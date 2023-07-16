@@ -363,6 +363,19 @@ class CommunicationSinglePage extends Component {
             </Spinner>
           </div>
         )}
+        {this.state.student.archiv && (
+          <Row className="sticky-top">
+            <Col>
+              <Card className="mb-2 mx-0" bg={'success'} text={'white'}>
+                <Card.Header>
+                  <Card.Title as="h5" className="text-light">
+                    Status: <b>Close</b>
+                  </Card.Title>
+                </Card.Header>
+              </Card>
+            </Col>
+          </Row>
+        )}
         <Row>
           <Card className="mb-2 mx-0">
             <Card.Header>
@@ -439,7 +452,7 @@ class CommunicationSinglePage extends Component {
                   <Col md={3}>
                     <b>Agents:</b>
                     <br />
-                    {this.state.student.agents.map((agent, i) => (
+                    {this.state.student?.agents?.map((agent, i) => (
                       // <Link>{`${agent.firstname} ${agent.lastname}`}</Link>
                       <>{`${agent.firstname} ${agent.lastname}`}</>
                     ))}
@@ -477,7 +490,7 @@ class CommunicationSinglePage extends Component {
             onDeleteSingleMessage={this.onDeleteSingleMessage}
           />
         </Row>
-        {this.props.user.archiv !== true ? (
+        {this.state.student.archiv !== true ? (
           <Row>
             <Card className="my-0 mx-0">
               <Card.Header>
@@ -514,8 +527,7 @@ class CommunicationSinglePage extends Component {
               <Card.Body>
                 <Row style={{ textDecoration: 'none' }}>
                   <Col className="my-0 mx-0">
-                    You service is finished. Therefore, you are in read only
-                    mode.
+                    The service is finished. Therefore, it is readonly.
                   </Col>
                 </Row>
               </Card.Body>

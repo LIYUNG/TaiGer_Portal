@@ -2,6 +2,8 @@ import React, { useRef, useEffect, useState } from 'react';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 
 import Friends from './Friends';
+import Friend from './Friends/Friend';
+
 import Aux from '../../../../../../hoc/_Aux';
 import DEMO from '../../../../../../store/constant';
 import { getQueryStudentResults } from '../../../../../../api';
@@ -21,7 +23,7 @@ const chatList = (props) => {
       const response = await getQueryStudentResults(searchTerm);
 
       if (response.data.success) {
-        setSearchResults(response.data.data);
+        setSearchResults(response.data?.data?.students);
         setIsResultsVisible(true);
         setLoading(false);
       } else {
@@ -97,7 +99,7 @@ const chatList = (props) => {
               id="search-friends"
               className="form-control"
               placeholder="<TODO in progress> Search Students . . ."
-              // onChange={handleInputChange}
+              onChange={handleInputChange}
             />
           </div>
         </div>
@@ -120,13 +122,15 @@ const chatList = (props) => {
               ) : (
                 // TODO: shown search result friends.
                 <PerfectScrollbar>
-                  <Friends
-                    listOpen={props.listOpen}
-                    handleCloseChat={props.handleCloseChat}
-                    user={props.user}
-                    searchMode={true}
-                    searchResults={searchResults}
-                  />
+                  {searchResults.length > 0 &&
+                    searchResults.map((std, i) => (
+                      <Friend
+                        key={std.id}
+                        data={std}
+                        activeId={props.user._id.toString()}
+                        clicked={props.handleCloseChat}
+                      />
+                    ))}
                 </PerfectScrollbar>
               )}
             </div>

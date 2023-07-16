@@ -716,7 +716,7 @@ class DocModificationThreadPage extends Component {
               <Card.Body>
                 <Row style={{ textDecoration: 'none' }}>
                   <Col className="my-0 mx-0">
-                    You service is finished. Therefore, you are in read only
+                    Your service is finished. Therefore, you are in read only
                     mode.
                   </Col>
                 </Row>

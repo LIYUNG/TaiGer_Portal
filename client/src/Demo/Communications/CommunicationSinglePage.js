@@ -416,7 +416,7 @@ class CommunicationSinglePage extends Component {
             <Card className="my-0 mx-0">
               <Card.Body>
                 <Row>
-                  <Col>
+                  <Col md={9}>
                     <h6>
                       <b>Instructions:</b> <br />
                       <br />
@@ -435,6 +435,14 @@ class CommunicationSinglePage extends Component {
                         </ul>
                       </p>
                     </h6>
+                  </Col>
+                  <Col md={3}>
+                    <b>Agents:</b>
+                    <br />
+                    {this.state.student.agents.map((agent, i) => (
+                      // <Link>{`${agent.firstname} ${agent.lastname}`}</Link>
+                      <>{`${agent.firstname} ${agent.lastname}`}</>
+                    ))}
                   </Col>
                 </Row>
               </Card.Body>
@@ -478,10 +486,11 @@ class CommunicationSinglePage extends Component {
                 </Card.Title>
               </Card.Header>
               <Card.Body>
-                {this.state.thread.isFinalVersion ? (
+                {this.state.student.agents?.length === 0 ? (
                   <Row style={{ textDecoration: 'none' }}>
                     <Col className="my-0 mx-0">
-                      This discussion thread is close.
+                      You don't have Agent yet. Please wait until you have
+                      Agent.
                     </Col>
                   </Row>
                 ) : (

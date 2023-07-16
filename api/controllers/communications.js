@@ -205,9 +205,9 @@ const getMessages = asyncHandler(async (req, res) => {
     params: { studentId }
   } = req;
 
-  const student = await Student.findById(studentId).select(
-    'firstname lastname'
-  );
+  const student = await Student.findById(studentId)
+    .select('firstname lastname agents')
+    .populate('agents', 'firstname lastname email role');
   if (!student) {
     logger.error('getMessages: Invalid student id!');
     throw new ErrorResponse(403, 'Invalid student id');
@@ -216,7 +216,7 @@ const getMessages = asyncHandler(async (req, res) => {
   communication_thread = await Communication.find({
     student_id: studentId
   })
-    .populate('student_id user_id', 'firstname lastname role agents editors')
+    .populate('student_id user_id', 'firstname lastname role')
     .sort({ createdAt: -1 }) // 0: latest!
     .limit(pageSize); // show only first y limit items after skip.
 

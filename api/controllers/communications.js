@@ -6,7 +6,10 @@ const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
 const { Role, Student, User } = require('../models/User');
 const { Communication } = require('../models/Communication');
-const { sendAgentNewMessageReminderEmail } = require('../services/email');
+const {
+  sendAgentNewMessageReminderEmail,
+  sendStudentNewMessageReminderEmail
+} = require('../services/email');
 const logger = require('../services/logger');
 const { isNotArchiv } = require('../constants');
 
@@ -243,7 +246,6 @@ const postMessages = asyncHandler(async (req, res) => {
   } catch (e) {
     throw new ErrorResponse(400, 'message collapse');
   }
-  // [TODO] Check student can only access their own thread!!!!
 
   const new_message = new Communication({
     student_id: studentId,
@@ -269,12 +271,14 @@ const postMessages = asyncHandler(async (req, res) => {
     'firstname lastname email archiv'
   );
 
+  // TODO inform agent/student
   if (user.role === Role.Student) {
     // If no editor, inform agent to assign
     for (let i = 0; i < student.agents.length; i += 1) {
       // inform active-agent
       if (isNotArchiv(student)) {
         if (isNotArchiv(student.agents[i])) {
+          // inform agent
           sendAgentNewMessageReminderEmail(
             {
               firstname: student.agents[i].firstname,
@@ -290,6 +294,19 @@ const postMessages = asyncHandler(async (req, res) => {
         }
       }
     }
+  } else {
+    sendStudentNewMessageReminderEmail(
+      {
+        firstname: student.firstname,
+        lastname: student.lastname,
+        address: student.email
+      },
+      {
+        taiger_user_firstname: user.firstname,
+        student_id: student._id.toString(),
+        taiger_user_lastname: user.lastname
+      }
+    );
   }
 });
 

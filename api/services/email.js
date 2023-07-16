@@ -28,7 +28,8 @@ const {
   TAIGER_SIGNATURE,
   SPLIT_LINE,
   ENGLISH_BELOW,
-  CONTACT_AGENT
+  CONTACT_AGENT,
+  STUDENT_COMMUNICATION_THREAD_URL
 } = require('../constants');
 
 const {
@@ -85,7 +86,7 @@ const updateNotificationEmail = async (recipient, msg) => {
 
 <p>請至 <a href="${SETTINGS_URL}">Setting</a> 確認使用者身分角色。</p>
 
-<p>${TAIGER_SIGNATURE}</p>
+<br />
 
 <p>${SPLIT_LINE}</p>
 
@@ -114,7 +115,7 @@ const updatePermissionNotificationEmail = async (recipient, msg) => {
 
 <p>請至 <a href="${TEAMS_URL}">TaiGer Teams</a> 確認使用者權限。</p>
 
-<p>${TAIGER_SIGNATURE}</p>
+<br />
 
 <p>${SPLIT_LINE}</p>
 
@@ -144,7 +145,7 @@ const uploadTemplateSuccessEmail = async (recipient, msg) => {
 
 <p>更多細節請至 <a href="${TEMPLATE_DOWNLOAD_URL}">TaiGer Portal Download</a></p>
 
-<p>${TAIGER_SIGNATURE}</p>
+<br />
 
 <p>${SPLIT_LINE}</p>
 
@@ -176,7 +177,7 @@ const deleteTemplateSuccessEmail = async (recipient, msg) => {
 
 <p>更多細節請至 <a href="${TEMPLATE_DOWNLOAD_URL}">TaiGer Portal Download</a></p>
 
-<p>${TAIGER_SIGNATURE}</p>
+<br />
 
 <p>${SPLIT_LINE}</p>
 
@@ -221,7 +222,7 @@ ${activationLink}
 
 <p>密碼為臨時，登入後請至 ${SETTINGS_URL} 盡速更換您的密碼</p>
 <p> </p>
-<p>${TAIGER_SIGNATURE}</p>
+<br />
 
 <p>${SPLIT_LINE}</p>
 
@@ -274,7 +275,7 @@ ${activationLink}
 
 <p>密碼為臨時，登入後請至 ${SETTINGS_URL} 盡速更換您的密碼</p>
 <p> </p>
-<p>${TAIGER_SIGNATURE}</p>
+<br />
 
 <p>${SPLIT_LINE}</p>
 
@@ -321,7 +322,7 @@ ${activationLink}
 
 <p>但您仍可再次請求啟用連結於： ${RESEND_ACTIVATION_URL}</p>
 
-<p>${TAIGER_SIGNATURE}</p>
+<br />
 
 <p>${SPLIT_LINE}</p>
 
@@ -362,7 +363,7 @@ ${passwordResetLink}
 
 <p>但您仍可再次請求密碼重設連結於： ${FORGOT_PASSWORD_URL} </p>
 
-<p>${TAIGER_SIGNATURE}</p>
+<br />
 
 <p>${SPLIT_LINE}</p>
 
@@ -394,7 +395,7 @@ const sendPasswordResetEmail = async (recipient) => {
 
 <p>TaiGer portal: <a href="${ORIGIN}">TaiGer portal</a></p>
 
-<p>${TAIGER_SIGNATURE}</p>
+<br />
 
 <p>${SPLIT_LINE}</p>
 
@@ -424,7 +425,7 @@ const sendAccountActivationConfirmationEmail = async (recipient, msg) => {
 
 <p>TaiGer Portal 連結： <a href="${ORIGIN}">TaiGer portal</a></p>
 
-<p>${TAIGER_SIGNATURE}</p>
+<br />
 
 <p>${SPLIT_LINE}</p>
 
@@ -458,7 +459,7 @@ ${msg.uploaded_documentname}。
 
 <p>有任何更新，請至 <a href="${BASE_DOCUMENT_URL}">Base Documents</a> 查看細節。</p>
 
-<p>${TAIGER_SIGNATURE}</p>
+<br />
 
 <p>${SPLIT_LINE}</p>
 
@@ -490,7 +491,7 @@ const sendUploadedVPDEmail = async (recipient, msg) => {
 
 <p>有任何 VPD 更新，請至 <a href="${UNI_ASSIST_FOR_STUDENT_URL}">Student Uni-Assist</a></p>
 
-<p>${TAIGER_SIGNATURE}</p>
+<br />
 
 <p>${SPLIT_LINE}</p>
 
@@ -522,7 +523,7 @@ const sendAgentUploadedProfileFilesForStudentEmail = async (recipient, msg) => {
 
 <p>${CONTACT_AGENT}</p>
 
-<p>${TAIGER_SIGNATURE}</p>
+<br />
 
 <p>${SPLIT_LINE}</p>
 
@@ -556,7 +557,7 @@ const sendAgentUploadedVPDForStudentEmail = async (recipient, msg) => {
 
 <p>${CONTACT_AGENT}</p>
 
-<p>${TAIGER_SIGNATURE}</p>
+<br />
 
 <p>${SPLIT_LINE}</p>
 
@@ -590,7 +591,7 @@ const sendUploadedProfileFilesRemindForAgentEmail = async (recipient, msg) => {
 
 <p>請至 ${BASE_DOCUMENT_FOR_AGENT_URL(msg.student_id)} 確認細節。</p>
 
-<p>${TAIGER_SIGNATURE}</p>
+<br />
 
 <p>${SPLIT_LINE}</p>
 
@@ -630,7 +631,7 @@ const sendUploadedVPDRemindForAgentEmail = async (recipient, msg) => {
     msg.student_firstname
   } ${msg.student_lastname} Uni-Assist</a> 確認細節。</p>
 
-<p>${TAIGER_SIGNATURE}</p>
+<br />
 
 <p>${SPLIT_LINE}</p>
 
@@ -671,7 +672,7 @@ const sendChangedProfileFileStatusEmail = async (recipient, msg) => {
 
 <p>如果有任何疑問，請聯絡您的顧問。 </p>
 
-<p>${TAIGER_SIGNATURE}</p>
+<br />
 
 <p>${SPLIT_LINE}</p>
 
@@ -701,7 +702,7 @@ const sendChangedProfileFileStatusEmail = async (recipient, msg) => {
 
 <p>請至 <a href="${BASE_DOCUMENT_URL}">Base Documents</a> 並再次確認。</p>
 
-<p>${TAIGER_SIGNATURE}</p>
+<br />
 
 <p>${SPLIT_LINE}</p>
 
@@ -734,7 +735,7 @@ const informAgentNewStudentEmail = async (recipient, msg) => {
     msg.std_id
   )} 查看他的背景問卷並與她/他打聲招呼！</p>
 
-<p>${TAIGER_SIGNATURE}</p>
+<br />
 
 <p>${SPLIT_LINE}</p>
 
@@ -772,7 +773,7 @@ const informStudentTheirAgentEmail = async (recipient, msg) => {
 
 <p>請至 <a href="${ORIGIN}">TaiGer portal</a> 並開始準備您的文件。</p>
 
-<p>${TAIGER_SIGNATURE}</p>
+<br />
 
 <p>${SPLIT_LINE}</p>
 
@@ -832,7 +833,7 @@ const informStudentArchivedStudentEmail = async (recipient, msg) => {
 
 <p>感謝您的使用。祝您在未來在求學的路上一帆風順。</p>
 
-<p>${TAIGER_SIGNATURE}</p>
+<br />
 
 <p>${SPLIT_LINE}</p>
 
@@ -872,7 +873,7 @@ const informStudentTheirEditorEmail = async (recipient, msg) => {
 
 <p>在 Portal 的文件修改討論串，請用<b>英文</b>溝通。</p>
 
-<p>${TAIGER_SIGNATURE}</p>
+<br />
 
 <p>${SPLIT_LINE}</p>
 
@@ -917,7 +918,7 @@ ${programList}
 
 <p>請至 <a href="${STUDENT_APPLICATION_URL}">Student Applications</a> 查看細節並選擇是否決定要申請 (Decided: Yes / No)。</p>
 
-<p>${TAIGER_SIGNATURE}</p>
+<br />
 
 <p>${SPLIT_LINE}</p>
 
@@ -948,7 +949,7 @@ const updateAcademicBackgroundEmail = async (recipient) => {
 
 <p>若有新的資訊，請再次到 <a href="${STUDENT_SURVEY_URL}">TaiGer Portal - Survey</a> 更新資訊。</p>
 
-<p>${TAIGER_SIGNATURE}</p>
+<br />
 
 <p>${SPLIT_LINE}</p>
 
@@ -977,7 +978,7 @@ const updateLanguageSkillEmail = async (recipient) => {
 
 <p>若有新的資訊，如考過檢定、或是知道新的考試時間，請再次到 <a href="${STUDENT_SURVEY_URL}">TaiGer Portal - Survey</a> 更新資訊。</p>
 
-<p>${TAIGER_SIGNATURE}</p>
+<br />
 
 <p>${SPLIT_LINE}</p>
 
@@ -1008,7 +1009,7 @@ const updateLanguageSkillEmailFromTaiGer = async (recipient, msg) => {
 
 <p>若有新的資訊，如考過檢定、或是知道新的考試時間，請再次到 <a href="${STUDENT_SURVEY_URL}">TaiGer Portal - Survey</a> 更新語言檢定資訊。</p>
 
-<p>${TAIGER_SIGNATURE}</p>
+<br />
 
 <p>${SPLIT_LINE}</p>
 
@@ -1037,7 +1038,7 @@ const updateApplicationPreferenceEmail = async (recipient) => {
 
 <p>若有更新，請至 <a href="${STUDENT_SURVEY_URL}">TaiGer Portal - Survey</a> </p>
 
-<p>${TAIGER_SIGNATURE}</p>
+<br />
 
 <p>${SPLIT_LINE}</p>
 
@@ -1065,7 +1066,7 @@ const updatePersonalDataEmail = async (recipient, msg) => {
 
 <p>請至 <a href="${SETTINGS_URL}">Setting</a> 查看細節。</p>
 
-<p>${TAIGER_SIGNATURE}</p>
+<br />
 
 <p>${SPLIT_LINE}</p>
 
@@ -1094,7 +1095,7 @@ const updateCredentialsEmail = async (recipient, msg) => {
 
 <p>請使用您的新密碼登入 TaiGer Portal： <a href="${ORIGIN}">TaiGer portal</a> </p>
 
-<p>${TAIGER_SIGNATURE}</p>
+<br />
 
 <p>${SPLIT_LINE}</p>
 
@@ -1135,7 +1136,7 @@ const UpdateStudentApplicationsEmail = async (recipient, msg) => {
 
 <p>並且到 <a href="${CVMLRL_CENTER_URL}">CV ML RL Center</a> 查看對於上述申請學程的新指派的文件任務細節。</p>
 
-<p>${TAIGER_SIGNATURE}</p>
+<br />
 
 <p>${SPLIT_LINE}</p>
 
@@ -1168,7 +1169,7 @@ ${applications_name}
 
 並且到 <a href="${CVMLRL_CENTER_URL}">CV ML RL Center</a> 查看對於上述申請學程的新指派的文件任務細節。
 
-<p>${TAIGER_SIGNATURE}</p>
+<br />
 
 <p>${SPLIT_LINE}</p>
 
@@ -1279,7 +1280,7 @@ const sendNewApplicationMessageInThreadEmail = async (recipient, msg) => {
 
 <p>請至 TaiGer Portal <a href="${thread_url}">${msg.student_firstname} - ${msg.student_lastname} ${msg.school} - ${msg.program_name} - ${msg.uploaded_documentname}</a> 並查看新訊息。 </p>
 
-<p>${TAIGER_SIGNATURE}</p>
+<br />
 
 <p>${SPLIT_LINE}</p>
 
@@ -1317,7 +1318,7 @@ const sendNewGeneraldocMessageInThreadEmail = async (recipient, msg) => {
 
 <p>請至 TaiGer Portal <a href="${thread_url}">${msg.student_firstname} ${msg.student_lastname}  - ${msg.uploaded_documentname}</a> 並查看細節。</p>
 
-<p>${TAIGER_SIGNATURE}</p>
+<br />
 
 <p>${SPLIT_LINE}</p>
 
@@ -1360,7 +1361,7 @@ const sendSetAsFinalGeneralFileForAgentEmail = async (recipient, msg) => {
 
 <p>如果您有任何問題，請聯絡您的文件編輯 Editor。</p>
 
-<p>${TAIGER_SIGNATURE}</p>
+<br />
 
 <p>${SPLIT_LINE}</p>
 
@@ -1406,7 +1407,7 @@ ${msg.editor_firstname} ${msg.editor_lastname} 標示 ${
 
 <p>如果您有任何問題，請聯絡您的文件編輯 Editor 或顧問。</p>
 
-<p>${TAIGER_SIGNATURE}</p>
+<br />
 
 <p>${SPLIT_LINE}</p>
   
@@ -1448,7 +1449,7 @@ const sendSetAsFinalGeneralFileForStudentEmail = async (recipient, msg) => {
 
 <p>如果您有任何問題，請聯絡您的文件編輯 Editor。</p>
 
-<p>${TAIGER_SIGNATURE}</p>
+<br />
 
 <p>${SPLIT_LINE}</p>
 
@@ -1484,7 +1485,7 @@ on ${msg.uploaded_updatedAt} for you.</p>
 
 <p>如果您有任何問題，請聯絡您的文件編輯 Editor。</p>
 
-<p>${TAIGER_SIGNATURE}</p>
+<br />
 
 <p>${SPLIT_LINE}</p>
 
@@ -1529,7 +1530,7 @@ const sendSetAsFinalProgramSpecificFileForStudentEmail = async (
 
 <p>如果您有任何問題，請聯絡您的文件編輯 Editor。</p>
 
-<p>${TAIGER_SIGNATURE}</p>
+<br />
 
 <p>${SPLIT_LINE}</p>
 
@@ -1569,7 +1570,7 @@ ${msg.school} - ${msg.program_name} ${msg.uploaded_documentname}
 
 <p>如果您有任何問題，請聯絡您的文件編輯 Editor。</p>
 
-<p>${TAIGER_SIGNATURE}</p>
+<br />
 
 <p>${SPLIT_LINE}</p>
 
@@ -1618,7 +1619,7 @@ ${msg.school} - ${msg.program_name} ${msg.uploaded_documentname} 於 ${
       msg.program_name
     } ${msg.uploaded_documentname}</a>  查看細節。</p>
 
-<p>${TAIGER_SIGNATURE}</p>
+<br />
 
 <p>${SPLIT_LINE}</p>
 
@@ -1664,7 +1665,7 @@ ${msg.school} - ${msg.program_name} ${msg.uploaded_documentname} 為未完成
       msg.program_name
     } ${msg.uploaded_documentname}</a> 查看細節。</p>
 
-<p>${TAIGER_SIGNATURE}</p>
+<br />
 
 <p>${SPLIT_LINE}</p>
 
@@ -1740,8 +1741,7 @@ const assignDocumentTaskToStudentEmail = async (recipient, msg) => {
 
 <p>如果您有任何問題，請聯絡您的文件編輯 Editor 或顧問。</p>
 
-<p>${TAIGER_SIGNATURE}</p>
-
+<br />
 <p>${SPLIT_LINE}</p>
 
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
@@ -1778,8 +1778,7 @@ const updateCoursesDataAgentEmail = async (recipient, msg) => {
     msg.student_id
   )}">Courses</a> 查看細節。</p>
 
-<p>${TAIGER_SIGNATURE}</p>
-
+<br />
 <p>${SPLIT_LINE}</p>
 
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
@@ -1824,8 +1823,7 @@ const sendAssignEditorReminderEmail = async (recipient, payload) => {
     payload.student_id
   )}">${payload.student_firstname} - ${payload.student_lastname}</a></b></p>
 
-<p>${TAIGER_SIGNATURE}</p>
-
+<br />
 <p>${SPLIT_LINE}</p>
 
 <p>${payload.student_firstname} - ${
@@ -1835,7 +1833,7 @@ const sendAssignEditorReminderEmail = async (recipient, payload) => {
 <p><b>請指派 Editor 給學生 <a href="${BASE_DOCUMENT_FOR_AGENT_URL(
     payload.student_id
   )}">${payload.student_firstname} - ${payload.student_lastname}</a></b></p>
-
+<br />
 <p>${TAIGER_SIGNATURE}</p>
 
 `; // should be for admin/editor/agent/student
@@ -1844,19 +1842,17 @@ const sendAssignEditorReminderEmail = async (recipient, payload) => {
 };
 
 const sendAgentNewMessageReminderEmail = async (recipient, payload) => {
-  const subject = '[DO NOT IGNORE] Assign Editor Reminder';
+  const subject = `[New Message] ${payload.student_firstname} - ${payload.student_lastname}`;
   const message = `\
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-<p>${payload.student_firstname} - ${
+<p><b>${payload.student_firstname} - ${
     payload.student_lastname
-  } sent new message(s)</p>
+  } sent new message(s)</b></p>
 
-<p><b>Please assign an Editor to the student <a href="${BASE_DOCUMENT_FOR_AGENT_URL(
+<p><b>Please go to student's communication <a href="${STUDENT_COMMUNICATION_THREAD_URL(
     payload.student_id
   )}">${payload.student_firstname} - ${payload.student_lastname}</a></b></p>
-
-<p>${TAIGER_SIGNATURE}</p>
 
 <p>${SPLIT_LINE}</p>
 
@@ -1864,10 +1860,40 @@ const sendAgentNewMessageReminderEmail = async (recipient, payload) => {
     payload.student_lastname
   } 傳了一則新訊息。</p>
 
-<p><b>請指派 Editor 給學生 <a href="${BASE_DOCUMENT_FOR_AGENT_URL(
+<p><b>請至學生討論串 <a href="${STUDENT_COMMUNICATION_THREAD_URL(
     payload.student_id
   )}">${payload.student_firstname} - ${payload.student_lastname}</a></b></p>
+<br />
+<p>${TAIGER_SIGNATURE}</p>
 
+`; // should be for admin/editor/agent/student
+
+  return sendEmail(recipient, subject, message);
+};
+
+const sendStudentNewMessageReminderEmail = async (recipient, payload) => {
+  const subject = `[New Message] ${recipient.firstname} ${recipient.lastname}`;
+  const message = `\
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+
+<p><b>${payload.taiger_user_firstname} - ${
+    payload.taiger_user_lastname
+  } sent you new message(s)</b></p>
+
+<p><b>Please go to my <a href="${STUDENT_COMMUNICATION_THREAD_URL(
+    payload.student_id
+  )}">Communication</a></b></p>
+
+<p>${SPLIT_LINE}</p>
+
+<p>${payload.taiger_user_firstname} - ${
+    payload.taiger_user_lastname
+  } 留了新訊息給你。</p>
+
+<p><b>請至學生討論串 <a href="${STUDENT_COMMUNICATION_THREAD_URL(
+    payload.student_id
+  )}">Communication</a></b></p>
+<br />
 <p>${TAIGER_SIGNATURE}</p>
 
 `; // should be for admin/editor/agent/student
@@ -1922,5 +1948,6 @@ module.exports = {
   createApplicationToStudentEmail,
   updateCoursesDataAgentEmail,
   sendAssignEditorReminderEmail,
-  sendAgentNewMessageReminderEmail
+  sendAgentNewMessageReminderEmail,
+  sendStudentNewMessageReminderEmail
 };

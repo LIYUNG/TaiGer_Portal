@@ -24,6 +24,8 @@ const ARCHIVED_STUDENTS_URL = new URL('/archiv/students', ORIGIN).href;
 const BASE_DOCUMENT_URL = new URL('/base-documents', ORIGIN).href;
 const BASE_DOCUMENT_FOR_AGENT_URL = (studentId) =>
   new URL(`/student-database/${studentId}/profile`, ORIGIN).href;
+const STUDENT_COMMUNICATION_THREAD_URL = (studentId) =>
+  new URL(`/communications/${studentId}`, ORIGIN).href;
 const TEMPLATE_DOWNLOAD_URL = new URL('/download', ORIGIN).href;
 const STUDENT_APPLICATION_URL = new URL('/student-applications', ORIGIN).href;
 const STUDENT_SURVEY_URL = new URL('/survey', ORIGIN).href;
@@ -1451,6 +1453,7 @@ module.exports = {
   THREAD_URL,
   ARCHIVED_STUDENTS_URL,
   BASE_DOCUMENT_URL,
+  STUDENT_COMMUNICATION_THREAD_URL,
   BASE_DOCUMENT_FOR_AGENT_URL,
   TEMPLATE_DOWNLOAD_URL,
   STUDENT_APPLICATION_URL,

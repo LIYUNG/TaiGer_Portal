@@ -364,12 +364,16 @@ class AgentReviewing extends React.Component {
               to={'/portal-informations/' + this.props.student._id}
               style={{ textDecoration: 'none' }}
             >
-              {to_register_application_portals(this.props.student) ? (
+              {this.props.student.applications?.length === 0 ? (
+                <p className="text-warning my-0" title="Not needed">
+                  <BsDash size={24} color="lightgray" className="mx-2" />
+                </p>
+              ) : to_register_application_portals(this.props.student) ? (
                 <p className="text-warning my-0">
                   <AiFillQuestionCircle
                     size={24}
                     color="lightgray"
-                    title="Working"
+                    title="Missing"
                     className="my-0 mx-2"
                   />
                 </p>

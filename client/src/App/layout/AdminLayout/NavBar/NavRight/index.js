@@ -7,7 +7,7 @@ import { stringAvatar } from '../../../../../Demo/Utils/contants';
 import ChatList from './ChatList';
 import Aux from '../../../../../hoc/_Aux';
 import DEMO from '../../../../../store/constant';
-import { AiOutlineMail } from 'react-icons/ai';
+import { AiOutlineCalendar, AiOutlineMail } from 'react-icons/ai';
 import {
   is_TaiGer_AdminAgent,
   is_TaiGer_Student
@@ -47,6 +47,9 @@ class NavRight extends Component {
       <Aux>
         <Col>
           <ul className="navbar-nav ml-auto my-0 py-0">
+            {/* <li className="mail-icon">
+              <AiOutlineCalendar size={24} />
+            </li> */}
             {is_TaiGer_Student(this.props.userdata) && (
               <li>
                 <Link
@@ -60,7 +63,7 @@ class NavRight extends Component {
             )}
             {is_TaiGer_AdminAgent(this.props.userdata) && (
               <li className="mail-icon" onClick={this.handleOpenChat}>
-                <AiOutlineMail size={24} center />
+                <AiOutlineMail size={24} />
               </li>
             )}
             <li className="py-0">

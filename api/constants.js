@@ -672,7 +672,7 @@ const unsubmitted_applications_list = (student, user, trigger_days) => {
       student.applications[i].closed !== 'O' &&
       student.applications[i].closed !== 'X' &&
       day_diff < parseInt(ESCALATION_DEADLINE_DAYS_TRIGGER, 10) &&
-      day_diff > -1
+      day_diff > -30
     ) {
       unsubmitted_applications_li += `<li>${
         student.applications[i].programId.school

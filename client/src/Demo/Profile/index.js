@@ -258,7 +258,7 @@ class Profile extends React.Component {
   render() {
     const { res_status, isLoaded, res_modal_status, res_modal_message } =
       this.state;
-    TabTitle('Settings');
+
     if (!isLoaded) {
       return (
         <div style={spinner_style}>
@@ -268,7 +268,19 @@ class Profile extends React.Component {
         </div>
       );
     }
-
+    TabTitle(
+      `${this.state.personaldata.firstname} ${
+        this.state.personaldata.lastname
+      } |${
+        this.state.personaldata.firstname_chinese
+          ? this.state.personaldata.firstname_chinese
+          : ' '
+      }${
+        this.state.personaldata.lastname_chinese
+          ? this.state.personaldata.lastname_chinese
+          : ' '
+      }Profile`
+    );
     if (res_status >= 400) {
       return <ErrorPage res_status={res_status} />;
     }
@@ -292,7 +304,17 @@ class Profile extends React.Component {
                       to={`/student-database/${this.props.match.params.user_id}/profile`}
                       className="text-info"
                     >
-                      {`${this.state.personaldata.firstname} ${this.state.personaldata.lastname} | ${this.state.personaldata.firstname_chinese} ${this.state.personaldata.lastname_chinese}`}{' '}
+                      {`${this.state.personaldata.firstname} ${
+                        this.state.personaldata.lastname
+                      } |${
+                        this.state.personaldata.firstname_chinese
+                          ? this.state.personaldata.firstname_chinese
+                          : ' '
+                      }${
+                        this.state.personaldata.lastname_chinese
+                          ? this.state.personaldata.lastname_chinese
+                          : ' '
+                      }`}{' '}
                       Personal Data
                     </Link>
                   ) : (

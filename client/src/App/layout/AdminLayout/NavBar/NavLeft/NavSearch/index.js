@@ -171,7 +171,13 @@ const NavSearch = (props) => {
                 {searchResults.map((result, i) =>
                   result.role === 'Student' ? (
                     <li onClick={() => onClickStudentHandler(result)} key={i}>
-                      {`${result.firstname} ${result.lastname} ${result.firstname_chinese} ${result.lastname_chinese}`}
+                      {`${result.firstname} ${result.lastname} ${
+                        result.firstname_chinese
+                          ? result.firstname_chinese
+                          : ' '
+                      }${
+                        result.lastname_chinese ? result.lastname_chinese : ' '
+                      }`}
                     </li>
                   ) : result.role === Role.Agent ? (
                     <li onClick={() => onClickAgentHandler(result)} key={i}>

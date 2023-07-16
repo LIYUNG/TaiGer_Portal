@@ -96,8 +96,8 @@ const chatList = (props) => {
               type="text"
               id="search-friends"
               className="form-control"
-              placeholder="Search Students . . ."
-              onChange={handleInputChange}
+              placeholder="<TODO in progress> Search Students . . ."
+              // onChange={handleInputChange}
             />
           </div>
         </div>

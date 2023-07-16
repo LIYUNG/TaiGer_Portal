@@ -181,6 +181,7 @@ class Message extends Component {
             </Card.Body>
           </Collapse>
         </Card>
+        {/* TODOL consider to move it to the parent! It render many time! as message increase */}
         <Modal
           show={this.state.deleteMessageModalShow}
           onHide={this.onHidedeleteMessageModalShow}

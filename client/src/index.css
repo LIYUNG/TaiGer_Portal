@@ -23,6 +23,9 @@ body {
   width: 100%;
 }
 
+.friend-list:hover {
+  background-color: rgb(214, 214, 214);
+}
 .mail-icon {
   /* Default styles */
   color: black;

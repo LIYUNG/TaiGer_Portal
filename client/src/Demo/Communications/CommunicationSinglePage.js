@@ -373,8 +373,8 @@ class CommunicationSinglePage extends Component {
                 >
                   <b>{student_name}</b>
                 </Link>
-                {'   '}
-                {' Communication with Agent'}
+                {' - '}
+                {' Conact your Agent'}
                 {'   '}
                 <span
                   className="text-light mb-0 me-2 "
@@ -418,7 +418,7 @@ class CommunicationSinglePage extends Component {
                 <Row>
                   <Col>
                     <h6>
-                      <b>Requirements:</b> <br />
+                      <b>Instructions:</b> <br />
                       <br />
                       <p>
                         TaiGer顧問皆位於中歐時區，無法及時回復，為確保有

@@ -112,17 +112,6 @@ export const valid_internal_categories = [
   { key: 'uniassist-internal', value: 'Uni-Assist Internal' }
 ];
 
-export const convertDate = (date) => {
-  let date_str = '';
-  let dat = new Date(date).toLocaleDateString('zh-Hans-CN');
-  let time = new Date(date).toLocaleTimeString('en-US', {
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: true
-  });
-  return dat + ', ' + time;
-};
-
 export const split_header = (header_name) => {
   var rest = header_name.substring(0, header_name.lastIndexOf(' ') + 1);
   var last = header_name.substring(
@@ -180,6 +169,63 @@ export const getNumberOfDays = (start, end) => {
   const diffInDays = Math.round(diffInTime / oneDay);
 
   return diffInDays.toString();
+};
+
+export const convertDate = (date) => {
+  // const userLocale = navigator.language;
+  let dat = new Date(date).toLocaleDateString('zh-Hans-CN');
+  let time = new Date(date).toLocaleTimeString('en-US', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true
+  });
+  const currentDate = new Date();
+  const input_date_point = new Date(date);
+  const today = new Date(
+    currentDate.getFullYear(),
+    currentDate.getMonth(),
+    currentDate.getDate()
+  );
+  const input_date = new Date(
+    input_date_point.getFullYear(),
+    input_date_point.getMonth(),
+    input_date_point.getDate()
+  );
+  const isToday = today.getTime() === input_date.getTime();
+  if (isToday) {
+    return `Today ${time}`;
+  } else {
+    return dat + ', ' + time;
+  }
+};
+
+export const convertDate_ux_friendly = (date) => {
+  let dat = new Date(date).toLocaleDateString('zh-Hans-CN');
+
+  const currentDate = new Date();
+  const input_date_point = new Date(date);
+  // Calculate the time difference in milliseconds
+  const timeDiff = Math.abs(currentDate - input_date_point);
+
+  // Convert milliseconds to minutes, hours, days, and weeks
+  const minutes = Math.floor(timeDiff / (1000 * 60));
+  const hours = Math.floor(timeDiff / (1000 * 60 * 60));
+  const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+  const weeks = Math.floor(days / 7);
+
+  let timeDisplay;
+  if (minutes < 60) {
+    timeDisplay = `${minutes} minute${minutes > 1 ? 's' : ''}`;
+  } else if (hours < 24) {
+    timeDisplay = `${hours} hour${hours > 1 ? 's' : ''}`;
+  } else if (days < 7) {
+    timeDisplay = `${days} day${days > 1 ? 's' : ''}`;
+  } else if (weeks < 4) {
+    timeDisplay = `${weeks} week${weeks > 1 ? 's' : ''}`;
+  } else {
+    timeDisplay = `${dat}`;
+  }
+  return timeDisplay;
 };
 
 const create_years = (start_year, end_year) => {

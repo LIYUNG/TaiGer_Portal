@@ -3,6 +3,10 @@ import React from 'react';
 import Aux from '../../../../../../../../hoc/_Aux';
 import DEMO from '../../../../../../../../store/constant';
 import { Link } from 'react-router-dom';
+import {
+  convertDate,
+  convertDate_ux_friendly
+} from '../../../../../../../../Demo/Utils/contants';
 const images = require.context(
   '../../../../../../../../assets/images/user',
   true
@@ -35,8 +39,8 @@ const friend = (props) => {
         <div
           className={
             props.data.latestCommunication.readBy.includes(props.activeId)
-              ? 'media userlist-box ripple'
-              : 'media userlist-box ripple active'
+              ? 'media userlist-box friend-list ripple'
+              : 'media userlist-box friend-list ripple active'
           }
           onClick={props.clicked}
         >
@@ -50,10 +54,17 @@ const friend = (props) => {
             <h6 className="chat-header">
               {props.data.firstname} {props.data.lastname}
               <br></br>
-              {props.data.latestCommunication.createdAt}
             </h6>
+            <span
+              className="text-secondary mb-1 me-2 "
+              style={{ float: 'left' }}
+            >
+              {convertDate_ux_friendly(
+                props.data.latestCommunication.createdAt
+              )}
+            </span>
           </div>
-        </div>{' '}
+        </div>
       </Link>
     </Aux>
   );

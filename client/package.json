@@ -76,7 +76,7 @@
   "scripts": {
     "start": "set PORT=3006 && react-scripts start",
     "build": "react-scripts build",
-    "analyze": "react-scripts source-map-explorer 'build/static/js/*.js'",
+    "analyze": "source-map-explorer 'build/static/js/*.js'",
     "deploy": "aws s3 sync build/ s3://taiger-file-storage-production-website",
     "prod": "npm run-script build && npm run-script deploy",
     "test": "react-scripts test",

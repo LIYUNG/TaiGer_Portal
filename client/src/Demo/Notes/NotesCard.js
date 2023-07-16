@@ -14,19 +14,9 @@ class NotesCard extends Component {
     deleteMessageModalShow: false
   };
   componentDidMount() {
-    var initialEditorState = null;
-    if (this.props.notes && this.props.notes !== '{}') {
-      try {
-        initialEditorState = JSON.parse(this.props.notes);
-      } catch (e) {
-        initialEditorState = { time: new Date(), blocks: [] };
-      }
-    } else {
-      initialEditorState = { time: new Date(), blocks: [] };
-    }
     this.setState((state) => ({
       ...state,
-      editorState: initialEditorState,
+      // editorState: initialEditorState,
       isLoaded: this.props.isLoaded,
       buttonDisabled: true,
       deleteMessageModalShow: false
@@ -94,22 +84,13 @@ class NotesCard extends Component {
   };
 
   render() {
-    if (!this.state.editorState) {
-      return (
-        <div style={spinner_style}>
-          <Spinner animation="border" role="status">
-            <span className="visually-hidden"></span>
-          </Spinner>
-        </div>
-      );
-    }
-
     return (
       <>
         <NotesEditor
           thread={this.state.thread}
           buttonDisabled={this.state.buttonDisabled}
-          editorState={this.state.editorState}
+          editorState={this.props.notes}
+          unique_id={this.props.student_id}
           handleClickSave={this.handleClickSave}
         />
         <Modal

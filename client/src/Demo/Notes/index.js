@@ -30,10 +30,20 @@ class Notes extends React.Component {
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
+        let initialEditorState = null;
+        if (data?.notes !== '{}') {
+          try {
+            initialEditorState = JSON.parse(data.notes);
+          } catch (e) {
+            initialEditorState = { time: new Date(), blocks: [] };
+          }
+        } else {
+          initialEditorState = { time: new Date(), blocks: [] };
+        }
         if (success) {
           this.setState({
             isLoaded: true,
-            notes: data ? data.notes : '{}',
+            notes: initialEditorState,
             success: success,
             res_status: status
           });
@@ -53,6 +63,48 @@ class Notes extends React.Component {
         }));
       }
     );
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.student_id !== this.props.student_id) {
+      getStudentNotes(this.props.student_id).then(
+        (resp) => {
+          const { data, success } = resp.data;
+          var initialEditorState = null;
+          if (data?.notes !== '{}') {
+            try {
+              initialEditorState = JSON.parse(data.notes);
+            } catch (e) {
+              initialEditorState = { time: new Date(), blocks: [] };
+            }
+          } else {
+            initialEditorState = { time: new Date(), blocks: [] };
+          }
+          const { status } = resp;
+          if (success) {
+            this.setState({
+              isLoaded: true,
+              notes: initialEditorState,
+              success: success,
+              res_status: status
+            });
+          } else {
+            this.setState({
+              isLoaded: true,
+              res_status: status
+            });
+          }
+        },
+        (error) => {
+          this.setState((state) => ({
+            ...state,
+            isLoaded: true,
+            error,
+            res_status: 500
+          }));
+        }
+      );
+    }
   }
 
   render() {
@@ -84,14 +136,6 @@ class Notes extends React.Component {
           user={this.props.user}
           student_id={this.props.student_id}
         />
-
-        {!isLoaded && (
-          <div style={spinner_style}>
-            <Spinner animation="border" role="status">
-              <span className="visually-hidden"></span>
-            </Spinner>
-          </div>
-        )}
       </Aux>
     );
   }

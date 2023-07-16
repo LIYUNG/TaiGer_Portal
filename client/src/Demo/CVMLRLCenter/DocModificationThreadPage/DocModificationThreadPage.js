@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Row, Col, Spinner, Button, Card, Modal } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import { FiExternalLink } from 'react-icons/fi';
 
 import Aux from '../../../hoc/_Aux';
 import MessageList from './MessageList';
@@ -650,8 +651,14 @@ class DocModificationThreadPage extends Component {
                         />
                       </h6>
                       If image not shown, please go to{' '}
-                      <a href="/base-documents">Base Documents</a> and upload
-                      the Passport Photo.
+                      <a href="/base-documents">
+                        <b>Base Documents</b>
+                        <FiExternalLink
+                          className="mx-1 mb-1"
+                          style={{ cursor: 'pointer' }}
+                        />
+                      </a>{' '}
+                      and upload the Passport Photo.
                     </Col>
                   )}
                 </Row>

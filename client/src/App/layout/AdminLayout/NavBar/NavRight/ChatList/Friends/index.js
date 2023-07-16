@@ -55,6 +55,46 @@ class Friends extends Component {
       );
     }
   }
+  componentDidUpdate(prevProps) {
+    if (prevProps.searchMode !== this.props.searchMode) {
+      if (this.props.searchMode) {
+        this.setState({
+          students: this.props.searchResults,
+          isLoaded: true,
+          file: null
+        });
+      } else {
+        getMyCommunicationThread().then(
+          (resp) => {
+            const { success, data } = resp.data;
+            const { status } = resp;
+            if (success) {
+              this.setState({
+                success,
+                students: data.students,
+                isLoaded: true,
+                file: null,
+                res_status: status
+              });
+            } else {
+              this.setState({
+                isLoaded: true,
+                res_status: status
+              });
+            }
+          },
+          (error) => {
+            this.setState((state) => ({
+              ...state,
+              isLoaded: true,
+              error,
+              res_status: 500
+            }));
+          }
+        );
+      }
+    }
+  }
   // componentWillReceiveProps = (nextProps) => {
   // UNSAFE_componentWillReceiveProps = (nextProps) => {
   //   if (!nextProps.listOpen) {

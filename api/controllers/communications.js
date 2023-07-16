@@ -69,7 +69,7 @@ const getSearchUserMessages = asyncHandler(async (req, res) => {
     { score: { $meta: 'textScore' } }
   )
     .sort({ score: { $meta: 'textScore' } })
-    .limit(5)
+    .limit(10)
     .select('firstname lastname firstname_chinese lastname_chinese role')
     .lean();
   const students = await Student.find({

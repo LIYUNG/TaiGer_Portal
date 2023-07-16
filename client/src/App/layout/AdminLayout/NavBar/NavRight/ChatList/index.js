@@ -58,6 +58,10 @@ const chatList = (props) => {
         setSearchResults([]);
       }
     }, 400); // Adjust the delay as needed
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+      clearTimeout(delayDebounceFn);
+    };
   }, [searchTerm]);
 
   useEffect(() => {
@@ -110,7 +114,7 @@ const chatList = (props) => {
                     handleCloseChat={props.handleCloseChat}
                     user={props.user}
                     searchMode={false}
-                    searchResults={false}
+                    searchResults={[]}
                   />
                 </PerfectScrollbar>
               ) : (

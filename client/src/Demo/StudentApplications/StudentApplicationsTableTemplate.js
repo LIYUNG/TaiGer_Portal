@@ -491,7 +491,15 @@ class StudentApplicationsTableTemplate extends React.Component {
             <Card className="my-2 mx-0" bg={'black'} text={'light'}>
               <Card.Header>
                 <Card.Title className="my-0 mx-0 text-light">
-                  {this.props.student.firstname} {this.props.student.lastname}{' '}
+                  <Link
+                    to={`/student-database/${this.props.student._id.toString()}/profile`}
+                    className="text-info"
+                  >
+                    <b>
+                      {this.props.student.firstname}{' '}
+                      {this.props.student.lastname}{' '}
+                    </b>
+                  </Link>
                   Applications
                 </Card.Title>
               </Card.Header>

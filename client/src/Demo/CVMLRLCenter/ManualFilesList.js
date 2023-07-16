@@ -12,6 +12,7 @@ class ManualFilesList extends Component {
               thread={thread}
               student={this.props.student}
               application={this.props.application}
+              decided={'O'}
               onFormSubmit={this.props.onFormSubmit}
               onTrashClick={this.props.onTrashClick}
               onDeleteProgramSpecificThread={
@@ -31,6 +32,7 @@ class ManualFilesList extends Component {
                 key={thread._id}
                 thread={thread}
                 application={this.props.application}
+                decided={this.props.application.decided}
                 program_id={this.props.application.programId._id}
                 student={this.props.student}
                 onTrashClick={this.props.onTrashClick}

@@ -831,10 +831,10 @@ class EditorDocsProgress extends React.Component {
                           </Col>
                         </Row>
                         <Row className="my-2 mx-0">
-                          <Col md={2}></Col>
-                          <Col md={4}>
-                            <p className="text-light">
-                              Please make sure the program should be proceeded.
+                          <h6 className="text-danger">
+                            <b>
+                              Ths following tasks are not visible in tasks
+                              dashboard and CV/MLRL/Center. Please
                               {showButtonIfMyStudent(
                                 this.props.user,
                                 this.state.student
@@ -850,10 +850,23 @@ class EditorDocsProgress extends React.Component {
                                   {' '}
                                   click here
                                 </Link>
-                              )}
-                            </p>
-                          </Col>
+                              )}{' '}
+                              to activate the application.
+                            </b>
+                          </h6>
                         </Row>
+                        <ManualFiles
+                          onDeleteFileThread={this.onDeleteFileThread}
+                          handleAsFinalFile={this.handleAsFinalFile}
+                          user={this.props.user}
+                          student={this.state.student}
+                          application={application}
+                          filetype={'ProgramSpecific'}
+                          initGeneralFileThread={this.initGeneralFileThread}
+                          initProgramSpecificFileThread={
+                            this.initProgramSpecificFileThread
+                          }
+                        />
                       </>
                     )}
                   </Row>

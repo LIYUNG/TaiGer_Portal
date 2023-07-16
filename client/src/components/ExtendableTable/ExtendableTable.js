@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
 import { Button, Collapse, Modal, Table } from 'react-bootstrap';
 import { IoCheckmarkCircle } from 'react-icons/io5';
+import {
+  convertDate,
+  convertDate_ux_friendly
+} from '../../Demo/Utils/contants';
+import { Link } from 'react-router-dom';
 
 export function ExtendableTable({ data }) {
   const [selectedRows, setSelectedRows] = useState([
@@ -118,6 +123,7 @@ export function ExtendableTable({ data }) {
               <tr>
                 <th>Status</th>
                 <th>Document Name</th>
+                <th>Last Update</th>
               </tr>
             </thead>
             <tbody>
@@ -135,34 +141,41 @@ export function ExtendableTable({ data }) {
                         }
                       />
                     </th>
-                    <th>{thread.doc_thread_id.file_type}</th>
+                    <th>
+                      <Link
+                        to={`/document-modification/${thread.doc_thread_id?._id.toString()}`}
+                      >
+                        {thread.doc_thread_id.file_type}
+                      </Link>
+                    </th>
+                    <th>{`${convertDate(thread.updatedAt)}`}</th>
                   </tr>
                 ))}
               {singleStudent.applications &&
                 singleStudent.applications.map((application, i) =>
-                  application.doc_modification_thread.map(
-                    (thread, x) =>
-                      application.decided === 'O' && (
-                        <tr>
-                          <th>
-                            <IoCheckmarkCircle
-                              size={24}
-                              color={
-                                thread.isFinalVersion
-                                  ? 'limegreen'
-                                  : 'lightgray'
-                              }
-                              title={
-                                thread.isFinalVersion
-                                  ? 'Finished'
-                                  : 'Not finished'
-                              }
-                            />
-                          </th>
-                          <th>{`${thread.doc_thread_id.file_type} - ${application.programId.school} ${application.programId.program_name}`}</th>
-                        </tr>
-                      )
-                  )
+                  application.doc_modification_thread.map((thread, x) => (
+                    <tr>
+                      <th>
+                        <IoCheckmarkCircle
+                          size={24}
+                          color={
+                            thread.isFinalVersion ? 'limegreen' : 'lightgray'
+                          }
+                          title={
+                            thread.isFinalVersion ? 'Finished' : 'Not finished'
+                          }
+                        />
+                      </th>
+                      <th>
+                        <Link
+                          to={`/document-modification/${thread.doc_thread_id?._id.toString()}`}
+                        >
+                          {`${thread.doc_thread_id.file_type} - ${application.programId.school} ${application.programId.program_name}`}
+                        </Link>
+                      </th>
+                      <th>{`${convertDate(thread.updatedAt)}`}</th>
+                    </tr>
+                  ))
                 )}
             </tbody>
           </Table>

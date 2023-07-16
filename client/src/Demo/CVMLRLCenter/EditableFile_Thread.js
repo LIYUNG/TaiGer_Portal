@@ -131,7 +131,9 @@ class EditableFile_Thread extends Component {
               to={
                 '/document-modification/' + this.props.thread.doc_thread_id._id
               }
-              className="text-info"
+              className={`${
+                this.props.decided === 'O' ? 'text-info' : 'text-secondary'
+              }`}
               style={{ textDecoration: 'none' }}
             >
               {documenName}

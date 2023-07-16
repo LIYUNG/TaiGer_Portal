@@ -82,9 +82,17 @@ const getExpense = asyncHandler(async (req, res) => {
         '-messages'
       )
       .select('-notification')
-      .lean()
-      .exec();
-    res.status(200).send({ success: true, data: { students, the_user } });
+      .lean();
+    // Merge the results
+    const mergedResults = students.map((student) => {
+      const aggregateData = studentsWithExpenses.find(
+        (item) => item._id.toString() === student._id.toString()
+      );
+      return { ...aggregateData, ...student };
+    });
+    res
+      .status(200)
+      .send({ success: true, data: { students: mergedResults, the_user } });
   } else {
     res.status(200).send({ success: true, data: { students: [], the_user } });
   }

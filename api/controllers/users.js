@@ -75,7 +75,8 @@ const addUser = asyncHandler(async (req, res) => {
     checkEmail
   )(req);
 
-  const { firstname, lastname, email } = req.body;
+  const { firstname_chinese, lastname_chinese, firstname, lastname, email } =
+    req.body;
   const existUser = await User.findOne({ email });
   if (existUser) {
     logger.error('addUser: An account with this email address already exists');
@@ -89,7 +90,14 @@ const addUser = asyncHandler(async (req, res) => {
     length: 10,
     numbers: true
   });
-  const user = await Student.create({ firstname, lastname, email, password });
+  const user = await Student.create({
+    firstname_chinese,
+    lastname_chinese,
+    firstname,
+    lastname,
+    email,
+    password
+  });
 
   const activationToken = generateRandomToken();
   await Token.create({ userId: user._id, value: hashToken(activationToken) });

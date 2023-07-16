@@ -41,7 +41,7 @@ class AddUserModal extends React.Component {
             <Form.Label>First Name</Form.Label>
             <Form.Control
               type="text"
-              placeholder="Chung-Ming"
+              placeholder="Shiao-Ming"
               onChange={(e) => this.handleChange(e)}
             />
           </Form.Group>
@@ -50,6 +50,22 @@ class AddUserModal extends React.Component {
             <Form.Control
               type="text"
               placeholder="Chen"
+              onChange={(e) => this.handleChange(e)}
+            />
+          </Form.Group>
+          <Form.Group className="my-2" controlId="firstname_chinese">
+            <Form.Label>Last Name</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="小明"
+              onChange={(e) => this.handleChange(e)}
+            />
+          </Form.Group>
+          <Form.Group className="my-2" controlId="lastname_chinese">
+            <Form.Label>Last Name</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="陳"
               onChange={(e) => this.handleChange(e)}
             />
           </Form.Group>
@@ -75,10 +91,7 @@ class AddUserModal extends React.Component {
           >
             {this.props.isLoaded ? 'Add User' : 'Loading'}
           </Button>
-          <Button
-            onClick={this.props.cloaseAddUserModal}
-            variant="light"
-          >
+          <Button onClick={this.props.cloaseAddUserModal} variant="light">
             Cancel
           </Button>
         </Modal.Footer>

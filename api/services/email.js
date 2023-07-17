@@ -1782,7 +1782,7 @@ const AnalysedCoursesDataStudentEmail = async (recipient, msg) => {
                   <p>
                     此份課程分析<b>僅供選課參考</b>
                     。請仔細看過每個向度所缺的課程，並對照學校之後學期是否有開期課程，抓出來，並和您的
-                    Agent 討論。
+                    Agent 討論。若您已經畢業，則當作申請學校的參考，了解學校大致要求的課程匹配度。
                   </p>
 <br />
 <p>${SPLIT_LINE}</p>
@@ -1800,7 +1800,7 @@ const AnalysedCoursesDataStudentEmail = async (recipient, msg) => {
                     courses missing in each category and cross-reference
                     whether your university offers those courses in the upcoming
                     semesters. Once you have identified them, discuss with your
-                    Agent.
+                    Agent. If you already graduate, this is only a reference.
                   </p>
 <p>${TAIGER_SIGNATURE}</p>
 

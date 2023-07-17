@@ -580,7 +580,7 @@ export default function MyCourses(props) {
         </Modal.Header>
         <Modal.Body>
           Transcript analysed successfully!{' '}
-          <b>The student will received an email notification and the analysed course URL link.</b> He/She should
+          <b>The student will receive an email notification and the analysed course URL link.</b> He/She should
           access the analysed page in their course page.
         </Modal.Body>
         <Modal.Footer>

@@ -1,11 +1,11 @@
 import React, { useRef, useEffect, useState } from 'react';
 import PerfectScrollbar from 'react-perfect-scrollbar';
+import { Placeholder } from 'react-bootstrap';
 
 import Friends from './Friends';
 import Friend from './Friends/Friend';
 
 import Aux from '../../../../../../hoc/_Aux';
-import DEMO from '../../../../../../store/constant';
 import { getQueryStudentResults } from '../../../../../../api';
 
 const chatList = (props) => {
@@ -21,11 +21,15 @@ const chatList = (props) => {
     try {
       setLoading(true);
       const response = await getQueryStudentResults(searchTerm);
-
       if (response.data.success) {
         setSearchResults(response.data?.data?.students);
         setIsResultsVisible(true);
         setLoading(false);
+        // setTimeout(function () {
+        //   setSearchResults(response.data?.data?.students);
+        //   setIsResultsVisible(true);
+        //   setLoading(false);
+        // }, 2000);
       } else {
         setIsResultsVisible(false);
         setStatedata((state) => ({
@@ -103,13 +107,13 @@ const chatList = (props) => {
             />
           </div>
         </div>
-        <div className="h-list-body">
-          <div className="main-friend-cont scroll-div">
-            <div
-              className="main-friend-list"
-              style={{ height: 'calc(100vh - 85px)' }}
-            >
-              {searchTerm === '' ? (
+        {searchTerm === '' ? (
+          <div className="h-list-body">
+            <div className="main-friend-cont scroll-div">
+              <div
+                className="main-friend-list"
+                style={{ height: 'calc(100vh - 85px)' }}
+              >
                 <PerfectScrollbar>
                   <Friends
                     listOpen={props.listOpen}
@@ -119,22 +123,57 @@ const chatList = (props) => {
                     searchResults={[]}
                   />
                 </PerfectScrollbar>
-              ) : (
-                <PerfectScrollbar>
-                  {searchResults.length > 0 &&
-                    searchResults.map((std, i) => (
-                      <Friend
-                        key={std.id}
-                        data={std}
-                        activeId={props.user._id.toString()}
-                        clicked={props.handleCloseChat}
-                      />
-                    ))}
-                </PerfectScrollbar>
-              )}
+              </div>
             </div>
           </div>
-        </div>
+        ) : (
+          <PerfectScrollbar>
+            {loading ? (
+              <>
+                <div className="h-list-body">
+                  <div className="main-friend-cont scroll-div">
+                    <div
+                      className="main-friend-list"
+                      style={{ height: 'calc(100vh - 85px)' }}
+                    >
+                      {[0, 1, 2, 3].map((x, i) => (
+                        <div className="media-body">
+                          <Placeholder as="h6" animation="glow">
+                            <Placeholder xs={8} />
+                          </Placeholder>
+                          <Placeholder as="p" animation="glow">
+                            <Placeholder xs={3} bg="secondary" />
+                          </Placeholder>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <>
+                {searchResults.length > 0 &&
+                  searchResults.map((std, i) => (
+                    <div className="h-list-body">
+                      <div className="main-friend-cont scroll-div">
+                        <div
+                          className="main-friend-list"
+                          style={{ height: 'calc(100vh - 85px)' }}
+                        >
+                          <Friend
+                            key={std.id}
+                            data={std}
+                            activeId={props.user._id.toString()}
+                            clicked={props.handleCloseChat}
+                          />{' '}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+              </>
+            )}
+          </PerfectScrollbar>
+        )}
       </div>
     </Aux>
   );

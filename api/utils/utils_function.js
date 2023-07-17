@@ -44,6 +44,7 @@ const Internaldoc = require('../models/Internaldoc');
 const Note = require('../models/Note');
 const { sendAssignEditorReminderEmail } = require('../services/email');
 const Permission = require('../models/Permission');
+const { Communication } = require('../models/Communication');
 
 const s3 = new aws.S3({
   accessKeyId: AWS_S3_ACCESS_KEY_ID,
@@ -270,6 +271,21 @@ const users_transformer = (users) => {
   return transformedDocuments;
 };
 
+const communications_transformer = (communications) => {
+  const transformedDocuments = communications.map((communication) => ({
+    ...communication,
+    _id: { $oid: communication._id.toString() },
+    student_id: { $oid: communication.student_id.toString() },
+    user_id: { $oid: communication.user_id.toString() },
+    readBy:
+      communication.readBy &&
+      communication.readBy.map((rb) => ({ $oid: rb.toString() })),
+    updatedAt: communication.updatedAt && { $date: communication.updatedAt },
+    createdAt: communication.createdAt && { $date: communication.createdAt }
+  }));
+  return transformedDocuments;
+};
+
 const courses_transformer = (courses) => {
   const transformedDocuments = courses.map((course) => ({
     ...course,
@@ -373,6 +389,7 @@ const MongoDBDataBaseDailySnapshot = async () => {
   const data_category = [
     'users',
     'courses',
+    'communications',
     'basedocumentationslinks',
     'docspages',
     'programs',
@@ -391,6 +408,7 @@ const MongoDBDataBaseDailySnapshot = async () => {
   const courses_raw = await Course.find().lean();
   const basedocumentationslinks_raw =
     await Basedocumentationslink.find().lean();
+  const communications_raw = await Communication.find().lean();
   const docspages_raw = await Docspage.find().lean();
   const programs_raw = await Program.find().lean();
   const documentthreads_raw = await Documentthread.find().lean();
@@ -401,6 +419,7 @@ const MongoDBDataBaseDailySnapshot = async () => {
   const expenses_raw = await Expense.find().lean();
 
   const users = users_transformer(users_raw);
+  const communications = communications_transformer(communications_raw);
   const courses = courses_transformer(courses_raw);
   const basedocumentationslinks = basedocumentationslinks_transformer(
     basedocumentationslinks_raw
@@ -415,6 +434,7 @@ const MongoDBDataBaseDailySnapshot = async () => {
   const data_json = {
     users,
     courses,
+    communications,
     basedocumentationslinks,
     docspages,
     programs,

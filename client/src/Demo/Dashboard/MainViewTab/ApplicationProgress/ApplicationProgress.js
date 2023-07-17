@@ -254,25 +254,6 @@ class ApplicationProgress extends React.Component {
               )}
           </td>
           {this.props.user.role !== 'Student' ? (
-            <td>
-              <Link
-                to={
-                  '/student-database/' + this.props.student._id + '/background'
-                }
-                style={{ textDecoration: 'none' }}
-              >
-                <p className="text-info">
-                  <b>
-                    {this.props.student.firstname},{' '}
-                    {this.props.student.lastname}
-                  </b>
-                </p>
-              </Link>
-            </td>
-          ) : (
-            <></>
-          )}
-          {this.props.user.role !== 'Student' ? (
             <td title="Selected / Should be selected">
               {this.props.student.applying_program_count ? (
                 this.props.student.applications.length <

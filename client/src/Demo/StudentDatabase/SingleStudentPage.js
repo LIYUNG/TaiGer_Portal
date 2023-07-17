@@ -46,6 +46,7 @@ import {
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import { AiFillEdit, AiFillMessage } from 'react-icons/ai';
+import { BsMessenger } from 'react-icons/bs';
 
 class SingleStudentPage extends React.Component {
   state = {
@@ -592,7 +593,14 @@ class SingleStudentPage extends React.Component {
                       style={{ textDecoration: 'none' }}
                       className="mx-1"
                     >
-                      <AiFillMessage color="lightblue" size={24} />
+                      <Button
+                        size="sm"
+                        className="ms-2 "
+                        onClick={this.onChangeView}
+                      >
+                        <BsMessenger color="white" size={16} />{' '}
+                        <b>Message</b>
+                      </Button>
                     </Link>
                     <span
                       className="text-light mb-1 me-2 "
@@ -600,10 +608,11 @@ class SingleStudentPage extends React.Component {
                     >
                       <Button
                         size="sm"
+                        variant='success'
                         className="ms-2 "
                         onClick={this.onChangeView}
                       >
-                        Switch to Student View
+                        Switch View
                       </Button>
                     </span>
                     <p className="text-light mt-2" style={{ float: 'right' }}>
@@ -634,7 +643,6 @@ class SingleStudentPage extends React.Component {
                             <></>
                           ) : (
                             <>
-                              <th>First-, Last Name</th>
                               <th>#</th>
                             </>
                           )}
@@ -780,7 +788,9 @@ class SingleStudentPage extends React.Component {
                 <Card className="my-0 mx-0">
                   <Card.Body>
                     <h5>
-                      <b>This is internal notes. Student won't see this note.</b>
+                      <b>
+                        This is internal notes. Student won't see this note.
+                      </b>
                     </h5>
                     <br />
                     <Notes

@@ -455,16 +455,17 @@ export default function MyCourses(props) {
               </Card.Body>
             </Card>
           )}
-          {is_TaiGer_AdminAgent(props.user) && (
-            <Card className="mb-2 mx-0">
-              <Card.Body>
-                <Row>
-                  <Col>
-                    <h4>Analyser</h4>
-                  </Col>
-                </Row>
-                <br />
-                {showButtonIfMyStudentB(props.user, statedata.student) && (
+
+          <Card className="mb-2 mx-0">
+            <Card.Body>
+              <Row>
+                <Col>
+                  <h4>Courses Analysis</h4>
+                </Col>
+              </Row>
+              <br />
+              {showButtonIfMyStudentB(props.user, statedata.student) &&
+                is_TaiGer_AdminAgent(props.user) && (
                   <>
                     <Row>
                       <Col>
@@ -513,43 +514,43 @@ export default function MyCourses(props) {
                     </Row>
                   </>
                 )}
-                <Row className="my-2"></Row>
-                <Row>
-                  <Col md={2}>
-                    <p>
-                      {statedata.analysis && statedata.analysis.isAnalysed ? (
-                        <>
-                          <Button
-                            onClick={onDownload}
-                            disabled={statedata.isDownloading}
-                          >
-                            Download
-                          </Button>
-                          <Link
-                            to={`/my-courses/analysis/${statedata.student._id.toString()}`}
-                            target="_blank"
-                          >
-                            View Online
-                          </Link>
-                        </>
-                      ) : (
-                        'No analysis yet'
-                      )}
-                    </p>
-                  </Col>
-                  <Col>
-                    <p className="my-2">
-                      Last analysis at:{' '}
-                      {statedata.analysis
-                        ? convertDate(statedata.analysis.updatedAt)
-                        : ''}
-                    </p>
-                  </Col>
-                </Row>
-                <br />
-              </Card.Body>
-            </Card>
-          )}
+              <Row className="my-2"></Row>
+              <Row>
+                <Col>
+                  <p>
+                    {statedata.analysis && statedata.analysis.isAnalysed ? (
+                      <>
+                        <Row>
+                          <Col>
+                            <Button
+                              onClick={onDownload}
+                              disabled={statedata.isDownloading}
+                            >
+                              Download
+                            </Button>
+                            <Link
+                              to={`/my-courses/analysis/${statedata.student._id.toString()}`}
+                              target="_blank"
+                            >
+                              <Button variant="secondary">View Online</Button>
+                            </Link>
+                            <p className="my-2">
+                              Last analysis at:{' '}
+                              {statedata.analysis
+                                ? convertDate(statedata.analysis.updatedAt)
+                                : ''}
+                            </p>
+                          </Col>
+                        </Row>
+                      </>
+                    ) : (
+                      'No analysis yet'
+                    )}
+                  </p>
+                </Col>
+              </Row>
+            </Card.Body>
+          </Card>
         </Col>
       </Row>
       <Modal
@@ -577,9 +578,13 @@ export default function MyCourses(props) {
         <Modal.Header>
           <Modal.Title id="contained-modal-title-vcenter">Success</Modal.Title>
         </Modal.Header>
-        <Modal.Body>Transcript analysed successfully!</Modal.Body>
+        <Modal.Body>
+          Transcript analysed successfully!{' '}
+          <b>The student will received an email notification and the analysed course URL link.</b> He/She should
+          access the analysed page in their course page.
+        </Modal.Body>
         <Modal.Footer>
-          <Button onClick={closeanalysisSuccessModal}>Close</Button>
+          <Button onClick={closeanalysisSuccessModal}>Ok</Button>
         </Modal.Footer>
       </Modal>
     </Aux>

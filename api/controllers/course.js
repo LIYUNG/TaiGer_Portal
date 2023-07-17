@@ -9,7 +9,10 @@ const { asyncHandler } = require('../middlewares/error-handler');
 const Course = require('../models/Course');
 const { Role, Student, User } = require('../models/User');
 const logger = require('../services/logger');
-const { updateCoursesDataAgentEmail } = require('../services/email');
+const {
+  updateCoursesDataAgentEmail,
+  AnalysedCoursesDataStudentEmail
+} = require('../services/email');
 const { one_month_cache } = require('../cache/node-cache');
 const {
   AWS_S3_ACCESS_KEY_ID,
@@ -162,6 +165,24 @@ const processTranscript_test = asyncHandler(async (req, res, next) => {
       res.status(403).send({ message: code });
     }
   });
+
+  // TODO: information student
+  const student = await Student.findById(studentId)
+    .populate('agents', 'firstname lastname email')
+    .exec();
+
+  if (isNotArchiv(student)) {
+    await AnalysedCoursesDataStudentEmail(
+      {
+        firstname: student.firstname,
+        lastname: student.lastname,
+        address: student.email
+      },
+      {
+        student_id: studentId
+      }
+    );
+  }
 });
 
 // Download original transcript excel

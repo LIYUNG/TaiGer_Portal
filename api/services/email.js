@@ -29,7 +29,8 @@ const {
   SPLIT_LINE,
   ENGLISH_BELOW,
   CONTACT_AGENT,
-  STUDENT_COMMUNICATION_THREAD_URL
+  STUDENT_COMMUNICATION_THREAD_URL,
+  STUDENT_ANALYSED_COURSE_URL
 } = require('../constants');
 
 const {
@@ -1765,6 +1766,49 @@ on ${msg.updatedAt}.</p>
   sendEmail(recipient, subject, message);
 };
 
+const AnalysedCoursesDataStudentEmail = async (recipient, msg) => {
+  const subject = '課程匹配度分析成功 / Course data analysed successfully';
+  const message = `\
+<p>${ENGLISH_BELOW}</p>
+
+<p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
+
+<p>您的的課程匹配度已分析。</p>
+
+<p>請至 <a href="${STUDENT_ANALYSED_COURSE_URL(
+    msg.student_id
+  )}">Courses</a> 查看細節。</p>
+
+                  <p>
+                    此份課程分析<b>僅供選課參考</b>
+                    。請仔細看過每個向度所缺的課程，並對照學校之後學期是否有開期課程，抓出來，並和您的
+                    Agent 討論。
+                  </p>
+<br />
+<p>${SPLIT_LINE}</p>
+
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+
+<p>Your courses data has been analysed successfully!</p>
+
+<p>Please go to <a href="${STUDENT_ANALYSED_COURSE_URL(
+    msg.student_id
+  )}">Courses</a> for more details.</p>
+                  <p>
+                    The course analysis provided is for
+                    <b>reference purposes only</b>. Please carefully review the
+                    courses missing in each category and cross-reference
+                    whether your university offers those courses in the upcoming
+                    semesters. Once you have identified them, discuss with your
+                    Agent.
+                  </p>
+<p>${TAIGER_SIGNATURE}</p>
+
+`; // should be for admin/editor/agent/student
+
+  return sendEmail(recipient, subject, message);
+};
+
 const updateCoursesDataAgentEmail = async (recipient, msg) => {
   const subject = '課程更新成功 / Course data updated successfully';
   const message = `\
@@ -1946,6 +1990,7 @@ module.exports = {
   informStudentArchivedStudentEmail,
   informStudentTheirEditorEmail,
   createApplicationToStudentEmail,
+  AnalysedCoursesDataStudentEmail,
   updateCoursesDataAgentEmail,
   sendAssignEditorReminderEmail,
   sendAgentNewMessageReminderEmail,

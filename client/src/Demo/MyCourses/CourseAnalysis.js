@@ -301,14 +301,42 @@ export default function CourseAnalysis(props) {
               <Row>
                 <Col>
                   <p>
-                    The courses analysis for each program as reference.{' '}
-                    <b>The results are not garanteed.</b>
+                    此份課程分析<b>僅供選課參考</b>
+                    。請仔細看過每個向度所缺的課程，並對照學校之後學期是否有開期課程，抓出來，並和您的
+                    Agent 討論。
                   </p>
                   <p>
-                    The <b>Required_ECTS</b> means the requirement from the
-                    programs. If your converted credits are still less then
-                    Required_ECTS. You need to take the recommended courses
-                    (建議修課) on the right side.
+                    The course analysis provided is for{' '}
+                    <b>reference purposes only</b>. Please carefully review the
+                    courses missing in each category and cross-reference
+                    whether your university offers those courses in the upcoming
+                    semesters. Once you have identified them, discuss with your
+                    Agent.
+                  </p>
+                  <p>
+                    在 General 頁面，為大略依照您主修向度做分類，其餘的 Tabs
+                    為指標性學校的課程匹配度分析。你會看到每個學校會要求的向度會不一樣，每個向度會對應一個
+                    <b>Required_ECTS</b>，代表你修的課程學分（經過
+                    <b>ECTS轉換</b> (1.5x 台灣學分)換算後），必須超過該向度的
+                    <b>Required_ECTS</b>
+                    才算達到該項度要求。若有缺少學分、向度，請參考每個 Program
+                    Tab 表格最右側，每個向度的
+                    <b>建議修課</b>名單
+                  </p>
+                  <p>
+                    On the General page, courses are roughly categorized
+                    according to your major category, while the remaining tabs
+                    provide an analysis of the curriculum match for benchmark
+                    programs. You will notice that each school has different
+                    requirements for the major course category, and each
+                    category corresponds to a <b>Required_ECTS</b>, which
+                    represents the credits you need to complete for the courses
+                    (<b>ECTS轉換</b>, 1.5 times the credits in Taiwan). You must
+                    exceed the <b>Required_ECTS</b> for a specific category to
+                    meet the degree requirements. If there are any deficiencies
+                    of credits in any categories, please refer to the rightmost
+                    column of each Program Tab table for the <b>建議修課</b> for
+                    each category.
                   </p>
                 </Col>
               </Row>

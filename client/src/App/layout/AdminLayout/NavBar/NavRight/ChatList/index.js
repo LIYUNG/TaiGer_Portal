@@ -120,7 +120,6 @@ const chatList = (props) => {
                   />
                 </PerfectScrollbar>
               ) : (
-                // TODO: shown search result friends.
                 <PerfectScrollbar>
                   {searchResults.length > 0 &&
                     searchResults.map((std, i) => (

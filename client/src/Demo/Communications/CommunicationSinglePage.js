@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Row, Col, Spinner, Button, Card, Modal } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import { FiExternalLink } from 'react-icons/fi';
 
 import Aux from '../../hoc/_Aux';
 import MessageList from './MessageList';
@@ -16,6 +17,7 @@ import {
   loadCommunicationThread
 } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
+import DEMO from '../../store/constant';
 
 class CommunicationSinglePage extends Component {
   state = {
@@ -438,10 +440,48 @@ class CommunicationSinglePage extends Component {
                         <b>效率溝通</b>，留言時請注意以下幾點：
                         <ul>
                           <li>
-                            1.
+                            <b>
+                              1. 請把{' '}
+                              <Link
+                                to={`${DEMO.SURVEY_LINK}`}
+                                className="text-primary"
+                              >
+                                Survey{' '}
+                                <FiExternalLink
+                                  className="mx-0 mb-1"
+                                  style={{ cursor: 'pointer' }}
+                                />
+                              </Link>
+                              填好,{' '}
+                              <Link
+                                to={`${DEMO.BASE_DOCUMENTS_LINK}`}
+                                className="text-primary"
+                              >
+                                Base Document{' '}
+                                <FiExternalLink
+                                  className="mx-0 mb-1"
+                                  style={{ cursor: 'pointer' }}
+                                />
+                              </Link>
+                              , 文件有的都盡量先掃描上傳,{' '}
+                              <Link
+                                to={`${DEMO.COURSES_LINK}`}
+                                className="text-primary"
+                              >
+                                My Courses{' '}
+                                <FiExternalLink
+                                  className="mx-0 mb-1"
+                                  style={{ cursor: 'pointer' }}
+                                />
+                              </Link>
+                              課程填好，之後 Agent 在回答問題時比較能掌握狀況。
+                            </b>
+                          </li>
+                          <li>
+                            2.
                             描述你的問題，請盡量一次列出所有問題，顧問可以一次回答，TaiGer顧問會盡可能一天內回覆
                           </li>
-                          <li>2. 你想要完成事項。</li>
+                          <li>3. 你想要完成事項。</li>
                           <li>
                             註：或想一次處理，請準備好所有問題，並和顧問約時間通話。
                           </li>

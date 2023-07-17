@@ -119,16 +119,7 @@ class Friends extends Component {
         </div>
       );
     }
-    // const friendList = friend.map((f) => {
-    //   return (
-    //     <Friend
-    //       key={f.id}
-    //       data={f}
-    //       activeId={this.state.user.id}
-    //       clicked={() => this.setState({ chatOpen: true, user: f })}
-    //     />
-    //   );
-    // });
+
     const friendList = this.state.students.map((f) => {
       if (f.latestCommunication) {
         return (

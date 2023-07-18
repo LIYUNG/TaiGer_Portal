@@ -23,7 +23,8 @@ import {
 class AgentMainView extends React.Component {
   state = {
     error: '',
-    user: this.props.user
+    user: this.props.user,
+    notification: this.props.notification
   };
 
   checkMissingBaseDocument = (students) => {
@@ -178,47 +179,46 @@ class AgentMainView extends React.Component {
 
     return (
       <>
-        {this.state.user.agent_notification &&
-          this.state.user.agent_notification.isRead_new_base_docs_uploaded.map(
-            (student, i) => (
-              <Row key={i}>
-                <Col>
-                  <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
-                    <p
-                      className="text-light my-3 mx-3"
-                      style={{ textAlign: 'left' }}
+        {this.state.notification?.isRead_new_base_docs_uploaded.map(
+          (student, i) => (
+            <Row key={i}>
+              <Col>
+                <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
+                  <p
+                    className="text-light my-3 mx-3"
+                    style={{ textAlign: 'left' }}
+                  >
+                    <BsExclamationTriangle size={18} />
+                    <b className="mx-2">Reminder:</b> There are new base
+                    documents uploaded by{' '}
+                    <b>
+                      {student.student_firstname} {student.student_lastname}
+                    </b>{' '}
+                    <Link
+                      to={`/student-database/${student.student_id}/profile`}
+                      style={{ textDecoration: 'none' }}
+                      className="text-info"
                     >
-                      <BsExclamationTriangle size={18} />
-                      <b className="mx-2">Reminder:</b> There are new base
-                      documents uploaded by{' '}
-                      <b>
-                        {student.student_firstname} {student.student_lastname}
-                      </b>{' '}
-                      <Link
-                        to={`/student-database/${student.student_id}/profile`}
-                        style={{ textDecoration: 'none' }}
-                        className="text-info"
-                      >
-                        Base Document
-                      </Link>{' '}
-                      <span style={{ float: 'right', cursor: 'pointer' }}>
-                        <BsX
-                          size={18}
-                          onClick={(e) =>
-                            this.removeAgentBanner(
-                              e,
-                              'isRead_new_base_docs_uploaded',
-                              student.student_id
-                            )
-                          }
-                        />
-                      </span>
-                    </p>
-                  </Card>
-                </Col>
-              </Row>
-            )
-          )}
+                      Base Document
+                    </Link>{' '}
+                    <span style={{ float: 'right', cursor: 'pointer' }}>
+                      <BsX
+                        size={18}
+                        onClick={(e) =>
+                          this.removeAgentBanner(
+                            e,
+                            'isRead_new_base_docs_uploaded',
+                            student.student_id
+                          )
+                        }
+                      />
+                    </span>
+                  </p>
+                </Card>
+              </Col>
+            </Row>
+          )
+        )}
         <Row>
           {is_any_programs_ready_to_submit(
             this.props.students.filter((student) =>

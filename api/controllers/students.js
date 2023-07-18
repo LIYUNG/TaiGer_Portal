@@ -56,6 +56,7 @@ const getStudent = asyncHandler(async (req, res) => {
 
 const getStudentAndDocLinks = asyncHandler(async (req, res) => {
   const {
+    user,
     params: { studentId }
   } = req;
 
@@ -82,9 +83,24 @@ const getStudentAndDocLinks = asyncHandler(async (req, res) => {
     category: 'survey'
   });
 
+  // TODO: remove agent notfication for new documents upload
+
   res
     .status(200)
     .send({ success: true, data: student_new, base_docs_link, survey_link });
+  if (user.role === Role.Agent) {
+    await Agent.findByIdAndUpdate(
+      user._id.toString(),
+      {
+        $pull: {
+          'agent_notification.isRead_new_base_docs_uploaded': {
+            student_id: studentId
+          }
+        }
+      },
+      {}
+    );
+  }
 });
 
 const updateDocumentationHelperLink = asyncHandler(async (req, res) => {
@@ -146,8 +162,6 @@ const getStudents = asyncHandler(async (req, res) => {
   } else if (user.role === Role.Agent) {
     const permissions = await Permission.findOne({ user_id: user._id });
     if (permissions && permissions.canAssignAgents) {
-      console.log('with permission');
-      console.log(permissions);
       const students = await Student.find({
         $or: [{ archiv: { $exists: false } }, { archiv: false }]
       })
@@ -158,8 +172,11 @@ const getStudents = asyncHandler(async (req, res) => {
           '-messages'
         )
         .select('-notification');
-
-      res.status(200).send({ success: true, data: students });
+      res.status(200).send({
+        success: true,
+        data: students,
+        notification: user.agent_notification
+      });
     } else {
       const students = await Student.find({
         agents: user._id,
@@ -180,14 +197,15 @@ const getStudents = asyncHandler(async (req, res) => {
       for (let j = 0; j < students.length; j += 1) {
         students_new.push(add_portals_registered_status(students[j]));
       }
-      res.status(200).send({ success: true, data: students_new });
+      res.status(200).send({
+        success: true,
+        data: students_new,
+        notification: user.agent_notification
+      });
     }
   } else if (user.role === Role.Editor) {
     const permissions = await Permission.findOne({ user_id: user._id });
     if (permissions && permissions.canAssignEditors) {
-      console.log('with permission');
-      console.log(permissions);
-
       const students = await Student.find({
         $or: [{ archiv: { $exists: false } }, { archiv: false }]
       })
@@ -201,8 +219,6 @@ const getStudents = asyncHandler(async (req, res) => {
 
       res.status(200).send({ success: true, data: students });
     } else {
-      console.log('no permission');
-      console.log(permissions);
       const students = await Student.find({
         editors: user._id,
         $or: [{ archiv: { $exists: false } }, { archiv: false }]
@@ -218,7 +234,7 @@ const getStudents = asyncHandler(async (req, res) => {
       res.status(200).send({ success: true, data: students });
     }
   } else if (user.role === Role.Student) {
-    const student = await Student.findById(user._id)
+    const student = await Student.findById(user._id.toString())
       .populate('applications.programId')
       .populate('agents editors', '-students')
       .populate(

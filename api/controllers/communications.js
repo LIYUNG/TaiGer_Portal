@@ -93,18 +93,9 @@ const getSearchUserMessages = asyncHandler(async (req, res) => {
     .status(200)
     .send({ success: true, data: { students: mergedResults, user } });
 });
-
-const getMyMessages = asyncHandler(async (req, res) => {
+const getSearchMessageKeywords = asyncHandler(async (req, res) => {
   const { user } = req;
 
-  if (
-    user.role !== Role.Admin &&
-    user.role !== Role.Agent &&
-    user.role !== Role.Editor
-  ) {
-    logger.error('getMyMessages: not TaiGer user!');
-    throw new ErrorResponse(401, 'Invalid TaiGer user');
-  }
   // Get only the last communication
   const studentsWithCommunications = await Student.aggregate([
     {
@@ -151,14 +142,19 @@ const getMyMessages = asyncHandler(async (req, res) => {
       .status(200)
       .send({ success: true, data: { students: mergedResults, user } });
   }
-  const students = await Student.find({
-    agents: user._id.toString(),
-    $or: [{ archiv: { $exists: false } }, { archiv: false }]
-  })
-    .select('firstname lastname role')
+  const students_search = await Student.find(
+    {
+      $text: { $search: req.query.q },
+      agents: user._id.toString()
+    },
+    { score: { $meta: 'textScore' } }
+  )
+    .sort({ score: { $meta: 'textScore' } })
+    .limit(10)
+    .select('firstname lastname firstname_chinese lastname_chinese role')
     .lean();
   // Merge the results
-  const mergedResults = students.map((student) => {
+  const mergedResults = students_search.map((student) => {
     const aggregateData = studentsWithCommunications.find(
       (item) => item._id.toString() === student._id.toString()
     );
@@ -168,6 +164,112 @@ const getMyMessages = asyncHandler(async (req, res) => {
   return res
     .status(200)
     .send({ success: true, data: { students: mergedResults, user } });
+});
+
+const getMyMessages = asyncHandler(async (req, res) => {
+  const { user } = req;
+
+  if (
+    user.role !== Role.Admin &&
+    user.role !== Role.Agent &&
+    user.role !== Role.Editor
+  ) {
+    logger.error('getMyMessages: not TaiGer user!');
+    throw new ErrorResponse(401, 'Invalid TaiGer user');
+  }
+
+  if (user.role === 'Admin') {
+    const students = await Student.find({
+      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+    })
+      .select('firstname lastname role')
+      .lean();
+    // Get only the last communication
+    const student_ids = students.map((stud, i) => stud._id);
+    const studentsWithCommunications = await Student.aggregate([
+      {
+        $lookup: {
+          from: 'communications',
+          localField: '_id',
+          foreignField: 'student_id',
+          as: 'communications'
+        }
+      },
+      {
+        $project: {
+          firstname: 1,
+          lastname: 1,
+          role: 1,
+          latestCommunication: {
+            $arrayElemAt: ['$communications', -1]
+          }
+        }
+      },
+      {
+        $match: {
+          'latestCommunication.student_id': { $in: student_ids }
+        }
+      },
+      {
+        $sort: {
+          'latestCommunication.createdAt': -1
+        }
+      }
+    ]);
+
+    return res.status(200).send({
+      success: true,
+      data: {
+        students: studentsWithCommunications,
+        user
+      }
+    });
+  }
+  const students = await Student.find({
+    agents: user._id.toString(),
+    $or: [{ archiv: { $exists: false } }, { archiv: false }]
+  })
+    .select('firstname lastname role')
+    .lean();
+  const student_ids = students.map((stud, i) => stud._id);
+  const studentsWithCommunications = await Student.aggregate([
+    {
+      $lookup: {
+        from: 'communications',
+        localField: '_id',
+        foreignField: 'student_id',
+        as: 'communications'
+      }
+    },
+    {
+      $project: {
+        firstname: 1,
+        lastname: 1,
+        role: 1,
+        latestCommunication: {
+          $arrayElemAt: ['$communications', -1]
+        }
+      }
+    },
+    {
+      $match: {
+        'latestCommunication.student_id': { $in: student_ids }
+      }
+    },
+    {
+      $sort: {
+        'latestCommunication.createdAt': -1
+      }
+    }
+  ]);
+
+  return res.status(200).send({
+    success: true,
+    data: {
+      students: studentsWithCommunications,
+      user
+    }
+  });
 });
 
 const loadMessages = asyncHandler(async (req, res) => {
@@ -367,6 +469,7 @@ const deleteAMessageInCommunicationThread = asyncHandler(async (req, res) => {
 
 module.exports = {
   getSearchUserMessages,
+  getSearchMessageKeywords,
   getMyMessages,
   loadMessages,
   getMessages,

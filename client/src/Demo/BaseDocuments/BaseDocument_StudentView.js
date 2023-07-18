@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Table, Card, Spinner } from 'react-bootstrap';
+import { Row, Col, Table, Card, Spinner, Button } from 'react-bootstrap';
 import ButtonSetUploaded from './ButtonSetUploaded';
 import ButtonSetAccepted from './ButtonSetAccepted';
 import ButtonSetRejected from './ButtonSetRejected';
@@ -21,6 +21,8 @@ import {
 } from '../../api';
 import { is_TaiGer_AdminAgent } from '../Utils/checking-functions';
 import Banner from '../../components/Banner/Banner';
+import { FiExternalLink } from 'react-icons/fi';
+import { Link } from 'react-router-dom';
 
 class BaseDocument_StudentView extends React.Component {
   state = {
@@ -432,7 +434,18 @@ class BaseDocument_StudentView extends React.Component {
               title={'Info:'}
               path={'/'}
               text={
-                '每個檔案都有注意事項。請務必上傳文件前，點選說明連結並查看。'
+                <>
+                  每個檔案都有注意事項。請務必上傳文件前，點選各文件名稱旁的說明連結圖示
+                  "
+                  <b>
+                    <FiExternalLink
+                      className="mx-1 mb-1"
+                      style={{ cursor: 'pointer' }}
+                    />
+                  </b>
+                  " 並查看文件要求，照著我們的要求上傳，Agent
+                  會再檢查文件是否沒問題。
+                </>
               }
               link_name={''}
               removeBanner={this.removeBanner}
@@ -444,7 +457,16 @@ class BaseDocument_StudentView extends React.Component {
               title={'Attention:'}
               path={'/'}
               text={
-                '無論是申請大學部或是碩士班，高中文件、學測或統測成績單為必要文件。德國學校通常列為必要文件'
+                <>
+                  無論是申請大學部或是碩士班，高中文件、學測或統測成績單為必要文件。德國學校通常列為必要文件，此文件會因為您的背景況狀有所變動。請先填好{' '}
+                  <Link to={'/survey'} className="text-primary">
+                    Academic Survey{' '}
+                    <FiExternalLink
+                      className="mx-1 mb-1"
+                      style={{ cursor: 'pointer' }}
+                    />
+                  </Link>
+                </>
               }
               link_name={''}
               removeBanner={this.removeBanner}

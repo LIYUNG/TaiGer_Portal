@@ -1144,7 +1144,9 @@ const updateAcademicBackground = asyncHandler(async (req, res, next) => {
     // no need university doc
     if (
       updatedStudent.academic_background.university.high_school_isGraduated ===
-      'pending'
+        'pending' ||
+      updatedStudent.academic_background.university.isGraduated ===
+        'No'
     ) {
       // make sure if existing uploaded file
       let bachelor_diploma_doc = updatedStudent.profile.find(

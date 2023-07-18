@@ -15,6 +15,7 @@ import { updateAgentBanner } from '../../../api';
 import { academic_background_header, profile_list } from '../../Utils/contants';
 import {
   DocumentStatus,
+  anyStudentWithoutApplicationSelection,
   isAnyCVNotAssigned,
   is_any_base_documents_uploaded,
   is_any_programs_ready_to_submit,
@@ -403,7 +404,7 @@ class AgentMainView extends React.Component {
               </Card>
             </Col>
           )}
-          {isAnyCVNotAssigned(
+          {anyStudentWithoutApplicationSelection(
             this.props.students.filter((student) =>
               student.agents.some(
                 (agent) => agent._id === this.props.user._id.toString()
@@ -441,7 +442,8 @@ class AgentMainView extends React.Component {
             <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
               <Card.Header>
                 <Card.Title className="my-0 mx-0 text-light">
-                  <BsExclamationTriangle size={18} /> No Enough Program Decided Tasks:
+                  <BsExclamationTriangle size={18} /> No Enough Program Decided
+                  Tasks:
                 </Card.Title>
               </Card.Header>
               <Table

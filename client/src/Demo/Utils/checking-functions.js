@@ -477,6 +477,17 @@ export const check_application_selection = (student) => {
   return true;
 };
 
+export const anyStudentWithoutApplicationSelection = (students) => {
+  let flag = false;
+  for (let i = 0; i < students.length; i += 1) {
+    flag = flag || !check_application_selection(students[i]);
+    if (flag) {
+      return flag;
+    }
+  }
+  return false;
+};
+
 export const is_num_Program_Not_specified = (student) => {
   if (
     student.applying_program_count === 0 ||

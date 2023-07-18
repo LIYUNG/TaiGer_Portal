@@ -506,6 +506,52 @@ class StudentApplicationsTableTemplate extends React.Component {
             </Card>
           </Col>
         </Row>
+        <Row>
+          <Col>
+            <Card className="my-2 mx-0" bg={'black'} text={'light'}>
+              <Card.Header>
+                <Card.Title className="my-0 mx-0 text-light">
+                  Application Preference From Survey
+                </Card.Title>
+              </Card.Header>
+              <Card.Body>
+                <li>
+                  Target field:{' '}
+                  <b>
+                    {
+                      this.props.student.application_preference
+                        ?.target_application_field
+                    }
+                  </b>
+                </li>
+                <li>
+                  Target degree:{' '}
+                  <b>
+                    {this.props.student.application_preference?.target_degree}
+                  </b>
+                </li>
+                <li>
+                  Accept Private University?:{' '}
+                  <b>
+                    {
+                      this.props.student.application_preference
+                        ?.considered_privat_universities
+                    }
+                  </b>
+                </li>
+                <li>
+                  Consider outside Germany:{' '}
+                  <b>
+                    {
+                      this.props.student.application_preference
+                        ?.application_outside_germany
+                    }
+                  </b>
+                </li>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
         {this.state.isProgramAssignMode ? (
           <>
             <ProgramList

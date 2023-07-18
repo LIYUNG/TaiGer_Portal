@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { BsExclamationTriangle, BsX } from 'react-icons/bs';
 
 import AgentReviewing from '../MainViewTab/AgentReview/AgentReviewing';
-import AgentTasks from '../MainViewTab/AgentTasks/index';
+// import AgentTasks from '../MainViewTab/AgentTasks/index';
 import ReadyToSubmitTasks from '../MainViewTab/AgentTasks/ReadyToSubmitTasks';
 import VPDToSubmitTasks from '../MainViewTab/AgentTasks/VPDToSubmitTasks';
 import BaseDocumentCheckingTasks from '../MainViewTab/AgentTasks/BaseDocumentCheckingTasks';
@@ -15,10 +15,14 @@ import { updateAgentBanner } from '../../../api';
 import { academic_background_header, profile_list } from '../../Utils/contants';
 import {
   DocumentStatus,
+  isAnyCVNotAssigned,
   is_any_base_documents_uploaded,
   is_any_programs_ready_to_submit,
   is_any_vpd_missing
 } from '../../Utils/checking-functions';
+import CVAssignTasks from '../MainViewTab/AgentTasks/CVAssignTasks';
+import NoProgramStudentTasks from '../MainViewTab/AgentTasks/NoProgramStudentTasks';
+import NoEnoughDecidedProgramsTasks from '../MainViewTab/AgentTasks/NoEnoughDecidedProgramsTasks';
 
 class AgentMainView extends React.Component {
   state = {
@@ -165,16 +169,51 @@ class AgentMainView extends React.Component {
           student={student}
         />
       ));
-    const agent_tasks = this.props.students
+    const cv_assign_tasks = this.props.students
       .filter((student) =>
         student.agents.some(
           (agent) => agent._id === this.props.user._id.toString()
         )
       )
       .map((student, i) => (
-        <AgentTasks key={i} role={this.props.user.role} student={student} />
+        <CVAssignTasks key={i} role={this.props.user.role} student={student} />
+      ));
+    const no_programs_student_tasks = this.props.students
+      .filter((student) =>
+        student.agents.some(
+          (agent) => agent._id === this.props.user._id.toString()
+        )
+      )
+      .map((student, i) => (
+        <NoProgramStudentTasks
+          key={i}
+          role={this.props.user.role}
+          student={student}
+        />
       ));
 
+    const no_enough_programs_decided_tasks = this.props.students
+      .filter((student) =>
+        student.agents.some(
+          (agent) => agent._id === this.props.user._id.toString()
+        )
+      )
+      .map((student, i) => (
+        <NoEnoughDecidedProgramsTasks
+          key={i}
+          role={this.props.user.role}
+          student={student}
+        />
+      ));
+    // const agent_tasks = this.props.students
+    //   .filter((student) =>
+    //     student.agents.some(
+    //       (agent) => agent._id === this.props.user._id.toString()
+    //     )
+    //   )
+    //   .map((student, i) => (
+    //     <AgentTasks key={i} role={this.props.user.role} student={student} />
+    //   ));
     let header = Object.values(academic_background_header);
 
     return (
@@ -293,7 +332,6 @@ class AgentMainView extends React.Component {
               </Card>
             </Col>
           )}
-
           {is_any_base_documents_uploaded(
             this.props.students.filter((student) =>
               student.agents.some(
@@ -330,7 +368,103 @@ class AgentMainView extends React.Component {
               </Card>
             </Col>
           )}
+          {isAnyCVNotAssigned(
+            this.props.students.filter((student) =>
+              student.agents.some(
+                (agent) => agent._id === this.props.user._id.toString()
+              )
+            )
+          ) && (
+            <Col md={6}>
+              <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
+                <Card.Header>
+                  <Card.Title className="my-0 mx-0 text-light">
+                    <BsExclamationTriangle size={18} /> CV Not Assigned Yet:
+                  </Card.Title>
+                </Card.Header>
+                <Table
+                  responsive
+                  bordered
+                  hover
+                  className="my-0 mx-0"
+                  variant="dark"
+                  text="light"
+                  size="sm"
+                >
+                  <thead>
+                    <tr>
+                      <th>Docs</th>
+                      <th>Student Name</th>
+                      <th>Year/Semester</th>
+                    </tr>
+                  </thead>
+                  <tbody>{cv_assign_tasks}</tbody>
+                </Table>
+              </Card>
+            </Col>
+          )}
+          {isAnyCVNotAssigned(
+            this.props.students.filter((student) =>
+              student.agents.some(
+                (agent) => agent._id === this.props.user._id.toString()
+              )
+            )
+          ) && (
+            <Col md={6}>
+              <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
+                <Card.Header>
+                  <Card.Title className="my-0 mx-0 text-light">
+                    <BsExclamationTriangle size={18} /> No Program Selected Yet:
+                  </Card.Title>
+                </Card.Header>
+                <Table
+                  responsive
+                  bordered
+                  hover
+                  className="my-0 mx-0"
+                  variant="dark"
+                  text="light"
+                  size="sm"
+                >
+                  <thead>
+                    <tr>
+                      <th>Student Name</th>
+                      <th>Year/Semester</th>
+                    </tr>
+                  </thead>
+                  <tbody>{no_programs_student_tasks}</tbody>
+                </Table>
+              </Card>
+            </Col>
+          )}
           <Col md={6}>
+            <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
+              <Card.Header>
+                <Card.Title className="my-0 mx-0 text-light">
+                  <BsExclamationTriangle size={18} /> No Enough Program Decided Tasks:
+                </Card.Title>
+              </Card.Header>
+              <Table
+                responsive
+                bordered
+                hover
+                className="my-0 mx-0"
+                variant="dark"
+                text="light"
+                size="sm"
+              >
+                <thead>
+                  <tr>
+                    <th>Tasks</th>
+                    <th>Description</th>
+                    <th>Last Update</th>
+                  </tr>
+                </thead>
+                <tbody>{no_enough_programs_decided_tasks}</tbody>
+              </Table>
+            </Card>
+          </Col>
+          {/* <Col md={6}>
             <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
               <Card.Header>
                 <Card.Title className="my-0 mx-0 text-light">
@@ -356,7 +490,7 @@ class AgentMainView extends React.Component {
                 <tbody>{agent_tasks}</tbody>
               </Table>
             </Card>
-          </Col>
+          </Col> */}
         </Row>
         <Row>
           <Col md={12}>

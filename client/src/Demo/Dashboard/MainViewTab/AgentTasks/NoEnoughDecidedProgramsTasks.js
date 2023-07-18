@@ -1,12 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import {
-  check_all_applications_decided,
   is_num_Program_Not_specified,
-  check_applications_decision_from_student
+  isProgramNotSelectedEnough
 } from '../../../Utils/checking-functions';
 
-class AgentTasks extends React.Component {
+class NoEnoughDecidedProgramsTasks extends React.Component {
   render() {
     return (
       <>
@@ -22,7 +21,6 @@ class AgentTasks extends React.Component {
                 className="text-info"
               >
                 <b>
-                  {' '}
                   {this.props.student.firstname} {this.props.student.lastname}{' '}
                 </b>
                 Applications
@@ -38,10 +36,10 @@ class AgentTasks extends React.Component {
           </tr>
         ) : (
           <>
-            {/* get programs feedback from student */}
-            {check_applications_decision_from_student(this.props.student) ? (
-              <>
-                {!check_all_applications_decided(this.props.student) && (
+            {/* select enough program task */}
+            {!is_num_Program_Not_specified(this.props.student) &&
+              isProgramNotSelectedEnough([this.props.student]) && (
+                <>
                   <tr>
                     <td>
                       <Link
@@ -61,7 +59,7 @@ class AgentTasks extends React.Component {
                       </Link>
                     </td>
                     <td>
-                      Please check the feedback from{' '}
+                      Please select enough programs for{' '}
                       <b>
                         {this.props.student.firstname}{' '}
                         {this.props.student.lastname}
@@ -69,39 +67,8 @@ class AgentTasks extends React.Component {
                     </td>
                     <td></td>
                   </tr>
-                )}
-              </>
-            ) : (
-              <>
-                <tr>
-                  <td>
-                    <Link
-                      to={
-                        '/student-applications/' +
-                        this.props.student._id.toString()
-                      }
-                      style={{ textDecoration: 'none' }}
-                      className="text-info"
-                    >
-                      <b>
-                        {' '}
-                        {this.props.student.firstname}{' '}
-                        {this.props.student.lastname}{' '}
-                      </b>
-                      Applications
-                    </Link>
-                  </td>
-                  <td>
-                    Waiting Feedback from{' '}
-                    <b>
-                      {this.props.student.firstname}{' '}
-                      {this.props.student.lastname}
-                    </b>
-                  </td>
-                  <td></td>
-                </tr>
-              </>
-            )}
+                </>
+              )}
           </>
         )}
         {/* TODO: add Portal register tasks */}
@@ -110,4 +77,4 @@ class AgentTasks extends React.Component {
   }
 }
 
-export default AgentTasks;
+export default NoEnoughDecidedProgramsTasks;

@@ -693,6 +693,17 @@ export const isCVFinished = (student) => {
   return !!(cv_thread && cv_thread.isFinalVersion);
 };
 
+export const isAnyCVNotAssigned = (students) => {
+  let flag = false;
+  for (let i = 0; i < students.length; i += 1) {
+    flag = flag || (!isCVFinished(students[i]) && !is_cv_assigned(students[i]));
+    if (flag) {
+      return flag;
+    }
+  }
+  return false;
+};
+
 export const is_program_ml_rl_essay_ready = (application) => {
   // check ML, RL, Essay
   for (let i = 0; i < application.doc_modification_thread.length; i += 1) {

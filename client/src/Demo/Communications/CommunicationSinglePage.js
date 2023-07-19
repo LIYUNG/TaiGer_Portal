@@ -90,7 +90,10 @@ class CommunicationSinglePage extends Component {
             this.setState({
               success,
               thread: data.reverse(),
+              upperThread: [],
               isLoaded: true,
+              loadButtonDisabled: false,
+              pageNumber: 1,
               student_id: this.props.match.params.student_id,
               student,
               // accordionKeys: new Array(data.length)

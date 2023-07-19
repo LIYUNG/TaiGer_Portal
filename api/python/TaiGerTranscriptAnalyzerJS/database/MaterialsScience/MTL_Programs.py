@@ -315,10 +315,10 @@ def BOCHUM_MTL_SIM(transcript_sorted_group_map, df_transcript_array, df_category
         PROG_SPEC_OTHERS,  # 化學實驗
         PROG_SPEC_OTHERS,  # 無機化學
         PROG_SPEC_OTHERS,  # 物理化學
-        PROG_SPEC_OTHERS,  # 材料
+        PROG_SPEC_WERKSTOFFKUNDE_PARAM,  # 材料
         PROG_SPEC_OTHERS,  # 控制
-        PROG_SPEC_OTHERS,  # 力學
-        PROG_SPEC_OTHERS,  # 熱力學
+        PROG_SPEC_MECHANIK_PARAM,  # 力學
+        PROG_SPEC_THERMODYNAMIK_PARAM,  # 熱力學
         PROG_SPEC_OTHERS,  # 流體力學
         PROG_SPEC_OTHERS,  # 電子學
         PROG_SPEC_OTHERS,  # 電路學
@@ -394,10 +394,10 @@ def FAU(transcript_sorted_group_map, df_transcript_array, df_category_courses_su
         PROG_SPEC_OTHERS,  # 化學實驗
         PROG_SPEC_OTHERS,  # 無機化學
         PROG_SPEC_OTHERS,  # 物理化學
-        PROG_SPEC_OTHERS,  # 材料
+        PROG_SPEC_WERKSTOFFKUNDE_PARAM,  # 材料
         PROG_SPEC_OTHERS,  # 控制
-        PROG_SPEC_OTHERS,  # 力學
-        PROG_SPEC_OTHERS,  # 熱力學
+        PROG_SPEC_MECHANIK_PARAM,  # 力學
+        PROG_SPEC_THERMODYNAMIK_PARAM,  # 熱力學
         PROG_SPEC_OTHERS,  # 流體力學
         PROG_SPEC_OTHERS,  # 電子學
         PROG_SPEC_OTHERS,  # 電路學

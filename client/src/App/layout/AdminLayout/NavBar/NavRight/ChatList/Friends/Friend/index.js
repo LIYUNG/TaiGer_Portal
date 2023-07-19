@@ -33,7 +33,7 @@ const friend = (props) => {
   return (
     <Aux>
       <Link
-        to={`/communications/${props.data._id.toString()}`}
+        to={`/communications/${props.data?._id?.toString()}`}
         className="media-left"
       >
         <div

@@ -14,8 +14,6 @@ const chatList = (props) => {
   const [isError, setIsErrorTerm] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [isResultsVisible, setIsResultsVisible] = useState(false);
-  const searchContainerRef = useRef(null);
 
   const fetchSearchResults = async () => {
     try {
@@ -23,7 +21,6 @@ const chatList = (props) => {
       const response = await getQueryStudentResults(searchTerm);
       if (response.data.success) {
         setSearchResults(response.data?.data?.students);
-        setIsResultsVisible(true);
         setLoading(false);
         // setTimeout(function () {
         //   setSearchResults(response.data?.data?.students);
@@ -31,7 +28,6 @@ const chatList = (props) => {
         //   setLoading(false);
         // }, 2000);
       } else {
-        setIsResultsVisible(false);
         setStatedata((state) => ({
           ...state,
           res_modal_status: 401,
@@ -44,7 +40,6 @@ const chatList = (props) => {
       }
     } catch (error) {
       console.error(error);
-      setIsResultsVisible(false);
       setStatedata((state) => ({
         ...state,
         res_modal_status: 403,
@@ -62,6 +57,7 @@ const chatList = (props) => {
         fetchSearchResults();
       } else {
         setSearchResults([]);
+        setLoading(false);
       }
     }, 400); // Adjust the delay as needed
     return () => {
@@ -81,6 +77,7 @@ const chatList = (props) => {
   }, []);
   const handleInputChange = (e) => {
     setSearchTerm(e.target.value);
+    setLoading(true);
   };
   const handleClickOutside = (event) => {
     if (componentRef.current && !componentRef.current.contains(event.target)) {
@@ -107,7 +104,32 @@ const chatList = (props) => {
             />
           </div>
         </div>
-        {searchTerm === '' ? (
+        {/* {} */}
+        {loading ? (
+          <>
+            <div className="h-list-body">
+              <div className="main-friend-cont scroll-div">
+                <div
+                  className="main-friend-list"
+                  style={{ height: 'calc(100vh - 85px)' }}
+                >
+                  <PerfectScrollbar>
+                    {[0, 1, 2, 3].map((x, i) => (
+                      <div className="media-body">
+                        <Placeholder as="h6" animation="glow">
+                          <Placeholder xs={8} />
+                        </Placeholder>
+                        <Placeholder as="p" animation="glow">
+                          <Placeholder xs={3} bg="secondary" />
+                        </Placeholder>
+                      </div>
+                    ))}
+                  </PerfectScrollbar>
+                </div>
+              </div>
+            </div>
+          </>
+        ) : searchTerm === '' ? (
           <div className="h-list-body">
             <div className="main-friend-cont scroll-div">
               <div
@@ -127,8 +149,28 @@ const chatList = (props) => {
             </div>
           </div>
         ) : (
-          <PerfectScrollbar>
-            {loading ? (
+          <>
+            {searchResults.length > 0 ? (
+              searchResults.map((std, i) => (
+                <div className="h-list-body">
+                  <div className="main-friend-cont scroll-div">
+                    <div
+                      className="main-friend-list"
+                      style={{ height: 'calc(100vh - 85px)' }}
+                    >
+                      <PerfectScrollbar>
+                        <Friend
+                          key={std.id}
+                          data={std}
+                          activeId={props.user._id.toString()}
+                          clicked={props.handleCloseChat}
+                        />
+                      </PerfectScrollbar>
+                    </div>
+                  </div>
+                </div>
+              ))
+            ) : (
               <>
                 <div className="h-list-body">
                   <div className="main-friend-cont scroll-div">
@@ -136,43 +178,26 @@ const chatList = (props) => {
                       className="main-friend-list"
                       style={{ height: 'calc(100vh - 85px)' }}
                     >
-                      {[0, 1, 2, 3].map((x, i) => (
-                        <div className="media-body">
-                          <Placeholder as="h6" animation="glow">
-                            <Placeholder xs={8} />
-                          </Placeholder>
-                          <Placeholder as="p" animation="glow">
-                            <Placeholder xs={3} bg="secondary" />
-                          </Placeholder>
+                      <PerfectScrollbar>
+                        <div className="media userlist-box friend-list ripple active">
+                          <div className="media-body">
+                            <h6 className="chat-header">
+                              Not found
+                              <br></br>
+                            </h6>
+                            <span
+                              className="text-secondary mb-1 me-2 "
+                              style={{ float: 'left' }}
+                            ></span>
+                          </div>
                         </div>
-                      ))}
+                      </PerfectScrollbar>
                     </div>
                   </div>
                 </div>
               </>
-            ) : (
-              <>
-                {searchResults.length > 0 &&
-                  searchResults.map((std, i) => (
-                    <div className="h-list-body">
-                      <div className="main-friend-cont scroll-div">
-                        <div
-                          className="main-friend-list"
-                          style={{ height: 'calc(100vh - 85px)' }}
-                        >
-                          <Friend
-                            key={std.id}
-                            data={std}
-                            activeId={props.user._id.toString()}
-                            clicked={props.handleCloseChat}
-                          />{' '}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-              </>
             )}
-          </PerfectScrollbar>
+          </>
         )}
       </div>
     </Aux>

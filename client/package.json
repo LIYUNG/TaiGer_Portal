@@ -78,7 +78,8 @@
     "build": "react-scripts build",
     "analyze": "source-map-explorer 'build/static/js/*.js'",
     "deploy": "aws s3 sync build/ s3://taiger-file-storage-production-website",
-    "prod": "npm run-script build && npm run-script deploy",
+    "invalid": "aws cloudfront create-invalidation --distribution-id E31WYFO0IE8GZL --paths \"/*\"",
+    "prod": "npm run-script build && npm run-script deploy && npm run-script invalid",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

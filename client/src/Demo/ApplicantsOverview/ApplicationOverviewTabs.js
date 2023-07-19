@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Spinner, Table, Card, Tabs, Tab } from 'react-bootstrap';
+import { Row, Col, Table, Card, Tabs, Tab } from 'react-bootstrap';
 import { AiFillEdit } from 'react-icons/ai';
 
 import {
@@ -19,10 +19,8 @@ import {
 } from '../Utils/checking-functions';
 import {
   applicationFileOverviewHeader,
-  applicationOverviewHeader,
-  spinner_style
+  applicationOverviewHeader
 } from '../Utils/contants';
-import ErrorPage from '../Utils/ErrorPage';
 
 // Define a default UI for filtering
 function GlobalFilter({
@@ -385,6 +383,40 @@ class ApplicationOverviewTabs extends React.Component {
     return (
       <>
         <Tabs fill={true} justify={true}>
+          {is_TaiGer_role(this.props.user) && (
+            <Tab eventKey="active_student_list" title="Active Student List">
+              <Row>
+                <Col>
+                  {this.props.students?.map((student, i) => (
+                    <>
+                      <li>
+                        <Link
+                          to={`/student-database/${student._id.toString()}/profile`}
+                        >
+                          {student.firstname} {student.lastname}{' '}
+                          {student.firstname_chinese} {student.lastname_chinese}{' '}
+                          {
+                            student.application_preference
+                              ?.expected_application_date
+                          }{' '}
+                          {
+                            student.application_preference
+                              ?.expected_application_semester
+                          }
+                        </Link>
+                      </li>
+                    </>
+                  ))}
+                  {/* <SortTable
+                  columns={applicationOverviewHeader}
+                  data={applications_arr}
+                  user={this.props.user}
+                /> */}
+                </Col>
+              </Row>
+            </Tab>
+          )}
+
           <Tab
             eventKey="application_status"
             title="Application Progress Overview"

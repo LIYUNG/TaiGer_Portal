@@ -1810,28 +1810,34 @@ const AnalysedCoursesDataStudentEmail = async (recipient, msg) => {
 };
 
 const updateCoursesDataAgentEmail = async (recipient, msg) => {
-  const subject = '課程更新成功 / Course data updated successfully';
+  const subject = `[TODO] 分析課程 ${msg.student_firstname} ${msg.student_lastname} | Course anaylsis for ${msg.student_firstname} ${msg.student_lastname}`;
   const message = `\
 <p>${ENGLISH_BELOW}</p>
 
 <p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
 
-<p>${msg.student_firstname} ${msg.student_lastname}的課程資料已更新成功。</p>
+<p>${msg.student_firstname} ${msg.student_lastname} 的課程資料已更新。</p>
 
-<p>請至 <a href="${STUDENT_COURSE_URL(
-    msg.student_id
-  )}">Courses</a> 查看細節。</p>
+<p>請至 <a href="${STUDENT_COURSE_URL(msg.student_id)}">${
+    msg.student_firstname
+  } ${
+    msg.student_lastname
+  } Courses</a> 查看細節並<b>幫學生點選課程分析，學生可以馬上收到課程匹配度分析。</b></p>
 
 <br />
 <p>${SPLIT_LINE}</p>
 
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-<p>You have updated your course data successfully!</p>
+<p>${msg.student_firstname} ${
+    msg.student_lastname
+  } has updated his/her courses data!</p>
 
-<p>Please go to <a href="${STUDENT_COURSE_URL(
-    msg.student_id
-  )}">Courses</a> for more details.</p>
+<p>Please go to <a href="${STUDENT_COURSE_URL(msg.student_id)}">${
+    msg.student_firstname
+  } ${
+    msg.student_lastname
+  } Courses</a> for more details and <b>analyze the courses. </b> A system email will be sent to the student when you analyzed.</p>
 
 <p>${TAIGER_SIGNATURE}</p>
 

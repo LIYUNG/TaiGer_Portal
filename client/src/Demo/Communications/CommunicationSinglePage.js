@@ -303,7 +303,6 @@ class CommunicationSinglePage extends Component {
           if (idx2 !== -1) {
             new_upper_messages.splice(idx2, 1);
           }
-          console.log(new_upper_messages);
           this.setState((state) => ({
             ...state,
             success,
@@ -498,7 +497,7 @@ class CommunicationSinglePage extends Component {
                     <br />
                     {this.state.student?.agents?.map((agent, i) => (
                       // <Link>{`${agent.firstname} ${agent.lastname}`}</Link>
-                      <>{`${agent.firstname} ${agent.lastname}`}</>
+                      <p key={i}>{`${agent.firstname} ${agent.lastname}`}</p>
                     ))}
                   </Col>
                 </Row>

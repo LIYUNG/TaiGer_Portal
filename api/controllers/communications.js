@@ -342,7 +342,24 @@ const postMessages = asyncHandler(async (req, res) => {
     params: { studentId }
   } = req;
   const { message } = req.body;
-
+  // TODO: check if consecutive post?
+  if (user.role === Role.Student) {
+    const communication_thread = await Communication.find({
+      student_id: studentId
+    })
+      .populate('student_id user_id', 'firstname lastname role')
+      .sort({ createdAt: -1 }) // 0: latest!
+      .limit(1); // show only first y limit items after skip.
+    if (
+      communication_thread.length > 0 &&
+      communication_thread[0]?.user_id?._id.toString() === studentId
+    ) {
+      throw new ErrorResponse(
+        429,
+        '過多訊息：請整理好一次您的問題，方便TaiGer Agent一次回復。若 Agent 尚未回覆當前留言，請把問題集中於當前的留言，您的 Agent 會盡速回復您'
+      );
+    }
+  }
   try {
     JSON.parse(message);
   } catch (e) {
@@ -418,37 +435,21 @@ const updateAMessageInThread = asyncHandler(async (req, res) => {
     user,
     params: { messageId }
   } = req;
+  const { message } = req.body;
 
-  const thread = await Communication.findById(messageId);
+  const thread = await Communication.findById(messageId).populate(
+    'student_id user_id',
+    'firstname lastname'
+  );
   if (!thread) {
     logger.error('updateAMessageInThread : Invalid message thread id');
     throw new ErrorResponse(403, 'Invalid message thread id');
   }
-
-  const msg = thread.messages.find(
-    (message) => message._id.toString() === messageId
-  );
-
-  if (!msg) {
-    logger.error('updateAMessageInThread : Invalid message id');
-    throw new ErrorResponse(403, 'Invalid message id');
-  }
-  // Prevent multitenant
-  if (msg.user_id.toString() !== user._id.toString()) {
-    logger.error(
-      'updateAMessageInThread : You can only delete your own message.'
-    );
-    throw new ErrorResponse(409, 'You can only delete your own message.');
-  }
-
-  // TODO: update message
-  //   await Communication.findByIdAndUpdate(studentId, {
-  //     $pull: {
-  //       messages: { _id: messageId }
-  //     }
-  //   });
-
-  res.status(200).send({ success: true });
+  console.log(req.body);
+  // console.log(message);
+  thread.message = JSON.stringify(req.body);
+  await thread.save();
+  res.status(200).send({ success: true, data: thread });
 });
 
 // (-) TODO email : no notification needed

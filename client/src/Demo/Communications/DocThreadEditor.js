@@ -10,7 +10,6 @@ import {
 } from 'react-bootstrap';
 
 function DocThreadEditor(props) {
-  const [show, setShow] = useState(false);
   let [statedata, setStatedata] = useState({
     editorState: props.editorState
   });
@@ -75,6 +74,14 @@ function DocThreadEditor(props) {
               onClick={(e) => props.handleClickSave(e, statedata.editorState)}
             >
               Save
+            </Button>
+          )}
+          {props.showCancelButton && (
+            <Button
+              variant="danger"
+              onClick={(e) => props.handleClickSave(e, statedata.editorState)}
+            >
+              Cancel
             </Button>
           )}
         </Col>

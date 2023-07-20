@@ -110,8 +110,8 @@ def TUM_MTL(transcript_sorted_group_map, df_transcript_array, df_category_course
                  transcript_sorted_group_map, df_transcript_array_temp, df_category_courses_sugesstion_data_temp, column_len_array)
 
 
-def RWTH_MTL(transcript_sorted_group_map, df_transcript_array, df_category_courses_sugesstion_data, writer):
-    program_name = 'RWTH_MTL'
+def RWTH_MTL_ENGINEERING(transcript_sorted_group_map, df_transcript_array, df_category_courses_sugesstion_data, writer):
+    program_name = 'RWTH_MTL_ENGINEERING'
     print("Create " + program_name + " sheet")
     df_transcript_array_temp = []
     df_category_courses_sugesstion_data_temp = []
@@ -419,4 +419,4 @@ def FAU(transcript_sorted_group_map, df_transcript_array, df_category_courses_su
                  transcript_sorted_group_map, df_transcript_array_temp, df_category_courses_sugesstion_data_temp, column_len_array)
 
 
-program_sort_function = [TUM_MTL, RWTH_MTL, STUTTGART_MTL, BOCHUM_MTL_SIM, FAU]
+program_sort_function = [TUM_MTL, RWTH_MTL_ENGINEERING, STUTTGART_MTL, BOCHUM_MTL_SIM, FAU]

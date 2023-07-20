@@ -13,6 +13,7 @@ import { RiCloseFill } from 'react-icons/ri';
 import EditorSimple from '../../components/EditorJs/EditorSimple';
 import { stringAvatar, convertDate } from '../Utils/contants';
 import { Avatar } from '@mui/material';
+import { AiFillEdit } from 'react-icons/ai';
 
 class Message extends Component {
   state = {
@@ -39,26 +40,26 @@ class Message extends Component {
       deleteMessageModalShow: false
     }));
   }
-  // componentDidUpdate(prevProps, prevState) {
-  //   if (prevProps.message.message !== this.props.message.message) {
-  //     var initialEditorState = null;
-  //     if (this.props.message.message && this.props.message.message !== '{}') {
-  //       try {
-  //         initialEditorState = JSON.parse(this.props.message.message);
-  //       } catch (e) {
-  //         initialEditorState = { time: new Date(), blocks: [] };
-  //       }
-  //     } else {
-  //       initialEditorState = { time: new Date(), blocks: [] };
-  //     }
-  //     this.setState((state) => ({
-  //       ...state,
-  //       editorState: initialEditorState,
-  //       isLoaded: this.props.isLoaded,
-  //       deleteMessageModalShow: false
-  //     }));
-  //   }
-  // }
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.message.message !== this.props.message.message) {
+      var initialEditorState = null;
+      if (this.props.message.message && this.props.message.message !== '{}') {
+        try {
+          initialEditorState = JSON.parse(this.props.message.message);
+        } catch (e) {
+          initialEditorState = { time: new Date(), blocks: [] };
+        }
+      } else {
+        initialEditorState = { time: new Date(), blocks: [] };
+      }
+      this.setState((state) => ({
+        ...state,
+        editorState: initialEditorState,
+        isLoaded: this.props.isLoaded,
+        deleteMessageModalShow: false
+      }));
+    }
+  }
 
   onOpendeleteMessageModalShow = (e, message_id, createdAt) => {
     this.setState({ message_id, deleteMessageModalShow: true, createdAt });
@@ -113,9 +114,7 @@ class Message extends Component {
           <Card.Header
             as="h5"
             aria-controls={'accordion' + this.props.idx}
-            aria-expanded={
-              this.props.accordionKeys[this.props.idx] !== -1
-            }
+            aria-expanded={this.props.accordionKeys[this.props.idx] !== -1}
             className="ps-2 py-2 pe-0 "
           >
             <Row className="my-0">
@@ -141,20 +140,36 @@ class Message extends Component {
                   <span style={{ float: 'right' }}>
                     {convertDate(this.props.message.createdAt)}
                     {editable && (
-                      <RiCloseFill
-                        className="mx-0"
-                        color="red"
-                        title="Delete this message and file"
-                        size={20}
-                        onClick={(e) =>
-                          this.onOpendeleteMessageModalShow(
-                            e,
-                            this.props.message._id.toString(),
-                            this.props.message.createdAt
-                          )
-                        }
-                        style={{ cursor: 'pointer' }}
-                      />
+                      <>
+                        <AiFillEdit
+                          className="mx-1"
+                          color="blue"
+                          title="Delete this message and file"
+                          size={20}
+                          onClick={(e) =>
+                            this.props
+                              .onEditMode
+                              // e,
+                              // this.props.message._id.toString()
+                              ()
+                          }
+                          style={{ cursor: 'pointer' }}
+                        />
+                        <RiCloseFill
+                          className="mx-0"
+                          color="red"
+                          title="Delete this message and file"
+                          size={20}
+                          onClick={(e) =>
+                            this.onOpendeleteMessageModalShow(
+                              e,
+                              this.props.message._id.toString(),
+                              this.props.message.createdAt
+                            )
+                          }
+                          style={{ cursor: 'pointer' }}
+                        />
+                      </>
                     )}
                   </span>
                 </p>
@@ -173,7 +188,7 @@ class Message extends Component {
               <EditorSimple
                 holder={`${this.props.message._id.toString()}`}
                 readOnly={true}
-                imageEnable={true}
+                imageEnable={false}
                 handleClickSave={this.props.handleClickSave}
                 editorState={this.state.editorState}
                 defaultHeight={0}

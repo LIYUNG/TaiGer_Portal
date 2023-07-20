@@ -228,6 +228,7 @@ class CommunicationSinglePage extends Component {
       }
     );
   };
+
   handleClickSave = (e, editorState) => {
     e.preventDefault();
     this.setState({ buttonDisabled: true });
@@ -515,6 +516,7 @@ class CommunicationSinglePage extends Component {
           {this.state.upperThread.length > 0 && (
             <MessageList
               accordionKeys={this.state.uppderaccordionKeys}
+              student_id={this.state.student._id.toString()}
               isUpperMessagList={true}
               singleExpandtHandler={this.singleExpandtUpperHandler}
               thread={this.state.upperThread}
@@ -525,6 +527,7 @@ class CommunicationSinglePage extends Component {
           )}
           <MessageList
             accordionKeys={this.state.accordionKeys}
+            student_id={this.state.student._id.toString()}
             isUpperMessagList={false}
             singleExpandtHandler={this.singleExpandtHandler}
             thread={this.state.thread}

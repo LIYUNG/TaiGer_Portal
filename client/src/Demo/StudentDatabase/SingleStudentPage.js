@@ -45,7 +45,7 @@ import {
 } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
-import { AiFillEdit, AiFillMessage } from 'react-icons/ai';
+import { AiFillEdit } from 'react-icons/ai';
 import { BsMessenger } from 'react-icons/bs';
 
 class SingleStudentPage extends React.Component {

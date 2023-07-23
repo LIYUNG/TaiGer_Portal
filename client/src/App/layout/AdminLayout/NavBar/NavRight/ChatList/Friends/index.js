@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 
-import friend from './friends';
 import Friend from './Friend';
-import Chat from './Chat';
 import Aux from '../../../../../../../hoc/_Aux';
 import { getMyCommunicationThread } from '../../../../../../../api';
 import { Spinner } from 'react-bootstrap';

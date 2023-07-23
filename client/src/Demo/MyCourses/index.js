@@ -564,7 +564,7 @@ export default function MyCourses(props) {
             Confirmation
           </Modal.Title>
         </Modal.Header>
-        <Modal.Body>Update transcript successfully</Modal.Body>
+        <Modal.Body>Update transcript successfully! Your agent will be notified and will analyse your courses as soon as possible.</Modal.Body>
         <Modal.Footer>
           <Button onClick={closeModal}>Close</Button>
         </Modal.Footer>

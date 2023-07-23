@@ -1,16 +1,8 @@
 import React from 'react';
 
 import Aux from '../../../../../../../../hoc/_Aux';
-import DEMO from '../../../../../../../../store/constant';
 import { Link } from 'react-router-dom';
-import {
-  convertDate,
-  convertDate_ux_friendly
-} from '../../../../../../../../Demo/Utils/contants';
-const images = require.context(
-  '../../../../../../../../assets/images/user',
-  true
-);
+import { convertDate_ux_friendly } from '../../../../../../../../Demo/Utils/contants';
 
 const friend = (props) => {
   let timeClass = ['d-block'];
@@ -44,12 +36,6 @@ const friend = (props) => {
           }
           onClick={props.clicked}
         >
-          {/* {newFriend} */}
-
-          {/* <a className="media-left" href={DEMO.BLANK_LINK}>
-            {' '}
-            {newFriend}
-          </a> */}
           <div className="media-body">
             <h6 className="chat-header">
               {props.data.firstname} {props.data.lastname}{' '}

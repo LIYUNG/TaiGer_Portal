@@ -234,7 +234,7 @@ export default function PortalCredentialPage(props) {
   }
 
   TabTitle(
-    `Student ${statedata.student.firstname} ${statedata.student.lastname} || Portal Credentials`
+    `Student ${statedata.student?.firstname} ${statedata.student?.lastname} || Portal Credentials`
   );
 
   if (statedata.res_status >= 400) {

@@ -55,8 +55,7 @@ class Documentation extends React.Component {
           const { message } = resp.data;
           this.setState({
             isLoaded: true,
-            res_modal_status: status,
-            res_modal_message: message
+            res_status: status
           });
         }
       },
@@ -194,6 +193,10 @@ class Documentation extends React.Component {
       res_modal_message
     } = this.state;
 
+    if (res_status >= 400) {
+      return <ErrorPage res_status={res_status} />;
+    }
+
     if (!isLoaded || !editorState) {
       return (
         <div style={spinner_style}>
@@ -202,10 +205,6 @@ class Documentation extends React.Component {
           </Spinner>
         </div>
       );
-    }
-
-    if (res_status >= 400) {
-      return <ErrorPage res_status={res_status} />;
     }
 
     const category_name = valid_categories.find(

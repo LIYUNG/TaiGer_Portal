@@ -335,14 +335,14 @@ const updateStudentsArchivStatus = asyncHandler(async (req, res) => {
   } = req;
 
   // TODO: data validation for isArchived and studentId
-  let student = await Student.findByIdAndUpdate(
+  const student = await Student.findByIdAndUpdate(
     studentId,
     {
       archiv: isArchived
     },
     { new: true, strict: false }
   )
-    .populate('editors')
+    .populate('agents editors', 'firstname lastname email')
     .lean()
     .exec();
   if (isArchived) {
@@ -434,7 +434,7 @@ const updateStudentsArchivStatus = asyncHandler(async (req, res) => {
         lastname: student.lastname,
         address: student.email
       },
-      {}
+      { student }
     );
   } else {
     if (user.role === Role.Admin) {

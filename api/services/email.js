@@ -757,12 +757,12 @@ const informAgentNewStudentEmail = async (recipient, msg) => {
 
 const informStudentTheirAgentEmail = async (recipient, msg) => {
   const subject = 'Your Agent';
-  var agent;
+  let agent;
   for (let i = 0; i < msg.agents.length; i++) {
     if (i === 0) {
-      agent = msg.agents[i].firstname + ' ' + msg.agents[i].lastname;
+      agent = `${msg.agents[i].firstname} ${msg.agents[i].lastname}`;
     } else {
-      agent += ', ' + msg.agents[i].firstname + ' ' + msg.agents[i].lastname;
+      agent += `, ${msg.agents[i].firstname} ${msg.agents[i].lastname}`;
     }
   }
   const message = `\
@@ -825,14 +825,24 @@ const informEditorArchivedStudentEmail = async (recipient, msg) => {
   return sendEmail(recipient, subject, message);
 };
 
-const informStudentArchivedStudentEmail = async (recipient, msg) => {
+const informStudentArchivedStudentEmail = async (recipient, payload) => {
   const subject = `[${recipient.firstname} ${recipient.lastname}] TaiGer Portal service ends`;
+  let agent;
+  for (let i = 0; i < payload.student.agents.length; i += 1) {
+    if (i === 0) {
+      agent = `<li>${payload.student.agents[i].firstname} - ${payload.student.agents[i].lastname} Email: ${payload.student.agents[i].email}</li>`;
+    } else {
+      agent += `<li>${payload.student.agents[i].firstname} ${payload.student.agents[i].lastname} Email: ${payload.student.agents[i].email}</li>`;
+    }
+  }
   const message = `\
 <p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
 
 <p>您在 TaiGer Portal 上的服務已結束。</p>
 
 <p>感謝您的使用。祝您在未來在求學的路上一帆風順。</p>
+
+<p>之後有任何問題，請聯絡您的Agent ${agent}</p>
 
 <br />
 
@@ -843,6 +853,8 @@ const informStudentArchivedStudentEmail = async (recipient, msg) => {
 <p>Your service in TaiGer Portal is closed! </p>
 
 <p>Thank you! We wish you success in your future endeavors</p>
+
+<p>For any further questions, please contact you agent ${agent}</p>
 
 <p>${TAIGER_SIGNATURE}</p>
 

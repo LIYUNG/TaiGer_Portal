@@ -399,15 +399,7 @@ class CommunicationSinglePage extends Component {
                   className="text-primary"
                   to={`/student-database/${this.state.student._id.toString()}/profile`}
                 >
-                  <b>
-                    {student_name}
-                    {this.state.student.firstname_chinese
-                      ? this.state.student.firstname_chinese
-                      : ''}{' '}
-                    {this.state.student.lastname_chinese
-                      ? this.state.student.lastname_chinese
-                      : ''}
-                  </b>
+                  <b>{student_name}</b>
                 </Link>
                 {' - '}
                 {' Conact your Agent'}

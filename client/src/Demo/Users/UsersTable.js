@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Spinner, Card, Button } from 'react-bootstrap';
+import { Row, Col, Spinner, Card, Button, Tabs, Tab } from 'react-bootstrap';
 import { Redirect } from 'react-router-dom';
 import { AiOutlinePlus } from 'react-icons/ai';
 
@@ -147,12 +147,54 @@ class UsersTable extends React.Component {
                   Users List
                 </Card.Title>
               </Card.Header>
-              <UsersList
-                success={this.state.success}
-                isLoaded={this.state.isLoaded}
-                user={this.state.user}
-                onSubmit2={this.onSubmit2}
-              />
+              <Tabs
+                defaultActiveKey={'Student'}
+                id="student_user_list"
+                fill={true}
+                justify={true}
+                className="py-0 my-0 mx-0"
+              >
+                <Tab eventKey="Student" title="Student">
+                  <UsersList
+                    success={this.state.success}
+                    isLoaded={this.state.isLoaded}
+                    user={this.state.user.filter(
+                      (usr, x) => usr.role === 'Student'
+                    )}
+                    onSubmit2={this.onSubmit2}
+                  />
+                </Tab>
+                <Tab eventKey="Agent" title="Agent">
+                  <UsersList
+                    success={this.state.success}
+                    isLoaded={this.state.isLoaded}
+                    user={this.state.user.filter(
+                      (usr, x) => usr.role === 'Agent'
+                    )}
+                    onSubmit2={this.onSubmit2}
+                  />
+                </Tab>
+                <Tab eventKey="Editor" title="Editor">
+                  <UsersList
+                    success={this.state.success}
+                    isLoaded={this.state.isLoaded}
+                    user={this.state.user.filter(
+                      (usr, x) => usr.role === 'Editor'
+                    )}
+                    onSubmit2={this.onSubmit2}
+                  />
+                </Tab>
+                <Tab eventKey="Admin" title="Admin">
+                  <UsersList
+                    success={this.state.success}
+                    isLoaded={this.state.isLoaded}
+                    user={this.state.user.filter(
+                      (usr, x) => usr.role === 'Admin'
+                    )}
+                    onSubmit2={this.onSubmit2}
+                  />
+                </Tab>
+              </Tabs>
             </Card>
           </Col>
         </Row>

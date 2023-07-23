@@ -6,6 +6,7 @@ import { FiExternalLink } from 'react-icons/fi';
 
 import OffcanvasBaseDocument from '../../components/Offcanvas/OffcanvasBaseDocument';
 import {
+  is_TaiGer_Admin,
   is_TaiGer_AdminAgent,
   is_TaiGer_Student,
   showButtonIfMyStudent
@@ -126,7 +127,7 @@ class ButtonSetMissing extends React.Component {
               style={{ cursor: 'pointer' }}
             />
           </a>
-          {is_TaiGer_AdminAgent(this.props.user) && (
+          {is_TaiGer_Admin(this.props.user) && (
             <a onClick={this.openOffcanvasWindow} style={{ cursor: 'pointer' }}>
               [Edit]
             </a>

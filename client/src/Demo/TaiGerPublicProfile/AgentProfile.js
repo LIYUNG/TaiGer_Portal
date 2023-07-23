@@ -138,8 +138,16 @@ class AgentProfile extends React.Component {
               </Card.Header>
               <Card.Body>
                 <Row>
-                  <h5 className="text-light">Email:</h5>
-                  <p className="text-info">{this.state.agent.email}</p>
+                  <Col>
+                    <h5 className="text-light">Email:</h5>
+                    <p className="text-info">{this.state.agent.email}</p>
+                  </Col>
+                  <Col>
+                    <h5 className="text-light">Office Hours</h5>
+                    {this.state.agent.officehours}
+                  </Col>
+                </Row>
+                <Row>
                   <h5 className="text-light">Introduction</h5>
                   {this.state.agent.selfIntroduction}
                 </Row>

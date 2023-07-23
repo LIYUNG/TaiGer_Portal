@@ -455,15 +455,27 @@ class Profile extends React.Component {
                 </Row>
               </Card.Body>
             </Card>
-            {!isLoaded && (
-              <div style={spinner_style}>
-                <Spinner animation="border" role="status">
-                  <span className="visually-hidden"></span>
-                </Spinner>
-              </div>
-            )}
           </Col>
         </Row>
+        {this.props.user.role === 'Agent' && (
+          <Card className="my-2 mx-0" bg={'dark'} text={'white'}>
+            <Card.Header>
+              <Card.Title className="my-0 mx-0 text-light">Profile</Card.Title>
+            </Card.Header>
+            <Card.Body>
+              <Row>
+                <Col>
+                  <h5 className="text-light">Office Hours</h5>
+                  {this.props.user.officehours}
+                </Col>
+              </Row>
+              <Row>
+                <h5 className="text-light">Introduction</h5>
+                {this.props.user.selfIntroduction}
+              </Row>
+            </Card.Body>
+          </Card>
+        )}
         <Modal
           show={this.state.updateconfirmed}
           onHide={this.onHide}

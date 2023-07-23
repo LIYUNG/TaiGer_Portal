@@ -98,7 +98,12 @@ class StudentDashboard extends React.Component {
         <tr key={i}>
           <td>Agent</td>
           <td>
-            {agent.firstname} - {agent.lastname}
+            <Link
+              to={`/teams/agents/profile/${agent._id.toString()}`}
+              className="text-info"
+            >
+              {agent.firstname} - {agent.lastname}
+            </Link>
           </td>
           <td>{agent.email}</td>
         </tr>

@@ -362,7 +362,6 @@ const Student = User.discriminator(
     {
       agents: [{ type: ObjectId, ref: 'Agent' }],
       editors: [{ type: ObjectId, ref: 'Editor' }],
-      unreadMessages: [{ type: ObjectId, ref: 'Communication' }],
       applications: [applicationSchema],
       applying_program_count: {
         type: Number,
@@ -455,7 +454,10 @@ const Agent = User.discriminator(
   new Schema(
     {
       // students: [{ type: ObjectId, ref: 'Student' }],
-      unreadMessages: [{ type: ObjectId, ref: 'Communication' }],
+      selfIntroduction: {
+        type: String,
+        default: ''
+      },
       agent_notification: {
         isRead_new_base_docs_uploaded: [
           {

@@ -1,10 +1,5 @@
 const { Router } = require('express');
-const {
-  GeneralPUTRequestRateLimiter,
-  GeneralPOSTRequestRateLimiter,
-  GeneralDELETERequestRateLimiter,
-  GeneralGETRequestRateLimiter
-} = require('../middlewares/rate_limiter');
+const { GeneralGETRequestRateLimiter } = require('../middlewares/rate_limiter');
 const { protect, permit } = require('../middlewares/auth');
 const { filter_archiv_user } = require('../middlewares/limit_archiv_user');
 const { Role } = require('../models/User');
@@ -12,12 +7,12 @@ const {
   getTeamMembers,
   getStatistics,
   getArchivStudents,
-  getAgents,
   getSingleAgent,
-  getEditors,
   getSingleEditor
 } = require('../controllers/teams');
-const { permission_canAccessStudentDatabase_filter } = require('../middlewares/permission-filter');
+const {
+  permission_canAccessStudentDatabase_filter
+} = require('../middlewares/permission-filter');
 
 const router = Router();
 

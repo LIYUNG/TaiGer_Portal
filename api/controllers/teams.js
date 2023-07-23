@@ -161,6 +161,24 @@ const getSingleAgent = asyncHandler(async (req, res, next) => {
   res.status(200).send({ success: true, data: { students, agent } });
 });
 
+const putAgentProfile = asyncHandler(async (req, res, next) => {
+  const { agent_id } = req.params;
+  const agent = await Agent.findById(agent_id).select(
+    'firstname lastname email selfIntroduction'
+  );
+
+  res.status(200).send({ success: true, data: agent });
+});
+
+const getAgentProfile = asyncHandler(async (req, res, next) => {
+  const { agent_id } = req.params;
+  const agent = await Agent.findById(agent_id).select(
+    'firstname lastname email selfIntroduction'
+  );
+
+  res.status(200).send({ success: true, data: agent });
+});
+
 const getEditors = asyncHandler(async (req, res, next) => {
   const { user } = req;
   if (user.role === 'Editor') {
@@ -251,6 +269,8 @@ module.exports = {
   getStatistics,
   getAgents,
   getSingleAgent,
+  putAgentProfile,
+  getAgentProfile,
   getEditors,
   getSingleEditor,
   getArchivStudents

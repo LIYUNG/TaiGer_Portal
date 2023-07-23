@@ -9,52 +9,55 @@ class User extends React.Component {
       return (
         <tr key={this.props.user._id}>
           <th>
-            <DropdownButton
-              size="sm"
-              title="Option"
-              variant="primary"
-              id={`dropdown-variants-${this.props.user._id}`}
-              key={this.props.user._id}
-            >
-              <Dropdown.Item
-                eventKey="2"
-                onClick={() =>
-                  this.props.setModalShow(
-                    this.props.user.firstname,
-                    this.props.user.lastname,
-                    this.props.user.role,
-                    this.props.user._id
-                  )
-                }
+            {this.props.user.role !== 'Admin' && (
+              <DropdownButton
+                size="sm"
+                title="Option"
+                variant="primary"
+                id={`dropdown-variants-${this.props.user._id}`}
+                key={this.props.user._id}
               >
-                Set User as...
-              </Dropdown.Item>
-              <Dropdown.Item
-                eventKey="4"
-                onClick={() =>
-                  this.props.setModalArchiv(
-                    this.props.user.firstname,
-                    this.props.user.lastname,
-                    this.props.user._id.toString(),
-                    this.props.user.archiv
-                  )
-                }
-              >
-                {this.props.user.archiv === true ? 'Activate' : 'Archiv'}
-              </Dropdown.Item>
-              <Dropdown.Item
-                eventKey="3"
-                onClick={() =>
-                  this.props.setModalShowDelete(
-                    this.props.user.firstname,
-                    this.props.user.lastname,
-                    this.props.user._id
-                  )
-                }
-              >
-                Delete
-              </Dropdown.Item>
-            </DropdownButton>
+                <Dropdown.Item
+                  eventKey="2"
+                  onClick={() =>
+                    this.props.setModalShow(
+                      this.props.user.firstname,
+                      this.props.user.lastname,
+                      this.props.user.role,
+                      this.props.user._id
+                    )
+                  }
+                >
+                  Set User as...
+                </Dropdown.Item>
+                <Dropdown.Item
+                  eventKey="4"
+                  onClick={() =>
+                    this.props.setModalArchiv(
+                      this.props.user.firstname,
+                      this.props.user.lastname,
+                      this.props.user._id.toString(),
+                      this.props.user.archiv
+                    )
+                  }
+                >
+                  {this.props.user.archiv === true ? 'Activate' : 'Archiv'}
+                </Dropdown.Item>
+                <Dropdown.Item
+                  eventKey="3"
+                  onClick={() =>
+                    this.props.setModalShowDelete(
+                      this.props.user.firstname,
+                      this.props.user.lastname,
+                      this.props.user._id
+                    )
+                  }
+                >
+                  Delete
+                </Dropdown.Item>
+              </DropdownButton>
+            )}
+
             {/* )} */}
           </th>
           {UserlistHeader.map((y, k) => (

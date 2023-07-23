@@ -413,6 +413,8 @@ export const getTeamMembers = () => request.get('/api/teams');
 export const getStatistics = () => request.get('/api/teams/statistics');
 export const getAgent = (agent_id) =>
   request.get(`/api/teams/agents/${agent_id}`);
+export const getAgentProfile = (agent_id) =>
+  request.get(`/api/agents/profile/${agent_id}`);
 export const getEditor = (editor_id) =>
   request.get(`/api/teams/editors/${editor_id}`);
 export const getExpense = (taiger_user_id) =>

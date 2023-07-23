@@ -164,7 +164,7 @@ class ArchivStudents extends React.Component {
               <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
                 <Card.Header>
                   <Card.Title className="my-0 mx-0 text-light">
-                    My Archived Students
+                    My Archived Students {` (${this.state.students.length})`}
                   </Card.Title>
                 </Card.Header>
               </Card>

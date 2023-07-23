@@ -150,6 +150,7 @@ class AgentPage extends React.Component {
                       <b>
                         {this.state.agent.firstname} {this.state.agent.lastname}
                       </b>
+                      {` (${this.state.students.length})`}
                     </Col>
                   </Row>
                 </Card.Title>

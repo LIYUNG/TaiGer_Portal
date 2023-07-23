@@ -1141,6 +1141,25 @@ class SurveyEditableComponent extends React.Component {
                   removeBanner={this.removeBanner}
                   notification_key={'x'}
                 />
+                {(this.state.academic_background?.language?.english_isPassed ===
+                  'X' ||
+                  this.state.academic_background?.language?.german_isPassed ===
+                    'X') && (
+                  <Banner
+                    ReadOnlyMode={true}
+                    bg={'danger'}
+                    title={'Reminder:'}
+                    path={'/'}
+                    text={
+                      <>
+                        報名考試時，請確認 <b>護照</b> 有無過期。
+                      </>
+                    }
+                    link_name={''}
+                    removeBanner={this.removeBanner}
+                    notification_key={'x'}
+                  />
+                )}
                 <Row>
                   <Col md={4}>
                     <Form.Group controlId="english_isPassed">
@@ -1230,7 +1249,7 @@ class SurveyEditableComponent extends React.Component {
                         <Col md={4}>
                           <Form.Group controlId="english_certificate">
                             <Form.Label className="my-0 mx-0 text-light">
-                              English Certificate
+                              Expected English Certificate
                             </Form.Label>
                             <Form.Control
                               as="select"

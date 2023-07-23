@@ -21,6 +21,7 @@ import {
   applicationFileOverviewHeader,
   applicationOverviewHeader
 } from '../Utils/contants';
+import TabStudBackgroundDashboard from '../Dashboard/MainViewTab/StudDocsOverview/TabStudBackgroundDashboard';
 
 // Define a default UI for filtering
 function GlobalFilter({
@@ -387,31 +388,12 @@ class ApplicationOverviewTabs extends React.Component {
             <Tab eventKey="active_student_list" title="Active Student List">
               <Row>
                 <Col>
-                  {this.props.students?.map((student, i) => (
-                    <>
-                      <li>
-                        <Link
-                          to={`/student-database/${student._id.toString()}/profile`}
-                        >
-                          {student.firstname} {student.lastname}{' '}
-                          {student.firstname_chinese} {student.lastname_chinese}{' '}
-                          {
-                            student.application_preference
-                              ?.expected_application_date
-                          }{' '}
-                          {
-                            student.application_preference
-                              ?.expected_application_semester
-                          }
-                        </Link>
-                      </li>
-                    </>
-                  ))}
-                  {/* <SortTable
-                  columns={applicationOverviewHeader}
-                  data={applications_arr}
-                  user={this.props.user}
-                /> */}
+                  <TabStudBackgroundDashboard
+                    user={this.props.user}
+                    students={this.props.students}
+                    // updateStudentArchivStatus={this.updateStudentArchivStatus}
+                    isArchivPage={false}
+                  />
                 </Col>
               </Row>
             </Tab>

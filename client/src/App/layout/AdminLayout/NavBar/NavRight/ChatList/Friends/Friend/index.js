@@ -52,7 +52,9 @@ const friend = (props) => {
           </a> */}
           <div className="media-body">
             <h6 className="chat-header">
-              {props.data.firstname} {props.data.lastname}
+              {props.data.firstname} {props.data.lastname}{' '}
+              {props.data.firstname_chinese ? props.data.firstname_chinese : ''}{' '}
+              {props.data.lastname ? props.data.lastname_chinese : ''}
               <br></br>
             </h6>
             <span

@@ -354,7 +354,17 @@ class CommunicationSinglePage extends Component {
       return <ErrorPage res_status={res_status} />;
     }
 
-    const student_name = `${this.state.student.firstname} ${this.state.student.lastname}`;
+    const student_name = `${this.state.student.firstname} ${
+      this.state.student.lastname
+    } ${
+      this.state.student.firstname_chinese
+        ? this.state.student.firstname_chinese
+        : ''
+    } ${
+      this.state.student.lastname_chinese
+        ? this.state.student.lastname_chinese
+        : ''
+    }`;
     const template_input = JSON.parse(
       `{"time":1689452160435,"blocks":[{"id":"WHsFbpmWmH","type":"paragraph","data":{"text":"<b>我的問題：</b>"}},{"id":"F8K_f07R8l","type":"paragraph","data":{"text":"&lt;Example&gt; 我想選課，不知道下學期要選什麼"}},{"id":"yYUL0bYWSB","type":"paragraph","data":{"text":"<b>我想和顧問討論</b>："}},{"id":"wJu56jmAKC","type":"paragraph","data":{"text":"&lt;Example&gt; 課程符合度最佳化"}}],"version":"2.27.2"}`
     );
@@ -389,7 +399,15 @@ class CommunicationSinglePage extends Component {
                   className="text-primary"
                   to={`/student-database/${this.state.student._id.toString()}/profile`}
                 >
-                  <b>{student_name}</b>
+                  <b>
+                    {student_name}
+                    {this.state.student.firstname_chinese
+                      ? this.state.student.firstname_chinese
+                      : ''}{' '}
+                    {this.state.student.lastname_chinese
+                      ? this.state.student.lastname_chinese
+                      : ''}
+                  </b>
                 </Link>
                 {' - '}
                 {' Conact your Agent'}

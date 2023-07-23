@@ -124,6 +124,13 @@ class AgentReviewing extends React.Component {
               {this.props.student.firstname}
               {' - '}
               {this.props.student.lastname}
+              {'|'}
+              {this.props.student.lastname_chinese
+                ? this.props.student.lastname_chinese
+                : ''}
+              {this.props.student.firstname_chinese
+                ? this.props.student.firstname_chinese
+                : ''}
               {', '}
               {this.props.student.birthday}
             </Link>

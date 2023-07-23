@@ -47,10 +47,15 @@ const getSearchUserMessages = asyncHandler(async (req, res) => {
     }
   ]);
   if (user.role === 'Admin') {
-    const students = await Student.find({
-      $or: [{ archiv: { $exists: false } }, { archiv: false }]
-    })
-      .select('firstname lastname role')
+    const students = await Student.find(
+      {
+        $text: { $search: req.query.q }
+      },
+      { score: { $meta: 'textScore' } }
+    )
+      .sort({ score: { $meta: 'textScore' } })
+      .limit(10)
+      .select('firstname lastname firstname_chinese lastname_chinese role')
       .lean();
     // Merge the results
     const mergedResults = students.map((student) => {
@@ -128,7 +133,7 @@ const getSearchMessageKeywords = asyncHandler(async (req, res) => {
     const students = await Student.find({
       $or: [{ archiv: { $exists: false } }, { archiv: false }]
     })
-      .select('firstname lastname role')
+      .select('firstname lastname firstname_chinese lastname_chinese role')
       .lean();
     // Merge the results
     const mergedResults = students.map((student) => {
@@ -199,6 +204,8 @@ const getMyMessages = asyncHandler(async (req, res) => {
         $project: {
           firstname: 1,
           lastname: 1,
+          firstname_chinese: 1,
+          lastname_chinese: 1,
           role: 1,
           latestCommunication: {
             $arrayElemAt: ['$communications', -1]
@@ -245,6 +252,8 @@ const getMyMessages = asyncHandler(async (req, res) => {
       $project: {
         firstname: 1,
         lastname: 1,
+        firstname_chinese: 1,
+        lastname_chinese: 1,
         role: 1,
         latestCommunication: {
           $arrayElemAt: ['$communications', -1]
@@ -289,7 +298,7 @@ const loadMessages = asyncHandler(async (req, res) => {
   const communication_thread = await Communication.find({
     student_id: studentId
   })
-    .populate('student_id user_id', 'firstname lastname role agents editors')
+    .populate('student_id user_id', 'firstname lastname firstname_chinese lastname_chinese role agents editors')
     .sort({ createdAt: -1 })
     .skip(skipAmount) // skip first x items.
     .limit(pageSize); // show only first y limit items after skip.
@@ -308,7 +317,7 @@ const getMessages = asyncHandler(async (req, res) => {
   } = req;
 
   const student = await Student.findById(studentId)
-    .select('firstname lastname agents archiv')
+    .select('firstname lastname firstname_chinese lastname_chinese agents archiv')
     .populate('agents', 'firstname lastname email role');
   if (!student) {
     logger.error('getMessages: Invalid student id!');

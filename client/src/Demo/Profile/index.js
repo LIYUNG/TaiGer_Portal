@@ -2,6 +2,9 @@ import React from 'react';
 import { Row, Col, Card, Form, Button, Spinner, Modal } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { BsExclamationTriangle } from 'react-icons/bs';
+import { Calendar, momentLocalizer } from 'react-big-calendar';
+import 'react-big-calendar/lib/css/react-big-calendar.css';
+import moment from 'moment';
 
 import Aux from '../../hoc/_Aux';
 import { spinner_style } from '../Utils/contants';
@@ -16,6 +19,26 @@ import {
 } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import { is_personal_data_filled } from '../Utils/checking-functions';
+
+const localizer = momentLocalizer(moment);
+
+const events = [
+  {
+    id: 1,
+    title: 'Meeting 1',
+    start: new Date(2023, 6, 24, 10, 0),
+    end: new Date(2023, 6, 24, 11, 30),
+    description: 'This is the first meeting description.'
+  },
+  {
+    id: 2,
+    title: 'Meeting 2',
+    start: new Date(2023, 6, 25, 14, 0),
+    end: new Date(2023, 6, 25, 16, 0),
+    description: 'This is the second meeting description.'
+  }
+];
+
 class Profile extends React.Component {
   state = {
     error: '',
@@ -473,6 +496,43 @@ class Profile extends React.Component {
                 <h5 className="text-light">Introduction</h5>
                 {this.props.user.selfIntroduction}
               </Row>
+            </Card.Body>
+          </Card>
+        )}
+        {(this.props.user.role === 'Admin' ||
+          this.props.user.role === 'Agent' ||
+          this.props.user.role === 'Editor') && (
+          <Card>
+            <Card.Body>
+              <Calendar
+                localizer={localizer}
+                events={events}
+                style={{ height: 500 }}
+                startAccessor="start"
+                endAccessor="end"
+                views={['month', 'week', 'day']}
+                defaultView="month" // Set the default view to "month"
+                // Using the eventPropGetter to customize event rendering
+                eventPropGetter={(event) => {
+                  return {
+                    style: {
+                      // You can add custom styles for each event here
+                      backgroundColor: '#3174ad',
+                      color: '#fff'
+                    }
+                  };
+                }}
+                // Using the popup to show event details
+                popup
+                // Rendering additional event information in the popup
+                components={{
+                  event: ({ event }) => (
+                    <span>
+                      {event.title} - {event.description}
+                    </span>
+                  )
+                }}
+              />
             </Card.Body>
           </Card>
         )}

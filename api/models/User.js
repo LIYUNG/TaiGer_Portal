@@ -454,6 +454,10 @@ const Agent = User.discriminator(
   new Schema(
     {
       // students: [{ type: ObjectId, ref: 'Student' }],
+      officehours: {
+        type: String,
+        default: ''
+      },
       selfIntroduction: {
         type: String,
         default: ''

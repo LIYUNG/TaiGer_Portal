@@ -43,7 +43,7 @@
     "node-sass": "^7.0.3",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
-    "react-big-calendar": "^0.40.8",
+    "react-big-calendar": "^1.8.1",
     "react-bootstrap": "^2.6.0",
     "react-bootstrap-calendar": "0.0.3",
     "react-bootstrap-icons": "^1.9.1",

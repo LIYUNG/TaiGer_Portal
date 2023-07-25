@@ -55,8 +55,15 @@ class ButtonSetUploaded extends React.Component {
   };
 
   componentDidUpdate(prevProps) {
-    if (prevProps.isLoaded !== this.props.isLoaded) {
-      this.setState((state) => ({ ...state, isLoaded: this.props.isLoaded }));
+    if (
+      prevProps.isLoaded !== this.props.isLoaded ||
+      prevProps.student._id.toString() !== this.props.student._id.toString()
+    ) {
+      this.setState((state) => ({
+        ...state,
+        isLoaded: this.props.isLoaded,
+        student_id: this.props.student._id.toString()
+      }));
     }
   }
 

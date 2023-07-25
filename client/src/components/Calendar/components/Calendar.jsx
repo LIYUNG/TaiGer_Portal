@@ -24,21 +24,21 @@ const events = [
   },
   {
     id: 3,
-    title: 'Meeting 1',
+    title: 'Meeting 3',
     start: new Date(2023, 6, 24, 10, 0),
     end: new Date(2023, 6, 24, 11, 30),
     description: 'This is the first meeting description.'
   },
   {
     id: 6,
-    title: 'Meeting 1',
+    title: 'Meeting 4',
     start: new Date(2023, 6, 24, 10, 0),
     end: new Date(2023, 6, 24, 11, 30),
     description: 'This is the first meeting description.'
   },
   {
     id: 7,
-    title: 'Meeting 2',
+    title: 'Meeting 5',
     start: new Date(2023, 6, 25, 14, 0),
     end: new Date(2023, 6, 25, 16, 0),
     description: 'This is the second meeting description.'
@@ -115,6 +115,30 @@ const MyCalendar = () => {
     // Add more disabled timeslots as needed
   ];
 
+  const eventPropGetter = (event, start, end, isSelected) => {
+    // Check any property of the event to determine the background color
+    if (event.title === 'Meeting 1') {
+      return {
+        style: {
+          backgroundColor: 'green' // Set the background color for this event
+        }
+      };
+    } else if (event.title === 'Meeting 2') {
+      return {
+        style: {
+          backgroundColor: 'blue' // Set a different background color for this event
+        }
+      };
+    }
+
+    // Default background color for other events
+    return {
+      style: {
+        backgroundColor: 'red' // Set a fallback background color for other events
+      }
+    };
+  };
+
   const slotPropGetter = (date) => {
     // Check if the current slot is within any of the disabled timeslots
     const isDisabled = disabledTimeslots.some(
@@ -134,6 +158,43 @@ const MyCalendar = () => {
     // Otherwise, return null to use the default slot style
     return null;
   };
+
+  // Office hours configuration (change as per your requirement)
+  const officeHours = {
+    start: 8, // Office start time (in hours, 24-hour format)
+    end: 18, // Office end time (in hours, 24-hour format)
+    step: 30 // Slot granularity in minutes (e.g., 30 minutes)
+  };
+
+  // Custom function to determine active and disabled timeslots
+  const getTimeslots = () => {
+    const timeslots = [];
+    const { start, end, step } = officeHours;
+
+    if (step <= 0) {
+      throw new Error('Step must be greater than zero.');
+    }
+
+    if (start >= end) {
+      throw new Error('Office start time must be before the end time.');
+    }
+
+    for (let hour = start; hour < end; hour++) {
+      for (let minute = 0; minute < 60; minute += step) {
+        const slotDate = moment()
+          .hour(hour)
+          .minute(minute)
+          .seconds(0)
+          .milliseconds(0)
+          .toDate();
+
+        timeslots.push(slotDate);
+      }
+    }
+
+    return timeslots;
+  };
+
   return (
     <>
       <Calendar
@@ -146,15 +207,15 @@ const MyCalendar = () => {
         defaultView="month" // Set the default view to "month"
         // Using the eventPropGetter to customize event rendering
         slotPropGetter={slotPropGetter} // Apply custom styles to slots based on the logic
-        eventPropGetter={(event) => {
-          return {
-            style: {
-              // You can add custom styles for each event here
-              backgroundColor: '#3174ad',
-              color: '#fff'
-            }
-          };
-        }}
+        // eventPropGetter={(event) => {
+        //   return {
+        //     style: {
+        //       // You can add custom styles for each event here
+        //       backgroundColor: '#3174ad',
+        //       color: '#fff'
+        //     }
+        //   };
+        // }}
         // Using the popup to show event details
         popup
         // Rendering additional event information in the popup
@@ -165,10 +226,14 @@ const MyCalendar = () => {
             </span>
           )
         }}
+        // Set the timeslots and step using the custom function
+        timeslots={2}
+        step={officeHours.step}
         selectable={true}
         // Handle event click to show the modal
         onSelectEvent={handleSelectEvent}
         onSelectSlot={handleSelectSlot}
+        eventPropGetter={eventPropGetter} // Apply custom styles to events based on the logic
         // onSelectSlot={() => console.log('Triggered!')}
       />
       {/* Modal */}

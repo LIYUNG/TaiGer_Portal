@@ -8,7 +8,8 @@ import {
   check_academic_background_filled,
   check_languages_filled,
   check_application_preference_filled,
-  showButtonIfMyStudent
+  showButtonIfMyStudent,
+  missing_survey_fields_list
 } from '../Utils/checking-functions';
 import {
   APPLICATION_YEARS_FUTURE,
@@ -185,7 +186,11 @@ class SurveyEditableComponent extends React.Component {
                   <b>請盡速填好以下問卷問題，這將會影響Agent處理您的申請進度</b>
                   <br />
                   The followings information are still missing:{' '}
-                  {this.props.academic_background &&
+                  {missing_survey_fields_list(
+                    this.props.academic_background,
+                    this.props.application_preference
+                  )}
+                  {/* {this.props.academic_background &&
                     this.props.academic_background.university &&
                     !this.props.academic_background.university
                       .attended_high_school && (
@@ -321,7 +326,7 @@ class SurveyEditableComponent extends React.Component {
                       <li>
                         <b>Target Degree Programs</b>
                       </li>
-                    )}
+                    )} */}
                 </Card.Body>
               </Card>
             </Col>

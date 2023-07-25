@@ -316,6 +316,144 @@ export const check_academic_background_filled = (academic_background) => {
   return true;
 };
 
+export const missing_survey_fields_list = (
+  academic_background,
+  application_preference
+) => {
+  return (
+    <>
+      {academic_background &&
+        academic_background.university &&
+        !academic_background.university.attended_high_school && (
+          <li>
+            <b>High School Name</b>
+          </li>
+        )}
+      {academic_background &&
+        academic_background.university &&
+        (!academic_background.university.high_school_isGraduated ||
+          academic_background.university.high_school_isGraduated === '-') && (
+          <li>
+            <b>High School graduate status</b>
+          </li>
+        )}
+      {academic_background &&
+        academic_background.university &&
+        !academic_background.university.attended_university && (
+          <li>
+            <b>University Name (English)</b>
+          </li>
+        )}
+      {academic_background &&
+        academic_background.university &&
+        !academic_background.university.attended_university_program && (
+          <li>
+            <b>University Program (English)</b>
+          </li>
+        )}
+      {academic_background &&
+        academic_background.university &&
+        (!academic_background.university.isGraduated ||
+          academic_background.university.isGraduated === '-') && (
+          <li>
+            <b>Bachelor Degree graduate status</b>
+          </li>
+        )}
+      {academic_background &&
+        academic_background.university &&
+        (!academic_background.university.Has_Exchange_Experience ||
+          academic_background.university.Has_Exchange_Experience === '-') && (
+          <li>
+            <b>Exchange Student Experience</b>
+          </li>
+        )}
+      {academic_background &&
+        academic_background.university &&
+        (!academic_background.university.Has_Internship_Experience ||
+          academic_background.university.Has_Internship_Experience === '-') && (
+          <li>
+            <b>Internship Experience</b>
+          </li>
+        )}
+      {academic_background &&
+        academic_background.university &&
+        (!academic_background.university.Has_Working_Experience ||
+          academic_background.university.Has_Working_Experience === '-') && (
+          <li>
+            <b>Full-Time Job Experience</b>
+          </li>
+        )}
+      {academic_background &&
+        academic_background.university &&
+        (!academic_background.university.isGraduated ||
+          academic_background.university.isGraduated === 'Yes' ||
+          academic_background.university.isGraduated === 'pending') && (
+          <>
+            {academic_background &&
+              academic_background.university &&
+              (!academic_background.university.Highest_GPA_Uni ||
+                academic_background.university.Highest_GPA_Uni === '-') && (
+                <li>
+                  <b>Highest Score GPA of your university program</b>
+                </li>
+              )}
+            {academic_background &&
+              academic_background.university &&
+              (!academic_background.university.Passing_GPA_Uni ||
+                academic_background.university.Passing_GPA_Uni === '-') && (
+                <li>
+                  <b>Passing Score GPA of your university program</b>
+                </li>
+              )}
+            {academic_background &&
+              academic_background.university &&
+              (!academic_background.university.My_GPA_Uni ||
+                academic_background.university.My_GPA_Uni === '-') && (
+                <li>
+                  <b>My GPA</b>
+                </li>
+              )}
+          </>
+        )}
+      {application_preference &&
+        !application_preference.expected_application_date && (
+          <li>
+            <b>Expected Application Year</b>
+          </li>
+        )}
+      {application_preference &&
+        !application_preference.expected_application_semester && (
+          <li>
+            <b>Expected Application Semester</b>
+          </li>
+        )}
+      {application_preference &&
+        !application_preference.target_application_field && (
+          <li>
+            <b>Target Application Fields</b>
+          </li>
+        )}
+      {application_preference && !application_preference.target_degree && (
+        <li>
+          <b>Target Degree Programs</b>
+        </li>
+      )}
+      {application_preference &&
+        application_preference.considered_privat_universities === '-' && (
+          <li>
+            <b>Considering private universities?</b>
+          </li>
+        )}
+      {application_preference &&
+        application_preference.application_outside_germany === '-' && (
+          <li>
+            <b>Considering universities outside Germany?</b>
+          </li>
+        )}
+    </>
+  );
+};
+
 export const application_deadline_calculator = (student, application) => {
   if (application.closed === 'O') {
     return 'CLOSE';

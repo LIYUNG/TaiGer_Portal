@@ -827,7 +827,7 @@ const informEditorArchivedStudentEmail = async (recipient, msg) => {
 
 const informStudentArchivedStudentEmail = async (recipient, payload) => {
   const subject = `[${recipient.firstname} ${recipient.lastname}] TaiGer Portal service ends`;
-  let agent;
+  let agent = '';
   for (let i = 0; i < payload.student.agents.length; i += 1) {
     if (i === 0) {
       agent = `<li>${payload.student.agents[i].firstname} - ${payload.student.agents[i].lastname} Email: ${payload.student.agents[i].email}</li>`;

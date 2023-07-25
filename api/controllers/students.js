@@ -515,19 +515,21 @@ const assignAgentToStudent = asyncHandler(async (req, res, next) => {
   res.status(200).send({ success: true, data: student_upated });
 
   for (let i = 0; i < to_be_informed_agents.length; i += 1) {
-    if (isNotArchiv(to_be_informed_agents[i])) {
-      await informAgentNewStudentEmail(
-        {
-          firstname: to_be_informed_agents[i].firstname,
-          lastname: to_be_informed_agents[i].lastname,
-          address: to_be_informed_agents[i].email
-        },
-        {
-          std_firstname: student.firstname,
-          std_lastname: student.lastname,
-          std_id: student._id.toString()
-        }
-      );
+    if (isNotArchiv(student)) {
+      if (isNotArchiv(to_be_informed_agents[i])) {
+        await informAgentNewStudentEmail(
+          {
+            firstname: to_be_informed_agents[i].firstname,
+            lastname: to_be_informed_agents[i].lastname,
+            address: to_be_informed_agents[i].email
+          },
+          {
+            std_firstname: student.firstname,
+            std_lastname: student.lastname,
+            std_id: student._id.toString()
+          }
+        );
+      }
     }
   }
   if (updated_agent.length !== 0) {
@@ -595,19 +597,21 @@ const assignEditorToStudent = asyncHandler(async (req, res, next) => {
   res.status(200).send({ success: true, data: student_upated });
 
   for (let i = 0; i < to_be_informed_editors.length; i += 1) {
-    if (isNotArchiv(to_be_informed_editors[i])) {
-      await informEditorNewStudentEmail(
-        {
-          firstname: to_be_informed_editors[i].firstname,
-          lastname: to_be_informed_editors[i].lastname,
-          address: to_be_informed_editors[i].email
-        },
-        {
-          std_firstname: student.firstname,
-          std_lastname: student.lastname,
-          std_id: student._id.toString()
-        }
-      );
+    if (isNotArchiv(student)) {
+      if (isNotArchiv(to_be_informed_editors[i])) {
+        await informEditorNewStudentEmail(
+          {
+            firstname: to_be_informed_editors[i].firstname,
+            lastname: to_be_informed_editors[i].lastname,
+            address: to_be_informed_editors[i].email
+          },
+          {
+            std_firstname: student.firstname,
+            std_lastname: student.lastname,
+            std_id: student._id.toString()
+          }
+        );
+      }
     }
   }
   if (updated_editor.length !== 0) {

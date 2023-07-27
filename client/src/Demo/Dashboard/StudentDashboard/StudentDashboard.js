@@ -130,6 +130,19 @@ class StudentDashboard extends React.Component {
 
     return (
       <>
+        {student.archiv && (
+          <Row className="sticky-top">
+            <Col>
+              <Card className="mb-2 mx-0" bg={'success'} text={'white'}>
+                <Card.Header>
+                  <Card.Title as="h5" className="text-light">
+                    Status: <b>Close</b> - Your TaiGer Portal Service is terminated.
+                  </Card.Title>
+                </Card.Header>
+              </Card>
+            </Col>
+          </Row>
+        )}
         {student.notification &&
           !student.notification.isRead_survey_not_complete &&
           !check_academic_background_filled(student.academic_background) && (

@@ -18,7 +18,7 @@ export default function Footer(props) {
       >
         Copyright TaiGer Consultancy © 2023 | Designed and developed by{' '}
         <a href="https://taigerconsultancy.com/" className="text-info">
-          TaiGer Consultancy
+          TaiGer Consultancy 台德留學顧問
         </a>
       </p>
     </footer>

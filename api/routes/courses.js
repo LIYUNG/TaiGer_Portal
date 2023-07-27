@@ -35,7 +35,6 @@ router
 router
   .route('/:studentId')
   .get(
-    filter_archiv_user,
     GeneralGETRequestRateLimiter,
     prohibit(Role.Guest),
     multitenant_filter,

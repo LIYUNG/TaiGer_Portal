@@ -369,6 +369,19 @@ export default function MyCourses(props) {
           res_modal_message={statedata.res_modal_message}
         />
       )}
+      {statedata.student.archiv && (
+        <Row className="sticky-top">
+          <Col>
+            <Card className="mb-2 mx-0" bg={'success'} text={'white'}>
+              <Card.Header>
+                <Card.Title as="h5" className="text-light">
+                  Status: <b>Close</b>
+                </Card.Title>
+              </Card.Header>
+            </Card>
+          </Col>
+        </Row>
+      )}
       <Row className="sticky-top ">
         <Col>
           <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
@@ -564,7 +577,10 @@ export default function MyCourses(props) {
             Confirmation
           </Modal.Title>
         </Modal.Header>
-        <Modal.Body>Update transcript successfully! Your agent will be notified and will analyse your courses as soon as possible.</Modal.Body>
+        <Modal.Body>
+          Update transcript successfully! Your agent will be notified and will
+          analyse your courses as soon as possible.
+        </Modal.Body>
         <Modal.Footer>
           <Button onClick={closeModal}>Close</Button>
         </Modal.Footer>
@@ -580,8 +596,11 @@ export default function MyCourses(props) {
         </Modal.Header>
         <Modal.Body>
           Transcript analysed successfully!{' '}
-          <b>The student will receive an email notification and the analysed course URL link.</b> He/She should
-          access the analysed page in their course page.
+          <b>
+            The student will receive an email notification and the analysed
+            course URL link.
+          </b>{' '}
+          He/She should access the analysed page in their course page.
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={closeanalysisSuccessModal}>Ok</Button>

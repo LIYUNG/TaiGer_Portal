@@ -116,7 +116,6 @@ router
 router
   .route('/student/notifications')
   .post(
-    filter_archiv_user,
     RemoveNotificationRateLimiter,
     permit(
       Role.Admin,

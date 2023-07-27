@@ -36,7 +36,7 @@ const getCourse = asyncHandler(async (req, res) => {
   }
   const courses = await Course.findOne({
     student_id: studentId
-  }).populate('student_id', 'firstname lastname agents editors');
+  }).populate('student_id', 'firstname lastname agents editors archiv');
 
   if (!courses) {
     return res.send({
@@ -47,7 +47,8 @@ const getCourse = asyncHandler(async (req, res) => {
           firstname: student.firstname,
           lastname: student.lastname,
           agents: student.agents,
-          editors: student.editors
+          editors: student.editors,
+          archiv: student.archiv
         },
         table_data_string:
           '[{"course_chinese":"(Example)物理一","course_english":null,"credits":"2","grades":"73"},{"course_chinese":"(Example)微積分一","course_english":null,"credits":"2","grades":"44"}]'

@@ -171,6 +171,102 @@ const getSearchMessageKeywords = asyncHandler(async (req, res) => {
     .send({ success: true, data: { students: mergedResults, user } });
 });
 
+const getUnreadNumberMessages = asyncHandler(async (req, res) => {
+  const { user } = req;
+
+  if (
+    user.role !== Role.Admin &&
+    user.role !== Role.Agent &&
+    user.role !== Role.Editor
+  ) {
+    logger.error('getMyMessages: not TaiGer user!');
+    throw new ErrorResponse(401, 'Invalid TaiGer user');
+  }
+
+  if (user.role === 'Admin') {
+    const students = await Student.find({
+      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+    })
+      .select('firstname lastname role')
+      .lean();
+    // Get only the last communication
+    const student_ids = students.map((stud, i) => stud._id);
+    const studentsWithCommunications = await Student.aggregate([
+      {
+        $lookup: {
+          from: 'communications',
+          localField: '_id',
+          foreignField: 'student_id',
+          as: 'communications'
+        }
+      },
+      {
+        $project: {
+          firstname: 1,
+          lastname: 1,
+          firstname_chinese: 1,
+          lastname_chinese: 1,
+          role: 1,
+          latestCommunication: {
+            $arrayElemAt: ['$communications', -1]
+          }
+        }
+      },
+      {
+        $match: {
+          'latestCommunication.student_id': { $in: student_ids },
+          'latestCommunication.readBy': { $nin: [user._id] }
+        }
+      }
+    ]);
+
+    return res.status(200).send({
+      success: true,
+      data: studentsWithCommunications.length
+    });
+  }
+  const students = await Student.find({
+    agents: user._id.toString(),
+    $or: [{ archiv: { $exists: false } }, { archiv: false }]
+  })
+    .select('firstname lastname role')
+    .lean();
+  const student_ids = students.map((stud, i) => stud._id);
+  const studentsWithCommunications = await Student.aggregate([
+    {
+      $lookup: {
+        from: 'communications',
+        localField: '_id',
+        foreignField: 'student_id',
+        as: 'communications'
+      }
+    },
+    {
+      $project: {
+        firstname: 1,
+        lastname: 1,
+        firstname_chinese: 1,
+        lastname_chinese: 1,
+        role: 1,
+        latestCommunication: {
+          $arrayElemAt: ['$communications', -1]
+        }
+      }
+    },
+    {
+      $match: {
+        'latestCommunication.student_id': { $in: student_ids },
+        'latestCommunication.readBy': { $nin: [user._id] }
+      }
+    }
+  ]);
+
+  return res.status(200).send({
+    success: true,
+    data: studentsWithCommunications.length
+  });
+});
+
 const getMyMessages = asyncHandler(async (req, res) => {
   const { user } = req;
 
@@ -298,7 +394,10 @@ const loadMessages = asyncHandler(async (req, res) => {
   const communication_thread = await Communication.find({
     student_id: studentId
   })
-    .populate('student_id user_id', 'firstname lastname firstname_chinese lastname_chinese role agents editors')
+    .populate(
+      'student_id user_id',
+      'firstname lastname firstname_chinese lastname_chinese role agents editors'
+    )
     .sort({ createdAt: -1 })
     .skip(skipAmount) // skip first x items.
     .limit(pageSize); // show only first y limit items after skip.
@@ -317,7 +416,9 @@ const getMessages = asyncHandler(async (req, res) => {
   } = req;
 
   const student = await Student.findById(studentId)
-    .select('firstname lastname firstname_chinese lastname_chinese agents archiv')
+    .select(
+      'firstname lastname firstname_chinese lastname_chinese agents archiv'
+    )
     .populate('agents', 'firstname lastname email role');
   if (!student) {
     logger.error('getMessages: Invalid student id!');
@@ -499,6 +600,7 @@ const deleteAMessageInCommunicationThread = asyncHandler(async (req, res) => {
 module.exports = {
   getSearchUserMessages,
   getSearchMessageKeywords,
+  getUnreadNumberMessages,
   getMyMessages,
   loadMessages,
   getMessages,

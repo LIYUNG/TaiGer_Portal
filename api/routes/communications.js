@@ -3,7 +3,8 @@ const {
   getMessagesRateLimiter,
   postMessagesRateLimiter,
   postMessagesImageRateLimiter,
-  GeneralGETSearchRequestRateLimiter
+  GeneralGETSearchRequestRateLimiter,
+  getNumberUnreadMessagesRateLimiter
 } = require('../middlewares/rate_limiter');
 const { filter_archiv_user } = require('../middlewares/limit_archiv_user');
 const { multitenant_filter } = require('../middlewares/multitenant-filter');
@@ -18,7 +19,8 @@ const {
   postMessages,
   getMyMessages,
   loadMessages,
-  getSearchUserMessages
+  getSearchUserMessages,
+  getUnreadNumberMessages
 } = require('../controllers/communications');
 
 const router = Router();
@@ -30,6 +32,14 @@ router
     GeneralGETSearchRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
     getSearchUserMessages
+  );
+
+router
+  .route('/ping/all')
+  .get(
+    getNumberUnreadMessagesRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
+    getUnreadNumberMessages
   );
 
 router

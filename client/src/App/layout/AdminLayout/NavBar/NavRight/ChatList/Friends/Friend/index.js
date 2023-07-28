@@ -3,6 +3,7 @@ import React from 'react';
 import Aux from '../../../../../../../../hoc/_Aux';
 import { Link } from 'react-router-dom';
 import { convertDate_ux_friendly } from '../../../../../../../../Demo/Utils/contants';
+import { RxDotFilled } from 'react-icons/rx';
 
 const friend = (props) => {
   let timeClass = ['d-block'];
@@ -38,6 +39,9 @@ const friend = (props) => {
         >
           <div className="media-body">
             <h6 className="chat-header">
+              {props.data.latestCommunication?.user_id !== props.activeId && (
+                <RxDotFilled size={18} title='Not Reply Yet' className="me-2" />
+              )}
               {props.data.firstname} {props.data.lastname}{' '}
               {props.data.firstname_chinese ? props.data.firstname_chinese : ''}{' '}
               {props.data.lastname ? props.data.lastname_chinese : ''}

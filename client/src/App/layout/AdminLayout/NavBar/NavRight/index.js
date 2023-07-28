@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { Col, Row, Dropdown, Button } from 'react-bootstrap';
+import { Col, Row, Dropdown } from 'react-bootstrap';
 import { Avatar } from '@mui/material';
 
 import { stringAvatar } from '../../../../../Demo/Utils/contants';
@@ -12,12 +12,32 @@ import {
   is_TaiGer_AdminAgent,
   is_TaiGer_Student
 } from '../../../../../Demo/Utils/checking-functions';
+import { getMyCommunicationUnreadNumber } from '../../../../../api';
 
 class NavRight extends Component {
   state = {
     listOpen: false,
-    dropdownShow: false
+    dropdownShow: false,
+    unreadCount: 0
   };
+
+  componentDidMount() {
+    // Start the periodic polling after the component is mounted
+    if (is_TaiGer_AdminAgent(this.props.userdata)) {
+      getMyCommunicationUnreadNumber()
+        .then((resp) => {
+          // Assuming the backend returns JSON data, update the state with the received data
+          const { success, data } = resp;
+          console.log(data);
+          this.setState({ unreadCount: data.data });
+        })
+        .catch((error) => {
+          // Handle errors, if any
+          console.error('Error fetching data:', error);
+          clearInterval(this.pollingInterval);
+        });
+    }
+  }
 
   handleOnClick(e) {
     this.props.handleOnClickLogout(e);
@@ -25,11 +45,11 @@ class NavRight extends Component {
 
   handleOpenChat = (e) => {
     // e.preventDefaults();
-    this.setState({ listOpen: true });
+    this.setState({ listOpen: true, unreadCount: 0 });
   };
   handleCloseChat = (e) => {
     // e.preventDefaults();
-    this.setState({ listOpen: false });
+    this.setState({ listOpen: false, unreadCount: 0 });
   };
 
   handleClick = (path) => {
@@ -57,13 +77,18 @@ class NavRight extends Component {
                   className="dropdown-item"
                   onClick={() => this.setState({ dropdownShow: false })}
                 >
-                  <AiOutlineMail size={24} />
+                  <AiOutlineMail size={28} />
                 </Link>
               </li>
             )}
             {is_TaiGer_AdminAgent(this.props.userdata) && (
               <li className="mail-icon" onClick={this.handleOpenChat}>
-                <AiOutlineMail size={24} />
+                <AiOutlineMail size={28} />
+                {this.state.unreadCount > 0 && (
+                  <span className="mail-icon-container badge">
+                    {this.state.unreadCount}
+                  </span>
+                )}
               </li>
             )}
             <li className="py-0">

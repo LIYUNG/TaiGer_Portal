@@ -308,8 +308,8 @@ export default function CourseAnalysis(props) {
                   <p>
                     The course analysis provided is for{' '}
                     <b>reference purposes only</b>. Please carefully review the
-                    courses missing in each category and cross-reference
-                    whether your university offers those courses in the upcoming
+                    courses missing in each category and cross-reference whether
+                    your university offers those courses in the upcoming
                     semesters. Once you have identified them, discuss with your
                     Agent.
                   </p>
@@ -338,6 +338,9 @@ export default function CourseAnalysis(props) {
                     column of each Program Tab table for the <b>建議修課</b> for
                     each category.
                   </p>
+                  <Link to="/docs/search/64c3817811e606a89a10ea47">
+                    <Button variant='secondary'>點我詳細解說</Button>
+                  </Link>
                 </Col>
               </Row>
               <br />

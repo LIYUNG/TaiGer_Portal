@@ -3,23 +3,38 @@ import { Link } from 'react-router-dom';
 import {
   AiFillCloseCircle,
   AiFillQuestionCircle,
+  AiOutlineComment,
   AiOutlineFieldTime
 } from 'react-icons/ai';
 import { IoCheckmarkCircle } from 'react-icons/io5';
-
+import { Modal } from 'react-bootstrap';
 import DEMO from '../../../store/constant';
 import { convertDate, profile_list } from '../../Utils/contants';
-import { BsDash } from 'react-icons/bs';
+// import { BsDash } from 'react-icons/bs';
+import { Button } from 'react-bootstrap';
 
 class StudentMyself extends React.Component {
   state = {
-    student: this.props.student
+    student: this.props.student,
+    CommentModel: false,
+    comments: ''
   };
 
+  openCommentWindow = (comments) => {
+    this.setState((state) => ({
+      ...state,
+      CommentModel: true,
+      comments
+    }));
+  };
+  closeCommentWindow = () => {
+    this.setState((state) => ({ ...state, CommentModel: false }));
+  };
   render() {
     let studentDocOverview;
     let documentlist2_keys = Object.keys(profile_list);
     let object_init = {};
+    let object_comments_init = {};
     let object_time_init = {};
     for (let i = 0; i < documentlist2_keys.length; i++) {
       object_init[documentlist2_keys[i]] = 'missing';
@@ -34,6 +49,8 @@ class StudentMyself extends React.Component {
           object_init[this.state.student.profile[i].name] = 'accepted';
         } else if (this.state.student.profile[i].status === 'rejected') {
           object_init[this.state.student.profile[i].name] = 'rejected';
+          object_comments_init[this.state.student.profile[i].name] =
+            this.state.student.profile[i].feedback;
         } else if (this.state.student.profile[i].status === 'missing') {
           object_init[this.state.student.profile[i].name] = 'missing';
         } else if (this.state.student.profile[i].status === 'notneeded') {
@@ -106,8 +123,33 @@ class StudentMyself extends React.Component {
                 style={{ textDecoration: 'none' }}
                 className="text-info"
               >
-                {key_doc_name}
+                {key_doc_name}{' '}
+                {/* <td>
+                  <Button
+                    size="sm"
+                    type="submit"
+                    variant="light"
+                    disabled={!this.state.isLoaded}
+                    title="Show Comments"
+                    onClick={(e) =>
+                      this.openCommentWindow(
+                        this.state.student_id,
+                        this.props.k
+                      )
+                    }
+                  >
+                    <AiOutlineComment size={12} />
+                  </Button>
+                </td> */}
               </Link>
+              <AiOutlineComment
+                size={24}
+                title="Show Comments"
+                style={{ cursor: 'pointer' }}
+                onClick={(e) =>
+                  this.openCommentWindow(object_comments_init[key_doc_name])
+                }
+              />
             </td>
             <td>{convertDate(object_time_init[key_doc_name])}</td>
           </tr>
@@ -147,7 +189,33 @@ class StudentMyself extends React.Component {
         );
       }
     });
-    return <>{studentDocOverview}</>;
+    return (
+      <>
+        {studentDocOverview}
+        <Modal
+          show={this.state.CommentModel}
+          onHide={this.closeCommentWindow}
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+        >
+          <Modal.Header>
+            <Modal.Title id="contained-modal-title-vcenter">
+              Comments
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <h5>Agent Feedback:</h5>
+            <p>
+              <b>{this.state.comments}</b>
+            </p>
+            <p>Please delete the old file before upload the new file.</p>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button onClick={this.closeCommentWindow}>Ok</Button>
+          </Modal.Footer>
+        </Modal>
+      </>
+    );
   }
 }
 

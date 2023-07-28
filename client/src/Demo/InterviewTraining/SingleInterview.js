@@ -39,7 +39,6 @@ class SingleInterview extends React.Component {
           } else {
             initialEditorState = { time: new Date(), blocks: [] };
           }
-          console.log(initialEditorState);
           this.setState({
             isLoaded: true,
             interview: data,

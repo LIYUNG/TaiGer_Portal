@@ -27,8 +27,7 @@ class NavRight extends Component {
       getMyCommunicationUnreadNumber()
         .then((resp) => {
           // Assuming the backend returns JSON data, update the state with the received data
-          const { success, data } = resp;
-          console.log(data);
+          const { data } = resp;
           this.setState({ unreadCount: data.data });
         })
         .catch((error) => {

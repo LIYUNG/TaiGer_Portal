@@ -57,7 +57,6 @@ class MessageList extends Component {
         const { success, data } = resp.data;
         const { status } = resp;
         if (success) {
-          console.log(data);
           this.setState({
             success,
             editorState,

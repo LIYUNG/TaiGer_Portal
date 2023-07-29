@@ -202,6 +202,39 @@ const is_deadline_within30days_needed = (student) => {
   return false;
 };
 
+const needUpdateCourseSelection = (student) => {
+  // not necessary if have studied or not yet begin
+  if (
+    student.academic_background?.university?.isGraduated === 'Yes' ||
+    student.academic_background?.university?.isGraduated === 'No'
+  ) {
+    return false;
+  }
+  // necessary if never updated course and is studying
+  if (student.courses?.length === 0) {
+    return true;
+  }
+  // necessary if never analyzed and is studying
+  if (!student.courses[0].analysis?.updatedAt) {
+    return true;
+  }
+  // necessary if courses or analysis expired 39 daays and is studying
+  const course_aged_days = parseInt(
+    getNumberOfDays(student.courses[0].updatedAt, new Date()),
+    10
+  );
+  const analyse_aged_days = parseInt(
+    getNumberOfDays(student.courses[0].analysis?.updatedAt, new Date()),
+    10
+  );
+  const trigger_days = 1;
+  if (course_aged_days > trigger_days || analyse_aged_days > trigger_days) {
+    return true;
+  }
+
+  return true;
+};
+
 const does_editor_have_pending_tasks = (students, editor) => {
   for (let i = 0; i < students.length; i += 1) {
     // check CV tasks
@@ -1421,6 +1454,7 @@ module.exports = {
   General_Docs,
   base_documents_summary,
   is_deadline_within30days_needed,
+  needUpdateCourseSelection,
   does_editor_have_pending_tasks,
   is_cv_ml_rl_task_response_needed,
   is_cv_ml_rl_reminder_needed,
@@ -1457,6 +1491,7 @@ module.exports = {
   BASE_DOCUMENT_URL,
   STUDENT_COMMUNICATION_THREAD_URL,
   BASE_DOCUMENT_FOR_AGENT_URL,
+  SURVEY_URL_FOR_AGENT_URL,
   TEMPLATE_DOWNLOAD_URL,
   STUDENT_APPLICATION_URL,
   STUDENT_SURVEY_URL,

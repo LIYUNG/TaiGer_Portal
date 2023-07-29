@@ -11,29 +11,14 @@ const {
   unsubmitted_applications_summary,
   unsubmitted_applications_escalation_summary,
   unsubmitted_applications_escalation_agent_summary,
-  ACCOUNT_ACTIVATION_URL,
-  RESEND_ACTIVATION_URL,
-  PASSWORD_RESET_URL,
-  FORGOT_PASSWORD_URL,
-  CVMLRL_CENTER_URL,
-  CVMLRL_FOR_EDITOR_URL,
-  UNI_ASSIST_FOR_STUDENT_URL,
-  UNI_ASSIST_FOR_AGENT_URL,
-  THREAD_URL,
-  BASE_DOCUMENT_URL,
-  BASE_DOCUMENT_FOR_AGENT_URL,
-  TEMPLATE_DOWNLOAD_URL,
-  STUDENT_APPLICATION_URL,
+
   STUDENT_SURVEY_URL,
-  SETTINGS_URL,
-  STUDENT_BACKGROUND_FOR_AGENT_URL,
   TAIGER_SIGNATURE,
-  SPLIT_LINE,
-  ENGLISH_BELOW,
-  CONTACT_AGENT,
   cvmlrl_deadline_within30days_escalation_summary,
   is_deadline_within30days_needed,
-  is_cv_ml_rl_reminder_needed
+  is_cv_ml_rl_reminder_needed,
+  STUDENT_COURSE_URL,
+  SURVEY_URL_FOR_AGENT_URL
 } = require('../constants');
 
 const {
@@ -253,6 +238,48 @@ ${unsubmitted_applications}
   return sendEmail(recipient, subject, message);
 };
 
+const StudentCourseSelectionReminderEmail = async (recipient, payload) => {
+  const subject = `[Courses Update] ${recipient.firstname} ${recipient.lastname}: 請更新您的課程，並為下學期選課做準備 | Please update courses and prepare the courses for the next semester!`;
+  const message = `\
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+
+<p>為了確保您的課程符合度能符合之後申請學校的課程要求，TaiGer 提醒您前往 <a href="${STUDENT_COURSE_URL(
+    payload.student._id.toString()
+  )}">TaiGer Portal My Course</a> 更新您截至目前為止的課程，您的 Agent 會再次為您下學期的選課做準備。</p>
+
+<p>為了您和 Agent 的溝通順暢，盡速更新課程，您的 Agent 會在您更新課程後，為您盡快分析課程。</p>
+
+<p>若您已經大學畢業，或是尚未就讀大學，請更新 <a href="${STUDENT_SURVEY_URL}">My Survey</a> 中 <b>Already Bachelor graduated ?</b> 為<b>Yes 已畢業</b> 或是<b>No 未開始就讀</b> ，您將不會在收到此 Email</p>
+
+<p>${TAIGER_SIGNATURE}</p>
+
+`;
+
+  return sendEmail(recipient, subject, message);
+};
+
+const AgentCourseSelectionReminderEmail = async (recipient, payload) => {
+  const subject = `[Courses Update] ${payload.student.firstname} ${payload.student.lastname}: 課程過時。請提醒學生，並為下學期選課做準備 | Please remind the student for courses selection next semester!`;
+  const message = `\
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+
+<p>為了確保學生課程符合度能符合之後申請學校的課程要求，TaiGer 提醒您前往 <a href="${STUDENT_COURSE_URL(
+    payload.student._id.toString()
+  )}">${payload.student.firstname} ${
+    payload.student.lastname
+  } Course</a> 檢查是否已更新課程分析。</p>
+
+<p>若學生已經大學畢業，或是尚未就讀大學，請更新 <a href="${SURVEY_URL_FOR_AGENT_URL(
+    payload.student._id.toString()
+  )}">My Survey</a> 中 <b>Already Bachelor graduated ?</b> 為<b>Yes 已畢業</b> 或是<b>No 未開始就讀</b> ，您將不會在收到此 Email</p>
+
+<p>${TAIGER_SIGNATURE}</p>
+
+`;
+
+  return sendEmail(recipient, subject, message);
+};
+
 const StudentCVMLRLEssay_NoReplyAfter3Days_DailyReminderEmail = async (
   recipient,
   payload
@@ -413,6 +440,8 @@ module.exports = {
   AgentTasksReminderEmail,
   EditorTasksReminderEmail,
   StudentApplicationsDeadline_Within30Days_DailyReminderEmail,
+  StudentCourseSelectionReminderEmail,
+  AgentCourseSelectionReminderEmail,
   StudentCVMLRLEssay_NoReplyAfter3Days_DailyReminderEmail,
   EditorCVMLRLEssay_NoReplyAfter7Days_DailyReminderEmail,
   AgentCVMLRLEssay_NoReplyAfterXDays_DailyReminderEmail,

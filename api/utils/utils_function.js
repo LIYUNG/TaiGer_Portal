@@ -17,16 +17,17 @@ const {
   EditorCVMLRLEssay_NoReplyAfter7Days_DailyReminderEmail,
   AgentCVMLRLEssay_NoReplyAfterXDays_DailyReminderEmail,
   AgentApplicationsDeadline_Within30Days_DailyReminderEmail,
-  EditorCVMLRLEssayDeadline_Within30Days_DailyReminderEmail
+  EditorCVMLRLEssayDeadline_Within30Days_DailyReminderEmail,
+  StudentCourseSelectionReminderEmail,
+  AgentCourseSelectionReminderEmail
 } = require('../services/regular_system_emails');
 const logger = require('../services/logger');
 const {
-  getNumberOfDays,
   does_editor_have_pending_tasks,
   is_deadline_within30days_needed,
   is_cv_ml_rl_reminder_needed,
-  application_deadline_calculator,
-  isNotArchiv
+  isNotArchiv,
+  needUpdateCourseSelection
 } = require('../constants');
 
 const {
@@ -787,6 +788,146 @@ const UrgentTasksReminderEmails = async () => {
   await UrgentTasksReminderEmails_Agent_core();
 };
 
+const NextSemesterCourseSelectionStudentReminderEmails = async () => {
+  // Only inform active student
+  const studentsWithCourses = await Student.aggregate([
+    {
+      $match: {
+        archiv: { $ne: true } // Filter out students where 'archiv' is not equal to true
+      }
+    },
+    {
+      $lookup: {
+        from: 'courses',
+        localField: '_id',
+        foreignField: 'student_id',
+        as: 'courses'
+      }
+    },
+    {
+      $project: {
+        firstname: 1,
+        lastname: 1,
+        email: 1,
+        role: 1,
+        archiv: 1,
+        academic_background: 1,
+        courses: 1
+      }
+    }
+  ]);
+  // console.log(studentsWithCourses[0]);
+  // console.log(studentsWithCourses[1]);
+  // console.log(studentsWithCourses[2]);
+  for (let j = 0; j < studentsWithCourses.length; j += 1) {
+    if (isNotArchiv(studentsWithCourses[j])) {
+      if (needUpdateCourseSelection(studentsWithCourses[j])) {
+        // Inform student
+        await StudentCourseSelectionReminderEmail(
+          {
+            firstname: studentsWithCourses[j].firstname,
+            lastname: studentsWithCourses[j].lastname,
+            address: studentsWithCourses[j].email
+          },
+          { student: studentsWithCourses[j] }
+        );
+      }
+    }
+  }
+};
+
+const NextSemesterCourseSelectionAgentReminderEmails = async () => {
+  // Only inform active student
+  const studentsWithCourses = await Student.aggregate([
+    {
+      $match: {
+        archiv: { $ne: true } // Filter out students where 'archiv' is not equal to true
+      }
+    },
+    {
+      $lookup: {
+        from: 'courses',
+        localField: '_id',
+        foreignField: 'student_id',
+        as: 'courses'
+      }
+    },
+    {
+      $lookup: {
+        from: 'users', // Replace 'users' with the actual name of the User collection
+        localField: 'agents',
+        foreignField: '_id',
+        as: 'agentsInfo'
+      }
+    },
+    {
+      $project: {
+        firstname: 1,
+        lastname: 1,
+        email: 1,
+        role: 1,
+        archiv: 1,
+        agents: {
+          $map: {
+            input: '$agents',
+            as: 'agentId',
+            in: {
+              $let: {
+                vars: {
+                  agentInfo: {
+                    $arrayElemAt: [
+                      {
+                        $filter: {
+                          input: '$agentsInfo',
+                          cond: { $eq: ['$$this._id', '$$agentId'] }
+                        }
+                      },
+                      0
+                    ]
+                  }
+                },
+                in: {
+                  firstname: '$$agentInfo.firstname',
+                  lastname: '$$agentInfo.lastname',
+                  archiv: '$$agentInfo.archiv',
+                  email: '$$agentInfo.email'
+                }
+              }
+            }
+          }
+        },
+        academic_background: 1,
+        courses: 1
+      }
+    }
+  ]);
+  for (let j = 0; j < studentsWithCourses.length; j += 1) {
+    if (isNotArchiv(studentsWithCourses[j])) {
+      if (needUpdateCourseSelection(studentsWithCourses[j])) {
+        // TODO: move informing Agent to another function so that all students needing update in 1 email for agents.
+        for (let x = 0; x < studentsWithCourses[j].agents.length; x += 1) {
+          if (isNotArchiv(studentsWithCourses[j].agents[x])) {
+            // TODO: inform Agent
+            await AgentCourseSelectionReminderEmail(
+              {
+                firstname: studentsWithCourses[j].agents[x].firstname,
+                lastname: studentsWithCourses[j].agents[x].lastname,
+                address: studentsWithCourses[j].agents[x].email
+              },
+              { student: studentsWithCourses[j] }
+            );
+          }
+        }
+      }
+    }
+  }
+};
+
+const NextSemesterCourseSelectionReminderEmails = async () => {
+  await NextSemesterCourseSelectionStudentReminderEmails();
+  // await NextSemesterCourseSelectionAgentReminderEmails();
+};
+
 const add_portals_registered_status = (student_input) => {
   const student = student_input;
   for (let i = 0; i < student.applications.length; i += 1) {
@@ -839,5 +980,6 @@ module.exports = {
   MongoDBDataBaseDailySnapshot,
   AssignEditorTasksReminderEmails,
   UrgentTasksReminderEmails,
+  NextSemesterCourseSelectionReminderEmails,
   add_portals_registered_status
 };

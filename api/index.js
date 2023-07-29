@@ -16,7 +16,9 @@ const {
   DAILY_TASKS_REMINDER_SCHEDULE,
   AWS_S3_PUBLIC_BUCKET_NAME,
   AWS_S3_BUCKET_NAME,
-  MONGODB_URI
+  MONGODB_URI,
+  COURSE_SELECTION_TASKS_REMINDER_JUNE_SCHEDULE,
+  COURSE_SELECTION_TASKS_REMINDER_DECEMBER_SCHEDULE
 } = require('./config');
 const logger = require('./services/logger');
 // const {
@@ -29,7 +31,8 @@ const {
   TasksReminderEmails,
   UrgentTasksReminderEmails,
   MongoDBDataBaseDailySnapshot,
-  AssignEditorTasksReminderEmails
+  AssignEditorTasksReminderEmails,
+  NextSemesterCourseSelectionReminderEmails
 } = require('./utils/utils_function');
 // const { UserS3GarbageCollector } = require('./controllers/users');
 
@@ -113,12 +116,20 @@ const launch = async () => {
     UrgentTasksReminderEmails
   );
 
-  // TODO:
   // Remind editor lead when input provided, but no editors.
-
   const job6 = schedule.scheduleJob(
     DAILY_TASKS_REMINDER_SCHEDULE,
     AssignEditorTasksReminderEmails
+  );
+
+  // Remind Student to select next semester courses.
+  const job7 = schedule.scheduleJob(
+    COURSE_SELECTION_TASKS_REMINDER_JUNE_SCHEDULE,
+    NextSemesterCourseSelectionReminderEmails
+  );
+  const job8 = schedule.scheduleJob(
+    COURSE_SELECTION_TASKS_REMINDER_DECEMBER_SCHEDULE,
+    NextSemesterCourseSelectionReminderEmails
   );
 
   logger.info(`isProd : ${isProd()}`);

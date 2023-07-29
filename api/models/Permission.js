@@ -12,6 +12,10 @@ const permissionSchema = new mongoose.Schema(
       type: Boolean,
       default: false
     },
+    canAccessAllChat: {
+      type: Boolean,
+      default: false
+    },
     canAssignAgents: {
       type: Boolean,
       default: false

@@ -176,6 +176,7 @@ class TaiGerOrg extends React.Component {
               <thead>
                 <tr>
                   <th>Name</th>
+                  <th>Can Access AllChat</th>
                   <th>Can Assign Agents</th>
                   <th>Can Assign Editors</th>
                   <th>Can Modify Docs</th>
@@ -192,6 +193,13 @@ class TaiGerOrg extends React.Component {
                           {agent.firstname} {agent.lastname}{' '}
                         </Link>
                       </b>
+                    </td>
+                    <td>
+                      {agent.permissions.length > 0
+                        ? agent.permissions[0].canAccessAllChat
+                          ? 'O'
+                          : 'X'
+                        : 'x'}
                     </td>
                     <td>
                       {agent.permissions.length > 0

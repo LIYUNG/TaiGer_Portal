@@ -10,7 +10,7 @@ class UnauthorizedError extends React.Component {
       <Aux>
         <Row>
           <Col>
-            <Card>請跟您的TaiGer顧問聯繫</Card>
+            <Card>Permission Denied. 請跟您的TaiGer顧問聯繫</Card>
           </Col>
         </Row>
       </Aux>

@@ -22,6 +22,9 @@ const {
   getSearchUserMessages,
   getUnreadNumberMessages
 } = require('../controllers/communications');
+const {
+  chatMultitenantFilter
+} = require('../middlewares/chatMultitenantFilter');
 
 const router = Router();
 
@@ -57,6 +60,7 @@ router
     postMessagesImageRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     multitenant_filter,
+    chatMultitenantFilter,
     updateAMessageInThread
   )
   .delete(
@@ -64,6 +68,7 @@ router
     postMessagesImageRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     multitenant_filter,
+    chatMultitenantFilter,
     deleteAMessageInCommunicationThread
   );
 
@@ -74,12 +79,14 @@ router
     postMessagesRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     multitenant_filter,
+    chatMultitenantFilter,
     postMessages
   )
   .get(
     getMessagesRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     multitenant_filter,
+    chatMultitenantFilter,
     getMessages
   );
 router
@@ -88,6 +95,7 @@ router
     getMessagesRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     multitenant_filter,
+    chatMultitenantFilter,
     loadMessages
   );
 

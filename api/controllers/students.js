@@ -21,7 +21,8 @@ const {
   informStudentTheirAgentEmail,
   informEditorNewStudentEmail,
   informStudentTheirEditorEmail,
-  createApplicationToStudentEmail
+  createApplicationToStudentEmail,
+  informAgentStudentAssignedEmail
 } = require('../services/email');
 
 const { RLs_CONSTANT, isNotArchiv } = require('../constants');
@@ -614,6 +615,27 @@ const assignEditorToStudent = asyncHandler(async (req, res, next) => {
       }
     }
   }
+  // TODO: inform Agent for assigning editor.
+  for (let i = 0; i < student_upated.agents.length; i += 1) {
+    if (isNotArchiv(student)) {
+      if (isNotArchiv(student_upated.agents[i])) {
+        await informAgentStudentAssignedEmail(
+          {
+            firstname: student_upated.agents[i].firstname,
+            lastname: student_upated.agents[i].lastname,
+            address: student_upated.agents[i].email
+          },
+          {
+            std_firstname: student.firstname,
+            std_lastname: student.lastname,
+            std_id: student._id.toString(),
+            editors: student_upated.editors
+          }
+        );
+      }
+    }
+  }
+
   if (updated_editor.length !== 0) {
     if (isNotArchiv(student)) {
       await informStudentTheirEditorEmail(

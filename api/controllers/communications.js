@@ -12,6 +12,7 @@ const {
 } = require('../services/email');
 const logger = require('../services/logger');
 const { isNotArchiv } = require('../constants');
+const Permission = require('../models/Permission');
 
 const pageSize = 5;
 
@@ -46,7 +47,12 @@ const getSearchUserMessages = asyncHandler(async (req, res) => {
       }
     }
   ]);
-  if (user.role === 'Admin') {
+
+  const permissions = await Permission.findOne({ user_id: user._id });
+  if (
+    user.role === 'Admin' ||
+    (user.role === 'Agent' && permissions?.canAccessAllChat)
+  ) {
     const students = await Student.find(
       {
         $text: { $search: req.query.q }
@@ -182,8 +188,11 @@ const getUnreadNumberMessages = asyncHandler(async (req, res) => {
     logger.error('getMyMessages: not TaiGer user!');
     throw new ErrorResponse(401, 'Invalid TaiGer user');
   }
-
-  if (user.role === 'Admin') {
+  const permissions = await Permission.findOne({ user_id: user._id });
+  if (
+    user.role === 'Admin' ||
+    (user.role === 'Agent' && permissions?.canAccessAllChat)
+  ) {
     const students = await Student.find({
       $or: [{ archiv: { $exists: false } }, { archiv: false }]
     })
@@ -279,7 +288,12 @@ const getMyMessages = asyncHandler(async (req, res) => {
     throw new ErrorResponse(401, 'Invalid TaiGer user');
   }
 
-  if (user.role === 'Admin') {
+  const permissions = await Permission.findOne({ user_id: user._id });
+
+  if (
+    user.role === 'Admin' ||
+    (user.role === 'Agent' && permissions?.canAccessAllChat)
+  ) {
     const students = await Student.find({
       $or: [{ archiv: { $exists: false } }, { archiv: false }]
     })

@@ -791,6 +791,32 @@ const informStudentTheirAgentEmail = async (recipient, msg) => {
   return sendEmail(recipient, subject, message);
 };
 
+const informAgentStudentAssignedEmail = async (recipient, msg) => {
+  const subject = `Editor assigned for ${msg.std_firstname} ${msg.std_lastname}`;
+  let editors = '';
+  for (let i = 0; i < msg.editors.length; i += 1) {
+    editors += `<li><b>${msg.editors[i].firstname} - ${msg.editors[i].lastname}</b> Email: ${msg.editors[i].email}</li>`;
+  }
+  const message = `\
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+
+<p>The following editors are assigned to student ${msg.std_firstname} ${
+    msg.std_lastname
+  }!</p>
+
+<p>${editors}</p>
+
+<p>Please go to <a href="${CVMLRL_FOR_EDITOR_URL(
+    msg.std_id
+  )}">TaiGer Portal</a> , and check if the CV task is created and say hello to your student!</p>
+
+<p>${TAIGER_SIGNATURE}</p>
+
+`;
+
+  return sendEmail(recipient, subject, message);
+};
+
 const informEditorNewStudentEmail = async (recipient, msg) => {
   const subject = `New student ${msg.std_firstname} ${msg.std_lastname} assigned to you`;
   const message = `\
@@ -798,9 +824,9 @@ const informEditorNewStudentEmail = async (recipient, msg) => {
 
 <p>${msg.std_firstname} ${msg.std_lastname} will be your student!</p>
 
-<p>Please go to ${CVMLRL_FOR_EDITOR_URL(
-    msg.std_id
-  )} , and check if the CV task is created and say hello to your student!</p>
+<p>Please go to
+<a href="${CVMLRL_FOR_EDITOR_URL(msg.std_id)}">TaiGer Portal</a>
+ , and check if the CV task is created and say hello to your student!</p>
 
 <p>${TAIGER_SIGNATURE}</p>
 
@@ -2003,6 +2029,7 @@ module.exports = {
   sendSetAsFinalProgramSpecificFileForAgentEmail,
   assignDocumentTaskToEditorEmail,
   assignDocumentTaskToStudentEmail,
+  informAgentStudentAssignedEmail,
   informEditorNewStudentEmail,
   informEditorArchivedStudentEmail,
   informStudentArchivedStudentEmail,

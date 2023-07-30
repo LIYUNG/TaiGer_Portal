@@ -596,7 +596,6 @@ class SingleStudentPage extends React.Component {
                       <Button
                         size="sm"
                         className="ms-2 "
-                        onClick={this.onChangeView}
                       >
                         <BsMessenger color="white" size={16} />{' '}
                         <b>Message</b>

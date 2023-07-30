@@ -16,6 +16,7 @@ import Banner from '../../components/Banner/Banner';
 import { TabTitle } from '../Utils/TabTitle';
 import { Link, Redirect } from 'react-router-dom';
 import DEMO from '../../store/constant';
+import { BsMessenger } from 'react-icons/bs';
 
 export default function PortalCredentialPage(props) {
   let [statedata, setStatedata] = useState({
@@ -264,6 +265,14 @@ export default function PortalCredentialPage(props) {
                       {statedata.student.firstname} {statedata.student.lastname}{' '}
                     </Link>
                     Portal Credentials
+                    <Link
+                      to={`/communications/${statedata.student._id.toString()}`}
+                      className="ms-3 my-0"
+                    >
+                      <Button size="sm" className="my-0">
+                        <BsMessenger color="white" size={16} /> <b>Message</b>
+                      </Button>
+                    </Link>
                   </Col>
                 </Row>
               </Card.Title>
@@ -282,7 +291,7 @@ export default function PortalCredentialPage(props) {
                     申請該校的申請平台帳號密碼，並在此頁面提供帳號密碼，方便日後Agent為您登入檢查上傳文件正確性。若有
                     [<b>Instructions</b>]{' '}
                     連結，請點入連結，依照裡面教學完成。填完帳號密碼，請務必點擊{' '}
-                    <Button size='sm'>Update</Button>儲存。
+                    <Button size="sm">Update</Button>儲存。
                   </p>
                   <p>
                     Please share your universities' application portals

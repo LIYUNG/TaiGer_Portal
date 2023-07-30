@@ -21,6 +21,7 @@ import {
 } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
+import { BsMessenger } from 'react-icons/bs';
 
 export default function MyCourses(props) {
   let [statedata, setStatedata] = useState({
@@ -396,6 +397,15 @@ export default function MyCourses(props) {
                       {statedata.student.firstname} {statedata.student.lastname}{' '}
                     </Link>
                     Courses
+                    <Link
+                      to={`/communications/${statedata.student._id.toString()}`}
+                      style={{ textDecoration: 'none' }}
+                      className="mx-1"
+                    >
+                      <Button size="sm" className="ms-2 ">
+                        <BsMessenger color="white" size={16} /> <b>Message</b>
+                      </Button>
+                    </Link>
                   </Col>
                 </Row>
               </Card.Title>

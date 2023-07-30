@@ -99,7 +99,21 @@ const getStatistics = asyncHandler(async (req, res) => {
     }).count();
     editors_data.push(Obj);
   }
-
+  const finished_docs = await Documentthread.find({
+    isFinalVersion: true,
+    $or: [
+      { file_type: 'CV' },
+      { file_type: 'ML' },
+      { file_type: 'RL_A' },
+      { file_type: 'RL_B' },
+      { file_type: 'RL_C' },
+      { file_type: 'Recommendation_Letter_A' },
+      { file_type: 'Recommendation_Letter_B' },
+      { file_type: 'Recommendation_Letter_C' }
+    ]
+  })
+    .populate('student_id', 'firstname lastname')
+    .select('file_type messages.createdAt');
   const users = await User.find({
     role: { $in: ['Admin', 'Agent', 'Editor'] }
   }).lean();
@@ -112,6 +126,7 @@ const getStatistics = asyncHandler(async (req, res) => {
       isClose: students.filter((student) => student.archiv === true).length,
       isOpen: students.filter((student) => student.archiv !== true).length
     },
+    finished_docs,
     agents: agents_data,
     editors: editors_data,
     students_details: students,

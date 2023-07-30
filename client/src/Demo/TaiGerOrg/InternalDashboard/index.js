@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Spinner, Row, Col } from 'react-bootstrap';
+import { Card, Spinner, Row, Col, Tabs, Tab } from 'react-bootstrap';
 import { Redirect, Link } from 'react-router-dom';
 import {
   BarChart,
@@ -9,7 +9,11 @@ import {
   YAxis,
   Bar,
   Cell,
-  ResponsiveContainer
+  ResponsiveContainer,
+  LineChart,
+  Legend,
+  Line,
+  Label
 } from 'recharts';
 
 import Aux from '../../../hoc/_Aux';
@@ -39,6 +43,7 @@ class InternalDashboard extends React.Component {
     students: null,
     documents: null,
     students_details: null,
+    finished_docs: null,
     agents: null,
     editors: null,
     res_status: 0
@@ -53,6 +58,7 @@ class InternalDashboard extends React.Component {
           students,
           agents,
           editors,
+          finished_docs,
           documents,
           students_details
         } = resp.data;
@@ -65,6 +71,7 @@ class InternalDashboard extends React.Component {
             documents: documents,
             agents: agents,
             editors: editors,
+            finished_docs,
             students_details,
             success: success,
             res_status: status
@@ -96,6 +103,7 @@ class InternalDashboard extends React.Component {
       res_status,
       isLoaded,
       students,
+      finished_docs,
       documents,
       agents,
       editors,
@@ -205,7 +213,7 @@ class InternalDashboard extends React.Component {
     const students_years_pair = [];
     let students_years = Object.keys(students_years_arr).sort();
     students_years = students_years.slice(
-      Math.max(students_years.length - 5, 1) // 3 >> the last x year students 
+      Math.max(students_years.length - 5, 1) // 3 >> the last x year students
     );
     students_years.forEach((date, i) => {
       students_years_pair.push({
@@ -251,6 +259,86 @@ class InternalDashboard extends React.Component {
         color: colors[i]
       });
     });
+    const calculateDuration = (start, end) => {
+      const startTime = new Date(start).getTime();
+      const endTime = new Date(end).getTime();
+      const duration = (endTime - startTime) / (1000 * 60 * 60 * 24); // Duration in days
+      return duration;
+    };
+    const refactor_finished_cv_docs = finished_docs
+      .filter(
+        (doc) =>
+          doc.messages.length !== 0 &&
+          doc.messages.length > 2 &&
+          doc.file_type === 'CV'
+      )
+      .map((finished_doc, u) => {
+        const start_date = finished_doc.messages[0].createdAt;
+        const end_date =
+          finished_doc.messages[finished_doc.messages.length - 1].createdAt;
+        return {
+          name: `${finished_doc.student_id?.firstname}-${finished_doc.student_id?.lastname}`,
+          start: start_date,
+          end: end_date
+        };
+      });
+    const CVdataWithDuration = refactor_finished_cv_docs.map((item, index) => ({
+      ...item,
+      name: `${item.name}`, // Create a name for the item, e.g., Item 0, Item 1, etc.
+      duration: calculateDuration(item.start, item.end)
+    }));
+
+    const refactor_finished_ml_docs = finished_docs
+      .filter(
+        (doc) =>
+          doc.messages.length !== 0 &&
+          doc.messages.length > 2 &&
+          doc.file_type === 'ML'
+      )
+      .map((finished_doc, u) => {
+        const start_date = finished_doc.messages[0].createdAt;
+        const end_date =
+          finished_doc.messages[finished_doc.messages.length - 1].createdAt;
+        return {
+          name: `${finished_doc.student_id?.firstname}-${finished_doc.student_id?.lastname}`,
+          start: start_date,
+          end: end_date
+        };
+      });
+    const MLdataWithDuration = refactor_finished_ml_docs.map((item, index) => ({
+      ...item,
+      name: `${item.name}`, // Create a name for the item, e.g., Item 0, Item 1, etc.
+      duration: calculateDuration(item.start, item.end)
+    }));
+
+    const refactor_finished_rl_docs = finished_docs
+      .filter(
+        (doc) =>
+          doc.messages.length !== 0 &&
+          doc.messages.length > 2 &&
+          (doc.file_type === 'RL_A' ||
+            doc.file_type === 'RL_B' ||
+            doc.file_type === 'RL_C' ||
+            doc.file_type === 'Recommendation_Letter_A' ||
+            doc.file_type === 'Recommendation_Letter_B' ||
+            doc.file_type === 'Recommendation_Letter_C')
+      )
+      .map((finished_doc, u) => {
+        const start_date = finished_doc.messages[0].createdAt;
+        const end_date =
+          finished_doc.messages[finished_doc.messages.length - 1].createdAt;
+        return {
+          name: `${finished_doc.student_id?.firstname}-${finished_doc.student_id?.lastname}`,
+          start: start_date,
+          end: end_date
+        };
+      });
+    const RLdataWithDuration = refactor_finished_rl_docs.map((item, index) => ({
+      ...item,
+      name: `${item.name}`, // Create a name for the item, e.g., Item 0, Item 1, etc.
+      duration: calculateDuration(item.start, item.end)
+    }));
+    console.log(finished_docs);
     return (
       <Aux>
         <Row className="sticky-top ">
@@ -266,261 +354,275 @@ class InternalDashboard extends React.Component {
             </Card>
           </Col>
         </Row>
-        <Row>
-          <Col md={12}>
-            <Card>
-              <Card.Header text={'dark'}>
-                <Card.Title>
-                  <Row>
-                    <Col className="my-0 mx-0">Open Tasks Distribution</Col>
-                  </Row>
-                </Card.Title>
-              </Card.Header>
-              <Card.Body>
-                Tasks distribute among the date. Note that CVs, MLs, RLs, and
-                Essay are mixed together.
-                <p className="my-0">
-                  <b style={{ color: 'red' }}>active:</b> students decide
-                  programs. These will be shown in{' '}
-                  <Link to={'/dashboard/cv-ml-rl'}>Tasks Dashboard</Link>
-                </p>
-                <p className="my-0">
-                  <b style={{ color: '#A9A9A9' }}>potentials:</b> students do
-                  not decide programs yet. But the tasks will be potentially
-                  active when they decided.
-                </p>
-                <TasksDistributionBarChart data={sorted_date_freq_pair} />
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
-        <Row>
-          <Col md={4}>
-            <Card>
-              <Card.Header text={'dark'}>
-                <Card.Title>
-                  <Row>
-                    <Col className="my-0 mx-0">Students</Col>
-                  </Row>
-                </Card.Title>
-              </Card.Header>
-              <Card.Body>
-                {/* Close: {students.isClose}. Open: {students.isOpen} */}
-                <ResponsiveContainer width="100%" height={300}>
-                  <BarChart
-                    data={students_years_pair}
-                    margin={{
-                      top: 20,
-                      right: 0,
-                      left: 0,
-                      bottom: 5
-                    }}
-                  >
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
-                    <YAxis allowDecimals={false} />
-                    {/* <Tooltip /> */}
-                    {/* <Legend /> */}
-                    <Bar
-                      dataKey="uv"
-                      fill="#8884d8"
-                      label={{ position: 'top' }}
-                    >
-                      {students_years_pair.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={colors[index % 20]} />
-                      ))}
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
-              </Card.Body>
-            </Card>
-          </Col>
-          <Col md={4}>
-            <Card>
-              <Card.Header text={'dark'}>
-                <Card.Title>
-                  <Row>
-                    <Col className="my-0 mx-0">Tasks</Col>
-                  </Row>
-                </Card.Title>
-              </Card.Header>
-              <Card.Body>
-                Number of Open Tasks:{' '}
-                <ResponsiveContainer width="100%" height={300}>
-                  <BarChart
-                    data={documents_data}
-                    margin={{
-                      top: 20,
-                      right: 0,
-                      left: 0,
-                      bottom: 5
-                    }}
-                  >
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
-                    <YAxis allowDecimals={false} />
-                    {/* <Tooltip /> */}
-                    {/* <Legend /> */}
-                    <Bar
-                      dataKey="uv"
-                      fill="#8884d8"
-                      label={{ position: 'top' }}
-                    >
-                      {documents_data.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={colors[index % 20]} />
-                      ))}
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
-              </Card.Body>
-            </Card>
-          </Col>
-          <Col md={4}>
-            <Card>
-              <Card.Header text={'dark'}>
-                <Card.Title>
-                  <Row>
-                    <Col className="my-0 mx-0">Agents</Col>
-                  </Row>
-                </Card.Title>
-              </Card.Header>
-              <Card.Body>
-                Number of active students per agent:
-                <ResponsiveContainer width="100%" height={300}>
-                  <BarChart
-                    data={agents_data}
-                    layout={'vertical'}
-                    margin={{
-                      top: 20,
-                      right: 30,
-                      left: 20,
-                      bottom: 5
-                    }}
-                  >
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis type="number" allowDecimals={false} />
-                    <YAxis type="category" dataKey="key" interval={0} />
-                    <Tooltip />
-                    {/* <Legend /> */}
-                    <Bar
-                      dataKey="student_num"
-                      fill={'#8884d8'}
-                      stackId={'a'}
-                      label={{ position: 'right' }}
-                    >
-                      {editor_tasks_distribution_data.map((entry, index) => (
-                        <Cell key={`cell-${index}`} />
-                      ))}
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
-        <Row>
-          <Col md={4}>
-            <Card>
-              <Card.Header text={'dark'}>
-                <Card.Title>
-                  <Row>
-                    <Col className="my-0 mx-0">Editors</Col>
-                  </Row>
-                </Card.Title>
-              </Card.Header>
-              <Card.Body>
-                Number of active students per editor:
-                <ResponsiveContainer width="100%" height={300}>
-                  <BarChart
-                    data={editors_data}
-                    layout={'vertical'}
-                    margin={{
-                      top: 20,
-                      right: 30,
-                      left: 40,
-                      bottom: 5
-                    }}
-                  >
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis type="number" allowDecimals={false} />
-                    <YAxis type="category" dataKey="key" interval={0} />
-                    <Tooltip />
-                    {/* <Legend /> */}
-                    <Bar
-                      dataKey="student_num"
-                      fill={'#8884d8'}
-                      stackId={'a'}
-                      label={{ position: 'right' }}
-                    >
-                      {editor_tasks_distribution_data.map((entry, index) => (
-                        <Cell key={`cell-${index}`} />
-                      ))}
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
-              </Card.Body>
-            </Card>
-          </Col>
-          <Col md={4}>
-            <Card>
-              <Card.Header text={'dark'}>
-                <Card.Title>
-                  <Row>
-                    <Col className="my-0 mx-0">Editors</Col>
-                  </Row>
-                </Card.Title>
-              </Card.Header>
-              <Card.Body>
-                Number of open and potential tasks per editor:
-                <ResponsiveContainer width="100%" height={300}>
-                  <BarChart
-                    data={editor_tasks_distribution_data}
-                    layout={'vertical'}
-                    margin={{
-                      top: 20,
-                      right: 30,
-                      left: 40,
-                      bottom: 5
-                    }}
-                  >
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis type="number" allowDecimals={false} />
-                    <YAxis type="category" dataKey="name" interval={0} />
-                    <Tooltip />
-                    {/* <Legend /> */}
-                    <Bar
-                      dataKey="active"
-                      fill={'#8884d8'}
-                      stackId={'a'}
-                      label={{ position: 'right' }}
-                    >
-                      {editor_tasks_distribution_data.map((entry, index) => (
-                        <Cell key={`cell-${index}`} />
-                      ))}
-                    </Bar>
-                    <Bar
-                      dataKey="potentials"
-                      fill="#A9A9A9"
-                      stackId={'a'}
-                      label={{ position: 'right' }}
-                    />
-                  </BarChart>
-                </ResponsiveContainer>
-              </Card.Body>
-            </Card>
-          </Col>
-          <Col md={4}>
-            <Card>
-              <Card.Header text={'dark'}>
-                <Card.Title>
-                  <Row>
-                    <Col className="my-0 mx-0">Applications</Col>
-                  </Row>
-                </Card.Title>
-              </Card.Header>
-              <Card.Body>
-                Number of Applications:
-                {/* <NVD3Chart
+        <Tabs defaultActiveKey="default" fill={true} justify={true}>
+          <Tab eventKey="default" title="Overview">
+            <Row>
+              <Col md={12}>
+                <Card>
+                  <Card.Header text={'dark'}>
+                    <Card.Title>
+                      <Row>
+                        <Col className="my-0 mx-0">Open Tasks Distribution</Col>
+                      </Row>
+                    </Card.Title>
+                  </Card.Header>
+                  <Card.Body>
+                    Tasks distribute among the date. Note that CVs, MLs, RLs,
+                    and Essay are mixed together.
+                    <p className="my-0">
+                      <b style={{ color: 'red' }}>active:</b> students decide
+                      programs. These will be shown in{' '}
+                      <Link to={'/dashboard/cv-ml-rl'}>Tasks Dashboard</Link>
+                    </p>
+                    <p className="my-0">
+                      <b style={{ color: '#A9A9A9' }}>potentials:</b> students
+                      do not decide programs yet. But the tasks will be
+                      potentially active when they decided.
+                    </p>
+                    <TasksDistributionBarChart data={sorted_date_freq_pair} />
+                  </Card.Body>
+                </Card>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={4}>
+                <Card>
+                  <Card.Header text={'dark'}>
+                    <Card.Title>
+                      <Row>
+                        <Col className="my-0 mx-0">Students</Col>
+                      </Row>
+                    </Card.Title>
+                  </Card.Header>
+                  <Card.Body>
+                    {/* Close: {students.isClose}. Open: {students.isOpen} */}
+                    <ResponsiveContainer width="100%" height={300}>
+                      <BarChart
+                        data={students_years_pair}
+                        margin={{
+                          top: 20,
+                          right: 0,
+                          left: 0,
+                          bottom: 5
+                        }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="name" />
+                        <YAxis allowDecimals={false} />
+                        {/* <Tooltip /> */}
+                        {/* <Legend /> */}
+                        <Bar
+                          dataKey="uv"
+                          fill="#8884d8"
+                          label={{ position: 'top' }}
+                        >
+                          {students_years_pair.map((entry, index) => (
+                            <Cell
+                              key={`cell-${index}`}
+                              fill={colors[index % 20]}
+                            />
+                          ))}
+                        </Bar>
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </Card.Body>
+                </Card>
+              </Col>
+              <Col md={4}>
+                <Card>
+                  <Card.Header text={'dark'}>
+                    <Card.Title>
+                      <Row>
+                        <Col className="my-0 mx-0">Tasks</Col>
+                      </Row>
+                    </Card.Title>
+                  </Card.Header>
+                  <Card.Body>
+                    Number of Open Tasks:{' '}
+                    <ResponsiveContainer width="100%" height={300}>
+                      <BarChart
+                        data={documents_data}
+                        margin={{
+                          top: 20,
+                          right: 0,
+                          left: 0,
+                          bottom: 5
+                        }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="name" />
+                        <YAxis allowDecimals={false} />
+                        {/* <Tooltip /> */}
+                        {/* <Legend /> */}
+                        <Bar
+                          dataKey="uv"
+                          fill="#8884d8"
+                          label={{ position: 'top' }}
+                        >
+                          {documents_data.map((entry, index) => (
+                            <Cell
+                              key={`cell-${index}`}
+                              fill={colors[index % 20]}
+                            />
+                          ))}
+                        </Bar>
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </Card.Body>
+                </Card>
+              </Col>
+              <Col md={4}>
+                <Card>
+                  <Card.Header text={'dark'}>
+                    <Card.Title>
+                      <Row>
+                        <Col className="my-0 mx-0">Agents</Col>
+                      </Row>
+                    </Card.Title>
+                  </Card.Header>
+                  <Card.Body>
+                    Number of active students per agent:
+                    <ResponsiveContainer width="100%" height={300}>
+                      <BarChart
+                        data={agents_data}
+                        layout={'vertical'}
+                        margin={{
+                          top: 20,
+                          right: 30,
+                          left: 20,
+                          bottom: 5
+                        }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis type="number" allowDecimals={false} />
+                        <YAxis type="category" dataKey="key" interval={0} />
+                        <Tooltip />
+                        {/* <Legend /> */}
+                        <Bar
+                          dataKey="student_num"
+                          fill={'#8884d8'}
+                          stackId={'a'}
+                          label={{ position: 'right' }}
+                        >
+                          {editor_tasks_distribution_data.map(
+                            (entry, index) => (
+                              <Cell key={`cell-${index}`} />
+                            )
+                          )}
+                        </Bar>
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </Card.Body>
+                </Card>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={4}>
+                <Card>
+                  <Card.Header text={'dark'}>
+                    <Card.Title>
+                      <Row>
+                        <Col className="my-0 mx-0">Editors</Col>
+                      </Row>
+                    </Card.Title>
+                  </Card.Header>
+                  <Card.Body>
+                    Number of active students per editor:
+                    <ResponsiveContainer width="100%" height={300}>
+                      <BarChart
+                        data={editors_data}
+                        layout={'vertical'}
+                        margin={{
+                          top: 20,
+                          right: 30,
+                          left: 40,
+                          bottom: 5
+                        }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis type="number" allowDecimals={false} />
+                        <YAxis type="category" dataKey="key" interval={0} />
+                        <Tooltip />
+                        {/* <Legend /> */}
+                        <Bar
+                          dataKey="student_num"
+                          fill={'#8884d8'}
+                          stackId={'a'}
+                          label={{ position: 'right' }}
+                        >
+                          {editor_tasks_distribution_data.map(
+                            (entry, index) => (
+                              <Cell key={`cell-${index}`} />
+                            )
+                          )}
+                        </Bar>
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </Card.Body>
+                </Card>
+              </Col>
+              <Col md={4}>
+                <Card>
+                  <Card.Header text={'dark'}>
+                    <Card.Title>
+                      <Row>
+                        <Col className="my-0 mx-0">Editors</Col>
+                      </Row>
+                    </Card.Title>
+                  </Card.Header>
+                  <Card.Body>
+                    Number of open and potential tasks per editor:
+                    <ResponsiveContainer width="100%" height={300}>
+                      <BarChart
+                        data={editor_tasks_distribution_data}
+                        layout={'vertical'}
+                        margin={{
+                          top: 20,
+                          right: 30,
+                          left: 40,
+                          bottom: 5
+                        }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis type="number" allowDecimals={false} />
+                        <YAxis type="category" dataKey="name" interval={0} />
+                        <Tooltip />
+                        {/* <Legend /> */}
+                        <Bar
+                          dataKey="active"
+                          fill={'#8884d8'}
+                          stackId={'a'}
+                          label={{ position: 'right' }}
+                        >
+                          {editor_tasks_distribution_data.map(
+                            (entry, index) => (
+                              <Cell key={`cell-${index}`} />
+                            )
+                          )}
+                        </Bar>
+                        <Bar
+                          dataKey="potentials"
+                          fill="#A9A9A9"
+                          stackId={'a'}
+                          label={{ position: 'right' }}
+                        />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </Card.Body>
+                </Card>
+              </Col>
+              <Col md={4}>
+                <Card>
+                  <Card.Header text={'dark'}>
+                    <Card.Title>
+                      <Row>
+                        <Col className="my-0 mx-0">Applications</Col>
+                      </Row>
+                    </Card.Title>
+                  </Card.Header>
+                  <Card.Body>
+                    Number of Applications:
+                    {/* <NVD3Chart
                   id="chart"
                   height={300}
                   type="pieChart"
@@ -528,76 +630,220 @@ class InternalDashboard extends React.Component {
                   x="key"
                   y="y"
                 /> */}
-                <ResponsiveContainer width="100%" height={300}>
-                  <BarChart
-                    data={applications_data}
-                    margin={{
-                      top: 20,
-                      right: 0,
-                      left: 0,
-                      bottom: 5
-                    }}
-                  >
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
-                    <YAxis allowDecimals={false} />
-                    {/* <Tooltip /> */}
-                    {/* <Legend /> */}
-                    <Bar
-                      dataKey="uv"
-                      fill="#8884d8"
-                      label={{ position: 'top' }}
-                    >
-                      {applications_data.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={colors[index % 20]} />
-                      ))}
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
-              </Card.Body>
-            </Card>
-          </Col>
-          <Col md={4}>
-            <Card>
-              <Card.Header text={'dark'}>
-                <Card.Title>
-                  <Row>
-                    <Col className="my-0 mx-0">Admissions</Col>
-                  </Row>
-                </Card.Title>
-              </Card.Header>
-              <Card.Body>
-                Number of Admissions:
-                <ResponsiveContainer width="100%" height={300}>
-                  <BarChart
-                    data={admissions_data}
-                    margin={{
-                      top: 20,
-                      right: 0,
-                      left: 0,
-                      bottom: 5
-                    }}
-                  >
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
-                    <YAxis allowDecimals={false} />
-                    {/* <Tooltip /> */}
-                    {/* <Legend /> */}
-                    <Bar
-                      dataKey="uv"
-                      fill="#8884d8"
-                      label={{ position: 'top' }}
-                    >
-                      {admissions_data.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={colors[index % 20]} />
-                      ))}
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
+                    <ResponsiveContainer width="100%" height={300}>
+                      <BarChart
+                        data={applications_data}
+                        margin={{
+                          top: 20,
+                          right: 0,
+                          left: 0,
+                          bottom: 5
+                        }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="name" />
+                        <YAxis allowDecimals={false} />
+                        {/* <Tooltip /> */}
+                        {/* <Legend /> */}
+                        <Bar
+                          dataKey="uv"
+                          fill="#8884d8"
+                          label={{ position: 'top' }}
+                        >
+                          {applications_data.map((entry, index) => (
+                            <Cell
+                              key={`cell-${index}`}
+                              fill={colors[index % 20]}
+                            />
+                          ))}
+                        </Bar>
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </Card.Body>
+                </Card>
+              </Col>
+              <Col md={4}>
+                <Card>
+                  <Card.Header text={'dark'}>
+                    <Card.Title>
+                      <Row>
+                        <Col className="my-0 mx-0">Admissions</Col>
+                      </Row>
+                    </Card.Title>
+                  </Card.Header>
+                  <Card.Body>
+                    Number of Admissions:
+                    <ResponsiveContainer width="100%" height={300}>
+                      <BarChart
+                        data={admissions_data}
+                        margin={{
+                          top: 20,
+                          right: 0,
+                          left: 0,
+                          bottom: 5
+                        }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="name" />
+                        <YAxis allowDecimals={false} />
+                        {/* <Tooltip /> */}
+                        {/* <Legend /> */}
+                        <Bar
+                          dataKey="uv"
+                          fill="#8884d8"
+                          label={{ position: 'top' }}
+                        >
+                          {admissions_data.map((entry, index) => (
+                            <Cell
+                              key={`cell-${index}`}
+                              fill={colors[index % 20]}
+                            />
+                          ))}
+                        </Bar>
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </Card.Body>
+                </Card>
+              </Col>
+            </Row>
+          </Tab>
+          <Tab eventKey="kpi" title="KPI">
+            <Row>
+              <Col md={4}>
+                <Card>
+                  <Card.Header text={'dark'}>
+                    <Card.Title>
+                      <Row>
+                        <Col className="my-0 mx-0">Closed CV KPI</Col>
+                      </Row>
+                    </Card.Title>
+                  </Card.Header>
+                  <Card.Body>
+                    <ResponsiveContainer width="100%" height={300}>
+                      <BarChart
+                        data={CVdataWithDuration}
+                        margin={{
+                          top: 20,
+                          right: 0,
+                          left: 0,
+                          bottom: 5
+                        }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis
+                          dataKey="name"
+                          angle={270}
+                          dx={0}
+                          dy={25}
+                          minTickGap={-200}
+                          axisLine={false}
+                        />
+                        <YAxis>
+                          <Label
+                            value="Duration (days)"
+                            angle={-90}
+                            position="insideLeft"
+                          />
+                        </YAxis>
+                        <Tooltip />
+                        <Legend />
+                        <Bar dataKey="duration" fill="#8884d8" />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </Card.Body>
+                </Card>
+              </Col>
+              <Col md={4}>
+                <Card>
+                  <Card.Header text={'dark'}>
+                    <Card.Title>
+                      <Row>
+                        <Col className="my-0 mx-0">Closed ML KPI</Col>
+                      </Row>
+                    </Card.Title>
+                  </Card.Header>
+                  <Card.Body>
+                    <ResponsiveContainer width="100%" height={300}>
+                      <BarChart
+                        data={MLdataWithDuration}
+                        margin={{
+                          top: 20,
+                          right: 0,
+                          left: 0,
+                          bottom: 5
+                        }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis
+                          dataKey="name"
+                          angle={270}
+                          dx={0}
+                          dy={25}
+                          minTickGap={-200}
+                          axisLine={false}
+                        />
+                        <YAxis>
+                          <Label
+                            value="Duration (days)"
+                            angle={-90}
+                            position="insideLeft"
+                          />
+                        </YAxis>
+                        <Tooltip />
+                        <Legend />
+                        <Bar dataKey="duration" fill="#8884d8" />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </Card.Body>
+                </Card>
+              </Col>
+              <Col md={4}>
+                <Card>
+                  <Card.Header text={'dark'}>
+                    <Card.Title>
+                      <Row>
+                        <Col className="my-0 mx-0">Closed RL KPI</Col>
+                      </Row>
+                    </Card.Title>
+                  </Card.Header>
+                  <Card.Body>
+                    <ResponsiveContainer width="100%" height={300}>
+                      <BarChart
+                        data={RLdataWithDuration}
+                        margin={{
+                          top: 20,
+                          right: 0,
+                          left: 0,
+                          bottom: 5
+                        }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis
+                          dataKey="name"
+                          angle={270}
+                          dx={0}
+                          dy={25}
+                          minTickGap={-200}
+                          axisLine={false}
+                        />
+                        <YAxis>
+                          <Label
+                            value="Duration (days)"
+                            angle={-90}
+                            position="insideLeft"
+                          />
+                        </YAxis>
+                        <Tooltip />
+                        <Legend />
+                        <Bar dataKey="duration" fill="#8884d8" />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </Card.Body>
+                </Card>
+              </Col>
+            </Row>
+          </Tab>
+        </Tabs>
       </Aux>
     );
   }

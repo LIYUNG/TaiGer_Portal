@@ -22,7 +22,8 @@ import {
   is_all_uni_assist_vpd_uploaded,
   num_uni_assist_vpd_needed,
   num_uni_assist_vpd_uploaded,
-  to_register_application_portals
+  to_register_application_portals,
+  needUpdateCourseSelection
 } from '../../../Utils/checking-functions';
 import { profile_list } from '../../../Utils/contants';
 
@@ -328,6 +329,9 @@ class AgentReviewing extends React.Component {
                 {total_accepted_base_docs_needed}/{total_base_docs_needed}
               </p>
             </Link>
+          </td>
+          <td>
+            {needUpdateCourseSelection(this.props.student) ? 'Yes' : 'No'}
           </td>
           <td>
             <Link

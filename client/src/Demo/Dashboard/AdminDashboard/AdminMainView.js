@@ -97,6 +97,7 @@ class AdminMainView extends React.Component {
                   <th>Survey</th>
                   <th>Language</th>
                   <th>Base Documents</th>
+                  <th>Course Analysis</th>
                   <th>CV</th>
                   <th>Portals</th>
                   <th>Uni-Assist</th>

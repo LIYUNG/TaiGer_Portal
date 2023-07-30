@@ -155,9 +155,21 @@ const getStudents = asyncHandler(async (req, res) => {
         '-notification +applications.portal_credentials.application_portal_a.account +applications.portal_credentials.application_portal_a.password +applications.portal_credentials.application_portal_b.account +applications.portal_credentials.application_portal_b.password'
       )
       .lean();
+    const courses = await Course.find().select('-table_data_string').lean();
+    // Perform the join
+    const studentsWithCourse = students.map((student) => {
+      const matchingItemB = courses.find(
+        (course) => student._id.toString() === course.student_id.toString()
+      );
+      if (matchingItemB) {
+        return { ...student, courses: matchingItemB };
+      } else {
+        return { ...student };
+      }
+    });
     const students_new = [];
-    for (let j = 0; j < students.length; j += 1) {
-      students_new.push(add_portals_registered_status(students[j]));
+    for (let j = 0; j < studentsWithCourse.length; j += 1) {
+      students_new.push(add_portals_registered_status(studentsWithCourse[j]));
     }
     res.status(200).send({ success: true, data: students_new });
   } else if (user.role === Role.Agent) {
@@ -172,10 +184,27 @@ const getStudents = asyncHandler(async (req, res) => {
           'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
           '-messages'
         )
-        .select('-notification');
+        .select('-notification')
+        .lean();
+      const courses = await Course.find().select('-table_data_string').lean();
+      // Perform the join
+      const studentsWithCourse = students.map((student) => {
+        const matchingItemB = courses.find(
+          (course) => student._id.toString() === course.student_id.toString()
+        );
+        if (matchingItemB) {
+          return { ...student, courses: matchingItemB };
+        } else {
+          return { ...student };
+        }
+      });
+      const students_new = [];
+      for (let j = 0; j < studentsWithCourse.length; j += 1) {
+        students_new.push(add_portals_registered_status(studentsWithCourse[j]));
+      }
       res.status(200).send({
         success: true,
-        data: students,
+        data: students_new,
         notification: user.agent_notification
       });
     } else {
@@ -192,11 +221,22 @@ const getStudents = asyncHandler(async (req, res) => {
         .select(
           '-notification +applications.portal_credentials.application_portal_a.account +applications.portal_credentials.application_portal_a.password +applications.portal_credentials.application_portal_b.account +applications.portal_credentials.application_portal_b.password'
         )
-        .lean()
-        .exec();
+        .lean();
+      const courses = await Course.find().select('-table_data_string').lean();
+      // Perform the join
+      const studentsWithCourse = students.map((student) => {
+        const matchingItemB = courses.find(
+          (course) => student._id.toString() === course.student_id.toString()
+        );
+        if (matchingItemB) {
+          return { ...student, courses: matchingItemB };
+        } else {
+          return { ...student };
+        }
+      });
       const students_new = [];
-      for (let j = 0; j < students.length; j += 1) {
-        students_new.push(add_portals_registered_status(students[j]));
+      for (let j = 0; j < studentsWithCourse.length; j += 1) {
+        students_new.push(add_portals_registered_status(studentsWithCourse[j]));
       }
       res.status(200).send({
         success: true,

@@ -231,6 +231,39 @@ export const is_any_base_documents_uploaded = (students) => {
   return false;
 };
 
+export const needUpdateCourseSelection = (student) => {
+  // not necessary if have studied or not yet begin
+  if (
+    student.academic_background?.university?.isGraduated === 'Yes' ||
+    student.academic_background?.university?.isGraduated === 'No'
+  ) {
+    return false;
+  }
+  // necessary if never updated course and is studying
+  if (!student.courses) {
+    return true;
+  }
+  // necessary if never analyzed and is studying
+  if (!student.courses.analysis?.updatedAt) {
+    return true;
+  }
+  // necessary if courses or analysis expired 39 daays and is studying
+  const course_aged_days = parseInt(
+    getNumberOfDays(student.courses.updatedAt, new Date()),
+    10
+  );
+  const analyse_aged_days = parseInt(
+    getNumberOfDays(student.courses.analysis?.updatedAt, new Date()),
+    10
+  );
+  const trigger_days = 1;
+  if (course_aged_days > trigger_days || analyse_aged_days > trigger_days) {
+    return true;
+  }
+
+  return true;
+};
+
 export const to_register_application_portals = (student) => {
   for (const application of student.applications) {
     if (!application.credential_a_filled || !application.credential_b_filled) {

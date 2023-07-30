@@ -230,22 +230,18 @@ export const is_any_base_documents_uploaded = (students) => {
   }
   return false;
 };
+export const STUDENT_COURSES_LINK = (student_Id) => {
+  return `/my-courses/${student_Id}`;
+};
 
 export const needUpdateCourseSelection = (student) => {
-  // not necessary if have studied or not yet begin
-  if (
-    student.academic_background?.university?.isGraduated === 'Yes' ||
-    student.academic_background?.university?.isGraduated === 'No'
-  ) {
-    return false;
-  }
   // necessary if never updated course and is studying
   if (!student.courses) {
-    return true;
+    return <span className="text-danger">No Input</span>;
   }
   // necessary if never analyzed and is studying
   if (!student.courses.analysis?.updatedAt) {
-    return true;
+    return <>No Anaylsis</>;
   }
   // necessary if courses or analysis expired 39 daays and is studying
   const course_aged_days = parseInt(
@@ -256,12 +252,29 @@ export const needUpdateCourseSelection = (student) => {
     getNumberOfDays(student.courses.analysis?.updatedAt, new Date()),
     10
   );
-  const trigger_days = 1;
-  if (course_aged_days > trigger_days || analyse_aged_days > trigger_days) {
-    return true;
+  // TODO: only check when june, july, november, december,
+  const currentDate = new Date();
+  const currentMonth = currentDate.getMonth(); // January is 0, December is 11
+  if (
+    currentMonth === 5 ||
+    currentMonth === 6 || // July
+    currentMonth === 10 ||
+    currentMonth === 11 // December
+  ) {
+    const trigger_days = 62;
+    if (course_aged_days > trigger_days || analyse_aged_days > trigger_days) {
+      return <span className="text-danger">Expired</span>;
+    }
   }
 
-  return true;
+  // not necessary if have studied or not yet begin
+  if (
+    student.academic_background?.university?.isGraduated === 'Yes' ||
+    student.academic_background?.university?.isGraduated === 'No'
+  ) {
+    return <>Graduated</>;
+  }
+  return <span className="text-warning">OK</span>;
 };
 
 export const to_register_application_portals = (student) => {

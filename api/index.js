@@ -18,7 +18,9 @@ const {
   AWS_S3_BUCKET_NAME,
   MONGODB_URI,
   COURSE_SELECTION_TASKS_REMINDER_JUNE_SCHEDULE,
-  COURSE_SELECTION_TASKS_REMINDER_DECEMBER_SCHEDULE
+  COURSE_SELECTION_TASKS_REMINDER_DECEMBER_SCHEDULE,
+  COURSE_SELECTION_TASKS_REMINDER_JULY_SCHEDULE,
+  COURSE_SELECTION_TASKS_REMINDER_NOVEMBER_SCHEDULE
 } = require('./config');
 const logger = require('./services/logger');
 // const {
@@ -122,12 +124,20 @@ const launch = async () => {
     AssignEditorTasksReminderEmails
   );
 
-  // Remind Student to select next semester courses.
+  // Remind Student to select next semester courses 6-7 month, 11-12 month.
   const job7 = schedule.scheduleJob(
     COURSE_SELECTION_TASKS_REMINDER_JUNE_SCHEDULE,
     NextSemesterCourseSelectionReminderEmails
   );
   const job8 = schedule.scheduleJob(
+    COURSE_SELECTION_TASKS_REMINDER_JULY_SCHEDULE,
+    NextSemesterCourseSelectionReminderEmails
+  );
+  const job9 = schedule.scheduleJob(
+    COURSE_SELECTION_TASKS_REMINDER_NOVEMBER_SCHEDULE,
+    NextSemesterCourseSelectionReminderEmails
+  );
+  const job10 = schedule.scheduleJob(
     COURSE_SELECTION_TASKS_REMINDER_DECEMBER_SCHEDULE,
     NextSemesterCourseSelectionReminderEmails
   );

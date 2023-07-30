@@ -23,7 +23,8 @@ import {
   num_uni_assist_vpd_needed,
   num_uni_assist_vpd_uploaded,
   to_register_application_portals,
-  needUpdateCourseSelection
+  needUpdateCourseSelection,
+  STUDENT_COURSES_LINK
 } from '../../../Utils/checking-functions';
 import { profile_list } from '../../../Utils/contants';
 
@@ -331,7 +332,12 @@ class AgentReviewing extends React.Component {
             </Link>
           </td>
           <td>
-            {needUpdateCourseSelection(this.props.student) ? 'Yes' : 'No'}
+            <Link
+              to={`${STUDENT_COURSES_LINK(this.props.student._id.toString())}`}
+              className="text-light"
+            >
+              {needUpdateCourseSelection(this.props.student)}
+            </Link>
           </td>
           <td>
             <Link

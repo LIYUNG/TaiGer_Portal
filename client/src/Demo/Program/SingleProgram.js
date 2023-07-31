@@ -104,7 +104,7 @@ class SingleProgram extends React.Component {
     const { student_id, program_ids } = assign_data;
     this.setState((state) => ({
       ...state,
-      isAssgining: true
+      isAssigning: true
     }));
     assignProgramToStudent(student_id, program_ids).then(
       (resp) => {
@@ -114,7 +114,7 @@ class SingleProgram extends React.Component {
           this.setState((state) => ({
             ...state,
             isLoaded: true,
-            isAssgining: false,
+            isAssigning: false,
             modalShowAssignSuccessWindow: true,
             modalShowAssignWindow: false,
             success,
@@ -125,7 +125,7 @@ class SingleProgram extends React.Component {
           this.setState((state) => ({
             ...state,
             isLoaded: true,
-            isAssgining: false,
+            isAssigning: false,
             res_modal_message: message,
             res_modal_status: status
           }));
@@ -136,7 +136,7 @@ class SingleProgram extends React.Component {
         setStatedataTable2((state) => ({
           ...state,
           isLoaded: true,
-          isAssgining: false,
+          isAssigning: false,
           error,
           res_modal_status: 500,
           res_modal_message: statusText
@@ -384,7 +384,7 @@ class SingleProgram extends React.Component {
             uni_name={[program.school]}
             program_name={[program.program_name]}
             handleSetStudentId={this.handleSetStudentId}
-            isAssgining={this.state.isAssgining}
+            isAssigning={this.state.isAssigning}
             onSubmitAddToStudentProgramList={
               this.onSubmitAddToStudentProgramList
             }

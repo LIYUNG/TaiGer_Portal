@@ -398,7 +398,9 @@ const loadMessages = asyncHandler(async (req, res) => {
   } = req;
 
   const student = await Student.findById(studentId)
-    .select('firstname lastname agents archiv')
+    .select(
+      'firstname lastname firstname_chinese lastname_chinese agents archiv'
+    )
     .populate('agents', 'firstname lastname email role');
   if (!student) {
     logger.error('getMessages: Invalid student id!');

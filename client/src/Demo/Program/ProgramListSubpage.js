@@ -117,10 +117,10 @@ class ProgramListSubpage extends React.Component {
         </Modal.Body>
         <Modal.Footer>
           <Button
-            disabled={this.props.isAssgining}
+            disabled={this.props.isButtonDisable}
             onClick={(e) => this.props.onSubmitAddToStudentProgramList(e)}
           >
-            {this.props.isAssgining ? (
+            {this.props.isButtonDisable ? (
               <Spinner animation="border" size="sm" role="status">
                 <span className="visually-hidden"></span>
               </Spinner>

@@ -94,7 +94,7 @@ export default function Signin1({ setUserdata }) {
           setButtondisable(false);
         } catch (err) {
           // TODO: handle error
-          alert('Server no response! Please try later.');
+          alert('Server is busy! Please try in 5 minutes later.');
           setButtondisable(false);
           // setButtondisable(false);
           // console.log(err);

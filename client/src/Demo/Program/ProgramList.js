@@ -350,9 +350,9 @@ function Table2(props) {
     toggleAllRowsSelected(false);
     props.setTableStates((state) => ({
       ...state,
-      isAssgining: false
+      isAssigning: false
     }));
-  }, [props.isAssgining]);
+  }, [props.isAssigning]);
 
   return (
     <>
@@ -525,7 +525,8 @@ function ProgramList(props) {
   let [tableStates, setTableStates] = useState({
     success: false,
     isloaded: false,
-    isAssgining: false,
+    isAssigning: false,
+    isButtonDisable: false,
     error: null,
     modalShowAssignWindow: false,
     modalShowAssignSuccessWindow: false,
@@ -587,7 +588,8 @@ function ProgramList(props) {
     const { student_id, program_ids } = assign_data;
     setTableStates((state) => ({
       ...state,
-      isAssgining: true
+      isAssigning: true,
+      isButtonDisable: true
     }));
     assignProgramToStudent(student_id, program_ids).then(
       (resp) => {
@@ -597,7 +599,8 @@ function ProgramList(props) {
           setTableStates((state) => ({
             ...state,
             isLoaded: true,
-            isAssgining: false,
+            isAssigning: false,
+            isButtonDisable: false,
             modalShowAssignSuccessWindow: true,
             modalShowAssignWindow: false,
             success,
@@ -608,21 +611,22 @@ function ProgramList(props) {
           setTableStates((state) => ({
             ...state,
             isLoaded: true,
-            isAssgining: false,
+            isAssigning: false,
+            isButtonDisable: false,
             res_modal_message: message,
             res_modal_status: status
           }));
         }
       },
       (error) => {
-        const { statusText } = resp;
         setTableStates((state) => ({
           ...state,
           isLoaded: true,
-          isAssgining: false,
+          isAssigning: false,
+          isButtonDisable: false,
           error,
           res_modal_status: 500,
-          res_modal_message: statusText
+          res_modal_message: 'Server error'
         }));
       }
     );
@@ -773,7 +777,7 @@ function ProgramList(props) {
           userId={props.user._id.toString()}
           setModalShow2={setModalShow2}
           setPrograms={setPrograms}
-          isAssgining={tableStates.isAssgining}
+          isAssigning={tableStates.isAssigning}
           setTableStates={setTableStates}
         />
       </Card>
@@ -790,7 +794,7 @@ function ProgramList(props) {
           degree={programs.degree}
           semester={programs.semester}
           handleChange2={handleSetStudentId}
-          isAssgining={tableStates.isAssgining}
+          isButtonDisable={tableStates.isButtonDisable}
           onSubmitAddToStudentProgramList={onSubmitAddToStudentProgramList}
         />
       ) : (
@@ -802,7 +806,8 @@ function ProgramList(props) {
           uni_name={programs.schools}
           program_name={programs.program_names}
           handleSetStudentId={handleSetStudentId}
-          isAssgining={tableStates.isAssgining}
+          isAssigning={tableStates.isAssigning}
+          isButtonDisable={tableStates.isButtonDisable}
           onSubmitAddToStudentProgramList={onSubmitAddToStudentProgramList}
         />
       )}

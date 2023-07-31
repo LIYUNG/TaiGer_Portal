@@ -338,7 +338,6 @@ class InternalDashboard extends React.Component {
       name: `${item.name}`, // Create a name for the item, e.g., Item 0, Item 1, etc.
       duration: calculateDuration(item.start, item.end)
     }));
-    console.log(finished_docs);
     return (
       <Aux>
         <Row className="sticky-top ">

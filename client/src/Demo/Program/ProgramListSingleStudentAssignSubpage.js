@@ -3,23 +3,31 @@ import { Modal } from 'react-bootstrap';
 import { Button, Spinner } from 'react-bootstrap';
 
 class ProgramListSingleStudentAssignSubpage extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      error: '',
-      students: []
-    };
-  }
-
+  state = {
+    uni_name: this.props.uni_name,
+    program_name: this.props.program_name,
+    degree: this.props.degree,
+    semester: this.props.semester,
+  };
   componentDidMount() {
     this.props.setStudentId(this.props.student._id.toString());
+  }
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.show !== this.props.show) {
+      this.setState({
+        uni_name: this.props.uni_name,
+        program_name: this.props.program_name,
+        degree: this.props.degree,
+        semester: this.props.semester
+      });
+    }
   }
 
   render() {
     let program_names = [];
-    for (let i = 0; i < this.props.uni_name.length; i++) {
+    for (let i = 0; i < this.state.uni_name.length; i++) {
       program_names.push(
-        `${this.props.uni_name[i]}-${this.props.program_name[i]}-${this.props.degree[i]}-${this.props.semester[i]}`
+        `${this.state.uni_name[i]}-${this.state.program_name[i]}-${this.state.degree[i]}-${this.state.semester[i]}`
       );
     }
     return (
@@ -46,10 +54,10 @@ class ProgramListSingleStudentAssignSubpage extends React.Component {
         </Modal.Body>
         <Modal.Footer>
           <Button
-            disabled={this.props.isAssgining}
+            disabled={this.props.isButtonDisable}
             onClick={(e) => this.props.onSubmitAddToStudentProgramList(e)}
           >
-            {this.props.isAssgining ? (
+            {this.props.isButtonDisable ? (
               <Spinner animation="border" size="sm" role="status">
                 <span className="visually-hidden"></span>
               </Spinner>

@@ -231,6 +231,18 @@ class Settings extends React.Component {
               </Card.Body>
             </Card>
           </Col>
+          <Col md={6}>
+            <Card className="my-4 mx-0" bg={'dark'} text={'white'}>
+              <Card.Header>
+                <Card.Title className="my-0 mx-0 text-light">
+                  Notification
+                </Card.Title>
+              </Card.Header>
+              <Card.Body>
+                Comming soon
+              </Card.Body>
+            </Card>
+          </Col>
         </Row>
         <Modal
           show={this.state.updatecredentialconfirmed}

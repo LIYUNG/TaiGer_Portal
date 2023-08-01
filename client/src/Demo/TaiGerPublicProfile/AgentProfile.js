@@ -1,21 +1,13 @@
 import React from 'react';
 import { Row, Col, Card, Form, Button, Spinner, Modal } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
-import { BsExclamationTriangle } from 'react-icons/bs';
 
 import Aux from '../../hoc/_Aux';
 import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 
-import {
-  updatePersonalData,
-  updateCredentials,
-  getAgentProfile,
-  getUser
-} from '../../api';
+import { getAgentProfile } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
-import { is_personal_data_filled } from '../Utils/checking-functions';
 class AgentProfile extends React.Component {
   state = {
     error: '',

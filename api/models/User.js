@@ -453,10 +453,14 @@ const Agent = User.discriminator(
   'Agent',
   new Schema(
     {
-      // students: [{ type: ObjectId, ref: 'Student' }],
       officehours: {
-        type: String,
-        default: ''
+        Monday: { active: { type: Boolean, default: false } },
+        Tuesday: { active: { type: Boolean, default: false } },
+        Wednesday: { active: { type: Boolean, default: false } },
+        Thursday: { active: { type: Boolean, default: false } },
+        Friday: { active: { type: Boolean, default: false } },
+        Saturday: { active: { type: Boolean, default: false } },
+        Sunday: { active: { type: Boolean, default: false } }
       },
       selfIntroduction: {
         type: String,
@@ -502,7 +506,6 @@ const Editor = User.discriminator(
   'Editor',
   new Schema(
     {
-      // students: [{ type: ObjectId, ref: 'Student' }],
       editor_notification: {
         isRead_survey_not_complete: {
           type: Boolean,

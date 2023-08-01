@@ -2,6 +2,7 @@ import React from 'react';
 import { Row, Col, Card, Form, Button, Spinner, Modal } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { BsExclamationTriangle } from 'react-icons/bs';
+import TimezoneSelect from 'react-timezone-select';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
 import Aux from '../../hoc/_Aux';
@@ -27,6 +28,7 @@ class Profile extends React.Component {
     data: null,
     success: false,
     user: {},
+    selectedTimezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     changed_personaldata: false,
     personaldata: this.props.match.params.user_id
       ? {
@@ -76,6 +78,7 @@ class Profile extends React.Component {
             this.setState({
               success,
               isLoaded: true,
+              officehours: data.officehours,
               personaldata: {
                 firstname: data.firstname,
                 firstname_chinese: data.firstname_chinese,
@@ -248,6 +251,11 @@ class Profile extends React.Component {
         }));
       }
     );
+  };
+
+  setSelectedTimezone = (e) => {
+    console.log(e);
+    this.setState({ selectedTimezone: e.value });
   };
 
   ConfirmError = () => {
@@ -461,23 +469,75 @@ class Profile extends React.Component {
           </Col>
         </Row>
         {this.props.user.role === 'Agent' && (
-          <Card className="my-2 mx-0" bg={'dark'} text={'white'}>
-            <Card.Header>
-              <Card.Title className="my-0 mx-0 text-light">Profile</Card.Title>
-            </Card.Header>
-            <Card.Body>
-              <Row>
-                <Col>
-                  <h5 className="text-light">Office Hours</h5>
-                  {this.props.user.officehours}
-                </Col>
-              </Row>
-              <Row>
-                <h5 className="text-light">Introduction</h5>
-                {this.props.user.selfIntroduction}
-              </Row>
-            </Card.Body>
-          </Card>
+          <Row>
+            <Col md={6}>
+              <Card className="my-2 mx-0" bg={'dark'} text={'white'}>
+                <Card.Header>
+                  <Card.Title className="my-0 mx-0 text-light">
+                    Profile
+                  </Card.Title>
+                </Card.Header>
+                <Card.Body>
+                  <Row>
+                    <h5 className="text-light">Introduction</h5>
+                    {this.props.user.selfIntroduction}
+                  </Row>
+                </Card.Body>
+              </Card>
+            </Col>
+            <Col md={6}>
+              <Card className="my-2 mx-0" bg={'dark'} text={'white'}>
+                <Card.Header>
+                  <Card.Title className="my-0 mx-0 text-light">
+                    Office Hours
+                  </Card.Title>
+                </Card.Header>
+                <Card.Body>
+                  <Row>
+                    <Col>
+                      <h5 className="text-light">Time zone</h5>
+                      {/* {this.props.user.officehours} */}
+                    </Col>
+                  </Row>
+                  <Row>
+                    <TimezoneSelect
+                      value={this.state.selectedTimezone}
+                      onChange={this.setSelectedTimezone}
+                      displayValue="UTC"
+                      disabled={true}
+                    />
+                  </Row>
+                  <br />
+                  {[
+                    'Monday',
+                    'Tuesday',
+                    'Wednesday',
+                    'Thursday',
+                    'Friday',
+                    'Saturday',
+                    'Sunday'
+                  ].map((day, i) => (
+                    <Row key={i}>
+                      <Form>
+                        <Form.Check
+                          type="switch"
+                          id={`${day}`}
+                          label={`${day}`}
+                          className={`${
+                            this.state.isChecked
+                              ? 'text-light'
+                              : 'text-secondary'
+                          }`}
+                          checked={this.state.isChecked}
+                          onChange={this.handleToggleChange}
+                        />
+                      </Form>
+                    </Row>
+                  ))}
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
         )}
         {(this.props.user.role === 'Admin' ||
           this.props.user.role === 'Agent' ||

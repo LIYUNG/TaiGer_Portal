@@ -69,7 +69,8 @@ export const valid_categories = [
   { key: 'portal-instruction', value: 'Portal-Instruction' },
   { key: 'certification', value: 'Certification' },
   { key: 'uniassist', value: 'Uni-Assist' },
-  { key: 'visa', value: 'Visa' }
+  { key: 'visa', value: 'Visa' },
+  { key: 'enrolment', value: 'Enrolment' }
 ];
 
 export const profile_name_list = {
@@ -362,7 +363,8 @@ export const documentation_categories = {
   'portal-instruction': 'Portal Instruction',
   certification: 'Certification Instruction',
   uniassist: 'Uni-Assist Instruction',
-  visa: 'Visa Instruction'
+  visa: 'Visa Instruction',
+  enrolment: 'Enrolment Instruction'
 };
 export const Role = {
   Admin: 'Admin',

@@ -31,7 +31,8 @@ const valid_categories = [
   'portal-instruction',
   'certification',
   'uniassist',
-  'visa'
+  'visa',
+  'enrolment'
 ];
 const DocumentationS3GarbageCollector = async () => {
   const doc = await Documentation.find();

@@ -3,11 +3,12 @@ import { Row, Col, Card, Form, Button, Spinner, Modal } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { BsExclamationTriangle } from 'react-icons/bs';
 import TimezoneSelect from 'react-timezone-select';
+import Select from 'react-select';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
 import Aux from '../../hoc/_Aux';
 import MyCalendar from '../../components/Calendar/components/Calendar';
-import { spinner_style } from '../Utils/contants';
+import { spinner_style, time_slots } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 
@@ -258,6 +259,13 @@ class Profile extends React.Component {
     this.setState({ selectedTimezone: e.value });
   };
 
+  handleToggleChange = (e) => {
+    console.log(e);
+    console.log(e.target.id);
+    console.log(e.target.checked);
+    // this.setState({ selectedTimezone: e.value });
+  };
+
   ConfirmError = () => {
     this.setState((state) => ({
       ...state,
@@ -504,7 +512,7 @@ class Profile extends React.Component {
                       value={this.state.selectedTimezone}
                       onChange={this.setSelectedTimezone}
                       displayValue="UTC"
-                      disabled={true}
+                      isDisabled={false}
                     />
                   </Row>
                   <br />
@@ -518,20 +526,45 @@ class Profile extends React.Component {
                     'Sunday'
                   ].map((day, i) => (
                     <Row key={i}>
-                      <Form>
-                        <Form.Check
-                          type="switch"
-                          id={`${day}`}
-                          label={`${day}`}
-                          className={`${
-                            this.state.isChecked
-                              ? 'text-light'
-                              : 'text-secondary'
-                          }`}
-                          checked={this.state.isChecked}
-                          onChange={this.handleToggleChange}
+                      <Col>
+                        <Form>
+                          <Form.Check
+                            type="switch"
+                            id={`${day}`}
+                            label={`${day}`}
+                            className={`${
+                              this.state.isChecked
+                                ? 'text-light'
+                                : 'text-secondary'
+                            }`}
+                            checked={this.state.isChecked}
+                            onChange={this.handleToggleChange}
+                          />
+                        </Form>
+                      </Col>
+                      <Col>
+                        <Select
+                          options={time_slots}
+                          isDisabled
+                          value={time_slots.find(
+                            (time_slot) => time_slot.value === '08:00'
+                          )}
+                          // onChange={(selectedOption) =>
+                          //   onChange(selectedOption.value)
+                          // }
                         />
-                      </Form>
+                      </Col>
+                      <Col>
+                        <Select
+                          options={time_slots}
+                          value={time_slots.find(
+                            (time_slot) => time_slot.value === '08:00'
+                          )}
+                          // onChange={(selectedOption) =>
+                          //   onChange(selectedOption.value)
+                          // }
+                        />
+                      </Col>
                     </Row>
                   ))}
                 </Card.Body>

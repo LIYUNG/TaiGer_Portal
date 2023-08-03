@@ -19,7 +19,10 @@ import {
   getUser
 } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
-import { is_personal_data_filled } from '../Utils/checking-functions';
+import {
+  is_TaiGer_Agent,
+  is_personal_data_filled
+} from '../Utils/checking-functions';
 
 class Profile extends React.Component {
   state = {
@@ -31,6 +34,9 @@ class Profile extends React.Component {
     user: {},
     selectedTimezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     changed_personaldata: false,
+    officehours: is_TaiGer_Agent(this.props.user)
+      ? this.props.user.officehours
+      : {},
     personaldata: this.props.match.params.user_id
       ? {
           firstname: '',
@@ -259,11 +265,36 @@ class Profile extends React.Component {
     this.setState({ selectedTimezone: e.value });
   };
 
-  handleToggleChange = (e) => {
+  handleToggleChange = (e, day) => {
     console.log(e);
     console.log(e.target.id);
     console.log(e.target.checked);
-    // this.setState({ selectedTimezone: e.value });
+    this.setState((prevState) => ({
+      officehours: {
+        ...prevState.officehours,
+        [day]: { ...prevState.officehours[day], active: e.target.checked }
+      }
+    }));
+  };
+  onTimeStartChange = (e, day) => {
+    console.log(e);
+    const { value } = e;
+    this.setState((prevState) => ({
+      officehours: {
+        ...prevState.officehours,
+        [day]: { ...prevState.officehours[day], start: value }
+      }
+    }));
+  };
+  onTimeEndChange = (e, day) => {
+    console.log(e);
+    const { value } = e;
+    this.setState((prevState) => ({
+      officehours: {
+        ...prevState.officehours,
+        [day]: { ...prevState.officehours[day], end: value }
+      }
+    }));
   };
 
   ConfirmError = () => {
@@ -504,7 +535,6 @@ class Profile extends React.Component {
                   <Row>
                     <Col>
                       <h5 className="text-light">Time zone</h5>
-                      {/* {this.props.user.officehours} */}
                     </Col>
                   </Row>
                   <Row>
@@ -538,32 +568,51 @@ class Profile extends React.Component {
                                 : 'text-secondary'
                             }`}
                             checked={this.state.isChecked}
-                            onChange={this.handleToggleChange}
+                            onChange={(e) => this.handleToggleChange(e, day)}
                           />
                         </Form>
                       </Col>
                       <Col>
-                        <Select
-                          options={time_slots}
-                          isDisabled
-                          value={time_slots.find(
-                            (time_slot) => time_slot.value === '08:00'
-                          )}
-                          // onChange={(selectedOption) =>
-                          //   onChange(selectedOption.value)
-                          // }
-                        />
+                        {this.state.officehours[day]?.active ? (
+                          <>
+                            <span className="text-light">From</span>
+                            <Select
+                              id={`${day}`}
+                              options={time_slots}
+                              isDisabled={!this.state.officehours[day]?.active}
+                              value={time_slots.find(
+                                (time_slot) =>
+                                  time_slot.value ===
+                                  this.state.officehours[day]?.start
+                              )}
+                              onChange={(e) => this.onTimeStartChange(e, day)}
+                            />
+                          </>
+                        ) : (
+                          <span className="text-light">Close</span>
+                        )}
                       </Col>
                       <Col>
-                        <Select
-                          options={time_slots}
-                          value={time_slots.find(
-                            (time_slot) => time_slot.value === '08:00'
-                          )}
-                          // onChange={(selectedOption) =>
-                          //   onChange(selectedOption.value)
-                          // }
-                        />
+                        {this.state.officehours[day]?.active ? (
+                          <>
+                            <span className="text-light">To</span>
+                            <Select
+                              id={`${day}`}
+                              options={time_slots}
+                              isDisabled={!this.state.officehours[day]?.active}
+                              value={time_slots.find(
+                                (time_slot) =>
+                                  time_slot.value ===
+                                  this.state.officehours[day]?.end
+                              )}
+                              onChange={(e) => (
+                                day, this.onTimeEndChange(e, day)
+                              )}
+                            />
+                          </>
+                        ) : (
+                          <span className="text-light">Close</span>
+                        )}
                       </Col>
                     </Row>
                   ))}

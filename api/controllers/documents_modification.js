@@ -1,4 +1,3 @@
-const aws = require('aws-sdk');
 const async = require('async');
 const path = require('path');
 const { ErrorResponse } = require('../common/errors');
@@ -28,18 +27,9 @@ const {
   CVDeadline_Calculator
 } = require('../constants');
 
-const {
-  AWS_S3_ACCESS_KEY_ID,
-  AWS_S3_ACCESS_KEY,
-  AWS_S3_BUCKET_NAME,
-  API_ORIGIN
-} = require('../config');
+const { AWS_S3_BUCKET_NAME, API_ORIGIN } = require('../config');
 const Permission = require('../models/Permission');
-
-const s3 = new aws.S3({
-  accessKeyId: AWS_S3_ACCESS_KEY_ID,
-  secretAccessKey: AWS_S3_ACCESS_KEY
-});
+const { s3 } = require('../aws/index');
 
 const ThreadS3GarbageCollector = async () => {
   try {

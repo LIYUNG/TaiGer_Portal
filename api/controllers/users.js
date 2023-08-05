@@ -1,6 +1,5 @@
 const _ = require('lodash');
 const crypto = require('crypto');
-const aws = require('aws-sdk');
 const generator = require('generate-password');
 
 const { ErrorResponse } = require('../common/errors');
@@ -19,22 +18,10 @@ const {
   fieldsValidation,
   checkUserFirstname,
   checkUserLastname,
-  checkEmail,
-  checkPassword
+  checkEmail
 } = require('../common/validation');
-
-const {
-  AWS_S3_ACCESS_KEY_ID,
-  AWS_S3_ACCESS_KEY,
-  AWS_S3_PUBLIC_BUCKET_NAME,
-  AWS_S3_BUCKET_NAME
-} = require('../config');
-const { isNotArchiv } = require('../constants');
-
-const s3 = new aws.S3({
-  accessKeyId: AWS_S3_ACCESS_KEY_ID,
-  secretAccessKey: AWS_S3_ACCESS_KEY
-});
+const { AWS_S3_BUCKET_NAME } = require('../config');
+const { s3 } = require('../aws/index');
 
 const generateRandomToken = () => crypto.randomBytes(32).toString('hex');
 const hashToken = (token) =>

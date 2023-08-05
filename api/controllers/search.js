@@ -1,7 +1,4 @@
 const _ = require('lodash');
-const { spawn } = require('child_process');
-const aws = require('aws-sdk');
-
 const { ErrorResponse } = require('../common/errors');
 const path = require('path');
 

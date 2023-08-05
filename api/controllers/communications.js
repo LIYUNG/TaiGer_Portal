@@ -1,10 +1,9 @@
-const aws = require('aws-sdk');
 const async = require('async');
 const { ObjectId } = require('mongodb');
 
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
-const { Role, Student, User } = require('../models/User');
+const { Role, Student } = require('../models/User');
 const { Communication } = require('../models/Communication');
 const {
   sendAgentNewMessageReminderEmail,

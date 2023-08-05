@@ -1,5 +1,4 @@
 const _ = require('lodash');
-const aws = require('aws-sdk');
 const path = require('path');
 const { ErrorResponse } = require('../common/errors');
 const { Role } = require('../models/User');
@@ -11,17 +10,9 @@ const Docspage = require('../models/Docspage');
 const { one_month_cache } = require('../cache/node-cache');
 const logger = require('../services/logger');
 const { getNumberOfDays } = require('../constants');
-const {
-  API_ORIGIN,
-  AWS_S3_ACCESS_KEY_ID,
-  AWS_S3_ACCESS_KEY,
-  AWS_S3_PUBLIC_BUCKET_NAME
-} = require('../config');
+const { API_ORIGIN, AWS_S3_PUBLIC_BUCKET_NAME } = require('../config');
 
-const s3 = new aws.S3({
-  accessKeyId: AWS_S3_ACCESS_KEY_ID,
-  secretAccessKey: AWS_S3_ACCESS_KEY
-});
+const { s3 } = require('../aws/index');
 
 const valid_categories = [
   'howtostart',

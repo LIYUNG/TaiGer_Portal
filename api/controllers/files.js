@@ -1,5 +1,4 @@
 const path = require('path');
-const aws = require('aws-sdk');
 const { asyncHandler } = require('../middlewares/error-handler');
 const { one_month_cache, two_month_cache } = require('../cache/node-cache');
 const { Role, Student, User, Agent } = require('../models/User');
@@ -32,18 +31,10 @@ const {
   NewMLRLEssayTasksEmailFromTaiGer
   // sendSomeReminderEmail,
 } = require('../services/email');
-const {
-  AWS_S3_ACCESS_KEY_ID,
-  AWS_S3_ACCESS_KEY,
-  AWS_S3_BUCKET_NAME,
-  AWS_S3_PUBLIC_BUCKET_NAME
-} = require('../config');
+const { AWS_S3_BUCKET_NAME, AWS_S3_PUBLIC_BUCKET_NAME } = require('../config');
 const logger = require('../services/logger');
 
-const s3 = new aws.S3({
-  accessKeyId: AWS_S3_ACCESS_KEY_ID,
-  secretAccessKey: AWS_S3_ACCESS_KEY
-});
+const { s3 } = require('../aws/index');
 
 const getMyfiles = asyncHandler(async (req, res) => {
   const { user } = req;
@@ -1145,8 +1136,7 @@ const updateAcademicBackground = asyncHandler(async (req, res, next) => {
     if (
       updatedStudent.academic_background.university.high_school_isGraduated ===
         'pending' ||
-      updatedStudent.academic_background.university.isGraduated ===
-        'No'
+      updatedStudent.academic_background.university.isGraduated === 'No'
     ) {
       // make sure if existing uploaded file
       let bachelor_diploma_doc = updatedStudent.profile.find(

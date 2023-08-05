@@ -1,21 +1,10 @@
 const _ = require('lodash');
-const crypto = require('crypto');
-const aws = require('aws-sdk');
-const generator = require('generate-password');
 
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
-const { User, Role } = require('../models/User');
 const Permission = require('../models/Permission');
-const {
-  updateNotificationEmail,
-  updatePermissionNotificationEmail
-} = require('../services/email');
+const { updatePermissionNotificationEmail } = require('../services/email');
 const logger = require('../services/logger');
-
-const generateRandomToken = () => crypto.randomBytes(32).toString('hex');
-const hashToken = (token) =>
-  crypto.createHash('sha256').update(token).digest('hex');
 
 const getUserPermission = asyncHandler(async (req, res) => {
   const users = await Permission.find({}).lean();

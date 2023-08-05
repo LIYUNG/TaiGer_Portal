@@ -1,4 +1,3 @@
-const aws = require('aws-sdk');
 const path = require('path');
 const async = require('async');
 
@@ -26,18 +25,8 @@ const {
 } = require('../services/email');
 
 const { RLs_CONSTANT, isNotArchiv } = require('../constants');
-const {
-  AWS_S3_ACCESS_KEY_ID,
-  AWS_S3_ACCESS_KEY,
-  AWS_S3_BUCKET_NAME
-} = require('../config');
 const Permission = require('../models/Permission');
 const Course = require('../models/Course');
-
-const s3 = new aws.S3({
-  accessKeyId: AWS_S3_ACCESS_KEY_ID,
-  secretAccessKey: AWS_S3_ACCESS_KEY
-});
 
 const getStudent = asyncHandler(async (req, res) => {
   const {

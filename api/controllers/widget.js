@@ -1,23 +1,13 @@
 const _ = require('lodash');
 const { spawn } = require('child_process');
-const aws = require('aws-sdk');
-
-const { ErrorResponse } = require('../common/errors');
 const path = require('path');
 
+const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
 const logger = require('../services/logger');
-const {
-  AWS_S3_ACCESS_KEY_ID,
-  AWS_S3_ACCESS_KEY,
-  AWS_S3_BUCKET_NAME,
-  AWS_S3_PUBLIC_BUCKET_NAME,
-  isProd
-} = require('../config');
-const s3 = new aws.S3({
-  accessKeyId: AWS_S3_ACCESS_KEY_ID,
-  secretAccessKey: AWS_S3_ACCESS_KEY
-});
+const { AWS_S3_BUCKET_NAME, isProd } = require('../config');
+const { s3 } = require('../aws/index');
+
 const student_name = 'PreCustomer';
 
 const WidgetProcessTranscript = asyncHandler(async (req, res, next) => {

@@ -1,23 +1,19 @@
 const { google } = require('googleapis');
 const uuid = require('uuid');
 const ical = require('ical-generator');
-const aws = require('aws-sdk');
 const async = require('async');
 const path = require('path');
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
 const { Role, Agent, Student, Editor } = require('../models/User');
 const { Interview } = require('../models/Interview');
+const { ses } = require('../aws/index');
 
 const {
-  AWS_S3_ACCESS_KEY_ID,
-  AWS_S3_ACCESS_KEY,
   GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET,
   GOOGLE_REDIRECT_URL,
-  GOOGLE_API_KEY,
-  CLIENT_EMAIL,
-  PRIVATE_KEY
+  GOOGLE_API_KEY
 } = require('../config');
 
 const oauth2Client = new google.auth.OAuth2(
@@ -25,11 +21,7 @@ const oauth2Client = new google.auth.OAuth2(
   GOOGLE_CLIENT_SECRET,
   GOOGLE_REDIRECT_URL
 );
-const ses = new aws.SES({
-  region: 'us-west-2',
-  accessKeyId: AWS_S3_ACCESS_KEY_ID,
-  secretAccessKey: AWS_S3_ACCESS_KEY
-});
+
 const scopes = ['https://www.googleapis.com/auth/calendar'];
 
 const logger = require('../services/logger');

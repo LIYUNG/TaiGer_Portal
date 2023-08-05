@@ -1,9 +1,7 @@
-const aws = require('aws-sdk');
 const async = require('async');
-const path = require('path');
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
-const { Role, Agent, Student, Editor } = require('../models/User');
+const { Student } = require('../models/User');
 const { Interview } = require('../models/Interview');
 const logger = require('../services/logger');
 

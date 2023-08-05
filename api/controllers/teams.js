@@ -1,23 +1,11 @@
 const _ = require('lodash');
-const aws = require('aws-sdk');
 
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
 const { User, Agent, Editor, Student, Role } = require('../models/User');
 const { Documentthread } = require('../models/Documentthread');
 const logger = require('../services/logger');
-
-const {
-  AWS_S3_ACCESS_KEY_ID,
-  AWS_S3_ACCESS_KEY,
-  AWS_S3_BUCKET_NAME
-} = require('../config');
 const Permission = require('../models/Permission');
-
-const s3 = new aws.S3({
-  accessKeyId: AWS_S3_ACCESS_KEY_ID,
-  secretAccessKey: AWS_S3_ACCESS_KEY
-});
 
 const getTeamMembers = asyncHandler(async (req, res) => {
   const users = await User.aggregate([

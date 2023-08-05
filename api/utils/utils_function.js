@@ -1,6 +1,3 @@
-const aws = require('aws-sdk');
-// const EJSON = require('ejson');
-const { ObjectID } = require('mongodb');
 const async = require('async');
 const path = require('path');
 const { ErrorResponse } = require('../common/errors');
@@ -30,11 +27,7 @@ const {
   needUpdateCourseSelection
 } = require('../constants');
 
-const {
-  AWS_S3_ACCESS_KEY_ID,
-  AWS_S3_ACCESS_KEY,
-  AWS_S3_MONGODB_BACKUP_SNAPSHOT
-} = require('../config');
+const { AWS_S3_MONGODB_BACKUP_SNAPSHOT } = require('../config');
 const { Program } = require('../models/Program');
 const { Template } = require('../models/Template');
 const Expense = require('../models/Expense');
@@ -46,11 +39,7 @@ const Note = require('../models/Note');
 const { sendAssignEditorReminderEmail } = require('../services/email');
 const Permission = require('../models/Permission');
 const { Communication } = require('../models/Communication');
-
-const s3 = new aws.S3({
-  accessKeyId: AWS_S3_ACCESS_KEY_ID,
-  secretAccessKey: AWS_S3_ACCESS_KEY
-});
+const { s3 } = require('../aws/index');
 
 const emptyS3Directory = async (bucket, dir) => {
   const listParams = {

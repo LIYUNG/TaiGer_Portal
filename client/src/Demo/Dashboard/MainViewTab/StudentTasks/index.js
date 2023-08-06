@@ -128,7 +128,7 @@ class StudentTasks extends React.Component {
                 style={{ textDecoration: 'none' }}
                 className="text-info"
               >
-                Survey
+                My Survey
                 <FiExternalLink
                   className="mx-1 mb-1"
                   style={{ cursor: 'pointer' }}

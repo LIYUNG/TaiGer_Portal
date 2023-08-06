@@ -159,8 +159,8 @@ const programSchema = new Schema(
       type: String
       // required: true,
     },
-    requiredDocuments: [String],
-    optionalDocuments: [String],
+    requiredDocuments: [String], // Not used
+    optionalDocuments: [String], // not used
     url: String
   },
   { timestamps: true }

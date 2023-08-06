@@ -54,8 +54,12 @@ const getStatistics = asyncHandler(async (req, res) => {
   documents_data.ML = { count: documents_ml };
   documents_data.RL = { count: documents_rl };
   documents_data.ESSAY = { count: documents_essay };
-  const agents = await Agent.find();
-  const editors = await Editor.find();
+  const agents = await Agent.find({
+    $or: [{ archiv: { $exists: false } }, { archiv: false }]
+  });
+  const editors = await Editor.find({
+    $or: [{ archiv: { $exists: false } }, { archiv: false }]
+  });
   const students = await Student.find()
     .populate('agents editors', 'firstname lastname')
     .populate('applications.programId')
@@ -129,7 +133,9 @@ const getAgents = asyncHandler(async (req, res, next) => {
       user_id: user._id.toString()
     });
     if (permissions && permissions.canAssignAgents) {
-      const agents = await Agent.find().select('firstname lastname');
+      const agents = await Agent.find({
+        $or: [{ archiv: { $exists: false } }, { archiv: false }]
+      }).select('firstname lastname');
       res.status(200).send({ success: true, data: agents });
     } else {
       logger.error('getAgents: no permission');
@@ -139,7 +145,9 @@ const getAgents = asyncHandler(async (req, res, next) => {
       );
     }
   } else {
-    const agents = await Agent.find().select('firstname lastname');
+    const agents = await Agent.find({
+      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+    }).select('firstname lastname');
     res.status(200).send({ success: true, data: agents });
   }
 });
@@ -189,7 +197,9 @@ const getEditors = asyncHandler(async (req, res, next) => {
       user_id: user._id.toString()
     });
     if (permissions && permissions.canAssignEditors) {
-      const editors = await Editor.find().select('firstname lastname');
+      const editors = await Editor.find({
+        $or: [{ archiv: { $exists: false } }, { archiv: false }]
+      }).select('firstname lastname');
       res.status(200).send({ success: true, data: editors });
     } else {
       logger.error('getEditors: no permission');
@@ -199,7 +209,9 @@ const getEditors = asyncHandler(async (req, res, next) => {
       );
     }
   } else {
-    const editors = await Editor.find().select('firstname lastname');
+    const editors = await Editor.find({
+      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+    }).select('firstname lastname');
     res.status(200).send({ success: true, data: editors });
   }
 });

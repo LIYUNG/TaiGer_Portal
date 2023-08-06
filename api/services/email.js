@@ -217,10 +217,6 @@ ${activationLink}
 
 <p>但您仍可再次請求啟用連結於： ${RESEND_ACTIVATION_URL}</p>
 
-<p>以下為您的 TaiGer Portal 帳號密碼：</p>
-<p>Email: <b>${recipient.address}</b></p>
-<p>Password: <b>${payload.password}</b></p>
-
 <p>密碼為臨時，登入後請至 ${SETTINGS_URL} 盡速更換您的密碼</p>
 <p> </p>
 <br />
@@ -270,7 +266,7 @@ ${activationLink}
 
 <p>但您仍可再次請求啟用連結於： ${RESEND_ACTIVATION_URL}</p>
 
-<p>以下為您的 TaiGer Portal 帳號密碼：</p>
+<p>以下為您的 TaiGer Portal 帳號 (即為您的 Email) 及 密碼：</p>
 <p>Email: <b>${recipient.address}</b></p>
 <p>Password: <b>${payload.password}</b></p>
 

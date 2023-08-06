@@ -460,7 +460,7 @@ class BaseDocument_StudentView extends React.Component {
                 <>
                   無論是申請大學部或是碩士班，高中文件、學測或統測成績單為必要文件。德國學校通常列為必要文件，此文件會因為您的背景況狀有所變動。請先填好{' '}
                   <Link to={'/survey'} className="text-primary">
-                    Academic Survey{' '}
+                    My Survey{' '}
                     <FiExternalLink
                       className="mx-1 mb-1"
                       style={{ cursor: 'pointer' }}

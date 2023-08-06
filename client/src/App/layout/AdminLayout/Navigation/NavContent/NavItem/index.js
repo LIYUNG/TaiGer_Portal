@@ -14,7 +14,7 @@ class NavItem extends Component {
     if (this.props.role === 'Admin') {
       if (
         itemTitle === 'My Courses' ||
-        itemTitle === 'Academic Survey' ||
+        itemTitle === 'My Survey' ||
         itemTitle === 'Portals Management' ||
         itemTitle === 'Uni-Assist Tasks' ||
         itemTitle === 'My Tasks Overview' ||
@@ -30,7 +30,7 @@ class NavItem extends Component {
     if (this.props.role === 'Agent') {
       if (
         itemTitle === 'My Courses' ||
-        itemTitle === 'Academic Survey' ||
+        itemTitle === 'My Survey' ||
         itemTitle === 'Tasks Overview' ||
         itemTitle === 'Portals Management' ||
         itemTitle === 'Uni-Assist Tasks' ||
@@ -47,7 +47,7 @@ class NavItem extends Component {
     if (this.props.role === 'Editor') {
       if (
         itemTitle === 'My Courses' ||
-        itemTitle === 'Academic Survey' ||
+        itemTitle === 'My Survey' ||
         itemTitle === 'Tasks Overview' ||
         itemTitle === 'Portals Management' ||
         itemTitle === 'Uni-Assist Tasks' ||

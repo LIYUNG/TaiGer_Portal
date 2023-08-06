@@ -65,7 +65,7 @@ export default {
         },
         {
           id: 'academicsurvey',
-          title: 'Academic Survey',
+          title: 'My Survey',
           type: 'item',
           url: '/survey',
           icon: 'feather icon-file-text'

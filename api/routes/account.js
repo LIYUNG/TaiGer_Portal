@@ -138,7 +138,7 @@ router
     removeAgentNotification
   );
 
-// Academic Survey for Students
+// My Survey for Students
 router
   .route('/survey')
   .get(

@@ -746,7 +746,7 @@ class SingleStudentPage extends React.Component {
                   user={this.props.user}
                 />
               </Tab>
-              <Tab eventKey="background" title="Background">
+              <Tab eventKey="background" title="My Survey">
                 <SurveyComponent
                   survey_link={this.state.survey_link}
                   user={this.props.user}
@@ -770,14 +770,14 @@ class SingleStudentPage extends React.Component {
                   updateconfirmed={this.state.updateconfirmed}
                 />
               </Tab>
-              <Tab eventKey="Courses_Table" title="Courses Table">
+              <Tab eventKey="Courses_Table" title="My Courses">
                 <Card className="my-0 mx-0">
                   <Card.Body>
                     <Row>
                       <Link
                         to={`/my-courses/${this.state.student._id.toString()}`}
                       >
-                        <Button>Go to Courses Table </Button>
+                        <Button>Go to My Courses </Button>
                       </Link>
                     </Row>
                   </Card.Body>

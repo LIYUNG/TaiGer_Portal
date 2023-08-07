@@ -11,6 +11,7 @@ const DEMO = {
   PORTALS_MANAGEMENT_LINK: '/portal-informations',
   SURVEY_LINK: '/survey',
   STUDENT_APPLICATIONS_LINK: '/student-applications',
+  STUDENT_DATABASE_LINK: '/student-database',
   SETTINGS: '/settings',
   PROFILE: '/profile'
 };

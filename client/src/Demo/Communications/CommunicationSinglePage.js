@@ -18,6 +18,7 @@ import {
 } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
+import { is_TaiGer_Student } from '../Utils/checking-functions';
 
 class CommunicationSinglePage extends Component {
   state = {
@@ -456,10 +457,15 @@ class CommunicationSinglePage extends Component {
                             <b>
                               1. 請把{' '}
                               <Link
-                                to={`${DEMO.SURVEY_LINK}`}
+                                to={
+                                  is_TaiGer_Student(this.props.user)
+                                    ? `${DEMO.SURVEY_LINK}`
+                                    : `${DEMO.STUDENT_DATABASE_LINK}/${this.state.student_id}/background`
+                                }
                                 className="text-primary"
+                                target="_blank"
                               >
-                                Survey{' '}
+                                My Survey{' '}
                                 <FiExternalLink
                                   className="mx-0 mb-1"
                                   style={{ cursor: 'pointer' }}
@@ -467,8 +473,13 @@ class CommunicationSinglePage extends Component {
                               </Link>
                               填好,{' '}
                               <Link
-                                to={`${DEMO.BASE_DOCUMENTS_LINK}`}
+                                to={
+                                  is_TaiGer_Student(this.props.user)
+                                    ? `${DEMO.BASE_DOCUMENTS_LINK}`
+                                    : `${DEMO.STUDENT_DATABASE_LINK}/${this.state.student_id}/profile`
+                                }
                                 className="text-primary"
+                                target="_blank"
                               >
                                 Base Document{' '}
                                 <FiExternalLink
@@ -478,8 +489,9 @@ class CommunicationSinglePage extends Component {
                               </Link>
                               , 文件有的都盡量先掃描上傳,{' '}
                               <Link
-                                to={`${DEMO.COURSES_LINK}`}
+                                to={`${DEMO.COURSES_LINK}/${this.state.student_id}`}
                                 className="text-primary"
+                                target="_blank"
                               >
                                 My Courses{' '}
                                 <FiExternalLink

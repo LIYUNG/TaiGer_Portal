@@ -136,7 +136,7 @@ class AgentProfile extends React.Component {
                   </Col>
                   <Col>
                     <h5 className="text-light">Office Hours</h5>
-                    {this.state.agent.officehours}
+                    {/* {this.state.agent.officehours} */}
                   </Col>
                 </Row>
                 <Row>

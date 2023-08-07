@@ -607,18 +607,25 @@ export const base_documents_checklist = {
   High_School_Diploma: ['English version ?', 'School Stamp or signature'],
   High_School_Transcript: ['English version ?', 'Grading system existed ?'],
   University_Entrance_Examination_GSAT: ['English version ?'],
-  Bachelor_Certificate: ['English version ?'],
+  Bachelor_Certificate: [
+    'English version ?',
+    '若尚未最終版(畢業證書)，請標記註冊證明為 Reject，並提醒每學期更新'
+  ],
   Bachelor_Transcript: [
     'Grading system existed ?',
     'GPA (1.7-4.3 system) and not 100-60 system ?',
     'Date of referral ? (if graduated)',
+    '若尚未最終版(with Date of referral)，請標記此成績單為 Reject，並提醒每學期更新',
     'For Bachelor application: 34 credits must be achieved (if applicable)'
   ],
   Englisch_Certificate: ['Not expired ?'],
   German_Certificate: ['Not expired ?'],
   GREGMAT: ['Not expired ?'],
   ECTS_Conversion: [],
-  Course_Description: [],
+  Course_Description: [
+    'Degree correctness (Ex: Engineering with B.Sc. not B.A.)?',
+    'All in English?'
+  ],
   Internship: [
     'Name and Birthday ?',
     'Start date and end date ?',
@@ -629,7 +636,7 @@ export const base_documents_checklist = {
   Exchange_Student_Certificate: ['With transcript ?'],
   Passport_Photo: ['Formal'],
   Passport: ['Signature ?', 'Not expired ?'],
-  Others: []
+  Others: ['All certificates in English ?']
 };
 
 export const academic_background_header = {

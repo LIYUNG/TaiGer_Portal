@@ -566,7 +566,7 @@ class CommunicationSinglePage extends Component {
                 </Card.Title>
               </Card.Header>
               <Card.Body>
-                {this.state.student.agents?.length === 0 ? (
+                {/* {this.state.student.agents?.length === 0 ? (
                   <Row style={{ textDecoration: 'none' }}>
                     <Col className="my-0 mx-0">
                       You don't have Agent yet. Please wait until you have
@@ -584,7 +584,17 @@ class CommunicationSinglePage extends Component {
                       />
                     </Col>
                   </Row>
-                )}
+                )} */}
+                <Row>
+                  <Col className="my-0 mx-0">
+                    <DocThreadEditor
+                      thread={this.state.thread}
+                      buttonDisabled={this.state.buttonDisabled}
+                      editorState={this.state.editorState}
+                      handleClickSave={this.handleClickSave}
+                    />
+                  </Col>
+                </Row>
               </Card.Body>
             </Card>
           </Row>

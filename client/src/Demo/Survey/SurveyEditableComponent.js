@@ -212,7 +212,8 @@ class SurveyEditableComponent extends React.Component {
                   You <b>language skills and certificates</b> information are
                   still missing or not up-to-date:
                   {this.props.academic_background.language?.english_isPassed ===
-                  '-' ? (
+                    '-' ||
+                  !this.props.academic_background.language?.english_isPassed ? (
                     <li>Do you need English Test?</li>
                   ) : this.props.academic_background.language
                       ?.english_isPassed === 'X' &&
@@ -233,7 +234,8 @@ class SurveyEditableComponent extends React.Component {
                     <></>
                   )}
                   {this.props.academic_background.language?.german_isPassed ===
-                  '-' ? (
+                    '-' ||
+                  !this.props.academic_background.language?.german_isPassed ? (
                     <li>Do you need German Test?</li>
                   ) : this.props.academic_background.language
                       ?.german_isPassed === 'X' &&
@@ -254,7 +256,8 @@ class SurveyEditableComponent extends React.Component {
                     <></>
                   )}
                   {this.props.academic_background.language?.gre_isPassed ===
-                  '-' ? (
+                    '-' ||
+                  !this.props.academic_background.language?.gre_isPassed ? (
                     <li>Do you need GRE Test?</li>
                   ) : this.props.academic_background.language?.gre_isPassed ===
                       'X' &&
@@ -274,7 +277,8 @@ class SurveyEditableComponent extends React.Component {
                     <></>
                   )}
                   {this.props.academic_background.language?.gmat_isPassed ===
-                  '-' ? (
+                    '-' ||
+                  !this.props.academic_background.language?.gmat_isPassed ? (
                     <li>Do you need GMAT Test?</li>
                   ) : this.props.academic_background.language?.gmat_isPassed ===
                       'X' &&

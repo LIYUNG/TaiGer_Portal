@@ -2,7 +2,12 @@ import React from 'react';
 import { Row, Col, Card, Form, Button, Offcanvas } from 'react-bootstrap';
 
 import Aux from '../../hoc/_Aux';
-import { ENGLISH_CERTIFICATE_OPTIONS, convertDate } from '../Utils/contants';
+import {
+  ENGLISH_CERTIFICATE_OPTIONS,
+  GMAT_CERTIFICATE_OPTIONS,
+  GRE_CERTIFICATE_OPTIONS,
+  convertDate
+} from '../Utils/contants';
 import { FiExternalLink } from 'react-icons/fi';
 import {
   check_academic_background_filled,
@@ -190,143 +195,6 @@ class SurveyEditableComponent extends React.Component {
                     this.props.academic_background,
                     this.props.application_preference
                   )}
-                  {/* {this.props.academic_background &&
-                    this.props.academic_background.university &&
-                    !this.props.academic_background.university
-                      .attended_high_school && (
-                      <li>
-                        <b>High School Name</b>
-                      </li>
-                    )}
-                  {this.props.academic_background &&
-                    this.props.academic_background.university &&
-                    (!this.props.academic_background.university
-                      .high_school_isGraduated ||
-                      this.props.academic_background.university
-                        .high_school_isGraduated === '-') && (
-                      <li>
-                        <b>High School graduate status</b>
-                      </li>
-                    )}
-                  {this.props.academic_background &&
-                    this.props.academic_background.university &&
-                    !this.props.academic_background.university
-                      .attended_university && (
-                      <li>
-                        <b>University Name (English)</b>
-                      </li>
-                    )}
-                  {this.props.academic_background &&
-                    this.props.academic_background.university &&
-                    !this.props.academic_background.university
-                      .attended_university_program && (
-                      <li>
-                        <b>University Program (English)</b>
-                      </li>
-                    )}
-                  {this.props.academic_background &&
-                    this.props.academic_background.university &&
-                    (!this.props.academic_background.university.isGraduated ||
-                      this.props.academic_background.university.isGraduated ===
-                        '-') && (
-                      <li>
-                        <b>Bachelor Degree graduate status</b>
-                      </li>
-                    )}
-                  {this.props.academic_background &&
-                    this.props.academic_background.university &&
-                    (!this.props.academic_background.university
-                      .Has_Exchange_Experience ||
-                      this.props.academic_background.university
-                        .Has_Exchange_Experience === '-') && (
-                      <li>
-                        <b>Exchange Student Experience</b>
-                      </li>
-                    )}
-                  {this.props.academic_background &&
-                    this.props.academic_background.university &&
-                    (!this.props.academic_background.university
-                      .Has_Internship_Experience ||
-                      this.props.academic_background.university
-                        .Has_Internship_Experience === '-') && (
-                      <li>
-                        <b>Internship Experience</b>
-                      </li>
-                    )}
-                  {this.props.academic_background &&
-                    this.props.academic_background.university &&
-                    (!this.props.academic_background.university
-                      .Has_Working_Experience ||
-                      this.props.academic_background.university
-                        .Has_Working_Experience === '-') && (
-                      <li>
-                        <b>Full-Time Job Experience</b>
-                      </li>
-                    )}
-                  {this.props.academic_background &&
-                    this.props.academic_background.university &&
-                    (!this.props.academic_background.university.isGraduated ||
-                      this.props.academic_background.university.isGraduated ===
-                        'Yes' ||
-                      this.props.academic_background.university.isGraduated ===
-                        'pending') && (
-                      <>
-                        {this.props.academic_background &&
-                          this.props.academic_background.university &&
-                          (!this.props.academic_background.university
-                            .Highest_GPA_Uni ||
-                            this.props.academic_background.university
-                              .Highest_GPA_Uni === '-') && (
-                            <li>
-                              <b>
-                                Highest Score GPA of your university program
-                              </b>
-                            </li>
-                          )}
-                        {this.props.academic_background &&
-                          this.props.academic_background.university &&
-                          (!this.props.academic_background.university
-                            .Passing_GPA_Uni ||
-                            this.props.academic_background.university
-                              .Passing_GPA_Uni === '-') && (
-                            <li>
-                              <b>
-                                Passing Score GPA of your university program
-                              </b>
-                            </li>
-                          )}
-                        {this.props.academic_background &&
-                          this.props.academic_background.university &&
-                          (!this.props.academic_background.university
-                            .My_GPA_Uni ||
-                            this.props.academic_background.university
-                              .My_GPA_Uni === '-') && (
-                            <li>
-                              <b>My GPA</b>
-                            </li>
-                          )}
-                      </>
-                    )}
-                  {this.props.application_preference &&
-                    !this.props.application_preference
-                      .expected_application_date && (
-                      <li>
-                        <b>Expected Application Year</b>
-                      </li>
-                    )}
-                  {this.props.application_preference &&
-                    !this.props.application_preference
-                      .expected_application_semester && (
-                      <li>
-                        <b>Expected Application Semester</b>
-                      </li>
-                    )}
-                  {this.props.application_preference &&
-                    !this.props.application_preference.target_degree && (
-                      <li>
-                        <b>Target Degree Programs</b>
-                      </li>
-                    )} */}
                 </Card.Body>
               </Card>
             </Col>
@@ -341,37 +209,74 @@ class SurveyEditableComponent extends React.Component {
                     請盡速更新您的語言檢定資訊，這將會影響Agent了解您的申請時程
                   </b>
                   <br />
-                  You <b>language skills</b> information are still missing or
-                  not up-to-date.
-                  {(!this.props.academic_background.language &&
-                    this.props.academic_background.language.english_isPassed ===
-                      'X' &&
+                  You <b>language skills and certificates</b> information are
+                  still missing or not up-to-date:
+                  {this.props.academic_background.language?.english_isPassed ===
+                    'X' &&
+                  parseInt(
                     getNumberOfDays(
-                      this.props.academic_background.language.english_test_date,
+                      this.props.academic_background.language
+                        ?.english_test_date,
                       new Date()
-                    ) > 1) ||
-                  (!this.props.academic_background.language &&
-                    this.props.academic_background.language.english_isPassed ===
-                      'X' &&
+                    )
+                  ) > 1 ? (
+                    <li>English Test passed?</li>
+                  ) : this.props.academic_background.language
+                      ?.english_isPassed === 'X' &&
                     this.props.academic_background.language
-                      .english_test_date === '') ? (
-                    <li>English Test Date (Or if passed? Or not needed?)</li>
+                      ?.english_test_date === '' ? (
+                    <li>English Test Date missing !</li>
                   ) : (
                     <></>
                   )}
-                  {(!this.props.academic_background.language &&
-                    this.props.academic_background.language.german_isPassed ===
-                      'X' &&
+                  {this.props.academic_background.language?.german_isPassed ===
+                    'X' &&
+                  parseInt(
                     getNumberOfDays(
-                      this.props.academic_background.language.german_test_date,
+                      this.props.academic_background.language?.german_test_date,
                       new Date()
-                    ) > 1) ||
-                  (!this.props.academic_background.language &&
-                    this.props.academic_background.language.german_isPassed ===
+                    )
+                  ) > 1 ? (
+                    <li>German Test passed ?</li>
+                  ) : this.props.academic_background.language
+                      ?.german_isPassed === 'X' &&
+                    this.props.academic_background.language
+                      ?.german_test_date === '' ? (
+                    <li>German Test Date not given</li>
+                  ) : (
+                    <></>
+                  )}
+                  {this.props.academic_background.language?.gre_isPassed ===
+                    'X' &&
+                  parseInt(
+                    getNumberOfDays(
+                      this.props.academic_background.language?.gre_test_date,
+                      new Date()
+                    )
+                  ) > 1 ? (
+                    <li>GRE Test passed ?</li>
+                  ) : this.props.academic_background.language?.gre_isPassed ===
                       'X' &&
-                    this.props.academic_background.language.german_test_date ===
-                      '') ? (
-                    <li>German Test Date (Or if passed? Or not needed?)</li>
+                    this.props.academic_background.language?.gre_test_date ===
+                      '' ? (
+                    <li>GRE Test Date not given</li>
+                  ) : (
+                    <></>
+                  )}
+                  {this.props.academic_background.language?.gmat_isPassed ===
+                    'X' &&
+                  parseInt(
+                    getNumberOfDays(
+                      this.props.academic_background.language?.gmat_test_date,
+                      new Date()
+                    )
+                  ) > 1 ? (
+                    <li>GMAT Test passed ?</li>
+                  ) : this.props.academic_background.language?.gmat_isPassed ===
+                      'X' &&
+                    this.props.academic_background.language?.gmat_test_date ===
+                      '' ? (
+                    <li>GMAT Test Date not given</li>
                   ) : (
                     <></>
                   )}
@@ -1130,7 +1035,7 @@ class SurveyEditableComponent extends React.Component {
             <Card className="my-4 mx-0" bg={'dark'} text={'white'}>
               <Card.Header>
                 <Card.Title className="my-0 mx-0 text-light">
-                  Languages
+                  Languages Test and Certificates
                 </Card.Title>
               </Card.Header>
               <Card.Body>
@@ -1466,6 +1371,274 @@ class SurveyEditableComponent extends React.Component {
                                   : ''
                               }
                               placeholder="Date of Germa Test"
+                              onChange={(e) => this.handleChange_Language(e)}
+                            />
+                          </Form.Group>
+                        </Col>
+                      </>
+                    )
+                  ) : (
+                    <></>
+                  )}
+                </Row>
+                <Row>
+                  <Col md={4}>
+                    <Form.Group controlId="gre_isPassed">
+                      <Form.Label className="my-0 mx-0 text-light">
+                        GRE Test ? (At least V145 Q160 )
+                      </Form.Label>
+                      <Form.Control
+                        as="select"
+                        disabled={isReadonly}
+                        value={
+                          this.state.academic_background.language &&
+                          this.state.academic_background.language.gre_isPassed
+                        }
+                        onChange={(e) => this.handleChange_Language(e)}
+                      >
+                        <option value="-">-</option>
+                        <option value="O">Yes (Provide Test Score)</option>
+                        <option value="X">No (Provide Test Date)</option>
+                        <option value="--">Not Needed</option>
+                      </Form.Control>
+                    </Form.Group>
+                  </Col>
+                  {this.state.academic_background.language &&
+                  this.state.academic_background.language.gre_isPassed &&
+                  (this.state.academic_background.language.gre_isPassed ===
+                    'O' ||
+                    this.state.academic_background.language.gre_isPassed ===
+                      'X') ? (
+                    this.state.academic_background.language.gre_isPassed ===
+                    'O' ? (
+                      <>
+                        <Col md={4}>
+                          <Form.Group controlId="gre_certificate">
+                            <Form.Label className="my-0 mx-0 text-light">
+                              GRE Certificate
+                            </Form.Label>
+                            <Form.Control
+                              as="select"
+                              disabled={isReadonly}
+                              value={
+                                this.state.academic_background.language &&
+                                this.state.academic_background.language
+                                  .gre_certificate
+                                  ? this.state.academic_background.language
+                                      .gre_certificate
+                                  : ''
+                              }
+                              onChange={(e) => this.handleChange_Language(e)}
+                            >
+                              <>{GRE_CERTIFICATE_OPTIONS()}</>
+                            </Form.Control>
+                          </Form.Group>
+                        </Col>
+                        <Col md={4}>
+                          <Form.Group controlId="gre_score">
+                            <Form.Label className="my-0 mx-0 text-light">
+                              GRE Test Score
+                            </Form.Label>
+                            <Form.Control
+                              type="text"
+                              readOnly={isReadonly}
+                              placeholder="(i.e. V152Q167A3.5) "
+                              value={
+                                this.state.academic_background.language &&
+                                this.state.academic_background.language
+                                  .gre_score
+                                  ? this.state.academic_background.language
+                                      .gre_score
+                                  : ''
+                              }
+                              disabled={
+                                this.state.academic_background.language &&
+                                this.state.academic_background.language
+                                  .gre_certificate === 'No'
+                                  ? true
+                                  : false
+                              }
+                              onChange={(e) => this.handleChange_Language(e)}
+                            />
+                          </Form.Group>
+                          <br />
+                        </Col>
+                      </>
+                    ) : (
+                      <>
+                        <Col md={4}>
+                          <Form.Group controlId="gre_certificate">
+                            <Form.Label className="my-0 mx-0 text-light">
+                              Expected GRE Certificate
+                            </Form.Label>
+                            <Form.Control
+                              as="select"
+                              disabled={isReadonly}
+                              value={
+                                this.state.academic_background.language &&
+                                this.state.academic_background.language
+                                  .gre_certificate
+                                  ? this.state.academic_background.language
+                                      .gre_certificate
+                                  : ''
+                              }
+                              onChange={(e) => this.handleChange_Language(e)}
+                            >
+                              <>{GRE_CERTIFICATE_OPTIONS()}</>
+                            </Form.Control>
+                          </Form.Group>
+                        </Col>
+                        <Col md={4}>
+                          <Form.Group controlId="gre_test_date">
+                            <Form.Label className="my-0 mx-0 text-light">
+                              Expected Test Date
+                            </Form.Label>
+                            <Form.Control
+                              type="date"
+                              readOnly={isReadonly}
+                              value={
+                                this.state.academic_background.language &&
+                                this.state.academic_background.language
+                                  .gre_test_date
+                                  ? this.state.academic_background.language
+                                      .gre_test_date
+                                  : ''
+                              }
+                              placeholder="Date of GRE General/Subject Test"
+                              onChange={(e) => this.handleChange_Language(e)}
+                            />
+                          </Form.Group>
+                        </Col>
+                      </>
+                    )
+                  ) : (
+                    <></>
+                  )}
+                </Row>
+                <Row>
+                  <Col md={4}>
+                    <Form.Group controlId="gmat_isPassed">
+                      <Form.Label className="my-0 mx-0 text-light">
+                        GMAT Test ? (At least 600 )
+                      </Form.Label>
+                      <Form.Control
+                        as="select"
+                        disabled={isReadonly}
+                        value={
+                          this.state.academic_background.language &&
+                          this.state.academic_background.language.gmat_isPassed
+                        }
+                        onChange={(e) => this.handleChange_Language(e)}
+                      >
+                        <option value="-">-</option>
+                        <option value="O">Yes (Provide Test Score)</option>
+                        <option value="X">No (Provide Test Date)</option>
+                        <option value="--">Not Needed</option>
+                      </Form.Control>
+                    </Form.Group>
+                  </Col>
+                  {this.state.academic_background.language &&
+                  this.state.academic_background.language.gmat_isPassed &&
+                  (this.state.academic_background.language.gmat_isPassed ===
+                    'O' ||
+                    this.state.academic_background.language.gmat_isPassed ===
+                      'X') ? (
+                    this.state.academic_background.language.gmat_isPassed ===
+                    'O' ? (
+                      <>
+                        <Col md={4}>
+                          <Form.Group controlId="gmat_certificate">
+                            <Form.Label className="my-0 mx-0 text-light">
+                              GMAT Certificate
+                            </Form.Label>
+                            <Form.Control
+                              as="select"
+                              disabled={isReadonly}
+                              value={
+                                this.state.academic_background.language &&
+                                this.state.academic_background.language
+                                  .gmat_certificate
+                                  ? this.state.academic_background.language
+                                      .gmat_certificate
+                                  : ''
+                              }
+                              onChange={(e) => this.handleChange_Language(e)}
+                            >
+                              <>{GMAT_CERTIFICATE_OPTIONS()}</>
+                            </Form.Control>
+                          </Form.Group>
+                        </Col>
+                        <Col md={4}>
+                          <Form.Group controlId="gmat_score">
+                            <Form.Label className="my-0 mx-0 text-light">
+                              GMAT Test Score
+                            </Form.Label>
+                            <Form.Control
+                              type="text"
+                              readOnly={isReadonly}
+                              placeholder="(i.e. 550, 620) "
+                              value={
+                                this.state.academic_background.language &&
+                                this.state.academic_background.language
+                                  .gmat_score
+                                  ? this.state.academic_background.language
+                                      .gmat_score
+                                  : ''
+                              }
+                              disabled={
+                                this.state.academic_background.language &&
+                                this.state.academic_background.language
+                                  .gmat_certificate === 'No'
+                                  ? true
+                                  : false
+                              }
+                              onChange={(e) => this.handleChange_Language(e)}
+                            />
+                          </Form.Group>
+                          <br />
+                        </Col>
+                      </>
+                    ) : (
+                      <>
+                        <Col md={4}>
+                          <Form.Group controlId="gmat_certificate">
+                            <Form.Label className="my-0 mx-0 text-light">
+                              Expected GMAT Certificate
+                            </Form.Label>
+                            <Form.Control
+                              as="select"
+                              disabled={isReadonly}
+                              value={
+                                this.state.academic_background.language &&
+                                this.state.academic_background.language
+                                  .gmat_certificate
+                                  ? this.state.academic_background.language
+                                      .gmat_certificate
+                                  : ''
+                              }
+                              onChange={(e) => this.handleChange_Language(e)}
+                            >
+                              <>{GMAT_CERTIFICATE_OPTIONS()}</>
+                            </Form.Control>
+                          </Form.Group>
+                        </Col>
+                        <Col md={4}>
+                          <Form.Group controlId="gmat_test_date">
+                            <Form.Label className="my-0 mx-0 text-light">
+                              Expected Test Date
+                            </Form.Label>
+                            <Form.Control
+                              type="date"
+                              readOnly={isReadonly}
+                              value={
+                                this.state.academic_background.language &&
+                                this.state.academic_background.language
+                                  .gmat_test_date
+                                  ? this.state.academic_background.language
+                                      .gmat_test_date
+                                  : ''
+                              }
+                              placeholder="Date of GMAT Phyical/Online Test"
                               onChange={(e) => this.handleChange_Language(e)}
                             />
                           </Form.Group>

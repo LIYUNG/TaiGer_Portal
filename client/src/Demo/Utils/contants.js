@@ -283,6 +283,26 @@ export const ENGLISH_CERTIFICATE_OPTIONS = () => {
   );
 };
 
+export const GRE_CERTIFICATE_OPTIONS = () => {
+  return (
+    <>
+      <option value="">Please Select</option>
+      <option value="GRE_GENERAL">GRE General Test</option>
+      <option value="GRE_SUBJECT">GRE Subject Test</option>
+    </>
+  );
+};
+
+export const GMAT_CERTIFICATE_OPTIONS = () => {
+  return (
+    <>
+      <option value="">Please Select</option>
+      <option value="GMAT_GENERAL">GMAT Physical Test</option>
+      <option value="GMAT_SUBJECT">GMAT Online Test</option>
+    </>
+  );
+};
+
 export const APPLICATION_YEARS_FUTURE = () => {
   return (
     <>

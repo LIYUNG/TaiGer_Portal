@@ -261,6 +261,38 @@ const UserSchema = new Schema(
           type: String,
           default: ''
         },
+        gre_isPassed: {
+          type: String,
+          default: '-'
+        },
+        gre_certificate: {
+          type: String,
+          default: ''
+        },
+        gre_score: {
+          type: String,
+          default: ''
+        },
+        gre_test_date: {
+          type: String,
+          default: ''
+        },
+        gmat_isPassed: {
+          type: String,
+          default: '-'
+        },
+        gmat_certificate: {
+          type: String,
+          default: ''
+        },
+        gmat_score: {
+          type: String,
+          default: ''
+        },
+        gmat_test_date: {
+          type: String,
+          default: ''
+        },
         updatedAt: Date
       }
     },

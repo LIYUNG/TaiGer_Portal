@@ -69,6 +69,16 @@ class SingleProgramView extends React.Component {
                 <Row>
                   <Col md={4}>
                     <p className="my-0">
+                      <b>GPA Requirement (German system)</b>
+                    </p>
+                  </Col>
+                  <Col md={8}>
+                    <p className="my-0">{this.props.program.gpa_requirement}</p>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col md={4}>
+                    <p className="my-0">
                       <b>Application Start (MM-DD)</b>
                     </p>
                   </Col>

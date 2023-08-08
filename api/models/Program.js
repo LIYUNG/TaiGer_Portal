@@ -37,6 +37,10 @@ const programSchema = new Schema(
       type: String
       // enum: Object.values(Languages)
     },
+    gpa_requirement: {
+      type: String
+      // required: true,
+    },
     application_start: String,
     application_deadline: {
       type: String

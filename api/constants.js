@@ -1074,7 +1074,11 @@ const missing_academic_background = (student, user) => {
     <li><b>English passed?</b></li>
     <li>English Certificate?</li>
     <li><b>German passed?</b></li>
-    <li>German Certificate?</li>`;
+    <li>German Certificate?</li>
+    <li><b>GRE passed?</b></li>
+    <li>GRE Certificate?</li
+    <li><b>GMAT passed?</b></li>
+    <li>GMAT Certificate?</li`;
     }
     missing_background_fields += '</ul>';
     if (user.role === Role.Admin || user.role === Role.Agent) {
@@ -1109,7 +1113,11 @@ const missing_academic_background = (student, user) => {
     student.academic_background.language.english_isPassed === '-' ||
     student.academic_background.language.english_isPassed === 'X' ||
     student.academic_background.language.german_isPassed === '-' ||
-    student.academic_background.language.german_isPassed === 'X'
+    student.academic_background.language.german_isPassed === 'X' ||
+    student.academic_background.language.gre_isPassed === '-' ||
+    student.academic_background.language.gre_isPassed === 'X' ||
+    student.academic_background.language.gmat_isPassed === '-' ||
+    student.academic_background.language.gmat_isPassed === 'X'
     // ||
     // !student.academic_background.university.isGraduated
   ) {
@@ -1182,9 +1190,12 @@ const missing_academic_background = (student, user) => {
         // After test date 1 day:
         const today = new Date();
         if (
-          getNumberOfDays(
-            student.academic_background.language.english_test_date,
-            today
+          parseInt(
+            getNumberOfDays(
+              student.academic_background.language.english_test_date,
+              today
+            ),
+            10
           ) > 1
         ) {
           missing_background_fields += `<li>English test date : <b>expired ${getNumberOfDays(
@@ -1208,13 +1219,74 @@ const missing_academic_background = (student, user) => {
         // After test date 1 day:
         const today = new Date();
         if (
-          getNumberOfDays(
-            student.academic_background.language.german_test_date,
-            today
+          parseInt(
+            getNumberOfDays(
+              student.academic_background.language.german_test_date,
+              today
+            ),
+            10
           ) > 1
         ) {
           missing_background_fields += `<li>German test date : <b>expired ${getNumberOfDays(
             student.academic_background.language.german_test_date,
+            today
+          )} days</b>
+          </li>`;
+        }
+      }
+    }
+    if (student.academic_background.language.gre_isPassed === '-') {
+      missing_background_fields += '<li>GRE passed?</li>';
+    }
+    if (student.academic_background.language.gre_isPassed === 'X') {
+      if (student.academic_background.language.gre_certificate === '') {
+        missing_background_fields += '<li>GRE Certificate?</li>';
+      }
+      if (student.academic_background.language.gre_test_date === '') {
+        missing_background_fields += '<li>GRE Test Date?</li>';
+      } else {
+        // After test date 1 day:
+        const today = new Date();
+        if (
+          parseInt(
+            getNumberOfDays(
+              student.academic_background.language.gre_test_date,
+              today
+            ),
+            10
+          ) > 1
+        ) {
+          missing_background_fields += `<li>GRE test date : <b>expired ${getNumberOfDays(
+            student.academic_background.language.gre_test_date,
+            today
+          )} days</b>
+          </li>`;
+        }
+      }
+    }
+    if (student.academic_background.language.gmat_isPassed === '-') {
+      missing_background_fields += '<li>GMAT passed?</li>';
+    }
+    if (student.academic_background.language.gmat_isPassed === 'X') {
+      if (student.academic_background.language.gmat_certificate === '') {
+        missing_background_fields += '<li>GMAT Certificate?</li>';
+      }
+      if (student.academic_background.language.gmat_test_date === '') {
+        missing_background_fields += '<li>GMAT Test Date?</li>';
+      } else {
+        // After test date 1 day:
+        const today = new Date();
+        if (
+          parseInt(
+            getNumberOfDays(
+              student.academic_background.language.gmat_test_date,
+              today
+            ),
+            10
+          ) > 1
+        ) {
+          missing_background_fields += `<li>GMAT test date : <b>expired ${getNumberOfDays(
+            student.academic_background.language.gmat_test_date,
             today
           )} days</b>
           </li>`;

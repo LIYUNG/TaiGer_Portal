@@ -1,9 +1,9 @@
-import React from "react";
-import { Form, Row, Col, Spinner, Card, Button } from "react-bootstrap";
+import React from 'react';
+import { Form, Row, Col, Spinner, Card, Button } from 'react-bootstrap';
 
 class NewProgramEdit extends React.Component {
   state = {
-    program: {},
+    program: {}
   };
   handleChange = (e) => {
     e.preventDefault();
@@ -11,7 +11,7 @@ class NewProgramEdit extends React.Component {
     program_temp[e.target.id] = e.target.value;
     this.setState((state) => ({
       ...state,
-      program: program_temp,
+      program: program_temp
     }));
   };
   AddValidProgram = (program) => {
@@ -26,7 +26,7 @@ class NewProgramEdit extends React.Component {
       e.preventDefault();
       this.props.handleSubmit_Program(program);
     } else {
-      alert("Please fill completely");
+      alert('Please fill completely');
     }
   };
   render() {
@@ -131,8 +131,27 @@ class NewProgramEdit extends React.Component {
                       placeholder="English"
                       onChange={(e) => this.handleChange(e)}
                       defaultValue={
-                        this.state.program.lang
-                          ? this.state.program.lang
+                        this.state.program.lang ? this.state.program.lang : ''
+                      }
+                    />
+                  </Form.Group>
+                </h5>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={4}>
+                <h5>GPA Requirement (German system)</h5>
+              </Col>
+              <Col md={4}>
+                <h5>
+                  <Form.Group controlId="gpa_requirement">
+                    <Form.Control
+                      type="text"
+                      placeholder="2,5"
+                      onChange={(e) => this.handleChange(e)}
+                      defaultValue={
+                        this.state.program.gpa_requirement
+                          ? this.state.program.gpa_requirement
                           : ''
                       }
                     />

@@ -212,14 +212,17 @@ class SurveyEditableComponent extends React.Component {
                   You <b>language skills and certificates</b> information are
                   still missing or not up-to-date:
                   {this.props.academic_background.language?.english_isPassed ===
-                    'X' &&
-                  parseInt(
-                    getNumberOfDays(
-                      this.props.academic_background.language
-                        ?.english_test_date,
-                      new Date()
-                    )
-                  ) > 1 ? (
+                  '-' ? (
+                    <li>Do you need English Test?</li>
+                  ) : this.props.academic_background.language
+                      ?.english_isPassed === 'X' &&
+                    parseInt(
+                      getNumberOfDays(
+                        this.props.academic_background.language
+                          ?.english_test_date,
+                        new Date()
+                      )
+                    ) > 1 ? (
                     <li>English Test passed?</li>
                   ) : this.props.academic_background.language
                       ?.english_isPassed === 'X' &&
@@ -230,13 +233,17 @@ class SurveyEditableComponent extends React.Component {
                     <></>
                   )}
                   {this.props.academic_background.language?.german_isPassed ===
-                    'X' &&
-                  parseInt(
-                    getNumberOfDays(
-                      this.props.academic_background.language?.german_test_date,
-                      new Date()
-                    )
-                  ) > 1 ? (
+                  '-' ? (
+                    <li>Do you need German Test?</li>
+                  ) : this.props.academic_background.language
+                      ?.german_isPassed === 'X' &&
+                    parseInt(
+                      getNumberOfDays(
+                        this.props.academic_background.language
+                          ?.german_test_date,
+                        new Date()
+                      )
+                    ) > 1 ? (
                     <li>German Test passed ?</li>
                   ) : this.props.academic_background.language
                       ?.german_isPassed === 'X' &&
@@ -247,13 +254,16 @@ class SurveyEditableComponent extends React.Component {
                     <></>
                   )}
                   {this.props.academic_background.language?.gre_isPassed ===
-                    'X' &&
-                  parseInt(
-                    getNumberOfDays(
-                      this.props.academic_background.language?.gre_test_date,
-                      new Date()
-                    )
-                  ) > 1 ? (
+                  '-' ? (
+                    <li>Do you need GRE Test?</li>
+                  ) : this.props.academic_background.language?.gre_isPassed ===
+                      'X' &&
+                    parseInt(
+                      getNumberOfDays(
+                        this.props.academic_background.language?.gre_test_date,
+                        new Date()
+                      )
+                    ) > 1 ? (
                     <li>GRE Test passed ?</li>
                   ) : this.props.academic_background.language?.gre_isPassed ===
                       'X' &&
@@ -264,13 +274,16 @@ class SurveyEditableComponent extends React.Component {
                     <></>
                   )}
                   {this.props.academic_background.language?.gmat_isPassed ===
-                    'X' &&
-                  parseInt(
-                    getNumberOfDays(
-                      this.props.academic_background.language?.gmat_test_date,
-                      new Date()
-                    )
-                  ) > 1 ? (
+                  '-' ? (
+                    <li>Do you need GMAT Test?</li>
+                  ) : this.props.academic_background.language?.gmat_isPassed ===
+                      'X' &&
+                    parseInt(
+                      getNumberOfDays(
+                        this.props.academic_background.language?.gmat_test_date,
+                        new Date()
+                      )
+                    ) > 1 ? (
                     <li>GMAT Test passed ?</li>
                   ) : this.props.academic_background.language?.gmat_isPassed ===
                       'X' &&
@@ -1054,6 +1067,10 @@ class SurveyEditableComponent extends React.Component {
                 {(this.state.academic_background?.language?.english_isPassed ===
                   'X' ||
                   this.state.academic_background?.language?.german_isPassed ===
+                    'X' ||
+                  this.state.academic_background?.language?.gre_isPassed ===
+                    'X' ||
+                  this.state.academic_background?.language?.gmat_isPassed ===
                     'X') && (
                   <Banner
                     ReadOnlyMode={true}

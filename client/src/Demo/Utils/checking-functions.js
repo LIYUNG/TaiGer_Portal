@@ -309,14 +309,14 @@ export const check_languages_filled = (academic_background) => {
   }
   if (
     !academic_background.language ||
-    ((!academic_background.language.english_isPassed ||
-      academic_background.language.english_isPassed === '-') &&
-      (!academic_background.language.german_isPassed ||
-        academic_background.language.german_isPassed === '-') &&
-      (!academic_background.language.gre_isPassed ||
-        academic_background.language.gre_isPassed === '-') &&
-      (!academic_background.language.gmat_isPassed ||
-        academic_background.language.gmat_isPassed === '-'))
+    !academic_background.language.english_isPassed ||
+    academic_background.language.english_isPassed === '-' ||
+    !academic_background.language.german_isPassed ||
+    academic_background.language.german_isPassed === '-' ||
+    !academic_background.language.gre_isPassed ||
+    academic_background.language.gre_isPassed === '-' ||
+    !academic_background.language.gmat_isPassed ||
+    academic_background.language.gmat_isPassed === '-'
   ) {
     return false;
   }
@@ -324,23 +324,27 @@ export const check_languages_filled = (academic_background) => {
   const today = new Date();
   if (
     (academic_background.language.english_isPassed === 'X' &&
-      getNumberOfDays(academic_background.language.english_test_date, today) >
-        1) ||
+      parseInt(
+        getNumberOfDays(academic_background.language.english_test_date, today)
+      ) > 1) ||
     (academic_background.language.english_isPassed === 'X' &&
       academic_background.language.english_test_date === '') ||
     (academic_background.language.german_isPassed === 'X' &&
-      getNumberOfDays(academic_background.language.german_test_date, today) >
-        1) ||
+      parseInt(
+        getNumberOfDays(academic_background.language.german_test_date, today)
+      ) > 1) ||
     (academic_background.language.german_isPassed === 'X' &&
       academic_background.language.german_test_date === '') ||
     (academic_background.language.gre_isPassed === 'X' &&
-      getNumberOfDays(academic_background.language.gre_test_date, today) >
-        1) ||
+      parseInt(
+        getNumberOfDays(academic_background.language.gre_test_date, today)
+      ) > 1) ||
     (academic_background.language.gre_isPassed === 'X' &&
       academic_background.language.gre_test_date === '') ||
     (academic_background.language.gmat_isPassed === 'X' &&
-      getNumberOfDays(academic_background.language.gmat_test_date, today) >
-        1) ||
+      parseInt(
+        getNumberOfDays(academic_background.language.gmat_test_date, today)
+      ) > 1) ||
     (academic_background.language.gmat_isPassed === 'X' &&
       academic_background.language.gmat_test_date === '')
   ) {

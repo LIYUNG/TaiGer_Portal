@@ -1518,6 +1518,12 @@ const updateLanguageSkill = asyncHandler(async (req, res, next) => {
   let english_certificate_doc = updatedStudent.profile.find(
     (doc) => doc.name === profile_name_list.Englisch_Certificate
   );
+  let gre_certificate_doc = updatedStudent.profile.find(
+    (doc) => doc.name === profile_name_list.GREGMAT
+  );
+  let gmat_certificate_doc = updatedStudent.profile.find(
+    (doc) => doc.name === profile_name_list.GMAT
+  );
   if (updatedStudent.academic_background.language.german_isPassed === '--') {
     if (!german_certificate_doc) {
       // Set not needed
@@ -1572,6 +1578,61 @@ const updateLanguageSkill = asyncHandler(async (req, res, next) => {
     updatedStudent.profile.push(english_certificate_doc);
   } else if (english_certificate_doc.status === DocumentStatus.NotNeeded) {
     english_certificate_doc.status = DocumentStatus.Missing;
+  }
+  if (updatedStudent.academic_background.language.gre_isPassed === '--') {
+    if (!gre_certificate_doc) {
+      // Set not needed
+      gre_certificate_doc = updatedStudent.profile.create({
+        name: profile_name_list.GREGMAT
+      });
+      gre_certificate_doc.status = DocumentStatus.NotNeeded;
+      gre_certificate_doc.required = true;
+      gre_certificate_doc.updatedAt = new Date();
+      gre_certificate_doc.path = '';
+      updatedStudent.profile.push(gre_certificate_doc);
+    } else if (gre_certificate_doc.status === DocumentStatus.Missing) {
+      gre_certificate_doc.status = DocumentStatus.NotNeeded;
+    }
+  } else if (!gre_certificate_doc) {
+    // Set not needed
+    gre_certificate_doc = updatedStudent.profile.create({
+      name: profile_name_list.GREGMAT
+    });
+    gre_certificate_doc.status = DocumentStatus.Missing;
+    gre_certificate_doc.required = true;
+    gre_certificate_doc.updatedAt = new Date();
+    gre_certificate_doc.path = '';
+    updatedStudent.profile.push(gre_certificate_doc);
+  } else if (gre_certificate_doc.status === DocumentStatus.NotNeeded) {
+    gre_certificate_doc.status = DocumentStatus.Missing;
+  }
+
+  if (updatedStudent.academic_background.language.gmat_isPassed === '--') {
+    if (!gmat_certificate_doc) {
+      // Set not needed
+      gmat_certificate_doc = updatedStudent.profile.create({
+        name: profile_name_list.GMAT
+      });
+      gmat_certificate_doc.status = DocumentStatus.NotNeeded;
+      gmat_certificate_doc.required = true;
+      gmat_certificate_doc.updatedAt = new Date();
+      gmat_certificate_doc.path = '';
+      updatedStudent.profile.push(gmat_certificate_doc);
+    } else if (gmat_certificate_doc.status === DocumentStatus.Missing) {
+      gmat_certificate_doc.status = DocumentStatus.NotNeeded;
+    }
+  } else if (!gmat_certificate_doc) {
+    // Set not needed
+    gmat_certificate_doc = updatedStudent.profile.create({
+      name: profile_name_list.GMAT
+    });
+    gmat_certificate_doc.status = DocumentStatus.Missing;
+    gmat_certificate_doc.required = true;
+    gmat_certificate_doc.updatedAt = new Date();
+    gmat_certificate_doc.path = '';
+    updatedStudent.profile.push(gmat_certificate_doc);
+  } else if (gmat_certificate_doc.status === DocumentStatus.NotNeeded) {
+    gmat_certificate_doc.status = DocumentStatus.Missing;
   }
 
   await updatedStudent.save();

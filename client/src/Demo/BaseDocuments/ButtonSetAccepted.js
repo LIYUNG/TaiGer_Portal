@@ -14,8 +14,7 @@ import { DELETE_STYLE, REJECT_STYLE, convertDate } from '../Utils/contants';
 import {
   is_TaiGer_Admin,
   is_TaiGer_Editor,
-  is_TaiGer_Student,
-  showButtonIfMyStudent
+  is_TaiGer_Student
 } from '../Utils/checking-functions';
 import OffcanvasBaseDocument from '../../components/Offcanvas/OffcanvasBaseDocument';
 
@@ -272,7 +271,7 @@ class ButtonSetAccepted extends React.Component {
             <td></td>
             <td>
               <Col>
-                {showButtonIfMyStudent(this.props.user, this.state.student) && (
+                {
                   <Form
                     onSubmit={(e) =>
                       this.onDeleteFileWarningPopUp(
@@ -295,7 +294,7 @@ class ButtonSetAccepted extends React.Component {
                       </Button>
                     </Form.Group>
                   </Form>
-                )}
+                }
               </Col>
             </td>
           </>

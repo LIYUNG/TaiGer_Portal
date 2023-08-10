@@ -17,8 +17,7 @@ import {
   is_TaiGer_Admin,
   is_TaiGer_AdminAgent,
   is_TaiGer_Editor,
-  is_TaiGer_Student,
-  showButtonIfMyStudent
+  is_TaiGer_Student
 } from '../Utils/checking-functions';
 import { ACCEPT_STYLE, DELETE_STYLE, convertDate } from '../Utils/contants';
 import { BASE_URL } from '../../api/request';
@@ -306,31 +305,7 @@ class ButtonSetRejected extends React.Component {
             </Button>
           </Col>
         </td>
-        <td>
-          {/* {is_TaiGer_AdminAgent(this.props.user) && (
-            <Col>
-              {showButtonIfMyStudent(this.props.user, this.state.student) && (
-                <Button
-                  variant={ACCEPT_STYLE}
-                  size="sm"
-                  type="submit"
-                  title="Mark as finished"
-                  disabled={!this.state.isLoaded}
-                  onClick={(e) =>
-                    this.onUpdateProfileDocStatus(
-                      e,
-                      this.props.k,
-                      this.state.student_id,
-                      'accepted'
-                    )
-                  }
-                >
-                  <AiOutlineCheck />
-                </Button>
-              )}
-            </Col>
-          )} */}
-        </td>
+        <td></td>
         <td>
           <Button
             size="sm"
@@ -351,7 +326,7 @@ class ButtonSetRejected extends React.Component {
           <>
             <td>
               <Col>
-                {showButtonIfMyStudent(this.props.user, this.state.student) && (
+                {
                   <Button
                     variant={DELETE_STYLE}
                     size="sm"
@@ -369,7 +344,7 @@ class ButtonSetRejected extends React.Component {
                   >
                     <AiOutlineDelete size={16} />
                   </Button>
-                )}
+                }
               </Col>
             </td>
           </>
@@ -507,7 +482,7 @@ class ButtonSetRejected extends React.Component {
                 </Form.Group>
               </Modal.Body>
               <Modal.Footer>
-                {showButtonIfMyStudent(this.props.user, this.state.student) && (
+                {
                   <Button
                     disabled={this.state.comments === ''}
                     onClick={(e) => this.onUpdateRejectMessageStudent(e)}
@@ -527,7 +502,7 @@ class ButtonSetRejected extends React.Component {
                       'Update'
                     )}
                   </Button>
-                )}
+                }
 
                 <Button onClick={this.closeCommentWindow} variant="light">
                   Close

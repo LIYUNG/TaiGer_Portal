@@ -8,8 +8,7 @@ import OffcanvasBaseDocument from '../../components/Offcanvas/OffcanvasBaseDocum
 import {
   is_TaiGer_Admin,
   is_TaiGer_AdminAgent,
-  is_TaiGer_Student,
-  showButtonIfMyStudent
+  is_TaiGer_Student
 } from '../Utils/checking-functions';
 
 class ButtonSetMissing extends React.Component {
@@ -144,24 +143,22 @@ class ButtonSetMissing extends React.Component {
                 </Spinner>
               </div>
             ) : (
-              showButtonIfMyStudent(this.props.user, this.props.student) && (
-                <Form.Group controlId={`${this.props.k}`}>
-                  <Form.Label>
-                    <IoMdCloudUpload color={'white'} size={32} />
-                  </Form.Label>
-                  <Form.Control
-                    hidden
-                    type="file"
-                    onChange={(e) =>
-                      this.handleGeneralDocSubmit(
-                        e,
-                        this.props.k,
-                        this.state.student_id
-                      )
-                    }
-                  />
-                </Form.Group>
-              )
+              <Form.Group controlId={`${this.props.k}`}>
+                <Form.Label>
+                  <IoMdCloudUpload color={'white'} size={32} />
+                </Form.Label>
+                <Form.Control
+                  hidden
+                  type="file"
+                  onChange={(e) =>
+                    this.handleGeneralDocSubmit(
+                      e,
+                      this.props.k,
+                      this.state.student_id
+                    )
+                  }
+                />
+              </Form.Group>
             )}
           </td>
         ) : (
@@ -171,7 +168,7 @@ class ButtonSetMissing extends React.Component {
         <td>
           {is_TaiGer_AdminAgent(this.props.user) && (
             <Col md>
-              {showButtonIfMyStudent(this.props.user, this.props.student) && (
+              {
                 <Form
                   onSubmit={(e) =>
                     this.onUpdateProfileDocStatus(
@@ -188,7 +185,7 @@ class ButtonSetMissing extends React.Component {
                     </Button>
                   </Form.Group>
                 </Form>
-              )}
+              }
             </Col>
           )}
         </td>

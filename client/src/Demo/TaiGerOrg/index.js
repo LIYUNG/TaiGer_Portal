@@ -176,11 +176,25 @@ class TaiGerOrg extends React.Component {
               <thead>
                 <tr>
                   <th>Name</th>
-                  <th>Can Access AllChat</th>
-                  <th>Can Assign Agents</th>
-                  <th>Can Assign Editors</th>
-                  <th>Can Modify Docs</th>
-                  <th>Can Access Students</th>
+                  <th>
+                    Can modify all
+                    <br /> Base Documents
+                  </th>
+                  <th>
+                    Can Access <br /> AllChat
+                  </th>
+                  <th>
+                    Can Assign <br /> Agents
+                  </th>
+                  <th>
+                    Can Assign <br /> Editors
+                  </th>
+                  <th>
+                    Can Modify <br /> Docs
+                  </th>
+                  <th>
+                    Can Access <br /> Students
+                  </th>
                   <th>Permissions</th>
                 </tr>
               </thead>
@@ -193,6 +207,13 @@ class TaiGerOrg extends React.Component {
                           {agent.firstname} {agent.lastname}{' '}
                         </Link>
                       </b>
+                    </td>
+                    <td>
+                      {agent.permissions.length > 0
+                        ? agent.permissions[0].canModifyAllBaseDocuments
+                          ? 'O'
+                          : 'X'
+                        : 'x'}
                     </td>
                     <td>
                       {agent.permissions.length > 0

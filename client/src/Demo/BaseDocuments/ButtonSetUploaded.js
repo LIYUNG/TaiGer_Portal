@@ -16,8 +16,7 @@ import {
   is_TaiGer_Admin,
   is_TaiGer_AdminAgent,
   is_TaiGer_Editor,
-  is_TaiGer_Student,
-  showButtonIfMyStudent
+  is_TaiGer_Student
 } from '../Utils/checking-functions';
 import {
   ACCEPT_STYLE,
@@ -276,7 +275,7 @@ class ButtonSetUploaded extends React.Component {
         ) : (
           <td>
             <Col md>
-              {showButtonIfMyStudent(this.props.user, this.state.student) && (
+              {
                 <Button
                   variant={DELETE_STYLE}
                   size="sm"
@@ -294,7 +293,7 @@ class ButtonSetUploaded extends React.Component {
                 >
                   <AiOutlineDelete size={16} />
                 </Button>
-              )}
+              }
             </Col>
           </td>
         )}

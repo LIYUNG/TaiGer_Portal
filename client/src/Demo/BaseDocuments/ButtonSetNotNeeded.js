@@ -6,11 +6,7 @@ import { FiExternalLink } from 'react-icons/fi';
 import { convertDate } from '../Utils/contants';
 
 import OffcanvasBaseDocument from '../../components/Offcanvas/OffcanvasBaseDocument';
-import {
-  is_TaiGer_Admin,
-  is_TaiGer_Editor,
-  showButtonIfMyStudent
-} from '../Utils/checking-functions';
+import { is_TaiGer_Admin, is_TaiGer_Editor } from '../Utils/checking-functions';
 
 class ButtonSetNotNeeded extends React.Component {
   state = {
@@ -142,24 +138,22 @@ class ButtonSetNotNeeded extends React.Component {
                   </Spinner>
                 </div>
               ) : (
-                showButtonIfMyStudent(this.props.user, this.state.student) && (
-                  <Form.Group controlId={`${this.props.k}`}>
-                    <Form.Label>
-                      <IoMdCloudUpload color={'white'} size={32} />
-                    </Form.Label>
-                    <Form.Control
-                      hidden
-                      type="file"
-                      onChange={(e) =>
-                        this.handleGeneralDocSubmit(
-                          e,
-                          this.props.k,
-                          this.state.student_id
-                        )
-                      }
-                    />
-                  </Form.Group>
-                )
+                <Form.Group controlId={`${this.props.k}`}>
+                  <Form.Label>
+                    <IoMdCloudUpload color={'white'} size={32} />
+                  </Form.Label>
+                  <Form.Control
+                    hidden
+                    type="file"
+                    onChange={(e) =>
+                      this.handleGeneralDocSubmit(
+                        e,
+                        this.props.k,
+                        this.state.student_id
+                      )
+                    }
+                  />
+                </Form.Group>
               )}
             </td>
             <td></td>
@@ -167,7 +161,7 @@ class ButtonSetNotNeeded extends React.Component {
         )}
         <td>
           <Col>
-            {showButtonIfMyStudent(this.props.user, this.state.student) && (
+            {
               <Form
                 onSubmit={(e) =>
                   this.onUpdateProfileDocStatus(
@@ -184,7 +178,7 @@ class ButtonSetNotNeeded extends React.Component {
                   </Button>
                 </Form.Group>
               </Form>
-            )}
+            }
           </Col>
         </td>
         <td></td>

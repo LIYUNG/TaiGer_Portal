@@ -118,7 +118,7 @@ export const profile_name_list = {
   Englisch_Certificate: 'Englisch_Certificate',
   German_Certificate: 'German_Certificate',
   GREGMAT: 'GREGMAT',
-  GMAT: 'GREGMAT',
+  GMAT: 'GMAT',
   ECTS_Conversion: 'ECTS_Conversion',
   Course_Description: 'Course_Description',
   Internship: 'Internship',

@@ -330,7 +330,8 @@ UserSchema.index({
   firstname: 'text',
   lastname: 'text',
   lastname_chinese: 'text',
-  firstname_chinese: 'text'
+  firstname_chinese: 'text',
+  email: 'text'
 });
 
 const User = model('User', UserSchema);

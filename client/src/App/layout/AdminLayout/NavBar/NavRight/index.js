@@ -92,7 +92,6 @@ class NavRight extends Component {
             )}
             <li className="py-0">
               <Dropdown
-                alignRight
                 className="drp-user"
                 show={this.state.dropdownShow}
                 onSelect={this.handleDropdownSelect}
@@ -107,7 +106,7 @@ class NavRight extends Component {
                     />
                   </Row>
                 </Dropdown.Toggle>
-                <Dropdown.Menu alignRight className="profile-notification">
+                <Dropdown.Menu className="profile-notification">
                   <div className="pro-head">
                     <span>{user_name}</span>
                   </div>

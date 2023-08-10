@@ -988,6 +988,7 @@ const profile_keys_list = [
   'Englisch_Certificate',
   'German_Certificate',
   'GREGMAT',
+  'GMAT',
   'ECTS_Conversion',
   'Course_Description',
   'Internship',

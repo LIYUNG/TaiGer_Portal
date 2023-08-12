@@ -1,9 +1,9 @@
-import React from "react";
-import { Form, Row, Col, Card, Button } from "react-bootstrap";
+import React from 'react';
+import { Form, Row, Col, Card, Button } from 'react-bootstrap';
 
 class SingleProgramEdit extends React.Component {
   state = {
-    program: this.props.program,
+    program: this.props.program
   };
   handleChange = (e) => {
     e.preventDefault();
@@ -11,7 +11,7 @@ class SingleProgramEdit extends React.Component {
     program_temp[e.target.id] = e.target.value;
     this.setState((state) => ({
       ...state,
-      program: program_temp,
+      program: program_temp
     }));
   };
   handleSubmit_Program = (e, program) => {
@@ -381,10 +381,10 @@ class SingleProgramEdit extends React.Component {
                       defaultValue={
                         this.state.program.rl_required
                           ? this.state.program.rl_required
-                          : ''
+                          : '0'
                       }
                     >
-                      <option value="no">no</option>
+                      <option value="0">no</option>
                       <option value="1">yes - 1</option>
                       <option value="2">yes - 2</option>
                       <option value="3">yes - 3</option>

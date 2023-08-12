@@ -14,17 +14,7 @@ import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import { Role, spinner_style } from '../Utils/contants';
 
-import {
-  Button,
-  Modal,
-  Table,
-  Row,
-  Col,
-  DropdownButton,
-  Dropdown,
-  Spinner,
-  Card
-} from 'react-bootstrap';
+import { Button, Modal, Table, Row, Col, Spinner, Card } from 'react-bootstrap';
 import {
   getPrograms,
   // createProgram,
@@ -616,6 +606,7 @@ function ProgramList(props) {
             isLoaded: true,
             isAssigning: false,
             isButtonDisable: false,
+            modalShowAssignWindow: false,
             res_modal_message: message,
             res_modal_status: status
           }));

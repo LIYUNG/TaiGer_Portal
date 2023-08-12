@@ -12,7 +12,7 @@ class ModalMain extends React.Component {
     return (
       <>
         <Modal
-          show={res_modal_status === 401}
+          show={[400, 401, 409, 423, 429, 500].includes(res_modal_status)}
           onHide={this.props.ConfirmError}
           aria-labelledby="contained-modal-title-vcenter"
           centered
@@ -51,20 +51,6 @@ class ModalMain extends React.Component {
             <Modal.Title id="contained-modal-title-vcenter">Error</Modal.Title>
           </Modal.Header>
           <Modal.Body>404: {res_modal_message}</Modal.Body>
-          <Modal.Footer>
-            <Button onClick={this.props.ConfirmError}>Ok</Button>
-          </Modal.Footer>
-        </Modal>
-        <Modal
-          show={res_modal_status === 409}
-          onHide={this.props.ConfirmError}
-          aria-labelledby="contained-modal-title-vcenter"
-          centered
-        >
-          <Modal.Header>
-            <Modal.Title id="contained-modal-title-vcenter">Error</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>{res_modal_message}</Modal.Body>
           <Modal.Footer>
             <Button onClick={this.props.ConfirmError}>Ok</Button>
           </Modal.Footer>
@@ -110,48 +96,6 @@ class ModalMain extends React.Component {
             <p>{res_modal_message}</p>
             <p>請確認您的檔案格式。壓縮過後的檔案仍然需要是上述格式。</p>
           </Modal.Body>
-          <Modal.Footer>
-            <Button onClick={this.props.ConfirmError}>Ok</Button>
-          </Modal.Footer>
-        </Modal>
-        <Modal
-          show={res_modal_status === 423}
-          onHide={this.props.ConfirmError}
-          aria-labelledby="contained-modal-title-vcenter"
-          centered
-        >
-          <Modal.Header>
-            <Modal.Title id="contained-modal-title-vcenter">Error</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>{res_modal_message}</Modal.Body>
-          <Modal.Footer>
-            <Button onClick={this.props.ConfirmError}>Ok</Button>
-          </Modal.Footer>
-        </Modal>
-        <Modal
-          show={res_modal_status === 429}
-          onHide={this.props.ConfirmError}
-          aria-labelledby="contained-modal-title-vcenter"
-          centered
-        >
-          <Modal.Header>
-            <Modal.Title id="contained-modal-title-vcenter">Error</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>{res_modal_message}</Modal.Body>
-          <Modal.Footer>
-            <Button onClick={this.props.ConfirmError}>Ok</Button>
-          </Modal.Footer>
-        </Modal>
-        <Modal
-          show={res_modal_status === 500}
-          onHide={this.props.ConfirmError}
-          aria-labelledby="contained-modal-title-vcenter"
-          centered
-        >
-          <Modal.Header>
-            <Modal.Title id="contained-modal-title-vcenter">Error</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>{res_modal_message}</Modal.Body>
           <Modal.Footer>
             <Button onClick={this.props.ConfirmError}>Ok</Button>
           </Modal.Footer>

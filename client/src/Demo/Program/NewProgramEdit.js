@@ -15,7 +15,13 @@ class NewProgramEdit extends React.Component {
     }));
   };
   AddValidProgram = (program) => {
-    if (program.school && program.program_name) {
+    if (
+      program.school &&
+      program.program_name &&
+      program.degree &&
+      program.semester &&
+      program.application_deadline
+    ) {
       return true;
     } else {
       return false;
@@ -36,7 +42,7 @@ class NewProgramEdit extends React.Component {
           <Card.Body>
             <Row>
               <Col md={4}>
-                <h5>University</h5>
+                <h5>University *</h5>
               </Col>
               <Col md={4}>
                 <h5>
@@ -57,7 +63,7 @@ class NewProgramEdit extends React.Component {
             </Row>
             <Row>
               <Col md={4}>
-                <h5>Program</h5>
+                <h5>Program*</h5>
               </Col>
               <Col md={4}>
                 <h5>
@@ -78,11 +84,27 @@ class NewProgramEdit extends React.Component {
             </Row>
             <Row>
               <Col md={4}>
-                <h5>Degree</h5>
+                <h5>Degree *</h5>
               </Col>
               <Col md={4}>
                 <h5>
                   <Form.Group controlId="degree">
+                    <Form.Control
+                      as="select"
+                      onChange={(e) => this.handleChange(e)}
+                      value={this.state.program.degree}
+                    >
+                      <option value="">Please Select</option>
+                      <option value="B. A.">Bachelor of Art</option>
+                      <option value="B. Eng.">Bachelor of Engineering</option>
+                      <option value="B. Sc.">Bachelor of Science</option>
+                      <option value="M. A.">Master of Art</option>
+                      <option value="M. Eng.">Master of Engineering</option>
+                      <option value="M. Sc.">Master of Science</option>
+                      <option value="MBA">MBA</option>
+                    </Form.Control>
+                  </Form.Group>
+                  {/* <Form.Group controlId="degree">
                     <Form.Control
                       type="text"
                       placeholder="M.Sc."
@@ -93,17 +115,28 @@ class NewProgramEdit extends React.Component {
                           : ''
                       }
                     />
-                  </Form.Group>
+                  </Form.Group> */}
                 </h5>
               </Col>
             </Row>
             <Row>
               <Col md={4}>
-                <h5>Semester</h5>
+                <h5>Semester *</h5>
               </Col>
               <Col md={4}>
                 <h5>
                   <Form.Group controlId="semester">
+                    <Form.Control
+                      as="select"
+                      onChange={(e) => this.handleChange(e)}
+                      value={this.state.program.semester}
+                    >
+                      <option value="">Please Select</option>
+                      <option value="WS">Winter Semester</option>
+                      <option value="SS">Summer Semester</option>
+                    </Form.Control>
+                  </Form.Group>
+                  {/* <Form.Group controlId="semester">
                     <Form.Control
                       type="text"
                       placeholder="Winter"
@@ -114,7 +147,7 @@ class NewProgramEdit extends React.Component {
                           : ''
                       }
                     />
-                  </Form.Group>
+                  </Form.Group> */}
                 </h5>
               </Col>
             </Row>
@@ -182,7 +215,7 @@ class NewProgramEdit extends React.Component {
             </Row>
             <Row>
               <Col md={4}>
-                <h5>Application Deadline (MM-DD)</h5>
+                <h5>Application Deadline (MM-DD) *</h5>
               </Col>
               <Col md={4}>
                 <h5>
@@ -320,7 +353,7 @@ class NewProgramEdit extends React.Component {
             </Row>
             <Row>
               <Col md={4}>
-                <h5>ML Required?</h5>
+                <h5>ML Required? *</h5>
               </Col>
               <Col md={4}>
                 <h5>
@@ -365,7 +398,7 @@ class NewProgramEdit extends React.Component {
             </Row>
             <Row>
               <Col md={4}>
-                <h5>RL Required?</h5>
+                <h5>RL Required? *</h5>
               </Col>
               <Col md={4}>
                 <h5>
@@ -376,10 +409,10 @@ class NewProgramEdit extends React.Component {
                       defaultValue={
                         this.state.program.rl_required
                           ? this.state.program.rl_required
-                          : 'no'
+                          : '0'
                       }
                     >
-                      <option value="no">no</option>
+                      <option value="0">no</option>
                       <option value="1">yes - 1</option>
                       <option value="2">yes - 2</option>
                       <option value="3">yes - 3</option>
@@ -412,7 +445,7 @@ class NewProgramEdit extends React.Component {
             </Row>
             <Row>
               <Col md={4}>
-                <h5>Essay Required?</h5>
+                <h5>Essay Required? *</h5>
               </Col>
               <Col md={4}>
                 <h5>
@@ -447,6 +480,95 @@ class NewProgramEdit extends React.Component {
                       defaultValue={
                         this.state.program.essay_requirements
                           ? this.state.program.essay_requirements
+                          : ''
+                      }
+                    />
+                  </Form.Group>
+                </h5>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={4}>
+                <h5>Portfolio Required?</h5>
+              </Col>
+              <Col md={6}>
+                <h5>
+                  <Form.Group controlId="portfolio_required">
+                    <Form.Control
+                      as="select"
+                      onChange={(e) => this.handleChange(e)}
+                      defaultValue={
+                        this.state.program.portfolio_required
+                          ? this.state.program.portfolio_required
+                          : ''
+                      }
+                    >
+                      <option value="no">no</option>
+                      <option value="yes">yes</option>
+                    </Form.Control>
+                  </Form.Group>
+                </h5>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={4}>
+                <h5>Portfolio Requirements</h5>
+              </Col>
+              <Col md={6}>
+                <h5>
+                  <Form.Group controlId="portfolio_requirements">
+                    <Form.Control
+                      as="textarea"
+                      rows="5"
+                      placeholder="2000 words"
+                      onChange={(e) => this.handleChange(e)}
+                      defaultValue={
+                        this.state.program.portfolio_requirements
+                          ? this.state.program.portfolio_requirements
+                          : ''
+                      }
+                    />
+                  </Form.Group>
+                </h5>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={4}>
+                <h5>Supplementary Form Required?</h5>
+              </Col>
+              <Col md={6}>
+                <h5>
+                  <Form.Group controlId="supplementary_form_required">
+                    <Form.Control
+                      as="select"
+                      onChange={(e) => this.handleChange(e)}
+                      defaultValue={
+                        this.state.program.supplementary_form_required
+                          ? this.state.program.supplementary_form_required
+                          : ''
+                      }
+                    >
+                      <option value="no">no</option>
+                      <option value="yes">yes</option>
+                    </Form.Control>
+                  </Form.Group>
+                </h5>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={4}>
+                <h5>Supplementary Form Requirements</h5>
+              </Col>
+              <Col md={4}>
+                <h5>
+                  <Form.Group controlId="supplementary_form_requirements">
+                    <Form.Control
+                      type="text"
+                      placeholder="2000 words"
+                      onChange={(e) => this.handleChange(e)}
+                      defaultValue={
+                        this.state.program.supplementary_form_requirements
+                          ? this.state.program.supplementary_form_requirements
                           : ''
                       }
                     />
@@ -602,6 +724,7 @@ class NewProgramEdit extends React.Component {
                 </h5>
               </Col>
             </Row>
+            <p>*: Must fill fields</p>
           </Card.Body>
         </Card>
         <Button

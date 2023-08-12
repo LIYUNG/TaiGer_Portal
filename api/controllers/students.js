@@ -735,11 +735,13 @@ const createApplication = asyncHandler(async (req, res) => {
   const program_ids = await Program.find({ _id: { $in: program_id_set } });
   if (program_ids.length !== program_id_set.length) {
     logger.error('createApplication: some program_ids invalid');
-    throw new ErrorResponse(400, 'some program_ids invalid');
+    throw new ErrorResponse(400, 'Some Programs are out-of-date. Please refresh the page.');
   }
   // limit the number in students application.
   if (student.applications.length + program_id_set.length > max_application) {
-    logger.error('createApplication: some program ids invalid');
+    logger.error(
+      `${student.firstname} ${student.lastname} has more than ${max_application} programs!`
+    );
     throw new ErrorResponse(
       400,
       `${student.firstname} ${student.lastname} has more than ${max_application} programs!`

@@ -392,7 +392,7 @@ class SingleProgramView extends React.Component {
                       href={this.props.program.website}
                       target="_blank"
                     >
-                      webiste
+                      website
                     </a>
                   </Col>
                 </Row>

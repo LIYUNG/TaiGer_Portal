@@ -617,7 +617,7 @@ class SingleProgramEdit extends React.Component {
             </Row>
             <Row>
               <Col md={4}>
-                <h5>Portal Link 1</h5>
+                <h5>Portal 1 link url</h5>
               </Col>
               <Col md={4}>
                 <h5>
@@ -638,7 +638,7 @@ class SingleProgramEdit extends React.Component {
             </Row>
             <Row>
               <Col md={4}>
-                <h5>Portal Link 2</h5>
+                <h5>Portal 1 TaiGer Instrution page url</h5>
               </Col>
               <Col md={4}>
                 <h5>
@@ -659,7 +659,7 @@ class SingleProgramEdit extends React.Component {
             </Row>
             <Row>
               <Col md={4}>
-                <h5>Portal Link 2</h5>
+                <h5>Portal 2 link url</h5>
               </Col>
               <Col md={4}>
                 <h5>
@@ -680,7 +680,7 @@ class SingleProgramEdit extends React.Component {
             </Row>
             <Row>
               <Col md={4}>
-                <h5>Portal Link 2</h5>
+                <h5>Portal 2 TaiGer Instrution page url</h5>
               </Col>
               <Col md={4}>
                 <h5>

@@ -623,7 +623,7 @@ class NewProgramEdit extends React.Component {
             </Row>
             <Row>
               <Col md={4}>
-                <h5>Portal Link 1</h5>
+                <h5>Portal 1 link url</h5>
               </Col>
               <Col md={4}>
                 <h5>
@@ -644,7 +644,28 @@ class NewProgramEdit extends React.Component {
             </Row>
             <Row>
               <Col md={4}>
-                <h5>Portal Link 2</h5>
+                <h5>Portal 1 TaiGer Instrution link url</h5>
+              </Col>
+              <Col md={4}>
+                <h5>
+                  <Form.Group controlId="application_portal_a_instructions">
+                    <Form.Control
+                      type="text"
+                      placeholder="url"
+                      onChange={(e) => this.handleChange(e)}
+                      defaultValue={
+                        this.state.program.application_portal_a_instructions
+                          ? this.state.program.application_portal_a_instructions
+                          : ''
+                      }
+                    />
+                  </Form.Group>
+                </h5>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={4}>
+                <h5>Portal 2 link url</h5>
               </Col>
               <Col md={4}>
                 <h5>
@@ -656,6 +677,27 @@ class NewProgramEdit extends React.Component {
                       defaultValue={
                         this.state.program.application_portal_b
                           ? this.state.program.application_portal_b
+                          : ''
+                      }
+                    />
+                  </Form.Group>
+                </h5>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={4}>
+                <h5>Portal 2 TaiGer Instrution link url</h5>
+              </Col>
+              <Col md={4}>
+                <h5>
+                  <Form.Group controlId="application_portal_b_instructions">
+                    <Form.Control
+                      type="text"
+                      placeholder="url"
+                      onChange={(e) => this.handleChange(e)}
+                      defaultValue={
+                        this.state.program.application_portal_b_instructions
+                          ? this.state.program.application_portal_b_instructions
                           : ''
                       }
                     />

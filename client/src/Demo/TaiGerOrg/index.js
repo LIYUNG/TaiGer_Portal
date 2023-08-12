@@ -177,6 +177,10 @@ class TaiGerOrg extends React.Component {
                 <tr>
                   <th>Name</th>
                   <th>
+                    Can modify
+                    <br /> program list
+                  </th>
+                  <th>
                     Can modify all
                     <br /> Base Documents
                   </th>
@@ -207,6 +211,13 @@ class TaiGerOrg extends React.Component {
                           {agent.firstname} {agent.lastname}{' '}
                         </Link>
                       </b>
+                    </td>
+                    <td>
+                      {agent.permissions.length > 0
+                        ? agent.permissions[0].canModifyProgramList
+                          ? 'O'
+                          : 'X'
+                        : 'x'}
                     </td>
                     <td>
                       {agent.permissions.length > 0

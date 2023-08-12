@@ -16,6 +16,7 @@ const {
   deleteProgram
 } = require('../controllers/programs');
 const { filter_archiv_user } = require('../middlewares/limit_archiv_user');
+const { permission_canModifyProgramList_filter } = require('../middlewares/permission-filter');
 
 const router = Router();
 
@@ -32,6 +33,7 @@ router
   .post(
     filter_archiv_user,
     permit(Role.Admin, Role.Manager, Role.Agent),
+    permission_canModifyProgramList_filter,
     createProgram
   );
 
@@ -47,8 +49,14 @@ router
     filter_archiv_user,
     UpdateProgramRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Editor, Role.Agent),
+    permission_canModifyProgramList_filter,
     updateProgram
   )
-  .delete(DeleteProgramRateLimiter, permit(Role.Admin), deleteProgram);
+  .delete(
+    DeleteProgramRateLimiter,
+    permit(Role.Admin),
+    permission_canModifyProgramList_filter,
+    deleteProgram
+  );
 
 module.exports = router;

@@ -78,6 +78,13 @@ export default {
           icon: 'feather icon-file-text'
         },
         {
+          id: 'applications-overview',
+          title: 'Applications Overview',
+          type: 'item',
+          icon: 'feather icon-book',
+          url: '/student-applications'
+        },
+        {
           id: 'agent_center',
           title: 'Base Documents',
           type: 'item',
@@ -138,13 +145,6 @@ export default {
           type: 'item',
           icon: 'feather icon-list',
           url: '/programs'
-        },
-        {
-          id: 'applications-overview',
-          title: 'Applications Overview',
-          type: 'item',
-          icon: 'feather icon-book',
-          url: '/student-applications'
         },
         {
           id: 'interview-training',

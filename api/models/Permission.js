@@ -12,6 +12,10 @@ const permissionSchema = new mongoose.Schema(
       type: Boolean,
       default: false
     },
+    canModifyProgramList: {
+      type: Boolean,
+      default: false
+    },
     canModifyAllBaseDocuments: {
       type: Boolean,
       default: false

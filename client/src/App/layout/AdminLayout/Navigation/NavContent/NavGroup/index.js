@@ -1,16 +1,16 @@
-import React from "react";
-import Aux from "../../../../../../hoc/_Aux";
-import NavCollapse from "./../NavCollapse";
-import NavItem from "./../NavItem";
+import React from 'react';
+import Aux from '../../../../../../hoc/_Aux';
+import NavCollapse from './../NavCollapse';
+import NavItem from './../NavItem';
 
 const navGroup = (props) => {
-  let navItems = "";
+  let navItems = '';
   if (props.group.children) {
     const groups = props.group.children;
     navItems = Object.keys(groups).map((item, i) => {
       item = groups[item];
       switch (item.type) {
-        case "collapse":
+        case 'collapse':
           return (
             <NavCollapse
               role={props.user.role}
@@ -19,7 +19,13 @@ const navGroup = (props) => {
               type="main"
             />
           );
-        case "item":
+        case 'item':
+          if (props.user.role === 'Student') {
+            if (item.title === 'Applications Overview') {
+              item.title = 'My Applications';
+              item.url = `/student-applications/${props.user._id.toString()}`;
+            }
+          }
           return (
             <NavItem
               role={props.user.role}
@@ -35,7 +41,7 @@ const navGroup = (props) => {
   }
 
   return (
-    <Aux >
+    <Aux>
       <li key={props.group.id} className="nav-item pcoded-menu-caption">
         <label>{props.group.title}</label>
       </li>

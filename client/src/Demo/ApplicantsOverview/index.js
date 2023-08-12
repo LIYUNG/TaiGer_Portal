@@ -24,33 +24,35 @@ class ApplicantSOverview extends React.Component {
   };
 
   componentDidMount() {
-    getStudents().then(
-      (resp) => {
-        const { data, success } = resp.data;
-        const { status } = resp;
-        if (success) {
-          this.setState({
+    if (this.props.user.role !== 'Student') {
+      getStudents().then(
+        (resp) => {
+          const { data, success } = resp.data;
+          const { status } = resp;
+          if (success) {
+            this.setState({
+              isLoaded: true,
+              students: data,
+              success: success,
+              res_status: status
+            });
+          } else {
+            this.setState({
+              isLoaded: true,
+              res_status: status
+            });
+          }
+        },
+        (error) => {
+          this.setState((state) => ({
+            ...state,
             isLoaded: true,
-            students: data,
-            success: success,
-            res_status: status
-          });
-        } else {
-          this.setState({
-            isLoaded: true,
-            res_status: status
-          });
+            error,
+            res_status: 500
+          }));
         }
-      },
-      (error) => {
-        this.setState((state) => ({
-          ...state,
-          isLoaded: true,
-          error,
-          res_status: 500
-        }));
-      }
-    );
+      );
+    }
   }
 
   render() {
@@ -61,6 +63,15 @@ class ApplicantSOverview extends React.Component {
       this.props.user.role !== 'Student'
     ) {
       return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
+    }
+    if (this.props.user.role === 'Student') {
+      return (
+        <Redirect
+          to={`${
+            DEMO.STUDENT_APPLICATIONS_LINK
+          }/${this.props.user._id.toString()}`}
+        />
+      );
     }
     TabTitle('Applications Overview');
     const { res_status, isLoaded } = this.state;

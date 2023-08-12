@@ -3,7 +3,8 @@ const {
   GetProgramListRateLimiter,
   GetProgramRateLimiter,
   UpdateProgramRateLimiter,
-  DeleteProgramRateLimiter
+  DeleteProgramRateLimiter,
+  PostProgramRateLimiter
 } = require('../middlewares/rate_limiter');
 const { protect, permit } = require('../middlewares/auth');
 const { Role } = require('../models/User');
@@ -16,7 +17,9 @@ const {
   deleteProgram
 } = require('../controllers/programs');
 const { filter_archiv_user } = require('../middlewares/limit_archiv_user');
-const { permission_canModifyProgramList_filter } = require('../middlewares/permission-filter');
+const {
+  permission_canModifyProgramList_filter
+} = require('../middlewares/permission-filter');
 
 const router = Router();
 
@@ -32,6 +35,7 @@ router
   )
   .post(
     filter_archiv_user,
+    PostProgramRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent),
     permission_canModifyProgramList_filter,
     createProgram

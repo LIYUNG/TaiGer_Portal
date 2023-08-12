@@ -29,13 +29,15 @@ import {
   getPrograms,
   // createProgram,
   // deleteProgram,
-  assignProgramToStudent
+  assignProgramToStudent,
+  createProgram
 } from '../../api';
 // A great library for fuzzy filtering/sorting items
 import { matchSorter } from 'match-sorter';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import ProgramListSingleStudentAssignSubpage from './ProgramListSingleStudentAssignSubpage';
+import NewProgramEdit from './NewProgramEdit';
 
 // Define a default UI for filtering
 function GlobalFilter({
@@ -549,6 +551,7 @@ function ProgramList(props) {
     semester: []
   });
   let [studentId, setStudentId] = useState('');
+  let [isCreationMode, setIsCreationMode] = useState(false);
 
   if (props.user.role !== Role.Admin && props.user.role !== Role.Agent) {
     return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
@@ -656,6 +659,42 @@ function ProgramList(props) {
   const handleSetStudentId = (e) => {
     const { value } = e.target;
     setStudentId(value);
+  };
+
+  const onClickIsCreateApplicationMode = () => {
+    setIsCreationMode(!isCreationMode);
+  };
+
+  const handleSubmit_Program = (program) => {
+    createProgram(program).then(
+      (resp) => {
+        const { data, success } = resp.data;
+        const { status } = resp;
+        if (success) {
+          let new_program_list = [...statedata.programs, data];
+          setStatedata((state) => ({
+            ...state,
+            success: success,
+            programs: new_program_list,
+            isloaded: true,
+            res_status: status
+          }));
+          setIsCreationMode(!isCreationMode);
+        } else {
+          setStatedata((state) => ({
+            ...state,
+            isloaded: true,
+            res_status: status
+          }));
+        }
+      },
+      (error) =>
+        setStatedata((state) => ({
+          ...state,
+          error,
+          isloaded: true
+        }))
+    );
   };
 
   const ConfirmError = () => {
@@ -769,47 +808,62 @@ function ProgramList(props) {
           res_modal_message={tableStates.res_modal_message}
         />
       )}
-      <Card className="my-0 mx-0" bg={'dark'} text={'white'}>
-        <Table2
-          columns={columns}
-          data={statedata.programs}
-          programs={programs}
-          userId={props.user._id.toString()}
-          setModalShow2={setModalShow2}
-          setPrograms={setPrograms}
-          isAssigning={tableStates.isAssigning}
-          setTableStates={setTableStates}
-        />
-      </Card>
-      {props.isStudentApplicationPage ? (
-        <ProgramListSingleStudentAssignSubpage
-          userId={props.user._id.toString()}
-          student={props.student}
-          show={tableStates.modalShowAssignWindow}
-          assignProgram={assignProgram}
-          setModalHide={setModalHide}
-          setStudentId={setStudentId}
-          uni_name={programs.schools}
-          program_name={programs.program_names}
-          degree={programs.degree}
-          semester={programs.semester}
-          handleChange2={handleSetStudentId}
-          isButtonDisable={tableStates.isButtonDisable}
-          onSubmitAddToStudentProgramList={onSubmitAddToStudentProgramList}
-        />
+
+      {isCreationMode ? (
+        <>
+          <NewProgramEdit
+            handleClick={onClickIsCreateApplicationMode}
+            handleSubmit_Program={handleSubmit_Program}
+          />
+        </>
       ) : (
-        <ProgramListSubpage
-          userId={props.user._id.toString()}
-          show={tableStates.modalShowAssignWindow}
-          assignProgram={assignProgram}
-          setModalHide={setModalHide}
-          uni_name={programs.schools}
-          program_name={programs.program_names}
-          handleSetStudentId={handleSetStudentId}
-          isAssigning={tableStates.isAssigning}
-          isButtonDisable={tableStates.isButtonDisable}
-          onSubmitAddToStudentProgramList={onSubmitAddToStudentProgramList}
-        />
+        <>
+          <Button onClick={onClickIsCreateApplicationMode}>
+            Add New Program
+          </Button>
+          <Card className="my-0 mx-0" bg={'dark'} text={'white'}>
+            <Table2
+              columns={columns}
+              data={statedata.programs}
+              programs={programs}
+              userId={props.user._id.toString()}
+              setModalShow2={setModalShow2}
+              setPrograms={setPrograms}
+              isAssigning={tableStates.isAssigning}
+              setTableStates={setTableStates}
+            />
+          </Card>
+          {props.isStudentApplicationPage ? (
+            <ProgramListSingleStudentAssignSubpage
+              userId={props.user._id.toString()}
+              student={props.student}
+              show={tableStates.modalShowAssignWindow}
+              assignProgram={assignProgram}
+              setModalHide={setModalHide}
+              setStudentId={setStudentId}
+              uni_name={programs.schools}
+              program_name={programs.program_names}
+              degree={programs.degree}
+              semester={programs.semester}
+              handleChange2={handleSetStudentId}
+              isButtonDisable={tableStates.isButtonDisable}
+              onSubmitAddToStudentProgramList={onSubmitAddToStudentProgramList}
+            />
+          ) : (
+            <ProgramListSubpage
+              userId={props.user._id.toString()}
+              show={tableStates.modalShowAssignWindow}
+              assignProgram={assignProgram}
+              setModalHide={setModalHide}
+              uni_name={programs.schools}
+              program_name={programs.program_names}
+              handleSetStudentId={handleSetStudentId}
+              isAssigning={tableStates.isAssigning}
+              isButtonDisable={tableStates.isButtonDisable}
+              onSubmitAddToStudentProgramList={onSubmitAddToStudentProgramList}
+            />
+          )}
+        </>
       )}
 
       <Modal

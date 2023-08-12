@@ -26,7 +26,7 @@ const permission_canAssignAgent_filter = async (req, res, next) => {
       next();
     } else {
       return next(
-        new ErrorResponse(429, 'Not allowed to access other resource.')
+        new ErrorResponse(403, 'Not allowed to access other resource.')
       );
     }
   } else {
@@ -39,10 +39,10 @@ const permission_canModifyDocs_filter = async (req, res, next) => {
   if (user.role === Role.Agent || user.role === Role.Editor) {
     const permission = await Permission.findOne({ user_id: user._id });
     if (!permission) {
-      return next(new ErrorResponse(429, 'Permission denied: Operation forbidden.'));
+      return next(new ErrorResponse(403, 'Permission denied: Operation forbidden.'));
     }
     if (!permission.canModifyDocumentation) {
-      return next(new ErrorResponse(429, 'Permission denied: Operation forbidden.'));
+      return next(new ErrorResponse(403, 'Permission denied: Operation forbidden.'));
     }
     next();
   } else {
@@ -55,10 +55,10 @@ const permission_canAccessStudentDatabase_filter = async (req, res, next) => {
   if (user.role === Role.Agent || user.role === Role.Editor) {
     const permission = await Permission.findOne({ user_id: user._id });
     if (!permission) {
-      return next(new ErrorResponse(429, 'Permission denied: Operation forbidden.'));
+      return next(new ErrorResponse(403, 'Permission denied: Operation forbidden.'));
     }
     if (!permission.canAccessStudentDatabase) {
-      return next(new ErrorResponse(429, 'Permission denied: Operation forbidden.'));
+      return next(new ErrorResponse(403, 'Permission denied: Operation forbidden.'));
     }
     next();
   } else {
@@ -72,10 +72,10 @@ const permission_canModifyProgramList_filter = async (req, res, next) => {
   if (user.role === Role.Agent) {
     const permission = await Permission.findOne({ user_id: user._id });
     if (!permission) {
-      return next(new ErrorResponse(429, 'Permission denied: Operation forbidden.'));
+      return next(new ErrorResponse(403, 'Permission denied: Operation forbidden.'));
     }
     if (!permission.canModifyProgramList) {
-      return next(new ErrorResponse(429, 'Permission denied: Operation forbidden.'));
+      return next(new ErrorResponse(403, 'Permission denied: Operation forbidden.'));
     }
     next();
   } else {

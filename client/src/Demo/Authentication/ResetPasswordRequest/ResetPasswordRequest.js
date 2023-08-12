@@ -3,8 +3,6 @@ import { NavLink } from 'react-router-dom';
 
 import './../../../assets/scss/style.scss';
 import Aux from '../../../hoc/_Aux';
-import Breadcrumb from '../../../App/layout/AdminLayout/Breadcrumb';
-import DEMO from '../../../store/constant';
 import { forgotPassword } from '../../../api';
 import taiger_logo from '../../../assets/images/taiger_logo.png';
 import Footer from '../../../components/Footer/Footer';
@@ -42,7 +40,6 @@ export default function ResetPasswordRequest() {
   if (emailSent) {
     return (
       <Aux>
-        <Breadcrumb />
         <div className="auth-wrapper">
           <div className="auth-content">
             <div>
@@ -75,7 +72,6 @@ export default function ResetPasswordRequest() {
   } else {
     return (
       <Aux>
-        <Breadcrumb />
         <div className="auth-wrapper">
           <div className="auth-content">
             <form onSubmit={handleSubmit}>

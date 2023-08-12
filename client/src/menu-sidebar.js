@@ -38,12 +38,6 @@ export default {
               url: '/forms/form-basic'
             },
             {
-              id: 'breadcrumb-pagination',
-              title: 'Breadcrumb & Pagination',
-              type: 'item',
-              url: '/basic/breadcrumb-paging'
-            },
-            {
               id: 'collapse',
               title: 'Collapse',
               type: 'item',

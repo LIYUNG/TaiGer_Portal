@@ -8,9 +8,7 @@ global.jQuery = $;
 const DashboardDefault = React.lazy(() => import('./Demo/Dashboard/Dashboard'));
 
 const ArchivStudent = React.lazy(() => import('./Demo/ArchivStudent/index'));
-const UIBasicBreadcrumbPagination = React.lazy(() =>
-  import('./Demo/UIElements/Basic/BreadcrumbPagination')
-);
+
 const CommunicationSinglePage = React.lazy(() =>
   import('./Demo/Communications/CommunicationSinglePage')
 );
@@ -142,12 +140,6 @@ const routes = [
     exact: true,
     name: 'Archiv Students',
     component: ArchivStudent
-  },
-  {
-    path: '/basic/breadcrumb-paging',
-    exact: true,
-    name: 'Basic Breadcrumb Pagination',
-    component: UIBasicBreadcrumbPagination
   },
   {
     path: '/programs/:programId',

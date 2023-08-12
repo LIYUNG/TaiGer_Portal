@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import './../../../assets/scss/style.scss';
 import Aux from '../../../hoc/_Aux';
-import Breadcrumb from '../../../App/layout/AdminLayout/Breadcrumb';
 import { resendActivation } from '../../../api/index';
 import taiger_logo from '../../../assets/images/taiger_logo.png';
 import Footer from '../../../components/Footer/Footer';
@@ -48,7 +47,6 @@ export default function Reactivation(props) {
   if (emailsent) {
     return (
       <Aux>
-        <Breadcrumb />
         <div className="auth-wrapper">
           <div className="auth-content">
             <form>
@@ -85,7 +83,6 @@ export default function Reactivation(props) {
   } else {
     return (
       <Aux>
-        <Breadcrumb />
         <div className="auth-wrapper">
           <div className="auth-content">
             <form onSubmit={handleSubmit}>

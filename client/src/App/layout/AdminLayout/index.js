@@ -6,7 +6,6 @@ import windowSize from 'react-window-size';
 
 import Navigation from './Navigation';
 import NavBar from './NavBar';
-import Breadcrumb from './Breadcrumb';
 import Loader from '../Loader';
 import routes from '../../../routes';
 import Aux from '../../../hoc/_Aux';
@@ -198,7 +197,6 @@ function AdminLayout(props) {
             <div className="pcoded-wrapper">
               <div className="pcoded-content">
                 <div className="pcoded-inner-content">
-                  {/* <Breadcrumb /> */}
                   <div className="main-body">
                     <div className="page-wrapper">
                       <Suspense fallback={<Loader />}>

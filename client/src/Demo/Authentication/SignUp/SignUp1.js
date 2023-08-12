@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import './../../../assets/scss/style.scss';
 import { Spinner } from 'react-bootstrap';
 import Aux from '../../../hoc/_Aux';
-import Breadcrumb from '../../../App/layout/AdminLayout/Breadcrumb';
 import { register } from '../../../api';
 import taiger_logo from '../../../assets/images/taiger_logo.png';
 
@@ -76,7 +75,6 @@ export default function SignUp1({ userData }) {
   if (signupsuccess) {
     return (
       <Aux>
-        <Breadcrumb />
         <div className="auth-wrapper">
           <div className="auth-content">
             <form>
@@ -115,7 +113,6 @@ export default function SignUp1({ userData }) {
   } else {
     return (
       <Aux>
-        <Breadcrumb />
         <div className="auth-wrapper">
           <div className="auth-content">
             <form>

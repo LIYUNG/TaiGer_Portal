@@ -3,7 +3,6 @@ import { NavLink } from 'react-router-dom';
 
 import './../../../assets/scss/style.scss';
 import Aux from '../../../hoc/_Aux';
-import Breadcrumb from '../../../App/layout/AdminLayout/Breadcrumb';
 import { resetPassword } from '../../../api/index';
 import Footer from '../../../components/Footer/Footer';
 
@@ -57,7 +56,6 @@ export default function ResetPassword(props) {
   if (passwordchanged) {
     return (
       <Aux>
-        <Breadcrumb />
         <div className="auth-wrapper">
           <div className="auth-content">
             <div className="auth-bg">
@@ -83,7 +81,6 @@ export default function ResetPassword(props) {
   } else {
     return (
       <Aux>
-        <Breadcrumb />
         <div className="auth-wrapper">
           <div className="auth-content">
             {/* <div className="auth-bg">

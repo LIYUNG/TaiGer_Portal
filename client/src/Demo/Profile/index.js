@@ -573,7 +573,8 @@ class Profile extends React.Component {
                         </Form>
                       </Col>
                       <Col>
-                        {this.state.officehours[day]?.active ? (
+                        {this.state.officehours &&
+                        this.state.officehours[day]?.active ? (
                           <>
                             <span className="text-light">From</span>
                             <Select
@@ -593,7 +594,8 @@ class Profile extends React.Component {
                         )}
                       </Col>
                       <Col>
-                        {this.state.officehours[day]?.active ? (
+                        {this.state.officehours &&
+                        this.state.officehours[day]?.active ? (
                           <>
                             <span className="text-light">To</span>
                             <Select

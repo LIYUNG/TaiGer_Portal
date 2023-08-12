@@ -54,7 +54,7 @@ class AddUserModal extends React.Component {
             />
           </Form.Group>
           <Form.Group className="my-2" controlId="firstname_chinese">
-            <Form.Label>First Name</Form.Label>
+            <Form.Label>名 (中文)</Form.Label>
             <Form.Control
               type="text"
               placeholder="小明"
@@ -62,7 +62,7 @@ class AddUserModal extends React.Component {
             />
           </Form.Group>
           <Form.Group className="my-2" controlId="lastname_chinese">
-            <Form.Label>Last Name</Form.Label>
+            <Form.Label>姓 (中文)</Form.Label>
             <Form.Control
               type="text"
               placeholder="陳"

@@ -14,38 +14,7 @@ const locales = {
 
 const localizer = momentLocalizer(moment);
 
-const events = [
-  {
-    id: 1,
-    title: 'Meeting 1',
-    start: new Date(2023, 6, 24, 10, 0),
-    end: new Date(2023, 6, 24, 11, 30),
-    description: 'This is the first meeting description.'
-  },
-  {
-    id: 3,
-    title: 'Meeting 3',
-    start: new Date(2023, 6, 24, 10, 0),
-    end: new Date(2023, 6, 24, 11, 30),
-    description: 'This is the first meeting description.'
-  },
-  {
-    id: 6,
-    title: 'Meeting 4',
-    start: new Date(2023, 6, 24, 10, 0),
-    end: new Date(2023, 6, 24, 11, 30),
-    description: 'This is the first meeting description.'
-  },
-  {
-    id: 7,
-    title: 'Meeting 5',
-    start: new Date(2023, 6, 25, 14, 0),
-    end: new Date(2023, 6, 25, 16, 0),
-    description: 'This is the second meeting description.'
-  }
-];
-
-const MyCalendar = () => {
+const MyCalendar = (props) => {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [isNewEventModalOpen, setIsNewEventModalOpen] = useState(false);
   const [newEventTitle, setNewEventTitle] = useState('');
@@ -94,13 +63,13 @@ const MyCalendar = () => {
   const handleCreateEvent = () => {
     // Create a new event object and add it to the events array
     const newEvent = {
-      id: events.length + 1,
+      id: props.events?.length + 1,
       title: newEventTitle,
       start: selectedEvent.start,
       end: selectedEvent.end,
       description: newEventDescription
     };
-    const updatedEvents = [...events, newEvent];
+    const updatedEvents = [...props.events, newEvent];
     // setEvents(updatedEvents);
     handleNewEventModalClose();
   };
@@ -199,8 +168,8 @@ const MyCalendar = () => {
     <>
       <Calendar
         localizer={localizer}
-        events={events}
-        style={{ height: 500 }}
+        events={props.events}
+        style={{ height: 600 }}
         startAccessor="start"
         endAccessor="end"
         views={['month', 'week', 'day']}

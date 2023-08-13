@@ -1,7 +1,7 @@
 // const path = require('path');
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
-const { Role, User, Student } = require('../models/User');
+const { Role, User, Student, Agent } = require('../models/User');
 const { Task } = require('../models/Task');
 const async = require('async');
 const { updateCredentialsEmail } = require('../services/email');
@@ -34,6 +34,23 @@ const updateCredentials = asyncHandler(async (req, res, next) => {
   );
 });
 
+const updateOfficehours = asyncHandler(async (req, res, next) => {
+  const {
+    user,
+    body: { officehours, timezone }
+  } = req;
+  await Agent.findByIdAndUpdate(
+    user._id.toString(),
+    { officehours, timezone },
+    {}
+  );
+
+  return res.status(200).send({
+    success: true
+  });
+});
+
 module.exports = {
+  updateOfficehours,
   updateCredentials
 };

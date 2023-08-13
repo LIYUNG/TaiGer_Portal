@@ -486,41 +486,35 @@ const Agent = User.discriminator(
   'Agent',
   new Schema(
     {
+      timezone: { type: String, default: '' },
       officehours: {
         Monday: {
           active: { type: Boolean, default: false },
-          start: { type: String, default: '' },
-          end: { type: String, default: '' }
+          time_slots: [{ type: Object }]
         },
         Tuesday: {
           active: { type: Boolean, default: false },
-          start: { type: String, default: '' },
-          end: { type: String, default: '' }
+          time_slots: [{ type: Object }]
         },
         Wednesday: {
           active: { type: Boolean, default: false },
-          start: { type: String, default: '' },
-          end: { type: String, default: '' }
+          time_slots: [{ type: Object }]
         },
         Thursday: {
           active: { type: Boolean, default: false },
-          start: { type: String, default: '' },
-          end: { type: String, default: '' }
+          time_slots: [{ type: Object }]
         },
         Friday: {
           active: { type: Boolean, default: false },
-          start: { type: String, default: '' },
-          end: { type: String, default: '' }
+          time_slots: [{ type: Object }]
         },
         Saturday: {
           active: { type: Boolean, default: false },
-          start: { type: String, default: '' },
-          end: { type: String, default: '' }
+          time_slots: [{ type: Object }]
         },
         Sunday: {
           active: { type: Boolean, default: false },
-          start: { type: String, default: '' },
-          end: { type: String, default: '' }
+          time_slots: [{ type: Object }]
         }
       },
       selfIntroduction: {

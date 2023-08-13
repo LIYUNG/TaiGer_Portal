@@ -2,10 +2,6 @@ const path = require('path');
 const { createTransport } = require('nodemailer');
 const queryString = require('query-string');
 const {
-  cv_ml_rl_unfinished_summary,
-  base_documents_summary,
-  missing_academic_background,
-  unsubmitted_applications_summary,
   ACCOUNT_ACTIVATION_URL,
   TEAMS_URL,
   RESEND_ACTIVATION_URL,
@@ -30,7 +26,8 @@ const {
   ENGLISH_BELOW,
   CONTACT_AGENT,
   STUDENT_COMMUNICATION_THREAD_URL,
-  STUDENT_ANALYSED_COURSE_URL
+  STUDENT_ANALYSED_COURSE_URL,
+  JITSI_MEET_URL
 } = require('../constants');
 
 const {
@@ -1985,6 +1982,84 @@ const sendStudentNewMessageReminderEmail = async (recipient, payload) => {
   return sendEmail(recipient, subject, message);
 };
 
+//
+
+const MeetingInvitationEmail = async (recipient, payload) => {
+  const subject = `[Meeting] ${payload.meeting_time} by ${payload.taiger_user_firstname} ${payload.taiger_user_lastname}`;
+  const message = `\
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+
+<p><b>${payload.taiger_user_firstname} - ${
+    payload.taiger_user_lastname
+  }</b> 預訂了一個討論時段： </p>
+<p><b>${payload.meeting_time}</b></p>
+
+<p> 請於該時間準時點擊以下連結： </p>
+
+<p>Jitsi Meet 會議連結網址： <a href="${JITSI_MEET_URL(
+    payload.student_id
+  )}">${JITSI_MEET_URL(payload.student_id)}</a></p>
+<p>Jitsi Meet 是行政院數位政委唐鳳建議使用的開源軟體，許多台灣大專院校如國立陽明交通大學、國立台東大學等所採用。</p>
+
+<p>${SPLIT_LINE}</p>
+
+<p>${payload.taiger_user_firstname} - ${
+    payload.taiger_user_lastname
+  } booked a meeting time on:</p>
+
+<p><b>${payload.meeting_time}</b></p>
+
+<p> Jitsi Meet Meeting link: <a href="${JITSI_MEET_URL(
+    payload.student_id
+  )}">${JITSI_MEET_URL(payload.student_id)}</a></p>
+<br />
+<p>Jitsi Meet is an open-source software recommended for use by Tang Feng, the Digital Minister of the Executive Yuan. It is adopted by many Taiwanese universities such as National Yang Ming Chiao Tung University and National Taitung University.</p>
+
+<p>${TAIGER_SIGNATURE}</p>
+
+`; // should be for admin/editor/agent/student
+
+  return sendEmail(recipient, subject, message);
+};
+
+const MeetingReminderEmail = async (recipient, payload) => {
+  const subject = `[Meeting Reminder] ${payload.meeting_time} by ${payload.taiger_user_firstname} ${payload.taiger_user_lastname}`;
+  const message = `\
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+
+<p><b>${payload.taiger_user_firstname} - ${
+    payload.taiger_user_lastname
+  }</b> 預訂了一個討論時段： </p>
+<p><b>${payload.meeting_time}</b></p>
+
+<p> 請於該時間準時點擊以下連結： </p>
+
+<p>Jitsi Meet 會議連結網址： <a href="${JITSI_MEET_URL(
+    payload.student_id
+  )}">${JITSI_MEET_URL(payload.student_id)}</a></p>
+<p>Jitsi Meet 是行政院數位政委唐鳳建議使用的開源軟體，許多台灣大專院校如國立陽明交通大學、國立台東大學等所採用。</p>
+
+<p>${SPLIT_LINE}</p>
+
+<p>${payload.taiger_user_firstname} - ${
+    payload.taiger_user_lastname
+  } booked a meeting time on:</p>
+
+<p><b>${payload.meeting_time}</b></p>
+
+<p> Jitsi Meet Meeting link: <a href="${JITSI_MEET_URL(
+    payload.student_id
+  )}">${JITSI_MEET_URL(payload.student_id)}</a></p>
+<br />
+<p>Jitsi Meet is an open-source software recommended for use by Tang Feng, the Digital Minister of the Executive Yuan. It is adopted by many Taiwanese universities such as National Yang Ming Chiao Tung University and National Taitung University.</p>
+
+<p>${TAIGER_SIGNATURE}</p>
+
+`; // should be for admin/editor/agent/student
+
+  return sendEmail(recipient, subject, message);
+};
+
 module.exports = {
   verifySMTPConfig,
   updateNotificationEmail,
@@ -2035,5 +2110,7 @@ module.exports = {
   updateCoursesDataAgentEmail,
   sendAssignEditorReminderEmail,
   sendAgentNewMessageReminderEmail,
-  sendStudentNewMessageReminderEmail
+  sendStudentNewMessageReminderEmail,
+  MeetingInvitationEmail,
+  MeetingReminderEmail
 };

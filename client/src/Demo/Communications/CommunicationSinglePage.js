@@ -403,7 +403,7 @@ class CommunicationSinglePage extends Component {
                   <b>{student_name}</b>
                 </Link>
                 {' - '}
-                {' Conact your Agent'}
+                {' Contact your Agent'}
                 {'   '}
                 <span
                   className="text-light mb-0 me-2 "

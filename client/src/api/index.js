@@ -411,6 +411,21 @@ export const getStudentNotes = (student_id) =>
 export const updateStudentNotes = (student_id, notes) =>
   request.put(`/api/notes/${student_id}`, { notes });
 
+// Time Slot events:
+export const getTimeSlots = (student_id) =>
+  request.get(`/api/events/${student_id}`);
+export const postEvent = (student_id) =>
+  request.post(`/api/events/${student_id}`);
+export const updateEvent = (student_id) =>
+  request.put(`/api/events/${student_id}`);
+export const deleteEvent = (student_id) =>
+  request.put(`/api/events/${student_id}`);
+export const updateOfficehours = (user_id, officehours, timezone) =>
+  request.put(`/api/account/profile/officehours/${user_id}`, {
+    officehours,
+    timezone
+  });
+
 // Teams
 export const getTeamMembers = () => request.get('/api/teams');
 export const getStatistics = () => request.get('/api/teams/statistics');

@@ -38,7 +38,7 @@ const {
   updatePersonalData
 } = require('../controllers/files');
 
-const { updateCredentials } = require('../controllers/account');
+const { updateCredentials, updateOfficehours } = require('../controllers/account');
 const { localAuth } = require('../middlewares/auth');
 
 const router = Router();
@@ -202,6 +202,15 @@ router
   );
 
 router
+  .route('/profile/officehours/:user_id')
+  .put(
+    filter_archiv_user,
+    updatePersonalInformationRateLimiter,
+    permit(Role.Admin, Role.Agent),
+    updateOfficehours
+  );
+
+router
   .route('/profile/:user_id')
   .post(
     filter_archiv_user,
@@ -216,6 +225,7 @@ router
     ),
     updatePersonalData
   );
+
 router
   .route('/credentials')
   .post(

@@ -14,7 +14,7 @@ import ModalMain from '../Utils/ModalHandler/ModalMain';
 
 import {
   updatePersonalData,
-  updateCredentials,
+  updateOfficehours,
   logout,
   getUser
 } from '../../api';
@@ -32,7 +32,9 @@ class Profile extends React.Component {
     data: null,
     success: false,
     user: {},
-    selectedTimezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    selectedTimezone:
+      this.props.user.timezone ||
+      Intl.DateTimeFormat().resolvedOptions().timeZone,
     changed_personaldata: false,
     officehours: is_TaiGer_Agent(this.props.user)
       ? this.props.user.officehours
@@ -54,13 +56,8 @@ class Profile extends React.Component {
           birthday: this.props.user.birthday,
           email: this.props.user.email
         },
-    credentials: {
-      current_password: '',
-      new_password: '',
-      new_password_again: ''
-    },
     updateconfirmed: false,
-    updatecredentialconfirmed: false,
+    updateOfficeHoursConfirmed: false,
     res_status: 0,
     res_modal_message: '',
     res_modal_status: 0
@@ -176,25 +173,46 @@ class Profile extends React.Component {
     );
   };
 
-  handleChange_Credentials = (e) => {
-    var credentials_temp = { ...this.state.credentials };
-    credentials_temp[e.target.id] = e.target.value;
-    this.setState((state) => ({
-      ...state,
-      credentials: credentials_temp
+  onHide = () => {
+    this.setState({
+      updateconfirmed: false
+    });
+  };
+
+  onHideOfficeHoursConfirmed = () => {
+    this.setState({
+      updateOfficeHoursConfirmed: false
+    });
+  };
+
+  setSelectedTimezone = (e) => {
+    this.setState({ selectedTimezone: e.value });
+  };
+
+  handleToggleChange = (e, day) => {
+    this.setState((prevState) => ({
+      officehours: {
+        ...prevState.officehours,
+        [day]: { ...prevState.officehours[day], active: e.target.checked }
+      }
     }));
   };
 
-  handleSubmit_Credentials = (e, credentials, email) => {
-    if (credentials.new_password !== credentials.new_password_again) {
-      alert('New password not matched');
-      return;
-    }
-    if (credentials.new_password.length < 8) {
-      alert('New password should have at least 8 characters.');
-      return;
-    }
-    updateCredentials(credentials, email, credentials.current_password).then(
+  onTimeStartChange = (e, day) => {
+    this.setState((prevState) => ({
+      officehours: {
+        ...prevState.officehours,
+        [day]: { ...prevState.officehours[day], time_slots: e }
+      }
+    }));
+  };
+
+  handleSubmit_Officehours = (e) => {
+    updateOfficehours(
+      this.props.user._id.toString(),
+      this.state.officehours,
+      this.state.selectedTimezone
+    ).then(
       (resp) => {
         const { success } = resp.data;
         const { status } = resp;
@@ -203,7 +221,7 @@ class Profile extends React.Component {
             ...state,
             isLoaded: true,
             success: success,
-            updatecredentialconfirmed: true,
+            updateOfficeHoursConfirmed: true,
             res_modal_status: status
           }));
         } else {
@@ -228,75 +246,6 @@ class Profile extends React.Component {
     );
   };
 
-  onHide = () => {
-    this.setState({
-      updateconfirmed: false
-    });
-  };
-
-  onHideCredential = () => {
-    this.setState({
-      updateconfirmed: false
-    });
-  };
-
-  setmodalhide = () => {
-    window.location.reload(true);
-  };
-
-  setmodalhideUpdateCredentials = () => {
-    logout().then(
-      (resp) => {
-        window.location.reload(true);
-      },
-      (error) => {
-        this.setState((state) => ({
-          ...state,
-          isLoaded: true,
-          error,
-          res_status: 500
-        }));
-      }
-    );
-  };
-
-  setSelectedTimezone = (e) => {
-    console.log(e);
-    this.setState({ selectedTimezone: e.value });
-  };
-
-  handleToggleChange = (e, day) => {
-    console.log(e);
-    console.log(e.target.id);
-    console.log(e.target.checked);
-    this.setState((prevState) => ({
-      officehours: {
-        ...prevState.officehours,
-        [day]: { ...prevState.officehours[day], active: e.target.checked }
-      }
-    }));
-  };
-  onTimeStartChange = (e, day) => {
-    console.log(e);
-    const { value } = e;
-    this.setState((prevState) => ({
-      officehours: {
-        ...prevState.officehours,
-        [day]: { ...prevState.officehours[day], start: value }
-      }
-    }));
-  };
-  onTimeEndChange = (e, day) => {
-    console.log(e);
-    const { value } = e;
-    this.setState((prevState) => ({
-      officehours: {
-        ...prevState.officehours,
-        [day]: { ...prevState.officehours[day], end: value }
-      }
-    }));
-  };
-
   ConfirmError = () => {
     this.setState((state) => ({
       ...state,
@@ -308,7 +257,6 @@ class Profile extends React.Component {
   render() {
     const { res_status, isLoaded, res_modal_status, res_modal_message } =
       this.state;
-
     if (!isLoaded) {
       return (
         <div style={spinner_style}>
@@ -334,7 +282,6 @@ class Profile extends React.Component {
     if (res_status >= 400) {
       return <ErrorPage res_status={res_status} />;
     }
-
     return (
       <Aux>
         {res_modal_status >= 400 && (
@@ -556,60 +503,34 @@ class Profile extends React.Component {
                     'Sunday'
                   ].map((day, i) => (
                     <Row key={i}>
-                      <Col>
+                      <Col md={4}>
                         <Form>
                           <Form.Check
                             type="switch"
                             id={`${day}`}
                             label={`${day}`}
                             className={`${
-                              this.state.isChecked
+                              this.state.officehours[day]?.active
                                 ? 'text-light'
                                 : 'text-secondary'
                             }`}
-                            checked={this.state.isChecked}
+                            checked={this.state.officehours[day]?.active}
                             onChange={(e) => this.handleToggleChange(e, day)}
                           />
                         </Form>
                       </Col>
-                      <Col>
+                      <Col md={8}>
                         {this.state.officehours &&
                         this.state.officehours[day]?.active ? (
                           <>
-                            <span className="text-light">From</span>
+                            <span className="text-light">Timeslots</span>
                             <Select
                               id={`${day}`}
                               options={time_slots}
+                              isMulti
                               isDisabled={!this.state.officehours[day]?.active}
-                              value={time_slots.find(
-                                (time_slot) =>
-                                  time_slot.value ===
-                                  this.state.officehours[day]?.start
-                              )}
+                              value={this.state.officehours[day].time_slots}
                               onChange={(e) => this.onTimeStartChange(e, day)}
-                            />
-                          </>
-                        ) : (
-                          <span className="text-light">Close</span>
-                        )}
-                      </Col>
-                      <Col>
-                        {this.state.officehours &&
-                        this.state.officehours[day]?.active ? (
-                          <>
-                            <span className="text-light">To</span>
-                            <Select
-                              id={`${day}`}
-                              options={time_slots}
-                              isDisabled={!this.state.officehours[day]?.active}
-                              value={time_slots.find(
-                                (time_slot) =>
-                                  time_slot.value ===
-                                  this.state.officehours[day]?.end
-                              )}
-                              onChange={(e) => (
-                                day, this.onTimeEndChange(e, day)
-                              )}
                             />
                           </>
                         ) : (
@@ -618,6 +539,11 @@ class Profile extends React.Component {
                       </Col>
                     </Row>
                   ))}
+                  <Row>
+                    <Button onClick={this.handleSubmit_Officehours}>
+                      Update
+                    </Button>
+                  </Row>
                 </Card.Body>
               </Card>
             </Col>
@@ -628,7 +554,38 @@ class Profile extends React.Component {
           this.props.user.role === 'Editor') && (
           <Card>
             <Card.Body>
-              <MyCalendar />
+              <MyCalendar
+                events={[
+                  {
+                    id: 1,
+                    title: 'Meeting 1',
+                    start: new Date(2023, 7, 24, 10, 0),
+                    end: new Date(2023, 7, 24, 11, 30),
+                    description: 'This is the first meeting description.'
+                  },
+                  {
+                    id: 3,
+                    title: 'Meeting 3',
+                    start: new Date(2023, 7, 24, 10, 0),
+                    end: new Date(2023, 7, 24, 11, 30),
+                    description: 'This is the first meeting description.'
+                  },
+                  {
+                    id: 6,
+                    title: 'Meeting 4',
+                    start: new Date(2023, 7, 24, 10, 0),
+                    end: new Date(2023, 7, 24, 11, 30),
+                    description: 'This is the first meeting description.'
+                  },
+                  {
+                    id: 7,
+                    title: 'Meeting 5',
+                    start: new Date(2023, 7, 25, 14, 0),
+                    end: new Date(2023, 7, 25, 16, 0),
+                    description: 'This is the second meeting description.'
+                  }
+                ]}
+              />
             </Card.Body>
           </Card>
         )}
@@ -646,12 +603,12 @@ class Profile extends React.Component {
           </Modal.Header>
           <Modal.Body>Personal Data is updated successfully!</Modal.Body>
           <Modal.Footer>
-            <Button onClick={this.setmodalhide}>Close</Button>
+            <Button onClick={this.onHide}>Close</Button>
           </Modal.Footer>
         </Modal>
         <Modal
-          show={this.state.updatecredentialconfirmed}
-          onHide={this.onHideCredential}
+          show={this.state.updateOfficeHoursConfirmed}
+          onHide={this.onHideOfficeHoursConfirmed}
           size="sm"
           aria-labelledby="contained-modal-title-vcenter"
           centered
@@ -665,7 +622,7 @@ class Profile extends React.Component {
             Credentials are updated successfully! Please login again.
           </Modal.Body>
           <Modal.Footer>
-            <Button onClick={(e) => this.setmodalhideUpdateCredentials(e)}>
+            <Button onClick={(e) => this.onHideOfficeHoursConfirmed(e)}>
               Ok
             </Button>
           </Modal.Footer>

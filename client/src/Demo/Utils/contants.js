@@ -237,6 +237,41 @@ export const convertDate = (date) => {
   }
 };
 
+export const program_fields = [
+  { name: 'University', prop: 'school' },
+  { name: 'Program', prop: 'program_name' },
+  { name: 'Degree', prop: 'degree' },
+  { name: 'Semester', prop: 'semester' },
+  { name: 'Teaching Language', prop: 'lang' },
+  { name: 'GPA Requirement (German system)', prop: 'gpa_requirement' },
+  { name: 'Application Start (MM-DD)', prop: 'application_start' },
+  { name: 'Application Deadline (MM-DD)', prop: 'application_deadline' },
+  { name: 'Need Uni-Assist?', prop: 'uni_assist' },
+  { name: 'TOEFL Requirement', prop: 'toefl' },
+  { name: 'IELTS Requirement', prop: 'ielts' },
+  { name: 'TestDaF Requirement', prop: 'testdaf' },
+  { name: 'GRE Requirement', prop: 'gre' },
+  { name: 'GMAT Requirement', prop: 'gmat' },
+  { name: 'ML Required?', prop: 'ml_required' },
+  { name: 'ML Requirements', prop: 'ml_requirements' },
+  { name: 'RL Required?', prop: 'rl_required' },
+  { name: 'RL Requirements', prop: 'rl_requirements' },
+  { name: 'Essay Required?', prop: 'essay_required' },
+  { name: 'Essay Requirements?', prop: 'essay_requirements' },
+  { name: 'Portfolio Required?', prop: 'portfolio_required' },
+  { name: 'Portfolio Requirements?', prop: 'portfolio_requirements' },
+  { name: 'Supplementary Form Required?', prop: 'supplementary_form_required' },
+  {
+    name: 'Supplementary Form Requirements',
+    prop: 'supplementary_form_requirements'
+  },
+  { name: 'Special Notes', prop: 'special_notes' },
+  { name: 'Comments', prop: 'comments' },
+  { name: 'Tuition Fees', prop: 'tuition_fees' },
+  { name: 'FPSO', prop: 'fpso' },
+  { name: 'Country', prop: 'country' }
+];
+
 export const convertDate_ux_friendly = (date) => {
   let dat = new Date(date).toLocaleDateString('zh-Hans-CN');
 

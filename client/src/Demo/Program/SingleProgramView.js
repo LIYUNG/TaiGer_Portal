@@ -303,6 +303,16 @@ class SingleProgramView extends React.Component {
                     <p className="my-0">{this.props.program.tuition_fees}</p>
                   </Col>
                 </Row>
+                <Row>
+                  <Col md={4}>
+                    <p className="my-0">
+                      <b>Country</b>
+                    </p>
+                  </Col>
+                  <Col md={8}>
+                    <p className="my-0">{this.props.program.country}</p>
+                  </Col>
+                </Row>
                 {this.props.program.application_portal_a && (
                   <>
                     <Row>

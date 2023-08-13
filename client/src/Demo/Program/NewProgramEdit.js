@@ -728,6 +728,27 @@ class NewProgramEdit extends React.Component {
             </Row>
             <Row>
               <Col md={4}>
+                <h5>Country</h5>
+              </Col>
+              <Col md={4}>
+                <h5>
+                  <Form.Group controlId="country">
+                    <Form.Control
+                      type="text"
+                      placeholder="de, fr, fi, se, nl, ch, sg, us..."
+                      onChange={(e) => this.handleChange(e)}
+                      defaultValue={
+                        this.state.program.country
+                          ? this.state.program.country
+                          : ''
+                      }
+                    />
+                  </Form.Group>
+                </h5>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={4}>
                 <h5>FPSO</h5>
               </Col>
               <Col md={4}>

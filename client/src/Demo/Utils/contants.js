@@ -49,6 +49,44 @@ export const SYMBOL_EXPLANATION = (
     </p>{' '}
   </>
 );
+
+export const convertTimeToLocale = (
+  inputTime,
+  inputTimezone,
+  outputTimezone
+) => {
+  const inputTimeParts = inputTime.split(':');
+  const now = new Date();
+  const inputDate = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate(),
+    parseInt(inputTimeParts[0], 10),
+    parseInt(inputTimeParts[1], 10)
+  );
+
+  const inputTimeString = inputDate.toLocaleString('en-US', {
+    timeZone: inputTimezone,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+
+  const outputTimeString = new Date(inputTimeString).toLocaleString('en-US', {
+    timeZone: outputTimezone,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZoneName: 'short'
+  });
+
+  return outputTimeString;
+};
+
 export const time_slots = [
   { value: '07:00', label: '07:00 AM' },
   { value: '07:30', label: '07:30 AM' },

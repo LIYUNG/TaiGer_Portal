@@ -1,13 +1,25 @@
 import React from 'react';
 import { Row, Col, Card, Form, Button, Spinner, Modal } from 'react-bootstrap';
+import TimezoneSelect from 'react-timezone-select';
+import Select from 'react-select';
 
 import Aux from '../../hoc/_Aux';
-import { spinner_style } from '../Utils/contants';
+import {
+  spinner_style,
+  time_slots,
+  convertTimeToLocale
+} from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 
 import { getAgentProfile } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
+import {
+  is_TaiGer_Student,
+  is_TaiGer_Agent,
+  is_personal_data_filled
+} from '../Utils/checking-functions';
+
 class AgentProfile extends React.Component {
   state = {
     error: '',
@@ -147,6 +159,101 @@ class AgentProfile extends React.Component {
             </Card>
           </Col>
         </Row>
+        {is_TaiGer_Student(this.props.user) && (
+          <Card className="my-2 mx-0" bg={'dark'} text={'white'}>
+            <Card.Header>
+              <Card.Title className="my-0 mx-0 text-light">
+                Office Hours
+              </Card.Title>
+            </Card.Header>
+            <Card.Body>
+              {[
+                'Monday',
+                'Tuesday',
+                'Wednesday',
+                'Thursday',
+                'Friday',
+                'Saturday',
+                'Sunday'
+              ].map((day, i) => (
+                <Row key={i}>
+                  <Col md={4}>
+                    <Form>
+                      <Form.Check
+                        type="switch"
+                        id={`${day}`}
+                        label={`${day}`}
+                        className={`${
+                          this.state.agent.officehours[day]?.active
+                            ? 'text-light'
+                            : 'text-secondary'
+                        }`}
+                        checked={this.state.agent.officehours[day]?.active}
+                        onChange={(e) => this.handleToggleChange(e, day)}
+                      />
+                    </Form>
+                  </Col>
+                  <Col md={8}>
+                    {this.state.agent.officehours &&
+                    this.state.agent.officehours[day]?.active ? (
+                      <>
+                        <span className="text-light">Timeslots</span>
+                        <Select
+                          id={`${day}`}
+                          options={time_slots}
+                          isMulti
+                          isDisabled={is_TaiGer_Student(this.props.user)}
+                          value={this.state.agent.officehours[day].time_slots}
+                          onChange={(e) => this.onTimeStartChange(e, day)}
+                        />
+                      </>
+                    ) : (
+                      <span className="text-light">Close</span>
+                    )}
+                  </Col>
+                </Row>
+              ))}
+            </Card.Body>
+          </Card>
+        )}
+        <Card>
+          {[
+            'Monday',
+            'Tuesday',
+            'Wednesday',
+            'Thursday',
+            'Friday',
+            'Saturday',
+            'Sunday'
+          ].map((day, i) => (
+            <>
+              {this.state.agent.officehours &&
+                this.state.agent.officehours[day]?.active && (
+                  <>
+                    {this.state.agent.officehours[day].time_slots
+                      .sort((a, b) => (a.value < b.value ? -1 : 1))
+                      .map((time_slot, j) => (
+                        <li>
+                          {day}:
+                          {convertTimeToLocale(
+                            time_slot.value,
+                            'Europe/Berlin',
+                            'Asia/Taipei'
+                          )}
+                        </li>
+                      ))}
+                  </>
+                )}
+            </>
+          ))}
+          {Intl.DateTimeFormat().resolvedOptions().timeZone}
+          {convertTimeToLocale('09:30', 'Europe/Berlin', 'Asia/Taipei')}
+          {convertTimeToLocale(
+            '09:30',
+            'Europe/Berlin',
+            Intl.DateTimeFormat().resolvedOptions().timeZone
+          )}
+        </Card>
       </Aux>
     );
   }

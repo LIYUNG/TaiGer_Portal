@@ -184,7 +184,7 @@ const putAgentProfile = asyncHandler(async (req, res, next) => {
 const getAgentProfile = asyncHandler(async (req, res, next) => {
   const { agent_id } = req.params;
   const agent = await Agent.findById(agent_id).select(
-    'firstname lastname email selfIntroduction'
+    'firstname lastname email selfIntroduction officehours timezone'
   );
 
   res.status(200).send({ success: true, data: agent });

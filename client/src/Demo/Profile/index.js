@@ -12,14 +12,10 @@ import { spinner_style, time_slots } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 
-import {
-  updatePersonalData,
-  updateOfficehours,
-  logout,
-  getUser
-} from '../../api';
+import { updatePersonalData, updateOfficehours, getUser } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import {
+  is_TaiGer_role,
   is_TaiGer_Agent,
   is_personal_data_filled
 } from '../Utils/checking-functions';
@@ -32,6 +28,7 @@ class Profile extends React.Component {
     data: null,
     success: false,
     user: {},
+    officehoursModifed: false,
     selectedTimezone:
       this.props.user.timezone ||
       Intl.DateTimeFormat().resolvedOptions().timeZone,
@@ -179,6 +176,10 @@ class Profile extends React.Component {
     });
   };
 
+  setmodalhide = () => {
+    window.location.reload(true);
+  };
+
   onHideOfficeHoursConfirmed = () => {
     this.setState({
       updateOfficeHoursConfirmed: false
@@ -203,7 +204,8 @@ class Profile extends React.Component {
       officehours: {
         ...prevState.officehours,
         [day]: { ...prevState.officehours[day], time_slots: e }
-      }
+      },
+      officehoursModifed: true
     }));
   };
 
@@ -221,6 +223,7 @@ class Profile extends React.Component {
             ...state,
             isLoaded: true,
             success: success,
+            officehoursModifed: false,
             updateOfficeHoursConfirmed: true,
             res_modal_status: status
           }));
@@ -540,7 +543,10 @@ class Profile extends React.Component {
                     </Row>
                   ))}
                   <Row>
-                    <Button onClick={this.handleSubmit_Officehours}>
+                    <Button
+                      disabled={!this.state.officehoursModifed}
+                      onClick={this.handleSubmit_Officehours}
+                    >
                       Update
                     </Button>
                   </Row>
@@ -549,9 +555,7 @@ class Profile extends React.Component {
             </Col>
           </Row>
         )}
-        {(this.props.user.role === 'Admin' ||
-          this.props.user.role === 'Agent' ||
-          this.props.user.role === 'Editor') && (
+        {is_TaiGer_role(this.props.user) && (
           <Card>
             <Card.Body>
               <MyCalendar
@@ -591,19 +595,19 @@ class Profile extends React.Component {
         )}
         <Modal
           show={this.state.updateconfirmed}
-          onHide={this.onHide}
+          onHide={this.setmodalhide}
           size="sm"
           aria-labelledby="contained-modal-title-vcenter"
           centered
         >
           <Modal.Header>
             <Modal.Title id="contained-modal-title-vcenter">
-              Update Success
+              Update Successfully
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>Personal Data is updated successfully!</Modal.Body>
           <Modal.Footer>
-            <Button onClick={this.onHide}>Close</Button>
+            <Button onClick={this.setmodalhide}>Close</Button>
           </Modal.Footer>
         </Modal>
         <Modal
@@ -615,12 +619,10 @@ class Profile extends React.Component {
         >
           <Modal.Header>
             <Modal.Title id="contained-modal-title-vcenter">
-              Update Credentials Successfully
+              Updated Successfully
             </Modal.Title>
           </Modal.Header>
-          <Modal.Body>
-            Credentials are updated successfully! Please login again.
-          </Modal.Body>
+          <Modal.Body>Office Hours time slots updated Successfully</Modal.Body>
           <Modal.Footer>
             <Button onClick={(e) => this.onHideOfficeHoursConfirmed(e)}>
               Ok

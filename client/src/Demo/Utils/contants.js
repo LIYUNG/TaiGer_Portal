@@ -4,6 +4,7 @@ import {
   AiFillQuestionCircle,
   AiOutlineFieldTime
 } from 'react-icons/ai';
+import { DateTime } from 'luxon';
 import { IoCheckmarkCircle } from 'react-icons/io5';
 import { BsDash } from 'react-icons/bs';
 import { BiCommentDots } from 'react-icons/bi';
@@ -50,7 +51,7 @@ export const SYMBOL_EXPLANATION = (
   </>
 );
 
-export const getNextDayDate = (dayOfWeek, nextN) => {
+export const getNextDayDate = (dayOfWeek, timezone, nextN) => {
   const daysOfWeek = [
     'Sunday',
     'Monday',
@@ -61,17 +62,15 @@ export const getNextDayDate = (dayOfWeek, nextN) => {
     'Saturday'
   ];
 
-  const today = new Date();
-  const currentDayOfWeek = today.getDay();
+  const now = DateTime.fromObject({}, { zone: timezone });
+
+  const currentDayOfWeek = daysOfWeek.indexOf(now.weekdayLong);
   const targetDayIndex = daysOfWeek.indexOf(dayOfWeek);
 
   let daysToAdd = (targetDayIndex - currentDayOfWeek + 7) % 7;
 
- 
-
   // Calculate the date of the next Nth occurrence
-  const nextOccurrence = new Date();
-  nextOccurrence.setDate(today.getDate() + daysToAdd + (nextN) * 7);
+  const nextOccurrence = now.plus({ days: daysToAdd + nextN * 7 });
 
   const options = {
     weekday: 'long',
@@ -79,7 +78,7 @@ export const getNextDayDate = (dayOfWeek, nextN) => {
     month: 'numeric',
     day: 'numeric'
   };
-  const formattedDate = nextOccurrence.toLocaleDateString(undefined, options);
+  const formattedDate = nextOccurrence.toLocaleString(options);
 
   return formattedDate;
 };
@@ -91,36 +90,20 @@ export const convertTimeToLocale = (
   outputTimezone
 ) => {
   const inputTimeParts = inputTime.split(':');
-  const [dayOfWeek, dateString] = inputDate.split(', ');
-  const now = new Date(dateString);
-  const inputDate_temp = new Date(
-    now.getFullYear(),
-    now.getMonth(),
-    now.getDate(),
-    parseInt(inputTimeParts[0], 10),
-    parseInt(inputTimeParts[1], 10)
-  );
-
-  const inputTimeString = inputDate_temp.toLocaleString('en-US', {
-    timeZone: inputTimezone,
-    weekday: 'long',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit'
+  const now = DateTime.fromFormat(inputDate, 'EEEE, L/d/yyyy', {
+    zone: inputTimezone
   });
+  console.log(now);
 
-  const outputTimeString = new Date(inputTimeString).toLocaleString('en-US', {
-    timeZone: outputTimezone,
-    weekday: 'long',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    timeZoneName: 'short'
+  const inputDateTemp = now.set({
+    hour: parseInt(inputTimeParts[0], 10),
+    minute: parseInt(inputTimeParts[1], 10),
+    second: 0,
+    millisecond: 0
   });
+  const outputTimeString = inputDateTemp
+    .setZone(outputTimezone)
+    .toFormat('cccc, L/d/yyyy HH:mm ZZZZ');
 
   return outputTimeString;
 };

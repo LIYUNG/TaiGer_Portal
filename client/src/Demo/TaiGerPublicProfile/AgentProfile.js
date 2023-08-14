@@ -193,7 +193,6 @@ class AgentProfile extends React.Component {
                             : 'text-secondary'
                         }`}
                         checked={this.state.agent.officehours[day]?.active}
-                        onChange={(e) => this.handleToggleChange(e, day)}
                       />
                     </Form>
                   </Col>
@@ -240,11 +239,20 @@ class AgentProfile extends React.Component {
                           .sort((a, b) => (a.value < b.value ? -1 : 1))
                           .map((time_slot, j) => (
                             <li>
+                              {getNextDayDate(
+                                day,
+                                this.state.agent.timezone,
+                                iter
+                              )}
                               {convertTimeToLocale(
-                                getNextDayDate(day, iter),
+                                getNextDayDate(
+                                  day,
+                                  this.state.agent.timezone,
+                                  iter
+                                ),
                                 time_slot.value,
-                                'Europe/Berlin',
-                                'Asia/Taipei'
+                                this.state.agent.timezone,
+                                Intl.DateTimeFormat().resolvedOptions().timeZone
                               )}
                             </li>
                           ))}
@@ -256,13 +264,13 @@ class AgentProfile extends React.Component {
           ))}
 
           {/* TODO: need function that convert Monday to Date and put into convertTimeToLocale!  */}
-          {Intl.DateTimeFormat().resolvedOptions().timeZone}
+          {/* {Intl.DateTimeFormat().resolvedOptions().timeZone}
           {convertTimeToLocale('09:30', 'Europe/Berlin', 'Asia/Taipei')}
           {convertTimeToLocale(
             '09:30',
             'Europe/Berlin',
             Intl.DateTimeFormat().resolvedOptions().timeZone
-          )}
+          )} */}
         </Card>
       </Aux>
     );

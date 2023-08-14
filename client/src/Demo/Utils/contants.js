@@ -93,7 +93,6 @@ export const convertTimeToLocale = (
   const now = DateTime.fromFormat(inputDate, 'EEEE, L/d/yyyy', {
     zone: inputTimezone
   });
-  console.log(now);
 
   const inputDateTemp = now.set({
     hour: parseInt(inputTimeParts[0], 10),

@@ -187,15 +187,19 @@ class Profile extends React.Component {
   };
 
   setSelectedTimezone = (e) => {
-    this.setState({ selectedTimezone: e.value });
+    this.setState({ selectedTimezone: e.value, officehoursModifed: true });
   };
 
   handleToggleChange = (e, day) => {
     this.setState((prevState) => ({
       officehours: {
         ...prevState.officehours,
-        [day]: { ...prevState.officehours[day], active: e.target.checked }
-      }
+        [day]: {
+          ...prevState.officehours[day],
+          active: e.target.checked
+        }
+      },
+      officehoursModifed: true
     }));
   };
 

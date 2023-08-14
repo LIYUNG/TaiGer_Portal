@@ -65,11 +65,14 @@ export const getNextDayDate = (dayOfWeek, nextN) => {
   const currentDayOfWeek = today.getDay();
   const targetDayIndex = daysOfWeek.indexOf(dayOfWeek);
 
-  const daysUntilNextOccurrence = (targetDayIndex - currentDayOfWeek + 7) % 7;
+  let daysToAdd = (targetDayIndex - currentDayOfWeek + 7) % 7;
 
+ 
+
+  // Calculate the date of the next Nth occurrence
   const nextOccurrence = new Date();
-  nextOccurrence.setDate(today.getDate() + daysUntilNextOccurrence);
-  
+  nextOccurrence.setDate(today.getDate() + daysToAdd + (nextN) * 7);
+
   const options = {
     weekday: 'long',
     year: 'numeric',
@@ -100,6 +103,7 @@ export const convertTimeToLocale = (
 
   const inputTimeString = inputDate_temp.toLocaleString('en-US', {
     timeZone: inputTimezone,
+    weekday: 'long',
     year: 'numeric',
     month: '2-digit',
     day: '2-digit',
@@ -109,6 +113,7 @@ export const convertTimeToLocale = (
 
   const outputTimeString = new Date(inputTimeString).toLocaleString('en-US', {
     timeZone: outputTimezone,
+    weekday: 'long',
     year: 'numeric',
     month: '2-digit',
     day: '2-digit',

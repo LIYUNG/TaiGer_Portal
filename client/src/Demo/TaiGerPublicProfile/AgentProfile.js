@@ -15,11 +15,7 @@ import ModalMain from '../Utils/ModalHandler/ModalMain';
 
 import { getAgentProfile } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
-import {
-  is_TaiGer_Student,
-  is_TaiGer_Agent,
-  is_personal_data_filled
-} from '../Utils/checking-functions';
+import { is_TaiGer_Student } from '../Utils/checking-functions';
 
 class AgentProfile extends React.Component {
   state = {
@@ -244,7 +240,6 @@ class AgentProfile extends React.Component {
                           .sort((a, b) => (a.value < b.value ? -1 : 1))
                           .map((time_slot, j) => (
                             <li>
-                              {getNextDayDate(day, iter)}:
                               {convertTimeToLocale(
                                 getNextDayDate(day, iter),
                                 time_slot.value,

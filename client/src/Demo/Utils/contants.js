@@ -50,14 +50,47 @@ export const SYMBOL_EXPLANATION = (
   </>
 );
 
+export const getNextDayDate = (dayOfWeek, nextN) => {
+  const daysOfWeek = [
+    'Sunday',
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday'
+  ];
+
+  const today = new Date();
+  const currentDayOfWeek = today.getDay();
+  const targetDayIndex = daysOfWeek.indexOf(dayOfWeek);
+
+  const daysUntilNextOccurrence = (targetDayIndex - currentDayOfWeek + 7) % 7;
+
+  const nextOccurrence = new Date();
+  nextOccurrence.setDate(today.getDate() + daysUntilNextOccurrence);
+  
+  const options = {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric'
+  };
+  const formattedDate = nextOccurrence.toLocaleDateString(undefined, options);
+
+  return formattedDate;
+};
+
 export const convertTimeToLocale = (
+  inputDate,
   inputTime,
   inputTimezone,
   outputTimezone
 ) => {
   const inputTimeParts = inputTime.split(':');
-  const now = new Date();
-  const inputDate = new Date(
+  const [dayOfWeek, dateString] = inputDate.split(', ');
+  const now = new Date(dateString);
+  const inputDate_temp = new Date(
     now.getFullYear(),
     now.getMonth(),
     now.getDate(),
@@ -65,7 +98,7 @@ export const convertTimeToLocale = (
     parseInt(inputTimeParts[1], 10)
   );
 
-  const inputTimeString = inputDate.toLocaleString('en-US', {
+  const inputTimeString = inputDate_temp.toLocaleString('en-US', {
     timeZone: inputTimezone,
     year: 'numeric',
     month: '2-digit',

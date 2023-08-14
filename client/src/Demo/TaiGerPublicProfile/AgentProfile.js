@@ -7,6 +7,7 @@ import Aux from '../../hoc/_Aux';
 import {
   spinner_style,
   time_slots,
+  getNextDayDate,
   convertTimeToLocale
 } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
@@ -167,6 +168,13 @@ class AgentProfile extends React.Component {
               </Card.Title>
             </Card.Header>
             <Card.Body>
+              <Row>
+                <TimezoneSelect
+                  value={this.state.agent.timezone || ''}
+                  displayValue="UTC"
+                  isDisabled={true}
+                />
+              </Row>
               {[
                 'Monday',
                 'Tuesday',
@@ -217,35 +225,42 @@ class AgentProfile extends React.Component {
           </Card>
         )}
         <Card>
-          {[
-            'Monday',
-            'Tuesday',
-            'Wednesday',
-            'Thursday',
-            'Friday',
-            'Saturday',
-            'Sunday'
-          ].map((day, i) => (
+          {[0, 1, 2, 3, 4].map((iter, x) => (
             <>
-              {this.state.agent.officehours &&
-                this.state.agent.officehours[day]?.active && (
-                  <>
-                    {this.state.agent.officehours[day].time_slots
-                      .sort((a, b) => (a.value < b.value ? -1 : 1))
-                      .map((time_slot, j) => (
-                        <li>
-                          {day}:
-                          {convertTimeToLocale(
-                            time_slot.value,
-                            'Europe/Berlin',
-                            'Asia/Taipei'
-                          )}
-                        </li>
-                      ))}
-                  </>
-                )}
+              {[
+                'Monday',
+                'Tuesday',
+                'Wednesday',
+                'Thursday',
+                'Friday',
+                'Saturday',
+                'Sunday'
+              ].map((day, i) => (
+                <>
+                  {this.state.agent.officehours &&
+                    this.state.agent.officehours[day]?.active && (
+                      <>
+                        {this.state.agent.officehours[day].time_slots
+                          .sort((a, b) => (a.value < b.value ? -1 : 1))
+                          .map((time_slot, j) => (
+                            <li>
+                              {getNextDayDate(day, iter)}:
+                              {convertTimeToLocale(
+                                getNextDayDate(day, iter),
+                                time_slot.value,
+                                'Europe/Berlin',
+                                'Asia/Taipei'
+                              )}
+                            </li>
+                          ))}
+                      </>
+                    )}
+                </>
+              ))}
             </>
           ))}
+
+          {/* TODO: need function that convert Monday to Date and put into convertTimeToLocale!  */}
           {Intl.DateTimeFormat().resolvedOptions().timeZone}
           {convertTimeToLocale('09:30', 'Europe/Berlin', 'Asia/Taipei')}
           {convertTimeToLocale(

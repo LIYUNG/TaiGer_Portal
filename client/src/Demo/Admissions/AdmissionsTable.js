@@ -221,15 +221,9 @@ function Table2({ header, data }) {
         Header: header,
         columns: [
           {
-            Header: 'First Name',
-            accessor: 'firstname'
+            Header: 'First and Last Name',
+            accessor: 'name'
             // Filter: SelectColumnFilter,
-            // filter: 'fuzzyText'
-          },
-          {
-            Header: 'Last Name',
-            accessor: 'lastname'
-            // Use our custom `fuzzyText` filter on this column
             // filter: 'fuzzyText'
           },
           {
@@ -547,8 +541,7 @@ function AdmissionsTable(props) {
           if (application.admission === 'O') {
             admissions_table.push({
               _id: student._id,
-              firstname: student.firstname,
-              lastname: student.lastname,
+              name: `${student.firstname}, ${student.lastname}`,
               editors: editors_name_string,
               agents: agents_name_string,
               year:
@@ -565,8 +558,7 @@ function AdmissionsTable(props) {
           if (application.admission === 'X') {
             rejections_table.push({
               _id: student._id,
-              firstname: student.firstname,
-              lastname: student.lastname,
+              name: `${student.firstname}, ${student.lastname}`,
               editors: editors_name_string,
               agents: agents_name_string,
               year:
@@ -583,8 +575,7 @@ function AdmissionsTable(props) {
           if (application.admission === '-') {
             pending_table.push({
               _id: student._id,
-              firstname: student.firstname,
-              lastname: student.lastname,
+              name: `${student.firstname}, ${student.lastname}`,
               editors: editors_name_string,
               agents: agents_name_string,
               year:
@@ -601,8 +592,7 @@ function AdmissionsTable(props) {
         } else if (application.closed === '-') {
           not_yet_closed_table.push({
             _id: student._id,
-            firstname: student.firstname,
-            lastname: student.lastname,
+            name: `${student.firstname}, ${student.lastname}`,
             editors: editors_name_string,
             agents: agents_name_string,
             year:

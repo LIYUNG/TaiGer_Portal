@@ -75,7 +75,7 @@ class StudDocsDashboard extends React.Component {
     }
     const target_application_field = this.props.student.application_preference
       ? this.props.student.application_preference.target_application_field || (
-          <text className="text-danger">TBD</text>
+          <span className="text-danger">TBD</span>
         )
       : '';
     return (
@@ -154,7 +154,7 @@ class StudDocsDashboard extends React.Component {
           <td>
             {this.props.student.application_preference
               .expected_application_semester || (
-              <text className="text-danger">TBD</text>
+              <span className="text-danger">TBD</span>
             )}
           </td>
           <td>
@@ -166,19 +166,19 @@ class StudDocsDashboard extends React.Component {
             <b>
               {this.props.student.academic_background.university
                 .attended_university || (
-                <text className="text-danger">TBD</text>
+                <span className="text-danger">TBD</span>
               )}
             </b>
             <br />
             {this.props.student.academic_background.university
               .attended_university_program || (
-              <text className="text-danger">TBD</text>
+              <span className="text-danger">TBD</span>
             )}
           </td>
           <td>{target_application_field}</td>
           <td>
             {this.props.student.academic_background.language
-              .english_certificate || <text className="text-danger">TBD</text>}
+              .english_certificate || <span className="text-danger">TBD</span>}
             <br />
             {this.props.student.academic_background.language.german_certificate}
           </td>

@@ -106,7 +106,7 @@ class StudentsAgentEditor extends React.Component {
     }
     const target_application_field = this.props.student.application_preference
       ? this.props.student.application_preference.target_application_field || (
-          <text className="text-danger">TBD</text>
+          <span className="text-danger">TBD</span>
         )
       : '';
     return (
@@ -209,42 +209,42 @@ class StudentsAgentEditor extends React.Component {
             <b className="my-0 py-0">
               {this.props.student.academic_background.university
                 .attended_university || (
-                <text className="text-danger">TBD</text>
+                <span className="text-danger">TBD</span>
               )}
             </b>
             <br className="my-0 py-0" />
             {this.props.student.academic_background.university
               .attended_university_program || (
-              <text className="text-danger">TBD</text>
+              <span className="text-danger">TBD</span>
             )}
           </td>
           <td>{target_application_field}</td>
           <td>
             {this.props.student.academic_background.language
-              .english_certificate || <text className="text-danger">TBD</text>}
+              .english_certificate || <span className="text-danger">TBD</span>}
             <br />
             {this.props.student.academic_background.language
-              .german_certificate || <text className="text-danger">TBD</text>}
+              .german_certificate || <span className="text-danger">TBD</span>}
           </td>
           <td>
             {this.props.student.academic_background.language.english_score || (
-              <text className="text-danger">TBD</text>
+              <span className="text-danger">TBD</span>
             )}
             <br />
             {this.props.student.academic_background.language.german_score || (
-              <text className="text-danger">TBD</text>
+              <span className="text-danger">TBD</span>
             )}
           </td>
           <td>
             {(this.props.student.academic_background.language
               .english_isPassed === 'X' &&
               this.props.student.academic_background.language
-                .english_test_date) || <text className="text-danger">TBD</text>}
+                .english_test_date) || <span className="text-danger">TBD</span>}
             <br />
             {(this.props.student.academic_background.language
               .german_isPassed === 'X' &&
               this.props.student.academic_background.language
-                .german_test_date) || <text className="text-danger">TBD</text>}
+                .german_test_date) || <span className="text-danger">TBD</span>}
           </td>
         </tr>
         {is_TaiGer_role(this.props.user) && (

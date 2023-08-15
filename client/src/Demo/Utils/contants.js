@@ -50,18 +50,34 @@ export const SYMBOL_EXPLANATION = (
     </p>{' '}
   </>
 );
+export const daysOfWeek = [
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+  'Saturday',
+  'Sunday'
+];
+export const getTodayAsWeekday = (timezone) => {
+  const now = DateTime.fromObject({}, { zone: timezone });
+  let currentDayOfWeek = daysOfWeek.indexOf(now.weekdayLong);
+  return currentDayOfWeek;
+};
 
+export const getReorderWeekday = (index) => {
+  let delayed_index = index;
+  delayed_index = (delayed_index + 2) % 7;
+  if (delayed_index >= 0 && delayed_index <= 6) {
+    const weekdayOrder = daysOfWeek
+      .slice(delayed_index)
+      .concat(daysOfWeek.slice(0, delayed_index));
+    return weekdayOrder;
+  } else {
+    return 'Invalid index';
+  }
+};
 export const getNextDayDate = (dayOfWeek, timezone, nextN) => {
-  const daysOfWeek = [
-    'Sunday',
-    'Monday',
-    'Tuesday',
-    'Wednesday',
-    'Thursday',
-    'Friday',
-    'Saturday'
-  ];
-
   const now = DateTime.fromObject({}, { zone: timezone });
 
   const currentDayOfWeek = daysOfWeek.indexOf(now.weekdayLong);

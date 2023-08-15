@@ -8,7 +8,10 @@ import {
   spinner_style,
   time_slots,
   getNextDayDate,
-  convertTimeToLocale
+  convertTimeToLocale,
+  daysOfWeek,
+  getTodayAsWeekday,
+  getReorderWeekday
 } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
@@ -118,7 +121,18 @@ class AgentProfile extends React.Component {
     if (res_status >= 400) {
       return <ErrorPage res_status={res_status} />;
     }
-
+    const reorder_weekday = getReorderWeekday(
+      getTodayAsWeekday(this.state.agent.timezone)
+    );
+    console.log(reorder_weekday);
+    console.log(getReorderWeekday(0));
+    console.log(getReorderWeekday(1));
+    console.log(getReorderWeekday(2));
+    console.log(getReorderWeekday(3));
+    console.log(getReorderWeekday(4));
+    console.log(getReorderWeekday(5));
+    console.log(getReorderWeekday(6));
+    console.log(getReorderWeekday(7));
     return (
       <Aux>
         {res_modal_status >= 400 && (
@@ -222,15 +236,7 @@ class AgentProfile extends React.Component {
         <Card>
           {[0, 1, 2, 3, 4].map((iter, x) => (
             <>
-              {[
-                'Monday',
-                'Tuesday',
-                'Wednesday',
-                'Thursday',
-                'Friday',
-                'Saturday',
-                'Sunday'
-              ].map((day, i) => (
+              {reorder_weekday.map((day, i) => (
                 <>
                   {this.state.agent.officehours &&
                     this.state.agent.officehours[day]?.active && (

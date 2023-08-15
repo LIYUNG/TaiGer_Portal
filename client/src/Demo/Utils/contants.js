@@ -267,6 +267,30 @@ export const getNumberOfDays = (start, end) => {
   return diffInDays.toString();
 };
 
+export const getDate = (date) => {
+  // const userLocale = navigator.language;
+  let dat = new Date(date).toLocaleDateString('zh-Hans-CN');
+
+  const currentDate = new Date();
+  const input_date_point = new Date(date);
+  const today = new Date(
+    currentDate.getFullYear(),
+    currentDate.getMonth(),
+    currentDate.getDate()
+  );
+  const input_date = new Date(
+    input_date_point.getFullYear(),
+    input_date_point.getMonth(),
+    input_date_point.getDate()
+  );
+  const isToday = today.getTime() === input_date.getTime();
+  if (isToday) {
+    return `Today`;
+  } else {
+    return dat;
+  }
+};
+
 export const convertDate = (date) => {
   // const userLocale = navigator.language;
   let dat = new Date(date).toLocaleDateString('zh-Hans-CN');

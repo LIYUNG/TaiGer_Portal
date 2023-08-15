@@ -1,7 +1,7 @@
 import React from 'react';
 import { Dropdown, DropdownButton } from 'react-bootstrap';
 
-import { UserlistHeader, convertDate } from '../Utils/contants';
+import { UserlistHeader, convertDate, getDate } from '../Utils/contants';
 import { Link } from 'react-router-dom';
 class User extends React.Component {
   render() {
@@ -57,8 +57,6 @@ class User extends React.Component {
                 </Dropdown.Item>
               </DropdownButton>
             )}
-
-            {/* )} */}
           </th>
           {UserlistHeader.map((y, k) => (
             <td key={k}>
@@ -94,6 +92,7 @@ class User extends React.Component {
               )}
             </td>
           ))}
+          <td>{getDate(this.props.user.createdAt)}</td>
           <td>{convertDate(this.props.user.lastLoginAt)}</td>
         </tr>
       );

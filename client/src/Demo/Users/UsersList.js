@@ -253,6 +253,7 @@ class UsersList extends React.Component {
         {UserlistHeader.map((x, i) => (
           <th key={i}>{x.name}</th>
         ))}
+        <th>Created At</th>
         <th>Last Login</th>
       </tr>
     );

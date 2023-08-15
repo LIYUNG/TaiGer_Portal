@@ -233,6 +233,18 @@ function Table2({ header, data }) {
             // filter: 'fuzzyText'
           },
           {
+            Header: 'Agent',
+            accessor: 'agents'
+            // Use our custom `fuzzyText` filter on this column
+            // filter: 'fuzzyText'
+          },
+          {
+            Header: 'Editor',
+            accessor: 'editors'
+            // Use our custom `fuzzyText` filter on this column
+            // filter: 'fuzzyText'
+          },
+          {
             Header: 'University',
             accessor: 'school'
             // Filter: NumberRangeColumnFilter,
@@ -520,7 +532,15 @@ function AdmissionsTable(props) {
   let rejections_table = [];
   let pending_table = [];
   let not_yet_closed_table = [];
-  statedata.students.map((student) =>
+  statedata.students.map((student) => {
+    let editors_name_string = '';
+    let agents_name_string = '';
+    for (const editor of student.editors) {
+      editors_name_string += `${editor.firstname} `;
+    }
+    for (const agent of student.agents) {
+      agents_name_string += `${agent.firstname} `;
+    }
     student.applications.map((application) => {
       if (application.decided === 'O') {
         if (application.closed === 'O') {
@@ -529,6 +549,8 @@ function AdmissionsTable(props) {
               _id: student._id,
               firstname: student.firstname,
               lastname: student.lastname,
+              editors: editors_name_string,
+              agents: agents_name_string,
               year:
                 student.aapplication_preference &&
                 student.aapplication_preference.expected_application_date,
@@ -545,6 +567,8 @@ function AdmissionsTable(props) {
               _id: student._id,
               firstname: student.firstname,
               lastname: student.lastname,
+              editors: editors_name_string,
+              agents: agents_name_string,
               year:
                 student.aapplication_preference &&
                 student.aapplication_preference.expected_application_date,
@@ -561,6 +585,8 @@ function AdmissionsTable(props) {
               _id: student._id,
               firstname: student.firstname,
               lastname: student.lastname,
+              editors: editors_name_string,
+              agents: agents_name_string,
               year:
                 student.aapplication_preference &&
                 student.application_preference.expected_application_date,
@@ -577,6 +603,8 @@ function AdmissionsTable(props) {
             _id: student._id,
             firstname: student.firstname,
             lastname: student.lastname,
+            editors: editors_name_string,
+            agents: agents_name_string,
             year:
               student.aapplication_preference &&
               student.application_preference.expected_application_date,
@@ -589,8 +617,8 @@ function AdmissionsTable(props) {
           });
         }
       }
-    })
-  );
+    });
+  });
 
   return (
     <>
@@ -603,40 +631,28 @@ function AdmissionsTable(props) {
         <Tab eventKey="Admissions" title="Admissions" className="my-0 mx-0">
           <Row>
             <Card className="my-0 mx-0" bg={'dark'} text={'white'}>
-              <Table2
-                header={'Admissions'}
-                data={admissions_table}
-              />
+              <Table2 header={'Admissions'} data={admissions_table} />
             </Card>
           </Row>
         </Tab>
         <Tab eventKey="Rejections" title="Rejections">
           <Row>
             <Card className="my-0 mx-0" bg={'dark'} text={'white'}>
-              <Table2
-                header={'Rejections '}
-                data={rejections_table}
-              />
+              <Table2 header={'Rejections '} data={rejections_table} />
             </Card>
           </Row>
         </Tab>
         <Tab eventKey="Pending" title="Pending">
           <Row>
             <Card className="my-0 mx-0" bg={'dark'} text={'white'}>
-              <Table2
-                header={'Pending'}
-                data={pending_table}
-              />
+              <Table2 header={'Pending'} data={pending_table} />
             </Card>
           </Row>
         </Tab>
         <Tab eventKey="NotClosedYet" title="Not Closed Yet">
           <Row>
             <Card className="my-0 mx-0" bg={'dark'} text={'white'}>
-              <Table2
-                header={'Not Closed Yet'}
-                data={not_yet_closed_table}
-              />
+              <Table2 header={'Not Closed Yet'} data={not_yet_closed_table} />
             </Card>
           </Row>
         </Tab>

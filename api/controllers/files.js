@@ -13,19 +13,11 @@ const {
 } = require('../constants');
 const {
   deleteTemplateSuccessEmail,
-  uploadTemplateSuccessEmail,
-  sendUploadedProfileFilesEmail,
-  sendUploadedVPDEmail,
   sendAgentUploadedProfileFilesForStudentEmail,
   sendAgentUploadedVPDForStudentEmail,
   sendUploadedProfileFilesRemindForAgentEmail,
   sendUploadedVPDRemindForAgentEmail,
   sendChangedProfileFileStatusEmail,
-  updateAcademicBackgroundEmail,
-  updateLanguageSkillEmail,
-  updateLanguageSkillEmailFromTaiGer,
-  updateApplicationPreferenceEmail,
-  updatePersonalDataEmail,
   UpdateStudentApplicationsEmail,
   NewMLRLEssayTasksEmail,
   NewMLRLEssayTasksEmailFromTaiGer
@@ -135,18 +127,6 @@ const uploadTemplate = asyncHandler(async (req, res) => {
     { upsert: true, new: true }
   );
   res.status(201).send({ success: true, data: updated_templates });
-
-  await uploadTemplateSuccessEmail(
-    {
-      firstname: user.firstname,
-      lastname: user.lastname,
-      address: user.email
-    },
-    {
-      category_name,
-      updatedAt: new Date()
-    }
-  );
 });
 
 const downloadTemplateFile = asyncHandler(async (req, res, next) => {
@@ -244,19 +224,6 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
         }
         await agent.save();
       }
-      if (isNotArchiv(student)) {
-        await sendUploadedProfileFilesEmail(
-          {
-            firstname: student.firstname,
-            lastname: student.lastname,
-            address: student.email
-          },
-          {
-            uploaded_documentname: document.name.replace(/_/g, ' '),
-            uploaded_updatedAt: document.updatedAt
-          }
-        );
-      }
 
       for (let i = 0; i < student.agents.length; i += 1) {
         if (isNotArchiv(student.agents[i])) {
@@ -325,19 +292,6 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
         // else: nothing to do as there was a notification before.
       }
       await agent.save();
-    }
-    if (isNotArchiv(student)) {
-      await sendUploadedProfileFilesEmail(
-        {
-          firstname: student.firstname,
-          lastname: student.lastname,
-          address: student.email
-        },
-        {
-          uploaded_documentname: document.name.replace(/_/g, ' '),
-          uploaded_updatedAt: document.updatedAt
-        }
-      );
     }
 
     // Reminder for Agent:
@@ -491,20 +445,6 @@ const saveVPDFilePath = asyncHandler(async (req, res) => {
   );
 
   if (user.role === Role.Student) {
-    if (isNotArchiv(student_updated)) {
-      await sendUploadedVPDEmail(
-        {
-          firstname: student_updated.firstname,
-          lastname: student_updated.lastname,
-          address: student_updated.email
-        },
-        {
-          uploaded_documentname: req.file.key.replace(/_/g, ' '),
-          uploaded_updatedAt: app.uni_assist.updatedAt
-        }
-      );
-    }
-
     // Reminder for Agent:
     for (let i = 0; i < student_updated.agents.length; i += 1) {
       if (isNotArchiv(student_updated.agents[i])) {
@@ -1467,17 +1407,6 @@ const updateAcademicBackground = asyncHandler(async (req, res, next) => {
       data: university,
       profile: updatedStudent.profile
     });
-
-    if (isNotArchiv(updatedStudent)) {
-      await updateAcademicBackgroundEmail(
-        {
-          firstname: updatedStudent.firstname,
-          lastname: updatedStudent.lastname,
-          address: updatedStudent.email
-        },
-        {}
-      );
-    }
   } catch (err) {
     logger.error(err);
     throw new ErrorResponse(400, JSON.stringify(err));
@@ -1642,34 +1571,6 @@ const updateLanguageSkill = asyncHandler(async (req, res, next) => {
     data: updatedStudent.academic_background.language,
     profile: updatedStudent.profile
   });
-  if (user.role === Role.Student) {
-    if (isNotArchiv(updatedStudent)) {
-      await updateLanguageSkillEmail(
-        {
-          firstname: updatedStudent.firstname,
-          lastname: updatedStudent.lastname,
-          address: updatedStudent.email
-        },
-        {}
-      );
-    }
-
-    // TODO : inform agents
-  } else {
-    if (isNotArchiv(updatedStudent)) {
-      await updateLanguageSkillEmailFromTaiGer(
-        {
-          firstname: updatedStudent.firstname,
-          lastname: updatedStudent.lastname,
-          address: updatedStudent.email
-        },
-        {
-          sender_firstname: user.firstname,
-          sender_lastname: user.lastname
-        }
-      );
-    }
-  }
 });
 
 // (O) email : self notification
@@ -1702,18 +1603,6 @@ const updateApplicationPreferenceSkill = asyncHandler(
       success: true,
       data: updatedStudent.application_preference
     });
-    if (user.role === Role.Student) {
-      if (isNotArchiv(updatedStudent)) {
-        await updateApplicationPreferenceEmail(
-          {
-            firstname: updatedStudent.firstname,
-            lastname: updatedStudent.lastname,
-            address: updatedStudent.email
-          },
-          {}
-        );
-      }
-    }
   }
 );
 
@@ -1740,16 +1629,6 @@ const updatePersonalData = asyncHandler(async (req, res, next) => {
         birthday: personaldata.birthday
       }
     });
-    if (isNotArchiv(updatedStudent)) {
-      await updatePersonalDataEmail(
-        {
-          firstname: personaldata.firstname,
-          lastname: personaldata.lastname,
-          address: user.email
-        },
-        {}
-      );
-    }
   } catch (err) {
     logger.error(err);
   }

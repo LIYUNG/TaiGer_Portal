@@ -130,38 +130,6 @@ const updatePermissionNotificationEmail = async (recipient, msg) => {
   return sendEmail(recipient, subject, message);
 };
 
-const uploadTemplateSuccessEmail = async (recipient, msg) => {
-  const subject = `Template ${msg.category_name} uploaded successfully!`;
-  const message = `\
-<p>${ENGLISH_BELOW}</p>
-
-<p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
-
-<p>${msg.category_name} 模板已成功上傳於</p>
-
-<p>${msg.updatedAt}</p>
-
-<p>更多細節請至 <a href="${TEMPLATE_DOWNLOAD_URL}">TaiGer Portal Download</a></p>
-
-<br />
-
-<p>${SPLIT_LINE}</p>
-
-<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
-
-<p>the template ${msg.category_name} is uploaded sucessfully on</p>
-
-<p>${msg.updatedAt}</p>
-
-<p>For more details, please visit: <a href="${TEMPLATE_DOWNLOAD_URL}">TaiGer Portal Download</a></p>
-
-<p>${TAIGER_SIGNATURE}</p>
-
-`;
-
-  return sendEmail(recipient, subject, message);
-};
-
 const deleteTemplateSuccessEmail = async (recipient, msg) => {
   const subject = `Template ${msg.category_name} deleted successfully!`;
   const message = `\
@@ -430,70 +398,6 @@ const sendAccountActivationConfirmationEmail = async (recipient, msg) => {
 <p>You can now login and explore the power of TaiGer Portal!</p>
 
 <p>TaiGer Portal: <a href="${ORIGIN}">TaiGer portal</a></p>
-
-<p>${TAIGER_SIGNATURE}</p>
-
-`;
-
-  return sendEmail(recipient, subject, message);
-};
-
-const sendUploadedProfileFilesEmail = async (recipient, msg) => {
-  const subject = `您的 ${msg.uploaded_documentname} 已成功上傳！ / Your ${msg.uploaded_documentname} is successfully uploaded!`;
-  const message = `\
-<p>${ENGLISH_BELOW}</p>
-
-<p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
-
-<p>您已於 ${msg.uploaded_updatedAt} 成功上傳</p>
-
-${msg.uploaded_documentname}。
-
-<p>您的顧問將會盡快瀏覽這份文件並給您意見回饋。</p>
-
-<p>有任何更新，請至 <a href="${BASE_DOCUMENT_URL}">Base Documents</a> 查看細節。</p>
-
-<br />
-
-<p>${SPLIT_LINE}</p>
-
-<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
-
-<p>you have uploaded ${msg.uploaded_documentname} on ${msg.uploaded_updatedAt} .</p>
-
-<p>Your agent will review it as soon as possible.</p>
-
-<p>Keep tracking your base documents progress: <a href="${BASE_DOCUMENT_URL}">Base Documents</a> </p>
-
-<p>${TAIGER_SIGNATURE}</p>
-
-`;
-
-  return sendEmail(recipient, subject, message);
-};
-
-const sendUploadedVPDEmail = async (recipient, msg) => {
-  const subject = 'VPD is successfully uploaded!';
-  const message = `\
-<p>${ENGLISH_BELOW}</p>
-
-<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
-
-<p>您已於 ${msg.uploaded_updatedAt} 成功上傳</p>
-
-<p>${msg.uploaded_documentname} 。</p>
-
-<p>有任何 VPD 更新，請至 <a href="${UNI_ASSIST_FOR_STUDENT_URL}">Student Uni-Assist</a></p>
-
-<br />
-
-<p>${SPLIT_LINE}</p>
-
-<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
-
-<p>you have successfully uploaded ${msg.uploaded_documentname} on ${msg.uploaded_updatedAt}.</p>
-
-<p>Keep tracking your VPD here: <a href="${UNI_ASSIST_FOR_STUDENT_URL}">Student Uni-Assist</a> </p>
 
 <p>${TAIGER_SIGNATURE}</p>
 
@@ -965,152 +869,6 @@ ${programList}
 <p>${TAIGER_SIGNATURE}</p>
 
 `;
-
-  return sendEmail(recipient, subject, message);
-};
-
-const updateAcademicBackgroundEmail = async (recipient) => {
-  const subject =
-    'TaiGer Portal 學術背景更新成功！ TaiGer Portal Academic Background updated successfully!';
-  const message = `\
-<p>${ENGLISH_BELOW}</p>
-
-<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
-
-<p>您已成功更新您的學術背景資訊！</p>
-
-<p>若有新的資訊，請再次到 <a href="${STUDENT_SURVEY_URL}">TaiGer Portal - Survey</a> 更新資訊。</p>
-
-<br />
-
-<p>${SPLIT_LINE}</p>
-
-<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
-
-<p>You have updated your academic background information successfully!</p>
-
-<p>If there is nw update, please go to <a href="${STUDENT_SURVEY_URL}">TaiGer Portal - Survey</a> and synchronize the information.</p>
-
-<p>${TAIGER_SIGNATURE}</p>
-
-`; // should be for admin/editor/agent/student
-
-  return sendEmail(recipient, subject, message);
-};
-
-const updateLanguageSkillEmail = async (recipient) => {
-  const subject =
-    '語言能力與檢定資訊更新成功 / Language skills updated successfully';
-  const message = `\
-<p>${ENGLISH_BELOW}</p>
-
-<p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
-
-<p>您已成功更新您的語言能力資訊與檢定！</p>
-
-<p>若有新的資訊，如考過檢定、或是知道新的考試時間，請再次到 <a href="${STUDENT_SURVEY_URL}">TaiGer Portal - Survey</a> 更新資訊。</p>
-
-<br />
-
-<p>${SPLIT_LINE}</p>
-
-<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
-
-<p>You have updated your Language skills information successfully!</p>
-
-<p>If there is nw update (for example: languages test passed or new test date registered) </p>
-
-Please go to <a href="${STUDENT_SURVEY_URL}">TaiGer Portal - Survey</a> and synchronize the information.
-
-<p>${TAIGER_SIGNATURE}</p>
-
-`; // should be for admin/editor/agent/student
-
-  return sendEmail(recipient, subject, message);
-};
-
-const updateLanguageSkillEmailFromTaiGer = async (recipient, msg) => {
-  const subject =
-    '語言能力與檢定資訊更新成功 /Language skills updated successfully';
-  const message = `\
-<p>${ENGLISH_BELOW}</p>
-
-<p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
-
-<p>${msg.sender_firstname} ${msg.sender_lastname} 成功更新您的語言能力與檢定資訊與檢定。</p>
-
-<p>若有新的資訊，如考過檢定、或是知道新的考試時間，請再次到 <a href="${STUDENT_SURVEY_URL}">TaiGer Portal - Survey</a> 更新語言檢定資訊。</p>
-
-<br />
-
-<p>${SPLIT_LINE}</p>
-
-<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
-
-<p>${msg.sender_firstname} ${msg.sender_lastname} updated your Language skills information successfully!</p>
-
-<p>Please double check in <a href="${STUDENT_SURVEY_URL}">TaiGer Portal - Survey</a> </p>
-
-<p>${TAIGER_SIGNATURE}</p>
-
-`; // should be for admin/editor/agent/student
-
-  return sendEmail(recipient, subject, message);
-};
-
-const updateApplicationPreferenceEmail = async (recipient) => {
-  const subject =
-    '申請學程偏好資訊更新成功 / Application preference updated successfully';
-  const message = `\
-<p>${ENGLISH_BELOW}</p>
-
-<p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
-
-<p>您成功更新您的申請偏好資訊。</p>
-
-<p>若有更新，請至 <a href="${STUDENT_SURVEY_URL}">TaiGer Portal - Survey</a> </p>
-
-<br />
-
-<p>${SPLIT_LINE}</p>
-
-<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
-
-<p>You have updated your application preference information successfully!</p>
-
-<p>If there is new update, please go to <a href="${STUDENT_SURVEY_URL}">TaiGer Portal - Survey</a> </p>
-
-<p>${TAIGER_SIGNATURE}</p>
-
-`; // should be for admin/editor/agent/student
-
-  return sendEmail(recipient, subject, message);
-};
-
-const updatePersonalDataEmail = async (recipient, msg) => {
-  const subject = '個人基本資料更新成功 / Personal data updated successfully';
-  const message = `\
-<p>${ENGLISH_BELOW}</p>
-
-<p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
-
-<p>您的個人基本資料已更新成功。</p>
-
-<p>請至 <a href="${SETTINGS_URL}">Setting</a> 查看細節。</p>
-
-<br />
-
-<p>${SPLIT_LINE}</p>
-
-<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
-
-<p>You have updated your personal data successfully!</p>
-
-<p>Please double check in <a href="${SETTINGS_URL}">Setting</a> </p>
-
-<p>${TAIGER_SIGNATURE}</p>
-
-`; // should be for admin/editor/agent/student
 
   return sendEmail(recipient, subject, message);
 };
@@ -2066,25 +1824,17 @@ module.exports = {
   updatePermissionNotificationEmail,
   sendEmail,
   deleteTemplateSuccessEmail,
-  uploadTemplateSuccessEmail,
   sendInvitationReminderEmail,
   sendInvitationEmail,
   sendConfirmationEmail,
   sendForgotPasswordEmail,
   sendPasswordResetEmail,
   sendAccountActivationConfirmationEmail,
-  sendUploadedProfileFilesEmail,
-  sendUploadedVPDEmail,
   sendAgentUploadedProfileFilesForStudentEmail,
   sendAgentUploadedVPDForStudentEmail,
   sendUploadedProfileFilesRemindForAgentEmail,
   sendUploadedVPDRemindForAgentEmail,
   sendChangedProfileFileStatusEmail,
-  updateAcademicBackgroundEmail,
-  updateLanguageSkillEmail,
-  updateLanguageSkillEmailFromTaiGer,
-  updateApplicationPreferenceEmail,
-  updatePersonalDataEmail,
   updateCredentialsEmail,
   UpdateStudentApplicationsEmail,
   NewMLRLEssayTasksEmail,

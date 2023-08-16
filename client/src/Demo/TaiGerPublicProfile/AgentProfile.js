@@ -8,10 +8,12 @@ import {
   spinner_style,
   time_slots,
   getNextDayDate,
-  convertTimeToLocale,
   daysOfWeek,
   getTodayAsWeekday,
-  getReorderWeekday
+  getReorderWeekday,
+  convertTimeToLocaleCalender,
+  shiftDateByOffset,
+  getTimezoneOffset
 } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
@@ -19,6 +21,8 @@ import ModalMain from '../Utils/ModalHandler/ModalMain';
 import { getAgentProfile } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import { is_TaiGer_Student } from '../Utils/checking-functions';
+import MyCalendar from '../../components/Calendar/components/Calendar';
+import { DateTime } from 'luxon';
 
 class AgentProfile extends React.Component {
   state = {
@@ -124,15 +128,66 @@ class AgentProfile extends React.Component {
     const reorder_weekday = getReorderWeekday(
       getTodayAsWeekday(this.state.agent.timezone)
     );
-    console.log(reorder_weekday);
-    console.log(getReorderWeekday(0));
-    console.log(getReorderWeekday(1));
-    console.log(getReorderWeekday(2));
-    console.log(getReorderWeekday(3));
-    console.log(getReorderWeekday(4));
-    console.log(getReorderWeekday(5));
-    console.log(getReorderWeekday(6));
-    console.log(getReorderWeekday(7));
+    // console.log(reorder_weekday);
+    // console.log(getReorderWeekday(0));
+    // console.log(getReorderWeekday(1));
+    // console.log(getReorderWeekday(2));
+    // console.log(getReorderWeekday(3));
+    // console.log(getReorderWeekday(4));
+    // console.log(getReorderWeekday(5));
+    // console.log(getReorderWeekday(6));
+    // console.log(getReorderWeekday(7));
+    const available_termins = [0, 1, 2, 3].flatMap((iter, x) =>
+      reorder_weekday.flatMap((day, i) => {
+        const timeSlots =
+          this.state.agent.officehours &&
+          this.state.agent.officehours[day]?.active &&
+          this.state.agent.officehours[day].time_slots
+            .sort((a, b) => (a.value < b.value ? -1 : 1))
+            .map((time_slot, j) => ({
+              id: j * 10 + i * 100 + x * 1000,
+              title: `${
+                (parseInt(time_slot.value.split(':')[0], 10) +
+                  getTimezoneOffset(
+                    Intl.DateTimeFormat().resolvedOptions().timeZone
+                  ) -
+                  getTimezoneOffset(this.state.agent.timezone)) %
+                24
+              }:${time_slot.value.split(':')[1]}`,
+              start: shiftDateByOffset(
+                new Date(
+                  getNextDayDate(day, this.state.agent.timezone, iter).year,
+                  getNextDayDate(day, this.state.agent.timezone, iter).month -
+                    1,
+                  getNextDayDate(day, this.state.agent.timezone, iter).day,
+                  parseInt(time_slot.value.split(':')[0], 10),
+                  parseInt(time_slot.value.split(':')[1], 10)
+                ),
+                getTimezoneOffset(
+                  Intl.DateTimeFormat().resolvedOptions().timeZone
+                ) - getTimezoneOffset(this.state.agent.timezone)
+              ),
+              end: shiftDateByOffset(
+                new Date(
+                  getNextDayDate(day, this.state.agent.timezone, iter).year,
+                  getNextDayDate(day, this.state.agent.timezone, iter).month -
+                    1,
+                  getNextDayDate(day, this.state.agent.timezone, iter).day,
+                  parseInt(time_slot.value.split(':')[0], 10),
+                  parseInt(time_slot.value.split(':')[1], 10)
+                ),
+                getTimezoneOffset(
+                  Intl.DateTimeFormat().resolvedOptions().timeZone
+                ) -
+                  getTimezoneOffset(this.state.agent.timezone) +
+                  0.5
+              ),
+              description: 'This is the first meeting description.'
+            }));
+
+        return timeSlots || [];
+      })
+    );
     return (
       <Aux>
         {res_modal_status >= 400 && (
@@ -207,6 +262,7 @@ class AgentProfile extends React.Component {
                             : 'text-secondary'
                         }`}
                         checked={this.state.agent.officehours[day]?.active}
+                        readOnly
                       />
                     </Form>
                   </Col>
@@ -234,50 +290,45 @@ class AgentProfile extends React.Component {
           </Card>
         )}
         <Card>
-          {[0, 1, 2, 3, 4].map((iter, x) => (
-            <>
-              {reorder_weekday.map((day, i) => (
-                <>
-                  {this.state.agent.officehours &&
-                    this.state.agent.officehours[day]?.active && (
-                      <>
-                        {this.state.agent.officehours[day].time_slots
-                          .sort((a, b) => (a.value < b.value ? -1 : 1))
-                          .map((time_slot, j) => (
-                            <li>
-                              {getNextDayDate(
-                                day,
-                                this.state.agent.timezone,
-                                iter
-                              )}
-                              {convertTimeToLocale(
-                                getNextDayDate(
-                                  day,
-                                  this.state.agent.timezone,
-                                  iter
-                                ),
-                                time_slot.value,
-                                this.state.agent.timezone,
-                                Intl.DateTimeFormat().resolvedOptions().timeZone
-                              )}
-                            </li>
-                          ))}
-                      </>
-                    )}
-                </>
-              ))}
-            </>
-          ))}
-
-          {/* TODO: need function that convert Monday to Date and put into convertTimeToLocale!  */}
-          {/* {Intl.DateTimeFormat().resolvedOptions().timeZone}
-          {convertTimeToLocale('09:30', 'Europe/Berlin', 'Asia/Taipei')}
-          {convertTimeToLocale(
-            '09:30',
-            'Europe/Berlin',
-            Intl.DateTimeFormat().resolvedOptions().timeZone
-          )} */}
+          <Card.Body>
+            <MyCalendar
+              events={[
+                ...available_termins,
+                {
+                  id: 7,
+                  title: 'Meeting 5',
+                  start: new Date(2023, 7, 25, 14, 0),
+                  end: new Date(2023, 7, 25, 16, 0),
+                  description: 'This is the second meeting description.'
+                }
+              ]}
+            />
+          </Card.Body>
         </Card>
+        {[0, 1, 2, 3].map((iter, x) =>
+          reorder_weekday.map(
+            (day, i) =>
+              this.state.agent.officehours &&
+              this.state.agent.officehours[day]?.active &&
+              this.state.agent.officehours[day].time_slots
+                .sort((a, b) => (a.value < b.value ? -1 : 1))
+                .map((time_slot, j) => (
+                  <Card key={j}>
+                    <Card.Header>
+                      <Card.Title>
+                        {/* {getNextDayDate(day, this.state.agent.timezone, iter)}
+                        {convertTimeToLocale(
+                          getNextDayDate(day, this.state.agent.timezone, iter),
+                          time_slot.value,
+                          this.state.agent.timezone,
+                          Intl.DateTimeFormat().resolvedOptions().timeZone
+                        )} */}
+                      </Card.Title>
+                    </Card.Header>
+                  </Card>
+                ))
+          )
+        )}
       </Aux>
     );
   }

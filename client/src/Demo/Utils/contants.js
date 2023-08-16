@@ -4,7 +4,7 @@ import {
   AiFillQuestionCircle,
   AiOutlineFieldTime
 } from 'react-icons/ai';
-import { DateTime } from 'luxon';
+import { DateTime, IANAZone } from 'luxon';
 import { IoCheckmarkCircle } from 'react-icons/io5';
 import { BsDash } from 'react-icons/bs';
 import { BiCommentDots } from 'react-icons/bi';
@@ -67,7 +67,7 @@ export const getTodayAsWeekday = (timezone) => {
 
 export const getReorderWeekday = (index) => {
   let delayed_index = index;
-  delayed_index = (delayed_index + 2) % 7;
+  delayed_index = (delayed_index + 1) % 7;
   if (delayed_index >= 0 && delayed_index <= 6) {
     const weekdayOrder = daysOfWeek
       .slice(delayed_index)
@@ -77,6 +77,25 @@ export const getReorderWeekday = (index) => {
     return 'Invalid index';
   }
 };
+
+export const getTimezoneOffset = (timezone) => {
+  const zone = IANAZone.create(timezone);
+  const now = Date.now();
+  const offset = zone.offset(new Date(now));
+  const offsetHours = offset / 60;
+  return offsetHours;
+};
+
+export const shiftDateByOffset = (originalDate, offsetHours) => {
+  const shiftedDate = new Date(originalDate);
+  const hours = Math.floor(offsetHours); // Get the whole number of hours
+  const minutes = (offsetHours - hours) * 60; // Convert decimal to minutes
+
+  shiftedDate.setHours(shiftedDate.getHours() + hours);
+  shiftedDate.setMinutes(shiftedDate.getMinutes() + minutes);
+  return shiftedDate;
+};
+
 export const getNextDayDate = (dayOfWeek, timezone, nextN) => {
   const now = DateTime.fromObject({}, { zone: timezone });
 
@@ -95,32 +114,16 @@ export const getNextDayDate = (dayOfWeek, timezone, nextN) => {
     day: 'numeric'
   };
   const formattedDate = nextOccurrence.toLocaleString(options);
-
-  return formattedDate;
-};
-
-export const convertTimeToLocale = (
-  inputDate,
-  inputTime,
-  inputTimezone,
-  outputTimezone
-) => {
-  const inputTimeParts = inputTime.split(':');
-  const now = DateTime.fromFormat(inputDate, 'EEEE, L/d/yyyy', {
-    zone: inputTimezone
-  });
-
-  const inputDateTemp = now.set({
-    hour: parseInt(inputTimeParts[0], 10),
-    minute: parseInt(inputTimeParts[1], 10),
-    second: 0,
-    millisecond: 0
-  });
-  const outputTimeString = inputDateTemp
-    .setZone(outputTimezone)
-    .toFormat('cccc, L/d/yyyy HH:mm ZZZZ');
-
-  return outputTimeString;
+  // console.log(nextOccurrence.weekdayLong);
+  // console.log(nextOccurrence.year);
+  // console.log(nextOccurrence.month);
+  // console.log(nextOccurrence.day);
+  return {
+    weekdayLong: nextOccurrence.weekdayLong,
+    year: nextOccurrence.year,
+    month: nextOccurrence.month,
+    day: nextOccurrence.day
+  };
 };
 
 export const time_slots = [

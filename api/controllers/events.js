@@ -19,24 +19,17 @@ const showEvent = asyncHandler(async (req, res) => {
 
   try {
     res.status(200).json(event);
-  } catch (err) {
-    // handleError(err, res);
-  }
+  } catch (err) {}
 });
 
 const postEvent = asyncHandler(async (req, res) => {
-  const newEvent = await new Event(req.body);
-
+  const newEvent = await Event.create(req.body);
+  console.log(req.body);
   try {
-    await newEvent.save((err, event) => {
-      if (err) {
-        handleError(err, res);
-      } else {
-        res.status(200).json(event);
-      }
-    });
+    await newEvent.save();
+    return res.status(200).send({ success: true, data: newEvent });
   } catch (err) {
-    // handleError(err, res);
+    throw new ErrorResponse(400, err);
   }
 });
 
@@ -57,10 +50,7 @@ const updateEvent = asyncHandler(async (req, res) => {
     if (!event) {
       res.status(404).json({ error: 'event is not found' });
     }
-  } catch (err) {
-    // console.log(err);
-    // handleError(err, res);
-  }
+  } catch (err) {}
 });
 
 const deleteEvent = asyncHandler(async (req, res) => {

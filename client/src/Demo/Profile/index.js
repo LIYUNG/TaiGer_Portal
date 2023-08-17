@@ -563,6 +563,7 @@ class Profile extends React.Component {
           <Card>
             <Card.Body>
               <MyCalendar
+                user={this.props.user}
                 events={[
                   {
                     id: 1,

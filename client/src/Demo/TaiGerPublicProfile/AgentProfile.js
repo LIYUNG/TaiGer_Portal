@@ -145,7 +145,7 @@ class AgentProfile extends React.Component {
           this.state.agent.officehours[day].time_slots
             .sort((a, b) => (a.value < b.value ? -1 : 1))
             .map((time_slot, j) => ({
-              id: j * 10 + i * 100 + x * 1000,
+              id: j * 10 + i * 100 + x * 1000 + 1,
               title: `${
                 (parseInt(time_slot.value.split(':')[0], 10) +
                   getTimezoneOffset(
@@ -293,15 +293,16 @@ class AgentProfile extends React.Component {
           <Card.Body>
             <MyCalendar
               events={[
-                ...available_termins,
-                {
-                  id: 7,
-                  title: 'Meeting 5',
-                  start: new Date(2023, 7, 25, 14, 0),
-                  end: new Date(2023, 7, 25, 16, 0),
-                  description: 'This is the second meeting description.'
-                }
+                ...available_termins
+                // {
+                //   id: 7,
+                //   title: 'Meeting 5',
+                //   start: new Date(2023, 7, 25, 14, 0),
+                //   end: new Date(2023, 7, 25, 16, 0),
+                //   description: 'This is the second meeting description.'
+                // }
               ]}
+              user={this.props.user}
             />
           </Card.Body>
         </Card>

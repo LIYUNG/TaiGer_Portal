@@ -7,6 +7,11 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 import Popping from './Popping';
 import { Button, Card, Form, Modal } from 'react-bootstrap';
 import { convertDate } from '../../../Demo/Utils/contants';
+import {
+  is_TaiGer_Agent,
+  is_TaiGer_Student
+} from '../../../Demo/Utils/checking-functions';
+import { postEvent } from '../../../api';
 
 const locales = {
   'en-US': enUS
@@ -15,7 +20,8 @@ const locales = {
 const localizer = momentLocalizer(moment);
 
 const MyCalendar = (props) => {
-  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [generalState, setGeneralState] = useState({});
+  const [selectedEvent, setSelectedEvent] = useState({});
   const [isNewEventModalOpen, setIsNewEventModalOpen] = useState(false);
   const [newEventTitle, setNewEventTitle] = useState('');
   const [newEventDescription, setNewEventDescription] = useState('');
@@ -23,29 +29,64 @@ const MyCalendar = (props) => {
   const [newEventEnd, setNewEventEnd] = useState(null); // Initialize end
 
   const handleSelectEvent = (event) => {
-    // console.log(event);
+    console.log(event);
     setSelectedEvent(event);
   };
 
   const handleModalClose = () => {
-    setSelectedEvent(null);
+    setSelectedEvent({});
   };
-
+  const handleModalBook = () => {
+    console.log('here');
+    const eventWrapper = { ...selectedEvent };
+    if (is_TaiGer_Student(props.user)) {
+      eventWrapper.student_id = props.user._id.toString();
+      console.log('here2');
+    }
+    postEvent(eventWrapper.student_id, eventWrapper).then(
+      (resp) => {
+        const { success, data } = resp.data;
+        const { status } = resp;
+        console.log('here3');
+        if (success) {
+          setGeneralState({
+            success,
+            isLoaded: true,
+            res_modal_status: status
+          });
+          setSelectedEvent({});
+        } else {
+          // TODO: what if data is oversize? data type not match?
+          const { message } = resp.data;
+          setGeneralState({
+            isLoaded: true,
+            res_modal_message: message,
+            res_modal_status: status
+          });
+          setSelectedEvent({});
+        }
+      },
+      (error) => {
+        console.log('here4');
+        setSelectedEvent({});
+      }
+    );
+  };
   const handleSelectSlot = (slotInfo) => {
     // When an empty date slot is clicked, open the modal to create a new event
     // setSelectedEvent({ start, end });
-    const isDisabled = disabledTimeslots.some(
-      (timeslot) =>
-        (slotInfo.start >= timeslot.start && slotInfo.end <= timeslot.end) ||
-        (slotInfo.start <= timeslot.start && slotInfo.end >= timeslot.end) ||
-        (slotInfo.start <= timeslot.start && slotInfo.end > timeslot.start) ||
-        (slotInfo.start < timeslot.end && slotInfo.end >= timeslot.end)
-    );
+    // const isDisabled = disabledTimeslots.some(
+    //   (timeslot) =>
+    //     (slotInfo.start >= timeslot.start && slotInfo.end <= timeslot.end) ||
+    //     (slotInfo.start <= timeslot.start && slotInfo.end >= timeslot.end) ||
+    //     (slotInfo.start <= timeslot.start && slotInfo.end > timeslot.start) ||
+    //     (slotInfo.start < timeslot.end && slotInfo.end >= timeslot.end)
+    // );
 
-    // If the slot is disabled, prevent any further action
-    if (isDisabled) {
-      return;
-    }
+    // // If the slot is disabled, prevent any further action
+    // if (isDisabled) {
+    //   return;
+    // }
     setNewEventStart(slotInfo.start); // Set the initial start value for the new event
     setNewEventEnd(slotInfo.end); // Set the initial end value for the new event
 
@@ -110,19 +151,19 @@ const MyCalendar = (props) => {
 
   const slotPropGetter = (date) => {
     // Check if the current slot is within any of the disabled timeslots
-    const isDisabled = disabledTimeslots.some(
-      (timeslot) => date >= timeslot.start && date < timeslot.end
-    );
+    // const isDisabled = disabledTimeslots.some(
+    //   (timeslot) => date >= timeslot.start && date < timeslot.end
+    // );
 
     // If the slot is disabled, return custom styles to make it visually inactive
-    if (isDisabled) {
-      return {
-        style: {
-          backgroundColor: '#f2f2f2', // A color to indicate the inactive state
-          pointerEvents: 'none' // Disable pointer events to prevent selection
-        }
-      };
-    }
+    // if (isDisabled) {
+    //   return {
+    //     style: {
+    //       backgroundColor: '#f2f2f2', // A color to indicate the inactive state
+    //       pointerEvents: 'none' // Disable pointer events to prevent selection
+    //     }
+    //   };
+    // }
 
     // Otherwise, return null to use the default slot style
     return null;
@@ -175,7 +216,7 @@ const MyCalendar = (props) => {
         views={['month', 'week', 'day']}
         defaultView="month" // Set the default view to "month"
         // Using the eventPropGetter to customize event rendering
-        slotPropGetter={slotPropGetter} // Apply custom styles to slots based on the logic
+        // slotPropGetter={slotPropGetter} // Apply custom styles to slots based on the logic
         // eventPropGetter={(event) => {
         //   return {
         //     style: {
@@ -201,21 +242,21 @@ const MyCalendar = (props) => {
         selectable={true}
         // Handle event click to show the modal
         onSelectEvent={handleSelectEvent}
-        onSelectSlot={handleSelectSlot}
+        onSelectSlot={is_TaiGer_Agent(props.user) ? handleSelectSlot : () => {}}
         eventPropGetter={eventPropGetter} // Apply custom styles to events based on the logic
         // onSelectSlot={() => console.log('Triggered!')}
       />
       {/* Modal */}
-      {selectedEvent && (
-        <Popping
-          open={true}
-          handleOpen={handleSelectEvent}
-          handleClose={handleModalClose}
-          // renderStatus={renderStatus}
-          // rerender={rerender}
-          event={selectedEvent}
-        />
-      )}
+
+      <Popping
+        open={selectedEvent}
+        handleClose={handleModalClose}
+        handleBook={handleModalBook}
+        // renderStatus={renderStatus}
+        // rerender={rerender}
+        event={selectedEvent}
+      />
+
       {/* Modal for creating a new event */}
       {/* React Bootstrap Modal for creating a new event */}
 

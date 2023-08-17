@@ -23,12 +23,15 @@ router
   .get(permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor), showEvent);
 
 router
-  .route('/')
-  .post(permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor), postEvent);
-
-router
-  .route('/:id/update')
-  .put(permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor), updateEvent);
+  .route('/:student_id')
+  .post(
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
+    postEvent
+  )
+  .put(
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
+    updateEvent
+  );
 
 router
   .route('/:id/delete')

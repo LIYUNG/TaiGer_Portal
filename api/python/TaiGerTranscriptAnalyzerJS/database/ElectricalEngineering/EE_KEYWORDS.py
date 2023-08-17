@@ -11,7 +11,7 @@ EE_CALCULUS_KEY_WORDS = ['微積分']
 EE_CALCULUS_ANTI_KEY_WORDS = ['asdgladfj;l']
 EE_MATH_KEY_WORDS = ['數學', '代數', '微分', '函數', '機率', '離散', '複變', '數值', '向量']
 EE_MATH_ANTI_KEY_WORDS = ['asdgladfj;l']
-EE_INTRO_COMPUTER_SCIENCE_KEY_WORDS = ['計算機', '演算', '資料', '運算', '數位系統',
+EE_INTRO_COMPUTER_SCIENCE_KEY_WORDS = ['計算機', '演算', '資料', '運算',
                                        '資電', '作業系統', '資料結構', '編譯器']
 EE_INTRO_COMPUTER_SCIENCE_ANTI_KEY_WORDS = [
     '倫理', 'Python', '機器學習', '傳輸', '素人', '思考']
@@ -23,7 +23,7 @@ EE_SOFTWARE_SYSTEM_ANTI_KEY_WORDS = ['asdgladfj;l']
 EE_CONTROL_THEORY_KEY_WORDS = ['控制', '線性系統', '非線性系統']
 EE_CONTROL_THEORY_ANTI_KEY_WORDS = ['asdgladfj;l', '網路', '碼', '儀', '可程式']
 EE_PHYSICS_KEY_WORDS = ['物理']
-EE_PHYSICS_ANTI_KEY_WORDS = ['半導體', '元件', '實驗', '史', '服務', '冶金']
+EE_PHYSICS_ANTI_KEY_WORDS = ['半導體', '元件', '實驗', '史', '服務', '冶金', '生活']
 EE_PHYSICS_EXP_KEY_WORDS = ['物理']
 EE_PHYSICS_EXP_ANTI_KEY_WORDS = ['半導體', '元件', '史', '服務']
 EE_ELECTRONICS_KEY_WORDS = ['電子', '電子電路']
@@ -31,12 +31,12 @@ EE_ELECTRONICS_ANTI_KEY_WORDS = [
     '實驗', '專題', '電力', '固態', '自動化', '倫理', '素養', '進階', '材料', '藝術', '視覺', '近代']
 EE_ELECTRONICS_EXP_KEY_WORDS = ['電子實驗', '電子', '電工實驗']
 EE_ELECTRONICS_EXP_ANTI_KEY_WORDS = ['專題', '電力', '固態', '自動化', '藝術', '材料', '近代']
-EE_ELECTRO_CIRCUIT_KEY_WORDS = ['電路', '數位邏輯', '邏輯系統', '邏輯設計']
+EE_ELECTRO_CIRCUIT_KEY_WORDS = ['電路', '數位邏輯', '數位系統', '邏輯系統', '邏輯設計']
 EE_ELECTRO_CIRCUIT_ANTI_KEY_WORDS = [
     '超大型', '專題', '倫理', '素養', '進階', '藝術', '高頻', '微波']
 EE_SIGNAL_SYSTEM_KEY_WORDS = ['訊號與系統', '信號與系統', '訊號', '信號']
 EE_SIGNAL_SYSTEM_ANTI_KEY_WORDS = ['asdgladfj;l''超大型', '專題']
-EE_ELECTRO_MAGNET_KEY_WORDS = ['電磁']
+EE_ELECTRO_MAGNET_KEY_WORDS = ['電磁', '電動力學']
 EE_ELECTRO_MAGNET_ANTI_KEY_WORDS = ['asdgladfj;l', '專題', '進階']
 EE_POWER_ELECTRO_KEY_WORDS = ['電力', '能源', '電動機', '電機', '高壓電', '電傳輸', '配電']
 EE_POWER_ELECTRO_ANTI_KEY_WORDS = ['asdgladfj;l', '專題', '進階']
@@ -77,7 +77,7 @@ EE_MATH_ANTI_KEY_WORDS_EN = ['asdgladfj;l', 'device']
 EE_INTRO_COMPUTER_SCIENCE_KEY_WORDS_EN = ['computer', 'algorithm', 'object', 'computing',
                                           '資電', 'operating system', 'data structure', 'software', 'compiler']
 EE_INTRO_COMPUTER_SCIENCE_ANTI_KEY_WORDS_EN = [
-    '倫理', 'Python', 'machine learning', 'circuit', 'program']
+    '倫理', 'Python', 'machine learning', 'circuit', 'program', 'vision']
 EE_PROGRAMMING_KEY_WORDS_EN = ['programming', 'program',
                                'language', 'Python', 'c++', 'c language']
 EE_PROGRAMMING_ANTI_KEY_WORDS_EN = [

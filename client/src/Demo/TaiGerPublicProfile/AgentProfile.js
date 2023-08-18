@@ -1,17 +1,24 @@
 import React from 'react';
-import { Row, Col, Card, Form, Button, Spinner, Modal } from 'react-bootstrap';
+import {
+  Row,
+  Col,
+  Card,
+  Form,
+  Button,
+  Spinner,
+  Modal,
+  Tabs,
+  Tab
+} from 'react-bootstrap';
 import TimezoneSelect from 'react-timezone-select';
 import Select from 'react-select';
 
 import Aux from '../../hoc/_Aux';
 import {
   spinner_style,
-  time_slots,
   getNextDayDate,
-  daysOfWeek,
   getTodayAsWeekday,
   getReorderWeekday,
-  convertTimeToLocaleCalender,
   shiftDateByOffset,
   getTimezoneOffset
 } from '../Utils/contants';
@@ -225,7 +232,7 @@ class AgentProfile extends React.Component {
             </Card>
           </Col>
         </Row>
-        {is_TaiGer_Student(this.props.user) && (
+        {/* {is_TaiGer_Student(this.props.user) && (
           <Card className="my-2 mx-0" bg={'dark'} text={'white'}>
             <Card.Header>
               <Card.Title className="my-0 mx-0 text-light">
@@ -288,48 +295,89 @@ class AgentProfile extends React.Component {
               ))}
             </Card.Body>
           </Card>
-        )}
+        )} */}
         <Card>
+          <Card.Header>
+            <Card.Title>Office Hours</Card.Title>
+          </Card.Header>
           <Card.Body>
-            <MyCalendar
-              events={[
-                ...available_termins
-                // {
-                //   id: 7,
-                //   title: 'Meeting 5',
-                //   start: new Date(2023, 7, 25, 14, 0),
-                //   end: new Date(2023, 7, 25, 16, 0),
-                //   description: 'This is the second meeting description.'
-                // }
-              ]}
-              user={this.props.user}
-            />
-          </Card.Body>
-        </Card>
-        {[0, 1, 2, 3].map((iter, x) =>
-          reorder_weekday.map(
-            (day, i) =>
-              this.state.agent.officehours &&
-              this.state.agent.officehours[day]?.active &&
-              this.state.agent.officehours[day].time_slots
-                .sort((a, b) => (a.value < b.value ? -1 : 1))
-                .map((time_slot, j) => (
-                  <Card key={j}>
-                    <Card.Header>
-                      <Card.Title>
-                        {/* {getNextDayDate(day, this.state.agent.timezone, iter)}
+            <Tabs
+              defaultActiveKey={'Calendar'}
+              id="Calendar-example"
+              fill={true}
+              justify={true}
+              className="py-0 my-0 mx-0"
+            >
+              <Tab eventKey="Calendar" title="Calendar">
+                <MyCalendar
+                  events={[
+                    ...available_termins
+                    // {
+                    //   id: 7,
+                    //   title: 'Meeting 5',
+                    //   start: new Date(2023, 7, 25, 14, 0),
+                    //   end: new Date(2023, 7, 25, 16, 0),
+                    //   description: 'This is the second meeting description.'
+                    // }
+                  ]}
+                  user={this.props.user}
+                />
+              </Tab>
+              <Tab eventKey="Appointment" title="Appointment">
+                {[0, 1, 2, 3].map((iter, x) =>
+                  reorder_weekday.map(
+                    (day, i) =>
+                      this.state.agent.officehours &&
+                      this.state.agent.officehours[day]?.active &&
+                      this.state.agent.officehours[day].time_slots
+                        .sort((a, b) => (a.value < b.value ? -1 : 1))
+                        .map((time_slot, j) => (
+                          <Card key={j} className="my-0 mx-0">
+                            <Card.Header>
+                              <Card.Title>
+                                {shiftDateByOffset(
+                                  new Date(
+                                    getNextDayDate(
+                                      day,
+                                      this.state.agent.timezone,
+                                      iter
+                                    ).year,
+                                    getNextDayDate(
+                                      day,
+                                      this.state.agent.timezone,
+                                      iter
+                                    ).month - 1,
+                                    getNextDayDate(
+                                      day,
+                                      this.state.agent.timezone,
+                                      iter
+                                    ).day,
+                                    parseInt(time_slot.value.split(':')[0], 10),
+                                    parseInt(time_slot.value.split(':')[1], 10)
+                                  ),
+                                  getTimezoneOffset(
+                                    Intl.DateTimeFormat().resolvedOptions()
+                                      .timeZone
+                                  ) -
+                                    getTimezoneOffset(this.state.agent.timezone)
+                                ).toLocaleString()}
+                                {/* {getNextDayDate(day, this.state.agent.timezone, iter)}
                         {convertTimeToLocale(
                           getNextDayDate(day, this.state.agent.timezone, iter),
                           time_slot.value,
                           this.state.agent.timezone,
                           Intl.DateTimeFormat().resolvedOptions().timeZone
                         )} */}
-                      </Card.Title>
-                    </Card.Header>
-                  </Card>
-                ))
-          )
-        )}
+                              </Card.Title>
+                            </Card.Header>
+                          </Card>
+                        ))
+                  )
+                )}
+              </Tab>
+            </Tabs>
+          </Card.Body>
+        </Card>
       </Aux>
     );
   }

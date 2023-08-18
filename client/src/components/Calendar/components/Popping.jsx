@@ -47,7 +47,9 @@ const Popping = ({
             <Button variant="primary" onClick={handleBook}>
               Book
             </Button>
-            <Button variant="danger">Close</Button>
+            <Button variant="danger" onClick={handleClose}>
+              Close
+            </Button>
           </Modal.Footer>
         </Modal>
       );

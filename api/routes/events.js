@@ -16,27 +16,24 @@ router.use(protect);
 
 router
   .route('/')
-  .get(permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor), getEvents);
-
-router
-  .route('/:id/show')
-  .get(permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor), showEvent);
-
-router
-  .route('/:student_id')
+  .get(permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor), getEvents)
   .post(
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     postEvent
-  )
-  .put(
-    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
-    updateEvent
   );
 
 router
-  .route('/:id/delete')
+  .route('/:student_id/show')
+  .get(permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor), showEvent);
+
+router
+  .route('/:event_id')
+  .put(
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
+    updateEvent
+  )
   .delete(
-    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     deleteEvent
   );
 

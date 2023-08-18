@@ -43,7 +43,7 @@ const MyCalendar = (props) => {
       eventWrapper.student_id = props.user._id.toString();
       console.log('here2');
     }
-    postEvent(eventWrapper.student_id, eventWrapper).then(
+    postEvent(eventWrapper).then(
       (resp) => {
         const { success, data } = resp.data;
         const { status } = resp;

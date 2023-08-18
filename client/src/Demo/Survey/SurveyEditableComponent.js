@@ -1,5 +1,13 @@
 import React from 'react';
-import { Row, Col, Card, Form, Button, Offcanvas } from 'react-bootstrap';
+import {
+  Row,
+  Col,
+  Card,
+  Form,
+  Button,
+  Offcanvas,
+  Badge
+} from 'react-bootstrap';
 
 import Aux from '../../hoc/_Aux';
 import {
@@ -1009,23 +1017,38 @@ class SurveyEditableComponent extends React.Component {
                       >
                         <Form.Label className="my-0 mx-0 text-light">
                           Other wish
-                        </Form.Label>
-                        <Form.Control
-                          as="textarea"
-                          rows="3"
-                          placeholder='Example: QS Ranking 300, 只要德國'
-                          value={
-                            this.state.application_preference &&
-                            this.state.application_preference.special_wished
-                              ? this.state.application_preference.special_wished
-                              : ''
-                          }
-                          onChange={(e) =>
-                            this.handleChange_ApplicationPreference(e)
-                          }
-                        ></Form.Control>
+                        </Form.Label>{' '}
+                        <div className="d-flex align-items-center">
+                          {/* Wrap label and input in a flex container */}
+                          <Form.Control
+                            as="textarea"
+                            maxLength={1000}
+                            rows="5"
+                            placeholder="Example: QS Ranking 300, 只要德國"
+                            value={
+                              this.state.application_preference &&
+                              this.state.application_preference.special_wished
+                                ? this.state.application_preference
+                                    .special_wished
+                                : ''
+                            }
+                            onChange={(e) =>
+                              this.handleChange_ApplicationPreference(e)
+                            }
+                            className="mr-2"
+                          ></Form.Control>
+                        </div>
                       </Form.Group>
                     </Form>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col>
+                    <span className="text-light">
+                      {this.state.application_preference.special_wished
+                        ?.length || 0}
+                      /1000
+                    </span>
                   </Col>
                 </Row>
                 <Row>

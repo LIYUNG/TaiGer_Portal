@@ -27,27 +27,29 @@ const MyCalendar = (props) => {
   const [newEventDescription, setNewEventDescription] = useState('');
   const [newEventStart, setNewEventStart] = useState(null); // Initialize start
   const [newEventEnd, setNewEventEnd] = useState(null); // Initialize end
+  const [newDescription, setNewDescription] = useState(''); // Initialize end
 
   const handleSelectEvent = (event) => {
     console.log(event);
     setSelectedEvent(event);
   };
-
+  const handleChange = (e) => {
+    const description_temp = e.target.value;
+    setNewDescription(description_temp);
+  };
   const handleModalClose = () => {
     setSelectedEvent({});
   };
   const handleModalBook = () => {
-    console.log('here');
     const eventWrapper = { ...selectedEvent };
     if (is_TaiGer_Student(props.user)) {
       eventWrapper.student_id = props.user._id.toString();
-      console.log('here2');
+      eventWrapper.description = newDescription;
     }
     postEvent(eventWrapper).then(
       (resp) => {
         const { success, data } = resp.data;
         const { status } = resp;
-        console.log('here3');
         if (success) {
           setGeneralState({
             success,
@@ -252,6 +254,8 @@ const MyCalendar = (props) => {
         open={selectedEvent}
         handleClose={handleModalClose}
         handleBook={handleModalBook}
+        handleChange={handleChange}
+        newDescription={newDescription}
         // renderStatus={renderStatus}
         // rerender={rerender}
         event={selectedEvent}

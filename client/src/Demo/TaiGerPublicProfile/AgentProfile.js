@@ -217,7 +217,7 @@ class AgentProfile extends React.Component {
                   getTimezoneOffset(this.state.agent.timezone) +
                   0.5
               ),
-              description: 'This is the first meeting description.'
+              description: ''
             }));
 
         return timeSlots || [];

@@ -1,4 +1,4 @@
-import { Modal, Button } from 'react-bootstrap';
+import { Modal, Button, Form, Badge } from 'react-bootstrap';
 import React, { useState } from 'react';
 import '../style/model.scss';
 import { Link, withRouter } from 'react-router-dom';
@@ -7,16 +7,18 @@ import { convertDate } from '../../../Demo/Utils/contants';
 const Popping = ({
   open,
   handleClose,
+  handleChange,
   event,
-  handleBook
+  handleBook,
+  newDescription
   // deleteEventApi,
   // renderStatus,
   // rerender
 }) => {
   if (event?.id) {
     // const navigate = useNavigate();
-    const { description, title, start, end } = event;
-
+    const { title, start, end } = event;
+    const textLimit = 2000;
     // const handleDelete = async () => {
     //   await deleteEventApi(event.id);
     //   rerender(!renderStatus);
@@ -24,24 +26,42 @@ const Popping = ({
 
     const modal = () => {
       return (
-        <Modal show={open} onHide={handleClose} centered>
+        <Modal show={open} size="xl" onHide={handleClose} centered>
           <Modal.Header closeButton>
             <Modal.Title className="text-capitalize">{title}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            {description ? (
-              <p className="lead">{description}</p>
-            ) : (
-              'No Dsecriptions Yet'
-            )}
-            <div className="row justify-content-between">
-              <p className="col small text-muted text-center pb-0 mb-0">
-                from: {convertDate(start)}
-              </p>
-              <p className="col small text-muted text-center pb-0 mb-0">
-                to: {convertDate(end)}
-              </p>
-            </div>
+            <Form>
+              <Form.Group controlId="description" className="my-0 mx-0">
+                <Form.Label>請寫下想討論的主題</Form.Label>
+                <Form.Control
+                  as="textarea"
+                  maxLength={textLimit}
+                  rows="10"
+                  placeholder="Example：我想定案選校、選課，我想討論簽證，德語班。"
+                  value={newDescription || ''}
+                  isInvalid={newDescription?.length > textLimit}
+                  onChange={handleChange}
+                ></Form.Control>
+                <Badge
+                  className="mt-3"
+                  bg={`${
+                    newDescription?.length > textLimit ? 'danger' : 'primary'
+                  }`}
+                >
+                  {newDescription?.length || 0}/{textLimit}
+                </Badge>
+              </Form.Group>
+            </Form>
+            <br />
+            <ul>
+              <li className="col text-muted pb-0 mb-0">
+                From: {convertDate(start)}
+              </li>
+              <li className="col text-muted pb-0 mb-0">
+                To: {convertDate(end)}
+              </li>
+            </ul>
           </Modal.Body>
           <Modal.Footer>
             <Button variant="primary" onClick={handleBook}>

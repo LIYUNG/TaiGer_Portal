@@ -16,7 +16,14 @@ const EventSchema = new mongoose.Schema(
     },
     description: {
       type: String,
-      required: [true, 'Please write a description for your event']
+      required: [true, 'Please write a description for your event'],
+      validate: {
+        validator: function (value) {
+          return value.length <= 2000; // Maximum allowed length
+        },
+        message:
+          'Description exceeds the maximum allowed length of 500 characters'
+      }
     },
     start: {
       type: Date,

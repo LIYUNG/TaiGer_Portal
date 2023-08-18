@@ -28,6 +28,7 @@ const postEvent = asyncHandler(async (req, res) => {
     await newEvent.save();
     return res.status(200).send({ success: true, data: newEvent });
   } catch (err) {
+    console.log(err);
     throw new ErrorResponse(400, err);
   }
 });

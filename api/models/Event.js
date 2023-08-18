@@ -6,6 +6,10 @@ const EventSchema = new mongoose.Schema(
   {
     student_id: [{ type: ObjectId, ref: 'User' }],
     taiger_user_id: [{ type: ObjectId, ref: 'User' }],
+    isConfirmed: {
+      type: Boolean,
+      default: false
+    },
     title: {
       type: String,
       required: [true, 'Please write a title for your event']

@@ -169,6 +169,10 @@ const UserSchema = new Schema(
         type: String,
         default: '-'
       },
+      special_wished: {
+        type: String,
+        default: ''
+      },
       application_outside_germany: {
         type: String,
         default: '-'

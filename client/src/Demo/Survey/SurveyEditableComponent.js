@@ -902,61 +902,6 @@ class SurveyEditableComponent extends React.Component {
                           }
                         />
                       </Form.Group>
-                      <Form.Group
-                        controlId="application_outside_germany"
-                        className="my-4 mx-0"
-                      >
-                        <Form.Label className="my-0 mx-0 text-light">
-                          Considering universities outside Germany?
-                        </Form.Label>
-                        <Form.Control
-                          disabled={isReadonly}
-                          as="select"
-                          value={
-                            this.state.application_preference &&
-                            this.state.application_preference
-                              .application_outside_germany
-                              ? this.state.application_preference
-                                  .application_outside_germany
-                              : '-'
-                          }
-                          onChange={(e) =>
-                            this.handleChange_ApplicationPreference(e)
-                          }
-                        >
-                          <option value="-">Please Select</option>
-                          <option>Yes</option>
-                          <option>No</option>
-                        </Form.Control>
-                      </Form.Group>
-                      <Form.Group
-                        controlId="considered_privat_universities"
-                        className="my-0 mx-0"
-                      >
-                        <Form.Label className="my-0 mx-0 text-light">
-                          Considering private universities? (Tuition Fee: ~15000
-                          EURO/year)
-                        </Form.Label>
-                        <Form.Control
-                          as="select"
-                          disabled={isReadonly}
-                          value={
-                            this.state.application_preference &&
-                            this.state.application_preference
-                              .considered_privat_universities
-                              ? this.state.application_preference
-                                  .considered_privat_universities
-                              : '-'
-                          }
-                          onChange={(e) =>
-                            this.handleChange_ApplicationPreference(e)
-                          }
-                        >
-                          <option value="-">Please Select</option>
-                          <option>Yes</option>
-                          <option>No</option>
-                        </Form.Control>
-                      </Form.Group>
                     </Form>
                   </Col>
                   <Col md={6}>
@@ -985,6 +930,100 @@ class SurveyEditableComponent extends React.Component {
                             Bachelor and Master
                           </option>
                         </Form.Control>
+                      </Form.Group>
+                    </Form>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col md={6}>
+                    <Form>
+                      <Form.Group
+                        controlId="application_outside_germany"
+                        className="my-4 mx-0"
+                      >
+                        <Form.Label className="my-0 mx-0 text-light">
+                          Considering universities outside Germany?
+                        </Form.Label>
+                        <Form.Control
+                          disabled={isReadonly}
+                          as="select"
+                          value={
+                            this.state.application_preference &&
+                            this.state.application_preference
+                              .application_outside_germany
+                              ? this.state.application_preference
+                                  .application_outside_germany
+                              : '-'
+                          }
+                          onChange={(e) =>
+                            this.handleChange_ApplicationPreference(e)
+                          }
+                        >
+                          <option value="-">Please Select</option>
+                          <option>Yes</option>
+                          <option>No</option>
+                        </Form.Control>
+                      </Form.Group>
+                    </Form>
+                  </Col>
+                  <Col md={6}>
+                    <Form>
+                      <Form.Group
+                        controlId="considered_privat_universities"
+                        className="my-4 mx-0"
+                      >
+                        <Form.Label className="my-0 mx-0 text-light">
+                          Considering private universities? (Tuition Fee: ~15000
+                          EURO/year)
+                        </Form.Label>
+                        <Form.Control
+                          as="select"
+                          disabled={isReadonly}
+                          value={
+                            this.state.application_preference &&
+                            this.state.application_preference
+                              .considered_privat_universities
+                              ? this.state.application_preference
+                                  .considered_privat_universities
+                              : '-'
+                          }
+                          onChange={(e) =>
+                            this.handleChange_ApplicationPreference(e)
+                          }
+                        >
+                          <option value="-">Please Select</option>
+                          <option value="Yes">Yes</option>
+                          <option value="No">No</option>
+                          <option value="NotSure">Not Sure</option>
+                        </Form.Control>
+                      </Form.Group>
+                    </Form>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col md={12}>
+                    <Form>
+                      <Form.Group
+                        controlId="special_wished"
+                        className="my-0 mx-0"
+                      >
+                        <Form.Label className="my-0 mx-0 text-light">
+                          Other wish
+                        </Form.Label>
+                        <Form.Control
+                          as="textarea"
+                          rows="3"
+                          placeholder='Example: QS Ranking 300, 只要德國'
+                          value={
+                            this.state.application_preference &&
+                            this.state.application_preference.special_wished
+                              ? this.state.application_preference.special_wished
+                              : ''
+                          }
+                          onChange={(e) =>
+                            this.handleChange_ApplicationPreference(e)
+                          }
+                        ></Form.Control>
                       </Form.Group>
                     </Form>
                   </Col>

@@ -548,6 +548,25 @@ class StudentApplicationsTableTemplate extends React.Component {
                     }
                   </b>
                 </li>
+                <li>
+                  Other wish:{' '}
+                  <Form>
+                    <Form.Group
+                      controlId="special_wished"
+                      className="my-0 mx-0"
+                    >
+                      <Form.Control
+                        as="textarea"
+                        rows="3"
+                        readOnly
+                        value={
+                          this.props.student.application_preference
+                            ?.special_wished || ''
+                        }
+                      ></Form.Control>
+                    </Form.Group>
+                  </Form>
+                </li>
               </Card.Body>
             </Card>
           </Col>

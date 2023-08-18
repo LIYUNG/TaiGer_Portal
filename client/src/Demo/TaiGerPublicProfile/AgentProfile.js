@@ -163,10 +163,24 @@ class AgentProfile extends React.Component {
               }:${time_slot.value.split(':')[1]}`,
               start: shiftDateByOffset(
                 new Date(
-                  getNextDayDate(day, this.state.agent.timezone, iter).year,
-                  getNextDayDate(day, this.state.agent.timezone, iter).month -
-                    1,
-                  getNextDayDate(day, this.state.agent.timezone, iter).day,
+                  getNextDayDate(
+                    reorder_weekday,
+                    day,
+                    this.state.agent.timezone,
+                    iter
+                  ).year,
+                  getNextDayDate(
+                    reorder_weekday,
+                    day,
+                    this.state.agent.timezone,
+                    iter
+                  ).month - 1,
+                  getNextDayDate(
+                    reorder_weekday,
+                    day,
+                    this.state.agent.timezone,
+                    iter
+                  ).day,
                   parseInt(time_slot.value.split(':')[0], 10),
                   parseInt(time_slot.value.split(':')[1], 10)
                 ),
@@ -176,10 +190,24 @@ class AgentProfile extends React.Component {
               ),
               end: shiftDateByOffset(
                 new Date(
-                  getNextDayDate(day, this.state.agent.timezone, iter).year,
-                  getNextDayDate(day, this.state.agent.timezone, iter).month -
-                    1,
-                  getNextDayDate(day, this.state.agent.timezone, iter).day,
+                  getNextDayDate(
+                    reorder_weekday,
+                    day,
+                    this.state.agent.timezone,
+                    iter
+                  ).year,
+                  getNextDayDate(
+                    reorder_weekday,
+                    day,
+                    this.state.agent.timezone,
+                    iter
+                  ).month - 1,
+                  getNextDayDate(
+                    reorder_weekday,
+                    day,
+                    this.state.agent.timezone,
+                    iter
+                  ).day,
                   parseInt(time_slot.value.split(':')[0], 10),
                   parseInt(time_slot.value.split(':')[1], 10)
                 ),
@@ -338,16 +366,19 @@ class AgentProfile extends React.Component {
                                 {shiftDateByOffset(
                                   new Date(
                                     getNextDayDate(
+                                      reorder_weekday,
                                       day,
                                       this.state.agent.timezone,
                                       iter
                                     ).year,
                                     getNextDayDate(
+                                      reorder_weekday,
                                       day,
                                       this.state.agent.timezone,
                                       iter
                                     ).month - 1,
                                     getNextDayDate(
+                                      reorder_weekday,
                                       day,
                                       this.state.agent.timezone,
                                       iter

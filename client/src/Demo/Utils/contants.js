@@ -62,12 +62,12 @@ export const daysOfWeek = [
 export const getTodayAsWeekday = (timezone) => {
   const now = DateTime.fromObject({}, { zone: timezone });
   let currentDayOfWeek = daysOfWeek.indexOf(now.weekdayLong);
-  return currentDayOfWeek;
+  return currentDayOfWeek + 2;
 };
 
 export const getReorderWeekday = (index) => {
   let delayed_index = index;
-  delayed_index = (delayed_index + 1) % 7;
+  delayed_index = (delayed_index ) % 7;
   if (delayed_index >= 0 && delayed_index <= 6) {
     const weekdayOrder = daysOfWeek
       .slice(delayed_index)
@@ -96,16 +96,15 @@ export const shiftDateByOffset = (originalDate, offsetHours) => {
   return shiftedDate;
 };
 
-export const getNextDayDate = (dayOfWeek, timezone, nextN) => {
+export const getNextDayDate = (reorder_weekday, dayOfWeek, timezone, nextN) => {
   const now = DateTime.fromObject({}, { zone: timezone });
+  // const currentDayOfWeek = reorder_weekday.indexOf(now.weekdayLong) +2;
+  const targetDayIndex = reorder_weekday.indexOf(dayOfWeek);
 
-  const currentDayOfWeek = daysOfWeek.indexOf(now.weekdayLong);
-  const targetDayIndex = daysOfWeek.indexOf(dayOfWeek);
-
-  let daysToAdd = (targetDayIndex - currentDayOfWeek + 7) % 7;
+  let daysToAdd = (targetDayIndex) % 7;
 
   // Calculate the date of the next Nth occurrence
-  const nextOccurrence = now.plus({ days: daysToAdd + nextN * 7 });
+  const nextOccurrence = now.plus({ days: daysToAdd + nextN * 7 + 2});
 
   const options = {
     weekday: 'long',

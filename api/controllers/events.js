@@ -2,15 +2,41 @@
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
 const Event = require('../models/Event');
+const { Agent, Role } = require('../models/User');
 
 const async = require('async');
 
 const getEvents = asyncHandler(async (req, res) => {
-  const events = await Event.find({});
+  const { user } = req;
+  let events;
+  if (user.role === Role.Student) {
+    events = await Event.find({ student_id: user._id })
+      .populate('taiger_user_id', 'firstname lastname email')
+      .lean();
+    const agents_ids = user.agents;
+    if (events.length === 0) {
+      const agent = await Agent.find({ _id: agents_ids }).select(
+        'firstname lastname email selfIntroduction officehours timezone'
+      );
 
-  try {
-    res.status(200).json(events);
-  } catch (err) {}
+      return res
+        .status(200)
+        .send({ success: true, data: agent, hasEvents: false });
+    }
+    res.status(200).send({ success: true, data: events, hasEvents: true });
+  }
+
+  const agents_ids = user.agents;
+  if (events.length === 0) {
+    const agent = await Agent.find({ _id: agents_ids }).select(
+      'firstname lastname email selfIntroduction officehours timezone'
+    );
+
+    return res
+      .status(200)
+      .send({ success: true, data: agent, hasEvents: false });
+  }
+  res.status(200).send({ success: true, data: events, hasEvents: true });
 });
 
 const showEvent = asyncHandler(async (req, res) => {

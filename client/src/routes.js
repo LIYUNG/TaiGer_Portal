@@ -45,6 +45,9 @@ const TaiGerOrgAgent = React.lazy(() => import('./Demo/TaiGerOrg/AgentPage'));
 const TaiGerMemberProfile = React.lazy(() =>
   import('./Demo/TaiGerPublicProfile/AgentProfile')
 );
+const OfficeHours = React.lazy(() =>
+  import('./Demo/OfficeHours/index')
+);
 const TaiGerOrgEditor = React.lazy(() => import('./Demo/TaiGerOrg/EditorPage'));
 const TaiGerOrgAdmin = React.lazy(() => import('./Demo/TaiGerOrg/AdminPage'));
 const ProgramList = React.lazy(() => import('./Demo/Program/ProgramList'));
@@ -387,6 +390,12 @@ const routes = [
     exact: true,
     name: '',
     component: SingleBalanceSheetOverview
+  },
+  {
+    path: '/events/students/:user_id',
+    exact: true,
+    name: '',
+    component: OfficeHours
   },
   {
     path: '/teams/agents/profile/:user_id',

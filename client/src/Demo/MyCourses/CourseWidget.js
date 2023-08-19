@@ -318,8 +318,6 @@ export default function CourseWidget(props) {
                           {cat.value}
                         </option>
                       ))}
-                      {/* <option value={'X'}>No</option>
-                            <option value={'O'}>Yes</option> */}
                     </Form.Control>
                   </Form.Group>
                   <br />

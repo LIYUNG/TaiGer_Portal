@@ -28,6 +28,13 @@ const MyCalendar = (props) => {
   const [newEventStart, setNewEventStart] = useState(null); // Initialize start
   const [newEventEnd, setNewEventEnd] = useState(null); // Initialize end
   const [newDescription, setNewDescription] = useState(''); // Initialize end
+  const [newReceiver, setNewReceiver] = useState(
+    is_TaiGer_Student(props.user)
+      ? props.user.agents.length > 0
+        ? props.user.agents[0]._id.toString()
+        : ''
+      : ''
+  ); // Initialize end
 
   const handleSelectEvent = (event) => {
     console.log(event);
@@ -37,14 +44,19 @@ const MyCalendar = (props) => {
     const description_temp = e.target.value;
     setNewDescription(description_temp);
   };
+  const handleChangeReceiver = (e) => {
+    const receiver_temp = e.target.value;
+    setNewReceiver(receiver_temp);
+  };
   const handleModalClose = () => {
     setSelectedEvent({});
   };
   const handleModalBook = () => {
     const eventWrapper = { ...selectedEvent };
     if (is_TaiGer_Student(props.user)) {
-      eventWrapper.student_id = props.user._id.toString();
+      eventWrapper.requester_id = props.user._id.toString();
       eventWrapper.description = newDescription;
+      eventWrapper.receiver_id = newReceiver;
     }
     postEvent(eventWrapper).then(
       (resp) => {
@@ -56,6 +68,7 @@ const MyCalendar = (props) => {
             isLoaded: true,
             res_modal_status: status
           });
+          setNewDescription('');
           setSelectedEvent({});
         } else {
           // TODO: what if data is oversize? data type not match?
@@ -65,11 +78,11 @@ const MyCalendar = (props) => {
             res_modal_message: message,
             res_modal_status: status
           });
+          setNewDescription('');
           setSelectedEvent({});
         }
       },
       (error) => {
-        console.log('here4');
         setSelectedEvent({});
       }
     );
@@ -255,10 +268,13 @@ const MyCalendar = (props) => {
         handleClose={handleModalClose}
         handleBook={handleModalBook}
         handleChange={handleChange}
+        handleChangeReceiver={handleChangeReceiver}
+        newReceiver={newReceiver}
         newDescription={newDescription}
         // renderStatus={renderStatus}
         // rerender={rerender}
         event={selectedEvent}
+        user={props.user}
       />
 
       {/* Modal for creating a new event */}

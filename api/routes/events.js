@@ -16,7 +16,10 @@ router.use(protect);
 
 router
   .route('/')
-  .get(permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor), getEvents)
+  .get(
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
+    getEvents
+  )
   .post(
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     postEvent

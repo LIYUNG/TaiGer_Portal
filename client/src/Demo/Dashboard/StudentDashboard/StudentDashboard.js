@@ -336,7 +336,7 @@ class StudentDashboard extends React.Component {
               <Card.Body style={{ background: 'black', color: 'white' }}>
                 <Row>
                   <Col md={4}>
-                    <Link to={`/officehours/${student._id.toString()}`}>
+                    <Link to={`/events/students/${student._id.toString()}`}>
                       <Button size="sm">預約</Button>
                     </Link>
                   </Col>

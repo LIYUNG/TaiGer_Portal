@@ -3,14 +3,18 @@ import React, { useState } from 'react';
 import '../style/model.scss';
 import { Link, withRouter } from 'react-router-dom';
 import { convertDate } from '../../../Demo/Utils/contants';
+import { is_TaiGer_Student } from '../../../Demo/Utils/checking-functions';
 
 const Popping = ({
   open,
   handleClose,
   handleChange,
+  handleChangeReceiver,
+  newReceiver,
   event,
   handleBook,
-  newDescription
+  newDescription,
+  user
   // deleteEventApi,
   // renderStatus,
   // rerender
@@ -53,6 +57,35 @@ const Popping = ({
                 </Badge>
               </Form.Group>
             </Form>
+            <Form>
+              <Form.Group controlId="receiver" className="my-0 mx-0">
+                <Form.Label>Receiver</Form.Label>
+                <Form.Control
+                  as="select"
+                  value={
+                    is_TaiGer_Student(user)
+                      ? user.agents.length > 0
+                        ? newReceiver
+                        : ''
+                      : ''
+                  }
+                  onChange={handleChangeReceiver}
+                >
+                  {is_TaiGer_Student(user)
+                    ? user.agents.map((agent, i) => (
+                        <option value={agent._id.toString()} key={i}>
+                          {agent.firstname}
+                          {agent.lastname}
+                        </option>
+                      ))
+                    : user.agents.map((cat, i) => (
+                        <option value={cat.key} key={i}>
+                          {cat.value}
+                        </option>
+                      ))}
+                </Form.Control>
+              </Form.Group>
+            </Form>
             <br />
             <ul>
               <li className="col text-muted pb-0 mb-0">
@@ -64,7 +97,11 @@ const Popping = ({
             </ul>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="primary" onClick={handleBook}>
+            <Button
+              variant="primary"
+              onClick={handleBook}
+              disabled={newDescription.length === 0 || newReceiver === ''}
+            >
               Book
             </Button>
             <Button variant="danger" onClick={handleClose}>

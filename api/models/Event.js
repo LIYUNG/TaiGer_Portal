@@ -4,8 +4,8 @@ const mongoose = require('mongoose');
 
 const EventSchema = new mongoose.Schema(
   {
-    student_id: [{ type: ObjectId, ref: 'User' }],
-    taiger_user_id: [{ type: ObjectId, ref: 'User' }],
+    requester_id: [{ type: ObjectId, ref: 'User' }],
+    receiver_id: [{ type: ObjectId, ref: 'User' }],
     isConfirmed: {
       type: Boolean,
       default: false

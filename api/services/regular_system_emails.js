@@ -64,7 +64,7 @@ const sendEmail = (to, subject, message) => {
 };
 
 const StudentTasksReminderEmail = async (recipient, payload) => {
-  const subject = `TaiGer Student Reminder: ${recipient.firstname} ${recipient.lastname}`;
+  const subject = `TaiGer Weekly Reminder: ${recipient.firstname} ${recipient.lastname}`;
   const unsubmitted_applications = unsubmitted_applications_summary(
     payload.student
   );

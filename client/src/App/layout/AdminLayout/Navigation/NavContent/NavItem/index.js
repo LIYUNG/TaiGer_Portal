@@ -21,7 +21,8 @@ class NavItem extends Component {
         itemTitle === 'Charts' ||
         itemTitle === 'Statistics' ||
         itemTitle === 'Map' ||
-        itemTitle === 'Tasks Overview'
+        itemTitle === 'Tasks Overview' ||
+        itemTitle === 'Contact Us'
       ) {
         return false;
       }
@@ -38,7 +39,8 @@ class NavItem extends Component {
         itemTitle === 'Statistics' ||
         itemTitle === 'Charts' ||
         itemTitle === 'Map' ||
-        itemTitle === 'User List'
+        itemTitle === 'User List' ||
+        itemTitle === 'Contact Us'
       ) {
         return false;
       }
@@ -56,7 +58,8 @@ class NavItem extends Component {
         itemTitle === 'Statistics' ||
         itemTitle === 'Charts' ||
         itemTitle === 'Map' ||
-        itemTitle === 'User List'
+        itemTitle === 'User List' ||
+        itemTitle === 'Contact Us'
       ) {
         return false;
       }

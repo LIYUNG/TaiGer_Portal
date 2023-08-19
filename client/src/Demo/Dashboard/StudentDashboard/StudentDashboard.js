@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Table, Card } from 'react-bootstrap';
+import { Row, Col, Table, Card, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { BsCalendar, BsExclamationTriangle, BsX } from 'react-icons/bs';
 
@@ -7,7 +7,7 @@ import StudentMyself from './StudentMyself';
 import Banner from '../../../components/Banner/Banner';
 import ApplicationProgressStudent from '../MainViewTab/ApplicationProgress/ApplicationProgressStudent';
 import RespondedThreads from '../MainViewTab/RespondedThreads/RespondedThreads';
-import StudentTasks from '../MainViewTab/StudentTasks/index';
+import StudentTasksResponsive from '../MainViewTab/StudentTasks/StudentTasksResponsive';
 import {
   check_academic_background_filled,
   check_applications_to_decided,
@@ -80,38 +80,7 @@ class StudentDashboard extends React.Component {
         student={this.state.student}
       />
     );
-
-    const your_editors = this.state.student.editors ? (
-      this.state.student.editors.map((editor, i) => (
-        <tr key={i}>
-          <td>Editor</td>
-          <td>
-            {editor.firstname} - {editor.lastname}
-          </td>
-          <td>{editor.email}</td>
-        </tr>
-      ))
-    ) : (
-      <></>
-    );
-    const your_agents = this.state.student.agents ? (
-      this.state.student.agents.map((agent, i) => (
-        <tr key={i}>
-          <td>Agent</td>
-          <td>
-            <Link
-              to={`/teams/agents/profile/${agent._id.toString()}`}
-              className="text-info"
-            >
-              {agent.firstname} - {agent.lastname}
-            </Link>
-          </td>
-          <td>{agent.email}</td>
-        </tr>
-      ))
-    ) : (
-      <></>
-    );
+    const hasUpcomingAppointment = false;
     const read_thread = (
       <RespondedThreads
         user={this.props.user}
@@ -121,7 +90,7 @@ class StudentDashboard extends React.Component {
     );
 
     const student_tasks = (
-      <StudentTasks
+      <StudentTasksResponsive
         role={this.props.role}
         student={this.state.student}
         isCoursesFilled={this.props.isCoursesFilled}
@@ -361,10 +330,27 @@ class StudentDashboard extends React.Component {
             <Card className="my-2 mx-0" bg={'secondary'} text={'light'}>
               <Card.Header>
                 <Card.Title className="my-0 mx-0 text-light">
-                  <AiOutlineCalendar size={24} /> Termin
+                  <AiOutlineCalendar size={24} /> 時段預約
                 </Card.Title>
               </Card.Header>
-              <Card.Body>Coming Soon</Card.Body>
+              <Card.Body style={{ background: 'black', color: 'white' }}>
+                <Row>
+                  <Col md={4}>
+                    <Link to={`/officehours/${student._id.toString()}`}>
+                      <Button size="sm">預約</Button>
+                    </Link>
+                  </Col>
+                  <Col md={8} style={{ color: 'white' }}>
+                    {hasUpcomingAppointment ? (
+                      <></>
+                    ) : (
+                      <>
+                        想要一次密集討論？ 可以預訂顧問 Office hour 時段討論。
+                      </>
+                    )}
+                  </Col>
+                </Row>
+              </Card.Body>
             </Card>
             <Card className="my-2 mx-0" bg={'dark'} text={'light'}>
               <Card.Header>

@@ -27,9 +27,7 @@ import ModalMain from '../Utils/ModalHandler/ModalMain';
 
 import { deleteEvent, getEvents, updateEvent } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
-import { is_TaiGer_Student } from '../Utils/checking-functions';
 import MyCalendar from '../../components/Calendar/components/Calendar';
-import { DateTime } from 'luxon';
 
 class OfficeHours extends React.Component {
   state = {
@@ -224,81 +222,91 @@ class OfficeHours extends React.Component {
     if (res_status >= 400) {
       return <ErrorPage res_status={res_status} />;
     }
-    const reorder_weekday = getReorderWeekday(
-      getTodayAsWeekday(this.state.agent.timezone)
-    );
+    // const getReorderWeekday(getTodayAsWeekday(agent.timezone)) = getReorderWeekday(
+    //   getTodayAsWeekday(this.state.agent.timezone)
+    // );
     const agents = this.state.agent;
     const available_termins = [0, 1, 2, 3].flatMap((iter, x) =>
       agents.flatMap((agent, idx) =>
-        reorder_weekday.flatMap((day, i) => {
-          const timeSlots =
-            agent.officehours &&
-            agent.officehours[day]?.active &&
-            agent.officehours[day].time_slots
-              .sort((a, b) => (a.value < b.value ? -1 : 1))
-              .map((time_slot, j) => ({
-                id: j * 10 + i * 100 + x * 1000 + 1,
-                title: `${
-                  (parseInt(time_slot.value.split(':')[0], 10) +
+        getReorderWeekday(getTodayAsWeekday(agent.timezone)).flatMap(
+          (day, i) => {
+            const timeSlots =
+              agent.officehours &&
+              agent.officehours[day]?.active &&
+              agent.officehours[day].time_slots
+                .sort((a, b) => (a.value < b.value ? -1 : 1))
+                .map((time_slot, j) => ({
+                  id: j * 10 + i * 100 + x * 1000 + 1,
+                  title: `${
+                    (parseInt(time_slot.value.split(':')[0], 10) +
+                      getTimezoneOffset(
+                        Intl.DateTimeFormat().resolvedOptions().timeZone
+                      ) -
+                      getTimezoneOffset(agent.timezone)) %
+                    24
+                  }:${time_slot.value.split(':')[1]}`,
+                  start: shiftDateByOffset(
+                    new Date(
+                      getNextDayDate(
+                        getReorderWeekday(getTodayAsWeekday(agent.timezone)),
+                        day,
+                        agent.timezone,
+                        iter
+                      ).year,
+                      getNextDayDate(
+                        getReorderWeekday(getTodayAsWeekday(agent.timezone)),
+                        day,
+                        agent.timezone,
+                        iter
+                      ).month - 1,
+                      getNextDayDate(
+                        getReorderWeekday(getTodayAsWeekday(agent.timezone)),
+                        day,
+                        agent.timezone,
+                        iter
+                      ).day,
+                      parseInt(time_slot.value.split(':')[0], 10),
+                      parseInt(time_slot.value.split(':')[1], 10)
+                    ),
+                    getTimezoneOffset(
+                      Intl.DateTimeFormat().resolvedOptions().timeZone
+                    ) - getTimezoneOffset(agent.timezone)
+                  ),
+                  end: shiftDateByOffset(
+                    new Date(
+                      getNextDayDate(
+                        getReorderWeekday(getTodayAsWeekday(agent.timezone)),
+                        day,
+                        agent.timezone,
+                        iter
+                      ).year,
+                      getNextDayDate(
+                        getReorderWeekday(getTodayAsWeekday(agent.timezone)),
+                        day,
+                        agent.timezone,
+                        iter
+                      ).month - 1,
+                      getNextDayDate(
+                        getReorderWeekday(getTodayAsWeekday(agent.timezone)),
+                        day,
+                        agent.timezone,
+                        iter
+                      ).day,
+                      parseInt(time_slot.value.split(':')[0], 10),
+                      parseInt(time_slot.value.split(':')[1], 10)
+                    ),
                     getTimezoneOffset(
                       Intl.DateTimeFormat().resolvedOptions().timeZone
                     ) -
-                    getTimezoneOffset(agent.timezone)) %
-                  24
-                }:${time_slot.value.split(':')[1]}`,
-                start: shiftDateByOffset(
-                  new Date(
-                    getNextDayDate(
-                      reorder_weekday,
-                      day,
-                      agent.timezone,
-                      iter
-                    ).year,
-                    getNextDayDate(reorder_weekday, day, agent.timezone, iter)
-                      .month - 1,
-                    getNextDayDate(
-                      reorder_weekday,
-                      day,
-                      agent.timezone,
-                      iter
-                    ).day,
-                    parseInt(time_slot.value.split(':')[0], 10),
-                    parseInt(time_slot.value.split(':')[1], 10)
+                      getTimezoneOffset(agent.timezone) +
+                      0.5
                   ),
-                  getTimezoneOffset(
-                    Intl.DateTimeFormat().resolvedOptions().timeZone
-                  ) - getTimezoneOffset(agent.timezone)
-                ),
-                end: shiftDateByOffset(
-                  new Date(
-                    getNextDayDate(
-                      reorder_weekday,
-                      day,
-                      agent.timezone,
-                      iter
-                    ).year,
-                    getNextDayDate(reorder_weekday, day, agent.timezone, iter)
-                      .month - 1,
-                    getNextDayDate(
-                      reorder_weekday,
-                      day,
-                      agent.timezone,
-                      iter
-                    ).day,
-                    parseInt(time_slot.value.split(':')[0], 10),
-                    parseInt(time_slot.value.split(':')[1], 10)
-                  ),
-                  getTimezoneOffset(
-                    Intl.DateTimeFormat().resolvedOptions().timeZone
-                  ) -
-                    getTimezoneOffset(agent.timezone) +
-                    0.5
-                ),
-                provider: agent
-              }));
+                  provider: agent
+                }));
 
-          return timeSlots || [];
-        })
+            return timeSlots || [];
+          }
+        )
       )
     );
     return (
@@ -325,7 +333,7 @@ class OfficeHours extends React.Component {
                 <br />
                 {event.description}
                 <br />
-                {event.isConfirmed}
+                {event.isConfirmed ? 'true' : 'false'}
                 <br />
                 {event.title}
                 <br />
@@ -337,10 +345,21 @@ class OfficeHours extends React.Component {
                 <br />
                 {event.updatedAt}
                 <Button
+                  variant="secondary"
                   onClick={(e) =>
                     this.handleDeleteAppointmentModalOpen(e, event)
                   }
-                ></Button>
+                >
+                  Update
+                </Button>
+                <Button
+                  variant="danger"
+                  onClick={(e) =>
+                    this.handleDeleteAppointmentModalOpen(e, event)
+                  }
+                >
+                  Delete
+                </Button>
               </Card>
             ))}
             <Modal
@@ -401,59 +420,18 @@ class OfficeHours extends React.Component {
                     />
                   </Tab>
                   <Tab eventKey="Appointment" title="Appointment">
-                    {[0, 1, 2, 3].map((iter, x) =>
-                      agents.flatMap((agent, idx) =>
-                        reorder_weekday.map(
-                          (day, i) =>
-                            agent.officehours &&
-                            agent.officehours[day]?.active &&
-                            agent.officehours[day].time_slots
-                              .sort((a, b) => (a.value < b.value ? -1 : 1))
-                              .map((time_slot, j) => (
-                                <Card key={j} className="my-0 mx-0">
-                                  <Card.Header>
-                                    <Card.Title>
-                                      {shiftDateByOffset(
-                                        new Date(
-                                          getNextDayDate(
-                                            reorder_weekday,
-                                            day,
-                                            agent.timezone,
-                                            iter
-                                          ).year,
-                                          getNextDayDate(
-                                            reorder_weekday,
-                                            day,
-                                            agent.timezone,
-                                            iter
-                                          ).month - 1,
-                                          getNextDayDate(
-                                            reorder_weekday,
-                                            day,
-                                            agent.timezone,
-                                            iter
-                                          ).day,
-                                          parseInt(
-                                            time_slot.value.split(':')[0],
-                                            10
-                                          ),
-                                          parseInt(
-                                            time_slot.value.split(':')[1],
-                                            10
-                                          )
-                                        ),
-                                        getTimezoneOffset(
-                                          Intl.DateTimeFormat().resolvedOptions()
-                                            .timeZone
-                                        ) - getTimezoneOffset(agent.timezone)
-                                      ).toLocaleString()}
-                                    </Card.Title>
-                                  </Card.Header>
-                                </Card>
-                              ))
-                        )
-                      )
-                    )}
+                    {available_termins
+                      .sort((a, b) => (a.start < b.start ? -1 : 1))
+                      .map((time_slot, j) => (
+                        <Card key={j} className="my-0 mx-0">
+                          <Card.Header>
+                            <Card.Title>
+                              {time_slot.start.toLocaleString()} to{' '}
+                              {time_slot.end.toLocaleString()}
+                            </Card.Title>
+                          </Card.Header>
+                        </Card>
+                      ))}
                   </Tab>
                 </Tabs>
               </Card.Body>

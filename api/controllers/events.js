@@ -64,19 +64,16 @@ const postEvent = asyncHandler(async (req, res) => {
 const updateEvent = asyncHandler(async (req, res) => {
   const { event_id } = req.params;
   try {
-    const event = await Event.findOne({ _id: event_id });
+    const event = await Event.findByIdAndUpdate(event_id, req.body, {
+      upsert: false
+    });
     if (event) {
       Object.assign(event, req.body);
-      event.save((err, event) => {
-        if (err) {
-          handleError(err, res);
-        } else {
-          res.status(200).json(event);
-        }
-      });
+      await event.save();
+      return res.status(200).send({ success: true });
     }
     if (!event) {
-      res.status(404).json({ error: 'event is not found' });
+      return res.status(404).json({ error: 'event is not found' });
     }
   } catch (err) {}
 });

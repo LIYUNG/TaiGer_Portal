@@ -20,7 +20,8 @@ import {
   getTodayAsWeekday,
   getReorderWeekday,
   shiftDateByOffset,
-  getTimezoneOffset
+  getTimezoneOffset,
+  convertDate
 } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
@@ -229,81 +230,41 @@ class OfficeHours extends React.Component {
     const available_termins = [0, 1, 2, 3].flatMap((iter, x) =>
       agents.flatMap((agent, idx) =>
         getReorderWeekday(getTodayAsWeekday(agent.timezone)).flatMap(
-          (day, i) => {
+          (weekday, i) => {
             const timeSlots =
               agent.officehours &&
-              agent.officehours[day]?.active &&
-              agent.officehours[day].time_slots
-                .sort((a, b) => (a.value < b.value ? -1 : 1))
-                .map((time_slot, j) => ({
-                  id: j * 10 + i * 100 + x * 1000 + 1,
-                  title: `${
-                    (parseInt(time_slot.value.split(':')[0], 10) +
-                      getTimezoneOffset(
-                        Intl.DateTimeFormat().resolvedOptions().timeZone
-                      ) -
-                      getTimezoneOffset(agent.timezone)) %
-                    24
-                  }:${time_slot.value.split(':')[1]}`,
-                  start: shiftDateByOffset(
-                    new Date(
-                      getNextDayDate(
-                        getReorderWeekday(getTodayAsWeekday(agent.timezone)),
-                        day,
-                        agent.timezone,
-                        iter
-                      ).year,
-                      getNextDayDate(
-                        getReorderWeekday(getTodayAsWeekday(agent.timezone)),
-                        day,
-                        agent.timezone,
-                        iter
-                      ).month - 1,
-                      getNextDayDate(
-                        getReorderWeekday(getTodayAsWeekday(agent.timezone)),
-                        day,
-                        agent.timezone,
-                        iter
-                      ).day,
-                      parseInt(time_slot.value.split(':')[0], 10),
-                      parseInt(time_slot.value.split(':')[1], 10)
-                    ),
+              agent.officehours[weekday]?.active &&
+              agent.officehours[weekday].time_slots
+                // .sort((a, b) => (a.value < b.value ? -1 : 1))
+                .flatMap((time_slot, j) => {
+                  const { year, month, day } = getNextDayDate(
+                    getReorderWeekday(getTodayAsWeekday(agent.timezone)),
+                    weekday,
+                    agent.timezone,
+                    iter
+                  );
+                  const hour = parseInt(time_slot.value.split(':')[0], 10);
+                  const minutes = parseInt(time_slot.value.split(':')[1], 10);
+                  const time_difference =
                     getTimezoneOffset(
                       Intl.DateTimeFormat().resolvedOptions().timeZone
-                    ) - getTimezoneOffset(agent.timezone)
-                  ),
-                  end: shiftDateByOffset(
-                    new Date(
-                      getNextDayDate(
-                        getReorderWeekday(getTodayAsWeekday(agent.timezone)),
-                        day,
-                        agent.timezone,
-                        iter
-                      ).year,
-                      getNextDayDate(
-                        getReorderWeekday(getTodayAsWeekday(agent.timezone)),
-                        day,
-                        agent.timezone,
-                        iter
-                      ).month - 1,
-                      getNextDayDate(
-                        getReorderWeekday(getTodayAsWeekday(agent.timezone)),
-                        day,
-                        agent.timezone,
-                        iter
-                      ).day,
-                      parseInt(time_slot.value.split(':')[0], 10),
-                      parseInt(time_slot.value.split(':')[1], 10)
+                    ) - getTimezoneOffset(agent.timezone);
+                  return {
+                    id: j * 10 + i * 100 + x * 1000 + 1,
+                    title: `${(hour + time_difference) % 24}:${
+                      time_slot.value.split(':')[1]
+                    }`,
+                    start: shiftDateByOffset(
+                      new Date(year, month - 1, day, hour, minutes),
+                      time_difference
                     ),
-                    getTimezoneOffset(
-                      Intl.DateTimeFormat().resolvedOptions().timeZone
-                    ) -
-                      getTimezoneOffset(agent.timezone) +
-                      0.5
-                  ),
-                  provider: agent
-                }));
-
+                    end: shiftDateByOffset(
+                      new Date(year, month - 1, day, hour, minutes),
+                      time_difference + 0.5
+                    ),
+                    provider: agent
+                  };
+                });
             return timeSlots || [];
           }
         )
@@ -331,19 +292,19 @@ class OfficeHours extends React.Component {
                   </span>
                 ))}
                 <br />
-                {event.description}
+                Description: {event.description}
                 <br />
-                {event.isConfirmed ? 'true' : 'false'}
+                Confirmed: {event.isConfirmed ? 'true' : 'false'}
                 <br />
-                {event.title}
+                Title: {event.title}
                 <br />
-                {event.start}
+                Start: {convertDate(event.start)}
                 <br />
-                {event.end}
+                End: {convertDate(event.end)}
                 <br />
-                {event.createdAt}
+                created at:{convertDate(event.createdAt)}
                 <br />
-                {event.updatedAt}
+                udpated at:{convertDate(event.updatedAt)}
                 <Button
                   variant="secondary"
                   onClick={(e) =>

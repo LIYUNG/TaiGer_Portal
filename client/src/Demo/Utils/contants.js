@@ -667,6 +667,32 @@ export const cvmlrlclosedlist = [
     prop: 'application'
   }
 ];
+export const program_progress_list_student = [
+  {
+    name: 'University',
+    prop: 'university'
+  },
+  {
+    name: 'Programs',
+    prop: 'programs'
+  },
+  {
+    name: 'Deadline',
+    prop: 'deadline'
+  },
+  {
+    name: 'Decided',
+    prop: 'decided'
+  },
+  {
+    name: 'Offer',
+    prop: 'offer'
+  },
+  {
+    name: 'Days left',
+    prop: 'days_left'
+  }
+];
 
 export const programstatuslist = [
   {

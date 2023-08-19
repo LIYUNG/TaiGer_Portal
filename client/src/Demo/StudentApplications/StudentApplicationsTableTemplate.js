@@ -457,18 +457,15 @@ class StudentApplicationsTableTemplate extends React.Component {
 
             <td>
               <p className="mb-1 text-info" key={application_idx}>
-                {application.closed
+                {application.closed === 'O'
                   ? '-'
                   : application.programId.application_deadline
-                  ? this.props.student.application_preference &&
-                    this.props.student.application_preference
-                      .expected_application_date &&
-                    getNumberOfDays(
+                  ? getNumberOfDays(
                       today,
-                      this.props.student.application_preference
-                        .expected_application_date +
-                        '-' +
-                        application.programId.application_deadline
+                      application_deadline_calculator(
+                        this.props.student,
+                        application
+                      )
                     )
                   : '-'}
               </p>

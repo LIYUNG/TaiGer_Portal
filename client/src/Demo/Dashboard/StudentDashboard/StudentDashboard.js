@@ -1,11 +1,11 @@
 import React from 'react';
 import { Row, Col, Table, Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { BsExclamationTriangle, BsX } from 'react-icons/bs';
+import { BsCalendar, BsExclamationTriangle, BsX } from 'react-icons/bs';
 
 import StudentMyself from './StudentMyself';
 import Banner from '../../../components/Banner/Banner';
-import ApplicationProgress from '../MainViewTab/ApplicationProgress/ApplicationProgress';
+import ApplicationProgressStudent from '../MainViewTab/ApplicationProgress/ApplicationProgressStudent';
 import RespondedThreads from '../MainViewTab/RespondedThreads/RespondedThreads';
 import StudentTasks from '../MainViewTab/StudentTasks/index';
 import {
@@ -19,8 +19,9 @@ import ErrorPage from '../../Utils/ErrorPage';
 
 import { updateBanner } from '../../../api';
 import DEMO from '../../../store/constant';
-import { programstatuslist } from '../../Utils/contants';
+import { program_progress_list_student } from '../../Utils/contants';
 import { FiExternalLink } from 'react-icons/fi';
+import { AiFillCalendar, AiOutlineCalendar } from 'react-icons/ai';
 
 class StudentDashboard extends React.Component {
   state = {
@@ -74,7 +75,7 @@ class StudentDashboard extends React.Component {
     );
 
     const application_progress = (
-      <ApplicationProgress
+      <ApplicationProgressStudent
         user={this.props.user}
         student={this.state.student}
       />
@@ -136,7 +137,8 @@ class StudentDashboard extends React.Component {
               <Card className="mb-2 mx-0" bg={'success'} text={'white'}>
                 <Card.Header>
                   <Card.Title as="h5" className="text-light">
-                    Status: <b>Close</b> - Your TaiGer Portal Service is terminated.
+                    Status: <b>Close</b> - Your TaiGer Portal Service is
+                    terminated.
                   </Card.Title>
                 </Card.Header>
               </Card>
@@ -327,11 +329,87 @@ class StudentDashboard extends React.Component {
             />
           )}
         <Row>
+          <Col md={8}>
+            <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
+              <Card.Header>
+                <Card.Title className="my-0 mx-0 text-light">
+                  <BsExclamationTriangle size={18} /> To Do Tasks:
+                  請盡速完成以下任務
+                </Card.Title>
+              </Card.Header>
+              <Table
+                responsive
+                bordered
+                hover
+                className="my-0 mx-0"
+                variant="dark"
+                text="light"
+                size="sm"
+              >
+                <thead>
+                  <tr>
+                    <th>Tasks</th>
+                    <th>Description</th>
+                    <th>Last Update</th>
+                  </tr>
+                </thead>
+                <tbody>{student_tasks}</tbody>
+              </Table>
+            </Card>
+          </Col>
+          <Col md={4}>
+            <Card className="my-2 mx-0" bg={'secondary'} text={'light'}>
+              <Card.Header>
+                <Card.Title className="my-0 mx-0 text-light">
+                  <AiOutlineCalendar size={24} /> Termin
+                </Card.Title>
+              </Card.Header>
+              <Card.Body>Coming Soon</Card.Body>
+            </Card>
+            <Card className="my-2 mx-0" bg={'dark'} text={'light'}>
+              <Card.Header>
+                <Card.Title className="my-0 mx-0 text-light">
+                  Pending: 等待 Editor 回復
+                </Card.Title>
+              </Card.Header>
+              <Table
+                responsive
+                bordered
+                hover
+                className="my-0 mx-0"
+                variant="dark"
+                text="light"
+                size="sm"
+              >
+                <thead>
+                  <tr>
+                    <th>Documents</th>
+                    <th>Last Update</th>
+                  </tr>
+                </thead>
+                <tbody>{read_thread}</tbody>
+              </Table>
+            </Card>
+          </Col>
+        </Row>
+        <Row>
+          <Col md={6}></Col>
+        </Row>
+        <Row>
           <Col>
             <Card className="my-2 mx-0" bg={'dark'} text={'light'}>
               <Card.Header>
                 <Card.Title className="my-0 mx-0 text-light">
-                  My Application Progress
+                  My Application Progress{' '}
+                  <Link
+                    to={`/student-applications/${student._id.toString()}`}
+                    className="py-0 text-info"
+                  >
+                    <FiExternalLink
+                      className="mx-1 mb-1"
+                      style={{ cursor: 'pointer' }}
+                    />
+                  </Link>
                 </Card.Title>
               </Card.Header>
               <Banner
@@ -360,7 +438,7 @@ class StudentDashboard extends React.Component {
                     ) : (
                       <th></th>
                     )}
-                    {programstatuslist.map((doc, index) => (
+                    {program_progress_list_student.map((doc, index) => (
                       <th key={index}>{doc.name}</th>
                     ))}
                   </tr>
@@ -370,36 +448,8 @@ class StudentDashboard extends React.Component {
             </Card>
           </Col>
         </Row>
-        <Row>
+        {/* <Row>
           <Col md={6}>
-            <Card className="my-2 mx-0" bg={'dark'} text={'light'}>
-              <Card.Header>
-                <Card.Title className="my-0 mx-0 text-light">
-                  Your TaiGer Team
-                </Card.Title>
-              </Card.Header>
-              <Table
-                responsive
-                bordered
-                hover
-                className="my-0 mx-0"
-                variant="dark"
-                text="light"
-                size="sm"
-              >
-                <thead>
-                  <tr>
-                    <th>Role</th>
-                    <th>First-, Last Name</th>
-                    <th>Email</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {your_agents}
-                  {your_editors}
-                </tbody>
-              </Table>
-            </Card>
             <Card className="my-2 mx-0" bg={'dark'} text={'light'}>
               <Card.Header>
                 <Card.Title className="my-0 mx-0 text-light">
@@ -430,59 +480,7 @@ class StudentDashboard extends React.Component {
               </Table>
             </Card>
           </Col>
-          <Col md={6}>
-            <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
-              <Card.Header>
-                <Card.Title className="my-0 mx-0 text-light">
-                  <BsExclamationTriangle size={18} /> To Do Tasks:
-                  請盡速完成以下任務
-                </Card.Title>
-              </Card.Header>
-              <Table
-                responsive
-                bordered
-                hover
-                className="my-0 mx-0"
-                variant="dark"
-                text="light"
-                size="sm"
-              >
-                <thead>
-                  <tr>
-                    <th>Tasks</th>
-                    <th>Description</th>
-                    <th>Last Update</th>
-                  </tr>
-                </thead>
-                <tbody>{student_tasks}</tbody>
-              </Table>
-            </Card>
-            <Card className="my-2 mx-0" bg={'dark'} text={'light'}>
-              <Card.Header>
-                <Card.Title className="my-0 mx-0 text-light">
-                  Pending: 等待 Editor 回復
-                </Card.Title>
-              </Card.Header>
-              <Table
-                responsive
-                bordered
-                hover
-                className="my-0 mx-0"
-                variant="dark"
-                text="light"
-                size="sm"
-              >
-                <thead>
-                  <tr>
-                    <th>Documents</th>
-                    <th>Last Update</th>
-                  </tr>
-                </thead>
-                <tbody>{read_thread}</tbody>
-              </Table>
-            </Card>
-          </Col>
-        </Row>
+        </Row> */}
       </>
     );
   }

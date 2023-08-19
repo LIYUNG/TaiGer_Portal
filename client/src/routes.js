@@ -54,6 +54,7 @@ const ApplicationsOverview = React.lazy(() =>
 const LearningResources = React.lazy(() =>
   import('./Demo/LearningResources/index')
 );
+const ContactUs = React.lazy(() => import('./Demo/Contact/index'));
 const StudentApplications = React.lazy(() =>
   import('./Demo/StudentApplications/StudentApplicationsIndividual')
 );
@@ -164,6 +165,12 @@ const routes = [
     exact: true,
     name: 'Learning Resources',
     component: LearningResources
+  },
+  {
+    path: '/contact',
+    exact: true,
+    name: 'Contact',
+    component: ContactUs
   },
   {
     path: '/student-applications',

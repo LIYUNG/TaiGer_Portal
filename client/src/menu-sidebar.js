@@ -383,14 +383,14 @@ export default {
             }
           ]
         },
-        // {
-        //   id: 'settings',
-        //   title: 'Settings',
-        //   type: 'item',
-        //   url: '/settings',
-        //   classes: 'nav-item',
-        //   icon: 'feather icon-settings'
-        // },
+        {
+          id: 'contact_us',
+          title: 'Contact Us',
+          type: 'item',
+          url: '/contact',
+          classes: 'nav-item',
+          icon: 'feather icon-mail'
+        },
         {
           id: 'menu-level',
           title: 'Menu Levels',

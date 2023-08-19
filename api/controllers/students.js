@@ -7,10 +7,7 @@ const { Role, User, Agent, Student, Editor } = require('../models/User');
 const { Program } = require('../models/Program');
 const { Documentthread } = require('../models/Documentthread');
 const { Basedocumentationslink } = require('../models/Basedocumentationslink');
-const {
-  emptyS3Directory,
-  add_portals_registered_status
-} = require('../utils/utils_function');
+const { add_portals_registered_status } = require('../utils/utils_function');
 const logger = require('../services/logger');
 
 const {
@@ -30,6 +27,7 @@ const Course = require('../models/Course');
 
 const getStudent = asyncHandler(async (req, res) => {
   const {
+    user,
     params: { studentId }
   } = req;
 
@@ -327,7 +325,14 @@ const getStudentsAndDocLinks = asyncHandler(async (req, res) => {
 
     res.status(200).send({ success: true, data: students, base_docs_link });
   } else if (user.role === Role.Student) {
-    const student = await Student.findById(user._id)
+    const obj = user.notification; // create object
+    obj['isRead_base_documents_rejected'] = true; // set value
+    await Student.findByIdAndUpdate(
+      user._id.toString(),
+      { notification: obj },
+      {}
+    );
+    const student = await Student.findById(user._id.toString())
       .select('firstname lastname profile')
       .lean()
       .exec();
@@ -735,7 +740,10 @@ const createApplication = asyncHandler(async (req, res) => {
   const program_ids = await Program.find({ _id: { $in: program_id_set } });
   if (program_ids.length !== program_id_set.length) {
     logger.error('createApplication: some program_ids invalid');
-    throw new ErrorResponse(400, 'Some Programs are out-of-date. Please refresh the page.');
+    throw new ErrorResponse(
+      400,
+      'Some Programs are out-of-date. Please refresh the page.'
+    );
   }
   // limit the number in students application.
   if (student.applications.length + program_id_set.length > max_application) {

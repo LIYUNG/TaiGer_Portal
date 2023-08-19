@@ -4,7 +4,7 @@ import StudentApplicationsTableTemplate from './StudentApplicationsTableTemplate
 import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 
-import { getStudent } from '../../api';
+import { getApplicationStudent } from '../../api';
 
 class StudentApplicationsIndividual extends React.Component {
   state = {
@@ -15,7 +15,7 @@ class StudentApplicationsIndividual extends React.Component {
     res_status: 0
   };
   componentDidMount() {
-    getStudent(this.props.match.params.student_id).then(
+    getApplicationStudent(this.props.match.params.student_id).then(
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;

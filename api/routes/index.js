@@ -7,6 +7,7 @@ const expensesRouter = require('./expenses');
 const agentsRouter = require('./agents');
 const editorsRouter = require('./editors');
 const eventsRouter = require('./events');
+const studentsApplicationRouter = require('./student_applications');
 const studentsRouter = require('./students');
 const documentationsRouter = require('./documentations');
 const coursesRouter = require('./courses');
@@ -29,6 +30,7 @@ const router = (app) => {
   apiRouter.use('/account', accountRouter);
 
   apiRouter.use('/users', usersRouter);
+  apiRouter.use('/student-applications', studentsApplicationRouter);
   apiRouter.use('/students', studentsRouter);
   apiRouter.use('/agents', agentsRouter);
   apiRouter.use('/editors', editorsRouter);
@@ -50,7 +52,6 @@ const router = (app) => {
   apiRouter.use('/tasks', tasksRouter);
   apiRouter.use('/teams', teamsRouter);
   apiRouter.use('/widgets', widgetsRouter);
-
 
   app.use('/api', apiRouter);
   app.use('/auth', authRouter);

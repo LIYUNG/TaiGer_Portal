@@ -10,8 +10,8 @@ const getEvents = asyncHandler(async (req, res) => {
   const { user } = req;
   let events;
   if (user.role === Role.Student) {
-    events = await Event.find({ student_id: user._id })
-      .populate('taiger_user_id', 'firstname lastname email')
+    events = await Event.find({ requester_id: user._id })
+      .populate('receiver_id', 'firstname lastname email')
       .lean();
     const agents_ids = user.agents;
     if (events.length === 0) {
@@ -23,7 +23,9 @@ const getEvents = asyncHandler(async (req, res) => {
         .status(200)
         .send({ success: true, data: agent, hasEvents: false });
     }
-    res.status(200).send({ success: true, data: events, hasEvents: true });
+    return res
+      .status(200)
+      .send({ success: true, data: events, hasEvents: true });
   }
 
   const agents_ids = user.agents;
@@ -80,12 +82,12 @@ const updateEvent = asyncHandler(async (req, res) => {
 });
 
 const deleteEvent = asyncHandler(async (req, res) => {
-  const event_id = req.params.event_id;
+  const { event_id } = req.params;
   try {
     await Event.findByIdAndDelete(event_id);
-    res.status(200).json('Event has been deleted');
+    res.status(200).send({ success: true });
   } catch (err) {
-    // handleError(err, res);
+    throw new ErrorResponse(400, err);
   }
 });
 

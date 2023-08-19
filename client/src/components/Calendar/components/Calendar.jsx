@@ -31,7 +31,6 @@ const MyCalendar = (props) => {
   const [newReceiver, setNewReceiver] = useState(''); // Initialize end
 
   const handleSelectEvent = (event) => {
-    console.log(event);
     setSelectedEvent(event);
   };
   const handleChange = (e) => {
@@ -142,7 +141,7 @@ const MyCalendar = (props) => {
     return {
       style: {
         backgroundColor: stringToColor(
-          `${event.provider.firstname}_${event.provider.lastname}`
+          `${event.provider.firstname} ${event.provider.lastname}`
         ) // Set a fallback background color for other events
       }
     };

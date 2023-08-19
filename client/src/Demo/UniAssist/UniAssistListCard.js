@@ -392,7 +392,7 @@ class UniAssistListCard extends React.Component {
                   to={'/programs/' + application.programId._id.toString()}
                   style={{ textDecoration: 'none' }}
                 >
-                  <h4 className="text-info">
+                  <h5 className="text-info">
                     {application.programId.school}{' '}
                     {application.programId.program_name}{' '}
                     {application.programId.uni_assist}
@@ -400,7 +400,7 @@ class UniAssistListCard extends React.Component {
                       className="mx-1 mb-1"
                       style={{ cursor: 'pointer' }}
                     />
-                  </h4>
+                  </h5>
                 </Link>
               </Row>
               <Row>
@@ -585,43 +585,6 @@ class UniAssistListCard extends React.Component {
               </Row>
             </>
           )}
-        {application.programId.uni_assist === 'No' &&
-          application.decided === 'O' && (
-            <>
-              <Link
-                to={'/programs/' + application.programId._id.toString()}
-                style={{ textDecoration: 'none' }}
-              >
-                <h4 className="text-info">
-                  {application.programId.school}{' '}
-                  {application.programId.program_name}
-                  <FiExternalLink
-                    className="mx-1 mb-1"
-                    style={{ cursor: 'pointer' }}
-                  />
-                </h4>
-              </Link>
-              <p className="text-light">
-                This program does NOT require Uni-Assist.
-              </p>
-            </>
-          )}
-        {application.programId.uni_assist === undefined &&
-          application.decided === 'O' && (
-            <>
-              <h4 className="text-info">
-                {application.programId.school}{' '}
-                {application.programId.program_name}
-                <FiExternalLink
-                  className="mx-1 mb-1"
-                  style={{ cursor: 'pointer' }}
-                />
-              </h4>
-              <p className="text-light">
-                This program does NOT require Uni-Assist.
-              </p>
-            </>
-          )}
       </div>
     ));
     return (
@@ -634,7 +597,10 @@ class UniAssistListCard extends React.Component {
           />
         )}
         <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
-          <Card.Body>{app_name}</Card.Body>
+          <Card.Body>
+            The following program needs uni-assist process:
+            {app_name}
+          </Card.Body>
         </Card>
         <Modal
           show={this.state.deleteVPDFileWarningModel}

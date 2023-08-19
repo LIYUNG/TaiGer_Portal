@@ -417,10 +417,9 @@ export const updateStudentNotes = (student_id, notes) =>
 // Time Slot events:
 export const getEvents = (student_id) => request.get(`/api/events`);
 export const postEvent = (event) => request.post(`/api/events`, event);
-export const updateEvent = (student_id) =>
-  request.put(`/api/events/${student_id}`);
-export const deleteEvent = (student_id) =>
-  request.put(`/api/events/${student_id}`);
+export const updateEvent = (event_id, updated_event) =>
+  request.put(`/api/events/${event_id}`, updated_event);
+export const deleteEvent = (event_id) => request.delete(`/api/events/${event_id}`);
 export const updateOfficehours = (user_id, officehours, timezone) =>
   request.put(`/api/account/profile/officehours/${user_id}`, {
     officehours,

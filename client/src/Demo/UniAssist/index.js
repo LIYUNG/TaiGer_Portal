@@ -10,6 +10,7 @@ import { getStudent } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import { FiExternalLink } from 'react-icons/fi';
+import { check_uni_assist_needed } from '../Utils/checking-functions';
 
 class UniAssistList extends React.Component {
   state = {
@@ -108,11 +109,17 @@ class UniAssistList extends React.Component {
             </Card>
           </Col>
         </Row>
-        <UniAssistListCard
-          student={this.state.student}
-          role={this.props.user.role}
-          user={this.props.user}
-        />
+        {check_uni_assist_needed(this.state.student) ? (
+          <UniAssistListCard
+            student={this.state.student}
+            role={this.props.user.role}
+            user={this.props.user}
+          />
+        ) : (
+          <Card>
+            <Card.Body>Based on the applications, Uni-Assist is NOT needed.</Card.Body>
+          </Card>
+        )}
       </>
     );
   }

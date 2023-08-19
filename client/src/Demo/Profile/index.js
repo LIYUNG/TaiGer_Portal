@@ -559,45 +559,6 @@ class Profile extends React.Component {
             </Col>
           </Row>
         )}
-        {is_TaiGer_role(this.props.user) && (
-          <Card>
-            <Card.Body>
-              <MyCalendar
-                user={this.props.user}
-                events={[
-                  {
-                    id: 1,
-                    title: 'Meeting 1',
-                    start: new Date(2023, 7, 24, 10, 0),
-                    end: new Date(2023, 7, 24, 11, 30),
-                    description: 'This is the first meeting description.'
-                  },
-                  {
-                    id: 3,
-                    title: 'Meeting 3',
-                    start: new Date(2023, 7, 24, 10, 0),
-                    end: new Date(2023, 7, 24, 11, 30),
-                    description: 'This is the first meeting description.'
-                  },
-                  {
-                    id: 6,
-                    title: 'Meeting 4',
-                    start: new Date(2023, 7, 24, 10, 0),
-                    end: new Date(2023, 7, 24, 11, 30),
-                    description: 'This is the first meeting description.'
-                  },
-                  {
-                    id: 7,
-                    title: 'Meeting 5',
-                    start: new Date(2023, 7, 25, 14, 0),
-                    end: new Date(2023, 7, 25, 16, 0),
-                    description: 'This is the second meeting description.'
-                  }
-                ]}
-              />
-            </Card.Body>
-          </Card>
-        )}
         <Modal
           show={this.state.updateconfirmed}
           onHide={this.setmodalhide}

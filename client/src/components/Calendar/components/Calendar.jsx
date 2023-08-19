@@ -6,7 +6,7 @@ import enUS from 'date-fns/locale/en-US';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import Popping from './Popping';
 import { Button, Card, Form, Modal } from 'react-bootstrap';
-import { convertDate } from '../../../Demo/Utils/contants';
+import { convertDate, stringToColor } from '../../../Demo/Utils/contants';
 import {
   is_TaiGer_Agent,
   is_TaiGer_Student
@@ -28,13 +28,7 @@ const MyCalendar = (props) => {
   const [newEventStart, setNewEventStart] = useState(null); // Initialize start
   const [newEventEnd, setNewEventEnd] = useState(null); // Initialize end
   const [newDescription, setNewDescription] = useState(''); // Initialize end
-  const [newReceiver, setNewReceiver] = useState(
-    is_TaiGer_Student(props.user)
-      ? props.user.agents.length > 0
-        ? props.user.agents[0]._id.toString()
-        : ''
-      : ''
-  ); // Initialize end
+  const [newReceiver, setNewReceiver] = useState(''); // Initialize end
 
   const handleSelectEvent = (event) => {
     console.log(event);
@@ -49,6 +43,8 @@ const MyCalendar = (props) => {
     setNewReceiver(receiver_temp);
   };
   const handleModalClose = () => {
+    setNewReceiver('');
+    setNewDescription('');
     setSelectedEvent({});
   };
   const handleModalBook = () => {
@@ -69,6 +65,7 @@ const MyCalendar = (props) => {
             res_modal_status: status
           });
           setNewDescription('');
+          setNewReceiver('');
           setSelectedEvent({});
         } else {
           // TODO: what if data is oversize? data type not match?
@@ -140,26 +137,13 @@ const MyCalendar = (props) => {
     // Add more disabled timeslots as needed
   ];
 
-  const eventPropGetter = (event, start, end, isSelected) => {
-    // Check any property of the event to determine the background color
-    if (event.title === 'Meeting 1') {
-      return {
-        style: {
-          backgroundColor: 'green' // Set the background color for this event
-        }
-      };
-    } else if (event.title === 'Meeting 2') {
-      return {
-        style: {
-          backgroundColor: 'blue' // Set a different background color for this event
-        }
-      };
-    }
-
+  const eventPropGetter = (event) => {
     // Default background color for other events
     return {
       style: {
-        backgroundColor: 'red' // Set a fallback background color for other events
+        backgroundColor: stringToColor(
+          `${event.provider.firstname}_${event.provider.lastname}`
+        ) // Set a fallback background color for other events
       }
     };
   };

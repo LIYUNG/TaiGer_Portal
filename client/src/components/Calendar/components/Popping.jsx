@@ -71,18 +71,23 @@ const Popping = ({
                   }
                   onChange={handleChangeReceiver}
                 >
-                  {is_TaiGer_Student(user)
-                    ? user.agents.map((agent, i) => (
-                        <option value={agent._id.toString()} key={i}>
-                          {agent.firstname}
-                          {agent.lastname}
-                        </option>
-                      ))
-                    : user.agents.map((cat, i) => (
-                        <option value={cat.key} key={i}>
-                          {cat.value}
-                        </option>
-                      ))}
+                  {is_TaiGer_Student(user) ? (
+                    <>
+                      <option value={''}>
+                        Please Select
+                      </option>
+                      <option value={event.provider._id.toString()}>
+                        {event.provider.firstname} {event.provider.lastname}
+                      </option>
+                    </>
+                  ) : (
+                    user.agents.map((agent, i) => (
+                      <option value={agent._id.toString()} key={i}>
+                        {agent.firstname}
+                        {agent.lastname}
+                      </option>
+                    ))
+                  )}
                 </Form.Control>
               </Form.Group>
             </Form>

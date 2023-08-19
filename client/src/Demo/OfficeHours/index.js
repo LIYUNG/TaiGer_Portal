@@ -149,12 +149,12 @@ class OfficeHours extends React.Component {
     const agents = this.state.agent;
     console.log(agents);
     const available_termins = [0, 1, 2, 3].flatMap((iter, x) =>
-      agents.flatMap((xx, idx) =>
+      agents.flatMap((agent, idx) =>
         reorder_weekday.flatMap((day, i) => {
           const timeSlots =
-            agents[idx].officehours &&
-            agents[idx].officehours[day]?.active &&
-            agents[idx].officehours[day].time_slots
+            agent.officehours &&
+            agent.officehours[day]?.active &&
+            agent.officehours[day].time_slots
               .sort((a, b) => (a.value < b.value ? -1 : 1))
               .map((time_slot, j) => ({
                 id: j * 10 + i * 100 + x * 1000 + 1,
@@ -163,7 +163,7 @@ class OfficeHours extends React.Component {
                     getTimezoneOffset(
                       Intl.DateTimeFormat().resolvedOptions().timeZone
                     ) -
-                    getTimezoneOffset(agents[idx].timezone)) %
+                    getTimezoneOffset(agent.timezone)) %
                   24
                 }:${time_slot.value.split(':')[1]}`,
                 start: shiftDateByOffset(
@@ -171,19 +171,15 @@ class OfficeHours extends React.Component {
                     getNextDayDate(
                       reorder_weekday,
                       day,
-                      agents[idx].timezone,
+                      agent.timezone,
                       iter
                     ).year,
+                    getNextDayDate(reorder_weekday, day, agent.timezone, iter)
+                      .month - 1,
                     getNextDayDate(
                       reorder_weekday,
                       day,
-                      agents[idx].timezone,
-                      iter
-                    ).month - 1,
-                    getNextDayDate(
-                      reorder_weekday,
-                      day,
-                      agents[idx].timezone,
+                      agent.timezone,
                       iter
                     ).day,
                     parseInt(time_slot.value.split(':')[0], 10),
@@ -191,26 +187,22 @@ class OfficeHours extends React.Component {
                   ),
                   getTimezoneOffset(
                     Intl.DateTimeFormat().resolvedOptions().timeZone
-                  ) - getTimezoneOffset(agents[idx].timezone)
+                  ) - getTimezoneOffset(agent.timezone)
                 ),
                 end: shiftDateByOffset(
                   new Date(
                     getNextDayDate(
                       reorder_weekday,
                       day,
-                      agents[idx].timezone,
+                      agent.timezone,
                       iter
                     ).year,
+                    getNextDayDate(reorder_weekday, day, agent.timezone, iter)
+                      .month - 1,
                     getNextDayDate(
                       reorder_weekday,
                       day,
-                      agents[idx].timezone,
-                      iter
-                    ).month - 1,
-                    getNextDayDate(
-                      reorder_weekday,
-                      day,
-                      agents[idx].timezone,
+                      agent.timezone,
                       iter
                     ).day,
                     parseInt(time_slot.value.split(':')[0], 10),
@@ -219,10 +211,10 @@ class OfficeHours extends React.Component {
                   getTimezoneOffset(
                     Intl.DateTimeFormat().resolvedOptions().timeZone
                   ) -
-                    getTimezoneOffset(agents[idx].timezone) +
+                    getTimezoneOffset(agent.timezone) +
                     0.5
                 ),
-                description: ''
+                provider: agent
               }));
 
           return timeSlots || [];
@@ -327,12 +319,12 @@ class OfficeHours extends React.Component {
                   </Tab>
                   <Tab eventKey="Appointment" title="Appointment">
                     {[0, 1, 2, 3].map((iter, x) =>
-                      agents.flatMap((xx, idx) =>
+                      agents.flatMap((agent, idx) =>
                         reorder_weekday.map(
                           (day, i) =>
-                            agents[idx].officehours &&
-                            agents[idx].officehours[day]?.active &&
-                            agents[idx].officehours[day].time_slots
+                            agent.officehours &&
+                            agent.officehours[day]?.active &&
+                            agent.officehours[day].time_slots
                               .sort((a, b) => (a.value < b.value ? -1 : 1))
                               .map((time_slot, j) => (
                                 <Card key={j} className="my-0 mx-0">
@@ -343,19 +335,19 @@ class OfficeHours extends React.Component {
                                           getNextDayDate(
                                             reorder_weekday,
                                             day,
-                                            agents[idx].timezone,
+                                            agent.timezone,
                                             iter
                                           ).year,
                                           getNextDayDate(
                                             reorder_weekday,
                                             day,
-                                            agents[idx].timezone,
+                                            agent.timezone,
                                             iter
                                           ).month - 1,
                                           getNextDayDate(
                                             reorder_weekday,
                                             day,
-                                            agents[idx].timezone,
+                                            agent.timezone,
                                             iter
                                           ).day,
                                           parseInt(
@@ -372,7 +364,7 @@ class OfficeHours extends React.Component {
                                             .timeZone
                                         ) -
                                           getTimezoneOffset(
-                                            agents[idx].timezone
+                                            agent.timezone
                                           )
                                       ).toLocaleString()}
                                       {/* {getNextDayDate(day, this.state.agent.timezone, iter)}

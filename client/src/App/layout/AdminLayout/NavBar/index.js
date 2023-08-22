@@ -7,7 +7,6 @@ import NavRight from './NavRight';
 import Aux from '../../../../hoc/_Aux';
 import { Link } from 'react-router-dom';
 import * as actionTypes from '../../../../store/actions';
-import taiger_logo_small from '../../../../assets/images/taiger_logo_small.png';
 import NavSearch from './NavLeft/NavSearch';
 import {
   is_TaiGer_Student,
@@ -49,7 +48,7 @@ class NavBar extends Component {
             >
               <img
                 className="img-radius"
-                src={taiger_logo_small}
+                src={'/assets/taiger_logo_small.png'}
                 alt="Generic placeholder"
               />
             </a>{' '}

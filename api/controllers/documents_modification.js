@@ -394,11 +394,11 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
       .select(
         'applications applications generaldocs_threads firstname lastname application_preference'
       );
-
     res.status(200).send({ success: true, data: students });
   } else if (user.role === Role.Student) {
     const obj = user.notification; // create object
     obj['isRead_new_cvmlrl_messsage'] = true; // set value
+    obj['isRead_new_cvmlrl_tasks_created'] = true;
     await Student.findByIdAndUpdate(
       user._id.toString(),
       { notification: obj },

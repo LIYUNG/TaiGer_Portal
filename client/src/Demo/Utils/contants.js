@@ -67,7 +67,7 @@ export const getTodayAsWeekday = (timezone) => {
 
 export const getReorderWeekday = (index) => {
   let delayed_index = index;
-  delayed_index = (delayed_index ) % 7;
+  delayed_index = delayed_index % 7;
   if (delayed_index >= 0 && delayed_index <= 6) {
     const weekdayOrder = daysOfWeek
       .slice(delayed_index)
@@ -101,10 +101,10 @@ export const getNextDayDate = (reorder_weekday, dayOfWeek, timezone, nextN) => {
   // const currentDayOfWeek = reorder_weekday.indexOf(now.weekdayLong) +2;
   const targetDayIndex = reorder_weekday.indexOf(dayOfWeek);
 
-  let daysToAdd = (targetDayIndex) % 7;
+  let daysToAdd = targetDayIndex % 7;
 
   // Calculate the date of the next Nth occurrence
-  const nextOccurrence = now.plus({ days: daysToAdd + nextN * 7 + 2});
+  const nextOccurrence = now.plus({ days: daysToAdd + nextN * 7 + 2 });
 
   const options = {
     weekday: 'long',
@@ -223,7 +223,8 @@ export const valid_internal_categories = [
   { key: 'editors', value: 'Editors' },
   { key: 'admin', value: 'Admin' },
   { key: 'base-documents-internal', value: 'Base Documents Internal' },
-  { key: 'uniassist-internal', value: 'Uni-Assist Internal' }
+  { key: 'uniassist-internal', value: 'Uni-Assist Internal' },
+  { key: 'others', value: 'Others' }
 ];
 
 export const split_header = (header_name) => {
@@ -572,7 +573,8 @@ export const internal_documentation_categories = {
   editors: 'Editors',
   admin: 'Admin',
   'base-documents-internal': 'Base Documents Internal',
-  'uniassist-internal': 'Uni-Assist Internal'
+  'uniassist-internal': 'Uni-Assist Internal',
+  others: 'Others'
 };
 
 export const cvmlrl_overview_closed_header = [

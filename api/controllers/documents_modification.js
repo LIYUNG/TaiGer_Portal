@@ -828,7 +828,7 @@ const postMessages = asyncHandler(async (req, res) => {
         // inform active-agent
         if (isNotArchiv(student)) {
           if (isNotArchiv(student.agents[i])) {
-            sendAssignEditorReminderEmail(
+            await sendAssignEditorReminderEmail(
               {
                 firstname: student.agents[i].firstname,
                 lastname: student.agents[i].lastname,
@@ -851,7 +851,7 @@ const postMessages = asyncHandler(async (req, res) => {
         .lean();
       if (permissions) {
         for (let x = 0; x < permissions.length; x += 1) {
-          sendAssignEditorReminderEmail(
+          await sendAssignEditorReminderEmail(
             {
               firstname: permissions[x].user_id.firstname,
               lastname: permissions[x].user_id.lastname,
@@ -866,12 +866,40 @@ const postMessages = asyncHandler(async (req, res) => {
         }
       }
     } else {
-      // Inform Editor
-      for (let i = 0; i < student.editors.length; i += 1) {
-        if (document_thread.program_id) {
+      if (document_thread.file_type === 'Supplementary_Form') {
+        // Inform Agent
+        for (let i = 0; i < student.agents.length; i += 1) {
           if (isNotArchiv(student)) {
-            if (isNotArchiv(student.editors[i])) {
-              sendNewApplicationMessageInThreadEmail(
+            if (isNotArchiv(student.agents[i])) {
+              // if supplementary form, inform Agent.
+              await sendNewApplicationMessageInThreadEmail(
+                {
+                  firstname: student.agents[i].firstname,
+                  lastname: student.agents[i].lastname,
+                  address: student.agents[i].email
+                },
+                {
+                  writer_firstname: user.firstname,
+                  writer_lastname: user.lastname,
+                  student_firstname: student.firstname,
+                  student_lastname: student.lastname,
+                  uploaded_documentname: document_thread.file_type,
+                  school: document_thread.program_id.school,
+                  program_name: document_thread.program_id.program_name,
+                  thread_id: document_thread._id.toString(),
+                  uploaded_updatedAt: new Date(),
+                  message
+                }
+              );
+            }
+          }
+        }
+      } else {
+        // Inform Editor
+        for (let i = 0; i < student.editors.length; i += 1) {
+          if (document_thread.program_id) {
+            if (isNotArchiv(student) && isNotArchiv(student.editors[i])) {
+              await sendNewApplicationMessageInThreadEmail(
                 {
                   firstname: student.editors[i].firstname,
                   lastname: student.editors[i].lastname,
@@ -891,28 +919,24 @@ const postMessages = asyncHandler(async (req, res) => {
                 }
               );
             }
-          }
-        } else {
-          if (isNotArchiv(student)) {
-            if (isNotArchiv(student.editors[i])) {
-              sendNewGeneraldocMessageInThreadEmail(
-                {
-                  firstname: student.editors[i].firstname,
-                  lastname: student.editors[i].lastname,
-                  address: student.editors[i].email
-                },
-                {
-                  writer_firstname: user.firstname,
-                  writer_lastname: user.lastname,
-                  student_firstname: student.firstname,
-                  student_lastname: student.lastname,
-                  uploaded_documentname: document_thread.file_type,
-                  thread_id: document_thread._id.toString(),
-                  uploaded_updatedAt: new Date(),
-                  message
-                }
-              );
-            }
+          } else if (isNotArchiv(student) && isNotArchiv(student.editors[i])) {
+            await sendNewGeneraldocMessageInThreadEmail(
+              {
+                firstname: student.editors[i].firstname,
+                lastname: student.editors[i].lastname,
+                address: student.editors[i].email
+              },
+              {
+                writer_firstname: user.firstname,
+                writer_lastname: user.lastname,
+                student_firstname: student.firstname,
+                student_lastname: student.lastname,
+                uploaded_documentname: document_thread.file_type,
+                thread_id: document_thread._id.toString(),
+                uploaded_updatedAt: new Date(),
+                message
+              }
+            );
           }
         }
       }
@@ -922,7 +946,7 @@ const postMessages = asyncHandler(async (req, res) => {
     // Inform student
     if (document_thread.program_id) {
       if (isNotArchiv(document_thread.student_id)) {
-        sendNewApplicationMessageInThreadEmail(
+        await sendNewApplicationMessageInThreadEmail(
           {
             firstname: document_thread.student_id.firstname,
             lastname: document_thread.student_id.lastname,
@@ -944,7 +968,7 @@ const postMessages = asyncHandler(async (req, res) => {
       }
     } else {
       if (isNotArchiv(document_thread.student_id)) {
-        sendNewGeneraldocMessageInThreadEmail(
+        await sendNewGeneraldocMessageInThreadEmail(
           {
             firstname: document_thread.student_id.firstname,
             lastname: document_thread.student_id.lastname,
@@ -971,7 +995,7 @@ const postMessages = asyncHandler(async (req, res) => {
       if (document_thread.program_id) {
         if (isNotArchiv(student)) {
           if (isNotArchiv(student.editors[i])) {
-            sendNewApplicationMessageInThreadEmail(
+            await sendNewApplicationMessageInThreadEmail(
               {
                 firstname: student.editors[i].firstname,
                 lastname: student.editors[i].lastname,
@@ -995,7 +1019,7 @@ const postMessages = asyncHandler(async (req, res) => {
       } else {
         if (isNotArchiv(student)) {
           if (isNotArchiv(student.editors[i])) {
-            sendNewGeneraldocMessageInThreadEmail(
+            await sendNewGeneraldocMessageInThreadEmail(
               {
                 firstname: student.editors[i].firstname,
                 lastname: student.editors[i].lastname,
@@ -1019,7 +1043,7 @@ const postMessages = asyncHandler(async (req, res) => {
     // Inform student
     if (document_thread.program_id) {
       if (isNotArchiv(document_thread.student_id)) {
-        sendNewApplicationMessageInThreadEmail(
+        await sendNewApplicationMessageInThreadEmail(
           {
             firstname: document_thread.student_id.firstname,
             lastname: document_thread.student_id.lastname,
@@ -1041,7 +1065,7 @@ const postMessages = asyncHandler(async (req, res) => {
       }
     } else {
       if (isNotArchiv(document_thread.student_id)) {
-        sendNewGeneraldocMessageInThreadEmail(
+        await sendNewGeneraldocMessageInThreadEmail(
           {
             firstname: document_thread.student_id.firstname,
             lastname: document_thread.student_id.lastname,

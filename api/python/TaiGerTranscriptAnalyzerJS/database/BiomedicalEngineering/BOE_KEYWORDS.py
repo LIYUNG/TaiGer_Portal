@@ -24,7 +24,7 @@ BOE_ORGANIC_CHEMISTRY_KEY_WORDS = ['有機化學', '有機化學實驗']
 BOE_ORGANIC_CHEMISTRY_ANTI_KEY_WORDS = ['asdgladfj;l', '管理', '文明', '服務', '微積分']
 
 BOE_PHYSICS_KEY_WORDS = ['物理']
-BOE_PHYSICS_ANTI_KEY_WORDS = ['半導體', '元件', '史', '量子', '天文']
+BOE_PHYSICS_ANTI_KEY_WORDS = ['半導體', '元件', '史', '量子', '天文', '化學']
 
 BOE_COMPUTER_SCIENCE_KEY_WORDS = ['計算機', '程式語言', '程式設計', '物件導向', '資料結構', '演算法']
 BOE_COMPUTER_SCIENCE_ANTI_KEY_WORDS = [

@@ -1056,7 +1056,7 @@ ${applications_name}
 
 const sendNewApplicationMessageInThreadEmail = async (recipient, msg) => {
   const thread_url = `${THREAD_URL}/${msg.thread_id}`;
-  const subject = `[Update] ${msg.writer_firstname} ${msg.writer_lastname} sent a new message > ${msg.school} ${msg.program_name} ${msg.uploaded_documentname} / ${msg.writer_firstname} ${msg.writer_lastname} has a new update > ${msg.school} ${msg.program_name} ${msg.uploaded_documentname}!`;
+  const subject = `[Update] ${msg.writer_firstname} ${msg.writer_lastname} sent a new message > ${msg.school} ${msg.program_name} ${msg.uploaded_documentname}!`;
   const message = `\
 <p>${ENGLISH_BELOW}</p>
 

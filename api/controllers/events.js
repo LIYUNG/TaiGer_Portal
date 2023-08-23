@@ -14,18 +14,15 @@ const getEvents = asyncHandler(async (req, res) => {
       .populate('receiver_id', 'firstname lastname email')
       .lean();
     const agents_ids = user.agents;
-    if (events.length === 0) {
-      const agent = await Agent.find({ _id: agents_ids }).select(
-        'firstname lastname email selfIntroduction officehours timezone'
-      );
-
-      return res
-        .status(200)
-        .send({ success: true, data: agent, hasEvents: false });
-    }
-    return res
-      .status(200)
-      .send({ success: true, data: events, hasEvents: true });
+    const agent = await Agent.find({ _id: agents_ids }).select(
+      'firstname lastname email selfIntroduction officehours timezone'
+    );
+    return res.status(200).send({
+      success: true,
+      agent,
+      data: events,
+      hasEvents: events.length !== 0
+    });
   }
 
   const agents_ids = user.agents;
@@ -47,13 +44,35 @@ const showEvent = asyncHandler(async (req, res) => {
 
   try {
     res.status(200).json(event);
-  } catch (err) {}
+  } catch (err) {
+    console.log(err);
+    throw new ErrorResponse(400, err);
+  }
 });
 
 const postEvent = asyncHandler(async (req, res) => {
+  const { user } = req;
   const newEvent = await Event.create(req.body);
   try {
     await newEvent.save();
+    let events;
+    if (user.role === Role.Student) {
+      events = await Event.find({ requester_id: user._id })
+        .populate('receiver_id', 'firstname lastname email')
+        .lean();
+      // TODO: check if there is already booked upcoming events
+
+      const agents_ids = user.agents;
+      const agent = await Agent.find({ _id: agents_ids }).select(
+        'firstname lastname email selfIntroduction officehours timezone'
+      );
+      return res.status(200).send({
+        success: true,
+        agent,
+        data: events,
+        hasEvents: events.length !== 0
+      });
+    }
     return res.status(200).send({ success: true, data: [newEvent] });
   } catch (err) {
     console.log(err);
@@ -75,7 +94,10 @@ const updateEvent = asyncHandler(async (req, res) => {
     if (!event) {
       return res.status(404).json({ error: 'event is not found' });
     }
-  } catch (err) {}
+  } catch (err) {
+    console.log(err);
+    throw new ErrorResponse(400, err);
+  }
 });
 
 const deleteEvent = asyncHandler(async (req, res) => {
@@ -89,18 +111,17 @@ const deleteEvent = asyncHandler(async (req, res) => {
         .populate('receiver_id', 'firstname lastname email')
         .lean();
       const agents_ids = user.agents;
+      const agent = await Agent.find({ _id: agents_ids }).select(
+        'firstname lastname email selfIntroduction officehours timezone'
+      );
       if (events.length === 0) {
-        const agent = await Agent.find({ _id: agents_ids }).select(
-          'firstname lastname email selfIntroduction officehours timezone'
-        );
-
         return res
           .status(200)
-          .send({ success: true, data: agent, hasEvents: false });
+          .send({ success: true, agent, data: [], hasEvents: false });
       }
       return res
         .status(200)
-        .send({ success: true, data: events, hasEvents: true });
+        .send({ success: true, agent, data: events, hasEvents: true });
     }
 
     res.status(200).send({ success: true, hasEvents: false });

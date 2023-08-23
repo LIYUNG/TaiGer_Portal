@@ -10,8 +10,6 @@ import {
   Tabs,
   Tab
 } from 'react-bootstrap';
-import TimezoneSelect from 'react-timezone-select';
-import Select from 'react-select';
 
 import Aux from '../../hoc/_Aux';
 import {
@@ -21,7 +19,8 @@ import {
   getReorderWeekday,
   shiftDateByOffset,
   getTimezoneOffset,
-  convertDate
+  convertDate,
+  getNumberOfDays
 } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
@@ -43,6 +42,8 @@ class OfficeHours extends React.Component {
     updateconfirmed: false,
     updatecredentialconfirmed: false,
     isDeleteModalOpen: false,
+    isEditModalOpen: false,
+    event_temp: {},
     event_id: '',
     selectedEvent: {},
     newReceiver: '',
@@ -59,12 +60,12 @@ class OfficeHours extends React.Component {
   componentDidMount() {
     getEvents(this.props.match.params.user_id).then(
       (resp) => {
-        const { data, hasEvents, success } = resp.data;
+        const { data, agent, hasEvents, success } = resp.data;
         const { status } = resp;
         if (success) {
           this.setState({
             isLoaded: true,
-            agent: data,
+            agent,
             hasEvents,
             events: data,
             success: success,
@@ -91,12 +92,12 @@ class OfficeHours extends React.Component {
     if (prevProps.match.params.user_id !== this.props.match.params.user_id) {
       getEvents(this.props.match.params.user_id).then(
         (resp) => {
-          const { data, hasEvents, success } = resp.data;
+          const { data, agent, hasEvents, success } = resp.data;
           const { status } = resp;
           if (success) {
             this.setState({
               isLoaded: true,
-              agent: data,
+              agent,
               hasEvents,
               events: data,
               success: success,
@@ -121,23 +122,27 @@ class OfficeHours extends React.Component {
     }
   }
 
-  handleUpdateAppointmentModal = (e, event_id, updated_event) => {
+  handleEditAppointmentModal = (e, event_id, updated_event) => {
     updateEvent(event_id, updated_event).then(
       (resp) => {
-        const { data, hasEvents, success } = resp.data;
+        const { data, agent, hasEvents, success } = resp.data;
         const { status } = resp;
         if (success) {
           this.setState({
             isLoaded: true,
-            agent: data,
+            agent,
             hasEvents,
+            isEditModalOpen: false,
             events: data,
+            event_id: '',
+            isDeleteModalOpen: false,
             success: success,
             res_status: status
           });
         } else {
           this.setState({
             isLoaded: true,
+            event_id: '',
             res_status: status
           });
         }
@@ -156,14 +161,16 @@ class OfficeHours extends React.Component {
   handleDeleteAppointmentModal = (e, event_id) => {
     deleteEvent(event_id).then(
       (resp) => {
-        const { data, hasEvents, success } = resp.data;
+        const { data, agent, hasEvents, success } = resp.data;
         const { status } = resp;
         if (success) {
           this.setState({
             isLoaded: true,
-            agent: data,
+            agent,
             hasEvents,
+            events: data,
             event_id: '',
+            isDeleteModalOpen: false,
             success: success,
             res_status: status
           });
@@ -197,6 +204,8 @@ class OfficeHours extends React.Component {
       (resp) => {
         const { success, data } = resp.data;
         const { status } = resp;
+        const events_temp = [...this.state.events];
+        events_temp.push(data);
         if (success) {
           this.setState({
             success,
@@ -227,9 +236,30 @@ class OfficeHours extends React.Component {
     );
   };
 
+  handleUpdateTimeSlot = (e) => {
+    const new_timeslot_temp = e.target.value;
+    this.setState({
+      eve: new_timeslot_temp
+    });
+  };
+  handleEditAppointmentModalClose = () => {
+    this.setState({
+      isEditModalOpen: false
+    });
+  };
+
   handleDeleteAppointmentModalClose = () => {
     this.setState({
       isDeleteModalOpen: false
+    });
+  };
+
+  handleEditAppointmentModalOpen = (e, event) => {
+    e.preventDefault();
+    this.setState({
+      isEditModalOpen: true,
+      event_temp: event,
+      event_id: event._id.toString()
     });
   };
 
@@ -290,6 +320,12 @@ class OfficeHours extends React.Component {
       isNewEventModalOpen: false,
       newEventTitle: '',
       newDescription: ''
+    });
+  };
+
+  switchCalendarAndMyBookedEvents = () => {
+    this.setState({
+      hasEvents: !this.state.hasEvents
     });
   };
 
@@ -374,41 +410,162 @@ class OfficeHours extends React.Component {
         )}
         {hasEvents ? (
           <>
-            {events?.map((event, i) => (
-              <Card key={i}>
-                <Card.Header>
-                  <Card.Title></Card.Title>
-                </Card.Header>
-                {event.receiver_id?.map((receiver, x) => (
-                  <span key={x}>
-                    {receiver.firstname} {receiver.lastname} {receiver.email}
-                  </span>
-                ))}
-                <br />
-                Description: {event.description}
-                <br />
-                Confirmed: {event.isConfirmed ? 'true' : 'false'}
-                <br />
-                Title: {event.title}
-                <br />
-                Start: {convertDate(event.start)}
-                <br />
-                End: {convertDate(event.end)}
-                <br />
-                created at:{convertDate(event.createdAt)}
-                <br />
-                udpated at:{convertDate(event.updatedAt)}
-                <Button variant="secondary">Update</Button>
+            <Button onClick={this.switchCalendarAndMyBookedEvents}>
+              To Calendar
+            </Button>
+            <Card>
+              <Card.Header>
+                <Card.Title>Upcoming</Card.Title>
+              </Card.Header>
+              <Card.Body>
+                {events?.filter(
+                  (event) => getNumberOfDays(new Date(), event.start) >= -1
+                ).length !== 0
+                  ? events
+                      ?.filter(
+                        (event) =>
+                          getNumberOfDays(new Date(), event.start) >= -1
+                      )
+                      .map((event, i) => (
+                        <Card key={i}>
+                          <Card.Header>
+                            <Card.Title></Card.Title>
+                          </Card.Header>
+                          {event.receiver_id?.map((receiver, x) => (
+                            <span key={x}>
+                              {receiver.firstname} {receiver.lastname}{' '}
+                              {receiver.email}
+                            </span>
+                          ))}
+                          <br />
+                          Description: {event.description}
+                          <br />
+                          Confirmed: {event.isConfirmed ? 'true' : 'false'}
+                          <br />
+                          Title: {event.title}
+                          <br />
+                          Start: {convertDate(event.start)}
+                          <br />
+                          End: {convertDate(event.end)}
+                          <br />
+                          created at:{convertDate(event.createdAt)}
+                          <br />
+                          udpated at:{convertDate(event.updatedAt)}
+                          <Button
+                            variant="secondary"
+                            onClick={(e) =>
+                              this.handleEditAppointmentModalOpen(e, event)
+                            }
+                          >
+                            Update
+                          </Button>
+                          <Button
+                            variant="danger"
+                            onClick={(e) =>
+                              this.handleDeleteAppointmentModalOpen(e, event)
+                            }
+                          >
+                            Delete
+                          </Button>
+                        </Card>
+                      ))
+                  : 'No upcoming event'}
+              </Card.Body>
+            </Card>
+            <Card>
+              <Card.Header>
+                <Card.Title>Past</Card.Title>
+              </Card.Header>
+              <Card.Body>
+                {events
+                  ?.filter(
+                    (event) => getNumberOfDays(new Date(), event.start) < -1
+                  )
+                  .map((event, i) => (
+                    <Card key={i}>
+                      <Card.Header>
+                        <Card.Title></Card.Title>
+                      </Card.Header>
+                      {event.receiver_id?.map((receiver, x) => (
+                        <span key={x}>
+                          {receiver.firstname} {receiver.lastname}{' '}
+                          {receiver.email}
+                        </span>
+                      ))}
+                      <br />
+                      Description: {event.description}
+                      <br />
+                      Confirmed: {event.isConfirmed ? 'true' : 'false'}
+                      <br />
+                      Title: {event.title}
+                      <br />
+                      Start: {convertDate(event.start)}
+                      <br />
+                      End: {convertDate(event.end)}
+                      <br />
+                      created at:{convertDate(event.createdAt)}
+                      <br />
+                      udpated at:{convertDate(event.updatedAt)}
+                      <Button
+                        variant="danger"
+                        disabled
+                        onClick={(e) =>
+                          this.handleDeleteAppointmentModalOpen(e, event)
+                        }
+                      >
+                        Delete
+                      </Button>
+                    </Card>
+                  ))}
+              </Card.Body>
+            </Card>
+
+            <Modal
+              show={this.state.isEditModalOpen}
+              onHide={this.handleEditAppointmentModalClose}
+              centered
+              size="lg"
+            >
+              <Modal.Header closeButton></Modal.Header>
+              <Modal.Body>
+                Description{' '}
+                <Form>
+                  <Form.Control
+                    as="textarea"
+                    onChange={(e) => this.handleUpdateTimeSlot(e)}
+                    value={this.state.event_temp.description}
+                  ></Form.Control>
+                </Form>
+                <Form>
+                  <Form.Label>Time Slot</Form.Label>
+                  <Form.Control
+                    as="select"
+                    onChange={(e) => this.handleUpdateTimeSlot(e)}
+                    value={this.state.event_temp.start}
+                  >
+                    {available_termins
+                      .sort((a, b) => (a.start < b.start ? -1 : 1))
+                      .map((time_slot, j) => (
+                        <option value={`${time_slot.start}`}>
+                          {time_slot.start.toLocaleString()} to{' '}
+                          {time_slot.end.toLocaleString()}
+                        </option>
+                      ))}
+                  </Form.Control>
+                </Form>
+              </Modal.Body>
+
+              <Modal.Footer>
                 <Button
-                  variant="danger"
+                  disabled={this.state.event_id === ''}
                   onClick={(e) =>
-                    this.handleDeleteAppointmentModalOpen(e, event)
+                    this.handleEditAppointmentModal(e, this.state.event_id)
                   }
                 >
-                  Delete
+                  Update
                 </Button>
-              </Card>
-            ))}
+              </Modal.Footer>
+            </Modal>
             <Modal
               show={this.state.isDeleteModalOpen}
               onHide={this.handleDeleteAppointmentModalClose}
@@ -431,6 +588,9 @@ class OfficeHours extends React.Component {
           </>
         ) : (
           <>
+            <Button onClick={this.switchCalendarAndMyBookedEvents}>
+              My Appointments
+            </Button>
             <Row>
               <Col>
                 <Card className="my-0 mx-0" bg={'dark'} text={'white'}>

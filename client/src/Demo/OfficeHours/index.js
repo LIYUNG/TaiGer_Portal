@@ -26,9 +26,10 @@ import {
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 
-import { deleteEvent, getEvents, updateEvent } from '../../api';
+import { deleteEvent, getEvents, postEvent, updateEvent } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import MyCalendar from '../../components/Calendar/components/Calendar';
+import { is_TaiGer_Student } from '../Utils/checking-functions';
 
 class OfficeHours extends React.Component {
   state = {
@@ -43,6 +44,13 @@ class OfficeHours extends React.Component {
     updatecredentialconfirmed: false,
     isDeleteModalOpen: false,
     event_id: '',
+    selectedEvent: {},
+    newReceiver: '',
+    newDescription: '',
+    newEventTitle: '',
+    newEventStart: null,
+    newEventEnd: null,
+    isNewEventModalOpen: false,
     res_status: 0,
     res_modal_message: '',
     res_modal_status: 0
@@ -178,6 +186,47 @@ class OfficeHours extends React.Component {
     );
   };
 
+  handleModalBook = () => {
+    const eventWrapper = { ...this.state.selectedEvent };
+    if (is_TaiGer_Student(this.props.user)) {
+      eventWrapper.requester_id = this.props.user._id.toString();
+      eventWrapper.description = this.state.newDescription;
+      eventWrapper.receiver_id = this.state.newReceiver;
+    }
+    postEvent(eventWrapper).then(
+      (resp) => {
+        const { success, data } = resp.data;
+        const { status } = resp;
+        if (success) {
+          this.setState({
+            success,
+            isLoaded: true,
+            newDescription: '',
+            newReceiver: '',
+            selectedEvent: {},
+            events: data,
+            hasEvents: true,
+            isDeleteModalOpen: false,
+            res_modal_status: status
+          });
+        } else {
+          // TODO: what if data is oversize? data type not match?
+          const { message } = resp.data;
+          setGeneralState({
+            isLoaded: true,
+            res_modal_message: message,
+            res_modal_status: status
+          });
+          setNewDescription('');
+          setSelectedEvent({});
+        }
+      },
+      (error) => {
+        setSelectedEvent({});
+      }
+    );
+  };
+
   handleDeleteAppointmentModalClose = () => {
     this.setState({
       isDeleteModalOpen: false
@@ -200,10 +249,47 @@ class OfficeHours extends React.Component {
     }));
   };
 
-  handlePostEvent = (e, new_event) => {
+  // Calendar handler:
+  handleSelectEvent = (event) => {
     this.setState({
-      events: new_event,
-      hasEvents: true
+      selectedEvent: event
+    });
+  };
+  handleChange = (e) => {
+    const description_temp = e.target.value;
+    this.setState({
+      newDescription: description_temp
+    });
+  };
+  handleModalClose = () => {
+    this.setState({
+      selectedEvent: {},
+      newDescription: '',
+      newReceiver: ''
+    });
+  };
+  handleChangeReceiver = (e) => {
+    const receiver_temp = e.target.value;
+    this.setState({
+      newReceiver: receiver_temp
+    });
+  };
+
+  handleSelectSlot = (slotInfo) => {
+    // When an empty date slot is clicked, open the modal to create a new event
+    this.setState({
+      newEventStart: slotInfo.start,
+      newEventEnd: slotInfo.end,
+      isNewEventModalOpen: true
+    });
+  };
+
+  handleNewEventModalClose = () => {
+    // Close the modal for creating a new event
+    this.setState({
+      isNewEventModalOpen: false,
+      newEventTitle: '',
+      newDescription: ''
     });
   };
 
@@ -378,7 +464,20 @@ class OfficeHours extends React.Component {
                     <MyCalendar
                       events={[...available_termins]}
                       user={this.props.user}
-                      handlePostEvent={this.handlePostEvent}
+                      handleSelectEvent={this.handleSelectEvent}
+                      handleChange={this.handleChange}
+                      handleModalClose={this.handleModalClose}
+                      handleChangeReceiver={this.handleChangeReceiver}
+                      handleSelectSlot={this.handleSelectSlot}
+                      handleNewEventModalClose={this.handleNewEventModalClose}
+                      handleModalBook={this.handleModalBook}
+                      newReceiver={this.state.newReceiver}
+                      newDescription={this.state.newDescription}
+                      selectedEvent={this.state.selectedEvent}
+                      newEventStart={this.state.newEventStart}
+                      newEventEnd={this.state.newEventEnd}
+                      newEventTitle={this.state.newEventTitle}
+                      isNewEventModalOpen={this.state.isNewEventModalOpen}
                     />
                   </Tab>
                   <Tab eventKey="Appointment" title="Appointment">

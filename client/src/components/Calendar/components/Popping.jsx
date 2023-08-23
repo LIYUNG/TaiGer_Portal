@@ -105,7 +105,7 @@ const Popping = ({
             <Button
               variant="primary"
               onClick={handleBook}
-              disabled={newDescription.length === 0 || newReceiver === ''}
+              disabled={newDescription?.length === 0 || newReceiver === ''}
             >
               Book
             </Button>

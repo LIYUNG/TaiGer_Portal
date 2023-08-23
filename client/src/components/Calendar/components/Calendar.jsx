@@ -20,79 +20,8 @@ const MyCalendar = (props) => {
   const [isNewEventModalOpen, setIsNewEventModalOpen] = useState(false);
   const [newEventTitle, setNewEventTitle] = useState('');
   const [newEventDescription, setNewEventDescription] = useState('');
-  const [newEventStart, setNewEventStart] = useState(null); // Initialize start
-  const [newEventEnd, setNewEventEnd] = useState(null); // Initialize end
-  const [newDescription, setNewDescription] = useState(''); // Initialize end
-  const [newReceiver, setNewReceiver] = useState(''); // Initialize end
 
-  const handleSelectEvent = (event) => {
-    setSelectedEvent(event);
-  };
-  const handleChange = (e) => {
-    const description_temp = e.target.value;
-    setNewDescription(description_temp);
-  };
-  const handleChangeReceiver = (e) => {
-    const receiver_temp = e.target.value;
-    setNewReceiver(receiver_temp);
-  };
-  const handleModalClose = () => {
-    setNewReceiver('');
-    setNewDescription('');
-    setSelectedEvent({});
-  };
-  const handleModalBook = () => {
-    const eventWrapper = { ...selectedEvent };
-    if (is_TaiGer_Student(props.user)) {
-      eventWrapper.requester_id = props.user._id.toString();
-      eventWrapper.description = newDescription;
-      eventWrapper.receiver_id = newReceiver;
-    }
-    postEvent(eventWrapper).then(
-      (resp) => {
-        const { success, data } = resp.data;
-        const { status } = resp;
-        if (success) {
-          setGeneralState({
-            success,
-            isLoaded: true,
-            res_modal_status: status
-          });
-          setNewDescription('');
-          setNewReceiver('');
-          setSelectedEvent({});
-          props.handlePostEvent(data);
-        } else {
-          // TODO: what if data is oversize? data type not match?
-          const { message } = resp.data;
-          setGeneralState({
-            isLoaded: true,
-            res_modal_message: message,
-            res_modal_status: status
-          });
-          setNewDescription('');
-          setSelectedEvent({});
-        }
-      },
-      (error) => {
-        setSelectedEvent({});
-      }
-    );
-  };
-  const handleSelectSlot = (slotInfo) => {
-    // When an empty date slot is clicked, open the modal to create a new event
-    setNewEventStart(slotInfo.start); // Set the initial start value for the new event
-    setNewEventEnd(slotInfo.end); // Set the initial end value for the new event
-    setIsNewEventModalOpen(true);
-  };
-
-  const handleNewEventModalClose = () => {
-    // Close the modal for creating a new event
-    setIsNewEventModalOpen(false);
-    setNewEventTitle('');
-    setNewEventDescription('');
-  };
-
+  
   const handleCreateEvent = () => {
     // Create a new event object and add it to the events array
     const newEvent = {
@@ -104,7 +33,7 @@ const MyCalendar = (props) => {
     };
     const updatedEvents = [...props.events, newEvent];
     // setEvents(updatedEvents);
-    handleNewEventModalClose();
+    props.handleNewEventModalClose();
   };
 
   const eventPropGetter = (event) => {
@@ -152,7 +81,7 @@ const MyCalendar = (props) => {
         timeslots={2}
         selectable={true}
         // Handle event click to show the modal
-        onSelectEvent={handleSelectEvent}
+        onSelectEvent={props.handleSelectEvent}
         onSelectSlot={is_TaiGer_Agent(props.user) ? handleSelectSlot : () => {}}
         eventPropGetter={eventPropGetter} // Apply custom styles to events based on the logic
         // onSelectSlot={() => console.log('Triggered!')}
@@ -160,16 +89,16 @@ const MyCalendar = (props) => {
       {/* Modal */}
 
       <Popping
-        open={selectedEvent}
-        handleClose={handleModalClose}
-        handleBook={handleModalBook}
-        handleChange={handleChange}
-        handleChangeReceiver={handleChangeReceiver}
-        newReceiver={newReceiver}
-        newDescription={newDescription}
+        open={props.selectedEvent}
+        handleClose={props.handleModalClose}
+        handleBook={props.handleModalBook}
+        handleChange={props.handleChange}
+        handleChangeReceiver={props.handleChangeReceiver}
+        newReceiver={props.newReceiver}
+        newDescription={props.newDescription}
         // renderStatus={renderStatus}
         // rerender={rerender}
-        event={selectedEvent}
+        event={props.selectedEvent}
         user={props.user}
       />
 
@@ -178,7 +107,7 @@ const MyCalendar = (props) => {
 
       <Modal
         show={isNewEventModalOpen}
-        onHide={handleNewEventModalClose}
+        onHide={props.handleNewEventModalClose}
         centered
         size="lg"
       >
@@ -207,14 +136,14 @@ const MyCalendar = (props) => {
               />
             </Form.Group>
           </Form>
-          {convertDate(newEventStart)}
-          {convertDate(newEventEnd)}
+          {convertDate(props.newEventStart)}
+          {convertDate(props.newEventEnd)}
         </Modal.Body>
         <Modal.Footer>
           <Button variant="primary" onClick={handleCreateEvent}>
             Create
           </Button>
-          <Button variant="secondary" onClick={handleNewEventModalClose}>
+          <Button variant="secondary" onClick={props.handleNewEventModalClose}>
             Cancel
           </Button>
         </Modal.Footer>

@@ -83,7 +83,7 @@ class OfficeHours extends React.Component {
     if (prevProps.match.params.user_id !== this.props.match.params.user_id) {
       getEvents(this.props.match.params.user_id).then(
         (resp) => {
-          const { data, success } = resp.data;
+          const { data, hasEvents, success } = resp.data;
           const { status } = resp;
           if (success) {
             this.setState({
@@ -116,7 +116,7 @@ class OfficeHours extends React.Component {
   handleUpdateAppointmentModal = (e, event_id, updated_event) => {
     updateEvent(event_id, updated_event).then(
       (resp) => {
-        const { data, success } = resp.data;
+        const { data, hasEvents, success } = resp.data;
         const { status } = resp;
         if (success) {
           this.setState({
@@ -148,14 +148,13 @@ class OfficeHours extends React.Component {
   handleDeleteAppointmentModal = (e, event_id) => {
     deleteEvent(event_id).then(
       (resp) => {
-        const { data, success } = resp.data;
+        const { data, hasEvents, success } = resp.data;
         const { status } = resp;
         if (success) {
           this.setState({
             isLoaded: true,
             agent: data,
             hasEvents,
-            events: data,
             event_id: '',
             success: success,
             res_status: status
@@ -186,6 +185,7 @@ class OfficeHours extends React.Component {
   };
 
   handleDeleteAppointmentModalOpen = (e, event) => {
+    e.preventDefault();
     this.setState({
       isDeleteModalOpen: true,
       event_id: event._id.toString()
@@ -198,6 +198,13 @@ class OfficeHours extends React.Component {
       res_modal_status: 0,
       res_modal_message: ''
     }));
+  };
+
+  handlePostEvent = (e, new_event) => {
+    this.setState({
+      events: new_event,
+      hasEvents: true
+    });
   };
 
   render() {
@@ -305,14 +312,7 @@ class OfficeHours extends React.Component {
                 created at:{convertDate(event.createdAt)}
                 <br />
                 udpated at:{convertDate(event.updatedAt)}
-                <Button
-                  variant="secondary"
-                  onClick={(e) =>
-                    this.handleDeleteAppointmentModalOpen(e, event)
-                  }
-                >
-                  Update
-                </Button>
+                <Button variant="secondary">Update</Button>
                 <Button
                   variant="danger"
                   onClick={(e) =>
@@ -378,6 +378,7 @@ class OfficeHours extends React.Component {
                     <MyCalendar
                       events={[...available_termins]}
                       user={this.props.user}
+                      handlePostEvent={this.handlePostEvent}
                     />
                   </Tab>
                   <Tab eventKey="Appointment" title="Appointment">

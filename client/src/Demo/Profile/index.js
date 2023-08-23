@@ -7,7 +7,6 @@ import Select from 'react-select';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
 import Aux from '../../hoc/_Aux';
-import MyCalendar from '../../components/Calendar/components/Calendar';
 import { spinner_style, time_slots } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';

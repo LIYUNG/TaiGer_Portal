@@ -16,11 +16,6 @@ import Select from 'react-select';
 import Aux from '../../hoc/_Aux';
 import {
   spinner_style,
-  getNextDayDate,
-  getTodayAsWeekday,
-  getReorderWeekday,
-  shiftDateByOffset,
-  getTimezoneOffset,
   time_slots
 } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
@@ -29,8 +24,6 @@ import ModalMain from '../Utils/ModalHandler/ModalMain';
 import { getAgentProfile } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import { is_TaiGer_Student } from '../Utils/checking-functions';
-import MyCalendar from '../../components/Calendar/components/Calendar';
-import { DateTime } from 'luxon';
 import { Link } from 'react-router-dom';
 
 class AgentProfile extends React.Component {
@@ -141,97 +134,7 @@ class AgentProfile extends React.Component {
     if (res_status >= 400) {
       return <ErrorPage res_status={res_status} />;
     }
-    const reorder_weekday = getReorderWeekday(
-      getTodayAsWeekday(this.state.agent.timezone)
-    );
-    // console.log(reorder_weekday);
-    // console.log(getReorderWeekday(0));
-    // console.log(getReorderWeekday(1));
-    // console.log(getReorderWeekday(2));
-    // console.log(getReorderWeekday(3));
-    // console.log(getReorderWeekday(4));
-    // console.log(getReorderWeekday(5));
-    // console.log(getReorderWeekday(6));
-    // console.log(getReorderWeekday(7));
-    const available_termins = [0, 1, 2, 3].flatMap((iter, x) =>
-      reorder_weekday.flatMap((day, i) => {
-        const timeSlots =
-          this.state.agent.officehours &&
-          this.state.agent.officehours[day]?.active &&
-          this.state.agent.officehours[day].time_slots
-            .sort((a, b) => (a.value < b.value ? -1 : 1))
-            .map((time_slot, j) => ({
-              id: j * 10 + i * 100 + x * 1000 + 1,
-              title: `${
-                (parseInt(time_slot.value.split(':')[0], 10) +
-                  getTimezoneOffset(
-                    Intl.DateTimeFormat().resolvedOptions().timeZone
-                  ) -
-                  getTimezoneOffset(this.state.agent.timezone)) %
-                24
-              }:${time_slot.value.split(':')[1]}`,
-              start: shiftDateByOffset(
-                new Date(
-                  getNextDayDate(
-                    reorder_weekday,
-                    day,
-                    this.state.agent.timezone,
-                    iter
-                  ).year,
-                  getNextDayDate(
-                    reorder_weekday,
-                    day,
-                    this.state.agent.timezone,
-                    iter
-                  ).month - 1,
-                  getNextDayDate(
-                    reorder_weekday,
-                    day,
-                    this.state.agent.timezone,
-                    iter
-                  ).day,
-                  parseInt(time_slot.value.split(':')[0], 10),
-                  parseInt(time_slot.value.split(':')[1], 10)
-                ),
-                getTimezoneOffset(
-                  Intl.DateTimeFormat().resolvedOptions().timeZone
-                ) - getTimezoneOffset(this.state.agent.timezone)
-              ),
-              end: shiftDateByOffset(
-                new Date(
-                  getNextDayDate(
-                    reorder_weekday,
-                    day,
-                    this.state.agent.timezone,
-                    iter
-                  ).year,
-                  getNextDayDate(
-                    reorder_weekday,
-                    day,
-                    this.state.agent.timezone,
-                    iter
-                  ).month - 1,
-                  getNextDayDate(
-                    reorder_weekday,
-                    day,
-                    this.state.agent.timezone,
-                    iter
-                  ).day,
-                  parseInt(time_slot.value.split(':')[0], 10),
-                  parseInt(time_slot.value.split(':')[1], 10)
-                ),
-                getTimezoneOffset(
-                  Intl.DateTimeFormat().resolvedOptions().timeZone
-                ) -
-                  getTimezoneOffset(this.state.agent.timezone) +
-                  0.5
-              ),
-              provider: this.state.agent
-            }));
 
-        return timeSlots || [];
-      })
-    );
     return (
       <Aux>
         {res_modal_status >= 400 && (

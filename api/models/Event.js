@@ -11,7 +11,7 @@ const EventSchema = new mongoose.Schema(
       default: false
     },
     meetingLink: {
-      type: Boolean,
+      type: String,
       default: false
     },
     title: {

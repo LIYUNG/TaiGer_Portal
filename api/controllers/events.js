@@ -55,6 +55,8 @@ const postEvent = asyncHandler(async (req, res) => {
   const newEvent = req.body;
   let events;
   if (user.role === Role.Student) {
+    newEvent.meetingLink = 'TODO_JITSIMEET_LINK';
+
     events = await Event.find({
       start: newEvent.start,
       requester_id: newEvent.requester_id
@@ -63,6 +65,7 @@ const postEvent = asyncHandler(async (req, res) => {
       .lean();
     // Check if there is already booked upcoming events
     if (events.length === 0) {
+      // TODO: additional check if the timeslot is in agent office hour?
       const write_NewEvent = await Event.create(newEvent);
       await write_NewEvent.save();
     } else {
@@ -125,14 +128,20 @@ const postEvent = asyncHandler(async (req, res) => {
 
 const updateEvent = asyncHandler(async (req, res) => {
   const { event_id } = req.params;
+  const updated_event = req.body;
   try {
-    const event = await Event.findByIdAndUpdate(event_id, req.body, {
-      upsert: false
-    });
+    const date = new Date(updated_event.start);
+    updated_event.isConfirmed = false;
+    updated_event.meetingLink = 'TODO';
+    updated_event.end = new Date(date.getTime() + 60000 * 30);
+    const event = await Event.findByIdAndUpdate(event_id, updated_event, {
+      upsert: false,
+      new: true
+    })
+      .populate('receiver_id', 'firstname lastname email')
+      .lean();
     if (event) {
-      Object.assign(event, req.body);
-      await event.save();
-      return res.status(200).send({ success: true });
+      return res.status(200).send({ success: true, data: event });
     }
     if (!event) {
       return res.status(404).json({ error: 'event is not found' });

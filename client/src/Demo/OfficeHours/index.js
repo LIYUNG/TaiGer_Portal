@@ -29,6 +29,15 @@ import { deleteEvent, getEvents, postEvent, updateEvent } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import MyCalendar from '../../components/Calendar/components/Calendar';
 import { is_TaiGer_Student } from '../Utils/checking-functions';
+import {
+  AiFillCheckCircle,
+  AiFillQuestionCircle,
+  AiOutlineCalendar,
+  AiOutlineDelete,
+  AiOutlineEdit,
+  AiOutlineMail,
+  AiOutlineUser
+} from 'react-icons/ai';
 
 class OfficeHours extends React.Component {
   state = {
@@ -125,15 +134,20 @@ class OfficeHours extends React.Component {
   handleEditAppointmentModal = (e, event_id, updated_event) => {
     updateEvent(event_id, updated_event).then(
       (resp) => {
-        const { data, agent, hasEvents, success } = resp.data;
+        const { data, success } = resp.data;
         const { status } = resp;
+        const temp_events = [...this.state.events];
+        let found_event_idx = temp_events.findIndex(
+          (temp_event) => temp_event._id.toString() === event_id
+        );
+        if (found_event_idx > 0) {
+          temp_events[found_event_idx] = data;
+        }
         if (success) {
           this.setState({
             isLoaded: true,
-            agent,
-            hasEvents,
             isEditModalOpen: false,
-            events: data,
+            events: temp_events,
             event_id: '',
             isDeleteModalOpen: false,
             success: success,
@@ -239,10 +253,20 @@ class OfficeHours extends React.Component {
     );
   };
 
+  handleUpdateDescription = (e) => {
+    const new_description_temp = e.target.value;
+    this.setState({
+      event_temp: {
+        ...this.state.event_temp,
+        description: new_description_temp
+      }
+    });
+  };
+
   handleUpdateTimeSlot = (e) => {
     const new_timeslot_temp = e.target.value;
     this.setState({
-      eve: new_timeslot_temp
+      event_temp: { ...this.state.event_temp, start: new_timeslot_temp }
     });
   };
   handleEditAppointmentModalClose = () => {
@@ -432,43 +456,64 @@ class OfficeHours extends React.Component {
                       .map((event, i) => (
                         <Card key={i}>
                           <Card.Header>
-                            <Card.Title></Card.Title>
+                            <Card.Title>
+                              <AiOutlineCalendar /> Start:{' '}
+                              {convertDate(event.start)} ~ 30 min
+                            </Card.Title>
                           </Card.Header>
-                          {event.receiver_id?.map((receiver, x) => (
-                            <span key={x}>
-                              {receiver.firstname} {receiver.lastname}{' '}
-                              {receiver.email}
-                            </span>
-                          ))}
-                          <br />
-                          Description: {event.description}
-                          <br />
-                          Confirmed: {event.isConfirmed ? 'true' : 'false'}
-                          <br />
-                          Title: {event.title}
-                          <br />
-                          Start: {convertDate(event.start)}
-                          <br />
-                          End: {convertDate(event.end)}
-                          <br />
-                          created at:{convertDate(event.createdAt)}
-                          <br />
-                          udpated at:{convertDate(event.updatedAt)}
+                          <Card.Body>
+                            <AiOutlineUser size={16} />
+                            Agent:{' '}
+                            {event.receiver_id?.map((receiver, x) => (
+                              <span key={x}>
+                                {receiver.firstname} {receiver.lastname}{' '}
+                                <AiOutlineMail ize={16} /> {receiver.email}
+                              </span>
+                            ))}
+                            <br />
+                            Description: {event.description}
+                            <br />
+                            Status:{' '}
+                            {event.isConfirmed ? (
+                              <AiFillCheckCircle
+                                title="Confirmed"
+                                size={16}
+                                color="limegreen"
+                              />
+                            ) : (
+                              <AiFillQuestionCircle
+                                title="Waiting for confirmation"
+                                size={16}
+                                color="gray"
+                              />
+                            )}
+                            <br />
+                            Meeting Link:{' '}
+                            {event.isConfirmed
+                              ? event.meetingLink
+                              : 'Will be available, after the appointment is confirmed by the Agent.'}
+                            <br />
+                            created at:{convertDate(event.createdAt)}
+                            <br />
+                            udpated at:{convertDate(event.updatedAt)}
+                          </Card.Body>
                           <Button
                             variant="secondary"
+                            size="sm"
                             onClick={(e) =>
                               this.handleEditAppointmentModalOpen(e, event)
                             }
                           >
-                            Update
+                            <AiOutlineEdit size={16} /> Update
                           </Button>
                           <Button
                             variant="danger"
+                            size="sm"
                             onClick={(e) =>
                               this.handleDeleteAppointmentModalOpen(e, event)
                             }
                           >
-                            Delete
+                            <AiOutlineDelete size={16} /> Delete
                           </Button>
                         </Card>
                       ))
@@ -488,23 +533,40 @@ class OfficeHours extends React.Component {
                     <Card key={i}>
                       <Card.Header>
                         <Card.Title>
-                          Start: {convertDate(event.start)} ~ 30 min
+                          <AiOutlineCalendar /> Start:{' '}
+                          {convertDate(event.start)} ~ 30 min
                         </Card.Title>
                       </Card.Header>
                       <Card.Body>
-                        Agent:{' '}
+                        <AiOutlineUser size={16} /> Agent:{' '}
                         {event.receiver_id?.map((receiver, x) => (
                           <span key={x}>
                             {receiver.firstname} {receiver.lastname}{' '}
-                            {receiver.email}
+                            <AiOutlineMail ize={16} /> {receiver.email}
                           </span>
                         ))}
                         <br />
                         Description: {event.description}
                         <br />
-                        Confirmed: {event.isConfirmed ? 'true' : 'false'}
+                        Status:{' '}
+                        {event.isConfirmed ? (
+                          <AiFillCheckCircle
+                            title="Confirmed"
+                            size={16}
+                            color="limegreen"
+                          />
+                        ) : (
+                          <AiFillQuestionCircle
+                            title="Waiting for confirmation"
+                            size={16}
+                            color="gray"
+                          />
+                        )}
                         <br />
-                        Meeting Link: {event.meetingLink ? 'true' : 'false'}
+                        Meeting Link:{' '}
+                        {event.isConfirmed
+                          ? event.meetingLink
+                          : 'Will be available, after the appointment is confirmed by the Agent.'}
                         {/* <br />
                         Title: {event.title} */}
                         {/* <br />
@@ -513,17 +575,17 @@ class OfficeHours extends React.Component {
                         created at:{convertDate(event.createdAt)}
                         <br />
                         udpated at:{convertDate(event.updatedAt)}
-                        <br />
-                        <Button
-                          variant="danger"
-                          disabled
-                          onClick={(e) =>
-                            this.handleDeleteAppointmentModalOpen(e, event)
-                          }
-                        >
-                          Delete
-                        </Button>
                       </Card.Body>
+                      <Button
+                        variant="danger"
+                        disabled
+                        size="sm"
+                        onClick={(e) =>
+                          this.handleDeleteAppointmentModalOpen(e, event)
+                        }
+                      >
+                        <AiOutlineDelete size={16} /> Delete
+                      </Button>
                     </Card>
                   ))}
               </Card.Body>
@@ -541,7 +603,7 @@ class OfficeHours extends React.Component {
                 <Form>
                   <Form.Control
                     as="textarea"
-                    onChange={(e) => this.handleUpdateTimeSlot(e)}
+                    onChange={(e) => this.handleUpdateDescription(e)}
                     value={this.state.event_temp.description}
                   ></Form.Control>
                 </Form>
@@ -571,7 +633,11 @@ class OfficeHours extends React.Component {
                 <Button
                   disabled={this.state.event_id === ''}
                   onClick={(e) =>
-                    this.handleEditAppointmentModal(e, this.state.event_id)
+                    this.handleEditAppointmentModal(
+                      e,
+                      this.state.event_id,
+                      this.state.event_temp
+                    )
                   }
                 >
                   Update

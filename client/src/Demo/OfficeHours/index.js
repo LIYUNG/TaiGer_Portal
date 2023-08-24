@@ -24,6 +24,7 @@ import {
 } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
+import Banner from '../../components/Banner/Banner';
 
 import { deleteEvent, getEvents, postEvent, updateEvent } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
@@ -699,8 +700,34 @@ class OfficeHours extends React.Component {
                   className="py-0 my-0 mx-0"
                 >
                   <Tab eventKey="Calendar" title="Calendar">
+                    {/* {'Only boo'} */}
+                    {events?.filter(
+                      (event) => getNumberOfDays(new Date(), event.start) >= -1
+                    ).length !== 0 && (
+                      <Banner
+                        ReadOnlyMode={true}
+                        bg={'primary'}
+                        title={'Info:'}
+                        path={'/'}
+                        text={
+                          <>
+                            在您目前預定的時段過後，您將可以再次預約時段。
+                          </>
+                        }
+                        link_name={''}
+                        removeBanner={(a, b) => {}}
+                        notification_key={'x'}
+                      />
+                    )}
                     <MyCalendar
-                      events={[...available_termins]}
+                      events={
+                        events?.filter(
+                          (event) =>
+                            getNumberOfDays(new Date(), event.start) >= -1
+                        ).length !== 0
+                          ? []
+                          : [...available_termins]
+                      }
                       user={this.props.user}
                       handleSelectEvent={this.handleSelectEvent}
                       handleChange={this.handleChange}

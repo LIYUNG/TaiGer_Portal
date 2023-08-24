@@ -76,7 +76,9 @@ const postEvent = asyncHandler(async (req, res) => {
     }
     events = await Event.find({
       requester_id: newEvent.requester_id
-    });
+    })
+      .populate('receiver_id', 'firstname lastname email')
+      .lean();;
     const agents_ids = user.agents;
     const agent = await Agent.find({ _id: agents_ids }).select(
       'firstname lastname email selfIntroduction officehours timezone'

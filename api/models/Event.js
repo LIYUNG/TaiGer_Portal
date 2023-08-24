@@ -10,6 +10,10 @@ const EventSchema = new mongoose.Schema(
       type: Boolean,
       default: false
     },
+    meetingLink: {
+      type: Boolean,
+      default: false
+    },
     title: {
       type: String,
       required: [true, 'Please write a title for your event']

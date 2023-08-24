@@ -221,13 +221,16 @@ class OfficeHours extends React.Component {
         } else {
           // TODO: what if data is oversize? data type not match?
           const { message } = resp.data;
-          setGeneralState({
+          this.setState({
+            success,
             isLoaded: true,
+            newDescription: '',
+            newReceiver: '',
+            selectedEvent: {},
+            isDeleteModalOpen: false,
             res_modal_message: message,
             res_modal_status: status
           });
-          setNewDescription('');
-          setSelectedEvent({});
         }
       },
       (error) => {
@@ -484,37 +487,43 @@ class OfficeHours extends React.Component {
                   .map((event, i) => (
                     <Card key={i}>
                       <Card.Header>
-                        <Card.Title></Card.Title>
+                        <Card.Title>
+                          Start: {convertDate(event.start)} ~ 30 min
+                        </Card.Title>
                       </Card.Header>
-                      {event.receiver_id?.map((receiver, x) => (
-                        <span key={x}>
-                          {receiver.firstname} {receiver.lastname}{' '}
-                          {receiver.email}
-                        </span>
-                      ))}
-                      <br />
-                      Description: {event.description}
-                      <br />
-                      Confirmed: {event.isConfirmed ? 'true' : 'false'}
-                      <br />
-                      Title: {event.title}
-                      <br />
-                      Start: {convertDate(event.start)}
-                      <br />
-                      End: {convertDate(event.end)}
-                      <br />
-                      created at:{convertDate(event.createdAt)}
-                      <br />
-                      udpated at:{convertDate(event.updatedAt)}
-                      <Button
-                        variant="danger"
-                        disabled
-                        onClick={(e) =>
-                          this.handleDeleteAppointmentModalOpen(e, event)
-                        }
-                      >
-                        Delete
-                      </Button>
+                      <Card.Body>
+                        Agent:{' '}
+                        {event.receiver_id?.map((receiver, x) => (
+                          <span key={x}>
+                            {receiver.firstname} {receiver.lastname}{' '}
+                            {receiver.email}
+                          </span>
+                        ))}
+                        <br />
+                        Description: {event.description}
+                        <br />
+                        Confirmed: {event.isConfirmed ? 'true' : 'false'}
+                        <br />
+                        Meeting Link: {event.meetingLink ? 'true' : 'false'}
+                        {/* <br />
+                        Title: {event.title} */}
+                        {/* <br />
+                      End: {convertDate(event.end)} */}
+                        <br />
+                        created at:{convertDate(event.createdAt)}
+                        <br />
+                        udpated at:{convertDate(event.updatedAt)}
+                        <br />
+                        <Button
+                          variant="danger"
+                          disabled
+                          onClick={(e) =>
+                            this.handleDeleteAppointmentModalOpen(e, event)
+                          }
+                        >
+                          Delete
+                        </Button>
+                      </Card.Body>
                     </Card>
                   ))}
               </Card.Body>
@@ -546,7 +555,10 @@ class OfficeHours extends React.Component {
                     {available_termins
                       .sort((a, b) => (a.start < b.start ? -1 : 1))
                       .map((time_slot, j) => (
-                        <option value={`${time_slot.start}`}>
+                        <option
+                          value={`${time_slot.start}`}
+                          key={`${time_slot.start}`}
+                        >
                           {time_slot.start.toLocaleString()} to{' '}
                           {time_slot.end.toLocaleString()}
                         </option>

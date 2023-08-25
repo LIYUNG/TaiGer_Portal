@@ -13,19 +13,18 @@ const navGroup = (props) => {
         case 'collapse':
           return (
             <NavCollapse
-              role={props.user.role}
+              user={props.user}
               key={item.id}
               collapse={item}
               type="main"
             />
           );
         case 'item':
-          if (props.user.role === 'Student') {
-            if (item.title === 'Applications Overview') {
-              item.title = 'My Applications';
-              item.url = `/student-applications/${props.user._id.toString()}`;
-            }
-          }
+          // if (props.user.role === 'Student') {
+          //   if (item.title === 'My Applications') {
+          //     item.url = `/my-applications/${props.user._id.toString()}`;
+          //   }
+          // }
           return (
             <NavItem
               role={props.user.role}

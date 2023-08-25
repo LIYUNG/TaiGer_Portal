@@ -23,9 +23,10 @@ class NavCollapse extends Component {
   }
   menuGroupFilterByRole = (collapse) => {
     if (collapse.children) {
-      if (this.props.role === 'Admin') {
+      if (this.props.user.role === 'Admin') {
         if (
           collapse.title === 'Component' ||
+          collapse.title === 'Applications Overview' ||
           // collapse.title === 'Documentation' ||
           collapse.title === 'Menu Levels'
         ) {
@@ -33,9 +34,10 @@ class NavCollapse extends Component {
         }
         return true;
       }
-      if (this.props.role === Role.Agent) {
+      if (this.props.user.role === Role.Agent) {
         if (
           collapse.title === 'Component' ||
+          collapse.title === 'Applications Overview' ||
           collapse.title === 'Tools' ||
           // collapse.title === 'Documentation' ||
           collapse.title === 'Menu Levels'
@@ -44,9 +46,10 @@ class NavCollapse extends Component {
         }
         return true;
       }
-      if (this.props.role === Role.Editor) {
+      if (this.props.user.role === Role.Editor) {
         if (
           collapse.title === 'Component' ||
+          collapse.title === 'Applications Overview' ||
           collapse.title === 'Tools' ||
           // collapse.title === 'Documentation' ||
           collapse.title === 'Menu Levels'
@@ -55,7 +58,7 @@ class NavCollapse extends Component {
         }
         return true;
       }
-      if (this.props.role === 'Student') {
+      if (this.props.user.role === 'Student') {
         if (
           collapse.title === 'Component' ||
           collapse.title === 'Docs Database' ||
@@ -68,7 +71,7 @@ class NavCollapse extends Component {
         }
         return true;
       }
-      if (this.props.role === 'Guest') {
+      if (this.props.user.role === 'Guest') {
         if (
           collapse.title === 'Component' ||
           collapse.title === 'Docs Database' ||
@@ -101,9 +104,14 @@ class NavCollapse extends Component {
                 <LoopNavCollapse key={item.id} collapse={item} type="sub" />
               );
             case 'item':
+              if (this.props.user.role === 'Student') {
+                if (item.title === 'My Applications') {
+                  item.url = `/student-applications/${this.props.user._id.toString()}`;
+                }
+              }
               return (
                 <NavItem
-                  role={this.props.role}
+                  role={this.props.user.role}
                   layout={this.props.layout}
                   key={item.id}
                   item={item}

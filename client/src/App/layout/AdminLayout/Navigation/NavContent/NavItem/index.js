@@ -73,6 +73,10 @@ class NavItem extends Component {
         itemTitle === 'My Tasks Overview' ||
         itemTitle === 'Program List' ||
         itemTitle === 'Map' ||
+        itemTitle === 'Applications Overview' ||
+        itemTitle === 'CV/ML/RL Center' ||
+        itemTitle === 'Base Documents' ||
+        itemTitle === 'Interview Training' ||
         itemTitle === 'TaiGer Admissions' ||
         itemTitle === 'Internal Docs' ||
         itemTitle === 'Archiv Students' ||

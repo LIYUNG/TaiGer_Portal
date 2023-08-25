@@ -40,6 +40,7 @@ const { sendAssignEditorReminderEmail } = require('../services/email');
 const Permission = require('../models/Permission');
 const { Communication } = require('../models/Communication');
 const { s3 } = require('../aws/index');
+const Event = require('../models/Event');
 
 const emptyS3Directory = async (bucket, dir) => {
   const listParams = {
@@ -170,6 +171,23 @@ const TasksReminderEmails = async () => {
   await TasksReminderEmails_Agent_core();
 };
 
+const events_transformer = (events) => {
+  const transformedDocuments = events.map((event) => ({
+    ...event,
+    _id: { $oid: event._id.toString() },
+    requester_id:
+      event.requester_id &&
+      event.requester_id.map((req_id) => ({ $oid: req_id.toString() })),
+    receiver_id:
+      event.receiver_id &&
+      event.receiver_id.map((rev_id) => ({ $oid: rev_id.toString() })),
+    start: event.start && { $date: event.start },
+    end: event.end && { $date: event.end },
+    updatedAt: event.updatedAt && { $date: event.updatedAt },
+    createdAt: event.createdAt && { $date: event.createdAt }
+  }));
+  return transformedDocuments;
+};
 const users_transformer = (users) => {
   const transformedDocuments = users.map((user) => ({
     ...user,
@@ -302,6 +320,17 @@ const notes_transformer = (notes) => {
   return transformedDocuments;
 };
 
+const permissions_transformer = (permissions) => {
+  const transformedDocuments = permissions.map((permission) => ({
+    ...permission,
+    _id: { $oid: permission._id.toString() },
+    user_id: { $oid: permission.user_id.toString() },
+    updatedAt: permission.updatedAt && { $date: permission.updatedAt },
+    createdAt: permission.createdAt && { $date: permission.createdAt }
+  }));
+  return transformedDocuments;
+};
+
 const basedocumentationslinks_transformer = (basedocumentationslinks) => {
   const transformedDocuments = basedocumentationslinks.map(
     (basedocumentationslink) => ({
@@ -382,14 +411,17 @@ const MongoDBDataBaseDailySnapshot = async () => {
     'communications',
     'basedocumentationslinks',
     'docspages',
+    'events',
     'programs',
     'documentthreads',
     'documentations',
     'internaldocs',
     'notes',
+    'permissions',
     'templates'
     // 'expenses'
   ];
+  const events_raw = await Event.find().lean();
   const users_raw = await User.find()
     .lean()
     .select(
@@ -405,9 +437,11 @@ const MongoDBDataBaseDailySnapshot = async () => {
   const documentations_raw = await Documentation.find().lean();
   const internaldocs_raw = await Internaldoc.find().lean();
   const notes_raw = await Note.find().lean();
+  const permissions_raw = await Permission.find().lean();
   const templates_raw = await Template.find().lean();
   const expenses_raw = await Expense.find().lean();
 
+  const events = events_transformer(events_raw);
   const users = users_transformer(users_raw);
   const communications = communications_transformer(communications_raw);
   const courses = courses_transformer(courses_raw);
@@ -420,8 +454,10 @@ const MongoDBDataBaseDailySnapshot = async () => {
   const documentations = docspages_transformer(documentations_raw);
   const internaldocs = docspages_transformer(internaldocs_raw);
   const notes = notes_transformer(notes_raw);
+  const permissions = permissions_transformer(permissions_raw);
   const templates = docspages_transformer(templates_raw);
   const data_json = {
+    events,
     users,
     courses,
     communications,
@@ -432,6 +468,7 @@ const MongoDBDataBaseDailySnapshot = async () => {
     documentations,
     internaldocs,
     notes,
+    permissions,
     templates
     // expenses
   };

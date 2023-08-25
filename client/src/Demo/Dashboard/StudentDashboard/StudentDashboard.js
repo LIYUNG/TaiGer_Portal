@@ -336,9 +336,13 @@ class StudentDashboard extends React.Component {
               <Card.Body style={{ background: 'black', color: 'white' }}>
                 <Row>
                   <Col md={4}>
-                    <Link to={`/events/students/${student._id.toString()}`}>
-                      <Button size="sm">預約</Button>
-                    </Link>
+                    {student.firstname === 'Testing-Student' ? (
+                      <Link to={`/events/students/${student._id.toString()}`}>
+                        <Button size="sm">預約</Button>
+                      </Link>
+                    ) : (
+                      <span className='text-light'>Coming soon</span>
+                    )}
                   </Col>
                   <Col md={8} style={{ color: 'white' }}>
                     {hasUpcomingAppointment ? (

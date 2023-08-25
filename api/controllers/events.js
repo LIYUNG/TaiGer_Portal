@@ -55,7 +55,9 @@ const postEvent = asyncHandler(async (req, res) => {
   const newEvent = req.body;
   let events;
   if (user.role === Role.Student) {
-    newEvent.meetingLink = 'TODO_JITSIMEET_LINK';
+    newEvent.meetingLink = `https://meet.jit.si/${user.firstname}_${
+      user.lastname
+    }_${user._id.toString()}`;
 
     events = await Event.find({
       start: newEvent.start,
@@ -78,7 +80,7 @@ const postEvent = asyncHandler(async (req, res) => {
       requester_id: newEvent.requester_id
     })
       .populate('receiver_id', 'firstname lastname email')
-      .lean();;
+      .lean();
     const agents_ids = user.agents;
     const agent = await Agent.find({ _id: agents_ids }).select(
       'firstname lastname email selfIntroduction officehours timezone'
@@ -89,6 +91,8 @@ const postEvent = asyncHandler(async (req, res) => {
       data: events,
       hasEvents: events.length !== 0
     });
+
+    // TODO Sent email to receiver
   }
 
   if (user.role === Role.Agent) {
@@ -128,13 +132,16 @@ const postEvent = asyncHandler(async (req, res) => {
   return res.status(200).send({ success: true, data: [newEvent] });
 });
 
-const updateEvent = asyncHandler(async (req, res) => {
+const confirmEvent = asyncHandler(async (req, res) => {
   const { event_id } = req.params;
+  const { user } = req;
   const updated_event = req.body;
   try {
     const date = new Date(updated_event.start);
     updated_event.isConfirmed = false;
-    updated_event.meetingLink = 'TODO';
+    updated_event.meetingLink = `https://meet.jit.si/${user.firstname}_${
+      user.lastname
+    }_${user._id.toString()}`;
     updated_event.end = new Date(date.getTime() + 60000 * 30);
     const event = await Event.findByIdAndUpdate(event_id, updated_event, {
       upsert: false,
@@ -148,6 +155,37 @@ const updateEvent = asyncHandler(async (req, res) => {
     if (!event) {
       return res.status(404).json({ error: 'event is not found' });
     }
+    // TODO Sent email to requester
+  } catch (err) {
+    console.log(err);
+    throw new ErrorResponse(400, err);
+  }
+});
+
+const updateEvent = asyncHandler(async (req, res) => {
+  const { event_id } = req.params;
+  const { user } = req;
+  const updated_event = req.body;
+  try {
+    const date = new Date(updated_event.start);
+    updated_event.isConfirmed = false;
+    updated_event.meetingLink = `https://meet.jit.si/${user.firstname}_${
+      user.lastname
+    }_${user._id.toString()}`;
+    updated_event.end = new Date(date.getTime() + 60000 * 30);
+    const event = await Event.findByIdAndUpdate(event_id, updated_event, {
+      upsert: false,
+      new: true
+    })
+      .populate('receiver_id', 'firstname lastname email')
+      .lean();
+    if (event) {
+      return res.status(200).send({ success: true, data: event });
+    }
+    if (!event) {
+      return res.status(404).json({ error: 'event is not found' });
+    }
+    // TODO Sent email to receiver
   } catch (err) {
     console.log(err);
     throw new ErrorResponse(400, err);
@@ -179,6 +217,7 @@ const deleteEvent = asyncHandler(async (req, res) => {
     }
 
     res.status(200).send({ success: true, hasEvents: false });
+    // TODO: remind receiver or reqester
   } catch (err) {
     throw new ErrorResponse(400, err);
   }
@@ -188,6 +227,7 @@ module.exports = {
   getEvents,
   showEvent,
   postEvent,
+  confirmEvent,
   updateEvent,
   deleteEvent
 };

@@ -69,6 +69,26 @@ class AddUserModal extends React.Component {
               onChange={(e) => this.handleChange(e)}
             />
           </Form.Group>
+          <Form.Group className="my-2" controlId="applying_program_count">
+            <Form.Label>Application Count</Form.Label>
+            <Form.Control
+              as="select"
+              defaultValue={0}
+              onChange={(e) => this.handleChange(e)}
+            >
+              <option value="0">Please Select</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+            </Form.Control>
+          </Form.Group>
           <Form.Group className="my-2" controlId="email">
             <Form.Label>Email</Form.Label>
             <Form.Control

@@ -62,8 +62,14 @@ const addUser = asyncHandler(async (req, res) => {
     checkEmail
   )(req);
 
-  const { firstname_chinese, lastname_chinese, firstname, lastname, email } =
-    req.body;
+  const {
+    firstname_chinese,
+    lastname_chinese,
+    firstname,
+    lastname,
+    email,
+    applying_program_count
+  } = req.body;
   const existUser = await User.findOne({ email });
   if (existUser) {
     logger.error('addUser: An account with this email address already exists');
@@ -83,6 +89,7 @@ const addUser = asyncHandler(async (req, res) => {
     firstname,
     lastname,
     email,
+    applying_program_count,
     password
   });
 

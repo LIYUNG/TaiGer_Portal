@@ -8,7 +8,8 @@ import {
   Spinner,
   Modal,
   Tabs,
-  Tab
+  Tab,
+  Badge
 } from 'react-bootstrap';
 
 import Aux from '../../hoc/_Aux';
@@ -600,20 +601,40 @@ class OfficeHours extends React.Component {
             >
               <Modal.Header closeButton></Modal.Header>
               <Modal.Body>
-                Description{' '}
                 <Form>
-                  <Form.Control
-                    as="textarea"
-                    onChange={(e) => this.handleUpdateDescription(e)}
-                    value={this.state.event_temp.description}
-                  ></Form.Control>
+                  <Form.Group className="my-0 mx-0">
+                    <Form.Label>請寫下想討論的主題</Form.Label>
+                    <Form.Control
+                      as="textarea"
+                      maxLength={2000}
+                      rows="10"
+                      placeholder="Example：我想定案選校、選課，我想討論簽證，德語班。"
+                      value={this.state.event_temp.description || ''}
+                      isInvalid={
+                        this.state.event_temp.description?.length > 2000
+                      }
+                      onChange={(e) => this.handleUpdateDescription(e)}
+                    ></Form.Control>
+                    <Badge
+                      className="mt-3"
+                      bg={`${
+                        this.state.event_temp.description?.length > 2000
+                          ? 'danger'
+                          : 'primary'
+                      }`}
+                    >
+                      {this.state.event_temp.description?.length || 0}/
+                      {2000}
+                    </Badge>
+                  </Form.Group>
                 </Form>
+                <br />
                 <Form>
                   <Form.Label>Time Slot</Form.Label>
                   <Form.Control
                     as="select"
                     onChange={(e) => this.handleUpdateTimeSlot(e)}
-                    value={this.state.event_temp.start}
+                    value={new Date(this.state.event_temp.start)}
                   >
                     {available_termins
                       .sort((a, b) => (a.start < b.start ? -1 : 1))
@@ -632,7 +653,10 @@ class OfficeHours extends React.Component {
 
               <Modal.Footer>
                 <Button
-                  disabled={this.state.event_id === ''}
+                  disabled={
+                    this.state.event_id === '' ||
+                    this.state.event_temp?.description?.length === 0
+                  }
                   onClick={(e) =>
                     this.handleEditAppointmentModal(
                       e,
@@ -710,9 +734,7 @@ class OfficeHours extends React.Component {
                         title={'Info:'}
                         path={'/'}
                         text={
-                          <>
-                            在您目前預定的時段過後，您將可以再次預約時段。
-                          </>
+                          <>在您目前預定的時段過後，您將可以再次預約時段。</>
                         }
                         link_name={''}
                         removeBanner={(a, b) => {}}

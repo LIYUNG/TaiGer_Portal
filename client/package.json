@@ -14,7 +14,6 @@
     "@editorjs/inline-code": "^1.4.0",
     "@editorjs/link": "^2.4.2",
     "@editorjs/list": "^1.8.0",
-    "@editorjs/liyungc-attaches": "git+ssh://git@github.com/LIYUNG/attaches.git",
     "@editorjs/marker": "^1.2.2",
     "@editorjs/quote": "^2.5.0",
     "@editorjs/table": "^2.2.2",

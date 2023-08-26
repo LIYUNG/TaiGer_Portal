@@ -519,7 +519,11 @@ class CommunicationSinglePage extends Component {
                     <br />
                     {this.state.student?.agents?.map((agent, i) => (
                       // <Link>{`${agent.firstname} ${agent.lastname}`}</Link>
-                      <p key={i}>{`${agent.firstname} ${agent.lastname}`}</p>
+                      <p key={i}>
+                        <Link
+                          to={`/teams/agents/profile/${agent._id.toString()}`}
+                        >{`${agent.firstname} ${agent.lastname}`}</Link>
+                      </p>
                     ))}
                   </Col>
                 </Row>

@@ -22,6 +22,7 @@ import DEMO from '../../../store/constant';
 import { program_progress_list_student } from '../../Utils/contants';
 import { FiExternalLink } from 'react-icons/fi';
 import { AiFillCalendar, AiOutlineCalendar } from 'react-icons/ai';
+import ApplicationProgressCard from '../../../components/ApplicationProgressCard/ApplicationProgressCard';
 
 class StudentDashboard extends React.Component {
   state = {
@@ -341,7 +342,7 @@ class StudentDashboard extends React.Component {
                         <Button size="sm">預約</Button>
                       </Link>
                     ) : (
-                      <span className='text-light'>Coming soon</span>
+                      <span className="text-light">Coming soon</span>
                     )}
                   </Col>
                   <Col md={8} style={{ color: 'white' }}>
@@ -383,7 +384,17 @@ class StudentDashboard extends React.Component {
           </Col>
         </Row>
         <Row>
-          <Col md={6}></Col>
+          {student.applications?.map(
+            (application, idx) =>
+              application.decided === 'O' && (
+                <Col md={4} key={idx}>
+                  <ApplicationProgressCard
+                    student={student}
+                    application={application}
+                  />
+                </Col>
+              )
+          )}
         </Row>
         <Row>
           <Col>

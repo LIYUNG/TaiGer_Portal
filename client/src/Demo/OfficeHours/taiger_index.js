@@ -151,14 +151,16 @@ class TaiGerOfficeHours extends React.Component {
         let found_event_idx = temp_events.findIndex(
           (temp_event) => temp_event._id.toString() === event_id
         );
-        if (found_event_idx > 0) {
+        if (found_event_idx >= 0) {
           temp_events[found_event_idx] = data;
         }
+        console.log(found_event_idx);
         if (success) {
           this.setState({
             isLoaded: true,
             isConfirmModalOpen: false,
             events: temp_events,
+            event_temp: {},
             event_id: '',
             isDeleteModalOpen: false,
             success: success,
@@ -167,6 +169,7 @@ class TaiGerOfficeHours extends React.Component {
         } else {
           this.setState({
             isLoaded: true,
+            event_temp: {},
             event_id: '',
             res_status: status
           });
@@ -188,11 +191,11 @@ class TaiGerOfficeHours extends React.Component {
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
-        const temp_events = [...this.state.events];
+        let temp_events = [...this.state.events];
         let found_event_idx = temp_events.findIndex(
           (temp_event) => temp_event._id.toString() === event_id
         );
-        if (found_event_idx > 0) {
+        if (found_event_idx >= 0) {
           temp_events[found_event_idx] = data;
         }
         if (success) {
@@ -200,6 +203,7 @@ class TaiGerOfficeHours extends React.Component {
             isLoaded: true,
             isEditModalOpen: false,
             events: temp_events,
+            event_temp: {},
             event_id: '',
             isDeleteModalOpen: false,
             success: success,
@@ -208,6 +212,7 @@ class TaiGerOfficeHours extends React.Component {
         } else {
           this.setState({
             isLoaded: true,
+            event_temp: {},
             event_id: '',
             res_status: status
           });
@@ -340,27 +345,23 @@ class TaiGerOfficeHours extends React.Component {
   };
   handleConfirmAppointmentModalOpen = (e, event) => {
     e.preventDefault();
-    const event_temp = { ...event };
-    event_temp.isConfirmed = true;
     this.setState({
       isConfirmModalOpen: true,
-      event_temp: event_temp,
+      event_temp: event,
       event_id: event._id.toString()
     });
   };
   handleEditAppointmentModalOpen = (e, event) => {
-    e.preventDefault();
-    const event_temp = { ...event };
-    event_temp.isConfirmed = false;
+    // e.preventDefault();
     this.setState({
       isEditModalOpen: true,
-      event_temp: event_temp,
+      event_temp: event,
       event_id: event._id.toString()
     });
   };
 
   handleDeleteAppointmentModalOpen = (e, event) => {
-    e.preventDefault();
+    // e.preventDefault();
     this.setState({
       isDeleteModalOpen: true,
       event_id: event._id.toString()
@@ -501,7 +502,6 @@ class TaiGerOfficeHours extends React.Component {
       end: new Date(event.end),
       provider: event.requester_id[0]
     }));
-    console.log(booked_events);
     return (
       <Aux>
         {res_modal_status >= 400 && (
@@ -521,13 +521,15 @@ class TaiGerOfficeHours extends React.Component {
               To Calendar
             </Button>
             {events?.filter(
-              (event) => getNumberOfDays(new Date(), event.start) >= -1
+              (event) =>
+                getNumberOfDays(new Date(), event.start) >= -1 &&
+                (!event.isConfirmedReceiver || !event.isConfirmedRequester)
             ).length !== 0 &&
               events
                 ?.filter(
                   (event) =>
                     getNumberOfDays(new Date(), event.start) >= -1 &&
-                    !event.isConfirmed
+                    (!event.isConfirmedReceiver || !event.isConfirmedRequester)
                 )
                 .map((event, i) => (
                   <EventConfirmationCard
@@ -552,13 +554,15 @@ class TaiGerOfficeHours extends React.Component {
                 {events?.filter(
                   (event) =>
                     getNumberOfDays(new Date(), event.start) >= -1 &&
-                    event.isConfirmed
+                    event.isConfirmedRequester &&
+                    event.isConfirmedReceiver
                 ).length !== 0
                   ? events
                       ?.filter(
                         (event) =>
                           getNumberOfDays(new Date(), event.start) >= -1 &&
-                          event.isConfirmed
+                          event.isConfirmedRequester &&
+                          event.isConfirmedReceiver
                       )
                       .map((event, i) => (
                         <EventConfirmationCard
@@ -607,7 +611,7 @@ class TaiGerOfficeHours extends React.Component {
                         Description: {event.description}
                         <br />
                         Status:{' '}
-                        {event.isConfirmed ? (
+                        {event.isConfirmedReceiver ? (
                           <AiFillCheckCircle
                             title="Confirmed"
                             size={16}
@@ -622,7 +626,7 @@ class TaiGerOfficeHours extends React.Component {
                         )}
                         <br />
                         Meeting Link:{' '}
-                        {event.isConfirmed
+                        {event.isConfirmedReceiver
                           ? event.meetingLink
                           : 'Will be available, after the appointment is confirmed by the Agent.'}
                         {/* <br />

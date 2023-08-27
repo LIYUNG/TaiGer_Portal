@@ -6,7 +6,11 @@ const EventSchema = new mongoose.Schema(
   {
     requester_id: [{ type: ObjectId, ref: 'User' }],
     receiver_id: [{ type: ObjectId, ref: 'User' }],
-    isConfirmed: {
+    isConfirmedRequester: {
+      type: Boolean,
+      default: false
+    },
+    isConfirmedReceiver: {
       type: Boolean,
       default: false
     },

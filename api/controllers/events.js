@@ -61,6 +61,7 @@ const postEvent = asyncHandler(async (req, res) => {
   const newEvent = req.body;
   let events;
   if (user.role === Role.Student) {
+    newEvent.isConfirmedRequester = true;
     newEvent.meetingLink = `https://meet.jit.si/${user.firstname}_${
       user.lastname
     }_${user._id.toString()}`;
@@ -144,16 +145,21 @@ const confirmEvent = asyncHandler(async (req, res) => {
   const updated_event = req.body;
   try {
     const date = new Date(updated_event.start);
-    updated_event.isConfirmed = false;
-    updated_event.meetingLink = `https://meet.jit.si/${user.firstname}_${
-      user.lastname
-    }_${user._id.toString()}`;
+    if (user.role === 'Student') {
+      updated_event.isConfirmedRequester = true;
+      updated_event.meetingLink = `https://meet.jit.si/${user.firstname}_${
+        user.lastname
+      }_${user._id.toString()}`;
+    }
+    if (user.role === 'Agent') {
+      updated_event.isConfirmedReceiver = true;
+    }
     updated_event.end = new Date(date.getTime() + 60000 * 30);
     const event = await Event.findByIdAndUpdate(event_id, updated_event, {
       upsert: false,
       new: true
     })
-      .populate('receiver_id', 'firstname lastname email')
+      .populate('receiver_id requester_id', 'firstname lastname email')
       .lean();
     if (event) {
       return res.status(200).send({ success: true, data: event });
@@ -174,10 +180,18 @@ const updateEvent = asyncHandler(async (req, res) => {
   const updated_event = req.body;
   try {
     const date = new Date(updated_event.start);
-    // updated_event.isConfirmed = false;
-    updated_event.meetingLink = `https://meet.jit.si/${user.firstname}_${
-      user.lastname
-    }_${user._id.toString()}`;
+    if (user.role === 'Student') {
+      updated_event.isConfirmedRequester = true;
+      updated_event.isConfirmedRequester = false;
+      updated_event.meetingLink = `https://meet.jit.si/${user.firstname}_${
+        user.lastname
+      }_${user._id.toString()}`;
+    }
+    if (user.role === 'Agent') {
+      updated_event.isConfirmedRequester = false;
+      updated_event.isConfirmedReceiver = true;
+    }
+
     updated_event.end = new Date(date.getTime() + 60000 * 30);
     const event = await Event.findByIdAndUpdate(event_id, updated_event, {
       upsert: false,
@@ -206,10 +220,31 @@ const deleteEvent = asyncHandler(async (req, res) => {
     let events;
     if (user.role === Role.Student) {
       events = await Event.find({ requester_id: user._id })
-        .populate('receiver_id', 'firstname lastname email')
+        .populate('receiver_id requester_id', 'firstname lastname email')
         .lean();
       const agents_ids = user.agents;
       const agent = await Agent.find({ _id: agents_ids }).select(
+        'firstname lastname email selfIntroduction officehours timezone'
+      );
+      if (events.length === 0) {
+        return res
+          .status(200)
+          .send({ success: true, agent, data: [], hasEvents: false });
+      }
+      return res
+        .status(200)
+        .send({ success: true, agent, data: events, hasEvents: true });
+    }
+    if (user.role === Role.Agent) {
+      events = await Event.find({
+        $or: [
+          { requester_id: user._id.toString() },
+          { receiver_id: user._id.toString() }
+        ]
+      })
+        .populate('receiver_id requester_id', 'firstname lastname email')
+        .lean();
+      const agent = await Agent.find({ _id: user._id.toString() }).select(
         'firstname lastname email selfIntroduction officehours timezone'
       );
       if (events.length === 0) {

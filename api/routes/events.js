@@ -6,7 +6,8 @@ const {
   showEvent,
   updateEvent,
   postEvent,
-  deleteEvent
+  deleteEvent,
+  confirmEvent
 } = require('../controllers/events');
 const { Role } = require('../models/User');
 // const handleError = require('../utils/eventErrors');
@@ -28,6 +29,12 @@ router
 router
   .route('/:student_id/show')
   .get(permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor), showEvent);
+router
+  .route('/:event_id/confirm')
+  .put(
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
+    confirmEvent
+  );
 
 router
   .route('/:event_id')

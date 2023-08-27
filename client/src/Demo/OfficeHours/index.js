@@ -142,7 +142,7 @@ class OfficeHours extends React.Component {
         let found_event_idx = temp_events.findIndex(
           (temp_event) => temp_event._id.toString() === event_id
         );
-        if (found_event_idx > 0) {
+        if (found_event_idx >= 0) {
           temp_events[found_event_idx] = data;
         }
         if (success) {
@@ -476,7 +476,7 @@ class OfficeHours extends React.Component {
                             Description: {event.description}
                             <br />
                             Status:{' '}
-                            {event.isConfirmed ? (
+                            {event.isConfirmedReceiver ? (
                               <AiFillCheckCircle
                                 title="Confirmed"
                                 size={16}
@@ -491,7 +491,7 @@ class OfficeHours extends React.Component {
                             )}
                             <br />
                             Meeting Link:{' '}
-                            {event.isConfirmed
+                            {event.isConfirmedReceiver
                               ? event.meetingLink
                               : 'Will be available, after the appointment is confirmed by the Agent.'}
                             <br />
@@ -551,7 +551,7 @@ class OfficeHours extends React.Component {
                         Description: {event.description}
                         <br />
                         Status:{' '}
-                        {event.isConfirmed ? (
+                        {event.isConfirmedReceiver ? (
                           <AiFillCheckCircle
                             title="Confirmed"
                             size={16}
@@ -566,13 +566,9 @@ class OfficeHours extends React.Component {
                         )}
                         <br />
                         Meeting Link:{' '}
-                        {event.isConfirmed
+                        {event.isConfirmedReceiver && event.isConfirmedRequester
                           ? event.meetingLink
                           : 'Will be available, after the appointment is confirmed by the Agent.'}
-                        {/* <br />
-                        Title: {event.title} */}
-                        {/* <br />
-                      End: {convertDate(event.end)} */}
                         <br />
                         created at:{convertDate(event.createdAt)}
                         <br />
@@ -623,8 +619,7 @@ class OfficeHours extends React.Component {
                           : 'primary'
                       }`}
                     >
-                      {this.state.event_temp.description?.length || 0}/
-                      {2000}
+                      {this.state.event_temp.description?.length || 0}/{2000}
                     </Badge>
                   </Form.Group>
                 </Form>

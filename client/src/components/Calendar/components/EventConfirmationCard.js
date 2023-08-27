@@ -11,6 +11,7 @@ import {
   AiOutlineEdit,
   AiOutlineMail,
   AiOutlineQuestion,
+  AiOutlineQuestionCircle,
   AiOutlineUser
 } from 'react-icons/ai';
 
@@ -26,7 +27,8 @@ export default function EventConfirmationCard(props) {
         <Row className="my-0">
           <Card.Title>
             <h5>
-              {props.event.isConfirmed ? (
+              {props.event.isConfirmedReceiver &&
+              props.event.isConfirmedRequester ? (
                 <AiFillCheckCircle
                   color="limegreen"
                   size={24}
@@ -38,7 +40,8 @@ export default function EventConfirmationCard(props) {
               <AiOutlineCalendar />: {convertDate(props.event.start)} ~ 30 min{' '}
             </h5>
             <span style={{ float: 'right' }}>
-              {!props.event.isConfirmed && (
+              {(!props.event.isConfirmedReceiver ||
+                !props.event.isConfirmedRequester) && (
                 <Button
                   variant="primary"
                   size="sm"
@@ -95,7 +98,8 @@ export default function EventConfirmationCard(props) {
           <p>{props.event.description}</p>
           <br />
           Meeting Link:{' '}
-          {props.event.isConfirmed ? (
+          {props.event.isConfirmedReceiver &&
+          props.event.isConfirmedRequester ? (
             <a href={`${props.event.meetingLink}`} className="text-primary">
               {props.event.meetingLink}
             </a>

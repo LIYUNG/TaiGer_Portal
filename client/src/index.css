@@ -66,3 +66,22 @@ body {
   justify-content: center;
   align-items: center;
 }
+
+/* .custom-rounded-progress-bar .progress-bar {
+  border-radius: 20px; 
+} */
+
+.custom-progress-bar-container {
+  display: flex;
+  border-radius: 20px; /* Adjust the value to control the roundness of corners */
+  overflow: hidden; /* Ensure rounded corners are visible */
+  background-color: gray; /* Apply gray background color */
+}
+
+.custom-progress-bar-container .progress {
+  border-radius: 20px; /* Same value as the parent container for consistency */
+}
+
+.custom-progress-bar-container .progress-bar {
+  border-radius: 20px; /* Same value as the parent container for consistency */
+}

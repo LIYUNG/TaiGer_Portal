@@ -64,7 +64,7 @@ export default function ApplicationProgressCard(props) {
               <FiExternalLink />
             </Link>
           </p>
-          <p>
+          <p style={{ display: 'flex', alignItems: 'center' }}>
             <ProgressBar
               now={
                 application_deadline_calculator(
@@ -74,7 +74,11 @@ export default function ApplicationProgressCard(props) {
                   ? 100
                   : 60
               }
-              label={`${
+              style={{ flex: 1, marginRight: '10px' }}
+              className="custom-progress-bar-container" // Apply your specific class here
+            />
+            <span>
+              {`${
                 application_deadline_calculator(
                   props.student,
                   props.application
@@ -82,8 +86,8 @@ export default function ApplicationProgressCard(props) {
                   ? 100
                   : 60
               }%`}
-            />
-          </p>{' '}
+            </span>
+          </p>
           {application_deadline_calculator(props.student, props.application) ===
             'CLOSE' && (
             <p>

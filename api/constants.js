@@ -42,6 +42,8 @@ const STUDENT_COURSE_URL = (studentId) =>
   new URL(`/my-courses/${studentId}`, ORIGIN).href;
 const STUDENT_ANALYSED_COURSE_URL = (studentId) =>
   new URL(`/my-courses/analysis/${studentId}`, ORIGIN).href;
+const AGENT_CALENDAR_EVENTS_URL = (taigerAgentId) =>
+  new URL(`/events/taiger/${taigerAgentId}`, ORIGIN).href;
 const JITSI_MEET_URL = (studentId) =>
   new URL(`https://meet.jit.si/${studentId}`, ORIGIN).href;
 const JITSI_MEET_INSTRUCTIONS_URL = new URL(
@@ -1582,6 +1584,7 @@ module.exports = {
   STUDENT_PROFILE_FOR_AGENT_URL,
   STUDENT_COURSE_URL,
   STUDENT_ANALYSED_COURSE_URL,
+  AGENT_CALENDAR_EVENTS_URL,
   JITSI_MEET_URL,
   JITSI_MEET_INSTRUCTIONS_URL,
   TAIGER_SIGNATURE,

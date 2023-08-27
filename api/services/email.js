@@ -28,7 +28,8 @@ const {
   STUDENT_COMMUNICATION_THREAD_URL,
   STUDENT_ANALYSED_COURSE_URL,
   JITSI_MEET_URL,
-  JITSI_MEET_INSTRUCTIONS_URL
+  JITSI_MEET_INSTRUCTIONS_URL,
+  AGENT_CALENDAR_EVENTS_URL
 } = require('../constants');
 
 const {
@@ -63,6 +64,60 @@ const verifySMTPConfig = () => {
 
 const senderName = `No-Reply TaiGer Consultancy ${SMTP_USERNAME}`;
 const sendEmail = (to, subject, message) => {
+  const htmlContent = `
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+    }
+    .container {
+      padding: 20px;
+      background-color: #ffffff;
+      border-radius: 5px;
+      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    .fa {
+      padding: 20px;
+      font-size: 30px;
+      width: 50px;
+      text-align: center;
+      text-decoration: none;
+    }
+
+/* Add a hover effect if you want */
+    .fa:hover {
+      opacity: 0.7;
+    }
+
+/* Set a specific color for each brand */
+
+/* Facebook */
+    .fa-facebook {
+      background: #3B5998;
+      color: white;
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+        <a
+          href="https://taigerconsultancy-portal.com/"
+          style={{ textDecoration: 'none' }}
+        >
+          <img
+            className="img-radius"
+            src="https://taigerconsultancy-portal.com/assets/taiger_logo_small.png"
+            alt="Generic placeholder"
+          />
+        </a>
+  ${message}
+</body>
+</html>
+`;
+
   const mail = {
     from: senderName,
     to,
@@ -1742,6 +1797,38 @@ const sendStudentNewMessageReminderEmail = async (recipient, payload) => {
 };
 
 //
+const MeetingConfirmationReminderEmail = async (recipient, payload) => {
+  const subject = `[Meeting Invitation] ${payload.taiger_user_firstname} ${payload.taiger_user_lastname}`;
+  const message = `\
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+
+<p><b>${payload.taiger_user_firstname} - ${
+    payload.taiger_user_lastname
+  }</b> 預訂了一個討論時段： </p>
+<p><b>${payload.meeting_time}</b></p>
+
+<p>請上去 <a href="${AGENT_CALENDAR_EVENTS_URL(
+    recipient.id
+  )}">TaiGer Meeting Calendar</a> 並<b>確認</b>討論時間。</p>
+
+<p>${SPLIT_LINE}</p>
+
+<p>${payload.taiger_user_firstname} - ${
+    payload.taiger_user_lastname
+  } booked a meeting time on:</p>
+
+<p><b>${payload.meeting_time}</b></p>
+
+<p>Please go to <a href="${AGENT_CALENDAR_EVENTS_URL(
+    recipient.id
+  )}">TaiGer Meeting Calendar</a> and <b>Confirm</b> the time。</p>
+
+<p>${TAIGER_SIGNATURE}</p>
+
+`; // should be for admin/editor/agent/student
+
+  return sendEmail(recipient, subject, message);
+};
 
 const MeetingInvitationEmail = async (recipient, payload) => {
   const subject = `[Meeting] ${payload.meeting_time} by ${payload.taiger_user_firstname} ${payload.taiger_user_lastname}`;
@@ -1866,6 +1953,7 @@ module.exports = {
   sendAssignEditorReminderEmail,
   sendAgentNewMessageReminderEmail,
   sendStudentNewMessageReminderEmail,
+  MeetingConfirmationReminderEmail,
   MeetingInvitationEmail,
   MeetingReminderEmail
 };

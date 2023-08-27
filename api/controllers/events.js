@@ -5,7 +5,27 @@ const Event = require('../models/Event');
 const { Agent, Role } = require('../models/User');
 
 const async = require('async');
-const { MeetingInvitationEmail } = require('../services/email');
+const {
+  MeetingInvitationEmail,
+  MeetingConfirmationReminderEmail
+} = require('../services/email');
+
+const meetingConfirmationReminder = (receiver, user, start_time) => {
+  MeetingConfirmationReminderEmail(
+    {
+      id: receiver._id.toString(),
+      firstname: receiver.firstname,
+      lastname: receiver.lastname,
+      address: receiver.email
+    },
+    {
+      taiger_user_firstname: user.firstname,
+      taiger_user_lastname: user.lastname,
+      meeting_time: start_time, // Replace with the actual meeting time
+      student_id: user._id.toString()
+    }
+  );
+};
 
 const getEvents = asyncHandler(async (req, res) => {
   const { user } = req;
@@ -64,6 +84,7 @@ const postEvent = asyncHandler(async (req, res) => {
   const newEvent = req.body;
   let events;
   if (user.role === Role.Student) {
+    let write_NewEvent;
     newEvent.isConfirmedRequester = true;
     newEvent.meetingLink = `https://meet.jit.si/${user.firstname}_${
       user.lastname
@@ -73,12 +94,12 @@ const postEvent = asyncHandler(async (req, res) => {
       start: newEvent.start,
       requester_id: newEvent.requester_id
     })
-      .populate('receiver_id', 'firstname lastname email')
+      .populate('requester_id receiver_id', 'firstname lastname email')
       .lean();
     // Check if there is already booked upcoming events
     if (events.length === 0) {
       // TODO: additional check if the timeslot is in agent office hour?
-      const write_NewEvent = await Event.create(newEvent);
+      write_NewEvent = await Event.create(newEvent);
       await write_NewEvent.save();
     } else {
       throw new ErrorResponse(
@@ -89,7 +110,7 @@ const postEvent = asyncHandler(async (req, res) => {
     events = await Event.find({
       requester_id: newEvent.requester_id
     })
-      .populate('receiver_id', 'firstname lastname email')
+      .populate('requester_id receiver_id', 'firstname lastname email')
       .lean();
     const agents_ids = user.agents;
     const agents = await Agent.find({ _id: agents_ids }).select(
@@ -103,7 +124,14 @@ const postEvent = asyncHandler(async (req, res) => {
     });
 
     // TODO Sent email to receiver
-    await MeetingInvitationEmail({}, {});
+    const updatedEvent = await Event.findById(write_NewEvent._id)
+      .populate('requester_id receiver_id', 'firstname lastname email')
+      .lean();
+    console.log(updatedEvent);
+
+    updatedEvent.receiver_id.forEach((receiver) => {
+      meetingConfirmationReminder(receiver, user, updatedEvent.start);
+    });
   } else {
     events = await Event.find({
       start: newEvent.start,

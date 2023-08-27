@@ -10,8 +10,6 @@ import {
   AiOutlineDelete,
   AiOutlineEdit,
   AiOutlineMail,
-  AiOutlineQuestion,
-  AiOutlineQuestionCircle,
   AiOutlineUser
 } from 'react-icons/ai';
 

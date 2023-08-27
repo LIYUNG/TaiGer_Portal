@@ -27,7 +27,13 @@ import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import Banner from '../../components/Banner/Banner';
 
-import { deleteEvent, getEvents, postEvent, updateEvent } from '../../api';
+import {
+  confirmEvent,
+  deleteEvent,
+  getEvents,
+  postEvent,
+  updateEvent
+} from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import MyCalendar from '../../components/Calendar/components/Calendar';
 import { is_TaiGer_Student } from '../Utils/checking-functions';
@@ -40,6 +46,7 @@ import {
   AiOutlineMail,
   AiOutlineUser
 } from 'react-icons/ai';
+import EventConfirmationCard from '../../components/Calendar/components/EventConfirmationCard';
 
 class OfficeHours extends React.Component {
   state = {
@@ -54,6 +61,7 @@ class OfficeHours extends React.Component {
     updatecredentialconfirmed: false,
     isDeleteModalOpen: false,
     isEditModalOpen: false,
+    isConfirmModalOpen: false,
     event_temp: {},
     event_id: '',
     selectedEvent: {},
@@ -132,6 +140,50 @@ class OfficeHours extends React.Component {
       );
     }
   }
+
+  handleConfirmAppointmentModal = (e, event_id, updated_event) => {
+    confirmEvent(event_id, updated_event).then(
+      (resp) => {
+        const { data, success } = resp.data;
+        const { status } = resp;
+        const temp_events = [...this.state.events];
+        let found_event_idx = temp_events.findIndex(
+          (temp_event) => temp_event._id.toString() === event_id
+        );
+        if (found_event_idx >= 0) {
+          temp_events[found_event_idx] = data;
+        }
+        console.log(found_event_idx);
+        if (success) {
+          this.setState({
+            isLoaded: true,
+            isConfirmModalOpen: false,
+            events: temp_events,
+            event_temp: {},
+            event_id: '',
+            isDeleteModalOpen: false,
+            success: success,
+            res_status: status
+          });
+        } else {
+          this.setState({
+            isLoaded: true,
+            event_temp: {},
+            event_id: '',
+            res_status: status
+          });
+        }
+      },
+      (error) => {
+        this.setState((state) => ({
+          ...state,
+          isLoaded: true,
+          error,
+          res_status: 500
+        }));
+      }
+    );
+  };
 
   handleEditAppointmentModal = (e, event_id, updated_event) => {
     updateEvent(event_id, updated_event).then(
@@ -271,6 +323,13 @@ class OfficeHours extends React.Component {
       event_temp: { ...this.state.event_temp, start: new_timeslot_temp }
     });
   };
+
+  handleConfirmAppointmentModalClose = () => {
+    this.setState({
+      isConfirmModalOpen: false
+    });
+  };
+
   handleEditAppointmentModalClose = () => {
     this.setState({
       isEditModalOpen: false
@@ -280,6 +339,15 @@ class OfficeHours extends React.Component {
   handleDeleteAppointmentModalClose = () => {
     this.setState({
       isDeleteModalOpen: false
+    });
+  };
+
+  handleConfirmAppointmentModalOpen = (e, event) => {
+    e.preventDefault();
+    this.setState({
+      isConfirmModalOpen: true,
+      event_temp: event,
+      event_id: event._id.toString()
     });
   };
 
@@ -442,18 +510,49 @@ class OfficeHours extends React.Component {
             <Button onClick={this.switchCalendarAndMyBookedEvents}>
               To Calendar
             </Button>
+            {events?.filter(
+              (event) =>
+                getNumberOfDays(new Date(), event.start) >= -1 &&
+                (!event.isConfirmedReceiver || !event.isConfirmedRequester)
+            ).length !== 0 &&
+              events
+                ?.filter(
+                  (event) =>
+                    getNumberOfDays(new Date(), event.start) >= -1 &&
+                    (!event.isConfirmedReceiver || !event.isConfirmedRequester)
+                )
+                .map((event, i) => (
+                  <EventConfirmationCard
+                    key={i}
+                    event={event}
+                    handleConfirmAppointmentModalOpen={
+                      this.handleConfirmAppointmentModalOpen
+                    }
+                    handleEditAppointmentModalOpen={
+                      this.handleEditAppointmentModalOpen
+                    }
+                    handleDeleteAppointmentModalOpen={
+                      this.handleDeleteAppointmentModalOpen
+                    }
+                  />
+                ))}
             <Card>
               <Card.Header>
                 <Card.Title>Upcoming</Card.Title>
               </Card.Header>
               <Card.Body>
                 {events?.filter(
-                  (event) => getNumberOfDays(new Date(), event.start) >= -1
+                  (event) =>
+                    getNumberOfDays(new Date(), event.start) >= -1 &&
+                    event.isConfirmedReceiver &&
+                    event.isConfirmedRequester
                 ).length !== 0
                   ? events
                       ?.filter(
                         (event) =>
-                          getNumberOfDays(new Date(), event.start) >= -1
+                          getNumberOfDays(new Date(), event.start) >= -1 &&
+                          event.isConfirmedReceiver &&
+                          event.isConfirmedRequester
                       )
                       .map((event, i) => (
                         <Card key={i}>
@@ -588,7 +687,39 @@ class OfficeHours extends React.Component {
                   ))}
               </Card.Body>
             </Card>
-
+            <Modal
+              show={this.state.isConfirmModalOpen}
+              onHide={this.handleConfirmAppointmentModalClose}
+              centered
+            >
+              <Modal.Header closeButton></Modal.Header>
+              <Modal.Body>
+                You are aware of this meeting time and confirm.
+              </Modal.Body>
+              <Modal.Footer>
+                <Button
+                  disabled={
+                    this.state.event_id === '' ||
+                    this.state.event_temp?.description?.length === 0
+                  }
+                  onClick={(e) =>
+                    this.handleConfirmAppointmentModal(
+                      e,
+                      this.state.event_id,
+                      this.state.event_temp
+                    )
+                  }
+                >
+                  <AiFillCheckCircle color="limegreen" size={16} /> Yes
+                </Button>
+                <Button
+                  variant="light"
+                  onClick={this.handleConfirmAppointmentModalClose}
+                >
+                  Close
+                </Button>
+              </Modal.Footer>
+            </Modal>
             <Modal
               show={this.state.isEditModalOpen}
               onHide={this.handleEditAppointmentModalClose}

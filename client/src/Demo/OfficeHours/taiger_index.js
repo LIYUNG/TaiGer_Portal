@@ -142,6 +142,7 @@ class TaiGerOfficeHours extends React.Component {
       );
     }
   }
+
   handleConfirmAppointmentModal = (e, event_id, updated_event) => {
     confirmEvent(event_id, updated_event).then(
       (resp) => {

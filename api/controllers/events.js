@@ -182,7 +182,7 @@ const updateEvent = asyncHandler(async (req, res) => {
     const date = new Date(updated_event.start);
     if (user.role === 'Student') {
       updated_event.isConfirmedRequester = true;
-      updated_event.isConfirmedRequester = false;
+      updated_event.isConfirmedReceiver = false;
       updated_event.meetingLink = `https://meet.jit.si/${user.firstname}_${
         user.lastname
       }_${user._id.toString()}`;

@@ -15,6 +15,7 @@ import {
   AiOutlineFieldTime
 } from 'react-icons/ai';
 import DEMO from '../../store/constant';
+import { FiExternalLink } from 'react-icons/fi';
 
 export default function ApplicationProgressCard(props) {
   const [isCollapse, setIsCollapse] = useState(true);
@@ -54,7 +55,12 @@ export default function ApplicationProgressCard(props) {
           </p>
           <p>
             {props.application?.programId?.program_name}{' '}
-            {props.application?.programId?.semester}
+            {props.application?.programId?.semester}{' '}
+            <Link
+              to={`/programs/${props.application?.programId?._id?.toString()}`}
+            >
+              <FiExternalLink />
+            </Link>
           </p>
           <p>
             <ProgressBar now={60} label={`${60}%`} />
@@ -78,6 +84,22 @@ export default function ApplicationProgressCard(props) {
                 </Link>
               </ListGroup.Item>
             ))}
+            {(props.application?.programId?.application_portal_a ||
+              props.application?.programId?.application_portal_b) && (
+              <ListGroup.Item>
+                <Link to={'/portal-informations'}>
+                  {(props.application?.programId?.application_portal_a &&
+                    !props.application.credential_a_filled) ||
+                  (props.application?.programId?.application_portal_b &&
+                    !props.application.credential_b_filled) ? (
+                    <AiFillQuestionCircle color="grey" size={16} />
+                  ) : (
+                    <AiFillCheckCircle color="limegreen" size={16} />
+                  )}{' '}
+                  Register University Portal
+                </Link>
+              </ListGroup.Item>
+            )}
             {props.application?.doc_modification_thread?.map((thread, idx) => (
               <ListGroup.Item>
                 <Link

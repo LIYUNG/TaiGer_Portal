@@ -22,6 +22,8 @@ node_modules
 /api/build
 /client/build
 /client/server_logs
+/client/public/assets/logo
+/client/public/assets/logo
 # misc
 .DS_Store
 .env.local

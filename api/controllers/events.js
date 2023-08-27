@@ -5,6 +5,7 @@ const Event = require('../models/Event');
 const { Agent, Role } = require('../models/User');
 
 const async = require('async');
+const { MeetingInvitationEmail } = require('../services/email');
 
 const getEvents = asyncHandler(async (req, res) => {
   const { user } = req;
@@ -14,17 +15,17 @@ const getEvents = asyncHandler(async (req, res) => {
       .populate('receiver_id requester_id', 'firstname lastname email')
       .lean();
     const agents_ids = user.agents;
-    const agent = await Agent.find({ _id: agents_ids }).select(
+    const agents = await Agent.find({ _id: agents_ids }).select(
       'firstname lastname email selfIntroduction officehours timezone'
     );
     return res.status(200).send({
       success: true,
-      agent,
+      agents,
       data: events,
       hasEvents: events.length !== 0
     });
   }
-  const agent = await Agent.find({ _id: user._id.toString() }).select(
+  const agents = await Agent.find({ _id: user._id.toString() }).select(
     'firstname lastname email selfIntroduction officehours timezone'
   );
   if (user.role === Role.Agent) {
@@ -37,11 +38,13 @@ const getEvents = asyncHandler(async (req, res) => {
     if (events.length === 0) {
       return res
         .status(200)
-        .send({ success: true, agent, data: events, hasEvents: false });
+        .send({ success: true, agents, data: events, hasEvents: false });
     }
   }
 
-  res.status(200).send({ success: true, agent, data: events, hasEvents: true });
+  res
+    .status(200)
+    .send({ success: true, agents, data: events, hasEvents: true });
 });
 
 const showEvent = asyncHandler(async (req, res) => {
@@ -89,20 +92,19 @@ const postEvent = asyncHandler(async (req, res) => {
       .populate('receiver_id', 'firstname lastname email')
       .lean();
     const agents_ids = user.agents;
-    const agent = await Agent.find({ _id: agents_ids }).select(
+    const agents = await Agent.find({ _id: agents_ids }).select(
       'firstname lastname email selfIntroduction officehours timezone'
     );
-    return res.status(200).send({
+    res.status(200).send({
       success: true,
-      agent,
+      agents,
       data: events,
       hasEvents: events.length !== 0
     });
 
     // TODO Sent email to receiver
-  }
-
-  if (user.role === Role.Agent) {
+    await MeetingInvitationEmail({}, {});
+  } else {
     events = await Event.find({
       start: newEvent.start,
       $or: [
@@ -126,17 +128,16 @@ const postEvent = asyncHandler(async (req, res) => {
       requester_id: newEvent.requester_id
     });
     const agents_ids = user.agents;
-    const agent = await Agent.find({ _id: agents_ids }).select(
+    const agents = await Agent.find({ _id: agents_ids }).select(
       'firstname lastname email selfIntroduction officehours timezone'
     );
-    return res.status(200).send({
+    res.status(200).send({
       success: true,
-      agent,
+      agents,
       data: events,
       hasEvents: events.length !== 0
     });
   }
-  return res.status(200).send({ success: true, data: [newEvent] });
 });
 
 const confirmEvent = asyncHandler(async (req, res) => {
@@ -223,17 +224,17 @@ const deleteEvent = asyncHandler(async (req, res) => {
         .populate('receiver_id requester_id', 'firstname lastname email')
         .lean();
       const agents_ids = user.agents;
-      const agent = await Agent.find({ _id: agents_ids }).select(
+      const agents = await Agent.find({ _id: agents_ids }).select(
         'firstname lastname email selfIntroduction officehours timezone'
       );
       if (events.length === 0) {
         return res
           .status(200)
-          .send({ success: true, agent, data: [], hasEvents: false });
+          .send({ success: true, agents, data: [], hasEvents: false });
       }
       return res
         .status(200)
-        .send({ success: true, agent, data: events, hasEvents: true });
+        .send({ success: true, agents, data: events, hasEvents: true });
     }
     if (user.role === Role.Agent) {
       events = await Event.find({
@@ -244,17 +245,17 @@ const deleteEvent = asyncHandler(async (req, res) => {
       })
         .populate('receiver_id requester_id', 'firstname lastname email')
         .lean();
-      const agent = await Agent.find({ _id: user._id.toString() }).select(
+      const agents = await Agent.find({ _id: user._id.toString() }).select(
         'firstname lastname email selfIntroduction officehours timezone'
       );
       if (events.length === 0) {
         return res
           .status(200)
-          .send({ success: true, agent, data: [], hasEvents: false });
+          .send({ success: true, agents, data: [], hasEvents: false });
       }
       return res
         .status(200)
-        .send({ success: true, agent, data: events, hasEvents: true });
+        .send({ success: true, agents, data: events, hasEvents: true });
     }
 
     res.status(200).send({ success: true, hasEvents: false });

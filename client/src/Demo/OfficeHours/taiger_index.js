@@ -42,9 +42,7 @@ import {
   AiFillCheckCircle,
   AiFillQuestionCircle,
   AiOutlineCalendar,
-  AiOutlineCheckCircle,
   AiOutlineDelete,
-  AiOutlineEdit,
   AiOutlineMail,
   AiOutlineUser
 } from 'react-icons/ai';
@@ -57,7 +55,7 @@ class TaiGerOfficeHours extends React.Component {
     isLoaded: false,
     data: null,
     success: false,
-    agent: {},
+    agents: {},
     hasEvents: false,
     updateconfirmed: false,
     updatecredentialconfirmed: false,
@@ -81,12 +79,12 @@ class TaiGerOfficeHours extends React.Component {
   componentDidMount() {
     getEvents(this.props.match.params.user_id).then(
       (resp) => {
-        const { data, agent, hasEvents, success } = resp.data;
+        const { data, agents, hasEvents, success } = resp.data;
         const { status } = resp;
         if (success) {
           this.setState({
             isLoaded: true,
-            agent,
+            agents,
             hasEvents,
             events: data,
             success: success,
@@ -113,12 +111,12 @@ class TaiGerOfficeHours extends React.Component {
     if (prevProps.match.params.user_id !== this.props.match.params.user_id) {
       getEvents(this.props.match.params.user_id).then(
         (resp) => {
-          const { data, agent, hasEvents, success } = resp.data;
+          const { data, agents, hasEvents, success } = resp.data;
           const { status } = resp;
           if (success) {
             this.setState({
               isLoaded: true,
-              agent,
+              agents,
               hasEvents,
               events: data,
               success: success,
@@ -232,12 +230,12 @@ class TaiGerOfficeHours extends React.Component {
   handleDeleteAppointmentModal = (e, event_id) => {
     deleteEvent(event_id).then(
       (resp) => {
-        const { data, agent, hasEvents, success } = resp.data;
+        const { data, agents, hasEvents, success } = resp.data;
         const { status } = resp;
         if (success) {
           this.setState({
             isLoaded: true,
-            agent,
+            agents,
             hasEvents,
             events: data,
             event_id: '',
@@ -430,6 +428,7 @@ class TaiGerOfficeHours extends React.Component {
     const {
       hasEvents,
       events,
+      agents,
       res_status,
       isLoaded,
       res_modal_status,
@@ -452,7 +451,6 @@ class TaiGerOfficeHours extends React.Component {
     // const getReorderWeekday(getTodayAsWeekday(agent.timezone)) = getReorderWeekday(
     //   getTodayAsWeekday(this.state.agent.timezone)
     // );
-    const agents = this.state.agent;
     //TODO: remove the conflicting time slots.
     const available_termins = [0, 1, 2, 3].flatMap((iter, x) =>
       agents.flatMap((agent, idx) =>

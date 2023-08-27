@@ -155,7 +155,6 @@ class TaiGerOfficeHours extends React.Component {
         if (found_event_idx >= 0) {
           temp_events[found_event_idx] = data;
         }
-        console.log(found_event_idx);
         if (success) {
           this.setState({
             isLoaded: true,
@@ -535,6 +534,7 @@ class TaiGerOfficeHours extends React.Component {
                 .map((event, i) => (
                   <EventConfirmationCard
                     key={i}
+                    user={this.props.user}
                     event={event}
                     handleConfirmAppointmentModalOpen={
                       this.handleConfirmAppointmentModalOpen
@@ -568,6 +568,7 @@ class TaiGerOfficeHours extends React.Component {
                       .map((event, i) => (
                         <EventConfirmationCard
                           key={i}
+                          user={this.props.user}
                           event={event}
                           handleConfirmAppointmentModalOpen={
                             this.handleConfirmAppointmentModalOpen

@@ -524,6 +524,7 @@ class OfficeHours extends React.Component {
                 .map((event, i) => (
                   <EventConfirmationCard
                     key={i}
+                    user={this.props.user}
                     event={event}
                     handleConfirmAppointmentModalOpen={
                       this.handleConfirmAppointmentModalOpen

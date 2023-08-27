@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { Card, Collapse, Button, Row } from 'react-bootstrap';
 import { convertDate } from '../../../Demo/Utils/contants';
 import {
@@ -9,9 +8,14 @@ import {
   AiOutlineCheckCircle,
   AiOutlineDelete,
   AiOutlineEdit,
+  AiOutlineLoading,
   AiOutlineMail,
   AiOutlineUser
 } from 'react-icons/ai';
+import {
+  is_TaiGer_Agent,
+  is_TaiGer_Student
+} from '../../../Demo/Utils/checking-functions';
 
 export default function EventConfirmationCard(props) {
   const [isCollapse, setIsCollapse] = useState(false);
@@ -38,19 +42,46 @@ export default function EventConfirmationCard(props) {
               <AiOutlineCalendar />: {convertDate(props.event.start)} ~ 30 min{' '}
             </h5>
             <span style={{ float: 'right' }}>
-              {(!props.event.isConfirmedReceiver ||
-                !props.event.isConfirmedRequester) && (
-                <Button
-                  variant="primary"
-                  size="sm"
-                  onClick={(e) =>
-                    props.handleConfirmAppointmentModalOpen(e, props.event)
-                  }
-                >
-                  <AiOutlineCheckCircle size={16} /> Confirm
-                </Button>
-              )}
-
+              {is_TaiGer_Student(props.user) &&
+                (props.event.isConfirmedRequester ? (
+                  props.event.isConfirmedReceiver ? (
+                    <></>
+                  ) : (
+                    <Button variant="primary" size="sm">
+                      <AiOutlineLoading size={16} /> Pending
+                    </Button>
+                  )
+                ) : (
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    onClick={(e) =>
+                      props.handleConfirmAppointmentModalOpen(e, props.event)
+                    }
+                  >
+                    <AiOutlineCheckCircle size={16} /> Confirm
+                  </Button>
+                ))}
+              {is_TaiGer_Agent(props.user) &&
+                (props.event.isConfirmedReceiver ? (
+                  props.event.isConfirmedRequester ? (
+                    <></>
+                  ) : (
+                    <Button variant="primary" size="sm">
+                      <AiOutlineLoading size={16} /> Pending
+                    </Button>
+                  )
+                ) : (
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    onClick={(e) =>
+                      props.handleConfirmAppointmentModalOpen(e, props.event)
+                    }
+                  >
+                    <AiOutlineCheckCircle size={16} /> Confirm
+                  </Button>
+                ))}
               <Button
                 variant="secondary"
                 size="sm"

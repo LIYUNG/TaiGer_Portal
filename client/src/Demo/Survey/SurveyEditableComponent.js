@@ -1154,7 +1154,7 @@ class SurveyEditableComponent extends React.Component {
                   />
                 )}
                 <Row>
-                  <Col md={2}>
+                  <Col md={4}>
                     <Form.Group controlId="english_isPassed">
                       <Form.Label className="my-0 mx-0 text-light">
                         English Passed ? (IELTS 6.5 / TOEFL 88)
@@ -1185,7 +1185,7 @@ class SurveyEditableComponent extends React.Component {
                     this.state.academic_background.language.english_isPassed ===
                     'O' ? (
                       <>
-                        <Col md={2}>
+                        <Col md={4}>
                           <Form.Group controlId="english_certificate">
                             <Form.Label className="my-0 mx-0 text-light">
                               English Certificate
@@ -1207,123 +1207,7 @@ class SurveyEditableComponent extends React.Component {
                             </Form.Control>
                           </Form.Group>
                         </Col>
-                        <Col md={2}>
-                          <Form.Group controlId="english_score_reading">
-                            <Form.Label className="my-0 mx-0 text-light">
-                              Reading
-                            </Form.Label>
-                            <Form.Control
-                              type="text"
-                              readOnly={isReadonly}
-                              placeholder="6.5 or 23 "
-                              value={
-                                this.state.academic_background.language &&
-                                this.state.academic_background.language
-                                  .english_score_reading
-                                  ? this.state.academic_background.language
-                                      .english_score_reading
-                                  : ''
-                              }
-                              disabled={
-                                this.state.academic_background.language &&
-                                this.state.academic_background.language
-                                  .english_certificate === 'No'
-                                  ? true
-                                  : false
-                              }
-                              onChange={(e) => this.handleChange_Language(e)}
-                            />
-                          </Form.Group>
-                          <br />
-                        </Col>
-                        <Col md={2}>
-                          <Form.Group controlId="english_score_listening">
-                            <Form.Label className="my-0 mx-0 text-light">
-                              Listening
-                            </Form.Label>
-                            <Form.Control
-                              type="text"
-                              readOnly={isReadonly}
-                              placeholder="6.5 or 23 "
-                              value={
-                                this.state.academic_background.language &&
-                                this.state.academic_background.language
-                                  .english_score_listening
-                                  ? this.state.academic_background.language
-                                      .english_score_listening
-                                  : ''
-                              }
-                              disabled={
-                                this.state.academic_background.language &&
-                                this.state.academic_background.language
-                                  .english_certificate === 'No'
-                                  ? true
-                                  : false
-                              }
-                              onChange={(e) => this.handleChange_Language(e)}
-                            />
-                          </Form.Group>
-                          <br />
-                        </Col>
-                        <Col md={2}>
-                          <Form.Group controlId="english_score_writing">
-                            <Form.Label className="my-0 mx-0 text-light">
-                              Writing
-                            </Form.Label>
-                            <Form.Control
-                              type="text"
-                              readOnly={isReadonly}
-                              placeholder="6.5 or 23 "
-                              value={
-                                this.state.academic_background.language &&
-                                this.state.academic_background.language
-                                  .english_score_writing
-                                  ? this.state.academic_background.language
-                                      .english_score_writing
-                                  : ''
-                              }
-                              disabled={
-                                this.state.academic_background.language &&
-                                this.state.academic_background.language
-                                  .english_certificate === 'No'
-                                  ? true
-                                  : false
-                              }
-                              onChange={(e) => this.handleChange_Language(e)}
-                            />
-                          </Form.Group>
-                          <br />
-                        </Col>
-                        <Col md={2}>
-                          <Form.Group controlId="english_score_speaking">
-                            <Form.Label className="my-0 mx-0 text-light">
-                              Speaking
-                            </Form.Label>
-                            <Form.Control
-                              type="text"
-                              readOnly={isReadonly}
-                              placeholder="6.5 or 23 "
-                              value={
-                                this.state.academic_background.language &&
-                                this.state.academic_background.language
-                                  .english_score_speaking
-                                  ? this.state.academic_background.language
-                                      .english_score_speaking
-                                  : ''
-                              }
-                              disabled={
-                                this.state.academic_background.language &&
-                                this.state.academic_background.language
-                                  .english_certificate === 'No'
-                                  ? true
-                                  : false
-                              }
-                              onChange={(e) => this.handleChange_Language(e)}
-                            />
-                          </Form.Group>
-                          <br />
-                        </Col>
-                        <Col md={2}>
+                        <Col md={4}>
                           <Form.Group controlId="english_score">
                             <Form.Label className="my-0 mx-0 text-light">
                               Overall
@@ -1331,7 +1215,12 @@ class SurveyEditableComponent extends React.Component {
                             <Form.Control
                               type="text"
                               readOnly={isReadonly}
-                              placeholder="6.5 or 93 "
+                              placeholder={`${
+                                this.state.academic_background.language
+                                  .english_certificate === 'IELTS'
+                                  ? '6.5'
+                                  : '92'
+                              } `}
                               value={
                                 this.state.academic_background.language &&
                                 this.state.academic_background.language
@@ -1352,10 +1241,146 @@ class SurveyEditableComponent extends React.Component {
                           </Form.Group>
                           <br />
                         </Col>
+                        <Col md={3}>
+                          <Form.Group controlId="english_score_reading">
+                            <Form.Label className="my-0 mx-0 text-light">
+                              Reading
+                            </Form.Label>
+                            <Form.Control
+                              type="text"
+                              readOnly={isReadonly}
+                              placeholder={`${
+                                this.state.academic_background.language
+                                  .english_certificate === 'IELTS'
+                                  ? '7.5'
+                                  : '21'
+                              } `}
+                              value={
+                                this.state.academic_background.language &&
+                                this.state.academic_background.language
+                                  .english_score_reading
+                                  ? this.state.academic_background.language
+                                      .english_score_reading
+                                  : ''
+                              }
+                              disabled={
+                                this.state.academic_background.language &&
+                                this.state.academic_background.language
+                                  .english_certificate === 'No'
+                                  ? true
+                                  : false
+                              }
+                              onChange={(e) => this.handleChange_Language(e)}
+                            />
+                          </Form.Group>
+                          <br />
+                        </Col>
+                        <Col md={3}>
+                          <Form.Group controlId="english_score_listening">
+                            <Form.Label className="my-0 mx-0 text-light">
+                              Listening
+                            </Form.Label>
+                            <Form.Control
+                              type="text"
+                              readOnly={isReadonly}
+                              placeholder={`${
+                                this.state.academic_background.language
+                                  .english_certificate === 'IELTS'
+                                  ? '6.0'
+                                  : '21'
+                              } `}
+                              value={
+                                this.state.academic_background.language &&
+                                this.state.academic_background.language
+                                  .english_score_listening
+                                  ? this.state.academic_background.language
+                                      .english_score_listening
+                                  : ''
+                              }
+                              disabled={
+                                this.state.academic_background.language &&
+                                this.state.academic_background.language
+                                  .english_certificate === 'No'
+                                  ? true
+                                  : false
+                              }
+                              onChange={(e) => this.handleChange_Language(e)}
+                            />
+                          </Form.Group>
+                          <br />
+                        </Col>
+                        <Col md={3}>
+                          <Form.Group controlId="english_score_writing">
+                            <Form.Label className="my-0 mx-0 text-light">
+                              Writing
+                            </Form.Label>
+                            <Form.Control
+                              type="text"
+                              readOnly={isReadonly}
+                              placeholder={`${
+                                this.state.academic_background.language
+                                  .english_certificate === 'IELTS'
+                                  ? '6.5'
+                                  : '21'
+                              } `}
+                              value={
+                                this.state.academic_background.language &&
+                                this.state.academic_background.language
+                                  .english_score_writing
+                                  ? this.state.academic_background.language
+                                      .english_score_writing
+                                  : ''
+                              }
+                              disabled={
+                                this.state.academic_background.language &&
+                                this.state.academic_background.language
+                                  .english_certificate === 'No'
+                                  ? true
+                                  : false
+                              }
+                              onChange={(e) => this.handleChange_Language(e)}
+                            />
+                          </Form.Group>
+                          <br />
+                        </Col>
+                        <Col md={3}>
+                          <Form.Group controlId="english_score_speaking">
+                            <Form.Label className="my-0 mx-0 text-light">
+                              Speaking
+                            </Form.Label>
+                            <Form.Control
+                              type="text"
+                              readOnly={isReadonly}
+                              placeholder={`${
+                                this.state.academic_background.language
+                                  .english_certificate === 'IELTS'
+                                  ? '6.5'
+                                  : '21'
+                              } `}
+                              value={
+                                this.state.academic_background.language &&
+                                this.state.academic_background.language
+                                  .english_score_speaking
+                                  ? this.state.academic_background.language
+                                      .english_score_speaking
+                                  : ''
+                              }
+                              disabled={
+                                this.state.academic_background.language &&
+                                this.state.academic_background.language
+                                  .english_certificate === 'No'
+                                  ? true
+                                  : false
+                              }
+                              onChange={(e) => this.handleChange_Language(e)}
+                            />
+                          </Form.Group>
+                          <br />
+                        </Col>
                       </>
                     ) : (
                       <>
-                        <Col md={2}>
+                        <Col md={4}>
                           <Form.Group controlId="english_certificate">
                             <Form.Label className="my-0 mx-0 text-light">
                               Expected English Certificate

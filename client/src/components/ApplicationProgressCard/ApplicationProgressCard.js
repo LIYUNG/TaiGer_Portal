@@ -6,7 +6,8 @@ import {
   Card,
   Collapse,
   ProgressBar,
-  ListGroup
+  ListGroup,
+  Button
 } from 'react-bootstrap';
 import { application_deadline_calculator } from '../../Demo/Utils/checking-functions';
 import {
@@ -33,7 +34,7 @@ export default function ApplicationProgressCard(props) {
               props.application
             ) === 'CLOSE' ? (
               <>
-                <AiFillCheckCircle color="limegreen" size={16} /> Close
+                <AiFillCheckCircle color="limegreen" size={16} /> Submitted
               </>
             ) : (
               <span title="Deadline">
@@ -63,8 +64,36 @@ export default function ApplicationProgressCard(props) {
             </Link>
           </p>
           <p>
-            <ProgressBar now={60} label={`${60}%`} />
+            <ProgressBar
+              now={
+                application_deadline_calculator(
+                  props.student,
+                  props.application
+                ) === 'CLOSE'
+                  ? 100
+                  : 60
+              }
+              label={`${
+                application_deadline_calculator(
+                  props.student,
+                  props.application
+                ) === 'CLOSE'
+                  ? 100
+                  : 60
+              }%`}
+            />
           </p>{' '}
+          {application_deadline_calculator(props.student, props.application) ===
+            'CLOSE' && (
+            <p>
+              <Button size="sm" variant="primary">
+                Offer
+              </Button>
+              <Button size="sm" variant="secondary">
+                Reject
+              </Button>
+            </p>
+          )}
         </Card.Title>
       </Card.Header>
       <Collapse in={isCollapse}>
@@ -85,7 +114,7 @@ export default function ApplicationProgressCard(props) {
               </ListGroup.Item>
             ))}
             {/* TODO: debug: checking english score with certificate */}
-            {((props.application?.programId?.ielts )||
+            {(props.application?.programId?.ielts ||
               props.application?.programId?.toefl) &&
             props.student?.academic_background?.language?.english_isPassed ===
               'O' ? (

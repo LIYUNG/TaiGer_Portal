@@ -44,6 +44,10 @@ const STUDENT_ANALYSED_COURSE_URL = (studentId) =>
   new URL(`/my-courses/analysis/${studentId}`, ORIGIN).href;
 const JITSI_MEET_URL = (studentId) =>
   new URL(`https://meet.jit.si/${studentId}`, ORIGIN).href;
+const JITSI_MEET_INSTRUCTIONS_URL = new URL(
+  '/docs/search/64eb25ec89ea0d1fcb39df73',
+  ORIGIN
+).href;
 
 // const TAIGER_SIGNATURE = '<p><b>Your TaiGer Consultancy Team</b></p>';
 const TAIGER_SIGNATURE = `<p><b>Your TaiGer Consultancy Team</b></p><p>Website: <a href="https://taigerconsultancy.com/">https://taigerconsultancy.com/</a></p>\
@@ -1579,6 +1583,7 @@ module.exports = {
   STUDENT_COURSE_URL,
   STUDENT_ANALYSED_COURSE_URL,
   JITSI_MEET_URL,
+  JITSI_MEET_INSTRUCTIONS_URL,
   TAIGER_SIGNATURE,
   SPLIT_LINE,
   ENGLISH_BELOW,

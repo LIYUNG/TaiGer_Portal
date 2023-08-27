@@ -27,7 +27,8 @@ const {
   CONTACT_AGENT,
   STUDENT_COMMUNICATION_THREAD_URL,
   STUDENT_ANALYSED_COURSE_URL,
-  JITSI_MEET_URL
+  JITSI_MEET_URL,
+  JITSI_MEET_INSTRUCTIONS_URL
 } = require('../constants');
 
 const {
@@ -1757,6 +1758,8 @@ const MeetingInvitationEmail = async (recipient, payload) => {
 <p>Jitsi Meet 會議連結網址： <a href="${JITSI_MEET_URL(
     payload.student_id
   )}">${JITSI_MEET_URL(payload.student_id)}</a></p>
+<p>若您是第一次使用Jitsi Meet 會議，建議可以先查看使用說明： <a href="${JITSI_MEET_INSTRUCTIONS_URL}">${JITSI_MEET_INSTRUCTIONS_URL}</a></p>
+
 <p>Jitsi Meet 是行政院數位政委唐鳳建議使用的開源軟體，許多台灣大專院校如國立陽明交通大學、國立台東大學等所採用。</p>
 
 <p>${SPLIT_LINE}</p>
@@ -1795,6 +1798,8 @@ const MeetingReminderEmail = async (recipient, payload) => {
 <p>Jitsi Meet 會議連結網址： <a href="${JITSI_MEET_URL(
     payload.student_id
   )}">${JITSI_MEET_URL(payload.student_id)}</a></p>
+<p>若您是第一次使用Jitsi Meet 會議，建議可以先查看使用說明： <a href="${JITSI_MEET_INSTRUCTIONS_URL}">${JITSI_MEET_INSTRUCTIONS_URL}</a></p>
+
 <p>Jitsi Meet 是行政院數位政委唐鳳建議使用的開源軟體，許多台灣大專院校如國立陽明交通大學、國立台東大學等所採用。</p>
 
 <p>${SPLIT_LINE}</p>

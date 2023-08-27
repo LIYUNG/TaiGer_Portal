@@ -417,6 +417,8 @@ export const updateStudentNotes = (student_id, notes) =>
 // Time Slot events:
 export const getEvents = (student_id) => request.get(`/api/events`);
 export const postEvent = (event) => request.post(`/api/events`, event);
+export const confirmEvent = (event_id, updated_event) =>
+  request.put(`/api/events/${event_id}`, updated_event);
 export const updateEvent = (event_id, updated_event) =>
   request.put(`/api/events/${event_id}`, updated_event);
 export const deleteEvent = (event_id) => request.delete(`/api/events/${event_id}`);

@@ -1,9 +1,11 @@
 import { Modal, Button, Form, Badge } from 'react-bootstrap';
 import React, { useState } from 'react';
 import '../style/model.scss';
-import { Link, withRouter } from 'react-router-dom';
 import { convertDate } from '../../../Demo/Utils/contants';
-import { is_TaiGer_Student } from '../../../Demo/Utils/checking-functions';
+import {
+  is_TaiGer_Agent,
+  is_TaiGer_Student
+} from '../../../Demo/Utils/checking-functions';
 
 const Popping = ({
   open,
@@ -73,13 +75,16 @@ const Popping = ({
                 >
                   {is_TaiGer_Student(user) ? (
                     <>
-                      <option value={''}>
-                        Please Select
-                      </option>
+                      <option value={''}>Please Select</option>
                       <option value={event.provider._id.toString()}>
                         {event.provider.firstname} {event.provider.lastname}
                       </option>
                     </>
+                  ) : is_TaiGer_Agent(user) ? (
+                    <option value={user._id.toString()}>
+                      {user.firstname}
+                      {user.lastname}
+                    </option>
                   ) : (
                     user.agents.map((agent, i) => (
                       <option value={agent._id.toString()} key={i}>

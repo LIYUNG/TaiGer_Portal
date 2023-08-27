@@ -18,13 +18,13 @@ import DEMO from '../../store/constant';
 import { FiExternalLink } from 'react-icons/fi';
 
 export default function ApplicationProgressCard(props) {
-  const [isCollapse, setIsCollapse] = useState(true);
+  const [isCollapse, setIsCollapse] = useState(false);
 
   const handleToggle = () => {
     setIsCollapse(!isCollapse);
   };
   return (
-    <Card className="my-1 mx-0">
+    <Card className="my-0 mx-0">
       <Card.Header onClick={handleToggle} style={{ cursor: 'pointer' }}>
         <Card.Title as="h5">
           <p>
@@ -85,7 +85,7 @@ export default function ApplicationProgressCard(props) {
               </ListGroup.Item>
             ))}
             {/* TODO: debug: checking english score with certificate */}
-            {(props.application?.programId?.ielts ||
+            {((props.application?.programId?.ielts )||
               props.application?.programId?.toefl) &&
             props.student?.academic_background?.language?.english_isPassed ===
               'O' ? (
@@ -179,7 +179,7 @@ export default function ApplicationProgressCard(props) {
                   ) : (
                     <AiFillQuestionCircle color="grey" size={16} />
                   )}{' '}
-                  {thread.doc_thread_id?.file_type}
+                  {thread.doc_thread_id?.file_type.replace(/_/g, ' ')}
                 </Link>
               </ListGroup.Item>
             ))}

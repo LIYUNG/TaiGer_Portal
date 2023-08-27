@@ -81,6 +81,22 @@ class NavRight extends Component {
               </li>
             )}
             {is_TaiGer_AdminAgent(this.props.userdata) && (
+              <li className="mail-icon">
+                <Link
+                  to={`/events/taiger/${this.props.userdata._id.toString()}`}
+                  className="dropdown-item"
+                  // onClick={() => this.setState({ dropdownShow: false })}
+                >
+                  <AiOutlineCalendar size={28} />
+                  {/* {this.state.unreadCount > 0 && (
+                    <span className="mail-icon-container badge">
+                      {this.state.unreadCount}
+                    </span>
+                  )} */}
+                </Link>
+              </li>
+            )}
+            {is_TaiGer_AdminAgent(this.props.userdata) && (
               <li className="mail-icon" onClick={this.handleOpenChat}>
                 <AiOutlineMail size={28} />
                 {this.state.unreadCount > 0 && (

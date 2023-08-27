@@ -4,13 +4,12 @@ import moment from 'moment';
 
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import Popping from './Popping';
-import { Button, Card, Form, Modal } from 'react-bootstrap';
+import { Button, Form, Modal } from 'react-bootstrap';
 import { convertDate, stringToColor } from '../../../Demo/Utils/contants';
 import {
   is_TaiGer_Agent,
   is_TaiGer_Student
 } from '../../../Demo/Utils/checking-functions';
-import { postEvent } from '../../../api';
 
 const localizer = momentLocalizer(moment);
 
@@ -21,7 +20,6 @@ const MyCalendar = (props) => {
   const [newEventTitle, setNewEventTitle] = useState('');
   const [newEventDescription, setNewEventDescription] = useState('');
 
-  
   const handleCreateEvent = () => {
     // Create a new event object and add it to the events array
     const newEvent = {
@@ -82,12 +80,14 @@ const MyCalendar = (props) => {
         selectable={true}
         // Handle event click to show the modal
         onSelectEvent={props.handleSelectEvent}
-        onSelectSlot={is_TaiGer_Agent(props.user) ? handleSelectSlot : () => {}}
+        onSelectSlot={
+          is_TaiGer_Agent(props.user) ? props.handleSelectSlot : () => {}
+        }
         eventPropGetter={eventPropGetter} // Apply custom styles to events based on the logic
         // onSelectSlot={() => console.log('Triggered!')}
       />
       {/* Modal */}
-
+      {/* {is_TaiGer_Student(props.user) && ( */}
       <Popping
         open={props.selectedEvent}
         handleClose={props.handleModalClose}
@@ -96,11 +96,10 @@ const MyCalendar = (props) => {
         handleChangeReceiver={props.handleChangeReceiver}
         newReceiver={props.newReceiver}
         newDescription={props.newDescription}
-        // renderStatus={renderStatus}
-        // rerender={rerender}
         event={props.selectedEvent}
         user={props.user}
       />
+      {/* )} */}
 
       {/* Modal for creating a new event */}
       {/* React Bootstrap Modal for creating a new event */}

@@ -7,9 +7,42 @@ const { Agent, Role } = require('../models/User');
 const async = require('async');
 const {
   MeetingInvitationEmail,
-  MeetingConfirmationReminderEmail
+  MeetingConfirmationReminderEmail,
+  MeetingAdjustReminderEmail
 } = require('../services/email');
 
+const MeetingAdjustReminder = (receiver, user, start_time) => {
+  MeetingAdjustReminderEmail(
+    {
+      id: receiver._id.toString(),
+      firstname: receiver.firstname,
+      lastname: receiver.lastname,
+      address: receiver.email
+    },
+    {
+      taiger_user_firstname: user.firstname,
+      taiger_user_lastname: user.lastname,
+      meeting_time: start_time, // Replace with the actual meeting time
+      student_id: user._id.toString()
+    }
+  );
+};
+const meetingInvitation = (receiver, user, start_time) => {
+  MeetingInvitationEmail(
+    {
+      id: receiver._id.toString(),
+      firstname: receiver.firstname,
+      lastname: receiver.lastname,
+      address: receiver.email
+    },
+    {
+      taiger_user_firstname: user.firstname,
+      taiger_user_lastname: user.lastname,
+      meeting_time: start_time, // Replace with the actual meeting time
+      student_id: user._id.toString()
+    }
+  );
+};
 const meetingConfirmationReminder = (receiver, user, start_time) => {
   MeetingConfirmationReminderEmail(
     {
@@ -191,12 +224,23 @@ const confirmEvent = asyncHandler(async (req, res) => {
       .populate('receiver_id requester_id', 'firstname lastname email')
       .lean();
     if (event) {
-      return res.status(200).send({ success: true, data: event });
+      res.status(200).send({ success: true, data: event });
     }
     if (!event) {
-      return res.status(404).json({ error: 'event is not found' });
+      res.status(404).json({ error: 'event is not found' });
     }
     // TODO Sent email to requester
+
+    if (user.role === 'Student') {
+      event.receiver_id.forEach((receiver) => {
+        meetingInvitation(receiver, user, event.start);
+      });
+    }
+    if (user.role === 'Agent') {
+      event.requester_id.forEach((requester) => {
+        meetingInvitation(requester, user, event.start);
+      });
+    }
   } catch (err) {
     console.log(err);
     throw new ErrorResponse(400, err);
@@ -229,12 +273,23 @@ const updateEvent = asyncHandler(async (req, res) => {
       .populate('receiver_id requester_id', 'firstname lastname email')
       .lean();
     if (event) {
-      return res.status(200).send({ success: true, data: event });
+      res.status(200).send({ success: true, data: event });
     }
     if (!event) {
-      return res.status(404).json({ error: 'event is not found' });
+      res.status(404).json({ error: 'event is not found' });
     }
     // TODO Sent email to receiver
+    // TODO: sync with google calendar.
+    if (user.role === 'Student') {
+      event.receiver_id.forEach((receiver) => {
+        MeetingAdjustReminder(receiver, user, event.start);
+      });
+    }
+    if (user.role === 'Agent') {
+      event.requester_id.forEach((requester) => {
+        MeetingAdjustReminder(requester, user, event.start);
+      });
+    }
   } catch (err) {
     console.log(err);
     throw new ErrorResponse(400, err);

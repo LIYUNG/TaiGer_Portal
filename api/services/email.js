@@ -1796,7 +1796,39 @@ const sendStudentNewMessageReminderEmail = async (recipient, payload) => {
   return sendEmail(recipient, subject, message);
 };
 
-//
+const MeetingAdjustReminderEmail = async (recipient, payload) => {
+  const subject = `[TODO][Meeting confirmation required] ${payload.taiger_user_firstname} ${payload.taiger_user_lastname}`;
+  const message = `\
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+
+<p><b>${payload.taiger_user_firstname} - ${
+    payload.taiger_user_lastname
+  }</b> 調整了一個討論時段： </p>
+<p><b>${payload.meeting_time}</b></p>
+
+<p>請上去 <a href="${AGENT_CALENDAR_EVENTS_URL(
+    recipient.id
+  )}">TaiGer Meeting Calendar</a> 並<b>確認</b>討論時間。</p>
+
+<p>${SPLIT_LINE}</p>
+
+<p>${payload.taiger_user_firstname} - ${
+    payload.taiger_user_lastname
+  } adjusted a meeting time on:</p>
+
+<p><b>${payload.meeting_time}</b></p>
+
+<p>Please go to <a href="${AGENT_CALENDAR_EVENTS_URL(
+    recipient.id
+  )}">TaiGer Meeting Calendar</a> and <b>Confirm</b> the time。</p>
+
+<p>${TAIGER_SIGNATURE}</p>
+
+`; // should be for admin/editor/agent/student
+
+  return sendEmail(recipient, subject, message);
+};
+
 const MeetingConfirmationReminderEmail = async (recipient, payload) => {
   const subject = `[Meeting Invitation] ${payload.taiger_user_firstname} ${payload.taiger_user_lastname}`;
   const message = `\
@@ -1831,13 +1863,13 @@ const MeetingConfirmationReminderEmail = async (recipient, payload) => {
 };
 
 const MeetingInvitationEmail = async (recipient, payload) => {
-  const subject = `[Meeting] ${payload.meeting_time} by ${payload.taiger_user_firstname} ${payload.taiger_user_lastname}`;
+  const subject = `[Meeting Confirmed by ${payload.taiger_user_firstname} ${payload.taiger_user_lastname}] Office hour: ${payload.meeting_time}.`;
   const message = `\
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
 <p><b>${payload.taiger_user_firstname} - ${
     payload.taiger_user_lastname
-  }</b> 預訂了一個討論時段： </p>
+  }</b> 確認了以下討論時段 (請注意時差，TaiGer Portal 查看您的當地時間)： </p>
 <p><b>${payload.meeting_time}</b></p>
 
 <p> 請於該時間準時點擊以下連結： </p>
@@ -1853,14 +1885,15 @@ const MeetingInvitationEmail = async (recipient, payload) => {
 
 <p>${payload.taiger_user_firstname} - ${
     payload.taiger_user_lastname
-  } booked a meeting time on:</p>
+  } confirmed the meeting time on (Please pay attention of the timezone. In TaiGer Portal, you should see the time in your timezone.):</p>
 
 <p><b>${payload.meeting_time}</b></p>
 
 <p> Jitsi Meet Meeting link: <a href="${JITSI_MEET_URL(
     payload.student_id
   )}">${JITSI_MEET_URL(payload.student_id)}</a></p>
-<br />
+<p>If it is the first time for you to use Jitsi Meet, we recommend you having a look at our brief introduction: <a href="${JITSI_MEET_INSTRUCTIONS_URL}">${JITSI_MEET_INSTRUCTIONS_URL}</a></p>
+
 <p>Jitsi Meet is an open-source software recommended for use by Tang Feng, the Digital Minister of the Executive Yuan. It is adopted by many Taiwanese universities such as National Yang Ming Chiao Tung University and National Taitung University.</p>
 
 <p>${TAIGER_SIGNATURE}</p>
@@ -1953,6 +1986,7 @@ module.exports = {
   sendAssignEditorReminderEmail,
   sendAgentNewMessageReminderEmail,
   sendStudentNewMessageReminderEmail,
+  MeetingAdjustReminderEmail,
   MeetingConfirmationReminderEmail,
   MeetingInvitationEmail,
   MeetingReminderEmail

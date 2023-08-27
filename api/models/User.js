@@ -245,6 +245,22 @@ const UserSchema = new Schema(
           type: String,
           default: ''
         },
+        english_score_reading: {
+          type: String,
+          default: ''
+        },
+        english_score_listening: {
+          type: String,
+          default: ''
+        },
+        english_score_writing: {
+          type: String,
+          default: ''
+        },
+        english_score_speaking: {
+          type: String,
+          default: ''
+        },
         english_test_date: {
           type: String,
           default: ''

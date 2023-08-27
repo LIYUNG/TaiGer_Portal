@@ -84,6 +84,20 @@ export default function ApplicationProgressCard(props) {
                 </Link>
               </ListGroup.Item>
             ))}
+            {props.student?.academic_background?.language?.english_isPassed ===
+            'O' ? (
+              <ListGroup.Item>
+                <Link to={`//base-documents`}>
+                  <AiFillCheckCircle color="limegreen" size={16} /> English
+                </Link>
+              </ListGroup.Item>
+            ) : (
+              <ListGroup.Item>
+                <Link to={`//base-documents`}>
+                  <AiFillQuestionCircle color="grey" size={16} /> English
+                </Link>
+              </ListGroup.Item>
+            )}
             {(props.application?.programId?.application_portal_a ||
               props.application?.programId?.application_portal_b) && (
               <ListGroup.Item>

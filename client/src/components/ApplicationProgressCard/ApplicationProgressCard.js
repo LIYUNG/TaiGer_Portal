@@ -27,7 +27,7 @@ export default function ApplicationProgressCard(props) {
   return (
     <Card className="my-0 mx-0">
       <Card.Header onClick={handleToggle} style={{ cursor: 'pointer' }}>
-        <Card.Title as="h5">
+        <Card.Title>
           <p>
             {application_deadline_calculator(
               props.student,
@@ -55,6 +55,7 @@ export default function ApplicationProgressCard(props) {
             <b>{props.application?.programId?.school}</b>
           </p>
           <p>
+            {props.application?.programId?.degree}{' '}
             {props.application?.programId?.program_name}{' '}
             {props.application?.programId?.semester}{' '}
             <Link
@@ -100,7 +101,7 @@ export default function ApplicationProgressCard(props) {
         <Card.Body>
           <ListGroup variant="flush">
             {props.student?.generaldocs_threads?.map((thread, idx) => (
-              <ListGroup.Item>
+              <ListGroup.Item key={idx}>
                 <Link
                   to={`/document-modification/${thread.doc_thread_id._id.toString()}`}
                 >
@@ -198,7 +199,7 @@ export default function ApplicationProgressCard(props) {
               </ListGroup.Item>
             )}
             {props.application?.doc_modification_thread?.map((thread, idx) => (
-              <ListGroup.Item>
+              <ListGroup.Item key={idx}>
                 <Link
                   to={`/document-modification/${thread.doc_thread_id._id.toString()}`}
                 >

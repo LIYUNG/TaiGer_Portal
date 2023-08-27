@@ -84,20 +84,74 @@ export default function ApplicationProgressCard(props) {
                 </Link>
               </ListGroup.Item>
             ))}
-            {props.student?.academic_background?.language?.english_isPassed ===
-            'O' ? (
+            {/* TODO: debug: checking english score with certificate */}
+            {(props.application?.programId?.ielts ||
+              props.application?.programId?.toefl) &&
+            props.student?.academic_background?.language?.english_isPassed ===
+              'O' ? (
               <ListGroup.Item>
-                <Link to={`//base-documents`}>
+                <Link to={`/survey`}>
                   <AiFillCheckCircle color="limegreen" size={16} /> English
                 </Link>
               </ListGroup.Item>
             ) : (
               <ListGroup.Item>
-                <Link to={`//base-documents`}>
+                <Link to={`/survey`}>
                   <AiFillQuestionCircle color="grey" size={16} /> English
                 </Link>
               </ListGroup.Item>
             )}
+            {props.application?.programId?.testdaf &&
+              (props.application?.programId?.testdaf === '-' ? (
+                <></>
+              ) : props.student?.academic_background?.language
+                  ?.german_isPassed === 'O' ? (
+                <ListGroup.Item>
+                  <Link to={`/survey`}>
+                    <AiFillCheckCircle color="limegreen" size={16} /> German
+                  </Link>
+                </ListGroup.Item>
+              ) : (
+                <ListGroup.Item>
+                  <Link to={`/survey`}>
+                    <AiFillQuestionCircle color="grey" size={16} /> German
+                  </Link>
+                </ListGroup.Item>
+              ))}
+            {props.application?.programId?.gre &&
+              (props.application?.programId?.gre === '-' ? (
+                <></>
+              ) : props.student?.academic_background?.language?.gre_isPassed ===
+                'O' ? (
+                <ListGroup.Item>
+                  <Link to={`/survey`}>
+                    <AiFillCheckCircle color="limegreen" size={16} /> GRE
+                  </Link>
+                </ListGroup.Item>
+              ) : (
+                <ListGroup.Item>
+                  <Link to={`/survey`}>
+                    <AiFillQuestionCircle color="grey" size={16} /> GRE
+                  </Link>
+                </ListGroup.Item>
+              ))}
+            {props.application?.programId?.gmat &&
+              (props.application?.programId?.gmat === '-' ? (
+                <></>
+              ) : props.student?.academic_background?.language
+                  ?.gmat_isPassed === 'O' ? (
+                <ListGroup.Item>
+                  <Link to={`/survey`}>
+                    <AiFillCheckCircle color="limegreen" size={16} /> GMAT
+                  </Link>
+                </ListGroup.Item>
+              ) : (
+                <ListGroup.Item>
+                  <Link to={`/survey`}>
+                    <AiFillQuestionCircle color="grey" size={16} /> GMAT
+                  </Link>
+                </ListGroup.Item>
+              ))}
             {(props.application?.programId?.application_portal_a ||
               props.application?.programId?.application_portal_b) && (
               <ListGroup.Item>

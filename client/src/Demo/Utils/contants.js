@@ -856,17 +856,17 @@ export const templatelist = [
     alias: 'Recommendation'
   },
   {
-    name: 'Internship Certificate (實習證明)',
+    name: 'Internship Certificate Example (實習證明模板)',
     prop: 'Internship_Certificate_Example',
     alias: 'Internship'
   },
   {
-    name: 'Employment Certificate (工作證明)',
+    name: 'Employment Certificate Example (工作證明範本)',
     prop: 'Employment_Template',
     alias: 'Employment'
   },
   {
-    name: 'Module Description (課程描述)',
+    name: 'Module Description Example (課程描述範本)',
     prop: 'Module_Catalog',
     alias: 'Module'
   },

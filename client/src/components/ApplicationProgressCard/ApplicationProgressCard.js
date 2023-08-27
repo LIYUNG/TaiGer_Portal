@@ -8,9 +8,13 @@ import {
   ProgressBar,
   ListGroup
 } from 'react-bootstrap';
-import { BsExclamationTriangle, BsX } from 'react-icons/bs';
 import { application_deadline_calculator } from '../../Demo/Utils/checking-functions';
-import { AiFillCheckCircle, AiFillQuestionCircle } from 'react-icons/ai';
+import {
+  AiFillCheckCircle,
+  AiFillQuestionCircle,
+  AiOutlineFieldTime
+} from 'react-icons/ai';
+import DEMO from '../../store/constant';
 
 export default function ApplicationProgressCard(props) {
   const [isCollapse, setIsCollapse] = useState(true);
@@ -23,16 +27,37 @@ export default function ApplicationProgressCard(props) {
       <Card.Header onClick={handleToggle} style={{ cursor: 'pointer' }}>
         <Card.Title as="h5">
           <p>
-            {application_deadline_calculator(props.student, props.application)}
+            {application_deadline_calculator(
+              props.student,
+              props.application
+            ) === 'CLOSE' ? (
+              <>
+                <AiFillCheckCircle color="limegreen" size={16} /> Close
+              </>
+            ) : (
+              <span title="Deadline">
+                <AiOutlineFieldTime size={16} />{' '}
+                {application_deadline_calculator(
+                  props.student,
+                  props.application
+                )}
+              </span>
+            )}
+          </p>
+          <p className="mb-0">
+            <img
+              src={`/assets/logo/country_logo/svg/${props.application?.programId.country}.svg`}
+              alt="Logo"
+              style={{ maxWidth: '20px', maxHeight: '20px' }}
+            />{' '}
+            <b>{props.application?.programId?.school}</b>
           </p>
           <p>
-            {props.application?.programId?.school}
-            {' - '}
             {props.application?.programId?.program_name}{' '}
             {props.application?.programId?.semester}
           </p>
           <p>
-            <ProgressBar now={100} label={`${60}%`} />
+            <ProgressBar now={60} label={`${60}%`} />
           </p>{' '}
         </Card.Title>
       </Card.Header>
@@ -71,8 +96,10 @@ export default function ApplicationProgressCard(props) {
 
             {props.application?.programId?.uni_assist?.includes('VPD') ? (
               <ListGroup.Item>
-                <AiFillQuestionCircle color="grey" size={16} />
-                Uni-Assist VPD
+                <Link to={`${DEMO.UNI_ASSIST_LINK}`}>
+                  <AiFillQuestionCircle color="grey" size={16} />
+                  Uni-Assist VPD
+                </Link>
               </ListGroup.Item>
             ) : (
               <></>

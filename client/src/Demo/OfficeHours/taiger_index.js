@@ -157,7 +157,7 @@ class TaiGerOfficeHours extends React.Component {
         if (success) {
           this.setState({
             isLoaded: true,
-            isEditModalOpen: false,
+            isConfirmModalOpen: false,
             events: temp_events,
             event_id: '',
             isDeleteModalOpen: false,
@@ -340,17 +340,21 @@ class TaiGerOfficeHours extends React.Component {
   };
   handleConfirmAppointmentModalOpen = (e, event) => {
     e.preventDefault();
+    const event_temp = { ...event };
+    event_temp.isConfirmed = true;
     this.setState({
       isConfirmModalOpen: true,
-      event_temp: event,
+      event_temp: event_temp,
       event_id: event._id.toString()
     });
   };
   handleEditAppointmentModalOpen = (e, event) => {
     e.preventDefault();
+    const event_temp = { ...event };
+    event_temp.isConfirmed = false;
     this.setState({
       isEditModalOpen: true,
-      event_temp: event,
+      event_temp: event_temp,
       event_id: event._id.toString()
     });
   };
@@ -518,34 +522,61 @@ class TaiGerOfficeHours extends React.Component {
             </Button>
             {events?.filter(
               (event) => getNumberOfDays(new Date(), event.start) >= -1
-            ).length !== 0
-              ? events
-                  ?.filter(
-                    (event) =>
-                      getNumberOfDays(new Date(), event.start) >= -1 &&
-                      !event.isConfirmed
-                  )
-                  .map((event, i) => (
-                    <EventConfirmationCard
-                      key={i}
-                      event={event}
-                      handleConfirmAppointmentModalOpen={
-                        this.handleConfirmAppointmentModalOpen
-                      }
-                      handleEditAppointmentModalOpen={
-                        this.handleEditAppointmentModalOpen
-                      }
-                      handleDeleteAppointmentModalOpen={
-                        this.handleDeleteAppointmentModalOpen
-                      }
-                    />
-                  ))
-              : 'No upcoming event'}
+            ).length !== 0 &&
+              events
+                ?.filter(
+                  (event) =>
+                    getNumberOfDays(new Date(), event.start) >= -1 &&
+                    !event.isConfirmed
+                )
+                .map((event, i) => (
+                  <EventConfirmationCard
+                    key={i}
+                    event={event}
+                    handleConfirmAppointmentModalOpen={
+                      this.handleConfirmAppointmentModalOpen
+                    }
+                    handleEditAppointmentModalOpen={
+                      this.handleEditAppointmentModalOpen
+                    }
+                    handleDeleteAppointmentModalOpen={
+                      this.handleDeleteAppointmentModalOpen
+                    }
+                  />
+                ))}
             <Card>
               <Card.Header>
                 <Card.Title as="h5">Upcoming</Card.Title>
               </Card.Header>
-              <Card.Body></Card.Body>
+              <Card.Body>
+                {events?.filter(
+                  (event) =>
+                    getNumberOfDays(new Date(), event.start) >= -1 &&
+                    event.isConfirmed
+                ).length !== 0
+                  ? events
+                      ?.filter(
+                        (event) =>
+                          getNumberOfDays(new Date(), event.start) >= -1 &&
+                          event.isConfirmed
+                      )
+                      .map((event, i) => (
+                        <EventConfirmationCard
+                          key={i}
+                          event={event}
+                          handleConfirmAppointmentModalOpen={
+                            this.handleConfirmAppointmentModalOpen
+                          }
+                          handleEditAppointmentModalOpen={
+                            this.handleEditAppointmentModalOpen
+                          }
+                          handleDeleteAppointmentModalOpen={
+                            this.handleDeleteAppointmentModalOpen
+                          }
+                        />
+                      ))
+                  : 'No upcoming event'}
+              </Card.Body>
             </Card>
             <Card>
               <Card.Header>

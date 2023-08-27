@@ -174,7 +174,7 @@ const updateEvent = asyncHandler(async (req, res) => {
   const updated_event = req.body;
   try {
     const date = new Date(updated_event.start);
-    updated_event.isConfirmed = false;
+    // updated_event.isConfirmed = false;
     updated_event.meetingLink = `https://meet.jit.si/${user.firstname}_${
       user.lastname
     }_${user._id.toString()}`;

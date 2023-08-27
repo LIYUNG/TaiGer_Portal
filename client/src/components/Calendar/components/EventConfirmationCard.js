@@ -27,22 +27,29 @@ export default function EventConfirmationCard(props) {
           <Card.Title>
             <h5>
               {props.event.isConfirmed ? (
-                <AiOutlineCalendar />
+                <AiFillCheckCircle
+                  color="limegreen"
+                  size={24}
+                  title="Confirmed"
+                />
               ) : (
-                <AiFillQuestionCircle color="grey" />
+                <AiFillQuestionCircle color="grey" size={24} />
               )}{' '}
-              Start: {convertDate(props.event.start)} ~ 30 min{' '}
+              <AiOutlineCalendar />: {convertDate(props.event.start)} ~ 30 min{' '}
             </h5>
             <span style={{ float: 'right' }}>
-              <Button
-                variant="primary"
-                size="sm"
-                onClick={(e) =>
-                  props.handleConfirmAppointmentModalOpen(e, props.event)
-                }
-              >
-                <AiOutlineCheckCircle size={16} /> Confirm
-              </Button>
+              {!props.event.isConfirmed && (
+                <Button
+                  variant="primary"
+                  size="sm"
+                  onClick={(e) =>
+                    props.handleConfirmAppointmentModalOpen(e, props.event)
+                  }
+                >
+                  <AiOutlineCheckCircle size={16} /> Confirm
+                </Button>
+              )}
+
               <Button
                 variant="secondary"
                 size="sm"
@@ -84,23 +91,17 @@ export default function EventConfirmationCard(props) {
             </span>
           ))}
           <br />
-          Description: {props.event.description}
-          <br />
-          Status:{' '}
-          {props.event.isConfirmed ? (
-            <AiFillCheckCircle title="Confirmed" size={16} color="limegreen" />
-          ) : (
-            <AiFillQuestionCircle
-              title="Waiting for confirmation"
-              size={16}
-              color="gray"
-            />
-          )}
+          Description:
+          <p>{props.event.description}</p>
           <br />
           Meeting Link:{' '}
-          {props.event.isConfirmed
-            ? props.event.meetingLink
-            : 'Will be available, after the appointment is confirmed by the Agent.'}
+          {props.event.isConfirmed ? (
+            <a href={`${props.event.meetingLink}`} className="text-primary">
+              {props.event.meetingLink}
+            </a>
+          ) : (
+            'Will be available, after the appointment is confirmed by the Agent.'
+          )}
           <br />
           created at:{convertDate(props.event.createdAt)}
           <br />

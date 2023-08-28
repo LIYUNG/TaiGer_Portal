@@ -384,17 +384,16 @@ class StudentDashboard extends React.Component {
           </Col>
         </Row>
         <Row>
-          {student.applications?.map(
-            (application, idx) =>
-              application.decided === 'O' && (
-                <Col md={4} key={idx}>
-                  <ApplicationProgressCard
-                    student={student}
-                    application={application}
-                  />
-                </Col>
-              )
-          )}
+          {student.applications
+            ?.filter((app) => app.decided === 'O')
+            .map((application, idx) => (
+              <Col md={4} key={idx}>
+                <ApplicationProgressCard
+                  student={student}
+                  application={application}
+                />
+              </Col>
+            ))}
         </Row>
         <Row>
           <Col>

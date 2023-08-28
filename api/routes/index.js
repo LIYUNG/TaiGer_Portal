@@ -22,6 +22,7 @@ const widgetsRouter = require('./widget');
 const admissionsRouter = require('./admissions');
 const searchesRouter = require('./searches');
 const teamsRouter = require('./teams');
+const uniassistRouter = require('./uniassist');
 const interviewsRouter = require('./interviews');
 const googleapisRouter = require('./googleapis');
 
@@ -51,6 +52,7 @@ const router = (app) => {
   apiRouter.use('/search', searchesRouter);
   apiRouter.use('/tasks', tasksRouter);
   apiRouter.use('/teams', teamsRouter);
+  apiRouter.use('/uniassist', uniassistRouter);
   apiRouter.use('/widgets', widgetsRouter);
 
   app.use('/api', apiRouter);

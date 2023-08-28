@@ -6,7 +6,7 @@ import UniAssistListCard from './UniAssistListCard';
 import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 
-import { getStudent } from '../../api';
+import { getStudentUniAssist } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import { FiExternalLink } from 'react-icons/fi';
@@ -21,7 +21,7 @@ class UniAssistList extends React.Component {
     res_status: 0
   };
   componentDidMount() {
-    getStudent(this.props.user._id.toString()).then(
+    getStudentUniAssist(this.props.user._id.toString()).then(
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
@@ -117,7 +117,9 @@ class UniAssistList extends React.Component {
           />
         ) : (
           <Card>
-            <Card.Body>Based on the applications, Uni-Assist is NOT needed.</Card.Body>
+            <Card.Body>
+              Based on the applications, Uni-Assist is NOT needed.
+            </Card.Body>
           </Card>
         )}
       </>

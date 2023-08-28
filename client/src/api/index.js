@@ -57,6 +57,9 @@ export const getExpenses = () => request.get(`/api/expenses`);
 export const getApplicationStudent = (studentId) =>
   request.get(`/api/student-applications/${studentId}`);
 
+export const getStudentUniAssist = (studentId) =>
+  request.get(`/api/uniassist/${studentId}`);
+
 export const getStudent = (studentId) =>
   request.get(`/api/students/${studentId}`);
 

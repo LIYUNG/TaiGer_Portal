@@ -19,11 +19,13 @@ import {
   isAnyCVNotAssigned,
   is_any_base_documents_uploaded,
   is_any_programs_ready_to_submit,
-  is_any_vpd_missing
+  is_any_vpd_missing,
+  programs_refactor
 } from '../../Utils/checking-functions';
 import CVAssignTasks from '../MainViewTab/AgentTasks/CVAssignTasks';
 import NoProgramStudentTasks from '../MainViewTab/AgentTasks/NoProgramStudentTasks';
 import NoEnoughDecidedProgramsTasks from '../MainViewTab/AgentTasks/NoEnoughDecidedProgramsTasks';
+import DEMO from '../../../store/constant';
 
 class AgentMainView extends React.Component {
   state = {
@@ -206,6 +208,17 @@ class AgentMainView extends React.Component {
           student={student}
         />
       ));
+    const applications_arr = programs_refactor(this.props.students)
+      .filter(
+        (application) =>
+          application.decided === 'O' &&
+          application.closed === '-' &&
+          application.program_name !== 'No Program'
+      )
+      .sort((a, b) =>
+        a.application_deadline > b.application_deadline ? 1 : -1
+      );
+
     // const agent_tasks = this.props.students
     //   .filter((student) =>
     //     student.agents.some(
@@ -259,6 +272,37 @@ class AgentMainView extends React.Component {
             </Row>
           )
         )}
+        <Row>
+          <Col md={12}>
+            <Card className="my-2 mx-0 card-with-scroll">
+              <Card.Header>
+                <Card.Title className="my-0 mx-0">
+                  Upcoming applications (Decided):
+                </Card.Title>
+              </Card.Header>
+              <Card.Body className="card-scrollable-body">
+                <Table>
+                  <tbody>
+                    {applications_arr.map((application, idx) => (
+                      <tr key={idx} className="text-black">
+                        <td>
+                          <b>
+                            <Link to={`${DEMO.STUDENT_DATABASE_LINK}/${application.student_id}/profile`}>
+                              {application.firstname_lastname}
+                            </Link>
+                          </b>
+                        </td>
+                        <td>{application.application_deadline}</td>
+                        <td>{application.school}</td>
+                        <td>{application.program_name}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
         <Row>
           {is_any_programs_ready_to_submit(
             this.props.students.filter((student) =>

@@ -85,3 +85,13 @@ body {
 .custom-progress-bar-container .progress-bar {
   border-radius: 20px; /* Same value as the parent container for consistency */
 }
+
+.card-with-scroll {
+  height: 300px; /* Set the desired height */
+  overflow: hidden; /* Hide content that overflows */
+}
+
+.card-scrollable-body {
+  overflow-y: scroll; /* Enable vertical scrolling */
+  max-height: calc(300px - 46px); /* Adjusted max height, considering header */
+}

@@ -50,7 +50,13 @@ class ApplicationProgress extends React.Component {
             key={i}
           >
             {application.decided === 'O' ? (
-              <p className="mb-1 text-info">{application.programId.school}</p>
+              <p
+                className={`mb-1 ${
+                  application.closed === 'O' ? 'text-warning' : 'text-info'
+                }`}
+              >
+                {application.programId.school}
+              </p>
             ) : (
               <p className="mb-1 text-secondary" title="Not decided yet">
                 {application.programId.school}
@@ -67,7 +73,13 @@ class ApplicationProgress extends React.Component {
             key={i}
           >
             {application.decided === 'O' ? (
-              <p className="mb-1 text-info">{application.programId.degree}</p>
+              <p
+                className={`mb-1 ${
+                  application.closed === 'O' ? 'text-warning' : 'text-info'
+                }`}
+              >
+                {application.programId.degree}
+              </p>
             ) : (
               <p className="mb-1 text-secondary" title="Not decided yet">
                 {application.programId.degree}
@@ -84,7 +96,11 @@ class ApplicationProgress extends React.Component {
             key={i}
           >
             {application.decided === 'O' ? (
-              <p className="mb-1 text-info">
+              <p
+                className={`mb-1 ${
+                  application.closed === 'O' ? 'text-warning' : 'text-info'
+                }`}
+              >
                 {application.programId.program_name}
               </p>
             ) : (
@@ -103,7 +119,13 @@ class ApplicationProgress extends React.Component {
             key={i}
           >
             {application.decided === 'O' ? (
-              <p className="mb-1 text-info">{application.programId.semester}</p>
+              <p
+                className={`mb-1 ${
+                  application.closed === 'O' ? 'text-warning' : 'text-info'
+                }`}
+              >
+                {application.programId.semester}
+              </p>
             ) : (
               <p className="mb-1 text-secondary" title="Not decided yet">
                 {application.programId.semester}
@@ -119,9 +141,19 @@ class ApplicationProgress extends React.Component {
           key={i}
         >
           {application.decided === 'O' ? (
-            <p className="mb-1 text-info">
-              {application.programId.toefl ? application.programId.toefl : '-'}
-            </p>
+            application.closed === 'O' ? (
+              <p className="mb-1 text-warning">
+                {application.programId.toefl
+                  ? application.programId.toefl
+                  : '-'}
+              </p>
+            ) : (
+              <p className="mb-1 text-info">
+                {application.programId.toefl
+                  ? application.programId.toefl
+                  : '-'}
+              </p>
+            )
           ) : (
             <p className="mb-1 text-secondary" title="Not decided yet">
               {application.programId.toefl ? application.programId.toefl : '-'}
@@ -136,9 +168,19 @@ class ApplicationProgress extends React.Component {
           key={i}
         >
           {application.decided === 'O' ? (
-            <p className="mb-1 text-info">
-              {application.programId.ielts ? application.programId.ielts : '-'}
-            </p>
+            application.closed === 'O' ? (
+              <p className="mb-1 text-warning">
+                {application.programId.ielts
+                  ? application.programId.ielts
+                  : '-'}
+              </p>
+            ) : (
+              <p className="mb-1 text-info">
+                {application.programId.ielts
+                  ? application.programId.ielts
+                  : '-'}
+              </p>
+            )
           ) : (
             <p className="mb-1 text-secondary" title="Not decided yet">
               {application.programId.ielts ? application.programId.ielts : '-'}
@@ -171,7 +213,12 @@ class ApplicationProgress extends React.Component {
       application_decided = this.props.student.applications.map(
         (application, i) =>
           application.decided === 'O' ? (
-            <p className="mb-1 text-info" key={i}>
+            <p
+              className={`mb-1 ${
+                application.closed === 'O' ? 'text-warning' : 'text-info'
+              }`}
+              key={i}
+            >
               O
             </p>
           ) : application.decided === 'X' ? (
@@ -187,7 +234,12 @@ class ApplicationProgress extends React.Component {
       application_closed = this.props.student.applications.map(
         (application, i) =>
           application.closed === 'O' ? (
-            <p className="mb-1 text-info" key={i}>
+            <p
+              className={`mb-1 ${
+                application.closed === 'O' ? 'text-warning' : 'text-info'
+              }`}
+              key={i}
+            >
               O
             </p>
           ) : application.closed === 'X' ? (

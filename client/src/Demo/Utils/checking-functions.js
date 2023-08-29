@@ -386,91 +386,79 @@ export const missing_survey_fields_list = (
 ) => {
   return (
     <>
-      {academic_background &&
-        academic_background.university &&
+      {academic_background?.university &&
         !academic_background.university.attended_high_school && (
           <li>
             <b>High School Name</b>
           </li>
         )}
-      {academic_background &&
-        academic_background.university &&
+      {academic_background?.university &&
         (!academic_background.university.high_school_isGraduated ||
           academic_background.university.high_school_isGraduated === '-') && (
           <li>
             <b>High School graduate status</b>
           </li>
         )}
-      {academic_background &&
-        academic_background.university &&
+      {academic_background?.university &&
         !academic_background.university.attended_university && (
           <li>
             <b>University Name (English)</b>
           </li>
         )}
-      {academic_background &&
-        academic_background.university &&
+      {academic_background?.university &&
         !academic_background.university.attended_university_program && (
           <li>
             <b>University Program (English)</b>
           </li>
         )}
-      {academic_background &&
-        academic_background.university &&
+      {academic_background?.university &&
         (!academic_background.university.isGraduated ||
           academic_background.university.isGraduated === '-') && (
           <li>
             <b>Bachelor Degree graduate status</b>
           </li>
         )}
-      {academic_background &&
-        academic_background.university &&
+      {academic_background?.university &&
         (!academic_background.university.Has_Exchange_Experience ||
           academic_background.university.Has_Exchange_Experience === '-') && (
           <li>
             <b>Exchange Student Experience</b>
           </li>
         )}
-      {academic_background &&
-        academic_background.university &&
+      {academic_background?.university &&
         (!academic_background.university.Has_Internship_Experience ||
           academic_background.university.Has_Internship_Experience === '-') && (
           <li>
             <b>Internship Experience</b>
           </li>
         )}
-      {academic_background &&
-        academic_background.university &&
+      {academic_background?.university &&
         (!academic_background.university.Has_Working_Experience ||
           academic_background.university.Has_Working_Experience === '-') && (
           <li>
             <b>Full-Time Job Experience</b>
           </li>
         )}
-      {academic_background &&
-        academic_background.university &&
+      {academic_background?.university &&
         (!academic_background.university.isGraduated ||
           academic_background.university.isGraduated === 'Yes' ||
           academic_background.university.isGraduated === 'pending') && (
           <>
-            {academic_background &&
-              academic_background.university &&
+            {academic_background?.university &&
               (!academic_background.university.Highest_GPA_Uni ||
                 academic_background.university.Highest_GPA_Uni === '-') && (
                 <li>
                   <b>Highest Score GPA of your university program</b>
                 </li>
               )}
-            {academic_background &&
-              academic_background.university &&
+            {academic_background?.university &&
               (!academic_background.university.Passing_GPA_Uni ||
                 academic_background.university.Passing_GPA_Uni === '-') && (
                 <li>
                   <b>Passing Score GPA of your university program</b>
                 </li>
               )}
-            {academic_background &&
-              academic_background.university &&
+            {academic_background?.university &&
               (!academic_background.university.My_GPA_Uni ||
                 academic_background.university.My_GPA_Uni === '-') && (
                 <li>
@@ -502,18 +490,16 @@ export const missing_survey_fields_list = (
           <b>Target Degree Programs</b>
         </li>
       )}
-      {application_preference &&
-        application_preference.considered_privat_universities === '-' && (
-          <li>
-            <b>Considering private universities?</b>
-          </li>
-        )}
-      {application_preference &&
-        application_preference.application_outside_germany === '-' && (
-          <li>
-            <b>Considering universities outside Germany?</b>
-          </li>
-        )}
+      {application_preference?.considered_privat_universities === '-' && (
+        <li>
+          <b>Considering private universities?</b>
+        </li>
+      )}
+      {application_preference?.application_outside_germany === '-' && (
+        <li>
+          <b>Considering universities outside Germany?</b>
+        </li>
+      )}
     </>
   );
 };
@@ -566,8 +552,8 @@ export const progressBarCounter = (student, application) => {
       !application.credential_a_filled) ||
       (application?.programId?.application_portal_b &&
         !application.credential_b_filled))
-      ? 1
-      : 0,
+      ? 0
+      : 1,
     application?.doc_modification_thread?.filter(
       (thread) => thread.isFinalVersion === true
     ).length,
@@ -578,8 +564,8 @@ export const progressBarCounter = (student, application) => {
       : 0,
     application?.closed === 'O' ? 1 : 0
   ];
-  console.log(finished_pointes);
-  console.log(all_points);
+  // console.log(finished_pointes);
+  // console.log(all_points);
   const percentage =
     (finished_pointes.reduce(
       (accumulator, currentValue) => accumulator + currentValue,

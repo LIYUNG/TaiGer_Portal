@@ -70,24 +70,26 @@ export default function ApplicationProgressCard(props) {
           <p style={{ display: 'flex', alignItems: 'center' }}>
             <ProgressBar
               now={
-                application_deadline_calculator(
-                  props.student,
-                  props.application
-                ) === 'CLOSE'
-                  ? 100
-                  : progressBarCounter(props.student, props.application)
+                // application_deadline_calculator(
+                //   props.student,
+                //   props.application
+                // ) === 'CLOSE'
+                //   ? 100
+                //   :
+                progressBarCounter(props.student, props.application)
               }
               style={{ flex: 1, marginRight: '10px' }}
               className="custom-progress-bar-container" // Apply your specific class here
             />
             <span>
               {`${
-                application_deadline_calculator(
-                  props.student,
-                  props.application
-                ) === 'CLOSE'
-                  ? 100
-                  : progressBarCounter(props.student, props.application)
+                // application_deadline_calculator(
+                //   props.student,
+                //   props.application
+                // ) === 'CLOSE'
+                //   ? 100
+                //   :
+                progressBarCounter(props.student, props.application)
               }%`}
             </span>
           </p>
@@ -122,21 +124,24 @@ export default function ApplicationProgressCard(props) {
               </ListGroup.Item>
             ))}
             {/* TODO: debug: checking english score with certificate */}
-            {(props.application?.programId?.ielts ||
-              props.application?.programId?.toefl) &&
-            props.student?.academic_background?.language?.english_isPassed ===
+            {props.application?.programId?.ielts ||
+            props.application?.programId?.toefl ? (
+              props.student?.academic_background?.language?.english_isPassed ===
               'O' ? (
-              <ListGroup.Item>
-                <Link to={`/survey`}>
-                  <AiFillCheckCircle color="limegreen" size={16} /> English
-                </Link>
-              </ListGroup.Item>
+                <ListGroup.Item>
+                  <Link to={`/survey`}>
+                    <AiFillCheckCircle color="limegreen" size={16} /> English
+                  </Link>
+                </ListGroup.Item>
+              ) : (
+                <ListGroup.Item>
+                  <Link to={`/survey`}>
+                    <AiFillQuestionCircle color="grey" size={16} /> English
+                  </Link>
+                </ListGroup.Item>
+              )
             ) : (
-              <ListGroup.Item>
-                <Link to={`/survey`}>
-                  <AiFillQuestionCircle color="grey" size={16} /> English
-                </Link>
-              </ListGroup.Item>
+              <></>
             )}
             {props.application?.programId?.testdaf &&
               (props.application?.programId?.testdaf === '-' ? (
@@ -235,7 +240,12 @@ export default function ApplicationProgressCard(props) {
             )}
 
             <ListGroup.Item>
-              <AiFillQuestionCircle color="grey" size={16} /> Submit
+              {props.application?.closed === 'O' ? (
+                <AiFillCheckCircle color="limegreen" size={16} />
+              ) : (
+                <AiFillQuestionCircle color="grey" size={16} />
+              )}
+              Submit
             </ListGroup.Item>
           </ListGroup>
         </Card.Body>

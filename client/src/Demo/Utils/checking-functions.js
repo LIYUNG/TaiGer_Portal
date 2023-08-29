@@ -519,8 +519,78 @@ export const missing_survey_fields_list = (
 };
 
 // TODO
-export const progressBarCounter = () => {
-  return 55;
+export const progressBarCounter = (student, application) => {
+  const all_points = [
+    student?.generaldocs_threads?.length || 0,
+
+    application?.programId?.ielts || application?.programId?.toefl ? 1 : 0,
+    application?.programId?.testdaf
+      ? application?.programId?.testdaf === '-'
+        ? 0
+        : 1
+      : 0,
+    application?.programId?.gre
+      ? application?.programId?.gre === '-'
+        ? 0
+        : 1
+      : 0,
+    application?.programId?.gmat
+      ? application?.programId?.gmat === '-'
+        ? 0
+        : 1
+      : 0,
+    application?.programId?.application_portal_a ||
+    application?.programId?.application_portal_b
+      ? 1
+      : 0,
+    application?.doc_modification_thread?.length || 0,
+    application?.programId?.uni_assist?.includes('VPD') ? 1 : 0,
+    1
+  ];
+
+  const finished_pointes = [
+    student?.generaldocs_threads?.filter(
+      (thread) => thread.isFinalVersion === true
+    ).length,
+
+    (application?.programId?.ielts || application?.programId?.toefl) &&
+    student?.academic_background?.language?.english_isPassed
+      ? 1
+      : 0,
+    student?.academic_background?.language?.german_isPassed === 'O' ? 1 : 0,
+    student?.academic_background?.language?.gre_isPassed === 'O' ? 1 : 0,
+    student?.academic_background?.language?.gmat_isPassed === 'O' ? 1 : 0,
+    (application?.programId?.application_portal_a ||
+      application?.programId?.application_portal_b) &&
+    ((application?.programId?.application_portal_a &&
+      !application.credential_a_filled) ||
+      (application?.programId?.application_portal_b &&
+        !application.credential_b_filled))
+      ? 1
+      : 0,
+    application?.doc_modification_thread?.filter(
+      (thread) => thread.isFinalVersion === true
+    ).length,
+    application?.programId?.uni_assist?.includes('VPD')
+      ? application?.uni_assist?.status === 'notstarted'
+        ? 0
+        : 1
+      : 0,
+    application?.closed === 'O' ? 1 : 0
+  ];
+  console.log(finished_pointes);
+  console.log(all_points);
+  const percentage =
+    (finished_pointes.reduce(
+      (accumulator, currentValue) => accumulator + currentValue,
+      0
+    ) /
+      all_points.reduce(
+        (accumulator, currentValue) => accumulator + currentValue,
+        0
+      )) *
+    100;
+  return Math.floor(percentage);
 };
 
 export const application_deadline_calculator = (student, application) => {

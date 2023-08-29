@@ -160,7 +160,6 @@ const postEvent = asyncHandler(async (req, res) => {
     const updatedEvent = await Event.findById(write_NewEvent._id)
       .populate('requester_id receiver_id', 'firstname lastname email')
       .lean();
-    console.log(updatedEvent);
 
     updatedEvent.receiver_id.forEach((receiver) => {
       meetingConfirmationReminder(receiver, user, updatedEvent.start);

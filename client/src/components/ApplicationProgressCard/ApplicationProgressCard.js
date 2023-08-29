@@ -9,7 +9,10 @@ import {
   ListGroup,
   Button
 } from 'react-bootstrap';
-import { application_deadline_calculator, progressBarCounter } from '../../Demo/Utils/checking-functions';
+import {
+  application_deadline_calculator,
+  progressBarCounter
+} from '../../Demo/Utils/checking-functions';
 import {
   AiFillCheckCircle,
   AiFillQuestionCircle,
@@ -72,7 +75,7 @@ export default function ApplicationProgressCard(props) {
                   props.application
                 ) === 'CLOSE'
                   ? 100
-                  : progressBarCounter()
+                  : progressBarCounter(props.student, props.application)
               }
               style={{ flex: 1, marginRight: '10px' }}
               className="custom-progress-bar-container" // Apply your specific class here
@@ -84,7 +87,7 @@ export default function ApplicationProgressCard(props) {
                   props.application
                 ) === 'CLOSE'
                   ? 100
-                  : progressBarCounter()
+                  : progressBarCounter(props.student, props.application)
               }%`}
             </span>
           </p>
@@ -218,15 +221,17 @@ export default function ApplicationProgressCard(props) {
               </ListGroup.Item>
             ))}
 
-            {props.application?.programId?.uni_assist?.includes('VPD') ? (
+            {props.application?.programId?.uni_assist?.includes('VPD') && (
               <ListGroup.Item>
                 <Link to={`${DEMO.UNI_ASSIST_LINK}`}>
-                  <AiFillQuestionCircle color="grey" size={16} />
+                  {props.application?.uni_assist?.status === 'notstarted' ? (
+                    <AiFillQuestionCircle color="grey" size={16} />
+                  ) : (
+                    <AiFillCheckCircle color="limegreen" size={16} />
+                  )}{' '}
                   Uni-Assist VPD
                 </Link>
               </ListGroup.Item>
-            ) : (
-              <></>
             )}
 
             <ListGroup.Item>

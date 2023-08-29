@@ -9,7 +9,7 @@ import {
   ListGroup,
   Button
 } from 'react-bootstrap';
-import { application_deadline_calculator } from '../../Demo/Utils/checking-functions';
+import { application_deadline_calculator, progressBarCounter } from '../../Demo/Utils/checking-functions';
 import {
   AiFillCheckCircle,
   AiFillQuestionCircle,
@@ -72,7 +72,7 @@ export default function ApplicationProgressCard(props) {
                   props.application
                 ) === 'CLOSE'
                   ? 100
-                  : 60
+                  : progressBarCounter()
               }
               style={{ flex: 1, marginRight: '10px' }}
               className="custom-progress-bar-container" // Apply your specific class here
@@ -84,7 +84,7 @@ export default function ApplicationProgressCard(props) {
                   props.application
                 ) === 'CLOSE'
                   ? 100
-                  : 60
+                  : progressBarCounter()
               }%`}
             </span>
           </p>

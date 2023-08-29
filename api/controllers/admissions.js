@@ -13,7 +13,7 @@ const getAdmissions = asyncHandler(async (req, res) => {
       '-applications.doc_modification_thread -applications.uni_assist -email -birthday -applying_program_count -agents -editors -profile -isAccountActivated -updatedAt -generaldocs_threads -taigerai -notification -academic_background'
     )
     .populate('agents editors', 'firstname lastname')
-    .populate('applications.programId', 'school program_name semester');
+    .populate('applications.programId', 'school program_name semester degree');
   res.status(200).send({ success: true, data: students });
 });
 

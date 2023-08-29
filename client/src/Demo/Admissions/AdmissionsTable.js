@@ -245,6 +245,12 @@ function Table2({ header, data }) {
             // filter: 'equals'
           },
           {
+            Header: 'Degree',
+            accessor: 'degree'
+            // Filter: NumberRangeColumnFilter,
+            // filter: 'equals'
+          },
+          {
             Header: 'Program',
             accessor: 'program_name'
             // Filter: NumberRangeColumnFilter,
@@ -548,6 +554,7 @@ function AdmissionsTable(props) {
                 student.aapplication_preference &&
                 student.aapplication_preference.expected_application_date,
               school: application.programId.school,
+              degree: application.programId.degree,
               program_name: application.programId.program_name,
               application_year:
                 student.application_preference &&
@@ -565,6 +572,7 @@ function AdmissionsTable(props) {
                 student.aapplication_preference &&
                 student.aapplication_preference.expected_application_date,
               school: application.programId.school,
+              degree: application.programId.degree,
               program_name: application.programId.program_name,
               application_year:
                 student.application_preference &&
@@ -582,6 +590,7 @@ function AdmissionsTable(props) {
                 student.aapplication_preference &&
                 student.application_preference.expected_application_date,
               school: application.programId.school,
+              degree: application.programId.degree,
               program_name: application.programId.program_name,
               application_year:
                 student.application_preference &&
@@ -599,6 +608,7 @@ function AdmissionsTable(props) {
               student.aapplication_preference &&
               student.application_preference.expected_application_date,
             school: application.programId.school,
+            degree: application.programId.degree,
             program_name: application.programId.program_name,
             application_year:
               student.application_preference &&

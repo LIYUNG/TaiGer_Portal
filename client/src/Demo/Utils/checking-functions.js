@@ -518,6 +518,11 @@ export const missing_survey_fields_list = (
   );
 };
 
+// TODO
+export const progressBarCounter = () => {
+  return 55;
+};
+
 export const application_deadline_calculator = (student, application) => {
   if (application.closed === 'O') {
     return 'CLOSE';

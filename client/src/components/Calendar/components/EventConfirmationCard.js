@@ -47,7 +47,11 @@ export default function EventConfirmationCard(props) {
                   props.event.isConfirmedReceiver ? (
                     <></>
                   ) : (
-                    <Button variant="primary" size="sm">
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      onClick={(e) => e.stopPropagation()}
+                    >
                       <AiOutlineLoading size={16} /> Pending
                     </Button>
                   )

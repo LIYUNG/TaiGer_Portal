@@ -47,6 +47,8 @@ import {
   AiOutlineUser
 } from 'react-icons/ai';
 import EventConfirmationCard from '../../components/Calendar/components/EventConfirmationCard';
+import { Redirect } from 'react-router-dom';
+import DEMO from '../../store/constant';
 
 class OfficeHours extends React.Component {
   state = {
@@ -64,6 +66,7 @@ class OfficeHours extends React.Component {
     isConfirmModalOpen: false,
     event_temp: {},
     event_id: '',
+    booked_events: [],
     selectedEvent: {},
     newReceiver: '',
     newDescription: '',
@@ -79,7 +82,7 @@ class OfficeHours extends React.Component {
   componentDidMount() {
     getEvents(this.props.match.params.user_id).then(
       (resp) => {
-        const { data, agents, hasEvents, success } = resp.data;
+        const { data, agents, booked_events, hasEvents, success } = resp.data;
         const { status } = resp;
         if (success) {
           this.setState({
@@ -87,6 +90,7 @@ class OfficeHours extends React.Component {
             agents,
             hasEvents,
             events: data,
+            booked_events,
             success: success,
             res_status: status
           });
@@ -111,7 +115,7 @@ class OfficeHours extends React.Component {
     if (prevProps.match.params.user_id !== this.props.match.params.user_id) {
       getEvents(this.props.match.params.user_id).then(
         (resp) => {
-          const { data, agents, hasEvents, success } = resp.data;
+          const { data, agents, booked_events, hasEvents, success } = resp.data;
           const { status } = resp;
           if (success) {
             this.setState({
@@ -119,6 +123,7 @@ class OfficeHours extends React.Component {
               agents,
               hasEvents,
               events: data,
+              booked_events,
               success: success,
               res_status: status
             });
@@ -344,6 +349,7 @@ class OfficeHours extends React.Component {
 
   handleConfirmAppointmentModalOpen = (e, event) => {
     e.preventDefault();
+    e.stopPropagation();
     this.setState({
       isConfirmModalOpen: true,
       event_temp: event,
@@ -353,6 +359,7 @@ class OfficeHours extends React.Component {
 
   handleEditAppointmentModalOpen = (e, event) => {
     e.preventDefault();
+    e.stopPropagation();
     this.setState({
       isEditModalOpen: true,
       event_temp: event,
@@ -362,6 +369,7 @@ class OfficeHours extends React.Component {
 
   handleDeleteAppointmentModalOpen = (e, event) => {
     e.preventDefault();
+    e.stopPropagation();
     this.setState({
       isDeleteModalOpen: true,
       event_id: event._id.toString()
@@ -427,10 +435,18 @@ class OfficeHours extends React.Component {
   };
 
   render() {
+    if (this.props.user.role !== 'Student') {
+      return (
+        <Redirect
+          to={`${DEMO.EVENT_TAIGER_LINK}/${this.props.user._id.toString()}`}
+        />
+      );
+    }
     const {
       hasEvents,
       events,
       agents,
+      booked_events,
       res_status,
       isLoaded,
       res_modal_status,
@@ -461,21 +477,38 @@ class OfficeHours extends React.Component {
             const timeSlots =
               agent.officehours &&
               agent.officehours[weekday]?.active &&
-              agent.officehours[weekday].time_slots
-                // .sort((a, b) => (a.value < b.value ? -1 : 1))
-                .flatMap((time_slot, j) => {
-                  const { year, month, day } = getNextDayDate(
-                    getReorderWeekday(getTodayAsWeekday(agent.timezone)),
-                    weekday,
-                    agent.timezone,
-                    iter
-                  );
-                  const hour = parseInt(time_slot.value.split(':')[0], 10);
-                  const minutes = parseInt(time_slot.value.split(':')[1], 10);
-                  const time_difference =
-                    getTimezoneOffset(
-                      Intl.DateTimeFormat().resolvedOptions().timeZone
-                    ) - getTimezoneOffset(agent.timezone);
+              agent.officehours[weekday].time_slots.flatMap((time_slot, j) => {
+                const { year, month, day } = getNextDayDate(
+                  getReorderWeekday(getTodayAsWeekday(agent.timezone)),
+                  weekday,
+                  agent.timezone,
+                  iter
+                );
+                const hour = parseInt(time_slot.value.split(':')[0], 10);
+                const minutes = parseInt(time_slot.value.split(':')[1], 10);
+                const time_difference =
+                  getTimezoneOffset(
+                    Intl.DateTimeFormat().resolvedOptions().timeZone
+                  ) - getTimezoneOffset(agent.timezone);
+                // console.log(booked_events);
+                // console.log(new Date(booked_events[0].start).toISOString());
+                // console.log(
+                //   shiftDateByOffset(
+                //     new Date(year, month - 1, day, hour, minutes),
+                //     time_difference
+                //   ).toISOString()
+                // );
+                const condition = booked_events.some(
+                  (booked_event) =>
+                    new Date(booked_event.start).toISOString() ===
+                    shiftDateByOffset(
+                      new Date(year, month - 1, day, hour, minutes),
+                      time_difference
+                    ).toISOString()
+                );
+                if (condition) {
+                  return [];
+                } else {
                   return {
                     id: j * 10 + i * 100 + x * 1000 + 1,
                     title: `${(hour + time_difference) % 24}:${
@@ -491,7 +524,8 @@ class OfficeHours extends React.Component {
                     ),
                     provider: agent
                   };
-                });
+                }
+              });
             return timeSlots || [];
           }
         )
@@ -592,9 +626,13 @@ class OfficeHours extends React.Component {
                             )}
                             <br />
                             Meeting Link:{' '}
-                            {event.isConfirmedReceiver
-                              ? event.meetingLink
-                              : 'Will be available, after the appointment is confirmed by the Agent.'}
+                            {event.isConfirmedReceiver ? (
+                              <a href={`${event.meetingLink}`}>
+                                {event.meetingLink}
+                              </a>
+                            ) : (
+                              'Will be available, after the appointment is confirmed by the Agent.'
+                            )}
                             <br />
                             created at:{convertDate(event.createdAt)}
                             <br />
@@ -667,9 +705,14 @@ class OfficeHours extends React.Component {
                         )}
                         <br />
                         Meeting Link:{' '}
-                        {event.isConfirmedReceiver && event.isConfirmedRequester
-                          ? event.meetingLink
-                          : 'Will be available, after the appointment is confirmed by the Agent.'}
+                        {event.isConfirmedReceiver &&
+                        event.isConfirmedRequester ? (
+                          <a href={`${event.meetingLink}`}>
+                            {event.meetingLink}
+                          </a>
+                        ) : (
+                          'Will be available, after the appointment is confirmed by the Agent.'
+                        )}
                         <br />
                         created at:{convertDate(event.createdAt)}
                         <br />
@@ -871,12 +914,13 @@ class OfficeHours extends React.Component {
                     )}
                     <MyCalendar
                       events={
-                        events?.filter(
-                          (event) =>
-                            getNumberOfDays(new Date(), event.start) >= -1
-                        ).length !== 0
-                          ? []
-                          : [...available_termins]
+                        // events?.filter(
+                        //   (event) =>
+                        //     getNumberOfDays(new Date(), event.start) >= -1
+                        // ).length !== 0
+                        //   ? []
+                        //   :
+                        [...available_termins]
                       }
                       user={this.props.user}
                       handleSelectEvent={this.handleSelectEvent}

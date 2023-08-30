@@ -47,6 +47,8 @@ import {
   AiOutlineUser
 } from 'react-icons/ai';
 import EventConfirmationCard from '../../components/Calendar/components/EventConfirmationCard';
+import { Redirect } from 'react-router-dom';
+import DEMO from '../../store/constant';
 
 class TaiGerOfficeHours extends React.Component {
   state = {
@@ -343,6 +345,7 @@ class TaiGerOfficeHours extends React.Component {
   };
   handleConfirmAppointmentModalOpen = (e, event) => {
     e.preventDefault();
+    e.stopPropagation();
     this.setState({
       isConfirmModalOpen: true,
       event_temp: event,
@@ -350,7 +353,8 @@ class TaiGerOfficeHours extends React.Component {
     });
   };
   handleEditAppointmentModalOpen = (e, event) => {
-    // e.preventDefault();
+    e.preventDefault();
+    e.stopPropagation();
     this.setState({
       isEditModalOpen: true,
       event_temp: event,
@@ -359,7 +363,8 @@ class TaiGerOfficeHours extends React.Component {
   };
 
   handleDeleteAppointmentModalOpen = (e, event) => {
-    // e.preventDefault();
+    e.preventDefault();
+    e.stopPropagation();
     this.setState({
       isDeleteModalOpen: true,
       event_id: event._id.toString()
@@ -425,6 +430,13 @@ class TaiGerOfficeHours extends React.Component {
   };
 
   render() {
+    if (this.props.user.role !== 'Agent') {
+      return (
+        <Redirect
+          to={`${DEMO.EVENT_STUDENT_LINK}/${this.props.user._id.toString()}`}
+        />
+      );
+    }
     const {
       hasEvents,
       events,

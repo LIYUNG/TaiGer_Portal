@@ -12,6 +12,8 @@ const DEMO = {
   SURVEY_LINK: '/survey',
   STUDENT_APPLICATIONS_LINK: '/student-applications',
   STUDENT_DATABASE_LINK: '/student-database',
+  EVENT_STUDENT_LINK: '/events/students',
+  EVENT_TAIGER_LINK: '/events/taiger',
   SETTINGS: '/settings',
   PROFILE: '/profile'
 };

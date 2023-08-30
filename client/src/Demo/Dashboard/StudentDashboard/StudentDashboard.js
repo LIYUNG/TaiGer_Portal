@@ -21,7 +21,7 @@ import { updateBanner } from '../../../api';
 import DEMO from '../../../store/constant';
 import { program_progress_list_student } from '../../Utils/contants';
 import { FiExternalLink } from 'react-icons/fi';
-import { AiFillCalendar, AiOutlineCalendar } from 'react-icons/ai';
+import { AiOutlineCalendar } from 'react-icons/ai';
 import ApplicationProgressCard from '../../../components/ApplicationProgressCard/ApplicationProgressCard';
 
 class StudentDashboard extends React.Component {
@@ -395,7 +395,7 @@ class StudentDashboard extends React.Component {
               </Col>
             ))}
         </Row>
-        <Row>
+        {/* <Row>
           <Col>
             <Card className="my-2 mx-0" bg={'dark'} text={'light'}>
               <Card.Header>
@@ -447,7 +447,7 @@ class StudentDashboard extends React.Component {
               </Table>
             </Card>
           </Col>
-        </Row>
+        </Row> */}
         {/* <Row>
           <Col md={6}>
             <Card className="my-2 mx-0" bg={'dark'} text={'light'}>

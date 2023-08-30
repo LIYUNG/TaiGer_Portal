@@ -63,6 +63,8 @@ export default function ApplicationProgressCard(props) {
             {props.application?.programId?.semester}{' '}
             <Link
               to={`/programs/${props.application?.programId?._id?.toString()}`}
+              target="_blank"
+              onClick={(e) => e.stopPropagation()}
             >
               <FiExternalLink />
             </Link>
@@ -70,40 +72,46 @@ export default function ApplicationProgressCard(props) {
           <p style={{ display: 'flex', alignItems: 'center' }}>
             <ProgressBar
               now={
-                // application_deadline_calculator(
-                //   props.student,
-                //   props.application
-                // ) === 'CLOSE'
-                //   ? 100
-                //   :
-                progressBarCounter(props.student, props.application)
+                application_deadline_calculator(
+                  props.student,
+                  props.application
+                ) === 'CLOSE'
+                  ? 100
+                  : progressBarCounter(props.student, props.application)
               }
               style={{ flex: 1, marginRight: '10px' }}
               className="custom-progress-bar-container" // Apply your specific class here
             />
             <span>
               {`${
-                // application_deadline_calculator(
-                //   props.student,
-                //   props.application
-                // ) === 'CLOSE'
-                //   ? 100
-                //   :
-                progressBarCounter(props.student, props.application)
+                application_deadline_calculator(
+                  props.student,
+                  props.application
+                ) === 'CLOSE'
+                  ? 100
+                  : progressBarCounter(props.student, props.application)
               }%`}
             </span>
           </p>
-          {application_deadline_calculator(props.student, props.application) ===
+          {/* {application_deadline_calculator(props.student, props.application) ===
             'CLOSE' && (
             <p>
-              <Button size="sm" variant="primary">
+              <Button
+                size="sm"
+                variant="outline-primary"
+                onClick={(e) => e.stopPropagation()}
+              >
                 Offer
               </Button>
-              <Button size="sm" variant="secondary">
+              <Button
+                size="sm"
+                variant="outline-secondary"
+                onClick={(e) => e.stopPropagation()}
+              >
                 Reject
               </Button>
             </p>
-          )}
+          )} */}
         </Card.Title>
       </Card.Header>
       <Collapse in={isCollapse}>

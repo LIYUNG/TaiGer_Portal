@@ -543,9 +543,21 @@ export const progressBarCounter = (student, application) => {
     student?.academic_background?.language?.english_isPassed
       ? 1
       : 0,
-    student?.academic_background?.language?.german_isPassed === 'O' ? 1 : 0,
-    student?.academic_background?.language?.gre_isPassed === 'O' ? 1 : 0,
-    student?.academic_background?.language?.gmat_isPassed === 'O' ? 1 : 0,
+    application?.programId?.testdaf &&
+    application?.programId?.testdaf !== '-' &&
+    student?.academic_background?.language?.german_isPassed === 'O'
+      ? 1
+      : 0,
+    application?.programId?.gre &&
+    application?.programId?.gre !== '-' &&
+    student?.academic_background?.language?.gre_isPassed === 'O'
+      ? 1
+      : 0,
+    application?.programId?.gmat &&
+    application?.programId?.gmat !== '-' &&
+    student?.academic_background?.language?.gmat_isPassed === 'O'
+      ? 1
+      : 0,
     (application?.programId?.application_portal_a ||
       application?.programId?.application_portal_b) &&
     ((application?.programId?.application_portal_a &&

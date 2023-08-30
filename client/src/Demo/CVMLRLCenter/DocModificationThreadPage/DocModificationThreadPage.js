@@ -25,12 +25,15 @@ import {
 } from '../../../api';
 import { TabTitle } from '../../Utils/TabTitle';
 import DEMO from '../../../store/constant';
+import FilesList from './FilesList';
 
 class DocModificationThreadPage extends Component {
   state = {
     error: '',
     file: null,
+    componentRef: React.createRef(),
     isLoaded: false,
+    isFilesListOpen: '', // TODO: 'open' to open, useRef(), please refer chatList implementation
     isSubmissionLoaded: true,
     articles: [],
     isEdit: false,
@@ -48,6 +51,8 @@ class DocModificationThreadPage extends Component {
     res_modal_message: ''
   };
   componentDidMount() {
+    // document.removeEventListener('click', this.handleClickOutside);
+    document.addEventListener('mousedown', this.handleClickOutside);
     getMessagThread(this.props.match.params.documentsthreadId).then(
       (resp) => {
         const { success, data, editors, agents, deadline } = resp.data;
@@ -372,9 +377,28 @@ class DocModificationThreadPage extends Component {
     this.setState((state) => ({ ...state, in_edit_mode: false }));
   };
 
+  handleClickOutside = (event) => {
+    if (
+      this.state.componentRef.current &&
+      !this.state.componentRef.current.contains(event.target)
+    ) {
+      // Clicked outside the component, trigger props.closed
+      this.handleCloseFileList();
+    }
+  };
+
+  handleOpenFileList = (event) => {
+    this.setState({ isFilesListOpen: 'open' });
+  };
+
+  handleCloseFileList = (event) => {
+    this.setState({ isFilesListOpen: '' });
+  };
+
   render() {
     const {
       isLoaded,
+      isFilesListOpen,
       isSubmissionLoaded,
       res_status,
       res_modal_status,
@@ -431,6 +455,25 @@ class DocModificationThreadPage extends Component {
             </Spinner>
           </div>
         )}
+        <div
+          className={`header-user-list ${isFilesListOpen}`}
+          ref={this.state.componentRef}
+        >
+          <div className="h-list-header">
+            <h4>Files Overview</h4>
+          </div>
+          <div>
+            <FilesList
+              documentsthreadId={this.state.documentsthreadId}
+              accordionKeys={this.state.accordionKeys}
+              singleExpandtHandler={this.singleExpandtHandler}
+              thread={this.state.thread}
+              isLoaded={this.state.isLoaded}
+              user={this.props.user}
+              onDeleteSingleMessage={this.onDeleteSingleMessage}
+            />
+          </div>
+        </div>
         <Row>
           <Card className="mb-2 mx-0">
             <Card.Header>
@@ -449,6 +492,7 @@ class DocModificationThreadPage extends Component {
                   className="text-light mb-0 me-2 "
                   style={{ float: 'right' }}
                 >
+                  <Button size='sm' variant='secondary' onClick={this.handleOpenFileList}>View all Files</Button>
                   {this.state.expand ? (
                     <Button
                       className="btn-sm float-right"

@@ -1808,7 +1808,7 @@ const MeetingAdjustReminderEmail = async (recipient, payload) => {
 
 <p>請上去 <a href="${AGENT_CALENDAR_EVENTS_URL(
     recipient.id
-  )}">TaiGer Meeting Calendar</a> 並<b>確認</b>討論時間。</p>
+  )}">TaiGer Meeting Calendar</a> 並<b>確認</b>討論內容和時間。</p>
 
 <p>${SPLIT_LINE}</p>
 
@@ -1841,7 +1841,7 @@ const MeetingConfirmationReminderEmail = async (recipient, payload) => {
 
 <p>請上去 <a href="${AGENT_CALENDAR_EVENTS_URL(
     recipient.id
-  )}">TaiGer Meeting Calendar</a> 並<b>確認</b>討論時間。</p>
+  )}">TaiGer Meeting Calendar</a> 並<b>確認</b>討論內容和時間。</p>
 
 <p>${SPLIT_LINE}</p>
 
@@ -1879,8 +1879,6 @@ const MeetingInvitationEmail = async (recipient, payload) => {
   }</a></p>
 <p>若您是第一次使用Jitsi Meet 會議，建議可以先查看使用說明： <a href="${JITSI_MEET_INSTRUCTIONS_URL}">${JITSI_MEET_INSTRUCTIONS_URL}</a></p>
 
-<p>Jitsi Meet 是行政院數位政委唐鳳建議使用的開源軟體，許多台灣大專院校如國立陽明交通大學、國立台東大學等所採用。</p>
-
 <p>${SPLIT_LINE}</p>
 
 <p>${payload.taiger_user_firstname} - ${
@@ -1893,8 +1891,6 @@ const MeetingInvitationEmail = async (recipient, payload) => {
     payload.student_id
   )}">${JITSI_MEET_URL(payload.student_id)}</a></p>
 <p>If it is the first time for you to use Jitsi Meet, we recommend you having a look at our brief introduction: <a href="${JITSI_MEET_INSTRUCTIONS_URL}">${JITSI_MEET_INSTRUCTIONS_URL}</a></p>
-
-<p>Jitsi Meet is an open-source software recommended for use by Tang Feng, the Digital Minister of the Executive Yuan. It is adopted by many Taiwanese universities such as National Yang Ming Chiao Tung University and National Taitung University.</p>
 
 <p>${TAIGER_SIGNATURE}</p>
 

@@ -337,7 +337,10 @@ class StudentDashboard extends React.Component {
               <Card.Body style={{ background: 'black', color: 'white' }}>
                 <Row>
                   <Col md={4}>
-                    {student.firstname === 'Testing-Student' ? (
+                    {(student.firstname === 'Testing-Student' &&
+                      student.lastname === 'Chen') ||
+                    (student.firstname === 'Hao' &&
+                      student.lastname === 'Tsui') ? (
                       <Link to={`/events/students/${student._id.toString()}`}>
                         <Button size="sm">預約</Button>
                       </Link>

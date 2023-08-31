@@ -156,8 +156,8 @@ const postEvent = asyncHandler(async (req, res) => {
       .populate('requester_id receiver_id', 'firstname lastname email')
       .lean();
     // Check if there is already booked upcoming events
-    console.log(events.length);
-    console.log(events.length);
+    // console.log(events.length);
+    // console.log(events.length);
     if (events.length === 0) {
       // TODO: additional check if the timeslot is in agent office hour?
       write_NewEvent = await Event.create(newEvent);
@@ -165,7 +165,7 @@ const postEvent = asyncHandler(async (req, res) => {
     } else {
       throw new ErrorResponse(
         429,
-        'You are not allowed to book the same timeslot'
+        'You are not allowed to book further timeslot, if you have already an upcoming timeslot.'
       );
     }
     events = await Event.find({
@@ -209,7 +209,7 @@ const postEvent = asyncHandler(async (req, res) => {
     } else {
       throw new ErrorResponse(
         429,
-        'You are not allowed to book the same timeslot'
+        'You are not allowed to book further timeslot, if you have already an upcoming timeslot.'
       );
     }
     events = await Event.find({

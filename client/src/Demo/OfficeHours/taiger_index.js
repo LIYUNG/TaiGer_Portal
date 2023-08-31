@@ -1,7 +1,5 @@
 import React from 'react';
 import {
-  Row,
-  Col,
   Card,
   Form,
   Button,
@@ -9,8 +7,7 @@ import {
   Modal,
   Tabs,
   Tab,
-  Badge,
-  Collapse
+  Badge
 } from 'react-bootstrap';
 
 import Aux from '../../hoc/_Aux';
@@ -26,7 +23,6 @@ import {
 } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
-import Banner from '../../components/Banner/Banner';
 
 import {
   confirmEvent,

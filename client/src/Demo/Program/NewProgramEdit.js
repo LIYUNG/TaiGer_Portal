@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Row, Col, Spinner, Card, Button } from 'react-bootstrap';
+import { Form, Row, Col, Card, Button } from 'react-bootstrap';
 
 class NewProgramEdit extends React.Component {
   state = {

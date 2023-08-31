@@ -13,8 +13,6 @@ import { DocumentStatus } from '../Utils/checking-functions';
 class StudentBaseDocumentsStatus extends React.Component {
   state = {
     student: this.props.student,
-    student_id: '',
-    docName: '',
     file: ''
   };
 

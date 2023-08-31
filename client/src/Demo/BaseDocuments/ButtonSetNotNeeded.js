@@ -1,5 +1,5 @@
 import React from 'react';
-import { Col, Form, Button, Modal, Spinner, Offcanvas } from 'react-bootstrap';
+import { Col, Form, Button, Modal, Spinner } from 'react-bootstrap';
 import { IoMdCloudUpload } from 'react-icons/io';
 import { BsDash } from 'react-icons/bs';
 import { FiExternalLink } from 'react-icons/fi';

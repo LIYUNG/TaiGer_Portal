@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Spinner, Card, Tabs } from 'react-bootstrap';
+import { Row, Col, Spinner, Card } from 'react-bootstrap';
 import { Redirect } from 'react-router-dom';
 
 import Aux from '../../hoc/_Aux';

@@ -14,7 +14,6 @@ import ModalMain from '../Utils/ModalHandler/ModalMain';
 import { updatePersonalData, updateOfficehours, getUser } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import {
-  is_TaiGer_role,
   is_TaiGer_Agent,
   is_personal_data_filled
 } from '../Utils/checking-functions';

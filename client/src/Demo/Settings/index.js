@@ -6,7 +6,7 @@ import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 
-import { updatePersonalData, updateCredentials, logout } from '../../api';
+import { updateCredentials, logout } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 class Settings extends React.Component {
   state = {
@@ -238,9 +238,7 @@ class Settings extends React.Component {
                   Notification
                 </Card.Title>
               </Card.Header>
-              <Card.Body>
-                Comming soon
-              </Card.Body>
+              <Card.Body>Comming soon</Card.Body>
             </Card>
           </Col>
         </Row>

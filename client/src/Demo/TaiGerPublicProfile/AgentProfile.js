@@ -1,23 +1,10 @@
 import React from 'react';
-import {
-  Row,
-  Col,
-  Card,
-  Form,
-  Button,
-  Spinner,
-  Modal,
-  Tabs,
-  Tab
-} from 'react-bootstrap';
+import { Row, Col, Card, Form, Button, Spinner } from 'react-bootstrap';
 import TimezoneSelect from 'react-timezone-select';
 import Select from 'react-select';
 
 import Aux from '../../hoc/_Aux';
-import {
-  spinner_style,
-  time_slots
-} from '../Utils/contants';
+import { spinner_style, time_slots } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 

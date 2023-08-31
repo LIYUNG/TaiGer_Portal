@@ -1,13 +1,5 @@
 import React from 'react';
-import {
-  Row,
-  Col,
-  Card,
-  Form,
-  Button,
-  Offcanvas,
-  Badge
-} from 'react-bootstrap';
+import { Row, Col, Card, Form, Button, Offcanvas } from 'react-bootstrap';
 
 import Aux from '../../hoc/_Aux';
 import {

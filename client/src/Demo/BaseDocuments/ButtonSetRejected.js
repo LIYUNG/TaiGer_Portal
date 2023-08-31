@@ -1,5 +1,5 @@
 import React from 'react';
-import { Col, Form, Button, Modal, Spinner, Offcanvas } from 'react-bootstrap';
+import { Col, Form, Button, Modal, Spinner } from 'react-bootstrap';
 import {
   AiOutlineDownload,
   AiOutlineCheck,

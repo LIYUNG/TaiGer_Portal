@@ -462,10 +462,7 @@ class OfficeHours extends React.Component {
     if (res_status >= 400) {
       return <ErrorPage res_status={res_status} />;
     }
-    // const getReorderWeekday(getTodayAsWeekday(agent.timezone)) = getReorderWeekday(
-    //   getTodayAsWeekday(this.state.agent.timezone)
-    // );
-    // const agents = this.state.agents;
+
     const available_termins = [0, 1, 2, 3].flatMap((iter, x) =>
       agents.flatMap((agent, idx) =>
         getReorderWeekday(getTodayAsWeekday(agent.timezone)).flatMap(
@@ -527,6 +524,8 @@ class OfficeHours extends React.Component {
         )
       )
     );
+
+    const has_officehours = available_termins?.length !== 0 ? true : false;
     return (
       <Aux>
         {res_modal_status >= 400 && (
@@ -902,6 +901,23 @@ class OfficeHours extends React.Component {
                         path={'/'}
                         text={
                           <>在您目前預定的時段過後，您將可以再次預約時段。</>
+                        }
+                        link_name={''}
+                        removeBanner={(a, b) => {}}
+                        notification_key={'x'}
+                      />
+                    )}
+                    {!has_officehours && (
+                      <Banner
+                        ReadOnlyMode={true}
+                        bg={'primary'}
+                        title={'Info:'}
+                        path={'/'}
+                        text={
+                          <>
+                            目前 Agent 無空出 Office hours 時段，請聯繫您的
+                            Agent。
+                          </>
                         }
                         link_name={''}
                         removeBanner={(a, b) => {}}

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Col, Spinner, Button, Card, Modal } from 'react-bootstrap';
+import { Row, Col, Spinner, Button, Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { FiExternalLink } from 'react-icons/fi';
 
@@ -516,7 +516,8 @@ class CommunicationSinglePage extends Component {
                             Portal平台上的個人資訊保持最新，以確保訊息的準確性。
                           </li>
                           <li>
-                            Note: 往後，會開放學生預約顧問 office hour 線上諮詢時段。敬請期待
+                            Note: 往後，會開放學生預約顧問 office hour
+                            線上諮詢時段。敬請期待
                           </li>
                         </ul>
                       </p>

@@ -4,8 +4,11 @@ import { Row, Col, Card, Form, Button, Offcanvas } from 'react-bootstrap';
 import Aux from '../../hoc/_Aux';
 import {
   ENGLISH_CERTIFICATE_OPTIONS,
+  GERMAN_CERTIFICATE_OPTIONS,
   GMAT_CERTIFICATE_OPTIONS,
   GRE_CERTIFICATE_OPTIONS,
+  IS_PASSED_OPTIONS,
+  TRI_STATE_OPTIONS,
   convertDate
 } from '../Utils/contants';
 import { FiExternalLink } from 'react-icons/fi';
@@ -23,6 +26,7 @@ import {
   getNumberOfDays
 } from '../Utils/contants';
 import Banner from '../../components/Banner/Banner';
+import InputFormSelect from './InputForms/InputFormSelect';
 class SurveyEditableComponent extends React.Component {
   state = {
     error: null,
@@ -209,7 +213,7 @@ class SurveyEditableComponent extends React.Component {
                     請盡速更新您的語言檢定資訊，這將會影響Agent了解您的申請時程
                   </b>
                   <br />
-                  You <b>language skills and certificates</b> information are
+                  Your <b>language skills and certificates</b> information are
                   still missing or not up-to-date:
                   {this.props.academic_background.language?.english_isPassed ===
                     '-' ||
@@ -348,57 +352,52 @@ class SurveyEditableComponent extends React.Component {
                         as="select"
                         disabled={isReadonly}
                         value={
-                          this.state.academic_background.university &&
-                          this.state.academic_background.university
-                            .high_school_isGraduated
+                          this.state.academic_background?.university
+                            ?.high_school_isGraduated
                             ? this.state.academic_background.university
                                 .high_school_isGraduated
                             : '-'
                         }
                         onChange={(e) => this.handleChange_Academic(e)}
                       >
-                        <option value="-">-</option>
-                        <option value="Yes">Yes</option>
-                        <option value="No">No</option>
+                        <>{TRI_STATE_OPTIONS()}</>
                         <option value="pending">Not finished yet</option>
                       </Form.Control>
                     </Form.Group>
                     <br />
                   </Col>
-                  {this.state.academic_background.university &&
-                    this.state.academic_background.university
-                      .high_school_isGraduated !== '-' && (
-                      <Col md={6}>
-                        <Form.Group controlId="high_school_graduated_year">
-                          <Form.Label className="my-0 mx-0 text-light">
-                            {this.state.academic_background.university
-                              .high_school_isGraduated === 'Yes' &&
-                              'High School Graduate Year'}
-                            {this.state.academic_background.university
-                              .high_school_isGraduated === 'pending' &&
-                              'Expected High School Graduate Year'}
-                            {this.state.academic_background.university
-                              .high_school_isGraduated === 'No' &&
-                              'High School Graduate leaved Year'}
-                          </Form.Label>
-                          <Form.Control
-                            type="text"
-                            readOnly={isReadonly}
-                            placeholder="2022"
-                            value={
-                              this.state.academic_background.university &&
-                              this.state.academic_background.university
-                                .high_school_graduated_year
-                                ? this.state.academic_background.university
-                                    .high_school_graduated_year
-                                : ''
-                            }
-                            onChange={(e) => this.handleChange_Academic(e)}
-                          />
-                        </Form.Group>
-                        <br />
-                      </Col>
-                    )}
+                  {this.state.academic_background?.university
+                    ?.high_school_isGraduated !== '-' && (
+                    <Col md={6}>
+                      <Form.Group controlId="high_school_graduated_year">
+                        <Form.Label className="my-0 mx-0 text-light">
+                          {this.state.academic_background.university
+                            .high_school_isGraduated === 'Yes' &&
+                            'High School Graduate Year'}
+                          {this.state.academic_background.university
+                            .high_school_isGraduated === 'pending' &&
+                            'Expected High School Graduate Year'}
+                          {this.state.academic_background.university
+                            .high_school_isGraduated === 'No' &&
+                            'High School Graduate leaved Year'}
+                        </Form.Label>
+                        <Form.Control
+                          type="text"
+                          readOnly={isReadonly}
+                          placeholder="2022"
+                          value={
+                            this.state.academic_background?.university
+                              ?.high_school_graduated_year
+                              ? this.state.academic_background.university
+                                  .high_school_graduated_year
+                              : ''
+                          }
+                          onChange={(e) => this.handleChange_Academic(e)}
+                        />
+                      </Form.Group>
+                      <br />
+                    </Col>
+                  )}
                 </Row>
                 <Row>
                   <h4 className="my-2 mx-0 text-light">
@@ -417,9 +416,8 @@ class SurveyEditableComponent extends React.Component {
                         readOnly={isReadonly}
                         onChange={(e) => this.handleChange_Academic(e)}
                         value={
-                          this.state.academic_background.university &&
-                          this.state.academic_background.university
-                            .attended_university
+                          this.state.academic_background?.university
+                            ?.attended_university
                             ? this.state.academic_background.university
                                 .attended_university
                             : ''
@@ -438,9 +436,8 @@ class SurveyEditableComponent extends React.Component {
                         readOnly={isReadonly}
                         placeholder="B.Sc, Mechanical Engineering / Not study yet"
                         value={
-                          this.state.academic_background.university &&
-                          this.state.academic_background.university
-                            .attended_university_program
+                          this.state.academic_background?.university
+                            ?.attended_university_program
                             ? this.state.academic_background.university
                                 .attended_university_program
                             : ''
@@ -479,10 +476,9 @@ class SurveyEditableComponent extends React.Component {
                     </Form.Group>
                     <br />
                   </Col>
-                  {this.state.academic_background.university &&
-                    this.state.academic_background.university.isGraduated !==
-                      '-' &&
-                    this.state.academic_background.university.isGraduated !==
+                  {this.state.academic_background?.university?.isGraduated !==
+                    '-' &&
+                    this.state.academic_background?.university?.isGraduated !==
                       'No' && (
                       <Col md={6}>
                         <Form.Group controlId="expected_grad_date">
@@ -499,9 +495,8 @@ class SurveyEditableComponent extends React.Component {
                             as="select"
                             disabled={isReadonly}
                             value={
-                              this.state.academic_background.university &&
-                              this.state.academic_background.university
-                                .expected_grad_date
+                              this.state.academic_background?.university
+                                ?.expected_grad_date
                                 ? this.state.academic_background.university
                                     .expected_grad_date
                                 : ''
@@ -517,80 +512,56 @@ class SurveyEditableComponent extends React.Component {
                 </Row>
                 <Row>
                   <Col md={6}>
-                    <Form.Group controlId="Has_Exchange_Experience">
-                      <Form.Label className="my-0 mx-0 text-light">
-                        Exchange Student Experience ?
-                      </Form.Label>
-                      <Form.Control
-                        as="select"
-                        disabled={isReadonly}
-                        value={
-                          this.state.academic_background.university &&
-                          this.state.academic_background.university
-                            .Has_Exchange_Experience
-                            ? this.state.academic_background.university
-                                .Has_Exchange_Experience
-                            : '-'
-                        }
-                        onChange={(e) => this.handleChange_Academic(e)}
-                      >
-                        <option value="-">-</option>
-                        <option value="Yes">Yes</option>
-                        <option value="No">No</option>
-                      </Form.Control>
-                    </Form.Group>
+                    <InputFormSelect
+                      prop_name={'Has_Exchange_Experience'}
+                      title={'Exchange Student Experience ?'}
+                      isReadonly={isReadonly}
+                      value={
+                        this.state.academic_background?.university
+                          ?.Has_Exchange_Experience
+                          ? this.state.academic_background.university
+                              .Has_Exchange_Experience
+                          : '-'
+                      }
+                      OPTIONS={TRI_STATE_OPTIONS()}
+                      handleChange={this.handleChange_Academic}
+                    />
                     <br />
                   </Col>
                   <Col md={6}>
-                    <Form.Group controlId="Has_Internship_Experience">
-                      <Form.Label className="my-0 mx-0 text-light">
-                        Internship Experience ?
-                      </Form.Label>
-                      <Form.Control
-                        as="select"
-                        disabled={isReadonly}
-                        value={
-                          this.state.academic_background.university &&
-                          this.state.academic_background.university
-                            .Has_Internship_Experience
-                            ? this.state.academic_background.university
-                                .Has_Internship_Experience
-                            : '-'
-                        }
-                        onChange={(e) => this.handleChange_Academic(e)}
-                      >
-                        <option value="-">-</option>
-                        <option value="Yes">Yes</option>
-                        <option value="No">No</option>
-                      </Form.Control>
-                    </Form.Group>
+                    <InputFormSelect
+                      prop_name={'Has_Internship_Experience'}
+                      title={'Internship Experience ?'}
+                      isReadonly={isReadonly}
+                      value={
+                        this.state.academic_background?.university
+                          ?.Has_Internship_Experience
+                          ? this.state.academic_background.university
+                              .Has_Internship_Experience
+                          : '-'
+                      }
+                      OPTIONS={TRI_STATE_OPTIONS()}
+                      handleChange={this.handleChange_Academic}
+                    />
                     <br />
                   </Col>
                 </Row>
                 <Row>
                   <Col md={6}>
-                    <Form.Group controlId="Has_Working_Experience">
-                      <Form.Label className="my-0 mx-0 text-light">
-                        Full-Time Job Experience ?
-                      </Form.Label>
-                      <Form.Control
-                        as="select"
-                        disabled={isReadonly}
-                        value={
-                          this.state.academic_background.university &&
-                          this.state.academic_background.university
-                            .Has_Working_Experience
-                            ? this.state.academic_background.university
-                                .Has_Working_Experience
-                            : '-'
-                        }
-                        onChange={(e) => this.handleChange_Academic(e)}
-                      >
-                        <option value="-">-</option>
-                        <option value="Yes">Yes</option>
-                        <option value="No">No</option>
-                      </Form.Control>
-                    </Form.Group>
+                    <InputFormSelect
+                      prop_name={'Has_Working_Experience'}
+                      title={'Full-Time Job Experience ?'}
+                      isReadonly={isReadonly}
+                      value={
+                        this.state.academic_background?.university
+                          ?.Has_Working_Experience
+                          ? this.state.academic_background.university
+                              .Has_Working_Experience
+                          : '-'
+                      }
+                      OPTIONS={TRI_STATE_OPTIONS()}
+                      handleChange={this.handleChange_Academic}
+                    />
                     <br />
                   </Col>
                 </Row>
@@ -628,9 +599,8 @@ class SurveyEditableComponent extends React.Component {
                         readOnly={isReadonly}
                         placeholder="4.3"
                         value={
-                          this.state.academic_background.university &&
-                          this.state.academic_background.university
-                            .Highest_GPA_Uni
+                          this.state.academic_background?.university
+                            ?.Highest_GPA_Uni
                         }
                         onChange={(e) => this.handleChange_Academic(e)}
                       />
@@ -669,9 +639,8 @@ class SurveyEditableComponent extends React.Component {
                         readOnly={isReadonly}
                         placeholder="1.7"
                         value={
-                          this.state.academic_background.university &&
-                          this.state.academic_background.university
-                            .Passing_GPA_Uni
+                          this.state.academic_background?.university
+                            ?.Passing_GPA_Uni
                         }
                         onChange={(e) => this.handleChange_Academic(e)}
                       />
@@ -713,8 +682,7 @@ class SurveyEditableComponent extends React.Component {
                         readOnly={isReadonly}
                         placeholder="3.8"
                         value={
-                          this.state.academic_background.university &&
-                          this.state.academic_background.university.My_GPA_Uni
+                          this.state.academic_background?.university?.My_GPA_Uni
                         }
                         onChange={(e) => this.handleChange_Academic(e)}
                       />
@@ -726,12 +694,12 @@ class SurveyEditableComponent extends React.Component {
                         Corresponding German GPA System:
                       </Form.Label>
                       <p className="text-info">
-                        {this.state.academic_background.university &&
-                        this.state.academic_background.university.My_GPA_Uni &&
-                        this.state.academic_background.university
-                          .Passing_GPA_Uni &&
-                        this.state.academic_background.university
-                          .Highest_GPA_Uni
+                        {this.state.academic_background?.university
+                          ?.My_GPA_Uni &&
+                        this.state.academic_background?.university
+                          ?.Passing_GPA_Uni &&
+                        this.state.academic_background?.university
+                          ?.Highest_GPA_Uni
                           ? this.Bayerische_Formel(
                               this.state.academic_background.university
                                 .Highest_GPA_Uni,
@@ -752,8 +720,7 @@ class SurveyEditableComponent extends React.Component {
                     <br />
                     {/* <br /> */}
                     Last update at:{' '}
-                    {this.props.academic_background.university &&
-                    this.props.academic_background.university.updatedAt
+                    {this.props.academic_background?.university?.updatedAt
                       ? convertDate(
                           this.props.academic_background.university.updatedAt
                         )
@@ -1147,26 +1114,17 @@ class SurveyEditableComponent extends React.Component {
                 )}
                 <Row>
                   <Col md={4}>
-                    <Form.Group controlId="english_isPassed">
-                      <Form.Label className="my-0 mx-0 text-light">
-                        English Passed ? (IELTS 6.5 / TOEFL 88)
-                      </Form.Label>
-                      <Form.Control
-                        as="select"
-                        disabled={isReadonly}
-                        value={
-                          this.state.academic_background.language &&
-                          this.state.academic_background.language
-                            .english_isPassed
-                        }
-                        onChange={(e) => this.handleChange_Language(e)}
-                      >
-                        <option value="-">-</option>
-                        <option value="O">Yes (Provide Test Score)</option>
-                        <option value="X">No (Provide Test Date)</option>
-                        <option value="--">Not Needed</option>
-                      </Form.Control>
-                    </Form.Group>
+                    <InputFormSelect
+                      prop_name={'english_isPassed'}
+                      title={'English Passed ? (IELTS 6.5 / TOEFL 88)'}
+                      isReadonly={isReadonly}
+                      value={
+                        this.state.academic_background?.language
+                          ?.english_isPassed
+                      }
+                      OPTIONS={IS_PASSED_OPTIONS()}
+                      handleChange={this.handleChange_Language}
+                    />
                   </Col>
                   {this.state.academic_background.language &&
                   this.state.academic_background.language.english_isPassed &&
@@ -1178,26 +1136,20 @@ class SurveyEditableComponent extends React.Component {
                     'O' ? (
                       <>
                         <Col md={4}>
-                          <Form.Group controlId="english_certificate">
-                            <Form.Label className="my-0 mx-0 text-light">
-                              English Certificate
-                            </Form.Label>
-                            <Form.Control
-                              as="select"
-                              disabled={isReadonly}
-                              value={
-                                this.state.academic_background.language &&
-                                this.state.academic_background.language
-                                  .english_certificate
-                                  ? this.state.academic_background.language
-                                      .english_certificate
-                                  : ''
-                              }
-                              onChange={(e) => this.handleChange_Language(e)}
-                            >
-                              <>{ENGLISH_CERTIFICATE_OPTIONS()}</>
-                            </Form.Control>
-                          </Form.Group>
+                          <InputFormSelect
+                            prop_name={'english_certificate'}
+                            title={'English Certificate'}
+                            isReadonly={isReadonly}
+                            value={
+                              this.state.academic_background?.language
+                                ?.english_certificate
+                                ? this.state.academic_background.language
+                                    .english_certificate
+                                : ''
+                            }
+                            OPTIONS={ENGLISH_CERTIFICATE_OPTIONS()}
+                            handleChange={this.handleChange_Language}
+                          />
                         </Col>
                         <Col md={4}>
                           <Form.Group controlId="english_score">
@@ -1248,17 +1200,15 @@ class SurveyEditableComponent extends React.Component {
                                   : '21'
                               } `}
                               value={
-                                this.state.academic_background.language &&
-                                this.state.academic_background.language
-                                  .english_score_reading
+                                this.state.academic_background?.language
+                                  ?.english_score_reading
                                   ? this.state.academic_background.language
                                       .english_score_reading
                                   : ''
                               }
                               disabled={
-                                this.state.academic_background.language &&
                                 this.state.academic_background.language
-                                  .english_certificate === 'No'
+                                  ?.english_certificate === 'No'
                                   ? true
                                   : false
                               }
@@ -1282,17 +1232,15 @@ class SurveyEditableComponent extends React.Component {
                                   : '21'
                               } `}
                               value={
-                                this.state.academic_background.language &&
-                                this.state.academic_background.language
-                                  .english_score_listening
+                                this.state.academic_background?.language
+                                  ?.english_score_listening
                                   ? this.state.academic_background.language
                                       .english_score_listening
                                   : ''
                               }
                               disabled={
-                                this.state.academic_background.language &&
-                                this.state.academic_background.language
-                                  .english_certificate === 'No'
+                                this.state.academic_background?.language
+                                  ?.english_certificate === 'No'
                                   ? true
                                   : false
                               }
@@ -1316,17 +1264,15 @@ class SurveyEditableComponent extends React.Component {
                                   : '21'
                               } `}
                               value={
-                                this.state.academic_background.language &&
-                                this.state.academic_background.language
-                                  .english_score_writing
+                                this.state.academic_background?.language
+                                  ?.english_score_writing
                                   ? this.state.academic_background.language
                                       .english_score_writing
                                   : ''
                               }
                               disabled={
-                                this.state.academic_background.language &&
-                                this.state.academic_background.language
-                                  .english_certificate === 'No'
+                                this.state.academic_background?.language
+                                  ?.english_certificate === 'No'
                                   ? true
                                   : false
                               }
@@ -1350,17 +1296,15 @@ class SurveyEditableComponent extends React.Component {
                                   : '21'
                               } `}
                               value={
-                                this.state.academic_background.language &&
-                                this.state.academic_background.language
-                                  .english_score_speaking
+                                this.state.academic_background?.language
+                                  ?.english_score_speaking
                                   ? this.state.academic_background.language
                                       .english_score_speaking
                                   : ''
                               }
                               disabled={
-                                this.state.academic_background.language &&
-                                this.state.academic_background.language
-                                  .english_certificate === 'No'
+                                this.state.academic_background?.language
+                                  ?.english_certificate === 'No'
                                   ? true
                                   : false
                               }
@@ -1373,26 +1317,20 @@ class SurveyEditableComponent extends React.Component {
                     ) : (
                       <>
                         <Col md={4}>
-                          <Form.Group controlId="english_certificate">
-                            <Form.Label className="my-0 mx-0 text-light">
-                              Expected English Certificate
-                            </Form.Label>
-                            <Form.Control
-                              as="select"
-                              disabled={isReadonly}
-                              value={
-                                this.state.academic_background.language &&
-                                this.state.academic_background.language
-                                  .english_certificate
-                                  ? this.state.academic_background.language
-                                      .english_certificate
-                                  : ''
-                              }
-                              onChange={(e) => this.handleChange_Language(e)}
-                            >
-                              <>{ENGLISH_CERTIFICATE_OPTIONS()}</>
-                            </Form.Control>
-                          </Form.Group>
+                          <InputFormSelect
+                            prop_name={'english_certificate'}
+                            title={'Expected English Certificate'}
+                            isReadonly={isReadonly}
+                            value={
+                              this.state.academic_background?.language
+                                ?.english_certificate
+                                ? this.state.academic_background.language
+                                    .english_certificate
+                                : ''
+                            }
+                            OPTIONS={ENGLISH_CERTIFICATE_OPTIONS()}
+                            handleChange={this.handleChange_Language}
+                          />
                         </Col>
                         <Col md={4}>
                           <Form.Group controlId="english_test_date">
@@ -1423,36 +1361,30 @@ class SurveyEditableComponent extends React.Component {
                 </Row>
                 <Row>
                   <Col md={4}>
-                    <Form.Group controlId="german_isPassed">
-                      <Form.Label className="my-0 mx-0 text-light">
-                        German Passed ? (Set <b>Not need</b> if applying English
-                        taught programs.)
-                      </Form.Label>
-                      <Form.Control
-                        as="select"
-                        disabled={isReadonly}
-                        value={
-                          this.state.academic_background.language &&
-                          this.state.academic_background.language
-                            .german_isPassed
-                        }
-                        onChange={(e) => this.handleChange_Language(e)}
-                      >
-                        <option value="-">-</option>
-                        <option value="O">Yes (Provide Test Score)</option>
-                        <option value="X">No (Provide Test Date)</option>
-                        <option value="--">Not Needed</option>
-                      </Form.Control>
-                    </Form.Group>
+                    <InputFormSelect
+                      prop_name={'german_isPassed'}
+                      title={
+                        <>
+                          German Passed ? (Set <b>Not need</b> if applying
+                          English taught programs.)
+                        </>
+                      }
+                      isReadonly={isReadonly}
+                      value={
+                        this.state.academic_background?.language
+                          ?.german_isPassed
+                      }
+                      OPTIONS={IS_PASSED_OPTIONS()}
+                      handleChange={this.handleChange_Language}
+                    />
                   </Col>
-                  {this.state.academic_background.language &&
-                  this.state.academic_background.language.german_isPassed &&
-                  (this.state.academic_background.language.german_isPassed ===
+                  {this.state.academic_background?.language?.german_isPassed &&
+                  (this.state.academic_background?.language?.german_isPassed ===
                     'O' ||
-                    this.state.academic_background.language.german_isPassed ===
-                      'X') ? (
-                    this.state.academic_background.language.german_isPassed ===
-                    'O' ? (
+                    this.state.academic_background?.language
+                      ?.german_isPassed === 'X') ? (
+                    this.state.academic_background?.language
+                      ?.german_isPassed === 'O' ? (
                       <>
                         <Col md={4}>
                           <Form.Group
@@ -1466,30 +1398,15 @@ class SurveyEditableComponent extends React.Component {
                               as="select"
                               disabled={isReadonly}
                               value={
-                                this.state.academic_background.language &&
-                                this.state.academic_background.language
-                                  .german_certificate
+                                this.state.academic_background?.language
+                                  ?.german_certificate
                                   ? this.state.academic_background.language
                                       .german_certificate
                                   : ''
                               }
                               onChange={(e) => this.handleChange_Language(e)}
                             >
-                              <option value="No">No</option>
-                              <option value="Goethe Zertifikat A2">
-                                Goethe Zertifikat A2
-                              </option>
-                              <option value="Goethe Zertifikat B1">
-                                Goethe Zertifikat B1
-                              </option>
-                              <option value="Goethe Zertifikat B2">
-                                Goethe Zertifikat B2
-                              </option>
-                              <option value="Goethe Zertifikat C1">
-                                Goethe Zertifikat C1
-                              </option>
-                              <option value="TestDaF">TestDaF</option>
-                              <option value="DSH">DSH</option>
+                              <>{GERMAN_CERTIFICATE_OPTIONS()}</>
                             </Form.Control>
                           </Form.Group>
                         </Col>
@@ -1506,17 +1423,15 @@ class SurveyEditableComponent extends React.Component {
                               readOnly={isReadonly}
                               placeholder="(i.e. TestDaF: 4, or DSH: 2) "
                               value={
-                                this.state.academic_background.language &&
-                                this.state.academic_background.language
-                                  .german_score
+                                this.state.academic_background?.language
+                                  ?.german_score
                                   ? this.state.academic_background.language
                                       .german_score
                                   : ''
                               }
                               disabled={
-                                this.state.academic_background.language &&
-                                this.state.academic_background.language
-                                  .german_certificate === 'No'
+                                this.state.academic_background?.language
+                                  ?.german_certificate === 'No'
                                   ? true
                                   : false
                               }
@@ -1549,21 +1464,7 @@ class SurveyEditableComponent extends React.Component {
                               }
                               onChange={(e) => this.handleChange_Language(e)}
                             >
-                              <option value="No">No</option>
-                              <option value="Goethe Zertifikat A2">
-                                Goethe Zertifikat A2
-                              </option>
-                              <option value="Goethe Zertifikat B1">
-                                Goethe Zertifikat B1
-                              </option>
-                              <option value="Goethe Zertifikat B2">
-                                Goethe Zertifikat B2
-                              </option>
-                              <option value="Goethe Zertifikat C1">
-                                Goethe Zertifikat C1
-                              </option>
-                              <option value="TestDaF">TestDaF</option>
-                              <option value="DSH">DSH</option>
+                              <>{GERMAN_CERTIFICATE_OPTIONS()}</>
                             </Form.Control>
                           </Form.Group>
                         </Col>
@@ -1599,28 +1500,18 @@ class SurveyEditableComponent extends React.Component {
                 </Row>
                 <Row>
                   <Col md={4}>
-                    <Form.Group controlId="gre_isPassed">
-                      <Form.Label className="my-0 mx-0 text-light">
-                        GRE Test ? (At least V145 Q160 )
-                      </Form.Label>
-                      <Form.Control
-                        as="select"
-                        disabled={isReadonly}
-                        value={
-                          this.state.academic_background.language &&
-                          this.state.academic_background.language.gre_isPassed
-                        }
-                        onChange={(e) => this.handleChange_Language(e)}
-                      >
-                        <option value="-">-</option>
-                        <option value="O">Yes (Provide Test Score)</option>
-                        <option value="X">No (Provide Test Date)</option>
-                        <option value="--">Not Needed</option>
-                      </Form.Control>
-                    </Form.Group>
+                    <InputFormSelect
+                      prop_name={'gre_isPassed'}
+                      title={'GRE Test ? (At least V145 Q160 )'}
+                      isReadonly={isReadonly}
+                      value={
+                        this.state.academic_background?.language?.gre_isPassed
+                      }
+                      OPTIONS={IS_PASSED_OPTIONS()}
+                      handleChange={this.handleChange_Language}
+                    />
                   </Col>
-                  {this.state.academic_background.language &&
-                  this.state.academic_background.language.gre_isPassed &&
+                  {this.state.academic_background?.language?.gre_isPassed &&
                   (this.state.academic_background.language.gre_isPassed ===
                     'O' ||
                     this.state.academic_background.language.gre_isPassed ===
@@ -1629,26 +1520,20 @@ class SurveyEditableComponent extends React.Component {
                     'O' ? (
                       <>
                         <Col md={4}>
-                          <Form.Group controlId="gre_certificate">
-                            <Form.Label className="my-0 mx-0 text-light">
-                              GRE Certificate
-                            </Form.Label>
-                            <Form.Control
-                              as="select"
-                              disabled={isReadonly}
-                              value={
-                                this.state.academic_background.language &&
-                                this.state.academic_background.language
-                                  .gre_certificate
-                                  ? this.state.academic_background.language
-                                      .gre_certificate
-                                  : ''
-                              }
-                              onChange={(e) => this.handleChange_Language(e)}
-                            >
-                              <>{GRE_CERTIFICATE_OPTIONS()}</>
-                            </Form.Control>
-                          </Form.Group>
+                          <InputFormSelect
+                            prop_name={'gre_certificate'}
+                            title={'GRE Certificate'}
+                            isReadonly={isReadonly}
+                            value={
+                              this.state.academic_background?.language
+                                ?.gre_certificate
+                                ? this.state.academic_background.language
+                                    .gre_certificate
+                                : ''
+                            }
+                            OPTIONS={GRE_CERTIFICATE_OPTIONS()}
+                            handleChange={this.handleChange_Language}
+                          />
                         </Col>
                         <Col md={4}>
                           <Form.Group controlId="gre_score">
@@ -1660,17 +1545,15 @@ class SurveyEditableComponent extends React.Component {
                               readOnly={isReadonly}
                               placeholder="(i.e. V152Q167A3.5) "
                               value={
-                                this.state.academic_background.language &&
-                                this.state.academic_background.language
-                                  .gre_score
+                                this.state.academic_background?.language
+                                  ?.gre_score
                                   ? this.state.academic_background.language
                                       .gre_score
                                   : ''
                               }
                               disabled={
-                                this.state.academic_background.language &&
-                                this.state.academic_background.language
-                                  .gre_certificate === 'No'
+                                this.state.academic_background?.language
+                                  ?.gre_certificate === 'No'
                                   ? true
                                   : false
                               }
@@ -1683,26 +1566,20 @@ class SurveyEditableComponent extends React.Component {
                     ) : (
                       <>
                         <Col md={4}>
-                          <Form.Group controlId="gre_certificate">
-                            <Form.Label className="my-0 mx-0 text-light">
-                              Expected GRE Certificate
-                            </Form.Label>
-                            <Form.Control
-                              as="select"
-                              disabled={isReadonly}
-                              value={
-                                this.state.academic_background.language &&
-                                this.state.academic_background.language
-                                  .gre_certificate
-                                  ? this.state.academic_background.language
-                                      .gre_certificate
-                                  : ''
-                              }
-                              onChange={(e) => this.handleChange_Language(e)}
-                            >
-                              <>{GRE_CERTIFICATE_OPTIONS()}</>
-                            </Form.Control>
-                          </Form.Group>
+                          <InputFormSelect
+                            prop_name={'gre_certificate'}
+                            title={'Expected GRE Certificate'}
+                            isReadonly={isReadonly}
+                            value={
+                              this.state.academic_background?.language
+                                ?.gre_certificate
+                                ? this.state.academic_background.language
+                                    .gre_certificate
+                                : ''
+                            }
+                            OPTIONS={GRE_CERTIFICATE_OPTIONS()}
+                            handleChange={this.handleChange_Language}
+                          />
                         </Col>
                         <Col md={4}>
                           <Form.Group controlId="gre_test_date">
@@ -1713,9 +1590,8 @@ class SurveyEditableComponent extends React.Component {
                               type="date"
                               readOnly={isReadonly}
                               value={
-                                this.state.academic_background.language &&
-                                this.state.academic_background.language
-                                  .gre_test_date
+                                this.state.academic_background?.language
+                                  ?.gre_test_date
                                   ? this.state.academic_background.language
                                       .gre_test_date
                                   : ''
@@ -1733,28 +1609,18 @@ class SurveyEditableComponent extends React.Component {
                 </Row>
                 <Row>
                   <Col md={4}>
-                    <Form.Group controlId="gmat_isPassed">
-                      <Form.Label className="my-0 mx-0 text-light">
-                        GMAT Test ? (At least 600 )
-                      </Form.Label>
-                      <Form.Control
-                        as="select"
-                        disabled={isReadonly}
-                        value={
-                          this.state.academic_background.language &&
-                          this.state.academic_background.language.gmat_isPassed
-                        }
-                        onChange={(e) => this.handleChange_Language(e)}
-                      >
-                        <option value="-">-</option>
-                        <option value="O">Yes (Provide Test Score)</option>
-                        <option value="X">No (Provide Test Date)</option>
-                        <option value="--">Not Needed</option>
-                      </Form.Control>
-                    </Form.Group>
+                    <InputFormSelect
+                      prop_name={'gmat_isPassed'}
+                      title={'GMAT Test ? (At least 600 )'}
+                      isReadonly={isReadonly}
+                      value={
+                        this.state.academic_background?.language?.gmat_isPassed
+                      }
+                      OPTIONS={IS_PASSED_OPTIONS()}
+                      handleChange={this.handleChange_Language}
+                    />
                   </Col>
-                  {this.state.academic_background.language &&
-                  this.state.academic_background.language.gmat_isPassed &&
+                  {this.state.academic_background?.language?.gmat_isPassed &&
                   (this.state.academic_background.language.gmat_isPassed ===
                     'O' ||
                     this.state.academic_background.language.gmat_isPassed ===
@@ -1763,26 +1629,20 @@ class SurveyEditableComponent extends React.Component {
                     'O' ? (
                       <>
                         <Col md={4}>
-                          <Form.Group controlId="gmat_certificate">
-                            <Form.Label className="my-0 mx-0 text-light">
-                              GMAT Certificate
-                            </Form.Label>
-                            <Form.Control
-                              as="select"
-                              disabled={isReadonly}
-                              value={
-                                this.state.academic_background.language &&
-                                this.state.academic_background.language
-                                  .gmat_certificate
-                                  ? this.state.academic_background.language
-                                      .gmat_certificate
-                                  : ''
-                              }
-                              onChange={(e) => this.handleChange_Language(e)}
-                            >
-                              <>{GMAT_CERTIFICATE_OPTIONS()}</>
-                            </Form.Control>
-                          </Form.Group>
+                          <InputFormSelect
+                            prop_name={'gmat_certificate'}
+                            title={'GMAT Certificate'}
+                            isReadonly={isReadonly}
+                            value={
+                              this.state.academic_background?.language
+                                ?.gmat_certificate
+                                ? this.state.academic_background.language
+                                    .gmat_certificate
+                                : ''
+                            }
+                            OPTIONS={GMAT_CERTIFICATE_OPTIONS()}
+                            handleChange={this.handleChange_Language}
+                          />
                         </Col>
                         <Col md={4}>
                           <Form.Group controlId="gmat_score">
@@ -1794,17 +1654,15 @@ class SurveyEditableComponent extends React.Component {
                               readOnly={isReadonly}
                               placeholder="(i.e. 550, 620) "
                               value={
-                                this.state.academic_background.language &&
-                                this.state.academic_background.language
-                                  .gmat_score
+                                this.state.academic_background?.language
+                                  ?.gmat_score
                                   ? this.state.academic_background.language
                                       .gmat_score
                                   : ''
                               }
                               disabled={
-                                this.state.academic_background.language &&
-                                this.state.academic_background.language
-                                  .gmat_certificate === 'No'
+                                this.state.academic_background?.language
+                                  ?.gmat_certificate === 'No'
                                   ? true
                                   : false
                               }
@@ -1817,26 +1675,20 @@ class SurveyEditableComponent extends React.Component {
                     ) : (
                       <>
                         <Col md={4}>
-                          <Form.Group controlId="gmat_certificate">
-                            <Form.Label className="my-0 mx-0 text-light">
-                              Expected GMAT Certificate
-                            </Form.Label>
-                            <Form.Control
-                              as="select"
-                              disabled={isReadonly}
-                              value={
-                                this.state.academic_background.language &&
-                                this.state.academic_background.language
-                                  .gmat_certificate
-                                  ? this.state.academic_background.language
-                                      .gmat_certificate
-                                  : ''
-                              }
-                              onChange={(e) => this.handleChange_Language(e)}
-                            >
-                              <>{GMAT_CERTIFICATE_OPTIONS()}</>
-                            </Form.Control>
-                          </Form.Group>
+                          <InputFormSelect
+                            prop_name={'gmat_certificate'}
+                            title={'Expected GMAT Certificate'}
+                            isReadonly={isReadonly}
+                            value={
+                              this.state.academic_background?.language
+                                ?.gmat_certificate
+                                ? this.state.academic_background.language
+                                    .gmat_certificate
+                                : ''
+                            }
+                            OPTIONS={GMAT_CERTIFICATE_OPTIONS()}
+                            handleChange={this.handleChange_Language}
+                          />
                         </Col>
                         <Col md={4}>
                           <Form.Group controlId="gmat_test_date">
@@ -1868,7 +1720,6 @@ class SurveyEditableComponent extends React.Component {
                 <Row>
                   <Col md={10} className="my-0 mx-0 text-light">
                     <br />
-                    {/* <br /> */}
                     Last update at:{' '}
                     {this.props.academic_background.language &&
                     this.props.academic_background.language.updatedAt

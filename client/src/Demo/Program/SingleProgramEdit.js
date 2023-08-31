@@ -1,5 +1,6 @@
 import React from 'react';
 import { Form, Row, Col, Card, Button } from 'react-bootstrap';
+import { BINARY_STATE_OPTIONS } from '../Utils/contants';
 
 class SingleProgramEdit extends React.Component {
   state = {
@@ -339,8 +340,7 @@ class SingleProgramEdit extends React.Component {
                           : ''
                       }
                     >
-                      <option value="no">no</option>
-                      <option value="yes">yes</option>
+                      {BINARY_STATE_OPTIONS()}
                     </Form.Control>
                   </Form.Group>
                 </h5>
@@ -431,8 +431,7 @@ class SingleProgramEdit extends React.Component {
                           : ''
                       }
                     >
-                      <option value="no">no</option>
-                      <option value="yes">yes</option>
+                      {BINARY_STATE_OPTIONS()}
                     </Form.Control>
                   </Form.Group>
                 </h5>
@@ -476,8 +475,7 @@ class SingleProgramEdit extends React.Component {
                           : ''
                       }
                     >
-                      <option value="no">no</option>
-                      <option value="yes">yes</option>
+                      {BINARY_STATE_OPTIONS()}
                     </Form.Control>
                   </Form.Group>
                 </h5>
@@ -521,8 +519,7 @@ class SingleProgramEdit extends React.Component {
                           : ''
                       }
                     >
-                      <option value="no">no</option>
-                      <option value="yes">yes</option>
+                      {BINARY_STATE_OPTIONS()}
                     </Form.Control>
                   </Form.Group>
                 </h5>

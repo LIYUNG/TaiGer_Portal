@@ -408,6 +408,36 @@ const create_years = (start_year, end_year) => {
   return year_array;
 };
 
+export const BINARY_STATE_OPTIONS = () => {
+  return (
+    <>
+      <option value="no">no</option>
+      <option value="yes">yes</option>
+    </>
+  );
+};
+
+export const TRI_STATE_OPTIONS = () => {
+  return (
+    <>
+      <option value="-">-</option>
+      <option value="Yes">Yes</option>
+      <option value="No">No</option>
+    </>
+  );
+};
+
+export const IS_PASSED_OPTIONS = () => {
+  return (
+    <>
+      <option value="-">-</option>
+      <option value="O">Yes (Provide Test Score)</option>
+      <option value="X">No (Provide Test Date)</option>
+      <option value="--">Not Needed</option>
+    </>
+  );
+};
+
 export const ENGLISH_CERTIFICATE_OPTIONS = () => {
   return (
     <>
@@ -416,6 +446,20 @@ export const ENGLISH_CERTIFICATE_OPTIONS = () => {
       <option value="IELTS">IELTS</option>
       <option value="Duolingo">Duolingo</option>
       <option value="Native">Native</option>
+    </>
+  );
+};
+
+export const GERMAN_CERTIFICATE_OPTIONS = () => {
+  return (
+    <>
+      <option value="No">No</option>
+      <option value="Goethe Zertifikat A2">Goethe Zertifikat A2</option>
+      <option value="Goethe Zertifikat B1">Goethe Zertifikat B1</option>
+      <option value="Goethe Zertifikat B2">Goethe Zertifikat B2</option>
+      <option value="Goethe Zertifikat C1">Goethe Zertifikat C1</option>
+      <option value="TestDaF">TestDaF</option>
+      <option value="DSH">DSH</option>
     </>
   );
 };

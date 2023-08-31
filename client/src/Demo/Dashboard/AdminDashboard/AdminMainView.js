@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Card, Table, Tabs, Tab } from 'react-bootstrap';
+import { Row, Card, Table } from 'react-bootstrap';
 import { BsExclamationTriangle } from 'react-icons/bs';
 
 import AgentReviewing from '../MainViewTab/AgentReview/AgentReviewing';

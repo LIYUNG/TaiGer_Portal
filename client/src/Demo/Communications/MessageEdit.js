@@ -10,7 +10,6 @@ import {
   OverlayTrigger
 } from 'react-bootstrap';
 import { RiCloseFill } from 'react-icons/ri';
-import { AiFillEdit } from 'react-icons/ai';
 
 // import Output from 'editorjs-react-renderer';
 import EditorSimple from '../../components/EditorJs/EditorSimple';

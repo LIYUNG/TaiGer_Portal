@@ -1,4 +1,4 @@
-import { Modal, Button, Form, Badge } from 'react-bootstrap';
+import { Modal, Button, Form, Badge, Spinner } from 'react-bootstrap';
 import React, { useState } from 'react';
 import '../style/model.scss';
 import { convertDate } from '../../../Demo/Utils/contants';
@@ -13,6 +13,7 @@ const Popping = ({
   handleChange,
   handleChangeReceiver,
   newReceiver,
+  BookButtonDisable,
   event,
   handleBook,
   newDescription,
@@ -110,9 +111,24 @@ const Popping = ({
             <Button
               variant="primary"
               onClick={handleBook}
-              disabled={newDescription?.length === 0 || newReceiver === ''}
+              disabled={
+                newDescription?.length === 0 ||
+                newReceiver === '' ||
+                BookButtonDisable
+              }
             >
-              Book
+              {BookButtonDisable ? (
+                <Spinner
+                  animation="border"
+                  role="status"
+                  variant="light"
+                  size="sm"
+                >
+                  <span className="visually-hidden"></span>
+                </Spinner>
+              ) : (
+                'Book'
+              )}
             </Button>
             <Button variant="danger" onClick={handleClose}>
               Close

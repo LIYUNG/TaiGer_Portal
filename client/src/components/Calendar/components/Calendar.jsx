@@ -95,6 +95,7 @@ const MyCalendar = (props) => {
         handleChange={props.handleChange}
         handleChangeReceiver={props.handleChangeReceiver}
         newReceiver={props.newReceiver}
+        BookButtonDisable={props.BookButtonDisable}
         newDescription={props.newDescription}
         event={props.selectedEvent}
         user={props.user}

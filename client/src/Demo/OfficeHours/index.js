@@ -69,6 +69,7 @@ class OfficeHours extends React.Component {
     booked_events: [],
     selectedEvent: {},
     newReceiver: '',
+    BookButtonDisable: false,
     newDescription: '',
     newEventTitle: '',
     newEventStart: null,
@@ -191,6 +192,8 @@ class OfficeHours extends React.Component {
   };
 
   handleEditAppointmentModal = (e, event_id, updated_event) => {
+    e.preventDefault();
+    this.setState({ BookButtonDisable: true });
     updateEvent(event_id, updated_event).then(
       (resp) => {
         const { data, success } = resp.data;
@@ -206,6 +209,7 @@ class OfficeHours extends React.Component {
           this.setState({
             isLoaded: true,
             isEditModalOpen: false,
+            BookButtonDisable: false,
             events: temp_events,
             event_id: '',
             isDeleteModalOpen: false,
@@ -215,6 +219,7 @@ class OfficeHours extends React.Component {
         } else {
           this.setState({
             isLoaded: true,
+            BookButtonDisable: false,
             event_id: '',
             res_status: status
           });
@@ -224,6 +229,7 @@ class OfficeHours extends React.Component {
         this.setState((state) => ({
           ...state,
           isLoaded: true,
+          BookButtonDisable: false,
           error,
           res_status: 500
         }));
@@ -232,6 +238,8 @@ class OfficeHours extends React.Component {
   };
 
   handleDeleteAppointmentModal = (e, event_id) => {
+    e.preventDefault();
+    this.setState({ BookButtonDisable: true });
     deleteEvent(event_id).then(
       (resp) => {
         const { data, agents, hasEvents, success } = resp.data;
@@ -243,6 +251,7 @@ class OfficeHours extends React.Component {
             hasEvents,
             events: data,
             event_id: '',
+            BookButtonDisable: false,
             isDeleteModalOpen: false,
             success: success,
             res_status: status
@@ -251,6 +260,7 @@ class OfficeHours extends React.Component {
           this.setState({
             isLoaded: true,
             event_id: '',
+            BookButtonDisable: false,
             res_status: status
           });
         }
@@ -259,6 +269,7 @@ class OfficeHours extends React.Component {
         this.setState((state) => ({
           ...state,
           isLoaded: true,
+          BookButtonDisable: false,
           error,
           res_status: 500
         }));
@@ -266,7 +277,9 @@ class OfficeHours extends React.Component {
     );
   };
 
-  handleModalBook = () => {
+  handleModalBook = (e) => {
+    e.preventDefault();
+    this.setState({ BookButtonDisable: true });
     const eventWrapper = { ...this.state.selectedEvent };
     if (is_TaiGer_Student(this.props.user)) {
       eventWrapper.requester_id = this.props.user._id.toString();
@@ -285,6 +298,7 @@ class OfficeHours extends React.Component {
             isLoaded: true,
             newDescription: '',
             newReceiver: '',
+            BookButtonDisable: false,
             selectedEvent: {},
             events: data,
             hasEvents: true,
@@ -299,6 +313,7 @@ class OfficeHours extends React.Component {
             isLoaded: true,
             newDescription: '',
             newReceiver: '',
+            BookButtonDisable: false,
             selectedEvent: {},
             isDeleteModalOpen: false,
             res_modal_message: message,
@@ -307,7 +322,16 @@ class OfficeHours extends React.Component {
         }
       },
       (error) => {
-        setSelectedEvent({});
+        this.setState({
+          success,
+          isLoaded: true,
+          newDescription: '',
+          newReceiver: '',
+          BookButtonDisable: false,
+          selectedEvent: {},
+          isDeleteModalOpen: false,
+          res_modal_status: status
+        });
       }
     );
   };
@@ -821,7 +845,8 @@ class OfficeHours extends React.Component {
                 <Button
                   disabled={
                     this.state.event_id === '' ||
-                    this.state.event_temp?.description?.length === 0
+                    this.state.event_temp?.description?.length === 0 ||
+                    this.state.BookButtonDisable
                   }
                   onClick={(e) =>
                     this.handleEditAppointmentModal(
@@ -831,7 +856,18 @@ class OfficeHours extends React.Component {
                     )
                   }
                 >
-                  Update
+                  {this.state.BookButtonDisable ? (
+                    <Spinner
+                      animation="border"
+                      role="status"
+                      variant="light"
+                      size="sm"
+                    >
+                      <span className="visually-hidden"></span>
+                    </Spinner>
+                  ) : (
+                    'Update'
+                  )}
                 </Button>
               </Modal.Footer>
             </Modal>
@@ -942,6 +978,7 @@ class OfficeHours extends React.Component {
                       handleSelectSlot={this.handleSelectSlot}
                       handleNewEventModalClose={this.handleNewEventModalClose}
                       handleModalBook={this.handleModalBook}
+                      BookButtonDisable={this.state.BookButtonDisable}
                       newReceiver={this.state.newReceiver}
                       newDescription={this.state.newDescription}
                       selectedEvent={this.state.selectedEvent}

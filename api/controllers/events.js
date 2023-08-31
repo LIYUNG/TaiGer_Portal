@@ -108,7 +108,7 @@ const getEvents = asyncHandler(async (req, res) => {
     }
   }
 
-  res.status(200).send({
+  return res.status(200).send({
     success: true,
     agents,
     data: events,

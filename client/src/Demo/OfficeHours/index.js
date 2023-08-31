@@ -436,11 +436,7 @@ class OfficeHours extends React.Component {
 
   render() {
     if (this.props.user.role !== 'Student') {
-      return (
-        <Redirect
-          to={`${DEMO.EVENT_TAIGER_LINK}/${this.props.user._id.toString()}`}
-        />
-      );
+      return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
     }
     const {
       hasEvents,

@@ -10,6 +10,7 @@ import DEMO from '../../../../../store/constant';
 import { AiOutlineCalendar, AiOutlineMail } from 'react-icons/ai';
 import {
   is_TaiGer_AdminAgent,
+  is_TaiGer_Agent,
   is_TaiGer_Student
 } from '../../../../../Demo/Utils/checking-functions';
 import { getMyCommunicationUnreadNumber } from '../../../../../api';
@@ -80,10 +81,12 @@ class NavRight extends Component {
                 </Link>
               </li>
             )}
-            {is_TaiGer_AdminAgent(this.props.userdata) && (
+            {is_TaiGer_Agent(this.props.userdata) && (
               <li className="mail-icon">
                 <Link
-                  to={`/events/taiger/${this.props.userdata._id.toString()}`}
+                  to={`${
+                    DEMO.EVENT_TAIGER_LINK
+                  }/${this.props.userdata._id.toString()}`}
                   className="dropdown-item"
                   // onClick={() => this.setState({ dropdownShow: false })}
                 >

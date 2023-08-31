@@ -136,7 +136,6 @@ const postEvent = asyncHandler(async (req, res) => {
   if (user.role === Role.Student) {
     let write_NewEvent;
     newEvent.isConfirmedRequester = true;
-    console.log(newEvent.start);
     // const date = new Date(newEvent.start);
     // newEvent.meetingLink = `https://meet.jit.si/${user.firstname}_${
     //   user.lastname
@@ -245,13 +244,23 @@ const confirmEvent = asyncHandler(async (req, res) => {
         .replace(/\./g, '_')}_${user._id.toString()}`;
     }
     if (user.role === 'Agent') {
-      updated_event.isConfirmedReceiver = true;
-      updated_event.meetingLink = `https://meet.jit.si/${user.firstname}_${
-        user.lastname
-      }_${date
-        .toISOString()
-        .replace(/:/g, '_')
-        .replace(/\./g, '_')}_${user._id.toString()}`;
+      const event_temp = await Event.findById(event_id)
+        .populate('receiver_id requester_id', 'firstname lastname email')
+        .lean();
+      let concat_name = '';
+      // eslint-disable-next-line no-restricted-syntax
+      for (const requester of event_temp.requester_id) {
+        concat_name += `${requester.firstname}_${requester.lastname}`;
+      }
+      if (event_temp) {
+        updated_event.isConfirmedReceiver = true;
+        updated_event.meetingLink = `https://meet.jit.si/${concat_name}_${date
+          .toISOString()
+          .replace(/:/g, '_')
+          .replace(/\./g, '_')}_${user._id.toString()}`;
+      } else {
+        throw new ErrorResponse(429, 'No event found!');
+      }
     }
     updated_event.end = new Date(date.getTime() + 60000 * 30);
     // console.log(date.toISOString());

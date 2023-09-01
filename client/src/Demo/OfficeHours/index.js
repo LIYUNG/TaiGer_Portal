@@ -148,6 +148,8 @@ class OfficeHours extends React.Component {
   }
 
   handleConfirmAppointmentModal = (e, event_id, updated_event) => {
+    e.preventDefault();
+    this.setState({ BookButtonDisable: true });
     confirmEvent(event_id, updated_event).then(
       (resp) => {
         const { data, success } = resp.data;
@@ -167,6 +169,7 @@ class OfficeHours extends React.Component {
             events: temp_events,
             event_temp: {},
             event_id: '',
+            BookButtonDisable: false,
             isDeleteModalOpen: false,
             success: success,
             res_status: status
@@ -176,6 +179,7 @@ class OfficeHours extends React.Component {
             isLoaded: true,
             event_temp: {},
             event_id: '',
+            BookButtonDisable: false,
             res_status: status
           });
         }
@@ -184,6 +188,7 @@ class OfficeHours extends React.Component {
         this.setState((state) => ({
           ...state,
           isLoaded: true,
+          BookButtonDisable: false,
           error,
           res_status: 500
         }));
@@ -764,7 +769,8 @@ class OfficeHours extends React.Component {
                 <Button
                   disabled={
                     this.state.event_id === '' ||
-                    this.state.event_temp?.description?.length === 0
+                    this.state.event_temp?.description?.length === 0 ||
+                    this.state.BookButtonDisable
                   }
                   onClick={(e) =>
                     this.handleConfirmAppointmentModal(
@@ -774,7 +780,20 @@ class OfficeHours extends React.Component {
                     )
                   }
                 >
-                  <AiFillCheckCircle color="limegreen" size={16} /> Yes
+                  {this.state.BookButtonDisable ? (
+                    <Spinner
+                      animation="border"
+                      role="status"
+                      variant="light"
+                      size="sm"
+                    >
+                      <span className="visually-hidden"></span>
+                    </Spinner>
+                  ) : (
+                    <>
+                      <AiFillCheckCircle color="limegreen" size={16} /> Yes
+                    </>
+                  )}
                 </Button>
                 <Button
                   variant="light"
@@ -881,12 +900,25 @@ class OfficeHours extends React.Component {
               <Modal.Body>Do you want to cancel this meeting?</Modal.Body>
               <Modal.Footer>
                 <Button
-                  disabled={this.state.event_id === ''}
+                  disabled={
+                    this.state.event_id === '' || this.state.BookButtonDisable
+                  }
                   onClick={(e) =>
                     this.handleDeleteAppointmentModal(e, this.state.event_id)
                   }
                 >
-                  Delete
+                  {this.state.BookButtonDisable ? (
+                    <Spinner
+                      animation="border"
+                      role="status"
+                      variant="light"
+                      size="sm"
+                    >
+                      <span className="visually-hidden"></span>
+                    </Spinner>
+                  ) : (
+                    'Delete'
+                  )}
                 </Button>
               </Modal.Footer>
             </Modal>

@@ -62,6 +62,7 @@ class TaiGerOfficeHours extends React.Component {
     isConfirmModalOpen: false,
     event_temp: {},
     event_id: '',
+    BookButtonDisable: false,
     selectedEvent: {},
     newReceiver: '',
     newDescription: '',
@@ -140,6 +141,8 @@ class TaiGerOfficeHours extends React.Component {
   }
 
   handleConfirmAppointmentModal = (e, event_id, updated_event) => {
+    e.preventDefault();
+    this.setState({ BookButtonDisable: true });
     confirmEvent(event_id, updated_event).then(
       (resp) => {
         const { data, success } = resp.data;
@@ -158,6 +161,7 @@ class TaiGerOfficeHours extends React.Component {
             events: temp_events,
             event_temp: {},
             event_id: '',
+            BookButtonDisable: false,
             isDeleteModalOpen: false,
             success: success,
             res_status: status
@@ -167,6 +171,7 @@ class TaiGerOfficeHours extends React.Component {
             isLoaded: true,
             event_temp: {},
             event_id: '',
+            BookButtonDisable: false,
             res_status: status
           });
         }
@@ -176,6 +181,7 @@ class TaiGerOfficeHours extends React.Component {
           ...state,
           isLoaded: true,
           error,
+          BookButtonDisable: false,
           res_status: 500
         }));
       }
@@ -183,6 +189,8 @@ class TaiGerOfficeHours extends React.Component {
   };
 
   handleEditAppointmentModal = (e, event_id, updated_event) => {
+    e.preventDefault();
+    this.setState({ BookButtonDisable: true });
     updateEvent(event_id, updated_event).then(
       (resp) => {
         const { data, success } = resp.data;
@@ -201,6 +209,7 @@ class TaiGerOfficeHours extends React.Component {
             events: temp_events,
             event_temp: {},
             event_id: '',
+            BookButtonDisable: false,
             isDeleteModalOpen: false,
             success: success,
             res_status: status
@@ -209,6 +218,7 @@ class TaiGerOfficeHours extends React.Component {
           this.setState({
             isLoaded: true,
             event_temp: {},
+            BookButtonDisable: false,
             event_id: '',
             res_status: status
           });
@@ -219,6 +229,7 @@ class TaiGerOfficeHours extends React.Component {
           ...state,
           isLoaded: true,
           error,
+          BookButtonDisable: false,
           res_status: 500
         }));
       }
@@ -226,6 +237,8 @@ class TaiGerOfficeHours extends React.Component {
   };
 
   handleDeleteAppointmentModal = (e, event_id) => {
+    e.preventDefault();
+    this.setState({ BookButtonDisable: true });
     deleteEvent(event_id).then(
       (resp) => {
         const { data, agents, hasEvents, success } = resp.data;
@@ -237,6 +250,7 @@ class TaiGerOfficeHours extends React.Component {
             hasEvents,
             events: data,
             event_id: '',
+            BookButtonDisable: false,
             isDeleteModalOpen: false,
             success: success,
             res_status: status
@@ -254,19 +268,22 @@ class TaiGerOfficeHours extends React.Component {
           ...state,
           isLoaded: true,
           error,
+          BookButtonDisable: false,
           res_status: 500
         }));
       }
     );
   };
 
-  handleModalBook = () => {
+  handleModalBook = (e) => {
     const eventWrapper = { ...this.state.selectedEvent };
     if (is_TaiGer_Student(this.props.user)) {
       eventWrapper.requester_id = this.props.user._id.toString();
       eventWrapper.description = this.state.newDescription;
       eventWrapper.receiver_id = this.state.newReceiver;
     }
+    e.preventDefault();
+    this.setState({ BookButtonDisable: true });
     postEvent(eventWrapper).then(
       (resp) => {
         const { success, data } = resp.data;
@@ -281,6 +298,7 @@ class TaiGerOfficeHours extends React.Component {
             newReceiver: '',
             selectedEvent: {},
             events: data,
+            BookButtonDisable: false,
             hasEvents: true,
             isDeleteModalOpen: false,
             res_modal_status: status
@@ -295,13 +313,23 @@ class TaiGerOfficeHours extends React.Component {
             newReceiver: '',
             selectedEvent: {},
             isDeleteModalOpen: false,
+            BookButtonDisable: false,
             res_modal_message: message,
             res_modal_status: status
           });
         }
       },
       (error) => {
-        setSelectedEvent({});
+        this.setState({
+          success,
+          error,
+          isLoaded: true,
+          newDescription: '',
+          newReceiver: '',
+          selectedEvent: {},
+          isDeleteModalOpen: false,
+          BookButtonDisable: false
+        });
       }
     );
   };
@@ -669,7 +697,8 @@ class TaiGerOfficeHours extends React.Component {
                 <Button
                   disabled={
                     this.state.event_id === '' ||
-                    this.state.event_temp?.description?.length === 0
+                    this.state.event_temp?.description?.length === 0 ||
+                    this.state.BookButtonDisable
                   }
                   onClick={(e) =>
                     this.handleConfirmAppointmentModal(
@@ -679,7 +708,20 @@ class TaiGerOfficeHours extends React.Component {
                     )
                   }
                 >
-                  <AiFillCheckCircle color="limegreen" size={16} /> Yes
+                  {this.state.BookButtonDisable ? (
+                    <Spinner
+                      animation="border"
+                      role="status"
+                      variant="light"
+                      size="sm"
+                    >
+                      <span className="visually-hidden"></span>
+                    </Spinner>
+                  ) : (
+                    <>
+                      <AiFillCheckCircle color="limegreen" size={16} /> Yes
+                    </>
+                  )}
                 </Button>
                 <Button
                   variant="light"
@@ -750,7 +792,8 @@ class TaiGerOfficeHours extends React.Component {
                 <Button
                   disabled={
                     this.state.event_id === '' ||
-                    this.state.event_temp?.description?.length === 0
+                    this.state.event_temp?.description?.length === 0 ||
+                    this.state.BookButtonDisable
                   }
                   onClick={(e) =>
                     this.handleEditAppointmentModal(
@@ -760,7 +803,18 @@ class TaiGerOfficeHours extends React.Component {
                     )
                   }
                 >
-                  Update
+                  {this.state.BookButtonDisable ? (
+                    <Spinner
+                      animation="border"
+                      role="status"
+                      variant="light"
+                      size="sm"
+                    >
+                      <span className="visually-hidden"></span>
+                    </Spinner>
+                  ) : (
+                    'Update'
+                  )}
                 </Button>
               </Modal.Footer>
             </Modal>
@@ -774,12 +828,25 @@ class TaiGerOfficeHours extends React.Component {
               <Modal.Body>Do you want to cancel this meeting?</Modal.Body>
               <Modal.Footer>
                 <Button
-                  disabled={this.state.event_id === ''}
+                  disabled={
+                    this.state.event_id === '' || this.state.BookButtonDisable
+                  }
                   onClick={(e) =>
                     this.handleDeleteAppointmentModal(e, this.state.event_id)
                   }
                 >
-                  Delete
+                  {this.state.BookButtonDisable ? (
+                    <Spinner
+                      animation="border"
+                      role="status"
+                      variant="light"
+                      size="sm"
+                    >
+                      <span className="visually-hidden"></span>
+                    </Spinner>
+                  ) : (
+                    'Delete'
+                  )}
                 </Button>
               </Modal.Footer>
             </Modal>
@@ -799,7 +866,6 @@ class TaiGerOfficeHours extends React.Component {
                   className="py-0 my-0 mx-0"
                 >
                   <Tab eventKey="Calendar" title="Calendar">
-                    {/* {'Only boo'} */}
                     <MyCalendar
                       events={[...booked_events]}
                       user={this.props.user}

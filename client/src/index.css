@@ -93,5 +93,5 @@ body {
 
 .card-scrollable-body {
   overflow-y: scroll; /* Enable vertical scrolling */
-  max-height: calc(300px - 46px); /* Adjusted max height, considering header */
+  max-height: calc(300px - 4px); /* Adjusted max height, considering header */
 }

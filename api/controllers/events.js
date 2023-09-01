@@ -136,10 +136,6 @@ const postEvent = asyncHandler(async (req, res) => {
   if (user.role === Role.Student) {
     let write_NewEvent;
     newEvent.isConfirmedRequester = true;
-    // const date = new Date(newEvent.start);
-    // newEvent.meetingLink = `https://meet.jit.si/${user.firstname}_${
-    //   user.lastname
-    // }_${date.toISOString()}_${user._id.toString()}`;
 
     // Check if there is already future timeslot, same student?
     const currentDate = new Date();
@@ -232,7 +228,6 @@ const confirmEvent = asyncHandler(async (req, res) => {
   const { user } = req;
   const updated_event = req.body;
   try {
-    console.log(updated_event.start);
     const date = new Date(updated_event.start);
     if (user.role === 'Student') {
       updated_event.isConfirmedRequester = true;
@@ -306,9 +301,6 @@ const updateEvent = asyncHandler(async (req, res) => {
     if (user.role === 'Student') {
       updated_event.isConfirmedRequester = true;
       updated_event.isConfirmedReceiver = false;
-      // updated_event.meetingLink = `https://meet.jit.si/${user.firstname}_${
-      //   user.lastname
-      // }_${date.toISOString()}_${user._id.toString()}`;
     }
     if (user.role === 'Agent') {
       updated_event.isConfirmedRequester = false;

@@ -275,19 +275,21 @@ class AgentMainView extends React.Component {
         <Row>
           <Col md={12}>
             <Card className="my-2 mx-0 card-with-scroll">
-              <Card.Header>
-                <Card.Title className="my-0 mx-0">
+              <Card.Header className="py-0 px-0">
+                <Card.Title className="my-2 mx-2">
                   Upcoming applications (Decided):
                 </Card.Title>
               </Card.Header>
               <Card.Body className="card-scrollable-body">
-                <Table>
+                <Table size="sm">
                   <tbody>
                     {applications_arr.map((application, idx) => (
                       <tr key={idx} className="text-black">
                         <td>
                           <b>
-                            <Link to={`${DEMO.STUDENT_DATABASE_LINK}/${application.student_id}/profile`}>
+                            <Link
+                              to={`${DEMO.STUDENT_DATABASE_LINK}/${application.student_id}/profile`}
+                            >
                               {application.firstname_lastname}
                             </Link>
                           </b>
@@ -312,32 +314,37 @@ class AgentMainView extends React.Component {
             )
           ) && (
             <Col md={6}>
-              <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
-                <Card.Header>
-                  <Card.Title className="my-0 mx-0 text-light">
+              <Card
+                className="my-2 mx-0 card-with-scroll"
+                bg={'danger'}
+                text={'light'}
+              >
+                <Card.Header className="py-0 px-0 " bg={'danger'}>
+                  <Card.Title className="my-2 mx-2 text-light" as={'h5'}>
                     <BsExclamationTriangle size={18} /> Ready To Submit Tasks (
                     ML/ RL/ Essay are finished. Please submit application
                     asap.):
                   </Card.Title>
                 </Card.Header>
-                <Table
-                  responsive
-                  bordered
-                  hover
-                  className="my-0 mx-0"
-                  variant="dark"
-                  text="light"
-                  size="sm"
-                >
-                  <thead>
-                    <tr>
-                      <th>Student</th>
-                      <th>Deadline</th>
-                      <th>Semester - Degree - Program</th>
-                    </tr>
-                  </thead>
-                  <tbody>{ready_to_submit_tasks}</tbody>
-                </Table>
+                <Card.Body className="py-0 px-0 card-scrollable-body">
+                  <Table
+                    bordered
+                    hover
+                    className="my-0 mx-0"
+                    variant="dark"
+                    text="light"
+                    size="sm"
+                  >
+                    <thead>
+                      <tr>
+                        <th>Student</th>
+                        <th>Deadline</th>
+                        <th>Semester - Degree - Program</th>
+                      </tr>
+                    </thead>
+                    <tbody>{ready_to_submit_tasks}</tbody>
+                  </Table>
+                </Card.Body>
               </Card>
             </Col>
           )}
@@ -350,30 +357,31 @@ class AgentMainView extends React.Component {
           ) && (
             <Col md={6}>
               <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
-                <Card.Header>
-                  <Card.Title className="my-0 mx-0 text-light">
+                <Card.Header className="py-0 px-0 " bg={'danger'}>
+                  <Card.Title className="my-2 mx-2 text-light" as={'h5'}>
                     <BsExclamationTriangle size={18} /> VPD missing:
                   </Card.Title>
                 </Card.Header>
-                <Table
-                  responsive
-                  bordered
-                  hover
-                  className="my-0 mx-0"
-                  variant="dark"
-                  text="light"
-                  size="sm"
-                >
-                  <thead>
-                    <tr>
-                      <th>Student</th>
-                      <th>Status</th>
-                      <th>Deadline</th>
-                      <th>Program</th>
-                    </tr>
-                  </thead>
-                  <tbody>{vpd_to_submit_tasks}</tbody>
-                </Table>
+                <Card.Body className="py-0 px-0 card-scrollable-body">
+                  <Table
+                    bordered
+                    hover
+                    className="my-0 mx-0"
+                    variant="dark"
+                    text="light"
+                    size="sm"
+                  >
+                    <thead>
+                      <tr>
+                        <th>Student</th>
+                        <th>Status</th>
+                        <th>Deadline</th>
+                        <th>Program</th>
+                      </tr>
+                    </thead>
+                    <tbody>{vpd_to_submit_tasks}</tbody>
+                  </Table>
+                </Card.Body>
               </Card>
             </Col>
           )}
@@ -386,30 +394,31 @@ class AgentMainView extends React.Component {
           ) && (
             <Col md={6}>
               <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
-                <Card.Header>
-                  <Card.Title className="my-0 mx-0 text-light">
+                <Card.Header className="py-0 px-0">
+                  <Card.Title className="my-2 mx-2 text-light" as={'h5'}>
                     <BsExclamationTriangle size={18} /> Check uploaded base
                     documents:
                   </Card.Title>
                 </Card.Header>
-                <Table
-                  responsive
-                  bordered
-                  hover
-                  className="my-0 mx-0"
-                  variant="dark"
-                  text="light"
-                  size="sm"
-                >
-                  <thead>
-                    <tr>
-                      <th>Student</th>
-                      <th>Base Document</th>
-                      <th>Upload Time</th>
-                    </tr>
-                  </thead>
-                  <tbody>{base_documents_checking_tasks}</tbody>
-                </Table>
+                <Card.Body className="py-0 px-0 card-scrollable-body">
+                  <Table
+                    bordered
+                    hover
+                    className="my-0 mx-0"
+                    variant="dark"
+                    text="light"
+                    size="sm"
+                  >
+                    <thead>
+                      <tr>
+                        <th>Student</th>
+                        <th>Base Document</th>
+                        <th>Upload Time</th>
+                      </tr>
+                    </thead>
+                    <tbody>{base_documents_checking_tasks}</tbody>
+                  </Table>
+                </Card.Body>
               </Card>
             </Col>
           )}
@@ -422,29 +431,30 @@ class AgentMainView extends React.Component {
           ) && (
             <Col md={6}>
               <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
-                <Card.Header>
-                  <Card.Title className="my-0 mx-0 text-light">
+                <Card.Header className="py-0 px-0">
+                  <Card.Title className="my-2 mx-2 text-light" as={'h5'}>
                     <BsExclamationTriangle size={18} /> CV Not Assigned Yet:
                   </Card.Title>
                 </Card.Header>
-                <Table
-                  responsive
-                  bordered
-                  hover
-                  className="my-0 mx-0"
-                  variant="dark"
-                  text="light"
-                  size="sm"
-                >
-                  <thead>
-                    <tr>
-                      <th>Docs</th>
-                      <th>Student Name</th>
-                      <th>Year/Semester</th>
-                    </tr>
-                  </thead>
-                  <tbody>{cv_assign_tasks}</tbody>
-                </Table>
+                <Card.Body className="py-0 px-0 card-scrollable-body">
+                  <Table
+                    bordered
+                    hover
+                    className="my-0 mx-0"
+                    variant="dark"
+                    text="light"
+                    size="sm"
+                  >
+                    <thead>
+                      <tr>
+                        <th>Docs</th>
+                        <th>Student Name</th>
+                        <th>Year/Semester</th>
+                      </tr>
+                    </thead>
+                    <tbody>{cv_assign_tasks}</tbody>
+                  </Table>
+                </Card.Body>
               </Card>
             </Col>
           )}
@@ -457,13 +467,42 @@ class AgentMainView extends React.Component {
           ) && (
             <Col md={6}>
               <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
-                <Card.Header>
-                  <Card.Title className="my-0 mx-0 text-light">
+                <Card.Header className="py-0 px-0">
+                  <Card.Title className="my-2 mx-2 text-light" as={'h5'}>
                     <BsExclamationTriangle size={18} /> No Program Selected Yet:
                   </Card.Title>
                 </Card.Header>
+                <Card.Body className="py-0 px-0 card-scrollable-body">
+                  <Table
+                    bordered
+                    hover
+                    className="my-0 mx-0"
+                    variant="dark"
+                    text="light"
+                    size="sm"
+                  >
+                    <thead>
+                      <tr>
+                        <th>Student Name</th>
+                        <th>Year/Semester</th>
+                      </tr>
+                    </thead>
+                    <tbody>{no_programs_student_tasks}</tbody>
+                  </Table>
+                </Card.Body>
+              </Card>
+            </Col>
+          )}
+          <Col md={6}>
+            <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
+              <Card.Header className="py-0 px-0">
+                <Card.Title className="my-2 mx-2 text-light" as={'h5'}>
+                  <BsExclamationTriangle size={18} /> No Enough Program Decided
+                  Tasks:
+                </Card.Title>
+              </Card.Header>
+              <Card.Body className="py-0 px-0 card-scrollable-body">
                 <Table
-                  responsive
                   bordered
                   hover
                   className="my-0 mx-0"
@@ -473,41 +512,14 @@ class AgentMainView extends React.Component {
                 >
                   <thead>
                     <tr>
-                      <th>Student Name</th>
-                      <th>Year/Semester</th>
+                      <th>Tasks</th>
+                      <th>Description</th>
+                      <th>Last Update</th>
                     </tr>
                   </thead>
-                  <tbody>{no_programs_student_tasks}</tbody>
+                  <tbody>{no_enough_programs_decided_tasks}</tbody>
                 </Table>
-              </Card>
-            </Col>
-          )}
-          <Col md={6}>
-            <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
-              <Card.Header>
-                <Card.Title className="my-0 mx-0 text-light">
-                  <BsExclamationTriangle size={18} /> No Enough Program Decided
-                  Tasks:
-                </Card.Title>
-              </Card.Header>
-              <Table
-                responsive
-                bordered
-                hover
-                className="my-0 mx-0"
-                variant="dark"
-                text="light"
-                size="sm"
-              >
-                <thead>
-                  <tr>
-                    <th>Tasks</th>
-                    <th>Description</th>
-                    <th>Last Update</th>
-                  </tr>
-                </thead>
-                <tbody>{no_enough_programs_decided_tasks}</tbody>
-              </Table>
+              </Card.Body>
             </Card>
           </Col>
           {/* <Col md={6}>

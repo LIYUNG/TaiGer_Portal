@@ -621,14 +621,6 @@ class InternalDashboard extends React.Component {
                   </Card.Header>
                   <Card.Body>
                     Number of Applications:
-                    {/* <NVD3Chart
-                  id="chart"
-                  height={300}
-                  type="pieChart"
-                  datum={applications_data}
-                  x="key"
-                  y="y"
-                /> */}
                     <ResponsiveContainer width="100%" height={300}>
                       <BarChart
                         data={applications_data}

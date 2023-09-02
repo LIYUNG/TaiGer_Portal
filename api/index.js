@@ -114,7 +114,7 @@ const launch = async () => {
   // reminder emails to agents, editor and student
 
   const job4 = schedule.scheduleJob(
-    DAILY_TASKS_REMINDER_SCHEDULE,
+    WEEKLY_TASKS_REMINDER_SCHEDULE,
     UrgentTasksReminderEmails
   );
 

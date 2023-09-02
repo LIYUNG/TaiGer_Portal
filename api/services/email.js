@@ -117,13 +117,83 @@ const sendEmail = (to, subject, message) => {
 </body>
 </html>
 `;
-
   const mail = {
     from: senderName,
     to,
     subject,
     // text: message,
     html: message
+  };
+  return transporter.sendMail(mail);
+};
+
+const sendEventEmail = (to, subject, message) => {
+  const htmlContent = `
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+    }
+    .container {
+      padding: 20px;
+      background-color: #ffffff;
+      border-radius: 5px;
+      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    .fa {
+      padding: 20px;
+      font-size: 30px;
+      width: 50px;
+      text-align: center;
+      text-decoration: none;
+    }
+
+/* Add a hover effect if you want */
+    .fa:hover {
+      opacity: 0.7;
+    }
+
+/* Set a specific color for each brand */
+
+/* Facebook */
+    .fa-facebook {
+      background: #3B5998;
+      color: white;
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+        <a
+          href="https://taigerconsultancy-portal.com/"
+          style={{ textDecoration: 'none' }}
+        >
+          <img
+            className="img-radius"
+            src="https://taigerconsultancy-portal.com/assets/taiger_logo_small.png"
+            alt="Generic placeholder"
+          />
+        </a>
+  ${message}
+</body>
+</html>
+`;
+  const content =
+    'BEGIN:VCALENDAR\r\nPRODID:-//ACME/DesktopCalendar//EN\r\nMETHOD:REQUEST\r\n...';
+  const mail = {
+    from: senderName,
+    to,
+    subject,
+    // text: message,
+    html: message,
+    icalEvent: {
+      filename: 'invitation.ics',
+      method: 'request',
+      content
+    }
   };
   return transporter.sendMail(mail);
 };

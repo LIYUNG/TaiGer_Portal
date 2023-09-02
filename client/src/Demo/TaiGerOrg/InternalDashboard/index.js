@@ -213,7 +213,7 @@ class InternalDashboard extends React.Component {
     const students_years_pair = [];
     let students_years = Object.keys(students_years_arr).sort();
     students_years = students_years.slice(
-      Math.max(students_years.length - 5, 1) // 3 >> the last x year students
+      Math.max(students_years.length - 10, 1) // 3 >> the last x year students
     );
     students_years.forEach((date, i) => {
       students_years_pair.push({

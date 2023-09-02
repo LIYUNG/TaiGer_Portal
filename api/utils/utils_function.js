@@ -742,17 +742,7 @@ const AssignEditorTasksReminderEmails = async () => {
         // inform active-agent
         if (isNotArchiv(students[i])) {
           if (isNotArchiv(students[i].agents[j])) {
-            // TODO : check if any input and then sent email
-            const editor_trigger_3days = 3;
-
-            let cv_ml_rl_3days_flag = false;
-            cv_ml_rl_3days_flag |= is_cv_ml_rl_reminder_needed(
-              students[i],
-              { _id: '0', role: 'Editor' },
-              editor_trigger_3days
-            );
-
-            if (cv_ml_rl_3days_flag) {
+            if (students[i].needEditor) {
               sendAssignEditorReminderEmail(
                 {
                   firstname: students[i].agents[j].firstname,
@@ -777,17 +767,7 @@ const AssignEditorTasksReminderEmails = async () => {
         .lean();
       if (permissions) {
         for (let x = 0; x < permissions.length; x += 1) {
-          // TODO : check if any input and then sent email
-          const editor_trigger_3days = 3;
-
-          let cv_ml_rl_3days_flag = false;
-          cv_ml_rl_3days_flag |= is_cv_ml_rl_reminder_needed(
-            students[i],
-            { _id: '0', role: 'Editor' },
-            editor_trigger_3days
-          );
-
-          if (cv_ml_rl_3days_flag) {
+          if (students[i].needEditor) {
             sendAssignEditorReminderEmail(
               {
                 firstname: permissions[x].user_id.firstname,
@@ -954,6 +934,110 @@ const NextSemesterCourseSelectionReminderEmails = async () => {
   // await NextSemesterCourseSelectionAgentReminderEmails();
 };
 
+const UpdateStatisticsData = async () => {
+  const documents_cv = await Documentthread.find({
+    isFinalVersion: false,
+    file_type: 'CV'
+  }).count();
+  // TODO: this include the tasks that created by not shown, because the programs are not decided.
+  // So that is why the number is more than what we actually see in UI.
+  // Case 2: if student in Archiv, but the tasks are still open!! then the number is not correct!
+  const documents_ml = await Documentthread.find({
+    isFinalVersion: false,
+    file_type: 'ML'
+  }).count();
+  const documents_rl = await Documentthread.find({
+    isFinalVersion: false,
+    $or: [
+      { file_type: 'RL_A' },
+      { file_type: 'RL_B' },
+      { file_type: 'RL_C' },
+      { file_type: 'Recommendation_Letter_A' },
+      { file_type: 'Recommendation_Letter_B' },
+      { file_type: 'Recommendation_Letter_C' }
+    ]
+  }).count();
+  const documents_essay = await Documentthread.find({
+    isFinalVersion: false,
+    file_type: 'Essay'
+  }).count();
+  const documents_data = {};
+  documents_data.CV = { count: documents_cv };
+  documents_data.ML = { count: documents_ml };
+  documents_data.RL = { count: documents_rl };
+  documents_data.ESSAY = { count: documents_essay };
+  const agents = await Agent.find({
+    $or: [{ archiv: { $exists: false } }, { archiv: false }]
+  });
+  const editors = await Editor.find({
+    $or: [{ archiv: { $exists: false } }, { archiv: false }]
+  });
+  const students = await Student.find()
+    .populate('agents editors', 'firstname lastname')
+    .populate('applications.programId')
+    .populate(
+      'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
+      '-messages'
+    );
+  const agents_data = [];
+  const editors_data = [];
+  for (let i = 0; i < agents.length; i += 1) {
+    const Obj = {};
+    Obj._id = agents[i]._id.toString();
+    Obj.firstname = agents[i].firstname;
+    Obj.lastname = agents[i].lastname;
+    Obj.student_num = await Student.find({
+      agents: agents[i]._id,
+      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+    }).count();
+    agents_data.push(Obj);
+  }
+  for (let i = 0; i < editors.length; i += 1) {
+    const Obj = {};
+    Obj._id = editors[i]._id.toString();
+    Obj.firstname = editors[i].firstname;
+    Obj.lastname = editors[i].lastname;
+    Obj.student_num = await Student.find({
+      editors: editors[i]._id,
+      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+    }).count();
+    editors_data.push(Obj);
+  }
+  const finished_docs = await Documentthread.find({
+    isFinalVersion: true,
+    $or: [
+      { file_type: 'CV' },
+      { file_type: 'ML' },
+      { file_type: 'RL_A' },
+      { file_type: 'RL_B' },
+      { file_type: 'RL_C' },
+      { file_type: 'Recommendation_Letter_A' },
+      { file_type: 'Recommendation_Letter_B' },
+      { file_type: 'Recommendation_Letter_C' }
+    ]
+  })
+    .populate('student_id', 'firstname lastname')
+    .select('file_type messages.createdAt');
+  const users = await User.find({
+    role: { $in: ['Admin', 'Agent', 'Editor'] }
+  }).lean();
+  const result = {
+    success: true,
+    data: users,
+    // documents_all_open,
+    documents: documents_data,
+    students: {
+      isClose: students.filter((student) => student.archiv === true).length,
+      isOpen: students.filter((student) => student.archiv !== true).length
+    },
+    finished_docs,
+    agents: agents_data,
+    editors: editors_data,
+    students_details: students,
+    applications: []
+  };
+};
+
 const add_portals_registered_status = (student_input) => {
   const student = student_input;
   for (let i = 0; i < student.applications.length; i += 1) {
@@ -1007,5 +1091,6 @@ module.exports = {
   AssignEditorTasksReminderEmails,
   UrgentTasksReminderEmails,
   NextSemesterCourseSelectionReminderEmails,
+  UpdateStatisticsData,
   add_portals_registered_status
 };

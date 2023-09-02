@@ -34,7 +34,8 @@ const {
   UrgentTasksReminderEmails,
   MongoDBDataBaseDailySnapshot,
   AssignEditorTasksReminderEmails,
-  NextSemesterCourseSelectionReminderEmails
+  NextSemesterCourseSelectionReminderEmails,
+  UpdateStatisticsData
 } = require('./utils/utils_function');
 // const { UserS3GarbageCollector } = require('./controllers/users');
 
@@ -141,6 +142,11 @@ const launch = async () => {
     COURSE_SELECTION_TASKS_REMINDER_DECEMBER_SCHEDULE,
     NextSemesterCourseSelectionReminderEmails
   );
+
+  // const job11 = schedule.scheduleJob(
+  //   DAILY_TASKS_REMINDER_SCHEDULE,
+  //   UpdateStatisticsData
+  // );
 
   logger.info(`isProd : ${isProd()}`);
   logger.info(`isDev : ${isDev()}`);

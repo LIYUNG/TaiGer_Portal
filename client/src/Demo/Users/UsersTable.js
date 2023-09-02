@@ -124,6 +124,14 @@ class UsersTable extends React.Component {
     if (res_status >= 400) {
       return <ErrorPage res_status={res_status} />;
     }
+    const student_list = this.state.user.filter(
+      (usr, x) => usr.role === 'Student'
+    );
+    const agent_list = this.state.user.filter((usr, x) => usr.role === 'Agent');
+    const editor_list = this.state.user.filter(
+      (usr, x) => usr.role === 'Editor'
+    );
+    const admin_list = this.state.user.filter((usr, x) => usr.role === 'Admin');
 
     return (
       <Aux>
@@ -154,17 +162,18 @@ class UsersTable extends React.Component {
                 justify={true}
                 className="py-0 my-0 mx-0"
               >
-                <Tab eventKey="Student" title="Student">
+                <Tab
+                  eventKey="Student"
+                  title={`Student (${student_list?.length})`}
+                >
                   <UsersList
                     success={this.state.success}
                     isLoaded={this.state.isLoaded}
-                    user={this.state.user.filter(
-                      (usr, x) => usr.role === 'Student'
-                    )}
+                    user={student_list}
                     onSubmit2={this.onSubmit2}
                   />
                 </Tab>
-                <Tab eventKey="Agent" title="Agent">
+                <Tab eventKey="Agent" title={`Agent (${agent_list.length})`}>
                   <UsersList
                     success={this.state.success}
                     isLoaded={this.state.isLoaded}
@@ -174,7 +183,7 @@ class UsersTable extends React.Component {
                     onSubmit2={this.onSubmit2}
                   />
                 </Tab>
-                <Tab eventKey="Editor" title="Editor">
+                <Tab eventKey="Editor" title={`Editor (${editor_list.length})`}>
                   <UsersList
                     success={this.state.success}
                     isLoaded={this.state.isLoaded}
@@ -184,7 +193,7 @@ class UsersTable extends React.Component {
                     onSubmit2={this.onSubmit2}
                   />
                 </Tab>
-                <Tab eventKey="Admin" title="Admin">
+                <Tab eventKey="Admin" title={`Admin (${admin_list.length})`}>
                   <UsersList
                     success={this.state.success}
                     isLoaded={this.state.isLoaded}

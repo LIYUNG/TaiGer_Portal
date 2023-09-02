@@ -66,6 +66,15 @@ class NoEditorsStudentsCard extends React.Component {
             </td>
             <td>{this.props.student.email}</td>
             <td>
+              {this.props.student.needEditor ? (
+                <span className="text-danger">
+                  <b>Ready to Assign</b>
+                </span>
+              ) : (
+                ''
+              )}
+            </td>
+            <td>
               {this.props.student.application_preference
                 .expected_application_date || (
                 <p className="text-danger">TBD</p>
@@ -74,7 +83,7 @@ class NoEditorsStudentsCard extends React.Component {
             <td>
               {!this.props.student.agents ||
               this.props.student.agents.length === 0 ? (
-                <p className="text-danger">
+                <p className="text-secondary">
                   <b>No Agent</b>
                 </p>
               ) : (

@@ -40,6 +40,7 @@ class AssignEditorsPage extends React.Component {
                     <th></th>
                     <th>First-, Last Name</th>
                     <th>Email</th>
+                    <th>Status</th>
                     <th>Target Year</th>
                     <th>Agent(s)</th>
                   </tr>

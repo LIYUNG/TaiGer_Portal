@@ -824,6 +824,7 @@ const postMessages = asyncHandler(async (req, res) => {
   if (user.role === Role.Student) {
     // If no editor, inform agent to assign
     if (!student.editors || student.editors.length === 0) {
+      await Student.findByIdAndUpdate(user._id, { needEditor: true }, {});
       for (let i = 0; i < student.agents.length; i += 1) {
         // inform active-agent
         if (isNotArchiv(student)) {

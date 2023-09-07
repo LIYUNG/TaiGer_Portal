@@ -408,6 +408,93 @@ const create_years = (start_year, end_year) => {
   return year_array;
 };
 
+export const AddValidProgram = (program) => {
+  const pattern = /^(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/;
+  if (
+    !program.application_deadline?.includes('olling') &&
+    !pattern.test(program.application_deadline)
+  ) {
+    return false;
+  }
+  if (
+    program.school &&
+    program.program_name &&
+    program.degree &&
+    program.lang &&
+    program.semester &&
+    program.country
+  ) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
+export const field_alert = (program) => {
+  if (!program.school) {
+    alert('Please fill School name completely');
+    return;
+  }
+  if (!program.program_name) {
+    alert('Please fill Program name completely');
+    return;
+  }
+  if (!program.degree) {
+    alert('Please fill Degree completely');
+    return;
+  }
+  if (!program.lang) {
+    alert('Please fill Teaching Language completely');
+    return;
+  }
+  if (!program.semester) {
+    alert('Please fill Semester completely');
+    return;
+  }
+  if (!program.country) {
+    alert('Please fill Country completely');
+    return;
+  }
+  const pattern = /^(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/;
+  if (
+    !program.application_deadline?.includes('olling') &&
+    !pattern.test(program.application_deadline)
+  ) {
+    alert(
+      'Please fill the application deadline correctly: Format: MM-DD or Rolling'
+    );
+    return;
+  }
+};
+export const LANGUAGES_OPTIONS = () => {
+  return (
+    <>
+      <option value="-">-</option>
+      <option value="English">English</option>
+      <option value="German">German</option>
+    </>
+  );
+};
+
+export const COUNTRIES_OPTIONS = () => {
+  return (
+    <>
+      <option value="-">-</option>
+      <option value="at">Austria</option>
+      <option value="au">Australia</option>
+      <option value="dk">Danmark</option>
+      <option value="de">Germany</option>
+      <option value="nl">Netherlands</option>
+      <option value="no">Norway</option>
+      <option value="sg">Singapore</option>
+      <option value="se">Sweden</option>
+      <option value="ch">Switzerland</option>
+      <option value="uk">United Kingdom</option>
+      <option value="us">United States</option>
+    </>
+  );
+};
+
 export const BINARY_STATE_OPTIONS = () => {
   return (
     <>

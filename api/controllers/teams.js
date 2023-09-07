@@ -70,14 +70,19 @@ const getStatistics = asyncHandler(async (req, res) => {
   const agents_data = [];
   const editors_data = [];
   for (let i = 0; i < agents.length; i += 1) {
+    const agent_students = await Student.find({
+      agents: agents[i]._id,
+      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+    }).lean();
+    const student_num_with_offer = agent_students.filter((std) =>
+      std.applications.some((application) => application.admission === 'O')
+    ).length;
     const Obj = {};
     Obj._id = agents[i]._id.toString();
     Obj.firstname = agents[i].firstname;
     Obj.lastname = agents[i].lastname;
-    Obj.student_num = await Student.find({
-      agents: agents[i]._id,
-      $or: [{ archiv: { $exists: false } }, { archiv: false }]
-    }).count();
+    Obj.student_num_no_offer = agent_students.length - student_num_with_offer;
+    Obj.student_num_with_offer = student_num_with_offer;
     agents_data.push(Obj);
   }
   for (let i = 0; i < editors.length; i += 1) {

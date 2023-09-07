@@ -1,6 +1,12 @@
 import React from 'react';
 import { Form, Row, Col, Card, Button } from 'react-bootstrap';
-import { BINARY_STATE_OPTIONS } from '../Utils/contants';
+import {
+  AddValidProgram,
+  BINARY_STATE_OPTIONS,
+  COUNTRIES_OPTIONS,
+  LANGUAGES_OPTIONS,
+  field_alert
+} from '../Utils/contants';
 
 class NewProgramEdit extends React.Component {
   state = {
@@ -15,25 +21,13 @@ class NewProgramEdit extends React.Component {
       program: program_temp
     }));
   };
-  AddValidProgram = (program) => {
-    if (
-      program.school &&
-      program.program_name &&
-      program.degree &&
-      program.semester &&
-      program.application_deadline
-    ) {
-      return true;
-    } else {
-      return false;
-    }
-  };
+
   handleSubmit_Program = (e, program) => {
-    if (this.AddValidProgram(program)) {
+    if (AddValidProgram(program)) {
       e.preventDefault();
       this.props.handleSubmit_Program(program);
     } else {
-      alert('Please fill completely');
+      field_alert(program);
     }
   };
   render() {
@@ -155,19 +149,20 @@ class NewProgramEdit extends React.Component {
             <Row> </Row>
             <Row>
               <Col md={4}>
-                <h5>Teaching Language</h5>
+                <h5>Teaching Language*</h5>
               </Col>
               <Col md={4}>
                 <h5>
                   <Form.Group controlId="lang">
                     <Form.Control
-                      type="text"
-                      placeholder="English"
+                      as="select"
                       onChange={(e) => this.handleChange(e)}
                       defaultValue={
                         this.state.program.lang ? this.state.program.lang : ''
                       }
-                    />
+                    >
+                      {LANGUAGES_OPTIONS()}
+                    </Form.Control>
                   </Form.Group>
                 </h5>
               </Col>
@@ -725,21 +720,22 @@ class NewProgramEdit extends React.Component {
             </Row>
             <Row>
               <Col md={4}>
-                <h5>Country</h5>
+                <h5>Country*</h5>
               </Col>
               <Col md={4}>
                 <h5>
                   <Form.Group controlId="country">
                     <Form.Control
-                      type="text"
-                      placeholder="de, fr, fi, se, nl, ch, sg, us..."
+                      as="select"
                       onChange={(e) => this.handleChange(e)}
                       defaultValue={
                         this.state.program.country
                           ? this.state.program.country
                           : ''
                       }
-                    />
+                    >
+                      {COUNTRIES_OPTIONS()}
+                    </Form.Control>
                   </Form.Group>
                 </h5>
               </Col>

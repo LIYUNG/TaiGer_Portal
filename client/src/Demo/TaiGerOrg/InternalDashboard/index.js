@@ -255,7 +255,8 @@ class InternalDashboard extends React.Component {
     agents.forEach((agent, i) => {
       agents_data.push({
         key: `${agent.firstname}`,
-        student_num: agent.student_num,
+        student_num_no_offer: agent.student_num_no_offer,
+        student_num_with_offer: agent.student_num_with_offer,
         color: colors[i]
       });
     });
@@ -498,17 +499,21 @@ class InternalDashboard extends React.Component {
                         <Tooltip />
                         {/* <Legend /> */}
                         <Bar
-                          dataKey="student_num"
+                          dataKey="student_num_no_offer"
                           fill={'#8884d8'}
                           stackId={'a'}
                           label={{ position: 'right' }}
                         >
-                          {editor_tasks_distribution_data.map(
-                            (entry, index) => (
-                              <Cell key={`cell-${index}`} />
-                            )
-                          )}
+                          {agents_data.map((entry, index) => (
+                            <Cell key={`cell-${index}`} />
+                          ))}
                         </Bar>
+                        <Bar
+                          dataKey="student_num_with_offer"
+                          fill="#A9A9A9"
+                          stackId={'a'}
+                          label={{ position: 'right' }}
+                        />
                       </BarChart>
                     </ResponsiveContainer>
                   </Card.Body>

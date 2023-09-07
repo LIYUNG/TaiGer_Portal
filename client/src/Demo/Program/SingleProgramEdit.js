@@ -1,6 +1,12 @@
 import React from 'react';
 import { Form, Row, Col, Card, Button } from 'react-bootstrap';
-import { BINARY_STATE_OPTIONS } from '../Utils/contants';
+import {
+  AddValidProgram,
+  BINARY_STATE_OPTIONS,
+  COUNTRIES_OPTIONS,
+  LANGUAGES_OPTIONS,
+  field_alert
+} from '../Utils/contants';
 
 class SingleProgramEdit extends React.Component {
   state = {
@@ -16,8 +22,12 @@ class SingleProgramEdit extends React.Component {
     }));
   };
   handleSubmit_Program = (e, program) => {
-    e.preventDefault();
-    this.props.handleSubmit_Program(program);
+    if (AddValidProgram(program)) {
+      e.preventDefault();
+      this.props.handleSubmit_Program(program);
+    } else {
+      field_alert(program);
+    }
   };
   render() {
     return (
@@ -133,13 +143,16 @@ class SingleProgramEdit extends React.Component {
                 <h5>
                   <Form.Group controlId="lang">
                     <Form.Control
-                      type="text"
-                      placeholder="English"
+                      as="select"
                       onChange={(e) => this.handleChange(e)}
                       defaultValue={
-                        this.state.program.lang ? this.state.program.lang : ''
+                        this.state.program.lang
+                          ? this.state.program.lang
+                          : 'English'
                       }
-                    />
+                    >
+                      {LANGUAGES_OPTIONS()}
+                    </Form.Control>
                   </Form.Group>
                 </h5>
               </Col>
@@ -620,15 +633,16 @@ class SingleProgramEdit extends React.Component {
                 <h5>
                   <Form.Group controlId="country">
                     <Form.Control
-                      type="text"
-                      placeholder="de, fr, fi, se, nl, ch, sg, us..."
+                      as="select"
                       onChange={(e) => this.handleChange(e)}
                       defaultValue={
                         this.state.program.country
                           ? this.state.program.country
                           : ''
                       }
-                    />
+                    >
+                      {COUNTRIES_OPTIONS()}
+                    </Form.Control>
                   </Form.Group>
                 </h5>
               </Col>

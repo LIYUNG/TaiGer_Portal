@@ -658,7 +658,10 @@ const getMessages = asyncHandler(async (req, res) => {
     params: { messagesThreadId }
   } = req;
   const document_thread = await Documentthread.findById(messagesThreadId)
-    .populate('student_id', 'firstname lastname role agents editors')
+    .populate(
+      'student_id',
+      'firstname lastname role agents editors application_preference'
+    )
     .populate('messages.user_id', 'firstname lastname role')
     .populate('program_id')
     .lean()
@@ -696,12 +699,34 @@ const getMessages = asyncHandler(async (req, res) => {
     );
     deadline = application_deadline_calculator(student, application);
   }
+  // Find conflict list:
+  let conflict_list = [];
+  if (
+    user.role === Role.Admin ||
+    user.role === Role.Agent ||
+    user.role === Role.Editor
+  ) {
+    conflict_list = await Student.find({
+      _id: { $ne: document_thread.student_id._id.toString() },
+      applications: {
+        $elemMatch: {
+          programId: document_thread.program_id?._id.toString()
+        }
+      },
+      'application_preference.expected_application_date':
+        document_thread.student_id?.application_preference
+          ?.expected_application_date
+    }).select(
+      'firstname lastname applications application_preference.expected_application_date'
+    );
+  }
   res.status(200).send({
     success: true,
     data: document_thread,
     agents,
     editors,
-    deadline
+    deadline,
+    conflict_list
   });
 });
 

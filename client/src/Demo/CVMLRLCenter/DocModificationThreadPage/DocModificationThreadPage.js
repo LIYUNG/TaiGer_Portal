@@ -12,6 +12,7 @@ import { spinner_style, templatelist } from '../../Utils/contants';
 
 import {
   is_TaiGer_AdminAgent,
+  is_TaiGer_Student,
   is_TaiGer_role,
   showButtonIfMyStudentB
 } from '../../Utils/checking-functions';
@@ -43,6 +44,7 @@ class DocModificationThreadPage extends Component {
     expand: true,
     editors: [],
     agents: [],
+    conflict_list: [],
     deadline: '',
     SetAsFinalFileModel: false,
     accordionKeys: [0], // to expand all]
@@ -55,7 +57,8 @@ class DocModificationThreadPage extends Component {
     document.addEventListener('mousedown', this.handleClickOutside);
     getMessagThread(this.props.match.params.documentsthreadId).then(
       (resp) => {
-        const { success, data, editors, agents, deadline } = resp.data;
+        const { success, data, editors, agents, deadline, conflict_list } =
+          resp.data;
         const { status } = resp;
         if (success) {
           this.setState({
@@ -64,6 +67,7 @@ class DocModificationThreadPage extends Component {
             editors,
             agents,
             deadline,
+            conflict_list,
             isLoaded: true,
             documentsthreadId: this.props.match.params.documentsthreadId,
             file: null,
@@ -400,6 +404,7 @@ class DocModificationThreadPage extends Component {
       isLoaded,
       isFilesListOpen,
       isSubmissionLoaded,
+      conflict_list,
       res_status,
       res_modal_status,
       res_modal_message
@@ -422,7 +427,11 @@ class DocModificationThreadPage extends Component {
     if (this.state.thread.file_type === 'CV') {
       widths = [9, 2, 1];
     } else {
-      widths = [10, 2];
+      if (is_TaiGer_Student(this.props.user)) {
+        widths = [10, 2];
+      } else {
+        widths = [9, 2, 1];
+      }
     }
 
     // Only CV, ML RL has instructions and template.
@@ -492,7 +501,13 @@ class DocModificationThreadPage extends Component {
                   className="text-light mb-0 me-2 "
                   style={{ float: 'right' }}
                 >
-                  <Button size='sm' variant='secondary' onClick={this.handleOpenFileList}>View all Files</Button>
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={this.handleOpenFileList}
+                  >
+                    View all Files
+                  </Button>
                   {this.state.expand ? (
                     <Button
                       className="btn-sm float-right"
@@ -683,7 +698,7 @@ class DocModificationThreadPage extends Component {
                     </h6>
                     <p>{this.state.deadline}</p>
                   </Col>
-                  {this.state.thread.file_type === 'CV' && (
+                  {this.state.thread.file_type === 'CV' ? (
                     <Col md={widths[2]}>
                       <h6>
                         <b>Profile photo:</b>
@@ -704,6 +719,26 @@ class DocModificationThreadPage extends Component {
                       </a>{' '}
                       and upload the Passport Photo.
                     </Col>
+                  ) : (
+                    !is_TaiGer_Student(this.props.user) && (
+                      <Col md={widths[2]}>
+                        <h6>
+                          <b>Conflict:</b>
+                        </h6>
+                        {conflict_list.length === 0
+                          ? 'None'
+                          : conflict_list.map((conflict_student) => (
+                              <Link
+                                to={`/student-database/${conflict_student._id.toString()}/profile`}
+                              >
+                                <b>
+                                  {conflict_student.firstname}{' '}
+                                  {conflict_student.lastname}
+                                </b>
+                              </Link>
+                            ))}
+                      </Col>
+                    )
                   )}
                 </Row>
               </Card.Body>

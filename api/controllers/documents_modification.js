@@ -710,7 +710,8 @@ const getMessages = asyncHandler(async (req, res) => {
       _id: { $ne: document_thread.student_id._id.toString() },
       applications: {
         $elemMatch: {
-          programId: document_thread.program_id?._id.toString()
+          programId: document_thread.program_id?._id.toString(),
+          decided: 'O'
         }
       },
       'application_preference.expected_application_date':

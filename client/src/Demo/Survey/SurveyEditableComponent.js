@@ -16,7 +16,7 @@ import {
   check_academic_background_filled,
   check_languages_filled,
   check_application_preference_filled,
-  showButtonIfMyStudent,
+  // showButtonIfMyStudent,
   missing_survey_fields_list
 } from '../Utils/checking-functions';
 import {
@@ -178,10 +178,7 @@ class SurveyEditableComponent extends React.Component {
   };
 
   render() {
-    const isReadonly = !showButtonIfMyStudent(this.props.user, {
-      agents: this.props.agents,
-      editors: this.props.editors
-    });
+    const isReadonly = false;
     return (
       <Aux>
         {(!check_academic_background_filled(this.props.academic_background) ||
@@ -731,24 +728,18 @@ class SurveyEditableComponent extends React.Component {
                       <br />
                       {this.props.singlestudentpage_fromtaiger ? (
                         <>
-                          {showButtonIfMyStudent(this.props.user, {
-                            agents: this.props.agents,
-                            editors: this.props.editors
-                          }) && (
-                            <Button
-                              variant="primary"
-                              disabled={!this.state.changed_academic}
-                              onClick={(e) =>
-                                this.props.handleSubmit_AcademicBackground_root(
-                                  e,
-                                  this.state.academic_background.university
-                                )
-                              }
-                            >
-                              Update
-                            </Button>
-                          )}
-
+                          <Button
+                            variant="primary"
+                            disabled={!this.state.changed_academic}
+                            onClick={(e) =>
+                              this.props.handleSubmit_AcademicBackground_root(
+                                e,
+                                this.state.academic_background.university
+                              )
+                            }
+                          >
+                            Update
+                          </Button>
                           <br />
                         </>
                       ) : (
@@ -1024,25 +1015,20 @@ class SurveyEditableComponent extends React.Component {
                       <br />
                       {this.props.singlestudentpage_fromtaiger ? (
                         <>
-                          {showButtonIfMyStudent(this.props.user, {
-                            agents: this.props.agents,
-                            editors: this.props.editors
-                          }) && (
-                            <Button
-                              variant="primary"
-                              disabled={
-                                !this.state.changed_application_preference
-                              }
-                              onClick={(e) =>
-                                this.props.handleSubmit_ApplicationPreference_root(
-                                  e,
-                                  this.state.application_preference
-                                )
-                              }
-                            >
-                              Update
-                            </Button>
-                          )}
+                          <Button
+                            variant="primary"
+                            disabled={
+                              !this.state.changed_application_preference
+                            }
+                            onClick={(e) =>
+                              this.props.handleSubmit_ApplicationPreference_root(
+                                e,
+                                this.state.application_preference
+                              )
+                            }
+                          >
+                            Update
+                          </Button>
                           <br />
                         </>
                       ) : (
@@ -1733,23 +1719,19 @@ class SurveyEditableComponent extends React.Component {
                       <br />
                       {this.props.singlestudentpage_fromtaiger ? (
                         <>
-                          {showButtonIfMyStudent(this.props.user, {
-                            agents: this.props.agents,
-                            editors: this.props.editors
-                          }) && (
-                            <Button
-                              variant="primary"
-                              disabled={!this.state.changed_language}
-                              onClick={(e) =>
-                                this.props.handleSubmit_Language_root(
-                                  e,
-                                  this.state.academic_background.language
-                                )
-                              }
-                            >
-                              Update
-                            </Button>
-                          )}
+                          <Button
+                            variant="primary"
+                            disabled={!this.state.changed_language}
+                            onClick={(e) =>
+                              this.props.handleSubmit_Language_root(
+                                e,
+                                this.state.academic_background.language
+                              )
+                            }
+                          >
+                            Update
+                          </Button>
+
                           <br />
                         </>
                       ) : (

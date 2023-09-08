@@ -728,14 +728,16 @@ class DocModificationThreadPage extends Component {
                         {conflict_list.length === 0
                           ? 'None'
                           : conflict_list.map((conflict_student) => (
-                              <Link
-                                to={`/student-database/${conflict_student._id.toString()}/profile`}
-                              >
-                                <b>
-                                  {conflict_student.firstname}{' '}
-                                  {conflict_student.lastname}
-                                </b>
-                              </Link>
+                              <p>
+                                <Link
+                                  to={`/student-database/${conflict_student._id.toString()}/CV_ML_RL`}
+                                >
+                                  <b>
+                                    {conflict_student.firstname}{' '}
+                                    {conflict_student.lastname}
+                                  </b>
+                                </Link>
+                              </p>
                             ))}
                       </Col>
                     )

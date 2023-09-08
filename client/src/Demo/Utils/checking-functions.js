@@ -540,7 +540,7 @@ export const progressBarCounter = (student, application) => {
     ).length,
 
     (application?.programId?.ielts || application?.programId?.toefl) &&
-    student?.academic_background?.language?.english_isPassed
+    student?.academic_background?.language?.english_isPassed === 'O'
       ? 1
       : 0,
     application?.programId?.testdaf &&

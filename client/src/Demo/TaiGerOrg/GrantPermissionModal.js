@@ -33,7 +33,7 @@ class GrantPermissionModal extends React.Component {
   render() {
     const permissions = [
       ['canModifyProgramList', 'Can modify program list'],
-      ['canModifyAllBaseDocuments', 'Can modify all Base Documents'],
+      ['canModifyAllBaseDocuments', 'Can modify all Base Documents And Survey Data'],
       ['canAccessAllChat', 'Can access all chat'],
       ['canAssignAgents', 'Can assign agents'],
       ['canAssignEditors', 'Can assign editors'],

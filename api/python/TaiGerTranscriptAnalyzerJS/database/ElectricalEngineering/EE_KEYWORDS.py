@@ -41,7 +41,7 @@ EE_SIGNAL_SYSTEM_ANTI_KEY_WORDS = ['asdgladfj;l''超大型', '專題']
 EE_ELECTRO_MAGNET_KEY_WORDS = ['電磁', '電動力學']
 EE_ELECTRO_MAGNET_ANTI_KEY_WORDS = ['asdgladfj;l', '專題', '進階']
 EE_POWER_ELECTRO_KEY_WORDS = ['電力', '能源', '電動機', '電機', '高壓電', '電傳輸', '配電']
-EE_POWER_ELECTRO_ANTI_KEY_WORDS = ['asdgladfj;l', '專題', '進階']
+EE_POWER_ELECTRO_ANTI_KEY_WORDS = ['asdgladfj;l', '專題', '進階', '政策']
 EE_COMMUNICATION_KEY_WORDS = ['密碼學', '安全', '傳輸', '射頻', '電信',
                               '網路', '無線', '通信', '通訊', '電波', '無線網路']
 EE_COMMUNICATION_ANTI_KEY_WORDS = [
@@ -58,7 +58,7 @@ EE_ADVANCED_ELECTRO_KEY_WORDS = ['自動化',  '藍芽', '晶片', '數位訊號
 EE_ADVANCED_ELECTRO_ANTI_KEY_WORDS = ['倫理', '藝術', '素養']
 EE_APPLICATION_ORIENTED_KEY_WORDS = ['生醫', '光機電', '電腦', '微系統', '物聯網', '聲學', '微機電', '控制',
                                      '影像', '深度學習', '光電', '應用', '綠能', '雲端運算', '醫學工程', '再生能源']
-EE_APPLICATION_ORIENTED_ANTI_KEY_WORDS = ['倫理', '素養', '入門', '經濟', '微波']
+EE_APPLICATION_ORIENTED_ANTI_KEY_WORDS = ['倫理', '素養', '入門', '經濟', '微波', '政策']
 EE_MACHINE_RELATED_KEY_WORDS = ['力學', '流體',
                                 '熱力', '傳導', '熱傳', '機械', '動力', '熱流', '機動']
 EE_MACHINE_RELATED_ANTI_KEY_WORDS = ['asdgladfj;l']
@@ -114,7 +114,7 @@ EE_ELECTRO_MAGNET_KEY_WORDS_EN = ['electromagne', 'magne']
 EE_ELECTRO_MAGNET_ANTI_KEY_WORDS_EN = ['asdgladfj;l', '專題', '進階']
 EE_POWER_ELECTRO_KEY_WORDS_EN = [
     'power', 'energy', '電動機', 'electrical machine', 'high voltage', 'transmission']
-EE_POWER_ELECTRO_ANTI_KEY_WORDS_EN = ['asdgladfj;l', '專題', '進階']
+EE_POWER_ELECTRO_ANTI_KEY_WORDS_EN = ['asdgladfj;l', '專題', '進階', 'policy']
 EE_COMMUNICATION_KEY_WORDS_EN = ['microwave', 'crypto', 'security', 'radio frequ',
                                  'network', 'wireless', 'communication', '通訊', '電波']
 EE_COMMUNICATION_ANTI_KEY_WORDS_EN = [

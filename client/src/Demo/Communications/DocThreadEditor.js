@@ -65,7 +65,7 @@ function DocThreadEditor(props) {
             >
               <span className="d-inline-block">
                 <Button disabled={true} style={{ pointerEvents: 'none' }}>
-                  Save
+                  Send
                 </Button>
               </span>
             </OverlayTrigger>
@@ -73,7 +73,7 @@ function DocThreadEditor(props) {
             <Button
               onClick={(e) => props.handleClickSave(e, statedata.editorState)}
             >
-              Save
+              Send
             </Button>
           )}
           {props.showCancelButton && (

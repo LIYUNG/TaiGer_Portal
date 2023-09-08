@@ -59,11 +59,16 @@ function DocThreadEditor(props) {
       <Row>
         <Col md={8}>
           <Form.Group controlId="formFile" className="mb-2">
-            <Form.Control type="file" multiple onChange={(e) => props.onFileChange(e)} />
+            <Form.Control
+              type="file"
+              multiple
+              onChange={(e) => props.onFileChange(e)}
+            />
           </Form.Group>
         </Col>
         <Col className="mt-2" md={4}>
-          (Choose max. 3 files with different extensions: .pdf, .docx, .jgp, and overall 2MB!)
+          (Choose max. 3 files with different extensions: .pdf, .docx, .jgp, and
+          overall 2MB!)
         </Col>
       </Row>
       <Row>
@@ -78,7 +83,7 @@ function DocThreadEditor(props) {
             >
               <span className="d-inline-block">
                 <Button disabled={true} style={{ pointerEvents: 'none' }}>
-                  Save
+                  Send
                 </Button>
               </span>
             </OverlayTrigger>
@@ -86,7 +91,7 @@ function DocThreadEditor(props) {
             <Button
               onClick={(e) => props.handleClickSave(e, statedata.editorState)}
             >
-              Save
+              Send
             </Button>
           )}
         </Col>

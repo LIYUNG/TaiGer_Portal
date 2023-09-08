@@ -23,7 +23,9 @@ EE_SOFTWARE_SYSTEM_ANTI_KEY_WORDS = ['asdgladfj;l']
 EE_CONTROL_THEORY_KEY_WORDS = ['控制', '線性系統', '非線性系統']
 EE_CONTROL_THEORY_ANTI_KEY_WORDS = ['asdgladfj;l', '網路', '碼', '儀', '可程式']
 EE_PHYSICS_KEY_WORDS = ['物理']
-EE_PHYSICS_ANTI_KEY_WORDS = ['半導體', '元件', '實驗', '史', '服務', '冶金', '生活']
+EE_PHYSICS_ANTI_KEY_WORDS = ['固態', '半導體', '元件', '實驗', '史', '服務', '冶金', '生活']
+EE_ADVANCED_PHYSICS_KEY_WORDS = ['固態物理']
+EE_ADVANCED_PHYSICS_ANTI_KEY_WORDS = ['半導體', '元件', '實驗', '史', '服務', '冶金', '生活']
 EE_PHYSICS_EXP_KEY_WORDS = ['物理']
 EE_PHYSICS_EXP_ANTI_KEY_WORDS = ['半導體', '元件', '史', '服務']
 EE_ELECTRONICS_KEY_WORDS = ['電子', '電子電路']
@@ -51,7 +53,7 @@ EE_SEMICONDUCTOR_KEY_WORDS = ['半導體', '元件', '固態']
 EE_SEMICONDUCTOR_ANTI_KEY_WORDS = ['專題', '倫理', '素養', '藝術', '電子']
 EE_ELEC_MATERIALS_KEY_WORDS = ['電子', '材料']
 EE_ELEC_MATERIALS_ANTI_KEY_WORDS = ['專題', '倫理', '藝術', '素養']
-EE_ADVANCED_ELECTRO_KEY_WORDS = ['積體電路', '自動化',  '藍芽', '晶片', '類比', '數位訊號', '數位信號',
+EE_ADVANCED_ELECTRO_KEY_WORDS = ['自動化',  '藍芽', '晶片', '數位訊號', '數位信號',
                                  '微算機', '微處理', 'VLSI', '嵌入式', '人工智慧', '機器學習']
 EE_ADVANCED_ELECTRO_ANTI_KEY_WORDS = ['倫理', '藝術', '素養']
 EE_APPLICATION_ORIENTED_KEY_WORDS = ['生醫', '光機電', '電腦', '微系統', '物聯網', '聲學', '微機電', '控制',
@@ -60,6 +62,9 @@ EE_APPLICATION_ORIENTED_ANTI_KEY_WORDS = ['倫理', '素養', '入門', '經濟'
 EE_MACHINE_RELATED_KEY_WORDS = ['力學', '流體',
                                 '熱力', '傳導', '熱傳', '機械', '動力', '熱流', '機動']
 EE_MACHINE_RELATED_ANTI_KEY_WORDS = ['asdgladfj;l']
+EE_ELECTRO_CIRCUIT_DESIGN_KEY_WORDS = ['數位電路', '類比', '積體電路', 'ic design', 'vlsi', 'ulsi']
+EE_ELECTRO_CIRCUIT_DESIGN_ANTI_KEY_WORDS = [
+    '專題', '倫理', '素養', '進階', '藝術', '高頻', '微波']
 USELESS_COURSES_KEY_WORDS = ['asdgladfj;l']
 USELESS_COURSES_ANTI_KEY_WORDS = ['asdgladfj;l']
 
@@ -88,6 +93,9 @@ EE_CONTROL_THEORY_KEY_WORDS_EN = ['control', 'linear system', '非線性系統']
 EE_CONTROL_THEORY_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
 EE_PHYSICS_KEY_WORDS_EN = ['physics']
 EE_PHYSICS_ANTI_KEY_WORDS_EN = [
+    'semicondu', 'device', 'experiment', 'lab']
+EE_ADVANCED_PHYSICS_KEY_WORDS_EN = ['solid state physics']
+EE_ADVANCED_PHYSICS_ANTI_KEY_WORDS_EN = [
     'semicondu', 'device', 'experiment', 'lab']
 EE_PHYSICS_EXP_KEY_WORDS_EN = ['physics']
 EE_PHYSICS_EXP_ANTI_KEY_WORDS_EN = ['semicondu', '元件']
@@ -118,8 +126,8 @@ EE_SEMICONDUCTOR_KEY_WORDS_EN = ['semicondu', '元件', 'solid state']
 EE_SEMICONDUCTOR_ANTI_KEY_WORDS_EN = ['專題', 'ethnic', '素養']
 EE_ELEC_MATERIALS_KEY_WORDS_EN = ['電子材料']
 EE_ELEC_MATERIALS_ANTI_KEY_WORDS_EN = ['專題', 'ethnic', '素養']
-EE_ADVANCED_ELECTRO_KEY_WORDS_EN = ['integrated circuit', 'automation',  'bluetooth', 'chip', 'analog', 'digital', 'digital signal',
-                                    'microprocessor', 'microcontroller', 'vlsi', 'embedded', 'artificial', 'machine learning', 'ulsi']
+EE_ADVANCED_ELECTRO_KEY_WORDS_EN = ['automation',  'bluetooth', 'chip', 'digital', 'digital signal',
+                                    'microprocessor', 'microcontroller', 'embedded', 'artificial', 'machine learning']
 EE_ADVANCED_ELECTRO_ANTI_KEY_WORDS_EN = ['ethnic', '素養']
 EE_APPLICATION_ORIENTED_KEY_WORDS_EN = ['生醫', 'neuro', '光機電', 'mems', 'iot', 'accoustics', 'solar',
                                         'image', 'deep learning', 'optoelectronics', '應用', 'green', 'cloud', 'medical', 'renewable']
@@ -127,5 +135,8 @@ EE_APPLICATION_ORIENTED_ANTI_KEY_WORDS_EN = ['ethnic', '素養']
 EE_MACHINE_RELATED_KEY_WORDS_EN = ['mechanics', 'fluid', 'statics', 'dynamics',
                                    'thermodyna', '傳導', 'conduction', 'machine', 'heat flux', '機動']
 EE_MACHINE_RELATED_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
+EE_ELECTRO_CIRCUIT_DESIGN_KEY_WORDS_EN = ['analog', 'integrated circuit', 'vlsi', 'ulsi', 'ic design']
+EE_ELECTRO_CIRCUIT_DESIGN_ANTI_KEY_WORDS_EN = [
+    '超大型', '專題', '倫理', '素養', '進階', '藝術', '高頻', '微波']
 USELESS_COURSES_KEY_WORDS_EN = ['asdgladfj;l']
 USELESS_COURSES_ANTI_KEY_WORDS_EN = ['asdgladfj;l']

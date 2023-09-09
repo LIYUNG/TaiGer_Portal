@@ -2,7 +2,7 @@
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
 const Event = require('../models/Event');
-const { Agent, Role } = require('../models/User');
+const { Agent, Role, Student } = require('../models/User');
 
 const async = require('async');
 const {
@@ -84,26 +84,35 @@ const getEvents = asyncHandler(async (req, res) => {
       agents,
       data: events,
       booked_events: agents_events,
-      hasEvents: events.length !== 0
+      hasEvents: events.length !== 0,
+      students: []
     });
   }
   const agents = await Agent.find({ _id: user._id.toString() }).select(
     'firstname lastname email selfIntroduction officehours timezone'
   );
+  let students = [];
+
   if (user.role === Role.Agent) {
     events = await Event.find({
       $or: [{ requester_id: user._id }, { receiver_id: user._id }]
     })
       .populate('receiver_id requester_id', 'firstname lastname email')
       .lean();
-
+    students = await Student.find({
+      agents: user._id,
+      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+    })
+      .select('firstname lastname firstname_chinese lastname_chinese  email')
+      .lean();
     if (events.length === 0) {
       return res.status(200).send({
         success: true,
         agents,
         data: events,
         booked_events: [],
-        hasEvents: false
+        hasEvents: false,
+        students
       });
     }
   }
@@ -113,7 +122,8 @@ const getEvents = asyncHandler(async (req, res) => {
     agents,
     data: events,
     booked_events: [],
-    hasEvents: true
+    hasEvents: true,
+    students
   });
 });
 
@@ -132,6 +142,7 @@ const showEvent = asyncHandler(async (req, res) => {
 const postEvent = asyncHandler(async (req, res) => {
   const { user } = req;
   const newEvent = req.body;
+  console.log(newEvent);
   let events;
   if (user.role === Role.Student) {
     let write_NewEvent;
@@ -188,6 +199,7 @@ const postEvent = asyncHandler(async (req, res) => {
       meetingConfirmationReminder(receiver, user, updatedEvent.start);
     });
   } else {
+    newEvent.isConfirmedReceiver = true;
     events = await Event.find({
       start: newEvent.start,
       $or: [

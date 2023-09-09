@@ -79,7 +79,9 @@ export const getReorderWeekday = (index) => {
 };
 
 export const getTimezoneOffset = (timezone) => {
-  const zone = IANAZone.create(timezone);
+  const zone = IANAZone.create(
+    timezone ? timezone : Intl.DateTimeFormat().resolvedOptions().timeZone
+  );
   const now = Date.now();
   const offset = zone.offset(new Date(now));
   const offsetHours = offset / 60;

@@ -1004,6 +1004,7 @@ class OfficeHours extends React.Component {
                       }
                       user={this.props.user}
                       handleSelectEvent={this.handleSelectEvent}
+                      handleUpdateTimeSlot={this.handleUpdateTimeSlot}
                       handleChange={this.handleChange}
                       handleModalClose={this.handleModalClose}
                       handleChangeReceiver={this.handleChangeReceiver}

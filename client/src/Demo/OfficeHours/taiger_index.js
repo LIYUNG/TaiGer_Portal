@@ -33,7 +33,7 @@ import {
 } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import MyCalendar from '../../components/Calendar/components/Calendar';
-import { is_TaiGer_Student } from '../Utils/checking-functions';
+import { is_TaiGer_Agent, is_TaiGer_Student } from '../Utils/checking-functions';
 import {
   AiFillCheckCircle,
   AiFillQuestionCircle,
@@ -55,6 +55,8 @@ class TaiGerOfficeHours extends React.Component {
     success: false,
     agents: {},
     hasEvents: false,
+    students: null,
+    student_id: '',
     updateconfirmed: false,
     updatecredentialconfirmed: false,
     isDeleteModalOpen: false,
@@ -78,7 +80,7 @@ class TaiGerOfficeHours extends React.Component {
   componentDidMount() {
     getEvents(this.props.match.params.user_id).then(
       (resp) => {
-        const { data, agents, hasEvents, success } = resp.data;
+        const { data, agents, hasEvents, students, success } = resp.data;
         const { status } = resp;
         if (success) {
           this.setState({
@@ -86,6 +88,7 @@ class TaiGerOfficeHours extends React.Component {
             agents,
             hasEvents,
             events: data,
+            students,
             success: success,
             res_status: status
           });
@@ -110,7 +113,7 @@ class TaiGerOfficeHours extends React.Component {
     if (prevProps.match.params.user_id !== this.props.match.params.user_id) {
       getEvents(this.props.match.params.user_id).then(
         (resp) => {
-          const { data, agents, hasEvents, success } = resp.data;
+          const { data, agents, hasEvents, students, success } = resp.data;
           const { status } = resp;
           if (success) {
             this.setState({
@@ -118,6 +121,7 @@ class TaiGerOfficeHours extends React.Component {
               agents,
               hasEvents,
               events: data,
+              students,
               success: success,
               res_status: status
             });
@@ -334,6 +338,70 @@ class TaiGerOfficeHours extends React.Component {
     );
   };
 
+  // Only Agent can request
+  handleModalCreateEvent = (newEvent) => {
+    const eventWrapper = { ...newEvent };
+    if (is_TaiGer_Agent(this.props.user)) {
+      eventWrapper.requester_id = this.state.student_id;
+      eventWrapper.receiver_id = this.props.user._id.toString();
+    }
+    // e.preventDefault();
+    this.setState({ BookButtonDisable: true });
+    postEvent(eventWrapper).then(
+      (resp) => {
+        const { success, data } = resp.data;
+        const { status } = resp;
+        const events_temp = [...this.state.events];
+        events_temp.push(data);
+        if (success) {
+          this.setState({
+            success,
+            isLoaded: true,
+            newDescription: '',
+            newReceiver: '',
+            selectedEvent: {},
+            student_id: '',
+            isNewEventModalOpen:false,
+            events: data,
+            newEvent: {},
+            BookButtonDisable: false,
+            hasEvents: true,
+            isDeleteModalOpen: false,
+            res_modal_status: status
+          });
+        } else {
+          // TODO: what if data is oversize? data type not match?
+          const { message } = resp.data;
+          this.setState({
+            success,
+            isLoaded: true,
+            newDescription: '',
+            newReceiver: '',
+            selectedEvent: {},
+            isNewEventModalOpen: false,
+            isDeleteModalOpen: false,
+            BookButtonDisable: false,
+            res_modal_message: message,
+            res_modal_status: status
+          });
+        }
+      },
+      (error) => {
+        this.setState({
+          success,
+          error,
+          isLoaded: true,
+          newDescription: '',
+          newReceiver: '',
+          isNewEventModalOpen: false,
+          selectedEvent: {},
+          isDeleteModalOpen: false,
+          BookButtonDisable: false
+        });
+      }
+    );
+  };
+
   handleUpdateDescription = (e) => {
     const new_description_temp = e.target.value;
     this.setState({
@@ -347,7 +415,15 @@ class TaiGerOfficeHours extends React.Component {
   handleUpdateTimeSlot = (e) => {
     const new_timeslot_temp = e.target.value;
     this.setState({
-      event_temp: { ...this.state.event_temp, start: new_timeslot_temp }
+      event_temp: { ...this.state.event_temp, start: new_timeslot_temp },
+      newEventStart: new_timeslot_temp
+    });
+  };
+
+  handleSelectStudent = (e) => {
+    const student_id = e.target.value;
+    this.setState({
+      student_id: student_id
     });
   };
 
@@ -431,6 +507,7 @@ class TaiGerOfficeHours extends React.Component {
 
   handleSelectSlot = (slotInfo) => {
     // When an empty date slot is clicked, open the modal to create a new event
+    console.log(slotInfo);
     this.setState({
       newEventStart: slotInfo.start,
       newEventEnd: slotInfo.end,
@@ -461,13 +538,14 @@ class TaiGerOfficeHours extends React.Component {
       hasEvents,
       events,
       agents,
+      students,
       res_status,
       isLoaded,
       res_modal_status,
       res_modal_message
     } = this.state;
 
-    if (!isLoaded) {
+    if (!isLoaded || !students) {
       return (
         <div style={spinner_style}>
           <Spinner animation="border" role="status">
@@ -870,18 +948,23 @@ class TaiGerOfficeHours extends React.Component {
                       events={[...booked_events]}
                       user={this.props.user}
                       handleSelectEvent={this.handleSelectEvent}
+                      handleUpdateTimeSlot={this.handleUpdateTimeSlot}
                       handleChange={this.handleChange}
                       handleModalClose={this.handleModalClose}
                       handleChangeReceiver={this.handleChangeReceiver}
                       handleSelectSlot={this.handleSelectSlot}
+                      handleSelectStudent={this.handleSelectStudent}
+                      student_id={this.state.student_id}
                       handleNewEventModalClose={this.handleNewEventModalClose}
                       handleModalBook={this.handleModalBook}
+                      handleModalCreateEvent={this.handleModalCreateEvent}
                       newReceiver={this.state.newReceiver}
                       newDescription={this.state.newDescription}
                       selectedEvent={this.state.selectedEvent}
                       newEventStart={this.state.newEventStart}
                       newEventEnd={this.state.newEventEnd}
                       newEventTitle={this.state.newEventTitle}
+                      students={this.state.students}
                       isNewEventModalOpen={this.state.isNewEventModalOpen}
                     />
                   </Tab>

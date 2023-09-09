@@ -61,11 +61,15 @@ const MyCalendar = (props) => {
 
   const handleCreateEvent = () => {
     // Create a new event object and add it to the events array
+    const time_difference =
+      getTimezoneOffset(Intl.DateTimeFormat().resolvedOptions().timeZone) -
+      getTimezoneOffset(props.user.timezone);
+
     const newEvent = {
       id: props.events?.length + 1,
       title: newEventTitle,
-      start: props.newEventStart,
-      // end: selectedEvent.end,
+      start: shiftDateByOffset(props.newEventStart, time_difference),
+      end: shiftDateByOffset(props.newEventStart, time_difference + 0.5),
       description: newEventDescription
     };
     const updatedEvents = [...props.events, newEvent];

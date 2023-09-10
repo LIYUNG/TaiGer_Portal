@@ -45,7 +45,7 @@ const STUDENT_ANALYSED_COURSE_URL = (studentId) =>
 const AGENT_CALENDAR_EVENTS_URL = (taigerAgentId) =>
   new URL(`/events/taiger/${taigerAgentId}`, ORIGIN).href;
 const STUDENT_CALENDAR_EVENTS_URL = (studentId) =>
-  new URL(`/events/taiger/${studentId}`, ORIGIN).href;
+  new URL(`/events/students/${studentId}`, ORIGIN).href;
 const JITSI_MEET_URL = (studentId) =>
   new URL(`https://meet.jit.si/${studentId}`, ORIGIN).href;
 const JITSI_MEET_INSTRUCTIONS_URL = new URL(

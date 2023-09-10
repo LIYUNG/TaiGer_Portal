@@ -22,6 +22,7 @@ const MeetingAdjustReminder = (receiver, user, start_time) => {
     {
       taiger_user_firstname: user.firstname,
       taiger_user_lastname: user.lastname,
+      role: user.role,
       meeting_time: start_time, // Replace with the actual meeting time
       student_id: user._id.toString()
     }
@@ -55,6 +56,7 @@ const meetingConfirmationReminder = (receiver, user, start_time) => {
     {
       taiger_user_firstname: user.firstname,
       taiger_user_lastname: user.lastname,
+      role: user.role,
       meeting_time: start_time, // Replace with the actual meeting time
       student_id: user._id.toString()
     }
@@ -200,44 +202,52 @@ const postEvent = asyncHandler(async (req, res) => {
       meetingConfirmationReminder(receiver, user, updatedEvent.start);
     });
   } else {
-    newEvent.isConfirmedReceiver = true;
-    events = await Event.find({
-      start: newEvent.start,
-      $or: [
-        { requester_id: newEvent.requester_id },
-        { receiver_id: newEvent.requester_id }
-      ]
-    })
-      .populate('receiver_id', 'firstname lastname email')
-      .lean();
-    // Check if there is any already booked upcoming events
-    if (events.length === 0) {
-      const write_NewEvent = await Event.create(newEvent);
-      await write_NewEvent.save();
-    } else {
-      throw new ErrorResponse(
-        429,
-        'You are not allowed to book further timeslot, if you have already an upcoming timeslot.'
+    try {
+      let write_NewEvent;
+      newEvent.isConfirmedReceiver = true;
+      events = await Event.find({
+        start: newEvent.start,
+        $or: [
+          { requester_id: newEvent.requester_id },
+          { receiver_id: newEvent.requester_id }
+        ]
+      })
+        .populate('receiver_id', 'firstname lastname email')
+        .lean();
+      // Check if there is any already booked upcoming events
+      if (events.length === 0) {
+        write_NewEvent = await Event.create(newEvent);
+        await write_NewEvent.save();
+      } else {
+        throw new ErrorResponse(
+          429,
+          'You are not allowed to book further timeslot, if you have already an upcoming timeslot.'
+        );
+      }
+      events = await Event.find({
+        $or: [{ requester_id: user._id }, { receiver_id: user._id }]
+      })
+        .populate('receiver_id requester_id', 'firstname lastname email')
+        .lean();
+      const agents_ids = user.agents;
+      const agents = await Agent.find({ _id: agents_ids }).select(
+        'firstname lastname email selfIntroduction officehours timezone'
       );
+      res.status(200).send({
+        success: true,
+        agents,
+        data: events,
+        hasEvents: events.length !== 0
+      });
+      const updatedEvent = await Event.findById(write_NewEvent._id)
+        .populate('requester_id receiver_id', 'firstname lastname email')
+        .lean();
+      updatedEvent.requester_id.forEach((requester) => {
+        meetingConfirmationReminder(requester, user, updatedEvent.start);
+      });
+    } catch (err) {
+      throw new ErrorResponse(429, err.message);
     }
-    events = await Event.find({
-      $or: [{ requester_id: user._id }, { receiver_id: user._id }]
-    })
-      .populate('receiver_id requester_id', 'firstname lastname email')
-      .lean();
-    const agents_ids = user.agents;
-    const agents = await Agent.find({ _id: agents_ids }).select(
-      'firstname lastname email selfIntroduction officehours timezone'
-    );
-    res.status(200).send({
-      success: true,
-      agents,
-      data: events,
-      hasEvents: events.length !== 0
-    });
-    // updatedEvent.receiver_id.forEach((receiver) => {
-    //   meetingConfirmationReminder(receiver, user, updatedEvent.start);
-    // });
   }
 });
 

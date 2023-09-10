@@ -151,7 +151,19 @@ export default function EventConfirmationCard(props) {
                 'Will be available, after the appointment is confirmed by the Agent.'
               )
             ) : (
-              'Please confirm the time and get the meeting link'
+              <scan>
+                Please{' '}
+                <Button
+                  variant="primary"
+                  size="sm"
+                  onClick={(e) =>
+                    props.handleConfirmAppointmentModalOpen(e, props.event)
+                  }
+                >
+                  <AiOutlineCheckCircle size={16} /> Confirm
+                </Button>{' '}
+                the time and get the meeting link
+              </scan>
             ))}
           {is_TaiGer_Agent(props.user) &&
             (props.event.isConfirmedReceiver ? (
@@ -163,7 +175,19 @@ export default function EventConfirmationCard(props) {
                 'Will be available, after the appointment is confirmed by the Student.'
               )
             ) : (
-              'Please confirm the time and get the meeting link'
+              <scan>
+                Please{' '}
+                <Button
+                  variant="primary"
+                  size="sm"
+                  onClick={(e) =>
+                    props.handleConfirmAppointmentModalOpen(e, props.event)
+                  }
+                >
+                  <AiOutlineCheckCircle size={16} /> Confirm
+                </Button>{' '}
+                the time and get the meeting link
+              </scan>
             ))}
           <br />
           created at:{convertDate(props.event.createdAt)}

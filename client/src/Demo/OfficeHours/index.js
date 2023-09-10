@@ -861,6 +861,17 @@ class OfficeHours extends React.Component {
                   </Form.Group>
                 </Form>
                 <br />
+                <h5>
+                  <AiOutlineUser size={16} />
+                  Agent:{' '}
+                  {this.state.event_temp.receiver_id?.map((receiver, x) => (
+                    <span key={x}>
+                      {receiver.firstname} {receiver.lastname}{' '}
+                      <AiOutlineMail ize={16} /> {receiver.email}
+                    </span>
+                  ))}
+                </h5>
+                <br />
                 <Form>
                   <Form.Label>Time Slot</Form.Label>
                   <Form.Control

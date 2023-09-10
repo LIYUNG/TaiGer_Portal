@@ -29,7 +29,8 @@ const {
   STUDENT_ANALYSED_COURSE_URL,
   JITSI_MEET_URL,
   JITSI_MEET_INSTRUCTIONS_URL,
-  AGENT_CALENDAR_EVENTS_URL
+  AGENT_CALENDAR_EVENTS_URL,
+  STUDENT_CALENDAR_EVENTS_URL
 } = require('../constants');
 
 const {
@@ -1876,9 +1877,11 @@ const MeetingAdjustReminderEmail = async (recipient, payload) => {
   }</b> 調整了一個討論時段： </p>
 <p><b>${payload.meeting_time}</b></p>
 
-<p>請上去 <a href="${AGENT_CALENDAR_EVENTS_URL(
-    recipient.id
-  )}">TaiGer Meeting Calendar</a> 並<b>確認</b>討論內容和時間。</p>
+<p>請上去 <a href="${
+    payload.role === 'Student'
+      ? AGENT_CALENDAR_EVENTS_URL(recipient.id)
+      : STUDENT_CALENDAR_EVENTS_URL(recipient.id)
+  }">TaiGer Meeting Calendar</a> 並<b>確認</b>討論內容和時間。</p>
 
 <p>${SPLIT_LINE}</p>
 
@@ -1888,9 +1891,11 @@ const MeetingAdjustReminderEmail = async (recipient, payload) => {
 
 <p><b>${payload.meeting_time}</b></p>
 
-<p>Please go to <a href="${AGENT_CALENDAR_EVENTS_URL(
-    recipient.id
-  )}">TaiGer Meeting Calendar</a> and <b>Confirm</b> the time。</p>
+<p>Please go to <a href="${
+    payload.role === 'Student'
+      ? AGENT_CALENDAR_EVENTS_URL(recipient.id)
+      : STUDENT_CALENDAR_EVENTS_URL(recipient.id)
+  }">TaiGer Meeting Calendar</a> and <b>Confirm</b> the time。</p>
 
 <p>${TAIGER_SIGNATURE}</p>
 
@@ -1900,7 +1905,7 @@ const MeetingAdjustReminderEmail = async (recipient, payload) => {
 };
 
 const MeetingConfirmationReminderEmail = async (recipient, payload) => {
-  const subject = `[Meeting Invitation] ${payload.taiger_user_firstname} ${payload.taiger_user_lastname}`;
+  const subject = `[TODO][Meeting Invitation] ${payload.taiger_user_firstname} ${payload.taiger_user_lastname}`;
   const message = `\
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
@@ -1909,9 +1914,11 @@ const MeetingConfirmationReminderEmail = async (recipient, payload) => {
   }</b> 預訂了一個討論時段： </p>
 <p><b>${payload.meeting_time}</b></p>
 
-<p>請上去 <a href="${AGENT_CALENDAR_EVENTS_URL(
-    recipient.id
-  )}">TaiGer Meeting Calendar</a> 並<b>確認</b>討論內容和時間。</p>
+<p>請上去 <a href="${
+    payload.role === 'Student'
+      ? AGENT_CALENDAR_EVENTS_URL(recipient.id)
+      : STUDENT_CALENDAR_EVENTS_URL(recipient.id)
+  }">TaiGer Meeting Calendar</a> 並<b>確認</b>討論內容和時間。</p>
 
 <p>${SPLIT_LINE}</p>
 
@@ -1921,9 +1928,11 @@ const MeetingConfirmationReminderEmail = async (recipient, payload) => {
 
 <p><b>${payload.meeting_time}</b></p>
 
-<p>Please go to <a href="${AGENT_CALENDAR_EVENTS_URL(
-    recipient.id
-  )}">TaiGer Meeting Calendar</a> and <b>Confirm</b> the time。</p>
+<p>Please go to <a href="${
+    payload.role === 'Student'
+      ? AGENT_CALENDAR_EVENTS_URL(recipient.id)
+      : STUDENT_CALENDAR_EVENTS_URL(recipient.id)
+  }">TaiGer Meeting Calendar</a> and <b>Confirm</b> the time。</p>
 
 <p>${TAIGER_SIGNATURE}</p>
 

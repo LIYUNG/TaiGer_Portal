@@ -142,7 +142,7 @@ const showEvent = asyncHandler(async (req, res) => {
 const postEvent = asyncHandler(async (req, res) => {
   const { user } = req;
   const newEvent = req.body;
-  console.log(newEvent);
+  // console.log(newEvent);
   let events;
   if (user.role === Role.Student) {
     let write_NewEvent;
@@ -220,8 +220,10 @@ const postEvent = asyncHandler(async (req, res) => {
       );
     }
     events = await Event.find({
-      requester_id: newEvent.requester_id
-    });
+      $or: [{ requester_id: user._id }, { receiver_id: user._id }]
+    })
+      .populate('receiver_id requester_id', 'firstname lastname email')
+      .lean();
     const agents_ids = user.agents;
     const agents = await Agent.find({ _id: agents_ids }).select(
       'firstname lastname email selfIntroduction officehours timezone'

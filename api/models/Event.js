@@ -20,7 +20,7 @@ const EventSchema = new mongoose.Schema(
     },
     title: {
       type: String,
-      required: [true, 'Please write a title for your event']
+      // required: [true, 'Please write a title for your event']
     },
     description: {
       type: String,

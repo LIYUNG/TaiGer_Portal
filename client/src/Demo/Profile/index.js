@@ -179,6 +179,8 @@ class Profile extends React.Component {
   };
 
   onHideOfficeHoursConfirmed = () => {
+    window.location.reload(true);
+
     this.setState({
       updateOfficeHoursConfirmed: false
     });

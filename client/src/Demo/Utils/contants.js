@@ -128,6 +128,12 @@ export const getNextDayDate = (reorder_weekday, dayOfWeek, timezone, nextN) => {
 };
 
 export const time_slots = [
+  { value: '04:00', label: '04:00 AM' },
+  { value: '04:30', label: '04:30 AM' },
+  { value: '05:00', label: '05:00 AM' },
+  { value: '05:30', label: '05:30 AM' },
+  { value: '06:00', label: '06:00 AM' },
+  { value: '06:30', label: '06:30 AM' },
   { value: '07:00', label: '07:00 AM' },
   { value: '07:30', label: '07:30 AM' },
   { value: '08:00', label: '08:00 AM' },

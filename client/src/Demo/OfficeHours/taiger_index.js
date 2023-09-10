@@ -33,7 +33,10 @@ import {
 } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import MyCalendar from '../../components/Calendar/components/Calendar';
-import { is_TaiGer_Agent, is_TaiGer_Student } from '../Utils/checking-functions';
+import {
+  is_TaiGer_Agent,
+  is_TaiGer_Student
+} from '../Utils/checking-functions';
 import {
   AiFillCheckCircle,
   AiFillQuestionCircle,
@@ -361,7 +364,7 @@ class TaiGerOfficeHours extends React.Component {
             newReceiver: '',
             selectedEvent: {},
             student_id: '',
-            isNewEventModalOpen:false,
+            isNewEventModalOpen: false,
             events: data,
             newEvent: {},
             BookButtonDisable: false,
@@ -704,7 +707,7 @@ class TaiGerOfficeHours extends React.Component {
                   .map((event, i) => (
                     <Card key={i}>
                       <Card.Header>
-                        <Card.Title>
+                        <Card.Title as="h5">
                           <AiOutlineCalendar /> Start:{' '}
                           {convertDate(event.start)} ~ 30 min, Time zone:{' '}
                           {Intl.DateTimeFormat().resolvedOptions().timeZone} UTC
@@ -749,10 +752,6 @@ class TaiGerOfficeHours extends React.Component {
                         {event.isConfirmedReceiver
                           ? event.meetingLink
                           : 'Will be available, after the appointment is confirmed by the Agent.'}
-                        {/* <br />
-                        Title: {event.title} */}
-                        {/* <br />
-                      End: {convertDate(event.end)} */}
                         <br />
                         created at:{convertDate(event.createdAt)}
                         <br />

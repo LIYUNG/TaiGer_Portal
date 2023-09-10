@@ -16,6 +16,8 @@ import {
   is_TaiGer_Agent,
   is_TaiGer_Student
 } from '../../../Demo/Utils/checking-functions';
+import { Link } from 'react-router-dom';
+import { FiExternalLink } from 'react-icons/fi';
 
 const localizer = momentLocalizer(moment);
 
@@ -149,7 +151,7 @@ const MyCalendar = (props) => {
             <Modal.Title>Create New Event</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <Form>
+            {/* <Form>
               <Form.Group controlId="event_title" className="mb-4">
                 <Form.Control
                   type="text"
@@ -158,7 +160,7 @@ const MyCalendar = (props) => {
                   onChange={(e) => setNewEventTitle(e.target.value)}
                 />
               </Form.Group>
-            </Form>
+            </Form> */}
             <Form>
               <Form.Group className="mb-3">
                 <Form.Control
@@ -176,6 +178,13 @@ const MyCalendar = (props) => {
                 ? `+${getTimezoneOffset(props.user.timezone)}`
                 : getTimezoneOffset(props.user.timezone)}
             </h6>
+            <span>
+              If the time zone not matches, please go to{' '}
+              <Link to="/profile">
+                Profile <FiExternalLink />
+              </Link>{' '}
+              to update your time zone
+            </span>
             <Form>
               <Form.Label>Time Slot</Form.Label>
               <Form.Control
@@ -190,8 +199,10 @@ const MyCalendar = (props) => {
                       value={`${time_slot.start}`}
                       key={`${time_slot.start}`}
                     >
-                      {time_slot.start.toLocaleString()} to{' '}
-                      {time_slot.end.toLocaleString()}
+                      {time_slot.start.toLocaleString()} UTC
+                      {getTimezoneOffset(props.user.timezone) >= 0
+                        ? `+${getTimezoneOffset(props.user.timezone)}`
+                        : getTimezoneOffset(props.user.timezone)}
                     </option>
                   ))}
               </Form.Control>
@@ -203,6 +214,9 @@ const MyCalendar = (props) => {
                 onChange={props.handleSelectStudent}
                 value={props.student_id}
               >
+                <option value="" key="x">
+                  Please Select
+                </option>
                 {props.students.map((student, j) => (
                   <option
                     value={`${student._id.toString()}`}
@@ -220,7 +234,11 @@ const MyCalendar = (props) => {
           <Modal.Footer>
             <Button
               variant="primary"
-              disabled={props.BookButtonDisable}
+              disabled={
+                props.BookButtonDisable ||
+                newEventDescription?.length === 0 ||
+                props.student_id === ''
+              }
               onClick={handleCreateEvent}
             >
               {props.BookButtonDisable ? (

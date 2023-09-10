@@ -98,12 +98,15 @@ const MyCalendar = (props) => {
         popup
         // Rendering additional event information in the popup
         components={{
-          event: ({ event }) => (
-            <span>
-              {event.start.toLocaleTimeString()}{' '}
-              {event.title} - {event.description}
-            </span>
-          )
+          event: ({ event }) =>
+            is_TaiGer_Student(props.user) ? (
+              <span>{event.start.toLocaleTimeString()}</span>
+            ) : (
+              <span>
+                {event.start.toLocaleTimeString()} {event.title} -{' '}
+                {event.description}
+              </span>
+            )
         }}
         // Set the timeslots and step using the custom function
         timeslots={2}

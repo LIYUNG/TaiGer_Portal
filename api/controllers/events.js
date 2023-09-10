@@ -234,6 +234,9 @@ const postEvent = asyncHandler(async (req, res) => {
       data: events,
       hasEvents: events.length !== 0
     });
+    // updatedEvent.receiver_id.forEach((receiver) => {
+    //   meetingConfirmationReminder(receiver, user, updatedEvent.start);
+    // });
   }
 });
 

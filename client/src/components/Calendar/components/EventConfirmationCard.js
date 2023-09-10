@@ -41,9 +41,15 @@ export default function EventConfirmationCard(props) {
               )}{' '}
               <AiOutlineCalendar />: {convertDate(props.event.start)} ~ 30 min,{' '}
               Time zone: {Intl.DateTimeFormat().resolvedOptions().timeZone} UTC
-              {getTimezoneOffset(Intl.DateTimeFormat().resolvedOptions().timeZone) >= 0
-                ? `+${getTimezoneOffset(Intl.DateTimeFormat().resolvedOptions().timeZone)}`
-                : getTimezoneOffset(Intl.DateTimeFormat().resolvedOptions().timeZone)}
+              {getTimezoneOffset(
+                Intl.DateTimeFormat().resolvedOptions().timeZone
+              ) >= 0
+                ? `+${getTimezoneOffset(
+                    Intl.DateTimeFormat().resolvedOptions().timeZone
+                  )}`
+                : getTimezoneOffset(
+                    Intl.DateTimeFormat().resolvedOptions().timeZone
+                  )}
             </h5>
             <span style={{ float: 'right' }}>
               {is_TaiGer_Student(props.user) &&
@@ -135,14 +141,30 @@ export default function EventConfirmationCard(props) {
           <p>{props.event.description}</p>
           <br />
           Meeting Link:{' '}
-          {props.event.isConfirmedReceiver &&
-          props.event.isConfirmedRequester ? (
-            <a href={`${props.event.meetingLink}`} className="text-primary">
-              {props.event.meetingLink}
-            </a>
-          ) : (
-            'Will be available, after the appointment is confirmed by the Agent.'
-          )}
+          {is_TaiGer_Student(props.user) &&
+            (props.event.isConfirmedRequester ? (
+              props.event.isConfirmedReceiver ? (
+                <a href={`${props.event.meetingLink}`} className="text-primary">
+                  {props.event.meetingLink}
+                </a>
+              ) : (
+                'Will be available, after the appointment is confirmed by the Agent.'
+              )
+            ) : (
+              'Please confirm the get the meeting link'
+            ))}
+          {is_TaiGer_Agent(props.user) &&
+            (props.event.isConfirmedReceiver ? (
+              props.event.isConfirmedRequester ? (
+                <a href={`${props.event.meetingLink}`} className="text-primary">
+                  {props.event.meetingLink}
+                </a>
+              ) : (
+                'Will be available, after the appointment is confirmed by the Student.'
+              )
+            ) : (
+              'Please confirm the get the meeting link'
+            ))}
           <br />
           created at:{convertDate(props.event.createdAt)}
           <br />

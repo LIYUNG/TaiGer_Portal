@@ -151,16 +151,6 @@ const MyCalendar = (props) => {
             <Modal.Title>Create New Event</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            {/* <Form>
-              <Form.Group controlId="event_title" className="mb-4">
-                <Form.Control
-                  type="text"
-                  placeholder="Title"
-                  value={newEventTitle}
-                  onChange={(e) => setNewEventTitle(e.target.value)}
-                />
-              </Form.Group>
-            </Form> */}
             <Form>
               <Form.Group className="mb-3">
                 <Form.Control

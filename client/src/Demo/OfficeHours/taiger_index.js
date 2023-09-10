@@ -484,9 +484,16 @@ class TaiGerOfficeHours extends React.Component {
 
   // Calendar handler:
   handleSelectEvent = (event) => {
+    console.log(event);
     this.setState({
-      selectedEvent: event
+      isEditModalOpen: true,
+      event_temp: event,
+      event_id: event._id.toString()
     });
+    // this.setState({
+    //   selectedEvent: event,
+    //   newDescription: event.description || ''
+    // });
   };
   handleChange = (e) => {
     const description_temp = e.target.value;
@@ -819,93 +826,6 @@ class TaiGerOfficeHours extends React.Component {
               </Modal.Footer>
             </Modal>
             <Modal
-              show={this.state.isEditModalOpen}
-              onHide={this.handleEditAppointmentModalClose}
-              centered
-              size="lg"
-            >
-              <Modal.Header closeButton>Edit</Modal.Header>
-              <Modal.Body>
-                <Form>
-                  <Form.Group className="my-0 mx-0">
-                    <Form.Label>請寫下想討論的主題</Form.Label>
-                    <Form.Control
-                      as="textarea"
-                      maxLength={2000}
-                      rows="10"
-                      placeholder="Example：我想定案選校、選課，我想討論簽證，德語班。"
-                      value={this.state.event_temp.description || ''}
-                      isInvalid={
-                        this.state.event_temp.description?.length > 2000
-                      }
-                      onChange={(e) => this.handleUpdateDescription(e)}
-                    ></Form.Control>
-                    <Badge
-                      className="mt-3"
-                      bg={`${
-                        this.state.event_temp.description?.length > 2000
-                          ? 'danger'
-                          : 'primary'
-                      }`}
-                    >
-                      {this.state.event_temp.description?.length || 0}/{2000}
-                    </Badge>
-                  </Form.Group>
-                </Form>
-                <br />
-                <Form>
-                  <Form.Label>Time Slot</Form.Label>
-                  <Form.Control
-                    as="select"
-                    onChange={(e) => this.handleUpdateTimeSlot(e)}
-                    value={new Date(this.state.event_temp.start)}
-                  >
-                    {available_termins
-                      .sort((a, b) => (a.start < b.start ? -1 : 1))
-                      .map((time_slot, j) => (
-                        <option
-                          value={`${time_slot.start}`}
-                          key={`${time_slot.start}`}
-                        >
-                          {time_slot.start.toLocaleString()} to{' '}
-                          {time_slot.end.toLocaleString()}
-                        </option>
-                      ))}
-                  </Form.Control>
-                </Form>
-              </Modal.Body>
-
-              <Modal.Footer>
-                <Button
-                  disabled={
-                    this.state.event_id === '' ||
-                    this.state.event_temp?.description?.length === 0 ||
-                    this.state.BookButtonDisable
-                  }
-                  onClick={(e) =>
-                    this.handleEditAppointmentModal(
-                      e,
-                      this.state.event_id,
-                      this.state.event_temp
-                    )
-                  }
-                >
-                  {this.state.BookButtonDisable ? (
-                    <Spinner
-                      animation="border"
-                      role="status"
-                      variant="light"
-                      size="sm"
-                    >
-                      <span className="visually-hidden"></span>
-                    </Spinner>
-                  ) : (
-                    'Update'
-                  )}
-                </Button>
-              </Modal.Footer>
-            </Modal>
-            <Modal
               show={this.state.isDeleteModalOpen}
               onHide={this.handleDeleteAppointmentModalClose}
               centered
@@ -996,6 +916,99 @@ class TaiGerOfficeHours extends React.Component {
             </Card>
           </>
         )}
+        <Modal
+          show={this.state.isEditModalOpen}
+          onHide={this.handleEditAppointmentModalClose}
+          centered
+          size="lg"
+        >
+          <Modal.Header closeButton>Edit</Modal.Header>
+          <Modal.Body>
+            <Form>
+              <Form.Group className="my-0 mx-0">
+                <Form.Label>請寫下想討論的主題</Form.Label>
+                <Form.Control
+                  as="textarea"
+                  maxLength={2000}
+                  rows="10"
+                  placeholder="Example：我想定案選校、選課，我想討論簽證，德語班。"
+                  value={this.state.event_temp.description || ''}
+                  isInvalid={this.state.event_temp.description?.length > 2000}
+                  onChange={(e) => this.handleUpdateDescription(e)}
+                ></Form.Control>
+                <Badge
+                  className="mt-3"
+                  bg={`${
+                    this.state.event_temp.description?.length > 2000
+                      ? 'danger'
+                      : 'primary'
+                  }`}
+                >
+                  {this.state.event_temp.description?.length || 0}/{2000}
+                </Badge>
+              </Form.Group>
+            </Form>
+            <p>
+              Student:{' '}
+              {this.state.event_temp?.requester_id?.map((requester, idx) => (
+                <p key={idx}>
+                  {requester.firstname} {requester.lastname}
+                </p>
+              ))}
+            </p>
+            <br />
+            <Form>
+              <Form.Label>Time Slot</Form.Label>
+              <Form.Control
+                as="select"
+                onChange={(e) => this.handleUpdateTimeSlot(e)}
+                value={new Date(this.state.event_temp.start)}
+              >
+                {available_termins
+                  .sort((a, b) => (a.start < b.start ? -1 : 1))
+                  .map((time_slot, j) => (
+                    <option
+                      value={`${time_slot.start}`}
+                      key={`${time_slot.start}`}
+                    >
+                      {time_slot.start.toLocaleString()} to{' '}
+                      {time_slot.end.toLocaleString()}
+                    </option>
+                  ))}
+              </Form.Control>
+            </Form>
+          </Modal.Body>
+
+          <Modal.Footer>
+            <Button
+              disabled={
+                this.state.event_id === '' ||
+                this.state.event_temp?.description?.length === 0 ||
+                this.state.BookButtonDisable
+              }
+              onClick={(e) =>
+                this.handleEditAppointmentModal(
+                  e,
+                  this.state.event_id,
+                  this.state.event_temp
+                )
+              }
+            >
+              {this.state.BookButtonDisable ? (
+                <Spinner
+                  animation="border"
+                  role="status"
+                  variant="light"
+                  size="sm"
+                >
+                  <span className="visually-hidden"></span>
+                </Spinner>
+              ) : (
+                'Update'
+              )}
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </Aux>
     );
   }

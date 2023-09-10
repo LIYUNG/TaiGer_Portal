@@ -664,7 +664,7 @@ class OfficeHours extends React.Component {
                             <br />
                             Meeting Link:{' '}
                             {event.isConfirmedReceiver ? (
-                              <a href={`${event.meetingLink}`}>
+                              <a href={`${event.meetingLink}`} target="_blank">
                                 {event.meetingLink}
                               </a>
                             ) : (
@@ -754,7 +754,7 @@ class OfficeHours extends React.Component {
                         Meeting Link:{' '}
                         {event.isConfirmedReceiver &&
                         event.isConfirmedRequester ? (
-                          <a href={`${event.meetingLink}`}>
+                          <a href={`${event.meetingLink}`} target="_blank">
                             {event.meetingLink}
                           </a>
                         ) : (

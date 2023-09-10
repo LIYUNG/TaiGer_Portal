@@ -144,7 +144,11 @@ export default function EventConfirmationCard(props) {
           {is_TaiGer_Student(props.user) &&
             (props.event.isConfirmedRequester ? (
               props.event.isConfirmedReceiver ? (
-                <a href={`${props.event.meetingLink}`} className="text-primary">
+                <a
+                  href={`${props.event.meetingLink}`}
+                  className="text-primary"
+                  target="_blank"
+                >
                   {props.event.meetingLink}
                 </a>
               ) : (

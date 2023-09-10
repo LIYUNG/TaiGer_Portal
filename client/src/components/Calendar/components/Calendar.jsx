@@ -100,6 +100,7 @@ const MyCalendar = (props) => {
         components={{
           event: ({ event }) => (
             <span>
+              {event.start.toLocaleTimeString()}{' '}
               {event.title} - {event.description}
             </span>
           )

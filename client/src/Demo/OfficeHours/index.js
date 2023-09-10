@@ -533,8 +533,10 @@ class OfficeHours extends React.Component {
                 } else {
                   return {
                     id: j * 10 + i * 100 + x * 1000 + 1,
-                    title: `${(hour + time_difference) % 24}:${
-                      time_slot.value.split(':')[1]
+                    title: `${this.props.user.firstname} ${
+                      this.props.user.lastname
+                    } ${this.props.user.firstname_chinese || ''} ${
+                      this.props.user.lastname_chinese || ''
                     }`,
                     start: shiftDateByOffset(
                       new Date(year, month - 1, day, hour, minutes),

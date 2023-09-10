@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Table, Card, Button } from 'react-bootstrap';
+import { Row, Col, Table, Card, Button, Badge } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { BsCalendar, BsExclamationTriangle, BsX } from 'react-icons/bs';
 
@@ -337,12 +337,17 @@ class StudentDashboard extends React.Component {
               <Card.Body style={{ background: 'black', color: 'white' }}>
                 <Row>
                   <Col md={4}>
-                    {(student.firstname === 'Testing-Student' &&
-                      student.lastname === 'Chen') ||
-                    (student.firstname === 'Hao' &&
-                      student.lastname === 'Tsui') ? (
+                    {student?.agents?.some((agent) =>
+                      [
+                        '639baebf8b84944b872cf648', //Leo
+                        '63b9a43af7b3a4a141267cd3' // David
+                      ].includes(agent._id.toString())
+                    ) ? (
                       <Link to={`/events/students/${student._id.toString()}`}>
                         <Button size="sm">預約</Button>
+                        <Badge className="mt-3" bg={`${'primary'}`}>
+                          Test
+                        </Badge>
                       </Link>
                     ) : (
                       <span className="text-light">Coming soon</span>

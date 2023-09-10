@@ -22,9 +22,6 @@ import { FiExternalLink } from 'react-icons/fi';
 const localizer = momentLocalizer(moment);
 
 const MyCalendar = (props) => {
-  const [generalState, setGeneralState] = useState({});
-  const [selectedEvent, setSelectedEvent] = useState({});
-  const [isNewEventModalOpen, setIsNewEventModalOpen] = useState(false);
   const [newEventTitle, setNewEventTitle] = useState('');
   const [newEventDescription, setNewEventDescription] = useState('');
   let available_termins;

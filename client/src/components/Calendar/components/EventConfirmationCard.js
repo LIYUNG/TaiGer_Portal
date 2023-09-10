@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Collapse, Button, Row } from 'react-bootstrap';
-import { convertDate } from '../../../Demo/Utils/contants';
+import { convertDate, getTimezoneOffset } from '../../../Demo/Utils/contants';
 import {
   AiFillCheckCircle,
   AiFillQuestionCircle,
@@ -39,7 +39,11 @@ export default function EventConfirmationCard(props) {
               ) : (
                 <AiFillQuestionCircle color="grey" size={24} />
               )}{' '}
-              <AiOutlineCalendar />: {convertDate(props.event.start)} ~ 30 min{' '}
+              <AiOutlineCalendar />: {convertDate(props.event.start)} ~ 30 min,{' '}
+              Time zone: {Intl.DateTimeFormat().resolvedOptions().timeZone} UTC
+              {getTimezoneOffset(Intl.DateTimeFormat().resolvedOptions().timeZone) >= 0
+                ? `+${getTimezoneOffset(Intl.DateTimeFormat().resolvedOptions().timeZone)}`
+                : getTimezoneOffset(Intl.DateTimeFormat().resolvedOptions().timeZone)}
             </h5>
             <span style={{ float: 'right' }}>
               {is_TaiGer_Student(props.user) &&

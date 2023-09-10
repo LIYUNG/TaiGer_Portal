@@ -706,7 +706,17 @@ class TaiGerOfficeHours extends React.Component {
                       <Card.Header>
                         <Card.Title>
                           <AiOutlineCalendar /> Start:{' '}
-                          {convertDate(event.start)} ~ 30 min
+                          {convertDate(event.start)} ~ 30 min, Time zone:{' '}
+                          {Intl.DateTimeFormat().resolvedOptions().timeZone} UTC
+                          {getTimezoneOffset(
+                            Intl.DateTimeFormat().resolvedOptions().timeZone
+                          ) >= 0
+                            ? `+${getTimezoneOffset(
+                                Intl.DateTimeFormat().resolvedOptions().timeZone
+                              )}`
+                            : getTimezoneOffset(
+                                Intl.DateTimeFormat().resolvedOptions().timeZone
+                              )}
                         </Card.Title>
                       </Card.Header>
                       <Card.Body>

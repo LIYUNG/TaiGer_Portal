@@ -40,7 +40,9 @@ const getCourse = asyncHandler(async (req, res) => {
           archiv: student.archiv
         },
         table_data_string:
-          '[{"course_chinese":"(Example)物理一","course_english":null,"credits":"2","grades":"73"},{"course_chinese":"(Example)微積分一","course_english":null,"credits":"2","grades":"44"}]'
+          '[{"course_chinese":"(Example)物理一","course_english":null,"credits":"2","grades":"73"},{"course_chinese":"(Example)微積分一","course_english":null,"credits":"2","grades":"77"},{"course_chinese":"(Example)微積分二","course_english":null,"credits":"3","grades":"88"}]',
+        table_data_string_taiger_guided:
+          '[{"course_chinese":"","course_english":"","credits":"0","grades":""}]'
       }
     });
   }
@@ -95,7 +97,10 @@ const processTranscript_test = asyncHandler(async (req, res, next) => {
     return res.send({ success: true, data: {} });
   }
   const stringified_courses = JSON.stringify(courses.table_data_string);
-  // console.log(stringified_courses);
+  const stringified_courses_taiger_guided = JSON.stringify(
+    courses.table_data_string_taiger_guided
+  );
+  console.log(stringified_courses_taiger_guided);
   let exitCode_Python = -1;
   // TODO: multitenancy studentId?
   let student_name = `${courses.student_id.firstname}_${courses.student_id.lastname}`;
@@ -115,7 +120,8 @@ const processTranscript_test = asyncHandler(async (req, res, next) => {
       category,
       studentId,
       student_name,
-      language
+      language,
+      stringified_courses_taiger_guided
     ],
     { stdio: 'inherit' }
   );

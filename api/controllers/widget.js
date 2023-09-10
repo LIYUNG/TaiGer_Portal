@@ -13,9 +13,12 @@ const student_name = 'PreCustomer';
 const WidgetProcessTranscript = asyncHandler(async (req, res, next) => {
   const {
     params: { category, language },
-    body: { courses }
+    body: { courses, table_data_string_taiger_guided }
   } = req;
   const stringified_courses = JSON.stringify(JSON.stringify(courses));
+  const stringified_courses_taiger_guided = JSON.stringify(JSON.stringify(
+    table_data_string_taiger_guided
+  ));
   let exitCode_Python = -1;
   const studentId = req.user._id.toString();
   const python_command = isProd() ? 'python3' : 'python';
@@ -33,7 +36,8 @@ const WidgetProcessTranscript = asyncHandler(async (req, res, next) => {
       category,
       studentId, // TODO: put in local or in Admin?
       student_name,
-      language
+      language,
+      stringified_courses_taiger_guided
     ],
     { stdio: 'inherit' }
   );

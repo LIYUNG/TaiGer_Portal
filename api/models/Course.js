@@ -8,6 +8,11 @@ const coursesSchema = new mongoose.Schema({
   student_id: { type: ObjectId, ref: 'User' },
   name: { type: String, default: '' },
   table_data_string: { type: String, default: '' },
+  table_data_string_taiger_guided: {
+    type: String,
+    default:
+      '[{"course_chinese":"","course_english":"","credits":"0","grades":""}]'
+  },
   updatedAt: Date,
   analysis: {
     path: { type: String, default: '' },

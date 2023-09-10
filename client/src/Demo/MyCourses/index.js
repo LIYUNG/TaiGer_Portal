@@ -28,6 +28,14 @@ export default function MyCourses(props) {
     error: '',
     isLoaded: false,
     coursesdata: {},
+    coursesdata_taiger_guided: [
+      {
+        course_chinese: '',
+        course_english: '',
+        credits: '',
+        grades: ''
+      }
+    ],
     analysis: {},
     confirmModalWindowOpen: false,
     analysisSuccessModalWindowOpen: false,
@@ -59,11 +67,16 @@ export default function MyCourses(props) {
           const course_from_database = data.table_data_string
             ? JSON.parse(data.table_data_string)
             : {};
+          const course_taiger_guided_from_database =
+            data.table_data_string_taiger_guided
+              ? JSON.parse(data.table_data_string_taiger_guided)
+              : {};
           setStatedata((state) => ({
             ...state,
             isLoaded: true,
             updatedAt: data.updatedAt,
             coursesdata: course_from_database,
+            coursesdata_taiger_guided: course_taiger_guided_from_database,
             analysis: data.analysis,
             student: data.student_id, // populated
             success: success,
@@ -88,24 +101,17 @@ export default function MyCourses(props) {
     );
   }, []);
 
-  const [coursesdata, setSoursesdata] = useState([
-    {
-      course_chinese: '電子學',
-      course_english: 'Electronics',
-      credits: '3',
-      grades: 'B'
-    },
-    {
-      course_chinese: '資料結構',
-      course_english: 'Data structure',
-      credits: '3',
-      grades: 'A'
-    }
-  ]);
   const onChange = (new_data) => {
     setStatedata((state) => ({
       ...state,
       coursesdata: new_data
+    }));
+  };
+
+  const onChange_taiger_guided = (new_data) => {
+    setStatedata((state) => ({
+      ...state,
+      coursesdata_taiger_guided: new_data
     }));
   };
 
@@ -129,6 +135,9 @@ export default function MyCourses(props) {
 
   const onSubmit = () => {
     const coursesdata_string = JSON.stringify(statedata.coursesdata);
+    const coursesdata_taiger_guided_string = JSON.stringify(
+      statedata.coursesdata_taiger_guided
+    );
     setStatedata((state) => ({
       ...state,
       isUpdating: true
@@ -136,7 +145,8 @@ export default function MyCourses(props) {
     postMycourses(statedata.student._id.toString(), {
       student_id: statedata.student._id.toString(),
       name: statedata.student.firstname,
-      table_data_string: coursesdata_string
+      table_data_string: coursesdata_string,
+      table_data_string_taiger_guided: coursesdata_taiger_guided_string
     }).then(
       (resp) => {
         const { data, success } = resp.data;
@@ -433,27 +443,67 @@ export default function MyCourses(props) {
                   <li>若您仍是高中生、申請大學部者，請忽略此表格</li>
                   <li>若有交換，請填入交換時的修過的課</li>
                   <li>若有在大學部時期修過的碩士課程也可以放上去</li>
-                  <li>若有同名課程(如微積分上、微積分下)，請各自獨立一行</li>
+                  <li>
+                    若有同名課程(如微積分一、微積分二)，請各自獨立一行，不能自行疊加在一行
+                  </li>
                   <li>
                     <b>
                       若你已就讀碩士或仍然是碩士班在學，請將碩士班課程標記"碩士"在，Grades那行。
                     </b>
                   </li>
-                  <li>若目前尚未畢業，請每學期選完課確定下學課表後更新這個表單</li>
+                  <li>
+                    若目前尚未畢業，請每學期選完課確定下學課表後更新這個表單
+                  </li>
                 </Col>
               </Row>
+              <Card className="my-2 py-2 mx-0 px-2">
+                <h4>
+                  <b>表格一</b>：請放 TaiGer 服務開始<b>前</b>已經修過的課程
+                </h4>
+                <li>
+                  您只需在TaiGer服務開始初期更新一次<b>表格一</b>
+                  ，往後新的學期，新課程請更新在
+                  <b>表格二</b>
+                </li>
+                <li>
+                  若您已畢業，只需更新<b>表格一</b>即可。
+                </li>
+                <DataSheetGrid
+                  id={1}
+                  height={6000}
+                  disableContextMenu={true}
+                  disableExpandSelection={false}
+                  headerRowHeight={30}
+                  rowHeight={25}
+                  value={statedata.coursesdata}
+                  autoAddRow={true}
+                  onChange={onChange}
+                  columns={columns}
+                />
+              </Card>
               <br />
-              <DataSheetGrid
-                height={6000}
-                disableContextMenu={true}
-                disableExpandSelection={false}
-                headerRowHeight={30}
-                rowHeight={25}
-                value={statedata.coursesdata}
-                autoAddRow={true}
-                onChange={onChange}
-                columns={columns}
-              />
+              <Card className="mt-0 py-2 mx-0 px-2" bg="info">
+                <h4>
+                  <b>表格二</b>：請放 TaiGer 服務開始<b>後</b>所選的修課程
+                </h4>
+                <span>
+                  如此一來顧問才能了解哪些課程是 TaiGer
+                  服務開始後要求修的課程。到畢業前所有新修的課程， 只需更新
+                  <b>表格二</b>。
+                </span>
+                <DataSheetGrid
+                  id={2}
+                  height={6000}
+                  disableContextMenu={true}
+                  disableExpandSelection={false}
+                  headerRowHeight={30}
+                  rowHeight={25}
+                  value={statedata.coursesdata_taiger_guided}
+                  autoAddRow={true}
+                  onChange={onChange_taiger_guided}
+                  columns={columns}
+                />
+              </Card>
               <Row className="my-2">
                 <Col>Last update at: {convertDate(statedata.updatedAt)}</Col>
               </Row>

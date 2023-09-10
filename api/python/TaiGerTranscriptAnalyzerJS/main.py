@@ -25,6 +25,10 @@ if __name__ == "__main__":
     ## print course:
     obj = json.loads(sys.argv[1])
     obj_arr = json.loads(obj)
+    obj2 = json.loads(sys.argv[6])
+    obj2_arr = json.loads(obj2)
+    obj_arr = obj_arr + obj2_arr
+    # print(obj_arr)
     # for obj in obj_arr:
     #     print(obj['course_chinese'])
     studentId = sys.argv[3]

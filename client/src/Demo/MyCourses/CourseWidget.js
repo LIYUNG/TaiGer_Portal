@@ -93,7 +93,8 @@ export default function CourseWidget(props) {
     WidgetTranscriptanalyser(
       statedata.study_group,
       statedata.analysis_language,
-      statedata.coursesdata
+      statedata.coursesdata,
+      []
     ).then(
       (resp) => {
         const { data, success } = resp.data;

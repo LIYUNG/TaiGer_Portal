@@ -62,7 +62,7 @@ const Popping = ({
             </Form>
             <Form>
               <Form.Group controlId="receiver" className="my-0 mx-0">
-                <Form.Label>Receiver</Form.Label>
+                <Form.Label>Agent</Form.Label>
                 <Form.Control
                   as="select"
                   value={

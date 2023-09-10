@@ -345,9 +345,9 @@ class StudentDashboard extends React.Component {
                     ) ? (
                       <Link to={`/events/students/${student._id.toString()}`}>
                         <Button size="sm">預約</Button>
-                        <Badge className="mt-3" bg={`${'primary'}`}>
+                        {/* <Badge className="mt-3" bg={`${'primary'}`}>
                           Test
-                        </Badge>
+                        </Badge> */}
                       </Link>
                     ) : (
                       <span className="text-light">Coming soon</span>

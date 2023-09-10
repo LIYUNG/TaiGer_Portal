@@ -544,7 +544,7 @@ def TUM_BIO_ECONOMICS(transcript_sorted_group_map, df_transcript_array, df_categ
     PROG_SPEC_VWL_PARAM = {
         'Program_Category': 'Volkswirtschaftliche Module', 'Required_ECTS': 10}
     PROG_SPEC_MATH_STATISTICS_PARAM = {
-        'Program_Category': 'Operations Research', 'Required_ECTS': 10}
+        'Program_Category': 'Math and Statistics', 'Required_ECTS': 10}
     PROG_SPEC_SUSTAINABLE_PARAM = {
         'Program_Category': 'Nachhaltigkeit (Sustainability)', 'Required_ECTS': 10}
     PROG_SPEC_OTHERS = {
@@ -552,10 +552,10 @@ def TUM_BIO_ECONOMICS(transcript_sorted_group_map, df_transcript_array, df_categ
 
     # This fixed to program course category.
     program_category = [
+        PROG_SPEC_EMPIRIAL_METHODE_PARAM,
         PROG_SPEC_BWL_PARAM,  # 管理
         PROG_SPEC_VWL_PARAM,  # 經濟
         PROG_SPEC_MATH_STATISTICS_PARAM,  # 數學 統計
-        PROG_SPEC_EMPIRIAL_METHODE_PARAM,
         PROG_SPEC_SUSTAINABLE_PARAM,  # 環境、永續、永續發展、生態、地球永續
         PROG_SPEC_OTHERS  # 其他
     ]

@@ -151,7 +151,7 @@ export default function EventConfirmationCard(props) {
                 'Will be available, after the appointment is confirmed by the Agent.'
               )
             ) : (
-              'Please confirm the get the meeting link'
+              'Please confirm the time and get the meeting link'
             ))}
           {is_TaiGer_Agent(props.user) &&
             (props.event.isConfirmedReceiver ? (
@@ -163,7 +163,7 @@ export default function EventConfirmationCard(props) {
                 'Will be available, after the appointment is confirmed by the Student.'
               )
             ) : (
-              'Please confirm the get the meeting link'
+              'Please confirm the time and get the meeting link'
             ))}
           <br />
           created at:{convertDate(props.event.createdAt)}

@@ -148,7 +148,7 @@ const MyCalendar = (props) => {
           size="lg"
         >
           <Modal.Header closeButton>
-            <Modal.Title>Create New Event</Modal.Title>
+            <Modal.Title as="h5">Create New Event</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <Form>
@@ -175,6 +175,7 @@ const MyCalendar = (props) => {
               </Link>{' '}
               to update your time zone
             </span>
+            <br />
             <Form>
               <Form.Label>Time Slot</Form.Label>
               <Form.Control
@@ -197,8 +198,9 @@ const MyCalendar = (props) => {
                   ))}
               </Form.Control>
             </Form>
+            <br />
             <Form>
-              <Form.Label>Time Slot</Form.Label>
+              <Form.Label>Choose Student</Form.Label>
               <Form.Control
                 as="select"
                 onChange={props.handleSelectStudent}

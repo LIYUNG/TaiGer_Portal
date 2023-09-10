@@ -870,6 +870,13 @@ class OfficeHours extends React.Component {
                   >
                     {available_termins
                       .sort((a, b) => (a.start < b.start ? -1 : 1))
+                      .filter((event) =>
+                        this.state.event_temp?.receiver_id?.some(
+                          (r_id) =>
+                            event.provider?._id?.toString() ===
+                            r_id?._id?.toString()
+                        )
+                      )
                       .map((time_slot, j) => (
                         <option
                           value={`${time_slot.start}`}

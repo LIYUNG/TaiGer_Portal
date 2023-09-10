@@ -155,7 +155,8 @@ const postEvent = asyncHandler(async (req, res) => {
         { start: newEvent.start }, // Start date is the same as the provided date
         {
           start: { $gt: currentDate }, // Start date is in the future
-          requester_id: newEvent.requester_id // Same requester_id
+          requester_id: newEvent.requester_id, // Same requester_id
+          receiver_id: newEvent.receiver_id // Same receiver_id
         }
       ]
     })
@@ -171,7 +172,7 @@ const postEvent = asyncHandler(async (req, res) => {
     } else {
       throw new ErrorResponse(
         429,
-        'You are not allowed to book further timeslot, if you have already an upcoming timeslot.'
+        'You are not allowed to book further timeslot, if you have already an upcoming timeslot of the agent.'
       );
     }
     events = await Event.find({

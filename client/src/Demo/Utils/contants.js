@@ -1170,45 +1170,67 @@ export const applicationOverviewHeader = [
 
 export const applicationFileOverviewHeader = [
   {
+    Header: 'Target Year',
+    accessor: 'target_year',
+    filter: 'fuzzyText'
+  },
+  {
     Header: 'First-, Last Name',
     accessor: 'firstname_lastname',
     filter: 'fuzzyText'
   },
+
   {
-    Header: 'University',
-    accessor: 'school',
-    filter: 'fuzzyText'
+    Header: 'Agent',
+    accessor: 'agents'
   },
   {
-    Header: 'Degree',
-    accessor: 'degree'
+    Header: 'Editor',
+    accessor: 'editors'
   },
   {
     Header: 'Program',
-    accessor: 'program_name'
+    accessor: 'program',
+    filter: 'fuzzyText'
   },
+  // {
+  //   Header: 'Degree',
+  //   accessor: 'degree'
+  // },
+  // {
+  //   Header: 'Program',
+  //   accessor: 'program_name'
+  // },
   {
     Header: 'Deadline',
     accessor: 'deadline'
   },
   {
-    Header: 'Base Docs',
-    accessor: 'base_docs'
+    Header: 'Day left',
+    accessor: 'days_left'
   },
   {
-    Header: 'Uni-Assist',
-    accessor: 'uniassist'
-  },
-  {
-    Header: 'CV',
-    accessor: 'cv'
-  },
-  {
-    Header: 'ML/RL',
-    accessor: 'ml_rl'
-  },
-  {
-    Header: 'Ready',
-    accessor: 'ready'
+    Header: 'Status(%)',
+    accessor: 'status'
   }
+  // {
+  //   Header: 'Base Docs',
+  //   accessor: 'base_docs'
+  // },
+  // {
+  //   Header: 'Uni-Assist',
+  //   accessor: 'uniassist'
+  // },
+  // {
+  //   Header: 'CV',
+  //   accessor: 'cv'
+  // },
+  // {
+  //   Header: 'ML/RL',
+  //   accessor: 'ml_rl'
+  // },
+  // {
+  //   Header: 'Ready',
+  //   accessor: 'ready'
+  // }
 ];

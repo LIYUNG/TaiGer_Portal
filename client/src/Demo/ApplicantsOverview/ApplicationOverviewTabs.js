@@ -15,7 +15,8 @@ import { matchSorter } from 'match-sorter';
 import {
   isProgramNotSelectedEnough,
   programs_refactor,
-  is_TaiGer_role
+  is_TaiGer_role,
+  open_tasks_with_editors
 } from '../Utils/checking-functions';
 import {
   applicationFileOverviewHeader,
@@ -276,12 +277,12 @@ function SortTable({ columns, data, user }) {
                   return j === 0 ? (
                     is_TaiGer_role(user) ? (
                       <td {...cell.getCellProps()} key={j}>
-                        <Link
+                        {/* <Link
                           to={`/student-applications/${row.original.student_id}`}
                           style={{ textDecoration: 'none' }}
                         >
                           <AiFillEdit color="grey" size={16} />
-                        </Link>
+                        </Link> */}
                         <Link
                           target="_blank"
                           to={`/student-database/${row.original.student_id}/profile`}
@@ -399,7 +400,7 @@ class ApplicationOverviewTabs extends React.Component {
             </Tab>
           )}
 
-          <Tab
+          {/* <Tab
             eventKey="application_status"
             title="Application Progress Overview"
           >
@@ -426,7 +427,7 @@ class ApplicationOverviewTabs extends React.Component {
                 />
               </Col>
             </Row>
-          </Tab>
+          </Tab> */}
           <Tab
             eventKey="application_documents_overview"
             title="Application Document Overview"

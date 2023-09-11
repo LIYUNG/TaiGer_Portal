@@ -7,7 +7,6 @@ import Popping from './Popping';
 import { Button, Form, Modal, Spinner } from 'react-bootstrap';
 import {
   NoonNightLabel,
-  convertDate,
   getTimezoneOffset,
   shiftDateByOffset,
   stringToColor,
@@ -221,8 +220,6 @@ const MyCalendar = (props) => {
                 ))}
               </Form.Control>
             </Form>
-            {/* {convertDate(props.newEventStart)}
-          {convertDate(props.newEventEnd)} */}
           </Modal.Body>
           <Modal.Footer>
             <Button

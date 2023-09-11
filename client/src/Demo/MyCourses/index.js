@@ -508,11 +508,11 @@ export default function MyCourses(props) {
                 <Col>Last update at: {convertDate(statedata.updatedAt)}</Col>
               </Row>
               <Row className="mx-1">
-                {showButtonIfMyStudentB(props.user, statedata.student) && (
+                {/* {showButtonIfMyStudentB(props.user, statedata.student) && ( */}
                   <Button onClick={onSubmit} disabled={statedata.isUpdating}>
                     {statedata.isUpdating ? 'Updating' : 'Update'}
                   </Button>
-                )}
+                {/* )} */}
               </Row>
               <br></br>
               <p>
@@ -538,7 +538,7 @@ export default function MyCourses(props) {
                 </Col>
               </Row>
               <br />
-              {showButtonIfMyStudentB(props.user, statedata.student) &&
+              {
                 is_TaiGer_AdminAgent(props.user) && (
                   <>
                     <Row>

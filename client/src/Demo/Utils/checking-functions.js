@@ -1374,9 +1374,19 @@ export const programs_refactor = (students) => {
       student.applications.length === 0
     ) {
       applications.push({
+        target_year: `${
+          student.application_preference?.expected_application_date || '-'
+        } ${
+          student.application_preference?.expected_application_semester || '-'
+        }`,
         school: 'No University',
         firstname_lastname: `${student.firstname}, ${student.lastname}`,
         program_name: 'No Program',
+        program: 'No Program',
+        editors: student.editors
+          ?.map((editor, i) => editor.firstname)
+          .join(', '),
+        agents: student.agents?.map((agent, i) => agent.firstname).join(', '),
         semester: '-',
         degree: '-',
         toefl: '-',
@@ -1394,14 +1404,25 @@ export const programs_refactor = (students) => {
         cv: '-',
         ml_rl: '-',
         ready: '-',
-        show: '-'
+        show: '-',
+        status: '-'
       });
     } else {
       for (const application of student.applications) {
         applications.push({
+          target_year: `${
+            student.application_preference?.expected_application_date || '-'
+          } ${
+            student.application_preference?.expected_application_semester || '-'
+          }`,
           school: application.programId.school,
           firstname_lastname: `${student.firstname}, ${student.lastname}`,
           program_name: application.programId.program_name,
+          program: `${application.programId.school} - ${application.programId.program_name} (${application.programId.degree})`,
+          editors: student.editors
+            ?.map((editor, i) => editor.firstname)
+            .join(', '),
+          agents: student.agents?.map((agent, i) => agent.firstname).join(', '),
           semester: application.programId.semester,
           degree: application.programId.degree,
           toefl: application.programId.toefl,
@@ -1457,7 +1478,11 @@ export const programs_refactor = (students) => {
                 ? 'Ready!'
                 : 'No'
               : 'Undecided',
-          show: application.decided === 'O' ? true : false
+          show: application.decided === 'O' ? true : false,
+          status:
+            application_deadline_calculator(student, application) === 'CLOSE'
+              ? 100
+              : progressBarCounter(student, application)
         });
       }
     }

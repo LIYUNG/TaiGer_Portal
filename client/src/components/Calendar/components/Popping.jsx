@@ -1,7 +1,7 @@
 import { Modal, Button, Form, Badge, Spinner } from 'react-bootstrap';
 import React, { useState } from 'react';
 import '../style/model.scss';
-import { convertDate } from '../../../Demo/Utils/contants';
+import { NoonNightLabel, convertDate } from '../../../Demo/Utils/contants';
 import {
   is_TaiGer_Agent,
   is_TaiGer_Student
@@ -100,7 +100,7 @@ const Popping = ({
             <br />
             <ul>
               <li className="col text-muted pb-0 mb-0">
-                From: {convertDate(start)}
+                From: {convertDate(start)} {NoonNightLabel(start)}
               </li>
               <li className="col text-muted pb-0 mb-0">
                 To: {convertDate(end)}

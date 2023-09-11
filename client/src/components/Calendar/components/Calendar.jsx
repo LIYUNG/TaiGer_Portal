@@ -6,6 +6,7 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 import Popping from './Popping';
 import { Button, Form, Modal, Spinner } from 'react-bootstrap';
 import {
+  NoonNightLabel,
   convertDate,
   getTimezoneOffset,
   shiftDateByOffset,
@@ -100,11 +101,13 @@ const MyCalendar = (props) => {
         components={{
           event: ({ event }) =>
             is_TaiGer_Student(props.user) ? (
-              <span>{event.start.toLocaleTimeString()}</span>
+              <span>
+                {event.start.toLocaleTimeString()} {NoonNightLabel(event.start)}{' '}
+              </span>
             ) : (
               <span>
-                {event.start.toLocaleTimeString()} {event.title} -{' '}
-                {event.description}
+                {event.start.toLocaleTimeString()} {NoonNightLabel(event.start)}
+                {event.title} - {event.description}
               </span>
             )
         }}

@@ -19,7 +19,8 @@ import {
   shiftDateByOffset,
   getTimezoneOffset,
   convertDate,
-  getNumberOfDays
+  getNumberOfDays,
+  NoonNightLabel
 } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
@@ -716,7 +717,8 @@ class TaiGerOfficeHours extends React.Component {
                       <Card.Header>
                         <Card.Title as="h5">
                           <AiOutlineCalendar /> Start:{' '}
-                          {convertDate(event.start)} ~ 30 min, Time zone:{' '}
+                          {convertDate(event.start)}{' '}
+                          {NoonNightLabel(event.start)} ~ 30 min, Time zone:{' '}
                           {Intl.DateTimeFormat().resolvedOptions().timeZone} UTC
                           {getTimezoneOffset(
                             Intl.DateTimeFormat().resolvedOptions().timeZone

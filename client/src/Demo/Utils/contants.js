@@ -77,7 +77,14 @@ export const getReorderWeekday = (index) => {
     return 'Invalid index';
   }
 };
-
+export const NoonNightLabel = (start) => {
+  const start_temp = new Date(start);
+  return start_temp.getHours() === 12 && start_temp.getMinutes() === 0
+    ? '(Noon)'
+    : start_temp.getHours() === 0 && start_temp.getMinutes() === 0
+    ? '(Night)'
+    : '';
+};
 export const getTimezoneOffset = (timezone) => {
   const zone = IANAZone.create(
     timezone ? timezone : Intl.DateTimeFormat().resolvedOptions().timeZone

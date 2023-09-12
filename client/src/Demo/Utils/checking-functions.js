@@ -648,12 +648,21 @@ export const GetCVDeadline = (student) => {
   var today = new Date();
   let daysLeftMin = 3000;
   let CVDeadline = '';
+  let daysLeftRollingMin = 0;
+  let CVDeadlineRolling = '';
+  let hasRolling = false;
   student.applications.forEach((application) => {
     if (application.decided === 'O') {
       const applicationDeadline = application_deadline_calculator(
         student,
         application
       );
+      if (applicationDeadline?.includes('olling')) {
+        console.log(student.firstname);
+        hasRolling = true;
+        daysLeftRollingMin = '-';
+        CVDeadlineRolling = applicationDeadline;
+      }
       const daysLeft = parseInt(getNumberOfDays(today, applicationDeadline));
 
       if (daysLeft < daysLeftMin) {
@@ -663,7 +672,12 @@ export const GetCVDeadline = (student) => {
     }
   });
   return daysLeftMin === 3000
-    ? { daysLeftMin: '-', CVDeadline: '-' }
+    ? hasRolling
+      ? {
+          daysLeftMin: daysLeftRollingMin,
+          CVDeadline: CVDeadlineRolling
+        }
+      : { daysLeftMin: '-', CVDeadline: '-' }
     : { daysLeftMin, CVDeadline };
 };
 
@@ -1215,12 +1229,13 @@ export const open_tasks = (students) => {
             aged_days: parseInt(
               getNumberOfDays(thread.doc_thread_id.updatedAt, new Date())
             ),
-            days_left: parseInt(
-              getNumberOfDays(
-                new Date(),
-                application_deadline_calculator(student, application)
-              )
-            ),
+            days_left:
+              parseInt(
+                getNumberOfDays(
+                  new Date(),
+                  application_deadline_calculator(student, application)
+                )
+              ) || '-',
             program_id: application.programId._id.toString(),
             show: application.decided === 'O' ? true : false,
             thread_id: thread.doc_thread_id._id.toString(),
@@ -1298,12 +1313,13 @@ export const open_tasks_with_editors = (students) => {
             aged_days: parseInt(
               getNumberOfDays(thread.doc_thread_id.updatedAt, new Date())
             ),
-            days_left: parseInt(
-              getNumberOfDays(
-                new Date(),
-                application_deadline_calculator(student, application)
-              )
-            ),
+            days_left:
+              parseInt(
+                getNumberOfDays(
+                  new Date(),
+                  application_deadline_calculator(student, application)
+                )
+              ) || '-',
             program_id: application.programId._id.toString(),
             show: application.decided === 'O' ? true : false,
             thread_id: thread.doc_thread_id._id.toString(),
@@ -1380,6 +1396,8 @@ export const programs_refactor = (students) => {
           student.application_preference?.expected_application_semester || '-'
         }`,
         school: 'No University',
+        application: {},
+        student: student,
         firstname_lastname: `${student.firstname}, ${student.lastname}`,
         program_name: 'No Program',
         program: 'No Program',
@@ -1391,6 +1409,7 @@ export const programs_refactor = (students) => {
         degree: '-',
         toefl: '-',
         ielts: '-',
+        testdaf: '-',
         program_id: '-',
         application_deadline: '-',
         decided: '-',
@@ -1416,6 +1435,8 @@ export const programs_refactor = (students) => {
             student.application_preference?.expected_application_semester || '-'
           }`,
           school: application.programId.school,
+          application,
+          student: student,
           firstname_lastname: `${student.firstname}, ${student.lastname}`,
           program_name: application.programId.program_name,
           program: `${application.programId.school} - ${application.programId.program_name} (${application.programId.degree})`,
@@ -1427,6 +1448,7 @@ export const programs_refactor = (students) => {
           degree: application.programId.degree,
           toefl: application.programId.toefl,
           ielts: application.programId.ielts,
+          testdaf: application.programId.testdaf,
           program_id: application.programId._id.toString(),
           application_deadline: application_deadline_calculator(
             student,
@@ -1437,12 +1459,13 @@ export const programs_refactor = (students) => {
           admission: application.admission,
           student_id: student._id.toString(),
           deadline: application_deadline_calculator(student, application),
-          days_left: parseInt(
-            getNumberOfDays(
-              new Date(),
-              application_deadline_calculator(student, application)
-            )
-          ),
+          days_left:
+            parseInt(
+              getNumberOfDays(
+                new Date(),
+                application_deadline_calculator(student, application)
+              )
+            ) || '-',
           base_docs:
             application.closed === 'O' ? '-' : isMissingBaseDocs ? 'X' : 'O',
           uniassist:

@@ -1,5 +1,5 @@
-import React from 'react';
-import { Row, Col, Table, Card, Tabs, Tab } from 'react-bootstrap';
+import React, { Fragment, useState } from 'react';
+import { Row, Col, Table, Card, Tabs, Tab, Collapse } from 'react-bootstrap';
 import { AiFillEdit } from 'react-icons/ai';
 
 import {
@@ -12,17 +12,10 @@ import {
 import { Link } from 'react-router-dom';
 import { matchSorter } from 'match-sorter';
 
-import {
-  isProgramNotSelectedEnough,
-  programs_refactor,
-  is_TaiGer_role,
-  open_tasks_with_editors
-} from '../Utils/checking-functions';
-import {
-  applicationFileOverviewHeader,
-  applicationOverviewHeader
-} from '../Utils/contants';
+import { programs_refactor, is_TaiGer_role } from '../Utils/checking-functions';
+import { applicationFileOverviewHeader } from '../Utils/contants';
 import TabStudBackgroundDashboard from '../Dashboard/MainViewTab/StudDocsOverview/TabStudBackgroundDashboard';
+import ApplicationProgressCardBody from '../../components/ApplicationProgressCard/ApplicationProgressCardBody';
 
 // Define a default UI for filtering
 function GlobalFilter({
@@ -199,47 +192,24 @@ function SortTable({ columns, data, user }) {
         <thead>
           {headerGroups.map((headerGroup, j) => (
             <tr {...headerGroup.getHeaderGroupProps()} key={j}>
-              {headerGroup.headers.map((column, i) =>
+              {headerGroup.headers.map((column, i) => (
                 // Add the sorting props to control sorting. For this example
                 // we can add them into the header props
-                i === 0 ? (
-                  is_TaiGer_role(user) ? (
-                    <th
-                      {...column.getHeaderProps(column.getSortByToggleProps())}
-                      key={i}
-                    >
-                      {column.render('Header')}
-                      {/* <div>{column.canFilter ? column.render('Filter') : null}</div> */}
-                      {/* Add a sort direction indicator */}
-                      <span>
-                        {column.isSorted
-                          ? column.isSortedDesc
-                            ? ' 🔽'
-                            : ' 🔼'
-                          : ' ⮃'}
-                      </span>
-                    </th>
-                  ) : (
-                    <th></th>
-                  )
-                ) : (
-                  <th
-                    {...column.getHeaderProps(column.getSortByToggleProps())}
-                    key={i}
-                  >
-                    {column.render('Header')}
-                    {/* <div>{column.canFilter ? column.render('Filter') : null}</div> */}
-                    {/* Add a sort direction indicator */}
-                    <span>
-                      {column.isSorted
-                        ? column.isSortedDesc
-                          ? ' 🔽'
-                          : ' 🔼'
-                        : ' ⮃'}
-                    </span>
-                  </th>
-                )
-              )}
+
+                <th
+                  {...column.getHeaderProps(column.getSortByToggleProps())}
+                  key={i}
+                >
+                  {column.render('Header')}
+                  <span>
+                    {column.isSorted
+                      ? column.isSortedDesc
+                        ? ' 🔽'
+                        : ' 🔼'
+                      : ' ⮃'}
+                  </span>
+                </th>
+              ))}
             </tr>
           ))}
           {headerGroups.map((headerGroup, j) => (
@@ -272,89 +242,100 @@ function SortTable({ columns, data, user }) {
           {firstPageRows.map((row, i) => {
             prepareRow(row);
             return (
-              <tr {...row.getRowProps()} key={i}>
-                {row.cells.map((cell, j) => {
-                  return j === 0 ? (
-                    is_TaiGer_role(user) ? (
-                      <td {...cell.getCellProps()} key={j}>
-                        {/* <Link
+              <Fragment key={i}>
+                <tr {...row.getRowProps()}>
+                  {row.cells.map((cell, j) => {
+                    return j === 0 ? (
+                      is_TaiGer_role(user) ? (
+                        <td {...cell.getCellProps()} key={j}>
+                          {/* <Link
                           to={`/student-applications/${row.original.student_id}`}
                           style={{ textDecoration: 'none' }}
                         >
                           <AiFillEdit color="grey" size={16} />
                         </Link> */}
-                        <Link
-                          target="_blank"
-                          to={`/student-database/${row.original.student_id}/profile`}
-                          className="text-info"
-                          style={{ textDecoration: 'none' }}
-                        >
-                          <b>{cell.render('Cell')}</b>
-                        </Link>
-                      </td>
-                    ) : (
-                      <td key={j}>
-                        <Link
-                          to={`/student-applications/${row.original.student_id}`}
-                          style={{ textDecoration: 'none' }}
-                        >
-                          <AiFillEdit color="grey" size={16} />
-                        </Link>
-                      </td>
-                    )
-                  ) : [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].includes(j) ? (
-                    <td {...cell.getCellProps()} key={j}>
-                      {row.original.decided === 'O' ? (
-                        row.original.closed === 'O' ? (
                           <Link
                             target="_blank"
-                            to={'/programs/' + row.original.program_id}
-                            className="text-warning"
+                            to={`/student-database/${row.original.student_id}/profile`}
+                            className="text-info"
                             style={{ textDecoration: 'none' }}
                           >
-                            {cell.render('Cell')}
+                            <b>{cell.render('Cell')}</b>
                           </Link>
+                        </td>
+                      ) : (
+                        <td key={j}>
+                          <Link
+                            to={`/student-applications/${row.original.student_id}`}
+                            style={{ textDecoration: 'none' }}
+                          >
+                            <AiFillEdit color="grey" size={16} />
+                          </Link>
+                        </td>
+                      )
+                    ) : [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].includes(j) ? (
+                      <td {...cell.getCellProps()} key={j}>
+                        {row.original.decided === 'O' ? (
+                          row.original.closed === 'O' ? (
+                            <Link
+                              target="_blank"
+                              to={'/programs/' + row.original.program_id}
+                              className="text-warning"
+                              style={{ textDecoration: 'none' }}
+                            >
+                              {cell.render('Cell')}
+                            </Link>
+                          ) : (
+                            <Link
+                              target="_blank"
+                              to={'/programs/' + row.original.program_id}
+                              className="text-info"
+                              style={{ textDecoration: 'none' }}
+                            >
+                              {cell.render('Cell')}
+                            </Link>
+                          )
                         ) : (
                           <Link
                             target="_blank"
                             to={'/programs/' + row.original.program_id}
-                            className="text-info"
+                            className="text-secondary"
+                            title="Not decided yet"
                             style={{ textDecoration: 'none' }}
                           >
                             {cell.render('Cell')}
                           </Link>
-                        )
-                      ) : (
-                        <Link
-                          target="_blank"
-                          to={'/programs/' + row.original.program_id}
-                          className="text-secondary"
-                          title="Not decided yet"
-                          style={{ textDecoration: 'none' }}
-                        >
-                          {cell.render('Cell')}
-                        </Link>
-                      )}
-                    </td>
-                  ) : j === 11 ? (
-                    cell.value < 30 ? (
-                      <td {...cell.getCellProps()} key={j}>
-                        <p className="text-danger my-0">
-                          {cell.render('Cell')}
-                        </p>
+                        )}
                       </td>
+                    ) : j === 11 ? (
+                      cell.value < 30 ? (
+                        <td {...cell.getCellProps()} key={j}>
+                          <p className="text-danger my-0">
+                            {cell.render('Cell')}
+                          </p>
+                        </td>
+                      ) : (
+                        <td {...cell.getCellProps()} key={j}>
+                          <p className="text-light my-0">
+                            {cell.render('Cell')}
+                          </p>
+                        </td>
+                      )
                     ) : (
                       <td {...cell.getCellProps()} key={j}>
-                        <p className="text-light my-0">{cell.render('Cell')}</p>
+                        {cell.render('Cell')}
                       </td>
-                    )
-                  ) : (
-                    <td {...cell.getCellProps()} key={j}>
-                      {cell.render('Cell')}
+                    );
+                  })}
+                </tr>
+                <Collapse in={true}>
+                  <tr {...row.getRowProps()}>
+                    <td colSpan="12">
+                      <ApplicationProgressCardBody application={row} />
                     </td>
-                  );
-                })}
-              </tr>
+                  </tr>
+                </Collapse>
+              </Fragment>
             );
           })}
         </tbody>
@@ -364,6 +345,149 @@ function SortTable({ columns, data, user }) {
     </>
   );
 }
+
+const AdvancedTable = ({ data, columns, students, user }) => {
+  const [sortConfig, setSortConfig] = useState({
+    key: null,
+    direction: 'ascending'
+  });
+  const [collapsedRows, setCollapsedRows] = useState({});
+  const [filterText, setFilterText] = useState('');
+
+  const handleSort = (key) => {
+    let direction = 'ascending';
+    if (sortConfig.key === key && sortConfig.direction === 'ascending') {
+      direction = 'descending';
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const handleCollapse = (index) => {
+    setCollapsedRows({
+      ...collapsedRows,
+      [index]: !collapsedRows[index]
+    });
+  };
+
+  const filteredData = data.filter(
+    (item) =>
+      item.target_year?.toLowerCase().includes(filterText.toLowerCase()) ||
+      item.firstname_lastname
+        ?.toLowerCase()
+        .includes(filterText.toLowerCase()) ||
+      item.program?.toLowerCase().includes(filterText.toLowerCase()) ||
+      item.deadline?.toLowerCase().includes(filterText.toLowerCase()) ||
+      item.agents?.toLowerCase().includes(filterText.toLowerCase()) ||
+      item.editors?.toLowerCase().includes(filterText.toLowerCase()) ||
+      item.days_left
+        ?.toString()
+        .toLowerCase()
+        .includes(filterText.toLowerCase()) ||
+      item.status?.toString().toLowerCase().includes(filterText.toLowerCase())
+  );
+
+  const sortedData = [...filteredData].sort((a, b) => {
+    if (sortConfig.key) {
+      if (a[sortConfig.key] < b[sortConfig.key]) {
+        return sortConfig.direction === 'ascending' ? -1 : 1;
+      }
+      if (a[sortConfig.key] > b[sortConfig.key]) {
+        return sortConfig.direction === 'ascending' ? 1 : -1;
+      }
+    }
+    return 0;
+  });
+
+  return (
+    <div>
+      Search:{' '}
+      <input
+        type="text"
+        placeholder=". . ."
+        value={filterText}
+        onChange={(e) => setFilterText(e.target.value)}
+      />
+      <Table
+        responsive
+        className="my-0"
+        variant="dark"
+        text="light"
+        bordered
+        hover
+        size="sm"
+      >
+        <thead>
+          <tr>
+            {columns.map((column, idx) => (
+              <th onClick={() => handleSort(`${column.accessor}`)}>
+                {column.Header}
+                <span>
+                  {sortConfig.key === column.accessor
+                    ? sortConfig.direction === 'ascending'
+                      ? ' 🔽'
+                      : sortConfig.direction === 'descending'
+                      ? ' 🔼'
+                      : ' ⮃'
+                    : ' ⮃'}
+                </span>
+              </th>
+            ))}
+            {/* <th onClick={() => handleSort('name')}>Name</th>
+            <th onClick={() => handleSort('age')}>Age</th>
+            <th>Actions</th> */}
+          </tr>
+        </thead>
+        <tbody>
+          {sortedData.map((item, index) => (
+            <React.Fragment key={index}>
+              <tr
+                className={
+                  item.decided === 'O'
+                    ? item.closed === 'O'
+                      ? 'text-warning'
+                      : 'text-info'
+                    : 'text-secondary'
+                }
+                title={
+                  item.decided === 'O'
+                    ? item.closed === 'O'
+                      ? 'Closed'
+                      : item.closed === 'X'
+                      ? 'Withdraw'
+                      : 'In Progress'
+                    : 'Not Decided Yet'
+                }
+              >
+                {columns.map((column, idx) => (
+                  <td onClick={() => handleCollapse(index)}>
+                    {item[column.accessor]}
+                  </td>
+                ))}
+                {/* <td>{item.name}</td>
+                <td>{item.age}</td>
+                <td>
+                  <button onClick={() => handleCollapse(index)}>
+                    {collapsedRows[index] ? 'Expand' : 'Collapse'}
+                  </button>
+                </td> */}
+              </tr>
+              {collapsedRows[index] && (
+                <tr>
+                  <td colSpan="12">
+                    <ApplicationProgressCardBody
+                      student={item.student}
+                      application={item.application}
+                    />
+                  </td>
+                </tr>
+              )}
+            </React.Fragment>
+          ))}
+        </tbody>
+      </Table>
+    </div>
+  );
+};
 
 class ApplicationOverviewTabs extends React.Component {
   render() {
@@ -399,44 +523,16 @@ class ApplicationOverviewTabs extends React.Component {
               </Row>
             </Tab>
           )}
-
-          {/* <Tab
-            eventKey="application_status"
-            title="Application Progress Overview"
-          >
-            {isProgramNotSelectedEnough(this.props.students) && (
-              <Row>
-                <Col>
-                  <Card className="mb-2 mx-0" bg={'danger'} text={'light'}>
-                    <Card.Body>
-                      <p className="text-light">
-                        The following students did not choose enough programs:
-                      </p>
-                      {listStudentProgramNotSelected}
-                    </Card.Body>
-                  </Card>
-                </Col>
-              </Row>
-            )}
-            <Row>
-              <Col>
-                <SortTable
-                  columns={applicationOverviewHeader}
-                  data={applications_arr}
-                  user={this.props.user}
-                />
-              </Col>
-            </Row>
-          </Tab> */}
           <Tab
             eventKey="application_documents_overview"
-            title="Application Document Overview"
+            title="Application Overview"
           >
             <Row>
               <Col>
-                <SortTable
+                <AdvancedTable
                   columns={applicationFileOverviewHeader}
                   data={applications_arr}
+                  students={this.props.students}
                   user={this.props.user}
                 />
               </Col>

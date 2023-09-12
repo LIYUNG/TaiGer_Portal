@@ -1339,6 +1339,8 @@ const profile_name_list = {
 const CVDeadline_Calculator = (student) => {
   let daysLeftMin = 3000;
   let CVDeadline = '';
+  let CVDeadlineRolling = '';
+  let hasRolling = false;
   const today = new Date();
   for (let i = 0; i < student.applications.length; i += 1) {
     if (student.applications[i].decided === 'O') {
@@ -1346,6 +1348,10 @@ const CVDeadline_Calculator = (student) => {
         student,
         student.applications[i]
       );
+      if (application_deadline_temp?.includes('olling')) {
+        hasRolling = true;
+        CVDeadlineRolling = application_deadline_temp;
+      }
       const day_left = parseInt(
         getNumberOfDays(today, application_deadline_temp),
         10
@@ -1356,7 +1362,11 @@ const CVDeadline_Calculator = (student) => {
       }
     }
   }
-  return daysLeftMin === 3000 ? '-' : CVDeadline;
+  return daysLeftMin === 3000
+    ? hasRolling
+      ? CVDeadlineRolling
+      : '-'
+    : CVDeadline;
 };
 
 const cvmlrl_deadline_within30days_escalation_summary = (student) => {

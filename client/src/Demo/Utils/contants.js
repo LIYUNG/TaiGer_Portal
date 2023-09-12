@@ -1193,14 +1193,6 @@ export const applicationFileOverviewHeader = [
     accessor: 'program',
     filter: 'fuzzyText'
   },
-  // {
-  //   Header: 'Degree',
-  //   accessor: 'degree'
-  // },
-  // {
-  //   Header: 'Program',
-  //   accessor: 'program_name'
-  // },
   {
     Header: 'Deadline',
     accessor: 'deadline'
@@ -1213,24 +1205,4 @@ export const applicationFileOverviewHeader = [
     Header: 'Status(%)',
     accessor: 'status'
   }
-  // {
-  //   Header: 'Base Docs',
-  //   accessor: 'base_docs'
-  // },
-  // {
-  //   Header: 'Uni-Assist',
-  //   accessor: 'uniassist'
-  // },
-  // {
-  //   Header: 'CV',
-  //   accessor: 'cv'
-  // },
-  // {
-  //   Header: 'ML/RL',
-  //   accessor: 'ml_rl'
-  // },
-  // {
-  //   Header: 'Ready',
-  //   accessor: 'ready'
-  // }
 ];

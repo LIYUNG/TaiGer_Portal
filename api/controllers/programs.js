@@ -142,6 +142,19 @@ const createProgram = asyncHandler(async (req, res) => {
   new_program.program_name = new_program.program_name.trim();
   new_program.updatedAt = new Date();
   new_program.whoupdated = `${user.firstname} ${user.lastname}`;
+  const programs = await Program.find({
+    school: new_program.school,
+    program_name: new_program.program_name,
+    degree: new_program.degree,
+    semester: new_program.semester
+  });
+  if (programs.length > 0) {
+    logger.error('createProgram: same program existed!');
+    throw new ErrorResponse(
+      429,
+      'This program is already existed! Considering update the existing one.'
+    );
+  }
   const program = await Program.create(new_program);
   return res.status(201).send({ success: true, data: program });
 });

@@ -3,6 +3,10 @@
   display: inline-block;
 }
 
+.search-container-school {
+  position: relative;
+}
+
 .search-input {
   width: 180px;
   padding: 8px;

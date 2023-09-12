@@ -529,6 +529,7 @@ function ProgramList(props) {
     success: false,
     programs: null,
     isloaded: false,
+    res_modal_status: 0,
     error: '',
     res_status: 0
   });
@@ -668,14 +669,16 @@ function ProgramList(props) {
             success: success,
             programs: new_program_list,
             isloaded: true,
-            res_status: status
+            res_modal_status: status
           }));
           setIsCreationMode(!isCreationMode);
         } else {
+          const { message } = resp.data;
           setStatedata((state) => ({
             ...state,
             isloaded: true,
-            res_status: status
+            res_modal_status: status,
+            res_modal_message: message
           }));
         }
       },
@@ -690,6 +693,11 @@ function ProgramList(props) {
 
   const ConfirmError = () => {
     setTableStates((state) => ({
+      ...state,
+      res_modal_status: 0,
+      res_modal_message: ''
+    }));
+    setStatedata((state) => ({
       ...state,
       res_modal_status: 0,
       res_modal_message: ''
@@ -799,7 +807,13 @@ function ProgramList(props) {
           res_modal_message={tableStates.res_modal_message}
         />
       )}
-
+      {statedata.res_modal_status >= 400 && (
+        <ModalMain
+          ConfirmError={ConfirmError}
+          res_modal_status={statedata.res_modal_status}
+          res_modal_message={statedata.res_modal_message}
+        />
+      )}
       {isCreationMode ? (
         <>
           <NewProgramEdit

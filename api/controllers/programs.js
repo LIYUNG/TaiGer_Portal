@@ -138,6 +138,8 @@ const createProgram = asyncHandler(async (req, res) => {
   const { user } = req;
   const new_program = req.body;
 
+  new_program.school = new_program.school.trim();
+  new_program.program_name = new_program.program_name.trim();
   new_program.updatedAt = new Date();
   new_program.whoupdated = `${user.firstname} ${user.lastname}`;
   const program = await Program.create(new_program);

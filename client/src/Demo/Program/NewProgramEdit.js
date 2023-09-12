@@ -99,18 +99,6 @@ class NewProgramEdit extends React.Component {
                       <option value="MBA">MBA</option>
                     </Form.Control>
                   </Form.Group>
-                  {/* <Form.Group controlId="degree">
-                    <Form.Control
-                      type="text"
-                      placeholder="M.Sc."
-                      onChange={(e) => this.handleChange(e)}
-                      defaultValue={
-                        this.state.program.degree
-                          ? this.state.program.degree
-                          : ''
-                      }
-                    />
-                  </Form.Group> */}
                 </h5>
               </Col>
             </Row>
@@ -131,18 +119,6 @@ class NewProgramEdit extends React.Component {
                       <option value="SS">Summer Semester</option>
                     </Form.Control>
                   </Form.Group>
-                  {/* <Form.Group controlId="semester">
-                    <Form.Control
-                      type="text"
-                      placeholder="Winter"
-                      onChange={(e) => this.handleChange(e)}
-                      defaultValue={
-                        this.state.program.semester
-                          ? this.state.program.semester
-                          : ''
-                      }
-                    />
-                  </Form.Group> */}
                 </h5>
               </Col>
             </Row>

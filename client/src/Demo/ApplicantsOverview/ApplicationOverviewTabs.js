@@ -458,18 +458,34 @@ const AdvancedTable = ({ data, columns, students, user }) => {
                     : 'Not Decided Yet'
                 }
               >
-                {columns.map((column, idx) => (
-                  <td onClick={() => handleCollapse(index)}>
-                    {item[column.accessor]}
-                  </td>
-                ))}
-                {/* <td>{item.name}</td>
-                <td>{item.age}</td>
-                <td>
-                  <button onClick={() => handleCollapse(index)}>
-                    {collapsedRows[index] ? 'Expand' : 'Collapse'}
-                  </button>
-                </td> */}
+                {columns.map((column, idx) =>
+                  column.accessor === 'firstname_lastname' ? (
+                    <td onClick={() => handleCollapse(index)}>
+                      <Link
+                        to={`/student-database/${item.student_id}/profile`}
+                        className="text-info"
+                        target="_blank"
+                      >
+                        {item[column.accessor]}
+                      </Link>
+                    </td>
+                  ) : (
+                    <td onClick={() => handleCollapse(index)}>
+                      {column.accessor === 'program' &&
+                      item.program_id !== '-' ? (
+                        <Link
+                          to={`/programs/${item.program_id}`}
+                          className="text-info"
+                          target="_blank"
+                        >
+                          {item[column.accessor]}
+                        </Link>
+                      ) : (
+                        <>{item[column.accessor]}</>
+                      )}
+                    </td>
+                  )
+                )}
               </tr>
               {collapsedRows[index] && (
                 <tr>
@@ -491,19 +507,6 @@ const AdvancedTable = ({ data, columns, students, user }) => {
 
 class ApplicationOverviewTabs extends React.Component {
   render() {
-    const listStudentProgramNotSelected = this.props.students.map(
-      (student, i) => (
-        <div key={i}>
-          {student.applications &&
-            student.applications.length < student.applying_program_count && (
-              <li className="text-light">
-                {student.firstname} {student.lastname}
-              </li>
-            )}
-        </div>
-      )
-    );
-
     const applications_arr = programs_refactor(this.props.students);
 
     return (

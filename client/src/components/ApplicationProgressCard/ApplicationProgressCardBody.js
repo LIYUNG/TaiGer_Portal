@@ -97,7 +97,7 @@ export default function ApplicationProgressCardBody(props) {
         {(props.application?.programId?.application_portal_a ||
           props.application?.programId?.application_portal_b) && (
           <ListGroup.Item>
-            <Link to={'/portal-informations'}>
+            <Link to={`/portal-informations/${props.student._id.toString()}`}>
               {(props.application?.programId?.application_portal_a &&
                 !props.application.credential_a_filled) ||
               (props.application?.programId?.application_portal_b &&

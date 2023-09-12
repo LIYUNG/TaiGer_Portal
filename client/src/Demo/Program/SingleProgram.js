@@ -324,6 +324,7 @@ class SingleProgram extends React.Component {
           <SingleProgramEdit
             program={program}
             isLoaded={isLoaded}
+            user={this.props.user}
             handleSubmit_Program={this.handleSubmit_Program}
             handleClick={this.handleClick}
           />

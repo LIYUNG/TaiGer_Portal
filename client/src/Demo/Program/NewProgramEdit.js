@@ -4,7 +4,9 @@ import {
   AddValidProgram,
   BINARY_STATE_OPTIONS,
   COUNTRIES_OPTIONS,
+  DEGREE_OPTIONS,
   LANGUAGES_OPTIONS,
+  SEMESTER_OPTIONS,
   field_alert
 } from '../Utils/contants';
 
@@ -89,14 +91,7 @@ class NewProgramEdit extends React.Component {
                       onChange={(e) => this.handleChange(e)}
                       value={this.state.program.degree}
                     >
-                      <option value="">Please Select</option>
-                      <option value="B. A.">Bachelor of Art</option>
-                      <option value="B. Eng.">Bachelor of Engineering</option>
-                      <option value="B. Sc.">Bachelor of Science</option>
-                      <option value="M. A.">Master of Art</option>
-                      <option value="M. Eng.">Master of Engineering</option>
-                      <option value="M. Sc.">Master of Science</option>
-                      <option value="MBA">MBA</option>
+                      {DEGREE_OPTIONS()}
                     </Form.Control>
                   </Form.Group>
                 </h5>
@@ -114,9 +109,7 @@ class NewProgramEdit extends React.Component {
                       onChange={(e) => this.handleChange(e)}
                       value={this.state.program.semester}
                     >
-                      <option value="">Please Select</option>
-                      <option value="WS">Winter Semester</option>
-                      <option value="SS">Summer Semester</option>
+                      {SEMESTER_OPTIONS()}
                     </Form.Control>
                   </Form.Group>
                 </h5>

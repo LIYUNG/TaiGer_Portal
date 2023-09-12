@@ -481,6 +481,22 @@ export const field_alert = (program) => {
     return;
   }
 };
+
+export const DEGREE_OPTIONS = () => {
+  return (
+    <>
+      <option value="">Please Select</option>
+      <option value="B. A.">Bachelor of Art</option>
+      <option value="B. Eng.">Bachelor of Engineering</option>
+      <option value="B. Sc.">Bachelor of Science</option>
+      <option value="M. A.">Master of Art</option>
+      <option value="M. Eng.">Master of Engineering</option>
+      <option value="M. Sc.">Master of Science</option>
+      <option value="MBA">MBA</option>
+    </>
+  );
+};
+
 export const LANGUAGES_OPTIONS = () => {
   return (
     <>
@@ -513,6 +529,16 @@ export const COUNTRIES_OPTIONS = () => {
       <option value="ch">Switzerland</option>
       <option value="uk">United Kingdom</option>
       <option value="us">United States</option>
+    </>
+  );
+};
+
+export const SEMESTER_OPTIONS = () => {
+  return (
+    <>
+      <option value="">Please Select</option>
+      <option value="WS">Winter Semester</option>
+      <option value="SS">Summer Semester</option>
     </>
   );
 };

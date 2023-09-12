@@ -4,9 +4,12 @@ import {
   AddValidProgram,
   BINARY_STATE_OPTIONS,
   COUNTRIES_OPTIONS,
+  DEGREE_OPTIONS,
   LANGUAGES_OPTIONS,
+  SEMESTER_OPTIONS,
   field_alert
 } from '../Utils/contants';
+import { is_TaiGer_Admin } from '../Utils/checking-functions';
 
 class SingleProgramEdit extends React.Component {
   state = {
@@ -39,23 +42,24 @@ class SingleProgramEdit extends React.Component {
                 <h5>University</h5>
               </Col>
               <Col md={4}>
-                {/* <h5>
-                  <Form.Group controlId="school">
-                    <Form.Control
-                      type="text"
-                      placeholder="National Taiwan University"
-                      onChange={(e) => this.handleChange(e)}
-                      defaultValue={
-                        this.state.program.school
-                          ? this.state.program.school
-                          : ''
-                      }
-                    />
-                  </Form.Group>
-                </h5> */}
-                <h5>
-                  {this.state.program.school ? this.state.program.school : ''}
-                </h5>
+                {is_TaiGer_Admin(this.props.user) ? (
+                  <h5>
+                    <Form.Group controlId="school">
+                      <Form.Control
+                        type="text"
+                        placeholder="National Taiwan University"
+                        onChange={(e) => this.handleChange(e)}
+                        defaultValue={
+                          this.state.program.school
+                            ? this.state.program.school
+                            : ''
+                        }
+                      />
+                    </Form.Group>
+                  </h5>
+                ) : (
+                  <h5>{this.state.program?.school || ''}</h5>
+                )}
               </Col>
             </Row>
             <Row>
@@ -63,25 +67,24 @@ class SingleProgramEdit extends React.Component {
                 <h5>Program</h5>
               </Col>
               <Col md={4}>
-                {/* <h5>
-                  <Form.Group controlId="program_name">
-                    <Form.Control
-                      type="text"
-                      placeholder="Electrical Engineering"
-                      onChange={(e) => this.handleChange(e)}
-                      defaultValue={
-                        this.state.program.program_name
-                          ? this.state.program.program_name
-                          : ''
-                      }
-                    />
-                  </Form.Group>
-                </h5> */}
-                <h5>
-                  {this.state.program.program_name
-                    ? this.state.program.program_name
-                    : ''}
-                </h5>
+                {is_TaiGer_Admin(this.props.user) ? (
+                  <h5>
+                    <Form.Group controlId="program_name">
+                      <Form.Control
+                        type="text"
+                        placeholder="Electrical Engineering"
+                        onChange={(e) => this.handleChange(e)}
+                        defaultValue={
+                          this.state.program.program_name
+                            ? this.state.program.program_name
+                            : ''
+                        }
+                      />
+                    </Form.Group>
+                  </h5>
+                ) : (
+                  <h5>{this.state.program?.program_name || ''}</h5>
+                )}
               </Col>
             </Row>
             <Row>
@@ -89,23 +92,21 @@ class SingleProgramEdit extends React.Component {
                 <h5>Degree</h5>
               </Col>
               <Col md={4}>
-                {/* <h5>
-                  <Form.Group controlId="degree">
-                    <Form.Control
-                      type="text"
-                      placeholder="M.Sc."
-                      onChange={(e) => this.handleChange(e)}
-                      defaultValue={
-                        this.state.program.degree
-                          ? this.state.program.degree
-                          : ''
-                      }
-                    />
-                  </Form.Group>
-                </h5> */}
-                <h5>
-                  {this.state.program.degree ? this.state.program.degree : ''}
-                </h5>
+                {is_TaiGer_Admin(this.props.user) ? (
+                  <h5>
+                    <Form.Group controlId="degree">
+                      <Form.Control
+                        as="select"
+                        onChange={(e) => this.handleChange(e)}
+                        value={this.state.program.degree}
+                      >
+                        {DEGREE_OPTIONS()}
+                      </Form.Control>
+                    </Form.Group>
+                  </h5>
+                ) : (
+                  <h5>{this.state.program?.degree || ''}</h5>
+                )}
               </Col>
             </Row>
             <Row>
@@ -113,25 +114,21 @@ class SingleProgramEdit extends React.Component {
                 <h5>Semester</h5>
               </Col>
               <Col md={4}>
-                {/* <h5>
-                  <Form.Group controlId="semester">
-                    <Form.Control
-                      type="text"
-                      placeholder="Winter"
-                      onChange={(e) => this.handleChange(e)}
-                      defaultValue={
-                        this.state.program.semester
-                          ? this.state.program.semester
-                          : ''
-                      }
-                    />
-                  </Form.Group>
-                </h5> */}
-                <h5>
-                  {this.state.program.semester
-                    ? this.state.program.semester
-                    : ''}
-                </h5>
+                {is_TaiGer_Admin(this.props.user) ? (
+                  <h5>
+                    <Form.Group controlId="semester">
+                      <Form.Control
+                        as="select"
+                        onChange={(e) => this.handleChange(e)}
+                        value={this.state.program.semester}
+                      >
+                        {SEMESTER_OPTIONS()}
+                      </Form.Control>
+                    </Form.Group>
+                  </h5>
+                ) : (
+                  <h5>{this.state.program?.semester || ''}</h5>
+                )}
               </Col>
             </Row>
             <Row> </Row>

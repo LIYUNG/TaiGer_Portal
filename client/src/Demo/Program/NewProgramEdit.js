@@ -12,7 +12,10 @@ import {
 
 class NewProgramEdit extends React.Component {
   state = {
-    program: {}
+    program: {},
+    school_name_set: new Set(
+      this.props.programs.map((program) => program.school)
+    )
   };
   handleChange = (e) => {
     e.preventDefault();

@@ -805,6 +805,7 @@ function ProgramList(props) {
           <NewProgramEdit
             handleClick={onClickIsCreateApplicationMode}
             handleSubmit_Program={handleSubmit_Program}
+            programs={statedata.programs}
           />
         </>
       ) : (

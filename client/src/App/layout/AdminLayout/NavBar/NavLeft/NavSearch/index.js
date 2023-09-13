@@ -5,6 +5,7 @@ import ModalMain from '../../../../../../Demo/Utils/ModalHandler/ModalMain';
 import './search.css';
 import { is_TaiGer_role } from '../../../../../../Demo/Utils/checking-functions';
 import { Role } from '../../../../../../Demo/Utils/contants';
+import { Form } from 'react-bootstrap';
 
 const NavSearch = (props) => {
   let [statedata, setStatedata] = useState({
@@ -74,7 +75,10 @@ const NavSearch = (props) => {
   };
 
   const handleInputChange = (e) => {
-    setSearchTerm(e.target.value);
+    setSearchTerm(e.target.value.trimLeft());
+    if (e.target.value.length === 0) {
+      setIsResultsVisible(false);
+    }
   };
 
   const handleInputBlur = () => {
@@ -156,66 +160,73 @@ const NavSearch = (props) => {
         />
       )}
       <div className="search-container" ref={searchContainerRef}>
-        <input
+        {/* <input
           type="text"
           className="search-input"
           placeholder="Search..."
           value={searchTerm}
           onMouseDown={handleInputBlur}
           onChange={handleInputChange}
-        />
+        /> */}
+        <Form>
+          <Form.Group className="my-0 mx-0">
+            <Form.Control
+              type="text"
+              className="search-input"
+              placeholder={'Search...'}
+              value={searchTerm}
+              onMouseDown={handleInputBlur}
+              onChange={handleInputChange}
+            ></Form.Control>
+          </Form.Group>
+        </Form>
         {/* {loading && <div>Loading...</div>} */}
-        {searchResults.length > 0
-          ? isResultsVisible && (
-              <div className="search-results result-list">
-                {searchResults.map((result, i) =>
-                  result.role === 'Student' ? (
-                    <li onClick={() => onClickStudentHandler(result)} key={i}>
-                      {`${result.firstname} ${result.lastname} ${
-                        result.firstname_chinese
-                          ? result.firstname_chinese
-                          : ' '
-                      }${
-                        result.lastname_chinese ? result.lastname_chinese : ' '
-                      }`}
-                    </li>
-                  ) : result.role === Role.Agent ? (
-                    <li onClick={() => onClickAgentHandler(result)} key={i}>
-                      {`${result.firstname} ${result.lastname}`}
-                    </li>
-                  ) : result.role === Role.Editor ? (
-                    <li onClick={() => onClickEditorHandler(result)} key={i}>
-                      {`${result.firstname} ${result.lastname}`}
-                    </li>
-                  ) : result.school ? (
-                    <li onClick={() => onClickProgramHandler(result)} key={i}>
-                      {`${result.school} ${result.program_name} ${result.degree} ${result.semester}`}
-                    </li>
-                  ) : result.internal ? (
-                    <li
-                      onClick={() =>
-                        onClickInternalDocumentationHandler(result)
-                      }
-                      key={i}
-                    >
-                      {`${result.title}`}
-                    </li>
-                  ) : (
-                    <li
-                      onClick={() => onClickDocumentationHandler(result)}
-                      key={i}
-                    >
-                      {`${result.title}`}
-                    </li>
-                  )
-                )}
-              </div>
-            )
-          : isResultsVisible && (
-              <div className="search-results result-list">
-                <li>No result</li>
-              </div>
-            )}
+        {isResultsVisible &&
+          (searchResults.length > 0 ? (
+            <div className="search-results result-list">
+              {searchResults.map((result, i) =>
+                result.role === 'Student' ? (
+                  <li onClick={() => onClickStudentHandler(result)} key={i}>
+                    {`${result.firstname} ${result.lastname} ${
+                      result.firstname_chinese ? result.firstname_chinese : ' '
+                    }${
+                      result.lastname_chinese ? result.lastname_chinese : ' '
+                    }`}
+                  </li>
+                ) : result.role === Role.Agent ? (
+                  <li onClick={() => onClickAgentHandler(result)} key={i}>
+                    {`${result.firstname} ${result.lastname}`}
+                  </li>
+                ) : result.role === Role.Editor ? (
+                  <li onClick={() => onClickEditorHandler(result)} key={i}>
+                    {`${result.firstname} ${result.lastname}`}
+                  </li>
+                ) : result.school ? (
+                  <li onClick={() => onClickProgramHandler(result)} key={i}>
+                    {`${result.school} ${result.program_name} ${result.degree} ${result.semester}`}
+                  </li>
+                ) : result.internal ? (
+                  <li
+                    onClick={() => onClickInternalDocumentationHandler(result)}
+                    key={i}
+                  >
+                    {`${result.title}`}
+                  </li>
+                ) : (
+                  <li
+                    onClick={() => onClickDocumentationHandler(result)}
+                    key={i}
+                  >
+                    {`${result.title}`}
+                  </li>
+                )
+              )}
+            </div>
+          ) : (
+            <div className="search-results result-list">
+              <li>No result</li>
+            </div>
+          ))}
       </div>
     </div>
   );

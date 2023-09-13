@@ -78,6 +78,7 @@ class SingleProgram extends React.Component {
               isLoaded: true,
               program: data,
               students,
+              isEdit:false,
               success: success,
               res_status: status
             });

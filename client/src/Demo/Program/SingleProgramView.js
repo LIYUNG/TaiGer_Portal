@@ -3,7 +3,8 @@ import { Row, Col, Card, Table } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import {
   is_TaiGer_AdminAgent,
-  is_TaiGer_role
+  is_TaiGer_role,
+  NewlineText
 } from '../Utils/checking-functions';
 import { convertDate, program_fields } from '../Utils/contants';
 
@@ -23,9 +24,9 @@ class SingleProgramView extends React.Component {
                       </p>
                     </Col>
                     <Col md={8}>
-                      <p className="my-0">
-                        {this.props.program[program_field.prop]}
-                      </p>
+                      <NewlineText
+                        text={this.props.program[program_field.prop]}
+                      />
                     </Col>
                   </Row>
                 ))}

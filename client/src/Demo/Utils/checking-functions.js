@@ -15,6 +15,14 @@ export const DocumentStatus = {
   Rejected: 'rejected',
   NotNeeded: 'notneeded'
 };
+
+export const NewlineText = (props) => {
+  const text = props.text;
+  const newText = text?.split('\n').map((str) => <p className="my-1">{str}</p>);
+
+  return newText;
+};
+
 export const showButtonIfMyStudent = (user, student) => {
   if (
     is_TaiGer_Admin(user) ||

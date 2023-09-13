@@ -37,12 +37,6 @@ function NewProgramEdit(props) {
 
   const fetchSearchResults = async () => {
     try {
-      console.log(initStates.school_name_set);
-      console.log(
-        [...initStates.school_name_set].filter((school) =>
-          school.includes(initStates.program.school)
-        )
-      );
       setSearchResults(
         [...initStates.school_name_set].filter((school) =>
           school.toLowerCase().includes(initStates.program.school.toLowerCase())
@@ -515,11 +509,12 @@ function NewProgramEdit(props) {
             <Col md={4}>
               <h5>Essay Requirements</h5>
             </Col>
-            <Col md={4}>
+            <Col md={6}>
               <h5>
                 <Form.Group controlId="essay_requirements">
                   <Form.Control
-                    type="text"
+                    as="textarea"
+                    rows="5"
                     placeholder="2000 words"
                     onChange={(e) => handleChange(e)}
                     defaultValue={
@@ -536,7 +531,7 @@ function NewProgramEdit(props) {
             <Col md={4}>
               <h5>Portfolio Required?</h5>
             </Col>
-            <Col md={6}>
+            <Col md={4}>
               <h5>
                 <Form.Group controlId="portfolio_required">
                   <Form.Control
@@ -580,7 +575,7 @@ function NewProgramEdit(props) {
             <Col md={4}>
               <h5>Supplementary Form Required?</h5>
             </Col>
-            <Col md={6}>
+            <Col md={4}>
               <h5>
                 <Form.Group controlId="supplementary_form_required">
                   <Form.Control
@@ -602,11 +597,12 @@ function NewProgramEdit(props) {
             <Col md={4}>
               <h5>Supplementary Form Requirements</h5>
             </Col>
-            <Col md={4}>
+            <Col md={6}>
               <h5>
                 <Form.Group controlId="supplementary_form_requirements">
                   <Form.Control
-                    type="text"
+                    as="textarea"
+                    rows="5"
                     placeholder="2000 words"
                     onChange={(e) => handleChange(e)}
                     defaultValue={

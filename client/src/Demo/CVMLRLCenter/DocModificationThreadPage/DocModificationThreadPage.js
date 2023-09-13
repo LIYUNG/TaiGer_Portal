@@ -11,6 +11,7 @@ import ModalMain from '../../Utils/ModalHandler/ModalMain';
 import { spinner_style, templatelist } from '../../Utils/contants';
 
 import {
+  NewlineText,
   is_TaiGer_AdminAgent,
   is_TaiGer_Student,
   is_TaiGer_role,
@@ -156,43 +157,34 @@ class DocModificationThreadPage extends Component {
 
   getRequirement = (thread) => {
     if (thread.file_type.includes('Essay')) {
-      return (
-        <p>
-          {thread.program_id.essay_required === 'yes'
-            ? this.state.thread.program_id.essay_requirements || 'No'
-            : 'No'}
-        </p>
-      );
+      return thread.program_id.essay_required === 'yes'
+        ? this.state.thread.program_id.essay_requirements || 'No'
+        : 'No';
     } else if (thread.file_type.includes('ML')) {
       if (thread.program_id.ml_required === 'yes') {
-        return <p>{this.state.thread.program_id.ml_requirements || 'No'}</p>;
+        return this.state.thread.program_id.ml_requirements || 'No';
       } else {
-        return <p>No</p>;
+        return 'No';
       }
     } else if (thread.file_type.includes('Portfolio')) {
       if (thread.program_id.portfolio_required === 'yes') {
-        return (
-          <p>{this.state.thread.program_id.portfolio_requirements || 'No'}</p>
-        );
+        return this.state.thread.program_id.portfolio_requirements || 'No';
       } else {
-        return <p>No</p>;
+        return 'No';
       }
     } else if (thread.file_type.includes('Supplementary_Form')) {
       if (thread.program_id.supplementary_form_required === 'yes') {
         return (
-          <p>
-            {this.state.thread.program_id.supplementary_form_requirements ||
-              'No'}
-          </p>
+          this.state.thread.program_id.supplementary_form_requirements || 'No'
         );
       } else {
-        return <p>No</p>;
+        return 'No';
       }
     } else if (thread.file_type.includes('RL')) {
       if (['1', '2', '3'].includes(thread.program_id.rl_required)) {
-        return <p>{this.state.thread.program_id.rl_requirements || 'No'}</p>;
+        return this.state.thread.program_id.rl_requirements || 'No';
       } else {
-        return <p>No</p>;
+        return 'No';
       }
     }
   };
@@ -638,7 +630,11 @@ class DocModificationThreadPage extends Component {
                         )}
                     </h6>
                     {this.state.thread.program_id ? (
-                      <>{this.getRequirement(this.state.thread)}</>
+                      <>
+                        <NewlineText
+                          text={this.getRequirement(this.state.thread)}
+                        />
+                      </>
                     ) : (
                       <p>No</p>
                     )}

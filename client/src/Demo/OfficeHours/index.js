@@ -22,7 +22,8 @@ import {
   getTimezoneOffset,
   convertDate,
   getNumberOfDays,
-  NoonNightLabel
+  NoonNightLabel,
+  isInTheFuture
 } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
@@ -574,13 +575,13 @@ class OfficeHours extends React.Component {
             </Button>
             {events?.filter(
               (event) =>
-                getNumberOfDays(new Date(), event.start) >= -1 &&
+                isInTheFuture(event.end) &&
                 (!event.isConfirmedReceiver || !event.isConfirmedRequester)
             ).length !== 0 &&
               events
                 ?.filter(
                   (event) =>
-                    getNumberOfDays(new Date(), event.start) >= -1 &&
+                    isInTheFuture(event.end) &&
                     (!event.isConfirmedReceiver || !event.isConfirmedRequester)
                 )
                 .map((event, i) => (
@@ -606,14 +607,14 @@ class OfficeHours extends React.Component {
               <Card.Body>
                 {events?.filter(
                   (event) =>
-                    getNumberOfDays(new Date(), event.start) >= -1 &&
+                    isInTheFuture(event.end) &&
                     event.isConfirmedReceiver &&
                     event.isConfirmedRequester
                 ).length !== 0
                   ? events
                       ?.filter(
                         (event) =>
-                          getNumberOfDays(new Date(), event.start) >= -1 &&
+                          isInTheFuture(event.end) &&
                           event.isConfirmedReceiver &&
                           event.isConfirmedRequester
                       )
@@ -708,9 +709,7 @@ class OfficeHours extends React.Component {
               </Card.Header>
               <Card.Body>
                 {events
-                  ?.filter(
-                    (event) => getNumberOfDays(new Date(), event.start) < -1
-                  )
+                  ?.filter((event) => !isInTheFuture(event.end))
                   .map((event, i) => (
                     <Card key={i}>
                       <Card.Header>

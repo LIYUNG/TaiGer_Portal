@@ -285,6 +285,13 @@ export const stringAvatar = (name) => {
   };
 };
 
+export const isInTheFuture = (end) => {
+  const now = new Date();
+  const date = new Date(end);
+
+  return now < date;
+};
+
 export const getNumberOfDays = (start, end) => {
   const date1 = new Date(start);
   const date2 = new Date(end);

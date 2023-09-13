@@ -184,7 +184,7 @@ const profile_list = {
   Internship: 'Internship Certificate',
   Exchange_Student_Certificate: 'Exchange Student Certificate',
   Employment_Certificate: 'Employment Certificate',
-  Passport_Photo: 'Passport Photo',
+  Passport_Photo: 'Formal Profile Photo',
   Passport: 'Passport Copy',
   Others: 'Others'
 };

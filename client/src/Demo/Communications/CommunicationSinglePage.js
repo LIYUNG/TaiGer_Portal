@@ -515,10 +515,6 @@ class CommunicationSinglePage extends Component {
                             顧問隨時需要了解您的進展情況，為了避免不必要的來回詢問學生資料進度，為此，請務必將您在TaiGer
                             Portal平台上的個人資訊保持最新，以確保訊息的準確性。
                           </li>
-                          <li>
-                            Note: 往後，會開放學生預約顧問 office hour
-                            線上諮詢時段。敬請期待
-                          </li>
                         </ul>
                       </p>
                     </h6>

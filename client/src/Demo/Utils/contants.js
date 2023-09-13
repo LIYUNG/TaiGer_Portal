@@ -943,7 +943,7 @@ export const profile_wtih_doc_link_list = {
     name: 'Exchange Student Certificate',
     link: ''
   },
-  Passport_Photo: { name: 'Passport Photo', link: '' },
+  Passport_Photo: { name: 'Formal Profile Photo', link: '' },
   Passport: { name: 'Passport Copy', link: '' },
   Others: { name: 'Others', link: '' }
 };
@@ -963,7 +963,7 @@ export const profile_list = {
   Internship: 'Internship Certificate',
   Employment_Certificate: 'Employment Certificate',
   Exchange_Student_Certificate: 'Exchange Student Certificate',
-  Passport_Photo: 'Passport Photo',
+  Passport_Photo: 'Formal Profile Photo',
   Passport: 'Passport Copy',
   Others: 'Others'
 };

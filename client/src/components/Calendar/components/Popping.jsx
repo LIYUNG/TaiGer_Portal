@@ -1,7 +1,11 @@
 import { Modal, Button, Form, Badge, Spinner } from 'react-bootstrap';
 import React, { useState } from 'react';
 import '../style/model.scss';
-import { NoonNightLabel, convertDate } from '../../../Demo/Utils/contants';
+import {
+  NoonNightLabel,
+  convertDate,
+  getTimezoneOffset
+} from '../../../Demo/Utils/contants';
 import {
   is_TaiGer_Agent,
   is_TaiGer_Student
@@ -100,10 +104,30 @@ const Popping = ({
             <br />
             <ul>
               <li className="col text-muted pb-0 mb-0">
-                From: {convertDate(start)} {NoonNightLabel(start)}
+                From: {convertDate(start)} {NoonNightLabel(start)}{' '}
+                {Intl.DateTimeFormat().resolvedOptions().timeZone} UTC
+                {getTimezoneOffset(
+                  Intl.DateTimeFormat().resolvedOptions().timeZone
+                ) >= 0
+                  ? `+${getTimezoneOffset(
+                      Intl.DateTimeFormat().resolvedOptions().timeZone
+                    )}`
+                  : getTimezoneOffset(
+                      Intl.DateTimeFormat().resolvedOptions().timeZone
+                    )}
               </li>
               <li className="col text-muted pb-0 mb-0">
-                To: {convertDate(end)}
+                To: {convertDate(end)}{' '}
+                {Intl.DateTimeFormat().resolvedOptions().timeZone} UTC
+                {getTimezoneOffset(
+                  Intl.DateTimeFormat().resolvedOptions().timeZone
+                ) >= 0
+                  ? `+${getTimezoneOffset(
+                      Intl.DateTimeFormat().resolvedOptions().timeZone
+                    )}`
+                  : getTimezoneOffset(
+                      Intl.DateTimeFormat().resolvedOptions().timeZone
+                    )}
               </li>
             </ul>
           </Modal.Body>

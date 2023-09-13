@@ -58,13 +58,13 @@ function NewProgramEdit(props) {
   const handleChange = (e) => {
     e.preventDefault();
     var program_temp = { ...initStates.program };
-    program_temp[e.target.id] = e.target.value;
+    program_temp[e.target.id] = e.target.value.trimLeft();
     setInitStates((initStates) => ({
       ...initStates,
       program: program_temp
     }));
     if (e.target.id === 'school') {
-      setSearchTerm(e.target.value);
+      setSearchTerm(e.target.value.trimLeft());
     }
   };
 
@@ -145,11 +145,7 @@ function NewProgramEdit(props) {
                     type="text"
                     placeholder="Electrical Engineering"
                     onChange={(e) => handleChange(e)}
-                    defaultValue={
-                      initStates.program.program_name
-                        ? initStates.program.program_name
-                        : ''
-                    }
+                    value={initStates.program.program_name || ''}
                   />
                 </Form.Group>
               </h5>

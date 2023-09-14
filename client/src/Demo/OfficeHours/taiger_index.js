@@ -574,10 +574,14 @@ class TaiGerOfficeHours extends React.Component {
     //   getTodayAsWeekday(this.state.agent.timezone)
     // );
     //TODO: remove the conflicting time slots.
+    // (in Testing again) TODO: bug >> browser dependent!
     const available_termins = [0, 1, 2, 3].flatMap((iter, x) =>
       agents.flatMap((agent, idx) =>
+        // BUG: getReorderWeekday(getTodayAsWeekday(agent.timezone)) cause wrong time in correct date.
+        // David on Thursday, getReorderWeekday start from Tuesday, and the timeslot it from tuesday (date: saturday but time: tuesday)
         getReorderWeekday(getTodayAsWeekday(agent.timezone)).flatMap(
           (weekday, i) => {
+            // observe: look like weekday is wrong should be saturday, but it starting from tuesday
             const timeSlots =
               agent.officehours &&
               agent.officehours[weekday]?.active &&

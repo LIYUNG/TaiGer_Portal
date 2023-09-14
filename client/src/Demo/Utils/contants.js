@@ -61,8 +61,11 @@ export const daysOfWeek = [
 ];
 export const getTodayAsWeekday = (timezone) => {
   const now = DateTime.fromObject({}, { zone: timezone });
-  let currentDayOfWeek = daysOfWeek.indexOf(now.weekdayLong);
-  return currentDayOfWeek + 2;
+  // console.log(now.weekday); // 1-7
+  // console.log(now.weekdayLong); // Monday,... (maybe abbrev. or another language)
+  // let currentDayOfWeek = daysOfWeek.indexOf(now.weekdayLong); // could return -1 if {weekdayLong} not english!
+  // return currentDayOfWeek + 2;  // error -1 +2 = 1 >> Starting from Tuesday
+  return now.weekday - 1 + 2;
 };
 
 export const getReorderWeekday = (index) => {
@@ -107,8 +110,7 @@ export const shiftDateByOffset = (originalDate, offsetHours) => {
 
 export const getNextDayDate = (reorder_weekday, dayOfWeek, timezone, nextN) => {
   const now = DateTime.fromObject({}, { zone: timezone });
-  // const currentDayOfWeek = reorder_weekday.indexOf(now.weekdayLong) +2;
-  const targetDayIndex = reorder_weekday.indexOf(dayOfWeek);
+  const targetDayIndex = reorder_weekday.indexOf(dayOfWeek); // dayOfWeek is explicitly predefined. (Monday....) 0-6
 
   let daysToAdd = targetDayIndex % 7;
 

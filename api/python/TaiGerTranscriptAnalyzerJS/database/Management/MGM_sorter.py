@@ -1,7 +1,7 @@
 import xlsxwriter
 from CourseSuggestionAlgorithms import *
 from util import *
-from database.Management.MGM_KEYWORDS import *
+from keywords import *
 from database.Management.MGM_Programs import program_sort_function, column_len_array
 from cell_formatter import red_out_failed_subject, red_out_insufficient_credit
 import pandas as pd

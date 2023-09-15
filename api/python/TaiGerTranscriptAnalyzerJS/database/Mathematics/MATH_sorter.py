@@ -2,7 +2,7 @@ import xlsxwriter
 from CourseSuggestionAlgorithms import *
 from util import *
 from keywords import *
-from database.DataScience_BusinessIntelligence.DSBI_Programs import program_sort_function, column_len_array
+from database.Mathematics.MATH_Programs import program_sort_function, column_len_array
 from cell_formatter import red_out_failed_subject, red_out_insufficient_credit
 import pandas as pd
 import sys
@@ -11,7 +11,7 @@ env_file_path = os.path.realpath(__file__)
 env_file_path = os.path.dirname(env_file_path)
 
 
-def DSBI_sorter(program_idx, file_path, abbrev, studentId, student_name, analysis_language):
+def MATH_sorter(program_idx, file_path, abbrev, studentId, student_name, analysis_language):
 
     basic_classification_en = {
         '微積分': [DSBI_CALCULUS_KEY_WORDS_EN, DSBI_CALCULUS_ANTI_KEY_WORDS_EN],

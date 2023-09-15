@@ -1,7 +1,7 @@
 import xlsxwriter
 from CourseSuggestionAlgorithms import *
 from util import *
-from database.ElectricalEngineering.EE_KEYWORDS import *
+from keywords import *
 from database.ElectricalEngineering.EE_Programs import program_sort_function, column_len_array
 from cell_formatter import red_out_failed_subject, red_out_insufficient_credit
 import pandas as pd
@@ -14,13 +14,13 @@ env_file_path = os.path.dirname(env_file_path)
 def EE_sorter(program_idx, file_path, abbrev, studentId, student_name, analysis_language):
 
     basic_classification_en = {
-        '微積分': [EE_CALCULUS_KEY_WORDS_EN, EE_CALCULUS_ANTI_KEY_WORDS_EN, ['一', '二']],
-        '數學': [EE_MATH_KEY_WORDS_EN, EE_MATH_ANTI_KEY_WORDS_EN],
+        '微積分': [CALCULUS_KEY_WORDS_EN, CALCULUS_ANTI_KEY_WORDS_EN, ['一', '二']],
+        '數學': [MATH_GENERAL_KEY_WORDS_EN, MATH_GENERAL_ANTI_KEY_WORDS_EN],
         '物理': [EE_PHYSICS_KEY_WORDS_EN, EE_PHYSICS_ANTI_KEY_WORDS_EN, ['一', '二']],
         '進階物理': [EE_ADVANCED_PHYSICS_KEY_WORDS_EN, EE_ADVANCED_PHYSICS_ANTI_KEY_WORDS_EN, ['一', '二']],
         '物理實驗': [EE_PHYSICS_EXP_KEY_WORDS_EN, EE_PHYSICS_EXP_ANTI_KEY_WORDS_EN, ['一', '二']],
         '資訊': [EE_INTRO_COMPUTER_SCIENCE_KEY_WORDS_EN, EE_INTRO_COMPUTER_SCIENCE_ANTI_KEY_WORDS_EN],
-        '程式': [EE_PROGRAMMING_KEY_WORDS_EN, EE_PROGRAMMING_ANTI_KEY_WORDS_EN],
+        '程式': [PROGRAMMING_LANGUAGE_KEY_WORDS_EN, PROGRAMMING_LANGUAGE_ANTI_KEY_WORDS_EN],
         '軟體工程': [EE_SOFTWARE_SYSTEM_KEY_WORDS_EN, EE_SOFTWARE_SYSTEM_ANTI_KEY_WORDS_EN],
         '控制系統': [EE_CONTROL_THEORY_KEY_WORDS_EN, EE_CONTROL_THEORY_ANTI_KEY_WORDS_EN],
         '電子': [EE_ELECTRONICS_KEY_WORDS_EN, EE_ELECTRONICS_ANTI_KEY_WORDS_EN, ['一', '二']],
@@ -40,13 +40,13 @@ def EE_sorter(program_idx, file_path, abbrev, studentId, student_name, analysis_
         '其他': [USELESS_COURSES_KEY_WORDS_EN, USELESS_COURSES_ANTI_KEY_WORDS_EN], }
 
     basic_classification_zh = {
-        '微積分': [EE_CALCULUS_KEY_WORDS, EE_CALCULUS_ANTI_KEY_WORDS, ['一', '二']],
-        '數學': [EE_MATH_KEY_WORDS, EE_MATH_ANTI_KEY_WORDS],
+        '微積分': [CALCULUS_KEY_WORDS, CALCULUS_ANTI_KEY_WORDS, ['一', '二']],
+        '數學': [MATH_GENERAL_KEY_WORDS, MATH_GENERAL_ANTI_KEY_WORDS],
         '物理': [EE_PHYSICS_KEY_WORDS, EE_PHYSICS_ANTI_KEY_WORDS, ['一', '二']],
         '進階物理': [EE_ADVANCED_PHYSICS_KEY_WORDS, EE_ADVANCED_PHYSICS_ANTI_KEY_WORDS, ['一', '二']],
         '物理實驗': [EE_PHYSICS_EXP_KEY_WORDS, EE_PHYSICS_EXP_ANTI_KEY_WORDS, ['一', '二']],
         '資訊': [EE_INTRO_COMPUTER_SCIENCE_KEY_WORDS, EE_INTRO_COMPUTER_SCIENCE_ANTI_KEY_WORDS],
-        '程式': [EE_PROGRAMMING_KEY_WORDS, EE_PROGRAMMING_ANTI_KEY_WORDS],
+        '程式': [PROGRAMMING_LANGUAGE_KEY_WORDS, PROGRAMMING_LANGUAGE_ANTI_KEY_WORDS],
         '軟體工程': [EE_SOFTWARE_SYSTEM_KEY_WORDS, EE_SOFTWARE_SYSTEM_ANTI_KEY_WORDS],
         '控制系統': [EE_CONTROL_THEORY_KEY_WORDS, EE_CONTROL_THEORY_ANTI_KEY_WORDS],
         '電子': [EE_ELECTRONICS_KEY_WORDS, EE_ELECTRONICS_ANTI_KEY_WORDS, ['一', '二']],

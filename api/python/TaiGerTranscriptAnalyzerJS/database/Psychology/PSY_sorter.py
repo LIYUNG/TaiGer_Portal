@@ -15,8 +15,8 @@ def PSY_sorter(program_idx, file_path, abbrev, studentId, student_name, analysis
     basic_classification_en = {
         '微積分': [CALCULUS_KEY_WORDS_EN, CALCULUS_ANTI_KEY_WORDS_EN],
         '線性代數': [MATH_LINEAR_ALGEBRA_KEY_WORDS_EN, MATH_LINEAR_ALGEBRA_ANTI_KEY_WORDS_EN],
-        '機率': [PSY_MATH_PROB_KEY_WORDS_EN, PSY_MATH_PROB_ANTI_KEY_WORDS_EN],
-        '數學': [PSY_MATH_KEY_WORDS_EN, PSY_MATH_ANTI_KEY_WORDS_EN],
+        '機率': [MATH_PROB_KEY_WORDS_EN, MATH_PROB_ANTI_KEY_WORDS_EN],
+        '數學': [ME_MATH_KEY_WORDS_EN, ME_MATH_ANTI_KEY_WORDS_EN],
         '經濟': [ECONOMICS_KEY_WORDS_EN, ECONOMICS_ANTI_KEY_WORDS_EN],
         '計量經濟': [ECONOMETRICS_KEY_WORDS_EN, ECONOMETRICS_ANTI_KEY_WORDS_EN],
         '企業': [BUSINESS_KEY_WORDS_EN, BUSINESS_ANTI_KEY_WORDS_EN],
@@ -39,8 +39,8 @@ def PSY_sorter(program_idx, file_path, abbrev, studentId, student_name, analysis
     basic_classification_zh = {
         '微積分': [CALCULUS_KEY_WORDS, CALCULUS_ANTI_KEY_WORDS, ['一', '二']],
         '線性代數': [MATH_LINEAR_ALGEBRA_KEY_WORDS, MATH_LINEAR_ALGEBRA_ANTI_KEY_WORDS],
-        '機率': [PSY_MATH_PROB_KEY_WORDS, PSY_MATH_PROB_ANTI_KEY_WORDS],
-        '數學': [PSY_MATH_KEY_WORDS, PSY_MATH_ANTI_KEY_WORDS, ['一', '二']],
+        '機率': [MATH_PROB_KEY_WORDS, MATH_PROB_ANTI_KEY_WORDS],
+        '數學': [ME_MATH_KEY_WORDS, ME_MATH_ANTI_KEY_WORDS, ['一', '二']],
         '經濟': [ECONOMICS_KEY_WORDS, ECONOMICS_ANTI_KEY_WORDS, ['一', '二']],
         '計量經濟': [ECONOMETRICS_KEY_WORDS, ECONOMETRICS_ANTI_KEY_WORDS],
         '企業': [BUSINESS_KEY_WORDS, BUSINESS_ANTI_KEY_WORDS],

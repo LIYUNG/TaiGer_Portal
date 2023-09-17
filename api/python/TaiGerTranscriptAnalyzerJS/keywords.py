@@ -136,11 +136,11 @@ MGM_MATH_ANTI_KEY_WORDS = ['asdgladfj;l', '通識']
 MGM_MATH_KEY_WORDS_EN = ['linear algebra', 'discrete math']
 MGM_MATH_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
 
-BOE_MATH_PROB_KEY_WORDS = ['機率', '統計', '隨機']
-BOE_MATH_PROB_ANTI_KEY_WORDS = ['asdgladfj;l', '學習', '管理']
-BOE_MATH_PROB_KEY_WORDS_EN = [
+MATH_PROB_KEY_WORDS = ['機率', '統計', '隨機']
+MATH_PROB_ANTI_KEY_WORDS = ['asdgladfj;l', '學習', '管理']
+MATH_PROB_KEY_WORDS_EN = [
     'probability', 'statistic', 'random', 'stochasti']
-BOE_MATH_PROB_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
+MATH_PROB_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
 
 
 

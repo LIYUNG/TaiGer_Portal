@@ -390,6 +390,10 @@ export const program_fields = [
     name: 'Supplementary Form Requirements',
     prop: 'supplementary_form_requirements'
   },
+  {
+    name: 'ECTS Requirements',
+    prop: 'ects_requirements'
+  },
   { name: 'Special Notes', prop: 'special_notes' },
   { name: 'Comments', prop: 'comments' },
   { name: 'Tuition Fees', prop: 'tuition_fees' },

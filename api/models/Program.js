@@ -110,6 +110,10 @@ const programSchema = new Schema(
       type: String
       // required: true,
     },
+    ects_requirements: {
+      type: String
+      // required: true,
+    },
     special_notes: {
       type: String
       // required: true,

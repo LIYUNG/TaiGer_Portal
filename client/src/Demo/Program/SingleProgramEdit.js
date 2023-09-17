@@ -559,6 +559,28 @@ class SingleProgramEdit extends React.Component {
             </Row>
             <Row>
               <Col md={4}>
+                <h5>ECTS Requirements</h5>
+              </Col>
+              <Col md={6}>
+                <h5>
+                  <Form.Group controlId="ects_requirements">
+                    <Form.Control
+                      as="textarea"
+                      rows="5"
+                      placeholder="Mathematics 20 ECTS, Electrical Engineering 15 ECTS, Computer architecture 8 ECTS..."
+                      onChange={(e) => this.handleChange(e)}
+                      defaultValue={
+                        this.state.program.ects_requirements
+                          ? this.state.program.ects_requirements
+                          : ''
+                      }
+                    />
+                  </Form.Group>
+                </h5>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={4}>
                 <h5>Special Notes</h5>
               </Col>
               <Col md={6}>

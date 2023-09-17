@@ -89,6 +89,9 @@ BOE_BIO_CHEMISTRY_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
 BOE_ADVANCED_CHEMISTRY_KEY_WORDS = ['物理化學', '分析化學', '高分子']
 BOE_ADVANCED_CHEMISTRY_ANTI_KEY_WORDS = [
     'asdgladfj;l']
+BOE_ADVANCED_CHEMISTRY_KEY_WORDS_EN = ['analytical chemist']
+BOE_ADVANCED_CHEMISTRY_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
+
 
 ###########
 ### Math ##
@@ -105,9 +108,45 @@ MATH_GENERAL_ANTI_KEY_WORDS = ['asdgladfj;l', '管理', '文明', '服務']
 MATH_GENERAL_KEY_WORDS_EN = ['math']
 MATH_GENERAL_ANTI_KEY_WORDS_EN = ['asdgladfj;l', '管理', '文明', '服務']
 
+ME_MATH_KEY_WORDS = ['數學', '代數', '函數', '機率', '離散', '複變', '數值', '向量']
+ME_MATH_ANTI_KEY_WORDS = ['asdgladfj;l']
+ME_MATH_KEY_WORDS_EN = ['math', 'linear algebra', 'differential', '函數', 'finite element',
+                        'probability', 'discrete', 'complex', 'numerical', 'vector analy']
+ME_MATH_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
+
+MTL_MATH_KEY_WORDS = ['數學', '微分', '函數', '機率', '複變', '向量', '幾何']
+MTL_MATH_ANTI_KEY_WORDS = ['asdgladfj;l', '離散']
+MTL_MATH_KEY_WORDS_EN = ['math', 'linear algebra', 'differential', '函數',
+                         'probability', 'discrete', 'complex', 'numerical', 'vector analy']
+MTL_MATH_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
+
+DSBI_MATH_KEY_WORDS = ['離散', '微分', '機率', '數學', '數值', '複變']
+DSBI_MATH_ANTI_KEY_WORDS = ['asdgladfj;l', '服務', '文明', '通識', '認識']
+DSBI_MATH_KEY_WORDS_EN = ['mathematic', 'equation', 'probability']
+DSBI_MATH_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
+
+BOE_MATH_NUM_METHOD_KEY_WORDS = ['數值方法', '數值', '離散', '工程數學', 'Matlab']
+BOE_MATH_NUM_METHOD_ANTI_KEY_WORDS = [
+    'asdgladfj;l', '管理', '文明', '服務', '微積分', '認識']
+BOE_MATH_NUM_METHOD_KEY_WORDS_EN = ['numerical', 'discrete', 'matlab', '']
+BOE_MATH_NUM_METHOD_ANTI_KEY_WORDS_EN = ['asdgladfj;l', '管理', '文明', '服務']
+
+MGM_MATH_KEY_WORDS = ['線性代數', '離散', '微分', '機率', '數學']
+MGM_MATH_ANTI_KEY_WORDS = ['asdgladfj;l', '通識']
+MGM_MATH_KEY_WORDS_EN = ['linear algebra', 'discrete math']
+MGM_MATH_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
+
+BOE_MATH_PROB_KEY_WORDS = ['機率', '統計', '隨機']
+BOE_MATH_PROB_ANTI_KEY_WORDS = ['asdgladfj;l', '學習', '管理']
+BOE_MATH_PROB_KEY_WORDS_EN = [
+    'probability', 'statistic', 'random', 'stochasti']
+BOE_MATH_PROB_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
+
+
+
 # 線性代數
 MATH_LINEAR_ALGEBRA_KEY_WORDS = ['線性代數', '代數', '幾何']
-MATH_LINEAR_ALGEBRA_ANTI_KEY_WORDS = ['asdgladfj;l', '管理', '文明', '服務']
+MATH_LINEAR_ALGEBRA_ANTI_KEY_WORDS = ['asdgladfj;l', '管理', '文明', '服務', '微積分']
 MATH_LINEAR_ALGEBRA_KEY_WORDS_EN = ['linear algebra', 'numerical']
 MATH_LINEAR_ALGEBRA_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
 
@@ -152,19 +191,10 @@ ME_COMPUTER_SCIENCE_KEY_WORDS_EN = [
 ME_COMPUTER_SCIENCE_ANTI_KEY_WORDS_EN = [
     'asdgladfj;l', '應用', 'Matlab', "labview", "matlab"]
 
-BOE_COMPUTER_SCIENCE_KEY_WORDS = ['計算機', '程式語言', '程式設計', '物件導向', '資料結構', '演算法']
-BOE_COMPUTER_SCIENCE_ANTI_KEY_WORDS = [
-    'asdgladfj;l', '應用', 'Matlab', "LabVIEW", "MATLAB"]
-BOE_COMPUTER_SCIENCE_KEY_WORDS_EN = [
-    'computer science', 'programming', 'object', 'data structure', 'algorithm']
-BOE_COMPUTER_SCIENCE_ANTI_KEY_WORDS_EN = [
-    'asdgladfj;l', '應用', 'Matlab', "labview", "matlab"]
-
 EE_INTRO_COMPUTER_SCIENCE_KEY_WORDS = ['計算機', '演算', '資料', '運算',
                                        '資電', '作業系統', '資料結構', '編譯器']
 EE_INTRO_COMPUTER_SCIENCE_ANTI_KEY_WORDS = [
     '倫理', 'Python', '機器學習', '傳輸', '素人', '思考']
-
 EE_INTRO_COMPUTER_SCIENCE_KEY_WORDS_EN = ['computer', 'algorithm', 'object', 'computing',
                                           '資電', 'operating system', 'data structure', 'software', 'compiler']
 EE_INTRO_COMPUTER_SCIENCE_ANTI_KEY_WORDS_EN = [
@@ -197,9 +227,9 @@ PROGRAMMING_LANGUAGE_ANTI_KEY_WORDS_EN = [
     'web', 'ethnic', 'machine learning', 'vision', 'chinese', 'english', 'french', 'japanese', 'spanish', 'german']
 
 # 軟體工程
-SOFTWARE_ENGINEERING_KEY_WORDS = ['軟體', '系統設計']
+SOFTWARE_ENGINEERING_KEY_WORDS = ['軟體', '系統設計', '軟體工程']
 SOFTWARE_ENGINEERING_ANTI_KEY_WORDS = ['asdgladfj']
-SOFTWARE_ENGINEERING_KEY_WORDS_EN = ['software', 'systems design']
+SOFTWARE_ENGINEERING_KEY_WORDS_EN = ['software', 'systems design', 'software engineering']
 SOFTWARE_ENGINEERING_ANTI_KEY_WORDS_EN = ['asdgladfj']
 
 # 資料庫
@@ -254,10 +284,10 @@ ALGORITHM_DATASTRUCTURE_KEY_WORDS_EN = ['algorithm', 'data struct']
 ALGORITHM_DATASTRUCTURE_ANTI_KEY_WORDS_EN = ['asdgladfj']
 
 # 理論資工
-CS_THEORY_COMP_KEY_WORDS = ['計算機理論', '原理', '可計算', '計算理論']
-CS_THEORY_COMP_ANTI_KEY_WORDS = ['asdgladfj', '經濟', '遊戲']
-CS_THEORY_COMP_KEY_WORDS_EN = ['theoretical compu', '原理', 'computabili']
-CS_THEORY_COMP_ANTI_KEY_WORDS_EN = ['asdgladfj']
+THEORY_COMPUTATION_KEY_WORDS = ['計算機理論', '原理', '可計算', '計算理論']
+THEORY_COMPUTATION_ANTI_KEY_WORDS = ['asdgladfj', '經濟', '遊戲']
+THEORY_COMPUTATION_KEY_WORDS_EN = ['theoretical compu', '原理', 'computabili']
+THEORY_COMPUTATION_ANTI_KEY_WORDS_EN = ['asdgladfj']
 
 # 商管經
 CS_BA_BI_ENG_KEY_WORDS = ['經濟學', '經濟', '企業',
@@ -346,10 +376,10 @@ FINANCE_KEY_WORDS_EN = ['financ', 'stock', 'options', 'currenc', 'bond']
 FINANCE_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
 
 # 行銷
-MGM_MARKETING_KEY_WORDS = ['行銷']
-MGM_MARKETING_ANTI_KEY_WORDS = ['asdgladfj;l']
-MGM_MARKETING_KEY_WORDS_EN = ['marketing']
-MGM_MARKETING_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
+MARKETING_KEY_WORDS = ['行銷']
+MARKETING_ANTI_KEY_WORDS = ['asdgladfj;l']
+MARKETING_KEY_WORDS_EN = ['marketing']
+MARKETING_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
 
 # 永續
 SUSTAINABILITY_KEY_WORDS = [
@@ -372,71 +402,54 @@ BACHELOR_THESIS_ANTI_KEY_WORDS = ['asdgladfj;l']
 BACHELOR_THESIS_KEY_WORDS_EN = ['project', 'thesis']
 BACHELOR_THESIS_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
 
-#################################################################################################################
-########################################## Electrical Engineering ###############################################
-#################################################################################################################
-
-# TODO: defining the keywords in proper way (iterative steps: generating, and see result, if mssing, then add keywords/anti_keywords)
-EE_MATH_KEY_WORDS = ['數學', '代數', '微分', '函數', '機率', '離散', '複變', '數值', '向量']
-EE_MATH_ANTI_KEY_WORDS = ['asdgladfj;l']
-EE_MATH_KEY_WORDS_EN = ['mathe', 'algebra', 'differential', '函數', 'multivar',
-                        'probability', 'discrete math', 'complex', 'numerical', 'vector analy']
-EE_MATH_ANTI_KEY_WORDS_EN = ['asdgladfj;l', 'device']
-
-
-# 軟體工程
-EE_SOFTWARE_SYSTEM_KEY_WORDS = ['軟體工程', ]
-EE_SOFTWARE_SYSTEM_ANTI_KEY_WORDS = ['asdgladfj;l']
-EE_SOFTWARE_SYSTEM_KEY_WORDS_EN = ['software engineering', ]
-EE_SOFTWARE_SYSTEM_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
-
 # 控制系統
-EE_CONTROL_THEORY_KEY_WORDS = ['控制', '線性系統', '非線性系統']
-EE_CONTROL_THEORY_ANTI_KEY_WORDS = ['asdgladfj;l', '網路', '碼', '儀', '可程式']
-EE_CONTROL_THEORY_KEY_WORDS_EN = ['control', 'linear system', '非線性系統']
-EE_CONTROL_THEORY_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
+CONTROL_THEORY_KEY_WORDS = ['控制', '線性系統', '非線性系統', '動態系統', '系統動態']
+CONTROL_THEORY_ANTI_KEY_WORDS = ['asdgladfj;l',
+                                 '網路', '碼', '儀', '可程式', '車輛', '交通', '管理', '控制器']
+CONTROL_THEORY_KEY_WORDS_EN = ['control', 'linear system', '非線性系統']
+CONTROL_THEORY_ANTI_KEY_WORDS_EN = ['asdgladfj;l', '車輛']
 
 # 電子
-EE_ELECTRONICS_KEY_WORDS = ['電子', '電子電路']
-EE_ELECTRONICS_ANTI_KEY_WORDS = [
+ELECTRONICS_KEY_WORDS = ['電子', '電子電路']
+ELECTRONICS_ANTI_KEY_WORDS = [
     '實驗', '專題', '電力', '固態', '自動化', '倫理', '素養', '進階', '材料', '藝術', '視覺', '近代']
-EE_ELECTRONICS_KEY_WORDS_EN = ['electronic', 'electrical']
-EE_ELECTRONICS_ANTI_KEY_WORDS_EN = [
+ELECTRONICS_KEY_WORDS_EN = ['electronic', 'electrical']
+ELECTRONICS_ANTI_KEY_WORDS_EN = [
     'project', 'power', 'solid', 'automation', 'ethnic', '素養', 'advanced', 'lab', 'experiment']
 
 # 電子實驗
-EE_ELECTRONICS_EXP_KEY_WORDS = ['電子實驗', '電子', '電工實驗']
-EE_ELECTRONICS_EXP_ANTI_KEY_WORDS = ['專題', '電力', '固態', '自動化', '藝術', '材料', '近代']
-EE_ELECTRONICS_EXP_KEY_WORDS_EN = ['lab', 'electroni']
-EE_ELECTRONICS_EXP_ANTI_KEY_WORDS_EN = [
+ELECTRONICS_EXPERIMENT_KEY_WORDS = ['電子實驗', '電子', '電工實驗']
+ELECTRONICS_EXPERIMENT_ANTI_KEY_WORDS = ['專題', '電力', '固態', '自動化', '藝術', '材料', '近代']
+ELECTRONICS_EXPERIMENT_KEY_WORDS_EN = ['lab', 'electroni']
+ELECTRONICS_EXPERIMENT_ANTI_KEY_WORDS_EN = [
     'physic', 'chemistry', 'general', '材料', 'wave', 'digital', 'mechanic']
 
 # 電路
-EE_ELECTRO_CIRCUIT_KEY_WORDS = ['電路', '數位邏輯', '數位系統', '邏輯系統', '邏輯設計']
-EE_ELECTRO_CIRCUIT_ANTI_KEY_WORDS = [
+ELECTRO_CIRCUIT_KEY_WORDS = ['電路', '數位邏輯', '數位系統', '邏輯系統', '邏輯設計']
+ELECTRO_CIRCUIT_ANTI_KEY_WORDS = [
     '超大型', '專題', '倫理', '素養', '進階', '藝術', '高頻', '微波']
-EE_ELECTRO_CIRCUIT_KEY_WORDS_EN = [
+ELECTRO_CIRCUIT_KEY_WORDS_EN = [
     'circuit', 'signal', 'fpga', 'hdl', '數位邏輯', 'logic']
-EE_ELECTRO_CIRCUIT_ANTI_KEY_WORDS_EN = ['超大型', '專題']
+ELECTRO_CIRCUIT_ANTI_KEY_WORDS_EN = ['超大型', '專題']
 
 # 訊號系統
-EE_SIGNAL_SYSTEM_KEY_WORDS = ['訊號與系統', '信號與系統', '訊號', '信號']
-EE_SIGNAL_SYSTEM_ANTI_KEY_WORDS = ['asdgladfj;l''超大型', '專題']
-EE_SIGNAL_SYSTEM_KEY_WORDS_EN = ['signals and systems']
-EE_SIGNAL_SYSTEM_ANTI_KEY_WORDS_EN = ['asdgladfj;l', '超大型', '專題']
+SIGNAL_SYSTEM_KEY_WORDS = ['訊號與系統', '信號與系統', '訊號', '信號']
+SIGNAL_SYSTEM_ANTI_KEY_WORDS = ['asdgladfj;l''超大型', '專題']
+SIGNAL_SYSTEM_KEY_WORDS_EN = ['signals and systems']
+SIGNAL_SYSTEM_ANTI_KEY_WORDS_EN = ['asdgladfj;l', '超大型', '專題']
 
 # 電磁
-EE_ELECTRO_MAGNET_KEY_WORDS = ['電磁', '電動力學']
-EE_ELECTRO_MAGNET_ANTI_KEY_WORDS = ['asdgladfj;l', '專題', '進階']
-EE_ELECTRO_MAGNET_KEY_WORDS_EN = ['electromagne', 'magne']
-EE_ELECTRO_MAGNET_ANTI_KEY_WORDS_EN = ['asdgladfj;l', '專題', '進階']
+ELECTRO_MAGNET_KEY_WORDS = ['電磁', '電動力學']
+ELECTRO_MAGNET_ANTI_KEY_WORDS = ['asdgladfj;l', '專題', '進階']
+ELECTRO_MAGNET_KEY_WORDS_EN = ['electromagne', 'magne']
+ELECTRO_MAGNET_ANTI_KEY_WORDS_EN = ['asdgladfj;l', '專題', '進階']
 
 # 電力電子
-EE_POWER_ELECTRO_KEY_WORDS = ['電力', '能源', '電動機', '電機', '高壓電', '電傳輸', '配電']
-EE_POWER_ELECTRO_ANTI_KEY_WORDS = ['asdgladfj;l', '專題', '進階', '政策']
-EE_POWER_ELECTRO_KEY_WORDS_EN = [
+POWER_ELECTRONICS_KEY_WORDS = ['電力', '能源', '電動機', '電機', '高壓電', '電傳輸', '配電']
+POWER_ELECTRONICS_ANTI_KEY_WORDS = ['asdgladfj;l', '專題', '進階', '政策']
+POWER_ELECTRONICS_KEY_WORDS_EN = [
     'power', 'energy', '電動機', 'electrical machine', 'high voltage', 'transmission']
-EE_POWER_ELECTRO_ANTI_KEY_WORDS_EN = ['asdgladfj;l', '專題', '進階', 'policy']
+POWER_ELECTRONICS_ANTI_KEY_WORDS_EN = ['asdgladfj;l', '專題', '進階', 'policy']
 
 # 通訊
 COMMUNICATION_ENGINEERING_KEY_WORDS = ['密碼學', '安全', '傳輸', '射頻', '電信',
@@ -447,6 +460,16 @@ COMMUNICATION_ENGINEERING_KEY_WORDS_EN = ['microwave', 'crypto', 'security', 'ra
                                           'network', 'wireless', 'communication', '通訊', '電波']
 COMMUNICATION_ENGINEERING_ANTI_KEY_WORDS_EN = [
     'asdgladfj;l', '專題', 'advanced', 'technical']
+
+BOE_COMMUNICATION_KEY_WORDS = ['電子', '電路', '密碼學', '傳輸', '電信', '信號', '訊號',
+                               '網路', '無線', '通信', '通訊', '電波', '無線網路']
+BOE_COMMUNICATION_ANTI_KEY_WORDS = [
+    'asdgladfj;l', '專題', '進階', '神經', '微波', '日治']
+BOE_COMMUNICATION_KEY_WORDS_EN = ['electr', 'circuit', 'magneti', 'microwave', 'crypto', 'security', 'radio frequ',
+                                  'network', 'wireless', 'communication']
+BOE_COMMUNICATION_ANTI_KEY_WORDS_EN = [
+    'asdgladfj;l', '專題', 'advanced', 'technical']
+
 
 # 半導體
 SEMICONDUCTOR_KEY_WORDS = ['半導體', '元件', '固態']
@@ -492,6 +515,15 @@ EE_MACHINE_RELATED_KEY_WORDS_EN = ['mechanics', 'fluid', 'statics', 'dynamics',
                                    'thermodyna', '傳導', 'conduction', 'machine', 'heat flux', '機動']
 EE_MACHINE_RELATED_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
 
+# 力學
+MECHANIK_KEY_WORDS = ['力學', '動力', '機動', '應力', '靜力', '振動', '運動學', '震動']
+MECHANIK_ANTI_KEY_WORDS = [
+    '熱力', '流體', '車輛', '氣動', '量子', '聲學', '廠']
+MECHANIK_KEY_WORDS_EN = ['mechanics', 'statics',
+                         'dynamics', '機動', 'vibra', 'kine', '應力']
+MECHANIK_ANTI_KEY_WORDS_EN = [
+    'thermodynam', 'fluid', 'automotive', 'quantum', 'accoustic']
+
 # 靜力學
 STATICS_KEY_WORDS = ['靜力']
 STATICS_ANTI_KEY_WORDS = ['asdgladfj']
@@ -514,13 +546,13 @@ MATERIALS_MECHANICS_ANTI_KEY_WORDS_EN = [
     'thermodynam', 'fluid', 'automotive', 'quantum', 'accoustic']
 
 # 電路設計
-EE_ELECTRO_CIRCUIT_DESIGN_KEY_WORDS = [
+ELECTRO_CIRCUIT_DESIGN_KEY_WORDS = [
     '數位電路', '類比', '積體電路', 'ic design', 'vlsi', 'ulsi']
-EE_ELECTRO_CIRCUIT_DESIGN_ANTI_KEY_WORDS = [
+ELECTRO_CIRCUIT_DESIGN_ANTI_KEY_WORDS = [
     '專題', '倫理', '素養', '進階', '藝術', '高頻', '微波']
-EE_ELECTRO_CIRCUIT_DESIGN_KEY_WORDS_EN = [
+ELECTRO_CIRCUIT_DESIGN_KEY_WORDS_EN = [
     'analog', 'integrated circuit', 'vlsi', 'ulsi', 'ic design']
-EE_ELECTRO_CIRCUIT_DESIGN_ANTI_KEY_WORDS_EN = [
+ELECTRO_CIRCUIT_DESIGN_ANTI_KEY_WORDS_EN = [
     '超大型', '專題', '倫理', '素養', '進階', '藝術', '高頻', '微波']
 
 # 流體
@@ -535,6 +567,14 @@ MASCHINEN_ELEMENTE_ANTI_KEY_WORDS = ['asdgladfj;l', '實習']
 MASCHINEN_ELEMENTE_KEY_WORDS_EN = ['mechanism']
 MASCHINEN_ELEMENTE_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
 
+# 熱傳導
+ME_WARMTRANSPORT_KEY_WORDS = ['熱傳', '傳導', '熱流']
+ME_WARMTRANSPORT_ANTI_KEY_WORDS = ['asdgladfj;l']
+ME_WARMTRANSPORT_KEY_WORDS_EN = [
+    'heat conduction', 'heat conduction', 'heat flux']
+ME_WARMTRANSPORT_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
+
+
 # 機械設計
 MASCHINENGESTALTUNG_KEY_WORDS = [
     '繪圖', '製圖', '電腦輔助', '機械設計', '機械', '工程圖', 'CAD']
@@ -545,267 +585,81 @@ MASCHINENGESTALTUNG_KEY_WORDS_EN = [
 MASCHINENGESTALTUNG_ANTI_KEY_WORDS_EN = ['asdgladfj;l', 'manufactur']
 
 # 熱力學
-ME_THERMODYN_KEY_WORDS = ['熱力', '熱工']
-ME_THERMODYN_ANTI_KEY_WORDS = ['asdgladfj;l', '專題', '進階']
-ME_THERMODYN_KEY_WORDS_EN = ['thermodyna']
-ME_THERMODYN_ANTI_KEY_WORDS_EN = ['asdgladfj;l', 'advance']
+THERMODYN_KEY_WORDS = ['熱力', '熱工']
+THERMODYN_ANTI_KEY_WORDS = ['asdgladfj;l', '專題', '進階']
+THERMODYN_KEY_WORDS_EN = ['thermodyna']
+THERMODYN_ANTI_KEY_WORDS_EN = ['asdgladfj;l', 'advance']
 
 
-#################################################################################################################
-########################################## Mechanical Engineering ###############################################
-#################################################################################################################
 
-
-ME_MATH_KEY_WORDS = ['數學', '代數', '函數', '機率', '離散', '複變', '數值', '向量']
-ME_MATH_ANTI_KEY_WORDS = ['asdgladfj;l']
-
-
-ME_WARMTRANSPORT_KEY_WORDS = ['熱傳', '傳導', '熱流']
-ME_WARMTRANSPORT_ANTI_KEY_WORDS = ['asdgladfj;l']
-ME_WERKSTOFFKUNDE_KEY_WORDS = ['材料']
-ME_WERKSTOFFKUNDE_ANTI_KEY_WORDS = ['asdgladfj;l', '力學', '應用', '世界', '們']
-ME_CONTROL_THEORY_KEY_WORDS = ['控制', '線性系統', '非線性系統', '動態系統', '系統動態']
-ME_CONTROL_THEORY_ANTI_KEY_WORDS = ['asdgladfj;l', '車輛', '交通', '管理', '控制器']
-
-
-ME_ELECTRICAL_ENG_KEY_WORDS = [
+# 基礎電機電子
+ELECTRICAL_ENG_KEY_WORDS = [
     '電力電子', '電機', '電動機', '電磁', '電子', '電路', '電工', '電力']
-ME_ELECTRICAL_ENG_ANTI_KEY_WORDS = [
+ELECTRICAL_ENG_ANTI_KEY_WORDS = [
     'asdgladfj;l', '邏輯', '自動化', '微電子', '商務', '實習']
+ELECTRICAL_ENG_KEY_WORDS_EN = [
+    'power electr', 'electrical machine', 'electromagne', 'electronic', 'circuit']
+ELECTRICAL_ENG_ANTI_KEY_WORDS_EN = [
+    'asdgladfj;l', 'logic', 'automation', 'microelectroni', 'business']
+
+# 製造
 ME_MANUFACTURE_ENG_KEY_WORDS = ['製造']
 ME_MANUFACTURE_ENG_ANTI_KEY_WORDS = ['asdgladfj;l', '邏輯', '自動化', '微電子']
-
-ME_MECHATRONICS_KEY_WORDS = ['機電', '微處理', '微控制']
-ME_MECHATRONICS_ANTI_KEY_WORDS = ['asdgladfj;l']
-ME_MEASUREMENT_KEY_WORDS = ['測量', '量測']
-ME_MEASUREMENT_ANTI_KEY_WORDS = ['asdgladfj;l']
-ME_VEHICLE_KEY_WORDS = ['車輛', '煞車', '內燃機', '電驅動', '汽車', '熱機', '懸吊', '變速']
-ME_VEHICLE_ANTI_KEY_WORDS = ['asdgladfj;l']
-
-#################################################################################################################
-################################### Mechanical Engineering English ##############################################
-#################################################################################################################
-
-
-ME_MATH_KEY_WORDS_EN = ['math', 'linear algebra', 'differential', '函數', 'finite element',
-                        'probability', 'discrete', 'complex', 'numerical', 'vector analy']
-ME_MATH_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
-
-
-ME_WARMTRANSPORT_KEY_WORDS_EN = [
-    'heat conduction', 'heat conduction', 'heat flux']
-ME_WARMTRANSPORT_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
-ME_WERKSTOFFKUNDE_KEY_WORDS_EN = ['material']
-ME_WERKSTOFFKUNDE_ANTI_KEY_WORDS_EN = ['asdgladfj;l', 'mechanics', '應用']
-ME_CONTROL_THEORY_KEY_WORDS_EN = ['control', 'linear system', '非線性系統']
-ME_CONTROL_THEORY_ANTI_KEY_WORDS_EN = ['asdgladfj;l', '車輛']
-
-
-ME_ELECTRICAL_ENG_KEY_WORDS_EN = [
-    'power electr', 'electrical machine', 'electromagne', 'electronic', 'circuit']
-ME_ELECTRICAL_ENG_ANTI_KEY_WORDS_EN = [
-    'asdgladfj;l', 'logic', 'automation', 'microelectroni', 'business']
 ME_MANUFACTURE_ENG_KEY_WORDS_EN = ['manufactur', 'fabrica', 'produc']
 ME_MANUFACTURE_ENG_ANTI_KEY_WORDS_EN = [
     'asdgladfj;l', 'logic', 'automation', 'microelectroni']
 
+# 機電
+ME_MECHATRONICS_KEY_WORDS = ['機電', '微處理', '微控制']
+ME_MECHATRONICS_ANTI_KEY_WORDS = ['asdgladfj;l']
 ME_MECHATRONICS_KEY_WORDS_EN = ['mechantro', 'microcomputer']
 ME_MECHATRONICS_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
-ME_MEASUREMENT_KEY_WORDS_EN = ['measure', 'sensor']
-ME_MEASUREMENT_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
-ME_VEHICLE_KEY_WORDS_EN = ['車輛', 'vehicle', 'cumbustion',
+
+# 測量
+MEASUREMENT_KEY_WORDS = ['測量', '量測']
+MEASUREMENT_ANTI_KEY_WORDS = ['asdgladfj;l']
+MEASUREMENT_KEY_WORDS_EN = ['measure', 'sensor']
+MEASUREMENT_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
+
+# 車輛
+VEHICLE_ENGINEERING_KEY_WORDS = ['車輛', '煞車', '內燃機', '電驅動', '汽車', '熱機', '懸吊', '變速']
+VEHICLE_ENGINEERING_ANTI_KEY_WORDS = ['asdgladfj;l']
+VEHICLE_ENGINEERING_KEY_WORDS_EN = ['車輛', 'vehicle', 'cumbustion',
                            '電驅動', 'automotive', '熱機', 'suspens']
-ME_VEHICLE_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
+VEHICLE_ENGINEERING_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
 
-
-#################################################################################################################
-########################################## Mechanical Engineering ###############################################
-#################################################################################################################
-
-# TODO: defining the keywords in proper way (iterative steps: generating, and see result, if mssing, then add keywords/anti_keywords)
+# 離散
 MTL_MATH_DISCRETE_KEY_WORDS = ['離散', '圖形', '圖論', '邏輯']
 MTL_MATH_DISCRETE_ANTI_KEY_WORDS = ['asdgladfj;l', '管理']
-
-MTL_MATH_KEY_WORDS = ['數學', '微分', '函數', '機率', '複變', '向量', '幾何']
-MTL_MATH_ANTI_KEY_WORDS = ['asdgladfj;l', '離散']
-
-
-MTL_WERKSTOFFKUNDE_KEY_WORDS = ['材料']
-MTL_WERKSTOFFKUNDE_ANTI_KEY_WORDS = ['asdgladfj;l', '力學']
-MTL_CONTROL_THEORY_KEY_WORDS = ['控制', '線性系統', '非線性系統']
-MTL_CONTROL_THEORY_ANTI_KEY_WORDS = ['asdgladfj;l']
-MTL_MECHANIK_KEY_WORDS = ['力學', '動力', '機動', '振動', '震動', '運動學', '應力']
-MTL_MECHANIK_ANTI_KEY_WORDS = ['熱力', '流體', '車輛', '氣動', '量子', '聲學']
-
-MTL_ELECTRONICS_KEY_WORDS = ['電子', '電子電路']
-MTL_ELECTRONICS_ANTI_KEY_WORDS = [
-    '實驗', '專題', '電力', '固態', '自動化', '倫理', '素養', '進階', '材料', '藝術', '視覺']
-MTL_ELECTRO_CIRCUIT_KEY_WORDS = ['電路', '數位邏輯', '邏輯系統', '邏輯設計']
-MTL_ELECTRO_CIRCUIT_ANTI_KEY_WORDS = [
-    '超大型', '專題', '倫理', '素養', '進階', '藝術', '高頻', '微波']
-
-#################################################################################################################
-################################### Mechanical Engineering Englis ###############################################
-#################################################################################################################
 MTL_MATH_DISCRETE_KEY_WORDS_EN = ['discrete math', '圖形', 'graph', '邏輯']
 MTL_MATH_DISCRETE_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
 
-MTL_MATH_KEY_WORDS_EN = ['math', 'linear algebra', 'differential', '函數',
-                         'probability', 'discrete', 'complex', 'numerical', 'vector analy']
-MTL_MATH_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
+# 材料科學
+WERKSTOFFKUNDE_KEY_WORDS = ['材料']
+WERKSTOFFKUNDE_ANTI_KEY_WORDS = ['asdgladfj;l', '力學', '應用', '世界', '們']
+WERKSTOFFKUNDE_KEY_WORDS_EN = ['material']
+WERKSTOFFKUNDE_ANTI_KEY_WORDS_EN = ['asdgladfj;l', 'mechanics', 'appl']
 
-MTL_WERKSTOFFKUNDE_KEY_WORDS_EN = ['material']
-MTL_WERKSTOFFKUNDE_ANTI_KEY_WORDS_EN = ['asdgladfj;l', 'mechanics']
-MTL_CONTROL_THEORY_KEY_WORDS_EN = ['control', 'linear system', '非線性系統']
-MTL_CONTROL_THEORY_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
-MTL_MECHANIK_KEY_WORDS_EN = ['mechanics', 'statics',
-                             'dynamics', '機動', 'vibra', 'kine', '應力']
-MTL_MECHANIK_ANTI_KEY_WORDS_EN = [
-    'thermodynam', 'fluid', 'automotive', '氣動', 'quantum', 'accoustic']
-
-MTL_ELECTRONICS_KEY_WORDS_EN = ['electronic', 'electrical']
-MTL_ELECTRONICS_ANTI_KEY_WORDS_EN = [
-    'project', 'power', 'solid', 'automation', 'ethnic', '素養', 'advanced', 'lab', 'experiment']
-MTL_ELECTRO_CIRCUIT_KEY_WORDS_EN = [
-    'circuit', 'signal', 'fpga', 'hdl', '數位邏輯', 'logic']
-MTL_ELECTRO_CIRCUIT_ANTI_KEY_WORDS_EN = ['超大型', '專題']
-
-
-#################################################################################################################
-###################################################### Management ###############################################
-#################################################################################################################
-
-# TODO: defining the keywords in proper way (iterative steps: generating, and see result, if mssing, then add keywords/anti_keywords)
-
-MGM_MATH_KEY_WORDS = ['線性代數', '離散', '微分', '機率', '數學']
-MGM_MATH_ANTI_KEY_WORDS = ['asdgladfj;l', '通識']
-
-
-
-#################################################################################################################
-########################################## Management English ###################################################
-#################################################################################################################
-
-# TODO: defining the keywords in proper way (iterative steps: generating, and see result, if mssing, then add keywords/anti_keywords)
-
-MGM_MATH_KEY_WORDS_EN = ['linear algebra', 'discrete math']
-MGM_MATH_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
-
-MGM_DATA_SCIENCE_KEY_WORDS = ['資料']
-MGM_DATA_SCIENCE_ANTI_KEY_WORDS = ['asdgladfj;l']
-MGM_DATA_SCIENCE_KEY_WORDS_EN = ['data']
-MGM_DATA_SCIENCE_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
-
-
-DSBI_DATA_SCIENCE_KEY_WORDS = ['資料', '資料分析', '資料探勘']
-DSBI_DATA_SCIENCE_ANTI_KEY_WORDS = ['asdgladfj;l', '庫', '結構']
-DSBI_DATA_SCIENCE_KEY_WORDS_EN = [
+# 資料科學
+DATA_SCIENCE_KEY_WORDS = ['資料', '資料分析', '資料探勘']
+DATA_SCIENCE_ANTI_KEY_WORDS = ['asdgladfj;l', '庫', '結構']
+DATA_SCIENCE_KEY_WORDS_EN = [
     'data science', 'information', 'mining', 'data analy']
-DSBI_DATA_SCIENCE_ANTI_KEY_WORDS_EN = ['asdgladfj;l', 'system']
+DATA_SCIENCE_ANTI_KEY_WORDS_EN = ['asdgladfj;l', 'system']
 
-#################################################################################################################
-##################################### Data Science and Business Intelligence#####################################
-#################################################################################################################
-
-# TODO: defining the keywords in proper way (iterative steps: generating, and see result, if mssing, then add keywords/anti_keywords)
-
-DSBI_MATH_LIN_ALGE_KEY_WORDS = ['線性代數', '代數', '幾何']
-DSBI_MATH_LIN_ALGE_ANTI_KEY_WORDS = ['asdgladfj;l', '管理', '文明', '服務', '微積分']
-DSBI_MATH_KEY_WORDS = ['離散', '微分', '機率', '數學', '數值', '複變']
-DSBI_MATH_ANTI_KEY_WORDS = ['asdgladfj;l', '服務', '文明', '通識', '認識']
-
-#################################################################################################################
-##################################### Data Science and Business Intelligence English#############################
-#################################################################################################################
-
-# TODO: defining the keywords in proper way (iterative steps: generating, and see result, if mssing, then add keywords/anti_keywords)
-
-DSBI_MATH_KEY_WORDS_EN = ['mathematic', 'equation', 'probability']
-DSBI_MATH_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
-
-
-# TODO: defining the keywords in proper way (iterative steps: generating, and see result, if mssing, then add keywords/anti_keywords)
-
-BOE_MATH_NUM_METHOD_KEY_WORDS = ['數值方法', '數值', '離散', '工程數學', 'Matlab']
-BOE_MATH_NUM_METHOD_ANTI_KEY_WORDS = [
-    'asdgladfj;l', '管理', '文明', '服務', '微積分', '認識']
-
-BOE_WERKSTOFFKUNDE_KEY_WORDS = ['材料']
-BOE_WERKSTOFFKUNDE_ANTI_KEY_WORDS = ['asdgladfj;l', '力學']
-
-BOE_COMMUNICATION_KEY_WORDS = ['電子', '電路', '密碼學', '傳輸', '電信', '信號', '訊號',
-                               '網路', '無線', '通信', '通訊', '電波', '無線網路']
-BOE_COMMUNICATION_ANTI_KEY_WORDS = [
-    'asdgladfj;l', '專題', '進階', '神經', '微波', '日治']
-
-BOE_MECHANIK_KEY_WORDS = ['力學', '機動', '應力', '靜力', '動力', '振動', '運動學', '震動']
-BOE_MECHANIK_ANTI_KEY_WORDS = [
-    '熱力', '流體', '車輛', '氣動', '量子', '聲學', '廠']
-
-BOE_BIOLOGY_KEY_WORDS = ['生物學', '解剖學', '生理學', '遺傳學', '普通生物',
-                         '細胞生物', '生物統計', '微生物', '分子生物', '免疫', '生物動力']
-BOE_BIOLOGY_ANTI_KEY_WORDS = ['asdgladfj;l', '力學']
-BOE_BIOLOGY_KEY_WORDS_EN = ['material']
-BOE_BIOLOGY_ANTI_KEY_WORDS_EN = ['asdgladfj;l', 'mechanics']
+# 生物學
+BIOLOGY_KEY_WORDS = ['生物學', '解剖學', '生理學', '遺傳學', '普通生物',
+                     '細胞生物', '生物統計', '微生物', '分子生物', '免疫', '生物動力']
+BIOLOGY_ANTI_KEY_WORDS = ['asdgladfj;l', '力學']
+BIOLOGY_KEY_WORDS_EN = ['material']
+BIOLOGY_ANTI_KEY_WORDS_EN = ['asdgladfj;l', 'mechanics']
 
 # 生醫
-BOE_BIO_MEDICAL_KEY_WORDS = ['醫學工程', '臨床工程',
+MEDICAL_KEY_WORDS = ['醫學工程', '臨床工程',
                              '臨床醫學', '測量', '醫學資訊', '生理訊號', '生醫工程']
-BOE_BIO_MEDICAL_ANTI_KEY_WORDS = ['asdgladfj;l', 'mechanics']
-BOE_BIO_MEDICAL_KEY_WORDS_EN = ['material']
-BOE_BIO_MEDICAL_ANTI_KEY_WORDS_EN = ['asdgladfj;l', 'mechanics']
-
-BOE_MATH_PROB_KEY_WORDS = ['機率', '統計', '隨機']
-BOE_MATH_PROB_ANTI_KEY_WORDS = ['asdgladfj;l', '學習', '管理']
-
-#################################################################################################################
-#################################################################################################################
-#################################################################################################################
-
-
-BOE_MATH_NUM_METHOD_KEY_WORDS_EN = ['numerical', 'discrete', 'matlab', '']
-BOE_MATH_NUM_METHOD_ANTI_KEY_WORDS_EN = ['asdgladfj;l', '管理', '文明', '服務']
-
-
-BOE_WERKSTOFFKUNDE_KEY_WORDS_EN = ['material']
-BOE_WERKSTOFFKUNDE_ANTI_KEY_WORDS_EN = ['asdgladfj;l', 'mechanics']
-
-BOE_COMMUNICATION_KEY_WORDS_EN = ['electr', 'circuit', 'magneti', 'microwave', 'crypto', 'security', 'radio frequ',
-                                  'network', 'wireless', 'communication']
-BOE_COMMUNICATION_ANTI_KEY_WORDS_EN = [
-    'asdgladfj;l', '專題', 'advanced', 'technical']
-
-BOE_MECHANIK_KEY_WORDS_EN = ['mechanics', 'statics',
-                             'dynamics', '機動', 'vibra', 'kine', '應力']
-BOE_MECHANIK_ANTI_KEY_WORDS_EN = [
-    'thermodynam', 'fluid', 'automotive', 'quantum', 'accoustic']
-
-
-BOE_MATH_PROB_KEY_WORDS_EN = [
-    'probability', 'statistic', 'random', 'stochasti']
-BOE_MATH_PROB_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
-
-BOE_ADVANCED_CHEMISTRY_KEY_WORDS_EN = ['analytical chemist']
-BOE_ADVANCED_CHEMISTRY_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
-
-BOE_INORGANIC_CHEMISTRY_KEY_WORDS_EN = ['inorganic chemis']
-BOE_INORGANIC_CHEMISTRY_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
-
-
-BOE_ELECTRO_MAGNET_KEY_WORDS_EN = ['electromagne', 'magne']
-BOE_ELECTRO_MAGNET_ANTI_KEY_WORDS_EN = ['asdgladfj;l', '專題', '進階']
-
-
-#################################################################################################################
-###################################################### Management ###############################################
-#################################################################################################################
-
-# TODO: defining the keywords in proper way (iterative steps: generating, and see result, if mssing, then add keywords/anti_keywords)
-
-PSY_MATH_KEY_WORDS = ['離散', '微分', '數學']
-PSY_MATH_ANTI_KEY_WORDS = ['asdgladfj;l', '通識', '過去', '未來']
-PSY_MATH_PROB_KEY_WORDS = ['機率', '隨機']
-PSY_MATH_PROB_ANTI_KEY_WORDS = ['asdgladfj;l', '學習', '管理']
+MEDICAL_ANTI_KEY_WORDS = ['asdgladfj;l', 'mechanics']
+MEDICAL_KEY_WORDS_EN = ['material']
+MEDICAL_ANTI_KEY_WORDS_EN = ['asdgladfj;l', 'mechanics']
 
 # 心理學
 PSY_PSYCHOLOGY_KEY_WORDS = ['心理']
@@ -837,30 +691,7 @@ PSY_NEURO_SCIENCE_ANTI_KEY_WORDS = ['asdgladfj;l']
 PSY_NEURO_SCIENCE_KEY_WORDS_EN = ['cogniti']
 PSY_NEURO_SCIENCE_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
 
-#################################################################################################################
-########################################## Management English ###################################################
-#################################################################################################################
-
-# TODO: defining the keywords in proper way (iterative steps: generating, and see result, if mssing, then add keywords/anti_keywords)
-PSY_MATH_KEY_WORDS_EN = ['mathematic']
-PSY_MATH_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
-PSY_MATH_PROB_KEY_WORDS_EN = ['probabi', '隨機']
-PSY_MATH_PROB_ANTI_KEY_WORDS_EN = ['asdgladfj;l', '學習', '管理']
-
-#################################################################################################################
-########################################## Mechanical Engineering ###############################################
-#################################################################################################################
-
-# TODO: defining the keywords in proper way (iterative steps: generating, and see result, if mssing, then add keywords/anti_keywords)
-
-CME_MATH_KEY_WORDS = ['數學', '代數', '微分', '函數', '機率', '離散', '複變', '數值', '向量']
-CME_MATH_ANTI_KEY_WORDS = ['asdgladfj;l']
-
-#################################################################################################################
-#################################################################################################################
-#################################################################################################################
-
-
+# 其他
 USELESS_COURSES_KEY_WORDS = ['asdgladfj;l']
 USELESS_COURSES_ANTI_KEY_WORDS = ['asdgladfj;l']
 USELESS_COURSES_KEY_WORDS_EN = ['asdgladfj;l']

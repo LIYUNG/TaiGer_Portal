@@ -716,70 +716,21 @@ class TaiGerOfficeHours extends React.Component {
                 {events
                   ?.filter((event) => !isInTheFuture(event.end))
                   .map((event, i) => (
-                    <Card key={i}>
-                      <Card.Header>
-                        <Card.Title as="h5">
-                          <AiOutlineCalendar /> Start:{' '}
-                          {convertDate(event.start)}{' '}
-                          {NoonNightLabel(event.start)} ~ 30 min, Time zone:{' '}
-                          {Intl.DateTimeFormat().resolvedOptions().timeZone} UTC
-                          {getTimezoneOffset(
-                            Intl.DateTimeFormat().resolvedOptions().timeZone
-                          ) >= 0
-                            ? `+${getTimezoneOffset(
-                                Intl.DateTimeFormat().resolvedOptions().timeZone
-                              )}`
-                            : getTimezoneOffset(
-                                Intl.DateTimeFormat().resolvedOptions().timeZone
-                              )}
-                        </Card.Title>
-                      </Card.Header>
-                      <Card.Body>
-                        <AiOutlineUser size={16} /> Agent:{' '}
-                        {event.receiver_id?.map((receiver, x) => (
-                          <span key={x}>
-                            {receiver.firstname} {receiver.lastname}{' '}
-                            <AiOutlineMail ize={16} /> {receiver.email}
-                          </span>
-                        ))}
-                        <br />
-                        Description: {event.description}
-                        <br />
-                        Status:{' '}
-                        {event.isConfirmedReceiver ? (
-                          <AiFillCheckCircle
-                            title="Confirmed"
-                            size={16}
-                            color="limegreen"
-                          />
-                        ) : (
-                          <AiFillQuestionCircle
-                            title="Waiting for confirmation"
-                            size={16}
-                            color="gray"
-                          />
-                        )}
-                        <br />
-                        Meeting Link:{' '}
-                        {event.isConfirmedReceiver
-                          ? event.meetingLink
-                          : 'Will be available, after the appointment is confirmed by the Agent.'}
-                        <br />
-                        created at:{convertDate(event.createdAt)}
-                        <br />
-                        udpated at:{convertDate(event.updatedAt)}
-                      </Card.Body>
-                      <Button
-                        variant="danger"
-                        disabled
-                        size="sm"
-                        onClick={(e) =>
-                          this.handleDeleteAppointmentModalOpen(e, event)
-                        }
-                      >
-                        <AiOutlineDelete size={16} /> Delete
-                      </Button>
-                    </Card>
+                    <EventConfirmationCard
+                      key={i}
+                      user={this.props.user}
+                      event={event}
+                      handleConfirmAppointmentModalOpen={
+                        this.handleConfirmAppointmentModalOpen
+                      }
+                      handleEditAppointmentModalOpen={
+                        this.handleEditAppointmentModalOpen
+                      }
+                      handleDeleteAppointmentModalOpen={
+                        this.handleDeleteAppointmentModalOpen
+                      }
+                      disabled={true}
+                    />
                   ))}
               </Card.Body>
             </Card>

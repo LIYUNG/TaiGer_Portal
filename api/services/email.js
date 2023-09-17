@@ -1948,8 +1948,7 @@ const MeetingInvitationEmail = async (recipient, payload) => {
 
 <p><b>${payload.taiger_user_firstname} - ${
     payload.taiger_user_lastname
-  }</b> 確認了以下討論時段 (請注意時差，TaiGer Portal 查看您的當地時間)： </p>
-<p><b>${payload.meeting_time}</b></p>
+  }</b> 確認了討論時段，請至 TaiGer Portal 查看您的當地 Meeting 時間。</p>
 
 <p> 請於該時間準時點擊以下連結： </p>
 
@@ -1962,9 +1961,7 @@ const MeetingInvitationEmail = async (recipient, payload) => {
 
 <p>${payload.taiger_user_firstname} - ${
     payload.taiger_user_lastname
-  } confirmed the meeting time on (Please pay attention of the timezone. In TaiGer Portal, you should see the time in your timezone.):</p>
-
-<p><b>${payload.meeting_time}</b></p>
+  } confirmed the meeting time. Please login to the TaiGer Portal and see the meeting time in your timezone.</p>
 
 <p> Jitsi Meet Meeting link: <a href="${JITSI_MEET_URL(
     payload.student_id

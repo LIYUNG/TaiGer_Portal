@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Collapse, Button, Row } from 'react-bootstrap';
-import { NoonNightLabel, convertDate, getTimezoneOffset } from '../../../Demo/Utils/contants';
+import {
+  NoonNightLabel,
+  convertDate,
+  getTimezoneOffset
+} from '../../../Demo/Utils/contants';
 import {
   AiFillCheckCircle,
   AiFillQuestionCircle,
@@ -40,7 +44,7 @@ export default function EventConfirmationCard(props) {
                 <AiFillQuestionCircle color="grey" size={24} />
               )}{' '}
               <AiOutlineCalendar />: {convertDate(props.event.start)}{' '}
-              {NoonNightLabel(props.event.start)} ~ 30 min, Time zone:{' '}
+              {NoonNightLabel(props.event.start)} ({' '}
               {Intl.DateTimeFormat().resolvedOptions().timeZone} UTC
               {getTimezoneOffset(
                 Intl.DateTimeFormat().resolvedOptions().timeZone
@@ -51,6 +55,19 @@ export default function EventConfirmationCard(props) {
                 : getTimezoneOffset(
                     Intl.DateTimeFormat().resolvedOptions().timeZone
                   )}
+              ){' '}
+              <b>
+                {is_TaiGer_Agent(props.user) && (
+                  <>
+                    {props.event.requester_id
+                      ?.map(
+                        (requester) =>
+                          `${requester.firstname} ${requester.lastname}`
+                      )
+                      .join(',')}
+                  </>
+                )}
+              </b>
             </h5>
             <span style={{ float: 'right' }}>
               {is_TaiGer_Student(props.user) &&
@@ -100,6 +117,7 @@ export default function EventConfirmationCard(props) {
               <Button
                 variant="secondary"
                 size="sm"
+                disabled={props.disabled}
                 onClick={(e) =>
                   props.handleEditAppointmentModalOpen(e, props.event)
                 }
@@ -109,6 +127,7 @@ export default function EventConfirmationCard(props) {
               <Button
                 variant="danger"
                 size="sm"
+                disabled={props.disabled}
                 onClick={(e) =>
                   props.handleDeleteAppointmentModalOpen(e, props.event)
                 }
@@ -130,6 +149,7 @@ export default function EventConfirmationCard(props) {
             </span>
           ))}
           <br />
+          <AiOutlineUser size={16} />
           Student:{' '}
           {props.event.requester_id?.map((requester, x) => (
             <span key={x}>
@@ -145,13 +165,17 @@ export default function EventConfirmationCard(props) {
           {is_TaiGer_Student(props.user) &&
             (props.event.isConfirmedRequester ? (
               props.event.isConfirmedReceiver ? (
-                <a
-                  href={`${props.event.meetingLink}`}
-                  className="text-primary"
-                  target="_blank"
-                >
-                  {props.event.meetingLink}
-                </a>
+                props.disabled ? (
+                  'Meeting Link expired'
+                ) : (
+                  <a
+                    href={`${props.event.meetingLink}`}
+                    className="text-primary"
+                    target="_blank"
+                  >
+                    {props.event.meetingLink}
+                  </a>
+                )
               ) : (
                 'Will be available, after the appointment is confirmed by the Agent.'
               )
@@ -173,9 +197,16 @@ export default function EventConfirmationCard(props) {
           {is_TaiGer_Agent(props.user) &&
             (props.event.isConfirmedReceiver ? (
               props.event.isConfirmedRequester ? (
-                <a href={`${props.event.meetingLink}`} className="text-primary">
-                  {props.event.meetingLink}
-                </a>
+                props.disabled ? (
+                  'Meeting Link expired'
+                ) : (
+                  <a
+                    href={`${props.event.meetingLink}`}
+                    className="text-primary"
+                  >
+                    {props.event.meetingLink}
+                  </a>
+                )
               ) : (
                 'Will be available, after the appointment is confirmed by the Student.'
               )

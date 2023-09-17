@@ -1,6 +1,11 @@
 import React from 'react';
 import { Spinner, Button, Card, Modal } from 'react-bootstrap';
-import { assignProgramToStudent, getProgram, updateProgram } from '../../api';
+import {
+  assignProgramToStudent,
+  getProgram,
+  processProgramListAi,
+  updateProgram
+} from '../../api';
 import SingleProgramView from './SingleProgramView';
 import SingleProgramEdit from './SingleProgramEdit';
 import ProgramDeleteWarning from './ProgramDeleteWarning';
@@ -78,7 +83,7 @@ class SingleProgram extends React.Component {
               isLoaded: true,
               program: data,
               students,
-              isEdit:false,
+              isEdit: false,
               success: success,
               res_status: status
             });
@@ -278,6 +283,34 @@ class SingleProgram extends React.Component {
     );
   };
 
+  programListAssistant = (e) => {
+    processProgramListAi(this.props.match.params.programId).then(
+      (resp) => {
+        const { success } = resp.data;
+        const { status } = resp;
+        console.log(success);
+        // if (success) {
+        //   this.setState({
+        //     isLoaded: true,
+        //     deleteProgramWarning: false,
+        //     isDeleted: true,
+        //     success: success,
+        //     isEdit: !this.state.isEdit,
+        //     res_modal_status: status
+        //   });
+        // } else {
+        //   const { message } = resp.data;
+        //   this.setState({
+        //     isLoaded: true,
+        //     res_modal_status: status,
+        //     res_modal_message: message
+        //   });
+        // }
+      },
+      (error) => {}
+    );
+    console.log('Trigger PLA');
+  };
   render() {
     const {
       res_status,
@@ -347,6 +380,7 @@ class SingleProgram extends React.Component {
             user={this.props.user}
             students={students}
             programId={this.props.match.params.programId}
+            programListAssistant={this.programListAssistant}
           />
           {is_TaiGer_AdminAgent(this.props.user) && (
             <>

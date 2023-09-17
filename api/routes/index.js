@@ -16,6 +16,7 @@ const portalsRouter = require('./portal_information');
 const programsRouter = require('./programs');
 const docsModiRouter = require('./documents_modification');
 const permissionsRouter = require('./permissions');
+const taigeraisRouter = require('./taigerais');
 const tasksRouter = require('./tasks');
 const notesRouter = require('./notes');
 const widgetsRouter = require('./widget');
@@ -50,6 +51,7 @@ const router = (app) => {
   apiRouter.use('/permissions', permissionsRouter);
   apiRouter.use('/programs', programsRouter);
   apiRouter.use('/search', searchesRouter);
+  apiRouter.use('/taigerai', taigeraisRouter);
   apiRouter.use('/tasks', tasksRouter);
   apiRouter.use('/teams', teamsRouter);
   apiRouter.use('/uniassist', uniassistRouter);

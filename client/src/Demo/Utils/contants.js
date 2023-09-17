@@ -512,6 +512,7 @@ export const LANGUAGES_OPTIONS = () => {
       <option value="-">-</option>
       <option value="English">English</option>
       <option value="German">German</option>
+      <option value="German-English">German-English</option>
     </>
   );
 };

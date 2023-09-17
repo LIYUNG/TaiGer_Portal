@@ -461,6 +461,10 @@ export const updatePersonalData = (user_id, personaldata) =>
 export const updateCredentials = (credentials, email, password) =>
   request.post(`/api/account/credentials`, { credentials, email, password });
 
+//TaiGer AI:
+export const processProgramListAi = (programId) =>
+  request.get(`/api/taigerai/${programId}`);
+
 //Interview:
 export const getAllInterviews = () => request.get('/api/interviews');
 export const getInterview = (interview_id) =>

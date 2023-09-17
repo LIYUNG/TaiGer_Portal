@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Card, Table } from 'react-bootstrap';
+import { Row, Col, Card, Table, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import {
   is_TaiGer_AdminAgent,
@@ -211,6 +211,14 @@ class SingleProgramView extends React.Component {
                   <br></br>
                   O: admitted, X: rejected, -: not confirmed
                 </Card.Body>
+              </Card>
+              <Card>
+                <Card.Header>
+                  <Card.Title>TaiGer Program Assistant</Card.Title>
+                  <Card.Body>
+                    <Button onClick={this.props.programListAssistant}>Fetch</Button>
+                  </Card.Body>
+                </Card.Header>
               </Card>
             </Col>
           )}

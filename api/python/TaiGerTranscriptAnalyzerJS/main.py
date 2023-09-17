@@ -3,11 +3,15 @@ import sys
 import json
 import os
 import pandas as pd
+from database.Biology.BIO_sorter import BIO_sorter
 from database.BiomedicalEngineering.BOE_sorter import BOE_sorter
+from database.Chemistry.CMY_sorter import CMY_sorter
 from database.ElectricalEngineering.EE_sorter import EE_sorter
 from database.ComputerScience.CS_sorter import CS_sorter
+from database.Mathematics.MATH_sorter import MATH_sorter
 from database.MechanicalEngineering.ME_sorter import ME_sorter
 from database.MaterialsScience.MTL_sorter import MTL_sorter
+from database.Physics.PHY_sorter import PHY_sorter
 from database.Psychology.PSY_sorter import PSY_sorter
 from database.Management.MGM_sorter import MGM_sorter
 from database.DataScience_BusinessIntelligence.DSBI_sorter import DSBI_sorter
@@ -37,12 +41,16 @@ if __name__ == "__main__":
     program_idx = []
     program_selection_path = ''
     program_group_to_file_path = {
+        'bio': '/database/Biology/BIO_Programs.xlsx', # TODO
         'cs': '/database/ComputerScience/CS_Programs.xlsx',
         'boe': '/database/BiomedicalEngineering/BOE_Programs.xlsx',
+        'cmy': '/database/Chemistry/CMY_Programs.xlsx', # TODO
+        'dsbi': '/database/DataScience_BusinessIntelligence/DSBI_Programs.xlsx',
         'ee': '/database/ElectricalEngineering/EE_Programs.xlsx',
+        'math': '/database/Mathematics/MATH_Programs.xlsx', # TODO
         'me': '/database/MechanicalEngineering/ME_Programs.xlsx',
         'mgm': '/database/Management/MGM_Programs.xlsx',
-        'dsbi': '/database/DataScience_BusinessIntelligence/DSBI_Programs.xlsx',
+        'phy': '/database/Physics/PHY_Programs.xlsx', # TODO
         'psy': '/database/Psychology/PSY_Programs.xlsx',
         'mtl': '/database/MaterialsScience/MTL_Programs.xlsx',
         'cme': '/database/Materials_Science/CME_Programs.xlsx',
@@ -69,14 +77,18 @@ if __name__ == "__main__":
             program_idx.append(idx) 
 
     sorter_functions = {
+        'bio': BIO_sorter, # TODO
         'cs': CS_sorter,
         'boe': BOE_sorter,
-        'ee': EE_sorter,
-        'me': ME_sorter,
-        'mgm': MGM_sorter,
         'dsbi': DSBI_sorter,
-        'psy': PSY_sorter,
+        'cmy': CMY_sorter, # TODO
+        'ee': EE_sorter,
+        'math': MATH_sorter, # TODO
+        'me': ME_sorter,
         'mtl': MTL_sorter,
+        'mgm': MGM_sorter,
+        'phy': PHY_sorter, # TODO
+        'psy': PSY_sorter,
         'te': TE_sorter
     }
     program_code = sys.argv[2]

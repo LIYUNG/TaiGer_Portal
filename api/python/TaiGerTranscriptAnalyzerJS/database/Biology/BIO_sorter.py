@@ -11,7 +11,7 @@ env_file_path = os.path.realpath(__file__)
 env_file_path = os.path.dirname(env_file_path)
 
 
-def sorter(program_idx, file_path, abbrev, studentId, student_name, analysis_language):
+def BIO_sorter(program_idx, file_path, abbrev, studentId, student_name, analysis_language):
 
     basic_classification_en = {
         '微積分': [CALCULUS_KEY_WORDS_EN, CALCULUS_ANTI_KEY_WORDS_EN],
@@ -27,7 +27,7 @@ def sorter(program_idx, file_path, abbrev, studentId, student_name, analysis_lan
         '作業研究': [OP_RESEARCH_KEY_WORDS_EN, OP_RESEARCH_ANTI_KEY_WORDS_EN],
         '觀察研究': [EP_RESEARCH_KEY_WORDS_EN, EP_RESEARCH_ANTI_KEY_WORDS_EN],
         '資工': [BASIC_CS_KEY_WORDS_EN, BASIC_CS_ANTI_KEY_WORDS_EN],
-        '程式': [PROGRAMMING_KEY_WORDS_EN, PROGRAMMING_ANTI_KEY_WORDS_EN],
+        '程式': [PROGRAMMING_LANGUAGE_KEY_WORDS_EN, PROGRAMMING_LANGUAGE_ANTI_KEY_WORDS_EN],
         '資料科學': [DATA_SCIENCE_KEY_WORDS_EN, DATA_SCIENCE_ANTI_KEY_WORDS_EN],
         '論文': [BACHELOR_THESIS_KEY_WORDS_EN, BACHELOR_THESIS_ANTI_KEY_WORDS_EN],
         '資管': [BUSINESS_INFORMATIC_KEY_WORDS_EN, BUSINESS_INFORMATIC_ANTI_KEY_WORDS_EN],
@@ -47,7 +47,7 @@ def sorter(program_idx, file_path, abbrev, studentId, student_name, analysis_lan
         '作業研究': [OP_RESEARCH_KEY_WORDS, OP_RESEARCH_ANTI_KEY_WORDS],
         '觀察研究': [EP_RESEARCH_KEY_WORDS, EP_RESEARCH_ANTI_KEY_WORDS],
         '資工': [BASIC_CS_KEY_WORDS, BASIC_CS_ANTI_KEY_WORDS],
-        '程式': [PROGRAMMING_KEY_WORDS, PROGRAMMING_ANTI_KEY_WORDS],
+        '程式': [PROGRAMMING_LANGUAGE_KEY_WORDS, PROGRAMMING_LANGUAGE_ANTI_KEY_WORDS],
         '資料科學': [DATA_SCIENCE_KEY_WORDS, DATA_SCIENCE_ANTI_KEY_WORDS],
         '論文': [BACHELOR_THESIS_KEY_WORDS, BACHELOR_THESIS_ANTI_KEY_WORDS],
         '資管': [BUSINESS_INFORMATIC_KEY_WORDS, BUSINESS_INFORMATIC_ANTI_KEY_WORDS],

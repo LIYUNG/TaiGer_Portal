@@ -1,7 +1,8 @@
 import xlsxwriter
 from CourseSuggestionAlgorithms import *
 from util import *
-from database.ChemicalEngineering.CME_KEYWORDS import *
+from keywords import *
+from database.ChemnicalEngineering.CME_Programs import program_sort_function, column_len_array
 from cell_formatter import red_out_failed_subject, red_out_insufficient_credit
 import pandas as pd
 import sys
@@ -11,6 +12,7 @@ env_file_path = os.path.dirname(env_file_path)
 
 # Global variable:
 column_len_array = []
+
 
 def RWTH_AUTO(transcript_sorted_group_map, df_transcript_array, df_category_courses_sugesstion_data, writer):
     program_name = 'RWTH_Aachen_AUTO'
@@ -26,7 +28,7 @@ def RWTH_AUTO(transcript_sorted_group_map, df_transcript_array, df_category_cour
     #####################################################################
 
     # Create transcript_sorted_group to program_category mapping
-    
+
     PROG_SPEC_MECHANIK_PARAM = {
         'Program_Category': 'Mechanik', 'Required_ECTS': 18}
     PROG_SPEC_MASCHINENGESTALTUNG_PARAM = {
@@ -58,7 +60,7 @@ def RWTH_AUTO(transcript_sorted_group_map, df_transcript_array, df_category_cour
         PROG_SPEC_CONTROL_TECHNIQUE_PARAM,  # 控制工程
         PROG_SPEC_STROEMUNGSMECHANIK_PARAM,  # 流體
         PROG_SPEC_MATH_PARAM,  # 數學
-        PROG_SPEC_FAHRZEUGTECHNIK_PARAM, # 汽車
+        PROG_SPEC_FAHRZEUGTECHNIK_PARAM,  # 汽車
         PROG_SPEC_OTHERS  # 其他
     ]
 

@@ -1,7 +1,6 @@
 import xlsxwriter
 from CourseSuggestionAlgorithms import *
 from util import *
-from database.ElectricalEngineering.EE_KEYWORDS import *
 from cell_formatter import red_out_failed_subject, red_out_insufficient_credit
 import pandas as pd
 import sys

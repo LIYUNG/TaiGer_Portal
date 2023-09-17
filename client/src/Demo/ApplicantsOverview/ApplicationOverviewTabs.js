@@ -513,7 +513,10 @@ class ApplicationOverviewTabs extends React.Component {
       <>
         <Tabs fill={true} justify={true}>
           {is_TaiGer_role(this.props.user) && (
-            <Tab eventKey="active_student_list" title="Active Student List">
+            <Tab
+              eventKey="active_student_list"
+              title={`Active Student List (${this.props.students?.length})`}
+            >
               <Row>
                 <Col>
                   <TabStudBackgroundDashboard

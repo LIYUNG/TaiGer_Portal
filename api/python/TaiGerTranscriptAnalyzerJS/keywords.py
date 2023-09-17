@@ -285,7 +285,7 @@ ALGORITHM_DATASTRUCTURE_ANTI_KEY_WORDS_EN = ['asdgladfj']
 
 # 理論資工
 THEORY_COMPUTATION_KEY_WORDS = ['計算機理論', '原理', '可計算', '計算理論']
-THEORY_COMPUTATION_ANTI_KEY_WORDS = ['asdgladfj', '經濟', '遊戲']
+THEORY_COMPUTATION_ANTI_KEY_WORDS = ['asdgladfj', '經濟', '遊戲', '憲法']
 THEORY_COMPUTATION_KEY_WORDS_EN = ['theoretical compu', '原理', 'computabili']
 THEORY_COMPUTATION_ANTI_KEY_WORDS_EN = ['asdgladfj']
 

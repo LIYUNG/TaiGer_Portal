@@ -7,7 +7,7 @@ ALL_DIFFERENTIATE_KEY_WORDS = 2
 ##############
 # 物理
 GENERAL_PHYSICS_KEY_WORDS = ['物理']
-GENERAL_PHYSICS_ANTI_KEY_WORDS = ['固態', '半導體', '元件',
+GENERAL_PHYSICS_ANTI_KEY_WORDS = ['固態', '半導體', '元件', '量子', '凝態', '核子', '天文', '分子', '原子',
                                   '實驗', '史', '服務', '冶金', '生活', '車輛', '通識', '化學']
 GENERAL_PHYSICS_KEY_WORDS_EN = ['physics']
 GENERAL_PHYSICS_ANTI_KEY_WORDS_EN = [
@@ -22,9 +22,31 @@ EE_ADVANCED_PHYSICS_ANTI_KEY_WORDS_EN = [
 
 # 物理實驗
 PHYSICS_EXP_KEY_WORDS = ['物理']
-PHYSICS_EXP_ANTI_KEY_WORDS = ['半導體', '元件', '史', '服務', '車輛', '通識', '生活']
+PHYSICS_EXP_ANTI_KEY_WORDS = ['固態', '半導體', '元件', '量子', '凝態', '核子', '天文', '分子', '原子',
+                              '史', '服務', '冶金', '生活', '車輛', '通識', '化學']
 PHYSICS_EXP_KEY_WORDS_EN = ['physics']
 PHYSICS_EXP_ANTI_KEY_WORDS_EN = ['semicondu', '元件']
+
+# 分子原子物理
+ATOM_PHYSICS_KEY_WORDS = ['分子物理', '原子物理']
+ATOM_PHYSICS_ANTI_KEY_WORDS = [
+    'asdgladfj;l']
+ATOM_PHYSICS_KEY_WORDS_EN = ['atomic physic', 'molecular physic']
+ATOM_PHYSICS_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
+
+# 凝態物理
+CONDENSED_MATTER_PHYSICS_KEY_WORDS = ['凝聚體', '凝態']
+CONDENSED_MATTER_PHYSICS_ANTI_KEY_WORDS = [
+    'asdgladfj;l']
+CONDENSED_MATTER_PHYSICS_KEY_WORDS_EN = ['condensed matter']
+CONDENSED_MATTER_PHYSICS_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
+
+# 核子物理
+NUCLEAR_PHYSICS_KEY_WORDS = ['核子物理', '核物理']
+NUCLEAR_PHYSICS_ANTI_KEY_WORDS = [
+    'asdgladfj;l']
+NUCLEAR_PHYSICS_KEY_WORDS_EN = ['nuclear physic']
+NUCLEAR_PHYSICS_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
 
 # 量子物理
 QUANTUM_PHYSICS_KEY_WORDS = ['量子物理', '量子力學']
@@ -143,7 +165,6 @@ MATH_PROB_KEY_WORDS_EN = [
 MATH_PROB_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
 
 
-
 # 線性代數
 MATH_LINEAR_ALGEBRA_KEY_WORDS = ['線性代數', '代數', '幾何']
 MATH_LINEAR_ALGEBRA_ANTI_KEY_WORDS = ['asdgladfj;l', '管理', '文明', '服務', '微積分']
@@ -229,7 +250,8 @@ PROGRAMMING_LANGUAGE_ANTI_KEY_WORDS_EN = [
 # 軟體工程
 SOFTWARE_ENGINEERING_KEY_WORDS = ['軟體', '系統設計', '軟體工程']
 SOFTWARE_ENGINEERING_ANTI_KEY_WORDS = ['asdgladfj']
-SOFTWARE_ENGINEERING_KEY_WORDS_EN = ['software', 'systems design', 'software engineering']
+SOFTWARE_ENGINEERING_KEY_WORDS_EN = [
+    'software', 'systems design', 'software engineering']
 SOFTWARE_ENGINEERING_ANTI_KEY_WORDS_EN = ['asdgladfj']
 
 # 資料庫
@@ -419,7 +441,8 @@ ELECTRONICS_ANTI_KEY_WORDS_EN = [
 
 # 電子實驗
 ELECTRONICS_EXPERIMENT_KEY_WORDS = ['電子實驗', '電子', '電工實驗']
-ELECTRONICS_EXPERIMENT_ANTI_KEY_WORDS = ['專題', '電力', '固態', '自動化', '藝術', '材料', '近代']
+ELECTRONICS_EXPERIMENT_ANTI_KEY_WORDS = [
+    '專題', '電力', '固態', '自動化', '藝術', '材料', '近代']
 ELECTRONICS_EXPERIMENT_KEY_WORDS_EN = ['lab', 'electroni']
 ELECTRONICS_EXPERIMENT_ANTI_KEY_WORDS_EN = [
     'physic', 'chemistry', 'general', '材料', 'wave', 'digital', 'mechanic']
@@ -441,7 +464,7 @@ SIGNAL_SYSTEM_ANTI_KEY_WORDS_EN = ['asdgladfj;l', '超大型', '專題']
 # 電磁
 ELECTRO_MAGNET_KEY_WORDS = ['電磁', '電動力學']
 ELECTRO_MAGNET_ANTI_KEY_WORDS = ['asdgladfj;l', '專題', '進階']
-ELECTRO_MAGNET_KEY_WORDS_EN = ['electromagne', 'magne']
+ELECTRO_MAGNET_KEY_WORDS_EN = ['electromagne', 'magne', 'electrodynami']
 ELECTRO_MAGNET_ANTI_KEY_WORDS_EN = ['asdgladfj;l', '專題', '進階']
 
 # 電力電子
@@ -591,7 +614,6 @@ THERMODYN_KEY_WORDS_EN = ['thermodyna']
 THERMODYN_ANTI_KEY_WORDS_EN = ['asdgladfj;l', 'advance']
 
 
-
 # 基礎電機電子
 ELECTRICAL_ENG_KEY_WORDS = [
     '電力電子', '電機', '電動機', '電磁', '電子', '電路', '電工', '電力']
@@ -622,10 +644,11 @@ MEASUREMENT_KEY_WORDS_EN = ['measure', 'sensor']
 MEASUREMENT_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
 
 # 車輛
-VEHICLE_ENGINEERING_KEY_WORDS = ['車輛', '煞車', '內燃機', '電驅動', '汽車', '熱機', '懸吊', '變速']
+VEHICLE_ENGINEERING_KEY_WORDS = [
+    '車輛', '煞車', '內燃機', '電驅動', '汽車', '熱機', '懸吊', '變速']
 VEHICLE_ENGINEERING_ANTI_KEY_WORDS = ['asdgladfj;l']
 VEHICLE_ENGINEERING_KEY_WORDS_EN = ['車輛', 'vehicle', 'cumbustion',
-                           '電驅動', 'automotive', '熱機', 'suspens']
+                                    '電驅動', 'automotive', '熱機', 'suspens']
 VEHICLE_ENGINEERING_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
 
 # 離散

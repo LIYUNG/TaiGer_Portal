@@ -1055,7 +1055,8 @@ const missing_academic_background = (student, user) => {
     !student.academic_background.language ||
     !student.application_preference
   ) {
-    missing_background_fields = `<p>The following fields in Survey not finished yet:</p>
+    missing_background_fields = `<p>問卷內的以下欄位尚未填寫:</p>
+    <p>The following fields in Survey not finished yet:</p>
     <ul>`;
     if (
       student.academic_background ||
@@ -1093,11 +1094,17 @@ const missing_academic_background = (student, user) => {
     }
     missing_background_fields += '</ul>';
     if (user.role === Role.Admin || user.role === Role.Agent) {
-      missing_background_fields += `<p>Please go to <a href="${SURVEY_URL_FOR_AGENT_URL(
+      missing_background_fields += `
+      <p>請至 <a href="${SURVEY_URL_FOR_AGENT_URL(
+        student._id.toString()
+      )}">Survey</a> 並<b>更新</b>.</p>
+      <p>Please go to <a href="${SURVEY_URL_FOR_AGENT_URL(
         student._id.toString()
       )}">Survey</a> and <b>update</b> them.</p>`;
     } else {
-      missing_background_fields += `<p>Please go to <a href="${STUDENT_SURVEY_URL}">Survey</a> and update them.</p>`;
+      missing_background_fields += `
+      <p>請至 <a href="${STUDENT_SURVEY_URL}">Survey</a> 並更新.</p>
+      <p>Please go to <a href="${STUDENT_SURVEY_URL}">Survey</a> and update them.</p>`;
     }
     return missing_background_fields;
   }
@@ -1498,6 +1505,7 @@ const base_documents_summary = (student) => {
       if (xx === 0) {
         xx += 1;
         missing_base_documents = `
+        <p>以下文件仍然未上傳, 請<b>盡速上傳</b>:</p>
         <p>The following base documents are still missing, please <b>upload</b> them as soon as possible:</p>
         <ul>
         <li>${profile_list[profile_keys_list[i]]}</li>`;
@@ -1511,6 +1519,7 @@ const base_documents_summary = (student) => {
       if (yy === 0) {
         yy += 1;
         rejected_base_documents = `
+        <p>以下文件仍然<b>不合格</b>, 請<b>盡速補上</b>:</p>
         <p>The following base documents are <b>not okay</b>, please <b>upload</b> them again as soon as possible:</p>
         <ul>
         <li>${profile_list[profile_keys_list[i]]}</li>`;

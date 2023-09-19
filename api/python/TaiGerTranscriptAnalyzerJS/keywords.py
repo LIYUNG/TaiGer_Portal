@@ -341,9 +341,9 @@ CS_PHY_CHEM_NS_ENG_ANTI_KEY_WORDS_EN = ['asdgladfj;l', '畢業', '社會', '人�
 
 
 # 經濟
-ECONOMICS_KEY_WORDS = ['經濟學', '經濟']
+ECONOMICS_KEY_WORDS = ['經濟學', '經濟', '財政學']
 ECONOMICS_ANTI_KEY_WORDS = ['asdgladfj;l', '計量', '日本', '循環', '永續', '綠色']
-ECONOMICS_KEY_WORDS_EN = ['economic']
+ECONOMICS_KEY_WORDS_EN = ['economic', 'finance econo']
 ECONOMICS_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
 
 # 企業
@@ -393,7 +393,7 @@ EP_RESEARCH_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
 # 金融
 FINANCE_KEY_WORDS = ['金融', '投資', '貨幣',
                      '資本市場', '財務', '期貨', '選擇權', '債券']
-FINANCE_ANTI_KEY_WORDS = ['asdgladfj;l', '專題']
+FINANCE_ANTI_KEY_WORDS = ['asdgladfj;l', '專題', '經濟']
 FINANCE_KEY_WORDS_EN = ['financ', 'stock', 'options', 'currenc', 'bond']
 FINANCE_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
 

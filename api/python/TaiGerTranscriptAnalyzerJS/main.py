@@ -8,6 +8,7 @@ from database.BiomedicalEngineering.BOE_sorter import BOE_sorter
 from database.Chemistry.CMY_sorter import CMY_sorter
 from database.ElectricalEngineering.EE_sorter import EE_sorter
 from database.ComputerScience.CS_sorter import CS_sorter
+from database.Forest.FOR_sorter import FOR_sorter
 from database.Mathematics.MATH_sorter import MATH_sorter
 from database.MechanicalEngineering.ME_sorter import ME_sorter
 from database.MaterialsScience.MTL_sorter import MTL_sorter
@@ -47,6 +48,7 @@ if __name__ == "__main__":
         'cmy': '/database/Chemistry/CMY_Programs.xlsx', # TODO
         'dsbi': '/database/DataScience_BusinessIntelligence/DSBI_Programs.xlsx',
         'ee': '/database/ElectricalEngineering/EE_Programs.xlsx',
+        'ee': '/database/Forest/FOR_Programs.xlsx',
         'math': '/database/Mathematics/MATH_Programs.xlsx', # TODO
         'me': '/database/MechanicalEngineering/ME_Programs.xlsx',
         'mgm': '/database/Management/MGM_Programs.xlsx',
@@ -83,11 +85,12 @@ if __name__ == "__main__":
         'dsbi': DSBI_sorter,
         'cmy': CMY_sorter, # TODO
         'ee': EE_sorter,
+        'for': FOR_sorter, # TODO
         'math': MATH_sorter, # TODO
         'me': ME_sorter,
         'mtl': MTL_sorter,
         'mgm': MGM_sorter,
-        'phy': PHY_sorter, # TODO
+        'phy': PHY_sorter,
         'psy': PSY_sorter,
         'te': TE_sorter
     }

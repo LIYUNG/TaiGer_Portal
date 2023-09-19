@@ -47,7 +47,7 @@
     "react-bootstrap": "^2.6.0",
     "react-bootstrap-calendar": "0.0.3",
     "react-bootstrap-icons": "^1.9.1",
-    "react-datasheet-grid": "^4.5.0",
+    "react-datasheet-grid": "^4.11.2",
     "react-datepicker": "^4.8.0",
     "react-doc-viewer": "^0.1.5",
     "react-dom": "^18.2.0",

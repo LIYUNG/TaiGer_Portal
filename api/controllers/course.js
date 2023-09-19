@@ -39,6 +39,7 @@ const getCourse = asyncHandler(async (req, res) => {
           editors: student.editors,
           archiv: student.archiv
         },
+        table_data_string_locked: false,
         table_data_string:
           '[{"course_chinese":"(Example)物理一","course_english":null,"credits":"2","grades":"73"},{"course_chinese":"(Example)微積分一","course_english":null,"credits":"2","grades":"77"},{"course_chinese":"(Example)微積分二","course_english":null,"credits":"3","grades":"88"}]',
         table_data_string_taiger_guided:
@@ -47,6 +48,16 @@ const getCourse = asyncHandler(async (req, res) => {
     });
   }
   return res.send({ success: true, data: courses });
+});
+
+const putCourse = asyncHandler(async (req, res) => {
+  const { studentId } = req.params;
+  const fields = req.body;
+  fields.updatedAt = new Date();
+  await Course.findOneAndUpdate({ student_id: studentId }, fields, {
+    new: false
+  }).populate('student_id', 'firstname lastname');
+  res.send({ success: true });
 });
 
 const createCourse = asyncHandler(async (req, res) => {
@@ -254,6 +265,7 @@ const deleteCourse = asyncHandler(async (req, res) => {
 
 module.exports = {
   getCourse,
+  putCourse,
   createCourse,
   processTranscript_test,
   downloadXLSX,

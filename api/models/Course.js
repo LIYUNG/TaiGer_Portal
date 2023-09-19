@@ -8,6 +8,7 @@ const coursesSchema = new mongoose.Schema({
   student_id: { type: ObjectId, ref: 'User' },
   name: { type: String, default: '' },
   table_data_string: { type: String, default: '' },
+  table_data_string_locked: { type: Boolean, default: false },
   table_data_string_taiger_guided: {
     type: String,
     default:

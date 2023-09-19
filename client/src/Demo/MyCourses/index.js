@@ -17,7 +17,8 @@ import {
   getMycourses,
   postMycourses,
   analyzedFileDownload_test,
-  transcriptanalyser_test
+  transcriptanalyser_test,
+  putMycourses
 } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
@@ -28,6 +29,7 @@ export default function MyCourses(props) {
     error: '',
     isLoaded: false,
     coursesdata: {},
+    table_data_string_locked: false,
     coursesdata_taiger_guided: [
       {
         course_chinese: '',
@@ -76,6 +78,7 @@ export default function MyCourses(props) {
             isLoaded: true,
             updatedAt: data.updatedAt,
             coursesdata: course_from_database,
+            table_data_string_locked: data.table_data_string_locked,
             coursesdata_taiger_guided: course_taiger_guided_from_database,
             analysis: data.analysis,
             student: data.student_id, // populated
@@ -108,6 +111,23 @@ export default function MyCourses(props) {
     }));
   };
 
+  const onChange_ReadOnly = (new_data) => {
+    setStatedata((state) => ({
+      ...state,
+      res_modal_status: 423,
+      res_modal_message: (
+        <>
+          <p>
+            <b>表格一</b>已鎖，請更新新的課程至<b>表格二</b>
+          </p>
+          <p>
+            This table is locked. Please update new courses in <b>Table 2</b>
+          </p>
+        </>
+      )
+    }));
+  };
+
   const onChange_taiger_guided = (new_data) => {
     setStatedata((state) => ({
       ...state,
@@ -131,6 +151,46 @@ export default function MyCourses(props) {
       ...state,
       analysis_language: value
     }));
+  };
+  const handleLockTable = (e) => {
+    e.preventDefault();
+    const table_data_string_locked_temp = statedata.table_data_string_locked;
+    // setStatedata((state) => ({
+    //   ...state,
+    //   table_data_string_locked: !table_data_string_locked_temp
+    // }));
+    putMycourses(statedata.student._id.toString(), {
+      table_data_string_locked: !table_data_string_locked_temp
+    }).then(
+      (resp) => {
+        const { success } = resp.data;
+        const { status } = resp;
+        if (!success) {
+          setStatedata((state) => ({
+            ...state,
+            isLoaded: true,
+            table_data_string_locked: table_data_string_locked_temp,
+            res_modal_status: status
+          }));
+        } else {
+          setStatedata((state) => ({
+            ...state,
+            table_data_string_locked: !table_data_string_locked_temp
+          }));
+        }
+      },
+      (error) => {
+        setStatedata((state) => ({
+          ...state,
+          isLoaded: true,
+          error,
+          res_modal_status: 500,
+          res_modal_message: message,
+          isUpdating: false
+        }));
+        alert('Locked Update failed. Please try it later.');
+      }
+    );
   };
 
   const onSubmit = () => {
@@ -471,13 +531,18 @@ export default function MyCourses(props) {
                 <DataSheetGrid
                   id={1}
                   height={6000}
-                  disableContextMenu={true}
+                  readOnly={true}
+                  disableContextMenu={false}
                   disableExpandSelection={false}
                   headerRowHeight={30}
                   rowHeight={25}
                   value={statedata.coursesdata}
                   autoAddRow={true}
-                  onChange={onChange}
+                  onChange={
+                    statedata.table_data_string_locked
+                      ? onChange_ReadOnly
+                      : onChange
+                  }
                   columns={columns}
                 />
               </Card>
@@ -504,14 +569,30 @@ export default function MyCourses(props) {
                   columns={columns}
                 />
               </Card>
+              <Row>
+                {is_TaiGer_AdminAgent(props.user) && (
+                  <Form>
+                    <Form.Group>
+                      <Form.Check
+                        type="checkbox"
+                        className="text-default"
+                        label={`Lock Table 1 preventing student modifying it.`}
+                        value={'is locked'}
+                        checked={statedata.table_data_string_locked}
+                        onChange={(e) => handleLockTable(e)}
+                      />
+                    </Form.Group>
+                  </Form>
+                )}
+              </Row>
               <Row className="my-2">
                 <Col>Last update at: {convertDate(statedata.updatedAt)}</Col>
               </Row>
               <Row className="mx-1">
                 {/* {showButtonIfMyStudentB(props.user, statedata.student) && ( */}
-                  <Button onClick={onSubmit} disabled={statedata.isUpdating}>
-                    {statedata.isUpdating ? 'Updating' : 'Update'}
-                  </Button>
+                <Button onClick={onSubmit} disabled={statedata.isUpdating}>
+                  {statedata.isUpdating ? 'Updating' : 'Update'}
+                </Button>
                 {/* )} */}
               </Row>
               <br></br>
@@ -538,56 +619,55 @@ export default function MyCourses(props) {
                 </Col>
               </Row>
               <br />
-              {
-                is_TaiGer_AdminAgent(props.user) && (
-                  <>
-                    <Row>
-                      <Col>
-                        <Form.Group controlId="study_group">
-                          <Form.Label>Select target group</Form.Label>
-                          <Form.Control
-                            as="select"
-                            onChange={(e) => handleChange_study_group(e)}
-                          >
-                            <option value={''}>Select Study Group</option>
-                            {study_group.map((cat, i) => (
-                              <option value={cat.key} key={i}>
-                                {cat.value}
-                              </option>
-                            ))}
-                            {/* <option value={'X'}>No</option>
+              {is_TaiGer_AdminAgent(props.user) && (
+                <>
+                  <Row>
+                    <Col>
+                      <Form.Group controlId="study_group">
+                        <Form.Label>Select target group</Form.Label>
+                        <Form.Control
+                          as="select"
+                          onChange={(e) => handleChange_study_group(e)}
+                        >
+                          <option value={''}>Select Study Group</option>
+                          {study_group.map((cat, i) => (
+                            <option value={cat.key} key={i}>
+                              {cat.value}
+                            </option>
+                          ))}
+                          {/* <option value={'X'}>No</option>
                             <option value={'O'}>Yes</option> */}
-                          </Form.Control>
-                        </Form.Group>
-                        <br />
-                        <Form.Group controlId="analysis_language">
-                          <Form.Label>Select language</Form.Label>
-                          <Form.Control
-                            as="select"
-                            onChange={(e) => handleChange_analysis_language(e)}
-                          >
-                            <option value={''}>Select Study Group</option>
-                            <option value={'zh'}>中文</option>
-                            <option value={'en'}>English (Beta Version)</option>
-                          </Form.Control>
-                        </Form.Group>
-                      </Col>
-                    </Row>
-                    <br />
-                    <Row className="mx-1">
-                      <Button
-                        onClick={onAnalyse}
-                        disabled={
-                          statedata.isAnalysing ||
-                          statedata.study_group === '' ||
-                          statedata.analysis_language === ''
-                        }
-                      >
-                        {statedata.isAnalysing ? 'Analysing' : 'Analyse'}
-                      </Button>
-                    </Row>
-                  </>
-                )}
+                        </Form.Control>
+                      </Form.Group>
+                      <br />
+                      <Form.Group controlId="analysis_language">
+                        <Form.Label>Select language</Form.Label>
+                        <Form.Control
+                          as="select"
+                          onChange={(e) => handleChange_analysis_language(e)}
+                        >
+                          <option value={''}>Select Study Group</option>
+                          <option value={'zh'}>中文</option>
+                          <option value={'en'}>English (Beta Version)</option>
+                        </Form.Control>
+                      </Form.Group>
+                    </Col>
+                  </Row>
+                  <br />
+                  <Row className="mx-1">
+                    <Button
+                      onClick={onAnalyse}
+                      disabled={
+                        statedata.isAnalysing ||
+                        statedata.study_group === '' ||
+                        statedata.analysis_language === ''
+                      }
+                    >
+                      {statedata.isAnalysing ? 'Analysing' : 'Analyse'}
+                    </Button>
+                  </Row>
+                </>
+              )}
               <Row className="my-2"></Row>
               <Row>
                 <Col>

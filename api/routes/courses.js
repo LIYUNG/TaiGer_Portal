@@ -1,7 +1,8 @@
 const { Router } = require('express');
 const {
   GeneralPOSTRequestRateLimiter,
-  GeneralGETRequestRateLimiter
+  GeneralGETRequestRateLimiter,
+  GeneralPUTRequestRateLimiter
 } = require('../middlewares/rate_limiter');
 const { filter_archiv_user } = require('../middlewares/limit_archiv_user');
 const { multitenant_filter } = require('../middlewares/multitenant-filter');
@@ -13,7 +14,8 @@ const { Role } = require('../models/User');
 
 const {
   getCourse,
-  createCourse
+  createCourse,
+  putCourse
   //   updateCourses,
 } = require('../controllers/course');
 
@@ -30,10 +32,13 @@ router
     multitenant_filter,
     InnerTaigerMultitenantFilter,
     createCourse
-  );
-
-router
-  .route('/:studentId')
+  )
+  .put(
+    GeneralPUTRequestRateLimiter,
+    prohibit(Role.Guest, Role.Editor, Role.Student),
+    multitenant_filter,
+    putCourse
+  )
   .get(
     GeneralGETRequestRateLimiter,
     prohibit(Role.Guest),

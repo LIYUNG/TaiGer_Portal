@@ -237,6 +237,8 @@ export const getMycourses = (student_id) =>
   request.get(`/api/courses/${student_id}`);
 export const postMycourses = (student_id, file) =>
   request.post(`/api/courses/${student_id}`, file);
+export const putMycourses = (student_id, locked) =>
+  request.put(`/api/courses/${student_id}`, locked);
 
 // Documentation APIs
 // Internal docs

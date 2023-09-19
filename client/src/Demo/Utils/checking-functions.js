@@ -1521,6 +1521,57 @@ export const programs_refactor = (students) => {
   return applications;
 };
 
+export const getNextProgramName = (student) => {
+  const getNextProgram = programs_refactor([student])
+    .filter(
+      (application) => application.decided === 'O' && application.closed === '-'
+    )
+    .sort((a, b) => (a.application_deadline > b.application_deadline ? 1 : -1));
+  return getNextProgram.length !== 0 ? getNextProgram[0].program : '-';
+};
+export const getNextProgramDeadline = (student) => {
+  const getNextProgram = programs_refactor([student])
+    .filter(
+      (application) => application.decided === 'O' && application.closed === '-'
+    )
+    .sort((a, b) => (a.application_deadline > b.application_deadline ? 1 : -1));
+  return getNextProgram.length !== 0
+    ? getNextProgram[0].application_deadline
+    : '-';
+};
+export const getNextProgramDayleft = (student) => {
+  const getNextProgram = programs_refactor([student])
+    .filter(
+      (application) => application.decided === 'O' && application.closed === '-'
+    )
+    .sort((a, b) => (a.application_deadline > b.application_deadline ? 1 : -1));
+  return getNextProgram.length !== 0 ? getNextProgram[0].days_left : '-';
+};
+export const getNextProgramStatus = (student) => {
+  const getNextProgram = programs_refactor([student])
+    .filter(
+      (application) => application.decided === 'O' && application.closed === '-'
+    )
+    .sort((a, b) => (a.application_deadline > b.application_deadline ? 1 : -1));
+  return getNextProgram.length !== 0 ? (
+    <span
+      className={`${
+        progressBarCounter(student, getNextProgram[0].application) < 100
+          ? progressBarCounter(student, getNextProgram[0].application) < 75
+            ? progressBarCounter(student, getNextProgram[0].application) < 30
+              ? 'text-danger' // 15 > x
+              : 'text-secondary' // 60 > x > 15
+            : 'text-warning' // 100 > x >60
+          : ''
+      }`}
+    >
+      {`${progressBarCounter(student, getNextProgram[0].application)} %`}
+    </span>
+  ) : (
+    '-'
+  );
+};
+
 export const numStudentYearDistribution = (students) => {
   const map = {};
   for (let i = 0; i < students.length; i++) {

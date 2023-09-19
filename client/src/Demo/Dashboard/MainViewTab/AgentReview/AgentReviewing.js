@@ -12,6 +12,10 @@ import {
   check_english_language_passed,
   check_german_language_passed,
   check_academic_background_filled,
+  getNextProgramName,
+  getNextProgramDeadline,
+  getNextProgramDayleft,
+  getNextProgramStatus,
   num_applications_decided,
   num_applications_submitted,
   check_all_applications_decided,
@@ -123,6 +127,19 @@ class AgentReviewing extends React.Component {
               className="text-info"
               style={{ textDecoration: 'none' }}
             >
+              {expected_application_year || <b className="text-danger">TBD</b>}
+              {'/'}
+              {expected_application_semster || (
+                <b className="text-danger">TBD</b>
+              )}
+            </Link>
+          </td>
+          <td>
+            <Link
+              to={'/student-database/' + this.props.student._id + '/profile'}
+              className="text-info"
+              style={{ textDecoration: 'none' }}
+            >
               {this.props.student.firstname}
               {' - '}
               {this.props.student.lastname}
@@ -138,18 +155,99 @@ class AgentReviewing extends React.Component {
             </Link>
           </td>
           <td>
+            {this.props.student.academic_background?.university
+              ?.high_school_isGraduated === 'Yes'
+              ? this.props.student.academic_background?.university
+                  ?.isGraduated === 'Yes'
+                ? 'Yes'
+                : 'No'
+              : 'No'}
+          </td>
+          <td>
             <Link
-              to={'/student-database/' + this.props.student._id + '/profile'}
-              className="text-info"
+              to={'/student-applications/' + this.props.student._id}
               style={{ textDecoration: 'none' }}
             >
-              {expected_application_year || <b className="text-danger">TBD</b>}
-              {'/'}
-              {expected_application_semster || (
-                <b className="text-danger">TBD</b>
+              <p className="text-warning my-0">
+                {is_all_applications_decided ? (
+                  <IoCheckmarkCircle
+                    size={24}
+                    color="limegreen"
+                    title="complete"
+                    className="my-0 mx-2"
+                  />
+                ) : (
+                  <AiFillQuestionCircle
+                    size={24}
+                    color="lightgray"
+                    title="incomplete"
+                    className="my-0 mx-2"
+                  />
+                )}
+                (
+                {num_apps_decided >
+                this.props.student.applying_program_count ? (
+                  <b>{num_apps_decided}</b>
+                ) : (
+                  num_apps_decided
+                )}
+                /{this.props.student.applying_program_count})
+              </p>
+            </Link>
+          </td>
+          <td>
+            <Link
+              to={'/student-applications/' + this.props.student._id}
+              style={{ textDecoration: 'none' }}
+            >
+              {is_All_Applications_Submitted ? (
+                <p className="text-warning my-0">
+                  {num_apps_closed >=
+                  this.props.student.applying_program_count ? (
+                    <>
+                      <IoCheckmarkCircle
+                        size={24}
+                        color="limegreen"
+                        title="complete"
+                        className="my-0 mx-2"
+                      />
+                      <b>({num_apps_closed}</b>
+                    </>
+                  ) : (
+                    <>
+                      <AiFillQuestionCircle
+                        size={24}
+                        color="lightgray"
+                        className="my-0 mx-2"
+                      />
+                      ({num_apps_closed}
+                    </>
+                  )}
+                  /{this.props.student.applying_program_count})
+                </p>
+              ) : (
+                <p className="text-warning my-0" title="incomplete">
+                  <AiFillQuestionCircle
+                    size={24}
+                    color="lightgray"
+                    className="my-0 mx-2"
+                  />
+                  (
+                  {num_apps_closed >
+                  this.props.student.applying_program_count ? (
+                    <b>{num_apps_closed}</b>
+                  ) : (
+                    num_apps_closed
+                  )}
+                  /{this.props.student.applying_program_count})
+                </p>
               )}
             </Link>
           </td>
+          <td>{getNextProgramName(this.props.student)}</td>
+          <td>{getNextProgramDeadline(this.props.student)}</td>
+          <td>{getNextProgramDayleft(this.props.student)}</td>
+          <td>{getNextProgramStatus(this.props.student)}</td>
           <td>
             <Link
               to={'/student-database/' + this.props.student._id + '/background'}
@@ -172,6 +270,32 @@ class AgentReviewing extends React.Component {
                   />
                 </p>
               )}
+            </Link>
+          </td>
+          <td>
+            <Link
+              to={'/student-database/' + this.props.student._id + '/profile'}
+              style={{ textDecoration: 'none' }}
+            >
+              <p
+                className="text-warning my-0"
+                title={isMissingBaseDocs ? 'incomplete' : 'complete'}
+              >
+                {isMissingBaseDocs ? (
+                  <AiFillQuestionCircle
+                    size={24}
+                    color="lightgray"
+                    className="my-0 mx-2"
+                  />
+                ) : (
+                  <IoCheckmarkCircle
+                    size={24}
+                    color="limegreen"
+                    className="my-0 mx-2"
+                  />
+                )}
+                {total_accepted_base_docs_needed}/{total_base_docs_needed}
+              </p>
             </Link>
           </td>
           <td>
@@ -307,32 +431,6 @@ class AgentReviewing extends React.Component {
           </td>
           <td>
             <Link
-              to={'/student-database/' + this.props.student._id + '/profile'}
-              style={{ textDecoration: 'none' }}
-            >
-              <p
-                className="text-warning my-0"
-                title={isMissingBaseDocs ? 'incomplete' : 'complete'}
-              >
-                {isMissingBaseDocs ? (
-                  <AiFillQuestionCircle
-                    size={24}
-                    color="lightgray"
-                    className="my-0 mx-2"
-                  />
-                ) : (
-                  <IoCheckmarkCircle
-                    size={24}
-                    color="limegreen"
-                    className="my-0 mx-2"
-                  />
-                )}
-                {total_accepted_base_docs_needed}/{total_base_docs_needed}
-              </p>
-            </Link>
-          </td>
-          <td>
-            <Link
               to={`${STUDENT_COURSES_LINK(this.props.student._id.toString())}`}
               className="text-light"
             >
@@ -435,87 +533,6 @@ class AgentReviewing extends React.Component {
               ) : (
                 <p className="text-warning my-0" title="Not needed">
                   <BsDash size={24} color="lightgray" className="mx-2" />
-                </p>
-              )}
-            </Link>
-          </td>
-          <td>
-            <Link
-              to={'/student-applications/' + this.props.student._id}
-              style={{ textDecoration: 'none' }}
-            >
-              <p className="text-warning my-0">
-                {is_all_applications_decided ? (
-                  <IoCheckmarkCircle
-                    size={24}
-                    color="limegreen"
-                    title="complete"
-                    className="my-0 mx-2"
-                  />
-                ) : (
-                  <AiFillQuestionCircle
-                    size={24}
-                    color="lightgray"
-                    title="incomplete"
-                    className="my-0 mx-2"
-                  />
-                )}
-                (
-                {num_apps_decided >
-                this.props.student.applying_program_count ? (
-                  <b>{num_apps_decided}</b>
-                ) : (
-                  num_apps_decided
-                )}
-                /{this.props.student.applying_program_count})
-              </p>
-            </Link>
-          </td>
-          <td>
-            <Link
-              to={'/student-applications/' + this.props.student._id}
-              style={{ textDecoration: 'none' }}
-            >
-              {is_All_Applications_Submitted ? (
-                <p className="text-warning my-0">
-                  {num_apps_closed >=
-                  this.props.student.applying_program_count ? (
-                    <>
-                      <IoCheckmarkCircle
-                        size={24}
-                        color="limegreen"
-                        title="complete"
-                        className="my-0 mx-2"
-                      />
-                      <b>({num_apps_closed}</b>
-                    </>
-                  ) : (
-                    <>
-                      <AiFillQuestionCircle
-                        size={24}
-                        color="lightgray"
-                        className="my-0 mx-2"
-                      />
-                      ({num_apps_closed}
-                    </>
-                  )}
-                  /{this.props.student.applying_program_count})
-                </p>
-              ) : (
-                <p className="text-warning my-0" title="incomplete">
-                  <AiFillQuestionCircle
-                    size={24}
-                    color="lightgray"
-                    className="my-0 mx-2"
-                  />
-                  (
-                  {num_apps_closed >
-                  this.props.student.applying_program_count ? (
-                    <b>{num_apps_closed}</b>
-                  ) : (
-                    num_apps_closed
-                  )}
-                  /{this.props.student.applying_program_count})
                 </p>
               )}
             </Link>

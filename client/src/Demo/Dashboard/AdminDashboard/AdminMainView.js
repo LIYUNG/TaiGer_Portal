@@ -78,7 +78,7 @@ class AdminMainView extends React.Component {
           <Card className="px-0 my-0 mx-0" bg={'dark'} text={'white'}>
             <Card.Header>
               <Card.Title className="my-0 mx-0 text-light">
-                Agent Reviewing
+                Student Overview
               </Card.Title>
             </Card.Header>
             <Table
@@ -92,17 +92,22 @@ class AdminMainView extends React.Component {
             >
               <thead>
                 <tr>
-                  <th>First-/Lastname,Birthday</th>
                   <th>Target Year</th>
+                  <th>First-/Lastname,Birthday</th>
+                  <th>Graduated</th>
+                  <th>Program Selection</th>
+                  <th>Applications</th>
+                  <th>Next Program to apply</th>
+                  <th>Next Program deadline</th>
+                  <th>day left</th>
+                  <th>Next Program status</th>
                   <th>Survey</th>
-                  <th>Language</th>
                   <th>Base Documents</th>
+                  <th>Language</th>
                   <th>Course Analysis</th>
                   <th>CV</th>
                   <th>Portals</th>
                   <th>Uni-Assist</th>
-                  <th>Program Selection</th>
-                  <th>Submission</th>
                 </tr>
               </thead>
               <tbody>{agent_reviewing}</tbody>

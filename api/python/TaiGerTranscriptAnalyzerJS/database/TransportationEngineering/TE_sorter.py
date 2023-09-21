@@ -15,7 +15,7 @@ def TE_sorter(program_idx, file_path, abbrev, studentId, student_name, analysis_
 
     basic_classification_en = {
         '微積分': [CALCULUS_KEY_WORDS_EN, CALCULUS_ANTI_KEY_WORDS_EN, ['一', '二']],
-        '數學': [MATH_GENERAL_KEY_WORDS_EN, MATH_GENERAL_ANTI_KEY_WORDS_EN],
+        '數學': [ME_MATH_KEY_WORDS_EN, ME_MATH_ANTI_KEY_WORDS_EN],
         '物理': [GENERAL_PHYSICS_KEY_WORDS_EN, GENERAL_PHYSICS_ANTI_KEY_WORDS_EN, ['一', '二']],
         '物理實驗': [PHYSICS_EXP_KEY_WORDS_EN, PHYSICS_EXP_ANTI_KEY_WORDS_EN, ['一', '二']],
         '資訊': [EE_INTRO_COMPUTER_SCIENCE_KEY_WORDS_EN, EE_INTRO_COMPUTER_SCIENCE_ANTI_KEY_WORDS_EN],
@@ -37,7 +37,7 @@ def TE_sorter(program_idx, file_path, abbrev, studentId, student_name, analysis_
 
     basic_classification_zh = {
         '微積分': [CALCULUS_KEY_WORDS, CALCULUS_ANTI_KEY_WORDS, ['一', '二']],
-        '數學': [MATH_GENERAL_KEY_WORDS, MATH_GENERAL_ANTI_KEY_WORDS],
+        '數學': [ME_MATH_KEY_WORDS, ME_MATH_ANTI_KEY_WORDS],
         '物理': [GENERAL_PHYSICS_KEY_WORDS, GENERAL_PHYSICS_ANTI_KEY_WORDS, ['一', '二']],
         '物理實驗': [PHYSICS_EXP_KEY_WORDS, PHYSICS_EXP_ANTI_KEY_WORDS, ['一', '二']],
         '資訊': [EE_INTRO_COMPUTER_SCIENCE_KEY_WORDS, EE_INTRO_COMPUTER_SCIENCE_ANTI_KEY_WORDS],

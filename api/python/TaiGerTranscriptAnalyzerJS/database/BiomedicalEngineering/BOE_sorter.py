@@ -14,7 +14,7 @@ env_file_path = os.path.dirname(env_file_path)
 def BOE_sorter(program_idx, file_path, abbrev, studentId, student_name, analysis_language):
     basic_classification_en = {
         '線性代數': [MATH_LINEAR_ALGEBRA_KEY_WORDS_EN, MATH_LINEAR_ALGEBRA_ANTI_KEY_WORDS_EN],
-        '數值分析': [BOE_MATH_NUM_METHOD_KEY_WORDS_EN, BOE_MATH_NUM_METHOD_ANTI_KEY_WORDS_EN],
+        '數值分析': [MATH_NUM_METHOD_KEY_WORDS_EN, MATH_NUM_METHOD_ANTI_KEY_WORDS_EN],
         '微積分': [CALCULUS_KEY_WORDS_EN, CALCULUS_ANTI_KEY_WORDS_EN, ['一', '二']],
         '普通化學': [BOE_GENERAL_CHEMISTRY_KEY_WORDS_EN, BOE_GENERAL_CHEMISTRY_ANTI_KEY_WORDS_EN],
         '有機化學': [ORGANIC_CHEMISTRY_KEY_WORDS_EN, ORGANIC_CHEMISTRY_ANTI_KEY_WORDS_EN],
@@ -39,7 +39,7 @@ def BOE_sorter(program_idx, file_path, abbrev, studentId, student_name, analysis
 
     basic_classification_zh = {
         '線性代數': [MATH_LINEAR_ALGEBRA_KEY_WORDS, MATH_LINEAR_ALGEBRA_ANTI_KEY_WORDS],
-        '數值分析': [BOE_MATH_NUM_METHOD_KEY_WORDS, BOE_MATH_NUM_METHOD_ANTI_KEY_WORDS],
+        '數值分析': [MATH_NUM_METHOD_KEY_WORDS, MATH_NUM_METHOD_ANTI_KEY_WORDS],
         '微積分': [CALCULUS_KEY_WORDS, CALCULUS_ANTI_KEY_WORDS, ['一', '二']],
         '普通化學': [BOE_GENERAL_CHEMISTRY_KEY_WORDS, BOE_GENERAL_CHEMISTRY_ANTI_KEY_WORDS],
         '有機化學': [ORGANIC_CHEMISTRY_KEY_WORDS, ORGANIC_CHEMISTRY_ANTI_KEY_WORDS],

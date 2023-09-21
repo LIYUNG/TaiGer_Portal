@@ -48,7 +48,7 @@ if __name__ == "__main__":
         'cmy': '/database/Chemistry/CMY_Programs.xlsx', # TODO
         'dsbi': '/database/DataScience_BusinessIntelligence/DSBI_Programs.xlsx',
         'ee': '/database/ElectricalEngineering/EE_Programs.xlsx',
-        'ee': '/database/Forest/FOR_Programs.xlsx',
+        'for': '/database/Forest/FOR_Programs.xlsx',
         'math': '/database/Mathematics/MATH_Programs.xlsx', # TODO
         'me': '/database/MechanicalEngineering/ME_Programs.xlsx',
         'mgm': '/database/Management/MGM_Programs.xlsx',

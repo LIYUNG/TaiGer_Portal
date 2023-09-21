@@ -125,39 +125,23 @@ CALCULUS_KEY_WORDS_EN = ['calculus', 'vector analy']
 CALCULUS_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
 
 # 工程數學
-MATH_GENERAL_KEY_WORDS = ['數學']
-MATH_GENERAL_ANTI_KEY_WORDS = ['asdgladfj;l', '管理', '文明', '服務']
-MATH_GENERAL_KEY_WORDS_EN = ['math']
-MATH_GENERAL_ANTI_KEY_WORDS_EN = ['asdgladfj;l', '管理', '文明', '服務']
-
-ME_MATH_KEY_WORDS = ['數學', '代數', '函數', '機率', '離散', '複變', '數值', '向量']
+ME_MATH_KEY_WORDS = ['數學', '微分', '代數', '函數', '機率', '離散', '複變', '數值', '向量']
 ME_MATH_ANTI_KEY_WORDS = ['asdgladfj;l']
 ME_MATH_KEY_WORDS_EN = ['math', 'linear algebra', 'differential', '函數', 'finite element',
                         'probability', 'discrete', 'complex', 'numerical', 'vector analy']
 ME_MATH_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
-
-MTL_MATH_KEY_WORDS = ['數學', '微分', '函數', '機率', '複變', '向量', '幾何']
-MTL_MATH_ANTI_KEY_WORDS = ['asdgladfj;l', '離散']
-MTL_MATH_KEY_WORDS_EN = ['math', 'linear algebra', 'differential', '函數',
-                         'probability', 'discrete', 'complex', 'numerical', 'vector analy']
-MTL_MATH_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
 
 DSBI_MATH_KEY_WORDS = ['離散', '微分', '機率', '數學', '數值', '複變']
 DSBI_MATH_ANTI_KEY_WORDS = ['asdgladfj;l', '服務', '文明', '通識', '認識']
 DSBI_MATH_KEY_WORDS_EN = ['mathematic', 'equation', 'probability']
 DSBI_MATH_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
 
-BOE_MATH_NUM_METHOD_KEY_WORDS = ['數值方法', '數值', '離散', '工程數學', 'Matlab']
-BOE_MATH_NUM_METHOD_ANTI_KEY_WORDS = [
-    'asdgladfj;l', '管理', '文明', '服務', '微積分', '認識']
-BOE_MATH_NUM_METHOD_KEY_WORDS_EN = ['numerical', 'discrete', 'matlab', '']
-BOE_MATH_NUM_METHOD_ANTI_KEY_WORDS_EN = ['asdgladfj;l', '管理', '文明', '服務']
-
 MGM_MATH_KEY_WORDS = ['線性代數', '離散', '微分', '機率', '數學']
 MGM_MATH_ANTI_KEY_WORDS = ['asdgladfj;l', '通識']
 MGM_MATH_KEY_WORDS_EN = ['linear algebra', 'discrete math']
 MGM_MATH_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
 
+# 機率
 MATH_PROB_KEY_WORDS = ['機率', '統計', '隨機']
 MATH_PROB_ANTI_KEY_WORDS = ['asdgladfj;l', '學習', '管理']
 MATH_PROB_KEY_WORDS_EN = [
@@ -318,11 +302,6 @@ CS_BA_BI_ENG_ANTI_KEY_WORDS = ['asdgladfj;l', '畢業', '社會', '人力']
 CS_BA_BI_ENG_KEY_WORDS_EN = ['語音',  '分散式']
 CS_BA_BI_ENG_ANTI_KEY_WORDS_EN = ['asdgladfj;l', '畢業', '社會', '人力']
 
-# 機率
-PROBABILITY_KEY_WORDS = ['機率', '統計', '隨機']
-PROBABILITY_ANTI_KEY_WORDS = ['asdgladfj;l', '學習', '管理']
-PROBABILITY_KEY_WORDS_EN = ['probability', 'statistic', 'random', 'stochasti']
-PROBABILITY_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
 
 # 進階資工
 ADVANCED_COMPUTER_SCIENCE_KEY_WORDS = ['語音', '推薦', '機器學習', '通訊原理', '自然語言', '高等', '網頁', '視窗',

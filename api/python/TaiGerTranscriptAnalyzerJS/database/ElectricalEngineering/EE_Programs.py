@@ -9,7 +9,7 @@ import sys
 column_len_array = []
 
 
-def TUM_EI(transcript_sorted_group_map, df_transcript_array, writer):
+def TUM_EI(transcript_sorted_group_map, df_transcript_array, df_category_courses_sugesstion_data, writer):
     print("Create TUM EI sheet")
     # TODO: implement the mapping from the existing courses to program's requirement
     start_row = 0

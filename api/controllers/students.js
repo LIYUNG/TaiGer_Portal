@@ -112,11 +112,50 @@ const updateDocumentationHelperLink = asyncHandler(async (req, res) => {
   res.status(200).send({ success: true, helper_link: updated_helper_link });
 });
 
+const getAllArchivStudents = asyncHandler(async (req, res) => {
+  const students = await Student.find({ archiv: true })
+    .populate('agents editors', 'firstname lastname email')
+    .populate('applications.programId')
+    .populate(
+      'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
+      '-messages'
+    )
+    .select(
+      '-notification +applications.portal_credentials.application_portal_a.account +applications.portal_credentials.application_portal_a.password +applications.portal_credentials.application_portal_b.account +applications.portal_credentials.application_portal_b.password'
+    )
+    .lean();
+
+  res.status(200).send({ success: true, data: students });
+});
+
+const getAllActiveStudents = asyncHandler(async (req, res) => {
+  const students = await Student.find({
+    $or: [{ archiv: { $exists: false } }, { archiv: false }]
+  })
+    .populate('agents editors', 'firstname lastname email')
+    .populate('applications.programId')
+    .populate(
+      'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
+      '-messages'
+    )
+    .select(
+      '-notification +applications.portal_credentials.application_portal_a.account +applications.portal_credentials.application_portal_a.password +applications.portal_credentials.application_portal_b.account +applications.portal_credentials.application_portal_b.password'
+    )
+    .lean();
+
+  res.status(200).send({ success: true, data: students });
+});
+
 const getAllStudents = asyncHandler(async (req, res) => {
   const students = await Student.find()
-    .populate('agents editors', 'firstname lastname')
+    .populate('agents editors', 'firstname lastname email')
+    .populate('applications.programId')
+    .populate(
+      'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
+      '-messages'
+    )
     .select(
-      'firstname lastname firstname_chinese lastname_chinese academic_background email archiv application_preference'
+      '-notification +applications.portal_credentials.application_portal_a.account +applications.portal_credentials.application_portal_a.password +applications.portal_credentials.application_portal_b.account +applications.portal_credentials.application_portal_b.password'
     )
     .lean();
 
@@ -1013,6 +1052,8 @@ module.exports = {
   getStudent,
   getStudentAndDocLinks,
   updateDocumentationHelperLink,
+  getAllArchivStudents,
+  getAllActiveStudents,
   getAllStudents,
   getStudents,
   getStudentsAndDocLinks,

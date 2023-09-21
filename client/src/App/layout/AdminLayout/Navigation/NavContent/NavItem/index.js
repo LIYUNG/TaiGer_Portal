@@ -16,6 +16,7 @@ class NavItem extends Component {
         itemTitle === 'My Courses' ||
         itemTitle === 'My Survey' ||
         itemTitle === 'Portals Management' ||
+        itemTitle === 'Applications Overview' ||
         itemTitle === 'Uni-Assist Tasks' ||
         itemTitle === 'My Tasks Overview' ||
         itemTitle === 'Charts' ||
@@ -28,12 +29,14 @@ class NavItem extends Component {
       }
       return true;
     }
-    if (this.props.role === 'Agent') {
+
+    if (this.props.role === 'Agent' || this.props.role === 'Editor') {
       if (
         itemTitle === 'My Courses' ||
         itemTitle === 'My Survey' ||
         itemTitle === 'Tasks Overview' ||
         itemTitle === 'Portals Management' ||
+        itemTitle === 'Applications Overview' ||
         itemTitle === 'Uni-Assist Tasks' ||
         itemTitle === 'My Tasks Overview' ||
         itemTitle === 'Statistics' ||
@@ -46,25 +49,7 @@ class NavItem extends Component {
       }
       return true;
     }
-    if (this.props.role === 'Editor') {
-      if (
-        itemTitle === 'My Courses' ||
-        itemTitle === 'My Survey' ||
-        itemTitle === 'Tasks Overview' ||
-        itemTitle === 'Portals Management' ||
-        itemTitle === 'Uni-Assist Tasks' ||
-        itemTitle === 'My Tasks Overview' ||
-        itemTitle === 'Program List' ||
-        itemTitle === 'Statistics' ||
-        itemTitle === 'Charts' ||
-        itemTitle === 'Map' ||
-        itemTitle === 'User List' ||
-        itemTitle === 'Contact Us'
-      ) {
-        return false;
-      }
-      return true;
-    }
+
     if (this.props.role === 'Student') {
       if (
         itemTitle === 'Tasks Overview' ||

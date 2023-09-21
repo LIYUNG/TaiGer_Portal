@@ -14,6 +14,46 @@ export default {
           icon: 'feather icon-home'
         },
         {
+          id: 'my-students',
+          title: 'My Students',
+          type: 'collapse',
+          icon: 'feather icon-users',
+          children: [
+            {
+              id: 'my-students-application-overview',
+              title: 'Application Overview',
+              type: 'item',
+              url: '/student-applications',
+              icon: 'feather icon-book',
+              target: false,
+              breadcrumbs: false
+            },
+            {
+              id: 'base_documents',
+              title: 'Base Documents',
+              type: 'item',
+              url: '/base-documents',
+              classes: 'nav-item',
+              icon: 'feather icon-eye'
+            },
+            {
+              id: 'editor_center',
+              title: 'CV/ML/RL Center',
+              type: 'item',
+              url: '/cv-ml-rl-center',
+              classes: 'nav-item',
+              icon: 'feather icon-edit-1'
+            },
+            {
+              id: 'archiv-student',
+              title: 'Archiv Students',
+              type: 'item',
+              icon: 'feather icon-users',
+              url: '/archiv/students'
+            }
+          ]
+        },
+        {
           id: 'basic',
           title: 'Component',
           type: 'collapse',
@@ -136,22 +176,6 @@ export default {
           ]
         },
         {
-          id: 'base_documents',
-          title: 'Base Documents',
-          type: 'item',
-          url: '/base-documents',
-          classes: 'nav-item',
-          icon: 'feather icon-eye'
-        },
-        {
-          id: 'editor_center',
-          title: 'CV/ML/RL Center',
-          type: 'item',
-          url: '/cv-ml-rl-center',
-          classes: 'nav-item',
-          icon: 'feather icon-edit-1'
-        },
-        {
           id: 'students_tasks_overview',
           title: 'Tasks Overview',
           type: 'item',
@@ -181,13 +205,7 @@ export default {
           icon: 'feather icon-list',
           url: '/programs'
         },
-        {
-          id: 'interview-training',
-          title: 'Interview Training',
-          type: 'item',
-          icon: 'feather icon-briefcase',
-          url: '/interview-training'
-        },
+
         {
           id: 'statistics',
           title: 'Statistics',
@@ -195,13 +213,6 @@ export default {
           icon: 'feather icon-bar-chart-2',
           url: '/statistics'
         },
-        // {
-        //   id: 'charts',
-        //   title: 'Charts',
-        //   type: 'item',
-        //   icon: 'feather icon-pie-chart',
-        //   url: '/charts/nvd3'
-        // },
         {
           id: 'maps',
           title: 'Map',
@@ -209,156 +220,75 @@ export default {
           icon: 'feather icon-map',
           url: '/maps/google-map'
         },
+
+        // {
+        //   id: 'learning-resources',
+        //   title: 'Learning Resources',
+        //   type: 'item',
+        //   icon: 'feather icon-book',
+        //   url: '/resources'
+        // },
+
         {
-          id: 'download',
-          title: 'Download Center',
-          type: 'item',
-          url: '/download',
-          classes: 'nav-item',
-          icon: 'feather icon-download'
-        },
-        {
-          id: 'learning-resources',
-          title: 'Learning Resources',
-          type: 'item',
-          icon: 'feather icon-book',
-          url: '/resources'
-        },
-        {
-          id: 'admissions_overview',
-          title: 'TaiGer Admissions',
-          type: 'item',
-          icon: 'feather icon-award',
-          url: '/admissions-overview'
-        },
-        {
-          id: 'archiv-student',
-          title: 'Archiv Students',
-          type: 'item',
+          id: 'all-students',
+          title: 'All Students',
+          type: 'collapse',
           icon: 'feather icon-users',
-          url: '/archiv/students'
-        },
-        {
-          id: 'docs',
-          title: 'Documentation',
-          type: 'collapse',
-          classes: 'nav-item',
-          icon: 'feather icon-help-circle',
           children: [
             {
-              id: 'howtostart',
-              title: 'How to Start',
+              id: 'all-application-overview',
+              title: 'All Application Overview',
               type: 'item',
-              url: '/docs/howtostart',
-              icon: 'feather icon-help-circle',
-              target: false,
-              breadcrumbs: false
+              url: '/all-students-applications',
+              classes: 'nav-item',
+              icon: 'fa fa-university'
             },
             {
-              id: 'base-documents',
-              title: 'Base Documents',
+              id: 'tasks_dashboard',
+              title: 'Tasks Dashboard',
               type: 'item',
-              url: '/docs/base-documents',
-              icon: 'feather icon-help-circle',
-              target: false,
-              breadcrumbs: false
+              url: '/dashboard/cv-ml-rl',
+              classes: 'nav-item',
+              icon: 'feather icon-edit-1'
             },
             {
-              id: 'cv-ml-rl',
-              title: 'CV/ML/RL',
+              id: 'all-students-application-overview',
+              title: 'Student Overview',
               type: 'item',
-              url: '/docs/cv-ml-rl',
-              icon: 'feather icon-help-circle',
-              target: false,
-              breadcrumbs: false
-            },
-            // {
-            //   id: 'doc-application',
-            //   title: 'Application',
-            //   type: 'item',
-            //   url: '/docs/application',
-            //   target: false,
-            //   breadcrumbs: false
-            // },
-            // {
-            //   id: 'doc-certification',
-            //   title: 'Certification',
-            //   type: 'item',
-            //   url: '/docs/certification',
-            //   target: false,
-            //   breadcrumbs: false
-            // },
-            {
-              id: 'doc-uniassist',
-              title: 'Uni-Assist',
-              type: 'item',
-              url: '/docs/uniassist',
-              icon: 'feather icon-help-circle',
-              target: false,
-              breadcrumbs: false
+              url: '/students-overview',
+              classes: 'nav-item',
+              icon: 'fa fa-users'
             },
             {
-              id: 'visa',
-              title: 'Visa',
+              id: 'internal_program_conflict',
+              title: 'Program Conflict',
               type: 'item',
-              url: '/docs/visa',
-              icon: 'feather icon-book',
-              target: false,
-              breadcrumbs: false
+              icon: 'feather icon-package',
+              url: '/internal/program-conflict'
             },
             {
-              id: 'internal-docs',
-              title: 'Internal Docs',
+              id: 'admissions_overview',
+              title: 'TaiGer Admissions',
               type: 'item',
-              url: '/docs/taiger/internal',
-              icon: 'feather icon-help-circle',
-              target: false,
-              breadcrumbs: false
+              icon: 'feather icon-award',
+              url: '/admissions-overview'
+            },
+            {
+              id: 'archiv-student',
+              title: 'Archiv Students',
+              type: 'item',
+              icon: 'feather icon-users',
+              url: '/archiv/students/all'
+            },
+            {
+              id: 'prev_students_database',
+              title: 'Student Database',
+              type: 'item',
+              url: '/student-database',
+              classes: 'nav-item',
+              icon: 'feather icon-cloud'
             }
           ]
-        },
-        {
-          id: 'internal_backend',
-          title: 'Docs Database',
-          type: 'collapse',
-          classes: 'nav-item',
-          icon: 'feather icon-codepen',
-          children: [
-            {
-              id: 'documents-creation',
-              title: 'Docs Database',
-              type: 'item',
-              url: '/internal/database/public-docs',
-              icon: 'feather icon-help-circle',
-              target: false,
-              breadcrumbs: false
-            },
-            {
-              id: 'internal-documents-creation',
-              title: 'Internal Docs Database',
-              type: 'item',
-              url: '/internal/database/internal-docs',
-              icon: 'feather icon-help-circle',
-              target: false,
-              breadcrumbs: false
-            }
-          ]
-        },
-        {
-          id: 'prev_students_database',
-          title: 'Student Database',
-          type: 'item',
-          url: '/student-database',
-          classes: 'nav-item',
-          icon: 'feather icon-cloud'
-        },
-        {
-          id: 'tasks_dashboard',
-          title: 'Tasks Dashboard',
-          type: 'item',
-          url: '/dashboard/cv-ml-rl',
-          classes: 'nav-item',
-          icon: 'feather icon-edit-1'
         },
         {
           id: 'taiger_widgets',
@@ -392,14 +322,21 @@ export default {
           title: 'TaiGer Teams',
           type: 'collapse',
           classes: 'nav-item',
-          icon: 'feather icon-menu',
+          icon: 'fa fa-coffee',
           children: [
+            {
+              id: 'teams_member_permission',
+              title: 'Permissions',
+              type: 'item',
+              icon: 'fa fa-key',
+              url: '/teams/permissions'
+            },
             {
               id: 'teams_member',
               title: 'TaiGer Teams',
               type: 'item',
-              icon: 'feather icon-star',
-              url: '/teams'
+              icon: 'fa fa-user',
+              url: '/teams/members'
             },
             {
               id: 'internal_dashboard',
@@ -408,18 +345,12 @@ export default {
               icon: 'feather icon-target',
               url: '/dashboard/internal'
             },
-            {
-              id: 'internal_program_conflict',
-              title: 'Program Conflict',
-              type: 'item',
-              icon: 'feather icon-package',
-              url: '/internal/program-conflict'
-            },
+
             {
               id: 'internal_accounting',
               title: 'TaiGer Accounting',
               type: 'item',
-              icon: 'fa fa-dollar',
+              icon: 'fa fa-euro',
               url: '/internal/accounting'
             }
           ]
@@ -458,7 +389,112 @@ export default {
               ]
             }
           ]
+        },
+        {
+          id: 'internal_backend',
+          title: 'Docs Database',
+          type: 'collapse',
+          classes: 'nav-item',
+          icon: 'feather icon-codepen',
+          children: [
+            {
+              id: 'documents-creation',
+              title: 'Docs Database',
+              type: 'item',
+              url: '/internal/database/public-docs',
+              icon: 'feather icon-help-circle',
+              target: false,
+              breadcrumbs: false
+            },
+            {
+              id: 'internal-documents-creation',
+              title: 'Internal Docs Database',
+              type: 'item',
+              url: '/internal/database/internal-docs',
+              icon: 'feather icon-help-circle',
+              target: false,
+              breadcrumbs: false
+            }
+          ]
+        },
+        {
+          id: 'docs',
+          title: 'Documentation',
+          type: 'collapse',
+          classes: 'nav-item',
+          icon: 'feather icon-help-circle',
+          children: [
+            {
+              id: 'howtostart',
+              title: 'How to Start',
+              type: 'item',
+              url: '/docs/howtostart',
+              icon: 'feather icon-help-circle',
+              target: false,
+              breadcrumbs: false
+            },
+            {
+              id: 'base-documents',
+              title: 'Base Documents',
+              type: 'item',
+              url: '/docs/base-documents',
+              icon: 'feather icon-help-circle',
+              target: false,
+              breadcrumbs: false
+            },
+            {
+              id: 'cv-ml-rl',
+              title: 'CV/ML/RL',
+              type: 'item',
+              url: '/docs/cv-ml-rl',
+              icon: 'feather icon-help-circle',
+              target: false,
+              breadcrumbs: false
+            },
+            {
+              id: 'doc-uniassist',
+              title: 'Uni-Assist',
+              type: 'item',
+              url: '/docs/uniassist',
+              icon: 'feather icon-help-circle',
+              target: false,
+              breadcrumbs: false
+            },
+            {
+              id: 'visa',
+              title: 'Visa',
+              type: 'item',
+              url: '/docs/visa',
+              icon: 'feather icon-book',
+              target: false,
+              breadcrumbs: false
+            },
+            {
+              id: 'internal-docs',
+              title: 'Internal Docs',
+              type: 'item',
+              url: '/docs/taiger/internal',
+              icon: 'feather icon-help-circle',
+              target: false,
+              breadcrumbs: false
+            }
+          ]
+        },
+        {
+          id: 'download',
+          title: 'Download Center',
+          type: 'item',
+          url: '/download',
+          classes: 'nav-item',
+          icon: 'feather icon-download'
         }
+        // {
+        //   id: 'interview-training',
+        //   title: 'Interview Training',
+        //   type: 'item',
+        //   icon: 'feather icon-briefcase',
+        //   url: '/interview-training'
+        // }
         // {
         //   id: "disabled-menu",
         //   title: "Disabled Menu",
@@ -483,12 +519,5 @@ export default {
         // },
       ]
     }
-    // {
-    //   id: 'taiger_internal_sidebar',
-    //   title: 'Taiger Internal',
-    //   type: 'group',
-    //   icon: 'icon-navigation',
-    //   children: []
-    // }
   ]
 };

@@ -30,7 +30,7 @@ router
   .get(
     filter_archiv_user,
     GetProgramListRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
     getPrograms
   )
   .post(

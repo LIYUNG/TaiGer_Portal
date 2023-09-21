@@ -7,6 +7,7 @@ global.jQuery = $;
 
 const DashboardDefault = React.lazy(() => import('./Demo/Dashboard/Dashboard'));
 
+const AllArchivStudent = React.lazy(() => import('./Demo/ArchivStudent/AllIndex'));
 const ArchivStudent = React.lazy(() => import('./Demo/ArchivStudent/index'));
 
 const CommunicationSinglePage = React.lazy(() =>
@@ -30,6 +31,12 @@ const CVMLRLOverview = React.lazy(() => import('./Demo/CVMLRLCenter/index'));
 const CVMLRLDashboard = React.lazy(() =>
   import('./Demo/CVMLRLCenter/indexAll')
 );
+const AllApplicantsOverview = React.lazy(() =>
+  import('./Demo/ApplicantsOverview/allStudentIndex')
+);
+const StudentOverviewPage = React.lazy(() =>
+  import('./Demo/StudentOverview/index')
+);
 const InternalDashboard = React.lazy(() =>
   import('./Demo/TaiGerOrg/InternalDashboard/index')
 );
@@ -40,7 +47,8 @@ const SingleBalanceSheetOverview = React.lazy(() =>
 const ProgramConflict = React.lazy(() =>
   import('./Demo/TaiGerOrg/ProgramConflict/index')
 );
-const TaiGerOrg = React.lazy(() => import('./Demo/TaiGerOrg/index'));
+const TaiGerPermissions = React.lazy(() => import('./Demo/TaiGerOrg/index'));
+const TaiGerOrg = React.lazy(() => import('./Demo/TaiGerOrg/TaiGerMember/index'));
 const TaiGerOrgAgent = React.lazy(() => import('./Demo/TaiGerOrg/AgentPage'));
 const TaiGerMemberProfile = React.lazy(() =>
   import('./Demo/TaiGerPublicProfile/AgentProfile')
@@ -145,6 +153,12 @@ const routes = [
     exact: true,
     name: 'Archiv Students',
     component: ArchivStudent
+  },
+  {
+    path: '/archiv/students/all',
+    exact: true,
+    name: 'Archiv Students',
+    component: AllArchivStudent
   },
   {
     path: '/programs/:programId',
@@ -363,7 +377,13 @@ const routes = [
     component: Survey
   },
   {
-    path: '/teams',
+    path: '/teams/permissions',
+    exact: true,
+    name: '',
+    component: TaiGerPermissions
+  },
+  {
+    path: '/teams/members',
     exact: true,
     name: '',
     component: TaiGerOrg
@@ -373,6 +393,18 @@ const routes = [
     exact: true,
     name: '',
     component: InternalDashboard
+  },
+  {
+    path: '/all-students-applications',
+    exact: true,
+    name: '',
+    component: AllApplicantsOverview
+  },
+  {
+    path: '/students-overview',
+    exact: true,
+    name: '',
+    component: StudentOverviewPage
   },
   {
     path: '/internal/program-conflict',

@@ -15,19 +15,14 @@ import ModalMain from '../Utils/ModalHandler/ModalMain';
 import { Role, spinner_style } from '../Utils/contants';
 
 import { Button, Modal, Table, Row, Col, Spinner, Card } from 'react-bootstrap';
-import {
-  getPrograms,
-  // createProgram,
-  // deleteProgram,
-  assignProgramToStudent,
-  createProgram
-} from '../../api';
+import { getPrograms, assignProgramToStudent, createProgram } from '../../api';
 // A great library for fuzzy filtering/sorting items
 import { matchSorter } from 'match-sorter';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import ProgramListSingleStudentAssignSubpage from './ProgramListSingleStudentAssignSubpage';
 import NewProgramEdit from './NewProgramEdit';
+import { is_TaiGer_role } from '../Utils/checking-functions';
 
 // Define a default UI for filtering
 function GlobalFilter({
@@ -544,7 +539,7 @@ function ProgramList(props) {
   let [studentId, setStudentId] = useState('');
   let [isCreationMode, setIsCreationMode] = useState(false);
 
-  if (props.user.role !== Role.Admin && props.user.role !== Role.Agent) {
+  if (!is_TaiGer_role(props.user)) {
     return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
   }
   TabTitle('Program List');

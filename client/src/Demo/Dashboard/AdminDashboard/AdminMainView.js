@@ -2,10 +2,10 @@ import React from 'react';
 import { Row, Card, Table } from 'react-bootstrap';
 import { BsExclamationTriangle } from 'react-icons/bs';
 
-import AgentReviewing from '../MainViewTab/AgentReview/AgentReviewing';
 import StudentsAgentEditor from '../MainViewTab/StudentsAgentEditor/StudentsAgentEditor';
 import AdminTasks from '../MainViewTab/AdminTasks/index';
 import { academic_background_header } from '../../Utils/contants';
+import StudentOverviewTable from '../../../components/StudentOverviewTable';
 
 class AdminMainView extends React.Component {
   render() {
@@ -37,9 +37,6 @@ class AdminMainView extends React.Component {
         />
       ));
 
-    const agent_reviewing = this.props.students.map((student, i) => (
-      <AgentReviewing key={i} role={this.props.user.role} student={student} />
-    ));
     const admin_tasks = (
       <AdminTasks role={this.props.user.role} students={this.props.students} />
     );
@@ -75,7 +72,12 @@ class AdminMainView extends React.Component {
           </Card>
         </Row>
         <Row className="px-0 mb-2 my-2">
-          <Card className="px-0 my-0 mx-0" bg={'dark'} text={'white'}>
+          <StudentOverviewTable
+            students={this.props.students}
+            user={this.props.user}
+            title="Student Overview"
+          />
+          {/* <Card className="px-0 my-0 mx-0" bg={'dark'} text={'white'}>
             <Card.Header>
               <Card.Title className="my-0 mx-0 text-light">
                 Student Overview
@@ -112,7 +114,7 @@ class AdminMainView extends React.Component {
               </thead>
               <tbody>{agent_reviewing}</tbody>
             </Table>
-          </Card>
+          </Card> */}
         </Row>
         <Row>
           <Table

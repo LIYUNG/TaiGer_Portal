@@ -26,8 +26,8 @@ class NavCollapse extends Component {
       if (this.props.user.role === 'Admin') {
         if (
           collapse.title === 'Component' ||
+          collapse.title === 'My Students' ||
           collapse.title === 'Applications Overview' ||
-          // collapse.title === 'Documentation' ||
           collapse.title === 'Menu Levels'
         ) {
           return false;
@@ -39,7 +39,6 @@ class NavCollapse extends Component {
           collapse.title === 'Component' ||
           collapse.title === 'Applications Overview' ||
           collapse.title === 'Tools' ||
-          // collapse.title === 'Documentation' ||
           collapse.title === 'Menu Levels'
         ) {
           return false;
@@ -51,7 +50,6 @@ class NavCollapse extends Component {
           collapse.title === 'Component' ||
           collapse.title === 'Applications Overview' ||
           collapse.title === 'Tools' ||
-          // collapse.title === 'Documentation' ||
           collapse.title === 'Menu Levels'
         ) {
           return false;
@@ -63,7 +61,8 @@ class NavCollapse extends Component {
           collapse.title === 'Component' ||
           collapse.title === 'Docs Database' ||
           collapse.title === 'Tools' ||
-          // collapse.title === 'Documentation' ||
+          collapse.title === 'My Students' ||
+          collapse.title === 'All Students' ||
           collapse.title === 'Menu Levels' ||
           collapse.title === 'TaiGer Teams'
         ) {
@@ -76,6 +75,8 @@ class NavCollapse extends Component {
           collapse.title === 'Component' ||
           collapse.title === 'Docs Database' ||
           collapse.title === 'Tools' ||
+          collapse.title === 'My Students' ||
+          collapse.title === 'All Students' ||
           collapse.title === 'Documentation' ||
           collapse.title === 'Menu Levels' ||
           collapse.title === 'TaiGer Teams'

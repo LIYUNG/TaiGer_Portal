@@ -30,7 +30,9 @@ const {
   assignEditorToStudent,
   createApplication,
   ToggleProgramStatus,
-  deleteApplication
+  deleteApplication,
+  getAllActiveStudents,
+  getAllArchivStudents
 } = require('../controllers/students');
 const {
   saveProfileFilePath,
@@ -70,11 +72,31 @@ router
   );
 
 router
+  .route('/all/archiv')
+  .get(
+    filter_archiv_user,
+    GeneralGETRequestRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
+    permission_canAccessStudentDatabase_filter,
+    getAllArchivStudents
+  );
+
+router
+  .route('/all/active')
+  .get(
+    filter_archiv_user,
+    GeneralGETRequestRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
+    permission_canAccessStudentDatabase_filter,
+    getAllActiveStudents
+  );
+
+router
   .route('/all')
   .get(
     filter_archiv_user,
     GeneralGETRequestRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
     permission_canAccessStudentDatabase_filter,
     getAllStudents
   );

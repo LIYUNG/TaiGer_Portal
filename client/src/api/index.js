@@ -50,6 +50,12 @@ export const getStudents = () => request.get(`/api/students`);
 
 export const getAllStudents = () => request.get(`/api/students/all`);
 
+export const getAllActiveStudents = () =>
+  request.get(`/api/students/all/active`);
+
+export const getAllArchivedStudents = () =>
+  request.get(`/api/students/all/archiv`);
+
 export const getAdmissions = () => request.get(`/api/admissions`);
 
 export const getExpenses = () => request.get(`/api/expenses`);

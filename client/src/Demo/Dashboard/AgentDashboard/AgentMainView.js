@@ -26,6 +26,7 @@ import CVAssignTasks from '../MainViewTab/AgentTasks/CVAssignTasks';
 import NoProgramStudentTasks from '../MainViewTab/AgentTasks/NoProgramStudentTasks';
 import NoEnoughDecidedProgramsTasks from '../MainViewTab/AgentTasks/NoEnoughDecidedProgramsTasks';
 import DEMO from '../../../store/constant';
+import StudentOverviewTable from '../../../components/StudentOverviewTable';
 
 class AgentMainView extends React.Component {
   state = {
@@ -552,44 +553,11 @@ class AgentMainView extends React.Component {
         </Row>
         <Row>
           <Col md={12}>
-            <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
-              <Card.Header>
-                <Card.Title className="my-0 mx-0 text-light">
-                  My Student Overview
-                </Card.Title>
-              </Card.Header>
-              <Table
-                responsive
-                bordered
-                hover
-                className="px-0 my-0 mx-0"
-                variant="dark"
-                text="light"
-                size="sm"
-              >
-                <thead>
-                  <tr>
-                    <th>Target Year</th>
-                    <th>First-/Lastname,Birthday</th>
-                    <th>Graduated</th>
-                    <th>Program Selection</th>
-                    <th>Applications</th>
-                    <th>Next Program to apply</th>
-                    <th>Next Program deadline</th>
-                    <th>day left</th>
-                    <th>Next Program status</th>
-                    <th>Survey</th>
-                    <th>Base Documents</th>
-                    <th>Language</th>
-                    <th>Course Analysis</th>
-                    <th>CV</th>
-                    <th>Portals</th>
-                    <th>Uni-Assist</th>
-                  </tr>
-                </thead>
-                <tbody>{agent_reviewing}</tbody>
-              </Table>
-            </Card>
+            <StudentOverviewTable
+              students={this.props.students}
+              user={this.props.user}
+              title="My Student Overview"
+            />
           </Col>
         </Row>
         <Row>

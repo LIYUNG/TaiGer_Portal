@@ -2,17 +2,20 @@ import React from 'react';
 import { Card, Spinner, Row, Col, Button } from 'react-bootstrap';
 import { Redirect, Link } from 'react-router-dom';
 
-import Aux from '../../hoc/_Aux';
-import { spinner_style } from '../Utils/contants';
-import ErrorPage from '../Utils/ErrorPage';
-import { is_TaiGer_Admin, is_TaiGer_role } from '../Utils/checking-functions';
+import Aux from '../../../hoc/_Aux';
+import { spinner_style } from '../../Utils/contants';
+import ErrorPage from '../../Utils/ErrorPage';
+import {
+  is_TaiGer_Admin,
+  is_TaiGer_role
+} from '../../Utils/checking-functions';
 
-import { getTeamMembers, updateUserPermission } from '../../api';
-import { TabTitle } from '../Utils/TabTitle';
-import DEMO from '../../store/constant';
-import GrantPermissionModal from './GrantPermissionModal';
+import { getTeamMembers, updateUserPermission } from '../../../api';
+import { TabTitle } from '../../Utils/TabTitle';
+import DEMO from '../../../store/constant';
+import GrantPermissionModal from './../GrantPermissionModal';
 
-class TaiGerOrg extends React.Component {
+class TaiGerMember extends React.Component {
   state = {
     error: '',
     role: '',
@@ -118,7 +121,7 @@ class TaiGerOrg extends React.Component {
     if (!is_TaiGer_role(this.props.user)) {
       return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
     }
-    TabTitle('TaiGer Team Permissions Management');
+    TabTitle('TaiGer Team');
     const { res_status, isLoaded } = this.state;
 
     if (!isLoaded && !this.state.teams) {
@@ -147,7 +150,7 @@ class TaiGerOrg extends React.Component {
               <Card.Header text={'dark'}>
                 <Card.Title>
                   <Row>
-                    <Col className="my-0 mx-0 text-light">TaiGer Team Permissions Management</Col>
+                    <Col className="my-0 mx-0 text-light">TaiGer Team</Col>
                   </Row>
                 </Card.Title>
               </Card.Header>
@@ -176,30 +179,6 @@ class TaiGerOrg extends React.Component {
               <thead>
                 <tr>
                   <th>Name</th>
-                  <th>
-                    Can modify
-                    <br /> program list
-                  </th>
-                  <th>
-                    Can modify all
-                    <br /> Base Documents
-                  </th>
-                  <th>
-                    Can Access <br /> AllChat
-                  </th>
-                  <th>
-                    Can Assign <br /> Agents
-                  </th>
-                  <th>
-                    Can Assign <br /> Editors
-                  </th>
-                  <th>
-                    Can Modify <br /> Docs
-                  </th>
-                  <th>
-                    Can Access <br /> Students
-                  </th>
-                  <th>Permissions</th>
                 </tr>
               </thead>
               <tbody>
@@ -212,71 +191,6 @@ class TaiGerOrg extends React.Component {
                         </Link>
                       </b>
                     </td>
-                    <td>
-                      {agent.permissions.length > 0
-                        ? agent.permissions[0].canModifyProgramList
-                          ? 'O'
-                          : 'X'
-                        : 'x'}
-                    </td>
-                    <td>
-                      {agent.permissions.length > 0
-                        ? agent.permissions[0].canModifyAllBaseDocuments
-                          ? 'O'
-                          : 'X'
-                        : 'x'}
-                    </td>
-                    <td>
-                      {agent.permissions.length > 0
-                        ? agent.permissions[0].canAccessAllChat
-                          ? 'O'
-                          : 'X'
-                        : 'x'}
-                    </td>
-                    <td>
-                      {agent.permissions.length > 0
-                        ? agent.permissions[0].canAssignAgents
-                          ? 'O'
-                          : 'X'
-                        : 'x'}
-                    </td>
-                    <td>
-                      {agent.permissions.length > 0
-                        ? agent.permissions[0].canAssignEditors
-                          ? 'O'
-                          : 'X'
-                        : 'x'}
-                    </td>
-                    <td>
-                      {agent.permissions.length > 0
-                        ? agent.permissions[0].canModifyDocumentation
-                          ? 'O'
-                          : 'X'
-                        : 'x'}
-                    </td>
-                    <td>
-                      {agent.permissions.length > 0
-                        ? agent.permissions[0].canAccessStudentDatabase
-                          ? 'O'
-                          : 'X'
-                        : 'x'}
-                    </td>
-                    <td>
-                      <Button
-                        size="sm"
-                        disabled={!is_TaiGer_Admin(this.props.user)}
-                        onClick={() =>
-                          this.setModalShow(
-                            agent.firstname,
-                            agent.lastname,
-                            agent._id.toString(),
-                            agent.permissions
-                          )
-                        }
-                      >
-                        Edit
-                      </Button>
-                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -287,11 +201,6 @@ class TaiGerOrg extends React.Component {
               <thead>
                 <tr>
                   <th>Name</th>
-                  <th>Can Assign Agents</th>
-                  <th>Can Assign Editors</th>
-                  <th>Can Modify Docs</th>
-                  <th>Can Access Students</th>
-                  <th>Permissions</th>
                 </tr>
               </thead>
               <tbody>
@@ -303,50 +212,6 @@ class TaiGerOrg extends React.Component {
                           {editor.firstname} {editor.lastname}{' '}
                         </Link>
                       </b>
-                    </td>
-                    <td>
-                      {editor.permissions.length > 0
-                        ? editor.permissions[0].canAssignAgents
-                          ? 'O'
-                          : 'X'
-                        : 'x'}
-                    </td>
-                    <td>
-                      {editor.permissions.length > 0
-                        ? editor.permissions[0].canAssignEditors
-                          ? 'O'
-                          : 'X'
-                        : 'x'}
-                    </td>
-                    <td>
-                      {editor.permissions.length > 0
-                        ? editor.permissions[0].canModifyDocumentation
-                          ? 'O'
-                          : 'X'
-                        : 'x'}
-                    </td>
-                    <td>
-                      {editor.permissions.length > 0
-                        ? editor.permissions[0].canAccessStudentDatabase
-                          ? 'O'
-                          : 'X'
-                        : 'x'}
-                    </td>
-                    <td>
-                      <Button
-                        size="sm"
-                        disabled={!is_TaiGer_Admin(this.props.user)}
-                        onClick={() =>
-                          this.setModalShow(
-                            editor.firstname,
-                            editor.lastname,
-                            editor._id.toString(),
-                            editor.permissions
-                          )
-                        }
-                      >
-                        Edit
-                      </Button>
                     </td>
                   </tr>
                 ))}
@@ -369,4 +234,4 @@ class TaiGerOrg extends React.Component {
   }
 }
 
-export default TaiGerOrg;
+export default TaiGerMember;

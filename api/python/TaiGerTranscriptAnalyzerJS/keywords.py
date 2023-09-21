@@ -143,7 +143,7 @@ MGM_MATH_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
 
 # 機率
 MATH_PROB_KEY_WORDS = ['機率', '統計', '隨機']
-MATH_PROB_ANTI_KEY_WORDS = ['asdgladfj;l', '學習', '管理']
+MATH_PROB_ANTI_KEY_WORDS = ['asdgladfj;l', '學習', '管理', '量化']
 MATH_PROB_KEY_WORDS_EN = [
     'probability', 'statistic', 'random', 'stochasti']
 MATH_PROB_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
@@ -351,7 +351,7 @@ ACCOUNTING_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
 
 # 統計
 STATISTICS_KEY_WORDS = ['統計']
-STATISTICS_ANTI_KEY_WORDS = ['asdgladfj;l']
+STATISTICS_ANTI_KEY_WORDS = ['asdgladfj;l', '量化']
 STATISTICS_KEY_WORDS_EN = ['statisti']
 STATISTICS_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
 
@@ -363,7 +363,7 @@ OP_RESEARCH_KEY_WORDS_EN = [
 OP_RESEARCH_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
 
 # 觀察研究
-EP_RESEARCH_KEY_WORDS = ['觀察研究', '市場分析', '市場研究', '討論']
+EP_RESEARCH_KEY_WORDS = ['觀察研究', '市場分析', '量化研究', '市場研究', '討論']
 EP_RESEARCH_ANTI_KEY_WORDS = ['asdgladfj;l']
 EP_RESEARCH_KEY_WORDS_EN = ['empirical',
                             'quantitative method', 'quantitative resear']

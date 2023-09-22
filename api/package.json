@@ -39,7 +39,7 @@
     "jwt-decode": "^3.1.2",
     "lodash": "^4.17.21",
     "method-override": "^3.0.0",
-    "mongodb": "^5.5.0",
+    "mongodb": "^5.9.0",
     "mongoose": "^7.2.1",
     "morgan": "^1.10.0",
     "morgan-json": "^1.1.0",
@@ -57,7 +57,6 @@
     "winston": "^3.8.1"
   },
   "devDependencies": {
-    "@shelf/jest-mongodb": "^2.0.1",
     "@types/jest": "^27.0.1",
     "cross-env": "^7.0.3",
     "eslint": "^8.19.0",
@@ -69,7 +68,7 @@
     "faker": "^5.5.3",
     "jest": "^27.0.6",
     "jest-extended": "^3.2.4",
-    "nodemon": "^2.0.22",
+    "nodemon": "^3.0.1",
     "prettier": "^2.8.8",
     "supertest": "^6.3.3"
   }

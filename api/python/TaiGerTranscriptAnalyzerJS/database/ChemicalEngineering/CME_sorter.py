@@ -163,8 +163,8 @@ def ME_sorter(program_idx, file_path):
     df_category_courses_sugesstion_data = []
     for idx, cat in enumerate(transcript_sorted_group_map):
         category_data = {cat: [], '學分': [], '成績': []}
-        df_category_data.concat(pd.DataFrame(data=category_data))
-        df_category_courses_sugesstion_data.concat(
+        df_category_data.append(pd.DataFrame(data=category_data))
+        df_category_courses_sugesstion_data.append(
             pd.DataFrame(data=category_courses_sugesstion_data, columns=['建議修課']))
 
     # 基本分類課程 (與學程無關)

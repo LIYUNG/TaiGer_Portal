@@ -340,8 +340,8 @@ def Classifier(program_idx, obj_arr, abbrev, env_file_path, basic_classification
     df_category_courses_sugesstion_data = []
     for idx, cat in enumerate(transcript_sorted_group_map):
         category_data = {cat: [], 'credits': [], 'grades': []}
-        df_category_data.concat(pd.DataFrame(data=category_data))
-        df_category_courses_sugesstion_data.concat(
+        df_category_data.append(pd.DataFrame(data=category_data))
+        df_category_courses_sugesstion_data.append(
             pd.DataFrame(data=category_courses_sugesstion_data, columns=['建議修課']))
 
     if analysis_language in ['en', None]:

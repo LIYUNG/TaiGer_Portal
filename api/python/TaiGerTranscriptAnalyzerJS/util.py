@@ -207,7 +207,7 @@ def CourseSorting(df_transcript, df_category_data, transcript_sorted_group_map, 
                         temp = {cat: subj, 'credits': float(df_transcript['credits'][idx]),
                             'grades': df_transcript['grades'][idx]}
                 df_category_data[idx2] = df_category_data[idx2].append(
-                    temp, ignore_index=True)
+                    pd.DataFrame(data=temp), ignore_index=True)
                 break
     return df_category_data
 
@@ -221,14 +221,14 @@ def DatabaseCourseSorting(df_database, df_category_courses_sugesstion_data, tran
             if(idx2 == len(transcript_sorted_group_map) - 1):
                 temp = {'建議修課': subj}
                 df_category_courses_sugesstion_data[idx2] = df_category_courses_sugesstion_data[idx2].append(
-                    temp, ignore_index=True)
+                    pd.DataFrame(data=temp), ignore_index=True)
                 continue
 
             # filter database by keywords. and exclude subject by anti_keywords
             if any(keywords in subj for keywords in transcript_sorted_group_map[cat][KEY_WORDS] if not any(anti_keywords in subj for anti_keywords in transcript_sorted_group_map[cat][ANTI_KEY_WORDS])):
                 temp = {'建議修課': subj}
                 df_category_courses_sugesstion_data[idx2] = df_category_courses_sugesstion_data[idx2].append(
-                    temp, ignore_index=True)
+                    pd.DataFrame(data=temp), ignore_index=True)
                 break
     return df_category_courses_sugesstion_data
 
@@ -240,13 +240,13 @@ def AppendCreditsCount(df_PROG_SPEC_CATES, program_category):
         category_credits_sum = {
             trans_cat.columns[0]: "sum", 'credits': credit_sum}
         df_PROG_SPEC_CATES[idx] = df_PROG_SPEC_CATES[idx].append(
-            category_credits_sum, ignore_index=True)
+            pd.DataFrame(data=category_credits_sum), ignore_index=True)
         # print(df_PROG_SPEC_CATES[idx]['credits'])
         # print(credit_sum)
         category_credits_sum = {trans_cat.columns[0]: "ECTS轉換", 'credits': 1.5 *
                                 credit_sum, 'Required_ECTS': program_category[idx]['Required_ECTS']}
         df_PROG_SPEC_CATES[idx] = df_PROG_SPEC_CATES[idx].append(
-            category_credits_sum, ignore_index=True)
+            pd.DataFrame(data=category_credits_sum), ignore_index=True)
     return df_PROG_SPEC_CATES
 
 

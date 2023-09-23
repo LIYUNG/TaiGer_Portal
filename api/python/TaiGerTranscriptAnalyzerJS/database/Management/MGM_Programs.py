@@ -17,9 +17,9 @@ def TUM_MMT(transcript_sorted_group_map, df_transcript_array, df_category_course
     df_transcript_array_temp = []
     df_category_courses_sugesstion_data_temp = []
     for idx, df in enumerate(df_transcript_array):
-        df_transcript_array_temp.concat(df.copy())
+        df_transcript_array_temp.append(df.copy())
     for idx, df in enumerate(df_category_courses_sugesstion_data):
-        df_category_courses_sugesstion_data_temp.concat(df.copy())
+        df_category_courses_sugesstion_data_temp.append(df.copy())
     #####################################################################
     ############## Program Specific Parameters ##########################
     #####################################################################
@@ -93,9 +93,9 @@ def TUM_CONSUMER_SCIENCE(transcript_sorted_group_map, df_transcript_array, df_ca
     df_transcript_array_temp = []
     df_category_courses_sugesstion_data_temp = []
     for idx, df in enumerate(df_transcript_array):
-        df_transcript_array_temp.concat(df.copy())
+        df_transcript_array_temp.append(df.copy())
     for idx, df in enumerate(df_category_courses_sugesstion_data):
-        df_category_courses_sugesstion_data_temp.concat(df.copy())
+        df_category_courses_sugesstion_data_temp.append(df.copy())
     #####################################################################
     ############## Program Specific Parameters ##########################
     #####################################################################
@@ -169,9 +169,9 @@ def UNI_KOELN_BA(transcript_sorted_group_map, df_transcript_array, df_category_c
     df_transcript_array_temp = []
     df_category_courses_sugesstion_data_temp = []
     for idx, df in enumerate(df_transcript_array):
-        df_transcript_array_temp.concat(df.copy())
+        df_transcript_array_temp.append(df.copy())
     for idx, df in enumerate(df_category_courses_sugesstion_data):
-        df_category_courses_sugesstion_data_temp.concat(df.copy())
+        df_category_courses_sugesstion_data_temp.append(df.copy())
     #####################################################################
     ############## Program Specific Parameters ##########################
     #####################################################################
@@ -244,9 +244,9 @@ def UNI_MANNHEIM_MGM(transcript_sorted_group_map, df_transcript_array, df_catego
     df_transcript_array_temp = []
     df_category_courses_sugesstion_data_temp = []
     for idx, df in enumerate(df_transcript_array):
-        df_transcript_array_temp.concat(df.copy())
+        df_transcript_array_temp.append(df.copy())
     for idx, df in enumerate(df_category_courses_sugesstion_data):
-        df_category_courses_sugesstion_data_temp.concat(df.copy())
+        df_category_courses_sugesstion_data_temp.append(df.copy())
     #####################################################################
     ############## Program Specific Parameters ##########################
     #####################################################################
@@ -310,9 +310,9 @@ def UNI_MAGDEBURG_FIN_ECO(transcript_sorted_group_map, df_transcript_array, df_c
     df_transcript_array_temp = []
     df_category_courses_sugesstion_data_temp = []
     for idx, df in enumerate(df_transcript_array):
-        df_transcript_array_temp.concat(df.copy())
+        df_transcript_array_temp.append(df.copy())
     for idx, df in enumerate(df_category_courses_sugesstion_data):
-        df_category_courses_sugesstion_data_temp.concat(df.copy())
+        df_category_courses_sugesstion_data_temp.append(df.copy())
     #####################################################################
     ############## Program Specific Parameters ##########################
     #####################################################################
@@ -379,9 +379,9 @@ def TU_DRESDEN_TRANSPORT_ECONOM(transcript_sorted_group_map, df_transcript_array
     df_transcript_array_temp = []
     df_category_courses_sugesstion_data_temp = []
     for idx, df in enumerate(df_transcript_array):
-        df_transcript_array_temp.concat(df.copy())
+        df_transcript_array_temp.append(df.copy())
     for idx, df in enumerate(df_category_courses_sugesstion_data):
-        df_category_courses_sugesstion_data_temp.concat(df.copy())
+        df_category_courses_sugesstion_data_temp.append(df.copy())
     #####################################################################
     ############## Program Specific Parameters ##########################
     #####################################################################
@@ -451,9 +451,9 @@ def TUM_SMT(transcript_sorted_group_map, df_transcript_array, df_category_course
     df_transcript_array_temp = []
     df_category_courses_sugesstion_data_temp = []
     for idx, df in enumerate(df_transcript_array):
-        df_transcript_array_temp.concat(df.copy())
+        df_transcript_array_temp.append(df.copy())
     for idx, df in enumerate(df_category_courses_sugesstion_data):
-        df_category_courses_sugesstion_data_temp.concat(df.copy())
+        df_category_courses_sugesstion_data_temp.append(df.copy())
     #####################################################################
     ############## Program Specific Parameters ##########################
     #####################################################################
@@ -527,9 +527,9 @@ def TUM_BIO_ECONOMICS(transcript_sorted_group_map, df_transcript_array, df_categ
     df_transcript_array_temp = []
     df_category_courses_sugesstion_data_temp = []
     for idx, df in enumerate(df_transcript_array):
-        df_transcript_array_temp.concat(df.copy())
+        df_transcript_array_temp.append(df.copy())
     for idx, df in enumerate(df_category_courses_sugesstion_data):
-        df_category_courses_sugesstion_data_temp.concat(df.copy())
+        df_category_courses_sugesstion_data_temp.append(df.copy())
     #####################################################################
     ############## Program Specific Parameters ##########################
     #####################################################################

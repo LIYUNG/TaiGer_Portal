@@ -34,8 +34,8 @@ def ProgramCategoryInit(program_category):
                          'credits': [], 'grades': [], 'Required_ECTS': cat['Required_ECTS']}
         PROG_SPEC_CATES_COURSES_SUGGESTION = {cat['Program_Category']: [],
                                               }
-        df_PROG_SPEC_CATES.concat(pd.DataFrame(data=PROG_SPEC_CAT))
-        df_PROG_SPEC_CATES_COURSES_SUGGESTION.concat(
+        df_PROG_SPEC_CATES.append(pd.DataFrame(data=PROG_SPEC_CAT))
+        df_PROG_SPEC_CATES_COURSES_SUGGESTION.append(
             pd.DataFrame(data=PROG_SPEC_CATES_COURSES_SUGGESTION))
     return df_PROG_SPEC_CATES, df_PROG_SPEC_CATES_COURSES_SUGGESTION
 
@@ -157,8 +157,7 @@ def CoursesToProgramCategoryMapping(df_PROG_SPEC_CATES, program_category_map, tr
             if idx != len(df_transcript_array_temp) - 1 and idx_temp == len(df_PROG_SPEC_CATES) - 1:
                 continue
 
-        df_PROG_SPEC_CATES[idx_temp] = df_PROG_SPEC_CATES[idx_temp].concat(
-            trans_cat, ignore_index=True)
+        df_PROG_SPEC_CATES[idx_temp] = pd.concat([df_PROG_SPEC_CATES[idx_temp],trans_cat])
     return df_PROG_SPEC_CATES
 
 
@@ -185,8 +184,7 @@ def CourseSorting(df_transcript, df_category_data, transcript_sorted_group_map, 
                     else:
                         temp0 = {cat: subj, 'credits': df_transcript['credits'][idx],
                             'grades': df_transcript['grades'][idx]}
-                df_category_data[idx2] = df_category_data[idx2].concat(
-                    temp0, ignore_index=True)
+                df_category_data[idx2] = pd.concat([df_category_data[idx2],temp0])
                 continue
 
             # filter subject by keywords. and exclude subject by anti_keywords
@@ -206,8 +204,7 @@ def CourseSorting(df_transcript, df_category_data, transcript_sorted_group_map, 
                     else:
                         temp = {cat: subj, 'credits': float(df_transcript['credits'][idx]),
                             'grades': df_transcript['grades'][idx]}
-                df_category_data[idx2] = df_category_data[idx2].concat(
-                    temp, ignore_index=True)
+                df_category_data[idx2] = pd.concat([df_category_data[idx2],temp])
                 break
     return df_category_data
 
@@ -220,15 +217,13 @@ def DatabaseCourseSorting(df_database, df_category_courses_sugesstion_data, tran
             # Put the rest of courses to Others
             if(idx2 == len(transcript_sorted_group_map) - 1):
                 temp = {'建議修課': subj}
-                df_category_courses_sugesstion_data[idx2] = df_category_courses_sugesstion_data[idx2].concat(
-                    temp, ignore_index=True)
+                df_category_courses_sugesstion_data[idx2] = pd.concat([df_category_courses_sugesstion_data[idx2], temp])
                 continue
 
             # filter database by keywords. and exclude subject by anti_keywords
             if any(keywords in subj for keywords in transcript_sorted_group_map[cat][KEY_WORDS] if not any(anti_keywords in subj for anti_keywords in transcript_sorted_group_map[cat][ANTI_KEY_WORDS])):
                 temp = {'建議修課': subj}
-                df_category_courses_sugesstion_data[idx2] = df_category_courses_sugesstion_data[idx2].concat(
-                    temp, ignore_index=True)
+                df_category_courses_sugesstion_data[idx2] = pd.concat([df_category_courses_sugesstion_data[idx2],temp])
                 break
     return df_category_courses_sugesstion_data
 
@@ -239,14 +234,12 @@ def AppendCreditsCount(df_PROG_SPEC_CATES, program_category):
         credit_sum = df_PROG_SPEC_CATES[idx]['credits'].sum()
         category_credits_sum = {
             trans_cat.columns[0]: "sum", 'credits': credit_sum}
-        df_PROG_SPEC_CATES[idx] = df_PROG_SPEC_CATES[idx].concat(
-            category_credits_sum, ignore_index=True)
+        df_PROG_SPEC_CATES[idx] = pd.concat([df_PROG_SPEC_CATES[idx], category_credits_sum])
         # print(df_PROG_SPEC_CATES[idx]['credits'])
         # print(credit_sum)
         category_credits_sum = {trans_cat.columns[0]: "ECTS轉換", 'credits': 1.5 *
                                 credit_sum, 'Required_ECTS': program_category[idx]['Required_ECTS']}
-        df_PROG_SPEC_CATES[idx] = df_PROG_SPEC_CATES[idx].concat(
-            category_credits_sum, ignore_index=True)
+        df_PROG_SPEC_CATES[idx] = pd.concat([df_PROG_SPEC_CATES[idx], category_credits_sum])
     return df_PROG_SPEC_CATES
 
 

@@ -15,9 +15,9 @@ def TUM_CHEMICAL_BIOTECH(transcript_sorted_group_map, df_transcript_array, df_ca
     df_transcript_array_temp = []
     df_category_courses_sugesstion_data_temp = []
     for idx, df in enumerate(df_transcript_array):
-        df_transcript_array_temp.concat(df.copy())
+        df_transcript_array_temp.append(df.copy())
     for idx, df in enumerate(df_category_courses_sugesstion_data):
-        df_category_courses_sugesstion_data_temp.concat(df.copy())
+        df_category_courses_sugesstion_data_temp.append(df.copy())
     #####################################################################
     ############## Program Specific Parameters ##########################
     #####################################################################

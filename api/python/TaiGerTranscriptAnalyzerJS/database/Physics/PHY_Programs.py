@@ -15,9 +15,9 @@ def TUM_LMU_QUANTUM_SCIENCE_TECH(transcript_sorted_group_map, df_transcript_arra
     df_transcript_array_temp = []
     df_category_courses_sugesstion_data_temp = []
     for idx, df in enumerate(df_transcript_array):
-        df_transcript_array_temp.append(df.copy())
+        df_transcript_array_temp.concat(df.copy())
     for idx, df in enumerate(df_category_courses_sugesstion_data):
-        df_category_courses_sugesstion_data_temp.append(df.copy())
+        df_category_courses_sugesstion_data_temp.concat(df.copy())
     #####################################################################
     ############## Program Specific Parameters ##########################
     #####################################################################
@@ -121,9 +121,9 @@ def TUM_PHYSICS_NUCLEAR(transcript_sorted_group_map, df_transcript_array, df_cat
     df_transcript_array_temp = []
     df_category_courses_sugesstion_data_temp = []
     for idx, df in enumerate(df_transcript_array):
-        df_transcript_array_temp.append(df.copy())
+        df_transcript_array_temp.concat(df.copy())
     for idx, df in enumerate(df_category_courses_sugesstion_data):
-        df_category_courses_sugesstion_data_temp.append(df.copy())
+        df_category_courses_sugesstion_data_temp.concat(df.copy())
     #####################################################################
     ############## Program Specific Parameters ##########################
     #####################################################################

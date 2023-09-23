@@ -17,9 +17,9 @@ def MANNHEIM_DATA_SCIENCE(transcript_sorted_group_map, df_transcript_array, df_c
     df_transcript_array_temp = []
     df_category_courses_sugesstion_data_temp = []
     for idx, df in enumerate(df_transcript_array):
-        df_transcript_array_temp.append(df.copy())
+        df_transcript_array_temp.concat(df.copy())
     for idx, df in enumerate(df_category_courses_sugesstion_data):
-        df_category_courses_sugesstion_data_temp.append(df.copy())
+        df_category_courses_sugesstion_data_temp.concat(df.copy())
     #####################################################################
     ############## Program Specific Parameters ##########################
     #####################################################################
@@ -82,9 +82,9 @@ def MANNHEIM_BUSINESS_INFORMATICS(transcript_sorted_group_map, df_transcript_arr
     df_transcript_array_temp = []
     df_category_courses_sugesstion_data_temp = []
     for idx, df in enumerate(df_transcript_array):
-        df_transcript_array_temp.append(df.copy())
+        df_transcript_array_temp.concat(df.copy())
     for idx, df in enumerate(df_category_courses_sugesstion_data):
-        df_category_courses_sugesstion_data_temp.append(df.copy())
+        df_category_courses_sugesstion_data_temp.concat(df.copy())
     #####################################################################
     ############## Program Specific Parameters ##########################
     #####################################################################
@@ -154,9 +154,9 @@ def TUM_INFO_MGM_SYS(transcript_sorted_group_map, df_transcript_array, df_catego
     df_transcript_array_temp = []
     df_category_courses_sugesstion_data_temp = []
     for idx, df in enumerate(df_transcript_array):
-        df_transcript_array_temp.append(df.copy())
+        df_transcript_array_temp.concat(df.copy())
     for idx, df in enumerate(df_category_courses_sugesstion_data):
-        df_category_courses_sugesstion_data_temp.append(df.copy())
+        df_category_courses_sugesstion_data_temp.concat(df.copy())
     #####################################################################
     ############## Program Specific Parameters ##########################
     #####################################################################
@@ -230,9 +230,9 @@ def TUEBINGEN_ML(transcript_sorted_group_map, df_transcript_array, df_category_c
     df_transcript_array_temp = []
     df_category_courses_sugesstion_data_temp = []
     for idx, df in enumerate(df_transcript_array):
-        df_transcript_array_temp.append(df.copy())
+        df_transcript_array_temp.concat(df.copy())
     for idx, df in enumerate(df_category_courses_sugesstion_data):
-        df_category_courses_sugesstion_data_temp.append(df.copy())
+        df_category_courses_sugesstion_data_temp.concat(df.copy())
     #####################################################################
     ############## Program Specific Parameters ##########################
     #####################################################################
@@ -300,9 +300,9 @@ def TU_BERLIN_INFO_SYS_MGMT(transcript_sorted_group_map, df_transcript_array, df
     df_transcript_array_temp = []
     df_category_courses_sugesstion_data_temp = []
     for idx, df in enumerate(df_transcript_array):
-        df_transcript_array_temp.append(df.copy())
+        df_transcript_array_temp.concat(df.copy())
     for idx, df in enumerate(df_category_courses_sugesstion_data):
-        df_category_courses_sugesstion_data_temp.append(df.copy())
+        df_category_courses_sugesstion_data_temp.concat(df.copy())
     #####################################################################
     ############## Program Specific Parameters ##########################
     #####################################################################
@@ -370,9 +370,9 @@ def UNI_MUENSTER_INFO_SYSTEM(transcript_sorted_group_map, df_transcript_array, d
     df_transcript_array_temp = []
     df_category_courses_sugesstion_data_temp = []
     for idx, df in enumerate(df_transcript_array):
-        df_transcript_array_temp.append(df.copy())
+        df_transcript_array_temp.concat(df.copy())
     for idx, df in enumerate(df_category_courses_sugesstion_data):
-        df_category_courses_sugesstion_data_temp.append(df.copy())
+        df_category_courses_sugesstion_data_temp.concat(df.copy())
     #####################################################################
     ############## Program Specific Parameters ##########################
     #####################################################################

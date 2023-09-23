@@ -20,9 +20,9 @@ def RWTH_AUTO(transcript_sorted_group_map, df_transcript_array, df_category_cour
     df_transcript_array_temp = []
     df_category_courses_sugesstion_data_temp = []
     for idx, df in enumerate(df_transcript_array):
-        df_transcript_array_temp.append(df.copy())
+        df_transcript_array_temp.concat(df.copy())
     for idx, df in enumerate(df_category_courses_sugesstion_data):
-        df_category_courses_sugesstion_data_temp.append(df.copy())
+        df_category_courses_sugesstion_data_temp.concat(df.copy())
     #####################################################################
     ############## Program Specific Parameters ##########################
     #####################################################################
@@ -163,8 +163,8 @@ def ME_sorter(program_idx, file_path):
     df_category_courses_sugesstion_data = []
     for idx, cat in enumerate(transcript_sorted_group_map):
         category_data = {cat: [], '學分': [], '成績': []}
-        df_category_data.append(pd.DataFrame(data=category_data))
-        df_category_courses_sugesstion_data.append(
+        df_category_data.concat(pd.DataFrame(data=category_data))
+        df_category_courses_sugesstion_data.concat(
             pd.DataFrame(data=category_courses_sugesstion_data, columns=['建議修課']))
 
     # 基本分類課程 (與學程無關)

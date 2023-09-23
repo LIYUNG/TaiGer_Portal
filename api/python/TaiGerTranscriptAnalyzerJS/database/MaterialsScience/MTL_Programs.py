@@ -15,9 +15,9 @@ def TUM_MTL(transcript_sorted_group_map, df_transcript_array, df_category_course
     df_transcript_array_temp = []
     df_category_courses_sugesstion_data_temp = []
     for idx, df in enumerate(df_transcript_array):
-        df_transcript_array_temp.append(df.copy())
+        df_transcript_array_temp.concat(df.copy())
     for idx, df in enumerate(df_category_courses_sugesstion_data):
-        df_category_courses_sugesstion_data_temp.append(df.copy())
+        df_category_courses_sugesstion_data_temp.concat(df.copy())
     #####################################################################
     ############## Program Specific Parameters ##########################
     #####################################################################
@@ -115,9 +115,9 @@ def RWTH_MTL_ENGINEERING(transcript_sorted_group_map, df_transcript_array, df_ca
     df_transcript_array_temp = []
     df_category_courses_sugesstion_data_temp = []
     for idx, df in enumerate(df_transcript_array):
-        df_transcript_array_temp.append(df.copy())
+        df_transcript_array_temp.concat(df.copy())
     for idx, df in enumerate(df_category_courses_sugesstion_data):
-        df_category_courses_sugesstion_data_temp.append(df.copy())
+        df_category_courses_sugesstion_data_temp.concat(df.copy())
     #####################################################################
     ############## Program Specific Parameters ##########################
     #####################################################################
@@ -185,9 +185,9 @@ def STUTTGART_MTL(transcript_sorted_group_map, df_transcript_array, df_category_
     df_transcript_array_temp = []
     df_category_courses_sugesstion_data_temp = []
     for idx, df in enumerate(df_transcript_array):
-        df_transcript_array_temp.append(df.copy())
+        df_transcript_array_temp.concat(df.copy())
     for idx, df in enumerate(df_category_courses_sugesstion_data):
-        df_category_courses_sugesstion_data_temp.append(df.copy())
+        df_category_courses_sugesstion_data_temp.concat(df.copy())
     #####################################################################
     ############## Program Specific Parameters ##########################
     #####################################################################
@@ -266,9 +266,9 @@ def BOCHUM_MTL_SIM(transcript_sorted_group_map, df_transcript_array, df_category
     df_transcript_array_temp = []
     df_category_courses_sugesstion_data_temp = []
     for idx, df in enumerate(df_transcript_array):
-        df_transcript_array_temp.append(df.copy())
+        df_transcript_array_temp.concat(df.copy())
     for idx, df in enumerate(df_category_courses_sugesstion_data):
-        df_category_courses_sugesstion_data_temp.append(df.copy())
+        df_category_courses_sugesstion_data_temp.concat(df.copy())
     #####################################################################
     ############## Program Specific Parameters ##########################
     #####################################################################
@@ -345,9 +345,9 @@ def FAU(transcript_sorted_group_map, df_transcript_array, df_category_courses_su
     df_transcript_array_temp = []
     df_category_courses_sugesstion_data_temp = []
     for idx, df in enumerate(df_transcript_array):
-        df_transcript_array_temp.append(df.copy())
+        df_transcript_array_temp.concat(df.copy())
     for idx, df in enumerate(df_category_courses_sugesstion_data):
-        df_category_courses_sugesstion_data_temp.append(df.copy())
+        df_category_courses_sugesstion_data_temp.concat(df.copy())
     #####################################################################
     ############## Program Specific Parameters ##########################
     #####################################################################

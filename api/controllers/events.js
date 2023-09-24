@@ -148,8 +148,9 @@ const postEvent = asyncHandler(async (req, res) => {
   let events;
   if (user.role === Role.Student) {
     let write_NewEvent;
+    delete newEvent.id;
     newEvent.isConfirmedRequester = true;
-
+    // TODO: verify requester_id and receiver_id?
     // Check if there is already future timeslot, same student?
     const currentDate = new Date();
     events = await Event.find({
@@ -204,6 +205,7 @@ const postEvent = asyncHandler(async (req, res) => {
   } else {
     try {
       let write_NewEvent;
+      delete newEvent.id;
       newEvent.isConfirmedReceiver = true;
       events = await Event.find({
         start: newEvent.start,

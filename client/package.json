@@ -83,6 +83,7 @@
     "not op_mini all"
   ],
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "jest": "^29.2.0",
     "react-to-print": "^2.14.7"
   }

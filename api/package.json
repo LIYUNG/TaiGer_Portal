@@ -14,7 +14,7 @@
   "preset": "@shelf/jest-mongodb",
   "dependencies": {
     "async": "^3.2.4",
-    "aws-sdk": "^2.1386.0",
+    "aws-sdk": "^2.1463.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.0",
     "child_process": "^1.0.2",

@@ -161,7 +161,7 @@ export default function Signin1({ setUserdata }) {
                   // ref={clickRef}
                   // disabled={!emailaddress || !password || buttondisable}
                   onClick={(e) => onButtonClick(e, true)}
-                  autoFocus
+                  // autoFocus
                   type="submit"
                   variant="primary"
                   // className="btn btn-success mb-2"

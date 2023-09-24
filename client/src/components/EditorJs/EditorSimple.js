@@ -42,7 +42,7 @@ const EditorSimple = (props) => {
       placeholder:
         'Please organize your questions and expected help concretely.',
       readOnly: props.readOnly,
-      autofocus: true,
+      // autofocus: true,
       minHeight: props.defaultHeight,
       tools: {
         header: {
@@ -178,7 +178,7 @@ const EditorSimple = (props) => {
       placeholder:
         'Please organize your questions and expected help concretely.',
       readOnly: props.readOnly,
-      autofocus: true,
+      // autofocus: true,
       minHeight: props.defaultHeight,
       tools: {
         header: {

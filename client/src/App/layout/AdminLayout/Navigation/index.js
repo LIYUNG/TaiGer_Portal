@@ -1,149 +1,154 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
-import windowSize from "react-window-size";
+import React, { useEffect } from 'react';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
+// import windowSize from "react-window-size";
+import {
+  useWindowSize,
+  useWindowWidth,
+  useWindowHeight
+} from '@react-hook/window-size';
 
-import NavLogo from "./NavLogo";
-import NavContent from "./NavContent";
-import OutsideClick from "./OutsideClick";
-import Aux from "./../../../../hoc/_Aux";
-import * as actionTypes from "./../../../../store/actions";
-import navigation_all from "../../../../menu-sidebar";
+import NavLogo from './NavLogo';
+import NavContent from './NavContent';
+import OutsideClick from './OutsideClick';
+import Aux from './../../../../hoc/_Aux';
+import * as actionTypes from './../../../../store/actions';
+import navigation_all from '../../../../menu-sidebar';
 
-class Navigation extends Component {
-  resize = () => {
-    const contentWidth = document.getElementById("root").clientWidth;
+function Navigation(props) {
+  const onlyWidth = useWindowWidth();
+  const resize = () => {
+    const contentWidth = document.getElementById('root').clientWidth;
 
-    if (this.props.layout === "horizontal" && contentWidth < 992) {
-      this.props.onChangeLayout("vertical");
+    if (props.layout === 'horizontal' && contentWidth < 992) {
+      props.onChangeLayout('vertical');
     }
   };
 
-  componentDidMount() {
-    this.resize();
-    window.addEventListener("resize", this.resize);
+  useEffect(() => {
+    resize();
+    window.addEventListener('resize', resize);
+    // returned function will be called on component unmount
+    return () => {
+      window.removeEventListener('resize', resize);
+    };
+  });
+
+  // useEffect(() => {
+  //   resize();
+  //   window.addEventListener('resize', resize);
+  // }, []);
+
+  // useEffect(() => {
+  //   window.removeEventListener('resize', resize);
+  // }, []);
+
+  let navClass = ['pcoded-navbar'];
+  if (
+    props.preLayout !== null &&
+    props.preLayout !== '' &&
+    props.preLayout !== 'layout-6' &&
+    props.preLayout !== 'layout-8'
+  ) {
+    navClass = [...navClass, props.preLayout];
+  } else {
+    navClass = [
+      ...navClass,
+      props.layoutType,
+      props.navBackColor,
+      props.navBrandColor,
+      'drp-icon-' + props.navDropdownIcon,
+      'menu-item-icon-' + props.navListIcon,
+      props.navActiveListColor,
+      props.navListTitleColor
+    ];
+
+    if (props.layout === 'horizontal') {
+      navClass = [...navClass, 'theme-horizontal'];
+    }
+
+    if (props.navBackImage) {
+      navClass = [...navClass, props.navBackImage];
+    }
+
+    if (props.navIconColor) {
+      navClass = [...navClass, 'icon-colored'];
+    }
+
+    if (!props.navFixedLayout) {
+      navClass = [...navClass, 'menupos-static'];
+    }
+
+    if (props.navListTitleHide) {
+      navClass = [...navClass, 'caption-hide'];
+    }
   }
 
-  componentWillUnmount() {
-    window.removeEventListener("resize", this.resize);
+  if (onlyWidth < 992 && props.collapseMenu) {
+    navClass = [...navClass, 'mob-open'];
+  } else if (props.collapseMenu) {
+    navClass = [...navClass, 'navbar-collapsed'];
   }
 
-  render() {
-    let navClass = ["pcoded-navbar"];
+  if (props.preLayout === 'layout-6') {
+    document.body.classList.add('layout-6');
+    document.body.style.backgroundImage = props.layout6Background;
+    document.body.style.backgroundSize = props.layout6BackSize;
+  }
 
-    if (
-      this.props.preLayout !== null &&
-      this.props.preLayout !== "" &&
-      this.props.preLayout !== "layout-6" &&
-      this.props.preLayout !== "layout-8"
-    ) {
-      navClass = [...navClass, this.props.preLayout];
-    } else {
-      navClass = [
-        ...navClass,
-        this.props.layoutType,
-        this.props.navBackColor,
-        this.props.navBrandColor,
-        "drp-icon-" + this.props.navDropdownIcon,
-        "menu-item-icon-" + this.props.navListIcon,
-        this.props.navActiveListColor,
-        this.props.navListTitleColor,
-      ];
+  if (props.preLayout === 'layout-8') {
+    document.body.classList.add('layout-8');
+  }
 
-      if (this.props.layout === "horizontal") {
-        navClass = [...navClass, "theme-horizontal"];
-      }
+  if (props.layoutType === 'dark') {
+    document.body.classList.add('datta-dark');
+  } else {
+    document.body.classList.remove('datta-dark');
+  }
 
-      if (this.props.navBackImage) {
-        navClass = [...navClass, this.props.navBackImage];
-      }
+  if (props.rtlLayout) {
+    document.body.classList.add('datta-rtl');
+  } else {
+    document.body.classList.remove('datta-rtl');
+  }
 
-      if (this.props.navIconColor) {
-        navClass = [...navClass, "icon-colored"];
-      }
-
-      if (!this.props.navFixedLayout) {
-        navClass = [...navClass, "menupos-static"];
-      }
-
-      if (this.props.navListTitleHide) {
-        navClass = [...navClass, "caption-hide"];
-      }
-    }
-
-    if (this.props.windowWidth < 992 && this.props.collapseMenu) {
-      navClass = [...navClass, "mob-open"];
-    } else if (this.props.collapseMenu) {
-      navClass = [...navClass, "navbar-collapsed"];
-    }
-
-    if (this.props.preLayout === "layout-6") {
-      document.body.classList.add("layout-6");
-      document.body.style.backgroundImage = this.props.layout6Background;
-      document.body.style.backgroundSize = this.props.layout6BackSize;
-    }
-
-    if (this.props.preLayout === "layout-8") {
-      document.body.classList.add("layout-8");
-    }
-
-    if (this.props.layoutType === "dark") {
-      document.body.classList.add("datta-dark");
-    } else {
-      document.body.classList.remove("datta-dark");
-    }
-
-    if (this.props.rtlLayout) {
-      document.body.classList.add("datta-rtl");
-    } else {
-      document.body.classList.remove("datta-rtl");
-    }
-
-    if (this.props.boxLayout) {
-      document.body.classList.add("container");
-      document.body.classList.add("box-layout");
-    } else {
-      document.body.classList.remove("container");
-      document.body.classList.remove("box-layout");
-    }
-    let navContent = (
-      <div className="navbar-wrapper">
-        <NavLogo
-          collapseMenu={this.props.collapseMenu}
-          windowWidth={this.props.windowWidth}
-          onToggleNavigation={this.props.onToggleNavigation}
-        />
-        <NavContent
-          user={this.props.userdata}
-          navigation={navigation_all.items}
-        />
-        ;
-      </div>
-    );
-    if (this.props.windowWidth < 992) {
-      navContent = (
-        <OutsideClick>
-          <div className="navbar-wrapper">
-            <NavLogo
-              collapseMenu={this.props.collapseMenu}
-              windowWidth={this.props.windowWidth}
-              onToggleNavigation={this.props.onToggleNavigation}
-            />
-            <NavContent
-              user={this.props.userdata}
-              navigation={navigation_all.items}
-            />
-          </div>
-        </OutsideClick>
-      );
-    }
-
-    return (
-      <Aux>
-        <nav className={navClass.join(" ")}>{navContent}</nav>
-      </Aux>
+  if (props.boxLayout) {
+    document.body.classList.add('container');
+    document.body.classList.add('box-layout');
+  } else {
+    document.body.classList.remove('container');
+    document.body.classList.remove('box-layout');
+  }
+  let navContent = (
+    <div className="navbar-wrapper">
+      <NavLogo
+        collapseMenu={props.collapseMenu}
+        windowWidth={onlyWidth}
+        onToggleNavigation={props.onToggleNavigation}
+      />
+      <NavContent user={props.userdata} navigation={navigation_all.items} />;
+    </div>
+  );
+  if (onlyWidth < 992) {
+    navContent = (
+      <OutsideClick>
+        <div className="navbar-wrapper">
+          <NavLogo
+            collapseMenu={props.collapseMenu}
+            windowWidth={onlyWidth}
+            onToggleNavigation={props.onToggleNavigation}
+          />
+          <NavContent user={props.userdata} navigation={navigation_all.items} />
+        </div>
+      </OutsideClick>
     );
   }
+
+  return (
+    <Aux>
+      <nav className={navClass.join(' ')}>{navContent}</nav>
+    </Aux>
+  );
 }
 
 const mapStateToProps = (state) => {
@@ -165,7 +170,7 @@ const mapStateToProps = (state) => {
     navListIcon: state.navListIcon,
     navActiveListColor: state.navActiveListColor,
     navListTitleColor: state.navListTitleColor,
-    navListTitleHide: state.navListTitleHide,
+    navListTitleHide: state.navListTitleHide
   };
 };
 
@@ -173,10 +178,10 @@ const mapDispatchToProps = (dispatch) => {
   return {
     onToggleNavigation: () => dispatch({ type: actionTypes.COLLAPSE_MENU }),
     onChangeLayout: (layout) =>
-      dispatch({ type: actionTypes.CHANGE_LAYOUT, layout: layout }),
+      dispatch({ type: actionTypes.CHANGE_LAYOUT, layout: layout })
   };
 };
 
 export default withRouter(
-  connect(mapStateToProps, mapDispatchToProps)(windowSize(Navigation))
+  connect(mapStateToProps, mapDispatchToProps)(Navigation)
 );

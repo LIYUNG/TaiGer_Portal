@@ -1,55 +1,61 @@
-import React, { Component } from 'react';
-import {connect} from 'react-redux';
-import windowSize from 'react-window-size';
+import React, { useState, useRef, useEffect } from 'react';
+import { connect } from 'react-redux';
+// import windowSize from 'react-window-size';
+import {
+  useWindowSize,
+  useWindowWidth,
+  useWindowHeight
+} from '@react-hook/window-size';
 
-import * as actionTypes from "../../../../../store/actions";
+import * as actionTypes from '../../../../../store/actions';
 
-class OutsideClick extends Component {
-    constructor(props) {
-        super(props);
+function OutsideClick(props) {
+  // const constructor(props) {
+  //   super(props);
 
-        this.setWrapperRef = this.setWrapperRef.bind(this);
-        this.handleOutsideClick = this.handleOutsideClick.bind(this);
+  //   this.setWrapperRef = this.setWrapperRef.bind(this);
+  //   this.handleOutsideClick = this.handleOutsideClick.bind(this);
+  // }
+  const onlyWidth = useWindowWidth();
+  const target = useRef(null);
+
+  const [wrapperRef, setWrapperRef] = useState(null);
+  useEffect(() => {
+    document.addEventListener('mousedown', handleOutsideClick);
+    // returned function will be called on component unmount
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideClick);
+    };
+  });
+
+  /**
+   * close menu if clicked on outside of element
+   */
+  const handleOutsideClick = (event) => {
+    if (wrapperRef && !wrapperRef.contains(event.target)) {
+      if (onlyWidth && props.collapseMenu) {
+        props.onToggleNavigation();
+      }
     }
+  };
 
-    componentDidMount() {
-        document.addEventListener('mousedown', this.handleOutsideClick);
-    }
-
-    componentWillUnmount() {
-        document.removeEventListener('mousedown', this.handleOutsideClick);
-    }
-
-    setWrapperRef(node) {
-        this.wrapperRef = node;
-    }
-
-    /**
-     * close menu if clicked on outside of element
-     */
-    handleOutsideClick(event) {
-        if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
-            if (this.props.windowWidth < 992 && this.props.collapseMenu) {
-                this.props.onToggleNavigation();
-            }
-        }
-    }
-
-    render() {
-        return <div className="nav-outside" ref={this.setWrapperRef}>{this.props.children}</div>;
-    }
+  return (
+    <div className="nav-outside" ref={setWrapperRef}>
+      {props.children}
+    </div>
+  );
 }
 
-const mapStateToProps = state => {
-    return {
-        collapseMenu: state.collapseMenu
-    }
+const mapStateToProps = (state) => {
+  return {
+    collapseMenu: state.collapseMenu
+  };
 };
 
-const mapDispatchToProps = dispatch => {
-    return {
-        onToggleNavigation: () => dispatch({type: actionTypes.COLLAPSE_MENU}),
-    }
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onToggleNavigation: () => dispatch({ type: actionTypes.COLLAPSE_MENU })
+  };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps) (windowSize(OutsideClick));
+export default connect(mapStateToProps, mapDispatchToProps)(OutsideClick);

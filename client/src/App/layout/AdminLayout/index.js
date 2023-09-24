@@ -1,8 +1,13 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
-import Fullscreen from 'react-full-screen';
-import windowSize from 'react-window-size';
+// import {FullScreen} from 'react-full-screen';
+// import windowSize from 'react-window-size';
+import {
+  useWindowSize,
+  useWindowWidth,
+  useWindowHeight
+} from '@react-hook/window-size';
 
 import Navigation from './Navigation';
 import NavBar from './NavBar';
@@ -18,6 +23,7 @@ import { verify, logout } from '../../../api/index';
 import Footer from '../../../components/Footer/Footer';
 
 function AdminLayout(props) {
+  const width = useWindowWidth();
   let [userdata, setUserdata] = useState({
     error: '',
     success: false,
@@ -65,8 +71,8 @@ function AdminLayout(props) {
 
   useEffect(() => {
     if (
-      props.windowWidth >= 992 &&
-      props.windowWidth <= 1024 &&
+      width >= 992 &&
+      width <= 1024 &&
       props.layout !== 'horizontal'
     ) {
       props.onComponentWillMount();
@@ -99,15 +105,16 @@ function AdminLayout(props) {
     if (
       !document.fullscreenElement &&
       !document.webkitIsFullScreen &&
-      !document.mozFullScreen &&
-      !document.msFullscreenElement
+      !document.mozFullScreen 
+      // &&
+      // !document.msFullscreenElement
     ) {
       props.onFullScreenExit();
     }
   };
 
   const mobileOutClickHandler = () => {
-    if (props.windowWidth < 992 && props.collapseMenu) {
+    if (width < 992 && props.collapseMenu) {
       props.onComponentWillMount();
     }
   };
@@ -185,7 +192,7 @@ function AdminLayout(props) {
   } else {
     return (
       <Aux>
-        <Fullscreen enabled={props.isFullScreen}>
+        {/* <FullScreen enabled={props.isFullScreen}> */}
           <Navigation userdata={userdata.data} />
           <NavBar
             userdata={userdata.data}
@@ -214,7 +221,7 @@ function AdminLayout(props) {
             </div>
           </div>
           <Footer />
-        </Fullscreen>
+        {/* </FullScreen> */}
       </Aux>
     );
   }
@@ -240,4 +247,4 @@ const mapDispatchToProps = (dispatch) => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(windowSize(AdminLayout));
+)(AdminLayout);

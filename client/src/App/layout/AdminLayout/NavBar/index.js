@@ -9,7 +9,6 @@ import { Link } from 'react-router-dom';
 import * as actionTypes from '../../../../store/actions';
 import NavSearch from './NavLeft/NavSearch';
 import {
-  is_TaiGer_Student,
   is_TaiGer_role
 } from '../../../../Demo/Utils/checking-functions';
 

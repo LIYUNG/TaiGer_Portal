@@ -67,7 +67,7 @@ const EditorNew = (props) => {
       //   console.log('Editor.js is ready to work!');
       // },
       readOnly: props.readOnly,
-      autofocus: true,
+      // autofocus: true,
       minHeight: 30,
       tools: {
         header: {

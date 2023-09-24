@@ -1,6 +1,12 @@
 import React, { Component } from 'react';
 import { Dropdown, Card, Collapse } from 'react-bootstrap';
-import windowSize from 'react-window-size';
+// import windowSize from 'react-window-size';
+import {
+  useWindowSize,
+  useWindowWidth,
+  useWindowHeight
+} from '@react-hook/window-size';
+
 
 import Aux from '../../hoc/_Aux';
 import DEMO from '../../store/constant';
@@ -116,8 +122,8 @@ class MainCard extends Component {
         top: 0,
         left: 0,
         right: 0,
-        width: this.props.windowWidth,
-        height: this.props.windowHeight
+        width: useWindowWidth(),
+        height: useWindowHeight()
       };
     }
 
@@ -154,4 +160,4 @@ class MainCard extends Component {
   }
 }
 
-export default windowSize(MainCard);
+export default MainCard;

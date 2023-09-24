@@ -124,10 +124,10 @@ export default function ResetPassword(props) {
                 <button type="submit" className="btn btn-primary shadow-2 mb-4">
                   Reset
                 </button>
-                <p className="mb-0 text-muted">
+                <p className="mb-0 text-light">
                   Already have an account?{' '}
-                  <NavLink to="/login" className="mb-0 text-muted">
-                    Login
+                  <NavLink to="/login">
+                    <p className="text-info">Login</p>
                   </NavLink>
                 </p>
               </div>

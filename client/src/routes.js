@@ -87,7 +87,7 @@ const CVMLRL_Modification_Thread = React.lazy(() =>
 const SingleStudentPage = React.lazy(() =>
   import('./Demo/StudentDatabase/SingleStudentPage')
 );
-const GoogleMap = React.lazy(() => import('./Demo/Maps/GoogleMap/index'));
+// const GoogleMap = React.lazy(() => import('./Demo/Maps/GoogleMap/index'));
 
 const DocsApplication = React.lazy(() => import('./Demo/Documentation/index'));
 const InternaldocsPage = React.lazy(() =>
@@ -220,12 +220,12 @@ const routes = [
     name: 'SingleStudentPage',
     component: SingleStudentPage
   },
-  {
-    path: '/maps/google-map',
-    exact: true,
-    name: 'Google Map',
-    component: GoogleMap
-  },
+  // {
+  //   path: '/maps/google-map',
+  //   exact: true,
+  //   name: 'Google Map',
+  //   component: GoogleMap
+  // },
   {
     path: '/docs/taiger/internal',
     exact: true,

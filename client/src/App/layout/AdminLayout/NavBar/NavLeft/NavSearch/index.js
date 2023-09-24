@@ -162,7 +162,7 @@ const NavSearch = (props) => {
       <div className="search-container" ref={searchContainerRef}>
         {/* <input
           type="text"
-          className="search-input"
+          className="search-input form-control"
           placeholder="Search..."
           value={searchTerm}
           onMouseDown={handleInputBlur}

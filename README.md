@@ -58,20 +58,20 @@ TaiGer Portal is running on Node.js. Make sure you already have Node environment
 In order to run TaiGer Portal on the localhost, one terminal should run backend server (make sure MongoDB is available as it will connect MongoDB and open the port) while another run frontend server.
 
 ## Important Librariby version
-* Nodejs v12
-* MongoDB v4.4
+* Nodejs v18
+* MongoDB v5.9
 
 ## Run Frontend
 ### Installation (One-time setup)
 
 Check your node -v 
 ```
-node -v #make sure the output is 12.22.12
+node -v #make sure the output is 18.18.0
 ```
-If your node -v is not v.12.22.12, do the following (The reason is in package.json, the node-sass v4.12.0 only compatible with node version v12.22.12, for compatibility check this [table](https://www.npmjs.com/package/node-sass))
+If your node -v is not v.18.18.0, do the following (The reason is in package.json, the node-sass v4.12.0 only compatible with node version v18.18.0, for compatibility check this [table](https://www.npmjs.com/package/node-sass))
 ```
 sudo npm install -g n
-n 12.22.22
+n 18.18.0
 ```
 
 ```

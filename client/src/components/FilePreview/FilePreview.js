@@ -1,6 +1,5 @@
 import React from 'react';
 // import request from '../../api/request';
-// import FileViewer from 'react-file-viewer';
 // import { Document, Page } from 'react-pdf/dist/esm/entry.webpack5';
 // import FileViewer from 'react-pdf';
 import { BASE_URL } from '../../api/request';

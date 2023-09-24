@@ -1,7 +1,6 @@
 import React from 'react';
 import { Row, Col, Tabs, Tab, Table, Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-// import Card from '../../../App/components/MainCard';
 import TabStudBackgroundDashboard from '../MainViewTab/StudDocsOverview/TabStudBackgroundDashboard';
 import TabProgramConflict from '../MainViewTab/ProgramConflict/TabProgramConflict';
 import StudentsAgentEditor from '../MainViewTab/StudentsAgentEditor/StudentsAgentEditor';

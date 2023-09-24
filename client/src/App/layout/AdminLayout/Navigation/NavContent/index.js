@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import PerfectScrollbar from "react-perfect-scrollbar";
-import windowSize from "react-window-size";
 
 import Aux from "../../../../../hoc/_Aux";
 import NavGroup from "./NavGroup";
@@ -129,5 +128,5 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export default withRouter(
-  connect(mapStateToProps, mapDispatchToProps)(windowSize(NavContent))
+  connect(mapStateToProps, mapDispatchToProps)(NavContent)
 );

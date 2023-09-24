@@ -44,14 +44,15 @@ def CheckTemplateFormat(df_transcript, analysis_lang):
     if analysis_lang == 'zh':
         if 'course_chinese' not in df_transcript.columns or 'credits' not in df_transcript.columns or 'grades' not in df_transcript.columns:
             print("Error: Please check the student's transcript xlsx file.")
-            print(" There must be course_chinese, credits and grades in student's course excel file.")
+            print(
+                " There must be course_chinese, credits and grades in student's course excel file.")
             sys.exit(1)
     elif analysis_lang == 'en':
         if 'course_english' not in df_transcript.columns or 'credits' not in df_transcript.columns or 'grades' not in df_transcript.columns:
             print("Error: Please check the student's transcript xlsx file.")
-            print(" There must be course_english, credits and grades in student's course excel file.")
+            print(
+                " There must be course_english, credits and grades in student's course excel file.")
             sys.exit(1)
-
 
 
 def CheckDBFormat(df_database):
@@ -85,11 +86,28 @@ def DataPreparation(df_database, df_transcript):
         df_transcript = Naming_Convention_ZH(df_transcript)
     if 'course_english' in df_transcript.columns:
         df_transcript = Naming_Convention_EN(df_transcript)
-    
-    df_transcript['credits'] = df_transcript['credits'].astype(float, errors='ignore')
-    df_transcript['grades'] = df_transcript['grades'].astype(float, errors='ignore')
+
+    df_transcript = Credits_Preprocessing(df_transcript)
+    df_transcript = Grades_Preprocessing(df_transcript)
+
+    df_transcript['credits'] = df_transcript['credits'].astype(
+        float, errors='ignore')
+    df_transcript['grades'] = df_transcript['grades'].astype(
+        float, errors='ignore')
     print("Prepared data successfully.")
     return df_database, df_transcript
+
+
+def Credits_Preprocessing(df_course):
+    # modify data in the same
+    df_course['credits'] = df_course['credits'].fillna(0)
+    return df_course
+
+
+def Grades_Preprocessing(df_course):
+    # modify data in the same
+    df_course['grades'] = df_course['grades'].fillna('-')
+    return df_course
 
 
 def Naming_Convention_ZH(df_course):
@@ -156,8 +174,10 @@ def CoursesToProgramCategoryMapping(df_PROG_SPEC_CATES, program_category_map, tr
         if isSuggestionCourse:
             if idx != len(df_transcript_array_temp) - 1 and idx_temp == len(df_PROG_SPEC_CATES) - 1:
                 continue
-
-        df_PROG_SPEC_CATES[idx_temp] = pd.concat([df_PROG_SPEC_CATES[idx_temp],trans_cat])
+        # print(trans_cat)
+        # df_trans_cat = pd.DataFrame(data=trans_cat, index=[0])
+        df_PROG_SPEC_CATES[idx_temp] = pd.concat(
+            [df_PROG_SPEC_CATES[idx_temp], trans_cat])
     return df_PROG_SPEC_CATES
 
 
@@ -165,46 +185,55 @@ def CoursesToProgramCategoryMapping(df_PROG_SPEC_CATES, program_category_map, tr
 def CourseSorting(df_transcript, df_category_data, transcript_sorted_group_map, column_name_en_zh):
     # print(df_transcript[column_name_en_zh])
     # df_transcript = df_transcript.dropna()
-    df_transcript['grades'] = df_transcript['grades'].astype(float, errors='ignore')
+    df_transcript['grades'] = df_transcript['grades'].astype(
+        float, errors='ignore')
     for idx, subj in enumerate(df_transcript[column_name_en_zh]):
         if subj == '-':
             continue
         for idx2, cat in enumerate(transcript_sorted_group_map):
             # Put the rest of courses to Others
-            if(idx2 == len(transcript_sorted_group_map) - 1):
+            if (idx2 == len(transcript_sorted_group_map) - 1):
                 temp_string = df_transcript['grades'][idx]
-                temp0 = 0;
+                temp0 = 0
                 if temp_string is None:
                     temp0 = {cat: subj, 'credits': df_transcript['credits'][idx],
-                        'grades': df_transcript['grades'][idx]}
+                             'grades': df_transcript['grades'][idx]}
                 else:
                     if isfloat(temp_string):
                         temp0 = {cat: subj, 'credits': df_transcript['credits'][idx],
-                            'grades': float(df_transcript['grades'][idx])}
+                                 'grades': float(df_transcript['grades'][idx])}
                     else:
                         temp0 = {cat: subj, 'credits': df_transcript['credits'][idx],
-                            'grades': df_transcript['grades'][idx]}
-                df_category_data[idx2] = pd.concat([df_category_data[idx2],temp0])
+                                 'grades': df_transcript['grades'][idx]}
+                # print(df_category_data[idx2])
+                df_temp0 = pd.DataFrame(data=temp0, index=[0])
+                if not df_temp0.empty:
+                    df_category_data[idx2] = pd.concat(
+                        [df_category_data[idx2], df_temp0])
                 continue
 
             # filter subject by keywords. and exclude subject by anti_keywords
             if any(keywords in subj for keywords in transcript_sorted_group_map[cat][KEY_WORDS] if not any(anti_keywords in subj for anti_keywords in transcript_sorted_group_map[cat][ANTI_KEY_WORDS])):
                 temp_string = df_transcript['grades'][idx]
+                temp = 0
                 if temp_string is None:
                     temp = {cat: subj, 'credits': float(df_transcript['credits'][idx]),
-                        'grades': df_transcript['grades'][idx]}
+                            'grades': df_transcript['grades'][idx]}
                 else:
                     # failed subject not count
-                    if((isfloat(temp_string) and float(temp_string) < 60 and float(temp_string) and float(temp_string) > 4.5)
-                        or "Fail" in str(temp_string) or "W" in str(temp_string) or "F" in str(temp_string) or "fail" in str(temp_string) or "退選" in str(temp_string) or "withdraw" in str(temp_string)):
+                    if ((isfloat(temp_string) and float(temp_string) < 60 and float(temp_string) and float(temp_string) > 4.5)
+                            or "Fail" in str(temp_string) or "W" in str(temp_string) or "F" in str(temp_string) or "fail" in str(temp_string) or "退選" in str(temp_string) or "withdraw" in str(temp_string)):
                         continue
                     if isfloat(temp_string):
                         temp = {cat: subj, 'credits': float(df_transcript['credits'][idx]),
-                        'grades': float(df_transcript['grades'][idx])}
+                                'grades': float(df_transcript['grades'][idx])}
                     else:
                         temp = {cat: subj, 'credits': float(df_transcript['credits'][idx]),
-                            'grades': df_transcript['grades'][idx]}
-                df_category_data[idx2] = pd.concat([df_category_data[idx2],temp])
+                                'grades': df_transcript['grades'][idx]}
+                df_temp = pd.DataFrame(data=temp, index=[0])
+                if not df_temp.empty:
+                    df_category_data[idx2] = pd.concat(
+                        [df_category_data[idx2], df_temp])
                 break
     return df_category_data
 
@@ -215,31 +244,42 @@ def DatabaseCourseSorting(df_database, df_category_courses_sugesstion_data, tran
             continue
         for idx2, cat in enumerate(transcript_sorted_group_map):
             # Put the rest of courses to Others
-            if(idx2 == len(transcript_sorted_group_map) - 1):
+            if (idx2 == len(transcript_sorted_group_map) - 1):
                 temp = {'建議修課': subj}
-                df_category_courses_sugesstion_data[idx2] = pd.concat([df_category_courses_sugesstion_data[idx2], temp])
+                df_temp = pd.DataFrame(data=temp, index=[0])
+                df_category_courses_sugesstion_data[idx2] = pd.concat(
+                    [df_category_courses_sugesstion_data[idx2], df_temp])
                 continue
 
             # filter database by keywords. and exclude subject by anti_keywords
             if any(keywords in subj for keywords in transcript_sorted_group_map[cat][KEY_WORDS] if not any(anti_keywords in subj for anti_keywords in transcript_sorted_group_map[cat][ANTI_KEY_WORDS])):
                 temp = {'建議修課': subj}
-                df_category_courses_sugesstion_data[idx2] = pd.concat([df_category_courses_sugesstion_data[idx2],temp])
+                df_temp = pd.DataFrame(data=temp, index=[0])
+                df_category_courses_sugesstion_data[idx2] = pd.concat(
+                    [df_category_courses_sugesstion_data[idx2], df_temp])
                 break
     return df_category_courses_sugesstion_data
 
 
 def AppendCreditsCount(df_PROG_SPEC_CATES, program_category):
     for idx, trans_cat in enumerate(df_PROG_SPEC_CATES):
-        df_PROG_SPEC_CATES[idx]['credits'] = df_PROG_SPEC_CATES[idx]['credits'].astype(float, errors='ignore')
+        df_PROG_SPEC_CATES[idx]['credits'] = df_PROG_SPEC_CATES[idx]['credits'].astype(
+            float, errors='ignore')
         credit_sum = df_PROG_SPEC_CATES[idx]['credits'].sum()
         category_credits_sum = {
             trans_cat.columns[0]: "sum", 'credits': credit_sum}
-        df_PROG_SPEC_CATES[idx] = pd.concat([df_PROG_SPEC_CATES[idx], category_credits_sum])
+        df_category_credits_sum = pd.DataFrame(
+            data=category_credits_sum, index=[0])
+        df_PROG_SPEC_CATES[idx] = pd.concat(
+            [df_PROG_SPEC_CATES[idx], df_category_credits_sum])
         # print(df_PROG_SPEC_CATES[idx]['credits'])
         # print(credit_sum)
         category_credits_sum = {trans_cat.columns[0]: "ECTS轉換", 'credits': 1.5 *
                                 credit_sum, 'Required_ECTS': program_category[idx]['Required_ECTS']}
-        df_PROG_SPEC_CATES[idx] = pd.concat([df_PROG_SPEC_CATES[idx], category_credits_sum])
+        df_category_credits_sum = pd.DataFrame(
+            data=category_credits_sum, index=[0])
+        df_PROG_SPEC_CATES[idx] = pd.concat(
+            [df_PROG_SPEC_CATES[idx], df_category_credits_sum])
     return df_PROG_SPEC_CATES
 
 
@@ -312,7 +352,7 @@ def Classifier(program_idx, obj_arr, abbrev, env_file_path, basic_classification
     print("Checked database successfully.")
 
     # Englist_Version = isOutputEnglish(df_transcript)
-    #TODO: data validation
+    # TODO: data validation
 
     # Data preparation
     df_database, df_transcript = DataPreparation(df_database, df_transcript)
@@ -322,7 +362,7 @@ def Classifier(program_idx, obj_arr, abbrev, env_file_path, basic_classification
 
     if analysis_language == 'en':
         transcript_sorted_group_map = basic_classification_en
-    elif analysis_language == 'zh': # Traditional Chinese
+    elif analysis_language == 'zh':  # Traditional Chinese
         transcript_sorted_group_map = basic_classification_zh
     else:
         transcript_sorted_group_map = basic_classification_zh
@@ -403,15 +443,16 @@ def Classifier(program_idx, obj_arr, abbrev, env_file_path, basic_classification
         data = output.getvalue()
 
     BASEDIR = os.path.abspath(os.path.dirname(__file__))
-    full_path = os.path.join(BASEDIR, '..\..\.env.development') # TODO: change in production
+    # TODO: change in production
+    full_path = os.path.join(BASEDIR, '..\..\.env.development')
     load_dotenv(full_path)
 
-    AWS_S3_BUCKET_NAME= os.environ.get("AWS_S3_BUCKET_NAME")
-    AWS_S3_ACCESS_KEY_ID= os.environ.get("AWS_S3_ACCESS_KEY_ID")
-    AWS_S3_ACCESS_KEY= os.environ.get("AWS_S3_ACCESS_KEY")
+    AWS_S3_BUCKET_NAME = os.environ.get("AWS_S3_BUCKET_NAME")
+    AWS_S3_ACCESS_KEY_ID = os.environ.get("AWS_S3_ACCESS_KEY_ID")
+    AWS_S3_ACCESS_KEY = os.environ.get("AWS_S3_ACCESS_KEY")
     session = boto3.Session(
-    aws_access_key_id=AWS_S3_ACCESS_KEY_ID,
-    aws_secret_access_key=AWS_S3_ACCESS_KEY,
+        aws_access_key_id=AWS_S3_ACCESS_KEY_ID,
+        aws_secret_access_key=AWS_S3_ACCESS_KEY,
     )
     s3 = session.resource('s3')
     transcript_path = studentId + '/analysed_transcript_' + student_name + '.xlsx'

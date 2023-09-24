@@ -294,16 +294,14 @@ class ApplicationProgress extends React.Component {
         <tr>
           <td>
             {/* If my own student */}
-            {showButtonIfMyStudent(this.props.user, this.props.student) &&
-              this.props.user.role !== 'Editor' &&
-              !this.props.isArchivPage && (
-                <Link
-                  to={'/student-applications/' + this.props.student._id}
-                  style={{ textDecoration: 'none' }}
-                >
-                  <AiFillEdit color="grey" size={16} />
-                </Link>
-              )}
+            {this.props.user.role !== 'Editor' && !this.props.isArchivPage && (
+              <Link
+                to={'/student-applications/' + this.props.student._id}
+                style={{ textDecoration: 'none' }}
+              >
+                <AiFillEdit color="grey" size={16} />
+              </Link>
+            )}
           </td>
           {this.props.user.role !== 'Student' ? (
             <td title="Selected / Should be selected">

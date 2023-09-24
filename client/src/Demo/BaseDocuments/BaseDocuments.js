@@ -152,27 +152,33 @@ class BaseDocuments extends React.Component {
                 text="light"
               >
                 <thead>
-                  <tr className="my-0 mx-0 text-light">
+                  <tr
+                    className="my-0 mx-0 text-light"
+                    style={{
+                      color: 'white'
+                    }}
+                  >
                     <th
                       className="headcol"
                       style={{
-                        background: 'black'
+                        background: 'black',
+                        color: 'white'
                       }}
                     >
                       First-, Last <br /> Name
                     </th>
                     <th
                       style={{
-                        background: 'black',
-                        color: 'black'
+                        background: 'black'
                       }}
                     >
-                      First-, Last Na
+                      {/* First-, Last Name */}
                     </th>
                     {profile_list_keys.map((doc_name, index) => (
                       <th
                         style={{
-                          background: 'black'
+                          background: 'black',
+                          color: 'white'
                         }}
                         key={index}
                         // style={spinner_style2}

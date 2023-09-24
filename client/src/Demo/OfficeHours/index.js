@@ -893,7 +893,7 @@ class OfficeHours extends React.Component {
                         title={'Info:'}
                         path={'/'}
                         text={
-                          <>在您目前預定的時段過後，您將可以再次預約時段。</>
+                          <>在您目前預訂的時段過後，您將可以再次預約時段。</>
                         }
                         link_name={''}
                         removeBanner={(a, b) => {}}

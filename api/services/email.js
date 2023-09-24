@@ -1911,28 +1911,25 @@ const MeetingConfirmationReminderEmail = async (recipient, payload) => {
 
 <p><b>${payload.taiger_user_firstname} - ${
     payload.taiger_user_lastname
-  }</b> 預訂了一個討論時段： </p>
-<p><b>${payload.meeting_time}</b></p>
+  }</b> 預訂了一個討論時段。</p>
 
 <p>請上去 <a href="${
     payload.role === 'Student'
       ? AGENT_CALENDAR_EVENTS_URL(recipient.id)
       : STUDENT_CALENDAR_EVENTS_URL(recipient.id)
-  }">TaiGer Meeting Calendar</a> 並<b>確認</b>討論內容和時間。</p>
+  }">TaiGer Meeting Calendar</a> 並<b>確認</b>討論內容和時間，才能啟用 meeting 連結。</p>
 
 <p>${SPLIT_LINE}</p>
 
 <p>${payload.taiger_user_firstname} - ${
     payload.taiger_user_lastname
-  } booked a meeting time on:</p>
-
-<p><b>${payload.meeting_time}</b></p>
+  } booked a meeting time.</p>
 
 <p>Please go to <a href="${
     payload.role === 'Student'
       ? AGENT_CALENDAR_EVENTS_URL(recipient.id)
       : STUDENT_CALENDAR_EVENTS_URL(recipient.id)
-  }">TaiGer Meeting Calendar</a> and <b>Confirm</b> the time。</p>
+  }">TaiGer Meeting Calendar</a> and <b>Confirm</b> the time in order to activate the meeting link.</p>
 
 <p>${TAIGER_SIGNATURE}</p>
 
@@ -1982,8 +1979,7 @@ const MeetingReminderEmail = async (recipient, payload) => {
 
 <p><b>${payload.taiger_user_firstname} - ${
     payload.taiger_user_lastname
-  }</b> 預訂了一個討論時段： </p>
-<p><b>${payload.meeting_time}</b></p>
+  }</b> 預訂了一個討論時段。 </p>
 
 <p> 請於該時間準時點擊以下連結： </p>
 
@@ -1998,9 +1994,7 @@ const MeetingReminderEmail = async (recipient, payload) => {
 
 <p>${payload.taiger_user_firstname} - ${
     payload.taiger_user_lastname
-  } booked a meeting time on:</p>
-
-<p><b>${payload.meeting_time}</b></p>
+  } booked a meeting time. </p>
 
 <p> Jitsi Meet Meeting link: <a href="${JITSI_MEET_URL(
     payload.student_id

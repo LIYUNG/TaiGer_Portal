@@ -7,11 +7,27 @@ import {
   NewlineText
 } from '../Utils/checking-functions';
 import { convertDate, program_fields } from '../Utils/contants';
+import Banner from '../../components/Banner/Banner';
+import DEMO from '../../store/constant';
 
 class SingleProgramView extends React.Component {
   render() {
     return (
       <>
+        <Row>
+          <Banner
+            ReadOnlyMode={true}
+            bg={'primary'}
+            to={`${DEMO.BASE_DOCUMENTS_LINK}`}
+            title={'Info:'}
+            text={
+              'TaiGer Portal 網站上的學程資訊主要為管理申請進度為主，學校學程詳細資訊仍以學校網站為主。'
+            }
+            link_name={''}
+            removeBanner={() => {}}
+            notification_key={''}
+          />
+        </Row>
         <Row>
           <Col md={is_TaiGer_role(this.props.user) ? 8 : 12}>
             <Card>
@@ -216,7 +232,9 @@ class SingleProgramView extends React.Component {
                 <Card.Header>
                   <Card.Title>TaiGer Program Assistant</Card.Title>
                   <Card.Body>
-                    <Button onClick={this.props.programListAssistant}>Fetch</Button>
+                    <Button onClick={this.props.programListAssistant}>
+                      Fetch
+                    </Button>
                   </Card.Body>
                 </Card.Header>
               </Card>

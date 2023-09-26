@@ -7,7 +7,7 @@ ALL_DIFFERENTIATE_KEY_WORDS = 2
 ##############
 # 物理
 GENERAL_PHYSICS_KEY_WORDS = ['物理']
-GENERAL_PHYSICS_ANTI_KEY_WORDS = ['固態', '半導體', '元件', '量子', '凝態', '核子', '天文', '分子', '原子',
+GENERAL_PHYSICS_ANTI_KEY_WORDS = ['固態', '生物', '半導體', '元件', '量子', '凝態', '核子', '天文', '分子', '原子',
                                   '實驗', '史', '服務', '冶金', '生活', '車輛', '通識', '化學']
 GENERAL_PHYSICS_KEY_WORDS_EN = ['physics']
 GENERAL_PHYSICS_ANTI_KEY_WORDS_EN = [
@@ -22,7 +22,7 @@ EE_ADVANCED_PHYSICS_ANTI_KEY_WORDS_EN = [
 
 # 物理實驗
 PHYSICS_EXP_KEY_WORDS = ['物理']
-PHYSICS_EXP_ANTI_KEY_WORDS = ['固態', '半導體', '元件', '量子', '凝態', '核子', '天文', '分子', '原子',
+PHYSICS_EXP_ANTI_KEY_WORDS = ['固態', '生物', '半導體', '元件', '量子', '凝態', '核子', '天文', '分子', '原子',
                               '史', '服務', '冶金', '生活', '車輛', '通識', '化學']
 PHYSICS_EXP_KEY_WORDS_EN = ['physics']
 PHYSICS_EXP_ANTI_KEY_WORDS_EN = ['semicondu', '元件']
@@ -71,10 +71,10 @@ MTL_CHEMISTRY_KEY_WORDS_EN = ['chemi']
 MTL_CHEMISTRY_ANTI_KEY_WORDS_EN = [
     'semiconductor', 'device', 'experi', '車輛', '通識']
 
-BOE_GENERAL_CHEMISTRY_KEY_WORDS = ['普通化學', '化學原理', '化學原理實驗']
-BOE_GENERAL_CHEMISTRY_ANTI_KEY_WORDS = ['asdgladfj;l', '管理', '文明', '服務', '微積分']
-BOE_GENERAL_CHEMISTRY_KEY_WORDS_EN = ['general checmis']
-BOE_GENERAL_CHEMISTRY_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
+GENERAL_CHEMISTRY_KEY_WORDS = ['普通化學', '化學原理', '化學動力', '化學原理實驗']
+GENERAL_CHEMISTRY_ANTI_KEY_WORDS = ['asdgladfj;l', '管理', '文明', '服務', '微積分']
+GENERAL_CHEMISTRY_KEY_WORDS_EN = ['general checmis']
+GENERAL_CHEMISTRY_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
 
 # 化學實驗
 MTL_CHEMISTRY_EXP_KEY_WORDS = ['化學']
@@ -83,7 +83,7 @@ MTL_CHEMISTRY_EXP_KEY_WORDS_EN = ['chemi']
 MTL_CHEMISTRY_EXP_ANTI_KEY_WORDS_EN = ['semiconductor', 'device', '車輛']
 
 # 有機化學
-ORGANIC_CHEMISTRY_KEY_WORDS = ['有機化學', '有機化學實驗']
+ORGANIC_CHEMISTRY_KEY_WORDS = ['有機化學', '有機反應', '有機化學實驗']
 ORGANIC_CHEMISTRY_ANTI_KEY_WORDS = ['asdgladfj;l', '管理', '文明', '服務', '微積分']
 ORGANIC_CHEMISTRY_KEY_WORDS_EN = ['organic chemis']
 ORGANIC_CHEMISTRY_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
@@ -101,14 +101,34 @@ PHYSICAL_CHEMISTRYY_ANTI_KEY_WORDS = ['asdgladfj;l']
 PHYSICAL_CHEMISTRYY_KEY_WORDS_EN = ['physical chemis']
 PHYSICAL_CHEMISTRYY_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
 
-# 生物化學
-BOE_BIO_CHEMISTRY_KEY_WORDS = ['生物化學']
-BOE_BIO_CHEMISTRY_ANTI_KEY_WORDS = ['asdgladfj;l']
-BOE_BIO_CHEMISTRY_KEY_WORDS_EN = ['biochemistr']
-BOE_BIO_CHEMISTRY_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
+# 光譜學
+SPECTROSCOPY_KEY_WORDS = ['光譜', '核磁共振']
+SPECTROSCOPY_ANTI_KEY_WORDS = ['asdgladfj;l']
+SPECTROSCOPY_KEY_WORDS_EN = ['spectro', 'spectra', 'nmr']
+SPECTROSCOPY_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
+
+# 生物物理化學
+BIOPHYSICAL_CHEMISTRY_KEY_WORDS = ['生物物理化學']
+BIOPHYSICAL_CHEMISTRY_ANTI_KEY_WORDS = ['asdgladfj;l']
+BIOPHYSICAL_CHEMISTRY_KEY_WORDS_EN = ['biophysical chemis']
+BIOPHYSICAL_CHEMISTRY_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
+
+# 生物化學一
+BIO_CHEMISTRY_ONE_KEY_WORDS = ['生物化學', '酵素化學']
+BIO_CHEMISTRY_ONE_ANTI_KEY_WORDS = ['asdgladfj;l', '生物物理化學']
+BIO_CHEMISTRY_ONE_KEY_WORDS_EN = ['biochemistr']
+BIO_CHEMISTRY_ONE_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
+
+# 生物化二
+BIO_CHEMISTRY_TWO_KEY_WORDS = ['內分泌', '結構生化', '蛋白質化學', '蛋白質結構',
+                               '合成生物', '生物技術', '生醫分析', '生物統計', '生物物理', '酵素化學', '組織工程']
+BIO_CHEMISTRY_TWO_ANTI_KEY_WORDS = ['asdgladfj;l', '生物物理化學']
+BIO_CHEMISTRY_TWO_KEY_WORDS_EN = ['biochemistr']
+BIO_CHEMISTRY_TWO_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
 
 
-BOE_ADVANCED_CHEMISTRY_KEY_WORDS = ['物理化學', '分析化學', '高分子']
+# 進階化學
+BOE_ADVANCED_CHEMISTRY_KEY_WORDS = ['分析化學', '高分子', '量子化學']
 BOE_ADVANCED_CHEMISTRY_ANTI_KEY_WORDS = [
     'asdgladfj;l']
 BOE_ADVANCED_CHEMISTRY_KEY_WORDS_EN = ['analytical chemist']
@@ -143,7 +163,7 @@ MGM_MATH_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
 
 # 機率
 MATH_PROB_KEY_WORDS = ['機率', '統計', '隨機']
-MATH_PROB_ANTI_KEY_WORDS = ['asdgladfj;l', '學習', '管理', '量化']
+MATH_PROB_ANTI_KEY_WORDS = ['asdgladfj;l', '學習', '管理', '量化', '生物']
 MATH_PROB_KEY_WORDS_EN = [
     'probability', 'statistic', 'random', 'stochasti']
 MATH_PROB_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
@@ -650,11 +670,37 @@ DATA_SCIENCE_KEY_WORDS_EN = [
 DATA_SCIENCE_ANTI_KEY_WORDS_EN = ['asdgladfj;l', 'system']
 
 # 生物學
-BIOLOGY_KEY_WORDS = ['生物學', '解剖學', '生理學', '遺傳學', '普通生物',
-                     '細胞生物', '生物統計', '微生物', '分子生物', '免疫', '生物動力']
-BIOLOGY_ANTI_KEY_WORDS = ['asdgladfj;l', '力學']
+BIOLOGY_KEY_WORDS = ['生物學', '解剖學', '生理學', '普通生物', '生物動力']
+BIOLOGY_ANTI_KEY_WORDS = ['asdgladfj;l', '力學', '微', '細胞', '分子']
 BIOLOGY_KEY_WORDS_EN = ['material']
 BIOLOGY_ANTI_KEY_WORDS_EN = ['asdgladfj;l', 'mechanics']
+
+# 基因遺傳學
+GENE_KEY_WORDS = ['遺傳學', '基因體']
+GENE_ANTI_KEY_WORDS = ['asdgladfj;l', '力學', '分子']
+GENE_KEY_WORDS_EN = ['material']
+GENE_ANTI_KEY_WORDS_EN = ['asdgladfj;l', 'mechanics']
+
+# 分子生物學
+MOLECULAR_BIOLOGY_KEY_WORDS = [
+    '病毒', '癌', '解剖學', '細胞生物', '生物統計', '細胞定序', '微生物', '分子生物', '免疫', '再生醫學', '生物動力']
+MOLECULAR_BIOLOGY_ANTI_KEY_WORDS = ['asdgladfj;l']
+MOLECULAR_BIOLOGY_KEY_WORDS_EN = ['material']
+MOLECULAR_BIOLOGY_ANTI_KEY_WORDS_EN = ['asdgladfj;l', 'mechanics']
+
+# 生物工程
+BIO_ENGINEERING_KEY_WORDS = ['遺傳工程', '基因工程']
+BIO_ENGINEERING_ANTI_KEY_WORDS = ['asdgladfj;l']
+BIO_ENGINEERING_KEY_WORDS_EN = ['material']
+BIO_ENGINEERING_ANTI_KEY_WORDS_EN = ['asdgladfj;l', 'mechanics']
+
+# 化學工程
+CHEMICAL_ENGINEERING_KEY_WORDS = [
+    '單元操作', '生物程序', '生化工程', '程序設計', '程序控制', '化學反應工程', '化學工業程序', '化學工程實驗']
+CHEMICAL_ENGINEERING_ANTI_KEY_WORDS = ['asdgladfj;l']
+CHEMICAL_ENGINEERING_KEY_WORDS_EN = ['material']
+CHEMICAL_ENGINEERING_ANTI_KEY_WORDS_EN = ['asdgladfj;l', 'mechanics']
+
 
 # 生醫
 MEDICAL_KEY_WORDS = ['醫學工程', '臨床工程',

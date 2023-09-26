@@ -181,6 +181,7 @@ export const time_slots = [
 ];
 export const study_group = [
   { key: 'boe', value: 'Biomedical Engineering' },
+  { key: 'cmy', value: 'Chemistry' },
   { key: 'cs', value: 'Computer Science' },
   { key: 'dsbi', value: 'Data Science/Business Intelligence' },
   { key: 'ee', value: 'Eletrical/Electronics Engineering' },

@@ -8,7 +8,8 @@ import { BASE_URL } from '../../api/request';
 import {
   showButtonIfMyStudent,
   is_TaiGer_AdminAgent,
-  DocumentStatus
+  DocumentStatus,
+  check_uni_assist_needed
 } from '../Utils/checking-functions';
 import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
@@ -596,12 +597,21 @@ class UniAssistListCard extends React.Component {
             res_modal_message={res_modal_message}
           />
         )}
-        <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
-          <Card.Body>
-            The following program needs uni-assist process:
-            {app_name}
-          </Card.Body>
-        </Card>
+        {check_uni_assist_needed(this.state.student) ? (
+          <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
+            <Card.Body>
+              The following program needs uni-assist process, please check if paid, uploaded document and upload VPD here:
+              {app_name}
+            </Card.Body>
+          </Card>
+        ) : (
+          <Card>
+            <Card.Body>
+              Based on the applications, Uni-Assist is NOT needed.
+            </Card.Body>
+          </Card>
+        )}
+
         <Modal
           show={this.state.deleteVPDFileWarningModel}
           onHide={this.closeWarningWindow}

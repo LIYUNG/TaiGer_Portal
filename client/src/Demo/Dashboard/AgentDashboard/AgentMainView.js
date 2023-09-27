@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { Row, Col, Table, Tabs, Tab, Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { BsExclamationTriangle, BsX } from 'react-icons/bs';
@@ -20,19 +20,21 @@ import {
   is_any_base_documents_uploaded,
   is_any_programs_ready_to_submit,
   is_any_vpd_missing,
-  programs_refactor
+  programs_refactor,
+  progressBarCounter
 } from '../../Utils/checking-functions';
 import CVAssignTasks from '../MainViewTab/AgentTasks/CVAssignTasks';
 import NoProgramStudentTasks from '../MainViewTab/AgentTasks/NoProgramStudentTasks';
 import NoEnoughDecidedProgramsTasks from '../MainViewTab/AgentTasks/NoEnoughDecidedProgramsTasks';
 import DEMO from '../../../store/constant';
-import StudentOverviewTable from '../../../components/StudentOverviewTable';
+import ApplicationProgressCardBody from '../../../components/ApplicationProgressCard/ApplicationProgressCardBody';
 
 class AgentMainView extends React.Component {
   state = {
     error: '',
     user: this.props.user,
-    notification: this.props.notification
+    notification: this.props.notification,
+    collapsedRows: {}
   };
 
   checkMissingBaseDocument = (students) => {
@@ -105,6 +107,16 @@ class AgentMainView extends React.Component {
         }));
       }
     );
+  };
+
+  handleCollapse = (index) => {
+    this.setState((state) => ({
+      ...state,
+      collapsedRows: {
+        ...this.state.collapsedRows,
+        [index]: !this.state.collapsedRows[index]
+      }
+    }));
   };
   render() {
     const students_agent_editor = this.props.students.map((student, i) => (
@@ -278,27 +290,50 @@ class AgentMainView extends React.Component {
             <Card className="my-2 mx-0 card-with-scroll">
               <Card.Header className="py-0 px-0">
                 <Card.Title className="my-2 mx-2">
-                  Upcoming applications (Decided):
+                  Upcoming Applications (Decided):
                 </Card.Title>
               </Card.Header>
               <Card.Body className="card-scrollable-body">
                 <Table size="sm">
                   <tbody>
                     {applications_arr.map((application, idx) => (
-                      <tr key={idx} className="text-black">
-                        <td>
-                          <b>
-                            <Link
-                              to={`${DEMO.STUDENT_DATABASE_LINK}/${application.student_id}/profile`}
-                            >
-                              {application.firstname_lastname}
-                            </Link>
-                          </b>
-                        </td>
-                        <td>{application.application_deadline}</td>
-                        <td>{application.school}</td>
-                        <td>{application.program_name}</td>
-                      </tr>
+                      <Fragment>
+                        <tr
+                          key={idx}
+                          className="text-black"
+                          onClick={() => this.handleCollapse(idx)}
+                        >
+                          <td>
+                            <b>
+                              <Link
+                                to={`${DEMO.STUDENT_DATABASE_LINK}/${application.student_id}/profile`}
+                              >
+                                {application.firstname_lastname}
+                              </Link>
+                            </b>
+                          </td>
+                          <td>{application.application_deadline}</td>
+                          <td>{application.school}</td>
+                          <td>
+                            {progressBarCounter(
+                              application.student,
+                              application.application
+                            )}
+                            %
+                          </td>
+                          <td>{application.program_name}</td>
+                        </tr>
+                        {this.state.collapsedRows[idx] && (
+                          <tr>
+                            <td colSpan="12">
+                              <ApplicationProgressCardBody
+                                student={application.student}
+                                application={application.application}
+                              />
+                            </td>
+                          </tr>
+                        )}
+                      </Fragment>
                     ))}
                   </tbody>
                 </Table>
@@ -522,42 +557,6 @@ class AgentMainView extends React.Component {
                 </Table>
               </Card.Body>
             </Card>
-          </Col>
-          {/* <Col md={6}>
-            <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
-              <Card.Header>
-                <Card.Title className="my-0 mx-0 text-light">
-                  <BsExclamationTriangle size={18} /> To Do Tasks:
-                </Card.Title>
-              </Card.Header>
-              <Table
-                responsive
-                bordered
-                hover
-                className="my-0 mx-0"
-                variant="dark"
-                text="light"
-                size="sm"
-              >
-                <thead>
-                  <tr>
-                    <th>Tasks</th>
-                    <th>Description</th>
-                    <th>Last Update</th>
-                  </tr>
-                </thead>
-                <tbody>{agent_tasks}</tbody>
-              </Table>
-            </Card>
-          </Col> */}
-        </Row>
-        <Row>
-          <Col md={12}>
-            <StudentOverviewTable
-              students={this.props.students}
-              user={this.props.user}
-              title="My Student Overview"
-            />
           </Col>
         </Row>
         <Row>

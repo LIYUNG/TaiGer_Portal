@@ -671,7 +671,7 @@ DATA_SCIENCE_ANTI_KEY_WORDS_EN = ['asdgladfj;l', 'system']
 
 # 生物學
 BIOLOGY_KEY_WORDS = ['生物學', '解剖學', '生理學', '普通生物', '生物動力']
-BIOLOGY_ANTI_KEY_WORDS = ['asdgladfj;l', '力學', '微', '細胞', '分子']
+BIOLOGY_ANTI_KEY_WORDS = ['asdgladfj;l', '力學', '微', '細胞', '分子', '專題', '討論']
 BIOLOGY_KEY_WORDS_EN = ['material']
 BIOLOGY_ANTI_KEY_WORDS_EN = ['asdgladfj;l', 'mechanics']
 

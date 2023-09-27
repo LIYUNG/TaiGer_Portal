@@ -37,6 +37,14 @@ export default {
               icon: 'feather icon-eye'
             },
             {
+              id: 'my-students-overview',
+              title: 'Student Overview',
+              type: 'item',
+              url: '/students-overview',
+              classes: 'nav-item',
+              icon: 'fa fa-users'
+            },
+            {
               id: 'editor_center',
               title: 'CV/ML/RL Center',
               type: 'item',
@@ -252,10 +260,10 @@ export default {
               icon: 'feather icon-edit-1'
             },
             {
-              id: 'all-students-application-overview',
+              id: 'all-students-overview',
               title: 'Student Overview',
               type: 'item',
-              url: '/students-overview',
+              url: '/students-overview/all',
               classes: 'nav-item',
               icon: 'fa fa-users'
             },

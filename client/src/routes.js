@@ -34,6 +34,9 @@ const CVMLRLDashboard = React.lazy(() =>
 const AllApplicantsOverview = React.lazy(() =>
   import('./Demo/ApplicantsOverview/allStudentIndex')
 );
+const MyStudentOverviewPage = React.lazy(() =>
+  import('./Demo/StudentOverview/MyStudentsOverview')
+);
 const StudentOverviewPage = React.lazy(() =>
   import('./Demo/StudentOverview/index')
 );
@@ -402,6 +405,12 @@ const routes = [
   },
   {
     path: '/students-overview',
+    exact: true,
+    name: '',
+    component: MyStudentOverviewPage
+  },
+  {
+    path: '/students-overview/all',
     exact: true,
     name: '',
     component: StudentOverviewPage

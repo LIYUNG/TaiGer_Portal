@@ -1,5 +1,14 @@
-import React, { Fragment, useState } from 'react';
-import { Row, Col, Table, Card, Tabs, Tab, Collapse } from 'react-bootstrap';
+import React, { Fragment, useEffect, useState } from 'react';
+import {
+  Row,
+  Col,
+  Table,
+  Card,
+  Tabs,
+  Tab,
+  Collapse,
+  Form
+} from 'react-bootstrap';
 import { AiFillEdit } from 'react-icons/ai';
 
 import {
@@ -353,7 +362,9 @@ const AdvancedTable = ({ data, columns, students, user }) => {
   });
   const [collapsedRows, setCollapsedRows] = useState({});
   const [filterText, setFilterText] = useState('');
+  // const [isInProgressOnly, setIsInProgressOnly] = useState(true);
 
+  // useEffect(() => {}, [isInProgressOnly]);
   const handleSort = (key) => {
     let direction = 'ascending';
     if (sortConfig.key === key && sortConfig.direction === 'ascending') {
@@ -385,7 +396,7 @@ const AdvancedTable = ({ data, columns, students, user }) => {
         .includes(filterText.toLowerCase()) ||
       item.status?.toString().toLowerCase().includes(filterText.toLowerCase())
   );
-
+  // console.log(isInProgressOnly);
   const sortedData = [...filteredData].sort((a, b) => {
     if (sortConfig.key) {
       if (a[sortConfig.key] < b[sortConfig.key]) {
@@ -398,6 +409,15 @@ const AdvancedTable = ({ data, columns, students, user }) => {
     return 0;
   });
 
+  const handleOncheck = (e) => {
+    console.log('Checkbox value changed:', e.target.value);
+    console.log('Checkbox changed:', e.target.checked);
+    // e.preventDefault();
+    // console.log(isInProgressOnly);
+    const checked = e.target.checked;
+    setIsInProgressOnly(checked);
+  };
+  // console.log(filteredData);
   return (
     <div>
       Search:{' '}
@@ -406,7 +426,26 @@ const AdvancedTable = ({ data, columns, students, user }) => {
         placeholder=". . ."
         value={filterText}
         onChange={(e) => setFilterText(e.target.value)}
-      />
+      />{' '}
+      {/* <input
+        type="checkbox"
+        label={`in Progess Only`}
+        value={'Is_Paid'}
+        checked={isInProgressOnly}
+        onChange={handleOncheck}
+      /> */}
+      {/* <Form>
+        <Form.Group>
+          <Form.Check
+            custom
+            type="checkbox"
+            label={`in Progess Only`}
+            value={'is'}
+            checked={isInProgressOnly}
+            onChange={(e) => handleOncheck(e)}
+          />
+        </Form.Group>
+      </Form> */}
       <Table
         responsive
         className="my-0"
@@ -432,22 +471,12 @@ const AdvancedTable = ({ data, columns, students, user }) => {
                 </span>
               </th>
             ))}
-            {/* <th onClick={() => handleSort('name')}>Name</th>
-            <th onClick={() => handleSort('age')}>Age</th>
-            <th>Actions</th> */}
           </tr>
         </thead>
         <tbody>
           {sortedData.map((item, index) => (
             <React.Fragment key={index}>
               <tr
-                className={
-                  item.decided === 'O'
-                    ? item.closed === 'O'
-                      ? 'text-warning'
-                      : 'text-info'
-                    : 'text-secondary'
-                }
                 title={
                   item.decided === 'O'
                     ? item.closed === 'O'
@@ -481,7 +510,17 @@ const AdvancedTable = ({ data, columns, students, user }) => {
                           {item[column.accessor]}
                         </Link>
                       ) : (
-                        <>{item[column.accessor]}</>
+                        <span
+                          className={
+                            item.decided === 'O'
+                              ? item.closed === 'O'
+                                ? 'text-warning'
+                                : 'text-info'
+                              : 'text-secondary'
+                          }
+                        >
+                          {item[column.accessor]}
+                        </span>
                       )}
                     </td>
                   )

@@ -11,11 +11,11 @@ class StudentOverviewTable extends React.Component {
 
     return (
       <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
-        <Card.Header>
+        {/* <Card.Header>
           <Card.Title className="my-0 mx-0 text-light">
             {this.props.title}
           </Card.Title>
-        </Card.Header>
+        </Card.Header> */}
         <Table
           responsive
           bordered

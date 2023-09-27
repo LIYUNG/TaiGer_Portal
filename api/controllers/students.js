@@ -199,77 +199,41 @@ const getStudents = asyncHandler(async (req, res) => {
     }
     res.status(200).send({ success: true, data: students_new });
   } else if (user.role === Role.Agent) {
-    const permissions = await Permission.findOne({ user_id: user._id });
-    if (permissions && permissions.canAssignAgents) {
-      const students = await Student.find({
-        $or: [{ archiv: { $exists: false } }, { archiv: false }]
-      })
-        .populate('agents editors', 'firstname lastname email')
-        .populate('applications.programId')
-        .populate(
-          'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
-          '-messages'
-        )
-        .select('-notification')
-        .lean();
-      const courses = await Course.find().select('-table_data_string').lean();
-      // Perform the join
-      const studentsWithCourse = students.map((student) => {
-        const matchingItemB = courses.find(
-          (course) => student._id.toString() === course.student_id.toString()
-        );
-        if (matchingItemB) {
-          return { ...student, courses: matchingItemB };
-        } else {
-          return { ...student };
-        }
-      });
-      const students_new = [];
-      for (let j = 0; j < studentsWithCourse.length; j += 1) {
-        students_new.push(add_portals_registered_status(studentsWithCourse[j]));
+    const students = await Student.find({
+      agents: user._id,
+      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+    })
+      .populate('agents editors', 'firstname lastname email')
+      .populate('applications.programId')
+      .populate(
+        'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
+        '-messages'
+      )
+      .select(
+        '-notification +applications.portal_credentials.application_portal_a.account +applications.portal_credentials.application_portal_a.password +applications.portal_credentials.application_portal_b.account +applications.portal_credentials.application_portal_b.password'
+      )
+      .lean();
+    const courses = await Course.find().select('-table_data_string').lean();
+    // Perform the join
+    const studentsWithCourse = students.map((student) => {
+      const matchingItemB = courses.find(
+        (course) => student._id.toString() === course.student_id.toString()
+      );
+      if (matchingItemB) {
+        return { ...student, courses: matchingItemB };
+      } else {
+        return { ...student };
       }
-      res.status(200).send({
-        success: true,
-        data: students_new,
-        notification: user.agent_notification
-      });
-    } else {
-      const students = await Student.find({
-        agents: user._id,
-        $or: [{ archiv: { $exists: false } }, { archiv: false }]
-      })
-        .populate('agents editors', 'firstname lastname email')
-        .populate('applications.programId')
-        .populate(
-          'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
-          '-messages'
-        )
-        .select(
-          '-notification +applications.portal_credentials.application_portal_a.account +applications.portal_credentials.application_portal_a.password +applications.portal_credentials.application_portal_b.account +applications.portal_credentials.application_portal_b.password'
-        )
-        .lean();
-      const courses = await Course.find().select('-table_data_string').lean();
-      // Perform the join
-      const studentsWithCourse = students.map((student) => {
-        const matchingItemB = courses.find(
-          (course) => student._id.toString() === course.student_id.toString()
-        );
-        if (matchingItemB) {
-          return { ...student, courses: matchingItemB };
-        } else {
-          return { ...student };
-        }
-      });
-      const students_new = [];
-      for (let j = 0; j < studentsWithCourse.length; j += 1) {
-        students_new.push(add_portals_registered_status(studentsWithCourse[j]));
-      }
-      res.status(200).send({
-        success: true,
-        data: students_new,
-        notification: user.agent_notification
-      });
+    });
+    const students_new = [];
+    for (let j = 0; j < studentsWithCourse.length; j += 1) {
+      students_new.push(add_portals_registered_status(studentsWithCourse[j]));
     }
+    res.status(200).send({
+      success: true,
+      data: students_new,
+      notification: user.agent_notification
+    });
   } else if (user.role === Role.Editor) {
     const permissions = await Permission.findOne({ user_id: user._id });
     if (permissions && permissions.canAssignEditors) {

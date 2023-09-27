@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { Row, Col, Card, Spinner } from 'react-bootstrap';
 import { Redirect, Link } from 'react-router-dom';
 
@@ -84,37 +84,40 @@ class UniAssistList extends React.Component {
             </Card>
           </Col>
         </Row>
-        <Row>
-          <Col>
-            <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
-              <Card.Body className="my-0 mx-0 text-light">
-                請依照指示，完成Uni-Assist帳號密碼以及上傳資料{` `}
-                <Link to="/docs/uniassist" className="text-info">
-                  Uni-Assist{' '}
-                  <FiExternalLink
-                    className="mx-1 mb-1"
-                    style={{ cursor: 'pointer' }}
-                  />
-                </Link>
-                <br />
-                Instructions: Follow the documentations in{' '}
-                <Link to="/docs/uniassist" className="text-info">
-                  Uni-Assist{' '}
-                  <FiExternalLink
-                    className="mx-1 mb-1"
-                    style={{ cursor: 'pointer' }}
-                  />
-                </Link>
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
+
         {check_uni_assist_needed(this.state.student) ? (
-          <UniAssistListCard
-            student={this.state.student}
-            role={this.props.user.role}
-            user={this.props.user}
-          />
+          <Fragment>
+            <Row>
+              <Col>
+                <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
+                  <Card.Body className="my-0 mx-0 text-light">
+                    請依照指示，完成Uni-Assist帳號密碼以及上傳資料{` `}
+                    <Link to="/docs/uniassist" className="text-info">
+                      Uni-Assist{' '}
+                      <FiExternalLink
+                        className="mx-1 mb-1"
+                        style={{ cursor: 'pointer' }}
+                      />
+                    </Link>
+                    <br />
+                    Instructions: Follow the documentations in{' '}
+                    <Link to="/docs/uniassist" className="text-info">
+                      Uni-Assist{' '}
+                      <FiExternalLink
+                        className="mx-1 mb-1"
+                        style={{ cursor: 'pointer' }}
+                      />
+                    </Link>
+                  </Card.Body>
+                </Card>
+              </Col>
+            </Row>
+            <UniAssistListCard
+              student={this.state.student}
+              role={this.props.user.role}
+              user={this.props.user}
+            />
+          </Fragment>
         ) : (
           <Card>
             <Card.Body>

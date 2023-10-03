@@ -100,7 +100,7 @@ class StudentsAgentEditor extends React.Component {
               {editor.lastname}
             </Link>
           </p>
-          <p className="mb-0 text-secondary">{editor.email}</p>
+          <span className="mb-0 text-secondary">{editor.email}</span>
         </div>
       ));
     }
@@ -167,7 +167,7 @@ class StudentsAgentEditor extends React.Component {
           </td>
           {!is_TaiGer_Student(this.props.user) ? (
             <td>
-              <p className="mb-1">
+              <p className="mb-0">
                 <Link
                   to={
                     '/student-database/' +
@@ -183,7 +183,9 @@ class StudentsAgentEditor extends React.Component {
                   {this.props.student.firstname_chinese}
                 </Link>
               </p>
-              <p className="mb-0 text-secondary">{this.props.student.email}</p>
+              <span className="mb-0 text-secondary">
+                {this.props.student.email}
+              </span>
             </td>
           ) : (
             <></>

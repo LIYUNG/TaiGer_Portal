@@ -47,7 +47,7 @@ class StudDocsDashboard extends React.Component {
               {agent.lastname}
             </Link>
           </p>
-          <p className="mb-0 text-muted">{agent.email}</p>
+          <p className="mb-0 text-secondary">{agent.email}</p>
         </div>
       ));
     }
@@ -69,7 +69,7 @@ class StudDocsDashboard extends React.Component {
               {editor.lastname}
             </Link>
           </p>
-          <p className="mb-0 text-muted">{editor.email}</p>
+          <p className="mb-0 text-secondary">{editor.email}</p>
         </div>
       ));
     }

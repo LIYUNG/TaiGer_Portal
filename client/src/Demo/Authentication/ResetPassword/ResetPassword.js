@@ -67,7 +67,7 @@ export default function ResetPassword(props) {
             <div className="card">
               <div className="card-body text-center">
                 <h5 className="mb-3">Password change successfully!</h5>
-                <p className="mb-0 text-muted">
+                <p className="mb-0 text-secondary">
                   Please login with your new password
                   <NavLink to="/login">Login</NavLink>
                 </p>

@@ -10,7 +10,7 @@ const friend = (props) => {
   if (props.data.status) {
     timeClass = [...timeClass, 'text-c-green'];
   } else {
-    timeClass = [...timeClass, 'text-muted'];
+    timeClass = [...timeClass, 'text-secondary'];
   }
 
   let time = '';

@@ -86,7 +86,7 @@ export default function SignUp1({ userData }) {
                 />
                 <h3 className="mb-3 text-info">Confirmation Email sent</h3>
                 <div className="input-group mb-3">
-                  <p className="mb-3 text-muted">
+                  <p className="mb-3 text-secondary">
                     Please go to your email and activate your registration.
                   </p>
                 </div>

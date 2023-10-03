@@ -29,7 +29,7 @@ let FILE_DONT_CARE_SYMBOL = (
 );
 export const SYMBOL_EXPLANATION = (
   <>
-    <p className="text-muted"> </p>
+    <p className="text-secondary"> </p>
     <p className="text-info">
       {FILE_OK_SYMBOL}: The document is valid and can be used in the
       application.

@@ -63,16 +63,7 @@ export default function Reactivation(props) {
                     The new activation link is sent to the following address:
                   </p>
                 </div>
-                {/* <div className="input-group mb-3">
-                  <input
-                    type="email"
-                    className="form-control"
-                    placeholder="Email"
-                    readonly="readonly"
-                    value={props.email}
-                  />
-                </div> */}
-                <p className="mb-4 text-muted">{props.email}</p>
+                <p className="mb-4 text-secondary">{props.email}</p>
               </div>
             </form>
           </div>

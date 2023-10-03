@@ -98,7 +98,7 @@ export default function Activation(props) {
                       The new activation link is sent to the following address:
                     </p>
                   </div>
-                  <p className="mb-4 text-muted">{email}</p>
+                  <p className="mb-4 text-secondary">{email}</p>
                 </div>
                 <Footer />
               </form>
@@ -121,7 +121,7 @@ export default function Activation(props) {
                   <p className="mb-4"></p>
                   <p className="mb-4">Link Expired</p>
                   <div className="input-group mb-4">
-                    <p className="mb-0 text-muted">
+                    <p className="mb-0 text-secondary">
                       The activation link is expired. Please request another
                       activation link!
                     </p>

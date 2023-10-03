@@ -78,7 +78,7 @@ class StudentsAgentEditor extends React.Component {
               {agent.lastname}
             </Link>
           </p>
-          <p className="mb-0 text-muted">{agent.email}</p>
+          <span className="mb-0 text-secondary">{agent.email}</span>
         </div>
       ));
     }
@@ -100,7 +100,7 @@ class StudentsAgentEditor extends React.Component {
               {editor.lastname}
             </Link>
           </p>
-          <p className="mb-0 text-muted">{editor.email}</p>
+          <p className="mb-0 text-secondary">{editor.email}</p>
         </div>
       ));
     }
@@ -183,7 +183,7 @@ class StudentsAgentEditor extends React.Component {
                   {this.props.student.firstname_chinese}
                 </Link>
               </p>
-              <p className="mb-0 text-muted">{this.props.student.email}</p>
+              <p className="mb-0 text-secondary">{this.props.student.email}</p>
             </td>
           ) : (
             <></>

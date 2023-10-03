@@ -103,7 +103,7 @@ const Popping = ({
             </Form>
             <br />
             <ul>
-              <li className="col text-muted pb-0 mb-0">
+              <li className="col text-secondary pb-0 mb-0">
                 From: {convertDate(start)} {NoonNightLabel(start)}{' '}
                 {Intl.DateTimeFormat().resolvedOptions().timeZone} UTC
                 {getTimezoneOffset(
@@ -116,7 +116,7 @@ const Popping = ({
                       Intl.DateTimeFormat().resolvedOptions().timeZone
                     )}
               </li>
-              <li className="col text-muted pb-0 mb-0">
+              <li className="col text-secondary pb-0 mb-0">
                 To: {convertDate(end)}{' '}
                 {Intl.DateTimeFormat().resolvedOptions().timeZone} UTC
                 {getTimezoneOffset(

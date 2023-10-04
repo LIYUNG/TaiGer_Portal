@@ -33,6 +33,15 @@ class CVMLRLOverview extends React.Component {
     res_modal_status: 0
   };
 
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.students !== this.props.students) {
+      this.setState((state) => ({
+        ...state,
+        students: this.props.students
+      }));
+    }
+  }
+
   closeSetAsFinalFileModelWindow = () => {
     this.setState((state) => ({
       ...state,

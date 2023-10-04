@@ -666,7 +666,6 @@ export const GetCVDeadline = (student) => {
         application
       );
       if (applicationDeadline?.includes('olling')) {
-        console.log(student.firstname);
         hasRolling = true;
         daysLeftRollingMin = '-';
         CVDeadlineRolling = applicationDeadline;

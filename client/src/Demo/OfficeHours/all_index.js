@@ -1,8 +1,8 @@
 import React from 'react';
 import {
+  Card,
   Row,
   Col,
-  Card,
   Form,
   Button,
   Spinner,
@@ -28,7 +28,7 @@ import ModalMain from '../Utils/ModalHandler/ModalMain';
 import {
   confirmEvent,
   deleteEvent,
-  getEvents,
+  getAllEvents,
   postEvent,
   updateEvent
 } from '../../api';
@@ -36,6 +36,7 @@ import { TabTitle } from '../Utils/TabTitle';
 import MyCalendar from '../../components/Calendar/components/Calendar';
 import {
   is_TaiGer_Agent,
+  is_TaiGer_role,
   is_TaiGer_Student
 } from '../Utils/checking-functions';
 import { AiFillCheckCircle } from 'react-icons/ai';
@@ -43,7 +44,7 @@ import EventConfirmationCard from '../../components/Calendar/components/EventCon
 import { Redirect } from 'react-router-dom';
 import DEMO from '../../store/constant';
 
-class TaiGerOfficeHours extends React.Component {
+class AllOfficeHours extends React.Component {
   state = {
     error: '',
     role: '',
@@ -75,7 +76,7 @@ class TaiGerOfficeHours extends React.Component {
   };
 
   componentDidMount() {
-    getEvents(this.props.match.params.user_id).then(
+    getAllEvents().then(
       (resp) => {
         const { data, agents, hasEvents, students, success } = resp.data;
         const { status } = resp;
@@ -106,40 +107,38 @@ class TaiGerOfficeHours extends React.Component {
       }
     );
   }
-  componentDidUpdate(prevProps) {
-    if (prevProps.match.params.user_id !== this.props.match.params.user_id) {
-      getEvents(this.props.match.params.user_id).then(
-        (resp) => {
-          const { data, agents, hasEvents, students, success } = resp.data;
-          const { status } = resp;
-          if (success) {
-            this.setState({
-              isLoaded: true,
-              agents,
-              hasEvents,
-              events: data,
-              students,
-              success: success,
-              res_status: status
-            });
-          } else {
-            this.setState({
-              isLoaded: true,
-              res_status: status
-            });
-          }
-        },
-        (error) => {
-          this.setState((state) => ({
-            ...state,
-            isLoaded: true,
-            error,
-            res_status: 500
-          }));
-        }
-      );
-    }
-  }
+  // componentDidUpdate(prevProps) {
+  //   getAllEvents().then(
+  //     (resp) => {
+  //       const { data, agents, hasEvents, students, success } = resp.data;
+  //       const { status } = resp;
+  //       if (success) {
+  //         this.setState({
+  //           isLoaded: true,
+  //           agents,
+  //           hasEvents,
+  //           events: data,
+  //           students,
+  //           success: success,
+  //           res_status: status
+  //         });
+  //       } else {
+  //         this.setState({
+  //           isLoaded: true,
+  //           res_status: status
+  //         });
+  //       }
+  //     },
+  //     (error) => {
+  //       this.setState((state) => ({
+  //         ...state,
+  //         isLoaded: true,
+  //         error,
+  //         res_status: 500
+  //       }));
+  //     }
+  //   );
+  // }
 
   handleConfirmAppointmentModal = (e, event_id, updated_event) => {
     e.preventDefault();
@@ -339,10 +338,6 @@ class TaiGerOfficeHours extends React.Component {
   handleModalCreateEvent = (newEvent) => {
     const eventWrapper = { ...newEvent };
     if (is_TaiGer_Agent(this.props.user)) {
-      const temp_std = this.state.students.find(
-        (std) => std._id.toString() === this.state.student_id
-      );
-      eventWrapper.title = `${temp_std.firstname} ${temp_std.lastname} ${temp_std.firstname_chinese} ${temp_std.lastname_chinese}`;
       eventWrapper.requester_id = this.state.student_id;
       eventWrapper.receiver_id = this.props.user._id.toString();
     }
@@ -515,7 +510,6 @@ class TaiGerOfficeHours extends React.Component {
 
   handleSelectSlot = (slotInfo) => {
     // When an empty date slot is clicked, open the modal to create a new event
-    console.log(slotInfo);
     this.setState({
       newEventStart: slotInfo.start,
       newEventEnd: slotInfo.end,
@@ -539,7 +533,7 @@ class TaiGerOfficeHours extends React.Component {
   };
 
   render() {
-    if (this.props.user.role !== 'Agent') {
+    if (!is_TaiGer_role(this.props.user)) {
       return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
     }
     const {
@@ -571,56 +565,56 @@ class TaiGerOfficeHours extends React.Component {
     // );
     //TODO: remove the conflicting time slots.
     // (in Testing again) TODO: bug >> browser dependent!
-    const available_termins = [0, 1, 2, 3].flatMap((iter, x) =>
-      agents.flatMap((agent, idx) =>
-        // BUG: getReorderWeekday(getTodayAsWeekday(agent.timezone)) cause wrong time in correct date.
-        // David on Thursday, getReorderWeekday start from Tuesday, and the timeslot it from tuesday (date: saturday but time: tuesday)
-        getReorderWeekday(getTodayAsWeekday(agent.timezone)).flatMap(
-          (weekday, i) => {
-            // observe: look like weekday is wrong should be saturday, but it starting from tuesday
-            const timeSlots =
-              agent.officehours &&
-              agent.officehours[weekday]?.active &&
-              agent.officehours[weekday].time_slots.flatMap((time_slot, j) => {
-                const { year, month, day } = getNextDayDate(
-                  getReorderWeekday(getTodayAsWeekday(agent.timezone)),
-                  weekday,
-                  agent.timezone,
-                  iter
-                );
-                const hour = parseInt(time_slot.value.split(':')[0], 10);
-                const minutes = parseInt(time_slot.value.split(':')[1], 10);
-                const time_difference =
-                  getTimezoneOffset(
-                    Intl.DateTimeFormat().resolvedOptions().timeZone
-                  ) - getTimezoneOffset(agent.timezone);
-                return {
-                  id: j * 10 + i * 100 + x * 1000 + 1,
-                  title: `${(hour + time_difference) % 24}:${
-                    time_slot.value.split(':')[1]
-                  }`,
-                  start: shiftDateByOffset(
-                    new Date(year, month - 1, day, hour, minutes),
-                    time_difference
-                  ),
-                  end: shiftDateByOffset(
-                    new Date(year, month - 1, day, hour, minutes),
-                    time_difference + 0.5
-                  ),
-                  provider: agent
-                };
-              });
-            return timeSlots || [];
-          }
-        )
-      )
-    );
+    // const available_termins = [0, 1, 2, 3].flatMap((iter, x) =>
+    //   agents.flatMap((agent, idx) =>
+    //     // BUG: getReorderWeekday(getTodayAsWeekday(agent.timezone)) cause wrong time in correct date.
+    //     // David on Thursday, getReorderWeekday start from Tuesday, and the timeslot it from tuesday (date: saturday but time: tuesday)
+    //     getReorderWeekday(getTodayAsWeekday(agent.timezone)).flatMap(
+    //       (weekday, i) => {
+    //         // observe: look like weekday is wrong should be saturday, but it starting from tuesday
+    //         const timeSlots =
+    //           agent.officehours &&
+    //           agent.officehours[weekday]?.active &&
+    //           agent.officehours[weekday].time_slots.flatMap((time_slot, j) => {
+    //             const { year, month, day } = getNextDayDate(
+    //               getReorderWeekday(getTodayAsWeekday(agent.timezone)),
+    //               weekday,
+    //               agent.timezone,
+    //               iter
+    //             );
+    //             const hour = parseInt(time_slot.value.split(':')[0], 10);
+    //             const minutes = parseInt(time_slot.value.split(':')[1], 10);
+    //             const time_difference =
+    //               getTimezoneOffset(
+    //                 Intl.DateTimeFormat().resolvedOptions().timeZone
+    //               ) - getTimezoneOffset(agent.timezone);
+    //             return {
+    //               id: j * 10 + i * 100 + x * 1000 + 1,
+    //               title: `${(hour + time_difference) % 24}:${
+    //                 time_slot.value.split(':')[1]
+    //               }`,
+    //               start: shiftDateByOffset(
+    //                 new Date(year, month - 1, day, hour, minutes),
+    //                 time_difference
+    //               ),
+    //               end: shiftDateByOffset(
+    //                 new Date(year, month - 1, day, hour, minutes),
+    //                 time_difference + 0.5
+    //               ),
+    //               provider: agent
+    //             };
+    //           });
+    //         return timeSlots || [];
+    //       }
+    //     )
+    //   )
+    // );
     const booked_events = events.map((event, idx) => ({
       ...event,
       id: event._id.toString(),
       start: new Date(event.start),
       end: new Date(event.end),
-      provider: event.requester_id[0]
+      provider: event.requester_id[0] || { firstname: 'TBD', lastname: 'TBD' }
     }));
     return (
       <Aux>
@@ -633,10 +627,10 @@ class TaiGerOfficeHours extends React.Component {
         )}
         <Row className="sticky-top">
           <Col>
-            <Card className="mb-2 mx-0" bg={'primary'} text={'light'}>
+            <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
               <Card.Header>
                 <Card.Title className="my-0 mx-0 text-light">
-                  My Events
+                  All Events
                 </Card.Title>
               </Card.Header>
             </Card>
@@ -823,8 +817,8 @@ class TaiGerOfficeHours extends React.Component {
           </>
         ) : (
           <>
-            <Button onClick={this.switchCalendarAndMyBookedEvents}>
-              My Appointments
+            <Button onClick={this.switchCalendarAndMyBookedEvents} size='sm'>
+              All Appointments
             </Button>
             <Card>
               <Card.Body>
@@ -920,7 +914,7 @@ class TaiGerOfficeHours extends React.Component {
               ))}
             </p>
             <br />
-            <Form>
+            {/* <Form>
               <Form.Label>Time Slot</Form.Label>
               <Form.Control
                 as="select"
@@ -939,7 +933,7 @@ class TaiGerOfficeHours extends React.Component {
                     </option>
                   ))}
               </Form.Control>
-            </Form>
+            </Form> */}
           </Modal.Body>
 
           <Modal.Footer>
@@ -977,4 +971,4 @@ class TaiGerOfficeHours extends React.Component {
   }
 }
 
-export default TaiGerOfficeHours;
+export default AllOfficeHours;

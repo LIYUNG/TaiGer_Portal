@@ -282,6 +282,13 @@ export default {
               url: '/admissions-overview'
             },
             {
+              id: 'all-calendar-events',
+              title: 'Calendar Events',
+              type: 'item',
+              icon: 'feather icon-calendar',
+              url: '/events/all'
+            },
+            {
               id: 'archiv-student',
               title: 'Archiv Students',
               type: 'item',

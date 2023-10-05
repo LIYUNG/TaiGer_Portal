@@ -7,7 +7,8 @@ const {
   updateEvent,
   postEvent,
   deleteEvent,
-  confirmEvent
+  confirmEvent,
+  getAllEvents
 } = require('../controllers/events');
 const { Role } = require('../models/User');
 const {
@@ -22,6 +23,14 @@ const { event_multitenant_filter } = require('../middlewares/event-filter');
 const router = Router();
 
 router.use(protect);
+
+router
+  .route('/all')
+  .get(
+    GeneralGETRequestRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
+    getAllEvents
+  );
 
 router
   .route('/')

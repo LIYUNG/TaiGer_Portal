@@ -184,7 +184,7 @@ const MyCalendar = (props) => {
                 value={props.newEventStart}
               >
                 {available_termins
-                  .sort((a, b) => (a.start < b.start ? -1 : 1))
+                  ?.sort((a, b) => (a.start < b.start ? -1 : 1))
                   .map((time_slot, j) => (
                     <option
                       value={`${time_slot.start}`}

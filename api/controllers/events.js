@@ -129,6 +129,44 @@ const getEvents = asyncHandler(async (req, res) => {
   });
 });
 
+const getAllEvents = asyncHandler(async (req, res) => {
+  const { user } = req;
+  const agents = await Agent.find().select(
+    'firstname lastname email selfIntroduction officehours timezone'
+  );
+
+  const events = await Event.find()
+    .populate('receiver_id requester_id', 'firstname lastname email')
+    .lean();
+  const students = await Student.find({
+    $and: [
+      { $or: [{ agents: user._id }, { editors: user._id }] },
+      { $or: [{ archiv: { $exists: false } }, { archiv: false }] }
+    ]
+  })
+    .select('firstname lastname firstname_chinese lastname_chinese  email')
+    .lean();
+  if (events.length === 0) {
+    return res.status(200).send({
+      success: true,
+      agents,
+      data: events,
+      booked_events: [],
+      hasEvents: false,
+      students
+    });
+  }
+
+  return res.status(200).send({
+    success: true,
+    agents,
+    data: events,
+    booked_events: [],
+    hasEvents: true,
+    students
+  });
+});
+
 const showEvent = asyncHandler(async (req, res) => {
   const { event_id } = req.params;
   const event = await Event.findById(event_id);
@@ -422,6 +460,7 @@ const deleteEvent = asyncHandler(async (req, res) => {
 
 module.exports = {
   getEvents,
+  getAllEvents,
   showEvent,
   postEvent,
   confirmEvent,

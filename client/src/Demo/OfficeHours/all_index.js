@@ -338,6 +338,10 @@ class AllOfficeHours extends React.Component {
   handleModalCreateEvent = (newEvent) => {
     const eventWrapper = { ...newEvent };
     if (is_TaiGer_Agent(this.props.user)) {
+      const temp_std = this.state.students.find(
+        (std) => std._id.toString() === this.state.student_id
+      );
+      eventWrapper.title = `${temp_std.firstname} ${temp_std.lastname} ${temp_std.firstname_chinese} ${temp_std.lastname_chinese}`;
       eventWrapper.requester_id = this.state.student_id;
       eventWrapper.receiver_id = this.props.user._id.toString();
     }
@@ -817,7 +821,7 @@ class AllOfficeHours extends React.Component {
           </>
         ) : (
           <>
-            <Button onClick={this.switchCalendarAndMyBookedEvents} size='sm'>
+            <Button onClick={this.switchCalendarAndMyBookedEvents} size="sm">
               All Appointments
             </Button>
             <Card>

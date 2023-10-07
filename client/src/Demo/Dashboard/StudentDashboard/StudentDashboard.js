@@ -341,6 +341,7 @@ class StudentDashboard extends React.Component {
                       [
                         '639baebf8b84944b872cf648', //Leo
                         '6475a149635df78e3a5b937b', //Lily
+                        '638b8f70be60d7999c6b649d', //Sydney
                         '63b9a43af7b3a4a141267cd3' // David
                       ].includes(agent._id.toString())
                     ) ? (

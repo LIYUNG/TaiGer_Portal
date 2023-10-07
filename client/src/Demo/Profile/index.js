@@ -49,6 +49,7 @@ class Profile extends React.Component {
           lastname: this.props.user.lastname,
           lastname_chinese: this.props.user.lastname_chinese,
           birthday: this.props.user.birthday,
+          role: this.props.user.role,
           email: this.props.user.email
         },
     updateconfirmed: false,
@@ -84,6 +85,7 @@ class Profile extends React.Component {
                 lastname: data.lastname,
                 lastname_chinese: data.lastname_chinese,
                 birthday: data.birthday,
+                role: data.role,
                 email: data.email
               },
               user_id: this.props.match.params.user_id
@@ -478,85 +480,89 @@ class Profile extends React.Component {
                 </Card.Body>
               </Card>
             </Col>
-            <Col md={6}>
-              <Card className="my-2 mx-0" bg={'dark'} text={'white'}>
-                <Card.Header>
-                  <Card.Title className="my-0 mx-0 text-light">
-                    Office Hours
-                  </Card.Title>
-                </Card.Header>
-                <Card.Body>
-                  <Row>
-                    <Col>
-                      <h5 className="text-light">Time zone</h5>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <TimezoneSelect
-                      value={this.state.selectedTimezone}
-                      onChange={this.setSelectedTimezone}
-                      displayValue="UTC"
-                      isDisabled={false}
-                    />
-                  </Row>
-                  <br />
-                  {[
-                    'Monday',
-                    'Tuesday',
-                    'Wednesday',
-                    'Thursday',
-                    'Friday',
-                    'Saturday',
-                    'Sunday'
-                  ].map((day, i) => (
-                    <Row key={i}>
-                      <Col md={4}>
-                        <Form>
-                          <Form.Check
-                            type="switch"
-                            id={`${day}`}
-                            label={`${day}`}
-                            className={`${
-                              this.state.officehours[day]?.active
-                                ? 'text-light'
-                                : 'text-secondary'
-                            }`}
-                            checked={this.state.officehours[day]?.active}
-                            onChange={(e) => this.handleToggleChange(e, day)}
-                          />
-                        </Form>
-                      </Col>
-                      <Col md={8}>
-                        {this.state.officehours &&
-                        this.state.officehours[day]?.active ? (
-                          <>
-                            <span className="text-light">Timeslots</span>
-                            <Select
-                              id={`${day}`}
-                              options={time_slots}
-                              isMulti
-                              isDisabled={!this.state.officehours[day]?.active}
-                              value={this.state.officehours[day].time_slots}
-                              onChange={(e) => this.onTimeStartChange(e, day)}
-                            />
-                          </>
-                        ) : (
-                          <span className="text-light">Close</span>
-                        )}
+            {is_TaiGer_Agent(this.state.personaldata) && (
+              <Col md={6}>
+                <Card className="my-2 mx-0" bg={'dark'} text={'white'}>
+                  <Card.Header>
+                    <Card.Title className="my-0 mx-0 text-light">
+                      Office Hours
+                    </Card.Title>
+                  </Card.Header>
+                  <Card.Body>
+                    <Row>
+                      <Col>
+                        <h5 className="text-light">Time zone</h5>
                       </Col>
                     </Row>
-                  ))}
-                  <Row>
-                    <Button
-                      disabled={!this.state.officehoursModifed}
-                      onClick={this.handleSubmit_Officehours}
-                    >
-                      Update
-                    </Button>
-                  </Row>
-                </Card.Body>
-              </Card>
-            </Col>
+                    <Row>
+                      <TimezoneSelect
+                        value={this.state.selectedTimezone}
+                        onChange={this.setSelectedTimezone}
+                        displayValue="UTC"
+                        isDisabled={false}
+                      />
+                    </Row>
+                    <br />
+                    {[
+                      'Monday',
+                      'Tuesday',
+                      'Wednesday',
+                      'Thursday',
+                      'Friday',
+                      'Saturday',
+                      'Sunday'
+                    ].map((day, i) => (
+                      <Row key={i}>
+                        <Col md={4}>
+                          <Form>
+                            <Form.Check
+                              type="switch"
+                              id={`${day}`}
+                              label={`${day}`}
+                              className={`${
+                                this.state.officehours[day]?.active
+                                  ? 'text-light'
+                                  : 'text-secondary'
+                              }`}
+                              checked={this.state.officehours[day]?.active}
+                              onChange={(e) => this.handleToggleChange(e, day)}
+                            />
+                          </Form>
+                        </Col>
+                        <Col md={8}>
+                          {this.state.officehours &&
+                          this.state.officehours[day]?.active ? (
+                            <>
+                              <span className="text-light">Timeslots</span>
+                              <Select
+                                id={`${day}`}
+                                options={time_slots}
+                                isMulti
+                                isDisabled={
+                                  !this.state.officehours[day]?.active
+                                }
+                                value={this.state.officehours[day].time_slots}
+                                onChange={(e) => this.onTimeStartChange(e, day)}
+                              />
+                            </>
+                          ) : (
+                            <span className="text-light">Close</span>
+                          )}
+                        </Col>
+                      </Row>
+                    ))}
+                    <Row>
+                      <Button
+                        disabled={!this.state.officehoursModifed}
+                        onClick={this.handleSubmit_Officehours}
+                      >
+                        Update
+                      </Button>
+                    </Row>
+                  </Card.Body>
+                </Card>
+              </Col>
+            )}
           </Row>
         )}
         <Modal

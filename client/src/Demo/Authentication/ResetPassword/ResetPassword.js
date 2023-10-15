@@ -5,6 +5,7 @@ import './../../../assets/scss/style.scss';
 import Aux from '../../../hoc/_Aux';
 import { resetPassword } from '../../../api/index';
 import Footer from '../../../components/Footer/Footer';
+import { Spinner } from 'react-bootstrap';
 
 export default function ResetPassword(props) {
   const query = new URLSearchParams(props.location.search);
@@ -13,6 +14,7 @@ export default function ResetPassword(props) {
   const [passwordchanged, setPasswordchanged] = useState(false);
   const [password, setPassword] = useState('');
   const [passwordRepeat, setPasswordRepeat] = useState('');
+  const [buttonDisable, setButtonDisable] = useState(false);
   const passwordValidation = () => {
     if (password === '') return false;
     if (password.length < 8) return false;
@@ -33,23 +35,28 @@ export default function ResetPassword(props) {
       try {
         // check 2 password match
         if (password === passwordRepeat) {
+          setButtonDisable(true);
           const resp = await resetPassword({
             email,
             password,
             token
           });
           const { success } = resp.data;
+          setButtonDisable(false);
           if (success) {
             setPasswordchanged(true);
           }
         } else {
+          setButtonDisable(false);
           alert('Password did not match!');
         }
       } catch (err) {
+        setButtonDisable(false);
         // TODO: error handler
         // console.log(err);
       }
     } else {
+      setButtonDisable(false);
       alert('Password is not valid');
     }
   };
@@ -121,8 +128,23 @@ export default function ResetPassword(props) {
                     onChange={(e) => setPasswordRepeat(e.target.value)}
                   />
                 </div>
-                <button type="submit" className="btn btn-primary shadow-2 mb-4">
-                  Reset
+                <button
+                  type="submit"
+                  disabled={buttonDisable}
+                  className="btn btn-primary shadow-2 mb-4"
+                >
+                  {buttonDisable ? (
+                    <Spinner
+                      animation="border"
+                      role="status"
+                      variant="light"
+                      size="sm"
+                    >
+                      <span className="visually-hidden"></span>
+                    </Spinner>
+                  ) : (
+                    'Reset'
+                  )}
                 </button>
                 <p className="mb-0 text-light">
                   Already have an account?{' '}

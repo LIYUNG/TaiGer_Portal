@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
+import { Spinner } from 'react-bootstrap';
 
 import './../../../assets/scss/style.scss';
 import Aux from '../../../hoc/_Aux';
@@ -10,6 +11,7 @@ import Footer from '../../../components/Footer/Footer';
 export default function ResetPasswordRequest() {
   const [emailaddress, setEmailaddress] = useState();
   const [emailSent, setEmailSent] = useState(false);
+  const [buttonDisable, setButtonDisable] = useState(false);
   const emailValidation = () => {
     const regex =
       /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
@@ -23,13 +25,17 @@ export default function ResetPasswordRequest() {
     e.preventDefault();
     if (emailValidation()) {
       try {
+        setButtonDisable(true);
         const resp = await forgotPassword({ email: emailaddress });
         if (resp.data.success) {
+          setButtonDisable(false);
           setEmailSent(true);
         } else {
+          setButtonDisable(false);
           alert('Email is not existed!');
         }
       } catch (err) {
+        setButtonDisable(false);
         // TODO: error handler
         // console.log(err);
       }
@@ -97,9 +103,21 @@ export default function ResetPasswordRequest() {
                 <button
                   size="sm"
                   type="submit"
+                  disabled={buttonDisable}
                   className="btn btn-success text-secondary shadow-2 mb-2"
                 >
-                  Reset
+                  {buttonDisable ? (
+                    <Spinner
+                      animation="border"
+                      role="status"
+                      variant="light"
+                      size="sm"
+                    >
+                      <span className="visually-hidden"></span>
+                    </Spinner>
+                  ) : (
+                    'Reset'
+                  )}
                 </button>
                 <p className="mb-2 text-light"></p>
                 Already have an account?{' '}

@@ -67,6 +67,7 @@ def TUM_MMT(transcript_sorted_group_map, df_transcript_array, df_category_course
         PROG_SPEC_ENG_SCIENCE_MATH_PARAM,  # 程式
         PROG_SPEC_ENG_SCIENCE_MATH_PARAM,  # 資料科學
         PROG_SPEC_ENG_SCIENCE_MATH_PARAM,  # 資訊系統
+        PROG_SPEC_OTHERS,  # 資料庫
         PROG_SPEC_OTHERS,  # 永續
         PROG_SPEC_OTHERS,  # 論文
         PROG_SPEC_OTHERS  # 其他
@@ -143,6 +144,7 @@ def TUM_CONSUMER_SCIENCE(transcript_sorted_group_map, df_transcript_array, df_ca
         PROG_SPEC_OTHERS,  # 程式
         PROG_SPEC_OTHERS,  # 資料科學
         PROG_SPEC_OTHERS,  # 資訊系統
+        PROG_SPEC_OTHERS,  # 資料庫
         PROG_SPEC_OTHERS,  # 永續
         PROG_SPEC_BACHELORARBEIT_PARAM,  # 論文
         PROG_SPEC_OTHERS  # 其他
@@ -216,6 +218,7 @@ def UNI_KOELN_BA(transcript_sorted_group_map, df_transcript_array, df_category_c
         PROG_SPEC_OTHERS,  # 程式
         PROG_SPEC_OTHERS,  # 資料科學
         PROG_SPEC_OTHERS,  # 資訊系統
+        PROG_SPEC_OTHERS,  # 資料庫
         PROG_SPEC_OTHERS,  # 永續
         PROG_SPEC_OTHERS,  # 論文
         PROG_SPEC_OTHERS  # 其他
@@ -281,6 +284,7 @@ def UNI_MANNHEIM_MGM(transcript_sorted_group_map, df_transcript_array, df_catego
         PROG_SPEC_OTHERS,  # 程式
         PROG_SPEC_OTHERS,  # 資料科學
         PROG_SPEC_OTHERS,  # 資訊系統
+        PROG_SPEC_OTHERS,  # 資料庫
         PROG_SPEC_OTHERS,  # 永續
         PROG_SPEC_OTHERS,  # 論文
         PROG_SPEC_OTHERS  # 其他
@@ -335,7 +339,7 @@ def UNI_MAGDEBURG_FIN_ECO(transcript_sorted_group_map, df_transcript_array, df_c
 
     # Mapping table: same dimension as transcript_sorted_group/ The length depends on how fine the transcript is classified
     program_category_map = [
-        PROG_SPEC_QUAN_MODULE_PARAM,  # 微積分
+        PROG_SPEC_OTHERS,  # 微積分
         PROG_SPEC_QUAN_MODULE_PARAM,  # 數學
         PROG_SPEC_ECO_BWL_PARAM,  # 經濟
         PROG_SPEC_QUAN_MODULE_PARAM,  # 計量經濟
@@ -345,12 +349,13 @@ def UNI_MAGDEBURG_FIN_ECO(transcript_sorted_group_map, df_transcript_array, df_c
         PROG_SPEC_QUAN_MODULE_PARAM,  # 統計
         PROG_SPEC_ECO_BWL_PARAM,  # 金融
         PROG_SPEC_OTHERS,  # 行銷
-        PROG_SPEC_OTHERS,  # 作業研究
+        PROG_SPEC_QUAN_MODULE_PARAM,  # 作業研究
         PROG_SPEC_OTHERS,  # 觀察研究
         PROG_SPEC_OTHERS,  # 基礎資工
         PROG_SPEC_OTHERS,  # 程式
         PROG_SPEC_OTHERS,  # 資料科學
         PROG_SPEC_OTHERS,  # 資訊系統
+        PROG_SPEC_QUAN_MODULE_PARAM,  # 資料庫
         PROG_SPEC_OTHERS,  # 永續
         PROG_SPEC_OTHERS,  # 論文
         PROG_SPEC_OTHERS  # 其他
@@ -425,6 +430,7 @@ def TU_DRESDEN_TRANSPORT_ECONOM(transcript_sorted_group_map, df_transcript_array
         PROG_SPEC_QUAN_METHOD_PARAM,  # 程式
         PROG_SPEC_QUAN_METHOD_PARAM,  # 資料科學
         PROG_SPEC_OTHERS,  # 資訊系統
+        PROG_SPEC_OTHERS,  # 資料庫
         PROG_SPEC_OTHERS,  # 永續
         PROG_SPEC_OTHERS,  # 論文
         PROG_SPEC_OTHERS  # 其他
@@ -501,6 +507,7 @@ def TUM_SMT(transcript_sorted_group_map, df_transcript_array, df_category_course
         PROG_SPEC_OTHERS,  # 程式
         PROG_SPEC_OTHERS,  # 資料科學
         PROG_SPEC_OTHERS,  # 資訊系統
+        PROG_SPEC_OTHERS,  # 資料庫
         PROG_SPEC_SUSTAINABLE_PARAM,  # 永續
         PROG_SPEC_OTHERS,  # 論文
         PROG_SPEC_OTHERS  # 其他
@@ -577,6 +584,7 @@ def TUM_BIO_ECONOMICS(transcript_sorted_group_map, df_transcript_array, df_categ
         PROG_SPEC_OTHERS,  # 程式
         PROG_SPEC_OTHERS,  # 資料科學
         PROG_SPEC_OTHERS,  # 資訊系統
+        PROG_SPEC_OTHERS,  # 資料庫
         PROG_SPEC_SUSTAINABLE_PARAM,  # 永續
         PROG_SPEC_OTHERS,  # 論文
         PROG_SPEC_OTHERS  # 其他

@@ -66,8 +66,7 @@ class ManualFiles extends React.Component {
         {is_TaiGer_role(this.props.user) &&
           (!this.props.application ||
             (this.props.application &&
-              this.props.application.closed !== 'O')) &&
-          showButtonIfMyStudent(this.props.user, this.props.student) && (
+              this.props.application.closed !== 'O')) && (
             <ToggleableUploadFileForm
               role={this.props.user.role}
               user={this.props.user}

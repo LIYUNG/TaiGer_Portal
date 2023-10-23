@@ -14,7 +14,7 @@ import {
   isDocumentsMissingAssign,
   file_category_const
 } from '../Utils/checking-functions';
-import { spinner_style } from '../Utils/contants';
+import { spinner_style, spinner_style2 } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 
@@ -140,7 +140,6 @@ class EditorDocsProgress extends React.Component {
             this.setState((state) => ({
               ...state,
               isLoaded: true,
-              delete_field: '',
               res_modal_message: message,
               res_modal_status: status
             }));
@@ -901,6 +900,7 @@ class EditorDocsProgress extends React.Component {
               <Form.Control
                 type="text"
                 placeholder="delete"
+                value={`${this.state.delete_field}`}
                 onChange={(e) => this.onChangeDeleteField(e)}
               />
             </Form.Group>
@@ -913,8 +913,8 @@ class EditorDocsProgress extends React.Component {
               {isLoaded ? (
                 'Yes'
               ) : (
-                <div style={spinner_style}>
-                  <Spinner animation="border" role="status">
+                <div style={spinner_style2}>
+                  <Spinner animation="border" size="sm" role="status">
                     <span className="visually-hidden"></span>
                   </Spinner>
                 </div>
@@ -947,8 +947,8 @@ class EditorDocsProgress extends React.Component {
               {isLoaded ? (
                 'Yes'
               ) : (
-                <div style={spinner_style}>
-                  <Spinner animation="border" role="status">
+                <div style={spinner_style2}>
+                  <Spinner animation="border" size="sm" role="status">
                     <span className="visually-hidden"></span>
                   </Spinner>
                 </div>
@@ -972,13 +972,6 @@ class EditorDocsProgress extends React.Component {
           <Modal.Body>{this.state.requirements}</Modal.Body>
           <Modal.Footer>
             <Button onClick={this.close_Requirements_ModalWindow}>Close</Button>
-            {!isLoaded && (
-              <div style={spinner_style}>
-                <Spinner animation="border" role="status">
-                  <span className="visually-hidden"></span>
-                </Spinner>
-              </div>
-            )}
           </Modal.Footer>
         </Modal>
         <Modal

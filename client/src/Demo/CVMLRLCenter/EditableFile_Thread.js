@@ -6,7 +6,7 @@ import { AiOutlineDelete, AiOutlineCheck, AiOutlineUndo } from 'react-icons/ai';
 import { IoCheckmarkCircle } from 'react-icons/io5';
 
 import {
-  showButtonIfMyStudent,
+  // showButtonIfMyStudent,
   is_TaiGer_role
 } from '../Utils/checking-functions';
 import { convertDate } from '../Utils/contants';
@@ -73,42 +73,38 @@ class EditableFile_Thread extends Component {
       <>
         <Row>
           <Col md={1}>
-            {showButtonIfMyStudent(this.props.user, this.props.student) &&
-              (!is_TaiGer_role(this.props.user) ? (
-                this.props.thread.isFinalVersion && (
-                  <IoCheckmarkCircle
-                    size={24}
-                    color="limegreen"
-                    title="Final Version"
-                    // onMouseEnter={this.MouseOver}
-                  />
-                )
-              ) : this.props.thread.isFinalVersion ? (
-                <>
-                  <IoCheckmarkCircle
-                    size={24}
-                    color="limegreen"
-                    title="Final Version"
-                    // onMouseEnter={this.MouseOver}
-                  />
-                </>
-              ) : (
-                <AiOutlineCheck
+            {!is_TaiGer_role(this.props.user) ? (
+              this.props.thread.isFinalVersion && (
+                <IoCheckmarkCircle
                   size={24}
-                  color="white"
-                  style={{ cursor: 'pointer' }}
-                  title="Set as final version"
-                  onClick={() =>
-                    this.handleAsFinalFileThread(documenName, true)
-                  }
+                  color="limegreen"
+                  title="Final Version"
+                  // onMouseEnter={this.MouseOver}
                 />
-              ))}
+              )
+            ) : this.props.thread.isFinalVersion ? (
+              <>
+                <IoCheckmarkCircle
+                  size={24}
+                  color="limegreen"
+                  title="Final Version"
+                  // onMouseEnter={this.MouseOver}
+                />
+              </>
+            ) : (
+              <AiOutlineCheck
+                size={24}
+                color="white"
+                style={{ cursor: 'pointer' }}
+                title="Set as final version"
+                onClick={() => this.handleAsFinalFileThread(documenName, true)}
+              />
+            )}
           </Col>
           <Col md={1}>
             {this.props.thread.isFinalVersion ? (
               this.props.user.role !== 'Student' &&
-              this.props.user.role !== 'Guest' &&
-              showButtonIfMyStudent(this.props.user, this.props.student) ? (
+              this.props.user.role !== 'Guest' ? (
                 <AiOutlineUndo
                   size={24}
                   color="red"
@@ -146,7 +142,7 @@ class EditableFile_Thread extends Component {
           </Col>
           {is_TaiGer_role(this.props.user) && (
             <Col md={1}>
-              {showButtonIfMyStudent(this.props.user, this.props.student) && (
+              {
                 <Button
                   size="sm"
                   style={{ cursor: 'pointer' }}
@@ -156,7 +152,7 @@ class EditableFile_Thread extends Component {
                 >
                   <AiOutlineDelete size={20} />
                 </Button>
-              )}
+              }
             </Col>
           )}
         </Row>

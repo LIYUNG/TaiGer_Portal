@@ -6,7 +6,6 @@ import { Link } from 'react-router-dom';
 
 import { BASE_URL } from '../../api/request';
 import {
-  showButtonIfMyStudent,
   is_TaiGer_AdminAgent,
   DocumentStatus,
   check_uni_assist_needed
@@ -127,6 +126,11 @@ class UniAssistListCard extends React.Component {
 
   handleSetAsNotNeeded = (e) => {
     e.preventDefault();
+    this.setState((state) => ({
+      ...state,
+      isLoaded2: { ...this.state.isLoaded2, [this.state.program_id]: false }
+    }));
+
     SetAsNotNeeded(this.state.student_id, this.state.program_id).then(
       (resp) => {
         const { data, success } = resp.data;
@@ -137,6 +141,10 @@ class UniAssistListCard extends React.Component {
             student: data,
             success: success,
             setAsNotNeededModel: false,
+            isLoaded2: {
+              ...this.state.isLoaded2,
+              [this.state.program_id]: true
+            },
             student_id: '',
             program_id: '',
             res_modal_status: status
@@ -146,6 +154,10 @@ class UniAssistListCard extends React.Component {
           this.setState((state) => ({
             ...state,
             isLoaded: true,
+            isLoaded2: {
+              ...this.state.isLoaded2,
+              [this.state.program_id]: true
+            },
             res_modal_message: message,
             res_modal_status: status
           }));
@@ -415,10 +427,7 @@ class UniAssistListCard extends React.Component {
                       ] ? (
                         <>
                           <Col md={1}>
-                            {showButtonIfMyStudent(
-                              this.props.user,
-                              this.props.student
-                            ) && (
+                            {
                               <Form.Group
                                 controlId={`${application.programId._id.toString()}`}
                               >
@@ -440,55 +449,47 @@ class UniAssistListCard extends React.Component {
                                   }
                                 />
                               </Form.Group>
+                            }
+                          </Col>
+                          <Col>
+                            {is_TaiGer_AdminAgent(this.props.user) && (
+                              <>
+                                <Form>
+                                  <Form.Check
+                                    type="checkbox"
+                                    className="text-light"
+                                    label={`Upload files and Paid`}
+                                    value={'Is_Paid'}
+                                    checked={application.uni_assist.isPaid}
+                                    onChange={(e) =>
+                                      this.onCheckHandler(
+                                        e,
+                                        this.state.student._id.toString(),
+                                        application.programId._id.toString(),
+                                        !application.uni_assist.isPaid
+                                      )
+                                    }
+                                  />
+                                </Form>
+                              </>
                             )}
                           </Col>
                           <Col>
-                            {is_TaiGer_AdminAgent(this.props.user) &&
-                              showButtonIfMyStudent(
-                                this.props.user,
-                                this.props.student
-                              ) && (
-                                <>
-                                  <Form>
-                                    <Form.Check
-                                      type="checkbox"
-                                      className="text-light"
-                                      label={`Upload files and Paid`}
-                                      value={'Is_Paid'}
-                                      checked={application.uni_assist.isPaid}
-                                      onChange={(e) =>
-                                        this.onCheckHandler(
-                                          e,
-                                          this.state.student._id.toString(),
-                                          application.programId._id.toString(),
-                                          !application.uni_assist.isPaid
-                                        )
-                                      }
-                                    />
-                                  </Form>
-                                </>
-                              )}
-                          </Col>
-                          <Col>
-                            {is_TaiGer_AdminAgent(this.props.user) &&
-                              showButtonIfMyStudent(
-                                this.props.user,
-                                this.props.student
-                              ) && (
-                                <Button
-                                  size={'sm'}
-                                  color={'lightgray'}
-                                  onClick={(e) =>
-                                    this.opensetAsNotNeededWindow(
-                                      e,
-                                      this.state.student._id.toString(),
-                                      application.programId._id.toString()
-                                    )
-                                  }
-                                >
-                                  Set Not Needed
-                                </Button>
-                              )}
+                            {is_TaiGer_AdminAgent(this.props.user) && (
+                              <Button
+                                size={'sm'}
+                                color={'lightgray'}
+                                onClick={(e) =>
+                                  this.opensetAsNotNeededWindow(
+                                    e,
+                                    this.state.student._id.toString(),
+                                    application.programId._id.toString()
+                                  )
+                                }
+                              >
+                                Set Not Needed
+                              </Button>
+                            )}
                           </Col>
                         </>
                       ) : (
@@ -515,25 +516,21 @@ class UniAssistListCard extends React.Component {
                       </p>
                     </Col>
                     <Col>
-                      {is_TaiGer_AdminAgent(this.props.user) &&
-                        showButtonIfMyStudent(
-                          this.props.user,
-                          this.props.student
-                        ) && (
-                          <Button
-                            size={'sm'}
-                            color={'lightgray'}
-                            onClick={(e) =>
-                              this.opensetAsNotNeededWindow(
-                                e,
-                                this.state.student._id.toString(),
-                                application.programId._id.toString()
-                              )
-                            }
-                          >
-                            Set needed
-                          </Button>
-                        )}
+                      {is_TaiGer_AdminAgent(this.props.user) && (
+                        <Button
+                          size={'sm'}
+                          color={'lightgray'}
+                          onClick={(e) =>
+                            this.opensetAsNotNeededWindow(
+                              e,
+                              this.state.student._id.toString(),
+                              application.programId._id.toString()
+                            )
+                          }
+                        >
+                          Set needed
+                        </Button>
+                      )}
                     </Col>
                   </>
                 ) : (
@@ -557,10 +554,7 @@ class UniAssistListCard extends React.Component {
                       </a>
                     </Col>
                     <Col>
-                      {showButtonIfMyStudent(
-                        this.props.user,
-                        this.props.student
-                      ) && (
+                      {
                         <Button
                           onClick={(e) =>
                             this.onDeleteVPDFileWarningPopUp(
@@ -579,7 +573,7 @@ class UniAssistListCard extends React.Component {
                         >
                           <AiOutlineDelete size={16} />
                         </Button>
-                      )}
+                      }
                     </Col>
                   </>
                 )}
@@ -600,7 +594,8 @@ class UniAssistListCard extends React.Component {
         {check_uni_assist_needed(this.state.student) ? (
           <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
             <Card.Body>
-              The following program needs uni-assist process, please check if paid, uploaded document and upload VPD here:
+              The following program needs uni-assist process, please check if
+              paid, uploaded document and upload VPD here:
               {app_name}
             </Card.Body>
           </Card>

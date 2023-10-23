@@ -215,6 +215,7 @@ export default function EventConfirmationCard(props) {
                   <a
                     href={`${props.event.meetingLink}`}
                     className="text-primary"
+                    target="_blank"
                   >
                     {props.event.meetingLink}
                   </a>

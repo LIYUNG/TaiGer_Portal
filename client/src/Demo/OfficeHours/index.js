@@ -23,7 +23,8 @@ import {
   convertDate,
   getNumberOfDays,
   NoonNightLabel,
-  isInTheFuture
+  isInTheFuture,
+  getUTCWithDST
 } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
@@ -494,7 +495,7 @@ class OfficeHours extends React.Component {
       return <ErrorPage res_status={res_status} />;
     }
 
-    const available_termins = [0, 1, 2, 3].flatMap((iter, x) =>
+    const available_termins = [0, 1, 2, 3, 4, 5, 6].flatMap((iter, x) =>
       agents.flatMap((agent, idx) =>
         getReorderWeekday(getTodayAsWeekday(agent.timezone)).flatMap(
           (weekday, i) => {
@@ -508,20 +509,22 @@ class OfficeHours extends React.Component {
                   agent.timezone,
                   iter
                 );
+                console.log(`${year}-${month}-${day}`);
+
+                const test_date = getUTCWithDST(
+                  year,
+                  month,
+                  day,
+                  agent.timezone,
+                  time_slot.value
+                );
+                console.log(test_date); // TODO in case timezone not defined?
                 const hour = parseInt(time_slot.value.split(':')[0], 10);
                 const minutes = parseInt(time_slot.value.split(':')[1], 10);
                 const time_difference =
                   getTimezoneOffset(
                     Intl.DateTimeFormat().resolvedOptions().timeZone
                   ) - getTimezoneOffset(agent.timezone);
-                // console.log(booked_events);
-                // console.log(new Date(booked_events[0].start).toISOString());
-                // console.log(
-                //   shiftDateByOffset(
-                //     new Date(year, month - 1, day, hour, minutes),
-                //     time_difference
-                //   ).toISOString()
-                // );
                 const condition = booked_events.some(
                   (booked_event) =>
                     new Date(booked_event.start).toISOString() ===
@@ -530,6 +533,8 @@ class OfficeHours extends React.Component {
                       time_difference
                     ).toISOString()
                 );
+                const end_date = new Date(test_date);
+                end_date.setMinutes(end_date.getMinutes() + 30);
                 if (condition) {
                   return [];
                 } else {
@@ -540,14 +545,8 @@ class OfficeHours extends React.Component {
                     } ${this.props.user.firstname_chinese || ''} ${
                       this.props.user.lastname_chinese || ''
                     }`,
-                    start: shiftDateByOffset(
-                      new Date(year, month - 1, day, hour, minutes),
-                      time_difference
-                    ),
-                    end: shiftDateByOffset(
-                      new Date(year, month - 1, day, hour, minutes),
-                      time_difference + 0.5
-                    ),
+                    start: new Date(test_date),
+                    end: end_date,
                     provider: agent
                   };
                 }

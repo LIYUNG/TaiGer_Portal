@@ -7,7 +7,10 @@ import Popping from './Popping';
 import { Button, Form, Modal, Spinner } from 'react-bootstrap';
 import {
   NoonNightLabel,
+  getLocalTime,
   getTimezoneOffset,
+  getUTCTimezoneOffset,
+  getUTCWithDST,
   shiftDateByOffset,
   stringToColor,
   time_slots
@@ -24,32 +27,34 @@ const localizer = momentLocalizer(moment);
 const MyCalendar = (props) => {
   const [newEventTitle, setNewEventTitle] = useState('');
   const [newEventDescription, setNewEventDescription] = useState('');
-  let available_termins;
-  if (is_TaiGer_Agent(props.user)) {
+  let available_termins=[];
+  if (is_TaiGer_Agent(props.user) && props.selected_year) {
     available_termins = time_slots.flatMap((time_slot, j) => {
-      const Some_Date = new Date(props.newEventStart);
-      const year = Some_Date.getFullYear();
-      const month = Some_Date.getMonth() + 1;
-      const day = Some_Date.getDate();
+      const Some_Date = new Date(props.newEventStart); //bug
+
+      const year = props.selected_year;
+      const month = props.selected_month;
+      const day = props.selected_day;
       const hour = parseInt(time_slot.value.split(':')[0], 10);
       const minutes = parseInt(time_slot.value.split(':')[1], 10);
       const time_difference =
         getTimezoneOffset(Intl.DateTimeFormat().resolvedOptions().timeZone) -
         getTimezoneOffset(props.user.timezone);
-
+      const test_date = getUTCWithDST(
+        year,
+        month,
+        day,
+        props.user.timezone,
+        time_slot.value
+      );
+      const start_date = new Date(test_date);
+      const end_date = new Date(start_date);
+      end_date.setMinutes(end_date.getMinutes() + 30);
       return {
         id: j * 10,
-        title: `${(hour + time_difference) % 24}:${
-          time_slot.value.split(':')[1]
-        }`,
-        start: shiftDateByOffset(
-          new Date(year, month - 1, day, hour, minutes),
-          0
-        ),
-        end: shiftDateByOffset(
-          new Date(year, month - 1, day, hour, minutes),
-          0.5
-        )
+        title: `${start_date.getHours()}:${time_slot.value.split(':')[1]}`,
+        start: start_date,
+        end: end_date
         // provider: agent
       };
     });
@@ -60,12 +65,13 @@ const MyCalendar = (props) => {
     const time_difference =
       getTimezoneOffset(Intl.DateTimeFormat().resolvedOptions().timeZone) -
       getTimezoneOffset(props.user.timezone);
-
+    const end_date = new Date(props.newEventStart);
+    end_date.setMinutes(end_date.getMinutes() + 30);
     const newEvent = {
       id: props.events?.length + 1,
       title: newEventTitle,
-      start: shiftDateByOffset(props.newEventStart, time_difference),
-      end: shiftDateByOffset(props.newEventStart, time_difference + 0.5),
+      start: props.newEventStart,
+      end: end_date,
       description: newEventDescription
     };
     const updatedEvents = [...props.events, newEvent];
@@ -83,6 +89,7 @@ const MyCalendar = (props) => {
       }
     };
   };
+  console.log(available_termins);
 
   return (
     <>
@@ -164,9 +171,10 @@ const MyCalendar = (props) => {
             </Form>
             <h6>
               Time zone: {props.user.timezone} UTC
-              {getTimezoneOffset(props.user.timezone) >= 0
+              {/* {getUTCTimezoneOffset(props.user.timezone)} */}
+              {/* {getTimezoneOffset(props.user.timezone) >= 0
                 ? `+${getTimezoneOffset(props.user.timezone)}`
-                : getTimezoneOffset(props.user.timezone)}
+                : getTimezoneOffset(props.user.timezone)} */}
             </h6>
             <span>
               If the time zone not matches, please go to{' '}
@@ -190,10 +198,11 @@ const MyCalendar = (props) => {
                       value={`${time_slot.start}`}
                       key={`${time_slot.start}`}
                     >
-                      {time_slot.start.toLocaleString()} UTC
-                      {getTimezoneOffset(props.user.timezone) >= 0
-                        ? `+${getTimezoneOffset(props.user.timezone)}`
-                        : getTimezoneOffset(props.user.timezone)}
+                      {getLocalTime(time_slot.start, props.user.timezone)} UTC +
+                      {getUTCTimezoneOffset(
+                        time_slot.start,
+                        props.user.timezone
+                      ) / 60}
                     </option>
                   ))}
               </Form.Control>

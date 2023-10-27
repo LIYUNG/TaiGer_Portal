@@ -34,6 +34,7 @@
     "jquery": "^3.6.1",
     "luxon": "^3.4.0",
     "match-sorter": "^6.3.1",
+    "moment-timezone": "^0.5.43",
     "namor": "^2.0.4",
     "node-sass": "^7.0.3",
     "prop-types": "^15.8.1",

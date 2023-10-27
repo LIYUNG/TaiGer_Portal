@@ -5,6 +5,7 @@ import {
   AiOutlineFieldTime
 } from 'react-icons/ai';
 import { DateTime, IANAZone } from 'luxon';
+import moment from 'moment-timezone';
 import { IoCheckmarkCircle } from 'react-icons/io5';
 import { BsDash } from 'react-icons/bs';
 import { BiCommentDots } from 'react-icons/bi';
@@ -87,6 +88,75 @@ export const NoonNightLabel = (start) => {
     : start_temp.getHours() === 0 && start_temp.getMinutes() === 0
     ? '(Night)'
     : '';
+};
+
+// export const DstOffset = (year, month, day, hour) => {
+//   const given_date = new Date(year, month, day, hour);
+//   given_date.getTimezoneOffset()
+//   return 0;
+// };
+
+const convertISOToCustomFormat = (isoString) => {
+  const date = new Date(isoString);
+  const year = date.getUTCFullYear();
+  const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(date.getUTCDate()).padStart(2, '0');
+  const hours = String(date.getUTCHours()).padStart(2, '0');
+  const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+  const seconds = String(date.getUTCSeconds()).padStart(2, '0');
+
+  return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.000+00:00`;
+};
+
+export const getUTCWithDST = (year, month, day, timezone, timeslot) => {
+  // Create a Moment object for the current date and time in the specified timezone
+  const localTime = moment.tz(timezone);
+  const [hours, minutes] = timeslot.split(':').map(Number);
+
+  // Set the time to the specified timeslot
+  localTime.set({
+    year,
+    month: month - 1,
+    day,
+    hour: hours,
+    minute: minutes,
+    second: 0,
+    millisecond: 0
+  });
+
+  // Ensure that the localTime is aware of DST
+  localTime.tz(timezone);
+
+  // Get the UTC time while considering DST
+  const utcTime = localTime.toISOString();
+  // console.log(localTime.utc().format());
+  const a = moment.tz(
+    `${year}-${month}-${day < 10 ? `0${day}` : `${day}`} ${timeslot}`,
+    timezone
+  );
+  // console.log(a.utc().format());
+  return convertISOToCustomFormat(a.utc().format());
+};
+// export const convertUTC = (utc_time) => {
+//   const year = utc_time.getFullYear()
+//   const month = utc_time.getMonth()
+//   const day = utc_time.getDay()
+//   const month = utc_time.getMonth()
+//   return ${year}-${month}-${day < 10 ? `0${day}` : `${day}`} ${timeslot}
+// };
+export const getLocalTime = (utc_time, timezone) => {
+  const utcMoment = moment
+    .utc(`${utc_time.toISOString()}`)
+    .tz(timezone);
+  const localTime = utcMoment.tz(timezone);
+  return localTime.format();
+};
+export const getUTCTimezoneOffset = (utc_time, timezone) => {
+  const utcMoment = moment.utc(`${utc_time.toISOString()}`);
+  const localTime = utcMoment.clone().tz(timezone);
+  const timeZoneOffsetMinutes = localTime.utcOffset();
+  // console.log(timeZoneOffsetMinutes);
+  return timeZoneOffsetMinutes;
 };
 export const getTimezoneOffset = (timezone) => {
   const zone = IANAZone.create(

@@ -20,7 +20,8 @@ import {
   getReorderWeekday,
   shiftDateByOffset,
   getTimezoneOffset,
-  isInTheFuture
+  isInTheFuture,
+  getUTCWithDST
 } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
@@ -69,6 +70,9 @@ class TaiGerOfficeHours extends React.Component {
     newEventStart: null,
     newEventEnd: null,
     isNewEventModalOpen: false,
+    selected_year: 0,
+    selected_month: 0,
+    selected_day: 0,
     res_status: 0,
     res_modal_message: '',
     res_modal_status: 0
@@ -415,6 +419,7 @@ class TaiGerOfficeHours extends React.Component {
 
   handleUpdateTimeSlot = (e) => {
     const new_timeslot_temp = e.target.value;
+    console.log(new_timeslot_temp);
     this.setState({
       event_temp: { ...this.state.event_temp, start: new_timeslot_temp },
       newEventStart: new_timeslot_temp
@@ -515,11 +520,21 @@ class TaiGerOfficeHours extends React.Component {
 
   handleSelectSlot = (slotInfo) => {
     // When an empty date slot is clicked, open the modal to create a new event
-    console.log(slotInfo);
+    console.log(slotInfo.start);
+    const Some_Date = new Date(slotInfo.start); //bug
+    const year = Some_Date.getFullYear();
+    const month = Some_Date.getMonth() + 1;
+    const day = Some_Date.getDate();
+    console.log(year);
+    console.log(month);
+    console.log(day);
     this.setState({
       newEventStart: slotInfo.start,
       newEventEnd: slotInfo.end,
-      isNewEventModalOpen: true
+      isNewEventModalOpen: true,
+      selected_year: year,
+      selected_month: month,
+      selected_day: day
     });
   };
 
@@ -588,25 +603,29 @@ class TaiGerOfficeHours extends React.Component {
                   agent.timezone,
                   iter
                 );
+                // console.log(`${year}-${month - 1}-${day}`);
+
+                const test_date = getUTCWithDST(
+                  year,
+                  month,
+                  day,
+                  agent.timezone,
+                  time_slot.value
+                );
+                // console.log(test_date); // TODO in case timezone not defined?
                 const hour = parseInt(time_slot.value.split(':')[0], 10);
                 const minutes = parseInt(time_slot.value.split(':')[1], 10);
-                const time_difference =
+                const time_difference = // TODO: dynamics offset based on winter time
                   getTimezoneOffset(
                     Intl.DateTimeFormat().resolvedOptions().timeZone
                   ) - getTimezoneOffset(agent.timezone);
+                const end_date = new Date(test_date);
+                end_date.setMinutes(end_date.getMinutes() + 30);
                 return {
                   id: j * 10 + i * 100 + x * 1000 + 1,
-                  title: `${(hour + time_difference) % 24}:${
-                    time_slot.value.split(':')[1]
-                  }`,
-                  start: shiftDateByOffset(
-                    new Date(year, month - 1, day, hour, minutes),
-                    time_difference
-                  ),
-                  end: shiftDateByOffset(
-                    new Date(year, month - 1, day, hour, minutes),
-                    time_difference + 0.5
-                  ),
+                  title: `${new Date(test_date)}`,
+                  start: new Date(test_date),
+                  end: end_date,
                   provider: agent
                 };
               });
@@ -856,6 +875,9 @@ class TaiGerOfficeHours extends React.Component {
                       newEventStart={this.state.newEventStart}
                       newEventEnd={this.state.newEventEnd}
                       newEventTitle={this.state.newEventTitle}
+                      selected_year={this.state.selected_year}
+                      selected_month={this.state.selected_month}
+                      selected_day={this.state.selected_day}
                       students={this.state.students}
                       isNewEventModalOpen={this.state.isNewEventModalOpen}
                     />

@@ -18,7 +18,6 @@ import {
   getNextDayDate,
   getTodayAsWeekday,
   getReorderWeekday,
-  shiftDateByOffset,
   getTimezoneOffset,
   isInTheFuture,
   getUTCWithDST
@@ -43,6 +42,7 @@ import { AiFillCheckCircle } from 'react-icons/ai';
 import EventConfirmationCard from '../../components/Calendar/components/EventConfirmationCard';
 import { Redirect } from 'react-router-dom';
 import DEMO from '../../store/constant';
+import moment from 'moment-timezone';
 
 class TaiGerOfficeHours extends React.Component {
   state = {
@@ -572,58 +572,56 @@ class TaiGerOfficeHours extends React.Component {
     if (res_status >= 400) {
       return <ErrorPage res_status={res_status} />;
     }
-    // const getReorderWeekday(getTodayAsWeekday(agent.timezone)) = getReorderWeekday(
-    //   getTodayAsWeekday(this.state.agent.timezone)
-    // );
-    //TODO: remove the conflicting time slots.
-    // (in Testing again) TODO: bug >> browser dependent!
-    const available_termins = [
-      0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
-      21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33
-    ].flatMap((iter, x) =>
+
+    let available_termins = [];
+    available_termins = [0, 1, 2, 3, 4, 5].flatMap((iter, x) =>
       agents.flatMap((agent, idx) =>
-        // BUG: getReorderWeekday(getTodayAsWeekday(agent.timezone)) cause wrong time in correct date.
-        // David on Thursday, getReorderWeekday start from Tuesday, and the timeslot it from tuesday (date: saturday but time: tuesday)
-        getReorderWeekday(getTodayAsWeekday(agent.timezone)).flatMap(
-          (weekday, i) => {
-            // observe: look like weekday is wrong should be saturday, but it starting from tuesday
-            const timeSlots =
-              agent.officehours &&
-              agent.officehours[weekday]?.active &&
-              agent.officehours[weekday].time_slots.flatMap((time_slot, j) => {
-                const { year, month, day } = getNextDayDate(
-                  getReorderWeekday(getTodayAsWeekday(agent.timezone)),
-                  weekday,
-                  agent.timezone,
-                  iter
-                );
-                const test_date = getUTCWithDST(
-                  year,
-                  month,
-                  day,
-                  agent.timezone,
-                  time_slot.value
-                );
-                // console.log(test_date); // TODO in case timezone not defined?
-                const hour = parseInt(time_slot.value.split(':')[0], 10);
-                const minutes = parseInt(time_slot.value.split(':')[1], 10);
-                const time_difference = // TODO: dynamics offset based on winter time
-                  getTimezoneOffset(
-                    Intl.DateTimeFormat().resolvedOptions().timeZone
-                  ) - getTimezoneOffset(agent.timezone);
-                const end_date = new Date(test_date);
-                end_date.setMinutes(end_date.getMinutes() + 30);
-                return {
-                  id: j * 10 + i * 100 + x * 1000 + 1,
-                  title: `${new Date(test_date)}`,
-                  start: new Date(test_date),
-                  end: end_date,
-                  provider: agent
-                };
-              });
-            return timeSlots || [];
-          }
-        )
+        agent.timezone && moment.tz.zone(agent.timezone)
+          ? getReorderWeekday(getTodayAsWeekday(agent.timezone)).flatMap(
+              (weekday, i) => {
+                const timeSlots =
+                  agent.officehours &&
+                  agent.officehours[weekday]?.active &&
+                  agent.officehours[weekday].time_slots.flatMap(
+                    (time_slot, j) => {
+                      const { year, month, day } = getNextDayDate(
+                        getReorderWeekday(getTodayAsWeekday(agent.timezone)),
+                        weekday,
+                        agent.timezone,
+                        iter
+                      );
+                      const test_date = getUTCWithDST(
+                        year,
+                        month,
+                        day,
+                        agent.timezone,
+                        time_slot.value
+                      );
+                      // console.log(test_date); // TODO in case timezone not defined?
+                      const hour = parseInt(time_slot.value.split(':')[0], 10);
+                      const minutes = parseInt(
+                        time_slot.value.split(':')[1],
+                        10
+                      );
+                      const time_difference = // TODO: dynamics offset based on winter time
+                        getTimezoneOffset(
+                          Intl.DateTimeFormat().resolvedOptions().timeZone
+                        ) - getTimezoneOffset(agent.timezone);
+                      const end_date = new Date(test_date);
+                      end_date.setMinutes(end_date.getMinutes() + 30);
+                      return {
+                        id: j * 10 + i * 100 + x * 1000 + 1,
+                        title: `${new Date(test_date)}`,
+                        start: new Date(test_date),
+                        end: end_date,
+                        provider: agent
+                      };
+                    }
+                  );
+                return timeSlots || [];
+              }
+            )
+          : []
       )
     );
     const booked_events = events.map((event, idx) => ({

@@ -20,9 +20,7 @@ import {
   getReorderWeekday,
   shiftDateByOffset,
   getTimezoneOffset,
-  convertDate,
   getNumberOfDays,
-  NoonNightLabel,
   isInTheFuture,
   getUTCWithDST
 } from '../Utils/contants';
@@ -42,16 +40,13 @@ import MyCalendar from '../../components/Calendar/components/Calendar';
 import { is_TaiGer_Student } from '../Utils/checking-functions';
 import {
   AiFillCheckCircle,
-  AiFillQuestionCircle,
-  AiOutlineCalendar,
-  AiOutlineDelete,
-  AiOutlineEdit,
   AiOutlineMail,
   AiOutlineUser
 } from 'react-icons/ai';
 import EventConfirmationCard from '../../components/Calendar/components/EventConfirmationCard';
 import { Redirect } from 'react-router-dom';
 import DEMO from '../../store/constant';
+import moment from 'moment-timezone';
 
 class OfficeHours extends React.Component {
   state = {
@@ -494,68 +489,73 @@ class OfficeHours extends React.Component {
       return <ErrorPage res_status={res_status} />;
     }
 
-    const available_termins = [
-      0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
-      21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33
-    ].flatMap((iter, x) =>
+    let available_termins = [];
+    available_termins = [0, 1, 2, 3, 4, 5].flatMap((iter, x) =>
       agents.flatMap((agent, idx) =>
-        getReorderWeekday(getTodayAsWeekday(agent.timezone)).flatMap(
-          (weekday, i) => {
-            const timeSlots =
-              agent.officehours &&
-              agent.officehours[weekday]?.active &&
-              agent.officehours[weekday].time_slots.flatMap((time_slot, j) => {
-                const { year, month, day } = getNextDayDate(
-                  getReorderWeekday(getTodayAsWeekday(agent.timezone)),
-                  weekday,
-                  agent.timezone,
-                  iter
-                );
-                // console.log(`${year}-${month}-${day}`);
+        agent.timezone && moment.tz.zone(agent.timezone)
+          ? getReorderWeekday(getTodayAsWeekday(agent.timezone)).flatMap(
+              (weekday, i) => {
+                const timeSlots =
+                  agent.officehours &&
+                  agent.officehours[weekday]?.active &&
+                  agent.officehours[weekday].time_slots.flatMap(
+                    (time_slot, j) => {
+                      const { year, month, day } = getNextDayDate(
+                        getReorderWeekday(getTodayAsWeekday(agent.timezone)),
+                        weekday,
+                        agent.timezone,
+                        iter
+                      );
+                      // console.log(`${year}-${month}-${day}`);
 
-                const test_date = getUTCWithDST(
-                  year,
-                  month,
-                  day,
-                  agent.timezone,
-                  time_slot.value
-                );
-                // console.log(test_date); // TODO in case timezone not defined?
-                const hour = parseInt(time_slot.value.split(':')[0], 10);
-                const minutes = parseInt(time_slot.value.split(':')[1], 10);
-                const time_difference =
-                  getTimezoneOffset(
-                    Intl.DateTimeFormat().resolvedOptions().timeZone
-                  ) - getTimezoneOffset(agent.timezone);
-                const condition = booked_events.some(
-                  (booked_event) =>
-                    new Date(booked_event.start).toISOString() ===
-                    shiftDateByOffset(
-                      new Date(year, month - 1, day, hour, minutes),
-                      time_difference
-                    ).toISOString()
-                );
-                const end_date = new Date(test_date);
-                end_date.setMinutes(end_date.getMinutes() + 30);
-                if (condition) {
-                  return [];
-                } else {
-                  return {
-                    id: j * 10 + i * 100 + x * 1000 + 1,
-                    title: `${this.props.user.firstname} ${
-                      this.props.user.lastname
-                    } ${this.props.user.firstname_chinese || ''} ${
-                      this.props.user.lastname_chinese || ''
-                    }`,
-                    start: new Date(test_date),
-                    end: end_date,
-                    provider: agent
-                  };
-                }
-              });
-            return timeSlots || [];
-          }
-        )
+                      const test_date = getUTCWithDST(
+                        year,
+                        month,
+                        day,
+                        agent.timezone,
+                        time_slot.value
+                      );
+                      // console.log(test_date); // TODO in case timezone not defined?
+                      const hour = parseInt(time_slot.value.split(':')[0], 10);
+                      const minutes = parseInt(
+                        time_slot.value.split(':')[1],
+                        10
+                      );
+                      const time_difference =
+                        getTimezoneOffset(
+                          Intl.DateTimeFormat().resolvedOptions().timeZone
+                        ) - getTimezoneOffset(agent.timezone);
+                      const condition = booked_events.some(
+                        (booked_event) =>
+                          new Date(booked_event.start).toISOString() ===
+                          shiftDateByOffset(
+                            new Date(year, month - 1, day, hour, minutes),
+                            time_difference
+                          ).toISOString()
+                      );
+                      const end_date = new Date(test_date);
+                      end_date.setMinutes(end_date.getMinutes() + 30);
+                      if (condition) {
+                        return [];
+                      } else {
+                        return {
+                          id: j * 10 + i * 100 + x * 1000 + 1,
+                          title: `${this.props.user.firstname} ${
+                            this.props.user.lastname
+                          } ${this.props.user.firstname_chinese || ''} ${
+                            this.props.user.lastname_chinese || ''
+                          }`,
+                          start: new Date(test_date),
+                          end: end_date,
+                          provider: agent
+                        };
+                      }
+                    }
+                  );
+                return timeSlots || [];
+              }
+            )
+          : []
       )
     );
 
@@ -954,8 +954,8 @@ class OfficeHours extends React.Component {
                         <Card key={j} className="my-0 mx-0">
                           <Card.Header>
                             <Card.Title>
-                              {time_slot.start.toLocaleString()} to{' '}
-                              {time_slot.end.toLocaleString()}
+                              {time_slot.start?.toLocaleString()} to{' '}
+                              {time_slot.end?.toLocaleString()}
                             </Card.Title>
                           </Card.Header>
                         </Card>

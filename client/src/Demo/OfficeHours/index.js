@@ -164,7 +164,6 @@ class OfficeHours extends React.Component {
         if (found_event_idx >= 0) {
           temp_events[found_event_idx] = data;
         }
-        console.log(found_event_idx);
         if (success) {
           this.setState({
             isLoaded: true,
@@ -495,7 +494,10 @@ class OfficeHours extends React.Component {
       return <ErrorPage res_status={res_status} />;
     }
 
-    const available_termins = [0, 1, 2, 3, 4, 5, 6].flatMap((iter, x) =>
+    const available_termins = [
+      0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+      21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33
+    ].flatMap((iter, x) =>
       agents.flatMap((agent, idx) =>
         getReorderWeekday(getTodayAsWeekday(agent.timezone)).flatMap(
           (weekday, i) => {
@@ -509,7 +511,7 @@ class OfficeHours extends React.Component {
                   agent.timezone,
                   iter
                 );
-                console.log(`${year}-${month}-${day}`);
+                // console.log(`${year}-${month}-${day}`);
 
                 const test_date = getUTCWithDST(
                   year,
@@ -518,7 +520,7 @@ class OfficeHours extends React.Component {
                   agent.timezone,
                   time_slot.value
                 );
-                console.log(test_date); // TODO in case timezone not defined?
+                // console.log(test_date); // TODO in case timezone not defined?
                 const hour = parseInt(time_slot.value.split(':')[0], 10);
                 const minutes = parseInt(time_slot.value.split(':')[1], 10);
                 const time_difference =

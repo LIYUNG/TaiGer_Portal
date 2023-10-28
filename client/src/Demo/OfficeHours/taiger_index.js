@@ -419,7 +419,6 @@ class TaiGerOfficeHours extends React.Component {
 
   handleUpdateTimeSlot = (e) => {
     const new_timeslot_temp = e.target.value;
-    console.log(new_timeslot_temp);
     this.setState({
       event_temp: { ...this.state.event_temp, start: new_timeslot_temp },
       newEventStart: new_timeslot_temp
@@ -487,16 +486,11 @@ class TaiGerOfficeHours extends React.Component {
 
   // Calendar handler:
   handleSelectEvent = (event) => {
-    console.log(event);
     this.setState({
       isEditModalOpen: true,
       event_temp: event,
       event_id: event._id.toString()
     });
-    // this.setState({
-    //   selectedEvent: event,
-    //   newDescription: event.description || ''
-    // });
   };
   handleChange = (e) => {
     const description_temp = e.target.value;
@@ -520,14 +514,11 @@ class TaiGerOfficeHours extends React.Component {
 
   handleSelectSlot = (slotInfo) => {
     // When an empty date slot is clicked, open the modal to create a new event
-    console.log(slotInfo.start);
     const Some_Date = new Date(slotInfo.start); //bug
     const year = Some_Date.getFullYear();
     const month = Some_Date.getMonth() + 1;
     const day = Some_Date.getDate();
-    console.log(year);
-    console.log(month);
-    console.log(day);
+
     this.setState({
       newEventStart: slotInfo.start,
       newEventEnd: slotInfo.end,
@@ -586,7 +577,10 @@ class TaiGerOfficeHours extends React.Component {
     // );
     //TODO: remove the conflicting time slots.
     // (in Testing again) TODO: bug >> browser dependent!
-    const available_termins = [0, 1, 2, 3].flatMap((iter, x) =>
+    const available_termins = [
+      0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+      21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33
+    ].flatMap((iter, x) =>
       agents.flatMap((agent, idx) =>
         // BUG: getReorderWeekday(getTodayAsWeekday(agent.timezone)) cause wrong time in correct date.
         // David on Thursday, getReorderWeekday start from Tuesday, and the timeslot it from tuesday (date: saturday but time: tuesday)
@@ -603,8 +597,6 @@ class TaiGerOfficeHours extends React.Component {
                   agent.timezone,
                   iter
                 );
-                // console.log(`${year}-${month - 1}-${day}`);
-
                 const test_date = getUTCWithDST(
                   year,
                   month,

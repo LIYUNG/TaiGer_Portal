@@ -60,13 +60,12 @@ export const daysOfWeek = [
   'Saturday',
   'Sunday'
 ];
+
+export const bufferDays = 2;
+
 export const getTodayAsWeekday = (timezone) => {
   const now = DateTime.fromObject({}, { zone: timezone });
-  // console.log(now.weekday); // 1-7
-  // console.log(now.weekdayLong); // Monday,... (maybe abbrev. or another language)
-  // let currentDayOfWeek = daysOfWeek.indexOf(now.weekdayLong); // could return -1 if {weekdayLong} not english!
-  // return currentDayOfWeek + 2;  // error -1 +2 = 1 >> Starting from Tuesday
-  return now.weekday - 1 + 2;
+  return now.weekday - 1 + bufferDays;
 };
 
 export const getReorderWeekday = (index) => {
@@ -89,12 +88,6 @@ export const NoonNightLabel = (start) => {
     ? '(Night)'
     : '';
 };
-
-// export const DstOffset = (year, month, day, hour) => {
-//   const given_date = new Date(year, month, day, hour);
-//   given_date.getTimezoneOffset()
-//   return 0;
-// };
 
 const convertISOToCustomFormat = (isoString) => {
   const date = new Date(isoString);
@@ -131,23 +124,16 @@ export const getUTCWithDST = (year, month, day, timezone, timeslot) => {
   const utcTime = localTime.toISOString();
   // console.log(localTime.utc().format());
   const a = moment.tz(
-    `${year}-${month}-${day < 10 ? `0${day}` : `${day}`} ${timeslot}`,
+    `${year}-${month < 10 ? `0${month}` : month}-${
+      day < 10 ? `0${day}` : `${day}`
+    } ${timeslot}`,
     timezone
   );
-  // console.log(a.utc().format());
   return convertISOToCustomFormat(a.utc().format());
 };
-// export const convertUTC = (utc_time) => {
-//   const year = utc_time.getFullYear()
-//   const month = utc_time.getMonth()
-//   const day = utc_time.getDay()
-//   const month = utc_time.getMonth()
-//   return ${year}-${month}-${day < 10 ? `0${day}` : `${day}`} ${timeslot}
-// };
+
 export const getLocalTime = (utc_time, timezone) => {
-  const utcMoment = moment
-    .utc(`${utc_time.toISOString()}`)
-    .tz(timezone);
+  const utcMoment = moment.utc(`${utc_time.toISOString()}`).tz(timezone);
   const localTime = utcMoment.tz(timezone);
   return localTime.format();
 };
@@ -155,7 +141,6 @@ export const getUTCTimezoneOffset = (utc_time, timezone) => {
   const utcMoment = moment.utc(`${utc_time.toISOString()}`);
   const localTime = utcMoment.clone().tz(timezone);
   const timeZoneOffsetMinutes = localTime.utcOffset();
-  // console.log(timeZoneOffsetMinutes);
   return timeZoneOffsetMinutes;
 };
 export const getTimezoneOffset = (timezone) => {
@@ -185,7 +170,7 @@ export const getNextDayDate = (reorder_weekday, dayOfWeek, timezone, nextN) => {
   let daysToAdd = targetDayIndex % 7;
 
   // Calculate the date of the next Nth occurrence
-  const nextOccurrence = now.plus({ days: daysToAdd + nextN * 7 + 2 });
+  const nextOccurrence = now.plus({ days: daysToAdd + nextN * 7 + bufferDays });
 
   const options = {
     weekday: 'long',
@@ -193,11 +178,6 @@ export const getNextDayDate = (reorder_weekday, dayOfWeek, timezone, nextN) => {
     month: 'numeric',
     day: 'numeric'
   };
-  const formattedDate = nextOccurrence.toLocaleString(options);
-  // console.log(nextOccurrence.weekdayLong);
-  // console.log(nextOccurrence.year);
-  // console.log(nextOccurrence.month);
-  // console.log(nextOccurrence.day);
   return {
     weekdayLong: nextOccurrence.weekdayLong,
     year: nextOccurrence.year,

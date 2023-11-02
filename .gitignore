@@ -51,9 +51,10 @@ globalConfig.json
 /api/python/TaiGerProgramListAICrawler/.env
 /api/python/TaiGerProgramListAICrawler/logs/*
 !/api/python/TaiGerProgramListAICrawler/logs/.gitkeep
+/api/python/TaiGerProgramListAICrawler/result
+!/api/python/TaiGerProgramListAICrawler/result/.gitkeep
 api/python/TaiGerProgramListAICrawler/ipynb/.ipynb_checkpoints/*
 api/python/TaiGerProgramListAICrawler/*/__pycache__/
 /api/python/TaiGerProgramListAICrawler/*.pyc
 /api/python/TaiGerProgramListAICrawler/ipynb/tempDB/
 /api/python/TaiGerProgramListAICrawler/ipynb/vectorDatabase/
-

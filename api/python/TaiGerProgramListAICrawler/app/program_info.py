@@ -85,6 +85,9 @@ def get_program_info(university_name, program_name, degree):
     df_program = process_program_information(university_name=university_name, 
                                              program_name=program_name, 
                                              llm=chat, retriever=retriever)
+    
+    df_program = df_program.set_index('index') # use the column name `index` as new index
+
 
     
     # 4. Remove VectorDB
@@ -99,6 +102,18 @@ def get_program_info(university_name, program_name, degree):
     else:
         logger.warning(f"'{persist_directory}' does not exist or is not a directory.")
     
+
+    # 5 Convert DataFrame to JSON
+    logger.info("--------------------- 5. Convert DataFrame to JSON for frontend ---------------------")
+    json_result = df_program.to_json(orient='index') #records, split, index, columns, values, and table
+    json_result_clean = json_result.replace('\/', '/') # clean up the werid symbol
+
+    # Write to file
+    file_name = f'{university_name}_{program_name}_{degree}_{today}'.replace(' ','') # remove space
+    result_json_path = f'../result/{file_name}.json'
+    with open(result_json_path, 'w') as f:
+        f.write(json_result_clean)
+    logger.info(f"json_result saved at {result_json_path}")
     logger.info("--------------------- End ----------------------------------\n\n\n\n\n")
     return df_program
 

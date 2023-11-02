@@ -61,11 +61,6 @@ def add_source_into_another_column(data_dict, source_list):
     }, index=keys) #index = column name
 
 
-    # some formating
-    def format_list(items):
-        return '\n'.join([f"{i+1}. {item}" for i, item in enumerate(items)])
-    
-    df['Source'] = [source_list for _ in range(len(df))] # now fill in with the same values
-    df['Source'] = df['Source'].apply(format_list)
-
+    copy_source_lists = [source_list.copy() for _ in range(len(df))]
+    df['Source'] = copy_source_lists
     return df

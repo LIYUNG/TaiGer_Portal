@@ -47,6 +47,7 @@ import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import { AiFillEdit } from 'react-icons/ai';
 import { BsMessenger } from 'react-icons/bs';
+import PortalCredentialPage from '../PortalCredentialPage';
 
 class SingleStudentPage extends React.Component {
   state = {
@@ -593,12 +594,8 @@ class SingleStudentPage extends React.Component {
                       style={{ textDecoration: 'none' }}
                       className="mx-1"
                     >
-                      <Button
-                        size="sm"
-                        className="ms-2 "
-                      >
-                        <BsMessenger color="white" size={16} />{' '}
-                        <b>Message</b>
+                      <Button size="sm" className="ms-2 ">
+                        <BsMessenger color="white" size={16} /> <b>Message</b>
                       </Button>
                     </Link>
                     <span
@@ -607,7 +604,7 @@ class SingleStudentPage extends React.Component {
                     >
                       <Button
                         size="sm"
-                        variant='success'
+                        variant="success"
                         className="ms-2 "
                         onClick={this.onChangeView}
                       >
@@ -730,11 +727,11 @@ class SingleStudentPage extends React.Component {
                 <Card className="my-0 mx-0">
                   <Card.Body>
                     <Row>
-                      <Link
-                        to={`/portal-informations/${this.state.student._id.toString()}`}
-                      >
-                        <Button>Go to Portal Credentials</Button>
-                      </Link>
+                      <PortalCredentialPage
+                        user={this.props.user}
+                        student_id={this.state.student._id.toString()}
+                        showTitle={true}
+                      />
                     </Row>
                   </Card.Body>
                 </Card>

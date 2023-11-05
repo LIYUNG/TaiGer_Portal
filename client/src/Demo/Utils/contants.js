@@ -557,6 +557,7 @@ export const DEGREE_OPTIONS = () => {
       <option value="M. A.">Master of Art</option>
       <option value="M. Eng.">Master of Engineering</option>
       <option value="M. Sc.">Master of Science</option>
+      <option value="M. Res.">Master of Reserach</option>
       <option value="MBA">MBA</option>
     </>
   );

@@ -419,7 +419,7 @@ class SingleProgram extends React.Component {
           {is_TaiGer_Student(this.props.user) && (
             <>
               <Button size="sm" onClick={() => this.handleReportClick()}>
-                Edit
+                Report
               </Button>
             </>
           )}

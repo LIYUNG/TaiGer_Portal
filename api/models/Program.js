@@ -39,133 +39,137 @@ const programSchema = new Schema(
     },
     gpa_requirement: {
       type: String
-      // required: true,
     },
     application_start: String,
     application_deadline: {
       type: String
-      // required: true,
     },
     uni_assist: {
       type: String
-      // required: true,
     },
     toefl: {
       type: String
-      // required: true,
+    },
+    toefl_reading: {
+      type: Number
+    },
+    toefl_listening: {
+      type: Number
+    },
+    toefl_writing: {
+      type: Number
+    },
+    toefl_speaking: {
+      type: Number
     },
     ielts: {
       type: String
-      // required: true,
+    },
+    ielts_reading: {
+      type: Number
+    },
+    ielts_listening: {
+      type: Number
+    },
+    ielts_writing: {
+      type: Number
+    },
+    ielts_speaking: {
+      type: Number
     },
     testdaf: {
       type: String
-      // required: true,
+    },
+    basic_german_requirement: {
+      type: String
     },
     gre: {
       type: String
-      // required: true,
+    },
+    gre_verbal: {
+      type: Number
+    },
+    gre_quantitative: {
+      type: Number
+    },
+    gre_analytical_writing: {
+      type: Number
     },
     gmat: {
       type: String
-      // required: true,
     },
     ml_required: {
       type: String
-      // required: true,
     },
     ml_requirements: {
       type: String
-      // required: true,
     },
     rl_required: {
       type: String
-      // required: true,
     },
     rl_requirements: {
       type: String
-      // required: true,
     },
     essay_required: {
       type: String
-      // required: true,
     },
     essay_requirements: {
       type: String
-      // required: true,
     },
     portfolio_required: {
       type: String
-      // required: true,
     },
     portfolio_requirements: {
       type: String
-      // required: true,
     },
     supplementary_form_required: {
       type: String
-      // required: true,
     },
     supplementary_form_requirements: {
       type: String
-      // required: true,
     },
     ects_requirements: {
       type: String
-      // required: true,
     },
     special_notes: {
       type: String
-      // required: true,
     },
     comments: {
       type: String
-      // required: true,
     },
     application_portal_a: {
       type: String
-      // required: true,
     },
     application_portal_b: {
       type: String
-      // required: true,
     },
     application_portal_a_instructions: {
       type: String
-      // required: true,
     },
     application_portal_b_instructions: {
       type: String
-      // required: true,
     },
     uni_assist_link: {
       type: String
-      // required: true,
     },
     website: {
       type: String
-      // required: true,
     },
     fpso: {
       type: String
-      // required: true,
     },
     updatedAt: Date,
     whoupdated: {
       type: String
-      // required: true,
     },
     tuition_fees: {
       type: String
-      // required: true,
     },
     study_group_flag: {
       type: String
-      // required: true,
     },
     country: {
       type: String
-      // required: true,
     },
     requiredDocuments: [String], // Not used
     optionalDocuments: [String], // not used

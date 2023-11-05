@@ -1,3 +1,4 @@
+import React from 'react';
 import { getNumberOfDays, convertDate, profile_list } from './contants';
 export const is_TaiGer_role = (user) =>
   user.role === 'Admin' || user.role === 'Agent' || user.role === 'Editor';
@@ -18,8 +19,36 @@ export const DocumentStatus = {
 
 export const NewlineText = (props) => {
   const text = props.text;
-  const newText = text?.split('\n').map((str) => <p className="my-1">{str}</p>);
+  // Regular expression to match URLs in the input string
+  const urlRegex = /(https?|ftp):\/\/[^\s/$.?#].[^\s]*/g;
 
+  // Split the input text by line breaks and URLs
+  const parts = text?.split(/\\n/);
+
+  // Process each part and replace URLs with <a> tags
+  const newText = parts?.map((part, index) => {
+    if (urlRegex.test(part)) {
+      // If the part is a URL, create an <a> element
+      return (
+        <a
+          key={index}
+          href={part}
+          className="text-primary"
+          target="_blank" // Open the link in a new tab/window
+          rel="noopener noreferrer" // Security best practice for opening links in a new tab/window
+        >
+          {part}
+        </a>
+      );
+    } else {
+      // If not a URL, create a <p> element
+      return (
+        <p key={index} className="my-1">
+          {part}
+        </p>
+      );
+    }
+  });
   return newText;
 };
 

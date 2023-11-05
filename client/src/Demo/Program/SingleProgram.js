@@ -15,12 +15,14 @@ import ModalMain from '../Utils/ModalHandler/ModalMain';
 import { TabTitle } from '../Utils/TabTitle';
 import {
   is_TaiGer_AdminAgent,
-  is_TaiGer_Admin
+  is_TaiGer_Admin,
+  is_TaiGer_Student
 } from '../Utils/checking-functions';
 
 import { deleteProgram } from '../../api';
 import { Link } from 'react-router-dom';
 import ProgramListSubpage from './ProgramListSubpage';
+import ProgramReportModal from './ProgramReportModal';
 
 class SingleProgram extends React.Component {
   state = {
@@ -29,6 +31,7 @@ class SingleProgram extends React.Component {
     program: null,
     success: false,
     isEdit: false,
+    isReport: false,
     modalShowAssignSuccessWindow: false,
     modalShowAssignWindow: false,
     deleteProgramWarning: false,
@@ -236,12 +239,20 @@ class SingleProgram extends React.Component {
     this.setState((state) => ({ ...state, isEdit: !this.state.isEdit }));
   };
 
+  handleReportClick = () => {
+    this.setState((state) => ({ ...state, isReport: !this.state.isReport }));
+  };
+
   setModalShowDDelete = () => {
     this.setState({
       deleteProgramWarning: true
     });
   };
-
+  setReportModalHideDelete = () => {
+    this.setState({
+      isReport: false
+    });
+  };
   setModalHideDDelete = () => {
     this.setState({
       deleteProgramWarning: false
@@ -405,6 +416,21 @@ class SingleProgram extends React.Component {
               )}
             </>
           )}
+          {is_TaiGer_Student(this.props.user) && (
+            <>
+              <Button size="sm" onClick={() => this.handleReportClick()}>
+                Edit
+              </Button>
+            </>
+          )}
+          <ProgramReportModal
+            isReport={this.state.isReport}
+            setReportModalHideDelete={this.setReportModalHideDelete}
+            uni_name={program.school}
+            program_name={program.program_name}
+            // RemoveProgramHandler={this.RemoveProgramHandler}
+            program_id={program._id.toString()}
+          />
           <ProgramDeleteWarning
             deleteProgramWarning={this.state.deleteProgramWarning}
             setModalHideDDelete={this.setModalHideDDelete}

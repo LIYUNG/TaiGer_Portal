@@ -61,6 +61,11 @@ const SPLIT_LINE = '-------------------------------------------------------';
 const ENGLISH_BELOW = '(English version below)';
 const CONTACT_AGENT = '如果您有任何疑問，請聯絡您的顧問。';
 
+const TicketStatus = {
+  Open: 'open',
+  Resolved: 'resolved'
+};
+
 const DocumentStatus = {
   Uploaded: 'uploaded',
   Missing: 'missing',
@@ -1551,6 +1556,7 @@ const base_documents_summary = (student) => {
 };
 
 module.exports = {
+  TicketStatus,
   DocumentStatus,
   CheckListStatus,
   TaskStatus,

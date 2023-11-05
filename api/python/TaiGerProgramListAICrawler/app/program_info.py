@@ -118,8 +118,19 @@ def get_program_info(university_name, program_name, degree):
     return df_program
 
 if __name__ == "__main__":
-    university_name = "Technische University Munich"
-    program_name = "Informatics"
-    degree = "Master degree"
+    print("--------------------------")
+    print("Python version:")
+    print(sys.version)
+    print("--------------------------")
+    university_name = sys.argv[1]
+    program_name = sys.argv[2]
+    degree = sys.argv[3]
+    print("ProgramList AI Crawler starts!")
+    print("university_name: " + university_name)
+    print("program_name: " + program_name)
+    print("degree: " + degree)
+    # university_name = "Technische University Munich"
+    # program_name = "Informatics"
+    # degree = "Master degree"
     get_program_info(university_name, program_name, degree)
 

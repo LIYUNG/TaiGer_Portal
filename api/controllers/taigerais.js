@@ -22,19 +22,11 @@ const processProgramListAi = asyncHandler(async (req, res, next) => {
   const python_command = isProd() ? 'python3' : 'python';
   const python = spawn(
     python_command,
-    [
-      path.join(
-        __dirname,
-        '..',
-        'python',
-        'TaiGerProgramListAICrawler',
-        'main.py'
-      ),
-      program.school,
-      program.program_name,
-      program.degree
-    ],
-    { stdio: 'inherit' }
+    ['program_info.py', program.school, program.program_name, program.degree],
+    {
+      stdio: 'inherit',
+      cwd: `${__dirname}/../python/TaiGerProgramListAICrawler/app`
+    }
   );
   python.on('data', (data) => {
     logger.log(`${data}`);

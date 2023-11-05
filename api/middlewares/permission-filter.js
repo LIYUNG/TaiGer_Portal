@@ -83,10 +83,31 @@ const permission_canModifyProgramList_filter = async (req, res, next) => {
   }
 };
 
+const permission_canModifyTicketList_filter = async (req, res, next) => {
+  const { user } = req;
+  if (user.role === Role.Agent) {
+    const permission = await Permission.findOne({ user_id: user._id });
+    if (!permission) {
+      return next(
+        new ErrorResponse(403, 'Permission denied: Operation forbidden.')
+      );
+    }
+    if (!permission.canModifyTicketList) {
+      return next(
+        new ErrorResponse(403, 'Permission denied: Operation forbidden.')
+      );
+    }
+    next();
+  } else {
+    next();
+  }
+};
+
 module.exports = {
   permission_canAssignEditor_filter,
   permission_canAssignAgent_filter,
   permission_canModifyDocs_filter,
   permission_canAccessStudentDatabase_filter,
-  permission_canModifyProgramList_filter
+  permission_canModifyProgramList_filter,
+  permission_canModifyTicketList_filter
 };

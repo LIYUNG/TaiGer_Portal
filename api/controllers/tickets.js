@@ -1,12 +1,14 @@
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
-const { Program } = require('../models/Program');
-const { User, Role, Student } = require('../models/User');
-const { Ticket } = require('../models/Ticket');
+const Ticket = require('../models/Ticket');
 const logger = require('../services/logger');
 const { one_month_cache } = require('../cache/node-cache');
+
 const getTickets = asyncHandler(async (req, res) => {
-  const tickets = await Ticket.find();
+  const tickets = await Ticket.find({
+    type: req.query.type,
+    program_id: req.query.program_id
+  }).sort({ createdAt: -1 });
   res.send({ success: true, data: tickets });
 });
 
@@ -22,8 +24,7 @@ const getTicket = asyncHandler(async (req, res) => {
 const createTicket = asyncHandler(async (req, res) => {
   const { user } = req;
   const new_ticket = req.body;
-
-  new_ticket.ticket_name = new_ticket.ticket_name.trim();
+  //   console.log(new_ticket);
   new_ticket.requester_id = user._id.toString();
   // TODO: DO not create the same
   const ticket = await Ticket.create(new_ticket);

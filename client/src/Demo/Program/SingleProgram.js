@@ -23,6 +23,7 @@ import { deleteProgram } from '../../api';
 import { Link } from 'react-router-dom';
 import ProgramListSubpage from './ProgramListSubpage';
 import ProgramReportModal from './ProgramReportModal';
+import ProgramReport from './ProgramReport';
 
 class SingleProgram extends React.Component {
   state = {
@@ -39,6 +40,7 @@ class SingleProgram extends React.Component {
     res_status: 0,
     students: [],
     student_id: '',
+    tickets: [],
     res_modal_message: '',
     res_modal_status: 0
   };
@@ -239,20 +241,12 @@ class SingleProgram extends React.Component {
     this.setState((state) => ({ ...state, isEdit: !this.state.isEdit }));
   };
 
-  handleReportClick = () => {
-    this.setState((state) => ({ ...state, isReport: !this.state.isReport }));
-  };
-
   setModalShowDDelete = () => {
     this.setState({
       deleteProgramWarning: true
     });
   };
-  setReportModalHideDelete = () => {
-    this.setState({
-      isReport: false
-    });
-  };
+
   setModalHideDDelete = () => {
     this.setState({
       deleteProgramWarning: false
@@ -322,6 +316,7 @@ class SingleProgram extends React.Component {
     );
     console.log('Trigger PLA');
   };
+
   render() {
     const {
       res_status,
@@ -417,20 +412,12 @@ class SingleProgram extends React.Component {
             </>
           )}
           {is_TaiGer_Student(this.props.user) && (
-            <>
-              <Button size="sm" onClick={() => this.handleReportClick()}>
-                Report
-              </Button>
-            </>
+            <ProgramReport
+              uni_name={program.school}
+              program_name={program.program_name}
+              program_id={program._id.toString()}
+            />
           )}
-          <ProgramReportModal
-            isReport={this.state.isReport}
-            setReportModalHideDelete={this.setReportModalHideDelete}
-            uni_name={program.school}
-            program_name={program.program_name}
-            // RemoveProgramHandler={this.RemoveProgramHandler}
-            program_id={program._id.toString()}
-          />
           <ProgramDeleteWarning
             deleteProgramWarning={this.state.deleteProgramWarning}
             setModalHideDDelete={this.setModalHideDDelete}

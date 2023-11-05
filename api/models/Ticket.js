@@ -10,7 +10,7 @@ const TicketSchema = new Schema(
     },
     resolver_id: {
       type: Schema.Types.ObjectId,
-      required: true,
+      // required: true,
       ref: 'User'
     },
     program_id: { type: Schema.Types.ObjectId, ref: 'Program' },
@@ -18,6 +18,10 @@ const TicketSchema = new Schema(
       type: String,
       enum: Object.values(TicketStatus),
       default: 'open'
+    },
+    type: {
+      type: String,
+      default: 'others'
     },
     description: {
       type: String,
@@ -30,7 +34,7 @@ const TicketSchema = new Schema(
     createdAt: {
       type: Date,
       default: Date.now,
-      expires: 60 // TODO: expireAfterSeconds. 1 year: 60*60*24*365*2
+      expires: '2y' // TODO: expireAfterSeconds. 1 year: 60*60*24*365*2
     }
   },
   { timestamps: true }

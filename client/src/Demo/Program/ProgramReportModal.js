@@ -2,6 +2,15 @@ import React from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 
 class ProgramReportModal extends React.Component {
+  state = {
+    description: ''
+  };
+  handleChange = (e) => {
+    this.setState({
+      description: e.target.value
+    });
+  };
+
   render() {
     return (
       <Modal
@@ -24,16 +33,19 @@ class ProgramReportModal extends React.Component {
               as="textarea"
               rows="5"
               placeholder="Deadline is wrong."
-              onChange={(e) => handleChange(e)}
+              onChange={(e) => this.handleChange(e)}
             />
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
           <Button
             variant="primary"
-            // onClick={() =>
-            //   this.props.RemoveProgramHandler(this.props.program_id)
-            // }
+            onClick={() =>
+              this.props.submitProgramReport(
+                this.props.program_id,
+                this.state.description
+              )
+            }
           >
             Submit ticket
           </Button>

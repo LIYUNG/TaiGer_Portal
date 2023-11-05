@@ -486,3 +486,14 @@ export const getMyInterviews = () =>
   request.get(`/api/interviews/my-interviews`);
 export const createInterview = (program_id, student_id, payload) =>
   request.post(`/api/interviews/${program_id}/${student_id}`, payload);
+
+// Ticket
+export const createProgramReport = (program_id, description, type) =>
+  request.post(`/api/tickets/`, { program_id, description, type });
+export const getProgramTickets = (type, program_id) =>
+  request.get(`/api/tickets?type=${type}&program_id=${program_id}`);
+// TODO
+export const updateProgramTickets = (type, program_id) =>
+  request.put(`/api/tickets?type=${type}&program_id=${program_id}`);
+export const deleteProgramTickets = (type, program_id) =>
+  request.delete(`/api/tickets?type=${type}&program_id=${program_id}`);

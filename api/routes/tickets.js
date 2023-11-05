@@ -30,14 +30,14 @@ router
   .get(
     filter_archiv_user,
     GetTicketListRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     getTickets
   )
   .post(
     filter_archiv_user,
     PostTicketRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent),
-    permission_canModifyTicketList_filter,
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Student),
+    // permission_canModifyTicketList_filter,
     createTicket
   );
 

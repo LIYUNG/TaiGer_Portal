@@ -1,30 +1,31 @@
 const { Router } = require('express');
 
-const authRouter = require('./auth');
 const accountRouter = require('./account');
-const usersRouter = require('./users');
-const expensesRouter = require('./expenses');
+const admissionsRouter = require('./admissions');
 const agentsRouter = require('./agents');
+const authRouter = require('./auth');
+const communicationsRouter = require('./communications');
+const coursesRouter = require('./courses');
+const documentationsRouter = require('./documentations');
+const docsModiRouter = require('./documents_modification');
+const expensesRouter = require('./expenses');
 const editorsRouter = require('./editors');
 const eventsRouter = require('./events');
-const studentsApplicationRouter = require('./student_applications');
-const studentsRouter = require('./students');
-const documentationsRouter = require('./documentations');
-const coursesRouter = require('./courses');
-const communicationsRouter = require('./communications');
+const interviewsRouter = require('./interviews');
+const notesRouter = require('./notes');
 const portalsRouter = require('./portal_information');
 const programsRouter = require('./programs');
-const docsModiRouter = require('./documents_modification');
 const permissionsRouter = require('./permissions');
+const searchesRouter = require('./searches');
+const studentsRouter = require('./students');
+const studentsApplicationRouter = require('./student_applications');
 const taigeraisRouter = require('./taigerais');
 const tasksRouter = require('./tasks');
-const notesRouter = require('./notes');
-const widgetsRouter = require('./widget');
-const admissionsRouter = require('./admissions');
-const searchesRouter = require('./searches');
 const teamsRouter = require('./teams');
+const ticketsRouter = require('./tickets');
 const uniassistRouter = require('./uniassist');
-const interviewsRouter = require('./interviews');
+const usersRouter = require('./users');
+const widgetsRouter = require('./widget');
 const googleapisRouter = require('./googleapis');
 
 const router = (app) => {
@@ -54,6 +55,7 @@ const router = (app) => {
   apiRouter.use('/taigerai', taigeraisRouter);
   apiRouter.use('/tasks', tasksRouter);
   apiRouter.use('/teams', teamsRouter);
+  apiRouter.use('/tickets', ticketsRouter);
   apiRouter.use('/uniassist', uniassistRouter);
   apiRouter.use('/widgets', widgetsRouter);
 

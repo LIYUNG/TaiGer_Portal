@@ -35,6 +35,13 @@ function NotesEditor(props) {
       Please write some text to improve the communication and understanding.
     </Tooltip>
   );
+  const handleClickSave = (e, editorState) => {
+    setStatedata((state) => ({
+      ...state,
+      buttonDisabled: true
+    }));
+    props.handleClickSave(e, editorState);
+  };
 
   return (
     <>
@@ -72,9 +79,7 @@ function NotesEditor(props) {
               </span>
             </OverlayTrigger>
           ) : (
-            <Button
-              onClick={(e) => props.handleClickSave(e, statedata.editorState)}
-            >
+            <Button onClick={(e) => handleClickSave(e, statedata.editorState)}>
               Save
             </Button>
           )}

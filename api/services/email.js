@@ -30,7 +30,8 @@ const {
   JITSI_MEET_URL,
   JITSI_MEET_INSTRUCTIONS_URL,
   AGENT_CALENDAR_EVENTS_URL,
-  STUDENT_CALENDAR_EVENTS_URL
+  STUDENT_CALENDAR_EVENTS_URL,
+  PROGRAM_URL
 } = require('../constants');
 
 const {
@@ -2009,6 +2010,68 @@ const MeetingReminderEmail = async (recipient, payload) => {
   return sendEmail(recipient, subject, message);
 };
 
+const TicketCreatedAgentEmail = async (recipient, payload) => {
+  const subject = `[TODO] Update request for ${payload.program.school}-${payload.program.program_name} by ${payload.student.firstname} ${payload.student.lastname}`;
+  const message = `\
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+
+<p><b>${payload.student.firstname} - ${
+    payload.student.lastname
+  }</b> 提供了一個 program ${payload.program.school} 
+
+${payload.program.program_name} Feedback. 請上前查看 <a href="${PROGRAM_URL(
+    payload.program._id.toString()
+  )}">Ticket</a> 並 Close ticket。 </p>
+
+<p>${SPLIT_LINE}</p>
+
+<p>${payload.student.firstname} - ${
+    payload.student.lastname
+  } provided a feedback for their program  ${payload.program.school} 
+
+${payload.program.program_name}. 
+
+Please check the <a href="${PROGRAM_URL(
+    payload.program._id.toString()
+  )}">Ticket</a> and resolve the ticket. </p>
+
+<p>${TAIGER_SIGNATURE}</p>
+
+`;
+
+  return sendEmail(recipient, subject, message);
+};
+
+const TicketResolvedStudentEmail = async (recipient, payload) => {
+  const subject = `[Resolved] Request for ${payload.program.school}-${payload.program.program_name} by ${payload.student.firstname} ${payload.student.lastname}`;
+  const message = `\
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+
+<p><b>${payload.agent.firstname} - ${payload.agent.lastname}</b> 解決了 ${
+    payload.program.school
+  } ${payload.program.program_name} <a href="${PROGRAM_URL(
+    payload.program._id.toString()
+  )}">Ticket</a> 並 Close ticket。 </p>
+
+<p>${SPLIT_LINE}</p>
+
+<p>${payload.agent.firstname} - ${
+    payload.agent.lastname
+  } provided a feedback for their program  ${payload.program.school} 
+
+${payload.program.program_name}. 
+
+Please check the <a href="${PROGRAM_URL(
+    payload.program._id.toString()
+  )}">Ticket</a> and resolve the ticket. </p>
+
+<p>${TAIGER_SIGNATURE}</p>
+
+`;
+
+  return sendEmail(recipient, subject, message);
+};
+
 module.exports = {
   verifySMTPConfig,
   updateNotificationEmail,
@@ -2055,5 +2118,7 @@ module.exports = {
   MeetingAdjustReminderEmail,
   MeetingConfirmationReminderEmail,
   MeetingInvitationEmail,
-  MeetingReminderEmail
+  MeetingReminderEmail,
+  TicketCreatedAgentEmail,
+  TicketResolvedStudentEmail
 };

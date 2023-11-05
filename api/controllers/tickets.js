@@ -3,6 +3,10 @@ const { asyncHandler } = require('../middlewares/error-handler');
 const Ticket = require('../models/Ticket');
 const logger = require('../services/logger');
 const { one_month_cache } = require('../cache/node-cache');
+const { Student } = require('../models/User');
+const { isNotArchiv } = require('../constants');
+const { Program } = require('../models/Program');
+const { TicketCreatedAgentEmail } = require('../services/email');
 
 const getTickets = asyncHandler(async (req, res) => {
   const tickets = await Ticket.find({
@@ -28,7 +32,28 @@ const createTicket = asyncHandler(async (req, res) => {
   new_ticket.requester_id = user._id.toString();
   // TODO: DO not create the same
   const ticket = await Ticket.create(new_ticket);
-  return res.status(201).send({ success: true, data: ticket });
+
+  res.status(201).send({ success: true, data: ticket });
+
+  const program = await Program.findById(new_ticket.program_id);
+  const student = await Student.findById(user._id.toString())
+    .populate('agents', 'firstname lastname email')
+    .exec();
+  for (let i = 0; i < student.agents.length; i += 1) {
+    if (isNotArchiv(student)) {
+      await TicketCreatedAgentEmail(
+        {
+          firstname: student.agents[i].firstname,
+          lastname: student.agents[i].lastname,
+          address: student.agents[i].email
+        },
+        {
+          program,
+          student
+        }
+      );
+    }
+  }
 });
 
 const updateTicket = asyncHandler(async (req, res) => {

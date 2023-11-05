@@ -168,6 +168,9 @@ const programModule = {
   study_group_flag: {
     type: String
   },
+  contact: {
+    type: String
+  },
   country: {
     type: String
   },
@@ -178,9 +181,22 @@ const programModule = {
 
 const programSchema = new Schema(programModule, { timestamps: true });
 
+const program_keys = Object.keys(programModule);
+const programAiModule = {};
+program_keys.forEach((key, i) => {
+  programAiModule[key] = {
+    Result: {
+      type: String
+    },
+    Source: {
+      type: String
+    }
+  };
+});
+
 const programAiSchema = new Schema(
   {
-    ...programModule,
+    ...programAiModule,
     program_id: { type: ObjectId, ref: 'Program' },
     ai_generated: {
       type: String
@@ -188,6 +204,7 @@ const programAiSchema = new Schema(
   },
   { timestamps: true }
 );
+
 programSchema.index({ school: 'text', program_name: 'text' });
 
 const Program = model('Program', programSchema);

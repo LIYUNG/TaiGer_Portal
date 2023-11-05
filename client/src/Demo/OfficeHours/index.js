@@ -515,7 +515,6 @@ class OfficeHours extends React.Component {
                         agent.timezone,
                         time_slot.value
                       );
-                      // console.log(test_date); // TODO in case timezone not defined?
                       const hour = parseInt(time_slot.value.split(':')[0], 10);
                       const minutes = parseInt(
                         time_slot.value.split(':')[1],

@@ -597,16 +597,7 @@ class TaiGerOfficeHours extends React.Component {
                         agent.timezone,
                         time_slot.value
                       );
-                      // console.log(test_date); // TODO in case timezone not defined?
-                      const hour = parseInt(time_slot.value.split(':')[0], 10);
-                      const minutes = parseInt(
-                        time_slot.value.split(':')[1],
-                        10
-                      );
-                      const time_difference = // TODO: dynamics offset based on winter time
-                        getTimezoneOffset(
-                          Intl.DateTimeFormat().resolvedOptions().timeZone
-                        ) - getTimezoneOffset(agent.timezone);
+
                       const end_date = new Date(test_date);
                       end_date.setMinutes(end_date.getMinutes() + 30);
                       return {

@@ -27,19 +27,13 @@ const localizer = momentLocalizer(moment);
 const MyCalendar = (props) => {
   const [newEventTitle, setNewEventTitle] = useState('');
   const [newEventDescription, setNewEventDescription] = useState('');
-  let available_termins=[];
+  let available_termins = [];
   if (is_TaiGer_Agent(props.user) && props.selected_year) {
     available_termins = time_slots.flatMap((time_slot, j) => {
-      const Some_Date = new Date(props.newEventStart); //bug
-
       const year = props.selected_year;
       const month = props.selected_month;
       const day = props.selected_day;
-      const hour = parseInt(time_slot.value.split(':')[0], 10);
-      const minutes = parseInt(time_slot.value.split(':')[1], 10);
-      const time_difference =
-        getTimezoneOffset(Intl.DateTimeFormat().resolvedOptions().timeZone) -
-        getTimezoneOffset(props.user.timezone);
+
       const test_date = getUTCWithDST(
         year,
         month,
@@ -62,9 +56,6 @@ const MyCalendar = (props) => {
 
   const handleCreateEvent = () => {
     // Create a new event object and add it to the events array
-    const time_difference =
-      getTimezoneOffset(Intl.DateTimeFormat().resolvedOptions().timeZone) -
-      getTimezoneOffset(props.user.timezone);
     const end_date = new Date(props.newEventStart);
     end_date.setMinutes(end_date.getMinutes() + 30);
     const newEvent = {
@@ -89,7 +80,6 @@ const MyCalendar = (props) => {
       }
     };
   };
-  console.log(available_termins);
 
   return (
     <>
@@ -169,13 +159,7 @@ const MyCalendar = (props) => {
                 />
               </Form.Group>
             </Form>
-            <h6>
-              Time zone: {props.user.timezone} UTC
-              {/* {getUTCTimezoneOffset(props.user.timezone)} */}
-              {/* {getTimezoneOffset(props.user.timezone) >= 0
-                ? `+${getTimezoneOffset(props.user.timezone)}`
-                : getTimezoneOffset(props.user.timezone)} */}
-            </h6>
+            <h6>Time zone: {props.user.timezone}</h6>
             <span>
               If the time zone not matches, please go to{' '}
               <Link to="/profile">

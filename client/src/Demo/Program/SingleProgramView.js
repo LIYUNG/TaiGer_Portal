@@ -9,6 +9,7 @@ import {
 import { convertDate, program_fields } from '../Utils/contants';
 import Banner from '../../components/Banner/Banner';
 import DEMO from '../../store/constant';
+import ProgramReport from './ProgramReport';
 
 class SingleProgramView extends React.Component {
   render() {
@@ -32,20 +33,84 @@ class SingleProgramView extends React.Component {
           <Col md={is_TaiGer_role(this.props.user) ? 8 : 12}>
             <Card>
               <Card.Body>
-                {program_fields.map((program_field, i) => (
-                  <Row>
-                    <Col md={4}>
-                      <p className="my-0">
-                        <b>{program_field.name}</b>
-                      </p>
-                    </Col>
-                    <Col md={8}>
-                      <NewlineText
-                        text={this.props.program[program_field.prop]}
-                      />
-                    </Col>
-                  </Row>
-                ))}
+                {program_fields.map((program_field, i) =>
+                  program_field.prop.includes('ielts') ||
+                  program_field.prop.includes('toefl') ? (
+                    <Row>
+                      <Col md={4}>
+                        <p className="my-0">
+                          <b>{program_field.name}</b>
+                        </p>
+                      </Col>
+                      <Col md={2}>
+                        <b>{this.props.program[program_field.prop]}</b>
+                      </Col>
+                      <Col md={6}>
+                        {this.props.program[
+                          `${program_field.prop}_reading`
+                        ] && (
+                          <b>
+                            R:{' '}
+                            {
+                              this.props.program[
+                                `${program_field.prop}_reading`
+                              ]
+                            }
+                          </b>
+                        )}{' '}
+                        {this.props.program[
+                          `${program_field.prop}_listening`
+                        ] && (
+                          <b>
+                            L:{' '}
+                            {
+                              this.props.program[
+                                `${program_field.prop}_listening`
+                              ]
+                            }
+                          </b>
+                        )}{' '}
+                        {this.props.program[
+                          `${program_field.prop}_speaking`
+                        ] && (
+                          <b>
+                            S:{' '}
+                            {
+                              this.props.program[
+                                `${program_field.prop}_speaking`
+                              ]
+                            }
+                          </b>
+                        )}{' '}
+                        {this.props.program[
+                          `${program_field.prop}_writing`
+                        ] && (
+                          <b>
+                            W:{' '}
+                            {
+                              this.props.program[
+                                `${program_field.prop}_writing`
+                              ]
+                            }
+                          </b>
+                        )}
+                      </Col>
+                    </Row>
+                  ) : (
+                    <Row>
+                      <Col md={4}>
+                        <p className="my-0">
+                          <b>{program_field.name}</b>
+                        </p>
+                      </Col>
+                      <Col md={8}>
+                        <NewlineText
+                          text={this.props.program[program_field.prop]}
+                        />
+                      </Col>
+                    </Row>
+                  )
+                )}
                 {this.props.program.application_portal_a && (
                   <>
                     <Row>
@@ -226,6 +291,15 @@ class SingleProgramView extends React.Component {
                   </Table>
                   <br></br>
                   O: admitted, X: rejected, -: not confirmed
+                </Card.Body>
+              </Card>
+              <Card className="my-2 mx-0 card-with-scroll">
+                <Card.Body className="card-scrollable-body">
+                  <ProgramReport
+                    uni_name={this.props.program.school}
+                    program_name={this.props.program.program_name}
+                    program_id={this.props.program._id.toString()}
+                  />
                 </Card.Body>
               </Card>
               <Card>

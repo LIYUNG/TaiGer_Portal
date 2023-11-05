@@ -255,6 +255,66 @@ class SingleProgramEdit extends React.Component {
                   </Form.Group>
                 </h5>
               </Col>
+              <Col md={1}>
+                Reading
+                <Form.Group controlId="toefl_reading">
+                  <Form.Control
+                    type="text"
+                    placeholder="21"
+                    onChange={(e) => this.handleChange(e)}
+                    defaultValue={
+                      this.state.program.toefl_reading
+                        ? this.state.program.toefl_reading
+                        : ''
+                    }
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={1}>
+                Listening
+                <Form.Group controlId="toefl_listening">
+                  <Form.Control
+                    type="text"
+                    placeholder="21"
+                    onChange={(e) => this.handleChange(e)}
+                    defaultValue={
+                      this.state.program.toefl_listening
+                        ? this.state.program.toefl_listening
+                        : ''
+                    }
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={1}>
+                Speaking
+                <Form.Group controlId="toefl_speaking">
+                  <Form.Control
+                    type="text"
+                    placeholder="21"
+                    onChange={(e) => this.handleChange(e)}
+                    defaultValue={
+                      this.state.program.toefl_speaking
+                        ? this.state.program.toefl_speaking
+                        : ''
+                    }
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={1}>
+                Writing
+                <Form.Group controlId="toefl_writing">
+                  <Form.Control
+                    type="text"
+                    placeholder="21"
+                    onChange={(e) => this.handleChange(e)}
+                    defaultValue={
+                      this.state.program.toefl_writing
+                        ? this.state.program.toefl_writing
+                        : ''
+                    }
+                  />
+                </Form.Group>
+              </Col>
             </Row>
             <Row>
               <Col md={4}>
@@ -273,6 +333,66 @@ class SingleProgramEdit extends React.Component {
                     />
                   </Form.Group>
                 </h5>
+              </Col>
+              <Col md={1}>
+                Reading
+                <Form.Group controlId="ielts_reading">
+                  <Form.Control
+                    type="text"
+                    placeholder="5.5"
+                    onChange={(e) => this.handleChange(e)}
+                    defaultValue={
+                      this.state.program.ielts_reading
+                        ? this.state.program.ielts_reading
+                        : ''
+                    }
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={1}>
+                Listening
+                <Form.Group controlId="ielts_listening">
+                  <Form.Control
+                    type="text"
+                    placeholder="6.5"
+                    onChange={(e) => this.handleChange(e)}
+                    defaultValue={
+                      this.state.program.ielts_listening
+                        ? this.state.program.ielts_listening
+                        : ''
+                    }
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={1}>
+                Speaking
+                <Form.Group controlId="ielts_speaking">
+                  <Form.Control
+                    type="text"
+                    placeholder="6"
+                    onChange={(e) => this.handleChange(e)}
+                    defaultValue={
+                      this.state.program.ielts_speaking
+                        ? this.state.program.ielts_speaking
+                        : ''
+                    }
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={1}>
+                Writing
+                <Form.Group controlId="ielts_writing">
+                  <Form.Control
+                    type="text"
+                    placeholder="5.5"
+                    onChange={(e) => this.handleChange(e)}
+                    defaultValue={
+                      this.state.program.ielts_writing
+                        ? this.state.program.ielts_writing
+                        : ''
+                    }
+                  />
+                </Form.Group>
               </Col>
             </Row>
             <Row>

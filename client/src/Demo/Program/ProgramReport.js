@@ -117,7 +117,6 @@ class ProgramReport extends React.Component {
             Report
           </Button>
         </Row>
-
         {tickets}
         <ProgramReportModal
           isReport={this.state.isReport}

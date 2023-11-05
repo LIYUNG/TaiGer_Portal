@@ -5,7 +5,7 @@ const { spawn } = require('child_process');
 
 const { asyncHandler } = require('../middlewares/error-handler');
 const logger = require('../services/logger');
-const { Program } = require('../models/Program');
+const { Program, ProgramAi } = require('../models/Program');
 const { isProd } = require('../config');
 
 const processProgramListAi = asyncHandler(async (req, res, next) => {
@@ -13,6 +13,7 @@ const processProgramListAi = asyncHandler(async (req, res, next) => {
     params: { programId }
   } = req;
   const program = await Program.findOne({ _id: programId }).lean();
+  const programai = await ProgramAi.findOne({ program_id: programId }).lean();
   if (!program) {
     logger.error('no program found!');
     return res.send({ success: true, data: {} });

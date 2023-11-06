@@ -495,5 +495,5 @@ export const getProgramTickets = (type, program_id) =>
 export const updateProgramTicket = (ticket_id, updatedTicket) =>
   request.put(`/api/tickets/${ticket_id}`, updatedTicket);
 // TODO
-export const deleteProgramTicket = (type, program_id) =>
-  request.delete(`/api/tickets?type=${type}&program_id=${program_id}`);
+export const deleteProgramTicket = (ticket_id) =>
+  request.delete(`/api/tickets/${ticket_id}`);

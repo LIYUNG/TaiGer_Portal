@@ -25,11 +25,25 @@ const TicketSchema = new Schema(
     },
     description: {
       type: String,
-      default: ''
+      default: '',
+      validate: {
+        validator: function (value) {
+          return value.length <= 2000; // Maximum allowed length
+        },
+        message:
+          'Description exceeds the maximum allowed length of 2000 characters'
+      }
     },
     feedback: {
       type: String,
-      default: ''
+      default: '',
+      validate: {
+        validator: function (value) {
+          return value.length <= 2000; // Maximum allowed length
+        },
+        message:
+          'Feedback exceeds the maximum allowed length of 2000 characters'
+      }
     },
     createdAt: {
       type: Date,

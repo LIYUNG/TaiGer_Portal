@@ -2,6 +2,7 @@ import React from 'react';
 import { Button, Spinner, Card, Row } from 'react-bootstrap';
 import {
   createProgramReport,
+  deleteProgramTicket,
   getProgramTickets,
   updateProgramTicket
 } from '../../api';
@@ -10,10 +11,13 @@ import ErrorPage from '../Utils/ErrorPage';
 import ProgramReportModal from './ProgramReportModal';
 import { NewlineText } from '../Utils/checking-functions';
 import ProgramReportUpdateModal from './ProgramReportUpdateModal';
+import ModalMain from '../Utils/ModalHandler/ModalMain';
+import ProgramReportDeleteModal from './ProgramReportDeleteModal';
 
 class ProgramReport extends React.Component {
   state = {
     isReport: false,
+    isReportDelete: false,
     isUpdateReport: false,
     description: '',
     isLoaded: false,
@@ -56,6 +60,14 @@ class ProgramReport extends React.Component {
   handleReportClick = () => {
     this.setState((state) => ({ ...state, isReport: !this.state.isReport }));
   };
+
+  handleReportDeleteClick = () => {
+    this.setState((state) => ({
+      ...state,
+      isReportDelete: !this.state.isReportDelete
+    }));
+  };
+
   handleReportUpdateClick = (ticket) => {
     this.setState((state) => ({
       ...state,
@@ -69,6 +81,13 @@ class ProgramReport extends React.Component {
       isReport: false
     });
   };
+
+  setReportDeleteModalHide = () => {
+    this.setState({
+      isReportDelete: false
+    });
+  };
+
   setReportUpdateModalHide = () => {
     this.setState({
       isUpdateReport: false
@@ -102,7 +121,16 @@ class ProgramReport extends React.Component {
           });
         }
       },
-      (error) => {}
+      (error) => {
+        console.log(error);
+        this.setState({
+          isLoaded: true,
+          isUpdateReport: false,
+          isReport: false,
+          res_modal_status: 500,
+          res_modal_message: error.message
+        });
+      }
     );
   };
 
@@ -137,10 +165,68 @@ class ProgramReport extends React.Component {
           });
         }
       },
-      (error) => {}
+      (error) => {
+        this.setState({
+          isLoaded: true,
+          isUpdateReport: false,
+          isReport: false,
+          res_modal_status: 500,
+          res_modal_message: error.message
+        });
+      }
     );
   };
 
+  submitProgramDeleteReport = (ticket_id, updatedTicket) => {
+    console.log(updatedTicket);
+    deleteProgramTicket(ticket_id, updatedTicket).then(
+      (resp) => {
+        const { success, data } = resp.data;
+        const { status } = resp;
+        if (success) {
+          const temp_tickets = [...this.state.tickets];
+          let temp_ticket_idx = temp_tickets.findIndex(
+            (temp_t) => temp_t._id.toString() === ticket_id
+          );
+          temp_tickets[temp_ticket_idx] = data;
+          this.setState({
+            isLoaded: true,
+            isUpdateReport: false,
+            isReport: false,
+            success: success,
+            tickets: temp_tickets,
+            res_modal_status: status
+          });
+        } else {
+          const { message } = resp.data;
+          this.setState({
+            isLoaded: true,
+            isUpdateReport: false,
+            isReport: false,
+            res_modal_status: status,
+            res_modal_message: message
+          });
+        }
+      },
+      (error) => {
+        this.setState({
+          isLoaded: true,
+          isUpdateReport: false,
+          isReport: false,
+          res_modal_status: 500,
+          res_modal_message: error.message
+        });
+      }
+    );
+  };
+
+  ConfirmError = () => {
+    this.setState((state) => ({
+      ...state,
+      res_modal_status: 0,
+      res_modal_message: ''
+    }));
+  };
   render() {
     const { res_status, isLoaded } = this.state;
     if (res_status >= 400) {
@@ -156,13 +242,21 @@ class ProgramReport extends React.Component {
       );
     }
     const tickets = this.state.tickets.map((ticket, i) => (
-      <Card>
+      <Card key={i}>
         <Card.Body>
           <Button
             size="sm"
             onClick={() => this.handleReportUpdateClick(ticket)}
           >
             Update
+          </Button>
+          <Button
+            size="sm"
+            variant="danger"
+            // onClick={() => this.handleReportDeleteClick()}
+            onClick={this.handleReportDeleteClick}
+          >
+            Delete
           </Button>
           <p>Description: {NewlineText({ text: ticket.description })}</p>
           <p>Status at: {ticket.status}</p>
@@ -180,12 +274,28 @@ class ProgramReport extends React.Component {
           </Button>
         </Row>
         {tickets}
+        {this.state.res_modal_status >= 400 && (
+          <ModalMain
+            ConfirmError={this.ConfirmError}
+            res_modal_status={this.state.res_modal_status}
+            res_modal_message={this.state.res_modal_message}
+          />
+        )}
         <ProgramReportModal
           isReport={this.state.isReport}
           setReportModalHideDelete={this.setReportModalHideDelete}
           uni_name={this.props.uni_name}
           program_name={this.props.program_name}
           submitProgramReport={this.submitProgramReport}
+          program_id={this.props.program_id.toString()}
+        />
+        <ProgramReportDeleteModal
+          isReportDelete={this.state.isReportDelete}
+          setReportDeleteModalHide={this.setReportDeleteModalHide}
+          ticket={this.state.ticket}
+          uni_name={this.props.uni_name}
+          program_name={this.props.program_name}
+          submitProgramDeleteReport={this.submitProgramDeleteReport}
           program_id={this.props.program_id.toString()}
         />
         <ProgramReportUpdateModal

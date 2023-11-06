@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, Button, Form } from 'react-bootstrap';
+import { Modal, Button, Form, Badge } from 'react-bootstrap';
 
 class ProgramReportModal extends React.Component {
   state = {
@@ -24,18 +24,33 @@ class ProgramReportModal extends React.Component {
           <Modal.Title>Report</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <h5>
-            What information is inaccurate for {this.props.uni_name} -{' '}
-            {this.props.program_name}?
-          </h5>
-          <Form.Group controlId="program_info_report">
-            <Form.Control
-              as="textarea"
-              rows="5"
-              placeholder="Deadline is wrong."
-              onChange={(e) => this.handleChange(e)}
-            />
-          </Form.Group>
+          <Form>
+            <Form.Group>
+              <Form.Label>
+                What information is inaccurate for {this.props.uni_name} -{' '}
+                {this.props.program_name}?
+              </Form.Label>
+              <Form.Control
+                controlId="program_info_report"
+                as="textarea"
+                maxLength={2000}
+                rows="10"
+                placeholder="Deadline is wrong.
+                IELTS 7"
+                value={this.state.description || ''}
+                isInvalid={this.state.description?.length > 2000}
+                onChange={(e) => this.handleChange(e)}
+              ></Form.Control>
+              <Badge
+                className="mt-3"
+                bg={`${
+                  this.state.description?.length > 2000 ? 'danger' : 'primary'
+                }`}
+              >
+                {this.state.description?.length || 0}/{2000}
+              </Badge>
+            </Form.Group>
+          </Form>
         </Modal.Body>
         <Modal.Footer>
           <Button

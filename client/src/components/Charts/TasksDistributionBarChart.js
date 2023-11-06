@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import {
   BarChart,
   CartesianGrid,
@@ -7,13 +7,8 @@ import {
   YAxis,
   Legend,
   Bar,
-  PieChart,
-  Pie,
-  Sector,
-  Cell,
   ResponsiveContainer
 } from 'recharts';
-import { BASE_URL } from '../../api/request';
 
 const TasksDistributionBarChart = ({ data }) => {
   return (

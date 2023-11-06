@@ -10,9 +10,7 @@ import {
   Bar,
   Cell,
   ResponsiveContainer,
-  LineChart,
   Legend,
-  Line,
   Label
 } from 'recharts';
 
@@ -31,6 +29,7 @@ import { getStatistics } from '../../../api';
 import { TabTitle } from '../../Utils/TabTitle';
 import DEMO from '../../../store/constant';
 import TasksDistributionBarChart from '../../../components/Charts/TasksDistributionBarChart';
+import ProgramListVisualization from './ProgramListVisualization.js';
 
 class InternalDashboard extends React.Component {
   state = {
@@ -836,6 +835,13 @@ class InternalDashboard extends React.Component {
                     </ResponsiveContainer>
                   </Card.Body>
                 </Card>
+              </Col>
+            </Row>
+          </Tab>
+          <Tab eventKey="program_list" title="Program List">
+            <Row>
+              <Col>
+                <ProgramListVisualization user={this.props.user}/>
               </Col>
             </Row>
           </Tab>

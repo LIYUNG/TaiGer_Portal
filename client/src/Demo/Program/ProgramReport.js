@@ -61,10 +61,11 @@ class ProgramReport extends React.Component {
     this.setState((state) => ({ ...state, isReport: !this.state.isReport }));
   };
 
-  handleReportDeleteClick = () => {
+  handleReportDeleteClick = (ticket) => {
     this.setState((state) => ({
       ...state,
-      isReportDelete: !this.state.isReportDelete
+      isReportDelete: !this.state.isReportDelete,
+      ticket
     }));
   };
 
@@ -177,22 +178,18 @@ class ProgramReport extends React.Component {
     );
   };
 
-  submitProgramDeleteReport = (ticket_id, updatedTicket) => {
-    console.log(updatedTicket);
-    deleteProgramTicket(ticket_id, updatedTicket).then(
+  submitProgramDeleteReport = (ticket_id) => {
+    deleteProgramTicket(ticket_id).then(
       (resp) => {
         const { success, data } = resp.data;
         const { status } = resp;
         if (success) {
-          const temp_tickets = [...this.state.tickets];
-          let temp_ticket_idx = temp_tickets.findIndex(
-            (temp_t) => temp_t._id.toString() === ticket_id
+          const temp_tickets = this.state.tickets.filter(
+            (ticket) => ticket._id.toString() !== ticket_id
           );
-          temp_tickets[temp_ticket_idx] = data;
           this.setState({
             isLoaded: true,
-            isUpdateReport: false,
-            isReport: false,
+            isReportDelete: false,
             success: success,
             tickets: temp_tickets,
             res_modal_status: status
@@ -201,8 +198,7 @@ class ProgramReport extends React.Component {
           const { message } = resp.data;
           this.setState({
             isLoaded: true,
-            isUpdateReport: false,
-            isReport: false,
+            isReportDelete: false,
             res_modal_status: status,
             res_modal_message: message
           });
@@ -211,8 +207,7 @@ class ProgramReport extends React.Component {
       (error) => {
         this.setState({
           isLoaded: true,
-          isUpdateReport: false,
-          isReport: false,
+          isReportDelete: false,
           res_modal_status: 500,
           res_modal_message: error.message
         });
@@ -253,8 +248,8 @@ class ProgramReport extends React.Component {
           <Button
             size="sm"
             variant="danger"
-            // onClick={() => this.handleReportDeleteClick()}
-            onClick={this.handleReportDeleteClick}
+            disabled={ticket.status === 'resolved'}
+            onClick={() => this.handleReportDeleteClick(ticket)}
           >
             Delete
           </Button>

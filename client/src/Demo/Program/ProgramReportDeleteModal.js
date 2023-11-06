@@ -3,13 +3,20 @@ import { Modal, Button, Form } from 'react-bootstrap';
 
 class ProgramReportDeleteModal extends React.Component {
   state = {
-    ticket: {}
+    ticket: {},
+    delete: ''
   };
   handleChange = (e) => {
     var temp_ticket = { ...this.state.ticket };
     temp_ticket[e.target.id] = e.target.value;
     this.setState({
       ticket: temp_ticket
+    });
+  };
+
+  handleDeleteChange = (e) => {
+    this.setState({
+      delete: e.target.value
     });
   };
 
@@ -27,8 +34,8 @@ class ProgramReportDeleteModal extends React.Component {
         </Modal.Header>
         <Modal.Body>
           <h5>
-            What information is inaccurate for {this.props.uni_name} -{' '}
-            {this.props.program_name}?
+            Do you want to delelete {this.props.uni_name} -{' '}
+            {this.props.program_name} ticket?
           </h5>
           <Form.Group controlId="description">
             <Form.Control
@@ -49,11 +56,22 @@ class ProgramReportDeleteModal extends React.Component {
               defaultValue={this.props.ticket.feedback}
             />
           </Form.Group>
+          <br />
+          <Form.Group controlId="delete">
+            <Form.Label>
+              Please enter <i>delete</i> in order to delete the ticket.
+            </Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="delete"
+              onChange={(e) => this.handleDeleteChange(e)}
+            />
+          </Form.Group>
         </Modal.Body>
         <Modal.Footer>
           <Button
             variant="primary"
-            disabled={true}
+            disabled={this.state.delete !== 'delete'}
             onClick={() =>
               this.props.submitProgramDeleteReport(
                 this.props.ticket._id.toString()

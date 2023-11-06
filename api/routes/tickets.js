@@ -57,9 +57,10 @@ router
     updateTicket
   )
   .delete(
+    filter_archiv_user,
     DeleteTicketRateLimiter,
-    permit(Role.Admin),
-    permission_canModifyTicketList_filter,
+    permit(Role.Admin, Role.Manager, Role.Editor, Role.Agent, Role.Student),
+    // permission_canModifyTicketList_filter,
     deleteTicket
   );
 

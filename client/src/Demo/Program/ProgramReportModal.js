@@ -55,6 +55,7 @@ class ProgramReportModal extends React.Component {
         <Modal.Footer>
           <Button
             variant="primary"
+            disabled={this.state.description?.length === 0}
             onClick={() =>
               this.props.submitProgramReport(
                 this.props.program_id,
@@ -62,7 +63,7 @@ class ProgramReportModal extends React.Component {
               )
             }
           >
-            Submit ticket
+            Create ticket
           </Button>
           <Button
             variant="secondary"

@@ -60,7 +60,7 @@ class ProgramReportUpdateModal extends React.Component {
               )
             }
           >
-            Submit ticket
+            Update ticket
           </Button>
           <Button
             variant="secondary"

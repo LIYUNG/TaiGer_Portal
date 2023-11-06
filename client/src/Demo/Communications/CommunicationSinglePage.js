@@ -56,9 +56,7 @@ class CommunicationSinglePage extends Component {
             //   .map((x, i) => i) // to expand all
             accordionKeys: new Array(data.length)
               .fill()
-              .map((x, i) =>
-                i === data.length - 1 ? data.length - i - 1 : -1
-              ), // to collapse all
+              .map((x, i) => (i >= data.length - 2 ? i : -1)), // only expand latest 2
             res_status: status
           });
         } else {
@@ -102,9 +100,7 @@ class CommunicationSinglePage extends Component {
               //   .map((x, i) => i) // to expand all
               accordionKeys: new Array(data.length)
                 .fill()
-                .map((x, i) =>
-                  i === data.length - 1 ? data.length - i - 1 : -1
-                ), // to collapse all
+                .map((x, i) => (i >= data.length - 2 ? i : -1)), // only expand latest 2
               res_status: status
             });
           } else {

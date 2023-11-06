@@ -492,8 +492,8 @@ export const createProgramReport = (program_id, description, type) =>
   request.post(`/api/tickets/`, { program_id, description, type });
 export const getProgramTickets = (type, program_id) =>
   request.get(`/api/tickets?type=${type}&program_id=${program_id}`);
+export const updateProgramTicket = (ticket_id, updatedTicket) =>
+  request.put(`/api/tickets/${ticket_id}`, updatedTicket);
 // TODO
-export const updateProgramTickets = (type, program_id) =>
-  request.put(`/api/tickets?type=${type}&program_id=${program_id}`);
-export const deleteProgramTickets = (type, program_id) =>
+export const deleteProgramTicket = (type, program_id) =>
   request.delete(`/api/tickets?type=${type}&program_id=${program_id}`);

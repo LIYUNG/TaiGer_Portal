@@ -52,8 +52,8 @@ router
   .put(
     filter_archiv_user,
     UpdateTicketRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Editor, Role.Agent),
-    permission_canModifyTicketList_filter,
+    permit(Role.Admin, Role.Manager, Role.Editor, Role.Agent, Role.Student),
+    // permission_canModifyTicketList_filter,
     updateTicket
   )
   .delete(

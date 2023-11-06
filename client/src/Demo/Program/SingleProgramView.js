@@ -16,18 +16,20 @@ class SingleProgramView extends React.Component {
     return (
       <>
         <Row>
-          <Banner
-            ReadOnlyMode={true}
-            bg={'primary'}
-            to={`${DEMO.BASE_DOCUMENTS_LINK}`}
-            title={'Info:'}
-            text={
-              'TaiGer Portal 網站上的學程資訊主要為管理申請進度為主，學校學程詳細資訊仍以學校網站為主。'
-            }
-            link_name={''}
-            removeBanner={() => {}}
-            notification_key={''}
-          />
+          <Col>
+            <Banner
+              ReadOnlyMode={true}
+              bg={'primary'}
+              to={`${DEMO.BASE_DOCUMENTS_LINK}`}
+              title={'Info:'}
+              text={
+                'TaiGer Portal 網站上的學程資訊主要為管理申請進度為主，學校學程詳細資訊仍以學校網站為主。'
+              }
+              link_name={''}
+              removeBanner={() => {}}
+              notification_key={''}
+            />
+          </Col>
         </Row>
         <Row>
           <Col md={is_TaiGer_role(this.props.user) ? 8 : 12}>
@@ -243,11 +245,11 @@ class SingleProgramView extends React.Component {
           </Col>
           {is_TaiGer_role(this.props.user) && (
             <Col md={4}>
-              <Card>
+              <Card className="mx-0 card-with-scroll">
                 <Card.Header>
                   <Card.Title>Who has applied this?</Card.Title>
                 </Card.Header>
-                <Card.Body>
+                <Card.Body className="card-scrollable-body">
                   <Table className="px-0 my-0 mx-0" size="sm">
                     <thead>
                       <tr>
@@ -293,7 +295,7 @@ class SingleProgramView extends React.Component {
                   O: admitted, X: rejected, -: not confirmed
                 </Card.Body>
               </Card>
-              <Card className="my-2 mx-0 card-with-scroll">
+              <Card className="card-with-scroll">
                 <Card.Body className="card-scrollable-body">
                   <ProgramReport
                     uni_name={this.props.program.school}

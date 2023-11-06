@@ -1,16 +1,24 @@
 import React from 'react';
 import { Button, Spinner, Card, Row } from 'react-bootstrap';
-import { createProgramReport, getProgramTickets } from '../../api';
-import { spinner_style } from '../Utils/contants';
+import {
+  createProgramReport,
+  getProgramTickets,
+  updateProgramTicket
+} from '../../api';
+import { convertDate, spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ProgramReportModal from './ProgramReportModal';
+import { NewlineText } from '../Utils/checking-functions';
+import ProgramReportUpdateModal from './ProgramReportUpdateModal';
 
 class ProgramReport extends React.Component {
   state = {
     isReport: false,
+    isUpdateReport: false,
     description: '',
     isLoaded: false,
     tickets: [],
+    ticket: {},
     res_status: 0,
     res_modal_message: '',
     res_modal_status: 0
@@ -48,12 +56,24 @@ class ProgramReport extends React.Component {
   handleReportClick = () => {
     this.setState((state) => ({ ...state, isReport: !this.state.isReport }));
   };
+  handleReportUpdateClick = (ticket) => {
+    this.setState((state) => ({
+      ...state,
+      isUpdateReport: !this.state.isUpdateReport,
+      ticket
+    }));
+  };
+
   setReportModalHideDelete = () => {
     this.setState({
       isReport: false
     });
   };
-
+  setReportUpdateModalHide = () => {
+    this.setState({
+      isUpdateReport: false
+    });
+  };
   handleChange = (e) => {
     this.setState({
       description: e.target.value
@@ -65,7 +85,6 @@ class ProgramReport extends React.Component {
       (resp) => {
         const { success, data } = resp.data;
         const { status } = resp;
-        console.log(success);
         if (success) {
           this.setState({
             isLoaded: true,
@@ -78,6 +97,41 @@ class ProgramReport extends React.Component {
           const { message } = resp.data;
           this.setState({
             isLoaded: true,
+            res_modal_status: status,
+            res_modal_message: message
+          });
+        }
+      },
+      (error) => {}
+    );
+  };
+
+  submitProgramUpdateReport = (ticket_id, updatedTicket) => {
+    console.log(updatedTicket);
+    updateProgramTicket(ticket_id, updatedTicket).then(
+      (resp) => {
+        const { success, data } = resp.data;
+        const { status } = resp;
+        if (success) {
+          const temp_tickets = [...this.state.tickets];
+          let temp_ticket_idx = temp_tickets.findIndex(
+            (temp_t) => temp_t._id.toString() === ticket_id
+          );
+          temp_tickets[temp_ticket_idx] = data;
+          this.setState({
+            isLoaded: true,
+            isUpdateReport: false,
+            isReport: false,
+            success: success,
+            tickets: temp_tickets,
+            res_modal_status: status
+          });
+        } else {
+          const { message } = resp.data;
+          this.setState({
+            isLoaded: true,
+            isUpdateReport: false,
+            isReport: false,
             res_modal_status: status,
             res_modal_message: message
           });
@@ -104,9 +158,17 @@ class ProgramReport extends React.Component {
     const tickets = this.state.tickets.map((ticket, i) => (
       <Card>
         <Card.Body>
-          <p>Description: {ticket.description}</p>
+          <Button
+            size="sm"
+            onClick={() => this.handleReportUpdateClick(ticket)}
+          >
+            Update
+          </Button>
+          <p>Description: {NewlineText({ text: ticket.description })}</p>
           <p>Status at: {ticket.status}</p>
-          <p>created at: {ticket.createdAt}</p>
+          <p>Feedback: {NewlineText({ text: ticket.feedback })}</p>
+          <p>updated at: {convertDate(ticket.updatedAt)}</p>
+          <p>created at: {convertDate(ticket.createdAt)}</p>
         </Card.Body>
       </Card>
     ));
@@ -124,6 +186,15 @@ class ProgramReport extends React.Component {
           uni_name={this.props.uni_name}
           program_name={this.props.program_name}
           submitProgramReport={this.submitProgramReport}
+          program_id={this.props.program_id.toString()}
+        />
+        <ProgramReportUpdateModal
+          isUpdateReport={this.state.isUpdateReport}
+          setReportUpdateModalHide={this.setReportUpdateModalHide}
+          ticket={this.state.ticket}
+          uni_name={this.props.uni_name}
+          program_name={this.props.program_name}
+          submitProgramUpdateReport={this.submitProgramUpdateReport}
           program_id={this.props.program_id.toString()}
         />
       </>

@@ -58,29 +58,20 @@ const createTicket = asyncHandler(async (req, res) => {
 
 const updateTicket = asyncHandler(async (req, res) => {
   const { user } = req;
+  const { ticket_id } = req.params;
   const fields = req.body;
 
   fields.updatedAt = new Date();
-  fields.requester_id = `${user.firstname} ${user.lastname}`;
+  // TODO: update resolver_id
+  const updatedTicket = await Ticket.findByIdAndUpdate(ticket_id, fields, {
+    new: true
+  });
 
-  // Delete cache key for image, pdf, docs, file here.
-  const value = one_month_cache.del(req.originalUrl);
-  if (value === 1) {
-    console.log('cache key deleted successfully due to update');
-  }
-
-  return res.status(200).send({ success: true, data: ticket });
+  return res.status(200).send({ success: true, data: updatedTicket });
 });
 
 const deleteTicket = asyncHandler(async (req, res) => {
-  await Ticket.findByIdAndDelete(req.params.ticketId);
-  console.log('The ticket deleted!');
-
-  const value = one_month_cache.del(req.originalUrl);
-  if (value === 1) {
-    console.log('cache key deleted successfully due to delete');
-  }
-
+  await Ticket.findByIdAndDelete(req.params.ticket_id);
   res.status(200).send({ success: true });
 });
 

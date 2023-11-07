@@ -1,10 +1,11 @@
 import React from 'react';
 import { Row, Col, Card, Table, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+
 import {
   is_TaiGer_AdminAgent,
   is_TaiGer_role,
-  NewlineText
+  LinkableNewlineText
 } from '../Utils/checking-functions';
 import { convertDate, program_fields } from '../Utils/contants';
 import Banner from '../../components/Banner/Banner';
@@ -106,7 +107,7 @@ class SingleProgramView extends React.Component {
                         </p>
                       </Col>
                       <Col md={8}>
-                        <NewlineText
+                        <LinkableNewlineText
                           text={this.props.program[program_field.prop]}
                         />
                       </Col>

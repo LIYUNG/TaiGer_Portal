@@ -8,10 +8,6 @@ import {
   YAxis,
   Legend,
   Bar,
-  PieChart,
-  Pie,
-  Sector,
-  Cell,
   ResponsiveContainer
 } from 'recharts';
 

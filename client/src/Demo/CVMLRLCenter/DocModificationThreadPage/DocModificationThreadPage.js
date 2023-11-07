@@ -11,7 +11,7 @@ import ModalMain from '../../Utils/ModalHandler/ModalMain';
 import { spinner_style, templatelist } from '../../Utils/contants';
 
 import {
-  NewlineText,
+  LinkableNewlineText,
   is_TaiGer_AdminAgent,
   is_TaiGer_Student,
   is_TaiGer_role,
@@ -631,7 +631,7 @@ class DocModificationThreadPage extends Component {
                     </h6>
                     {this.state.thread.program_id ? (
                       <>
-                        <NewlineText
+                        <LinkableNewlineText
                           text={this.getRequirement(this.state.thread)}
                         />
                       </>

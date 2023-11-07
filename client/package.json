@@ -52,6 +52,7 @@
     "react-full-screen": "^1.1.1",
     "react-google-charts": "^4.0.0",
     "react-icons": "^4.8.0",
+    "react-linkify": "^1.0.0-alpha",
     "react-loadable": "^5.5.0",
     "react-nvd3": "^0.5.7",
     "react-pdf": "^7.0.1",

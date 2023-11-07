@@ -2,17 +2,24 @@ const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
 const Ticket = require('../models/Ticket');
 const logger = require('../services/logger');
-const { one_month_cache } = require('../cache/node-cache');
 const { Student } = require('../models/User');
 const { isNotArchiv } = require('../constants');
 const { Program } = require('../models/Program');
 const { TicketCreatedAgentEmail } = require('../services/email');
 
 const getTickets = asyncHandler(async (req, res) => {
-  const tickets = await Ticket.find({
-    type: req.query.type,
-    program_id: req.query.program_id
-  }).sort({ createdAt: -1 });
+  const { type, program_id, status } = req.query;
+  const query = {};
+  if (type) {
+    query.type = type;
+  }
+  if (program_id) {
+    query.program_id = program_id;
+  }
+  if (status) {
+    query.status = status;
+  }
+  const tickets = await Ticket.find(query).sort({ createdAt: -1 });
   res.send({ success: true, data: tickets });
 });
 

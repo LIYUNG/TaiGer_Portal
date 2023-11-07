@@ -1,10 +1,9 @@
 import React, { Fragment } from 'react';
-import { Row, Col, Table, Tabs, Tab, Card } from 'react-bootstrap';
+import { Row, Col, Table, Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { BsExclamationTriangle, BsX } from 'react-icons/bs';
 
 import AgentReviewing from '../MainViewTab/AgentReview/AgentReviewing';
-// import AgentTasks from '../MainViewTab/AgentTasks/index';
 import ReadyToSubmitTasks from '../MainViewTab/AgentTasks/ReadyToSubmitTasks';
 import VPDToSubmitTasks from '../MainViewTab/AgentTasks/VPDToSubmitTasks';
 import BaseDocumentCheckingTasks from '../MainViewTab/AgentTasks/BaseDocumentCheckingTasks';
@@ -28,6 +27,7 @@ import NoProgramStudentTasks from '../MainViewTab/AgentTasks/NoProgramStudentTas
 import NoEnoughDecidedProgramsTasks from '../MainViewTab/AgentTasks/NoEnoughDecidedProgramsTasks';
 import DEMO from '../../../store/constant';
 import ApplicationProgressCardBody from '../../../components/ApplicationProgressCard/ApplicationProgressCardBody';
+import ProgramReportCard from '../../Program/ProgramReportCard';
 
 class AgentMainView extends React.Component {
   state = {
@@ -342,6 +342,10 @@ class AgentMainView extends React.Component {
           </Col>
         </Row>
         <Row>
+          {/* TODO: add a program update request ticket card (independent component?) */}
+          {/* <Col md={6}> */}
+            <ProgramReportCard />
+          {/* </Col> */}
           {is_any_programs_ready_to_submit(
             this.props.students.filter((student) =>
               student.agents.some(

@@ -3,7 +3,7 @@ import { Button, Spinner, Card, Row } from 'react-bootstrap';
 import {
   createProgramReport,
   deleteProgramTicket,
-  getProgramTickets,
+  getProgramTicket,
   updateProgramTicket
 } from '../../api';
 import { convertDate, spinner_style } from '../Utils/contants';
@@ -29,7 +29,7 @@ class ProgramReport extends React.Component {
   };
 
   componentDidMount() {
-    getProgramTickets('program', this.props.program_id).then(
+    getProgramTicket('program', this.props.program_id).then(
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;

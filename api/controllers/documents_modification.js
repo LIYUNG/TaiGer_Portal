@@ -1543,6 +1543,46 @@ const deleteAMessageInThread = asyncHandler(async (req, res) => {
   });
 
   res.status(200).send({ success: true });
+
+  // update latest_message_left_by_id
+  const updated_thread = await Documentthread.findById(messagesThreadId);
+
+  const student = await Student.findById(thread.student_id);
+  const application = student.applications.find((application) =>
+    application.doc_modification_thread.some(
+      (thread) => thread.doc_thread_id.toString() === messagesThreadId
+    )
+  );
+  if (!application) {
+    const t = student.generaldocs_threads.find(
+      (tt) => tt.doc_thread_id.toString() === messagesThreadId
+    );
+    if (updated_thread.messages.length > 0) {
+      t.latest_message_left_by_id =
+        updated_thread.messages[
+          updated_thread.messages.length - 1
+        ].user_id.toString();
+      t.updatedAt =
+        updated_thread.messages[updated_thread.messages.length - 1].updatedAt;
+    } else {
+      t.latest_message_left_by_id = '';
+    }
+  } else {
+    const t = application.doc_modification_thread.find(
+      (tt) => tt.doc_thread_id.toString() === messagesThreadId
+    );
+    if (updated_thread.messages.length > 0) {
+      t.latest_message_left_by_id =
+        updated_thread.messages[
+          updated_thread.messages.length - 1
+        ].user_id.toString();
+      t.updatedAt =
+        updated_thread.messages[updated_thread.messages.length - 1].updatedAt;
+    } else {
+      t.latest_message_left_by_id = '';
+    }
+  }
+  await student.save();
 });
 
 module.exports = {

@@ -19,7 +19,9 @@ const getTickets = asyncHandler(async (req, res) => {
   if (status) {
     query.status = status;
   }
-  const tickets = await Ticket.find(query).sort({ createdAt: -1 });
+  const tickets = await Ticket.find(query)
+    .populate('program_id', 'school program_name degree')
+    .sort({ createdAt: -1 });
   res.send({ success: true, data: tickets });
 });
 

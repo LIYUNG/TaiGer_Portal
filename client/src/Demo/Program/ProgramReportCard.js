@@ -82,7 +82,7 @@ class ProgramReportCard extends React.Component {
       <tr key={i}>
         <td>
           <Link
-            to={`/programs/${ticket.program_id.toString()}`}
+            to={`/programs/${ticket.program_id?._id.toString()}`}
             style={{ textDecoration: 'none' }}
             className="text-info"
           >
@@ -91,11 +91,27 @@ class ProgramReportCard extends React.Component {
         </td>
         <td>
           <Link
-            to={`/programs/${ticket.program_id.toString()}`}
+            to={`/programs/${ticket.program_id?._id.toString()}`}
             style={{ textDecoration: 'none' }}
             className="text-info"
+            title={`${ticket.program_id?.school} - ${ticket.program_id?.program_name}`}
           >
-            {ticket.description}
+            {`${ticket.program_id?.school} - ${ticket.program_id?.program_name}`.substring(
+              0,
+              30
+            )}
+            {`...`}
+          </Link>
+        </td>
+        <td>
+          <Link
+            to={`/programs/${ticket.program_id?._id.toString()}`}
+            style={{ textDecoration: 'none' }}
+            className="text-info"
+            title={ticket.description}
+          >
+            {`${ticket.description}`.substring(0, 50)}
+            {ticket.description?.length > 50 ? ` ...` : ''}
           </Link>
         </td>
       </tr>
@@ -125,6 +141,7 @@ class ProgramReportCard extends React.Component {
                 <thead>
                   <tr>
                     <th>idx</th>
+                    <th>program</th>
                     <th>description</th>
                   </tr>
                 </thead>

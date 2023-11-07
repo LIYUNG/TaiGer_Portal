@@ -1,11 +1,13 @@
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
 const { Program } = require('../models/Program');
-const { User, Role, Student } = require('../models/User');
+const { Role, Student } = require('../models/User');
 const logger = require('../services/logger');
 const { one_month_cache } = require('../cache/node-cache');
 const { two_weeks_cache } = require('../cache/node-cache');
 const { PROGRAMS_CACHE } = require('../config');
+const Ticket = require('../models/Ticket');
+
 const getPrograms = asyncHandler(async (req, res) => {
   // Option 1 : Cache version
   if (PROGRAMS_CACHE === 'true') {
@@ -224,6 +226,10 @@ const deleteProgram = asyncHandler(async (req, res) => {
     throw new ErrorResponse(423, 'This program can not be deleted!');
   }
   res.status(200).send({ success: true });
+  if (students.length === 0) {
+    await Ticket.deleteMany({ program_id: req.params.programId });
+    console.log('Delete Tickets!');
+  }
 });
 
 module.exports = {

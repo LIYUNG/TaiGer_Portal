@@ -6,7 +6,7 @@ import {
   getProgramTicket,
   updateProgramTicket
 } from '../../api';
-import { convertDate, spinner_style } from '../Utils/contants';
+import { convertDate, spinner_style2 } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ProgramReportModal from './ProgramReportModal';
 import { NewlineText } from '../Utils/checking-functions';
@@ -229,7 +229,7 @@ class ProgramReport extends React.Component {
     }
     if (!isLoaded) {
       return (
-        <div style={spinner_style}>
+        <div style={spinner_style2}>
           <Spinner animation="border" role="status">
             <span className="visually-hidden"></span>
           </Spinner>

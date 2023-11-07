@@ -6,7 +6,6 @@ import Aux from '../../hoc/_Aux';
 import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
-import { showButtonIfMyStudentB } from '../Utils/checking-functions';
 
 import { getPortalCredentials, postPortalCredentials } from '../../api';
 import Banner from '../../components/Banner/Banner';
@@ -312,39 +311,35 @@ export default function PortalCredentialsCard(props) {
                             {application.programId.program_name}
                           </b>
                         </a>{' '}
-                        {showButtonIfMyStudentB(
-                          props.user,
-                          statedata.student
-                        ) &&
-                          (application.programId.application_portal_a ||
-                            application.programId.application_portal_b) && (
-                            <Button
-                              size="sm"
-                              onClick={(e) =>
-                                onSubmit(
-                                  statedata.student._id.toString(),
-                                  application.programId._id.toString(),
-                                  statedata.credentials[
-                                    application.programId._id.toString()
-                                  ]
-                                )
-                              }
-                              disabled={
-                                !statedata.isUpdateLoaded[
-                                  application.programId._id.toString()
-                                ] ||
-                                !statedata.isChanged[
+                        {(application.programId.application_portal_a ||
+                          application.programId.application_portal_b) && (
+                          <Button
+                            size="sm"
+                            onClick={(e) =>
+                              onSubmit(
+                                statedata.student._id.toString(),
+                                application.programId._id.toString(),
+                                statedata.credentials[
                                   application.programId._id.toString()
                                 ]
-                              }
-                            >
-                              {!statedata.isUpdateLoaded[
+                              )
+                            }
+                            disabled={
+                              !statedata.isUpdateLoaded[
+                                application.programId._id.toString()
+                              ] ||
+                              !statedata.isChanged[
                                 application.programId._id.toString()
                               ]
-                                ? 'Updating'
-                                : 'Update'}
-                            </Button>
-                          )}
+                            }
+                          >
+                            {!statedata.isUpdateLoaded[
+                              application.programId._id.toString()
+                            ]
+                              ? 'Updating'
+                              : 'Update'}
+                          </Button>
+                        )}
                       </div>
                       {(application.programId.application_portal_a ||
                         application.programId.application_portal_b) && (

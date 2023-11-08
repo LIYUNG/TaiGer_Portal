@@ -860,6 +860,21 @@ export const num_applications_submitted = (student) => {
   return num_apps_closed;
 };
 
+export const areProgramsDecidedMoreThanContract = (student) => {
+  if (
+    !student.applications ||
+    student.applying_program_count === 0 ||
+    student.applications.length === 0
+  ) {
+    return false;
+  }
+  const num_decided =
+    student?.applications?.filter((application) => application.decided === 'O')
+      .length | 0;
+
+  return num_decided >= student.applying_program_count;
+};
+
 export const check_all_applications_decided = (student) => {
   if (
     !student.applications ||
@@ -885,12 +900,14 @@ export const check_all_applications_decided = (student) => {
   return true;
 };
 
-export const check_all_applications_submitted = (keys, student) => {
+export const check_all_decided_applications_submitted = (student) => {
   if (!student.applications || student.applications.length === 0) {
     return false;
   }
 
-  return student.applications.every((app) => app.closed === 'O');
+  return student.applications
+    .filter((app) => app.decided === 'O')
+    .every((app) => app.closed === 'O' && app.decided === 'O');
 };
 
 export const check_program_uni_assist_needed = (application) => {

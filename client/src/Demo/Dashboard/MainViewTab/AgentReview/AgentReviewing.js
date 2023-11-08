@@ -18,8 +18,8 @@ import {
   getNextProgramStatus,
   num_applications_decided,
   num_applications_submitted,
-  check_all_applications_decided,
-  check_all_applications_submitted,
+  areProgramsDecidedMoreThanContract,
+  check_all_decided_applications_submitted,
   isCVFinished,
   is_cv_assigned,
   check_uni_assist_needed,
@@ -84,12 +84,11 @@ class AgentReviewing extends React.Component {
 
     let num_apps_decided = num_applications_decided(this.props.student);
     let num_apps_closed = num_applications_submitted(this.props.student);
-    let is_all_applications_decided = check_all_applications_decided(
+    let areProgramsAllDecided = areProgramsDecidedMoreThanContract(
       this.props.student
     );
 
-    let is_All_Applications_Submitted = check_all_applications_submitted(
-      keys,
+    let is_All_Applications_Submitted = check_all_decided_applications_submitted(
       this.props.student
     );
 
@@ -169,7 +168,7 @@ class AgentReviewing extends React.Component {
               style={{ textDecoration: 'none' }}
             >
               <p className="text-warning my-0">
-                {is_all_applications_decided ? (
+                {areProgramsAllDecided ? (
                   <IoCheckmarkCircle
                     size={24}
                     color="limegreen"

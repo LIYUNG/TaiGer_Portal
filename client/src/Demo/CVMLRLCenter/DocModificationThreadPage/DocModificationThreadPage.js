@@ -804,10 +804,7 @@ class DocModificationThreadPage extends Component {
         {is_TaiGer_role(this.props.user) &&
           (!this.state.thread.isFinalVersion ? (
             <Row className="mt-2">
-              {showButtonIfMyStudentB(
-                this.props.user,
-                this.state.thread.student_id
-              ) && (
+              {
                 <Button
                   variant="success"
                   onClick={(e) =>
@@ -827,14 +824,11 @@ class DocModificationThreadPage extends Component {
                     </Spinner>
                   )}
                 </Button>
-              )}
+              }
             </Row>
           ) : (
             <Row className="mt-2">
-              {showButtonIfMyStudentB(
-                this.props.user,
-                this.state.thread.student_id
-              ) && (
+              {
                 <Button
                   variant="danger"
                   onClick={(e) =>
@@ -854,7 +848,7 @@ class DocModificationThreadPage extends Component {
                     </Spinner>
                   )}
                 </Button>
-              )}
+              }
             </Row>
           ))}
         <Modal

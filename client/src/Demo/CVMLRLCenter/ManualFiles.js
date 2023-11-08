@@ -1,10 +1,7 @@
 import React from 'react';
 import ManualFilesList from './ManualFilesList';
 import ToggleableUploadFileForm from './ToggleableUploadFileForm';
-import {
-  is_TaiGer_role,
-  showButtonIfMyStudent
-} from '../Utils/checking-functions';
+import { is_TaiGer_role } from '../Utils/checking-functions';
 
 class ManualFiles extends React.Component {
   state = {

@@ -95,3 +95,8 @@ body {
   overflow-y: scroll; /* Enable vertical scrolling */
   max-height: calc(300px - 4px); /* Adjusted max height, considering header */
 }
+
+.white-line {
+  border: 1px solid white; /* Set the line color to white */
+  margin: 20px 0;          /* Adjust margin as needed */
+}

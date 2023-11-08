@@ -553,7 +553,7 @@ class EditorDocsProgress extends React.Component {
               initProgramSpecificFileThread={this.initProgramSpecificFileThread}
               application={null}
             />
-            <hr></hr>
+            <hr className="white-line"></hr>
             {/* TODO: simplify this! with array + function! */}
             {this.state.student.applications &&
               this.state.student.applications.map((application, i) => (
@@ -747,7 +747,7 @@ class EditorDocsProgress extends React.Component {
                             this.initProgramSpecificFileThread
                           }
                         />
-                        <hr></hr>
+                        <hr className="white-line"></hr>
                       </>
                     ) : (
                       <>
@@ -866,6 +866,7 @@ class EditorDocsProgress extends React.Component {
                             this.initProgramSpecificFileThread
                           }
                         />
+                        <hr className="white-line"></hr>
                       </>
                     )}
                   </Row>

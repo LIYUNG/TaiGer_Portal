@@ -1,16 +1,37 @@
 import React from 'react';
-import { Card, Spinner, Row, Col } from 'react-bootstrap';
+import {
+  Card,
+  Spinner,
+  Row,
+  Col,
+  ButtonToolbar,
+  ButtonGroup,
+  Button
+} from 'react-bootstrap';
 import { Redirect } from 'react-router-dom';
 
 import Aux from '../../../hoc/_Aux';
-import { getLast180DaysObject, getLast180DaysSet, spinner_style, transformObjectToArray } from '../../Utils/contants';
+import {
+  getLast180DaysObject,
+  getLast180DaysSet,
+  spinner_style,
+  transformObjectToArray
+} from '../../Utils/contants';
 import ErrorPage from '../../Utils/ErrorPage';
 import { is_TaiGer_Admin } from '../../Utils/checking-functions';
 
 import { getUserLog } from '../../../api';
 import { TabTitle } from '../../Utils/TabTitle';
 import DEMO from '../../../store/constant';
-import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import {
+  CartesianGrid,
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis
+} from 'recharts';
 
 class TaiGerPortalSingleUserLog extends React.Component {
   state = {
@@ -20,7 +41,7 @@ class TaiGerPortalSingleUserLog extends React.Component {
     logs: null,
     success: false,
     modalShow: false,
-
+    range: 180,
     res_status: 0
   };
 
@@ -86,6 +107,12 @@ class TaiGerPortalSingleUserLog extends React.Component {
     }
   }
 
+  onChangeRange = (e) => {
+    e.preventDefault();
+    const range = parseInt(e.target.value);
+    this.setState({ range });
+  };
+
   render() {
     if (!is_TaiGer_Admin(this.props.user)) {
       return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
@@ -115,7 +142,6 @@ class TaiGerPortalSingleUserLog extends React.Component {
     const dataToBeUsed = transformObjectToArray(last180DaysObject).sort(
       (a, b) => (a.date > b.date ? 1 : -1)
     );
-
     return (
       <Aux>
         <Row className="sticky-top ">
@@ -139,7 +165,6 @@ class TaiGerPortalSingleUserLog extends React.Component {
         </Row>
         <Card>
           <Card.Body>
-            API call
             {/* TODO insert a table */}
             {/* {this.state.logs.map((log) => (
               <p>
@@ -149,9 +174,54 @@ class TaiGerPortalSingleUserLog extends React.Component {
                 {log.operation}
               </p>
             ))} */}
+            <ButtonToolbar aria-label="Toolbar with button groups">
+              <ButtonGroup className="me-2" aria-label="First group">
+                <Button
+                  variant={
+                    this.state.range === 7 ? 'primary' : 'outline-primary'
+                  }
+                  value={7}
+                  onClick={this.onChangeRange}
+                  size="sm"
+                >
+                  7 days
+                </Button>
+                <Button
+                  variant={
+                    this.state.range === 30 ? 'primary' : 'outline-primary'
+                  }
+                  value={30}
+                  onClick={this.onChangeRange}
+                  size="sm"
+                >
+                  30 days
+                </Button>
+                <Button
+                  variant={
+                    this.state.range === 60 ? 'primary' : 'outline-primary'
+                  }
+                  value={60}
+                  onClick={this.onChangeRange}
+                  size="sm"
+                >
+                  60 days
+                </Button>
+                <Button
+                  variant={
+                    this.state.range === 180 ? 'primary' : 'outline-primary'
+                  }
+                  value={180}
+                  onClick={this.onChangeRange}
+                  size="sm"
+                >
+                  180 days
+                </Button>
+              </ButtonGroup>
+            </ButtonToolbar>
+            API call
             <ResponsiveContainer height={250} width="100%">
               <LineChart
-                data={dataToBeUsed}
+                data={dataToBeUsed.slice(-this.state.range)}
                 margin={{
                   top: 20,
                   right: 10,
@@ -162,11 +232,19 @@ class TaiGerPortalSingleUserLog extends React.Component {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis
                   dataKey="date"
-                  interval={Math.ceil(dataToBeUsed.length / 10)}
+                  interval={Math.ceil(
+                    dataToBeUsed.slice(-this.state.range).length / 12
+                  )}
                   angle={-45}
                   textAnchor="end"
                 />
-                <YAxis />
+                <YAxis
+                  label={{
+                    value: '# of API calls',
+                    angle: -90,
+                    position: 'insideLeft'
+                  }}
+                />
                 <Tooltip />
                 <Line
                   type="monotone"

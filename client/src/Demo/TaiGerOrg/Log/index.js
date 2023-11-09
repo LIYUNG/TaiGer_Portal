@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Spinner, Row, Col, ButtonToolbar, ButtonGroup, Button } from 'react-bootstrap';
+import { Card, Spinner, Row, Col } from 'react-bootstrap';
 import { Link, Redirect } from 'react-router-dom';
 
 import Aux from '../../../hoc/_Aux';
@@ -15,15 +15,7 @@ import { is_TaiGer_Admin } from '../../Utils/checking-functions';
 import { getUsersLog } from '../../../api';
 import { TabTitle } from '../../Utils/TabTitle';
 import DEMO from '../../../store/constant';
-import {
-  CartesianGrid,
-  Line,
-  LineChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis
-} from 'recharts';
+import LogLineChart from '../../../components/Charts/LogLineChart';
 
 class TaiGerPortalUsersLog extends React.Component {
   state = {
@@ -150,82 +142,11 @@ class TaiGerPortalUsersLog extends React.Component {
         </Row>
         <Card>
           <Card.Body>
-            <ButtonToolbar aria-label="Toolbar with button groups">
-              <ButtonGroup className="me-2" aria-label="First group">
-                <Button
-                  variant={
-                    this.state.range === 7 ? 'primary' : 'outline-primary'
-                  }
-                  value={7}
-                  onClick={this.onChangeRange}
-                  size="sm"
-                >
-                  7 days
-                </Button>
-                <Button
-                  variant={
-                    this.state.range === 30 ? 'primary' : 'outline-primary'
-                  }
-                  value={30}
-                  onClick={this.onChangeRange}
-                  size="sm"
-                >
-                  30 days
-                </Button>
-                <Button
-                  variant={
-                    this.state.range === 60 ? 'primary' : 'outline-primary'
-                  }
-                  value={60}
-                  onClick={this.onChangeRange}
-                  size="sm"
-                >
-                  60 days
-                </Button>
-                <Button
-                  variant={
-                    this.state.range === 180 ? 'primary' : 'outline-primary'
-                  }
-                  value={180}
-                  onClick={this.onChangeRange}
-                  size="sm"
-                >
-                  180 days
-                </Button>
-              </ButtonGroup>
-            </ButtonToolbar>
-            API call
-            {/* TODO insert a table */}
-            <ResponsiveContainer height={250} width="100%">
-              <LineChart
-                data={dataToBeUsed.slice(-this.state.range)}
-                margin={{
-                  top: 20,
-                  right: 10,
-                  left: 0,
-                  bottom: 40
-                }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis
-                  dataKey="date"
-                  interval={Math.ceil(
-                    dataToBeUsed.slice(-this.state.range).length / 12
-                  )}
-                  angle={-45}
-                  textAnchor="end"
-                />
-                <YAxis />
-                <Tooltip />
-                <Line
-                  type="monotone"
-                  dataKey="apiCallCount"
-                  stroke="#8884d8"
-                  activeDot={{ r: 8 }}
-                  dot={false}
-                />
-              </LineChart>
-            </ResponsiveContainer>
+            <LogLineChart data={dataToBeUsed} />
+            <br />
+            <hh5>API calls detail:</hh5>
+            <br />
+            <br />
             {this.state.logs.map((log) => (
               <p>
                 <Link to={`/internal/logs/${log.user_id._id.toString()}`}>

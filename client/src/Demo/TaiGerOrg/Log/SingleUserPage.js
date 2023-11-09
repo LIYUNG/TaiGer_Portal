@@ -1,13 +1,5 @@
 import React from 'react';
-import {
-  Card,
-  Spinner,
-  Row,
-  Col,
-  ButtonToolbar,
-  ButtonGroup,
-  Button
-} from 'react-bootstrap';
+import { Card, Spinner, Row, Col } from 'react-bootstrap';
 import { Redirect } from 'react-router-dom';
 
 import Aux from '../../../hoc/_Aux';
@@ -23,15 +15,7 @@ import { is_TaiGer_Admin } from '../../Utils/checking-functions';
 import { getUserLog } from '../../../api';
 import { TabTitle } from '../../Utils/TabTitle';
 import DEMO from '../../../store/constant';
-import {
-  CartesianGrid,
-  Line,
-  LineChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis
-} from 'recharts';
+import LogLineChart from '../../../components/Charts/LogLineChart';
 
 class TaiGerPortalSingleUserLog extends React.Component {
   state = {
@@ -107,12 +91,6 @@ class TaiGerPortalSingleUserLog extends React.Component {
     }
   }
 
-  onChangeRange = (e) => {
-    e.preventDefault();
-    const range = parseInt(e.target.value);
-    this.setState({ range });
-  };
-
   render() {
     if (!is_TaiGer_Admin(this.props.user)) {
       return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
@@ -165,96 +143,21 @@ class TaiGerPortalSingleUserLog extends React.Component {
         </Row>
         <Card>
           <Card.Body>
-            {/* TODO insert a table */}
-            {/* {this.state.logs.map((log) => (
-              <p>
-                {log.user_id?.firstname} {log.user_id?.lastname} {log.date}
-                {log.apiCallCount}
-                {log.apiPath}
-                {log.operation}
-              </p>
-            ))} */}
-            <ButtonToolbar aria-label="Toolbar with button groups">
-              <ButtonGroup className="me-2" aria-label="First group">
-                <Button
-                  variant={
-                    this.state.range === 7 ? 'primary' : 'outline-primary'
-                  }
-                  value={7}
-                  onClick={this.onChangeRange}
-                  size="sm"
-                >
-                  7 days
-                </Button>
-                <Button
-                  variant={
-                    this.state.range === 30 ? 'primary' : 'outline-primary'
-                  }
-                  value={30}
-                  onClick={this.onChangeRange}
-                  size="sm"
-                >
-                  30 days
-                </Button>
-                <Button
-                  variant={
-                    this.state.range === 60 ? 'primary' : 'outline-primary'
-                  }
-                  value={60}
-                  onClick={this.onChangeRange}
-                  size="sm"
-                >
-                  60 days
-                </Button>
-                <Button
-                  variant={
-                    this.state.range === 180 ? 'primary' : 'outline-primary'
-                  }
-                  value={180}
-                  onClick={this.onChangeRange}
-                  size="sm"
-                >
-                  180 days
-                </Button>
-              </ButtonGroup>
-            </ButtonToolbar>
-            API call
-            <ResponsiveContainer height={250} width="100%">
-              <LineChart
-                data={dataToBeUsed.slice(-this.state.range)}
-                margin={{
-                  top: 20,
-                  right: 10,
-                  left: 0,
-                  bottom: 40
-                }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis
-                  dataKey="date"
-                  interval={Math.ceil(
-                    dataToBeUsed.slice(-this.state.range).length / 12
-                  )}
-                  angle={-45}
-                  textAnchor="end"
-                />
-                <YAxis
-                  label={{
-                    value: '# of API calls',
-                    angle: -90,
-                    position: 'insideLeft'
-                  }}
-                />
-                <Tooltip />
-                <Line
-                  type="monotone"
-                  dataKey="apiCallCount"
-                  stroke="#8884d8"
-                  activeDot={{ r: 8 }}
-                  dot={false}
-                />
-              </LineChart>
-            </ResponsiveContainer>
+            <LogLineChart data={dataToBeUsed} />
+            <br />
+            <hh5>API calls detail:</hh5>
+            <br />
+            <br />
+            {this.state.logs
+              .sort((a, b) => (a.date > b.date ? -1 : 1))
+              .map((log, idx) => (
+                <li key={idx}>
+                  {log.user_id?.firstname} {log.user_id?.lastname} {log.date}
+                  {log.apiCallCount}
+                  {log.apiPath}
+                  {log.operation}
+                </li>
+              ))}
           </Card.Body>
         </Card>
       </Aux>

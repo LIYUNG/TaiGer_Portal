@@ -25,7 +25,7 @@ const UserlogSchema = new Schema({
   createdAt: {
     type: Date,
     default: Date.now,
-    expires: 7776000 // 3 month
+    expires: 15552000 // 6 month
   }
 });
 

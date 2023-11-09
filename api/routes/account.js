@@ -40,6 +40,7 @@ const {
 
 const { updateCredentials, updateOfficehours } = require('../controllers/account');
 const { localAuth } = require('../middlewares/auth');
+const { logAccess } = require('../utils/log/log');
 
 const router = Router();
 
@@ -51,7 +52,8 @@ router
     filter_archiv_user,
     GeneralGETRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
-    getMyfiles
+    getMyfiles,
+    logAccess
   );
 
 router
@@ -60,7 +62,8 @@ router
     filter_archiv_user,
     GeneralGETRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
-    getTemplates
+    getTemplates,
+    logAccess
   );
 
 router
@@ -69,14 +72,21 @@ router
     filter_archiv_user,
     permit(Role.Admin),
     TemplatefileUpload,
-    uploadTemplate
+    uploadTemplate,
+    logAccess
   )
-  .delete(filter_archiv_user, permit(Role.Admin, Role.Manager), deleteTemplate)
+  .delete(
+    filter_archiv_user,
+    permit(Role.Admin, Role.Manager),
+    deleteTemplate,
+    logAccess
+  )
   .get(
     filter_archiv_user,
     DownloadTemplateRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
-    downloadTemplateFile
+    downloadTemplateFile,
+    logAccess
   );
 
 router
@@ -87,7 +97,8 @@ router
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Student),
     multitenant_filter,
     InnerTaigerMultitenantFilter,
-    UpdateStudentApplications
+    UpdateStudentApplications,
+    logAccess
   );
 
 // TaiGer Transcript Analyser:
@@ -99,7 +110,8 @@ router
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
     multitenant_filter,
     InnerTaigerMultitenantFilter,
-    processTranscript_test
+    processTranscript_test,
+    logAccess
   );
 
 router
@@ -109,7 +121,8 @@ router
     DownloadTemplateRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     multitenant_filter,
-    downloadXLSX
+    downloadXLSX,
+    logAccess
   );
 
 // Close notification for Studen
@@ -125,7 +138,8 @@ router
       Role.Student,
       Role.Guest
     ),
-    removeNotification
+    removeNotification,
+    logAccess
   );
 
 // Close notification for Agent
@@ -135,7 +149,8 @@ router
     filter_archiv_user,
     RemoveNotificationRateLimiter,
     permit(Role.Agent),
-    removeAgentNotification
+    removeAgentNotification,
+    logAccess
   );
 
 // My Survey for Students
@@ -144,7 +159,8 @@ router
   .get(
     updatePersonalInformationRateLimiter,
     permit(Role.Admin, Role.Agent, Role.Editor, Role.Student, Role.Guest),
-    getMyAcademicBackground
+    getMyAcademicBackground,
+    logAccess
   );
 
 router
@@ -162,7 +178,8 @@ router
     ),
     multitenant_filter,
     InnerTaigerMultitenantFilter,
-    updateAcademicBackground
+    updateAcademicBackground,
+    logAccess
   );
 
 router
@@ -180,7 +197,8 @@ router
     ),
     multitenant_filter,
     InnerTaigerMultitenantFilter,
-    updateLanguageSkill
+    updateLanguageSkill,
+    logAccess
   );
 
 router
@@ -198,7 +216,8 @@ router
     ),
     multitenant_filter,
     InnerTaigerMultitenantFilter,
-    updateApplicationPreferenceSkill
+    updateApplicationPreferenceSkill,
+    logAccess
   );
 
 router
@@ -207,7 +226,8 @@ router
     filter_archiv_user,
     updatePersonalInformationRateLimiter,
     permit(Role.Admin, Role.Agent),
-    updateOfficehours
+    updateOfficehours,
+    logAccess
   );
 
 router
@@ -223,7 +243,8 @@ router
       Role.Student,
       Role.Guest
     ),
-    updatePersonalData
+    updatePersonalData,
+    logAccess
   );
 
 router
@@ -239,7 +260,8 @@ router
       Role.Guest
     ),
     localAuth,
-    updateCredentials
+    updateCredentials,
+    logAccess
   );
 
 module.exports = router;

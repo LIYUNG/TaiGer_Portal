@@ -111,7 +111,7 @@ const processTranscript_test = asyncHandler(async (req, res, next) => {
   const stringified_courses_taiger_guided = JSON.stringify(
     courses.table_data_string_taiger_guided
   );
-  console.log(stringified_courses_taiger_guided);
+
   let exitCode_Python = -1;
   // TODO: multitenancy studentId?
   let student_name = `${courses.student_id.firstname}_${courses.student_id.lastname}`;
@@ -190,6 +190,7 @@ const processTranscript_test = asyncHandler(async (req, res, next) => {
       }
     );
   }
+  next();
 });
 
 // Download original transcript excel
@@ -248,13 +249,15 @@ const downloadXLSX = asyncHandler(async (req, res, next) => {
 
       res.attachment(fileKey_converted);
       // return res.send({ data: data.Body, lastModifiedDate: data.LastModified });
-      return res.end(data.Body);
+      res.end(data.Body);
+      next();
     });
   } else {
     console.log('cache hit');
     const fileKey_converted = encodeURIComponent(fileKey); // Use the encoding necessary
     res.attachment(fileKey_converted);
-    return res.end(value);
+    res.end(value);
+    next();
   }
 });
 

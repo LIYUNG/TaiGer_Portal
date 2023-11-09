@@ -19,6 +19,7 @@ const {
 } = require('../middlewares/rate_limiter');
 const { filter_archiv_user } = require('../middlewares/limit_archiv_user');
 const { event_multitenant_filter } = require('../middlewares/event-filter');
+const { logAccess } = require('../utils/log/log');
 // const handleError = require('../utils/eventErrors');
 const router = Router();
 
@@ -29,7 +30,8 @@ router
   .get(
     GeneralGETRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
-    getAllEvents
+    getAllEvents,
+    logAccess
   );
 
 router
@@ -37,13 +39,15 @@ router
   .get(
     GeneralGETRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
-    getEvents
+    getEvents,
+    logAccess
   )
   .post(
     filter_archiv_user,
     GeneralPOSTRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student), // TODO: prevent student change receiver_id!
-    postEvent
+    postEvent,
+    logAccess
   );
 
 router
@@ -51,7 +55,8 @@ router
   .get(
     GeneralGETRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
-    showEvent
+    showEvent,
+    logAccess
   );
 
 router
@@ -61,7 +66,8 @@ router
     GeneralPUTRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     event_multitenant_filter,
-    confirmEvent
+    confirmEvent,
+    logAccess
   );
 
 router
@@ -71,7 +77,8 @@ router
     GeneralPUTRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     event_multitenant_filter,
-    updateEvent
+    updateEvent,
+    logAccess
   )
   .delete(
     filter_archiv_user,

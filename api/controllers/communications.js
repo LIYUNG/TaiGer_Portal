@@ -15,7 +15,8 @@ const Permission = require('../models/Permission');
 
 const pageSize = 5;
 
-const getSearchUserMessages = asyncHandler(async (req, res) => {
+// TODO
+const getSearchUserMessages = asyncHandler(async (req, res, next) => {
   const { user } = req;
 
   // Get only the last communication
@@ -70,38 +71,40 @@ const getSearchUserMessages = asyncHandler(async (req, res) => {
       return { ...aggregateData, ...student };
     });
 
-    return res
+    res
+      .status(200)
+      .send({ success: true, data: { students: mergedResults, user } });
+  } else {
+    const students_search = await Student.find(
+      {
+        $text: { $search: req.query.q },
+        agents: user._id.toString()
+      },
+      { score: { $meta: 'textScore' } }
+    )
+      .sort({ score: { $meta: 'textScore' } })
+      .limit(10)
+      .select('firstname lastname firstname_chinese lastname_chinese role')
+      .lean();
+    const students = await Student.find({
+      agents: user._id.toString(),
+      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+    })
+      .select('firstname lastname role')
+      .lean();
+    // Merge the results
+    const mergedResults = students_search.map((student) => {
+      const aggregateData = studentsWithCommunications.find(
+        (item) => item._id.toString() === student._id.toString()
+      );
+      return { ...aggregateData, ...student };
+    });
+
+    res
       .status(200)
       .send({ success: true, data: { students: mergedResults, user } });
   }
-  const students_search = await Student.find(
-    {
-      $text: { $search: req.query.q },
-      agents: user._id.toString()
-    },
-    { score: { $meta: 'textScore' } }
-  )
-    .sort({ score: { $meta: 'textScore' } })
-    .limit(10)
-    .select('firstname lastname firstname_chinese lastname_chinese role')
-    .lean();
-  const students = await Student.find({
-    agents: user._id.toString(),
-    $or: [{ archiv: { $exists: false } }, { archiv: false }]
-  })
-    .select('firstname lastname role')
-    .lean();
-  // Merge the results
-  const mergedResults = students_search.map((student) => {
-    const aggregateData = studentsWithCommunications.find(
-      (item) => item._id.toString() === student._id.toString()
-    );
-    return { ...aggregateData, ...student };
-  });
-
-  return res
-    .status(200)
-    .send({ success: true, data: { students: mergedResults, user } });
+  next();
 });
 const getSearchMessageKeywords = asyncHandler(async (req, res) => {
   const { user } = req;
@@ -275,7 +278,7 @@ const getUnreadNumberMessages = asyncHandler(async (req, res) => {
   });
 });
 
-const getMyMessages = asyncHandler(async (req, res) => {
+const getMyMessages = asyncHandler(async (req, res, next) => {
   const { user } = req;
 
   if (
@@ -333,7 +336,55 @@ const getMyMessages = asyncHandler(async (req, res) => {
       }
     ]);
 
-    return res.status(200).send({
+    res.status(200).send({
+      success: true,
+      data: {
+        students: studentsWithCommunications,
+        user
+      }
+    });
+  } else {
+    const students = await Student.find({
+      agents: user._id.toString(),
+      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+    })
+      .select('firstname lastname role')
+      .lean();
+    const student_ids = students.map((stud, i) => stud._id);
+    const studentsWithCommunications = await Student.aggregate([
+      {
+        $lookup: {
+          from: 'communications',
+          localField: '_id',
+          foreignField: 'student_id',
+          as: 'communications'
+        }
+      },
+      {
+        $project: {
+          firstname: 1,
+          lastname: 1,
+          firstname_chinese: 1,
+          lastname_chinese: 1,
+          role: 1,
+          latestCommunication: {
+            $arrayElemAt: ['$communications', -1]
+          }
+        }
+      },
+      {
+        $match: {
+          'latestCommunication.student_id': { $in: student_ids }
+        }
+      },
+      {
+        $sort: {
+          'latestCommunication.createdAt': -1
+        }
+      }
+    ]);
+
+    res.status(200).send({
       success: true,
       data: {
         students: studentsWithCommunications,
@@ -341,56 +392,11 @@ const getMyMessages = asyncHandler(async (req, res) => {
       }
     });
   }
-  const students = await Student.find({
-    agents: user._id.toString(),
-    $or: [{ archiv: { $exists: false } }, { archiv: false }]
-  })
-    .select('firstname lastname role')
-    .lean();
-  const student_ids = students.map((stud, i) => stud._id);
-  const studentsWithCommunications = await Student.aggregate([
-    {
-      $lookup: {
-        from: 'communications',
-        localField: '_id',
-        foreignField: 'student_id',
-        as: 'communications'
-      }
-    },
-    {
-      $project: {
-        firstname: 1,
-        lastname: 1,
-        firstname_chinese: 1,
-        lastname_chinese: 1,
-        role: 1,
-        latestCommunication: {
-          $arrayElemAt: ['$communications', -1]
-        }
-      }
-    },
-    {
-      $match: {
-        'latestCommunication.student_id': { $in: student_ids }
-      }
-    },
-    {
-      $sort: {
-        'latestCommunication.createdAt': -1
-      }
-    }
-  ]);
 
-  return res.status(200).send({
-    success: true,
-    data: {
-      students: studentsWithCommunications,
-      user
-    }
-  });
+  next();
 });
 
-const loadMessages = asyncHandler(async (req, res) => {
+const loadMessages = asyncHandler(async (req, res, next) => {
   const {
     user,
     params: { studentId, pageNumber }
@@ -419,12 +425,11 @@ const loadMessages = asyncHandler(async (req, res) => {
 
   // Multitenant-filter: Check student can only access their own thread!!!!
 
-  return res
-    .status(200)
-    .send({ success: true, data: communication_thread, student });
+  res.status(200).send({ success: true, data: communication_thread, student });
+  next();
 });
 
-const getMessages = asyncHandler(async (req, res) => {
+const getMessages = asyncHandler(async (req, res, next) => {
   const {
     user,
     params: { studentId }
@@ -455,13 +460,12 @@ const getMessages = asyncHandler(async (req, res) => {
       await lastElement.save();
     }
   }
-  return res
-    .status(200)
-    .send({ success: true, data: communication_thread, student });
+  res.status(200).send({ success: true, data: communication_thread, student });
+  next();
 });
 
 // (O) notification email works
-const postMessages = asyncHandler(async (req, res) => {
+const postMessages = asyncHandler(async (req, res, next) => {
   const {
     user,
     params: { studentId }
@@ -571,10 +575,11 @@ const postMessages = asyncHandler(async (req, res) => {
       }
     );
   }
+  next();
 });
 
 // (-) TODO email : no notification needed
-const updateAMessageInThread = asyncHandler(async (req, res) => {
+const updateAMessageInThread = asyncHandler(async (req, res, next) => {
   const {
     user,
     params: { messageId }
@@ -589,28 +594,30 @@ const updateAMessageInThread = asyncHandler(async (req, res) => {
     logger.error('updateAMessageInThread : Invalid message thread id');
     throw new ErrorResponse(403, 'Invalid message thread id');
   }
-  console.log(req.body);
-  // console.log(message);
   thread.message = JSON.stringify(req.body);
   await thread.save();
   res.status(200).send({ success: true, data: thread });
+  next();
 });
 
 // (-) TODO email : no notification needed
-const deleteAMessageInCommunicationThread = asyncHandler(async (req, res) => {
-  const {
-    user,
-    params: { messageId }
-  } = req;
+const deleteAMessageInCommunicationThread = asyncHandler(
+  async (req, res, next) => {
+    const {
+      user,
+      params: { messageId }
+    } = req;
 
-  // Prevent multitenant
-  try {
-    await Communication.findByIdAndDelete(messageId);
-    res.status(200).send({ success: true });
-  } catch (e) {
-    throw new ErrorResponse(400, 'message collapse');
+    // Prevent multitenant
+    try {
+      await Communication.findByIdAndDelete(messageId);
+      res.status(200).send({ success: true });
+      next();
+    } catch (e) {
+      throw new ErrorResponse(400, 'message collapse');
+    }
   }
-});
+);
 
 module.exports = {
   getSearchUserMessages,

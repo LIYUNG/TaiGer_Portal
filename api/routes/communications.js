@@ -25,6 +25,7 @@ const {
 const {
   chatMultitenantFilter
 } = require('../middlewares/chatMultitenantFilter');
+const { logAccess } = require('../utils/log/log');
 
 const router = Router();
 
@@ -34,7 +35,8 @@ router
   .get(
     GeneralGETSearchRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
-    getSearchUserMessages
+    getSearchUserMessages,
+    logAccess
   );
 
 router
@@ -50,7 +52,8 @@ router
   .get(
     getMessagesRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
-    getMyMessages
+    getMyMessages,
+    logAccess
   );
 
 router
@@ -61,7 +64,8 @@ router
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     multitenant_filter,
     chatMultitenantFilter,
-    updateAMessageInThread
+    updateAMessageInThread,
+    logAccess
   )
   .delete(
     filter_archiv_user,
@@ -69,7 +73,8 @@ router
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     multitenant_filter,
     chatMultitenantFilter,
-    deleteAMessageInCommunicationThread
+    deleteAMessageInCommunicationThread,
+    logAccess
   );
 
 router
@@ -80,14 +85,16 @@ router
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     multitenant_filter,
     chatMultitenantFilter,
-    postMessages
+    postMessages,
+    logAccess
   )
   .get(
     getMessagesRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     multitenant_filter,
     chatMultitenantFilter,
-    getMessages
+    getMessages,
+    logAccess
   );
 router
   .route('/:studentId/pages/:pageNumber')
@@ -96,7 +103,8 @@ router
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     multitenant_filter,
     chatMultitenantFilter,
-    loadMessages
+    loadMessages,
+    logAccess
   );
 
 module.exports = router;

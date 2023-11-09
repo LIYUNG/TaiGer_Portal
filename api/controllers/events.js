@@ -63,7 +63,7 @@ const meetingConfirmationReminder = (receiver, user, start_time) => {
   );
 };
 
-const getEvents = asyncHandler(async (req, res) => {
+const getEvents = asyncHandler(async (req, res, next) => {
   const { user } = req;
   let events;
   let agents_events;
@@ -119,7 +119,7 @@ const getEvents = asyncHandler(async (req, res) => {
     }
   }
 
-  return res.status(200).send({
+  res.status(200).send({
     success: true,
     agents,
     data: events,
@@ -127,9 +127,10 @@ const getEvents = asyncHandler(async (req, res) => {
     hasEvents: true,
     students
   });
+  next();
 });
 
-const getAllEvents = asyncHandler(async (req, res) => {
+const getAllEvents = asyncHandler(async (req, res, next) => {
   const { user } = req;
   const agents = await Agent.find().select(
     'firstname lastname email selfIntroduction officehours timezone'
@@ -147,7 +148,7 @@ const getAllEvents = asyncHandler(async (req, res) => {
     .select('firstname lastname firstname_chinese lastname_chinese  email')
     .lean();
   if (events.length === 0) {
-    return res.status(200).send({
+    res.status(200).send({
       success: true,
       agents,
       data: events,
@@ -155,31 +156,33 @@ const getAllEvents = asyncHandler(async (req, res) => {
       hasEvents: false,
       students
     });
+  } else {
+    res.status(200).send({
+      success: true,
+      agents,
+      data: events,
+      booked_events: [],
+      hasEvents: true,
+      students
+    });
   }
-
-  return res.status(200).send({
-    success: true,
-    agents,
-    data: events,
-    booked_events: [],
-    hasEvents: true,
-    students
-  });
+  next();
 });
 
-const showEvent = asyncHandler(async (req, res) => {
+const showEvent = asyncHandler(async (req, res, next) => {
   const { event_id } = req.params;
   const event = await Event.findById(event_id);
 
   try {
     res.status(200).json(event);
+    next();
   } catch (err) {
     console.log(err);
     throw new ErrorResponse(400, err);
   }
 });
 
-const postEvent = asyncHandler(async (req, res) => {
+const postEvent = asyncHandler(async (req, res, next) => {
   const { user } = req;
   const newEvent = req.body;
   // console.log(newEvent);
@@ -289,9 +292,10 @@ const postEvent = asyncHandler(async (req, res) => {
       throw new ErrorResponse(429, err.message);
     }
   }
+  next();
 });
 
-const confirmEvent = asyncHandler(async (req, res) => {
+const confirmEvent = asyncHandler(async (req, res, next) => {
   const { event_id } = req.params;
   const { user } = req;
   const updated_event = req.body;
@@ -354,13 +358,14 @@ const confirmEvent = asyncHandler(async (req, res) => {
         meetingInvitation(requester, user, event);
       });
     }
+    next();
   } catch (err) {
     console.log(err);
     throw new ErrorResponse(400, err);
   }
 });
 
-const updateEvent = asyncHandler(async (req, res) => {
+const updateEvent = asyncHandler(async (req, res, next) => {
   const { event_id } = req.params;
   const { user } = req;
   const updated_event = req.body;
@@ -400,13 +405,14 @@ const updateEvent = asyncHandler(async (req, res) => {
         MeetingAdjustReminder(requester, user, event.start);
       });
     }
+    next();
   } catch (err) {
     console.log(err);
     throw new ErrorResponse(400, err);
   }
 });
 
-const deleteEvent = asyncHandler(async (req, res) => {
+const deleteEvent = asyncHandler(async (req, res, next) => {
   const { event_id } = req.params;
   const { user } = req;
   try {
@@ -424,6 +430,7 @@ const deleteEvent = asyncHandler(async (req, res) => {
         return res
           .status(200)
           .send({ success: true, agents, data: [], hasEvents: false });
+          
       }
       return res
         .status(200)
@@ -452,6 +459,7 @@ const deleteEvent = asyncHandler(async (req, res) => {
     }
 
     res.status(200).send({ success: true, hasEvents: false });
+    next();
     // TODO: remind receiver or reqester
   } catch (err) {
     throw new ErrorResponse(400, err);

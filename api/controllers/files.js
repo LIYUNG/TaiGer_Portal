@@ -28,7 +28,7 @@ const logger = require('../services/logger');
 
 const { s3 } = require('../aws/index');
 
-const getMyfiles = asyncHandler(async (req, res) => {
+const getMyfiles = asyncHandler(async (req, res, next) => {
   const { user } = req;
   const student = await User.findById(user._id);
   if (!student) {
@@ -36,10 +36,11 @@ const getMyfiles = asyncHandler(async (req, res) => {
     throw new ErrorResponse(403, 'Invalid student id');
   }
 
-  return res.status(201).send({ success: true, data: student });
+  res.status(201).send({ success: true, data: student });
+  next();
 });
 
-const getTemplates = asyncHandler(async (req, res) => {
+const getTemplates = asyncHandler(async (req, res, next) => {
   const { user } = req;
 
   if (user.role === Role.Guest) {
@@ -49,11 +50,12 @@ const getTemplates = asyncHandler(async (req, res) => {
 
   const templates = await Template.find({});
 
-  return res.status(201).send({ success: true, data: templates });
+  res.status(201).send({ success: true, data: templates });
+  next();
 });
 
 // (O) email admin delete template
-const deleteTemplate = asyncHandler(async (req, res) => {
+const deleteTemplate = asyncHandler(async (req, res, next) => {
   const { user } = req;
   const { category_name } = req.params;
 
@@ -106,10 +108,11 @@ const deleteTemplate = asyncHandler(async (req, res) => {
       updatedAt: new Date()
     }
   );
+  next();
 });
 
 // (O) email admin uploaded template successfully
-const uploadTemplate = asyncHandler(async (req, res) => {
+const uploadTemplate = asyncHandler(async (req, res, next) => {
   const { user } = req;
   const { category_name } = req.params;
   if (user.role !== Role.Admin) {
@@ -127,6 +130,7 @@ const uploadTemplate = asyncHandler(async (req, res) => {
     { upsert: true, new: true }
   );
   res.status(201).send({ success: true, data: updated_templates });
+  next();
 });
 
 const downloadTemplateFile = asyncHandler(async (req, res, next) => {
@@ -172,12 +176,14 @@ const downloadTemplateFile = asyncHandler(async (req, res, next) => {
       }
 
       res.attachment(fileKey);
-      return res.end(data.Body);
+      res.end(data.Body);
+      next();
     });
   } else {
     console.log('Template file cache hit');
     res.attachment(fileKey);
-    return res.end(value);
+    res.end(value);
+    next();
   }
 });
 
@@ -882,6 +888,7 @@ const UpdateStudentApplications = asyncHandler(async (req, res, next) => {
       }
     }
   }
+  next();
 });
 
 const deleteProfileFile = asyncHandler(async (req, res, next) => {
@@ -1020,6 +1027,7 @@ const removeNotification = asyncHandler(async (req, res, next) => {
   res.status(200).send({
     success: true
   });
+  next();
 });
 
 const removeAgentNotification = asyncHandler(async (req, res, next) => {
@@ -1039,6 +1047,7 @@ const removeAgentNotification = asyncHandler(async (req, res, next) => {
   res.status(200).send({
     success: true
   });
+  next();
 });
 
 const getMyAcademicBackground = asyncHandler(async (req, res, next) => {
@@ -1062,6 +1071,7 @@ const getMyAcademicBackground = asyncHandler(async (req, res, next) => {
     },
     survey_link: survey_docs_link
   });
+  next();
 });
 
 // (O)  email : self notification
@@ -1430,6 +1440,7 @@ const updateAcademicBackground = asyncHandler(async (req, res, next) => {
       data: university,
       profile: updatedStudent.profile
     });
+    next();
   } catch (err) {
     logger.error(err);
     throw new ErrorResponse(400, JSON.stringify(err));
@@ -1594,6 +1605,7 @@ const updateLanguageSkill = asyncHandler(async (req, res, next) => {
     data: updatedStudent.academic_background.language,
     profile: updatedStudent.profile
   });
+  next();
 });
 
 // (O) email : self notification
@@ -1626,6 +1638,7 @@ const updateApplicationPreferenceSkill = asyncHandler(
       success: true,
       data: updatedStudent.application_preference
     });
+    next();
   }
 );
 
@@ -1652,6 +1665,7 @@ const updatePersonalData = asyncHandler(async (req, res, next) => {
         birthday: personaldata.birthday
       }
     });
+    next();
   } catch (err) {
     logger.error(err);
   }

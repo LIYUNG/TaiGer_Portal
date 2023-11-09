@@ -25,7 +25,7 @@ const { RLs_CONSTANT, isNotArchiv } = require('../constants');
 const Permission = require('../models/Permission');
 const Course = require('../models/Course');
 
-const getStudent = asyncHandler(async (req, res) => {
+const getStudent = asyncHandler(async (req, res, next) => {
   const {
     user,
     params: { studentId }
@@ -40,9 +40,10 @@ const getStudent = asyncHandler(async (req, res) => {
     )
     .lean();
   res.status(200).send({ success: true, data: student });
+  next();
 });
 
-const getStudentAndDocLinks = asyncHandler(async (req, res) => {
+const getStudentAndDocLinks = asyncHandler(async (req, res, next) => {
   const {
     user,
     params: { studentId }
@@ -89,9 +90,10 @@ const getStudentAndDocLinks = asyncHandler(async (req, res) => {
       {}
     );
   }
+  next();
 });
 
-const updateDocumentationHelperLink = asyncHandler(async (req, res) => {
+const updateDocumentationHelperLink = asyncHandler(async (req, res, next) => {
   const { link, key, category } = req.body;
   // if not in database, then create one
   // otherwise: update the existing one.
@@ -110,9 +112,10 @@ const updateDocumentationHelperLink = asyncHandler(async (req, res) => {
     category
   });
   res.status(200).send({ success: true, helper_link: updated_helper_link });
+  next();
 });
 
-const getAllArchivStudents = asyncHandler(async (req, res) => {
+const getAllArchivStudents = asyncHandler(async (req, res, next) => {
   const students = await Student.find({ archiv: true })
     .populate('agents editors', 'firstname lastname email')
     .populate('applications.programId')
@@ -126,9 +129,10 @@ const getAllArchivStudents = asyncHandler(async (req, res) => {
     .lean();
 
   res.status(200).send({ success: true, data: students });
+  next();
 });
 
-const getAllActiveStudents = asyncHandler(async (req, res) => {
+const getAllActiveStudents = asyncHandler(async (req, res, next) => {
   const students = await Student.find({
     $or: [{ archiv: { $exists: false } }, { archiv: false }]
   })
@@ -144,9 +148,10 @@ const getAllActiveStudents = asyncHandler(async (req, res) => {
     .lean();
 
   res.status(200).send({ success: true, data: students });
+  next();
 });
 
-const getAllStudents = asyncHandler(async (req, res) => {
+const getAllStudents = asyncHandler(async (req, res, next) => {
   const students = await Student.find()
     .populate('agents editors', 'firstname lastname email')
     .populate('applications.programId')
@@ -160,9 +165,10 @@ const getAllStudents = asyncHandler(async (req, res) => {
     .lean();
 
   res.status(200).send({ success: true, data: students });
+  next();
 });
 
-const getStudents = asyncHandler(async (req, res) => {
+const getStudents = asyncHandler(async (req, res, next) => {
   const {
     user
     // params: { userId },
@@ -293,9 +299,10 @@ const getStudents = asyncHandler(async (req, res) => {
     // Guest
     res.status(200).send({ success: true, data: [user] });
   }
+  next();
 });
 
-const getStudentsAndDocLinks = asyncHandler(async (req, res) => {
+const getStudentsAndDocLinks = asyncHandler(async (req, res, next) => {
   const { user } = req;
   if (user.role === Role.Admin) {
     const students = await Student.find({
@@ -347,9 +354,10 @@ const getStudentsAndDocLinks = asyncHandler(async (req, res) => {
     // Guest
     res.status(200).send({ success: true, data: [user] });
   }
+  next();
 });
 
-const getArchivStudent = asyncHandler(async (req, res) => {
+const getArchivStudent = asyncHandler(async (req, res, next) => {
   const {
     params: { studentId }
   } = req;
@@ -360,12 +368,13 @@ const getArchivStudent = asyncHandler(async (req, res) => {
   }).populate('applications.programId agents editors');
   // .lean();
   res.status(200).send({ success: true, data: students[0] });
+  next();
 });
 
 // () TODO email : agent better notification! (only added or removed should be informed.)
 // (O) email : inform student close service
 // (O) email : inform editor that student is archived.
-const updateStudentsArchivStatus = asyncHandler(async (req, res) => {
+const updateStudentsArchivStatus = asyncHandler(async (req, res, next) => {
   const {
     user,
     params: { studentId },
@@ -501,6 +510,7 @@ const updateStudentsArchivStatus = asyncHandler(async (req, res) => {
       res.status(200).send({ success: true, data: [] });
     }
   }
+  next();
 });
 
 // (O) email : agent better notification! (only added should be informed.)
@@ -584,6 +594,7 @@ const assignAgentToStudent = asyncHandler(async (req, res, next) => {
       );
     }
   }
+  next();
 });
 
 // () TODO email : agent better notification
@@ -687,9 +698,10 @@ const assignEditorToStudent = asyncHandler(async (req, res, next) => {
       );
     }
   }
+  next();
 });
 
-const ToggleProgramStatus = asyncHandler(async (req, res) => {
+const ToggleProgramStatus = asyncHandler(async (req, res, next) => {
   const {
     params: { studentId, program_id }
   } = req;
@@ -716,11 +728,12 @@ const ToggleProgramStatus = asyncHandler(async (req, res) => {
   await student.save();
 
   res.status(201).send({ success: true, data: student });
+  next();
 });
 // (O) email : student notification
 // (O) auto-create document thread for student: ML,RL,Essay
 // (if applicable, depending on program list)
-const createApplication = asyncHandler(async (req, res) => {
+const createApplication = asyncHandler(async (req, res, next) => {
   const {
     user,
     params: { studentId },
@@ -933,6 +946,7 @@ const createApplication = asyncHandler(async (req, res) => {
       }
     );
   }
+  next();
 });
 
 // () TODO email : agent notification
@@ -1010,6 +1024,7 @@ const deleteApplication = asyncHandler(async (req, res, next) => {
     logger.error('Your Application folder not empty!', err);
     throw new ErrorResponse(500, 'Your Application folder not empty!');
   }
+  next();
 });
 
 module.exports = {

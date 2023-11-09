@@ -159,7 +159,11 @@ const downloadTemplateFile = asyncHandler(async (req, res, next) => {
   if (value === undefined) {
     s3.getObject(options, (err, data) => {
       // Handle any error and exit
-      if (err) return err;
+      if (!data || !data.Body) {
+        console.log('File not found in S3');
+        // You can handle this case as needed, e.g., send a 404 response
+        return res.status(404).send(err);
+      }
 
       // No error happened
       const success = two_month_cache.set(fileKey, data.Body);
@@ -179,7 +183,7 @@ const downloadTemplateFile = asyncHandler(async (req, res, next) => {
 
 // (O) email : student notification
 // (O) email : agent notification
-const saveProfileFilePath = asyncHandler(async (req, res) => {
+const saveProfileFilePath = asyncHandler(async (req, res, next) => {
   const {
     user,
     params: { studentId, category }
@@ -260,79 +264,80 @@ const saveProfileFilePath = asyncHandler(async (req, res) => {
         );
       }
     }
-    return;
-  }
-  document.status = DocumentStatus.Uploaded;
-  document.required = true;
-  document.updatedAt = new Date();
-  document.path = path.join(req.file.metadata.path, req.file.key);
-  await student.save();
+  } else {
+    document.status = DocumentStatus.Uploaded;
+    document.required = true;
+    document.updatedAt = new Date();
+    document.path = path.join(req.file.metadata.path, req.file.key);
+    await student.save();
 
-  // retrieve studentId differently depend on if student or Admin/Agent uploading the file
-  res.status(201).send({ success: true, data: student });
-  if (user.role === Role.Student) {
-    // TODO: notify agents
-    for (let i = 0; i < student.agents.length; i += 1) {
-      // console.log(student.agents[i]._id.toString());
-      const agent = await Agent.findById(student.agents[i]._id.toString());
-      if (agent.agent_notification) {
-        const temp_student =
-          agent.agent_notification.isRead_new_base_docs_uploaded.find(
-            (std_obj) => std_obj.student_id === student._id.toString()
-          );
-        // if not notified yet:
-        if (!temp_student) {
-          agent.agent_notification.isRead_new_base_docs_uploaded.push({
-            // eslint-disable-next-line no-underscore-dangle
-            student_id: student._id.toString(),
-            student_firstname: student.firstname,
-            student_lastname: student.lastname
-          });
+    // retrieve studentId differently depend on if student or Admin/Agent uploading the file
+    res.status(201).send({ success: true, data: student });
+    if (user.role === Role.Student) {
+      // TODO: notify agents
+      for (let i = 0; i < student.agents.length; i += 1) {
+        // console.log(student.agents[i]._id.toString());
+        const agent = await Agent.findById(student.agents[i]._id.toString());
+        if (agent.agent_notification) {
+          const temp_student =
+            agent.agent_notification.isRead_new_base_docs_uploaded.find(
+              (std_obj) => std_obj.student_id === student._id.toString()
+            );
+          // if not notified yet:
+          if (!temp_student) {
+            agent.agent_notification.isRead_new_base_docs_uploaded.push({
+              // eslint-disable-next-line no-underscore-dangle
+              student_id: student._id.toString(),
+              student_firstname: student.firstname,
+              student_lastname: student.lastname
+            });
+          }
+          // else: nothing to do as there was a notification before.
         }
-        // else: nothing to do as there was a notification before.
+        await agent.save();
       }
-      await agent.save();
-    }
 
-    // Reminder for Agent:
-    for (let i = 0; i < student.agents.length; i += 1) {
-      if (isNotArchiv(student.agents[i])) {
-        await sendUploadedProfileFilesRemindForAgentEmail(
+      // Reminder for Agent:
+      for (let i = 0; i < student.agents.length; i += 1) {
+        if (isNotArchiv(student.agents[i])) {
+          await sendUploadedProfileFilesRemindForAgentEmail(
+            {
+              firstname: student.agents[i].firstname,
+              lastname: student.agents[i].lastname,
+              address: student.agents[i].email
+            },
+            {
+              student_firstname: student.firstname,
+              student_lastname: student.lastname,
+              student_id: student._id.toString(),
+              uploaded_documentname: document.name.replace(/_/g, ' '),
+              uploaded_updatedAt: document.updatedAt
+            }
+          );
+        }
+      }
+    } else {
+      if (isNotArchiv(student)) {
+        await sendAgentUploadedProfileFilesForStudentEmail(
           {
-            firstname: student.agents[i].firstname,
-            lastname: student.agents[i].lastname,
-            address: student.agents[i].email
+            firstname: student.firstname,
+            lastname: student.lastname,
+            address: student.email
           },
           {
-            student_firstname: student.firstname,
-            student_lastname: student.lastname,
-            student_id: student._id.toString(),
+            agent_firstname: user.firstname,
+            agent_lastname: user.lastname,
             uploaded_documentname: document.name.replace(/_/g, ' '),
             uploaded_updatedAt: document.updatedAt
           }
         );
       }
     }
-  } else {
-    if (isNotArchiv(student)) {
-      await sendAgentUploadedProfileFilesForStudentEmail(
-        {
-          firstname: student.firstname,
-          lastname: student.lastname,
-          address: student.email
-        },
-        {
-          agent_firstname: user.firstname,
-          agent_lastname: user.lastname,
-          uploaded_documentname: document.name.replace(/_/g, ' '),
-          uploaded_updatedAt: document.updatedAt
-        }
-      );
-    }
   }
+  next();
 });
 
-const updateVPDPayment = asyncHandler(async (req, res) => {
+const updateVPDPayment = asyncHandler(async (req, res, next) => {
   const {
     params: { studentId, program_id },
     body: { isPaid }
@@ -360,10 +365,11 @@ const updateVPDPayment = asyncHandler(async (req, res) => {
 
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
   res.status(201).send({ success: true, data: student });
+  next();
 });
 // () email:
 
-const updateVPDFileNecessity = asyncHandler(async (req, res) => {
+const updateVPDFileNecessity = asyncHandler(async (req, res, next) => {
   const {
     params: { studentId, program_id }
   } = req;
@@ -395,11 +401,12 @@ const updateVPDFileNecessity = asyncHandler(async (req, res) => {
 
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
   res.status(201).send({ success: true, data: student });
+  next();
 });
 
 // (O) email : student notification
 // (O) email : agent notification
-const saveVPDFilePath = asyncHandler(async (req, res) => {
+const saveVPDFilePath = asyncHandler(async (req, res, next) => {
   const {
     user,
     params: { studentId, program_id }
@@ -481,6 +488,7 @@ const saveVPDFilePath = asyncHandler(async (req, res) => {
       );
     }
   }
+  next();
 });
 
 const downloadVPDFile = asyncHandler(async (req, res, next) => {
@@ -527,7 +535,11 @@ const downloadVPDFile = asyncHandler(async (req, res, next) => {
   if (value === undefined) {
     s3.getObject(options, (err, data) => {
       // Handle any error and exit
-      if (err) return err;
+      if (!data || !data.Body) {
+        console.log('File not found in S3');
+        // You can handle this case as needed, e.g., send a 404 response
+        return res.status(404).send(err);
+      }
 
       // No error happened
       const success = one_month_cache.set(cache_key, data.Body);
@@ -536,12 +548,14 @@ const downloadVPDFile = asyncHandler(async (req, res, next) => {
       }
 
       res.attachment(fileKey);
-      return res.end(data.Body);
+      res.end(data.Body);
+      next();
     });
   } else {
     console.log('VPD file cache hit');
     res.attachment(fileKey);
-    return res.end(value);
+    res.end(value);
+    next();
   }
 });
 
@@ -589,7 +603,11 @@ const downloadProfileFileURL = asyncHandler(async (req, res, next) => {
   if (value === undefined) {
     s3.getObject(options, (err, data) => {
       // Handle any error and exit
-      if (err) return err;
+      if (!data || !data.Body) {
+        console.log('File not found in S3');
+        // You can handle this case as needed, e.g., send a 404 response
+        return res.status(404).send(err);
+      }
 
       // No error happened
       const success = one_month_cache.set(cache_key, data.Body);
@@ -598,12 +616,14 @@ const downloadProfileFileURL = asyncHandler(async (req, res, next) => {
       }
 
       res.attachment(fileKey);
-      return res.end(data.Body);
+      res.end(data.Body);
+      next();
     });
   } else {
     console.log('Profile file cache hit');
     res.attachment(fileKey);
-    return res.end(value);
+    res.end(value);
+    next();
   }
 });
 
@@ -639,45 +659,46 @@ const updateProfileDocumentStatus = asyncHandler(async (req, res, next) => {
       document.path = '';
       student.profile.push(document);
       await student.save();
-      return res.status(201).send({ success: true, data: student });
+      res.status(201).send({ success: true, data: student });
+    } else {
+      if (status === DocumentStatus.Rejected) {
+        // rejected file notification set
+        student.notification.isRead_base_documents_rejected = false;
+        document.feedback = feedback;
+      }
+      if (status === DocumentStatus.Accepted) {
+        document.feedback = '';
+      }
+
+      document.status = status;
+      document.updatedAt = new Date();
+
+      await student.save();
+      res.status(201).send({ success: true, data: student });
+      // Reminder for Student:
+      if (isNotArchiv(student)) {
+        if (
+          status !== DocumentStatus.NotNeeded &&
+          status !== DocumentStatus.Missing
+        ) {
+          await sendChangedProfileFileStatusEmail(
+            {
+              firstname: student.firstname,
+              lastname: student.lastname,
+              address: student.email
+            },
+            {
+              message: feedback,
+              status,
+              category: category.replace(/_/g, ' ')
+            }
+          );
+        }
+      }
     }
+    next();
   } catch (err) {
     logger.error('updateProfileDocumentStatus: ', err);
-  }
-
-  if (status === DocumentStatus.Rejected) {
-    // rejected file notification set
-    student.notification.isRead_base_documents_rejected = false;
-    document.feedback = feedback;
-  }
-  if (status === DocumentStatus.Accepted) {
-    document.feedback = '';
-  }
-
-  document.status = status;
-  document.updatedAt = new Date();
-
-  await student.save();
-  res.status(201).send({ success: true, data: student });
-  // Reminder for Student:
-  if (isNotArchiv(student)) {
-    if (
-      status !== DocumentStatus.NotNeeded &&
-      status !== DocumentStatus.Missing
-    ) {
-      await sendChangedProfileFileStatusEmail(
-        {
-          firstname: student.firstname,
-          lastname: student.lastname,
-          address: student.email
-        },
-        {
-          message: feedback,
-          status,
-          category: category.replace(/_/g, ' ')
-        }
-      );
-    }
   }
 });
 
@@ -913,6 +934,7 @@ const deleteProfileFile = asyncHandler(async (req, res, next) => {
           console.log('Profile cache key deleted successfully');
         }
         res.status(200).send({ success: true, data: document });
+        next();
       }
     });
   } catch (err) {
@@ -976,6 +998,7 @@ const deleteVPDFile = asyncHandler(async (req, res, next) => {
           console.log('VPD cache key deleted successfully');
         }
         res.status(200).send({ success: true });
+        next();
       }
     });
   } catch (err) {

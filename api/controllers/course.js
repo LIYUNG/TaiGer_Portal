@@ -233,7 +233,11 @@ const downloadXLSX = asyncHandler(async (req, res, next) => {
     };
     s3.getObject(options, (err, data) => {
       // Handle any error and exit
-      if (err) return err;
+      if (!data || !data.Body) {
+        console.log('File not found in S3');
+        // You can handle this case as needed, e.g., send a 404 response
+        return res.status(404).send(err);
+      }
       // Convert Body from a Buffer to a String
       const fileKey_converted = encodeURIComponent(fileKey); // Use the encoding necessary
 

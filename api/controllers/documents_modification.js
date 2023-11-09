@@ -1136,7 +1136,11 @@ const getMessageImageDownload = asyncHandler(async (req, res) => {
   if (value === undefined) {
     s3.getObject(options, (err, data) => {
       // Handle any error and exit
-      if (err) return err;
+      if (!data || !data.Body) {
+        console.log('File not found in S3');
+        // You can handle this case as needed, e.g., send a 404 response
+        return res.status(404).send(err);
+      }
 
       // No error happened
       const success = one_month_cache.set(cache_key, data.Body);
@@ -1212,7 +1216,11 @@ const getMessageFileDownload = asyncHandler(async (req, res) => {
   if (value === undefined) {
     s3.getObject(options, (err, data) => {
       // Handle any error and exit
-      if (err) return err;
+      if (!data || !data.Body) {
+        console.log('File not found in S3');
+        // You can handle this case as needed, e.g., send a 404 response
+        return res.status(404).send(err);
+      }
 
       // No error happened
       const success = one_month_cache.set(cache_key, data.Body);

@@ -29,7 +29,6 @@ app.use(helmet.originAgentCluster());
 app.use(helmet.permittedCrossDomainPolicies());
 app.use(helmet.referrerPolicy());
 app.use(helmet.xssFilter());
-
 app.use(
   cors({
     exposedHeaders: ['Content-Disposition'],

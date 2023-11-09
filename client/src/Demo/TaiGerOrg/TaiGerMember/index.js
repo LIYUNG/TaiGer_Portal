@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Spinner, Row, Col, Button } from 'react-bootstrap';
+import { Card, Spinner, Row, Col } from 'react-bootstrap';
 import { Redirect, Link } from 'react-router-dom';
 
 import Aux from '../../../hoc/_Aux';
@@ -121,7 +121,7 @@ class TaiGerMember extends React.Component {
     if (!is_TaiGer_role(this.props.user)) {
       return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
     }
-    TabTitle('TaiGer Team');
+    TabTitle('TaiGer Team Member');
     const { res_status, isLoaded } = this.state;
 
     if (!isLoaded && !this.state.teams) {
@@ -150,7 +150,7 @@ class TaiGerMember extends React.Component {
               <Card.Header text={'dark'}>
                 <Card.Title>
                   <Row>
-                    <Col className="my-0 mx-0 text-light">TaiGer Team</Col>
+                    <Col className="my-0 mx-0 text-light">TaiGer Team Member</Col>
                   </Row>
                 </Card.Title>
               </Card.Header>

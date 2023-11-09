@@ -32,6 +32,7 @@ const updateCredentials = asyncHandler(async (req, res, next) => {
     },
     {}
   );
+  next();
 });
 
 const updateOfficehours = asyncHandler(async (req, res, next) => {
@@ -45,9 +46,10 @@ const updateOfficehours = asyncHandler(async (req, res, next) => {
     {}
   );
 
-  return res.status(200).send({
+  res.status(200).send({
     success: true
   });
+  next();
 });
 
 module.exports = {

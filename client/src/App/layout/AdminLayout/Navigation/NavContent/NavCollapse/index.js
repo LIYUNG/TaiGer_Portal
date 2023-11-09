@@ -64,7 +64,8 @@ class NavCollapse extends Component {
           collapse.title === 'My Students' ||
           collapse.title === 'All Students' ||
           collapse.title === 'Menu Levels' ||
-          collapse.title === 'TaiGer Teams'
+          collapse.title === 'TaiGer Teams' ||
+          collapse.title === 'TaiGer Members'
         ) {
           return false;
         }
@@ -79,7 +80,8 @@ class NavCollapse extends Component {
           collapse.title === 'All Students' ||
           collapse.title === 'Documentation' ||
           collapse.title === 'Menu Levels' ||
-          collapse.title === 'TaiGer Teams'
+          collapse.title === 'TaiGer Teams' ||
+          collapse.title === 'TaiGer Members'
         ) {
           return false;
         }

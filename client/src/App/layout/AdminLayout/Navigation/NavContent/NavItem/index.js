@@ -1,13 +1,8 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import { withRouter } from 'react-router-dom';
-// import windowSize from 'react-window-size';
-import {
-  useWindowSize,
-  useWindowWidth,
-  useWindowHeight
-} from '@react-hook/window-size';
+import { useWindowWidth } from '@react-hook/window-size';
 
 import Aux from '../../../../../../hoc/_Aux';
 import NavIcon from './../NavIcon';
@@ -48,6 +43,7 @@ function NavItem(props) {
         itemTitle === 'Charts' ||
         itemTitle === 'Map' ||
         itemTitle === 'User List' ||
+        itemTitle === 'User Logs' ||
         itemTitle === 'Contact Us'
       ) {
         return false;
@@ -72,7 +68,8 @@ function NavItem(props) {
         itemTitle === 'Archiv Students' ||
         itemTitle === 'Student Database' ||
         itemTitle === 'Tasks Dashboard' ||
-        itemTitle === 'TaiGer Teams' ||
+        itemTitle === 'TaiGer Members' ||
+        itemTitle === 'User Logs' ||
         itemTitle === 'User List'
       ) {
         return false;
@@ -98,7 +95,8 @@ function NavItem(props) {
         itemTitle === 'Documentation' ||
         itemTitle === 'Student Database' ||
         itemTitle === 'Tasks Dashboard' ||
-        itemTitle === 'TaiGer Teams' ||
+        itemTitle === 'TaiGer Members' ||
+        itemTitle === 'User Logs' ||
         itemTitle === 'User List'
       ) {
         return false;

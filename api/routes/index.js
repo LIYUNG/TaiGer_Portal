@@ -25,19 +25,17 @@ const teamsRouter = require('./teams');
 const ticketsRouter = require('./tickets');
 const uniassistRouter = require('./uniassist');
 const usersRouter = require('./users');
+const userlogsRouter = require('./userlogs');
 const widgetsRouter = require('./widget');
 const googleapisRouter = require('./googleapis');
 
 const router = (app) => {
   const apiRouter = Router();
   apiRouter.use('/account', accountRouter);
-
-  apiRouter.use('/users', usersRouter);
   apiRouter.use('/student-applications', studentsApplicationRouter);
   apiRouter.use('/students', studentsRouter);
   apiRouter.use('/agents', agentsRouter);
   apiRouter.use('/editors', editorsRouter);
-
   apiRouter.use('/admissions', admissionsRouter);
   apiRouter.use('/courses', coursesRouter);
   apiRouter.use('/communications', communicationsRouter);
@@ -57,6 +55,8 @@ const router = (app) => {
   apiRouter.use('/teams', teamsRouter);
   apiRouter.use('/tickets', ticketsRouter);
   apiRouter.use('/uniassist', uniassistRouter);
+  apiRouter.use('/users', usersRouter);
+  apiRouter.use('/userlogs', userlogsRouter);
   apiRouter.use('/widgets', widgetsRouter);
 
   app.use('/api', apiRouter);

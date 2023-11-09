@@ -7,7 +7,9 @@ global.jQuery = $;
 
 const DashboardDefault = React.lazy(() => import('./Demo/Dashboard/Dashboard'));
 
-const AllArchivStudent = React.lazy(() => import('./Demo/ArchivStudent/AllIndex'));
+const AllArchivStudent = React.lazy(() =>
+  import('./Demo/ArchivStudent/AllIndex')
+);
 const ArchivStudent = React.lazy(() => import('./Demo/ArchivStudent/index'));
 
 const CommunicationSinglePage = React.lazy(() =>
@@ -51,20 +53,22 @@ const ProgramConflict = React.lazy(() =>
   import('./Demo/TaiGerOrg/ProgramConflict/index')
 );
 const TaiGerPermissions = React.lazy(() => import('./Demo/TaiGerOrg/index'));
-const TaiGerOrg = React.lazy(() => import('./Demo/TaiGerOrg/TaiGerMember/index'));
+const TaiGerUsersLog = React.lazy(() => import('./Demo/TaiGerOrg/Log/index'));
+const TaiGerUserLog = React.lazy(() =>
+  import('./Demo/TaiGerOrg/Log/SingleUserPage')
+);
+const TaiGerOrg = React.lazy(() =>
+  import('./Demo/TaiGerOrg/TaiGerMember/index')
+);
 const TaiGerOrgAgent = React.lazy(() => import('./Demo/TaiGerOrg/AgentPage'));
 const TaiGerMemberProfile = React.lazy(() =>
   import('./Demo/TaiGerPublicProfile/AgentProfile')
 );
-const AllOfficeHours = React.lazy(() =>
-  import('./Demo/OfficeHours/all_index')
-);
+const AllOfficeHours = React.lazy(() => import('./Demo/OfficeHours/all_index'));
 const TaiGerOfficeHours = React.lazy(() =>
   import('./Demo/OfficeHours/taiger_index')
 );
-const OfficeHours = React.lazy(() =>
-  import('./Demo/OfficeHours/index')
-);
+const OfficeHours = React.lazy(() => import('./Demo/OfficeHours/index'));
 const TaiGerOrgEditor = React.lazy(() => import('./Demo/TaiGerOrg/EditorPage'));
 const TaiGerOrgAdmin = React.lazy(() => import('./Demo/TaiGerOrg/AdminPage'));
 const ProgramList = React.lazy(() => import('./Demo/Program/ProgramList'));
@@ -431,6 +435,18 @@ const routes = [
     exact: true,
     name: '',
     component: Accounting
+  },
+  {
+    path: '/internal/logs',
+    exact: true,
+    name: '',
+    component: TaiGerUsersLog
+  },
+  {
+    path: '/internal/logs/:user_id',
+    exact: true,
+    name: '',
+    component: TaiGerUserLog
   },
   {
     path: '/internal/accounting/users/:taiger_user_id',

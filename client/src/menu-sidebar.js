@@ -348,10 +348,17 @@ export default {
             },
             {
               id: 'teams_member',
-              title: 'TaiGer Teams',
+              title: 'TaiGer Members',
               type: 'item',
               icon: 'fa fa-user',
               url: '/teams/members'
+            },
+            {
+              id: 'teams_member',
+              title: 'User Logs',
+              type: 'item',
+              icon: 'fa fa-user',
+              url: '/internal/logs'
             },
             {
               id: 'internal_dashboard',

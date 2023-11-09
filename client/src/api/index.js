@@ -500,3 +500,9 @@ export const deleteProgramTicket = (ticket_id) =>
 // TODO
 export const getProgramTickets = (type, status) =>
   request.get(`/api/tickets?type=${type}&status=${status}`);
+
+// Log:
+export const getUsersLog = () =>
+  request.get(`/api/userlogs`);
+export const getUserLog = (user_id) =>
+  request.get(`/api/userlogs/${user_id}`);

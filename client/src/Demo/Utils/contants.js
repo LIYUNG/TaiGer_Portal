@@ -89,6 +89,43 @@ export const NoonNightLabel = (start) => {
     : '';
 };
 
+export const transformObjectToArray = (inputObject) => {
+  return Object.entries(inputObject).map(([date, apiCallCount]) => ({
+    date,
+    apiCallCount
+  }));
+};
+export const getLast180DaysSet = () => {
+  const today = new Date();
+  const last180DaysSet = new Set();
+
+  for (let i = 179; i >= 0; i--) {
+    const currentDate = new Date(today);
+    currentDate.setDate(today.getDate() - i);
+
+    const formattedDate = currentDate.toISOString().split('T')[0]; // Get YYYY-MM-DD format
+
+    last180DaysSet.add({ date: formattedDate });
+  }
+
+  return last180DaysSet;
+};
+
+export const getLast180DaysObject = () => {
+  const today = new Date();
+  const last180DaysObject = {};
+
+  for (let i = 0; i < 180; i++) {
+    const currentDate = new Date(today);
+    currentDate.setDate(today.getDate() - i);
+
+    const formattedDate = currentDate.toISOString().split('T')[0];
+    last180DaysObject[formattedDate] = 0;
+  }
+
+  return last180DaysObject;
+};
+
 const convertISOToCustomFormat = (isoString) => {
   const date = new Date(isoString);
   const year = date.getUTCFullYear();

@@ -3,13 +3,14 @@ import { Card, Spinner, Row, Col } from 'react-bootstrap';
 import { Redirect } from 'react-router-dom';
 
 import Aux from '../../../hoc/_Aux';
-import { spinner_style } from '../../Utils/contants';
+import { getLast180DaysObject, getLast180DaysSet, spinner_style, transformObjectToArray } from '../../Utils/contants';
 import ErrorPage from '../../Utils/ErrorPage';
 import { is_TaiGer_Admin } from '../../Utils/checking-functions';
 
 import { getUserLog } from '../../../api';
 import { TabTitle } from '../../Utils/TabTitle';
 import DEMO from '../../../store/constant';
+import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
 class TaiGerPortalSingleUserLog extends React.Component {
   state = {
@@ -106,6 +107,15 @@ class TaiGerPortalSingleUserLog extends React.Component {
       return <ErrorPage res_status={res_status} />;
     }
 
+    // const last180DaysSet = getLast180DaysSet();
+    const last180DaysObject = getLast180DaysObject();
+    this.state.logs.forEach((log) => {
+      last180DaysObject[log.date] += log.apiCallCount;
+    });
+    const dataToBeUsed = transformObjectToArray(last180DaysObject).sort(
+      (a, b) => (a.date > b.date ? 1 : -1)
+    );
+
     return (
       <Aux>
         <Row className="sticky-top ">
@@ -129,16 +139,44 @@ class TaiGerPortalSingleUserLog extends React.Component {
         </Row>
         <Card>
           <Card.Body>
-            Log page
+            API call
             {/* TODO insert a table */}
-            {this.state.logs.map((log) => (
+            {/* {this.state.logs.map((log) => (
               <p>
                 {log.user_id?.firstname} {log.user_id?.lastname} {log.date}
                 {log.apiCallCount}
                 {log.apiPath}
                 {log.operation}
               </p>
-            ))}
+            ))} */}
+            <ResponsiveContainer height={250} width="100%">
+              <LineChart
+                data={dataToBeUsed}
+                margin={{
+                  top: 20,
+                  right: 10,
+                  left: 0,
+                  bottom: 40
+                }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis
+                  dataKey="date"
+                  interval={Math.ceil(dataToBeUsed.length / 10)}
+                  angle={-45}
+                  textAnchor="end"
+                />
+                <YAxis />
+                <Tooltip />
+                <Line
+                  type="monotone"
+                  dataKey="apiCallCount"
+                  stroke="#8884d8"
+                  activeDot={{ r: 8 }}
+                  dot={false}
+                />
+              </LineChart>
+            </ResponsiveContainer>
           </Card.Body>
         </Card>
       </Aux>

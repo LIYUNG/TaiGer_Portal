@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "cross-env NODE_ENV=production nodemon index.js",
-    "dev": "cross-env NODE_ENV=development nodemon index.js --ignore '__tests__/*'",
+    "dev": "cross-env NODE_ENV=development nodemon --config nodemon.json index.js",
     "test": "cross-env NODE_ENV=test jest --runInBand --detectOpenHandles --coverage",
     "deploy-s3": "aws s3 sync . s3://taiger-file-storage-production-backend-server --exclude \".env.production\" --exclude \"__tests__/*\" --exclude \"node_modules/*\" --exclude \"cert/*\" --exclude \"logs/*\"",
     "deploy-ec2": "aws ec2 run-instances --launch-template LaunchTemplateId=\"lt-00b01e82ef9ebd817\" --region us-west-2",
@@ -48,6 +48,7 @@
     "node-cache": "^5.1.2",
     "node-schedule": "^2.1.1",
     "nodemailer": "^6.9.2",
+    "openai": "^4.17.4",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",

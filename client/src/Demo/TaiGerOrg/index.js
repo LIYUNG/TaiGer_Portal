@@ -147,7 +147,9 @@ class TaiGerOrg extends React.Component {
               <Card.Header text={'dark'}>
                 <Card.Title>
                   <Row>
-                    <Col className="my-0 mx-0 text-light">TaiGer Team Permissions Management</Col>
+                    <Col className="my-0 mx-0 text-light">
+                      TaiGer Team Permissions Management
+                    </Col>
                   </Row>
                 </Card.Title>
               </Card.Header>
@@ -199,6 +201,12 @@ class TaiGerOrg extends React.Component {
                   <th>
                     Can Access <br /> Students
                   </th>
+                  <th>
+                    Can User <br /> TaiGerAI
+                  </th>
+                  <th>
+                    TaiGerAI <br /> Quota
+                  </th>
                   <th>Permissions</th>
                 </tr>
               </thead>
@@ -213,53 +221,63 @@ class TaiGerOrg extends React.Component {
                       </b>
                     </td>
                     <td>
-                      {agent.permissions.length > 0
+                      {agent.permissions?.length > 0
                         ? agent.permissions[0].canModifyProgramList
                           ? 'O'
                           : 'X'
                         : 'x'}
                     </td>
                     <td>
-                      {agent.permissions.length > 0
+                      {agent.permissions?.length > 0
                         ? agent.permissions[0].canModifyAllBaseDocuments
                           ? 'O'
                           : 'X'
                         : 'x'}
                     </td>
                     <td>
-                      {agent.permissions.length > 0
+                      {agent.permissions?.length > 0
                         ? agent.permissions[0].canAccessAllChat
                           ? 'O'
                           : 'X'
                         : 'x'}
                     </td>
                     <td>
-                      {agent.permissions.length > 0
+                      {agent.permissions?.length > 0
                         ? agent.permissions[0].canAssignAgents
                           ? 'O'
                           : 'X'
                         : 'x'}
                     </td>
                     <td>
-                      {agent.permissions.length > 0
+                      {agent.permissions?.length > 0
                         ? agent.permissions[0].canAssignEditors
                           ? 'O'
                           : 'X'
                         : 'x'}
                     </td>
                     <td>
-                      {agent.permissions.length > 0
+                      {agent.permissions?.length > 0
                         ? agent.permissions[0].canModifyDocumentation
                           ? 'O'
                           : 'X'
                         : 'x'}
                     </td>
                     <td>
-                      {agent.permissions.length > 0
+                      {agent.permissions?.length > 0
                         ? agent.permissions[0].canAccessStudentDatabase
                           ? 'O'
                           : 'X'
                         : 'x'}
+                    </td>
+                    <td>
+                      {agent.permissions.length > 0
+                        ? agent.permissions[0].canUseTaiGerAI
+                          ? 'O'
+                          : 'X'
+                        : 'x'}
+                    </td>
+                    <td>
+                      <span>{agent.permissions[0]?.taigerAiQuota | 0}</span>
                     </td>
                     <td>
                       <Button
@@ -291,6 +309,12 @@ class TaiGerOrg extends React.Component {
                   <th>Can Assign Editors</th>
                   <th>Can Modify Docs</th>
                   <th>Can Access Students</th>
+                  <th>
+                    Can User <br /> TaiGerAI
+                  </th>
+                  <th>
+                    TaiGerAI <br /> Quota
+                  </th>
                   <th>Permissions</th>
                 </tr>
               </thead>
@@ -331,6 +355,18 @@ class TaiGerOrg extends React.Component {
                           ? 'O'
                           : 'X'
                         : 'x'}
+                    </td>
+                    <td>
+                      {editor.permissions.length > 0
+                        ? editor.permissions[0].canUseTaiGerAI
+                          ? 'O'
+                          : 'X'
+                        : 'x'}
+                    </td>
+                    <td>
+                      <td>
+                        <span>{editor.permissions[0]?.taigerAiQuota | 0}</span>
+                      </td>
                     </td>
                     <td>
                       <Button

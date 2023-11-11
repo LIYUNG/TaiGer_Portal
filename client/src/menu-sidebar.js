@@ -354,6 +354,15 @@ export default {
               url: '/teams/members'
             },
             {
+              id: 'cvmlrl-generator',
+              title: 'CVMLRL Generator',
+              type: 'item',
+              url: '/cvmlrl/generator',
+              icon: 'feather icon-gitlab',
+              target: false,
+              breadcrumbs: false
+            },
+            {
               id: 'teams_member',
               title: 'User Logs',
               type: 'item',

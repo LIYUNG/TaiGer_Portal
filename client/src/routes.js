@@ -29,6 +29,9 @@ const MyCoursesAnalysis = React.lazy(() =>
 const CoursesAnalysisWidget = React.lazy(() =>
   import('./Demo/MyCourses/CourseWidget')
 );
+const CVMLRLGenerator = React.lazy(() =>
+  import('./Demo/TaiGerAI/CVMLRLGenerator')
+);
 const CVMLRLOverview = React.lazy(() => import('./Demo/CVMLRLCenter/index'));
 const CVMLRLDashboard = React.lazy(() =>
   import('./Demo/CVMLRLCenter/indexAll')
@@ -345,6 +348,12 @@ const routes = [
     exact: true,
     name: 'Course Analyser',
     component: CoursesAnalysisWidget
+  },
+  {
+    path: '/cvmlrl/generator',
+    exact: true,
+    name: 'CVMLRL Generator',
+    component: CVMLRLGenerator
   },
   {
     path: '/internal/widgets/:admin_id',

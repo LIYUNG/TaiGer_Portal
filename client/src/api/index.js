@@ -472,7 +472,10 @@ export const updateCredentials = (credentials, email, password) =>
 
 //TaiGer AI:
 export const processProgramListAi = (programId) =>
-  request.get(`/api/taigerai/${programId}`);
+  request.get(`/api/taigerai/program/${programId}`);
+
+export const cvmlrlAi = (prompt) =>
+  request.post(`/api/taigerai/cvmlrl`, { prompt });
 
 //Interview:
 export const getAllInterviews = () => request.get('/api/interviews');
@@ -502,7 +505,5 @@ export const getProgramTickets = (type, status) =>
   request.get(`/api/tickets?type=${type}&status=${status}`);
 
 // Log:
-export const getUsersLog = () =>
-  request.get(`/api/userlogs`);
-export const getUserLog = (user_id) =>
-  request.get(`/api/userlogs/${user_id}`);
+export const getUsersLog = () => request.get(`/api/userlogs`);
+export const getUserLog = (user_id) => request.get(`/api/userlogs/${user_id}`);

@@ -8,7 +8,15 @@ const {
 const permissionSchema = new mongoose.Schema(
   {
     user_id: { type: ObjectId, ref: 'User' },
+    taigerAiQuota: {
+      type: Number,
+      default: 0
+    },
     canAssignEditors: {
+      type: Boolean,
+      default: false
+    },
+    canUseTaiGerAI: {
       type: Boolean,
       default: false
     },

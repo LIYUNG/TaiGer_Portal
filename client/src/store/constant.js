@@ -2,6 +2,12 @@ const DEMO = {
   BLANK_LINK: '#',
   COURSES_LINK: '/my-courses',
   DASHBOARD_LINK: '/dashboard/default',
+  DOCUMENT_MODIFICATION_LINK: (thread_id) => {
+    return `/document-modification/${thread_id}`;
+  },
+  DOCUMENT_MODIFICATION_INPUT_LINK: (thread_id) => {
+    return `/document-modification/student-input/${thread_id}`;
+  },
   MY_INTERVIEW_LINK: '/interview-training/my-interviews',
   INTERVIEW_LINK: '/interview-training',
   UNI_ASSIST_LINK: '/uni-assist',

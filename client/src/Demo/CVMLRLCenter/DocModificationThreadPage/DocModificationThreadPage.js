@@ -12,10 +12,10 @@ import { spinner_style, templatelist } from '../../Utils/contants';
 
 import {
   LinkableNewlineText,
+  getRequirement,
   is_TaiGer_AdminAgent,
   is_TaiGer_Student,
-  is_TaiGer_role,
-  showButtonIfMyStudentB
+  is_TaiGer_role
 } from '../../Utils/checking-functions';
 import { BASE_URL } from '../../../api/request';
 
@@ -153,40 +153,6 @@ class DocModificationThreadPage extends Component {
         .fill()
         .map((x, i) => i) // to expand all]
     }));
-  };
-
-  getRequirement = (thread) => {
-    if (thread.file_type.includes('Essay')) {
-      return thread.program_id.essay_required === 'yes'
-        ? this.state.thread.program_id.essay_requirements || 'No'
-        : 'No';
-    } else if (thread.file_type.includes('ML')) {
-      if (thread.program_id.ml_required === 'yes') {
-        return this.state.thread.program_id.ml_requirements || 'No';
-      } else {
-        return 'No';
-      }
-    } else if (thread.file_type.includes('Portfolio')) {
-      if (thread.program_id.portfolio_required === 'yes') {
-        return this.state.thread.program_id.portfolio_requirements || 'No';
-      } else {
-        return 'No';
-      }
-    } else if (thread.file_type.includes('Supplementary_Form')) {
-      if (thread.program_id.supplementary_form_required === 'yes') {
-        return (
-          this.state.thread.program_id.supplementary_form_requirements || 'No'
-        );
-      } else {
-        return 'No';
-      }
-    } else if (thread.file_type.includes('RL')) {
-      if (['1', '2', '3'].includes(thread.program_id.rl_required)) {
-        return this.state.thread.program_id.rl_requirements || 'No';
-      } else {
-        return 'No';
-      }
-    }
   };
 
   handleClickSave = (e, editorState) => {
@@ -585,6 +551,15 @@ class DocModificationThreadPage extends Component {
                                     <b>Link [點我下載]</b>
                                   </Button>
                                 </a>
+                                or &nbsp;
+                                <Link
+                                  to={`${DEMO.DOCUMENT_MODIFICATION_INPUT_LINK(
+                                    this.state.documentsthreadId
+                                  )}`}
+                                  // target="_blank"
+                                >
+                                  <Button size="sm">線上填寫</Button>
+                                </Link>
                               </b>
                             ) : (
                               <b>
@@ -596,6 +571,15 @@ class DocModificationThreadPage extends Component {
                                     <b>Link [點我下載]</b>
                                   </Button>
                                 </a>
+                                or &nbsp;
+                                <Link
+                                  to={`${DEMO.DOCUMENT_MODIFICATION_INPUT_LINK(
+                                    this.state.documentsthreadId
+                                  )}`}
+                                  // target="_blank"
+                                >
+                                  <Button size="sm">線上填寫</Button>
+                                </Link>
                               </b>
                             )
                           ) : (
@@ -632,7 +616,7 @@ class DocModificationThreadPage extends Component {
                     {this.state.thread.program_id ? (
                       <>
                         <LinkableNewlineText
-                          text={this.getRequirement(this.state.thread)}
+                          text={getRequirement(this.state.thread)}
                         />
                       </>
                     ) : (

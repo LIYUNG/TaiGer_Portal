@@ -43,6 +43,41 @@ export const LinkableNewlineText = ({ text }) => {
     </div>
   );
 };
+
+export const getRequirement = (thread) => {
+  if (thread.file_type.includes('Essay')) {
+    return thread.program_id.essay_required === 'yes'
+      ? thread.program_id.essay_requirements || 'No'
+      : 'No';
+  } else if (thread.file_type.includes('ML')) {
+    if (thread.program_id.ml_required === 'yes') {
+      return thread.program_id.ml_requirements || 'No';
+    } else {
+      return 'No';
+    }
+  } else if (thread.file_type.includes('Portfolio')) {
+    if (thread.program_id.portfolio_required === 'yes') {
+      return thread.program_id.portfolio_requirements || 'No';
+    } else {
+      return 'No';
+    }
+  } else if (thread.file_type.includes('Supplementary_Form')) {
+    if (thread.program_id.supplementary_form_required === 'yes') {
+      return (
+        thread.program_id.supplementary_form_requirements || 'No'
+      );
+    } else {
+      return 'No';
+    }
+  } else if (thread.file_type.includes('RL')) {
+    if (['1', '2', '3'].includes(thread.program_id.rl_required)) {
+      return thread.program_id.rl_requirements || 'No';
+    } else {
+      return 'No';
+    }
+  }
+};
+
 export const NewlineText = (props) => {
   const text = props.text;
 

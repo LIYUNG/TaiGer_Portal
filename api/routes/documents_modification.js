@@ -38,8 +38,12 @@ const {
   deleteProgramSpecificMessagesThread,
   deleteAMessageInThread,
   postImageInThread,
-  postMessages
+  postMessages,
+  getStudentInput
 } = require('../controllers/documents_modification');
+const {
+  docThreadMultitenant_filter
+} = require('../middlewares/documentThreadMultitenantFilter');
 
 const router = Router();
 
@@ -51,6 +55,15 @@ router
     getMessagesRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
     getAllCVMLRLOverview
+  );
+// TODO: multitenant
+router
+  .route('/student-input/:messagesThreadId')
+  .get(
+    getMessagesRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
+    docThreadMultitenant_filter,
+    getStudentInput
   );
 
 router
@@ -101,6 +114,15 @@ router
     doc_thread_ops_validator,
     MessagesThreadUpload,
     postMessages
+  )
+  .delete(
+    filter_archiv_user,
+    GeneralDELETERequestRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
+    multitenant_filter,
+    doc_thread_ops_validator,
+    InnerTaigerMultitenantFilter,
+    deleteGeneralMessagesThread
   );
 // TODO: multitenancy: check user id match user_id in message
 router
@@ -109,6 +131,7 @@ router
     filter_archiv_user,
     postMessagesImageRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
+    docThreadMultitenant_filter,
     deleteAMessageInThread
   );
 // Get image in thread
@@ -139,29 +162,17 @@ router
   .get(
     getMessagesRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
+    docThreadMultitenant_filter,
     getMessages
   );
 
-router
-  .route('/:messagesThreadId/:studentId')
-  .delete(
-    filter_archiv_user,
-    GeneralDELETERequestRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
-    multitenant_filter,
-    doc_thread_ops_validator,
-    InnerTaigerMultitenantFilter,
-    deleteGeneralMessagesThread
-  );
-
-// WARNING: strict ratelimiter for S3 file download
-// TODO: Multitenant-filter in call-back function, maybe add studentId both in frontend and backend
 router
   .route('/:messagesThreadId/:messageId/:file_key')
   .get(
     filter_archiv_user,
     getMessageFileRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
+    docThreadMultitenant_filter,
     getMessageFileDownload
   );
 

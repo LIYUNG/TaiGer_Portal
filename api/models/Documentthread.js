@@ -12,6 +12,10 @@ const documentthreadsSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  student_input: {
+    type: String,
+    default: ''
+  },
   messages: [
     {
       user_id: { type: ObjectId, ref: 'User' },

@@ -99,6 +99,11 @@ const CVMLRL_Modification_Thread = React.lazy(() =>
     './Demo/CVMLRLCenter/DocModificationThreadPage/DocModificationThreadPage'
   )
 );
+const CVMLRL_Modification_ThreadInput = React.lazy(() =>
+  import(
+    './Demo/CVMLRLCenter/DocModificationThreadPage/DocModificationThreadInput'
+  )
+);
 const SingleStudentPage = React.lazy(() =>
   import('./Demo/StudentDatabase/SingleStudentPage')
 );
@@ -186,6 +191,12 @@ const routes = [
     exact: true,
     name: 'CVMLRL Modification Thread',
     component: CVMLRL_Modification_Thread
+  },
+  {
+    path: '/document-modification/student-input/:documentsthreadId',
+    exact: true,
+    name: 'CVMLRL Modification Thread',
+    component: CVMLRL_Modification_ThreadInput
   },
   {
     path: '/programs',

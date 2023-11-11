@@ -300,6 +300,20 @@ const getAllCVMLRLOverview = asyncHandler(async (req, res) => {
   res.status(200).send({ success: true, data: students });
 });
 
+const getStudentInput = asyncHandler(async (req, res) => {
+  const {
+    user,
+    params: { messagesThreadId }
+  } = req;
+  const document_thread = await Documentthread.findById(messagesThreadId)
+    .populate('student_id', 'firstname lastname role ')
+    .select('student_input file_type')
+    .populate('program_id')
+    .lean()
+    .exec();
+  res.status(200).send({ success: true, data: document_thread });
+});
+
 const getCVMLRLOverview = asyncHandler(async (req, res) => {
   const {
     user
@@ -1596,6 +1610,7 @@ const deleteAMessageInThread = asyncHandler(async (req, res) => {
 module.exports = {
   ThreadS3GarbageCollector,
   getAllCVMLRLOverview,
+  getStudentInput,
   getCVMLRLOverview,
   initGeneralMessagesThread,
   initApplicationMessagesThread,

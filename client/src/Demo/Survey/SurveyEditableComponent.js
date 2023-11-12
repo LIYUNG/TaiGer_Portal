@@ -1,5 +1,14 @@
 import React from 'react';
-import { Row, Col, Card, Form, Button, Offcanvas } from 'react-bootstrap';
+import {
+  Row,
+  Col,
+  Card,
+  Form,
+  Button,
+  Offcanvas,
+  OverlayTrigger,
+  Tooltip
+} from 'react-bootstrap';
 
 import Aux from '../../hoc/_Aux';
 import {
@@ -27,6 +36,7 @@ import {
 } from '../Utils/contants';
 import Banner from '../../components/Banner/Banner';
 import InputFormSelect from './InputForms/InputFormSelect';
+import { AiFillQuestionCircle } from 'react-icons/ai';
 class SurveyEditableComponent extends React.Component {
   state = {
     error: null,
@@ -177,6 +187,19 @@ class SurveyEditableComponent extends React.Component {
     });
   };
 
+  renderTooltipApplicationYear = (props) => (
+    <Tooltip id="tooltip-disabled" {...props}>
+      請填上預計申請入學年度，您的申請必須要在這個預計入學年度和預計入學學期前完成。各學校申請截止
+      Deadline 會依照你的預計入學年度和學期為您做計算。
+    </Tooltip>
+  );
+
+  renderTooltipApplicationSemester = (props) => (
+    <Tooltip id="tooltip-disabled" {...props}>
+      請填上預計入學學期，您的申請必須會在這個時間之前結束。各學校申請截止
+      Deadline 會依照你的預計入學年度和學期為您做計算。
+    </Tooltip>
+  );
   render() {
     const isReadonly = false;
     return (
@@ -775,8 +798,20 @@ class SurveyEditableComponent extends React.Component {
                 <Row>
                   <Col md={6}>
                     <Form.Group controlId="expected_application_date">
-                      <Form.Label className="my-0 mx-0 text-light">
-                        Expected Application Year
+                      <Form.Label className="mb-2 mx-0 text-light">
+                        預計要入學的年度 Expected Application Year{' '}
+                        <OverlayTrigger
+                          placement="top"
+                          delay={{ show: 250, hide: 400 }}
+                          overlay={this.renderTooltipApplicationYear}
+                        >
+                          <span className="d-inline-block">
+                            <AiFillQuestionCircle
+                              size={24}
+                              color="dodgerblue  "
+                            />
+                          </span>
+                        </OverlayTrigger>
                       </Form.Label>
                       <Form.Control
                         as="select"
@@ -801,8 +836,20 @@ class SurveyEditableComponent extends React.Component {
                   </Col>
                   <Col md={6}>
                     <Form.Group controlId="expected_application_semester">
-                      <Form.Label className="my-0 mx-0 text-light">
-                        Expected Application Semester
+                      <Form.Label className="mb-2 mx-0 text-light">
+                        預計要入學的學期 Expected Application Semester{' '}
+                        <OverlayTrigger
+                          placement="top"
+                          delay={{ show: 250, hide: 400 }}
+                          overlay={this.renderTooltipApplicationSemester}
+                        >
+                          <span className="d-inline-block">
+                            <AiFillQuestionCircle
+                              size={24}
+                              color="dodgerblue  "
+                            />
+                          </span>
+                        </OverlayTrigger>
                       </Form.Label>
                       <Form.Control
                         as="select"

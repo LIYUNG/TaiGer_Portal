@@ -75,7 +75,7 @@ const TaiGerAiGeneral = asyncHandler(async (req, res, next) => {
   const { prompt, model } = req.body;
   console.log(prompt);
 
-  const chatGPTOutput = await generate(prompt, model);
+  const chatGPTOutput = await generate(prompt, model || 'gpt-3.5-turbo');
   // console.log(chatGPTOutput);
 
   // const chatGPTOutput_Streaming = await generate(

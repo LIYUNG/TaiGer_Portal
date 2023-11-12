@@ -110,7 +110,7 @@ class CVMLRLGenerator extends React.Component {
             <Form>
               <Form.Group className="my-0 mx-0">
                 <Form.Control
-                  as="textArea"
+                  as="textarea"
                   placeholder={'Search...'}
                   onChange={this.onChange}
                 ></Form.Control>
@@ -120,7 +120,7 @@ class CVMLRLGenerator extends React.Component {
             <Button disabled={this.state.isGenerating} onClick={this.onSubmit}>
               {this.state.isGenerating ? (
                 <div style={spinner_style2}>
-                  <Spinner size='sm' animation="border" role="status">
+                  <Spinner size="sm" animation="border" role="status">
                     <span className="visually-hidden"></span>
                   </Spinner>
                 </div>

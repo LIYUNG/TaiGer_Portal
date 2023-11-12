@@ -611,6 +611,40 @@ export const LANGUAGES_OPTIONS = () => {
   );
 };
 
+export const COUNTRIES_MAPPING = {
+  at: 'Austria',
+  au: 'Australia',
+  be: 'Belgium',
+  ca: 'Canada',
+  cz: 'Czech',
+  dk: 'Danmark',
+  fi: 'Finland',
+  fr: 'France',
+  de: 'Germany',
+  gr: 'Greece',
+  hk: 'Hong Kong',
+  hu: 'Hungary',
+  ie: 'Ireland',
+  it: 'Italy',
+  jp: 'Japan',
+  kr: 'South Korea',
+  lv: 'Latvia',
+  lt: 'Lithuania',
+  lu: 'Luxembourg',
+  nl: 'Netherlands',
+  nz: 'New Zealand',
+  no: 'Norway',
+  pl: 'Poland',
+  pt: 'Portugal',
+  ru: 'Russia',
+  sg: 'Singapore',
+  es: 'Spain',
+  se: 'Sweden',
+  ch: 'Switzerland',
+  uk: 'United Kingdom',
+  us: 'United States'
+};
+
 export const COUNTRIES_OPTIONS = () => {
   return (
     <>

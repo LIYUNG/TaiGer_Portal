@@ -6,7 +6,12 @@ import { FiExternalLink } from 'react-icons/fi';
 import Aux from '../../../hoc/_Aux';
 import ErrorPage from '../../Utils/ErrorPage';
 import ModalMain from '../../Utils/ModalHandler/ModalMain';
-import { spinner_style, templatelist } from '../../Utils/contants';
+import {
+  COUNTRIES_MAPPING,
+  spinner_style,
+  spinner_style2,
+  templatelist
+} from '../../Utils/contants';
 
 import {
   LinkableNewlineText,
@@ -17,7 +22,11 @@ import {
 } from '../../Utils/checking-functions';
 import { BASE_URL } from '../../../api/request';
 
-import { SubmitMessageWithAttachment, getStudentInput } from '../../../api';
+import {
+  SubmitMessageWithAttachment,
+  cvmlrlAi,
+  getStudentInput
+} from '../../../api';
 import { TabTitle } from '../../Utils/TabTitle';
 import DEMO from '../../../store/constant';
 import FilesList from './FilesList';
@@ -25,6 +34,7 @@ import FilesList from './FilesList';
 class DocModificationThreadInput extends Component {
   state = {
     error: '',
+    isGenerating: false,
     res_status: 0,
     res_modal_status: 0,
     res_modal_message: ''
@@ -142,6 +152,50 @@ class DocModificationThreadInput extends Component {
     this.setState((state) => ({ ...state, in_edit_mode: false }));
   };
 
+  onChange = (e) => {
+    const prompt_temp = e.target.value;
+    console.log(prompt_temp);
+    this.setState({
+      prompt: prompt_temp
+    });
+  };
+
+  onSubmit = () => {
+    this.setState({
+      isGenerating: true
+    });
+    cvmlrlAi(this.state.prompt).then(
+      (resp) => {
+        const { data, success } = resp.data;
+        const { status } = resp;
+        if (success) {
+          this.setState({
+            isLoaded: true,
+            isGenerating: false,
+            data,
+            success: success,
+            res_status: status
+          });
+        } else {
+          this.setState({
+            isLoaded: true,
+            isGenerating: false,
+            res_status: status
+          });
+        }
+      },
+      (error) => {
+        this.setState((state) => ({
+          ...state,
+          isLoaded: true,
+          isGenerating: false,
+          error,
+          res_status: 500
+        }));
+      }
+    );
+  };
+
   render() {
     const {
       isLoaded,
@@ -221,15 +275,19 @@ class DocModificationThreadInput extends Component {
         )}
         <Row className="pb-2">
           <Col className="px-0">
-            <Card className="my-0 mx-0">
-              <Link
-                to={`${DEMO.DOCUMENT_MODIFICATION_LINK(
-                  this.state.documentsthreadId
-                )}`}
-                // target="_blank"
-              >
-                <Button size="sm">回到討論串</Button>
-              </Link>
+            <Card className="mb-0 my-0 mx-0">
+              <Row>
+                <Col>
+                  <Link
+                    to={`${DEMO.DOCUMENT_MODIFICATION_LINK(
+                      this.state.documentsthreadId
+                    )}`}
+                    // target="_blank"
+                  >
+                    <Button size="sm">回到討論串</Button>
+                  </Link>
+                </Col>
+              </Row>
               <Card.Body>
                 <b>Requirements:</b>
                 {this.state.thread?.program_id ? (
@@ -249,23 +307,178 @@ class DocModificationThreadInput extends Component {
           <Col className="px-0">
             <Card>
               <Card.Body>
+                <h4>
+                  Please answer the following questions in <b>English</b>! Your editor can only undertand English.
+                </h4>
                 <Form>
                   <Form.Group>
-                    <Form.Control type="textArea"></Form.Control>
+                    <Form.Label>
+                      1. Why do you want to study in{' '}
+                      {COUNTRIES_MAPPING[
+                        this.state.thread.program_id.country
+                      ] || 'this country'}{' '}
+                      and not in your home country or any other country?
+                    </Form.Label>
+                    <Form.Control
+                      as="textarea"
+                      onChange={this.onChange}
+                    ></Form.Control>
                   </Form.Group>
                 </Form>
                 <br />
                 <Form>
                   <Form.Group>
-                    <Form.Label>Use requirements?</Form.Label>
-                    <Form.Check></Form.Check>
+                    <Form.Label>
+                      2. What is your dream job you want to do after you have
+                      graduated? What do you want to become professionally?
+                    </Form.Label>
+                    <Form.Control
+                      as="textarea"
+                      onChange={this.onChange}
+                    ></Form.Control>
                   </Form.Group>
                 </Form>
-                <Button>Save</Button>
+                <br />
+                <Form>
+                  <Form.Group>
+                    <Form.Label>
+                      3. Why do you think your field of interest (= area of the
+                      programs you want to apply for) is important now and in
+                      the future?
+                    </Form.Label>
+                    <Form.Control
+                      as="textarea"
+                      onChange={this.onChange}
+                    ></Form.Control>
+                  </Form.Group>
+                </Form>
+                <br />
+                <Form>
+                  <Form.Group>
+                    <Form.Label>
+                      4. How did your previous education/academic experience
+                      (學術界的相關經驗) prepare you for your future studies?
+                      What did you learn so far? (e.g. courses, projects,
+                      achievements, …)
+                    </Form.Label>
+                    <Form.Control
+                      as="textarea"
+                      onChange={this.onChange}
+                    ></Form.Control>
+                  </Form.Group>
+                </Form>
+                <br />
+                <Form>
+                  <Form.Group>
+                    <Form.Label>
+                      5. How did your previous practical experience
+                      (實習、工作的相關經驗) prepare you for your future
+                      studies? What did you learn? (e.g. experiences during
+                      internship/jobs/…)
+                    </Form.Label>
+                    <Form.Control
+                      as="textarea"
+                      onChange={this.onChange}
+                    ></Form.Control>
+                  </Form.Group>
+                </Form>
+                <br />
+                <Form>
+                  <Form.Group>
+                    <Form.Label>
+                      6. What are your 3 biggest strengths? (abilities, personal
+                      characteristics, …)
+                    </Form.Label>
+                    <Form.Control
+                      as="textarea"
+                      onChange={this.onChange}
+                    ></Form.Control>
+                  </Form.Group>
+                </Form>
+                <br />
+                <Form>
+                  <Form.Group>
+                    <Form.Label>
+                      7. Why should the {this.state.thread.program_id.school}{' '}
+                      select you as their student? What can you contribute to
+                      the universities?
+                    </Form.Label>
+                    <Form.Control
+                      as="textarea"
+                      onChange={this.onChange}
+                    ></Form.Control>
+                  </Form.Group>
+                </Form>
+                <br />
+                <Form>
+                  <Form.Group>
+                    <Form.Label>
+                      8. Anything else you want to tell us?
+                    </Form.Label>
+                    <Form.Control
+                      as="textarea"
+                      onChange={this.onChange}
+                    ></Form.Control>
+                  </Form.Group>
+                </Form>
+                <br />
+                <Form>
+                  <Form.Group>
+                    <Form.Label>
+                      9. Why do you want to study exactly at the{' '}
+                      {this.state.thread.program_id
+                        ? `${this.state.thread.program_id.school} - ${this.state.thread.program_id.program_name}`
+                        : ''}
+                      ? What is special about them?
+                    </Form.Label>
+                    <Form.Control
+                      as="textarea"
+                      onChange={this.onChange}
+                    ></Form.Control>
+                  </Form.Group>
+                </Form>
+                <br />
+                <Button size="sm">Save</Button>
               </Card.Body>
             </Card>
           </Col>
         </Row>
+        {is_TaiGer_role(this.props.user) && (
+          <Row>
+            <Col className="px-0">
+              <Card>
+                <Card.Body>
+                  <Form>
+                    <Form.Group>
+                      <Form.Label>Use requirements?</Form.Label>
+                      <Form.Check></Form.Check>
+                    </Form.Group>
+                  </Form>
+                  <Button
+                    size="sm"
+                    disabled={this.state.isGenerating}
+                    onClick={this.onSubmit}
+                  >
+                    {this.state.isGenerating ? (
+                      <div style={spinner_style2}>
+                        <Spinner size="sm" animation="border" role="status">
+                          <span className="visually-hidden"></span>
+                        </Spinner>
+                      </div>
+                    ) : (
+                      'Generate'
+                    )}
+                  </Button>
+                  <p>
+                    <LinkableNewlineText
+                      text={this.state.data}
+                    ></LinkableNewlineText>
+                  </p>
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
+        )}
       </Aux>
     );
   }

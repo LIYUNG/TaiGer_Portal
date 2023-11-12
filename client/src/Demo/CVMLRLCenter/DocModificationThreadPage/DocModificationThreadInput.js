@@ -258,12 +258,8 @@ class DocModificationThreadInput extends Component {
   };
 
   render() {
-    const {
-      isLoaded,
-      res_status,
-      res_modal_status,
-      res_modal_message
-    } = this.state;
+    const { isLoaded, res_status, res_modal_status, res_modal_message } =
+      this.state;
     if (!isLoaded && !this.state.thread) {
       return (
         <div style={spinner_style}>
@@ -379,6 +375,8 @@ class DocModificationThreadInput extends Component {
                       <Form.Label>{qa.question}</Form.Label>
                       <Form.Control
                         as="textarea"
+                        rows={qa.rows || '1'}
+                        placeholder={qa.placeholder}
                         defaultValue={qa.anwser}
                         onChange={this.onChange}
                       ></Form.Control>

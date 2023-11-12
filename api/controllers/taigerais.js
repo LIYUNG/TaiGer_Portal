@@ -10,6 +10,9 @@ const { isProd } = require('../config');
 const { openAIClient } = require('../services/openai');
 const Permission = require('../models/Permission');
 const { Student } = require('../models/User');
+const { generalMLPrompt } = require('../prompt/ml_prompt');
+const { FILE_MAPPING_TABLE } = require('../constants');
+const { generalRLPrompt } = require('../prompt/rl_prompt');
 
 const processProgramListAi = asyncHandler(async (req, res, next) => {
   const {
@@ -48,7 +51,7 @@ const processProgramListAi = asyncHandler(async (req, res, next) => {
   });
 });
 
-const generate = async (input, model = 'gpt-3.5-turbo') => {
+const generate = async (input, model) => {
   console.log(`model = ${model}`);
   const response = await openAIClient.chat.completions.create({
     messages: [{ role: 'user', content: input }],
@@ -97,33 +100,58 @@ const TaiGerAiGeneral = asyncHandler(async (req, res, next) => {
 const cvmlrlAi = asyncHandler(async (req, res, next) => {
   const { user } = req;
   const {
-    prompt,
-    program_requirements,
+    student_input,
+    document_requirements,
     editor_requirements,
-    model,
+    program_full_name,
+    file_type,
     student_id
   } = req.body;
-  console.log(prompt);
-  console.log(program_requirements);
+  console.log(student_input);
+  console.log(document_requirements);
   const parsed_editor_requirements = JSON.parse(editor_requirements);
   console.log(parsed_editor_requirements);
   let student_info = {};
-  if (parsed_editor_requirements?.useStudentBackgroundData) {
-    try {
-      const student = await Student.findById(student_id);
-      student_info = {
-        firstname: student.firstname,
-        lastname: student.lastname,
-        academic_background: student.academic_background
-      };
-    } catch (e) {}
+
+  try {
+    const student = await Student.findById(student_id);
+    student_info = {
+      firstname: student.firstname,
+      lastname: student.lastname,
+      academic_background: student.academic_background
+    };
+  } catch (e) {}
+
+  const file_type_name = FILE_MAPPING_TABLE[file_type];
+  let concat_prompt = '';
+  if (file_type.includes('ML')) {
+    concat_prompt = generalMLPrompt({
+      editor_requirements,
+      document_requirements,
+      program_full_name,
+      student_input,
+      file_type_name,
+      student_info
+    });
+  } else {
+    // TODO: need to fine tune prompt
+    concat_prompt = generalRLPrompt({
+      editor_requirements,
+      document_requirements,
+      program_full_name,
+      student_input,
+      file_type_name,
+      student_info
+    });
   }
-  const concat_prompt = `Based on this questions and answer: ${prompt}, give me a formal text based on the requirement: ${program_requirements} and ${editor_requirements} ${
-    parsed_editor_requirements?.useStudentBackgroundData
-      ? `student information: ${student_info}`
-      : ''
-  }`;
-  const chatGPTOutput = await generate(concat_prompt, model);
+
+  console.log('Show prompt');
+  console.log('========================');
+  console.log(concat_prompt);
+  const chatGPTOutput = await generate(
+    concat_prompt,
+    parsed_editor_requirements.gptModel || 'gpt-3.5-turbo'
+  );
   // console.log(chatGPTOutput);
 
   // const chatGPTOutput_Streaming = await generate(

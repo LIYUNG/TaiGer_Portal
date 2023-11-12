@@ -86,7 +86,7 @@ class DocModificationThreadInput extends Component {
                   input_content: temp_question,
                   updatedAt: data?.student_input?.updatedAt
                 },
-            program_requirements: {},
+            document_requirements: {},
             editor_requirements: {},
             editors,
             agents,
@@ -144,20 +144,9 @@ class DocModificationThreadInput extends Component {
           ...this.state.editor_requirements,
           [id]: checked
         },
-        program_requirements: checked ? getRequirement(this.state.thread) : ''
+        document_requirements: checked ? getRequirement(this.state.thread) : ''
       });
       console.log('useProgramRequirementData');
-      return;
-    }
-    if (id === 'useStudentBackgroundData') {
-      const checked = e.target.checked;
-      this.setState({
-        editor_requirements: {
-          ...this.state.editor_requirements,
-          [id]: checked
-        }
-      });
-      console.log('useStudentBackgroundData');
       return;
     }
 
@@ -341,12 +330,21 @@ class DocModificationThreadInput extends Component {
     });
     // Mock
     // this.fetchData();
-
+    let program_full_name = '';
+    if (this.state.thread.program_id) {
+      program_full_name =
+        this.state.thread.program_id.school +
+        '-(' +
+        this.state.thread.program_id.degree +
+        ') ';
+    }
     cvmlrlAi(
       JSON.stringify(this.state.student_input),
-      JSON.stringify(this.state.program_requirements),
+      JSON.stringify(this.state.document_requirements),
       JSON.stringify(this.state.editor_requirements),
-      this.state.thread.student_id._id.toString()
+      this.state.thread.student_id._id.toString(),
+      program_full_name,
+      this.state.thread.file_type
     ).then(
       (resp) => {
         const { data, success } = resp.data;
@@ -599,26 +597,6 @@ class DocModificationThreadInput extends Component {
                     </Col>
                     <Col>
                       <Form>
-                        <Form.Group controlId="useStudentBackgroundData">
-                          <Form.Label>
-                            Use student's background data (major,
-                            current/graduated university)?
-                          </Form.Label>
-                          <Form.Check
-                            type="checkbox"
-                            value={
-                              this.editor_requirements?.useStudentBackgroundData
-                            }
-                            checked={
-                              this.editor_requirements?.useStudentBackgroundData
-                            }
-                            onChange={this.onChangeEditorRequirements}
-                          ></Form.Check>
-                        </Form.Group>
-                      </Form>
-                    </Col>
-                    <Col>
-                      <Form>
                         <Form.Group controlId="outputLanguage">
                           <Form.Label>Output language?</Form.Label>
                           <Form.Control
@@ -646,14 +624,17 @@ class DocModificationThreadInput extends Component {
                             as="select"
                           >
                             <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
-                            {/* <option value="gpt-3.5-turbo-16k">
+                            <option value="gpt-3.5-turbo-16k">
                               gpt-3.5-turbo-16k
                             </option>
                             <option value="gpt-4">gpt-4</option>
                             <option value="gpt-4-32k">gpt-4-32k</option>
                             <option value="text-embedding-ada-002">
                               text-embedding-ada-002
-                            </option> */}
+                            </option>
+                            <option value="gpt-4-1106-preview">
+                              gpt-4-1106-preview
+                            </option>
                           </Form.Control>
                         </Form.Group>
                       </Form>

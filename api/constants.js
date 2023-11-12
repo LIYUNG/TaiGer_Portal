@@ -168,6 +168,19 @@ const TaskStatus = {
   Pending: 'pending',
   NotNeeded: 'notneeded'
 };
+const FILE_MAPPING_TABLE = {
+  CV: 'Curriculum Vitae',
+  ML: 'Motivation Letter',
+  Portfolio: 'Portfolio',
+  RL_A: 'Recommendation Letter',
+  RL_B: 'Recommendation Letter',
+  RL_C: 'Recommendation Letter',
+  Recommendation_Letter_A: 'Recommendation Letter',
+  Recommendation_Letter_B: 'Recommendation Letter',
+  Recommendation_Letter_C: 'Recommendation Letter',
+  Scholarship_Form: 'Scholarship',
+  Supplementary_Form: 'Supplementary Form'
+};
 const RLs_CONSTANT = ['RL_A', 'RL_B', 'RL_C'];
 const General_Docs = [
   'Recommendation_Letter_A',
@@ -1562,6 +1575,7 @@ module.exports = {
   DocumentStatus,
   CheckListStatus,
   TaskStatus,
+  FILE_MAPPING_TABLE,
   RLs_CONSTANT,
   General_Docs,
   base_documents_summary,

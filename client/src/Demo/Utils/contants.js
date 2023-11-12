@@ -1124,10 +1124,13 @@ export const ENGLISH_CERTIFICATE_OPTIONS = () => {
   return (
     <>
       <option value="">Please Select</option>
-      <option value="TOEFL">TOEFL</option>
-      <option value="IELTS">IELTS</option>
-      <option value="Duolingo">Duolingo</option>
-      <option value="Native">Native</option>
+      <option value="TOEFL">TOEFL iBT (現場考)</option>
+      <option value="IELTS">IELTS Academy (現場考)</option>
+      <option value="Duolingo">Duolingo (極少數承認)</option>
+      <option value="Native">English Native 母語</option>
+      <option value="Others" disabled>
+        其餘考試不適用
+      </option>
     </>
   );
 };
@@ -1141,7 +1144,12 @@ export const GERMAN_CERTIFICATE_OPTIONS = () => {
       <option value="Goethe Zertifikat B2">Goethe Zertifikat B2</option>
       <option value="Goethe Zertifikat C1">Goethe Zertifikat C1</option>
       <option value="TestDaF">TestDaF</option>
+      <option value="Telc">Telc</option>
       <option value="DSH">DSH</option>
+      <option value="Native">German Native 母語</option>
+      <option value="OTHERS" disabled>
+        其餘德語不適用。報名考試前請和顧問諮詢
+      </option>
     </>
   );
 };
@@ -1152,6 +1160,9 @@ export const GRE_CERTIFICATE_OPTIONS = () => {
       <option value="">Please Select</option>
       <option value="GRE_GENERAL">GRE General Test</option>
       <option value="GRE_SUBJECT">GRE Subject Test</option>
+      <option value="GRE_OTHERS" disabled>
+        GRE Online 不再適用。報名考試前請和顧問諮詢
+      </option>
     </>
   );
 };
@@ -1161,7 +1172,10 @@ export const GMAT_CERTIFICATE_OPTIONS = () => {
     <>
       <option value="">Please Select</option>
       <option value="GMAT_GENERAL">GMAT Physical Test</option>
-      <option value="GMAT_SUBJECT">GMAT Online Test</option>
+      <option value="GMAT_FOCUS">GMAT Focus Test</option>
+      <option value="GMAT_SUBJECT" disabled>
+        GMAT Online 不再適用。報名考試前請和顧問諮詢
+      </option>
     </>
   );
 };

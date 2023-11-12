@@ -486,16 +486,20 @@ export const TaiGerAiGeneral = (prompt) =>
     prompt
   });
 export const cvmlrlAi = (
-  prompt,
-  program_requirements = '',
+  student_input,
+  document_requirements = '',
   editor_requirements = '',
-  student_id = ''
+  student_id = '',
+  program_full_name = '',
+  file_type = ''
 ) =>
   request.post(`/api/taigerai/cvmlrl`, {
-    prompt,
-    program_requirements,
+    student_input,
+    document_requirements,
     editor_requirements,
-    student_id
+    student_id,
+    program_full_name,
+    file_type
   });
 
 //Interview:

@@ -1,7 +1,15 @@
 import React, { Component } from 'react';
-import { Row, Col, Spinner, Button, Card, Modal, Form } from 'react-bootstrap';
+import {
+  Row,
+  Col,
+  Spinner,
+  Button,
+  Card,
+  Modal,
+  Form,
+  Placeholder
+} from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { FiExternalLink } from 'react-icons/fi';
 
 import Aux from '../../../hoc/_Aux';
 import ErrorPage from '../../Utils/ErrorPage';
@@ -160,40 +168,69 @@ class DocModificationThreadInput extends Component {
     });
   };
 
+  // Example usage
+  mockApiCall = async (data, timeout = 1000) => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(data);
+      }, timeout);
+    });
+  };
+  // Example usage
+  fetchData = async () => {
+    try {
+      console.log('Fetching data...');
+
+      // Simulate an API call with a 2-second delay
+      const result = await this.mockApiCall('testing mocked api call', 2000);
+
+      console.log('Data received:', result);
+      this.setState({
+        isLoaded: true,
+        isGenerating: false,
+        data: result,
+        success: true
+      });
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
   onSubmit = () => {
     this.setState({
       isGenerating: true
     });
-    cvmlrlAi(this.state.prompt).then(
-      (resp) => {
-        const { data, success } = resp.data;
-        const { status } = resp;
-        if (success) {
-          this.setState({
-            isLoaded: true,
-            isGenerating: false,
-            data,
-            success: success,
-            res_status: status
-          });
-        } else {
-          this.setState({
-            isLoaded: true,
-            isGenerating: false,
-            res_status: status
-          });
-        }
-      },
-      (error) => {
-        this.setState((state) => ({
-          ...state,
-          isLoaded: true,
-          isGenerating: false,
-          error,
-          res_status: 500
-        }));
-      }
-    );
+    // Mock
+    this.fetchData();
+    // cvmlrlAi(this.state.prompt).then(
+    //   (resp) => {
+    //     const { data, success } = resp.data;
+    //     const { status } = resp;
+    //     if (success) {
+    //       this.setState({
+    //         isLoaded: true,
+    //         isGenerating: false,
+    //         data,
+    //         success: success,
+    //         res_status: status
+    //       });
+    //     } else {
+    //       this.setState({
+    //         isLoaded: true,
+    //         isGenerating: false,
+    //         res_status: status
+    //       });
+    //     }
+    //   },
+    //   (error) => {
+    //     this.setState((state) => ({
+    //       ...state,
+    //       isLoaded: true,
+    //       isGenerating: false,
+    //       error,
+    //       res_status: 500
+    //     }));
+    //   }
+    // );
   };
 
   render() {
@@ -308,7 +345,8 @@ class DocModificationThreadInput extends Component {
             <Card>
               <Card.Body>
                 <h4>
-                  Please answer the following questions in <b>English</b>! Your editor can only undertand English.
+                  Please answer the following questions in <b>English</b>! Your
+                  editor can only undertand English.
                 </h4>
                 <Form>
                   <Form.Group>
@@ -438,7 +476,12 @@ class DocModificationThreadInput extends Component {
                   </Form.Group>
                 </Form>
                 <br />
-                <Button size="sm">Save</Button>
+                <Button size="sm">
+                  <b>Submit</b>
+                </Button>
+                <Button variant="outline-primary" size="sm">
+                  Save as draft
+                </Button>
               </Card.Body>
             </Card>
           </Col>
@@ -448,32 +491,88 @@ class DocModificationThreadInput extends Component {
             <Col className="px-0">
               <Card>
                 <Card.Body>
-                  <Form>
-                    <Form.Group>
-                      <Form.Label>Use requirements?</Form.Label>
-                      <Form.Check></Form.Check>
-                    </Form.Group>
-                  </Form>
+                  <Row>
+                    <Col>
+                      <Form>
+                        <Form.Group>
+                          <Form.Label>Use requirements?</Form.Label>
+                          <Form.Check></Form.Check>
+                        </Form.Group>
+                      </Form>
+                    </Col>
+                    <Col>
+                      <Form>
+                        <Form.Group controlId="outputLanguage">
+                          <Form.Label>Output language?</Form.Label>
+                          <Form.Control
+                            defaultValue="English"
+                            onChange={(e) => {}}
+                            as="select"
+                          >
+                            <option value="English">English</option>
+                            <option value="German">German</option>
+                          </Form.Control>
+                        </Form.Group>
+                      </Form>
+                    </Col>
+                    <Col>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col>
+                      <Form>
+                        <Form.Group controlId="additionalPrompt">
+                          <Form.Label>Additional requirement?</Form.Label>
+                          <Form.Control
+                            onChange={(e) => {}}
+                            placeholder="the length should be within 10000 characters / words"
+                            as="textarea"
+                          ></Form.Control>
+                        </Form.Group>
+                      </Form>
+                    </Col>
+                  </Row>
+
+                  <br />
                   <Button
                     size="sm"
                     disabled={this.state.isGenerating}
                     onClick={this.onSubmit}
                   >
                     {this.state.isGenerating ? (
-                      <div style={spinner_style2}>
-                        <Spinner size="sm" animation="border" role="status">
-                          <span className="visually-hidden"></span>
-                        </Spinner>
-                      </div>
+                      <>
+                        <Spinner
+                          size="sm"
+                          animation="border"
+                          role="status"
+                        ></Spinner>
+                        {'  '}
+                        Generating
+                      </>
                     ) : (
                       'Generate'
                     )}
                   </Button>
-                  <p>
-                    <LinkableNewlineText
-                      text={this.state.data}
-                    ></LinkableNewlineText>
-                  </p>
+                  {this.state.isGenerating ? (
+                    <Placeholder as={Card.Text} animation="glow">
+                      <Placeholder xs={7} /> <Placeholder xs={5} />{' '}
+                      <Placeholder xs={4} /> <Placeholder xs={8} />{' '}
+                      <Placeholder xs={2} /> <Placeholder xs={3} />{' '}
+                      <Placeholder xs={2} /> <Placeholder xs={3} />{' '}
+                      <Placeholder xs={10} /> <Placeholder xs={1} />{' '}
+                      <Placeholder xs={2} /> <Placeholder xs={3} />{' '}
+                      <Placeholder xs={9} /> <Placeholder xs={2} />{' '}
+                      <Placeholder xs={2} /> <Placeholder xs={3} />{' '}
+                      <Placeholder xs={1} /> <Placeholder xs={9} />{' '}
+                      <Placeholder xs={4} /> <Placeholder xs={8} />
+                    </Placeholder>
+                  ) : (
+                    <p>
+                      <LinkableNewlineText
+                        text={this.state.data}
+                      ></LinkableNewlineText>
+                    </p>
+                  )}
                 </Card.Body>
               </Card>
             </Col>

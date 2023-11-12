@@ -15,29 +15,21 @@ import Aux from '../../../hoc/_Aux';
 import ErrorPage from '../../Utils/ErrorPage';
 import ModalMain from '../../Utils/ModalHandler/ModalMain';
 import {
-  COUNTRIES_MAPPING,
-  spinner_style,
-  spinner_style2,
-  templatelist
+  CVQuestions,
+  MLQuestions,
+  RLQuestions,
+  spinner_style
 } from '../../Utils/contants';
 
 import {
   LinkableNewlineText,
   getRequirement,
-  is_TaiGer_AdminAgent,
-  is_TaiGer_Student,
   is_TaiGer_role
 } from '../../Utils/checking-functions';
-import { BASE_URL } from '../../../api/request';
 
-import {
-  SubmitMessageWithAttachment,
-  cvmlrlAi,
-  getStudentInput
-} from '../../../api';
+import { cvmlrlAi, getStudentInput } from '../../../api';
 import { TabTitle } from '../../Utils/TabTitle';
 import DEMO from '../../../store/constant';
-import FilesList from './FilesList';
 
 class DocModificationThreadInput extends Component {
   state = {
@@ -53,10 +45,30 @@ class DocModificationThreadInput extends Component {
         const { success, data, editors, agents, deadline, conflict_list } =
           resp.data;
         const { status } = resp;
+        let temp_question = [];
+        if (
+          data?.file_type?.includes('RL') ||
+          data?.file_type?.includes('Recommendation')
+        ) {
+          temp_question = RLQuestions(data);
+        } else {
+          switch (data?.file_type) {
+            case 'ML':
+              temp_question = MLQuestions(data);
+              break;
+            case 'CV':
+              temp_question = CVQuestions();
+              break;
+            default:
+              temp_question = [];
+          }
+        }
+
         if (success) {
           this.setState({
             success,
             thread: data,
+            questions: temp_question,
             editors,
             agents,
             deadline,
@@ -98,74 +110,22 @@ class DocModificationThreadInput extends Component {
     }));
   };
 
-  handleClickSave = (e, editorState) => {
-    e.preventDefault();
-    this.setState({ buttonDisabled: true });
-    var message = JSON.stringify(editorState);
-    const formData = new FormData();
-
-    if (this.state.file) {
-      this.state.file.forEach((file) => {
-        formData.append('files', file);
-      });
-    }
-
-    // formData.append('files', this.state.file);
-    formData.append('message', message);
-
-    SubmitMessageWithAttachment(
-      this.state.documentsthreadId,
-      this.state.thread.student_id?._id,
-      formData
-    ).then(
-      (resp) => {
-        const { success, data } = resp.data;
-        const { status } = resp;
-        if (success) {
-          this.setState({
-            success,
-            file: null,
-            editorState: {},
-            thread: data,
-            isLoaded: true,
-            buttonDisabled: false,
-            accordionKeys: [
-              ...this.state.accordionKeys,
-              data.messages.length - 1
-            ],
-            res_modal_status: status
-          });
-        } else {
-          // TODO: what if data is oversize? data type not match?
-          const { message } = resp.data;
-          this.setState({
-            isLoaded: true,
-            buttonDisabled: false,
-            res_modal_message: message,
-            res_modal_status: status
-          });
-        }
-      },
-      (error) => {
-        const { statusText } = resp;
-        this.setState((state) => ({
-          ...state,
-          isLoaded: true,
-          error,
-          res_modal_status: 500,
-          res_modal_message: statusText
-        }));
-      }
-    );
-    this.setState((state) => ({ ...state, in_edit_mode: false }));
+  onChange = (e) => {
+    const id = e.target.id;
+    const ans = e.target.value;
+    console.log(id);
+    console.log(ans);
+    const temp_questions = [...this.state.questions];
+    const temp_q = temp_questions.find((qa) => qa.question_id === id);
+    temp_q.answer = ans;
+    this.setState({
+      questions: temp_questions
+    });
   };
 
-  onChange = (e) => {
-    const prompt_temp = e.target.value;
-    console.log(prompt_temp);
-    this.setState({
-      prompt: prompt_temp
-    });
+  onSaveAsDraft = (Questions) => {
+    console.log(Questions);
+    console.log(JSON.stringify(Questions));
   };
 
   // Example usage
@@ -182,7 +142,32 @@ class DocModificationThreadInput extends Component {
       console.log('Fetching data...');
 
       // Simulate an API call with a 2-second delay
-      const result = await this.mockApiCall('testing mocked api call', 2000);
+      const result = await this.mockApiCall(
+        `testing mocked api call testing mocked api call
+        testing mocked api call
+        testing mocked api call
+        testing mocked api call
+        testing mocked api call
+        testing mocked api call
+        testing mocked api call
+        testing mocked api call
+        testing mocked api call
+        testing mocked api call
+        testing mocked api call
+        testing mocked api call
+        testing mocked api call
+        testing mocked api call
+        testing mocked api call
+        testing mocked api call
+        testing mocked api call
+        testing mocked api call
+        testing mocked api call
+        testing mocked api call
+        testing mocked api call
+        testing mocked api call
+        testing mocked api call`,
+        2000
+      );
 
       console.log('Data received:', result);
       this.setState({
@@ -195,6 +180,7 @@ class DocModificationThreadInput extends Component {
       console.error('Error fetching data:', error);
     }
   };
+
   onSubmit = () => {
     this.setState({
       isGenerating: true
@@ -271,6 +257,7 @@ class DocModificationThreadInput extends Component {
       docName = this.state.thread.file_type;
     }
     TabTitle(`${student_name} ${docName}`);
+
     return (
       <Aux>
         {!isLoaded && (
@@ -345,138 +332,29 @@ class DocModificationThreadInput extends Component {
             <Card>
               <Card.Body>
                 <h4>
-                  Please answer the following questions in <b>English</b>! Your
-                  editor can only undertand English.
+                  Please answer the following questions in <b>English</b>{' '}
+                  {this.state.thread.program_id?.lang?.includes('German')
+                    ? '( or German if you like ) '
+                    : ''}
+                  !
                 </h4>
-                <Form>
-                  <Form.Group>
-                    <Form.Label>
-                      1. Why do you want to study in{' '}
-                      {COUNTRIES_MAPPING[
-                        this.state.thread.program_id.country
-                      ] || 'this country'}{' '}
-                      and not in your home country or any other country?
-                    </Form.Label>
-                    <Form.Control
-                      as="textarea"
-                      onChange={this.onChange}
-                    ></Form.Control>
-                  </Form.Group>
-                </Form>
-                <br />
-                <Form>
-                  <Form.Group>
-                    <Form.Label>
-                      2. What is your dream job you want to do after you have
-                      graduated? What do you want to become professionally?
-                    </Form.Label>
-                    <Form.Control
-                      as="textarea"
-                      onChange={this.onChange}
-                    ></Form.Control>
-                  </Form.Group>
-                </Form>
-                <br />
-                <Form>
-                  <Form.Group>
-                    <Form.Label>
-                      3. Why do you think your field of interest (= area of the
-                      programs you want to apply for) is important now and in
-                      the future?
-                    </Form.Label>
-                    <Form.Control
-                      as="textarea"
-                      onChange={this.onChange}
-                    ></Form.Control>
-                  </Form.Group>
-                </Form>
-                <br />
-                <Form>
-                  <Form.Group>
-                    <Form.Label>
-                      4. How did your previous education/academic experience
-                      (學術界的相關經驗) prepare you for your future studies?
-                      What did you learn so far? (e.g. courses, projects,
-                      achievements, …)
-                    </Form.Label>
-                    <Form.Control
-                      as="textarea"
-                      onChange={this.onChange}
-                    ></Form.Control>
-                  </Form.Group>
-                </Form>
-                <br />
-                <Form>
-                  <Form.Group>
-                    <Form.Label>
-                      5. How did your previous practical experience
-                      (實習、工作的相關經驗) prepare you for your future
-                      studies? What did you learn? (e.g. experiences during
-                      internship/jobs/…)
-                    </Form.Label>
-                    <Form.Control
-                      as="textarea"
-                      onChange={this.onChange}
-                    ></Form.Control>
-                  </Form.Group>
-                </Form>
-                <br />
-                <Form>
-                  <Form.Group>
-                    <Form.Label>
-                      6. What are your 3 biggest strengths? (abilities, personal
-                      characteristics, …)
-                    </Form.Label>
-                    <Form.Control
-                      as="textarea"
-                      onChange={this.onChange}
-                    ></Form.Control>
-                  </Form.Group>
-                </Form>
-                <br />
-                <Form>
-                  <Form.Group>
-                    <Form.Label>
-                      7. Why should the {this.state.thread.program_id.school}{' '}
-                      select you as their student? What can you contribute to
-                      the universities?
-                    </Form.Label>
-                    <Form.Control
-                      as="textarea"
-                      onChange={this.onChange}
-                    ></Form.Control>
-                  </Form.Group>
-                </Form>
-                <br />
-                <Form>
-                  <Form.Group>
-                    <Form.Label>
-                      8. Anything else you want to tell us?
-                    </Form.Label>
-                    <Form.Control
-                      as="textarea"
-                      onChange={this.onChange}
-                    ></Form.Control>
-                  </Form.Group>
-                </Form>
-                <br />
-                <Form>
-                  <Form.Group>
-                    <Form.Label>
-                      9. Why do you want to study exactly at the{' '}
-                      {this.state.thread.program_id
-                        ? `${this.state.thread.program_id.school} - ${this.state.thread.program_id.program_name}`
-                        : ''}
-                      ? What is special about them?
-                    </Form.Label>
-                    <Form.Control
-                      as="textarea"
-                      onChange={this.onChange}
-                    ></Form.Control>
-                  </Form.Group>
-                </Form>
-                <br />
-                <Button size="sm">
+                {this.state.questions.map((qa, i) => (
+                  <Form className="mb-2" key={i}>
+                    <Form.Group controlId={qa.question_id}>
+                      <Form.Label>{qa.question}</Form.Label>
+                      <Form.Control
+                        as="textarea"
+                        defaultValue={qa.anwser}
+                        onChange={this.onChange}
+                      ></Form.Control>
+                    </Form.Group>
+                  </Form>
+                ))}
+
+                <Button
+                  size="sm"
+                  onClick={(e) => this.onSaveAsDraft(this.state.questions)}
+                >
                   <b>Submit</b>
                 </Button>
                 <Button variant="outline-primary" size="sm">
@@ -495,7 +373,18 @@ class DocModificationThreadInput extends Component {
                     <Col>
                       <Form>
                         <Form.Group>
-                          <Form.Label>Use requirements?</Form.Label>
+                          <Form.Label>Use program's requirements?</Form.Label>
+                          <Form.Check></Form.Check>
+                        </Form.Group>
+                      </Form>
+                    </Col>
+                    <Col>
+                      <Form>
+                        <Form.Group>
+                          <Form.Label>
+                            Use student's background data (major,
+                            current/graduated university)?
+                          </Form.Label>
                           <Form.Check></Form.Check>
                         </Form.Group>
                       </Form>
@@ -515,8 +404,6 @@ class DocModificationThreadInput extends Component {
                         </Form.Group>
                       </Form>
                     </Col>
-                    <Col>
-                    </Col>
                   </Row>
                   <Row>
                     <Col>
@@ -525,7 +412,7 @@ class DocModificationThreadInput extends Component {
                           <Form.Label>Additional requirement?</Form.Label>
                           <Form.Control
                             onChange={(e) => {}}
-                            placeholder="the length should be within 10000 characters / words"
+                            placeholder="the length should be within 10000 characters / words, paragraph structure, etc."
                             as="textarea"
                           ></Form.Control>
                         </Form.Group>

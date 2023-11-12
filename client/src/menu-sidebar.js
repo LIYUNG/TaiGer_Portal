@@ -363,7 +363,7 @@ export default {
               breadcrumbs: false
             },
             {
-              id: 'teams_member',
+              id: 'user_logs',
               title: 'User Logs',
               type: 'item',
               icon: 'fa fa-user',

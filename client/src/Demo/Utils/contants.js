@@ -28,6 +28,90 @@ let FILE_MISSING_SYMBOL = (
 let FILE_DONT_CARE_SYMBOL = (
   <BsDash size={18} color="lightgray" title="Not needed" />
 );
+
+export const CVQuestions = () => {
+  return [
+    {
+      question_id: 'q1',
+      question: `1. What is your major`,
+      answer: ''
+    }
+  ];
+};
+
+export const RLQuestions = (thread) => {
+  return [
+    {
+      question_id: 'q1',
+      question: `1.Who is your professor`,
+      answer: ''
+    }
+  ];
+};
+
+export const MLQuestions = (thread) => {
+  return [
+    {
+      question_id: 'q1',
+      question: `1. Why do you want to study in 
+                      ${
+                        COUNTRIES_MAPPING[thread?.program_id?.country] ||
+                        'this country'
+                      } and not in your home country or any other country?`,
+      answer: ''
+    },
+    {
+      question_id: 'q2',
+      question:
+        '2. What is your dream job you want to do after you have graduated? What do you want to become professionally?',
+      answer: ''
+    },
+    {
+      question_id: 'q3',
+      question:
+        '3. Why do you think your field of interest (= area of the programs you want to apply for) is important now and in the future?',
+      answer: ''
+    },
+    {
+      question_id: 'q4',
+      question:
+        '4. How did your previous education/academic experience (學術界的相關經驗) prepare you for your future studies? What did you learn so far? (e.g. courses, projects, achievements, …)',
+      answer: ''
+    },
+    {
+      question_id: 'q5',
+      question:
+        '5. How did your previous practical experience (實習、工作的相關經驗) prepare you for your future studies? What did you learn? (e.g. experiences during internship/jobs/…)',
+      answer: ''
+    },
+    {
+      question_id: 'q6',
+      question:
+        '6. What are your 3 biggest strengths? (abilities, personal characteristics, …)',
+      answer: ''
+    },
+    {
+      question_id: 'q7',
+      question: `7. Why should the ${thread?.program_id?.school} select you as their student? What can you contribute to the universities?`,
+      answer: ''
+    },
+    {
+      question_id: 'q8',
+      question: `8. Why do you want to study exactly at the ${
+        thread?.program_id
+          ? `${thread.program_id?.school} - ${thread.program_id?.program_name}`
+          : ``
+      } ? What is special about them?`,
+      answer: ''
+    },
+    {
+      question_id: 'q9',
+      question:
+        '9. Any missing requirements or anything else you want to tell us?',
+      answer: ''
+    }
+  ];
+};
 export const SYMBOL_EXPLANATION = (
   <>
     <p className="text-secondary"> </p>

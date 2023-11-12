@@ -10,7 +10,7 @@ import {
 } from '../Utils/checking-functions';
 import ErrorPage from '../Utils/ErrorPage';
 
-import { cvmlrlAi } from '../../api';
+import { TaiGerAiGeneral, cvmlrlAi } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 
@@ -36,7 +36,7 @@ class CVMLRLGenerator extends React.Component {
     this.setState({
       isGenerating: true
     });
-    cvmlrlAi(this.state.prompt).then(
+    TaiGerAiGeneral(this.state.prompt).then(
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;

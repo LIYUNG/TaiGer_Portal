@@ -474,9 +474,22 @@ export const updateCredentials = (credentials, email, password) =>
 //TaiGer AI:
 export const processProgramListAi = (programId) =>
   request.get(`/api/taigerai/program/${programId}`);
-
-export const cvmlrlAi = (prompt) =>
-  request.post(`/api/taigerai/cvmlrl`, { prompt });
+export const TaiGerAiGeneral = (prompt) =>
+  request.post(`/api/taigerai/general`, {
+    prompt
+  });
+export const cvmlrlAi = (
+  prompt,
+  program_requirements = '',
+  editor_requirements = '',
+  student_id = ''
+) =>
+  request.post(`/api/taigerai/cvmlrl`, {
+    prompt,
+    program_requirements,
+    editor_requirements,
+    student_id
+  });
 
 //Interview:
 export const getAllInterviews = () => request.get('/api/interviews');

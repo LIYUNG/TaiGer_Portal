@@ -2,7 +2,7 @@ const { Router } = require('express');
 const { GeneralGETRequestRateLimiter } = require('../middlewares/rate_limiter');
 const { Role } = require('../models/User');
 const { protect, permit } = require('../middlewares/auth');
-const { processProgramListAi, cvmlrlAi } = require('../controllers/taigerais');
+const { processProgramListAi, cvmlrlAi, TaiGerAiGeneral } = require('../controllers/taigerais');
 const { filter_archiv_user } = require('../middlewares/limit_archiv_user');
 const {
   permission_canModifyProgramList_filter,
@@ -12,6 +12,17 @@ const {
 
 const router = Router();
 router.use(protect);
+
+router
+  .route('/general')
+  .post(
+    filter_archiv_user,
+    GeneralGETRequestRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
+    permission_canUseTaiGerAI_filter,
+    permission_TaiGerAIRatelimiter,
+    TaiGerAiGeneral
+  );
 
 router
   .route('/cvmlrl')

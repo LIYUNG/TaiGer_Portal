@@ -69,6 +69,8 @@ class DocModificationThreadInput extends Component {
             success,
             thread: data,
             questions: temp_question,
+            program_requirements: {},
+            editor_requirements: {},
             editors,
             agents,
             deadline,
@@ -113,14 +115,48 @@ class DocModificationThreadInput extends Component {
   onChange = (e) => {
     const id = e.target.id;
     const ans = e.target.value;
-    console.log(id);
-    console.log(ans);
     const temp_questions = [...this.state.questions];
     const temp_q = temp_questions.find((qa) => qa.question_id === id);
     temp_q.answer = ans;
     this.setState({
       questions: temp_questions
     });
+  };
+
+  onChangeEditorRequirements = (e) => {
+    const id = e.target.id;
+    if (id === 'useProgramRequirementData') {
+      const checked = e.target.checked;
+      this.setState({
+        editor_requirements: {
+          ...this.state.editor_requirements,
+          [id]: checked
+        },
+        program_requirements: checked ? getRequirement(this.state.thread) : ''
+      });
+      console.log('useProgramRequirementData');
+      return;
+    }
+    if (id === 'useStudentBackgroundData') {
+      const checked = e.target.checked;
+      this.setState({
+        editor_requirements: {
+          ...this.state.editor_requirements,
+          [id]: checked
+        }
+      });
+      console.log('useStudentBackgroundData');
+      return;
+    }
+
+    const ans = e.target.value;
+    this.setState({
+      editor_requirements: {
+        ...this.state.editor_requirements,
+        [id]: ans
+      }
+    });
+    console.log('ans');
   };
 
   onSaveAsDraft = (Questions) => {
@@ -157,14 +193,6 @@ class DocModificationThreadInput extends Component {
         testing mocked api call
         testing mocked api call
         testing mocked api call
-        testing mocked api call
-        testing mocked api call
-        testing mocked api call
-        testing mocked api call
-        testing mocked api call
-        testing mocked api call
-        testing mocked api call
-        testing mocked api call
         testing mocked api call`,
         2000
       );
@@ -186,45 +214,52 @@ class DocModificationThreadInput extends Component {
       isGenerating: true
     });
     // Mock
-    this.fetchData();
-    // cvmlrlAi(this.state.prompt).then(
-    //   (resp) => {
-    //     const { data, success } = resp.data;
-    //     const { status } = resp;
-    //     if (success) {
-    //       this.setState({
-    //         isLoaded: true,
-    //         isGenerating: false,
-    //         data,
-    //         success: success,
-    //         res_status: status
-    //       });
-    //     } else {
-    //       this.setState({
-    //         isLoaded: true,
-    //         isGenerating: false,
-    //         res_status: status
-    //       });
-    //     }
-    //   },
-    //   (error) => {
-    //     this.setState((state) => ({
-    //       ...state,
-    //       isLoaded: true,
-    //       isGenerating: false,
-    //       error,
-    //       res_status: 500
-    //     }));
-    //   }
-    // );
+    console.log(JSON.stringify(this.state.questions));
+    console.log(JSON.stringify(this.state.program_requirements));
+    console.log(JSON.stringify(this.state.editor_requirements));
+
+    // this.fetchData();
+
+    cvmlrlAi(
+      JSON.stringify(this.state.questions),
+      JSON.stringify(this.state.program_requirements),
+      JSON.stringify(this.state.editor_requirements),
+      this.state.thread.student_id._id.toString()
+    ).then(
+      (resp) => {
+        const { data, success } = resp.data;
+        const { status } = resp;
+        if (success) {
+          this.setState({
+            isLoaded: true,
+            isGenerating: false,
+            data,
+            success: success,
+            res_status: status
+          });
+        } else {
+          this.setState({
+            isLoaded: true,
+            isGenerating: false,
+            res_status: status
+          });
+        }
+      },
+      (error) => {
+        this.setState((state) => ({
+          ...state,
+          isLoaded: true,
+          isGenerating: false,
+          error,
+          res_status: 500
+        }));
+      }
+    );
   };
 
   render() {
     const {
       isLoaded,
-      isFilesListOpen,
-      isSubmissionLoaded,
-      conflict_list,
       res_status,
       res_modal_status,
       res_modal_message
@@ -372,20 +407,36 @@ class DocModificationThreadInput extends Component {
                   <Row>
                     <Col>
                       <Form>
-                        <Form.Group>
+                        <Form.Group controlId="useProgramRequirementData">
                           <Form.Label>Use program's requirements?</Form.Label>
-                          <Form.Check></Form.Check>
+                          <Form.Check
+                            type="checkbox"
+                            checked={
+                              this.editor_requirements
+                                ?.useProgramRequirementData
+                            }
+                            onChange={this.onChangeEditorRequirements}
+                          ></Form.Check>
                         </Form.Group>
                       </Form>
                     </Col>
                     <Col>
                       <Form>
-                        <Form.Group>
+                        <Form.Group controlId="useStudentBackgroundData">
                           <Form.Label>
                             Use student's background data (major,
                             current/graduated university)?
                           </Form.Label>
-                          <Form.Check></Form.Check>
+                          <Form.Check
+                            type="checkbox"
+                            value={
+                              this.editor_requirements?.useStudentBackgroundData
+                            }
+                            checked={
+                              this.editor_requirements?.useStudentBackgroundData
+                            }
+                            onChange={this.onChangeEditorRequirements}
+                          ></Form.Check>
                         </Form.Group>
                       </Form>
                     </Col>
@@ -395,11 +446,37 @@ class DocModificationThreadInput extends Component {
                           <Form.Label>Output language?</Form.Label>
                           <Form.Control
                             defaultValue="English"
-                            onChange={(e) => {}}
+                            onChange={(e) => {
+                              this.onChangeEditorRequirements(e);
+                            }}
                             as="select"
                           >
                             <option value="English">English</option>
                             <option value="German">German</option>
+                          </Form.Control>
+                        </Form.Group>
+                      </Form>
+                    </Col>
+                    <Col>
+                      <Form>
+                        <Form.Group controlId="gptModel">
+                          <Form.Label>GPT Model language?</Form.Label>
+                          <Form.Control
+                            defaultValue="gpt-3.5-turbo"
+                            onChange={(e) => {
+                              this.onChangeEditorRequirements(e);
+                            }}
+                            as="select"
+                          >
+                            <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
+                            {/* <option value="gpt-3.5-turbo-16k">
+                              gpt-3.5-turbo-16k
+                            </option>
+                            <option value="gpt-4">gpt-4</option>
+                            <option value="gpt-4-32k">gpt-4-32k</option>
+                            <option value="text-embedding-ada-002">
+                              text-embedding-ada-002
+                            </option> */}
                           </Form.Control>
                         </Form.Group>
                       </Form>
@@ -411,7 +488,9 @@ class DocModificationThreadInput extends Component {
                         <Form.Group controlId="additionalPrompt">
                           <Form.Label>Additional requirement?</Form.Label>
                           <Form.Control
-                            onChange={(e) => {}}
+                            onChange={(e) => {
+                              this.onChangeEditorRequirements(e);
+                            }}
                             placeholder="the length should be within 10000 characters / words, paragraph structure, etc."
                             as="textarea"
                           ></Form.Control>

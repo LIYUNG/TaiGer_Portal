@@ -334,6 +334,26 @@ const putStudentInput = asyncHandler(async (req, res, next) => {
   }
 });
 
+const resetStudentInput = asyncHandler(async (req, res, next) => {
+  const {
+    params: { messagesThreadId }
+  } = req;
+  const { input, informEditor } = req.body;
+  const student_input_temp = {
+    student_input: {
+      input_content: input,
+      updatedAt: new Date()
+    }
+  };
+  await Documentthread.findByIdAndUpdate(messagesThreadId, student_input_temp, {
+    upsert: false
+  });
+  res.status(200).send({ success: true });
+  if (informEditor) {
+    // TODO: inform editor
+  }
+});
+
 const getCVMLRLOverview = asyncHandler(async (req, res) => {
   const {
     user
@@ -1632,6 +1652,7 @@ module.exports = {
   getAllCVMLRLOverview,
   getStudentInput,
   putStudentInput,
+  resetStudentInput,
   getCVMLRLOverview,
   initGeneralMessagesThread,
   initApplicationMessagesThread,

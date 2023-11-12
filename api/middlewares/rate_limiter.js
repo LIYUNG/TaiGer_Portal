@@ -148,6 +148,13 @@ const putThreadInputRateLimiter = rateLimit({
   legacyHeaders: false // Disable the `X-RateLimit-*` headers
 });
 
+const resetThreadInputRateLimiter = rateLimit({
+  windowMs: 30 * 60 * 1000, // 30 minutes
+  max: 30, // Limit each IP to 30 requests per `window` (here, per 15 minutes)
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false // Disable the `X-RateLimit-*` headers
+});
+
 const getMessageFileRateLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 30 minutes
   max: 40, // Limit each IP to 40 requests per `window` (here, per 15 minutes)
@@ -288,6 +295,7 @@ module.exports = {
   getNumberUnreadMessagesRateLimiter,
   getMessagesRateLimiter,
   putThreadInputRateLimiter,
+  resetThreadInputRateLimiter,
   getMessageFileRateLimiter,
   SetStatusMessagesThreadRateLimiter,
   GetProgramListRateLimiter,

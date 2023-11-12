@@ -28,7 +28,12 @@ import {
   is_TaiGer_role
 } from '../../Utils/checking-functions';
 
-import { cvmlrlAi, getStudentInput, putStudentInput } from '../../../api';
+import {
+  cvmlrlAi,
+  getStudentInput,
+  putStudentInput,
+  resetStudentInput
+} from '../../../api';
 import { TabTitle } from '../../Utils/TabTitle';
 import DEMO from '../../../store/constant';
 
@@ -37,6 +42,7 @@ class DocModificationThreadInput extends Component {
     error: '',
     isGenerating: false,
     isSaving: false,
+    isResetting: false,
     isSubmitting: false,
     student_input: [],
     res_status: 0,
@@ -73,11 +79,13 @@ class DocModificationThreadInput extends Component {
             thread: data,
             student_input: data?.student_input?.input_content
               ? {
-                  input_content: JSON.parse(data?.student_input.input_content),
+                  input_content: JSON.parse(data?.student_input?.input_content),
                   updatedAt: data?.student_input.updatedAt
                 }
-              : { input_content: [], updatedAt: data?.student_input.updatedAt },
-            questions: temp_question,
+              : {
+                  input_content: temp_question,
+                  updatedAt: data?.student_input?.updatedAt
+                },
             program_requirements: {},
             editor_requirements: {},
             editors,
@@ -117,11 +125,13 @@ class DocModificationThreadInput extends Component {
   onChange = (e) => {
     const id = e.target.id;
     const ans = e.target.value;
-    const temp_questions = [...this.state.questions];
-    const temp_q = temp_questions.find((qa) => qa.question_id === id);
+    const temp_student_input = { ...this.state.student_input };
+    const temp_q = temp_student_input.input_content.find(
+      (qa) => qa.question_id === id
+    );
     temp_q.answer = ans;
     this.setState({
-      questions: temp_questions
+      student_input: temp_student_input
     });
   };
 
@@ -160,8 +170,73 @@ class DocModificationThreadInput extends Component {
     });
     console.log('ans');
   };
+  onReset = () => {
+    this.setState({
+      isResetting: true
+    });
+    resetStudentInput(this.props.match?.params.documentsthreadId).then(
+      (resp) => {
+        const { success } = resp.data;
+        const { status } = resp;
 
-  onSubmitInput = (input, informEditor) => {
+        let temp_question = [];
+        if (
+          this.state.thread?.file_type?.includes('RL') ||
+          this.state.thread?.file_type?.includes('Recommendation')
+        ) {
+          temp_question = RLQuestions(this.state.thread);
+        } else {
+          switch (this.state.thread?.file_type) {
+            case 'ML':
+              temp_question = MLQuestions(this.state.thread);
+              break;
+            case 'CV':
+              temp_question = CVQuestions();
+              break;
+            default:
+              temp_question = [];
+          }
+        }
+
+        if (success) {
+          this.setState({
+            success,
+            student_input: {
+              input_content: temp_question,
+              updatedAt: new Date()
+            },
+            isResetting: false,
+            isLoaded: true,
+            res_status: status
+          });
+        } else {
+          this.setState({
+            isLoaded: true,
+            isResetting: false,
+            res_status: status
+          });
+        }
+      },
+      (error) => {
+        this.setState((state) => ({
+          ...state,
+          isLoaded: true,
+          isResetting: false,
+          error,
+          res_status: 500
+        }));
+      }
+    );
+    this.setState({
+      student_input: {
+        ...this.state.student_input,
+        input_content: [],
+        updatedAt: new Date()
+      }
+    });
+  };
+
+  onSubmitInput = (student_input, informEditor) => {
     if (informEditor) {
       this.setState({
         isSubmitting: true
@@ -174,7 +249,7 @@ class DocModificationThreadInput extends Component {
 
     putStudentInput(
       this.props.match?.params.documentsthreadId,
-      JSON.stringify(input),
+      JSON.stringify(student_input.input_content),
       informEditor
     ).then(
       (resp) => {
@@ -186,7 +261,7 @@ class DocModificationThreadInput extends Component {
             success,
             isSaving: false,
             isSubmitting: false,
-            student_input:{
+            student_input: {
               ...this.state.student_input,
               updatedAt: new Date()
             },
@@ -265,14 +340,10 @@ class DocModificationThreadInput extends Component {
       isGenerating: true
     });
     // Mock
-    console.log(JSON.stringify(this.state.questions));
-    console.log(JSON.stringify(this.state.program_requirements));
-    console.log(JSON.stringify(this.state.editor_requirements));
-
     // this.fetchData();
 
     cvmlrlAi(
-      JSON.stringify(this.state.questions),
+      JSON.stringify(this.state.student_input),
       JSON.stringify(this.state.program_requirements),
       JSON.stringify(this.state.editor_requirements),
       this.state.thread.student_id._id.toString()
@@ -339,7 +410,6 @@ class DocModificationThreadInput extends Component {
       docName = this.state.thread.file_type;
     }
     TabTitle(`${student_name} ${docName}`);
-    console.log(this.state.student_input);
     return (
       <Aux>
         {!isLoaded && (
@@ -420,8 +490,9 @@ class DocModificationThreadInput extends Component {
                     : ''}
                   !
                 </h4>
-                {this.state.student_input?.input_content?.length === 0
-                  ? this.state.questions.map((qa, i) => (
+                <Row>
+                  {this.state.student_input?.input_content.map((qa, i) => (
+                    <Col md={qa.width || 12}>
                       <Form className="mb-2" key={i}>
                         <Form.Group controlId={qa.question_id}>
                           <Form.Label>{qa.question}</Form.Label>
@@ -434,27 +505,14 @@ class DocModificationThreadInput extends Component {
                           ></Form.Control>
                         </Form.Group>
                       </Form>
-                    ))
-                  : this.state.student_input?.input_content.map((qa, i) => (
-                      <Form className="mb-2" key={i}>
-                        <Form.Group controlId={qa.question_id}>
-                          <Form.Label>{qa.question}</Form.Label>
-                          <Form.Control
-                            as="textarea"
-                            rows={qa.rows || '1'}
-                            placeholder={qa.placeholder}
-                            defaultValue={qa.answer}
-                            onChange={this.onChange}
-                          ></Form.Control>
-                        </Form.Group>
-                      </Form>
-                    ))}
-
+                    </Col>
+                  ))}
+                </Row>
                 <Button
                   size="sm"
                   disabled={this.state.isSaving}
                   onClick={(e) =>
-                    this.onSubmitInput(this.state.questions, true)
+                    this.onSubmitInput(this.state.student_input, true)
                   }
                 >
                   {this.state.isSubmitting ? (
@@ -475,7 +533,7 @@ class DocModificationThreadInput extends Component {
                   disabled={this.state.isSaving}
                   size="sm"
                   onClick={(e) =>
-                    this.onSubmitInput(this.state.questions, false)
+                    this.onSubmitInput(this.state.student_input, false)
                   }
                 >
                   {this.state.isSaving ? (
@@ -492,8 +550,27 @@ class DocModificationThreadInput extends Component {
                     'Save as draft'
                   )}
                 </Button>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={(e) => this.onReset()}
+                >
+                  {this.state.isResetting ? (
+                    <>
+                      <Spinner
+                        size="sm"
+                        animation="border"
+                        role="status"
+                      ></Spinner>
+                      {'  '}
+                      Resetting
+                    </>
+                  ) : (
+                    'Reset'
+                  )}
+                </Button>
                 <span style={{ float: 'right' }}>
-                  Updated At: {convertDate(this.state.student_input.updatedAt)}
+                  Updated At: {convertDate(this.state.student_input?.updatedAt)}
                 </span>
               </Card.Body>
             </Card>

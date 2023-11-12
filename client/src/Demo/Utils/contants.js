@@ -183,11 +183,9 @@ export const MLQuestions = (thread) => {
   return [
     {
       question_id: 'q1',
-      question: `1. Why do you want to study in 
-                      ${
-                        COUNTRIES_MAPPING[thread?.program_id?.country] ||
-                        'this country'
-                      } and not in your home country or any other country?`,
+      question: `1. Why do you want to study in ${
+        COUNTRIES_MAPPING[thread?.program_id?.country] || 'this country'
+      } and not in your home country or any other country?`,
       rows: '2',
       answer: ''
     },

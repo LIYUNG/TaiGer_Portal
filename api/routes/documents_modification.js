@@ -7,7 +7,8 @@ const {
   SetStatusMessagesThreadRateLimiter,
   GeneralPUTRequestRateLimiter,
   GeneralDELETERequestRateLimiter,
-  getMessageFileRateLimiter
+  getMessageFileRateLimiter,
+  putThreadInputRateLimiter
 } = require('../middlewares/rate_limiter');
 const { filter_archiv_user } = require('../middlewares/limit_archiv_user');
 const { multitenant_filter } = require('../middlewares/multitenant-filter');
@@ -39,7 +40,8 @@ const {
   deleteAMessageInThread,
   postImageInThread,
   postMessages,
-  getStudentInput
+  getStudentInput,
+  putStudentInput
 } = require('../controllers/documents_modification');
 const {
   docThreadMultitenant_filter
@@ -64,6 +66,12 @@ router
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     docThreadMultitenant_filter,
     getStudentInput
+  )
+  .put(
+    putThreadInputRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
+    docThreadMultitenant_filter,
+    putStudentInput
   );
 
 router

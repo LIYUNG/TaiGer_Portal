@@ -300,7 +300,7 @@ const getAllCVMLRLOverview = asyncHandler(async (req, res) => {
   res.status(200).send({ success: true, data: students });
 });
 
-const getStudentInput = asyncHandler(async (req, res) => {
+const getStudentInput = asyncHandler(async (req, res, next) => {
   const {
     user,
     params: { messagesThreadId }
@@ -312,6 +312,22 @@ const getStudentInput = asyncHandler(async (req, res) => {
     .lean()
     .exec();
   res.status(200).send({ success: true, data: document_thread });
+});
+
+const putStudentInput = asyncHandler(async (req, res, next) => {
+  const {
+    params: { messagesThreadId }
+  } = req;
+  const { input, informEditor } = req.body;
+  await Documentthread.findByIdAndUpdate(
+    messagesThreadId,
+    { student_input: input },
+    { upsert: false }
+  );
+  res.status(200).send({ success: true });
+  if (informEditor) {
+    // TODO: inform editor
+  }
 });
 
 const getCVMLRLOverview = asyncHandler(async (req, res) => {
@@ -1611,6 +1627,7 @@ module.exports = {
   ThreadS3GarbageCollector,
   getAllCVMLRLOverview,
   getStudentInput,
+  putStudentInput,
   getCVMLRLOverview,
   initGeneralMessagesThread,
   initApplicationMessagesThread,

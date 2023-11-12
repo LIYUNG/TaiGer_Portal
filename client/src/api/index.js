@@ -366,6 +366,11 @@ export const deleteAMessageInCommunicationThread = (
   );
 export const getStudentInput = (documentsthreadId) =>
   request.get(`/api/document-threads/student-input/${documentsthreadId}`);
+export const putStudentInput = (documentsthreadId, input, informEditor) =>
+  request.put(`/api/document-threads/student-input/${documentsthreadId}`, {
+    input,
+    informEditor
+  });
 export const getMessagThread = (documentsthreadId) =>
   request.get(`/api/document-threads/${documentsthreadId}`);
 export const deleteAMessageInThread = (documentsthreadId, messageId) =>

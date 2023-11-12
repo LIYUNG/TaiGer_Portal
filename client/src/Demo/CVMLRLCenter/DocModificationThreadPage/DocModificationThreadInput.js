@@ -27,7 +27,7 @@ import {
   is_TaiGer_role
 } from '../../Utils/checking-functions';
 
-import { cvmlrlAi, getStudentInput } from '../../../api';
+import { cvmlrlAi, getStudentInput, putStudentInput } from '../../../api';
 import { TabTitle } from '../../Utils/TabTitle';
 import DEMO from '../../../store/constant';
 
@@ -35,6 +35,9 @@ class DocModificationThreadInput extends Component {
   state = {
     error: '',
     isGenerating: false,
+    isSaving: false,
+    isSubmitting: false,
+    student_input: [],
     res_status: 0,
     res_modal_status: 0,
     res_modal_message: ''
@@ -42,8 +45,7 @@ class DocModificationThreadInput extends Component {
   componentDidMount() {
     getStudentInput(this.props.match?.params.documentsthreadId).then(
       (resp) => {
-        const { success, data, editors, agents, deadline, conflict_list } =
-          resp.data;
+        const { success, data, editors, agents, deadline } = resp.data;
         const { status } = resp;
         let temp_question = [];
         if (
@@ -68,22 +70,18 @@ class DocModificationThreadInput extends Component {
           this.setState({
             success,
             thread: data,
+            student_input: data?.student_input
+              ? JSON.parse(data?.student_input)
+              : [],
             questions: temp_question,
             program_requirements: {},
             editor_requirements: {},
             editors,
             agents,
             deadline,
-            conflict_list,
             isLoaded: true,
             documentsthreadId: this.props.match.params.documentsthreadId,
-            file: null,
-            // accordionKeys: new Array(data.messages.length)
-            //   .fill()
-            //   .map((x, i) => i) // to expand all
-            accordionKeys: new Array(data.messages?.length)
-              .fill()
-              .map((x, i) => (i === data.messages?.length - 1 ? i : -1)), // to collapse all
+
             res_status: status
           });
         } else {
@@ -159,9 +157,54 @@ class DocModificationThreadInput extends Component {
     console.log('ans');
   };
 
-  onSaveAsDraft = (Questions) => {
-    console.log(Questions);
-    console.log(JSON.stringify(Questions));
+  onSubmitInput = (input, informEditor) => {
+    if (informEditor) {
+      this.setState({
+        isSubmitting: true
+      });
+    } else {
+      this.setState({
+        isSaving: true
+      });
+    }
+
+    putStudentInput(
+      this.props.match?.params.documentsthreadId,
+      JSON.stringify(input),
+      informEditor
+    ).then(
+      (resp) => {
+        const { success } = resp.data;
+        const { status } = resp;
+
+        if (success) {
+          this.setState({
+            success,
+            isSaving: false,
+            isSubmitting: false,
+            isLoaded: true,
+            res_status: status
+          });
+        } else {
+          this.setState({
+            isLoaded: true,
+            isSaving: false,
+            isSubmitting: false,
+            res_status: status
+          });
+        }
+      },
+      (error) => {
+        this.setState((state) => ({
+          ...state,
+          isLoaded: true,
+          isSaving: false,
+          isSubmitting: false,
+          error,
+          res_status: 500
+        }));
+      }
+    );
   };
 
   // Example usage
@@ -288,7 +331,7 @@ class DocModificationThreadInput extends Component {
       docName = this.state.thread.file_type;
     }
     TabTitle(`${student_name} ${docName}`);
-
+    console.log(this.state.student_input);
     return (
       <Aux>
         {!isLoaded && (
@@ -369,29 +412,77 @@ class DocModificationThreadInput extends Component {
                     : ''}
                   !
                 </h4>
-                {this.state.questions.map((qa, i) => (
-                  <Form className="mb-2" key={i}>
-                    <Form.Group controlId={qa.question_id}>
-                      <Form.Label>{qa.question}</Form.Label>
-                      <Form.Control
-                        as="textarea"
-                        rows={qa.rows || '1'}
-                        placeholder={qa.placeholder}
-                        defaultValue={qa.anwser}
-                        onChange={this.onChange}
-                      ></Form.Control>
-                    </Form.Group>
-                  </Form>
-                ))}
+                {this.state.student_input.length === 0
+                  ? this.state.questions.map((qa, i) => (
+                      <Form className="mb-2" key={i}>
+                        <Form.Group controlId={qa.question_id}>
+                          <Form.Label>{qa.question}</Form.Label>
+                          <Form.Control
+                            as="textarea"
+                            rows={qa.rows || '1'}
+                            placeholder={qa.placeholder}
+                            defaultValue={qa.answer}
+                            onChange={this.onChange}
+                          ></Form.Control>
+                        </Form.Group>
+                      </Form>
+                    ))
+                  : this.state.student_input.map((qa, i) => (
+                      <Form className="mb-2" key={i}>
+                        <Form.Group controlId={qa.question_id}>
+                          <Form.Label>{qa.question}</Form.Label>
+                          <Form.Control
+                            as="textarea"
+                            rows={qa.rows || '1'}
+                            placeholder={qa.placeholder}
+                            defaultValue={qa.answer}
+                            onChange={this.onChange}
+                          ></Form.Control>
+                        </Form.Group>
+                      </Form>
+                    ))}
 
                 <Button
                   size="sm"
-                  onClick={(e) => this.onSaveAsDraft(this.state.questions)}
+                  disabled={this.state.isSaving}
+                  onClick={(e) =>
+                    this.onSubmitInput(this.state.questions, true)
+                  }
                 >
-                  <b>Submit</b>
+                  {this.state.isSubmitting ? (
+                    <>
+                      <Spinner
+                        size="sm"
+                        animation="border"
+                        role="status"
+                      ></Spinner>
+                      Submitting
+                    </>
+                  ) : (
+                    'Submit'
+                  )}
                 </Button>
-                <Button variant="outline-primary" size="sm">
-                  Save as draft
+                <Button
+                  variant="outline-primary"
+                  disabled={this.state.isSaving}
+                  size="sm"
+                  onClick={(e) =>
+                    this.onSubmitInput(this.state.questions, false)
+                  }
+                >
+                  {this.state.isSaving ? (
+                    <>
+                      <Spinner
+                        size="sm"
+                        animation="border"
+                        role="status"
+                      ></Spinner>
+                      {'  '}
+                      Saving
+                    </>
+                  ) : (
+                    'Save as draft'
+                  )}
                 </Button>
               </Card.Body>
             </Card>

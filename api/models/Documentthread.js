@@ -13,8 +13,12 @@ const documentthreadsSchema = new mongoose.Schema({
     default: false
   },
   student_input: {
-    type: String,
-    default: ''
+    input_content: {
+      type: String,
+      default: ''
+    },
+    updatedAt: Date,
+    createdAt: Date
   },
   messages: [
     {

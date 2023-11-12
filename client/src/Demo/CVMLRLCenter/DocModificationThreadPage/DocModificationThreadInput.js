@@ -18,6 +18,7 @@ import {
   CVQuestions,
   MLQuestions,
   RLQuestions,
+  convertDate,
   spinner_style
 } from '../../Utils/contants';
 
@@ -70,9 +71,12 @@ class DocModificationThreadInput extends Component {
           this.setState({
             success,
             thread: data,
-            student_input: data?.student_input
-              ? JSON.parse(data?.student_input)
-              : [],
+            student_input: data?.student_input?.input_content
+              ? {
+                  input_content: JSON.parse(data?.student_input.input_content),
+                  updatedAt: data?.student_input.updatedAt
+                }
+              : { input_content: [], updatedAt: data?.student_input.updatedAt },
             questions: temp_question,
             program_requirements: {},
             editor_requirements: {},
@@ -182,6 +186,10 @@ class DocModificationThreadInput extends Component {
             success,
             isSaving: false,
             isSubmitting: false,
+            student_input:{
+              ...this.state.student_input,
+              updatedAt: new Date()
+            },
             isLoaded: true,
             res_status: status
           });
@@ -412,7 +420,7 @@ class DocModificationThreadInput extends Component {
                     : ''}
                   !
                 </h4>
-                {this.state.student_input.length === 0
+                {this.state.student_input?.input_content?.length === 0
                   ? this.state.questions.map((qa, i) => (
                       <Form className="mb-2" key={i}>
                         <Form.Group controlId={qa.question_id}>
@@ -427,7 +435,7 @@ class DocModificationThreadInput extends Component {
                         </Form.Group>
                       </Form>
                     ))
-                  : this.state.student_input.map((qa, i) => (
+                  : this.state.student_input?.input_content.map((qa, i) => (
                       <Form className="mb-2" key={i}>
                         <Form.Group controlId={qa.question_id}>
                           <Form.Label>{qa.question}</Form.Label>
@@ -484,6 +492,9 @@ class DocModificationThreadInput extends Component {
                     'Save as draft'
                   )}
                 </Button>
+                <span style={{ float: 'right' }}>
+                  Updated At: {convertDate(this.state.student_input.updatedAt)}
+                </span>
               </Card.Body>
             </Card>
           </Col>

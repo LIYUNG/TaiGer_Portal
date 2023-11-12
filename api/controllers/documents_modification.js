@@ -319,11 +319,15 @@ const putStudentInput = asyncHandler(async (req, res, next) => {
     params: { messagesThreadId }
   } = req;
   const { input, informEditor } = req.body;
-  await Documentthread.findByIdAndUpdate(
-    messagesThreadId,
-    { student_input: input },
-    { upsert: false }
-  );
+  const student_input_temp = {
+    student_input: {
+      input_content: input,
+      updatedAt: new Date()
+    }
+  };
+  await Documentthread.findByIdAndUpdate(messagesThreadId, student_input_temp, {
+    upsert: false
+  });
   res.status(200).send({ success: true });
   if (informEditor) {
     // TODO: inform editor

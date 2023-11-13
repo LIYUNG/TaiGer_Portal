@@ -1,4 +1,4 @@
-import request from './request';
+import { BASE_URL, request, request_streaming } from './request';
 
 export const login = (credentials) => request.post('/auth/login', credentials);
 
@@ -485,6 +485,43 @@ export const TaiGerAiGeneral = (prompt) =>
   request.post(`/api/taigerai/general`, {
     prompt
   });
+export const TaiGerAiGeneral2 = (prompt) =>
+  fetch(`${BASE_URL}/api/taigerai/general`, {
+    method: 'post', // HTTP POST to send query to server
+    headers: {
+      'Content-Type': 'application/json'
+      // 'Content-Type': 'text/event-stream' // indicates what the server actually sent
+    },
+    credentials: 'include',
+    body: JSON.stringify({ prompt }) // server is expecting JSON
+  });
+
+export const cvmlrlAi2 = (prompt) =>
+  fetch(`${BASE_URL}/api/taigerai/cvmlrl`, {
+    method: 'post', // HTTP POST to send query to server
+    headers: {
+      'Content-Type': 'application/json'
+      // 'Content-Type': 'text/event-stream' // indicates what the server actually sent
+    },
+    credentials: 'include',
+    body: JSON.stringify(prompt) // server is expecting JSON
+  });
+// export const cvmlrlAi2 = (
+//   student_input,
+//   document_requirements = '',
+//   editor_requirements = '',
+//   student_id = '',
+//   program_full_name = '',
+//   file_type = ''
+// ) =>
+//   request.post(`/api/taigerai/cvmlrl`, {
+//     student_input,
+//     document_requirements,
+//     editor_requirements,
+//     student_id,
+//     program_full_name,
+//     file_type
+//   });
 export const cvmlrlAi = (
   student_input,
   document_requirements = '',

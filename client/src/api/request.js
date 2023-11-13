@@ -16,4 +16,19 @@ const request = axios.create({
   validateStatus: (status) => status < 500
 });
 
-export default request;
+const request_streaming = axios.create({
+  baseURL: BASE_URL,
+  withCredentials: true,
+  credentials: 'same-origin',
+  responseType: 'stream',
+  validateStatus: (status) => status < 500
+});
+request_streaming.interceptors.request.use((request) =>
+  requestHandler(request)
+);
+request_streaming.interceptors.response.use(
+  (response) => successHandler(response),
+  (error) => errorHandler(error)
+);
+
+export { request, request_streaming };

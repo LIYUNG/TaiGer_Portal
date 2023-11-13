@@ -10,7 +10,7 @@ import {
 } from '../Utils/checking-functions';
 import ErrorPage from '../Utils/ErrorPage';
 
-import { TaiGerAiGeneral, cvmlrlAi } from '../../api';
+import { TaiGerAiGeneral, TaiGerAiGeneral2, cvmlrlAi } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 
@@ -32,40 +32,61 @@ class CVMLRLGenerator extends React.Component {
     });
   }
 
-  onSubmit = () => {
+  onSubmit = async () => {
     this.setState({
       isGenerating: true
     });
-    TaiGerAiGeneral(this.state.prompt).then(
-      (resp) => {
-        const { data, success } = resp.data;
-        const { status } = resp;
-        if (success) {
-          this.setState({
-            isLoaded: true,
-            isGenerating: false,
-            data,
-            success: success,
-            res_status: status
-          });
-        } else {
-          this.setState({
-            isLoaded: true,
-            isGenerating: false,
-            res_status: status
-          });
-        }
-      },
-      (error) => {
-        this.setState((state) => ({
-          ...state,
-          isLoaded: true,
-          isGenerating: false,
-          error,
-          res_status: 500
-        }));
+    const response = await TaiGerAiGeneral2(JSON.stringify(this.state.prompt));
+    // Handle the streaming data
+    const reader = response.body
+      .pipeThrough(new TextDecoderStream())
+      .getReader();
+
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) {
+        break;
       }
-    );
+      this.setState({
+        data: this.state.data + value
+      });
+    }
+    this.setState({
+      isLoaded: true,
+      data: this.state.data + ' \n ================================= \n',
+      isGenerating: false
+    });
+
+    // TaiGerAiGeneral(this.state.prompt).then(
+    //   (resp) => {
+    //     const { data, success } = resp.data;
+    //     const { status } = resp;
+    //     if (success) {
+    //       this.setState({
+    //         isLoaded: true,
+    //         isGenerating: false,
+    //         data,
+    //         success: success,
+    //         res_status: status
+    //       });
+    //     } else {
+    //       this.setState({
+    //         isLoaded: true,
+    //         isGenerating: false,
+    //         res_status: status
+    //       });
+    //     }
+    //   },
+    //   (error) => {
+    //     this.setState((state) => ({
+    //       ...state,
+    //       isLoaded: true,
+    //       isGenerating: false,
+    //       error,
+    //       res_status: 500
+    //     }));
+    //   }
+    // );
   };
   onChange = (e) => {
     const prompt_temp = e.target.value;

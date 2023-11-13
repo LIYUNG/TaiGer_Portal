@@ -54,47 +54,32 @@ const processProgramListAi = asyncHandler(async (req, res, next) => {
 const generate = async (input, model) => {
   console.log(`model = ${model}`);
   const response = await openAIClient.chat.completions.create({
-    messages: [{ role: 'user', content: input }],
+    messages: [{ role: 'user', content: input || 'where is BMW Headquarter?' }],
     model
   });
   // console.log(response.choices[0]?.message);
   return response.choices[0]?.message;
 };
-const generate_streaming = async (input) => {
-  const response = await openAIClient.chat.completions.create({
-    messages: [{ role: 'user', content: input }],
+const generate_streaming = async (input, model) =>
+  openAIClient.chat.completions.create({
+    messages: [{ role: 'user', content: input || 'where is BMW Headquarter?' }],
     model: 'gpt-3.5-turbo',
     stream: true
   });
-  // console.log(response.choices[0]?.message);
-  return response.choices[0]?.message;
-};
 
 const TaiGerAiGeneral = asyncHandler(async (req, res, next) => {
   const { user } = req;
   const { prompt, model } = req.body;
-  console.log(prompt);
-
-  const chatGPTOutput = await generate(prompt, model || 'gpt-3.5-turbo');
-  // console.log(chatGPTOutput);
-
-  // const chatGPTOutput_Streaming = await generate(
-  //   'Do you know how to learn German efficiently?'
-  // );
-  // const starttime = Date.now();
-  // for await (const part of chatGPTOutput_Streaming) {
-  //   const chunkTime = (Date.now() - starttime) / 1000;
-  //   process.stdout.write(JSON.stringify(part.choices[0]?.delta || ''));
-  //   console.log(' chunk time:', chunkTime);
-  //   res.write(part.choices[0]?.delta.content || '');
-  // }
-  // res.end();
-  res.send({ success: true, data: chatGPTOutput?.content });
-  const permission = await Permission.findOne({ user_id: user._id });
-  if (permission.taigerAiQuota > 0) {
-    permission.taigerAiQuota -= 1;
-    await permission.save();
+  const stream = await generate_streaming(prompt, model || 'gpt-3.5-turbo');
+  // let starttime = Date.now();
+  for await (const part of stream) {
+    // const chunkTime = (Date.now() - starttime) / 1000;
+    // process.stdout.write(JSON.stringify(part.choices[0]?.delta || ''));
+    // console.log(' chunk time:', chunkTime);
+    // here express will stream the response
+    res.write(part.choices[0]?.delta.content || '');
   }
+  res.end();
 });
 
 const cvmlrlAi = asyncHandler(async (req, res, next) => {
@@ -107,10 +92,10 @@ const cvmlrlAi = asyncHandler(async (req, res, next) => {
     file_type,
     student_id
   } = req.body;
-  console.log(student_input);
-  console.log(document_requirements);
+  // console.log(student_input);
+  // console.log(document_requirements);
   const parsed_editor_requirements = JSON.parse(editor_requirements);
-  console.log(parsed_editor_requirements);
+  // console.log(parsed_editor_requirements);
   let student_info = {};
 
   try {
@@ -118,6 +103,7 @@ const cvmlrlAi = asyncHandler(async (req, res, next) => {
     student_info = {
       firstname: student.firstname,
       lastname: student.lastname,
+      email: student.email,
       academic_background: student.academic_background
     };
   } catch (e) {}
@@ -145,27 +131,29 @@ const cvmlrlAi = asyncHandler(async (req, res, next) => {
     });
   }
 
-  console.log('Show prompt');
-  console.log('========================');
-  console.log(concat_prompt);
-  const chatGPTOutput = await generate(
+  // console.log('Show prompt');
+  // console.log('========================');
+  // console.log(concat_prompt);
+  // const chatGPTOutput = await generate(
+  //   concat_prompt,
+  //   parsed_editor_requirements.gptModel || 'gpt-3.5-turbo'
+  // );
+  // res.send({ success: true, data: chatGPTOutput?.content });
+
+  const stream = await generate_streaming(
     concat_prompt,
     parsed_editor_requirements.gptModel || 'gpt-3.5-turbo'
   );
-  // console.log(chatGPTOutput);
+  // let starttime = Date.now();
+  for await (const part of stream) {
+    // const chunkTime = (Date.now() - starttime) / 1000;
+    // process.stdout.write(JSON.stringify(part.choices[0]?.delta || ''));
+    // console.log(' chunk time:', chunkTime);
+    // here express will stream the response
+    res.write(part.choices[0]?.delta.content || '');
+  }
+  res.end();
 
-  // const chatGPTOutput_Streaming = await generate(
-  //   'Do you know how to learn German efficiently?'
-  // );
-  // const starttime = Date.now();
-  // for await (const part of chatGPTOutput_Streaming) {
-  //   const chunkTime = (Date.now() - starttime) / 1000;
-  //   process.stdout.write(JSON.stringify(part.choices[0]?.delta || ''));
-  //   console.log(' chunk time:', chunkTime);
-  //   res.write(part.choices[0]?.delta.content || '');
-  // }
-  // res.end();
-  res.send({ success: true, data: chatGPTOutput?.content });
   const permission = await Permission.findOne({ user_id: user._id });
   if (permission.taigerAiQuota > 0) {
     permission.taigerAiQuota -= 1;

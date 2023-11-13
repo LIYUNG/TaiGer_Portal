@@ -30,6 +30,7 @@ import {
 
 import {
   cvmlrlAi,
+  cvmlrlAi2,
   getStudentInput,
   putStudentInput,
   resetStudentInput
@@ -41,10 +42,12 @@ class DocModificationThreadInput extends Component {
   state = {
     error: '',
     isGenerating: false,
+    isFirstDataArrived: false,
     isSaving: false,
     isResetting: false,
     isSubmitting: false,
     student_input: [],
+    data: '',
     res_status: 0,
     res_modal_status: 0,
     res_modal_message: ''
@@ -146,7 +149,6 @@ class DocModificationThreadInput extends Component {
         },
         document_requirements: checked ? getRequirement(this.state.thread) : ''
       });
-      console.log('useProgramRequirementData');
       return;
     }
 
@@ -157,7 +159,6 @@ class DocModificationThreadInput extends Component {
         [id]: ans
       }
     });
-    console.log('ans');
   };
   onReset = () => {
     this.setState({
@@ -324,7 +325,7 @@ class DocModificationThreadInput extends Component {
     }
   };
 
-  onSubmit = () => {
+  onSubmit = async () => {
     this.setState({
       isGenerating: true
     });
@@ -338,43 +339,35 @@ class DocModificationThreadInput extends Component {
         this.state.thread.program_id.degree +
         ') ';
     }
-    cvmlrlAi(
-      JSON.stringify(this.state.student_input),
-      JSON.stringify(this.state.document_requirements),
-      JSON.stringify(this.state.editor_requirements),
-      this.state.thread.student_id._id.toString(),
-      program_full_name,
-      this.state.thread.file_type
-    ).then(
-      (resp) => {
-        const { data, success } = resp.data;
-        const { status } = resp;
-        if (success) {
-          this.setState({
-            isLoaded: true,
-            isGenerating: false,
-            data,
-            success: success,
-            res_status: status
-          });
-        } else {
-          this.setState({
-            isLoaded: true,
-            isGenerating: false,
-            res_status: status
-          });
-        }
-      },
-      (error) => {
-        this.setState((state) => ({
-          ...state,
-          isLoaded: true,
-          isGenerating: false,
-          error,
-          res_status: 500
-        }));
+    const response = await cvmlrlAi2({
+      student_input: JSON.stringify(this.state.student_input),
+      document_requirements: JSON.stringify(this.state.document_requirements),
+      editor_requirements: JSON.stringify(this.state.editor_requirements),
+      student_id: this.state.thread.student_id._id.toString(),
+      program_full_name: program_full_name,
+      file_type: this.state.thread.file_type
+    });
+    const reader = response.body
+      .pipeThrough(new TextDecoderStream())
+      .getReader();
+
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) {
+        break;
       }
-    );
+      this.setState({
+        isFirstDataArrived: true,
+        data: this.state.data + value
+      });
+    }
+    this.setState({
+      isLoaded: true,
+      data: this.state.data + ' \n ================================= \n',
+      isFirstDataArrived: false,
+      isGenerating: false,
+      res_status: status
+    });
   };
 
   render() {
@@ -660,7 +653,7 @@ class DocModificationThreadInput extends Component {
                   <br />
                   <Button
                     size="sm"
-                    disabled={this.state.isGenerating}
+                    disabled={this.state.isGenerating && !this.state.data}
                     onClick={this.onSubmit}
                   >
                     {this.state.isGenerating ? (
@@ -677,7 +670,7 @@ class DocModificationThreadInput extends Component {
                       'Generate'
                     )}
                   </Button>
-                  {this.state.isGenerating ? (
+                  {this.state.isGenerating && !this.state.data ? (
                     <Placeholder as={Card.Text} animation="glow">
                       <Placeholder xs={7} /> <Placeholder xs={5} />{' '}
                       <Placeholder xs={4} /> <Placeholder xs={8} />{' '}

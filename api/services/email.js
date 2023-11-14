@@ -1968,14 +1968,12 @@ const MeetingInvitationEmail = async (recipient, payload) => {
 const MeetingReminderEmail = async (recipient, payload) => {
   const subject = `[Meeting Reminder] ${recipient.firstname} ${recipient.lastname}`;
   const message = `\
-<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
-
 [會議討論體醒]
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+<br />
 <p> 請於約定時間(時間請見 TaiGer Portal)該時間準時點擊以下連結： </p>
-
 <p>Jitsi Meet 會議連結網址： <a href="${payload.event?.meetingLink}">${payload.event?.meetingLink}</a></p>
 <p>若需要改時間，請上去 Update 您現在預定的時段至另一個 office hour 時段。</p>
-
 <p>若您是第一次使用Jitsi Meet 會議，建議可以先查看使用說明： <a href="${JITSI_MEET_INSTRUCTIONS_URL}">${JITSI_MEET_INSTRUCTIONS_URL}</a></p>
 <br />
 <p>Jitsi Meet 是行政院數位政委唐鳳建議使用的開源軟體，許多台灣大專院校如國立陽明交通大學、國立台東大學等所採用。</p>
@@ -1983,11 +1981,53 @@ const MeetingReminderEmail = async (recipient, payload) => {
 <p>${SPLIT_LINE}</p>
 [Meeting Reminder]
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+<br />
 <p>Please attend the meeting (see TaiGer Portal for the booked time slot) with the following link： </p>
 <p>If you can not attend the meeting, please go to TaiGer Portal and Update the existing time slot to another time.</p>
 <p> Jitsi Meet Meeting link: <a href="${payload.event?.meetingLink}">${payload.event?.meetingLink}</a></p>
 <br />
 <p>Jitsi Meet is an open-source software recommended for use by Tang Feng, the Digital Minister of the Executive Yuan. It is adopted by many Taiwanese universities such as National Yang Ming Chiao Tung University and National Taitung University.</p>
+
+<p>${TAIGER_SIGNATURE}</p>
+
+`; // should be for admin/editor/agent/student
+
+  return sendEmail(recipient, subject, message);
+};
+
+const UnconfirmedMeetingReminderEmail = async (recipient, payload) => {
+  const subject = `[TODO now] Meeting to confirm reminder ${recipient.firstname} ${recipient.lastname}`;
+  const message = `\
+[會議時間確認體醒]
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+<p> 您有一個尚未確認的討論時段與 ${payload.firstname} ${payload.lastname}</p>
+<p> 請上去 <a href="${
+    payload.role === 'Student'
+      ? STUDENT_CALENDAR_EVENTS_URL(payload.id)
+      : AGENT_CALENDAR_EVENTS_URL(payload.id)
+  }">TaiGer Meeting Calendar</a> 確認討論時段是否可以</p>
+<p>若需要改時間，請上去 <a href="${
+    payload.role === 'Student'
+      ? STUDENT_CALENDAR_EVENTS_URL(payload.id)
+      : AGENT_CALENDAR_EVENTS_URL(payload.id)
+  }">TaiGer Meeting Calendar</a> Update 您現在預定的時段至另一個您可以的 office hour 時段。</p>
+
+<p>${SPLIT_LINE}</p>
+[Meeting Reminder]
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+<p>You have an unconfirmed meeting slot with ${payload.firstname} ${
+    payload.lastname
+  } </p>
+<p>Please go to <a href="${
+    payload.role === 'Student'
+      ? STUDENT_CALENDAR_EVENTS_URL(payload.id)
+      : AGENT_CALENDAR_EVENTS_URL(payload.id)
+  }">TaiGer Meeting Calendar</a> to <b>confirm</b> the meeting time slot.</p>
+<p>If you can not attend the meeting, please go to <a href="${
+    payload.role === 'Student'
+      ? STUDENT_CALENDAR_EVENTS_URL(payload.id)
+      : AGENT_CALENDAR_EVENTS_URL(payload.id)
+  }">TaiGer Meeting Calendar</a> and Update the existing time slot to another time available for you.</p>
 
 <p>${TAIGER_SIGNATURE}</p>
 
@@ -2105,6 +2145,7 @@ module.exports = {
   MeetingConfirmationReminderEmail,
   MeetingInvitationEmail,
   MeetingReminderEmail,
+  UnconfirmedMeetingReminderEmail,
   TicketCreatedAgentEmail,
   TicketResolvedStudentEmail
 };

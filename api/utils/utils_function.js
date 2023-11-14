@@ -39,7 +39,8 @@ const Internaldoc = require('../models/Internaldoc');
 const Note = require('../models/Note');
 const {
   sendAssignEditorReminderEmail,
-  MeetingReminderEmail
+  MeetingReminderEmail,
+  UnconfirmedMeetingReminderEmail
 } = require('../services/email');
 const Permission = require('../models/Permission');
 const { Communication } = require('../models/Communication');
@@ -1135,6 +1136,65 @@ const MeetingDailyReminderChecker = async () => {
   console.log('Meeting attendees reminded');
 };
 
+const UnconfirmedMeetingDailyReminderChecker = async () => {
+  const currentDate = new Date();
+  const twentyFourHoursLater = new Date(currentDate);
+  twentyFourHoursLater.setHours(currentDate.getHours() + 24);
+
+  // Only future meeting within 24 hours, not past
+  const upcomingEvents = await Event.find({
+    $and: [
+      {
+        end: {
+          $gte: currentDate
+        }
+      },
+      {
+        $or: [{ isConfirmedReceiver: false }, { isConfirmedRequester: false }]
+      }
+    ]
+  }).populate('requester_id receiver_id', 'firstname lastname role email');
+  if (upcomingEvents) {
+    for (let j = 0; j < upcomingEvents.length; j += 1) {
+      // eslint-disable-next-line no-await-in-loop
+      if (!upcomingEvents[j].isConfirmedRequester) {
+        await UnconfirmedMeetingReminderEmail(
+          {
+            firstname: upcomingEvents[j].requester_id[0].firstname,
+            lastname: upcomingEvents[j].requester_id[0].lastname,
+            address: upcomingEvents[j].requester_id[0].email
+          },
+          {
+            event: upcomingEvents[j],
+            firstname: upcomingEvents[j].receiver_id[0].firstname,
+            lastname: upcomingEvents[j].receiver_id[0].lastname,
+            id: upcomingEvents[j].requester_id[0]._id.toString(),
+            role: upcomingEvents[j].requester_id[0].role
+          }
+        );
+      }
+      if (!upcomingEvents[j].isConfirmedReceiver) {
+        await UnconfirmedMeetingReminderEmail(
+          {
+            firstname: upcomingEvents[j].receiver_id[0].firstname,
+            lastname: upcomingEvents[j].receiver_id[0].lastname,
+            address: upcomingEvents[j].receiver_id[0].email
+          },
+          {
+            event: upcomingEvents[j],
+            firstname: upcomingEvents[j].requester_id[0].firstname,
+            lastname: upcomingEvents[j].requester_id[0].lastname,
+            id: upcomingEvents[j].receiver_id[0]._id.toString(),
+            role: upcomingEvents[j].receiver_id[0].role
+          }
+        );
+      }
+    }
+  }
+
+  console.log('Unconfirmed Meeting attendee reminded');
+};
+
 module.exports = {
   emptyS3Directory,
   TasksReminderEmails,
@@ -1144,5 +1204,6 @@ module.exports = {
   NextSemesterCourseSelectionReminderEmails,
   UpdateStatisticsData,
   add_portals_registered_status,
-  MeetingDailyReminderChecker
+  MeetingDailyReminderChecker,
+  UnconfirmedMeetingDailyReminderChecker
 };

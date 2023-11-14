@@ -410,6 +410,15 @@ class DocModificationThreadInput extends Component {
             </Spinner>
           </div>
         )}
+        <Row className="sticky-top">
+          <Card className="mb-2 mx-0" bg={'success'} text={'white'}>
+            <Card.Header>
+              <Card.Title as="h5" className="text-light">
+                Beta testing: Not open yet. Don't fill the form.
+              </Card.Title>
+            </Card.Header>
+          </Card>
+        </Row>
         <Row>
           <Card className="mb-2 mx-0">
             <Card.Header>

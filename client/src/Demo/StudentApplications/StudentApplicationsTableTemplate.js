@@ -758,7 +758,7 @@ class StudentApplicationsTableTemplate extends React.Component {
                 </Card.Header>
                 <Card.Body>
                   <div
-                    className="search-container-school"
+                    className="search-container"
                     ref={this.state.searchContainerRef}
                   >
                     <Form>

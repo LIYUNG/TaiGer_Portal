@@ -53,6 +53,7 @@ class StudentApplicationsTableTemplate extends React.Component {
     importedStudent: '',
     importedStudentPrograms: [],
     importedStudentModalOpen: false,
+    isButtonDisable: false,
     isImportingStudentPrograms: false,
     modalShowAssignSuccessWindow: false,
     student_id: null,
@@ -247,6 +248,10 @@ class StudentApplicationsTableTemplate extends React.Component {
     const program_ids = this.state.importedStudentPrograms.map((program) =>
       program.programId._id.toString()
     );
+    this.setState((state) => ({
+      ...state,
+      isButtonDisable: true
+    }));
     assignProgramToStudent(this.state.student._id.toString(), program_ids).then(
       (res) => {
         const { success } = res.data;
@@ -1013,10 +1018,18 @@ class StudentApplicationsTableTemplate extends React.Component {
                   </Modal.Body>
                   <Modal.Footer>
                     <Button
-                      disabled={!this.state.isLoaded}
+                      disabled={this.state.isButtonDisable}
                       onClick={this.handleImportProgramsConfirm}
                     >
-                      Yes
+                      {this.state.isButtonDisable ? (
+                        <div style={spinner_style2}>
+                          <Spinner animation="border" size="sm" role="status">
+                            <span className="visually-hidden"></span>
+                          </Spinner>
+                        </div>
+                      ) : (
+                        'Yes'
+                      )}
                     </Button>
                     <Button
                       onClick={this.onHideimportedStudentModalOpen}

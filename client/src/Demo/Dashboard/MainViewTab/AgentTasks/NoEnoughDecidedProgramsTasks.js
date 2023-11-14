@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import {
-  is_num_Program_Not_specified,
-  isProgramNotSelectedEnough
+  areProgramsDecidedMoreThanContract,
+  is_num_Program_Not_specified
 } from '../../../Utils/checking-functions';
 
 class NoEnoughDecidedProgramsTasks extends React.Component {
@@ -37,38 +37,37 @@ class NoEnoughDecidedProgramsTasks extends React.Component {
         ) : (
           <>
             {/* select enough program task */}
-            {!is_num_Program_Not_specified(this.props.student) &&
-              isProgramNotSelectedEnough([this.props.student]) && (
-                <>
-                  <tr>
-                    <td>
-                      <Link
-                        to={
-                          '/student-applications/' +
-                          this.props.student._id.toString()
-                        }
-                        style={{ textDecoration: 'none' }}
-                        className="text-info"
-                      >
-                        <b>
-                          {' '}
-                          {this.props.student.firstname}{' '}
-                          {this.props.student.lastname}{' '}
-                        </b>
-                        Applications
-                      </Link>
-                    </td>
-                    <td>
-                      Please select enough programs for{' '}
+            {!areProgramsDecidedMoreThanContract(this.props.student) && (
+              <>
+                <tr>
+                  <td>
+                    <Link
+                      to={
+                        '/student-applications/' +
+                        this.props.student._id.toString()
+                      }
+                      style={{ textDecoration: 'none' }}
+                      className="text-info"
+                    >
                       <b>
+                        {' '}
                         {this.props.student.firstname}{' '}
-                        {this.props.student.lastname}
+                        {this.props.student.lastname}{' '}
                       </b>
-                    </td>
-                    <td></td>
-                  </tr>
-                </>
-              )}
+                      Applications
+                    </Link>
+                  </td>
+                  <td>
+                    Please select enough programs for{' '}
+                    <b>
+                      {this.props.student.firstname}{' '}
+                      {this.props.student.lastname}
+                    </b>
+                  </td>
+                  <td></td>
+                </tr>
+              </>
+            )}
           </>
         )}
         {/* TODO: add Portal register tasks */}

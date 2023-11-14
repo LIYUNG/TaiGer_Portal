@@ -1944,26 +1944,18 @@ const MeetingInvitationEmail = async (recipient, payload) => {
   const message = `\
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-<p><b>${payload.taiger_user_firstname} - ${
-    payload.taiger_user_lastname
-  }</b> 確認了討論時段，請至 TaiGer Portal 查看您的當地 Meeting 時間。</p>
+<p><b>${payload.taiger_user_firstname} - ${payload.taiger_user_lastname}</b> 確認了討論時段，請至 TaiGer Portal 查看您的當地 Meeting 時間。</p>
 
 <p> 請於該時間準時點擊以下連結： </p>
 
-<p>Jitsi Meet 會議連結網址： <a href="${payload.meeting_link}">${
-    payload.meeting_link
-  }</a></p>
+<p>Jitsi Meet 會議連結網址： <a href="${payload.meeting_link}">${payload.meeting_link}</a></p>
 <p>若您是第一次使用Jitsi Meet 會議，建議可以先查看使用說明： <a href="${JITSI_MEET_INSTRUCTIONS_URL}">${JITSI_MEET_INSTRUCTIONS_URL}</a></p>
 
 <p>${SPLIT_LINE}</p>
 
-<p>${payload.taiger_user_firstname} - ${
-    payload.taiger_user_lastname
-  } confirmed the meeting time. Please login to the TaiGer Portal and see the meeting time in your timezone.</p>
+<p>${payload.taiger_user_firstname} - ${payload.taiger_user_lastname} confirmed the meeting time. Please login to the TaiGer Portal and see the meeting time in your timezone.</p>
 
-<p> Jitsi Meet Meeting link: <a href="${JITSI_MEET_URL(
-    payload.student_id
-  )}">${JITSI_MEET_URL(payload.student_id)}</a></p>
+<p> Jitsi Meet Meeting link: <a href="${payload.meeting_link}">${payload.meeting_link}</a></p>
 <p>If it is the first time for you to use Jitsi Meet, we recommend you having a look at our brief introduction: <a href="${JITSI_MEET_INSTRUCTIONS_URL}">${JITSI_MEET_INSTRUCTIONS_URL}</a></p>
 
 <p>${TAIGER_SIGNATURE}</p>
@@ -1974,32 +1966,26 @@ const MeetingInvitationEmail = async (recipient, payload) => {
 };
 
 const MeetingReminderEmail = async (recipient, payload) => {
-  const subject = `[Meeting Reminder] ${payload.meeting_time} by ${payload.taiger_user_firstname} ${payload.taiger_user_lastname}`;
+  const subject = `[Meeting Reminder] ${recipient.firstname} ${recipient.lastname}`;
   const message = `\
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-<p><b>${payload.taiger_user_firstname} - ${
-    payload.taiger_user_lastname
-  }</b> 預訂了一個討論時段。 </p>
+[會議討論體醒]
+<p> 請於約定時間(時間請見 TaiGer Portal)該時間準時點擊以下連結： </p>
 
-<p> 請於該時間準時點擊以下連結： </p>
+<p>Jitsi Meet 會議連結網址： <a href="${payload.event?.meetingLink}">${payload.event?.meetingLink}</a></p>
+<p>若需要改時間，請上去 Update 您現在預定的時段至另一個 office hour 時段。</p>
 
-<p>Jitsi Meet 會議連結網址： <a href="${JITSI_MEET_URL(
-    payload.student_id
-  )}">${JITSI_MEET_URL(payload.student_id)}</a></p>
 <p>若您是第一次使用Jitsi Meet 會議，建議可以先查看使用說明： <a href="${JITSI_MEET_INSTRUCTIONS_URL}">${JITSI_MEET_INSTRUCTIONS_URL}</a></p>
-
+<br />
 <p>Jitsi Meet 是行政院數位政委唐鳳建議使用的開源軟體，許多台灣大專院校如國立陽明交通大學、國立台東大學等所採用。</p>
 
 <p>${SPLIT_LINE}</p>
-
-<p>${payload.taiger_user_firstname} - ${
-    payload.taiger_user_lastname
-  } booked a meeting time. </p>
-
-<p> Jitsi Meet Meeting link: <a href="${JITSI_MEET_URL(
-    payload.student_id
-  )}">${JITSI_MEET_URL(payload.student_id)}</a></p>
+[Meeting Reminder]
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+<p>Please attend the meeting (see TaiGer Portal for the booked time slot) with the following link： </p>
+<p>If you can not attend the meeting, please go to TaiGer Portal and Update the existing time slot to another time.</p>
+<p> Jitsi Meet Meeting link: <a href="${payload.event?.meetingLink}">${payload.event?.meetingLink}</a></p>
 <br />
 <p>Jitsi Meet is an open-source software recommended for use by Tang Feng, the Digital Minister of the Executive Yuan. It is adopted by many Taiwanese universities such as National Yang Ming Chiao Tung University and National Taitung University.</p>
 

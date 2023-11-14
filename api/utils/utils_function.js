@@ -1,3 +1,4 @@
+/* eslint-disable no-await-in-loop */
 const async = require('async');
 const path = require('path');
 const { ErrorResponse } = require('../common/errors');
@@ -36,7 +37,10 @@ const { Basedocumentationslink } = require('../models/Basedocumentationslink');
 const Docspage = require('../models/Docspage');
 const Internaldoc = require('../models/Internaldoc');
 const Note = require('../models/Note');
-const { sendAssignEditorReminderEmail } = require('../services/email');
+const {
+  sendAssignEditorReminderEmail,
+  MeetingReminderEmail
+} = require('../services/email');
 const Permission = require('../models/Permission');
 const { Communication } = require('../models/Communication');
 const { s3 } = require('../aws/index');
@@ -1084,6 +1088,53 @@ const add_portals_registered_status = (student_input) => {
   return student;
 };
 
+const MeetingDailyReminderChecker = async () => {
+  const currentDate = new Date();
+  const twentyFourHoursLater = new Date(currentDate);
+  twentyFourHoursLater.setHours(currentDate.getHours() + 24);
+
+  // Only future meeting within 24 hours, not past
+  const upcomingEvents = await Event.find({
+    $and: [
+      {
+        end: {
+          $gte: currentDate,
+          $lt: twentyFourHoursLater
+        }
+      },
+      { isConfirmedReceiver: true },
+      { isConfirmedRequester: true }
+    ]
+  }).populate('requester_id receiver_id', 'firstname lastname email');
+  if (upcomingEvents) {
+    for (let j = 0; j < upcomingEvents.length; j += 1) {
+      // eslint-disable-next-line no-await-in-loop
+      await MeetingReminderEmail(
+        {
+          firstname: upcomingEvents[j].requester_id[0].firstname,
+          lastname: upcomingEvents[j].requester_id[0].lastname,
+          address: upcomingEvents[j].requester_id[0].email
+        },
+        {
+          event: upcomingEvents[j]
+        }
+      );
+      await MeetingReminderEmail(
+        {
+          firstname: upcomingEvents[j].receiver_id[0].firstname,
+          lastname: upcomingEvents[j].receiver_id[0].lastname,
+          address: upcomingEvents[j].receiver_id[0].email
+        },
+        {
+          event: upcomingEvents[j]
+        }
+      );
+    }
+  }
+
+  console.log('Meeting attendees reminded');
+};
+
 module.exports = {
   emptyS3Directory,
   TasksReminderEmails,
@@ -1092,5 +1143,6 @@ module.exports = {
   UrgentTasksReminderEmails,
   NextSemesterCourseSelectionReminderEmails,
   UpdateStatisticsData,
-  add_portals_registered_status
+  add_portals_registered_status,
+  MeetingDailyReminderChecker
 };

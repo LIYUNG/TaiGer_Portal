@@ -35,7 +35,8 @@ const {
   MongoDBDataBaseDailySnapshot,
   AssignEditorTasksReminderEmails,
   NextSemesterCourseSelectionReminderEmails,
-  UpdateStatisticsData
+  UpdateStatisticsData,
+  MeetingDailyReminderChecker
 } = require('./utils/utils_function');
 // const { UserS3GarbageCollector } = require('./controllers/users');
 
@@ -147,6 +148,10 @@ const launch = async () => {
   //   DAILY_TASKS_REMINDER_SCHEDULE,
   //   UpdateStatisticsData
   // );
+  const job12 = schedule.scheduleJob(
+    DAILY_TASKS_REMINDER_SCHEDULE,
+    MeetingDailyReminderChecker
+  );
 
   logger.info(`isProd : ${isProd()}`);
   logger.info(`isDev : ${isDev()}`);

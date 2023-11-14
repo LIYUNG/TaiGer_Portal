@@ -680,7 +680,7 @@ class StudentApplicationsTableTemplate extends React.Component {
           </Col>
         </Row>
         <Row>
-          <Col md={6}>
+          <Col md={is_TaiGer_role(this.props.user) ? 6 : 12}>
             <Card className="my-2 mx-0" bg={'black'} text={'light'}>
               <Card.Header>
                 <Card.Title className="my-0 mx-0 text-light">
@@ -743,66 +743,68 @@ class StudentApplicationsTableTemplate extends React.Component {
               </Card.Body>
             </Card>
           </Col>
-          <Col md={6}>
-            <Card className="my-2 mx-0" bg={'black'} text={'light'}>
-              <Card.Header>
-                <Card.Title className="my-0 mx-0 text-light">
-                  Import programs from another student
-                </Card.Title>
-              </Card.Header>
-              <Card.Body>
-                <div
-                  className="search-container-school"
-                  ref={this.state.searchContainerRef}
-                >
-                  <Form>
-                    <Form.Group className="my-0 mx-0">
-                      <Form.Label className="mb-2 mx-0 text-light">
-                        Find the student and import his/her progams to{' '}
-                        <b>
-                          {this.state.student.firstname}{' '}
-                          {this.state.student.lastname}
-                        </b>
-                      </Form.Label>
-                      <Form.Control
-                        type="text"
-                        className="search-input"
-                        placeholder={'Search student...'}
-                        value={this.state.searchTerm}
-                        onMouseDown={this.handleInputBlur}
-                        onChange={this.handleInputChange}
-                      ></Form.Control>
-                    </Form.Group>
-                  </Form>
-                  {this.state.isResultsVisible &&
-                    (this.state.searchResults?.length > 0 ? (
-                      <div className="search-results result-list">
-                        {this.state.searchResults?.map((result, i) => (
-                          <li
-                            onClick={() => this.onClickStudentHandler(result)}
-                            key={i}
-                          >
-                            {`${result.firstname} ${result.lastname} ${
-                              result.firstname_chinese
-                                ? result.firstname_chinese
-                                : ' '
-                            }${
-                              result.lastname_chinese
-                                ? result.lastname_chinese
-                                : ' '
-                            }`}
-                          </li>
-                        ))}
-                      </div>
-                    ) : (
-                      <div className="search-results result-list">
-                        <li>No result</li>
-                      </div>
-                    ))}
-                </div>
-              </Card.Body>
-            </Card>
-          </Col>
+          {is_TaiGer_role(this.props.user) && (
+            <Col md={6}>
+              <Card className="my-2 mx-0" bg={'black'} text={'light'}>
+                <Card.Header>
+                  <Card.Title className="my-0 mx-0 text-light">
+                    Import programs from another student
+                  </Card.Title>
+                </Card.Header>
+                <Card.Body>
+                  <div
+                    className="search-container-school"
+                    ref={this.state.searchContainerRef}
+                  >
+                    <Form>
+                      <Form.Group className="my-0 mx-0">
+                        <Form.Label className="mb-2 mx-0 text-light">
+                          Find the student and import his/her progams to{' '}
+                          <b>
+                            {this.state.student.firstname}{' '}
+                            {this.state.student.lastname}
+                          </b>
+                        </Form.Label>
+                        <Form.Control
+                          type="text"
+                          className="search-input"
+                          placeholder={'Search student...'}
+                          value={this.state.searchTerm}
+                          onMouseDown={this.handleInputBlur}
+                          onChange={this.handleInputChange}
+                        ></Form.Control>
+                      </Form.Group>
+                    </Form>
+                    {this.state.isResultsVisible &&
+                      (this.state.searchResults?.length > 0 ? (
+                        <div className="search-results result-list">
+                          {this.state.searchResults?.map((result, i) => (
+                            <li
+                              onClick={() => this.onClickStudentHandler(result)}
+                              key={i}
+                            >
+                              {`${result.firstname} ${result.lastname} ${
+                                result.firstname_chinese
+                                  ? result.firstname_chinese
+                                  : ' '
+                              }${
+                                result.lastname_chinese
+                                  ? result.lastname_chinese
+                                  : ' '
+                              }`}
+                            </li>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="search-results result-list">
+                          <li>No result</li>
+                        </div>
+                      ))}
+                  </div>
+                </Card.Body>
+              </Card>
+            </Col>
+          )}
         </Row>
         {this.state.isProgramAssignMode ? (
           <>

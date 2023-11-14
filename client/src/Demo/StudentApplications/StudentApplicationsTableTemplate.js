@@ -27,12 +27,19 @@ import Banner from '../../components/Banner/Banner';
 import {
   getNumberOfDays,
   programstatuslist,
-  spinner_style
+  spinner_style,
+  spinner_style2
 } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 
-import { UpdateStudentApplications, removeProgramFromStudent } from '../../api';
+import {
+  UpdateStudentApplications,
+  removeProgramFromStudent,
+  getStudentApplications,
+  assignProgramToStudent,
+  getQueryStudentsResults
+} from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import ProgramList from '../Program/ProgramList';
@@ -43,6 +50,11 @@ class StudentApplicationsTableTemplate extends React.Component {
     student: this.props.student,
     applications: this.props.student.applications,
     isLoaded: this.props.isLoaded,
+    importedStudent: '',
+    importedStudentPrograms: [],
+    importedStudentModalOpen: false,
+    isImportingStudentPrograms: false,
+    modalShowAssignSuccessWindow: false,
     student_id: null,
     program_id: null,
     success: false,
@@ -52,9 +64,112 @@ class StudentApplicationsTableTemplate extends React.Component {
     modalUpdatedApplication: false,
     show: false,
     isProgramAssignMode: false,
+    searchContainerRef: React.createRef(),
+    searchResults: [],
+    isResultsVisible: false,
     res_status: 0,
     res_modal_status: 0,
     res_modal_message: ''
+  };
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.searchTerm !== this.state.searchTerm) {
+      const delayDebounceFn = setTimeout(() => {
+        if (this.state.searchTerm) {
+          this.fetchSearchResults();
+        } else {
+          this.setState({
+            searchResults: []
+          });
+        }
+      }, 300); // Adjust the delay as needed
+      document.addEventListener('click', this.handleClickOutside);
+      return () => {
+        document.removeEventListener('click', this.handleClickOutside);
+        clearTimeout(delayDebounceFn);
+      };
+    }
+  }
+
+  handleClickOutside = (event) => {
+    // Check if the click target is outside of the search container and result list
+    if (
+      this.state.searchContainerRef.current &&
+      !this.state.searchContainerRef.current.contains(event.target)
+    ) {
+      // Clicked outside, hide the result list
+      this.setState({
+        isResultsVisible: false
+      });
+    }
+  };
+
+  fetchSearchResults = async () => {
+    try {
+      this.setState({
+        isLoading: true
+      });
+      const response = await getQueryStudentsResults(this.state.searchTerm);
+      if (response.data.success) {
+        this.setState({
+          searchResults: response.data.data,
+          isResultsVisible: true,
+          isLoading: false
+        });
+      } else {
+        this.setState({
+          isResultsVisible: false,
+          searchTerm: '',
+          searchResults: [],
+          isErrorTerm: true,
+          isLoading: false,
+          res_modal_status: 401,
+          res_modal_message: 'Session expired. Please refresh.'
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      this.setState({
+        isResultsVisible: false,
+        searchTerm: '',
+        searchResults: [],
+        isErrorTerm: true,
+        isLoading: false,
+        res_modal_status: 403,
+        res_modal_message: error
+      });
+    }
+  };
+
+  onClickStudentHandler = (result) => {
+    this.setState({
+      importedStudentModalOpen: true,
+      isImportingStudentPrograms: true
+    });
+    // Call api:
+    getStudentApplications(result._id.toString()).then(
+      (res) => {
+        const { data, success } = res.data;
+        const { status } = res;
+        if (success) {
+          this.setState((state) => ({
+            ...state,
+            isImportingStudentPrograms: false,
+            importedStudentPrograms: data,
+            res_modal_status: status
+          }));
+        } else {
+          const { message } = res.data;
+          this.setState((state) => ({
+            ...state,
+            isLoaded: true,
+            res_modal_status: status,
+            res_modal_message: message
+          }));
+        }
+      },
+      (error) => {}
+    );
   };
 
   handleChangeProgramCount = (e) => {
@@ -87,6 +202,36 @@ class StudentApplicationsTableTemplate extends React.Component {
       modalDeleteApplication: true
     }));
   };
+
+  onHideAssignSuccessWindow = () => {
+    this.setState({
+      modalShowAssignSuccessWindow: false
+    });
+    window.location.reload(true);
+  };
+
+  handleInputChange = (e) => {
+    this.setState({
+      searchTerm: e.target.value.trimLeft()
+    });
+    if (e.target.value.length === 0) {
+      this.setState({
+        isResultsVisible: false
+      });
+    }
+  };
+
+  handleInputBlur = () => {
+    this.setState({
+      isResultsVisible: false
+    });
+  };
+  onHideimportedStudentModalOpen = () => {
+    this.setState({
+      importedStudentModalOpen: false,
+      importedStudentPrograms: []
+    });
+  };
   onHideModalDeleteApplication = () => {
     this.setState({
       modalDeleteApplication: false
@@ -96,6 +241,38 @@ class StudentApplicationsTableTemplate extends React.Component {
     this.setState({
       modalUpdatedApplication: false
     });
+  };
+
+  handleImportProgramsConfirm = (e) => {
+    const program_ids = this.state.importedStudentPrograms.map((program) =>
+      program.programId._id.toString()
+    );
+    assignProgramToStudent(this.state.student._id.toString(), program_ids).then(
+      (res) => {
+        const { success } = res.data;
+        const { status } = res;
+        if (success) {
+          this.setState((state) => ({
+            ...state,
+            isButtonDisable: false,
+            importedStudentModalOpen: false,
+            modalShowAssignSuccessWindow: true,
+            success,
+            res_modal_status: status
+          }));
+        } else {
+          const { message } = res.data;
+          this.setState((state) => ({
+            ...state,
+            isLoaded: true,
+            importedStudentModalOpen: false,
+            res_modal_message: message,
+            res_modal_status: status
+          }));
+        }
+      },
+      (error) => {}
+    );
   };
 
   handleDeleteConfirm = (e) => {
@@ -278,7 +455,6 @@ class StudentApplicationsTableTemplate extends React.Component {
         </>
       );
     } else {
-      // applying_university = this.props.student.applications.map(
       applying_university_info = this.state.student.applications.map(
         (application, application_idx) => (
           <tr key={application_idx}>
@@ -504,7 +680,7 @@ class StudentApplicationsTableTemplate extends React.Component {
           </Col>
         </Row>
         <Row>
-          <Col>
+          <Col md={6}>
             <Card className="my-2 mx-0" bg={'black'} text={'light'}>
               <Card.Header>
                 <Card.Title className="my-0 mx-0 text-light">
@@ -564,6 +740,66 @@ class StudentApplicationsTableTemplate extends React.Component {
                     </Form.Group>
                   </Form>
                 </li>
+              </Card.Body>
+            </Card>
+          </Col>
+          <Col md={6}>
+            <Card className="my-2 mx-0" bg={'black'} text={'light'}>
+              <Card.Header>
+                <Card.Title className="my-0 mx-0 text-light">
+                  Import programs from another student
+                </Card.Title>
+              </Card.Header>
+              <Card.Body>
+                <div
+                  className="search-container-school"
+                  ref={this.state.searchContainerRef}
+                >
+                  <Form>
+                    <Form.Group className="my-0 mx-0">
+                      <Form.Label className="mb-2 mx-0 text-light">
+                        Find the student and import his/her progams to{' '}
+                        <b>
+                          {this.state.student.firstname}{' '}
+                          {this.state.student.lastname}
+                        </b>
+                      </Form.Label>
+                      <Form.Control
+                        type="text"
+                        className="search-input"
+                        placeholder={'Search student...'}
+                        value={this.state.searchTerm}
+                        onMouseDown={this.handleInputBlur}
+                        onChange={this.handleInputChange}
+                      ></Form.Control>
+                    </Form.Group>
+                  </Form>
+                  {this.state.isResultsVisible &&
+                    (this.state.searchResults?.length > 0 ? (
+                      <div className="search-results result-list">
+                        {this.state.searchResults?.map((result, i) => (
+                          <li
+                            onClick={() => this.onClickStudentHandler(result)}
+                            key={i}
+                          >
+                            {`${result.firstname} ${result.lastname} ${
+                              result.firstname_chinese
+                                ? result.firstname_chinese
+                                : ' '
+                            }${
+                              result.lastname_chinese
+                                ? result.lastname_chinese
+                                : ' '
+                            }`}
+                          </li>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="search-results result-list">
+                        <li>No result</li>
+                      </div>
+                    ))}
+                </div>
               </Card.Body>
             </Card>
           </Col>
@@ -742,7 +978,73 @@ class StudentApplicationsTableTemplate extends React.Component {
                     </Row>
                   </>
                 )}
-
+                <Modal
+                  show={this.state.importedStudentModalOpen}
+                  onHide={this.onHideimportedStudentModalOpen}
+                  size="xl"
+                  aria-labelledby="contained-modal-title-vcenter"
+                  centered
+                >
+                  <Modal.Header>
+                    <Modal.Title id="contained-modal-title-vcenter">
+                      Import programs
+                    </Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body>
+                    Do you want to import the following programs?
+                    <br />
+                    (Same programs will <b>NOT</b> be duplicated :) )
+                    {this.state.isImportingStudentPrograms ? (
+                      <div style={spinner_style2}>
+                        <Spinner animation="border" role="status">
+                          <span className="visually-hidden"></span>
+                        </Spinner>
+                      </div>
+                    ) : (
+                      this.state.importedStudentPrograms?.map((app, i) => (
+                        <li key={i}>
+                          {`${app.programId?.school} - ${app.programId?.program_name} ${app.programId?.degree} 
+                          ${app.programId?.semester}`}
+                        </li>
+                      )) || []
+                    )}
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <Button
+                      disabled={!this.state.isLoaded}
+                      onClick={this.handleImportProgramsConfirm}
+                    >
+                      Yes
+                    </Button>
+                    <Button
+                      onClick={this.onHideimportedStudentModalOpen}
+                      variant="outline-primary"
+                    >
+                      No
+                    </Button>
+                  </Modal.Footer>
+                </Modal>
+                <Modal
+                  show={this.state.modalShowAssignSuccessWindow}
+                  onHide={this.onHideAssignSuccessWindow}
+                  size="m"
+                  aria-labelledby="contained-modal-title-vcenter"
+                  centered
+                >
+                  <Modal.Header>
+                    <Modal.Title id="contained-modal-title-vcenter">
+                      Success
+                    </Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body>
+                    Program(s) imported to student successfully!
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <Button onClick={this.onHideAssignSuccessWindow}>
+                      Close
+                    </Button>
+                  </Modal.Footer>
+                </Modal>
                 <Modal
                   show={this.state.modalDeleteApplication}
                   onHide={this.onHideModalDeleteApplication}

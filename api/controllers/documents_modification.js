@@ -4,7 +4,10 @@ const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
 const { Role, Agent, Student, Editor } = require('../models/User');
 const { one_month_cache } = require('../cache/node-cache');
-const { Documentthread } = require('../models/Documentthread');
+const {
+  Documentthread,
+  STUDENT_INPUT_STATUS_E
+} = require('../models/Documentthread');
 const { emptyS3Directory } = require('../utils/utils_function');
 const {
   sendNewApplicationMessageInThreadEmail,
@@ -316,12 +319,14 @@ const getStudentInput = asyncHandler(async (req, res, next) => {
 
 const putStudentInput = asyncHandler(async (req, res, next) => {
   const {
+    user,
     params: { messagesThreadId }
   } = req;
   const { input, informEditor } = req.body;
   const student_input_temp = {
     student_input: {
       input_content: input,
+      input_status: STUDENT_INPUT_STATUS_E.PRODIVDED,
       updatedAt: new Date()
     }
   };
@@ -331,6 +336,131 @@ const putStudentInput = asyncHandler(async (req, res, next) => {
   res.status(200).send({ success: true });
   if (informEditor) {
     // TODO: inform editor
+    if (user.role === Role.Student) {
+      // If no editor, inform agent to assign
+      if (!student.editors || student.editors.length === 0) {
+        await Student.findByIdAndUpdate(user._id, { needEditor: true }, {});
+        for (let i = 0; i < student.agents.length; i += 1) {
+          // inform active-agent
+          if (isNotArchiv(student)) {
+            if (isNotArchiv(student.agents[i])) {
+              await sendAssignEditorReminderEmail(
+                {
+                  firstname: student.agents[i].firstname,
+                  lastname: student.agents[i].lastname,
+                  address: student.agents[i].email
+                },
+                {
+                  student_firstname: student.firstname,
+                  student_id: student._id.toString(),
+                  student_lastname: student.lastname
+                }
+              );
+            }
+          }
+        }
+        // inform editor-lead
+        const permissions = await Permission.find({
+          canAssignEditors: true
+        })
+          .populate('user_id', 'firstname lastname email')
+          .lean();
+        if (permissions) {
+          for (let x = 0; x < permissions.length; x += 1) {
+            await sendAssignEditorReminderEmail(
+              {
+                firstname: permissions[x].user_id.firstname,
+                lastname: permissions[x].user_id.lastname,
+                address: permissions[x].user_id.email
+              },
+              {
+                student_firstname: student.firstname,
+                student_id: student._id.toString(),
+                student_lastname: student.lastname
+              }
+            );
+          }
+        }
+      } else {
+        if (document_thread.file_type === 'Supplementary_Form') {
+          // Inform Agent
+          for (let i = 0; i < student.agents.length; i += 1) {
+            if (isNotArchiv(student)) {
+              if (isNotArchiv(student.agents[i])) {
+                // if supplementary form, inform Agent.
+                await sendNewApplicationMessageInThreadEmail(
+                  {
+                    firstname: student.agents[i].firstname,
+                    lastname: student.agents[i].lastname,
+                    address: student.agents[i].email
+                  },
+                  {
+                    writer_firstname: user.firstname,
+                    writer_lastname: user.lastname,
+                    student_firstname: student.firstname,
+                    student_lastname: student.lastname,
+                    uploaded_documentname: document_thread.file_type,
+                    school: document_thread.program_id.school,
+                    program_name: document_thread.program_id.program_name,
+                    thread_id: document_thread._id.toString(),
+                    uploaded_updatedAt: new Date(),
+                    message
+                  }
+                );
+              }
+            }
+          }
+        } else {
+          // Inform Editor
+          for (let i = 0; i < student.editors.length; i += 1) {
+            if (document_thread.program_id) {
+              if (isNotArchiv(student) && isNotArchiv(student.editors[i])) {
+                await sendNewApplicationMessageInThreadEmail(
+                  {
+                    firstname: student.editors[i].firstname,
+                    lastname: student.editors[i].lastname,
+                    address: student.editors[i].email
+                  },
+                  {
+                    writer_firstname: user.firstname,
+                    writer_lastname: user.lastname,
+                    student_firstname: student.firstname,
+                    student_lastname: student.lastname,
+                    uploaded_documentname: document_thread.file_type,
+                    school: document_thread.program_id.school,
+                    program_name: document_thread.program_id.program_name,
+                    thread_id: document_thread._id.toString(),
+                    uploaded_updatedAt: new Date(),
+                    message
+                  }
+                );
+              }
+            } else if (
+              isNotArchiv(student) &&
+              isNotArchiv(student.editors[i])
+            ) {
+              await sendNewGeneraldocMessageInThreadEmail(
+                {
+                  firstname: student.editors[i].firstname,
+                  lastname: student.editors[i].lastname,
+                  address: student.editors[i].email
+                },
+                {
+                  writer_firstname: user.firstname,
+                  writer_lastname: user.lastname,
+                  student_firstname: student.firstname,
+                  student_lastname: student.lastname,
+                  uploaded_documentname: document_thread.file_type,
+                  thread_id: document_thread._id.toString(),
+                  uploaded_updatedAt: new Date(),
+                  message
+                }
+              );
+            }
+          }
+        }
+      }
+    }
   }
 });
 

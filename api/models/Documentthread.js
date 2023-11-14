@@ -17,6 +17,10 @@ const documentthreadsSchema = new mongoose.Schema({
       type: String,
       default: ''
     },
+    input_status: {
+      type: String,
+      default: ''
+    },
     updatedAt: Date,
     createdAt: Date
   },
@@ -44,7 +48,16 @@ const documentthreadsSchema = new mongoose.Schema({
   ],
   updatedAt: Date
 });
+
+const STUDENT_INPUT_STATUS_E = {
+  EMPTY: 'empty',
+  PRODIVDED: 'provided',
+  GENERATED: 'generated',
+  BLOCKED: 'blocked'
+};
+
 const Documentthread = mongoose.model('Documentthread', documentthreadsSchema);
 module.exports = {
-  Documentthread
+  Documentthread,
+  STUDENT_INPUT_STATUS_E
 };

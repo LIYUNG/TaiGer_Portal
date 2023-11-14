@@ -29,7 +29,7 @@ const NavSearch = (props) => {
       } else {
         setSearchResults([]);
       }
-    }, 500); // Adjust the delay as needed
+    }, 300); // Adjust the delay as needed
     document.addEventListener('click', handleClickOutside);
     return () => {
       document.removeEventListener('click', handleClickOutside);
@@ -160,14 +160,6 @@ const NavSearch = (props) => {
         />
       )}
       <div className="search-container" ref={searchContainerRef}>
-        {/* <input
-          type="text"
-          className="search-input form-control"
-          placeholder="Search..."
-          value={searchTerm}
-          onMouseDown={handleInputBlur}
-          onChange={handleInputChange}
-        /> */}
         <Form>
           <Form.Group className="my-0 mx-0">
             <Form.Control

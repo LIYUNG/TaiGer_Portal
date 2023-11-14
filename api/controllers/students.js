@@ -730,6 +730,21 @@ const ToggleProgramStatus = asyncHandler(async (req, res, next) => {
   res.status(201).send({ success: true, data: student });
   next();
 });
+
+const getStudentApplications = asyncHandler(async (req, res, next) => {
+  const {
+    params: { studentId }
+  } = req;
+  const student = await Student.findById(studentId)
+    .select('applications.programId')
+    .populate('applications.programId', 'school program_name degree semester');
+  if (!student) {
+    logger.error('getStudentApplications: no such student');
+    throw new ErrorResponse(404, `getStudentApplications: no such student`);
+  }
+  res.status(201).send({ success: true, data: student.applications });
+});
+
 // (O) email : student notification
 // (O) auto-create document thread for student: ML,RL,Essay
 // (if applicable, depending on program list)
@@ -739,7 +754,7 @@ const createApplication = asyncHandler(async (req, res, next) => {
     params: { studentId },
     body: { program_id_set }
   } = req;
-
+  console.log(program_id_set);
   // Limit the number of assigning programs
   const max_application = 20;
   if (program_id_set.length > max_application) {
@@ -1041,6 +1056,7 @@ module.exports = {
   assignAgentToStudent,
   assignEditorToStudent,
   ToggleProgramStatus,
+  getStudentApplications,
   createApplication,
   deleteApplication
 };

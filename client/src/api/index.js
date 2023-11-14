@@ -23,6 +23,8 @@ export const resendActivation = ({ email }) =>
 export const verify = () => request.get('/auth/verify');
 
 // Search API
+export const getQueryStudentsResults = (keywords) =>
+  request.get(`/api/search/students?q=${keywords}`);
 export const getQueryResults = (keywords) =>
   request.get(`/api/search?q=${keywords}`);
 export const getQueryPublicResults = (keywords) =>
@@ -91,10 +93,11 @@ export const assignProgramToStudent = (studentId, program_ids) =>
   request.post(`/api/students/${studentId}/applications`, {
     program_id_set: program_ids
   });
+export const getStudentApplications = (studentId) =>
+  request.get(`/api/students/${studentId}/applications`);
 
 export const removeProgramFromStudent = (programId, studentId) =>
   request.delete(`/api/students/${studentId}/applications/${programId}`);
-
 export const ToggleProgramStatus = (studentId, program_id) =>
   request.put(`/api/students/${studentId}/${program_id}`);
 

@@ -32,7 +32,8 @@ const {
   ToggleProgramStatus,
   deleteApplication,
   getAllActiveStudents,
-  getAllArchivStudents
+  getAllArchivStudents,
+  getStudentApplications
 } = require('../controllers/students');
 const {
   saveProfileFilePath,
@@ -199,6 +200,16 @@ router
 
 router
   .route('/:studentId/applications')
+  .get(
+    filter_archiv_user,
+    GeneralGETRequestRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent),
+    permission_canAccessStudentDatabase_filter,
+    multitenant_filter,
+    InnerTaigerMultitenantFilter,
+    getStudentApplications,
+    logAccess
+  )
   .post(
     filter_archiv_user,
     GeneralPOSTRequestRateLimiter,

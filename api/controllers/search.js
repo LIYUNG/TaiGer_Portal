@@ -91,7 +91,28 @@ const getQueryResults = asyncHandler(async (req, res, next) => {
       .sort((a, b) => b.score - a.score)
   });
 });
+
+const getQueryStudentsResults = asyncHandler(async (req, res, next) => {
+  const students = await User.find(
+    {
+      $text: { $search: req.query.q },
+      role: { $in: ['Student'] }
+    },
+    { score: { $meta: 'textScore' } }
+  )
+    .sort({ score: { $meta: 'textScore' } })
+    .limit(5)
+    .select('firstname lastname firstname_chinese lastname_chinese role')
+    .lean();
+
+  res.status(200).send({
+    success: true,
+    data: students.sort((a, b) => b.score - a.score)
+  });
+});
+
 module.exports = {
+  getQueryStudentsResults,
   getQueryPublicResults,
   getQueryResults
 };

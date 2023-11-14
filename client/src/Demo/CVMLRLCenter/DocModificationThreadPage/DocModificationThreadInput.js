@@ -653,7 +653,7 @@ class DocModificationThreadInput extends Component {
                   <br />
                   <Button
                     size="sm"
-                    disabled={this.state.isGenerating && !this.state.data}
+                    disabled={this.state.isGenerating}
                     onClick={this.onSubmit}
                   >
                     {this.state.isGenerating ? (

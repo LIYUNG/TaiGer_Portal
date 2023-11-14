@@ -7,7 +7,8 @@ const { Role } = require('../models/User');
 
 const {
   getQueryResults,
-  getQueryPublicResults
+  getQueryPublicResults,
+  getQueryStudentsResults
 } = require('../controllers/search');
 
 const router = Router();
@@ -22,6 +23,14 @@ router.use(protect);
 //     permit(Role.Student),
 //     getQueryPublicResults
 //   );
+
+router
+  .route('/students')
+  .get(
+    GeneralGETSearchRequestRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
+    getQueryStudentsResults
+  );
 
 router
   .route('/')

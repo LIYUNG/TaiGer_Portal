@@ -68,6 +68,13 @@ const TicketStatus = {
   Resolved: 'resolved'
 };
 
+const ManagerType = {
+  Agent: 'Agent',
+  Editor: 'Editor',
+  AgentAndEditor: 'AgentAndEditor',
+  None: 'None'
+};
+
 const DocumentStatus = {
   Uploaded: 'uploaded',
   Missing: 'missing',
@@ -1572,6 +1579,7 @@ const base_documents_summary = (student) => {
 
 module.exports = {
   TicketStatus,
+  ManagerType,
   DocumentStatus,
   CheckListStatus,
   TaskStatus,

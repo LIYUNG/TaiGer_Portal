@@ -8,6 +8,7 @@ export const is_TaiGer_AdminAgent = (user) =>
 export const is_TaiGer_Admin = (user) => user.role === 'Admin';
 export const is_TaiGer_Editor = (user) => user.role === 'Editor';
 export const is_TaiGer_Agent = (user) => user.role === 'Agent';
+export const is_TaiGer_Manager = (user) => user.role === 'Manager';
 export const is_TaiGer_Student = (user) => user.role === 'Student';
 export const is_TaiGer_Guest = (user) => user.role === 'Guest';
 export const DocumentStatus = {

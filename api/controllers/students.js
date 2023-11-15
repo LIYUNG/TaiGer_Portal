@@ -21,7 +21,7 @@ const {
   informAgentStudentAssignedEmail
 } = require('../services/email');
 
-const { RLs_CONSTANT, isNotArchiv } = require('../constants');
+const { RLs_CONSTANT, isNotArchiv, ManagerType } = require('../constants');
 const Permission = require('../models/Permission');
 const Course = require('../models/Course');
 
@@ -204,6 +204,85 @@ const getStudents = asyncHandler(async (req, res, next) => {
       students_new.push(add_portals_registered_status(studentsWithCourse[j]));
     }
     res.status(200).send({ success: true, data: students_new });
+  } else if (user.role === Role.Manager) {
+    let students = [];
+    // TODO: depends on manager type
+    if (user.manager_type === ManagerType.Agent) {
+      students = await Student.find({
+        agents: { $in: user.agents },
+        $or: [{ archiv: { $exists: false } }, { archiv: false }]
+      })
+        .populate('agents editors', 'firstname lastname email')
+        .populate('applications.programId')
+        .populate(
+          'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
+          '-messages'
+        )
+        .select(
+          '-notification +applications.portal_credentials.application_portal_a.account +applications.portal_credentials.application_portal_a.password +applications.portal_credentials.application_portal_b.account +applications.portal_credentials.application_portal_b.password'
+        )
+        .lean();
+    }
+    if (user.manager_type === ManagerType.Editor) {
+      students = await Student.find({
+        editors: { $in: user.editors },
+        $or: [{ archiv: { $exists: false } }, { archiv: false }]
+      })
+        .populate('agents editors', 'firstname lastname email')
+        .populate('applications.programId')
+        .populate(
+          'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
+          '-messages'
+        )
+        .select(
+          '-notification +applications.portal_credentials.application_portal_a.account +applications.portal_credentials.application_portal_a.password +applications.portal_credentials.application_portal_b.account +applications.portal_credentials.application_portal_b.password'
+        )
+        .lean();
+    }
+    if (user.manager_type === ManagerType.AgentAndEditor) {
+      students = await Student.find({
+        $and: [
+          {
+            $or: [
+              { agents: { $in: user.agents } },
+              { editors: { $in: user.editors } }
+            ]
+          },
+          { $or: [{ archiv: { $exists: false } }, { archiv: false }] }
+        ]
+      })
+        .populate('agents editors', 'firstname lastname email')
+        .populate('applications.programId')
+        .populate(
+          'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
+          '-messages'
+        )
+        .select(
+          '-notification +applications.portal_credentials.application_portal_a.account +applications.portal_credentials.application_portal_a.password +applications.portal_credentials.application_portal_b.account +applications.portal_credentials.application_portal_b.password'
+        )
+        .lean();
+    }
+    const courses = await Course.find().select('-table_data_string').lean();
+    // Perform the join
+    const studentsWithCourse = students.map((student) => {
+      const matchingItemB = courses.find(
+        (course) => student._id.toString() === course.student_id.toString()
+      );
+      if (matchingItemB) {
+        return { ...student, courses: matchingItemB };
+      } else {
+        return { ...student };
+      }
+    });
+    const students_new = [];
+    for (let j = 0; j < studentsWithCourse.length; j += 1) {
+      students_new.push(add_portals_registered_status(studentsWithCourse[j]));
+    }
+    res.status(200).send({
+      success: true,
+      data: students_new,
+      notification: user.agent_notification
+    });
   } else if (user.role === Role.Agent) {
     const students = await Student.find({
       agents: user._id,

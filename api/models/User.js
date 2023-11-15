@@ -6,7 +6,7 @@ const {
 const bcrypt = require('bcryptjs');
 const isEmail = require('validator/lib/isEmail');
 
-const { DocumentStatus, CheckListStatus } = require('../constants');
+const { DocumentStatus, ManagerType } = require('../constants');
 
 const Role = {
   Admin: 'Admin',
@@ -475,24 +475,43 @@ const Manager = User.discriminator(
     {
       agents: [{ type: ObjectId, ref: 'Agent' }],
       editors: [{ type: ObjectId, ref: 'Editor' }],
+      manager_type: {
+        type: String,
+        enum: Object.values(ManagerType),
+        default: ManagerType.None
+      },
       manager_notification: {
         isRead_new_base_docs_uploaded: [
           {
             student_id: {
               type: String,
               default: ''
-            },
-            student_firstname: {
-              type: String,
-              default: ''
-            },
-            student_lastname: {
-              type: String,
-              default: ''
             }
           }
         ],
         isRead_new_programs_assigned: {
+          type: Boolean,
+          default: false
+        }
+      },
+      attribute: {
+        can_write_ml: {
+          type: Boolean,
+          default: false
+        },
+        can_write_rl: {
+          type: Boolean,
+          default: false
+        },
+        can_write_cv: {
+          type: Boolean,
+          default: false
+        },
+        can_write_essay: {
+          type: Boolean,
+          default: false
+        },
+        can_do_interview: {
           type: Boolean,
           default: false
         }
@@ -596,6 +615,28 @@ const Editor = User.discriminator(
           default: false
         },
         isRead_new_programs_assigned: {
+          type: Boolean,
+          default: false
+        }
+      },
+      attribute: {
+        can_write_ml: {
+          type: Boolean,
+          default: false
+        },
+        can_write_rl: {
+          type: Boolean,
+          default: false
+        },
+        can_write_cv: {
+          type: Boolean,
+          default: false
+        },
+        can_write_essay: {
+          type: Boolean,
+          default: false
+        },
+        can_do_interview: {
           type: Boolean,
           default: false
         }

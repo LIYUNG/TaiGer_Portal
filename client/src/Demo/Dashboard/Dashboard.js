@@ -5,6 +5,7 @@ import Aux from '../../hoc/_Aux';
 import AdminMainView from './AdminDashboard/AdminMainView';
 import AgentMainView from './AgentDashboard/AgentMainView';
 import EditorMainView from './EditorDashboard/EditorMainView';
+import ManagerMainView from './ManagerDashboard/ManagerMainView';
 import StudentDashboard from './StudentDashboard/StudentDashboard';
 import GuestDashboard from './GuestDashboard/GuestDashboard';
 import ErrorPage from '../Utils/ErrorPage';
@@ -25,6 +26,7 @@ import {
   is_TaiGer_Admin,
   is_TaiGer_Agent,
   is_TaiGer_Editor,
+  is_TaiGer_Manager,
   is_TaiGer_Student
 } from '../Utils/checking-functions';
 
@@ -424,6 +426,32 @@ class Dashboard extends React.Component {
             submitUpdateEditorlist={this.submitUpdateEditorlist}
             updateStudentArchivStatus={this.updateStudentArchivStatus}
             isDashboard={this.state.isDashboard}
+          />
+        </Aux>
+      );
+    } else if (is_TaiGer_Manager(this.props.user)) {
+      return (
+        <Aux>
+          {res_modal_status >= 400 && (
+            <ModalMain
+              ConfirmError={this.ConfirmError}
+              res_modal_status={res_modal_status}
+              res_modal_message={res_modal_message}
+            />
+          )}
+          <ManagerMainView
+            user={this.props.user}
+            students={this.state.students}
+            notification={this.state.notification}
+            editAgent={this.editAgent}
+            agent_list={this.state.agent_list}
+            UpdateAgentlist={this.UpdateAgentlist}
+            updateAgentList={this.state.updateAgentList}
+            handleChangeAgentlist={this.handleChangeAgentlist}
+            submitUpdateAgentlist={this.submitUpdateAgentlist}
+            updateStudentArchivStatus={this.updateStudentArchivStatus}
+            isDashboard={this.state.isDashboard}
+            onUpdateProfileFilefromstudent={this.onUpdateProfileFilefromstudent}
           />
         </Aux>
       );

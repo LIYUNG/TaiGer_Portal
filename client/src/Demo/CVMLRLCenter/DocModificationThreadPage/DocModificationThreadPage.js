@@ -551,7 +551,7 @@ class DocModificationThreadPage extends Component {
                                     <b>Link [點我下載]</b>
                                   </Button>
                                 </a>
-                                or &nbsp;
+                                {/* or &nbsp;
                                 <Link
                                   to={`${DEMO.DOCUMENT_MODIFICATION_INPUT_LINK(
                                     this.state.documentsthreadId
@@ -559,7 +559,7 @@ class DocModificationThreadPage extends Component {
                                   // target="_blank"
                                 >
                                   <Button size="sm">線上填寫</Button>
-                                </Link>
+                                </Link> */}
                               </b>
                             ) : (
                               <b>
@@ -571,7 +571,7 @@ class DocModificationThreadPage extends Component {
                                     <b>Link [點我下載]</b>
                                   </Button>
                                 </a>
-                                or &nbsp;
+                                {/* or &nbsp;
                                 <Link
                                   to={`${DEMO.DOCUMENT_MODIFICATION_INPUT_LINK(
                                     this.state.documentsthreadId
@@ -579,7 +579,7 @@ class DocModificationThreadPage extends Component {
                                   // target="_blank"
                                 >
                                   <Button size="sm">線上填寫</Button>
-                                </Link>
+                                </Link> */}
                               </b>
                             )
                           ) : (

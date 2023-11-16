@@ -13,7 +13,6 @@ import {
 import { getTeamMembers, updateUserPermission } from '../../../api';
 import { TabTitle } from '../../Utils/TabTitle';
 import DEMO from '../../../store/constant';
-import GrantPermissionModal from './../GrantPermissionModal';
 
 class TaiGerMember extends React.Component {
   state = {
@@ -219,16 +218,6 @@ class TaiGerMember extends React.Component {
             </table>
           </Card.Body>
         </Card>
-        {this.state.modalShow && (
-          <GrantPermissionModal
-            modalShow={this.state.modalShow}
-            firstname={this.state.firstname}
-            lastname={this.state.lastname}
-            user_permissions={this.state.user_permissions}
-            setModalHide={this.setModalHide}
-            onUpdatePermissions={this.onUpdatePermissions}
-          />
-        )}
       </Aux>
     );
   }

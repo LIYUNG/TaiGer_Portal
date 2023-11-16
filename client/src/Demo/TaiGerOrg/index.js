@@ -1,5 +1,13 @@
 import React from 'react';
-import { Card, Spinner, Row, Col, Button } from 'react-bootstrap';
+import {
+  Card,
+  Spinner,
+  Row,
+  Col,
+  Button,
+  DropdownButton,
+  Dropdown
+} from 'react-bootstrap';
 import { Redirect, Link } from 'react-router-dom';
 
 import Aux from '../../hoc/_Aux';
@@ -7,10 +15,11 @@ import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import { is_TaiGer_Admin, is_TaiGer_role } from '../Utils/checking-functions';
 
-import { getTeamMembers, updateUserPermission } from '../../api';
+import { getTeamMembers, updateUser, updateUserPermission } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import GrantPermissionModal from './GrantPermissionModal';
+import GrantManagerModal from './GrantManagerModal';
 
 class TaiGerOrg extends React.Component {
   state = {
@@ -20,6 +29,7 @@ class TaiGerOrg extends React.Component {
     data: null,
     success: false,
     modalShow: false,
+    managerModalShow: false,
     firstname: '',
     lastname: '',
     selected_user_id: '',
@@ -68,12 +78,42 @@ class TaiGerOrg extends React.Component {
     });
   };
 
+  setManagerModalShow = (
+    user_firstname,
+    user_lastname,
+    user_id,
+    permissions
+  ) => {
+    this.setState({
+      managerModalShow: true,
+      firstname: user_firstname,
+      lastname: user_lastname,
+      selected_user_id: user_id,
+      user_permissions: permissions
+    });
+  };
+
   setModalHide = () => {
     this.setState({
       modalShow: false
     });
   };
 
+  setManagerModalHide = () => {
+    this.setState({
+      managerModalShow: false
+    });
+  };
+
+  onUpdateUser = () => {
+    updateUser(user_id, paylaod).then(
+      (resp) => {
+        const { data, success } = resp.data;
+        const { status } = resp;
+      },
+      (error) => {}
+    );
+  };
   onUpdatePermissions = (e, permissions) => {
     e.preventDefault();
     updateUserPermission(this.state.selected_user_id, permissions).then(
@@ -136,6 +176,9 @@ class TaiGerOrg extends React.Component {
     }
     const admins = this.state.teams.filter((member) => member.role === 'Admin');
     const agents = this.state.teams.filter((member) => member.role === 'Agent');
+    const managers = this.state.teams.filter(
+      (member) => member.role === 'Manager'
+    );
     const editors = this.state.teams.filter(
       (member) => member.role === 'Editor'
     );
@@ -172,7 +215,83 @@ class TaiGerOrg extends React.Component {
                 ))}
               </>
             )}
+            <h4>Manager:</h4>
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Type</th>
 
+                  <th>
+                    Can User <br /> TaiGerAI
+                  </th>
+                  <th>
+                    TaiGerAI <br /> Quota
+                  </th>
+                  <th>Permissions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {managers.map((manager, i) => (
+                  <tr key={i}>
+                    <td>
+                      <b>
+                        <Link to={`/teams/managers/${manager._id.toString()}`}>
+                          {manager.firstname} {manager.lastname}{' '}
+                        </Link>
+                      </b>
+                    </td>
+                    <td>
+                      {manager.permissions?.length > 0
+                        ? manager.permissions[0].canModifyProgramList
+                          ? 'O'
+                          : 'X'
+                        : 'x'}
+                    </td>
+                    <td>
+                      {manager.permissions?.length > 0
+                        ? manager.permissions[0].canModifyAllBaseDocuments
+                          ? 'O'
+                          : 'X'
+                        : 'x'}
+                    </td>
+                    <td>
+                      <DropdownButton
+                        id="dropdown-basic-button"
+                        title="Edit"
+                        size="sm"
+                        disabled={!is_TaiGer_Admin(this.props.user)}
+                      >
+                        <Dropdown.Item
+                          onClick={() =>
+                            this.setModalShow(
+                              manager.firstname,
+                              manager.lastname,
+                              manager._id.toString(),
+                              manager.permissions
+                            )
+                          }
+                        >
+                          Permission
+                        </Dropdown.Item>
+                        {/* <Dropdown.Item
+                          onClick={() =>
+                            this.setManagerModalShow(
+                              manager.firstname,
+                              manager.lastname,
+                              manager._id.toString(),
+                              manager.permissions
+                            )
+                          }
+                        >
+                          Change Role Manager
+                        </Dropdown.Item> */}
+                      </DropdownButton>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
             <h4>Agent:</h4>
             <table>
               <thead>
@@ -280,20 +399,37 @@ class TaiGerOrg extends React.Component {
                       <span>{agent.permissions[0]?.taigerAiQuota | 0}</span>
                     </td>
                     <td>
-                      <Button
+                      <DropdownButton
+                        id="dropdown-basic-button"
+                        title="Edit"
                         size="sm"
                         disabled={!is_TaiGer_Admin(this.props.user)}
-                        onClick={() =>
-                          this.setModalShow(
-                            agent.firstname,
-                            agent.lastname,
-                            agent._id.toString(),
-                            agent.permissions
-                          )
-                        }
                       >
-                        Edit
-                      </Button>
+                        <Dropdown.Item
+                          onClick={() =>
+                            this.setModalShow(
+                              agent.firstname,
+                              agent.lastname,
+                              agent._id.toString(),
+                              agent.permissions
+                            )
+                          }
+                        >
+                          Permission
+                        </Dropdown.Item>
+                        {/* <Dropdown.Item
+                          onClick={() =>
+                            this.setManagerModalShow(
+                              agent.firstname,
+                              agent.lastname,
+                              agent._id.toString(),
+                              agent.permissions
+                            )
+                          }
+                        >
+                          Set Manager
+                        </Dropdown.Item> */}
+                      </DropdownButton>
                     </td>
                   </tr>
                 ))}
@@ -369,20 +505,37 @@ class TaiGerOrg extends React.Component {
                       </td>
                     </td>
                     <td>
-                      <Button
+                      <DropdownButton
+                        id="dropdown-basic-button"
+                        title="Edit"
                         size="sm"
                         disabled={!is_TaiGer_Admin(this.props.user)}
-                        onClick={() =>
-                          this.setModalShow(
-                            editor.firstname,
-                            editor.lastname,
-                            editor._id.toString(),
-                            editor.permissions
-                          )
-                        }
                       >
-                        Edit
-                      </Button>
+                        <Dropdown.Item
+                          onClick={() =>
+                            this.setModalShow(
+                              editor.firstname,
+                              editor.lastname,
+                              editor._id.toString(),
+                              editor.permissions
+                            )
+                          }
+                        >
+                          Permission
+                        </Dropdown.Item>
+                        {/* <Dropdown.Item
+                          onClick={() =>
+                            this.setManagerModalShow(
+                              editor.firstname,
+                              editor.lastname,
+                              editor._id.toString(),
+                              editor.permissions
+                            )
+                          }
+                        >
+                          Set Manager
+                        </Dropdown.Item> */}
+                      </DropdownButton>
                     </td>
                   </tr>
                 ))}
@@ -397,6 +550,16 @@ class TaiGerOrg extends React.Component {
             lastname={this.state.lastname}
             user_permissions={this.state.user_permissions}
             setModalHide={this.setModalHide}
+            onUpdatePermissions={this.onUpdatePermissions}
+          />
+        )}
+        {this.state.managerModalShow && (
+          <GrantManagerModal
+            managerModalShow={this.state.managerModalShow}
+            firstname={this.state.firstname}
+            lastname={this.state.lastname}
+            user_permissions={this.state.user_permissions}
+            setManagerModalHide={this.setManagerModalHide}
             onUpdatePermissions={this.onUpdatePermissions}
           />
         )}

@@ -16,8 +16,6 @@ class GrantPermissionModal extends React.Component {
   }
   onChangePermissions = (e) => {
     const { value, checked } = e.target;
-    // console.log(e.target.value);
-    // console.log(e.target.checked);
     this.setState((prevState) => ({
       permissions: {
         ...prevState.permissions,

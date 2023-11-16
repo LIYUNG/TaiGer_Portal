@@ -473,6 +473,8 @@ export const getExpense = (taiger_user_id) =>
   request.get(`/api/expenses/users/${taiger_user_id}`);
 export const updateUserPermission = (taiger_user_id, permissions) =>
   request.post(`/api/permissions/${taiger_user_id}`, permissions);
+export const updateUserAttribute = (user_id, payload) =>
+  request.post(`/api/users/${user_id}`, payload);
 
 //Personal Data:
 export const updatePersonalData = (user_id, personaldata) =>

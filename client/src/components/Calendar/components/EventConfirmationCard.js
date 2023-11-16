@@ -59,7 +59,7 @@ export default function EventConfirmationCard(props) {
                   )}
               ){' '}
               <b>
-                {is_TaiGer_Agent(props.user) && (
+                {is_TaiGer_role(props.user) && (
                   <>
                     {props.event.requester_id
                       ?.map(
@@ -206,7 +206,7 @@ export default function EventConfirmationCard(props) {
                 the time and get the meeting link
               </scan>
             ))}
-          {is_TaiGer_Agent(props.user) &&
+          {is_TaiGer_role(props.user) &&
             (props.event.isConfirmedReceiver ? (
               props.event.isConfirmedRequester ? (
                 props.disabled ? (

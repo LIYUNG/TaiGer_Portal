@@ -89,7 +89,7 @@ export default function PortalCredentialsCard(props) {
         }));
       }
     );
-  }, []);
+  }, [props.student_id]);
 
   const onChange = (e) => {
     e.persist();

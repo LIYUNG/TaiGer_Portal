@@ -922,6 +922,10 @@ class TaiGerOfficeHours extends React.Component {
                 </p>
               ))}
             </p>
+            <p>
+              Time zone: {this.props.user.timezone}. (Please update it in{' '}
+              <a href="/profile" target='_blank'>Profile</a>)
+            </p>
             <br />
             <Form>
               <Form.Label>Time Slot</Form.Label>

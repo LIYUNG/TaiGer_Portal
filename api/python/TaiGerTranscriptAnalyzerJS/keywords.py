@@ -347,9 +347,9 @@ ECONOMICS_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
 
 # 企業
 BUSINESS_KEY_WORDS = ['企業', '商事', '商管', '電子商務']
-BUSINESS_ANTI_KEY_WORDS = ['asdgladfj;l', '資料']
+BUSINESS_ANTI_KEY_WORDS = ['asdgladfj;l', '資料', '寫作', '英文', '英語']
 BUSINESS_KEY_WORDS_EN = ['business', 'commerce']
-BUSINESS_ANTI_KEY_WORDS_EN = ['asdgladfj;l', 'information']
+BUSINESS_ANTI_KEY_WORDS_EN = ['asdgladfj;l', 'information', 'writing', 'english']
 
 # 計量經濟
 ECONOMETRICS_KEY_WORDS = ['計量經濟', '經濟計量', '數量方法']

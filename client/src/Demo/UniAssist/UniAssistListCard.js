@@ -17,16 +17,15 @@ import ModalMain from '../Utils/ModalHandler/ModalMain';
 import {
   uploadVPDforstudent,
   deleteVPDFile,
-  downloadVPDProfile,
   SetAsNotNeeded,
-  SetUniAssistPaid,
-  uploadVPDPaidConfirmationforstudent
+  SetUniAssistPaid
 } from '../../api';
 import { FiExternalLink } from 'react-icons/fi';
 
 class UniAssistListCard extends React.Component {
   state = {
     error: '',
+    fileType: '',
     student_id: '',
     program_id: '',
     isLoaded2: {},
@@ -71,12 +70,18 @@ class UniAssistListCard extends React.Component {
 
   handleUniAssistDocSubmit = (e, student_id, program_id) => {
     e.preventDefault();
-    this.onSubmitVPDFile(e, e.target.files[0], student_id, program_id);
+    this.onSubmitVPDFile(e, e.target.files[0], student_id, program_id, 'VPD');
   };
 
   handleUniAssistVPDPaidConfirmationDocSubmit = (e, student_id, program_id) => {
     e.preventDefault();
-    this.onSubmitVPDFile(e, e.target.files[0], student_id, program_id);
+    this.onSubmitVPDFile(
+      e,
+      e.target.files[0],
+      student_id,
+      program_id,
+      'VPDConfirmation'
+    );
   };
 
   closesetAsNotNeededWindow = () => {
@@ -193,7 +198,11 @@ class UniAssistListCard extends React.Component {
       }
     }));
 
-    deleteVPDFile(this.state.student_id, this.state.program_id).then(
+    deleteVPDFile(
+      this.state.student_id,
+      this.state.program_id,
+      this.state.fileType
+    ).then(
       (resp) => {
         const { success } = resp.data;
         const { status } = resp;
@@ -204,8 +213,13 @@ class UniAssistListCard extends React.Component {
           const app_idx = this.state.student.applications.findIndex(
             (application) => application.programId._id.toString() === program_id
           );
-          app.uni_assist.status = 'missing';
-          app.uni_assist.vpd_file_path = '';
+          if (this.state.fileType === 'VPD') {
+            app.uni_assist.status = 'missing';
+            app.uni_assist.vpd_file_path = '';
+          }
+          if (this.state.fileType === 'VPDConfirmation') {
+            app.uni_assist.vpd_paid_confirmation_file_path = '';
+          }
           app.uni_assist.updatedAt = new Date();
           let tmep_student = { ...this.state.student };
           tmep_student.applications[app_idx] = app;
@@ -218,6 +232,7 @@ class UniAssistListCard extends React.Component {
             },
             student: tmep_student,
             success: success,
+            fileType: '',
             deleteVPDFileWarningModel: false,
             res_modal_status: status
           }));
@@ -230,6 +245,7 @@ class UniAssistListCard extends React.Component {
               ...state.isLoaded2,
               [program_id]: true
             },
+            fileType: '',
             res_modal_message: message,
             res_modal_status: status
           }));
@@ -240,6 +256,7 @@ class UniAssistListCard extends React.Component {
         this.setState((state) => ({
           ...state,
           isLoaded: true,
+          fileType: '',
           error,
           res_modal_status: 500,
           res_modal_message: statusText
@@ -247,80 +264,18 @@ class UniAssistListCard extends React.Component {
       }
     );
   };
-  onDeleteVPDFileWarningPopUp = (e, student_id, program_id) => {
+  onDeleteVPDFileWarningPopUp = (e, student_id, program_id, fileType) => {
     e.preventDefault();
     this.setState((state) => ({
       ...state,
       student_id,
       program_id,
-      deleteVPDFileWarningModel: true
+      deleteVPDFileWarningModel: true,
+      fileType
     }));
   };
 
-  handleUniAssistDocDownload = (e, student_id, program_id) => {
-    e.preventDefault();
-    downloadVPDProfile(student_id, program_id).then(
-      (resp) => {
-        const { status } = resp;
-        if (status === 200) {
-          const actualFileName =
-            resp.headers['content-disposition'].split('"')[1];
-          const { data: blob } = resp;
-          if (blob.size === 0) return;
-
-          var filetype = actualFileName.split('.'); //split file name
-          filetype = filetype.pop(); //get the file type
-
-          if (filetype === 'pdf') {
-            const url = window.URL.createObjectURL(
-              new Blob([blob], { type: 'application/pdf' })
-            );
-
-            //Open the URL on new Window
-            window.open(url); //TODO: having a reasonable file name, pdf viewer
-          } else {
-            //if not pdf, download instead.
-
-            const url = window.URL.createObjectURL(new Blob([blob]));
-
-            const link = document.createElement('a');
-            link.href = url;
-            link.setAttribute('download', actualFileName);
-            // Append to html link element page
-            document.body.appendChild(link);
-            // Start download
-            link.click();
-            // Clean up and remove the link
-            link.parentNode.removeChild(link);
-          }
-        } else {
-          const { message } = resp.data;
-          this.setState((state) => ({
-            ...state,
-            isLoaded: true,
-            isLoaded2: {
-              ...state.isLoaded2,
-              [program_id]: true
-            },
-            res_modal_message: message,
-            res_modal_status: status
-          }));
-        }
-      },
-      (error) => {
-        const { statusText } = resp;
-        this.setState((state) => ({
-          ...state,
-          isLoaded: true,
-          error,
-          res_modal_status: 500,
-          res_modal_message: statusText
-        }));
-      }
-    );
-  };
-
-  onSubmitVPDFile = (e, NewFile, student_id, program_id) => {
+  onSubmitVPDFile = (e, NewFile, student_id, program_id, fileType) => {
     e.preventDefault();
     const formData = new FormData();
     formData.append('file', NewFile);
@@ -331,63 +286,7 @@ class UniAssistListCard extends React.Component {
       }
     }));
 
-    uploadVPDforstudent(student_id, program_id, formData).then(
-      (resp) => {
-        const { data, success } = resp.data;
-        const { status } = resp;
-        if (success) {
-          this.setState((state) => ({
-            ...state,
-            student: data, // resp.data = {success: true, data:{...}}
-            success,
-            category: '',
-            isLoaded: true,
-            isLoaded2: {
-              ...state.isLoaded2,
-              [program_id]: true
-            },
-            file: '',
-            res_modal_status: status
-          }));
-        } else {
-          const { message } = resp.data;
-          this.setState((state) => ({
-            ...state,
-            isLoaded: true,
-            isLoaded2: {
-              ...state.isLoaded2,
-              [program_id]: true
-            },
-            res_modal_message: message,
-            res_modal_status: status
-          }));
-        }
-      },
-      (error) => {
-        const { statusText } = resp;
-        this.setState((state) => ({
-          ...state,
-          isLoaded: true,
-          error,
-          res_modal_status: 500,
-          res_modal_message: statusText
-        }));
-      }
-    );
-  };
-
-  onSubmitVPDPaidConfirmationFile = (e, NewFile, student_id, program_id) => {
-    e.preventDefault();
-    const formData = new FormData();
-    formData.append('file', NewFile);
-    this.setState((state) => ({
-      isLoaded2: {
-        ...state.isLoaded2,
-        [program_id]: false
-      }
-    }));
-
-    uploadVPDPaidConfirmationforstudent(student_id, program_id, formData).then(
+    uploadVPDforstudent(student_id, program_id, formData, fileType).then(
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
@@ -523,7 +422,7 @@ class UniAssistListCard extends React.Component {
                               </Col>
                               <Col md={1}>
                                 <Form.Group
-                                  controlId={`${application.programId._id.toString()}`}
+                                  controlId={`0${application.programId._id.toString()}`}
                                 >
                                   <Form.Label>
                                     <IoMdCloudUpload
@@ -544,34 +443,102 @@ class UniAssistListCard extends React.Component {
                                   />
                                 </Form.Group>
                               </Col>
-                              <Col md={4}>
-                                <p className="mt-1 text-light">
-                                  Confirmation Form (if applicable)
-                                </p>
-                              </Col>
-                              <Col md={1}>
-                                <Form.Group
-                                  controlId={`${application.programId._id.toString()}`}
-                                >
-                                  <Form.Label>
-                                    <IoMdCloudUpload
-                                      color={'lightgray'}
-                                      size={32}
-                                    />
-                                  </Form.Label>
-                                  <Form.Control
-                                    hidden
-                                    type="file"
-                                    onChange={(e) =>
-                                      this.handleUniAssistVPDPaidConfirmationDocSubmit(
-                                        e,
-                                        this.state.student._id.toString(),
-                                        application.programId._id.toString()
-                                      )
+                              {!application.uni_assist
+                                ?.vpd_paid_confirmation_file_path ||
+                              application.uni_assist
+                                ?.vpd_paid_confirmation_file_path === '' ? (
+                                <>
+                                  {this.state.isLoaded2[
+                                    `${application.programId._id.toString()}`
+                                  ] ? (
+                                    <>
+                                      <Col md={4}>
+                                        <p className="mt-1 text-light">
+                                          Confirmation Form (if applicable)
+                                        </p>
+                                      </Col>
+                                      <Col md={1}>
+                                        <Form.Group
+                                          controlId={`${application.programId._id.toString()}`}
+                                        >
+                                          <Form.Label>
+                                            <IoMdCloudUpload
+                                              color={'lightgray'}
+                                              size={32}
+                                            />
+                                          </Form.Label>
+                                          <Form.Control
+                                            hidden
+                                            type="file"
+                                            onChange={(e) =>
+                                              this.handleUniAssistVPDPaidConfirmationDocSubmit(
+                                                e,
+                                                this.state.student._id.toString(),
+                                                application.programId._id.toString()
+                                              )
+                                            }
+                                          />
+                                        </Form.Group>
+                                      </Col>
+                                    </>
+                                  ) : (
+                                    <div>
+                                      <Spinner
+                                        // className="mx-2 my-2"
+                                        animation="border"
+                                        role="status"
+                                        variant="light"
+                                      >
+                                        <span className="visually-hidden"></span>
+                                      </Spinner>
+                                    </div>
+                                  )}
+                                </>
+                              ) : (
+                                <>
+                                  <Col md={2}>
+                                    <a
+                                      href={`${BASE_URL}/api/students/${this.state.student._id.toString()}/vpd/${application.programId._id.toString()}/VPDConfirmation`}
+                                      target="_blank"
+                                    >
+                                      <Button
+                                        title="Download"
+                                        disabled={
+                                          !this.state.isLoaded2[
+                                            application.programId._id.toString()
+                                          ]
+                                        }
+                                        size={'sm'}
+                                      >
+                                        <AiOutlineDownload size={16} />
+                                      </Button>
+                                    </a>
+                                  </Col>
+                                  <Col>
+                                    {
+                                      <Button
+                                        onClick={(e) =>
+                                          this.onDeleteVPDFileWarningPopUp(
+                                            e,
+                                            this.state.student._id.toString(),
+                                            application.programId._id.toString(),
+                                            'VPDConfirmation'
+                                          )
+                                        }
+                                        disabled={
+                                          !this.state.isLoaded2[
+                                            application.programId._id.toString()
+                                          ]
+                                        }
+                                        variant={'danger'}
+                                        size={'sm'}
+                                      >
+                                        <AiOutlineDelete size={16} />
+                                      </Button>
                                     }
-                                  />
-                                </Form.Group>
-                              </Col>
+                                  </Col>
+                                </>
+                              )}
                               {is_TaiGer_AdminAgent(this.props.user) && (
                                 <>
                                   <Col>
@@ -652,7 +619,8 @@ class UniAssistListCard extends React.Component {
                                 this.onDeleteVPDFileWarningPopUp(
                                   e,
                                   this.state.student._id.toString(),
-                                  application.programId._id.toString()
+                                  application.programId._id.toString(),
+                                  'VPD'
                                 )
                               }
                               disabled={

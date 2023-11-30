@@ -131,26 +131,15 @@ export const updateDocumentationHelperLink = (link, key, category) =>
 export const deleteFile = (category, studentId) =>
   request.delete(`/api/students/${studentId}/files/${category}`);
 
-export const downloadVPDProfile = (studentId, program_id) =>
-  request.get(`/api/students/${studentId}/vpd/${program_id}/VPD`, {
-    responseType: 'blob'
-  });
-export const downloadVPDConfirationProfile = (studentId, program_id) =>
-  request.get(`/api/students/${studentId}/vpd/${program_id}/VPDConfirmation`, {
-    responseType: 'blob'
-  });
-export const uploadVPDforstudent = (studentId, program_id, data) =>
-  request.post(`/api/students/${studentId}/vpd/${program_id}/VPD`, data);
-export const uploadVPDPaidConfirmationforstudent = (studentId, program_id, data) =>
-  request.post(`/api/students/${studentId}/vpd/${program_id}/VPDConfirmation`, data);
-
-export const deleteVPDFile = (studentId, program_id) =>
-  request.delete(`/api/students/${studentId}/vpd/${program_id}/VPD`);
-
-export const deleteVPDConfirmationFile = (studentId, program_id) =>
-  request.delete(
-    `/api/students/${studentId}/vpd/${program_id}/VPDConfirmation`
+export const uploadVPDforstudent = (studentId, program_id, data, fileType) =>
+  request.post(
+    `/api/students/${studentId}/vpd/${program_id}/${fileType}`,
+    data
   );
+
+export const deleteVPDFile = (studentId, program_id, fileType) =>
+  request.delete(`/api/students/${studentId}/vpd/${program_id}/${fileType}`);
+
 export const SetAsNotNeeded = (studentId, program_id) =>
   request.put(`/api/students/${studentId}/vpd/${program_id}/VPD`);
 

@@ -248,7 +248,7 @@ router
   );
 
 router
-  .route('/:studentId/vpd/:program_id')
+  .route('/:studentId/vpd/:program_id/:fileType')
   .put(
     filter_archiv_user,
     GeneralPUTRequestRateLimiter,

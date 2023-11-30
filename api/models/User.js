@@ -369,6 +369,14 @@ const applicationSchema = new Schema({
       type: String,
       default: ''
     },
+    vpd_paid_confirmation_file_path: {
+      type: String,
+      default: ''
+    },
+    vpd_paid_confirmation_file_status: {
+      type: String,
+      default: ''
+    },
     isPaid: {
       type: Boolean,
       default: false

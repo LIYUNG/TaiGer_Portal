@@ -105,7 +105,7 @@ const storage_vpd_s3 = multerS3({
     cb(null, { fieldName: file.fieldname, path: directory });
   },
   key: (req, file, cb) => {
-    const { studentId, program_id } = req.params;
+    const { studentId, program_id, fileType } = req.params;
 
     Student.findById(studentId).then((student) => {
       if (student) {
@@ -113,7 +113,7 @@ const storage_vpd_s3 = multerS3({
           const program_name = `${program.school} ${program.program_name}`;
           let temp_name = `${student.lastname}_${
             student.firstname
-          }_${program_name}_VPD${path.extname(file.originalname)}`;
+          }_${program_name}_${fileType}${path.extname(file.originalname)}`;
           temp_name = temp_name.replace(/ /g, '_');
           temp_name = temp_name.replace(/\//g, '_');
           cb(null, temp_name);

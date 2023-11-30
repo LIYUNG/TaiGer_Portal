@@ -415,7 +415,7 @@ const updateVPDFileNecessity = asyncHandler(async (req, res, next) => {
 const saveVPDFilePath = asyncHandler(async (req, res, next) => {
   const {
     user,
-    params: { studentId, program_id }
+    params: { studentId, program_id, fileType }
   } = req;
 
   const student = await Student.findById(studentId).populate(
@@ -441,12 +441,23 @@ const saveVPDFilePath = asyncHandler(async (req, res, next) => {
 
     return;
   }
-  app.uni_assist.status = DocumentStatus.Uploaded;
-  app.uni_assist.updatedAt = new Date();
-  app.uni_assist.vpd_file_path = path.join(
-    req.file.metadata.path,
-    req.file.key
-  );
+  if (fileType === 'VPD') {
+    app.uni_assist.status = DocumentStatus.Uploaded;
+    app.uni_assist.updatedAt = new Date();
+    app.uni_assist.vpd_file_path = path.join(
+      req.file.metadata.path,
+      req.file.key
+    );
+  }
+  if (fileType === 'VPDConfirmation') {
+    // app.uni_assist.status = DocumentStatus.Uploaded;
+    app.uni_assist.updatedAt = new Date();
+    app.uni_assist.vpd_paid_confirmation_file_path = path.join(
+      req.file.metadata.path,
+      req.file.key
+    );
+  }
+
   await student.save();
 
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
@@ -500,7 +511,7 @@ const saveVPDFilePath = asyncHandler(async (req, res, next) => {
 const downloadVPDFile = asyncHandler(async (req, res, next) => {
   const {
     user,
-    params: { studentId, program_id }
+    params: { studentId, program_id, fileType }
   } = req;
 
   // AWS S3
@@ -518,16 +529,33 @@ const downloadVPDFile = asyncHandler(async (req, res, next) => {
     logger.error('downloadVPDFile: Invalid app name!');
     throw new ErrorResponse(403, 'Invalid app name');
   }
-  if (!app.uni_assist.vpd_file_path) {
-    logger.error('downloadVPDFile: File not uploaded yet!');
-    throw new ErrorResponse(403, 'File not uploaded yet');
+  if (fileType === 'VPD') {
+    if (!app.uni_assist.vpd_file_path) {
+      logger.error('downloadVPDFile: File not uploaded yet!');
+      throw new ErrorResponse(403, 'VPD File not uploaded yet');
+    }
   }
 
-  let document_split = app.uni_assist.vpd_file_path.replace(/\\/g, '/');
+  if (fileType === 'VPDConfirmation') {
+    if (!app.uni_assist.vpd_paid_confirmation_file_path) {
+      logger.error('downloadVPDConfirmationFile: File not uploaded yet!');
+      throw new ErrorResponse(403, 'VPD Confirmation File not uploaded yet');
+    }
+  }
+  let document_split = '';
+  if (fileType === 'VPD') {
+    document_split = app.uni_assist.vpd_file_path.replace(/\\/g, '/');
+  }
+  if (fileType === 'VPDConfirmation') {
+    document_split = app.uni_assist.vpd_paid_confirmation_file_path.replace(
+      /\\/g,
+      '/'
+    );
+  }
   document_split = document_split.split('/');
   const fileKey = document_split[1];
   let directory = path.join(AWS_S3_BUCKET_NAME, document_split[0]);
-  logger.info('Trying to download VPD file', fileKey);
+  logger.info(`Trying to download ${fileType} file`, fileKey);
 
   directory = directory.replace(/\\/g, '/');
   const options = {
@@ -535,7 +563,6 @@ const downloadVPDFile = asyncHandler(async (req, res, next) => {
     Bucket: directory
   };
 
-  console.log(fileKey);
   const cache_key = `${studentId}${fileKey}`;
   const value = one_month_cache.get(cache_key); // vpd name
   if (value === undefined) {
@@ -953,7 +980,7 @@ const deleteProfileFile = asyncHandler(async (req, res, next) => {
 });
 
 const deleteVPDFile = asyncHandler(async (req, res, next) => {
-  const { studentId, program_id } = req.params;
+  const { studentId, program_id, fileType } = req.params;
 
   const student = await Student.findOne({
     _id: studentId
@@ -973,12 +1000,31 @@ const deleteVPDFile = asyncHandler(async (req, res, next) => {
     logger.error('deleteVPDFile: Invalid applications name');
     throw new ErrorResponse(403, 'Invalid applications name');
   }
-  if (!app.uni_assist.vpd_file_path) {
-    logger.error('deleteVPDFile: File not exist');
-    throw new ErrorResponse(403, 'File not exist');
+  if (fileType === 'VPD') {
+    if (!app.uni_assist.vpd_file_path) {
+      logger.error('deleteVPDFile: VPD File not exist');
+      throw new ErrorResponse(403, 'VPD File not exist');
+    }
+  }
+  if (fileType === 'VPDConfirmation') {
+    if (!app.uni_assist.vpd_paid_confirmation_file_path) {
+      logger.error(
+        'deleteVPDConfirmationFile: VPD Confirmation File not exist'
+      );
+      throw new ErrorResponse(403, 'VPD Confirmation File not exist');
+    }
+  }
+  let document_split = '';
+  if (fileType === 'VPD') {
+    document_split = app.uni_assist.vpd_file_path.replace(/\\/g, '/');
+  }
+  if (fileType === 'VPDConfirmation') {
+    document_split = app.uni_assist.vpd_paid_confirmation_file_path.replace(
+      /\\/g,
+      '/'
+    );
   }
 
-  let document_split = app.uni_assist.vpd_file_path.replace(/\\/g, '/');
   document_split = document_split.split('/');
   const fileKey = document_split[1];
   let directory = path.join(AWS_S3_BUCKET_NAME, document_split[0]);
@@ -994,8 +1040,13 @@ const deleteVPDFile = asyncHandler(async (req, res, next) => {
       if (error) {
         logger.error(error);
       } else {
-        app.uni_assist.status = DocumentStatus.Missing;
-        app.uni_assist.vpd_file_path = '';
+        if (fileType === 'VPD') {
+          app.uni_assist.status = DocumentStatus.Missing;
+          app.uni_assist.vpd_file_path = '';
+        }
+        if (fileType === 'VPDConfirmation') {
+          app.uni_assist.vpd_paid_confirmation_file_path = '';
+        }
         app.uni_assist.updatedAt = new Date();
 
         student.save();

@@ -13,7 +13,12 @@ import {
   frequencyDistribution,
   open_tasks_with_editors
 } from '../../Utils/checking-functions';
-import { academic_background_header } from '../../Utils/contants';
+import {
+  academic_background_header,
+  is_new_message_status,
+  is_pending_status
+} from '../../Utils/contants';
+import DEMO from '../../../store/constant';
 
 class EditorMainView extends React.Component {
   render() {
@@ -117,6 +122,56 @@ class EditorMainView extends React.Component {
       });
     });
     let header = Object.values(academic_background_header);
+    const unreplied_task = this.props.students
+      .filter((student) =>
+        student.editors.some(
+          (editor) => editor._id === this.props.user._id.toString()
+        )
+      )
+      .flatMap((student, i) => [
+        ...student.generaldocs_threads
+          .filter(
+            (generaldocs_threads) =>
+              !generaldocs_threads.isFinalVersion &&
+              is_new_message_status(this.props.user, generaldocs_threads)
+          )
+          .flatMap((generaldocs_threads, i) => [generaldocs_threads]),
+        ...student.applications.flatMap((application, i) =>
+          application.doc_modification_thread
+            .filter(
+              (application_doc_thread) =>
+                !application_doc_thread.isFinalVersion &&
+                is_new_message_status(this.props.user, application_doc_thread)
+            )
+            .flatMap((application_doc_thread, idx) => [application_doc_thread])
+        )
+      ]);
+    const follow_up_task = this.props.students
+      .filter((student) =>
+        student.editors.some(
+          (editor) => editor._id === this.props.user._id.toString()
+        )
+      )
+      .flatMap((student, i) => [
+        ...student.generaldocs_threads
+          .filter(
+            (generaldocs_threads) =>
+              !generaldocs_threads.isFinalVersion &&
+              is_pending_status(this.props.user, generaldocs_threads) &&
+              generaldocs_threads.latest_message_left_by_id !== ''
+          )
+          .flatMap((generaldocs_threads, i) => [generaldocs_threads]),
+        ...student.applications.flatMap((application, i) =>
+          application.doc_modification_thread
+            .filter(
+              (application_doc_thread) =>
+                !application_doc_thread.isFinalVersion &&
+                is_pending_status(this.props.user, application_doc_thread) &&
+                application_doc_thread.latest_message_left_by_id !== ''
+            )
+            .flatMap((application_doc_thread, idx) => [application_doc_thread])
+        )
+      ]);
 
     return (
       <>
@@ -129,12 +184,95 @@ class EditorMainView extends React.Component {
                     <b>
                       {this.props.user.firstname} {this.props.user.lastname}
                     </b>{' '}
-                    Open Tasks Distribution
+                    Dashboard
                   </Col>
                 </Row>
               </Card.Title>
             </Card.Header>
+          </Card>
+        </Row>
+        <Row>
+          <Col md={3}>
+            <Card className="px-0 mb-2 mx-0" bg={'danger'}>
+              <Card.Header>
+                <Card.Title className="text-light">Action required</Card.Title>
+              </Card.Header>
+              <Card.Body>
+                <h4>
+                  <Link to={DEMO.CV_ML_RL_CENTER_LINK} className="text-light">
+                    <b><u>{unreplied_task?.length}</u></b>
+                  </Link>
+                </h4>
+              </Card.Body>
+            </Card>
+          </Col>
+          <Col md={3}>
+            <Card className="px-0 mb-2 mx-0 card-with-scroll" bg={'primary'}>
+              <Card.Header text={'dark'}>
+                <Card.Title className="text-light">Followup Task</Card.Title>
+              </Card.Header>
+              <Card.Body>
+                <h4>
+                  <Link to={DEMO.CV_ML_RL_CENTER_LINK} className="text-light">
+                    <b><u>{follow_up_task?.length}</u></b>
+                  </Link>
+                </h4>
+              </Card.Body>
+            </Card>
+          </Col>
+          <Col md={3}>
+            <Card className="px-0 mb-2 mx-0 card-with-scroll" bg={'secondary'}>
+              <Card.Header text={'dark'}>
+                <Row>
+                  <Col className="my-0 mx-0">
+                    <Card.Title className="text-light">
+                      # of my students
+                    </Card.Title>
+                  </Col>
+                </Row>
+              </Card.Header>
+              <Card.Body>
+                <h4>
+                  <Link
+                    to={DEMO.STUDENT_APPLICATIONS_LINK}
+                    className="text-light"
+                  >
+                    <b>
+                      <u>
+                        {
+                          this.props.students.filter((student) =>
+                            student.editors.some(
+                              (editor) =>
+                                editor._id === this.props.user._id.toString()
+                            )
+                          )?.length
+                        }
+                      </u>
+                    </b>
+                  </Link>
+                </h4>
+              </Card.Body>
+            </Card>
+          </Col>
+          <Col md={3}>
+            <Card className="px-0 mb-2 mx-0 card-with-scroll" bg={'success'}>
+              <Card.Header text={'dark'}>
+                <Row>
+                  <Col className="my-0 mx-0">
+                    <Card.Title className="text-light">XXXXXX</Card.Title>
+                  </Col>
+                </Row>
+              </Card.Header>
+              <Card.Body>
+                <h4 className="text-light">Coming soon</h4>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
+        <Row>
+          <Card className="px-0 mb-2 mx-0 card-with-scroll">
             <Card.Body>
+              <p>My workload over time</p>
               Tasks distribute among the date. Note that CVs, MLs, RLs, and
               Essay are mixed together.
               <p className="my-0">
@@ -193,7 +331,7 @@ class EditorMainView extends React.Component {
             </Card>
           </Row>
         )}
-        <Row>
+        {/* <Row>
           <Card className="px-0 mb-2 mx-0" bg={'danger'} text={'light'}>
             <Card.Header>
               <Card.Title className="my-0 mx-0 text-light">
@@ -212,9 +350,9 @@ class EditorMainView extends React.Component {
               {unread_thread}
             </Table>
           </Card>
-        </Row>
+        </Row> */}
         <TabProgramConflict students={this.props.students} />
-        <Row>
+        {/* <Row>
           <Card className="px-0 mb-2 mx-0" bg={'primary'} text={'light'}>
             <Card.Header>
               <Card.Title className="my-0 mx-0 text-light">
@@ -233,25 +371,7 @@ class EditorMainView extends React.Component {
               {editor_todo_tasks}
             </Table>
           </Card>
-        </Row>
-        <Row>
-          <Tabs
-            defaultActiveKey="dz"
-            id="uncontrolled-tab-example"
-            fill={true}
-            justify={true}
-          >
-            <Tab eventKey="dz" title="Agents and Editors"></Tab>
-            <Tab eventKey="y" title="Student Profile Overview">
-              <TabStudBackgroundDashboard
-                students={this.props.students}
-                user={this.props.user}
-                updateStudentArchivStatus={this.props.updateStudentArchivStatus}
-                isDashboard={this.props.isDashboard}
-              />
-            </Tab>
-          </Tabs>
-        </Row>
+        </Row> */}
         <Row>
           <Table
             size="sm"

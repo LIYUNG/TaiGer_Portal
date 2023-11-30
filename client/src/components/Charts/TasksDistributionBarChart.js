@@ -39,7 +39,7 @@ const TasksDistributionBarChart = ({ data }) => {
           dataKey="active"
           fill="#FF0000"
           stackId={'a'}
-          label={{ position: 'top' }}
+          // label={{ position: 'top' }}
         />
         <Bar
           dataKey="potentials"

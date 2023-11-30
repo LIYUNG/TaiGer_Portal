@@ -29,7 +29,8 @@ class UnrespondedThreads extends React.Component {
           <tr key={i}>
             {!generaldocs_threads.isFinalVersion &&
               generaldocs_threads.latest_message_left_by_id !==
-                this.props.user._id.toString() && (
+                this.props.user._id.toString() &&
+              generaldocs_threads.latest_message_left_by_id !== '' && (
                 <>
                   <td>
                     <Link

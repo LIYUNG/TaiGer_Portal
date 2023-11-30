@@ -247,7 +247,7 @@ class CVMLRLOverview extends React.Component {
                 />
                 <Banner
                   ReadOnlyMode={true}
-                  bg={'secondary'}
+                  bg={'primary'}
                   title={'Attention:'}
                   path={'/'}
                   text={'Follow up'}

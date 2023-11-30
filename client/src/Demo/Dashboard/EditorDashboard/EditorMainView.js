@@ -200,7 +200,10 @@ class EditorMainView extends React.Component {
               <Card.Body>
                 <h4>
                   <Link to={DEMO.CV_ML_RL_CENTER_LINK} className="text-light">
-                    <b><u>{unreplied_task?.length}</u></b>
+                    <b>
+                      <u>{unreplied_task?.length}</u>
+                    </b>{' '}
+                    Task{unreplied_task?.length > 1 ? 's' : ''}
                   </Link>
                 </h4>
               </Card.Body>
@@ -214,7 +217,10 @@ class EditorMainView extends React.Component {
               <Card.Body>
                 <h4>
                   <Link to={DEMO.CV_ML_RL_CENTER_LINK} className="text-light">
-                    <b><u>{follow_up_task?.length}</u></b>
+                    <b>
+                      <u>{follow_up_task?.length}</u>
+                    </b>{' '}
+                    Task{follow_up_task?.length > 1 ? 's' : ''}
                   </Link>
                 </h4>
               </Card.Body>

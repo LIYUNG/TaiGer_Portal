@@ -29,6 +29,7 @@ class UniAssistListCard extends React.Component {
     student_id: '',
     program_id: '',
     isLoaded2: {},
+    isLoadedVPDConfirmation: {},
     isLoaded: false,
     student: this.props.student,
     deleteVPDFileWarningModel: false,
@@ -45,7 +46,8 @@ class UniAssistListCard extends React.Component {
       ] = true;
     }
     this.setState({
-      isLoaded2: temp_isLoaded
+      isLoaded2: temp_isLoaded,
+      isLoadedVPDConfirmation: temp_isLoaded
     });
   }
   componentDidUpdate(prevProps, prevState) {
@@ -60,7 +62,8 @@ class UniAssistListCard extends React.Component {
       }
       this.setState({
         student: this.props.student,
-        isLoaded2: temp_isLoaded
+        isLoaded2: temp_isLoaded,
+        isLoadedVPDConfirmation: temp_isLoaded
       });
     }
   }
@@ -190,13 +193,22 @@ class UniAssistListCard extends React.Component {
   };
 
   handleUniAssistDocDelete = (e, program_id) => {
-    // this.setState({ isLoaded: false });
-    this.setState((state) => ({
-      isLoaded2: {
-        ...state.isLoaded2,
-        [program_id]: false
-      }
-    }));
+    if (this.state.fileType === 'VPD') {
+      this.setState((state) => ({
+        isLoaded2: {
+          ...state.isLoaded2,
+          [program_id]: false
+        }
+      }));
+    }
+    if (this.state.fileType === 'VPDConfirmation') {
+      this.setState((state) => ({
+        isLoadedVPDConfirmation: {
+          ...state.isLoadedVPDConfirmation,
+          [program_id]: false
+        }
+      }));
+    }
 
     deleteVPDFile(
       this.state.student_id,
@@ -223,19 +235,36 @@ class UniAssistListCard extends React.Component {
           app.uni_assist.updatedAt = new Date();
           let tmep_student = { ...this.state.student };
           tmep_student.applications[app_idx] = app;
-          this.setState((state) => ({
-            ...state,
-            isLoaded: true,
-            isLoaded2: {
-              ...state.isLoaded2,
-              [program_id]: true
-            },
-            student: tmep_student,
-            success: success,
-            fileType: '',
-            deleteVPDFileWarningModel: false,
-            res_modal_status: status
-          }));
+          if (this.state.fileType === 'VPD') {
+            this.setState((state) => ({
+              ...state,
+              isLoaded: true,
+              isLoaded2: {
+                ...state.isLoaded2,
+                [program_id]: true
+              },
+              student: tmep_student,
+              success: success,
+              fileType: '',
+              deleteVPDFileWarningModel: false,
+              res_modal_status: status
+            }));
+          }
+          if (this.state.fileType === 'VPDConfirmation') {
+            this.setState((state) => ({
+              ...state,
+              isLoaded: true,
+              isLoadedVPDConfirmation: {
+                ...state.isLoadedVPDConfirmation,
+                [program_id]: true
+              },
+              student: tmep_student,
+              success: success,
+              fileType: '',
+              deleteVPDFileWarningModel: false,
+              res_modal_status: status
+            }));
+          }
         } else {
           const { message } = resp.data;
           this.setState((state) => ({
@@ -279,31 +308,58 @@ class UniAssistListCard extends React.Component {
     e.preventDefault();
     const formData = new FormData();
     formData.append('file', NewFile);
-    this.setState((state) => ({
-      isLoaded2: {
-        ...state.isLoaded2,
-        [program_id]: false
-      }
-    }));
+    if (fileType === 'VPD') {
+      this.setState((state) => ({
+        isLoaded2: {
+          ...state.isLoaded2,
+          [program_id]: false
+        }
+      }));
+    }
+    if (fileType === 'VPDConfirmation') {
+      this.setState((state) => ({
+        isLoadedVPDConfirmation: {
+          ...state.isLoadedVPDConfirmation,
+          [program_id]: false
+        }
+      }));
+    }
 
     uploadVPDforstudent(student_id, program_id, formData, fileType).then(
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
         if (success) {
-          this.setState((state) => ({
-            ...state,
-            student: data, // resp.data = {success: true, data:{...}}
-            success,
-            category: '',
-            isLoaded: true,
-            isLoaded2: {
-              ...state.isLoaded2,
-              [program_id]: true
-            },
-            file: '',
-            res_modal_status: status
-          }));
+          if (fileType === 'VPD') {
+            this.setState((state) => ({
+              ...state,
+              student: data, // resp.data = {success: true, data:{...}}
+              success,
+              category: '',
+              isLoaded: true,
+              isLoaded2: {
+                ...state.isLoaded2,
+                [program_id]: true
+              },
+              file: '',
+              res_modal_status: status
+            }));
+          }
+          if (fileType === 'VPDConfirmation') {
+            this.setState((state) => ({
+              ...state,
+              student: data, // resp.data = {success: true, data:{...}}
+              success,
+              category: '',
+              isLoaded: true,
+              isLoadedVPDConfirmation: {
+                ...state.isLoadedVPDConfirmation,
+                [program_id]: true
+              },
+              file: '',
+              res_modal_status: status
+            }));
+          }
         } else {
           const { message } = resp.data;
           this.setState((state) => ({
@@ -412,189 +468,57 @@ class UniAssistListCard extends React.Component {
                     application.uni_assist.status === DocumentStatus.Missing ||
                     application.uni_assist.status === 'notstarted' ? (
                       <>
-                        <Row>
-                          {this.state.isLoaded2[
-                            `${application.programId._id.toString()}`
-                          ] ? (
-                            <>
-                              <Col md={1}>
-                                <h5 className="mt-1 text-light">VPD</h5>
-                              </Col>
-                              <Col md={1}>
-                                <Form.Group
-                                  controlId={`0${application.programId._id.toString()}`}
-                                >
-                                  <Form.Label>
-                                    <IoMdCloudUpload
-                                      color={'lightgray'}
-                                      size={32}
-                                    />
-                                  </Form.Label>
-                                  <Form.Control
-                                    hidden
-                                    type="file"
-                                    onChange={(e) =>
-                                      this.handleUniAssistDocSubmit(
-                                        e,
-                                        this.state.student._id.toString(),
-                                        application.programId._id.toString()
-                                      )
-                                    }
-                                  />
-                                </Form.Group>
-                              </Col>
-                              {!application.uni_assist
-                                ?.vpd_paid_confirmation_file_path ||
-                              application.uni_assist
-                                ?.vpd_paid_confirmation_file_path === '' ? (
-                                <>
-                                  {this.state.isLoaded2[
-                                    `${application.programId._id.toString()}`
-                                  ] ? (
-                                    <>
-                                      <Col md={4}>
-                                        <p className="mt-1 text-light">
-                                          Confirmation Form (if applicable)
-                                        </p>
-                                      </Col>
-                                      <Col md={1}>
-                                        <Form.Group
-                                          controlId={`${application.programId._id.toString()}`}
-                                        >
-                                          <Form.Label>
-                                            <IoMdCloudUpload
-                                              color={'lightgray'}
-                                              size={32}
-                                            />
-                                          </Form.Label>
-                                          <Form.Control
-                                            hidden
-                                            type="file"
-                                            onChange={(e) =>
-                                              this.handleUniAssistVPDPaidConfirmationDocSubmit(
-                                                e,
-                                                this.state.student._id.toString(),
-                                                application.programId._id.toString()
-                                              )
-                                            }
-                                          />
-                                        </Form.Group>
-                                      </Col>
-                                    </>
-                                  ) : (
-                                    <div>
-                                      <Spinner
-                                        // className="mx-2 my-2"
-                                        animation="border"
-                                        role="status"
-                                        variant="light"
-                                      >
-                                        <span className="visually-hidden"></span>
-                                      </Spinner>
-                                    </div>
-                                  )}
-                                </>
-                              ) : (
-                                <>
-                                  <Col md={2}>
-                                    <a
-                                      href={`${BASE_URL}/api/students/${this.state.student._id.toString()}/vpd/${application.programId._id.toString()}/VPDConfirmation`}
-                                      target="_blank"
-                                    >
-                                      <Button
-                                        title="Download"
-                                        disabled={
-                                          !this.state.isLoaded2[
-                                            application.programId._id.toString()
-                                          ]
-                                        }
-                                        size={'sm'}
-                                      >
-                                        <AiOutlineDownload size={16} />
-                                      </Button>
-                                    </a>
-                                  </Col>
-                                  <Col>
-                                    {
-                                      <Button
-                                        onClick={(e) =>
-                                          this.onDeleteVPDFileWarningPopUp(
-                                            e,
-                                            this.state.student._id.toString(),
-                                            application.programId._id.toString(),
-                                            'VPDConfirmation'
-                                          )
-                                        }
-                                        disabled={
-                                          !this.state.isLoaded2[
-                                            application.programId._id.toString()
-                                          ]
-                                        }
-                                        variant={'danger'}
-                                        size={'sm'}
-                                      >
-                                        <AiOutlineDelete size={16} />
-                                      </Button>
-                                    }
-                                  </Col>
-                                </>
-                              )}
-                              {is_TaiGer_AdminAgent(this.props.user) && (
-                                <>
-                                  <Col>
-                                    <Form>
-                                      <Form.Check
-                                        type="checkbox"
-                                        className="text-light"
-                                        label={`Upload files and Paid`}
-                                        value={'Is_Paid'}
-                                        checked={application.uni_assist.isPaid}
-                                        onChange={(e) =>
-                                          this.onCheckHandler(
-                                            e,
-                                            this.state.student._id.toString(),
-                                            application.programId._id.toString(),
-                                            !application.uni_assist.isPaid
-                                          )
-                                        }
-                                      />
-                                    </Form>
-                                  </Col>
-                                  <Col>
-                                    <Button
-                                      size={'sm'}
-                                      color={'lightgray'}
-                                      onClick={(e) =>
-                                        this.opensetAsNotNeededWindow(
-                                          e,
-                                          this.state.student._id.toString(),
-                                          application.programId._id.toString()
-                                        )
-                                      }
-                                    >
-                                      Set Not Needed
-                                    </Button>
-                                  </Col>
-                                </>
-                              )}
-                            </>
-                          ) : (
-                            <div>
-                              <Spinner
-                                // className="mx-2 my-2"
-                                animation="border"
-                                role="status"
-                                variant="light"
+                        {this.state.isLoaded2[
+                          `${application.programId._id.toString()}`
+                        ] ? (
+                          <>
+                            <Col md={1}>
+                              <h5 className="mt-1 text-light">VPD</h5>
+                            </Col>
+                            <Col md={1}>
+                              <Form.Group
+                                controlId={`0${application.programId._id.toString()}`}
                               >
-                                <span className="visually-hidden"></span>
-                              </Spinner>
-                            </div>
-                          )}
-                        </Row>
+                                <Form.Label>
+                                  <IoMdCloudUpload
+                                    color={'lightgray'}
+                                    size={32}
+                                  />
+                                </Form.Label>
+                                <Form.Control
+                                  hidden
+                                  type="file"
+                                  onChange={(e) =>
+                                    this.handleUniAssistDocSubmit(
+                                      e,
+                                      this.state.student._id.toString(),
+                                      application.programId._id.toString()
+                                    )
+                                  }
+                                />
+                              </Form.Group>
+                            </Col>
+                            <Col md={1}></Col>
+                          </>
+                        ) : (
+                          <div>
+                            <Spinner
+                              // className="mx-2 my-2"
+                              animation="border"
+                              role="status"
+                              variant="light"
+                            >
+                              <span className="visually-hidden"></span>
+                            </Spinner>
+                          </div>
+                        )}
                       </>
                     ) : (
                       <>
-                        <Col md={2}>
+                        <Col md={1}>
+                          <h5 className="mt-1 text-light">VPD</h5>
+                        </Col>
+                        <Col md={1}>
                           <a
                             href={`${BASE_URL}/api/students/${this.state.student._id.toString()}/vpd/${application.programId._id.toString()}/VPD`}
                             target="_blank"
@@ -612,29 +536,171 @@ class UniAssistListCard extends React.Component {
                             </Button>
                           </a>
                         </Col>
-                        <Col>
-                          {
+                        <Col md={1}>
+                          <Button
+                            onClick={(e) =>
+                              this.onDeleteVPDFileWarningPopUp(
+                                e,
+                                this.state.student._id.toString(),
+                                application.programId._id.toString(),
+                                'VPD'
+                              )
+                            }
+                            disabled={
+                              !this.state.isLoaded2[
+                                application.programId._id.toString()
+                              ]
+                            }
+                            variant={'danger'}
+                            size={'sm'}
+                          >
+                            <AiOutlineDelete size={16} />
+                          </Button>
+                        </Col>
+                      </>
+                    )}
+                    {!application.uni_assist?.vpd_paid_confirmation_file_path ||
+                    application.uni_assist?.vpd_paid_confirmation_file_path ===
+                      '' ? (
+                      <>
+                        {this.state.isLoadedVPDConfirmation[
+                          `${application.programId._id.toString()}`
+                        ] ? (
+                          <>
+                            <Col md={4}>
+                              <p className="mt-1 text-light">
+                                Confirmation Form (if applicable)
+                              </p>
+                            </Col>
+                            <Col md={1}>
+                              <Form.Group
+                                controlId={`${application.programId._id.toString()}`}
+                              >
+                                <Form.Label>
+                                  <IoMdCloudUpload
+                                    color={'lightgray'}
+                                    size={32}
+                                  />
+                                </Form.Label>
+                                <Form.Control
+                                  hidden
+                                  type="file"
+                                  onChange={(e) =>
+                                    this.handleUniAssistVPDPaidConfirmationDocSubmit(
+                                      e,
+                                      this.state.student._id.toString(),
+                                      application.programId._id.toString()
+                                    )
+                                  }
+                                />
+                              </Form.Group>
+                            </Col>
+                            <Col md={1}></Col>
+                          </>
+                        ) : (
+                          <Col md={1}>
+                            <Spinner
+                              // className="mx-2 my-2"
+                              animation="border"
+                              role="status"
+                              variant="light"
+                            >
+                              <span className="visually-hidden"></span>
+                            </Spinner>
+                          </Col>
+                        )}
+                      </>
+                    ) : (
+                      <>
+                        <Col md={4}>
+                          <p className="mt-1 text-light">
+                            Confirmation Form (if applicable)
+                          </p>
+                        </Col>
+                        <Col md={1}>
+                          <a
+                            href={`${BASE_URL}/api/students/${this.state.student._id.toString()}/vpd/${application.programId._id.toString()}/VPDConfirmation`}
+                            target="_blank"
+                          >
                             <Button
-                              onClick={(e) =>
-                                this.onDeleteVPDFileWarningPopUp(
-                                  e,
-                                  this.state.student._id.toString(),
-                                  application.programId._id.toString(),
-                                  'VPD'
-                                )
-                              }
+                              title="Download"
                               disabled={
                                 !this.state.isLoaded2[
                                   application.programId._id.toString()
                                 ]
                               }
-                              variant={'danger'}
                               size={'sm'}
                             >
-                              <AiOutlineDelete size={16} />
+                              <AiOutlineDownload size={16} />
                             </Button>
-                          }
+                          </a>
                         </Col>
+                        <Col md={1}>
+                          <Button
+                            onClick={(e) =>
+                              this.onDeleteVPDFileWarningPopUp(
+                                e,
+                                this.state.student._id.toString(),
+                                application.programId._id.toString(),
+                                'VPDConfirmation'
+                              )
+                            }
+                            disabled={
+                              !this.state.isLoadedVPDConfirmation[
+                                application.programId._id.toString()
+                              ]
+                            }
+                            variant={'danger'}
+                            size={'sm'}
+                          >
+                            <AiOutlineDelete size={16} />
+                          </Button>
+                        </Col>
+                      </>
+                    )}
+                    {(!application.uni_assist ||
+                      application.uni_assist.status ===
+                        DocumentStatus.Missing ||
+                      application.uni_assist.status === 'notstarted') && (
+                      <>
+                        {is_TaiGer_AdminAgent(this.props.user) && (
+                          <>
+                            <Col>
+                              <Form>
+                                <Form.Check
+                                  type="checkbox"
+                                  className="text-light"
+                                  label={`Upload files and Paid`}
+                                  value={'Is_Paid'}
+                                  checked={application.uni_assist.isPaid}
+                                  onChange={(e) =>
+                                    this.onCheckHandler(
+                                      e,
+                                      this.state.student._id.toString(),
+                                      application.programId._id.toString(),
+                                      !application.uni_assist.isPaid
+                                    )
+                                  }
+                                />
+                              </Form>
+                            </Col>
+                            <Col>
+                              <Button
+                                size={'sm'}
+                                color={'lightgray'}
+                                onClick={(e) =>
+                                  this.opensetAsNotNeededWindow(
+                                    e,
+                                    this.state.student._id.toString(),
+                                    application.programId._id.toString()
+                                  )
+                                }
+                              >
+                                Set Not Needed
+                              </Button>
+                            </Col>
+                          </>
+                        )}
                       </>
                     )}
                   </>
@@ -683,12 +749,16 @@ class UniAssistListCard extends React.Component {
           <Modal.Body>Do you want to delete?</Modal.Body>
           <Modal.Footer>
             <Button
-              disabled={!this.state.isLoaded2[this.state.program_id]}
+              disabled={
+                !this.state.isLoaded2[this.state.program_id] ||
+                !this.state.isLoadedVPDConfirmation[this.state.program_id]
+              }
               onClick={(e) =>
                 this.handleUniAssistDocDelete(e, this.state.program_id)
               }
             >
-              {this.state.isLoaded2[this.state.program_id] ? (
+              {this.state.isLoaded2[this.state.program_id] ||
+              this.state.isLoadedVPDConfirmation[this.state.program_id] ? (
                 'Yes'
               ) : (
                 <Spinner
@@ -721,10 +791,14 @@ class UniAssistListCard extends React.Component {
           </Modal.Body>
           <Modal.Footer>
             <Button
-              disabled={!this.state.isLoaded2[this.state.program_id]}
+              disabled={
+                !this.state.isLoaded2[this.state.program_id] ||
+                !this.state.isLoadedVPDConfirmation[this.state.program_id]
+              }
               onClick={(e) => this.handleSetAsNotNeeded(e)}
             >
-              {this.state.isLoaded2[this.state.program_id] ? (
+              {this.state.isLoaded2[this.state.program_id] ||
+              this.state.isLoadedVPDConfirmation[this.state.program_id] ? (
                 'Yes'
               ) : (
                 <Spinner

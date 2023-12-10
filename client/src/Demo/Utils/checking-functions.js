@@ -64,9 +64,7 @@ export const getRequirement = (thread) => {
     }
   } else if (thread.file_type.includes('Supplementary_Form')) {
     if (thread.program_id.supplementary_form_required === 'yes') {
-      return (
-        thread.program_id.supplementary_form_requirements || 'No'
-      );
+      return thread.program_id.supplementary_form_requirements || 'No';
     } else {
       return 'No';
     }
@@ -1198,6 +1196,12 @@ export const is_the_uni_assist_vpd_uploaded = (application) => {
     if (
       application.uni_assist.status === DocumentStatus.Uploaded ||
       application.uni_assist.status === DocumentStatus.NotNeeded
+    ) {
+      return true;
+    }
+    if (
+      !application.uni_assist.vpd_paid_confirmation_file_pat &&
+      application.uni_assist.vpd_paid_confirmation_file_path !== ''
     ) {
       return true;
     }

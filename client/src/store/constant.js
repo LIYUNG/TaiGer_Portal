@@ -17,6 +17,9 @@ const DEMO = {
   PORTALS_MANAGEMENT_LINK: '/portal-informations',
   SURVEY_LINK: '/survey',
   STUDENT_APPLICATIONS_LINK: '/student-applications',
+  STUDENT_APPLICATIONS_ID_LINK: (student_id) => {
+    return `/student-applications/${student_id}`;
+  },
   STUDENT_DATABASE_LINK: '/student-database',
   EVENT_STUDENT_LINK: '/events/students',
   EVENT_TAIGER_LINK: '/events/taiger',

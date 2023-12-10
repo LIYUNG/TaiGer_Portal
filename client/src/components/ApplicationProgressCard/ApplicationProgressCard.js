@@ -1,11 +1,16 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Col, Card, Collapse, ProgressBar, Button } from 'react-bootstrap';
+import { Card, Collapse, ProgressBar, Button } from 'react-bootstrap';
 import {
   application_deadline_calculator,
   progressBarCounter
 } from '../../Demo/Utils/checking-functions';
-import { AiFillCheckCircle, AiOutlineFieldTime } from 'react-icons/ai';
+import {
+  AiFillCheckCircle,
+  AiFillCloseCircle,
+  AiOutlineFieldTime,
+  AiOutlineUndo
+} from 'react-icons/ai';
 import ApplicationProgressCardBody from './ApplicationProgressCardBody';
 import { FiExternalLink } from 'react-icons/fi';
 
@@ -25,7 +30,21 @@ export default function ApplicationProgressCard(props) {
               props.application
             ) === 'CLOSE' ? (
               <>
-                <AiFillCheckCircle color="limegreen" size={16} /> Submitted
+                {props.application.admission === '-' && (
+                  <>
+                    <AiFillCheckCircle color="limegreen" size={16} /> Submitted
+                  </>
+                )}
+                {props.application.admission === 'O' && (
+                  <>
+                    <AiFillCheckCircle color="lightblue" size={16} /> Admitted
+                  </>
+                )}
+                {props.application.admission === 'X' && (
+                  <>
+                    <AiFillCloseCircle color="red" size={16} /> Rejected
+                  </>
+                )}
               </>
             ) : (
               <span title="Deadline">
@@ -57,6 +76,76 @@ export default function ApplicationProgressCard(props) {
               <FiExternalLink />
             </Link>
           </p>
+          <p>
+            {application_deadline_calculator(
+              props.student,
+              props.application
+            ) === 'CLOSE' ? (
+              <>
+                Tell me about your result?{' '}
+                {props.application.admission === '-' && (
+                  <>
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      Admitted
+                    </Button>
+                    <Button
+                      variant="danger"
+                      size="sm"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      Rejected
+                    </Button>
+                  </>
+                )}
+                {props.application.admission === 'O' && (
+                  <>
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      disabled
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      Admitted
+                    </Button>
+                    <Button
+                      variant="outline-secondary"
+                      size="sm"
+                      title="Undo"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <AiOutlineUndo size={16} />
+                    </Button>
+                  </>
+                )}
+                {props.application.admission === 'X' && (
+                  <>
+                    <Button
+                      variant="danger"
+                      size="sm"
+                      disabled
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      Rejected
+                    </Button>
+                    <Button
+                      variant="outline-secondary"
+                      title="Undo"
+                      size="sm"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <AiOutlineUndo size={16} />
+                    </Button>
+                  </>
+                )}
+              </>
+            ) : (
+              ''
+            )}
+          </p>
           <p style={{ display: 'flex', alignItems: 'center' }}>
             <ProgressBar
               now={
@@ -81,25 +170,6 @@ export default function ApplicationProgressCard(props) {
               }%`}
             </span>
           </p>
-          {/* {application_deadline_calculator(props.student, props.application) ===
-            'CLOSE' && (
-            <p>
-              <Button
-                size="sm"
-                variant="outline-primary"
-                onClick={(e) => e.stopPropagation()}
-              >
-                Offer
-              </Button>
-              <Button
-                size="sm"
-                variant="outline-secondary"
-                onClick={(e) => e.stopPropagation()}
-              >
-                Reject
-              </Button>
-            </p>
-          )} */}
         </Card.Title>
       </Card.Header>
       <Collapse in={isCollapse}>

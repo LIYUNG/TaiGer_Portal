@@ -140,12 +140,14 @@ export default function ApplicationProgressCardBody(props) {
         )}
 
         <ListGroup.Item>
-          {props.application?.closed === 'O' ? (
-            <AiFillCheckCircle color="limegreen" size={16} />
-          ) : (
-            <AiFillQuestionCircle color="grey" size={16} />
-          )}
-          Submit
+          <Link to={`${DEMO.STUDENT_APPLICATIONS_ID_LINK(props.student._id.toString())}`}>
+            {props.application?.closed === 'O' ? (
+              <AiFillCheckCircle color="limegreen" size={16} />
+            ) : (
+              <AiFillQuestionCircle color="grey" size={16} />
+            )}
+            Submit
+          </Link>
         </ListGroup.Item>
       </ListGroup>
     </>

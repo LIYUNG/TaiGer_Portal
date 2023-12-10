@@ -908,6 +908,30 @@ class StudentApplicationsTableTemplate extends React.Component {
                         removeBanner={this.removeBanner}
                         notification_key={''}
                       />
+                      <Banner
+                        ReadOnlyMode={true}
+                        bg={'secondary'}
+                        to={`${DEMO.BASE_DOCUMENTS_LINK}`}
+                        title={'Instructions:'}
+                        text={
+                          '請選擇要申請的學程打在 Decided: Yes，不要申請打的 No。'
+                        }
+                        link_name={''}
+                        removeBanner={this.removeBanner}
+                        notification_key={''}
+                      />
+                      <Banner
+                        ReadOnlyMode={true}
+                        bg={'danger'}
+                        to={`${DEMO.BASE_DOCUMENTS_LINK}`}
+                        title={'Instructions:'}
+                        text={
+                          '請選擇要申請的學程打在 Submitted: Submitted，若想中斷申請請告知顧問，或是 選擇 Withdraw (如果東西都已準備好且解鎖)'
+                        }
+                        link_name={''}
+                        removeBanner={this.removeBanner}
+                        notification_key={''}
+                      />
                       <Table
                         size="sm"
                         bordered

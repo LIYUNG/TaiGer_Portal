@@ -35,7 +35,8 @@ const {
   updateAcademicBackground,
   updateLanguageSkill,
   updateApplicationPreferenceSkill,
-  updatePersonalData
+  updatePersonalData,
+  updateStudentApplicationResult
 } = require('../controllers/files');
 
 const { updateCredentials, updateOfficehours } = require('../controllers/account');
@@ -100,7 +101,17 @@ router
     UpdateStudentApplications,
     logAccess
   );
-
+router
+  .route('/applications/result/:studentId')
+  .put(
+    filter_archiv_user,
+    GeneralPUTRequestRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Student),
+    multitenant_filter,
+    InnerTaigerMultitenantFilter,
+    updateStudentApplicationResult,
+    logAccess
+  );
 // TaiGer Transcript Analyser:
 router
   .route('/transcript/:studentId/:category/:language')

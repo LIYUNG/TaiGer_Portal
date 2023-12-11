@@ -918,6 +918,26 @@ const UpdateStudentApplications = asyncHandler(async (req, res, next) => {
   next();
 });
 
+const updateStudentApplicationResult = asyncHandler(async (req, res, next) => {
+  const { studentId } = req.params;
+  const { application_id, result } = req.body;
+
+  const student = await Student.findById(studentId);
+  if (!student) {
+    logger.error('updateStudentApplicationResult: Invalid student Id');
+    throw new ErrorResponse(403, 'Invalid student Id');
+  }
+
+  await Student.findOneAndUpdate(
+    { _id: studentId, 'applications._id': application_id },
+    {
+      'applications.$.admission': result
+    }
+  );
+  res.status(200).send({ success: true });
+  next();
+});
+
 const deleteProfileFile = asyncHandler(async (req, res, next) => {
   const { studentId, category } = req.params;
 
@@ -1734,6 +1754,7 @@ module.exports = {
   downloadTemplateFile,
   updateProfileDocumentStatus,
   UpdateStudentApplications,
+  updateStudentApplicationResult,
   deleteProfileFile,
   updateVPDPayment,
   updateVPDFileNecessity,

@@ -1,6 +1,13 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Card, Collapse, ProgressBar, Button, Modal } from 'react-bootstrap';
+import {
+  Card,
+  Collapse,
+  ProgressBar,
+  Button,
+  Modal,
+  Spinner
+} from 'react-bootstrap';
 import {
   application_deadline_calculator,
   progressBarCounter
@@ -14,9 +21,11 @@ import {
 import ApplicationProgressCardBody from './ApplicationProgressCardBody';
 import { FiExternalLink } from 'react-icons/fi';
 import { updateStudentApplicationResult } from '../../api';
+import { spinner_style2 } from '../../Demo/Utils/contants';
 
 export default function ApplicationProgressCard(props) {
   const [isCollapse, setIsCollapse] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [application, setApplication] = useState(props.application);
   const [resultState, setResultState] = useState('-');
   const [showUndoModal, setShowUndoModal] = useState(false);
@@ -43,6 +52,7 @@ export default function ApplicationProgressCard(props) {
   };
   const handleUpdateResult = (e, result) => {
     e.stopPropagation();
+    setIsLoading(true);
     updateStudentApplicationResult(
       props.student._id.toString(),
       application._id.toString(),
@@ -56,7 +66,9 @@ export default function ApplicationProgressCard(props) {
           setApplication(application_tmep);
           setShowUndoModal(false);
           setShowSetResultModal(false);
+          setIsLoading(false);
         } else {
+          setIsLoading(false);
         }
       },
       (error) => {}
@@ -221,11 +233,20 @@ export default function ApplicationProgressCard(props) {
         <Modal.Footer>
           <Button
             variant="secondary"
+            disabled={isLoading}
             size="sm"
             title="Undo"
             onClick={(e) => handleUpdateResult(e, '-')}
           >
-            Confirm
+            {isLoading ? (
+              <div style={spinner_style2}>
+                <Spinner animation="border" size="sm" role="status">
+                  <span className="visually-hidden"></span>
+                </Spinner>
+              </div>
+            ) : (
+              'Confirm'
+            )}
           </Button>
           <Button
             variant="outline-secondary"
@@ -252,10 +273,21 @@ export default function ApplicationProgressCard(props) {
         <Modal.Footer>
           <Button
             variant={resultState === 'O' ? 'primary' : 'danger'}
+            disabled={isLoading}
             size="sm"
             onClick={(e) => handleUpdateResult(e, resultState)}
           >
-            {resultState === 'O' ? 'Admitted' : 'Rejected'}
+            {isLoading ? (
+              <div style={spinner_style2}>
+                <Spinner animation="border" size="sm" role="status">
+                  <span className="visually-hidden"></span>
+                </Spinner>
+              </div>
+            ) : resultState === 'O' ? (
+              'Admitted'
+            ) : (
+              'Rejected'
+            )}
           </Button>
           <Button
             variant="outline-secondary"

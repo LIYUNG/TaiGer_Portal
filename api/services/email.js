@@ -569,7 +569,7 @@ const sendAgentUploadedProfileFilesForStudentEmail = async (recipient, msg) => {
 };
 
 const sendAgentUploadedVPDForStudentEmail = async (recipient, msg) => {
-  const subject = '您的 VPD 已成功上傳 / Your VPD is successfully uploaded!';
+  const subject = `您的 ${msg.fileType} 已成功上傳 / Your ${msg.fileType} is successfully uploaded!`;
   const message = `\
 <p>${ENGLISH_BELOW}</p>
 
@@ -641,7 +641,7 @@ const sendUploadedProfileFilesRemindForAgentEmail = async (recipient, msg) => {
 };
 
 const sendUploadedVPDRemindForAgentEmail = async (recipient, msg) => {
-  const subject = `新 VPD 上傳從 ${msg.student_firstname} ${msg.student_lastname} / New VPD uploaded from ${msg.student_firstname} ${msg.student_lastname}`;
+  const subject = `新 ${msg.fileType} 上傳從 ${msg.student_firstname} ${msg.student_lastname} / New ${msg.fileType} uploaded from ${msg.student_firstname} ${msg.student_lastname}`;
   const message = `\
 <p>${ENGLISH_BELOW}</p>
 

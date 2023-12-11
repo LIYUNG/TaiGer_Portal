@@ -685,19 +685,24 @@ class UniAssistListCard extends React.Component {
                               </Form>
                             </Col>
                             <Col>
-                              <Button
-                                size={'sm'}
-                                color={'lightgray'}
-                                onClick={(e) =>
-                                  this.opensetAsNotNeededWindow(
-                                    e,
-                                    this.state.student._id.toString(),
-                                    application.programId._id.toString()
-                                  )
-                                }
-                              >
-                                Set Not Needed
-                              </Button>
+                              {(!application.uni_assist
+                                ?.vpd_paid_confirmation_file_path ||
+                                application.uni_assist
+                                  ?.vpd_paid_confirmation_file_path === '') && (
+                                <Button
+                                  size={'sm'}
+                                  color={'lightgray'}
+                                  onClick={(e) =>
+                                    this.opensetAsNotNeededWindow(
+                                      e,
+                                      this.state.student._id.toString(),
+                                      application.programId._id.toString()
+                                    )
+                                  }
+                                >
+                                  Set Not Needed
+                                </Button>
+                              )}
                             </Col>
                           </>
                         )}

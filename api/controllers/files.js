@@ -482,6 +482,7 @@ const saveVPDFilePath = asyncHandler(async (req, res, next) => {
             student_firstname: student_updated.firstname,
             student_lastname: student_updated.lastname,
             student_id: student_updated._id.toString(),
+            fileType,
             uploaded_documentname: req.file.key.replace(/_/g, ' '),
             uploaded_updatedAt: app.uni_assist.updatedAt
           }
@@ -499,6 +500,7 @@ const saveVPDFilePath = asyncHandler(async (req, res, next) => {
         {
           agent_firstname: user.firstname,
           agent_lastname: user.lastname,
+          fileType,
           uploaded_documentname: req.file.key.replace(/_/g, ' '),
           uploaded_updatedAt: app.uni_assist.updatedAt
         }

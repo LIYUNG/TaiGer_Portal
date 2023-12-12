@@ -433,7 +433,7 @@ class SingleProgram extends React.Component {
             uni_name={[program.school]}
             program_name={[program.program_name]}
             handleSetStudentId={this.handleSetStudentId}
-            isAssigning={this.state.isAssigning}
+            isButtonDisable={this.state.isAssigning}
             onSubmitAddToStudentProgramList={
               this.onSubmitAddToStudentProgramList
             }

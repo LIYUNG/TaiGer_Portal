@@ -28,6 +28,7 @@ const MeetingAdjustReminder = (receiver, user, start_time) => {
     }
   );
 };
+
 const meetingInvitation = (receiver, user, event) => {
   MeetingInvitationEmail(
     {
@@ -37,14 +38,19 @@ const meetingInvitation = (receiver, user, event) => {
       address: receiver.email
     },
     {
-      taiger_user_firstname: user.firstname,
-      taiger_user_lastname: user.lastname,
+      taiger_user: user,
       meeting_time: event.start, // Replace with the actual meeting time
       student_id: user._id.toString(),
-      meeting_link: event.meetingLink
+      meeting_link: event.meetingLink,
+      event,
+      event_title:
+        user.role === 'Student'
+          ? `${user.firstname} ${user.lastname}`
+          : `${receiver.firstname} ${receiver.lastname}`
     }
   );
 };
+
 const meetingConfirmationReminder = (receiver, user, start_time) => {
   MeetingConfirmationReminderEmail(
     {
@@ -430,7 +436,6 @@ const deleteEvent = asyncHandler(async (req, res, next) => {
         return res
           .status(200)
           .send({ success: true, agents, data: [], hasEvents: false });
-          
       }
       return res
         .status(200)

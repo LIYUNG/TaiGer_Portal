@@ -130,7 +130,14 @@ const sendEmail = (to, subject, message) => {
   return transporter.sendMail(mail);
 };
 
-const sendEventEmail = (to, subject, message, icsData) => {
+const sendEventEmail = (
+  to,
+  subject,
+  message,
+  meeting_event,
+  cc,
+  event_title
+) => {
   const htmlContent = `
 <!DOCTYPE html>
 <html>
@@ -193,28 +200,28 @@ const sendEventEmail = (to, subject, message, icsData) => {
     method: 'request', // publish (manually add) or request : receiver can choose yes or no. (but not good. info not sync with portal.)
     events: [
       {
-        start: new Date(), // Start date of the event
-        end: new Date(new Date().getTime() + 3600000), // End date of the event (1 hour later in this example)
-        summary: 'Event Summary',
-        description: 'Event Description',
-        location: 'Event Location',
+        start: new Date(meeting_event.start), // Start date of the event
+        end: new Date(meeting_event.end), // End date of the event (1 hour later in this example)
+        summary: event_title,
+        description: meeting_event.description,
+        location: meeting_event.meetingLink,
         organizer: {
-          name: 'Organiser name',
+          name: 'TaiGer Portal',
           email: 'noreply.taigerconsultancy@gmail.com',
           mailto: 'noreply.taigerconsultancy@gmail.com'
         },
         attendees: [
           {
-            email: 'deutschlernenmitbutterbrezel@gmail.com',
-            name: 'Shashank Kumar',
+            email: cc.email,
+            name: `${cc.firstname} ${cc.lastname}`,
             status: 'ACCEPTED',
             rsvp: true,
             type: 'INDIVIDUAL',
             role: 'REQ-PARTICIPANT'
           },
           {
-            email: 'taiger.leoc@gmail.com',
-            name: 'TaiGer Leo',
+            email: to.address,
+            name: `${to.firstname} ${to.lastname}`,
             status: 'ACCEPTED',
             rsvp: true,
             type: 'INDIVIDUAL',
@@ -224,9 +231,14 @@ const sendEventEmail = (to, subject, message, icsData) => {
       }
     ]
   });
+
   const mail = {
     from: senderName,
     to,
+    cc: {
+      name: `${cc.firstname} ${cc.lastname}`,
+      address: cc.email
+    },
     subject,
     // text: message,
     html: message,
@@ -1981,29 +1993,38 @@ const MeetingConfirmationReminderEmail = async (recipient, payload) => {
 };
 
 const MeetingInvitationEmail = async (recipient, payload) => {
-  const subject = `[Meeting Confirmed by ${payload.taiger_user_firstname} ${payload.taiger_user_lastname}] Office hour: ${payload.meeting_time}.`;
+  const subject = `[Meeting Confirmed by ${payload.taiger_user.firstname} ${payload.taiger_user.lastname}] Office hour: ${payload.meeting_time}.`;
   const message = `\
-<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+<p>Hi,</p>
 
-<p><b>${payload.taiger_user_firstname} - ${payload.taiger_user_lastname}</b> 確認了討論時段，請至 TaiGer Portal 查看您的當地 Meeting 時間。</p>
+<p><b>${payload.taiger_user.firstname} - ${payload.taiger_user.lastname}</b> 確認了討論時段，請至 TaiGer Portal 查看您的當地 Meeting 時間。</p>
 
 <p> 請於該時間準時點擊以下連結： </p>
 
 <p>Jitsi Meet 會議連結網址： <a href="${payload.meeting_link}">${payload.meeting_link}</a></p>
 <p>若您是第一次使用Jitsi Meet 會議，建議可以先查看使用說明： <a href="${JITSI_MEET_INSTRUCTIONS_URL}">${JITSI_MEET_INSTRUCTIONS_URL}</a></p>
+<p>若需要改時間，請上去TaiGer Portal, Update 您現在預定的時段至另一個 office hour 時段。</p>
 
 <p>${SPLIT_LINE}</p>
 
-<p>${payload.taiger_user_firstname} - ${payload.taiger_user_lastname} confirmed the meeting time. Please login to the TaiGer Portal and see the meeting time in your timezone.</p>
+<p>${payload.taiger_user.firstname} - ${payload.taiger_user.lastname} confirmed the meeting time. Please login to the TaiGer Portal and see the meeting time in your timezone.</p>
 
 <p> Jitsi Meet Meeting link: <a href="${payload.meeting_link}">${payload.meeting_link}</a></p>
 <p>If it is the first time for you to use Jitsi Meet, we recommend you having a look at our brief introduction: <a href="${JITSI_MEET_INSTRUCTIONS_URL}">${JITSI_MEET_INSTRUCTIONS_URL}</a></p>
+<p>If you can not attend the meeting, please go to TaiGer Portal and Update the existing time slot to another time.</p>
 
 <p>${TAIGER_SIGNATURE}</p>
 
 `; // should be for admin/editor/agent/student
 
-  return sendEventEmail(recipient, subject, message, {});
+  return sendEventEmail(
+    recipient,
+    subject,
+    message,
+    payload.event,
+    payload.taiger_user,
+    payload.event_title
+  );
 };
 
 const MeetingReminderEmail = async (recipient, payload) => {
@@ -2014,7 +2035,7 @@ const MeetingReminderEmail = async (recipient, payload) => {
 <br />
 <p> 請於約定時間(時間請見 TaiGer Portal)該時間準時點擊以下連結： </p>
 <p>Jitsi Meet 會議連結網址： <a href="${payload.event?.meetingLink}">${payload.event?.meetingLink}</a></p>
-<p>若需要改時間，請上去 Update 您現在預定的時段至另一個 office hour 時段。</p>
+<p>若需要改時間，請上去TaiGer Portal, Update 您現在預定的時段至另一個 office hour 時段。</p>
 <p>若您是第一次使用Jitsi Meet 會議，建議可以先查看使用說明： <a href="${JITSI_MEET_INSTRUCTIONS_URL}">${JITSI_MEET_INSTRUCTIONS_URL}</a></p>
 <br />
 <p>Jitsi Meet 是行政院數位政委唐鳳建議使用的開源軟體，許多台灣大專院校如國立陽明交通大學、國立台東大學等所採用。</p>

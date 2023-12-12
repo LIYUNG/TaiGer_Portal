@@ -1,5 +1,6 @@
 const path = require('path');
 const { createTransport } = require('nodemailer');
+const ical = require('ical-generator');
 const queryString = require('query-string');
 const {
   ACCOUNT_ACTIVATION_URL,
@@ -129,7 +130,7 @@ const sendEmail = (to, subject, message) => {
   return transporter.sendMail(mail);
 };
 
-const sendEventEmail = (to, subject, message) => {
+const sendEventEmail = (to, subject, message, icsData) => {
   const htmlContent = `
 <!DOCTYPE html>
 <html>
@@ -185,17 +186,57 @@ const sendEventEmail = (to, subject, message) => {
 `;
   const content =
     'BEGIN:VCALENDAR\r\nPRODID:-//ACME/DesktopCalendar//EN\r\nMETHOD:REQUEST\r\n...';
+  const event = ical({
+    domain: 'taigerconsultancy-portal.com',
+    prodId: '//TaiGer Portal//taigerconsultancy-portal.com//EN',
+    timezone: 'Europe/Berlin',
+    method: 'request', // publish (manually add) or request : receiver can choose yes or no. (but not good. info not sync with portal.)
+    events: [
+      {
+        start: new Date(), // Start date of the event
+        end: new Date(new Date().getTime() + 3600000), // End date of the event (1 hour later in this example)
+        summary: 'Event Summary',
+        description: 'Event Description',
+        location: 'Event Location',
+        organizer: {
+          name: 'Organiser name',
+          email: 'noreply.taigerconsultancy@gmail.com',
+          mailto: 'noreply.taigerconsultancy@gmail.com'
+        },
+        attendees: [
+          {
+            email: 'deutschlernenmitbutterbrezel@gmail.com',
+            name: 'Shashank Kumar',
+            status: 'ACCEPTED',
+            rsvp: true,
+            type: 'INDIVIDUAL',
+            role: 'REQ-PARTICIPANT'
+          },
+          {
+            email: 'taiger.leoc@gmail.com',
+            name: 'TaiGer Leo',
+            status: 'ACCEPTED',
+            rsvp: true,
+            type: 'INDIVIDUAL',
+            role: 'REQ-PARTICIPANT'
+          }
+        ]
+      }
+    ]
+  });
   const mail = {
     from: senderName,
     to,
     subject,
     // text: message,
     html: message,
-    icalEvent: {
-      filename: 'invitation.ics',
-      method: 'request',
-      content
-    }
+    attachments: [
+      {
+        filename: 'event.ics',
+        method: 'request', // publish (manually add) or request : receiver can choose yes or no. (but not good. info not sync with portal.)
+        content: event.toString()
+      }
+    ]
   };
   return transporter.sendMail(mail);
 };
@@ -1962,7 +2003,7 @@ const MeetingInvitationEmail = async (recipient, payload) => {
 
 `; // should be for admin/editor/agent/student
 
-  return sendEmail(recipient, subject, message);
+  return sendEventEmail(recipient, subject, message, {});
 };
 
 const MeetingReminderEmail = async (recipient, payload) => {

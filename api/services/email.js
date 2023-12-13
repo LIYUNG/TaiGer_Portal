@@ -196,7 +196,6 @@ const sendEventEmail = (
   const event = ical({
     domain: 'taigerconsultancy-portal.com',
     prodId: '//TaiGer Portal//taigerconsultancy-portal.com//EN',
-    timezone: 'Europe/Berlin',
     method: 'request', // publish (manually add) or request : receiver can choose yes or no. (but not good. info not sync with portal.)
     events: [
       {

@@ -571,19 +571,21 @@ class DocModificationThreadPage extends Component {
                                     <b>Link [點我下載]</b>
                                   </Button>
                                 </a>
-                                <br></br>
-                                {/* or &nbsp; */}
-                                <Link
-                                  to={`${DEMO.DOCUMENT_MODIFICATION_INPUT_LINK(
-                                    this.state.documentsthreadId
-                                  )}`}
-                                  // target="_blank"
-                                >
-                                  <Button size="xl">
-                                    <Badge>Beta</Badge> &nbsp;{' '}
-                                    <b>Editor Helper</b>
-                                  </Button>
-                                </Link>
+                                {is_TaiGer_role(this.props.user) && (
+                                  <>
+                                    <br></br>
+                                    <Link
+                                      to={`${DEMO.DOCUMENT_MODIFICATION_INPUT_LINK(
+                                        this.state.documentsthreadId
+                                      )}`}
+                                    >
+                                      <Button size="xl" variant='danger'>
+                                        <Badge>Beta</Badge> &nbsp;{' '}
+                                        <b>Editor Helper</b>
+                                      </Button>
+                                    </Link>
+                                  </>
+                                )}
                               </b>
                             )
                           ) : (

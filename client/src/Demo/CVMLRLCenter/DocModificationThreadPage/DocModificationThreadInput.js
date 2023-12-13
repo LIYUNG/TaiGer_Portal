@@ -42,6 +42,7 @@ class DocModificationThreadInput extends Component {
   state = {
     error: '',
     isGenerating: false,
+    isGenerated: false,
     isFirstDataArrived: false,
     isSaving: false,
     isResetting: false,
@@ -329,6 +330,11 @@ class DocModificationThreadInput extends Component {
     this.setState({
       isGenerating: true
     });
+    if (this.state.isGenerated) {
+      this.setState({
+        data: ''
+      });
+    }
     // Mock
     // this.fetchData();
     let program_full_name = '';
@@ -347,32 +353,44 @@ class DocModificationThreadInput extends Component {
       program_full_name: program_full_name,
       file_type: this.state.thread.file_type
     });
-    const reader = response.body
-      .pipeThrough(new TextDecoderStream())
-      .getReader();
+    console.log(response);
+    if (response.status === 403) {
+      this.setState({
+        isLoaded: true,
+        data: this.state.data + ' \n ================================= \n',
+        isFirstDataArrived: false,
+        isGenerating: false,
+        isGenerated: true,
+        res_modal_status: response.status
+      });
+    } else {
+      const reader = response.body
+        .pipeThrough(new TextDecoderStream())
+        .getReader();
 
-    while (true) {
-      const { value, done } = await reader.read();
-      if (done) {
-        break;
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) {
+          break;
+        }
+        this.setState({
+          isFirstDataArrived: true,
+          data: this.state.data + value
+        });
       }
       this.setState({
-        isFirstDataArrived: true,
-        data: this.state.data + value
+        isLoaded: true,
+        data: this.state.data + ' \n ================================= \n',
+        isFirstDataArrived: false,
+        isGenerating: false,
+        isGenerated: true,
+        res_modal_status: response.status
       });
     }
-    this.setState({
-      isLoaded: true,
-      data: this.state.data + ' \n ================================= \n',
-      isFirstDataArrived: false,
-      isGenerating: false,
-      res_status: status
-    });
   };
 
   render() {
-    const { isLoaded, res_status, res_modal_status, res_modal_message } =
-      this.state;
+    const { isLoaded, res_status } = this.state;
     if (!isLoaded && !this.state.thread) {
       return (
         <div style={spinner_style}>
@@ -410,15 +428,49 @@ class DocModificationThreadInput extends Component {
             </Spinner>
           </div>
         )}
-        <Row className="sticky-top">
-          <Card className="mb-2 mx-0" bg={'success'} text={'white'}>
-            <Card.Header>
-              <Card.Title as="h5" className="text-light">
-                Beta testing: Not open yet. Don't fill the form.
-              </Card.Title>
-            </Card.Header>
-          </Card>
-        </Row>
+        {this.state.res_modal_status >= 400 && (
+          <ModalMain
+            ConfirmError={this.ConfirmError}
+            res_modal_status={this.state.res_modal_status}
+            res_modal_message={this.state.res_modal_message}
+          />
+        )}
+        {is_TaiGer_role(this.props.user) ? (
+          <Row className="sticky-top">
+            <Card className="mb-2 mx-0" bg={'danger'} text={'white'}>
+              <Card.Header>
+                <Card.Title as="h5" className="text-light">
+                  <b>
+                    Beta testing: Please carefully review the generated output.
+                  </b>
+                </Card.Title>
+              </Card.Header>
+            </Card>
+          </Row>
+        ) : (
+          <Row className="sticky-top">
+            <Card className="mb-2 mx-0" bg={'danger'} text={'white'}>
+              <Card.Header>
+                <Card.Title as="h5" className="text-light">
+                  <b>Beta testing: don't use it.</b>
+                </Card.Title>
+              </Card.Header>
+            </Card>
+          </Row>
+        )}
+        {is_TaiGer_role(this.props.user) && (
+          <Row>
+            <Card className="mb-2 mx-0" bg={'primary'} text={'white'}>
+              <Card.Header>
+                <Card.Title as="h5" className="text-light">
+                  <b>
+                    In case you don't have permission, please contact Travis.
+                  </b>
+                </Card.Title>
+              </Card.Header>
+            </Card>
+          </Row>
+        )}
         <Row>
           <Card className="mb-2 mx-0">
             <Card.Header>
@@ -675,6 +727,8 @@ class DocModificationThreadInput extends Component {
                         {'  '}
                         Generating
                       </>
+                    ) : this.state.isGenerated ? (
+                      'Regenerate'
                     ) : (
                       'Generate'
                     )}

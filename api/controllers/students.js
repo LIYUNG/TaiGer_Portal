@@ -827,13 +827,13 @@ const getStudentApplications = asyncHandler(async (req, res, next) => {
 // (O) email : student notification
 // (O) auto-create document thread for student: ML,RL,Essay
 // (if applicable, depending on program list)
+// TODO: race condition risk (when send 2 api call concurrently)
 const createApplication = asyncHandler(async (req, res, next) => {
   const {
     user,
     params: { studentId },
     body: { program_id_set }
   } = req;
-  console.log(program_id_set);
   // Limit the number of assigning programs
   const max_application = 20;
   if (program_id_set.length > max_application) {
@@ -1001,28 +1001,6 @@ const createApplication = asyncHandler(async (req, res, next) => {
     student.applications.push(application);
   }
   await student.save();
-  //   });
-  //     programId: program_id_set[i]
-  //   });
-  //   // const { requiredDocuments, optionalDocuments } = program;
-  //   const now = new Date();
-  //   const application = student.applications.create({
-  //     programId: program_id_set[i]
-  //   });
-  //   // application.documents = [
-  //   //   ...requiredDocuments.map((name) => ({
-  //   //     name,
-  //   //     required: true,
-  //   //     updatedAt: now,
-  //   //   })),
-  //   //   ...optionalDocuments.map((name) => ({
-  //   //     name,
-  //   //     required: false,
-  //   //     updatedAt: now,
-  //   //   })),
-  //   // ];
-  //   student.applications.push(application);
-  //   await student.save();
 
   res.status(201).send({ success: true, data: program_id_set });
 

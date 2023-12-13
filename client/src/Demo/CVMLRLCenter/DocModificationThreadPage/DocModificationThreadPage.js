@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Col, Spinner, Button, Card, Modal } from 'react-bootstrap';
+import { Row, Col, Spinner, Button, Card, Modal, Badge } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { FiExternalLink } from 'react-icons/fi';
 
@@ -571,15 +571,19 @@ class DocModificationThreadPage extends Component {
                                     <b>Link [點我下載]</b>
                                   </Button>
                                 </a>
-                                {/* or &nbsp;
+                                <br></br>
+                                {/* or &nbsp; */}
                                 <Link
                                   to={`${DEMO.DOCUMENT_MODIFICATION_INPUT_LINK(
                                     this.state.documentsthreadId
                                   )}`}
                                   // target="_blank"
                                 >
-                                  <Button size="sm">線上填寫</Button>
-                                </Link> */}
+                                  <Button size="xl">
+                                    <Badge>Beta</Badge> &nbsp;{' '}
+                                    <b>Editor Helper</b>
+                                  </Button>
+                                </Link>
                               </b>
                             )
                           ) : (

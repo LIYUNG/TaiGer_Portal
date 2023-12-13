@@ -9,7 +9,12 @@ const Permission = require('../models/Permission');
 
 const getTeamMembers = asyncHandler(async (req, res) => {
   const users = await User.aggregate([
-    { $match: { role: { $in: ['Admin', 'Agent', 'Editor'] } } },
+    {
+      $match: {
+        role: { $in: ['Admin', 'Agent', 'Editor'] },
+        $or: [{ archiv: { $exists: false } }, { archiv: false }]
+      }
+    },
     {
       $lookup: {
         from: 'permissions',

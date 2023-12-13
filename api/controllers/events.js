@@ -8,10 +8,11 @@ const async = require('async');
 const {
   MeetingInvitationEmail,
   MeetingConfirmationReminderEmail,
-  MeetingAdjustReminderEmail
+  MeetingAdjustReminderEmail,
+  MeetingCancelledReminderEmail
 } = require('../services/email');
 
-const MeetingAdjustReminder = (receiver, user, start_time) => {
+const MeetingAdjustReminder = (receiver, user, meeting_event) => {
   MeetingAdjustReminderEmail(
     {
       id: receiver._id.toString(),
@@ -23,8 +24,40 @@ const MeetingAdjustReminder = (receiver, user, start_time) => {
       taiger_user_firstname: user.firstname,
       taiger_user_lastname: user.lastname,
       role: user.role,
-      meeting_time: start_time, // Replace with the actual meeting time
-      student_id: user._id.toString()
+      meeting_time: meeting_event.start,
+      student_id: user._id.toString(),
+      event: meeting_event,
+      isUpdatingEvent: true
+    }
+  );
+};
+
+const MeetingCancelledReminder = (user, meeting_event) => {
+  MeetingCancelledReminderEmail(
+    user.role === 'Student'
+      ? {
+          id: meeting_event.receiver_id[0]._id.toString(),
+          firstname: meeting_event.receiver_id[0].firstname,
+          lastname: meeting_event.receiver_id[0].lastname,
+          address: meeting_event.receiver_id[0].email
+        }
+      : {
+          id: meeting_event.requester_id[0]._id.toString(),
+          firstname: meeting_event.requester_id[0].firstname,
+          lastname: meeting_event.requester_id[0].lastname,
+          address: meeting_event.requester_id[0].email
+        },
+    {
+      taiger_user: user,
+      role: user.role,
+      meeting_time: meeting_event.start,
+      student_id: user._id.toString(),
+      event: meeting_event,
+      event_title:
+        user.role === 'Student'
+          ? `${user.firstname} ${user.lastname}`
+          : `${meeting_event.receiver_id[0].firstname} ${meeting_event.receiver_id[0].lastname}`,
+      isUpdatingEvent: false
     }
   );
 };
@@ -42,6 +75,7 @@ const meetingInvitation = (receiver, user, event) => {
       meeting_time: event.start, // Replace with the actual meeting time
       student_id: user._id.toString(),
       meeting_link: event.meetingLink,
+      isUpdatingEvent: false,
       event,
       event_title:
         user.role === 'Student'
@@ -403,12 +437,12 @@ const updateEvent = asyncHandler(async (req, res, next) => {
     // TODO: sync with google calendar.
     if (user.role === 'Student') {
       event.receiver_id.forEach((receiver) => {
-        MeetingAdjustReminder(receiver, user, event.start);
+        MeetingAdjustReminder(receiver, user, event);
       });
     }
     if (user.role === 'Agent') {
       event.requester_id.forEach((requester) => {
-        MeetingAdjustReminder(requester, user, event.start);
+        MeetingAdjustReminder(requester, user, event);
       });
     }
     next();
@@ -422,6 +456,9 @@ const deleteEvent = asyncHandler(async (req, res, next) => {
   const { event_id } = req.params;
   const { user } = req;
   try {
+    const toBeDeletedEvent = await Event.findById(event_id)
+      .populate('receiver_id requester_id', 'firstname lastname email')
+      .lean();
     await Event.findByIdAndDelete(event_id);
     let events;
     if (user.role === Role.Student) {
@@ -432,16 +469,14 @@ const deleteEvent = asyncHandler(async (req, res, next) => {
       const agents = await Agent.find({ _id: agents_ids }).select(
         'firstname lastname email selfIntroduction officehours timezone'
       );
-      if (events.length === 0) {
-        return res
-          .status(200)
-          .send({ success: true, agents, data: [], hasEvents: false });
-      }
-      return res
-        .status(200)
-        .send({ success: true, agents, data: events, hasEvents: true });
-    }
-    if (user.role === Role.Agent) {
+      res.status(200).send({
+        success: true,
+        agents,
+        data: events.length === 0 ? [] : events,
+        hasEvents: events.length !== 0
+      });
+      MeetingCancelledReminder(user, toBeDeletedEvent);
+    } else if (user.role === Role.Agent) {
       events = await Event.find({
         $or: [
           { requester_id: user._id.toString() },
@@ -453,19 +488,18 @@ const deleteEvent = asyncHandler(async (req, res, next) => {
       const agents = await Agent.find({ _id: user._id.toString() }).select(
         'firstname lastname email selfIntroduction officehours timezone'
       );
-      if (events.length === 0) {
-        return res
-          .status(200)
-          .send({ success: true, agents, data: [], hasEvents: false });
-      }
-      return res
-        .status(200)
-        .send({ success: true, agents, data: events, hasEvents: true });
+      res.status(200).send({
+        success: true,
+        agents,
+        data: events.length === 0 ? [] : events,
+        hasEvents: events.length !== 0
+      });
+      MeetingCancelledReminder(user, toBeDeletedEvent);
+    } else {
+      res.status(200).send({ success: true, hasEvents: false });
     }
-
-    res.status(200).send({ success: true, hasEvents: false });
-    next();
     // TODO: remind receiver or reqester
+    next();
   } catch (err) {
     throw new ErrorResponse(400, err);
   }

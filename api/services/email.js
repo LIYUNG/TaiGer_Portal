@@ -136,7 +136,9 @@ const sendEventEmail = (
   message,
   meeting_event,
   cc,
-  event_title
+  event_title,
+  isUpdatingEvent,
+  toDelete
 ) => {
   const htmlContent = `
 <!DOCTYPE html>
@@ -202,7 +204,10 @@ const sendEventEmail = (
         start: new Date(meeting_event.start), // Start date of the event
         end: new Date(meeting_event.end), // End date of the event (1 hour later in this example)
         summary: event_title,
+        sequence: isUpdatingEvent ? 1 : 0, // Set the SEQUENCE to 1
+        id: meeting_event._id.toString(), // Set a custom UID here
         description: meeting_event.description,
+        status: toDelete ? 'CANCELLED' : 'CONFIRMED', // for delete event
         location: meeting_event.meetingLink,
         organizer: {
           name: 'TaiGer Portal',
@@ -2022,7 +2027,36 @@ const MeetingInvitationEmail = async (recipient, payload) => {
     message,
     payload.event,
     payload.taiger_user,
-    payload.event_title
+    payload.event_title,
+    payload.isUpdatingEvent,
+    false
+  );
+};
+
+const MeetingCancelledReminderEmail = async (recipient, payload) => {
+  const subject = `[Meeting Cancelled by ${payload.taiger_user.firstname} ${payload.taiger_user.lastname}] Office hour: ${payload.meeting_time}.`;
+  const message = `\
+<p>Hi,</p>
+
+<p><b>${payload.taiger_user.firstname} - ${payload.taiger_user.lastname}</b> 取消了討論時段。</p>
+
+<p>${SPLIT_LINE}</p>
+
+<p>${payload.taiger_user.firstname} - ${payload.taiger_user.lastname} cancelled the meeting.</p>
+
+<p>${TAIGER_SIGNATURE}</p>
+
+`; // should be for admin/editor/agent/student
+
+  return sendEventEmail(
+    recipient,
+    subject,
+    message,
+    payload.event,
+    payload.taiger_user,
+    payload.event_title,
+    payload.isUpdatingEvent,
+    true
   );
 };
 
@@ -2205,6 +2239,7 @@ module.exports = {
   MeetingAdjustReminderEmail,
   MeetingConfirmationReminderEmail,
   MeetingInvitationEmail,
+  MeetingCancelledReminderEmail,
   MeetingReminderEmail,
   UnconfirmedMeetingReminderEmail,
   TicketCreatedAgentEmail,

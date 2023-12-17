@@ -1201,7 +1201,7 @@ export const is_the_uni_assist_vpd_uploaded = (application) => {
     }
     if (application.uni_assist.vpd_file_path === '') {
       if (
-        !application.uni_assist?.vpd_paid_confirmation_file_pat &&
+        application.uni_assist?.vpd_paid_confirmation_file_path &&
         application.uni_assist?.vpd_paid_confirmation_file_path !== ''
       ) {
         return true;

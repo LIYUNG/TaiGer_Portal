@@ -16,6 +16,7 @@ import {
   AiFillCheckCircle,
   AiFillCloseCircle,
   AiOutlineFieldTime,
+  AiOutlineStop,
   AiOutlineUndo
 } from 'react-icons/ai';
 import ApplicationProgressCardBody from './ApplicationProgressCardBody';
@@ -98,6 +99,12 @@ export default function ApplicationProgressCard(props) {
                   </>
                 )}
               </>
+            ) : application_deadline_calculator(props.student, application) ===
+              'WITHDRAW' ? (
+              <span title="Deadline">
+                <AiOutlineStop size={16} />{' '}
+                {application_deadline_calculator(props.student, application)}
+              </span>
             ) : (
               <span title="Deadline">
                 <AiOutlineFieldTime size={16} />{' '}

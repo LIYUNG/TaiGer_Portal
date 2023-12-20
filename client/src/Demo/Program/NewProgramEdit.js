@@ -309,6 +309,66 @@ function NewProgramEdit(props) {
                 </Form.Group>
               </h5>
             </Col>
+            <Col md={1}>
+              Reading
+              <Form.Group controlId="toefl_reading">
+                <Form.Control
+                  type="text"
+                  placeholder="21"
+                  onChange={(e) => handleChange(e)}
+                  defaultValue={
+                    initStates.program.toefl_reading
+                      ? initStates.program.toefl_reading
+                      : ''
+                  }
+                />
+              </Form.Group>
+            </Col>
+            <Col md={1}>
+              Listening
+              <Form.Group controlId="toefl_listening">
+                <Form.Control
+                  type="text"
+                  placeholder="21"
+                  onChange={(e) => handleChange(e)}
+                  defaultValue={
+                    initStates.program.toefl_listening
+                      ? initStates.program.toefl_listening
+                      : ''
+                  }
+                />
+              </Form.Group>
+            </Col>
+            <Col md={1}>
+              Speaking
+              <Form.Group controlId="toefl_speaking">
+                <Form.Control
+                  type="text"
+                  placeholder="21"
+                  onChange={(e) => handleChange(e)}
+                  defaultValue={
+                    initStates.program.toefl_speaking
+                      ? initStates.program.toefl_speaking
+                      : ''
+                  }
+                />
+              </Form.Group>
+            </Col>
+            <Col md={1}>
+              Writing
+              <Form.Group controlId="toefl_writing">
+                <Form.Control
+                  type="text"
+                  placeholder="21"
+                  onChange={(e) => handleChange(e)}
+                  defaultValue={
+                    initStates.program.toefl_writing
+                      ? initStates.program.toefl_writing
+                      : ''
+                  }
+                />
+              </Form.Group>
+            </Col>
           </Row>
           <Row>
             <Col md={4}>
@@ -327,6 +387,66 @@ function NewProgramEdit(props) {
                   />
                 </Form.Group>
               </h5>
+            </Col>
+            <Col md={1}>
+              Reading
+              <Form.Group controlId="ielts_reading">
+                <Form.Control
+                  type="text"
+                  placeholder="5.5"
+                  onChange={(e) => handleChange(e)}
+                  defaultValue={
+                    initStates.program.ielts_reading
+                      ? initStates.program.ielts_reading
+                      : ''
+                  }
+                />
+              </Form.Group>
+            </Col>
+            <Col md={1}>
+              Listening
+              <Form.Group controlId="ielts_listening">
+                <Form.Control
+                  type="text"
+                  placeholder="6.5"
+                  onChange={(e) => handleChange(e)}
+                  defaultValue={
+                    initStates.program.ielts_listening
+                      ? initStates.program.ielts_listening
+                      : ''
+                  }
+                />
+              </Form.Group>
+            </Col>
+            <Col md={1}>
+              Speaking
+              <Form.Group controlId="ielts_speaking">
+                <Form.Control
+                  type="text"
+                  placeholder="6"
+                  onChange={(e) => handleChange(e)}
+                  defaultValue={
+                    initStates.program.ielts_speaking
+                      ? initStates.program.ielts_speaking
+                      : ''
+                  }
+                />
+              </Form.Group>
+            </Col>
+            <Col md={1}>
+              Writing
+              <Form.Group controlId="ielts_writing">
+                <Form.Control
+                  type="text"
+                  placeholder="5.5"
+                  onChange={(e) => handleChange(e)}
+                  defaultValue={
+                    initStates.program.ielts_writing
+                      ? initStates.program.ielts_writing
+                      : ''
+                  }
+                />
+              </Form.Group>
             </Col>
           </Row>
           <Row>

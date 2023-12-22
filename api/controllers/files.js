@@ -1560,7 +1560,7 @@ const updateLanguageSkill = asyncHandler(async (req, res, next) => {
     (doc) => doc.name === profile_name_list.Englisch_Certificate
   );
   let gre_certificate_doc = updatedStudent.profile.find(
-    (doc) => doc.name === profile_name_list.GREGMAT
+    (doc) => doc.name === profile_name_list.GRE
   );
   let gmat_certificate_doc = updatedStudent.profile.find(
     (doc) => doc.name === profile_name_list.GMAT
@@ -1624,7 +1624,7 @@ const updateLanguageSkill = asyncHandler(async (req, res, next) => {
     if (!gre_certificate_doc) {
       // Set not needed
       gre_certificate_doc = updatedStudent.profile.create({
-        name: profile_name_list.GREGMAT
+        name: profile_name_list.GRE
       });
       gre_certificate_doc.status = DocumentStatus.NotNeeded;
       gre_certificate_doc.required = true;
@@ -1637,7 +1637,7 @@ const updateLanguageSkill = asyncHandler(async (req, res, next) => {
   } else if (!gre_certificate_doc) {
     // Set not needed
     gre_certificate_doc = updatedStudent.profile.create({
-      name: profile_name_list.GREGMAT
+      name: profile_name_list.GRE
     });
     gre_certificate_doc.status = DocumentStatus.Missing;
     gre_certificate_doc.required = true;

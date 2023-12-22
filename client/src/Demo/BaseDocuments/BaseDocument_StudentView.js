@@ -311,7 +311,9 @@ class BaseDocument_StudentView extends React.Component {
     // TODO: what if this.state.student.profile[i].name key not in base_docs_link[i].key?
     if (this.props.base_docs_link) {
       this.props.base_docs_link.forEach((baseDoc) => {
-        object_init[baseDoc.key].link = baseDoc.link;
+        if (object_init[baseDoc.key]) {
+          object_init[baseDoc.key].link = baseDoc.link;
+        }
       });
     }
     if (this.state.student.profile) {

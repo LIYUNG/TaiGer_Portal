@@ -330,45 +330,48 @@ class StudentDashboard extends React.Component {
             </Card>
           </Col>
           <Col md={4}>
-            <Card className="my-2 mx-0" bg={'secondary'} text={'light'}>
-              <Card.Header>
-                <Card.Title className="my-0 mx-0 text-light">
-                  <AiOutlineCalendar size={24} /> 時段預約
-                </Card.Title>
-              </Card.Header>
-              <Card.Body style={{ background: 'black', color: 'white' }}>
-                <Row>
-                  <Col md={4}>
-                    {student?.agents?.some((agent) =>
-                      [
-                        '639baebf8b84944b872cf648', //Leo
-                        '6475a149635df78e3a5b937b', //Lily
-                        '638b8f70be60d7999c6b649d', //Sydney
-                        '63b9a43af7b3a4a141267cd3' // David
-                      ].includes(agent._id.toString())
-                    ) ? (
-                      <Link to={`/events/students/${student._id.toString()}`}>
-                        <Button size="sm">預約</Button>
-                        {/* <Badge className="mt-3" bg={`${'primary'}`}>
+            {appConfig.meetingEnable && (
+              <Card className="my-2 mx-0" bg={'secondary'} text={'light'}>
+                <Card.Header>
+                  <Card.Title className="my-0 mx-0 text-light">
+                    <AiOutlineCalendar size={24} /> 時段預約
+                  </Card.Title>
+                </Card.Header>
+                <Card.Body style={{ background: 'black', color: 'white' }}>
+                  <Row>
+                    <Col md={4}>
+                      {student?.agents?.some((agent) =>
+                        [
+                          '639baebf8b84944b872cf648', //Leo
+                          '6475a149635df78e3a5b937b', //Lily
+                          '638b8f70be60d7999c6b649d', //Sydney
+                          '63b9a43af7b3a4a141267cd3' // David
+                        ].includes(agent._id.toString())
+                      ) ? (
+                        <Link to={`/events/students/${student._id.toString()}`}>
+                          <Button size="sm">預約</Button>
+                          {/* <Badge className="mt-3" bg={`${'primary'}`}>
                           Test
                         </Badge> */}
-                      </Link>
-                    ) : (
-                      <span className="text-light">Coming soon</span>
-                    )}
-                  </Col>
-                  <Col md={8} style={{ color: 'white' }}>
-                    {hasUpcomingAppointment ? (
-                      <></>
-                    ) : (
-                      <>
-                        想要一次密集討論？ 可以預訂顧問 Office hour 時段討論。
-                      </>
-                    )}
-                  </Col>
-                </Row>
-              </Card.Body>
-            </Card>
+                        </Link>
+                      ) : (
+                        <span className="text-light">Coming soon</span>
+                      )}
+                    </Col>
+                    <Col md={8} style={{ color: 'white' }}>
+                      {hasUpcomingAppointment ? (
+                        <></>
+                      ) : (
+                        <>
+                          想要一次密集討論？ 可以預訂顧問 Office hour 時段討論。
+                        </>
+                      )}
+                    </Col>
+                  </Row>
+                </Card.Body>
+              </Card>
+            )}
+
             <Card className="my-2 mx-0" bg={'dark'} text={'light'}>
               <Card.Header>
                 <Card.Title className="my-0 mx-0 text-light">

@@ -25,13 +25,15 @@ export default {
 
 export const appConfig = {
   // Branding
-  companyName: 'Bear',
-  companyFullName: 'Bear Consultancy',
+  companyName: 'TaiGer',
+  companyFullName: 'TaiGer Consultancy',
+  companycompanyLandingPage: 'https://taigerconsultancy.com/',
   LoginPageLogo: '/assets/images/taiger_logo.png',
   LogoSmall: '/assets/taiger_logo_small.png',
   LogoPath: '',
   // Application level comfiguration
   vpdEnable: true,
+  AIEnable: true,
   meetingEnable: true,
   AIEnable: true
 };

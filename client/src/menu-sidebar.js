@@ -40,6 +40,7 @@ let application_overview = [
     breadcrumbs: false
   }
 ];
+
 if (appConfig.vpdEnable) {
   application_overview.push({
     id: 'uni_assist_tasks',
@@ -120,6 +121,70 @@ all_students_nestedList = [
     url: '/student-database',
     classes: 'nav-item',
     icon: 'feather icon-cloud'
+  }
+];
+
+let documentations_nestedList = [
+  {
+    id: 'howtostart',
+    title: 'How to Start',
+    type: 'item',
+    url: '/docs/howtostart',
+    icon: 'feather icon-help-circle',
+    target: false,
+    breadcrumbs: false
+  },
+  {
+    id: 'base-documents',
+    title: 'Base Documents',
+    type: 'item',
+    url: '/docs/base-documents',
+    icon: 'feather icon-help-circle',
+    target: false,
+    breadcrumbs: false
+  },
+  {
+    id: 'cv-ml-rl',
+    title: 'CV/ML/RL',
+    type: 'item',
+    url: '/docs/cv-ml-rl',
+    icon: 'feather icon-help-circle',
+    target: false,
+    breadcrumbs: false
+  }
+];
+
+if (appConfig.vpdEnable) {
+  documentations_nestedList.push({
+    id: 'doc-uniassist',
+    title: 'Uni-Assist',
+    type: 'item',
+    url: '/docs/uniassist',
+    icon: 'feather icon-help-circle',
+    target: false,
+    breadcrumbs: false
+  });
+}
+
+documentations_nestedList = [
+  ...documentations_nestedList,
+  {
+    id: 'visa',
+    title: 'Visa',
+    type: 'item',
+    url: '/docs/visa',
+    icon: 'feather icon-book',
+    target: false,
+    breadcrumbs: false
+  },
+  {
+    id: 'internal-docs',
+    title: 'Internal Docs',
+    type: 'item',
+    url: '/docs/taiger/internal',
+    icon: 'feather icon-help-circle',
+    target: false,
+    breadcrumbs: false
   }
 ];
 
@@ -469,62 +534,7 @@ export default {
           type: 'collapse',
           classes: 'nav-item',
           icon: 'feather icon-help-circle',
-          children: [
-            {
-              id: 'howtostart',
-              title: 'How to Start',
-              type: 'item',
-              url: '/docs/howtostart',
-              icon: 'feather icon-help-circle',
-              target: false,
-              breadcrumbs: false
-            },
-            {
-              id: 'base-documents',
-              title: 'Base Documents',
-              type: 'item',
-              url: '/docs/base-documents',
-              icon: 'feather icon-help-circle',
-              target: false,
-              breadcrumbs: false
-            },
-            {
-              id: 'cv-ml-rl',
-              title: 'CV/ML/RL',
-              type: 'item',
-              url: '/docs/cv-ml-rl',
-              icon: 'feather icon-help-circle',
-              target: false,
-              breadcrumbs: false
-            },
-            {
-              id: 'doc-uniassist',
-              title: 'Uni-Assist',
-              type: 'item',
-              url: '/docs/uniassist',
-              icon: 'feather icon-help-circle',
-              target: false,
-              breadcrumbs: false
-            },
-            {
-              id: 'visa',
-              title: 'Visa',
-              type: 'item',
-              url: '/docs/visa',
-              icon: 'feather icon-book',
-              target: false,
-              breadcrumbs: false
-            },
-            {
-              id: 'internal-docs',
-              title: 'Internal Docs',
-              type: 'item',
-              url: '/docs/taiger/internal',
-              icon: 'feather icon-help-circle',
-              target: false,
-              breadcrumbs: false
-            }
-          ]
+          children: documentations_nestedList
         },
         {
           id: 'download',

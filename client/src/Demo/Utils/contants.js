@@ -554,17 +554,28 @@ export const study_group = [
   { key: 'mtl', value: 'Materials Science' }
 ];
 
-export const valid_categories = [
-  { key: 'howtostart', value: 'How to Start' },
-  { key: 'application', value: 'Application' },
-  { key: 'base-documents', value: 'Base-documents' },
-  { key: 'cv-ml-rl', value: 'CV/ML/RL' },
-  { key: 'portal-instruction', value: 'Portal-Instruction' },
-  { key: 'certification', value: 'Certification' },
-  { key: 'uniassist', value: 'Uni-Assist' },
-  { key: 'visa', value: 'Visa' },
-  { key: 'enrolment', value: 'Enrolment' }
-];
+export const valid_categories = appConfig.vpdEnable
+  ? [
+      { key: 'howtostart', value: 'How to Start' },
+      { key: 'application', value: 'Application' },
+      { key: 'base-documents', value: 'Base-documents' },
+      { key: 'cv-ml-rl', value: 'CV/ML/RL' },
+      { key: 'portal-instruction', value: 'Portal-Instruction' },
+      { key: 'certification', value: 'Certification' },
+      { key: 'uniassist', value: 'Uni-Assist' },
+      { key: 'visa', value: 'Visa' },
+      { key: 'enrolment', value: 'Enrolment' }
+    ]
+  : [
+      { key: 'howtostart', value: 'How to Start' },
+      { key: 'application', value: 'Application' },
+      { key: 'base-documents', value: 'Base-documents' },
+      { key: 'cv-ml-rl', value: 'CV/ML/RL' },
+      { key: 'portal-instruction', value: 'Portal-Instruction' },
+      { key: 'certification', value: 'Certification' },
+      { key: 'visa', value: 'Visa' },
+      { key: 'enrolment', value: 'Enrolment' }
+    ];
 
 export const profile_name_list = {
   High_School_Diploma: 'High_School_Diploma',
@@ -1167,17 +1178,29 @@ export const is_pending_status = (user, thread) => {
   return !is_new_message_status(user, thread);
 };
 
-export const documentation_categories = {
-  howtostart: `How to Start ${appConfig.companyName} Portal`,
-  'base-documents': 'Base Documents',
-  'cv-ml-rl': 'CV/ML/RL',
-  application: 'Application Instruction',
-  'portal-instruction': 'Portal Instruction',
-  certification: 'Certification Instruction',
-  uniassist: 'Uni-Assist Instruction',
-  visa: 'Visa Instruction',
-  enrolment: 'Enrolment Instruction'
-};
+export const documentation_categories = appConfig.vpdEnable
+  ? {
+      howtostart: `How to Start ${appConfig.companyName} Portal`,
+      'base-documents': 'Base Documents',
+      'cv-ml-rl': 'CV/ML/RL',
+      application: 'Application Instruction',
+      'portal-instruction': 'Portal Instruction',
+      certification: 'Certification Instruction',
+      uniassist: 'Uni-Assist Instruction',
+      visa: 'Visa Instruction',
+      enrolment: 'Enrolment Instruction'
+    }
+  : {
+      howtostart: `How to Start ${appConfig.companyName} Portal`,
+      'base-documents': 'Base Documents',
+      'cv-ml-rl': 'CV/ML/RL',
+      application: 'Application Instruction',
+      'portal-instruction': 'Portal Instruction',
+      certification: 'Certification Instruction',
+      visa: 'Visa Instruction',
+      enrolment: 'Enrolment Instruction'
+    };
+
 export const Role = {
   Admin: 'Admin',
   Manager: 'Manager',

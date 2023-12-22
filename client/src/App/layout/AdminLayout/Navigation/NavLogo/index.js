@@ -29,7 +29,9 @@ const navLogo = (props) => {
           style={{ textDecoration: 'none' }}
           className="b-brand mx-2"
         >
-          <span className="b-title"> {appConfig.companyName}</span>
+          <span className="b-title">
+            <h3 className='mt-2 text-light'>{appConfig.companyName}</h3>
+          </span>
         </Link>
         <a
           // href={DEMO.BLANK_LINK}

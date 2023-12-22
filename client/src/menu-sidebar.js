@@ -53,6 +53,76 @@ if (appConfig.vpdEnable) {
   });
 }
 
+let all_students_nestedList = [
+  {
+    id: 'all-application-overview',
+    title: 'All Application Overview',
+    type: 'item',
+    url: '/all-students-applications',
+    classes: 'nav-item',
+    icon: 'fa fa-university'
+  },
+  {
+    id: 'tasks_dashboard',
+    title: 'Tasks Dashboard',
+    type: 'item',
+    url: '/dashboard/cv-ml-rl',
+    classes: 'nav-item',
+    icon: 'feather icon-edit-1'
+  },
+  {
+    id: 'all-students-overview',
+    title: 'Student Overview',
+    type: 'item',
+    url: '/students-overview/all',
+    classes: 'nav-item',
+    icon: 'fa fa-users'
+  },
+  {
+    id: 'internal_program_conflict',
+    title: 'Program Conflict',
+    type: 'item',
+    icon: 'feather icon-package',
+    url: '/internal/program-conflict'
+  },
+  {
+    id: 'admissions_overview',
+    title: `${appConfig.companyName} Admissions`,
+    type: 'item',
+    icon: 'feather icon-award',
+    url: '/admissions-overview'
+  }
+];
+
+if (appConfig.meetingEnable) {
+  all_students_nestedList.push({
+    id: 'all-calendar-events',
+    title: 'Calendar Events',
+    type: 'item',
+    icon: 'feather icon-calendar',
+    url: '/events/all'
+  });
+}
+
+all_students_nestedList = [
+  ...all_students_nestedList,
+  {
+    id: 'archiv-student',
+    title: 'Archiv Students',
+    type: 'item',
+    icon: 'feather icon-users',
+    url: '/archiv/students/all'
+  },
+  {
+    id: 'prev_students_database',
+    title: 'Student Database',
+    type: 'item',
+    url: '/student-database',
+    classes: 'nav-item',
+    icon: 'feather icon-cloud'
+  }
+];
+
 export default {
   items: [
     {
@@ -248,68 +318,7 @@ export default {
           title: 'All Students',
           type: 'collapse',
           icon: 'feather icon-users',
-          children: [
-            {
-              id: 'all-application-overview',
-              title: 'All Application Overview',
-              type: 'item',
-              url: '/all-students-applications',
-              classes: 'nav-item',
-              icon: 'fa fa-university'
-            },
-            {
-              id: 'tasks_dashboard',
-              title: 'Tasks Dashboard',
-              type: 'item',
-              url: '/dashboard/cv-ml-rl',
-              classes: 'nav-item',
-              icon: 'feather icon-edit-1'
-            },
-            {
-              id: 'all-students-overview',
-              title: 'Student Overview',
-              type: 'item',
-              url: '/students-overview/all',
-              classes: 'nav-item',
-              icon: 'fa fa-users'
-            },
-            {
-              id: 'internal_program_conflict',
-              title: 'Program Conflict',
-              type: 'item',
-              icon: 'feather icon-package',
-              url: '/internal/program-conflict'
-            },
-            {
-              id: 'admissions_overview',
-              title: `${appConfig.companyName} Admissions`,
-              type: 'item',
-              icon: 'feather icon-award',
-              url: '/admissions-overview'
-            },
-            {
-              id: 'all-calendar-events',
-              title: 'Calendar Events',
-              type: 'item',
-              icon: 'feather icon-calendar',
-              url: '/events/all'
-            },
-            {
-              id: 'archiv-student',
-              title: 'Archiv Students',
-              type: 'item',
-              icon: 'feather icon-users',
-              url: '/archiv/students/all'
-            },
-            {
-              id: 'prev_students_database',
-              title: 'Student Database',
-              type: 'item',
-              url: '/student-database',
-              classes: 'nav-item',
-              icon: 'feather icon-cloud'
-            }
-          ]
+          children: all_students_nestedList
         },
         {
           id: 'taiger_widgets',

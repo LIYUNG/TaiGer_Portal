@@ -86,7 +86,9 @@ class Accounting extends React.Component {
               <Card.Header text={'dark'}>
                 <Card.Title>
                   <Row>
-                    <Col className="my-0 mx-0 text-light">TaiGer Team</Col>
+                    <Col className="my-0 mx-0 text-light">
+                      {appConfig.companyName} Team
+                    </Col>
                   </Row>
                 </Card.Title>
               </Card.Header>

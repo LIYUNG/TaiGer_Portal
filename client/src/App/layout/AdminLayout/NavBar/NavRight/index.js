@@ -14,6 +14,7 @@ import {
   is_TaiGer_Student
 } from '../../../../../Demo/Utils/checking-functions';
 import { getMyCommunicationUnreadNumber } from '../../../../../api';
+import { appConfig } from '../../../../../config';
 
 class NavRight extends Component {
   state = {
@@ -70,45 +71,48 @@ class NavRight extends Component {
             {/* <li className="mail-icon">
               <AiOutlineCalendar size={24} />
             </li> */}
-            {is_TaiGer_Student(this.props.userdata) && (
-              <li>
-                <Link
-                  to={`/communications/${this.props.userdata._id.toString()}`}
-                  className="dropdown-item"
-                  onClick={() => this.setState({ dropdownShow: false })}
-                >
-                  <AiOutlineMail size={28} />
-                </Link>
-              </li>
-            )}
-            {is_TaiGer_Agent(this.props.userdata) && (
-              <li className="mail-icon">
-                <Link
-                  to={`${
-                    DEMO.EVENT_TAIGER_LINK
-                  }/${this.props.userdata._id.toString()}`}
-                  className="dropdown-item"
-                  // onClick={() => this.setState({ dropdownShow: false })}
-                >
-                  <AiOutlineCalendar size={28} />
-                  {/* {this.state.unreadCount > 0 && (
+            {appConfig.messengerEnable &&
+              is_TaiGer_Student(this.props.userdata) && (
+                <li>
+                  <Link
+                    to={`/communications/${this.props.userdata._id.toString()}`}
+                    className="dropdown-item"
+                    onClick={() => this.setState({ dropdownShow: false })}
+                  >
+                    <AiOutlineMail size={28} />
+                  </Link>
+                </li>
+              )}
+            {appConfig.meetingEnable &&
+              is_TaiGer_Agent(this.props.userdata) && (
+                <li className="mail-icon">
+                  <Link
+                    to={`${
+                      DEMO.EVENT_TAIGER_LINK
+                    }/${this.props.userdata._id.toString()}`}
+                    className="dropdown-item"
+                    // onClick={() => this.setState({ dropdownShow: false })}
+                  >
+                    <AiOutlineCalendar size={28} />
+                    {/* {this.state.unreadCount > 0 && (
                     <span className="mail-icon-container badge">
                       {this.state.unreadCount}
                     </span>
                   )} */}
-                </Link>
-              </li>
-            )}
-            {is_TaiGer_AdminAgent(this.props.userdata) && (
-              <li className="mail-icon" onClick={this.handleOpenChat}>
-                <AiOutlineMail size={28} />
-                {this.state.unreadCount > 0 && (
-                  <span className="mail-icon-container badge">
-                    {this.state.unreadCount}
-                  </span>
-                )}
-              </li>
-            )}
+                  </Link>
+                </li>
+              )}
+            {appConfig.messengerEnable &&
+              is_TaiGer_AdminAgent(this.props.userdata) && (
+                <li className="mail-icon" onClick={this.handleOpenChat}>
+                  <AiOutlineMail size={28} />
+                  {this.state.unreadCount > 0 && (
+                    <span className="mail-icon-container badge">
+                      {this.state.unreadCount}
+                    </span>
+                  )}
+                </li>
+              )}
             <li className="py-0">
               <Dropdown
                 className="drp-user"

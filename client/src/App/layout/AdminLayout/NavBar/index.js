@@ -8,9 +8,7 @@ import Aux from '../../../../hoc/_Aux';
 import { Link } from 'react-router-dom';
 import * as actionTypes from '../../../../store/actions';
 import NavSearch from './NavLeft/NavSearch';
-import {
-  is_TaiGer_role
-} from '../../../../Demo/Utils/checking-functions';
+import { is_TaiGer_role } from '../../../../Demo/Utils/checking-functions';
 import { appConfig } from '../../../../config';
 
 class NavBar extends Component {
@@ -57,7 +55,9 @@ class NavBar extends Component {
               style={{ textDecoration: 'none' }}
               className="b-brand mx-2"
             >
-              <span className="b-title">TaiGer</span>
+              <span className="b-title">
+                <h3 className="mt-2 text-light">{appConfig.companyName}</h3>
+              </span>
             </Link>
           </div>
           <a className="mobile-menu" id="mobile-header">

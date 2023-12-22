@@ -35,5 +35,6 @@ export const appConfig = {
   vpdEnable: true,
   AIEnable: true,
   meetingEnable: true,
+  messengerEnable: true,
   AIEnable: true
 };

@@ -1,5 +1,58 @@
 import { appConfig } from './config';
 
+let application_overview = [
+  {
+    id: 'applications_overview_stidemt',
+    title: 'My Applications',
+    type: 'item',
+    icon: 'feather icon-book',
+    url: '/student-applications',
+    target: false
+  },
+  {
+    id: 'base_documents',
+    title: 'My Documents',
+    type: 'item',
+    url: '/base-documents',
+    classes: 'nav-item',
+    icon: 'feather icon-eye',
+    target: false,
+    breadcrumbs: false
+  },
+  {
+    id: 'editor_center',
+    title: 'CV ML RL Overview',
+    type: 'item',
+    url: '/cv-ml-rl-center',
+    classes: 'nav-item',
+    icon: 'feather icon-edit-1',
+    target: false,
+    breadcrumbs: false
+  },
+  {
+    id: 'application_portal_management',
+    title: 'Portals Management',
+    type: 'item',
+    url: '/portal-informations',
+    classes: 'nav-item',
+    icon: 'feather icon-layout',
+    target: false,
+    breadcrumbs: false
+  }
+];
+if (appConfig.vpdEnable) {
+  application_overview.push({
+    id: 'uni_assist_tasks',
+    title: 'Uni-Assist Tasks',
+    type: 'item',
+    url: '/uni-assist',
+    classes: 'nav-item',
+    icon: 'feather icon-navigation',
+    target: false,
+    breadcrumbs: false
+  });
+}
+
 export default {
   items: [
     {
@@ -134,56 +187,7 @@ export default {
           type: 'collapse',
           classes: 'nav-item',
           icon: 'feather icon-book',
-          children: [
-            {
-              id: 'applications_overview_stidemt',
-              title: 'My Applications',
-              type: 'item',
-              icon: 'feather icon-book',
-              url: '/student-applications',
-              target: false
-            },
-            {
-              id: 'base_documents',
-              title: 'My Documents',
-              type: 'item',
-              url: '/base-documents',
-              classes: 'nav-item',
-              icon: 'feather icon-eye',
-              target: false,
-              breadcrumbs: false
-            },
-            {
-              id: 'editor_center',
-              title: 'CV ML RL Overview',
-              type: 'item',
-              url: '/cv-ml-rl-center',
-              classes: 'nav-item',
-              icon: 'feather icon-edit-1',
-              target: false,
-              breadcrumbs: false
-            },
-            {
-              id: 'application_portal_management',
-              title: 'Portals Management',
-              type: 'item',
-              url: '/portal-informations',
-              classes: 'nav-item',
-              icon: 'feather icon-layout',
-              target: false,
-              breadcrumbs: false
-            },
-            {
-              id: 'uni_assist_tasks',
-              title: 'Uni-Assist Tasks',
-              type: 'item',
-              url: '/uni-assist',
-              classes: 'nav-item',
-              icon: 'feather icon-navigation',
-              target: false,
-              breadcrumbs: false
-            }
-          ]
+          children: application_overview
         },
         {
           id: 'students_tasks_overview',

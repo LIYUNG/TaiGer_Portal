@@ -14,6 +14,7 @@ import {
   to_register_application_portals,
   is_personal_data_filled
 } from '../../../Utils/checking-functions';
+import { appConfig } from '../../../../config';
 
 class StudentTasks extends React.Component {
   render() {
@@ -184,25 +185,28 @@ class StudentTasks extends React.Component {
           </tr>
         )}
         {/* check uni-assist */}
-        {!is_all_uni_assist_vpd_uploaded(this.props.student) && (
-          <tr>
-            <td>
-              <Link
-                to={`${DEMO.UNI_ASSIST_LINK}`}
-                style={{ textDecoration: 'none' }}
-                className="text-info"
-              >
-                Uni-Assist
-                <FiExternalLink
-                  className="mx-1 mb-1"
-                  style={{ cursor: 'pointer' }}
-                />
-              </Link>
-            </td>
-            <td>請至 Uni-Assist 專區，依照指示完成帳號申請，上傳文件，申請 VPD</td>
-            <td></td>
-          </tr>
-        )}
+        {appConfig.vpdEnable &&
+          !is_all_uni_assist_vpd_uploaded(this.props.student) && (
+            <tr>
+              <td>
+                <Link
+                  to={`${DEMO.UNI_ASSIST_LINK}`}
+                  style={{ textDecoration: 'none' }}
+                  className="text-info"
+                >
+                  Uni-Assist
+                  <FiExternalLink
+                    className="mx-1 mb-1"
+                    style={{ cursor: 'pointer' }}
+                  />
+                </Link>
+              </td>
+              <td>
+                請至 Uni-Assist 專區，依照指示完成帳號申請，上傳文件，申請 VPD
+              </td>
+              <td></td>
+            </tr>
+          )}
         {!is_personal_data_filled(this.props.student) && (
           <tr>
             <td>

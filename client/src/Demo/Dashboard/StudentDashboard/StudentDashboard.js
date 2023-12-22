@@ -141,6 +141,7 @@ class StudentDashboard extends React.Component {
 
         {student.notification &&
           !student.notification.isRead_uni_assist_task_assigned &&
+          appConfig.vpdEnable &&
           !is_all_uni_assist_vpd_uploaded(student) && (
             <Banner
               ReadOnlyMode={this.props.ReadOnlyMode}

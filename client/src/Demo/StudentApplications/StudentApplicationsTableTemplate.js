@@ -577,7 +577,8 @@ class StudentApplicationsTableTemplate extends React.Component {
                 {application.closed === 'O' ||
                 (is_program_ml_rl_essay_ready(application) &&
                   isCVFinished(this.state.student) &&
-                  is_the_uni_assist_vpd_uploaded(application)) ? (
+                  (!appConfig.vpdEnable ||
+                    is_the_uni_assist_vpd_uploaded(application))) ? (
                   <Form.Group controlId="closed">
                     <Form.Control
                       as="select"

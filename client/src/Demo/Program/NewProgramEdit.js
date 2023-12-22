@@ -272,26 +272,29 @@ function NewProgramEdit(props) {
               </h5>
             </Col>
           </Row>
-          <Row>
-            <Col md={4}>
-              <h5>Need Uni-Assist?</h5>
-            </Col>
-            <Col md={4}>
-              <h5>
-                <Form.Group controlId="uni_assist">
-                  <Form.Control
-                    as="select"
-                    onChange={(e) => handleChange(e)}
-                    value={initStates.program.uni_assist}
-                  >
-                    <option value="No">No</option>
-                    <option value="Yes-VPD">Yes-VPD</option>
-                    <option value="Yes-Full">Yes-Full</option>
-                  </Form.Control>
-                </Form.Group>
-              </h5>
-            </Col>
-          </Row>
+          {appConfig.vpdEnable && (
+            <Row>
+              <Col md={4}>
+                <h5>Need Uni-Assist?</h5>
+              </Col>
+              <Col md={4}>
+                <h5>
+                  <Form.Group controlId="uni_assist">
+                    <Form.Control
+                      as="select"
+                      onChange={(e) => handleChange(e)}
+                      value={initStates.program.uni_assist}
+                    >
+                      <option value="No">No</option>
+                      <option value="Yes-VPD">Yes-VPD</option>
+                      <option value="Yes-Full">Yes-Full</option>
+                    </Form.Control>
+                  </Form.Group>
+                </h5>
+              </Col>
+            </Row>
+          )}
+
           <Row>
             <Col md={4}>
               <h5>TOEFL Requirement</h5>

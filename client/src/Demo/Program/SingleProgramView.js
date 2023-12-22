@@ -98,6 +98,21 @@ class SingleProgramView extends React.Component {
                         )}
                       </Col>
                     </Row>
+                  ) : program_field.prop.includes('uni_assist') ? (
+                    appConfig.vpdEnable && (
+                      <Row>
+                        <Col md={4}>
+                          <p className="my-0">
+                            <b>{program_field.name}</b>
+                          </p>
+                        </Col>
+                        <Col md={8}>
+                          <LinkableNewlineText
+                            text={this.props.program[program_field.prop]}
+                          />
+                        </Col>
+                      </Row>
+                    )
                   ) : (
                     <Row>
                       <Col md={4}>

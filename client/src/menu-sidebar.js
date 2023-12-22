@@ -1,3 +1,5 @@
+import { appConfig } from './config';
+
 export default {
   items: [
     {
@@ -276,7 +278,7 @@ export default {
             },
             {
               id: 'admissions_overview',
-              title: 'TaiGer Admissions',
+              title: `${appConfig.companyName} Admissions`,
               type: 'item',
               icon: 'feather icon-award',
               url: '/admissions-overview'
@@ -334,7 +336,7 @@ export default {
         },
         {
           id: 'teams_overview',
-          title: 'TaiGer Teams',
+          title: `${appConfig.companyName} Teams`,
           type: 'collapse',
           classes: 'nav-item',
           icon: 'fa fa-coffee',
@@ -348,7 +350,7 @@ export default {
             },
             {
               id: 'teams_member',
-              title: 'TaiGer Members',
+              title: `${appConfig.companyName} Members`,
               type: 'item',
               icon: 'fa fa-user',
               url: '/teams/members'
@@ -371,7 +373,7 @@ export default {
             },
             {
               id: 'internal_dashboard',
-              title: 'TaiGer Dashboard',
+              title: `${appConfig.companyName} Dashboard`,
               type: 'item',
               icon: 'feather icon-target',
               url: '/dashboard/internal'
@@ -379,7 +381,7 @@ export default {
 
             {
               id: 'internal_accounting',
-              title: 'TaiGer Accounting',
+              title: `${appConfig.companyName} Accounting`,
               type: 'item',
               icon: 'fa fa-euro',
               url: '/internal/accounting'

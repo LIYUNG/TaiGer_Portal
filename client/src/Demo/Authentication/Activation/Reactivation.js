@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import './../../../assets/scss/style.scss';
 import Aux from '../../../hoc/_Aux';
 import { resendActivation } from '../../../api/index';
-import taiger_logo from '../../../assets/images/taiger_logo.png';
 import Footer from '../../../components/Footer/Footer';
+import { appConfig } from '../../../config';
 
 export default function Reactivation(props) {
   // const query = new URLSearchParams(props.location.search);
@@ -53,7 +53,7 @@ export default function Reactivation(props) {
               <div className="card-body text-center">
                 <img
                   className="img-radius"
-                  src={taiger_logo}
+                  src={appConfig.LoginPageLogo}
                   alt="Generic placeholder"
                 />
                 <p className="mb-4"></p>
@@ -80,7 +80,7 @@ export default function Reactivation(props) {
               <div className="card-body text-center">
                 <img
                   className="img-radius"
-                  src={taiger_logo}
+                  src={appConfig.LoginPageLogo}
                   alt="Generic placeholder"
                 />
                 <p className="mb-4"></p>

@@ -10,6 +10,7 @@ import {
   field_alert
 } from '../Utils/contants';
 import { is_TaiGer_Admin } from '../Utils/checking-functions';
+import { appConfig } from '../../config';
 
 class SingleProgramEdit extends React.Component {
   state = {
@@ -810,7 +811,7 @@ class SingleProgramEdit extends React.Component {
             </Row>
             <Row>
               <Col md={4}>
-                <h5>Portal 1 TaiGer Instrution page url</h5>
+                <h5>Portal 1 {appConfig.companyName} Instrution page url</h5>
               </Col>
               <Col md={4}>
                 <h5>
@@ -852,7 +853,7 @@ class SingleProgramEdit extends React.Component {
             </Row>
             <Row>
               <Col md={4}>
-                <h5>Portal 2 TaiGer Instrution page url</h5>
+                <h5>Portal 2 {appConfig.companyName} Instrution page url</h5>
               </Col>
               <Col md={4}>
                 <h5>

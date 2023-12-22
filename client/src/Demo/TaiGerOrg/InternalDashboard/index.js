@@ -30,6 +30,7 @@ import { TabTitle } from '../../Utils/TabTitle';
 import DEMO from '../../../store/constant';
 import TasksDistributionBarChart from '../../../components/Charts/TasksDistributionBarChart';
 import ProgramListVisualization from './ProgramListVisualization.js';
+import { appConfig } from '../../../config';
 
 class InternalDashboard extends React.Component {
   state = {
@@ -97,7 +98,7 @@ class InternalDashboard extends React.Component {
     if (!is_TaiGer_role(this.props.user)) {
       return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
     }
-    TabTitle('TaiGer Dashboard');
+    TabTitle(`${appConfig.companyName} Dashboard`);
     const {
       res_status,
       isLoaded,
@@ -346,7 +347,9 @@ class InternalDashboard extends React.Component {
               <Card.Header text={'dark'}>
                 <Card.Title>
                   <Row>
-                    <Col className="my-0 mx-0 text-light">TaiGer Dashboard</Col>
+                    <Col className="my-0 mx-0 text-light">
+                      {appConfig.companyName} Dashboard
+                    </Col>
                   </Row>
                 </Card.Title>
               </Card.Header>
@@ -841,7 +844,7 @@ class InternalDashboard extends React.Component {
           <Tab eventKey="program_list" title="Program List">
             <Row>
               <Col>
-                <ProgramListVisualization user={this.props.user}/>
+                <ProgramListVisualization user={this.props.user} />
               </Col>
             </Row>
           </Tab>

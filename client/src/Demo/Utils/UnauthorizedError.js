@@ -2,6 +2,7 @@ import React from 'react';
 import { Row, Col } from 'react-bootstrap';
 import Card from '../../App/components/MainCard';
 import Aux from '../../hoc/_Aux';
+import { appConfig } from '../../config';
 
 // Status 403: Forbidden requests
 class UnauthorizedError extends React.Component {
@@ -10,7 +11,9 @@ class UnauthorizedError extends React.Component {
       <Aux>
         <Row>
           <Col>
-            <Card>Permission Denied. 請跟您的TaiGer顧問聯繫</Card>
+            <Card>
+              Permission Denied. 請跟您的 {appConfig.companyName} 顧問聯繫
+            </Card>
           </Col>
         </Row>
       </Aux>

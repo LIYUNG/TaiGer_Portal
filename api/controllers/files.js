@@ -922,6 +922,7 @@ const UpdateStudentApplications = asyncHandler(async (req, res, next) => {
 
 const updateStudentApplicationResult = asyncHandler(async (req, res, next) => {
   const { studentId } = req.params;
+  const { user } = req;
   const { application_id, result } = req.body;
 
   const student = await Student.findById(studentId);
@@ -937,6 +938,10 @@ const updateStudentApplicationResult = asyncHandler(async (req, res, next) => {
     }
   );
   res.status(200).send({ success: true });
+  if (user.role === 'Student') {
+    // TODO: add email informing agent.
+    // TODO: add email informing editor.
+  }
   next();
 });
 

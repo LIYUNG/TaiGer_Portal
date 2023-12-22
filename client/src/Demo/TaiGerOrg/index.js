@@ -20,6 +20,7 @@ import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import GrantPermissionModal from './GrantPermissionModal';
 import GrantManagerModal from './GrantManagerModal';
+import { appConfig } from '../../config';
 
 class TaiGerOrg extends React.Component {
   state = {
@@ -158,7 +159,7 @@ class TaiGerOrg extends React.Component {
     if (!is_TaiGer_role(this.props.user)) {
       return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
     }
-    TabTitle('TaiGer Team Permissions Management');
+    TabTitle(`${appConfig.companyName} Team Permissions Management`);
     const { res_status, isLoaded } = this.state;
 
     if (!isLoaded && !this.state.teams) {
@@ -191,7 +192,7 @@ class TaiGerOrg extends React.Component {
                 <Card.Title>
                   <Row>
                     <Col className="my-0 mx-0 text-light">
-                      TaiGer Team Permissions Management
+                      {appConfig.companyName} Team Permissions Management
                     </Col>
                   </Row>
                 </Card.Title>

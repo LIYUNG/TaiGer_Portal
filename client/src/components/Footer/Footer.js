@@ -1,6 +1,9 @@
 import React from 'react';
 
 export default function Footer(props) {
+  const currentDate = new Date();
+  const currentYear = currentDate.getFullYear();
+
   return (
     <footer
       style={{
@@ -16,7 +19,7 @@ export default function Footer(props) {
           fontSize: '12px'
         }}
       >
-        Copyright TaiGer Consultancy © 2023 | Designed and developed by{' '}
+        Copyright TaiGer Consultancy © {currentYear} | Designed and developed by{' '}
         <a href="https://taigerconsultancy.com/" className="text-info">
           TaiGer Consultancy 台德留學顧問
         </a>

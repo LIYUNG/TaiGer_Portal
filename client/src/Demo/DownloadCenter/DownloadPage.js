@@ -11,6 +11,7 @@ import { deleteTemplateFile, getTemplates, uploadtemplate } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import Banner from '../../components/Banner/Banner';
+import { appConfig } from '../../config';
 
 class DownloadPage extends React.Component {
   state = {
@@ -207,7 +208,7 @@ class DownloadPage extends React.Component {
             <Card className="my-0 mx-0" bg={'dark'} text={'white'}>
               <Card.Header>
                 <Card.Title className="my-0 mx-0 text-light">
-                  Download TaiGer Document Templates
+                  Download ${appConfig.companyName} Document Templates
                 </Card.Title>
               </Card.Header>
               <Banner
@@ -215,9 +216,7 @@ class DownloadPage extends React.Component {
                 bg={'primary'}
                 title={'Info:'}
                 path={`${DEMO.CV_ML_RL_DOCS_LINK}`}
-                text={
-                  'This is TaiGer templates helping you finish your CV ML RL tasks. Please download, fill and upload them to the corresponding task.'
-                }
+                text={`This is ${appConfig.companyName} templates helping you finish your CV ML RL tasks. Please download, fill and upload them to the corresponding task.`}
                 link_name={'Test'}
                 removeBanner={this.removeBanner}
                 notification_key={'isRead_new_agent_assigned'}

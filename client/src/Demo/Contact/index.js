@@ -9,6 +9,7 @@ import ErrorPage from '../Utils/ErrorPage';
 import { getStudents } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
+import { appConfig } from '../../config';
 
 class Contact extends React.Component {
   state = {
@@ -126,7 +127,7 @@ class Contact extends React.Component {
             <Card className="my-2 mx-0" bg={'dark'} text={'light'}>
               <Card.Header>
                 <Card.Title className="my-0 mx-0 text-light">
-                  Your TaiGer Team
+                  Your {appConfig.companyName} Team
                 </Card.Title>
               </Card.Header>
               <Table

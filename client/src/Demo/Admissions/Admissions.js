@@ -9,6 +9,7 @@ import { is_TaiGer_role } from '../Utils/checking-functions';
 import { getAdmissions } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
+import { appConfig } from '../../config';
 
 class Admissions extends React.Component {
   state = {
@@ -53,7 +54,7 @@ class Admissions extends React.Component {
     if (!is_TaiGer_role(this.props.user)) {
       return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
     }
-    TabTitle('TaiGer Admissions');
+    TabTitle(`${appConfig.companyName} Admissions`);
     const { res_status, isLoaded } = this.state;
 
     if (!isLoaded && !this.state.data) {

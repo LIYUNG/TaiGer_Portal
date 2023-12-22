@@ -13,6 +13,7 @@ import ErrorPage from '../Utils/ErrorPage';
 import { TaiGerAiGeneral, TaiGerAiGeneral2, cvmlrlAi } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
+import { appConfig } from '../../config';
 
 class CVMLRLGenerator extends React.Component {
   state = {
@@ -99,7 +100,7 @@ class CVMLRLGenerator extends React.Component {
     if (!is_TaiGer_role(this.props.user)) {
       return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
     }
-    TabTitle('TaiGer AI Playground');
+    TabTitle(`${appConfig.companyName} AI Playground`);
     const { res_status, isLoaded } = this.state;
 
     if (!isLoaded) {
@@ -127,7 +128,7 @@ class CVMLRLGenerator extends React.Component {
         )}
         <Card>
           <Card.Body>
-            <h4>TaiGer AI Playground</h4>
+            <h4>{appConfig.companyName} AI Playground</h4>
             <Form>
               <Form.Group className="my-0 mx-0">
                 <Form.Control

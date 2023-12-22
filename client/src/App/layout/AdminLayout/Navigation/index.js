@@ -112,13 +112,6 @@ function Navigation(props) {
     document.body.classList.remove('datta-rtl');
   }
 
-  if (props.boxLayout) {
-    document.body.classList.add('container');
-    document.body.classList.add('box-layout');
-  } else {
-    document.body.classList.remove('container');
-    document.body.classList.remove('box-layout');
-  }
   let navContent = (
     <div className="navbar-wrapper">
       <NavLogo

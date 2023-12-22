@@ -16,6 +16,7 @@ import { getUsersLog } from '../../../api';
 import { TabTitle } from '../../Utils/TabTitle';
 import DEMO from '../../../store/constant';
 import LogLineChart from '../../../components/Charts/LogLineChart';
+import { appConfig } from '../../../config';
 
 class TaiGerPortalUsersLog extends React.Component {
   state = {
@@ -99,7 +100,7 @@ class TaiGerPortalUsersLog extends React.Component {
     if (!is_TaiGer_Admin(this.props.user)) {
       return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
     }
-    TabTitle('TaiGer User Logs');
+    TabTitle(`${appConfig.companyName} User Logs`);
     const { res_status, isLoaded } = this.state;
 
     if (!isLoaded) {

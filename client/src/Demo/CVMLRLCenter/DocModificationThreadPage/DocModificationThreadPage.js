@@ -28,6 +28,7 @@ import {
 import { TabTitle } from '../../Utils/TabTitle';
 import DEMO from '../../../store/constant';
 import FilesList from './FilesList';
+import { appConfig } from '../../../config';
 
 class DocModificationThreadPage extends Component {
   state = {
@@ -507,7 +508,7 @@ class DocModificationThreadPage extends Component {
                     {template_obj ? (
                       <>
                         <p>
-                          請填好我們的 TaiGer
+                          請填好我們的 {appConfig.companyName}
                           Template，並在這個討論串夾帶在和您的 Editor
                           討論。回覆時請用 <b>英語(English)</b>{' '}
                           好讓外籍顧問方便溝通。有任何流程疑問{' '}
@@ -517,8 +518,8 @@ class DocModificationThreadPage extends Component {
                             </Button>
                           </Link>
                           <br />
-                          Please fill our TaiGer template and attach the filled
-                          template and reply in
+                          Please fill our {appConfig.companyName} template and
+                          attach the filled template and reply in
                           <b> English</b> in this discussion. Any process
                           question:{' '}
                           <Link to={`${DEMO.CV_ML_RL_DOCS_LINK}`}>
@@ -579,7 +580,7 @@ class DocModificationThreadPage extends Component {
                                         this.state.documentsthreadId
                                       )}`}
                                     >
-                                      <Button size="xl" variant='danger'>
+                                      <Button size="xl" variant="danger">
                                         <Badge>Beta</Badge> &nbsp;{' '}
                                         <b>Editor Helper</b>
                                       </Button>

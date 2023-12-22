@@ -48,6 +48,7 @@ import DEMO from '../../store/constant';
 import { AiFillEdit } from 'react-icons/ai';
 import { BsMessenger } from 'react-icons/bs';
 import PortalCredentialPage from '../PortalCredentialPage';
+import { appConfig } from '../../config';
 
 class SingleStudentPage extends React.Component {
   state = {
@@ -736,13 +737,16 @@ class SingleStudentPage extends React.Component {
                   </Card.Body>
                 </Card>
               </Tab>
-              <Tab eventKey="uni-assist" title="Uni-Assist">
-                <UniAssistListCard
-                  student={this.state.student}
-                  role={this.props.user.role}
-                  user={this.props.user}
-                />
-              </Tab>
+              {appConfig.vpdEnable && (
+                <Tab eventKey="uni-assist" title="Uni-Assist">
+                  <UniAssistListCard
+                    student={this.state.student}
+                    role={this.props.user.role}
+                    user={this.props.user}
+                  />
+                </Tab>
+              )}
+
               <Tab eventKey="background" title="My Survey">
                 <SurveyComponent
                   survey_link={this.state.survey_link}

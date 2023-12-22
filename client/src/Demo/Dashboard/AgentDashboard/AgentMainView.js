@@ -11,6 +11,7 @@ import BaseDocumentCheckingTasks from '../MainViewTab/AgentTasks/BaseDocumentChe
 import StudentsAgentEditor from '../MainViewTab/StudentsAgentEditor/StudentsAgentEditor';
 
 import { updateAgentBanner } from '../../../api';
+import { appConfig } from '../../../config';
 import { academic_background_header, profile_list } from '../../Utils/contants';
 import {
   DocumentStatus,
@@ -344,7 +345,7 @@ class AgentMainView extends React.Component {
         <Row>
           {/* TODO: add a program update request ticket card (independent component?) */}
           {/* <Col md={6}> */}
-            <ProgramReportCard />
+          <ProgramReportCard />
           {/* </Col> */}
           {is_any_programs_ready_to_submit(
             this.props.students.filter((student) =>
@@ -388,43 +389,44 @@ class AgentMainView extends React.Component {
               </Card>
             </Col>
           )}
-          {is_any_vpd_missing(
-            this.props.students.filter((student) =>
-              student.agents.some(
-                (agent) => agent._id === this.props.user._id.toString()
+          {appConfig.vpdEnable &&
+            is_any_vpd_missing(
+              this.props.students.filter((student) =>
+                student.agents.some(
+                  (agent) => agent._id === this.props.user._id.toString()
+                )
               )
-            )
-          ) && (
-            <Col md={6}>
-              <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
-                <Card.Header className="py-0 px-0 " bg={'danger'}>
-                  <Card.Title className="my-2 mx-2 text-light" as={'h5'}>
-                    <BsExclamationTriangle size={18} /> VPD missing:
-                  </Card.Title>
-                </Card.Header>
-                <Card.Body className="py-0 px-0 card-scrollable-body">
-                  <Table
-                    bordered
-                    hover
-                    className="my-0 mx-0"
-                    variant="dark"
-                    text="light"
-                    size="sm"
-                  >
-                    <thead>
-                      <tr>
-                        <th>Student</th>
-                        <th>Status</th>
-                        <th>Deadline</th>
-                        <th>Program</th>
-                      </tr>
-                    </thead>
-                    <tbody>{vpd_to_submit_tasks}</tbody>
-                  </Table>
-                </Card.Body>
-              </Card>
-            </Col>
-          )}
+            ) && (
+              <Col md={6}>
+                <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
+                  <Card.Header className="py-0 px-0 " bg={'danger'}>
+                    <Card.Title className="my-2 mx-2 text-light" as={'h5'}>
+                      <BsExclamationTriangle size={18} /> VPD missing:
+                    </Card.Title>
+                  </Card.Header>
+                  <Card.Body className="py-0 px-0 card-scrollable-body">
+                    <Table
+                      bordered
+                      hover
+                      className="my-0 mx-0"
+                      variant="dark"
+                      text="light"
+                      size="sm"
+                    >
+                      <thead>
+                        <tr>
+                          <th>Student</th>
+                          <th>Status</th>
+                          <th>Deadline</th>
+                          <th>Program</th>
+                        </tr>
+                      </thead>
+                      <tbody>{vpd_to_submit_tasks}</tbody>
+                    </Table>
+                  </Card.Body>
+                </Card>
+              </Col>
+            )}
           {is_any_base_documents_uploaded(
             this.props.students.filter((student) =>
               student.agents.some(

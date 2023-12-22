@@ -11,6 +11,7 @@ import NavSearch from './NavLeft/NavSearch';
 import {
   is_TaiGer_role
 } from '../../../../Demo/Utils/checking-functions';
+import { appConfig } from '../../../../config';
 
 class NavBar extends Component {
   render() {
@@ -47,7 +48,7 @@ class NavBar extends Component {
             >
               <img
                 className="img-radius"
-                src={'/assets/taiger_logo_small.png'}
+                src={appConfig.LogoSmall}
                 alt="Generic placeholder"
               />
             </a>{' '}

@@ -19,6 +19,7 @@ import { Card, Col, Row, Spinner } from 'react-bootstrap';
 import { getPrograms } from '../../../../api';
 import DEMO from '../../../../store/constant';
 import { is_TaiGer_role } from '../../../Utils/checking-functions';
+import { appConfig } from '../../../../config';
 
 function ProgramDistributionChart({ data, x_key }) {
   return (
@@ -244,7 +245,9 @@ function ProgramListVisualization(props) {
         <Card.Header text={'dark'}>
           <Card.Title>
             <Row>
-              <Col className="my-0 mx-0">TaiGer ProgramList Distribution</Col>
+              <Col className="my-0 mx-0">
+                {appConfig.companyName} ProgramList Distribution
+              </Col>
             </Row>
           </Card.Title>
         </Card.Header>

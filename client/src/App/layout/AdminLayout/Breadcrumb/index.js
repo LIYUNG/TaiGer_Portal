@@ -1,20 +1,20 @@
-import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 
-import config from "../../../../config";
-import navigation_admin from "../../../../menu-sidebar";
-import DEMO from "../../../../store/constant";
-import Aux from "../../../../hoc/_Aux";
+import config, { appConfig } from '../../../../config';
+import navigation_admin from '../../../../menu-sidebar';
+import DEMO from '../../../../store/constant';
+import Aux from '../../../../hoc/_Aux';
 
 class Breadcrumb extends Component {
   state = {
     main: [],
-    item: [],
+    item: []
   };
 
   componentDidMount() {
     navigation_admin.items.map((item, index) => {
-      if (item.type && item.type === "group") {
+      if (item.type && item.type === 'group') {
         this.getCollapse(item, index);
       }
       return false;
@@ -24,7 +24,7 @@ class Breadcrumb extends Component {
   // componentWillReceiveProps = () => {
   UNSAFE_componentWillReceiveProps = () => {
     navigation_admin.items.map((item, index) => {
-      if (item.type && item.type === "group") {
+      if (item.type && item.type === 'group') {
         this.getCollapse(item);
       }
       return false;
@@ -34,9 +34,9 @@ class Breadcrumb extends Component {
   getCollapse = (item) => {
     if (item.children) {
       item.children.filter((collapse) => {
-        if (collapse.type && collapse.type === "collapse") {
+        if (collapse.type && collapse.type === 'collapse') {
           this.getCollapse(collapse);
-        } else if (collapse.type && collapse.type === "item") {
+        } else if (collapse.type && collapse.type === 'item') {
           if (document.location.pathname === config.basename + collapse.url) {
             this.setState({ item: collapse, main: item });
           }
@@ -48,9 +48,9 @@ class Breadcrumb extends Component {
 
   render() {
     let main, item;
-    let breadcrumb = "";
-    let title = "Welcome";
-    if (this.state.main && this.state.main.type === "collapse") {
+    let breadcrumb = '';
+    let title = 'Welcome';
+    if (this.state.main && this.state.main.type === 'collapse') {
       main = (
         <li className="breadcrumb-item">
           <a href={DEMO.BLANK_LINK}>{this.state.main.title}</a>
@@ -58,7 +58,7 @@ class Breadcrumb extends Component {
       );
     }
 
-    if (this.state.item && this.state.item.type === "item") {
+    if (this.state.item && this.state.item.type === 'item') {
       title = this.state.item.title;
       item = (
         <li className="breadcrumb-item">
@@ -92,7 +92,7 @@ class Breadcrumb extends Component {
       }
     }
 
-    document.title = title + " | TaiGer Consultancy Portal";
+    document.title = title + ` | ${appConfig.companyFullName} Portal`;
 
     return <Aux>{breadcrumb}</Aux>;
   }

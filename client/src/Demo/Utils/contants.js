@@ -9,6 +9,7 @@ import moment from 'moment-timezone';
 import { IoCheckmarkCircle } from 'react-icons/io5';
 import { BsDash } from 'react-icons/bs';
 import { BiCommentDots } from 'react-icons/bi';
+import { appConfig } from '../../config';
 let FILE_OK_SYMBOL = (
   <IoCheckmarkCircle size={18} color="limegreen" title="Valid Document" />
 );
@@ -1167,7 +1168,7 @@ export const is_pending_status = (user, thread) => {
 };
 
 export const documentation_categories = {
-  howtostart: 'How to Start TaiGer Portal',
+  howtostart: `How to Start ${appConfig.companyName} Portal`,
   'base-documents': 'Base Documents',
   'cv-ml-rl': 'CV/ML/RL',
   application: 'Application Instruction',

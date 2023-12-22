@@ -16,6 +16,7 @@ import {
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import TasksDistributionBarChart from '../../components/Charts/TasksDistributionBarChart';
+import { appConfig } from '../../config';
 
 class AgentPage extends React.Component {
   state = {
@@ -146,7 +147,7 @@ class AgentPage extends React.Component {
                 <Card.Title>
                   <Row>
                     <Col className="my-0 mx-0 text-light">
-                      TaiGer Team Agent:{' '}
+                      ${appConfig.companyName} Team Agent:{' '}
                       <b>
                         {this.state.agent.firstname} {this.state.agent.lastname}
                       </b>

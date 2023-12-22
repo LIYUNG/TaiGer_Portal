@@ -232,7 +232,6 @@ const mapStateToProps = (state) => {
     defaultPath: state.defaultPath,
     isFullScreen: state.isFullScreen,
     collapseMenu: state.collapseMenu,
-    configBlock: state.configBlock,
     layout: state.layout
   };
 };

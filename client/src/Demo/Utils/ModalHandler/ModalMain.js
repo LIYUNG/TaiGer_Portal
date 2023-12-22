@@ -1,5 +1,6 @@
 import React from 'react';
 import { Modal, Button } from 'react-bootstrap';
+import { appConfig } from '../../../config';
 
 class ModalMain extends React.Component {
   state = {
@@ -35,7 +36,8 @@ class ModalMain extends React.Component {
             <Modal.Title id="contained-modal-title-vcenter">Error</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            Operation forbidden. Please contact TaiGer for more detail.
+            Operation forbidden. Please contact {appConfig.companyName} for more
+            detail.
           </Modal.Body>
           <Modal.Footer>
             <Button onClick={this.props.ConfirmError}>Ok</Button>

@@ -16,6 +16,7 @@ import {
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import TasksDistributionBarChart from '../../components/Charts/TasksDistributionBarChart';
+import { appConfig } from '../../config';
 
 class EditorPage extends React.Component {
   state = {
@@ -144,7 +145,7 @@ class EditorPage extends React.Component {
                 <Card.Title>
                   <Row>
                     <Col className="my-0 mx-0 text-light">
-                      TaiGer Team Editor:{' '}
+                      ${appConfig.companyName} Team Editor:{' '}
                       <b>
                         {this.state.editor.firstname}{' '}
                         {this.state.editor.lastname}

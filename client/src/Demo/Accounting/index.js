@@ -10,6 +10,7 @@ import { is_TaiGer_Admin, is_TaiGer_role } from '../Utils/checking-functions';
 import { getTeamMembers } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
+import { appConfig } from '../../config';
 
 class Accounting extends React.Component {
   state = {
@@ -56,7 +57,7 @@ class Accounting extends React.Component {
     if (!is_TaiGer_role(this.props.user)) {
       return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
     }
-    TabTitle('TaiGer Accounting');
+    TabTitle(`${appConfig.companyName} Accounting`);
     const { res_status, isLoaded } = this.state;
 
     if (!isLoaded && !this.state.teams) {

@@ -10,6 +10,7 @@ import ErrorPage from '../Utils/ErrorPage';
 import { getTeamMembers } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
+import { appConfig } from '../../config';
 
 class AdminPage extends React.Component {
   state = {
@@ -76,7 +77,7 @@ class AdminPage extends React.Component {
       return <ErrorPage res_status={res_status} />;
     }
 
-    TabTitle('TaiGer Admin');
+    TabTitle(`${appConfig.companyName} Admin`);
 
     return (
       <Aux>
@@ -86,7 +87,9 @@ class AdminPage extends React.Component {
               <Card.Header text={'dark'}>
                 <Card.Title>
                   <Row>
-                    <Col className="my-0 mx-0 text-light">TaiGer Team</Col>
+                    <Col className="my-0 mx-0 text-light">
+                      {appConfig.companyName} Team
+                    </Col>
                   </Row>
                 </Card.Title>
               </Card.Header>

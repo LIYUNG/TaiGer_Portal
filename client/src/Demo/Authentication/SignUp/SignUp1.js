@@ -5,7 +5,7 @@ import './../../../assets/scss/style.scss';
 import { Spinner } from 'react-bootstrap';
 import Aux from '../../../hoc/_Aux';
 import { register } from '../../../api';
-import taiger_logo from '../../../assets/images/taiger_logo.png';
+import { appConfig } from '../../../config';
 
 export default function SignUp1({ userData }) {
   const [email, setEmail] = useState();
@@ -81,7 +81,7 @@ export default function SignUp1({ userData }) {
               <div className="card-body text-center">
                 <img
                   className="mb-3 img-radius"
-                  src={taiger_logo}
+                  src={appConfig.LoginPageLogo}
                   alt="Generic placeholder"
                 />
                 <h3 className="mb-3 text-info">Confirmation Email sent</h3>
@@ -119,7 +119,7 @@ export default function SignUp1({ userData }) {
               <div className="card-body text-center">
                 <img
                   className="mb-2 img-radius"
-                  src={taiger_logo}
+                  src={appConfig.LoginPageLogo}
                   alt="Generic placeholder"
                 />
                 <h3 className="mb-3 text-info">Sign up</h3>

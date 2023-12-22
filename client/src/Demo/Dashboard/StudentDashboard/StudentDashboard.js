@@ -23,6 +23,7 @@ import { program_progress_list_student } from '../../Utils/contants';
 import { FiExternalLink } from 'react-icons/fi';
 import { AiOutlineCalendar } from 'react-icons/ai';
 import ApplicationProgressCard from '../../../components/ApplicationProgressCard/ApplicationProgressCard';
+import { appConfig } from '../../../config';
 
 class StudentDashboard extends React.Component {
   state = {
@@ -107,8 +108,8 @@ class StudentDashboard extends React.Component {
               <Card className="mb-2 mx-0" bg={'success'} text={'white'}>
                 <Card.Header>
                   <Card.Title as="h5" className="text-light">
-                    Status: <b>Close</b> - Your TaiGer Portal Service is
-                    terminated.
+                    Status: <b>Close</b> - Your {appConfig.companyName} Portal
+                    Service is terminated.
                   </Card.Title>
                 </Card.Header>
               </Card>

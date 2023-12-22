@@ -5,8 +5,8 @@ import { Spinner } from 'react-bootstrap';
 import './../../../assets/scss/style.scss';
 import Aux from '../../../hoc/_Aux';
 import { forgotPassword } from '../../../api';
-import taiger_logo from '../../../assets/images/taiger_logo.png';
 import Footer from '../../../components/Footer/Footer';
+import { appConfig } from '../../../config';
 
 export default function ResetPasswordRequest() {
   const [emailaddress, setEmailaddress] = useState();
@@ -52,7 +52,7 @@ export default function ResetPasswordRequest() {
               <div className="card-body text-center">
                 <img
                   className="mb-3 img-radius"
-                  src={taiger_logo}
+                  src={appConfig.LoginPageLogo}
                   alt="Generic placeholder"
                 />
                 <h3 className="mb-3 text-light">Reset Password</h3>
@@ -84,7 +84,7 @@ export default function ResetPasswordRequest() {
               <div className="card-body text-center">
                 <img
                   className="mb-3 img-radius"
-                  src={taiger_logo}
+                  src={appConfig.LoginPageLogo}
                   alt="Generic placeholder"
                 />
                 <p className="mb-4"></p>

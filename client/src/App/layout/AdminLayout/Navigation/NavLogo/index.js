@@ -2,6 +2,7 @@ import React from 'react';
 import DEMO from './../../../../../store/constant';
 import Aux from '../../../../../hoc/_Aux';
 import { Link } from 'react-router-dom';
+import { appConfig } from '../../../../../config';
 
 const navLogo = (props) => {
   let toggleClass = ['mobile-menu'];
@@ -19,7 +20,7 @@ const navLogo = (props) => {
         >
           <img
             className="img-radius"
-            src={'/assets/taiger_logo_small.png'}
+            src={appConfig.LogoSmall}
             alt="Generic placeholder"
           />
         </a>{' '}
@@ -28,7 +29,7 @@ const navLogo = (props) => {
           style={{ textDecoration: 'none' }}
           className="b-brand mx-2"
         >
-          <span className="b-title"> TaiGer</span>
+          <span className="b-title"> {appConfig.companyName}</span>
         </Link>
         <a
           // href={DEMO.BLANK_LINK}

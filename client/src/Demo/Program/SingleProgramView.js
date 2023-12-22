@@ -11,6 +11,7 @@ import { convertDate, program_fields } from '../Utils/contants';
 import Banner from '../../components/Banner/Banner';
 import DEMO from '../../store/constant';
 import ProgramReport from './ProgramReport';
+import { appConfig } from '../../config';
 
 class SingleProgramView extends React.Component {
   render() {
@@ -23,9 +24,7 @@ class SingleProgramView extends React.Component {
               bg={'primary'}
               to={`${DEMO.BASE_DOCUMENTS_LINK}`}
               title={'Info:'}
-              text={
-                'TaiGer Portal 網站上的學程資訊主要為管理申請進度為主，學校學程詳細資訊仍以學校網站為主。'
-              }
+              text={`${appConfig.companyName} Portal 網站上的學程資訊主要為管理申請進度為主，學校學程詳細資訊仍以學校網站為主。`}
               link_name={''}
               removeBanner={() => {}}
               notification_key={''}
@@ -307,7 +306,9 @@ class SingleProgramView extends React.Component {
               </Card>
               <Card>
                 <Card.Header>
-                  <Card.Title>TaiGer Program Assistant</Card.Title>
+                  <Card.Title>
+                    {appConfig.companyName} Program Assistant
+                  </Card.Title>
                   <Card.Body>
                     <Button onClick={this.props.programListAssistant}>
                       Fetch

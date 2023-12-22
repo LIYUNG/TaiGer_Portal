@@ -23,6 +23,7 @@ import {
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import { BsMessenger } from 'react-icons/bs';
+import { appConfig } from '../../config';
 
 export default function MyCourses(props) {
   let [statedata, setStatedata] = useState({
@@ -518,10 +519,12 @@ export default function MyCourses(props) {
               </Row>
               <Card className="my-2 py-2 mx-0 px-2">
                 <h4>
-                  <b>表格一</b>：請放 TaiGer 服務開始<b>前</b>已經修過的課程
+                  <b>表格一</b>：請放 {appConfig.companyName} 服務開始<b>前</b>
+                  已經修過的課程
                 </h4>
                 <li>
-                  您只需在TaiGer服務開始初期更新一次<b>表格一</b>
+                  您只需在 {appConfig.companyName} 服務開始初期更新一次
+                  <b>表格一</b>
                   ，往後新的學期，新課程請更新在
                   <b>表格二</b>
                 </li>
@@ -549,10 +552,11 @@ export default function MyCourses(props) {
               <br />
               <Card className="mt-0 py-2 mx-0 px-2" bg="info">
                 <h4>
-                  <b>表格二</b>：請放 TaiGer 服務開始<b>後</b>所選的修課程
+                  <b>表格二</b>：請放 {appConfig.companyName} 服務開始<b>後</b>
+                  所選的修課程
                 </h4>
                 <span>
-                  如此一來顧問才能了解哪些課程是 TaiGer
+                  如此一來顧問才能了解哪些課程是 {appConfig.companyName}
                   服務開始後要求修的課程。到畢業前所有新修的課程， 只需更新
                   <b>表格二</b>。
                 </span>

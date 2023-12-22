@@ -43,6 +43,7 @@ import {
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import ProgramList from '../Program/ProgramList';
+import { appConfig } from '../../config';
 
 class StudentApplicationsTableTemplate extends React.Component {
   state = {
@@ -901,9 +902,7 @@ class StudentApplicationsTableTemplate extends React.Component {
                         bg={'primary'}
                         to={`${DEMO.BASE_DOCUMENTS_LINK}`}
                         title={'Info:'}
-                        text={
-                          'TaiGer Portal 網站上的學程資訊主要為管理申請進度為主，學校學程詳細資訊仍以學校網站為主。'
-                        }
+                        text={`${appConfig.companyName} Portal 網站上的學程資訊主要為管理申請進度為主，學校學程詳細資訊仍以學校網站為主。`}
                         link_name={''}
                         removeBanner={this.removeBanner}
                         notification_key={''}

@@ -19,6 +19,7 @@ import {
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import { is_TaiGer_Student } from '../Utils/checking-functions';
+import { appConfig } from '../../config';
 
 class CommunicationSinglePage extends Component {
   state = {
@@ -446,7 +447,8 @@ class CommunicationSinglePage extends Component {
                       <b>Instructions:</b> <br />
                       <br />
                       <p>
-                        TaiGer顧問皆位於中歐時區，無法及時回復，為確保有
+                        {appConfig.companyName}
+                        顧問皆位於中歐時區，無法及時回復，為確保有
                         <b>效率溝通</b>，留言時請注意以下幾點：
                         <ul>
                           <li>

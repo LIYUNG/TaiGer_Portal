@@ -13,6 +13,7 @@ import {
 import { getTeamMembers, updateUserPermission } from '../../../api';
 import { TabTitle } from '../../Utils/TabTitle';
 import DEMO from '../../../store/constant';
+import { appConfig } from '../../../config';
 
 class TaiGerMember extends React.Component {
   state = {
@@ -120,7 +121,7 @@ class TaiGerMember extends React.Component {
     if (!is_TaiGer_role(this.props.user)) {
       return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
     }
-    TabTitle('TaiGer Team Member');
+    TabTitle(`${appConfig.companyName} Team Member`);
     const { res_status, isLoaded } = this.state;
 
     if (!isLoaded && !this.state.teams) {
@@ -149,7 +150,9 @@ class TaiGerMember extends React.Component {
               <Card.Header text={'dark'}>
                 <Card.Title>
                   <Row>
-                    <Col className="my-0 mx-0 text-light">TaiGer Team Member</Col>
+                    <Col className="my-0 mx-0 text-light">
+                      {appConfig.companyName} Team Member
+                    </Col>
                   </Row>
                 </Card.Title>
               </Card.Header>

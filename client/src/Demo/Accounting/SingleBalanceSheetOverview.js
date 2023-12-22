@@ -15,6 +15,7 @@ import {
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import { ExtendableTable } from '../../components/ExtendableTable/ExtendableTable';
+import { appConfig } from '../../config';
 
 class SingleBalanceSheetOverview extends React.Component {
   state = {
@@ -112,9 +113,10 @@ class SingleBalanceSheetOverview extends React.Component {
                 <Card.Title>
                   <Row>
                     <Col className="my-0 mx-0 text-light">
-                      TaiGer Team Agent:{' '}
+                      {appConfig.companyName} Team Agent:{' '}
                       <b>
-                        {this.state.the_user.firstname} {this.state.the_user.lastname}
+                        {this.state.the_user.firstname}{' '}
+                        {this.state.the_user.lastname}
                       </b>
                     </Col>
                   </Row>

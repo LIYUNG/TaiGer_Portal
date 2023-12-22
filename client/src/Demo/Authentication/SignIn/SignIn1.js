@@ -2,14 +2,13 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Spinner, Button } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 
-import './../../../assets/scss/style.scss';
 import Aux from '../../../hoc/_Aux';
 import { login } from '../../../api/index';
 import Reactivation from '../Activation/Reactivation';
-import taiger_logo from '../../../assets/images/taiger_logo.png';
+import { appConfig } from '../../../config';
+// import LoginPageLogo from appConfig.LoginPageLogo;
 import Footer from '../../../components/Footer/Footer';
 
-// export default function Signin1({ setToken }) {
 export default function Signin1({ setUserdata }) {
   const [emailaddress, setEmailaddress] = useState();
   const [password, setPassword] = useState();
@@ -128,7 +127,7 @@ export default function Signin1({ setUserdata }) {
               <div className="card-body text-center">
                 <img
                   className="img-radius"
-                  src={taiger_logo}
+                  src={appConfig.LoginPageLogo}
                   alt="Generic placeholder"
                 />
                 <p className="mb-4"></p>

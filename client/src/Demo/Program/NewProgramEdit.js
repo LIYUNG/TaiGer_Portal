@@ -9,6 +9,7 @@ import {
   SEMESTER_OPTIONS,
   field_alert
 } from '../Utils/contants';
+import { appConfig } from '../../config';
 
 function NewProgramEdit(props) {
   let [initStates, setInitStates] = useState({
@@ -821,7 +822,7 @@ function NewProgramEdit(props) {
           </Row>
           <Row>
             <Col md={4}>
-              <h5>Portal 1 TaiGer Instrution link url</h5>
+              <h5>Portal 1 {appConfig.companyName} Instrution link url</h5>
             </Col>
             <Col md={4}>
               <h5>
@@ -863,7 +864,7 @@ function NewProgramEdit(props) {
           </Row>
           <Row>
             <Col md={4}>
-              <h5>Portal 2 TaiGer Instrution link url</h5>
+              <h5>Portal 2 {appConfig.companyName} Instrution link url</h5>
             </Col>
             <Col md={4}>
               <h5>

@@ -10,6 +10,7 @@ import NavBadge from './../NavBadge';
 import NavItem from '../NavItem';
 import LoopNavCollapse from './index';
 import { Role } from '../../../../../../Demo/Utils/contants';
+import { appConfig } from '../../../../../../config';
 
 class NavCollapse extends Component {
   componentDidMount() {
@@ -64,8 +65,8 @@ class NavCollapse extends Component {
           collapse.title === 'My Students' ||
           collapse.title === 'All Students' ||
           collapse.title === 'Menu Levels' ||
-          collapse.title === 'TaiGer Teams' ||
-          collapse.title === 'TaiGer Members'
+          collapse.title === `${appConfig.companyName} Teams` ||
+          collapse.title === `${appConfig.companyName} Members`
         ) {
           return false;
         }
@@ -80,8 +81,8 @@ class NavCollapse extends Component {
           collapse.title === 'All Students' ||
           collapse.title === 'Documentation' ||
           collapse.title === 'Menu Levels' ||
-          collapse.title === 'TaiGer Teams' ||
-          collapse.title === 'TaiGer Members'
+          collapse.title === `${appConfig.companyName} Teams` ||
+          collapse.title === `${appConfig.companyName} Members`
         ) {
           return false;
         }

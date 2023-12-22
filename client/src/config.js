@@ -31,7 +31,7 @@ export const appConfig = {
   LogoSmall: '/assets/taiger_logo_small.png',
   LogoPath: '',
   // Application level comfiguration
-  vpdEnable: false,
+  vpdEnable: true,
   meetingEnable: true,
   AIEnable: true
 };

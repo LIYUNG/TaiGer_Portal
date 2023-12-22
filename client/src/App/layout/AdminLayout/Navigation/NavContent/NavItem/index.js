@@ -8,6 +8,7 @@ import Aux from '../../../../../../hoc/_Aux';
 import NavIcon from './../NavIcon';
 import NavBadge from './../NavBadge';
 import * as actionTypes from '../../../../../../store/actions';
+import { appConfig } from '../../../../../../config';
 
 function NavItem(props) {
   const menuItemFilterByRole = (itemTitle) => {
@@ -63,12 +64,12 @@ function NavItem(props) {
         itemTitle === 'CV/ML/RL Center' ||
         itemTitle === 'Base Documents' ||
         itemTitle === 'Interview Training' ||
-        itemTitle === 'TaiGer Admissions' ||
+        itemTitle === `${appConfig.companyName} Admissions` ||
         itemTitle === 'Internal Docs' ||
         itemTitle === 'Archiv Students' ||
         itemTitle === 'Student Database' ||
         itemTitle === 'Tasks Dashboard' ||
-        itemTitle === 'TaiGer Members' ||
+        itemTitle === `${appConfig.companyName} Members` ||
         itemTitle === 'User Logs' ||
         itemTitle === 'User List'
       ) {
@@ -88,14 +89,14 @@ function NavItem(props) {
         itemTitle === 'Charts' ||
         itemTitle === 'Program List' ||
         itemTitle === 'Interview Training' ||
-        itemTitle === 'TaiGer Admissions' ||
+        itemTitle === `${appConfig.companyName} Admissions` ||
         itemTitle === 'Map' ||
         itemTitle === 'Archiv Students' ||
         itemTitle === 'Internal Docs' ||
         itemTitle === 'Documentation' ||
         itemTitle === 'Student Database' ||
         itemTitle === 'Tasks Dashboard' ||
-        itemTitle === 'TaiGer Members' ||
+        itemTitle === `${appConfig.companyName} Members` ||
         itemTitle === 'User Logs' ||
         itemTitle === 'User List'
       ) {

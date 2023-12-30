@@ -670,8 +670,17 @@ export const progressBarCounter = (student, application) => {
 };
 
 export const isEnglishOK = (program, student) => {
-  // console.log(program);
-  // console.log(program.ielts_reading);
+  // in case not number string
+  if (
+    !parseFloat(student.academic_background.language.english_score) ||
+    !parseFloat(student.academic_background.language.english_score_reading) ||
+    !parseFloat(student.academic_background.language.english_score_listening) ||
+    !parseFloat(student.academic_background.language.english_score_writing) ||
+    !parseFloat(student.academic_background.language.english_score_speaking)
+  ) {
+    return false;
+  }
+
   if (student.academic_background.language.english_certificate === 'TOEFL') {
     if (
       program.toefl >

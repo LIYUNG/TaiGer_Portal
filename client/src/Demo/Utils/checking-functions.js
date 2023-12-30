@@ -583,7 +583,6 @@ export const missing_survey_fields_list = (
   );
 };
 
-// TODO
 export const progressBarCounter = (student, application) => {
   const all_points = [
     student?.generaldocs_threads?.length || 0,
@@ -612,14 +611,15 @@ export const progressBarCounter = (student, application) => {
     application?.programId?.uni_assist?.includes('VPD') ? 1 : 0,
     1
   ];
-
+  // console.log(isEnglishOK(application?.programId, student));
   const finished_pointes = [
     student?.generaldocs_threads?.filter(
       (thread) => thread.isFinalVersion === true
     ).length,
 
     (application?.programId?.ielts || application?.programId?.toefl) &&
-    student?.academic_background?.language?.english_isPassed === 'O'
+    student?.academic_background?.language?.english_isPassed === 'O' &&
+    isEnglishOK(application?.programId, student)
       ? 1
       : 0,
     application?.programId?.testdaf &&
@@ -655,8 +655,7 @@ export const progressBarCounter = (student, application) => {
       : 0,
     application?.closed === 'O' ? 1 : 0
   ];
-  // console.log(finished_pointes);
-  // console.log(all_points);
+
   const percentage =
     (finished_pointes.reduce(
       (accumulator, currentValue) => accumulator + currentValue,
@@ -668,6 +667,57 @@ export const progressBarCounter = (student, application) => {
       )) *
     100;
   return Math.floor(percentage);
+};
+
+export const isEnglishOK = (program, student) => {
+  // console.log(program);
+  // console.log(program.ielts_reading);
+  if (student.academic_background.language.english_certificate === 'TOEFL') {
+    if (
+      program.toefl >
+        parseFloat(student.academic_background.language.english_score) ||
+      program.toefl_reading >
+        parseFloat(
+          student.academic_background.language.english_score_reading
+        ) ||
+      program.toefl_listening >
+        parseFloat(
+          student.academic_background.language.english_score_listening
+        ) ||
+      program.toefl_writing >
+        parseFloat(
+          student.academic_background.language.english_score_writing
+        ) ||
+      program.toefl_speaking >
+        parseFloat(student.academic_background.language.english_score_speaking)
+    ) {
+      return false;
+    }
+  }
+  if (student.academic_background.language.english_certificate === 'IELTS') {
+    if (
+      program.ielts >
+        parseFloat(student.academic_background.language.english_score) ||
+      program.ielts_reading >
+        parseFloat(
+          student.academic_background.language.english_score_reading
+        ) ||
+      program.ielts_listening >
+        parseFloat(
+          student.academic_background.language.english_score_listening
+        ) ||
+      program.ielts_writing >
+        parseFloat(
+          student.academic_background.language.english_score_writing
+        ) ||
+      program.ielts_speaking >
+        parseFloat(student.academic_background.language.english_score_speaking)
+    ) {
+      return false;
+    }
+  }
+
+  return true;
 };
 
 export const application_deadline_calculator = (student, application) => {

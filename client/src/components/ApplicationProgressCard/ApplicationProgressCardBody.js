@@ -2,8 +2,13 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ListGroup } from 'react-bootstrap';
 
-import { AiFillCheckCircle, AiFillQuestionCircle } from 'react-icons/ai';
+import {
+  AiFillCheckCircle,
+  AiFillQuestionCircle,
+  AiFillWarning
+} from 'react-icons/ai';
 import DEMO from '../../store/constant';
+import { isEnglishOK } from '../../Demo/Utils/checking-functions';
 
 export default function ApplicationProgressCardBody(props) {
   return (
@@ -28,11 +33,19 @@ export default function ApplicationProgressCardBody(props) {
         props.application?.programId?.toefl ? (
           props.student?.academic_background?.language?.english_isPassed ===
           'O' ? (
-            <ListGroup.Item>
-              <Link to={`/survey`}>
-                <AiFillCheckCircle color="limegreen" size={16} /> English
-              </Link>
-            </ListGroup.Item>
+            isEnglishOK(props.application?.programId, props.student) ? (
+              <ListGroup.Item>
+                <Link to={`/survey`}>
+                  <AiFillCheckCircle color="limegreen" size={16} /> English
+                </Link>
+              </ListGroup.Item>
+            ) : (
+              <ListGroup.Item title="English Requirements not met with your input in My Survey">
+                <Link to={`/survey`}>
+                  <AiFillWarning color="red" size={16} /> English
+                </Link>
+              </ListGroup.Item>
+            )
           ) : (
             <ListGroup.Item>
               <Link to={`/survey`}>
@@ -140,7 +153,11 @@ export default function ApplicationProgressCardBody(props) {
         )}
 
         <ListGroup.Item>
-          <Link to={`${DEMO.STUDENT_APPLICATIONS_ID_LINK(props.student._id.toString())}`}>
+          <Link
+            to={`${DEMO.STUDENT_APPLICATIONS_ID_LINK(
+              props.student._id.toString()
+            )}`}
+          >
             {props.application?.closed === 'O' ? (
               <AiFillCheckCircle color="limegreen" size={16} />
             ) : (

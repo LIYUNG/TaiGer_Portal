@@ -208,7 +208,7 @@ class DownloadPage extends React.Component {
             <Card className="my-0 mx-0" bg={'dark'} text={'white'}>
               <Card.Header>
                 <Card.Title className="my-0 mx-0 text-light">
-                  Download ${appConfig.companyName} Document Templates
+                  Download {appConfig.companyName} Document Templates
                 </Card.Title>
               </Card.Header>
               <Banner

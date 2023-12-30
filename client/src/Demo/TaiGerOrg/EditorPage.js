@@ -145,11 +145,12 @@ class EditorPage extends React.Component {
                 <Card.Title>
                   <Row>
                     <Col className="my-0 mx-0 text-light">
-                      ${appConfig.companyName} Team Editor:{' '}
+                      {appConfig.companyName} Team Editor:{' '}
                       <b>
                         {this.state.editor.firstname}{' '}
                         {this.state.editor.lastname}
                       </b>
+                      {` (${this.state.students.length})`}
                     </Col>
                   </Row>
                 </Card.Title>

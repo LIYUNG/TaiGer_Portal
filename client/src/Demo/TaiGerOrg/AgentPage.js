@@ -147,7 +147,7 @@ class AgentPage extends React.Component {
                 <Card.Title>
                   <Row>
                     <Col className="my-0 mx-0 text-light">
-                      ${appConfig.companyName} Team Agent:{' '}
+                      {appConfig.companyName} Team Agent:{' '}
                       <b>
                         {this.state.agent.firstname} {this.state.agent.lastname}
                       </b>

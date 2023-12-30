@@ -1,5 +1,6 @@
 import React from 'react';
 import $ from 'jquery';
+import { appConfig } from './config';
 
 window.jQuery = $;
 window.$ = $;
@@ -142,7 +143,7 @@ const AgentsAssignment = React.lazy(() =>
 const EditorsAssignment = React.lazy(() =>
   import('./Demo/AssignmentAgentsEditors/AssignEditors/index')
 );
-
+// TODO: conditional configuration.
 const routes = [
   {
     path: '/assignment/agents',
@@ -331,12 +332,6 @@ const routes = [
     component: BaseDocuments
   },
   {
-    path: '/uni-assist',
-    exact: true,
-    name: 'Uni Assist Tasks',
-    component: UniAssist
-  },
-  {
     path: '/portal-informations',
     exact: true,
     name: 'Portal Information',
@@ -377,12 +372,6 @@ const routes = [
     exact: true,
     name: 'CV/ML/RL Center',
     component: CVMLRLOverview
-  },
-  {
-    path: '/communications/:student_id',
-    exact: true,
-    name: 'My Chat',
-    component: CommunicationSinglePage
   },
   {
     path: '/settings',
@@ -475,24 +464,6 @@ const routes = [
     component: SingleBalanceSheetOverview
   },
   {
-    path: '/events/all',
-    exact: true,
-    name: '',
-    component: AllOfficeHours
-  },
-  {
-    path: '/events/taiger/:user_id',
-    exact: true,
-    name: '',
-    component: TaiGerOfficeHours
-  },
-  {
-    path: '/events/students/:user_id',
-    exact: true,
-    name: '',
-    component: OfficeHours
-  },
-  {
     path: '/teams/agents/profile/:user_id',
     exact: true,
     name: '',
@@ -533,5 +504,47 @@ const routes = [
   //   component: DashboardDefault,
   // },
 ];
+
+if (appConfig.vpdEnable) {
+  routes.push({
+    path: '/uni-assist',
+    exact: true,
+    name: 'Uni Assist Tasks',
+    component: UniAssist
+  });
+}
+
+if (appConfig.AIEnable) {
+}
+
+if (appConfig.meetingEnable) {
+  routes.push({
+    path: '/events/all',
+    exact: true,
+    name: '',
+    component: AllOfficeHours
+  });
+  routes.push({
+    path: '/events/taiger/:user_id',
+    exact: true,
+    name: '',
+    component: TaiGerOfficeHours
+  });
+  routes.push({
+    path: '/events/students/:user_id',
+    exact: true,
+    name: '',
+    component: OfficeHours
+  });
+}
+
+if (appConfig.messengerEnable) {
+  routes.push({
+    path: '/communications/:student_id',
+    exact: true,
+    name: 'My Chat',
+    component: CommunicationSinglePage
+  });
+}
 
 export default routes;

@@ -188,6 +188,59 @@ documentations_nestedList = [
   }
 ];
 
+let taiger_teams_items = [
+  {
+    id: 'teams_member_permission',
+    title: 'Permissions',
+    type: 'item',
+    icon: 'fa fa-key',
+    url: '/teams/permissions'
+  },
+  {
+    id: 'teams_member',
+    title: `${appConfig.companyName} Members`,
+    type: 'item',
+    icon: 'fa fa-user',
+    url: '/teams/members'
+  }
+];
+
+if (appConfig.AIEnable) {
+  taiger_teams_items.push({
+    id: 'cvmlrl-generator',
+    title: 'CVMLRL Generator',
+    type: 'item',
+    url: '/cvmlrl/generator',
+    icon: 'feather icon-gitlab',
+    target: false,
+    breadcrumbs: false
+  });
+}
+taiger_teams_items = [
+  ...taiger_teams_items,
+  {
+    id: 'user_logs',
+    title: 'User Logs',
+    type: 'item',
+    icon: 'fa fa-user',
+    url: '/internal/logs'
+  },
+  {
+    id: 'internal_dashboard',
+    title: `${appConfig.companyName} Dashboard`,
+    type: 'item',
+    icon: 'feather icon-target',
+    url: '/dashboard/internal'
+  },
+  {
+    id: 'internal_accounting',
+    title: `${appConfig.companyName} Accounting`,
+    type: 'item',
+    icon: 'fa fa-euro',
+    url: '/internal/accounting'
+  }
+];
+
 export default {
   items: [
     {
@@ -418,53 +471,7 @@ export default {
           type: 'collapse',
           classes: 'nav-item',
           icon: 'fa fa-coffee',
-          children: [
-            {
-              id: 'teams_member_permission',
-              title: 'Permissions',
-              type: 'item',
-              icon: 'fa fa-key',
-              url: '/teams/permissions'
-            },
-            {
-              id: 'teams_member',
-              title: `${appConfig.companyName} Members`,
-              type: 'item',
-              icon: 'fa fa-user',
-              url: '/teams/members'
-            },
-            {
-              id: 'cvmlrl-generator',
-              title: 'CVMLRL Generator',
-              type: 'item',
-              url: '/cvmlrl/generator',
-              icon: 'feather icon-gitlab',
-              target: false,
-              breadcrumbs: false
-            },
-            {
-              id: 'user_logs',
-              title: 'User Logs',
-              type: 'item',
-              icon: 'fa fa-user',
-              url: '/internal/logs'
-            },
-            {
-              id: 'internal_dashboard',
-              title: `${appConfig.companyName} Dashboard`,
-              type: 'item',
-              icon: 'feather icon-target',
-              url: '/dashboard/internal'
-            },
-
-            {
-              id: 'internal_accounting',
-              title: `${appConfig.companyName} Accounting`,
-              type: 'item',
-              icon: 'fa fa-euro',
-              url: '/internal/accounting'
-            }
-          ]
+          children: taiger_teams_items
         },
         {
           id: 'contact_us',

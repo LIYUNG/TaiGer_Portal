@@ -194,12 +194,6 @@ const routes = [
     component: CVMLRL_Modification_Thread
   },
   {
-    path: '/document-modification/student-input/:documentsthreadId',
-    exact: true,
-    name: 'CVMLRL Modification Thread',
-    component: CVMLRL_Modification_ThreadInput
-  },
-  {
     path: '/programs',
     exact: true,
     name: 'Program Table',
@@ -356,12 +350,6 @@ const routes = [
     component: CoursesAnalysisWidget
   },
   {
-    path: '/cvmlrl/generator',
-    exact: true,
-    name: 'CVMLRL Generator',
-    component: CVMLRLGenerator
-  },
-  {
     path: '/internal/widgets/:admin_id',
     exact: true,
     name: 'My MyCourses Analysis',
@@ -515,6 +503,18 @@ if (appConfig.vpdEnable) {
 }
 
 if (appConfig.AIEnable) {
+  routes.push({
+    path: '/document-modification/student-input/:documentsthreadId',
+    exact: true,
+    name: 'CVMLRL Modification Thread',
+    component: CVMLRL_Modification_ThreadInput
+  });
+  routes.push({
+    path: '/cvmlrl/generator',
+    exact: true,
+    name: 'CVMLRL Generator',
+    component: CVMLRLGenerator
+  });
 }
 
 if (appConfig.meetingEnable) {

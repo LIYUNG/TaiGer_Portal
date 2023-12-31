@@ -30,7 +30,7 @@ module.exports = {
   SMTP_HOST: env('SMTP_HOST', 'smtp.ethereal.email'),
   SMTP_PORT: env('SMTP_PORT', 587),
   SMTP_USERNAME: env('SMTP_USERNAME', 'glen.simonis12@ethereal.email'),
-  SMTP_PASSWORD: env('SMTP_PASSWORD', 'KHJ5yg3xpSCgRDHCjd'),
+  SMTP_PASSWORD: env('SMTP_PASSWORD', 'PASSWORD'),
   BASE_URL: env('BASE_URL', 'http://localhost:3000'),
   UPLOAD_PATH: env('UPLOAD_PATH'),
   CLEAN_UP_SCHEDULE: env('CLEAN_UP_SCHEDULE', '* * * 1 * *'),

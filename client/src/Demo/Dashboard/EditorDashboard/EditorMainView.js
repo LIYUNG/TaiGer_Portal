@@ -1,12 +1,9 @@
 import React from 'react';
-import { Row, Col, Tabs, Tab, Table, Card } from 'react-bootstrap';
+import { Row, Col, Table, Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import TabStudBackgroundDashboard from '../MainViewTab/StudDocsOverview/TabStudBackgroundDashboard';
 import TabProgramConflict from '../MainViewTab/ProgramConflict/TabProgramConflict';
 import StudentsAgentEditor from '../MainViewTab/StudentsAgentEditor/StudentsAgentEditor';
 import UnrespondedThreads from '../MainViewTab/NewUpdatedThreadFromStudent/UnrespondedThreads';
-import EditorTODOTasks from '../MainViewTab/EditorTODOTasks/EditorTODOTasks';
-import { BsExclamationTriangle, BsX } from 'react-icons/bs';
 import TasksDistributionBarChart from '../../../components/Charts/TasksDistributionBarChart';
 import {
   does_student_have_editors,
@@ -75,34 +72,7 @@ class EditorMainView extends React.Component {
         </tbody>
       </>
     );
-    const editor_todo_tasks = (
-      <>
-        <thead>
-          <tr>
-            <th>First-, Last Name</th>
-            <th>Status</th>
-            <th>Documents</th>
-            <th>Deadline</th>
-            <th>Last Update</th>
-          </tr>
-        </thead>
-        <tbody>
-          {this.props.students
-            .filter((student) =>
-              student.editors.some(
-                (editor) => editor._id === this.props.user._id.toString()
-              )
-            )
-            .map((student, i) => (
-              <EditorTODOTasks
-                user={this.props.user}
-                key={student._id}
-                student={student}
-              />
-            ))}
-        </tbody>
-      </>
-    );
+
     const open_tasks_arr = open_tasks_with_editors(this.props.students);
     const task_distribution = open_tasks_arr
       .filter(({ isFinalVersion, show }) => isFinalVersion !== true)
@@ -284,7 +254,9 @@ class EditorMainView extends React.Component {
               <p className="my-0">
                 <b style={{ color: 'red' }}>active:</b> students decide
                 programs. These will be shown in{' '}
-                <Link to={'/dashboard/cv-ml-rl'}>Tasks Dashboard</Link>
+                <Link to={`${DEMO.CV_ML_RL_DASHBOARD_LINK}`}>
+                  Tasks Dashboard
+                </Link>
               </p>
               <p className="my-0">
                 <b style={{ color: '#A9A9A9' }}>potentials:</b> students do not
@@ -337,47 +309,7 @@ class EditorMainView extends React.Component {
             </Card>
           </Row>
         )}
-        {/* <Row>
-          <Card className="px-0 mb-2 mx-0" bg={'danger'} text={'light'}>
-            <Card.Header>
-              <Card.Title className="my-0 mx-0 text-light">
-                <BsExclamationTriangle size={18} /> Unreplied messages:
-              </Card.Title>
-            </Card.Header>
-            <Table
-              responsive
-              bordered
-              hover
-              className="my-0 mx-0"
-              variant="dark"
-              text="light"
-              size="sm"
-            >
-              {unread_thread}
-            </Table>
-          </Card>
-        </Row> */}
         <TabProgramConflict students={this.props.students} />
-        {/* <Row>
-          <Card className="px-0 mb-2 mx-0" bg={'primary'} text={'light'}>
-            <Card.Header>
-              <Card.Title className="my-0 mx-0 text-light">
-                Editor Open Tasks:
-              </Card.Title>
-            </Card.Header>
-            <Table
-              responsive
-              bordered
-              hover
-              className="my-0 mx-0"
-              variant="dark"
-              text="light"
-              size="sm"
-            >
-              {editor_todo_tasks}
-            </Table>
-          </Card>
-        </Row> */}
         <Row>
           <Table
             size="sm"

@@ -374,7 +374,9 @@ class InternalDashboard extends React.Component {
                     <p className="my-0">
                       <b style={{ color: 'red' }}>active:</b> students decide
                       programs. These will be shown in{' '}
-                      <Link to={'/dashboard/cv-ml-rl'}>Tasks Dashboard</Link>
+                      <Link to={`${DEMO.CV_ML_RL_DASHBOARD_LINK}`}>
+                        Tasks Dashboard
+                      </Link>
                     </p>
                     <p className="my-0">
                       <b style={{ color: '#A9A9A9' }}>potentials:</b> students

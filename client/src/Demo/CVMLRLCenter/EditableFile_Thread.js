@@ -10,6 +10,7 @@ import {
   is_TaiGer_role
 } from '../Utils/checking-functions';
 import { convertDate } from '../Utils/contants';
+import DEMO from '../../store/constant';
 
 class EditableFile_Thread extends Component {
   handleAsFinalFileThread = (documenName, isFinal) => {
@@ -124,9 +125,9 @@ class EditableFile_Thread extends Component {
 
           <Col md={6}>
             <Link
-              to={
-                '/document-modification/' + this.props.thread.doc_thread_id._id
-              }
+              to={DEMO.DOCUMENT_MODIFICATION_LINK(
+                this.props.thread.doc_thread_id._id
+              )}
               className={`${
                 this.props.decided === 'O' ? 'text-info' : 'text-secondary'
               }`}

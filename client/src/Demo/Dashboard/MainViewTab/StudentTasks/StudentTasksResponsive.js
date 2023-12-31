@@ -32,10 +32,9 @@ class StudentTasksResponsive extends React.Component {
                 <>
                   <td>
                     <Link
-                      to={
-                        '/document-modification/' +
+                      to={DEMO.DOCUMENT_MODIFICATION_LINK(
                         generaldocs_threads.doc_thread_id._id
-                      }
+                      )}
                       className="text-info"
                       style={{ textDecoration: 'none' }}
                     >
@@ -44,10 +43,9 @@ class StudentTasksResponsive extends React.Component {
                   </td>
                   <td>
                     <Link
-                      to={
-                        '/document-modification/' +
+                      to={DEMO.DOCUMENT_MODIFICATION_LINK(
                         generaldocs_threads.doc_thread_id._id
-                      }
+                      )}
                       className="text-info"
                       style={{ textDecoration: 'none' }}
                     >
@@ -80,10 +78,9 @@ class StudentTasksResponsive extends React.Component {
                     <>
                       <td>
                         <Link
-                          to={
-                            '/document-modification/' +
+                          to={DEMO.DOCUMENT_MODIFICATION_LINK(
                             application_doc_thread.doc_thread_id._id
-                          }
+                          )}
                           className="text-info"
                           style={{ textDecoration: 'none' }}
                         >
@@ -92,10 +89,9 @@ class StudentTasksResponsive extends React.Component {
                       </td>
                       <td>
                         <Link
-                          to={
-                            '/document-modification/' +
+                          to={DEMO.DOCUMENT_MODIFICATION_LINK(
                             application_doc_thread.doc_thread_id._id
-                          }
+                          )}
                           className="text-info"
                           style={{ textDecoration: 'none' }}
                         >

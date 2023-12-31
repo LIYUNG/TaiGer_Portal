@@ -581,7 +581,6 @@ const postMessages = asyncHandler(async (req, res, next) => {
 // (-) TODO email : no notification needed
 const updateAMessageInThread = asyncHandler(async (req, res, next) => {
   const {
-    user,
     params: { messageId }
   } = req;
   const { message } = req.body;

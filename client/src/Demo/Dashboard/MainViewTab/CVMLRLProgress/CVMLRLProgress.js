@@ -9,6 +9,7 @@ import {
 
 import { convertDate, is_new_message_status } from '../../../Utils/contants';
 import { getNumberOfDays, return_thread_status } from '../../../Utils/contants';
+import DEMO from '../../../../store/constant';
 
 class CVMLRLProgress extends React.Component {
   handleAsFinalFileThread = (
@@ -43,11 +44,10 @@ class CVMLRLProgress extends React.Component {
                   <td></td>
                   <td>
                     <Link
-                      to={
-                        '/student-database/' +
-                        this.props.student._id +
+                      to={DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                        this.props.student._id,
                         '/CV_ML_RL'
-                      }
+                      )}
                       style={{ textDecoration: 'none' }}
                     >
                       <p className="text-light my-0">
@@ -98,10 +98,9 @@ class CVMLRLProgress extends React.Component {
                   {return_thread_status(this.props.user, generaldocs_thread)}
                   <td>
                     <Link
-                      to={
-                        '/document-modification/' +
+                      to={DEMO.DOCUMENT_MODIFICATION_LINK(
                         generaldocs_thread.doc_thread_id._id
-                      }
+                      )}
                       style={{ textDecoration: 'none' }}
                       className="text-info"
                     >
@@ -142,11 +141,10 @@ class CVMLRLProgress extends React.Component {
                       <td></td>
                       <td>
                         <Link
-                          to={
-                            '/student-database/' +
-                            this.props.student._id +
+                          to={DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                            this.props.student._id,
                             '/CV_ML_RL'
-                          }
+                          )}
                           style={{ textDecoration: 'none' }}
                         >
                           <p className="text-light my-0">
@@ -197,10 +195,9 @@ class CVMLRLProgress extends React.Component {
                       {return_thread_status(this.props.user, doc_thread)}
                       <td>
                         <Link
-                          to={
-                            '/document-modification/' +
+                          to={DEMO.DOCUMENT_MODIFICATION_LINK(
                             doc_thread.doc_thread_id._id
-                          }
+                          )}
                           style={{ textDecoration: 'none' }}
                           className="text-info"
                         >

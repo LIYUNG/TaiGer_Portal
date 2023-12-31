@@ -13,12 +13,16 @@ const DEMO = {
   UNI_ASSIST_LINK: '/uni-assist',
   CV_ML_RL_CENTER_LINK: '/cv-ml-rl-center',
   CV_ML_RL_DOCS_LINK: '/docs/cv-ml-rl',
+  CV_ML_RL_DASHBOARD_LINK: '/dashboard/cv-ml-rl',
   BASE_DOCUMENTS_LINK: '/base-documents',
   PORTALS_MANAGEMENT_LINK: '/portal-informations',
   SURVEY_LINK: '/survey',
   STUDENT_APPLICATIONS_LINK: '/student-applications',
   STUDENT_APPLICATIONS_ID_LINK: (student_id) => {
     return `/student-applications/${student_id}`;
+  },
+  STUDENT_DATABASE_STUDENTID_LINK: (student_id, path) => {
+    return `/student-database/${student_id}${path}`;
   },
   STUDENT_DATABASE_LINK: '/student-database',
   EVENT_STUDENT_LINK: '/events/students',

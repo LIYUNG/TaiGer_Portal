@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 
 import { AiOutlineCheck, AiOutlineUndo } from 'react-icons/ai';
 import { is_TaiGer_role } from '../../Demo/Utils/checking-functions';
+import DEMO from '../../store/constant';
 
 function SortTable({ columns, data, user, handleAsFinalFile }) {
   const {
@@ -134,7 +135,9 @@ function SortTable({ columns, data, user, handleAsFinalFile }) {
                     <td {...cell.getCellProps()} key={j}>
                       <Link
                         target="_blank"
-                        to={'/document-modification/' + row.original.thread_id}
+                        to={DEMO.DOCUMENT_MODIFICATION_LINK(
+                          row.original.thread_id
+                        )}
                         className="text-info"
                         style={{ textDecoration: 'none' }}
                       >

@@ -15,7 +15,7 @@ const {
   ProfilefileUpload,
   VPDfileUpload
 } = require('../middlewares/file-upload');
-const { Role, Student } = require('../models/User');
+const { Role } = require('../models/User');
 
 const {
   getStudent,

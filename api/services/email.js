@@ -1,4 +1,3 @@
-const path = require('path');
 const { createTransport } = require('nodemailer');
 const ical = require('ical-generator');
 const queryString = require('query-string');

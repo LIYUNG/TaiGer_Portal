@@ -37,6 +37,7 @@ import ModalMain from '../Utils/ModalHandler/ModalMain';
 import { SetFileAsFinal } from '../../api';
 import Banner from '../../components/Banner/Banner';
 import SortTable from '../../components/SortTable/SortTable';
+import DEMO from '../../store/constant';
 
 // Define a default UI for filtering
 function GlobalFilter({
@@ -285,7 +286,9 @@ function SortTable2({ columns, data, user, handleAsFinalFile }) {
                     <td {...cell.getCellProps()} key={j}>
                       <Link
                         target="_blank"
-                        to={'/document-modification/' + row.original.thread_id}
+                        to={DEMO.DOCUMENT_MODIFICATION_LINK(
+                          row.original.thread_id
+                        )}
                         className="text-info"
                         style={{ textDecoration: 'none' }}
                       >

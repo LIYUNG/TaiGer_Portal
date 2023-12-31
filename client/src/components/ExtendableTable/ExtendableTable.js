@@ -6,6 +6,7 @@ import {
   convertDate_ux_friendly
 } from '../../Demo/Utils/contants';
 import { Link } from 'react-router-dom';
+import DEMO from '../../store/constant';
 
 export function ExtendableTable({ data }) {
   const [selectedRows, setSelectedRows] = useState([
@@ -149,7 +150,9 @@ export function ExtendableTable({ data }) {
                     </th>
                     <th>
                       <Link
-                        to={`/document-modification/${thread.doc_thread_id?._id.toString()}`}
+                        to={DEMO.DOCUMENT_MODIFICATION_LINK(
+                          thread.doc_thread_id?._id.toString()
+                        )}
                       >
                         {thread.doc_thread_id.file_type}
                       </Link>
@@ -174,7 +177,9 @@ export function ExtendableTable({ data }) {
                       </th>
                       <th>
                         <Link
-                          to={`/document-modification/${thread.doc_thread_id?._id.toString()}`}
+                          to={DEMO.DOCUMENT_MODIFICATION_LINK(
+                            thread.doc_thread_id?._id.toString()
+                          )}
                         >
                           {`${thread.doc_thread_id.file_type} - ${application.programId.school} ${application.programId.program_name}`}
                         </Link>

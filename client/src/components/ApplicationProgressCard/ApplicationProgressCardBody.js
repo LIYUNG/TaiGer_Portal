@@ -10,6 +10,13 @@ import {
 import DEMO from '../../store/constant';
 import { isEnglishOK } from '../../Demo/Utils/checking-functions';
 
+const DocumentOkIcon = () => {
+  return <AiFillCheckCircle color="limegreen" size={16} />;
+};
+const DocumentMissingIcon = () => {
+  return <AiFillQuestionCircle color="grey" size={16} />;
+};
+
 export default function ApplicationProgressCardBody(props) {
   return (
     <>
@@ -17,12 +24,14 @@ export default function ApplicationProgressCardBody(props) {
         {props.student?.generaldocs_threads?.map((thread, idx) => (
           <ListGroup.Item key={idx}>
             <Link
-              to={`/document-modification/${thread.doc_thread_id._id.toString()}`}
+              to={DEMO.DOCUMENT_MODIFICATION_LINK(
+                thread.doc_thread_id._id.toString()
+              )}
             >
               {thread.isFinalVersion ? (
-                <AiFillCheckCircle color="limegreen" size={16} />
+                <DocumentOkIcon />
               ) : (
-                <AiFillQuestionCircle color="grey" size={16} />
+                <DocumentMissingIcon />
               )}{' '}
               {thread.doc_thread_id?.file_type}
             </Link>
@@ -36,7 +45,7 @@ export default function ApplicationProgressCardBody(props) {
             isEnglishOK(props.application?.programId, props.student) ? (
               <ListGroup.Item>
                 <Link to={`/survey`}>
-                  <AiFillCheckCircle color="limegreen" size={16} /> English
+                  <DocumentOkIcon /> English
                 </Link>
               </ListGroup.Item>
             ) : (
@@ -49,7 +58,7 @@ export default function ApplicationProgressCardBody(props) {
           ) : (
             <ListGroup.Item>
               <Link to={`/survey`}>
-                <AiFillQuestionCircle color="grey" size={16} /> English
+                <DocumentMissingIcon /> English
               </Link>
             </ListGroup.Item>
           )
@@ -63,13 +72,13 @@ export default function ApplicationProgressCardBody(props) {
             'O' ? (
             <ListGroup.Item>
               <Link to={`/survey`}>
-                <AiFillCheckCircle color="limegreen" size={16} /> German
+                <DocumentOkIcon /> German
               </Link>
             </ListGroup.Item>
           ) : (
             <ListGroup.Item>
               <Link to={`/survey`}>
-                <AiFillQuestionCircle color="grey" size={16} /> German
+                <DocumentMissingIcon /> German
               </Link>
             </ListGroup.Item>
           ))}
@@ -80,13 +89,13 @@ export default function ApplicationProgressCardBody(props) {
             'O' ? (
             <ListGroup.Item>
               <Link to={`/survey`}>
-                <AiFillCheckCircle color="limegreen" size={16} /> GRE
+                <DocumentOkIcon /> GRE
               </Link>
             </ListGroup.Item>
           ) : (
             <ListGroup.Item>
               <Link to={`/survey`}>
-                <AiFillQuestionCircle color="grey" size={16} /> GRE
+                <DocumentMissingIcon /> GRE
               </Link>
             </ListGroup.Item>
           ))}
@@ -97,13 +106,13 @@ export default function ApplicationProgressCardBody(props) {
             'O' ? (
             <ListGroup.Item>
               <Link to={`/survey`}>
-                <AiFillCheckCircle color="limegreen" size={16} /> GMAT
+                <DocumentOkIcon /> GMAT
               </Link>
             </ListGroup.Item>
           ) : (
             <ListGroup.Item>
               <Link to={`/survey`}>
-                <AiFillQuestionCircle color="grey" size={16} /> GMAT
+                <DocumentMissingIcon /> GMAT
               </Link>
             </ListGroup.Item>
           ))}
@@ -115,9 +124,9 @@ export default function ApplicationProgressCardBody(props) {
                 !props.application.credential_a_filled) ||
               (props.application?.programId?.application_portal_b &&
                 !props.application.credential_b_filled) ? (
-                <AiFillQuestionCircle color="grey" size={16} />
+                <DocumentMissingIcon />
               ) : (
-                <AiFillCheckCircle color="limegreen" size={16} />
+                <DocumentOkIcon />
               )}{' '}
               Register University Portal
             </Link>
@@ -126,13 +135,15 @@ export default function ApplicationProgressCardBody(props) {
         {props.application?.doc_modification_thread?.map((thread, idx) => (
           <ListGroup.Item key={idx}>
             <Link
-              to={`/document-modification/${thread.doc_thread_id._id.toString()}`}
+              to={DEMO.DOCUMENT_MODIFICATION_LINK(
+                thread.doc_thread_id._id.toString()
+              )}
             >
               {' '}
               {thread.isFinalVersion ? (
-                <AiFillCheckCircle color="limegreen" size={16} />
+                <DocumentOkIcon />
               ) : (
-                <AiFillQuestionCircle color="grey" size={16} />
+                <DocumentMissingIcon />
               )}{' '}
               {thread.doc_thread_id?.file_type.replace(/_/g, ' ')}
             </Link>
@@ -143,9 +154,9 @@ export default function ApplicationProgressCardBody(props) {
           <ListGroup.Item>
             <Link to={`${DEMO.UNI_ASSIST_LINK}`}>
               {props.application?.uni_assist?.status === 'notstarted' ? (
-                <AiFillQuestionCircle color="grey" size={16} />
+                <DocumentMissingIcon />
               ) : (
-                <AiFillCheckCircle color="limegreen" size={16} />
+                <DocumentOkIcon />
               )}{' '}
               Uni-Assist VPD
             </Link>
@@ -159,9 +170,9 @@ export default function ApplicationProgressCardBody(props) {
             )}`}
           >
             {props.application?.closed === 'O' ? (
-              <AiFillCheckCircle color="limegreen" size={16} />
+              <DocumentOkIcon />
             ) : (
-              <AiFillQuestionCircle color="grey" size={16} />
+              <DocumentMissingIcon />
             )}
             Submit
           </Link>

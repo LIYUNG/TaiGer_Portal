@@ -22,33 +22,11 @@ class RespondedThreads extends React.Component {
               generaldocs_threads.latest_message_left_by_id ===
                 this.props.user._id.toString() && (
                 <>
-                  {this.props.role !== 'Student' && (
-                    <td>
-                      <Link
-                        to={
-                          this.props.role === 'Student' ||
-                          this.props.role === 'Guest'
-                            ? `${DEMO.CV_ML_RL_CENTER_LINK}`
-                            : '/student-database/' +
-                              this.props.student._id +
-                              '/CV_ML_RL'
-                        }
-                        className="text-info"
-                        style={{ textDecoration: 'none' }}
-                      >
-                        {this.props.student.firstname}
-                        {' - '}
-                        {this.props.student.lastname}
-                      </Link>
-                    </td>
-                  )}
-
                   <td>
                     <Link
-                      to={
-                        '/document-modification/' +
+                      to={DEMO.DOCUMENT_MODIFICATION_LINK(
                         generaldocs_threads.doc_thread_id._id
-                      }
+                      )}
                       className="text-info"
                       style={{ textDecoration: 'none' }}
                     >
@@ -72,32 +50,11 @@ class RespondedThreads extends React.Component {
                     this.props.user._id.toString() &&
                   application.decided === 'O' && (
                     <>
-                      {this.props.role !== 'Student' && (
-                        <td>
-                          <Link
-                            to={
-                              this.props.role === 'Student' ||
-                              this.props.role === 'Guest'
-                                ? `${DEMO.CV_ML_RL_CENTER_LINK}`
-                                : '/student-database/' +
-                                  this.props.student._id +
-                                  '/CV_ML_RL'
-                            }
-                            className="text-info"
-                            style={{ textDecoration: 'none' }}
-                          >
-                            {this.props.student.firstname}
-                            {' - '}
-                            {this.props.student.lastname}
-                          </Link>
-                        </td>
-                      )}
                       <td>
                         <Link
-                          to={
-                            '/document-modification/' +
+                          to={DEMO.DOCUMENT_MODIFICATION_LINK(
                             application_doc_thread.doc_thread_id._id
-                          }
+                          )}
                           className="text-info"
                           style={{ textDecoration: 'none' }}
                         >

@@ -135,11 +135,32 @@ export default function ApplicationProgressCard(props) {
               <FiExternalLink />
             </Link>
           </p>
+          {application_deadline_calculator(props.student, application) ===
+            'CLOSE' &&
+            application.admission === '-' && (
+              <>
+                <p>
+                  Have you received the interview invitation from this program ?
+                  Request an interview training with TaiGer trainer!
+                </p>
+                <p>
+                  <Button
+                    variant="primary"
+                    disabled
+                    size="sm"
+                    onClick={(e) => console.log('Book clicked')}
+                  >
+                    Coming soon
+                  </Button>
+                </p>
+              </>
+            )}
+
+          <p>Tell me about your result? </p>
           <p>
             {application_deadline_calculator(props.student, application) ===
             'CLOSE' ? (
               <>
-                Tell me about your result?{' '}
                 {application.admission === '-' && (
                   <>
                     <Button

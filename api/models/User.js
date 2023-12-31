@@ -412,6 +412,7 @@ const applicationSchema = new Schema({
     type: String,
     default: ''
   },
+  finalEnrolment: { type: Boolean, default: false },
   decided: { type: String, default: '-' },
   closed: { type: String, default: '-' },
   admission: { type: String, default: '-' }
@@ -428,6 +429,10 @@ const Student = User.discriminator(
       applying_program_count: {
         type: Number,
         default: 0
+      },
+      linkedIn: {
+        type: String,
+        default: ''
       },
       profile: [
         {

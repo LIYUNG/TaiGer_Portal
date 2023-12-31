@@ -1,6 +1,7 @@
-import React, { Component } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import Aux from '../../../../../../hoc/_Aux';
 import DEMO from '../../../../../../store/constant';
@@ -12,19 +13,23 @@ import LoopNavCollapse from './index';
 import { Role } from '../../../../../../Demo/Utils/contants';
 import { appConfig } from '../../../../../../config';
 
-class NavCollapse extends Component {
-  componentDidMount() {
+function NavCollapse(props) {
+  const { isOpen, isTrigger } = props;
+  const { t, i18n } = useTranslation();
+
+  useEffect(() => {
     const currentIndex = document.location.pathname
       .toString()
       .split('/')
-      .findIndex((id) => id === this.props.collapse.id);
+      .findIndex((id) => id === props.collapse.id);
     if (currentIndex > -1) {
-      this.props.onCollapseToggle(this.props.collapse.id, this.props.type);
+      props.onCollapseToggle(props.collapse.id, props.type);
     }
-  }
-  menuGroupFilterByRole = (collapse) => {
+  }, []);
+
+  const menuGroupFilterByRole = (collapse) => {
     if (collapse.children) {
-      if (this.props.user.role === 'Admin') {
+      if (props.user.role === 'Admin') {
         if (
           collapse.title === 'Component' ||
           collapse.title === 'My Students' ||
@@ -35,7 +40,7 @@ class NavCollapse extends Component {
         }
         return true;
       }
-      if (this.props.user.role === Role.Agent) {
+      if (props.user.role === Role.Agent) {
         if (
           collapse.title === 'Component' ||
           collapse.title === 'Applications Overview' ||
@@ -46,7 +51,7 @@ class NavCollapse extends Component {
         }
         return true;
       }
-      if (this.props.user.role === Role.Editor) {
+      if (props.user.role === Role.Editor) {
         if (
           collapse.title === 'Component' ||
           collapse.title === 'Applications Overview' ||
@@ -57,7 +62,7 @@ class NavCollapse extends Component {
         }
         return true;
       }
-      if (this.props.user.role === 'Student') {
+      if (props.user.role === 'Student') {
         if (
           collapse.title === 'Component' ||
           collapse.title === 'Docs Database' ||
@@ -72,7 +77,7 @@ class NavCollapse extends Component {
         }
         return true;
       }
-      if (this.props.user.role === 'Guest') {
+      if (props.user.role === 'Guest') {
         if (
           collapse.title === 'Component' ||
           collapse.title === 'Docs Database' ||
@@ -93,128 +98,110 @@ class NavCollapse extends Component {
       return false;
     }
   };
-  render() {
-    const { isOpen, isTrigger } = this.props;
 
-    let navItems = '';
-    if (this.menuGroupFilterByRole(this.props.collapse)) {
-      if (this.props.collapse.children) {
-        const collapses = this.props.collapse.children;
-        navItems = Object.keys(collapses).map((item) => {
-          item = collapses[item];
-          switch (item.type) {
-            case 'collapse':
-              return (
-                <LoopNavCollapse key={item.id} collapse={item} type="sub" />
-              );
-            case 'item':
-              if (this.props.user.role === 'Student') {
-                if (item.title === 'My Applications') {
-                  item.url = `/student-applications/${this.props.user._id.toString()}`;
-                }
+  let navItems = '';
+  if (menuGroupFilterByRole(props.collapse)) {
+    if (props.collapse.children) {
+      const collapses = props.collapse.children;
+      navItems = Object.keys(collapses).map((item) => {
+        item = collapses[item];
+        switch (item.type) {
+          case 'collapse':
+            return <LoopNavCollapse key={item.id} collapse={item} type="sub" />;
+          case 'item':
+            if (props.user.role === 'Student') {
+              if (item.title === 'My Applications') {
+                item.url = `/student-applications/${props.user._id.toString()}`;
               }
-              return (
-                <NavItem
-                  role={this.props.user.role}
-                  layout={this.props.layout}
-                  key={item.id}
-                  item={item}
-                />
-              );
-            default:
-              return false;
-          }
-        });
-      }
-      let itemTitle = this.props.collapse.title;
-      if (this.props.collapse.icon) {
-        itemTitle = (
-          <span className="pcoded-mtext">{this.props.collapse.title}</span>
-        );
-      }
-
-      let navLinkClass = ['nav-link my-0 py-0'];
-
-      let navItemClass = [
-        'nav-item',
-        'pcoded-hasmenu',
-        'text-light',
-        'my-0 py-0'
-      ];
-      const openIndex = isOpen.findIndex((id) => id === this.props.collapse.id);
-      if (openIndex > -1) {
-        navItemClass = [...navItemClass, 'active'];
-        if (this.props.layout !== 'horizontal') {
-          navLinkClass = [...navLinkClass, 'active'];
+            }
+            return (
+              <NavItem
+                role={props.user.role}
+                layout={props.layout}
+                key={item.id}
+                item={item}
+              />
+            );
+          default:
+            return false;
         }
-      }
-
-      const triggerIndex = isTrigger.findIndex(
-        (id) => id === this.props.collapse.id
-      );
-      if (triggerIndex > -1) {
-        navItemClass = [...navItemClass, 'pcoded-trigger'];
-      }
-
-      const currentIndex = document.location.pathname
-        .toString()
-        .split('/')
-        .findIndex((id) => id === this.props.collapse.id);
-      if (currentIndex > -1) {
-        navItemClass = [...navItemClass, 'active'];
-        if (this.props.layout !== 'horizontal') {
-          navLinkClass = [...navLinkClass, 'active'];
-        }
-      }
-
-      const subContent = (
-        <Aux>
-          <a
-            className={navLinkClass.join(' ')}
-            style={{ cursor: 'pointer' }}
-            onClick={() =>
-              this.props.onCollapseToggle(
-                this.props.collapse.id,
-                this.props.type
-              )
-            }
-          >
-            <NavIcon items={this.props.collapse} />
-            {itemTitle}
-            <NavBadge layout={this.props.layout} items={this.props.collapse} />
-          </a>
-          <ul className="pcoded-submenu">{navItems}</ul>
-        </Aux>
-      );
-      let mainContent = '';
-      if (this.props.layout === 'horizontal') {
-        mainContent = (
-          <li
-            className={navItemClass.join(' ')}
-            onMouseLeave={() =>
-              this.props.onNavCollapseLeave(
-                this.props.collapse.id,
-                this.props.type
-              )
-            }
-            onMouseEnter={() =>
-              this.props.onCollapseToggle(
-                this.props.collapse.id,
-                this.props.type
-              )
-            }
-          >
-            {subContent}
-          </li>
-        );
-      } else {
-        mainContent = <li className={navItemClass.join(' ')}>{subContent}</li>;
-      }
-
-      return <Aux>{mainContent}</Aux>;
-    } else {
-      return false;
+      });
     }
+    let itemTitle = t(props.collapse.title);
+    if (props.collapse.icon) {
+      itemTitle = (
+        <span className="pcoded-mtext">{t(props.collapse.title)}</span>
+      );
+    }
+
+    let navLinkClass = ['nav-link my-0 py-0'];
+
+    let navItemClass = [
+      'nav-item',
+      'pcoded-hasmenu',
+      'text-light',
+      'my-0 py-0'
+    ];
+    const openIndex = isOpen.findIndex((id) => id === props.collapse.id);
+    if (openIndex > -1) {
+      navItemClass = [...navItemClass, 'active'];
+      if (props.layout !== 'horizontal') {
+        navLinkClass = [...navLinkClass, 'active'];
+      }
+    }
+
+    const triggerIndex = isTrigger.findIndex((id) => id === props.collapse.id);
+    if (triggerIndex > -1) {
+      navItemClass = [...navItemClass, 'pcoded-trigger'];
+    }
+
+    const currentIndex = document.location.pathname
+      .toString()
+      .split('/')
+      .findIndex((id) => id === props.collapse.id);
+    if (currentIndex > -1) {
+      navItemClass = [...navItemClass, 'active'];
+      if (props.layout !== 'horizontal') {
+        navLinkClass = [...navLinkClass, 'active'];
+      }
+    }
+
+    const subContent = (
+      <Aux>
+        <a
+          className={navLinkClass.join(' ')}
+          style={{ cursor: 'pointer' }}
+          onClick={() => props.onCollapseToggle(props.collapse.id, props.type)}
+        >
+          <NavIcon items={props.collapse} />
+          {itemTitle}
+          <NavBadge layout={props.layout} items={props.collapse} />
+        </a>
+        <ul className="pcoded-submenu">{navItems}</ul>
+      </Aux>
+    );
+    let mainContent = '';
+    if (props.layout === 'horizontal') {
+      mainContent = (
+        <li
+          className={navItemClass.join(' ')}
+          onMouseLeave={() =>
+            props.onNavCollapseLeave(props.collapse.id, props.type)
+          }
+          onMouseEnter={() =>
+            props.onCollapseToggle(props.collapse.id, props.type)
+          }
+        >
+          {subContent}
+        </li>
+      );
+    } else {
+      mainContent = <li className={navItemClass.join(' ')}>{subContent}</li>;
+    }
+
+    return <Aux>{mainContent}</Aux>;
+  } else {
+    return false;
   }
 }
 

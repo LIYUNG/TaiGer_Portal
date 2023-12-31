@@ -835,7 +835,7 @@ class EditorDocsProgress extends React.Component {
                           <h6 className="text-danger">
                             <b>
                               Ths following tasks are not visible in tasks
-                              dashboard and CV/MLRL/Center. Please
+                              dashboard and CV/ML/RL/Center. Please
                               {showButtonIfMyStudent(
                                 this.props.user,
                                 this.state.student

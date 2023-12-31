@@ -21,9 +21,11 @@ import routes3 from '../../../route3';
 import ScrollToTop from '../ScrollToTop';
 import { verify, logout } from '../../../api/index';
 import Footer from '../../../components/Footer/Footer';
+import { useTranslation } from 'react-i18next';
 
 function AdminLayout(props) {
   const width = useWindowWidth();
+  const { i18n } = useTranslation();
   let [userdata, setUserdata] = useState({
     error: '',
     success: false,
@@ -34,6 +36,8 @@ function AdminLayout(props) {
   });
 
   useEffect(() => {
+    // TODO: activate i18next by uncomment the following language changes
+    i18n.changeLanguage(navigator.language);
     verify().then(
       (resp) => {
         const { data, success } = resp.data;
@@ -70,11 +74,7 @@ function AdminLayout(props) {
   }, []);
 
   useEffect(() => {
-    if (
-      width >= 992 &&
-      width <= 1024 &&
-      props.layout !== 'horizontal'
-    ) {
+    if (width >= 992 && width <= 1024 && props.layout !== 'horizontal') {
       props.onComponentWillMount();
     }
   }, [props.layout]);
@@ -105,7 +105,7 @@ function AdminLayout(props) {
     if (
       !document.fullscreenElement &&
       !document.webkitIsFullScreen &&
-      !document.mozFullScreen 
+      !document.mozFullScreen
       // &&
       // !document.msFullscreenElement
     ) {
@@ -193,34 +193,34 @@ function AdminLayout(props) {
     return (
       <Aux>
         {/* <FullScreen enabled={props.isFullScreen}> */}
-          <Navigation userdata={userdata.data} />
-          <NavBar
-            userdata={userdata.data}
-            handleOnClickLogout={handleOnClickLogout}
-          />
-          <div
-            className="pcoded-main-container"
-            onClick={() => mobileOutClickHandler}
-          >
-            <div className="pcoded-wrapper">
-              <div className="pcoded-content">
-                <div className="pcoded-inner-content">
-                  {/* <Breadcrumb /> */}
-                  <div className="main-body">
-                    <div className="page-wrapper">
-                      <Suspense fallback={<Loader />}>
-                        <Switch>
-                          {menu}
-                          <Redirect from="/" to={props.defaultPath} />
-                        </Switch>
-                      </Suspense>
-                    </div>
+        <Navigation userdata={userdata.data} />
+        <NavBar
+          userdata={userdata.data}
+          handleOnClickLogout={handleOnClickLogout}
+        />
+        <div
+          className="pcoded-main-container"
+          onClick={() => mobileOutClickHandler}
+        >
+          <div className="pcoded-wrapper">
+            <div className="pcoded-content">
+              <div className="pcoded-inner-content">
+                {/* <Breadcrumb /> */}
+                <div className="main-body">
+                  <div className="page-wrapper">
+                    <Suspense fallback={<Loader />}>
+                      <Switch>
+                        {menu}
+                        <Redirect from="/" to={props.defaultPath} />
+                      </Switch>
+                    </Suspense>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          <Footer />
+        </div>
+        <Footer />
         {/* </FullScreen> */}
       </Aux>
     );
@@ -243,7 +243,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AdminLayout);
+export default connect(mapStateToProps, mapDispatchToProps)(AdminLayout);

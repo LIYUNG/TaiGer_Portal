@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import { withRouter } from 'react-router-dom';
 import { useWindowWidth } from '@react-hook/window-size';
+import { useTranslation } from 'react-i18next';
 
 import Aux from '../../../../../../hoc/_Aux';
 import NavIcon from './../NavIcon';
@@ -11,6 +12,7 @@ import * as actionTypes from '../../../../../../store/actions';
 import { appConfig } from '../../../../../../config';
 
 function NavItem(props) {
+  const { t, i18n } = useTranslation();
   const menuItemFilterByRole = (itemTitle) => {
     if (props.role === 'Admin') {
       if (
@@ -107,11 +109,12 @@ function NavItem(props) {
   };
   const onlyWidth = useWindowWidth();
   let itemTitle = props.item.title;
+  console.log(itemTitle);
   let itemTarget = '';
   let subContent;
   if (menuItemFilterByRole(itemTitle)) {
     if (props.item.icon) {
-      itemTitle = <span className="pcoded-mtext">{props.item.title}</span>;
+      itemTitle = <span className="pcoded-mtext">{t(props.item.title)}</span>;
     }
 
     if (props.item.target) {

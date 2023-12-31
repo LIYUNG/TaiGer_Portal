@@ -11,6 +11,7 @@ import reducer from './store/reducer';
 import config from './config';
 import './index.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './i18n';
 
 const store = createStore(
   reducer,

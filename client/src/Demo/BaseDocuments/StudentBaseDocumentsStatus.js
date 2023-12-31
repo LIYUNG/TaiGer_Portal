@@ -9,6 +9,7 @@ import {
 import { BsDash } from 'react-icons/bs';
 import { profile_list } from '../Utils/contants';
 import { DocumentStatus } from '../Utils/checking-functions';
+import DEMO from '../../store/constant';
 
 class StudentBaseDocumentsStatus extends React.Component {
   state = {
@@ -57,8 +58,10 @@ class StudentBaseDocumentsStatus extends React.Component {
     const title_missing = 'Incomplete';
     let current_style = style_ok;
     let current_title = title_ok;
-    const student_profile_path =
-      '/student-database/' + this.props.student._id + '/profile';
+    const student_profile_path = `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+      this.props.student._id,
+      '/profile'
+    )}`;
     var file_information;
     for (var i = 0; i < profile_list_keys.length; i++) {
       if (

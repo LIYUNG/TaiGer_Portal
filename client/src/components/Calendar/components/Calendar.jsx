@@ -21,6 +21,7 @@ import {
 } from '../../../Demo/Utils/checking-functions';
 import { Link } from 'react-router-dom';
 import { FiExternalLink } from 'react-icons/fi';
+import DEMO from '../../../store/constant';
 
 const localizer = momentLocalizer(moment);
 
@@ -162,7 +163,7 @@ const MyCalendar = (props) => {
             <h6>Time zone: {props.user.timezone}</h6>
             <span>
               If the time zone not matches, please go to{' '}
-              <Link to="/profile">
+              <Link to={`${DEMO.PROFILE}`}>
                 Profile <FiExternalLink />
               </Link>{' '}
               to update your time zone

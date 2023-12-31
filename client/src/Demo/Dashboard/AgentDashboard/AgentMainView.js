@@ -233,15 +233,6 @@ class AgentMainView extends React.Component {
         a.application_deadline > b.application_deadline ? 1 : -1
       );
 
-    // const agent_tasks = this.props.students
-    //   .filter((student) =>
-    //     student.agents.some(
-    //       (agent) => agent._id === this.props.user._id.toString()
-    //     )
-    //   )
-    //   .map((student, i) => (
-    //     <AgentTasks key={i} role={this.props.user.role} student={student} />
-    //   ));
     let header = Object.values(academic_background_header);
 
     return (
@@ -262,7 +253,10 @@ class AgentMainView extends React.Component {
                       {student.student_firstname} {student.student_lastname}
                     </b>{' '}
                     <Link
-                      to={`/student-database/${student.student_id}/profile`}
+                      to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                        student.student_id,
+                        DEMO.PROFILE
+                      )}`}
                       style={{ textDecoration: 'none' }}
                       className="text-info"
                     >
@@ -307,7 +301,10 @@ class AgentMainView extends React.Component {
                           <td>
                             <b>
                               <Link
-                                to={`${DEMO.STUDENT_DATABASE_LINK}/${application.student_id}/profile`}
+                                to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                                  application.student_id,
+                                  DEMO.PROFILE
+                                )}`}
                               >
                                 {application.firstname_lastname}
                               </Link>

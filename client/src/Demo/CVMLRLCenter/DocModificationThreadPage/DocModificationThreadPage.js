@@ -448,7 +448,10 @@ class DocModificationThreadPage extends Component {
               <h4 className="mt-1 ms-0" style={{ textAlign: 'left' }}>
                 <Link
                   className="text-primary"
-                  to={`/student-database/${this.state.thread.student_id._id.toString()}/profile`}
+                  to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                    this.state.thread.student_id._id.toString(),
+                    DEMO.PROFILE
+                  )}`}
                 >
                   <b>{student_name}</b>
                 </Link>
@@ -612,7 +615,9 @@ class DocModificationThreadPage extends Component {
                       {is_TaiGer_AdminAgent(this.props.user) &&
                         this.state.thread.program_id && (
                           <Link
-                            to={`/programs/${this.state.thread.program_id._id.toString()}`}
+                            to={`${DEMO.SINGLE_PROGRAM_LINK(
+                              this.state.thread.program_id._id.toString()
+                            )}`}
                             target="_blank"
                           >
                             {' '}
@@ -637,7 +642,9 @@ class DocModificationThreadPage extends Component {
                         <p>
                           {is_TaiGer_role(this.props.user) ? (
                             <Link
-                              to={`/teams/agents/${agent._id.toString()}`}
+                              to={`${DEMO.TEAM_AGENT_LINK(
+                                agent._id.toString()
+                              )}`}
                               target="_blank"
                             >
                               {agent.firstname} {agent.lastname}
@@ -656,7 +663,9 @@ class DocModificationThreadPage extends Component {
                         <p>
                           {is_TaiGer_role(this.props.user) ? (
                             <Link
-                              to={`/teams/editors/${editor._id.toString()}`}
+                              to={`${DEMO.TEAM_EDITOR_LINK(
+                                editor._id.toString()
+                              )}`}
                               target="_blank"
                             >
                               {editor.firstname} {editor.lastname}
@@ -675,7 +684,9 @@ class DocModificationThreadPage extends Component {
                       {is_TaiGer_AdminAgent(this.props.user) &&
                         this.state.thread.program_id && (
                           <Link
-                            to={`/programs/${this.state.thread.program_id._id.toString()}`}
+                            to={`${DEMO.SINGLE_PROGRAM_LINK(
+                              this.state.thread.program_id._id.toString()
+                            )}`}
                             target="_blank"
                           >
                             {' '}
@@ -717,7 +728,10 @@ class DocModificationThreadPage extends Component {
                           : conflict_list.map((conflict_student) => (
                               <p>
                                 <Link
-                                  to={`/student-database/${conflict_student._id.toString()}/CV_ML_RL`}
+                                  to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                                    conflict_student._id.toString(),
+                                    '/CV_ML_RL'
+                                  )}`}
                                 >
                                   <b>
                                     {conflict_student.firstname}{' '}

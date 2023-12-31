@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { check_application_selection } from '../../../Utils/checking-functions';
+import DEMO from '../../../../store/constant';
 
 class NoProgramStudentTasks extends React.Component {
   render() {
@@ -11,11 +12,10 @@ class NoProgramStudentTasks extends React.Component {
           <tr>
             <td>
               <Link
-                to={
-                  '/student-database/' +
-                  this.props.student._id.toString() +
-                  '/uni-assist'
-                }
+                to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                  this.props.student._id.toString(),
+                  DEMO.UNI_ASSIST_LINK
+                )}`}
                 style={{ textDecoration: 'none' }}
                 className="text-info"
               >

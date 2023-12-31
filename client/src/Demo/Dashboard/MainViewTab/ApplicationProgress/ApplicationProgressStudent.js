@@ -8,6 +8,7 @@ import {
   showButtonIfMyStudent,
   application_deadline_calculator
 } from '../../../Utils/checking-functions';
+import DEMO from '../../../../store/constant';
 
 class ApplicationProgressStudent extends React.Component {
   updateStudentArchivStatus = (studentId, isArchived) => {
@@ -35,7 +36,7 @@ class ApplicationProgressStudent extends React.Component {
       applying_university = this.props.student.applications.map(
         (application, i) => (
           <Link
-            to={'/programs/' + application.programId._id}
+            to={`${DEMO.SINGLE_PROGRAM_LINK(application.programId._id)}`}
             style={{ textDecoration: 'none' }}
             key={i}
           >
@@ -53,7 +54,7 @@ class ApplicationProgressStudent extends React.Component {
       applying_program = this.props.student.applications.map(
         (application, i) => (
           <Link
-            to={'/programs/' + application.programId._id}
+            to={`${DEMO.SINGLE_PROGRAM_LINK(application.programId._id)}`}
             style={{ textDecoration: 'none' }}
             key={i}
           >
@@ -162,7 +163,9 @@ class ApplicationProgressStudent extends React.Component {
               this.props.user.role !== 'Editor' &&
               !this.props.isArchivPage && (
                 <Link
-                  to={'/student-applications/' + this.props.student._id}
+                  to={`${DEMO.STUDENT_APPLICATIONS_ID_LINK(
+                    this.props.student._id
+                  )}`}
                   style={{ textDecoration: 'none' }}
                 >
                   <AiFillEdit color="grey" size={16} />

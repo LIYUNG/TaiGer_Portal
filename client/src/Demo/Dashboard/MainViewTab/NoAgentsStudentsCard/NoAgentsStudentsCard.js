@@ -3,6 +3,7 @@ import { Dropdown, DropdownButton } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
 import EditAgentsSubpage from '../StudDocsOverview/EditAgentsSubpage';
+import DEMO from '../../../../store/constant';
 
 class NoAgentsStudentsCard extends React.Component {
   state = {
@@ -58,7 +59,10 @@ class NoAgentsStudentsCard extends React.Component {
             )}
             <td>
               <Link
-                to={'/student-database/' + this.props.student._id + '/profile'}
+                to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                  this.props.student._id,
+                  DEMO.PROFILE
+                )}`}
                 className="text-info"
                 style={{ textDecoration: 'none' }}
               >

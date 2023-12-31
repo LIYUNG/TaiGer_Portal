@@ -38,9 +38,10 @@ class UnrespondedThreads extends React.Component {
                         is_TaiGer_Student(this.props.user) ||
                         is_TaiGer_Guest(this.props.user)
                           ? `${DEMO.CV_ML_RL_CENTER_LINK}`
-                          : '/student-database/' +
-                            this.props.student._id +
-                            '/CV_ML_RL'
+                          : `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                              this.props.student._id,
+                              '/CV_ML_RL'
+                            )}`
                       }
                       className="text-info"
                       style={{ textDecoration: 'none' }}
@@ -85,9 +86,10 @@ class UnrespondedThreads extends React.Component {
                             is_TaiGer_Student(this.props.user) ||
                             is_TaiGer_Guest(this.props.user)
                               ? `${DEMO.CV_ML_RL_CENTER_LINK}`
-                              : '/student-database/' +
-                                this.props.student._id +
-                                '/CV_ML_RL'
+                              : `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                                  this.props.student._id,
+                                  '/CV_ML_RL'
+                                )}`
                           }
                           className="text-info"
                           style={{ textDecoration: 'none' }}

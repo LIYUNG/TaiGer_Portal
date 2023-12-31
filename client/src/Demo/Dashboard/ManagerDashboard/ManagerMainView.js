@@ -232,15 +232,6 @@ class ManagerMainView extends React.Component {
         a.application_deadline > b.application_deadline ? 1 : -1
       );
 
-    // const agent_tasks = this.props.students
-    //   .filter((student) =>
-    //     student.agents.some(
-    //       (agent) => agent._id === this.props.user._id.toString()
-    //     )
-    //   )
-    //   .map((student, i) => (
-    //     <AgentTasks key={i} role={this.props.user.role} student={student} />
-    //   ));
     let header = Object.values(academic_background_header);
 
     return (

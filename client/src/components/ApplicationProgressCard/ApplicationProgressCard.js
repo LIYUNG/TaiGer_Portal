@@ -23,6 +23,7 @@ import ApplicationProgressCardBody from './ApplicationProgressCardBody';
 import { FiExternalLink } from 'react-icons/fi';
 import { updateStudentApplicationResult } from '../../api';
 import { spinner_style2 } from '../../Demo/Utils/contants';
+import DEMO from '../../store/constant';
 
 export default function ApplicationProgressCard(props) {
   const [isCollapse, setIsCollapse] = useState(false);
@@ -125,7 +126,9 @@ export default function ApplicationProgressCard(props) {
             {application?.programId?.program_name}{' '}
             {application?.programId?.semester}{' '}
             <Link
-              to={`/programs/${application?.programId?._id?.toString()}`}
+              to={`${DEMO.SINGLE_PROGRAM_LINK(
+                application?.programId?._id?.toString()
+              )}`}
               target="_blank"
               onClick={(e) => e.stopPropagation()}
             >

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import DEMO from '../../../../store/constant';
 
 class ProgramConflict extends React.Component {
   state = {
@@ -12,7 +13,10 @@ class ProgramConflict extends React.Component {
     var stds = studs_id.map((k, i) => (
       <div className="text-info" key={i}>
         <Link
-          to={`/student-database/${studs_id[i]}/profile`}
+          to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+            studs_id[i],
+            DEMO.PROFILE
+          )}`}
           style={{ textDecoration: 'none' }}
           className="text-info"
         >
@@ -50,7 +54,7 @@ class ProgramConflict extends React.Component {
           <tr>
             <td>
               <Link
-                to={`/programs/${this.props.conf_program_id}`}
+                to={`${DEMO.SINGLE_PROGRAM_LINK(this.props.conf_program_id)}`}
                 style={{ textDecoration: 'none' }}
                 className="text-danger"
               >
@@ -63,7 +67,7 @@ class ProgramConflict extends React.Component {
               </Link>
               <br></br>
               <Link
-                to={`/programs/${this.props.conf_program_id}`}
+                to={`${DEMO.SINGLE_PROGRAM_LINK(this.props.conf_program_id)}`}
                 style={{ textDecoration: 'none' }}
                 className="text-danger"
               >

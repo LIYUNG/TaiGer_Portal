@@ -6,6 +6,7 @@ import {
   application_deadline_calculator,
   is_uni_assist_paid_and_docs_uploaded
 } from '../../../Utils/checking-functions';
+import DEMO from '../../../../store/constant';
 
 class VPDToSubmitTasks extends React.Component {
   render() {
@@ -19,11 +20,10 @@ class VPDToSubmitTasks extends React.Component {
                 <tr key={i}>
                   <td>
                     <Link
-                      to={
-                        '/student-database/' +
-                        this.props.student._id.toString() +
-                        '/uni-assist'
-                      }
+                      to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                        this.props.student._id.toString(),
+                        DEMO.UNI_ASSIST_LINK
+                      )}`}
                       style={{ textDecoration: 'none' }}
                       className="text-info"
                     >

@@ -25,6 +25,7 @@ import { programs_refactor, is_TaiGer_role } from '../Utils/checking-functions';
 import { applicationFileOverviewHeader } from '../Utils/contants';
 import TabStudBackgroundDashboard from '../Dashboard/MainViewTab/StudDocsOverview/TabStudBackgroundDashboard';
 import ApplicationProgressCardBody from '../../components/ApplicationProgressCard/ApplicationProgressCardBody';
+import DEMO from '../../store/constant';
 
 // Define a default UI for filtering
 function GlobalFilter({
@@ -257,15 +258,12 @@ function SortTable({ columns, data, user }) {
                     return j === 0 ? (
                       is_TaiGer_role(user) ? (
                         <td {...cell.getCellProps()} key={j}>
-                          {/* <Link
-                          to={`/student-applications/${row.original.student_id}`}
-                          style={{ textDecoration: 'none' }}
-                        >
-                          <AiFillEdit color="grey" size={16} />
-                        </Link> */}
                           <Link
                             target="_blank"
-                            to={`/student-database/${row.original.student_id}/profile`}
+                            to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                              row.original.student_id,
+                              '/profile'
+                            )}`}
                             className="text-info"
                             style={{ textDecoration: 'none' }}
                           >
@@ -275,7 +273,9 @@ function SortTable({ columns, data, user }) {
                       ) : (
                         <td key={j}>
                           <Link
-                            to={`/student-applications/${row.original.student_id}`}
+                            to={`${DEMO.STUDENT_APPLICATIONS_ID_LINK(
+                              row.original.student_id
+                            )}`}
                             style={{ textDecoration: 'none' }}
                           >
                             <AiFillEdit color="grey" size={16} />
@@ -288,7 +288,9 @@ function SortTable({ columns, data, user }) {
                           row.original.closed === 'O' ? (
                             <Link
                               target="_blank"
-                              to={'/programs/' + row.original.program_id}
+                              to={`${DEMO.SINGLE_PROGRAM_LINK(
+                                row.original.program_id
+                              )}`}
                               className="text-warning"
                               style={{ textDecoration: 'none' }}
                             >
@@ -297,7 +299,9 @@ function SortTable({ columns, data, user }) {
                           ) : (
                             <Link
                               target="_blank"
-                              to={'/programs/' + row.original.program_id}
+                              to={`${DEMO.SINGLE_PROGRAM_LINK(
+                                row.original.program_id
+                              )}`}
                               className="text-info"
                               style={{ textDecoration: 'none' }}
                             >
@@ -307,7 +311,9 @@ function SortTable({ columns, data, user }) {
                         ) : (
                           <Link
                             target="_blank"
-                            to={'/programs/' + row.original.program_id}
+                            to={`${DEMO.SINGLE_PROGRAM_LINK(
+                              row.original.program_id
+                            )}`}
                             className="text-secondary"
                             title="Not decided yet"
                             style={{ textDecoration: 'none' }}
@@ -491,7 +497,10 @@ const AdvancedTable = ({ data, columns, students, user }) => {
                   column.accessor === 'firstname_lastname' ? (
                     <td onClick={() => handleCollapse(index)}>
                       <Link
-                        to={`/student-database/${item.student_id}/profile`}
+                        to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                          item.student_id,
+                          '/profile'
+                        )}`}
                         className="text-info"
                         target="_blank"
                       >
@@ -503,7 +512,7 @@ const AdvancedTable = ({ data, columns, students, user }) => {
                       {column.accessor === 'program' &&
                       item.program_id !== '-' ? (
                         <Link
-                          to={`/programs/${item.program_id}`}
+                          to={`${DEMO.SINGLE_PROGRAM_LINK(item.program_id)}`}
                           className="text-info"
                           target="_blank"
                         >

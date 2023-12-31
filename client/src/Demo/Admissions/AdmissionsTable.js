@@ -12,6 +12,7 @@ import { Link } from 'react-router-dom';
 import { Button, Table, Row, Col, Card, Tabs, Tab } from 'react-bootstrap';
 // A great library for fuzzy filtering/sorting items
 import { matchSorter } from 'match-sorter';
+import DEMO from '../../store/constant';
 
 // Define a default UI for filtering
 function GlobalFilter({
@@ -410,11 +411,10 @@ function Table2({ header, data }) {
                   return (
                     <td {...cell.getCellProps()}>
                       <Link
-                        to={
-                          '/student-database/' +
-                          row.original._id +
+                        to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                          row.original._id,
                           '/background'
-                        }
+                        )}`}
                         className="text-info"
                         style={{ textDecoration: 'none' }}
                       >

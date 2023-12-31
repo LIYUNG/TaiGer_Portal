@@ -7,6 +7,7 @@ import {
   is_program_closed,
   application_deadline_calculator
 } from '../../../Utils/checking-functions';
+import DEMO from '../../../../store/constant';
 
 class ReadyToSubmitTasks extends React.Component {
   render() {
@@ -23,11 +24,10 @@ class ReadyToSubmitTasks extends React.Component {
               <tr key={i}>
                 <td>
                   <Link
-                    to={
-                      '/student-database/' +
-                      this.props.student._id.toString() +
+                    to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                      this.props.student._id.toString(),
                       '/CV_ML_RL'
-                    }
+                    )}`}
                     style={{ textDecoration: 'none' }}
                     className="text-info"
                   >

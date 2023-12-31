@@ -146,7 +146,9 @@ class SingleBalanceSheetOverview extends React.Component {
         </Row>
         <Row className="my-2 mx-0">
           <Link
-            to={`/teams/agents/archiv/${this.state.the_user._id.toString()}`}
+            to={`${DEMO.TEAM_AGENT_ARCHIV_LINK(
+              this.state.the_user._id.toString()
+            )}`}
           >
             <Button>See Archiv Student</Button>
           </Link>

@@ -254,7 +254,10 @@ function SortTable2({ columns, data, user, handleAsFinalFile }) {
                     <td {...cell.getCellProps()} key={j}>
                       <Link
                         target="_blank"
-                        to={`/student-database/${row.original.student_id}/profile`}
+                        to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                          row.original.student_id,
+                          '/profile'
+                        )}`}
                         className="text-light"
                         style={{ textDecoration: 'none' }}
                       >
@@ -268,7 +271,9 @@ function SortTable2({ columns, data, user, handleAsFinalFile }) {
                           <Link
                             key={u}
                             target="_blank"
-                            to={`/teams/editors/${editor._id.toString()}`}
+                            to={`${DEMO.TEAM_EDITOR_LINK(
+                              editor._id.toString()
+                            )}`}
                             style={{ textDecoration: 'none' }}
                           >
                             <p className="text-light my-0">

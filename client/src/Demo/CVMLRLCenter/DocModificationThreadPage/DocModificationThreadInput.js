@@ -477,7 +477,10 @@ class DocModificationThreadInput extends Component {
               <h4 className="mt-1 ms-0" style={{ textAlign: 'left' }}>
                 <Link
                   className="text-primary"
-                  to={`/student-database/${this.state.thread.student_id?._id.toString()}/profile`}
+                  to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                    this.state.thread.student_id?._id.toString(),
+                    DEMO.PROFILE
+                  )}`}
                 >
                   <b>{student_name}</b>
                 </Link>

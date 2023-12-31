@@ -395,7 +395,10 @@ class CommunicationSinglePage extends Component {
               <h4 className="mt-1 ms-0" style={{ textAlign: 'left' }}>
                 <Link
                   className="text-primary"
-                  to={`/student-database/${this.state.student._id.toString()}/profile`}
+                  to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                    this.state.student._id.toString(),
+                    '/profile'
+                  )}`}
                 >
                   <b>{student_name}</b>
                 </Link>
@@ -458,7 +461,10 @@ class CommunicationSinglePage extends Component {
                                 to={
                                   is_TaiGer_Student(this.props.user)
                                     ? `${DEMO.SURVEY_LINK}`
-                                    : `${DEMO.STUDENT_DATABASE_LINK}/${this.state.student_id}/background`
+                                    : `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                                        this.state.student_id,
+                                        '/background'
+                                      )}`
                                 }
                                 className="text-primary"
                                 target="_blank"
@@ -474,7 +480,10 @@ class CommunicationSinglePage extends Component {
                                 to={
                                   is_TaiGer_Student(this.props.user)
                                     ? `${DEMO.BASE_DOCUMENTS_LINK}`
-                                    : `${DEMO.STUDENT_DATABASE_LINK}/${this.state.student_id}/profile`
+                                    : `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                                        this.state.student_id,
+                                        '/profile'
+                                      )}`
                                 }
                                 className="text-primary"
                                 target="_blank"
@@ -522,10 +531,11 @@ class CommunicationSinglePage extends Component {
                     <b>Agents:</b>
                     <br />
                     {this.state.student?.agents?.map((agent, i) => (
-                      // <Link>{`${agent.firstname} ${agent.lastname}`}</Link>
                       <p key={i}>
                         <Link
-                          to={`/teams/agents/profile/${agent._id.toString()}`}
+                          to={`${DEMO.TEAM_AGENT_PROFILE_LINK(
+                            agent._id.toString()
+                          )}`}
                         >{`${agent.firstname} ${agent.lastname}`}</Link>
                       </p>
                     ))}

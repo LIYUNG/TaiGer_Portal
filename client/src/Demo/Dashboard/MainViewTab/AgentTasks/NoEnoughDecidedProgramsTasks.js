@@ -4,6 +4,7 @@ import {
   areProgramsDecidedMoreThanContract,
   is_num_Program_Not_specified
 } from '../../../Utils/checking-functions';
+import DEMO from '../../../../store/constant';
 
 class NoEnoughDecidedProgramsTasks extends React.Component {
   render() {
@@ -14,9 +15,9 @@ class NoEnoughDecidedProgramsTasks extends React.Component {
           <tr>
             <td>
               <Link
-                to={
-                  '/student-applications/' + this.props.student._id.toString()
-                }
+                to={`${DEMO.STUDENT_APPLICATIONS_ID_LINK(
+                  this.props.student._id.toString()
+                )}`}
                 style={{ textDecoration: 'none' }}
                 className="text-info"
               >
@@ -42,10 +43,9 @@ class NoEnoughDecidedProgramsTasks extends React.Component {
                 <tr>
                   <td>
                     <Link
-                      to={
-                        '/student-applications/' +
+                      to={`${DEMO.STUDENT_APPLICATIONS_ID_LINK(
                         this.props.student._id.toString()
-                      }
+                      )}`}
                       style={{ textDecoration: 'none' }}
                       className="text-info"
                     >

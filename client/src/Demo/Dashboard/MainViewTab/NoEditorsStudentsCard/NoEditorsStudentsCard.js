@@ -4,6 +4,7 @@ import { Dropdown, DropdownButton } from 'react-bootstrap';
 import EditEditorsSubpage from '../StudDocsOverview/EditEditorsSubpage';
 import { is_TaiGer_role } from '../../../Utils/checking-functions';
 import { Link } from 'react-router-dom';
+import DEMO from '../../../../store/constant';
 
 class NoEditorsStudentsCard extends React.Component {
   state = {
@@ -59,7 +60,10 @@ class NoEditorsStudentsCard extends React.Component {
             <td>
               <Link
                 className="text-info"
-                to={`/student-database/${this.props.student._id.toString()}/profile`}
+                to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                  this.props.student._id.toString(),
+                  DEMO.PROFILE
+                )}`}
               >
                 {this.props.student.firstname}, {this.props.student.lastname}
               </Link>

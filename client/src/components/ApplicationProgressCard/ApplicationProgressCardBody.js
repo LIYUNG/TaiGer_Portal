@@ -44,20 +44,20 @@ export default function ApplicationProgressCardBody(props) {
           'O' ? (
             isEnglishOK(props.application?.programId, props.student) ? (
               <ListGroup.Item>
-                <Link to={`/survey`}>
+                <Link to={`${DEMO.SURVEY_LINK}`}>
                   <DocumentOkIcon /> English
                 </Link>
               </ListGroup.Item>
             ) : (
               <ListGroup.Item title="English Requirements not met with your input in My Survey">
-                <Link to={`/survey`}>
+                <Link to={`${DEMO.SURVEY_LINK}`}>
                   <AiFillWarning color="red" size={16} /> English
                 </Link>
               </ListGroup.Item>
             )
           ) : (
             <ListGroup.Item>
-              <Link to={`/survey`}>
+              <Link to={`${DEMO.SURVEY_LINK}`}>
                 <DocumentMissingIcon /> English
               </Link>
             </ListGroup.Item>
@@ -71,13 +71,13 @@ export default function ApplicationProgressCardBody(props) {
           ) : props.student?.academic_background?.language?.german_isPassed ===
             'O' ? (
             <ListGroup.Item>
-              <Link to={`/survey`}>
+              <Link to={`${DEMO.SURVEY_LINK}`}>
                 <DocumentOkIcon /> German
               </Link>
             </ListGroup.Item>
           ) : (
             <ListGroup.Item>
-              <Link to={`/survey`}>
+              <Link to={`${DEMO.SURVEY_LINK}`}>
                 <DocumentMissingIcon /> German
               </Link>
             </ListGroup.Item>
@@ -88,13 +88,13 @@ export default function ApplicationProgressCardBody(props) {
           ) : props.student?.academic_background?.language?.gre_isPassed ===
             'O' ? (
             <ListGroup.Item>
-              <Link to={`/survey`}>
+              <Link to={`${DEMO.SURVEY_LINK}`}>
                 <DocumentOkIcon /> GRE
               </Link>
             </ListGroup.Item>
           ) : (
             <ListGroup.Item>
-              <Link to={`/survey`}>
+              <Link to={`${DEMO.SURVEY_LINK}`}>
                 <DocumentMissingIcon /> GRE
               </Link>
             </ListGroup.Item>
@@ -105,13 +105,13 @@ export default function ApplicationProgressCardBody(props) {
           ) : props.student?.academic_background?.language?.gmat_isPassed ===
             'O' ? (
             <ListGroup.Item>
-              <Link to={`/survey`}>
+              <Link to={`${DEMO.SURVEY_LINK}`}>
                 <DocumentOkIcon /> GMAT
               </Link>
             </ListGroup.Item>
           ) : (
             <ListGroup.Item>
-              <Link to={`/survey`}>
+              <Link to={`${DEMO.SURVEY_LINK}`}>
                 <DocumentMissingIcon /> GMAT
               </Link>
             </ListGroup.Item>
@@ -119,7 +119,11 @@ export default function ApplicationProgressCardBody(props) {
         {(props.application?.programId?.application_portal_a ||
           props.application?.programId?.application_portal_b) && (
           <ListGroup.Item>
-            <Link to={`/portal-informations/${props.student._id.toString()}`}>
+            <Link
+              to={`${DEMO.PORTALS_MANAGEMENT_STUDENTID_LINK(
+                props.student._id.toString()
+              )}`}
+            >
               {(props.application?.programId?.application_portal_a &&
                 !props.application.credential_a_filled) ||
               (props.application?.programId?.application_portal_b &&

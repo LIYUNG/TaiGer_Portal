@@ -1,13 +1,10 @@
 import React from 'react';
-import { Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { AiFillEdit } from 'react-icons/ai';
 
 import { getNumberOfDays } from '../../../Utils/contants';
-import {
-  showButtonIfMyStudent,
-  application_deadline_calculator
-} from '../../../Utils/checking-functions';
+import { application_deadline_calculator } from '../../../Utils/checking-functions';
+import DEMO from '../../../../store/constant';
 
 class ApplicationProgress extends React.Component {
   updateStudentArchivStatus = (studentId, isArchived) => {
@@ -45,7 +42,7 @@ class ApplicationProgress extends React.Component {
       applying_university = this.props.student.applications.map(
         (application, i) => (
           <Link
-            to={'/programs/' + application.programId._id}
+            to={`${DEMO.SINGLE_PROGRAM_LINK(application.programId._id)}`}
             style={{ textDecoration: 'none' }}
             key={i}
           >
@@ -68,7 +65,7 @@ class ApplicationProgress extends React.Component {
       applying_program_degree = this.props.student.applications.map(
         (application, i) => (
           <Link
-            to={'/programs/' + application.programId._id}
+            to={`${DEMO.SINGLE_PROGRAM_LINK(application.programId._id)}`}
             style={{ textDecoration: 'none' }}
             key={i}
           >
@@ -91,7 +88,7 @@ class ApplicationProgress extends React.Component {
       applying_program = this.props.student.applications.map(
         (application, i) => (
           <Link
-            to={'/programs/' + application.programId._id}
+            to={`${DEMO.SINGLE_PROGRAM_LINK(application.programId._id)}`}
             style={{ textDecoration: 'none' }}
             key={i}
           >
@@ -114,7 +111,7 @@ class ApplicationProgress extends React.Component {
       program_semester = this.props.student.applications.map(
         (application, i) => (
           <Link
-            to={'/programs/' + application.programId._id}
+            to={`${DEMO.SINGLE_PROGRAM_LINK(application.programId._id)}`}
             style={{ textDecoration: 'none' }}
             key={i}
           >
@@ -136,7 +133,7 @@ class ApplicationProgress extends React.Component {
       );
       program_toefl = this.props.student.applications.map((application, i) => (
         <Link
-          to={'/programs/' + application.programId._id}
+          to={`${DEMO.SINGLE_PROGRAM_LINK(application.programId._id)}`}
           style={{ textDecoration: 'none' }}
           key={i}
         >
@@ -163,7 +160,7 @@ class ApplicationProgress extends React.Component {
       ));
       program_ielts = this.props.student.applications.map((application, i) => (
         <Link
-          to={'/programs/' + application.programId._id}
+          to={`${DEMO.SINGLE_PROGRAM_LINK(application.programId._id)}`}
           style={{ textDecoration: 'none' }}
           key={i}
         >
@@ -296,7 +293,9 @@ class ApplicationProgress extends React.Component {
             {/* If my own student */}
             {this.props.user.role !== 'Editor' && !this.props.isArchivPage && (
               <Link
-                to={'/student-applications/' + this.props.student._id}
+                to={`${DEMO.STUDENT_APPLICATIONS_ID_LINK(
+                  this.props.student._id
+                )}`}
                 style={{ textDecoration: 'none' }}
               >
                 <AiFillEdit color="grey" size={16} />

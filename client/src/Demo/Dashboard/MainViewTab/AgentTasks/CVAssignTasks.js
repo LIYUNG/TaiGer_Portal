@@ -4,6 +4,7 @@ import {
   isCVFinished,
   is_cv_assigned
 } from '../../../Utils/checking-functions';
+import DEMO from '../../../../store/constant';
 
 class CVAssignTasks extends React.Component {
   render() {
@@ -15,11 +16,10 @@ class CVAssignTasks extends React.Component {
             <tr>
               <td>
                 <Link
-                  to={
-                    '/student-database/' +
-                    this.props.student._id.toString() +
+                  to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                    this.props.student._id.toString(),
                     '/CV_ML_RL'
-                  }
+                  )}`}
                   style={{ textDecoration: 'none' }}
                   className="text-info"
                 >

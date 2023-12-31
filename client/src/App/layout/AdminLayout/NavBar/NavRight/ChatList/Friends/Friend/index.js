@@ -4,6 +4,7 @@ import Aux from '../../../../../../../../hoc/_Aux';
 import { Link } from 'react-router-dom';
 import { convertDate_ux_friendly } from '../../../../../../../../Demo/Utils/contants';
 import { RxDotFilled } from 'react-icons/rx';
+import DEMO from '../../../../../../../../store/constant';
 
 const friend = (props) => {
   let timeClass = ['d-block'];
@@ -26,7 +27,7 @@ const friend = (props) => {
   return (
     <Aux>
       <Link
-        to={`/communications/${props.data?._id?.toString()}`}
+        to={`${DEMO.COMMUNICATIONS_LINK(props.data?._id?.toString())}`}
         className="media-left"
       >
         <div
@@ -40,7 +41,7 @@ const friend = (props) => {
           <div className="media-body">
             <h6 className="chat-header">
               {props.data.latestCommunication?.user_id !== props.activeId && (
-                <RxDotFilled size={18} title='Not Reply Yet' className="me-2" />
+                <RxDotFilled size={18} title="Not Reply Yet" className="me-2" />
               )}
               {props.data.firstname} {props.data.lastname}{' '}
               {props.data.firstname_chinese ? props.data.firstname_chinese : ''}{' '}

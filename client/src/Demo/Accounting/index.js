@@ -102,7 +102,7 @@ class Accounting extends React.Component {
               <p key={i}>
                 <b>
                   <Link
-                    to={`/internal/accounting/users/${agent._id.toString()}`}
+                    to={`${DEMO.ACCOUNTING_USER_ID_LINK(agent._id.toString())}`}
                   >
                     {agent.firstname} {agent.lastname}{' '}
                   </Link>
@@ -114,7 +114,9 @@ class Accounting extends React.Component {
               <p key={i}>
                 <b>
                   <Link
-                    to={`/internal/accounting/users/${editor._id.toString()}`}
+                    to={`${DEMO.ACCOUNTING_USER_ID_LINK(
+                      editor._id.toString()
+                    )}`}
                   >
                     {editor.firstname} {editor.lastname}{' '}
                   </Link>

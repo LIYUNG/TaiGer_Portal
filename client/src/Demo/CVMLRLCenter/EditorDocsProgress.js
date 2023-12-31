@@ -26,6 +26,7 @@ import {
   initGeneralMessageThread,
   initApplicationMessageThread
 } from '../../api';
+import DEMO from '../../store/constant';
 
 class EditorDocsProgress extends React.Component {
   state = {
@@ -653,7 +654,9 @@ class EditorDocsProgress extends React.Component {
                         )}
                         <Col md={4}>
                           <Link
-                            to={`/programs/${application.programId._id}`}
+                            to={`${DEMO.SINGLE_PROGRAM_LINK(
+                              application.programId._id
+                            )}`}
                             style={{ textDecoration: 'none' }}
                             className="text-info"
                           >
@@ -755,10 +758,9 @@ class EditorDocsProgress extends React.Component {
                           <Col md={2}></Col>
                           <Col md={4}>
                             <Link
-                              to={
-                                '/programs/' +
+                              to={`${DEMO.SINGLE_PROGRAM_LINK(
                                 application.programId._id.toString()
-                              }
+                              )}`}
                               style={{ textDecoration: 'none' }}
                               className="text-info"
                             >
@@ -839,10 +841,9 @@ class EditorDocsProgress extends React.Component {
                                 this.state.student
                               ) && (
                                 <Link
-                                  to={
-                                    '/student-applications/' +
+                                  to={`${DEMO.STUDENT_APPLICATIONS_ID_LINK(
                                     this.state.student._id.toString()
-                                  }
+                                  )}`}
                                   style={{ textDecoration: 'none' }}
                                   className="text-info"
                                 >

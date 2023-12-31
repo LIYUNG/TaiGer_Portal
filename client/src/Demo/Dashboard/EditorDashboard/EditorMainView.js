@@ -294,7 +294,7 @@ class EditorMainView extends React.Component {
                   <tr>
                     <td>
                       <Link
-                        to={'/assignment/editors'}
+                        to={`${DEMO.ASSIGN_EDITOR_LINK}`}
                         style={{ textDecoration: 'none' }}
                         className="text-info"
                       >

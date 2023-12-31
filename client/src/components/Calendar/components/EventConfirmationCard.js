@@ -22,6 +22,7 @@ import {
   is_TaiGer_role
 } from '../../../Demo/Utils/checking-functions';
 import { Link } from 'react-router-dom';
+import DEMO from '../../../store/constant';
 
 export default function EventConfirmationCard(props) {
   const [isCollapse, setIsCollapse] = useState(false);
@@ -156,7 +157,10 @@ export default function EventConfirmationCard(props) {
           {props.event.requester_id?.map((requester, x) =>
             is_TaiGer_role(props.user) ? (
               <Link
-                to={`/student-database/${requester._id.toString()}/profile`}
+                to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                  requester._id.toString(),
+                  '/profile'
+                )}`}
                 key={x}
               >
                 {requester.firstname} {requester.lastname}{' '}

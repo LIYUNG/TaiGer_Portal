@@ -97,7 +97,7 @@ class Contact extends React.Component {
           <td>Agent</td>
           <td>
             <Link
-              to={`/teams/agents/profile/${agent._id.toString()}`}
+              to={`${DEMO.TEAM_AGENT_PROFILE_LINK(agent._id.toString())}`}
               className="text-info"
             >
               {agent.firstname} - {agent.lastname}

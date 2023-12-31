@@ -31,6 +31,7 @@ import {
   STUDENT_COURSES_LINK
 } from '../../../Utils/checking-functions';
 import { profile_list } from '../../../Utils/contants';
+import DEMO from '../../../../store/constant';
 
 class AgentReviewing extends React.Component {
   render() {
@@ -88,9 +89,8 @@ class AgentReviewing extends React.Component {
       this.props.student
     );
 
-    let is_All_Applications_Submitted = check_all_decided_applications_submitted(
-      this.props.student
-    );
+    let is_All_Applications_Submitted =
+      check_all_decided_applications_submitted(this.props.student);
 
     const isCVFinished_b = isCVFinished(this.props.student);
     const isCVAssigned = is_cv_assigned(this.props.student);
@@ -122,7 +122,10 @@ class AgentReviewing extends React.Component {
         <tr className="my-0 mx-0 py-0">
           <td>
             <Link
-              to={'/student-database/' + this.props.student._id + '/profile'}
+              to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                this.props.student._id,
+                DEMO.PROFILE
+              )}`}
               className="text-info"
               style={{ textDecoration: 'none' }}
             >
@@ -135,7 +138,10 @@ class AgentReviewing extends React.Component {
           </td>
           <td>
             <Link
-              to={'/student-database/' + this.props.student._id + '/profile'}
+              to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                this.props.student._id,
+                DEMO.PROFILE
+              )}`}
               className="text-info"
               style={{ textDecoration: 'none' }}
             >
@@ -164,7 +170,9 @@ class AgentReviewing extends React.Component {
           </td>
           <td>
             <Link
-              to={'/student-applications/' + this.props.student._id}
+              to={`${DEMO.STUDENT_APPLICATIONS_ID_LINK(
+                this.props.student._id
+              )}`}
               style={{ textDecoration: 'none' }}
             >
               <p className="text-warning my-0">
@@ -196,7 +204,9 @@ class AgentReviewing extends React.Component {
           </td>
           <td>
             <Link
-              to={'/student-applications/' + this.props.student._id}
+              to={`${DEMO.STUDENT_APPLICATIONS_ID_LINK(
+                this.props.student._id
+              )}`}
               style={{ textDecoration: 'none' }}
             >
               {is_All_Applications_Submitted ? (
@@ -249,7 +259,10 @@ class AgentReviewing extends React.Component {
           <td>{getNextProgramStatus(this.props.student)}</td>
           <td>
             <Link
-              to={'/student-database/' + this.props.student._id + '/background'}
+              to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                this.props.student._id,
+                '/background'
+              )}`}
               style={{ textDecoration: 'none' }}
             >
               {isSurveyCompleted ? (
@@ -273,7 +286,10 @@ class AgentReviewing extends React.Component {
           </td>
           <td>
             <Link
-              to={'/student-database/' + this.props.student._id + '/profile'}
+              to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                this.props.student._id,
+                DEMO.PROFILE
+              )}`}
               style={{ textDecoration: 'none' }}
             >
               <p
@@ -300,9 +316,10 @@ class AgentReviewing extends React.Component {
           <td>
             {!isLanguageInfoComplete(this.props.student.academic_background) ? (
               <Link
-                to={
-                  '/student-database/' + this.props.student._id + '/background'
-                }
+                to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                  this.props.student._id,
+                  '/background'
+                )}`}
                 style={{ textDecoration: 'none' }}
               >
                 <p className="text-danger my-0">No info</p>
@@ -313,11 +330,10 @@ class AgentReviewing extends React.Component {
                   this.props.student.academic_background
                 ) && (
                   <Link
-                    to={
-                      '/student-database/' +
-                      this.props.student._id +
+                    to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                      this.props.student._id,
                       '/background'
-                    }
+                    )}`}
                     style={{ textDecoration: 'none' }}
                   >
                     {isEnglishPassed ? (
@@ -367,11 +383,10 @@ class AgentReviewing extends React.Component {
                   this.props.student.academic_background
                 ) && (
                   <Link
-                    to={
-                      '/student-database/' +
-                      this.props.student._id +
+                    to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                      this.props.student._id,
                       '/background'
-                    }
+                    )}`}
                     style={{ textDecoration: 'none' }}
                   >
                     {isGermanPassed ? (
@@ -438,7 +453,10 @@ class AgentReviewing extends React.Component {
           </td>
           <td>
             <Link
-              to={'/student-database/' + this.props.student._id + '/CV_ML_RL'}
+              to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                this.props.student._id,
+                '/CV_ML_RL'
+              )}`}
               style={{ textDecoration: 'none' }}
             >
               {!isCVFinished_b ? (
@@ -475,7 +493,9 @@ class AgentReviewing extends React.Component {
           </td>
           <td>
             <Link
-              to={'/portal-informations/' + this.props.student._id}
+              to={`${DEMO.PORTALS_MANAGEMENT_STUDENTID_LINK(
+                this.props.student._id
+              )}`}
               style={{ textDecoration: 'none' }}
             >
               {this.props.student.applications?.length === 0 ? (
@@ -505,7 +525,10 @@ class AgentReviewing extends React.Component {
           </td>
           <td>
             <Link
-              to={'/student-database/' + this.props.student._id + '/uni-assist'}
+              to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                this.props.student._id,
+                DEMO.UNI_ASSIST_LINK
+              )}`}
               style={{ textDecoration: 'none' }}
             >
               {is_uni_assist_needed ? (

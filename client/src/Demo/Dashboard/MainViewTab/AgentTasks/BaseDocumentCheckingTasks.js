@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 import { convertDate } from '../../../Utils/contants';
+import DEMO from '../../../../store/constant';
 
 class BaseDocumentCheckingTasks extends React.Component {
   render() {
@@ -14,11 +15,10 @@ class BaseDocumentCheckingTasks extends React.Component {
               <tr key={i}>
                 <td>
                   <Link
-                    to={
-                      '/student-database/' +
-                      this.props.student._id.toString() +
-                      '/profile'
-                    }
+                    to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                      this.props.student._id.toString(),
+                      DEMO.PROFILE
+                    )}`}
                     style={{ textDecoration: 'none' }}
                     className="text-info"
                   >

@@ -5,6 +5,7 @@ import {
   does_student_have_editors,
   is_num_Program_Not_specified
 } from '../../../Utils/checking-functions';
+import DEMO from '../../../../store/constant';
 
 class AdminTasks extends React.Component {
   render() {
@@ -14,7 +15,9 @@ class AdminTasks extends React.Component {
           <tr key={i}>
             <td>
               <Link
-                to={'/student-applications/' + student._id.toString()}
+                to={`${DEMO.STUDENT_APPLICATIONS_ID_LINK(
+                  student._id.toString()
+                )}`}
                 style={{ textDecoration: 'none' }}
                 className="text-info"
               >
@@ -41,7 +44,7 @@ class AdminTasks extends React.Component {
           <tr>
             <td>
               <Link
-                to={'/assignment/agents'}
+                to={`${DEMO.ASSIGN_AGENT_LINK}`}
                 style={{ textDecoration: 'none' }}
                 className="text-info"
               >
@@ -56,7 +59,7 @@ class AdminTasks extends React.Component {
           <tr>
             <td>
               <Link
-                to={'/assignment/editors'}
+                to={`${DEMO.ASSIGN_EDITOR_LINK}`}
                 style={{ textDecoration: 'none' }}
                 className="text-info"
               >

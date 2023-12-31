@@ -75,7 +75,9 @@ class NavRight extends Component {
               is_TaiGer_Student(this.props.userdata) && (
                 <li>
                   <Link
-                    to={`/communications/${this.props.userdata._id.toString()}`}
+                    to={`${DEMO.COMMUNICATIONS_LINK(
+                      this.props.userdata._id.toString()
+                    )}`}
                     className="dropdown-item"
                     onClick={() => this.setState({ dropdownShow: false })}
                   >
@@ -91,14 +93,8 @@ class NavRight extends Component {
                       DEMO.EVENT_TAIGER_LINK
                     }/${this.props.userdata._id.toString()}`}
                     className="dropdown-item"
-                    // onClick={() => this.setState({ dropdownShow: false })}
                   >
                     <AiOutlineCalendar size={28} />
-                    {/* {this.state.unreadCount > 0 && (
-                    <span className="mail-icon-container badge">
-                      {this.state.unreadCount}
-                    </span>
-                  )} */}
                   </Link>
                 </li>
               )}

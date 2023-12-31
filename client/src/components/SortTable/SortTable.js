@@ -124,7 +124,10 @@ function SortTable({ columns, data, user, handleAsFinalFile }) {
                     <td {...cell.getCellProps()} key={j}>
                       <Link
                         target="_blank"
-                        to={`/student-database/${row.original.student_id}/profile`}
+                        to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                          row.original.student_id,
+                          '/profile'
+                        )}`}
                         className="text-light"
                         style={{ textDecoration: 'none' }}
                       >

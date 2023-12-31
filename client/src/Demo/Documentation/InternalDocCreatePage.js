@@ -24,6 +24,7 @@ import {
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
+import { TopBar } from '../../components/TopBar/TopBar';
 
 class InternalDocCreatePage extends React.Component {
   state = {
@@ -260,21 +261,7 @@ class InternalDocCreatePage extends React.Component {
     TabTitle('Internal Docs Database');
     return (
       <Aux>
-        <Row className="sticky-top ">
-          <Col>
-            <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
-              <Card.Header text={'dark'}>
-                <Card.Title>
-                  <Row>
-                    <Col className="my-0 mx-0 text-light">
-                      All Internal Documentations
-                    </Col>
-                  </Row>
-                </Card.Title>
-              </Card.Header>
-            </Card>
-          </Col>
-        </Row>
+        <TopBar>All Internal Documentations</TopBar>
         <Row>
           <Col sm={12}>
             <Card className="mb-2 mx-0">

@@ -15,6 +15,7 @@ import {
 } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
+import { TopBar } from '../../components/TopBar/TopBar';
 
 class Documentation extends React.Component {
   state = {
@@ -211,31 +212,17 @@ class Documentation extends React.Component {
       (categorie) => categorie.key === this.props.match.params.category
     ).value;
     TabTitle(`Doc: ${category_name}`);
-    if (this.state.isEdit) {
-      return (
-        <>
-          {res_modal_status >= 400 && (
-            <ModalMain
-              ConfirmError={this.ConfirmError}
-              res_modal_status={res_modal_status}
-              res_modal_message={res_modal_message}
-            />
-          )}
-          <Row className="sticky-top ">
-            <Col>
-              <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
-                <Card.Header text={'dark'}>
-                  <Card.Title>
-                    <Row>
-                      <Col className="my-0 mx-0 text-light">
-                        {category_name}
-                      </Col>
-                    </Row>
-                  </Card.Title>
-                </Card.Header>
-              </Card>
-            </Col>
-          </Row>
+    return (
+      <>
+        {res_modal_status >= 400 && (
+          <ModalMain
+            ConfirmError={this.ConfirmError}
+            res_modal_status={res_modal_status}
+            res_modal_message={res_modal_message}
+          />
+        )}
+        <TopBar>{category_name}</TopBar>
+        {this.state.isEdit ? (
           <DocPageEdit
             category={'category'}
             document={document}
@@ -245,31 +232,7 @@ class Documentation extends React.Component {
             handleClickEditToggle={this.handleClickEditToggle}
             handleClickSave={this.handleClickSave}
           />
-        </>
-      );
-    } else {
-      return (
-        <>
-          <Row className="sticky-top ">
-            <Col>
-              <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
-                <Card.Header text={'dark'}>
-                  <Card.Title>
-                    <Row>
-                      <Col className="my-0 mx-0 text-light">
-                        {
-                          valid_categories.find(
-                            (categorie) =>
-                              categorie.key === this.props.match.params.category
-                          ).value
-                        }
-                      </Col>
-                    </Row>
-                  </Card.Title>
-                </Card.Header>
-              </Card>
-            </Col>
-          </Row>
+        ) : (
           <DocPageView
             document={document}
             document_title={this.state.document_title}
@@ -279,9 +242,9 @@ class Documentation extends React.Component {
             user={this.props.user}
             handleClickEditToggle={this.handleClickEditToggle}
           />
-        </>
-      );
-    }
+        )}
+      </>
+    );
   }
 }
 

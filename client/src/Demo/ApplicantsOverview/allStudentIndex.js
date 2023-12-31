@@ -11,6 +11,7 @@ import { getAllActiveStudents } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import { is_TaiGer_role } from '../Utils/checking-functions';
+import { TopBar } from '../../components/TopBar/TopBar';
 
 class AllApplicantsOverview extends React.Component {
   state = {
@@ -87,17 +88,7 @@ class AllApplicantsOverview extends React.Component {
 
     return (
       <Aux>
-        <Row className="sticky-top">
-          <Col>
-            <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
-              <Card.Header>
-                <Card.Title className="my-0 mx-0 text-light">
-                  All Students Applications Overview
-                </Card.Title>
-              </Card.Header>
-            </Card>
-          </Col>
-        </Row>
+        <TopBar>All Students Applications Overview</TopBar>
         <ApplicationOverviewTabs
           user={this.props.user}
           success={this.state.success}

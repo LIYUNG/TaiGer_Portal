@@ -11,6 +11,7 @@ import { TabTitle } from '../Utils/TabTitle';
 import { is_TaiGer_role } from '../Utils/checking-functions';
 import { Link } from 'react-router-dom';
 import DEMO from '../../store/constant';
+import { TopBar } from '../../components/TopBar/TopBar';
 
 class index extends React.Component {
   state = {
@@ -79,17 +80,7 @@ class index extends React.Component {
 
     return (
       <Aux>
-        <Row className="sticky-top">
-          <Col>
-            <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
-              <Card.Header>
-                <Card.Title className="my-0 mx-0 text-light">
-                  CV ML RL Overview
-                </Card.Title>
-              </Card.Header>
-            </Card>
-          </Col>
-        </Row>
+        <TopBar>CV ML RL Overview</TopBar>
         {!is_TaiGer_role(this.props.user) && (
           <Card>
             <Card.Body>

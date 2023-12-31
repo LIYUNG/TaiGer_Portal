@@ -17,6 +17,7 @@ import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import TasksDistributionBarChart from '../../components/Charts/TasksDistributionBarChart';
 import { appConfig } from '../../config';
+import { TopBar } from '../../components/TopBar/TopBar';
 
 class AgentPage extends React.Component {
   state = {
@@ -140,25 +141,13 @@ class AgentPage extends React.Component {
 
     return (
       <Aux>
-        <Row className="sticky-top ">
-          <Col>
-            <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
-              <Card.Header text={'dark'}>
-                <Card.Title>
-                  <Row>
-                    <Col className="my-0 mx-0 text-light">
-                      {appConfig.companyName} Team Agent:{' '}
-                      <b>
-                        {this.state.agent.firstname} {this.state.agent.lastname}
-                      </b>
-                      {` (${this.state.students.length})`}
-                    </Col>
-                  </Row>
-                </Card.Title>
-              </Card.Header>
-            </Card>
-          </Col>
-        </Row>
+        <TopBar>
+          {appConfig.companyName} Team Agent:{' '}
+          <b>
+            {this.state.agent.firstname} {this.state.agent.lastname}
+          </b>
+          {` (${this.state.students.length})`}
+        </TopBar>
         <Row>
           <Col md={12}>
             <Card>

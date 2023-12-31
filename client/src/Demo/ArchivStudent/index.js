@@ -12,6 +12,7 @@ import ModalMain from '../Utils/ModalHandler/ModalMain';
 import { getArchivStudents, updateArchivStudents } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
+import { TopBar } from '../../components/TopBar/TopBar';
 
 class ArchivStudents extends React.Component {
   state = {
@@ -159,17 +160,9 @@ class ArchivStudents extends React.Component {
     if (this.state.success) {
       return (
         <Aux>
-          <Row className="sticky-top">
-            <Col>
-              <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
-                <Card.Header>
-                  <Card.Title className="my-0 mx-0 text-light">
-                    My Archived Students {` (${this.state.students.length})`}
-                  </Card.Title>
-                </Card.Header>
-              </Card>
-            </Col>
-          </Row>
+          <TopBar>
+            My Archived Students {` (${this.state.students.length})`}
+          </TopBar>
           {res_modal_status >= 400 && (
             <ModalMain
               ConfirmError={this.ConfirmError}

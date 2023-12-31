@@ -21,6 +21,7 @@ import DEMO from '../../store/constant';
 import GrantPermissionModal from './GrantPermissionModal';
 import GrantManagerModal from './GrantManagerModal';
 import { appConfig } from '../../config';
+import { TopBar } from '../../components/TopBar/TopBar';
 
 class TaiGerOrg extends React.Component {
   state = {
@@ -185,21 +186,7 @@ class TaiGerOrg extends React.Component {
     );
     return (
       <Aux>
-        <Row className="sticky-top ">
-          <Col>
-            <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
-              <Card.Header text={'dark'}>
-                <Card.Title>
-                  <Row>
-                    <Col className="my-0 mx-0 text-light">
-                      {appConfig.companyName} Team Permissions Management
-                    </Col>
-                  </Row>
-                </Card.Title>
-              </Card.Header>
-            </Card>
-          </Col>
-        </Row>
+        <TopBar>{appConfig.companyName} Team Permissions Management</TopBar>
         <Card>
           <Card.Body>
             {is_TaiGer_Admin(this.props.user) && (

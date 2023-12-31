@@ -16,6 +16,7 @@ import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import { ExtendableTable } from '../../components/ExtendableTable/ExtendableTable';
 import { appConfig } from '../../config';
+import { TopBar } from '../../components/TopBar/TopBar';
 
 class SingleBalanceSheetOverview extends React.Component {
   state = {
@@ -106,25 +107,12 @@ class SingleBalanceSheetOverview extends React.Component {
 
     return (
       <Aux>
-        <Row className="sticky-top ">
-          <Col>
-            <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
-              <Card.Header text={'dark'}>
-                <Card.Title>
-                  <Row>
-                    <Col className="my-0 mx-0 text-light">
-                      {appConfig.companyName} Team Agent:{' '}
-                      <b>
-                        {this.state.the_user.firstname}{' '}
-                        {this.state.the_user.lastname}
-                      </b>
-                    </Col>
-                  </Row>
-                </Card.Title>
-              </Card.Header>
-            </Card>
-          </Col>
-        </Row>
+        <TopBar>
+          Accounting {appConfig.companyName} Team Agent:{' '}
+          <b>
+            {this.state.the_user.firstname} {this.state.the_user.lastname}
+          </b>
+        </TopBar>
         <Row>
           <Col md={12}>
             <Card>

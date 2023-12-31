@@ -43,6 +43,7 @@ import { AiFillCheckCircle } from 'react-icons/ai';
 import EventConfirmationCard from '../../components/Calendar/components/EventConfirmationCard';
 import { Redirect } from 'react-router-dom';
 import DEMO from '../../store/constant';
+import { TopBar } from '../../components/TopBar/TopBar';
 
 class AllOfficeHours extends React.Component {
   state = {
@@ -629,17 +630,7 @@ class AllOfficeHours extends React.Component {
             res_modal_message={res_modal_message}
           />
         )}
-        <Row className="sticky-top">
-          <Col>
-            <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
-              <Card.Header>
-                <Card.Title className="my-0 mx-0 text-light">
-                  All Events
-                </Card.Title>
-              </Card.Header>
-            </Card>
-          </Col>
-        </Row>
+        <TopBar>All Events</TopBar>
         {hasEvents ? (
           <>
             <Button

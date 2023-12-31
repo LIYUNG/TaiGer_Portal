@@ -31,6 +31,7 @@ import DEMO from '../../../store/constant';
 import TasksDistributionBarChart from '../../../components/Charts/TasksDistributionBarChart';
 import ProgramListVisualization from './ProgramListVisualization.js';
 import { appConfig } from '../../../config';
+import { TopBar } from '../../../components/TopBar/TopBar';
 
 class InternalDashboard extends React.Component {
   state = {
@@ -341,21 +342,7 @@ class InternalDashboard extends React.Component {
     }));
     return (
       <Aux>
-        <Row className="sticky-top ">
-          <Col>
-            <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
-              <Card.Header text={'dark'}>
-                <Card.Title>
-                  <Row>
-                    <Col className="my-0 mx-0 text-light">
-                      {appConfig.companyName} Dashboard
-                    </Col>
-                  </Row>
-                </Card.Title>
-              </Card.Header>
-            </Card>
-          </Col>
-        </Row>
+        <TopBar>{appConfig.companyName} Dashboard</TopBar>
         <Tabs defaultActiveKey="default" fill={true} justify={true}>
           <Tab eventKey="default" title="Overview">
             <Row>

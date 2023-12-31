@@ -12,6 +12,7 @@ import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import Banner from '../../components/Banner/Banner';
 import { appConfig } from '../../config';
+import { TopBar } from '../../components/TopBar/TopBar';
 
 class DownloadPage extends React.Component {
   state = {
@@ -203,14 +204,10 @@ class DownloadPage extends React.Component {
             res_modal_message={res_modal_message}
           />
         )}
+        <TopBar>Download {appConfig.companyName} Document Templates</TopBar>
         <Row>
           <Col>
             <Card className="my-0 mx-0" bg={'dark'} text={'white'}>
-              <Card.Header>
-                <Card.Title className="my-0 mx-0 text-light">
-                  Download {appConfig.companyName} Document Templates
-                </Card.Title>
-              </Card.Header>
               <Banner
                 ReadOnlyMode={true}
                 bg={'primary'}

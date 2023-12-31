@@ -11,6 +11,7 @@ import { is_TaiGer_role } from '../Utils/checking-functions';
 import { Redirect } from 'react-router-dom';
 import DEMO from '../../store/constant';
 import StudentOverviewTable from '../../components/StudentOverviewTable';
+import { TopBar } from '../../components/TopBar/TopBar';
 
 class StudentOverviewPage extends React.Component {
   state = {
@@ -82,17 +83,9 @@ class StudentOverviewPage extends React.Component {
 
     return (
       <Aux>
-        <Row className="sticky-top">
-          <Col>
-            <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
-              <Card.Header>
-                <Card.Title className="my-0 mx-0 text-light">
-                  All Active Student Overview ({this.state.students?.length})
-                </Card.Title>
-              </Card.Header>
-            </Card>
-          </Col>
-        </Row>
+        <TopBar>
+          All Active Student Overview ({this.state.students?.length})
+        </TopBar>
         <StudentOverviewTable
           title="All"
           students={this.state.students}

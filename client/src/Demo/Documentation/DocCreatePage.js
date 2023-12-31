@@ -24,6 +24,7 @@ import {
 } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
+import { TopBar } from '../../components/TopBar/TopBar';
 
 class DocCreatePage extends React.Component {
   state = {
@@ -271,21 +272,7 @@ class DocCreatePage extends React.Component {
             res_modal_message={res_modal_message}
           />
         )}
-        <Row className="sticky-top ">
-          <Col>
-            <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
-              <Card.Header text={'dark'}>
-                <Card.Title>
-                  <Row>
-                    <Col className="my-0 mx-0 text-light">
-                      All Documentations
-                    </Col>
-                  </Row>
-                </Card.Title>
-              </Card.Header>
-            </Card>
-          </Col>
-        </Row>
+        <TopBar>All Documentations</TopBar>
         <Row>
           <Col sm={12}>
             {this.state.isEdit ? (

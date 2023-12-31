@@ -146,8 +146,23 @@ const getAllActiveStudents = asyncHandler(async (req, res, next) => {
       '-notification +applications.portal_credentials.application_portal_a.account +applications.portal_credentials.application_portal_a.password +applications.portal_credentials.application_portal_b.account +applications.portal_credentials.application_portal_b.password'
     )
     .lean();
-
-  res.status(200).send({ success: true, data: students });
+  const courses = await Course.find().select('-table_data_string').lean();
+  // Perform the join
+  const studentsWithCourse = students.map((student) => {
+    const matchingItemB = courses.find(
+      (course) => student._id.toString() === course.student_id.toString()
+    );
+    if (matchingItemB) {
+      return { ...student, courses: matchingItemB };
+    } else {
+      return { ...student };
+    }
+  });
+  const students_new = [];
+  for (let j = 0; j < studentsWithCourse.length; j += 1) {
+    students_new.push(add_portals_registered_status(studentsWithCourse[j]));
+  }
+  res.status(200).send({ success: true, data: students_new });
   next();
 });
 

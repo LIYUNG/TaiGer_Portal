@@ -11,11 +11,6 @@ class StudentOverviewTable extends React.Component {
 
     return (
       <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
-        {/* <Card.Header>
-          <Card.Title className="my-0 mx-0 text-light">
-            {this.props.title}
-          </Card.Title>
-        </Card.Header> */}
         <Table
           responsive
           bordered
@@ -29,6 +24,8 @@ class StudentOverviewTable extends React.Component {
             <tr>
               <th>Target Year</th>
               <th>First-/Lastname,Birthday</th>
+              <th>Agent</th>
+              <th>Editor</th>
               <th>Graduated</th>
               <th>Program Selection</th>
               <th>Applications</th>
@@ -41,8 +38,12 @@ class StudentOverviewTable extends React.Component {
               <th>Language</th>
               <th>Course Analysis</th>
               <th>CV</th>
+              <th>ML</th>
+              <th>RL</th>
+              <th>Essay</th>
               <th>Portals</th>
               <th>Uni-Assist</th>
+              <th>open/offer/reject</th>
             </tr>
           </thead>
           <tbody>{agent_reviewing}</tbody>

@@ -160,6 +160,32 @@ class AgentReviewing extends React.Component {
             </Link>
           </td>
           <td>
+            {this.props.student.agents?.map((agent, i) => (
+              <>
+                <Link
+                  to={`${DEMO.TEAM_AGENT_LINK(agent._id.toString())}`}
+                  className="text-info"
+                >
+                  {agent.firstname}
+                </Link>
+                &nbsp;
+              </>
+            ))}
+          </td>
+          <td>
+            {this.props.student.editors?.map((editor, i) => (
+              <>
+                <Link
+                  to={`${DEMO.TEAM_EDITOR_LINK(editor._id.toString())}`}
+                  className="text-info"
+                >
+                  {editor.firstname}
+                </Link>
+                &nbsp;
+              </>
+            ))}
+          </td>
+          <td>
             {this.props.student.academic_background?.university
               ?.high_school_isGraduated === 'Yes'
               ? this.props.student.academic_background?.university
@@ -493,6 +519,105 @@ class AgentReviewing extends React.Component {
           </td>
           <td>
             <Link
+              to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                this.props.student._id,
+                '/CV_ML_RL'
+              )}`}
+              className="text-info"
+              style={{ textDecoration: 'none' }}
+            >
+              {
+                this.props.student.applications.filter((application, i) =>
+                  application.doc_modification_thread?.some(
+                    (thread, j) =>
+                      application.decided === 'O' &&
+                      thread.doc_thread_id.isFinalVersion &&
+                      thread.doc_thread_id.file_type === 'ML'
+                  )
+                ).length
+              }
+              /
+              {
+                this.props.student.applications.filter((application, i) =>
+                  application.doc_modification_thread?.some(
+                    (thread, j) =>
+                      application.decided === 'O' &&
+                      thread.doc_thread_id.file_type === 'ML'
+                  )
+                ).length
+              }
+            </Link>
+          </td>
+          <td>
+            <Link
+              to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                this.props.student._id,
+                '/CV_ML_RL'
+              )}`}
+              className="text-info"
+              style={{ textDecoration: 'none' }}
+            >
+              {
+                this.props.student.applications.filter((application, i) =>
+                  application.doc_modification_thread?.some(
+                    (thread, j) =>
+                      application.decided === 'O' &&
+                      thread.doc_thread_id.isFinalVersion &&
+                      (thread.doc_thread_id.file_type.includes('RL') ||
+                        thread.doc_thread_id.file_type.includes(
+                          'Recommendation'
+                        ))
+                  )
+                ).length
+              }
+              /
+              {
+                this.props.student.applications.filter((application, i) =>
+                  application.doc_modification_thread?.some(
+                    (thread, j) =>
+                      application.decided === 'O' &&
+                      (thread.doc_thread_id.file_type.includes('RL') ||
+                        thread.doc_thread_id.file_type.includes(
+                          'Recommendation'
+                        ))
+                  )
+                ).length
+              }
+            </Link>
+          </td>
+          <td>
+            <Link
+              to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                this.props.student._id,
+                '/CV_ML_RL'
+              )}`}
+              className="text-info"
+              style={{ textDecoration: 'none' }}
+            >
+              {
+                this.props.student.applications.filter((application, i) =>
+                  application.doc_modification_thread?.some(
+                    (thread, j) =>
+                      application.decided === 'O' &&
+                      thread.doc_thread_id.isFinalVersion &&
+                      thread.doc_thread_id.file_type.includes('Essay')
+                  )
+                ).length
+              }
+              /
+              {
+                this.props.student.applications.filter((application, i) =>
+                  application.doc_modification_thread?.some(
+                    (thread, j) =>
+                      application.decided === 'O' &&
+                      thread.doc_thread_id.file_type.includes('Essay')
+                  )
+                ).length
+              }
+            </Link>
+          </td>
+          <td>
+            <Link
               to={`${DEMO.PORTALS_MANAGEMENT_STUDENTID_LINK(
                 this.props.student._id
               )}`}
@@ -558,6 +683,34 @@ class AgentReviewing extends React.Component {
                 </p>
               )}
             </Link>
+          </td>
+          <td>
+            {
+              this.props.student.applications.filter(
+                (application, i) =>
+                  application.closed === 'O' &&
+                  application.decided === 'O' &&
+                  application.admission === '-'
+              ).length
+            }
+            /
+            {
+              this.props.student.applications.filter(
+                (application, i) =>
+                  application.closed === 'O' &&
+                  application.decided === 'O' &&
+                  application.admission === 'O'
+              ).length
+            }
+            /
+            {
+              this.props.student.applications.filter(
+                (application, i) =>
+                  application.closed === 'O' &&
+                  application.decided === 'O' &&
+                  application.admission === 'X'
+              ).length
+            }
           </td>
         </tr>
       </>

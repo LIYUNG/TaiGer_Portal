@@ -406,7 +406,7 @@ function Table2(props) {
                       ) : (
                         <Link
                           target="_blank"
-                          to={'/programs/' + row.original._id}
+                          to={`${DEMO.SINGLE_PROGRAM_LINK(row.original._id)}`}
                           className="text-info"
                           style={{ textDecoration: 'none' }}
                         >

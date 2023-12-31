@@ -252,7 +252,10 @@ class ManagerMainView extends React.Component {
                       {student.student_firstname} {student.student_lastname}
                     </b>{' '}
                     <Link
-                      to={`/student-database/${student.student_id}/profile`}
+                      to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                        student.student_id,
+                        DEMO.PROFILE
+                      )}`}
                       style={{ textDecoration: 'none' }}
                       className="text-info"
                     >
@@ -297,7 +300,10 @@ class ManagerMainView extends React.Component {
                           <td>
                             <b>
                               <Link
-                                to={`${DEMO.STUDENT_DATABASE_LINK}/${application.student_id}/profile`}
+                                to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                                  application.student_id,
+                                  DEMO.PROFILE
+                                )}`}
                               >
                                 {application.firstname_lastname}
                               </Link>

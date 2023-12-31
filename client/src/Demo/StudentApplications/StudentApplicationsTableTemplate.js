@@ -482,7 +482,7 @@ class StudentApplicationsTableTemplate extends React.Component {
             )}
             <td>
               <Link
-                to={'/programs/' + application.programId._id}
+                to={`${DEMO.SINGLE_PROGRAM_LINK(application.programId._id)}`}
                 style={{ textDecoration: 'none' }}
               >
                 <p className="mb-1 text-info" key={application_idx}>
@@ -492,7 +492,7 @@ class StudentApplicationsTableTemplate extends React.Component {
             </td>
             <td>
               <Link
-                to={'/programs/' + application.programId._id}
+                to={`${DEMO.SINGLE_PROGRAM_LINK(application.programId._id)}`}
                 style={{ textDecoration: 'none' }}
               >
                 <p className="mb-1 text-info" key={application_idx}>
@@ -502,7 +502,7 @@ class StudentApplicationsTableTemplate extends React.Component {
             </td>
             <td>
               <Link
-                to={'/programs/' + application.programId._id}
+                to={`${DEMO.SINGLE_PROGRAM_LINK(application.programId._id)}`}
                 style={{ textDecoration: 'none' }}
               >
                 <p className="mb-1 text-info" key={application_idx}>
@@ -512,7 +512,7 @@ class StudentApplicationsTableTemplate extends React.Component {
             </td>
             <td>
               <Link
-                to={'/programs/' + application.programId._id}
+                to={`${DEMO.SINGLE_PROGRAM_LINK(application.programId._id)}`}
                 style={{ textDecoration: 'none' }}
               >
                 <p className="mb-1 text-info" key={application_idx}>
@@ -522,7 +522,7 @@ class StudentApplicationsTableTemplate extends React.Component {
             </td>
             <td>
               <Link
-                to={'/programs/' + application.programId._id}
+                to={`${DEMO.SINGLE_PROGRAM_LINK(application.programId._id)}`}
                 style={{ textDecoration: 'none' }}
               >
                 <p className="mb-1 text-info" key={application_idx}>
@@ -534,7 +534,7 @@ class StudentApplicationsTableTemplate extends React.Component {
             </td>
             <td>
               <Link
-                to={'/programs/' + application.programId._id}
+                to={`${DEMO.SINGLE_PROGRAM_LINK(application.programId._id)}`}
                 style={{ textDecoration: 'none' }}
               >
                 <p className="mb-1 text-info" key={application_idx}>
@@ -672,7 +672,10 @@ class StudentApplicationsTableTemplate extends React.Component {
               <Card.Header>
                 <Card.Title className="my-0 mx-0 text-light">
                   <Link
-                    to={`/student-database/${this.props.student._id.toString()}/profile`}
+                    to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                      this.props.student._id.toString(),
+                      DEMO.PROFILE
+                    )}`}
                     className="text-info"
                   >
                     <b>
@@ -996,7 +999,6 @@ class StudentApplicationsTableTemplate extends React.Component {
                         <span
                           style={{ display: 'flex', justifyContent: 'center' }}
                         >
-                          {/* <Link to={'/programs'}> */}
                           <Button
                             size="sm"
                             onClick={this.onClickProgramAssignHandler}

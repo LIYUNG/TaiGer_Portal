@@ -17,6 +17,7 @@ import {
   is_TaiGer_Agent,
   is_personal_data_filled
 } from '../Utils/checking-functions';
+import DEMO from '../../store/constant';
 
 class Profile extends React.Component {
   state = {
@@ -307,7 +308,10 @@ class Profile extends React.Component {
                 <Card.Title className="my-0 mx-0 text-light">
                   {this.props.match.params.user_id ? (
                     <Link
-                      to={`/student-database/${this.props.match.params.user_id}/profile`}
+                      to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                        this.props.match.params.user_id,
+                        DEMO.PROFILE
+                      )}`}
                       className="text-info"
                     >
                       {`${this.state.personaldata.firstname} ${

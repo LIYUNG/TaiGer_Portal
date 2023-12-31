@@ -12,6 +12,7 @@ import Banner from '../../components/Banner/Banner';
 import { TabTitle } from '../Utils/TabTitle';
 import { Link, Redirect } from 'react-router-dom';
 import { BsMessenger } from 'react-icons/bs';
+import DEMO from '../../store/constant';
 
 export default function PortalCredentialsCard(props) {
   let [statedata, setStatedata] = useState({
@@ -251,14 +252,19 @@ export default function PortalCredentialsCard(props) {
                     <Col className="my-0 mx-0 text-light">
                       <Link
                         className="text-warning"
-                        to={`/student-database/${statedata.student._id.toString()}/profile`}
+                        to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                          statedata.student._id.toString(),
+                          DEMO.PROFILE
+                        )}`}
                       >
                         {statedata.student.firstname}{' '}
                         {statedata.student.lastname}{' '}
                       </Link>
                       Portal Credentials
                       <Link
-                        to={`/communications/${statedata.student._id.toString()}`}
+                        to={`${DEMO.COMMUNICATIONS_LINK(
+                          statedata.student._id.toString()
+                        )}`}
                         className="ms-3 my-0"
                       >
                         <Button size="sm" className="my-0">

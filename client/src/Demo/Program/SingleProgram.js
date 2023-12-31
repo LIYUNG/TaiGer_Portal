@@ -24,6 +24,7 @@ import { Link } from 'react-router-dom';
 import ProgramListSubpage from './ProgramListSubpage';
 import ProgramReportModal from './ProgramReportModal';
 import ProgramReport from './ProgramReport';
+import DEMO from '../../store/constant';
 
 class SingleProgram extends React.Component {
   state = {
@@ -346,7 +347,9 @@ class SingleProgram extends React.Component {
         <Card>
           <Card.Header>The program is deleted</Card.Header>
           <Card.Body>
-            <Link to={'/programs'}>Click me back to the program list</Link>
+            <Link to={`${DEMO.PROGRAMS}`}>
+              Click me back to the program list
+            </Link>
           </Card.Body>
         </Card>
       );

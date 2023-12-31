@@ -463,13 +463,18 @@ export default function MyCourses(props) {
                   <Col className="my-0 mx-0 text-light">
                     <Link
                       className="text-warning"
-                      to={`/student-database/${statedata.student._id.toString()}/profile`}
+                      to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                        statedata.student._id.toString(),
+                        DEMO.PROFILE
+                      )}`}
                     >
                       {statedata.student.firstname} {statedata.student.lastname}{' '}
                     </Link>
                     Courses
                     <Link
-                      to={`/communications/${statedata.student._id.toString()}`}
+                      to={`${DEMO.COMMUNICATIONS_LINK(
+                        statedata.student._id.toString()
+                      )}`}
                       style={{ textDecoration: 'none' }}
                       className="mx-1"
                     >
@@ -687,7 +692,9 @@ export default function MyCourses(props) {
                               Download
                             </Button>
                             <Link
-                              to={`/my-courses/analysis/${statedata.student._id.toString()}`}
+                              to={`${DEMO.COURSES_ANALYSIS_RESULT_LINK(
+                                statedata.student._id.toString()
+                              )}`}
                               target="_blank"
                             >
                               <Button variant="secondary">View Online</Button>

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Dropdown, DropdownButton } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import DEMO from '../../../../store/constant';
 
 class StudDocsDashboard extends React.Component {
   state = {
@@ -39,7 +40,7 @@ class StudDocsDashboard extends React.Component {
         <div key={agent._id}>
           <p className="mb-0 text-info">
             <Link
-              to={`/teams/agents/${agent._id.toString()}`}
+              to={`${DEMO.TEAM_AGENT_LINK(agent._id.toString())}`}
               className="mb-0 text-info"
             >
               {agent.firstname}
@@ -61,7 +62,7 @@ class StudDocsDashboard extends React.Component {
         <div key={editor._id}>
           <p className="mb-0 text-info">
             <Link
-              to={`/teams/editors/${editor._id.toString()}`}
+              to={`${DEMO.TEAM_EDITOR_LINK(editor._id.toString())}`}
               className="mb-0 text-info"
             >
               {editor.firstname}
@@ -131,7 +132,10 @@ class StudDocsDashboard extends React.Component {
           </td>
           <td>
             <Link
-              to={'/student-database/' + this.props.student._id + '/background'}
+              to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                this.props.student._id,
+                '/background'
+              )}`}
               className="text-info"
               style={{ textDecoration: 'none' }}
             >

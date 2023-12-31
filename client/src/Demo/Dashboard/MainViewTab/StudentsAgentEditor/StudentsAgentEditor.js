@@ -9,6 +9,7 @@ import {
   is_TaiGer_role
 } from '../../../Utils/checking-functions';
 import { is_TaiGer_Student } from '../../../Utils/checking-functions';
+import DEMO from '../../../../store/constant';
 
 class StudentsAgentEditor extends React.Component {
   state = {
@@ -70,7 +71,7 @@ class StudentsAgentEditor extends React.Component {
         <div key={agent._id}>
           <p className="mb-0 text-info">
             <Link
-              to={`/teams/agents/${agent._id.toString()}`}
+              to={`${DEMO.TEAM_AGENT_LINK(agent._id.toString())}`}
               className="mb-0 text-info"
             >
               {agent.firstname}
@@ -92,7 +93,7 @@ class StudentsAgentEditor extends React.Component {
         <div key={editor._id}>
           <p className="mb-0 text-info">
             <Link
-              to={`/teams/editors/${editor._id.toString()}`}
+              to={`${DEMO.TEAM_EDITOR_LINK(editor._id.toString())}`}
               className="mb-0 text-info"
             >
               {editor.firstname}
@@ -169,11 +170,10 @@ class StudentsAgentEditor extends React.Component {
             <td>
               <p className="mb-0">
                 <Link
-                  to={
-                    '/student-database/' +
-                    this.props.student._id +
+                  to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                    this.props.student._id,
                     '/background'
-                  }
+                  )}`}
                   className="text-info"
                   style={{ textDecoration: 'none' }}
                 >

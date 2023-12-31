@@ -584,14 +584,16 @@ class SingleStudentPage extends React.Component {
                     {this.state.student.lastname_chinese}
                     {this.state.student.firstname_chinese}
                     <Link
-                      to={'/profile/' + this.state.student._id}
+                      to={`${DEMO.PROFILE_STUDENT_LINK(
+                        this.state.student._id
+                      )}`}
                       style={{ textDecoration: 'none' }}
                       className="mx-1"
                     >
                       <AiFillEdit color="red" size={24} />
                     </Link>
                     <Link
-                      to={'/communications/' + this.state.student._id}
+                      to={`${DEMO.COMMUNICATIONS_LINK(this.state.student._id)}`}
                       style={{ textDecoration: 'none' }}
                       className="mx-1"
                     >
@@ -776,7 +778,9 @@ class SingleStudentPage extends React.Component {
                   <Card.Body>
                     <Row>
                       <Link
-                        to={`/my-courses/${this.state.student._id.toString()}`}
+                        to={`${DEMO.COURSES_INPUT_LINK(
+                          this.state.student._id.toString()
+                        )}`}
                       >
                         <Button>Go to My Courses </Button>
                       </Link>

@@ -208,7 +208,9 @@ class TaiGerOrg extends React.Component {
                 {admins.map((admin, i) => (
                   <p key={i}>
                     <b>
-                      <Link to={`/teams/admins/${admin._id.toString()}`}>
+                      <Link
+                        to={`${DEMO.TEAM_ADMIN_LINK(admin._id.toString())}`}
+                      >
                         {admin.firstname} {admin.lastname}
                       </Link>
                     </b>
@@ -237,7 +239,11 @@ class TaiGerOrg extends React.Component {
                   <tr key={i}>
                     <td>
                       <b>
-                        <Link to={`/teams/managers/${manager._id.toString()}`}>
+                        <Link
+                          to={`${DEMO.TEAM_MANAGER_LINK(
+                            manager._id.toString()
+                          )}`}
+                        >
                           {manager.firstname} {manager.lastname}{' '}
                         </Link>
                       </b>
@@ -335,7 +341,9 @@ class TaiGerOrg extends React.Component {
                   <tr key={i}>
                     <td>
                       <b>
-                        <Link to={`/teams/agents/${agent._id.toString()}`}>
+                        <Link
+                          to={`${DEMO.TEAM_AGENT_LINK(agent._id.toString())}`}
+                        >
                           {agent.firstname} {agent.lastname}{' '}
                         </Link>
                       </b>
@@ -460,7 +468,9 @@ class TaiGerOrg extends React.Component {
                   <tr key={i}>
                     <td>
                       <b>
-                        <Link to={`/teams/editors/${editor._id.toString()}`}>
+                        <Link
+                          to={`${DEMO.TEAM_EDITOR_LINK(editor._id.toString())}`}
+                        >
                           {editor.firstname} {editor.lastname}{' '}
                         </Link>
                       </b>

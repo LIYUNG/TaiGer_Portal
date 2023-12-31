@@ -278,7 +278,10 @@ class SingleProgramView extends React.Component {
                         <tr key={i}>
                           <td>
                             <Link
-                              to={`/student-database/${student._id.toString()}/profile`}
+                              to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                                student._id.toString(),
+                                DEMO.PROFILE
+                              )}`}
                             >
                               {student.firstname} {student.lastname}
                             </Link>

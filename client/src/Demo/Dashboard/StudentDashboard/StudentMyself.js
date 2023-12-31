@@ -124,23 +124,6 @@ class StudentMyself extends React.Component {
                 className="text-info"
               >
                 {key_doc_name}{' '}
-                {/* <td>
-                  <Button
-                    size="sm"
-                    type="submit"
-                    variant="light"
-                    disabled={!this.state.isLoaded}
-                    title="Show Comments"
-                    onClick={(e) =>
-                      this.openCommentWindow(
-                        this.state.student_id,
-                        this.props.k
-                      )
-                    }
-                  >
-                    <AiOutlineComment size={12} />
-                  </Button>
-                </td> */}
               </Link>
               <AiOutlineComment
                 size={24}

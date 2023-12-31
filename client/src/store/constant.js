@@ -1,14 +1,25 @@
 const DEMO = {
-  BLANK_LINK: '#',
   ASSIGN_AGENT_LINK: '/assignment/agents',
   ASSIGN_EDITOR_LINK: '/assignment/editors',
   ACCOUNTING_USER_ID_LINK: (user_id) => {
     return `/internal/accounting/users/${user_id}`;
   },
+  BASE_DOCUMENTS_LINK: '/base-documents',
+  BLANK_LINK: '#',
   COURSES_LINK: '/my-courses',
+  COURSES_INPUT_LINK: (student_id) => {
+    return `/my-courses/${student_id}`;
+  },
+  COURSES_ANALYSIS_RESULT_LINK: (student_id) => {
+    return `/my-courses/analysis/${student_id}`;
+  },
+  COURSES_ANALYSIS_EXPLANATION_LINK: '/docs/search/64c3817811e606a89a10ea47',
   COMMUNICATIONS_LINK: (student_id) => {
     return `/communications/${student_id}`;
   },
+  CV_ML_RL_CENTER_LINK: '/cv-ml-rl-center',
+  CV_ML_RL_DOCS_LINK: '/docs/cv-ml-rl',
+  CV_ML_RL_DASHBOARD_LINK: '/dashboard/cv-ml-rl',
   DASHBOARD_LINK: '/dashboard/default',
   DOCUMENT_MODIFICATION_LINK: (thread_id) => {
     return `/document-modification/${thread_id}`;
@@ -16,13 +27,24 @@ const DEMO = {
   DOCUMENT_MODIFICATION_INPUT_LINK: (thread_id) => {
     return `/document-modification/student-input/${thread_id}`;
   },
-  MY_INTERVIEW_LINK: '/interview-training/my-interviews',
+  EVENT_STUDENT_LINK: '/events/students',
+  EVENT_STUDENT_STUDENTID_LINK: (student_id) => {
+    return `/events/students/${student_id}`;
+  },
+  EVENT_TAIGER_LINK: '/events/taiger',
   INTERVIEW_LINK: '/interview-training',
-  UNI_ASSIST_LINK: '/uni-assist',
-  CV_ML_RL_CENTER_LINK: '/cv-ml-rl-center',
-  CV_ML_RL_DOCS_LINK: '/docs/cv-ml-rl',
-  CV_ML_RL_DASHBOARD_LINK: '/dashboard/cv-ml-rl',
-  BASE_DOCUMENTS_LINK: '/base-documents',
+  INTERNAL_WIDGET_LINK: (user_id) => {
+    return `/internal/widgets/${user_id}`;
+  },
+  INTERNAL_LOGS_LINK: (user_id) => {
+    return `/internal/logs/${user_id}`;
+  },
+  MY_INTERVIEW_LINK: '/interview-training/my-interviews',
+  PROFILE: '/profile',
+  PROFILE_STUDENT_LINK: (user_id) => {
+    return `/profile/${user_id}`;
+  },
+  PROGRAMS: '/programs',
   SINGLE_PROGRAM_LINK: (program_id) => {
     return `/programs/${program_id}`;
   },
@@ -30,7 +52,7 @@ const DEMO = {
   PORTALS_MANAGEMENT_STUDENTID_LINK: (student_id) => {
     return `/portal-informations/${student_id}`;
   },
-  SURVEY_LINK: '/survey',
+  SETTINGS: '/settings',
   STUDENT_APPLICATIONS_LINK: '/student-applications',
   STUDENT_APPLICATIONS_ID_LINK: (student_id) => {
     return `/student-applications/${student_id}`;
@@ -39,8 +61,10 @@ const DEMO = {
     return `/student-database/${student_id}${path}`;
   },
   STUDENT_DATABASE_LINK: '/student-database',
-  EVENT_STUDENT_LINK: '/events/students',
-  EVENT_TAIGER_LINK: '/events/taiger',
+  SURVEY_LINK: '/survey',
+  TEAM_ADMIN_LINK: (admin_id) => {
+    return `/teams/admins/${admin_id}`;
+  },
   TEAM_AGENT_LINK: (agent_id) => {
     return `/teams/agents/${agent_id}`;
   },
@@ -59,8 +83,11 @@ const DEMO = {
   TEAM_EDITOR_PROFILE_LINK: (editor_id) => {
     return `/teams/editors/profile/${editor_id}`;
   },
-  SETTINGS: '/settings',
-  PROFILE: '/profile'
+  TEAM_MANAGER_LINK: (manager_id) => {
+    return `/teams/managers/${manager_id}`;
+  },
+  UNI_ASSIST_DOCS_LINK: '/docs/uniassist',
+  UNI_ASSIST_LINK: '/uni-assist'
 };
 
 export default DEMO;

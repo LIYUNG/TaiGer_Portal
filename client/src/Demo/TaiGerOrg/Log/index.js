@@ -150,7 +150,9 @@ class TaiGerPortalUsersLog extends React.Component {
             <br />
             {this.state.logs.map((log) => (
               <p>
-                <Link to={`/internal/logs/${log.user_id._id.toString()}`}>
+                <Link
+                  to={`${DEMO.INTERNAL_LOGS_LINK(log.user_id._id.toString())}`}
+                >
                   {log.user_id?.firstname} {log.user_id?.lastname}
                 </Link>{' '}
                 {log.date}

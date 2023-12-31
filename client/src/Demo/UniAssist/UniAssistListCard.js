@@ -21,6 +21,7 @@ import {
   SetUniAssistPaid
 } from '../../api';
 import { FiExternalLink } from 'react-icons/fi';
+import DEMO from '../../store/constant';
 
 class UniAssistListCard extends React.Component {
   state = {
@@ -421,7 +422,9 @@ class UniAssistListCard extends React.Component {
             <>
               <Row>
                 <Link
-                  to={'/programs/' + application.programId._id.toString()}
+                  to={`${DEMO.SINGLE_PROGRAM_LINK(
+                    application.programId._id.toString()
+                  )}`}
                   style={{ textDecoration: 'none' }}
                 >
                   <h5 className="text-info">

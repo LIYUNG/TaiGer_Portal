@@ -3,6 +3,7 @@ import { Dropdown, DropdownButton } from 'react-bootstrap';
 
 import { UserlistHeader, convertDate, getDate } from '../Utils/contants';
 import { Link } from 'react-router-dom';
+import DEMO from '../../store/constant';
 class User extends React.Component {
   render() {
     if (this.props.success) {
@@ -69,21 +70,26 @@ class User extends React.Component {
               ) : this.props.user.role === 'Student' ? (
                 <Link
                   className="text-info"
-                  to={`/student-database/${this.props.user._id.toString()}/profile`}
+                  to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                    this.props.user._id.toString(),
+                    DEMO.PROFILE
+                  )}`}
                 >
                   {this.props.user[y.prop]}
                 </Link>
               ) : this.props.user.role === 'Agent' ? (
                 <Link
                   className="text-info"
-                  to={`/teams/agents/${this.props.user._id.toString()}`}
+                  to={`${DEMO.TEAM_AGENT_LINK(this.props.user._id.toString())}`}
                 >
                   {this.props.user[y.prop]}
                 </Link>
               ) : this.props.user.role === 'Editor' ? (
                 <Link
                   className="text-info"
-                  to={`/teams/editors/${this.props.user._id.toString()}`}
+                  to={`${DEMO.TEAM_EDITOR_LINK(
+                    this.props.user._id.toString()
+                  )}`}
                 >
                   {this.props.user[y.prop]}
                 </Link>

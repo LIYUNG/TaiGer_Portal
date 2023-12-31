@@ -199,7 +199,9 @@ class EditorPage extends React.Component {
         />
         <Row className="my-2 mx-0">
           <Link
-            to={`/teams/editors/archiv/${this.state.editor._id.toString()}`}
+            to={`${DEMO.TEAM_EDITOR_ARCHIV_LINK(
+              this.state.editor._id.toString()
+            )}`}
           >
             <Button>See Archiv Student</Button>
           </Link>

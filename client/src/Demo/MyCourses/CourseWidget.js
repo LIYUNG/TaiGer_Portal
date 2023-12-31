@@ -361,7 +361,9 @@ export default function CourseWidget(props) {
                           Download
                         </Button>
                         <Link
-                          to={`/internal/widgets/${props.user._id.toString()}`}
+                          to={`${DEMO.INTERNAL_WIDGET_LINK(
+                            props.user._id.toString()
+                          )}`}
                           target="_blank"
                         >
                           View Online

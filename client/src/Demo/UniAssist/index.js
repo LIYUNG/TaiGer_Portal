@@ -92,7 +92,10 @@ class UniAssistList extends React.Component {
                 <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
                   <Card.Body className="my-0 mx-0 text-light">
                     請依照指示，完成Uni-Assist帳號密碼以及上傳資料{` `}
-                    <Link to="/docs/uniassist" className="text-info">
+                    <Link
+                      to={`${DEMO.UNI_ASSIST_DOCS_LINK}`}
+                      className="text-info"
+                    >
                       Uni-Assist{' '}
                       <FiExternalLink
                         className="mx-1 mb-1"
@@ -101,7 +104,10 @@ class UniAssistList extends React.Component {
                     </Link>
                     <br />
                     Instructions: Follow the documentations in{' '}
-                    <Link to="/docs/uniassist" className="text-info">
+                    <Link
+                      to={`${DEMO.UNI_ASSIST_DOCS_LINK}`}
+                      className="text-info"
+                    >
                       Uni-Assist{' '}
                       <FiExternalLink
                         className="mx-1 mb-1"

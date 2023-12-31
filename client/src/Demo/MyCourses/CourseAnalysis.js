@@ -15,6 +15,7 @@ import {
 } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import { Link } from 'react-router-dom';
+import DEMO from '../../store/constant';
 
 export default function CourseAnalysis(props) {
   let [statedata, setStatedata] = useState({
@@ -276,7 +277,10 @@ export default function CourseAnalysis(props) {
                     {!props.match.params.admin_id ? (
                       <Link
                         className="text-warning"
-                        to={`/student-database/${statedata.student_id}/profile`}
+                        to={`$${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                          statedata.student_id,
+                          DEMO.PROFILE
+                        )}`}
                       >
                         {statedata.student_name}{' '}
                       </Link>
@@ -338,8 +342,8 @@ export default function CourseAnalysis(props) {
                     column of each Program Tab table for the <b>建議修課</b> for
                     each category.
                   </p>
-                  <Link to="/docs/search/64c3817811e606a89a10ea47">
-                    <Button variant='secondary'>點我詳細解說</Button>
+                  <Link to={`${DEMO.COURSES_ANALYSIS_EXPLANATION_LINK}`}>
+                    <Button variant="secondary">點我詳細解說</Button>
                   </Link>
                 </Col>
               </Row>

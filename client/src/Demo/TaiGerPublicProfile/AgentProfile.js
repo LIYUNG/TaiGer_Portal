@@ -12,6 +12,7 @@ import { getAgentProfile } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import { is_TaiGer_Student } from '../Utils/checking-functions';
 import { Link } from 'react-router-dom';
+import DEMO from '../../store/constant';
 
 class AgentProfile extends React.Component {
   state = {
@@ -232,7 +233,9 @@ class AgentProfile extends React.Component {
                             <Row>
                               <h5 className="text-light">想要與顧問討論？</h5>
                               <Link
-                                to={`/events/students/${this.props.user._id.toString()}`}
+                                to={`${DEMO.EVENT_STUDENT_STUDENTID_LINK(
+                                  this.props.user._id.toString()
+                                )}`}
                               >
                                 <Button>預約</Button>
                               </Link>

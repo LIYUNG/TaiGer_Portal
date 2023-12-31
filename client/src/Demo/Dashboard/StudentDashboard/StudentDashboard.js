@@ -348,11 +348,12 @@ class StudentDashboard extends React.Component {
                           '63b9a43af7b3a4a141267cd3' // David
                         ].includes(agent._id.toString())
                       ) ? (
-                        <Link to={`/events/students/${student._id.toString()}`}>
+                        <Link
+                          to={`${DEMO.EVENT_STUDENT_STUDENTID_LINK(
+                            student._id.toString()
+                          )}`}
+                        >
                           <Button size="sm">預約</Button>
-                          {/* <Badge className="mt-3" bg={`${'primary'}`}>
-                          Test
-                        </Badge> */}
                         </Link>
                       ) : (
                         <span className="text-light">Coming soon</span>

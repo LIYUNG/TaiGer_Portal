@@ -177,7 +177,9 @@ class AgentPage extends React.Component {
                 <p className="my-0">
                   <b style={{ color: 'red' }}>active:</b> students decided
                   programs. These will be shown in{' '}
-                  <Link to={'/student-applications'}>Application Overview</Link>
+                  <Link to={`${DEMO.STUDENT_APPLICATIONS_LINK}`}>
+                    Application Overview
+                  </Link>
                 </p>
                 <p className="my-0">
                   <b style={{ color: '#A9A9A9' }}>potentials:</b> students do
@@ -196,7 +198,11 @@ class AgentPage extends React.Component {
           students={this.state.students}
         />
         <Row className="my-2 mx-0">
-          <Link to={`/teams/agents/archiv/${this.state.agent._id.toString()}`}>
+          <Link
+            to={`${DEMO.TEAM_AGENT_ARCHIV_LINK(
+              this.state.agent._id.toString()
+            )}`}
+          >
             <Button>See Archiv Student</Button>
           </Link>
         </Row>

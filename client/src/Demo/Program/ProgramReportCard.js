@@ -8,6 +8,7 @@ import { NewlineText } from '../Utils/checking-functions';
 import { Table } from 'react-bootstrap';
 import { BsExclamationTriangle } from 'react-icons/bs';
 import { Link } from 'react-router-dom';
+import DEMO from '../../store/constant';
 
 class ProgramReportCard extends React.Component {
   state = {
@@ -82,7 +83,9 @@ class ProgramReportCard extends React.Component {
       <tr key={i}>
         <td>
           <Link
-            to={`/programs/${ticket.program_id?._id.toString()}`}
+            to={`${DEMO.SINGLE_PROGRAM_LINK(
+              ticket.program_id?._id.toString()
+            )}`}
             style={{ textDecoration: 'none' }}
             className="text-info"
           >
@@ -91,7 +94,9 @@ class ProgramReportCard extends React.Component {
         </td>
         <td>
           <Link
-            to={`/programs/${ticket.program_id?._id.toString()}`}
+            to={`${DEMO.SINGLE_PROGRAM_LINK(
+              ticket.program_id?._id.toString()
+            )}`}
             style={{ textDecoration: 'none' }}
             className="text-info"
             title={`${ticket.program_id?.school} - ${ticket.program_id?.program_name}`}
@@ -105,7 +110,9 @@ class ProgramReportCard extends React.Component {
         </td>
         <td>
           <Link
-            to={`/programs/${ticket.program_id?._id.toString()}`}
+            to={`${DEMO.SINGLE_PROGRAM_LINK(
+              ticket.program_id?._id.toString()
+            )}`}
             style={{ textDecoration: 'none' }}
             className="text-info"
             title={ticket.description}

@@ -149,8 +149,9 @@ export default function ApplicationProgressCard(props) {
             application.admission === '-' && (
               <>
                 <p>
-                  Have you received the interview invitation from this program ?
-                  Request an interview training with TaiGer trainer!
+                  {t(
+                    'Have you received the interview invitation from this program?'
+                  )}
                 </p>
                 <p>
                   <Button

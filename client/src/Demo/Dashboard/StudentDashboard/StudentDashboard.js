@@ -19,7 +19,6 @@ import ErrorPage from '../../Utils/ErrorPage';
 
 import { updateBanner } from '../../../api';
 import DEMO from '../../../store/constant';
-import { program_progress_list_student } from '../../Utils/contants';
 import { FiExternalLink } from 'react-icons/fi';
 import { AiOutlineCalendar } from 'react-icons/ai';
 import ApplicationProgressCard from '../../../components/ApplicationProgressCard/ApplicationProgressCard';

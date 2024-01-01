@@ -45,7 +45,17 @@ export const translation_resources = {
       'Internal Docs': 'Internal Docs',
       'Download Center': 'Download Center',
       'Contact Us': 'Contact Us',
-      'Program List': 'Program List'
+      'Program List': 'Program List',
+      'Tell me about your result': 'Tell me about your result',
+      'Change your result': 'Change your result',
+      Submitted: 'Submitted',
+      Admitted: 'Admitted',
+      Rejected: 'Rejected',
+      Profile: 'Profile',
+      Settings: 'Settings',
+      Confirm: 'Confirm',
+      Cancel: 'Cancel',
+      'Log Out': 'Log Out'
     }
   },
   'zh-TW': {
@@ -89,7 +99,17 @@ export const translation_resources = {
       'Internal Docs': '內部文件',
       'Download Center': '下載中心',
       'Contact Us': '聯絡我們',
-      'Program List': '科系資料庫'
+      'Program List': '科系資料庫',
+      'Tell me about your result': '請告訴我們您的申請結果',
+      'Change your result': '更改申請結果',
+      Submitted: '已送出',
+      Admitted: '錄取',
+      Rejected: '沒錄取',
+      Profile: '個人資料',
+      Settings: '設定',
+      Confirm: '確認',
+      Cancel: '取消',
+      'Log Out': '登出'
     }
   }
 };

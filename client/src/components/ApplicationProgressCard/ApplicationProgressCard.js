@@ -8,6 +8,8 @@ import {
   Modal,
   Spinner
 } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
+
 import {
   application_deadline_calculator,
   progressBarCounter
@@ -32,6 +34,7 @@ export default function ApplicationProgressCard(props) {
   const [resultState, setResultState] = useState('-');
   const [showUndoModal, setShowUndoModal] = useState(false);
   const [showSetResultModal, setShowSetResultModal] = useState(false);
+  const { t, i18n } = useTranslation();
 
   const handleToggle = () => {
     setIsCollapse(!isCollapse);
@@ -86,17 +89,23 @@ export default function ApplicationProgressCard(props) {
               <>
                 {application.admission === '-' && (
                   <>
-                    <AiFillCheckCircle color="limegreen" size={16} /> Submitted
+                    <AiFillCheckCircle color="limegreen" size={16} />
+                    &nbsp;
+                    {t('Submitted')}
                   </>
                 )}
                 {application.admission === 'O' && (
                   <>
-                    <AiFillCheckCircle color="lightblue" size={16} /> Admitted
+                    <AiFillCheckCircle color="lightblue" size={16} />
+                    &nbsp;
+                    {t('Admitted')}
                   </>
                 )}
                 {application.admission === 'X' && (
                   <>
-                    <AiFillCloseCircle color="red" size={16} /> Rejected
+                    <AiFillCloseCircle color="red" size={16} />
+                    &nbsp;
+                    {t('Rejected')}
                   </>
                 )}
               </>
@@ -155,8 +164,14 @@ export default function ApplicationProgressCard(props) {
                 </p>
               </>
             )}
+          {application_deadline_calculator(props.student, application) ===
+            'CLOSE' &&
+            (application.admission === '-' ? (
+              <p>{t('Tell me about your result')} : </p>
+            ) : (
+              <p>{t('Change your result')} : </p>
+            ))}
 
-          <p>Tell me about your result? </p>
           <p>
             {application_deadline_calculator(props.student, application) ===
             'CLOSE' ? (
@@ -168,14 +183,14 @@ export default function ApplicationProgressCard(props) {
                       size="sm"
                       onClick={(e) => openSetResultModal(e, 'O')}
                     >
-                      Admitted
+                      {t('Admitted')}
                     </Button>
                     <Button
                       variant="danger"
                       size="sm"
                       onClick={(e) => openSetResultModal(e, 'X')}
                     >
-                      Rejected
+                      {t('Rejected')}
                     </Button>
                   </>
                 )}
@@ -187,7 +202,7 @@ export default function ApplicationProgressCard(props) {
                       disabled
                       onClick={(e) => e.stopPropagation()}
                     >
-                      Admitted
+                      {t('Admitted')}
                     </Button>
                     <Button
                       variant="outline-secondary"
@@ -207,7 +222,7 @@ export default function ApplicationProgressCard(props) {
                       disabled
                       onClick={(e) => stopPropagation()}
                     >
-                      Rejected
+                      {t('Rejected')}
                     </Button>
                     <Button
                       variant="outline-secondary"
@@ -276,7 +291,7 @@ export default function ApplicationProgressCard(props) {
                 </Spinner>
               </div>
             ) : (
-              'Confirm'
+              t('Confirm')
             )}
           </Button>
           <Button
@@ -285,7 +300,7 @@ export default function ApplicationProgressCard(props) {
             title="Undo"
             onClick={closeUndoModal}
           >
-            Cancel
+            {t('Cancel')}
           </Button>
         </Modal.Footer>
       </Modal>
@@ -299,7 +314,7 @@ export default function ApplicationProgressCard(props) {
         <Modal.Body>
           Do you want to set the application of{' '}
           <b>{`${application.programId.school}-${application.programId.degree}-${application.programId.program_name}`}</b>{' '}
-          as <b>{resultState === 'O' ? 'Admitted' : 'Rejected'}</b>?
+          as <b>{resultState === 'O' ? t('Admitted') : t('Rejected')}</b>?
         </Modal.Body>
         <Modal.Footer>
           <Button
@@ -315,9 +330,9 @@ export default function ApplicationProgressCard(props) {
                 </Spinner>
               </div>
             ) : resultState === 'O' ? (
-              'Admitted'
+              t('Admitted')
             ) : (
-              'Rejected'
+              t('Rejected')
             )}
           </Button>
           <Button

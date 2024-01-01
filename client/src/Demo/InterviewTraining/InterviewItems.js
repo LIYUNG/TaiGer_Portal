@@ -33,6 +33,20 @@ class InterviewItems extends React.Component {
                 <Row>Stats: {`${this.props.interview.status}`}</Row>
               </Col>
               <Col>
+                <p>
+                  Student :
+                  <Link
+                    to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                      this.props.interview.student_id._id.toString(),
+                      DEMO.PROFILE
+                    )}`}
+                  >
+                    <b>{` ${this.props.interview.student_id.firstname} - ${this.props.interview.student_id.lastname}`}</b>
+                  </Link>
+                </p>
+                <p>{`Email: ${this.props.interview.student_id.email}`}</p>
+              </Col>
+              <Col>
                 <Link
                   to={`${DEMO.INTERVIEW_SINGLE_LINK(
                     this.props.interview._id.toString()

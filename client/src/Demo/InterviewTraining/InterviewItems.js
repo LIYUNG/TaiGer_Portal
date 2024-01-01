@@ -3,6 +3,7 @@ import { Card, Col, Row } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { HiX } from 'react-icons/hi';
 import { is_TaiGer_AdminAgent } from '../Utils/checking-functions';
+import DEMO from '../../store/constant';
 
 class InterviewItems extends React.Component {
   render() {
@@ -33,7 +34,9 @@ class InterviewItems extends React.Component {
               </Col>
               <Col>
                 <Link
-                  to={`interview-training/${this.props.interview._id.toString()}`}
+                  to={`${DEMO.INTERVIEW_SINGLE_LINK(
+                    this.props.interview._id.toString()
+                  )}`}
                 >
                   {`${this.props.interview.program_id.school} - ${this.props.interview.program_id.program_name} ${this.props.interview.program_id.degree}`}
                   <br />

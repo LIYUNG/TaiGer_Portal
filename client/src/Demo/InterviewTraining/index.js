@@ -18,6 +18,7 @@ import { TabTitle } from '../Utils/TabTitle';
 import NotesEditor from '../Notes/NotesEditor';
 import InterviewItems from './InterviewItems';
 import DEMO from '../../store/constant';
+import { TopBar } from '../../components/TopBar/TopBar';
 
 class InterviewTraining extends React.Component {
   state = {
@@ -172,6 +173,13 @@ class InterviewTraining extends React.Component {
 
   handleClickSave = (e, editorState) => {
     e.preventDefault();
+    if (
+      !this.state.interviewData.program_id ||
+      this.state.interviewData.program_id === ''
+    ) {
+      alert('Interview University / Program is missing');
+      return;
+    }
     const message = JSON.stringify(editorState);
     const msg = {
       program_id: this.state.program_id,
@@ -306,23 +314,23 @@ class InterviewTraining extends React.Component {
           <Col sm={12}>
             {this.state.isEdit ? (
               <>
-                <Row className="sticky-top ">
-                  <Col>
-                    <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
-                      <Card.Header text={'dark'}>
-                        <Card.Title>
-                          <Row>
-                            <Col className="my-0 mx-0 text-light">
-                              {is_TaiGer_role(this.props.user)
-                                ? 'All Interviews'
-                                : 'Create Interview Training Request'}
-                            </Col>
-                          </Row>
-                        </Card.Title>
-                      </Card.Header>
-                    </Card>
-                  </Col>
-                </Row>
+                <TopBar>
+                  {is_TaiGer_role(this.props.user)
+                    ? 'All Interviews'
+                    : 'Create Interview Training Request'}
+                </TopBar>
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  onClick={(e) =>
+                    this.setState((state) => ({
+                      ...state,
+                      isEdit: !this.state.isEdit
+                    }))
+                  }
+                >
+                  Back
+                </Button>
                 <Card className="mb-2 mx-0">
                   <Card.Body>
                     <h3>Provide Interview Information</h3>
@@ -438,7 +446,12 @@ class InterviewTraining extends React.Component {
                     </p>
                     <NotesEditor
                       thread={this.state.thread}
-                      buttonDisabled={this.state.buttonDisabled}
+                      buttonDisabled={
+                        !this.state.interviewData.program_id ||
+                        this.state.interviewData.program_id === '' ||
+                        !this.state.interviewData.interview_date ||
+                        this.state.interviewData.interview_date === ''
+                      }
                       editorState={this.state.editorState}
                       handleClickSave={this.handleClickSave}
                     />
@@ -447,23 +460,11 @@ class InterviewTraining extends React.Component {
               </>
             ) : (
               <>
-                <Row className="sticky-top ">
-                  <Col>
-                    <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
-                      <Card.Header text={'dark'}>
-                        <Card.Title>
-                          <Row>
-                            <Col className="my-0 mx-0 text-light">
-                              {is_TaiGer_role(this.props.user)
-                                ? 'All Interviews'
-                                : 'My Interviews'}
-                            </Col>
-                          </Row>
-                        </Card.Title>
-                      </Card.Header>
-                    </Card>
-                  </Col>
-                </Row>
+                <TopBar>
+                  {is_TaiGer_role(this.props.user)
+                    ? 'All Interviews'
+                    : 'My Interviews'}
+                </TopBar>
                 {interviewslist.map((interview, i) => (
                   <InterviewItems
                     key={i}
@@ -474,7 +475,9 @@ class InterviewTraining extends React.Component {
                 ))}
                 {!is_TaiGer_role(this.props.user) &&
                   available_interview_request_programs.length > 0 && (
-                    <Button onClick={this.handleClick}>Add</Button>
+                    <Button size="sm" onClick={this.handleClick}>
+                      Add
+                    </Button>
                   )}
               </>
             )}

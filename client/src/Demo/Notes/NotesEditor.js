@@ -13,15 +13,14 @@ import EditorSimple from '../../components/EditorJs/EditorSimple';
 function NotesEditor(props) {
   let [statedata, setStatedata] = useState({
     editorState: props.editorState,
-    buttonDisabled: props.buttonDisabled
+    buttonDisabled: true
   });
   useEffect(() => {
     setStatedata((state) => ({
       ...state,
       editorState: props.editorState,
-      buttonDisabled: props.buttonDisabled
     }));
-  }, [props.editorState, props.buttonDisabled]);
+  }, [props.editorState]);
   const handleEditorChange = (content) => {
     setStatedata((state) => ({
       ...state,
@@ -66,20 +65,28 @@ function NotesEditor(props) {
         <Col className="my-0 mx-0">
           {!statedata.editorState.blocks ||
           statedata.editorState.blocks.length === 0 ||
-          statedata.buttonDisabled ? (
+          statedata.buttonDisabled ||
+          props.buttonDisabled ? (
             <OverlayTrigger
               placement="right"
               delay={{ show: 250, hide: 400 }}
               overlay={renderTooltip}
             >
               <span className="d-inline-block">
-                <Button disabled={true} style={{ pointerEvents: 'none' }}>
+                <Button
+                  size="sm"
+                  disabled={true}
+                  style={{ pointerEvents: 'none' }}
+                >
                   Save
                 </Button>
               </span>
             </OverlayTrigger>
           ) : (
-            <Button onClick={(e) => handleClickSave(e, statedata.editorState)}>
+            <Button
+              size="sm"
+              onClick={(e) => handleClickSave(e, statedata.editorState)}
+            >
               Save
             </Button>
           )}

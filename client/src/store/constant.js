@@ -33,6 +33,9 @@ const DEMO = {
   },
   EVENT_TAIGER_LINK: '/events/taiger',
   INTERVIEW_LINK: '/interview-training',
+  INTERVIEW_SINGLE_LINK: (interview_id) => {
+    return `/interview-training/${interview_id}`;
+  },
   INTERNAL_WIDGET_LINK: (user_id) => {
     return `/internal/widgets/${user_id}`;
   },

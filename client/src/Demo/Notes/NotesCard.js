@@ -88,7 +88,7 @@ class NotesCard extends Component {
       <>
         <NotesEditor
           thread={this.state.thread}
-          buttonDisabled={this.state.buttonDisabled}
+          // buttonDisabled={this.state.buttonDisabled}
           editorState={this.props.notes}
           unique_id={this.props.student_id}
           handleClickSave={this.handleClickSave}

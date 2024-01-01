@@ -170,7 +170,16 @@ export default function ApplicationProgressCard(props) {
             (application.admission === '-' ? (
               <p>{t('Tell me about your result')} : </p>
             ) : (
-              <p>{t('Change your result')} : </p>
+              <Button
+                variant="outline-secondary"
+                size="sm"
+                title="Undo"
+                onClick={(e) => openUndoModal(e)}
+              >
+                <AiOutlineUndo size={16} />
+                &nbsp;
+                {t('Change your result')}
+              </Button>
             ))}
 
           <p>
@@ -192,46 +201,6 @@ export default function ApplicationProgressCard(props) {
                       onClick={(e) => openSetResultModal(e, 'X')}
                     >
                       {t('Rejected')}
-                    </Button>
-                  </>
-                )}
-                {application.admission === 'O' && (
-                  <>
-                    <Button
-                      variant="primary"
-                      size="sm"
-                      disabled
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      {t('Admitted')}
-                    </Button>
-                    <Button
-                      variant="outline-secondary"
-                      size="sm"
-                      title="Undo"
-                      onClick={(e) => openUndoModal(e)}
-                    >
-                      <AiOutlineUndo size={16} />
-                    </Button>
-                  </>
-                )}
-                {application.admission === 'X' && (
-                  <>
-                    <Button
-                      variant="danger"
-                      size="sm"
-                      disabled
-                      onClick={(e) => stopPropagation()}
-                    >
-                      {t('Rejected')}
-                    </Button>
-                    <Button
-                      variant="outline-secondary"
-                      title="Undo"
-                      size="sm"
-                      onClick={(e) => openUndoModal(e)}
-                    >
-                      <AiOutlineUndo size={16} />
                     </Button>
                   </>
                 )}

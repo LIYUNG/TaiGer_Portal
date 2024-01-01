@@ -33,14 +33,11 @@ const interviewsSchema = new mongoose.Schema(
       type: String,
       default: ''
     },
-
-    interview_trainig_date: {
-      type: String,
-      default: ''
+    start: {
+      type: Date
     },
-    interview_trainig_time: {
-      type: String,
-      default: ''
+    end: {
+      type: Date
     }
   },
   { timestamps: true }

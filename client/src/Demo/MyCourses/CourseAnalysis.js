@@ -309,12 +309,16 @@ export default function CourseAnalysis(props) {
                   <p>{t('Course Analysis banner')}</p>
                   <p>{t('Course Analysis description')}</p>
                   <Link to={`${DEMO.COURSES_ANALYSIS_EXPLANATION_LINK}`}>
-                    <Button variant="secondary">點我詳細解說</Button>
+                    <Button size="sm" className="my-1" variant="secondary">
+                      {t('Course Analysis explanation button')}
+                    </Button>
                   </Link>
                 </Col>
               </Row>
               <br />
-              <Button onClick={() => onDownload()}>Download Excel</Button>
+              <Button size="sm" onClick={() => onDownload()}>
+                {t('Download')} Excel
+              </Button>
               <Tabs>
                 {statedata.sheetNames.map((sheetName, i) => (
                   <Tab
@@ -337,7 +341,9 @@ export default function CourseAnalysis(props) {
                 ))}
               </Tabs>
               <Row className="my-2">
-                <Col>Last update at: {convertDate(statedata.LastModified)}</Col>
+                <Col>
+                  {t('Last update')} {convertDate(statedata.LastModified)}
+                </Col>
               </Row>
             </Card.Body>
           </Card>

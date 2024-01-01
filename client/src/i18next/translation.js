@@ -58,13 +58,33 @@ export const translation_resources = {
         'The course analysis provided is for reference purposes only. Please carefully review the courses missing in each category and cross-reference whether your university offers those courses in the upcoming semesters. Once you have identified them, discuss with your Agent.',
       'Course Analysis description':
         'On the General page, courses are roughly categorized according to your major category, while the remaining tabs provide an analysis of the curriculum match for benchmark programs. You will notice that each school has different requirements for the major course category, and each category corresponds to a Required_ECTS, which represents the credits you need to complete for the courses (ECTS轉換, 1.5 times the credits in Taiwan). You must exceed the Required_ECTS for a specific category to meet the degree requirements. If there are any deficiencies of credits in any categories, please refer to the rightmost column of each Program Tab table for the 建議修課 for each category.',
+      'After you updated the course table, please contact your agent for your course analysis.':
+        'After you updated the course table, please contact your agent for your course analysis.',
+      'Courses analysed successfully!': 'Courses analysed successfully!',
+      'The student will receive an email notification and the analysed course URL link.':
+        'The student will receive an email notification and the analysed course URL link.',
+      'Student should access the analysed page in their course page.':
+        'Student should access the analysed page in their course page.',
+      'Instructions: Follow the documentations in':
+        'Instructions: Follow the documentations in',
+      'Based on the applications, Uni-Assist is NOT needed':
+        'Based on the applications, Uni-Assist is NOT needed.',
+      'Course Analysis explanation button': 'More explanation',
+      'To Do Tasks': 'To Do Tasks',
+      'Please finish it as soon as possible':
+        'Please finish it as soon as possible',
+      Update: 'Update',
+      Updating: 'Updating',
       Submitted: 'Submitted',
+      Download: 'Download',
+      'View Online': 'View Online',
       Admitted: 'Admitted',
       Rejected: 'Rejected',
       Profile: 'Profile',
       Settings: 'Settings',
       Confirm: 'Confirm',
       Cancel: 'Cancel',
+      'Last update': 'Last update at',
       'Log Out': 'Log Out'
     }
   },
@@ -122,13 +142,32 @@ export const translation_resources = {
         '此份課程分析僅供選課參考。請仔細看過每個向度所缺的課程，並對照學校之後學期是否有開期課程，抓出來，並和您的 Agent 討論。',
       'Course Analysis description':
         '在 General 頁面，為大略依照您主修向度做分類，其餘的 Tabs 為指標性學校的課程匹配度分析。你會看到每個學校會要求的向度會不一樣，每個向度會對應一個 Required_ECTS，代表你修的課程學分（經過 ECTS轉換 (1.5x 台灣學分)換算後），必須超過該向度的 Required_ECTS 才算達到該項度要求。若有缺少學分、向度，請參考每個 Program Tab 表格最右側，每個向度的 建議修課名單',
+      'After you updated the course table, please contact your agent for your course analysis.':
+        '在更新課表後，請聯絡您的顧問關於您的課程分析和選課建議',
+      'Courses analysed successfully!': '課程分析成功！',
+      'The student will receive an email notification and the analysed course URL link.':
+        '學生會收到 email 通知，並收到課程分析的連結。',
+      'Student should access the analysed page in their course page.':
+        '學生也可以在他們的填寫課程頁面找到課程分析連結。',
+      'Instructions: Follow the documentations in':
+        '請依照指示，完成Uni-Assist帳號密碼以及上傳資料',
+      'Based on the applications, Uni-Assist is NOT needed':
+        '根據您的欲申請的學程， 您並不需要處理 Uni-Assist 第三方學歷認證流程。',
+      'Course Analysis explanation button': '點我詳細解說',
+      'To Do Tasks': '待辦事項清單',
+      'Please finish it as soon as possible': '請您盡速處理以下事項',
+      Update: '更新',
+      Updating: '更新中',
       Submitted: '已送出',
+      Download: '下載',
+      'View Online': '線上檢視',
       Admitted: '錄取',
       Rejected: '沒錄取',
       Profile: '個人資料',
       Settings: '設定',
       Confirm: '確認',
       Cancel: '取消',
+      'Last update': '最後更新於',
       'Log Out': '登出'
     }
   }

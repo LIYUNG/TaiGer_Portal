@@ -304,19 +304,19 @@ const routes = [
   {
     path: '/my-courses/analysis/:student_id',
     exact: true,
-    name: 'My MyCourses Analysis',
+    name: 'My Courses Analysis',
     component: MyCoursesAnalysis
   },
   {
     path: '/my-courses/:student_id',
     exact: true,
-    name: 'My Courses',
+    name: 'My Courses 2',
     component: MyCourses
   },
   {
     path: '/my-courses',
     exact: true,
-    name: 'My Courses',
+    name: 'My Courses 1',
     component: MyCourses
   },
   {

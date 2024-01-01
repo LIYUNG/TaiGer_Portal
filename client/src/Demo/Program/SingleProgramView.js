@@ -20,11 +20,8 @@ import { appConfig } from '../../config';
 
 function SingleProgramView(props) {
   const { t, i18n } = useTranslation();
-  const lng = navigator.language;
   return (
     <>
-      <h1>{t('Welcome to React')}</h1>
-      <h2>{lng}</h2>
       <Row>
         <Col>
           <Banner

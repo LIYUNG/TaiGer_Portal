@@ -2,8 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { Row, Col, Spinner, Button, Card, Modal, Form } from 'react-bootstrap';
 import { DataSheetGrid, textColumn, keyColumn } from 'react-datasheet-grid';
 import { Redirect, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+
 import Aux from '../../hoc/_Aux';
-import { convertDate, spinner_style, study_group } from '../Utils/contants';
+import {
+  convertDate,
+  spinner_style,
+  spinner_style2,
+  study_group
+} from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import {
@@ -26,6 +33,7 @@ import { BsMessenger } from 'react-icons/bs';
 import { appConfig } from '../../config';
 
 export default function MyCourses(props) {
+  const { t, i18n } = useTranslation();
   let [statedata, setStatedata] = useState({
     error: '',
     isLoaded: false,
@@ -595,19 +603,41 @@ export default function MyCourses(props) {
                 )}
               </Row>
               <Row className="my-2">
-                <Col>Last update at: {convertDate(statedata.updatedAt)}</Col>
+                <Col>
+                  {t('Last update')}&nbsp;
+                  {convertDate(statedata.updatedAt)}
+                </Col>
               </Row>
               <Row className="mx-1">
                 {/* {showButtonIfMyStudentB(props.user, statedata.student) && ( */}
                 <Button onClick={onSubmit} disabled={statedata.isUpdating}>
-                  {statedata.isUpdating ? 'Updating' : 'Update'}
+                  {statedata.isUpdating ? (
+                    <>
+                      <div>
+                        <Spinner
+                          animation="border"
+                          size="sm"
+                          role="status"
+                          variant="light"
+                        >
+                          <span className="visually-hidden"></span>
+                        </Spinner>
+                        <span className="text-light">
+                          &nbsp;{t('Updating')}{' '}
+                        </span>
+                      </div>
+                    </>
+                  ) : (
+                    t('Update')
+                  )}
                 </Button>
                 {/* )} */}
               </Row>
               <br></br>
               <p>
-                After you updated the course table, please contact your agent
-                for your course analysis.
+                {t(
+                  'After you updated the course table, please contact your agent for your course analysis.'
+                )}
               </p>
             </Card.Body>
           </Card>
@@ -689,7 +719,7 @@ export default function MyCourses(props) {
                               onClick={onDownload}
                               disabled={statedata.isDownloading}
                             >
-                              Download
+                              {t('Download')}
                             </Button>
                             <Link
                               to={`${DEMO.COURSES_ANALYSIS_RESULT_LINK(
@@ -697,7 +727,9 @@ export default function MyCourses(props) {
                               )}`}
                               target="_blank"
                             >
-                              <Button variant="secondary">View Online</Button>
+                              <Button variant="secondary">
+                                {t('View Online')}
+                              </Button>
                             </Link>
                             <p className="my-2">
                               Last analysis at:{' '}
@@ -747,12 +779,13 @@ export default function MyCourses(props) {
           <Modal.Title id="contained-modal-title-vcenter">Success</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          Transcript analysed successfully!{' '}
+          {t('Courses analysed successfully!')}
           <b>
-            The student will receive an email notification and the analysed
-            course URL link.
+            {t(
+              'The student will receive an email notification and the analysed course URL link.'
+            )}
           </b>{' '}
-          He/She should access the analysed page in their course page.
+          {t('Student should access the analysed page in their course page.')}
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={closeanalysisSuccessModal}>Ok</Button>

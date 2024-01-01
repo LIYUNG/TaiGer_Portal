@@ -17,7 +17,6 @@ class UsersTable extends React.Component {
   state = {
     error: null,
     addUserModalState: false,
-    role: '',
     isLoaded: false,
     user: null,
     success: false,

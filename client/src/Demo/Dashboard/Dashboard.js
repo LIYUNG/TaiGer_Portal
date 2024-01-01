@@ -470,6 +470,7 @@ class Dashboard extends React.Component {
             students={this.state.students}
             notification={this.state.notification}
             editAgent={this.editAgent}
+            editEditor={this.editEditor}
             agent_list={this.state.agent_list}
             UpdateAgentlist={this.UpdateAgentlist}
             updateAgentList={this.state.updateAgentList}

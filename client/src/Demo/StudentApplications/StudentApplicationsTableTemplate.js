@@ -283,11 +283,6 @@ class StudentApplicationsTableTemplate extends React.Component {
 
   handleDeleteConfirm = (e) => {
     e.preventDefault();
-    // let applications_temp = [...this.state.applications];
-    // for (let i = 0; i < applications_temp.length; i += 1) {
-    //   delete applications_temp[i].programId;
-    //   delete applications_temp[i].doc_modification_thread;
-    // }
     this.setState({ isLoaded: false });
     removeProgramFromStudent(this.state.program_id, this.state.student_id).then(
       (resp) => {
@@ -823,7 +818,6 @@ class StudentApplicationsTableTemplate extends React.Component {
               student={this.props.student}
               isStudentApplicationPage={true}
             />
-            {/* <Button variant='primary'>Assign</Button>*/}
             <Button
               variant="secondary"
               onClick={this.onClickBackToApplicationOverviewnHandler}

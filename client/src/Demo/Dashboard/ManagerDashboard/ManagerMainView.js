@@ -4,8 +4,6 @@ import { Link } from 'react-router-dom';
 import { BsExclamationTriangle, BsX } from 'react-icons/bs';
 
 import AgentReviewing from '../MainViewTab/AgentReview/AgentReviewing';
-import ReadyToSubmitTasks from '../MainViewTab/AgentTasks/ReadyToSubmitTasks';
-import VPDToSubmitTasks from '../MainViewTab/AgentTasks/VPDToSubmitTasks';
 import BaseDocumentCheckingTasks from '../MainViewTab/AgentTasks/BaseDocumentCheckingTasks';
 
 import StudentsAgentEditor from '../MainViewTab/StudentsAgentEditor/StudentsAgentEditor';
@@ -22,12 +20,14 @@ import {
   programs_refactor,
   progressBarCounter
 } from '../../Utils/checking-functions';
-import CVAssignTasks from '../MainViewTab/AgentTasks/CVAssignTasks';
 import NoProgramStudentTasks from '../MainViewTab/AgentTasks/NoProgramStudentTasks';
-import NoEnoughDecidedProgramsTasks from '../MainViewTab/AgentTasks/NoEnoughDecidedProgramsTasks';
 import DEMO from '../../../store/constant';
 import ApplicationProgressCardBody from '../../../components/ApplicationProgressCard/ApplicationProgressCardBody';
 import ProgramReportCard from '../../Program/ProgramReportCard';
+import CVAssignTasksCard from '../MainViewTab/AgentTasks/CVAssignTasksCard';
+import ReadyToSubmitTasksCard from '../MainViewTab/AgentTasks/ReadyToSubmitTasksCard';
+import NoEnoughDecidedProgramsTasksCard from '../MainViewTab/AgentTasks/NoEnoughDecidedProgramsTasksCard';
+import VPDToSubmitTasksCard from '../MainViewTab/AgentTasks/VPDToSubmitTasksCard';
 
 class ManagerMainView extends React.Component {
   state = {
@@ -145,33 +145,6 @@ class ManagerMainView extends React.Component {
         <AgentReviewing key={i} role={this.props.user.role} student={student} />
       ));
 
-    const ready_to_submit_tasks = this.props.students
-      .filter((student) =>
-        student.agents.some(
-          (agent) => agent._id === this.props.user._id.toString()
-        )
-      )
-      .map((student, i) => (
-        <ReadyToSubmitTasks
-          key={i}
-          role={this.props.user.role}
-          student={student}
-        />
-      ));
-
-    const vpd_to_submit_tasks = this.props.students
-      .filter((student) =>
-        student.agents.some(
-          (agent) => agent._id === this.props.user._id.toString()
-        )
-      )
-      .map((student, i) => (
-        <VPDToSubmitTasks
-          key={i}
-          role={this.props.user.role}
-          student={student}
-        />
-      ));
     const base_documents_checking_tasks = this.props.students
       .filter((student) =>
         student.agents.some(
@@ -185,15 +158,7 @@ class ManagerMainView extends React.Component {
           student={student}
         />
       ));
-    const cv_assign_tasks = this.props.students
-      .filter((student) =>
-        student.agents.some(
-          (agent) => agent._id === this.props.user._id.toString()
-        )
-      )
-      .map((student, i) => (
-        <CVAssignTasks key={i} role={this.props.user.role} student={student} />
-      ));
+
     const no_programs_student_tasks = this.props.students
       .filter((student) =>
         student.agents.some(
@@ -208,19 +173,6 @@ class ManagerMainView extends React.Component {
         />
       ));
 
-    const no_enough_programs_decided_tasks = this.props.students
-      .filter((student) =>
-        student.agents.some(
-          (agent) => agent._id === this.props.user._id.toString()
-        )
-      )
-      .map((student, i) => (
-        <NoEnoughDecidedProgramsTasks
-          key={i}
-          role={this.props.user.role}
-          student={student}
-        />
-      ));
     const applications_arr = programs_refactor(this.props.students)
       .filter(
         (application) =>
@@ -350,40 +302,10 @@ class ManagerMainView extends React.Component {
               )
             )
           ) && (
-            <Col md={6}>
-              <Card
-                className="my-2 mx-0 card-with-scroll"
-                bg={'danger'}
-                text={'light'}
-              >
-                <Card.Header className="py-0 px-0 " bg={'danger'}>
-                  <Card.Title className="my-2 mx-2 text-light" as={'h5'}>
-                    <BsExclamationTriangle size={18} /> Ready To Submit Tasks (
-                    ML/ RL/ Essay are finished. Please submit application
-                    asap.):
-                  </Card.Title>
-                </Card.Header>
-                <Card.Body className="py-0 px-0 card-scrollable-body">
-                  <Table
-                    bordered
-                    hover
-                    className="my-0 mx-0"
-                    variant="dark"
-                    text="light"
-                    size="sm"
-                  >
-                    <thead>
-                      <tr>
-                        <th>Student</th>
-                        <th>Deadline</th>
-                        <th>Semester - Degree - Program</th>
-                      </tr>
-                    </thead>
-                    <tbody>{ready_to_submit_tasks}</tbody>
-                  </Table>
-                </Card.Body>
-              </Card>
-            </Col>
+            <ReadyToSubmitTasksCard
+              students={props.students}
+              user={props.user}
+            />
           )}
           {is_any_vpd_missing(
             this.props.students.filter((student) =>
@@ -392,35 +314,7 @@ class ManagerMainView extends React.Component {
               )
             )
           ) && (
-            <Col md={6}>
-              <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
-                <Card.Header className="py-0 px-0 " bg={'danger'}>
-                  <Card.Title className="my-2 mx-2 text-light" as={'h5'}>
-                    <BsExclamationTriangle size={18} /> VPD missing:
-                  </Card.Title>
-                </Card.Header>
-                <Card.Body className="py-0 px-0 card-scrollable-body">
-                  <Table
-                    bordered
-                    hover
-                    className="my-0 mx-0"
-                    variant="dark"
-                    text="light"
-                    size="sm"
-                  >
-                    <thead>
-                      <tr>
-                        <th>Student</th>
-                        <th>Status</th>
-                        <th>Deadline</th>
-                        <th>Program</th>
-                      </tr>
-                    </thead>
-                    <tbody>{vpd_to_submit_tasks}</tbody>
-                  </Table>
-                </Card.Body>
-              </Card>
-            </Col>
+            <VPDToSubmitTasksCard students={props.students} user={props.user} />
           )}
           {is_any_base_documents_uploaded(
             this.props.students.filter((student) =>
@@ -466,34 +360,7 @@ class ManagerMainView extends React.Component {
               )
             )
           ) && (
-            <Col md={6}>
-              <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
-                <Card.Header className="py-0 px-0">
-                  <Card.Title className="my-2 mx-2 text-light" as={'h5'}>
-                    <BsExclamationTriangle size={18} /> CV Not Assigned Yet:
-                  </Card.Title>
-                </Card.Header>
-                <Card.Body className="py-0 px-0 card-scrollable-body">
-                  <Table
-                    bordered
-                    hover
-                    className="my-0 mx-0"
-                    variant="dark"
-                    text="light"
-                    size="sm"
-                  >
-                    <thead>
-                      <tr>
-                        <th>Docs</th>
-                        <th>Student Name</th>
-                        <th>Year/Semester</th>
-                      </tr>
-                    </thead>
-                    <tbody>{cv_assign_tasks}</tbody>
-                  </Table>
-                </Card.Body>
-              </Card>
-            </Col>
+            <CVAssignTasksCard students={props.students} user={props.user} />
           )}
           {anyStudentWithoutApplicationSelection(
             this.props.students.filter((student) =>
@@ -530,35 +397,10 @@ class ManagerMainView extends React.Component {
               </Card>
             </Col>
           )}
-          <Col md={6}>
-            <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
-              <Card.Header className="py-0 px-0">
-                <Card.Title className="my-2 mx-2 text-light" as={'h5'}>
-                  <BsExclamationTriangle size={18} /> No Enough Program Decided
-                  Tasks:
-                </Card.Title>
-              </Card.Header>
-              <Card.Body className="py-0 px-0 card-scrollable-body">
-                <Table
-                  bordered
-                  hover
-                  className="my-0 mx-0"
-                  variant="dark"
-                  text="light"
-                  size="sm"
-                >
-                  <thead>
-                    <tr>
-                      <th>Tasks</th>
-                      <th>Description</th>
-                      <th>Last Update</th>
-                    </tr>
-                  </thead>
-                  <tbody>{no_enough_programs_decided_tasks}</tbody>
-                </Table>
-              </Card.Body>
-            </Card>
-          </Col>
+          <NoEnoughDecidedProgramsTasksCard
+            students={props.students}
+            user={props.user}
+          />
         </Row>
         <Row>
           <Table

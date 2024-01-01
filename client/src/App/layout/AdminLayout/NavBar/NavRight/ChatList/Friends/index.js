@@ -93,21 +93,9 @@ class Friends extends Component {
       }
     }
   }
-  // componentWillReceiveProps = (nextProps) => {
-  // UNSAFE_componentWillReceiveProps = (nextProps) => {
-  //   if (!nextProps.listOpen) {
-  //     this.setState({ chatOpen: false, user: [] });
-  //   }
-  // };
 
   render() {
-    const {
-      isLoaded,
-      students,
-      res_status,
-      res_modal_status,
-      res_modal_message
-    } = this.state;
+    const { isLoaded, students, res_status } = this.state;
     if (!isLoaded && !students) {
       return (
         <div style={spinner_style}>

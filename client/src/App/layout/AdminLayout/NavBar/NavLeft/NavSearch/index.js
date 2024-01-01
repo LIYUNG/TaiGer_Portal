@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { getQueryPublicResults, getQueryResults } from '../../../../../../api';
 import { withRouter } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+
 import ModalMain from '../../../../../../Demo/Utils/ModalHandler/ModalMain';
 import './search.css';
 import { is_TaiGer_role } from '../../../../../../Demo/Utils/checking-functions';
@@ -8,6 +10,7 @@ import { Role } from '../../../../../../Demo/Utils/contants';
 import { Form } from 'react-bootstrap';
 
 const NavSearch = (props) => {
+  const { t, i18n } = useTranslation();
   let [statedata, setStatedata] = useState({
     error: '',
     res_status: 0,
@@ -142,12 +145,6 @@ const NavSearch = (props) => {
 
   const ConfirmError = () => {
     window.location.reload(true);
-    // setIsErrorTerm(false);
-    // setStatedata((state) => ({
-    //   ...state,
-    //   res_modal_status: 0,
-    //   res_modal_message: ''
-    // }));
   };
 
   return (
@@ -165,7 +162,7 @@ const NavSearch = (props) => {
             <Form.Control
               type="text"
               className="search-input"
-              placeholder={'Search...'}
+              placeholder={`${t('Search')}...`}
               value={searchTerm}
               onMouseDown={handleInputBlur}
               onChange={handleInputChange}

@@ -22,7 +22,6 @@ import {
 import { deleteProgram } from '../../api';
 import { Link } from 'react-router-dom';
 import ProgramListSubpage from './ProgramListSubpage';
-import ProgramReportModal from './ProgramReportModal';
 import ProgramReport from './ProgramReport';
 import DEMO from '../../store/constant';
 

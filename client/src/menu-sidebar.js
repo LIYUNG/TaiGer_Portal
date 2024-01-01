@@ -72,6 +72,22 @@ let all_students_nestedList = [
     icon: 'feather icon-edit-1'
   },
   {
+    id: 'essays_dashboard',
+    title: 'Essay Dashboard',
+    type: 'item',
+    url: '/dashboard/essay',
+    classes: 'nav-item',
+    icon: 'feather icon-edit-1'
+  },
+  {
+    id: 'interview-training',
+    title: 'Interview Training',
+    type: 'item',
+    icon: 'feather icon-briefcase',
+    classes: 'nav-item',
+    url: '/interview-training'
+  },
+  {
     id: 'all-students-overview',
     title: 'Student Overview',
     type: 'item',
@@ -551,13 +567,6 @@ export default {
           classes: 'nav-item',
           icon: 'feather icon-download'
         }
-        // {
-        //   id: 'interview-training',
-        //   title: 'Interview Training',
-        //   type: 'item',
-        //   icon: 'feather icon-briefcase',
-        //   url: '/interview-training'
-        // }
         // {
         //   id: "disabled-menu",
         //   title: "Disabled Menu",

@@ -37,6 +37,7 @@ const CVMLRLOverview = React.lazy(() => import('./Demo/CVMLRLCenter/index'));
 const CVMLRLDashboard = React.lazy(() =>
   import('./Demo/CVMLRLCenter/indexAll')
 );
+const EssayDashboard = React.lazy(() => import('./Demo/EssayDashboard/index'));
 const AllApplicantsOverview = React.lazy(() =>
   import('./Demo/ApplicantsOverview/allStudentIndex')
 );
@@ -283,18 +284,18 @@ const routes = [
     name: 'InternalDocCreatePage',
     component: InternalDocCreatePage
   },
-  // {
-  //   path: '/interview-training',
-  //   exact: true,
-  //   name: 'InterviewTraining',
-  //   component: InterviewTraining
-  // },
-  // {
-  //   path: '/interview-training/:interview_id',
-  //   exact: true,
-  //   name: 'SingleInterview',
-  //   component: SingleInterview
-  // },
+  {
+    path: '/interview-training',
+    exact: true,
+    name: 'InterviewTraining',
+    component: InterviewTraining
+  },
+  {
+    path: '/interview-training/:interview_id',
+    exact: true,
+    name: 'SingleInterview',
+    component: SingleInterview
+  },
   {
     path: '/download',
     exact: true,
@@ -342,6 +343,12 @@ const routes = [
     exact: true,
     name: 'CV/ML/RL Dashboard',
     component: CVMLRLDashboard
+  },
+  {
+    path: '/dashboard/essay',
+    exact: true,
+    name: 'CV/ML/RL Dashboard',
+    component: EssayDashboard
   },
   {
     path: '/internal/widgets/course-analyser',

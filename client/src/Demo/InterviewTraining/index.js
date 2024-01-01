@@ -4,10 +4,7 @@ import { Redirect } from 'react-router-dom';
 
 import Aux from '../../hoc/_Aux';
 import { spinner_style } from '../Utils/contants';
-import {
-  is_TaiGer_AdminAgent,
-  is_TaiGer_role
-} from '../Utils/checking-functions';
+import { is_TaiGer_role } from '../Utils/checking-functions';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 
@@ -20,6 +17,7 @@ import {
 import { TabTitle } from '../Utils/TabTitle';
 import NotesEditor from '../Notes/NotesEditor';
 import InterviewItems from './InterviewItems';
+import DEMO from '../../store/constant';
 
 class InterviewTraining extends React.Component {
   state = {
@@ -244,10 +242,9 @@ class InterviewTraining extends React.Component {
   };
 
   render() {
-    // if (is_TaiGer_role(this.props.user)) {
-    //   return <Redirect to={`${DEMO.INTERVIEW_LINK}`} />;
+    // if (!is_TaiGer_role(this.props.user)) {
+    //   return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
     // }
-
     const {
       res_status,
       isLoaded,

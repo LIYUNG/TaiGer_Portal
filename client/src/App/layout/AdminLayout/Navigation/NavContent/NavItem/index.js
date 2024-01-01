@@ -109,7 +109,6 @@ function NavItem(props) {
   };
   const onlyWidth = useWindowWidth();
   let itemTitle = props.item.title;
-  console.log(itemTitle);
   let itemTarget = '';
   let subContent;
   if (menuItemFilterByRole(itemTitle)) {

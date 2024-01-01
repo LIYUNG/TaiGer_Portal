@@ -26,7 +26,7 @@ export const translation_resources = {
       'Student Overview': 'Student Overview',
       'CV/ML/RL Center': 'CV/ML/RL Center',
       'Archiv Students': 'Archiv Students',
-      'All Students': 'My Students',
+      'All Students': 'All Students',
       'Tasks Dashboard': 'Tasks Dashboard',
       'Program Conflict': 'Program Conflict',
       [`${appConfig.companyName} Teams`]: `${appConfig.companyName} Teams`,

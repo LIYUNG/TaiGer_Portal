@@ -6,6 +6,7 @@ const {
 const mongoose = require('mongoose');
 const documentthreadsSchema = new mongoose.Schema({
   student_id: { type: ObjectId, ref: 'User' },
+  outsourced_user_id: { type: ObjectId, ref: 'User' },
   file_type: { type: String, default: '' },
   program_id: { type: ObjectId, ref: 'Program' },
   isFinalVersion: {

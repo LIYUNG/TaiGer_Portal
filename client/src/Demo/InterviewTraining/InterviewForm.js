@@ -1,14 +1,10 @@
 import React from 'react';
-import { Row, Col, Spinner, Button, Card, Form, Modal } from 'react-bootstrap';
+import { Spinner, Card, Form } from 'react-bootstrap';
 
 import Aux from '../../hoc/_Aux';
 import { spinner_style } from '../Utils/contants';
-import {
-  is_TaiGer_AdminAgent,
-  is_TaiGer_role
-} from '../Utils/checking-functions';
+import { is_TaiGer_role } from '../Utils/checking-functions';
 import ErrorPage from '../Utils/ErrorPage';
-import ModalMain from '../Utils/ModalHandler/ModalMain';
 
 import {
   getMyInterviews,
@@ -17,11 +13,9 @@ import {
   getAllInterviews
 } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
-import DEMO from '../../store/constant';
 import NotesEditor from '../Notes/NotesEditor';
-import InterviewItems from './InterviewItems';
 
-class InterviewTraining extends React.Component {
+class InterviewTrainingForm extends React.Component {
   state = {
     error: '',
     isLoaded: false,
@@ -413,4 +407,4 @@ class InterviewTraining extends React.Component {
   }
 }
 
-export default InterviewTraining;
+export default InterviewTrainingForm;

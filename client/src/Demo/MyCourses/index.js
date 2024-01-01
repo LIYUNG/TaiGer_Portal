@@ -5,18 +5,12 @@ import { Redirect, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import Aux from '../../hoc/_Aux';
-import {
-  convertDate,
-  spinner_style,
-  spinner_style2,
-  study_group
-} from '../Utils/contants';
+import { convertDate, spinner_style, study_group } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import {
   is_TaiGer_AdminAgent,
-  is_TaiGer_role,
-  showButtonIfMyStudentB
+  is_TaiGer_role
 } from '../Utils/checking-functions';
 import 'react-datasheet-grid/dist/style.css';
 
@@ -27,6 +21,7 @@ import {
   transcriptanalyser_test,
   putMycourses
 } from '../../api';
+import { TopBar } from '../../components/TopBar/TopBar';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import { BsMessenger } from 'react-icons/bs';
@@ -462,41 +457,27 @@ export default function MyCourses(props) {
           </Col>
         </Row>
       )}
-      <Row className="sticky-top ">
-        <Col>
-          <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
-            <Card.Header text={'dark'}>
-              <Card.Title>
-                <Row>
-                  <Col className="my-0 mx-0 text-light">
-                    <Link
-                      className="text-warning"
-                      to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-                        statedata.student._id.toString(),
-                        DEMO.PROFILE
-                      )}`}
-                    >
-                      {statedata.student.firstname} {statedata.student.lastname}{' '}
-                    </Link>
-                    Courses
-                    <Link
-                      to={`${DEMO.COMMUNICATIONS_LINK(
-                        statedata.student._id.toString()
-                      )}`}
-                      style={{ textDecoration: 'none' }}
-                      className="mx-1"
-                    >
-                      <Button size="sm" className="ms-2 ">
-                        <BsMessenger color="white" size={16} /> <b>Message</b>
-                      </Button>
-                    </Link>
-                  </Col>
-                </Row>
-              </Card.Title>
-            </Card.Header>
-          </Card>
-        </Col>
-      </Row>
+      <TopBar>
+        <Link
+          className="text-warning"
+          to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+            statedata.student._id.toString(),
+            DEMO.PROFILE
+          )}`}
+        >
+          {statedata.student.firstname} {statedata.student.lastname}{' '}
+        </Link>
+        Courses
+        <Link
+          to={`${DEMO.COMMUNICATIONS_LINK(statedata.student._id.toString())}`}
+          style={{ textDecoration: 'none' }}
+          className="mx-1"
+        >
+          <Button size="sm" className="ms-2 ">
+            <BsMessenger color="white" size={16} /> <b>Message</b>
+          </Button>
+        </Link>
+      </TopBar>
       <Row>
         <Col sm={12}>
           <Card className="mb-2 mx-0">
@@ -609,7 +590,6 @@ export default function MyCourses(props) {
                 </Col>
               </Row>
               <Row className="mx-1">
-                {/* {showButtonIfMyStudentB(props.user, statedata.student) && ( */}
                 <Button onClick={onSubmit} disabled={statedata.isUpdating}>
                   {statedata.isUpdating ? (
                     <>

@@ -73,6 +73,20 @@ export const translation_resources = {
       'To Do Tasks': 'To Do Tasks',
       'Please finish it as soon as possible':
         'Please finish it as soon as possible',
+      'Please complete My Surney so that your agent can understand your situation':
+        'Please complete My Surney so that your agent can understand your situation',
+      'Please complete My Courses table. The agent will provide you with course analysis and courses suggestion.':
+        'Please complete My Courses table. The agent will provide you with course analysis and courses suggestion.',
+      "Please refer to the programs provided by the agent and visit the school's program website for detailed information. Complete the school selection before the start of the application season.":
+        "Please refer to the programs provided by the agent and visit the school's program website for detailed information. Complete the school selection before the start of the application season.",
+      'Please upload documents as soon as possible. The agent needs them to understand your academic background.':
+        'Please upload documents as soon as possible. The agent needs them to understand your academic background.',
+      "Please go to each school's website to create an account and provide your login credentials. This will facilitate the agent in conducting pre-submission checks for you in the future.":
+        "Please go to each school's website to create an account and provide your login credentials. This will facilitate the agent in conducting pre-submission checks for you in the future.",
+      'Please be sure to update your Chinese and English names, as well as your date of birth information. This will affect the preparation of formal documents by the editor for you.':
+        'Please be sure to update your Chinese and English names, as well as your date of birth information. This will affect the preparation of formal documents by the editor for you.',
+      'Please go to the Uni-Assist section, follow the instructions to complete':
+        'Please go to the Uni-Assist section, follow the instructions to complete the account registration, upload documents, and apply for the VPD (Vorprüfungsdokumentation).',
       Update: 'Update',
       Updating: 'Updating',
       Submitted: 'Submitted',
@@ -80,6 +94,7 @@ export const translation_resources = {
       'View Online': 'View Online',
       Admitted: 'Admitted',
       Rejected: 'Rejected',
+      'Personal Data': 'Personal Data',
       Profile: 'Profile',
       Settings: 'Settings',
       Confirm: 'Confirm',
@@ -156,6 +171,20 @@ export const translation_resources = {
       'Course Analysis explanation button': '點我詳細解說',
       'To Do Tasks': '待辦事項清單',
       'Please finish it as soon as possible': '請您盡速處理以下事項',
+      'Please complete My Survey so that your agent can understand your situation':
+        '請完成問卷，您的Agent才能了解您的狀況',
+      'Please complete My Courses table. The agent will provide you with course analysis and courses suggestion.':
+        '請完成我的修課，Agent 將會為您提供課程分析以及修課建議。',
+      "Please refer to the programs provided by the agent and visit the school's program website for detailed information. Complete the school selection before the start of the application season.":
+        '請參考Agent提供的Program，並到學校學程網站了解詳細資訊，於申請季開始前完成選校',
+      'Please upload documents as soon as possible. The agent needs them to understand your academic background.':
+        '請盡速上傳各類成績單和證書等的文件。Agent才能了解你學術背。',
+      'Please be sure to update your Chinese and English names, as well as your date of birth information. This will affect the preparation of formal documents by the editor for you.':
+        '請務必更新你中英文姓名、生日資料。這會影響Editor為您正式文件準備。',
+      "Please go to each school's website to create an account and provide your login credentials. This will facilitate the agent in conducting pre-submission checks for you in the future.":
+        '請到各學校網站辦理帳號並提供您的帳號密碼，方便Agent日後為您做送出前檢查',
+      'Please go to the Uni-Assist section, follow the instructions to complete':
+        '請至 Uni-Assist 專區，依照指示完成帳號申請，上傳文件，申請 VPD',
       Update: '更新',
       Updating: '更新中',
       Submitted: '已送出',
@@ -163,6 +192,7 @@ export const translation_resources = {
       'View Online': '線上檢視',
       Admitted: '錄取',
       Rejected: '沒錄取',
+      'Personal Data': '個人資料',
       Profile: '個人資料',
       Settings: '設定',
       Confirm: '確認',

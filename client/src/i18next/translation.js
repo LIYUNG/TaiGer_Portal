@@ -54,6 +54,10 @@ export const translation_resources = {
         'Have you received the interview invitation from this program? Request an interview training with TaiGer trainer!',
       'Change your result': 'Change your result',
       'New agent is assigned to you': 'New agent is assigned to you.',
+      'Course Analysis banner':
+        'The course analysis provided is for reference purposes only. Please carefully review the courses missing in each category and cross-reference whether your university offers those courses in the upcoming semesters. Once you have identified them, discuss with your Agent.',
+      'Course Analysis description':
+        'On the General page, courses are roughly categorized according to your major category, while the remaining tabs provide an analysis of the curriculum match for benchmark programs. You will notice that each school has different requirements for the major course category, and each category corresponds to a Required_ECTS, which represents the credits you need to complete for the courses (ECTS轉換, 1.5 times the credits in Taiwan). You must exceed the Required_ECTS for a specific category to meet the degree requirements. If there are any deficiencies of credits in any categories, please refer to the rightmost column of each Program Tab table for the 建議修課 for each category.',
       Submitted: 'Submitted',
       Admitted: 'Admitted',
       Rejected: 'Rejected',
@@ -114,6 +118,10 @@ export const translation_resources = {
         '您是否收到此學程的面試邀請通知？若有的話請告知我們，我們會盡速安排與 TaiGer 面試官做模擬面試',
       'Change your result': '更改申請結果',
       'New agent is assigned to you': '新的顧問以指派給您。',
+      'Course Analysis banner':
+        '此份課程分析僅供選課參考。請仔細看過每個向度所缺的課程，並對照學校之後學期是否有開期課程，抓出來，並和您的 Agent 討論。',
+      'Course Analysis description':
+        '在 General 頁面，為大略依照您主修向度做分類，其餘的 Tabs 為指標性學校的課程匹配度分析。你會看到每個學校會要求的向度會不一樣，每個向度會對應一個 Required_ECTS，代表你修的課程學分（經過 ECTS轉換 (1.5x 台灣學分)換算後），必須超過該向度的 Required_ECTS 才算達到該項度要求。若有缺少學分、向度，請參考每個 Program Tab 表格最右側，每個向度的 建議修課名單',
       Submitted: '已送出',
       Admitted: '錄取',
       Rejected: '沒錄取',

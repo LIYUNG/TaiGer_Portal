@@ -37,7 +37,12 @@ function AdminLayout(props) {
 
   useEffect(() => {
     // TODO: activate i18next by uncomment the following language changes
-    i18n.changeLanguage(navigator.language);
+    if (navigator.language === 'en' || navigator.language === 'zh-TW') {
+      i18n.changeLanguage(navigator.language);
+    } else {
+      i18n.changeLanguage('en');
+    }
+
     verify().then(
       (resp) => {
         const { data, success } = resp.data;

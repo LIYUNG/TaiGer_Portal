@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Row, Col, Spinner, Button, Card, Tab, Tabs } from 'react-bootstrap';
 import { DataSheetGrid, textColumn, keyColumn } from 'react-datasheet-grid';
 import * as XLSX from 'xlsx/xlsx.mjs';
+import { useTranslation } from 'react-i18next';
 
 import Aux from '../../hoc/_Aux';
 import { convertDate, spinner_style } from '../Utils/contants';
@@ -18,6 +19,7 @@ import { Link } from 'react-router-dom';
 import DEMO from '../../store/constant';
 
 export default function CourseAnalysis(props) {
+  const { t, i18n } = useTranslation();
   let [statedata, setStatedata] = useState({
     error: '',
     isLoaded: false,
@@ -304,44 +306,8 @@ export default function CourseAnalysis(props) {
             <Card.Body>
               <Row>
                 <Col>
-                  <p>
-                    此份課程分析<b>僅供選課參考</b>
-                    。請仔細看過每個向度所缺的課程，並對照學校之後學期是否有開期課程，抓出來，並和您的
-                    Agent 討論。
-                  </p>
-                  <p>
-                    The course analysis provided is for{' '}
-                    <b>reference purposes only</b>. Please carefully review the
-                    courses missing in each category and cross-reference whether
-                    your university offers those courses in the upcoming
-                    semesters. Once you have identified them, discuss with your
-                    Agent.
-                  </p>
-                  <p>
-                    在 General 頁面，為大略依照您主修向度做分類，其餘的 Tabs
-                    為指標性學校的課程匹配度分析。你會看到每個學校會要求的向度會不一樣，每個向度會對應一個
-                    <b>Required_ECTS</b>，代表你修的課程學分（經過
-                    <b>ECTS轉換</b> (1.5x 台灣學分)換算後），必須超過該向度的
-                    <b>Required_ECTS</b>
-                    才算達到該項度要求。若有缺少學分、向度，請參考每個 Program
-                    Tab 表格最右側，每個向度的
-                    <b>建議修課</b>名單
-                  </p>
-                  <p>
-                    On the General page, courses are roughly categorized
-                    according to your major category, while the remaining tabs
-                    provide an analysis of the curriculum match for benchmark
-                    programs. You will notice that each school has different
-                    requirements for the major course category, and each
-                    category corresponds to a <b>Required_ECTS</b>, which
-                    represents the credits you need to complete for the courses
-                    (<b>ECTS轉換</b>, 1.5 times the credits in Taiwan). You must
-                    exceed the <b>Required_ECTS</b> for a specific category to
-                    meet the degree requirements. If there are any deficiencies
-                    of credits in any categories, please refer to the rightmost
-                    column of each Program Tab table for the <b>建議修課</b> for
-                    each category.
-                  </p>
+                  <p>{t('Course Analysis banner')}</p>
+                  <p>{t('Course Analysis description')}</p>
                   <Link to={`${DEMO.COURSES_ANALYSIS_EXPLANATION_LINK}`}>
                     <Button variant="secondary">點我詳細解說</Button>
                   </Link>

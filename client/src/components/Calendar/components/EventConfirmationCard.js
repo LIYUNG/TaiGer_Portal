@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Card, Collapse, Button, Row } from 'react-bootstrap';
 import {
   NoonNightLabel,

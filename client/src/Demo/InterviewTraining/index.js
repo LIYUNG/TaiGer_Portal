@@ -185,10 +185,10 @@ class InterviewTraining extends React.Component {
       program_id: this.state.program_id,
       interview_date: this.state.category,
       prop: this.props.item,
-      interview_notes: message
+      interview_description: message
     };
     const interviewData_temp = this.state.interviewData;
-    interviewData_temp.interview_notes = message;
+    interviewData_temp.interview_description = message;
     createInterview(
       this.state.interviewData.program_id,
       this.props.user._id.toString(),

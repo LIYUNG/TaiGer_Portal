@@ -34,8 +34,8 @@ class SingleInterview extends React.Component {
         if (success) {
           var initialEditorState = null;
           const author = data.author;
-          if (data.interview_notes) {
-            initialEditorState = JSON.parse(data.interview_notes);
+          if (data.interview_description) {
+            initialEditorState = JSON.parse(data.interview_description);
           } else {
             initialEditorState = { time: new Date(), blocks: [] };
           }
@@ -79,8 +79,8 @@ class SingleInterview extends React.Component {
           if (success) {
             var initialEditorState = null;
             const author = data.author;
-            if (data.interview_notes) {
-              initialEditorState = JSON.parse(data.interview_notes);
+            if (data.interview_description) {
+              initialEditorState = JSON.parse(data.interview_description);
             } else {
               initialEditorState = { time: new Date(), blocks: [] };
             }
@@ -118,7 +118,7 @@ class SingleInterview extends React.Component {
     e.preventDefault();
     const message = JSON.stringify(editorState);
     const interviewData_temp = interview;
-    interviewData_temp.interview_notes = message;
+    interviewData_temp.interview_description = message;
     updateInterview(
       this.props.match.params.interview_id,
       interviewData_temp

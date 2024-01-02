@@ -208,7 +208,11 @@ export const UpdateStudentApplications = (
     applying_program_count
   });
 
-export const updateStudentApplicationResult = (studentId, application_id, result) =>
+export const updateStudentApplicationResult = (
+  studentId,
+  application_id,
+  result
+) =>
   request.put(`/api/account/applications/result/${studentId}`, {
     application_id,
     result
@@ -557,6 +561,8 @@ export const deleteInterview = (interview_id) =>
   request.delete(`/api/interviews/${interview_id}`);
 export const updateInterview = (interview_id, payload) =>
   request.put(`/api/interviews/${interview_id}`, payload);
+export const updateInterviewTrainer = (interview_id, trainer_id) =>
+  request.put(`/api/interviews/trainer/${interview_id}`, { trainer_id });
 export const getMyInterviews = () =>
   request.get(`/api/interviews/my-interviews`);
 export const createInterview = (program_id, student_id, payload) =>

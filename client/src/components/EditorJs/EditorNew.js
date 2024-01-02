@@ -15,7 +15,7 @@ import Quote from '@editorjs/quote';
 import Underline from '@editorjs/underline';
 import AttachesTool from '@editorjs/attaches';
 // import AttachesTool from '@editorjs/liyungc-attaches';
-import LinkTool from '@editorjs/link';
+// import LinkTool from '@editorjs/link';
 import ColorPlugin from 'editorjs-text-color-plugin';
 import TextAlign from '@canburaks/text-align-editorjs';
 

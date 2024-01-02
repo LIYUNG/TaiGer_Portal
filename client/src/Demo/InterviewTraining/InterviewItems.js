@@ -1,31 +1,96 @@
-import React, { useState } from 'react';
-import { Button, Card, Col, Collapse, Row } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
+import {
+  Button,
+  Card,
+  Col,
+  Collapse,
+  ListGroup,
+  Modal,
+  Row
+} from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { HiX } from 'react-icons/hi';
 import { useTranslation } from 'react-i18next';
 
-import { is_TaiGer_AdminAgent } from '../Utils/checking-functions';
+import {
+  is_TaiGer_AdminAgent,
+  is_TaiGer_role
+} from '../Utils/checking-functions';
 import DEMO from '../../store/constant';
 import {
   AiFillCheckCircle,
   AiFillQuestionCircle,
   AiOutlineDelete
 } from 'react-icons/ai';
+import { getEditors, updateInterviewTrainer } from '../../api';
+import EditorSimple from '../../components/EditorJs/EditorSimple';
 
 function InterviewItems(props) {
   const { t, i18n } = useTranslation();
   const [isCollapse, setIsCollapse] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [interview, setiInterview] = useState(props.interview);
+  const [editors, setEditors] = useState([]);
+  const [trainerId, setTrainerId] = useState(
+    new Set(interview.trainer_id?.map((t_id) => t_id._id.toString()))
+  );
 
   const handleToggle = () => {
     setIsCollapse(!isCollapse);
   };
+
+  const toggleModal = () => {
+    setTrainerId(
+      new Set(interview.trainer_id.map((t_id) => t_id._id.toString()))
+    );
+    setShowModal(!showModal);
+  };
+
+  const openModal = async () => {
+    setShowModal(true);
+    getEditor();
+  };
+
+  const modifyTrainer = (new_trainerId, isActive) => {
+    if (isActive) {
+      const temp_0 = [...trainerId];
+      const temp = new Set(temp_0);
+      temp.delete(new_trainerId);
+      setTrainerId(new Set(temp));
+    } else {
+      const temp_0 = [...trainerId];
+      const temp = new Set(temp_0);
+      temp.add(new_trainerId);
+      setTrainerId(new Set(temp));
+    }
+  };
+
+  const getEditor = async () => {
+    const { data } = await getEditors();
+    const { data: editors_a, success } = data;
+    setEditors(editors_a);
+  };
+
+  const updateTrainer = async () => {
+    const temp_trainer_id_array = Array.from(trainerId);
+    console.log(temp_trainer_id_array);
+    const { data } = await updateInterviewTrainer(
+      interview._id.toString(),
+      temp_trainer_id_array
+    );
+    const { data: interview_updated, success } = data;
+    if (success) {
+      setiInterview(interview_updated);
+      setShowModal(false);
+    }
+  };
+
   return (
     <>
-      <Card>
+      <Card className="my-2">
         <Card.Header onClick={handleToggle} style={{ cursor: 'pointer' }}>
           <Card.Title>
             <h5>
-              {props.interview.status !== 'Unscheduled' ? (
+              {interview.status !== 'Unscheduled' ? (
                 <AiFillCheckCircle
                   color="limegreen"
                   size={24}
@@ -35,15 +100,9 @@ function InterviewItems(props) {
                 <AiFillQuestionCircle color="grey" size={24} />
               )}
               &nbsp;
-              {props.interview.status}
-              <Link
-                to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-                  props.interview.student_id._id.toString(),
-                  DEMO.PROFILE
-                )}`}
-              >
-                <b>{` ${props.interview.student_id.firstname} - ${props.interview.student_id.lastname}`}</b>
-              </Link>
+              {interview.status}
+              &nbsp;
+              <b>{` ${interview.student_id.firstname} - ${interview.student_id.lastname}`}</b>
             </h5>
             <span style={{ float: 'right', cursor: 'pointer' }}>
               {is_TaiGer_AdminAgent(props.user) && (
@@ -51,9 +110,7 @@ function InterviewItems(props) {
                   variant="danger"
                   size="sm"
                   title="Delete"
-                  onClick={() =>
-                    props.openDeleteDocModalWindow(props.interview)
-                  }
+                  onClick={() => props.openDeleteDocModalWindow(interview)}
                 >
                   <AiOutlineDelete size={16} />
                   &nbsp; Delete
@@ -66,109 +123,187 @@ function InterviewItems(props) {
           <Card.Body>
             <Row>
               <Col>
-                <h4>
+                <h5>
                   <i className="feather icon-user-check me-1" />
                   {t('Student')} :
                   <Link
                     to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-                      props.interview.student_id._id.toString(),
+                      interview.student_id._id.toString(),
                       DEMO.PROFILE
                     )}`}
                   >
-                    <b>{` ${props.interview.student_id.firstname} - ${props.interview.student_id.lastname}`}</b>
+                    <b>{` ${interview.student_id.firstname} - ${interview.student_id.lastname}`}</b>
                   </Link>
-                </h4>
-                <p>{`Email: ${props.interview.student_id.email}`}</p>
+                </h5>
+                <p>{`Email: ${interview.student_id.email}`}</p>
               </Col>
               <Col>
-                <h4>
+                <h5>
                   <Link
                     to={`${DEMO.INTERVIEW_SINGLE_LINK(
-                      props.interview._id.toString()
+                      interview._id.toString()
                     )}`}
                   >
                     <i className="feather icon-star me-1" />
                     {t('Interview Program')}:&nbsp;
-                    {`${props.interview.program_id.school} - ${props.interview.program_id.program_name} ${props.interview.program_id.degree}`}
+                    {`${interview.program_id.school} - ${interview.program_id.program_name} ${interview.program_id.degree}`}
                     <br />
                   </Link>
-                </h4>
-                <h4>
-                  <Link
-                    to={`${DEMO.INTERVIEW_SINGLE_LINK(
-                      props.interview._id.toString()
-                    )}`}
-                  >
-                    <i className="feather icon-calendar me-1" />
-                    {t('Interview Date')}:&nbsp;
-                    {`${props.interview.interview_date} - ${props.interview.interview_time}`}
-                  </Link>
-                </h4>
-                <h4>
-                  <Link
-                    to={`${DEMO.INTERVIEW_SINGLE_LINK(
-                      props.interview._id.toString()
-                    )}`}
-                  >
-                    <i className="feather icon-user me-1" />
-                    {t('Interviewer')}:&nbsp;
-                    {`${props.interview.interviewer}`}
-                  </Link>
-                </h4>
+                </h5>
+                <br />
+                <h5>
+                  <i className="feather icon-calendar me-1" />
+                  {t('Interview Date')}:&nbsp;
+                  {`${interview.interview_date} - ${interview.interview_time}`}
+                </h5>
+                <br />
+                <h5>
+                  <i className="feather icon-user me-1" />
+                  {t('Interviewer')}:&nbsp;
+                  {`${interview.interviewer}`}
+                </h5>
               </Col>
             </Row>
+            <br />
             <Row>
-              <h4>
+              <h5>
                 <i className="feather icon-book me-1" />
                 {t('Description')}
-              </h4>{' '}
+              </h5>{' '}
             </Row>
-            <Row>{`${props.interview.interview_description}`}</Row>
             <Row>
-              <h4>
+              <Card>
+                <EditorSimple
+                  holder={`${props.interview._id.toString()}-description`}
+                  readOnly={true}
+                  imageEnable={true}
+                  handleClickSave={props.handleClickSave}
+                  editorState={
+                    interview.interview_description &&
+                    interview.interview_description !== '{}'
+                      ? JSON.parse(interview.interview_description)
+                      : { time: new Date(), blocks: [] }
+                  }
+                  defaultHeight={0}
+                />
+              </Card>
+            </Row>
+            <br />
+            <Row>
+              <h5>
                 <i className="feather icon-headphones me-1" />
                 {t('Trainer')}
-              </h4>{' '}
+              </h5>{' '}
             </Row>
             <Row>
-              {props.interview.interview_trainer_id ? (
+              {interview.trainer_id && interview.trainer_id?.length !== 0 ? (
                 <>
-                  {`${props.interview.interview_trainer_id?.firstname}`}
-                  <Button variant="secondary">{t('Change Trainer')}</Button>
+                  {interview.trainer_id.map((t_id, idx) => (
+                    <p>
+                      {t_id.firstname} {t_id.lastname}
+                    </p>
+                  ))}
+                  {is_TaiGer_role(props.user) && (
+                    <Button size="sm" variant="secondary" onClick={openModal}>
+                      {t('Change Trainer')}
+                    </Button>
+                  )}
                 </>
               ) : (
                 <>
-                  <Button>{t('Assign Trainer')}</Button>
+                  {is_TaiGer_role(props.user) && (
+                    <Button size="sm" onClick={openModal}>
+                      {t('Assign Trainer')}
+                    </Button>
+                  )}
                 </>
               )}
             </Row>
+            <br />
             <Row>
-              <h4>
+              <h5>
                 <Link
-                  to={`${DEMO.INTERVIEW_SINGLE_LINK(
-                    props.interview._id.toString()
-                  )}`}
+                  to={`${DEMO.INTERVIEW_SINGLE_LINK(interview._id.toString())}`}
                 >
                   <i className="feather icon-calendar me-1" />
                   {t('Interview Training Time')}:&nbsp;
                 </Link>
-              </h4>
+              </h5>
             </Row>
             <Row>
-              <h4>
-                {`${props.interview.interview_training_time}`}
-                <Button>{t('Make Training Time Available')}</Button>
-              </h4>
+              {`${interview.interview_training_time || 'Unscheduled'}`}
+              {is_TaiGer_role(props.user) && (
+                <Button size="sm">{t('Make Training Time Available')}</Button>
+              )}
             </Row>
+            <br />
             <Row>
-              <h4>
+              <h5>
                 <i className="feather icon-book me-1" />
                 {t('Notes')}
-              </h4>{' '}
+              </h5>{' '}
             </Row>
-            <Row>{`${props.interview.interview_notes}`}</Row>
+            <Row>
+              <Card>
+                <EditorSimple
+                  holder={`${props.interview._id.toString()}-notes`}
+                  readOnly={true}
+                  imageEnable={true}
+                  handleClickSave={props.handleClickSave}
+                  editorState={
+                    interview.interview_notes &&
+                    interview.interview_notes !== '{}'
+                      ? JSON.parse(interview.interview_notes)
+                      : { time: new Date(), blocks: [] }
+                  }
+                  defaultHeight={0}
+                />
+              </Card>
+            </Row>
           </Card.Body>
         </Collapse>
+        <Modal show={showModal} size="sm" centered onHide={toggleModal}>
+          <Modal.Header>Assign Trainer</Modal.Header>
+          <Modal.Body>
+            <Row>
+              <h5>
+                <i className="feather icon-users me-1" />
+                {t('Trainer')}
+              </h5>
+            </Row>
+            <Row>
+              {editors.map((editor, i) => (
+                <>
+                  <ListGroup as="ul">
+                    <ListGroup.Item
+                      as="li"
+                      active={trainerId.has(editor._id.toString())}
+                      action
+                      onClick={() =>
+                        modifyTrainer(
+                          editor._id.toString(),
+                          trainerId.has(editor._id.toString())
+                        )
+                      }
+                    >
+                      <Row>
+                        {editor.firstname} {editor.lastname}
+                      </Row>
+                    </ListGroup.Item>
+                  </ListGroup>
+                </>
+              ))}
+            </Row>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button size="sm" variant="primary" onClick={updateTrainer}>
+              Assign
+            </Button>
+            <Button size="sm" variant="secondary" onClick={toggleModal}>
+              Close
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </Card>
     </>
   );

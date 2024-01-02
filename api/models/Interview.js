@@ -7,7 +7,7 @@ const mongoose = require('mongoose');
 const interviewsSchema = new mongoose.Schema(
   {
     student_id: { type: ObjectId, ref: 'User' },
-    trainer_id: { type: ObjectId, ref: 'User' },
+    trainer_id: [{ type: ObjectId, ref: 'User' }],
     program_id: { type: ObjectId, ref: 'Program' },
     interview_description: {
       type: String,

@@ -9,11 +9,15 @@ const {
   getMyInterview,
   createInterview,
   deleteInterview,
-  updateInterview
+  updateInterview,
+  updateInterviewTrainer
 } = require('../controllers/interviews');
 const { multitenant_filter } = require('../middlewares/multitenant-filter');
 const { filter_archiv_user } = require('../middlewares/limit_archiv_user');
-const { InterviewPUTRateLimiter, InterviewGETRateLimiter } = require('../middlewares/rate_limiter');
+const {
+  InterviewPUTRateLimiter,
+  InterviewGETRateLimiter
+} = require('../middlewares/rate_limiter');
 
 const router = Router();
 
@@ -33,6 +37,14 @@ router
     InterviewGETRateLimiter,
     permit(Role.Student),
     getMyInterview
+  );
+router
+  .route('/trainer/:interview_id')
+  .put(
+    filter_archiv_user,
+    InterviewPUTRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
+    updateInterviewTrainer
   );
 
 router

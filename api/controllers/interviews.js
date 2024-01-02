@@ -9,11 +9,31 @@ const getAllInterviews = asyncHandler(async (req, res) => {
   const { user } = req;
 
   const interviews = await Interview.find()
-    .populate('student_id', 'firstname lastname email')
-    .populate('program_id', 'school program_name degree')
+    .populate('student_id trainer_id', 'firstname lastname email')
+    .populate('program_id', 'school program_name degree semester')
     .lean();
 
   res.status(200).send({ success: true, data: interviews });
+});
+
+const getMyInterview = asyncHandler(async (req, res) => {
+  const { user } = req;
+  const interviews = await Interview.find({
+    student_id: user._id.toString()
+  })
+    .populate('student_id trainer_id', 'firstname lastname email')
+    .populate('program_id', 'school program_name')
+    .lean();
+
+  const student = await Student.findById(user._id.toString())
+    .populate('applications.programId', 'school program_name degree semester')
+    .lean();
+  if (!student) {
+    logger.info('getMyInterview: this student is not existed!');
+    throw new ErrorResponse(400, 'this student is not existed!');
+  }
+
+  res.status(200).send({ success: true, data: interviews, student });
 });
 
 const getInterview = asyncHandler(async (req, res) => {
@@ -22,7 +42,7 @@ const getInterview = asyncHandler(async (req, res) => {
     params: { interview_id }
   } = req;
   const interview = await Interview.findById(interview_id)
-    .populate('student_id', 'firstname lastname email')
+    .populate('student_id trainer_id', 'firstname lastname email')
     .populate('program_id', 'school program_name degree')
     .lean();
 
@@ -43,11 +63,12 @@ const deleteInterview = asyncHandler(async (req, res) => {
   res.status(200).send({ success: true });
 });
 
-const assignInterviewTrainer = asyncHandler(async (req, res) => {
+const updateInterviewTrainer = asyncHandler(async (req, res) => {
   const {
-    params: { interview_id, trainer_id }
+    params: { interview_id },
+    body: { trainer_id }
   } = req;
-
+  console.log(trainer_id);
   const interview = await Interview.findByIdAndUpdate(
     interview_id,
     { trainer_id },
@@ -72,31 +93,11 @@ const updateInterview = asyncHandler(async (req, res) => {
     upsert: true,
     new: true
   })
-    .populate('student_id', 'firstname lastname email')
+    .populate('student_id trainer_id', 'firstname lastname email')
     .populate('program_id', 'school program_name degree semester')
     .lean();
 
   res.status(200).send({ success: true, data: interview });
-});
-
-const getMyInterview = asyncHandler(async (req, res) => {
-  const { user } = req;
-  const interviews = await Interview.find({
-    student_id: user._id.toString()
-  })
-    .populate('student_id', 'firstname lastname email')
-    .populate('program_id', 'school program_name')
-    .lean();
-
-  const student = await Student.findById(user._id.toString())
-    .populate('applications.programId', 'school program_name degree semester')
-    .lean();
-  if (!student) {
-    logger.info('getMyInterview: this student is not existed!');
-    throw new ErrorResponse(400, 'this student is not existed!');
-  }
-
-  res.status(200).send({ success: true, data: interviews, student });
 });
 
 // () TODO: inform editor
@@ -122,7 +123,7 @@ const createInterview = asyncHandler(async (req, res) => {
     payload,
     { upsert: true, new: true }
   )
-    .populate('student_id', 'firstname lastname email')
+    .populate('student_id trainer_id', 'firstname lastname email')
     .populate('program_id', 'school program_name degree semester')
     .lean();
 
@@ -133,7 +134,7 @@ module.exports = {
   getAllInterviews,
   getMyInterview,
   getInterview,
-  assignInterviewTrainer,
+  updateInterviewTrainer,
   updateInterview,
   deleteInterview,
   createInterview

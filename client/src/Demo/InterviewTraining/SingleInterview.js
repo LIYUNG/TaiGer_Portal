@@ -261,6 +261,7 @@ class SingleInterview extends React.Component {
         {interview ? (
           <InterviewItems
             user={this.props.user}
+            expanded={true}
             readOnly={false}
             interview={interview}
             openDeleteDocModalWindow={this.openDeleteDocModalWindow}

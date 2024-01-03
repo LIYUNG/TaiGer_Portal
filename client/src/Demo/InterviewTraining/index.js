@@ -469,6 +469,7 @@ class InterviewTraining extends React.Component {
                 {interviewslist.map((interview, i) => (
                   <InterviewItems
                     key={i}
+                    expanded={false}
                     user={this.props.user}
                     readOnly={true}
                     interview={interview}

@@ -52,7 +52,7 @@ function NotesEditor(props) {
                 holder={`${props.notes_id}`}
                 thread={props.thread}
                 defaultHeight={0}
-                readOnly={false}
+                readOnly={props.readOnly}
                 handleEditorChange={handleEditorChange}
                 editorState={props.editorState}
                 setStatedata={setStatedata}
@@ -61,37 +61,39 @@ function NotesEditor(props) {
           </Card>
         </Col>
       </Row>
-      <Row>
-        <Col className="my-0 mx-0">
-          {!statedata.editorState.blocks ||
-          statedata.editorState.blocks.length === 0 ||
-          statedata.buttonDisabled ||
-          props.buttonDisabled ? (
-            <OverlayTrigger
-              placement="right"
-              delay={{ show: 250, hide: 400 }}
-              overlay={renderTooltip}
-            >
-              <span className="d-inline-block">
-                <Button
-                  size="sm"
-                  disabled={true}
-                  style={{ pointerEvents: 'none' }}
-                >
-                  Save
-                </Button>
-              </span>
-            </OverlayTrigger>
-          ) : (
-            <Button
-              size="sm"
-              onClick={(e) => handleClickSave(e, statedata.editorState)}
-            >
-              Save
-            </Button>
-          )}
-        </Col>
-      </Row>
+      {!props.readOnly && (
+        <Row>
+          <Col className="my-0 mx-0">
+            {!statedata.editorState.blocks ||
+            statedata.editorState.blocks.length === 0 ||
+            statedata.buttonDisabled ||
+            props.buttonDisabled ? (
+              <OverlayTrigger
+                placement="right"
+                delay={{ show: 250, hide: 400 }}
+                overlay={renderTooltip}
+              >
+                <span className="d-inline-block">
+                  <Button
+                    size="sm"
+                    disabled={true}
+                    style={{ pointerEvents: 'none' }}
+                  >
+                    Save
+                  </Button>
+                </span>
+              </OverlayTrigger>
+            ) : (
+              <Button
+                size="sm"
+                onClick={(e) => handleClickSave(e, statedata.editorState)}
+              >
+                Save
+              </Button>
+            )}
+          </Col>
+        </Row>
+      )}
     </>
   );
 }

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Button, Modal } from 'react-bootstrap';
 
-import { convertDate } from '../Utils/contants';
 import NotesEditor from './NotesEditor';
 import { updateStudentNotes } from '../../api';
 
@@ -10,36 +9,16 @@ class NotesCard extends Component {
     editorState: null,
     message_id: '',
     isLoaded: false,
-    buttonDisabled: false,
-    deleteMessageModalShow: false
+    buttonDisabled: false
   };
 
   componentDidMount() {
     this.setState((state) => ({
       ...state,
-      // editorState: initialEditorState,
       isLoaded: this.props.isLoaded,
-      buttonDisabled: true,
-      deleteMessageModalShow: false
+      buttonDisabled: true
     }));
   }
-
-  onOpendeleteMessageModalShow = (e, message_id, createdAt) => {
-    this.setState({ message_id, deleteMessageModalShow: true, createdAt });
-  };
-  onHidedeleteMessageModalShow = (e) => {
-    this.setState({
-      message_id: '',
-      createdAt: '',
-      deleteMessageModalShow: false
-    });
-  };
-
-  onDeleteSingleMessage = (e) => {
-    e.preventDefault();
-    this.setState({ deleteMessageModalShow: false });
-    this.props.onDeleteSingleMessage(e, this.state.message_id);
-  };
 
   handleClickSave = (e, editorState) => {
     e.preventDefault();
@@ -95,34 +74,6 @@ class NotesCard extends Component {
           unique_id={this.props.student_id}
           handleClickSave={this.handleClickSave}
         />
-        <Modal
-          show={this.state.deleteMessageModalShow}
-          onHide={this.onHidedeleteMessageModalShow}
-          aria-labelledby="contained-modal-title-vcenter"
-          centered
-        >
-          <Modal.Header>
-            <Modal.Title id="contained-modal-title-vcenter">
-              Warning
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            Do you wan to delete this message on{' '}
-            <b>{convertDate(this.state.createdAt)}?</b>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button
-              disabled={!this.props.isLoaded}
-              variant="danger"
-              onClick={this.onDeleteSingleMessage}
-            >
-              {this.props.isLoaded ? 'Delete' : 'Pending'}
-            </Button>
-            <Button onClick={this.onHidedeleteMessageModalShow} variant="light">
-              Cancel
-            </Button>
-          </Modal.Footer>
-        </Modal>
       </>
     );
   }

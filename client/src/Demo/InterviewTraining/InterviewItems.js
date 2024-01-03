@@ -24,10 +24,11 @@ import {
 } from 'react-icons/ai';
 import { getEditors, updateInterviewTrainer } from '../../api';
 import EditorSimple from '../../components/EditorJs/EditorSimple';
+import NotesEditor from '../Notes/NotesEditor';
 
 function InterviewItems(props) {
   const { t, i18n } = useTranslation();
-  const [isCollapse, setIsCollapse] = useState(false);
+  const [isCollapse, setIsCollapse] = useState(props.expanded);
   const [showModal, setShowModal] = useState(false);
   const [interview, setiInterview] = useState(props.interview);
   const [editors, setEditors] = useState([]);
@@ -85,8 +86,14 @@ function InterviewItems(props) {
     }
   };
 
-  const handleEditorChange = (content) => {
+  const handleClickInterviewDescriptionSave = (content) => {
     // TODO
+    console.log('description save');
+  };
+
+  const handleClickInterviewNotesSave = (content) => {
+    // TODO
+    console.log('notes save');
   };
 
   return (
@@ -187,22 +194,20 @@ function InterviewItems(props) {
               </h5>{' '}
             </Row>
             <Row>
-              <Card>
-                <EditorSimple
-                  holder={`${props.interview._id.toString()}-description`}
-                  readOnly={props.readOnly}
-                  imageEnable={false}
-                  handleEditorChange={handleEditorChange}
-                  handleClickSave={props.handleClickSave}
-                  editorState={
-                    interview.interview_description &&
-                    interview.interview_description !== '{}'
-                      ? JSON.parse(interview.interview_description)
-                      : { time: new Date(), blocks: [] }
-                  }
-                  defaultHeight={0}
-                />
-              </Card>
+              <NotesEditor
+                thread={null}
+                notes_id={`${props.interview._id.toString()}-description`}
+                // buttonDisabled={this.state.buttonDisabled}
+                editorState={
+                  interview.interview_description &&
+                  interview.interview_description !== '{}'
+                    ? JSON.parse(interview.interview_description)
+                    : { time: new Date(), blocks: [] }
+                }
+                unique_id={`${props.interview._id.toString()}-description`}
+                handleClickSave={handleClickInterviewDescriptionSave}
+                readOnly={props.readOnly}
+              />
             </Row>
             <br />
             <Row>
@@ -260,22 +265,20 @@ function InterviewItems(props) {
               </h5>{' '}
             </Row>
             <Row>
-              <Card>
-                <EditorSimple
-                  holder={`${props.interview._id.toString()}-notes`}
-                  readOnly={props.readOnly}
-                  imageEnable={false}
-                  handleEditorChange={handleEditorChange}
-                  handleClickSave={props.handleClickSave}
-                  editorState={
-                    interview.interview_notes &&
-                    interview.interview_notes !== '{}'
-                      ? JSON.parse(interview.interview_notes)
-                      : { time: new Date(), blocks: [] }
-                  }
-                  defaultHeight={0}
-                />
-              </Card>
+              <NotesEditor
+                thread={null}
+                notes_id={`${props.interview._id.toString()}-notes`}
+                // buttonDisabled={this.state.buttonDisabled}
+                editorState={
+                  interview.interview_notes &&
+                  interview.interview_notes !== '{}'
+                    ? JSON.parse(interview.interview_notes)
+                    : { time: new Date(), blocks: [] }
+                }
+                unique_id={`${props.interview._id.toString()}-notes`}
+                handleClickSave={handleClickInterviewNotesSave}
+                readOnly={props.readOnly}
+              />
             </Row>
           </Card.Body>
         </Collapse>

@@ -49,7 +49,7 @@ function NotesEditor(props) {
           <Card border="dark">
             <Card.Body border="dark">
               <EditorSimple
-                holder={'editorjs'}
+                holder={`${props.notes_id}`}
                 thread={props.thread}
                 defaultHeight={0}
                 readOnly={false}

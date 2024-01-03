@@ -151,6 +151,7 @@ class InterviewTraining extends React.Component {
       }
     );
   };
+
   openDeleteDocModalWindow = (interview) => {
     this.setState((state) => ({
       ...state,
@@ -469,6 +470,7 @@ class InterviewTraining extends React.Component {
                   <InterviewItems
                     key={i}
                     user={this.props.user}
+                    readOnly={true}
                     interview={interview}
                     openDeleteDocModalWindow={this.openDeleteDocModalWindow}
                   />

@@ -7,18 +7,10 @@ class SingleInterviewEdit extends React.Component {
   state = {
     interview: this.props.interview
   };
+
   componentDidMount() {
     this.setState({ interview: this.props.interview });
   }
-  handleChange_category = (e) => {
-    e.preventDefault();
-    var category_temp = { ...this.state.category };
-    category_temp = e.target.value;
-    this.setState((state) => ({
-      ...state,
-      category: category_temp
-    }));
-  };
 
   handleChange = (e) => {
     const interview_temp = { ...this.state.interview };

@@ -20,51 +20,13 @@ class MessageEdit extends Component {
   state = {
     editorState: null,
     message_id: '',
-    // isLoaded: false,
     deleteMessageModalShow: false
   };
-  //   componentDidMount() {
-  //     var initialEditorState = null;
-  //     if (this.props.message.message && this.props.message.message !== '{}') {
-  //       try {
-  //         initialEditorState = JSON.parse(this.props.message.message);
-  //       } catch (e) {
-  //         initialEditorState = { time: new Date(), blocks: [] };
-  //       }
-  //     } else {
-  //       initialEditorState = { time: new Date(), blocks: [] };
-  //     }
-  //     this.setState((state) => ({
-  //       ...state,
-  //       editorState: initialEditorState,
-  //       isLoaded: true,
-  //       deleteMessageModalShow: false
-  //     }));
-  //   }
-  // componentDidUpdate(prevProps, prevState) {
-  //   if (prevProps.message.message !== this.props.message.message) {
-  //     var initialEditorState = null;
-  //     if (this.props.message.message && this.props.message.message !== '{}') {
-  //       try {
-  //         initialEditorState = JSON.parse(this.props.message.message);
-  //       } catch (e) {
-  //         initialEditorState = { time: new Date(), blocks: [] };
-  //       }
-  //     } else {
-  //       initialEditorState = { time: new Date(), blocks: [] };
-  //     }
-  //     this.setState((state) => ({
-  //       ...state,
-  //       editorState: initialEditorState,
-  //       isLoaded: this.props.isLoaded,
-  //       deleteMessageModalShow: false
-  //     }));
-  //   }
-  // }
 
   onOpendeleteMessageModalShow = (e, message_id, createdAt) => {
     this.setState({ message_id, deleteMessageModalShow: true, createdAt });
   };
+
   onHidedeleteMessageModalShow = (e) => {
     this.setState({
       message_id: '',

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Spinner } from 'react-bootstrap';
+import { Button, Modal, Spinner } from 'react-bootstrap';
 
 import SingleInterviewView from './SingleInterviewView';
 import SingleInterviewEdit from './SingleInterviewEdit';
@@ -9,6 +9,7 @@ import ModalMain from '../Utils/ModalHandler/ModalMain';
 
 import { getInterview, updateInterview } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
+import InterviewItems from './InterviewItems';
 
 class SingleInterview extends React.Component {
   state = {
@@ -64,6 +65,7 @@ class SingleInterview extends React.Component {
       }
     );
   }
+
   componentDidUpdate(prevProps, prevState) {
     if (
       prevProps.match.params.interview_id !==
@@ -153,6 +155,22 @@ class SingleInterview extends React.Component {
     this.setState((state) => ({ ...state, in_edit_mode: false }));
   };
 
+  openDeleteDocModalWindow = (interview) => {
+    this.setState((state) => ({
+      ...state,
+      interview_id_toBeDelete: interview._id,
+      interview_name_toBeDelete: `${interview.program_id.school} ${interview.program_id.program_name}`,
+      SetDeleteDocModel: true
+    }));
+  };
+
+  closeDeleteDocModalWindow = (e) => {
+    this.setState((state) => ({
+      ...state,
+      SetDeleteDocModel: false
+    }));
+  };
+
   ConfirmError = () => {
     this.setState((state) => ({
       ...state,
@@ -184,7 +202,7 @@ class SingleInterview extends React.Component {
     if (res_status >= 400) {
       return <ErrorPage res_status={res_status} />;
     }
-    TabTitle(`Doc: ${this.state.document_title}`);
+    TabTitle(`Interview: ${this.state.document_title}`);
     if (this.state.isEdit) {
       return (
         <>
@@ -195,16 +213,21 @@ class SingleInterview extends React.Component {
               res_modal_message={res_modal_message}
             />
           )}
-          <SingleInterviewEdit
+          <InterviewItems
             user={this.props.user}
-            category={this.state.category}
+            readOnly={false}
+            interview={interview}
+            openDeleteDocModalWindow={this.openDeleteDocModalWindow}
+          />
+          {/* <SingleInterviewEdit
+            user={this.props.user}
             interview={interview}
             editorState={this.state.editorState}
             author={this.state.author}
             isLoaded={isLoaded}
             handleClickEditToggle={this.handleClickEditToggle}
             handleClickSave={this.handleClickSave}
-          />
+          /> */}
         </>
       );
     } else {
@@ -217,15 +240,35 @@ class SingleInterview extends React.Component {
               res_modal_message={res_modal_message}
             />
           )}
-          <SingleInterviewView
-            category={this.state.category}
-            interview={interview}
-            editorState={this.state.editorState}
-            author={this.state.author}
-            isLoaded={isLoaded}
+          <InterviewItems
             user={this.props.user}
-            handleClickEditToggle={this.handleClickEditToggle}
+            readOnly={true}
+            interview={interview}
+            openDeleteDocModalWindow={this.openDeleteDocModalWindow}
           />
+          <Modal
+            show={this.state.SetDeleteDocModel}
+            onHide={this.closeDeleteDocModalWindow}
+            aria-labelledby="contained-modal-title-vcenter"
+            centered
+          >
+            <Modal.Header>
+              <Modal.Title id="contained-modal-title-vcenter">
+                Warning
+              </Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              Do you want to delete the interview request of{' '}
+              <b>{this.state.interview_name_toBeDelete}</b>?
+            </Modal.Body>
+            <Modal.Footer>
+              <Button disabled={!isLoaded} onClick={this.handleDeleteInterview}>
+                Yes
+              </Button>
+
+              <Button onClick={this.closeDeleteDocModalWindow}>No</Button>
+            </Modal.Footer>
+          </Modal>
         </>
       );
     }

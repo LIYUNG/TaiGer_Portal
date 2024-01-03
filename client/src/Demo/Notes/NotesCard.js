@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Spinner, Button, Modal } from 'react-bootstrap';
+import { Button, Modal } from 'react-bootstrap';
 
-import { convertDate, spinner_style } from '../Utils/contants';
+import { convertDate } from '../Utils/contants';
 import NotesEditor from './NotesEditor';
 import { updateStudentNotes } from '../../api';
 
@@ -13,6 +13,7 @@ class NotesCard extends Component {
     buttonDisabled: false,
     deleteMessageModalShow: false
   };
+
   componentDidMount() {
     this.setState((state) => ({
       ...state,
@@ -88,6 +89,7 @@ class NotesCard extends Component {
       <>
         <NotesEditor
           thread={this.state.thread}
+          notes_id={'editorjs'}
           // buttonDisabled={this.state.buttonDisabled}
           editorState={this.props.notes}
           unique_id={this.props.student_id}

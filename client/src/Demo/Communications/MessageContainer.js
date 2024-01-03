@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import Message from './Message';
 import { updateAMessageInCommunicationThread } from '../../api';
 import MessageEdit from './MessageEdit';
-import DocThreadEditor from './DocThreadEditor';
 
 class MessageList extends Component {
   state = {

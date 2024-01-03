@@ -84,6 +84,10 @@ function InterviewItems(props) {
     }
   };
 
+  const handleEditorChange = (content) => {
+    // TODO
+  };
+
   return (
     <>
       <Card className="my-2">
@@ -175,8 +179,9 @@ function InterviewItems(props) {
               <Card>
                 <EditorSimple
                   holder={`${props.interview._id.toString()}-description`}
-                  readOnly={true}
-                  imageEnable={true}
+                  readOnly={props.readOnly}
+                  imageEnable={false}
+                  handleEditorChange={handleEditorChange}
                   handleClickSave={props.handleClickSave}
                   editorState={
                     interview.interview_description &&
@@ -247,8 +252,9 @@ function InterviewItems(props) {
               <Card>
                 <EditorSimple
                   holder={`${props.interview._id.toString()}-notes`}
-                  readOnly={true}
-                  imageEnable={true}
+                  readOnly={props.readOnly}
+                  imageEnable={false}
+                  handleEditorChange={handleEditorChange}
                   handleClickSave={props.handleClickSave}
                   editorState={
                     interview.interview_notes &&
@@ -272,7 +278,7 @@ function InterviewItems(props) {
               </h5>
             </Row>
             <Row>
-              {editors.map((editor, i) => (
+              {editors?.map((editor, i) => (
                 <>
                   <ListGroup as="ul">
                     <ListGroup.Item

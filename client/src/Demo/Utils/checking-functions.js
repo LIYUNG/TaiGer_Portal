@@ -1,6 +1,7 @@
 import React from 'react';
 import Linkify from 'react-linkify';
 import { getNumberOfDays, convertDate, profile_list } from './contants';
+
 export const is_TaiGer_role = (user) =>
   user.role === 'Admin' || user.role === 'Agent' || user.role === 'Editor';
 export const is_TaiGer_AdminAgent = (user) =>

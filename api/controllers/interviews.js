@@ -63,34 +63,12 @@ const deleteInterview = asyncHandler(async (req, res) => {
   res.status(200).send({ success: true });
 });
 
-const updateInterviewTrainer = asyncHandler(async (req, res) => {
-  const {
-    params: { interview_id },
-    body: { trainer_id }
-  } = req;
-  console.log(trainer_id);
-  const interview = await Interview.findByIdAndUpdate(
-    interview_id,
-    { trainer_id },
-    {
-      new: true
-    }
-  )
-    .populate('student_id trainer_id', 'firstname lastname email')
-    .populate('program_id', 'school program_name degree semester')
-    .lean();
-
-  res.status(200).send({ success: true, data: interview });
-});
-
 const updateInterview = asyncHandler(async (req, res) => {
   const {
-    params: { interview_id },
-    body: payload
+    params: { interview_id }
   } = req;
-
+  const payload = req.body;
   const interview = await Interview.findByIdAndUpdate(interview_id, payload, {
-    upsert: true,
     new: true
   })
     .populate('student_id trainer_id', 'firstname lastname email')
@@ -134,7 +112,6 @@ module.exports = {
   getAllInterviews,
   getMyInterview,
   getInterview,
-  updateInterviewTrainer,
   updateInterview,
   deleteInterview,
   createInterview

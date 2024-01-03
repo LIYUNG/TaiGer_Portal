@@ -22,7 +22,7 @@ import {
   AiOutlineDelete,
   AiOutlineEdit
 } from 'react-icons/ai';
-import { getEditors, updateInterviewTrainer } from '../../api';
+import { getEditors, updateInterview } from '../../api';
 import EditorSimple from '../../components/EditorJs/EditorSimple';
 import NotesEditor from '../Notes/NotesEditor';
 
@@ -75,10 +75,9 @@ function InterviewItems(props) {
   const updateTrainer = async () => {
     const temp_trainer_id_array = Array.from(trainerId);
     console.log(temp_trainer_id_array);
-    const { data } = await updateInterviewTrainer(
-      interview._id.toString(),
-      temp_trainer_id_array
-    );
+    const { data } = await updateInterview(interview._id.toString(), {
+      trainer_id: temp_trainer_id_array
+    });
     const { data: interview_updated, success } = data;
     if (success) {
       setiInterview(interview_updated);
@@ -86,14 +85,28 @@ function InterviewItems(props) {
     }
   };
 
-  const handleClickInterviewDescriptionSave = (content) => {
-    // TODO
-    console.log('description save');
+  const handleClickInterviewDescriptionSave = async (e, editorState) => {
+    e.preventDefault();
+    var notes = JSON.stringify(editorState);
+    const { data } = await updateInterview(interview._id.toString(), {
+      interview_description: notes
+    });
+    const { data: interview_updated, success } = data;
+    if (success) {
+      setiInterview(interview_updated);
+    }
   };
 
-  const handleClickInterviewNotesSave = (content) => {
-    // TODO
-    console.log('notes save');
+  const handleClickInterviewNotesSave = async (e, editorState) => {
+    e.preventDefault();
+    var notes = JSON.stringify(editorState);
+    const { data } = await updateInterview(interview._id.toString(), {
+      interview_notes: notes
+    });
+    const { data: interview_updated, success } = data;
+    if (success) {
+      setiInterview(interview_updated);
+    }
   };
 
   return (

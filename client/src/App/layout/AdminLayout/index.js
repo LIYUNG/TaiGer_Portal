@@ -225,7 +225,6 @@ function AdminLayout(props) {
           </div>
         </div>
         <Footer />
-        {/* </FullScreen> */}
       </Aux>
     );
   }

@@ -8,7 +8,11 @@ export default function Footer(props) {
   const { i18n } = useTranslation();
 
   const handleOnChange = (e) => {
-    console.log(e.target.lang);
+    const storedLanguage = localStorage.getItem('locale');
+    if (storedLanguage === e.target.lang || e.target.lang === '') {
+      return;
+    }
+
     if (e.target.lang === 'en' || e.target.lang === 'zh-TW') {
       i18n.changeLanguage(e.target.lang);
       localStorage.setItem('locale', e.target.lang);
@@ -41,12 +45,24 @@ export default function Footer(props) {
         <li className="text-light">
           <b>Language &nbsp;</b>
         </li>
-        <li lang="en" className="text-light" style={{ cursor: 'pointer' }}>
-          English
+        <li
+          lang="en"
+          className="text-light"
+          style={{
+            cursor: localStorage.getItem('locale') === 'en' ? '' : 'pointer'
+          }}
+        >
+          {localStorage.getItem('locale') === 'en' ? <b>English</b> : 'English'}
         </li>
         <li className="text-light">&nbsp;|&nbsp;</li>
-        <li lang="zh-TW" className="text-light" style={{ cursor: 'pointer' }}>
-          中文
+        <li
+          lang="zh-TW"
+          className="text-light"
+          style={{
+            cursor: localStorage.getItem('locale') === 'zh-TW' ? '' : 'pointer'
+          }}
+        >
+          {localStorage.getItem('locale') === 'zh-TW' ? <b>中文</b> : '中文'}
         </li>
       </ul>
       <p

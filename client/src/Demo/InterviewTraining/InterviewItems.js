@@ -19,7 +19,8 @@ import DEMO from '../../store/constant';
 import {
   AiFillCheckCircle,
   AiFillQuestionCircle,
-  AiOutlineDelete
+  AiOutlineDelete,
+  AiOutlineEdit
 } from 'react-icons/ai';
 import { getEditors, updateInterviewTrainer } from '../../api';
 import EditorSimple from '../../components/EditorJs/EditorSimple';
@@ -109,7 +110,7 @@ function InterviewItems(props) {
               <b>{` ${interview.student_id.firstname} - ${interview.student_id.lastname}`}</b>
             </h5>
             <span style={{ float: 'right', cursor: 'pointer' }}>
-              {is_TaiGer_AdminAgent(props.user) && (
+              {is_TaiGer_AdminAgent(props.user) && !props.readOnly && (
                 <Button
                   variant="danger"
                   size="sm"
@@ -119,6 +120,16 @@ function InterviewItems(props) {
                   <AiOutlineDelete size={16} />
                   &nbsp; Delete
                 </Button>
+              )}
+              {props.readOnly && (
+                <Link
+                  to={`${DEMO.INTERVIEW_SINGLE_LINK(interview._id.toString())}`}
+                >
+                  <Button variant="secondary" size="sm" title="Delete">
+                    <AiOutlineEdit size={16} />
+                    &nbsp; Edit
+                  </Button>
+                </Link>
               )}
             </span>
           </Card.Title>
@@ -208,7 +219,7 @@ function InterviewItems(props) {
                       {t_id.firstname} {t_id.lastname}
                     </p>
                   ))}
-                  {is_TaiGer_role(props.user) && (
+                  {is_TaiGer_role(props.user) && !props.readOnly && (
                     <Button size="sm" variant="secondary" onClick={openModal}>
                       {t('Change Trainer')}
                     </Button>
@@ -216,7 +227,7 @@ function InterviewItems(props) {
                 </>
               ) : (
                 <>
-                  {is_TaiGer_role(props.user) && (
+                  {is_TaiGer_role(props.user) && !props.readOnly && (
                     <Button size="sm" onClick={openModal}>
                       {t('Assign Trainer')}
                     </Button>
@@ -237,7 +248,7 @@ function InterviewItems(props) {
             </Row>
             <Row>
               {`${interview.interview_training_time || 'Unscheduled'}`}
-              {is_TaiGer_role(props.user) && (
+              {is_TaiGer_role(props.user) && !props.readOnly && (
                 <Button size="sm">{t('Make Training Time Available')}</Button>
               )}
             </Row>

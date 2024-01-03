@@ -47,8 +47,8 @@ const getInterview = asyncHandler(async (req, res) => {
     .lean();
 
   if (!interview) {
-    logger.info('createInterview: this interview is already existed!');
-    throw new ErrorResponse(400, 'this interview is already existed!');
+    logger.info('getInterview: this interview is not found!');
+    throw new ErrorResponse(404, 'this interview is not found!');
   }
   res.status(200).send({ success: true, data: interview });
 });

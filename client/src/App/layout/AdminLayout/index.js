@@ -1,13 +1,8 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
-// import {FullScreen} from 'react-full-screen';
-// import windowSize from 'react-window-size';
-import {
-  useWindowSize,
-  useWindowWidth,
-  useWindowHeight
-} from '@react-hook/window-size';
+import { useWindowWidth } from '@react-hook/window-size';
+import { useTranslation } from 'react-i18next';
 
 import Navigation from './Navigation';
 import NavBar from './NavBar';
@@ -21,7 +16,6 @@ import routes3 from '../../../route3';
 import ScrollToTop from '../ScrollToTop';
 import { verify, logout } from '../../../api/index';
 import Footer from '../../../components/Footer/Footer';
-import { useTranslation } from 'react-i18next';
 
 function AdminLayout(props) {
   const width = useWindowWidth();
@@ -36,9 +30,14 @@ function AdminLayout(props) {
   });
 
   useEffect(() => {
-    // TODO: activate i18next by uncomment the following language changes
-    if (navigator.language === 'en' || navigator.language === 'zh-TW') {
-      i18n.changeLanguage(navigator.language);
+    const storedLanguage = localStorage.getItem('locale');
+    if (storedLanguage) {
+      if (navigator.language === 'en' || navigator.language === 'zh-TW') {
+        i18n.changeLanguage(storedLanguage);
+        // i18n.changeLanguage(navigator.language); // browser setting
+      } else {
+        i18n.changeLanguage('en');
+      }
     } else {
       i18n.changeLanguage('en');
     }

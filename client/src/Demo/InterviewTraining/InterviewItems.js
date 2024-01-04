@@ -12,6 +12,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import {
+  LinkableNewlineText,
   is_TaiGer_AdminAgent,
   is_TaiGer_role
 } from '../Utils/checking-functions';
@@ -170,7 +171,10 @@ function InterviewItems(props) {
                     <b>{` ${interview.student_id.firstname} - ${interview.student_id.lastname}`}</b>
                   </Link>
                 </h5>
-                <p>{`Email: ${interview.student_id.email}`}</p>
+                <p style={{ display: 'flex', alignItems: 'center' }}>
+                  <i className="feather icon-mail me-1" title="email" />
+                  <LinkableNewlineText text={interview.student_id.email} />
+                </p>
               </Col>
               <Col>
                 <h5>
@@ -234,8 +238,10 @@ function InterviewItems(props) {
               {interview.trainer_id && interview.trainer_id?.length !== 0 ? (
                 <>
                   {interview.trainer_id.map((t_id, idx) => (
-                    <p>
-                      {t_id.firstname} {t_id.lastname}
+                    <p style={{ display: 'flex', alignItems: 'center' }}>
+                      {t_id.firstname} {t_id.lastname} -&nbsp;
+                      <i className="feather icon-mail me-1" title="email" />
+                      <LinkableNewlineText text={t_id.email} />
                     </p>
                   ))}
                   {is_TaiGer_role(props.user) && !props.readOnly && (
@@ -246,6 +252,7 @@ function InterviewItems(props) {
                 </>
               ) : (
                 <>
+                  <p>{t('No Trainer Assigned')}</p>
                   {is_TaiGer_role(props.user) && !props.readOnly && (
                     <Button size="sm" onClick={openModal}>
                       {t('Assign Trainer')}

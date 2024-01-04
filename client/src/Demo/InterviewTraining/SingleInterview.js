@@ -1,8 +1,6 @@
 import React from 'react';
 import { Button, Card, Modal, Spinner } from 'react-bootstrap';
 
-import SingleInterviewView from './SingleInterviewView';
-import SingleInterviewEdit from './SingleInterviewEdit';
 import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
@@ -299,15 +297,6 @@ class SingleInterview extends React.Component {
             <Button onClick={this.closeDeleteDocModalWindow}>No</Button>
           </Modal.Footer>
         </Modal>
-        {/* <SingleInterviewEdit
-            user={this.props.user}
-            interview={interview}
-            editorState={this.state.editorState}
-            author={this.state.author}
-            isLoaded={isLoaded}
-            handleClickEditToggle={this.handleClickEditToggle}
-            handleClickSave={this.handleClickSave}
-          /> */}
       </>
     );
   }

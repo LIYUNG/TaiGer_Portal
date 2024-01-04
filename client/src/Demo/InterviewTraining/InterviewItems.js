@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Button,
   Card,
@@ -24,8 +24,8 @@ import {
   AiOutlineEdit
 } from 'react-icons/ai';
 import { getEditors, updateInterview } from '../../api';
-import EditorSimple from '../../components/EditorJs/EditorSimple';
 import NotesEditor from '../Notes/NotesEditor';
+import EventDateComponent from '../../components/DateComponent';
 
 function InterviewItems(props) {
   const { t, i18n } = useTranslation();
@@ -273,6 +273,7 @@ function InterviewItems(props) {
               {is_TaiGer_role(props.user) && !props.readOnly && (
                 <Button size="sm">{t('Make Training Time Available')}</Button>
               )}
+              <EventDateComponent eventDate={new Date('2024-01-01')} />
             </Row>
             <br />
             <Row>

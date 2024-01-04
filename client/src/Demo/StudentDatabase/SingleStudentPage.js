@@ -259,26 +259,6 @@ class SingleStudentPage extends React.Component {
     );
   };
 
-  handleChangeAgentlist = (e) => {
-    const { value, checked } = e.target;
-    this.setState((prevState) => ({
-      updateAgentList: {
-        ...prevState.updateAgentList,
-        [value]: checked
-      }
-    }));
-  };
-
-  handleChangeEditorlist = (e) => {
-    const { value, checked } = e.target;
-    this.setState((prevState) => ({
-      updateEditorList: {
-        ...prevState.updateEditorList,
-        [value]: checked
-      }
-    }));
-  };
-
   submitUpdateAgentlist = (e, updateAgentList, student_id) => {
     e.preventDefault();
     this.UpdateAgentlist(e, updateAgentList, student_id);
@@ -701,10 +681,8 @@ class SingleStudentPage extends React.Component {
                       agent_list={this.state.agent_list}
                       editor_list={this.state.editor_list}
                       updateAgentList={this.state.updateAgentList}
-                      handleChangeAgentlist={this.handleChangeAgentlist}
                       submitUpdateAgentlist={this.submitUpdateAgentlist}
                       updateEditorList={this.state.updateEditorList}
-                      handleChangeEditorlist={this.handleChangeEditorlist}
                       submitUpdateEditorlist={this.submitUpdateEditorlist}
                     />
                   </tbody>

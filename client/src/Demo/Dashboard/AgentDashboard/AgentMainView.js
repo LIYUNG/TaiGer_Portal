@@ -93,7 +93,6 @@ function AgentMainView(props) {
       editAgent={props.editAgent}
       agent_list={props.agent_list}
       updateAgentList={props.updateAgentList}
-      handleChangeAgentlist={props.handleChangeAgentlist}
       submitUpdateAgentlist={props.submitUpdateAgentlist}
       isDashboard={props.isDashboard}
       updateStudentArchivStatus={props.updateStudentArchivStatus}

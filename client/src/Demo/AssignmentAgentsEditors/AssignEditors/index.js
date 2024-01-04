@@ -104,16 +104,6 @@ class AssignEditors extends React.Component {
     );
   };
 
-  handleChangeEditorlist = (e) => {
-    const { value, checked } = e.target;
-    this.setState((prevState) => ({
-      updateEditorList: {
-        ...prevState.updateEditorList,
-        [value]: checked
-      }
-    }));
-  };
-
   submitUpdateEditorlist = (e, updateEditorList, student_id) => {
     e.preventDefault();
     this.UpdateEditorlist(e, updateEditorList, student_id);
@@ -206,7 +196,6 @@ class AssignEditors extends React.Component {
           editor_list={this.state.editor_list}
           students={this.state.students}
           updateEditorList={this.state.updateEditorList}
-          handleChangeEditorlist={this.handleChangeEditorlist}
           submitUpdateEditorlist={this.submitUpdateEditorlist}
         />
       </Aux>

@@ -106,7 +106,6 @@ class NoEditorsStudentsCard extends React.Component {
                 onHide={this.setEditorModalhide}
                 setmodalhide={this.setEditorModalhide}
                 updateEditorList={this.props.updateEditorList}
-                handleChangeEditorlist={this.props.handleChangeEditorlist}
                 submitUpdateEditorlist={this.submitUpdateEditorlist}
               />
             </>

@@ -28,10 +28,8 @@ class AdminMainView extends React.Component {
           agent_list={this.props.agent_list}
           editor_list={this.props.editor_list}
           updateAgentList={this.props.updateAgentList}
-          handleChangeAgentlist={this.props.handleChangeAgentlist}
           submitUpdateAgentlist={this.props.submitUpdateAgentlist}
           updateEditorList={this.props.updateEditorList}
-          handleChangeEditorlist={this.props.handleChangeEditorlist}
           submitUpdateEditorlist={this.props.submitUpdateEditorlist}
           isDashboard={this.props.isDashboard}
         />
@@ -77,44 +75,6 @@ class AdminMainView extends React.Component {
             user={this.props.user}
             title="Student Overview"
           />
-          {/* <Card className="px-0 my-0 mx-0" bg={'dark'} text={'white'}>
-            <Card.Header>
-              <Card.Title className="my-0 mx-0 text-light">
-                Student Overview
-              </Card.Title>
-            </Card.Header>
-            <Table
-              responsive
-              bordered
-              hover
-              className="px-0 my-0 mx-0 py-0"
-              variant="dark"
-              text="light"
-              size="sm"
-            >
-              <thead>
-                <tr>
-                  <th>Target Year</th>
-                  <th>First-/Lastname,Birthday</th>
-                  <th>Graduated</th>
-                  <th>Program Selection</th>
-                  <th>Applications</th>
-                  <th>Next Program to apply</th>
-                  <th>Next Program deadline</th>
-                  <th>day left</th>
-                  <th>Next Program status</th>
-                  <th>Survey</th>
-                  <th>Base Documents</th>
-                  <th>Language</th>
-                  <th>Course Analysis</th>
-                  <th>CV</th>
-                  <th>Portals</th>
-                  <th>Uni-Assist</th>
-                </tr>
-              </thead>
-              <tbody>{agent_reviewing}</tbody>
-            </Table>
-          </Card> */}
         </Row>
         <Row>
           <Table

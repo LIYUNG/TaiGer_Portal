@@ -37,7 +37,6 @@ class EditorMainView extends React.Component {
               editor_list={this.props.editor_list}
               editEditor={this.props.editEditor}
               updateEditorList={this.props.updateEditorList}
-              handleChangeEditorlist={this.props.handleChangeEditorlist}
               submitUpdateEditorlist={this.props.submitUpdateEditorlist}
               isDashboard={this.props.isDashboard}
               updateStudentArchivStatus={this.props.updateStudentArchivStatus}

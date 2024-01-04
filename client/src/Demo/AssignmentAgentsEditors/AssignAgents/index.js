@@ -104,16 +104,6 @@ class AssignAgents extends React.Component {
     );
   };
 
-  handleChangeAgentlist = (e) => {
-    const { value, checked } = e.target;
-    this.setState((prevState) => ({
-      updateAgentList: {
-        ...prevState.updateAgentList,
-        [value]: checked
-      }
-    }));
-  };
-
   submitUpdateAgentlist = (e, updateAgentList, student_id) => {
     e.preventDefault();
     this.UpdateAgentlist(e, updateAgentList, student_id);
@@ -206,7 +196,6 @@ class AssignAgents extends React.Component {
           UpdateAgentlist={this.UpdateAgentlist}
           students={this.state.students}
           updateAgentList={this.state.updateAgentList}
-          handleChangeAgentlist={this.handleChangeAgentlist}
           submitUpdateAgentlist={this.submitUpdateAgentlist}
         />
       </Aux>

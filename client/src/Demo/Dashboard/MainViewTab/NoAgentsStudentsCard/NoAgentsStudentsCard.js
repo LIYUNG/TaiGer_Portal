@@ -88,7 +88,6 @@ class NoAgentsStudentsCard extends React.Component {
                 onHide={this.setAgentModalhide}
                 setmodalhide={this.setAgentModalhide}
                 updateAgentList={this.props.updateAgentList}
-                handleChangeAgentlist={this.props.handleChangeAgentlist}
                 submitUpdateAgentlist={this.submitUpdateAgentlist}
               />
             </>

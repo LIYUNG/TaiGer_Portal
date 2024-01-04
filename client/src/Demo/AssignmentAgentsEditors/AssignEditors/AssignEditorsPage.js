@@ -13,7 +13,6 @@ class AssignEditorsPage extends React.Component {
         editEditor={this.props.editEditor}
         editor_list={this.props.editor_list}
         updateEditorList={this.props.updateEditorList}
-        handleChangeEditorlist={this.props.handleChangeEditorlist}
         submitUpdateEditorlist={this.props.submitUpdateEditorlist}
       />
     ));

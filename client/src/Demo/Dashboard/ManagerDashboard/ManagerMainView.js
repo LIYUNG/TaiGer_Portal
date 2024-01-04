@@ -128,22 +128,11 @@ class ManagerMainView extends React.Component {
         editAgent={this.props.editAgent}
         agent_list={this.props.agent_list}
         updateAgentList={this.props.updateAgentList}
-        handleChangeAgentlist={this.props.handleChangeAgentlist}
         submitUpdateAgentlist={this.props.submitUpdateAgentlist}
         isDashboard={this.props.isDashboard}
         updateStudentArchivStatus={this.props.updateStudentArchivStatus}
       />
     ));
-
-    const agent_reviewing = this.props.students
-      .filter((student) =>
-        student.agents.some(
-          (agent) => agent._id === this.props.user._id.toString()
-        )
-      )
-      .map((student, i) => (
-        <AgentReviewing key={i} role={this.props.user.role} student={student} />
-      ));
 
     const base_documents_checking_tasks = this.props.students
       .filter((student) =>

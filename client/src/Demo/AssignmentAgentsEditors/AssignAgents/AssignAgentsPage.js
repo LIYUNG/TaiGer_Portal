@@ -12,7 +12,6 @@ class AssignAgentsPage extends React.Component {
         editAgent={this.props.editAgent}
         agent_list={this.props.agent_list}
         updateAgentList={this.props.updateAgentList}
-        handleChangeAgentlist={this.props.handleChangeAgentlist}
         submitUpdateAgentlist={this.props.submitUpdateAgentlist}
       />
     ));

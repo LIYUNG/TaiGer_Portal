@@ -1,84 +1,98 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Table, Form, Modal } from 'react-bootstrap';
 import { Button } from 'react-bootstrap';
-class EditEditorsSubpage extends React.Component {
+function EditEditorsSubpage(props) {
   // edit Editor subpage
-  render() {
-    return (
-      <Modal
-        show={this.props.show}
-        onHide={this.props.onHide}
-        size="l"
-        aria-labelledby="contained-modal-title-vcenter"
-        centered
-      >
-        <Modal.Header>
-          <Modal.Title id="contained-modal-title-vcenter">
-            Editor for {this.props.student.firstname} -{' '}
-            {this.props.student.lastname}
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <h4>Editor:</h4>
-          <Table size="sm">
-            <tbody>
-              {this.props.editor_list ? (
-                this.props.editor_list.map((editor, i) => (
-                  <tr key={i + 1}>
-                    <th>
-                      <Form.Group>
-                        <Form.Check
-                          custom
-                          type="checkbox"
-                          name="student_id"
-                          defaultChecked={
-                            this.props.student.editors
-                              ? this.props.student.editors.some(
-                                  (e) => e._id === editor._id
-                                )
-                              : false
-                          }
-                          onChange={(e) => this.props.handleChangeEditorlist(e)}
-                          value={editor._id}
-                          id={'editor' + i + 1}
-                        />
-                      </Form.Group>
-                    </th>
-                    <td>
-                      <h5 className="my-0">
-                        {editor.firstname} {editor.lastname}
-                      </h5>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
+  const [checkboxState, setCheckboxState] = useState({});
+
+  useEffect(() => {
+    // Initialize the state with checked checkboxes based on the student's agents
+    const initialCheckboxState = {};
+    props.editor_list?.forEach((editor, i) => {
+      initialCheckboxState[editor._id] = props.student.editors
+        ? props.student.editors.some((a) => a._id === editor._id)
+        : false;
+    });
+    setCheckboxState(initialCheckboxState);
+  }, [props.editor_list, props.student.editors]);
+
+  const handleChangeEditorlist = (e) => {
+    const { value } = e.target;
+    setCheckboxState((prevState) => ({
+      ...prevState,
+      [value]: !prevState[value]
+    }));
+  };
+
+  return (
+    <Modal
+      show={props.show}
+      onHide={props.onHide}
+      size="l"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
+    >
+      <Modal.Header>
+        <Modal.Title id="contained-modal-title-vcenter">
+          Editor for {props.student.firstname} - {props.student.lastname}
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <h4>Editor:</h4>
+        <Table size="sm">
+          <tbody>
+            {props.editor_list ? (
+              props.editor_list.map((editor, i) => (
+                <tr key={i + 1}>
+                  <th>
+                    <Form.Group>
+                      <Form.Check
+                        custom
+                        type="checkbox"
+                        name="student_id"
+                        defaultChecked={
+                          props.student.editors
+                            ? props.student.editors.some(
+                                (e) => e._id === editor._id
+                              )
+                            : false
+                        }
+                        onChange={(e) => handleChangeEditorlist(e)}
+                        value={editor._id}
+                        id={'editor' + i + 1}
+                      />
+                    </Form.Group>
+                  </th>
                   <td>
-                    <h5 className="my-0"> No Editor</h5>
+                    <h5 className="my-0">
+                      {editor.firstname} {editor.lastname}
+                    </h5>
                   </td>
                 </tr>
-              )}
-            </tbody>
-          </Table>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button
-            onClick={(e) =>
-              this.props.submitUpdateEditorlist(
-                e,
-                this.props.updateEditorList,
-                this.props.student._id
-              )
-            }
-          >
-            Update
-          </Button>
-          <Button onClick={this.props.setmodalhide} variant="light">
-            Cancel
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    );
-  }
+              ))
+            ) : (
+              <tr>
+                <td>
+                  <h5 className="my-0"> No Editor</h5>
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </Table>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button
+          onClick={(e) =>
+            props.submitUpdateEditorlist(e, checkboxState, props.student._id)
+          }
+        >
+          Update
+        </Button>
+        <Button onClick={props.setmodalhide} variant="light">
+          Cancel
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  );
 }
 export default EditEditorsSubpage;

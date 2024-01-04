@@ -1,4 +1,4 @@
-import { BASE_URL, request, request_streaming } from './request';
+import { BASE_URL, request } from './request';
 
 export const login = (credentials) => request.post('/auth/login', credentials);
 

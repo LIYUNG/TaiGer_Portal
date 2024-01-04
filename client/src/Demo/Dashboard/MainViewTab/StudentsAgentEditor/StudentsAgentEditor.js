@@ -28,37 +28,35 @@ function StudentsAgentEditor(props) {
 
   const startEditingAgent = (student) => {
     props.editAgent(student);
-    setStudentsAgentEditor({
-      ...studentsAgentEditor,
+    setStudentsAgentEditor((prevState) => ({
+      ...prevState,
       subpage: 1,
       showAgentPage: true
-    });
+    }));
   };
 
   const setEditorModalhide = () => {
-    setStudentsAgentEditor({
-      ...studentsAgentEditor,
+    setStudentsAgentEditor((prevState) => ({
+      ...prevState,
       showEditorPage: false
-    });
+    }));
   };
 
   const startEditingEditor = (student) => {
     props.editEditor(student);
-    setStudentsAgentEditor({
-      ...studentsAgentEditor,
+    setStudentsAgentEditor((prevState) => ({
+      ...prevState,
       subpage: 2,
       showEditorPage: true
-    });
+    }));
   };
 
   const submitUpdateAgentlist = (e, updateAgentList, student_id) => {
-    e.preventDefault();
     setAgentModalhide();
     props.submitUpdateAgentlist(e, updateAgentList, student_id);
   };
 
   const submitUpdateEditorlist = (e, updateEditorList, student_id) => {
-    e.preventDefault();
     setEditorModalhide();
     props.submitUpdateEditorlist(e, updateEditorList, student_id);
   };
@@ -66,9 +64,7 @@ function StudentsAgentEditor(props) {
   let studentsAgent;
   let studentsEditor;
   if (props.student.agents === undefined || props.student.agents.length === 0) {
-    studentsAgent = (
-      <p className="text-danger">{t('No Agent assigned')}</p>
-    );
+    studentsAgent = <p className="text-danger">{t('No Agent assigned')}</p>;
   } else {
     studentsAgent = props.student.agents.map((agent, i) => (
       <div key={agent._id}>
@@ -253,7 +249,6 @@ function StudentsAgentEditor(props) {
             onHide={setAgentModalhide}
             setmodalhide={setAgentModalhide}
             updateAgentList={props.updateAgentList}
-            handleChangeAgentlist={props.handleChangeAgentlist}
             submitUpdateAgentlist={submitUpdateAgentlist}
           />
           <EditEditorsSubpage
@@ -263,7 +258,6 @@ function StudentsAgentEditor(props) {
             onHide={setEditorModalhide}
             setmodalhide={setEditorModalhide}
             updateEditorList={props.updateEditorList}
-            handleChangeEditorlist={props.handleChangeEditorlist}
             submitUpdateEditorlist={submitUpdateEditorlist}
           />
         </>

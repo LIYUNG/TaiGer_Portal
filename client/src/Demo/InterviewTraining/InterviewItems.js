@@ -135,7 +135,7 @@ function InterviewItems(props) {
                   variant="danger"
                   size="sm"
                   title="Delete"
-                  onClick={() => props.openDeleteDocModalWindow(interview)}
+                  onClick={(e) => props.openDeleteDocModalWindow(e, interview)}
                 >
                   <AiOutlineDelete size={16} />
                   &nbsp; Delete
@@ -175,9 +175,10 @@ function InterviewItems(props) {
               <Col>
                 <h5>
                   <Link
-                    to={`${DEMO.INTERVIEW_SINGLE_LINK(
-                      interview._id.toString()
+                    to={`${DEMO.SINGLE_PROGRAM_LINK(
+                      interview.program_id._id.toString()
                     )}`}
+                    target="_blank"
                   >
                     <i className="feather icon-star me-1" />
                     {t('Interview Program')}:&nbsp;
@@ -256,12 +257,8 @@ function InterviewItems(props) {
             <br />
             <Row>
               <h5>
-                <Link
-                  to={`${DEMO.INTERVIEW_SINGLE_LINK(interview._id.toString())}`}
-                >
-                  <i className="feather icon-calendar me-1" />
-                  {t('Interview Training Time')}:&nbsp;
-                </Link>
+                <i className="feather icon-calendar me-1" />
+                {t('Interview Training Time')}:&nbsp;
               </h5>
             </Row>
             <Row>

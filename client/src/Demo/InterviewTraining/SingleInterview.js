@@ -159,7 +159,8 @@ class SingleInterview extends React.Component {
     this.setState((state) => ({ ...state, in_edit_mode: false }));
   };
 
-  openDeleteDocModalWindow = (interview) => {
+  openDeleteDocModalWindow = (e, interview) => {
+    e.stopPropagation();
     this.setState((state) => ({
       ...state,
       interview_id_toBeDelete: interview._id,

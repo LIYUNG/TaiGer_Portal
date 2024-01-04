@@ -152,7 +152,8 @@ class InterviewTraining extends React.Component {
     );
   };
 
-  openDeleteDocModalWindow = (interview) => {
+  openDeleteDocModalWindow = (e, interview) => {
+    e.stopPropagation();
     this.setState((state) => ({
       ...state,
       interview_id_toBeDelete: interview._id,

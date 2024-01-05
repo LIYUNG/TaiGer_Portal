@@ -39,7 +39,6 @@ class ButtonSetUploaded extends React.Component {
     isLoaded: this.props.isLoaded,
     feedback: '',
     deleteFileWarningModel: false,
-    CommentModel: false,
     showPreview: false,
     preview_path: '#',
     num_points: base_documents_checklist[this.props.k]
@@ -69,16 +68,13 @@ class ButtonSetUploaded extends React.Component {
   closeOffcanvasWindow = () => {
     this.setState((state) => ({ ...state, baseDocsflagOffcanvas: false }));
   };
+
   openOffcanvasWindow = () => {
     this.setState((state) => ({ ...state, baseDocsflagOffcanvas: true }));
   };
 
   closeWarningWindow = () => {
     this.setState((state) => ({ ...state, deleteFileWarningModel: false }));
-  };
-
-  closeCommentWindow = () => {
-    this.setState((state) => ({ ...state, CommentModel: false }));
   };
 
   closePreviewWindow = () => {
@@ -424,37 +420,6 @@ class ButtonSetUploaded extends React.Component {
               )}
             </Button>
             <Button onClick={this.closeAcceptWarningWindow}>No</Button>
-          </Modal.Footer>
-        </Modal>
-        <Modal
-          show={this.state.CommentModel}
-          onHide={this.closeCommentWindow}
-          aria-labelledby="contained-modal-title-vcenter"
-          centered
-        >
-          <Modal.Header>
-            <Modal.Title id="contained-modal-title-vcenter">
-              Comments
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>{this.state.comments}</Modal.Body>
-          <Modal.Footer>
-            <Button onClick={this.closeCommentWindow}>
-              {!this.state.isLoaded ? (
-                <div>
-                  <Spinner
-                    animation="border"
-                    role="status"
-                    variant="light"
-                    size="sm"
-                  >
-                    <span className="visually-hidden"></span>
-                  </Spinner>
-                </div>
-              ) : (
-                'Ok'
-              )}
-            </Button>
           </Modal.Footer>
         </Modal>
         <Modal

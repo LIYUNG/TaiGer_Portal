@@ -151,6 +151,7 @@ export const translation_resources = {
       Description: 'Description',
       Editor: 'Editor',
       Editors: 'Editors',
+      Error: 'Error',
       'Forgot Password': 'Forgot Password',
       Login: 'Login',
       'Meeting Link': 'Meeting Link',
@@ -176,9 +177,11 @@ export const translation_resources = {
       Cancel: 'Cancel',
       Website: 'Website',
       Year: 'Year',
+      'Switch View': 'Switch View',
       'Document Type': 'Document Type',
       'Last update': 'Last update at',
       'Upload Time': 'Upload Time',
+      'Last Login': 'Last Login',
       'Log Out': 'Log Out'
     }
   },
@@ -329,6 +332,7 @@ export const translation_resources = {
       Description: '描述',
       Editor: '編輯',
       Editors: '編輯',
+      Error: '錯誤',
       'Forgot Password': '忘記密碼',
       Login: '登入',
       'Meeting Link': '會議連結',
@@ -354,9 +358,11 @@ export const translation_resources = {
       Cancel: '取消',
       Website: '網站',
       Year: '年',
+      'Switch View': '更換視角',
       'Document Type': '文件種類',
       'Last update': '最後更新於',
       'Upload Time': '上傳時間',
+      'Last Login': '最近登入',
       'Log Out': '登出'
     }
   }

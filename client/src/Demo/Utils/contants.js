@@ -767,9 +767,9 @@ export const program_fields = [
   { name: 'RL Required?', prop: 'rl_required' },
   { name: 'RL Requirements', prop: 'rl_requirements' },
   { name: 'Essay Required?', prop: 'essay_required' },
-  { name: 'Essay Requirements?', prop: 'essay_requirements' },
+  { name: 'Essay Requirements', prop: 'essay_requirements' },
   { name: 'Portfolio Required?', prop: 'portfolio_required' },
-  { name: 'Portfolio Requirements?', prop: 'portfolio_requirements' },
+  { name: 'Portfolio Requirements', prop: 'portfolio_requirements' },
   { name: 'Supplementary Form Required?', prop: 'supplementary_form_required' },
   {
     name: 'Supplementary Form Requirements',
@@ -902,7 +902,8 @@ export const LANGUAGES_OPTIONS = () => {
       <option value="-">-</option>
       <option value="English">English</option>
       <option value="German">German</option>
-      <option value="German-English">German-English</option>
+      <option value="German-and-English">German-AND-English</option>
+      <option value="German-or-English">German-OR-English</option>
     </>
   );
 };

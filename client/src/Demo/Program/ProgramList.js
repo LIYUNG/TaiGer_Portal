@@ -8,11 +8,12 @@ import {
   usePagination
 } from 'react-table';
 import { Link, Redirect } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import ProgramListSubpage from './ProgramListSubpage';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
-import { Role, spinner_style } from '../Utils/contants';
+import { spinner_style } from '../Utils/contants';
 
 import { Button, Modal, Table, Row, Col, Spinner, Card } from 'react-bootstrap';
 import { getPrograms, assignProgramToStudent, createProgram } from '../../api';
@@ -30,6 +31,7 @@ function GlobalFilter({
   globalFilter,
   setGlobalFilter
 }) {
+  const { t, i18n } = useTranslation();
   const count = preGlobalFilteredRows.length;
   const [value, setValue] = React.useState(globalFilter);
   const onChange = useAsyncDebounce((value) => {
@@ -38,14 +40,13 @@ function GlobalFilter({
 
   return (
     <span>
-      Search:{' '}
+      {t('Search')}:&nbsp;
       <input
         value={value || ''}
         onChange={(e) => {
           setValue(e.target.value);
           onChange(e.target.value);
         }}
-        // placeholder={`${count} records...`}
         placeholder={` TUM, Management ...`}
         style={{
           fontSize: '0.9rem',
@@ -509,6 +510,7 @@ function filterGreaterThan(rows, id, filterValue) {
 filterGreaterThan.autoRemove = (val) => typeof val !== 'number';
 
 function ProgramList(props) {
+  const { t, i18n } = useTranslation();
   let [tableStates, setTableStates] = useState({
     success: false,
     isloaded: false,
@@ -708,40 +710,40 @@ function ProgramList(props) {
   const columns = React.useMemo(
     () => [
       {
-        Header: 'Program Database',
+        Header: `${t('Program List')}`,
         columns: [
           {
-            Header: 'University',
+            Header: `${t('School')}`,
             accessor: 'school',
             Filter: SelectColumnFilter,
             filter: 'fuzzyText'
           },
           {
-            Header: 'Program',
+            Header: `${t('Program')}`,
             accessor: 'program_name',
             // Use our custom `fuzzyText` filter on this column
             filter: 'fuzzyText'
           },
           {
-            Header: 'Country',
+            Header: `${t('Country')}`,
             accessor: 'country',
             // Use our custom `fuzzyText` filter on this column
             filter: 'fuzzyText'
           },
           {
-            Header: 'Degree',
+            Header: `${t('Degree')}`,
             accessor: 'degree',
             // Filter: SelectColumnFilter,
             filter: 'fuzzyText'
           },
           {
-            Header: 'Semester',
+            Header: `${t('Semester')}`,
             accessor: 'semester',
             Filter: SelectColumnFilter,
             filter: 'fuzzyText'
           },
           {
-            Header: 'Language',
+            Header: `${t('Language')}`,
             accessor: 'lang'
             // Filter: NumberRangeColumnFilter,
             // filter: 'between'
@@ -765,11 +767,11 @@ function ProgramList(props) {
             // filter: filterGreaterThan
           },
           {
-            Header: 'Application Deadline',
+            Header: `${t('Deadline')}`,
             accessor: 'application_deadline'
           },
           {
-            Header: 'Last Update',
+            Header: `${t('Last update')}`,
             accessor: 'updatedAt'
           }
         ]
@@ -820,7 +822,7 @@ function ProgramList(props) {
       ) : (
         <>
           <Button onClick={onClickIsCreateApplicationMode}>
-            Add New Program
+            {t('Add New Program')}
           </Button>
           <Card className="my-0 mx-0" bg={'dark'} text={'white'}>
             <Table2

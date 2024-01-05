@@ -748,7 +748,7 @@ export const convertDate = (date) => {
 };
 
 export const program_fields = [
-  { name: 'University', prop: 'school' },
+  { name: 'School', prop: 'school' },
   { name: 'Program', prop: 'program_name' },
   { name: 'Degree', prop: 'degree' },
   { name: 'Semester', prop: 'semester' },

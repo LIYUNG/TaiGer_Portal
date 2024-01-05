@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Row, Col, Spinner, Card } from 'react-bootstrap';
 import { Redirect } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import Aux from '../../hoc/_Aux';
 import ApplicationOverviewTabs from './ApplicationOverviewTabs';
@@ -12,8 +13,9 @@ import { getStudents } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 
-class ApplicantSOverview extends React.Component {
-  state = {
+function ApplicantSOverview(props) {
+  const { t, i18n } = useTranslation();
+  const [applicationsOverviewState, setApplicationsOverview] = useState({
     error: '',
     isLoaded: false,
     data: null,
@@ -21,31 +23,33 @@ class ApplicantSOverview extends React.Component {
     students: null,
     status: '', //reject, accept... etc
     res_status: 0
-  };
+  });
 
-  componentDidMount() {
-    if (this.props.user.role !== 'Student') {
+  useEffect(() => {
+    if (props.user.role !== 'Student') {
       getStudents().then(
         (resp) => {
           const { data, success } = resp.data;
           const { status } = resp;
           if (success) {
-            this.setState({
+            setApplicationsOverview((prevState) => ({
+              ...prevState,
               isLoaded: true,
               students: data,
               success: success,
               res_status: status
-            });
+            }));
           } else {
-            this.setState({
+            setApplicationsOverview((prevState) => ({
+              ...prevState,
               isLoaded: true,
               res_status: status
-            });
+            }));
           }
         },
         (error) => {
-          this.setState((state) => ({
-            ...state,
+          setApplicationsOverview((prevState) => ({
+            ...prevState,
             isLoaded: true,
             error,
             res_status: 500
@@ -53,66 +57,62 @@ class ApplicantSOverview extends React.Component {
         }
       );
     }
+  }, []);
+
+  if (
+    props.user.role !== 'Admin' &&
+    props.user.role !== 'Editor' &&
+    props.user.role !== 'Agent' &&
+    props.user.role !== 'Student'
+  ) {
+    return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
   }
-
-  render() {
-    if (
-      this.props.user.role !== 'Admin' &&
-      this.props.user.role !== 'Editor' &&
-      this.props.user.role !== 'Agent' &&
-      this.props.user.role !== 'Student'
-    ) {
-      return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
-    }
-    if (this.props.user.role === 'Student') {
-      return (
-        <Redirect
-          to={`${
-            DEMO.STUDENT_APPLICATIONS_LINK
-          }/${this.props.user._id.toString()}`}
-        />
-      );
-    }
-    TabTitle('Applications Overview');
-    const { res_status, isLoaded } = this.state;
-
-    if (!isLoaded && !this.state.students) {
-      return (
-        <div style={spinner_style}>
-          <Spinner animation="border" role="status">
-            <span className="visually-hidden"></span>
-          </Spinner>
-        </div>
-      );
-    }
-
-    if (res_status >= 400) {
-      return <ErrorPage res_status={res_status} />;
-    }
-
+  if (props.user.role === 'Student') {
     return (
-      <Aux>
-        <Row className="sticky-top">
-          <Col>
-            <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
-              <Card.Header>
-                <Card.Title className="my-0 mx-0 text-light">
-                  {is_TaiGer_role(this.props.user)
-                    ? 'Students Applications Overview'
-                    : `${this.props.user.firstname} ${this.props.user.lastname} Applications Overview`}
-                </Card.Title>
-              </Card.Header>
-            </Card>
-          </Col>
-        </Row>
-        <ApplicationOverviewTabs
-          user={this.props.user}
-          success={this.state.success}
-          students={this.state.students}
-        />
-      </Aux>
+      <Redirect
+        to={`${DEMO.STUDENT_APPLICATIONS_LINK}/${props.user._id.toString()}`}
+      />
     );
   }
+  TabTitle('Applications Overview');
+  const { res_status, isLoaded } = applicationsOverviewState;
+
+  if (!isLoaded && !applicationsOverviewState.students) {
+    return (
+      <div style={spinner_style}>
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden"></span>
+        </Spinner>
+      </div>
+    );
+  }
+
+  if (res_status >= 400) {
+    return <ErrorPage res_status={res_status} />;
+  }
+
+  return (
+    <Aux>
+      <Row className="sticky-top">
+        <Col>
+          <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
+            <Card.Header>
+              <Card.Title className="my-0 mx-0 text-light">
+                {is_TaiGer_role(props.user)
+                  ? `${t('All Application Overview')}`
+                  : `${props.user.firstname} ${props.user.lastname} Applications Overview`}
+              </Card.Title>
+            </Card.Header>
+          </Card>
+        </Col>
+      </Row>
+      <ApplicationOverviewTabs
+        user={props.user}
+        success={applicationsOverviewState.success}
+        students={applicationsOverviewState.students}
+      />
+    </Aux>
+  );
 }
 
 export default ApplicantSOverview;

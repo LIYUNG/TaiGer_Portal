@@ -92,12 +92,6 @@ export default function ResetPassword(props) {
       <Aux>
         <div className="auth-wrapper">
           <div className="auth-content">
-            {/* <div className="auth-bg">
-              <span className="r" />
-              <span className="r s" />
-              <span className="r s" />
-              <span className="r" />
-            </div> */}
             <form onSubmit={handleSubmit}>
               <div className="card-body text-center">
                 <div className="mb-4">

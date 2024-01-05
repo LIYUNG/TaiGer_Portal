@@ -1,5 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Form, Row, Col, Card, Button } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
+
 import {
   AddValidProgram,
   BINARY_STATE_OPTIONS,
@@ -12,6 +14,7 @@ import {
 import { appConfig } from '../../config';
 
 function NewProgramEdit(props) {
+  const { t, i18n } = useTranslation();
   let [initStates, setInitStates] = useState({
     program: {},
     school_name_set: new Set(props.programs.map((program) => program.school))

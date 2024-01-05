@@ -78,7 +78,7 @@ export default function Footer(props) {
         <a href="https://taigerconsultancy.com/" className="text-info">
           TaiGer Consultancy 台德留學顧問
         </a>
-      </p>{' '}
+      </p>
     </footer>
   );
 }

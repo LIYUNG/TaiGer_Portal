@@ -22,10 +22,7 @@ export default function Signin1({ setUserdata }) {
   useEffect(() => {
     setIsLoaded(true);
   }, [emailaddress, password, buttondisable]);
-  if (isLoaded) {
-    // console.log(document.getElementById('email').value);
-    // console.log(document.getElementById('password'));
-  }
+
   const emailValidation = () => {
     const regex =
       /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;

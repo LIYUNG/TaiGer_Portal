@@ -46,7 +46,7 @@ function SingleProgramView(props) {
                   <Row>
                     <Col md={4}>
                       <p className="my-0">
-                        <b>{program_field.name}</b>
+                        <b>{t(`${program_field.name}`)}</b>
                       </p>
                     </Col>
                     <Col md={2}>
@@ -80,7 +80,7 @@ function SingleProgramView(props) {
                     <Row>
                       <Col md={4}>
                         <p className="my-0">
-                          <b>{program_field.name}</b>
+                          <b>{t(`${program_field.name}`)}</b>
                         </p>
                       </Col>
                       <Col md={8}>
@@ -94,7 +94,7 @@ function SingleProgramView(props) {
                   <Row>
                     <Col md={4}>
                       <p className="my-0">
-                        <b>{program_field.name}</b>
+                        <b>{t(`${program_field.name}`)}</b>
                       </p>
                     </Col>
                     <Col md={8}>
@@ -116,7 +116,7 @@ function SingleProgramView(props) {
                   <Row>
                     <Col md={4}>
                       <p className="my-0">
-                        <b>{program_field.name}</b>
+                        <b>{t(`${program_field.name}`)}</b>
                       </p>
                     </Col>
                     <Col md={8}>
@@ -136,13 +136,9 @@ function SingleProgramView(props) {
                       </p>
                     </Col>
                     <Col md={8}>
-                      <a
-                        className="my-0"
-                        href={props.program.application_portal_a}
-                        target="_blank"
-                      >
-                        Portal Link 1
-                      </a>
+                      <LinkableNewlineText
+                        text={props.program.application_portal_a}
+                      />
                     </Col>
                   </Row>
                   <Row>
@@ -152,13 +148,9 @@ function SingleProgramView(props) {
                       </p>
                     </Col>
                     <Col md={8}>
-                      <a
-                        className="my-0"
-                        href={props.program.application_portal_a_instructions}
-                        target="_blank"
-                      >
-                        Portal Instructions 1
-                      </a>
+                      <LinkableNewlineText
+                        text={props.program.application_portal_a_instructions}
+                      />
                     </Col>
                   </Row>
                 </>
@@ -172,13 +164,9 @@ function SingleProgramView(props) {
                       </p>
                     </Col>
                     <Col md={8}>
-                      <a
-                        className="my-0"
-                        href={props.program.application_portal_b}
-                        target="_blank"
-                      >
-                        Portal Link 2
-                      </a>
+                      <LinkableNewlineText
+                        text={props.program.application_portal_b}
+                      />
                     </Col>
                   </Row>
                   <Row>
@@ -188,13 +176,9 @@ function SingleProgramView(props) {
                       </p>
                     </Col>
                     <Col md={8}>
-                      <a
-                        className="my-0"
-                        href={props.program.application_portal_b_instructions}
-                        target="_blank"
-                      >
-                        Portal Instructions 2
-                      </a>
+                      <LinkableNewlineText
+                        text={props.program.application_portal_b_instructions}
+                      />
                     </Col>
                   </Row>
                 </>
@@ -202,7 +186,7 @@ function SingleProgramView(props) {
               <Row>
                 <Col md={4}>
                   <p className="my-0">
-                    <b>Website</b>
+                    <b>{t('Website')}</b>
                   </p>
                 </Col>
                 <Col md={8}>
@@ -212,14 +196,14 @@ function SingleProgramView(props) {
                     href={props.program.website}
                     target="_blank"
                   >
-                    website
+                    <LinkableNewlineText text={props.program.website} />
                   </a>
                 </Col>
               </Row>
               <Row>
                 <Col md={4}>
                   <p className="my-0">
-                    <b>Last Update</b>
+                    <b>{t('Last update')}</b>
                   </p>
                 </Col>
                 <Col md={4}>

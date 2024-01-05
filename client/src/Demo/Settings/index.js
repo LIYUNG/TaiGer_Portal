@@ -171,7 +171,7 @@ function Settings(props) {
                   <Form>
                     <Form.Group controlId="current_password">
                       <Form.Label className="my-0 mx-0 text-light">
-                        Current Password
+                        {t('Current Password')}
                       </Form.Label>
                       <Form.Control
                         type="password"

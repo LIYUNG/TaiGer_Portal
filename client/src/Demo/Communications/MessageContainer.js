@@ -3,7 +3,7 @@ import Message from './Message';
 import { updateAMessageInCommunicationThread } from '../../api';
 import MessageEdit from './MessageEdit';
 
-class MessageList extends Component {
+class MessageContainer extends Component {
   state = {
     error: '',
     isEdit: false,
@@ -156,4 +156,4 @@ class MessageList extends Component {
   }
 }
 
-export default MessageList;
+export default MessageContainer;

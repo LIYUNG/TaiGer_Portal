@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Spinner, Card } from 'react-bootstrap';
+import { Spinner } from 'react-bootstrap';
 
 import Aux from '../../hoc/_Aux';
 import { spinner_style } from '../Utils/contants';

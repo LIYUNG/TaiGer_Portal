@@ -214,7 +214,7 @@ class DownloadPage extends React.Component {
                 title={'Info:'}
                 path={`${DEMO.CV_ML_RL_DOCS_LINK}`}
                 text={`This is ${appConfig.companyName} templates helping you finish your CV ML RL tasks. Please download, fill and upload them to the corresponding task.`}
-                link_name={'Test'}
+                link_name={'Read More'}
                 removeBanner={this.removeBanner}
                 notification_key={'isRead_new_agent_assigned'}
               />

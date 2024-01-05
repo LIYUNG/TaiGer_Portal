@@ -50,6 +50,7 @@ import { AiFillEdit } from 'react-icons/ai';
 import { BsMessenger } from 'react-icons/bs';
 import PortalCredentialPage from '../PortalCredentialPage';
 import { appConfig } from '../../config';
+import { TopBar } from '../../components/TopBar/TopBar';
 
 function SingleStudentPage(props) {
   const { t, i18n } = useTranslation();
@@ -491,17 +492,9 @@ function SingleStudentPage(props) {
         />
       )}
       {singleStudentPage.student.archiv && (
-        <Row className="sticky-top">
-          <Col>
-            <Card className="mb-2 mx-0" bg={'success'} text={'white'}>
-              <Card.Header>
-                <Card.Title as="h5" className="text-light">
-                  Status: <b>Close</b>
-                </Card.Title>
-              </Card.Header>
-            </Card>
-          </Col>
-        </Row>
+        <TopBar>
+          Status: <b>Close</b>
+        </TopBar>
       )}
       {singleStudentPage.taiger_view ? (
         <>

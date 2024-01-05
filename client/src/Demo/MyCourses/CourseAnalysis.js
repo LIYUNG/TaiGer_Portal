@@ -17,6 +17,7 @@ import {
 import { TabTitle } from '../Utils/TabTitle';
 import { Link } from 'react-router-dom';
 import DEMO from '../../store/constant';
+import { TopBar } from '../../components/TopBar/TopBar';
 
 export default function CourseAnalysis(props) {
   const { t, i18n } = useTranslation();
@@ -269,40 +270,24 @@ export default function CourseAnalysis(props) {
           res_modal_message={statedata.res_modal_message}
         />
       )}
-      <Row className="sticky-top ">
-        <Col>
-          <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
-            <Card.Header text={'dark'}>
-              <Card.Title>
-                <Row>
-                  <Col className="my-0 mx-0 text-light">
-                    {!props.match.params.admin_id ? (
-                      <Link
-                        className="text-warning"
-                        to={`$${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-                          statedata.student_id,
-                          DEMO.PROFILE
-                        )}`}
-                      >
-                        {statedata.student_name}{' '}
-                      </Link>
-                    ) : (
-                      <>{statedata.student_name} </>
-                    )}
-                    Courses Analysis
-                  </Col>
-                </Row>
-              </Card.Title>
-            </Card.Header>
-          </Card>
-        </Col>
-      </Row>
+      <TopBar>
+        {!props.match.params.admin_id ? (
+          <Link
+            className="text-warning"
+            to={`$${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+              statedata.student_id,
+              DEMO.PROFILE
+            )}`}
+          >
+            {statedata.student_name}
+          </Link>
+        ) : (
+          <>{statedata.student_name} </>
+        )}
+      </TopBar>
       <Row>
         <Col sm={12}>
           <Card className="mb-2 mx-0">
-            {/* <Card.Header>
-                <Card.Title></Card.Title>
-              </Card.Header> */}
             <Card.Body>
               <Row>
                 <Col>

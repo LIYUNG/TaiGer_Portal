@@ -17,6 +17,7 @@ import { TabTitle } from '../../Utils/TabTitle';
 import DEMO from '../../../store/constant';
 import LogLineChart from '../../../components/Charts/LogLineChart';
 import { appConfig } from '../../../config';
+import { TopBar } from '../../../components/TopBar/TopBar';
 
 class TaiGerPortalUsersLog extends React.Component {
   state = {
@@ -128,19 +129,7 @@ class TaiGerPortalUsersLog extends React.Component {
 
     return (
       <Aux>
-        <Row className="sticky-top ">
-          <Col>
-            <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
-              <Card.Header text={'dark'}>
-                <Card.Title>
-                  <Row>
-                    <Col className="my-0 mx-0 text-light">User Logs</Col>
-                  </Row>
-                </Card.Title>
-              </Card.Header>
-            </Card>
-          </Col>
-        </Row>
+        <TopBar>User Logs</TopBar>
         <Card>
           <Card.Body>
             <LogLineChart data={dataToBeUsed} />

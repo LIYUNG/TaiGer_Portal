@@ -131,10 +131,8 @@ function BaseDocuments(props) {
 
   return (
     <Aux>
-      {/* <Row className="sticky-top"> */}
       <Row className="pt-0">
         {is_TaiGer_role(props.user) ? (
-          // <Card bg={'dark'} text={'light'}>
           <Card className="mb-0 mx-0" bg={'dark'} text={'light'}>
             <Card.Header>
               <Card.Title className="my-0 mx-0 text-light">

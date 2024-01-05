@@ -15,6 +15,7 @@ import {
 } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
+import { TopBar } from '../../components/TopBar/TopBar';
 
 export default function CourseWidget(props) {
   let [statedata, setStatedata] = useState({
@@ -264,21 +265,7 @@ export default function CourseWidget(props) {
           res_modal_message={statedata.res_modal_message}
         />
       )}
-      <Row className="sticky-top ">
-        <Col>
-          <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
-            <Card.Header text={'dark'}>
-              <Card.Title>
-                <Row>
-                  <Col className="my-0 mx-0 text-light">
-                    Pre-Customer Course Analyser
-                  </Col>
-                </Row>
-              </Card.Title>
-            </Card.Header>
-          </Card>
-        </Col>
-      </Row>
+      <TopBar>Pre-Customer Course Analyser</TopBar>
       <Row>
         <Col sm={12}>
           <Card className="mb-2 mx-0">

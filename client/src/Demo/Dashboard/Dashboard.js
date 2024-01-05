@@ -54,28 +54,30 @@ function Dashboard(props) {
         const { data, success, isCoursesFilled, notification } = resp.data;
         const { status } = resp;
         if (success) {
-          setDashboardState({
+          setDashboardState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             students: data,
             isCoursesFilled: isCoursesFilled,
             notification,
             success: success,
             res_status: status
-          });
+          }));
         } else {
-          setDashboardState({
+          setDashboardState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             res_status: status
-          });
+          }));
         }
       },
       (error) => {
-        setDashboardState({
-          ...dashboardState,
+        setDashboardState((prevState) => ({
+          ...prevState,
           isLoaded: true,
           error,
           res_status: 500
-        });
+        }));
       }
     );
   }, []);
@@ -100,32 +102,31 @@ function Dashboard(props) {
             }),
             {}
           );
-
-          setDashboardState({
-            ...dashboardState,
+          setDashboardState((prevState) => ({
+            ...prevState,
             agent_list: agents,
             updateAgentList,
             res_modal_status: status
-          });
+          }));
         } else {
           const { message } = resp.data;
-          setDashboardState({
-            ...dashboardState,
+          setDashboardState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             res_modal_message: message,
             res_modal_status: status
-          });
+          }));
         }
       },
       (error) => {
         const { statusText } = resp;
-        setDashboardState({
-          ...dashboardState,
+        setDashboardState((prevState) => ({
+          ...prevState,
           isLoaded: true,
           error,
           res_modal_status: 500,
           res_modal_message: statusText
-        });
+        }));
       }
     );
   };
@@ -150,32 +151,31 @@ function Dashboard(props) {
             }),
             {}
           );
-
-          setDashboardState({
-            ...dashboardState,
+          setDashboardState((prevState) => ({
+            ...prevState,
             editor_list: editors,
             updateEditorList,
             res_modal_status: status
-          });
+          }));
         } else {
           const { message } = resp.data;
-          setDashboardState({
-            ...dashboardState,
+          setDashboardState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             res_modal_message: message,
             res_modal_status: status
-          });
+          }));
         }
       },
       (error) => {
         const { statusText } = resp;
-        setDashboardState({
-          ...dashboardState,
+        setDashboardState((prevState) => ({
+          ...prevState,
           isLoaded: true,
           error,
           res_modal_status: 500,
           res_modal_message: statusText
-        });
+        }));
       }
     );
   };
@@ -202,32 +202,33 @@ function Dashboard(props) {
             ({ _id }) => _id === student_id
           );
           students_temp[studentIdx] = data; // datda is single student updated
-          setDashboardState({
+          setDashboardState((prevState) => ({
+            ...prevState,
             isLoaded: true, //false to reload everything
             students: students_temp,
             success: success,
             updateAgentList: [],
             res_modal_status: status
-          });
+          }));
         } else {
           const { message } = resp.data;
-          setDashboardState({
-            ...dashboardState,
+          setDashboardState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             res_modal_message: message,
             res_modal_status: status
-          });
+          }));
         }
       },
       (error) => {
         const { statusText } = resp;
-        setDashboardState({
-          ...dashboardState,
+        setDashboardState((prevState) => ({
+          ...prevState,
           isLoaded: true,
           error,
           res_modal_status: 500,
           res_modal_message: statusText
-        });
+        }));
       }
     );
   };
@@ -244,32 +245,33 @@ function Dashboard(props) {
             ({ _id }) => _id === student_id
           );
           students_temp[studentIdx] = data; // datda is single student updated
-          setDashboardState({
+          setDashboardState((prevState) => ({
+            ...prevState,
             isLoaded: true, //false to reload everything
             students: students_temp,
             success: success,
             updateAgentList: [],
             res_modal_status: status
-          });
+          }));
         } else {
           const { message } = resp.data;
-          setDashboardState({
-            ...dashboardState,
+          setDashboardState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             res_modal_message: message,
             res_modal_status: status
-          });
+          }));
         }
       },
       (error) => {
         const { statusText } = resp;
-        setDashboardState({
-          ...dashboardState,
+        setDashboardState((prevState) => ({
+          ...prevState,
           isLoaded: true,
           error,
           res_modal_status: 500,
           res_modal_message: statusText
-        });
+        }));
       }
     );
   };
@@ -280,32 +282,32 @@ function Dashboard(props) {
         const { data, success } = resp.data;
         const { status } = resp;
         if (success) {
-          setDashboardState({
-            ...dashboardState,
+          setDashboardState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             students: data,
             success: success,
             res_modal_status: status
-          });
+          }));
         } else {
           const { message } = resp.data;
-          setDashboardState({
-            ...dashboardState,
+          setDashboardState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             res_modal_message: message,
             res_modal_status: status
-          });
+          }));
         }
       },
       (error) => {
         const { statusText } = resp;
-        setDashboardState({
-          ...dashboardState,
+        setDashboardState((prevState) => ({
+          ...prevState,
           isLoaded: true,
           error,
           res_modal_status: 500,
           res_modal_message: statusText
-        });
+        }));
       }
     );
   };
@@ -319,9 +321,6 @@ function Dashboard(props) {
     var student_arrayidx = dashboardState.students.findIndex(
       (student) => student._id === student_id
     );
-    // var student = dashboardState.students.find(
-    //   (student) => student._id === student_id
-    // );
     var students = [...dashboardState.students];
     updateProfileDocumentStatus(category, student_id, status, feedback).then(
       (res) => {
@@ -329,32 +328,32 @@ function Dashboard(props) {
         const { status } = res;
         if (success) {
           students[student_arrayidx] = data;
-          setDashboardState({
-            ...dashboardState,
+          setDashboardState((prevState) => ({
+            ...prevState,
             students: students,
             success,
             isLoaded: true,
             res_modal_status: status
-          });
+          }));
         } else {
-          const { message } = resp.data;
-          setDashboardState({
-            ...dashboardState,
+          const { message } = res.data;
+          setDashboardState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             res_modal_message: message,
             res_modal_status: status
-          });
+          }));
         }
       },
       (error) => {
         const { statusText } = resp;
-        setDashboardState({
-          ...dashboardState,
+        setDashboardState((prevState) => ({
+          ...prevState,
           isLoaded: true,
           error,
           res_modal_status: 500,
           res_modal_message: statusText
-        });
+        }));
       }
     );
   };
@@ -399,7 +398,6 @@ function Dashboard(props) {
           editEditor={editEditor}
           agent_list={dashboardState.agent_list}
           editor_list={dashboardState.editor_list}
-          UpdateAgentlist={UpdateAgentlist}
           students={dashboardState.students}
           updateAgentList={dashboardState.updateAgentList}
           submitUpdateAgentlist={submitUpdateAgentlist}
@@ -426,7 +424,6 @@ function Dashboard(props) {
           notification={dashboardState.notification}
           editAgent={editAgent}
           agent_list={dashboardState.agent_list}
-          UpdateAgentlist={UpdateAgentlist}
           updateAgentList={dashboardState.updateAgentList}
           submitUpdateAgentlist={submitUpdateAgentlist}
           updateStudentArchivStatus={updateStudentArchivStatus}
@@ -453,7 +450,6 @@ function Dashboard(props) {
           editAgent={editAgent}
           editEditor={editEditor}
           agent_list={dashboardState.agent_list}
-          UpdateAgentlist={UpdateAgentlist}
           updateAgentList={dashboardState.updateAgentList}
           submitUpdateAgentlist={submitUpdateAgentlist}
           updateStudentArchivStatus={updateStudentArchivStatus}

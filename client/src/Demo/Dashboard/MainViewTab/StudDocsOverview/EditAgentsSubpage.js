@@ -77,7 +77,7 @@ function EditAgentsSubpage(props) {
         >
           Update
         </Button>
-        <Button onClick={props.setmodalhide} variant="light">
+        <Button onClick={props.onHide} variant="light">
           Cancel
         </Button>
       </Modal.Footer>

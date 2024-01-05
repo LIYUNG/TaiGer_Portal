@@ -709,6 +709,16 @@ export const getDate = (date) => {
   }
 };
 
+export const getTime = (date) => {
+  // const userLocale = navigator.language;
+  let time = new Date(date).toLocaleTimeString('en-US', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true
+  });
+  return `${time}`;
+};
+
 export const convertDate = (date) => {
   // const userLocale = navigator.language;
   let dat = new Date(date).toLocaleDateString('zh-Hans-CN');

@@ -20,10 +20,10 @@ function StudentsAgentEditor(props) {
   });
 
   const setAgentModalhide = () => {
-    setStudentsAgentEditor({
-      ...studentsAgentEditor,
+    setStudentsAgentEditor((prevState) => ({
+      ...prevState,
       showAgentPage: false
-    });
+    }));
   };
 
   const startEditingAgent = (student) => {
@@ -247,7 +247,6 @@ function StudentsAgentEditor(props) {
             agent_list={props.agent_list}
             show={studentsAgentEditor.showAgentPage}
             onHide={setAgentModalhide}
-            setmodalhide={setAgentModalhide}
             updateAgentList={props.updateAgentList}
             submitUpdateAgentlist={submitUpdateAgentlist}
           />
@@ -256,7 +255,6 @@ function StudentsAgentEditor(props) {
             editor_list={props.editor_list}
             show={studentsAgentEditor.showEditorPage}
             onHide={setEditorModalhide}
-            setmodalhide={setEditorModalhide}
             updateEditorList={props.updateEditorList}
             submitUpdateEditorlist={submitUpdateEditorlist}
           />

@@ -571,7 +571,7 @@ class OfficeHours extends React.Component {
         {hasEvents ? (
           <>
             <Button onClick={this.switchCalendarAndMyBookedEvents}>
-              To Calendar
+              Book an Office Hour
             </Button>
             {events?.filter(
               (event) =>

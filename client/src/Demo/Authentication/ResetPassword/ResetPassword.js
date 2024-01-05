@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
+import { Spinner } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
 
 import './../../../assets/scss/style.scss';
 import Aux from '../../../hoc/_Aux';
 import { resetPassword } from '../../../api/index';
 import Footer from '../../../components/Footer/Footer';
-import { Spinner } from 'react-bootstrap';
 
 export default function ResetPassword(props) {
+  const { t, i18n } = useTranslation();
   const query = new URLSearchParams(props.location.search);
   const [email, setEmail] = useState(query.get('email'));
   const [token, setToken] = useState(query.get('token'));
@@ -101,7 +103,7 @@ export default function ResetPassword(props) {
                 <div className="mb-4">
                   <i className="feather icon-user-plus auth-icon" />
                 </div>
-                <h3 className="mb-3 text-light">Reset Password</h3>
+                <h3 className="mb-3 text-light">{t('Reset Login Password')}</h3>
                 <h5 className="mb-3 text-light">Enter New Password</h5>
                 <p className="text-light">
                   Password must contain at least:
@@ -143,13 +145,13 @@ export default function ResetPassword(props) {
                       <span className="visually-hidden"></span>
                     </Spinner>
                   ) : (
-                    'Reset'
+                    `${t('Reset')}`
                   )}
                 </button>
                 <p className="mb-0 text-light">
-                  Already have an account?{' '}
+                  {t('Already have an account')}?{' '}
                   <NavLink to="/login">
-                    <p className="text-info">Login</p>
+                    <p className="text-info">{t('Login')}</p>
                   </NavLink>
                 </p>
               </div>

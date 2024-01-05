@@ -1,5 +1,7 @@
 import React from 'react';
 import { Button, Row, Accordion, Col } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
+
 import {
   NoonNightLabel,
   convertDate,
@@ -30,6 +32,7 @@ import DEMO from '../../../store/constant';
 import EventDateComponent from '../../DateComponent';
 
 export default function EventConfirmationCard(props) {
+  const { t, i18n } = useTranslation();
   return (
     <Accordion
       defaultActiveKey={
@@ -112,7 +115,7 @@ export default function EventConfirmationCard(props) {
             <Col>
               <h5>
                 <AiOutlineUser size={16} />
-                Agent:{' '}
+                {t('Agent')}:{' '}
                 {props.event.receiver_id?.map((receiver, x) => (
                   <span key={x}>
                     {receiver.firstname} {receiver.lastname}{' '}
@@ -122,7 +125,7 @@ export default function EventConfirmationCard(props) {
               </h5>
               <h5>
                 <AiOutlineUser size={16} />
-                Student:{' '}
+                {t('Student')}:{' '}
                 {props.event.requester_id?.map((requester, x) =>
                   is_TaiGer_role(props.user) ? (
                     <Link
@@ -143,12 +146,12 @@ export default function EventConfirmationCard(props) {
                   )
                 )}
               </h5>
-              <h5>Meeting Link:</h5>
+              <h5>{t('Meeting Link')} :</h5>
               {is_TaiGer_Student(props.user) &&
                 (props.event.isConfirmedRequester ? (
                   props.event.isConfirmedReceiver ? (
                     props.disabled ? (
-                      'Meeting Link expired'
+                      `${t('Meeting Link')} expired'`
                     ) : (
                       <a
                         href={`${props.event.meetingLink}`}
@@ -271,7 +274,7 @@ export default function EventConfirmationCard(props) {
                     props.handleEditAppointmentModalOpen(e, props.event)
                   }
                 >
-                  <AiOutlineEdit size={16} /> Update
+                  <AiOutlineEdit size={16} /> {t('Update')}
                 </Button>
                 <Button
                   variant="danger"
@@ -281,14 +284,14 @@ export default function EventConfirmationCard(props) {
                     props.handleDeleteAppointmentModalOpen(e, props.event)
                   }
                 >
-                  <AiOutlineDelete size={16} /> Delete
+                  <AiOutlineDelete size={16} /> {t('Delete')}
                 </Button>
               </span>
             </h5>
           </Row>
           <Row>
             <Col>
-              <h5>Description:</h5>
+              <h5>{t('Description')}</h5>
               <p>{props.event.description}</p>
             </Col>
             <Col>

@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
+
 import './../../../assets/scss/style.scss';
 import Aux from '../../../hoc/_Aux';
 import { activation, resendActivation } from '../../../api/index';
@@ -7,6 +9,7 @@ import Footer from '../../../components/Footer/Footer';
 import { appConfig } from '../../../config';
 
 export default function Activation(props) {
+  const { t, i18n } = useTranslation();
   const query = new URLSearchParams(props.location.search);
   const [email, setEmail] = useState(query.get('email'));
   const [token, setToken] = useState(query.get('token'));
@@ -92,10 +95,15 @@ export default function Activation(props) {
                     alt="Generic placeholder"
                   />
                   <p className="mb-4 mb-2 text-light"></p>
-                  <p className="mb-2 text-light">Confirmation Email sent</p>
+                  <p className="mb-2 text-light">
+                    {t('Confirmation Email sent')}
+                  </p>
                   <div className="input-group mb-2">
                     <p className="mb-0 text-success">
-                      The new activation link is sent to the following address:
+                      {t(
+                        'The new activation link is sent to the following address'
+                      )}
+                      :
                     </p>
                   </div>
                   <p className="mb-4 text-secondary">{email}</p>

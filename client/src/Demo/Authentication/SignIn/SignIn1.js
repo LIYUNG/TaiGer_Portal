@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Spinner, Button } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import Aux from '../../../hoc/_Aux';
 import { login } from '../../../api/index';
@@ -16,6 +17,7 @@ export default function Signin1({ setUserdata }) {
   const [buttondisable, setButtondisable] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [reactivateAccount, setReactivateAccount] = useState(false);
+  const { t, i18n } = useTranslation();
   const clickRef = useRef();
   useEffect(() => {
     setIsLoaded(true);
@@ -170,12 +172,12 @@ export default function Signin1({ setUserdata }) {
                       <span className="visually-hidden"></span>
                     </Spinner>
                   ) : (
-                    'Login'
+                    `${t('Login')}`
                   )}
                 </Button>
-                <p className="mb-2 text-light">Forgot password?</p>
+                <p className="mb-2 text-light">{t('Forgot Password')}?</p>
                 <NavLink to="/forgot-password">
-                  <p className="text-info">Reset</p>
+                  <p className="text-info">{t('Reset Login Password')}</p>
                 </NavLink>
                 <Footer />
               </div>

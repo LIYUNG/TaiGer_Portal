@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { Spinner } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
 
 import './../../../assets/scss/style.scss';
 import Aux from '../../../hoc/_Aux';
@@ -9,6 +10,7 @@ import Footer from '../../../components/Footer/Footer';
 import { appConfig } from '../../../config';
 
 export default function ResetPasswordRequest() {
+  const { t, i18n } = useTranslation();
   const [emailaddress, setEmailaddress] = useState();
   const [emailSent, setEmailSent] = useState(false);
   const [buttonDisable, setButtonDisable] = useState(false);
@@ -55,15 +57,16 @@ export default function ResetPasswordRequest() {
                   src={appConfig.LoginPageLogo}
                   alt="Generic placeholder"
                 />
-                <h3 className="mb-3 text-light">Reset Password</h3>
-                <div className="input-group mb-3">
-                  <p className="mb-3 text-light">
-                    Password reset email is already sent to your give email
-                    address. Please have a check.
-                  </p>
-                </div>
+                <h3 className="mb-3 text-light">{t('Reset Login Password')}</h3>
+                <p className="mb-3 text-light">
+                  {t(
+                    'Password reset email is already sent to your give email address'
+                  )}
+                  <br />
+                  {t('Please have a check')}
+                </p>
                 <p className="mb-2 text-light">
-                  Already have an account?{' '}
+                  {t('Already have an account')}?{' '}
                   <NavLink to="/login">
                     <p className="text-info">Login</p>
                   </NavLink>
@@ -88,9 +91,9 @@ export default function ResetPasswordRequest() {
                   alt="Generic placeholder"
                 />
                 <p className="mb-4"></p>
-                <h3 className="mb-4 text-light">Reset Password</h3>
+                <h3 className="mb-4 text-light">{t('Reset Login Password')}</h3>
                 <p className="mb-4 text-light">
-                  Please provide the email that you provided to us before.
+                  {t('Please provide the email that you provided to us before')}
                 </p>
                 <div className="input-group mb-3">
                   <input
@@ -116,13 +119,13 @@ export default function ResetPasswordRequest() {
                       <span className="visually-hidden"></span>
                     </Spinner>
                   ) : (
-                    'Reset'
+                    `${t('Reset')}`
                   )}
                 </button>
                 <p className="mb-2 text-light"></p>
-                Already have an account?{' '}
+                {t('Already have an account')}?{' '}
                 <NavLink to="/login">
-                  <p className="text-info">Login</p>
+                  <p className="text-info">{t('Login')}</p>
                 </NavLink>
                 <Footer />
               </div>

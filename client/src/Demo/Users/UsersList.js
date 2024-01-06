@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Table } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
 
 import User from './User';
 import UsersListSubpage from './UsersListSubpage';
@@ -10,8 +11,9 @@ import { deleteUser, changeUserRole, updateArchivUser } from '../../api';
 import { UserlistHeader } from '../Utils/contants';
 import UserArchivWarning from './UserArchivWarning';
 
-class UsersList extends React.Component {
-  state = {
+function UsersList(props) {
+  const { t, i18n } = useTranslation();
+  const [usersListState, setUsersListState] = useState({
     error: '',
     modalShow: false,
     delete_field: '',
@@ -20,81 +22,87 @@ class UsersList extends React.Component {
     selected_user_role: '',
     selected_user_id: '',
     archiv: false,
-    data: this.props.user,
+    data: props.users,
     modalShowNewProgram: false,
     deleteUserWarning: false,
     archivUserWarning: false,
-    success: this.props.success,
-    isLoaded: this.props.isLoaded,
+    success: props.success,
+    isLoaded: props.isLoaded,
     res_status: 0,
     res_modal_message: '',
     res_modal_status: 0
-  };
+  });
 
-  componentDidUpdate(prevProps, prevState) {
-    if (this.props.user !== prevProps.user) {
-      this.setState({
-        data: this.props.user
-      });
-    }
-  }
+  useEffect(() => {
+    setUsersListState((prevState) => ({
+      ...prevState,
+      data: props.users
+    }));
+  }, []);
 
-  setModalShow = (user_firstname, user_lastname, user_role, user_id) => {
-    this.setState({
+  const setModalShow = (user_firstname, user_lastname, user_role, user_id) => {
+    setUsersListState((prevState) => ({
+      ...prevState,
       modalShow: true,
       firstname: user_firstname,
       lastname: user_lastname,
       selected_user_role: user_role,
       selected_user_id: user_id
-    });
+    }));
   };
 
-  setModalHide = () => {
-    this.setState({
+  const setModalHide = () => {
+    setUsersListState((prevState) => ({
+      ...prevState,
       modalShow: false
-    });
+    }));
   };
 
-  setModalArchivHide = () => {
-    this.setState({
+  const setModalArchivHide = () => {
+    setUsersListState((prevState) => ({
+      ...prevState,
       archivUserWarning: false
-    });
+    }));
   };
-  setModalHideDDelete = () => {
-    this.setState({
+  const setModalHideDDelete = () => {
+    setUsersListState((prevState) => ({
+      ...prevState,
       deleteUserWarning: false,
       delete_field: ''
-    });
+    }));
   };
 
-  setModalShowDelete = (user_firstname, user_lastname, user_id) => {
-    this.setState({
+  const setModalShowDelete = (user_firstname, user_lastname, user_id) => {
+    setUsersListState((prevState) => ({
+      ...prevState,
       deleteUserWarning: true,
       firstname: user_firstname,
       lastname: user_lastname,
       selected_user_id: user_id
-    });
+    }));
   };
-  setModalArchiv = (user_firstname, user_lastname, user_id, archiv) => {
-    this.setState({
+  const setModalArchiv = (user_firstname, user_lastname, user_id, archiv) => {
+    setUsersListState((prevState) => ({
+      ...prevState,
       archivUserWarning: true,
       firstname: user_firstname,
       lastname: user_lastname,
       selected_user_id: user_id,
       archiv
-    });
+    }));
   };
-  handleChange2 = (e) => {
+  const handleChange2 = (e) => {
     const { value } = e.target;
-    this.setState((state) => ({
+    setUsersListState((prevState) => ({
+      ...prevState,
       selected_user_role: value
     }));
   };
 
-  deleteUser = (user_id) => {
+  const handleDeleteUser = (user_id) => {
     // TODO: also delete files in file system
-    this.setState((state) => ({
-      ...state,
+    setUsersListState((prevState) => ({
+      ...prevState,
       isLoaded: false
     }));
 
@@ -103,23 +111,26 @@ class UsersList extends React.Component {
         const { success } = resp.data;
         const { status } = resp;
         if (success) {
-          var array = [...this.state.data];
-          let idx = this.state.data.findIndex((user) => user._id === user_id);
+          var array = [...usersListState.data];
+          let idx = usersListState.data.findIndex(
+            (user) => user._id === user_id
+          );
           if (idx !== -1) {
             array.splice(idx, 1);
           }
-          this.setState({
+          setUsersListState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             success,
             delete_field: '',
             deleteUserWarning: false,
             data: array,
             res_modal_status: status
-          });
+          }));
         } else {
           const { message } = resp.data;
-          this.setState((state) => ({
-            ...state,
+          setUsersListState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             res_modal_message: message,
             res_modal_status: status
@@ -128,8 +139,8 @@ class UsersList extends React.Component {
       },
       (error) => {
         const { statusText } = resp;
-        this.setState((state) => ({
-          ...state,
+        setUsersListState((prevState) => ({
+          ...prevState,
           isLoaded: true,
           error,
           res_modal_status: 500,
@@ -138,14 +149,16 @@ class UsersList extends React.Component {
       }
     );
   };
-  onChangeDeleteField = (e) => {
-    this.setState({ delete_field: e.target.value });
+
+  const onChangeDeleteField = (e) => {
+    setUsersListState((prevState) => ({
+      ...prevState,
+      delete_field: e.target.value
+    }));
   };
-  onChangeArchivField = (e) => {
-    this.setState({ delete_field: e.target.value });
-  };
-  assignUserAs = (user_data) => {
-    var updated_user = this.state.data.map((user) => {
+
+  const assignUserAs = (user_data) => {
+    var updated_user = usersListState.data.map((user) => {
       if (user._id === user_data._id) {
         return Object.assign(user, user_data);
       } else {
@@ -158,17 +171,18 @@ class UsersList extends React.Component {
         const { data, success } = resp.data;
         const { status } = resp;
         if (success) {
-          this.setState({
+          setUsersListState((prevState) => ({
+            ...prevState,
             modalShow: false,
             isLoaded: true,
             success,
             data: updated_user,
             res_modal_status: status
-          });
+          }));
         } else {
           const { message } = resp.data;
-          this.setState((state) => ({
-            ...state,
+          setUsersListState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             res_modal_message: message,
             res_modal_status: status
@@ -177,8 +191,8 @@ class UsersList extends React.Component {
       },
       (error) => {
         const { statusText } = resp;
-        this.setState((state) => ({
-          ...state,
+        setUsersListState((prevState) => ({
+          ...prevState,
           isLoaded: true,
           error,
           res_modal_status: 500,
@@ -188,25 +202,21 @@ class UsersList extends React.Component {
     );
   };
 
-  onSubmit2 = (e) => {
+  const onSubmit2 = (e) => {
     e.preventDefault();
-    const user_role = this.state.selected_user_role;
-    const user_id = this.state.selected_user_id;
-    this.assignUserAs({ role: user_role, _id: user_id });
+    const user_role = usersListState.selected_user_role;
+    const user_id = usersListState.selected_user_id;
+    assignUserAs({ role: user_role, _id: user_id });
   };
 
-  RemoveUserHandler3 = (user_id) => {
-    this.deleteUser(user_id);
-  };
-
-  updateUserArchivStatus = (user_id, isArchived) => {
+  const updateUserArchivStatus = (user_id, isArchived) => {
     updateArchivUser(user_id, isArchived).then(
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
         if (success) {
-          this.setState((state) => ({
-            ...state,
+          setUsersListState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             archivUserWarning: false,
             data: data,
@@ -215,8 +225,8 @@ class UsersList extends React.Component {
           }));
         } else {
           const { message } = resp.data;
-          this.setState((state) => ({
-            ...state,
+          setUsersListState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             res_modal_message: message,
             res_modal_status: status
@@ -225,8 +235,8 @@ class UsersList extends React.Component {
       },
       (error) => {
         const { statusText } = resp;
-        this.setState((state) => ({
-          ...state,
+        setUsersListState((prevState) => ({
+          ...prevState,
           isLoaded: true,
           error,
           res_modal_status: 500,
@@ -236,94 +246,92 @@ class UsersList extends React.Component {
     );
   };
 
-  ConfirmError = () => {
-    this.setState((state) => ({
-      ...state,
+  const ConfirmError = () => {
+    setUsersListState((prevState) => ({
+      ...prevState,
       res_modal_status: 0,
       res_modal_message: ''
     }));
   };
 
-  render() {
-    const { res_modal_message, res_modal_status } = this.state;
+  const { res_modal_message, res_modal_status } = usersListState;
 
-    const headers = (
-      <tr>
-        <th> </th>
-        {UserlistHeader.map((x, i) => (
-          <th key={i}>{x.name}</th>
-        ))}
-        <th>Created At</th>
-        <th>Last Login</th>
-      </tr>
-    );
+  const headers = (
+    <tr>
+      <th> </th>
+      {UserlistHeader.map((x, i) => (
+        <th key={i}>{t(`${x.name}`)}</th>
+      ))}
+      <th>{t('Created At')}</th>
+      <th>{t('Last Login')}</th>
+    </tr>
+  );
 
-    const users = this.state.data.map((user) => (
-      <User
-        key={user._id}
-        user={user}
-        setModalShowDelete={this.setModalShowDelete}
-        setModalArchiv={this.setModalArchiv}
-        setModalShow={this.setModalShow}
-        success={this.state.success}
+  const users = usersListState.data.map((user) => (
+    <User
+      key={user._id}
+      user={user}
+      setModalShowDelete={setModalShowDelete}
+      setModalArchiv={setModalArchiv}
+      setModalShow={setModalShow}
+      success={usersListState.success}
+    />
+  ));
+
+  return (
+    <>
+      {res_modal_status >= 400 && (
+        <ModalMain
+          ConfirmError={ConfirmError}
+          res_modal_status={res_modal_status}
+          res_modal_message={res_modal_message}
+        />
+      )}
+      <Table
+        responsive
+        bordered
+        hover
+        className="my-0 mx-0"
+        variant="dark"
+        text="light"
+        size="sm"
+      >
+        <thead>{headers}</thead>
+        <tbody>{users}</tbody>
+      </Table>
+      <UsersListSubpage
+        show={usersListState.modalShow}
+        setModalHide={setModalHide}
+        firstname={usersListState.firstname}
+        lastname={usersListState.lastname}
+        selected_user_role={usersListState.selected_user_role}
+        selected_user_id={usersListState.selected_user_id}
+        handleChange2={handleChange2}
+        onSubmit2={onSubmit2}
       />
-    ));
-
-    return (
-      <>
-        {res_modal_status >= 400 && (
-          <ModalMain
-            ConfirmError={this.ConfirmError}
-            res_modal_status={res_modal_status}
-            res_modal_message={res_modal_message}
-          />
-        )}
-        <Table
-          responsive
-          bordered
-          hover
-          className="my-0 mx-0"
-          variant="dark"
-          text="light"
-          size="sm"
-        >
-          <thead>{headers}</thead>
-          <tbody>{users}</tbody>
-        </Table>
-        <UsersListSubpage
-          show={this.state.modalShow}
-          setModalHide={this.setModalHide}
-          firstname={this.state.firstname}
-          lastname={this.state.lastname}
-          selected_user_role={this.state.selected_user_role}
-          selected_user_id={this.state.selected_user_id}
-          handleChange2={this.handleChange2}
-          onSubmit2={this.onSubmit2}
-        />
-        <UserDeleteWarning
-          isLoaded={this.state.isLoaded}
-          deleteUserWarning={this.state.deleteUserWarning}
-          onChangeDeleteField={this.onChangeDeleteField}
-          delete_field={this.state.delete_field}
-          setModalHideDDelete={this.setModalHideDDelete}
-          firstname={this.state.firstname}
-          lastname={this.state.lastname}
-          selected_user_id={this.state.selected_user_id}
-          RemoveUserHandler3={this.RemoveUserHandler3}
-        />
-        <UserArchivWarning
-          isLoaded={this.state.isLoaded}
-          archivUserWarning={this.state.archivUserWarning}
-          archiv={this.state.archiv}
-          setModalArchivHide={this.setModalArchivHide}
-          firstname={this.state.firstname}
-          lastname={this.state.lastname}
-          selected_user_id={this.state.selected_user_id}
-          updateUserArchivStatus={this.updateUserArchivStatus}
-        />
-      </>
-    );
-  }
+      <UserDeleteWarning
+        isLoaded={usersListState.isLoaded}
+        deleteUserWarning={usersListState.deleteUserWarning}
+        onChangeDeleteField={onChangeDeleteField}
+        delete_field={usersListState.delete_field}
+        setModalHideDDelete={setModalHideDDelete}
+        firstname={usersListState.firstname}
+        lastname={usersListState.lastname}
+        selected_user_id={usersListState.selected_user_id}
+        handleDeleteUser={handleDeleteUser}
+      />
+      <UserArchivWarning
+        isLoaded={usersListState.isLoaded}
+        archivUserWarning={usersListState.archivUserWarning}
+        archiv={usersListState.archiv}
+        setModalArchivHide={setModalArchivHide}
+        firstname={usersListState.firstname}
+        lastname={usersListState.lastname}
+        selected_user_id={usersListState.selected_user_id}
+        updateUserArchivStatus={updateUserArchivStatus}
+      />
+    </>
+  );
 }
 
 export default UsersList;

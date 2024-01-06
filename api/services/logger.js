@@ -5,7 +5,7 @@ const options = {
     level: 'info',
     filename: './logs/app.log',
     handleExceptions: true,
-    json: true,
+    format: winston.format.json(),
     maxsize: 5242880, // 5MB
     maxFiles: 5,
     colorize: false
@@ -13,8 +13,10 @@ const options = {
   console: {
     level: 'debug',
     handleExceptions: true,
-    json: false,
-    colorize: true
+    format: winston.format.combine(
+      winston.format.colorize(),
+      winston.format.simple()
+    ),
   }
 };
 

@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Row, Col, Table, Spinner } from 'react-bootstrap';
+import { FiExternalLink } from 'react-icons/fi';
+import { Link } from 'react-router-dom';
+
 import ButtonSetUploaded from './ButtonSetUploaded';
 import ButtonSetAccepted from './ButtonSetAccepted';
 import ButtonSetRejected from './ButtonSetRejected';
@@ -20,8 +23,6 @@ import {
 } from '../../api';
 import { is_TaiGer_AdminAgent } from '../Utils/checking-functions';
 import Banner from '../../components/Banner/Banner';
-import { FiExternalLink } from 'react-icons/fi';
-import { Link } from 'react-router-dom';
 import DEMO from '../../store/constant';
 
 function BaseDocument_StudentView(props) {

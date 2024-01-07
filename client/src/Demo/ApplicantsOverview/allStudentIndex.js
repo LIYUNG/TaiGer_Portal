@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Row, Col, Spinner, Card } from 'react-bootstrap';
 import { Redirect } from 'react-router-dom';
 
@@ -13,40 +13,41 @@ import DEMO from '../../store/constant';
 import { is_TaiGer_role } from '../Utils/checking-functions';
 import { TopBar } from '../../components/TopBar/TopBar';
 
-class AllApplicantsOverview extends React.Component {
-  state = {
+function AllApplicantsOverview(props) {
+  const [allApplicantsOverviewState, setAllApplicantsOverviewState] = useState({
     error: '',
     isLoaded: false,
-    data: null,
     success: false,
     students: null,
     status: '', //reject, accept... etc
     res_status: 0
-  };
+  });
 
-  componentDidMount() {
-    if (this.props.user.role !== 'Student') {
+  useEffect(() => {
+    if (props.user.role !== 'Student') {
       getAllActiveStudents().then(
         (resp) => {
           const { data, success } = resp.data;
           const { status } = resp;
           if (success) {
-            this.setState({
+            setAllApplicantsOverviewState((prevState) => ({
+              ...prevState,
               isLoaded: true,
               students: data,
               success: success,
               res_status: status
-            });
+            }));
           } else {
-            this.setState({
+            setAllApplicantsOverviewState((prevState) => ({
+              ...prevState,
               isLoaded: true,
               res_status: status
-            });
+            }));
           }
         },
         (error) => {
-          this.setState((state) => ({
-            ...state,
+          setAllApplicantsOverviewState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             error,
             res_status: 500
@@ -54,49 +55,45 @@ class AllApplicantsOverview extends React.Component {
         }
       );
     }
+  }, []);
+
+  if (!is_TaiGer_role(props.user)) {
+    return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
   }
-
-  render() {
-    if (!is_TaiGer_role(this.props.user)) {
-      return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
-    }
-    if (this.props.user.role === 'Student') {
-      return (
-        <Redirect
-          to={`${
-            DEMO.STUDENT_APPLICATIONS_LINK
-          }/${this.props.user._id.toString()}`}
-        />
-      );
-    }
-    TabTitle('Applications Overview');
-    const { res_status, isLoaded } = this.state;
-
-    if (!isLoaded && !this.state.students) {
-      return (
-        <div style={spinner_style}>
-          <Spinner animation="border" role="status">
-            <span className="visually-hidden"></span>
-          </Spinner>
-        </div>
-      );
-    }
-
-    if (res_status >= 400) {
-      return <ErrorPage res_status={res_status} />;
-    }
-
+  if (props.user.role === 'Student') {
     return (
-      <Aux>
-        <TopBar>All Students Applications Overview</TopBar>
-        <ApplicationOverviewTabs
-          user={this.props.user}
-          success={this.state.success}
-          students={this.state.students}
-        />
-      </Aux>
+      <Redirect
+        to={`${DEMO.STUDENT_APPLICATIONS_LINK}/${props.user._id.toString()}`}
+      />
     );
   }
+  TabTitle('Applications Overview');
+  const { res_status, isLoaded } = allApplicantsOverviewState;
+
+  if (!isLoaded && !allApplicantsOverviewState.students) {
+    return (
+      <div style={spinner_style}>
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden"></span>
+        </Spinner>
+      </div>
+    );
+  }
+
+  if (res_status >= 400) {
+    return <ErrorPage res_status={res_status} />;
+  }
+
+  return (
+    <Aux>
+      <TopBar>All Students Applications Overview</TopBar>
+      <ApplicationOverviewTabs
+        user={props.user}
+        success={allApplicantsOverviewState.success}
+        students={allApplicantsOverviewState.students}
+      />
+    </Aux>
+  );
 }
 
 export default AllApplicantsOverview;

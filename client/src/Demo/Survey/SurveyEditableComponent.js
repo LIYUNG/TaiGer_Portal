@@ -787,7 +787,6 @@ class SurveyEditableComponent extends React.Component {
                 </Row>
               </Card.Body>
             </Card>
-            {/* TODO () : frontend and backend not connected. */}
             <Card className="my-4 mx-0" bg={'dark'} text={'white'}>
               <Card.Header>
                 <Card.Title className="my-0 mx-0 text-light">

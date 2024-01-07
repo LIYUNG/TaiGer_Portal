@@ -4,107 +4,109 @@ import { Dropdown, DropdownButton } from 'react-bootstrap';
 import { UserlistHeader, convertDate, getDate } from '../Utils/contants';
 import { Link } from 'react-router-dom';
 import DEMO from '../../store/constant';
-class User extends React.Component {
-  render() {
-    if (this.props.success) {
-      return (
-        <tr key={this.props.user._id}>
-          <th>
-            {this.props.user.role !== 'Admin' && (
-              <DropdownButton
-                size="sm"
-                title="Option"
-                variant="primary"
-                id={`dropdown-variants-${this.props.user._id}`}
-                key={this.props.user._id}
+import {
+  is_TaiGer_Agent,
+  is_TaiGer_Editor,
+  is_TaiGer_Student
+} from '../Utils/checking-functions';
+
+function User(props) {
+  if (props.success) {
+    return (
+      <tr key={props.user._id}>
+        <th>
+          {props.user.role !== 'Admin' && (
+            <DropdownButton
+              size="sm"
+              title="Option"
+              variant="primary"
+              id={`dropdown-variants-${props.user._id}`}
+              key={props.user._id}
+            >
+              <Dropdown.Item
+                eventKey="2"
+                onClick={() =>
+                  props.setModalShow(
+                    props.user.firstname,
+                    props.user.lastname,
+                    props.user.role,
+                    props.user._id
+                  )
+                }
               >
-                <Dropdown.Item
-                  eventKey="2"
-                  onClick={() =>
-                    this.props.setModalShow(
-                      this.props.user.firstname,
-                      this.props.user.lastname,
-                      this.props.user.role,
-                      this.props.user._id
-                    )
-                  }
-                >
-                  Set User as...
-                </Dropdown.Item>
-                <Dropdown.Item
-                  eventKey="4"
-                  onClick={() =>
-                    this.props.setModalArchiv(
-                      this.props.user.firstname,
-                      this.props.user.lastname,
-                      this.props.user._id.toString(),
-                      this.props.user.archiv
-                    )
-                  }
-                >
-                  {this.props.user.archiv === true ? 'Activate' : 'Archiv'}
-                </Dropdown.Item>
-                <Dropdown.Item
-                  eventKey="3"
-                  onClick={() =>
-                    this.props.setModalShowDelete(
-                      this.props.user.firstname,
-                      this.props.user.lastname,
-                      this.props.user._id
-                    )
-                  }
-                >
-                  Delete
-                </Dropdown.Item>
-              </DropdownButton>
-            )}
-          </th>
-          {UserlistHeader.map((y, k) => (
-            <td key={k}>
-              {typeof this.props.user[y.prop] == 'boolean' ? (
-                this.props.user[y.prop] ? (
-                  'Yes'
-                ) : (
-                  'No'
-                )
-              ) : this.props.user.role === 'Student' ? (
-                <Link
-                  className="text-info"
-                  to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-                    this.props.user._id.toString(),
-                    DEMO.PROFILE
-                  )}`}
-                >
-                  {this.props.user[y.prop]}
-                </Link>
-              ) : this.props.user.role === 'Agent' ? (
-                <Link
-                  className="text-info"
-                  to={`${DEMO.TEAM_AGENT_LINK(this.props.user._id.toString())}`}
-                >
-                  {this.props.user[y.prop]}
-                </Link>
-              ) : this.props.user.role === 'Editor' ? (
-                <Link
-                  className="text-info"
-                  to={`${DEMO.TEAM_EDITOR_LINK(
-                    this.props.user._id.toString()
-                  )}`}
-                >
-                  {this.props.user[y.prop]}
-                </Link>
+                Set User as...
+              </Dropdown.Item>
+              <Dropdown.Item
+                eventKey="4"
+                onClick={() =>
+                  props.setModalArchiv(
+                    props.user.firstname,
+                    props.user.lastname,
+                    props.user._id.toString(),
+                    props.user.archiv
+                  )
+                }
+              >
+                {props.user.archiv === true ? 'Activate' : 'Archiv'}
+              </Dropdown.Item>
+              <Dropdown.Item
+                eventKey="3"
+                onClick={() =>
+                  props.setModalShowDelete(
+                    props.user.firstname,
+                    props.user.lastname,
+                    props.user._id
+                  )
+                }
+              >
+                Delete
+              </Dropdown.Item>
+            </DropdownButton>
+          )}
+        </th>
+        {UserlistHeader.map((y, k) => (
+          <td key={k}>
+            {typeof props.user[y.prop] == 'boolean' ? (
+              props.user[y.prop] ? (
+                'Yes'
               ) : (
-                this.props.user[y.prop]
-              )}
-            </td>
-          ))}
-          <td>{getDate(this.props.user.createdAt)}</td>
-          <td>{convertDate(this.props.user.lastLoginAt)}</td>
-        </tr>
-      );
-    } else {
-      return <></>;
-    }
+                'No'
+              )
+            ) : is_TaiGer_Student(props.user) ? (
+              <Link
+                className="text-info"
+                to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                  props.user._id.toString(),
+                  DEMO.PROFILE
+                )}`}
+              >
+                {props.user[y.prop]}
+              </Link>
+            ) : is_TaiGer_Agent(props.user) ? (
+              <Link
+                className="text-info"
+                to={`${DEMO.TEAM_AGENT_LINK(props.user._id.toString())}`}
+              >
+                {props.user[y.prop]}
+              </Link>
+            ) : is_TaiGer_Editor(props.user) ? (
+              <Link
+                className="text-info"
+                to={`${DEMO.TEAM_EDITOR_LINK(props.user._id.toString())}`}
+              >
+                {props.user[y.prop]}
+              </Link>
+            ) : (
+              props.user[y.prop]
+            )}
+          </td>
+        ))}
+        <td>{getDate(props.user.createdAt)}</td>
+        <td>{convertDate(props.user.lastLoginAt)}</td>
+      </tr>
+    );
+  } else {
+    return <></>;
   }
 }
 

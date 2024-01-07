@@ -20,12 +20,6 @@ class StudentOverviewPage extends React.Component {
     data: null,
     success: false,
     students: null,
-    doc_thread_id: '',
-    student_id: '',
-    program_id: '',
-    SetAsFinalFileModel: false,
-    isFinalVersion: false,
-    status: '', //reject, accept... etc
     res_status: 0,
     res_modal_message: '',
     res_modal_status: 0

@@ -5,20 +5,18 @@ import Aux from '../../hoc/_Aux';
 import { appConfig } from '../../config';
 
 // Status 403: Forbidden requests
-class UnauthorizedError extends React.Component {
-  render() {
-    return (
-      <Aux>
-        <Row>
-          <Col>
-            <Card>
-              Permission Denied. 請跟您的 {appConfig.companyName} 顧問聯繫
-            </Card>
-          </Col>
-        </Row>
-      </Aux>
-    );
-  }
+function UnauthorizedError(props) {
+  return (
+    <Aux>
+      <Row>
+        <Col>
+          <Card>
+            Permission Denied. 請跟您的 {appConfig.companyName} 顧問聯繫
+          </Card>
+        </Col>
+      </Row>
+    </Aux>
+  );
 }
 
 export default UnauthorizedError;

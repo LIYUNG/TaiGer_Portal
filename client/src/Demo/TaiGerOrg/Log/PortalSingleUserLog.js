@@ -29,7 +29,6 @@ function PortalSingleUserLog(props) {
       isLoaded: false,
       logs: null,
       success: false,
-      modalShow: false,
       range: 180,
       res_status: 0
     });

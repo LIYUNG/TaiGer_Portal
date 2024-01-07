@@ -60,7 +60,7 @@ const ProgramConflict = React.lazy(() =>
 const TaiGerPermissions = React.lazy(() => import('./Demo/TaiGerOrg/index'));
 const TaiGerUsersLog = React.lazy(() => import('./Demo/TaiGerOrg/Log/index'));
 const TaiGerUserLog = React.lazy(() =>
-  import('./Demo/TaiGerOrg/Log/TaiGerPortalSingleUserLog')
+  import('./Demo/TaiGerOrg/Log/PortalSingleUserLog')
 );
 const TaiGerOrg = React.lazy(() =>
   import('./Demo/TaiGerOrg/TaiGerMember/index')

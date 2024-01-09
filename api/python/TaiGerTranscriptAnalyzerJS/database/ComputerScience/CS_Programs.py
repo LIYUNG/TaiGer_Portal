@@ -57,7 +57,7 @@ def TUM_CS(transcript_sorted_group_map, df_transcript_array, df_category_courses
         PROG_SPEC_INTRO_INFO_PARAM,  # 電腦網路
         PROG_SPEC_OTHERS,  # 數理邏輯
         PROG_SPEC_OTHERS,  # 圖論
-        PROG_SPEC_FUNC_PROG_MODULE_PARAM,  # 正規方法
+        PROG_SPEC_THEORY_COMP_MODULE_PARAM,  # 正規方法
         PROG_SPEC_FUNC_PROG_MODULE_PARAM,  # 函數程式
         PROG_SPEC_INTRO_INFO_PARAM,  # 演算法 資料結構
         PROG_SPEC_THEORY_COMP_MODULE_PARAM,  # 可運算度 複雜度

@@ -291,9 +291,9 @@ MATHEMATICAL_GRAPH_THEORY_KEY_WORDS_EN = ['graph theor']
 MATHEMATICAL_GRAPH_THEORY_ANTI_KEY_WORDS_EN = ['asdgladfj;l', '設計']
 
 # 正規方法
-FORMAL_METHOD_KEY_WORDS = ['正規', '常規', '形式系統']
+FORMAL_METHOD_KEY_WORDS = ['正規', '常規', '形式系統', '形式語言']
 FORMAL_METHOD_ANTI_KEY_WORDS = ['asdgladfj']
-FORMAL_METHOD_KEY_WORDS_EN = ['formal', '常規', '形式系統']
+FORMAL_METHOD_KEY_WORDS_EN = ['formal language', 'formal', 'automata']
 FORMAL_METHOD_ANTI_KEY_WORDS_EN = ['asdgladfj']
 
 # 函式程式
@@ -312,7 +312,7 @@ ALGORITHM_DATASTRUCTURE_ANTI_KEY_WORDS_EN = ['asdgladfj']
 # 理論資工
 THEORY_COMPUTATION_KEY_WORDS = ['計算機理論', '原理', '可計算', '計算理論']
 THEORY_COMPUTATION_ANTI_KEY_WORDS = ['asdgladfj', '經濟', '遊戲', '憲法']
-THEORY_COMPUTATION_KEY_WORDS_EN = ['theoretical compu', '原理', 'computabili']
+THEORY_COMPUTATION_KEY_WORDS_EN = ['theoretical compu', '原理', 'computabili', 'computable', 'complexity theor']
 THEORY_COMPUTATION_ANTI_KEY_WORDS_EN = ['asdgladfj']
 
 # 商管經

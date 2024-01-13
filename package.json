@@ -3,9 +3,9 @@
     "version": "0.0.0",
     "private": true,
     "scripts": {
-        "backend": "cd api&&yarn dev",
-        "frontend": "cd client&&yarn start",
-        "full": "concurrently \"yarn backend\" \"yarn frontend\""
+        "backend": "cd api&&npm run dev",
+        "frontend": "cd client&&npm start",
+        "full": "concurrently \"npm run backend\" \"npm run frontend\""
     },
     "devDependencies": {
         "concurrently": "^8.2.2"

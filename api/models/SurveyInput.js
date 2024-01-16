@@ -9,8 +9,11 @@ const contentType = ['sentence', 'paragraph', 'essay'];
 const surveyInputSchema = new mongoose.Schema({
     studenId: { type: ObjectId, required: true, ref: 'User' },
     programId: { type: ObjectId, ref: 'Program' },
-    outsourcedUserId: [{ type: ObjectId, ref: 'User' }],
     threadType: { type: String, required: true, enum: threadType },
+    isSpecific: {
+        type: Boolean,
+        default: true
+    },
     isFinalVersion: {
         type: Boolean,
         default: false

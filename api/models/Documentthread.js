@@ -4,11 +4,18 @@ const {
   Types: { ObjectId }
 } = require('mongoose');
 const mongoose = require('mongoose');
-const documentthreadsSchema = new mongoose.Schema({
-  student_id: { type: ObjectId, ref: 'User' },
-  outsourced_user_id: [{ type: ObjectId, ref: 'User' }],
-  file_type: { type: String, default: '' },
+
+const threadType = ['CV', 'ML', 'RL', 'Essay'];
+
+const documentThreadsSchema = new mongoose.Schema({
+  student_id: { type: ObjectId, require: true, ref: 'User' },
   program_id: { type: ObjectId, ref: 'Program' },
+  outsourced_user_id: [{ type: ObjectId, ref: 'User' }],
+  file_type: { type: String, require: true, enum: threadType }, // Change to threadType
+  isSpecific: {
+    type: Boolean,
+    default: true
+  },
   isFinalVersion: {
     type: Boolean,
     default: false
@@ -57,8 +64,9 @@ const STUDENT_INPUT_STATUS_E = {
   BLOCKED: 'blocked'
 };
 
-const Documentthread = mongoose.model('Documentthread', documentthreadsSchema);
+const Documentthread = mongoose.model('Documentthread', documentThreadsSchema);
 module.exports = {
   Documentthread,
+  threadType,
   STUDENT_INPUT_STATUS_E
 };

@@ -43,7 +43,11 @@ const {
   postMessages,
   getStudentInput,
   putStudentInput,
-  resetStudentInput
+  resetStudentInput,
+  getSurveyInput,
+  postSurveyInput,
+  putSurveyInput,
+  resetSurveyInput
 } = require('../controllers/documents_modification');
 const {
   docThreadMultitenant_filter
@@ -81,6 +85,36 @@ router
     docThreadMultitenant_filter,
     resetStudentInput
   );
+
+// Survey input
+router
+  .route('/survey-input/:surveyInputId')
+  .get(
+    getMessagesRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
+    // docThreadMultitenant_filter,
+    getSurveyInput
+  ).put(
+    putThreadInputRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
+    // docThreadMultitenant_filter,
+    putSurveyInput
+  ).delete(
+    resetThreadInputRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
+    // docThreadMultitenant_filter,
+    resetSurveyInput
+  );
+
+router
+  .route('/survey-input')
+  .post(
+    putThreadInputRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
+    // docThreadMultitenant_filter,
+    postSurveyInput
+  );
+
 
 router
   .route('/overview')

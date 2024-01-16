@@ -2,14 +2,13 @@ const mongoose = require('mongoose');
 const {
     Types: { ObjectId }
 } = require('mongoose');
-const { threadType, STUDENT_INPUT_STATUS_E } = require('./Documentthread');
-
+const { documentType, STUDENT_INPUT_STATUS_E } = require('./Documentthread');
 const contentType = ['sentence', 'paragraph', 'essay'];
 
 const surveyInputSchema = new mongoose.Schema({
-    studenId: { type: ObjectId, required: true, ref: 'User' },
+    studentId: { type: ObjectId, required: true, ref: 'User' },
     programId: { type: ObjectId, ref: 'Program' },
-    threadType: { type: String, required: true, enum: threadType },
+    surveyType: { type: String, required: true, enum: documentType },
     isSpecific: {
         type: Boolean,
         default: true
@@ -33,7 +32,11 @@ const surveyInputSchema = new mongoose.Schema({
         enum: Object.values(STUDENT_INPUT_STATUS_E),
         default: STUDENT_INPUT_STATUS_E.EMPTY
     },
-    createdAt: Date,
+    createdAt: {
+        type: Date,
+        immutable: true,
+        default: () => Date.now(),
+    },
     updatedAt: Date
 });
 

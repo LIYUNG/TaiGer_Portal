@@ -8,6 +8,7 @@ const {
   Documentthread,
   STUDENT_INPUT_STATUS_E
 } = require('../models/Documentthread');
+const surveyInput = require('../models/SurveyInput');
 const { emptyS3Directory } = require('../utils/utils_function');
 const {
   sendNewApplicationMessageInThreadEmail,
@@ -33,6 +34,7 @@ const {
 const { AWS_S3_BUCKET_NAME, API_ORIGIN } = require('../config');
 const Permission = require('../models/Permission');
 const { s3 } = require('../aws/index');
+
 
 const ThreadS3GarbageCollector = async () => {
   try {
@@ -302,6 +304,72 @@ const getAllCVMLRLOverview = asyncHandler(async (req, res) => {
     .lean();
   res.status(200).send({ success: true, data: students });
 });
+
+const getSurveyInput = asyncHandler(async (req, res, next) => {
+  const {
+    user,
+    params: { surveyInputId }
+  } = req;
+  const document = await surveyInput.findById(surveyInputId)
+    .populate('studentId', 'firstname lastname role')
+    .select('surveyType isSpecific surveyContent')
+    .populate('programId')
+    .lean()
+    .exec();
+  res.status(200).send({ success: true, data: document });
+});
+
+const postSurveyInput = asyncHandler(async (req, res, next) => {
+  const { input, informEditor } = req.body;
+  console.log("input ->", input);
+  const newSurveyInput = new surveyInput(
+    {
+      ...input,
+      createdAt: new Date()
+    }
+  );
+  await newSurveyInput.save()
+  res.status(200).send({ success: true });
+  if (informEditor) {
+    // TODO: inform editor
+  }
+});
+
+const putSurveyInput = asyncHandler(async (req, res, next) => {
+  const {
+    user,
+    params: { surveyInputId }
+  } = req;
+  const { input, informEditor } = req.body;
+  await surveyInput.findByIdAndUpdate(surveyInputId,
+    {
+      ...input,
+      surveyStatus: STUDENT_INPUT_STATUS_E.PRODIVDED,
+      updatedAt: new Date()
+    }, { upsert: false });
+  res.status(200).send({ success: true });
+  if (informEditor) {
+    // TODO: inform editor
+  }
+});
+
+const resetSurveyInput = asyncHandler(async (req, res, next) => {
+  const {
+    params: { surveyInputId }
+  } = req;
+  const { input, informEditor } = req.body;
+  await surveyInput.findByIdAndUpdate(surveyInputId, {
+    $unset: {
+      'surveyContent.$[].answer': 1
+    }
+  });
+  res.status(200).send({ success: true });
+  if (informEditor) {
+    // TODO: inform editor
+  }
+});
+
+
 
 const getStudentInput = asyncHandler(async (req, res, next) => {
   const {
@@ -1780,6 +1848,10 @@ const deleteAMessageInThread = asyncHandler(async (req, res) => {
 module.exports = {
   ThreadS3GarbageCollector,
   getAllCVMLRLOverview,
+  getSurveyInput,
+  postSurveyInput,
+  putSurveyInput,
+  resetSurveyInput,
   getStudentInput,
   putStudentInput,
   resetStudentInput,

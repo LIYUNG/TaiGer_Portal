@@ -5,13 +5,13 @@ const {
 } = require('mongoose');
 const mongoose = require('mongoose');
 
-const threadType = ['CV', 'ML', 'RL', 'Essay'];
+const documentType = ['CV', 'ML', 'RL', 'Essay'];
 
 const documentThreadsSchema = new mongoose.Schema({
   student_id: { type: ObjectId, require: true, ref: 'User' },
   program_id: { type: ObjectId, ref: 'Program' },
   outsourced_user_id: [{ type: ObjectId, ref: 'User' }],
-  file_type: { type: String, require: true, enum: threadType }, // Change to threadType
+  file_type: { type: String, require: true, enum: documentType }, // Change to threadType
   isSpecific: {
     type: Boolean,
     default: true
@@ -67,6 +67,6 @@ const STUDENT_INPUT_STATUS_E = {
 const Documentthread = mongoose.model('Documentthread', documentThreadsSchema);
 module.exports = {
   Documentthread,
-  threadType,
+  documentType,
   STUDENT_INPUT_STATUS_E
 };

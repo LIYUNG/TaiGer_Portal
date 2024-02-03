@@ -21,27 +21,21 @@ from database.TransportationEngineering.TE_sorter import TE_sorter
 file_path = os.path.realpath(__file__)
 file_path = os.path.dirname(file_path)
 
-def analyze_transcript(courses, category, student_id, student_name, language, courses_taiger_guided):
-    return {courses, category, student_id, student_name, language, courses_taiger_guided}
-
-if __name__ == "__main__":
+def analyze_transcript(str_courses, category, student_id, student_name, language, str_courses_taiger_guided):
     print("--------------------------")
     print("New Transcript Analyser")
     print("Python version:")
     print(sys.version)
     print("--------------------------")
     ## print course:
-    obj = json.loads(sys.argv[1])
-    obj_arr = json.loads(obj)
-    obj2 = json.loads(sys.argv[6])
-    obj2_arr = json.loads(obj2)
-    obj_arr = obj_arr + obj2_arr
+    course = json.loads(str_courses)
+    course_arr = json.loads(course)
+    courses_taiger_guided = json.loads(str_courses_taiger_guided)
+    courses_taiger_guided_arr = json.loads(courses_taiger_guided)
+    course_arr = course_arr + courses_taiger_guided_arr
     # print(obj_arr)
     # for obj in obj_arr:
     #     print(obj['course_chinese'])
-    studentId = sys.argv[3]
-    student_name = sys.argv[4]
-    analysis_language = sys.argv[5]
     program_idx = []
     program_selection_path = ''
     program_group_to_file_path = {
@@ -61,7 +55,7 @@ if __name__ == "__main__":
         'cme': '/database/Materials_Science/CME_Programs.xlsx',
         'te': '/database/TransportationEngineering/TE_Programs.xlsx',
     }
-    program_group = sys.argv[2]
+    program_group = category
     if program_group in program_group_to_file_path:
         program_selection_path = file_path + \
             program_group_to_file_path[program_group]
@@ -97,9 +91,10 @@ if __name__ == "__main__":
         'psy': PSY_sorter,
         'te': TE_sorter
     }
-    program_code = sys.argv[2]
+    program_code = category
     if program_code in sorter_functions:
-        sorter_functions[program_code](program_idx, obj_arr, program_code.upper(), studentId, student_name, analysis_language)
-    # else:
-        # handle the case where the program code is not recognized
-        # maybe raise an exception or log an error message
+        sorter_functions[program_code](program_idx, course_arr, program_code.upper(), student_id, student_name, language)    
+    return {str_courses, category, student_id, student_name, language, str_courses_taiger_guided}
+
+if __name__ == "__main__":
+    analyze_transcript(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6])

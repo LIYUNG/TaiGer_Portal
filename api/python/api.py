@@ -1,3 +1,4 @@
+import uvicorn
 from typing import Union
 from fastapi import FastAPI
 from pydantic import BaseModel
@@ -33,3 +34,6 @@ class TranscriptInfo(BaseModel):
 @app.post('/analyze-transcript')
 def analyze_transcript(info: TranscriptInfo):
     return TranscriptAnalyzer.analyze_transcript(info.courses, info.category, info.student_id, info.student_name, info.language, info.courses_taiger_guided)
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)

@@ -21,6 +21,9 @@ from database.TransportationEngineering.TE_sorter import TE_sorter
 file_path = os.path.realpath(__file__)
 file_path = os.path.dirname(file_path)
 
+def analyze_transcript(courses, category, student_id, student_name, language, courses_taiger_guided):
+    return {courses, category, student_id, student_name, language, courses_taiger_guided}
+
 if __name__ == "__main__":
     print("--------------------------")
     print("New Transcript Analyser")

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Redirect } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
+import { Box, Card } from '@mui/material';
 import {
   BarChart,
   CartesianGrid,
@@ -13,13 +14,12 @@ import {
 
 import ErrorPage from '../../../Utils/ErrorPage';
 import ModalMain from '../../../Utils/ModalHandler/ModalMain';
-import { spinner_style } from '../../../Utils/contants';
-
-import { Card, Col, Row, Spinner } from 'react-bootstrap';
 import { getPrograms } from '../../../../api';
 import DEMO from '../../../../store/constant';
 import { is_TaiGer_role } from '../../../Utils/checking-functions';
 import { appConfig } from '../../../../config';
+import { useAuth } from '../../../../components/AuthProvider';
+import Loading from '../../../../components/Loading/Loading';
 
 function ProgramDistributionChart({ data, x_key }) {
   return (
@@ -48,7 +48,8 @@ function ProgramDistributionChart({ data, x_key }) {
   );
 }
 
-function ProgramListVisualization(props) {
+function ProgramListVisualization() {
+  const { user } = useAuth();
   let [tableStates, setTableStates] = useState({
     success: false,
     isloaded: false,
@@ -69,8 +70,8 @@ function ProgramListVisualization(props) {
     res_status: 0
   });
 
-  if (!is_TaiGer_role(props.user)) {
-    return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
+  if (!is_TaiGer_role(user)) {
+    return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
   }
   useEffect(() => {
     getPrograms().then(
@@ -115,15 +116,8 @@ function ProgramListVisualization(props) {
     }));
   };
 
-  // const data = React.useMemo(() => makeData(100000), []);
   if (!statedata.isloaded && !statedata.programs) {
-    return (
-      <div style={spinner_style}>
-        <Spinner animation="border" role="status">
-          <span className="visually-hidden"></span>
-        </Spinner>
-      </div>
-    );
+    return <Loading />;
   }
 
   if (statedata.res_status >= 400) {
@@ -241,18 +235,9 @@ function ProgramListVisualization(props) {
           res_modal_message={statedata.res_modal_message}
         />
       )}
-      <Card>
-        <Card.Header text={'dark'}>
-          <Card.Title>
-            <Row>
-              <Col className="my-0 mx-0">
-                {appConfig.companyName} ProgramList Distribution
-              </Col>
-            </Row>
-          </Card.Title>
-        </Card.Header>
-        <Card.Body>
-          By Country:
+      <Card sx={{ p: 2 }}>
+        <Box>
+          {appConfig.companyName} ProgramList Distribution By Country:
           <ProgramDistributionChart
             data={outputDataByCountry}
             x_key="country"
@@ -277,7 +262,7 @@ function ProgramListVisualization(props) {
             )}
             x_key="whoupdated"
           />
-        </Card.Body>
+        </Box>
       </Card>
       {/* <>
         {statedata.programs.map((program, i) => (

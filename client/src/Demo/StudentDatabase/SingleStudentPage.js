@@ -1,17 +1,26 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
+import { Navigate, Link as LinkDom, useLoaderData } from 'react-router-dom';
 import {
   Tabs,
   Tab,
-  Card,
-  Table,
-  Row,
-  Col,
+  Box,
   Button,
-  Spinner
-} from 'react-bootstrap';
-import { Link } from 'react-router-dom';
-import { Redirect } from 'react-router-dom';
+  Card,
+  Link,
+  Typography,
+  Table,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableCell,
+  Grid,
+  Breadcrumbs,
+  Alert
+} from '@mui/material';
+import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
+import { AiFillEdit } from 'react-icons/ai';
+import { BsMessenger } from 'react-icons/bs';
 
 import BaseDocument_StudentView from '../BaseDocuments/BaseDocument_StudentView';
 import EditorDocsProgress from '../CVMLRLCenter/EditorDocsProgress';
@@ -22,196 +31,58 @@ import ApplicationProgress from '../Dashboard/MainViewTab/ApplicationProgress/Ap
 import StudentsAgentEditor from '../Dashboard/MainViewTab/StudentsAgentEditor/StudentsAgentEditor';
 import StudentDashboard from '../Dashboard/StudentDashboard/StudentDashboard';
 import {
-  SYMBOL_EXPLANATION,
   profile_name_list,
-  spinner_style,
   convertDate,
   programstatuslist,
-  profile_wtih_doc_link_list,
   academic_background_header
 } from '../Utils/contants';
-import { is_TaiGer_role } from '../Utils/checking-functions';
-import ErrorPage from '../Utils/ErrorPage';
-import ModalMain from '../Utils/ModalHandler/ModalMain';
-
 import {
-  getStudentAndDocLinks,
-  updateAcademicBackground,
-  updateLanguageSkill,
-  updateApplicationPreference,
-  getAgents,
-  updateAgents,
-  getEditors,
-  updateEditors
-} from '../../api';
+  is_TaiGer_Guest,
+  is_TaiGer_Student,
+  is_TaiGer_role
+} from '../Utils/checking-functions';
+import ModalMain from '../Utils/ModalHandler/ModalMain';
+import { updateAgents, updateEditors } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
-import { AiFillEdit } from 'react-icons/ai';
-import { BsMessenger } from 'react-icons/bs';
 import PortalCredentialPage from '../PortalCredentialPage';
 import { appConfig } from '../../config';
 import { TopBar } from '../../components/TopBar/TopBar';
+import { useAuth } from '../../components/AuthProvider';
+import { CustomTabPanel, a11yProps } from '../../components/Tabs';
+import { SurveyProvider } from '../../components/SurveyProvider';
 
-function SingleStudentPage(props) {
-  const { t, i18n } = useTranslation();
+CustomTabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.number.isRequired,
+  value: PropTypes.number.isRequired
+};
+
+function SingleStudentPage() {
+  const {
+    data: { survey_link, base_docs_link, data }
+  } = useLoaderData();
+  const { user } = useAuth();
+  const { t } = useTranslation();
   const [singleStudentPage, setSingleStudentPage] = useState({
     error: '',
     isLoaded: {},
     isLoaded2: false,
     taiger_view: true,
-    agent_list: [],
-    editor_list: [],
-    updateAgentList: {},
-    updateEditorList: {},
-    student: null,
-    base_docs_link: null,
-    survey_link: null,
+    student: data,
+    base_docs_link: base_docs_link,
+    survey_link: survey_link.find(
+      (link) => link.key === profile_name_list.Grading_System
+    ).link,
     success: false,
     res_status: 0,
     res_modal_message: '',
     res_modal_status: 0
   });
-  useEffect(() => {
-    let keys2 = Object.keys(profile_wtih_doc_link_list);
-    let temp_isLoaded = {};
-    for (let i = 0; i < keys2.length; i++) {
-      temp_isLoaded[keys2[i]] = true;
-    }
-    getStudentAndDocLinks(props.match.params.studentId).then(
-      (resp) => {
-        const { survey_link, base_docs_link, data, success } = resp.data;
-        const { status } = resp;
-        if (success) {
-          const granding_system_doc_link = survey_link.find(
-            (link) => link.key === profile_name_list.Grading_System
-          );
-          setSingleStudentPage((prevState) => ({
-            ...prevState,
-            isLoaded: temp_isLoaded,
-            isLoaded2: true,
-            student: data,
-            base_docs_link,
-            survey_link: granding_system_doc_link.link,
-            success: success,
-            res_status: status
-          }));
-        } else {
-          setSingleStudentPage((prevState) => ({
-            ...prevState,
-            isLoaded: temp_isLoaded,
-            isLoaded2: true,
-            res_status: status
-          }));
-        }
-      },
-      (error) => {
-        setSingleStudentPage((prevState) => ({
-          ...prevState,
-          isLoaded: temp_isLoaded,
-          isLoaded2: true,
-          error,
-          res_status: 500
-        }));
-      }
-    );
-  }, [props.match.params.studentId]);
+  const [value, setValue] = useState(0);
 
-  const editAgent = (student) => {
-    getAgents().then(
-      (resp) => {
-        const { data, success } = resp.data;
-        const { status } = resp;
-        if (success) {
-          const agents = data; //get all agent
-          const { agents: student_agents } = student;
-          const updateAgentList = agents.reduce(
-            (prev, { _id }) => ({
-              ...prev,
-              [_id]: student_agents
-                ? student_agents.findIndex(
-                    (student_agent) => student_agent._id === _id
-                  ) > -1
-                : false
-            }),
-            {}
-          );
-          setSingleStudentPage((prevState) => ({
-            ...prevState,
-            agent_list: agents,
-            updateAgentList,
-            res_modal_status: status
-          }));
-        } else {
-          const { message } = resp.data;
-          setSingleStudentPage((prevState) => ({
-            ...prevState,
-            isLoaded: true,
-            res_modal_message: message,
-            res_modal_status: status
-          }));
-        }
-      },
-      (error) => {
-        const { statusText } = resp;
-        setSingleStudentPage((prevState) => ({
-          ...prevState,
-          isLoaded: true,
-          error,
-          res_modal_status: 500,
-          res_modal_message: statusText
-        }));
-      }
-    );
-  };
-
-  const editEditor = (student) => {
-    getEditors().then(
-      (resp) => {
-        // TODO: check success
-        const { data, success } = resp.data;
-        const { status } = resp;
-        if (success) {
-          const editors = data;
-          const { editors: student_editors } = student;
-          const updateEditorList = editors.reduce(
-            (prev, { _id }) => ({
-              ...prev,
-              [_id]: student_editors
-                ? student_editors.findIndex(
-                    (student_editor) => student_editor._id === _id
-                  ) > -1
-                : false
-            }),
-            {}
-          );
-
-          setSingleStudentPage((prevState) => ({
-            ...prevState,
-            editor_list: editors,
-            updateEditorList,
-            res_modal_status: status
-          }));
-        } else {
-          const { message } = resp.data;
-          setSingleStudentPage((prevState) => ({
-            ...prevState,
-            isLoaded: true,
-            res_modal_message: message,
-            res_modal_status: status
-          }));
-        }
-      },
-      (error) => {
-        const { statusText } = resp;
-        setSingleStudentPage((prevState) => ({
-          ...prevState,
-          isLoaded: true,
-          error,
-          res_modal_status: 500,
-          res_modal_message: statusText
-        }));
-      }
-    );
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
   };
 
   const submitUpdateAgentlist = (e, updateAgentList, student_id) => {
@@ -252,13 +123,12 @@ function SingleStudentPage(props) {
         }
       },
       (error) => {
-        const { statusText } = resp;
         setSingleStudentPage((prevState) => ({
           ...prevState,
           isLoaded: true,
           error,
           res_modal_status: 500,
-          res_modal_message: statusText
+          res_modal_message: ''
         }));
       }
     );
@@ -292,148 +162,12 @@ function SingleStudentPage(props) {
         }
       },
       (error) => {
-        const { statusText } = resp;
         setSingleStudentPage((prevState) => ({
           ...prevState,
           isLoaded: true,
           error,
           res_modal_status: 500,
-          res_modal_message: statusText
-        }));
-      }
-    );
-  };
-
-  const handleSubmit_AcademicBackground_root = (e, university, student_id) => {
-    e.preventDefault();
-    updateAcademicBackground(university, student_id).then(
-      (resp) => {
-        const { profile, data, success } = resp.data;
-        const { status } = resp;
-        if (success) {
-          setSingleStudentPage((prevState) => ({
-            ...prevState,
-            isLoaded2: true,
-            student: {
-              ...prevState.student,
-              academic_background: {
-                ...prevState.student.academic_background,
-                university: data
-              },
-              profile: profile
-            },
-            success: success,
-            updateconfirmed: true,
-            res_modal_status: status
-          }));
-        } else {
-          const { message } = resp.data;
-          setSingleStudentPage((prevState) => ({
-            ...prevState,
-            isLoaded2: true,
-            res_modal_message: message,
-            res_modal_status: status
-          }));
-        }
-      },
-      (error) => {
-        const { statusText } = resp;
-        setSingleStudentPage((prevState) => ({
-          ...prevState,
-          isLoaded2: true,
-          error,
-          res_modal_status: 500,
-          res_modal_message: statusText
-        }));
-      }
-    );
-  };
-
-  const handleSubmit_Language_root = (e, language, student_id) => {
-    e.preventDefault();
-    updateLanguageSkill(language, student_id).then(
-      (resp) => {
-        const { profile, data, success } = resp.data;
-        const { status } = resp;
-        if (success) {
-          setSingleStudentPage((prevState) => ({
-            ...prevState,
-            isLoaded2: true,
-            student: {
-              ...prevState.student,
-              academic_background: {
-                ...prevState.student.academic_background,
-                language: data
-              },
-              profile: profile
-            },
-            success: success,
-            updateconfirmed: true,
-            res_modal_status: status
-          }));
-        } else {
-          const { message } = resp.data;
-          setSingleStudentPage((prevState) => ({
-            ...prevState,
-            isLoaded2: true,
-            res_modal_message: message,
-            res_modal_status: status
-          }));
-        }
-      },
-      (error) => {
-        const { statusText } = resp;
-        setSingleStudentPage((prevState) => ({
-          ...prevState,
-          isLoaded2: true,
-          error,
-          res_modal_status: 500,
-          res_modal_message: statusText
-        }));
-      }
-    );
-  };
-
-  const handleSubmit_ApplicationPreference_root = (
-    e,
-    application_preference,
-    student_id
-  ) => {
-    e.preventDefault();
-    updateApplicationPreference(application_preference, student_id).then(
-      (resp) => {
-        const { data, success } = resp.data;
-        const { status } = resp;
-        if (success) {
-          setSingleStudentPage((prevState) => ({
-            ...prevState,
-            isLoaded2: true,
-            student: {
-              ...prevState.student,
-              application_preference: data
-            },
-            success: success,
-            updateconfirmed: true,
-            res_modal_status: status
-          }));
-        } else {
-          const { message } = resp.data;
-          setSingleStudentPage((prevState) => ({
-            ...prevState,
-            isLoaded: true,
-            res_modal_message: message,
-            res_modal_status: status
-          }));
-        }
-      },
-      (error) => {
-        const { statusText } = resp;
-        setSingleStudentPage((prevState) => ({
-          ...prevState,
-          isLoaded: true,
-          error,
-          res_modal_status: 500,
-          res_modal_message: statusText
+          res_modal_message: ''
         }));
       }
     );
@@ -453,31 +187,12 @@ function SingleStudentPage(props) {
     }));
   };
 
-  if (!is_TaiGer_role(props.user)) {
-    return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
+  if (!is_TaiGer_role(user)) {
+    return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
   }
 
-  const {
-    res_modal_status,
-    res_status,
-    base_docs_link,
-    res_modal_message,
-    isLoaded2
-  } = singleStudentPage;
+  const { res_modal_status, res_modal_message } = singleStudentPage;
 
-  if (res_status >= 400) {
-    return <ErrorPage res_status={res_status} />;
-  }
-
-  if (!singleStudentPage.student) {
-    return (
-      <div style={spinner_style}>
-        <Spinner animation="border" role="status">
-          <span className="visually-hidden"></span>
-        </Spinner>
-      </div>
-    );
-  }
   TabTitle(
     `Student ${singleStudentPage.student.firstname} ${singleStudentPage.student.lastname} | ${singleStudentPage.student.firstname_chinese} ${singleStudentPage.student.lastname_chinese}`
   );
@@ -496,274 +211,215 @@ function SingleStudentPage(props) {
           Status: <b>Close</b>
         </TopBar>
       )}
+      <Grid container justifyContent="space-between" alignItems="center">
+        <Grid item>
+          <Breadcrumbs aria-label="breadcrumb">
+            <Link
+              underline="hover"
+              color="inherit"
+              component={LinkDom}
+              to={`${DEMO.DASHBOARD_LINK}`}
+            >
+              {appConfig.companyName}
+            </Link>
+            <Link
+              underline="hover"
+              color="inherit"
+              component={LinkDom}
+              to={`${DEMO.STUDENT_DATABASE_LINK}`}
+            >
+              {t('Student Database')}
+            </Link>
+            <Typography color="text.primary">
+              Student {singleStudentPage.student.firstname}
+              {' ,'}
+              {singleStudentPage.student.lastname}
+              {' | '}
+              {singleStudentPage.student.lastname_chinese}
+              {singleStudentPage.student.firstname_chinese}
+            </Typography>
+            <Link
+              underline="hover"
+              color="inherit"
+              component={LinkDom}
+              to={`${DEMO.PROFILE_STUDENT_LINK(singleStudentPage.student._id)}`}
+            >
+              <AiFillEdit color="red" size={24} />
+            </Link>
+          </Breadcrumbs>
+        </Grid>
+        <Grid item>
+          <Box style={{ textAlign: 'left' }}>
+            <Typography style={{ float: 'right' }}>
+              <Link
+                underline="hover"
+                color="inherit"
+                component={LinkDom}
+                to={`${DEMO.COMMUNICATIONS_LINK(
+                  singleStudentPage.student._id
+                )}`}
+                sx={{ mr: 1 }}
+              >
+                <Button color="primary" variant="contained" size="small">
+                  <BsMessenger color="white" size={16} />
+                  &nbsp;
+                  <b>{t('Message')}</b>
+                </Button>
+              </Link>
+              {t('Last Login')}:&nbsp;
+              {convertDate(singleStudentPage.student.lastLoginAt)}{' '}
+              <Button
+                size="small"
+                variant="contained"
+                color="secondary"
+                onClick={onChangeView}
+              >
+                {t('Switch View')}
+              </Button>
+            </Typography>
+          </Box>
+        </Grid>
+      </Grid>
       {singleStudentPage.taiger_view ? (
         <>
-          <Row>
-            <Col>
-              <Card className="my-2 mx-0" bg={'dark'} text={'white'}>
-                <h4
-                  className="text-light mt-4 ms-4"
-                  style={{ textAlign: 'left' }}
-                >
-                  {singleStudentPage.student.firstname}
-                  {' ,'}
-                  {singleStudentPage.student.lastname}
-                  {' | '}
-                  {singleStudentPage.student.lastname_chinese}
-                  {singleStudentPage.student.firstname_chinese}
-                  <Link
-                    to={`${DEMO.PROFILE_STUDENT_LINK(
-                      singleStudentPage.student._id
-                    )}`}
-                    style={{ textDecoration: 'none' }}
-                    className="mx-1"
-                  >
-                    <AiFillEdit color="red" size={24} />
-                  </Link>
-                  <Link
-                    to={`${DEMO.COMMUNICATIONS_LINK(
-                      singleStudentPage.student._id
-                    )}`}
-                    style={{ textDecoration: 'none' }}
-                    className="mx-1"
-                  >
-                    <Button size="sm" className="ms-2 ">
-                      <BsMessenger color="white" size={16} /> <b>Message</b>
-                    </Button>
-                  </Link>
-                  <span
-                    className="text-light mb-1 me-2 "
-                    style={{ float: 'right' }}
-                  >
-                    <Button
-                      size="sm"
-                      variant="success"
-                      className="ms-2 "
-                      onClick={onChangeView}
-                    >
-                      {t('Switch View')}
-                    </Button>
-                  </span>
-                  <p className="text-light mt-2" style={{ float: 'right' }}>
-                    {t('Last Login')}:&nbsp;
-                    {convertDate(singleStudentPage.student.lastLoginAt)}
-                  </p>
-                </h4>
-              </Card>
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <Card className="my-1 mx-0" bg={'dark'} text={'white'}>
-                <Card.Body>
-                  <Table
-                    responsive
-                    bordered
-                    hover
-                    className="my-0 mx-0"
-                    variant="dark"
-                    text="light"
-                    size="sm"
-                  >
-                    <thead>
-                      <tr>
-                        <th></th>
-                        {props.user.role === 'Student' ||
-                        props.user.role === 'Guest' ? (
-                          <></>
-                        ) : (
-                          <>
-                            <th>#</th>
-                          </>
-                        )}
-                        {programstatuslist.map((doc, index) => (
-                          <th key={index}>{doc.name}</th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <ApplicationProgress
-                        user={props.user}
-                        student={singleStudentPage.student}
-                        isLoaded={singleStudentPage.isLoaded2}
-                      />
-                    </tbody>
-                  </Table>
-                </Card.Body>
-              </Card>
-            </Col>
-          </Row>
-          <Tabs
-            defaultActiveKey={props.match.params.tab}
-            id="uncontrolled-tab-example"
-            fill={true}
-            justify={true}
-            className="py-0 my-0 mx-0"
-          >
-            <Tab eventKey="profile" title="Profile Overview">
-              <Table
-                responsive
-                className="px-0 py-0 mb-2 mx-0"
-                variant="dark"
-                text="light"
-                size="sm"
-              >
-                <thead>
-                  <tr>
-                    <th></th>
-                    <th>First-, Last Name</th>
-                    <th>Agents</th>
-                    <th>Editors</th>
-                    <th>Year</th>
-                    <th>Semester</th>
-                    <th>Degree</th>
-                    {header.map((name, index) => (
-                      <th key={index}>{name}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  <StudentsAgentEditor
-                    role={props.user.role}
-                    user={props.user}
-                    student={singleStudentPage.student}
-                    editAgent={editAgent}
-                    editEditor={editEditor}
-                    agent_list={singleStudentPage.agent_list}
-                    editor_list={singleStudentPage.editor_list}
-                    updateAgentList={singleStudentPage.updateAgentList}
-                    submitUpdateAgentlist={submitUpdateAgentlist}
-                    updateEditorList={singleStudentPage.updateEditorList}
-                    submitUpdateEditorlist={submitUpdateEditorlist}
-                  />
-                </tbody>
-              </Table>
-              <BaseDocument_StudentView
-                base_docs_link={base_docs_link}
-                student={singleStudentPage.student}
-                user={props.user}
-                SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
-              />
-            </Tab>
-            <Tab eventKey="CV_ML_RL" title="CV ML RL">
-              <Card className="my-0 mx-0" bg={'dark'} text={'white'}>
-                <EditorDocsProgress
+          <Grid container spacing={2}>
+            <Grid item xs={12}></Grid>
+            <Grid item xs={12}>
+              <Card></Card>
+            </Grid>
+          </Grid>
+          <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+            {/* TODO: subpath tab for URL */}
+            <Tabs
+              value={value}
+              onChange={handleChange}
+              indicatorColor="primary"
+              aria-label="basic tabs example"
+            >
+              <Tab label={t('Application Overview')} {...a11yProps(0)} />
+              <Tab label="Profile Overview" {...a11yProps(1)} />
+              <Tab label="CV ML RL" {...a11yProps(2)} />
+              <Tab label="Portal" {...a11yProps(3)} />
+              <Tab label={`${t('Uni-Assist')}`} {...a11yProps(4)} />
+              <Tab label={`${t('My Survey')}`} {...a11yProps(5)} />
+              <Tab label={`${t('My Courses')}`} {...a11yProps(6)} />
+              <Tab label={`${t('Notes')}`} {...a11yProps(7)} />
+            </Tabs>
+          </Box>
+          <CustomTabPanel value={value} index={0}>
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  <TableCell></TableCell>
+                  {is_TaiGer_Student(user) || is_TaiGer_Guest(user) ? (
+                    <></>
+                  ) : (
+                    <>
+                      <TableCell title={`Selected So far / Promised`}>
+                        #
+                      </TableCell>
+                    </>
+                  )}
+                  {programstatuslist.map((doc, index) => (
+                    <TableCell key={index}>{doc.name}</TableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                <ApplicationProgress student={singleStudentPage.student} />
+              </TableBody>
+            </Table>
+          </CustomTabPanel>
+          <CustomTabPanel value={value} index={1}>
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  <TableCell></TableCell>
+                  <TableCell>First-, Last Name</TableCell>
+                  <TableCell>{t('Agents')}</TableCell>
+                  <TableCell>{t('Editors')}</TableCell>
+                  <TableCell>{t('Year')}</TableCell>
+                  <TableCell>{t('Semester')}</TableCell>
+                  <TableCell>{t('Degree')}</TableCell>
+                  {header.map((name, index) => (
+                    <TableCell key={index}>{t(`${name}`)}</TableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                <StudentsAgentEditor
                   student={singleStudentPage.student}
-                  idx={0}
-                  user={props.user}
+                  submitUpdateAgentlist={submitUpdateAgentlist}
+                  submitUpdateEditorlist={submitUpdateEditorlist}
                 />
-              </Card>
-            </Tab>
-            <Tab eventKey="program_portal" title="Portal">
-              <Card className="my-0 mx-0">
-                <Card.Body>
-                  <Row>
-                    <PortalCredentialPage
-                      user={props.user}
-                      student_id={singleStudentPage.student._id.toString()}
-                      showTitle={true}
-                    />
-                  </Row>
-                </Card.Body>
-              </Card>
-            </Tab>
-            {appConfig.vpdEnable && (
-              <Tab eventKey="uni-assist" title="Uni-Assist">
-                <UniAssistListCard
-                  student={singleStudentPage.student}
-                  role={props.user.role}
-                  user={props.user}
-                />
-              </Tab>
-            )}
-
-            <Tab eventKey="background" title="My Survey">
-              <SurveyComponent
-                survey_link={singleStudentPage.survey_link}
-                user={props.user}
-                agents={singleStudentPage.student.agents}
-                editors={singleStudentPage.student.editors}
-                academic_background={
-                  singleStudentPage.student.academic_background
-                }
-                application_preference={
-                  singleStudentPage.student.application_preference
-                }
-                isLoaded={singleStudentPage.isLoaded2}
-                student={singleStudentPage.student}
+              </TableBody>
+            </Table>
+            <BaseDocument_StudentView
+              base_docs_link={base_docs_link}
+              student={singleStudentPage.student}
+            />
+          </CustomTabPanel>
+          <CustomTabPanel value={value} index={2}>
+            <Card sx={{ p: 2 }}>
+              <EditorDocsProgress student={singleStudentPage.student} idx={0} />
+            </Card>
+          </CustomTabPanel>
+          <CustomTabPanel value={value} index={3}>
+            <Card>
+              <PortalCredentialPage
                 student_id={singleStudentPage.student._id.toString()}
-                singlestudentpage_fromtaiger={true}
-                handleSubmit_AcademicBackground_root={
-                  handleSubmit_AcademicBackground_root
-                }
-                handleSubmit_Language_root={handleSubmit_Language_root}
-                handleSubmit_ApplicationPreference_root={
-                  handleSubmit_ApplicationPreference_root
-                }
+                showTitle={true}
+              />
+            </Card>
+          </CustomTabPanel>
+          <CustomTabPanel value={value} index={4}>
+            <UniAssistListCard student={singleStudentPage.student} />
+          </CustomTabPanel>
+          <CustomTabPanel value={value} index={5}>
+            <SurveyProvider
+              value={{
+                academic_background:
+                  singleStudentPage.student.academic_background,
+                application_preference:
+                  singleStudentPage.student.application_preference,
+                survey_link: singleStudentPage.survey_link,
+                student_id: singleStudentPage.student._id.toString()
+              }}
+            >
+              <SurveyComponent
                 updateconfirmed={singleStudentPage.updateconfirmed}
               />
-            </Tab>
-            <Tab eventKey="Courses_Table" title="My Courses">
-              <Card className="my-0 mx-0">
-                <Card.Body>
-                  <Row>
-                    <Link
-                      to={`${DEMO.COURSES_INPUT_LINK(
-                        singleStudentPage.student._id.toString()
-                      )}`}
-                    >
-                      <Button>Go to My Courses </Button>
-                    </Link>
-                  </Row>
-                </Card.Body>
-              </Card>
-            </Tab>
-            <Tab eventKey="Notes" title="Notes">
-              <Card className="my-0 mx-0">
-                <Card.Body>
-                  <h5>
-                    <b>This is internal notes. Student won't see this note.</b>
-                  </h5>
-                  <br />
-                  <Notes
-                    user={props.user}
-                    student_id={singleStudentPage.student._id.toString()}
-                  />
-                </Card.Body>
-              </Card>
-            </Tab>
-          </Tabs>
+            </SurveyProvider>
+          </CustomTabPanel>
+          <CustomTabPanel value={value} index={6}>
+            <LinkDom
+              to={`${DEMO.COURSES_INPUT_LINK(
+                singleStudentPage.student._id.toString()
+              )}`}
+            >
+              <Button color="primary" variant="contained">
+                Go to My Courses{' '}
+              </Button>
+            </LinkDom>
+          </CustomTabPanel>
+          <CustomTabPanel value={value} index={7}>
+            <Typography fontWeight="bold">
+              This is internal notes. Student won&apos;t see this note.
+            </Typography>
+            <br />
+            <Notes student_id={singleStudentPage.student._id.toString()} />
+          </CustomTabPanel>
         </>
       ) : (
         <>
-          <Row>
-            <Col>
-              <Card className="my-2 mx-0" bg={'secondary'} text={'white'}>
-                <h4
-                  className="text-light mt-4 ms-4"
-                  style={{ textAlign: 'left' }}
-                >
-                  Student View: {singleStudentPage.student.firstname}{' '}
-                  {singleStudentPage.student.lastname}
-                  <span style={{ float: 'right', cursor: 'pointer' }}>
-                    <Button
-                      size="sm"
-                      className="ms-2 mb-2"
-                      onClick={onChangeView}
-                    >
-                      Switch Back
-                    </Button>
-                  </span>
-                </h4>
-              </Card>
-            </Col>
-          </Row>
+          <Alert severity="error" sx={{ mt: 2 }}>
+            <Typography variant="body1" fontWeight="bold">
+              {t('Student View')}
+            </Typography>
+          </Alert>
           <StudentDashboard
-            user={singleStudentPage.student}
-            role={singleStudentPage.student.role}
             student={singleStudentPage.student}
             ReadOnlyMode={true}
-            SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
           />
         </>
       )}

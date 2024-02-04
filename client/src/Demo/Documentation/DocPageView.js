@@ -1,22 +1,24 @@
 import React from 'react';
 import { Row, Col, Card, Button } from 'react-bootstrap';
+
 import EditorNew from '../../components/EditorJs/EditorNew';
 import { convertDate } from '../Utils/contants';
 // import Blocks from 'editorjs-blocks-react-renderer';
 // import Output from 'editorjs-react-renderer';
 import { is_TaiGer_AdminAgent } from '../Utils/checking-functions';
+import { useAuth } from '../../components/AuthProvider';
 
-class DocPageView extends React.Component {
-  render() {
-    return (
-      <>
-        <Card className="mb-2 mx-0">
-          <Card.Body>
-            {/* <section>
-              <Output data={this.props.editorState} />
+function DocPageView(props) {
+  const { user } = useAuth();
+  return (
+    <>
+      <Card className="mb-2 mx-0">
+        <Card.Body>
+          {/* <section>
+              <Output data={props.editorState} />
             </section> */}
-            {/* <Blocks
-              data={this.props.editorState}
+          {/* <Blocks
+              data={props.editorState}
               config={{
                 code: {
                   className: 'language-js'
@@ -55,46 +57,38 @@ class DocPageView extends React.Component {
                 }
               }}
             /> */}
-            <EditorNew
-              readOnly={true}
-              handleClickSave={this.props.handleClickSave}
-              handleClickEditToggle={this.props.handleClickEditToggle}
-              editorState={this.props.editorState}
-            />
-            {is_TaiGer_AdminAgent(this.props.user) && (
-              <>
-                <Row>
-                  <Col md={2}>
-                    <p className="my-0">Updated at</p>
-                  </Col>
-                  <Col md={2}>
-                    <p className="my-0">
-                      {convertDate(this.props.editorState.time)}
-                    </p>
-                  </Col>
-                  <Col md={2}>
-                    <p className="my-0">Updated by</p>
-                  </Col>
-                  <Col md={6}>
-                    <p className="my-0">
-                      {this.props.author ? this.props.author : '-'}
-                    </p>
-                  </Col>
-                </Row>
-              </>
-            )}
-            {is_TaiGer_AdminAgent(this.props.user) && (
-              <Button
-                size="sm"
-                onClick={() => this.props.handleClickEditToggle()}
-              >
-                Edit
-              </Button>
-            )}
-          </Card.Body>
-        </Card>
-      </>
-    );
-  }
+          <EditorNew
+            readOnly={true}
+            handleClickSave={props.handleClickSave}
+            handleClickEditToggle={props.handleClickEditToggle}
+            editorState={props.editorState}
+          />
+          {is_TaiGer_AdminAgent(user) && (
+            <>
+              <Row>
+                <Col md={2}>
+                  <p className="my-0">Updated at</p>
+                </Col>
+                <Col md={2}>
+                  <p className="my-0">{convertDate(props.editorState.time)}</p>
+                </Col>
+                <Col md={2}>
+                  <p className="my-0">Updated by</p>
+                </Col>
+                <Col md={6}>
+                  <p className="my-0">{props.author ? props.author : '-'}</p>
+                </Col>
+              </Row>
+            </>
+          )}
+          {is_TaiGer_AdminAgent(user) && (
+            <Button size="sm" onClick={() => props.handleClickEditToggle()}>
+              Edit
+            </Button>
+          )}
+        </Card.Body>
+      </Card>
+    </>
+  );
 }
 export default DocPageView;

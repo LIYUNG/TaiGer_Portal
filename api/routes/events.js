@@ -8,7 +8,8 @@ const {
   postEvent,
   deleteEvent,
   confirmEvent,
-  getAllEvents
+  getAllEvents,
+  getActiveEventsNumber
 } = require('../controllers/events');
 const { Role } = require('../models/User');
 const {
@@ -32,6 +33,14 @@ router
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
     getAllEvents,
     logAccess
+  );
+
+router
+  .route('/ping')
+  .get(
+    GeneralGETRequestRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
+    getActiveEventsNumber
   );
 
 router

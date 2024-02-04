@@ -1,26 +1,41 @@
-import React, { useState, useEffect } from 'react';
-import { Row, Col, Spinner, Button, Card, Tab, Tabs } from 'react-bootstrap';
+import React, { useState, useEffect, useRef } from 'react';
+import {
+  Box,
+  Button,
+  Card,
+  Breadcrumbs,
+  Link,
+  Typography,
+  Grid,
+  Select,
+  MenuItem
+} from '@mui/material';
 import { DataSheetGrid, textColumn, keyColumn } from 'react-datasheet-grid';
 import * as XLSX from 'xlsx/xlsx.mjs';
 import { useTranslation } from 'react-i18next';
-
-import Aux from '../../hoc/_Aux';
-import { convertDate, spinner_style } from '../Utils/contants';
-import ErrorPage from '../Utils/ErrorPage';
-import ModalMain from '../Utils/ModalHandler/ModalMain';
+import { Link as LinkDom, useNavigate, useParams } from 'react-router-dom';
 import 'react-datasheet-grid/dist/style.css';
 
+import { convertDate } from '../Utils/contants';
+import ErrorPage from '../Utils/ErrorPage';
+import ModalMain from '../Utils/ModalHandler/ModalMain';
 import {
   analyzedFileDownload_test,
   WidgetanalyzedFileDownload
 } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
-import { Link } from 'react-router-dom';
 import DEMO from '../../store/constant';
-import { TopBar } from '../../components/TopBar/TopBar';
+import { useAuth } from '../../components/AuthProvider';
+import Loading from '../../components/Loading/Loading';
+import { appConfig } from '../../config';
+import { is_TaiGer_role } from '../Utils/checking-functions';
 
-export default function CourseAnalysis(props) {
-  const { t, i18n } = useTranslation();
+export default function CourseAnalysis() {
+  const { admin_id, student_id } = useParams();
+  const { t } = useTranslation();
+  const { user } = useAuth();
+  const [value, setValue] = useState(0);
+  const navigate = useNavigate();
   let [statedata, setStatedata] = useState({
     error: '',
     isLoaded: false,
@@ -31,7 +46,7 @@ export default function CourseAnalysis(props) {
     success: false,
     student: null,
     excel_file: {},
-    student_id: '',
+    studentId: '',
     file: '',
     analyzed_course: '',
     isAnalysing: false,
@@ -42,10 +57,10 @@ export default function CourseAnalysis(props) {
     res_modal_status: 0,
     res_modal_message: ''
   });
-
+  const ref = useRef(null);
   useEffect(() => {
-    if (props.match.params.admin_id) {
-      WidgetanalyzedFileDownload(props.user._id.toString()).then(
+    if (admin_id) {
+      WidgetanalyzedFileDownload(user._id.toString()).then(
         (resp) => {
           // TODO: timeout? success?
           const { status } = resp;
@@ -85,22 +100,19 @@ export default function CourseAnalysis(props) {
           }
         },
         (error) => {
-          const { statusText } = resp;
           setStatedata((state) => ({
             ...state,
             isLoaded: true,
             error,
             res_modal_status: 500,
-            res_modal_message: statusText,
+            res_modal_message: '',
             isUpdating: false
           }));
         }
       );
     } else {
-      const student_id = props.match.params.student_id
-        ? props.match.params.student_id
-        : props.user._id.toString();
-      analyzedFileDownload_test(student_id).then(
+      const studentId = student_id || user._id.toString();
+      analyzedFileDownload_test(studentId).then(
         (resp) => {
           // TODO: timeout? success?
           const { status } = resp;
@@ -122,7 +134,7 @@ export default function CourseAnalysis(props) {
                 sheets,
                 student_name: student_name_temp,
                 excel_file: blob,
-                student_id,
+                studentId,
                 isLoaded: true,
                 file_name: actualFileName,
                 LastModified,
@@ -143,19 +155,22 @@ export default function CourseAnalysis(props) {
           }
         },
         (error) => {
-          const { statusText } = resp;
           setStatedata((state) => ({
             ...state,
             isLoaded: true,
             error,
             res_modal_status: 500,
-            res_modal_message: statusText,
+            res_modal_message: '',
             isUpdating: false
           }));
         }
       );
     }
   }, []);
+
+  const handleChange = (event) => {
+    setValue(event.target.value);
+  };
 
   const readAsArrayBuffer = (blob) => {
     return new Promise((resolve) => {
@@ -232,29 +247,26 @@ export default function CourseAnalysis(props) {
   const columns = [
     {
       ...keyColumn('0', textColumn),
-      title: '0'
+      title: '0',
+      shrink: 0
     },
     {
       ...keyColumn('1', textColumn),
-      title: '1'
+      title: '1',
+      shrink: 0
     },
     {
       ...keyColumn('2', textColumn),
-      title: '2'
+      title: '2',
+      shrink: 0
     },
-    { ...keyColumn('3', textColumn), title: '3' },
-    { ...keyColumn('4', textColumn), title: '4' },
-    { ...keyColumn('5', textColumn), title: '5' },
-    { ...keyColumn('6', textColumn), title: '6' }
+    { ...keyColumn('3', textColumn), title: '3', shrink: 0 },
+    { ...keyColumn('4', textColumn), title: '4', shrink: 0 },
+    { ...keyColumn('5', textColumn), title: '5', shrink: 0 },
+    { ...keyColumn('6', textColumn), title: '6', shrink: 0 }
   ];
   if (!statedata.isLoaded) {
-    return (
-      <div style={spinner_style}>
-        <Spinner animation="border" role="status">
-          <span className="visually-hidden"></span>
-        </Spinner>
-      </div>
-    );
+    return <Loading />;
   }
   TabTitle(`Student ${statedata.student_name} || Courses Analysis`);
   if (statedata.res_status >= 400) {
@@ -262,7 +274,7 @@ export default function CourseAnalysis(props) {
   }
 
   return (
-    <Aux>
+    <Box>
       {statedata.res_modal_status >= 400 && (
         <ModalMain
           ConfirmError={ConfirmError}
@@ -270,70 +282,122 @@ export default function CourseAnalysis(props) {
           res_modal_message={statedata.res_modal_message}
         />
       )}
-      <TopBar>
-        {!props.match.params.admin_id ? (
+      <Breadcrumbs aria-label="breadcrumb">
+        <Link
+          underline="hover"
+          color="inherit"
+          component={LinkDom}
+          to={`${DEMO.DASHBOARD_LINK}`}
+        >
+          {appConfig.companyName}
+        </Link>
+        {is_TaiGer_role(user) && (
           <Link
-            className="text-warning"
-            to={`$${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-              statedata.student_id,
-              DEMO.PROFILE
+            underline="hover"
+            color="inherit"
+            component={LinkDom}
+            to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+              statedata.studentId,
+              '/profile'
             )}`}
           >
             {statedata.student_name}
           </Link>
-        ) : (
-          <>{statedata.student_name} </>
         )}
-      </TopBar>
-      <Row>
-        <Col sm={12}>
-          <Card className="mb-2 mx-0">
-            <Card.Body>
-              <Row>
-                <Col>
-                  <p>{t('Course Analysis banner')}</p>
-                  <p>{t('Course Analysis description')}</p>
-                  <Link to={`${DEMO.COURSES_ANALYSIS_EXPLANATION_LINK}`}>
-                    <Button size="sm" className="my-1" variant="secondary">
-                      {t('Course Analysis explanation button')}
-                    </Button>
-                  </Link>
-                </Col>
-              </Row>
-              <br />
-              <Button size="sm" onClick={() => onDownload()}>
-                {t('Download')} Excel
-              </Button>
-              <Tabs>
-                {statedata.sheetNames.map((sheetName, i) => (
-                  <Tab
-                    key={`${sheetName}`}
-                    eventKey={`${sheetName}`}
-                    title={`${sheetName}`}
-                  >
-                    <DataSheetGrid
-                      height={6000}
-                      disableContextMenu={true}
-                      disableExpandSelection={false}
-                      headerRowHeight={30}
-                      rowHeight={25}
-                      value={statedata.sheets[sheetName]}
-                      autoAddRow={true}
-                      disabled={true}
-                      columns={columns}
-                    />
-                  </Tab>
-                ))}
-              </Tabs>
-              <Row className="my-2">
-                <Col>
-                  {t('Last update')} {convertDate(statedata.LastModified)}
-                </Col>
-              </Row>
-            </Card.Body>
+        <Link
+          underline="hover"
+          color="inherit"
+          component={LinkDom}
+          to={
+            !admin_id
+              ? `${DEMO.COURSES_INPUT_LINK(statedata.studentId)}`
+              : '/internal/widgets/course-analyser'
+          }
+        >
+          {t('My Courses')}
+        </Link>
+        <Typography color="text.primary">{t('Courses Analysis')}</Typography>
+      </Breadcrumbs>
+      <Card sx={{ p: 2 }}>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Typography variant="body1">
+              {t('Course Analysis banner')}
+            </Typography>
+          </Grid>
+          <Grid item xs={12}>
+            <Typography variant="body1">
+              {t('Course Analysis description')}
+            </Typography>
+          </Grid>
+          <Grid item xs={12}>
+            <Button
+              size="small"
+              color="primary"
+              variant="contained"
+              onClick={() => navigate(DEMO.COURSES_ANALYSIS_EXPLANATION_LINK)}
+              sx={{ mr: 2 }}
+            >
+              {t('Course Analysis explanation button')}
+            </Button>
+            <Button
+              size="small"
+              color="secondary"
+              variant="contained"
+              onClick={() => onDownload()}
+            >
+              {t('Download')} Excel
+            </Button>
+          </Grid>
+          <Grid item xs={12}>
+            <Typography>{t('Programs')}:</Typography>
+          </Grid>
+          <Grid item xs={12} sx={{ mb: 2 }}>
+            <Select
+              fullWidth
+              size="small"
+              value={value}
+              onChange={handleChange}
+              aria-label="course analysis tabs"
+            >
+              {statedata.sheetNames.map((sheetName, i) => (
+                <MenuItem key={sheetName} value={i}>
+                  {sheetName}
+                </MenuItem>
+              ))}
+            </Select>
+          </Grid>
+        </Grid>
+        {statedata.sheetNames.map((sheetName, i) => (
+          <Card key={i} sx={{ minWidth: '800px' }}>
+            {value === i && (
+              <DataSheetGrid
+                ref={ref}
+                height={6000}
+                style={{ minWidth: '450px' }}
+                disableContextMenu={true}
+                // disableExpandSelection={false}
+                headerRowHeight={30}
+                rowHeight={25}
+                value={statedata.sheets[sheetName]}
+                // autoAddRow={true}
+                disabled={true}
+                columns={columns}
+              />
+            )}
           </Card>
-        </Col>
-      </Row>
-    </Aux>
+        ))}
+        {/* <Tabs
+          value={value}
+          onChange={handleChange}
+          aria-label="course analysis tabs"
+        >
+          {statedata.sheetNames.map((sheetName, i) => (
+            <Tab key={`${sheetName}`} label={sheetName} {...a11yProps(i)}></Tab>
+          ))}
+        </Tabs> */}
+        {t('Last update')} {convertDate(statedata.LastModified)}
+      </Card>
+    </Box>
   );
 }

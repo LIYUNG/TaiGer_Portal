@@ -1,14 +1,19 @@
-import React from 'react';
-import { Col, Form, Button, Modal, Spinner } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
+import { Link as LinkDom } from 'react-router-dom';
+import { Form } from 'react-bootstrap';
 import {
-  AiOutlineDownload,
-  AiOutlineCheck,
-  AiFillCloseCircle,
-  AiOutlineComment,
-  AiOutlineDelete,
-  AiOutlineClose
-} from 'react-icons/ai';
-import { FiExternalLink } from 'react-icons/fi';
+  Box,
+  Button,
+  Link,
+  CircularProgress,
+  TableCell,
+  TableRow,
+  Typography
+} from '@mui/material';
+import { AiFillCloseCircle, AiOutlineComment } from 'react-icons/ai';
+import DeleteIcon from '@mui/icons-material/Delete';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import LinkIcon from '@mui/icons-material/Link';
 
 import FilePreview from '../../components/FilePreview/FilePreview';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
@@ -19,102 +24,113 @@ import {
   is_TaiGer_Editor,
   is_TaiGer_Student
 } from '../Utils/checking-functions';
-import { ACCEPT_STYLE, DELETE_STYLE, convertDate } from '../Utils/contants';
+import { ACCEPT_STYLE, convertDate } from '../Utils/contants';
 import { BASE_URL } from '../../api/request';
 
-import { updateProfileDocumentStatus, deleteFile } from '../../api';
+import { updateProfileDocumentStatus } from '../../api';
+import { useAuth } from '../../components/AuthProvider';
+import ModalNew from '../../components/Modal';
+import { useTranslation } from 'react-i18next';
 
-class ButtonSetRejected extends React.Component {
-  state = {
+function ButtonSetRejected(props) {
+  const { user } = useAuth();
+  const { t } = useTranslation();
+  const [buttonSetRejectedState, setButtonSetRejectedState] = useState({
     error: '',
-    student: this.props.student,
-    link: this.props.link,
-    student_id: this.props.student._id.toString(),
+    student: props.student,
+    link: props.link,
+    student_id: props.student._id.toString(),
     category: '',
     docName: '',
     feedback: '',
-    comments: this.props.message,
+    comments: props.message,
     file: '',
-    isLoaded: this.props.isLoaded,
-    deleteFileWarningModel: this.props.deleteFileWarningModel,
-    CommentModel: this.props.CommentModel,
+    isLoaded: props.isLoaded,
+    deleteFileWarningModel: props.deleteFileWarningModel,
+    CommentModel: false,
     showPreview: false,
     preview_path: '#',
-    rejectProfileFileModel: this.props.rejectProfileFileModel,
-    acceptProfileFileModel: this.props.acceptProfileFileModel,
+    rejectProfileFileModel: props.rejectProfileFileModel,
     baseDocsflagOffcanvas: false,
     baseDocsflagOffcanvasButtonDisable: false,
     res_modal_status: 0,
     res_modal_message: ''
+  });
+
+  useEffect(() => {
+    setButtonSetRejectedState((prevState) => ({
+      ...prevState,
+      isLoaded: props.isLoaded,
+      student_id: props.student._id.toString(),
+      comments: props.message
+    }));
+  }, [props.student._id]);
+
+  useEffect(() => {
+    setButtonSetRejectedState((prevState) => ({
+      ...prevState,
+      isLoaded: props.isLoaded,
+      student_id: props.student._id.toString(),
+      comments: props.message
+    }));
+  }, [props.isLoaded]);
+
+  const closeOffcanvasWindow = () => {
+    setButtonSetRejectedState((prevState) => ({
+      ...prevState,
+      baseDocsflagOffcanvas: false
+    }));
+  };
+  const openOffcanvasWindow = () => {
+    setButtonSetRejectedState((prevState) => ({
+      ...prevState,
+      baseDocsflagOffcanvas: true
+    }));
   };
 
-  componentDidUpdate(prevProps) {
-    if (
-      prevProps.isLoaded !== this.props.isLoaded ||
-      prevProps.student._id.toString() !== this.props.student._id.toString()
-    ) {
-      this.setState((state) => ({
-        ...state,
-        isLoaded: this.props.isLoaded,
-        student_id: this.props.student._id.toString(),
-        comments: this.props.message
-      }));
-    }
-  }
-
-  closeOffcanvasWindow = () => {
-    this.setState((state) => ({ ...state, baseDocsflagOffcanvas: false }));
-  };
-  openOffcanvasWindow = () => {
-    this.setState((state) => ({ ...state, baseDocsflagOffcanvas: true }));
+  const closeWarningWindow = () => {
+    setButtonSetRejectedState((prevState) => ({
+      ...prevState,
+      deleteFileWarningModel: false
+    }));
   };
 
-  openWarningWindow = () => {
-    this.setState((state) => ({ ...state, deleteFileWarningModel: true }));
-  };
-
-  closeWarningWindow = () => {
-    this.setState((state) => ({ ...state, deleteFileWarningModel: false }));
-  };
-
-  openCommentWindow = (student_id, category) => {
-    this.setState((state) => ({
-      ...state,
+  const openCommentWindow = (student_id, category) => {
+    setButtonSetRejectedState((prevState) => ({
+      ...prevState,
       CommentModel: true,
       student_id,
       category
     }));
   };
 
-  closeCommentWindow = () => {
-    this.setState((state) => ({ ...state, CommentModel: false }));
+  const closeCommentWindow = () => {
+    setButtonSetRejectedState((prevState) => ({
+      ...prevState,
+      CommentModel: false
+    }));
   };
 
-  closePreviewWindow = () => {
-    this.setState((state) => ({ ...state, showPreview: false }));
+  const closePreviewWindow = () => {
+    setButtonSetRejectedState((prevState) => ({
+      ...prevState,
+      showPreview: false
+    }));
   };
 
-  showPreview = (e, path) => {
+  const showPreview = (e, path) => {
     e.preventDefault();
-    this.setState((state) => ({
-      ...state,
+    setButtonSetRejectedState((prevState) => ({
+      ...prevState,
       showPreview: true,
       preview_path: path
     }));
   };
 
-  closeRejectWarningWindow = () => {
-    this.setState((state) => ({ ...state, rejectProfileFileModel: false }));
-  };
-
-  closeAcceptWarningWindow = () => {
-    this.setState((state) => ({ ...state, acceptProfileFileModel: false }));
-  };
-
-  onDeleteFileWarningPopUp = (e, category, student_id, docName) => {
+  const onDeleteFileWarningPopUp = (e, category, student_id, docName) => {
     e.preventDefault();
-    this.setState((state) => ({
-      ...state,
+    setButtonSetRejectedState((prevState) => ({
+      ...prevState,
       student_id,
       category,
       docName,
@@ -122,27 +138,27 @@ class ButtonSetRejected extends React.Component {
     }));
   };
 
-  handleRejectMessage = (e, rejectmessage) => {
+  const handleRejectMessage = (e, rejectmessage) => {
     e.preventDefault();
-    this.setState((state) => ({
-      ...state,
+    setButtonSetRejectedState((prevState) => ({
+      ...prevState,
       comments: rejectmessage
     }));
   };
 
-  onUpdateProfileDocStatus = (e, category, student_id, status) => {
+  const onUpdateProfileDocStatus = (e, category, student_id, status) => {
     e.preventDefault();
     if (status === 'accepted') {
-      this.setState((state) => ({
-        ...state,
+      setButtonSetRejectedState((prevState) => ({
+        ...prevState,
         student_id,
         category,
         status,
         acceptProfileFileModel: true
       }));
     } else {
-      this.setState((state) => ({
-        ...state,
+      setButtonSetRejectedState((prevState) => ({
+        ...prevState,
         student_id,
         category,
         status,
@@ -151,73 +167,59 @@ class ButtonSetRejected extends React.Component {
     }
   };
 
-  onDeleteFilefromstudent = (e) => {
+  const onDeleteFilefromstudent = (e) => {
     e.preventDefault();
-    this.setState((state) => ({
-      ...state,
+    setButtonSetRejectedState((prevState) => ({
+      ...prevState,
       isLoaded: false
     }));
-    this.props.onDeleteFilefromstudent(
-      this.state.category,
-      this.state.student_id
+    props.onDeleteFilefromstudent(
+      buttonSetRejectedState.category,
+      buttonSetRejectedState.student_id
     );
   };
 
-  onUpdateProfileFilefromstudent = (e) => {
-    this.setState((state) => ({
-      ...state,
-      isLoaded: false
-    }));
+  const updateDocLink = (e) => {
     e.preventDefault();
-    this.props.onUpdateProfileFilefromstudent(
-      this.state.category,
-      this.state.student_id,
-      this.state.status,
-      this.state.comments
-    );
-  };
-
-  updateDocLink = (e) => {
-    e.preventDefault();
-    this.setState((state) => ({
-      ...state,
+    setButtonSetRejectedState((prevState) => ({
+      ...prevState,
       baseDocsflagOffcanvasButtonDisable: true
     }));
-    this.props.updateDocLink(this.state.link, this.props.k);
-    this.setState((state) => ({
-      ...state,
+    props.updateDocLink(buttonSetRejectedState.link, props.k);
+    setButtonSetRejectedState((prevState) => ({
+      ...prevState,
       baseDocsflagOffcanvasButtonDisable: false,
       baseDocsflagOffcanvas: false
     }));
   };
 
-  onChangeURL = (e) => {
+  const onChangeURL = (e) => {
     e.preventDefault();
     const url_temp = e.target.value;
-    this.setState((state) => ({
-      ...state,
+    setButtonSetRejectedState((prevState) => ({
+      ...prevState,
       link: url_temp
     }));
   };
 
-  onUpdateRejectMessageStudent = (e) => {
-    this.setState((state) => ({
-      ...state,
+  const onUpdateRejectMessageStudent = (e) => {
+    setButtonSetRejectedState((prevState) => ({
+      ...prevState,
       isLoaded: false
     }));
     e.preventDefault();
     updateProfileDocumentStatus(
-      this.state.category,
-      this.state.student_id,
+      buttonSetRejectedState.category,
+      buttonSetRejectedState.student_id,
       'rejected',
-      this.state.comments
+      buttonSetRejectedState.comments
     ).then(
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
         if (success) {
-          this.setState((state) => ({
-            ...state,
+          setButtonSetRejectedState((prevState) => ({
+            ...prevState,
             student: data,
             success,
             CommentModel: false,
@@ -226,8 +228,8 @@ class ButtonSetRejected extends React.Component {
           }));
         } else {
           const { message } = resp.data;
-          this.setState((state) => ({
-            ...state,
+          setButtonSetRejectedState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             res_modal_status: status,
             res_modal_message: message
@@ -235,373 +237,265 @@ class ButtonSetRejected extends React.Component {
         }
       },
       (error) => {
-        const { statusText } = resp;
-        this.setState((state) => ({
-          ...state,
+        setButtonSetRejectedState((prevState) => ({
+          ...prevState,
           isLoaded: true,
           error,
           res_modal_status: 500,
-          res_modal_message: statusText
+          res_modal_message: ''
         }));
       }
     );
   };
 
-  ConfirmError = () => {
-    this.setState((state) => ({
-      ...state,
+  const ConfirmError = () => {
+    setButtonSetRejectedState((prevState) => ({
+      ...prevState,
       res_modal_status: 0,
       res_modal_message: ''
     }));
   };
 
-  render() {
-    const { res_status, res_modal_status, res_modal_message } = this.state;
-    var ButttonRow_Rejected;
-    ButttonRow_Rejected = (
-      <tr>
-        <td>
-          <AiFillCloseCircle size={24} color="red" title="Invalid Document" />
-        </td>
-        <td>
-          {this.props.docName}
-          <a
-            href={
-              this.state.link && this.state.link != '' ? this.state.link : '/'
-            }
-            target="_blank"
-            className="text-info"
-          >
-            <FiExternalLink
-              className="mx-1 mb-1"
-              style={{ cursor: 'pointer' }}
-            />
-          </a>
-          {is_TaiGer_Admin(this.props.user) && (
-            <a onClick={this.openOffcanvasWindow} style={{ cursor: 'pointer' }}>
-              [Edit]
-            </a>
-          )}
-        </td>
-        <td>{convertDate(this.props.time)}</td>
-        <td>
-          <Col>
-            {/* <a
-              href={`${BASE_URL}/api/students/${this.state.student_id.toString()}/files/${
-                this.props.path
-              }`}
-              target="_blank"
-            >
-              <Button size="sm" type="submit" title="Download">
-                <AiOutlineDownload size={16} />
-              </Button>
-            </a> */}
-            <Button
-              size="sm"
-              title="Download"
-              onClick={(e) => this.showPreview(e, this.props.path)}
-            >
-              <AiOutlineDownload size={16} />
-            </Button>
-          </Col>
-        </td>
-        <td></td>
-        <td>
-          <Button
-            size="sm"
-            type="submit"
-            variant="light"
-            disabled={!this.state.isLoaded}
-            title="Show Comments"
-            onClick={(e) =>
-              this.openCommentWindow(this.state.student_id, this.props.k)
-            }
-          >
-            <AiOutlineComment size={20} />
+  const { res_modal_status, res_modal_message } = buttonSetRejectedState;
+  var ButttonRow_Rejected;
+  ButttonRow_Rejected = (
+    <TableRow>
+      <TableCell>
+        <AiFillCloseCircle size={24} color="red" title="Invalid Document" />
+      </TableCell>
+      <TableCell>
+        {props.docName}
+        <Link
+          to={
+            buttonSetRejectedState.link && buttonSetRejectedState.link != ''
+              ? buttonSetRejectedState.link
+              : '/'
+          }
+          component={LinkDom}
+          target="_blank"
+          sx={{ ml: 1 }}
+        >
+          <Button size="small" variant="outlined" startIcon={<LinkIcon />}>
+            {t('Read More')}
           </Button>
-        </td>
-        <td></td>
-        {is_TaiGer_AdminAgent(this.props.user) ||
-        is_TaiGer_Student(this.props.user) ? (
+        </Link>
+        {is_TaiGer_Admin(user) && (
+          <a onClick={openOffcanvasWindow} style={{ cursor: 'pointer' }}>
+            [Edit]
+          </a>
+        )}
+      </TableCell>
+      <TableCell>{convertDate(props.time)}</TableCell>
+      <TableCell>
+        <Button
+          color="primary"
+          variant="contained"
+          size="small"
+          title="Download"
+          startIcon={<FileDownloadIcon />}
+          onClick={(e) => showPreview(e, props.path)}
+        >
+          {t('Download')}
+        </Button>
+      </TableCell>
+      <TableCell></TableCell>
+      <TableCell>
+        <Button
+          size="small"
+          variant="outlined"
+          disabled={!buttonSetRejectedState.isLoaded}
+          title="Show Comments"
+          onClick={() =>
+            openCommentWindow(buttonSetRejectedState.student_id, props.k)
+          }
+        >
+          <AiOutlineComment size={20} />
+        </Button>
+      </TableCell>
+      <TableCell></TableCell>
+      {is_TaiGer_AdminAgent(user) || is_TaiGer_Student(user) ? (
+        <TableCell>
+          <Button
+            variant="contained"
+            color="error"
+            size="small"
+            title="Delete"
+            disabled={!buttonSetRejectedState.isLoaded}
+            onClick={(e) =>
+              onDeleteFileWarningPopUp(
+                e,
+                props.k,
+                buttonSetRejectedState.student_id,
+                props.docName
+              )
+            }
+            startIcon={<DeleteIcon />}
+          >
+            {t('Delete')}
+          </Button>
+        </TableCell>
+      ) : (
+        <TableCell></TableCell>
+      )}
+    </TableRow>
+  );
+
+  return (
+    <>
+      {res_modal_status >= 400 && (
+        <ModalMain
+          ConfirmError={ConfirmError}
+          res_modal_status={res_modal_status}
+          res_modal_message={res_modal_message}
+        />
+      )}
+      {ButttonRow_Rejected}
+      <ModalNew
+        open={buttonSetRejectedState.deleteFileWarningModel}
+        onClose={closeWarningWindow}
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Typography variant="h5">{t('Warning')}</Typography>
+        <Typography sx={{ my: 2 }}>
+          {t('Do you want to delete')} {props.docName}?
+        </Typography>
+
+        <Button
+          variant="contained"
+          disabled={!buttonSetRejectedState.isLoaded}
+          onClick={(e) => onDeleteFilefromstudent(e)}
+          sx={{ mr: 1 }}
+        >
+          {!buttonSetRejectedState.isLoaded ? <CircularProgress /> : t('Yes')}
+        </Button>
+        <Button onClick={closeWarningWindow} variant="outlined">
+          {t('No')}
+        </Button>
+      </ModalNew>
+      <ModalNew
+        open={buttonSetRejectedState.CommentModel}
+        onClose={closeCommentWindow}
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Typography variant="h6">{t('Comments')}</Typography>
+        {is_TaiGer_Student(user) ? (
           <>
-            <td>
-              <Col>
-                {
-                  <Button
-                    variant={DELETE_STYLE}
-                    size="sm"
-                    type="submit"
-                    title="Delete"
-                    disabled={!this.state.isLoaded}
-                    onClick={(e) =>
-                      this.onDeleteFileWarningPopUp(
-                        e,
-                        this.props.k,
-                        this.state.student_id,
-                        this.props.docName
-                      )
-                    }
-                  >
-                    <AiOutlineDelete size={16} />
-                  </Button>
-                }
-              </Col>
-            </td>
+            <Typography>{buttonSetRejectedState.comments}</Typography>
+            <Typography>
+              Please delete the old file before upload the new file.
+            </Typography>
+            <Button onClick={closeCommentWindow}>{t('Ok')}</Button>
           </>
         ) : (
           <>
-            <td></td>
+            <Typography>
+              <Form.Group controlId="rejectmessage">
+                <Form.Label>
+                  Please give a reason why the uploaded{' '}
+                  {buttonSetRejectedState.category} is invalied?
+                </Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="ex. Poor scanned quality."
+                  defaultValue={buttonSetRejectedState.comments}
+                  onChange={(e) => handleRejectMessage(e, e.target.value)}
+                />
+              </Form.Group>
+            </Typography>
+            <Box>
+              <Button
+                disabled={buttonSetRejectedState.comments === ''}
+                onClick={(e) => onUpdateRejectMessageStudent(e)}
+              >
+                {!buttonSetRejectedState.isLoaded ? (
+                  <CircularProgress />
+                ) : (
+                  t('Update')
+                )}
+              </Button>
+              <Button onClick={closeCommentWindow} variant="light">
+                {t('Close')}
+              </Button>
+            </Box>
           </>
         )}
-      </tr>
-    );
-
-    return (
-      <>
-        {res_modal_status >= 400 && (
-          <ModalMain
-            ConfirmError={this.ConfirmError}
-            res_modal_status={res_modal_status}
-            res_modal_message={res_modal_message}
+      </ModalNew>
+      <ModalNew
+        open={buttonSetRejectedState.showPreview}
+        onClose={closePreviewWindow}
+        aria-labelledby="contained-modal-title-vcenter2"
+        size="xl"
+      >
+        <Typography id="contained-d-title-vcenter">{props.path}</Typography>
+        <Typography>
+          <FilePreview
+            path={buttonSetRejectedState.preview_path}
+            student_id={buttonSetRejectedState.student_id.toString()}
           />
+        </Typography>
+        {props.path.split('.')[1] !== 'pdf' && (
+          <a
+            href={`${BASE_URL}/api/students/${buttonSetRejectedState.student_id.toString()}/files/${
+              props.path
+            }`}
+            download
+            target="_blank"
+            rel="noreferrer"
+          >
+            <Button
+              color="secondary"
+              variant="contained"
+              size="small"
+              title="Download"
+              startIcon={<FileDownloadIcon />}
+            >
+              {t('Download')}
+            </Button>
+          </a>
         )}
-        {ButttonRow_Rejected}
-        <Modal
-          show={this.state.deleteFileWarningModel}
-          onHide={this.closeWarningWindow}
-          aria-labelledby="contained-modal-title-vcenter"
-          centered
+        {!(is_TaiGer_Editor(user) || is_TaiGer_Student(user)) && (
+          <Button
+            color={ACCEPT_STYLE}
+            variant="contained"
+            size="small"
+            title="Mark as accepted"
+            disabled={!buttonSetRejectedState.isLoaded}
+            onClick={(e) =>
+              onUpdateProfileDocStatus(
+                e,
+                props.k,
+                buttonSetRejectedState.student_id,
+                'accepted'
+              )
+            }
+          >
+            {t('Ok')}
+          </Button>
+        )}
+        <Button
+          color="secondary"
+          variant="outlined"
+          size="small"
+          onClick={closePreviewWindow}
         >
-          <Modal.Header>
-            <Modal.Title id="contained-modal-title-vcenter">
-              Warning
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>Do you want to delete {this.props.docName}?</Modal.Body>
-          <Modal.Footer>
-            <Button
-              disabled={!this.state.isLoaded}
-              onClick={(e) => this.onDeleteFilefromstudent(e)}
-            >
-              {!this.state.isLoaded ? (
-                <div>
-                  <Spinner
-                    animation="border"
-                    role="status"
-                    variant="light"
-                    size="sm"
-                  >
-                    <span className="visually-hidden"></span>
-                  </Spinner>
-                </div>
-              ) : (
-                'Yes'
-              )}
-            </Button>
-            <Button onClick={this.closeWarningWindow} variant="light">
-              No
-            </Button>
-          </Modal.Footer>
-        </Modal>
-        <Modal
-          show={this.state.acceptProfileFileModel}
-          onHide={this.closeAcceptWarningWindow}
-          aria-labelledby="contained-modal-title-vcenter"
-          centered
-        >
-          <Modal.Header>
-            <Modal.Title id="contained-modal-title-vcenter">
-              Warning
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            {this.state.category} is a valid and can be used for the
-            application?
-          </Modal.Body>
-          <Modal.Footer>
-            <Button
-              disabled={!this.state.isLoaded}
-              onClick={(e) => this.onUpdateProfileFilefromstudent(e)}
-            >
-              {!this.state.isLoaded ? (
-                <div>
-                  <Spinner
-                    animation="border"
-                    role="status"
-                    variant="light"
-                    size="sm"
-                  >
-                    <span className="visually-hidden"></span>
-                  </Spinner>
-                </div>
-              ) : (
-                'Yes'
-              )}
-            </Button>
-            <Button onClick={this.closeAcceptWarningWindow}>No</Button>
-          </Modal.Footer>
-        </Modal>
-        <Modal
-          show={this.state.CommentModel}
-          onHide={this.closeCommentWindow}
-          aria-labelledby="contained-modal-title-vcenter"
-          centered
-        >
-          <Modal.Header>
-            <Modal.Title id="contained-modal-title-vcenter">
-              Comments
-            </Modal.Title>
-          </Modal.Header>
-
-          {is_TaiGer_Student(this.props.user) ? (
-            <>
-              <Modal.Body>
-                <p>{this.state.comments}</p>
-                <p>Please delete the old file before upload the new file.</p>
-              </Modal.Body>
-              <Modal.Footer>
-                <Button onClick={this.closeCommentWindow}>Ok</Button>
-              </Modal.Footer>
-            </>
-          ) : (
-            <>
-              <Modal.Body>
-                <Form.Group controlId="rejectmessage">
-                  <Form.Label>
-                    Please give a reason why the uploaded {this.state.category}{' '}
-                    is invalied?
-                  </Form.Label>
-                  <Form.Control
-                    type="text"
-                    placeholder="ex. Poor scanned quality."
-                    defaultValue={this.state.comments}
-                    onChange={(e) =>
-                      this.handleRejectMessage(e, e.target.value)
-                    }
-                  />
-                </Form.Group>
-              </Modal.Body>
-              <Modal.Footer>
-                {
-                  <Button
-                    disabled={this.state.comments === ''}
-                    onClick={(e) => this.onUpdateRejectMessageStudent(e)}
-                  >
-                    {!this.state.isLoaded ? (
-                      <div>
-                        <Spinner
-                          animation="border"
-                          role="status"
-                          variant="light"
-                          size="sm"
-                        >
-                          <span className="visually-hidden"></span>
-                        </Spinner>
-                      </div>
-                    ) : (
-                      'Update'
-                    )}
-                  </Button>
-                }
-
-                <Button onClick={this.closeCommentWindow} variant="light">
-                  Close
-                </Button>
-              </Modal.Footer>
-            </>
-          )}
-        </Modal>
-        <Modal
-          show={this.state.showPreview}
-          onHide={this.closePreviewWindow}
-          aria-labelledby="contained-modal-title-vcenter2"
-          size="xl"
-          centered
-        >
-          <Modal.Header>
-            <Modal.Title id="contained-d-title-vcenter">
-              {this.props.path}
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <FilePreview
-              path={this.state.preview_path}
-              student_id={this.state.student_id.toString()}
-            />
-          </Modal.Body>
-          <Modal.Footer>
-            {this.props.path.split('.')[1] !== 'pdf' && (
-              <a
-                href={`${BASE_URL}/api/students/${this.state.student_id.toString()}/files/${
-                  this.props.path
-                }`}
-                download
-                target="_blank"
-              >
-                <Button size="sm" title="Download">
-                  <AiOutlineDownload size={16} />
-                </Button>
-              </a>
-            )}
-            {!(
-              is_TaiGer_Editor(this.props.user) ||
-              is_TaiGer_Student(this.props.user)
-            ) && (
-              <Form
-                onSubmit={(e) =>
-                  this.onUpdateProfileDocStatus(
-                    e,
-                    this.props.k,
-                    this.state.student_id,
-                    'accepted'
-                  )
-                }
-              >
-                <Form.Group controlId="exampleForm.ControlSelect1">
-                  <Button
-                    variant={ACCEPT_STYLE}
-                    size="sm"
-                    type="submit"
-                    title="Mark as finshed"
-                    disabled={!this.state.isLoaded}
-                  >
-                    <AiOutlineCheck size={16} />
-                  </Button>
-                </Form.Group>
-              </Form>
-            )}
-            <Button size="sm" onClick={this.closePreviewWindow}>
-              {!this.state.isLoaded ? (
-                <div>
-                  <Spinner
-                    animation="border"
-                    role="status"
-                    variant="light"
-                    size="sm"
-                  >
-                    <span className="visually-hidden"></span>
-                  </Spinner>
-                </div>
-              ) : (
-                <AiOutlineClose size={16} />
-              )}
-            </Button>
-          </Modal.Footer>
-        </Modal>
-        <OffcanvasBaseDocument
-          show={this.state.baseDocsflagOffcanvas}
-          onHide={this.closeOffcanvasWindow}
-          link={this.state.link}
-          docName={this.props.docName}
-          onChangeURL={this.onChangeURL}
-          updateDocLink={this.updateDocLink}
-          baseDocsflagOffcanvasButtonDisable={
-            this.state.baseDocsflagOffcanvasButtonDisable
-          }
-        />
-      </>
-    );
-  }
+          {!buttonSetRejectedState.isLoaded ? <CircularProgress /> : t('Close')}
+        </Button>
+      </ModalNew>
+      <OffcanvasBaseDocument
+        open={buttonSetRejectedState.baseDocsflagOffcanvas}
+        onHide={closeOffcanvasWindow}
+        link={buttonSetRejectedState.link}
+        docName={props.docName}
+        onChangeURL={onChangeURL}
+        updateDocLink={updateDocLink}
+        baseDocsflagOffcanvasButtonDisable={
+          buttonSetRejectedState.baseDocsflagOffcanvasButtonDisable
+        }
+      />
+    </>
+  );
 }
 
 export default ButtonSetRejected;

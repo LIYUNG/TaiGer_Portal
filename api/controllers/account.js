@@ -2,7 +2,6 @@
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
 const { Role, User, Student, Agent } = require('../models/User');
-const { Task } = require('../models/Task');
 const async = require('async');
 const { updateCredentialsEmail } = require('../services/email');
 const logger = require('../services/logger');

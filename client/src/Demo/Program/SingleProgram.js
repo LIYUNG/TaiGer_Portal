@@ -1,5 +1,8 @@
-import React from 'react';
-import { Spinner, Button, Card, Modal } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
+import { Card, Breadcrumbs, Button, Link, Typography } from '@mui/material';
+import { Link as LinkDom, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+
 import {
   assignProgramToStudent,
   getProgram,
@@ -9,24 +12,29 @@ import {
 import SingleProgramView from './SingleProgramView';
 import SingleProgramEdit from './SingleProgramEdit';
 import ProgramDeleteWarning from './ProgramDeleteWarning';
-import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import { TabTitle } from '../Utils/TabTitle';
 import {
   is_TaiGer_AdminAgent,
   is_TaiGer_Admin,
-  is_TaiGer_Student
+  is_TaiGer_Student,
+  is_TaiGer_role
 } from '../Utils/checking-functions';
-
 import { deleteProgram } from '../../api';
-import { Link } from 'react-router-dom';
 import ProgramListSubpage from './ProgramListSubpage';
 import ProgramReport from './ProgramReport';
 import DEMO from '../../store/constant';
+import { useAuth } from '../../components/AuthProvider';
+import Loading from '../../components/Loading/Loading';
+import { appConfig } from '../../config';
+import ModalNew from '../../components/Modal';
 
-class SingleProgram extends React.Component {
-  state = {
+function SingleProgram() {
+  const { programId } = useParams();
+  const { t } = useTranslation();
+  const { user } = useAuth();
+  const [singleProgramState, setSingleProgramState] = useState({
     error: '',
     isLoaded: false,
     program: null,
@@ -43,78 +51,44 @@ class SingleProgram extends React.Component {
     tickets: [],
     res_modal_message: '',
     res_modal_status: 0
-  };
-  componentDidMount() {
-    getProgram(this.props.match.params.programId).then(
+  });
+  useEffect(() => {
+    getProgram(programId).then(
       (resp) => {
         const { data, success, students } = resp.data;
         const { status } = resp;
         if (success) {
-          this.setState({
+          setSingleProgramState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             program: data,
             students,
             success: success,
             res_status: status
-          });
+          }));
         } else {
-          this.setState({
+          setSingleProgramState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             res_status: status
-          });
+          }));
         }
       },
       (error) => {
-        this.setState((state) => ({
-          ...state,
+        setSingleProgramState((prevState) => ({
+          ...prevState,
           isLoaded: true,
           error,
           res_status: 500
         }));
       }
     );
-  }
+  }, [programId]);
 
-  componentDidUpdate(prevProps, prevState) {
-    if (
-      prevProps.match.params.programId !== this.props.match.params.programId
-    ) {
-      getProgram(this.props.match.params.programId).then(
-        (resp) => {
-          const { data, success, students } = resp.data;
-          const { status } = resp;
-          if (success) {
-            this.setState({
-              isLoaded: true,
-              program: data,
-              students,
-              isEdit: false,
-              success: success,
-              res_status: status
-            });
-          } else {
-            this.setState({
-              isLoaded: true,
-              res_status: status
-            });
-          }
-        },
-        (error) => {
-          this.setState((state) => ({
-            ...state,
-            isLoaded: true,
-            error,
-            res_status: 500
-          }));
-        }
-      );
-    }
-  }
-
-  assignProgram = (assign_data) => {
+  const assignProgram = (assign_data) => {
     const { student_id, program_ids } = assign_data;
-    this.setState((state) => ({
-      ...state,
+    setSingleProgramState((prevState) => ({
+      ...prevState,
       isAssigning: true
     }));
     assignProgramToStudent(student_id, program_ids).then(
@@ -122,8 +96,8 @@ class SingleProgram extends React.Component {
         const { success } = resp.data;
         const { status } = resp;
         if (success) {
-          this.setState((state) => ({
-            ...state,
+          setSingleProgramState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             isAssigning: false,
             modalShowAssignSuccessWindow: true,
@@ -133,8 +107,8 @@ class SingleProgram extends React.Component {
           }));
         } else {
           const { message } = resp.data;
-          this.setState((state) => ({
-            ...state,
+          setSingleProgramState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             isAssigning: false,
             res_modal_message: message,
@@ -143,325 +117,333 @@ class SingleProgram extends React.Component {
         }
       },
       (error) => {
-        const { statusText } = resp;
-        setStatedataTable2((state) => ({
-          ...state,
+        setSingleProgramState((prevState) => ({
+          ...prevState,
           isLoaded: true,
           isAssigning: false,
           error,
           res_modal_status: 500,
-          res_modal_message: statusText
+          res_modal_message: ''
         }));
       }
     );
   };
 
-  onSubmitAddToStudentProgramList = (e) => {
+  const onSubmitAddToStudentProgramList = (e) => {
     e.preventDefault();
-    const student_id = this.state.student_id;
-    this.assignProgram({
+    const student_id = singleProgramState.student_id;
+    assignProgram({
       student_id,
-      program_ids: [this.state.program._id.toString()]
+      program_ids: [singleProgramState.program._id.toString()]
     });
   };
 
-  onHideAssignSuccessWindow = () => {
-    this.setState((state) => ({
-      ...state,
+  const onHideAssignSuccessWindow = () => {
+    setSingleProgramState((prevState) => ({
+      ...prevState,
       modalShowAssignSuccessWindow: false
     }));
   };
 
-  setModalShow2 = () => {
-    this.setState((state) => ({
-      ...state,
+  const setModalShow2 = () => {
+    setSingleProgramState((prevState) => ({
+      ...prevState,
       modalShowAssignWindow: true
     }));
   };
 
-  setModalHide = () => {
-    this.setState((state) => ({
-      ...state,
+  const setModalHide = () => {
+    setSingleProgramState((prevState) => ({
+      ...prevState,
       modalShowAssignWindow: false
     }));
   };
-  handleSetStudentId = (e) => {
+  const handleSetStudentId = (e) => {
     const { value } = e.target;
-    this.setState((state) => ({
-      ...state,
+    setSingleProgramState((prevState) => ({
+      ...prevState,
       student_id: value
     }));
   };
 
-  handleSubmit_Program = (program) => {
+  const handleSubmit_Program = (program) => {
     updateProgram(program).then(
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
         if (success) {
-          this.setState({
+          setSingleProgramState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             program: data,
             success: success,
-            isEdit: !this.state.isEdit,
+            isEdit: !singleProgramState.isEdit,
             res_modal_status: status
-          });
+          }));
         } else {
           const { message } = resp.data;
-          this.setState({
+          setSingleProgramState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             res_modal_status: status,
             res_modal_message: message
-          });
+          }));
         }
       },
       (error) => {
-        const { statusText } = resp;
-        this.setState((state) => ({
-          ...state,
+        setSingleProgramState((prevState) => ({
+          ...prevState,
           isLoaded: true,
           error,
           res_modal_status: 500,
-          res_modal_message: statusText
+          res_modal_message: ''
         }));
       }
     );
   };
 
-  ConfirmError = () => {
+  const ConfirmError = () => {
     // window.location.reload(true);
-    this.setState((state) => ({
-      ...state,
+    setSingleProgramState((prevState) => ({
+      ...prevState,
       res_modal_status: 0,
       res_modal_message: ''
     }));
   };
 
-  handleClick = () => {
-    this.setState((state) => ({ ...state, isEdit: !this.state.isEdit }));
+  const handleClick = () => {
+    setSingleProgramState((prevState) => ({
+      ...prevState,
+      isEdit: !singleProgramState.isEdit
+    }));
   };
 
-  setModalShowDDelete = () => {
-    this.setState({
+  const setModalShowDDelete = () => {
+    setSingleProgramState((prevState) => ({
+      ...prevState,
       deleteProgramWarning: true
-    });
+    }));
   };
 
-  setModalHideDDelete = () => {
-    this.setState({
+  const setModalHideDDelete = () => {
+    setSingleProgramState((prevState) => ({
+      ...prevState,
       deleteProgramWarning: false
-    });
+    }));
   };
-  RemoveProgramHandler = (program_id) => {
+  const RemoveProgramHandler = (program_id) => {
     deleteProgram(program_id).then(
       (resp) => {
         const { success } = resp.data;
         const { status } = resp;
         if (success) {
-          this.setState({
+          setSingleProgramState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             deleteProgramWarning: false,
             isDeleted: true,
             success: success,
-            isEdit: !this.state.isEdit,
+            isEdit: !singleProgramState.isEdit,
             res_modal_status: status
-          });
+          }));
         } else {
           const { message } = resp.data;
-          this.setState({
+          setSingleProgramState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             res_modal_status: status,
             res_modal_message: message
-          });
+          }));
         }
       },
       (error) => {
-        const { statusText } = resp;
-        this.setState((state) => ({
-          ...state,
+        setSingleProgramState((prevState) => ({
+          ...prevState,
           isLoaded: true,
           error,
           res_modal_status: 500,
-          res_modal_message: statusText
+          res_modal_message: ''
         }));
       }
     );
   };
 
-  programListAssistant = (e) => {
-    processProgramListAi(this.props.match.params.programId).then(
-      (resp) => {
-        const { success } = resp.data;
-        const { status } = resp;
-        console.log(success);
-        // if (success) {
-        //   this.setState({
-        //     isLoaded: true,
-        //     deleteProgramWarning: false,
-        //     isDeleted: true,
-        //     success: success,
-        //     isEdit: !this.state.isEdit,
-        //     res_modal_status: status
-        //   });
-        // } else {
-        //   const { message } = resp.data;
-        //   this.setState({
-        //     isLoaded: true,
-        //     res_modal_status: status,
-        //     res_modal_message: message
-        //   });
-        // }
-      },
-      (error) => {}
+  const programListAssistant = () => {
+    processProgramListAi(programId).then(
+      () => {},
+      () => {}
     );
-    console.log('Trigger PLA');
   };
 
-  render() {
-    const {
-      res_status,
-      isLoaded,
-      isDeleted,
-      res_modal_status,
-      res_modal_message,
-      program,
-      students
-    } = this.state;
-    if (res_status >= 400) {
-      return <ErrorPage res_status={res_status} />;
-    }
-    if (!isLoaded) {
-      return (
-        <div style={spinner_style}>
-          <Spinner animation="border" role="status">
-            <span className="visually-hidden"></span>
-          </Spinner>
-        </div>
-      );
-    }
-    TabTitle(`${program.school} - ${program.program_name}`);
+  const {
+    res_status,
+    isLoaded,
+    isDeleted,
+    res_modal_status,
+    res_modal_message,
+    program,
+    students
+  } = singleProgramState;
+  if (res_status >= 400) {
+    return <ErrorPage res_status={res_status} />;
+  }
+  if (!isLoaded) {
+    return <Loading />;
+  }
+  TabTitle(`${program.school} - ${program.program_name}`);
 
-    if (isDeleted) {
-      return (
-        <Card>
-          <Card.Header>The program is deleted</Card.Header>
-          <Card.Body>
-            <Link to={`${DEMO.PROGRAMS}`}>
-              Click me back to the program list
+  if (isDeleted) {
+    return (
+      <Card>
+        <Typography variant="h5">The program is deleted</Typography>
+        <Typography>
+          <LinkDom to={`${DEMO.PROGRAMS}`}>
+            Click me back to the program list
+          </LinkDom>
+        </Typography>
+      </Card>
+    );
+  }
+  if (singleProgramState.isEdit) {
+    return (
+      <>
+        {res_modal_status >= 400 && (
+          <ModalMain
+            ConfirmError={ConfirmError}
+            res_modal_status={res_modal_status}
+            res_modal_message={res_modal_message}
+          />
+        )}
+        <SingleProgramEdit
+          program={program}
+          isLoaded={isLoaded}
+          user={user}
+          handleSubmit_Program={handleSubmit_Program}
+          handleClick={handleClick}
+        />
+      </>
+    );
+  } else {
+    return (
+      <>
+        {res_modal_status >= 400 && (
+          <ModalMain
+            ConfirmError={ConfirmError}
+            res_modal_status={res_modal_status}
+            res_modal_message={res_modal_message}
+          />
+        )}
+        <Breadcrumbs aria-label="breadcrumb">
+          <Link
+            underline="hover"
+            color="inherit"
+            component={LinkDom}
+            to={`${DEMO.DASHBOARD_LINK}`}
+          >
+            {appConfig.companyName}
+          </Link>
+          {is_TaiGer_role(user) ? (
+            <Link
+              underline="hover"
+              color="inherit"
+              component={LinkDom}
+              to={`${DEMO.PROGRAMS}`}
+            >
+              {t('Program List')}
             </Link>
-          </Card.Body>
-        </Card>
-      );
-    }
-    if (this.state.isEdit) {
-      return (
-        <>
-          {res_modal_status >= 400 && (
-            <ModalMain
-              ConfirmError={this.ConfirmError}
-              res_modal_status={res_modal_status}
-              res_modal_message={res_modal_message}
-            />
+          ) : (
+            <Link
+              underline="hover"
+              color="inherit"
+              component={LinkDom}
+              to={`${DEMO.STUDENT_APPLICATIONS_ID_LINK(user._id.toString())}`}
+            >
+              {t('Applications')}
+            </Link>
           )}
-          <SingleProgramEdit
-            program={program}
-            isLoaded={isLoaded}
-            user={this.props.user}
-            handleSubmit_Program={this.handleSubmit_Program}
-            handleClick={this.handleClick}
-          />
-        </>
-      );
-    } else {
-      return (
-        <>
-          {res_modal_status >= 400 && (
-            <ModalMain
-              ConfirmError={this.ConfirmError}
-              res_modal_status={res_modal_status}
-              res_modal_message={res_modal_message}
-            />
-          )}
-          <SingleProgramView
-            program={program}
-            isLoaded={isLoaded}
-            user={this.props.user}
-            students={students}
-            programId={this.props.match.params.programId}
-            programListAssistant={this.programListAssistant}
-          />
-          {is_TaiGer_AdminAgent(this.props.user) && (
-            <>
-              <Button size="sm" onClick={() => this.handleClick()}>
-                Edit
-              </Button>
+          <Typography color="text.primary">
+            {`${program.school}-${program.program_name}`}
+          </Typography>
+        </Breadcrumbs>
+        <SingleProgramView
+          program={program}
+          isLoaded={isLoaded}
+          user={user}
+          students={students}
+          programId={programId}
+          programListAssistant={programListAssistant}
+        />
+        {is_TaiGer_AdminAgent(user) && (
+          <>
+            <Button
+              color="secondary"
+              size="small"
+              onClick={() => handleClick()}
+            >
+              {t('Edit')}
+            </Button>
+            <Button
+              color="primary"
+              size="small"
+              variant="secondary"
+              onClick={() => setModalShow2()}
+            >
+              {t('Assign')}
+            </Button>
+            {is_TaiGer_Admin(user) && (
               <Button
-                size="sm"
-                variant="secondary"
-                onClick={() => this.setModalShow2()}
+                size="small"
+                variant="danger"
+                onClick={() => setModalShowDDelete()}
               >
-                Assign
+                {t('Delete')}
               </Button>
-              {is_TaiGer_Admin(this.props.user) && (
-                <Button
-                  size="sm"
-                  variant="danger"
-                  onClick={() => this.setModalShowDDelete()}
-                >
-                  Delete
-                </Button>
-              )}
-            </>
-          )}
-          {is_TaiGer_Student(this.props.user) && (
-            <ProgramReport
-              uni_name={program.school}
-              program_name={program.program_name}
-              program_id={program._id.toString()}
-            />
-          )}
-          <ProgramDeleteWarning
-            deleteProgramWarning={this.state.deleteProgramWarning}
-            setModalHideDDelete={this.setModalHideDDelete}
+            )}
+          </>
+        )}
+        {is_TaiGer_Student(user) && (
+          <ProgramReport
             uni_name={program.school}
             program_name={program.program_name}
-            RemoveProgramHandler={this.RemoveProgramHandler}
             program_id={program._id.toString()}
           />
-          <ProgramListSubpage
-            userId={this.props.user._id.toString()}
-            show={this.state.modalShowAssignWindow}
-            setModalHide={this.setModalHide}
-            uni_name={[program.school]}
-            program_name={[program.program_name]}
-            handleSetStudentId={this.handleSetStudentId}
-            isButtonDisable={this.state.isAssigning}
-            onSubmitAddToStudentProgramList={
-              this.onSubmitAddToStudentProgramList
-            }
-          />
-          <Modal
-            show={this.state.modalShowAssignSuccessWindow}
-            onHide={this.onHideAssignSuccessWindow}
-            size="m"
-            aria-labelledby="contained-modal-title-vcenter"
-            centered
+        )}
+        <ProgramDeleteWarning
+          deleteProgramWarning={singleProgramState.deleteProgramWarning}
+          setModalHideDDelete={setModalHideDDelete}
+          uni_name={program.school}
+          program_name={program.program_name}
+          RemoveProgramHandler={RemoveProgramHandler}
+          program_id={program._id.toString()}
+        />
+        <ProgramListSubpage
+          userId={user._id.toString()}
+          show={singleProgramState.modalShowAssignWindow}
+          setModalHide={setModalHide}
+          uni_name={[program.school]}
+          program_name={[program.program_name]}
+          handleSetStudentId={handleSetStudentId}
+          isButtonDisable={singleProgramState.isAssigning}
+          onSubmitAddToStudentProgramList={onSubmitAddToStudentProgramList}
+        />
+        <ModalNew
+          open={singleProgramState.modalShowAssignSuccessWindow}
+          onClose={onHideAssignSuccessWindow}
+          aria-labelledby="contained-modal-title-vcenter"
+        >
+          <Typography>{t('Success')}</Typography>
+          <Typography>Program(s) assigned to student successfully!</Typography>
+          <Button
+            size="small"
+            color="primary"
+            variant="contained"
+            onClick={onHideAssignSuccessWindow}
           >
-            <Modal.Header>
-              <Modal.Title id="contained-modal-title-vcenter">
-                Success
-              </Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              Program(s) assigned to student successfully!
-            </Modal.Body>
-            <Modal.Footer>
-              <Button onClick={this.onHideAssignSuccessWindow}>Close</Button>
-            </Modal.Footer>
-          </Modal>
-        </>
-      );
-    }
+            {t('Close')}
+          </Button>
+        </ModalNew>
+      </>
+    );
   }
 }
 export default SingleProgram;

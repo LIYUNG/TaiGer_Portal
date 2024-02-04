@@ -1,19 +1,25 @@
 import React, { Fragment, useEffect, useState } from 'react';
-import { Row, Col, Card, Spinner } from 'react-bootstrap';
-import { Redirect, Link } from 'react-router-dom';
+import { Navigate, Link as LinkDom } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import UniAssistListCard from './UniAssistListCard';
-import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 
 import { getStudentUniAssist } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import { FiExternalLink } from 'react-icons/fi';
-import { check_uni_assist_needed } from '../Utils/checking-functions';
+import {
+  check_student_needs_uni_assist,
+  is_TaiGer_Student
+} from '../Utils/checking-functions';
+import { useAuth } from '../../components/AuthProvider';
+import { appConfig } from '../../config';
+import { Breadcrumbs, Link, Typography, Card } from '@mui/material';
+import Loading from '../../components/Loading/Loading';
 
-function UniAssistList(props) {
+function UniAssistList() {
+  const { user } = useAuth();
   const [uniAssistListState, setUniAssistListState] = useState({
     error: '',
     isLoaded: false,
@@ -21,9 +27,9 @@ function UniAssistList(props) {
     deleteVPDFileWarningModel: false,
     res_status: 0
   });
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   useEffect(() => {
-    getStudentUniAssist(props.user._id.toString()).then(
+    getStudentUniAssist(user._id.toString()).then(
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
@@ -54,20 +60,14 @@ function UniAssistList(props) {
     );
   }, []);
 
-  if (props.user.role !== 'Student') {
-    return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
+  if (!is_TaiGer_Student(user)) {
+    return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
   }
   TabTitle('Uni-Assist & VPD');
   const { res_status, isLoaded } = uniAssistListState;
 
   if (!isLoaded && !uniAssistListState.student) {
-    return (
-      <div style={spinner_style}>
-        <Spinner animation="border" role="status">
-          <span className="visually-hidden"></span>
-        </Spinner>
-      </div>
-    );
+    return <Loading />;
   }
 
   if (res_status >= 400) {
@@ -76,50 +76,41 @@ function UniAssistList(props) {
 
   return (
     <>
-      <Row>
-        <Col>
-          <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
-            <Card.Header>
-              <Card.Title className="my-0 mx-0 text-light">
-                Uni-Assist Tasks & VPD
-              </Card.Title>
-            </Card.Header>
-          </Card>
-        </Col>
-      </Row>
-
-      {check_uni_assist_needed(uniAssistListState.student) ? (
+      <Breadcrumbs aria-label="breadcrumb">
+        <Link
+          underline="hover"
+          color="inherit"
+          component={LinkDom}
+          to={`${DEMO.DASHBOARD_LINK}`}
+        >
+          {appConfig.companyName}
+        </Link>
+        <Typography color="text.primary">Uni-Assist Tasks & VPD</Typography>
+      </Breadcrumbs>
+      {check_student_needs_uni_assist(uniAssistListState.student) ? (
         <Fragment>
-          <Row>
-            <Col>
-              <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
-                <Card.Body className="my-0 mx-0 text-light">
-                  {t('Instructions: Follow the documentations in')}:{` `}
-                  <Link
-                    to={`${DEMO.UNI_ASSIST_DOCS_LINK}`}
-                    className="text-info"
-                  >
-                    Uni-Assist{' '}
-                    <FiExternalLink
-                      className="mx-1 mb-1"
-                      style={{ cursor: 'pointer' }}
-                    />
-                  </Link>
-                </Card.Body>
-              </Card>
-            </Col>
-          </Row>
-          <UniAssistListCard
-            student={uniAssistListState.student}
-            role={props.user.role}
-            user={props.user}
-          />
+          <Typography sx={{ my: 2 }}>
+            {t('Instructions: Follow the documentations in')}:{` `}
+            <Link
+              underline="hover"
+              to={`${DEMO.UNI_ASSIST_DOCS_LINK}`}
+              component={LinkDom}
+              target="_blank"
+            >
+              Uni-Assist{' '}
+              <FiExternalLink
+                className="mx-1 mb-1"
+                style={{ cursor: 'pointer' }}
+              />
+            </Link>
+          </Typography>
+          <UniAssistListCard student={uniAssistListState.student} />
         </Fragment>
       ) : (
         <Card>
-          <Card.Body>
+          <Typography>
             {t('Based on the applications, Uni-Assist is NOT needed')}
-          </Card.Body>
+          </Typography>
         </Card>
       )}
     </>

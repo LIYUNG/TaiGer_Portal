@@ -1,8 +1,10 @@
-import React, { useEffect } from 'react';
-import { Row } from 'react-bootstrap';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
+import Container from '@mui/material/Container';
+import Typography from '@mui/material/Typography';
+import { Box, CssBaseline, Link } from '@mui/material';
 
-export default function Footer(props) {
+export default function Footer() {
   const currentDate = new Date();
   const currentYear = currentDate.getFullYear();
   const { i18n } = useTranslation();
@@ -22,63 +24,144 @@ export default function Footer(props) {
     }
   };
 
-  return (
-    <footer
-      style={{
-        display: 'flex',
-        flexDirection: 'column', // Set flex direction to column
-        padding: 0,
-        backgroundColor: '#000000'
-      }}
-    >
-      <ul
-        onClick={handleOnChange}
-        className="my-1 py-0"
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          listStyle: 'none', // Corrected property name
-          padding: '2px'
-        }}
-      >
-        <li className="text-light">
-          <b>Language &nbsp;</b>
-        </li>
-        <li
-          lang="en"
-          className="text-light"
-          style={{
-            cursor: localStorage.getItem('locale') === 'en' ? '' : 'pointer'
-          }}
-        >
-          {localStorage.getItem('locale') === 'en' ? <b>English</b> : 'English'}
-        </li>
-        <li className="text-light">&nbsp;|&nbsp;</li>
-        <li
-          lang="zh-TW"
-          className="text-light"
-          style={{
-            cursor: localStorage.getItem('locale') === 'zh-TW' ? '' : 'pointer'
-          }}
-        >
-          {localStorage.getItem('locale') === 'zh-TW' ? <b>中文</b> : '中文'}
-        </li>
-      </ul>
-      <p
-        className="mb-1 text-light"
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          fontSize: '12px'
-        }}
-      >
-        Copyright TaiGer Consultancy © {currentYear} | Designed and developed by
-        &nbsp;
-        <a href="https://taigerconsultancy.com/" className="text-info">
+  function Copyright() {
+    return (
+      <Typography variant="string" color="text.secondary">
+        {`Copyright © ${currentYear} | Designed and developed by `}
+        <Link color="inherit" href="https://taigerconsultancy.com/">
           TaiGer Consultancy 台德留學顧問
-        </a>
-      </p>
-    </footer>
+        </Link>{' '}
+      </Typography>
+    );
+  }
+
+  return (
+    <>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column'
+        }}
+      >
+        <CssBaseline />
+        <Box
+          component="footer"
+          sx={{
+            py: 2,
+            px: 2,
+            mt: 'auto',
+            backgroundColor: (theme) =>
+              theme.palette.mode === 'light'
+                ? theme.palette.grey[200]
+                : theme.palette.grey[800]
+          }}
+        >
+          <Container maxWidth="sm">
+            <Box
+              align="center"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              <Typography component={'span'} variant="string" fontWeight="bold">
+                Language &nbsp;
+              </Typography>
+              <Typography
+                component={'span'}
+                variant="string"
+                lang="en"
+                onClick={handleOnChange}
+                fontWeight={
+                  localStorage.getItem('locale') === 'en' ? 'bold' : 'light'
+                }
+                style={{
+                  cursor:
+                    localStorage.getItem('locale') === 'en' ? '' : 'pointer'
+                }}
+              >
+                English
+              </Typography>
+              <Typography component={'span'}>&nbsp;|&nbsp;</Typography>
+              <Typography
+                component={'span'}
+                variant="string"
+                lang="zh-TW"
+                onClick={handleOnChange}
+                fontWeight={
+                  localStorage.getItem('locale') === 'zh-TW'
+                    ? 'bold'
+                    : 'regular'
+                }
+                style={{
+                  cursor:
+                    localStorage.getItem('locale') === 'zh-TW' ? '' : 'pointer'
+                }}
+              >
+                中文
+              </Typography>
+            </Box>
+            <Copyright />
+          </Container>
+        </Box>
+      </Box>
+    </>
+    // <footer>
+    //   <Container maxWidth="sm">
+    //     <Typography variant="body2" color="textSecondary" align="center">
+    //       <ul
+    //         onClick={handleOnChange}
+    //         className="my-1 py-0"
+    //         style={{
+    //           display: 'flex',
+    //           alignItems: 'center',
+    //           justifyContent: 'center',
+    //           listStyle: 'none', // Corrected property name
+    //           padding: '2px'
+    //         }}
+    //       >
+    //         <li >
+    //           <b>Language &nbsp;</b>
+    //
+    //         <li
+    //           lang="en"
+    //
+    //           style={{
+    //             cursor: localStorage.getItem('locale') === 'en' ? '' : 'pointer'
+    //           }}
+    //         >
+    //           {localStorage.getItem('locale') === 'en' ? (
+    //             <b>English</b>
+    //           ) : (
+    //             'English'
+    //           )}
+    //
+    //         <li >&nbsp;|&nbsp;
+    //         <li
+    //           lang="zh-TW"
+    //
+    //           style={{
+    //             cursor:
+    //               localStorage.getItem('locale') === 'zh-TW' ? '' : 'pointer'
+    //           }}
+    //         >
+    //           {localStorage.getItem('locale') === 'zh-TW' ? (
+    //             <b>中文</b>
+    //           ) : (
+    //             '中文'
+    //           )}
+    //
+    //       </ul>
+    //     </Typography>{' '}
+    //     <Typography variant="body3" color="textSecondary" align="center">
+    //       Copyright TaiGer Consultancy © {currentYear} | Designed and developed
+    //       by &nbsp;
+    //       <a href="https://taigerconsultancy.com/" className="text-info">
+    //         TaiGer Consultancy 台德留學顧問
+    //       </a>
+    //     </Typography>
+    //   </Container>
+    // </footer>
   );
 }

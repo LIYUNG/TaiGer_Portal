@@ -1,18 +1,12 @@
 import React from 'react';
-import { Row, Col } from 'react-bootstrap';
-import Card from '../../App/components/MainCard';
-import Aux from '../../hoc/_Aux';
+import { Box, Card } from '@mui/material';
 
 // Status 423: Forbidden requests
-function ResourceLockedError(props) {
+function ResourceLockedError() {
   return (
-    <Aux>
-      <Row>
-        <Col>
-          <Card>The resource is locked and can not be changed.</Card>
-        </Col>
-      </Row>
-    </Aux>
+    <Box>
+      <Card>The resource is locked and can not be changed.</Card>
+    </Box>
   );
 }
 

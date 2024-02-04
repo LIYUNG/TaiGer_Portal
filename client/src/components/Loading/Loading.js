@@ -1,22 +1,18 @@
 import React from 'react';
-import { Spinner } from 'react-bootstrap';
-
-import './../../assets/scss/style.scss';
-import Aux from '../../hoc/_Aux';
+import { CircularProgress } from '@mui/material';
 
 export default function Loading() {
   return (
-    <Aux>
-      <div className="auth-wrapper">
-        <Spinner
-          style={{
-            position: 'fixed',
-            top: '45%',
-            left: '50%'
-          }}
-          variant={'light'}
-        ></Spinner>
-      </div>
-    </Aux>
+    <div
+      // maxWidth="md"
+      style={{
+        position: 'fixed',
+        transform: 'translate(-50%, -50%)',
+        top: '40%',
+        left: '50%'
+      }}
+    >
+      <CircularProgress />
+    </div>
   );
 }

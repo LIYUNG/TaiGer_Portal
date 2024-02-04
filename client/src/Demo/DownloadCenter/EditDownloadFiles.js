@@ -1,115 +1,108 @@
 import React from 'react';
-import { Button, Table, Col, Form, Spinner } from 'react-bootstrap';
+import { Col, Form } from 'react-bootstrap';
+import {
+  Table,
+  Button,
+  TableBody,
+  TableRow,
+  TableCell,
+  CircularProgress
+} from '@mui/material';
 import { AiOutlineDelete } from 'react-icons/ai';
+import { useTranslation } from 'react-i18next';
+
 import { BASE_URL } from '../../api/request';
 import { is_TaiGer_Admin } from '../Utils/checking-functions';
-import { DELETE_STYLE, templatelist } from '../Utils/contants';
+import { templatelist } from '../Utils/contants';
+import { useAuth } from '../../components/AuthProvider';
 
-class EditDownloadFiles extends React.Component {
-  state = {};
-
-  submitFile = (e, prop) => {
+function EditDownloadFiles(props) {
+  const { user } = useAuth();
+  const { t } = useTranslation();
+  const submitFile = (e, prop) => {
     e.preventDefault();
-    this.props.submitFile(e, prop);
+    props.submitFile(e, prop);
   };
 
-  render() {
-    let object_init = {};
-    for (let i = 0; i < templatelist.length; i++) {
-      object_init[templatelist[i].prop] = 'missing';
-    }
-    for (let i = 0; i < this.props.templates.length; i++) {
-      object_init[this.props.templates[i].category_name] = 'uploaded';
-    }
-    let templatelist2;
-    templatelist2 = templatelist.map((template, i) => {
-      return (
-        <tr key={i + 1}>
-          <td>{template.name}</td>
-          <td>
-            {is_TaiGer_Admin(this.props.user) && (
-              <Col>
-                {object_init[template.prop] === 'uploaded' ? (
-                  <Button
-                    variant={DELETE_STYLE}
-                    size="sm"
-                    type="submit"
-                    title="Delete"
-                    disabled={!this.props.areLoaded[template.prop]}
-                    onClick={(e) =>
-                      this.props.onDeleteTemplateFile(e, template.prop)
-                    }
-                  >
-                    <AiOutlineDelete size={16} />
-                  </Button>
-                ) : (
-                  <Col>
-                    <Form.Group controlId="formFile">
-                      <Form.Control
-                        type="file"
-                        onChange={(e) => this.props.onFileChange(e)}
-                      />
-                    </Form.Group>
-                  </Col>
-                )}
-              </Col>
-            )}
-          </td>
-          <td>
-            {object_init[template.prop] === 'uploaded' ? (
-              <Col>
-                <a
-                  href={`${BASE_URL}/api/account/files/template/${template.prop}`}
-                  target="_blank"
-                  className="text-info"
-                >
-                  <Button size="sm">Download</Button>
-                </a>
-              </Col>
-            ) : (
-              is_TaiGer_Admin(this.props.user) && (
-                <Col>
-                  <Button
-                    size="sm"
-                    disabled={!this.props.areLoaded[template.prop]}
-                    type="submit"
-                    onClick={(e) => this.submitFile(e, template.prop)}
-                  >
-                    {!this.props.areLoaded[template.prop] ? (
-                      <div>
-                        <Spinner
-                          size="sm"
-                          animation="border"
-                          role="status"
-                          variant="light"
-                        >
-                          <span className="visually-hidden"></span>
-                        </Spinner>
-                      </div>
-                    ) : (
-                      'Upload'
-                    )}
-                  </Button>
-                </Col>
-              )
-            )}
-          </td>
-        </tr>
-      );
-    });
-
-    return (
-      <Table
-        responsive
-        variant="dark"
-        text="light"
-        className="my-0 mx-0"
-        size="sm"
-      >
-        <tbody>{templatelist2}</tbody>
-      </Table>
-    );
+  let object_init = {};
+  for (let i = 0; i < templatelist.length; i++) {
+    object_init[templatelist[i].prop] = 'missing';
   }
+  for (let i = 0; i < props.templates.length; i++) {
+    object_init[props.templates[i].category_name] = 'uploaded';
+  }
+  let templatelist2;
+  templatelist2 = templatelist.map((template, i) => {
+    return (
+      <TableRow key={i + 1}>
+        <TableCell>{template.name}</TableCell>
+        <TableCell>
+          {is_TaiGer_Admin(user) && (
+            <Col>
+              {object_init[template.prop] === 'uploaded' ? (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                  type="submit"
+                  title="Delete"
+                  disabled={!props.areLoaded[template.prop]}
+                  onClick={(e) => props.onDeleteTemplateFile(e, template.prop)}
+                >
+                  <AiOutlineDelete size={16} />
+                </Button>
+              ) : (
+                <Col>
+                  <Form.Group controlId="formFile">
+                    <Form.Control
+                      type="file"
+                      onChange={(e) => props.onFileChange(e)}
+                    />
+                  </Form.Group>
+                </Col>
+              )}
+            </Col>
+          )}
+        </TableCell>
+        <TableCell>
+          {object_init[template.prop] === 'uploaded' ? (
+            <Col>
+              <a
+                href={`${BASE_URL}/api/account/files/template/${template.prop}`}
+                target="_blank"
+                className="text-info" rel="noreferrer"
+              >
+                <Button color="primary" variant="contained" size="small">
+                  {t('Download')}
+                </Button>
+              </a>
+            </Col>
+          ) : is_TaiGer_Admin(user) ? (
+            <Button
+              size="small"
+              disabled={!props.areLoaded[template.prop]}
+              type="submit"
+              onClick={(e) => submitFile(e, template.prop)}
+            >
+              {!props.areLoaded[template.prop] ? (
+                <CircularProgress size={16} />
+              ) : (
+                'Upload'
+              )}
+            </Button>
+          ) : (
+            t('Unavailable')
+          )}
+        </TableCell>
+      </TableRow>
+    );
+  });
+
+  return (
+    <Table size="small">
+      <TableBody>{templatelist2}</TableBody>
+    </Table>
+  );
 }
 
 export default EditDownloadFiles;

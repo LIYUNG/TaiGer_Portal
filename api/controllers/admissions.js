@@ -2,7 +2,6 @@
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
 const { Role, User, Student } = require('../models/User');
-const { Task } = require('../models/Task');
 const async = require('async');
 
 const getAdmissions = asyncHandler(async (req, res) => {
@@ -19,10 +18,7 @@ const getAdmissions = asyncHandler(async (req, res) => {
 
 const getAdmissionsYear = asyncHandler(async (req, res) => {
   const { applications_year } = req.params;
-  const tasks = await Task.find({ student_id: applications_year })
-    .populate('student_id', 'firstname lastname')
-    .lean()
-    .exec();
+  const tasks = await Student.find({ student_id: applications_year });
   res.status(200).send({ success: true, data: tasks });
 });
 

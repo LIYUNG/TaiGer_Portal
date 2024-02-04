@@ -1,102 +1,117 @@
-import React from 'react';
-import { Dropdown, DropdownButton } from 'react-bootstrap';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import {
+  Button,
+  Menu,
+  MenuItem,
+  TableCell,
+  TableRow,
+  Typography
+} from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import EditAgentsSubpage from '../StudDocsOverview/EditAgentsSubpage';
 import DEMO from '../../../../store/constant';
+import { useAuth } from '../../../../components/AuthProvider';
+import { is_TaiGer_Admin } from '../../../Utils/checking-functions';
 
-class NoAgentsStudentsCard extends React.Component {
-  state = {
+function NoAgentsStudentsCard(props) {
+  const { user } = useAuth();
+  const [noAgentsStudentsCardState, setNoAgentsStudentsCard] = useState({
     showAgentPage: false
+  });
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+  const { t } = useTranslation();
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
   };
-
-  setAgentModalhide = () => {
-    this.setState({
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  const setAgentModalhide = () => {
+    setNoAgentsStudentsCard({
       showAgentPage: false
     });
   };
 
-  startEditingAgent = (student) => {
-    this.props.editAgent(student);
-    this.setState({
-      subpage: 1,
+  const startEditingAgent = () => {
+    setNoAgentsStudentsCard({
       showAgentPage: true
     });
   };
 
-  submitUpdateAgentlist = (e, updateAgentList, student_id) => {
+  const submitUpdateAgentlist = (e, updateAgentList, student_id) => {
     e.preventDefault();
-    this.setAgentModalhide();
-    this.props.submitUpdateAgentlist(e, updateAgentList, student_id);
+    setAgentModalhide();
+    props.submitUpdateAgentlist(e, updateAgentList, student_id);
   };
 
-  render() {
-    if (
-      this.props.student.agents === undefined ||
-      this.props.student.agents.length === 0
-    ) {
-      return (
-        <>
-          <tr>
-            {this.props.role === 'Admin' && !this.props.isArchivPage && (
-              <td>
-                <DropdownButton
-                  className="my-0 mx-0"
-                  size="sm"
-                  title="Option"
-                  variant="primary"
-                  id={`dropdown-variants-${this.props.student._id}`}
-                  key={this.props.student._id}
-                >
-                  <Dropdown.Item
-                    eventKey="1"
-                    onClick={() => this.startEditingAgent(this.props.student)}
-                  >
-                    Edit Agent
-                  </Dropdown.Item>
-                </DropdownButton>
-              </td>
-            )}
-            <td>
-              <Link
-                to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-                  this.props.student._id,
-                  DEMO.PROFILE
-                )}`}
-                className="text-info"
-                style={{ textDecoration: 'none' }}
+  if (props.student.agents === undefined || props.student.agents.length === 0) {
+    return (
+      <>
+        <TableRow>
+          {is_TaiGer_Admin(user) && !props.isArchivPage && (
+            <TableCell>
+              <Button
+                size="small"
+                id="basic-button"
+                variant="contained"
+                aria-controls={open ? 'basic-menu' : undefined}
+                aria-haspopup="true"
+                aria-expanded={open ? 'true' : undefined}
+                onClick={handleClick}
               >
-                {this.props.student.firstname}
-                {', '}
-                {this.props.student.lastname}
-              </Link>
-            </td>
-            <td>{this.props.student.email}</td>
-            <td>
-              {this.props.student.application_preference
-                .expected_application_date || (
-                <p className="text-danger">TBD</p>
-              )}
-            </td>
-          </tr>
-          {this.props.role === 'Admin' && (
-            <>
-              <EditAgentsSubpage
-                student={this.props.student}
-                agent_list={this.props.agent_list}
-                show={this.state.showAgentPage}
-                onHide={this.setAgentModalhide}
-                setmodalhide={this.setAgentModalhide}
-                updateAgentList={this.props.updateAgentList}
-                submitUpdateAgentlist={this.submitUpdateAgentlist}
-              />
-            </>
+                {t('Option')}
+              </Button>
+              <Menu
+                id="basic-menu"
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleClose}
+                MenuListProps={{
+                  'aria-labelledby': 'basic-button'
+                }}
+              >
+                <MenuItem onClick={() => startEditingAgent()}>
+                  Edit Agent
+                </MenuItem>
+              </Menu>
+            </TableCell>
           )}
-        </>
-      );
-    } else {
-      return <></>;
-    }
+          <TableCell>
+            <Link
+              to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                props.student._id,
+                DEMO.PROFILE
+              )}`}
+              style={{ textDecoration: 'none' }}
+            >
+              {props.student.firstname}
+              {', '}
+              {props.student.lastname}
+            </Link>
+          </TableCell>
+          <TableCell>{props.student.email}</TableCell>
+          <TableCell>
+            {props.student.application_preference.expected_application_date || (
+              <Typography>TBD</Typography>
+            )}
+          </TableCell>
+        </TableRow>
+        {is_TaiGer_Admin(user) && noAgentsStudentsCardState.showAgentPage && (
+          <EditAgentsSubpage
+            student={props.student}
+            show={noAgentsStudentsCardState.showAgentPage}
+            onHide={setAgentModalhide}
+            setmodalhide={setAgentModalhide}
+            submitUpdateAgentlist={submitUpdateAgentlist}
+          />
+        )}
+      </>
+    );
+  } else {
+    return <></>;
   }
 }
 

@@ -1,113 +1,61 @@
 import React from 'react';
-import { Row, Card, Table } from 'react-bootstrap';
 import { BsExclamationTriangle } from 'react-icons/bs';
+import {
+  Card,
+  Grid,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Typography
+} from '@mui/material';
 
-import StudentsAgentEditor from '../MainViewTab/StudentsAgentEditor/StudentsAgentEditor';
 import AdminTasks from '../MainViewTab/AdminTasks/index';
-import { academic_background_header } from '../../Utils/contants';
 import StudentOverviewTable from '../../../components/StudentOverviewTable';
+import StudentsAgentEditorWrapper from '../MainViewTab/StudentsAgentEditor/StudentsAgentEditorWrapper';
 
-class AdminMainView extends React.Component {
-  render() {
-    const students_agent_editor = this.props.students
-      .sort((a, b) =>
-        a.agents.length === 0 && a.agents.length < b.agents.length
-          ? -2
-          : a.editors.length < b.editors.length
-          ? -1
-          : 1
-      )
-      .map((student, i) => (
-        <StudentsAgentEditor
-          key={i}
-          user={this.props.user}
-          student={student}
-          updateStudentArchivStatus={this.props.updateStudentArchivStatus}
-          editAgent={this.props.editAgent}
-          editEditor={this.props.editEditor}
-          agent_list={this.props.agent_list}
-          editor_list={this.props.editor_list}
-          updateAgentList={this.props.updateAgentList}
-          submitUpdateAgentlist={this.props.submitUpdateAgentlist}
-          updateEditorList={this.props.updateEditorList}
-          submitUpdateEditorlist={this.props.submitUpdateEditorlist}
-          isDashboard={this.props.isDashboard}
-        />
-      ));
+function AdminMainView(props) {
+  const admin_tasks = <AdminTasks students={props.students} />;
 
-    const admin_tasks = (
-      <AdminTasks role={this.props.user.role} students={this.props.students} />
-    );
-    let header = Object.values(academic_background_header);
-
-    return (
-      <>
-        <Row className="px-0 py-0 mb-2 my-0">
-          <Card className="py-0 px-0 my-0 mx-0" bg={'danger'} text={'light'}>
-            <Card.Header>
-              <Card.Title className="px-0 py-0 my-0 mx-0 text-light">
-                <BsExclamationTriangle size={18} /> Admin To Do Tasks:
-              </Card.Title>
-            </Card.Header>
-            <Table
-              size="sm"
-              responsive
-              bordered
-              hover
-              className="px-0 my-0 mx-0"
-              variant="dark"
-              text="light"
-            >
-              <thead>
-                <tr>
-                  <th>Tasks</th>
-                  <th>Description</th>
-                  <th>Last Update</th>
-                </tr>
-              </thead>
-              <tbody>{admin_tasks}</tbody>
+  return (
+    <>
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <Card>
+            <Typography variant="h6">
+              <BsExclamationTriangle size={18} /> Admin To Do Tasks:
+            </Typography>
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  <TableCell>Tasks</TableCell>
+                  <TableCell>Description</TableCell>
+                  <TableCell>Last Update</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>{admin_tasks}</TableBody>
             </Table>
           </Card>
-        </Row>
-        <Row className="px-0 mb-2 my-2">
+        </Grid>
+        <Grid item xs={12}>
           <StudentOverviewTable
-            students={this.props.students}
-            user={this.props.user}
+            students={props.students}
             title="Student Overview"
           />
-        </Row>
-        <Row>
-          <Table
-            size="sm"
-            responsive
-            bordered
-            hover
-            className="my-0 mx-0"
-            variant="dark"
-            text="light"
-          >
-            <thead>
-              <tr>
-                <th></th>
-                <th>
-                  First-, Last Name | 姓名 <br /> Email
-                </th>
-                <th>Agents</th>
-                <th>Editors</th>
-                <th>Year</th>
-                <th>Semester</th>
-                <th>Degree</th>
-                {header.map((name, index) => (
-                  <th key={index}>{name}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>{students_agent_editor}</tbody>
-          </Table>
-        </Row>
-      </>
-    );
-  }
+        </Grid>
+        <Grid item xs={12}>
+          <StudentsAgentEditorWrapper
+            students={props.students}
+            updateStudentArchivStatus={props.updateStudentArchivStatus}
+            submitUpdateAgentlist={props.submitUpdateAgentlist}
+            submitUpdateEditorlist={props.submitUpdateEditorlist}
+            isDashboard={props.isDashboard}
+          />
+        </Grid>
+      </Grid>
+    </>
+  );
 }
 
 export default AdminMainView;

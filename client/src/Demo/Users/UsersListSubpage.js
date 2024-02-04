@@ -1,56 +1,58 @@
 import React from 'react';
-import { Button, Form, Modal } from 'react-bootstrap';
+import {
+  Box,
+  Button,
+  FormControl,
+  FormControlLabel,
+  Radio,
+  RadioGroup,
+  Typography
+} from '@mui/material';
+
+import ModalNew from '../../components/Modal';
+import { useTranslation } from 'react-i18next';
 
 function UsersListSubpage(props) {
-  let user_roles = ['Guest', 'Student', 'Editor', 'Agent'];
+  const { t } = useTranslation();
+  let user_roles = ['Student', 'Editor', 'Agent'];
   return (
-    <Modal
-      show={props.show}
-      onHide={props.setModalHide}
-      size="lg"
-      aria-labelledby="contained-modal-title-vcenter"
-      centered
-    >
-      <Modal.Header>
-        <Modal.Title id="contained-modal-title-vcenter">
-          Assign {props.firstname} - {props.lastname} as
-        </Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <table>
-          <tbody>
-            {user_roles.map((role, i) => (
-              <tr key={i + 1}>
-                <th>
-                  <Form.Group>
-                    <Form.Check
-                      custom
-                      type="radio"
-                      name="user_role"
-                      defaultChecked={
-                        props.selected_user_role === role ? true : false
-                      }
-                      id={role}
-                      value={role}
-                      onChange={props.handleChange2}
-                    />
-                  </Form.Group>
-                </th>
-                <td>
-                  <h4 className="mb-1">{role}</h4>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button onClick={(e) => props.onSubmit2(e)}>Assign</Button>
-        <Button onClick={props.setModalHide} variant="light">
-          Cancel
+    <ModalNew open={props.show} onClose={props.setModalHide} centered>
+      <Typography variant="h6">
+        Assign {props.firstname} - {props.lastname} as
+      </Typography>
+      <FormControl>
+        <RadioGroup
+          aria-labelledby="demo-controlled-radio-buttons-group"
+          name="controlled-radio-buttons-group"
+          value={props.selected_user_role}
+          onChange={props.handleChange2}
+        >
+          {user_roles.map((role, i) => (
+            <FormControlLabel
+              key={i + 1}
+              control={<Radio />}
+              value={role}
+              label={role}
+              onChange={props.handleChange2}
+            />
+          ))}
+        </RadioGroup>
+      </FormControl>
+
+      <Box sx={{ mt: 2 }}>
+        <Button
+          color="primary"
+          variant="contained"
+          onClick={(e) => props.onSubmit2(e)}
+          sx={{ mr: 2 }}
+        >
+          {t('Assign')}
         </Button>
-      </Modal.Footer>
-    </Modal>
+        <Button color="primary" variant="outlined" onClick={props.setModalHide}>
+          {t('Cancel')}
+        </Button>
+      </Box>
+    </ModalNew>
   );
 }
 export default UsersListSubpage;

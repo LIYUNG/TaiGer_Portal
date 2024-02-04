@@ -1,35 +1,35 @@
-import React from 'react';
-import { Form, Row, Col, Card, Button } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
 import DocumentsListItemsEditor from './DocumentsListItemsEditor';
+import { Card } from '@mui/material';
 
-class DocPageEdit extends React.Component {
-  state = {
-    doc_title: this.props.document_title
-  };
-  componentDidMount() {
-    this.setState({ doc_title: this.props.document_title });
-  }
+function DocPageEdit(props) {
+  const [docPageEditState, setDocPageEditState] = useState({
+    doc_title: props.document_title
+  });
 
-  handleClickSave = (e, editorState) => {
+  useEffect(() => {
+    setDocPageEditState((prevState) => ({
+      ...prevState,
+      doc_title: props.document_title
+    }));
+  }, []);
+
+  const handleClickSave = (e, editorState) => {
     e.preventDefault();
-    this.props.handleClickSave(e, this.state.doc_title, editorState);
+    props.handleClickSave(e, docPageEditState.doc_title, editorState);
   };
-  render() {
-    return (
-      <>
-        <Card>
-          <Card.Body>
-            <DocumentsListItemsEditor
-              category={this.props.category}
-              doc_title={'not_used'}
-              editorState={this.props.editorState}
-              handleClickSave={this.handleClickSave}
-              handleClickEditToggle={this.props.handleClickEditToggle}
-            />
-          </Card.Body>
-        </Card>
-      </>
-    );
-  }
+  return (
+    <>
+      <Card sx={{ mt: 2 }}>
+        <DocumentsListItemsEditor
+          category={props.category}
+          doc_title={'not_used'}
+          editorState={props.editorState}
+          handleClickSave={handleClickSave}
+          handleClickEditToggle={props.handleClickEditToggle}
+        />
+      </Card>
+    </>
+  );
 }
 export default DocPageEdit;

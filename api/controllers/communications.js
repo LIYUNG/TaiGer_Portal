@@ -181,7 +181,17 @@ const getSearchMessageKeywords = asyncHandler(async (req, res) => {
 
 const getUnreadNumberMessages = asyncHandler(async (req, res) => {
   const { user } = req;
-
+  if (user.role === Role.Student) {
+    const latestMessage = await Communication.findOne({
+      student_id: user._id.toString()
+    })
+      .sort({ createdAt: -1 })
+      .exec();
+    return res.status(200).send({
+      success: true,
+      data: latestMessage.readBy?.includes(user._id.toString()) ? 0 : 1
+    });
+  }
   if (
     user.role !== Role.Admin &&
     user.role !== Role.Agent &&

@@ -1,7 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Table, Spinner } from 'react-bootstrap';
 import { FiExternalLink } from 'react-icons/fi';
-import { Link } from 'react-router-dom';
+import { Link as LinkDom } from 'react-router-dom';
+import {
+  Box,
+  Link,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow
+} from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import ButtonSetUploaded from './ButtonSetUploaded';
 import ButtonSetAccepted from './ButtonSetAccepted';
@@ -10,11 +19,10 @@ import ButtonSetNotNeeded from './ButtonSetNotNeeded';
 import ButtonSetMissing from './ButtonSetMissing';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import {
-  spinner_style,
   profile_wtih_doc_link_list,
-  profile_list
+  profile_list,
+  SYMBOL_EXPLANATION
 } from '../Utils/contants';
-
 import {
   uploadforstudent,
   updateProfileDocumentStatus,
@@ -24,14 +32,17 @@ import {
 import { is_TaiGer_AdminAgent } from '../Utils/checking-functions';
 import Banner from '../../components/Banner/Banner';
 import DEMO from '../../store/constant';
+import { useAuth } from '../../components/AuthProvider';
+import Loading from '../../components/Loading/Loading';
 
 function BaseDocument_StudentView(props) {
+  const { user } = useAuth();
+  const { t } = useTranslation();
   const [baseDocumentStudentViewState, setBaseDocumentStudentViewState] =
     useState({
       error: '',
       student: props.student,
       student_id: '',
-      // isLoaded: props.isLoaded,
       isLoaded: {},
       ready: false,
       docName: '',
@@ -98,7 +109,6 @@ function BaseDocument_StudentView(props) {
         }
       },
       (error) => {
-        const { statusText } = resp;
         setBaseDocumentStudentViewState((prevState) => ({
           ...prevState,
           isLoaded: {
@@ -107,7 +117,7 @@ function BaseDocument_StudentView(props) {
           },
           error,
           res_modal_status: 500,
-          res_modal_message: statusText
+          res_modal_message: ''
         }));
       }
     );
@@ -158,7 +168,6 @@ function BaseDocument_StudentView(props) {
         }
       },
       (error) => {
-        const { statusText } = resp;
         setBaseDocumentStudentViewState((prevState) => ({
           ...prevState,
           isLoaded: {
@@ -168,7 +177,7 @@ function BaseDocument_StudentView(props) {
           error,
           deleteFileWarningModel: false,
           res_modal_status: 500,
-          res_modal_message: statusText
+          res_modal_message: ''
         }));
       }
     );
@@ -231,7 +240,6 @@ function BaseDocument_StudentView(props) {
         }
       },
       (error) => {
-        const { statusText } = resp;
         setBaseDocumentStudentViewState((prevState) => ({
           ...prevState,
           isLoaded: {
@@ -240,7 +248,7 @@ function BaseDocument_StudentView(props) {
           },
           error,
           res_modal_status: 500,
-          res_modal_message: statusText
+          res_modal_message: ''
         }));
       }
     );
@@ -270,13 +278,12 @@ function BaseDocument_StudentView(props) {
         }
       },
       (error) => {
-        const { message } = resp.data;
         setBaseDocumentStudentViewState((prevState) => ({
           ...prevState,
           error,
           isLoaded2: true,
-          res_modal_message: message,
-          res_modal_status: status
+          res_modal_message: '',
+          res_modal_status: 500
         }));
       }
     );
@@ -285,13 +292,7 @@ function BaseDocument_StudentView(props) {
   const { res_modal_status, res_modal_message, ready } =
     baseDocumentStudentViewState;
   if (!ready) {
-    return (
-      <div style={spinner_style}>
-        <Spinner animation="border" role="status">
-          <span className="visually-hidden"></span>
-        </Spinner>
-      </div>
-    );
+    return <Loading />;
   }
   let value2 = Object.values(profile_list);
   let keys2 = Object.keys(profile_wtih_doc_link_list);
@@ -341,7 +342,7 @@ function BaseDocument_StudentView(props) {
         updateDocLink={updateDocLink}
         link={object_init[k].link}
         path={object_init[k].path}
-        user={props.user}
+        user={user}
         isLoaded={baseDocumentStudentViewState.isLoaded[k]}
         docName={value2[i]}
         time={object_time_init[k]}
@@ -356,7 +357,7 @@ function BaseDocument_StudentView(props) {
         updateDocLink={updateDocLink}
         link={object_init[k].link}
         path={object_init[k].path}
-        user={props.user}
+        user={user}
         isLoaded={baseDocumentStudentViewState.isLoaded[k]}
         docName={value2[i]}
         time={object_time_init[k]}
@@ -374,7 +375,7 @@ function BaseDocument_StudentView(props) {
         updateDocLink={updateDocLink}
         link={object_init[k].link}
         path={object_init[k].path}
-        user={props.user}
+        user={user}
         isLoaded={baseDocumentStudentViewState.isLoaded[k]}
         docName={value2[i]}
         time={object_time_init[k]}
@@ -388,12 +389,12 @@ function BaseDocument_StudentView(props) {
         }
       />
     ) : object_init[k].status === 'notneeded' ? (
-      is_TaiGer_AdminAgent(props.user) && (
+      is_TaiGer_AdminAgent(user) && (
         <ButtonSetNotNeeded
           key={i + 1}
           updateDocLink={updateDocLink}
           link={object_init[k].link}
-          user={props.user}
+          user={user}
           isLoaded={baseDocumentStudentViewState.isLoaded[k]}
           docName={value2[i]}
           time={object_time_init[k]}
@@ -412,7 +413,7 @@ function BaseDocument_StudentView(props) {
         key={i + 1}
         updateDocLink={updateDocLink}
         link={object_init[k].link}
-        user={props.user}
+        user={user}
         isLoaded={baseDocumentStudentViewState.isLoaded[k]}
         docName={value2[i]}
         time={object_time_init[k]}
@@ -427,81 +428,72 @@ function BaseDocument_StudentView(props) {
   );
 
   return (
-    <>
-      <Row>
-        <Col>
-          <Banner
-            ReadOnlyMode={true}
-            bg={'primary'}
-            title={'Info:'}
-            path={'/'}
-            text={
-              <>
-                每個檔案都有注意事項。請務必上傳文件前，點選各文件名稱旁的說明連結圖示
-                "
-                <b>
-                  <FiExternalLink
-                    className="mx-1 mb-1"
-                    style={{ cursor: 'pointer' }}
-                  />
-                </b>
-                " 並查看文件要求，照著我們的要求上傳，Agent
-                會再檢查文件是否沒問題。
-              </>
-            }
-            link_name={''}
-            removeBanner={<></>}
-            notification_key={'x'}
-          />
-          <Banner
-            ReadOnlyMode={true}
-            bg={'danger'}
-            title={'Attention:'}
-            path={'/'}
-            text={
-              <>
-                無論是申請大學部或是碩士班，高中文件、學測或統測成績單為必要文件。德國學校通常列為必要文件，此文件會因為您的背景況狀有所變動。請先填好{' '}
-                <Link to={`${DEMO.SURVEY_LINK}`} className="text-primary">
-                  My Survey{' '}
-                  <FiExternalLink
-                    className="mx-1 mb-1"
-                    style={{ cursor: 'pointer' }}
-                  />
-                </Link>
-              </>
-            }
-            link_name={''}
-            removeBanner={<></>}
-            notification_key={'x'}
-          />
-        </Col>
-        <Table
-          responsive
-          bordered
-          hover
-          className="py-0 my-0 mx-0"
-          variant="dark"
-          text="light"
-          size="sm"
-        >
-          <thead>
-            <tr>
-              <th>Status</th>
-              <th>File Name:</th>
-              <th>Updated</th>
-              <th></th>
-              <th></th>
-              <th></th>
-              <th></th>
-              <th>Delete</th>
-            </tr>
-          </thead>
-          <tbody>{file_information}</tbody>
-        </Table>
-      </Row>
-      <Row>
-        <Col className="md-4">{props.SYMBOL_EXPLANATION}</Col>
-      </Row>
+    <Box>
+      <Banner
+        ReadOnlyMode={true}
+        bg={'primary'}
+        title={'info'}
+        path={'/'}
+        text={
+          <>
+            每個檔案都有注意事項。請務必上傳文件前，點選各文件名稱旁的說明連結圖示
+            &quot;
+            <b>
+              <FiExternalLink
+                className="mx-1 mb-1"
+                style={{ cursor: 'pointer' }}
+              />
+            </b>
+            &quot; 並查看文件要求，照著我們的要求上傳，Agent
+            會再檢查文件是否沒問題。
+          </>
+        }
+        link_name={''}
+        removeBanner={<></>}
+        notification_key={undefined}
+      />
+      <Banner
+        ReadOnlyMode={true}
+        bg={'danger'}
+        title={'info'}
+        path={'/'}
+        text={
+          <>
+            無論是申請大學部或是碩士班，高中文件、學測或統測成績單為必要文件。德國學校通常列為必要文件，此文件會因為您的背景況狀有所變動。請先填好{' '}
+            <Link
+              underline="hover"
+              to={`${DEMO.SURVEY_LINK}`}
+              component={LinkDom}
+              target="_blank"
+            >
+              My Survey{' '}
+              <FiExternalLink
+                className="mx-1 mb-1"
+                style={{ cursor: 'pointer' }}
+              />
+            </Link>
+          </>
+        }
+        link_name={''}
+        removeBanner={undefined}
+        notification_key={undefined}
+      />
+      <Table size="small">
+        <TableHead>
+          <TableRow>
+            <TableCell>{t('Status')}</TableCell>
+            <TableCell>{t('File Name')}</TableCell>
+            <TableCell>{t('Updated')}</TableCell>
+            <TableCell></TableCell>
+            <TableCell></TableCell>
+            <TableCell></TableCell>
+            <TableCell></TableCell>
+            <TableCell>{t('Delete')}</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>{file_information}</TableBody>
+      </Table>
+      {SYMBOL_EXPLANATION}
       {res_modal_status >= 400 && (
         <ModalMain
           ConfirmError={ConfirmError}
@@ -509,7 +501,7 @@ function BaseDocument_StudentView(props) {
           res_modal_message={res_modal_message}
         />
       )}
-    </>
+    </Box>
   );
 }
 

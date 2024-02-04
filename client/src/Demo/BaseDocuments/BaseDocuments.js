@@ -1,14 +1,24 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Spinner, Table, Card } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
+import { Link as LinkDom } from 'react-router-dom';
+import {
+  Box,
+  Breadcrumbs,
+  Card,
+  Link,
+  Typography,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow
+} from '@mui/material';
 
-import Aux from '../../hoc/_Aux';
 import StudentBaseDocumentsStatus from './StudentBaseDocumentsStatus';
 import BaseDocument_StudentView from './BaseDocument_StudentView';
 import {
   SYMBOL_EXPLANATION,
   split_header,
-  spinner_style,
   profile_list
 } from '../Utils/contants';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
@@ -17,9 +27,14 @@ import { is_TaiGer_role } from '../Utils/checking-functions';
 
 import { getStudentsAndDocLinks } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
+import { useAuth } from '../../components/AuthProvider';
+import DEMO from '../../store/constant';
+import { appConfig } from '../../config';
+import Loading from '../../components/Loading/Loading';
 
-function BaseDocuments(props) {
-  const { t, i18n } = useTranslation();
+function BaseDocuments() {
+  const { user } = useAuth();
+  const { t } = useTranslation();
   const [baseDocumentsState, setBaseDocumentsState] = useState({
     error: '',
     isLoaded: false,
@@ -82,13 +97,7 @@ function BaseDocuments(props) {
   TabTitle('Base Documents');
 
   if (!isLoaded && !baseDocumentsState.students) {
-    return (
-      <div style={spinner_style}>
-        <Spinner animation="border" role="status">
-          <span className="visually-hidden"></span>
-        </Spinner>
-      </div>
-    );
+    return <Loading />;
   }
 
   if (res_status >= 400) {
@@ -98,31 +107,23 @@ function BaseDocuments(props) {
   let profile_list_keys = Object.values(profile_list);
 
   const student_profile = baseDocumentsState.students.map((student, i) => (
-    <StudentBaseDocumentsStatus
-      key={i}
-      idx={i}
-      student={student}
-      role={props.user.role}
-      user={props.user}
-      SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
-      isLoaded={isLoaded}
-    />
+    <TableRow key={i}>
+      <StudentBaseDocumentsStatus
+        key={i}
+        idx={i}
+        student={student}
+        SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
+        isLoaded={isLoaded}
+      />
+    </TableRow>
   ));
 
   const student_profile_student_view = baseDocumentsState.students.map(
     (student, i) => (
-      <Card className="mb-2 mx-0" bg={'dark'} text={'light'} key={i}>
-        <Card.Header>
-          <Card.Title className="my-0 mx-0 text-light">
-            {student.firstname}
-            {' ,'}
-            {student.lastname}
-          </Card.Title>
-        </Card.Header>
+      <Card key={i}>
         <BaseDocument_StudentView
           base_docs_link={base_docs_link}
           student={student}
-          user={props.user}
           SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
         />
       </Card>
@@ -130,65 +131,43 @@ function BaseDocuments(props) {
   );
 
   return (
-    <Aux>
-      <Row className="pt-0">
-        {is_TaiGer_role(props.user) ? (
-          <Card className="mb-0 mx-0" bg={'dark'} text={'light'}>
-            <Card.Header>
-              <Card.Title className="my-0 mx-0 text-light">
-                {t('Base Documents')}
-              </Card.Title>
-            </Card.Header>
-            <Table size="sm" responsive hover text="light">
-              <thead>
-                <tr
-                  className="my-0 mx-0 text-light"
-                  style={{
-                    color: 'white'
-                  }}
-                >
-                  <th
-                    className="headcol"
-                    style={{
-                      background: 'black',
-                      color: 'white'
-                    }}
-                  >
-                    First-, Last <br /> Name
-                  </th>
-                  <th
-                    style={{
-                      background: 'black'
-                    }}
-                  ></th>
-                  {profile_list_keys.map((doc_name, index) => (
-                    <th
-                      style={{
-                        background: 'black',
-                        color: 'white'
-                      }}
-                      key={index}
-                    >
-                      {split_header(doc_name)}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>{student_profile}</tbody>
-            </Table>
-          </Card>
-        ) : (
-          <>{student_profile_student_view}</>
-        )}
-        {res_modal_status >= 400 && (
-          <ModalMain
-            ConfirmError={this.ConfirmError}
-            res_modal_status={res_modal_status}
-            res_modal_message={res_modal_message}
-          />
-        )}
-      </Row>
-    </Aux>
+    <Box>
+      <Breadcrumbs aria-label="breadcrumb">
+        <Link
+          underline="hover"
+          color="inherit"
+          component={LinkDom}
+          to={`${DEMO.DASHBOARD_LINK}`}
+        >
+          {appConfig.companyName}
+        </Link>
+        <Typography color="text.primary">{t('Base Documents')}</Typography>
+      </Breadcrumbs>
+      {is_TaiGer_role(user) ? (
+        <Table size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell>
+                First-, Last <br /> Name
+              </TableCell>
+              {profile_list_keys.map((doc_name, index) => (
+                <TableCell key={index}>{split_header(doc_name)}</TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>{student_profile}</TableBody>
+        </Table>
+      ) : (
+        <>{student_profile_student_view}</>
+      )}
+      {res_modal_status >= 400 && (
+        <ModalMain
+          ConfirmError={this.ConfirmError}
+          res_modal_status={res_modal_status}
+          res_modal_message={res_modal_message}
+        />
+      )}
+    </Box>
   );
 }
 

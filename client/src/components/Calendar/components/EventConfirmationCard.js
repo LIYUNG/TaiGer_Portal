@@ -1,6 +1,16 @@
 import React from 'react';
-import { Button, Row, Accordion, Col } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Button,
+  Grid,
+  Typography
+} from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import HourglassBottomIcon from '@mui/icons-material/HourglassBottom';
 
 import {
   NoonNightLabel,
@@ -16,9 +26,6 @@ import {
   AiOutlineCalendar,
   AiOutlineCheckCircle,
   AiOutlineClockCircle,
-  AiOutlineDelete,
-  AiOutlineEdit,
-  AiOutlineLoading,
   AiOutlineMail,
   AiOutlineUser
 } from 'react-icons/ai';
@@ -30,36 +37,71 @@ import {
 import { Link } from 'react-router-dom';
 import DEMO from '../../../store/constant';
 import EventDateComponent from '../../DateComponent';
+import { useAuth } from '../../AuthProvider';
 
 export default function EventConfirmationCard(props) {
-  const { t, i18n } = useTranslation();
+  const { user } = useAuth();
+  const { t } = useTranslation();
   return (
     <Accordion
-      defaultActiveKey={
+      defaultExpanded={
         (!props.event.isConfirmedReceiver ||
           !props.event.isConfirmedRequester) &&
         isInTheFuture(props.event.end)
-          ? ['0']
-          : []
       }
-      alwaysOpen={true}
+      disableGutters
+      // expanded={!props.disabled}
     >
-      <Accordion.Item eventKey="0">
-        <Accordion.Header className="d-flex justify-content-between align-items-center">
-          <h5>
-            {props.event.isConfirmedReceiver &&
-            props.event.isConfirmedRequester ? (
-              <AiFillCheckCircle
-                color="limegreen"
-                size={24}
-                title="Confirmed"
-              />
-            ) : (
-              <AiFillQuestionCircle color="grey" size={24} />
-            )}{' '}
-            &nbsp;
-            <AiOutlineCalendar />
-            &nbsp;{convertDate(props.event.start)}{' '}
+      <AccordionSummary>
+        <Typography variant="h6">
+          {props.event.isConfirmedReceiver &&
+          props.event.isConfirmedRequester ? (
+            <AiFillCheckCircle color="limegreen" size={24} title="Confirmed" />
+          ) : (
+            <AiFillQuestionCircle color="grey" size={24} />
+          )}{' '}
+          &nbsp;
+          <AiOutlineCalendar />
+          &nbsp;{convertDate(props.event.start)}{' '}
+          {NoonNightLabel(props.event.start)} ({' '}
+          {Intl.DateTimeFormat().resolvedOptions().timeZone} UTC
+          {getTimezoneOffset(
+            Intl.DateTimeFormat().resolvedOptions().timeZone
+          ) >= 0
+            ? `+${getTimezoneOffset(
+                Intl.DateTimeFormat().resolvedOptions().timeZone
+              )}`
+            : getTimezoneOffset(
+                Intl.DateTimeFormat().resolvedOptions().timeZone
+              )}
+          ){' '}
+          <b>
+            {is_TaiGer_role(user) && (
+              <>
+                {props.event.requester_id
+                  ?.map(
+                    (requester) =>
+                      `${requester.firstname} ${requester.lastname}`
+                  )
+                  .join(',')}
+              </>
+            )}
+          </b>
+        </Typography>
+      </AccordionSummary>
+      <AccordionDetails>
+        <Grid container spacing={2}>
+          <Grid item xs={6} md={2}>
+            <EventDateComponent eventDate={new Date(props.event.start)} />
+          </Grid>
+          <Grid item xs={6} md={4}>
+            <Typography variant="h6">
+              <AiOutlineCalendar />: {getDate(props.event.start)}
+            </Typography>
+            <Typography variant="h6">
+              {' '}
+              <AiOutlineClockCircle />: {getTime(props.event.start)}
+            </Typography>
             {NoonNightLabel(props.event.start)} ({' '}
             {Intl.DateTimeFormat().resolvedOptions().timeZone} UTC
             {getTimezoneOffset(
@@ -71,246 +113,234 @@ export default function EventConfirmationCard(props) {
               : getTimezoneOffset(
                   Intl.DateTimeFormat().resolvedOptions().timeZone
                 )}
-            ){' '}
-            <b>
-              {is_TaiGer_role(props.user) && (
-                <>
-                  {props.event.requester_id
-                    ?.map(
-                      (requester) =>
-                        `${requester.firstname} ${requester.lastname}`
-                    )
-                    .join(',')}
-                </>
-              )}
-            </b>
-          </h5>
-        </Accordion.Header>
-        <Accordion.Body>
-          <Row>
-            <Col md={2}>
-              <EventDateComponent eventDate={new Date(props.event.start)} />
-            </Col>
-            <Col md={2}>
-              <h5>
-                <AiOutlineCalendar />: {getDate(props.event.start)}
-              </h5>
-              <h5>
-                {' '}
-                <AiOutlineClockCircle />: {getTime(props.event.start)}
-              </h5>
-              {NoonNightLabel(props.event.start)} ({' '}
-              {Intl.DateTimeFormat().resolvedOptions().timeZone} UTC
-              {getTimezoneOffset(
-                Intl.DateTimeFormat().resolvedOptions().timeZone
-              ) >= 0
-                ? `+${getTimezoneOffset(
-                    Intl.DateTimeFormat().resolvedOptions().timeZone
-                  )}`
-                : getTimezoneOffset(
-                    Intl.DateTimeFormat().resolvedOptions().timeZone
-                  )}
-              )
-            </Col>
-            <Col>
-              <h5>
-                <AiOutlineUser size={16} />
-                {t('Agent')}:{' '}
-                {props.event.receiver_id?.map((receiver, x) => (
+            )
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Typography variant="body1">
+              <AiOutlineUser size={16} />
+              {t('Agent')}:{' '}
+              {props.event.receiver_id?.map((receiver, x) => (
+                <span key={x}>
+                  {receiver.firstname} {receiver.lastname}{' '}
+                  <AiOutlineMail ize={16} /> {receiver.email}
+                </span>
+              ))}
+            </Typography>
+            <Typography variant="body1">
+              <AiOutlineUser size={16} />
+              {t('Student')}:{' '}
+              {props.event.requester_id?.map((requester, x) =>
+                is_TaiGer_role(user) ? (
+                  <Link
+                    to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                      requester._id.toString(),
+                      '/profile'
+                    )}`}
+                    key={x}
+                  >
+                    {requester.firstname} {requester.lastname}{' '}
+                    <AiOutlineMail ize={16} /> {requester.email}
+                  </Link>
+                ) : (
                   <span key={x}>
-                    {receiver.firstname} {receiver.lastname}{' '}
-                    <AiOutlineMail ize={16} /> {receiver.email}
+                    {requester.firstname} {requester.lastname}{' '}
+                    <AiOutlineMail ize={16} /> {requester.email}
                   </span>
-                ))}
-              </h5>
-              <h5>
-                <AiOutlineUser size={16} />
-                {t('Student')}:{' '}
-                {props.event.requester_id?.map((requester, x) =>
-                  is_TaiGer_role(props.user) ? (
-                    <Link
-                      to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-                        requester._id.toString(),
-                        '/profile'
-                      )}`}
-                      key={x}
+                )
+              )}
+            </Typography>
+            <Typography variant="h6">{t('Meeting Link')} :</Typography>
+            {is_TaiGer_Student(user) &&
+              (props.event.isConfirmedRequester ? (
+                props.event.isConfirmedReceiver ? (
+                  props.disabled ? (
+                    `${t('Meeting Link')} expired'`
+                  ) : (
+                    <a
+                      href={`${props.event.meetingLink}`}
+                      className="text-primary"
+                      target="_blank"
+                      rel="noreferrer"
                     >
-                      {requester.firstname} {requester.lastname}{' '}
-                      <AiOutlineMail ize={16} /> {requester.email}
-                    </Link>
-                  ) : (
-                    <span key={x}>
-                      {requester.firstname} {requester.lastname}{' '}
-                      <AiOutlineMail ize={16} /> {requester.email}
-                    </span>
-                  )
-                )}
-              </h5>
-              <h5>{t('Meeting Link')} :</h5>
-              {is_TaiGer_Student(props.user) &&
-                (props.event.isConfirmedRequester ? (
-                  props.event.isConfirmedReceiver ? (
-                    props.disabled ? (
-                      `${t('Meeting Link')} expired'`
-                    ) : (
-                      <a
-                        href={`${props.event.meetingLink}`}
-                        className="text-primary"
-                        target="_blank"
-                      >
-                        {props.event.meetingLink}
-                      </a>
-                    )
-                  ) : (
-                    'Will be available, after the appointment is confirmed by the Agent.'
+                      {props.event.meetingLink}
+                    </a>
                   )
                 ) : (
-                  <scan>
-                    Please{' '}
-                    <Button
-                      variant="primary"
-                      size="sm"
-                      onClick={(e) =>
-                        props.handleConfirmAppointmentModalOpen(e, props.event)
-                      }
-                    >
-                      <AiOutlineCheckCircle size={16} /> Confirm
-                    </Button>{' '}
-                    the time and get the meeting link
-                  </scan>
-                ))}
-              {is_TaiGer_role(props.user) &&
-                (props.event.isConfirmedReceiver ? (
-                  props.event.isConfirmedRequester ? (
-                    props.disabled ? (
-                      'Meeting Link expired'
-                    ) : (
-                      <a
-                        href={`${props.event.meetingLink}`}
-                        className="text-primary"
-                        target="_blank"
-                      >
-                        {props.event.meetingLink}
-                      </a>
-                    )
+                  'Will be available, after the appointment is confirmed by the Agent.'
+                )
+              ) : (
+                <span>
+                  Please{' '}
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    size="small"
+                    onClick={(e) =>
+                      props.handleConfirmAppointmentModalOpen(e, props.event)
+                    }
+                  >
+                    <AiOutlineCheckCircle size={16} /> {t('Confirm')}
+                  </Button>{' '}
+                  the time and get the meeting link
+                </span>
+              ))}
+            {is_TaiGer_role(user) &&
+              (props.event.isConfirmedReceiver ? (
+                props.event.isConfirmedRequester ? (
+                  props.disabled ? (
+                    'Meeting Link expired'
                   ) : (
-                    'Will be available, after the appointment is confirmed by the Student.'
+                    <a
+                      href={`${props.event.meetingLink}`}
+                      className="text-primary"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {props.event.meetingLink}
+                    </a>
                   )
                 ) : (
-                  <scan>
-                    Please{' '}
-                    <Button
-                      variant="primary"
-                      size="sm"
-                      onClick={(e) =>
-                        props.handleConfirmAppointmentModalOpen(e, props.event)
-                      }
-                    >
-                      <AiOutlineCheckCircle size={16} /> Confirm
-                    </Button>{' '}
-                    the time and get the meeting link
-                  </scan>
-                ))}
-              <br />
-            </Col>
-          </Row>
-          <Row>
-            <h5>
-              <span
-                style={{
-                  float: 'right',
-                  justifyContent: 'flex-end'
-                }}
-              >
-                {is_TaiGer_Student(props.user) &&
-                  (props.event.isConfirmedRequester ? (
-                    props.event.isConfirmedReceiver ? (
-                      <></>
-                    ) : (
-                      <Button
-                        variant="primary"
-                        size="sm"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <AiOutlineLoading size={16} /> Pending
-                      </Button>
-                    )
-                  ) : (
-                    <Button
-                      variant="primary"
-                      size="sm"
-                      onClick={(e) =>
-                        props.handleConfirmAppointmentModalOpen(e, props.event)
-                      }
-                    >
-                      <AiOutlineCheckCircle size={16} /> Confirm
-                    </Button>
-                  ))}
-                {is_TaiGer_Agent(props.user) &&
-                  (props.event.isConfirmedReceiver ? (
-                    props.event.isConfirmedRequester ? (
-                      <></>
-                    ) : (
-                      <Button variant="primary" size="sm">
-                        <AiOutlineLoading size={16} /> Pending
-                      </Button>
-                    )
-                  ) : (
-                    <Button
-                      variant="primary"
-                      size="sm"
-                      onClick={(e) =>
-                        props.handleConfirmAppointmentModalOpen(e, props.event)
-                      }
-                    >
-                      <AiOutlineCheckCircle size={16} /> Confirm
-                    </Button>
-                  ))}
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  disabled={props.disabled}
-                  onClick={(e) =>
-                    props.handleEditAppointmentModalOpen(e, props.event)
-                  }
-                >
-                  <AiOutlineEdit size={16} /> {t('Update')}
-                </Button>
-                <Button
-                  variant="danger"
-                  size="sm"
-                  disabled={props.disabled}
-                  onClick={(e) =>
-                    props.handleDeleteAppointmentModalOpen(e, props.event)
-                  }
-                >
-                  <AiOutlineDelete size={16} /> {t('Delete')}
-                </Button>
-              </span>
-            </h5>
-          </Row>
-          <Row>
-            <Col>
-              <h5>{t('Description')}</h5>
-              <p>{props.event.description}</p>
-            </Col>
-            <Col>
-              <p>
+                  'Will be available, after the appointment is confirmed by the Student.'
+                )
+              ) : (
+                <span>
+                  Please{' '}
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    size="small"
+                    onClick={(e) =>
+                      props.handleConfirmAppointmentModalOpen(e, props.event)
+                    }
+                  >
+                    <AiOutlineCheckCircle size={16} /> {t('Confirm')}
+                  </Button>{' '}
+                  the time and get the meeting link
+                </span>
+              ))}
+            <br />
+          </Grid>
+          <Grid item xs={12}>
+            <Grid container justifyContent="space-between" alignItems="center">
+              <Grid item>
+                <Typography variant="body1">{t('Description')}</Typography>
+                <Typography>{props.event.description}</Typography>
                 <span
                   style={{
                     float: 'right',
                     justifyContent: 'flex-end'
                   }}
                 >
-                  created at:{convertDate(props.event.createdAt)}
-                  <br />
-                  udpated at:{convertDate(props.event.updatedAt)}
+                  <Typography>
+                    created at:{convertDate(props.event.createdAt)}
+                  </Typography>
+                  <Typography>
+                    udpated at:{convertDate(props.event.updatedAt)}
+                  </Typography>
                 </span>
-              </p>
-            </Col>
-          </Row>
-        </Accordion.Body>
-      </Accordion.Item>
+              </Grid>
+              <Grid item>
+                <Typography variant="h6">
+                  <span
+                    style={{
+                      float: 'right',
+                      justifyContent: 'flex-end'
+                    }}
+                  >
+                    {is_TaiGer_Student(user) &&
+                      (props.event.isConfirmedRequester ? (
+                        props.event.isConfirmedReceiver ? (
+                          <></>
+                        ) : (
+                          <Button
+                            color="primary"
+                            variant="outlined"
+                            size="small"
+                            title="Wait for confirmation"
+                            onClick={(e) => e.stopPropagation()}
+                            startIcon={<HourglassBottomIcon />}
+                          >
+                            {t('Pending')}
+                          </Button>
+                        )
+                      ) : (
+                        <Button
+                          color="primary"
+                          variant="contained"
+                          size="small"
+                          onClick={(e) =>
+                            props.handleConfirmAppointmentModalOpen(
+                              e,
+                              props.event
+                            )
+                          }
+                          sx={{ mx: 2 }}
+                        >
+                          <AiOutlineCheckCircle size={16} /> {t('Confirm')}
+                        </Button>
+                      ))}
+                    {is_TaiGer_Agent(user) &&
+                      (props.event.isConfirmedReceiver ? (
+                        props.event.isConfirmedRequester ? (
+                          <></>
+                        ) : (
+                          <Button
+                            color="primary"
+                            variant="outlined"
+                            size="small"
+                            title="Wait for confirmation"
+                            startIcon={<HourglassBottomIcon />}
+                          >
+                            {t('Pending')}
+                          </Button>
+                        )
+                      ) : (
+                        <Button
+                          color="primary"
+                          size="small"
+                          variant="contained"
+                          onClick={(e) =>
+                            props.handleConfirmAppointmentModalOpen(
+                              e,
+                              props.event
+                            )
+                          }
+                        >
+                          <AiOutlineCheckCircle size={16} /> {t('Confirm')}
+                        </Button>
+                      ))}
+                    <Button
+                      color="secondary"
+                      variant="outlined"
+                      size="small"
+                      disabled={props.disabled}
+                      onClick={(e) =>
+                        props.handleEditAppointmentModalOpen(e, props.event)
+                      }
+                      sx={{ mx: 2 }}
+                      startIcon={<EditIcon />}
+                    >
+                      {t('Update')}
+                    </Button>
+                    <Button
+                      color="secondary"
+                      variant="contained"
+                      size="small"
+                      disabled={props.disabled}
+                      onClick={(e) =>
+                        props.handleDeleteAppointmentModalOpen(e, props.event)
+                      }
+                      startIcon={<DeleteIcon />}
+                    >
+                      {t('Delete')}
+                    </Button>
+                  </span>
+                </Typography>
+              </Grid>
+            </Grid>
+          </Grid>
+        </Grid>
+      </AccordionDetails>
     </Accordion>
   );
 }

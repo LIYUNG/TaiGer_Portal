@@ -1,16 +1,34 @@
-import React from 'react';
-import { Row, Col, Card, Form, Button, Spinner, Modal } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Autocomplete,
+  Box,
+  Breadcrumbs,
+  Button,
+  Card,
+  Checkbox,
+  FormControlLabel,
+  Grid,
+  Link,
+  TextField,
+  Typography
+} from '@mui/material';
+import { Link as LinkDom, useParams } from 'react-router-dom';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { BsExclamationTriangle } from 'react-icons/bs';
 import TimezoneSelect from 'react-timezone-select';
-import Select from 'react-select';
-import 'react-big-calendar/lib/css/react-big-calendar.css';
+import { useTranslation } from 'react-i18next';
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
+import CheckBoxIcon from '@mui/icons-material/CheckBox';
+const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
+const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
-import Aux from '../../hoc/_Aux';
-import { spinner_style, time_slots } from '../Utils/contants';
+import { time_slots } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
-
 import { updatePersonalData, updateOfficehours, getUser } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import {
@@ -18,9 +36,16 @@ import {
   is_personal_data_filled
 } from '../Utils/checking-functions';
 import DEMO from '../../store/constant';
+import { useAuth } from '../../components/AuthProvider';
+import ModalNew from '../../components/Modal';
+import { appConfig } from '../../config';
+import Loading from '../../components/Loading/Loading';
 
-class Profile extends React.Component {
-  state = {
+function Profile() {
+  const { t } = useTranslation();
+  const { user } = useAuth();
+  const { user_id } = useParams();
+  const [profileState, setProfileState] = useState({
     error: '',
     role: '',
     isLoaded: false,
@@ -29,13 +54,10 @@ class Profile extends React.Component {
     user: {},
     officehoursModifed: false,
     selectedTimezone:
-      this.props.user.timezone ||
-      Intl.DateTimeFormat().resolvedOptions().timeZone,
+      user.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone,
     changed_personaldata: false,
-    officehours: is_TaiGer_Agent(this.props.user)
-      ? this.props.user.officehours
-      : {},
-    personaldata: this.props.match.params.user_id
+    officehours: is_TaiGer_Agent(user) ? user.officehours : {},
+    personaldata: user_id
       ? {
           firstname: '',
           firstname_chinese: '',
@@ -45,38 +67,34 @@ class Profile extends React.Component {
           email: ''
         }
       : {
-          firstname: this.props.user.firstname,
-          firstname_chinese: this.props.user.firstname_chinese,
-          lastname: this.props.user.lastname,
-          lastname_chinese: this.props.user.lastname_chinese,
-          birthday: this.props.user.birthday,
-          role: this.props.user.role,
-          email: this.props.user.email
+          firstname: user.firstname,
+          firstname_chinese: user.firstname_chinese,
+          lastname: user.lastname,
+          lastname_chinese: user.lastname_chinese,
+          birthday: user.birthday,
+          role: user.role,
+          email: user.email
         },
     updateconfirmed: false,
     updateOfficeHoursConfirmed: false,
     res_status: 0,
     res_modal_message: '',
     res_modal_status: 0
-  };
+  });
 
-  componentDidMount() {
-    this.getUser_function();
-  }
-  componentDidUpdate(prevProps) {
-    if (prevProps.match.params.user_id !== this.props.match.params.user_id) {
-      this.getUser_function();
-    }
-  }
+  useEffect(() => {
+    getUser_function();
+  }, [user_id]);
 
-  getUser_function = () => {
-    if (this.props.match.params.user_id) {
-      getUser(this.props.match.params.user_id).then(
+  const getUser_function = () => {
+    if (user_id) {
+      getUser(user_id).then(
         (resp) => {
           const { success, data } = resp.data;
           const { status } = resp;
           if (success) {
-            this.setState({
+            setProfileState((prevState) => ({
+              ...prevState,
               success,
               isLoaded: true,
               officehours: data.officehours,
@@ -89,21 +107,20 @@ class Profile extends React.Component {
                 role: data.role,
                 email: data.email
               },
-              user_id: this.props.match.params.user_id
-                ? this.props.match.params.user_id
-                : this.props.user._id.toString(),
+              user_id: user_id ? user_id : user._id.toString(),
               res_status: status
-            });
+            }));
           } else {
-            this.setState({
+            setProfileState((prevState) => ({
+              ...prevState,
               isLoaded: true,
               res_status: status
-            });
+            }));
           }
         },
         (error) => {
-          this.setState((state) => ({
-            ...state,
+          setProfileState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             error,
             res_status: 500
@@ -111,37 +128,35 @@ class Profile extends React.Component {
         }
       );
     } else {
-      this.setState((state) => ({
-        ...state,
+      setProfileState((prevState) => ({
+        ...prevState,
         isLoaded: true,
         success: true
       }));
     }
   };
 
-  handleChange_PersonalData = (e) => {
-    var personaldata_temp = { ...this.state.personaldata };
+  const handleChange_PersonalData = (e) => {
+    var personaldata_temp = { ...profileState.personaldata };
     personaldata_temp[e.target.id] = e.target.value;
-    this.setState((state) => ({
-      ...state,
+    setProfileState((prevState) => ({
+      ...prevState,
       changed_personaldata: true,
       personaldata: personaldata_temp
     }));
   };
 
-  handleSubmit_PersonalData = (e, personaldata) => {
+  const handleSubmit_PersonalData = (e, personaldata) => {
     updatePersonalData(
-      this.props.match.params.user_id
-        ? this.state.user_id
-        : this.props.user._id.toString(),
+      user_id ? profileState.user_id : user._id.toString(),
       personaldata
     ).then(
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
         if (success) {
-          this.setState((state) => ({
-            ...state,
+          setProfileState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             personaldata: data,
             success: success,
@@ -151,50 +166,49 @@ class Profile extends React.Component {
           }));
         } else {
           const { message } = resp.data;
-          this.setState({
+          setProfileState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             res_modal_message: message,
             res_modal_status: status
-          });
+          }));
         }
       },
       (error) => {
-        const { statusText } = resp;
-        this.setState((state) => ({
-          ...state,
+        setProfileState((prevState) => ({
+          ...prevState,
           isLoaded: true,
           error,
           res_modal_status: 500,
-          res_modal_message: statusText
+          res_modal_message: ''
         }));
       }
     );
   };
 
-  onHide = () => {
-    this.setState({
-      updateconfirmed: false
-    });
-  };
-
-  setmodalhide = () => {
+  const setmodalhide = () => {
     window.location.reload(true);
   };
 
-  onHideOfficeHoursConfirmed = () => {
-    window.location.reload(true);
-
-    this.setState({
+  const onHideOfficeHoursConfirmed = () => {
+    setProfileState((prevState) => ({
+      ...prevState,
       updateOfficeHoursConfirmed: false
-    });
+    }));
+    window.location.reload(true);
   };
 
-  setSelectedTimezone = (e) => {
-    this.setState({ selectedTimezone: e.value, officehoursModifed: true });
+  const setSelectedTimezone = (e) => {
+    setProfileState((prevState) => ({
+      ...prevState,
+      selectedTimezone: e.value,
+      officehoursModifed: true
+    }));
   };
 
-  handleToggleChange = (e, day) => {
-    this.setState((prevState) => ({
+  const handleToggleChange = (e, day) => {
+    setProfileState((prevState) => ({
+      ...prevState,
       officehours: {
         ...prevState.officehours,
         [day]: {
@@ -206,28 +220,34 @@ class Profile extends React.Component {
     }));
   };
 
-  onTimeStartChange = (e, day) => {
-    this.setState((prevState) => ({
+  const onTimeStartChange2 = (e, newValues, day) => {
+    console.log(e.target);
+    console.log(newValues);
+    setProfileState((prevState) => ({
+      ...prevState,
       officehours: {
         ...prevState.officehours,
-        [day]: { ...prevState.officehours[day], time_slots: e }
+        [day]: {
+          ...prevState.officehours[day],
+          time_slots: newValues
+        }
       },
       officehoursModifed: true
     }));
   };
 
-  handleSubmit_Officehours = (e) => {
+  const handleSubmit_Officehours = () => {
     updateOfficehours(
-      this.props.user._id.toString(),
-      this.state.officehours,
-      this.state.selectedTimezone
+      user._id.toString(),
+      profileState.officehours,
+      profileState.selectedTimezone
     ).then(
       (resp) => {
         const { success } = resp.data;
         const { status } = resp;
         if (success) {
-          this.setState((state) => ({
-            ...state,
+          setProfileState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             success: success,
             officehoursModifed: false,
@@ -236,378 +256,358 @@ class Profile extends React.Component {
           }));
         } else {
           const { message } = resp.data;
-          this.setState({
+          setProfileState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             res_modal_message: message,
             res_modal_status: status
-          });
+          }));
         }
       },
       (error) => {
-        const { statusText } = resp;
-        this.setState((state) => ({
-          ...state,
+        setProfileState((prevState) => ({
+          ...prevState,
           isLoaded: true,
           error,
           res_modal_status: 500,
-          res_modal_message: statusText
+          res_modal_message: ''
         }));
       }
     );
   };
 
-  ConfirmError = () => {
-    this.setState((state) => ({
-      ...state,
+  const ConfirmError = () => {
+    setProfileState((prevState) => ({
+      ...prevState,
       res_modal_status: 0,
       res_modal_message: ''
     }));
   };
 
-  render() {
-    const { res_status, isLoaded, res_modal_status, res_modal_message } =
-      this.state;
-    if (!isLoaded) {
-      return (
-        <div style={spinner_style}>
-          <Spinner animation="border" role="status">
-            <span className="visually-hidden"></span>
-          </Spinner>
-        </div>
-      );
-    }
-    TabTitle(
-      `${this.state.personaldata.firstname} ${
-        this.state.personaldata.lastname
-      } |${
-        this.state.personaldata.firstname_chinese
-          ? this.state.personaldata.firstname_chinese
-          : ' '
-      }${
-        this.state.personaldata.lastname_chinese
-          ? this.state.personaldata.lastname_chinese
-          : ' '
-      }Profile`
-    );
-    if (res_status >= 400) {
-      return <ErrorPage res_status={res_status} />;
-    }
-    return (
-      <Aux>
-        {res_modal_status >= 400 && (
-          <ModalMain
-            ConfirmError={this.ConfirmError}
-            res_modal_status={res_modal_status}
-            res_modal_message={res_modal_message}
-          />
-        )}
-        <Row>
-          <Col>
-            <Card className="my-0 mx-0" bg={'dark'} text={'white'}>
-              <Card.Header>
-                <Card.Title className="my-0 mx-0 text-light">
-                  {this.props.match.params.user_id ? (
-                    <Link
-                      to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-                        this.props.match.params.user_id,
-                        DEMO.PROFILE
-                      )}`}
-                      className="text-info"
-                    >
-                      {`${this.state.personaldata.firstname} ${
-                        this.state.personaldata.lastname
-                      } |${
-                        this.state.personaldata.firstname_chinese
-                          ? this.state.personaldata.firstname_chinese
-                          : ' '
-                      }${
-                        this.state.personaldata.lastname_chinese
-                          ? this.state.personaldata.lastname_chinese
-                          : ' '
-                      }`}{' '}
-                      Personal Data
-                    </Link>
-                  ) : (
-                    <>Personal Data</>
-                  )}
-                </Card.Title>
-              </Card.Header>
-              <Card.Body>
-                {!is_personal_data_filled(this.state.personaldata) && (
-                  <Row>
-                    <Col>
-                      <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
-                        <p
-                          className="text-light my-3 mx-3"
-                          style={{ textAlign: 'left' }}
-                        >
-                          <BsExclamationTriangle size={18} />
-                          <b className="mx-2">Reminder:</b> Please fill your
-                          <ul>
-                            {!this.state.personaldata.firstname && (
-                              <li>First Name(English)</li>
-                            )}
-                            {!this.state.personaldata.lastname && (
-                              <li>Last Name(English)</li>
-                            )}
-                            {!this.state.personaldata.firstname_chinese && (
-                              <li>名 (中文)</li>
-                            )}
-                            {!this.state.personaldata.lastname_chinese && (
-                              <li>姓 (中文)</li>
-                            )}
-                            {!this.state.personaldata.birthday && (
-                              <li>birthday</li>
-                            )}
-                          </ul>
-                        </p>
-                      </Card>
-                    </Col>
-                  </Row>
-                )}
-                <Row>
-                  <Col>
-                    <Form.Group controlId="firstname">
-                      <Form.Label className="my-0 mx-0 text-light">
-                        First Name (English)
-                      </Form.Label>
-                      <Form.Control
-                        type="text"
-                        placeholder="First name"
-                        autoComplete="nope"
-                        value={this.state.personaldata.firstname}
-                        onChange={(e) => this.handleChange_PersonalData(e)}
-                      />
-                    </Form.Group>
-                    <br />
-                    <Form.Group controlId="firstname_chinese">
-                      <Form.Label className="my-0 mx-0 text-light">
-                        名 (中文)
-                      </Form.Label>
-                      <Form.Control
-                        type="text"
-                        placeholder="小明"
-                        autoComplete="nope"
-                        value={this.state.personaldata.firstname_chinese}
-                        onChange={(e) => this.handleChange_PersonalData(e)}
-                      />
-                    </Form.Group>
-                    <br />
-                    <Form.Group className="mb-2">
-                      <Form.Label className="my-0 mx-0 text-light">
-                        Email
-                      </Form.Label>
-                      <p className="text-info">
-                        {this.state.personaldata.email}
-                      </p>
-                    </Form.Group>
-                  </Col>
-                  <Col md={6}>
-                    <Form autoComplete="nope">
-                      <Form.Group controlId="lastname">
-                        <Form.Label className="my-0 mx-0 text-light">
-                          Last Name (English)
-                        </Form.Label>
-                        <Form.Control
-                          type="text"
-                          autoComplete="nope"
-                          placeholder="Last name"
-                          value={this.state.personaldata.lastname}
-                          onChange={(e) => this.handleChange_PersonalData(e)}
-                        />
-                      </Form.Group>
-                    </Form>
-                    <br />
-                    <Form autoComplete="nope">
-                      <Form.Group controlId="lastname_chinese">
-                        <Form.Label className="my-0 mx-0 text-light">
-                          姓 (中文)
-                        </Form.Label>
-                        <Form.Control
-                          type="text"
-                          placeholder="王"
-                          autoComplete="nope"
-                          value={this.state.personaldata.lastname_chinese}
-                          onChange={(e) => this.handleChange_PersonalData(e)}
-                        />
-                      </Form.Group>
-                    </Form>
-                    <Form.Group className="my-2" controlId="birthday">
-                      <Form.Label className="my-0 mx-0 text-light">
-                        Birthday
-                      </Form.Label>
-                      <Form.Control
-                        type="date"
-                        placeholder="1999/01/01"
-                        value={this.state.personaldata.birthday}
-                        onChange={(e) => this.handleChange_PersonalData(e)}
-                      />
-                    </Form.Group>
-                    <Button
-                      variant="primary"
-                      disabled={
-                        this.state.personaldata.firstname === '' ||
-                        this.state.personaldata.firstname_chinese === '' ||
-                        this.state.personaldata.lastname === '' ||
-                        this.state.personaldata.lastname_chinese === '' ||
-                        !this.state.changed_personaldata
-                      }
-                      onClick={(e) =>
-                        this.handleSubmit_PersonalData(
-                          e,
-                          this.state.personaldata
-                        )
-                      }
-                    >
-                      Update
-                    </Button>
-                  </Col>
-                </Row>
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
-        {this.props.user.role === 'Agent' && (
-          <Row>
-            <Col md={6}>
-              <Card className="my-2 mx-0" bg={'dark'} text={'white'}>
-                <Card.Header>
-                  <Card.Title className="my-0 mx-0 text-light">
-                    Profile
-                  </Card.Title>
-                </Card.Header>
-                <Card.Body>
-                  <Row>
-                    <h5 className="text-light">Introduction</h5>
-                    {this.props.user.selfIntroduction}
-                  </Row>
-                </Card.Body>
-              </Card>
-            </Col>
-            {is_TaiGer_Agent(this.state.personaldata) && (
-              <Col md={6}>
-                <Card className="my-2 mx-0" bg={'dark'} text={'white'}>
-                  <Card.Header>
-                    <Card.Title className="my-0 mx-0 text-light">
-                      Office Hours
-                    </Card.Title>
-                  </Card.Header>
-                  <Card.Body>
-                    <Row>
-                      <Col>
-                        <h5 className="text-light">Time zone</h5>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <TimezoneSelect
-                        value={this.state.selectedTimezone}
-                        onChange={this.setSelectedTimezone}
-                        displayValue="UTC"
-                        isDisabled={false}
-                      />
-                    </Row>
-                    <br />
-                    {[
-                      'Monday',
-                      'Tuesday',
-                      'Wednesday',
-                      'Thursday',
-                      'Friday',
-                      'Saturday',
-                      'Sunday'
-                    ].map((day, i) => (
-                      <Row key={i}>
-                        <Col md={4}>
-                          <Form>
-                            <Form.Check
-                              type="switch"
-                              id={`${day}`}
-                              label={`${day}`}
-                              className={`${
-                                this.state.officehours[day]?.active
-                                  ? 'text-light'
-                                  : 'text-secondary'
-                              }`}
-                              checked={this.state.officehours[day]?.active}
-                              onChange={(e) => this.handleToggleChange(e, day)}
-                            />
-                          </Form>
-                        </Col>
-                        <Col md={8}>
-                          {this.state.officehours &&
-                          this.state.officehours[day]?.active ? (
-                            <>
-                              <span className="text-light">Timeslots</span>
-                              <Select
-                                id={`${day}`}
-                                options={time_slots}
-                                isMulti
-                                isDisabled={
-                                  !this.state.officehours[day]?.active
-                                }
-                                value={this.state.officehours[day].time_slots}
-                                onChange={(e) => this.onTimeStartChange(e, day)}
-                              />
-                            </>
-                          ) : (
-                            <span className="text-light">Close</span>
-                          )}
-                        </Col>
-                      </Row>
-                    ))}
-                    <Row>
-                      <Button
-                        disabled={!this.state.officehoursModifed}
-                        onClick={this.handleSubmit_Officehours}
-                      >
-                        Update
-                      </Button>
-                    </Row>
-                  </Card.Body>
-                </Card>
-              </Col>
-            )}
-          </Row>
-        )}
-        <Modal
-          show={this.state.updateconfirmed}
-          onHide={this.setmodalhide}
-          size="sm"
-          aria-labelledby="contained-modal-title-vcenter"
-          centered
-        >
-          <Modal.Header>
-            <Modal.Title id="contained-modal-title-vcenter">
-              Update Successfully
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>Personal Data is updated successfully!</Modal.Body>
-          <Modal.Footer>
-            <Button onClick={this.setmodalhide}>Close</Button>
-          </Modal.Footer>
-        </Modal>
-        <Modal
-          show={this.state.updateOfficeHoursConfirmed}
-          onHide={this.onHideOfficeHoursConfirmed}
-          size="sm"
-          aria-labelledby="contained-modal-title-vcenter"
-          centered
-        >
-          <Modal.Header>
-            <Modal.Title id="contained-modal-title-vcenter">
-              Updated Successfully
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>Office Hours time slots updated Successfully</Modal.Body>
-          <Modal.Footer>
-            <Button onClick={(e) => this.onHideOfficeHoursConfirmed(e)}>
-              Ok
-            </Button>
-          </Modal.Footer>
-        </Modal>
-      </Aux>
-    );
+  const { res_status, isLoaded, res_modal_status, res_modal_message } =
+    profileState;
+  if (!isLoaded) {
+    return <Loading />;
   }
+  TabTitle(
+    `${profileState.personaldata.firstname} ${
+      profileState.personaldata.lastname
+    } |${
+      profileState.personaldata.firstname_chinese
+        ? profileState.personaldata.firstname_chinese
+        : ' '
+    }${
+      profileState.personaldata.lastname_chinese
+        ? profileState.personaldata.lastname_chinese
+        : ' '
+    }Profile`
+  );
+  if (res_status >= 400) {
+    return <ErrorPage res_status={res_status} />;
+  }
+  return (
+    <Box>
+      {res_modal_status >= 400 && (
+        <ModalMain
+          ConfirmError={ConfirmError}
+          res_modal_status={res_modal_status}
+          res_modal_message={res_modal_message}
+        />
+      )}
+      <Breadcrumbs aria-label="breadcrumb">
+        <Link
+          underline="hover"
+          color="inherit"
+          component={LinkDom}
+          to={`${DEMO.DASHBOARD_LINK}`}
+        >
+          {appConfig.companyName}
+        </Link>
+        {user_id && (
+          <Link
+            underline="hover"
+            color="inherit"
+            component={LinkDom}
+            to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+              user_id,
+              DEMO.PROFILE
+            )}`}
+          >
+            {`${profileState.personaldata.firstname} ${
+              profileState.personaldata.lastname
+            } |${
+              profileState.personaldata.firstname_chinese
+                ? profileState.personaldata.firstname_chinese
+                : ' '
+            }${
+              profileState.personaldata.lastname_chinese
+                ? profileState.personaldata.lastname_chinese
+                : ' '
+            }`}
+          </Link>
+        )}
+
+        <Typography color="text.primary">{t('Personal Data')}</Typography>
+      </Breadcrumbs>
+      <Box component="form" noValidate sx={{ mt: 3 }}>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            {!is_personal_data_filled(profileState.personaldata) && (
+              <Accordion
+                disableGutters
+                defaultExpanded
+                sx={{ backgroundColor: '#FF0000' }}
+              >
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls="panel1-content"
+                  id="panel1-header"
+                >
+                  <BsExclamationTriangle size={18} />
+                  <b className="mx-2">{t('Reminder')}:</b> Please fill your
+                </AccordionSummary>
+                <AccordionDetails>
+                  <p
+                    className="text-light my-3 mx-3"
+                    style={{ textAlign: 'left' }}
+                  >
+                    <ul>
+                      {!profileState.personaldata.firstname && (
+                        <li>First Name(English)</li>
+                      )}
+                      {!profileState.personaldata.lastname && (
+                        <li>Last Name(English)</li>
+                      )}
+                      {!profileState.personaldata.firstname_chinese && (
+                        <li>名 (中文)</li>
+                      )}
+                      {!profileState.personaldata.lastname_chinese && (
+                        <li>姓 (中文)</li>
+                      )}
+                      {!profileState.personaldata.birthday && (
+                        <li>{t('Birthday')}</li>
+                      )}
+                    </ul>
+                  </p>
+                </AccordionDetails>
+              </Accordion>
+            )}
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              autoComplete="firstname"
+              name="firstname"
+              required
+              fullWidth
+              id="firstname"
+              label={`${t('First Name')} (English)`}
+              value={profileState.personaldata.firstname}
+              onChange={(e) => handleChange_PersonalData(e)}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              autoComplete="lastname"
+              name="lastname"
+              required
+              fullWidth
+              id="lastname"
+              label={`${t('Last Name')} (English)`}
+              value={profileState.personaldata.lastname}
+              onChange={(e) => handleChange_PersonalData(e)}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              autoComplete="firstname_chinese"
+              name="firstname_chinese"
+              required
+              fullWidth
+              id="firstname_chinese"
+              label={`${t('First Name')} (中文)`}
+              value={profileState.personaldata.firstname_chinese}
+              onChange={(e) => handleChange_PersonalData(e)}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              autoComplete="lastname_chinese"
+              name="lastname_chinese"
+              required
+              fullWidth
+              id="lastname_chinese"
+              label={`${t('Last Name')} (中文)`}
+              value={profileState.personaldata.lastname_chinese}
+              onChange={(e) => handleChange_PersonalData(e)}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              autoComplete="birthday"
+              name="birthday"
+              type="date"
+              required
+              fullWidth
+              id="birthday"
+              label={`${t('Birthday')}`}
+              InputLabelProps={{
+                shrink: true
+              }}
+              value={profileState.personaldata.birthday}
+              onChange={(e) => handleChange_PersonalData(e)}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <Typography>Email: {profileState.personaldata.email}</Typography>
+          </Grid>
+        </Grid>
+        <Button
+          color="primary"
+          fullWidth
+          variant="contained"
+          disabled={
+            profileState.personaldata.firstname === '' ||
+            profileState.personaldata.firstname_chinese === '' ||
+            profileState.personaldata.lastname === '' ||
+            profileState.personaldata.lastname_chinese === '' ||
+            !profileState.changed_personaldata
+          }
+          onClick={(e) =>
+            handleSubmit_PersonalData(e, profileState.personaldata)
+          }
+          sx={{ mt: 3, mb: 2 }}
+        >
+          {t('Update')}
+        </Button>
+      </Box>
+      {!user_id && is_TaiGer_Agent(user) && (
+        <>
+          <Card sx={{ padding: 2, mb: 2 }}>
+            <Typography>{t('Profile')}</Typography>
+
+            <h5 className="text-light">{t('Introduction')}</h5>
+            {user.selfIntroduction}
+          </Card>
+          {is_TaiGer_Agent(profileState.personaldata) && (
+            <Card sx={{ padding: 2, mb: 2 }}>
+              <Typography variant="h6">{t('Office Hours')}</Typography>
+              <Typography variant="h6">{t('Time zone')}</Typography>
+              <TimezoneSelect
+                value={profileState.selectedTimezone}
+                onChange={setSelectedTimezone}
+                displayValue="UTC"
+                isDisabled={false}
+              />
+              <br />
+              {[
+                'Monday',
+                'Tuesday',
+                'Wednesday',
+                'Thursday',
+                'Friday',
+                'Saturday',
+                'Sunday'
+              ].map((day, i) => (
+                <Box key={i} sx={{ display: 'flex', textAlign: 'right' }}>
+                  <FormControlLabel
+                    label={`${day}`}
+                    control={
+                      <Checkbox
+                        checked={profileState.officehours[day]?.active}
+                        onChange={(e) => handleToggleChange(e, day)}
+                      />
+                    }
+                  />
+                  {profileState.officehours &&
+                  profileState.officehours[day]?.active ? (
+                    <>
+                      {/* <span>Timeslots</span> */}
+                      <Autocomplete
+                        multiple
+                        id={`${day}`}
+                        options={time_slots}
+                        disableCloseOnSelect
+                        getOptionLabel={(option) => option.label}
+                        value={profileState.officehours[day].time_slots}
+                        onChange={(e, newValue) =>
+                          onTimeStartChange2(e, newValue, day)
+                        }
+                        isOptionEqualToValue={(option, value) =>
+                          option.value === value.value
+                        }
+                        renderOption={(props, option, { selected }) => (
+                          <li {...props}>
+                            <Checkbox
+                              icon={icon}
+                              checkedIcon={checkedIcon}
+                              style={{ marginRight: 8 }}
+                              checked={selected}
+                            />
+                            {option.label}
+                          </li>
+                        )}
+                        style={{ width: 500 }}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            variant="standard"
+                            label="Timeslots"
+                            placeholder="Timeslots"
+                          />
+                        )}
+                      />
+                    </>
+                  ) : (
+                    <span>{t('Close')}</span>
+                  )}
+                </Box>
+              ))}
+              <Button
+                variant="contained"
+                color="primary"
+                disabled={!profileState.officehoursModifed}
+                onClick={handleSubmit_Officehours}
+              >
+                {t('Update')}
+              </Button>
+            </Card>
+          )}
+        </>
+      )}
+      <ModalNew
+        open={profileState.updateconfirmed}
+        onClose={setmodalhide}
+        aria-labelledby="contained-modal-title-vcenter"
+      >
+        <Typography variant="h6">Update Successfully</Typography>
+        <Typography>Personal Data is updated successfully!</Typography>
+        <br />
+        <div style={{ marginTop: 'auto', textAlign: 'right' }}>
+          <Button color="primary" variant="contained" onClick={setmodalhide}>
+            {t('Close')}
+          </Button>
+        </div>
+      </ModalNew>
+      <ModalNew
+        open={profileState.updateOfficeHoursConfirmed}
+        onClose={onHideOfficeHoursConfirmed}
+        aria-labelledby="contained-modal-title-vcenter"
+      >
+        <Typography variant="h6">Update Successfully</Typography>
+        <Typography>Office Hours time slots updated Successfully</Typography>
+        <br />
+        <div style={{ marginTop: 'auto', textAlign: 'right' }}>
+          <Button
+            color="primary"
+            variant="contained"
+            onClick={() => onHideOfficeHoursConfirmed()}
+          >
+            {t('Close')}
+          </Button>
+        </div>
+      </ModalNew>
+    </Box>
+  );
 }
 
 export default Profile;

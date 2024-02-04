@@ -1,17 +1,24 @@
-import React from 'react';
-import { Spinner, Row, Col, Card } from 'react-bootstrap';
-import { getProgramTickets } from '../../api';
-import { convertDate, spinner_style, spinner_style2 } from '../Utils/contants';
-import ErrorPage from '../Utils/ErrorPage';
-import { NewlineText } from '../Utils/checking-functions';
-
-import { Table } from 'react-bootstrap';
-import { BsExclamationTriangle } from 'react-icons/bs';
+import React, { useEffect, useState } from 'react';
+import {
+  Alert,
+  Card,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow
+} from '@mui/material';
 import { Link } from 'react-router-dom';
-import DEMO from '../../store/constant';
 
-class ProgramReportCard extends React.Component {
-  state = {
+import { getProgramTickets } from '../../api';
+import ErrorPage from '../Utils/ErrorPage';
+import DEMO from '../../store/constant';
+import Loading from '../../components/Loading/Loading';
+import { useTranslation } from 'react-i18next';
+
+function ProgramReportCard() {
+  const { t } = useTranslation();
+  const [programReportCardState, setProgramReportCardState] = useState({
     isReport: false,
     isReportDelete: false,
     isUpdateReport: false,
@@ -22,143 +29,108 @@ class ProgramReportCard extends React.Component {
     res_status: 0,
     res_modal_message: '',
     res_modal_status: 0
-  };
+  });
 
-  componentDidMount() {
+  useEffect(() => {
     getProgramTickets('program', 'open').then(
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
         if (success) {
-          this.setState({
+          setProgramReportCardState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             tickets: data,
             success: success,
             res_status: status
-          });
+          }));
         } else {
-          this.setState({
+          setProgramReportCardState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             res_status: status
-          });
+          }));
         }
       },
       (error) => {
-        this.setState((state) => ({
-          ...state,
+        setProgramReportCardState((prevState) => ({
+          ...prevState,
           isLoaded: true,
           error,
           res_status: 500
         }));
       }
     );
+  }, []);
+
+  const { res_status, isLoaded } = programReportCardState;
+  if (res_status >= 400) {
+    return <ErrorPage res_status={res_status} />;
+  }
+  if (!isLoaded) {
+    return <Loading />;
+  }
+  if (
+    !programReportCardState.tickets ||
+    programReportCardState.tickets?.length === 0
+  ) {
+    return <></>;
   }
 
-  ConfirmError = () => {
-    this.setState((state) => ({
-      ...state,
-      res_modal_status: 0,
-      res_modal_message: ''
-    }));
-  };
-  render() {
-    const { res_status, isLoaded } = this.state;
-    if (res_status >= 400) {
-      return <ErrorPage res_status={res_status} />;
-    }
-    if (!isLoaded) {
-      return (
-        <div style={spinner_style2}>
-          <Spinner animation="border" role="status">
-            <span className="visually-hidden"></span>
-          </Spinner>
-        </div>
-      );
-    }
-    if (!this.state.tickets || this.state.tickets?.length === 0) {
-      return <></>;
-    }
-
-    const tickets = this.state.tickets.map((ticket, i) => (
-      <tr key={i}>
-        <td>
-          <Link
-            to={`${DEMO.SINGLE_PROGRAM_LINK(
-              ticket.program_id?._id.toString()
-            )}`}
-            style={{ textDecoration: 'none' }}
-            className="text-info"
-          >
-            {i + 1}.
-          </Link>
-        </td>
-        <td>
-          <Link
-            to={`${DEMO.SINGLE_PROGRAM_LINK(
-              ticket.program_id?._id.toString()
-            )}`}
-            style={{ textDecoration: 'none' }}
-            className="text-info"
-            title={`${ticket.program_id?.school} - ${ticket.program_id?.program_name}`}
-          >
-            {`${ticket.program_id?.school} - ${ticket.program_id?.program_name}`.substring(
-              0,
-              30
-            )}
-            {`...`}
-          </Link>
-        </td>
-        <td>
-          <Link
-            to={`${DEMO.SINGLE_PROGRAM_LINK(
-              ticket.program_id?._id.toString()
-            )}`}
-            style={{ textDecoration: 'none' }}
-            className="text-info"
-            title={ticket.description}
-          >
-            {`${ticket.description}`.substring(0, 50)}
-            {ticket.description?.length > 50 ? ` ...` : ''}
-          </Link>
-        </td>
-      </tr>
-    ));
-    return (
-      <>
-        <Col md={6}>
-          <Card
-            className="my-2 mx-0 card-with-scroll"
-            bg={'danger'}
-            text={'light'}
-          >
-            <Card.Header className="py-0 px-0 " bg={'danger'}>
-              <Card.Title className="my-2 mx-2 text-light" as={'h5'}>
-                <BsExclamationTriangle size={18} /> Program Update Request
-              </Card.Title>
-            </Card.Header>
-            <Card.Body className="py-0 px-0 card-scrollable-body">
-              <Table
-                bordered
-                hover
-                className="my-0 mx-0"
-                variant="dark"
-                text="light"
-                size="sm"
-              >
-                <thead>
-                  <tr>
-                    <th>idx</th>
-                    <th>program</th>
-                    <th>description</th>
-                  </tr>
-                </thead>
-                <tbody>{tickets}</tbody>
-              </Table>
-            </Card.Body>
-          </Card>
-        </Col>
-      </>
-    );
-  }
+  const tickets = programReportCardState.tickets.map((ticket, i) => (
+    <TableRow key={i}>
+      <TableCell>
+        <Link
+          to={`${DEMO.SINGLE_PROGRAM_LINK(ticket.program_id?._id.toString())}`}
+          style={{ textDecoration: 'none' }}
+          className="text-info"
+        >
+          {i + 1}.
+        </Link>
+      </TableCell>
+      <TableCell>
+        <Link
+          to={`${DEMO.SINGLE_PROGRAM_LINK(ticket.program_id?._id.toString())}`}
+          style={{ textDecoration: 'none' }}
+          className="text-info"
+          title={`${ticket.program_id?.school} - ${ticket.program_id?.program_name}`}
+        >
+          {`${ticket.program_id?.school} - ${ticket.program_id?.program_name}`.substring(
+            0,
+            30
+          )}
+          {`...`}
+        </Link>
+      </TableCell>
+      <TableCell>
+        <Link
+          to={`${DEMO.SINGLE_PROGRAM_LINK(ticket.program_id?._id.toString())}`}
+          style={{ textDecoration: 'none' }}
+          className="text-info"
+          title={ticket.description}
+        >
+          {`${ticket.description}`.substring(0, 50)}
+          {ticket.description?.length > 50 ? ` ...` : ''}
+        </Link>
+      </TableCell>
+    </TableRow>
+  ));
+  return (
+    <Card className="card-with-scroll">
+      <Alert severity="error">{t('Program Update Request')}:</Alert>
+      <div className="card-scrollable-body">
+        <Table size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell>idx</TableCell>
+              <TableCell>program</TableCell>
+              <TableCell>description</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>{tickets}</TableBody>
+        </Table>
+      </div>
+    </Card>
+  );
 }
 export default ProgramReportCard;

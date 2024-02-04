@@ -1,24 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import { Spinner } from 'react-bootstrap';
+import React, { useState } from 'react';
+import { Box, Breadcrumbs, Link, Typography } from '@mui/material';
+import { Link as LinkDom, useLoaderData } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
-import Aux from '../../hoc/_Aux';
 import AdminMainView from './AdminDashboard/AdminMainView';
 import AgentMainView from './AgentDashboard/AgentMainView';
 import EditorMainView from './EditorDashboard/EditorMainView';
 import ManagerMainView from './ManagerDashboard/ManagerMainView';
 import StudentDashboard from './StudentDashboard/StudentDashboard';
 import GuestDashboard from './GuestDashboard/GuestDashboard';
-import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
-import { SYMBOL_EXPLANATION, spinner_style } from '../Utils/contants';
-
 import {
-  getStudents,
   updateArchivStudents,
   updateProfileDocumentStatus,
-  getAgents,
   updateAgents,
-  getEditors,
   updateEditors
 } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
@@ -26,159 +21,36 @@ import {
   is_TaiGer_Admin,
   is_TaiGer_Agent,
   is_TaiGer_Editor,
+  is_TaiGer_Guest,
   is_TaiGer_Manager,
   is_TaiGer_Student
 } from '../Utils/checking-functions';
+import { useAuth } from '../../components/AuthProvider';
+import DEMO from '../../store/constant';
+import { appConfig } from '../../config';
 
-function Dashboard(props) {
+function Dashboard() {
+  const { user } = useAuth();
+  const {
+    data: { data: students, isCoursesFilled, notification }
+  } = useLoaderData();
+  const { t } = useTranslation();
   const [dashboardState, setDashboardState] = useState({
     error: '',
     agent_list: [],
     editor_list: [],
-    isLoaded: false,
-    students: [],
+    students: students,
     updateAgentList: {},
     updateEditorList: {},
     success: false,
     isDashboard: true,
     file: '',
-    notification: {},
-    isCoursesFilled: false,
+    notification: notification,
+    isCoursesFilled: isCoursesFilled,
     res_status: 0,
     res_modal_message: '',
     res_modal_status: 0
   });
-  useEffect(() => {
-    getStudents().then(
-      (resp) => {
-        const { data, success, isCoursesFilled, notification } = resp.data;
-        const { status } = resp;
-        if (success) {
-          setDashboardState((prevState) => ({
-            ...prevState,
-            isLoaded: true,
-            students: data,
-            isCoursesFilled: isCoursesFilled,
-            notification,
-            success: success,
-            res_status: status
-          }));
-        } else {
-          setDashboardState((prevState) => ({
-            ...prevState,
-            isLoaded: true,
-            res_status: status
-          }));
-        }
-      },
-      (error) => {
-        setDashboardState((prevState) => ({
-          ...prevState,
-          isLoaded: true,
-          error,
-          res_status: 500
-        }));
-      }
-    );
-  }, []);
-
-  const editAgent = (student) => {
-    getAgents().then(
-      (resp) => {
-        // TODO: check success
-        const { data, success } = resp.data;
-        const { status } = resp;
-        if (success) {
-          const agents = data; //get all agent
-          const { agents: student_agents } = student;
-          const updateAgentList = agents.reduce(
-            (prev, { _id }) => ({
-              ...prev,
-              [_id]: student_agents
-                ? student_agents.findIndex(
-                    (student_agent) => student_agent._id === _id
-                  ) > -1
-                : false
-            }),
-            {}
-          );
-          setDashboardState((prevState) => ({
-            ...prevState,
-            agent_list: agents,
-            updateAgentList,
-            res_modal_status: status
-          }));
-        } else {
-          const { message } = resp.data;
-          setDashboardState((prevState) => ({
-            ...prevState,
-            isLoaded: true,
-            res_modal_message: message,
-            res_modal_status: status
-          }));
-        }
-      },
-      (error) => {
-        const { statusText } = resp;
-        setDashboardState((prevState) => ({
-          ...prevState,
-          isLoaded: true,
-          error,
-          res_modal_status: 500,
-          res_modal_message: statusText
-        }));
-      }
-    );
-  };
-
-  const editEditor = (student) => {
-    getEditors().then(
-      (resp) => {
-        // TODO: check success
-        const { data, success } = resp.data;
-        const { status } = resp;
-        if (success) {
-          const editors = data;
-          const { editors: student_editors } = student;
-          const updateEditorList = editors.reduce(
-            (prev, { _id }) => ({
-              ...prev,
-              [_id]: student_editors
-                ? student_editors.findIndex(
-                    (student_editor) => student_editor._id === _id
-                  ) > -1
-                : false
-            }),
-            {}
-          );
-          setDashboardState((prevState) => ({
-            ...prevState,
-            editor_list: editors,
-            updateEditorList,
-            res_modal_status: status
-          }));
-        } else {
-          const { message } = resp.data;
-          setDashboardState((prevState) => ({
-            ...prevState,
-            isLoaded: true,
-            res_modal_message: message,
-            res_modal_status: status
-          }));
-        }
-      },
-      (error) => {
-        const { statusText } = resp;
-        setDashboardState((prevState) => ({
-          ...prevState,
-          isLoaded: true,
-          error,
-          res_modal_status: 500,
-          res_modal_message: statusText
-        }));
-      }
-    );
-  };
 
   const submitUpdateAgentlist = (e, updateAgentList, student_id) => {
     e.preventDefault();
@@ -221,13 +93,12 @@ function Dashboard(props) {
         }
       },
       (error) => {
-        const { statusText } = resp;
         setDashboardState((prevState) => ({
           ...prevState,
           isLoaded: true,
           error,
           res_modal_status: 500,
-          res_modal_message: statusText
+          res_modal_message: ''
         }));
       }
     );
@@ -264,13 +135,12 @@ function Dashboard(props) {
         }
       },
       (error) => {
-        const { statusText } = resp;
         setDashboardState((prevState) => ({
           ...prevState,
           isLoaded: true,
           error,
           res_modal_status: 500,
-          res_modal_message: statusText
+          res_modal_message: ''
         }));
       }
     );
@@ -300,13 +170,12 @@ function Dashboard(props) {
         }
       },
       (error) => {
-        const { statusText } = resp;
         setDashboardState((prevState) => ({
           ...prevState,
           isLoaded: true,
           error,
           res_modal_status: 500,
-          res_modal_message: statusText
+          res_modal_message: ''
         }));
       }
     );
@@ -346,13 +215,12 @@ function Dashboard(props) {
         }
       },
       (error) => {
-        const { statusText } = resp;
         setDashboardState((prevState) => ({
           ...prevState,
           isLoaded: true,
           error,
           res_modal_status: 500,
-          res_modal_message: statusText
+          res_modal_message: ''
         }));
       }
     );
@@ -366,160 +234,80 @@ function Dashboard(props) {
     });
   };
 
-  const { res_modal_status, res_modal_message, isLoaded, res_status } =
-    dashboardState;
+  const { res_modal_status, res_modal_message } = dashboardState;
   TabTitle('Home Page');
-  if (!isLoaded || !dashboardState.students) {
-    return (
-      <div style={spinner_style}>
-        <Spinner animation="border" role="status">
-          <span className="visually-hidden"></span>
-        </Spinner>
-      </div>
-    );
-  }
-  if (res_status >= 400) {
-    return <ErrorPage res_status={res_status} />;
-  }
 
-  if (is_TaiGer_Admin(props.user)) {
-    return (
-      <Aux>
-        {res_modal_status >= 400 && (
-          <ModalMain
-            ConfirmError={ConfirmError}
-            res_modal_status={res_modal_status}
-            res_modal_message={res_modal_message}
-          />
-        )}
+  return (
+    <Box data-testid="dashoboard_component">
+      {res_modal_status >= 400 && (
+        <ModalMain
+          ConfirmError={ConfirmError}
+          res_modal_status={res_modal_status}
+          res_modal_message={res_modal_message}
+        />
+      )}
+      <Breadcrumbs aria-label="breadcrumb">
+        <Link
+          underline="hover"
+          color="inherit"
+          component={LinkDom}
+          to={`${DEMO.DASHBOARD_LINK}`}
+        >
+          {appConfig.companyName}
+        </Link>
+        <Typography color="text.primary">{t('Dashboard')}</Typography>
+      </Breadcrumbs>
+      {is_TaiGer_Admin(user) && (
         <AdminMainView
-          user={props.user}
-          editAgent={editAgent}
-          editEditor={editEditor}
-          agent_list={dashboardState.agent_list}
-          editor_list={dashboardState.editor_list}
           students={dashboardState.students}
-          updateAgentList={dashboardState.updateAgentList}
           submitUpdateAgentlist={submitUpdateAgentlist}
-          updateEditorList={dashboardState.updateEditorList}
           submitUpdateEditorlist={submitUpdateEditorlist}
           updateStudentArchivStatus={updateStudentArchivStatus}
           isDashboard={dashboardState.isDashboard}
         />
-      </Aux>
-    );
-  } else if (is_TaiGer_Manager(props.user)) {
-    return (
-      <Aux>
-        {res_modal_status >= 400 && (
-          <ModalMain
-            ConfirmError={ConfirmError}
-            res_modal_status={res_modal_status}
-            res_modal_message={res_modal_message}
-          />
-        )}
+      )}
+      {is_TaiGer_Manager(user) && (
         <ManagerMainView
-          user={props.user}
           students={dashboardState.students}
           notification={dashboardState.notification}
-          editAgent={editAgent}
-          agent_list={dashboardState.agent_list}
-          updateAgentList={dashboardState.updateAgentList}
           submitUpdateAgentlist={submitUpdateAgentlist}
           updateStudentArchivStatus={updateStudentArchivStatus}
           isDashboard={dashboardState.isDashboard}
           onUpdateProfileFilefromstudent={onUpdateProfileFilefromstudent}
         />
-      </Aux>
-    );
-  } else if (is_TaiGer_Agent(props.user)) {
-    return (
-      <Aux>
-        {res_modal_status >= 400 && (
-          <ModalMain
-            ConfirmError={ConfirmError}
-            res_modal_status={res_modal_status}
-            res_modal_message={res_modal_message}
-          />
-        )}
+      )}
+      {is_TaiGer_Agent(user) && (
         <AgentMainView
-          data-testid="agent_main_view"
-          user={props.user}
           students={dashboardState.students}
           notification={dashboardState.notification}
-          editAgent={editAgent}
-          editEditor={editEditor}
-          agent_list={dashboardState.agent_list}
-          updateAgentList={dashboardState.updateAgentList}
           submitUpdateAgentlist={submitUpdateAgentlist}
           updateStudentArchivStatus={updateStudentArchivStatus}
           isDashboard={dashboardState.isDashboard}
           onUpdateProfileFilefromstudent={onUpdateProfileFilefromstudent}
         />
-      </Aux>
-    );
-  } else if (is_TaiGer_Editor(props.user)) {
-    return (
-      <Aux>
-        {res_modal_status >= 400 && (
-          <ModalMain
-            ConfirmError={ConfirmError}
-            res_modal_status={res_modal_status}
-            res_modal_message={res_modal_message}
-          />
-        )}
+      )}
+      {is_TaiGer_Editor(user) && (
         <EditorMainView
-          user={props.user}
-          editAgent={editAgent}
-          editEditor={editEditor}
-          agent_list={dashboardState.agent_list}
-          editor_list={dashboardState.editor_list}
           students={dashboardState.students}
-          updateEditorList={dashboardState.updateEditorList}
           updateStudentArchivStatus={updateStudentArchivStatus}
           submitUpdateEditorlist={submitUpdateEditorlist}
           isDashboard={dashboardState.isDashboard}
         />
-      </Aux>
-    );
-  } else if (is_TaiGer_Student(props.user)) {
-    return (
-      <Aux>
-        {res_modal_status >= 400 && (
-          <ModalMain
-            ConfirmError={ConfirmError}
-            res_modal_status={res_modal_status}
-            res_modal_message={res_modal_message}
-          />
-        )}
+      )}
+      {is_TaiGer_Student(user) && (
         <StudentDashboard
-          user={props.user}
           isCoursesFilled={dashboardState.isCoursesFilled}
-          role={props.user.role}
           student={dashboardState.students[0]}
-          SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
         />
-      </Aux>
-    );
-  } else {
-    return (
-      <Aux>
-        {res_modal_status >= 400 && (
-          <ModalMain
-            ConfirmError={ConfirmError}
-            res_modal_status={res_modal_status}
-            res_modal_message={res_modal_message}
-          />
-        )}
+      )}
+      {is_TaiGer_Guest(user) && (
         <GuestDashboard
-          role={props.user.role}
           success={dashboardState.success}
           students={dashboardState.students}
-          SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
         />
-      </Aux>
-    );
-  }
+      )}
+    </Box>
+  );
 }
 
 export default Dashboard;

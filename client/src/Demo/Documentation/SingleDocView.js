@@ -1,24 +1,28 @@
 import React from 'react';
-import { Row, Col, Card, Button } from 'react-bootstrap';
+import { Row, Col } from 'react-bootstrap';
+import { Button, Card } from '@mui/material';
+
 import EditorNew from '../../components/EditorJs/EditorNew';
 import { convertDate } from '../Utils/contants';
 // import Blocks from 'editorjs-blocks-react-renderer';
 // import Output from 'editorjs-react-renderer';
 import { is_TaiGer_AdminAgent } from '../Utils/checking-functions';
-class SingleDocView extends React.Component {
-  render() {
-    return (
-      <>
-        <Card className="mb-2 mx-0">
-          <Card.Header>
-            <Card.Title>{this.props.document_title}</Card.Title>
-          </Card.Header>
-          <Card.Body>
-            {/* <section>
-              <Output data={this.props.editorState} />
+import { useAuth } from '../../components/AuthProvider';
+
+function SingleDocView(props) {
+  const { user } = useAuth();
+  return (
+    <>
+      <Card sx={{ p: 2, mt: 2 }}>
+        {/* <Card.Header>
+          <Card.Title>{props.document_title}</Card.Title>
+        </Card.Header>
+        <Card.Body> */}
+        {/* <section>
+              <Output data={props.editorState} />
             </section> */}
-            {/* <Blocks
-              data={this.props.editorState}
+        {/* <Blocks
+              data={props.editorState}
               config={{
                 code: {
                   className: 'language-js'
@@ -57,46 +61,43 @@ class SingleDocView extends React.Component {
                 }
               }}
             /> */}
-            <EditorNew
-              readOnly={true}
-              handleClickSave={this.props.handleClickSave}
-              handleClickEditToggle={this.props.handleClickEditToggle}
-              editorState={this.props.editorState}
-            />
-            {is_TaiGer_AdminAgent(this.props.user) && (
-              <>
-                <Row>
-                  <Col md={2}>
-                    <p className="my-0">Updated at</p>
-                  </Col>
-                  <Col md={2}>
-                    <p className="my-0">
-                      {convertDate(this.props.editorState.time)}
-                    </p>
-                  </Col>
-                  <Col md={2}>
-                    <p className="my-0">Updated by</p>
-                  </Col>
-                  <Col md={6}>
-                    <p className="my-0">
-                      {this.props.author ? this.props.author : '-'}
-                    </p>
-                  </Col>
-                </Row>
-              </>
-            )}
-            {is_TaiGer_AdminAgent(this.props.user) && (
-              <Button
-                size="sm"
-                onClick={(e) => this.props.handleClickEditToggle(e)}
-              >
-                Edit
-              </Button>
-            )}
-          </Card.Body>
-        </Card>
-      </>
-    );
-  }
+        <EditorNew
+          readOnly={true}
+          handleClickSave={props.handleClickSave}
+          handleClickEditToggle={props.handleClickEditToggle}
+          editorState={props.editorState}
+        />
+        {is_TaiGer_AdminAgent(user) && (
+          <>
+            <Row>
+              <Col md={2}>
+                <p className="my-0">Updated at</p>
+              </Col>
+              <Col md={2}>
+                <p className="my-0">{convertDate(props.editorState.time)}</p>
+              </Col>
+              <Col md={2}>
+                <p className="my-0">Updated by</p>
+              </Col>
+              <Col md={6}>
+                <p className="my-0">{props.author ? props.author : '-'}</p>
+              </Col>
+            </Row>
+          </>
+        )}
+        {is_TaiGer_AdminAgent(user) && (
+          <Button
+            size="small"
+            color="secondary"
+            variant="contained"
+            onClick={(e) => props.handleClickEditToggle(e)}
+          >
+            Edit
+          </Button>
+        )}
+        {/* </Card.Body> */}
+      </Card>
+    </>
+  );
 }
 export default SingleDocView;

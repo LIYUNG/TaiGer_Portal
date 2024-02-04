@@ -1,122 +1,143 @@
-import React from 'react';
-import { Modal, Button, Form } from 'react-bootstrap';
+import React, { useState } from 'react';
+import {
+  Box,
+  Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+  Typography
+} from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
-class AddUserModal extends React.Component {
-  state = { user_information: {} };
-  handleChange = (e) => {
+import ModalNew from '../../components/Modal';
+
+function AddUserModal(props) {
+  const { t } = useTranslation();
+  const [addUserModal, setAddUserModal] = useState({ user_information: {} });
+  const handleChange = (e) => {
     e.preventDefault();
-    var user_information_temp = { ...this.state.user_information };
-    user_information_temp[e.target.id] = e.target.value;
-    this.setState((state) => ({
-      ...state,
+    var user_information_temp = { ...addUserModal.user_information };
+    user_information_temp[e.target.name] = e.target.value;
+    setAddUserModal((prevState) => ({
+      ...prevState,
       user_information: user_information_temp
     }));
   };
-  AddUserSubmit = (e, user_information) => {
+  const AddUserSubmit = (e, user_information) => {
     e.preventDefault();
     if (
       !user_information.firstname ||
       !user_information.lastname ||
       !user_information.email
     ) {
+      /* empty */
     } else {
-      this.props.AddUserSubmit(e, user_information);
+      props.AddUserSubmit(e, user_information);
     }
   };
 
-  render() {
-    return (
-      <Modal
-        show={this.props.addUserModalState}
-        onHide={this.props.cloaseAddUserModal}
-        size="md"
-        aria-labelledby="contained-modal-title-vcenter"
-        centered
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>Add new user</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form.Group className="my-2" controlId="firstname">
-            <Form.Label>First Name</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Shiao-Ming"
-              onChange={(e) => this.handleChange(e)}
-            />
-          </Form.Group>
-          <Form.Group className="my-2" controlId="lastname">
-            <Form.Label>Last Name</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Chen"
-              onChange={(e) => this.handleChange(e)}
-            />
-          </Form.Group>
-          <Form.Group className="my-2" controlId="firstname_chinese">
-            <Form.Label>名 (中文)</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="小明"
-              onChange={(e) => this.handleChange(e)}
-            />
-          </Form.Group>
-          <Form.Group className="my-2" controlId="lastname_chinese">
-            <Form.Label>姓 (中文)</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="陳"
-              onChange={(e) => this.handleChange(e)}
-            />
-          </Form.Group>
-          <Form.Group className="my-2" controlId="applying_program_count">
-            <Form.Label>Application Count</Form.Label>
-            <Form.Control
-              as="select"
-              defaultValue={0}
-              onChange={(e) => this.handleChange(e)}
-            >
-              <option value="0">Please Select</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-              <option value="6">6</option>
-              <option value="7">7</option>
-              <option value="8">8</option>
-              <option value="9">9</option>
-              <option value="10">10</option>
-            </Form.Control>
-          </Form.Group>
-          <Form.Group className="my-2" controlId="email">
-            <Form.Label>Email</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="chung.ming.wang@gmail.com"
-              onChange={(e) => this.handleChange(e)}
-            />
-          </Form.Group>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button
-            variant="primary"
-            disabled={
-              !this.state.user_information.firstname ||
-              !this.state.user_information.lastname ||
-              !this.state.user_information.email ||
-              !this.props.isLoaded
-            }
-            onClick={(e) => this.AddUserSubmit(e, this.state.user_information)}
-          >
-            {this.props.isLoaded ? 'Add User' : 'Loading'}
-          </Button>
-          <Button onClick={this.props.cloaseAddUserModal} variant="light">
-            Cancel
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    );
-  }
+  return (
+    <ModalNew open={props.addUserModalState} onClose={props.cloaseAddUserModal}>
+      <Typography variant="h5">{t('Add New User')}</Typography>
+      <TextField
+        name="firstname"
+        required
+        fullWidth
+        label={t('First Name (English)')}
+        type="text"
+        placeholder="Shiao-Ming"
+        onChange={(e) => handleChange(e)}
+        sx={{ mb: 2 }}
+      />
+      <TextField
+        name="lastname"
+        required
+        fullWidth
+        label={t('Last Name (English)')}
+        type="text"
+        placeholder="Chen"
+        onChange={(e) => handleChange(e)}
+        sx={{ mb: 2 }}
+      />
+      <TextField
+        name="firstname_chinese"
+        required
+        fullWidth
+        label={t('名 (中文)')}
+        type="text"
+        placeholder="小明"
+        onChange={(e) => handleChange(e)}
+        sx={{ mb: 2 }}
+      />
+      <TextField
+        name="lastname_chinese"
+        required
+        fullWidth
+        label={t('姓 (中文)')}
+        type="text"
+        placeholder="陳"
+        onChange={(e) => handleChange(e)}
+        sx={{ mb: 2 }}
+      />
+      <FormControl fullWidth sx={{ mb: 2 }}>
+        <InputLabel id="Application Count">{t('Application Count')}</InputLabel>
+        <Select
+          labelId="Application Count"
+          name="applying_program_count"
+          id="Application Count"
+          value={addUserModal.user_information?.applying_program_count || '0'}
+          label={t('Application Count')}
+          onChange={(e) => handleChange(e)}
+        >
+          <MenuItem value="0">{t('Please Select')}</MenuItem>
+          <MenuItem value="1">1</MenuItem>
+          <MenuItem value="2">2</MenuItem>
+          <MenuItem value="3">3</MenuItem>
+          <MenuItem value="4">4</MenuItem>
+          <MenuItem value="5">5</MenuItem>
+          <MenuItem value="6">6</MenuItem>
+          <MenuItem value="7">7</MenuItem>
+          <MenuItem value="8">8</MenuItem>
+          <MenuItem value="9">9</MenuItem>
+          <MenuItem value="10">10</MenuItem>
+        </Select>
+      </FormControl>
+      <TextField
+        name="email"
+        required
+        fullWidth
+        label={t('Email Address')}
+        type="text"
+        placeholder="chung.ming.wang@gmail.com"
+        onChange={(e) => handleChange(e)}
+        sx={{ mb: 2 }}
+      />
+      <Box>
+        <Button
+          color="primary"
+          variant="contained"
+          disabled={
+            !addUserModal.user_information.firstname ||
+            !addUserModal.user_information.lastname ||
+            !addUserModal.user_information.email ||
+            !props.isLoaded
+          }
+          onClick={(e) => AddUserSubmit(e, addUserModal.user_information)}
+          sx={{ mr: 2 }}
+        >
+          {props.isLoaded ? t('Add User') : t('Loading')}
+        </Button>
+        <Button
+          color="secondary"
+          variant="outlined"
+          onClick={props.cloaseAddUserModal}
+        >
+          {t('Cancel')}
+        </Button>
+      </Box>
+    </ModalNew>
+  );
 }
 export default AddUserModal;

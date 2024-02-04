@@ -1,46 +1,46 @@
 import React from 'react';
-import { Modal, Form } from 'react-bootstrap';
-import { Button } from 'react-bootstrap';
+import { Button, Typography } from '@mui/material';
+import { useTranslation } from 'react-i18next';
+
+import ModalNew from '../../components/Modal';
 
 function UserArchivWarning(props) {
+  const { t } = useTranslation();
   return (
-    <Modal
-      show={props.archivUserWarning}
-      onHide={props.setModalArchivHide}
-      size="md"
+    <ModalNew
+      open={props.archivUserWarning}
+      onClose={props.setModalArchivHide}
       aria-labelledby="contained-modal-title-vcenter"
-      centered
     >
-      <Modal.Header closeButton>
-        <Modal.Title>Warning</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <h5>
-          Do you want to archiv{' '}
-          <b>
-            {props.firstname} - {props.lastname}
-          </b>
-          ?
-        </h5>
-      </Modal.Body>
+      <Typography variant="h5">Warning</Typography>
+      <Typography variant="h5">
+        Do you want to archiv{' '}
+        <b>
+          {props.firstname} - {props.lastname}
+        </b>
+        ?
+      </Typography>
 
-      <Modal.Footer>
-        <Button
-          variant="primary"
-          onClick={() =>
-            props.updateUserArchivStatus(
-              props.selected_user_id,
-              props.archiv === true ? false : true
-            )
-          }
-        >
-          {props.isLoaded ? 'Yes' : 'Loading'}
-        </Button>
-        <Button onClick={props.setModalArchivHide} variant="light">
-          No
-        </Button>
-      </Modal.Footer>
-    </Modal>
+      <Button
+        color="primary"
+        variant="contained"
+        onClick={() =>
+          props.updateUserArchivStatus(
+            props.selected_user_id,
+            props.archiv === true ? false : true
+          )
+        }
+      >
+        {props.isLoaded ? t('Yes') : t('Loading')}
+      </Button>
+      <Button
+        color="primary"
+        variant="outlined"
+        onClick={props.setModalArchivHide}
+      >
+        {t('No')}
+      </Button>
+    </ModalNew>
   );
 }
 export default UserArchivWarning;

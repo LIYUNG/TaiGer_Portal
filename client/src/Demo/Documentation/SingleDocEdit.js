@@ -1,116 +1,113 @@
-import React from 'react';
-import { Form, Row, Col, Card, Button } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
+import { Form } from 'react-bootstrap';
+
 import DocumentsListItemsEditor from './DocumentsListItemsEditor';
 import { valid_categories, valid_internal_categories } from '../Utils/contants';
+import { Typography, Card } from '@mui/material';
 
-class SingleDocEdit extends React.Component {
-  state = {
-    doc_title: this.props.document_title,
-    category: this.props.category
-  };
-  componentDidMount() {
-    this.setState({ doc_title: this.props.document_title });
-  }
-  handleChange_category = (e) => {
+function SingleDocEdit(props) {
+  const [singleDocEditState, setSingleDocEdit] = useState({
+    doc_title: props.document_title,
+    category: props.category
+  });
+
+  useEffect(() => {
+    setSingleDocEdit((prevState) => ({
+      ...prevState,
+      doc_title: props.document_title
+    }));
+  }, []);
+
+  const handleChange_category = (e) => {
     e.preventDefault();
-    var category_temp = { ...this.state.category };
+    var category_temp = { ...singleDocEditState.category };
     category_temp = e.target.value;
-    this.setState((state) => ({
-      ...state,
+    setSingleDocEdit((prevState) => ({
+      ...prevState,
       category: category_temp
     }));
   };
 
-  handleChange = (e) => {
+  const handleChange = (e) => {
     e.preventDefault();
-    var doc_title_temp = { ...this.state.doc_title };
+    var doc_title_temp = { ...singleDocEditState.doc_title };
     doc_title_temp = e.target.value;
-    this.setState((state) => ({
-      ...state,
+    setSingleDocEdit((prevState) => ({
+      ...prevState,
       doc_title: doc_title_temp
     }));
   };
 
-  handleClickSave = (e, editorState) => {
+  const handleClickSave = (e, editorState) => {
     e.preventDefault();
-    this.props.handleClickSave(
+    props.handleClickSave(
       e,
-      this.state.category,
-      this.state.doc_title,
+      singleDocEditState.category,
+      singleDocEditState.doc_title,
       editorState
     );
   };
 
-  render() {
-    return (
-      <>
-        <Card>
-          <Card.Body>
-            <Row>
-              <Col>
-                {this.props.internal ? (
-                  <>
-                    <h4>
-                      Category:<b className="text-danger">Internal</b>
-                    </h4>
-                    <Form.Group controlId="category">
-                      <Form.Control
-                        as="select"
-                        onChange={(e) => this.handleChange_category(e)}
-                        defaultValue={this.props.category}
-                      >
-                        <option value={''}>Select Document Category</option>
-                        {valid_internal_categories.map((cat, i) => (
-                          <option value={cat.key}>{cat.value}</option>
-                        ))}
-                      </Form.Control>
-                    </Form.Group>
-                  </>
-                ) : (
-                  <>
-                    <h4>
-                      Category:<b className="text-danger">Public</b>
-                    </h4>{' '}
-                    <Form.Group controlId="category">
-                      <Form.Control
-                        as="select"
-                        onChange={(e) => this.handleChange_category(e)}
-                        defaultValue={this.props.category}
-                      >
-                        <option value={''}>Select Document Category</option>
-                        {valid_categories.map((cat, i) => (
-                          <option value={cat.key}>{cat.value}</option>
-                        ))}
-                      </Form.Control>
-                    </Form.Group>
-                  </>
-                )}
-              </Col>
-            </Row>{' '}
-            <Row>
-              <Col>
-                <h4>
-                  <Form.Group controlId="document_title">
-                    <Form.Control
-                      type="text"
-                      placeholder="Title"
-                      onChange={(e) => this.handleChange(e)}
-                      defaultValue={this.props.document_title}
-                    />
-                  </Form.Group>
-                </h4>
-              </Col>
-            </Row>{' '}
-            <DocumentsListItemsEditor
-              doc_title={this.state.doc_title}
-              editorState={this.props.editorState}
-              handleClickSave={this.handleClickSave}
-              handleClickEditToggle={this.props.handleClickEditToggle}
-            />
-          </Card.Body>
-        </Card>
-      </>
-    );
-  }
+  return (
+    <>
+      <Card sx={{ p: 2, mt: 2 }}>
+        {props.internal ? (
+          <>
+            <Typography variant="body1">
+              Category:<b>Internal</b>
+            </Typography>
+            <Form.Group controlId="category">
+              <Form.Control
+                as="select"
+                onChange={(e) => handleChange_category(e)}
+                defaultValue={props.category}
+              >
+                <option value={''}>Select Document Category</option>
+                {valid_internal_categories.map((cat, i) => (
+                  <option key={i} value={cat.key}>
+                    {cat.value}
+                  </option>
+                ))}
+              </Form.Control>
+            </Form.Group>
+          </>
+        ) : (
+          <>
+            <Typography variant="body1">
+              Category: <b>Public</b>
+            </Typography>
+            <Form.Group controlId="category">
+              <Form.Control
+                as="select"
+                onChange={(e) => handleChange_category(e)}
+                defaultValue={props.category}
+              >
+                <option value={''}>Select Document Category</option>
+                {valid_categories.map((cat, i) => (
+                  <option key={i} value={cat.key}>
+                    {cat.value}
+                  </option>
+                ))}
+              </Form.Control>
+            </Form.Group>
+          </>
+        )}
+        <Form.Group controlId="document_title">
+          <Form.Control
+            type="text"
+            placeholder="Title"
+            onChange={(e) => handleChange(e)}
+            defaultValue={props.document_title}
+          />
+        </Form.Group>
+        <DocumentsListItemsEditor
+          doc_title={singleDocEditState.doc_title}
+          editorState={props.editorState}
+          handleClickSave={handleClickSave}
+          handleClickEditToggle={props.handleClickEditToggle}
+        />
+      </Card>
+    </>
+  );
 }
 export default SingleDocEdit;

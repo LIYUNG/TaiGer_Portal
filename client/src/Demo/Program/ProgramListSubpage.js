@@ -1,139 +1,124 @@
-import React from 'react';
-import { Form, Modal } from 'react-bootstrap';
-import { Button, Spinner } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
+import { Form } from 'react-bootstrap';
+import {
+  Button,
+  CircularProgress,
+  Table,
+  TableBody,
+  TableCell,
+  TableRow,
+  Typography
+} from '@mui/material';
 
-import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
-
 import { getStudents } from '../../api';
+import ModalNew from '../../components/Modal';
+import { useTranslation } from 'react-i18next';
 
-class ProgramListSubpage extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      error: '',
-      students: [],
-      isLoaded: false,
-      timeouterror: null,
-      unauthorizederror: null,
-      res_status: 0
-    };
-  }
+function ProgramListSubpage(props) {
+  const { t } = useTranslation();
+  const [programListSubpageState, setProgramListSubpageState] = useState({
+    error: '',
+    students: [],
+    isLoaded: false,
+    timeouterror: null,
+    unauthorizederror: null,
+    res_status: 0
+  });
 
-  componentDidMount() {
+  useEffect(() => {
     getStudents().then(
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
         if (success) {
-          this.setState({
+          setProgramListSubpageState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             students: data,
             success,
             res_status: status
-          });
+          }));
         } else {
-          this.setState({
+          setProgramListSubpageState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             res_status: status
-          });
+          }));
         }
       },
       (error) => {
-        this.setState((state) => ({
-          ...state,
+        setProgramListSubpageState((prevState) => ({
+          ...prevState,
           isLoaded: true,
           error,
           res_status: 500
         }));
       }
     );
+  }, []);
+
+  const { res_status, isLoaded } = programListSubpageState;
+
+  if (!isLoaded && !programListSubpageState.students) {
+    return <CircularProgress />;
   }
 
-  render() {
-    const { res_status, isLoaded } = this.state;
+  if (res_status >= 400) {
+    return <ErrorPage res_status={res_status} />;
+  }
 
-    if (!isLoaded && !this.state.students) {
-      return (
-        <div style={spinner_style}>
-          <Spinner animation="border" role="status">
-            <span className="visually-hidden"></span>
-          </Spinner>
-        </div>
-      );
-    }
-
-    if (res_status >= 400) {
-      return <ErrorPage res_status={res_status} />;
-    }
-
-    let program_names = [];
-    for (let i = 0; i < this.props.uni_name.length; i++) {
-      program_names.push(
-        this.props.uni_name[i] + ' - ' + this.props.program_name[i]
-      );
-    }
-    return (
-      <Modal
-        show={this.props.show}
-        onHide={this.props.setModalHide}
-        size="lg"
-        aria-labelledby="contained-modal-title-vcenter"
-        centered
-      >
-        <Modal.Body>
-          Assign{' '}
-          {program_names.map((program_name, i) => (
-            <p className="my-0" key={i}>
-              <b>{program_name}</b>
-            </p>
+  let program_names = [];
+  for (let i = 0; i < props.uni_name.length; i++) {
+    program_names.push(props.uni_name[i] + ' - ' + props.program_name[i]);
+  }
+  return (
+    <ModalNew
+      open={props.show}
+      onClose={props.setModalHide}
+      aria-labelledby="contained-modal-title-vcenter"
+    >
+      {t('Assign')}{' '}
+      {program_names.map((program_name, i) => (
+        <Typography variant="body1" fontWeight="bold" key={i}>
+          {program_name}
+        </Typography>
+      ))}
+      <Typography variant="body1">{t('to the student')}:</Typography>
+      <Table size="small">
+        <TableBody>
+          {programListSubpageState.students.map((student, i) => (
+            <TableRow key={i}>
+              <TableCell>
+                <Form.Group>
+                  <Form.Check
+                    type="radio"
+                    name="student_id"
+                    value={student._id}
+                    id={student._id}
+                    onChange={props.handleSetStudentId}
+                  />
+                </Form.Group>
+              </TableCell>
+              <TableCell>
+                {student.firstname}, {student.lastname}
+              </TableCell>
+            </TableRow>
           ))}
-          <p>to the student:</p>
-          <table>
-            <tbody>
-              {this.state.students.map((student, i) => (
-                <tr key={student._id} key={i}>
-                  <th>
-                    <div>
-                      <Form.Group>
-                        <Form.Check
-                          custom
-                          type="radio"
-                          name="student_id"
-                          value={student._id}
-                          id={student._id}
-                          onChange={this.props.handleSetStudentId}
-                        />
-                      </Form.Group>
-                    </div>
-                  </th>
-                  <td>
-                    {student.firstname}, {student.lastname}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button
-            disabled={this.props.isButtonDisable}
-            onClick={(e) => this.props.onSubmitAddToStudentProgramList(e)}
-          >
-            {this.props.isButtonDisable ? (
-              <Spinner animation="border" size="sm" role="status">
-                <span className="visually-hidden"></span>
-              </Spinner>
-            ) : (
-              'Assign'
-            )}
-          </Button>
-          <Button onClick={this.props.setModalHide} variant="light">
-            Cancel
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    );
-  }
+        </TableBody>
+      </Table>
+      <Button
+        variant="contained"
+        color="primary"
+        disabled={props.isButtonDisable}
+        onClick={(e) => props.onSubmitAddToStudentProgramList(e)}
+      >
+        {props.isButtonDisable ? <CircularProgress /> : t('Assign')}
+      </Button>
+      <Button variant="outlined" onClick={props.setModalHide}>
+        {t('Cancel')}
+      </Button>
+    </ModalNew>
+  );
 }
 export default ProgramListSubpage;

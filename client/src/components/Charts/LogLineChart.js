@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Button, ButtonGroup, ButtonToolbar } from 'react-bootstrap';
+import { ButtonGroup, ButtonToolbar } from 'react-bootstrap';
+import { Button } from '@mui/material';
 import {
   CartesianGrid,
   Tooltip,

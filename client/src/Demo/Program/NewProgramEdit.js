@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Form, Row, Col, Card, Button } from 'react-bootstrap';
+import { Form, Col } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
+import { Box, Button, Card, Grid, Typography } from '@mui/material';
 
 import {
   AddValidProgram,
@@ -14,7 +15,7 @@ import {
 import { appConfig } from '../../config';
 
 function NewProgramEdit(props) {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   let [initStates, setInitStates] = useState({
     program: {},
     school_name_set: new Set(props.programs.map((program) => program.school))
@@ -47,7 +48,9 @@ function NewProgramEdit(props) {
         )
       );
       setIsResultsVisible(true);
-    } catch (error) {}
+    } catch (error) {
+      /* empty */
+    }
   };
   const handleClickOutside = (event) => {
     // Check if the click target is outside of the search container and result list
@@ -96,894 +99,889 @@ function NewProgramEdit(props) {
   return (
     <>
       <Card>
-        <Card.Body>
-          <Row>
-            <Col md={4}>
-              <h5>University *</h5>
-            </Col>
-            <Col md={4}>
-              <h5>
-                <div
-                  className="search-container-school"
-                  ref={searchContainerRef}
+        <Grid container>
+          <Grid md={4}>
+            <h5>University *</h5>
+          </Grid>
+          <Grid md={4}>
+            <h5>
+              <div className="search-container-school" ref={searchContainerRef}>
+                <Form.Group controlId="school">
+                  <Form.Control
+                    type="text"
+                    placeholder="National Taiwan University"
+                    onChange={(e) => handleChange(e)}
+                    value={initStates.program.school || searchTerm}
+                  />
+                </Form.Group>
+                {/* {loading && <div>Loading...</div>} */}
+                {searchResults.length > 0
+                  ? isResultsVisible && (
+                      <div className="search-results result-list">
+                        {searchResults.map((result, i) => (
+                          <li
+                            onClick={() => onClickResultHandler(result)}
+                            key={i}
+                          >
+                            {`${result}`}
+                          </li>
+                        ))}
+                      </div>
+                    )
+                  : isResultsVisible && (
+                      <div className="search-results result-list">
+                        <li>No result</li>
+                      </div>
+                    )}
+              </div>
+            </h5>
+          </Grid>
+        </Grid>
+        <Box>
+          <Grid md={4}>
+            <h5>Program*</h5>
+          </Grid>
+          <Grid md={4}>
+            <h5>
+              <Form.Group controlId="program_name">
+                <Form.Control
+                  type="text"
+                  placeholder="Electrical Engineering"
+                  onChange={(e) => handleChange(e)}
+                  value={initStates.program.program_name || ''}
+                />
+              </Form.Group>
+            </h5>
+          </Grid>
+        </Box>
+        <Box>
+          <Grid md={4}>
+            <h5>Degree *</h5>
+          </Grid>
+          <Grid md={4}>
+            <h5>
+              <Form.Group controlId="degree">
+                <Form.Control
+                  as="select"
+                  onChange={(e) => handleChange(e)}
+                  value={initStates.program.degree}
                 >
-                  <Form.Group controlId="school">
-                    <Form.Control
-                      type="text"
-                      placeholder="National Taiwan University"
-                      onChange={(e) => handleChange(e)}
-                      value={initStates.program.school || searchTerm}
-                    />
-                  </Form.Group>
-                  {/* {loading && <div>Loading...</div>} */}
-                  {searchResults.length > 0
-                    ? isResultsVisible && (
-                        <div className="search-results result-list">
-                          {searchResults.map((result, i) => (
-                            <li
-                              onClick={() => onClickResultHandler(result)}
-                              key={i}
-                            >
-                              {`${result}`}
-                            </li>
-                          ))}
-                        </div>
-                      )
-                    : isResultsVisible && (
-                        <div className="search-results result-list">
-                          <li>No result</li>
-                        </div>
-                      )}
-                </div>
-              </h5>
-            </Col>
-          </Row>
-          <Row>
-            <Col md={4}>
-              <h5>Program*</h5>
-            </Col>
+                  {DEGREE_OPTIONS()}
+                </Form.Control>
+              </Form.Group>
+            </h5>
+          </Grid>
+        </Box>
+        <Box>
+          <Grid md={4}>
+            <h5>Semester *</h5>
+          </Grid>
+          <Grid md={4}>
+            <h5>
+              <Form.Group controlId="semester">
+                <Form.Control
+                  as="select"
+                  onChange={(e) => handleChange(e)}
+                  value={initStates.program.semester}
+                >
+                  {SEMESTER_OPTIONS()}
+                </Form.Control>
+              </Form.Group>
+            </h5>
+          </Grid>
+        </Box>
+        <Box> </Box>
+        <Box>
+          <Grid md={4}>
+            <h5>Teaching Language*</h5>
+          </Grid>
+          <Grid md={4}>
+            <h5>
+              <Form.Group controlId="lang">
+                <Form.Control
+                  as="select"
+                  onChange={(e) => handleChange(e)}
+                  defaultValue={
+                    initStates.program.lang ? initStates.program.lang : ''
+                  }
+                >
+                  {LANGUAGES_OPTIONS()}
+                </Form.Control>
+              </Form.Group>
+            </h5>
+          </Grid>
+        </Box>
+        <Box>
+          <Grid md={4}>
+            <h5>GPA Requirement (German system)</h5>
+          </Grid>
+          <Grid md={4}>
+            <h5>
+              <Form.Group controlId="gpa_requirement">
+                <Form.Control
+                  type="text"
+                  placeholder="2,5"
+                  onChange={(e) => handleChange(e)}
+                  defaultValue={
+                    initStates.program.gpa_requirement
+                      ? initStates.program.gpa_requirement
+                      : ''
+                  }
+                />
+              </Form.Group>
+            </h5>
+          </Grid>
+        </Box>
+        <Box>
+          <Grid md={4}>
+            <h5>Application Start (MM-DD)</h5>
+          </Grid>
+          <Grid md={4}>
+            <h5>
+              <Form.Group controlId="application_start">
+                <Form.Control
+                  type="text"
+                  placeholder="05-31"
+                  onChange={(e) => handleChange(e)}
+                  defaultValue={
+                    initStates.program.application_start
+                      ? initStates.program.application_start
+                      : ''
+                  }
+                />
+              </Form.Group>
+            </h5>
+          </Grid>
+        </Box>
+        <Box>
+          <Grid md={4}>
+            <h5>Application Deadline (MM-DD) *</h5>
+          </Grid>
+          <Grid md={4}>
+            <h5>
+              <Form.Group controlId="application_deadline">
+                <Form.Control
+                  type="text"
+                  placeholder="05-31"
+                  onChange={(e) => handleChange(e)}
+                  defaultValue={
+                    initStates.program.application_deadline
+                      ? initStates.program.application_deadline
+                      : ''
+                  }
+                />
+              </Form.Group>
+            </h5>
+          </Grid>
+        </Box>
+        {appConfig.vpdEnable && (
+          <Box>
+            <Grid md={4}>
+              <h5>Need Uni-Assist?</h5>
+            </Grid>
             <Col md={4}>
               <h5>
-                <Form.Group controlId="program_name">
-                  <Form.Control
-                    type="text"
-                    placeholder="Electrical Engineering"
-                    onChange={(e) => handleChange(e)}
-                    value={initStates.program.program_name || ''}
-                  />
-                </Form.Group>
-              </h5>
-            </Col>
-          </Row>
-          <Row>
-            <Col md={4}>
-              <h5>Degree *</h5>
-            </Col>
-            <Col md={4}>
-              <h5>
-                <Form.Group controlId="degree">
+                <Form.Group controlId="uni_assist">
                   <Form.Control
                     as="select"
                     onChange={(e) => handleChange(e)}
-                    value={initStates.program.degree}
+                    value={initStates.program.uni_assist}
                   >
-                    {DEGREE_OPTIONS()}
+                    <option value="No">No</option>
+                    <option value="Yes-VPD">Yes-VPD</option>
+                    <option value="Yes-Full">Yes-Full</option>
                   </Form.Control>
                 </Form.Group>
               </h5>
             </Col>
-          </Row>
-          <Row>
-            <Col md={4}>
-              <h5>Semester *</h5>
-            </Col>
-            <Col md={4}>
-              <h5>
-                <Form.Group controlId="semester">
-                  <Form.Control
-                    as="select"
-                    onChange={(e) => handleChange(e)}
-                    value={initStates.program.semester}
-                  >
-                    {SEMESTER_OPTIONS()}
-                  </Form.Control>
-                </Form.Group>
-              </h5>
-            </Col>
-          </Row>
-          <Row> </Row>
-          <Row>
-            <Col md={4}>
-              <h5>Teaching Language*</h5>
-            </Col>
-            <Col md={4}>
-              <h5>
-                <Form.Group controlId="lang">
-                  <Form.Control
-                    as="select"
-                    onChange={(e) => handleChange(e)}
-                    defaultValue={
-                      initStates.program.lang ? initStates.program.lang : ''
-                    }
-                  >
-                    {LANGUAGES_OPTIONS()}
-                  </Form.Control>
-                </Form.Group>
-              </h5>
-            </Col>
-          </Row>
-          <Row>
-            <Col md={4}>
-              <h5>GPA Requirement (German system)</h5>
-            </Col>
-            <Col md={4}>
-              <h5>
-                <Form.Group controlId="gpa_requirement">
-                  <Form.Control
-                    type="text"
-                    placeholder="2,5"
-                    onChange={(e) => handleChange(e)}
-                    defaultValue={
-                      initStates.program.gpa_requirement
-                        ? initStates.program.gpa_requirement
-                        : ''
-                    }
-                  />
-                </Form.Group>
-              </h5>
-            </Col>
-          </Row>
-          <Row>
-            <Col md={4}>
-              <h5>Application Start (MM-DD)</h5>
-            </Col>
-            <Col md={4}>
-              <h5>
-                <Form.Group controlId="application_start">
-                  <Form.Control
-                    type="text"
-                    placeholder="05-31"
-                    onChange={(e) => handleChange(e)}
-                    defaultValue={
-                      initStates.program.application_start
-                        ? initStates.program.application_start
-                        : ''
-                    }
-                  />
-                </Form.Group>
-              </h5>
-            </Col>
-          </Row>
-          <Row>
-            <Col md={4}>
-              <h5>Application Deadline (MM-DD) *</h5>
-            </Col>
-            <Col md={4}>
-              <h5>
-                <Form.Group controlId="application_deadline">
-                  <Form.Control
-                    type="text"
-                    placeholder="05-31"
-                    onChange={(e) => handleChange(e)}
-                    defaultValue={
-                      initStates.program.application_deadline
-                        ? initStates.program.application_deadline
-                        : ''
-                    }
-                  />
-                </Form.Group>
-              </h5>
-            </Col>
-          </Row>
-          {appConfig.vpdEnable && (
-            <Row>
-              <Col md={4}>
-                <h5>Need Uni-Assist?</h5>
-              </Col>
-              <Col md={4}>
-                <h5>
-                  <Form.Group controlId="uni_assist">
-                    <Form.Control
-                      as="select"
-                      onChange={(e) => handleChange(e)}
-                      value={initStates.program.uni_assist}
-                    >
-                      <option value="No">No</option>
-                      <option value="Yes-VPD">Yes-VPD</option>
-                      <option value="Yes-Full">Yes-Full</option>
-                    </Form.Control>
-                  </Form.Group>
-                </h5>
-              </Col>
-            </Row>
-          )}
-
-          <Row>
-            <Col md={4}>
-              <h5>TOEFL Requirement</h5>
-            </Col>
-            <Col md={4}>
-              <h5>
-                <Form.Group controlId="toefl">
-                  <Form.Control
-                    type="text"
-                    placeholder="88"
-                    onChange={(e) => handleChange(e)}
-                    defaultValue={
-                      initStates.program.toefl ? initStates.program.toefl : ''
-                    }
-                  />
-                </Form.Group>
-              </h5>
-            </Col>
-            <Col md={1}>
-              Reading
-              <Form.Group controlId="toefl_reading">
+          </Box>
+        )}
+        <Box>
+          <Col md={4}>
+            <Typography variant="h6">{t('TOEFL Requirement')}</Typography>
+          </Col>
+          <Col md={4}>
+            <h5>
+              <Form.Group controlId="toefl">
                 <Form.Control
                   type="text"
-                  placeholder="21"
+                  placeholder="88"
                   onChange={(e) => handleChange(e)}
                   defaultValue={
-                    initStates.program.toefl_reading
-                      ? initStates.program.toefl_reading
-                      : ''
+                    initStates.program.toefl ? initStates.program.toefl : ''
                   }
                 />
               </Form.Group>
-            </Col>
-            <Col md={1}>
-              Listening
-              <Form.Group controlId="toefl_listening">
-                <Form.Control
-                  type="text"
-                  placeholder="21"
-                  onChange={(e) => handleChange(e)}
-                  defaultValue={
-                    initStates.program.toefl_listening
-                      ? initStates.program.toefl_listening
-                      : ''
-                  }
-                />
-              </Form.Group>
-            </Col>
-            <Col md={1}>
-              Speaking
-              <Form.Group controlId="toefl_speaking">
-                <Form.Control
-                  type="text"
-                  placeholder="21"
-                  onChange={(e) => handleChange(e)}
-                  defaultValue={
-                    initStates.program.toefl_speaking
-                      ? initStates.program.toefl_speaking
-                      : ''
-                  }
-                />
-              </Form.Group>
-            </Col>
-            <Col md={1}>
-              Writing
-              <Form.Group controlId="toefl_writing">
-                <Form.Control
-                  type="text"
-                  placeholder="21"
-                  onChange={(e) => handleChange(e)}
-                  defaultValue={
-                    initStates.program.toefl_writing
-                      ? initStates.program.toefl_writing
-                      : ''
-                  }
-                />
-              </Form.Group>
-            </Col>
-          </Row>
-          <Row>
-            <Col md={4}>
-              <h5>IELTS Requirement</h5>
-            </Col>
-            <Col md={4}>
-              <h5>
-                <Form.Group controlId="ielts">
-                  <Form.Control
-                    type="text"
-                    placeholder="6.5"
-                    onChange={(e) => handleChange(e)}
-                    defaultValue={
-                      initStates.program.ielts ? initStates.program.ielts : ''
-                    }
-                  />
-                </Form.Group>
-              </h5>
-            </Col>
-            <Col md={1}>
-              Reading
-              <Form.Group controlId="ielts_reading">
-                <Form.Control
-                  type="text"
-                  placeholder="5.5"
-                  onChange={(e) => handleChange(e)}
-                  defaultValue={
-                    initStates.program.ielts_reading
-                      ? initStates.program.ielts_reading
-                      : ''
-                  }
-                />
-              </Form.Group>
-            </Col>
-            <Col md={1}>
-              Listening
-              <Form.Group controlId="ielts_listening">
+            </h5>
+          </Col>
+          <Col md={1}>
+            <Typography variant="string">{t('Reading')}</Typography>
+            <Form.Group controlId="toefl_reading">
+              <Form.Control
+                type="text"
+                placeholder="21"
+                onChange={(e) => handleChange(e)}
+                defaultValue={
+                  initStates.program.toefl_reading
+                    ? initStates.program.toefl_reading
+                    : ''
+                }
+              />
+            </Form.Group>
+          </Col>
+          <Col md={1}>
+            <Typography variant="string">{t('Listening')}</Typography>
+            <Form.Group controlId="toefl_listening">
+              <Form.Control
+                type="text"
+                placeholder="21"
+                onChange={(e) => handleChange(e)}
+                defaultValue={
+                  initStates.program.toefl_listening
+                    ? initStates.program.toefl_listening
+                    : ''
+                }
+              />
+            </Form.Group>
+          </Col>
+          <Col md={1}>
+            <Typography variant="string">{t('Speaking')}</Typography>
+            <Form.Group controlId="toefl_speaking">
+              <Form.Control
+                type="text"
+                placeholder="21"
+                onChange={(e) => handleChange(e)}
+                defaultValue={
+                  initStates.program.toefl_speaking
+                    ? initStates.program.toefl_speaking
+                    : ''
+                }
+              />
+            </Form.Group>
+          </Col>
+          <Col md={1}>
+            <Typography variant="string">{t('Writing')}</Typography>
+            <Form.Group controlId="toefl_writing">
+              <Form.Control
+                type="text"
+                placeholder="21"
+                onChange={(e) => handleChange(e)}
+                defaultValue={
+                  initStates.program.toefl_writing
+                    ? initStates.program.toefl_writing
+                    : ''
+                }
+              />
+            </Form.Group>
+          </Col>
+        </Box>
+        <Box>
+          <Col md={4}>
+            <Typography variant="h6">{t('IELTS Requirement')}</Typography>
+          </Col>
+          <Col md={4}>
+            <h5>
+              <Form.Group controlId="ielts">
                 <Form.Control
                   type="text"
                   placeholder="6.5"
                   onChange={(e) => handleChange(e)}
                   defaultValue={
-                    initStates.program.ielts_listening
-                      ? initStates.program.ielts_listening
-                      : ''
+                    initStates.program.ielts ? initStates.program.ielts : ''
                   }
                 />
               </Form.Group>
-            </Col>
-            <Col md={1}>
-              Speaking
-              <Form.Group controlId="ielts_speaking">
+            </h5>
+          </Col>
+          <Col md={1}>
+            <Typography variant="string">{t('Reading')}</Typography>
+            <Form.Group controlId="ielts_reading">
+              <Form.Control
+                type="text"
+                placeholder="5.5"
+                onChange={(e) => handleChange(e)}
+                defaultValue={
+                  initStates.program.ielts_reading
+                    ? initStates.program.ielts_reading
+                    : ''
+                }
+              />
+            </Form.Group>
+          </Col>
+          <Col md={1}>
+            <Typography variant="string">{t('Listening')}</Typography>
+            <Form.Group controlId="ielts_listening">
+              <Form.Control
+                type="text"
+                placeholder="6.5"
+                onChange={(e) => handleChange(e)}
+                defaultValue={
+                  initStates.program.ielts_listening
+                    ? initStates.program.ielts_listening
+                    : ''
+                }
+              />
+            </Form.Group>
+          </Col>
+          <Col md={1}>
+            <Typography variant="string">{t('Speaking')}</Typography>
+            <Form.Group controlId="ielts_speaking">
+              <Form.Control
+                type="text"
+                placeholder="6"
+                onChange={(e) => handleChange(e)}
+                defaultValue={
+                  initStates.program.ielts_speaking
+                    ? initStates.program.ielts_speaking
+                    : ''
+                }
+              />
+            </Form.Group>
+          </Col>
+          <Col md={1}>
+            {t('Writing')}
+            <Form.Group controlId="ielts_writing">
+              <Form.Control
+                type="text"
+                placeholder="5.5"
+                onChange={(e) => handleChange(e)}
+                defaultValue={
+                  initStates.program.ielts_writing
+                    ? initStates.program.ielts_writing
+                    : ''
+                }
+              />
+            </Form.Group>
+          </Col>
+        </Box>
+        <Box>
+          <Col md={4}>
+            <Typography variant="h6">{t('TestDaF Requirement')}</Typography>
+          </Col>
+          <Col md={4}>
+            <Typography variant="h6">
+              <Form.Group controlId="testdaf">
                 <Form.Control
                   type="text"
-                  placeholder="6"
+                  placeholder="4"
                   onChange={(e) => handleChange(e)}
                   defaultValue={
-                    initStates.program.ielts_speaking
-                      ? initStates.program.ielts_speaking
-                      : ''
+                    initStates.program.testdaf ? initStates.program.testdaf : ''
                   }
                 />
               </Form.Group>
-            </Col>
-            <Col md={1}>
-              Writing
-              <Form.Group controlId="ielts_writing">
+            </Typography>
+          </Col>
+        </Box>
+        <Box>
+          <Col md={4}>
+            <Typography variant="h6">{t('GRE Requirement')}</Typography>
+          </Col>
+          <Col md={4}>
+            <Typography variant="h6">
+              <Form.Group controlId="gre">
                 <Form.Control
                   type="text"
-                  placeholder="5.5"
+                  placeholder="V145Q160"
                   onChange={(e) => handleChange(e)}
                   defaultValue={
-                    initStates.program.ielts_writing
-                      ? initStates.program.ielts_writing
+                    initStates.program.gre ? initStates.program.gre : ''
+                  }
+                />
+              </Form.Group>
+            </Typography>
+          </Col>
+        </Box>
+        <Box>
+          <Col md={4}>
+            <Typography variant="h6">{t('GMAT Requirement')}</Typography>
+          </Col>
+          <Col md={4}>
+            <Typography variant="h6">
+              <Form.Group controlId="gmat">
+                <Form.Control
+                  type="text"
+                  placeholder="640"
+                  onChange={(e) => handleChange(e)}
+                  defaultValue={
+                    initStates.program.gmat ? initStates.program.gmat : ''
+                  }
+                />
+              </Form.Group>
+            </Typography>
+          </Col>
+        </Box>
+        <Box>
+          <Col md={4}>
+            <Typography variant="h6">{t('ML Required?')}*</Typography>
+          </Col>
+          <Col md={4}>
+            <Typography variant="h6">
+              <Form.Group controlId="ml_required">
+                <Form.Control
+                  as="select"
+                  onChange={(e) => handleChange(e)}
+                  defaultValue={
+                    initStates.program.ml_required
+                      ? initStates.program.ml_required
+                      : ''
+                  }
+                >
+                  {BINARY_STATE_OPTIONS()}
+                </Form.Control>
+              </Form.Group>
+            </Typography>
+          </Col>
+        </Box>
+        <Box>
+          <Col md={4}>
+            <Typography variant="h6">{t('ML Requirements?')}</Typography>
+          </Col>
+          <Col md={6}>
+            <Typography variant="h6">
+              <Form.Group controlId="ml_requirements">
+                <Form.Control
+                  as="textarea"
+                  rows="5"
+                  placeholder="1200-1500words"
+                  onChange={(e) => handleChange(e)}
+                  defaultValue={
+                    initStates.program.ml_requirements
+                      ? initStates.program.ml_requirements
                       : ''
                   }
                 />
               </Form.Group>
-            </Col>
-          </Row>
-          <Row>
-            <Col md={4}>
-              <h5>TestDaF Requirement</h5>
-            </Col>
-            <Col md={4}>
-              <h5>
-                <Form.Group controlId="testdaf">
-                  <Form.Control
-                    type="text"
-                    placeholder="4"
-                    onChange={(e) => handleChange(e)}
-                    defaultValue={
-                      initStates.program.testdaf
-                        ? initStates.program.testdaf
-                        : ''
-                    }
-                  />
-                </Form.Group>
-              </h5>
-            </Col>
-          </Row>
-          <Row>
-            <Col md={4}>
-              <h5>GRE Requirement</h5>
-            </Col>
-            <Col md={4}>
-              <h5>
-                <Form.Group controlId="gre">
-                  <Form.Control
-                    type="text"
-                    placeholder="V145Q160"
-                    onChange={(e) => handleChange(e)}
-                    defaultValue={
-                      initStates.program.gre ? initStates.program.gre : ''
-                    }
-                  />
-                </Form.Group>
-              </h5>
-            </Col>
-          </Row>
-          <Row>
-            <Col md={4}>
-              <h5>GMAT Requirement</h5>
-            </Col>
-            <Col md={4}>
-              <h5>
-                <Form.Group controlId="gmat">
-                  <Form.Control
-                    type="text"
-                    placeholder="640"
-                    onChange={(e) => handleChange(e)}
-                    defaultValue={
-                      initStates.program.gmat ? initStates.program.gmat : ''
-                    }
-                  />
-                </Form.Group>
-              </h5>
-            </Col>
-          </Row>
-          <Row>
-            <Col md={4}>
-              <h5>ML Required? *</h5>
-            </Col>
-            <Col md={4}>
-              <h5>
-                <Form.Group controlId="ml_required">
-                  <Form.Control
-                    as="select"
-                    onChange={(e) => handleChange(e)}
-                    defaultValue={
-                      initStates.program.ml_required
-                        ? initStates.program.ml_required
-                        : ''
-                    }
-                  >
-                    {BINARY_STATE_OPTIONS()}
-                  </Form.Control>
-                </Form.Group>
-              </h5>
-            </Col>
-          </Row>
-          <Row>
-            <Col md={4}>
-              <h5>ML Requirements</h5>
-            </Col>
-            <Col md={6}>
-              <h5>
-                <Form.Group controlId="ml_requirements">
-                  <Form.Control
-                    as="textarea"
-                    rows="5"
-                    placeholder="1200-1500words"
-                    onChange={(e) => handleChange(e)}
-                    defaultValue={
-                      initStates.program.ml_requirements
-                        ? initStates.program.ml_requirements
-                        : ''
-                    }
-                  />
-                </Form.Group>
-              </h5>
-            </Col>
-          </Row>
-          <Row>
-            <Col md={4}>
-              <h5>RL Required? *</h5>
-            </Col>
-            <Col md={4}>
-              <h5>
-                <Form.Group controlId="rl_required">
-                  <Form.Control
-                    as="select"
-                    onChange={(e) => handleChange(e)}
-                    defaultValue={
-                      initStates.program.rl_required
-                        ? initStates.program.rl_required
-                        : '0'
-                    }
-                  >
-                    <option value="0">no</option>
-                    <option value="1">yes - 1</option>
-                    <option value="2">yes - 2</option>
-                    <option value="3">yes - 3</option>
-                  </Form.Control>
-                </Form.Group>
-              </h5>
-            </Col>
-          </Row>
-          <Row>
-            <Col md={4}>
-              <h5>RL Requirements</h5>
-            </Col>
-            <Col md={6}>
-              <h5>
-                <Form.Group controlId="rl_requirements">
-                  <Form.Control
-                    as="textarea"
-                    rows="5"
-                    placeholder="1 page"
-                    onChange={(e) => handleChange(e)}
-                    defaultValue={
-                      initStates.program.rl_requirements
-                        ? initStates.program.rl_requirements
-                        : ''
-                    }
-                  />
-                </Form.Group>
-              </h5>
-            </Col>
-          </Row>
-          <Row>
-            <Col md={4}>
-              <h5>Essay Required? *</h5>
-            </Col>
-            <Col md={4}>
-              <h5>
-                <Form.Group controlId="essay_required">
-                  <Form.Control
-                    as="select"
-                    onChange={(e) => handleChange(e)}
-                    defaultValue={
-                      initStates.program.essay_required
-                        ? initStates.program.essay_required
-                        : ''
-                    }
-                  >
-                    {BINARY_STATE_OPTIONS()}
-                  </Form.Control>
-                </Form.Group>
-              </h5>
-            </Col>
-          </Row>
-          <Row>
-            <Col md={4}>
-              <h5>Essay Requirements</h5>
-            </Col>
-            <Col md={6}>
-              <h5>
-                <Form.Group controlId="essay_requirements">
-                  <Form.Control
-                    as="textarea"
-                    rows="5"
-                    placeholder="2000 words"
-                    onChange={(e) => handleChange(e)}
-                    defaultValue={
-                      initStates.program.essay_requirements
-                        ? initStates.program.essay_requirements
-                        : ''
-                    }
-                  />
-                </Form.Group>
-              </h5>
-            </Col>
-          </Row>
-          <Row>
-            <Col md={4}>
-              <h5>Portfolio Required?</h5>
-            </Col>
-            <Col md={4}>
-              <h5>
-                <Form.Group controlId="portfolio_required">
-                  <Form.Control
-                    as="select"
-                    onChange={(e) => handleChange(e)}
-                    defaultValue={
-                      initStates.program.portfolio_required
-                        ? initStates.program.portfolio_required
-                        : ''
-                    }
-                  >
-                    {BINARY_STATE_OPTIONS()}
-                  </Form.Control>
-                </Form.Group>
-              </h5>
-            </Col>
-          </Row>
-          <Row>
-            <Col md={4}>
-              <h5>Portfolio Requirements</h5>
-            </Col>
-            <Col md={6}>
-              <h5>
-                <Form.Group controlId="portfolio_requirements">
-                  <Form.Control
-                    as="textarea"
-                    rows="5"
-                    placeholder="2000 words"
-                    onChange={(e) => handleChange(e)}
-                    defaultValue={
-                      initStates.program.portfolio_requirements
-                        ? initStates.program.portfolio_requirements
-                        : ''
-                    }
-                  />
-                </Form.Group>
-              </h5>
-            </Col>
-          </Row>
-          <Row>
-            <Col md={4}>
-              <h5>Supplementary Form Required?</h5>
-            </Col>
-            <Col md={4}>
-              <h5>
-                <Form.Group controlId="supplementary_form_required">
-                  <Form.Control
-                    as="select"
-                    onChange={(e) => handleChange(e)}
-                    defaultValue={
-                      initStates.program.supplementary_form_required
-                        ? initStates.program.supplementary_form_required
-                        : ''
-                    }
-                  >
-                    {BINARY_STATE_OPTIONS()}
-                  </Form.Control>
-                </Form.Group>
-              </h5>
-            </Col>
-          </Row>
-          <Row>
-            <Col md={4}>
-              <h5>Supplementary Form Requirements</h5>
-            </Col>
-            <Col md={6}>
-              <h5>
-                <Form.Group controlId="supplementary_form_requirements">
-                  <Form.Control
-                    as="textarea"
-                    rows="5"
-                    placeholder="2000 words"
-                    onChange={(e) => handleChange(e)}
-                    defaultValue={
-                      initStates.program.supplementary_form_requirements
-                        ? initStates.program.supplementary_form_requirements
-                        : ''
-                    }
-                  />
-                </Form.Group>
-              </h5>
-            </Col>
-          </Row>
-          <Row>
-            <Col md={4}>
-              <h5>ECTS Requirements</h5>
-            </Col>
-            <Col md={6}>
-              <h5>
-                <Form.Group controlId="ects_requirements">
-                  <Form.Control
-                    as="textarea"
-                    rows="5"
-                    placeholder="Mathematics 20 ECTS, Electrical Engineering 15 ECTS, Computer architecture 8 ECTS..."
-                    onChange={(e) => handleChange(e)}
-                    defaultValue={
-                      initStates.program.ects_requirements
-                        ? initStates.program.ects_requirements
-                        : ''
-                    }
-                  />
-                </Form.Group>
-              </h5>
-            </Col>
-          </Row>
-          <Row>
-            <Col md={4}>
-              <h5>Special Notes</h5>
-            </Col>
-            <Col md={6}>
-              <h5>
-                <Form.Group controlId="special_notes">
-                  <Form.Control
-                    as="textarea"
-                    rows="5"
-                    placeholder="2000 words"
-                    onChange={(e) => handleChange(e)}
-                    defaultValue={
-                      initStates.program.special_notes
-                        ? initStates.program.special_notes
-                        : ''
-                    }
-                  />
-                </Form.Group>
-              </h5>
-            </Col>
-          </Row>
-          <Row>
-            {' '}
-            <Col md={4}>
-              <h5>Comments</h5>
-            </Col>
-            <Col md={6}>
-              <h5>
-                <Form.Group controlId="comments">
-                  <Form.Control
-                    as="textarea"
-                    rows="5"
-                    placeholder="2000 words"
-                    onChange={(e) => handleChange(e)}
-                    defaultValue={
-                      initStates.program.comments
-                        ? initStates.program.comments
-                        : ''
-                    }
-                  />
-                </Form.Group>
-              </h5>
-            </Col>
-          </Row>
-          <Row>
-            <Col md={4}>
-              <h5>Portal 1 link url</h5>
-            </Col>
-            <Col md={4}>
-              <h5>
-                <Form.Group controlId="application_portal_a">
-                  <Form.Control
-                    type="text"
-                    placeholder="url"
-                    onChange={(e) => handleChange(e)}
-                    defaultValue={
-                      initStates.program.application_portal_a
-                        ? initStates.program.application_portal_a
-                        : ''
-                    }
-                  />
-                </Form.Group>
-              </h5>
-            </Col>
-          </Row>
-          <Row>
-            <Col md={4}>
-              <h5>Portal 1 {appConfig.companyName} Instrution link url</h5>
-            </Col>
-            <Col md={4}>
-              <h5>
-                <Form.Group controlId="application_portal_a_instructions">
-                  <Form.Control
-                    type="text"
-                    placeholder="url"
-                    onChange={(e) => handleChange(e)}
-                    defaultValue={
-                      initStates.program.application_portal_a_instructions
-                        ? initStates.program.application_portal_a_instructions
-                        : ''
-                    }
-                  />
-                </Form.Group>
-              </h5>
-            </Col>
-          </Row>
-          <Row>
-            <Col md={4}>
-              <h5>Portal 2 link url</h5>
-            </Col>
-            <Col md={4}>
-              <h5>
-                <Form.Group controlId="application_portal_b">
-                  <Form.Control
-                    type="text"
-                    placeholder="url"
-                    onChange={(e) => handleChange(e)}
-                    defaultValue={
-                      initStates.program.application_portal_b
-                        ? initStates.program.application_portal_b
-                        : ''
-                    }
-                  />
-                </Form.Group>
-              </h5>
-            </Col>
-          </Row>
-          <Row>
-            <Col md={4}>
-              <h5>Portal 2 {appConfig.companyName} Instrution link url</h5>
-            </Col>
-            <Col md={4}>
-              <h5>
-                <Form.Group controlId="application_portal_b_instructions">
-                  <Form.Control
-                    type="text"
-                    placeholder="url"
-                    onChange={(e) => handleChange(e)}
-                    defaultValue={
-                      initStates.program.application_portal_b_instructions
-                        ? initStates.program.application_portal_b_instructions
-                        : ''
-                    }
-                  />
-                </Form.Group>
-              </h5>
-            </Col>
-          </Row>
-          <Row>
-            <Col md={4}>
-              <h5>Website</h5>
-            </Col>
-            <Col md={4}>
-              <h5>
-                <Form.Group controlId="website">
-                  <Form.Control
-                    type="text"
-                    placeholder="url"
-                    onChange={(e) => handleChange(e)}
-                    defaultValue={
-                      initStates.program.website
-                        ? initStates.program.website
-                        : ''
-                    }
-                  />
-                </Form.Group>
-              </h5>
-            </Col>
-          </Row>
-          <Row>
-            <Col md={4}>
-              <h5>Country*</h5>
-            </Col>
-            <Col md={4}>
-              <h5>
-                <Form.Group controlId="country">
-                  <Form.Control
-                    as="select"
-                    onChange={(e) => handleChange(e)}
-                    defaultValue={
-                      initStates.program.country
-                        ? initStates.program.country
-                        : ''
-                    }
-                  >
-                    {COUNTRIES_OPTIONS()}
-                  </Form.Control>
-                </Form.Group>
-              </h5>
-            </Col>
-          </Row>
-          <Row>
-            <Col md={4}>
-              <h5>FPSO</h5>
-            </Col>
-            <Col md={4}>
-              <h5>
-                <Form.Group controlId="fpso">
-                  <Form.Control
-                    type="text"
-                    placeholder="url"
-                    onChange={(e) => handleChange(e)}
-                    defaultValue={
-                      initStates.program.fpso ? initStates.program.fpso : ''
-                    }
-                  />
-                </Form.Group>
-              </h5>
-            </Col>
-          </Row>
-          <Row>
-            <Col md={4}>
-              <h5>Group</h5>
-            </Col>
-            <Col md={6}>
-              <h5>
-                <Form.Group controlId="study_group_flag">
-                  <Form.Control
-                    type="text"
-                    placeholder="ee"
-                    onChange={(e) => handleChange(e)}
-                    defaultValue={
-                      initStates.program.study_group_flag
-                        ? initStates.program.study_group_flag
-                        : ''
-                    }
-                  />
-                </Form.Group>
-              </h5>
-            </Col>
-          </Row>
-          <p>*: Must fill fields</p>
-        </Card.Body>
+            </Typography>
+          </Col>
+        </Box>
+        <Box>
+          <Col md={4}>
+            <h5>RL Required? *</h5>
+          </Col>
+          <Col md={4}>
+            <h5>
+              <Form.Group controlId="rl_required">
+                <Form.Control
+                  as="select"
+                  onChange={(e) => handleChange(e)}
+                  defaultValue={
+                    initStates.program.rl_required
+                      ? initStates.program.rl_required
+                      : '0'
+                  }
+                >
+                  <option value="0">no</option>
+                  <option value="1">yes - 1</option>
+                  <option value="2">yes - 2</option>
+                  <option value="3">yes - 3</option>
+                </Form.Control>
+              </Form.Group>
+            </h5>
+          </Col>
+        </Box>
+        <Box>
+          <Col md={4}>
+            <Typography variant="h6">{t('RL Requirements?')}</Typography>
+          </Col>
+          <Col md={6}>
+            <Typography variant="h6">
+              <Form.Group controlId="rl_requirements">
+                <Form.Control
+                  as="textarea"
+                  rows="5"
+                  placeholder="1 page"
+                  onChange={(e) => handleChange(e)}
+                  defaultValue={
+                    initStates.program.rl_requirements
+                      ? initStates.program.rl_requirements
+                      : ''
+                  }
+                />
+              </Form.Group>
+            </Typography>
+          </Col>
+        </Box>
+        <Box>
+          <Col md={4}>
+            <h5>Essay Required? *</h5>
+          </Col>
+          <Col md={4}>
+            <h5>
+              <Form.Group controlId="essay_required">
+                <Form.Control
+                  as="select"
+                  onChange={(e) => handleChange(e)}
+                  defaultValue={
+                    initStates.program.essay_required
+                      ? initStates.program.essay_required
+                      : ''
+                  }
+                >
+                  {BINARY_STATE_OPTIONS()}
+                </Form.Control>
+              </Form.Group>
+            </h5>
+          </Col>
+        </Box>
+        <Box>
+          <Col md={4}>
+            <h5>Essay Requirements</h5>
+          </Col>
+          <Col md={6}>
+            <h5>
+              <Form.Group controlId="essay_requirements">
+                <Form.Control
+                  as="textarea"
+                  rows="5"
+                  placeholder="2000 words"
+                  onChange={(e) => handleChange(e)}
+                  defaultValue={
+                    initStates.program.essay_requirements
+                      ? initStates.program.essay_requirements
+                      : ''
+                  }
+                />
+              </Form.Group>
+            </h5>
+          </Col>
+        </Box>
+        <Box>
+          <Col md={4}>
+            <Typography variant="h6">{t('Portfolio Required?')}</Typography>
+          </Col>
+          <Col md={4}>
+            <Typography variant="h6">
+              <Form.Group controlId="portfolio_required">
+                <Form.Control
+                  as="select"
+                  onChange={(e) => handleChange(e)}
+                  defaultValue={
+                    initStates.program.portfolio_required
+                      ? initStates.program.portfolio_required
+                      : ''
+                  }
+                >
+                  {BINARY_STATE_OPTIONS()}
+                </Form.Control>
+              </Form.Group>
+            </Typography>
+          </Col>
+        </Box>
+        <Box>
+          <Col md={4}>
+            <Typography variant="h6">{t('Portfolio Requirements')}</Typography>
+          </Col>
+          <Col md={6}>
+            <h5>
+              <Form.Group controlId="portfolio_requirements">
+                <Form.Control
+                  as="textarea"
+                  rows="5"
+                  placeholder="2000 words"
+                  onChange={(e) => handleChange(e)}
+                  defaultValue={
+                    initStates.program.portfolio_requirements
+                      ? initStates.program.portfolio_requirements
+                      : ''
+                  }
+                />
+              </Form.Group>
+            </h5>
+          </Col>
+        </Box>
+        <Box>
+          <Col md={4}>
+            <h5>Supplementary Form Required?</h5>
+          </Col>
+          <Col md={4}>
+            <h5>
+              <Form.Group controlId="supplementary_form_required">
+                <Form.Control
+                  as="select"
+                  onChange={(e) => handleChange(e)}
+                  defaultValue={
+                    initStates.program.supplementary_form_required
+                      ? initStates.program.supplementary_form_required
+                      : ''
+                  }
+                >
+                  {BINARY_STATE_OPTIONS()}
+                </Form.Control>
+              </Form.Group>
+            </h5>
+          </Col>
+        </Box>
+        <Box>
+          <Col md={4}>
+            <h5>Supplementary Form Requirements</h5>
+          </Col>
+          <Col md={6}>
+            <h5>
+              <Form.Group controlId="supplementary_form_requirements">
+                <Form.Control
+                  as="textarea"
+                  rows="5"
+                  placeholder="2000 words"
+                  onChange={(e) => handleChange(e)}
+                  defaultValue={
+                    initStates.program.supplementary_form_requirements
+                      ? initStates.program.supplementary_form_requirements
+                      : ''
+                  }
+                />
+              </Form.Group>
+            </h5>
+          </Col>
+        </Box>
+        <Box>
+          <Col md={4}>
+            <h5>ECTS Requirements</h5>
+          </Col>
+          <Col md={6}>
+            <h5>
+              <Form.Group controlId="ects_requirements">
+                <Form.Control
+                  as="textarea"
+                  rows="5"
+                  placeholder="Mathematics 20 ECTS, Electrical Engineering 15 ECTS, Computer architecture 8 ECTS..."
+                  onChange={(e) => handleChange(e)}
+                  defaultValue={
+                    initStates.program.ects_requirements
+                      ? initStates.program.ects_requirements
+                      : ''
+                  }
+                />
+              </Form.Group>
+            </h5>
+          </Col>
+        </Box>
+        <Box>
+          <Col md={4}>
+            <h5>Special Notes</h5>
+          </Col>
+          <Col md={6}>
+            <h5>
+              <Form.Group controlId="special_notes">
+                <Form.Control
+                  as="textarea"
+                  rows="5"
+                  placeholder="2000 words"
+                  onChange={(e) => handleChange(e)}
+                  defaultValue={
+                    initStates.program.special_notes
+                      ? initStates.program.special_notes
+                      : ''
+                  }
+                />
+              </Form.Group>
+            </h5>
+          </Col>
+        </Box>
+        <Box>
+          {' '}
+          <Col md={4}>
+            <h5>Comments</h5>
+          </Col>
+          <Col md={6}>
+            <h5>
+              <Form.Group controlId="comments">
+                <Form.Control
+                  as="textarea"
+                  rows="5"
+                  placeholder="2000 words"
+                  onChange={(e) => handleChange(e)}
+                  defaultValue={
+                    initStates.program.comments
+                      ? initStates.program.comments
+                      : ''
+                  }
+                />
+              </Form.Group>
+            </h5>
+          </Col>
+        </Box>
+        <Box>
+          <Col md={4}>
+            <h5>Portal 1 link url</h5>
+          </Col>
+          <Col md={4}>
+            <h5>
+              <Form.Group controlId="application_portal_a">
+                <Form.Control
+                  type="text"
+                  placeholder="url"
+                  onChange={(e) => handleChange(e)}
+                  defaultValue={
+                    initStates.program.application_portal_a
+                      ? initStates.program.application_portal_a
+                      : ''
+                  }
+                />
+              </Form.Group>
+            </h5>
+          </Col>
+        </Box>
+        <Box>
+          <Col md={4}>
+            <h5>Portal 1 {appConfig.companyName} Instrution link url</h5>
+          </Col>
+          <Col md={4}>
+            <h5>
+              <Form.Group controlId="application_portal_a_instructions">
+                <Form.Control
+                  type="text"
+                  placeholder="url"
+                  onChange={(e) => handleChange(e)}
+                  defaultValue={
+                    initStates.program.application_portal_a_instructions
+                      ? initStates.program.application_portal_a_instructions
+                      : ''
+                  }
+                />
+              </Form.Group>
+            </h5>
+          </Col>
+        </Box>
+        <Box>
+          <Col md={4}>
+            <h5>Portal 2 link url</h5>
+          </Col>
+          <Col md={4}>
+            <h5>
+              <Form.Group controlId="application_portal_b">
+                <Form.Control
+                  type="text"
+                  placeholder="url"
+                  onChange={(e) => handleChange(e)}
+                  defaultValue={
+                    initStates.program.application_portal_b
+                      ? initStates.program.application_portal_b
+                      : ''
+                  }
+                />
+              </Form.Group>
+            </h5>
+          </Col>
+        </Box>
+        <Box>
+          <Col md={4}>
+            <h5>Portal 2 {appConfig.companyName} Instrution link url</h5>
+          </Col>
+          <Col md={4}>
+            <h5>
+              <Form.Group controlId="application_portal_b_instructions">
+                <Form.Control
+                  type="text"
+                  placeholder="url"
+                  onChange={(e) => handleChange(e)}
+                  defaultValue={
+                    initStates.program.application_portal_b_instructions
+                      ? initStates.program.application_portal_b_instructions
+                      : ''
+                  }
+                />
+              </Form.Group>
+            </h5>
+          </Col>
+        </Box>
+        <Box>
+          <Col md={4}>
+            <h5>Website</h5>
+          </Col>
+          <Col md={4}>
+            <h5>
+              <Form.Group controlId="website">
+                <Form.Control
+                  type="text"
+                  placeholder="url"
+                  onChange={(e) => handleChange(e)}
+                  defaultValue={
+                    initStates.program.website ? initStates.program.website : ''
+                  }
+                />
+              </Form.Group>
+            </h5>
+          </Col>
+        </Box>
+        <Box>
+          <Col md={4}>
+            <h5>Country*</h5>
+          </Col>
+          <Col md={4}>
+            <h5>
+              <Form.Group controlId="country">
+                <Form.Control
+                  as="select"
+                  onChange={(e) => handleChange(e)}
+                  defaultValue={
+                    initStates.program.country ? initStates.program.country : ''
+                  }
+                >
+                  {COUNTRIES_OPTIONS()}
+                </Form.Control>
+              </Form.Group>
+            </h5>
+          </Col>
+        </Box>
+        <Box>
+          <Col md={4}>
+            <h5>FPSO</h5>
+          </Col>
+          <Col md={4}>
+            <h5>
+              <Form.Group controlId="fpso">
+                <Form.Control
+                  type="text"
+                  placeholder="url"
+                  onChange={(e) => handleChange(e)}
+                  defaultValue={
+                    initStates.program.fpso ? initStates.program.fpso : ''
+                  }
+                />
+              </Form.Group>
+            </h5>
+          </Col>
+        </Box>
+        <Box>
+          <Col md={4}>
+            <h5>Group</h5>
+          </Col>
+          <Col md={6}>
+            <h5>
+              <Form.Group controlId="study_group_flag">
+                <Form.Control
+                  type="text"
+                  placeholder="ee"
+                  onChange={(e) => handleChange(e)}
+                  defaultValue={
+                    initStates.program.study_group_flag
+                      ? initStates.program.study_group_flag
+                      : ''
+                  }
+                />
+              </Form.Group>
+            </h5>
+          </Col>
+        </Box>
+        <Typography>*: Must fill fields</Typography>
+        <Button
+          size="small"
+          color="primary"
+          variant="contained"
+          onClick={(e) => handleSubmit_Program(e, initStates.program)}
+        >
+          {t('Create')}
+        </Button>
+        <Button
+          size="small"
+          color="secondary"
+          variant="outlined"
+          onClick={() => props.handleClick()}
+        >
+          {t('Cancel')}
+        </Button>
       </Card>
-      <Button
-        size="sm"
-        onClick={(e) => handleSubmit_Program(e, initStates.program)}
-      >
-        Create
-      </Button>
-      <Button size="sm" onClick={() => props.handleClick()} variant="light">
-        Cancel
-      </Button>
     </>
   );
 }

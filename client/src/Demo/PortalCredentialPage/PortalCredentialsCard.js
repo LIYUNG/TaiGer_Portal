@@ -1,20 +1,31 @@
-import React, { useState, useEffect } from 'react';
-import { Row, Col, Spinner, Button, Card, Modal, Form } from 'react-bootstrap';
-import 'react-datasheet-grid/dist/style.css';
+import React, { useState, useEffect, Fragment } from 'react';
+import { Link as LinkDom } from 'react-router-dom';
+// import 'react-datasheet-grid/dist/style.css';
+import { useTranslation } from 'react-i18next';
+import {
+  Button,
+  Divider,
+  Grid,
+  Box,
+  Breadcrumbs,
+  Card,
+  Link,
+  Typography,
+  TextField
+} from '@mui/material';
 
-import Aux from '../../hoc/_Aux';
-import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
-
 import { getPortalCredentials, postPortalCredentials } from '../../api';
 import Banner from '../../components/Banner/Banner';
 import { TabTitle } from '../Utils/TabTitle';
-import { Link, Redirect } from 'react-router-dom';
-import { BsMessenger } from 'react-icons/bs';
 import DEMO from '../../store/constant';
+import { appConfig } from '../../config';
+import Loading from '../../components/Loading/Loading';
+import ModalNew from '../../components/Modal';
 
 export default function PortalCredentialsCard(props) {
+  const { t } = useTranslation();
   let [statedata, setStatedata] = useState({
     error: '',
     isLoaded: false,
@@ -161,7 +172,7 @@ export default function PortalCredentialsCard(props) {
     }));
     postPortalCredentials(student_id, program_id, credentials).then(
       (resp) => {
-        const { data, success } = resp.data;
+        const { success } = resp.data;
         const { status } = resp;
         if (success) {
           setStatedata((state) => ({
@@ -186,14 +197,13 @@ export default function PortalCredentialsCard(props) {
         }
       },
       (error) => {
-        const { statusText } = resp;
         setStatedata((state) => ({
           ...state,
           isLoaded: true,
           isUpdating: false,
           error,
           res_modal_status: 500,
-          res_modal_message: statusText
+          res_modal_message: ''
         }));
         alert('Course Update failed. Please try later.');
       }
@@ -216,13 +226,7 @@ export default function PortalCredentialsCard(props) {
   };
 
   if (!statedata.isLoaded) {
-    return (
-      <div style={spinner_style}>
-        <Spinner animation="border" role="status">
-          <span className="visually-hidden"></span>
-        </Spinner>
-      </div>
-    );
+    return <Loading />;
   }
 
   TabTitle(
@@ -234,7 +238,7 @@ export default function PortalCredentialsCard(props) {
   }
 
   return (
-    <Aux>
+    <Box>
       {statedata.res_modal_status >= 400 && (
         <ModalMain
           ConfirmError={ConfirmError}
@@ -243,297 +247,266 @@ export default function PortalCredentialsCard(props) {
         />
       )}
       {!props.showTitle && (
-        <Row className="sticky-top ">
-          <Col>
-            <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
-              <Card.Header text={'dark'}>
-                <Card.Title>
-                  <Row>
-                    <Col className="my-0 mx-0 text-light">
-                      <Link
-                        className="text-warning"
-                        to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-                          statedata.student._id.toString(),
-                          DEMO.PROFILE
-                        )}`}
-                      >
-                        {statedata.student.firstname}{' '}
-                        {statedata.student.lastname}{' '}
-                      </Link>
-                      Portal Credentials
-                      <Link
-                        to={`${DEMO.COMMUNICATIONS_LINK(
-                          statedata.student._id.toString()
-                        )}`}
-                        className="ms-3 my-0"
-                      >
-                        <Button size="sm" className="my-0">
-                          <BsMessenger color="white" size={16} /> <b>Message</b>
-                        </Button>
-                      </Link>
-                    </Col>
-                  </Row>
-                </Card.Title>
-              </Card.Header>
-            </Card>
-          </Col>
-        </Row>
+        <Breadcrumbs aria-label="breadcrumb">
+          <Link
+            underline="hover"
+            color="inherit"
+            component={LinkDom}
+            to={`${DEMO.DASHBOARD_LINK}`}
+          >
+            {appConfig.companyName}
+          </Link>
+          <Typography color="text.primary">Portal Credentials</Typography>
+        </Breadcrumbs>
       )}
 
-      <Row>
-        <Col sm={12}>
-          <Card className="mb-2 mx-0">
-            <Card.Body>
-              <Row>
-                <Col>
-                  <p>
-                    請到下列各學校網站 [<b>Link</b>]{' '}
-                    申請該校的申請平台帳號密碼，並在此頁面提供帳號密碼，方便日後Agent為您登入檢查上傳文件正確性。若有
-                    [<b>Instructions</b>]{' '}
-                    連結，請點入連結，依照裡面教學完成。填完帳號密碼，請務必點擊{' '}
-                    <Button size="sm">Update</Button>儲存。
-                  </p>
-                  <p>
-                    Please share your universities' application portals
-                    credentials here. Your agent(s) can help you review your
-                    applications in universities' application portals, when you
-                    are blocked.
-                  </p>
-                </Col>
-              </Row>
-              {statedata.applications.map((application, i) => (
-                <>
-                  {application.decided === 'O' && (
-                    <>
-                      <hr></hr>
-                      <div>
-                        <a
-                          href={`/programs/${application.programId._id.toString()}`}
-                          target="_blank"
-                        >
-                          <b>
-                            {application.programId.school}
-                            {' - '}
-                            {application.programId.program_name}
-                          </b>
-                        </a>{' '}
-                        {(application.programId.application_portal_a ||
-                          application.programId.application_portal_b) && (
-                          <Button
-                            size="sm"
-                            onClick={(e) =>
-                              onSubmit(
-                                statedata.student._id.toString(),
-                                application.programId._id.toString(),
-                                statedata.credentials[
-                                  application.programId._id.toString()
-                                ]
-                              )
-                            }
-                            disabled={
-                              !statedata.isUpdateLoaded[
-                                application.programId._id.toString()
-                              ] ||
-                              !statedata.isChanged[
-                                application.programId._id.toString()
-                              ]
-                            }
-                          >
-                            {!statedata.isUpdateLoaded[
-                              application.programId._id.toString()
-                            ]
-                              ? 'Updating'
-                              : 'Update'}
-                          </Button>
-                        )}
-                      </div>
+      <Card sx={{ padding: 2 }}>
+        <Typography>
+          請到下列各學校網站 [<b>Link</b>]{' '}
+          申請該校的申請平台帳號密碼，並在此頁面提供帳號密碼，方便日後Agent為您登入檢查上傳文件正確性。若有
+          [<b>Instructions</b>]{' '}
+          連結，請點入連結，依照裡面教學完成。填完帳號密碼，請務必點擊{' '}
+          <Button color="primary" variant="contained" size="small">
+            {t('Update')}
+          </Button>
+          儲存。
+        </Typography>
+        <Typography sx={{ mb: 2 }}>
+          Please share your universities&apos; application portals credentials
+          here. Your agent(s) can help you review your applications in
+          universities&apos; application portals, when you are blocked.
+        </Typography>
+
+        {statedata.applications.map((application, i) => (
+          <Fragment key={i}>
+            {application.decided === 'O' && (
+              <>
+                <Divider></Divider>
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <Typography sx={{ marginLeft: 2, marginTop: 1 }}>
+                      <Link
+                        underline="hover"
+                        href={`/programs/${application.programId._id.toString()}`}
+                        target="_blank"
+                      >
+                        <b>
+                          {application.programId.school}
+                          {' - '}
+                          {application.programId.program_name}
+                        </b>
+                      </Link>{' '}
                       {(application.programId.application_portal_a ||
                         application.programId.application_portal_b) && (
-                        <>
-                          {((application.programId.application_portal_a &&
-                            (!statedata.credentials[
+                        <Button
+                          color="primary"
+                          variant="contained"
+                          size="small"
+                          onClick={() =>
+                            onSubmit(
+                              statedata.student._id.toString(),
+                              application.programId._id.toString(),
+                              statedata.credentials[
+                                application.programId._id.toString()
+                              ]
+                            )
+                          }
+                          disabled={
+                            !statedata.isUpdateLoaded[
                               application.programId._id.toString()
-                            ].account_portal_a ||
-                              !statedata.credentials[
-                                application.programId._id.toString()
-                              ].password_portal_a)) ||
-                            (application.programId.application_portal_b &&
-                              (!statedata.credentials[
-                                application.programId._id.toString()
-                              ].account_portal_b ||
-                                !statedata.credentials[
-                                  application.programId._id.toString()
-                                ].password_portal_b))) && (
-                            <div>
-                              <Banner
-                                ReadOnlyMode={true}
-                                bg={'danger'}
-                                title={'Warning:'}
-                                path={'/'}
-                                text={
-                                  'Please register and provide credentials here:'
-                                }
-                                link_name={''}
-                                // removeBanner={this.removeBanner}
-                                notification_key={'x'}
-                              ></Banner>
-                            </div>
-                          )}
-
-                          <Row>
-                            <Col md={3}>
-                              <b>Account</b>
-                            </Col>
-                            <Col md={3}>
-                              <b>Password</b>
-                            </Col>
-                            <Col md={3}>
-                              <b>Link</b>
-                            </Col>
-                            <Col md={3}>
-                              <b>Instructions</b>
-                            </Col>
-                          </Row>
-                          {application.programId.application_portal_a && (
-                            <Row>
-                              <Col md={3}>
-                                <Form.Group
-                                  controlId={`${application.programId._id.toString()}_application_portal_a_account`}
-                                  className="my-0 mx-0"
-                                >
-                                  <Form.Control
-                                    type="text"
-                                    placeholder="account"
-                                    onChange={(e) => onChange(e)}
-                                    defaultValue={
-                                      statedata.credentials[
-                                        application.programId._id.toString()
-                                      ].account_portal_a
-                                    }
-                                  />
-                                </Form.Group>
-                              </Col>
-                              <Col md={3}>
-                                <Form.Group
-                                  controlId={`${application.programId._id.toString()}_application_portal_a_password`}
-                                  className="my-0 mx-0"
-                                >
-                                  <Form.Control
-                                    type="text"
-                                    placeholder="password"
-                                    onChange={(e) => onChange(e)}
-                                    defaultValue={
-                                      statedata.credentials[
-                                        application.programId._id.toString()
-                                      ].password_portal_a
-                                    }
-                                  />
-                                </Form.Group>
-                              </Col>
-                              <Col md={3}>
-                                <a
-                                  href={`${application.programId.application_portal_a}`}
-                                  target="_blank"
-                                >
-                                  {application.programId.application_portal_a}
-                                </a>
-                              </Col>
-                              <Col md={3}>
-                                <a
-                                  href={`${application.programId.application_portal_a_instructions}`}
-                                  target="_blank"
-                                >
-                                  {
-                                    application.programId
-                                      .application_portal_a_instructions
-                                  }
-                                </a>
-                              </Col>
-                            </Row>
-                          )}
-                          {application.programId.application_portal_b && (
-                            <Row>
-                              <Col md={3}>
-                                <Form.Group
-                                  controlId={`${application.programId._id.toString()}_application_portal_b_account`}
-                                  className="my-1 mx-0"
-                                >
-                                  <Form.Control
-                                    type="text"
-                                    placeholder="account"
-                                    onChange={(e) => onChange(e)}
-                                    defaultValue={
-                                      statedata.credentials[
-                                        application.programId._id.toString()
-                                      ].account_portal_b
-                                    }
-                                  />
-                                </Form.Group>
-                              </Col>
-                              <Col md={3}>
-                                <Form.Group
-                                  controlId={`${application.programId._id.toString()}_application_portal_b_password`}
-                                  className="my-1 mx-0"
-                                >
-                                  <Form.Control
-                                    type="text"
-                                    placeholder="password"
-                                    onChange={(e) => onChange(e)}
-                                    defaultValue={
-                                      statedata.credentials[
-                                        application.programId._id.toString()
-                                      ].password_portal_b
-                                    }
-                                  />
-                                </Form.Group>
-                              </Col>
-                              <Col md={3}>
-                                <a
-                                  href={`${application.programId.application_portal_b}`}
-                                  target="_blank"
-                                >
-                                  {application.programId.application_portal_b}
-                                </a>
-                              </Col>
-                              <Col md={3}>
-                                <a
-                                  href={`${application.programId.application_portal_b_instructions}`}
-                                  target="_blank"
-                                >
-                                  {
-                                    application.programId
-                                      .application_portal_b_instructions
-                                  }
-                                </a>
-                              </Col>
-                            </Row>
-                          )}
-                        </>
+                            ] ||
+                            !statedata.isChanged[
+                              application.programId._id.toString()
+                            ]
+                          }
+                        >
+                          {!statedata.isUpdateLoaded[
+                            application.programId._id.toString()
+                          ]
+                            ? t('Updating')
+                            : t('Update')}
+                        </Button>
                       )}
-                    </>
-                  )}
-                </>
-              ))}
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-      <Modal
-        show={statedata.confirmModalWindowOpen}
-        onHide={closeModal}
+                    </Typography>
+                  </Grid>
+                </Grid>
+                {(application.programId.application_portal_a ||
+                  application.programId.application_portal_b) && (
+                  <>
+                    {((application.programId.application_portal_a &&
+                      (!statedata.credentials[
+                        application.programId._id.toString()
+                      ].account_portal_a ||
+                        !statedata.credentials[
+                          application.programId._id.toString()
+                        ].password_portal_a)) ||
+                      (application.programId.application_portal_b &&
+                        (!statedata.credentials[
+                          application.programId._id.toString()
+                        ].account_portal_b ||
+                          !statedata.credentials[
+                            application.programId._id.toString()
+                          ].password_portal_b))) && (
+                      <div>
+                        <Banner
+                          ReadOnlyMode={true}
+                          bg={'danger'}
+                          title={'warning'}
+                          path={'/'}
+                          text={'Please register and provide credentials here:'}
+                          link_name={''}
+                          // removeBanner={this.removeBanner}
+                          notification_key={undefined}
+                        ></Banner>
+                      </div>
+                    )}
+                    <Grid
+                      container
+                      spacing={2}
+                      sx={{ marginLeft: 0, marginTop: 0 }}
+                    >
+                      <Grid item xs={3}>
+                        <b>{t('Account')}</b>
+                      </Grid>
+                      <Grid item xs={3}>
+                        <b>{t('Password')}</b>
+                      </Grid>
+                      <Grid item xs={3}>
+                        <b>{t('Link')}</b>
+                      </Grid>
+                      <Grid item xs={3}>
+                        <b>{t('Instructions')}</b>
+                      </Grid>
+                    </Grid>
+                    {application.programId.application_portal_a && (
+                      <Grid container spacing={2} sx={{ marginLeft: 0 }}>
+                        <Grid item xs={3}>
+                          <TextField
+                            type="text"
+                            size="small"
+                            id={`${application.programId._id.toString()}_application_portal_a_account`}
+                            placeholder="account"
+                            onChange={(e) => onChange(e)}
+                            value={
+                              statedata.credentials[
+                                application.programId._id.toString()
+                              ].account_portal_a
+                            }
+                          />
+                        </Grid>
+                        <Grid item xs={3}>
+                          <TextField
+                            type="text"
+                            size="small"
+                            id={`${application.programId._id.toString()}_application_portal_a_password`}
+                            placeholder="password"
+                            onChange={(e) => onChange(e)}
+                            value={
+                              statedata.credentials[
+                                application.programId._id.toString()
+                              ].password_portal_a
+                            }
+                          />
+                        </Grid>
+                        <Grid item xs={3}>
+                          <Link
+                            underline="hover"
+                            to={`${application.programId.application_portal_a}`}
+                            component={LinkDom}
+                            target="_blank"
+                          >
+                            {application.programId.application_portal_a}
+                          </Link>
+                        </Grid>
+                        <Grid item xs={3}>
+                          <Link
+                            underline="hover"
+                            to={`${application.programId.application_portal_a_instructions}`}
+                            component={LinkDom}
+                            target="_blank"
+                          >
+                            {
+                              application.programId
+                                .application_portal_a_instructions
+                            }
+                          </Link>
+                        </Grid>
+                      </Grid>
+                    )}
+                    {application.programId.application_portal_b && (
+                      <Grid container spacing={2} sx={{ marginLeft: 0 }}>
+                        <Grid item xs={3}>
+                          <TextField
+                            type="text"
+                            size="small"
+                            id={`${application.programId._id.toString()}_application_portal_b_account`}
+                            placeholder="account"
+                            onChange={(e) => onChange(e)}
+                            defaultValue={
+                              statedata.credentials[
+                                application.programId._id.toString()
+                              ].account_portal_b
+                            }
+                          />
+                        </Grid>
+                        <Grid item xs={3}>
+                          <TextField
+                            type="text"
+                            size="small"
+                            id={`${application.programId._id.toString()}_application_portal_b_password`}
+                            placeholder="password"
+                            onChange={(e) => onChange(e)}
+                            defaultValue={
+                              statedata.credentials[
+                                application.programId._id.toString()
+                              ].password_portal_b
+                            }
+                          />
+                        </Grid>
+                        <Grid item xs={3}>
+                          <Link
+                            underline="hover"
+                            to={`${application.programId.application_portal_b}`}
+                            component={LinkDom}
+                            target="_blank"
+                          >
+                            {application.programId.application_portal_b}
+                          </Link>
+                        </Grid>
+                        <Grid item xs={3}>
+                          <Link
+                            underline="hover"
+                            to={`${application.programId.application_portal_b_instructions}`}
+                            component={LinkDom}
+                            target="_blank"
+                          >
+                            {
+                              application.programId
+                                .application_portal_b_instructions
+                            }
+                          </Link>
+                        </Grid>
+                      </Grid>
+                    )}
+                  </>
+                )}
+              </>
+            )}
+          </Fragment>
+        ))}
+      </Card>
+      <ModalNew
+        open={statedata.confirmModalWindowOpen}
+        onClose={closeModal}
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
-        <Modal.Header>
-          <Modal.Title id="contained-modal-title-vcenter">
-            Confirmation
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>Update portal credentials successfully</Modal.Body>
-        <Modal.Footer>
-          <Button onClick={closeModal}>Close</Button>
-        </Modal.Footer>
-      </Modal>
-    </Aux>
+        <Typography variant="h5">{t('Confirmation')}</Typography>
+        <Typography>{t('Update portal credentials successfully')}</Typography>
+        <Button color="primary" variant="outlined" onClick={closeModal}>
+          {t('Close')}
+        </Button>
+      </ModalNew>
+    </Box>
   );
 }

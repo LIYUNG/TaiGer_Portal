@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import PropTypes from 'prop-types';
-import './../../../assets/scss/style.scss';
-import { Spinner } from 'react-bootstrap';
-import Aux from '../../../hoc/_Aux';
+import { useTranslation } from 'react-i18next';
+
 import { register } from '../../../api';
-import { appConfig } from '../../../config';
+import AuthWrapper from '../../../components/AuthWrapper';
+import { Button, Typography } from '@mui/material';
 
 export default function SignUp1({ userData }) {
+  const { t } = useTranslation();
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [passwordconfirm, setPasswordConfirm] = useState();
@@ -62,7 +62,6 @@ export default function SignUp1({ userData }) {
       }
     } catch (err) {
       // TODO: handle error
-      // console.log(err);
     }
   };
 
@@ -71,124 +70,67 @@ export default function SignUp1({ userData }) {
     setButtondisable(buttondisable);
     handleSubmit(e);
   };
-  // render() {
+
   if (signupsuccess) {
     return (
-      <Aux>
-        <div className="auth-wrapper">
-          <div className="auth-content">
-            <form>
-              <div className="card-body text-center">
-                <img
-                  className="mb-3 img-radius"
-                  src={appConfig.LoginPageLogo}
-                  alt="Generic placeholder"
-                />
-                <h3 className="mb-3 text-info">Confirmation Email sent</h3>
-                <div className="input-group mb-3">
-                  <p className="mb-3 text-secondary">
-                    Please go to your email and activate your registration.
-                  </p>
-                </div>
-                <NavLink to="/">
-                  <button
-                    className="btn btn-success shadow-2 mb-3"
-                    disabled={buttondisable}
-                  >
-                    {buttondisable ? (
-                      <Spinner animation="border" role="status" size="sm">
-                        <span className="visually-hidden"></span>
-                      </Spinner>
-                    ) : (
-                      'Login'
-                    )}
-                  </button>
-                </NavLink>
-              </div>
-            </form>
-          </div>
-        </div>
-      </Aux>
+      <AuthWrapper>
+        <Typography variant="h5">{t('Confirmation Email sent')}</Typography>
+        <Typography variant="h6">
+          {t('Please go to your email and activate your registration.')}
+        </Typography>
+        <NavLink to="/account/login">
+          <Button color="success" disabled={buttondisable}>
+            {buttondisable ? <CircularProgress /> : t('Login')}
+          </Button>
+        </NavLink>
+      </AuthWrapper>
     );
   } else {
     return (
-      <Aux>
-        <div className="auth-wrapper">
-          <div className="auth-content">
-            <form>
-              <div className="card-body text-center">
-                <img
-                  className="mb-2 img-radius"
-                  src={appConfig.LoginPageLogo}
-                  alt="Generic placeholder"
-                />
-                <h3 className="mb-3 text-info">Sign up</h3>
-                <div className="input-group mb-3">
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="First name"
-                    onChange={(e) => setFirstame(e.target.value)}
-                  />
-                </div>
-                <div className="input-group mb-3">
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Last name"
-                    onChange={(e) => setLastname(e.target.value)}
-                  />
-                </div>
-                <div className="input-group mb-3">
-                  <input
-                    type="email"
-                    className="form-control"
-                    placeholder="Email"
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
-                </div>
-                <div className="input-group mb-3">
-                  <input
-                    type="password"
-                    className="form-control"
-                    placeholder="Password"
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
-                </div>
-                <div className="input-group mb-3">
-                  <input
-                    type="password"
-                    className="form-control"
-                    placeholder="Password confirmation"
-                    onChange={(e) => setPasswordConfirm(e.target.value)}
-                  />
-                </div>
-                <button
-                  className="btn btn-success shadow-2 mb-3"
-                  disabled={buttondisable}
-                  onClick={(e) => onButtonClick(e, true)}
-                >
-                  {buttondisable ? (
-                    <Spinner animation="border" role="status" size="sm">
-                      <span className="visually-hidden"></span>
-                    </Spinner>
-                  ) : (
-                    'Sign up'
-                  )}
-                </button>
-                <p className="mb-0 text-light">Already have an account?</p>
-                <NavLink to="/login">
-                  <p className="mb-0 text-info">Login</p>Login
-                </NavLink>
-              </div>
-            </form>
-          </div>
-        </div>
-      </Aux>
+      <AuthWrapper>
+        <Typography variant="h5">{t('Sign up')}</Typography>
+        <input
+          type="text"
+          className="form-control"
+          placeholder="First name"
+          onChange={(e) => setFirstame(e.target.value)}
+        />
+        <input
+          type="text"
+          className="form-control"
+          placeholder="Last name"
+          onChange={(e) => setLastname(e.target.value)}
+        />
+        <input
+          type="email"
+          className="form-control"
+          placeholder="Email"
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <input
+          type="password"
+          className="form-control"
+          placeholder="Password"
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <input
+          type="password"
+          className="form-control"
+          placeholder="Password confirmation"
+          onChange={(e) => setPasswordConfirm(e.target.value)}
+        />
+        <Button
+          color="success"
+          disabled={buttondisable}
+          onClick={(e) => onButtonClick(e, true)}
+        >
+          {buttondisable ? <CircularProgress /> : t('Sign up')}
+        </Button>
+        <Typography>{t('Already have an account?')}</Typography>
+        <NavLink to="/login">
+          <Typography>{t('Login')}</Typography>
+        </NavLink>
+      </AuthWrapper>
     );
   }
 }
-
-SignUp1.propTypes = {
-  setToken: PropTypes.func.isRequired
-};

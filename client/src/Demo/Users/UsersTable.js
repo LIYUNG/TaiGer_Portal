@@ -1,13 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Spinner, Card, Button, Tabs, Tab } from 'react-bootstrap';
-import { Redirect } from 'react-router-dom';
+import { Navigate, Link as LinkDom } from 'react-router-dom';
+import {
+  Button,
+  Tabs,
+  Tab,
+  Box,
+  Link,
+  Typography,
+  Breadcrumbs
+} from '@mui/material';
+import PropTypes from 'prop-types';
 import { AiOutlinePlus } from 'react-icons/ai';
 import { useTranslation } from 'react-i18next';
 
-import Aux from '../../hoc/_Aux';
 import UsersList from './UsersList';
 import AddUserModal from './AddUserModal';
-import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import DEMO from '../../store/constant';
@@ -19,9 +26,20 @@ import {
   is_TaiGer_Editor,
   is_TaiGer_Student
 } from '../Utils/checking-functions';
+import { useAuth } from '../../components/AuthProvider';
+import { appConfig } from '../../config';
+import Loading from '../../components/Loading/Loading';
+import { CustomTabPanel, a11yProps } from '../../components/Tabs';
 
-function UsersTable(props) {
-  const { t, i18n } = useTranslation();
+CustomTabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.number.isRequired,
+  value: PropTypes.number.isRequired
+};
+
+function UsersTable() {
+  const { user } = useAuth();
+  const { t } = useTranslation();
   const [userTableState, setUserTableState] = useState({
     error: null,
     addUserModalState: false,
@@ -32,7 +50,11 @@ function UsersTable(props) {
     res_modal_message: '',
     res_modal_status: 0
   });
+  const [value, setValue] = useState(0);
 
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
   useEffect(() => {
     getUsers().then(
       (resp) => {
@@ -115,40 +137,30 @@ function UsersTable(props) {
     }));
   };
 
-  if (!is_TaiGer_Admin(props.user)) {
-    return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
+  if (!is_TaiGer_Admin(user)) {
+    return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
   }
   TabTitle('User List');
   const { res_modal_message, res_modal_status, res_status, isLoaded } =
     userTableState;
 
   if (!isLoaded && !userTableState.users) {
-    return (
-      <div style={spinner_style}>
-        <Spinner animation="border" role="status">
-          <span className="visually-hidden"></span>
-        </Spinner>
-      </div>
-    );
+    return <Loading />;
   }
   if (res_status >= 400) {
     return <ErrorPage res_status={res_status} />;
   }
-  const student_list = userTableState.users.filter((usr, x) =>
+  const student_list = userTableState.users.filter((usr) =>
     is_TaiGer_Student(usr)
   );
-  const agent_list = userTableState.users.filter((usr, x) =>
-    is_TaiGer_Agent(usr)
-  );
-  const editor_list = userTableState.users.filter((usr, x) =>
+  const agent_list = userTableState.users.filter((usr) => is_TaiGer_Agent(usr));
+  const editor_list = userTableState.users.filter((usr) =>
     is_TaiGer_Editor(usr)
   );
-  const admin_list = userTableState.users.filter((usr, x) =>
-    is_TaiGer_Admin(usr)
-  );
+  const admin_list = userTableState.users.filter((usr) => is_TaiGer_Admin(usr));
 
   return (
-    <Aux>
+    <Box>
       {res_modal_status >= 400 && (
         <ModalMain
           ConfirmError={ConfirmError}
@@ -156,75 +168,87 @@ function UsersTable(props) {
           res_modal_message={res_modal_message}
         />
       )}
-      <Row>
-        <Button onClick={openAddUserModal}>
-          <AiOutlinePlus /> {t('Add New User')}
-        </Button>
-      </Row>
-      <Row>
-        <Col>
-          <Card bg={'primary'} text="light">
-            <Card.Header>
-              <Card.Title className="my-0 mx-0 text-light">
-                {t('User List')}
-              </Card.Title>
-            </Card.Header>
-            <Tabs
-              defaultActiveKey={'Student'}
-              id="student_user_list"
-              fill={true}
-              justify={true}
-              className="py-0 my-0 mx-0"
-            >
-              <Tab
-                eventKey="Student"
-                title={`${t('Student')} (${student_list?.length})`}
-              >
-                <UsersList
-                  success={userTableState.success}
-                  isLoaded={userTableState.isLoaded}
-                  users={student_list}
-                />
-              </Tab>
-              <Tab
-                eventKey={'Agents'}
-                title={`${t('Agents')} (${agent_list.length})`}
-              >
-                <UsersList
-                  success={userTableState.success}
-                  isLoaded={userTableState.isLoaded}
-                  users={agent_list}
-                />
-              </Tab>
-              <Tab
-                eventKey="Editor"
-                title={`${t('Editor')} (${editor_list.length})`}
-              >
-                <UsersList
-                  success={userTableState.success}
-                  isLoaded={userTableState.isLoaded}
-                  users={editor_list}
-                />
-              </Tab>
-              <Tab
-                eventKey="Admin"
-                title={`${t('Admin')} (${admin_list.length})`}
-              >
-                <UsersList
-                  success={userTableState.success}
-                  isLoaded={userTableState.isLoaded}
-                  users={admin_list}
-                />
-              </Tab>
-            </Tabs>
-          </Card>
-        </Col>
-      </Row>
-      <Row>
-        <Button onClick={openAddUserModal}>
-          <AiOutlinePlus /> {t('Add New User')}
-        </Button>
-      </Row>
+      <Breadcrumbs aria-label="breadcrumb">
+        <Link
+          underline="hover"
+          color="inherit"
+          component={LinkDom}
+          to={`${DEMO.DASHBOARD_LINK}`}
+        >
+          {appConfig.companyName}
+        </Link>
+        <Typography color="text.primary">{t('User List')}</Typography>
+      </Breadcrumbs>
+      <Button
+        fullWidth
+        size="small"
+        color="primary"
+        variant="contained"
+        onClick={openAddUserModal}
+      >
+        <AiOutlinePlus /> {t('Add New User')}
+      </Button>
+      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+        <Tabs
+          value={value}
+          onChange={handleChange}
+          aria-label="basic tabs example"
+        >
+          <Tab
+            label={`${t('Student')} (${student_list?.length})`}
+            {...a11yProps(0)}
+          />
+          <Tab
+            label={`${t('Agents')} (${agent_list.length})`}
+            {...a11yProps(1)}
+          />
+          <Tab
+            label={`${t('Editor')} (${editor_list.length})`}
+            {...a11yProps(2)}
+          />
+          <Tab
+            label={`${t('Admin')} (${admin_list.length})`}
+            {...a11yProps(3)}
+          />
+        </Tabs>
+      </Box>
+      <CustomTabPanel value={value} index={0}>
+        <UsersList
+          success={userTableState.success}
+          isLoaded={userTableState.isLoaded}
+          users={student_list}
+        />
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={1}>
+        <UsersList
+          success={userTableState.success}
+          isLoaded={userTableState.isLoaded}
+          users={agent_list}
+        />
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={2}>
+        <UsersList
+          success={userTableState.success}
+          isLoaded={userTableState.isLoaded}
+          users={editor_list}
+        />
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={3}>
+        <UsersList
+          success={userTableState.success}
+          isLoaded={userTableState.isLoaded}
+          users={admin_list}
+        />
+      </CustomTabPanel>
+      <Button
+        fullWidth
+        size="small"
+        color="primary"
+        variant="contained"
+        onClick={openAddUserModal}
+      >
+        <AiOutlinePlus /> {t('Add New User')}
+      </Button>
       <AddUserModal
         isLoaded={userTableState.isLoaded}
         addUserModalState={userTableState.addUserModalState}
@@ -234,7 +258,7 @@ function UsersTable(props) {
         selected_user_id={userTableState.selected_user_id}
         AddUserSubmit={AddUserSubmit}
       />
-    </Aux>
+    </Box>
   );
 }
 

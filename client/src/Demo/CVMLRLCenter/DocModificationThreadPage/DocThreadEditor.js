@@ -1,17 +1,13 @@
 import React, { useEffect, useState } from 'react';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+import SendIcon from '@mui/icons-material/Send';
+
 import EditorSimple from '../../../components/EditorJs/EditorSimple';
-import {
-  Row,
-  Col,
-  Button,
-  Form,
-  OverlayTrigger,
-  Tooltip,
-  Card
-} from 'react-bootstrap';
+import { Button, Grid, Card, Input } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 function DocThreadEditor(props) {
-  const [show, setShow] = useState(false);
+  const { t } = useTranslation();
   let [statedata, setStatedata] = useState({
     editorState: props.editorState
   });
@@ -30,49 +26,60 @@ function DocThreadEditor(props) {
 
   const renderTooltip = (props) => (
     <Tooltip id="tooltip-disabled" {...props}>
-      Please write some text to improve the communication and
-      understanding.
+      Please write some text to improve the communication and understanding.
     </Tooltip>
   );
 
   return (
     <>
-      <Row style={{ textDecoration: 'none' }}>
-        <Col className="my-0 mx-0">
-          <Card border="dark">
-            <Card.Body border="dark">
-              <EditorSimple
-                holder={'editorjs'}
-                thread={props.thread}
-                defaultHeight={0}
-                readOnly={false}
-                imageEnable={true}
-                handleEditorChange={handleEditorChange}
-                handleClickSave={props.handleClickSave}
-                editorState={props.editorState}
-                setStatedata={setStatedata}
-              />
-            </Card.Body>
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <Card sx={{ px: 4, pt: 2, minHeight: 200 }}>
+            <EditorSimple
+              holder={'editorjs'}
+              thread={props.thread}
+              defaultHeight={0}
+              readOnly={false}
+              imageEnable={true}
+              handleEditorChange={handleEditorChange}
+              handleClickSave={props.handleClickSave}
+              editorState={props.editorState}
+              setStatedata={setStatedata}
+            />
           </Card>
-        </Col>
-      </Row>
-      <Row>
-        <Col md={8}>
-          <Form.Group controlId="formFile" className="mb-2">
+        </Grid>
+        <Grid item xs={12}>
+          <Input
+            fullWidth
+            inputComponent="input"
+            inputProps={{ multiple: true }}
+            type="file"
+            onChange={(e) => props.onFileChange(e)}
+            // inputRef={this.fileInputRef}
+          />
+          {/* <Button type="submit" variant="contained" color="primary">
+              Submit
+            </Button> */}
+          {/* <TextField
+            fullWidth
+            size="small"
+            type="file"
+            multiple
+            onChange={(e) => props.onFileChange(e)}
+          /> */}
+          {/* <Form.Group controlId="formFile">
             <Form.Control
               type="file"
               multiple
               onChange={(e) => props.onFileChange(e)}
             />
-          </Form.Group>
-        </Col>
-        <Col className="mt-2" md={4}>
+          </Form.Group> */}
+        </Grid>
+        <Grid item xs={12}>
           (Choose max. 3 files with different extensions: .pdf, .docx, .jgp, and
           overall 2MB!)
-        </Col>
-      </Row>
-      <Row>
-        <Col className="my-0 mx-0">
+        </Grid>
+        <Grid item xs={12}>
           {!statedata.editorState.blocks ||
           statedata.editorState.blocks.length === 0 ||
           props.buttonDisabled ? (
@@ -82,20 +89,29 @@ function DocThreadEditor(props) {
               overlay={renderTooltip}
             >
               <span className="d-inline-block">
-                <Button disabled={true} style={{ pointerEvents: 'none' }}>
-                  Send
+                <Button
+                  color="primary"
+                  variant="contained"
+                  disabled={true}
+                  style={{ pointerEvents: 'none' }}
+                  startIcon={<SendIcon />}
+                >
+                  {t('Send')}
                 </Button>
               </span>
             </OverlayTrigger>
           ) : (
             <Button
+              color="primary"
+              variant="contained"
               onClick={(e) => props.handleClickSave(e, statedata.editorState)}
+              startIcon={<SendIcon />}
             >
-              Send
+              {t('Send')}
             </Button>
           )}
-        </Col>
-      </Row>
+        </Grid>
+      </Grid>
     </>
   );
 }

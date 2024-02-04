@@ -1,19 +1,22 @@
-import React from 'react';
-import { Button, Card, Modal, Spinner } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
+import { AiFillCheckCircle } from 'react-icons/ai';
+import { Card, Button, Typography } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
-import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
-
-import { deleteInterview, getInterview, updateInterview } from '../../api';
+import { deleteInterview, getInterview } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import InterviewItems from './InterviewItems';
 import DEMO from '../../store/constant';
-import { Link } from 'react-router-dom';
-import { AiFillCheckCircle } from 'react-icons/ai';
+import Loading from '../../components/Loading/Loading';
+import ModalNew from '../../components/Modal';
 
-class SingleInterview extends React.Component {
-  state = {
+function SingleInterview() {
+  const { interview_id } = useParams();
+  const { t } = useTranslation();
+  const [singleInterviewState, setSingleInterviewState] = useState({
     error: '',
     author: '',
     isLoaded: false,
@@ -25,14 +28,19 @@ class SingleInterview extends React.Component {
     res_status: 0,
     res_modal_message: '',
     res_modal_status: 0
-  };
-  componentDidMount() {
-    getInterview(this.props.match.params.interview_id).then(
+  });
+
+  useEffect(() => {
+    getInterview(interview_id).then(
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
         if (!data) {
-          this.setState({ isLoaded: true, res_status: status });
+          setSingleInterviewState((prevState) => ({
+            ...prevState,
+            isLoaded: true,
+            res_status: status
+          }));
         }
         if (success) {
           var initialEditorState = null;
@@ -42,145 +50,99 @@ class SingleInterview extends React.Component {
           } else {
             initialEditorState = { time: new Date(), blocks: [] };
           }
-          this.setState({
+          setSingleInterviewState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             interview: data,
             editorState: initialEditorState,
             author,
             success: success,
             res_status: status
-          });
+          }));
         } else {
-          this.setState({
+          setSingleInterviewState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             res_status: status
-          });
+          }));
         }
       },
       (error) => {
-        this.setState((state) => ({
-          ...state,
+        setSingleInterviewState((prevState) => ({
+          ...prevState,
           isLoaded: true,
           error,
           res_status: 500
         }));
       }
     );
-  }
+  }, [interview_id]);
 
-  componentDidUpdate(prevProps, prevState) {
-    if (
-      prevProps.match.params.interview_id !==
-      this.props.match.params.interview_id
-    ) {
-      getInterview(this.props.match.params.interview_id).then(
-        (resp) => {
-          const { data, success } = resp.data;
-          const { status } = resp;
-          if (!data) {
-            this.setState({ isLoaded: true, res_status: status });
-          }
-          if (success) {
-            var initialEditorState = null;
-            const author = data.author;
-            if (data.interview_description) {
-              initialEditorState = JSON.parse(data.interview_description);
-            } else {
-              initialEditorState = { time: new Date(), blocks: [] };
-            }
-            this.setState({
-              isLoaded: true,
-              interview: data,
-              editorState: initialEditorState,
-              author,
-              success: success,
-              res_status: status
-            });
-          } else {
-            this.setState({
-              isLoaded: true,
-              res_status: status
-            });
-          }
-        },
-        (error) => {
-          this.setState((state) => ({
-            ...state,
-            isLoaded: true,
-            error,
-            res_status: 500
-          }));
-        }
-      );
-    }
-  }
+  // const handleClickSave = (e, interview, editorState) => {
+  //   e.preventDefault();
+  //   const message = JSON.stringify(editorState);
+  //   const interviewData_temp = interview;
+  //   interviewData_temp.interview_description = message;
+  //   updateInterview(interview_id, interviewData_temp).then(
+  //     (resp) => {
+  //       const { success, data } = resp.data;
+  //       const { status } = resp;
+  //       if (success) {
+  //         setSingleInterviewState((prevState) => ({
+  //           ...prevState,
+  //           success,
+  //           interview: data,
+  //           editorState,
+  //           isEdit: !singleInterviewState.isEdit,
+  //           author: data.author,
+  //           isLoaded: true,
+  //           res_modal_status: status
+  //         }));
+  //       } else {
+  //         const { message } = resp.data;
+  //         setSingleInterviewState((prevState) => ({
+  //           ...prevState,
+  //           isLoaded: true,
+  //           res_modal_message: message,
+  //           res_modal_status: status
+  //         }));
+  //       }
+  //     },
+  //     (error) => {
+  //       setSingleInterviewState((prevState) => ({
+  //         ...prevState,
+  //         error
+  //       }));
+  //     }
+  //   );
+  //   setSingleInterviewState((state) => ({ ...state, in_edit_mode: false }));
+  // };
 
-  handleClickEditToggle = (e) => {
-    this.setState((state) => ({ ...state, isEdit: !this.state.isEdit }));
-  };
-  handleClickSave = (e, interview, editorState) => {
-    e.preventDefault();
-    const message = JSON.stringify(editorState);
-    const interviewData_temp = interview;
-    interviewData_temp.interview_description = message;
-    updateInterview(
-      this.props.match.params.interview_id,
-      interviewData_temp
-    ).then(
-      (resp) => {
-        const { success, data } = resp.data;
-        const { status } = resp;
-        if (success) {
-          this.setState({
-            success,
-            interview: data,
-            editorState,
-            isEdit: !this.state.isEdit,
-            author: data.author,
-            isLoaded: true,
-            res_modal_status: status
-          });
-        } else {
-          const { message } = resp.data;
-          this.setState((state) => ({
-            ...state,
-            isLoaded: true,
-            res_modal_message: message,
-            res_modal_status: status
-          }));
-        }
-      },
-      (error) => {
-        this.setState({ error });
-      }
-    );
-    this.setState((state) => ({ ...state, in_edit_mode: false }));
-  };
-
-  openDeleteDocModalWindow = (e, interview) => {
+  const openDeleteDocModalWindow = (e, interview) => {
     e.stopPropagation();
-    this.setState((state) => ({
-      ...state,
+    setSingleInterviewState((prevState) => ({
+      ...prevState,
       interview_id_toBeDelete: interview._id,
       interview_name_toBeDelete: `${interview.program_id.school} ${interview.program_id.program_name}`,
       SetDeleteDocModel: true
     }));
   };
 
-  closeDeleteDocModalWindow = (e) => {
-    this.setState((state) => ({
-      ...state,
+  const closeDeleteDocModalWindow = () => {
+    setSingleInterviewState((prevState) => ({
+      ...prevState,
       SetDeleteDocModel: false
     }));
   };
 
-  handleDeleteInterview = (doc) => {
-    deleteInterview(this.state.interview._id.toString()).then(
+  const handleDeleteInterview = () => {
+    deleteInterview(singleInterviewState.interview._id.toString()).then(
       (resp) => {
         const { success } = resp.data;
         const { status } = resp;
         if (success) {
-          this.setState({
+          setSingleInterviewState((prevState) => ({
+            ...prevState,
             success,
             SetDeleteDocModel: false,
             isEdit: false,
@@ -188,11 +150,11 @@ class SingleInterview extends React.Component {
             interview: null,
             isLoaded: true,
             res_modal_status: status
-          });
+          }));
         } else {
           const { message } = resp.data;
-          this.setState((state) => ({
-            ...state,
+          setSingleInterviewState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             res_modal_message: message,
             res_modal_status: status
@@ -200,105 +162,88 @@ class SingleInterview extends React.Component {
         }
       },
       (error) => {
-        const { statusText } = resp;
-        this.setState((state) => ({
-          ...state,
+        setSingleInterviewState((prevState) => ({
+          ...prevState,
           isLoaded: true,
           error,
           res_modal_status: 500,
-          res_modal_message: statusText
+          res_modal_message: ''
         }));
       }
     );
   };
 
-  ConfirmError = () => {
-    this.setState((state) => ({
-      ...state,
+  const ConfirmError = () => {
+    setSingleInterviewState((prevState) => ({
+      ...prevState,
       res_modal_status: 0,
       res_modal_message: ''
     }));
   };
 
-  render() {
-    const {
-      res_status,
-      editorState,
-      interview,
-      isDeleteSuccessful,
-      isLoaded,
-      res_modal_status,
-      res_modal_message
-    } = this.state;
+  const {
+    res_status,
+    editorState,
+    interview,
+    isDeleteSuccessful,
+    isLoaded,
+    res_modal_status,
+    res_modal_message
+  } = singleInterviewState;
 
-    if (!isLoaded && !editorState) {
-      return (
-        <div style={spinner_style}>
-          <Spinner animation="border" role="status">
-            <span className="visually-hidden"></span>
-          </Spinner>
-        </div>
-      );
-    }
-
-    if (res_status >= 400) {
-      return <ErrorPage res_status={res_status} />;
-    }
-    TabTitle(`Interview: ${this.state.document_title}`);
-    return (
-      <>
-        {res_modal_status >= 400 && (
-          <ModalMain
-            ConfirmError={this.ConfirmError}
-            res_modal_status={res_modal_status}
-            res_modal_message={res_modal_message}
-          />
-        )}
-        <Link to={DEMO.INTERVIEW_LINK}>
-          <Button>Back</Button>
-        </Link>
-        {interview ? (
-          <InterviewItems
-            user={this.props.user}
-            expanded={true}
-            readOnly={false}
-            interview={interview}
-            openDeleteDocModalWindow={this.openDeleteDocModalWindow}
-          />
-        ) : isDeleteSuccessful ? (
-          <Card>
-            <AiFillCheckCircle color="limegreen" size={24} title="Confirmed" />{' '}
-            &nbsp; Interview request deleted successfully!
-          </Card>
-        ) : (
-          <Card>Status 404: Error! Interview not found'</Card>
-        )}
-
-        <Modal
-          show={this.state.SetDeleteDocModel}
-          onHide={this.closeDeleteDocModalWindow}
-          aria-labelledby="contained-modal-title-vcenter"
-          centered
-        >
-          <Modal.Header>
-            <Modal.Title id="contained-modal-title-vcenter">
-              Warning
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            Do you want to delete the interview request of{' '}
-            <b>{this.state.interview_name_toBeDelete}</b>?
-          </Modal.Body>
-          <Modal.Footer>
-            <Button disabled={!isLoaded} onClick={this.handleDeleteInterview}>
-              Yes
-            </Button>
-
-            <Button onClick={this.closeDeleteDocModalWindow}>No</Button>
-          </Modal.Footer>
-        </Modal>
-      </>
-    );
+  if (!isLoaded && !editorState) {
+    return <Loading />;
   }
+
+  if (res_status >= 400) {
+    return <ErrorPage res_status={res_status} />;
+  }
+  TabTitle(`Interview: ${singleInterviewState.document_title}`);
+  return (
+    <>
+      {res_modal_status >= 400 && (
+        <ModalMain
+          ConfirmError={ConfirmError}
+          res_modal_status={res_modal_status}
+          res_modal_message={res_modal_message}
+        />
+      )}
+      <Link to={DEMO.INTERVIEW_LINK}>
+        <Button variant="outlined" color="secondary">
+          {t('Back')}
+        </Button>
+      </Link>
+      {interview ? (
+        <InterviewItems
+          expanded={true}
+          readOnly={false}
+          interview={interview}
+          openDeleteDocModalWindow={openDeleteDocModalWindow}
+        />
+      ) : isDeleteSuccessful ? (
+        <Card>
+          <AiFillCheckCircle color="limegreen" size={24} title="Confirmed" />{' '}
+          &nbsp; Interview request deleted successfully!
+        </Card>
+      ) : (
+        <Card>Status 404: Error! Interview not found.</Card>
+      )}
+
+      <ModalNew
+        show={singleInterviewState.SetDeleteDocModel}
+        onHide={closeDeleteDocModalWindow}
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Typography>{t('Warning')}</Typography>
+        Do you want to delete the interview request of{' '}
+        <b>{singleInterviewState.interview_name_toBeDelete}</b>?
+        <Button disabled={!isLoaded} onClick={handleDeleteInterview}>
+          Yes
+        </Button>
+        <Button onClick={closeDeleteDocModalWindow}>No</Button>
+      </ModalNew>
+    </>
+  );
 }
 export default SingleInterview;

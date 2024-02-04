@@ -1,18 +1,30 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
-  Row,
-  Col,
-  Spinner,
-  Card,
-  Table,
-  Form,
+  Box,
+  Breadcrumbs,
   Button,
-  Modal
-} from 'react-bootstrap';
-import { Link } from 'react-router-dom';
-import { AiFillDelete } from 'react-icons/ai';
+  Card,
+  CircularProgress,
+  FormControl,
+  Grid,
+  Link,
+  List,
+  ListItem,
+  MenuItem,
+  Select,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  TextField,
+  Typography
+} from '@mui/material';
 
-import Aux from '../../hoc/_Aux';
+import { Link as LinkDom } from 'react-router-dom';
+import { AiFillDelete } from 'react-icons/ai';
+import { useTranslation } from 'react-i18next';
+
 import {
   is_TaiGer_role,
   isProgramNotSelectedEnough,
@@ -20,15 +32,16 @@ import {
   is_program_ml_rl_essay_ready,
   is_the_uni_assist_vpd_uploaded,
   isCVFinished,
-  application_deadline_calculator
+  application_deadline_calculator,
+  is_TaiGer_Student,
+  is_TaiGer_Admin
 } from '../Utils/checking-functions';
 import OverlayButton from '../../components/Overlay/OverlayButton';
 import Banner from '../../components/Banner/Banner';
 import {
+  IS_SUBMITTED_STATE_OPTIONS,
   getNumberOfDays,
-  programstatuslist,
-  spinner_style,
-  spinner_style2
+  programstatuslist
 } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
@@ -44,13 +57,21 @@ import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import ProgramList from '../Program/ProgramList';
 import { appConfig } from '../../config';
+import { useAuth } from '../../components/AuthProvider';
+import Loading from '../../components/Loading/Loading';
+import ModalNew from '../../components/Modal';
 
-class StudentApplicationsTableTemplate extends React.Component {
-  state = {
+function StudentApplicationsTableTemplate(props) {
+  const { user } = useAuth();
+  const { t } = useTranslation();
+  const [
+    studentApplicationsTableTemplateState,
+    setStudentApplicationsTableTemplateState
+  ] = useState({
     error: '',
-    student: this.props.student,
-    applications: this.props.student.applications,
-    isLoaded: this.props.isLoaded,
+    student: props.student,
+    applications: props.student.applications,
+    isLoaded: props.isLoaded,
     importedStudent: '',
     importedStudentPrograms: [],
     importedStudentModalOpen: false,
@@ -61,65 +82,71 @@ class StudentApplicationsTableTemplate extends React.Component {
     program_id: null,
     success: false,
     application_status_changed: false,
-    applying_program_count: this.props.student.applying_program_count,
+    applying_program_count: props.student.applying_program_count,
     modalDeleteApplication: false,
     modalUpdatedApplication: false,
-    show: false,
+    showProgramCorrectnessReminderModal: true,
     isProgramAssignMode: false,
-    searchContainerRef: React.createRef(),
+    searchContainerRef: useRef(),
     searchResults: [],
     isResultsVisible: false,
     res_status: 0,
     res_modal_status: 0,
     res_modal_message: ''
-  };
+  });
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      if (studentApplicationsTableTemplateState.searchTerm) {
+        fetchSearchResults();
+      } else {
+        setStudentApplicationsTableTemplateState((prevState) => ({
+          ...prevState,
+          searchResults: []
+        }));
+      }
+    }, 300); // Adjust the delay as needed
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+      clearTimeout(delayDebounceFn);
+    };
+  }, [studentApplicationsTableTemplateState.searchTerm]);
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState.searchTerm !== this.state.searchTerm) {
-      const delayDebounceFn = setTimeout(() => {
-        if (this.state.searchTerm) {
-          this.fetchSearchResults();
-        } else {
-          this.setState({
-            searchResults: []
-          });
-        }
-      }, 300); // Adjust the delay as needed
-      document.addEventListener('click', this.handleClickOutside);
-      return () => {
-        document.removeEventListener('click', this.handleClickOutside);
-        clearTimeout(delayDebounceFn);
-      };
-    }
-  }
-
-  handleClickOutside = (event) => {
+  const handleClickOutside = (event) => {
     // Check if the click target is outside of the search container and result list
     if (
-      this.state.searchContainerRef.current &&
-      !this.state.searchContainerRef.current.contains(event.target)
+      studentApplicationsTableTemplateState.searchContainerRef.current &&
+      !studentApplicationsTableTemplateState.searchContainerRef.current.contains(
+        event.target
+      )
     ) {
       // Clicked outside, hide the result list
-      this.setState({
+      setStudentApplicationsTableTemplateState((prevState) => ({
+        ...prevState,
         isResultsVisible: false
-      });
+      }));
     }
   };
 
-  fetchSearchResults = async () => {
+  const fetchSearchResults = async () => {
     try {
-      this.setState({
+      setStudentApplicationsTableTemplateState((prevState) => ({
+        ...prevState,
         isLoading: true
-      });
-      const response = await getQueryStudentsResults(this.state.searchTerm);
+      }));
+      const response = await getQueryStudentsResults(
+        studentApplicationsTableTemplateState.searchTerm
+      );
       if (response.data.success) {
-        this.setState({
+        setStudentApplicationsTableTemplateState((prevState) => ({
+          ...prevState,
           searchResults: response.data.data,
           isResultsVisible: true,
           isLoading: false
-        });
+        }));
       } else {
-        this.setState({
+        setStudentApplicationsTableTemplateState((prevState) => ({
+          ...prevState,
           isResultsVisible: false,
           searchTerm: '',
           searchResults: [],
@@ -127,11 +154,11 @@ class StudentApplicationsTableTemplate extends React.Component {
           isLoading: false,
           res_modal_status: 401,
           res_modal_message: 'Session expired. Please refresh.'
-        });
+        }));
       }
     } catch (error) {
-      console.error(error);
-      this.setState({
+      setStudentApplicationsTableTemplateState((prevState) => ({
+        ...prevState,
         isResultsVisible: false,
         searchTerm: '',
         searchResults: [],
@@ -139,127 +166,141 @@ class StudentApplicationsTableTemplate extends React.Component {
         isLoading: false,
         res_modal_status: 403,
         res_modal_message: error
-      });
+      }));
     }
   };
 
-  onClickStudentHandler = (result) => {
-    this.setState({
+  const onClickStudentHandler = (result) => {
+    setStudentApplicationsTableTemplateState((prevState) => ({
+      ...prevState,
       importedStudentModalOpen: true,
       isImportingStudentPrograms: true
-    });
+    }));
     // Call api:
     getStudentApplications(result._id.toString()).then(
       (res) => {
         const { data, success } = res.data;
         const { status } = res;
         if (success) {
-          this.setState((state) => ({
-            ...state,
+          setStudentApplicationsTableTemplateState((prevState) => ({
+            ...prevState,
             isImportingStudentPrograms: false,
             importedStudentPrograms: data,
             res_modal_status: status
           }));
         } else {
           const { message } = res.data;
-          this.setState((state) => ({
-            ...state,
+          setStudentApplicationsTableTemplateState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             res_modal_status: status,
             res_modal_message: message
           }));
         }
       },
-      (error) => {}
+      () => {}
     );
   };
 
-  handleChangeProgramCount = (e) => {
+  const handleChangeProgramCount = (e) => {
     e.preventDefault();
     let applying_program_count = e.target.value;
-    this.setState((state) => ({
-      ...state,
+    setStudentApplicationsTableTemplateState((prevState) => ({
+      ...prevState,
       application_status_changed: true,
       applying_program_count
     }));
   };
 
-  handleChange = (e, application_idx) => {
+  const handleChange = (e, application_idx) => {
     e.preventDefault();
-    let applications_temp = [...this.state.student.applications];
-    applications_temp[application_idx][e.target.id] = e.target.value;
-    this.setState((state) => ({
-      ...state,
+    let applications_temp = [
+      ...studentApplicationsTableTemplateState.student.applications
+    ];
+    applications_temp[application_idx][e.target.name] = e.target.value;
+    setStudentApplicationsTableTemplateState((prevState) => ({
+      ...prevState,
       application_status_changed: true,
       applications: applications_temp
     }));
   };
 
-  handleDelete = (e, program_id, student_id) => {
+  const handleDelete = (e, program_id, student_id) => {
     e.preventDefault();
-    this.setState((state) => ({
-      ...state,
+    setStudentApplicationsTableTemplateState((prevState) => ({
+      ...prevState,
       student_id,
       program_id,
       modalDeleteApplication: true
     }));
   };
 
-  onHideAssignSuccessWindow = () => {
-    this.setState({
+  const onHideAssignSuccessWindow = () => {
+    setStudentApplicationsTableTemplateState((prevState) => ({
+      ...prevState,
       modalShowAssignSuccessWindow: false
-    });
+    }));
     window.location.reload(true);
   };
 
-  handleInputChange = (e) => {
-    this.setState({
+  const handleInputChange = (e) => {
+    setStudentApplicationsTableTemplateState((prevState) => ({
+      ...prevState,
       searchTerm: e.target.value.trimLeft()
-    });
+    }));
     if (e.target.value.length === 0) {
-      this.setState({
+      setStudentApplicationsTableTemplateState((prevState) => ({
+        ...prevState,
         isResultsVisible: false
-      });
+      }));
     }
   };
 
-  handleInputBlur = () => {
-    this.setState({
+  const handleInputBlur = () => {
+    setStudentApplicationsTableTemplateState((prevState) => ({
+      ...prevState,
       isResultsVisible: false
-    });
+    }));
   };
-  onHideimportedStudentModalOpen = () => {
-    this.setState({
+  const onHideimportedStudentModalOpen = () => {
+    setStudentApplicationsTableTemplateState((prevState) => ({
+      ...prevState,
       importedStudentModalOpen: false,
       importedStudentPrograms: []
-    });
+    }));
   };
-  onHideModalDeleteApplication = () => {
-    this.setState({
+  const onHideModalDeleteApplication = () => {
+    setStudentApplicationsTableTemplateState((prevState) => ({
+      ...prevState,
       modalDeleteApplication: false
-    });
+    }));
   };
-  onHideUpdatedApplicationWindow = () => {
-    this.setState({
+  const onHideUpdatedApplicationWindow = () => {
+    setStudentApplicationsTableTemplateState((prevState) => ({
+      ...prevState,
       modalUpdatedApplication: false
-    });
+    }));
   };
 
-  handleImportProgramsConfirm = (e) => {
-    const program_ids = this.state.importedStudentPrograms.map((program) =>
-      program.programId._id.toString()
-    );
-    this.setState((state) => ({
-      ...state,
+  const handleImportProgramsConfirm = () => {
+    const program_ids =
+      studentApplicationsTableTemplateState.importedStudentPrograms.map(
+        (program) => program.programId._id.toString()
+      );
+    setStudentApplicationsTableTemplateState((prevState) => ({
+      ...prevState,
       isButtonDisable: true
     }));
-    assignProgramToStudent(this.state.student._id.toString(), program_ids).then(
+    assignProgramToStudent(
+      studentApplicationsTableTemplateState.student._id.toString(),
+      program_ids
+    ).then(
       (res) => {
         const { success } = res.data;
         const { status } = res;
         if (success) {
-          this.setState((state) => ({
-            ...state,
+          setStudentApplicationsTableTemplateState((prevState) => ({
+            ...prevState,
             isButtonDisable: false,
             importedStudentModalOpen: false,
             modalShowAssignSuccessWindow: true,
@@ -268,8 +309,8 @@ class StudentApplicationsTableTemplate extends React.Component {
           }));
         } else {
           const { message } = res.data;
-          this.setState((state) => ({
-            ...state,
+          setStudentApplicationsTableTemplateState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             importedStudentModalOpen: false,
             res_modal_message: message,
@@ -277,23 +318,29 @@ class StudentApplicationsTableTemplate extends React.Component {
           }));
         }
       },
-      (error) => {}
+      () => {}
     );
   };
 
-  handleDeleteConfirm = (e) => {
+  const handleDeleteConfirm = (e) => {
     e.preventDefault();
-    this.setState({ isLoaded: false });
-    removeProgramFromStudent(this.state.program_id, this.state.student_id).then(
+    setStudentApplicationsTableTemplateState((prevState) => ({
+      ...prevState,
+      isLoaded: false
+    }));
+    removeProgramFromStudent(
+      studentApplicationsTableTemplateState.program_id,
+      studentApplicationsTableTemplateState.student_id
+    ).then(
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
         if (success) {
-          this.setState((state) => ({
-            ...state,
+          setStudentApplicationsTableTemplateState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             student: {
-              ...state.student,
+              ...prevState.student,
               applications: data
             },
             success: success,
@@ -302,8 +349,8 @@ class StudentApplicationsTableTemplate extends React.Component {
           }));
         } else {
           const { message } = resp.data;
-          this.setState((state) => ({
-            ...state,
+          setStudentApplicationsTableTemplateState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             res_modal_status: status,
             res_modal_message: message
@@ -311,24 +358,26 @@ class StudentApplicationsTableTemplate extends React.Component {
         }
       },
       (error) => {
-        const { statusText } = resp;
-        this.setState((state) => ({
-          ...state,
+        setStudentApplicationsTableTemplateState((prevState) => ({
+          ...prevState,
           isLoaded: true,
           error,
           res_modal_status: 500,
-          res_modal_message: statusText
+          res_modal_message: ''
         }));
       }
     );
   };
 
-  handleSubmit = (e, student_id, applications) => {
+  const handleSubmit = (e, student_id) => {
     e.preventDefault();
-    let applications_temp = [...this.state.student.applications];
-    let applying_program_count = this.state.applying_program_count;
-    this.setState((state) => ({
-      ...state,
+    let applications_temp = [
+      ...studentApplicationsTableTemplateState.student.applications
+    ];
+    let applying_program_count =
+      studentApplicationsTableTemplateState.applying_program_count;
+    setStudentApplicationsTableTemplateState((prevState) => ({
+      ...prevState,
       isLoaded: false
     }));
     UpdateStudentApplications(
@@ -340,8 +389,8 @@ class StudentApplicationsTableTemplate extends React.Component {
         const { data, success } = resp.data;
         const { status } = resp;
         if (success) {
-          this.setState((state) => ({
-            ...state,
+          setStudentApplicationsTableTemplateState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             student: data,
             success: success,
@@ -351,8 +400,8 @@ class StudentApplicationsTableTemplate extends React.Component {
           }));
         } else {
           const { message } = resp.data;
-          this.setState((state) => ({
-            ...state,
+          setStudentApplicationsTableTemplateState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             res_modal_status: status,
             res_modal_message: message
@@ -360,241 +409,259 @@ class StudentApplicationsTableTemplate extends React.Component {
         }
       },
       (error) => {
-        const { statusText } = resp;
-        this.setState((state) => ({
-          ...state,
+        setStudentApplicationsTableTemplateState((prevState) => ({
+          ...prevState,
           isLoaded: true,
           error,
           res_modal_status: 500,
-          res_modal_message: statusText
+          res_modal_message: ''
         }));
       }
     );
   };
 
-  onClickProgramAssignHandler = () => {
-    this.setState({
+  const onClickProgramAssignHandler = () => {
+    setStudentApplicationsTableTemplateState((prevState) => ({
+      ...prevState,
       isProgramAssignMode: true
-    });
+    }));
   };
 
-  onClickBackToApplicationOverviewnHandler = () => {
-    this.setState({
+  const onClickBackToApplicationOverviewnHandler = () => {
+    setStudentApplicationsTableTemplateState((prevState) => ({
+      ...prevState,
       isProgramAssignMode: false
-    });
+    }));
   };
 
-  ConfirmError = () => {
-    this.setState((state) => ({
-      ...state,
+  const closeProgramCorrectnessModal = () => {
+    setStudentApplicationsTableTemplateState((prevState) => ({
+      ...prevState,
+      showProgramCorrectnessReminderModal: false
+    }));
+  };
+  const ConfirmError = () => {
+    setStudentApplicationsTableTemplateState((prevState) => ({
+      ...prevState,
       res_modal_status: 0,
       res_modal_message: ''
     }));
   };
 
-  render() {
-    const { res_status, isLoaded, res_modal_status, res_modal_message } =
-      this.state;
+  const {
+    res_status,
+    isLoaded,
+    res_modal_status,
+    res_modal_message,
+    showProgramCorrectnessReminderModal
+  } = studentApplicationsTableTemplateState;
 
-    if (!isLoaded && !this.state.student) {
-      return (
-        <div style={spinner_style}>
-          <Spinner animation="border" role="status">
-            <span className="visually-hidden"></span>
-          </Spinner>
-        </div>
-      );
-    }
-    TabTitle(
-      `Student ${this.state.student.firstname} ${this.state.student.lastname} || Applications Status`
+  if (!isLoaded && !studentApplicationsTableTemplateState.student) {
+    return <Loading />;
+  }
+  TabTitle(
+    `Student ${studentApplicationsTableTemplateState.student.firstname} ${studentApplicationsTableTemplateState.student.lastname} || Applications Status`
+  );
+  if (res_status >= 400) {
+    return <ErrorPage res_status={res_status} />;
+  }
+  var applying_university_info;
+  // var applying_university;
+  var today = new Date();
+  if (
+    studentApplicationsTableTemplateState.student.applications === undefined ||
+    studentApplicationsTableTemplateState.student.applications.length === 0
+  ) {
+    applying_university_info = (
+      <>
+        <TableRow>
+          {props.role !== 'Student' && <TableCell></TableCell>}
+          <TableCell>
+            <Typography> No University</Typography>
+          </TableCell>
+          <TableCell>
+            <Typography> No Program</Typography>
+          </TableCell>
+          <TableCell>
+            <Typography> No Date</Typography>
+          </TableCell>
+          <TableCell>
+            <Typography> - </Typography>
+          </TableCell>
+          <TableCell>
+            <Typography> - </Typography>
+          </TableCell>
+          <TableCell>
+            <Typography> - </Typography>
+          </TableCell>
+          <TableCell>
+            <Typography> - </Typography>
+          </TableCell>
+          <TableCell>
+            <Typography> - </Typography>
+          </TableCell>
+          <TableCell>
+            <Typography> - </Typography>
+          </TableCell>
+          <TableCell>
+            <Typography>- </Typography>
+          </TableCell>
+          <TableCell>
+            <Typography>- </Typography>
+          </TableCell>
+        </TableRow>
+      </>
     );
-    if (res_status >= 400) {
-      return <ErrorPage res_status={res_status} />;
-    }
-    var applying_university_info;
-    // var applying_university;
-    var today = new Date();
-    if (
-      this.state.student.applications === undefined ||
-      this.state.student.applications.length === 0
-    ) {
-      applying_university_info = (
-        <>
-          <tr>
-            {this.props.role !== 'Student' && <td></td>}
-            <td>
-              <p className="mb-1 text-danger"> No University</p>
-            </td>
-            <td>
-              <p className="mb-1 text-danger"> No Program</p>
-            </td>
-            <td>
-              <p className="mb-1 text-danger"> No Date</p>
-            </td>
-            <td>
-              <p className="mb-1"> </p>
-            </td>
-            <td>
-              <p className="mb-1"> </p>
-            </td>
-            <td>
-              <p className="mb-1"> </p>
-            </td>
-            <td>
-              <p className="mb-1"> </p>
-            </td>
-            <td>
-              <p className="mb-1"> </p>
-            </td>
-            <td>
-              <p className="mb-1"> </p>
-            </td>
-            <td>
-              <p className="mb-1"> </p>
-            </td>
-          </tr>
-        </>
-      );
-    } else {
-      applying_university_info = this.state.student.applications.map(
+  } else {
+    applying_university_info =
+      studentApplicationsTableTemplateState.student.applications.map(
         (application, application_idx) => (
-          <tr key={application_idx}>
-            {this.props.role !== 'Student' && (
-              <td>
+          <TableRow key={application_idx}>
+            {props.role !== 'Student' && (
+              <TableCell>
                 <Button
-                  size="sm"
+                  color="primary"
+                  variant="contained"
+                  size="small"
                   onClick={(e) =>
-                    this.handleDelete(
+                    handleDelete(
                       e,
                       application.programId._id,
-                      this.state.student._id
+                      studentApplicationsTableTemplateState.student._id
                     )
                   }
                 >
                   <AiFillDelete size={16} />
                 </Button>
-              </td>
+              </TableCell>
             )}
-            <td>
+            <TableCell>
               <Link
                 to={`${DEMO.SINGLE_PROGRAM_LINK(application.programId._id)}`}
+                component={LinkDom}
                 style={{ textDecoration: 'none' }}
               >
-                <p className="mb-1 text-info" key={application_idx}>
+                <Typography key={application_idx}>
                   {application.programId.school}
-                </p>
+                </Typography>
               </Link>
-            </td>
-            <td>
+            </TableCell>
+            <TableCell>
               <Link
                 to={`${DEMO.SINGLE_PROGRAM_LINK(application.programId._id)}`}
+                component={LinkDom}
                 style={{ textDecoration: 'none' }}
               >
-                <p className="mb-1 text-info" key={application_idx}>
+                <Typography key={application_idx}>
                   {application.programId.degree}
-                </p>
+                </Typography>
               </Link>
-            </td>
-            <td>
+            </TableCell>
+            <TableCell>
               <Link
                 to={`${DEMO.SINGLE_PROGRAM_LINK(application.programId._id)}`}
+                component={LinkDom}
                 style={{ textDecoration: 'none' }}
               >
-                <p className="mb-1 text-info" key={application_idx}>
+                <Typography key={application_idx}>
                   {application.programId.program_name}
-                </p>
+                </Typography>
               </Link>
-            </td>
-            <td>
+            </TableCell>
+            <TableCell>
               <Link
                 to={`${DEMO.SINGLE_PROGRAM_LINK(application.programId._id)}`}
+                component={LinkDom}
                 style={{ textDecoration: 'none' }}
               >
-                <p className="mb-1 text-info" key={application_idx}>
+                <Typography key={application_idx}>
                   {application.programId.semester}
-                </p>
+                </Typography>
               </Link>
-            </td>
-            <td>
+            </TableCell>
+            <TableCell>
               <Link
                 to={`${DEMO.SINGLE_PROGRAM_LINK(application.programId._id)}`}
+                component={LinkDom}
                 style={{ textDecoration: 'none' }}
               >
-                <p className="mb-1 text-info" key={application_idx}>
+                <Typography key={application_idx}>
                   {application.programId.toefl
                     ? application.programId.toefl
                     : '-'}
-                </p>
+                </Typography>
               </Link>
-            </td>
-            <td>
+            </TableCell>
+            <TableCell>
               <Link
                 to={`${DEMO.SINGLE_PROGRAM_LINK(application.programId._id)}`}
+                component={LinkDom}
                 style={{ textDecoration: 'none' }}
               >
-                <p className="mb-1 text-info" key={application_idx}>
+                <Typography key={application_idx}>
                   {application.programId.ielts
                     ? application.programId.ielts
                     : '-'}
-                </p>
+                </Typography>
               </Link>
-            </td>
-            <td>
+            </TableCell>
+            <TableCell>
               {application.closed === 'O' ? (
-                <p className="mb-1 text-warning" key={application_idx}>
-                  Close
-                </p>
+                <Typography key={application_idx}>Close</Typography>
               ) : (
-                <p className="mb-1 text-info" key={application_idx}>
-                  {application_deadline_calculator(
-                    this.props.student,
-                    application
-                  )}
-                </p>
+                <Typography key={application_idx}>
+                  {application_deadline_calculator(props.student, application)}
+                </Typography>
               )}
-            </td>
-            <td>
-              <Form.Group controlId="decided">
-                <Form.Control
-                  as="select"
-                  onChange={(e) => this.handleChange(e, application_idx)}
+            </TableCell>
+            <TableCell>
+              <FormControl fullWidth>
+                <Select
+                  size="small"
+                  labelId="decided"
+                  name="decided"
+                  id="decided"
+                  onChange={(e) => handleChange(e, application_idx)}
+                  disabled={application.closed !== '-'}
                   value={application.decided}
                 >
-                  <option value={'-'}>-</option>
-                  <option value={'X'}>No</option>
-                  <option value={'O'}>Yes</option>
-                </Form.Control>
-              </Form.Group>
-            </td>
+                  <MenuItem value={'-'}>-</MenuItem>
+                  <MenuItem value={'X'}>No</MenuItem>
+                  <MenuItem value={'O'}>Yes</MenuItem>
+                </Select>
+              </FormControl>
+            </TableCell>
             {application.decided === 'O' ? (
-              <td>
+              <TableCell>
                 {/* When all thread finished */}
                 {application.closed === 'O' ||
                 (is_program_ml_rl_essay_ready(application) &&
-                  isCVFinished(this.state.student) &&
+                  isCVFinished(studentApplicationsTableTemplateState.student) &&
                   (!appConfig.vpdEnable ||
                     is_the_uni_assist_vpd_uploaded(application))) ? (
-                  <Form.Group controlId="closed">
-                    <Form.Control
-                      as="select"
-                      onChange={(e) => this.handleChange(e, application_idx)}
-                      disabled={
-                        !(
-                          application.decided !== '-' &&
-                          application.decided !== 'X'
-                        )
-                      }
+                  <FormControl fullWidth>
+                    <Select
+                      size="small"
+                      labelId="closed"
+                      name="closed"
+                      id="closed"
                       value={application.closed}
+                      onChange={(e) => handleChange(e, application_idx)}
+                      disabled={application.admission !== '-'}
                     >
-                      <option value={'-'}>Not Yet</option>
-                      <option value={'X'}>Withdraw</option>
-                      <option value={'O'}>Submitted</option>
-                    </Form.Control>
-                  </Form.Group>
+                      <MenuItem value="-">Not Yet</MenuItem>
+                      <MenuItem value="X">Withdraw</MenuItem>
+                      <MenuItem value="O">Submitted</MenuItem>
+                    </Select>
+                  </FormControl>
                 ) : (
                   <OverlayButton
                     text={`Please make sure ${
-                      !isCVFinished(this.state.student) ? 'CV ' : ''
+                      !isCVFinished(
+                        studentApplicationsTableTemplateState.student
+                      )
+                        ? 'CV '
+                        : ''
                     }${
                       !is_program_ml_rl_essay_ready(application)
                         ? 'ML/RL/Essay '
@@ -606,16 +673,37 @@ class StudentApplicationsTableTemplate extends React.Component {
                     }are prepared to unlock this.`}
                   />
                 )}
-              </td>
+              </TableCell>
             ) : (
-              <td></td>
+              <TableCell></TableCell>
             )}
-            {application.closed === 'O' ? (
-              <td>
-                <Form.Group controlId="admission">
+            {application.decided === 'O' && application.closed === 'O' ? (
+              <TableCell>
+                <FormControl fullWidth>
+                  <Select
+                    size="small"
+                    labelId="admission"
+                    name="admission"
+                    id="admission"
+                    disabled={
+                      !(
+                        application.closed !== '-' && application.closed !== 'X'
+                      )
+                    }
+                    defaultValue={application.admission ?? '-'}
+                    onChange={(e) => handleChange(e, application_idx)}
+                  >
+                    {IS_SUBMITTED_STATE_OPTIONS.map((option) => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+                {/* <Form.Group controlId="admission">
                   <Form.Control
                     as="select"
-                    onChange={(e) => this.handleChange(e, application_idx)}
+                    onChange={(e) => handleChange(e, application_idx)}
                     disabled={
                       !(
                         application.closed !== '-' && application.closed !== 'X'
@@ -627,13 +715,13 @@ class StudentApplicationsTableTemplate extends React.Component {
                     <option value={'X'}>No</option>
                     <option value={'O'}>Yes</option>
                   </Form.Control>
-                </Form.Group>
-              </td>
+                </Form.Group> */}
+              </TableCell>
             ) : (
-              <td></td>
+              <TableCell></TableCell>
             )}
 
-            <td>
+            <TableCell>
               <p className="mb-1 text-info" key={application_idx}>
                 {application.closed === 'O'
                   ? '-'
@@ -641,504 +729,525 @@ class StudentApplicationsTableTemplate extends React.Component {
                   ? getNumberOfDays(
                       today,
                       application_deadline_calculator(
-                        this.props.student,
+                        props.student,
                         application
                       )
                     )
                   : '-'}
               </p>
-            </td>
-          </tr>
+            </TableCell>
+          </TableRow>
         )
       );
-    }
-    return (
-      <Aux>
-        {res_modal_status >= 400 && (
-          <ModalMain
-            ConfirmError={this.ConfirmError}
-            res_modal_status={res_modal_status}
-            res_modal_message={res_modal_message}
-          />
-        )}
-        <Row>
-          <Col>
-            <Card className="my-2 mx-0" bg={'black'} text={'light'}>
-              <Card.Header>
-                <Card.Title className="my-0 mx-0 text-light">
-                  <Link
-                    to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-                      this.props.student._id.toString(),
-                      DEMO.PROFILE
-                    )}`}
-                    className="text-info"
-                  >
-                    <b>
-                      {this.props.student.firstname}{' '}
-                      {this.props.student.lastname}{' '}
-                    </b>
-                  </Link>
-                  Applications
-                </Card.Title>
-              </Card.Header>
-            </Card>
-          </Col>
-        </Row>
-        <Row>
-          <Col md={is_TaiGer_role(this.props.user) ? 6 : 12}>
-            <Card className="my-2 mx-0" bg={'black'} text={'light'}>
-              <Card.Header>
-                <Card.Title className="my-0 mx-0 text-light">
-                  Application Preference From Survey
-                </Card.Title>
-              </Card.Header>
-              <Card.Body>
-                <li>
-                  Target field:{' '}
-                  <b>
-                    {
-                      this.props.student.application_preference
-                        ?.target_application_field
-                    }
-                  </b>
-                </li>
-                <li>
-                  Target degree:{' '}
-                  <b>
-                    {this.props.student.application_preference?.target_degree}
-                  </b>
-                </li>
-                <li>
-                  Accept Private University?:{' '}
-                  <b>
-                    {
-                      this.props.student.application_preference
-                        ?.considered_privat_universities
-                    }
-                  </b>
-                </li>
-                <li>
-                  Consider outside Germany:{' '}
-                  <b>
-                    {
-                      this.props.student.application_preference
-                        ?.application_outside_germany
-                    }
-                  </b>
-                </li>
-                <li>
-                  Other wish:{' '}
-                  <Form>
-                    <Form.Group
-                      controlId="special_wished"
-                      className="my-0 mx-0"
-                    >
-                      <Form.Control
-                        as="textarea"
-                        rows="3"
-                        readOnly
-                        value={
-                          this.props.student.application_preference
-                            ?.special_wished || ''
-                        }
-                      ></Form.Control>
-                    </Form.Group>
-                  </Form>
-                </li>
-              </Card.Body>
-            </Card>
-          </Col>
-          {is_TaiGer_role(this.props.user) && (
-            <Col md={6}>
-              <Card className="my-2 mx-0" bg={'black'} text={'light'}>
-                <Card.Header>
-                  <Card.Title className="my-0 mx-0 text-light">
-                    Import programs from another student
-                  </Card.Title>
-                </Card.Header>
-                <Card.Body>
-                  <div
-                    className="search-container"
-                    ref={this.state.searchContainerRef}
-                  >
-                    <Form>
-                      <Form.Group className="my-0 mx-0">
-                        <Form.Label className="mb-2 mx-0 text-light">
-                          Find the student and import his/her progams to{' '}
-                          <b>
-                            {this.state.student.firstname}{' '}
-                            {this.state.student.lastname}
-                          </b>
-                        </Form.Label>
-                        <Form.Control
-                          type="text"
-                          className="search-input"
-                          placeholder={'Search student...'}
-                          value={this.state.searchTerm}
-                          onMouseDown={this.handleInputBlur}
-                          onChange={this.handleInputChange}
-                        ></Form.Control>
-                      </Form.Group>
-                    </Form>
-                    {this.state.isResultsVisible &&
-                      (this.state.searchResults?.length > 0 ? (
-                        <div className="search-results result-list">
-                          {this.state.searchResults?.map((result, i) => (
-                            <li
-                              onClick={() => this.onClickStudentHandler(result)}
-                              key={i}
-                            >
-                              {`${result.firstname} ${result.lastname} ${
-                                result.firstname_chinese
-                                  ? result.firstname_chinese
-                                  : ' '
-                              }${
-                                result.lastname_chinese
-                                  ? result.lastname_chinese
-                                  : ' '
-                              }`}
-                            </li>
-                          ))}
-                        </div>
-                      ) : (
-                        <div className="search-results result-list">
-                          <li>No result</li>
-                        </div>
-                      ))}
-                  </div>
-                </Card.Body>
-              </Card>
-            </Col>
-          )}
-        </Row>
-        {this.state.isProgramAssignMode ? (
-          <>
-            <ProgramList
-              user={this.props.user}
-              student={this.props.student}
-              isStudentApplicationPage={true}
-            />
-            <Button
-              variant="secondary"
-              onClick={this.onClickBackToApplicationOverviewnHandler}
-            >
-              Back
-            </Button>
-          </>
-        ) : (
-          <>
-            {isProgramNotSelectedEnough([this.state.student]) && (
-              <Row>
-                <Col>
-                  <Card className="mb-2 mx-0" bg={'danger'} text={'light'}>
-                    <Card.Body>
-                      {this.props.student.firstname}{' '}
-                      {this.props.student.lastname} did not choose enough
-                      programs.
-                    </Card.Body>
-                  </Card>
-                </Col>
-              </Row>
-            )}
-            {this.props.role === 'Admin' &&
-              is_num_Program_Not_specified(this.state.student) && (
-                <Row>
-                  <Col>
-                    <Card className="mb-2 mx-0" bg={'danger'} text={'light'}>
-                      <Card.Body>
-                        The number of student's applications is not specified!
-                        Please determine the number of the programs according to
-                        the contract
-                      </Card.Body>
-                    </Card>
-                  </Col>
-                </Row>
-              )}
-            <Row>
-              <Col>
-                <Card className="my-0 mx-0" bg={'info'} text={'white'}>
-                  <Row bg={'info'}>
-                    <Col md={4} className="mx-2 my-2">
-                      <h4>Applying Program Count: </h4>
-                    </Col>
-                    {this.props.role === 'Admin' ? (
-                      <Col md={2} className="mx-2 my-1">
-                        <Form.Group controlId="applying_program_count">
-                          <Form.Control
-                            as="select"
-                            defaultValue={
-                              this.state.student.applying_program_count
-                            }
-                            onChange={(e) => this.handleChangeProgramCount(e)}
-                          >
-                            <option value="0">Please Select</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                            <option value="6">6</option>
-                            <option value="7">7</option>
-                            <option value="8">8</option>
-                            <option value="9">9</option>
-                            <option value="10">10</option>
-                          </Form.Control>
-                        </Form.Group>
-                      </Col>
-                    ) : (
-                      <>
-                        <Col md={2} className="mx-2 my-3">
-                          <h4>{this.state.student.applying_program_count}</h4>
-                        </Col>
-                      </>
-                    )}
-                  </Row>
-                  <Row>
-                    <Col>
-                      <Banner
-                        ReadOnlyMode={true}
-                        bg={'primary'}
-                        to={`${DEMO.BASE_DOCUMENTS_LINK}`}
-                        title={'Info:'}
-                        text={`${appConfig.companyName} Portal 網站上的學程資訊主要為管理申請進度為主，學校學程詳細資訊仍以學校網站為主。`}
-                        link_name={''}
-                        removeBanner={this.removeBanner}
-                        notification_key={''}
-                      />
-                      <Banner
-                        ReadOnlyMode={true}
-                        bg={'secondary'}
-                        to={`${DEMO.BASE_DOCUMENTS_LINK}`}
-                        title={'Instructions:'}
-                        text={
-                          '請選擇要申請的學程打在 Decided: Yes，不要申請打的 No。'
-                        }
-                        link_name={''}
-                        removeBanner={this.removeBanner}
-                        notification_key={''}
-                      />
-                      <Banner
-                        ReadOnlyMode={true}
-                        bg={'danger'}
-                        to={`${DEMO.BASE_DOCUMENTS_LINK}`}
-                        title={'Instructions:'}
-                        text={
-                          '請選擇要申請的學程打在 Submitted: Submitted，若想中斷申請請告知顧問，或是 選擇 Withdraw (如果東西都已準備好且解鎖)'
-                        }
-                        link_name={''}
-                        removeBanner={this.removeBanner}
-                        notification_key={''}
-                      />
-                      <Table
-                        size="sm"
-                        bordered
-                        hover
-                        responsive
-                        className="my-0 mx-0"
-                        variant="dark"
-                        text="light"
-                      >
-                        <thead>
-                          <tr>
-                            {this.props.role !== 'Student' && <th></th>}
-                            {programstatuslist.map((doc, index) => (
-                              <th key={index}>{doc.name}</th>
-                            ))}
-                          </tr>
-                        </thead>
-                        <tbody>{applying_university_info}</tbody>
-                      </Table>
-                    </Col>
-                  </Row>
-                </Card>
-                <Row className="my-2 mx-0">
-                  <Button
-                    size="sm"
-                    disabled={
-                      !this.state.application_status_changed ||
-                      !this.state.isLoaded
-                    }
-                    onClick={(e) =>
-                      this.handleSubmit(
-                        e,
-                        this.state.student._id,
-                        this.state.student.applications
-                      )
-                    }
-                  >
-                    {this.state.isLoaded ? (
-                      'Update'
-                    ) : (
-                      <Spinner animation="border" size="sm" role="status">
-                        <span className="visually-hidden"></span>
-                      </Spinner>
-                    )}
-                  </Button>
-                </Row>
-                {is_TaiGer_role(this.props.user) && (
-                  <>
-                    <Row>
-                      <p>
-                        <span
-                          style={{ display: 'flex', justifyContent: 'center' }}
-                        >
-                          You want to add more programs to{' '}
-                          {this.props.student.firstname}{' '}
-                          {this.props.student.lastname}?
-                        </span>
-                      </p>
-                    </Row>
-                    <Row className="mt-2 mx-0">
-                      <p>
-                        <span
-                          style={{ display: 'flex', justifyContent: 'center' }}
-                        >
-                          <Button
-                            size="sm"
-                            onClick={this.onClickProgramAssignHandler}
-                          >
-                            Add New Programs
-                          </Button>{' '}
-                          {/* </Link> */}
-                        </span>
-                      </p>
-                    </Row>
-                  </>
-                )}
-                <Modal
-                  show={this.state.importedStudentModalOpen}
-                  onHide={this.onHideimportedStudentModalOpen}
-                  size="xl"
-                  aria-labelledby="contained-modal-title-vcenter"
-                  centered
-                >
-                  <Modal.Header>
-                    <Modal.Title id="contained-modal-title-vcenter">
-                      Import programs
-                    </Modal.Title>
-                  </Modal.Header>
-                  <Modal.Body>
-                    Do you want to import the following programs?
-                    <br />
-                    (Same programs will <b>NOT</b> be duplicated :) )
-                    {this.state.isImportingStudentPrograms ? (
-                      <div style={spinner_style2}>
-                        <Spinner animation="border" role="status">
-                          <span className="visually-hidden"></span>
-                        </Spinner>
-                      </div>
-                    ) : (
-                      this.state.importedStudentPrograms?.map((app, i) => (
-                        <li key={i}>
-                          {`${app.programId?.school} - ${app.programId?.program_name} ${app.programId?.degree} 
-                          ${app.programId?.semester}`}
-                        </li>
-                      )) || []
-                    )}
-                  </Modal.Body>
-                  <Modal.Footer>
-                    <Button
-                      disabled={this.state.isButtonDisable}
-                      onClick={this.handleImportProgramsConfirm}
-                    >
-                      {this.state.isButtonDisable ? (
-                        <div style={spinner_style2}>
-                          <Spinner animation="border" size="sm" role="status">
-                            <span className="visually-hidden"></span>
-                          </Spinner>
-                        </div>
-                      ) : (
-                        'Yes'
-                      )}
-                    </Button>
-                    <Button
-                      onClick={this.onHideimportedStudentModalOpen}
-                      variant="outline-primary"
-                    >
-                      No
-                    </Button>
-                  </Modal.Footer>
-                </Modal>
-                <Modal
-                  show={this.state.modalShowAssignSuccessWindow}
-                  onHide={this.onHideAssignSuccessWindow}
-                  size="m"
-                  aria-labelledby="contained-modal-title-vcenter"
-                  centered
-                >
-                  <Modal.Header>
-                    <Modal.Title id="contained-modal-title-vcenter">
-                      Success
-                    </Modal.Title>
-                  </Modal.Header>
-                  <Modal.Body>
-                    Program(s) imported to student successfully!
-                  </Modal.Body>
-                  <Modal.Footer>
-                    <Button onClick={this.onHideAssignSuccessWindow}>
-                      Close
-                    </Button>
-                  </Modal.Footer>
-                </Modal>
-                <Modal
-                  show={this.state.modalDeleteApplication}
-                  onHide={this.onHideModalDeleteApplication}
-                  size="m"
-                  aria-labelledby="contained-modal-title-vcenter"
-                  centered
-                >
-                  <Modal.Header>
-                    <Modal.Title id="contained-modal-title-vcenter">
-                      Warning: Delete an application
-                    </Modal.Title>
-                  </Modal.Header>
-                  <Modal.Body>
-                    This will delete all message and editted files in
-                    discussion. Are you sure?
-                  </Modal.Body>
-                  <Modal.Footer>
-                    <Button
-                      disabled={!this.state.isLoaded}
-                      onClick={this.handleDeleteConfirm}
-                    >
-                      Yes
-                    </Button>
-                    <Button
-                      onClick={this.onHideModalDeleteApplication}
-                      variant="light"
-                    >
-                      Close
-                    </Button>
-                  </Modal.Footer>
-                </Modal>
-                <Modal
-                  show={this.state.modalUpdatedApplication}
-                  onHide={this.onHideUpdatedApplicationWindow}
-                  size="m"
-                  aria-labelledby="contained-modal-title-vcenter"
-                  centered
-                >
-                  <Modal.Header>
-                    <Modal.Title id="contained-modal-title-vcenter">
-                      Info:
-                    </Modal.Title>
-                  </Modal.Header>
-                  <Modal.Body>
-                    Applications status updated successfully!
-                  </Modal.Body>
-                  <Modal.Footer>
-                    <Button onClick={this.onHideUpdatedApplicationWindow}>
-                      Close
-                    </Button>
-                  </Modal.Footer>
-                </Modal>
-              </Col>
-            </Row>
-          </>
-        )}
-      </Aux>
-    );
   }
+  return (
+    <Box>
+      {res_modal_status >= 400 && (
+        <ModalMain
+          ConfirmError={ConfirmError}
+          res_modal_status={res_modal_status}
+          res_modal_message={res_modal_message}
+        />
+      )}
+      {is_TaiGer_Student(user) && (
+        <ModalNew open={showProgramCorrectnessReminderModal}>
+          <Typography variant="h6" fontWeight="bold">
+            {t('Warning')}
+          </Typography>
+          <Typography
+            variant="body1"
+            sx={{ mt: 2 }}
+          >{`${appConfig.companyName} Portal 網站上的學程資訊主要為管理申請進度為主，學校學程詳細資訊仍以學校網站為主。`}</Typography>
+          <Typography
+            sx={{ mt: 2 }}
+          >{`若發現 ${appConfig.companyName} Portal 資訊和學校官方網站資料有不同之處，請和顧問討論。`}</Typography>
+          <Button
+            fullWidth
+            variant="contained"
+            color="primary"
+            onClick={closeProgramCorrectnessModal}
+            sx={{ mt: 2 }}
+          >
+            {t('Accept')}
+          </Button>
+        </ModalNew>
+      )}
+      <Breadcrumbs aria-label="breadcrumb">
+        <Link
+          underline="hover"
+          color="inherit"
+          component={LinkDom}
+          to={`${DEMO.DASHBOARD_LINK}`}
+        >
+          {appConfig.companyName}
+        </Link>
+        {is_TaiGer_role(user) && (
+          <Link
+            underline="hover"
+            color="inherit"
+            component={LinkDom}
+            to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+              props.student._id.toString(),
+              '/profile'
+            )}`}
+          >
+            {props.student.firstname} {props.student.lastname}
+          </Link>
+        )}
+        <Typography color="text.primary">{t('Applications')}</Typography>
+      </Breadcrumbs>
+      <Grid container spacing={2}>
+        <Grid item sx={12} md={is_TaiGer_role(user) ? 6 : 12}>
+          <Typography variant="h6">
+            {t('Application Preference From Survey')}
+          </Typography>
+          <List
+            sx={{
+              width: '100%',
+              bgcolor: 'background.paper',
+              position: 'relative',
+              overflow: 'auto',
+              '& ul': { padding: 0 }
+            }}
+            subheader={<li />}
+          >
+            <ListItem>
+              Target field:{' '}
+              <b>
+                {props.student.application_preference?.target_application_field}
+              </b>
+            </ListItem>
+            <ListItem>
+              Target degree:{' '}
+              <b>{props.student.application_preference?.target_degree}</b>
+            </ListItem>
+            <ListItem>
+              Accept Private University?:{' '}
+              <b>
+                {
+                  props.student.application_preference
+                    ?.considered_privat_universities
+                }
+              </b>
+            </ListItem>
+            <ListItem>
+              Consider outside Germany:{' '}
+              <b>
+                {
+                  props.student.application_preference
+                    ?.application_outside_germany
+                }
+              </b>
+            </ListItem>
+            <ListItem>
+              Other wish:{' '}
+              <TextField
+                id="special_wished"
+                multiline
+                fullWidth
+                rows={4}
+                readOnly
+                value={
+                  props.student.application_preference?.special_wished || ''
+                }
+                variant="standard"
+              />
+            </ListItem>
+          </List>
+        </Grid>
+        {is_TaiGer_role(user) && (
+          <Grid item sx={12} md={6}>
+            <Card sx={{ p: 2, minHeight: '300px' }}>
+              <Typography>
+                {t('Import programs from another student')}
+              </Typography>
+              <Typography>
+                {t('Find the student and import his/her progams to ')}
+              </Typography>
+              <div
+                className="search-container"
+                ref={studentApplicationsTableTemplateState.searchContainerRef}
+              >
+                <TextField
+                  type="text"
+                  size="small"
+                  className="search-input"
+                  placeholder={t('Search student...')}
+                  value={studentApplicationsTableTemplateState.searchTerm}
+                  onMouseDown={handleInputBlur}
+                  onChange={handleInputChange}
+                />
+                {/* <Form>
+                  <Form.Group className="my-0 mx-0">
+                    <Form.Label className="mb-2 mx-0 text-light">
+                      Find the student and import his/her progams to{' '}
+                      <b>
+                        {
+                          studentApplicationsTableTemplateState.student
+                            .firstname
+                        }{' '}
+                        {studentApplicationsTableTemplateState.student.lastname}
+                      </b>
+                    </Form.Label>
+                    <Form.Control
+                      type="text"
+                      className="search-input"
+                      placeholder={'Search student...'}
+                      value={studentApplicationsTableTemplateState.searchTerm}
+                      onMouseDown={handleInputBlur}
+                      onChange={handleInputChange}
+                    ></Form.Control>
+                  </Form.Group>
+                </Form> */}
+                {studentApplicationsTableTemplateState.isResultsVisible &&
+                  (studentApplicationsTableTemplateState.searchResults?.length >
+                  0 ? (
+                    <Box className="search-results result-list">
+                      {studentApplicationsTableTemplateState.searchResults?.map(
+                        (result, i) => (
+                          <li
+                            onClick={() => onClickStudentHandler(result)}
+                            key={i}
+                          >
+                            {`${result.firstname} ${result.lastname} ${
+                              result.firstname_chinese
+                                ? result.firstname_chinese
+                                : ' '
+                            }${
+                              result.lastname_chinese
+                                ? result.lastname_chinese
+                                : ' '
+                            }`}
+                          </li>
+                        )
+                      )}
+                    </Box>
+                  ) : (
+                    <Box
+                      className="search-results result-list"
+                      sx={{ zIndex: 999 }}
+                    >
+                      <li>No result</li>
+                    </Box>
+                  ))}
+              </div>
+            </Card>
+          </Grid>
+        )}
+      </Grid>
+      {studentApplicationsTableTemplateState.isProgramAssignMode ? (
+        <>
+          <ProgramList
+            user={user}
+            student={props.student}
+            isStudentApplicationPage={true}
+          />
+          <Button
+            color="secondary"
+            variant="contained"
+            size="small"
+            onClick={onClickBackToApplicationOverviewnHandler}
+          >
+            {t('Back')}
+          </Button>
+        </>
+      ) : (
+        <>
+          {isProgramNotSelectedEnough([
+            studentApplicationsTableTemplateState.student
+          ]) && (
+            <Card>
+              {props.student.firstname} {props.student.lastname} did not choose
+              enough programs.
+            </Card>
+          )}
+          {is_TaiGer_Admin(user) &&
+            is_num_Program_Not_specified(
+              studentApplicationsTableTemplateState.student
+            ) && (
+              <Card>
+                The number of student&apos;s applications is not specified!
+                Please determine the number of the programs according to the
+                contract
+              </Card>
+            )}
+          <Grid container spacing={2}>
+            <Grid item xs={4}>
+              <Typography variant="h6">
+                {t('Applying Program Count')}:{' '}
+              </Typography>
+            </Grid>
+            {is_TaiGer_Admin(user) ? (
+              <Grid item xs={2}>
+                <FormControl fullWidth>
+                  <Select
+                    size="small"
+                    id="applying_program_count"
+                    name="applying_program_count"
+                    value={
+                      studentApplicationsTableTemplateState.applying_program_count
+                    }
+                    onChange={(e) => handleChangeProgramCount(e)}
+                  >
+                    <MenuItem value="0">Please Select</MenuItem>
+                    <MenuItem value="1">1</MenuItem>
+                    <MenuItem value="2">2</MenuItem>
+                    <MenuItem value="3">3</MenuItem>
+                    <MenuItem value="4">4</MenuItem>
+                    <MenuItem value="5">5</MenuItem>
+                    <MenuItem value="6">6</MenuItem>
+                    <MenuItem value="7">7</MenuItem>
+                    <MenuItem value="8">8</MenuItem>
+                    <MenuItem value="9">9</MenuItem>
+                    <MenuItem value="10">10</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+            ) : (
+              <>
+                <Grid item xs={2}>
+                  <Typography variant="h6">
+                    {
+                      studentApplicationsTableTemplateState.student
+                        .applying_program_count
+                    }
+                  </Typography>
+                </Grid>
+              </>
+            )}
+          </Grid>
+          <Box>
+            <Card>
+              <Box>
+                <Banner
+                  ReadOnlyMode={true}
+                  bg={'primary'}
+                  to={`${DEMO.BASE_DOCUMENTS_LINK}`}
+                  title={'info'}
+                  text={`${appConfig.companyName} Portal 網站上的學程資訊主要為管理申請進度為主，學校學程詳細資訊仍以學校網站為主。`}
+                  link_name={''}
+                  removeBanner={<></>}
+                  notification_key={undefined}
+                />
+                <Banner
+                  ReadOnlyMode={true}
+                  bg={'secondary'}
+                  to={`${DEMO.BASE_DOCUMENTS_LINK}`}
+                  title={'warning'}
+                  text={
+                    '請選擇要申請的學程打在 Decided: Yes，不要申請打的 No。'
+                  }
+                  link_name={''}
+                  removeBanner={<></>}
+                  notification_key={undefined}
+                />
+                <Banner
+                  ReadOnlyMode={true}
+                  bg={'danger'}
+                  to={`${DEMO.BASE_DOCUMENTS_LINK}`}
+                  title={'warning'}
+                  text={
+                    '請選擇要申請的學程打在 Submitted: Submitted，若想中斷申請請告知顧問，或是 選擇 Withdraw (如果東西都已準備好且解鎖)'
+                  }
+                  link_name={''}
+                  removeBanner={<></>}
+                  notification_key={undefined}
+                />
+                <Table size="small">
+                  <TableHead>
+                    <TableRow>
+                      {props.role !== 'Student' && <TableCell></TableCell>}
+                      {programstatuslist.map((doc, index) => (
+                        <TableCell key={index}>{doc.name}</TableCell>
+                      ))}
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>{applying_university_info}</TableBody>
+                </Table>
+              </Box>
+            </Card>
+            <Box>
+              <Button
+                fullWidth
+                color="primary"
+                variant="contained"
+                disabled={
+                  !studentApplicationsTableTemplateState.application_status_changed ||
+                  !studentApplicationsTableTemplateState.isLoaded
+                }
+                onClick={(e) =>
+                  handleSubmit(
+                    e,
+                    studentApplicationsTableTemplateState.student._id
+                  )
+                }
+                sx={{ mt: 2 }}
+              >
+                {studentApplicationsTableTemplateState.isLoaded ? (
+                  t('Update')
+                ) : (
+                  <CircularProgress size={16} />
+                )}
+              </Button>
+            </Box>
+            {is_TaiGer_role(user) && (
+              <>
+                <Box>
+                  <Typography>
+                    <span style={{ display: 'flex', justifyContent: 'center' }}>
+                      You want to add more programs to {props.student.firstname}{' '}
+                      {props.student.lastname}?
+                    </span>
+                  </Typography>
+                </Box>
+                <Box>
+                  <Typography>
+                    <span style={{ display: 'flex', justifyContent: 'center' }}>
+                      <Button
+                        size="small"
+                        color="primary"
+                        variant="contained"
+                        onClick={onClickProgramAssignHandler}
+                      >
+                        {t('Add New Program')}
+                      </Button>{' '}
+                    </span>
+                  </Typography>
+                </Box>
+              </>
+            )}
+            <ModalNew
+              open={
+                studentApplicationsTableTemplateState.importedStudentModalOpen
+              }
+              onClose={onHideimportedStudentModalOpen}
+              size="xl"
+              aria-labelledby="contained-modal-title-vcenter"
+            >
+              <Typography variant="h5">Import programs</Typography>
+              <Typography>
+                Do you want to import the following programs?
+                <br />
+                (Same programs will <b>NOT</b> be duplicated :) )
+                {studentApplicationsTableTemplateState.isImportingStudentPrograms ? (
+                  <CircularProgress size={16} />
+                ) : (
+                  studentApplicationsTableTemplateState.importedStudentPrograms?.map(
+                    (app, i) => (
+                      <li key={i}>
+                        {`${app.programId?.school} - ${app.programId?.program_name} ${app.programId?.degree} 
+                          ${app.programId?.semester}`}
+                      </li>
+                    )
+                  ) || []
+                )}
+              </Typography>
+              <Typography>
+                <Button
+                  color="primary"
+                  variant="contained"
+                  size="small"
+                  disabled={
+                    studentApplicationsTableTemplateState.isButtonDisable
+                  }
+                  onClick={handleImportProgramsConfirm}
+                >
+                  {studentApplicationsTableTemplateState.isButtonDisable ? (
+                    <CircularProgress size={16} />
+                  ) : (
+                    t('Yes')
+                  )}
+                </Button>
+                <Button
+                  color="primary"
+                  variant="outlined"
+                  size="small"
+                  onClick={onHideimportedStudentModalOpen}
+                >
+                  {t('No')}
+                </Button>
+              </Typography>
+            </ModalNew>
+            <ModalNew
+              open={
+                studentApplicationsTableTemplateState.modalShowAssignSuccessWindow
+              }
+              onClose={onHideAssignSuccessWindow}
+              size="m"
+              aria-labelledby="contained-modal-title-vcenter"
+            >
+              <Typography id="contained-modal-title-vcenter">
+                {t('Success')}
+              </Typography>
+              <Typography>
+                Program(s) imported to student successfully!
+              </Typography>
+              <Typography>
+                <Button onClick={onHideAssignSuccessWindow}>Close</Button>
+              </Typography>
+            </ModalNew>
+            <ModalNew
+              open={
+                studentApplicationsTableTemplateState.modalDeleteApplication
+              }
+              onClose={onHideModalDeleteApplication}
+              size="small"
+              aria-labelledby="contained-modal-title-vcenter"
+            >
+              <Typography variant="h6" sx={{ mb: 2 }}>
+                {t('Warning')}: {t('Delete an application')}
+              </Typography>
+              <Typography>
+                This will delete all message and editted files in discussion.
+                Are you sure?
+              </Typography>
+              <Box sx={{ mt: 2 }}>
+                <Button
+                  color="error"
+                  variant="contained"
+                  disabled={!studentApplicationsTableTemplateState.isLoaded}
+                  onClick={handleDeleteConfirm}
+                  sx={{ mr: 2 }}
+                >
+                  {t('Yes')}
+                </Button>
+                <Button
+                  onClick={onHideModalDeleteApplication}
+                  variant="outlined"
+                >
+                  {t('Close')}
+                </Button>
+              </Box>
+            </ModalNew>
+            <ModalNew
+              open={
+                studentApplicationsTableTemplateState.modalUpdatedApplication
+              }
+              onClose={onHideUpdatedApplicationWindow}
+              size="small"
+              aria-labelledby="contained-modal-title-vcenter"
+              centered
+            >
+              <Typography id="contained-modal-title-vcenter">Info:</Typography>
+              <Typography>
+                {t('Applications status updated successfully!')}
+              </Typography>
+              <Typography>
+                <Button
+                  color="primary"
+                  variant="outlined"
+                  size="small"
+                  onClick={onHideUpdatedApplicationWindow}
+                >
+                  {t('Close')}
+                </Button>
+              </Typography>
+            </ModalNew>
+          </Box>
+        </>
+      )}
+    </Box>
+  );
 }
 
 export default StudentApplicationsTableTemplate;

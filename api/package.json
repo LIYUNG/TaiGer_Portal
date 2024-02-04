@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "cross-env NODE_ENV=production nodemon index.js",
+    "start": "cross-env NODE_ENV=production node index.js",
     "dev": "cross-env NODE_ENV=development nodemon --config nodemon.json index.js",
     "test": "cross-env NODE_ENV=test jest --runInBand --detectOpenHandles --coverage",
     "deploy-s3": "aws s3 sync . s3://taiger-file-storage-production-backend-server --exclude \".env.production\" --exclude \"__tests__/*\" --exclude \"node_modules/*\" --exclude \"cert/*\" --exclude \"logs/*\"",
@@ -20,6 +20,7 @@
     "child_process": "^1.0.2",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
     "crypto": "^1.0.1",
     "debug": "~2.6.9",
     "dotenv": "^10.0.0",
@@ -59,7 +60,6 @@
   },
   "devDependencies": {
     "@types/jest": "^27.0.1",
-    "cross-env": "^7.0.3",
     "eslint": "^8.19.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-plugin-import": "^2.26.0",

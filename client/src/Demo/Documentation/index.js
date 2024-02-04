@@ -1,24 +1,26 @@
-import React from 'react';
-import { Spinner, Row, Col, Card } from 'react-bootstrap';
-import { Redirect } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Navigate, useParams, Link as LinkDom } from 'react-router-dom';
+import { Breadcrumbs, Link, Typography } from '@mui/material';
 
 import DocPageView from './DocPageView';
 import DocPageEdit from './DocPageEdit';
 import { valid_categories } from '../Utils/contants';
-import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
-
 import {
   getCategorizedDocumentationPage,
   updateDocumentationPage
 } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
-import { TopBar } from '../../components/TopBar/TopBar';
+import { useAuth } from '../../components/AuthProvider';
+import Loading from '../../components/Loading/Loading';
+import { appConfig } from '../../config';
 
-class Documentation extends React.Component {
-  state = {
+function Documentation(props) {
+  const { category } = useParams();
+  const { user } = useAuth();
+  const [documentationState, setDocumentationState] = useState({
     error: '',
     isLoaded: false,
     success: false,
@@ -28,10 +30,9 @@ class Documentation extends React.Component {
     res_status: 0,
     res_modal_message: '',
     res_modal_status: 0
-  };
-
-  componentDidMount() {
-    getCategorizedDocumentationPage(this.props.match.params.category).then(
+  });
+  useEffect(() => {
+    getCategorizedDocumentationPage(category).then(
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
@@ -45,110 +46,68 @@ class Documentation extends React.Component {
           }
           // initialEditorState = JSON.parse(data.text);
 
-          this.setState({
+          setDocumentationState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             editorState: initialEditorState,
             author,
             success: success,
             res_status: status
-          });
+          }));
         } else {
-          const { message } = resp.data;
-          this.setState({
+          setDocumentationState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             res_status: status
-          });
+          }));
         }
       },
       (error) => {
-        const { statusText } = resp;
-        this.setState((state) => ({
-          ...state,
+        setDocumentationState((prevState) => ({
+          ...prevState,
           isLoaded: true,
           error,
           res_modal_status: 500,
-          res_modal_message: statusText
+          res_modal_message: ''
         }));
       }
     );
-  }
-  // when changing category URL
-  componentDidUpdate(prevProps, prevState) {
-    if (prevProps.match.params.category !== this.props.match.params.category) {
-      // this.setState({
-      //   isLoaded: false
-      // });
-      getCategorizedDocumentationPage(this.props.match.params.category).then(
-        (resp) => {
-          const { data, success } = resp.data;
-          const { status } = resp;
-          const author = data.author;
-          if (success) {
-            var initialEditorState = null;
-            if (data.text) {
-              initialEditorState = JSON.parse(data.text);
-            } else {
-              initialEditorState = {
-                time: new Date(),
-                blocks: []
-              };
-            }
-            this.setState({
-              isLoaded: true,
-              editorState: initialEditorState,
-              author,
-              success: success,
-              res_status: status
-            });
-          } else {
-            this.setState({
-              isLoaded: true,
-              res_status: status
-            });
-          }
-        },
-        (error) => {
-          this.setState((state) => ({
-            ...state,
-            isLoaded: true,
-            error,
-            res_status: 500
-          }));
-        }
-      );
-    }
-  }
+  }, [category]);
 
-  handleClickEditToggle = (e) => {
-    this.setState((state) => ({ ...state, isEdit: !this.state.isEdit }));
+  const handleClickEditToggle = () => {
+    setDocumentationState((prevState) => ({
+      ...prevState,
+      isEdit: !documentationState.isEdit
+    }));
   };
-  handleClickSave = (e, doc_title, editorState) => {
+  const handleClickSave = (e, doc_title, editorState) => {
     e.preventDefault();
     const message = JSON.stringify(editorState);
     const msg = {
-      category: this.props.match.params.category,
+      category: category,
       title: doc_title,
-      prop: this.props.item,
+      prop: props.item,
       text: message
     };
-    updateDocumentationPage(this.props.match.params.category, msg).then(
+    updateDocumentationPage(category, msg).then(
       (resp) => {
         const { success, data } = resp.data;
         const { status } = resp;
         if (success) {
-          this.setState({
+          setDocumentationState((prevState) => ({
+            ...prevState,
             success,
             document_title: data.title,
             editorState,
-            isEdit: !this.state.isEdit,
+            isEdit: !documentationState.isEdit,
             author: data.author,
             isLoaded: true,
             res_modal_status: status
-          });
+          }));
         } else {
           const { message } = resp.data;
-          this.setState((state) => ({
-            ...state,
+          setDocumentationState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             res_modal_message: message,
             res_modal_status: status
@@ -156,96 +115,100 @@ class Documentation extends React.Component {
         }
       },
       (error) => {
-        const { statusText } = resp;
-        this.setState((state) => ({
-          ...state,
+        setDocumentationState((prevState) => ({
+          ...prevState,
           isLoaded: true,
           error,
           res_modal_status: 500,
-          res_modal_message: statusText
+          res_modal_message: ''
         }));
       }
     );
-    this.setState((state) => ({ ...state, in_edit_mode: false }));
+    setDocumentationState((prevState) => ({
+      ...prevState,
+      in_edit_mode: false
+    }));
   };
 
-  ConfirmError = () => {
-    this.setState((state) => ({
-      ...state,
+  const ConfirmError = () => {
+    setDocumentationState((prevState) => ({
+      ...prevState,
       res_modal_status: 0,
       res_modal_message: ''
     }));
   };
 
-  render() {
-    if (
-      this.props.user.role !== 'Admin' &&
-      this.props.user.role !== 'Editor' &&
-      this.props.user.role !== 'Agent' &&
-      this.props.user.role !== 'Student'
-    ) {
-      return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
-    }
-    const {
-      res_status,
-      editorState,
-      isLoaded,
-      res_modal_status,
-      res_modal_message
-    } = this.state;
-
-    if (res_status >= 400) {
-      return <ErrorPage res_status={res_status} />;
-    }
-
-    if (!isLoaded || !editorState) {
-      return (
-        <div style={spinner_style}>
-          <Spinner animation="border" role="status">
-            <span className="visually-hidden"></span>
-          </Spinner>
-        </div>
-      );
-    }
-
-    const category_name = valid_categories.find(
-      (categorie) => categorie.key === this.props.match.params.category
-    ).value;
-    TabTitle(`Doc: ${category_name}`);
-    return (
-      <>
-        {res_modal_status >= 400 && (
-          <ModalMain
-            ConfirmError={this.ConfirmError}
-            res_modal_status={res_modal_status}
-            res_modal_message={res_modal_message}
-          />
-        )}
-        <TopBar>{category_name}</TopBar>
-        {this.state.isEdit ? (
-          <DocPageEdit
-            category={'category'}
-            document={document}
-            document_title={this.state.document_title}
-            editorState={this.state.editorState}
-            isLoaded={isLoaded}
-            handleClickEditToggle={this.handleClickEditToggle}
-            handleClickSave={this.handleClickSave}
-          />
-        ) : (
-          <DocPageView
-            document={document}
-            document_title={this.state.document_title}
-            editorState={this.state.editorState}
-            isLoaded={isLoaded}
-            author={this.state.author}
-            user={this.props.user}
-            handleClickEditToggle={this.handleClickEditToggle}
-          />
-        )}
-      </>
-    );
+  if (
+    user.role !== 'Admin' &&
+    user.role !== 'Editor' &&
+    user.role !== 'Agent' &&
+    user.role !== 'Student'
+  ) {
+    return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
   }
+  const {
+    res_status,
+    editorState,
+    isLoaded,
+    res_modal_status,
+    res_modal_message
+  } = documentationState;
+
+  if (res_status >= 400) {
+    return <ErrorPage res_status={res_status} />;
+  }
+
+  if (!isLoaded || !editorState) {
+    return <Loading />;
+  }
+
+  const category_name = valid_categories.find(
+    (categorie) => categorie.key === category
+  ).value;
+  TabTitle(`Doc: ${category_name}`);
+  return (
+    <>
+      {res_modal_status >= 400 && (
+        <ModalMain
+          ConfirmError={ConfirmError}
+          res_modal_status={res_modal_status}
+          res_modal_message={res_modal_message}
+        />
+      )}
+      <Breadcrumbs aria-label="breadcrumb">
+        <Link
+          underline="hover"
+          color="inherit"
+          component={LinkDom}
+          to={`${DEMO.DASHBOARD_LINK}`}
+        >
+          {appConfig.companyName}
+        </Link>
+        <Typography color="text.primary">{category_name}</Typography>
+      </Breadcrumbs>
+      {documentationState.isEdit ? (
+        <DocPageEdit
+          category={'category'}
+          document={document}
+          document_title={documentationState.document_title}
+          editorState={documentationState.editorState}
+          isLoaded={isLoaded}
+          handleClickEditToggle={handleClickEditToggle}
+          handleClickSave={handleClickSave}
+        />
+      ) : (
+        <DocPageView
+          document={document}
+          document_title={documentationState.document_title}
+          editorState={documentationState.editorState}
+          isLoaded={isLoaded}
+          author={documentationState.author}
+          user={user}
+          handleClickEditToggle={handleClickEditToggle}
+        />
+      )}
+    </>
+  );
 }
 
 export default Documentation;

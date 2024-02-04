@@ -1,29 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import './../../../assets/scss/style.scss';
-import Aux from '../../../hoc/_Aux';
+import { Button, Typography } from '@mui/material';
+import { useTranslation } from 'react-i18next';
+
 import { resendActivation } from '../../../api/index';
-import Footer from '../../../components/Footer/Footer';
-import { appConfig } from '../../../config';
+import AuthWrapper from '../../../components/AuthWrapper';
 
 export default function Reactivation(props) {
-  // const query = new URLSearchParams(props.location.search);
-  // const [email, setEmail] = useState(query.get('email'));
   const [emailsent, setEmailsent] = React.useState(false);
-
-  // useEffect(() => {
-  //   activation(email, token).then((res) => {
-  //     const { success } = res.data;
-  //     if (success) {
-  //       setEmailsent(true);
-  //     } else {
-  //       alert(res.data.message);
-  //     }
-  //   });
-  // }, []);
-
-  //TODO: default call API to get token
-
+  const { t } = useTranslation();
   const handleSubmit = async (e) => {
     e.preventDefault();
     setEmailsent(true);
@@ -39,72 +24,35 @@ export default function Reactivation(props) {
       }
     } catch (err) {
       // TODO: handle error
-      // console.log(err);
     }
   };
 
   // if return 200, then show Start button, otherwise, resend the activation email with token.
-  if (emailsent) {
-    return (
-      <Aux>
-        <div className="auth-wrapper">
-          <div className="auth-content">
-            <form>
-              <div className="card-body text-center">
-                <img
-                  className="img-radius"
-                  src={appConfig.LoginPageLogo}
-                  alt="Generic placeholder"
-                />
-                <p className="mb-4"></p>
-                <p className="mb-2">Confirmation Email sent</p>
-                <div className="input-group mb-2">
-                  <p className="mb-0 text-success">
-                    The new activation link is sent to the following address:
-                  </p>
-                </div>
-                <p className="mb-4 text-secondary">{props.email}</p>
-              </div>
-            </form>
-          </div>
-        </div>
-        <Footer />
-      </Aux>
-    );
-  } else {
-    return (
-      <Aux>
-        <div className="auth-wrapper">
-          <div className="auth-content">
-            <form onSubmit={handleSubmit}>
-              <div className="card-body text-center">
-                <img
-                  className="img-radius"
-                  src={appConfig.LoginPageLogo}
-                  alt="Generic placeholder"
-                />
-                <p className="mb-4"></p>
-                <p className="mb-4">Account is not activated</p>
-                <div className="input-group mb-4">
-                  <p className="mb-0 text-success">
-                    Please click "Resend" to receive the new activation link in
-                    your email.
-                  </p>
-                </div>
-                <button
-                  className="btn btn-primary shadow-2 mb-4"
-                  onClick={(e) => handleSubmit(e)}
-                >
-                  Resend
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-        <Footer />
-      </Aux>
-    );
-  }
+  return (
+    <AuthWrapper>
+      {emailsent ? (
+        <>
+          <Typography>{t('Confirmation Email sent')}</Typography>
+          <Typography>
+            {t(' The new activation link is sent to the following address:')}
+          </Typography>
+          <Typography>{props.email}</Typography>
+        </>
+      ) : (
+        <>
+          <Typography>{t('Account is not activated')}</Typography>
+          <Typography>
+            {t(
+              'Please click "Resend" to receive the new activation link in your email.'
+            )}
+          </Typography>
+          <Button color="primary" onClick={(e) => handleSubmit(e)}>
+            {t('Resend')}
+          </Button>
+        </>
+      )}
+    </AuthWrapper>
+  );
 }
 
 Reactivation.propTypes = {

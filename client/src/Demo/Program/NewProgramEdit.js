@@ -874,7 +874,7 @@ function NewProgramEdit(props) {
           variant="contained"
           onClick={(e) => handleSubmit_Program(e, initStates.program)}
         >
-          {t('Create')}
+          {props.program ? t('Update') : t('Create')}
         </Button>
         <Button
           size="small"

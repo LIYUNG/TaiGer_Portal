@@ -84,42 +84,57 @@ function ApplicationProgress(props) {
           <></>
         )}
         {application.decided === 'O' ? (
-          <TableCell
-            className={`mb-1 ${
-              application.closed === 'O' ? 'text-warning' : 'text-info'
-            }`}
-          >
-            {application.programId.school}
+          <TableCell>
+            <Typography
+              color={
+                application.closed === 'O' ? 'success.light' : 'error.main'
+              }
+              fontWeight="bold"
+            >
+              {application.programId.school}
+            </Typography>
           </TableCell>
         ) : (
-          <TableCell className="mb-1 text-secondary" title="Not decided yet">
-            {application.programId.school}
+          <TableCell title="Not decided yet">
+            <Typography color="grey" fontWeight="bold">
+              {application.programId.school}
+            </Typography>
           </TableCell>
         )}
         {application.decided === 'O' ? (
-          <TableCell
-            className={`mb-1 ${
-              application.closed === 'O' ? 'text-warning' : 'text-info'
-            }`}
-          >
-            {application.programId.degree}
+          <TableCell>
+            <Typography
+              color={
+                application.closed === 'O' ? 'success.light' : 'error.main'
+              }
+              fontWeight="bold"
+            >
+              {application.programId.degree}
+            </Typography>
           </TableCell>
         ) : (
-          <TableCell className="mb-1 text-secondary" title="Not decided yet">
-            {application.programId.degree}
+          <TableCell title="Not decided yet">
+            <Typography color="grey" fontWeight="bold">
+              {application.programId.degree}
+            </Typography>
           </TableCell>
         )}
         {application.decided === 'O' ? (
-          <TableCell
-            className={`mb-1 ${
-              application.closed === 'O' ? 'text-warning' : 'text-info'
-            }`}
-          >
-            {application.programId.program_name}
+          <TableCell>
+            <Typography
+              color={
+                application.closed === 'O' ? 'success.light' : 'error.main'
+              }
+              fontWeight="bold"
+            >
+              {application.programId.program_name}
+            </Typography>
           </TableCell>
         ) : (
-          <TableCell className="mb-1 text-secondary" title="Not decided yet">
-            {application.programId.program_name}
+          <TableCell title="Not decided yet">
+            <Typography color="grey" fontWeight="bold">
+              {application.programId.program_name}
+            </Typography>
           </TableCell>
         )}
         {application.decided === 'O' ? (

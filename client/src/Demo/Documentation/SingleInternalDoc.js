@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
 
-import SingleDocView from './SingleDocView';
 import SingleDocEdit from './SingleDocEdit';
 import { is_TaiGer_role } from '../Utils/checking-functions';
 import ErrorPage from '../Utils/ErrorPage';
@@ -13,6 +12,7 @@ import {
 import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
+import DocPageView from './DocPageView';
 
 function SingleDoc(props) {
   const { documentation_id } = useParams();
@@ -158,15 +158,13 @@ function SingleDoc(props) {
     );
   } else {
     return (
-      <SingleDocView
+      <DocPageView
         category={singleInternalDocState.category}
         internal={singleInternalDocState.internal}
         document={document}
         document_title={singleInternalDocState.document_title}
         editorState={singleInternalDocState.editorState}
         author={singleInternalDocState.author}
-        isLoaded={isLoaded}
-        user={user}
         handleClickEditToggle={handleClickEditToggle}
       />
     );

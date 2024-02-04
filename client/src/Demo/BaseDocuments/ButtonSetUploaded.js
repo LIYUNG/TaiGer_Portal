@@ -332,8 +332,10 @@ function ButtonSetUploaded(props) {
         onClose={closeRejectWarningWindow}
         aria-labelledby="contained-modal-title-vcenter"
       >
-        <Typography variant="h5">Warning</Typography>
-        <Typography>
+        <Typography variant="h5" sx={{ mb: 2 }}>
+          {t('Warning')}
+        </Typography>
+        <Typography sx={{ mb: 2 }}>
           Please give a reason why the uploaded
           {ButtonSetUploadedState.category} is invalied?
         </Typography>
@@ -346,6 +348,8 @@ function ButtonSetUploaded(props) {
           sx={{ mb: 2 }}
         />
         <Button
+          color="primary"
+          variant="contained"
           disabled={
             ButtonSetUploadedState.feedback === '' ||
             !ButtonSetUploadedState.isLoaded

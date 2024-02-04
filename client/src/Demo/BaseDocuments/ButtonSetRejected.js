@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Link as LinkDom } from 'react-router-dom';
-import { Form } from 'react-bootstrap';
 import {
   Box,
   Button,
@@ -8,6 +7,8 @@ import {
   CircularProgress,
   TableCell,
   TableRow,
+  InputLabel,
+  TextField,
   Typography
 } from '@mui/material';
 import { AiFillCloseCircle, AiOutlineComment } from 'react-icons/ai';
@@ -391,18 +392,16 @@ function ButtonSetRejected(props) {
         ) : (
           <>
             <Typography>
-              <Form.Group controlId="rejectmessage">
-                <Form.Label>
-                  Please give a reason why the uploaded{' '}
-                  {buttonSetRejectedState.category} is invalied?
-                </Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="ex. Poor scanned quality."
-                  defaultValue={buttonSetRejectedState.comments}
-                  onChange={(e) => handleRejectMessage(e, e.target.value)}
-                />
-              </Form.Group>
+              <InputLabel sx={{ my: 2 }}>
+                Please give a reason why the uploaded{' '}
+                {buttonSetRejectedState.category} is invalied?
+              </InputLabel>
+              <TextField
+                type="text"
+                placeholder="ex. Poor scanned quality."
+                value={buttonSetRejectedState.comments || ''}
+                onChange={(e) => handleRejectMessage(e, e.target.value)}
+              />
             </Typography>
             <Box>
               <Button
@@ -410,7 +409,7 @@ function ButtonSetRejected(props) {
                 onClick={(e) => onUpdateRejectMessageStudent(e)}
               >
                 {!buttonSetRejectedState.isLoaded ? (
-                  <CircularProgress />
+                  <CircularProgress size={24} />
                 ) : (
                   t('Update')
                 )}

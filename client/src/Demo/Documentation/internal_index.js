@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Card } from 'react-bootstrap';
+import { Alert } from '@mui/material';
 import { Navigate } from 'react-router-dom';
 
 import DocPageView from './DocPageView';
@@ -164,21 +164,9 @@ function InternaldocsPage(props) {
           res_modal_message={res_modal_message}
         />
       )}
-      <Row className="sticky-top ">
-        <Col>
-          <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
-            <Card.Header text={'dark'}>
-              <Card.Title>
-                <Row>
-                  <Col className="my-0 mx-0 text-light">
-                    Internal Documentation
-                  </Col>
-                </Row>
-              </Card.Title>
-            </Card.Header>
-          </Card>
-        </Col>
-      </Row>
+
+      <Alert severity='info'>Internal Documentation</Alert>
+
       {internalDocsPageState.isEdit ? (
         <DocPageEdit
           category={'category'}

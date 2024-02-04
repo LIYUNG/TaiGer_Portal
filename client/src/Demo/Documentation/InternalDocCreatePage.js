@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Card, Form } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
 import { Navigate, Link as LinkDom } from 'react-router-dom';
 import {
   Box,
+  Card,
   Breadcrumbs,
   Button,
   Grid,
@@ -294,54 +295,46 @@ function InternalDocCreatePage(props) {
           <Card>
             {internalDocCreatePageState.isEdit ? (
               <>
-                <Card.Body>
-                  <Row>
-                    <Form.Group controlId="decided">
-                      <Form.Control
-                        as="select"
-                        onChange={(e) => handleChange_category(e)}
-                      >
-                        <option value={''}>Select Document Category</option>
-                        {valid_internal_categories.map((cat, i) => (
-                          <option value={cat.key} key={i}>
-                            {cat.value}
-                          </option>
-                        ))}
-                        {/* <option value={'X'}>No</option>
-                            <option value={'O'}>Yes</option> */}
-                      </Form.Control>
-                    </Form.Group>
-                  </Row>
-                  <Row>
-                    <Form.Group controlId="doc_title" className="mb-4">
-                      <Form.Control
-                        type="text"
-                        placeholder="Title"
-                        defaultValue={''}
-                        onChange={(e) => handleChange_doc_title(e)}
-                      />
-                    </Form.Group>
-                  </Row>
-                  <DocumentsListItemsEditor
-                    category={internalDocCreatePageState.category}
-                    doc_title={internalDocCreatePageState.doc_title}
-                    editorState={internalDocCreatePageState.editorState}
-                    handleClickSave={handleClickSave}
-                    handleClickEditToggle={handleClickEditToggle}
-                    // readOnlyMode={readOnlyMode}
-                    role={props.role}
+                <Form.Group controlId="decided">
+                  <Form.Control
+                    as="select"
+                    onChange={(e) => handleChange_category(e)}
+                  >
+                    <option value={''}>Select Document Category</option>
+                    {valid_internal_categories.map((cat, i) => (
+                      <option value={cat.key} key={i}>
+                        {cat.value}
+                      </option>
+                    ))}
+                  </Form.Control>
+                </Form.Group>
+                <Form.Group controlId="doc_title" className="mb-4">
+                  <Form.Control
+                    type="text"
+                    placeholder="Title"
+                    defaultValue={''}
+                    onChange={(e) => handleChange_doc_title(e)}
                   />
-                </Card.Body>
+                </Form.Group>
+                <DocumentsListItemsEditor
+                  category={internalDocCreatePageState.category}
+                  doc_title={internalDocCreatePageState.doc_title}
+                  editorState={internalDocCreatePageState.editorState}
+                  handleClickSave={handleClickSave}
+                  handleClickEditToggle={handleClickEditToggle}
+                  // readOnlyMode={readOnlyMode}
+                  role={props.role}
+                />
               </>
             ) : (
-              <Card.Body>
+              <>
                 {documentlist_key.map((catego, i) => (
-                  <Row key={i}>
+                  <Box key={i}>
                     <Typography variant="h6">
                       - {internal_documentation_categories[`${catego}`]}
                     </Typography>
                     {document_list(catego)}
-                  </Row>
+                  </Box>
                 ))}
                 {is_TaiGer_AdminAgent(user) && (
                   <Button
@@ -352,7 +345,7 @@ function InternalDocCreatePage(props) {
                     {t('Add')}
                   </Button>
                 )}
-              </Card.Body>
+              </>
             )}
           </Card>
         </Grid>

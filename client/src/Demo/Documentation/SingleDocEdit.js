@@ -3,7 +3,7 @@ import { Form } from 'react-bootstrap';
 
 import DocumentsListItemsEditor from './DocumentsListItemsEditor';
 import { valid_categories, valid_internal_categories } from '../Utils/contants';
-import { Typography, Card } from '@mui/material';
+import { Typography, Card, FormControl, Select, MenuItem } from '@mui/material';
 
 function SingleDocEdit(props) {
   const [singleDocEditState, setSingleDocEdit] = useState({
@@ -56,40 +56,46 @@ function SingleDocEdit(props) {
             <Typography variant="body1">
               Category:<b>Internal</b>
             </Typography>
-            <Form.Group controlId="category">
-              <Form.Control
-                as="select"
+            <FormControl fullWidth>
+              <Select
+                size="small"
+                labelId="category"
+                name="category"
+                id="category"
                 onChange={(e) => handleChange_category(e)}
-                defaultValue={props.category}
+                value={singleDocEditState.category || ''}
               >
-                <option value={''}>Select Document Category</option>
+                <MenuItem value={''}>Select Document Category</MenuItem>
                 {valid_internal_categories.map((cat, i) => (
-                  <option key={i} value={cat.key}>
+                  <MenuItem key={i} value={cat.key}>
                     {cat.value}
-                  </option>
+                  </MenuItem>
                 ))}
-              </Form.Control>
-            </Form.Group>
+              </Select>
+            </FormControl>
           </>
         ) : (
           <>
             <Typography variant="body1">
               Category: <b>Public</b>
             </Typography>
-            <Form.Group controlId="category">
-              <Form.Control
-                as="select"
+            <FormControl fullWidth>
+              <Select
+                size="small"
+                labelId="category"
+                name="category"
+                id="category"
                 onChange={(e) => handleChange_category(e)}
-                defaultValue={props.category}
+                value={singleDocEditState.category || ''}
               >
-                <option value={''}>Select Document Category</option>
+                <MenuItem value={''}>Select Document Category</MenuItem>
                 {valid_categories.map((cat, i) => (
-                  <option key={i} value={cat.key}>
+                  <MenuItem key={i} value={cat.key}>
                     {cat.value}
-                  </option>
+                  </MenuItem>
                 ))}
-              </Form.Control>
-            </Form.Group>
+              </Select>
+            </FormControl>
           </>
         )}
         <Form.Group controlId="document_title">

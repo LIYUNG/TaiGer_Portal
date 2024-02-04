@@ -1,5 +1,6 @@
 import React from 'react';
-import { Row, Col, Card, Button } from 'react-bootstrap';
+import { Button, Card, Typography } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import EditorNew from '../../components/EditorJs/EditorNew';
 import { convertDate } from '../Utils/contants';
@@ -10,14 +11,14 @@ import { useAuth } from '../../components/AuthProvider';
 
 function DocPageView(props) {
   const { user } = useAuth();
+  const { t } = useTranslation();
   return (
     <>
-      <Card className="mb-2 mx-0">
-        <Card.Body>
-          {/* <section>
+      <Card sx={{ p: 2 }}>
+        {/* <section>
               <Output data={props.editorState} />
             </section> */}
-          {/* <Blocks
+        {/* <Blocks
               data={props.editorState}
               config={{
                 code: {
@@ -57,36 +58,32 @@ function DocPageView(props) {
                 }
               }}
             /> */}
-          <EditorNew
-            readOnly={true}
-            handleClickSave={props.handleClickSave}
-            handleClickEditToggle={props.handleClickEditToggle}
-            editorState={props.editorState}
-          />
-          {is_TaiGer_AdminAgent(user) && (
-            <>
-              <Row>
-                <Col md={2}>
-                  <p className="my-0">Updated at</p>
-                </Col>
-                <Col md={2}>
-                  <p className="my-0">{convertDate(props.editorState.time)}</p>
-                </Col>
-                <Col md={2}>
-                  <p className="my-0">Updated by</p>
-                </Col>
-                <Col md={6}>
-                  <p className="my-0">{props.author ? props.author : '-'}</p>
-                </Col>
-              </Row>
-            </>
-          )}
-          {is_TaiGer_AdminAgent(user) && (
-            <Button size="sm" onClick={() => props.handleClickEditToggle()}>
-              Edit
-            </Button>
-          )}
-        </Card.Body>
+        <EditorNew
+          readOnly={true}
+          handleClickSave={props.handleClickSave}
+          handleClickEditToggle={props.handleClickEditToggle}
+          editorState={props.editorState}
+        />
+        {is_TaiGer_AdminAgent(user) && (
+          <>
+            <Typography>
+              Updated at {convertDate(props.editorState.time)}
+            </Typography>
+            <Typography>
+              Updated by {props.author ? props.author : '-'}
+            </Typography>
+          </>
+        )}
+        {is_TaiGer_AdminAgent(user) && (
+          <Button
+            size="small"
+            color="secondary"
+            variant="contained"
+            onClick={() => props.handleClickEditToggle()}
+          >
+            {t('Edit')}
+          </Button>
+        )}
       </Card>
     </>
   );

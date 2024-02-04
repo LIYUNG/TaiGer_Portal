@@ -2,20 +2,18 @@ import React, { useEffect, useState } from 'react';
 import { Breadcrumbs, Link, Typography } from '@mui/material';
 import { Link as LinkDom, useParams } from 'react-router-dom';
 
-import SingleDocView from './SingleDocView';
 import SingleDocEdit from './SingleDocEdit';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import { getDocumentation, updateDocumentation } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
-import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
 import { appConfig } from '../../config';
 import DEMO from '../../store/constant';
 import { documentation_categories } from '../Utils/contants';
+import DocPageView from './DocPageView';
 
 function SingleDoc(props) {
-  const { user } = useAuth();
   const { documentation_id } = useParams();
   const [singleDocState, setSingleDocState] = useState({
     error: '',
@@ -224,14 +222,12 @@ function SingleDoc(props) {
             {singleDocState.document_title}
           </Typography>
         </Breadcrumbs>
-        <SingleDocView
+        <DocPageView
           category={singleDocState.category}
           document={document}
           document_title={singleDocState.document_title}
           editorState={singleDocState.editorState}
           author={singleDocState.author}
-          isLoaded={isLoaded}
-          user={user}
           handleClickEditToggle={handleClickEditToggle}
         />
       </>

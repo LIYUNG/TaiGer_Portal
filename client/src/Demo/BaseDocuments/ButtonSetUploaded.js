@@ -317,7 +317,11 @@ function ButtonSetUploaded(props) {
           onClick={(e) => onDeleteFilefromstudent(e)}
           sx={{ mr: 1 }}
         >
-          {!ButtonSetUploadedState.isLoaded ? <CircularProgress /> : t('Yes')}
+          {!ButtonSetUploadedState.isLoaded ? (
+            <CircularProgress size={24} />
+          ) : (
+            t('Yes')
+          )}
         </Button>
         <Button variant="outlined" onClick={closeWarningWindow}>
           {t('No')}
@@ -349,7 +353,7 @@ function ButtonSetUploaded(props) {
           onClick={(e) => onUpdateProfileFilefromstudent(e)}
         >
           {!ButtonSetUploadedState.isLoaded ? (
-            <CircularProgress />
+            <CircularProgress size={24} />
           ) : (
             t('Submit')
           )}
@@ -364,18 +368,30 @@ function ButtonSetUploaded(props) {
       >
         <Typography variant="h5">Warning</Typography>
 
-        <Typography>
+        <Typography sx={{ my: 2 }}>
           {ButtonSetUploadedState.category} is a valid and can be used for the
           application?
         </Typography>
 
         <Button
+          color="primary"
+          variant="contained"
           disabled={!ButtonSetUploadedState.isLoaded}
           onClick={(e) => onUpdateProfileFilefromstudent(e)}
         >
-          {!ButtonSetUploadedState.isLoaded ? <CircularProgress /> : t('Yes')}
+          {!ButtonSetUploadedState.isLoaded ? (
+            <CircularProgress size={24} />
+          ) : (
+            t('Yes')
+          )}
         </Button>
-        <Button onClick={closeAcceptWarningWindow}>No</Button>
+        <Button
+          color="primary"
+          variant="outlined"
+          onClick={closeAcceptWarningWindow}
+        >
+          {t('No')}
+        </Button>
       </ModalNew>
       <ModalNew
         open={ButtonSetUploadedState.showPreview}
@@ -418,7 +434,8 @@ function ButtonSetUploaded(props) {
               props.path
             }`}
             download
-            target="_blank" rel="noreferrer"
+            target="_blank"
+            rel="noreferrer"
           >
             <Button
               color="primary"
@@ -478,7 +495,11 @@ function ButtonSetUploaded(props) {
           </>
         )}
         <Button size="small" variant="outlined" onClick={closePreviewWindow}>
-          {!ButtonSetUploadedState.isLoaded ? <CircularProgress /> : t('Close')}
+          {!ButtonSetUploadedState.isLoaded ? (
+            <CircularProgress size={24} />
+          ) : (
+            t('Close')
+          )}
         </Button>
       </ModalNew>
       <OffcanvasBaseDocument

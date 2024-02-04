@@ -1,15 +1,24 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Form, Col } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
-import { Box, Button, Card, Grid, Typography } from '@mui/material';
+import {
+  Button,
+  Card,
+  FormControl,
+  Grid,
+  MenuItem,
+  Select,
+  TextField,
+  Typography
+} from '@mui/material';
 
 import {
   AddValidProgram,
-  BINARY_STATE_OPTIONS,
-  COUNTRIES_OPTIONS,
-  DEGREE_OPTIONS,
-  LANGUAGES_OPTIONS,
-  SEMESTER_OPTIONS,
+  BINARY_STATE_ARRAY_OPTIONS,
+  COUNTRIES_ARRAY_OPTIONS,
+  DEGREE_CATOGARY_ARRAY_OPTIONS,
+  LANGUAGES_ARRAY_OPTIONS,
+  SEMESTER_ARRAY_OPTIONS,
+  UNI_ASSIST_ARRAY_OPTIONS,
   field_alert
 } from '../Utils/contants';
 import { appConfig } from '../../config';
@@ -65,7 +74,7 @@ function NewProgramEdit(props) {
   const handleChange = (e) => {
     e.preventDefault();
     var program_temp = { ...initStates.program };
-    program_temp[e.target.id] = e.target.value.trimLeft();
+    program_temp[e.target.name] = e.target.value.trimLeft();
     setInitStates((initStates) => ({
       ...initStates,
       program: program_temp
@@ -98,22 +107,25 @@ function NewProgramEdit(props) {
   };
   return (
     <>
-      <Card>
+      <Card sx={{ p: 2 }}>
         <Grid container>
-          <Grid md={4}>
-            <h5>University *</h5>
+          <Grid itemxs={6} md={6}>
+            <Typography variant="h6">University *</Typography>
           </Grid>
-          <Grid md={4}>
-            <h5>
+          <Grid itemxs={6} md={6}>
+            <Typography variant="h6">
               <div className="search-container-school" ref={searchContainerRef}>
-                <Form.Group controlId="school">
-                  <Form.Control
-                    type="text"
-                    placeholder="National Taiwan University"
-                    onChange={(e) => handleChange(e)}
-                    value={initStates.program.school || searchTerm}
-                  />
-                </Form.Group>
+                <TextField
+                  fullWidth
+                  size="small"
+                  type="text"
+                  id="school"
+                  name="school"
+                  placeholder="National Taiwan University"
+                  onChange={(e) => handleChange(e)}
+                  value={initStates.program.school || searchTerm}
+                />
+
                 {/* {loading && <div>Loading...</div>} */}
                 {searchResults.length > 0
                   ? isResultsVisible && (
@@ -134,837 +146,727 @@ function NewProgramEdit(props) {
                       </div>
                     )}
               </div>
-            </h5>
+            </Typography>
           </Grid>
-        </Grid>
-        <Box>
-          <Grid md={4}>
-            <h5>Program*</h5>
+          <Grid itemxs={6} md={6}>
+            <Typography variant="h6">Program*</Typography>
           </Grid>
-          <Grid md={4}>
-            <h5>
-              <Form.Group controlId="program_name">
-                <Form.Control
-                  type="text"
-                  placeholder="Electrical Engineering"
-                  onChange={(e) => handleChange(e)}
-                  value={initStates.program.program_name || ''}
-                />
-              </Form.Group>
-            </h5>
+          <Grid itemxs={6} md={6}>
+            <Typography variant="h6">
+              <TextField
+                fullWidth
+                size="small"
+                type="text"
+                id="program_name"
+                name="program_name"
+                placeholder="Electrical Engineering"
+                onChange={(e) => handleChange(e)}
+                value={initStates.program.program_name || ''}
+              />
+            </Typography>
           </Grid>
-        </Box>
-        <Box>
-          <Grid md={4}>
-            <h5>Degree *</h5>
+          <Grid itemxs={6} md={6}>
+            <Typography variant="h6">Degree *</Typography>
           </Grid>
-          <Grid md={4}>
-            <h5>
-              <Form.Group controlId="degree">
-                <Form.Control
-                  as="select"
+          <Grid itemxs={6} md={6}>
+            <Typography variant="h6">
+              <FormControl fullWidth>
+                <Select
+                  size="small"
+                  labelId="degree"
+                  name="degree"
+                  id="degree"
                   onChange={(e) => handleChange(e)}
                   value={initStates.program.degree}
                 >
-                  {DEGREE_OPTIONS()}
-                </Form.Control>
-              </Form.Group>
-            </h5>
+                  {DEGREE_CATOGARY_ARRAY_OPTIONS.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Typography>
           </Grid>
-        </Box>
-        <Box>
-          <Grid md={4}>
-            <h5>Semester *</h5>
+          <Grid itemxs={6} md={6}>
+            <Typography variant="h6">Semester *</Typography>
           </Grid>
-          <Grid md={4}>
-            <h5>
-              <Form.Group controlId="semester">
-                <Form.Control
-                  as="select"
+          <Grid itemxs={6} md={6}>
+            <Typography variant="h6">
+              <FormControl fullWidth>
+                <Select
+                  size="small"
+                  labelId="semester"
+                  name="semester"
+                  id="semester"
                   onChange={(e) => handleChange(e)}
-                  value={initStates.program.semester}
+                  value={initStates.program.semester || ''}
                 >
-                  {SEMESTER_OPTIONS()}
-                </Form.Control>
-              </Form.Group>
-            </h5>
+                  {SEMESTER_ARRAY_OPTIONS.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Typography>
           </Grid>
-        </Box>
-        <Box> </Box>
-        <Box>
-          <Grid md={4}>
-            <h5>Teaching Language*</h5>
+          <Grid itemxs={6} md={6}>
+            <Typography variant="h6">Teaching Language*</Typography>
           </Grid>
-          <Grid md={4}>
-            <h5>
-              <Form.Group controlId="lang">
-                <Form.Control
-                  as="select"
+          <Grid itemxs={6} md={6}>
+            <Typography variant="h6">
+              <FormControl fullWidth>
+                <Select
+                  size="small"
+                  labelId="lang"
+                  name="lang"
+                  id="lang"
                   onChange={(e) => handleChange(e)}
-                  defaultValue={
-                    initStates.program.lang ? initStates.program.lang : ''
-                  }
+                  value={initStates.program.lang || '-'}
                 >
-                  {LANGUAGES_OPTIONS()}
-                </Form.Control>
-              </Form.Group>
-            </h5>
+                  {LANGUAGES_ARRAY_OPTIONS.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Typography>
           </Grid>
-        </Box>
-        <Box>
-          <Grid md={4}>
-            <h5>GPA Requirement (German system)</h5>
+          <Grid itemxs={6} md={6}>
+            <Typography variant="h6">
+              GPA Requirement (German system)
+            </Typography>
           </Grid>
-          <Grid md={4}>
-            <h5>
-              <Form.Group controlId="gpa_requirement">
-                <Form.Control
-                  type="text"
-                  placeholder="2,5"
-                  onChange={(e) => handleChange(e)}
-                  defaultValue={
-                    initStates.program.gpa_requirement
-                      ? initStates.program.gpa_requirement
-                      : ''
-                  }
-                />
-              </Form.Group>
-            </h5>
+          <Grid itemxs={6} md={6}>
+            <Typography variant="h6">
+              <TextField
+                fullWidth
+                size="small"
+                type="text"
+                id="gpa_requirement"
+                name="gpa_requirement"
+                placeholder="2,5"
+                onChange={(e) => handleChange(e)}
+                value={initStates.program.gpa_requirement || ''}
+              />
+            </Typography>
           </Grid>
-        </Box>
-        <Box>
-          <Grid md={4}>
-            <h5>Application Start (MM-DD)</h5>
+          <Grid itemxs={6} md={6}>
+            <Typography variant="h6">Application Start (MM-DD)</Typography>
           </Grid>
-          <Grid md={4}>
-            <h5>
-              <Form.Group controlId="application_start">
-                <Form.Control
-                  type="text"
-                  placeholder="05-31"
-                  onChange={(e) => handleChange(e)}
-                  defaultValue={
-                    initStates.program.application_start
-                      ? initStates.program.application_start
-                      : ''
-                  }
-                />
-              </Form.Group>
-            </h5>
+          <Grid itemxs={6} md={6}>
+            <Typography variant="h6">
+              <TextField
+                fullWidth
+                size="small"
+                type="text"
+                id="application_start"
+                name="application_start"
+                placeholder="04-01"
+                onChange={(e) => handleChange(e)}
+                value={initStates.program.application_start || ''}
+              />
+            </Typography>
           </Grid>
-        </Box>
-        <Box>
-          <Grid md={4}>
-            <h5>Application Deadline (MM-DD) *</h5>
+          <Grid itemxs={6} md={6}>
+            <Typography variant="h6">Application Deadline (MM-DD) *</Typography>
           </Grid>
-          <Grid md={4}>
-            <h5>
-              <Form.Group controlId="application_deadline">
-                <Form.Control
-                  type="text"
-                  placeholder="05-31"
-                  onChange={(e) => handleChange(e)}
-                  defaultValue={
-                    initStates.program.application_deadline
-                      ? initStates.program.application_deadline
-                      : ''
-                  }
-                />
-              </Form.Group>
-            </h5>
+          <Grid itemxs={6} md={6}>
+            <Typography variant="h6">
+              <TextField
+                fullWidth
+                size="small"
+                type="text"
+                id="application_deadline"
+                name="application_deadline"
+                placeholder="05-31"
+                onChange={(e) => handleChange(e)}
+                value={initStates.program.application_deadline || ''}
+              />
+            </Typography>
           </Grid>
-        </Box>
-        {appConfig.vpdEnable && (
-          <Box>
-            <Grid md={4}>
-              <h5>Need Uni-Assist?</h5>
-            </Grid>
-            <Col md={4}>
-              <h5>
-                <Form.Group controlId="uni_assist">
-                  <Form.Control
-                    as="select"
-                    onChange={(e) => handleChange(e)}
-                    value={initStates.program.uni_assist}
-                  >
-                    <option value="No">No</option>
-                    <option value="Yes-VPD">Yes-VPD</option>
-                    <option value="Yes-Full">Yes-Full</option>
-                  </Form.Control>
-                </Form.Group>
-              </h5>
-            </Col>
-          </Box>
-        )}
-        <Box>
-          <Col md={4}>
+          {appConfig.vpdEnable && (
+            <>
+              <Grid item xs={6} md={6}>
+                <Typography variant="h6">Need Uni-Assist?</Typography>
+              </Grid>
+              <Grid item xs={6} md={6}>
+                <Typography variant="h6">
+                  <FormControl fullWidth>
+                    <Select
+                      size="small"
+                      labelId="uni_assist"
+                      name="uni_assist"
+                      id="uni_assist"
+                      onChange={(e) => handleChange(e)}
+                      value={initStates.program.uni_assist || 'No'}
+                    >
+                      {UNI_ASSIST_ARRAY_OPTIONS.map((option) => (
+                        <MenuItem key={option.value} value={option.value}>
+                          {option.label}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Typography>
+              </Grid>
+            </>
+          )}
+          <Grid item xs={6} md={6}>
             <Typography variant="h6">{t('TOEFL Requirement')}</Typography>
-          </Col>
-          <Col md={4}>
-            <h5>
-              <Form.Group controlId="toefl">
-                <Form.Control
-                  type="text"
-                  placeholder="88"
-                  onChange={(e) => handleChange(e)}
-                  defaultValue={
-                    initStates.program.toefl ? initStates.program.toefl : ''
-                  }
-                />
-              </Form.Group>
-            </h5>
-          </Col>
-          <Col md={1}>
-            <Typography variant="string">{t('Reading')}</Typography>
-            <Form.Group controlId="toefl_reading">
-              <Form.Control
+          </Grid>
+          <Grid item xs={2} md={2}>
+            <Typography variant="h6">
+              <TextField
+                fullWidth
+                size="small"
                 type="text"
-                placeholder="21"
+                id="toefl"
+                name="toefl"
+                placeholder="88"
                 onChange={(e) => handleChange(e)}
-                defaultValue={
-                  initStates.program.toefl_reading
-                    ? initStates.program.toefl_reading
-                    : ''
-                }
+                value={initStates.program.toefl || ''}
               />
-            </Form.Group>
-          </Col>
-          <Col md={1}>
-            <Typography variant="string">{t('Listening')}</Typography>
-            <Form.Group controlId="toefl_listening">
-              <Form.Control
-                type="text"
-                placeholder="21"
-                onChange={(e) => handleChange(e)}
-                defaultValue={
-                  initStates.program.toefl_listening
-                    ? initStates.program.toefl_listening
-                    : ''
-                }
-              />
-            </Form.Group>
-          </Col>
-          <Col md={1}>
-            <Typography variant="string">{t('Speaking')}</Typography>
-            <Form.Group controlId="toefl_speaking">
-              <Form.Control
-                type="text"
-                placeholder="21"
-                onChange={(e) => handleChange(e)}
-                defaultValue={
-                  initStates.program.toefl_speaking
-                    ? initStates.program.toefl_speaking
-                    : ''
-                }
-              />
-            </Form.Group>
-          </Col>
-          <Col md={1}>
-            <Typography variant="string">{t('Writing')}</Typography>
-            <Form.Group controlId="toefl_writing">
-              <Form.Control
-                type="text"
-                placeholder="21"
-                onChange={(e) => handleChange(e)}
-                defaultValue={
-                  initStates.program.toefl_writing
-                    ? initStates.program.toefl_writing
-                    : ''
-                }
-              />
-            </Form.Group>
-          </Col>
-        </Box>
-        <Box>
-          <Col md={4}>
+            </Typography>
+          </Grid>{' '}
+          <Grid item xs={1} md={1}>
+            <TextField
+              fullWidth
+              size="small"
+              type="text"
+              id="toefl_reading"
+              name="toefl_reading"
+              label={t('Reading')}
+              placeholder="21"
+              onChange={(e) => handleChange(e)}
+              value={initStates.program.toefl_reading || ''}
+            />
+          </Grid>
+          <Grid item xs={1} md={1}>
+            <TextField
+              fullWidth
+              size="small"
+              type="text"
+              id="toefl_listening"
+              name="toefl_listening"
+              label={t('Listening')}
+              placeholder="21"
+              onChange={(e) => handleChange(e)}
+              value={initStates.program.toefl_listening || ''}
+            />
+          </Grid>
+          <Grid item xs={1} md={1}>
+            <TextField
+              fullWidth
+              size="small"
+              type="text"
+              id="toefl_speaking"
+              name="toefl_speaking"
+              label={t('Speaking')}
+              placeholder="21"
+              onChange={(e) => handleChange(e)}
+              value={initStates.program.toefl_speaking || ''}
+            />
+          </Grid>
+          <Grid item xs={1} md={1}>
+            <TextField
+              fullWidth
+              size="small"
+              type="text"
+              id="toefl_writing"
+              name="toefl_writing"
+              label={t('Writing')}
+              placeholder="21"
+              onChange={(e) => handleChange(e)}
+              value={initStates.program.toefl_writing || ''}
+            />
+          </Grid>
+          <Grid item xs={6} md={6}>
             <Typography variant="h6">{t('IELTS Requirement')}</Typography>
-          </Col>
-          <Col md={4}>
-            <h5>
-              <Form.Group controlId="ielts">
-                <Form.Control
-                  type="text"
-                  placeholder="6.5"
-                  onChange={(e) => handleChange(e)}
-                  defaultValue={
-                    initStates.program.ielts ? initStates.program.ielts : ''
-                  }
-                />
-              </Form.Group>
-            </h5>
-          </Col>
-          <Col md={1}>
-            <Typography variant="string">{t('Reading')}</Typography>
-            <Form.Group controlId="ielts_reading">
-              <Form.Control
+          </Grid>
+          <Grid item xs={2} md={2}>
+            <Typography variant="h6">
+              <TextField
+                fullWidth
+                size="small"
                 type="text"
-                placeholder="5.5"
-                onChange={(e) => handleChange(e)}
-                defaultValue={
-                  initStates.program.ielts_reading
-                    ? initStates.program.ielts_reading
-                    : ''
-                }
-              />
-            </Form.Group>
-          </Col>
-          <Col md={1}>
-            <Typography variant="string">{t('Listening')}</Typography>
-            <Form.Group controlId="ielts_listening">
-              <Form.Control
-                type="text"
+                id="ielts"
+                name="ielts"
                 placeholder="6.5"
                 onChange={(e) => handleChange(e)}
-                defaultValue={
-                  initStates.program.ielts_listening
-                    ? initStates.program.ielts_listening
-                    : ''
-                }
+                value={initStates.program.ielts || ''}
               />
-            </Form.Group>
-          </Col>
-          <Col md={1}>
-            <Typography variant="string">{t('Speaking')}</Typography>
-            <Form.Group controlId="ielts_speaking">
-              <Form.Control
-                type="text"
-                placeholder="6"
-                onChange={(e) => handleChange(e)}
-                defaultValue={
-                  initStates.program.ielts_speaking
-                    ? initStates.program.ielts_speaking
-                    : ''
-                }
-              />
-            </Form.Group>
-          </Col>
-          <Col md={1}>
-            {t('Writing')}
-            <Form.Group controlId="ielts_writing">
-              <Form.Control
-                type="text"
-                placeholder="5.5"
-                onChange={(e) => handleChange(e)}
-                defaultValue={
-                  initStates.program.ielts_writing
-                    ? initStates.program.ielts_writing
-                    : ''
-                }
-              />
-            </Form.Group>
-          </Col>
-        </Box>
-        <Box>
-          <Col md={4}>
+            </Typography>
+          </Grid>
+          <Grid item xs={1} md={1}>
+            <TextField
+              fullWidth
+              size="small"
+              type="text"
+              id="ielts_reading"
+              name="ielts_reading"
+              label={t('Reading')}
+              placeholder="6.5"
+              onChange={(e) => handleChange(e)}
+              value={initStates.program.ielts_reading || ''}
+            />
+          </Grid>
+          <Grid item xs={1} md={1}>
+            <TextField
+              fullWidth
+              size="small"
+              type="text"
+              id="ielts_listening"
+              name="ielts_listening"
+              label={t('Listening')}
+              placeholder="6.5"
+              onChange={(e) => handleChange(e)}
+              value={initStates.program.ielts_listening || ''}
+            />
+          </Grid>
+          <Grid item xs={1} md={1}>
+            <TextField
+              fullWidth
+              size="small"
+              type="text"
+              id="ielts_speaking"
+              name="ielts_speaking"
+              label={t('Speaking')}
+              placeholder="6.5"
+              onChange={(e) => handleChange(e)}
+              value={initStates.program.ielts_speaking || ''}
+            />
+          </Grid>
+          <Grid item xs={1} md={1}>
+            <TextField
+              fullWidth
+              size="small"
+              type="text"
+              id="ielts_writing"
+              name="ielts_writing"
+              label={t('Writing')}
+              placeholder="6.5"
+              onChange={(e) => handleChange(e)}
+              value={initStates.program.ielts_writing || ''}
+            />
+          </Grid>
+          <Grid item xs={6} md={6}>
             <Typography variant="h6">{t('TestDaF Requirement')}</Typography>
-          </Col>
-          <Col md={4}>
-            <Typography variant="h6">
-              <Form.Group controlId="testdaf">
-                <Form.Control
-                  type="text"
-                  placeholder="4"
-                  onChange={(e) => handleChange(e)}
-                  defaultValue={
-                    initStates.program.testdaf ? initStates.program.testdaf : ''
-                  }
-                />
-              </Form.Group>
-            </Typography>
-          </Col>
-        </Box>
-        <Box>
-          <Col md={4}>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <TextField
+              fullWidth
+              size="small"
+              type="text"
+              id="testdaf"
+              name="testdaf"
+              placeholder="4"
+              onChange={(e) => handleChange(e)}
+              value={initStates.program.testdaf || ''}
+            />
+          </Grid>
+          <Grid item xs={6} md={6}>
             <Typography variant="h6">{t('GRE Requirement')}</Typography>
-          </Col>
-          <Col md={4}>
-            <Typography variant="h6">
-              <Form.Group controlId="gre">
-                <Form.Control
-                  type="text"
-                  placeholder="V145Q160"
-                  onChange={(e) => handleChange(e)}
-                  defaultValue={
-                    initStates.program.gre ? initStates.program.gre : ''
-                  }
-                />
-              </Form.Group>
-            </Typography>
-          </Col>
-        </Box>
-        <Box>
-          <Col md={4}>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <TextField
+              fullWidth
+              size="small"
+              type="text"
+              id="gre"
+              name="gre"
+              placeholder="V145Q160"
+              onChange={(e) => handleChange(e)}
+              value={initStates.program.gre || ''}
+            />
+          </Grid>
+          <Grid item xs={6} md={6}>
             <Typography variant="h6">{t('GMAT Requirement')}</Typography>
-          </Col>
-          <Col md={4}>
-            <Typography variant="h6">
-              <Form.Group controlId="gmat">
-                <Form.Control
-                  type="text"
-                  placeholder="640"
-                  onChange={(e) => handleChange(e)}
-                  defaultValue={
-                    initStates.program.gmat ? initStates.program.gmat : ''
-                  }
-                />
-              </Form.Group>
-            </Typography>
-          </Col>
-        </Box>
-        <Box>
-          <Col md={4}>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <TextField
+              fullWidth
+              size="small"
+              type="text"
+              id="gmat"
+              name="gmat"
+              placeholder="640"
+              onChange={(e) => handleChange(e)}
+              value={initStates.program.gmat || ''}
+            />
+          </Grid>
+          <Grid item xs={6} md={6}>
             <Typography variant="h6">{t('ML Required?')}*</Typography>
-          </Col>
-          <Col md={4}>
-            <Typography variant="h6">
-              <Form.Group controlId="ml_required">
-                <Form.Control
-                  as="select"
-                  onChange={(e) => handleChange(e)}
-                  defaultValue={
-                    initStates.program.ml_required
-                      ? initStates.program.ml_required
-                      : ''
-                  }
-                >
-                  {BINARY_STATE_OPTIONS()}
-                </Form.Control>
-              </Form.Group>
-            </Typography>
-          </Col>
-        </Box>
-        <Box>
-          <Col md={4}>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <FormControl fullWidth>
+              <Select
+                size="small"
+                labelId="ml_required"
+                name="ml_required"
+                id="ml_required"
+                onChange={(e) => handleChange(e)}
+                value={initStates.program.ml_required || 'no'}
+              >
+                {BINARY_STATE_ARRAY_OPTIONS.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={6} md={6}>
             <Typography variant="h6">{t('ML Requirements?')}</Typography>
-          </Col>
-          <Col md={6}>
-            <Typography variant="h6">
-              <Form.Group controlId="ml_requirements">
-                <Form.Control
-                  as="textarea"
-                  rows="5"
-                  placeholder="1200-1500words"
-                  onChange={(e) => handleChange(e)}
-                  defaultValue={
-                    initStates.program.ml_requirements
-                      ? initStates.program.ml_requirements
-                      : ''
-                  }
-                />
-              </Form.Group>
-            </Typography>
-          </Col>
-        </Box>
-        <Box>
-          <Col md={4}>
-            <h5>RL Required? *</h5>
-          </Col>
-          <Col md={4}>
-            <h5>
-              <Form.Group controlId="rl_required">
-                <Form.Control
-                  as="select"
-                  onChange={(e) => handleChange(e)}
-                  defaultValue={
-                    initStates.program.rl_required
-                      ? initStates.program.rl_required
-                      : '0'
-                  }
-                >
-                  <option value="0">no</option>
-                  <option value="1">yes - 1</option>
-                  <option value="2">yes - 2</option>
-                  <option value="3">yes - 3</option>
-                </Form.Control>
-              </Form.Group>
-            </h5>
-          </Col>
-        </Box>
-        <Box>
-          <Col md={4}>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <TextField
+              fullWidth
+              size="small"
+              type="text"
+              id="ml_requirements"
+              name="ml_requirements"
+              placeholder="1200-1500words"
+              onChange={(e) => handleChange(e)}
+              value={initStates.program.ml_requirements || ''}
+            />
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <Typography variant="h6">RL Required? *</Typography>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <FormControl fullWidth>
+              <Select
+                size="small"
+                labelId="rl_required"
+                name="rl_required"
+                id="rl_required"
+                onChange={(e) => handleChange(e)}
+                value={initStates.program.rl_required || '0'}
+              >
+                <MenuItem value="0">no</MenuItem>
+                <MenuItem value="1">yes - 1</MenuItem>
+                <MenuItem value="2">yes - 2</MenuItem>
+                <MenuItem value="3">yes - 3</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={6} md={6}>
             <Typography variant="h6">{t('RL Requirements?')}</Typography>
-          </Col>
-          <Col md={6}>
-            <Typography variant="h6">
-              <Form.Group controlId="rl_requirements">
-                <Form.Control
-                  as="textarea"
-                  rows="5"
-                  placeholder="1 page"
-                  onChange={(e) => handleChange(e)}
-                  defaultValue={
-                    initStates.program.rl_requirements
-                      ? initStates.program.rl_requirements
-                      : ''
-                  }
-                />
-              </Form.Group>
-            </Typography>
-          </Col>
-        </Box>
-        <Box>
-          <Col md={4}>
-            <h5>Essay Required? *</h5>
-          </Col>
-          <Col md={4}>
-            <h5>
-              <Form.Group controlId="essay_required">
-                <Form.Control
-                  as="select"
-                  onChange={(e) => handleChange(e)}
-                  defaultValue={
-                    initStates.program.essay_required
-                      ? initStates.program.essay_required
-                      : ''
-                  }
-                >
-                  {BINARY_STATE_OPTIONS()}
-                </Form.Control>
-              </Form.Group>
-            </h5>
-          </Col>
-        </Box>
-        <Box>
-          <Col md={4}>
-            <h5>Essay Requirements</h5>
-          </Col>
-          <Col md={6}>
-            <h5>
-              <Form.Group controlId="essay_requirements">
-                <Form.Control
-                  as="textarea"
-                  rows="5"
-                  placeholder="2000 words"
-                  onChange={(e) => handleChange(e)}
-                  defaultValue={
-                    initStates.program.essay_requirements
-                      ? initStates.program.essay_requirements
-                      : ''
-                  }
-                />
-              </Form.Group>
-            </h5>
-          </Col>
-        </Box>
-        <Box>
-          <Col md={4}>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <TextField
+              fullWidth
+              size="small"
+              type="text"
+              id="rl_requirements"
+              name="rl_requirements"
+              placeholder="1 page"
+              onChange={(e) => handleChange(e)}
+              value={initStates.program.rl_requirements || ''}
+            />
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <Typography variant="h6">Essay Required? *</Typography>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <FormControl fullWidth>
+              <Select
+                size="small"
+                labelId="essay_required"
+                name="essay_required"
+                id="essay_required"
+                onChange={(e) => handleChange(e)}
+                value={initStates.program.essay_required || ''}
+              >
+                {BINARY_STATE_ARRAY_OPTIONS.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <Typography variant="h6">Essay Requirements</Typography>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <TextField
+              fullWidth
+              size="small"
+              type="text"
+              multiline
+              rows={4}
+              id="essay_requirements"
+              name="essay_requirements"
+              placeholder="2000 words"
+              onChange={(e) => handleChange(e)}
+              value={initStates.program.essay_requirements || ''}
+            />
+          </Grid>
+          <Grid item xs={6} md={6}>
             <Typography variant="h6">{t('Portfolio Required?')}</Typography>
-          </Col>
-          <Col md={4}>
-            <Typography variant="h6">
-              <Form.Group controlId="portfolio_required">
-                <Form.Control
-                  as="select"
-                  onChange={(e) => handleChange(e)}
-                  defaultValue={
-                    initStates.program.portfolio_required
-                      ? initStates.program.portfolio_required
-                      : ''
-                  }
-                >
-                  {BINARY_STATE_OPTIONS()}
-                </Form.Control>
-              </Form.Group>
-            </Typography>
-          </Col>
-        </Box>
-        <Box>
-          <Col md={4}>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <FormControl fullWidth>
+              <Select
+                size="small"
+                labelId="portfolio_required"
+                name="portfolio_required"
+                id="portfolio_required"
+                onChange={(e) => handleChange(e)}
+                value={initStates.program.portfolio_required || ''}
+              >
+                {BINARY_STATE_ARRAY_OPTIONS.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={6} md={6}>
             <Typography variant="h6">{t('Portfolio Requirements')}</Typography>
-          </Col>
-          <Col md={6}>
-            <h5>
-              <Form.Group controlId="portfolio_requirements">
-                <Form.Control
-                  as="textarea"
-                  rows="5"
-                  placeholder="2000 words"
-                  onChange={(e) => handleChange(e)}
-                  defaultValue={
-                    initStates.program.portfolio_requirements
-                      ? initStates.program.portfolio_requirements
-                      : ''
-                  }
-                />
-              </Form.Group>
-            </h5>
-          </Col>
-        </Box>
-        <Box>
-          <Col md={4}>
-            <h5>Supplementary Form Required?</h5>
-          </Col>
-          <Col md={4}>
-            <h5>
-              <Form.Group controlId="supplementary_form_required">
-                <Form.Control
-                  as="select"
-                  onChange={(e) => handleChange(e)}
-                  defaultValue={
-                    initStates.program.supplementary_form_required
-                      ? initStates.program.supplementary_form_required
-                      : ''
-                  }
-                >
-                  {BINARY_STATE_OPTIONS()}
-                </Form.Control>
-              </Form.Group>
-            </h5>
-          </Col>
-        </Box>
-        <Box>
-          <Col md={4}>
-            <h5>Supplementary Form Requirements</h5>
-          </Col>
-          <Col md={6}>
-            <h5>
-              <Form.Group controlId="supplementary_form_requirements">
-                <Form.Control
-                  as="textarea"
-                  rows="5"
-                  placeholder="2000 words"
-                  onChange={(e) => handleChange(e)}
-                  defaultValue={
-                    initStates.program.supplementary_form_requirements
-                      ? initStates.program.supplementary_form_requirements
-                      : ''
-                  }
-                />
-              </Form.Group>
-            </h5>
-          </Col>
-        </Box>
-        <Box>
-          <Col md={4}>
-            <h5>ECTS Requirements</h5>
-          </Col>
-          <Col md={6}>
-            <h5>
-              <Form.Group controlId="ects_requirements">
-                <Form.Control
-                  as="textarea"
-                  rows="5"
-                  placeholder="Mathematics 20 ECTS, Electrical Engineering 15 ECTS, Computer architecture 8 ECTS..."
-                  onChange={(e) => handleChange(e)}
-                  defaultValue={
-                    initStates.program.ects_requirements
-                      ? initStates.program.ects_requirements
-                      : ''
-                  }
-                />
-              </Form.Group>
-            </h5>
-          </Col>
-        </Box>
-        <Box>
-          <Col md={4}>
-            <h5>Special Notes</h5>
-          </Col>
-          <Col md={6}>
-            <h5>
-              <Form.Group controlId="special_notes">
-                <Form.Control
-                  as="textarea"
-                  rows="5"
-                  placeholder="2000 words"
-                  onChange={(e) => handleChange(e)}
-                  defaultValue={
-                    initStates.program.special_notes
-                      ? initStates.program.special_notes
-                      : ''
-                  }
-                />
-              </Form.Group>
-            </h5>
-          </Col>
-        </Box>
-        <Box>
-          {' '}
-          <Col md={4}>
-            <h5>Comments</h5>
-          </Col>
-          <Col md={6}>
-            <h5>
-              <Form.Group controlId="comments">
-                <Form.Control
-                  as="textarea"
-                  rows="5"
-                  placeholder="2000 words"
-                  onChange={(e) => handleChange(e)}
-                  defaultValue={
-                    initStates.program.comments
-                      ? initStates.program.comments
-                      : ''
-                  }
-                />
-              </Form.Group>
-            </h5>
-          </Col>
-        </Box>
-        <Box>
-          <Col md={4}>
-            <h5>Portal 1 link url</h5>
-          </Col>
-          <Col md={4}>
-            <h5>
-              <Form.Group controlId="application_portal_a">
-                <Form.Control
-                  type="text"
-                  placeholder="url"
-                  onChange={(e) => handleChange(e)}
-                  defaultValue={
-                    initStates.program.application_portal_a
-                      ? initStates.program.application_portal_a
-                      : ''
-                  }
-                />
-              </Form.Group>
-            </h5>
-          </Col>
-        </Box>
-        <Box>
-          <Col md={4}>
-            <h5>Portal 1 {appConfig.companyName} Instrution link url</h5>
-          </Col>
-          <Col md={4}>
-            <h5>
-              <Form.Group controlId="application_portal_a_instructions">
-                <Form.Control
-                  type="text"
-                  placeholder="url"
-                  onChange={(e) => handleChange(e)}
-                  defaultValue={
-                    initStates.program.application_portal_a_instructions
-                      ? initStates.program.application_portal_a_instructions
-                      : ''
-                  }
-                />
-              </Form.Group>
-            </h5>
-          </Col>
-        </Box>
-        <Box>
-          <Col md={4}>
-            <h5>Portal 2 link url</h5>
-          </Col>
-          <Col md={4}>
-            <h5>
-              <Form.Group controlId="application_portal_b">
-                <Form.Control
-                  type="text"
-                  placeholder="url"
-                  onChange={(e) => handleChange(e)}
-                  defaultValue={
-                    initStates.program.application_portal_b
-                      ? initStates.program.application_portal_b
-                      : ''
-                  }
-                />
-              </Form.Group>
-            </h5>
-          </Col>
-        </Box>
-        <Box>
-          <Col md={4}>
-            <h5>Portal 2 {appConfig.companyName} Instrution link url</h5>
-          </Col>
-          <Col md={4}>
-            <h5>
-              <Form.Group controlId="application_portal_b_instructions">
-                <Form.Control
-                  type="text"
-                  placeholder="url"
-                  onChange={(e) => handleChange(e)}
-                  defaultValue={
-                    initStates.program.application_portal_b_instructions
-                      ? initStates.program.application_portal_b_instructions
-                      : ''
-                  }
-                />
-              </Form.Group>
-            </h5>
-          </Col>
-        </Box>
-        <Box>
-          <Col md={4}>
-            <h5>Website</h5>
-          </Col>
-          <Col md={4}>
-            <h5>
-              <Form.Group controlId="website">
-                <Form.Control
-                  type="text"
-                  placeholder="url"
-                  onChange={(e) => handleChange(e)}
-                  defaultValue={
-                    initStates.program.website ? initStates.program.website : ''
-                  }
-                />
-              </Form.Group>
-            </h5>
-          </Col>
-        </Box>
-        <Box>
-          <Col md={4}>
-            <h5>Country*</h5>
-          </Col>
-          <Col md={4}>
-            <h5>
-              <Form.Group controlId="country">
-                <Form.Control
-                  as="select"
-                  onChange={(e) => handleChange(e)}
-                  defaultValue={
-                    initStates.program.country ? initStates.program.country : ''
-                  }
-                >
-                  {COUNTRIES_OPTIONS()}
-                </Form.Control>
-              </Form.Group>
-            </h5>
-          </Col>
-        </Box>
-        <Box>
-          <Col md={4}>
-            <h5>FPSO</h5>
-          </Col>
-          <Col md={4}>
-            <h5>
-              <Form.Group controlId="fpso">
-                <Form.Control
-                  type="text"
-                  placeholder="url"
-                  onChange={(e) => handleChange(e)}
-                  defaultValue={
-                    initStates.program.fpso ? initStates.program.fpso : ''
-                  }
-                />
-              </Form.Group>
-            </h5>
-          </Col>
-        </Box>
-        <Box>
-          <Col md={4}>
-            <h5>Group</h5>
-          </Col>
-          <Col md={6}>
-            <h5>
-              <Form.Group controlId="study_group_flag">
-                <Form.Control
-                  type="text"
-                  placeholder="ee"
-                  onChange={(e) => handleChange(e)}
-                  defaultValue={
-                    initStates.program.study_group_flag
-                      ? initStates.program.study_group_flag
-                      : ''
-                  }
-                />
-              </Form.Group>
-            </h5>
-          </Col>
-        </Box>
-        <Typography>*: Must fill fields</Typography>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <TextField
+              fullWidth
+              size="small"
+              type="text"
+              multiline
+              rows={4}
+              id="portfolio_requirements"
+              name="portfolio_requirements"
+              placeholder="2000 words"
+              onChange={(e) => handleChange(e)}
+              value={initStates.program.portfolio_requirements || ''}
+            />
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <Typography variant="h6">Supplementary Form Required?</Typography>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <FormControl fullWidth>
+              <Select
+                size="small"
+                labelId="supplementary_form_required"
+                name="supplementary_form_required"
+                id="supplementary_form_required"
+                onChange={(e) => handleChange(e)}
+                value={initStates.program.supplementary_form_required || ''}
+              >
+                {BINARY_STATE_ARRAY_OPTIONS.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <Typography variant="h6">
+              Supplementary Form Requirements
+            </Typography>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <TextField
+              fullWidth
+              size="small"
+              type="text"
+              multiline
+              rows={4}
+              id="supplementary_form_requirements"
+              name="supplementary_form_requirements"
+              placeholder="fill the form"
+              onChange={(e) => handleChange(e)}
+              value={initStates.program.supplementary_form_requirements || ''}
+            />
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <Typography variant="h6">ECTS Requirements</Typography>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <TextField
+              fullWidth
+              size="small"
+              type="text"
+              multiline
+              rows={4}
+              id="ects_requirements"
+              name="ects_requirements"
+              placeholder="Mathematics 20 ECTS, Electrical Engineering 15 ECTS, Computer architecture 8 ECTS..."
+              onChange={(e) => handleChange(e)}
+              value={initStates.program.ects_requirements || ''}
+            />
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <Typography variant="h6">Special Notes</Typography>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <TextField
+              fullWidth
+              size="small"
+              type="text"
+              multiline
+              rows={4}
+              id="special_notes"
+              name="special_notes"
+              placeholder="Hard copy"
+              onChange={(e) => handleChange(e)}
+              value={initStates.program.special_notes || ''}
+            />
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <Typography variant="h6">Comments</Typography>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <TextField
+              fullWidth
+              size="small"
+              type="text"
+              multiline
+              rows={4}
+              id="comments"
+              name="comments"
+              placeholder="Hard copy"
+              onChange={(e) => handleChange(e)}
+              value={initStates.program.comments || ''}
+            />
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <Typography variant="h6">Portal 1 link url</Typography>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <TextField
+              fullWidth
+              size="small"
+              type="text"
+              id="application_portal_a"
+              name="application_portal_a"
+              placeholder="https://...."
+              onChange={(e) => handleChange(e)}
+              value={initStates.program.application_portal_a || ''}
+            />
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <Typography variant="h6">
+              Portal 1 {appConfig.companyName} Instrution link url
+            </Typography>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <TextField
+              fullWidth
+              size="small"
+              type="text"
+              id="application_portal_a_instructions"
+              name="application_portal_a_instructions"
+              placeholder="https://...."
+              onChange={(e) => handleChange(e)}
+              value={initStates.program.application_portal_a_instructions || ''}
+            />
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <Typography variant="h6">Portal 2 link url</Typography>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <TextField
+              fullWidth
+              size="small"
+              type="text"
+              id="application_portal_b"
+              name="application_portal_b"
+              placeholder="https://...."
+              onChange={(e) => handleChange(e)}
+              value={initStates.program.application_portal_b || ''}
+            />
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <Typography variant="h6">
+              Portal 2 {appConfig.companyName} Instrution link url
+            </Typography>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <TextField
+              fullWidth
+              size="small"
+              type="text"
+              id="application_portal_b_instructions"
+              name="application_portal_b_instructions"
+              placeholder="https://...."
+              onChange={(e) => handleChange(e)}
+              value={initStates.program.application_portal_b_instructions || ''}
+            />
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <Typography variant="h6">Website</Typography>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <TextField
+              fullWidth
+              size="small"
+              type="text"
+              id="website"
+              name="website"
+              placeholder="https://...."
+              onChange={(e) => handleChange(e)}
+              value={initStates.program.website || ''}
+            />
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <Typography variant="h6">Country*</Typography>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <FormControl fullWidth>
+              <Select
+                size="small"
+                labelId="country"
+                name="country"
+                id="country"
+                onChange={(e) => handleChange(e)}
+                value={initStates.program.country || '-'}
+              >
+                {COUNTRIES_ARRAY_OPTIONS.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <Typography variant="h6">FPSO</Typography>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <TextField
+              fullWidth
+              size="small"
+              type="text"
+              id="fpso"
+              name="fpso"
+              placeholder="https://...."
+              onChange={(e) => handleChange(e)}
+              value={initStates.program.fpso || ''}
+            />
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <Typography variant="h6">Group</Typography>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <TextField
+              fullWidth
+              size="small"
+              type="text"
+              id="study_group_flag"
+              name="study_group_flag"
+              placeholder="ee"
+              onChange={(e) => handleChange(e)}
+              value={initStates.program.study_group_flag || ''}
+            />
+          </Grid>
+        </Grid>
+        <Typography variant="h6">*: Must fill fields</Typography>
         <Button
           size="small"
           color="primary"

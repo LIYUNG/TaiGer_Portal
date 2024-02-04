@@ -925,6 +925,34 @@ export const field_alert = (program) => {
   }
 };
 
+export const DEGREE_CATOGARY_ARRAY_OPTIONS = [
+  { value: '', label: 'Please Select' },
+  { value: 'Bachelor', label: 'Bachelor' },
+  { value: 'B. A.', label: 'Bachelor of Art' },
+  { value: 'B. Eng.', label: 'Bachelor of Engineering' },
+  { value: 'B. Sc.', label: 'Bachelor of Science' },
+  { value: 'Master', label: 'Master' },
+  { value: 'M. A.', label: 'Master of Art' },
+  { value: 'M. Eng.', label: 'Master of Engineering' },
+  { value: 'M. Sc.', label: 'Master of Science' },
+  { value: 'M. Res.', label: 'Master of Reserach' },
+  { value: 'MBA', label: 'MBA' }
+];
+
+export const LANGUAGES_ARRAY_OPTIONS = [
+  { value: '-', label: '-' },
+  { value: 'English', label: 'English' },
+  { value: 'German', label: 'German' },
+  { value: 'German-and-English', label: 'German-AND-English' },
+  { value: 'German-or-English', label: 'German-OR-English' }
+];
+
+export const UNI_ASSIST_ARRAY_OPTIONS = [
+  { value: 'No', label: 'No' },
+  { value: 'Yes-VPD', label: 'Yes-VPD' },
+  { value: 'Yes-Full', label: 'Yes-Full' }
+];
+
 export const DEGREE_OPTIONS = () => {
   return (
     <>
@@ -987,6 +1015,80 @@ export const COUNTRIES_MAPPING = {
   us: 'United States'
 };
 
+export const COUNTRIES_ARRAY_OPTIONS = [
+  { value: '-', label: '-' },
+  { value: 'at', label: 'Austria' },
+  { value: 'au', label: 'Australia' },
+  { value: 'be', label: 'Belgium' },
+  { value: 'ca', label: 'Canada' },
+  { value: 'cz', label: 'Czech' },
+  { value: 'dk', label: 'Danmark' },
+  { value: 'fi', label: 'Finland' },
+  { value: 'fr', label: 'France' },
+  { value: 'de', label: 'Germany' },
+  { value: 'gr', label: 'Greece' },
+  { value: 'hk', label: 'Hong Kong' },
+  { value: 'hu', label: 'Hungary' },
+  { value: 'ie', label: 'Ireland' },
+  { value: 'it', label: 'Italy' },
+  { value: 'jp', label: 'Japan' },
+  { value: 'kr', label: 'South Korea' },
+  { value: 'lv', label: 'Latvia' },
+  { value: 'lt', label: 'Lithuania' },
+  { value: 'lu', label: 'Luxembourg' },
+  { value: 'nl', label: 'Netherlands' },
+  { value: 'nz', label: 'New Zealand' },
+  { value: 'no', label: 'Norway' },
+  { value: 'pl', label: 'Poland' },
+  { value: 'pt', label: 'Portugal' },
+  { value: 'ru', label: 'Russia' },
+  { value: 'sg', label: 'Singapore' },
+  { value: 'es', label: 'Spain' },
+  { value: 'se', label: 'Sweden' },
+  { value: 'ch', label: 'Switzerland' },
+  { value: 'uk', label: 'United Kingdom' },
+  { value: 'us', label: 'United States' }
+];
+
+() => {
+  return (
+    <>
+      <option value="-">-</option>
+      <option value="at">Austria</option>
+      <option value="au">Australia</option>
+      <option value="be">Belgium</option>
+      <option value="ca">Canada</option>
+      <option value="cz">Czech</option>
+      <option value="dk">Danmark</option>
+      <option value="fi">Finland</option>
+      <option value="fr">France</option>
+      <option value="de">Germany</option>
+      <option value="gr">Greece</option>
+      <option value="hk">Hong Kong</option>
+      <option value="hu">Hungary</option>
+      <option value="ie">Ireland</option>
+      <option value="it">Italy</option>
+      <option value="jp">Japan</option>
+      <option value="kr">South Korea</option>
+      <option value="lv">Latvia</option>
+      <option value="lt">Lithuania</option>
+      <option value="lu">Luxembourg</option>
+      <option value="nl">Netherlands</option>
+      <option value="nz">New Zealand</option>
+      <option value="no">Norway</option>
+      <option value="pl">Poland</option>
+      <option value="pt">Portugal</option>
+      <option value="ru">Russia</option>
+      <option value="sg">Singapore</option>
+      <option value="es">Spain</option>
+      <option value="se">Sweden</option>
+      <option value="ch">Switzerland</option>
+      <option value="uk">United Kingdom</option>
+      <option value="us">United States</option>
+    </>
+  );
+};
+
 export const COUNTRIES_OPTIONS = () => {
   return (
     <>
@@ -1044,6 +1146,11 @@ export const BINARY_STATE_OPTIONS = () => {
     </>
   );
 };
+
+export const BINARY_STATE_ARRAY_OPTIONS = [
+  { value: 'no', label: 'no' },
+  { value: 'yes', label: 'yes' }
+];
 
 export const BACHELOR_GRADUATE_STATUS_OPTIONS = [
   { value: '-', label: '-' },

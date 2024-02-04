@@ -542,7 +542,7 @@ function EditorDocsProgress(props) {
         {t('General Documents')} ({t('CV')}, {t('Recommendation Letters')})
       </Typography>
       {create_generaldoc_reminder && (
-        <Card>
+        <Card sx={{ p: 2, mb: 2 }}>
           <Typography>
             The following general documents are not started yet, please{' '}
             <b>create</b> the discussion thread below:{' '}

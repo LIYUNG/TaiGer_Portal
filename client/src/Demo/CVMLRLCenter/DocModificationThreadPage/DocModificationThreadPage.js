@@ -661,7 +661,7 @@ function DocModificationThreadPage() {
             )}
             <Box>
               <Typography variant="body1" fontWeight="bold">
-                Requirements:
+                {t('Requirements')}:
               </Typography>
               {is_TaiGer_AdminAgent(user) &&
                 docModificationThreadPageState.thread.program_id && (
@@ -673,7 +673,7 @@ function DocModificationThreadPage() {
                     component={LinkDom}
                     target="_blank"
                   >
-                    [Update]
+                    [{t('Update')}]
                   </Link>
                 )}
             </Box>
@@ -684,22 +684,24 @@ function DocModificationThreadPage() {
                 />
               </>
             ) : (
-              <Typography>No</Typography>
+              <Typography>{t('No')}</Typography>
             )}
           </Grid>
           <Grid item md={widths[1]}>
             <Typography variant="body1" fontWeight="bold">
-              Agent:
+              {t('Agent')}:
             </Typography>
             {docModificationThreadPageState.agents.map((agent, i) => (
               <Typography key={i}>
                 {is_TaiGer_role(user) ? (
-                  <LinkDom
+                  <Link
+                    underline="hover"
+                    component={LinkDom}
                     to={`${DEMO.TEAM_AGENT_LINK(agent._id.toString())}`}
                     target="_blank"
                   >
                     {agent.firstname} {agent.lastname}
-                  </LinkDom>
+                  </Link>
                 ) : (
                   <>
                     {agent.firstname} {agent.lastname}
@@ -708,17 +710,19 @@ function DocModificationThreadPage() {
               </Typography>
             ))}
             <Typography variant="body1" fontWeight="bold">
-              Editor:
+              {t('Editor')}:
             </Typography>
             {docModificationThreadPageState.editors.map((editor, i) => (
               <Typography key={i}>
                 {is_TaiGer_role(user) ? (
-                  <LinkDom
+                  <Link
+                    underline="hover"
+                    component={LinkDom}
                     to={`${DEMO.TEAM_EDITOR_LINK(editor._id.toString())}`}
                     target="_blank"
                   >
                     {editor.firstname} {editor.lastname}
-                  </LinkDom>
+                  </Link>
                 ) : (
                   <>
                     {editor.firstname} {editor.lastname}
@@ -728,10 +732,12 @@ function DocModificationThreadPage() {
             ))}
 
             <Typography variant="body1">
-              <b>Deadline:</b>
+              <b>{t('Deadline')}:</b>
               {is_TaiGer_AdminAgent(user) &&
                 docModificationThreadPageState.thread.program_id && (
-                  <LinkDom
+                  <Link
+                    underline="hover"
+                    component={LinkDom}
                     to={`${DEMO.SINGLE_PROGRAM_LINK(
                       docModificationThreadPageState.thread.program_id._id.toString()
                     )}`}
@@ -739,7 +745,7 @@ function DocModificationThreadPage() {
                   >
                     {' '}
                     [Update]
-                  </LinkDom>
+                  </Link>
                 )}
             </Typography>
             <Typography variant="string">
@@ -758,19 +764,16 @@ function DocModificationThreadPage() {
                 />
               </h6>
               If image not shown, please go to{' '}
-              <a href="/base-documents">
+              <Link underline="hover" to="/base-documents" component={LinkDom}>
                 <b>Base Documents</b>
-                <FiExternalLink
-                  className="mx-1 mb-1"
-                  style={{ cursor: 'pointer' }}
-                />
-              </a>{' '}
+                <FiExternalLink style={{ cursor: 'pointer' }} />
+              </Link>
               and upload the Passport Photo.
             </Grid>
           ) : (
             !is_TaiGer_Student(user) && (
               <Grid md={widths[2]}>
-                <Typography variant="body1">Conflict:</Typography>
+                <Typography variant="body1">{t('Conflict')}:</Typography>
                 {conflict_list.length === 0
                   ? 'None'
                   : conflict_list.map((conflict_student, j) => (

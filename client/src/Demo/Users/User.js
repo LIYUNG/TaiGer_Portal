@@ -1,7 +1,14 @@
 import React, { useState } from 'react';
-import { Button, Menu, MenuItem, TableCell, TableRow } from '@mui/material';
+import {
+  Button,
+  Link,
+  Menu,
+  MenuItem,
+  TableCell,
+  TableRow
+} from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { Link as LinkDom } from 'react-router-dom';
 
 import { UserlistHeader, convertDate, getDate } from '../Utils/contants';
 import DEMO from '../../store/constant';
@@ -69,7 +76,7 @@ function User(props) {
                     )
                   }
                 >
-                  {props.user.archiv === true ? 'Activate' : 'Archiv'}
+                  {props.user.archiv === true ? t('Activate') : t('Archiv')}
                 </MenuItem>
                 <MenuItem
                   onClick={() =>
@@ -90,25 +97,35 @@ function User(props) {
           <TableCell key={k}>
             {typeof props.user[y.prop] == 'boolean' ? (
               props.user[y.prop] ? (
-                'Yes'
+                t('Yes')
               ) : (
-                'No'
+                t('No')
               )
             ) : is_TaiGer_Student(props.user) ? (
               <Link
+                underline="hover"
                 to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                   props.user._id.toString(),
                   DEMO.PROFILE
                 )}`}
+                component={LinkDom}
               >
                 {props.user[y.prop]}
               </Link>
             ) : is_TaiGer_Agent(props.user) ? (
-              <Link to={`${DEMO.TEAM_AGENT_LINK(props.user._id.toString())}`}>
+              <Link
+                underline="hover"
+                to={`${DEMO.TEAM_AGENT_LINK(props.user._id.toString())}`}
+                component={LinkDom}
+              >
                 {props.user[y.prop]}
               </Link>
             ) : is_TaiGer_Editor(props.user) ? (
-              <Link to={`${DEMO.TEAM_EDITOR_LINK(props.user._id.toString())}`}>
+              <Link
+                underline="hover"
+                to={`${DEMO.TEAM_EDITOR_LINK(props.user._id.toString())}`}
+                component={LinkDom}
+              >
                 {props.user[y.prop]}
               </Link>
             ) : (

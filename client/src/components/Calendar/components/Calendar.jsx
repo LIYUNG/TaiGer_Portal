@@ -2,16 +2,18 @@ import React, { useState } from 'react';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import { FiExternalLink } from 'react-icons/fi';
 import moment from 'moment';
-import { Link } from 'react-router-dom';
+import { Link as LinkDom } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import Popping from './Popping';
 import {
+  Box,
   Button,
   CircularProgress,
   FormControl,
   InputLabel,
+  Link,
   MenuItem,
   Select,
   TextField,
@@ -33,7 +35,6 @@ import {
 } from '../../../Demo/Utils/checking-functions';
 import DEMO from '../../../store/constant';
 import { useAuth } from '../../AuthProvider';
-import { Box } from '@mui/system';
 import ModalNew from '../../Modal';
 
 const localizer = momentLocalizer(moment);
@@ -147,16 +148,15 @@ const MyCalendar = (props) => {
         event={props.selectedEvent}
         user={user}
       />
-      {/* )} */}
-
       {/* Modal for creating a new event */}
-      {/* React Bootstrap Modal for creating a new event */}
       {is_TaiGer_Agent(user) && (
         <ModalNew
           open={props.isNewEventModalOpen}
           onClose={props.handleNewEventModalClose}
         >
-          <Typography variant="h6">Create New Event</Typography>
+          <Typography variant="h6" sx={{ mb: 2 }}>
+            Create New Event
+          </Typography>
           <Box>
             <TextField
               fullWidth
@@ -166,16 +166,18 @@ const MyCalendar = (props) => {
               value={newEventDescription}
               placeholder="Description"
             />
-            <Typography variant="h6">Time zone: {user.timezone}</Typography>
+            <Typography variant="body1" sx={{ mt: 2 }}>
+              Time zone: {user.timezone}
+            </Typography>
             <span>
               If the time zone not matches, please go to{' '}
-              <Link to={`${DEMO.PROFILE}`}>
+              <Link to={`${DEMO.PROFILE}`} component={LinkDom}>
                 Profile <FiExternalLink />
               </Link>{' '}
               to update your time zone
             </span>
             <br />
-            <FormControl fullWidth>
+            <FormControl fullWidth sx={{ my: 2 }}>
               <InputLabel id="time_slot">{t('Time Slot')}</InputLabel>
               <Select
                 labelId="Time_Slot"
@@ -200,7 +202,7 @@ const MyCalendar = (props) => {
               </Select>
             </FormControl>
             <br />
-            <FormControl fullWidth>
+            <FormControl fullWidth sx={{ mb: 2 }}>
               <InputLabel id="Choose_Student">{t('Choose Student')}</InputLabel>
               <Select
                 labelId="Choose_Student"
@@ -227,18 +229,20 @@ const MyCalendar = (props) => {
           </Box>
           <Box>
             <Button
-              variant="primary"
+              color="primary"
+              variant="contained"
               disabled={
                 props.BookButtonDisable ||
                 newEventDescription?.length === 0 ||
                 props.student_id === ''
               }
               onClick={handleCreateEvent}
+              sx={{ mr: 2 }}
             >
-              {props.BookButtonDisable ? <CircularProgress /> : 'Create'}
+              {props.BookButtonDisable ? <CircularProgress /> : t('Create')}
             </Button>
             <Button variant="outlined" onClick={props.handleNewEventModalClose}>
-              Cancel
+              {t('Cancel')}
             </Button>
           </Box>
         </ModalNew>

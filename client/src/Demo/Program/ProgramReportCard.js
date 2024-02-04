@@ -2,13 +2,14 @@ import React, { useEffect, useState } from 'react';
 import {
   Alert,
   Card,
+  Link,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableRow
 } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link as LinkDom } from 'react-router-dom';
 
 import { getProgramTickets } from '../../api';
 import ErrorPage from '../Utils/ErrorPage';
@@ -82,8 +83,7 @@ function ProgramReportCard() {
       <TableCell>
         <Link
           to={`${DEMO.SINGLE_PROGRAM_LINK(ticket.program_id?._id.toString())}`}
-          style={{ textDecoration: 'none' }}
-          className="text-info"
+          component={LinkDom}
         >
           {i + 1}.
         </Link>
@@ -91,8 +91,7 @@ function ProgramReportCard() {
       <TableCell>
         <Link
           to={`${DEMO.SINGLE_PROGRAM_LINK(ticket.program_id?._id.toString())}`}
-          style={{ textDecoration: 'none' }}
-          className="text-info"
+          component={LinkDom}
           title={`${ticket.program_id?.school} - ${ticket.program_id?.program_name}`}
         >
           {`${ticket.program_id?.school} - ${ticket.program_id?.program_name}`.substring(
@@ -105,8 +104,7 @@ function ProgramReportCard() {
       <TableCell>
         <Link
           to={`${DEMO.SINGLE_PROGRAM_LINK(ticket.program_id?._id.toString())}`}
-          style={{ textDecoration: 'none' }}
-          className="text-info"
+          component={LinkDom}
           title={ticket.description}
         >
           {`${ticket.description}`.substring(0, 50)}

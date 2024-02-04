@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { Collapse } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link as LinkDom } from 'react-router-dom';
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
   Button,
+  Link,
   Table,
   TableBody,
   TableCell,
@@ -243,6 +244,7 @@ export function ExtendableTable({ data }) {
                       to={DEMO.DOCUMENT_MODIFICATION_LINK(
                         thread.doc_thread_id?._id.toString()
                       )}
+                      component={LinkDom}
                     >
                       {thread.doc_thread_id.file_type}
                     </Link>
@@ -270,6 +272,7 @@ export function ExtendableTable({ data }) {
                         to={DEMO.DOCUMENT_MODIFICATION_LINK(
                           thread.doc_thread_id?._id.toString()
                         )}
+                        component={LinkDom}
                       >
                         {`${thread.doc_thread_id.file_type} - ${application.programId.school} ${application.programId.program_name}`}
                       </Link>

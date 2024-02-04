@@ -107,13 +107,14 @@ function TaiGerPortalUsersLog() {
         <br />
         {portalUsersLog.logs.map((log, i) => (
           <Typography key={i}>
-            <LinkDom
+            <Link
               to={`${DEMO.INTERNAL_LOGS_USER_ID_LINK(
                 log.user_id._id.toString()
               )}`}
+              component={LinkDom}
             >
               {log.user_id?.firstname} {log.user_id?.lastname}
-            </LinkDom>{' '}
+            </Link>{' '}
             {log.date}
             {log.apiCallCount}
             {log.apiPath}

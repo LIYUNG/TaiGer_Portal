@@ -1,9 +1,11 @@
 import React from 'react';
+import { Link as LinkDom } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Link,
   Button,
   Grid,
   Typography
@@ -34,7 +36,6 @@ import {
   is_TaiGer_Student,
   is_TaiGer_role
 } from '../../../Demo/Utils/checking-functions';
-import { Link } from 'react-router-dom';
 import DEMO from '../../../store/constant';
 import EventDateComponent from '../../DateComponent';
 import { useAuth } from '../../AuthProvider';
@@ -132,10 +133,12 @@ export default function EventConfirmationCard(props) {
               {props.event.requester_id?.map((requester, x) =>
                 is_TaiGer_role(user) ? (
                   <Link
+                    underline="hover"
                     to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                       requester._id.toString(),
                       '/profile'
                     )}`}
+                    component={LinkDom}
                     key={x}
                   >
                     {requester.firstname} {requester.lastname}{' '}

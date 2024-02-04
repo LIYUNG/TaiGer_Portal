@@ -10,12 +10,14 @@ import {
   TableRow,
   Typography
 } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import AdminTasks from '../MainViewTab/AdminTasks/index';
 import StudentOverviewTable from '../../../components/StudentOverviewTable';
 import StudentsAgentEditorWrapper from '../MainViewTab/StudentsAgentEditor/StudentsAgentEditorWrapper';
 
 function AdminMainView(props) {
+  const { t } = useTranslation();
   const admin_tasks = <AdminTasks students={props.students} />;
 
   return (
@@ -24,14 +26,14 @@ function AdminMainView(props) {
         <Grid item xs={12}>
           <Card>
             <Typography variant="h6">
-              <BsExclamationTriangle size={18} /> Admin To Do Tasks:
+              <BsExclamationTriangle size={18} /> Admin {t('To Do Tasks')}:
             </Typography>
             <Table size="small">
               <TableHead>
                 <TableRow>
-                  <TableCell>Tasks</TableCell>
-                  <TableCell>Description</TableCell>
-                  <TableCell>Last Update</TableCell>
+                  <TableCell>{t('Tasks')}</TableCell>
+                  <TableCell>{t('Description')}</TableCell>
+                  <TableCell>{t('Last Update')}</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>{admin_tasks}</TableBody>

@@ -1,6 +1,6 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { TableCell, TableRow } from '@mui/material';
+import { Link as LinkDom } from 'react-router-dom';
+import { Link, TableCell, TableRow } from '@mui/material';
 
 import {
   does_student_have_agents,
@@ -21,8 +21,7 @@ function AdminTasks(props) {
               to={`${DEMO.STUDENT_APPLICATIONS_ID_LINK(
                 student._id.toString()
               )}`}
-              style={{ textDecoration: 'none' }}
-              className="text-info"
+              component={LinkDom}
             >
               Number of Applications{' '}
               <b>

@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { ListGroup } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link as LinkDom } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
   Box,
+  Link,
   Button,
   Grid,
   Typography
@@ -147,7 +148,9 @@ function InterviewItems(props) {
             )}
             {props.readOnly && (
               <Link
+                underline="hover"
                 to={`${DEMO.INTERVIEW_SINGLE_LINK(interview._id.toString())}`}
+                component={LinkDom}
               >
                 <Button
                   color="secondary"
@@ -167,10 +170,12 @@ function InterviewItems(props) {
             <Grid item xs={12} md={6}>
               <Typography variant="body1">{t('Student')}: </Typography>
               <Link
+                underline="hover"
                 to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                   interview.student_id._id.toString(),
                   DEMO.PROFILE
                 )}`}
+                component={LinkDom}
               >
                 <Typography fontWeight="bold">{` ${interview.student_id.firstname} - ${interview.student_id.lastname}`}</Typography>
               </Link>
@@ -183,9 +188,11 @@ function InterviewItems(props) {
                 {t('Interview Program')}:&nbsp;
               </Typography>
               <Link
+                underline="hover"
                 to={`${DEMO.SINGLE_PROGRAM_LINK(
                   interview.program_id._id.toString()
                 )}`}
+                component={LinkDom}
                 target="_blank"
               >
                 {`${interview.program_id.school} - ${interview.program_id.program_name} ${interview.program_id.degree}`}

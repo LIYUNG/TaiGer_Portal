@@ -1,10 +1,10 @@
 import React, { Fragment } from 'react';
-import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   Box,
   Button,
   Card,
+  Link,
   Grid,
   Table,
   TableBody,
@@ -193,9 +193,7 @@ function SingleProgramView(props) {
                   <Typography fontWeight="bold">{t('Website')}</Typography>
                 </Grid>
                 <Grid item xs={12} md={8}>
-                  <a href={props.program.website} target="_blank" rel="noreferrer">
-                    <LinkableNewlineText text={props.program.website} />
-                  </a>
+                  <LinkableNewlineText text={props.program.website} />
                 </Grid>
                 <Grid item xs={12} md={4}>
                   <Typography fontWeight="bold">{t('Last update')}</Typography>

@@ -7,8 +7,9 @@ import {
   // useRowSelect,
   usePagination
 } from 'react-table';
-import { Link } from 'react-router-dom';
+import { Link as LinkDom } from 'react-router-dom';
 import {
+  Link,
   Table,
   TableBody,
   TableCell,
@@ -226,8 +227,7 @@ function Table2({ header, data }) {
                           row.original._id,
                           '/background'
                         )}`}
-                        className="text-info"
-                        style={{ textDecoration: 'none' }}
+                        component={LinkDom}
                       >
                         {cell.render('Cell')}
                       </Link>

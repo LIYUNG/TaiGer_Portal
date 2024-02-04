@@ -1,6 +1,6 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { TableBody, TableCell, TableRow } from '@mui/material';
+import { Link as LinkDom } from 'react-router-dom';
+import { Link, TableBody, TableCell, TableRow } from '@mui/material';
 
 import DEMO from '../../../../store/constant';
 
@@ -13,8 +13,7 @@ function ProgramConflict(props) {
           studs_id[i],
           DEMO.PROFILE
         )}`}
-        style={{ textDecoration: 'none' }}
-        className="text-info"
+        component={LinkDom}
       >
         {props.students.find((stud) => stud._id === studs_id[i]).firstname},{' '}
         {props.students.find((stud) => stud._id === studs_id[i]).lastname}
@@ -40,16 +39,14 @@ function ProgramConflict(props) {
         <TableCell>
           <Link
             to={`${DEMO.SINGLE_PROGRAM_LINK(props.conf_program_id)}`}
-            style={{ textDecoration: 'none' }}
-            className="text-danger"
+            component={LinkDom}
           >
             <b>{props.conflict_programs[props.conf_program_id].school}</b>
           </Link>
           <br></br>
           <Link
             to={`${DEMO.SINGLE_PROGRAM_LINK(props.conf_program_id)}`}
-            style={{ textDecoration: 'none' }}
-            className="text-danger"
+            component={LinkDom}
           >
             {props.conflict_programs[props.conf_program_id].program}
           </Link>

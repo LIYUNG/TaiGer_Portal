@@ -121,9 +121,12 @@ function TaiGerMember() {
             {admins.map((admin, i) => (
               <p key={i}>
                 <b>
-                  <LinkDom to={`${DEMO.TEAM_ADMIN_LINK(admin._id.toString())}`}>
+                  <Link
+                    to={`${DEMO.TEAM_ADMIN_LINK(admin._id.toString())}`}
+                    component={LinkDom}
+                  >
                     {admin.firstname} {admin.lastname}
-                  </LinkDom>
+                  </Link>
                 </b>
               </p>
             ))}
@@ -142,11 +145,12 @@ function TaiGerMember() {
               <TableRow key={i}>
                 <TableCell>
                   <b>
-                    <LinkDom
+                    <Link
                       to={`${DEMO.TEAM_AGENT_LINK(agent._id.toString())}`}
+                      component={LinkDom}
                     >
                       {agent.firstname} {agent.lastname}{' '}
-                    </LinkDom>
+                    </Link>
                   </b>
                 </TableCell>
               </TableRow>
@@ -165,11 +169,12 @@ function TaiGerMember() {
               <TableRow key={i}>
                 <TableCell>
                   <b>
-                    <LinkDom
+                    <Link
                       to={`${DEMO.TEAM_EDITOR_LINK(editor._id.toString())}`}
+                      component={LinkDom}
                     >
                       {editor.firstname} {editor.lastname}{' '}
-                    </LinkDom>
+                    </Link>
                   </b>
                 </TableCell>
               </TableRow>

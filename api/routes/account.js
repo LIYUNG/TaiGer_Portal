@@ -19,6 +19,7 @@ const { TemplatefileUpload } = require('../middlewares/file-upload');
 
 const {
   processTranscript_test,
+  processTranscript_api,
   downloadXLSX
 } = require('../controllers/course');
 
@@ -122,6 +123,19 @@ router
     multitenant_filter,
     InnerTaigerMultitenantFilter,
     processTranscript_test,
+    logAccess
+  );
+
+// TaiGer Transcript Analyser (Python Backend)
+router
+  .route('/transcript-test/:studentId/:category/:language')
+  .post(
+    filter_archiv_user,
+    TranscriptAnalyserRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
+    multitenant_filter,
+    InnerTaigerMultitenantFilter,
+    processTranscript_api,
     logAccess
   );
 

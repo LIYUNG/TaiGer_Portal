@@ -527,6 +527,8 @@ function NewProgramEdit(props) {
               fullWidth
               size="small"
               type="text"
+              multiline
+              rows={4}
               id="ml_requirements"
               name="ml_requirements"
               placeholder="1200-1500words"
@@ -562,6 +564,8 @@ function NewProgramEdit(props) {
               fullWidth
               size="small"
               type="text"
+              multiline
+              rows={4}
               id="rl_requirements"
               name="rl_requirements"
               placeholder="1 page"

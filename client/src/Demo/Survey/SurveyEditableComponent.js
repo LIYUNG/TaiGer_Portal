@@ -265,7 +265,7 @@ const SurveyEditableComponent = (props) => {
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
-                labelId="high_school_isGraduated"
+                labelid="high_school_isGraduated"
                 name="high_school_isGraduated"
                 id="high_school_isGraduated"
                 error={
@@ -337,7 +337,7 @@ const SurveyEditableComponent = (props) => {
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
-                labelId="isGraduated"
+                labelid="isGraduated"
                 name="isGraduated"
                 id="isGraduated"
                 error={
@@ -420,7 +420,7 @@ const SurveyEditableComponent = (props) => {
                       'No' && (
                       <TextField
                         fullWidth
-                        labelId="expected_grad_date"
+                        labelid="expected_grad_date"
                         name="expected_grad_date"
                         id="expected_grad_date"
                         error={
@@ -459,7 +459,7 @@ const SurveyEditableComponent = (props) => {
                 <Grid item xs={12} sm={6}>
                   <TextField
                     fullWidth
-                    labelId="Has_Exchange_Experience"
+                    labelid="Has_Exchange_Experience"
                     name="Has_Exchange_Experience"
                     id="Has_Exchange_Experience"
                     error={
@@ -492,7 +492,7 @@ const SurveyEditableComponent = (props) => {
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
-                labelId="Has_Internship_Experience"
+                labelid="Has_Internship_Experience"
                 name="Has_Internship_Experience"
                 id={t('Internship Experience ?')}
                 error={
@@ -712,7 +712,7 @@ const SurveyEditableComponent = (props) => {
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
-                labelId="expected_application_date"
+                labelid="expected_application_date"
                 name="expected_application_date"
                 id="expected_application_date"
                 error={
@@ -740,7 +740,7 @@ const SurveyEditableComponent = (props) => {
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
-                labelId="expected_application_semester"
+                labelid="expected_application_semester"
                 name="expected_application_semester"
                 id="expected_application_semester"
                 error={
@@ -791,7 +791,7 @@ const SurveyEditableComponent = (props) => {
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
-                labelId="target_degree"
+                labelid="target_degree"
                 name="target_degree"
                 id="target_degree"
                 error={survey.application_preference?.target_degree === ''}
@@ -814,7 +814,7 @@ const SurveyEditableComponent = (props) => {
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
-                labelId="application_outside_germany"
+                labelid="application_outside_germany"
                 name="application_outside_germany"
                 id="application_outside_germany"
                 error={
@@ -843,7 +843,7 @@ const SurveyEditableComponent = (props) => {
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
-                labelId="considered_privat_universities"
+                labelid="considered_privat_universities"
                 name="considered_privat_universities"
                 id="considered_privat_universities"
                 error={
@@ -972,7 +972,7 @@ const SurveyEditableComponent = (props) => {
                     '-' && 'Please provide English info.'
                 }
                 select
-                labelId="english_isPassed"
+                labelid="english_isPassed"
                 id="english_isPassed"
                 name="english_isPassed"
                 value={
@@ -997,7 +997,6 @@ const SurveyEditableComponent = (props) => {
                     {t('English Certificate')}
                   </InputLabel>
                   <Select
-                    labelId="english_certificate"
                     id="english_certificate"
                     name="english_certificate"
                     value={
@@ -1187,7 +1186,7 @@ const SurveyEditableComponent = (props) => {
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
-                labelId="german_isPassed"
+                labelid="german_isPassed"
                 id="german_isPassed"
                 name="german_isPassed"
                 error={
@@ -1220,7 +1219,6 @@ const SurveyEditableComponent = (props) => {
                     {t('German Certificate')}
                   </InputLabel>
                   <Select
-                    labelId="german_certificate"
                     id="german_certificate"
                     name="german_certificate"
                     value={
@@ -1289,7 +1287,7 @@ const SurveyEditableComponent = (props) => {
                   survey.academic_background?.language?.gre_isPassed === '-' &&
                   'Please provide GRE info.'
                 }
-                labelId="gre_isPassed"
+                labelid="gre_isPassed"
                 select
                 id="gre_isPassed"
                 name="gre_isPassed"
@@ -1310,7 +1308,6 @@ const SurveyEditableComponent = (props) => {
                 <FormControl fullWidth>
                   <InputLabel id="gre_certificate">{t('GRE Test')}</InputLabel>
                   <Select
-                    labelId="gre_certificate"
                     id="gre_certificate"
                     name="gre_certificate"
                     value={
@@ -1372,7 +1369,7 @@ const SurveyEditableComponent = (props) => {
               <TextField
                 fullWidth
                 select
-                labelId="gmat_isPassed"
+                labelid="gmat_isPassed"
                 error={
                   survey.academic_background?.language?.gmat_isPassed === '-'
                 }
@@ -1401,7 +1398,6 @@ const SurveyEditableComponent = (props) => {
                     {t('GMAT Test')}
                   </InputLabel>
                   <Select
-                    labelId="gmat_certificate"
                     id="gmat_certificate"
                     name="gmat_certificate"
                     value={

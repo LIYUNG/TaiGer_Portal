@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link as LinkDom } from 'react-router-dom';
 import {
   Button,
+  Link,
   Menu,
   MenuItem,
   TableCell,
@@ -85,7 +86,7 @@ function NoAgentsStudentsCard(props) {
                 props.student._id,
                 DEMO.PROFILE
               )}`}
-              style={{ textDecoration: 'none' }}
+              component={LinkDom}
             >
               {props.student.firstname}
               {', '}

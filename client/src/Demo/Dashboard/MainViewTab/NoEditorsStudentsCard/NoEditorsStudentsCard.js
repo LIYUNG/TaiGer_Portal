@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Button,
+  Link,
   Menu,
   MenuItem,
   TableCell,
   TableRow,
   Typography
 } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link as LinkDom } from 'react-router-dom';
 
 import EditEditorsSubpage from '../StudDocsOverview/EditEditorsSubpage';
 import { is_TaiGer_role } from '../../../Utils/checking-functions';
@@ -89,7 +90,7 @@ function NoEditorsStudentsCard(props) {
           )}
           <TableCell>
             <Link
-              className="text-info"
+              component={LinkDom}
               to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                 props.student._id.toString(),
                 DEMO.PROFILE

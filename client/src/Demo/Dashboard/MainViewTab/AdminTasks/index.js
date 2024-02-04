@@ -45,26 +45,18 @@ function AdminTasks(props) {
       {!does_student_have_agents(props.students) && (
         <TableRow>
           <TableCell>
-            <Link
-              to={`${DEMO.ASSIGN_AGENT_LINK}`}
-              style={{ textDecoration: 'none' }}
-              className="text-info"
-            >
+            <Link to={`${DEMO.ASSIGN_AGENT_LINK}`} component={LinkDom}>
               {t('Assign Agents')}
             </Link>
           </TableCell>
-          <TableCell>Please assign agents</TableCell>
+          <TableCell>{t('Please assign agents')}</TableCell>
           <TableCell></TableCell>
         </TableRow>
       )}
       {!does_student_have_editors(props.students) && (
         <TableRow>
           <TableCell>
-            <Link
-              to={`${DEMO.ASSIGN_EDITOR_LINK}`}
-              style={{ textDecoration: 'none' }}
-              className="text-info"
-            >
+            <Link to={`${DEMO.ASSIGN_EDITOR_LINK}`} component={LinkDom}>
               {t('Assign Editors')}
             </Link>
           </TableCell>

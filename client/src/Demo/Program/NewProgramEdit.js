@@ -26,8 +26,8 @@ import { appConfig } from '../../config';
 function NewProgramEdit(props) {
   const { t } = useTranslation();
   let [initStates, setInitStates] = useState({
-    program: {},
-    school_name_set: new Set(props.programs.map((program) => program.school))
+    program: props.program || {},
+    school_name_set: new Set(props.programs?.map((program) => program.school))
   });
   const [searchResults, setSearchResults] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -109,10 +109,10 @@ function NewProgramEdit(props) {
     <>
       <Card sx={{ p: 2 }}>
         <Grid container>
-          <Grid itemxs={6} md={6}>
+          <Grid item xs={6} md={6}>
             <Typography variant="h6">University *</Typography>
           </Grid>
-          <Grid itemxs={6} md={6}>
+          <Grid item xs={6} md={6}>
             <Typography variant="h6">
               <div className="search-container-school" ref={searchContainerRef}>
                 <TextField
@@ -127,7 +127,7 @@ function NewProgramEdit(props) {
                 />
 
                 {/* {loading && <div>Loading...</div>} */}
-                {searchResults.length > 0
+                {props.programs && searchResults.length > 0
                   ? isResultsVisible && (
                       <div className="search-results result-list">
                         {searchResults.map((result, i) => (
@@ -140,7 +140,8 @@ function NewProgramEdit(props) {
                         ))}
                       </div>
                     )
-                  : isResultsVisible && (
+                  : props.programs &&
+                    isResultsVisible && (
                       <div className="search-results result-list">
                         <li>No result</li>
                       </div>
@@ -148,10 +149,10 @@ function NewProgramEdit(props) {
               </div>
             </Typography>
           </Grid>
-          <Grid itemxs={6} md={6}>
+          <Grid item xs={6} md={6}>
             <Typography variant="h6">Program*</Typography>
           </Grid>
-          <Grid itemxs={6} md={6}>
+          <Grid item xs={6} md={6}>
             <Typography variant="h6">
               <TextField
                 fullWidth
@@ -165,10 +166,10 @@ function NewProgramEdit(props) {
               />
             </Typography>
           </Grid>
-          <Grid itemxs={6} md={6}>
+          <Grid item xs={6} md={6}>
             <Typography variant="h6">Degree *</Typography>
           </Grid>
-          <Grid itemxs={6} md={6}>
+          <Grid item xs={6} md={6}>
             <Typography variant="h6">
               <FormControl fullWidth>
                 <Select
@@ -188,10 +189,10 @@ function NewProgramEdit(props) {
               </FormControl>
             </Typography>
           </Grid>
-          <Grid itemxs={6} md={6}>
+          <Grid item xs={6} md={6}>
             <Typography variant="h6">Semester *</Typography>
           </Grid>
-          <Grid itemxs={6} md={6}>
+          <Grid item xs={6} md={6}>
             <Typography variant="h6">
               <FormControl fullWidth>
                 <Select
@@ -211,10 +212,10 @@ function NewProgramEdit(props) {
               </FormControl>
             </Typography>
           </Grid>
-          <Grid itemxs={6} md={6}>
+          <Grid item xs={6} md={6}>
             <Typography variant="h6">Teaching Language*</Typography>
           </Grid>
-          <Grid itemxs={6} md={6}>
+          <Grid item xs={6} md={6}>
             <Typography variant="h6">
               <FormControl fullWidth>
                 <Select
@@ -234,12 +235,12 @@ function NewProgramEdit(props) {
               </FormControl>
             </Typography>
           </Grid>
-          <Grid itemxs={6} md={6}>
+          <Grid item xs={6} md={6}>
             <Typography variant="h6">
               GPA Requirement (German system)
             </Typography>
           </Grid>
-          <Grid itemxs={6} md={6}>
+          <Grid item xs={6} md={6}>
             <Typography variant="h6">
               <TextField
                 fullWidth
@@ -253,10 +254,10 @@ function NewProgramEdit(props) {
               />
             </Typography>
           </Grid>
-          <Grid itemxs={6} md={6}>
+          <Grid item xs={6} md={6}>
             <Typography variant="h6">Application Start (MM-DD)</Typography>
           </Grid>
-          <Grid itemxs={6} md={6}>
+          <Grid item xs={6} md={6}>
             <Typography variant="h6">
               <TextField
                 fullWidth
@@ -270,10 +271,10 @@ function NewProgramEdit(props) {
               />
             </Typography>
           </Grid>
-          <Grid itemxs={6} md={6}>
+          <Grid item xs={6} md={6}>
             <Typography variant="h6">Application Deadline (MM-DD) *</Typography>
           </Grid>
-          <Grid itemxs={6} md={6}>
+          <Grid item xs={6} md={6}>
             <Typography variant="h6">
               <TextField
                 fullWidth

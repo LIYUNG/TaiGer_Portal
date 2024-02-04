@@ -950,7 +950,7 @@ export const LANGUAGES_ARRAY_OPTIONS = [
 export const UNI_ASSIST_ARRAY_OPTIONS = [
   { value: 'No', label: 'No' },
   { value: 'Yes-VPD', label: 'Yes-VPD' },
-  { value: 'Yes-Full', label: 'Yes-Full' }
+  { value: 'Yes-FULL', label: 'Yes-Full' }
 ];
 
 export const DEGREE_OPTIONS = () => {

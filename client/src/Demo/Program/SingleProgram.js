@@ -10,7 +10,6 @@ import {
   updateProgram
 } from '../../api';
 import SingleProgramView from './SingleProgramView';
-import SingleProgramEdit from './SingleProgramEdit';
 import ProgramDeleteWarning from './ProgramDeleteWarning';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
@@ -29,6 +28,7 @@ import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
 import { appConfig } from '../../config';
 import ModalNew from '../../components/Modal';
+import NewProgramEdit from './NewProgramEdit';
 
 function SingleProgram() {
   const { programId } = useParams();
@@ -314,13 +314,16 @@ function SingleProgram() {
             res_modal_message={res_modal_message}
           />
         )}
-        <SingleProgramEdit
+        <NewProgramEdit
           program={program}
-          isLoaded={isLoaded}
-          user={user}
           handleSubmit_Program={handleSubmit_Program}
           handleClick={handleClick}
         />
+        {/* <SingleProgramEdit
+          program={program}
+          handleSubmit_Program={handleSubmit_Program}
+          handleClick={handleClick}
+        /> */}
       </>
     );
   } else {

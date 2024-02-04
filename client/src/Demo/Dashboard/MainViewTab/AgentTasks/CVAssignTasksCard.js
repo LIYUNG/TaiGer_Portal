@@ -1,96 +1,94 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { Card, Col, Table } from 'react-bootstrap';
-import { BsExclamationTriangle } from 'react-icons/bs';
+import { Link as LinkDom } from 'react-router-dom';
+import {
+  Link,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Alert
+} from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { Card, Typography } from '@mui/material';
 
 import {
   isCVFinished,
   is_cv_assigned
 } from '../../../Utils/checking-functions';
 import DEMO from '../../../../store/constant';
+import { useAuth } from '../../../../components/AuthProvider';
 
 function CVAssignTasksCard(props) {
-  const { t, i18n } = useTranslation();
+  const { user } = useAuth();
+  const { t } = useTranslation();
   const CVAssignTasks = (props) => {
     return (
       <>
         {/* cv assign tasks */}
-        {!isCVFinished(props.student) &&
-          !is_cv_assigned(props.student) && (
-            <tr>
-              <td>
-                <Link
-                  to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-                    props.student._id.toString(),
-                    '/CV_ML_RL'
-                  )}`}
-                  style={{ textDecoration: 'none' }}
-                  className="text-info"
-                >
-                  CV
-                </Link>
-              </td>
-              <td>
-                <b>
-                  {props.student.firstname} {props.student.lastname}
-                </b>
-              </td>
-              <td>
-                {props.student.application_preference
-                  ?.expected_application_date || (
-                  <span className="text-danger">TBD</span>
-                )}
-                {'/'}
-                {props.student.application_preference
-                  ?.expected_application_semester || (
-                  <span className="text-danger">TBD</span>
-                )}
-              </td>
-            </tr>
-          )}
+        {!isCVFinished(props.student) && !is_cv_assigned(props.student) && (
+          <>
+            <TableCell>
+              <Link
+                to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                  props.student._id.toString(),
+                  '/CV_ML_RL'
+                )}`}
+                component={LinkDom}
+              >
+                CV
+              </Link>
+            </TableCell>
+            <TableCell>
+              <b>
+                {props.student.firstname} {props.student.lastname}
+              </b>
+            </TableCell>
+            <TableCell>
+              {props.student.application_preference
+                ?.expected_application_date || (
+                <span className="text-danger">TBD</span>
+              )}
+              {'/'}
+              {props.student.application_preference
+                ?.expected_application_semester || (
+                <span className="text-danger">TBD</span>
+              )}
+            </TableCell>
+          </>
+        )}
       </>
     );
   };
+
   const cv_assign_tasks = props.students
     .filter((student) =>
-      student.agents.some((agent) => agent._id === props.user._id.toString())
+      student.agents.some((agent) => agent._id === user._id.toString())
     )
     .map((student, i) => (
-      <CVAssignTasks key={i} role={props.user.role} student={student} />
+      <TableRow key={i}>
+        <CVAssignTasks key={i} role={user.role} student={student} />
+      </TableRow>
     ));
   return (
     <>
-      <Col md={6}>
-        <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
-          <Card.Header className="py-0 px-0">
-            <Card.Title className="my-2 mx-2 text-light" as={'h5'}>
-              <BsExclamationTriangle size={18} /> {t('CV Not Assigned Yet')}:
-            </Card.Title>
-          </Card.Header>
-          <Card.Body className="py-0 px-0 card-scrollable-body">
-            <Table
-              bordered
-              hover
-              className="my-0 mx-0"
-              variant="dark"
-              text="light"
-              size="sm"
-            >
-              <thead>
-                <tr>
-                  <th>Docs</th>
-                  <th>{t('Student')}</th>
-                  <th>
-                    {t('Year')}/{t('Semester')}
-                  </th>
-                </tr>
-              </thead>
-              <tbody>{cv_assign_tasks}</tbody>
-            </Table>
-          </Card.Body>
-        </Card>
-      </Col>
+      <Card sx={{ padding: 2, mb: 2 }}>
+        <Alert severity="error">
+          <Typography variant="string">{t('CV Not Assigned Yet')}</Typography>
+        </Alert>
+        <Table size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell>Docs</TableCell>
+              <TableCell>{t('Student')}</TableCell>
+              <TableCell>
+                {t('Year')}/{t('Semester')}
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>{cv_assign_tasks}</TableBody>
+        </Table>
+      </Card>
     </>
   );
 }

@@ -1,17 +1,21 @@
-import React from 'react';
-import { Spinner } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
+import { Breadcrumbs, Link, Typography } from '@mui/material';
+import { Link as LinkDom, useParams } from 'react-router-dom';
 
-import SingleDocView from './SingleDocView';
 import SingleDocEdit from './SingleDocEdit';
-import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
-
 import { getDocumentation, updateDocumentation } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
+import Loading from '../../components/Loading/Loading';
+import { appConfig } from '../../config';
+import DEMO from '../../store/constant';
+import { documentation_categories } from '../Utils/contants';
+import DocPageView from './DocPageView';
 
-class SingleDoc extends React.Component {
-  state = {
+function SingleDoc(props) {
+  const { documentation_id } = useParams();
+  const [singleDocState, setSingleDocState] = useState({
     error: '',
     author: '',
     isLoaded: false,
@@ -21,129 +25,92 @@ class SingleDoc extends React.Component {
     res_status: 0,
     res_modal_message: '',
     res_modal_status: 0
-  };
-  componentDidMount() {
-    getDocumentation(this.props.match.params.documentation_id).then(
+  });
+  useEffect(() => {
+    getDocumentation(documentation_id).then(
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
         if (!data) {
-          this.setState({ isLoaded: true, res_status: status });
+          setSingleDocState((prevState) => ({
+            ...prevState,
+            isLoaded: true,
+            res_status: 404
+          }));
+          return;
         }
         if (success) {
           var initialEditorState = null;
-          const author = data.author;
-          if (data.text) {
+          const author = data?.author;
+          if (data?.text) {
             initialEditorState = JSON.parse(data.text);
           } else {
             initialEditorState = {};
           }
           // initialEditorState = JSON.parse(data.text);
-          this.setState({
+          setSingleDocState((prevState) => ({
+            ...prevState,
             isLoaded: true,
-            document_title: data.title,
-            category: data.category,
+            document_title: data?.title,
+            category: data?.category,
             editorState: initialEditorState,
             author,
             success: success,
             res_status: status
-          });
+          }));
         } else {
-          this.setState({
+          setSingleDocState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             res_status: status
-          });
+          }));
         }
       },
       (error) => {
-        this.setState((state) => ({
-          ...state,
+        setSingleDocState((prevState) => ({
+          ...prevState,
           isLoaded: true,
           error,
           res_status: 500
         }));
       }
     );
-  }
-  componentDidUpdate(prevProps, prevState) {
-    if (
-      prevProps.match.params.documentation_id !==
-      this.props.match.params.documentation_id
-    ) {
-      getDocumentation(this.props.match.params.documentation_id).then(
-        (resp) => {
-          const { data, success } = resp.data;
-          const { status } = resp;
-          if (!data) {
-            this.setState({ isLoaded: true, res_status: status });
-          }
-          if (success) {
-            var initialEditorState = null;
-            const author = data.author;
-            if (data.text) {
-              initialEditorState = JSON.parse(data.text);
-            } else {
-              initialEditorState = {};
-            }
-            initialEditorState = JSON.parse(data.text);
-            this.setState({
-              isLoaded: true,
-              document_title: data.title,
-              category: data.category,
-              editorState: initialEditorState,
-              author,
-              success: success,
-              res_status: status
-            });
-          } else {
-            this.setState({
-              isLoaded: true,
-              res_status: status
-            });
-          }
-        },
-        (error) => {
-          this.setState((state) => ({
-            ...state,
-            isLoaded: true,
-            error,
-            res_status: 500
-          }));
-        }
-      );
-    }
-  }
-  
-  handleClickEditToggle = (e) => {
-    this.setState((state) => ({ ...state, isEdit: !this.state.isEdit }));
+  }, [documentation_id]);
+
+  const handleClickEditToggle = () => {
+    setSingleDocState((prevState) => ({
+      ...prevState,
+      isEdit: !singleDocState.isEdit
+    }));
   };
-  handleClickSave = (e, category, doc_title, editorState) => {
+  const handleClickSave = (e, category, doc_title, editorState) => {
     e.preventDefault();
     const message = JSON.stringify(editorState);
     const msg = {
       title: doc_title,
       category,
-      prop: this.props.item,
+      prop: props.item,
       text: message
     };
-    updateDocumentation(this.props.match.params.documentation_id, msg).then(
+    updateDocumentation(documentation_id, msg).then(
       (resp) => {
         const { success, data } = resp.data;
         const { status } = resp;
         if (success) {
-          this.setState({
+          setSingleDocState((prevState) => ({
+            ...prevState,
             success,
             document_title: data.title,
             editorState,
-            isEdit: !this.state.isEdit,
+            isEdit: !singleDocState.isEdit,
             author: data.author,
             isLoaded: true,
             res_modal_status: status
-          });
+          }));
         } else {
           const { message } = resp.data;
-          this.setState((state) => ({
-            ...state,
+          setSingleDocState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             res_modal_message: message,
             res_modal_status: status
@@ -151,88 +118,120 @@ class SingleDoc extends React.Component {
         }
       },
       (error) => {
-        this.setState({ error });
+        setSingleDocState({ error });
       }
     );
-    this.setState((state) => ({ ...state, in_edit_mode: false }));
+    setSingleDocState((prevState) => ({ ...prevState, in_edit_mode: false }));
   };
 
-  ConfirmError = () => {
-    this.setState((state) => ({
-      ...state,
+  const ConfirmError = () => {
+    setSingleDocState((prevState) => ({
+      ...prevState,
       res_modal_status: 0,
       res_modal_message: ''
     }));
   };
 
-  render() {
-    const {
-      res_status,
-      editorState,
-      isLoaded,
-      res_modal_status,
-      res_modal_message
-    } = this.state;
+  const {
+    res_status,
+    editorState,
+    isLoaded,
+    res_modal_status,
+    res_modal_message
+  } = singleDocState;
 
-    if (!isLoaded && !editorState) {
-      return (
-        <div style={spinner_style}>
-          <Spinner animation="border" role="status">
-            <span className="visually-hidden"></span>
-          </Spinner>
-        </div>
-      );
-    }
+  if (!isLoaded && !editorState) {
+    return <Loading />;
+  }
 
-    if (res_status >= 400) {
-      return <ErrorPage res_status={res_status} />;
-    }
-    TabTitle(`Doc: ${this.state.document_title}`);
-    if (this.state.isEdit) {
-      return (
-        <>
-          {res_modal_status >= 400 && (
-            <ModalMain
-              ConfirmError={this.ConfirmError}
-              res_modal_status={res_modal_status}
-              res_modal_message={res_modal_message}
-            />
-          )}
-          <SingleDocEdit
-            category={this.state.category}
-            document={document}
-            document_title={this.state.document_title}
-            editorState={this.state.editorState}
-            author={this.state.author}
-            isLoaded={isLoaded}
-            handleClickEditToggle={this.handleClickEditToggle}
-            handleClickSave={this.handleClickSave}
+  if (res_status >= 400) {
+    return <ErrorPage res_status={res_status} />;
+  }
+  TabTitle(`Doc: ${singleDocState.document_title}`);
+  if (singleDocState.isEdit) {
+    return (
+      <>
+        {res_modal_status >= 400 && (
+          <ModalMain
+            ConfirmError={ConfirmError}
+            res_modal_status={res_modal_status}
+            res_modal_message={res_modal_message}
           />
-        </>
-      );
-    } else {
-      return (
-        <>
-          {res_modal_status >= 400 && (
-            <ModalMain
-              ConfirmError={this.ConfirmError}
-              res_modal_status={res_modal_status}
-              res_modal_message={res_modal_message}
-            />
-          )}
-          <SingleDocView
-            category={this.state.category}
-            document={document}
-            document_title={this.state.document_title}
-            editorState={this.state.editorState}
-            author={this.state.author}
-            isLoaded={isLoaded}
-            user={this.props.user}
-            handleClickEditToggle={this.handleClickEditToggle}
+        )}
+        <Breadcrumbs aria-label="breadcrumb">
+          <Link
+            underline="hover"
+            color="inherit"
+            component={LinkDom}
+            to={`${DEMO.DASHBOARD_LINK}`}
+          >
+            {appConfig.companyName}
+          </Link>
+          <Link
+            underline="hover"
+            color="inherit"
+            component={LinkDom}
+            to={`${DEMO.DOCS_ROOT_LINK(singleDocState.category)}`}
+          >
+            {documentation_categories[singleDocState.category]}
+          </Link>
+          <Typography color="text.primary">
+            {singleDocState.document_title}
+          </Typography>
+        </Breadcrumbs>
+        <SingleDocEdit
+          category={singleDocState.category}
+          document={document}
+          document_title={singleDocState.document_title}
+          editorState={singleDocState.editorState}
+          author={singleDocState.author}
+          isLoaded={isLoaded}
+          handleClickEditToggle={handleClickEditToggle}
+          handleClickSave={handleClickSave}
+        />
+      </>
+    );
+  } else {
+    return (
+      <>
+        {res_modal_status >= 400 && (
+          <ModalMain
+            ConfirmError={ConfirmError}
+            res_modal_status={res_modal_status}
+            res_modal_message={res_modal_message}
           />
-        </>
-      );
-    }
+        )}
+        <Breadcrumbs aria-label="breadcrumb">
+          <Link
+            underline="hover"
+            color="inherit"
+            component={LinkDom}
+            to={`${DEMO.DASHBOARD_LINK}`}
+          >
+            {appConfig.companyName}
+          </Link>
+          <Link
+            underline="hover"
+            color="inherit"
+            component={LinkDom}
+            to={`${DEMO.DOCS_ROOT_LINK(singleDocState.category)}`}
+          >
+            {documentation_categories[singleDocState.category]}
+          </Link>
+          <Typography color="text.primary">
+            {singleDocState.document_title}
+          </Typography>
+        </Breadcrumbs>
+        <DocPageView
+          category={singleDocState.category}
+          document={document}
+          document_title={singleDocState.document_title}
+          editorState={singleDocState.editorState}
+          author={singleDocState.author}
+          handleClickEditToggle={handleClickEditToggle}
+        />
+      </>
+    );
   }
 }
 export default SingleDoc;

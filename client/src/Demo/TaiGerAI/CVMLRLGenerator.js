@@ -1,22 +1,30 @@
-import React from 'react';
-import { Button, Card, Form, Spinner } from 'react-bootstrap';
-import { Redirect } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import {
+  Box,
+  Breadcrumbs,
+  Button,
+  CircularProgress,
+  Link,
+  TextField,
+  Typography
+} from '@mui/material';
+import { Navigate, Link as LinkDom } from 'react-router-dom';
 
-import Aux from '../../hoc/_Aux';
-import { spinner_style, spinner_style2 } from '../Utils/contants';
 import {
   LinkableNewlineText,
   is_TaiGer_role
 } from '../Utils/checking-functions';
 import ErrorPage from '../Utils/ErrorPage';
-
-import { TaiGerAiGeneral, TaiGerAiGeneral2, cvmlrlAi } from '../../api';
+import { TaiGerAiGeneral2 } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import { appConfig } from '../../config';
+import { useAuth } from '../../components/AuthProvider';
+import Loading from '../../components/Loading/Loading';
 
-class CVMLRLGenerator extends React.Component {
-  state = {
+function CVMLRLGenerator() {
+  const { user } = useAuth();
+  const [cVMLRLGeneratorState, setCVMLRLGeneratorState] = useState({
     error: '',
     role: '',
     isLoaded: false,
@@ -25,139 +33,114 @@ class CVMLRLGenerator extends React.Component {
     success: false,
     prompt: '',
     res_status: 0
-  };
+  });
 
-  componentDidMount() {
-    this.setState({
+  useEffect(() => {
+    setCVMLRLGeneratorState((prevState) => ({
+      ...prevState,
       isLoaded: true
-    });
-  }
+    }));
+  }, []);
 
-  onSubmit = async () => {
-    this.setState({
+  const onSubmit = async () => {
+    setCVMLRLGeneratorState((prevState) => ({
+      ...prevState,
       isGenerating: true
-    });
-    const response = await TaiGerAiGeneral2(JSON.stringify(this.state.prompt));
+    }));
+    const response = await TaiGerAiGeneral2(
+      JSON.stringify(cVMLRLGeneratorState.prompt)
+    );
     // Handle the streaming data
     const reader = response.body
       .pipeThrough(new TextDecoderStream())
       .getReader();
 
+    // eslint-disable-next-line no-constant-condition
     while (true) {
       const { value, done } = await reader.read();
       if (done) {
         break;
       }
-      this.setState({
-        data: this.state.data + value
-      });
+      setCVMLRLGeneratorState((prevState) => ({
+        ...prevState,
+        data: prevState.data + value
+      }));
     }
-    this.setState({
+    setCVMLRLGeneratorState((prevState) => ({
+      ...prevState,
       isLoaded: true,
-      data: this.state.data + ' \n ================================= \n',
+      data: prevState.data + ' \n ================================= \n',
       isGenerating: false
-    });
-
-    // TaiGerAiGeneral(this.state.prompt).then(
-    //   (resp) => {
-    //     const { data, success } = resp.data;
-    //     const { status } = resp;
-    //     if (success) {
-    //       this.setState({
-    //         isLoaded: true,
-    //         isGenerating: false,
-    //         data,
-    //         success: success,
-    //         res_status: status
-    //       });
-    //     } else {
-    //       this.setState({
-    //         isLoaded: true,
-    //         isGenerating: false,
-    //         res_status: status
-    //       });
-    //     }
-    //   },
-    //   (error) => {
-    //     this.setState((state) => ({
-    //       ...state,
-    //       isLoaded: true,
-    //       isGenerating: false,
-    //       error,
-    //       res_status: 500
-    //     }));
-    //   }
-    // );
+    }));
   };
-  onChange = (e) => {
+  const onChange = (e) => {
     const prompt_temp = e.target.value;
-    console.log(prompt_temp);
-    this.setState({
+    setCVMLRLGeneratorState((prevState) => ({
+      ...prevState,
       prompt: prompt_temp
-    });
+    }));
   };
-  render() {
-    if (!is_TaiGer_role(this.props.user)) {
-      return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
-    }
-    TabTitle(`${appConfig.companyName} AI Playground`);
-    const { res_status, isLoaded } = this.state;
-
-    if (!isLoaded) {
-      return (
-        <div style={spinner_style}>
-          <Spinner animation="border" role="status">
-            <span className="visually-hidden"></span>
-          </Spinner>
-        </div>
-      );
-    }
-
-    if (res_status >= 400) {
-      return <ErrorPage res_status={res_status} />;
-    }
-
-    return (
-      <Aux>
-        {!isLoaded && (
-          <div style={spinner_style}>
-            <Spinner animation="border" role="status">
-              <span className="visually-hidden"></span>
-            </Spinner>
-          </div>
-        )}
-        <Card>
-          <Card.Body>
-            <h4>{appConfig.companyName} AI Playground</h4>
-            <Form>
-              <Form.Group className="my-0 mx-0">
-                <Form.Control
-                  as="textarea"
-                  placeholder={'Search...'}
-                  onChange={this.onChange}
-                ></Form.Control>
-              </Form.Group>
-            </Form>
-            <br />
-            <Button disabled={this.state.isGenerating} onClick={this.onSubmit}>
-              {this.state.isGenerating ? (
-                <div style={spinner_style2}>
-                  <Spinner size="sm" animation="border" role="status">
-                    <span className="visually-hidden"></span>
-                  </Spinner>
-                </div>
-              ) : (
-                'Submit'
-              )}
-            </Button>
-            <p>
-              <LinkableNewlineText text={this.state.data}></LinkableNewlineText>
-            </p>
-          </Card.Body>
-        </Card>
-      </Aux>
-    );
+  if (!is_TaiGer_role(user)) {
+    return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
   }
+  TabTitle(`${appConfig.companyName} AI Playground`);
+  const { res_status, isLoaded } = cVMLRLGeneratorState;
+
+  if (!isLoaded) {
+    return <Loading />;
+  }
+
+  if (res_status >= 400) {
+    return <ErrorPage res_status={res_status} />;
+  }
+
+  return (
+    <Box>
+      {!isLoaded && <Loading />}
+      <Breadcrumbs aria-label="breadcrumb">
+        <Link
+          underline="hover"
+          color="inherit"
+          component={LinkDom}
+          to={`${DEMO.DASHBOARD_LINK}`}
+        >
+          {appConfig.companyName}
+        </Link>
+        <Typography color="text.primary">
+          {appConfig.companyName} AI Playground
+        </Typography>
+      </Breadcrumbs>
+
+      <TextField
+        size="small"
+        fullWidth
+        multiline
+        minRows={6}
+        placeholder={'How many train stations in Germany?'}
+        onChange={onChange}
+        sx={{ my: 2 }}
+      />
+      <br />
+      <Button
+        color="primary"
+        variant="contained"
+        disabled={cVMLRLGeneratorState.isGenerating}
+        onClick={onSubmit}
+        sx={{ mb: 2 }}
+      >
+        {cVMLRLGeneratorState.isGenerating ? (
+          <CircularProgress size={16} />
+        ) : (
+          'Submit'
+        )}
+      </Button>
+      <Typography variant="p">
+        <LinkableNewlineText
+          text={cVMLRLGeneratorState.data}
+        ></LinkableNewlineText>
+      </Typography>
+    </Box>
+  );
 }
 
 export default CVMLRLGenerator;

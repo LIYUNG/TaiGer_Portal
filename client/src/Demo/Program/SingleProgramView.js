@@ -1,7 +1,18 @@
-import React from 'react';
-import { Row, Col, Card, Table, Button } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import React, { Fragment } from 'react';
 import { useTranslation } from 'react-i18next';
+import {
+  Box,
+  Button,
+  Card,
+  Link,
+  Grid,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Typography
+} from '@mui/material';
 
 import {
   is_TaiGer_AdminAgent,
@@ -17,301 +28,283 @@ import Banner from '../../components/Banner/Banner';
 import DEMO from '../../store/constant';
 import ProgramReport from './ProgramReport';
 import { appConfig } from '../../config';
+import { useAuth } from '../../components/AuthProvider';
 
 function SingleProgramView(props) {
-  const { t, i18n } = useTranslation();
+  const { user } = useAuth();
+  const { t } = useTranslation();
   return (
     <>
-      <Row>
-        <Col>
-          <Banner
-            ReadOnlyMode={true}
-            bg={'primary'}
-            to={`${DEMO.BASE_DOCUMENTS_LINK}`}
-            title={'Info:'}
-            text={`${appConfig.companyName} Portal 網站上的學程資訊主要為管理申請進度為主，學校學程詳細資訊仍以學校網站為主。`}
-            link_name={''}
-            removeBanner={() => {}}
-            notification_key={''}
-          />
-        </Col>
-      </Row>
-      <Row>
-        <Col md={is_TaiGer_role(props.user) ? 8 : 12}>
-          <Card>
-            <Card.Body>
-              {program_fields.map((program_field, i) =>
-                program_field.prop.includes('ielts') ||
-                program_field.prop.includes('toefl') ? (
-                  <Row>
-                    <Col md={4}>
-                      <p className="my-0">
-                        <b>{t(`${program_field.name}`)}</b>
-                      </p>
-                    </Col>
-                    <Col md={2}>
-                      <b>{props.program[program_field.prop]}</b>
-                    </Col>
-                    <Col md={6}>
-                      {props.program[`${program_field.prop}_reading`] && (
-                        <b>
-                          R: {props.program[`${program_field.prop}_reading`]}
-                        </b>
-                      )}{' '}
-                      {props.program[`${program_field.prop}_listening`] && (
-                        <b>
-                          L: {props.program[`${program_field.prop}_listening`]}
-                        </b>
-                      )}{' '}
-                      {props.program[`${program_field.prop}_speaking`] && (
-                        <b>
-                          S: {props.program[`${program_field.prop}_speaking`]}
-                        </b>
-                      )}{' '}
-                      {props.program[`${program_field.prop}_writing`] && (
-                        <b>
-                          W: {props.program[`${program_field.prop}_writing`]}
-                        </b>
-                      )}
-                    </Col>
-                  </Row>
-                ) : program_field.prop.includes('uni_assist') ? (
-                  appConfig.vpdEnable && (
-                    <Row>
-                      <Col md={4}>
-                        <p className="my-0">
-                          <b>{t(`${program_field.name}`)}</b>
-                        </p>
-                      </Col>
-                      <Col md={8}>
+      <Box>
+        <Banner
+          ReadOnlyMode={true}
+          bg={'primary'}
+          to={`${DEMO.BASE_DOCUMENTS_LINK}`}
+          title={'info'}
+          text={`${appConfig.companyName} Portal 網站上的學程資訊主要為管理申請進度為主，學校學程詳細資訊仍以學校網站為主。`}
+          link_name={''}
+          removeBanner={() => {}}
+          notification_key={undefined}
+        />
+      </Box>
+      <Box>
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={is_TaiGer_role(user) ? 8 : 12}>
+            <Card sx={{ p: 2 }}>
+              <Grid container spacing={2}>
+                {program_fields.map((program_field, i) =>
+                  program_field.prop.includes('ielts') ||
+                  program_field.prop.includes('toefl') ? (
+                    <Fragment key={i}>
+                      <Grid item xs={12} md={4}>
+                        <Typography fontWeight="bold">
+                          {t(`${program_field.name}`)}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={12} md={2}>
+                        <Typography fontWeight="bold">
+                          {props.program[program_field.prop]}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={12} md={6}>
+                        {props.program[`${program_field.prop}_reading`] && (
+                          <Typography fontWeight="bold">
+                            R: {props.program[`${program_field.prop}_reading`]}
+                          </Typography>
+                        )}{' '}
+                        {props.program[`${program_field.prop}_listening`] && (
+                          <Typography fontWeight="bold">
+                            L:{' '}
+                            {props.program[`${program_field.prop}_listening`]}
+                          </Typography>
+                        )}{' '}
+                        {props.program[`${program_field.prop}_speaking`] && (
+                          <Typography fontWeight="bold">
+                            S: {props.program[`${program_field.prop}_speaking`]}
+                          </Typography>
+                        )}{' '}
+                        {props.program[`${program_field.prop}_writing`] && (
+                          <Typography fontWeight="bold">
+                            W: {props.program[`${program_field.prop}_writing`]}
+                          </Typography>
+                        )}
+                      </Grid>
+                    </Fragment>
+                  ) : program_field.prop.includes('uni_assist') ? (
+                    appConfig.vpdEnable && (
+                      <Fragment key={i}>
+                        <Grid item xs={12} md={4}>
+                          <Typography fontWeight="bold">
+                            {t(`${program_field.name}`)}
+                          </Typography>
+                        </Grid>
+                        <Grid item xs={12} md={8}>
+                          <LinkableNewlineText
+                            text={props.program[program_field.prop]}
+                          />
+                        </Grid>
+                      </Fragment>
+                    )
+                  ) : program_field.prop.includes('country') ? (
+                    <Fragment key={i}>
+                      <Grid item xs={12} md={4}>
+                        <Typography fontWeight="bold">
+                          {t(`${program_field.name}`)}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={12} md={8}>
+                        <span>
+                          <img
+                            src={`/assets/logo/country_logo/svg/${
+                              props.program[program_field.prop]
+                            }.svg`}
+                            alt="Logo"
+                            style={{ maxWidth: '20px', maxHeight: '20px' }}
+                            title={
+                              COUNTRIES_MAPPING[
+                                props.program[program_field.prop]
+                              ]
+                            }
+                          />
+                        </span>
+                      </Grid>
+                    </Fragment>
+                  ) : (
+                    <Fragment key={i}>
+                      <Grid item xs={12} md={4}>
+                        <Typography fontWeight="bold">
+                          {t(`${program_field.name}`)}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={12} md={8}>
                         <LinkableNewlineText
                           text={props.program[program_field.prop]}
                         />
-                      </Col>
-                    </Row>
+                      </Grid>
+                    </Fragment>
                   )
-                ) : program_field.prop.includes('country') ? (
-                  <Row>
-                    <Col md={4}>
-                      <p className="my-0">
-                        <b>{t(`${program_field.name}`)}</b>
-                      </p>
-                    </Col>
-                    <Col md={8}>
-                      <span>
-                        <img
-                          src={`/assets/logo/country_logo/svg/${
-                            props.program[program_field.prop]
-                          }.svg`}
-                          alt="Logo"
-                          style={{ maxWidth: '20px', maxHeight: '20px' }}
-                          title={
-                            COUNTRIES_MAPPING[props.program[program_field.prop]]
-                          }
-                        />
-                      </span>
-                    </Col>
-                  </Row>
-                ) : (
-                  <Row>
-                    <Col md={4}>
-                      <p className="my-0">
-                        <b>{t(`${program_field.name}`)}</b>
-                      </p>
-                    </Col>
-                    <Col md={8}>
-                      <LinkableNewlineText
-                        text={props.program[program_field.prop]}
-                      />
-                    </Col>
-                  </Row>
-                )
-              )}
-              {props.program.application_portal_a && (
-                <>
-                  <Row>
-                    <Col md={4}>
-                      <p className="my-0">
-                        <b>Portal Link 1</b>
-                      </p>
-                    </Col>
-                    <Col md={8}>
+                )}
+                {props.program.application_portal_a && (
+                  <>
+                    <Grid item xs={12} md={4}>
+                      <Typography fontWeight="bold">Portal Link 1</Typography>
+                    </Grid>
+                    <Grid item xs={12} md={8}>
                       <LinkableNewlineText
                         text={props.program.application_portal_a}
                       />
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col md={4}>
-                      <p className="my-0">
-                        <b>Portal Instructions 1</b>
-                      </p>
-                    </Col>
-                    <Col md={8}>
+                    </Grid>
+
+                    <Grid item xs={12} md={4}>
+                      <Typography fontWeight="bold">
+                        Portal Instructions 1
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={12} md={8}>
                       <LinkableNewlineText
                         text={props.program.application_portal_a_instructions}
                       />
-                    </Col>
-                  </Row>
-                </>
-              )}
-              {props.program.application_portal_b && (
-                <>
-                  <Row>
-                    <Col md={4}>
-                      <p className="my-0">
-                        <b>Portal Link 2</b>
-                      </p>
-                    </Col>
-                    <Col md={8}>
+                    </Grid>
+                  </>
+                )}
+                {props.program.application_portal_b && (
+                  <>
+                    <Grid item xs={12} md={4}>
+                      <Typography fontWeight="bold">Portal Link 2</Typography>
+                    </Grid>
+                    <Grid item xs={12} md={8}>
                       <LinkableNewlineText
                         text={props.program.application_portal_b}
                       />
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col md={4}>
-                      <p className="my-0">
-                        <b>Portal Instructions 2</b>
-                      </p>
-                    </Col>
-                    <Col md={8}>
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                      <Typography fontWeight="bold">
+                        Portal Instructions 2
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={12} md={8}>
                       <LinkableNewlineText
                         text={props.program.application_portal_b_instructions}
                       />
-                    </Col>
-                  </Row>
-                </>
-              )}
-              <Row>
-                <Col md={4}>
-                  <p className="my-0">
-                    <b>{t('Website')}</b>
-                  </p>
-                </Col>
-                <Col md={8}>
-                  <p className="my-0"></p>
-                  <a
-                    className="my-0"
-                    href={props.program.website}
-                    target="_blank"
-                  >
-                    <LinkableNewlineText text={props.program.website} />
-                  </a>
-                </Col>
-              </Row>
-              <Row>
-                <Col md={4}>
-                  <p className="my-0">
-                    <b>{t('Last update')}</b>
-                  </p>
-                </Col>
-                <Col md={4}>
-                  <p className="my-0">
-                    <b>{convertDate(props.program.updatedAt)}</b>
-                  </p>
-                </Col>
-              </Row>
-              {is_TaiGer_AdminAgent(props.user) && (
-                <>
-                  <Row>
-                    <Col md={4}>
-                      <p className="my-0">Updated by</p>
-                    </Col>
-                    <Col md={6}>
-                      <p className="my-0">{props.program.whoupdated}</p>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col md={4}>
-                      <p className="my-0">Group</p>
-                    </Col>
-                    <Col md={6}>
-                      <p className="my-0">{props.program.study_group_flag}</p>
-                    </Col>
-                  </Row>
-                </>
-              )}
-            </Card.Body>
-          </Card>
-        </Col>
-        {is_TaiGer_role(props.user) && (
-          <Col md={4}>
-            <Card className="mx-0 card-with-scroll">
-              <Card.Header>
-                <Card.Title>Who has applied this?</Card.Title>
-              </Card.Header>
-              <Card.Body className="card-scrollable-body">
-                <Table className="px-0 my-0 mx-0" size="sm">
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>Year</th>
-                      <th>Admission</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {props.students.map((student, i) => (
-                      <tr key={i}>
-                        <td>
-                          <Link
-                            to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-                              student._id.toString(),
-                              DEMO.PROFILE
-                            )}`}
-                          >
-                            {student.firstname} {student.lastname}
-                          </Link>
-                        </td>
-                        <td>
-                          {student.application_preference
-                            ? student.application_preference
-                                .expected_application_date
-                            : '-'}
-                        </td>
-                        <td>
-                          {student.applications.find(
-                            (application) =>
-                              application.programId.toString() ===
-                              props.programId
-                          )
-                            ? student.applications.find(
+                    </Grid>
+                  </>
+                )}
+                <Grid item xs={12} md={4}>
+                  <Typography fontWeight="bold">{t('Website')}</Typography>
+                </Grid>
+                <Grid item xs={12} md={8}>
+                  <LinkableNewlineText text={props.program.website} />
+                </Grid>
+                <Grid item xs={12} md={4}>
+                  <Typography fontWeight="bold">{t('Last update')}</Typography>
+                </Grid>
+                <Grid item xs={12} md={8}>
+                  <Typography fontWeight="bold">
+                    {convertDate(props.program.updatedAt)}
+                  </Typography>
+                </Grid>
+                {is_TaiGer_AdminAgent(user) && (
+                  <>
+                    <Grid item xs={12} md={4}>
+                      <Typography>{t('Updated by')}</Typography>
+                    </Grid>
+                    <Grid item xs={12} md={8}>
+                      <Typography>{props.program.whoupdated}</Typography>
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                      <Typography>{t('Group')}</Typography>
+                    </Grid>
+                    <Grid item xs={12} md={8}>
+                      <Typography>{props.program.study_group_flag}</Typography>
+                    </Grid>
+                  </>
+                )}
+              </Grid>
+            </Card>
+          </Grid>
+          <Grid item xs={12} md={4}>
+            {is_TaiGer_role(user) && (
+              <>
+                <Card className="card-with-scroll" sx={{ p: 2 }}>
+                  <Typography variant="string">
+                    Who has applied this?
+                  </Typography>
+                  <div className="card-scrollable-body">
+                    <Table size="small">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>{t('Name')}</TableCell>
+                          <TableCell>{t('Year')}</TableCell>
+                          <TableCell>{t('Admission')}</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {props.students.map((student, i) => (
+                          <TableRow key={i}>
+                            <TableCell>
+                              <Link
+                                to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                                  student._id.toString(),
+                                  DEMO.PROFILE
+                                )}`}
+                              >
+                                {student.firstname} {student.lastname}
+                              </Link>
+                            </TableCell>
+                            <TableCell>
+                              {student.application_preference
+                                ? student.application_preference
+                                    .expected_application_date
+                                : '-'}
+                            </TableCell>
+                            <TableCell>
+                              {student.applications.find(
                                 (application) =>
                                   application.programId.toString() ===
                                   props.programId
-                              ).admission
-                            : ''}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </Table>
-                <br></br>
-                O: admitted, X: rejected, -: not confirmed
-              </Card.Body>
-            </Card>
-            <Card className="card-with-scroll">
-              <Card.Body className="card-scrollable-body">
-                <ProgramReport
-                  uni_name={props.program.school}
-                  program_name={props.program.program_name}
-                  program_id={props.program._id.toString()}
-                />
-              </Card.Body>
-            </Card>
-            <Card>
-              <Card.Header>
-                <Card.Title>
-                  {appConfig.companyName} Program Assistant
-                </Card.Title>
-                <Card.Body>
-                  <Button onClick={props.programListAssistant}>Fetch</Button>
-                </Card.Body>
-              </Card.Header>
-            </Card>
-          </Col>
-        )}
-      </Row>
+                              )
+                                ? student.applications.find(
+                                    (application) =>
+                                      application.programId.toString() ===
+                                      props.programId
+                                  ).admission
+                                : ''}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                    <Typography variant="string" sx={{ mt: 2 }}>
+                      O: admitted, X: rejected, -: not confirmed{' '}
+                    </Typography>
+                  </div>
+                </Card>
+                <Card className="card-with-scroll">
+                  <div className="card-scrollable-body">
+                    <ProgramReport
+                      uni_name={props.program.school}
+                      program_name={props.program.program_name}
+                      program_id={props.program._id.toString()}
+                    />
+                  </div>
+                </Card>
+                <Card>
+                  <Typography>
+                    {appConfig.companyName} {t('Program Assistant')}
+                  </Typography>
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    onClick={props.programListAssistant}
+                  >
+                    {t('Fetch')}
+                  </Button>
+                </Card>
+              </>
+            )}
+          </Grid>
+        </Grid>
+      </Box>
     </>
   );
 }

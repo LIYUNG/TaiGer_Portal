@@ -1,5 +1,16 @@
-import { Modal, Button, Form, Badge, Spinner } from 'react-bootstrap';
-import React, { useState } from 'react';
+import React from 'react';
+import {
+  Badge,
+  Button,
+  CircularProgress,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+  Typography
+} from '@mui/material';
+
 import '../style/model.scss';
 import {
   NoonNightLabel,
@@ -10,6 +21,8 @@ import {
   is_TaiGer_Agent,
   is_TaiGer_Student
 } from '../../../Demo/Utils/checking-functions';
+import ModalNew from '../../Modal';
+import { useTranslation } from 'react-i18next';
 
 const Popping = ({
   open,
@@ -29,136 +42,122 @@ const Popping = ({
   if (event?.id) {
     // const navigate = useNavigate();
     const { title, start, end } = event;
+    const { t } = useTranslation();
     const textLimit = 2000;
-    // const handleDelete = async () => {
-    //   await deleteEventApi(event.id);
-    //   rerender(!renderStatus);
-    // };
 
     const modal = () => {
       return (
-        <Modal show={open} size="xl" onHide={handleClose} centered>
-          <Modal.Header closeButton>
-            <Modal.Title className="text-capitalize">{title}</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Form>
-              <Form.Group controlId="description" className="my-0 mx-0">
-                <Form.Label>請寫下想討論的主題</Form.Label>
-                <Form.Control
-                  as="textarea"
-                  maxLength={textLimit}
-                  rows="10"
-                  placeholder="Example：我想定案選校、選課，我想討論簽證，德語班。"
-                  value={newDescription || ''}
-                  isInvalid={newDescription?.length > textLimit}
-                  onChange={handleChange}
-                ></Form.Control>
-                <Badge
-                  className="mt-3"
-                  bg={`${
-                    newDescription?.length > textLimit ? 'danger' : 'primary'
-                  }`}
-                >
-                  {newDescription?.length || 0}/{textLimit}
-                </Badge>
-              </Form.Group>
-            </Form>
-            <Form>
-              <Form.Group controlId="receiver" className="my-0 mx-0">
-                <Form.Label>Agent</Form.Label>
-                <Form.Control
-                  as="select"
-                  value={
-                    is_TaiGer_Student(user)
-                      ? user.agents.length > 0
-                        ? newReceiver
-                        : ''
-                      : ''
-                  }
-                  onChange={handleChangeReceiver}
-                >
-                  {is_TaiGer_Student(user) ? (
-                    <>
-                      <option value={''}>Please Select</option>
-                      <option value={event.provider._id.toString()}>
-                        {event.provider.firstname} {event.provider.lastname}
-                      </option>
-                    </>
-                  ) : is_TaiGer_Agent(user) ? (
-                    <option value={user._id.toString()}>
-                      {user.firstname}
-                      {user.lastname}
-                    </option>
-                  ) : (
-                    user.agents.map((agent, i) => (
-                      <option value={agent._id.toString()} key={i}>
-                        {agent.firstname}
-                        {agent.lastname}
-                      </option>
-                    ))
-                  )}
-                </Form.Control>
-              </Form.Group>
-            </Form>
-            <br />
-            <ul>
-              <li className="col text-secondary pb-0 mb-0">
-                From: {convertDate(start)} {NoonNightLabel(start)}{' '}
-                {Intl.DateTimeFormat().resolvedOptions().timeZone} UTC
-                {getTimezoneOffset(
-                  Intl.DateTimeFormat().resolvedOptions().timeZone
-                ) >= 0
-                  ? `+${getTimezoneOffset(
-                      Intl.DateTimeFormat().resolvedOptions().timeZone
-                    )}`
-                  : getTimezoneOffset(
-                      Intl.DateTimeFormat().resolvedOptions().timeZone
-                    )}
-              </li>
-              <li className="col text-secondary pb-0 mb-0">
-                To: {convertDate(end)}{' '}
-                {Intl.DateTimeFormat().resolvedOptions().timeZone} UTC
-                {getTimezoneOffset(
-                  Intl.DateTimeFormat().resolvedOptions().timeZone
-                ) >= 0
-                  ? `+${getTimezoneOffset(
-                      Intl.DateTimeFormat().resolvedOptions().timeZone
-                    )}`
-                  : getTimezoneOffset(
-                      Intl.DateTimeFormat().resolvedOptions().timeZone
-                    )}
-              </li>
-            </ul>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button
-              variant="primary"
-              onClick={handleBook}
-              disabled={
-                newDescription?.length === 0 ||
-                newReceiver === '' ||
-                BookButtonDisable
+        <ModalNew open={open} size="xl" onClose={handleClose} centered>
+          <Typography variant="h6">{title}</Typography>
+          <Typography variant="body1">請寫下想討論的主題</Typography>
+          <TextField
+            fullWidth
+            type="textarea"
+            inputProps={{ maxLength: textLimit }}
+            multiline
+            minRows={5}
+            placeholder="Example：我想定案選校、選課，我想討論簽證，德語班。"
+            value={newDescription || ''}
+            isInvalid={newDescription?.length > textLimit}
+            onChange={handleChange}
+          ></TextField>
+          <br />
+          <Badge
+            bg={`${newDescription?.length > textLimit ? 'danger' : 'primary'}`}
+          >
+            {newDescription?.length || 0}/{textLimit}
+          </Badge>
+          <FormControl fullWidth>
+            <InputLabel id="Agent">{t('Agent')}</InputLabel>
+            <Select
+              labelId="Agent"
+              name="Agent"
+              id="Agent"
+              value={
+                is_TaiGer_Student(user)
+                  ? user.agents.length > 0
+                    ? newReceiver
+                    : ''
+                  : ''
               }
+              label={t('Agent')}
+              onChange={handleChangeReceiver}
             >
-              {BookButtonDisable ? (
-                <Spinner
-                  animation="border"
-                  role="status"
-                  variant="light"
-                  size="sm"
-                >
-                  <span className="visually-hidden"></span>
-                </Spinner>
-              ) : (
-                'Book'
+              {is_TaiGer_Student(user) && (
+                <MenuItem value={''}>Please Select</MenuItem>
               )}
-            </Button>
-            <Button variant="danger" onClick={handleClose}>
-              Close
-            </Button>
-          </Modal.Footer>
-        </Modal>
+              {is_TaiGer_Student(user) ? (
+                <MenuItem value={event.provider._id.toString()}>
+                  {event.provider.firstname} {event.provider.lastname}
+                </MenuItem>
+              ) : is_TaiGer_Agent(user) ? (
+                <MenuItem value={user._id.toString()}>
+                  {user.firstname}
+                  {user.lastname}
+                </MenuItem>
+              ) : (
+                user.agents.map((agent, i) => (
+                  <MenuItem value={agent._id.toString()} key={i}>
+                    {agent.firstname}
+                    {agent.lastname}
+                  </MenuItem>
+                ))
+              )}
+            </Select>
+          </FormControl>
+          <br />
+          <ul>
+            <li className="col text-secondary pb-0 mb-0">
+              From: {convertDate(start)} {NoonNightLabel(start)}{' '}
+              {Intl.DateTimeFormat().resolvedOptions().timeZone} UTC
+              {getTimezoneOffset(
+                Intl.DateTimeFormat().resolvedOptions().timeZone
+              ) >= 0
+                ? `+${getTimezoneOffset(
+                    Intl.DateTimeFormat().resolvedOptions().timeZone
+                  )}`
+                : getTimezoneOffset(
+                    Intl.DateTimeFormat().resolvedOptions().timeZone
+                  )}
+            </li>
+            <li className="col text-secondary pb-0 mb-0">
+              To: {convertDate(end)}{' '}
+              {Intl.DateTimeFormat().resolvedOptions().timeZone} UTC
+              {getTimezoneOffset(
+                Intl.DateTimeFormat().resolvedOptions().timeZone
+              ) >= 0
+                ? `+${getTimezoneOffset(
+                    Intl.DateTimeFormat().resolvedOptions().timeZone
+                  )}`
+                : getTimezoneOffset(
+                    Intl.DateTimeFormat().resolvedOptions().timeZone
+                  )}
+            </li>
+          </ul>
+
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            onClick={handleBook}
+            disabled={
+              newDescription?.length === 0 ||
+              newReceiver === '' ||
+              BookButtonDisable
+            }
+            sx={{ mr: 2 }}
+          >
+            {BookButtonDisable ? <CircularProgress /> : t('Book')}
+          </Button>
+          <Button
+            variant="outlined"
+            color="secondary"
+            size="small"
+            onClick={handleClose}
+          >
+            {t('Close')}
+          </Button>
+        </ModalNew>
       );
     };
     return modal();

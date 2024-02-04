@@ -1,12 +1,12 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { ListGroup } from 'react-bootstrap';
-
+import { Link as LinkDom } from 'react-router-dom';
+import { Link, List, ListItem } from '@mui/material';
 import {
   AiFillCheckCircle,
   AiFillQuestionCircle,
   AiFillWarning
 } from 'react-icons/ai';
+
 import DEMO from '../../store/constant';
 import { isEnglishOK } from '../../Demo/Utils/checking-functions';
 
@@ -20,10 +20,13 @@ const DocumentMissingIcon = () => {
 export default function ApplicationProgressCardBody(props) {
   return (
     <>
-      <ListGroup variant="flush">
+      <List variant="flush">
         {props.student?.generaldocs_threads?.map((thread, idx) => (
-          <ListGroup.Item key={idx}>
+          <ListItem key={idx}>
             <Link
+              underline="hover"
+              color="inherit"
+              component={LinkDom}
               to={DEMO.DOCUMENT_MODIFICATION_LINK(
                 thread.doc_thread_id._id.toString()
               )}
@@ -35,7 +38,7 @@ export default function ApplicationProgressCardBody(props) {
               )}{' '}
               {thread.doc_thread_id?.file_type}
             </Link>
-          </ListGroup.Item>
+          </ListItem>
         ))}
         {/* TODO: debug: checking english score with certificate */}
         {props.application?.programId?.ielts ||
@@ -43,24 +46,39 @@ export default function ApplicationProgressCardBody(props) {
           props.student?.academic_background?.language?.english_isPassed ===
           'O' ? (
             isEnglishOK(props.application?.programId, props.student) ? (
-              <ListGroup.Item>
-                <Link to={`${DEMO.SURVEY_LINK}`}>
+              <ListItem>
+                <Link
+                  underline="hover"
+                  color="inherit"
+                  component={LinkDom}
+                  to={`${DEMO.SURVEY_LINK}`}
+                >
                   <DocumentOkIcon /> English
                 </Link>
-              </ListGroup.Item>
+              </ListItem>
             ) : (
-              <ListGroup.Item title="English Requirements not met with your input in My Survey">
-                <Link to={`${DEMO.SURVEY_LINK}`}>
+              <ListItem title="English Requirements not met with your input in My Survey">
+                <Link
+                  underline="hover"
+                  color="inherit"
+                  component={LinkDom}
+                  to={`${DEMO.SURVEY_LINK}`}
+                >
                   <AiFillWarning color="red" size={16} /> English
                 </Link>
-              </ListGroup.Item>
+              </ListItem>
             )
           ) : (
-            <ListGroup.Item>
-              <Link to={`${DEMO.SURVEY_LINK}`}>
+            <ListItem>
+              <Link
+                underline="hover"
+                color="inherit"
+                component={LinkDom}
+                to={`${DEMO.SURVEY_LINK}`}
+              >
                 <DocumentMissingIcon /> English
               </Link>
-            </ListGroup.Item>
+            </ListItem>
           )
         ) : (
           <></>
@@ -70,56 +88,89 @@ export default function ApplicationProgressCardBody(props) {
             <></>
           ) : props.student?.academic_background?.language?.german_isPassed ===
             'O' ? (
-            <ListGroup.Item>
-              <Link to={`${DEMO.SURVEY_LINK}`}>
+            <ListItem>
+              <Link
+                underline="hover"
+                color="inherit"
+                component={LinkDom}
+                to={`${DEMO.SURVEY_LINK}`}
+              >
                 <DocumentOkIcon /> German
               </Link>
-            </ListGroup.Item>
+            </ListItem>
           ) : (
-            <ListGroup.Item>
-              <Link to={`${DEMO.SURVEY_LINK}`}>
+            <ListItem>
+              <Link
+                underline="hover"
+                color="inherit"
+                component={LinkDom}
+                to={`${DEMO.SURVEY_LINK}`}
+              >
                 <DocumentMissingIcon /> German
               </Link>
-            </ListGroup.Item>
+            </ListItem>
           ))}
         {props.application?.programId?.gre &&
           (props.application?.programId?.gre === '-' ? (
             <></>
           ) : props.student?.academic_background?.language?.gre_isPassed ===
             'O' ? (
-            <ListGroup.Item>
-              <Link to={`${DEMO.SURVEY_LINK}`}>
+            <ListItem>
+              <Link
+                underline="hover"
+                color="inherit"
+                component={LinkDom}
+                to={`${DEMO.SURVEY_LINK}`}
+              >
                 <DocumentOkIcon /> GRE
               </Link>
-            </ListGroup.Item>
+            </ListItem>
           ) : (
-            <ListGroup.Item>
-              <Link to={`${DEMO.SURVEY_LINK}`}>
+            <ListItem>
+              <Link
+                underline="hover"
+                color="inherit"
+                component={LinkDom}
+                to={`${DEMO.SURVEY_LINK}`}
+              >
                 <DocumentMissingIcon /> GRE
               </Link>
-            </ListGroup.Item>
+            </ListItem>
           ))}
         {props.application?.programId?.gmat &&
           (props.application?.programId?.gmat === '-' ? (
             <></>
           ) : props.student?.academic_background?.language?.gmat_isPassed ===
             'O' ? (
-            <ListGroup.Item>
-              <Link to={`${DEMO.SURVEY_LINK}`}>
+            <ListItem>
+              <Link
+                underline="hover"
+                color="inherit"
+                component={LinkDom}
+                to={`${DEMO.SURVEY_LINK}`}
+              >
                 <DocumentOkIcon /> GMAT
               </Link>
-            </ListGroup.Item>
+            </ListItem>
           ) : (
-            <ListGroup.Item>
-              <Link to={`${DEMO.SURVEY_LINK}`}>
+            <ListItem>
+              <Link
+                underline="hover"
+                color="inherit"
+                component={LinkDom}
+                to={`${DEMO.SURVEY_LINK}`}
+              >
                 <DocumentMissingIcon /> GMAT
               </Link>
-            </ListGroup.Item>
+            </ListItem>
           ))}
         {(props.application?.programId?.application_portal_a ||
           props.application?.programId?.application_portal_b) && (
-          <ListGroup.Item>
+          <ListItem>
             <Link
+              underline="hover"
+              color="inherit"
+              component={LinkDom}
               to={`${DEMO.PORTALS_MANAGEMENT_STUDENTID_LINK(
                 props.student._id.toString()
               )}`}
@@ -134,16 +185,18 @@ export default function ApplicationProgressCardBody(props) {
               )}{' '}
               Register University Portal
             </Link>
-          </ListGroup.Item>
+          </ListItem>
         )}
         {props.application?.doc_modification_thread?.map((thread, idx) => (
-          <ListGroup.Item key={idx}>
+          <ListItem key={idx}>
             <Link
+              underline="hover"
+              color="inherit"
+              component={LinkDom}
               to={DEMO.DOCUMENT_MODIFICATION_LINK(
                 thread.doc_thread_id._id.toString()
               )}
             >
-              {' '}
               {thread.isFinalVersion ? (
                 <DocumentOkIcon />
               ) : (
@@ -151,12 +204,17 @@ export default function ApplicationProgressCardBody(props) {
               )}{' '}
               {thread.doc_thread_id?.file_type.replace(/_/g, ' ')}
             </Link>
-          </ListGroup.Item>
+          </ListItem>
         ))}
 
         {props.application?.programId?.uni_assist?.includes('VPD') && (
-          <ListGroup.Item>
-            <Link to={`${DEMO.UNI_ASSIST_LINK}`}>
+          <ListItem>
+            <Link
+              underline="hover"
+              color="inherit"
+              component={LinkDom}
+              to={`${DEMO.UNI_ASSIST_LINK}`}
+            >
               {props.application?.uni_assist?.status === 'notstarted' ? (
                 <DocumentMissingIcon />
               ) : (
@@ -164,11 +222,14 @@ export default function ApplicationProgressCardBody(props) {
               )}{' '}
               Uni-Assist VPD
             </Link>
-          </ListGroup.Item>
+          </ListItem>
         )}
 
-        <ListGroup.Item>
+        <ListItem>
           <Link
+            underline="hover"
+            color="inherit"
+            component={LinkDom}
             to={`${DEMO.STUDENT_APPLICATIONS_ID_LINK(
               props.student._id.toString()
             )}`}
@@ -180,8 +241,8 @@ export default function ApplicationProgressCardBody(props) {
             )}
             Submit
           </Link>
-        </ListGroup.Item>
-      </ListGroup>
+        </ListItem>
+      </List>
     </>
   );
 }

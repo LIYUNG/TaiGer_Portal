@@ -1,30 +1,27 @@
-import React from 'react';
-// import ReactDOM from 'react-dom';
+import React, { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { createStore } from 'redux';
-import { Provider } from 'react-redux';
-import { BrowserRouter } from 'react-router-dom';
+import { I18nextProvider } from 'react-i18next';
 
-import App from './App/index';
+import App from './App';
 import * as serviceWorker from './serviceWorker';
-import reducer from './store/reducer';
-import config from './config';
+import { AuthProvider } from './components/AuthProvider/index';
 import './index.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import './i18n';
+import i18n from './i18n';
+import { CustomThemeProvider } from './components/ThemeProvider';
 
-const store = createStore(
-  reducer,
-  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
-);
+const storedLanguage = localStorage.getItem('locale') || 'en';
+i18n.changeLanguage(storedLanguage);
 
 const app = (
-  <Provider store={store}>
-    <BrowserRouter basename={config.basename}>
-      {/* basename="/datta-able" */}
-      <App />
-    </BrowserRouter>
-  </Provider>
+  <CustomThemeProvider>
+    <I18nextProvider>
+      <AuthProvider>
+        <StrictMode>
+          <App />
+        </StrictMode>
+      </AuthProvider>
+    </I18nextProvider>
+  </CustomThemeProvider>
 );
 
 // Create a root.

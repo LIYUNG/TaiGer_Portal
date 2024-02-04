@@ -1,14 +1,17 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
+
 import Message from './Message';
 import { updateAMessageInCommunicationThread } from '../../api';
 import MessageEdit from './MessageEdit';
+import { useAuth } from '../../components/AuthProvider';
 
-class MessageContainer extends Component {
-  state = {
+function MessageContainer(props) {
+  const { user } = useAuth();
+  const [messageContainerState, setMessageContainerState] = useState({
     error: '',
     isEdit: false,
     isLoaded: false,
-    message: this.props.message,
+    message: props.message,
     thread: null,
     upperThread: [],
     buttonDisabled: false,
@@ -23,32 +26,37 @@ class MessageContainer extends Component {
     res_status: 0,
     res_modal_status: 0,
     res_modal_message: ''
-  };
-  componentDidMount() {
+  });
+
+  useEffect(() => {
     var initialEditorState = null;
-    if (this.props.message.message && this.props.message.message !== '{}') {
+    if (props.message.message && props.message.message !== '{}') {
       try {
-        initialEditorState = JSON.parse(this.props.message.message);
+        initialEditorState = JSON.parse(props.message.message);
       } catch (e) {
         initialEditorState = { time: new Date(), blocks: [] };
       }
     } else {
       initialEditorState = { time: new Date(), blocks: [] };
     }
-    this.setState((state) => ({
-      ...state,
+    setMessageContainerState((prevState) => ({
+      ...prevState,
       editorState: initialEditorState,
       isLoaded: true
       //   deleteMessageModalShow: false
     }));
-  }
-  updateMessage = (e, editorState, messageId) => {
+  }, []);
+
+  const updateMessage = (e, editorState, messageId) => {
     e.preventDefault();
-    this.setState({ buttonDisabled: true });
+    setMessageContainerState((prevState) => ({
+      ...prevState,
+      buttonDisabled: true
+    }));
     let message = JSON.stringify(editorState);
     // let messageId = '1';
     updateAMessageInCommunicationThread(
-      this.props.student_id,
+      props.student_id,
       messageId,
       message
     ).then(
@@ -56,34 +64,35 @@ class MessageContainer extends Component {
         const { success, data } = resp.data;
         const { status } = resp;
         if (success) {
-          this.setState({
+          setMessageContainerState((prevState) => ({
+            ...prevState,
             success,
             editorState,
             message: data,
-            // thread: [...this.state.thread, ...data],
             isLoaded: true,
             isEdit: false,
             buttonDisabled: false,
             accordionKeys: [
-              ...this.state.accordionKeys,
-              this.state.accordionKeys.length
+              ...prevState.accordionKeys,
+              prevState.accordionKeys.length
             ],
             res_modal_status: status
-          });
+          }));
         } else {
           // TODO: what if data is oversize? data type not match?
           const { message } = resp.data;
-          this.setState({
+          setMessageContainerState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             buttonDisabled: false,
             res_modal_message: message,
             res_modal_status: status
-          });
+          }));
         }
       },
       (error) => {
-        this.setState((state) => ({
-          ...state,
+        setMessageContainerState((prevState) => ({
+          ...prevState,
           isLoaded: true,
           error,
           res_modal_status: 500,
@@ -92,68 +101,65 @@ class MessageContainer extends Component {
       }
     );
   };
-  onEditMode = () => {
-    this.setState({
+
+  const onEditMode = () => {
+    setMessageContainerState((prevState) => ({
+      ...prevState,
       isEdit: true
-    });
+    }));
   };
-  handleCancelEdit = () => {
-    this.setState({
+
+  const handleCancelEdit = () => {
+    setMessageContainerState((prevState) => ({
+      ...prevState,
       isEdit: false
-    });
+    }));
   };
-  render() {
-    let firstname = this.props.message.user_id
-      ? this.props.message.user_id.firstname
-      : 'Staff';
-    let lastname = this.props.message.user_id
-      ? this.props.message.user_id.lastname
-      : 'TaiGer';
-    const editable = this.props.message.user_id
-      ? this.props.message.user_id._id.toString() ===
-        this.props.user._id.toString()
-        ? true
-        : false
-      : false;
-    const full_name = `${firstname} ${lastname}`;
-    return (
-      <>
-        {this.state.isEdit ? (
-          <>
-            <MessageEdit
-              singleExpandtHandler={this.props.singleExpandtHandler}
-              idx={this.props.idx}
-              editorState={this.state.editorState}
-              onTrashClick={this.props.onTrashClick}
-              lastupdate={this.props.lastupdate}
-              isLoaded={this.props.isLoaded}
-              user={this.props.user}
-              full_name={full_name}
-              message={this.props.message}
-              editable={editable}
-              onDeleteSingleMessage={this.props.onDeleteSingleMessage}
-              buttonDisabled={this.state.buttonDisabled}
-              handleClickSave={this.updateMessage}
-              handleCancelEdit={this.handleCancelEdit}
-            />
-          </>
-        ) : (
-          <Message
-            accordionKeys={this.props.accordionKeys}
-            singleExpandtHandler={this.props.singleExpandtHandler}
-            idx={this.props.idx}
-            message={this.state.message}
-            onTrashClick={this.props.onTrashClick}
-            lastupdate={this.props.lastupdate}
-            isLoaded={this.props.isLoaded}
-            user={this.props.user}
-            onDeleteSingleMessage={this.props.onDeleteSingleMessage}
-            onEditMode={this.onEditMode}
+  let firstname = props.message.user_id
+    ? props.message.user_id.firstname
+    : 'Staff';
+  let lastname = props.message.user_id
+    ? props.message.user_id.lastname
+    : 'TaiGer';
+  const editable = props.message.user_id
+    ? props.message.user_id._id.toString() === user._id.toString()
+      ? true
+      : false
+    : false;
+  const full_name = `${firstname} ${lastname}`;
+  return (
+    <>
+      {messageContainerState.isEdit ? (
+        <>
+          <MessageEdit
+            idx={props.idx}
+            editorState={messageContainerState.editorState}
+            onTrashClick={props.onTrashClick}
+            lastupdate={props.lastupdate}
+            isLoaded={props.isLoaded}
+            full_name={full_name}
+            message={props.message}
+            editable={editable}
+            onDeleteSingleMessage={props.onDeleteSingleMessage}
+            buttonDisabled={messageContainerState.buttonDisabled}
+            handleClickSave={updateMessage}
+            handleCancelEdit={handleCancelEdit}
           />
-        )}
-      </>
-    );
-  }
+        </>
+      ) : (
+        <Message
+          accordionKeys={props.accordionKeys}
+          idx={props.idx}
+          message={messageContainerState.message}
+          onTrashClick={props.onTrashClick}
+          lastupdate={props.lastupdate}
+          isLoaded={props.isLoaded}
+          onDeleteSingleMessage={props.onDeleteSingleMessage}
+          onEditMode={onEditMode}
+        />
+      )}
+    </>
+  );
 }
 
 export default MessageContainer;

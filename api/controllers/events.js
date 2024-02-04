@@ -170,6 +170,25 @@ const getEvents = asyncHandler(async (req, res, next) => {
   next();
 });
 
+const getActiveEventsNumber = asyncHandler(async (req, res, next) => {
+  const { user } = req;
+  if (
+    user.role === Role.Student ||
+    user.role === Role.Agent ||
+    user.role === Role.Admin
+  ) {
+    const futureEvents = await Event.find({
+      $or: [{ requester_id: user._id }, { receiver_id: user._id }],
+      isConfirmedReceiver: true,
+      isConfirmedRequester: true,
+      start: { $gt: new Date() }
+    }).lean();
+    res.status(200).send({ success: true, data: futureEvents.length });
+  } else {
+    res.status(200).send({ success: true });
+  }
+});
+
 const getAllEvents = asyncHandler(async (req, res, next) => {
   const { user } = req;
   const agents = await Agent.find().select(
@@ -507,6 +526,7 @@ const deleteEvent = asyncHandler(async (req, res, next) => {
 
 module.exports = {
   getEvents,
+  getActiveEventsNumber,
   getAllEvents,
   showEvent,
   postEvent,

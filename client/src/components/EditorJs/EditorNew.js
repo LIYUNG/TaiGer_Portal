@@ -1,12 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Row, Col, Button } from 'react-bootstrap';
+import { Box, Button } from '@mui/material';
+
 import EditorJS from '@editorjs/editorjs';
 import Header from '@editorjs/header';
 import List from '@editorjs/list';
 import Embed from '@editorjs/embed';
 import ImageTool from '@editorjs/image';
 import Table from '@editorjs/table';
-import Marker from '@editorjs/marker';
+// import Marker from '@editorjs/marker';
 import InlineCode from '@editorjs/inline-code';
 // import Link from '@editorjs/link';
 import Delimiter from '@editorjs/delimiter';
@@ -20,16 +21,18 @@ import ColorPlugin from 'editorjs-text-color-plugin';
 import TextAlign from '@canburaks/text-align-editorjs';
 
 import { uploadImage, uploadDocDocs } from '../../api';
+import { useTranslation } from 'react-i18next';
 
 const EditorNew = (props) => {
+  const { t } = useTranslation();
   const ejInstance = useRef();
   // This will run only once
   const [editorState, setEditorState] = useState(props.editorState);
   const [contentReady, setContentready] = useState(true);
   var editor;
-  const handleEditorChange = (content) => {
-    setEditorState(content);
-  };
+  // const handleEditorChange = (content) => {
+  //   setEditorState(content);
+  // };
   useEffect(() => {
     setEditorState(props.editorState);
   }, [props.editorState]);
@@ -55,13 +58,15 @@ const EditorNew = (props) => {
         ejInstance.current = editor;
       },
       // onChange: props.handleEditorChange,
-      onChange: async (api, event) => {
-        setContentready(false);
-        api.saver.save().then((outputData) => {
-          // console.log('outputData ', outputData);
-          setEditorState(outputData);
-          setContentready(true);
-        });
+      onChange: async (api) => {
+        if (!props.readOnly) {
+          setContentready(false);
+          api.saver.save().then((outputData) => {
+            // console.log('outputData ', outputData);
+            setEditorState(outputData);
+            setContentready(true);
+          });
+        }
       },
       // onReady: () => {
       //   console.log('Editor.js is ready to work!');
@@ -242,33 +247,36 @@ const EditorNew = (props) => {
 
   return (
     <React.Fragment>
-      <div id={'editorjs'}></div>
+      <Box id={'editorjs'}></Box>
       {/* <div>{JSON.stringify(props.editorState)}</div> */}
       {props.readOnly ? (
         <></>
       ) : (
-        <Row>
-          <Col className="my-0 mx-0">
-            <Button
-              disabled={
-                !contentReady ||
-                props.doc_title.replace(/ /g, '').length === 0 ||
-                props.category === '' ||
-                !editorState.blocks ||
-                editorState.blocks.length === 0
-              }
-              onClick={(e) => props.handleClickSave(e, editorState)}
-            >
-              Save
-            </Button>
-            <Button
-              onClick={(e) => props.handleClickEditToggle(e)}
-              variant="light"
-            >
-              Cancel
-            </Button>
-          </Col>
-        </Row>
+        <>
+          <Button
+            disabled={
+              !contentReady ||
+              props.doc_title.replace(/ /g, '').length === 0 ||
+              props.category === '' ||
+              !editorState.blocks ||
+              editorState.blocks.length === 0
+            }
+            color="primary"
+            variant="contained"
+            size="small"
+            onClick={(e) => props.handleClickSave(e, editorState)}
+            sx={{ marginRight: 1 }}
+          >
+            {t('Save')}
+          </Button>
+          <Button
+            onClick={(e) => props.handleClickEditToggle(e)}
+            size="small"
+            variant="outlined"
+          >
+            {t('Cancel')}
+          </Button>
+        </>
       )}
     </React.Fragment>
   );

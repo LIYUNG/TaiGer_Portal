@@ -1,7 +1,16 @@
-import React, { useState } from 'react';
-import { Dropdown, DropdownButton } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import React, { Fragment, useState } from 'react';
+import { Link as LinkDom } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import {
+  Box,
+  Button,
+  Link,
+  Menu,
+  MenuItem,
+  TableCell,
+  TableRow,
+  Typography
+} from '@mui/material';
 
 import EditAgentsSubpage from '../StudDocsOverview/EditAgentsSubpage';
 import EditEditorsSubpage from '../StudDocsOverview/EditEditorsSubpage';
@@ -11,13 +20,28 @@ import {
 } from '../../../Utils/checking-functions';
 import { is_TaiGer_Student } from '../../../Utils/checking-functions';
 import DEMO from '../../../../store/constant';
+import { useAuth } from '../../../../components/AuthProvider';
 
 function StudentsAgentEditor(props) {
-  const { t, i18n } = useTranslation();
+  const { user } = useAuth();
+  const { t } = useTranslation();
   const [studentsAgentEditor, setStudentsAgentEditor] = useState({
     showAgentPage: false,
     showEditorPage: false
   });
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const updateStudentArchivStatus = (student_id, archiv) => {
+    setAnchorEl(null);
+    props.updateStudentArchivStatus(student_id, archiv);
+  };
 
   const setAgentModalhide = () => {
     setStudentsAgentEditor((prevState) => ({
@@ -26,8 +50,8 @@ function StudentsAgentEditor(props) {
     }));
   };
 
-  const startEditingAgent = (student) => {
-    props.editAgent(student);
+  const startEditingAgent = () => {
+    setAnchorEl(null);
     setStudentsAgentEditor((prevState) => ({
       ...prevState,
       subpage: 1,
@@ -42,8 +66,8 @@ function StudentsAgentEditor(props) {
     }));
   };
 
-  const startEditingEditor = (student) => {
-    props.editEditor(student);
+  const startEditingEditor = () => {
+    setAnchorEl(null);
     setStudentsAgentEditor((prevState) => ({
       ...prevState,
       subpage: 2,
@@ -64,200 +88,199 @@ function StudentsAgentEditor(props) {
   let studentsAgent;
   let studentsEditor;
   if (props.student.agents === undefined || props.student.agents.length === 0) {
-    studentsAgent = <p className="text-danger">{t('No Agent assigned')}</p>;
+    studentsAgent = <Typography>{t('No Agent assigned')}</Typography>;
   } else {
-    studentsAgent = props.student.agents.map((agent, i) => (
-      <div key={agent._id}>
-        <p className="mb-0 text-info">
+    studentsAgent = props.student.agents.map((agent) => (
+      <Fragment key={agent._id}>
+        <Typography variant="string">
           <Link
             to={`${DEMO.TEAM_AGENT_LINK(agent._id.toString())}`}
-            className="mb-0 text-info"
+            component={LinkDom}
           >
             {agent.firstname}
-            {', '}
-            {agent.lastname}
           </Link>
-        </p>
-        <span className="mb-0 text-secondary">{agent.email}</span>
-      </div>
+        </Typography>
+        &nbsp;
+        {/* <br />
+        <Typography variant="string">{agent.email}</Typography> */}
+      </Fragment>
     ));
   }
   if (
     props.student.editors === undefined ||
     props.student.editors.length === 0
   ) {
-    studentsEditor = <p className="text-danger">{t('No Editor assigned')}</p>;
+    studentsEditor = <Typography>{t('No Editor assigned')}</Typography>;
   } else {
-    studentsEditor = props.student.editors.map((editor, i) => (
-      <div key={editor._id}>
-        <p className="mb-0 text-info">
+    studentsEditor = props.student.editors.map((editor) => (
+      <Box key={editor._id}>
+        <Typography variant="string">
           <Link
             to={`${DEMO.TEAM_EDITOR_LINK(editor._id.toString())}`}
-            className="mb-0 text-info"
+            component={LinkDom}
           >
-            {editor.firstname}
-            {', '}
-            {editor.lastname}
+            {`${editor.firstname}`}
           </Link>
-        </p>
-        <span className="mb-0 text-secondary">{editor.email}</span>
-      </div>
+        </Typography>
+        &nbsp;
+        {/* <br />
+        <Typography variant="string">{editor.email}</Typography> */}
+      </Box>
     ));
   }
   const target_application_field = props.student.application_preference
     ? props.student.application_preference.target_application_field || (
-        <span className="text-danger">TBD</span>
+        <span>TBD</span>
       )
     : '';
   return (
     <>
-      <tr>
-        <td>
-          {is_TaiGer_role(props.user) && !props.isArchivPage && (
-            <DropdownButton
-              size="sm"
-              title="Option"
-              variant="primary"
-              id={`dropdown-variants-${props.student._id}`}
-              key={props.student._id}
-              drop="right"
-            >
-              <Dropdown.Item
-                eventKey="1"
-                onClick={() => startEditingAgent(props.student)}
+      <TableRow>
+        <TableCell>
+          {is_TaiGer_role(user) && !props.isArchivPage && (
+            <>
+              <Button
+                id="basic-button"
+                variant="contained"
+                size="small"
+                aria-controls={open ? 'basic-menu' : undefined}
+                aria-haspopup="true"
+                aria-expanded={open ? 'true' : undefined}
+                onClick={handleClick}
               >
-                Edit Agent
-              </Dropdown.Item>
-              <Dropdown.Item
-                eventKey="2"
-                onClick={() => startEditingEditor(props.student)}
+                {t('Option')}
+              </Button>
+              <Menu
+                id="basic-menu"
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleClose}
+                MenuListProps={{
+                  'aria-labelledby': 'basic-button'
+                }}
               >
-                Edit Editor
-              </Dropdown.Item>
-              {props.isDashboard && !is_TaiGer_Editor(props.user) && (
-                <Dropdown.Item
-                  eventKey="5"
-                  onClick={() =>
-                    props.updateStudentArchivStatus(props.student._id, true)
-                  }
-                >
-                  Move to Archiv
-                </Dropdown.Item>
-              )}
-              {props.isArchivPage && !is_TaiGer_Editor(props.user) && (
-                <Dropdown.Item
-                  eventKey="6"
-                  onClick={() =>
-                    props.updateStudentArchivStatus(props.student._id, false)
-                  }
-                >
-                  Move to Active
-                </Dropdown.Item>
-              )}
-            </DropdownButton>
+                <MenuItem onClick={() => startEditingAgent()}>
+                  Edit Agent
+                </MenuItem>
+                <MenuItem onClick={() => startEditingEditor()}>
+                  Edit Editor
+                </MenuItem>
+                {props.isDashboard && !is_TaiGer_Editor(user) && (
+                  <MenuItem
+                    onClick={() =>
+                      updateStudentArchivStatus(props.student._id, true)
+                    }
+                  >
+                    Move to Archiv
+                  </MenuItem>
+                )}
+                {props.isArchivPage && !is_TaiGer_Editor(user) && (
+                  <MenuItem
+                    onClick={() =>
+                      updateStudentArchivStatus(props.student._id, false)
+                    }
+                  >
+                    {t('Move to Active')}
+                  </MenuItem>
+                )}
+              </Menu>
+            </>
           )}
-        </td>
-        {!is_TaiGer_Student(props.user) ? (
-          <td>
-            <p className="mb-0">
+        </TableCell>
+        {!is_TaiGer_Student(user) ? (
+          <TableCell>
+            <Typography className="mb-0">
               <Link
                 to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                   props.student._id,
                   '/background'
                 )}`}
-                className="text-info"
-                style={{ textDecoration: 'none' }}
+                component={LinkDom}
               >
                 {props.student.firstname}, {props.student.lastname} {' | '}
                 {props.student.lastname_chinese}
                 {props.student.firstname_chinese}
               </Link>
-            </p>
+            </Typography>
             <span className="mb-0 text-secondary">{props.student.email}</span>
-          </td>
+          </TableCell>
         ) : (
           <></>
         )}
-        <td>{studentsAgent}</td>
-        <td>{studentsEditor}</td>
-        <td>
+        <TableCell>{studentsAgent}</TableCell>
+        <TableCell>{studentsEditor}</TableCell>
+        <TableCell>
           {props.student.application_preference.expected_application_date || (
-            <p className="text-danger">TBD</p>
+            <Typography>TBD</Typography>
           )}
-        </td>
-        <td>
+        </TableCell>
+        <TableCell>
           {props.student.application_preference
-            .expected_application_semester || (
-            <p className="text-danger">TBD</p>
-          )}
-        </td>
-        <td>
+            .expected_application_semester || <Typography>TBD</Typography>}
+        </TableCell>
+        <TableCell>
           {props.student.application_preference.target_degree || (
-            <p className="text-danger">TBD</p>
+            <Typography>TBD</Typography>
           )}
-        </td>
-        <td>
-          <b className="my-0 py-0">
+        </TableCell>
+        <TableCell>
+          <Typography fontWeight="bold">
+            {props.student.academic_background.university.attended_university ||
+              'TBD'}
+          </Typography>
+          <Typography>
             {props.student.academic_background.university
-              .attended_university || <span className="text-danger">TBD</span>}
-          </b>
-          <br className="my-0 py-0" />
-          {props.student.academic_background.university
-            .attended_university_program || (
-            <span className="text-danger">TBD</span>
-          )}
-        </td>
-        <td>{target_application_field}</td>
-        <td>
+              .attended_university_program || 'TBD'}
+          </Typography>
+        </TableCell>
+        <TableCell>{target_application_field}</TableCell>
+        <TableCell>
           {props.student.academic_background.language.english_certificate || (
-            <span className="text-danger">TBD</span>
+            <Typography>TBD</Typography>
           )}
-          <br />
           {props.student.academic_background.language.german_certificate || (
-            <span className="text-danger">TBD</span>
+            <Typography>TBD</Typography>
           )}
-        </td>
-        <td>
+        </TableCell>
+        <TableCell>
           {props.student.academic_background.language.english_score || (
-            <span className="text-danger">TBD</span>
+            <span>TBD</span>
           )}
-          <br />
           {props.student.academic_background.language.german_score || (
-            <span className="text-danger">TBD</span>
+            <span>TBD</span>
           )}
-        </td>
-        <td>
+        </TableCell>
+        <TableCell>
           {(props.student.academic_background.language.english_isPassed ===
             'X' &&
             props.student.academic_background.language.english_test_date) || (
-            <span className="text-danger">TBD</span>
+            <span>TBD</span>
           )}
-          <br />
           {(props.student.academic_background.language.german_isPassed ===
             'X' &&
             props.student.academic_background.language.german_test_date) || (
-            <span className="text-danger">TBD</span>
+            <span>TBD</span>
           )}
-        </td>
-      </tr>
-      {is_TaiGer_role(props.user) && (
+        </TableCell>
+      </TableRow>
+      {is_TaiGer_role(user) && (
         <>
-          <EditAgentsSubpage
-            student={props.student}
-            agent_list={props.agent_list}
-            show={studentsAgentEditor.showAgentPage}
-            onHide={setAgentModalhide}
-            updateAgentList={props.updateAgentList}
-            submitUpdateAgentlist={submitUpdateAgentlist}
-          />
-          <EditEditorsSubpage
-            student={props.student}
-            editor_list={props.editor_list}
-            show={studentsAgentEditor.showEditorPage}
-            onHide={setEditorModalhide}
-            updateEditorList={props.updateEditorList}
-            submitUpdateEditorlist={submitUpdateEditorlist}
-          />
+          {studentsAgentEditor.showAgentPage && (
+            <EditAgentsSubpage
+              student={props.student}
+              show={studentsAgentEditor.showAgentPage}
+              onHide={setAgentModalhide}
+              submitUpdateAgentlist={submitUpdateAgentlist}
+            />
+          )}
+          {studentsAgentEditor.showEditorPage && (
+            <EditEditorsSubpage
+              student={props.student}
+              show={studentsAgentEditor.showEditorPage}
+              onHide={setEditorModalhide}
+              submitUpdateEditorlist={submitUpdateEditorlist}
+            />
+          )}
         </>
       )}
     </>

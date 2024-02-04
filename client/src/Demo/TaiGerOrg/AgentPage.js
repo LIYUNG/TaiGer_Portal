@@ -1,13 +1,17 @@
-import React from 'react';
-import { Card, Spinner, Row, Col, Button } from 'react-bootstrap';
-import { Redirect, Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Navigate, Link as LinkDom, useParams } from 'react-router-dom';
+import {
+  Box,
+  Breadcrumbs,
+  Button,
+  Card,
+  Link,
+  Typography
+} from '@mui/material';
 
-import Aux from '../../hoc/_Aux';
 import ApplicationOverviewTabs from '../ApplicantsOverview/ApplicationOverviewTabs';
 import ErrorPage from '../Utils/ErrorPage';
-
 import { getAgent } from '../../api';
-import { spinner_style } from '../Utils/contants';
 import {
   frequencyDistribution,
   is_TaiGer_role,
@@ -17,10 +21,13 @@ import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import TasksDistributionBarChart from '../../components/Charts/TasksDistributionBarChart';
 import { appConfig } from '../../config';
-import { TopBar } from '../../components/TopBar/TopBar';
+import { useAuth } from '../../components/AuthProvider';
+import Loading from '../../components/Loading/Loading';
 
-class AgentPage extends React.Component {
-  state = {
+function AgentPage() {
+  const { user_id } = useParams();
+  const { user } = useAuth();
+  const [agentPageState, setAgentPageState] = useState({
     error: '',
     role: '',
     isLoaded: false,
@@ -29,175 +36,135 @@ class AgentPage extends React.Component {
     students: null,
     agent: null,
     res_status: 0
-  };
+  });
 
-  componentDidMount() {
-    getAgent(this.props.match.params.user_id).then(
+  useEffect(() => {
+    getAgent(user_id).then(
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
         if (success) {
-          this.setState({
+          setAgentPageState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             students: data.students,
             agent: data.agent,
             success: success,
             res_status: status
-          });
+          }));
         } else {
-          this.setState({
+          setAgentPageState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             res_status: status
-          });
+          }));
         }
       },
       (error) => {
-        this.setState((state) => ({
-          ...state,
+        setAgentPageState((prevState) => ({
+          ...prevState,
           isLoaded: true,
           error,
           res_status: 500
         }));
       }
     );
+  }, [user_id]);
+
+  if (!is_TaiGer_role(user)) {
+    return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevProps.match.params.user_id !== this.props.match.params.user_id) {
-      getAgent(this.props.match.params.user_id).then(
-        (resp) => {
-          const { data, success } = resp.data;
-          const { status } = resp;
-          if (success) {
-            this.setState({
-              isLoaded: true,
-              students: data.students,
-              agent: data.agent,
-              success: success,
-              res_status: status
-            });
-          } else {
-            this.setState({
-              isLoaded: true,
-              res_status: status
-            });
-          }
-        },
-        (error) => {
-          this.setState((state) => ({
-            ...state,
-            isLoaded: true,
-            error,
-            res_status: 500
-          }));
-        }
-      );
-    }
+  const { res_status, isLoaded } = agentPageState;
+
+  if (!isLoaded && !agentPageState.students && !agentPageState.agent) {
+    return <Loading />;
   }
 
-  render() {
-    if (!is_TaiGer_role(this.props.user)) {
-      return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
-    }
+  if (res_status >= 400) {
+    return <ErrorPage res_status={res_status} />;
+  }
 
-    const { res_status, isLoaded } = this.state;
+  TabTitle(
+    `Agent: ${agentPageState.agent.firstname}, ${agentPageState.agent.lastname}`
+  );
 
-    if (!isLoaded && !this.state.students && !this.state.agent) {
-      return (
-        <div style={spinner_style}>
-          <Spinner animation="border" role="status">
-            <span className="visually-hidden"></span>
-          </Spinner>
-        </div>
-      );
-    }
-
-    if (res_status >= 400) {
-      return <ErrorPage res_status={res_status} />;
-    }
-
-    TabTitle(
-      `Agent: ${this.state.agent.firstname}, ${this.state.agent.lastname}`
-    );
-
-    const open_applications_arr = programs_refactor(this.state.students);
-    const applications_distribution = open_applications_arr
-      .filter(({ isFinalVersion, show }) => isFinalVersion !== true)
-      .map(({ deadline, file_type, show }) => {
-        return { deadline, file_type, show };
-      });
-    const open_distr = frequencyDistribution(applications_distribution);
-
-    const sort_date = Object.keys(open_distr).sort();
-
-    const sorted_date_freq_pair = [];
-    sort_date.forEach((date, i) => {
-      sorted_date_freq_pair.push({
-        name: `${date}`,
-        active: open_distr[date].show,
-        potentials: open_distr[date].potentials
-      });
+  const open_applications_arr = programs_refactor(agentPageState.students);
+  const applications_distribution = open_applications_arr
+    .filter(({ isFinalVersion }) => isFinalVersion !== true)
+    .map(({ deadline, file_type, show }) => {
+      return { deadline, file_type, show };
     });
+  const open_distr = frequencyDistribution(applications_distribution);
 
-    return (
-      <Aux>
-        <TopBar>
-          {appConfig.companyName} Team Agent:{' '}
-          <b>
-            {this.state.agent.firstname} {this.state.agent.lastname}
-          </b>
-          {` (${this.state.students.length})`}
-        </TopBar>
-        <Row>
-          <Col md={12}>
-            <Card>
-              <Card.Header text={'dark'}>
-                <Card.Title>
-                  <Row>
-                    <Col className="my-0 mx-0">
-                      {this.state.agent.firstname} {this.state.agent.lastname}{' '}
-                      Open Applications Distribution
-                    </Col>
-                  </Row>
-                </Card.Title>
-              </Card.Header>
-              <Card.Body>
-                Applications distribute among the date.
-                <p className="my-0">
-                  <b style={{ color: 'red' }}>active:</b> students decided
-                  programs. These will be shown in{' '}
-                  <Link to={`${DEMO.STUDENT_APPLICATIONS_LINK}`}>
-                    Application Overview
-                  </Link>
-                </p>
-                <p className="my-0">
-                  <b style={{ color: '#A9A9A9' }}>potentials:</b> students do
-                  not decide programs yet. But the applications will be
-                  potentially activated when they would decide.
-                </p>
-                <TasksDistributionBarChart data={sorted_date_freq_pair} />
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
-        <ApplicationOverviewTabs
-          isLoaded={this.state.isLoaded}
-          user={this.props.user}
-          success={this.state.success}
-          students={this.state.students}
-        />
-        <Row className="my-2 mx-0">
-          <Link
-            to={`${DEMO.TEAM_AGENT_ARCHIV_LINK(
-              this.state.agent._id.toString()
-            )}`}
-          >
-            <Button>See Archiv Student</Button>
-          </Link>
-        </Row>
-      </Aux>
-    );
-  }
+  const sort_date = Object.keys(open_distr).sort();
+
+  const sorted_date_freq_pair = [];
+  sort_date.forEach((date) => {
+    sorted_date_freq_pair.push({
+      name: `${date}`,
+      active: open_distr[date].show,
+      potentials: open_distr[date].potentials
+    });
+  });
+
+  return (
+    <Box>
+      <Breadcrumbs aria-label="breadcrumb">
+        <Link
+          underline="hover"
+          color="inherit"
+          component={LinkDom}
+          to={`${DEMO.DASHBOARD_LINK}`}
+        >
+          {appConfig.companyName}
+        </Link>
+        <Link
+          underline="hover"
+          color="inherit"
+          component={LinkDom}
+          to={`${DEMO.TEAM_MEMBERS_LINK}`}
+        >
+          {appConfig.companyName} Team
+        </Link>
+        <Typography color="text.primary">
+          {agentPageState.agent.firstname} {agentPageState.agent.lastname}
+          {` (${agentPageState.students.length})`}
+        </Typography>
+      </Breadcrumbs>
+      <Card sx={{ p: 2 }}>
+        <Typography variant="h5">
+          {agentPageState.agent.firstname} {agentPageState.agent.lastname} Open
+          Applications Distribution
+        </Typography>
+        <Typography>Applications distribute among the date.</Typography>
+        <Typography>
+          <b style={{ color: 'red' }}>active:</b> students decided programs.
+          These will be shown in{' '}
+          <LinkDom to={`${DEMO.STUDENT_APPLICATIONS_LINK}`}>
+            Application Overview
+          </LinkDom>
+        </Typography>
+        <Typography>
+          <b style={{ color: '#A9A9A9' }}>potentials:</b> students do not decide
+          programs yet. But the applications will be potentially activated when
+          they would decide.
+        </Typography>
+        <TasksDistributionBarChart data={sorted_date_freq_pair} />
+      </Card>
+      <ApplicationOverviewTabs students={agentPageState.students} />
+      <Link
+        component={LinkDom}
+        to={`${DEMO.TEAM_AGENT_ARCHIV_LINK(
+          agentPageState.agent._id.toString()
+        )}`}
+      >
+        <Button variant="contained" color="primary">
+          See Archiv Student
+        </Button>
+      </Link>
+    </Box>
+  );
 }
 
 export default AgentPage;

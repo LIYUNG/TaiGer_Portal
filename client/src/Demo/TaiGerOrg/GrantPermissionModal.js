@@ -1,22 +1,39 @@
-import React from 'react';
-import { Button, Form, Modal } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
+import { Form } from 'react-bootstrap';
+import {
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Typography
+} from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
-class GrantPermissionModal extends React.Component {
-  state = {
+import ModalNew from '../../components/Modal';
+
+function GrantPermissionModal(props) {
+  const { t } = useTranslation();
+  const [grantPermissionModalState, setGrantPermissionModalState] = useState({
     permissions: [],
     changed: false
-  };
-  componentDidMount() {
-    this.setState({
+  });
+
+  useEffect(() => {
+    setGrantPermissionModalState((prevState) => ({
+      ...prevState,
       permissions:
-        this.props.user_permissions.length > 0
-          ? this.props.user_permissions[0]
+        props.user_permissions.length > 0
+          ? props.user_permissions[0]
           : { canAssignEditors: false, canAssignAgents: false }
-    });
-  }
-  onChangePermissions = (e) => {
+    }));
+  }, []);
+
+  const onChangePermissions = (e) => {
     const { value, checked } = e.target;
-    this.setState((prevState) => ({
+    setGrantPermissionModalState((prevState) => ({
+      ...prevState,
       permissions: {
         ...prevState.permissions,
         [value]: checked
@@ -25,9 +42,10 @@ class GrantPermissionModal extends React.Component {
     }));
   };
 
-  onChangePermissions_Quota = (e) => {
+  const onChangePermissions_Quota = (e) => {
     const { value, id } = e.target;
-    this.setState((prevState) => ({
+    setGrantPermissionModalState((prevState) => ({
+      ...prevState,
       permissions: {
         ...prevState.permissions,
         [id]: value
@@ -36,97 +54,91 @@ class GrantPermissionModal extends React.Component {
     }));
   };
 
-  onSubmitHandler = (e) => {
-    this.props.onUpdatePermissions(e, this.state.permissions);
+  const onSubmitHandler = (e) => {
+    props.onUpdatePermissions(e, grantPermissionModalState.permissions);
   };
-  render() {
-    const permissions = [
-      ['canModifyProgramList', 'Can modify program list'],
-      [
-        'canModifyAllBaseDocuments',
-        'Can modify all Base Documents And Survey Data'
-      ],
-      ['canAccessAllChat', 'Can access all chat'],
-      ['canAssignAgents', 'Can assign agents'],
-      ['canAssignEditors', 'Can assign editors'],
-      ['canModifyDocumentation', 'Can modify documentation'],
-      ['canAccessStudentDatabase', 'Can access student database'],
-      ['canUseTaiGerAI', 'Can use TaiGer AI']
-    ];
-    const permissionsQuota = [['taigerAiQuota', 'TaiGerAI Quota']];
-    // console.log(this.state.permissions);
-    return (
-      <Modal
-        show={this.props.modalShow}
-        onHide={this.props.setModalHide}
-        size="lg"
-        aria-labelledby="contained-modal-title-vcenter"
-        centered
+  const permissions = [
+    ['canModifyProgramList', 'Can modify program list'],
+    [
+      'canModifyAllBaseDocuments',
+      'Can modify all Base Documents And Survey Data'
+    ],
+    ['canAccessAllChat', 'Can access all chat'],
+    ['canAssignAgents', 'Can assign agents'],
+    ['canAssignEditors', 'Can assign editors'],
+    ['canModifyDocumentation', 'Can modify documentation'],
+    ['canAccessStudentDatabase', 'Can access student database'],
+    ['canUseTaiGerAI', 'Can use TaiGer AI']
+  ];
+  const permissionsQuota = [['taigerAiQuota', 'TaiGerAI Quota']];
+
+  return (
+    <ModalNew
+      open={props.modalShow}
+      onClose={props.setModalHide}
+      size="lg"
+      aria-labelledby="contained-modal-title-vcenter"
+    >
+      <Typography>
+        Edit {props.firstname} - {props.lastname} permissions:
+      </Typography>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>Permission</TableCell>
+            <TableCell>Check</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {permissions.map((permission, i) => (
+            <TableRow key={i + 1}>
+              <TableCell>{permission[1]}</TableCell>
+              <TableCell>
+                <Form.Group>
+                  <Form.Check
+                    type="checkbox"
+                    checked={
+                      grantPermissionModalState.permissions[permission[0]]
+                    }
+                    onChange={(e) => onChangePermissions(e)}
+                    value={permission[0]}
+                  />
+                </Form.Group>
+              </TableCell>
+            </TableRow>
+          ))}
+          {permissionsQuota.map((permission_quota, j) => (
+            <TableRow key={j + 1000}>
+              <TableCell>{permission_quota[1]}</TableCell>
+              <TableCell>
+                <Form.Group>
+                  <Form.Control
+                    type="number"
+                    placeholder="1000"
+                    id={permission_quota[0]}
+                    value={
+                      grantPermissionModalState.permissions[permission_quota[0]]
+                    }
+                    onChange={(e) => onChangePermissions_Quota(e)}
+                  />
+                </Form.Group>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+      <Button
+        color="primary"
+        variant="contained"
+        disabled={!grantPermissionModalState.changed}
+        onClick={(e) => onSubmitHandler(e)}
       >
-        <Modal.Header>
-          <Modal.Title id="contained-modal-title-vcenter">
-            Edit {this.props.firstname} - {this.props.lastname} permissions:
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <table>
-            <thead>
-              <tr>
-                <th>Permission</th>
-                <th>Check</th>
-              </tr>
-            </thead>
-            <tbody>
-              {permissions.map((permission, i) => (
-                <tr key={i + 1}>
-                  <td>{permission[1]}</td>
-                  <td>
-                    <Form.Group>
-                      <Form.Check
-                        // custom
-                        type="checkbox"
-                        // name="agent_id"
-                        // defaultChecked={this.state.permissions[permission[0]]}
-                        checked={this.state.permissions[permission[0]]}
-                        onChange={(e) => this.onChangePermissions(e)}
-                        value={permission[0]}
-                      />
-                    </Form.Group>
-                  </td>
-                </tr>
-              ))}
-              {permissionsQuota.map((permission_quota, j) => (
-                <tr key={j + 1000}>
-                  <td>{permission_quota[1]}</td>
-                  <td>
-                    <Form.Group>
-                      <Form.Control
-                        type="number"
-                        placeholder="1000"
-                        id={permission_quota[0]}
-                        value={this.state.permissions[permission_quota[0]]}
-                        onChange={(e) => this.onChangePermissions_Quota(e)}
-                      />
-                    </Form.Group>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button
-            disabled={!this.state.changed}
-            onClick={(e) => this.onSubmitHandler(e)}
-          >
-            Update
-          </Button>
-          <Button onClick={this.props.setModalHide} variant="light">
-            Cancel
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    );
-  }
+        {t('Update')}
+      </Button>
+      <Button color="primary" variant="outlined" onClick={props.setModalHide}>
+        {t('Cancel')}
+      </Button>
+    </ModalNew>
+  );
 }
 export default GrantPermissionModal;

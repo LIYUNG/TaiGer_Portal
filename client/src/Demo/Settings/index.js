@@ -1,16 +1,31 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Card, Form, Button, Spinner, Modal } from 'react-bootstrap';
+import {
+  Grid,
+  Button,
+  TextField,
+  Typography,
+  CircularProgress,
+  Card,
+  FormControl,
+  RadioGroup,
+  FormControlLabel,
+  Radio
+} from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-import Aux from '../../hoc/_Aux';
-import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 
-import { updateCredentials, logout } from '../../api';
+import { updateCredentials } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
-function Settings(props) {
-  const { t, i18n } = useTranslation();
+import { useAuth } from '../../components/AuthProvider';
+import ModalNew from '../../components/Modal';
+import { useCustomTheme } from '../../components/ThemeProvider';
+
+function Settings() {
+  const { isDarkMode, toggleDarkMode } = useCustomTheme();
+  const { t } = useTranslation();
+  const { user, logout } = useAuth();
   const [settingsState, setSettingsState] = useState({
     error: '',
     role: '',
@@ -20,11 +35,11 @@ function Settings(props) {
     user: {},
     changed_personaldata: false,
     personaldata: {
-      firstname: props.user.firstname,
-      firstname_chinese: props.user.firstname_chinese,
-      lastname: props.user.lastname,
-      lastname_chinese: props.user.lastname_chinese,
-      birthday: props.user.birthday
+      firstname: user.firstname,
+      firstname_chinese: user.firstname_chinese,
+      lastname: user.lastname,
+      lastname_chinese: user.lastname_chinese,
+      birthday: user.birthday
     },
     credentials: {
       current_password: '',
@@ -85,42 +100,19 @@ function Settings(props) {
         }
       },
       (error) => {
-        const { statusText } = resp;
         setSettingsState({
           ...settingsState,
           isLoaded: true,
           error,
           res_modal_status: 500,
-          res_modal_message: statusText
+          res_modal_message: ''
         });
       }
     );
-  };
-
-  const onHideCredential = () => {
-    setSettingsState({
-      updatecredentialconfirmed: false
-    });
-  };
-
-  const setmodalhide = () => {
-    window.location.reload(true);
   };
 
   const setmodalhideUpdateCredentials = () => {
-    logout().then(
-      (resp) => {
-        window.location.reload(true);
-      },
-      (error) => {
-        setSettingsState({
-          ...settingsState,
-          isLoaded: true,
-          error,
-          res_status: 500
-        });
-      }
-    );
+    logout();
   };
 
   const ConfirmError = () => {
@@ -135,13 +127,7 @@ function Settings(props) {
     settingsState;
   TabTitle('Settings');
   if (!isLoaded) {
-    return (
-      <div style={spinner_style}>
-        <Spinner animation="border" role="status">
-          <span className="visually-hidden"></span>
-        </Spinner>
-      </div>
-    );
+    return <CircularProgress />;
   }
 
   if (res_status >= 400) {
@@ -149,7 +135,7 @@ function Settings(props) {
   }
 
   return (
-    <Aux>
+    <Grid container spacing={2}>
       {res_modal_status >= 400 && (
         <ModalMain
           ConfirmError={ConfirmError}
@@ -157,112 +143,106 @@ function Settings(props) {
           res_modal_message={res_modal_message}
         />
       )}
-      <Row>
-        <Col md={6}>
-          <Card className="my-4 mx-0" bg={'dark'} text={'white'}>
-            <Card.Header>
-              <Card.Title className="my-0 mx-0 text-light">
-                {t('Reset Login Password')}
-              </Card.Title>
-            </Card.Header>
-            <Card.Body>
-              <Row className="my-0 mx-0">
-                <Col>
-                  <Form>
-                    <Form.Group controlId="current_password">
-                      <Form.Label className="my-0 mx-0 text-light">
-                        {t('Current Password')}
-                      </Form.Label>
-                      <Form.Control
-                        type="password"
-                        onChange={(e) => handleChange_Credentials(e)}
-                      />
-                    </Form.Group>
-                  </Form>
-                </Col>
-              </Row>
-              <Row className="my-4 mx-0">
-                <Col>
-                  <Form>
-                    <Form.Group controlId="new_password">
-                      <Form.Label className="my-0 mx-0 text-light">
-                        {t('Enter New Password')}
-                      </Form.Label>
-                      <Form.Control
-                        type="password"
-                        onChange={(e) => handleChange_Credentials(e)}
-                      />
-                    </Form.Group>
-                  </Form>
-                </Col>
-              </Row>
-              <Row className="my-0 mx-0">
-                <Col>
-                  <Form>
-                    <Form.Group controlId="new_password_again">
-                      <Form.Label className="my-0 mx-0 text-light">
-                        {t('Enter New Password Again')}
-                      </Form.Label>
-                      <Form.Control
-                        type="password"
-                        onChange={(e) => handleChange_Credentials(e)}
-                      />
-                    </Form.Group>
-                  </Form>
-                  <br />
-                  <Button
-                    disabled={
-                      settingsState.credentials.current_password === '' ||
-                      settingsState.credentials.new_password === '' ||
-                      settingsState.credentials.new_password_again === ''
-                    }
-                    variant="primary"
-                    onClick={(e) =>
-                      handleSubmit_Credentials(
-                        e,
-                        settingsState.credentials,
-                        props.user.email
-                      )
-                    }
-                  >
-                    Reset Password
-                  </Button>
-                </Col>
-              </Row>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col md={6}>
-          <Card className="my-4 mx-0" bg={'dark'} text={'white'}>
-            <Card.Header>
-              <Card.Title className="my-0 mx-0 text-light">
-                Notification
-              </Card.Title>
-            </Card.Header>
-            <Card.Body>Comming soon</Card.Body>
-          </Card>
-        </Col>
-      </Row>
-      <Modal
-        show={settingsState.updatecredentialconfirmed}
-        onHide={setmodalhideUpdateCredentials}
-        size="sm"
+      <Grid item xs={12}>
+        <Typography variant="h5">{t('Settings')}</Typography>
+      </Grid>
+      <Grid item xs={12} md={6}>
+        <Card sx={{ p: 2 }}>
+          <Typography variant="h6">{t('Reset Login Password')}</Typography>
+          <TextField
+            fullWidth
+            id="current_password"
+            margin="normal"
+            required
+            label={`${t('Current Password')}`}
+            autoComplete="off"
+            type="password"
+            onChange={(e) => handleChange_Credentials(e)}
+          />
+          <TextField
+            fullWidth
+            id="new_password"
+            margin="normal"
+            required
+            label={`${t('Enter New Password')}`}
+            autoComplete="off"
+            type="password"
+            onChange={(e) => handleChange_Credentials(e)}
+          />
+          <TextField
+            fullWidth
+            id="new_password_again"
+            margin="normal"
+            required
+            label={`${t('Enter New Password Again')}`}
+            autoComplete="off"
+            type="password"
+            onChange={(e) => handleChange_Credentials(e)}
+          />
+          <Button
+            fullWidth
+            disabled={
+              settingsState.credentials.current_password === '' ||
+              settingsState.credentials.new_password === '' ||
+              settingsState.credentials.new_password_again === ''
+            }
+            color="primary"
+            variant="contained"
+            onClick={(e) =>
+              handleSubmit_Credentials(e, settingsState.credentials, user.email)
+            }
+          >
+            {t('Reset Password')}
+          </Button>
+        </Card>
+      </Grid>
+      <Grid item xs={12} md={6}>
+        <Card sx={{ p: 2 }}>
+          <Typography>{t('Theme')}</Typography>
+          <FormControl>
+            <RadioGroup
+              aria-labelledby="demo-controlled-radio-buttons-group"
+              name="controlled-radio-buttons-group"
+              value={isDarkMode}
+              onChange={toggleDarkMode}
+            >
+              <FormControlLabel value={true} control={<Radio />} label="Dark" />
+              <FormControlLabel
+                value={false}
+                control={<Radio />}
+                label="Light"
+              />
+            </RadioGroup>
+          </FormControl>
+        </Card>
+      </Grid>
+      <Grid item xs={12} md={6}>
+        <Typography>{t('Notification')}</Typography>
+        <Typography>{t('Comming soon')}</Typography>
+      </Grid>
+      <ModalNew
+        open={settingsState.updatecredentialconfirmed}
+        onClose={setmodalhideUpdateCredentials}
         aria-labelledby="contained-modal-title-vcenter"
-        centered
       >
-        <Modal.Header>
-          <Modal.Title id="contained-modal-title-vcenter">
-            Update Credentials Successfully
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          Credentials are updated successfully! Please login again.
-        </Modal.Body>
-        <Modal.Footer>
-          <Button onClick={(e) => setmodalhideUpdateCredentials(e)}>Ok</Button>
-        </Modal.Footer>
-      </Modal>
-    </Aux>
+        <Typography variant="h6">
+          {t('Update Credentials Successfully')}
+        </Typography>
+        <Typography>
+          {t('Credentials are updated successfully! Please login again.')}
+        </Typography>
+        <br />
+        <div style={{ marginTop: 'auto', textAlign: 'right' }}>
+          <Button
+            color="primary"
+            variant="contained"
+            onClick={(e) => setmodalhideUpdateCredentials(e)}
+          >
+            {t('Ok')}
+          </Button>
+        </div>
+      </ModalNew>
+    </Grid>
   );
 }
 

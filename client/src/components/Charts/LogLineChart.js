@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, ButtonGroup, ButtonToolbar } from 'react-bootstrap';
+import { ButtonGroup, Button } from '@mui/material';
 import {
   CartesianGrid,
   Tooltip,
@@ -20,42 +20,40 @@ const LogLineChart = ({ data }) => {
   };
   return (
     <>
-      <ButtonToolbar aria-label="Toolbar with button groups">
-        <ButtonGroup className="me-2" aria-label="First group">
-          <Button
-            variant={range === 7 ? 'primary' : 'outline-primary'}
-            value={7}
-            onClick={onChangeRange}
-            size="sm"
-          >
-            7 days
-          </Button>
-          <Button
-            variant={range === 30 ? 'primary' : 'outline-primary'}
-            value={30}
-            onClick={onChangeRange}
-            size="sm"
-          >
-            30 days
-          </Button>
-          <Button
-            variant={range === 60 ? 'primary' : 'outline-primary'}
-            value={60}
-            onClick={onChangeRange}
-            size="sm"
-          >
-            60 days
-          </Button>
-          <Button
-            variant={range === 180 ? 'primary' : 'outline-primary'}
-            value={180}
-            onClick={onChangeRange}
-            size="sm"
-          >
-            180 days
-          </Button>
-        </ButtonGroup>
-      </ButtonToolbar>
+      <ButtonGroup sx={{ mb: 2 }}>
+        <Button
+          variant={range === 7 ? 'contained' : 'outlined'}
+          value={7}
+          onClick={onChangeRange}
+          size="sm"
+        >
+          7 days
+        </Button>
+        <Button
+          variant={range === 30 ? 'contained' : 'outlined'}
+          value={30}
+          onClick={onChangeRange}
+          size="sm"
+        >
+          30 days
+        </Button>
+        <Button
+          variant={range === 60 ? 'contained' : 'outlined'}
+          value={60}
+          onClick={onChangeRange}
+          size="sm"
+        >
+          60 days
+        </Button>
+        <Button
+          variant={range === 180 ? 'contained' : 'outlined'}
+          value={180}
+          onClick={onChangeRange}
+          size="sm"
+        >
+          180 days
+        </Button>
+      </ButtonGroup>
       <ResponsiveContainer height={250} width="100%">
         <LineChart
           data={data.slice(-range)}

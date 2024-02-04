@@ -1,56 +1,39 @@
 import React from 'react';
-import { Table, Card } from 'react-bootstrap';
+import {
+  Card,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow
+} from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import AgentReviewing from '../../Demo/Dashboard/MainViewTab/AgentReview/AgentReviewing';
+import { studentOverviewTableHeader } from '../../Demo/Utils/contants';
 
-class StudentOverviewTable extends React.Component {
-  render() {
-    const agent_reviewing = this.props.students.map((student, i) => (
-      <AgentReviewing key={i} role={this.props.user.role} student={student} />
-    ));
+function StudentOverviewTable(props) {
+  const { t } = useTranslation();
+  const agent_reviewing = props.students.map((student, i) => (
+    <AgentReviewing key={i} student={student} />
+  ));
 
-    return (
-      <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
-        <Table
-          responsive
-          bordered
-          hover
-          className="px-0 my-0 mx-0"
-          variant="dark"
-          text="light"
-          size="sm"
-        >
-          <thead>
-            <tr>
-              <th>Target Year</th>
-              <th>First-/Lastname,Birthday</th>
-              <th>Agent</th>
-              <th>Editor</th>
-              <th>Graduated</th>
-              <th>Program Selection</th>
-              <th>Applications</th>
-              <th>Next Program to apply</th>
-              <th>Next Program deadline</th>
-              <th>day left</th>
-              <th>Next Program status</th>
-              <th>Survey</th>
-              <th>Base Documents</th>
-              <th>Language</th>
-              <th>Course Analysis</th>
-              <th>CV</th>
-              <th>ML</th>
-              <th>RL</th>
-              <th>Essay</th>
-              <th>Portals</th>
-              <th>Uni-Assist</th>
-              <th>open/offer/reject</th>
-            </tr>
-          </thead>
-          <tbody>{agent_reviewing}</tbody>
-        </Table>
-      </Card>
-    );
-  }
+  return (
+    <Card>
+      <Table size="small">
+        <TableHead>
+          <TableRow>
+            {studentOverviewTableHeader.map((header, idx) => (
+              <TableCell key={idx} align="left">
+                {t(`${header}`)}
+              </TableCell>
+            ))}
+          </TableRow>
+        </TableHead>
+        <TableBody>{agent_reviewing}</TableBody>
+      </Table>
+    </Card>
+  );
 }
 
 export default StudentOverviewTable;

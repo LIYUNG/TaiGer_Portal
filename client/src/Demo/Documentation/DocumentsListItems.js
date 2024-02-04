@@ -1,36 +1,32 @@
 import React from 'react';
-import { Row, Col } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link as LinkDom } from 'react-router-dom';
 import { HiX } from 'react-icons/hi';
-import { is_TaiGer_AdminAgent } from '../Utils/checking-functions';
+import { Link } from '@mui/material';
 
-class DocumentsListItems extends React.Component {
-  render() {
-    return (
-      <>
-        <Row>
-          <Col sm={10}>
-            {is_TaiGer_AdminAgent(this.props.user) && (
-              <HiX
-                size={24}
-                color="red"
-                title="Delete"
-                style={{ cursor: 'pointer' }}
-                onClick={() =>
-                  this.props.openDeleteDocModalWindow(this.props.document)
-                }
-              />
-            )}
-            {this.props.idx}
-            {'. '}
-            <Link to={`${this.props.path}/${this.props.document._id}`}>
-              {this.props.document.title}
-            </Link>
-          </Col>
-        </Row>
-      </>
-    );
-  }
+import { is_TaiGer_AdminAgent } from '../Utils/checking-functions';
+import { useAuth } from '../../components/AuthProvider';
+import { Box } from '@mui/material';
+
+function DocumentsListItems(props) {
+  const { user } = useAuth;
+  return (
+    <Box sx={{ mx: 2, my: 1 }}>
+      {is_TaiGer_AdminAgent(user) && (
+        <HiX
+          size={24}
+          color="red"
+          title="Delete"
+          style={{ cursor: 'pointer' }}
+          onClick={() => props.openDeleteDocModalWindow(props.document)}
+        />
+      )}
+      {props.idx}
+      {'. '}
+      <Link to={`${props.path}/${props.document._id}`} component={LinkDom}>
+        {props.document.title}
+      </Link>
+    </Box>
+  );
 }
 
 export default DocumentsListItems;

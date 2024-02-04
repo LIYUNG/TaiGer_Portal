@@ -1,50 +1,27 @@
-import React, { useState, useEffect } from 'react';
+/* eslint-disable react/prop-types */
+import React, { useState } from 'react';
 import {
   useTable,
   useFilters,
   useGlobalFilter,
-  useAsyncDebounce,
   // useRowSelect,
   usePagination
 } from 'react-table';
-import { Link } from 'react-router-dom';
-
-import { Button, Table, Row, Col, Card, Tabs, Tab } from 'react-bootstrap';
-// A great library for fuzzy filtering/sorting items
+import { Link as LinkDom } from 'react-router-dom';
+import {
+  Link,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow
+} from '@mui/material';
+import { Button, Tabs, Tab, Box, Typography } from '@mui/material';
+import PropTypes from 'prop-types';
 import { matchSorter } from 'match-sorter';
+
 import DEMO from '../../store/constant';
-
-// Define a default UI for filtering
-function GlobalFilter({
-  preGlobalFilteredRows,
-  globalFilter,
-  setGlobalFilter
-}) {
-  const count = preGlobalFilteredRows.length;
-  const [value, setValue] = React.useState(globalFilter);
-  const onChange = useAsyncDebounce((value) => {
-    setGlobalFilter(value || undefined);
-  }, 200);
-
-  return (
-    <span>
-      Search:{' '}
-      <input
-        value={value || ''}
-        onChange={(e) => {
-          setValue(e.target.value);
-          onChange(e.target.value);
-        }}
-        // placeholder={`${count} records...`}
-        placeholder={` TUM, Management ...`}
-        style={{
-          fontSize: '0.9rem',
-          border: '0'
-        }}
-      />
-    </span>
-  );
-}
+import { CustomTabPanel, a11yProps } from '../../components/Tabs';
 
 // Define a default UI for filtering
 function DefaultColumnFilter({
@@ -63,156 +40,12 @@ function DefaultColumnFilter({
   );
 }
 
-// This is a custom filter UI for selecting
-// a unique option from a list
-function SelectColumnFilter({
-  column: { filterValue, setFilter, preFilteredRows, id }
-}) {
-  // Calculate the options for filtering
-  // using the preFilteredRows
-  const options = React.useMemo(() => {
-    const options = new Set();
-    preFilteredRows.forEach((row) => {
-      options.add(row.values[id]);
-    });
-    return [...options.values()];
-  }, [id, preFilteredRows]);
-
-  // Render a multi-select box
-  return (
-    <select
-      value={filterValue}
-      onChange={(e) => {
-        setFilter(e.target.value || undefined);
-      }}
-    >
-      <option value="">All</option>
-      {options.map((option, i) => (
-        <option key={i} value={option}>
-          {option}
-        </option>
-      ))}
-    </select>
-  );
-}
-
-// This is a custom filter UI that uses a
-// slider to set the filter value between a column's
-// min and max values
-// function SliderColumnFilter({
-//   column: { filterValue, setFilter, preFilteredRows, id }
-// }) {
-//   // Calculate the min and max
-//   // using the preFilteredRows
-
-//   const [min, max] = React.useMemo(() => {
-//     let min = preFilteredRows.length ? preFilteredRows[0].values[id] : 0;
-//     let max = preFilteredRows.length ? preFilteredRows[0].values[id] : 0;
-//     preFilteredRows.forEach((row) => {
-//       min = Math.min(row.values[id], min);
-//       max = Math.max(row.values[id], max);
-//     });
-//     return [min, max];
-//   }, [id, preFilteredRows]);
-
-//   return (
-//     <>
-//       <input
-//         type="range"
-//         min={min}
-//         max={max}
-//         value={filterValue || min}
-//         onChange={(e) => {
-//           setFilter(parseInt(e.target.value, 10));
-//         }}
-//       />
-//       <button onClick={() => setFilter(undefined)}>Off</button>
-//     </>
-//   );
-// }
-
-// This is a custom UI for our 'between' or number range
-// filter. It uses two number boxes and filters rows to
-// ones that have values between the two
-// function NumberRangeColumnFilter({
-//   column: { filterValue = [], preFilteredRows, setFilter, id }
-// }) {
-//   const [min, max] = React.useMemo(() => {
-//     let min = preFilteredRows.length ? preFilteredRows[0].values[id] : 0;
-//     let max = preFilteredRows.length ? preFilteredRows[0].values[id] : 0;
-//     preFilteredRows.forEach((row) => {
-//       min = Math.min(row.values[id], min);
-//       max = Math.max(row.values[id], max);
-//     });
-//     return [min, max];
-//   }, [id, preFilteredRows]);
-
-//   return (
-//     <div
-//       style={{
-//         display: 'flex'
-//       }}
-//     >
-//       <input
-//         value={filterValue[0] || ''}
-//         type="number"
-//         onChange={(e) => {
-//           const val = e.target.value;
-//           setFilter((old = []) => [
-//             val ? parseInt(val, 10) : undefined,
-//             old[1]
-//           ]);
-//         }}
-//         placeholder={`Min (${min})`}
-//         style={{
-//           width: '70px',
-//           marginRight: '0.5rem'
-//         }}
-//       />
-//       to
-//       <input
-//         value={filterValue[1] || ''}
-//         type="number"
-//         onChange={(e) => {
-//           const val = e.target.value;
-//           setFilter((old = []) => [
-//             old[0],
-//             val ? parseInt(val, 10) : undefined
-//           ]);
-//         }}
-//         placeholder={`Max (${max})`}
-//         style={{
-//           width: '70px',
-//           marginLeft: '0.5rem'
-//         }}
-//       />
-//     </div>
-//   );
-// }
-
 function fuzzyTextFilterFn(rows, id, filterValue) {
   return matchSorter(rows, filterValue, { keys: [(row) => row.values[id]] });
 }
 
 // Let the table remove the filter if the string is empty
 fuzzyTextFilterFn.autoRemove = (val) => !val;
-
-const IndeterminateCheckbox = React.forwardRef(
-  ({ indeterminate, ...rest }, ref) => {
-    const defaultRef = React.useRef();
-    const resolvedRef = ref || defaultRef;
-
-    React.useEffect(() => {
-      resolvedRef.current.indeterminate = indeterminate;
-    }, [resolvedRef, indeterminate]);
-
-    return (
-      <>
-        <input type="checkbox" ref={resolvedRef} {...rest} />
-      </>
-    );
-  }
-);
 
 // Our table component
 function Table2({ header, data }) {
@@ -307,8 +140,8 @@ function Table2({ header, data }) {
     headerGroups,
     page,
     prepareRow,
-    state,
-    visibleColumns,
+    // state,
+    // visibleColumns,
     canPreviousPage,
     canNextPage,
     pageOptions,
@@ -317,10 +150,10 @@ function Table2({ header, data }) {
     nextPage,
     previousPage,
     setPageSize,
-    preGlobalFilteredRows,
-    setGlobalFilter,
+    // preGlobalFilteredRows,
+    // setGlobalFilter,
     // selectedFlatRows,
-    toggleAllRowsSelected,
+    // toggleAllRowsSelected,
     state: { pageIndex, pageSize }
   } = useTable(
     {
@@ -365,145 +198,102 @@ function Table2({ header, data }) {
 
   return (
     <>
-      <Table
-        className="my-0 mx-2"
-        variant="dark"
-        text="light"
-        responsive
-        hover
-        size="sm"
-        {...getTableProps()}
-      >
-        {/* <table {...getTableProps()}> */}
-        <thead>
-          {headerGroups.map((headerGroup) => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column) => (
-                <th {...column.getHeaderProps()}>
-                  {column.render('Header')}
+      <Table size="small" {...getTableProps()}>
+        <TableHead>
+          {headerGroups.map((headerGroup, i) => (
+            <TableRow key={i} {...headerGroup.getHeaderGroupProps()}>
+              {headerGroup.headers.map((column, j) => (
+                <TableCell key={j} {...column.getHeaderProps()}>
+                  <Typography fontWeight="bold">
+                    {column.render('Header')}
+                  </Typography>
                   {/* Render the columns filter UI */}
-                  <div>{column.canFilter ? column.render('Filter') : null}</div>
-                </th>
+                  {column.canFilter ? column.render('Filter') : null}
+                </TableCell>
               ))}
-            </tr>
+            </TableRow>
           ))}
-          {/* <tr>
-            <th
-              colSpan={visibleColumns.length}
-              style={{
-                textAlign: 'left'
-              }}
-            >
-              <GlobalFilter
-                preGlobalFilteredRows={preGlobalFilteredRows}
-                globalFilter={state.globalFilter}
-                setGlobalFilter={setGlobalFilter}
-              />
-            </th>
-          </tr> */}
-        </thead>
-        <tbody {...getTableBodyProps()}>
+        </TableHead>
+        <TableBody {...getTableBodyProps()}>
           {page.map((row, i) => {
             prepareRow(row);
             return (
-              <tr {...row.getRowProps()}>
+              <TableRow key={i} {...row.getRowProps()}>
                 {row.cells.map((cell, j) => {
                   return (
-                    <td {...cell.getCellProps()}>
+                    <TableCell key={j} {...cell.getCellProps()}>
                       <Link
                         to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                           row.original._id,
                           '/background'
                         )}`}
-                        className="text-info"
-                        style={{ textDecoration: 'none' }}
+                        component={LinkDom}
                       >
                         {cell.render('Cell')}
                       </Link>
-                    </td>
+                    </TableCell>
                   );
                 })}
-              </tr>
+              </TableRow>
             );
           })}
-        </tbody>
-        {/* </table> */}
+        </TableBody>
       </Table>
       <div className="pagination">
-        <Row>
-          <Col md={1}>
-            <Button
-              size="sm"
-              onClick={() => gotoPage(0)}
-              disabled={!canPreviousPage}
-            >
-              {'<<'}
-            </Button>
-          </Col>{' '}
-          <Col md={1}>
-            <Button
-              size="sm"
-              onClick={() => previousPage()}
-              disabled={!canPreviousPage}
-            >
-              {'<'}
-            </Button>
-          </Col>{' '}
-          <Col md={1}>
-            <Button
-              size="sm"
-              onClick={() => nextPage()}
-              disabled={!canNextPage}
-            >
-              {'>'}
-            </Button>
-          </Col>{' '}
-          <Col md={1}>
-            <Button
-              size="sm"
-              onClick={() => gotoPage(pageCount - 1)}
-              disabled={!canNextPage}
-            >
-              {'>>'}
-            </Button>
-          </Col>{' '}
-          <Col md={2}>
-            <span className="my-0 mx-0 text-light">
-              Page{' '}
-              <strong>
-                {pageIndex + 1} of {pageOptions.length}
-              </strong>{' '}
-            </span>
-          </Col>
-          <Col md={4}>
-            <span className="my-0 mx-0 text-light">
-              | Go to page:{' '}
-              <input
-                type="number"
-                defaultValue={pageIndex + 1}
-                onChange={(e) => {
-                  const page = e.target.value ? Number(e.target.value) - 1 : 0;
-                  gotoPage(page);
-                }}
-                style={{ width: '100px' }}
-              />
-            </span>
-          </Col>{' '}
-          <Col md={2}>
-            <select
-              value={pageSize}
-              onChange={(e) => {
-                setPageSize(Number(e.target.value));
-              }}
-            >
-              {[20, 40, 60, 80, 100].map((pageSize) => (
-                <option key={pageSize} value={pageSize}>
-                  Show {pageSize}
-                </option>
-              ))}
-            </select>
-          </Col>
-        </Row>
+        <Button
+          size="sm"
+          onClick={() => gotoPage(0)}
+          disabled={!canPreviousPage}
+        >
+          {'<<'}
+        </Button>
+        <Button
+          size="sm"
+          onClick={() => previousPage()}
+          disabled={!canPreviousPage}
+        >
+          {'<'}
+        </Button>
+        <Button size="sm" onClick={() => nextPage()} disabled={!canNextPage}>
+          {'>'}
+        </Button>
+        <Button
+          size="sm"
+          onClick={() => gotoPage(pageCount - 1)}
+          disabled={!canNextPage}
+        >
+          {'>>'}
+        </Button>
+        <span className="my-0 mx-0 text-light">
+          Page{' '}
+          <strong>
+            {pageIndex + 1} of {pageOptions.length}
+          </strong>{' '}
+        </span>
+        <span className="my-0 mx-0 text-light">
+          | Go to page:{' '}
+          <input
+            type="number"
+            defaultValue={pageIndex + 1}
+            onChange={(e) => {
+              const page = e.target.value ? Number(e.target.value) - 1 : 0;
+              gotoPage(page);
+            }}
+            style={{ width: '100px' }}
+          />
+        </span>
+        <select
+          value={pageSize}
+          onChange={(e) => {
+            setPageSize(Number(e.target.value));
+          }}
+        >
+          {[20, 40, 60, 80, 100].map((pageSize) => (
+            <option key={pageSize} value={pageSize}>
+              Show {pageSize}
+            </option>
+          ))}
+        </select>
       </div>
     </>
   );
@@ -523,16 +313,24 @@ function filterGreaterThan(rows, id, filterValue) {
 // check, but here, we want to remove the filter if it's not a number
 filterGreaterThan.autoRemove = (val) => typeof val !== 'number';
 
-function AdmissionsTable(props) {
-  let [statedata, setStatedata] = useState({
-    students: props.students
-  });
+CustomTabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.number.isRequired,
+  value: PropTypes.number.isRequired
+};
 
+function AdmissionsTable(props) {
+  const students = props.students;
+  const [value, setValue] = useState(0);
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
   let admissions_table = [];
   let rejections_table = [];
   let pending_table = [];
   let not_yet_closed_table = [];
-  statedata.students.map((student) => {
+  students.map((student) => {
     let editors_name_string = '';
     let agents_name_string = '';
     for (const editor of student.editors) {
@@ -622,41 +420,30 @@ function AdmissionsTable(props) {
 
   return (
     <>
-      <Tabs
-        defaultActiveKey="Admissions"
-        id="fill-tab-example"
-        fill={true}
-        justify={true}
-      >
-        <Tab eventKey="Admissions" title="Admissions" className="my-0 mx-0">
-          <Row>
-            <Card className="my-0 mx-0" bg={'dark'} text={'white'}>
-              <Table2 header={'Admissions'} data={admissions_table} />
-            </Card>
-          </Row>
-        </Tab>
-        <Tab eventKey="Rejections" title="Rejections">
-          <Row>
-            <Card className="my-0 mx-0" bg={'dark'} text={'white'}>
-              <Table2 header={'Rejections '} data={rejections_table} />
-            </Card>
-          </Row>
-        </Tab>
-        <Tab eventKey="Pending" title="Pending">
-          <Row>
-            <Card className="my-0 mx-0" bg={'dark'} text={'white'}>
-              <Table2 header={'Pending'} data={pending_table} />
-            </Card>
-          </Row>
-        </Tab>
-        <Tab eventKey="NotClosedYet" title="Not Closed Yet">
-          <Row>
-            <Card className="my-0 mx-0" bg={'dark'} text={'white'}>
-              <Table2 header={'Not Closed Yet'} data={not_yet_closed_table} />
-            </Card>
-          </Row>
-        </Tab>
-      </Tabs>
+      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+        <Tabs
+          value={value}
+          onChange={handleChange}
+          aria-label="basic tabs example"
+        >
+          <Tab label="Admissions" {...a11yProps(0)} />
+          <Tab label="Rejections" {...a11yProps(1)} />
+          <Tab label="Pending" {...a11yProps(2)} />
+          <Tab label="Not Closed Yet" {...a11yProps(3)} />
+        </Tabs>
+      </Box>
+      <CustomTabPanel value={value} index={0}>
+        <Table2 header={'Admissions'} data={admissions_table} />
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={1}>
+        <Table2 header={'Rejections '} data={rejections_table} />
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={2}>
+        <Table2 header={'Pending'} data={pending_table} />
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={3}>
+        <Table2 header={'Not Closed Yet'} data={not_yet_closed_table} />
+      </CustomTabPanel>
     </>
   );
 }

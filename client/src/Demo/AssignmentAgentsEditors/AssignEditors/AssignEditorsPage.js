@@ -1,57 +1,64 @@
 import React from 'react';
-import { Row, Card, Col, Table } from 'react-bootstrap';
-import NoAgentsStudentsCard from '../../Dashboard/MainViewTab/NoAgentsStudentsCard/NoAgentsStudentsCard';
+import {
+  Box,
+  Breadcrumbs,
+  Card,
+  Link,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Typography
+} from '@mui/material';
+import { Link as LinkDom } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+
 import NoEditorsStudentsCard from '../../Dashboard/MainViewTab/NoEditorsStudentsCard/NoEditorsStudentsCard';
+import { appConfig } from '../../../config';
+import DEMO from '../../../store/constant';
 
-class AssignEditorsPage extends React.Component {
-  render() {
-    const no_editor_students = this.props.students.map((student, i) => (
-      <NoEditorsStudentsCard
-        key={i}
-        user={this.props.user}
-        student={student}
-        editEditor={this.props.editEditor}
-        editor_list={this.props.editor_list}
-        updateEditorList={this.props.updateEditorList}
-        submitUpdateEditorlist={this.props.submitUpdateEditorlist}
-      />
-    ));
+function AssignEditorsPage(props) {
+  const { t } = useTranslation();
+  const no_editor_students = props.students.map((student, i) => (
+    <NoEditorsStudentsCard
+      key={i}
+      student={student}
+      submitUpdateEditorlist={props.submitUpdateEditorlist}
+    />
+  ));
 
-    return (
-      <>
-        <Row>
-          <Col>
-            <Card className="my-0 mx-0" bg={'danger'} text={'white'}>
-              <Card.Header>
-                <Card.Title className="my-0 mx-0 text-light">
-                  No Editors Students
-                </Card.Title>
-              </Card.Header>
-              <Table
-                responsive
-                className="my-0 mx-0"
-                variant="dark"
-                text="light"
-                size="sm"
-              >
-                <thead>
-                  <tr>
-                    <th></th>
-                    <th>First-, Last Name</th>
-                    <th>Email</th>
-                    <th>Status</th>
-                    <th>Target Year</th>
-                    <th>Agent(s)</th>
-                  </tr>
-                </thead>
-                <tbody>{no_editor_students}</tbody>
-              </Table>
-            </Card>
-          </Col>
-        </Row>
-      </>
-    );
-  }
+  return (
+    <Box>
+      <Breadcrumbs aria-label="breadcrumb">
+        <Link
+          underline="hover"
+          color="inherit"
+          component={LinkDom}
+          to={`${DEMO.DASHBOARD_LINK}`}
+        >
+          {appConfig.companyName}
+        </Link>
+        <Typography color="text.primary">Assign Editors</Typography>
+      </Breadcrumbs>
+      <Card sx={{ p: 2 }}>
+        <Typography variant="h6">{t('No Editors Students')}</Typography>
+        <Table size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell></TableCell>
+              <TableCell>First-, Last Name</TableCell>
+              <TableCell>{t('Email')}</TableCell>
+              <TableCell>{t('Status')}</TableCell>
+              <TableCell>{t('Target Year<')}</TableCell>
+              <TableCell>{t('Agent(s)')}</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>{no_editor_students}</TableBody>
+        </Table>
+      </Card>
+    </Box>
+  );
 }
 
 export default AssignEditorsPage;

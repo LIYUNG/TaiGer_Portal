@@ -1,58 +1,62 @@
 import React from 'react';
-import { Row, Card, Col, Table } from 'react-bootstrap';
+import {
+  Box,
+  Breadcrumbs,
+  Card,
+  Link,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Typography
+} from '@mui/material';
+import { Link as LinkDom } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+
+import { appConfig } from '../../../config';
+import DEMO from '../../../store/constant';
 import NoAgentsStudentsCard from '../../Dashboard/MainViewTab/NoAgentsStudentsCard/NoAgentsStudentsCard';
 
-class AssignAgentsPage extends React.Component {
-  render() {
-    const no_agent_students = this.props.students.map((student, i) => (
-      <NoAgentsStudentsCard
-        key={i}
-        role={this.props.role}
-        student={student}
-        editAgent={this.props.editAgent}
-        agent_list={this.props.agent_list}
-        updateAgentList={this.props.updateAgentList}
-        submitUpdateAgentlist={this.props.submitUpdateAgentlist}
-      />
-    ));
+function AssignAgentsPage(props) {
+  const { t } = useTranslation();
+  const no_agent_students = props.students.map((student, i) => (
+    <NoAgentsStudentsCard
+      key={i}
+      student={student}
+      submitUpdateAgentlist={props.submitUpdateAgentlist}
+    />
+  ));
 
-    return (
-      <>
-        <Row>
-          <Col mx={0} my={0}>
-            <Card
-              className="my-0 mx-0  text-light"
-              bg={'danger'}
-              text={'white'}
-            >
-              <Card.Header>
-                <Card.Title className="my-0 mx-0 text-light">
-                  No Agents Students
-                </Card.Title>
-              </Card.Header>
-              <Table
-                responsive
-                variant="dark"
-                text="light"
-                className="my-0 mx-0"
-                size="sm"
-              >
-                <thead>
-                  <tr>
-                    <th></th>
-                    <th>First-, Last Name</th>
-                    <th>Email</th>
-                    <th>Target Year</th>
-                  </tr>
-                </thead>
-                <tbody>{no_agent_students}</tbody>
-              </Table>
-            </Card>
-          </Col>
-        </Row>
-      </>
-    );
-  }
+  return (
+    <Box>
+      <Breadcrumbs aria-label="breadcrumb">
+        <Link
+          underline="hover"
+          color="inherit"
+          component={LinkDom}
+          to={`${DEMO.DASHBOARD_LINK}`}
+        >
+          {appConfig.companyName}
+        </Link>
+        <Typography color="text.primary">{t('Assign Agents')}</Typography>
+      </Breadcrumbs>
+      <Card sx={{ p: 2 }}>
+        <Typography variant="h6">{t('No Agents Students')}</Typography>
+        <Table size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell></TableCell>
+              <TableCell>First-, Last Name</TableCell>
+              <TableCell>Email</TableCell>
+              <TableCell>Target Year</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>{no_agent_students}</TableBody>
+        </Table>
+      </Card>
+    </Box>
+  );
 }
 
 export default AssignAgentsPage;

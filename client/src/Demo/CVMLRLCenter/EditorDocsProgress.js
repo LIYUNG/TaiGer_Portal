@@ -674,9 +674,11 @@ function EditorDocsProgress(props) {
                     >
                       <Typography
                         variant="body1"
-                        className={`text-${
-                          application.closed === 'O' ? 'warning' : 'danger'
-                        }`}
+                        color={
+                          application.closed === 'O'
+                            ? 'success.light'
+                            : 'error.main'
+                        }
                       >
                         <b>
                           {application.programId.school} -{' '}
@@ -769,7 +771,7 @@ function EditorDocsProgress(props) {
                         )}`}
                         component={LinkDom}
                       >
-                        <Typography variant="string">
+                        <Typography variant="string" color="grey">
                           <b>
                             {application.programId.school} -{' '}
                             {application.programId.degree} -{' '}
@@ -833,29 +835,27 @@ function EditorDocsProgress(props) {
                       <Typography>{t('Undecided')}</Typography>
                     </Grid>
                   </Grid>
-                  <Grid>
-                    <Typography variant="string">
-                      <b>
-                        Ths following tasks are not visible in tasks dashboard
-                        and CV/ML/RL/Center. Please
-                        {showButtonIfMyStudent(
-                          user,
-                          editorDocsProgressState.student
-                        ) && (
-                          <Link
-                            to={`${DEMO.STUDENT_APPLICATIONS_ID_LINK(
-                              editorDocsProgressState.student._id.toString()
-                            )}`}
-                            component={LinkDom}
-                          >
-                            {' '}
-                            click here
-                          </Link>
-                        )}{' '}
-                        to activate the application.
-                      </b>
-                    </Typography>
-                  </Grid>
+                  <Typography variant="string" sx={{ my: 2 }}>
+                    <b>
+                      Ths following tasks are not visible in tasks dashboard and
+                      CV/ML/RL/Center. Please
+                      {showButtonIfMyStudent(
+                        user,
+                        editorDocsProgressState.student
+                      ) && (
+                        <Link
+                          to={`${DEMO.STUDENT_APPLICATIONS_ID_LINK(
+                            editorDocsProgressState.student._id.toString()
+                          )}`}
+                          component={LinkDom}
+                        >
+                          {' '}
+                          click here
+                        </Link>
+                      )}{' '}
+                      to activate the application.
+                    </b>
+                  </Typography>
                   <ManualFiles
                     onDeleteFileThread={onDeleteFileThread}
                     handleAsFinalFile={handleAsFinalFile}

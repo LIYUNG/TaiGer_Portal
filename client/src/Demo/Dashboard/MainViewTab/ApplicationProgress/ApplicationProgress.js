@@ -10,7 +10,7 @@ import {
 } from '../../../Utils/checking-functions';
 import DEMO from '../../../../store/constant';
 import { useAuth } from '../../../../components/AuthProvider';
-import { TableCell, TableRow } from '@mui/material';
+import { TableCell, TableRow, Typography } from '@mui/material';
 
 function ApplicationProgress(props) {
   const { user } = useAuth();
@@ -66,15 +66,15 @@ function ApplicationProgress(props) {
             {props.student.applying_program_count ? (
               props.student.applications.length <
               props.student.applying_program_count ? (
-                <p className="text-danger">
+                <Typography className="text-danger">
                   <b>{props.student.applications.length}</b> /{' '}
                   {props.student.applying_program_count}
-                </p>
+                </Typography>
               ) : (
-                <p className="text-info">
+                <Typography className="text-info">
                   {props.student.applications.length} /{' '}
                   {props.student.applying_program_count}
-                </p>
+                </Typography>
               )
             ) : (
               <b className="text-danger">0</b>

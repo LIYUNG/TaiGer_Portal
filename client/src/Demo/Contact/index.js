@@ -1,149 +1,107 @@
-import React, { useEffect, useState } from 'react';
-import { Row, Col, Spinner, Card, Table } from 'react-bootstrap';
-import { Link, Redirect } from 'react-router-dom';
+import React from 'react';
+import { Link as LinkDom, Navigate, useLoaderData } from 'react-router-dom';
+import {
+  Box,
+  Card,
+  Breadcrumbs,
+  Table,
+  Link,
+  Typography,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableCell
+} from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
-import Aux from '../../hoc/_Aux';
-import { spinner_style } from '../Utils/contants';
-import ErrorPage from '../Utils/ErrorPage';
-
-import { getStudents } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import { appConfig } from '../../config';
-import { TopBar } from '../../components/TopBar/TopBar';
+import { useAuth } from '../../components/AuthProvider';
 
-function Contact(props) {
-  const [contactState, setContactState] = useState({
-    error: '',
-    isLoaded: false,
-    data: null,
-    success: false,
-    students: null,
-    status: '', //reject, accept... etc
-    res_status: 0
-  });
-  useEffect(() => {
-    getStudents().then(
-      (resp) => {
-        const { data, success } = resp.data;
-        const { status } = resp;
-        if (success) {
-          setContactState({
-            isLoaded: true,
-            students: data,
-            success: success,
-            res_status: status
-          });
-        } else {
-          setContactState({
-            isLoaded: true,
-            res_status: status
-          });
-        }
-      },
-      (error) => {
-        setContactState((state) => ({
-          ...state,
-          isLoaded: true,
-          error,
-          res_status: 500
-        }));
-      }
-    );
-  }, []);
+function Contact() {
+  const { user } = useAuth();
+  const {
+    data: { data: students }
+  } = useLoaderData();
+  const { t } = useTranslation();
+  const contactState = {
+    students: students
+  };
 
   if (
-    props.user.role !== 'Admin' &&
-    props.user.role !== 'Editor' &&
-    props.user.role !== 'Agent' &&
-    props.user.role !== 'Student'
+    user.role !== 'Admin' &&
+    user.role !== 'Editor' &&
+    user.role !== 'Agent' &&
+    user.role !== 'Student'
   ) {
-    return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
+    return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
   }
   TabTitle('Contact Us');
-  const { res_status, isLoaded } = contactState;
-
-  if (!isLoaded && !contactState.students) {
-    return (
-      <div style={spinner_style}>
-        <Spinner animation="border" role="status">
-          <span className="visually-hidden"></span>
-        </Spinner>
-      </div>
-    );
-  }
-
-  if (res_status >= 400) {
-    return <ErrorPage res_status={res_status} />;
-  }
 
   const your_editors = contactState.students[0].editors ? (
     contactState.students[0].editors.map((editor, i) => (
-      <tr key={i}>
-        <td>Editor</td>
-        <td>
+      <TableRow key={i}>
+        <TableCell>{t('Editor')}</TableCell>
+        <TableCell>
           {editor.firstname} - {editor.lastname}
-        </td>
-        <td>{editor.email}</td>
-      </tr>
+        </TableCell>
+        <TableCell>{editor.email}</TableCell>
+      </TableRow>
     ))
   ) : (
     <></>
   );
+
   const your_agents = contactState.students[0].agents ? (
     contactState.students[0].agents.map((agent, i) => (
-      <tr key={i}>
-        <td>Agent</td>
-        <td>
+      <TableRow key={i}>
+        <TableCell>{t('Agent')}</TableCell>
+        <TableCell>
           <Link
             to={`${DEMO.TEAM_AGENT_PROFILE_LINK(agent._id.toString())}`}
-            className="text-info"
+            component={LinkDom}
           >
             {agent.firstname} - {agent.lastname}
           </Link>
-        </td>
-        <td>{agent.email}</td>
-      </tr>
+        </TableCell>
+        <TableCell>{agent.email}</TableCell>
+      </TableRow>
     ))
   ) : (
     <></>
   );
+
   return (
-    <Aux>
-      <TopBar>Contact Us</TopBar>
-      <Row>
-        <Col md={6}>
-          <Card className="my-2 mx-0" bg={'dark'} text={'light'}>
-            <Card.Header>
-              <Card.Title className="my-0 mx-0 text-light">
-                Your {appConfig.companyName} Team
-              </Card.Title>
-            </Card.Header>
-            <Table
-              responsive
-              bordered
-              hover
-              className="my-0 mx-0"
-              variant="dark"
-              text="light"
-              size="sm"
-            >
-              <thead>
-                <tr>
-                  <th>Role</th>
-                  <th>First-, Last Name</th>
-                  <th>Email</th>
-                </tr>
-              </thead>
-              <tbody>
-                {your_agents}
-                {your_editors}
-              </tbody>
-            </Table>
-          </Card>
-        </Col>
-      </Row>
-    </Aux>
+    <Box>
+      <Breadcrumbs aria-label="breadcrumb">
+        <Link
+          underline="hover"
+          color="inherit"
+          component={LinkDom}
+          to={`${DEMO.DASHBOARD_LINK}`}
+        >
+          {appConfig.companyName}
+        </Link>
+        <Typography color="text.primary">{t('Contact Us')}</Typography>
+      </Breadcrumbs>
+      <Typography sx={{ my: 2 }}>Your {appConfig.companyName} Team</Typography>
+      <Card>
+        <Table size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell>{t('Role')}</TableCell>
+              <TableCell>First-, Last Name</TableCell>
+              <TableCell>Email</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {your_agents}
+            {your_editors}
+          </TableBody>
+        </Table>
+      </Card>
+    </Box>
   );
 }
 

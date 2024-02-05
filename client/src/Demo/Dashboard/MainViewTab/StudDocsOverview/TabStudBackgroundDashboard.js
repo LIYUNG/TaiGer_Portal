@@ -1,61 +1,59 @@
 import React from 'react';
-import { Table } from 'react-bootstrap';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper
+} from '@mui/material';
+
 import StudDocsDashboard from './StudDocsDashboard';
 import { academic_background_header } from '../../../Utils/contants';
+import { useTranslation } from 'react-i18next';
 
-class TabStudBackgroundDashboard extends React.Component {
-  render() {
-    const stdlist = (
-      <tbody>
-        {this.props.students.map((student, i) => (
-          <StudDocsDashboard
-            key={i}
-            user={this.props.user}
-            student={student}
-            updateStudentArchivStatus={this.props.updateStudentArchivStatus}
-            isDashboard={this.props.isDashboard}
-            isArchivPage={this.props.isArchivPage}
-          />
-        ))}
-      </tbody>
-    );
-    let header = Object.values(academic_background_header);
-    return (
-      <Table
-        size="sm"
-        responsive
-        // bordered
-        // striped
-        hover
-        className="px-0 py-0 mb-0 mx-0"
-        variant="dark"
-        text="light"
-      >
-        <thead>
-          <tr
-            style={{
-              backgroundColor: 'black',
-              color: 'white'
-            }}
-          >
-            <th></th>
-            <th>
+function TabStudBackgroundDashboard(props) {
+  const { t } = useTranslation();
+  const stdlist = (
+    <TableBody>
+      {props.students.map((student, i) => (
+        <StudDocsDashboard
+          key={i}
+          student={student}
+          updateStudentArchivStatus={props.updateStudentArchivStatus}
+          isDashboard={props.isDashboard}
+          isArchivPage={props.isArchivPage}
+        />
+      ))}
+    </TableBody>
+  );
+  let header = Object.values(academic_background_header);
+  return (
+    <TableContainer component={Paper}>
+      <Table size="small">
+        <TableHead>
+          <TableRow>
+            <TableCell></TableCell>
+            <TableCell align="left">
               First-, Last Name | 姓名 <br /> Email
-            </th>
-            <th>Agents</th>
-            <th>Editors</th>
-            <th>Year</th>
-            <th>Semester</th>
-            <th>Degree</th>
+            </TableCell>
+            <TableCell align="left">{t('Agents')}</TableCell>
+            <TableCell align="left">{t('Editors')}</TableCell>
+            <TableCell align="left">{t('Year')}</TableCell>
+            <TableCell align="left">{t('Semester')}</TableCell>
+            <TableCell align="left">{t('Degree')}</TableCell>
             {header.map((name, index) => (
-              <th key={index}>{name}</th>
+              <TableCell key={index} align="left">
+                {t(`${name}`)}
+              </TableCell>
             ))}
-          </tr>
-        </thead>
+          </TableRow>
+        </TableHead>
         {stdlist}
       </Table>
-    );
-  }
+    </TableContainer>
+  );
 }
 
 export default TabStudBackgroundDashboard;

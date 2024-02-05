@@ -1,20 +1,20 @@
-import React from 'react';
-import { Row, Col, Card, Spinner } from 'react-bootstrap';
-import { Redirect } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Navigate, Link as LinkDom } from 'react-router-dom';
+import { Box, Breadcrumbs, Card, Link, Typography } from '@mui/material';
 
-import Aux from '../../hoc/_Aux';
 import TabStudBackgroundDashboard from '../Dashboard/MainViewTab/StudDocsOverview/TabStudBackgroundDashboard';
-import { spinner_style } from '../Utils/contants';
 import { is_TaiGer_role } from '../Utils/checking-functions';
 import ErrorPage from '../Utils/ErrorPage';
-
 import { getAllStudents, updateArchivStudents } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
-import { TopBar } from '../../components/TopBar/TopBar';
+import { useAuth } from '../../components/AuthProvider';
+import { appConfig } from '../../config';
+import Loading from '../../components/Loading/Loading';
 
-class Dashboard extends React.Component {
-  state = {
+function StudentDatabase() {
+  const { user } = useAuth();
+  const [studentDatabaseState, setStudentDatabaseState] = useState({
     error: '',
     timeouterror: null,
     unauthorizederror: null,
@@ -27,60 +27,63 @@ class Dashboard extends React.Component {
     updateEditorList: {},
     success: false,
     res_status: 0
-  };
-
-  componentDidMount() {
+  });
+  useEffect(() => {
     getAllStudents().then(
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
         if (success) {
-          this.setState({
+          setStudentDatabaseState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             students: data,
             success: success,
             res_status: status
-          });
+          }));
         } else {
-          this.setState({
+          setStudentDatabaseState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             res_status: status
-          });
+          }));
         }
       },
       (error) => {
-        this.setState((state) => ({
-          ...state,
+        setStudentDatabaseState((prevState) => ({
+          ...prevState,
           isLoaded: true,
           error,
           res_status: 500
         }));
       }
     );
-  }
+  }, []);
 
-  updateStudentArchivStatus = (studentId, isArchived) => {
+  const updateStudentArchivStatus = (studentId, isArchived) => {
     updateArchivStudents(studentId, isArchived).then(
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
         if (success) {
-          this.setState({
+          setStudentDatabaseState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             students: data,
             success: success,
             res_status: status
-          });
+          }));
         } else {
-          this.setState({
+          setStudentDatabaseState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             res_status: status
-          });
+          }));
         }
       },
       (error) => {
-        this.setState((state) => ({
-          ...state,
+        setStudentDatabaseState((prevState) => ({
+          ...prevState,
           isLoaded: true,
           error,
           res_status: 500
@@ -89,47 +92,49 @@ class Dashboard extends React.Component {
     );
   };
 
-  render() {
-    if (!is_TaiGer_role(this.props.user)) {
-      return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
-    }
+  if (!is_TaiGer_role(user)) {
+    return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
+  }
 
-    const { res_status, isLoaded } = this.state;
+  const { res_status, isLoaded } = studentDatabaseState;
 
-    if (!isLoaded && !this.state.data) {
-      return (
-        <div style={spinner_style}>
-          <Spinner animation="border" role="status">
-            <span className="visually-hidden"></span>
-          </Spinner>
-        </div>
-      );
-    }
+  if (!isLoaded && !studentDatabaseState.data) {
+    return <Loading />;
+  }
 
-    if (res_status >= 400) {
-      return <ErrorPage res_status={res_status} />;
-    }
-    TabTitle('Student Database');
-    if (this.state.success) {
-      return (
-        <Aux>
-          <TopBar>Students Database ({this.state.students?.length})</TopBar>
-          <Row>
-            <Col>
-              <Card className="my-0 mx-0">
-                <TabStudBackgroundDashboard
-                  user={this.props.user}
-                  students={this.state.students}
-                  updateStudentArchivStatus={this.updateStudentArchivStatus}
-                  isArchivPage={this.state.isArchivPage}
-                />
-              </Card>
-            </Col>
-          </Row>
-        </Aux>
-      );
-    }
+  if (res_status >= 400) {
+    return <ErrorPage res_status={res_status} />;
+  }
+  TabTitle('Student Database');
+  if (studentDatabaseState.success) {
+    return (
+      <Box data-testid="student_datdabase">
+        <Breadcrumbs aria-label="breadcrumb">
+          <Link
+            underline="hover"
+            color="inherit"
+            component={LinkDom}
+            to={`${DEMO.DASHBOARD_LINK}`}
+          >
+            {appConfig.companyName}
+          </Link>
+          <Typography color="text.primary">
+            Students Database ({studentDatabaseState.students?.length})
+          </Typography>
+        </Breadcrumbs>
+        <Box>
+          <Card>
+            <TabStudBackgroundDashboard
+              user={user}
+              students={studentDatabaseState.students}
+              updateStudentArchivStatus={updateStudentArchivStatus}
+              isArchivPage={studentDatabaseState.isArchivPage}
+            />
+          </Card>
+        </Box>
+      </Box>
+    );
   }
 }
 
-export default Dashboard;
+export default StudentDatabase;

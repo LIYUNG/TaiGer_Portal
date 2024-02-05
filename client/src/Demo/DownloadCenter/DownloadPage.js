@@ -1,21 +1,28 @@
-import React from 'react';
-import { Row, Col, Spinner, Card } from 'react-bootstrap';
-import Aux from '../../hoc/_Aux';
+import React, { useEffect, useState } from 'react';
+import {
+  Box,
+  Breadcrumbs,
+  Card,
+  CircularProgress,
+  Link,
+  Typography
+} from '@mui/material';
+import { Link as LinkDom, Navigate } from 'react-router-dom';
 
 import EditDownloadFiles from './EditDownloadFiles';
-import { spinner_style, templatelist } from '../Utils/contants';
+import { templatelist } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
-
 import { deleteTemplateFile, getTemplates, uploadtemplate } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import Banner from '../../components/Banner/Banner';
 import { appConfig } from '../../config';
-import { TopBar } from '../../components/TopBar/TopBar';
+import { useAuth } from '../../components/AuthProvider';
 
-class DownloadPage extends React.Component {
-  state = {
+function DownloadPage() {
+  const { user } = useAuth();
+  const [downloadPageState, setDownloadPageState] = useState({
     error: '',
     file: '',
     isLoaded: false,
@@ -25,8 +32,8 @@ class DownloadPage extends React.Component {
     res_status: 0,
     res_modal_message: '',
     res_modal_status: 0
-  };
-  componentDidMount() {
+  });
+  useEffect(() => {
     getTemplates().then(
       (resp) => {
         const { data, success } = resp.data;
@@ -36,95 +43,99 @@ class DownloadPage extends React.Component {
           for (let i = 0; i < templatelist.length; i++) {
             areLoaded_temp[templatelist[i].prop] = true;
           }
-          this.setState({
+          setDownloadPageState((prevState) => ({
+            ...prevState,
             isLoaded: true, //false to reload everything
             templates: data,
             success: success,
             res_status: status,
             areLoaded: areLoaded_temp
-          });
+          }));
         } else {
-          this.setState({
+          setDownloadPageState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             res_status: status,
             areLoaded: {}
-          });
+          }));
         }
       },
       (error) => {
-        this.setState((state) => ({
-          ...state,
+        setDownloadPageState((prevState) => ({
+          ...prevState,
           isLoaded: true,
           error,
           res_status: 500
         }));
       }
     );
-  }
+  }, []);
 
-  onFileChange = (e) => {
-    this.setState({
+  const onFileChange = (e) => {
+    setDownloadPageState((prevState) => ({
+      ...prevState,
       file: e.target.files[0]
-    });
+    }));
   };
 
-  onSubmitFile = (e, category) => {
+  const onSubmitFile = (e, category) => {
     e.preventDefault();
     const formData = new FormData();
-    formData.append('file', this.state.file);
-    let areLoaded_temp = { ...this.state.areLoaded };
+    formData.append('file', downloadPageState.file);
+    let areLoaded_temp = { ...downloadPageState.areLoaded };
     areLoaded_temp[category] = false;
-    this.setState({ areLoaded: areLoaded_temp });
+    setDownloadPageState({ areLoaded: areLoaded_temp });
     uploadtemplate(category, formData).then(
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
         if (success) {
           areLoaded_temp[category] = true;
-          let templates_temp = [...this.state.templates];
+          let templates_temp = [...downloadPageState.templates];
           templates_temp.push(data);
-          this.setState({
+          setDownloadPageState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             templates: templates_temp,
             success: success,
             areLoaded: areLoaded_temp,
             res_modal_status: status
-          });
+          }));
         } else {
           const { message } = resp.data;
-          this.setState({
+          setDownloadPageState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             areLoaded: areLoaded_temp,
             res_modal_status: status,
             res_modal_message: message
-          });
+          }));
         }
       },
       (error) => {
-        const { statusText } = resp;
-        this.setState((state) => ({
-          ...state,
+        setDownloadPageState((prevState) => ({
+          ...prevState,
           isLoaded: true,
           error,
           areLoaded: areLoaded_temp,
           res_modal_status: 500,
-          res_modal_message: statusText
+          res_modal_message: ''
         }));
       }
     );
   };
 
-  submitFile = (e, docName) => {
-    if (this.state.file === '') {
+  const submitFile = (e, docName) => {
+    if (downloadPageState.file === '') {
       e.preventDefault();
       alert('Please select file');
     } else {
       e.preventDefault();
-      this.onSubmitFile(e, docName);
+      onSubmitFile(e, docName);
     }
   };
 
-  onDeleteTemplateFile = (e, category) => {
+  const onDeleteTemplateFile = (e, category) => {
     e.preventDefault();
     deleteTemplateFile(category).then(
       (resp) => {
@@ -132,112 +143,109 @@ class DownloadPage extends React.Component {
         const { status } = resp;
         //TODO: backend logic
         if (success) {
-          this.setState({
+          setDownloadPageState((prevState) => ({
+            ...prevState,
             isLoaded: true, //false to reload everything
             templates: data,
             success: success,
             res_modal_status: status
-          });
+          }));
         } else {
           const { message } = resp.data;
-          this.setState({
+          setDownloadPageState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             res_modal_status: status,
             res_modal_message: message
-          });
+          }));
         }
       },
       (error) => {
-        const { statusText } = resp;
-        this.setState((state) => ({
-          ...state,
+        setDownloadPageState((prevState) => ({
+          ...prevState,
           isLoaded: true,
           error,
           res_modal_status: 500,
-          res_modal_message: statusText
+          res_modal_message: ''
         }));
       }
     );
   };
 
-  ConfirmError = () => {
-    this.setState((state) => ({
-      ...state,
+  const ConfirmError = () => {
+    setDownloadPageState((prevState) => ({
+      ...prevState,
       res_modal_status: 0,
       res_modal_message: ''
     }));
   };
 
-  render() {
-    if (
-      this.props.user.role !== 'Admin' &&
-      this.props.user.role !== 'Editor' &&
-      this.props.user.role !== 'Agent' &&
-      this.props.user.role !== 'Student'
-    ) {
-      return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
-    }
-    TabTitle('Download Center');
-    const { res_status, isLoaded, res_modal_status, res_modal_message } =
-      this.state;
-
-    if (!isLoaded && !this.state.templates) {
-      return (
-        <div style={spinner_style}>
-          <Spinner animation="border" role="status">
-            <span className="visually-hidden"></span>
-          </Spinner>
-        </div>
-      );
-    }
-
-    if (res_status >= 400) {
-      return <ErrorPage res_status={res_status} />;
-    }
-
-    return (
-      <Aux>
-        {res_modal_status >= 400 && (
-          <ModalMain
-            ConfirmError={this.ConfirmError}
-            res_modal_status={res_modal_status}
-            res_modal_message={res_modal_message}
-          />
-        )}
-        <TopBar>Download {appConfig.companyName} Document Templates</TopBar>
-        <Row>
-          <Col>
-            <Card className="my-0 mx-0" bg={'dark'} text={'white'}>
-              <Banner
-                ReadOnlyMode={true}
-                bg={'primary'}
-                title={'Info:'}
-                path={`${DEMO.CV_ML_RL_DOCS_LINK}`}
-                text={`This is ${appConfig.companyName} templates helping you finish your CV ML RL tasks. Please download, fill and upload them to the corresponding task.`}
-                link_name={'Read More'}
-                removeBanner={this.removeBanner}
-                notification_key={'isRead_new_agent_assigned'}
-              />
-              <Row>
-                <Col>
-                  <EditDownloadFiles
-                    role={this.props.user.role}
-                    user={this.props.user}
-                    templates={this.state.templates}
-                    submitFile={this.submitFile}
-                    onFileChange={this.onFileChange}
-                    templatelist={templatelist}
-                    areLoaded={this.state.areLoaded}
-                    onDeleteTemplateFile={this.onDeleteTemplateFile}
-                  />
-                </Col>
-              </Row>
-            </Card>
-          </Col>
-        </Row>
-      </Aux>
-    );
+  if (
+    user.role !== 'Admin' &&
+    user.role !== 'Editor' &&
+    user.role !== 'Agent' &&
+    user.role !== 'Student'
+  ) {
+    return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
   }
+  TabTitle('Download Center');
+  const { res_status, isLoaded, res_modal_status, res_modal_message } =
+    downloadPageState;
+
+  if (!isLoaded && !downloadPageState.templates) {
+    return <CircularProgress />;
+  }
+
+  if (res_status >= 400) {
+    return <ErrorPage res_status={res_status} />;
+  }
+
+  return (
+    <Box>
+      {res_modal_status >= 400 && (
+        <ModalMain
+          ConfirmError={ConfirmError}
+          res_modal_status={res_modal_status}
+          res_modal_message={res_modal_message}
+        />
+      )}
+      <Breadcrumbs aria-label="breadcrumb">
+        <Link
+          underline="hover"
+          color="inherit"
+          component={LinkDom}
+          to={`${DEMO.DASHBOARD_LINK}`}
+        >
+          {appConfig.companyName}
+        </Link>
+        <Typography color="text.primary">Download</Typography>
+      </Breadcrumbs>
+      <Box>
+        <Card>
+          <Banner
+            ReadOnlyMode={true}
+            bg={'primary'}
+            title={'info'}
+            path={`${DEMO.CV_ML_RL_DOCS_LINK}`}
+            text={`This is ${appConfig.companyName} templates helping you finish your CV ML RL tasks. Please download, fill and upload them to the corresponding task.`}
+            link_name={'Read More'}
+            removeBanner={null}
+            notification_key={undefined}
+          />
+
+          <EditDownloadFiles
+            user={user}
+            templates={downloadPageState.templates}
+            submitFile={submitFile}
+            onFileChange={onFileChange}
+            templatelist={templatelist}
+            areLoaded={downloadPageState.areLoaded}
+            onDeleteTemplateFile={onDeleteTemplateFile}
+          />
+        </Card>
+      </Box>
+    </Box>
+  );
 }
 
 export default DownloadPage;

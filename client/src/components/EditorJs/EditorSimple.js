@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from 'react';
-// import { Row, Col, Button } from 'react-bootstrap';
 import EditorJS from '@editorjs/editorjs';
 import Header from '@editorjs/header';
 import List from '@editorjs/list';
@@ -33,11 +32,12 @@ const EditorSimple = (props) => {
       onReady: () => {
         ejInstance.current = editor;
       },
-      onChange: async (api, event) => {
-        api.saver.save().then((outputData) => {
-          // console.log('outputData ', outputData);
-          props.handleEditorChange(outputData);
-        });
+      onChange: async (api) => {
+        if (!props.readOnly) {
+          api.saver.save().then((outputData) => {
+            props.handleEditorChange(outputData);
+          });
+        }
       },
       placeholder:
         'Please organize your questions and expected help concretely.',
@@ -112,7 +112,6 @@ const EditorSimple = (props) => {
             //   byFile: 'https://localhost:3000/api/docs/upload/image', // Your backend file uploader endpoint
             //   byUrl: 'https://localhost:3000/api/docs/upload/image' // Your endpoint that provides uploading by Url
             // },
-            // onRemove: (data) => console.log(data),
             uploader: {
               async uploadByFile(file) {
                 const formData = new FormData();
@@ -169,11 +168,12 @@ const EditorSimple = (props) => {
       onReady: () => {
         ejInstance.current = editor;
       },
-      onChange: async (api, event) => {
-        api.saver.save().then((outputData) => {
-          // console.log('outputData ', outputData);
-          props.handleEditorChange(outputData);
-        });
+      onChange: async (api) => {
+        if (!props.readOnly) {
+          api.saver.save().then((outputData) => {
+            props.handleEditorChange(outputData);
+          });
+        }
       },
       placeholder:
         'Please organize your questions and expected help concretely.',

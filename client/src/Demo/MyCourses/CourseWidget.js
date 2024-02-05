@@ -1,23 +1,37 @@
 import React, { useState, useEffect } from 'react';
-import { Row, Col, Spinner, Button, Card, Modal, Form } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
+import {
+  Box,
+  Breadcrumbs,
+  Button,
+  Card,
+  Link,
+  Typography
+} from '@mui/material';
 import { DataSheetGrid, textColumn, keyColumn } from 'react-datasheet-grid';
-import { Redirect, Link } from 'react-router-dom';
-import Aux from '../../hoc/_Aux';
-import { spinner_style, study_group } from '../Utils/contants';
+import { Navigate, Link as LinkDom, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import 'react-datasheet-grid/dist/style.css';
+
+import { study_group } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import { is_TaiGer_role } from '../Utils/checking-functions';
-import 'react-datasheet-grid/dist/style.css';
-
 import {
   WidgetanalyzedFileDownload,
   WidgetTranscriptanalyser
 } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
-import { TopBar } from '../../components/TopBar/TopBar';
+import { useAuth } from '../../components/AuthProvider';
+import Loading from '../../components/Loading/Loading';
+import { appConfig } from '../../config';
+import ModalNew from '../../components/Modal';
 
-export default function CourseWidget(props) {
+export default function CourseWidget() {
+  const { user } = useAuth();
+  const { student_id } = useParams();
+  const { t } = useTranslation();
   let [statedata, setStatedata] = useState({
     error: '',
     isLoaded: true,
@@ -111,7 +125,6 @@ export default function CourseWidget(props) {
             res_modal_status: status
           }));
         } else {
-          const { message } = resp.data;
           setStatedata((state) => ({
             ...state,
             isLoaded: true,
@@ -123,7 +136,6 @@ export default function CourseWidget(props) {
         }
       },
       (error) => {
-        const statusText = error.message;
         setStatedata((state) => ({
           ...state,
           isLoaded: true,
@@ -142,7 +154,7 @@ export default function CourseWidget(props) {
       ...state,
       isDownloading: true
     }));
-    WidgetanalyzedFileDownload(props.user._id.toString()).then(
+    WidgetanalyzedFileDownload(user._id.toString()).then(
       (resp) => {
         // TODO: timeout? success?
         const { status } = resp;
@@ -194,13 +206,12 @@ export default function CourseWidget(props) {
         }
       },
       (error) => {
-        const { statusText } = resp;
         setStatedata((state) => ({
           ...state,
           isLoaded: true,
           error,
           res_modal_status: 500,
-          res_modal_message: statusText,
+          res_modal_message: '',
           isDownloading: false
         }));
       }
@@ -237,17 +248,11 @@ export default function CourseWidget(props) {
   ];
 
   if (!statedata.isLoaded) {
-    return (
-      <div style={spinner_style}>
-        <Spinner animation="border" role="status">
-          <span className="visually-hidden"></span>
-        </Spinner>
-      </div>
-    );
+    return <Loading />;
   }
-  if (!props.match.params.student_id) {
-    if (!is_TaiGer_role(props.user)) {
-      return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
+  if (!student_id) {
+    if (!is_TaiGer_role(user)) {
+      return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
     }
   }
 
@@ -257,7 +262,7 @@ export default function CourseWidget(props) {
   TabTitle(`Course Analyser`);
 
   return (
-    <Aux>
+    <Box>
       {statedata.res_modal_status >= 400 && (
         <ModalMain
           ConfirmError={ConfirmError}
@@ -265,137 +270,125 @@ export default function CourseWidget(props) {
           res_modal_message={statedata.res_modal_message}
         />
       )}
-      <TopBar>Pre-Customer Course Analyser</TopBar>
-      <Row>
-        <Col sm={12}>
-          <Card className="mb-2 mx-0">
-            <Card.Body>
-              <Row>
-                <Col>
-                  <p>1. Please fill the courses.</p>
-                  <p>2. Select study group</p>
-                  <p>
-                    3. Select language. <b>Chinese</b> is more accurate.
-                  </p>
-                </Col>
-              </Row>
-              <br />
-              <DataSheetGrid
-                height={6000}
-                disableContextMenu={true}
-                disableExpandSelection={false}
-                headerRowHeight={30}
-                rowHeight={25}
-                value={statedata.coursesdata}
-                autoAddRow={true}
-                onChange={onChange}
-                columns={columns}
-              />
-              <br />
-              <Row>
-                <Col>
-                  <Form.Group controlId="study_group">
-                    <Form.Label>Select target group</Form.Label>
-                    <Form.Control
-                      as="select"
-                      onChange={(e) => handleChange_study_group(e)}
-                    >
-                      <option value={''}>Select Study Group</option>
-                      {study_group.map((cat, i) => (
-                        <option value={cat.key} key={i}>
-                          {cat.value}
-                        </option>
-                      ))}
-                    </Form.Control>
-                  </Form.Group>
-                  <br />
-                  <Form.Group controlId="analysis_language">
-                    <Form.Label>Select language</Form.Label>
-                    <Form.Control
-                      as="select"
-                      onChange={(e) => handleChange_analysis_language(e)}
-                    >
-                      <option value={''}>Select Study Group</option>
-                      <option value={'zh'}>中文</option>
-                      <option value={'en'}>English (Beta Version)</option>
-                    </Form.Control>
-                  </Form.Group>
-                </Col>
-              </Row>
-              <br />
-              <Row className="mx-1">
-                <Button
-                  onClick={onAnalyse}
-                  disabled={
-                    statedata.isAnalysing ||
-                    statedata.study_group === '' ||
-                    statedata.analysis_language === ''
-                  }
-                >
-                  {statedata.isAnalysing ? 'Analysing' : 'Analyse'}
-                </Button>
-              </Row>
-              <Row className="my-2"></Row>
-              <Row>
-                <Col md={2}>
-                  <p>
-                    {statedata.analysis && statedata.analysis.isAnalysed ? (
-                      <>
-                        <Button
-                          onClick={onDownload}
-                          disabled={statedata.isDownloading}
-                        >
-                          Download
-                        </Button>
-                        <Link
-                          to={`${DEMO.INTERNAL_WIDGET_LINK(
-                            props.user._id.toString()
-                          )}`}
-                          target="_blank"
-                        >
-                          View Online
-                        </Link>
-                      </>
-                    ) : (
-                      'No analysis yet'
-                    )}
-                  </p>
-                </Col>
-              </Row>
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-      <Modal
-        show={statedata.confirmModalWindowOpen}
-        onHide={closeModal}
+      <Breadcrumbs aria-label="breadcrumb">
+        <Link
+          underline="hover"
+          color="inherit"
+          component={LinkDom}
+          to={`${DEMO.DASHBOARD_LINK}`}
+        >
+          {appConfig.companyName}
+        </Link>
+        <Typography color="text.primary">
+          Pre-Customer Course Analyser
+        </Typography>
+      </Breadcrumbs>
+      <Card>
+        <Typography sx={{ px: 2, pt: 2 }}>
+          1. Please fill the courses.
+        </Typography>
+        <Typography sx={{ px: 2 }}>2. Select study group</Typography>
+        <Typography sx={{ px: 2 }}>
+          3. Select language. <b>Chinese</b> is more accurate.
+        </Typography>
+        <br />
+        <DataSheetGrid
+          height={6000}
+          style={{ minWidth: '450px' }}
+          disableContextMenu={true}
+          disableExpandSelection={false}
+          headerRowHeight={30}
+          rowHeight={25}
+          value={statedata.coursesdata}
+          autoAddRow={true}
+          onChange={onChange}
+          columns={columns}
+        />
+        <br />
+
+        <Form.Group controlId="study_group">
+          <Form.Label>Select target group</Form.Label>
+          <Form.Control
+            as="select"
+            onChange={(e) => handleChange_study_group(e)}
+          >
+            <option value={''}>Select Study Group</option>
+            {study_group.map((cat, i) => (
+              <option value={cat.key} key={i}>
+                {cat.value}
+              </option>
+            ))}
+          </Form.Control>
+        </Form.Group>
+        <br />
+        <Form.Group controlId="analysis_language">
+          <Form.Label>Select language</Form.Label>
+          <Form.Control
+            as="select"
+            onChange={(e) => handleChange_analysis_language(e)}
+          >
+            <option value={''}>{t('Select Study Group')}</option>
+            <option value={'zh'}>中文</option>
+            <option value={'en'}>English (Beta Version)</option>
+          </Form.Control>
+        </Form.Group>
+        <br />
+        <Button
+          color="primary"
+          variant="contained"
+          onClick={onAnalyse}
+          disabled={
+            statedata.isAnalysing ||
+            statedata.study_group === '' ||
+            statedata.analysis_language === ''
+          }
+        >
+          {statedata.isAnalysing ? t('Analysing') : t('Analyse')}
+        </Button>
+        <Typography>
+          {statedata.analysis && statedata.analysis.isAnalysed ? (
+            <>
+              <Button onClick={onDownload} disabled={statedata.isDownloading}>
+                {t('Download')}
+              </Button>
+              <Link
+                to={`${DEMO.INTERNAL_WIDGET_LINK(user._id.toString())}`}
+                target="_blank"
+              >
+                {t('View Online')}
+              </Link>
+            </>
+          ) : (
+            t('No analysis yet')
+          )}
+        </Typography>
+      </Card>
+      <ModalNew
+        open={statedata.confirmModalWindowOpen}
+        onClose={closeModal}
         aria-labelledby="contained-modal-title-vcenter"
-        centered
       >
-        <Modal.Header>
-          <Modal.Title id="contained-modal-title-vcenter">
-            Confirmation
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>Update transcript successfully</Modal.Body>
-        <Modal.Footer>
-          <Button onClick={closeModal}>Close</Button>
-        </Modal.Footer>
-      </Modal>
-      <Modal
-        show={statedata.analysisSuccessModalWindowOpen}
-        onHide={closeanalysisSuccessModal}
+        <Typography variant="h6">{t('Confirmation')}</Typography>
+        <Typography>{t('Update transcript successfully')}</Typography>
+        <Button color="primary" variant="contained" onClick={closeModal}>
+          {t('Close')}
+        </Button>
+      </ModalNew>
+      <ModalNew
+        open={statedata.analysisSuccessModalWindowOpen}
+        onClose={closeanalysisSuccessModal}
         aria-labelledby="contained-modal-title-vcenter"
-        centered
       >
-        <Modal.Header>
-          <Modal.Title id="contained-modal-title-vcenter">Success</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>Transcript analysed successfully!</Modal.Body>
-        <Modal.Footer>
-          <Button onClick={closeanalysisSuccessModal}>Close</Button>
-        </Modal.Footer>
-      </Modal>
-    </Aux>
+        <Typography variant="h6">{t('Success')}</Typography>
+        <Typography>{t('Transcript analysed successfully!')}</Typography>
+        <Button
+          color="primary"
+          variant="contained"
+          onClick={closeanalysisSuccessModal}
+        >
+          {t('Close')}
+        </Button>
+      </ModalNew>
+    </Box>
   );
 }

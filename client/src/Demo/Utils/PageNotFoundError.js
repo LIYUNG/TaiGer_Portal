@@ -1,20 +1,13 @@
 import React from 'react';
-import { Row, Col, Card } from 'react-bootstrap';
-import Aux from '../../hoc/_Aux';
+import { Box, Card, Typography } from '@mui/material';
 
-function PageNotFoundError(props) {
+function PageNotFoundError() {
   return (
-    <Aux>
-      <Row>
-        <Col>
-          <Card>
-            <Card.Body>
-              <h4>Page Not Found!</h4>
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-    </Aux>
+    <Box>
+      <Card>
+        <Typography variant="h5">Page Not Found!</Typography>
+      </Card>
+    </Box>
   );
 }
 

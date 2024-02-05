@@ -1,17 +1,11 @@
 import React from 'react';
-import { Row, Col } from 'react-bootstrap';
-import Card from '../../App/components/MainCard';
-import Aux from '../../hoc/_Aux';
+import { Card, Box } from '@mui/material';
 
-function TooManyRequestsError(props) {
+function TooManyRequestsError() {
   return (
-    <Aux>
-      <Row>
-        <Col>
-          <Card>Too many requests. Please try later.</Card>
-        </Col>
-      </Row>
-    </Aux>
+    <Box>
+      <Card>Too many requests. Please try later.</Card>
+    </Box>
   );
 }
 

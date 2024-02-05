@@ -1,18 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import { Table } from 'react-bootstrap';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow
+} from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import User from './User';
 import UsersListSubpage from './UsersListSubpage';
 import UserDeleteWarning from './UserDeleteWarning';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
-
 import { deleteUser, changeUserRole, updateArchivUser } from '../../api';
 import { UserlistHeader } from '../Utils/contants';
 import UserArchivWarning from './UserArchivWarning';
 
 function UsersList(props) {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const [usersListState, setUsersListState] = useState({
     error: '',
     modalShow: false,
@@ -138,13 +143,12 @@ function UsersList(props) {
         }
       },
       (error) => {
-        const { statusText } = resp;
         setUsersListState((prevState) => ({
           ...prevState,
           isLoaded: true,
           error,
           res_modal_status: 500,
-          res_modal_message: statusText
+          res_modal_message: ''
         }));
       }
     );
@@ -168,7 +172,7 @@ function UsersList(props) {
 
     changeUserRole(user_data._id, user_data.role).then(
       (resp) => {
-        const { data, success } = resp.data;
+        const { success } = resp.data;
         const { status } = resp;
         if (success) {
           setUsersListState((prevState) => ({
@@ -190,13 +194,12 @@ function UsersList(props) {
         }
       },
       (error) => {
-        const { statusText } = resp;
         setUsersListState((prevState) => ({
           ...prevState,
           isLoaded: true,
           error,
           res_modal_status: 500,
-          res_modal_message: statusText
+          res_modal_message: ''
         }));
       }
     );
@@ -234,13 +237,12 @@ function UsersList(props) {
         }
       },
       (error) => {
-        const { statusText } = resp;
         setUsersListState((prevState) => ({
           ...prevState,
           isLoaded: true,
           error,
           res_modal_status: 500,
-          res_modal_message: statusText
+          res_modal_message: ''
         }));
       }
     );
@@ -257,14 +259,14 @@ function UsersList(props) {
   const { res_modal_message, res_modal_status } = usersListState;
 
   const headers = (
-    <tr>
-      <th> </th>
+    <TableRow>
+      <TableCell> </TableCell>
       {UserlistHeader.map((x, i) => (
-        <th key={i}>{t(`${x.name}`)}</th>
+        <TableCell key={i}>{t(`${x.name}`)}</TableCell>
       ))}
-      <th>{t('Created At')}</th>
-      <th>{t('Last Login')}</th>
-    </tr>
+      <TableCell>{t('Created At')}</TableCell>
+      <TableCell>{t('Last Login')}</TableCell>
+    </TableRow>
   );
 
   const users = usersListState.data.map((user) => (
@@ -287,17 +289,9 @@ function UsersList(props) {
           res_modal_message={res_modal_message}
         />
       )}
-      <Table
-        responsive
-        bordered
-        hover
-        className="my-0 mx-0"
-        variant="dark"
-        text="light"
-        size="sm"
-      >
-        <thead>{headers}</thead>
-        <tbody>{users}</tbody>
+      <Table size="small">
+        <TableHead>{headers}</TableHead>
+        <TableBody>{users}</TableBody>
       </Table>
       <UsersListSubpage
         show={usersListState.modalShow}

@@ -1,99 +1,47 @@
 import React from 'react';
-import { Row, Col, Spinner, Card } from 'react-bootstrap';
+import { Link as LinkDom, useLoaderData } from 'react-router-dom';
 
-import Aux from '../../hoc/_Aux';
-import { spinner_style } from '../Utils/contants';
-import ErrorPage from '../Utils/ErrorPage';
-
-import { getStudents } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import { is_TaiGer_role } from '../Utils/checking-functions';
-import { Redirect } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import DEMO from '../../store/constant';
 import StudentOverviewTable from '../../components/StudentOverviewTable';
-import { TopBar } from '../../components/TopBar/TopBar';
+import { useAuth } from '../../components/AuthProvider';
+import { Box, Breadcrumbs, Link, Typography } from '@mui/material';
+import { appConfig } from '../../config';
+import { useTranslation } from 'react-i18next';
 
-class MyStudentsOverview extends React.Component {
-  state = {
-    error: '',
-    isLoaded: false,
-    data: null,
-    success: false,
-    students: null,
-    doc_thread_id: '',
-    student_id: '',
-    program_id: '',
-    SetAsFinalFileModel: false,
-    isFinalVersion: false,
-    status: '', //reject, accept... etc
-    res_status: 0,
-    res_modal_message: '',
-    res_modal_status: 0
-  };
+function MyStudentsOverview() {
+  const { user } = useAuth();
+  const { t } = useTranslation();
+  const {
+    data: { data: students }
+  } = useLoaderData();
 
-  componentDidMount() {
-    getStudents().then(
-      (resp) => {
-        const { data, success } = resp.data;
-        const { status } = resp;
-        if (success) {
-          this.setState({
-            isLoaded: true,
-            students: data,
-            success: success,
-            res_status: status
-          });
-        } else {
-          this.setState({
-            isLoaded: true,
-            res_status: status
-          });
-        }
-      },
-      (error) => {
-        this.setState((state) => ({
-          ...state,
-          isLoaded: true,
-          error,
-          res_status: 500
-        }));
-      }
-    );
+  if (!is_TaiGer_role(user)) {
+    return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
   }
 
-  render() {
-    if (!is_TaiGer_role(this.props.user)) {
-      return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
-    }
-    const { res_status, isLoaded } = this.state;
-    TabTitle('My Students Overview');
-    if (!isLoaded && !this.state.students) {
-      return (
-        <div style={spinner_style}>
-          <Spinner animation="border" role="status">
-            <span className="visually-hidden"></span>
-          </Spinner>
-        </div>
-      );
-    }
+  TabTitle('My Students Overview');
 
-    if (res_status >= 400) {
-      return <ErrorPage res_status={res_status} />;
-    }
-
-    return (
-      <Aux>
-        <TopBar>
-          My Active Student Overview ({this.state.students?.length})
-        </TopBar>
-        <StudentOverviewTable
-          title="All"
-          students={this.state.students}
-          user={this.props.user}
-        />
-      </Aux>
-    );
-  }
+  return (
+    <Box>
+      <Breadcrumbs aria-label="breadcrumb">
+        <Link
+          underline="hover"
+          color="inherit"
+          component={LinkDom}
+          to={`${DEMO.DASHBOARD_LINK}`}
+        >
+          {appConfig.companyName}
+        </Link>
+        <Typography color="text.primary">
+          {t('My Active Student Overview')} ({students?.length})
+        </Typography>
+      </Breadcrumbs>
+      <StudentOverviewTable title="All" students={students} user={user} />
+    </Box>
+  );
 }
 
 export default MyStudentsOverview;

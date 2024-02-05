@@ -1,34 +1,28 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
-  Row,
-  Col,
-  Spinner,
-  Table,
-  Modal,
   Button,
+  Link,
+  Tabs,
+  Table,
   Tab,
-  Tabs
-} from 'react-bootstrap';
-
-import {
-  useTable,
-  useSortBy,
-  useFilters,
-  useGlobalFilter,
-  useAsyncDebounce,
-  useRowSelect,
-  usePagination
-} from 'react-table';
-import { Link } from 'react-router-dom';
+  Box,
+  Typography,
+  TableBody,
+  TableRow,
+  TableCell,
+  TableHead
+} from '@mui/material';
+import PropTypes from 'prop-types';
+import { useTable, useSortBy, useFilters, useGlobalFilter } from 'react-table';
+import { Link as LinkDom } from 'react-router-dom';
 import { matchSorter } from 'match-sorter';
+import { useTranslation } from 'react-i18next';
 
 import {
-  spinner_style,
   taskTashboardHeader,
   cvmlrl_overview_closed_header
 } from '../Utils/contants';
 import {
-  is_TaiGer_role,
   open_tasks,
   open_tasks_with_editors
 } from '../Utils/checking-functions';
@@ -38,38 +32,10 @@ import { SetFileAsFinal } from '../../api';
 import Banner from '../../components/Banner/Banner';
 import SortTable from '../../components/SortTable/SortTable';
 import DEMO from '../../store/constant';
-
-// Define a default UI for filtering
-function GlobalFilter({
-  preGlobalFilteredRows,
-  globalFilter,
-  setGlobalFilter
-}) {
-  const count = preGlobalFilteredRows.length;
-  const [value, setValue] = React.useState(globalFilter);
-  const onChange = useAsyncDebounce((value) => {
-    setGlobalFilter(value || undefined);
-  }, 200);
-
-  return (
-    <span>
-      Global Search:{' '}
-      <input
-        value={value || ''}
-        onChange={(e) => {
-          setValue(e.target.value);
-          onChange(e.target.value);
-        }}
-        // placeholder={`${count} records...`}
-        placeholder={` TUM, Xiao-Ming ...`}
-        style={{
-          fontSize: '0.9rem',
-          border: '0'
-        }}
-      />
-    </span>
-  );
-}
+import { useAuth } from '../../components/AuthProvider';
+import ModalNew from '../../components/Modal';
+import { CustomTabPanel, a11yProps } from '../../components/Tabs';
+import Loading from '../../components/Loading/Loading';
 
 function fuzzyTextFilterFn(rows, id, filterValue) {
   return matchSorter(rows, filterValue, { keys: [(row) => row.values[id]] });
@@ -77,23 +43,6 @@ function fuzzyTextFilterFn(rows, id, filterValue) {
 
 // Let the table remove the filter if the string is empty
 fuzzyTextFilterFn.autoRemove = (val) => !val;
-
-const IndeterminateCheckbox = React.forwardRef(
-  ({ indeterminate, ...rest }, ref) => {
-    const defaultRef = React.useRef();
-    const resolvedRef = ref || defaultRef;
-
-    React.useEffect(() => {
-      resolvedRef.current.indeterminate = indeterminate;
-    }, [resolvedRef, indeterminate]);
-
-    return (
-      <>
-        <input type="checkbox" ref={resolvedRef} {...rest} />
-      </>
-    );
-  }
-);
 
 // Define a default UI for filtering
 function DefaultColumnFilter({
@@ -113,7 +62,8 @@ function DefaultColumnFilter({
   );
 }
 
-function SortTable2({ columns, data, user, handleAsFinalFile }) {
+function SortTable2({ columns, data }) {
+  const { t } = useTranslation();
   const filterTypes = React.useMemo(
     () => ({
       // Add a new fuzzyTextFilterFn filter type.
@@ -145,18 +95,18 @@ function SortTable2({ columns, data, user, handleAsFinalFile }) {
     getTableBodyProps,
     headerGroups,
     rows,
-    prepareRow,
-    visibleColumns,
-    canPreviousPage,
-    canNextPage,
-    pageOptions,
-    pageCount,
-    gotoPage,
-    nextPage,
-    previousPage,
-    setPageSize,
-    preGlobalFilteredRows,
-    setGlobalFilter
+    prepareRow
+    // visibleColumns,
+    // canPreviousPage,
+    // canNextPage,
+    // pageOptions,
+    // pageCount,
+    // gotoPage,
+    // nextPage,
+    // previousPage,
+    // setPageSize,
+    // preGlobalFilteredRows,
+    // setGlobalFilter
   } = useTable(
     {
       columns,
@@ -173,42 +123,17 @@ function SortTable2({ columns, data, user, handleAsFinalFile }) {
   // it at 20 for this use case
   const firstPageRows = rows.slice(0, 2000);
 
-  const handleAsFinalFileThread = (
-    thread_id,
-    student_id,
-    program_id,
-    documenName,
-    isFinalVersion
-  ) => {
-    handleAsFinalFile(
-      thread_id,
-      student_id,
-      program_id,
-      documenName,
-      isFinalVersion
-    );
-  };
-
   return (
     <>
-      <Table
-        responsive
-        bordered
-        hover
-        className="my-0 mx-0"
-        variant="dark"
-        text="light"
-        size="sm"
-        {...getTableProps()}
-      >
-        <thead>
+      <Table size="small" {...getTableProps()}>
+        <TableHead>
           {headerGroups.map((headerGroup, x) => (
-            <tr {...headerGroup.getHeaderGroupProps()} key={x}>
+            <TableRow {...headerGroup.getHeaderGroupProps()} key={x}>
               {headerGroup.headers.map((column, i) => (
                 // Add the sorting props to control sorting. For this example
                 // we can add them into the header props
 
-                <th
+                <TableCell
                   {...column.getHeaderProps(column.getSortByToggleProps())}
                   key={i}
                 >
@@ -222,50 +147,49 @@ function SortTable2({ columns, data, user, handleAsFinalFile }) {
                         : ' 🔼'
                       : ' ⮃'}
                   </span>
-                </th>
+                </TableCell>
               ))}
-            </tr>
+            </TableRow>
           ))}
           {headerGroups.map((headerGroup, j) => (
-            <tr {...headerGroup.getHeaderGroupProps()} key={j}>
+            <TableRow {...headerGroup.getHeaderGroupProps()} key={j}>
               {headerGroup.headers.map((column, i) =>
                 // Add the sorting props to control sorting. For this example
                 // we can add them into the header props
                 [0, 2, 4, 7].includes(i) ? (
-                  <th>
-                    <div>
-                      {column.canFilter ? column.render('Filter') : null}
-                    </div>
-                  </th>
+                  <TableCell key={i}>
+                    {column.canFilter ? column.render('Filter') : null}
+                  </TableCell>
                 ) : (
-                  <th key={i}></th>
+                  <TableCell key={i}></TableCell>
                 )
               )}
-            </tr>
+            </TableRow>
           ))}
-        </thead>
-        <tbody {...getTableBodyProps()}>
+        </TableHead>
+        <TableBody {...getTableBodyProps()}>
           {firstPageRows.map((row, i) => {
             prepareRow(row);
             return (
-              <tr {...row.getRowProps()} key={i}>
+              <TableRow {...row.getRowProps()} key={i}>
                 {row.cells.map((cell, j) => {
                   return j === 0 ? (
-                    <td {...cell.getCellProps()} key={j}>
+                    <TableCell {...cell.getCellProps()} key={j}>
                       <Link
                         target="_blank"
                         to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                           row.original.student_id,
                           '/profile'
                         )}`}
-                        className="text-light"
-                        style={{ textDecoration: 'none' }}
+                        component={LinkDom}
                       >
-                        <b>{cell.render('Cell')}</b>
+                        <Typography fontWeight="bold">
+                          {cell.render('Cell')}
+                        </Typography>
                       </Link>
-                    </td>
+                    </TableCell>
                   ) : j === 1 ? (
-                    <td {...cell.getCellProps()} key={j}>
+                    <TableCell {...cell.getCellProps()} key={j}>
                       {cell.value && cell.value.length > 0 ? (
                         cell.value.map((editor, u) => (
                           <Link
@@ -274,66 +198,61 @@ function SortTable2({ columns, data, user, handleAsFinalFile }) {
                             to={`${DEMO.TEAM_EDITOR_LINK(
                               editor._id.toString()
                             )}`}
-                            style={{ textDecoration: 'none' }}
+                            component={LinkDom}
                           >
-                            <p className="text-light my-0">
+                            <Typography>
                               <b>{`${editor.firstname} ${editor.lastname}`}</b>
-                            </p>
+                            </Typography>
                           </Link>
                         ))
                       ) : (
-                        <p className="text-danger my-0">
-                          <b>No Editor</b>
-                        </p>
+                        <Typography fontWeight="bold">
+                          {t('No Editor')}
+                        </Typography>
                       )}
-                    </td>
+                    </TableCell>
                   ) : j === 5 ? (
-                    <td {...cell.getCellProps()} key={j}>
+                    <TableCell {...cell.getCellProps()} key={j}>
                       <Link
                         target="_blank"
                         to={DEMO.DOCUMENT_MODIFICATION_LINK(
                           row.original.thread_id
                         )}
-                        className="text-info"
-                        style={{ textDecoration: 'none' }}
+                        component={LinkDom}
                       >
                         {cell.render('Cell')}
                       </Link>
-                    </td>
+                    </TableCell>
                   ) : j === 6 ? (
                     cell.value > 14 ? (
-                      <td {...cell.getCellProps()} key={j}>
-                        <p className="text-danger my-0">
-                          {cell.render('Cell')}
-                        </p>
-                      </td>
+                      <TableCell {...cell.getCellProps()} key={j}>
+                        <Typography>{cell.render('Cell')}</Typography>
+                      </TableCell>
                     ) : (
-                      <td {...cell.getCellProps()} key={j}>
-                        <p className="text-light my-0">{cell.render('Cell')}</p>
-                      </td>
+                      <TableCell {...cell.getCellProps()} key={j}>
+                        <Typography>{cell.render('Cell')}</Typography>
+                      </TableCell>
                     )
                   ) : j === 4 ? (
                     cell.value < 30 ? (
-                      <td {...cell.getCellProps()} key={j}>
-                        <p className="text-danger my-0">
-                          {cell.render('Cell')}
-                        </p>
-                      </td>
+                      <TableCell {...cell.getCellProps()} key={j}>
+                        <Typography>{cell.render('Cell')}</Typography>
+                      </TableCell>
                     ) : (
-                      <td {...cell.getCellProps()} key={j}>
-                        <p className="text-light my-0">{cell.render('Cell')}</p>
-                      </td>
+                      <TableCell {...cell.getCellProps()} key={j}>
+                        <Typography>{cell.render('Cell')}</Typography>
+                      </TableCell>
                     )
                   ) : (
-                    <td {...cell.getCellProps()} key={j}>
+                    <TableCell {...cell.getCellProps()} key={j}>
                       {cell.render('Cell')}
-                    </td>
+                    </TableCell>
                   );
                 })}
-              </tr>
+              </TableRow>
             );
           })}
-        </tbody>
+        </TableBody>
       </Table>
       <br />
       {/* <div>Showing the first 20 results of {rows.length} rows</div> */}
@@ -341,13 +260,21 @@ function SortTable2({ columns, data, user, handleAsFinalFile }) {
   );
 }
 
-class CVMLRLDashboard extends React.Component {
-  state = {
+CustomTabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.number.isRequired,
+  value: PropTypes.number.isRequired
+};
+
+function CVMLRLDashboard(props) {
+  const { user } = useAuth();
+  const { t } = useTranslation();
+  const [cVMLRLDashboardState, setCVMLRLDashboardState] = useState({
     error: '',
-    isLoaded: this.props.isLoaded,
+    isLoaded: props.isLoaded,
     data: null,
-    success: this.props.success,
-    students: this.props.students,
+    success: props.success,
+    students: props.students,
     doc_thread_id: '',
     student_id: '',
     program_id: '',
@@ -357,45 +284,52 @@ class CVMLRLDashboard extends React.Component {
     res_status: 0,
     res_modal_message: '',
     res_modal_status: 0
-  };
+  });
+  const [value, setValue] = useState(0);
 
-  closeSetAsFinalFileModelWindow = () => {
-    this.setState((state) => ({
-      ...state,
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+  const closeSetAsFinalFileModelWindow = () => {
+    setCVMLRLDashboardState((prevState) => ({
+      ...prevState,
       SetAsFinalFileModel: false
     }));
   };
-  ConfirmSetAsFinalFileHandler = () => {
-    this.setState((state) => ({
-      ...state,
+  const ConfirmSetAsFinalFileHandler = () => {
+    setCVMLRLDashboardState((prevState) => ({
+      ...prevState,
       isLoaded: false // false to reload everything
     }));
     SetFileAsFinal(
-      this.state.doc_thread_id,
-      this.state.student_id,
-      this.state.program_id
+      cVMLRLDashboardState.doc_thread_id,
+      cVMLRLDashboardState.student_id,
+      cVMLRLDashboardState.program_id
     ).then(
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
         if (success) {
-          let temp_students = [...this.state.students];
+          let temp_students = [...cVMLRLDashboardState.students];
           let student_temp_idx = temp_students.findIndex(
-            (student) => student._id.toString() === this.state.student_id
+            (student) =>
+              student._id.toString() === cVMLRLDashboardState.student_id
           );
-          if (this.state.program_id) {
+          if (cVMLRLDashboardState.program_id) {
             let application_idx = temp_students[
               student_temp_idx
             ].applications.findIndex(
               (application) =>
-                application.programId._id.toString() === this.state.program_id
+                application.programId._id.toString() ===
+                cVMLRLDashboardState.program_id
             );
 
             let thread_idx = temp_students[student_temp_idx].applications[
               application_idx
             ].doc_modification_thread.findIndex(
               (thread) =>
-                thread.doc_thread_id._id.toString() === this.state.doc_thread_id
+                thread.doc_thread_id._id.toString() ===
+                cVMLRLDashboardState.doc_thread_id
             );
 
             temp_students[student_temp_idx].applications[
@@ -415,7 +349,8 @@ class CVMLRLDashboard extends React.Component {
               student_temp_idx
             ].generaldocs_threads.findIndex(
               (thread) =>
-                thread.doc_thread_id._id.toString() === this.state.doc_thread_id
+                thread.doc_thread_id._id.toString() ===
+                cVMLRLDashboardState.doc_thread_id
             );
             temp_students[student_temp_idx].generaldocs_threads[
               general_doc_idx
@@ -430,8 +365,8 @@ class CVMLRLDashboard extends React.Component {
             ].doc_thread_id.updatedAt = data.updatedAt;
           }
 
-          this.setState((state) => ({
-            ...state,
+          setCVMLRLDashboardState((prevState) => ({
+            ...prevState,
             docName: '',
             isLoaded: true,
             students: temp_students,
@@ -442,8 +377,8 @@ class CVMLRLDashboard extends React.Component {
           }));
         } else {
           const { message } = resp.data;
-          this.setState((state) => ({
-            ...state,
+          setCVMLRLDashboardState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             res_modal_message: message,
             res_modal_status: status
@@ -451,27 +386,26 @@ class CVMLRLDashboard extends React.Component {
         }
       },
       (error) => {
-        const { statusText } = resp;
-        this.setState((state) => ({
-          ...state,
+        setCVMLRLDashboardState((prevState) => ({
+          ...prevState,
           isLoaded: true,
           error,
           res_modal_status: 500,
-          res_modal_message: statusText
+          res_modal_message: ''
         }));
       }
     );
   };
 
-  handleAsFinalFile = (
+  const handleAsFinalFile = (
     doc_thread_id,
     student_id,
     program_id,
     docName,
     isFinalVersion
   ) => {
-    this.setState((state) => ({
-      ...state,
+    setCVMLRLDashboardState((prevState) => ({
+      ...prevState,
       doc_thread_id,
       student_id,
       program_id,
@@ -481,164 +415,130 @@ class CVMLRLDashboard extends React.Component {
     }));
   };
 
-  ConfirmError = () => {
-    this.setState((state) => ({
-      ...state,
+  const ConfirmError = () => {
+    setCVMLRLDashboardState((prevState) => ({
+      ...prevState,
       res_modal_status: 0,
       res_modal_message: ''
     }));
   };
 
-  render() {
-    const { res_modal_status, res_modal_message, isLoaded } = this.state;
+  const { res_modal_status, res_modal_message, isLoaded } =
+    cVMLRLDashboardState;
 
-    const style = {
-      position: 'fixed',
-      top: '40%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)'
-    };
-
-    if (!isLoaded && !this.state.students) {
-      return (
-        <div style={spinner_style}>
-          <Spinner animation="border" role="status">
-            <span className="visually-hidden"></span>
-          </Spinner>
-        </div>
-      );
-    }
-
-    const open_tasks_arr = open_tasks_with_editors(this.state.students);
-    const open_tasks_arr2 = open_tasks(this.state.students);
-
-    const cvmlrl_active_tasks = open_tasks_arr.filter(
-      (open_task) =>
-        open_task.show &&
-        !open_task.isFinalVersion &&
-        open_task.latest_message_left_by_id !== ''
-    );
-    const cvmlrl_idle_tasks = open_tasks_arr.filter(
-      (open_task) =>
-        open_task.show &&
-        !open_task.isFinalVersion &&
-        open_task.latest_message_left_by_id === ''
-    );
-    const cvmlrl_closed_v2 = open_tasks_arr2.filter(
-      (open_task) => open_task.show && open_task.isFinalVersion
-    );
-    return (
-      <>
-        {res_modal_status >= 400 && (
-          <ModalMain
-            ConfirmError={this.ConfirmError}
-            res_modal_status={res_modal_status}
-            res_modal_message={res_modal_message}
-          />
-        )}
-        <Row>
-          <Col>
-            <Tabs defaultActiveKey="open" fill={true} justify={true}>
-              <Tab eventKey="open" title="Open">
-                <Banner
-                  ReadOnlyMode={true}
-                  bg={'primary'}
-                  title={'Active:'}
-                  path={'/'}
-                  text={
-                    'Received students inputs and Active Tasks. Be aware of the deadline!'
-                  }
-                  link_name={''}
-                  removeBanner={this.removeBanner}
-                  notification_key={'x'}
-                />
-                <SortTable2
-                  columns={taskTashboardHeader}
-                  data={cvmlrl_active_tasks}
-                  user={this.props.user}
-                  handleAsFinalFile={this.handleAsFinalFile}
-                />
-                <Banner
-                  ReadOnlyMode={true}
-                  bg={'info'}
-                  title={'Info:'}
-                  path={'/'}
-                  text={'No student inputs tasks. Agents should push students'}
-                  link_name={''}
-                  removeBanner={this.removeBanner}
-                  notification_key={'x'}
-                />
-                <SortTable2
-                  columns={taskTashboardHeader}
-                  data={cvmlrl_idle_tasks}
-                  user={this.props.user}
-                  handleAsFinalFile={this.handleAsFinalFile}
-                />
-              </Tab>
-              <Tab eventKey="closed" title="Closed">
-                <Banner
-                  ReadOnlyMode={true}
-                  bg={'success'}
-                  title={'Closed'}
-                  path={'/'}
-                  text={''}
-                  link_name={''}
-                  removeBanner={this.removeBanner}
-                  notification_key={'x'}
-                />
-                <SortTable
-                  columns={cvmlrl_overview_closed_header}
-                  data={cvmlrl_closed_v2}
-                  user={this.props.user}
-                  handleAsFinalFile={this.handleAsFinalFile}
-                />
-                <Row className="mt-4">
-                  <p>
-                    Note: if the documents are not closed but locate here, it is
-                    becaue the applications are already submitted. The documents
-                    can safely closed eventually.
-                  </p>
-                </Row>
-              </Tab>
-            </Tabs>
-          </Col>
-        </Row>
-        <Modal
-          show={this.state.SetAsFinalFileModel}
-          onHide={this.closeSetAsFinalFileModelWindow}
-          aria-labelledby="contained-modal-title-vcenter"
-          centered
-        >
-          <Modal.Header>
-            <Modal.Title id="contained-modal-title-vcenter">
-              Warning
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            Do you want to set {this.state.docName} as{' '}
-            {this.state.isFinalVersion ? 'open' : 'final'} for student?
-          </Modal.Body>
-          <Modal.Footer>
-            <Button
-              disabled={!isLoaded}
-              onClick={this.ConfirmSetAsFinalFileHandler}
-            >
-              Yes
-            </Button>
-
-            <Button onClick={this.closeSetAsFinalFileModelWindow}>No</Button>
-            {!isLoaded && (
-              <div style={spinner_style}>
-                <Spinner animation="border" role="status">
-                  <span className="visually-hidden"></span>
-                </Spinner>
-              </div>
-            )}
-          </Modal.Footer>
-        </Modal>
-      </>
-    );
+  if (!isLoaded && !cVMLRLDashboardState.students) {
+    return <Loading />;
   }
+
+  const open_tasks_arr = open_tasks_with_editors(cVMLRLDashboardState.students);
+  const open_tasks_arr2 = open_tasks(cVMLRLDashboardState.students);
+
+  const cvmlrl_active_tasks = open_tasks_arr.filter(
+    (open_task) =>
+      open_task.show &&
+      !open_task.isFinalVersion &&
+      open_task.latest_message_left_by_id !== ''
+  );
+  const cvmlrl_idle_tasks = open_tasks_arr.filter(
+    (open_task) =>
+      open_task.show &&
+      !open_task.isFinalVersion &&
+      open_task.latest_message_left_by_id === ''
+  );
+  const cvmlrl_closed_v2 = open_tasks_arr2.filter(
+    (open_task) => open_task.show && open_task.isFinalVersion
+  );
+  return (
+    <>
+      {res_modal_status >= 400 && (
+        <ModalMain
+          ConfirmError={ConfirmError}
+          res_modal_status={res_modal_status}
+          res_modal_message={res_modal_message}
+        />
+      )}
+
+      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+        <Tabs
+          value={value}
+          onChange={handleChange}
+          aria-label="basic tabs example"
+        >
+          <Tab label="Open" {...a11yProps(0)} />
+          <Tab label="Closed" {...a11yProps(1)} />
+        </Tabs>
+      </Box>
+      <CustomTabPanel value={value} index={0}>
+        <Banner
+          ReadOnlyMode={true}
+          bg={'primary'}
+          title={'warning'}
+          path={'/'}
+          text={
+            'Received students inputs and Active Tasks. Be aware of the deadline!'
+          }
+          link_name={''}
+          removeBanner={<></>}
+          notification_key={undefined}
+        />
+        <SortTable2 columns={taskTashboardHeader} data={cvmlrl_active_tasks} />
+        <Banner
+          ReadOnlyMode={true}
+          bg={'info'}
+          title={'info'}
+          path={'/'}
+          text={'No student inputs tasks. Agents should push students'}
+          link_name={''}
+          removeBanner={<></>}
+          notification_key={undefined}
+        />
+        <SortTable2 columns={taskTashboardHeader} data={cvmlrl_idle_tasks} />
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={1}>
+        <Banner
+          ReadOnlyMode={true}
+          bg={'success'}
+          title={'success'}
+          path={'/'}
+          text={'These tasks are closed'}
+          link_name={''}
+          removeBanner={<></>}
+          notification_key={undefined}
+        />
+        <Typography sx={{ p: 2 }}>
+          Note: if the documents are not closed but locate here, it is becaue
+          the applications are already submitted. The documents can safely
+          closed eventually.
+        </Typography>
+        <SortTable
+          columns={cvmlrl_overview_closed_header}
+          data={cvmlrl_closed_v2}
+          user={user}
+          handleAsFinalFile={handleAsFinalFile}
+        />
+      </CustomTabPanel>
+      <ModalNew
+        open={cVMLRLDashboardState.SetAsFinalFileModel}
+        onClose={closeSetAsFinalFileModelWindow}
+        aria-labelledby="contained-modal-title-vcenter"
+      >
+        <Typography variant="h5">{t('Warning')}</Typography>
+        <Typography>
+          Do you want to set {cVMLRLDashboardState.docName} as{' '}
+          {cVMLRLDashboardState.isFinalVersion ? 'open' : 'final'} for student?
+        </Typography>
+        <Button
+          variant="contained"
+          disabled={!isLoaded}
+          onClick={ConfirmSetAsFinalFileHandler}
+        >
+          {t('Yes')}
+        </Button>
+        <Button onClick={closeSetAsFinalFileModelWindow}>No</Button>
+        {!isLoaded && <Loading />}
+      </ModalNew>
+    </>
+  );
 }
 
 export default CVMLRLDashboard;

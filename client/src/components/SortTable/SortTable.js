@@ -1,38 +1,30 @@
 import React from 'react';
-import { Table } from 'react-bootstrap';
+import {
+  Link,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Typography
+} from '@mui/material';
 import { useTable, useSortBy, useFilters } from 'react-table';
-import { Link } from 'react-router-dom';
-
+import { Link as LinkDom } from 'react-router-dom';
 import { AiOutlineCheck, AiOutlineUndo } from 'react-icons/ai';
+
 import { is_TaiGer_role } from '../../Demo/Utils/checking-functions';
 import DEMO from '../../store/constant';
 
 function SortTable({ columns, data, user, handleAsFinalFile }) {
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    rows,
-    prepareRow,
-    visibleColumns,
-    canPreviousPage,
-    canNextPage,
-    pageOptions,
-    pageCount,
-    gotoPage,
-    nextPage,
-    previousPage,
-    setPageSize,
-    preGlobalFilteredRows,
-    setGlobalFilter
-  } = useTable(
-    {
-      columns,
-      data
-    },
-    useFilters, // useFilters!
-    useSortBy
-  );
+  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
+    useTable(
+      {
+        columns,
+        data
+      },
+      useFilters, // useFilters!
+      useSortBy
+    );
 
   // We don't want to render all 2000 rows for this example, so cap
   // it at 20 for this use case
@@ -56,26 +48,17 @@ function SortTable({ columns, data, user, handleAsFinalFile }) {
 
   return (
     <>
-      <Table
-        responsive
-        bordered
-        hover
-        className="my-0 mx-0"
-        variant="dark"
-        text="light"
-        size="sm"
-        {...getTableProps()}
-      >
-        <thead>
+      <Table size="small" {...getTableProps()}>
+        <TableHead>
           {headerGroups.map((headerGroup, x) => (
-            <tr {...headerGroup.getHeaderGroupProps()} key={x}>
+            <TableRow {...headerGroup.getHeaderGroupProps()} key={x}>
               {headerGroup.headers.map((column, i) =>
                 // Add the sorting props to control sorting. For this example
                 // we can add them into the header props
 
                 i === 1 ? (
                   is_TaiGer_role(user) ? (
-                    <th
+                    <TableCell
                       {...column.getHeaderProps(column.getSortByToggleProps())}
                       key={i}
                     >
@@ -89,12 +72,12 @@ function SortTable({ columns, data, user, handleAsFinalFile }) {
                             : ' 🔼'
                           : ' ⮃'}
                       </span>
-                    </th>
+                    </TableCell>
                   ) : (
-                    <th key={i}></th>
+                    <TableCell key={i}></TableCell>
                   )
                 ) : (
-                  <th
+                  <TableCell
                     {...column.getHeaderProps(column.getSortByToggleProps())}
                     key={i}
                   >
@@ -108,72 +91,71 @@ function SortTable({ columns, data, user, handleAsFinalFile }) {
                           : ' 🔼'
                         : ' ⮃'}
                     </span>
-                  </th>
+                  </TableCell>
                 )
               )}
-            </tr>
+            </TableRow>
           ))}
-        </thead>
-        <tbody {...getTableBodyProps()}>
+        </TableHead>
+        <TableBody {...getTableBodyProps()}>
           {firstPageRows.map((row, i) => {
             prepareRow(row);
             return (
-              <tr {...row.getRowProps()} key={i}>
+              <TableRow {...row.getRowProps()} key={i}>
                 {row.cells.map((cell, j) => {
                   return j === 0 ? (
-                    <td {...cell.getCellProps()} key={j}>
+                    <TableCell {...cell.getCellProps()} key={j}>
                       <Link
                         target="_blank"
                         to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                           row.original.student_id,
                           '/profile'
                         )}`}
-                        className="text-light"
-                        style={{ textDecoration: 'none' }}
+                        component={LinkDom}
                       >
-                        <b>{cell.render('Cell')}</b>
+                        <Typography fontWeight="bold">
+                          {cell.render('Cell')}
+                        </Typography>
                       </Link>
-                    </td>
+                    </TableCell>
                   ) : j === 5 ? (
-                    <td {...cell.getCellProps()} key={j}>
+                    <TableCell {...cell.getCellProps()} key={j}>
                       <Link
                         target="_blank"
                         to={DEMO.DOCUMENT_MODIFICATION_LINK(
                           row.original.thread_id
                         )}
-                        className="text-info"
+                        component={LinkDom}
                         style={{ textDecoration: 'none' }}
                       >
                         {cell.render('Cell')}
                       </Link>
-                    </td>
+                    </TableCell>
                   ) : j === 6 ? (
                     cell.value > 14 ? (
-                      <td {...cell.getCellProps()} key={j}>
+                      <TableCell {...cell.getCellProps()} key={j}>
                         <p className="text-danger my-0">
                           {cell.render('Cell')}
                         </p>
-                      </td>
+                      </TableCell>
                     ) : (
-                      <td {...cell.getCellProps()} key={j}>
+                      <TableCell {...cell.getCellProps()} key={j}>
                         <p className="text-light my-0">{cell.render('Cell')}</p>
-                      </td>
+                      </TableCell>
                     )
                   ) : j === 4 ? (
                     cell.value < 30 ? (
-                      <td {...cell.getCellProps()} key={j}>
-                        <p className="text-danger my-0">
-                          {cell.render('Cell')}
-                        </p>
-                      </td>
+                      <TableCell {...cell.getCellProps()} key={j}>
+                        <Typography>{cell.render('Cell')}</Typography>
+                      </TableCell>
                     ) : (
-                      <td {...cell.getCellProps()} key={j}>
-                        <p className="text-light my-0">{cell.render('Cell')}</p>
-                      </td>
+                      <TableCell {...cell.getCellProps()} key={j}>
+                        <Typography>{cell.render('Cell')}</Typography>
+                      </TableCell>
                     )
                   ) : j === 1 ? (
                     is_TaiGer_role(user) ? (
-                      <td {...cell.getCellProps()} key={j}>
+                      <TableCell {...cell.getCellProps()} key={j}>
                         {row.original.isFinalVersion ? (
                           <AiOutlineUndo
                             size={24}
@@ -210,20 +192,20 @@ function SortTable({ columns, data, user, handleAsFinalFile }) {
                             }
                           />
                         )}
-                      </td>
+                      </TableCell>
                     ) : (
-                      <td {...cell.getCellProps()} key={j}></td>
+                      <TableCell {...cell.getCellProps()} key={j}></TableCell>
                     )
                   ) : (
-                    <td {...cell.getCellProps()} key={j}>
+                    <TableCell {...cell.getCellProps()} key={j}>
                       {cell.render('Cell')}
-                    </td>
+                    </TableCell>
                   );
                 })}
-              </tr>
+              </TableRow>
             );
           })}
-        </tbody>
+        </TableBody>
       </Table>
       <br />
       {/* <div>Showing the first 20 results of {rows.length} rows</div> */}

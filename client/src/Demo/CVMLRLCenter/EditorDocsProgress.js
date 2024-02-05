@@ -1,8 +1,20 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { Row, Col, Form, Button, Card, Modal, Spinner } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
+import { Link as LinkDom } from 'react-router-dom';
+import {
+  Box,
+  Card,
+  Button,
+  CircularProgress,
+  Divider,
+  Grid,
+  Link,
+  Typography,
+  TextField,
+  InputLabel
+} from '@mui/material';
 import { AiOutlineCheck, AiOutlineUndo } from 'react-icons/ai';
 import { ImCheckmark } from 'react-icons/im';
+import { useTranslation } from 'react-i18next';
 
 import ManualFiles from './ManualFiles';
 import {
@@ -14,7 +26,7 @@ import {
   isDocumentsMissingAssign,
   file_category_const
 } from '../Utils/checking-functions';
-import { spinner_style, spinner_style2 } from '../Utils/contants';
+import { spinner_style2 } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 
@@ -27,12 +39,17 @@ import {
   initApplicationMessageThread
 } from '../../api';
 import DEMO from '../../store/constant';
+import { useAuth } from '../../components/AuthProvider';
+import Loading from '../../components/Loading/Loading';
+import ModalNew from '../../components/Modal';
 
-class EditorDocsProgress extends React.Component {
-  state = {
+function EditorDocsProgress(props) {
+  const { user } = useAuth();
+  const { t } = useTranslation();
+  const [editorDocsProgressState, setEditorDocsProgressState] = useState({
     error: '',
     delete_field: '',
-    student: this.props.student,
+    student: props.student,
     deleteFileWarningModel: false,
     SetProgramStatusModel: false,
     SetAsFinalFileModel: false,
@@ -50,83 +67,81 @@ class EditorDocsProgress extends React.Component {
     res_status: 0,
     res_modal_message: '',
     res_modal_status: 0
-  };
-  componentDidMount() {
-    this.setState((state) => ({
-      isLoaded: true
+  });
+  useEffect(() => {
+    setEditorDocsProgressState((prevState) => ({
+      ...prevState,
+      isLoaded: true,
+      student: props.student
     }));
-  }
-  componentDidUpdate(prevProps, prevState) {
-    if (
-      prevProps.student._id.toString() !== this.props.student._id.toString()
-    ) {
-      this.setState({
-        student: this.props.student
-      });
-    }
-  }
-  closeSetProgramStatusModel = () => {
-    this.setState((state) => ({
-      ...state,
+  }, [props.student._id]);
+
+  const closeSetProgramStatusModel = () => {
+    setEditorDocsProgressState((prevState) => ({
+      ...prevState,
       SetProgramStatusModel: false
     }));
   };
-  closeSetAsFinalFileModelWindow = () => {
-    this.setState((state) => ({
-      ...state,
+  const closeSetAsFinalFileModelWindow = () => {
+    setEditorDocsProgressState((prevState) => ({
+      ...prevState,
       SetAsFinalFileModel: false
     }));
   };
-  openRequirements_ModalWindow = (ml_requirements) => {
-    this.setState((state) => ({
-      ...state,
+  const openRequirements_ModalWindow = (ml_requirements) => {
+    setEditorDocsProgressState((prevState) => ({
+      ...prevState,
       Requirements_Modal: true,
       requirements: ml_requirements
     }));
   };
-  close_Requirements_ModalWindow = () => {
-    this.setState((state) => ({
-      ...state,
+  const close_Requirements_ModalWindow = () => {
+    setEditorDocsProgressState((prevState) => ({
+      ...prevState,
       Requirements_Modal: false,
       requirements: ''
     }));
   };
-  closeDocExistedWindow = () => {
-    this.setState((state) => ({ ...state, isThreadExisted: false }));
+  const closeDocExistedWindow = () => {
+    setEditorDocsProgressState((prevState) => ({
+      ...prevState,
+      isThreadExisted: false
+    }));
   };
-  closeWarningWindow = () => {
-    this.setState((state) => ({
-      ...state,
+  const closeWarningWindow = () => {
+    setEditorDocsProgressState((prevState) => ({
+      ...prevState,
       deleteFileWarningModel: false,
       delete_field: ''
     }));
   };
 
-  ConfirmDeleteDiscussionThreadHandler = () => {
-    this.setState((state) => ({
-      ...state,
+  const ConfirmDeleteDiscussionThreadHandler = () => {
+    setEditorDocsProgressState((prevState) => ({
+      ...prevState,
       isLoaded: false //false to reload everything
     }));
-    if (this.state.program_id == null) {
+    if (editorDocsProgressState.program_id == null) {
       deleteGenralFileThread(
-        this.state.doc_thread_id,
-        this.state.student_id
+        editorDocsProgressState.doc_thread_id,
+        editorDocsProgressState.student_id
       ).then(
         (resp) => {
           const { success } = resp.data;
           const { status } = resp;
           if (success) {
-            let student_temp = { ...this.state.student };
+            let student_temp = { ...editorDocsProgressState.student };
             let general_docs_idx = student_temp.generaldocs_threads.findIndex(
               (thread) =>
-                thread.doc_thread_id._id.toString() === this.state.doc_thread_id
+                thread.doc_thread_id._id.toString() ===
+                editorDocsProgressState.doc_thread_id
             );
             if (general_docs_idx !== -1) {
               student_temp.generaldocs_threads.splice(general_docs_idx, 1);
             }
 
-            this.setState((state) => ({
-              ...state,
+            setEditorDocsProgressState((prevState) => ({
+              ...prevState,
               student_id: '',
               doc_thread_id: '',
               isLoaded: true,
@@ -138,8 +153,8 @@ class EditorDocsProgress extends React.Component {
             }));
           } else {
             const { message } = resp.data;
-            this.setState((state) => ({
-              ...state,
+            setEditorDocsProgressState((prevState) => ({
+              ...prevState,
               isLoaded: true,
               res_modal_message: message,
               res_modal_status: status
@@ -147,31 +162,31 @@ class EditorDocsProgress extends React.Component {
           }
         },
         (error) => {
-          const { statusText } = resp;
-          this.setState((state) => ({
-            ...state,
+          setEditorDocsProgressState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             delete_field: '',
             error,
             res_modal_status: 500,
-            res_modal_message: statusText
+            res_modal_message: ''
           }));
         }
       );
     } else {
       deleteProgramSpecificFileThread(
-        this.state.doc_thread_id,
-        this.state.program_id,
-        this.state.student_id
+        editorDocsProgressState.doc_thread_id,
+        editorDocsProgressState.program_id,
+        editorDocsProgressState.student_id
       ).then(
         (resp) => {
           const { success } = resp.data;
           const { status } = resp;
           if (success) {
-            let student_temp = { ...this.state.student };
+            let student_temp = { ...editorDocsProgressState.student };
             let application_idx = student_temp.applications.findIndex(
               (application) =>
-                application.programId._id.toString() === this.state.program_id
+                application.programId._id.toString() ===
+                editorDocsProgressState.program_id
             );
             if (application_idx !== -1) {
               let doc_thread_idx = student_temp.applications[
@@ -179,7 +194,7 @@ class EditorDocsProgress extends React.Component {
               ].doc_modification_thread.findIndex(
                 (thread) =>
                   thread.doc_thread_id._id.toString() ===
-                  this.state.doc_thread_id
+                  editorDocsProgressState.doc_thread_id
               );
               if (doc_thread_idx !== -1) {
                 student_temp.applications[
@@ -187,8 +202,8 @@ class EditorDocsProgress extends React.Component {
                 ].doc_modification_thread.splice(doc_thread_idx, 1);
               }
             }
-            this.setState((state) => ({
-              ...state,
+            setEditorDocsProgressState((prevState) => ({
+              ...prevState,
               student_id: '',
               program_id: '',
               doc_thread_id: '',
@@ -201,8 +216,8 @@ class EditorDocsProgress extends React.Component {
             }));
           } else {
             const { message } = resp.data;
-            this.setState((state) => ({
-              ...state,
+            setEditorDocsProgressState((prevState) => ({
+              ...prevState,
               isLoaded: true,
               delete_field: '',
               res_modal_message: message,
@@ -211,47 +226,48 @@ class EditorDocsProgress extends React.Component {
           }
         },
         (error) => {
-          const { statusText } = resp;
-          this.setState((state) => ({
-            ...state,
+          setEditorDocsProgressState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             error,
             delete_field: '',
             res_modal_status: 500,
-            res_modal_message: statusText
+            res_modal_message: ''
           }));
         }
       );
     }
   };
 
-  ConfirmSetAsFinalFileHandler = () => {
-    this.setState((state) => ({
-      ...state,
+  const ConfirmSetAsFinalFileHandler = () => {
+    setEditorDocsProgressState((prevState) => ({
+      ...prevState,
       isLoaded: false // false to reload everything
     }));
     SetFileAsFinal(
-      this.state.doc_thread_id,
-      this.state.student_id,
-      this.state.program_id
+      editorDocsProgressState.doc_thread_id,
+      editorDocsProgressState.student_id,
+      editorDocsProgressState.program_id
     ).then(
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
         if (success) {
-          let student_temp = { ...this.state.student };
+          let student_temp = { ...editorDocsProgressState.student };
           let targetThread;
-          if (this.state.program_id) {
+          if (editorDocsProgressState.program_id) {
             let application_idx = student_temp.applications.findIndex(
               (application) =>
-                application.programId._id.toString() === this.state.program_id
+                application.programId._id.toString() ===
+                editorDocsProgressState.program_id
             );
 
             let thread_idx = student_temp.applications[
               application_idx
             ].doc_modification_thread.findIndex(
               (thread) =>
-                thread.doc_thread_id._id.toString() === this.state.doc_thread_id
+                thread.doc_thread_id._id.toString() ===
+                editorDocsProgressState.doc_thread_id
             );
             targetThread =
               student_temp.applications[application_idx]
@@ -259,7 +275,8 @@ class EditorDocsProgress extends React.Component {
           } else {
             let general_doc_idx = student_temp.generaldocs_threads.findIndex(
               (docs) =>
-                docs.doc_thread_id._id.toString() === this.state.doc_thread_id
+                docs.doc_thread_id._id.toString() ===
+                editorDocsProgressState.doc_thread_id
             );
             targetThread = student_temp.generaldocs_threads[general_doc_idx];
           }
@@ -267,8 +284,8 @@ class EditorDocsProgress extends React.Component {
           targetThread.updatedAt = data.updatedAt;
           targetThread.doc_thread_id.updatedAt = data.updatedAt;
 
-          this.setState((state) => ({
-            ...state,
+          setEditorDocsProgressState((prevState) => ({
+            ...prevState,
             studentId: '',
             applicationId: '',
             docName: '',
@@ -280,8 +297,8 @@ class EditorDocsProgress extends React.Component {
           }));
         } else {
           const { message } = resp.data;
-          this.setState((state) => ({
-            ...state,
+          setEditorDocsProgressState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             res_modal_message: message,
             res_modal_status: status
@@ -289,39 +306,41 @@ class EditorDocsProgress extends React.Component {
         }
       },
       (error) => {
-        const { statusText } = resp;
-        this.setState((state) => ({
-          ...state,
+        setEditorDocsProgressState((prevState) => ({
+          ...prevState,
           isLoaded: true,
           error,
           res_modal_status: 500,
-          res_modal_message: statusText
+          res_modal_message: ''
         }));
       }
     );
   };
 
-  handleProgramStatus = (student_id, program_id) => {
-    this.setState((state) => ({
-      ...state,
+  const handleProgramStatus = (student_id, program_id) => {
+    setEditorDocsProgressState((prevState) => ({
+      ...prevState,
       student_id,
       program_id,
       SetProgramStatusModel: true
     }));
   };
 
-  SubmitProgramStatusHandler = () => {
-    this.setState((state) => ({
-      ...state,
+  const SubmitProgramStatusHandler = () => {
+    setEditorDocsProgressState((prevState) => ({
+      ...prevState,
       isLoaded: false // false to reload everything
     }));
-    ToggleProgramStatus(this.state.student_id, this.state.program_id).then(
+    ToggleProgramStatus(
+      editorDocsProgressState.student_id,
+      editorDocsProgressState.program_id
+    ).then(
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
         if (success) {
-          this.setState((state) => ({
-            ...state,
+          setEditorDocsProgressState((prevState) => ({
+            ...prevState,
             studentId: '',
             applicationId: '',
             isLoaded: true,
@@ -332,8 +351,8 @@ class EditorDocsProgress extends React.Component {
           }));
         } else {
           const { message } = resp.data;
-          this.setState((state) => ({
-            ...state,
+          setEditorDocsProgressState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             res_modal_message: message,
             res_modal_status: status
@@ -341,26 +360,26 @@ class EditorDocsProgress extends React.Component {
         }
       },
       (error) => {
-        const { statusText } = resp;
-        this.setState((state) => ({
-          ...state,
+        setEditorDocsProgressState((prevState) => ({
+          ...prevState,
           isLoaded: true,
           error,
           res_modal_status: 500,
-          res_modal_message: statusText
+          res_modal_message: ''
         }));
       }
     );
   };
-  handleAsFinalFile = (
+
+  const handleAsFinalFile = (
     doc_thread_id,
     student_id,
     program_id,
     isFinal,
     docName
   ) => {
-    this.setState((state) => ({
-      ...state,
+    setEditorDocsProgressState((prevState) => ({
+      ...prevState,
       doc_thread_id,
       student_id,
       program_id,
@@ -370,13 +389,21 @@ class EditorDocsProgress extends React.Component {
     }));
   };
 
-  onChangeDeleteField = (e) => {
-    this.setState({ delete_field: e.target.value });
+  const onChangeDeleteField = (e) => {
+    setEditorDocsProgressState((prevState) => ({
+      ...prevState,
+      delete_field: e.target.value
+    }));
   };
 
-  onDeleteFileThread = (doc_thread_id, application, studentId, docName) => {
-    this.setState((state) => ({
-      ...state,
+  const onDeleteFileThread = (
+    doc_thread_id,
+    application,
+    studentId,
+    docName
+  ) => {
+    setEditorDocsProgressState((prevState) => ({
+      ...prevState,
       doc_thread_id,
       program_id: application ? application.programId._id : null,
       student_id: studentId,
@@ -385,12 +412,11 @@ class EditorDocsProgress extends React.Component {
     }));
   };
 
-  initProgramSpecificFileThread = (
+  const initProgramSpecificFileThread = (
     e,
     studentId,
     programId,
-    document_catgory,
-    thread_name
+    document_catgory
   ) => {
     e.preventDefault();
     initApplicationMessageThread(studentId, programId, document_catgory)
@@ -398,7 +424,7 @@ class EditorDocsProgress extends React.Component {
         const { data, success } = resp.data;
         const { status } = resp;
         if (success) {
-          let student_temp = { ...this.state.student };
+          let student_temp = { ...editorDocsProgressState.student };
           let application_idx = student_temp.applications.findIndex(
             (application) => application.programId._id.toString() === programId
           );
@@ -406,17 +432,18 @@ class EditorDocsProgress extends React.Component {
             application_idx
           ].doc_modification_thread.push(data);
 
-          this.setState({
+          setEditorDocsProgressState((prevState) => ({
+            ...prevState,
             isLoaded: true, //false to reload everything
             student: student_temp,
             success: success,
             file: '',
             res_modal_status: status
-          });
+          }));
         } else {
           const { message } = resp.data;
-          this.setState((state) => ({
-            ...state,
+          setEditorDocsProgressState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             res_modal_message: message,
             res_modal_status: status
@@ -424,18 +451,18 @@ class EditorDocsProgress extends React.Component {
         }
       })
       .catch((error) => {
-        const { statusText } = resp;
-        this.setState((state) => ({
-          ...state,
+        setEditorDocsProgressState((prevState) => ({
+          ...prevState,
           isLoaded: true,
           error,
           res_modal_status: 500,
-          res_modal_message: statusText
+          res_modal_message: ''
         }));
       });
   };
 
-  initGeneralFileThread = (e, studentId, document_catgory, thread_name) => {
+  const initGeneralFileThread = (e, studentId, document_catgory) => {
+    // eslint-disable-next-line no-constant-condition
     if ('1' === '') {
       e.preventDefault();
       alert('Please select file group');
@@ -446,20 +473,21 @@ class EditorDocsProgress extends React.Component {
           const { data, success } = resp.data;
           const { status } = resp;
           if (success) {
-            let student_temp = { ...this.state.student };
+            let student_temp = { ...editorDocsProgressState.student };
             student_temp.generaldocs_threads.push(data);
-            this.setState({
+            setEditorDocsProgressState((prevState) => ({
+              ...prevState,
               isLoaded: true, //false to reload everything
               student: student_temp,
               success: success,
               file: '',
               res_modal_status: status
-            });
+            }));
           } else {
             // TODO: handle frontend render if create duplicate thread
             const { message } = resp.data;
-            this.setState((state) => ({
-              ...state,
+            setEditorDocsProgressState((prevState) => ({
+              ...prevState,
               isLoaded: true,
               res_modal_message: message,
               res_modal_status: status
@@ -467,559 +495,527 @@ class EditorDocsProgress extends React.Component {
           }
         })
         .catch((error) => {
-          const { statusText } = resp;
-          this.setState((state) => ({
-            ...state,
+          setEditorDocsProgressState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             error,
             res_modal_status: 500,
-            res_modal_message: statusText
+            res_modal_message: ''
           }));
         });
     }
   };
 
-  ConfirmError = () => {
-    this.setState((state) => ({
-      ...state,
+  const ConfirmError = () => {
+    setEditorDocsProgressState((prevState) => ({
+      ...prevState,
       res_modal_status: 0,
       res_modal_message: ''
     }));
   };
 
-  render() {
-    const { res_modal_status, res_modal_message, res_status, isLoaded } =
-      this.state;
+  const { res_modal_status, res_modal_message, res_status, isLoaded } =
+    editorDocsProgressState;
 
-    if (!isLoaded && !this.state.student) {
-      return (
-        <div style={spinner_style}>
-          <Spinner animation="border" role="status">
-            <span className="visually-hidden"></span>
-          </Spinner>
-        </div>
-      );
-    }
+  if (!isLoaded && !editorDocsProgressState.student) {
+    return <Loading />;
+  }
 
-    if (res_status >= 400) {
-      return <ErrorPage res_status={res_status} />;
-    }
+  if (res_status >= 400) {
+    return <ErrorPage res_status={res_status} />;
+  }
 
-    const create_generaldoc_reminder = check_generaldocs(this.state.student);
-    const required_doc_keys = Object.keys(file_category_const);
-    return (
-      <>
-        <div>
-          {res_modal_status >= 400 && (
-            <ModalMain
-              ConfirmError={this.ConfirmError}
-              res_modal_status={res_modal_status}
-              res_modal_message={res_modal_message}
-            />
-          )}
-          <Card.Body>
-            <Row className="mb-4 mx-0">
-              <Col md={8}>
-                <b className="text-light">
-                  General Documents (CV, Recommendation Letters)
+  const create_generaldoc_reminder = check_generaldocs(
+    editorDocsProgressState.student
+  );
+  const required_doc_keys = Object.keys(file_category_const);
+  return (
+    <Box>
+      {res_modal_status >= 400 && (
+        <ModalMain
+          ConfirmError={ConfirmError}
+          res_modal_status={res_modal_status}
+          res_modal_message={res_modal_message}
+        />
+      )}
+      <Typography>
+        {t('General Documents')} ({t('CV')}, {t('Recommendation Letters')})
+      </Typography>
+      {create_generaldoc_reminder && (
+        <Card sx={{ p: 2, mb: 2 }}>
+          <Typography>
+            The following general documents are not started yet, please{' '}
+            <b>create</b> the discussion thread below:{' '}
+            {editorDocsProgressState.student.generaldocs_threads &&
+              editorDocsProgressState.student.generaldocs_threads.findIndex(
+                (thread) => thread.doc_thread_id.file_type === 'CV'
+              ) === -1 && (
+                <li>
+                  <b>{t('CV')}</b>
+                </li>
+              )}
+          </Typography>
+        </Card>
+      )}
+      <ManualFiles
+        onDeleteFileThread={onDeleteFileThread}
+        handleAsFinalFile={handleAsFinalFile}
+        student={editorDocsProgressState.student}
+        filetype={'General'}
+        initGeneralFileThread={initGeneralFileThread}
+        initProgramSpecificFileThread={initProgramSpecificFileThread}
+        application={null}
+      />
+      <Divider />
+      <Typography sx={{ mt: 2 }}>{t('Applications')}</Typography>
+      {/* TODO: simplify this! with array + function! */}
+      {editorDocsProgressState.student.applications &&
+        editorDocsProgressState.student.applications.map((application, i) => (
+          <div key={i}>
+            {isDocumentsMissingAssign(application) && (
+              <Card>
+                <Typography variant="string">
+                  Please assign the following documents to the student for{' '}
+                </Typography>
+                <b>
+                  {application.programId.school}{' '}
+                  {application.programId.program_name}
                 </b>
-              </Col>
-            </Row>
-            {create_generaldoc_reminder && (
-              <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
-                <Card.Body>
-                  <p className="text-light my-0">
-                    The following general documents are not started yet, please{' '}
-                    <b>create</b> the discussion thread below:{' '}
-                    {this.state.student.generaldocs_threads &&
-                      this.state.student.generaldocs_threads.findIndex(
-                        (thread) => thread.doc_thread_id.file_type === 'CV'
-                      ) === -1 && (
-                        <li>
-                          <b>CV</b>
-                        </li>
-                      )}{' '}
-                  </p>
-                </Card.Body>
+                :{' '}
+                {required_doc_keys.map(
+                  (doc_reqired_key, i) =>
+                    application.programId[doc_reqired_key] === 'yes' &&
+                    application.doc_modification_thread.findIndex(
+                      (thread) =>
+                        thread.doc_thread_id.file_type ===
+                        file_category_const[doc_reqired_key]
+                    ) === -1 && (
+                      <li key={i}>
+                        <b>{file_category_const[doc_reqired_key]}</b>
+                      </li>
+                    )
+                )}
               </Card>
             )}
-
-            <ManualFiles
-              onDeleteFileThread={this.onDeleteFileThread}
-              handleAsFinalFile={this.handleAsFinalFile}
-              user={this.props.user}
-              student={this.state.student}
-              filetype={'General'}
-              initGeneralFileThread={this.initGeneralFileThread}
-              initProgramSpecificFileThread={this.initProgramSpecificFileThread}
-              application={null}
-            />
-            <hr className="white-line"></hr>
-            {/* TODO: simplify this! with array + function! */}
-            {this.state.student.applications &&
-              this.state.student.applications.map((application, i) => (
-                <div key={i}>
-                  {isDocumentsMissingAssign(application) && (
-                    <Card className="my-0 mx-0" bg={'danger'} text={'light'}>
-                      <Card.Body>
-                        Please assign the following documents to the student for{' '}
-                        <b>
-                          {application.programId.school}{' '}
-                          {application.programId.program_name}
-                        </b>
-                        :{' '}
-                        {required_doc_keys.map(
-                          (doc_reqired_key, i) =>
-                            application.programId[doc_reqired_key] === 'yes' &&
-                            application.doc_modification_thread.findIndex(
-                              (thread) =>
-                                thread.doc_thread_id.file_type ===
-                                file_category_const[doc_reqired_key]
-                            ) === -1 && (
-                              <li key={i}>
-                                <b>{file_category_const[doc_reqired_key]}</b>
-                              </li>
-                            )
-                        )}
-                      </Card.Body>
-                    </Card>
-                  )}
-                  <Row className="my-2 mx-0">
-                    {application.decided === 'O' ? (
+            <Grid container spacing={2}>
+              {application.decided === 'O' ? (
+                <>
+                  {is_program_ml_rl_essay_finished(application) ? (
+                    is_program_closed(application) ? (
                       <>
-                        {is_program_ml_rl_essay_finished(application) ? (
-                          is_program_closed(application) ? (
-                            <>
-                              <Col md={1}>
-                                {showButtonIfMyStudent(
-                                  this.props.user,
-                                  this.state.student
-                                ) && (
-                                  <ImCheckmark
-                                    size={24}
-                                    color="limegreen"
-                                    title="This program is closed"
-                                  />
-                                )}
-                              </Col>
-                              <Col md={1}>
-                                {showButtonIfMyStudent(
-                                  this.props.user,
-                                  this.state.student
-                                ) && (
-                                  <AiOutlineUndo
-                                    size={24}
-                                    color="red"
-                                    title="Re-open this program as it was not submitted"
-                                    style={{ cursor: 'pointer' }}
-                                    onClick={() =>
-                                      this.handleProgramStatus(
-                                        this.state.student._id.toString(),
-                                        application.programId._id.toString()
-                                      )
-                                    }
-                                  />
-                                )}
-                              </Col>
-                            </>
-                          ) : (
-                            <>
-                              <Col md={1}>
-                                {showButtonIfMyStudent(
-                                  this.props.user,
-                                  this.state.student
-                                ) && (
-                                  <AiOutlineCheck
-                                    size={24}
-                                    color="white"
-                                    style={{ cursor: 'pointer' }}
-                                    title="Close this program - marked as finished."
-                                    onClick={() =>
-                                      this.handleProgramStatus(
-                                        this.state.student._id.toString(),
-                                        application.programId._id.toString()
-                                      )
-                                    }
-                                  />
-                                )}
-                              </Col>
-                              <Col md={1}></Col>
-                            </>
-                          )
-                        ) : (
-                          <>
-                            <Col md={1}></Col>
-                            <Col md={1}></Col>
-                          </>
-                        )}
-                        <Col md={4}>
-                          <Link
-                            to={`${DEMO.SINGLE_PROGRAM_LINK(
-                              application.programId._id
-                            )}`}
-                            style={{ textDecoration: 'none' }}
-                            className="text-info"
-                          >
-                            <h5
-                              className={`text-${
-                                application.closed === 'O'
-                                  ? 'warning'
-                                  : 'danger'
-                              }`}
-                            >
-                              <b>
-                                {application.programId.school} -{' '}
-                                {application.programId.degree} -{' '}
-                                {application.programId.program_name}
-                              </b>
-                            </h5>
-                          </Link>
-                        </Col>
-                        <Col md={2}>
-                          {required_doc_keys.map(
-                            (doc_reqired_key, i) =>
-                              application.programId[doc_reqired_key] ===
-                                'yes' && (
-                                <Button
-                                  key={i}
-                                  size="sm"
-                                  title={`${file_category_const[doc_reqired_key]}`}
-                                  variant="secondary"
-                                  onClick={() =>
-                                    this.openRequirements_ModalWindow(
-                                      application.programId[
-                                        doc_reqired_key.replace(
-                                          'required',
-                                          'requirements'
-                                        )
-                                      ]
-                                    )
-                                  }
-                                >
-                                  {file_category_const[doc_reqired_key]}
-                                </Button>
-                              )
+                        <Grid item xs={1} md={1}>
+                          {showButtonIfMyStudent(
+                            user,
+                            editorDocsProgressState.student
+                          ) && (
+                            <ImCheckmark
+                              size={24}
+                              color="limegreen"
+                              title="This program is closed"
+                            />
                           )}
-                          {application.programId.rl_required > 0 && (
-                            <Button
-                              size="sm"
-                              title="RL"
-                              variant="info"
+                        </Grid>
+                        <Grid item xs={1} md={1}>
+                          {showButtonIfMyStudent(
+                            user,
+                            editorDocsProgressState.student
+                          ) && (
+                            <AiOutlineUndo
+                              size={24}
+                              color="red"
+                              title="Re-open this program as it was not submitted"
+                              style={{ cursor: 'pointer' }}
                               onClick={() =>
-                                this.openRequirements_ModalWindow(
-                                  application.programId.rl_requirements
+                                handleProgramStatus(
+                                  editorDocsProgressState.student._id.toString(),
+                                  application.programId._id.toString()
                                 )
                               }
-                            >
-                              RL
-                            </Button>
+                            />
                           )}
-                        </Col>
-                        <Col>
-                          <p className="text-light">
-                            Deadline:{' '}
-                            {application_deadline_calculator(
-                              this.state.student,
-                              application
-                            )}
-                          </p>
-                        </Col>
-                        <Col md={1}>
-                          <p className="text-light">Status: </p>
-                        </Col>
-                        <Col md={1}>
-                          {application.closed === 'O' ? (
-                            <p className="text-warning">
-                              <b>Close</b>
-                            </p>
-                          ) : (
-                            <p className="text-danger">
-                              <b>Open</b>
-                            </p>
-                          )}
-                        </Col>
-                        <ManualFiles
-                          onDeleteFileThread={this.onDeleteFileThread}
-                          handleAsFinalFile={this.handleAsFinalFile}
-                          user={this.props.user}
-                          student={this.state.student}
-                          application={application}
-                          filetype={'ProgramSpecific'}
-                          initGeneralFileThread={this.initGeneralFileThread}
-                          initProgramSpecificFileThread={
-                            this.initProgramSpecificFileThread
-                          }
-                        />
-                        <hr className="white-line"></hr>
+                        </Grid>
                       </>
                     ) : (
                       <>
-                        <Row className="my-2 mx-0">
-                          <Col md={2}></Col>
-                          <Col md={4}>
-                            <Link
-                              to={`${DEMO.SINGLE_PROGRAM_LINK(
-                                application.programId._id.toString()
-                              )}`}
-                              style={{ textDecoration: 'none' }}
-                              className="text-info"
-                            >
-                              <h5 className="text-secondary">
-                                <b>
-                                  {application.programId.school} -{' '}
-                                  {application.programId.degree} -{' '}
-                                  {application.programId.program_name}
-                                </b>
-                              </h5>
-                            </Link>
-                          </Col>
-                          <Col md={2}>
-                            {required_doc_keys.map(
-                              (doc_reqired_key, i) =>
-                                application.programId[doc_reqired_key] ===
-                                  'yes' && (
-                                  <Button
-                                    key={i}
-                                    size="sm"
-                                    title={`${file_category_const[doc_reqired_key]}`}
-                                    variant="secondary"
-                                    onClick={() =>
-                                      this.openRequirements_ModalWindow(
-                                        application.programId[
-                                          doc_reqired_key.replace(
-                                            'required',
-                                            'requirements'
-                                          )
-                                        ]
-                                      )
-                                    }
-                                  >
-                                    {file_category_const[doc_reqired_key]}
-                                  </Button>
+                        <Grid item xs={1} md={1}>
+                          {showButtonIfMyStudent(
+                            user,
+                            editorDocsProgressState.student
+                          ) && (
+                            <AiOutlineCheck
+                              size={24}
+                              color="white"
+                              style={{ cursor: 'pointer' }}
+                              title="Close this program - marked as finished."
+                              onClick={() =>
+                                handleProgramStatus(
+                                  editorDocsProgressState.student._id.toString(),
+                                  application.programId._id.toString()
                                 )
-                            )}
-                            {application.programId.rl_required > 0 && (
-                              <Button
-                                size="sm"
-                                title="Comments"
-                                variant="info"
-                                onClick={() =>
-                                  this.openRequirements_ModalWindow(
-                                    application.programId.rl_requirements
-                                  )
-                                }
-                              >
-                                RL
-                              </Button>
-                            )}
-                          </Col>
-                          <Col>
-                            <p className="text-light">
-                              Deadline:{' '}
-                              {application_deadline_calculator(
-                                this.state.student,
-                                application
-                              )}
-                            </p>
-                          </Col>
-                          <Col md={1}>
-                            <p className="text-light">Status: </p>
-                          </Col>
-                          <Col md={1}>
-                            <p className="text-danger">
-                              <b>Undecided</b>
-                            </p>
-                          </Col>
-                        </Row>
-                        <Row className="my-2 mx-0">
-                          <h6 className="text-danger">
-                            <b>
-                              Ths following tasks are not visible in tasks
-                              dashboard and CV/ML/RL/Center. Please
-                              {showButtonIfMyStudent(
-                                this.props.user,
-                                this.state.student
-                              ) && (
-                                <Link
-                                  to={`${DEMO.STUDENT_APPLICATIONS_ID_LINK(
-                                    this.state.student._id.toString()
-                                  )}`}
-                                  style={{ textDecoration: 'none' }}
-                                  className="text-info"
-                                >
-                                  {' '}
-                                  click here
-                                </Link>
-                              )}{' '}
-                              to activate the application.
-                            </b>
-                          </h6>
-                        </Row>
-                        <ManualFiles
-                          onDeleteFileThread={this.onDeleteFileThread}
-                          handleAsFinalFile={this.handleAsFinalFile}
-                          user={this.props.user}
-                          student={this.state.student}
-                          application={application}
-                          filetype={'ProgramSpecific'}
-                          initGeneralFileThread={this.initGeneralFileThread}
-                          initProgramSpecificFileThread={
-                            this.initProgramSpecificFileThread
-                          }
-                        />
-                        <hr className="white-line"></hr>
+                              }
+                            />
+                          )}
+                        </Grid>
+                        <Grid item xs={1} md={1}></Grid>
                       </>
+                    )
+                  ) : (
+                    <>
+                      <Grid item xs={1} md={1}></Grid>
+                      <Grid item xs={1} md={1}></Grid>
+                    </>
+                  )}
+                  <Grid item xs={4} md={4}>
+                    <Link
+                      to={`${DEMO.SINGLE_PROGRAM_LINK(
+                        application.programId._id
+                      )}`}
+                      component={LinkDom}
+                    >
+                      <Typography
+                        variant="body1"
+                        color={
+                          application.closed === 'O'
+                            ? 'success.light'
+                            : 'error.main'
+                        }
+                      >
+                        <b>
+                          {application.programId.school} -{' '}
+                          {application.programId.degree} -{' '}
+                          {application.programId.program_name}
+                        </b>
+                      </Typography>
+                    </Link>
+                  </Grid>
+                  <Grid item xs={2} md={2}>
+                    {required_doc_keys.map(
+                      (doc_reqired_key, i) =>
+                        application.programId[doc_reqired_key] === 'yes' && (
+                          <Button
+                            key={i}
+                            size="small"
+                            title={`${file_category_const[doc_reqired_key]}`}
+                            variant="contained"
+                            color="secondary"
+                            onClick={() =>
+                              openRequirements_ModalWindow(
+                                application.programId[
+                                  doc_reqired_key.replace(
+                                    'required',
+                                    'requirements'
+                                  )
+                                ]
+                              )
+                            }
+                          >
+                            {file_category_const[doc_reqired_key]}
+                          </Button>
+                        )
                     )}
-                  </Row>
-                </div>
-              ))}
-          </Card.Body>
-        </div>
-        <Modal
-          show={this.state.deleteFileWarningModel}
-          onHide={this.closeWarningWindow}
-          aria-labelledby="contained-modal-title-vcenter"
-          centered
-        >
-          <Modal.Header>
-            <Modal.Title id="contained-modal-title-vcenter">
-              Warning
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            Do you want to delete <b>{this.state.docName}</b>?
-            <Form.Group
-              // controlId="target_application_field"
-              className="my-0 mx-0"
-            >
-              <Form.Label className="my-1 mx-0">
-                Please enter{' '}
-                <i>
-                  <b>delete</b>
-                </i>{' '}
-                in order to delete the user.
-              </Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="delete"
-                value={`${this.state.delete_field}`}
-                onChange={(e) => this.onChangeDeleteField(e)}
-              />
-            </Form.Group>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button
-              disabled={!isLoaded || this.state.delete_field !== 'delete'}
-              onClick={this.ConfirmDeleteDiscussionThreadHandler}
-            >
-              {isLoaded ? (
-                'Yes'
+                    {application.programId.rl_required > 0 && (
+                      <Button
+                        size="small"
+                        title="RL"
+                        variant="contained"
+                        color="info"
+                        onClick={() =>
+                          openRequirements_ModalWindow(
+                            application.programId.rl_requirements
+                          )
+                        }
+                      >
+                        RL
+                      </Button>
+                    )}
+                  </Grid>
+                  <Grid item sx={2} md={2}>
+                    <Typography>
+                      Deadline:{' '}
+                      {application_deadline_calculator(
+                        editorDocsProgressState.student,
+                        application
+                      )}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={1} md={1}>
+                    <Typography>{t('Status')}: </Typography>
+                  </Grid>
+                  <Grid item xs={1} md={1}>
+                    {application.closed === 'O' ? (
+                      <Typography fontWeight="bold">{t('Close')}</Typography>
+                    ) : (
+                      <Typography fontWeight="bold">{t('Open')}</Typography>
+                    )}
+                  </Grid>
+                  <ManualFiles
+                    onDeleteFileThread={onDeleteFileThread}
+                    handleAsFinalFile={handleAsFinalFile}
+                    student={editorDocsProgressState.student}
+                    application={application}
+                    filetype={'ProgramSpecific'}
+                    initGeneralFileThread={initGeneralFileThread}
+                    initProgramSpecificFileThread={
+                      initProgramSpecificFileThread
+                    }
+                  />
+                </>
               ) : (
-                <div style={spinner_style2}>
-                  <Spinner animation="border" size="sm" role="status">
-                    <span className="visually-hidden"></span>
-                  </Spinner>
-                </div>
+                <>
+                  <Grid container spacing={2}>
+                    <Grid item xs={2} md={2}></Grid>
+                    <Grid item xs={4} md={4}>
+                      <Link
+                        to={`${DEMO.SINGLE_PROGRAM_LINK(
+                          application.programId._id.toString()
+                        )}`}
+                        component={LinkDom}
+                      >
+                        <Typography variant="string" color="grey">
+                          <b>
+                            {application.programId.school} -{' '}
+                            {application.programId.degree} -{' '}
+                            {application.programId.program_name}
+                          </b>
+                        </Typography>
+                      </Link>
+                    </Grid>
+                    <Grid item xs={2} md={2}>
+                      {required_doc_keys.map(
+                        (doc_reqired_key, i) =>
+                          application.programId[doc_reqired_key] === 'yes' && (
+                            <Button
+                              key={i}
+                              size="sm"
+                              title={`${file_category_const[doc_reqired_key]}`}
+                              variant="secondary"
+                              onClick={() =>
+                                openRequirements_ModalWindow(
+                                  application.programId[
+                                    doc_reqired_key.replace(
+                                      'required',
+                                      'requirements'
+                                    )
+                                  ]
+                                )
+                              }
+                            >
+                              {file_category_const[doc_reqired_key]}
+                            </Button>
+                          )
+                      )}
+                      {application.programId.rl_required > 0 && (
+                        <Button
+                          size="small"
+                          title="Comments"
+                          variant="info"
+                          onClick={() =>
+                            openRequirements_ModalWindow(
+                              application.programId.rl_requirements
+                            )
+                          }
+                        >
+                          RL
+                        </Button>
+                      )}
+                    </Grid>
+                    <Grid item xs={1}>
+                      <Typography>
+                        {t('Deadline')}:{' '}
+                        {application_deadline_calculator(
+                          editorDocsProgressState.student,
+                          application
+                        )}
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={1}>
+                      <Typography>{t('Status')}</Typography>
+                    </Grid>
+                    <Grid item xs={1}>
+                      <Typography>{t('Undecided')}</Typography>
+                    </Grid>
+                  </Grid>
+                  <Typography variant="string" sx={{ my: 2 }}>
+                    <b>
+                      Ths following tasks are not visible in tasks dashboard and
+                      CV/ML/RL/Center. Please
+                      {showButtonIfMyStudent(
+                        user,
+                        editorDocsProgressState.student
+                      ) && (
+                        <Link
+                          to={`${DEMO.STUDENT_APPLICATIONS_ID_LINK(
+                            editorDocsProgressState.student._id.toString()
+                          )}`}
+                          component={LinkDom}
+                        >
+                          {' '}
+                          click here
+                        </Link>
+                      )}{' '}
+                      to activate the application.
+                    </b>
+                  </Typography>
+                  <ManualFiles
+                    onDeleteFileThread={onDeleteFileThread}
+                    handleAsFinalFile={handleAsFinalFile}
+                    student={editorDocsProgressState.student}
+                    application={application}
+                    filetype={'ProgramSpecific'}
+                    initGeneralFileThread={initGeneralFileThread}
+                    initProgramSpecificFileThread={
+                      initProgramSpecificFileThread
+                    }
+                  />
+                </>
               )}
-            </Button>
-
-            <Button onClick={this.closeWarningWindow}>No</Button>
-          </Modal.Footer>
-        </Modal>
-        <Modal
-          show={this.state.SetAsFinalFileModel}
-          onHide={this.closeSetAsFinalFileModelWindow}
-          aria-labelledby="contained-modal-title-vcenter"
-          centered
+            </Grid>
+            <Divider sx={{ my: 2 }} />
+          </div>
+        ))}
+      <ModalNew
+        open={editorDocsProgressState.deleteFileWarningModel}
+        onClose={closeWarningWindow}
+        aria-labelledby="contained-modal-title-vcenter"
+      >
+        <Typography variant="h6">{t('Warning')}</Typography>
+        <Typography sx={{ my: 2 }}>
+          Do you want to delete <b>{editorDocsProgressState.docName}</b>?
+        </Typography>
+        <InputLabel>
+          <Typography>
+            Please enter{' '}
+            <i>
+              <b>delete</b>
+            </i>{' '}
+            in order to delete the user.
+          </Typography>
+        </InputLabel>
+        <TextField
+          fullWidth
+          size="small"
+          type="text"
+          placeholder="delete"
+          value={`${editorDocsProgressState.delete_field}`}
+          onChange={(e) => onChangeDeleteField(e)}
+          sx={{ mb: 2 }}
+        />
+        <Button
+          size="small"
+          color="primary"
+          variant="contained"
+          disabled={
+            !isLoaded || editorDocsProgressState.delete_field !== 'delete'
+          }
+          onClick={ConfirmDeleteDiscussionThreadHandler}
+          sx={{ mr: 1 }}
         >
-          <Modal.Header>
-            <Modal.Title id="contained-modal-title-vcenter">
-              Warning
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            Do you want to set {this.state.docName} as{' '}
-            {this.state.isFinal ? 'final' : 'open'}?
-          </Modal.Body>
-          <Modal.Footer>
-            <Button
-              disabled={!isLoaded}
-              onClick={this.ConfirmSetAsFinalFileHandler}
-            >
-              {isLoaded ? (
-                'Yes'
-              ) : (
-                <div style={spinner_style2}>
-                  <Spinner animation="border" size="sm" role="status">
-                    <span className="visually-hidden"></span>
-                  </Spinner>
-                </div>
-              )}
-            </Button>
-
-            <Button onClick={this.closeSetAsFinalFileModelWindow}>No</Button>
-          </Modal.Footer>
-        </Modal>
-        <Modal
-          show={this.state.Requirements_Modal}
-          onHide={this.close_Requirements_ModalWindow}
-          aria-labelledby="contained-modal-title-vcenter"
-          centered
+          {isLoaded ? (
+            t('Yes')
+          ) : (
+            <div style={spinner_style2}>
+              <CircularProgress />
+            </div>
+          )}
+        </Button>
+        <Button
+          size="small"
+          color="primary"
+          variant="outlined"
+          onClick={closeWarningWindow}
         >
-          <Modal.Header>
-            <Modal.Title id="contained-modal-title-vcenter">
-              Special Requirements
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>{this.state.requirements}</Modal.Body>
-          <Modal.Footer>
-            <Button onClick={this.close_Requirements_ModalWindow}>Close</Button>
-          </Modal.Footer>
-        </Modal>
-        <Modal
-          show={this.state.isThreadExisted}
-          onHide={this.closeDocExistedWindow}
-          aria-labelledby="contained-modal-title-vcenter"
-          centered
+          {t('No')}
+        </Button>
+      </ModalNew>
+      <ModalNew
+        open={editorDocsProgressState.SetAsFinalFileModel}
+        onClose={closeSetAsFinalFileModelWindow}
+        aria-labelledby="contained-modal-title-vcenter"
+      >
+        <Typography variant="h6" sx={{ mb: 1 }}>
+          {t('Warning')}
+        </Typography>
+        <Typography sx={{ mb: 1 }}>
+          Do you want to set {editorDocsProgressState.docName} as{' '}
+          {editorDocsProgressState.isFinal ? 'final' : 'open'}?
+        </Typography>
+        <Button
+          color="primary"
+          variant="contained"
+          size="small"
+          disabled={!isLoaded}
+          onClick={ConfirmSetAsFinalFileHandler}
         >
-          <Modal.Header>
-            <Modal.Title id="contained-modal-title-vcenter">
-              Attention
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>{this.state.docName} is already existed</Modal.Body>
-          <Modal.Footer>
-            <Button onClick={this.closeDocExistedWindow}>Close</Button>
-          </Modal.Footer>
-        </Modal>
-        <Modal
-          show={this.state.SetProgramStatusModel}
-          onHide={this.closeSetProgramStatusModel}
-          aria-labelledby="contained-modal-title-vcenter"
-          centered
+          {isLoaded ? (
+            t('Yes')
+          ) : (
+            <div style={spinner_style2}>
+              <CircularProgress />
+            </div>
+          )}
+        </Button>
+        <Button
+          size="small"
+          variant="outlined"
+          onClick={closeSetAsFinalFileModelWindow}
         >
-          <Modal.Header>
-            <Modal.Title id="contained-modal-title-vcenter">
-              Attention
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            Do you want to {this.state.isFinal ? 'close' : 're-open'} this
-            program for {this.state.student.firstname}?
-          </Modal.Body>
-          <Modal.Footer>
-            <Button
-              disabled={!isLoaded}
-              onClick={this.SubmitProgramStatusHandler}
-            >
-              Yes
-            </Button>
-            <Button onClick={this.closeSetProgramStatusModel}>Close</Button>
-          </Modal.Footer>
-        </Modal>
-      </>
-    );
-  }
+          {t('No')}
+        </Button>
+      </ModalNew>
+      <ModalNew
+        open={editorDocsProgressState.Requirements_Modal}
+        onClose={close_Requirements_ModalWindow}
+        aria-labelledby="contained-modal-title-vcenter"
+      >
+        <Typography variant="h6">{t('Special Requirements')}</Typography>
+        <Typography>{editorDocsProgressState.requirements}</Typography>
+        <Button onClick={close_Requirements_ModalWindow}>{t('Close')}</Button>
+      </ModalNew>
+      <ModalNew
+        open={editorDocsProgressState.isThreadExisted}
+        onClose={closeDocExistedWindow}
+        aria-labelledby="contained-modal-title-vcenter"
+      >
+        <Typography variant="h6">{t('Attention')}</Typography>
+        <Typography>
+          {editorDocsProgressState.docName} is already existed
+        </Typography>
+        <Button
+          color="secondary"
+          variant="contained"
+          onClick={closeDocExistedWindow}
+        >
+          {t('Close')}
+        </Button>
+      </ModalNew>
+      <ModalNew
+        open={editorDocsProgressState.SetProgramStatusModel}
+        onClose={closeSetProgramStatusModel}
+        aria-labelledby="contained-modal-title-vcenter"
+      >
+        <Typography variant="h6">{t('Attention')}</Typography>
+        <Typography>
+          Do you want to {editorDocsProgressState.isFinal ? 'close' : 're-open'}{' '}
+          this program for {editorDocsProgressState.student.firstname}?
+        </Typography>
+        <Button
+          color="primary"
+          variant="contained"
+          disabled={!isLoaded}
+          onClick={SubmitProgramStatusHandler}
+        >
+          {t('Yes')}
+        </Button>
+        <Button
+          color="primary"
+          variant="outlined"
+          onClick={closeSetProgramStatusModel}
+        >
+          {t('Close')}
+        </Button>
+      </ModalNew>
+    </Box>
+  );
 }
 
 export default EditorDocsProgress;

@@ -1,40 +1,36 @@
 import React from 'react';
-import { Modal, Button } from 'react-bootstrap';
+import { Button, Typography } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
-class ProgramDeleteWarning extends React.Component {
-  render() {
-    return (
-      <Modal
-        show={this.props.deleteProgramWarning}
-        onHide={this.props.setModalHideDDelete}
-        size="lg"
-        aria-labelledby="contained-modal-title-vcenter"
-        centered
+import ModalNew from '../../components/Modal';
+
+function ProgramDeleteWarning(props) {
+  const { t } = useTranslation();
+  return (
+    <ModalNew
+      open={props.deleteProgramWarning}
+      onClose={props.setModalHideDDelete}
+      aria-labelledby="contained-modal-title-vcenter"
+    >
+      <Typography>Warning</Typography>
+      <Typography variant="h5">
+        Do you want to delete {props.uni_name} - {props.program_name}?
+      </Typography>
+      <Button
+        color="primary"
+        variant="contained"
+        onClick={() => props.RemoveProgramHandler(props.program_id)}
       >
-        <Modal.Header closeButton>
-          <Modal.Title>Warning</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <h5>
-            Do you want to delete {this.props.uni_name} -{' '}
-            {this.props.program_name}?
-          </h5>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button
-            variant="primary"
-            onClick={() =>
-              this.props.RemoveProgramHandler(this.props.program_id)
-            }
-          >
-            Yes
-          </Button>
-          <Button variant="secondary" onClick={this.props.setModalHideDDelete}>
-            No
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    );
-  }
+        {t('Yes')}
+      </Button>
+      <Button
+        color="secondary"
+        variant="outlined"
+        onClick={props.setModalHideDDelete}
+      >
+        {t('No')}
+      </Button>
+    </ModalNew>
+  );
 }
 export default ProgramDeleteWarning;

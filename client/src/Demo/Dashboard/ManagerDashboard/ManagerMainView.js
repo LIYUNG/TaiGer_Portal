@@ -1,17 +1,23 @@
-import React, { Fragment } from 'react';
-import { Row, Col, Table, Card } from 'react-bootstrap';
+import React, { Fragment, useState } from 'react';
+import { Row, Col, Card } from 'react-bootstrap';
+import {
+  Alert,
+  Grid,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Typography
+} from '@mui/material';
 import { Link } from 'react-router-dom';
 import { BsExclamationTriangle, BsX } from 'react-icons/bs';
 
-import AgentReviewing from '../MainViewTab/AgentReview/AgentReviewing';
 import BaseDocumentCheckingTasks from '../MainViewTab/AgentTasks/BaseDocumentCheckingTasks';
-
 import StudentsAgentEditor from '../MainViewTab/StudentsAgentEditor/StudentsAgentEditor';
-
 import { updateAgentBanner } from '../../../api';
-import { academic_background_header, profile_list } from '../../Utils/contants';
+import { academic_background_header } from '../../Utils/contants';
 import {
-  DocumentStatus,
   anyStudentWithoutApplicationSelection,
   isAnyCVNotAssigned,
   is_any_base_documents_uploaded,
@@ -20,7 +26,7 @@ import {
   programs_refactor,
   progressBarCounter
 } from '../../Utils/checking-functions';
-import NoProgramStudentTasks from '../MainViewTab/AgentTasks/NoProgramStudentTasks';
+import NoProgramStudentTask from '../MainViewTab/AgentTasks/NoProgramStudentTask';
 import DEMO from '../../../store/constant';
 import ApplicationProgressCardBody from '../../../components/ApplicationProgressCard/ApplicationProgressCardBody';
 import ProgramReportCard from '../../Program/ProgramReportCard';
@@ -28,80 +34,52 @@ import CVAssignTasksCard from '../MainViewTab/AgentTasks/CVAssignTasksCard';
 import ReadyToSubmitTasksCard from '../MainViewTab/AgentTasks/ReadyToSubmitTasksCard';
 import NoEnoughDecidedProgramsTasksCard from '../MainViewTab/AgentTasks/NoEnoughDecidedProgramsTasksCard';
 import VPDToSubmitTasksCard from '../MainViewTab/AgentTasks/VPDToSubmitTasksCard';
+import { useAuth } from '../../../components/AuthProvider';
+import { useTranslation } from 'react-i18next';
 
-class ManagerMainView extends React.Component {
-  state = {
+function ManagerMainView(props) {
+  const { user } = useAuth();
+  const { t } = useTranslation();
+  const [managerMainViewState, setManagerMainViewState] = useState({
     error: '',
-    user: this.props.user,
-    notification: this.props.notification,
+    user: user,
+    notification: props.notification,
     collapsedRows: {}
-  };
+  });
 
-  checkMissingBaseDocument = (students) => {
-    for (let stud_idx = 0; stud_idx < students.length; stud_idx += 1) {
-      let student = students[stud_idx];
-      let keys = Object.keys(profile_list);
-      let object_init = {};
-      for (let i = 0; i < keys.length; i++) {
-        object_init[keys[i]] = DocumentStatus.Missing;
-      }
-
-      if (student.profile) {
-        for (let i = 0; i < student.profile.length; i++) {
-          if (student.profile[i].status === DocumentStatus.Uploaded) {
-            object_init[student.profile[i].name] = DocumentStatus.Uploaded;
-          } else if (student.profile[i].status === DocumentStatus.Accepted) {
-            object_init[student.profile[i].name] = DocumentStatus.Accepted;
-          } else if (student.profile[i].status === DocumentStatus.Rejected) {
-            object_init[student.profile[i].name] = DocumentStatus.Rejected;
-          } else if (student.profile[i].status === DocumentStatus.Missing) {
-            object_init[student.profile[i].name] = DocumentStatus.Missing;
-          } else if (student.profile[i].status === DocumentStatus.NotNeeded) {
-            object_init[student.profile[i].name] = DocumentStatus.NotNeeded;
-          }
-        }
-      } else {
-      }
-      for (let i = 0; i < keys.length; i += 1) {
-        if (object_init[keys[i]] === DocumentStatus.Uploaded) {
-          return true;
-        }
-      }
-    }
-    return false;
-  };
-
-  removeAgentBanner = (e, notification_key, student_id) => {
+  const removeAgentBanner = (e, notification_key, student_id) => {
     e.preventDefault();
-    const temp_user = { ...this.state.user };
+    const temp_user = { ...user };
     const idx = temp_user.agent_notification[`${notification_key}`].findIndex(
       (student_obj) => student_obj.student_id === student_id
     );
     temp_user.agent_notification[`${notification_key}`].splice(idx, 1);
 
-    this.setState({
+    setManagerMainViewState((prevState) => ({
+      ...prevState,
       user: temp_user
-    });
+    }));
 
     updateAgentBanner(notification_key, student_id).then(
       (resp) => {
         const { success } = resp.data;
         const { status } = resp;
         if (success) {
-          this.setState((state) => ({
-            ...state,
+          setManagerMainViewState((prevState) => ({
+            ...prevState,
             success: success,
             res_status: status
           }));
         } else {
-          this.setState({
+          setManagerMainViewState((prevState) => ({
+            ...prevState,
             res_status: status
-          });
+          }));
         }
       },
       (error) => {
-        this.setState((state) => ({
-          ...state,
+        setManagerMainViewState((prevState) => ({
+          ...prevState,
           error,
           res_status: 500
         }));
@@ -109,320 +87,263 @@ class ManagerMainView extends React.Component {
     );
   };
 
-  handleCollapse = (index) => {
-    this.setState((state) => ({
-      ...state,
+  const handleCollapse = (index) => {
+    setManagerMainViewState((prevState) => ({
+      ...prevState,
       collapsedRows: {
-        ...this.state.collapsedRows,
-        [index]: !this.state.collapsedRows[index]
+        ...prevState.collapsedRows,
+        [index]: !prevState.collapsedRows[index]
       }
     }));
   };
-  render() {
-    const students_agent_editor = this.props.students.map((student, i) => (
-      <StudentsAgentEditor
-        key={i}
-        user={this.props.user}
-        student={student}
-        documentslist={this.props.documentslist}
-        editAgent={this.props.editAgent}
-        agent_list={this.props.agent_list}
-        updateAgentList={this.props.updateAgentList}
-        submitUpdateAgentlist={this.props.submitUpdateAgentlist}
-        isDashboard={this.props.isDashboard}
-        updateStudentArchivStatus={this.props.updateStudentArchivStatus}
-      />
+  const students_agent_editor = props.students.map((student, i) => (
+    <StudentsAgentEditor
+      key={i}
+      user={user}
+      student={student}
+      documentslist={props.documentslist}
+      updateAgentList={props.updateAgentList}
+      submitUpdateAgentlist={props.submitUpdateAgentlist}
+      isDashboard={props.isDashboard}
+      updateStudentArchivStatus={props.updateStudentArchivStatus}
+    />
+  ));
+
+  const base_documents_checking_tasks = props.students
+    .filter((student) =>
+      student.agents.some((agent) => agent._id === user._id.toString())
+    )
+    .map((student, i) => (
+      <BaseDocumentCheckingTasks key={i} role={user.role} student={student} />
     ));
 
-    const base_documents_checking_tasks = this.props.students
-      .filter((student) =>
-        student.agents.some(
-          (agent) => agent._id === this.props.user._id.toString()
-        )
-      )
-      .map((student, i) => (
-        <BaseDocumentCheckingTasks
-          key={i}
-          role={this.props.user.role}
-          student={student}
-        />
-      ));
+  const no_programs_student_tasks = props.students
+    .filter((student) =>
+      student.agents.some((agent) => agent._id === user._id.toString())
+    )
+    .map((student, i) => (
+      <NoProgramStudentTask key={i} role={user.role} student={student} />
+    ));
 
-    const no_programs_student_tasks = this.props.students
-      .filter((student) =>
-        student.agents.some(
-          (agent) => agent._id === this.props.user._id.toString()
-        )
-      )
-      .map((student, i) => (
-        <NoProgramStudentTasks
-          key={i}
-          role={this.props.user.role}
-          student={student}
-        />
-      ));
+  const applications_arr = programs_refactor(props.students)
+    .filter(
+      (application) =>
+        application.decided === 'O' &&
+        application.closed === '-' &&
+        application.program_name !== 'No Program'
+    )
+    .sort((a, b) => (a.application_deadline > b.application_deadline ? 1 : -1));
 
-    const applications_arr = programs_refactor(this.props.students)
-      .filter(
-        (application) =>
-          application.decided === 'O' &&
-          application.closed === '-' &&
-          application.program_name !== 'No Program'
-      )
-      .sort((a, b) =>
-        a.application_deadline > b.application_deadline ? 1 : -1
-      );
+  let header = Object.values(academic_background_header);
 
-    let header = Object.values(academic_background_header);
-
-    return (
-      <>
-        {this.state.notification?.isRead_new_base_docs_uploaded.map(
-          (student, i) => (
-            <Row key={i}>
-              <Col>
-                <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
-                  <p
-                    className="text-light my-3 mx-3"
-                    style={{ textAlign: 'left' }}
+  return (
+    <>
+      {managerMainViewState.notification?.isRead_new_base_docs_uploaded.map(
+        (student, i) => (
+          <Row key={i}>
+            <Col>
+              <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
+                <p
+                  className="text-light my-3 mx-3"
+                  style={{ textAlign: 'left' }}
+                >
+                  <BsExclamationTriangle size={18} />
+                  <b className="mx-2">Reminder:</b> There are new base documents
+                  uploaded by{' '}
+                  <b>
+                    {student.student_firstname} {student.student_lastname}
+                  </b>{' '}
+                  <Link
+                    to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                      student.student_id,
+                      DEMO.PROFILE
+                    )}`}
+                    style={{ textDecoration: 'none' }}
+                    className="text-info"
                   >
-                    <BsExclamationTriangle size={18} />
-                    <b className="mx-2">Reminder:</b> There are new base
-                    documents uploaded by{' '}
-                    <b>
-                      {student.student_firstname} {student.student_lastname}
-                    </b>{' '}
-                    <Link
-                      to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-                        student.student_id,
-                        DEMO.PROFILE
-                      )}`}
-                      style={{ textDecoration: 'none' }}
-                      className="text-info"
-                    >
-                      Base Document
-                    </Link>{' '}
-                    <span style={{ float: 'right', cursor: 'pointer' }}>
-                      <BsX
-                        size={18}
-                        onClick={(e) =>
-                          this.removeAgentBanner(
-                            e,
-                            'isRead_new_base_docs_uploaded',
-                            student.student_id
-                          )
-                        }
-                      />
-                    </span>
-                  </p>
-                </Card>
-              </Col>
-            </Row>
+                    Base Document
+                  </Link>{' '}
+                  <span style={{ float: 'right', cursor: 'pointer' }}>
+                    <BsX
+                      size={18}
+                      onClick={(e) =>
+                        removeAgentBanner(
+                          e,
+                          'isRead_new_base_docs_uploaded',
+                          student.student_id
+                        )
+                      }
+                    />
+                  </span>
+                </p>
+              </Card>
+            </Col>
+          </Row>
+        )
+      )}
+      <Row>
+        <Col md={12}>
+          <Card className="card-with-scroll">
+            <Alert severity="error">
+              {t('Upcoming Applications')} (Decided):
+            </Alert>
+            <div className="card-scrollable-body">
+              <Table size="small">
+                <TableBody>
+                  {applications_arr.map((application, idx) => (
+                    <Fragment key={idx}>
+                      <TableRow
+                        className="text-black"
+                        onClick={() => handleCollapse(idx)}
+                      >
+                        <TableCell>
+                          <b>
+                            <Link
+                              to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                                application.student_id,
+                                DEMO.PROFILE
+                              )}`}
+                            >
+                              {application.firstname_lastname}
+                            </Link>
+                          </b>
+                        </TableCell>
+                        <TableCell>
+                          {application.application_deadline}
+                        </TableCell>
+                        <TableCell>{application.school}</TableCell>
+                        <TableCell>
+                          {progressBarCounter(
+                            application.student,
+                            application.application
+                          )}
+                          %
+                        </TableCell>
+                        <TableCell>{application.program_name}</TableCell>
+                      </TableRow>
+                      {managerMainViewState.collapsedRows[idx] && (
+                        <TableRow>
+                          <td colSpan="12">
+                            <ApplicationProgressCardBody
+                              student={application.student}
+                              application={application.application}
+                            />
+                          </td>
+                        </TableRow>
+                      )}
+                    </Fragment>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </Card>
+        </Col>
+      </Row>
+      <Grid container spacing={2}>
+        {/* TODO: add a program update request ticket card (independent component?) */}
+        {/* <Col md={6}> */}
+        <ProgramReportCard />
+        {/* </Col> */}
+        {is_any_programs_ready_to_submit(
+          props.students.filter((student) =>
+            student.agents.some((agent) => agent._id === user._id.toString())
           )
-        )}
-        <Row>
-          <Col md={12}>
-            <Card className="my-2 mx-0 card-with-scroll">
+        ) && <ReadyToSubmitTasksCard students={props.students} user={user} />}
+        {is_any_vpd_missing(
+          props.students.filter((student) =>
+            student.agents.some((agent) => agent._id === user._id.toString())
+          )
+        ) && <VPDToSubmitTasksCard students={props.students} user={user} />}
+        {is_any_base_documents_uploaded(
+          props.students.filter((student) =>
+            student.agents.some((agent) => agent._id === user._id.toString())
+          )
+        ) && (
+          <Col md={6}>
+            <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
               <Card.Header className="py-0 px-0">
-                <Card.Title className="my-2 mx-2">
-                  Upcoming Applications (Decided):
+                <Card.Title className="my-2 mx-2 text-light" as={'h5'}>
+                  <BsExclamationTriangle size={18} /> Check uploaded base
+                  documents:
                 </Card.Title>
               </Card.Header>
-              <Card.Body className="card-scrollable-body">
-                <Table size="sm">
-                  <tbody>
-                    {applications_arr.map((application, idx) => (
-                      <Fragment>
-                        <tr
-                          key={idx}
-                          className="text-black"
-                          onClick={() => this.handleCollapse(idx)}
-                        >
-                          <td>
-                            <b>
-                              <Link
-                                to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-                                  application.student_id,
-                                  DEMO.PROFILE
-                                )}`}
-                              >
-                                {application.firstname_lastname}
-                              </Link>
-                            </b>
-                          </td>
-                          <td>{application.application_deadline}</td>
-                          <td>{application.school}</td>
-                          <td>
-                            {progressBarCounter(
-                              application.student,
-                              application.application
-                            )}
-                            %
-                          </td>
-                          <td>{application.program_name}</td>
-                        </tr>
-                        {this.state.collapsedRows[idx] && (
-                          <tr>
-                            <td colSpan="12">
-                              <ApplicationProgressCardBody
-                                student={application.student}
-                                application={application.application}
-                              />
-                            </td>
-                          </tr>
-                        )}
-                      </Fragment>
-                    ))}
-                  </tbody>
+              <Card.Body className="py-0 px-0 card-scrollable-body">
+                <Table
+                  bordered
+                  hover
+                  className="my-0 mx-0"
+                  variant="dark"
+                  text="light"
+                  size="sm"
+                >
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Student</TableCell>
+                      <TableCell>Base Document</TableCell>
+                      <TableCell>Upload Time</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>{base_documents_checking_tasks}</TableBody>
                 </Table>
               </Card.Body>
             </Card>
           </Col>
-        </Row>
-        <Row>
-          {/* TODO: add a program update request ticket card (independent component?) */}
-          {/* <Col md={6}> */}
-          <ProgramReportCard />
-          {/* </Col> */}
-          {is_any_programs_ready_to_submit(
-            this.props.students.filter((student) =>
-              student.agents.some(
-                (agent) => agent._id === this.props.user._id.toString()
-              )
-            )
-          ) && (
-            <ReadyToSubmitTasksCard
-              students={props.students}
-              user={props.user}
-            />
-          )}
-          {is_any_vpd_missing(
-            this.props.students.filter((student) =>
-              student.agents.some(
-                (agent) => agent._id === this.props.user._id.toString()
-              )
-            )
-          ) && (
-            <VPDToSubmitTasksCard students={props.students} user={props.user} />
-          )}
-          {is_any_base_documents_uploaded(
-            this.props.students.filter((student) =>
-              student.agents.some(
-                (agent) => agent._id === this.props.user._id.toString()
-              )
-            )
-          ) && (
-            <Col md={6}>
-              <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
-                <Card.Header className="py-0 px-0">
-                  <Card.Title className="my-2 mx-2 text-light" as={'h5'}>
-                    <BsExclamationTriangle size={18} /> Check uploaded base
-                    documents:
-                  </Card.Title>
-                </Card.Header>
-                <Card.Body className="py-0 px-0 card-scrollable-body">
-                  <Table
-                    bordered
-                    hover
-                    className="my-0 mx-0"
-                    variant="dark"
-                    text="light"
-                    size="sm"
-                  >
-                    <thead>
-                      <tr>
-                        <th>Student</th>
-                        <th>Base Document</th>
-                        <th>Upload Time</th>
-                      </tr>
-                    </thead>
-                    <tbody>{base_documents_checking_tasks}</tbody>
-                  </Table>
-                </Card.Body>
-              </Card>
-            </Col>
-          )}
-          {isAnyCVNotAssigned(
-            this.props.students.filter((student) =>
-              student.agents.some(
-                (agent) => agent._id === this.props.user._id.toString()
-              )
-            )
-          ) && (
-            <CVAssignTasksCard students={props.students} user={props.user} />
-          )}
-          {anyStudentWithoutApplicationSelection(
-            this.props.students.filter((student) =>
-              student.agents.some(
-                (agent) => agent._id === this.props.user._id.toString()
-              )
-            )
-          ) && (
-            <Col md={6}>
-              <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
-                <Card.Header className="py-0 px-0">
-                  <Card.Title className="my-2 mx-2 text-light" as={'h5'}>
-                    <BsExclamationTriangle size={18} /> No Program Selected Yet:
-                  </Card.Title>
-                </Card.Header>
-                <Card.Body className="py-0 px-0 card-scrollable-body">
-                  <Table
-                    bordered
-                    hover
-                    className="my-0 mx-0"
-                    variant="dark"
-                    text="light"
-                    size="sm"
-                  >
-                    <thead>
-                      <tr>
-                        <th>Student Name</th>
-                        <th>Year/Semester</th>
-                      </tr>
-                    </thead>
-                    <tbody>{no_programs_student_tasks}</tbody>
-                  </Table>
-                </Card.Body>
-              </Card>
-            </Col>
-          )}
-          <NoEnoughDecidedProgramsTasksCard
-            students={props.students}
-            user={props.user}
-          />
-        </Row>
-        <Row>
-          <Table
-            size="sm"
-            responsive
-            bordered
-            hover
-            className="my-0 mx-0"
-            variant="dark"
-            text="light"
-          >
-            <thead>
-              <tr>
-                <th></th>
-                <th>
-                  First-, Last Name | 姓名 <br /> Email
-                </th>
-                <th>Agents</th>
-                <th>Editors</th>
-                <th>Year</th>
-                <th>Semester</th>
-                <th>Degree</th>
-                {header.map((name, index) => (
-                  <th key={index}>{name}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>{students_agent_editor}</tbody>
-          </Table>
-        </Row>
-      </>
-    );
-  }
+        )}
+        {isAnyCVNotAssigned(
+          props.students.filter((student) =>
+            student.agents.some((agent) => agent._id === user._id.toString())
+          )
+        ) && <CVAssignTasksCard students={props.students} user={user} />}
+        {anyStudentWithoutApplicationSelection(
+          props.students.filter((student) =>
+            student.agents.some((agent) => agent._id === user._id.toString())
+          )
+        ) && (
+          <Grid item xs={6}>
+            <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
+              <Typography variant="h6">
+                <BsExclamationTriangle size={18} /> No Program Selected Yet:
+              </Typography>
+              <Table size="small">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Student Name</TableCell>
+                    <TableCell>Year/Semester</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>{no_programs_student_tasks}</TableBody>
+              </Table>
+            </Card>
+          </Grid>
+        )}
+        <NoEnoughDecidedProgramsTasksCard
+          students={props.students}
+          user={user}
+        />
+      </Grid>
+      <Row>
+        <Table size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell></TableCell>
+              <TableCell>
+                First-, Last Name | 姓名 <br /> Email
+              </TableCell>
+              <TableCell>Agents</TableCell>
+              <TableCell>Editors</TableCell>
+              <TableCell>Year</TableCell>
+              <TableCell>Semester</TableCell>
+              <TableCell>Degree</TableCell>
+              {header.map((name, index) => (
+                <TableCell key={index}>{name}</TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>{students_agent_editor}</TableBody>
+        </Table>
+      </Row>
+    </>
+  );
 }
 
 export default ManagerMainView;

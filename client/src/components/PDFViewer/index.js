@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { BsDownload, BsZoomIn, BsZoomOut } from 'react-icons/bs';
 import { pdfjs, Document, Page } from 'react-pdf';
-import { Button } from 'react-bootstrap';
+import { Button } from '@mui/material';
 
 import { getProfilePdf } from '../../api';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
@@ -9,11 +9,9 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/$
 
 const PDFViewer = (student_id, path) => {
   const [pdfData, setPdfData] = useState(null);
-  const [pageNumber, setPageNumber] = useState(1);
   const [pageWidth, setPageWidth] = useState(null);
   const [numPages, setNumPages] = useState(null);
   const containerRef = useRef(null);
-  const [zoomModalOpen, setZoomModalOpen] = useState(false);
   const [zoomLevel, setZoomLevel] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
 

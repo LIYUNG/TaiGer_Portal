@@ -1,13 +1,23 @@
-import React from 'react';
-import { Row, Col, Spinner, Button, Card, Form, Modal } from 'react-bootstrap';
-import { Redirect } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Form } from 'react-bootstrap';
+import { Link as LinkDom } from 'react-router-dom';
+import {
+  Box,
+  Button,
+  Card,
+  Breadcrumbs,
+  Link,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Typography
+} from '@mui/material';
 
-import Aux from '../../hoc/_Aux';
-import { spinner_style } from '../Utils/contants';
 import { is_TaiGer_role } from '../Utils/checking-functions';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
-
 import {
   getMyInterviews,
   createInterview,
@@ -18,10 +28,16 @@ import { TabTitle } from '../Utils/TabTitle';
 import NotesEditor from '../Notes/NotesEditor';
 import InterviewItems from './InterviewItems';
 import DEMO from '../../store/constant';
-import { TopBar } from '../../components/TopBar/TopBar';
+import { useAuth } from '../../components/AuthProvider';
+import { appConfig } from '../../config';
+import Loading from '../../components/Loading/Loading';
+import ModalNew from '../../components/Modal';
+import { useTranslation } from 'react-i18next';
 
-class InterviewTraining extends React.Component {
-  state = {
+function InterviewTraining() {
+  const { user } = useAuth();
+  const { t } = useTranslation();
+  const [interviewTrainingState, setInterviewTrainingState] = useState({
     error: '',
     isLoaded: false,
     data: null,
@@ -39,32 +55,34 @@ class InterviewTraining extends React.Component {
     res_status: 0,
     res_modal_message: '',
     res_modal_status: 0
-  };
+  });
 
-  componentDidMount() {
-    if (is_TaiGer_role(this.props.user)) {
+  useEffect(() => {
+    if (is_TaiGer_role(user)) {
       getAllInterviews().then(
         (resp) => {
           const { data, success, student } = resp.data;
           const { status } = resp;
           if (success) {
-            this.setState({
+            setInterviewTrainingState((prevState) => ({
+              ...prevState,
               isLoaded: true,
               interviewslist: data,
               student: student,
               success: success,
               res_status: status
-            });
+            }));
           } else {
-            this.setState({
+            setInterviewTrainingState((prevState) => ({
+              ...prevState,
               isLoaded: true,
               res_status: status
-            });
+            }));
           }
         },
         (error) => {
-          this.setState((state) => ({
-            ...state,
+          setInterviewTrainingState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             error,
             res_status: 500
@@ -77,23 +95,25 @@ class InterviewTraining extends React.Component {
           const { data, success, student } = resp.data;
           const { status } = resp;
           if (success) {
-            this.setState({
+            setInterviewTrainingState((prevState) => ({
+              ...prevState,
               isLoaded: true,
               interviewslist: data,
               student: student,
               success: success,
               res_status: status
-            });
+            }));
           } else {
-            this.setState({
+            setInterviewTrainingState((prevState) => ({
+              ...prevState,
               isLoaded: true,
               res_status: status
-            });
+            }));
           }
         },
         (error) => {
-          this.setState((state) => ({
-            ...state,
+          setInterviewTrainingState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             error,
             res_status: 500
@@ -101,38 +121,44 @@ class InterviewTraining extends React.Component {
         }
       );
     }
-  }
+  }, []);
 
-  handleClick = () => {
-    this.setState((state) => ({ ...state, isEdit: !this.state.isEdit }));
+  const handleClick = () => {
+    setInterviewTrainingState((prevState) => ({
+      ...prevState,
+      isEdit: !prevState.isEdit
+    }));
   };
 
-  handleDeleteInterview = (doc) => {
-    deleteInterview(this.state.interview_id_toBeDelete).then(
+  const handleDeleteInterview = () => {
+    deleteInterview(interviewTrainingState.interview_id_toBeDelete).then(
       (resp) => {
         const { success } = resp.data;
         const { status } = resp;
         if (success) {
-          let interviewslist_temp = [...this.state.interviewslist];
+          let interviewslist_temp = [...interviewTrainingState.interviewslist];
           let to_be_delete_doc_idx = interviewslist_temp.findIndex(
-            (doc) => doc._id.toString() === this.state.interview_id_toBeDelete
+            (doc) =>
+              doc._id.toString() ===
+              interviewTrainingState.interview_id_toBeDelete
           );
           if (to_be_delete_doc_idx > -1) {
             // only splice array when item is found
             interviewslist_temp.splice(to_be_delete_doc_idx, 1); // 2nd parameter means remove one item only
           }
-          this.setState({
+          setInterviewTrainingState((prevState) => ({
+            ...prevState,
             success,
             interviewslist: interviewslist_temp,
             SetDeleteDocModel: false,
             isEdit: false,
             isLoaded: true,
             res_modal_status: status
-          });
+          }));
         } else {
           const { message } = resp.data;
-          this.setState((state) => ({
-            ...state,
+          setInterviewTrainingState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             res_modal_message: message,
             res_modal_status: status
@@ -140,80 +166,70 @@ class InterviewTraining extends React.Component {
         }
       },
       (error) => {
-        const { statusText } = resp;
-        this.setState((state) => ({
-          ...state,
+        setInterviewTrainingState((prevState) => ({
+          ...prevState,
           isLoaded: true,
           error,
           res_modal_status: 500,
-          res_modal_message: statusText
+          res_modal_message: ''
         }));
       }
     );
   };
 
-  openDeleteDocModalWindow = (e, interview) => {
+  const openDeleteDocModalWindow = (e, interview) => {
     e.stopPropagation();
-    this.setState((state) => ({
-      ...state,
+    setInterviewTrainingState((prevState) => ({
+      ...prevState,
       interview_id_toBeDelete: interview._id,
       interview_name_toBeDelete: `${interview.program_id.school} ${interview.program_id.program_name}`,
       SetDeleteDocModel: true
     }));
   };
 
-  closeDeleteDocModalWindow = (e) => {
-    this.setState((state) => ({
-      ...state,
+  const closeDeleteDocModalWindow = () => {
+    setInterviewTrainingState((prevState) => ({
+      ...prevState,
       SetDeleteDocModel: false
     }));
   };
 
-  handleClickEditToggle = (e) => {
-    this.setState((state) => ({ ...state, isEdit: !this.state.isEdit }));
-  };
-
-  handleClickSave = (e, editorState) => {
+  const handleClickSave = (e, editorState) => {
     e.preventDefault();
     if (
-      !this.state.interviewData.program_id ||
-      this.state.interviewData.program_id === ''
+      !interviewTrainingState.interviewData.program_id ||
+      interviewTrainingState.interviewData.program_id === ''
     ) {
       alert('Interview University / Program is missing');
       return;
     }
     const message = JSON.stringify(editorState);
-    const msg = {
-      program_id: this.state.program_id,
-      interview_date: this.state.category,
-      prop: this.props.item,
-      interview_description: message
-    };
-    const interviewData_temp = this.state.interviewData;
+    const interviewData_temp = interviewTrainingState.interviewData;
     interviewData_temp.interview_description = message;
     createInterview(
-      this.state.interviewData.program_id,
-      this.props.user._id.toString(),
+      interviewTrainingState.interviewData.program_id,
+      user._id.toString(),
       interviewData_temp
     ).then(
       (resp) => {
         const { success, data } = resp.data;
         const { status } = resp;
         if (success) {
-          let interviewslist_temp = [...this.state.interviewslist];
+          let interviewslist_temp = [...interviewTrainingState.interviewslist];
           interviewslist_temp.push(data);
-          this.setState({
+          setInterviewTrainingState((prevState) => ({
+            ...prevState,
             success,
             interviewslist: interviewslist_temp,
             editorState: '',
-            isEdit: !this.state.isEdit,
+            isEdit: !prevState.isEdit,
             isLoaded: true,
             res_modal_status: status
-          });
+          }));
         } else {
           const { message } = resp.data;
-          this.setState((state) => ({
-            ...state,
+          setInterviewTrainingState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             res_modal_message: message,
             res_modal_status: status
@@ -221,298 +237,290 @@ class InterviewTraining extends React.Component {
         }
       },
       (error) => {
-        const { statusText } = resp;
-        this.setState((state) => ({
-          ...state,
+        setInterviewTrainingState((prevState) => ({
+          ...prevState,
           isLoaded: true,
           error,
           res_modal_status: 500,
-          res_modal_message: statusText
+          res_modal_message: ''
         }));
       }
     );
-    this.setState((state) => ({ ...state, in_edit_mode: false }));
+    setInterviewTrainingState((state) => ({ ...state, in_edit_mode: false }));
   };
 
-  handleChange_InterviewTraining = (e) => {
-    const interviewData_temp = { ...this.state.interviewData };
+  const handleChange_InterviewTraining = (e) => {
+    const interviewData_temp = { ...interviewTrainingState.interviewData };
     interviewData_temp[e.target.id] = e.target.value;
-    this.setState((state) => ({
-      ...state,
+    setInterviewTrainingState((prevState) => ({
+      ...prevState,
       interviewData: interviewData_temp
     }));
   };
 
-  ConfirmError = () => {
-    this.setState((state) => ({
-      ...state,
+  const ConfirmError = () => {
+    setInterviewTrainingState((prevState) => ({
+      ...prevState,
       res_modal_status: 0,
       res_modal_message: ''
     }));
   };
 
-  render() {
-    // if (!is_TaiGer_role(this.props.user)) {
-    //   return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
-    // }
-    const {
-      res_status,
-      isLoaded,
-      res_modal_status,
-      res_modal_message,
-      interviewslist,
-      student
-    } = this.state;
+  // if (!is_TaiGer_role(user)) {
+  //   return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
+  // }
+  const {
+    res_status,
+    isLoaded,
+    res_modal_status,
+    res_modal_message,
+    interviewslist,
+    student
+  } = interviewTrainingState;
 
-    if (!isLoaded) {
-      return (
-        <div style={spinner_style}>
-          <Spinner animation="border" role="status">
-            <span className="visually-hidden"></span>
-          </Spinner>
-        </div>
-      );
-    }
-
-    if (res_status >= 400) {
-      return <ErrorPage res_status={res_status} />;
-    }
-    let available_interview_request_programs = [];
-    if (!is_TaiGer_role(this.props.user)) {
-      available_interview_request_programs = student.applications
-        .filter(
-          (application) =>
-            application.decided === 'O' &&
-            application.admission !== 'O' &&
-            application.admission !== 'X' &&
-            !interviewslist.find(
-              (interview) =>
-                interview.program_id._id.toString() ===
-                application.programId._id.toString()
-            )
-        )
-        .map((application) => {
-          return {
-            key: application.programId._id.toString(),
-            value: `${application.programId.school} ${application.programId.program_name} ${application.programId.degree} ${application.programId.semester}`
-          };
-        });
-    }
-
-    // console.log(available_interview_request_programs);
-
-    TabTitle('Docs Database');
-    return (
-      <Aux>
-        {res_modal_status >= 400 && (
-          <ModalMain
-            ConfirmError={this.ConfirmError}
-            res_modal_status={res_modal_status}
-            res_modal_message={res_modal_message}
-          />
-        )}
-
-        <Row>
-          <Col sm={12}>
-            {this.state.isEdit ? (
-              <>
-                <TopBar>
-                  {is_TaiGer_role(this.props.user)
-                    ? 'All Interviews'
-                    : 'Create Interview Training Request'}
-                </TopBar>
-                <Button
-                  size="sm"
-                  variant="secondary"
-                  onClick={(e) =>
-                    this.setState((state) => ({
-                      ...state,
-                      isEdit: !this.state.isEdit
-                    }))
-                  }
-                >
-                  Back
-                </Button>
-                <Card className="mb-2 mx-0">
-                  <Card.Body>
-                    <h3>Provide Interview Information</h3>
-                    <table>
-                      <thead>
-                        <tr>
-                          <th></th>
-                          <th></th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>Interview Date</td>
-                          <td>
-                            <Form>
-                              <Form.Group controlId="interview_date">
-                                <Form.Control
-                                  type="date"
-                                  //   value={''}
-                                  placeholder="Date of Interview"
-                                  onChange={(e) =>
-                                    this.handleChange_InterviewTraining(e)
-                                  }
-                                />
-                              </Form.Group>
-                            </Form>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>Interview time</td>
-                          <td>
-                            <Form>
-                              <Form.Group controlId="interview_time">
-                                <Form.Control
-                                  type="text"
-                                  //   value={''}
-                                  placeholder="Date of Interview"
-                                  onChange={(e) =>
-                                    this.handleChange_InterviewTraining(e)
-                                  }
-                                />
-                              </Form.Group>
-                            </Form>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>Interview duration</td>
-                          <td>
-                            <Form>
-                              <Form.Group controlId="interview_duration">
-                                <Form.Control
-                                  type="text"
-                                  //   value={''}
-                                  placeholder="1 hour"
-                                  onChange={(e) =>
-                                    this.handleChange_InterviewTraining(e)
-                                  }
-                                />
-                              </Form.Group>
-                            </Form>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>Interview University</td>
-                          <td>
-                            <Form>
-                              <Form.Group controlId="program_id">
-                                <Form.Control
-                                  as="select"
-                                  onChange={(e) =>
-                                    this.handleChange_InterviewTraining(e)
-                                  }
-                                >
-                                  <option value={''}>
-                                    Select Document Category
-                                  </option>
-                                  {!is_TaiGer_role(this.props.user) &&
-                                    available_interview_request_programs.map(
-                                      (cat, i) => (
-                                        <option value={cat.key} key={i}>
-                                          {cat.value}
-                                        </option>
-                                      )
-                                    )}
-                                </Form.Control>
-                              </Form.Group>
-                            </Form>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>Interviewer</td>
-                          <td>
-                            <Form>
-                              <Form.Group controlId="interviewer">
-                                <Form.Control
-                                  type="text"
-                                  //   value={''}
-                                  placeholder="Prof. Sebastian"
-                                  onChange={(e) =>
-                                    this.handleChange_InterviewTraining(e)
-                                  }
-                                />
-                              </Form.Group>
-                            </Form>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                    <br />
-                    <p>
-                      Please provide further information (invitation email
-                      content, reading assignment, etc.) below:{' '}
-                    </p>
-                    <NotesEditor
-                      thread={this.state.thread}
-                      buttonDisabled={
-                        !this.state.interviewData.program_id ||
-                        this.state.interviewData.program_id === '' ||
-                        !this.state.interviewData.interview_date ||
-                        this.state.interviewData.interview_date === ''
-                      }
-                      editorState={this.state.editorState}
-                      handleClickSave={this.handleClickSave}
-                    />
-                  </Card.Body>
-                </Card>
-              </>
-            ) : (
-              <>
-                <TopBar>
-                  {is_TaiGer_role(this.props.user)
-                    ? 'All Interviews'
-                    : 'My Interviews'}
-                </TopBar>
-                {interviewslist.map((interview, i) => (
-                  <InterviewItems
-                    key={i}
-                    expanded={false}
-                    user={this.props.user}
-                    readOnly={true}
-                    interview={interview}
-                    openDeleteDocModalWindow={this.openDeleteDocModalWindow}
-                  />
-                ))}
-                {!is_TaiGer_role(this.props.user) &&
-                  available_interview_request_programs.length > 0 && (
-                    <Button size="sm" onClick={this.handleClick}>
-                      Add
-                    </Button>
-                  )}
-              </>
-            )}
-          </Col>
-        </Row>
-        <Modal
-          show={this.state.SetDeleteDocModel}
-          onHide={this.closeDeleteDocModalWindow}
-          aria-labelledby="contained-modal-title-vcenter"
-          centered
-        >
-          <Modal.Header>
-            <Modal.Title id="contained-modal-title-vcenter">
-              Warning
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            Do you want to delete the interview request of{' '}
-            <b>{this.state.interview_name_toBeDelete}</b>?
-          </Modal.Body>
-          <Modal.Footer>
-            <Button disabled={!isLoaded} onClick={this.handleDeleteInterview}>
-              Yes
-            </Button>
-
-            <Button onClick={this.closeDeleteDocModalWindow}>No</Button>
-          </Modal.Footer>
-        </Modal>
-      </Aux>
-    );
+  if (!isLoaded) {
+    return <Loading />;
   }
+
+  if (res_status >= 400) {
+    return <ErrorPage res_status={res_status} />;
+  }
+  let available_interview_request_programs = [];
+  if (!is_TaiGer_role(user)) {
+    available_interview_request_programs = student.applications
+      .filter(
+        (application) =>
+          application.decided === 'O' &&
+          application.admission !== 'O' &&
+          application.admission !== 'X' &&
+          !interviewslist.find(
+            (interview) =>
+              interview.program_id._id.toString() ===
+              application.programId._id.toString()
+          )
+      )
+      .map((application) => {
+        return {
+          key: application.programId._id.toString(),
+          value: `${application.programId.school} ${application.programId.program_name} ${application.programId.degree} ${application.programId.semester}`
+        };
+      });
+  }
+
+  TabTitle('Docs Database');
+  return (
+    <Box>
+      {res_modal_status >= 400 && (
+        <ModalMain
+          ConfirmError={ConfirmError}
+          res_modal_status={res_modal_status}
+          res_modal_message={res_modal_message}
+        />
+      )}
+
+      {interviewTrainingState.isEdit ? (
+        <>
+          <Breadcrumbs aria-label="breadcrumb">
+            <Link
+              underline="hover"
+              color="inherit"
+              component={LinkDom}
+              to={`${DEMO.DASHBOARD_LINK}`}
+            >
+              {appConfig.companyName}
+            </Link>
+            <Typography color="text.primary">
+              {is_TaiGer_role(user)
+                ? 'All Interviews'
+                : 'Create Interview Training Request'}
+            </Typography>
+          </Breadcrumbs>
+          <Button
+            size="small"
+            color="secondary"
+            onClick={() =>
+              setInterviewTrainingState((state) => ({
+                ...state,
+                isEdit: !interviewTrainingState.isEdit
+              }))
+            }
+          >
+            {t('Back')}
+          </Button>
+          <Card>
+            <Typography variant="h6">Provide Interview Information</Typography>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell></TableCell>
+                  <TableCell></TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                <TableRow>
+                  <TableCell>Interview Date</TableCell>
+                  <TableCell>
+                    <Form>
+                      <Form.Group controlId="interview_date">
+                        <Form.Control
+                          type="date"
+                          //   value={''}
+                          placeholder="Date of Interview"
+                          onChange={(e) => handleChange_InterviewTraining(e)}
+                        />
+                      </Form.Group>
+                    </Form>
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>Interview time</TableCell>
+                  <TableCell>
+                    <Form>
+                      <Form.Group controlId="interview_time">
+                        <Form.Control
+                          type="text"
+                          //   value={''}
+                          placeholder="Date of Interview"
+                          onChange={(e) => handleChange_InterviewTraining(e)}
+                        />
+                      </Form.Group>
+                    </Form>
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>Interview duration</TableCell>
+                  <TableCell>
+                    <Form>
+                      <Form.Group controlId="interview_duration">
+                        <Form.Control
+                          type="text"
+                          //   value={''}
+                          placeholder="1 hour"
+                          onChange={(e) => handleChange_InterviewTraining(e)}
+                        />
+                      </Form.Group>
+                    </Form>
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>Interview University</TableCell>
+                  <TableCell>
+                    <Form>
+                      <Form.Group controlId="program_id">
+                        <Form.Control
+                          as="select"
+                          onChange={(e) => handleChange_InterviewTraining(e)}
+                        >
+                          <option value={''}>Select Document Category</option>
+                          {!is_TaiGer_role(user) &&
+                            available_interview_request_programs.map(
+                              (cat, i) => (
+                                <option value={cat.key} key={i}>
+                                  {cat.value}
+                                </option>
+                              )
+                            )}
+                        </Form.Control>
+                      </Form.Group>
+                    </Form>
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>Interviewer</TableCell>
+                  <TableCell>
+                    <Form>
+                      <Form.Group controlId="interviewer">
+                        <Form.Control
+                          type="text"
+                          //   value={''}
+                          placeholder="Prof. Sebastian"
+                          onChange={(e) => handleChange_InterviewTraining(e)}
+                        />
+                      </Form.Group>
+                    </Form>
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+            <br />
+            <Typography>
+              Please provide further information (invitation email content,
+              reading assignment, etc.) below:{' '}
+            </Typography>
+            <NotesEditor
+              thread={interviewTrainingState.thread}
+              buttonDisabled={
+                !interviewTrainingState.interviewData.program_id ||
+                interviewTrainingState.interviewData.program_id === '' ||
+                !interviewTrainingState.interviewData.interview_date ||
+                interviewTrainingState.interviewData.interview_date === ''
+              }
+              editorState={interviewTrainingState.editorState}
+              handleClickSave={handleClickSave}
+            />
+          </Card>
+        </>
+      ) : (
+        <>
+          <Breadcrumbs aria-label="breadcrumb">
+            <Link
+              underline="hover"
+              color="inherit"
+              component={LinkDom}
+              to={`${DEMO.DASHBOARD_LINK}`}
+            >
+              {appConfig.companyName}
+            </Link>
+            <Typography color="text.primary">
+              {is_TaiGer_role(user) ? 'All Interviews' : 'My Interviews'}
+            </Typography>
+          </Breadcrumbs>
+          {interviewslist.map((interview, i) => (
+            <InterviewItems
+              key={i}
+              expanded={false}
+              user={user}
+              readOnly={true}
+              interview={interview}
+              openDeleteDocModalWindow={openDeleteDocModalWindow}
+            />
+          ))}
+          {!is_TaiGer_role(user) &&
+            available_interview_request_programs.length > 0 && (
+              <Button size="small" onClick={handleClick}>
+                {t('Add')}
+              </Button>
+            )}
+        </>
+      )}
+
+      <ModalNew
+        open={interviewTrainingState.SetDeleteDocModel}
+        onClose={closeDeleteDocModalWindow}
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Typography variant="h6">Warning</Typography>
+        Do you want to delete the interview request of{' '}
+        <b>{interviewTrainingState.interview_name_toBeDelete}</b>?
+        <Button
+          color="primary"
+          variant="contained"
+          disabled={!isLoaded}
+          onClick={handleDeleteInterview}
+        >
+          {t('Yes')}
+        </Button>
+        <Button
+          color="secondary"
+          variant="outlined"
+          onClick={closeDeleteDocModalWindow}
+        >
+          {t('No')}
+        </Button>
+      </ModalNew>
+    </Box>
+  );
 }
 
 export default InterviewTraining;

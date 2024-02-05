@@ -1,87 +1,136 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Form, Modal } from 'react-bootstrap';
-import { Button } from 'react-bootstrap';
+import ModalNew from '../../../../components/Modal';
+import {
+  Box,
+  Button,
+  Checkbox,
+  CircularProgress,
+  FormControlLabel,
+  Table,
+  TableBody,
+  TableCell,
+  TableRow,
+  Typography
+} from '@mui/material';
+import { useTranslation } from 'react-i18next';
+import { getAgents } from '../../../../api';
 
 function EditAgentsSubpage(props) {
-  // edit Agent subpage
+  const { t } = useTranslation();
   const [checkboxState, setCheckboxState] = useState({});
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
     // Initialize the state with checked checkboxes based on the student's agents
-    const initialCheckboxState = {};
-    props.agent_list?.forEach((agent, i) => {
-      initialCheckboxState[agent._id] = props.student.agents
-        ? props.student.agents.some((a) => a._id === agent._id)
-        : false;
-    });
-    setCheckboxState(initialCheckboxState);
-  }, [props.agent_list, props.student.agents]);
+    getAgents().then(
+      (resp) => {
+        // TODO: check success
+        const { data, success } = resp.data;
+        if (success) {
+          const agents = data; //get all agent
+          const { agents: student_agents } = props.student;
+          const updateAgentList = agents.reduce(
+            (prev, { _id }) => ({
+              ...prev,
+              [_id]: student_agents
+                ? student_agents.findIndex(
+                    (student_agent) => student_agent._id === _id
+                  ) > -1
+                : false
+            }),
+            {}
+          );
+          setCheckboxState({ agents, updateAgentList });
+          setIsLoaded(true);
+        } else {
+          setIsLoaded(true);
+        }
+      },
+      () => {
+        // const { statusText } = resp;
+        throw new Response('No data', { status: 500 });
+        // setIsLoaded(true);
+      }
+    );
+  }, [props.student.agents]);
 
   const handleChangeAgentlist = (e) => {
     const { value } = e.target;
     setCheckboxState((prevState) => ({
       ...prevState,
-      [value]: !prevState[value]
+      updateAgentList: {
+        ...prevState.updateAgentList,
+        [value]: !prevState.updateAgentList[value]
+      }
     }));
   };
 
-  let agentlist = props.agent_list ? (
-    props.agent_list.map((agent, i) => (
-      <tr key={i + 1}>
-        <td>
-          <Form>
-            <Form.Check
-              type="checkbox"
-              checked={checkboxState[agent._id]}
-              onChange={(e) => handleChangeAgentlist(e)}
-              value={agent._id}
-            />
-          </Form>
-        </td>
-        <td>
-          <h5 className="my-0">
-            {agent.lastname} {agent.firstname}
-          </h5>
-        </td>
-      </tr>
+  let agentlist = checkboxState.agents ? (
+    checkboxState.agents.map((agent, i) => (
+      <TableRow key={i + 1}>
+        <TableCell>
+          <FormControlLabel
+            label={`${agent.lastname} ${agent.firstname}`}
+            control={
+              <Checkbox
+                checked={checkboxState?.updateAgentList[agent._id] || false}
+                onChange={(e) => handleChangeAgentlist(e)}
+                value={agent._id}
+              />
+            }
+          />
+        </TableCell>
+      </TableRow>
     ))
   ) : (
-    <tr>
-      <h5 className="my-1"> No Agent</h5>
-    </tr>
+    <TableRow>
+      <TableCell>
+        <Typography variant="h6">{t('No Agent')}</Typography>
+      </TableCell>
+    </TableRow>
   );
 
   return (
-    <Modal
-      show={props.show}
-      onHide={props.onHide}
-      size="l"
+    <ModalNew
+      open={props.show}
+      onClose={props.onHide}
+      size="large"
       aria-labelledby="contained-modal-title-vcenter"
       centered
     >
-      <Modal.Header>
-        <Modal.Title id="contained-modal-title-vcenter">
-          Agent for {props.student.firstname} - {props.student.lastname} to
-        </Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <Table size="sm">
-          <tbody>{agentlist}</tbody>
-        </Table>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button
-          onClick={(e) =>
-            props.submitUpdateAgentlist(e, checkboxState, props.student._id)
-          }
-        >
-          Update
-        </Button>
-        <Button onClick={props.onHide} variant="light">
-          Cancel
-        </Button>
-      </Modal.Footer>
-    </Modal>
+      {isLoaded ? (
+        <>
+          <Typography variant="h6">
+            Agent for {props.student.firstname} - {props.student.lastname} to
+          </Typography>
+          <Typography variant="body1">{t('Agent')}: </Typography>
+          <Table size="small">
+            <TableBody>{agentlist}</TableBody>
+          </Table>
+          <Box sx={{ mt: 2 }}>
+            <Button
+              color="primary"
+              variant="contained"
+              onClick={(e) =>
+                props.submitUpdateAgentlist(
+                  e,
+                  checkboxState.updateAgentList,
+                  props.student._id
+                )
+              }
+              sx={{ mr: 2 }}
+            >
+              {t('Update')}
+            </Button>
+            <Button color="secondary" variant="outlined" onClick={props.onHide}>
+              {t('Cancel')}
+            </Button>
+          </Box>
+        </>
+      ) : (
+        <CircularProgress size={24} />
+      )}
+    </ModalNew>
   );
 }
 

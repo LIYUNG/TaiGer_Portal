@@ -1,88 +1,76 @@
-import React from 'react';
+import React, { useState } from 'react';
+
 import ManualFilesList from './ManualFilesList';
 import ToggleableUploadFileForm from './ToggleableUploadFileForm';
 import { is_TaiGer_role } from '../Utils/checking-functions';
+import { useAuth } from '../../components/AuthProvider';
 
-class ManualFiles extends React.Component {
-  state = {
-    category: ''
-  };
+function ManualFiles(props) {
+  const { user } = useAuth();
+  const [categoryState, setCategory] = useState('');
 
-  handleCreateGeneralMessageThread = (
-    e,
-    studentId,
-    fileCategory,
-    thread_name
-  ) => {
+  const handleCreateGeneralMessageThread = (e, studentId, fileCategory) => {
     e.preventDefault();
-    if (!this.state.category) {
+    if (!categoryState) {
       alert('Please select file type');
     } else {
-      this.props.initGeneralFileThread(e, studentId, fileCategory, thread_name);
-      this.setState({ category: '' });
+      props.initGeneralFileThread(e, studentId, fileCategory);
+      setCategory({ category: '' });
     }
   };
 
-  handleCreateProgramSpecificMessageThread = (
+  const handleCreateProgramSpecificMessageThread = (
     e,
     studentId,
     programId,
-    fileCategory,
-    thread_name
+    fileCategory
   ) => {
     e.preventDefault();
-    if (!this.state.category) {
+    if (!categoryState) {
       alert('Please select file type');
     } else {
-      this.props.initProgramSpecificFileThread(
+      props.initProgramSpecificFileThread(
         e,
         studentId,
         programId,
-        fileCategory,
-        thread_name
+        fileCategory
       );
-      this.setState({ category: '' });
+      setCategory('');
     }
   };
 
-  handleSelect = (e) => {
+  const handleSelect = (e) => {
     e.preventDefault();
-    this.setState({ category: e.target.value });
+    setCategory(e.target.value);
   };
-  render() {
-    return (
-      <>
-        <ManualFilesList
-          student={this.props.student}
-          onDeleteFileThread={this.props.onDeleteFileThread}
-          handleAsFinalFile={this.props.handleAsFinalFile}
-          user={this.props.user}
-          application={this.props.application}
-        />
 
-        {is_TaiGer_role(this.props.user) &&
-          (!this.props.application ||
-            (this.props.application &&
-              this.props.application.closed !== 'O')) && (
-            <ToggleableUploadFileForm
-              role={this.props.user.role}
-              user={this.props.user}
-              student={this.props.student}
-              handleSelect={this.handleSelect}
-              handleCreateGeneralMessageThread={
-                this.handleCreateGeneralMessageThread
-              }
-              handleCreateProgramSpecificMessageThread={
-                this.handleCreateProgramSpecificMessageThread
-              }
-              category={this.state.category}
-              filetype={this.props.filetype}
-              application={this.props.application}
-            />
-          )}
-      </>
-    );
-  }
+  return (
+    <>
+      <ManualFilesList
+        student={props.student}
+        onDeleteFileThread={props.onDeleteFileThread}
+        handleAsFinalFile={props.handleAsFinalFile}
+        application={props.application}
+      />
+      {is_TaiGer_role(user) &&
+        (!props.application ||
+          (props.application && props.application.closed !== 'O')) && (
+          <ToggleableUploadFileForm
+            role={user.role}
+            user={user}
+            student={props.student}
+            handleSelect={handleSelect}
+            handleCreateGeneralMessageThread={handleCreateGeneralMessageThread}
+            handleCreateProgramSpecificMessageThread={
+              handleCreateProgramSpecificMessageThread
+            }
+            category={categoryState}
+            filetype={props.filetype}
+            application={props.application}
+          />
+        )}
+    </>
+  );
 }
 
 export default ManualFiles;

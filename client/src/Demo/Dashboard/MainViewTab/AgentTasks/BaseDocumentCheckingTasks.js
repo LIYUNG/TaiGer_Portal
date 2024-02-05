@@ -1,41 +1,38 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link as LinkDom } from 'react-router-dom';
+import { Link, TableCell, TableRow } from '@mui/material';
 
 import { convertDate } from '../../../Utils/contants';
 import DEMO from '../../../../store/constant';
 
-class BaseDocumentCheckingTasks extends React.Component {
-  render() {
-    return (
-      <>
-        {/* check program reday to be submitted */}
-        {this.props.student.profile.map(
-          (file, i) =>
-            file.status === 'uploaded' && (
-              <tr key={i}>
-                <td>
-                  <Link
-                    to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-                      this.props.student._id.toString(),
-                      DEMO.PROFILE
-                    )}`}
-                    style={{ textDecoration: 'none' }}
-                    className="text-info"
-                  >
-                    <b>
-                      {this.props.student.firstname}{' '}
-                      {this.props.student.lastname}
-                    </b>
-                  </Link>
-                </td>
-                <td>{file.name}</td>
-                <td>{convertDate(file.updatedAt)}</td>
-              </tr>
-            )
-        )}
-      </>
-    );
-  }
+function BaseDocumentCheckingTasks(props) {
+  return (
+    <>
+      {/* check program reday to be submitted */}
+      {props.student.profile.map(
+        (file, i) =>
+          file.status === 'uploaded' && (
+            <TableRow key={i}>
+              <TableCell>
+                <Link
+                  to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                    props.student._id.toString(),
+                    DEMO.PROFILE
+                  )}`}
+                  component={LinkDom}
+                >
+                  <b>
+                    {props.student.firstname} {props.student.lastname}
+                  </b>
+                </Link>
+              </TableCell>
+              <TableCell>{file.name}</TableCell>
+              <TableCell>{convertDate(file.updatedAt)}</TableCell>
+            </TableRow>
+          )
+      )}
+    </>
+  );
 }
 
 export default BaseDocumentCheckingTasks;

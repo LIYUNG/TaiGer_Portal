@@ -1,18 +1,24 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Spinner } from 'react-bootstrap';
+import {
+  Button,
+  CircularProgress,
+  Grid,
+  Link,
+  TextField,
+  Typography
+} from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-import './../../../assets/scss/style.scss';
-import Aux from '../../../hoc/_Aux';
 import { resetPassword } from '../../../api/index';
-import Footer from '../../../components/Footer/Footer';
+import AuthWrapper from '../../../components/AuthWrapper';
+import DEMO from '../../../store/constant';
 
-export default function ResetPassword(props) {
-  const { t, i18n } = useTranslation();
-  const query = new URLSearchParams(props.location.search);
-  const [email, setEmail] = useState(query.get('email'));
-  const [token, setToken] = useState(query.get('token'));
+export default function ResetPassword() {
+  const { t } = useTranslation();
+  const query = new URLSearchParams(window.location.search);
+  const email = query.get('email');
+  const token = query.get('token');
   const [passwordchanged, setPasswordchanged] = useState(false);
   const [password, setPassword] = useState('');
   const [passwordRepeat, setPasswordRepeat] = useState('');
@@ -55,105 +61,79 @@ export default function ResetPassword(props) {
       } catch (err) {
         setButtonDisable(false);
         // TODO: error handler
-        // console.log(err);
       }
     } else {
       setButtonDisable(false);
       alert('Password is not valid');
     }
   };
-  if (passwordchanged) {
-    return (
-      <Aux>
-        <div className="auth-wrapper">
-          <div className="auth-content">
-            <div className="auth-bg">
-              <span className="r" />
-              <span className="r s" />
-              <span className="r s" />
-              <span className="r" />
-            </div>
-            <div className="card">
-              <div className="card-body text-center">
-                <h5 className="mb-3">Password change successfully!</h5>
-                <p className="mb-0 text-secondary">
-                  Please login with your new password
-                  <NavLink to="/login">Login</NavLink>
-                </p>
-              </div>
-            </div>
-            <Footer />
-          </div>
-        </div>
-      </Aux>
-    );
-  } else {
-    return (
-      <Aux>
-        <div className="auth-wrapper">
-          <div className="auth-content">
-            <form onSubmit={handleSubmit}>
-              <div className="card-body text-center">
-                <div className="mb-4">
-                  <i className="feather icon-user-plus auth-icon" />
-                </div>
-                <h3 className="mb-3 text-light">{t('Reset Login Password')}</h3>
-                <h5 className="mb-3 text-light">Enter New Password</h5>
-                <p className="text-light">
-                  Password must contain at least:
-                  <br />- 1 Uppercase
-                  <br />- 1 Lowercase
-                  <br />- 1 number
-                  <br />- 1 special character
-                  <br />- length of 8 - 20 characters
-                </p>
-                <div className="input-group mb-4 text-light">
-                  <input
-                    type="password"
-                    className="form-control"
-                    placeholder="password"
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
-                </div>
-                <h5 className="mb-3 text-light">Enter New Password Again</h5>
-                <div className="input-group mb-4 text-light">
-                  <input
-                    type="password"
-                    className="form-control"
-                    placeholder="password"
-                    onChange={(e) => setPasswordRepeat(e.target.value)}
-                  />
-                </div>
-                <button
-                  type="submit"
-                  disabled={buttonDisable}
-                  className="btn btn-primary shadow-2 mb-4"
-                >
-                  {buttonDisable ? (
-                    <Spinner
-                      animation="border"
-                      role="status"
-                      variant="light"
-                      size="sm"
-                    >
-                      <span className="visually-hidden"></span>
-                    </Spinner>
-                  ) : (
-                    `${t('Reset')}`
-                  )}
-                </button>
-                <p className="mb-0 text-light">
-                  {t('Already have an account')}?{' '}
-                  <NavLink to="/login">
-                    <p className="text-info">{t('Login')}</p>
-                  </NavLink>
-                </p>
-              </div>
-              <Footer />
-            </form>
-          </div>
-        </div>
-      </Aux>
-    );
-  }
+  return (
+    <AuthWrapper>
+      {passwordchanged ? (
+        <>
+          <Typography variant="h6">
+            {t('Password change successfully!')}
+          </Typography>
+          <Typography>{t('Please login with your new password')}</Typography>
+          <NavLink to={DEMO.LOGIN_LINK} sx={{ mb: 2 }}>
+            <Typography>{t('Login')}</Typography>
+          </NavLink>
+        </>
+      ) : (
+        <>
+          <Typography variant="h5">{t('Reset Login Password')}</Typography>
+          <Typography>
+            Password must contain at least:
+            <br />- 1 Uppercase
+            <br />- 1 Lowercase
+            <br />- 1 number
+            <br />- 1 special character
+            <br />- length of 8 - 20 characters
+          </Typography>
+          <TextField
+            id="password-input"
+            margin="normal"
+            required
+            fullWidth
+            label={t('Enter New Password')}
+            type="password"
+            autoComplete="password"
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <TextField
+            id="password-again-input"
+            margin="normal"
+            required
+            fullWidth
+            label={t('Enter New Password Again')}
+            type="password"
+            autoComplete="password"
+            onChange={(e) => setPasswordRepeat(e.target.value)}
+            sx={{ mb: 2 }}
+          />
+          <Button
+            color="primary"
+            variant="contained"
+            onClick={handleSubmit}
+            disabled={buttonDisable}
+            sx={{ mb: 2 }}
+          >
+            {buttonDisable ? <CircularProgress /> : `${t('Reset')}`}
+          </Button>
+          <Grid container spacing={2} sx={{ my: 2 }}>
+            <Grid item xs={6} sx={{ textAlign: 'right' }}>
+              <Typography sx={{ mb: 2 }}>
+                {t('Already have an account')}?{' '}
+              </Typography>{' '}
+            </Grid>
+            <Grid item xs={6}>
+              <Link to={DEMO.LOGIN_LINK} sx={{ mb: 2 }} component={NavLink}>
+                <Typography>{t('Login')}</Typography>
+              </Link>
+            </Grid>
+          </Grid>
+        </>
+      )}
+    </AuthWrapper>
+  );
 }

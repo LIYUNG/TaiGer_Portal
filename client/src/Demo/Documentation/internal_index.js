@@ -1,23 +1,24 @@
-import React from 'react';
-import { Spinner, Row, Col, Card } from 'react-bootstrap';
-import { Redirect } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Alert } from '@mui/material';
+import { Navigate } from 'react-router-dom';
 
 import DocPageView from './DocPageView';
 import DocPageEdit from './DocPageEdit';
-import { spinner_style } from '../Utils/contants';
 import { is_TaiGer_role } from '../Utils/checking-functions';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
-
 import {
   getInternalDocumentationPage,
   updateInternalDocumentationPage
 } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
+import { useAuth } from '../../components/AuthProvider';
+import Loading from '../../components/Loading/Loading';
 
-class InternaldocsPage extends React.Component {
-  state = {
+function InternaldocsPage(props) {
+  const { user } = useAuth();
+  const [internalDocsPageState, setInternalDocsPageState] = useState({
     error: '',
     isLoaded: false,
     success: false,
@@ -27,9 +28,8 @@ class InternaldocsPage extends React.Component {
     res_status: 0,
     res_modal_message: '',
     res_modal_status: 0
-  };
-
-  componentDidMount() {
+  });
+  useEffect(() => {
     getInternalDocumentationPage().then(
       (resp) => {
         const { data, success } = resp.data;
@@ -44,41 +44,46 @@ class InternaldocsPage extends React.Component {
           }
           // initialEditorState = JSON.parse(data.text);
 
-          this.setState({
+          setInternalDocsPageState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             editorState: initialEditorState,
             author,
             success: success,
             res_status: status
-          });
+          }));
         } else {
-          this.setState({
+          setInternalDocsPageState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             res_status: status
-          });
+          }));
         }
       },
       (error) => {
-        this.setState((state) => ({
-          ...state,
+        setInternalDocsPageState((prevState) => ({
+          ...prevState,
           isLoaded: true,
           error,
           res_status: 500
         }));
       }
     );
-  }
+  }, []);
 
-  handleClickEditToggle = (e) => {
-    this.setState((state) => ({ ...state, isEdit: !this.state.isEdit }));
+  const handleClickEditToggle = () => {
+    setInternalDocsPageState((prevState) => ({
+      ...prevState,
+      isEdit: !internalDocsPageState.isEdit
+    }));
   };
-  handleClickSave = (e, doc_title, editorState) => {
+  const handleClickSave = (e, doc_title, editorState) => {
     e.preventDefault();
     const message = JSON.stringify(editorState);
     const msg = {
       category: 'internal',
       title: doc_title,
-      prop: this.props.item,
+      prop: props.item,
       text: message
     };
     updateInternalDocumentationPage(msg).then(
@@ -86,19 +91,20 @@ class InternaldocsPage extends React.Component {
         const { success, data } = resp.data;
         const { status } = resp;
         if (success) {
-          this.setState({
+          setInternalDocsPageState((prevState) => ({
+            ...prevState,
             success,
             document_title: data.title,
             editorState,
-            isEdit: !this.state.isEdit,
+            isEdit: !internalDocsPageState.isEdit,
             author: data.author,
             isLoaded: true,
             res_modal_status: status
-          });
+          }));
         } else {
           const { message } = resp.data;
-          this.setState((state) => ({
-            ...state,
+          setInternalDocsPageState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             res_modal_message: message,
             res_modal_status: status
@@ -106,102 +112,84 @@ class InternaldocsPage extends React.Component {
         }
       },
       (error) => {
-        const { statusText } = resp;
-        this.setState((state) => ({
-          ...state,
+        setInternalDocsPageState((prevState) => ({
+          ...prevState,
           isLoaded: true,
           error,
           res_modal_status: 500,
-          res_modal_message: statusText
+          res_modal_message: ''
         }));
       }
     );
-    this.setState((state) => ({ ...state, in_edit_mode: false }));
+    setInternalDocsPageState((prevState) => ({
+      ...prevState,
+      in_edit_mode: false
+    }));
   };
 
-  ConfirmError = () => {
-    this.setState((state) => ({
-      ...state,
+  const ConfirmError = () => {
+    setInternalDocsPageState((prevState) => ({
+      ...prevState,
       res_modal_status: 0,
       res_modal_message: ''
     }));
   };
 
-  render() {
-    if (!is_TaiGer_role(this.props.user)) {
-      return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
-    }
-
-    const {
-      res_status,
-      editorState,
-      isLoaded,
-      res_modal_status,
-      res_modal_message
-    } = this.state;
-
-    if (!isLoaded || !editorState) {
-      return (
-        <div style={spinner_style}>
-          <Spinner animation="border" role="status">
-            <span className="visually-hidden"></span>
-          </Spinner>
-        </div>
-      );
-    }
-
-    if (res_status >= 400) {
-      return <ErrorPage res_status={res_status} />;
-    }
-    TabTitle('Internal Documentations');
-    return (
-      <>
-        {res_modal_status >= 400 && (
-          <ModalMain
-            ConfirmError={this.ConfirmError}
-            res_modal_status={res_modal_status}
-            res_modal_message={res_modal_message}
-          />
-        )}
-        <Row className="sticky-top ">
-          <Col>
-            <Card className="mb-2 mx-0" bg={'dark'} text={'light'}>
-              <Card.Header text={'dark'}>
-                <Card.Title>
-                  <Row>
-                    <Col className="my-0 mx-0 text-light">
-                      Internal Documentation
-                    </Col>
-                  </Row>
-                </Card.Title>
-              </Card.Header>
-            </Card>
-          </Col>
-        </Row>
-        {this.state.isEdit ? (
-          <DocPageEdit
-            category={'category'}
-            document={document}
-            document_title={this.state.document_title}
-            editorState={this.state.editorState}
-            isLoaded={isLoaded}
-            handleClickEditToggle={this.handleClickEditToggle}
-            handleClickSave={this.handleClickSave}
-          />
-        ) : (
-          <DocPageView
-            document={document}
-            document_title={this.state.document_title}
-            editorState={this.state.editorState}
-            isLoaded={isLoaded}
-            author={this.state.author}
-            user={this.props.user}
-            handleClickEditToggle={this.handleClickEditToggle}
-          />
-        )}
-      </>
-    );
+  if (!is_TaiGer_role(user)) {
+    return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
   }
+
+  const {
+    res_status,
+    editorState,
+    isLoaded,
+    res_modal_status,
+    res_modal_message
+  } = internalDocsPageState;
+
+  if (!isLoaded || !editorState) {
+    return <Loading />;
+  }
+
+  if (res_status >= 400) {
+    return <ErrorPage res_status={res_status} />;
+  }
+  TabTitle('Internal Documentations');
+  return (
+    <>
+      {res_modal_status >= 400 && (
+        <ModalMain
+          ConfirmError={ConfirmError}
+          res_modal_status={res_modal_status}
+          res_modal_message={res_modal_message}
+        />
+      )}
+
+      <Alert severity='info'>Internal Documentation</Alert>
+
+      {internalDocsPageState.isEdit ? (
+        <DocPageEdit
+          category={'category'}
+          document={document}
+          document_title={internalDocsPageState.document_title}
+          editorState={internalDocsPageState.editorState}
+          isLoaded={isLoaded}
+          handleClickEditToggle={handleClickEditToggle}
+          handleClickSave={handleClickSave}
+        />
+      ) : (
+        <DocPageView
+          document={document}
+          document_title={internalDocsPageState.document_title}
+          editorState={internalDocsPageState.editorState}
+          isLoaded={isLoaded}
+          author={internalDocsPageState.author}
+          user={user}
+          handleClickEditToggle={handleClickEditToggle}
+        />
+      )}
+    </>
+  );
 }
 
 export default InternaldocsPage;

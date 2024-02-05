@@ -1,167 +1,144 @@
-import React, { Component } from 'react';
-import { Col, Row, Button } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
-
+import React from 'react';
+import { Grid, Button, Link, Typography } from '@mui/material';
+import { Link as LinkDom } from 'react-router-dom';
 import { AiOutlineDelete, AiOutlineCheck, AiOutlineUndo } from 'react-icons/ai';
 import { IoCheckmarkCircle } from 'react-icons/io5';
+import { useTranslation } from 'react-i18next';
 
-import {
-  // showButtonIfMyStudent,
-  is_TaiGer_role
-} from '../Utils/checking-functions';
+import { is_TaiGer_role } from '../Utils/checking-functions';
 import { convertDate } from '../Utils/contants';
 import DEMO from '../../store/constant';
+import { useAuth } from '../../components/AuthProvider';
 
-class EditableFile_Thread extends Component {
-  handleAsFinalFileThread = (documenName, isFinal) => {
-    this.props.handleAsFinalFile(
-      this.props.thread.doc_thread_id._id,
-      this.props.student._id,
-      this.props.program_id,
+function EditableFile_Thread(props) {
+  const { user } = useAuth();
+  const { t } = useTranslation();
+  const handleAsFinalFileThread = (documenName, isFinal) => {
+    props.handleAsFinalFile(
+      props.thread.doc_thread_id._id,
+      props.student._id,
+      props.program_id,
       isFinal,
       documenName
     );
   };
 
-  handleDeleteFileThread = (documenName) => {
-    this.props.onDeleteFileThread(
-      this.props.thread.doc_thread_id._id,
-      this.props.application,
-      this.props.student._id,
+  const handleDeleteFileThread = (documenName) => {
+    props.onDeleteFileThread(
+      props.thread.doc_thread_id._id,
+      props.application,
+      props.student._id,
       documenName
     );
   };
 
-  handleDeleteProgramSpecificFileThread = () => {
-    this.props.onDeleteProgramSpecificThread(
-      this.props.thread.doc_thread_id._id,
-      this.props.program_id,
-      this.props.student._id
-    );
-  };
-
-  render() {
-    let fileStatus;
-    let documenName;
-    let school_program_name;
-    // let program_deadline;
-    if (this.props.application) {
-      school_program_name =
-        this.props.application.programId.school +
-        ' - ' +
-        this.props.application.programId.degree +
-        ' - ' +
-        this.props.application.programId.program_name;
-      documenName =
-        this.props.student.firstname +
-        ' - ' +
-        this.props.student.lastname +
-        ' ' +
-        school_program_name +
-        ' ' +
-        this.props.thread.doc_thread_id.file_type;
-      // program_deadline = this.props.application.programId.application_deadline
-    } else {
-      documenName =
-        this.props.student.firstname +
-        ' - ' +
-        this.props.student.lastname +
-        ' ' +
-        this.props.thread.doc_thread_id.file_type;
-    }
-
-    fileStatus = (
-      <>
-        <Row>
-          <Col md={1}>
-            {!is_TaiGer_role(this.props.user) ? (
-              this.props.thread.isFinalVersion && (
-                <IoCheckmarkCircle
-                  size={24}
-                  color="limegreen"
-                  title="Final Version"
-                  // onMouseEnter={this.MouseOver}
-                />
-              )
-            ) : this.props.thread.isFinalVersion ? (
-              <>
-                <IoCheckmarkCircle
-                  size={24}
-                  color="limegreen"
-                  title="Final Version"
-                  // onMouseEnter={this.MouseOver}
-                />
-              </>
-            ) : (
-              <AiOutlineCheck
-                size={24}
-                color="white"
-                style={{ cursor: 'pointer' }}
-                title="Set as final version"
-                onClick={() => this.handleAsFinalFileThread(documenName, true)}
-              />
-            )}
-          </Col>
-          <Col md={1}>
-            {this.props.thread.isFinalVersion ? (
-              this.props.user.role !== 'Student' &&
-              this.props.user.role !== 'Guest' ? (
-                <AiOutlineUndo
-                  size={24}
-                  color="red"
-                  title="Un do Final Version"
-                  style={{ cursor: 'pointer' }}
-                  onClick={() =>
-                    this.handleAsFinalFileThread(documenName, false)
-                  }
-                />
-              ) : (
-                <p className="text-warning">Closed</p>
-              )
-            ) : (
-              <></>
-            )}
-          </Col>
-
-          <Col md={6}>
-            <Link
-              to={DEMO.DOCUMENT_MODIFICATION_LINK(
-                this.props.thread.doc_thread_id._id
-              )}
-              className={`${
-                this.props.decided === 'O' ? 'text-info' : 'text-secondary'
-              }`}
-              style={{ textDecoration: 'none' }}
-            >
-              {documenName}
-            </Link>
-          </Col>
-          <Col md={2}>
-            <p className="text-light">
-              {convertDate(this.props.thread.doc_thread_id.updatedAt)}
-            </p>
-          </Col>
-          {is_TaiGer_role(this.props.user) && (
-            <Col md={1}>
-              {
-                <Button
-                  size="sm"
-                  style={{ cursor: 'pointer' }}
-                  title="Delete"
-                  variant="danger"
-                  onClick={() => this.handleDeleteFileThread(documenName)}
-                >
-                  <AiOutlineDelete size={20} />
-                </Button>
-              }
-            </Col>
-          )}
-        </Row>
-      </>
-    );
-
-    return <>{fileStatus}</>;
+  let fileStatus;
+  let documenName;
+  let school_program_name;
+  if (props.application) {
+    school_program_name =
+      props.application.programId.school +
+      ' - ' +
+      props.application.programId.degree +
+      ' - ' +
+      props.application.programId.program_name;
+    documenName =
+      props.student.firstname +
+      ' - ' +
+      props.student.lastname +
+      ' ' +
+      school_program_name +
+      ' ' +
+      props.thread.doc_thread_id?.file_type;
+    // program_deadline = props.application.programId.application_deadline
+  } else {
+    documenName =
+      props.student.firstname +
+      ' - ' +
+      props.student.lastname +
+      ' ' +
+      props.thread.doc_thread_id?.file_type;
   }
+
+  fileStatus = (
+    <>
+      <Grid container spacing={2}>
+        <Grid item xs={1}>
+          {!is_TaiGer_role(user) ? (
+            props.thread.isFinalVersion && (
+              <IoCheckmarkCircle
+                size={24}
+                color="limegreen"
+                title="Final Version"
+              />
+            )
+          ) : props.thread.isFinalVersion ? (
+            <IoCheckmarkCircle
+              size={24}
+              color="limegreen"
+              title="Final Version"
+            />
+          ) : (
+            <AiOutlineCheck
+              size={24}
+              color="white"
+              style={{ cursor: 'pointer' }}
+              title="Set as final version"
+              onClick={() => handleAsFinalFileThread(documenName, true)}
+            />
+          )}
+        </Grid>
+        <Grid item xs={1}>
+          {props.thread.isFinalVersion ? (
+            user.role !== 'Student' && user.role !== 'Guest' ? (
+              <AiOutlineUndo
+                size={24}
+                color="red"
+                title="Un do Final Version"
+                style={{ cursor: 'pointer' }}
+                onClick={() => handleAsFinalFileThread(documenName, false)}
+              />
+            ) : (
+              <Typography color="error.main">{t('Closed')}</Typography>
+            )
+          ) : (
+            <></>
+          )}
+        </Grid>
+        <Grid item xs={6}>
+          <Link
+            to={DEMO.DOCUMENT_MODIFICATION_LINK(
+              props.thread.doc_thread_id?._id
+            )}
+            component={LinkDom}
+          >
+            <Typography color={props.decided === 'O' ? 'primary' : 'grey'}>
+              {documenName}
+            </Typography>
+          </Link>
+        </Grid>
+        <Grid item xs={2}>
+          {convertDate(props.thread.doc_thread_id?.updatedAt)}
+        </Grid>
+        {is_TaiGer_role(user) && (
+          <Grid item xs={1}>
+            <Button
+              size="small"
+              style={{ cursor: 'pointer' }}
+              title="Delete"
+              variant="contained"
+              color="error"
+              onClick={() => handleDeleteFileThread(documenName)}
+            >
+              <AiOutlineDelete size={20} />
+            </Button>
+          </Grid>
+        )}
+      </Grid>
+    </>
+  );
+
+  return <>{fileStatus}</>;
 }
 
 export default EditableFile_Thread;

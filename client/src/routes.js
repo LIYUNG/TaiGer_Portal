@@ -1,10 +1,13 @@
 import React from 'react';
-import $ from 'jquery';
 import { appConfig } from './config';
-
-window.jQuery = $;
-window.$ = $;
-global.jQuery = $;
+import {
+  getAllActiveStudentsLoader,
+  getApplicationStudentLoader,
+  getMyAcademicBackgroundLoader,
+  getStudentAndDocLinksLoader,
+  getStudentsLoader
+} from './api/dataLoader';
+import DefaultErrorPage from './Demo/Utils/DefaultErrorPage';
 
 const DashboardDefault = React.lazy(() => import('./Demo/Dashboard/Dashboard'));
 
@@ -85,7 +88,7 @@ const LearningResources = React.lazy(() =>
 );
 const ContactUs = React.lazy(() => import('./Demo/Contact/index'));
 const StudentApplications = React.lazy(() =>
-  import('./Demo/StudentApplications/StudentApplicationsIndividual')
+  import('./Demo/StudentApplications/index')
 );
 const SingleProgram = React.lazy(() => import('./Demo/Program/SingleProgram'));
 const UsersTable = React.lazy(() => import('./Demo/Users/UsersTable'));
@@ -109,7 +112,6 @@ const CVMLRL_Modification_ThreadInput = React.lazy(() =>
 const SingleStudentPage = React.lazy(() =>
   import('./Demo/StudentDatabase/SingleStudentPage')
 );
-// const GoogleMap = React.lazy(() => import('./Demo/Maps/GoogleMap/index'));
 
 const DocsApplication = React.lazy(() => import('./Demo/Documentation/index'));
 const InternaldocsPage = React.lazy(() =>
@@ -147,357 +149,364 @@ const EditorsAssignment = React.lazy(() =>
 // TODO: conditional configuration.
 const routes = [
   {
-    path: '/assignment/agents',
-    exact: true,
-    name: 'AssignAgents',
-    component: AgentsAssignment
-  },
-  {
-    path: '/assignment/editors',
-    exact: true,
-    name: 'AssignEditors',
-    component: EditorsAssignment
+    path: '/assignment',
+    children: [
+      {
+        path: 'agents',
+        errorElement: <DefaultErrorPage />,
+        loader: getStudentsLoader,
+        element: <AgentsAssignment />
+      },
+      {
+        path: 'editors',
+        errorElement: <DefaultErrorPage />,
+        loader: getStudentsLoader,
+        element: <EditorsAssignment />
+      }
+    ]
   },
   {
     path: '/dashboard/default',
-    exact: true,
-    name: 'Dashboard',
-    component: DashboardDefault
+    errorElement: <DefaultErrorPage />,
+    loader: getStudentsLoader,
+    element: <DashboardDefault />
   },
   {
     path: '/admissions-overview',
     exact: true,
     name: 'Admissions',
-    component: Admissions
+    Component: Admissions
   },
   {
     path: '/archiv/students',
     exact: true,
     name: 'Archiv Students',
-    component: ArchivStudent
+    Component: ArchivStudent
   },
   {
     path: '/archiv/students/all',
     exact: true,
     name: 'Archiv Students',
-    component: AllArchivStudent
+    Component: AllArchivStudent
   },
   {
     path: '/programs/:programId',
     exact: true,
     name: 'SingleProgram',
-    component: SingleProgram
+    Component: SingleProgram
   },
   {
     path: '/document-modification/:documentsthreadId',
     exact: true,
     name: 'CVMLRL Modification Thread',
-    component: CVMLRL_Modification_Thread
+    Component: CVMLRL_Modification_Thread
   },
   {
     path: '/programs',
     exact: true,
     name: 'Program Table',
-    component: ProgramList
+    Component: ProgramList
   },
   {
     path: '/resources',
     exact: true,
     name: 'Learning Resources',
-    component: LearningResources
+    Component: LearningResources
   },
   {
     path: '/contact',
-    exact: true,
-    name: 'Contact',
-    component: ContactUs
+    errorElement: <DefaultErrorPage />,
+    loader: getStudentsLoader,
+    element: <ContactUs />
   },
   {
     path: '/student-applications',
-    exact: true,
-    name: 'Applications Overview',
-    component: ApplicationsOverview
+    errorElement: <DefaultErrorPage />,
+    loader: getStudentsLoader,
+    element: <ApplicationsOverview />
   },
   {
     path: '/student-applications/:student_id',
-    exact: true,
-    name: 'Student Applications',
-    component: StudentApplications
+    errorElement: <DefaultErrorPage />,
+    loader: getApplicationStudentLoader,
+    element: <StudentApplications />
   },
   {
     path: '/users',
     exact: true,
     name: 'Users Table',
-    component: UsersTable
+    Component: UsersTable
   },
   {
     path: '/student-database',
     exact: true,
     name: 'StudentDatabase',
-    component: StudentDatabase
+    Component: StudentDatabase
   },
   {
     path: '/student-database/:studentId/:tab',
-    exact: true,
-    name: 'SingleStudentPage',
-    component: SingleStudentPage
+    errorElement: <DefaultErrorPage />,
+    loader: getStudentAndDocLinksLoader,
+    element: <SingleStudentPage />
   },
   // {
   //   path: '/maps/google-map',
   //   exact: true,
   //   name: 'Google Map',
-  //   component: GoogleMap
+  //   Component: GoogleMap
   // },
   {
     path: '/docs/taiger/internal',
     exact: true,
     name: 'Documentation',
-    component: InternaldocsPage
+    Component: InternaldocsPage
   },
   {
     path: '/docs/:category',
     exact: true,
     name: 'Documentation',
-    component: DocsApplication
+    Component: DocsApplication
   },
   {
     path: '/docs/internal/search/:documentation_id',
     exact: true,
     name: 'DocumentationPage',
-    component: DocsInternalPage
+    Component: DocsInternalPage
   },
   {
     path: '/docs/search/:documentation_id',
     exact: true,
     name: 'DocumentationPage',
-    component: DocsPage
+    Component: DocsPage
   },
   {
     path: '/internal/database/public-docs',
     exact: true,
     name: 'DocCreatePage',
-    component: DocCreatePage
+    Component: DocCreatePage
   },
   {
     path: '/internal/database/internal-docs',
     exact: true,
     name: 'InternalDocCreatePage',
-    component: InternalDocCreatePage
+    Component: InternalDocCreatePage
   },
   {
     path: '/interview-training',
     exact: true,
     name: 'InterviewTraining',
-    component: InterviewTraining
+    Component: InterviewTraining
   },
   {
     path: '/interview-training/:interview_id',
     exact: true,
     name: 'SingleInterview',
-    component: SingleInterview
+    Component: SingleInterview
   },
   {
     path: '/download',
     exact: true,
     name: 'Download',
-    component: Download
+    Component: Download
   },
   {
     path: '/my-courses/analysis/:student_id',
     exact: true,
     name: 'My Courses Analysis',
-    component: MyCoursesAnalysis
+    Component: MyCoursesAnalysis
   },
   {
     path: '/my-courses/:student_id',
     exact: true,
     name: 'My Courses 2',
-    component: MyCourses
+    Component: MyCourses
   },
   {
     path: '/my-courses',
     exact: true,
     name: 'My Courses 1',
-    component: MyCourses
+    Component: MyCourses
   },
   {
     path: '/base-documents',
     exact: true,
     name: 'Base Documents',
-    component: BaseDocuments
+    Component: BaseDocuments
   },
   {
     path: '/portal-informations',
     exact: true,
     name: 'Portal Information',
-    component: PortalCredentialPage
+    Component: PortalCredentialPage
   },
   {
     path: '/portal-informations/:student_id',
     exact: true,
     name: 'Portal Information',
-    component: PortalCredentialPage
+    Component: PortalCredentialPage
   },
   {
     path: '/dashboard/cv-ml-rl',
     exact: true,
     name: 'CV/ML/RL Dashboard',
-    component: CVMLRLDashboard
+    Component: CVMLRLDashboard
   },
   {
     path: '/dashboard/essay',
     exact: true,
     name: 'CV/ML/RL Dashboard',
-    component: EssayDashboard
+    Component: EssayDashboard
   },
   {
     path: '/internal/widgets/course-analyser',
     exact: true,
     name: 'Course Analyser',
-    component: CoursesAnalysisWidget
+    Component: CoursesAnalysisWidget
   },
   {
     path: '/internal/widgets/:admin_id',
     exact: true,
     name: 'My MyCourses Analysis',
-    component: MyCoursesAnalysis
+    Component: MyCoursesAnalysis
   },
   {
     path: '/cv-ml-rl-center',
     exact: true,
     name: 'CV/ML/RL Center',
-    component: CVMLRLOverview
+    Component: CVMLRLOverview
   },
   {
     path: '/settings',
     exact: true,
     name: 'Settings',
-    component: Settings
+    Component: Settings
   },
   {
     path: '/profile',
     exact: true,
     name: 'Profile',
-    component: Profile
+    Component: Profile
   },
   {
     path: '/profile/:user_id',
     exact: true,
     name: 'Profile',
-    component: Profile
+    Component: Profile
   },
   {
     path: '/survey',
-    exact: true,
-    name: '',
-    component: Survey
+    errorElement: <DefaultErrorPage />,
+    loader: getMyAcademicBackgroundLoader,
+    element: <Survey />
   },
   {
     path: '/teams/permissions',
     exact: true,
     name: '',
-    component: TaiGerPermissions
+    Component: TaiGerPermissions
   },
   {
     path: '/teams/members',
     exact: true,
     name: '',
-    component: TaiGerOrg
+    Component: TaiGerOrg
   },
   {
     path: '/dashboard/internal',
     exact: true,
     name: '',
-    component: InternalDashboard
+    Component: InternalDashboard
   },
   {
     path: '/all-students-applications',
-    exact: true,
-    name: '',
-    component: AllApplicantsOverview
+    errorElement: <DefaultErrorPage />,
+    loader: getAllActiveStudentsLoader,
+    element: <AllApplicantsOverview />
   },
   {
     path: '/students-overview',
-    exact: true,
-    name: '',
-    component: MyStudentOverviewPage
+    errorElement: <DefaultErrorPage />,
+    loader: getStudentsLoader,
+    element: <MyStudentOverviewPage />
   },
   {
     path: '/students-overview/all',
     exact: true,
     name: '',
-    component: StudentOverviewPage
+    Component: StudentOverviewPage
   },
   {
     path: '/internal/program-conflict',
     exact: true,
     name: '',
-    component: ProgramConflict
+    Component: ProgramConflict
   },
   {
     path: '/internal/accounting',
     exact: true,
     name: '',
-    component: Accounting
+    Component: Accounting
   },
   {
     path: '/internal/logs',
     exact: true,
     name: '',
-    component: TaiGerUsersLog
+    Component: TaiGerUsersLog
   },
   {
     path: '/internal/logs/:user_id',
     exact: true,
     name: '',
-    component: TaiGerUserLog
+    Component: TaiGerUserLog
   },
   {
     path: '/internal/accounting/users/:taiger_user_id',
     exact: true,
     name: '',
-    component: SingleBalanceSheetOverview
+    Component: SingleBalanceSheetOverview
   },
   {
     path: '/teams/agents/profile/:user_id',
     exact: true,
     name: '',
-    component: TaiGerMemberProfile
+    Component: TaiGerMemberProfile
   },
   {
     path: '/teams/agents/:user_id',
     exact: true,
     name: '',
-    component: TaiGerOrgAgent
+    Component: TaiGerOrgAgent
   },
   {
     path: '/teams/agents/archiv/:user_id',
     exact: true,
     name: 'Archiv Students',
-    component: ArchivStudent
+    Component: ArchivStudent
   },
   {
     path: '/teams/editors/:user_id',
     exact: true,
     name: '',
-    component: TaiGerOrgEditor
+    Component: TaiGerOrgEditor
   },
   {
     path: '/teams/editors/archiv/:user_id',
     exact: true,
     name: 'Archiv Students',
-    component: ArchivStudent
+    Component: ArchivStudent
   },
   {
     path: '/teams/admins/:user_id',
     exact: true,
     name: '',
-    component: TaiGerOrgAdmin
+    Component: TaiGerOrgAdmin
+  },
+  {
+    path: '/',
+    errorElement: <DefaultErrorPage />,
+    loader: getStudentsLoader,
+    element: <DashboardDefault />
   }
-  // {
-  //   path: "/",
-  //   component: DashboardDefault,
-  // },
 ];
 
 if (appConfig.vpdEnable) {
@@ -505,7 +514,7 @@ if (appConfig.vpdEnable) {
     path: '/uni-assist',
     exact: true,
     name: 'Uni Assist Tasks',
-    component: UniAssist
+    Component: UniAssist
   });
 }
 
@@ -514,13 +523,13 @@ if (appConfig.AIEnable) {
     path: '/document-modification/student-input/:documentsthreadId',
     exact: true,
     name: 'CVMLRL Modification Thread',
-    component: CVMLRL_Modification_ThreadInput
+    Component: CVMLRL_Modification_ThreadInput
   });
   routes.push({
     path: '/cvmlrl/generator',
     exact: true,
     name: 'CVMLRL Generator',
-    component: CVMLRLGenerator
+    Component: CVMLRLGenerator
   });
 }
 
@@ -529,19 +538,19 @@ if (appConfig.meetingEnable) {
     path: '/events/all',
     exact: true,
     name: '',
-    component: AllOfficeHours
+    Component: AllOfficeHours
   });
   routes.push({
     path: '/events/taiger/:user_id',
     exact: true,
     name: '',
-    component: TaiGerOfficeHours
+    Component: TaiGerOfficeHours
   });
   routes.push({
     path: '/events/students/:user_id',
     exact: true,
     name: '',
-    component: OfficeHours
+    Component: OfficeHours
   });
 }
 
@@ -550,7 +559,7 @@ if (appConfig.messengerEnable) {
     path: '/communications/:student_id',
     exact: true,
     name: 'My Chat',
-    component: CommunicationSinglePage
+    Component: CommunicationSinglePage
   });
 }
 

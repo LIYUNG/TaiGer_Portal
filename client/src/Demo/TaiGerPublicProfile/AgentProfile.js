@@ -1,21 +1,26 @@
-import React from 'react';
-import { Row, Col, Card, Form, Button, Spinner } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
+import { Form } from 'react-bootstrap';
+import { Box, Button, Card, Link, Grid, Typography } from '@mui/material';
 import TimezoneSelect from 'react-timezone-select';
+import { Link as LinkDom, useParams } from 'react-router-dom';
 import Select from 'react-select';
+import { useTranslation } from 'react-i18next';
 
-import Aux from '../../hoc/_Aux';
-import { spinner_style, time_slots } from '../Utils/contants';
+import { time_slots } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
-
 import { getAgentProfile } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import { is_TaiGer_Student } from '../Utils/checking-functions';
-import { Link } from 'react-router-dom';
 import DEMO from '../../store/constant';
+import { useAuth } from '../../components/AuthProvider';
+import Loading from '../../components/Loading/Loading';
 
-class AgentProfile extends React.Component {
-  state = {
+function AgentProfile() {
+  const { user } = useAuth();
+  const { user_id } = useParams();
+  const { t } = useTranslation();
+  const [agentProfileState, setAgentProfileState] = useState({
     error: '',
     role: '',
     isLoaded: false,
@@ -23,236 +28,170 @@ class AgentProfile extends React.Component {
     success: false,
     agent: {},
     selectedTimezone:
-      this.props.user.timezone ||
-      Intl.DateTimeFormat().resolvedOptions().timeZone,
+      user.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone,
     updateconfirmed: false,
     updatecredentialconfirmed: false,
     res_status: 0,
     res_modal_message: '',
     res_modal_status: 0
-  };
+  });
 
-  componentDidMount() {
-    getAgentProfile(this.props.match.params.user_id).then(
+  useEffect(() => {
+    getAgentProfile(user_id).then(
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
         if (success) {
-          this.setState({
+          setAgentProfileState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             agent: data,
             success: success,
             res_status: status
-          });
+          }));
         } else {
-          this.setState({
+          setAgentProfileState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             res_status: status
-          });
+          }));
         }
       },
       (error) => {
-        this.setState((state) => ({
-          ...state,
+        setAgentProfileState((prevState) => ({
+          ...prevState,
           isLoaded: true,
           error,
           res_status: 500
         }));
       }
     );
-  }
-  componentDidUpdate(prevProps) {
-    if (prevProps.match.params.user_id !== this.props.match.params.user_id) {
-      getAgentProfile(this.props.match.params.user_id).then(
-        (resp) => {
-          const { data, success } = resp.data;
-          const { status } = resp;
-          if (success) {
-            this.setState({
-              isLoaded: true,
-              agent: data,
-              success: success,
-              res_status: status
-            });
-          } else {
-            this.setState({
-              isLoaded: true,
-              res_status: status
-            });
-          }
-        },
-        (error) => {
-          this.setState((state) => ({
-            ...state,
-            isLoaded: true,
-            error,
-            res_status: 500
-          }));
-        }
-      );
-    }
-  }
+  }, [user_id]);
 
-  setSelectedTimezone = (e) => {
-    this.setState({ selectedTimezone: e.value, officehoursModifed: true });
-  };
-
-  ConfirmError = () => {
-    this.setState((state) => ({
-      ...state,
+  const ConfirmError = () => {
+    setAgentProfileState((prevState) => ({
+      ...prevState,
       res_modal_status: 0,
       res_modal_message: ''
     }));
   };
 
-  render() {
-    const { res_status, isLoaded, res_modal_status, res_modal_message } =
-      this.state;
+  const { res_status, isLoaded, res_modal_status, res_modal_message } =
+    agentProfileState;
 
-    if (!isLoaded) {
-      return (
-        <div style={spinner_style}>
-          <Spinner animation="border" role="status">
-            <span className="visually-hidden"></span>
-          </Spinner>
-        </div>
-      );
-    }
-    TabTitle(`Agent Profile`);
-    if (res_status >= 400) {
-      return <ErrorPage res_status={res_status} />;
-    }
-
-    return (
-      <Aux>
-        {res_modal_status >= 400 && (
-          <ModalMain
-            ConfirmError={this.ConfirmError}
-            res_modal_status={res_modal_status}
-            res_modal_message={res_modal_message}
-          />
-        )}
-        <Row>
-          <Col>
-            <Card className="my-0 mx-0" bg={'dark'} text={'white'}>
-              <Card.Header>
-                <Card.Title className="my-0 mx-0 text-light">
-                  {this.state.agent.firstname} {this.state.agent.lastname}{' '}
-                  Profile
-                </Card.Title>
-              </Card.Header>
-              <Card.Body>
-                <Row>
-                  <Col md={6}>
-                    <Row>
-                      <h5 className="text-light">Email:</h5>
-                      <p className="text-info">{this.state.agent.email}</p>
-                    </Row>
-                    <Row>
-                      <h5 className="text-light">Introduction</h5>
-                      {this.state.agent.selfIntroduction}
-                    </Row>
-                  </Col>
-                  <Col md={6}>
-                    <Card className="my-0 py-0 mx-0" bg={'dark'} text={'white'}>
-                      <Card.Header>
-                        <Card.Title className="my-0 mx-0 text-light">
-                          Office Hours
-                        </Card.Title>
-                      </Card.Header>
-                      <Card.Body>
-                        <Row>
-                          <Col>
-                            <h5 className="text-light">Time zone</h5>
-                          </Col>
-                        </Row>
-                        <Row>
-                          <TimezoneSelect
-                            value={this.state.selectedTimezone}
-                            displayValue="UTC"
-                            isDisabled={true}
-                          />
-                        </Row>
-                        <br />
-                        {[
-                          'Monday',
-                          'Tuesday',
-                          'Wednesday',
-                          'Thursday',
-                          'Friday',
-                          'Saturday',
-                          'Sunday'
-                        ].map((day, i) => (
-                          <Row key={i}>
-                            <Col md={4}>
-                              <Form>
-                                <Form.Check
-                                  type="switch"
-                                  id={`${day}`}
-                                  label={`${day}`}
-                                  readOnly
-                                  className={`${
-                                    this.state.agent.officehours[day]?.active
-                                      ? 'text-light'
-                                      : 'text-secondary'
-                                  }`}
-                                  checked={
-                                    this.state.agent.officehours[day]?.active
-                                  }
-                                />
-                              </Form>
-                            </Col>
-                            <Col md={8}>
-                              {this.state.agent.officehours &&
-                              this.state.agent.officehours[day]?.active ? (
-                                <>
-                                  <span className="text-light">Timeslots</span>
-                                  <Select
-                                    id={`${day}`}
-                                    options={time_slots}
-                                    isMulti
-                                    isDisabled={true}
-                                    value={
-                                      this.state.agent.officehours[day]
-                                        .time_slots
-                                    }
-                                    onChange={(e) =>
-                                      this.onTimeStartChange(e, day)
-                                    }
-                                  />
-                                </>
-                              ) : (
-                                <span className="text-light">Close</span>
-                              )}
-                            </Col>
-                          </Row>
-                        ))}
-                        {is_TaiGer_Student(this.props.user) && (
-                          <>
-                            <br />
-                            <Row>
-                              <h5 className="text-light">想要與顧問討論？</h5>
-                              <Link
-                                to={`${DEMO.EVENT_STUDENT_STUDENTID_LINK(
-                                  this.props.user._id.toString()
-                                )}`}
-                              >
-                                <Button>預約</Button>
-                              </Link>
-                            </Row>
-                          </>
-                        )}
-                      </Card.Body>
-                    </Card>
-                  </Col>
-                </Row>
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
-      </Aux>
-    );
+  if (!isLoaded) {
+    return <Loading />;
   }
+  TabTitle(`Agent Profile`);
+  if (res_status >= 400) {
+    return <ErrorPage res_status={res_status} />;
+  }
+
+  return (
+    <Box>
+      {res_modal_status >= 400 && (
+        <ModalMain
+          ConfirmError={ConfirmError}
+          res_modal_status={res_modal_status}
+          res_modal_message={res_modal_message}
+        />
+      )}
+
+      <Card sx={{ p: 2 }}>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Typography variant="h5">
+              {agentProfileState.agent.firstname}{' '}
+              {agentProfileState.agent.lastname} Profile
+            </Typography>
+          </Grid>
+        </Grid>
+        <Grid item xs={12}>
+          <Typography variant="body1">
+            Email: {agentProfileState.agent.email}
+          </Typography>
+          <Typography variant="h6">{t('Introduction')}</Typography>
+          {agentProfileState.agent.selfIntroduction}
+        </Grid>
+        <Grid item xs={12}>
+          <Box>
+            <Typography variant="h6">{t('Office Hours')}</Typography>
+            <Typography variant="body1">{t('Time zone')}</Typography>
+            <TimezoneSelect
+              value={agentProfileState.selectedTimezone}
+              displayValue="UTC"
+              isDisabled={true}
+            />
+            <br />
+            <Grid container spacing={2}>
+              {[
+                'Monday',
+                'Tuesday',
+                'Wednesday',
+                'Thursday',
+                'Friday',
+                'Saturday',
+                'Sunday'
+              ].map((day, i) => (
+                <Grid item xs={12} key={i}>
+                  <Form>
+                    <Form.Check
+                      type="switch"
+                      id={`${day}`}
+                      label={`${day}`}
+                      readOnly
+                      className={`${
+                        agentProfileState.agent.officehours[day]?.active
+                          ? 'text-light'
+                          : 'text-secondary'
+                      }`}
+                      checked={agentProfileState.agent.officehours[day]?.active}
+                    />
+                  </Form>
+
+                  {agentProfileState.agent.officehours &&
+                  agentProfileState.agent.officehours[day]?.active ? (
+                    <>
+                      <span>{t('Timeslots')}</span>
+                      <Select
+                        id={`${day}`}
+                        options={time_slots}
+                        isMulti
+                        isDisabled={true}
+                        value={
+                          agentProfileState.agent.officehours[day].time_slots
+                        }
+                        // onChange={(e) => onTimeStartChange(e, day)}
+                      />
+                    </>
+                  ) : (
+                    <span>{t('Close')}</span>
+                  )}
+                </Grid>
+              ))}
+            </Grid>
+            {is_TaiGer_Student(user) && (
+              <>
+                <Typography variant="body1" sx={{ my: 2 }}>
+                  想要與顧問討論？
+                </Typography>
+                <Link
+                  to={`${DEMO.EVENT_STUDENT_STUDENTID_LINK(
+                    user._id.toString()
+                  )}`}
+                  component={LinkDom}
+                >
+                  <Button color="primary" variant="contained">
+                    {t('Book')}
+                  </Button>
+                </Link>
+              </>
+            )}
+          </Box>
+        </Grid>
+      </Card>
+    </Box>
+  );
 }
 
 export default AgentProfile;

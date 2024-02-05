@@ -1,23 +1,57 @@
 import React from 'react';
 import Linkify from 'react-linkify';
 import { getNumberOfDays, convertDate, profile_list } from './contants';
-
+import { useTranslation } from 'react-i18next';
+import { Link } from '@mui/material';
+import { Link as LinkDom } from 'react-router-dom';
 export const is_TaiGer_role = (user) =>
-  user.role === 'Admin' || user.role === 'Agent' || user.role === 'Editor';
+  user?.role === 'Admin' || user?.role === 'Agent' || user?.role === 'Editor';
 export const is_TaiGer_AdminAgent = (user) =>
-  user.role === 'Admin' || user.role === 'Agent';
-export const is_TaiGer_Admin = (user) => user.role === 'Admin';
-export const is_TaiGer_Editor = (user) => user.role === 'Editor';
-export const is_TaiGer_Agent = (user) => user.role === 'Agent';
-export const is_TaiGer_Manager = (user) => user.role === 'Manager';
-export const is_TaiGer_Student = (user) => user.role === 'Student';
-export const is_TaiGer_Guest = (user) => user.role === 'Guest';
+  user?.role === 'Admin' || user?.role === 'Agent';
+export const is_TaiGer_Admin = (user) => user?.role === 'Admin';
+export const is_TaiGer_Editor = (user) => user?.role === 'Editor';
+export const is_TaiGer_Agent = (user) => user?.role === 'Agent';
+export const is_TaiGer_Manager = (user) => user?.role === 'Manager';
+export const is_TaiGer_Student = (user) => user?.role === 'Student';
+export const is_TaiGer_Guest = (user) => user?.role === 'Guest';
 export const DocumentStatus = {
   Uploaded: 'uploaded',
   Missing: 'missing',
   Accepted: 'accepted',
   Rejected: 'rejected',
   NotNeeded: 'notneeded'
+};
+
+export const calculateDisplayLength = (text) => {
+  let length = 0;
+  for (let i = 0; i < text.length; i++) {
+    // Check if the character is a Chinese character
+    const isChinese = text.codePointAt(i) > 255; // Adjust the threshold if needed
+    length += isChinese ? 2 : 1;
+  }
+  return length;
+};
+
+export const truncateText = (text, maxLength) => {
+  let currentLength = 0;
+  let truncatedText = '';
+
+  for (let i = 0; i < text.length; i++) {
+    const isChinese = text.codePointAt(i) > 255; // Adjust the threshold if needed
+    currentLength += isChinese ? 2 : 1;
+
+    if (currentLength <= maxLength) {
+      truncatedText += text[i];
+    } else {
+      break;
+    }
+  }
+
+  if (currentLength > maxLength) {
+    truncatedText += '...';
+  }
+
+  return truncatedText;
 };
 
 export const LinkableNewlineText = ({ text }) => {
@@ -28,22 +62,29 @@ export const LinkableNewlineText = ({ text }) => {
     <div style={textStyle}>
       <Linkify
         componentDecorator={(decoratedHref, decoratedText, key) => (
-          <a
-            href={decoratedHref}
+          <Link
+            underline="hover"
+            to={decoratedHref}
+            component={LinkDom}
             key={key}
-            style={{
-              color: 'blue' // Change the color to your preferred value
-            }}
             target="_blank"
           >
             {decoratedText}
-          </a>
+          </Link>
         )}
       >
         {text}
       </Linkify>
     </div>
   );
+};
+
+export const Bayerische_Formel = (high, low, my) => {
+  if (high - low !== 0) {
+    var Germen_note = 1 + (3 * (high - my)) / (high - low);
+    return Germen_note.toFixed(2);
+  }
+  return 0;
 };
 
 export const getRequirement = (thread) => {
@@ -124,9 +165,9 @@ export const showButtonIfMyStudent = (user, student) => {
 
 export const showButtonIfMyStudentB = (user, student) => {
   if (
-    user.role === 'Admin' ||
-    user.role === 'Student' ||
-    user.role === 'Guest'
+    is_TaiGer_Admin(user) ||
+    is_TaiGer_Student(user) ||
+    is_TaiGer_Guest(user)
   ) {
     return true;
   }
@@ -186,46 +227,30 @@ export const check_if_there_is_german_language_info = (academic_background) => {
 };
 
 export const check_english_language_passed = (academic_background) => {
-  if (!academic_background || !academic_background.language) {
-    return false;
-  }
-  if (academic_background.language.english_isPassed === 'O') {
+  if (academic_background?.language?.english_isPassed === 'O') {
     return true;
   }
-
   return false;
 };
 
 export const check_english_language_Notneeded = (academic_background) => {
-  if (!academic_background || !academic_background.language) {
-    return false;
-  }
-  if (academic_background.language.english_isPassed === '--') {
+  if (academic_background?.language?.english_isPassed === '--') {
     return true;
   }
-
   return false;
 };
 
 export const check_german_language_passed = (academic_background) => {
-  if (!academic_background || !academic_background.language) {
-    return false;
-  }
-  if (academic_background.language.german_isPassed === 'O') {
+  if (academic_background?.language?.german_isPassed === 'O') {
     return true;
   }
-
   return false;
 };
 
 export const check_german_language_Notneeded = (academic_background) => {
-  if (!academic_background || !academic_background.language) {
-    return false;
-  }
-  if (academic_background.language.german_isPassed === '--') {
+  if (academic_background?.language?.german_isPassed === '--') {
     return true;
   }
-
   return false;
 };
 
@@ -253,20 +278,16 @@ export const based_documents_init = (student) => {
 };
 
 export const are_base_documents_missing = (student) => {
-  if (student.profile === undefined) {
-    return true;
-  }
-  if (student.profile.length === 0) {
-    return true;
-  }
-  const { object_init, documentlist2_keys } = based_documents_init(student);
+  if (student.profile?.length > 0) {
+    const { object_init, documentlist2_keys } = based_documents_init(student);
 
-  for (let i = 0; i < documentlist2_keys.length; i++) {
-    if (
-      object_init[documentlist2_keys[i]] !== DocumentStatus.Accepted &&
-      object_init[documentlist2_keys[i]] !== DocumentStatus.NotNeeded
-    ) {
-      return true;
+    for (let i = 0; i < documentlist2_keys.length; i++) {
+      if (
+        object_init[documentlist2_keys[i]] !== DocumentStatus.Accepted &&
+        object_init[documentlist2_keys[i]] !== DocumentStatus.NotNeeded
+      ) {
+        return true;
+      }
     }
   }
   return false;
@@ -440,17 +461,17 @@ export const check_academic_background_filled = (academic_background) => {
   }
   // TODO: can add more mandatory field
   if (
-    !academic_background.university.attended_high_school ||
-    !academic_background.university.high_school_isGraduated ||
-    academic_background.university.high_school_isGraduated === '-' ||
-    !academic_background.university.Has_Exchange_Experience ||
-    academic_background.university.Has_Exchange_Experience === '-' ||
-    !academic_background.university.Has_Internship_Experience ||
-    academic_background.university.Has_Internship_Experience === '-' ||
-    !academic_background.university.Has_Working_Experience ||
-    academic_background.university.Has_Working_Experience === '-' ||
-    !academic_background.university.attended_university ||
-    !academic_background.university.attended_university_program
+    !academic_background.university?.attended_high_school ||
+    !academic_background.university?.high_school_isGraduated ||
+    academic_background.university?.high_school_isGraduated === '-' ||
+    !academic_background.university?.Has_Exchange_Experience ||
+    academic_background.university?.Has_Exchange_Experience === '-' ||
+    !academic_background.university?.Has_Internship_Experience ||
+    academic_background.university?.Has_Internship_Experience === '-' ||
+    !academic_background.university?.Has_Working_Experience ||
+    academic_background.university?.Has_Working_Experience === '-' ||
+    !academic_background.university?.attended_university ||
+    !academic_background.university?.attended_university_program
     // ||
     // !academic_background.university.isGraduated
   ) {
@@ -460,64 +481,56 @@ export const check_academic_background_filled = (academic_background) => {
   return true;
 };
 
-export const missing_survey_fields_list = (
+export const MissingSurveyFieldsList = ({
   academic_background,
   application_preference
-) => {
+}) => {
+  const { t } = useTranslation();
   return (
     <>
       {academic_background?.university &&
         !academic_background.university.attended_high_school && (
-          <li>
-            <b>High School Name</b>
-          </li>
+          <li>{t('High School Name')}</li>
         )}
       {academic_background?.university &&
         (!academic_background.university.high_school_isGraduated ||
           academic_background.university.high_school_isGraduated === '-') && (
-          <li>
-            <b>High School graduate status</b>
-          </li>
-        )}
-      {academic_background?.university &&
-        !academic_background.university.attended_university && (
-          <li>
-            <b>University Name (English)</b>
-          </li>
-        )}
-      {academic_background?.university &&
-        !academic_background.university.attended_university_program && (
-          <li>
-            <b>University Program (English)</b>
-          </li>
+          <li>{t('High School graduate status')}</li>
         )}
       {academic_background?.university &&
         (!academic_background.university.isGraduated ||
           academic_background.university.isGraduated === '-') && (
-          <li>
-            <b>Bachelor Degree graduate status</b>
-          </li>
+          <li>{t('Bachelor Degree graduate status')}</li>
         )}
-      {academic_background?.university &&
+      {[('Yes', 'pending')].includes(
+        academic_background?.university?.isGraduated
+      ) &&
+        academic_background?.university?.attended_university === '' && (
+          <li>{t('University Name (Bachelor degree)')}</li>
+        )}
+      {['Yes', 'pending'].includes(
+        academic_background?.university?.isGraduated
+      ) &&
+        academic_background?.university?.attended_university_program === '' && (
+          <li>{t('Program Name / Not study yet')}</li>
+        )}
+      {['Yes', 'pending'].includes(
+        academic_background?.university?.isGraduated
+      ) &&
+        academic_background?.university &&
         (!academic_background.university.Has_Exchange_Experience ||
           academic_background.university.Has_Exchange_Experience === '-') && (
-          <li>
-            <b>Exchange Student Experience</b>
-          </li>
+          <li>{t('Exchange Student Experience ?')}</li>
         )}
       {academic_background?.university &&
         (!academic_background.university.Has_Internship_Experience ||
           academic_background.university.Has_Internship_Experience === '-') && (
-          <li>
-            <b>Internship Experience</b>
-          </li>
+          <li>{t('Internship Experience ?')}</li>
         )}
       {academic_background?.university &&
         (!academic_background.university.Has_Working_Experience ||
           academic_background.university.Has_Working_Experience === '-') && (
-          <li>
-            <b>Full-Time Job Experience</b>
-          </li>
+          <li>{t('Full-Time Job Experience ?')}</li>
         )}
       {academic_background?.university &&
         (!academic_background.university.isGraduated ||
@@ -527,58 +540,40 @@ export const missing_survey_fields_list = (
             {academic_background?.university &&
               (!academic_background.university.Highest_GPA_Uni ||
                 academic_background.university.Highest_GPA_Uni === '-') && (
-                <li>
-                  <b>Highest Score GPA of your university program</b>
-                </li>
+                <li>{t('Highest Score GPA of your university program')}</li>
               )}
             {academic_background?.university &&
               (!academic_background.university.Passing_GPA_Uni ||
                 academic_background.university.Passing_GPA_Uni === '-') && (
-                <li>
-                  <b>Passing Score GPA of your university program</b>
-                </li>
+                <li>{t('Passing Score GPA of your university program')}</li>
               )}
             {academic_background?.university &&
               (!academic_background.university.My_GPA_Uni ||
                 academic_background.university.My_GPA_Uni === '-') && (
-                <li>
-                  <b>My GPA</b>
-                </li>
+                <li>{t('My GPA')}</li>
               )}
           </>
         )}
       {application_preference &&
         !application_preference.expected_application_date && (
-          <li>
-            <b>Expected Application Year</b>
-          </li>
+          <li>{t('Expected Application Year')}</li>
         )}
       {application_preference &&
         !application_preference.expected_application_semester && (
-          <li>
-            <b>Expected Application Semester</b>
-          </li>
+          <li>{t('Expected Application Semester')}</li>
         )}
       {application_preference &&
         !application_preference.target_application_field && (
-          <li>
-            <b>Target Application Fields</b>
-          </li>
+          <li>{t('Target Application Fields')}</li>
         )}
       {application_preference && !application_preference.target_degree && (
-        <li>
-          <b>Target Degree Programs</b>
-        </li>
+        <li>{t('Target Degree Programs')}</li>
       )}
       {application_preference?.considered_privat_universities === '-' && (
-        <li>
-          <b>Considering private universities?</b>
-        </li>
+        <li>{t('Considering private universities?')}</li>
       )}
       {application_preference?.application_outside_germany === '-' && (
-        <li>
-          <b>Considering universities outside Germany?</b>
-        </li>
+        <li>{t('Considering universities outside Germany?')}</li>
       )}
     </>
   );
@@ -612,7 +607,6 @@ export const progressBarCounter = (student, application) => {
     application?.programId?.uni_assist?.includes('VPD') ? 1 : 0,
     1
   ];
-  // console.log(isEnglishOK(application?.programId, student));
   const finished_pointes = [
     student?.generaldocs_threads?.filter(
       (thread) => thread.isFinalVersion === true
@@ -743,10 +737,7 @@ export const application_deadline_calculator = (student, application) => {
     return 'No Data';
   }
   let application_year = '<TBD>';
-  if (
-    student.application_preference &&
-    student.application_preference.expected_application_date !== ''
-  ) {
+  if (student.application_preference?.expected_application_date !== '') {
     application_year = parseInt(
       student.application_preference.expected_application_date
     );
@@ -761,9 +752,9 @@ export const application_deadline_calculator = (student, application) => {
   let deadline_month = parseInt(
     application.programId.application_deadline.split('-')[0]
   );
-  let deadline_day = parseInt(
-    application.programId.application_deadline.split('-')[1]
-  );
+  // let deadline_day = parseInt(
+  //   application.programId.application_deadline.split('-')[1]
+  // );
   if (semester === undefined) {
     return 'Err';
   }
@@ -934,7 +925,7 @@ export const isProgramNotSelectedEnough = (students) => {
   return false;
 };
 
-export const num_applications_decided = (student) => {
+export const numApplicationsDecided = (student) => {
   if (student.applications === undefined) {
     return 0;
   }
@@ -944,7 +935,7 @@ export const num_applications_decided = (student) => {
   return num_apps_decided;
 };
 
-export const num_applications_submitted = (student) => {
+export const numApplicationsSubmitted = (student) => {
   if (student.applications === undefined) {
     return 0;
   }
@@ -1005,17 +996,14 @@ export const check_all_decided_applications_submitted = (student) => {
 };
 
 export const check_program_uni_assist_needed = (application) => {
-  if (!application.programId.uni_assist) {
-    return false;
-  }
-  if (application.programId.uni_assist.includes('Yes')) {
+  if (application.programId?.uni_assist?.includes('Yes')) {
     return true;
   }
 
   return false;
 };
 
-export const is_uni_assist_vpd_needed = (application) => {
+export const isUniAssistVPDNeeded = (application) => {
   if (
     application.decided === 'O' &&
     application.programId.uni_assist &&
@@ -1047,11 +1035,10 @@ export const is_uni_assist_paid_and_docs_uploaded = (application) => {
   if (application.uni_assist && application.uni_assist.isPaid) {
     return true;
   }
-
   return false;
 };
 
-export const check_uni_assist_needed = (student) => {
+export const check_student_needs_uni_assist = (student) => {
   if (!student.applications) {
     return false;
   }
@@ -1123,28 +1110,21 @@ export const is_program_ml_rl_essay_finished = (application) => {
   );
 };
 
+// Tested
 export const is_cv_assigned = (student) => {
   // check CV
-  if (!student.generaldocs_threads) {
-    return false;
-  }
-  if (
+  return (
     student.generaldocs_threads.findIndex(
       (thread) => thread.doc_thread_id.file_type === 'CV'
-    ) === -1
-  ) {
-    return false;
-  }
-
-  return true;
+    ) >= 0
+  );
 };
 
+// Tested
 export const isCVFinished = (student) => {
-  const cv_thread =
-    student.generaldocs_threads &&
-    student.generaldocs_threads.find(
-      (thread) => thread.doc_thread_id.file_type === 'CV'
-    );
+  const cv_thread = student?.generaldocs_threads?.find(
+    (thread) => thread.doc_thread_id.file_type === 'CV'
+  );
   return !!(cv_thread && cv_thread.isFinalVersion);
 };
 
@@ -1511,7 +1491,6 @@ export const open_tasks_with_editors = (students) => {
 export const programs_refactor = (students) => {
   const applications = [];
   for (const student of students) {
-    var application_deadline;
     let isMissingBaseDocs = false;
 
     let keys = Object.keys(profile_list);
@@ -1534,8 +1513,8 @@ export const programs_refactor = (students) => {
           object_init[student.profile[i].name] = DocumentStatus.NotNeeded;
         }
       }
-    } else {
     }
+
     for (let i = 0; i < keys.length; i += 1) {
       if (
         object_init[keys[i]] !== DocumentStatus.Accepted &&
@@ -1563,10 +1542,8 @@ export const programs_refactor = (students) => {
         firstname_lastname: `${student.firstname}, ${student.lastname}`,
         program_name: 'No Program',
         program: 'No Program',
-        editors: student.editors
-          ?.map((editor, i) => editor.firstname)
-          .join(', '),
-        agents: student.agents?.map((agent, i) => agent.firstname).join(', '),
+        editors: student.editors?.map((editor) => editor.firstname).join(', '),
+        agents: student.agents?.map((agent) => agent.firstname).join(', '),
         semester: '-',
         degree: '-',
         toefl: '-',
@@ -1603,9 +1580,9 @@ export const programs_refactor = (students) => {
           program_name: application.programId.program_name,
           program: `${application.programId.school} - ${application.programId.program_name} (${application.programId.degree})`,
           editors: student.editors
-            ?.map((editor, i) => editor.firstname)
+            ?.map((editor) => editor.firstname)
             .join(', '),
-          agents: student.agents?.map((agent, i) => agent.firstname).join(', '),
+          agents: student.agents?.map((agent) => agent.firstname).join(', '),
           semester: application.programId.semester,
           degree: application.programId.degree,
           toefl: application.programId.toefl,

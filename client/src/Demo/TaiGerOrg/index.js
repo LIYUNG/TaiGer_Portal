@@ -1,30 +1,38 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { Navigate, Link as LinkDom } from 'react-router-dom';
 import {
-  Card,
-  Spinner,
-  Row,
-  Col,
+  Box,
+  Breadcrumbs,
   Button,
-  DropdownButton,
-  Dropdown
-} from 'react-bootstrap';
-import { Redirect, Link } from 'react-router-dom';
+  Card,
+  Link,
+  Menu,
+  MenuItem,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Typography
+} from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
-import Aux from '../../hoc/_Aux';
-import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import { is_TaiGer_Admin, is_TaiGer_role } from '../Utils/checking-functions';
-
-import { getTeamMembers, updateUser, updateUserPermission } from '../../api';
+import { getTeamMembers, updateUserPermission } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import GrantPermissionModal from './GrantPermissionModal';
 import GrantManagerModal from './GrantManagerModal';
 import { appConfig } from '../../config';
-import { TopBar } from '../../components/TopBar/TopBar';
+import { useAuth } from '../../components/AuthProvider';
+import Loading from '../../components/Loading/Loading';
 
-class TaiGerOrg extends React.Component {
-  state = {
+function TaiGerOrg() {
+  const { user } = useAuth();
+  const { t } = useTranslation();
+
+  const [taiGerOrgState, setTaiGerOrgState] = useState({
     error: '',
     role: '',
     isLoaded: false,
@@ -38,97 +46,84 @@ class TaiGerOrg extends React.Component {
     user_permissions: [],
     teams: null,
     res_status: 0
-  };
-
-  componentDidMount() {
+  });
+  useEffect(() => {
     getTeamMembers().then(
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
         if (success) {
-          this.setState({
+          setTaiGerOrgState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             teams: data,
             success: success,
             res_status: status
-          });
+          }));
         } else {
-          this.setState({
+          setTaiGerOrgState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             res_status: status
-          });
+          }));
         }
       },
       (error) => {
-        this.setState((state) => ({
-          ...state,
+        setTaiGerOrgState((prevState) => ({
+          ...prevState,
           isLoaded: true,
           error,
           res_status: 500
         }));
       }
     );
-  }
+  }, []);
 
-  setModalShow = (user_firstname, user_lastname, user_id, permissions) => {
-    this.setState({
-      modalShow: true,
-      firstname: user_firstname,
-      lastname: user_lastname,
-      selected_user_id: user_id,
-      user_permissions: permissions
-    });
-  };
-
-  setManagerModalShow = (
+  const setModalShow = (
     user_firstname,
     user_lastname,
     user_id,
     permissions
   ) => {
-    this.setState({
-      managerModalShow: true,
+    setTaiGerOrgState((prevState) => ({
+      ...prevState,
+      modalShow: true,
       firstname: user_firstname,
       lastname: user_lastname,
       selected_user_id: user_id,
       user_permissions: permissions
-    });
+    }));
   };
 
-  setModalHide = () => {
-    this.setState({
+  const setModalHide = () => {
+    setTaiGerOrgState((prevState) => ({
+      ...prevState,
       modalShow: false
-    });
+    }));
   };
 
-  setManagerModalHide = () => {
-    this.setState({
+  const setManagerModalHide = () => {
+    setTaiGerOrgState((prevState) => ({
+      ...prevState,
       managerModalShow: false
-    });
+    }));
   };
 
-  onUpdateUser = () => {
-    updateUser(user_id, paylaod).then(
-      (resp) => {
-        const { data, success } = resp.data;
-        const { status } = resp;
-      },
-      (error) => {}
-    );
-  };
-  onUpdatePermissions = (e, permissions) => {
+  const onUpdatePermissions = (e, permissions) => {
     e.preventDefault();
-    updateUserPermission(this.state.selected_user_id, permissions).then(
+    updateUserPermission(taiGerOrgState.selected_user_id, permissions).then(
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
         if (success) {
-          let teams_temp = [...this.state.teams];
+          let teams_temp = [...taiGerOrgState.teams];
           let team_member = teams_temp.find(
-            (member) => member._id.toString() === this.state.selected_user_id
+            (member) =>
+              member._id.toString() === taiGerOrgState.selected_user_id
           );
           team_member.permissions = [data];
-          this.setState({
+          setTaiGerOrgState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             modalShow: false,
             teams: teams_temp,
@@ -137,17 +132,18 @@ class TaiGerOrg extends React.Component {
             selected_user_id: '',
             success: success,
             res_status: status
-          });
+          }));
         } else {
-          this.setState({
+          setTaiGerOrgState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             res_status: status
-          });
+          }));
         }
       },
       (error) => {
-        this.setState((state) => ({
-          ...state,
+        setTaiGerOrgState((prevState) => ({
+          ...prevState,
           isLoaded: true,
           error,
           res_status: 500
@@ -156,414 +152,452 @@ class TaiGerOrg extends React.Component {
     );
   };
 
-  render() {
-    if (!is_TaiGer_role(this.props.user)) {
-      return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
-    }
-    TabTitle(`${appConfig.companyName} Team Permissions Management`);
-    const { res_status, isLoaded } = this.state;
-
-    if (!isLoaded && !this.state.teams) {
-      return (
-        <div style={spinner_style}>
-          <Spinner animation="border" role="status">
-            <span className="visually-hidden"></span>
-          </Spinner>
-        </div>
-      );
-    }
-
-    if (res_status >= 400) {
-      return <ErrorPage res_status={res_status} />;
-    }
-    const admins = this.state.teams.filter((member) => member.role === 'Admin');
-    const agents = this.state.teams.filter((member) => member.role === 'Agent');
-    const managers = this.state.teams.filter(
-      (member) => member.role === 'Manager'
-    );
-    const editors = this.state.teams.filter(
-      (member) => member.role === 'Editor'
-    );
-    return (
-      <Aux>
-        <TopBar>{appConfig.companyName} Team Permissions Management</TopBar>
-        <Card>
-          <Card.Body>
-            {is_TaiGer_Admin(this.props.user) && (
-              <>
-                <h4>Admin:</h4>
-                {admins.map((admin, i) => (
-                  <p key={i}>
-                    <b>
-                      <Link
-                        to={`${DEMO.TEAM_ADMIN_LINK(admin._id.toString())}`}
-                      >
-                        {admin.firstname} {admin.lastname}
-                      </Link>
-                    </b>
-                  </p>
-                ))}
-              </>
-            )}
-            <h4>Manager:</h4>
-            <table>
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Type</th>
-
-                  <th>
-                    Can User <br /> TaiGerAI
-                  </th>
-                  <th>
-                    TaiGerAI <br /> Quota
-                  </th>
-                  <th>Permissions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {managers.map((manager, i) => (
-                  <tr key={i}>
-                    <td>
-                      <b>
-                        <Link
-                          to={`${DEMO.TEAM_MANAGER_LINK(
-                            manager._id.toString()
-                          )}`}
-                        >
-                          {manager.firstname} {manager.lastname}{' '}
-                        </Link>
-                      </b>
-                    </td>
-                    <td>
-                      {manager.permissions?.length > 0
-                        ? manager.permissions[0].canModifyProgramList
-                          ? 'O'
-                          : 'X'
-                        : 'x'}
-                    </td>
-                    <td>
-                      {manager.permissions?.length > 0
-                        ? manager.permissions[0].canModifyAllBaseDocuments
-                          ? 'O'
-                          : 'X'
-                        : 'x'}
-                    </td>
-                    <td>
-                      <DropdownButton
-                        id="dropdown-basic-button"
-                        title="Edit"
-                        size="sm"
-                        disabled={!is_TaiGer_Admin(this.props.user)}
-                      >
-                        <Dropdown.Item
-                          onClick={() =>
-                            this.setModalShow(
-                              manager.firstname,
-                              manager.lastname,
-                              manager._id.toString(),
-                              manager.permissions
-                            )
-                          }
-                        >
-                          Permission
-                        </Dropdown.Item>
-                        {/* <Dropdown.Item
-                          onClick={() =>
-                            this.setManagerModalShow(
-                              manager.firstname,
-                              manager.lastname,
-                              manager._id.toString(),
-                              manager.permissions
-                            )
-                          }
-                        >
-                          Change Role Manager
-                        </Dropdown.Item> */}
-                      </DropdownButton>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            <h4>Agent:</h4>
-            <table>
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>
-                    Can modify
-                    <br /> program list
-                  </th>
-                  <th>
-                    Can modify all
-                    <br /> Base Documents
-                  </th>
-                  <th>
-                    Can Access <br /> AllChat
-                  </th>
-                  <th>
-                    Can Assign <br /> Agents
-                  </th>
-                  <th>
-                    Can Assign <br /> Editors
-                  </th>
-                  <th>
-                    Can Modify <br /> Docs
-                  </th>
-                  <th>
-                    Can Access <br /> Students
-                  </th>
-                  <th>
-                    Can User <br /> TaiGerAI
-                  </th>
-                  <th>
-                    TaiGerAI <br /> Quota
-                  </th>
-                  <th>Permissions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {agents.map((agent, i) => (
-                  <tr key={i}>
-                    <td>
-                      <b>
-                        <Link
-                          to={`${DEMO.TEAM_AGENT_LINK(agent._id.toString())}`}
-                        >
-                          {agent.firstname} {agent.lastname}{' '}
-                        </Link>
-                      </b>
-                    </td>
-                    <td>
-                      {agent.permissions?.length > 0
-                        ? agent.permissions[0].canModifyProgramList
-                          ? 'O'
-                          : 'X'
-                        : 'x'}
-                    </td>
-                    <td>
-                      {agent.permissions?.length > 0
-                        ? agent.permissions[0].canModifyAllBaseDocuments
-                          ? 'O'
-                          : 'X'
-                        : 'x'}
-                    </td>
-                    <td>
-                      {agent.permissions?.length > 0
-                        ? agent.permissions[0].canAccessAllChat
-                          ? 'O'
-                          : 'X'
-                        : 'x'}
-                    </td>
-                    <td>
-                      {agent.permissions?.length > 0
-                        ? agent.permissions[0].canAssignAgents
-                          ? 'O'
-                          : 'X'
-                        : 'x'}
-                    </td>
-                    <td>
-                      {agent.permissions?.length > 0
-                        ? agent.permissions[0].canAssignEditors
-                          ? 'O'
-                          : 'X'
-                        : 'x'}
-                    </td>
-                    <td>
-                      {agent.permissions?.length > 0
-                        ? agent.permissions[0].canModifyDocumentation
-                          ? 'O'
-                          : 'X'
-                        : 'x'}
-                    </td>
-                    <td>
-                      {agent.permissions?.length > 0
-                        ? agent.permissions[0].canAccessStudentDatabase
-                          ? 'O'
-                          : 'X'
-                        : 'x'}
-                    </td>
-                    <td>
-                      {agent.permissions.length > 0
-                        ? agent.permissions[0].canUseTaiGerAI
-                          ? 'O'
-                          : 'X'
-                        : 'x'}
-                    </td>
-                    <td>
-                      <span>{agent.permissions[0]?.taigerAiQuota | 0}</span>
-                    </td>
-                    <td>
-                      <DropdownButton
-                        id="dropdown-basic-button"
-                        title="Edit"
-                        size="sm"
-                        disabled={!is_TaiGer_Admin(this.props.user)}
-                      >
-                        <Dropdown.Item
-                          onClick={() =>
-                            this.setModalShow(
-                              agent.firstname,
-                              agent.lastname,
-                              agent._id.toString(),
-                              agent.permissions
-                            )
-                          }
-                        >
-                          Permission
-                        </Dropdown.Item>
-                        {/* <Dropdown.Item
-                          onClick={() =>
-                            this.setManagerModalShow(
-                              agent.firstname,
-                              agent.lastname,
-                              agent._id.toString(),
-                              agent.permissions
-                            )
-                          }
-                        >
-                          Set Manager
-                        </Dropdown.Item> */}
-                      </DropdownButton>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-
-            <h4>Editor:</h4>
-            <table>
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Can Assign Agents</th>
-                  <th>Can Assign Editors</th>
-                  <th>Can Modify Docs</th>
-                  <th>Can Access Students</th>
-                  <th>
-                    Can User <br /> TaiGerAI
-                  </th>
-                  <th>
-                    TaiGerAI <br /> Quota
-                  </th>
-                  <th>Permissions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {editors.map((editor, i) => (
-                  <tr key={i}>
-                    <td>
-                      <b>
-                        <Link
-                          to={`${DEMO.TEAM_EDITOR_LINK(editor._id.toString())}`}
-                        >
-                          {editor.firstname} {editor.lastname}{' '}
-                        </Link>
-                      </b>
-                    </td>
-                    <td>
-                      {editor.permissions.length > 0
-                        ? editor.permissions[0].canAssignAgents
-                          ? 'O'
-                          : 'X'
-                        : 'x'}
-                    </td>
-                    <td>
-                      {editor.permissions.length > 0
-                        ? editor.permissions[0].canAssignEditors
-                          ? 'O'
-                          : 'X'
-                        : 'x'}
-                    </td>
-                    <td>
-                      {editor.permissions.length > 0
-                        ? editor.permissions[0].canModifyDocumentation
-                          ? 'O'
-                          : 'X'
-                        : 'x'}
-                    </td>
-                    <td>
-                      {editor.permissions.length > 0
-                        ? editor.permissions[0].canAccessStudentDatabase
-                          ? 'O'
-                          : 'X'
-                        : 'x'}
-                    </td>
-                    <td>
-                      {editor.permissions.length > 0
-                        ? editor.permissions[0].canUseTaiGerAI
-                          ? 'O'
-                          : 'X'
-                        : 'x'}
-                    </td>
-                    <td>
-                      <td>
-                        <span>{editor.permissions[0]?.taigerAiQuota | 0}</span>
-                      </td>
-                    </td>
-                    <td>
-                      <DropdownButton
-                        id="dropdown-basic-button"
-                        title="Edit"
-                        size="sm"
-                        disabled={!is_TaiGer_Admin(this.props.user)}
-                      >
-                        <Dropdown.Item
-                          onClick={() =>
-                            this.setModalShow(
-                              editor.firstname,
-                              editor.lastname,
-                              editor._id.toString(),
-                              editor.permissions
-                            )
-                          }
-                        >
-                          Permission
-                        </Dropdown.Item>
-                        {/* <Dropdown.Item
-                          onClick={() =>
-                            this.setManagerModalShow(
-                              editor.firstname,
-                              editor.lastname,
-                              editor._id.toString(),
-                              editor.permissions
-                            )
-                          }
-                        >
-                          Set Manager
-                        </Dropdown.Item> */}
-                      </DropdownButton>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </Card.Body>
-        </Card>
-        {this.state.modalShow && (
-          <GrantPermissionModal
-            modalShow={this.state.modalShow}
-            firstname={this.state.firstname}
-            lastname={this.state.lastname}
-            user_permissions={this.state.user_permissions}
-            setModalHide={this.setModalHide}
-            onUpdatePermissions={this.onUpdatePermissions}
-          />
-        )}
-        {this.state.managerModalShow && (
-          <GrantManagerModal
-            managerModalShow={this.state.managerModalShow}
-            firstname={this.state.firstname}
-            lastname={this.state.lastname}
-            user_permissions={this.state.user_permissions}
-            setManagerModalHide={this.setManagerModalHide}
-            onUpdatePermissions={this.onUpdatePermissions}
-          />
-        )}
-      </Aux>
-    );
+  if (!is_TaiGer_role(user)) {
+    return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
   }
+  TabTitle(`${appConfig.companyName} Team Permissions Management`);
+  const { res_status, isLoaded } = taiGerOrgState;
+
+  if (!isLoaded && !taiGerOrgState.teams) {
+    return <Loading />;
+  }
+
+  if (res_status >= 400) {
+    return <ErrorPage res_status={res_status} />;
+  }
+  const admins = taiGerOrgState.teams.filter(
+    (member) => member.role === 'Admin'
+  );
+  const agents = taiGerOrgState.teams.filter(
+    (member) => member.role === 'Agent'
+  );
+  // const managers = taiGerOrgState.teams.filter(
+  //   (member) => member.role === 'Manager'
+  // );
+  const editors = taiGerOrgState.teams.filter(
+    (member) => member.role === 'Editor'
+  );
+
+  const EditorRow = ({ editor }) => {
+    const [anchorEl, setAnchorEl] = useState(null);
+    const open = Boolean(anchorEl);
+    const handleClick = (event) => {
+      setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+      setAnchorEl(null);
+    };
+
+    return (
+      <TableRow>
+        <TableCell>
+          <Typography>
+            <Link
+              component={LinkDom}
+              to={`${DEMO.TEAM_EDITOR_LINK(editor._id.toString())}`}
+            >
+              {editor.firstname} {editor.lastname}{' '}
+            </Link>
+          </Typography>
+        </TableCell>
+        <TableCell>
+          {editor.permissions.length > 0
+            ? editor.permissions[0].canAssignAgents
+              ? 'O'
+              : 'X'
+            : 'x'}
+        </TableCell>
+        <TableCell>
+          {editor.permissions.length > 0
+            ? editor.permissions[0].canAssignEditors
+              ? 'O'
+              : 'X'
+            : 'x'}
+        </TableCell>
+        <TableCell>
+          {editor.permissions.length > 0
+            ? editor.permissions[0].canModifyDocumentation
+              ? 'O'
+              : 'X'
+            : 'x'}
+        </TableCell>
+        <TableCell>
+          {editor.permissions.length > 0
+            ? editor.permissions[0].canAccessStudentDatabase
+              ? 'O'
+              : 'X'
+            : 'x'}
+        </TableCell>
+        <TableCell>
+          {editor.permissions.length > 0
+            ? editor.permissions[0].canUseTaiGerAI
+              ? 'O'
+              : 'X'
+            : 'x'}
+        </TableCell>
+        <TableCell>
+          <span>{editor.permissions[0]?.taigerAiQuota | 0}</span>
+        </TableCell>
+        <TableCell>
+          <Button
+            id="basic-button"
+            variant="contained"
+            aria-controls={open ? `basic-menu` : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? 'true' : undefined}
+            onClick={handleClick}
+          >
+            {t('Edit')}
+          </Button>
+          <Menu
+            id={`basic-menu`}
+            anchorEl={anchorEl}
+            disabled={!is_TaiGer_Admin(user)}
+            open={open}
+            onClose={handleClose}
+            MenuListProps={{
+              'aria-labelledby': 'basic-button'
+            }}
+          >
+            <MenuItem
+              onClick={() =>
+                setModalShow(
+                  editor.firstname,
+                  editor.lastname,
+                  editor._id.toString(),
+                  editor.permissions
+                )
+              }
+            >
+              Permission
+            </MenuItem>
+          </Menu>
+        </TableCell>
+      </TableRow>
+    );
+  };
+
+  const AgentRow = ({ agent }) => {
+    const [anchorEl, setAnchorEl] = useState(null);
+    const open = Boolean(anchorEl);
+    const handleClick = (event) => {
+      setAnchorEl(event.currentTarget);
+    };
+
+    return (
+      <TableRow>
+        <TableCell>
+          <Typography>
+            <Link
+              component={LinkDom}
+              to={`${DEMO.TEAM_AGENT_LINK(agent._id.toString())}`}
+            >
+              {agent.firstname} {agent.lastname}{' '}
+            </Link>
+          </Typography>
+        </TableCell>
+        <TableCell>
+          {agent.permissions?.length > 0
+            ? agent.permissions[0].canModifyProgramList
+              ? 'O'
+              : 'X'
+            : 'x'}
+        </TableCell>
+        <TableCell>
+          {agent.permissions?.length > 0
+            ? agent.permissions[0].canModifyAllBaseDocuments
+              ? 'O'
+              : 'X'
+            : 'x'}
+        </TableCell>
+        <TableCell>
+          {agent.permissions?.length > 0
+            ? agent.permissions[0].canAccessAllChat
+              ? 'O'
+              : 'X'
+            : 'x'}
+        </TableCell>
+        <TableCell>
+          {agent.permissions?.length > 0
+            ? agent.permissions[0].canAssignAgents
+              ? 'O'
+              : 'X'
+            : 'x'}
+        </TableCell>
+        <TableCell>
+          {agent.permissions?.length > 0
+            ? agent.permissions[0].canAssignEditors
+              ? 'O'
+              : 'X'
+            : 'x'}
+        </TableCell>
+        <TableCell>
+          {agent.permissions?.length > 0
+            ? agent.permissions[0].canModifyDocumentation
+              ? 'O'
+              : 'X'
+            : 'x'}
+        </TableCell>
+        <TableCell>
+          {agent.permissions?.length > 0
+            ? agent.permissions[0].canAccessStudentDatabase
+              ? 'O'
+              : 'X'
+            : 'x'}
+        </TableCell>
+        <TableCell>
+          {agent.permissions.length > 0
+            ? agent.permissions[0].canUseTaiGerAI
+              ? 'O'
+              : 'X'
+            : 'x'}
+        </TableCell>
+        <TableCell>
+          <span>{agent.permissions[0]?.taigerAiQuota | 0}</span>
+        </TableCell>
+        <TableCell>
+          <Button
+            id="basic-button"
+            variant="contained"
+            aria-controls={open ? `basic-menu` : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? 'true' : undefined}
+            onClick={handleClick}
+          >
+            {t('Edit')}
+          </Button>
+          <Menu
+            id={`basic-menu`}
+            anchorEl={anchorEl}
+            disabled={!is_TaiGer_Admin(user)}
+            open={open}
+            onClose={() => setAnchorEl(null)}
+            MenuListProps={{
+              'aria-labelledby': 'basic-button'
+            }}
+          >
+            <MenuItem
+              onClick={() =>
+                setModalShow(
+                  agent.firstname,
+                  agent.lastname,
+                  agent._id.toString(),
+                  agent.permissions
+                )
+              }
+            >
+              Permission
+            </MenuItem>
+          </Menu>
+        </TableCell>
+      </TableRow>
+    );
+  };
+  return (
+    <Box>
+      <Breadcrumbs aria-label="breadcrumb">
+        <Link
+          underline="hover"
+          color="inherit"
+          component={LinkDom}
+          to={`${DEMO.DASHBOARD_LINK}`}
+        >
+          {appConfig.companyName}
+        </Link>
+        <Typography color="text.primary">Permissions Management</Typography>
+      </Breadcrumbs>
+      <Card>
+        {is_TaiGer_Admin(user) && (
+          <>
+            <Typography variant="h5">Admin:</Typography>
+            {admins.map((admin, i) => (
+              <Typography key={i}>
+                <b>
+                  <Link to={`${DEMO.TEAM_ADMIN_LINK(admin._id.toString())}`}>
+                    {admin.firstname} {admin.lastname}
+                  </Link>
+                </b>
+              </Typography>
+            ))}
+          </>
+        )}
+      </Card>
+      {/* <Card>
+        <Typography variant="h5">Manager:</Typography>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>{t('Name')}</TableCell>
+              <TableCell>Type</TableCell>
+              <TableCell>
+                Can User <br /> TaiGerAI
+              </TableCell>
+              <TableCell>
+                TaiGerAI <br /> Quota
+              </TableCell>
+              <TableCell>Permissions</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {managers.map((manager, i) => (
+              <TableRow key={i}>
+                <TableCell>
+                  <b>
+                    <Link
+                      to={`${DEMO.TEAM_MANAGER_LINK(manager._id.toString())}`}
+                    >
+                      {manager.firstname} {manager.lastname}{' '}
+                    </Link>
+                  </b>
+                </TableCell>
+                <TableCell>
+                  {manager.permissions?.length > 0
+                    ? manager.permissions[0].canModifyProgramList
+                      ? 'O'
+                      : 'X'
+                    : 'x'}
+                </TableCell>
+                <TableCell>
+                  {manager.permissions?.length > 0
+                    ? manager.permissions[0].canModifyAllBaseDocuments
+                      ? 'O'
+                      : 'X'
+                    : 'x'}
+                </TableCell>
+                <TableCell>
+                  <Button
+                    id="basic-button"
+                    variant="contained"
+                    aria-controls={open ? 'basic-menu' : undefined}
+                    aria-haspopup="true"
+                    aria-expanded={open ? 'true' : undefined}
+                    onClick={handleClick}
+                  >
+                    {t('Edit')}
+                  </Button>
+                  <Menu
+                    id="basic-menu"
+                    anchorEl={anchorEl}
+                    disabled={!is_TaiGer_Admin(user)}
+                    open={open}
+                    onClose={handleClose}
+                    MenuListProps={{
+                      'aria-labelledby': 'basic-button'
+                    }}
+                  >
+                    <MenuItem
+                      onClick={() =>
+                        setModalShow(
+                          manager.firstname,
+                          manager.lastname,
+                          manager._id.toString(),
+                          manager.permissions
+                        )
+                      }
+                    >
+                      {t('Permission')}
+                    </MenuItem>
+                  </Menu>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </Card> */}
+      <Card>
+        <Typography variant="h5">{t('Agent')}:</Typography>
+        <Table size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell>{t('Name')}</TableCell>
+              <TableCell>
+                Can modify
+                <br /> program list
+              </TableCell>
+              <TableCell>
+                Can modify all
+                <br /> Base Documents
+              </TableCell>
+              <TableCell>
+                Can Access <br /> AllChat
+              </TableCell>
+              <TableCell>
+                Can Assign <br /> Agents
+              </TableCell>
+              <TableCell>
+                Can Assign <br /> Editors
+              </TableCell>
+              <TableCell>
+                Can Modify <br /> Docs
+              </TableCell>
+              <TableCell>
+                Can Access <br /> Students
+              </TableCell>
+              <TableCell>
+                Can User <br /> TaiGerAI
+              </TableCell>
+              <TableCell>
+                TaiGerAI <br /> Quota
+              </TableCell>
+              <TableCell>Permissions</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {agents.map((agent, i) => (
+              <AgentRow agent={agent} key={i} />
+            ))}
+          </TableBody>
+        </Table>
+      </Card>
+      <Card>
+        <Typography variant="h5">{t('Editor')}:</Typography>
+        <Table size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell>Name</TableCell>
+              <TableCell>Can Assign Agents</TableCell>
+              <TableCell>Can Assign Editors</TableCell>
+              <TableCell>Can Modify Docs</TableCell>
+              <TableCell>Can Access Students</TableCell>
+              <TableCell>
+                Can User <br /> TaiGerAI
+              </TableCell>
+              <TableCell>
+                TaiGerAI <br /> Quota
+              </TableCell>
+              <TableCell>Permissions</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {editors.map((editor, i) => (
+              <EditorRow editor={editor} key={i} />
+            ))}
+          </TableBody>
+        </Table>
+      </Card>
+      {taiGerOrgState.modalShow && (
+        <GrantPermissionModal
+          modalShow={taiGerOrgState.modalShow}
+          firstname={taiGerOrgState.firstname}
+          lastname={taiGerOrgState.lastname}
+          user_permissions={taiGerOrgState.user_permissions}
+          setModalHide={setModalHide}
+          onUpdatePermissions={onUpdatePermissions}
+        />
+      )}
+      {taiGerOrgState.managerModalShow && (
+        <GrantManagerModal
+          managerModalShow={taiGerOrgState.managerModalShow}
+          firstname={taiGerOrgState.firstname}
+          lastname={taiGerOrgState.lastname}
+          user_permissions={taiGerOrgState.user_permissions}
+          setManagerModalHide={setManagerModalHide}
+          onUpdatePermissions={onUpdatePermissions}
+        />
+      )}
+    </Box>
+  );
 }
 
 export default TaiGerOrg;

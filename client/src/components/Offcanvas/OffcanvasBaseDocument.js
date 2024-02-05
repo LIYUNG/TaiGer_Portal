@@ -1,34 +1,32 @@
 import React from 'react';
-import { Form, Button, Offcanvas } from 'react-bootstrap';
+import { Button, TextField, Typography } from '@mui/material';
+import { useTranslation } from 'react-i18next';
+
+import ModalNew from '../Modal';
 
 export default function OffcanvasBaseDocument(props) {
+  const { t } = useTranslation();
   return (
-    <Offcanvas
-      show={props.show}
-      onHide={props.onHide}
-      placement="end"
-    >
-      <Offcanvas.Header closeButton>
-        <Offcanvas.Title>Edit</Offcanvas.Title>
-      </Offcanvas.Header>
-      <Offcanvas.Body>
-        <Form.Group className="mb-3">
-          <Form.Label>
-            Documentation Link for <b>{props.docName}</b>
-          </Form.Label>
-          <Form.Control
-            placeholder="https://taigerconsultancy-portal.com/docs/search/12345678"
-            defaultValue={props.link}
-            onChange={(e) => props.onChangeURL(e)}
-          />
-        </Form.Group>
-        <Button
-          onClick={(e) => props.updateDocLink(e)}
-          disabled={props.baseDocsflagOffcanvasButtonDisable}
-        >
-          Save
-        </Button>
-      </Offcanvas.Body>
-    </Offcanvas>
+    <ModalNew open={props.open} onClose={props.onHide}>
+      <Typography variant="h6">{t('Edit')}</Typography>
+      <Typography variant="body1">
+        Documentation Link for <b>{props.docName}</b>
+      </Typography>
+      <br />
+      <TextField
+        fullWidth
+        size="small"
+        placeholder="https://taigerconsultancy-portal.com/docs/search/12345678"
+        defaultValue={props.link}
+        onChange={(e) => props.onChangeURL(e)}
+      ></TextField>
+      <Button
+        variant="contained"
+        onClick={(e) => props.updateDocLink(e)}
+        disabled={props.baseDocsflagOffcanvasButtonDisable}
+      >
+        {t('Save')}
+      </Button>
+    </ModalNew>
   );
 }

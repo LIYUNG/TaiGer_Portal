@@ -47,6 +47,9 @@ yarn-error.log*
 # jest-mongodb
 globalConfig.json
 
+# python
+/venv
+**/__pycache__
 
 # travis
 /api/python/TaiGerProgramListAICrawler/.env

@@ -26,7 +26,6 @@ const UpdateEvent = ({updateEventApi, event, error}) => {
 
 
     useEffect( ()=>{
-      console.log(error);
       if(error && !firstRender){
         setError(error)
         
@@ -50,7 +49,6 @@ const UpdateEvent = ({updateEventApi, event, error}) => {
       setFirstRender(false)
       updateEventApi(values, event.id)
       .then(res=> {
-        console.log(res);
         setRerender(!rerender);
         if(res === "response was successful"){
           navigate("/")

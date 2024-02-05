@@ -9,7 +9,53 @@ import moment from 'moment-timezone';
 import { IoCheckmarkCircle } from 'react-icons/io5';
 import { BsDash } from 'react-icons/bs';
 import { BiCommentDots } from 'react-icons/bi';
+import { styled, alpha } from '@mui/material/styles';
+import { InputBase } from '@mui/material';
+
 import { appConfig } from '../../config';
+
+export const Search = styled('div')(({ theme }) => ({
+  position: 'relative',
+  borderRadius: theme.shape.borderRadius,
+  backgroundColor: alpha(theme.palette.common.white, 0.15),
+  '&:hover': {
+    backgroundColor: alpha(theme.palette.common.white, 0.25)
+  },
+  marginRight: theme.spacing(2),
+  marginLeft: 0,
+  width: '100%',
+  [theme.breakpoints.up('sm')]: {
+    marginLeft: theme.spacing(3),
+    width: 'auto'
+  }
+}));
+
+export const SearchIconWrapper = styled('div')(({ theme }) => ({
+  padding: theme.spacing(0, 2),
+  height: '100%',
+  position: 'absolute',
+  pointerEvents: 'none',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center'
+}));
+
+export const StyledInputBase = styled(InputBase)(({ theme }) => ({
+  color: 'inherit',
+  '& .MuiInputBase-input': {
+    padding: theme.spacing(1, 1, 1, 0),
+    // vertical padding + font size from searchIcon
+    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+    transition: theme.transitions.create('width'),
+    width: '100%',
+    [theme.breakpoints.up('md')]: {
+      width: '20ch'
+    }
+  }
+}));
+
+export const menuWidth = 350;
+
 let FILE_OK_SYMBOL = (
   <IoCheckmarkCircle size={18} color="limegreen" title="Valid Document" />
 );
@@ -65,7 +111,7 @@ export const CVQuestions = () => {
   ];
 };
 
-export const RLQuestions = (thread) => {
+export const RLQuestions = () => {
   return [
     {
       question_id: 'q1',
@@ -433,8 +479,7 @@ export const getUTCWithDST = (year, month, day, timezone, timeslot) => {
   localTime.tz(timezone);
 
   // Get the UTC time while considering DST
-  const utcTime = localTime.toISOString();
-  // console.log(localTime.utc().format());
+  // const utcTime = localTime.toISOString();
   const a = moment.tz(
     `${year}-${month < 10 ? `0${month}` : month}-${
       day < 10 ? `0${day}` : `${day}`
@@ -484,12 +529,12 @@ export const getNextDayDate = (reorder_weekday, dayOfWeek, timezone, nextN) => {
   // Calculate the date of the next Nth occurrence
   const nextOccurrence = now.plus({ days: daysToAdd + nextN * 7 + bufferDays });
 
-  const options = {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'numeric',
-    day: 'numeric'
-  };
+  // const options = {
+  //   weekday: 'long',
+  //   year: 'numeric',
+  //   month: 'numeric',
+  //   day: 'numeric'
+  // };
   return {
     weekdayLong: nextOccurrence.weekdayLong,
     year: nextOccurrence.year,
@@ -880,6 +925,34 @@ export const field_alert = (program) => {
   }
 };
 
+export const DEGREE_CATOGARY_ARRAY_OPTIONS = [
+  { value: '', label: 'Please Select' },
+  { value: 'Bachelor', label: 'Bachelor' },
+  { value: 'B. A.', label: 'Bachelor of Art' },
+  { value: 'B. Eng.', label: 'Bachelor of Engineering' },
+  { value: 'B. Sc.', label: 'Bachelor of Science' },
+  { value: 'Master', label: 'Master' },
+  { value: 'M. A.', label: 'Master of Art' },
+  { value: 'M. Eng.', label: 'Master of Engineering' },
+  { value: 'M. Sc.', label: 'Master of Science' },
+  { value: 'M. Res.', label: 'Master of Reserach' },
+  { value: 'MBA', label: 'MBA' }
+];
+
+export const LANGUAGES_ARRAY_OPTIONS = [
+  { value: '-', label: '-' },
+  { value: 'English', label: 'English' },
+  { value: 'German', label: 'German' },
+  { value: 'German-and-English', label: 'German-AND-English' },
+  { value: 'German-or-English', label: 'German-OR-English' }
+];
+
+export const UNI_ASSIST_ARRAY_OPTIONS = [
+  { value: 'No', label: 'No' },
+  { value: 'Yes-VPD', label: 'Yes-VPD' },
+  { value: 'Yes-FULL', label: 'Yes-Full' }
+];
+
 export const DEGREE_OPTIONS = () => {
   return (
     <>
@@ -942,6 +1015,80 @@ export const COUNTRIES_MAPPING = {
   us: 'United States'
 };
 
+export const COUNTRIES_ARRAY_OPTIONS = [
+  { value: '-', label: '-' },
+  { value: 'at', label: 'Austria' },
+  { value: 'au', label: 'Australia' },
+  { value: 'be', label: 'Belgium' },
+  { value: 'ca', label: 'Canada' },
+  { value: 'cz', label: 'Czech' },
+  { value: 'dk', label: 'Danmark' },
+  { value: 'fi', label: 'Finland' },
+  { value: 'fr', label: 'France' },
+  { value: 'de', label: 'Germany' },
+  { value: 'gr', label: 'Greece' },
+  { value: 'hk', label: 'Hong Kong' },
+  { value: 'hu', label: 'Hungary' },
+  { value: 'ie', label: 'Ireland' },
+  { value: 'it', label: 'Italy' },
+  { value: 'jp', label: 'Japan' },
+  { value: 'kr', label: 'South Korea' },
+  { value: 'lv', label: 'Latvia' },
+  { value: 'lt', label: 'Lithuania' },
+  { value: 'lu', label: 'Luxembourg' },
+  { value: 'nl', label: 'Netherlands' },
+  { value: 'nz', label: 'New Zealand' },
+  { value: 'no', label: 'Norway' },
+  { value: 'pl', label: 'Poland' },
+  { value: 'pt', label: 'Portugal' },
+  { value: 'ru', label: 'Russia' },
+  { value: 'sg', label: 'Singapore' },
+  { value: 'es', label: 'Spain' },
+  { value: 'se', label: 'Sweden' },
+  { value: 'ch', label: 'Switzerland' },
+  { value: 'uk', label: 'United Kingdom' },
+  { value: 'us', label: 'United States' }
+];
+
+() => {
+  return (
+    <>
+      <option value="-">-</option>
+      <option value="at">Austria</option>
+      <option value="au">Australia</option>
+      <option value="be">Belgium</option>
+      <option value="ca">Canada</option>
+      <option value="cz">Czech</option>
+      <option value="dk">Danmark</option>
+      <option value="fi">Finland</option>
+      <option value="fr">France</option>
+      <option value="de">Germany</option>
+      <option value="gr">Greece</option>
+      <option value="hk">Hong Kong</option>
+      <option value="hu">Hungary</option>
+      <option value="ie">Ireland</option>
+      <option value="it">Italy</option>
+      <option value="jp">Japan</option>
+      <option value="kr">South Korea</option>
+      <option value="lv">Latvia</option>
+      <option value="lt">Lithuania</option>
+      <option value="lu">Luxembourg</option>
+      <option value="nl">Netherlands</option>
+      <option value="nz">New Zealand</option>
+      <option value="no">Norway</option>
+      <option value="pl">Poland</option>
+      <option value="pt">Portugal</option>
+      <option value="ru">Russia</option>
+      <option value="sg">Singapore</option>
+      <option value="es">Spain</option>
+      <option value="se">Sweden</option>
+      <option value="ch">Switzerland</option>
+      <option value="uk">United Kingdom</option>
+      <option value="us">United States</option>
+    </>
+  );
+};
+
 export const COUNTRIES_OPTIONS = () => {
   return (
     <>
@@ -1000,26 +1147,65 @@ export const BINARY_STATE_OPTIONS = () => {
   );
 };
 
-export const TRI_STATE_OPTIONS = () => {
-  return (
-    <>
-      <option value="-">-</option>
-      <option value="Yes">Yes</option>
-      <option value="No">No</option>
-    </>
-  );
-};
+export const BINARY_STATE_ARRAY_OPTIONS = [
+  { value: 'no', label: 'no' },
+  { value: 'yes', label: 'yes' }
+];
 
-export const IS_PASSED_OPTIONS = () => {
-  return (
-    <>
-      <option value="-">-</option>
-      <option value="O">Yes (Provide Test Score)</option>
-      <option value="X">No (Provide Test Date)</option>
-      <option value="--">Not Needed</option>
-    </>
-  );
-};
+export const BACHELOR_GRADUATE_STATUS_OPTIONS = [
+  { value: '-', label: '-' },
+  { value: 'Yes', label: 'Yes 已畢業' },
+  { value: 'No', label: 'No 未開始就讀' },
+  { value: 'pending', label: 'Not finished yet 就讀中，尚未畢業' }
+];
+
+export const DUAL_STATE_OPTIONS = [
+  { value: '-', label: '-' },
+  { value: 'Yes', label: 'Yes' },
+  { value: 'No', label: 'No' }
+];
+
+export const HIG_SCHOOL_TRI_STATE_OPTIONS = [
+  { value: '-', label: '-' },
+  { value: 'Yes', label: 'Yes' },
+  { value: 'No', label: 'No' },
+  { value: 'pending', label: 'In progress' }
+];
+
+export const TRI_STATE_OPTIONS = [
+  { value: '-', label: '-' },
+  { value: 'Yes', label: 'Yes' },
+  { value: 'No', label: 'No' },
+  { value: 'NotSure', label: 'Not Sure' }
+];
+
+export const IS_SUBMITTED_STATE_OPTIONS = [
+  { value: '-', label: '-' },
+  { value: 'O', label: 'Yes' },
+  { value: 'X', label: 'No ' }
+];
+
+export const IS_OFFERED_STATE_OPTIONS = [
+  { value: '-', label: '-' },
+  { value: 'O', label: 'Yes' },
+  { value: 'X', label: 'No ' }
+];
+
+export const IS_PASSED_OPTIONS = [
+  { value: '-', label: '-' },
+  { value: 'O', label: 'Yes (Provide Test Score)' },
+  { value: 'X', label: 'No (Provide Test Date)' },
+  { value: '--', label: 'Not Needed' }
+];
+
+export const ENGLISH_CERTIFICATE_ARRAY_OPTIONS = [
+  { value: '', label: 'Please Select' },
+  { value: 'TOEFL', label: 'TOEFL iBT (現場考)' },
+  { value: 'IELTS', label: 'IELTS Academy (現場考)' },
+  { value: 'Duolingo', label: 'Duolingo (極少數承認)' },
+  { value: 'Native', label: 'English Native 母語' },
+  { value: 'Others', label: '其餘考試不適用' }
+];
 
 export const ENGLISH_CERTIFICATE_OPTIONS = () => {
   return (
@@ -1035,6 +1221,23 @@ export const ENGLISH_CERTIFICATE_OPTIONS = () => {
     </>
   );
 };
+
+export const GERMAN_CERTIFICATE_ARRAY_OPTIONS = [
+  { value: 'No', label: 'No' },
+  { value: 'Goethe Zertifikat A2', label: 'Goethe Zertifikat A2' },
+  { value: 'Goethe Zertifikat B1', label: 'Goethe Zertifikat B1' },
+  { value: 'Goethe Zertifikat B2', label: 'Goethe Zertifikat B2' },
+  { value: 'Goethe Zertifikat C1', label: 'Goethe Zertifikat C1' },
+  { value: 'TestDaF', label: 'TestDaF' },
+  { value: 'Telc', label: 'Telc' },
+  { value: 'DSH', label: 'DSH' },
+  { value: 'Native', label: 'Native' },
+  {
+    value: 'OTHERS',
+    label: '其餘德語不適用。報名考試前請和顧問諮詢',
+    disabled: true
+  }
+];
 
 export const GERMAN_CERTIFICATE_OPTIONS = () => {
   return (
@@ -1055,6 +1258,13 @@ export const GERMAN_CERTIFICATE_OPTIONS = () => {
   );
 };
 
+export const GRE_CERTIFICATE_ARRAY_OPTIONS = [
+  { value: '', label: 'Please Select' },
+  { value: 'GRE_GENERAL', label: 'GRE General Test' },
+  { value: 'GRE_SUBJECT', label: 'GRE Subject Test' },
+  { value: 'GRE_OTHERS', label: 'GRE Other Test', disabled: true }
+];
+
 export const GRE_CERTIFICATE_OPTIONS = () => {
   return (
     <>
@@ -1068,42 +1278,43 @@ export const GRE_CERTIFICATE_OPTIONS = () => {
   );
 };
 
-export const GMAT_CERTIFICATE_OPTIONS = () => {
-  return (
-    <>
-      <option value="">Please Select</option>
-      <option value="GMAT_GENERAL">GMAT Physical Test</option>
-      <option value="GMAT_FOCUS">GMAT Focus Test</option>
-      <option value="GMAT_SUBJECT" disabled>
-        GMAT Online 不再適用。報名考試前請和顧問諮詢
-      </option>
-    </>
-  );
-};
+export const GMAT_CERTIFICATE_OPTIONS = [
+  { value: '', label: 'Please Select' },
+  { value: 'GMAT_GENERAL', label: 'GMAT Physical Test' },
+  { value: 'GMAT_FOCUS', label: 'GMAT Focus Test' },
+  {
+    value: 'GMAT_SUBJECT',
+    label: 'GMAT Online 不再適用。報名考試前請和顧問諮詢',
+    disabled: true
+  }
+];
 
 export const APPLICATION_YEARS_FUTURE = () => {
-  return (
-    <>
-      {create_years(1990, 2050).map((year, idx) => (
-        <option key={idx} value={year}>
-          {year}
-        </option>
-      ))}
-    </>
-  );
+  return create_years(1990, 2050).map((year) => ({
+    value: year,
+    label: year
+  }));
 };
 
 export const EXPECTATION_APPLICATION_YEARS = () => {
-  return (
-    <>
-      {create_years(2018, 2050).map((year, idx) => (
-        <option key={idx} value={year}>
-          {year}
-        </option>
-      ))}
-    </>
-  );
+  return create_years(2018, 2050).map((year) => ({
+    value: year,
+    label: year
+  }));
 };
+
+export const SEMESTER_ARRAY_OPTIONS = [
+  { value: '', label: 'Please Select' },
+  { value: 'WS', label: 'Winter Semester (Semester begins on October)' },
+  { value: 'SS', label: 'Summer Semester (Semester begins on April)' }
+];
+
+export const DEGREE_ARRAY_OPTIONS = [
+  { value: '', label: 'Please Select' },
+  { value: 'Bachelor', label: 'Bachelor' },
+  { value: 'Master', label: 'Master' },
+  { value: 'BachelorMaster', label: 'BachelorMaster' }
+];
 
 export const return_thread_status = (user, thread) => {
   if (thread.isFinalVersion) {
@@ -1229,6 +1440,39 @@ export const internal_documentation_categories = {
   'uniassist-internal': 'Uni-Assist Internal',
   others: 'Others'
 };
+
+export const statuses = {
+  uploaded: 'uploaded',
+  accepted: 'accepted',
+  rejected: 'rejected',
+  missing: 'missing',
+  notneeded: 'notneeded'
+};
+
+export const studentOverviewTableHeader = [
+  'Target Year',
+  'First-/Lastname,Birthday',
+  'Agent',
+  'Editor',
+  'Graduated',
+  'Program Selection',
+  'Applications',
+  'Next Program to apply',
+  'Next Program deadline',
+  'Days left',
+  'Next Program status',
+  'Survey',
+  'Base Documents',
+  'Language',
+  'Course Analysis',
+  'CV',
+  'ML',
+  'RL',
+  'Essay',
+  'Portals',
+  'Uni-Assist',
+  'open/offer/reject'
+];
 
 export const cvmlrl_overview_closed_header = [
   {

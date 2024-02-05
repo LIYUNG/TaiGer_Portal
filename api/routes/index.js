@@ -20,7 +20,6 @@ const searchesRouter = require('./searches');
 const studentsRouter = require('./students');
 const studentsApplicationRouter = require('./student_applications');
 const taigeraisRouter = require('./taigerais');
-const tasksRouter = require('./tasks');
 const teamsRouter = require('./teams');
 const ticketsRouter = require('./tickets');
 const uniassistRouter = require('./uniassist');
@@ -51,7 +50,6 @@ const router = (app) => {
   apiRouter.use('/programs', programsRouter);
   apiRouter.use('/search', searchesRouter);
   apiRouter.use('/taigerai', taigeraisRouter);
-  apiRouter.use('/tasks', tasksRouter);
   apiRouter.use('/teams', teamsRouter);
   apiRouter.use('/tickets', ticketsRouter);
   apiRouter.use('/uniassist', uniassistRouter);

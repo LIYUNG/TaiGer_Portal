@@ -640,6 +640,7 @@ const initGeneralMessagesThread = asyncHandler(async (req, res) => {
 
   const doc_thread_existed = await Documentthread.findOne({
     student_id: studentId,
+    program_id: null,
     file_type: document_category
   });
 

@@ -7,32 +7,44 @@ import {
   useRowSelect,
   usePagination
 } from 'react-table';
-import { Link, Redirect } from 'react-router-dom';
+import { Link as LinkDom, Navigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import {
+  Button,
+  Card,
+  Table,
+  TableRow,
+  TableBody,
+  TableHead,
+  TableCell,
+  Breadcrumbs,
+  Link,
+  Typography,
+  InputBase,
+  Box
+} from '@mui/material';
+import { matchSorter } from 'match-sorter';
+import SearchIcon from '@mui/icons-material/Search';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
 
 import ProgramListSubpage from './ProgramListSubpage';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
-import { spinner_style } from '../Utils/contants';
-
-import { Button, Modal, Table, Row, Col, Spinner, Card } from 'react-bootstrap';
 import { getPrograms, assignProgramToStudent, createProgram } from '../../api';
 // A great library for fuzzy filtering/sorting items
-import { matchSorter } from 'match-sorter';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import ProgramListSingleStudentAssignSubpage from './ProgramListSingleStudentAssignSubpage';
 import NewProgramEdit from './NewProgramEdit';
 import { is_TaiGer_role } from '../Utils/checking-functions';
+import { useAuth } from '../../components/AuthProvider';
+import Loading from '../../components/Loading/Loading';
+import { appConfig } from '../../config';
+import ModalNew from '../../components/Modal';
 
 // Define a default UI for filtering
-function GlobalFilter({
-  preGlobalFilteredRows,
-  globalFilter,
-  setGlobalFilter
-}) {
-  const { t, i18n } = useTranslation();
-  const count = preGlobalFilteredRows.length;
+function GlobalFilter({ globalFilter, setGlobalFilter }) {
+  const { t } = useTranslation();
   const [value, setValue] = React.useState(globalFilter);
   const onChange = useAsyncDebounce((value) => {
     setGlobalFilter(value || undefined);
@@ -41,18 +53,21 @@ function GlobalFilter({
   return (
     <span>
       {t('Search')}:&nbsp;
-      <input
-        value={value || ''}
-        onChange={(e) => {
-          setValue(e.target.value);
-          onChange(e.target.value);
-        }}
-        placeholder={` TUM, Management ...`}
-        style={{
-          fontSize: '0.9rem',
-          border: '0'
-        }}
-      />
+      <Box>
+        <SearchIcon />
+        <InputBase
+          value={value || ''}
+          onChange={(e) => {
+            setValue(e.target.value);
+            onChange(e.target.value);
+          }}
+          placeholder={` TUM, Management ...`}
+          style={{
+            fontSize: '0.9rem',
+            border: '0'
+          }}
+        />
+      </Box>
     </span>
   );
 }
@@ -209,6 +224,7 @@ function fuzzyTextFilterFn(rows, id, filterValue) {
 // Let the table remove the filter if the string is empty
 fuzzyTextFilterFn.autoRemove = (val) => !val;
 
+// eslint-disable-next-line react/display-name
 const IndeterminateCheckbox = React.forwardRef(
   ({ indeterminate, ...rest }, ref) => {
     const defaultRef = React.useRef();
@@ -344,21 +360,18 @@ function Table2(props) {
 
   return (
     <>
-      <Table variant="dark" text="light" bordered hover size="sm">
-        <thead>
-          <tr>
-            <th
+      <Table size="small">
+        <TableHead>
+          <TableRow>
+            <TableCell
               colSpan={visibleColumns.length}
               style={{
                 textAlign: 'left'
               }}
             >
-              <span className="mx-2" style={{ cursor: 'pointer' }}>
+              <span style={{ cursor: 'pointer' }}>
                 {props.programs.programIds.length !== 0 && (
-                  <i
-                    className="feather icon-user-plus"
-                    onClick={props.setModalShow2}
-                  />
+                  <PersonAddIcon onClick={props.setModalShow2} />
                 )}
               </span>
               <GlobalFilter
@@ -366,130 +379,112 @@ function Table2(props) {
                 globalFilter={state.globalFilter}
                 setGlobalFilter={setGlobalFilter}
               />
-            </th>
-          </tr>
-        </thead>
-        <tbody></tbody>
+            </TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody></TableBody>
       </Table>
-      <Table
-        className="my-0 mx-2"
-        variant="dark"
-        text="light"
-        responsive
-        bordered
-        hover
-        size="sm"
-        {...getTableProps()}
-      >
-        <thead>
-          {headerGroups.map((headerGroup) => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column) => (
-                <th {...column.getHeaderProps()}>
+      <Table size="small" {...getTableProps()}>
+        <TableHead>
+          {headerGroups.map((headerGroup, k) => (
+            <TableRow key={k} {...headerGroup.getHeaderGroupProps()}>
+              {headerGroup.headers.map((column, x) => (
+                <TableCell key={x} {...column.getHeaderProps()}>
                   {column.render('Header')}
                   {/* Render the columns filter UI */}
                   <div>{column.canFilter ? column.render('Filter') : null}</div>
-                </th>
+                </TableCell>
               ))}
-            </tr>
+            </TableRow>
           ))}
-        </thead>
-        <tbody {...getTableBodyProps()}>
+        </TableHead>
+        <TableBody {...getTableBodyProps()}>
           {page.map((row, i) => {
             prepareRow(row);
             return (
-              <tr {...row.getRowProps()}>
+              <TableRow key={i} {...row.getRowProps()}>
                 {row.cells.map((cell, j) => {
                   return (
-                    <td {...cell.getCellProps()}>
+                    <TableCell key={j} {...cell.getCellProps()}>
                       {j === 0 ? (
                         <>{cell.render('Cell')}</>
                       ) : (
                         <Link
                           target="_blank"
                           to={`${DEMO.SINGLE_PROGRAM_LINK(row.original._id)}`}
-                          className="text-info"
-                          style={{ textDecoration: 'none' }}
+                          component={LinkDom}
                         >
                           {cell.render('Cell')}
                         </Link>
                       )}
-                    </td>
+                    </TableCell>
                   );
                 })}
-              </tr>
+              </TableRow>
             );
           })}
-        </tbody>
+        </TableBody>
       </Table>
       <div>
-        <Row>
-          <Col md={12}>
-            <p className="my-1">
-              <span
-                className="ms-4"
-                style={{ color: !canPreviousPage ? 'grey' : 'white' }}
-              >
-                <i
-                  className="mx-1 feather icon-chevrons-left"
-                  onClick={() => gotoPage(0)}
-                  disabled={!canPreviousPage}
-                />
-              </span>
-              <span style={{ color: !canPreviousPage ? 'grey' : 'white' }}>
-                <i
-                  className="mx-1 feather icon-chevron-left"
-                  onClick={() => previousPage()}
-                  disabled={!canPreviousPage}
-                />
-              </span>
-              <span style={{ color: !canNextPage ? 'grey' : 'white' }}>
-                <i
-                  className="mx-1 feather icon-chevron-right"
-                  onClick={() => nextPage()}
-                  disabled={!canNextPage}
-                />
-              </span>
-              <span style={{ color: !canNextPage ? 'grey' : 'white' }}>
-                <i
-                  className="mx-1 feather icon-chevrons-right"
-                  onClick={() => gotoPage(pageCount - 1)}
-                  disabled={!canNextPage}
-                />
-              </span>
-              <span className="text-light mx-2" style={{ float: 'right' }}>
-                Go to page:{' '}
-                <input
-                  type="number"
-                  defaultValue={pageIndex + 1}
-                  onChange={(e) => {
-                    const page = e.target.value
-                      ? Number(e.target.value) - 1
-                      : 0;
-                    gotoPage(page);
-                  }}
-                  style={{ width: '50px' }}
-                />
-                <strong className="mx-2">
-                  {pageIndex + 1} / {pageOptions.length}
-                </strong>{' '}
-                <select
-                  style={{ float: 'right' }}
-                  value={pageSize}
-                  onChange={(e) => {
-                    setPageSize(Number(e.target.value));
-                  }}
-                >
-                  {[20, 40, 60, 80, 100].map((pageSize) => (
-                    <option key={pageSize} value={pageSize}>
-                      Show {pageSize}
-                    </option>
-                  ))}
-                </select>
-              </span>
-            </p>
-          </Col>
-        </Row>
+        <span
+          className="ms-4"
+          style={{ color: !canPreviousPage ? 'grey' : 'white' }}
+        >
+          <i
+            className="mx-1 feather icon-chevrons-left"
+            onClick={() => gotoPage(0)}
+            disabled={!canPreviousPage}
+          />
+        </span>
+        <span style={{ color: !canPreviousPage ? 'grey' : 'white' }}>
+          <i
+            className="mx-1 feather icon-chevron-left"
+            onClick={() => previousPage()}
+            disabled={!canPreviousPage}
+          />
+        </span>
+        <span style={{ color: !canNextPage ? 'grey' : 'white' }}>
+          <i
+            className="mx-1 feather icon-chevron-right"
+            onClick={() => nextPage()}
+            disabled={!canNextPage}
+          />
+        </span>
+        <span style={{ color: !canNextPage ? 'grey' : 'white' }}>
+          <i
+            className="mx-1 feather icon-chevrons-right"
+            onClick={() => gotoPage(pageCount - 1)}
+            disabled={!canNextPage}
+          />
+        </span>
+        <span className="text-light mx-2" style={{ float: 'right' }}>
+          Go to page:{' '}
+          <input
+            type="number"
+            defaultValue={pageIndex + 1}
+            onChange={(e) => {
+              const page = e.target.value ? Number(e.target.value) - 1 : 0;
+              gotoPage(page);
+            }}
+            style={{ width: '50px' }}
+          />
+          <strong className="mx-2">
+            {pageIndex + 1} / {pageOptions.length}
+          </strong>{' '}
+          <select
+            style={{ float: 'right' }}
+            value={pageSize}
+            onChange={(e) => {
+              setPageSize(Number(e.target.value));
+            }}
+          >
+            {[20, 40, 60, 80, 100].map((pageSize) => (
+              <option key={pageSize} value={pageSize}>
+                Show {pageSize}
+              </option>
+            ))}
+          </select>
+        </span>
       </div>
     </>
   );
@@ -510,7 +505,8 @@ function filterGreaterThan(rows, id, filterValue) {
 filterGreaterThan.autoRemove = (val) => typeof val !== 'number';
 
 function ProgramList(props) {
-  const { t, i18n } = useTranslation();
+  const { user } = useAuth();
+  const { t } = useTranslation();
   let [tableStates, setTableStates] = useState({
     success: false,
     isloaded: false,
@@ -541,10 +537,10 @@ function ProgramList(props) {
   let [studentId, setStudentId] = useState('');
   let [isCreationMode, setIsCreationMode] = useState(false);
 
-  if (!is_TaiGer_role(props.user)) {
-    return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
+  if (!is_TaiGer_role(user)) {
+    return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
   }
-  TabTitle('Program List');
+  TabTitle(t('Program List'));
   useEffect(() => {
     getPrograms().then(
       (resp) => {
@@ -782,13 +778,7 @@ function ProgramList(props) {
 
   // const data = React.useMemo(() => makeData(100000), []);
   if (!statedata.isloaded && !statedata.programs) {
-    return (
-      <div style={spinner_style}>
-        <Spinner animation="border" role="status">
-          <span className="visually-hidden"></span>
-        </Spinner>
-      </div>
-    );
+    return <Loading />;
   }
 
   if (statedata.res_status >= 400) {
@@ -796,7 +786,8 @@ function ProgramList(props) {
   }
 
   return (
-    <>
+    <Box>
+      {' '}
       {tableStates.res_modal_status >= 400 && (
         <ModalMain
           ConfirmError={ConfirmError}
@@ -811,6 +802,17 @@ function ProgramList(props) {
           res_modal_message={statedata.res_modal_message}
         />
       )}
+      <Breadcrumbs aria-label="breadcrumb">
+        <Link
+          underline="hover"
+          color="inherit"
+          component={LinkDom}
+          to={`${DEMO.DASHBOARD_LINK}`}
+        >
+          {appConfig.companyName}
+        </Link>
+        <Typography color="text.primary">{t('Program List')}</Typography>
+      </Breadcrumbs>
       {isCreationMode ? (
         <>
           <NewProgramEdit
@@ -821,15 +823,20 @@ function ProgramList(props) {
         </>
       ) : (
         <>
-          <Button onClick={onClickIsCreateApplicationMode}>
+          <Button
+            size="small"
+            color="primary"
+            variant="contained"
+            onClick={onClickIsCreateApplicationMode}
+          >
             {t('Add New Program')}
           </Button>
-          <Card className="my-0 mx-0" bg={'dark'} text={'white'}>
+          <Card>
             <Table2
               columns={columns}
               data={statedata.programs}
               programs={programs}
-              userId={props.user._id.toString()}
+              userId={user._id.toString()}
               setModalShow2={setModalShow2}
               setPrograms={setPrograms}
               isAssigning={tableStates.isAssigning}
@@ -838,7 +845,7 @@ function ProgramList(props) {
           </Card>
           {props.isStudentApplicationPage ? (
             <ProgramListSingleStudentAssignSubpage
-              userId={props.user._id.toString()}
+              userId={user._id.toString()}
               student={props.student}
               show={tableStates.modalShowAssignWindow}
               assignProgram={assignProgram}
@@ -854,7 +861,7 @@ function ProgramList(props) {
             />
           ) : (
             <ProgramListSubpage
-              userId={props.user._id.toString()}
+              userId={user._id.toString()}
               show={tableStates.modalShowAssignWindow}
               assignProgram={assignProgram}
               setModalHide={setModalHide}
@@ -868,23 +875,21 @@ function ProgramList(props) {
           )}
         </>
       )}
-
-      <Modal
-        show={tableStates.modalShowAssignSuccessWindow}
+      <ModalNew
+        open={tableStates.modalShowAssignSuccessWindow}
         onHide={onHideAssignSuccessWindow}
         size="m"
-        aria-labelledby="contained-modal-title-vcenter"
         centered
       >
-        <Modal.Header>
-          <Modal.Title id="contained-modal-title-vcenter">Success</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>Program(s) assigned to student successfully!</Modal.Body>
-        <Modal.Footer>
-          <Button onClick={onHideAssignSuccessWindow}>Close</Button>
-        </Modal.Footer>
-      </Modal>
-    </>
+        <Typography>{t('Success')}</Typography>
+        <Typography>
+          {t('Program(s) assigned to student successfully!')}
+        </Typography>
+        <Typography>
+          <Button onClick={onHideAssignSuccessWindow}>{t('Close')}</Button>
+        </Typography>
+      </ModalNew>
+    </Box>
   );
 }
 

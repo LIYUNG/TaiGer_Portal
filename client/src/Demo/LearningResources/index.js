@@ -1,18 +1,17 @@
-import React from 'react';
-import { Row, Col, Spinner, Card } from 'react-bootstrap';
-import { Redirect } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Navigate } from 'react-router-dom';
+import { Box, Card, Typography } from '@mui/material';
 
-import Aux from '../../hoc/_Aux';
-import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
-
 import { getStudents } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
-import { TopBar } from '../../components/TopBar/TopBar';
+import { useAuth } from '../../components/AuthProvider';
+import Loading from '../../components/Loading/Loading';
 
-class LearningResources extends React.Component {
-  state = {
+function LearningResources() {
+  const { user } = useAuth();
+  const [learningResourcesState, setLearningResourcesState] = useState({
     error: '',
     isLoaded: false,
     data: null,
@@ -20,76 +19,67 @@ class LearningResources extends React.Component {
     students: null,
     status: '', //reject, accept... etc
     res_status: 0
-  };
+  });
 
-  componentDidMount() {
+  useEffect(() => {
     getStudents().then(
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
         if (success) {
-          this.setState({
+          setLearningResourcesState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             students: data,
             success: success,
             res_status: status
-          });
+          }));
         } else {
-          this.setState({
+          setLearningResourcesState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             res_status: status
-          });
+          }));
         }
       },
       (error) => {
-        this.setState((state) => ({
-          ...state,
+        setLearningResourcesState((prevState) => ({
+          ...prevState,
           isLoaded: true,
           error,
           res_status: 500
         }));
       }
     );
+  }, []);
+
+  if (
+    user.role !== 'Admin' &&
+    user.role !== 'Editor' &&
+    user.role !== 'Agent' &&
+    user.role !== 'Student'
+  ) {
+    return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
+  }
+  TabTitle('Applications Overview');
+  const { res_status, isLoaded } = learningResourcesState;
+
+  if (!isLoaded && !learningResourcesState.students) {
+    return <Loading />;
   }
 
-  render() {
-    if (
-      this.props.user.role !== 'Admin' &&
-      this.props.user.role !== 'Editor' &&
-      this.props.user.role !== 'Agent' &&
-      this.props.user.role !== 'Student'
-    ) {
-      return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
-    }
-    TabTitle('Applications Overview');
-    const { res_status, isLoaded } = this.state;
-
-    if (!isLoaded && !this.state.students) {
-      return (
-        <div style={spinner_style}>
-          <Spinner animation="border" role="status">
-            <span className="visually-hidden"></span>
-          </Spinner>
-        </div>
-      );
-    }
-
-    if (res_status >= 400) {
-      return <ErrorPage res_status={res_status} />;
-    }
-
-    return (
-      <Aux>
-        <TopBar>Learning Resources</TopBar>
-        <Card>
-          <Card.Header>
-            <Card.Title>Resources A</Card.Title>
-          </Card.Header>
-          <Card.Body>Comming soon!</Card.Body>
-        </Card>
-      </Aux>
-    );
+  if (res_status >= 400) {
+    return <ErrorPage res_status={res_status} />;
   }
+
+  return (
+    <Box>
+      <Card>
+        <Typography>Resources A</Typography>
+        <Typography>Comming soon!</Typography>
+      </Card>
+    </Box>
+  );
 }
 
 export default LearningResources;

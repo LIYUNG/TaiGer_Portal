@@ -1,11 +1,9 @@
 import React from 'react';
 
-const SignUp1 = React.lazy(() =>
-  import('./Demo/Authentication/SignUp/SignUp1')
-);
-const Signin1 = React.lazy(() =>
-  import('./Demo/Authentication/SignIn/SignIn1')
-);
+// const SignUp1 = React.lazy(() =>
+//   import('./Demo/Authentication/SignUp/SignUp1')
+// );
+const SignIn = React.lazy(() => import('./Demo/Authentication/SignIn/SignIn'));
 const ResetPasswordRequest = React.lazy(() =>
   import('./Demo/Authentication/ResetPasswordRequest/ResetPasswordRequest')
 );
@@ -23,27 +21,26 @@ const route = [
     path: '/account/activation',
     exact: true,
     name: 'Signup 1',
-    component: AccountActivation
+    Component: AccountActivation
   },
   {
     path: '/account/reset-password',
     exact: true,
     name: 'ResetPassword',
-    component: ResetPassword
+    Component: ResetPassword
   },
   {
-    path: '/forgot-password',
+    path: '/account/forgot-password',
     exact: true,
     name: 'ResetPassword 1',
-    component: ResetPasswordRequest
+    Component: ResetPasswordRequest
   },
   {
-    path: '/login',
-    exact: true,
+    path: '/account/login',
     name: 'Login',
-    component: Signin1
-  },
-  { path: '/', exact: false, name: 'Default', component: Signin1 }
+    Component: SignIn
+  }
+  // { path: '/', exact: false, name: 'Default', Component: SignIn }
 ];
 
 export default route;

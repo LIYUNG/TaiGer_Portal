@@ -1,17 +1,31 @@
 import React, { useState } from 'react';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
+import { FiExternalLink } from 'react-icons/fi';
 import moment from 'moment';
+import { Link as LinkDom } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import Popping from './Popping';
-import { Button, Form, Modal, Spinner } from 'react-bootstrap';
+import {
+  Box,
+  Button,
+  CircularProgress,
+  FormControl,
+  InputLabel,
+  Link,
+  MenuItem,
+  Select,
+  TextField,
+  Typography
+} from '@mui/material';
 import {
   NoonNightLabel,
   getLocalTime,
-  getTimezoneOffset,
+  // getTimezoneOffset,
   getUTCTimezoneOffset,
   getUTCWithDST,
-  shiftDateByOffset,
+  // shiftDateByOffset,
   stringToColor,
   time_slots
 } from '../../../Demo/Utils/contants';
@@ -19,17 +33,19 @@ import {
   is_TaiGer_Agent,
   is_TaiGer_Student
 } from '../../../Demo/Utils/checking-functions';
-import { Link } from 'react-router-dom';
-import { FiExternalLink } from 'react-icons/fi';
 import DEMO from '../../../store/constant';
+import { useAuth } from '../../AuthProvider';
+import ModalNew from '../../Modal';
 
 const localizer = momentLocalizer(moment);
 
 const MyCalendar = (props) => {
-  const [newEventTitle, setNewEventTitle] = useState('');
+  const { t } = useTranslation();
+  const { user } = useAuth();
+  const newEventTitle = '';
   const [newEventDescription, setNewEventDescription] = useState('');
   let available_termins = [];
-  if (is_TaiGer_Agent(props.user) && props.selected_year) {
+  if (is_TaiGer_Agent(user) && props.selected_year) {
     available_termins = time_slots.flatMap((time_slot, j) => {
       const year = props.selected_year;
       const month = props.selected_month;
@@ -39,7 +55,7 @@ const MyCalendar = (props) => {
         year,
         month,
         day,
-        props.user.timezone,
+        user.timezone,
         time_slot.value
       );
       const start_date = new Date(test_date);
@@ -66,7 +82,7 @@ const MyCalendar = (props) => {
       end: end_date,
       description: newEventDescription
     };
-    const updatedEvents = [...props.events, newEvent];
+    // const updatedEvents = [...props.events, newEvent];
     // setEvents(updatedEvents);
     props.handleModalCreateEvent(newEvent);
   };
@@ -97,7 +113,7 @@ const MyCalendar = (props) => {
         // Rendering additional event information in the popup
         components={{
           event: ({ event }) =>
-            is_TaiGer_Student(props.user) ? (
+            is_TaiGer_Student(user) ? (
               <span>
                 {event.start.toLocaleTimeString()} {NoonNightLabel(event.start)}{' '}
               </span>
@@ -113,15 +129,13 @@ const MyCalendar = (props) => {
         selectable={true}
         // Handle event click to show the modal
         onSelectEvent={props.handleSelectEvent}
-        onSelectSlot={
-          is_TaiGer_Agent(props.user) ? props.handleSelectSlot : () => {}
-        }
+        onSelectSlot={is_TaiGer_Agent(user) ? props.handleSelectSlot : () => {}}
         // Using the eventPropGetter to customize event rendering
         eventPropGetter={eventPropGetter} // Apply custom styles to events based on the logic
         // onSelectSlot={() => console.log('Triggered!')}
       />
       {/* Modal */}
-      {/* {is_TaiGer_Student(props.user) && ( */}
+      {/* {is_TaiGer_Student(user) && ( */}
       <Popping
         open={props.selectedEvent}
         handleClose={props.handleModalClose}
@@ -132,120 +146,106 @@ const MyCalendar = (props) => {
         BookButtonDisable={props.BookButtonDisable}
         newDescription={props.newDescription}
         event={props.selectedEvent}
-        user={props.user}
+        user={user}
       />
-      {/* )} */}
-
       {/* Modal for creating a new event */}
-      {/* React Bootstrap Modal for creating a new event */}
-      {is_TaiGer_Agent(props.user) && (
-        <Modal
-          show={props.isNewEventModalOpen}
-          onHide={props.handleNewEventModalClose}
-          centered
-          size="lg"
+      {is_TaiGer_Agent(user) && (
+        <ModalNew
+          open={props.isNewEventModalOpen}
+          onClose={props.handleNewEventModalClose}
         >
-          <Modal.Header closeButton>
-            <Modal.Title as="h5">Create New Event</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Form>
-              <Form.Group className="mb-3">
-                <Form.Control
-                  as="textarea"
-                  rows="5"
-                  onChange={(e) => setNewEventDescription(e.target.value)}
-                  value={newEventDescription}
-                  placeholder="Description"
-                />
-              </Form.Group>
-            </Form>
-            <h6>Time zone: {props.user.timezone}</h6>
+          <Typography variant="h6" sx={{ mb: 2 }}>
+            Create New Event
+          </Typography>
+          <Box>
+            <TextField
+              fullWidth
+              multiline
+              minRows={6}
+              onChange={(e) => setNewEventDescription(e.target.value)}
+              value={newEventDescription}
+              placeholder="Description"
+            />
+            <Typography variant="body1" sx={{ mt: 2 }}>
+              Time zone: {user.timezone}
+            </Typography>
             <span>
               If the time zone not matches, please go to{' '}
-              <Link to={`${DEMO.PROFILE}`}>
+              <Link to={`${DEMO.PROFILE}`} component={LinkDom}>
                 Profile <FiExternalLink />
               </Link>{' '}
               to update your time zone
             </span>
             <br />
-            <Form>
-              <Form.Label>Time Slot</Form.Label>
-              <Form.Control
-                as="select"
-                onChange={props.handleUpdateTimeSlot}
+            <FormControl fullWidth sx={{ my: 2 }}>
+              <InputLabel id="time_slot">{t('Time Slot')}</InputLabel>
+              <Select
+                labelId="Time_Slot"
+                name="Time_Slot"
+                id="Time_Slot"
                 value={props.newEventStart}
+                label={'Time Slot'}
+                onChange={props.handleUpdateTimeSlot}
               >
                 {available_termins
                   ?.sort((a, b) => (a.start < b.start ? -1 : 1))
-                  .map((time_slot, j) => (
-                    <option
+                  .map((time_slot) => (
+                    <MenuItem
                       value={`${time_slot.start}`}
                       key={`${time_slot.start}`}
                     >
-                      {getLocalTime(time_slot.start, props.user.timezone)} UTC +
-                      {getUTCTimezoneOffset(
-                        time_slot.start,
-                        props.user.timezone
-                      ) / 60}
-                    </option>
+                      {getLocalTime(time_slot.start, user.timezone)} UTC +
+                      {getUTCTimezoneOffset(time_slot.start, user.timezone) /
+                        60}
+                    </MenuItem>
                   ))}
-              </Form.Control>
-            </Form>
+              </Select>
+            </FormControl>
             <br />
-            <Form>
-              <Form.Label>Choose Student</Form.Label>
-              <Form.Control
-                as="select"
-                onChange={props.handleSelectStudent}
+            <FormControl fullWidth sx={{ mb: 2 }}>
+              <InputLabel id="Choose_Student">{t('Choose Student')}</InputLabel>
+              <Select
+                labelId="Choose_Student"
+                name="Choose_Student"
+                id="Choose_Student"
                 value={props.student_id}
+                label={'Choose Student'}
+                onChange={props.handleSelectStudent}
               >
-                <option value="" key="x">
+                <MenuItem value="" key="x">
                   Please Select
-                </option>
-                {props.students.map((student, j) => (
-                  <option
+                </MenuItem>
+                {props.students.map((student) => (
+                  <MenuItem
                     value={`${student._id.toString()}`}
                     key={`${student._id.toString()}`}
                   >
                     {student.firstname} {student.lastname}/{' '}
                     {student.firstname_chinese} {student.lastname_chinese}
-                  </option>
+                  </MenuItem>
                 ))}
-              </Form.Control>
-            </Form>
-          </Modal.Body>
-          <Modal.Footer>
+              </Select>
+            </FormControl>
+          </Box>
+          <Box>
             <Button
-              variant="primary"
+              color="primary"
+              variant="contained"
               disabled={
                 props.BookButtonDisable ||
                 newEventDescription?.length === 0 ||
                 props.student_id === ''
               }
               onClick={handleCreateEvent}
+              sx={{ mr: 2 }}
             >
-              {props.BookButtonDisable ? (
-                <Spinner
-                  animation="border"
-                  role="status"
-                  variant="light"
-                  size="sm"
-                >
-                  <span className="visually-hidden"></span>
-                </Spinner>
-              ) : (
-                'Create'
-              )}
+              {props.BookButtonDisable ? <CircularProgress /> : t('Create')}
             </Button>
-            <Button
-              variant="secondary"
-              onClick={props.handleNewEventModalClose}
-            >
-              Cancel
+            <Button variant="outlined" onClick={props.handleNewEventModalClose}>
+              {t('Cancel')}
             </Button>
-          </Modal.Footer>
-        </Modal>
+          </Box>
+        </ModalNew>
       )}
     </>
   );

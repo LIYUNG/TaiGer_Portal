@@ -1,21 +1,14 @@
 import React from 'react';
-import { Row, Col } from 'react-bootstrap';
-import Card from '../../App/components/MainCard';
-import Aux from '../../hoc/_Aux';
+import { Box, Card } from '@mui/material';
+
 import { appConfig } from '../../config';
 
 // Status 403: Forbidden requests
-function UnauthorizedError(props) {
+function UnauthorizedError() {
   return (
-    <Aux>
-      <Row>
-        <Col>
-          <Card>
-            Permission Denied. 請跟您的 {appConfig.companyName} 顧問聯繫
-          </Card>
-        </Col>
-      </Row>
-    </Aux>
+    <Box>
+      <Card>Permission Denied. 請跟您的 {appConfig.companyName} 顧問聯繫</Card>
+    </Box>
   );
 }
 

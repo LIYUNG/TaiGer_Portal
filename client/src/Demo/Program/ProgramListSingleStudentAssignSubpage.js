@@ -1,76 +1,76 @@
-import React from 'react';
-import { Modal } from 'react-bootstrap';
-import { Button, Spinner } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
+import { Button, CircularProgress, Typography } from '@mui/material';
 
-class ProgramListSingleStudentAssignSubpage extends React.Component {
-  state = {
-    uni_name: this.props.uni_name,
-    program_name: this.props.program_name,
-    degree: this.props.degree,
-    semester: this.props.semester,
-  };
-  componentDidMount() {
-    this.props.setStudentId(this.props.student._id.toString());
-  }
-  componentDidUpdate(prevProps, prevState) {
-    if (prevProps.show !== this.props.show) {
-      this.setState({
-        uni_name: this.props.uni_name,
-        program_name: this.props.program_name,
-        degree: this.props.degree,
-        semester: this.props.semester
-      });
-    }
-  }
+import ModalNew from '../../components/Modal';
 
-  render() {
-    let program_names = [];
-    for (let i = 0; i < this.state.uni_name.length; i++) {
-      program_names.push(
-        `${this.state.uni_name[i]}-${this.state.program_name[i]}-${this.state.degree[i]}-${this.state.semester[i]}`
-      );
-    }
-    return (
-      <Modal
-        show={this.props.show}
-        onHide={this.props.setModalHide}
-        size="lg"
-        aria-labelledby="contained-modal-title-vcenter"
-        centered
-      >
-        <Modal.Body>
-          <h4>Assign </h4>
-          {program_names.map((program_name, i) => (
-            <p className="my-0" key={i}>
-              <b>{program_name}</b>
-            </p>
-          ))}
-          <p>to the student:</p>
-          <table>
-            <tbody>
-              <b>{`${this.props.student.firstname} ${this.props.student.lastname}`}</b>
-            </tbody>
-          </table>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button
-            disabled={this.props.isButtonDisable}
-            onClick={(e) => this.props.onSubmitAddToStudentProgramList(e)}
-          >
-            {this.props.isButtonDisable ? (
-              <Spinner animation="border" size="sm" role="status">
-                <span className="visually-hidden"></span>
-              </Spinner>
-            ) : (
-              'Assign'
-            )}
-          </Button>
-          <Button onClick={this.props.setModalHide} variant="light">
-            Cancel
-          </Button>
-        </Modal.Footer>
-      </Modal>
+function ProgramListSingleStudentAssignSubpage(props) {
+  const [
+    ProgramListSingleStudentAssignSubpageState,
+    setProgramListSingleStudentAssignSubpageState
+  ] = useState({
+    uni_name: props.uni_name,
+    program_name: props.program_name,
+    degree: props.degree,
+    semester: props.semester
+  });
+
+  useEffect(() => {
+    props.setStudentId(props.student._id.toString());
+  }, []);
+
+  useEffect(() => {
+    setProgramListSingleStudentAssignSubpageState((prevState) => ({
+      ...prevState,
+      uni_name: props.uni_name,
+      program_name: props.program_name,
+      degree: props.degree,
+      semester: props.semester
+    }));
+  }, [props.show]);
+
+  let program_names = [];
+  for (
+    let i = 0;
+    i < ProgramListSingleStudentAssignSubpageState.uni_name.length;
+    i++
+  ) {
+    program_names.push(
+      `${ProgramListSingleStudentAssignSubpageState.uni_name[i]}-${ProgramListSingleStudentAssignSubpageState.program_name[i]}-${ProgramListSingleStudentAssignSubpageState.degree[i]}-${ProgramListSingleStudentAssignSubpageState.semester[i]}`
     );
   }
+  return (
+    <ModalNew
+      open={props.show}
+      onClose={props.setModalHide}
+      size="small"
+      aria-labelledby="contained-modal-title-vcenter"
+    >
+      <Typography variant="h6">Assign </Typography>
+      {program_names.map((program_name, i) => (
+        <Typography key={i}>
+          <b>{program_name}</b>
+        </Typography>
+      ))}
+      <Typography>to the student:</Typography>
+      <table>
+        <tbody>
+          <b>{`${props.student.firstname} ${props.student.lastname}`}</b>
+        </tbody>
+      </table>
+
+      <Button
+        color="primary"
+        variant="contained"
+        disabled={props.isButtonDisable}
+        onClick={(e) => props.onSubmitAddToStudentProgramList(e)}
+      >
+        {props.isButtonDisable ? <CircularProgress /> : 'Assign'}
+      </Button>
+      <Button color="secondary" variant="outlined" onClick={props.setModalHide}>
+        Cancel
+      </Button>
+    </ModalNew>
+  );
 }
+
 export default ProgramListSingleStudentAssignSubpage;

@@ -195,7 +195,6 @@ const processTranscript_test = asyncHandler(async (req, res, next) => {
   next();
 });
 
-
 const processTranscript_api = asyncHandler(async (req, res, next) => {
   const {
     params: { category, studentId, language }
@@ -216,14 +215,17 @@ const processTranscript_api = asyncHandler(async (req, res, next) => {
   let student_name = `${courses.student_id.firstname}_${courses.student_id.lastname}`;
   student_name = student_name.replace(/ /g, '-');
   try {
-    const result = await axios.post('http://localhost:8000/analyze-transcript', {
-      courses: stringified_courses,
-      category: category,
-      student_id: studentId,
-      student_name: student_name,
-      language: language,
-      courses_taiger_guided: stringified_courses_taiger_guided
-    });
+    const result = await axios.post(
+      'http://127.0.0.1:8000/analyze-transcript',
+      {
+        courses: stringified_courses,
+        category: category,
+        student_id: studentId,
+        student_name: student_name,
+        language: language,
+        courses_taiger_guided: stringified_courses_taiger_guided
+      }
+    );
     courses.analysis.isAnalysed = true;
     courses.analysis.path = path.join(
       studentId,
@@ -233,17 +235,20 @@ const processTranscript_api = asyncHandler(async (req, res, next) => {
     courses.save();
 
     const url_split = req.originalUrl.split('/');
-    const cache_key = `${url_split[1]}/${url_split[2]}/${url_split[3]}/${url_split[4]}`;
+    
+    // temporary workaround before full migration
+    // const cache_key = `${url_split[1]}/${url_split[2]}/${url_split[3]}/${url_split[4]}`;
+    const cache_key = `${url_split[1]}/${url_split[2]}/transcript/${url_split[4]}`;
+
     const success = one_month_cache.del(cache_key);
     if (success === 1) {
       console.log('cache key deleted successfully');
     }
     res.status(200).send({ success: true, data: courses.analysis });
     // TODO: send analysed link email to student
-
   } catch (err) {
     console.log(err);
-    res.status(403).send({ message: "analyze failed" });
+    res.status(403).send({ message: 'analyze failed' });
   }
 
   // TODO: information student

@@ -1,5 +1,7 @@
 const _ = require('lodash');
 const { spawn } = require('child_process');
+
+const axios = require('axios');
 const path = require('path');
 
 const { ErrorResponse } = require('../common/errors');
@@ -193,6 +195,82 @@ const processTranscript_test = asyncHandler(async (req, res, next) => {
   next();
 });
 
+const processTranscript_api = asyncHandler(async (req, res, next) => {
+  const {
+    params: { category, studentId, language }
+  } = req;
+  const courses = await Course.findOne({ student_id: studentId }).populate(
+    'student_id'
+  );
+  if (!courses) {
+    logger.error('no course for this student!');
+    return res.send({ success: true, data: {} });
+  }
+  const stringified_courses = JSON.stringify(courses.table_data_string);
+  const stringified_courses_taiger_guided = JSON.stringify(
+    courses.table_data_string_taiger_guided
+  );
+
+  // TODO: multitenancy studentId?
+  let student_name = `${courses.student_id.firstname}_${courses.student_id.lastname}`;
+  student_name = student_name.replace(/ /g, '-');
+  try {
+    const result = await axios.post(
+      'http://127.0.0.1:8000/analyze-transcript',
+      {
+        courses: stringified_courses,
+        category: category,
+        student_id: studentId,
+        student_name: student_name,
+        language: language,
+        courses_taiger_guided: stringified_courses_taiger_guided
+      }
+    );
+    courses.analysis.isAnalysed = true;
+    courses.analysis.path = path.join(
+      studentId,
+      `analysed_transcript_${student_name}.xlsx`
+    );
+    courses.analysis.updatedAt = new Date();
+    courses.save();
+
+    const url_split = req.originalUrl.split('/');
+    
+    // temporary workaround before full migration
+    // const cache_key = `${url_split[1]}/${url_split[2]}/${url_split[3]}/${url_split[4]}`;
+    const cache_key = `${url_split[1]}/${url_split[2]}/transcript/${url_split[4]}`;
+
+    const success = one_month_cache.del(cache_key);
+    if (success === 1) {
+      console.log('cache key deleted successfully');
+    }
+    res.status(200).send({ success: true, data: courses.analysis });
+    // TODO: send analysed link email to student
+  } catch (err) {
+    console.log(err);
+    res.status(403).send({ message: 'analyze failed' });
+  }
+
+  // TODO: information student
+  const student = await Student.findById(studentId)
+    .populate('agents', 'firstname lastname email')
+    .exec();
+
+  if (isNotArchiv(student)) {
+    await AnalysedCoursesDataStudentEmail(
+      {
+        firstname: student.firstname,
+        lastname: student.lastname,
+        address: student.email
+      },
+      {
+        student_id: studentId
+      }
+    );
+  }
+  next();
+});
+
 // Download original transcript excel
 const downloadXLSX = asyncHandler(async (req, res, next) => {
   const {
@@ -275,6 +353,7 @@ module.exports = {
   putCourse,
   createCourse,
   processTranscript_test,
+  processTranscript_api,
   downloadXLSX,
   deleteCourse
 };

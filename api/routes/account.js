@@ -115,7 +115,7 @@ router
   );
 // TaiGer Transcript Analyser:
 router
-  .route('/transcript/:studentId/:category/:language')
+  .route('/transcript2/:studentId/:category/:language')
   .post(
     filter_archiv_user,
     TranscriptAnalyserRateLimiter,
@@ -128,7 +128,7 @@ router
 
 // TaiGer Transcript Analyser (Python Backend)
 router
-  .route('/transcript-test/:studentId/:category/:language')
+  .route('/transcript/:studentId/:category/:language')
   .post(
     filter_archiv_user,
     TranscriptAnalyserRateLimiter,

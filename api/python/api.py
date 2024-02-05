@@ -41,8 +41,11 @@ def create_transcript_analysis(info: TranscriptInfo):
     try:
         analyze_transcript(info.courses, info.category, info.student_id, info.student_name, info.language, info.courses_taiger_guided)
     except SystemExit as e: # TODO: improve error handling (replace sys.exit() with raise error)
+        if e.code == 0:  # execution successful
+            return {"response": {"status": "success"}}
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"response": {"status": "SystemExit", "error": str(e)}})
     except Exception as e:
+        print('Exception: ', e)
         return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, content={"response": {"status": "error", "error": str(e)}})
     return {"response": {"status": "success"}}
 

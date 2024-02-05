@@ -242,7 +242,7 @@ const processTranscript_api = asyncHandler(async (req, res, next) => {
     // TODO: send analysed link email to student
 
   } catch (err) {
-    // res.status(403).send({ message: err });
+    console.log(err);
     res.status(403).send({ message: "analyze failed" });
   }
 

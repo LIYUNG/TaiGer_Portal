@@ -136,60 +136,6 @@ export const NewlineText = (props) => {
   return newText;
 };
 
-export const showButtonIfMyStudent = (user, student) => {
-  if (
-    is_TaiGer_Admin(user) ||
-    is_TaiGer_Student(user) ||
-    is_TaiGer_Guest(user)
-  ) {
-    return true;
-  }
-  // check user as Agetn Editor, if student belongs to him/her
-  if (
-    student.agents.findIndex((agent) =>
-      typeof agent === String
-        ? user._id.toString() === agent
-        : user._id.toString() === agent._id.toString()
-    ) !== -1 ||
-    student.editors.findIndex((editor) =>
-      typeof editor === String
-        ? user._id.toString() === editor
-        : user._id.toString() === editor._id.toString()
-    ) !== -1
-  ) {
-    return true;
-  }
-
-  return false;
-};
-
-export const showButtonIfMyStudentB = (user, student) => {
-  if (
-    is_TaiGer_Admin(user) ||
-    is_TaiGer_Student(user) ||
-    is_TaiGer_Guest(user)
-  ) {
-    return true;
-  }
-  // check user as Agetn Editor, if student belongs to him/her
-  if (
-    student.agents.findIndex((agent) =>
-      typeof agent === String
-        ? user._id.toString() === agent
-        : user._id.toString() === agent.toString()
-    ) !== -1 ||
-    student.editors.findIndex((editor) =>
-      typeof editor === String
-        ? user._id.toString() === editor
-        : user._id.toString() === editor.toString()
-    ) !== -1
-  ) {
-    return true;
-  }
-
-  return false;
-};
-
 export const isLanguageInfoComplete = (academic_background) => {
   if (!academic_background || !academic_background.language) {
     return false;

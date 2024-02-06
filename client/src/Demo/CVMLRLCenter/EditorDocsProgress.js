@@ -594,13 +594,28 @@ function EditorDocsProgress(props) {
                                 }
                               />
                             </Grid>
-                            <Grid item xs={1} md={1}></Grid>
+                            <Grid item xs={1} md={1}>
+                              {
+                                application.doc_modification_thread?.filter(
+                                  (doc) => doc.isFinalVersion
+                                ).length
+                              }
+                              /
+                              {application.doc_modification_thread?.length || 0}
+                            </Grid>
                           </>
                         )
                       ) : (
                         <>
                           <Grid item xs={1} md={1}></Grid>
-                          <Grid item xs={1} md={1}></Grid>
+                          <Grid item xs={1} md={1}>
+                            {
+                              application.doc_modification_thread?.filter(
+                                (doc) => doc.isFinalVersion
+                              ).length
+                            }
+                            /{application.doc_modification_thread?.length || 0}
+                          </Grid>
                         </>
                       )}
                       <Grid item xs={4} md={4}>

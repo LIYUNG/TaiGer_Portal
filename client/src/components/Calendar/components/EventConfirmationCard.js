@@ -159,14 +159,14 @@ export default function EventConfirmationCard(props) {
                   props.disabled ? (
                     `${t('Meeting Link')} expired'`
                   ) : (
-                    <a
-                      href={`${props.event.meetingLink}`}
-                      className="text-primary"
+                    <Link
+                      to={`${props.event.meetingLink}`}
+                      component={LinkDom}
                       target="_blank"
                       rel="noreferrer"
                     >
                       {props.event.meetingLink}
-                    </a>
+                    </Link>
                   )
                 ) : (
                   'Will be available, after the appointment is confirmed by the Agent.'
@@ -193,14 +193,14 @@ export default function EventConfirmationCard(props) {
                   props.disabled ? (
                     'Meeting Link expired'
                   ) : (
-                    <a
-                      href={`${props.event.meetingLink}`}
-                      className="text-primary"
+                    <Link
+                      to={`${props.event.meetingLink}`}
+                      component={LinkDom}
                       target="_blank"
                       rel="noreferrer"
                     >
                       {props.event.meetingLink}
-                    </a>
+                    </Link>
                   )
                 ) : (
                   'Will be available, after the appointment is confirmed by the Student.'

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Link as LinkDom } from 'react-router-dom';
 import {
   Box,
-  Card,
   Button,
   CircularProgress,
   Divider,
@@ -10,21 +9,19 @@ import {
   Link,
   Typography,
   TextField,
-  InputLabel
+  InputLabel,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails
 } from '@mui/material';
-import { AiOutlineCheck, AiOutlineUndo } from 'react-icons/ai';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { ImCheckmark } from 'react-icons/im';
 import { useTranslation } from 'react-i18next';
 
 import ManualFiles from './ManualFiles';
 import {
-  showButtonIfMyStudent,
-  check_generaldocs,
-  is_program_ml_rl_essay_finished,
-  is_program_closed,
-  application_deadline_calculator,
-  isDocumentsMissingAssign,
-  file_category_const
+  LinkableNewlineText,
+  application_deadline_calculator
 } from '../Utils/checking-functions';
 import { spinner_style2 } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
@@ -39,12 +36,11 @@ import {
   initApplicationMessageThread
 } from '../../api';
 import DEMO from '../../store/constant';
-import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
 import ModalNew from '../../components/Modal';
+import { AiOutlineLink } from 'react-icons/ai';
 
 function EditorDocsProgress(props) {
-  const { user } = useAuth();
   const { t } = useTranslation();
   const [editorDocsProgressState, setEditorDocsProgressState] = useState({
     error: '',
@@ -525,10 +521,74 @@ function EditorDocsProgress(props) {
     return <ErrorPage res_status={res_status} />;
   }
 
-  const create_generaldoc_reminder = check_generaldocs(
-    editorDocsProgressState.student
-  );
-  const required_doc_keys = Object.keys(file_category_const);
+  function ApplicationAccordionSummary({ application }) {
+    return (
+      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+        <Grid container spacing={2}>
+          <Grid item xs={1} md={1}>
+            {application.decided === '-' || application.decided === 'X' ? (
+              <>Undecided</>
+            ) : application.closed === 'O' ? (
+              <>
+                <ImCheckmark
+                  size={16}
+                  color="limegreen"
+                  title="This program is closed"
+                />
+              </>
+            ) : application.closed === 'X' ? (
+              <Typography fontWeight="bold">{t('WITHDRAW')}</Typography>
+            ) : (
+              <Typography fontWeight="bold">{t('In progress')}</Typography>
+            )}
+          </Grid>
+          <Grid item xs={1} md={1}>
+            {
+              application.doc_modification_thread?.filter(
+                (doc) => doc.isFinalVersion
+              ).length
+            }
+            /{application.doc_modification_thread?.length || 0}
+          </Grid>
+          <Grid item xs={8} md={8} sx={{ display: 'flex' }}>
+            <Typography
+              variant="body1"
+              color={
+                application.decided === 'O'
+                  ? application.closed === 'O'
+                    ? 'success.light'
+                    : 'error.main'
+                  : 'grey'
+              }
+              sx={{ mr: 2 }}
+            >
+              <b>
+                {application.programId.school} - {application.programId.degree}{' '}
+                - {application.programId.program_name}
+              </b>
+            </Typography>
+            <Link
+              to={`${DEMO.SINGLE_PROGRAM_LINK(application.programId._id)}`}
+              component={LinkDom}
+              target="_blank"
+            >
+              <AiOutlineLink />
+            </Link>
+          </Grid>
+          <Grid item sx={2} md={2}>
+            <Typography>
+              Deadline:{' '}
+              {application_deadline_calculator(
+                editorDocsProgressState.student,
+                application
+              )}
+            </Typography>
+          </Grid>
+        </Grid>
+      </AccordionSummary>
+    );
+  }
+
   return (
     <Box>
       {res_modal_status >= 400 && (
@@ -537,25 +597,6 @@ function EditorDocsProgress(props) {
           res_modal_status={res_modal_status}
           res_modal_message={res_modal_message}
         />
-      )}
-      <Typography>
-        {t('General Documents')} ({t('CV')}, {t('Recommendation Letters')})
-      </Typography>
-      {create_generaldoc_reminder && (
-        <Card sx={{ p: 2, mb: 2 }}>
-          <Typography>
-            The following general documents are not started yet, please{' '}
-            <b>create</b> the discussion thread below:{' '}
-            {editorDocsProgressState.student.generaldocs_threads &&
-              editorDocsProgressState.student.generaldocs_threads.findIndex(
-                (thread) => thread.doc_thread_id.file_type === 'CV'
-              ) === -1 && (
-                <li>
-                  <b>{t('CV')}</b>
-                </li>
-              )}
-          </Typography>
-        </Card>
       )}
       <ManualFiles
         onDeleteFileThread={onDeleteFileThread}
@@ -569,307 +610,51 @@ function EditorDocsProgress(props) {
       <Divider />
       <Typography sx={{ mt: 2 }}>{t('Applications')}</Typography>
       {/* TODO: simplify this! with array + function! */}
-      {editorDocsProgressState.student.applications &&
-        editorDocsProgressState.student.applications.map((application, i) => (
+      {editorDocsProgressState.student.applications
+        ?.filter((app) => app.decided === 'O')
+        .map((application, i) => (
           <div key={i}>
-            {isDocumentsMissingAssign(application) && (
-              <Card>
-                <Typography variant="string">
-                  Please assign the following documents to the student for{' '}
-                </Typography>
-                <b>
-                  {application.programId.school}{' '}
-                  {application.programId.program_name}
-                </b>
-                :{' '}
-                {required_doc_keys.map(
-                  (doc_reqired_key, i) =>
-                    application.programId[doc_reqired_key] === 'yes' &&
-                    application.doc_modification_thread.findIndex(
-                      (thread) =>
-                        thread.doc_thread_id.file_type ===
-                        file_category_const[doc_reqired_key]
-                    ) === -1 && (
-                      <li key={i}>
-                        <b>{file_category_const[doc_reqired_key]}</b>
-                      </li>
-                    )
-                )}
-              </Card>
-            )}
-            <Grid container spacing={2}>
-              {application.decided === 'O' ? (
-                <>
-                  {is_program_ml_rl_essay_finished(application) ? (
-                    is_program_closed(application) ? (
-                      <>
-                        <Grid item xs={1} md={1}>
-                          {showButtonIfMyStudent(
-                            user,
-                            editorDocsProgressState.student
-                          ) && (
-                            <ImCheckmark
-                              size={24}
-                              color="limegreen"
-                              title="This program is closed"
-                            />
-                          )}
-                        </Grid>
-                        <Grid item xs={1} md={1}>
-                          {showButtonIfMyStudent(
-                            user,
-                            editorDocsProgressState.student
-                          ) && (
-                            <AiOutlineUndo
-                              size={24}
-                              color="red"
-                              title="Re-open this program as it was not submitted"
-                              style={{ cursor: 'pointer' }}
-                              onClick={() =>
-                                handleProgramStatus(
-                                  editorDocsProgressState.student._id.toString(),
-                                  application.programId._id.toString()
-                                )
-                              }
-                            />
-                          )}
-                        </Grid>
-                      </>
-                    ) : (
-                      <>
-                        <Grid item xs={1} md={1}>
-                          {showButtonIfMyStudent(
-                            user,
-                            editorDocsProgressState.student
-                          ) && (
-                            <AiOutlineCheck
-                              size={24}
-                              color="white"
-                              style={{ cursor: 'pointer' }}
-                              title="Close this program - marked as finished."
-                              onClick={() =>
-                                handleProgramStatus(
-                                  editorDocsProgressState.student._id.toString(),
-                                  application.programId._id.toString()
-                                )
-                              }
-                            />
-                          )}
-                        </Grid>
-                        <Grid item xs={1} md={1}></Grid>
-                      </>
-                    )
-                  ) : (
-                    <>
-                      <Grid item xs={1} md={1}></Grid>
-                      <Grid item xs={1} md={1}></Grid>
-                    </>
-                  )}
-                  <Grid item xs={4} md={4}>
-                    <Link
-                      to={`${DEMO.SINGLE_PROGRAM_LINK(
-                        application.programId._id
-                      )}`}
-                      component={LinkDom}
-                    >
-                      <Typography
-                        variant="body1"
-                        className={`text-${
-                          application.closed === 'O' ? 'warning' : 'danger'
-                        }`}
-                      >
-                        <b>
-                          {application.programId.school} -{' '}
-                          {application.programId.degree} -{' '}
-                          {application.programId.program_name}
-                        </b>
-                      </Typography>
-                    </Link>
-                  </Grid>
-                  <Grid item xs={2} md={2}>
-                    {required_doc_keys.map(
-                      (doc_reqired_key, i) =>
-                        application.programId[doc_reqired_key] === 'yes' && (
-                          <Button
-                            key={i}
-                            size="small"
-                            title={`${file_category_const[doc_reqired_key]}`}
-                            variant="contained"
-                            color="secondary"
-                            onClick={() =>
-                              openRequirements_ModalWindow(
-                                application.programId[
-                                  doc_reqired_key.replace(
-                                    'required',
-                                    'requirements'
-                                  )
-                                ]
-                              )
-                            }
-                          >
-                            {file_category_const[doc_reqired_key]}
-                          </Button>
-                        )
-                    )}
-                    {application.programId.rl_required > 0 && (
-                      <Button
-                        size="small"
-                        title="RL"
-                        variant="contained"
-                        color="info"
-                        onClick={() =>
-                          openRequirements_ModalWindow(
-                            application.programId.rl_requirements
-                          )
-                        }
-                      >
-                        RL
-                      </Button>
-                    )}
-                  </Grid>
-                  <Grid item sx={2} md={2}>
-                    <Typography>
-                      Deadline:{' '}
-                      {application_deadline_calculator(
-                        editorDocsProgressState.student,
-                        application
-                      )}
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={1} md={1}>
-                    <Typography>{t('Status')}: </Typography>
-                  </Grid>
-                  <Grid item xs={1} md={1}>
-                    {application.closed === 'O' ? (
-                      <Typography fontWeight="bold">{t('Close')}</Typography>
-                    ) : (
-                      <Typography fontWeight="bold">{t('Open')}</Typography>
-                    )}
-                  </Grid>
-                  <ManualFiles
-                    onDeleteFileThread={onDeleteFileThread}
-                    handleAsFinalFile={handleAsFinalFile}
-                    student={editorDocsProgressState.student}
-                    application={application}
-                    filetype={'ProgramSpecific'}
-                    initGeneralFileThread={initGeneralFileThread}
-                    initProgramSpecificFileThread={
-                      initProgramSpecificFileThread
-                    }
-                  />
-                </>
-              ) : (
-                <>
-                  <Grid container spacing={2}>
-                    <Grid item xs={2} md={2}></Grid>
-                    <Grid item xs={4} md={4}>
-                      <Link
-                        to={`${DEMO.SINGLE_PROGRAM_LINK(
-                          application.programId._id.toString()
-                        )}`}
-                        component={LinkDom}
-                      >
-                        <Typography variant="string">
-                          <b>
-                            {application.programId.school} -{' '}
-                            {application.programId.degree} -{' '}
-                            {application.programId.program_name}
-                          </b>
-                        </Typography>
-                      </Link>
-                    </Grid>
-                    <Grid item xs={2} md={2}>
-                      {required_doc_keys.map(
-                        (doc_reqired_key, i) =>
-                          application.programId[doc_reqired_key] === 'yes' && (
-                            <Button
-                              key={i}
-                              size="sm"
-                              title={`${file_category_const[doc_reqired_key]}`}
-                              variant="secondary"
-                              onClick={() =>
-                                openRequirements_ModalWindow(
-                                  application.programId[
-                                    doc_reqired_key.replace(
-                                      'required',
-                                      'requirements'
-                                    )
-                                  ]
-                                )
-                              }
-                            >
-                              {file_category_const[doc_reqired_key]}
-                            </Button>
-                          )
-                      )}
-                      {application.programId.rl_required > 0 && (
-                        <Button
-                          size="small"
-                          title="Comments"
-                          variant="info"
-                          onClick={() =>
-                            openRequirements_ModalWindow(
-                              application.programId.rl_requirements
-                            )
-                          }
-                        >
-                          RL
-                        </Button>
-                      )}
-                    </Grid>
-                    <Grid item xs={1}>
-                      <Typography>
-                        {t('Deadline')}:{' '}
-                        {application_deadline_calculator(
-                          editorDocsProgressState.student,
-                          application
-                        )}
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={1}>
-                      <Typography>{t('Status')}</Typography>
-                    </Grid>
-                    <Grid item xs={1}>
-                      <Typography>{t('Undecided')}</Typography>
-                    </Grid>
-                  </Grid>
-                  <Grid>
-                    <Typography variant="string">
-                      <b>
-                        Ths following tasks are not visible in tasks dashboard
-                        and CV/ML/RL/Center. Please
-                        {showButtonIfMyStudent(
-                          user,
-                          editorDocsProgressState.student
-                        ) && (
-                          <Link
-                            to={`${DEMO.STUDENT_APPLICATIONS_ID_LINK(
-                              editorDocsProgressState.student._id.toString()
-                            )}`}
-                            component={LinkDom}
-                          >
-                            {' '}
-                            click here
-                          </Link>
-                        )}{' '}
-                        to activate the application.
-                      </b>
-                    </Typography>
-                  </Grid>
-                  <ManualFiles
-                    onDeleteFileThread={onDeleteFileThread}
-                    handleAsFinalFile={handleAsFinalFile}
-                    student={editorDocsProgressState.student}
-                    application={application}
-                    filetype={'ProgramSpecific'}
-                    initGeneralFileThread={initGeneralFileThread}
-                    initProgramSpecificFileThread={
-                      initProgramSpecificFileThread
-                    }
-                  />
-                </>
-              )}
-            </Grid>
+            <Accordion defaultExpanded={false} disableGutters>
+              <ApplicationAccordionSummary application={application} />
+              <AccordionDetails>
+                <ManualFiles
+                  onDeleteFileThread={onDeleteFileThread}
+                  handleAsFinalFile={handleAsFinalFile}
+                  student={editorDocsProgressState.student}
+                  application={application}
+                  openRequirements_ModalWindow={openRequirements_ModalWindow}
+                  filetype={'ProgramSpecific'}
+                  handleProgramStatus={handleProgramStatus}
+                  initGeneralFileThread={initGeneralFileThread}
+                  initProgramSpecificFileThread={initProgramSpecificFileThread}
+                />
+              </AccordionDetails>
+            </Accordion>
+
+            <Divider sx={{ my: 2 }} />
+          </div>
+        ))}
+      {editorDocsProgressState.student.applications
+        ?.filter((app) => app.decided !== 'O')
+        .map((application, i) => (
+          <div key={i}>
+            <Accordion defaultExpanded={false} disableGutters>
+              <ApplicationAccordionSummary application={application} />
+              <AccordionDetails>
+                <ManualFiles
+                  onDeleteFileThread={onDeleteFileThread}
+                  handleAsFinalFile={handleAsFinalFile}
+                  student={editorDocsProgressState.student}
+                  application={application}
+                  openRequirements_ModalWindow={openRequirements_ModalWindow}
+                  filetype={'ProgramSpecific'}
+                  handleProgramStatus={handleProgramStatus}
+                  initGeneralFileThread={initGeneralFileThread}
+                  initProgramSpecificFileThread={initProgramSpecificFileThread}
+                />
+              </AccordionDetails>
+            </Accordion>
+
             <Divider sx={{ my: 2 }} />
           </div>
         ))}
@@ -968,8 +753,16 @@ function EditorDocsProgress(props) {
         aria-labelledby="contained-modal-title-vcenter"
       >
         <Typography variant="h6">{t('Special Requirements')}</Typography>
-        <Typography>{editorDocsProgressState.requirements}</Typography>
-        <Button onClick={close_Requirements_ModalWindow}>{t('Close')}</Button>
+        <Typography>
+          <LinkableNewlineText text={editorDocsProgressState.requirements} />
+        </Typography>
+        <Button
+          color="primary"
+          variant="outlined"
+          onClick={close_Requirements_ModalWindow}
+        >
+          {t('Close')}
+        </Button>
       </ModalNew>
       <ModalNew
         open={editorDocsProgressState.isThreadExisted}

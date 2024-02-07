@@ -3,7 +3,7 @@ import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import SendIcon from '@mui/icons-material/Send';
 
 import EditorSimple from '../../../components/EditorJs/EditorSimple';
-import { Button, Grid, Card, Input } from '@mui/material';
+import { Button, Grid, Card, TextField } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 function DocThreadEditor(props) {
@@ -49,24 +49,24 @@ function DocThreadEditor(props) {
           </Card>
         </Grid>
         <Grid item xs={12}>
-          <Input
+          {/* <Input
             fullWidth
             inputComponent="input"
             inputProps={{ multiple: true }}
             type="file"
             onChange={(e) => props.onFileChange(e)}
             // inputRef={this.fileInputRef}
-          />
+          /> */}
           {/* <Button type="submit" variant="contained" color="primary">
               Submit
             </Button> */}
-          {/* <TextField
+          <TextField
             fullWidth
             size="small"
             type="file"
             multiple
             onChange={(e) => props.onFileChange(e)}
-          /> */}
+          />
           {/* <Form.Group controlId="formFile">
             <Form.Control
               type="file"

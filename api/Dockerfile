@@ -1,12 +1,8 @@
-FROM --platform=linux/arm64/v8 node:18-alpine
-WORKDIR /code
+FROM node:18-alpine
 
-COPY package.json package.json
-COPY package-lock.json package-lock.json
-
-RUN npm install
-
+WORKDIR /app
 COPY . .
+RUN npm install --production 
 
-# Specify the default command to run
+USER node
 CMD [ "npm", "start" ]

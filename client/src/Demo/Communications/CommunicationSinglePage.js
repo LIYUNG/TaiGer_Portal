@@ -69,6 +69,7 @@ function CommunicationSinglePage() {
             ...prevState,
             success,
             thread: data.reverse(),
+            upperThread: [],
             isLoaded: true,
             student_id: student_id,
             student,
@@ -312,36 +313,6 @@ function CommunicationSinglePage() {
   }
   return (
     <>
-      {/* {!isLoaded && <Loading />} */}
-      {communicationSinglePageState.student.archiv && (
-        <Card className="sticky-top">
-          Status: <b>Close</b>
-        </Card>
-      )}
-      <Breadcrumbs aria-label="breadcrumb">
-        <Link
-          underline="hover"
-          color="inherit"
-          component={LinkDom}
-          to={`${DEMO.DASHBOARD_LINK}`}
-        >
-          {appConfig.companyName}
-        </Link>
-        {is_TaiGer_role(user) && (
-          <Link
-            underline="hover"
-            color="inherit"
-            component={LinkDom}
-            to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-              communicationSinglePageState.student_id,
-              '/profile'
-            )}`}
-          >
-            {student_name}
-          </Link>
-        )}
-        <Typography color="text.primary">Messege</Typography>
-      </Breadcrumbs>
       {communicationSinglePageState.student?.archiv && (
         <TopBar>
           Status: <b>Close</b>
@@ -349,6 +320,32 @@ function CommunicationSinglePage() {
       )}
       <>
         <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Breadcrumbs aria-label="breadcrumb">
+              <Link
+                underline="hover"
+                color="inherit"
+                component={LinkDom}
+                to={`${DEMO.DASHBOARD_LINK}`}
+              >
+                {appConfig.companyName}
+              </Link>
+              {is_TaiGer_role(user) && (
+                <Link
+                  underline="hover"
+                  color="inherit"
+                  component={LinkDom}
+                  to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                    communicationSinglePageState.student_id,
+                    '/profile'
+                  )}`}
+                >
+                  {student_name}
+                </Link>
+              )}
+              <Typography color="text.primary">Messege</Typography>
+            </Breadcrumbs>
+          </Grid>
           <Grid item xs={12} sm={9}>
             <Typography variant="h6">Instructions:</Typography>
             <Box variant="body1">

@@ -1,3 +1,9 @@
+# TaiGer
+/docs
+/python
+/__tests__
+
+# general config
 **/.env*
 **/.git
 **/.gitignore

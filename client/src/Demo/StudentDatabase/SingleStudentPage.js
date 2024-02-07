@@ -13,7 +13,6 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  Grid,
   Breadcrumbs,
   Alert
 } from '@mui/material';
@@ -211,8 +210,8 @@ function SingleStudentPage() {
           Status: <b>Close</b>
         </TopBar>
       )}
-      <Grid container justifyContent="space-between" alignItems="center">
-        <Grid item>
+      <Box display="flex" justifyContent="space-between" alignItems="center">
+        <Box>
           <Breadcrumbs aria-label="breadcrumb">
             <Link
               underline="hover"
@@ -231,7 +230,7 @@ function SingleStudentPage() {
               {t('Student Database')}
             </Link>
             <Typography color="text.primary">
-              Student {singleStudentPage.student.firstname}
+              {t('Student')} {singleStudentPage.student.firstname}
               {' ,'}
               {singleStudentPage.student.lastname}
               {' | '}
@@ -247,8 +246,8 @@ function SingleStudentPage() {
               <AiFillEdit color="red" size={24} />
             </Link>
           </Breadcrumbs>
-        </Grid>
-        <Grid item>
+        </Box>
+        <Box>
           <Box style={{ textAlign: 'left' }}>
             <Typography style={{ float: 'right' }}>
               <Link
@@ -278,16 +277,10 @@ function SingleStudentPage() {
               </Button>
             </Typography>
           </Box>
-        </Grid>
-      </Grid>
+        </Box>
+      </Box>
       {singleStudentPage.taiger_view ? (
         <>
-          <Grid container spacing={2}>
-            <Grid item xs={12}></Grid>
-            <Grid item xs={12}>
-              <Card></Card>
-            </Grid>
-          </Grid>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
             {/* TODO: subpath tab for URL */}
             <Tabs
@@ -297,13 +290,13 @@ function SingleStudentPage() {
               aria-label="basic tabs example"
             >
               <Tab label={t('Application Overview')} {...a11yProps(0)} />
-              <Tab label="Profile Overview" {...a11yProps(1)} />
-              <Tab label="CV ML RL" {...a11yProps(2)} />
-              <Tab label="Portal" {...a11yProps(3)} />
-              <Tab label={`${t('Uni-Assist')}`} {...a11yProps(4)} />
-              <Tab label={`${t('My Survey')}`} {...a11yProps(5)} />
-              <Tab label={`${t('My Courses')}`} {...a11yProps(6)} />
-              <Tab label={`${t('Notes')}`} {...a11yProps(7)} />
+              <Tab label={t('Profile Overview')} {...a11yProps(1)} />
+              <Tab label={t('CV ML RL')} {...a11yProps(2)} />
+              <Tab label={t('Portal')} {...a11yProps(3)} />
+              <Tab label={t('Uni-Assist')} {...a11yProps(4)} />
+              <Tab label={t('My Survey')} {...a11yProps(5)} />
+              <Tab label={t('My Courses')} {...a11yProps(6)} />
+              <Tab label={t('Notes')} {...a11yProps(7)} />
             </Tabs>
           </Box>
           <CustomTabPanel value={value} index={0}>

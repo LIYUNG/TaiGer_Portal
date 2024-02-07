@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Button, Link } from '@mui/material';
+import { Grid, Button, Link, Typography } from '@mui/material';
 import { Link as LinkDom } from 'react-router-dom';
 import { AiOutlineDelete, AiOutlineCheck, AiOutlineUndo } from 'react-icons/ai';
 import { IoCheckmarkCircle } from 'react-icons/io5';
@@ -99,7 +99,7 @@ function EditableFile_Thread(props) {
                 onClick={() => handleAsFinalFileThread(documenName, false)}
               />
             ) : (
-              <p className="text-warning">{t('Closed')}</p>
+              <Typography color="error.main">{t('Closed')}</Typography>
             )
           ) : (
             <></>
@@ -112,7 +112,9 @@ function EditableFile_Thread(props) {
             )}
             component={LinkDom}
           >
-            {documenName}
+            <Typography color={props.decided === 'O' ? 'primary' : 'grey'}>
+              {documenName}
+            </Typography>
           </Link>
         </Grid>
         <Grid item xs={2}>
@@ -125,7 +127,7 @@ function EditableFile_Thread(props) {
               style={{ cursor: 'pointer' }}
               title="Delete"
               variant="contained"
-              color="secondary"
+              color="error"
               onClick={() => handleDeleteFileThread(documenName)}
             >
               <AiOutlineDelete size={20} />

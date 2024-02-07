@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link as LinkDom } from 'react-router-dom';
 import { AiFillEdit } from 'react-icons/ai';
 
 import { getNumberOfDays } from '../../../Utils/contants';
@@ -10,7 +10,7 @@ import {
 } from '../../../Utils/checking-functions';
 import DEMO from '../../../../store/constant';
 import { useAuth } from '../../../../components/AuthProvider';
-import { TableCell, TableRow, Typography } from '@mui/material';
+import { Link, TableCell, TableRow, Typography } from '@mui/material';
 
 function ApplicationProgress(props) {
   const { user } = useAuth();
@@ -27,7 +27,7 @@ function ApplicationProgress(props) {
           {!is_TaiGer_Editor(user) && !props.isArchivPage && (
             <Link
               to={`${DEMO.STUDENT_APPLICATIONS_ID_LINK(props.student._id)}`}
-              style={{ textDecoration: 'none' }}
+              component={LinkDom}
             >
               <AiFillEdit color="grey" size={16} />
             </Link>
@@ -83,45 +83,66 @@ function ApplicationProgress(props) {
         ) : (
           <></>
         )}
-        {application.decided === 'O' ? (
-          <TableCell
-            className={`mb-1 ${
-              application.closed === 'O' ? 'text-warning' : 'text-info'
-            }`}
+        <TableCell title={application.decided !== 'O' && 'Not decided yet'}>
+          <Link
+            to={DEMO.SINGLE_PROGRAM_LINK(application.programId._id.toString())}
+            component={LinkDom}
+            target="_blank"
           >
-            {application.programId.school}
-          </TableCell>
-        ) : (
-          <TableCell className="mb-1 text-secondary" title="Not decided yet">
-            {application.programId.school}
-          </TableCell>
-        )}
-        {application.decided === 'O' ? (
-          <TableCell
-            className={`mb-1 ${
-              application.closed === 'O' ? 'text-warning' : 'text-info'
-            }`}
+            <Typography
+              color={
+                application.decided === 'O'
+                  ? application.closed === 'O'
+                    ? 'success.light'
+                    : 'error.main'
+                  : 'grey'
+              }
+              fontWeight="bold"
+            >
+              {application.programId.school}
+            </Typography>
+          </Link>
+        </TableCell>
+        <TableCell title={application.decided !== 'O' && 'Not decided yet'}>
+          <Link
+            to={DEMO.SINGLE_PROGRAM_LINK(application.programId._id.toString())}
+            component={LinkDom}
+            target="_blank"
           >
-            {application.programId.degree}
-          </TableCell>
-        ) : (
-          <TableCell className="mb-1 text-secondary" title="Not decided yet">
-            {application.programId.degree}
-          </TableCell>
-        )}
-        {application.decided === 'O' ? (
-          <TableCell
-            className={`mb-1 ${
-              application.closed === 'O' ? 'text-warning' : 'text-info'
-            }`}
+            <Typography
+              color={
+                application.decided === 'O'
+                  ? application.closed === 'O'
+                    ? 'success.light'
+                    : 'error.main'
+                  : 'grey'
+              }
+              fontWeight="bold"
+            >
+              {application.programId.degree}
+            </Typography>
+          </Link>
+        </TableCell>
+        <TableCell title={application.decided !== 'O' && 'Not decided yet'}>
+          <Link
+            to={DEMO.SINGLE_PROGRAM_LINK(application.programId._id.toString())}
+            component={LinkDom}
+            target="_blank"
           >
-            {application.programId.program_name}
-          </TableCell>
-        ) : (
-          <TableCell className="mb-1 text-secondary" title="Not decided yet">
-            {application.programId.program_name}
-          </TableCell>
-        )}
+            <Typography
+              color={
+                application.decided === 'O'
+                  ? application.closed === 'O'
+                    ? 'success.light'
+                    : 'error.main'
+                  : 'grey'
+              }
+              fontWeight="bold"
+            >
+              {application.programId.program_name}
+            </Typography>
+          </Link>
+        </TableCell>
         {application.decided === 'O' ? (
           <TableCell
             className={`mb-1 ${

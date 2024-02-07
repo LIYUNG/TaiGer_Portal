@@ -1051,8 +1051,8 @@ export const num_uni_assist_vpd_needed = (student) => {
 export const is_program_ml_rl_essay_finished = (application) => {
   // check ML, RL, Essay
   return (
-    application.doc_modification_thread.length === 0 ||
-    application.doc_modification_thread.every((thread) => thread.isFinalVersion)
+    application.doc_modification_thread?.length === 0 ||
+    application.doc_modification_thread?.every((thread) => thread.isFinalVersion)
   );
 };
 

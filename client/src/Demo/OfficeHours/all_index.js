@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Tabs, Tab } from 'react-bootstrap';
 import {
   Box,
   Badge,
@@ -8,6 +7,8 @@ import {
   Card,
   CircularProgress,
   Link,
+  Tabs,
+  Tab,
   Typography,
   TextField
 } from '@mui/material';
@@ -45,10 +46,12 @@ import { useAuth } from '../../components/AuthProvider';
 import { appConfig } from '../../config';
 import Loading from '../../components/Loading/Loading';
 import ModalNew from '../../components/Modal';
+import { CustomTabPanel, a11yProps } from '../../components/Tabs';
 
 function AllOfficeHours() {
   const { user } = useAuth();
   const { t } = useTranslation();
+  const [value, setValue] = useState(0);
   const [allOfficeHoursState, setAllOfficeHoursState] = useState({
     error: '',
     role: '',
@@ -113,6 +116,10 @@ function AllOfficeHours() {
       }
     );
   }, []);
+
+  const handleChangeTab = (event, newValue) => {
+    setValue(newValue);
+  };
 
   const handleConfirmAppointmentModal = (e, event_id, updated_event) => {
     e.preventDefault();
@@ -684,7 +691,7 @@ function AllOfficeHours() {
                 />
               ))}
           <Card>
-            <Typography variant="h5">Upcoming</Typography>
+            <Typography variant="h6">{t('Upcoming')}</Typography>
             {events?.filter(
               (event) =>
                 isInTheFuture(event.end) &&
@@ -698,6 +705,7 @@ function AllOfficeHours() {
                       event.isConfirmedRequester &&
                       event.isConfirmedReceiver
                   )
+                  .sort((a, b) => a.start - b.start)
                   .map((event, i) => (
                     <EventConfirmationCard
                       key={i}
@@ -717,9 +725,10 @@ function AllOfficeHours() {
               : 'No upcoming event'}
           </Card>
           <Card>
-            <Typography variant="h5">Past </Typography>
+            <Typography variant="h6">{t('Past')}</Typography>
             {events
               ?.filter((event) => !isInTheFuture(event.end))
+              .sort((a, b) => a.start > b.start)
               .map((event, i) => (
                 <EventConfirmationCard
                   key={i}
@@ -817,49 +826,41 @@ function AllOfficeHours() {
             {t('All Appointments')}
           </Button>
           <Card>
-            <Tabs
-              defaultActiveKey={'Calendar'}
-              id="Calendar-example"
-              fill={true}
-              justify={true}
-              className="py-0 my-0 mx-0"
-            >
-              <Tab eventKey="Calendar" title="Calendar">
-                <MyCalendar
-                  events={[...booked_events]}
-                  user={user}
-                  handleSelectEvent={handleSelectEvent}
-                  handleUpdateTimeSlot={handleUpdateTimeSlot}
-                  handleChange={handleChange}
-                  handleModalClose={handleModalClose}
-                  handleChangeReceiver={handleChangeReceiver}
-                  handleSelectSlot={handleSelectSlot}
-                  handleSelectStudent={handleSelectStudent}
-                  student_id={allOfficeHoursState.student_id}
-                  handleNewEventModalClose={handleNewEventModalClose}
-                  handleModalBook={handleModalBook}
-                  handleModalCreateEvent={handleModalCreateEvent}
-                  newReceiver={allOfficeHoursState.newReceiver}
-                  newDescription={allOfficeHoursState.newDescription}
-                  selectedEvent={allOfficeHoursState.selectedEvent}
-                  newEventStart={allOfficeHoursState.newEventStart}
-                  newEventEnd={allOfficeHoursState.newEventEnd}
-                  newEventTitle={allOfficeHoursState.newEventTitle}
-                  students={allOfficeHoursState.students}
-                  isNewEventModalOpen={allOfficeHoursState.isNewEventModalOpen}
-                />
-              </Tab>
-              <Tab eventKey="Appointment" title="Appointment">
-                {booked_events
-                  .sort((a, b) => (a.start < b.start ? -1 : 1))
-                  .map((time_slot, j) => (
-                    <Card key={j}>
-                      {time_slot.start.toLocaleString()} to{' '}
-                      {time_slot.end.toLocaleString()}
-                    </Card>
-                  ))}
-              </Tab>
-            </Tabs>
+            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+              <Tabs
+                value={value}
+                onChange={handleChangeTab}
+                indicatorColor="primary"
+                aria-label="basic tabs example"
+              >
+                <Tab label={t('Calendar')} {...a11yProps(0)} />
+              </Tabs>
+            </Box>
+            <CustomTabPanel value={value} index={0}>
+              <MyCalendar
+                events={[...booked_events]}
+                user={user}
+                handleSelectEvent={handleSelectEvent}
+                handleUpdateTimeSlot={handleUpdateTimeSlot}
+                handleChange={handleChange}
+                handleModalClose={handleModalClose}
+                handleChangeReceiver={handleChangeReceiver}
+                handleSelectSlot={handleSelectSlot}
+                handleSelectStudent={handleSelectStudent}
+                student_id={allOfficeHoursState.student_id}
+                handleNewEventModalClose={handleNewEventModalClose}
+                handleModalBook={handleModalBook}
+                handleModalCreateEvent={handleModalCreateEvent}
+                newReceiver={allOfficeHoursState.newReceiver}
+                newDescription={allOfficeHoursState.newDescription}
+                selectedEvent={allOfficeHoursState.selectedEvent}
+                newEventStart={allOfficeHoursState.newEventStart}
+                newEventEnd={allOfficeHoursState.newEventEnd}
+                newEventTitle={allOfficeHoursState.newEventTitle}
+                students={allOfficeHoursState.students}
+                isNewEventModalOpen={allOfficeHoursState.isNewEventModalOpen}
+              />
+            </CustomTabPanel>
           </Card>
         </>
       )}
@@ -869,7 +870,7 @@ function AllOfficeHours() {
         size="xl"
         centered
       >
-        <Typography variant="h5">{t('Edit')}</Typography>
+        <Typography variant="h6">{t('Edit')}</Typography>
         <Typography>請寫下想討論的主題</Typography>
         <TextField
           fullWidth

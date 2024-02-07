@@ -69,6 +69,7 @@ function CommunicationSinglePage() {
             ...prevState,
             success,
             thread: data.reverse(),
+            upperThread: [],
             isLoaded: true,
             student_id: student_id,
             student,

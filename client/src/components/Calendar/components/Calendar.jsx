@@ -17,7 +17,8 @@ import {
   MenuItem,
   Select,
   TextField,
-  Typography
+  Typography,
+  useTheme
 } from '@mui/material';
 import {
   NoonNightLabel,
@@ -42,6 +43,7 @@ const localizer = momentLocalizer(moment);
 const MyCalendar = (props) => {
   const { t } = useTranslation();
   const { user } = useAuth();
+  const theme = useTheme();
   const newEventTitle = '';
   const [newEventDescription, setNewEventDescription] = useState('');
   let available_termins = [];
@@ -89,8 +91,10 @@ const MyCalendar = (props) => {
 
   const eventPropGetter = (event) => {
     // Default background color for other events
+    // console.log(theme);
     return {
       style: {
+        color: theme.palette.text.primary,
         backgroundColor: stringToColor(
           `${event.provider.firstname} ${event.provider.lastname}`
         ) // Set a fallback background color for other events

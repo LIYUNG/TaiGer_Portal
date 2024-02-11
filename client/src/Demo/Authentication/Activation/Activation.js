@@ -6,9 +6,9 @@ import { useTranslation } from 'react-i18next';
 import { activation, resendActivation } from '../../../api/index';
 import AuthWrapper from '../../../components/AuthWrapper';
 
-export default function Activation(props) {
+export default function Activation() {
   const { t } = useTranslation();
-  const query = new URLSearchParams(props.location.search);
+  const query = new URLSearchParams(window.location.search);
   const email = query.get('email');
   const token = query.get('token');
   const [activationsuccess, setActivationSuccess] = React.useState(false);

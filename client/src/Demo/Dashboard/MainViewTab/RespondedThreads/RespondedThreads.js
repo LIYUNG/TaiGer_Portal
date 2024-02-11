@@ -4,10 +4,8 @@ import { Link, TableCell, TableRow } from '@mui/material';
 
 import DEMO from '../../../../store/constant';
 import { convertDate } from '../../../Utils/contants';
-import { useAuth } from '../../../../components/AuthProvider';
 
 function RespondedThreads(props) {
-  const { user } = useAuth();
   var unread_general_generaldocs;
   var unread_applications_docthread;
 
@@ -23,7 +21,7 @@ function RespondedThreads(props) {
         <TableRow key={i}>
           {!generaldocs_threads.isFinalVersion &&
             generaldocs_threads.latest_message_left_by_id ===
-              user._id.toString() && (
+              props.student._id.toString() && (
               <>
                 <TableCell>
                   <Link
@@ -53,7 +51,7 @@ function RespondedThreads(props) {
             <TableRow key={idx}>
               {!application_doc_thread.isFinalVersion &&
                 application_doc_thread.latest_message_left_by_id ===
-                  user._id.toString() &&
+                  props.student._id.toString() &&
                 application.decided === 'O' && (
                   <>
                     <TableCell>

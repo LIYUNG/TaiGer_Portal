@@ -55,7 +55,7 @@ function ApplicationProgress(props) {
           {!is_TaiGer_Editor(user) && !props.isArchivPage && (
             <Link
               to={`${DEMO.STUDENT_APPLICATIONS_ID_LINK(props.student._id)}`}
-              style={{ textDecoration: 'none' }}
+              component={LinkDom}
             >
               <AiFillEdit color="grey" size={16} />
             </Link>

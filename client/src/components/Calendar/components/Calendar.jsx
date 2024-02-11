@@ -4,6 +4,8 @@ import { FiExternalLink } from 'react-icons/fi';
 import moment from 'moment';
 import { Link as LinkDom } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+// import { Scheduler } from '@aldabil/react-scheduler';
+// import { de } from 'date-fns/esm/locale';
 
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import Popping from './Popping';
@@ -47,11 +49,15 @@ const MyCalendar = (props) => {
   const newEventTitle = '';
   const [newEventDescription, setNewEventDescription] = useState('');
   let available_termins = [];
-  if (is_TaiGer_Agent(user) && props.selected_year) {
-    available_termins = time_slots.flatMap((time_slot, j) => {
-      const year = props.selected_year;
-      const month = props.selected_month;
-      const day = props.selected_day;
+  function getAvailableTermins({
+    selected_day,
+    selected_month,
+    selected_year
+  }) {
+    return time_slots.flatMap((time_slot, j) => {
+      const year = selected_year;
+      const month = selected_month;
+      const day = selected_day;
 
       const test_date = getUTCWithDST(
         year,
@@ -70,6 +76,13 @@ const MyCalendar = (props) => {
         end: end_date
         // provider: agent
       };
+    });
+  }
+  if (is_TaiGer_Agent(user) && props.selected_year) {
+    available_termins = getAvailableTermins({
+      selected_day: props.selected_day,
+      selected_month: props.selected_month,
+      selected_year: props.selected_year
     });
   }
 
@@ -101,9 +114,214 @@ const MyCalendar = (props) => {
       }
     };
   };
-
+  // const FieldBooked = ({ start, end, title, description, requester_id }) => (
+  //   <div className="flex flex-col items-center justify-center w-full h-full gap-1 my-auto">
+  //     <div className="flex items-center gap-1">
+  //       <span>
+  //         {start?.toLocaleTimeString('en-US', {
+  //           timeStyle: 'short'
+  //         })}
+  //       </span>
+  //       -
+  //       <span>
+  //         {end?.toLocaleTimeString('en-US', {
+  //           timeStyle: 'short'
+  //         })}
+  //       </span>
+  //     </div>
+  //     <div>{title}</div>
+  //     <div>{description}</div>
+  //     <div>{(requester_id ?? [])[0]?.firstname}</div>
+  //   </div>
+  // );
+  // console.log(available_termins);
   return (
     <>
+      {/* <Scheduler
+        // locale={de}
+        view="month"
+        events={props.events.map((event) => {
+          event.event_id = event._id;
+          return event;
+        })}
+        eventRenderer={(event) => <FieldBooked {...event} />}
+        onConfirm={(e) => {
+          console.log(e);
+          console.log('Confirm');
+        }}
+        day={{
+          startHour: 0,
+          endHour: 24,
+          step: 60,
+          navigation: true
+        }}
+        week={{
+          weekDays: [0, 1, 2, 3, 4, 5, 6],
+          weekStartOn: 0,
+          startHour: 8,
+          endHour: 24,
+          step: 60,
+          navigation: true
+        }}
+        customEditor={(scheduler) => (
+          <>
+            {console.log(scheduler)}
+            <Typography variant="h6" sx={{ mb: 2 }}>
+              Create New Event
+            </Typography>
+            <Box>
+              <TextField
+                fullWidth
+                multiline
+                minRows={6}
+                onChange={(e) => setNewEventDescription(e.target.value)}
+                value={scheduler.state.description.value}
+                placeholder="Description"
+              />
+              <Typography variant="body1" sx={{ mt: 2 }}>
+                Time zone: {user.timezone}
+              </Typography>
+              <span>
+                If the time zone not matches, please go to{' '}
+                <Link to={`${DEMO.PROFILE}`} component={LinkDom}>
+                  Profile <FiExternalLink />
+                </Link>{' '}
+                to update your time zone
+              </span>
+              <br />
+              <FormControl fullWidth sx={{ my: 2 }}>
+                <InputLabel id="time_slot">{t('Time Slot')}</InputLabel>
+                <Select
+                  labelId="Time_Slot"
+                  name="Time_Slot"
+                  id="Time_Slot"
+                  value={new Date(scheduler.state.start.value) || ''}
+                  label={'Time Slot'}
+                  onChange={props.handleUpdateTimeSlot}
+                >
+                  <MenuItem value="">Please Select</MenuItem>
+                  {getAvailableTermins({
+                    selected_day: new Date(
+                      scheduler.state.start.value
+                    ).getDate(),
+                    selected_month:
+                      new Date(scheduler.state.start.value).getMonth() + 1,
+                    selected_year: new Date(
+                      scheduler.state.start.value
+                    ).getFullYear()
+                  })
+                    // ?.sort((a, b) => (a.start < b.start ? -1 : 1))
+                    .map((time_slot) => (
+                      <MenuItem
+                        value={`${time_slot.start}`}
+                        key={`${time_slot.start}`}
+                      >
+                        {getLocalTime(time_slot.start, user.timezone)} UTC +
+                        {getUTCTimezoneOffset(time_slot.start, user.timezone) /
+                          60}
+                      </MenuItem>
+                    ))}
+                </Select>
+              </FormControl>
+              <br />
+              <FormControl fullWidth sx={{ mb: 2 }}>
+                <InputLabel id="Choose_Student">
+                  {t('Choose Student')}
+                </InputLabel>
+                <Select
+                  labelId="Choose_Student"
+                  name="Choose_Student"
+                  id="Choose_Student"
+                  value={props.student_id}
+                  label={'Choose Student'}
+                  onChange={props.handleSelectStudent}
+                >
+                  <MenuItem value="" key="x">
+                    Please Select
+                  </MenuItem>
+                  {props.students.map((student) => (
+                    <MenuItem
+                      value={`${student._id.toString()}`}
+                      key={`${student._id.toString()}`}
+                    >
+                      {student.firstname} {student.lastname}/{' '}
+                      {student.firstname_chinese} {student.lastname_chinese}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Box>
+            <Box>
+              <Button
+                color="primary"
+                variant="contained"
+                disabled={
+                  props.BookButtonDisable ||
+                  newEventDescription?.length === 0 ||
+                  props.student_id === ''
+                }
+                onClick={handleCreateEvent}
+                sx={{ mr: 2 }}
+              >
+                {props.BookButtonDisable ? <CircularProgress /> : t('Create')}
+              </Button>
+              <Button variant="outlined" onClick={scheduler.close}>
+                {t('Cancel')}
+              </Button>
+            </Box>
+          </>
+        )}
+        fields={[
+          {
+            name: 'description',
+            type: 'input',
+            config: {
+              label: 'Description',
+              required: true,
+              multiline: true,
+              rows: 4,
+              min: 1,
+              variant: 'outlined'
+            }
+          },
+          {
+            name: 'title',
+            type: 'input',
+            config: {
+              label: 'Title',
+              required: true,
+              multiline: true,
+              rows: 1,
+              min: 1,
+              variant: 'outlined'
+            }
+          }
+        ]}
+        onDelete={(id) => {
+          console.log(id);
+          console.log('delete');
+        }}
+        viewerExtraComponent={(fields, event) => {
+          return (
+            <div className="flex flex-col">
+              <div className="flex items-center gap-2 mt-2">
+                <div className="text-lg">
+                  Studnet:{event.requester_id[0].firstname}{' '}
+                  {event.requester_id[0].lastname}
+                </div>
+                <div className="text-lg">
+                  Agents:{event.receiver_id[0].firstname}{' '}
+                  {event.receiver_id[0].lastname}
+                </div>
+              </div>
+              <div className="flex items-center gap-2 mt-2">
+                <div className="text-lg">Description:</div>
+                <div className="text-lg font-bold">{event.description}</div>
+              </div>
+            </div>
+          );
+        }}
+      /> */}
       <Calendar
         localizer={localizer}
         events={props.events}

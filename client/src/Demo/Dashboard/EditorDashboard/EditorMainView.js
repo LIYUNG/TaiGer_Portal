@@ -3,6 +3,7 @@ import {
   Box,
   Card,
   Grid,
+  Link,
   Table,
   TableBody,
   TableCell,
@@ -10,7 +11,7 @@ import {
   TableRow,
   Typography
 } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link as LinkDom } from 'react-router-dom';
 
 import TabProgramConflict from '../MainViewTab/ProgramConflict/TabProgramConflict';
 import StudentsAgentEditor from '../MainViewTab/StudentsAgentEditor/StudentsAgentEditor';
@@ -128,7 +129,11 @@ function EditorMainView(props) {
           <Card sx={{ p: 2 }}>
             <Typography>Action required</Typography>
             <Typography variant="h6">
-              <Link to={DEMO.CV_ML_RL_CENTER_LINK}>
+              <Link
+                to={DEMO.CV_ML_RL_CENTER_LINK}
+                component={LinkDom}
+                underline="hover"
+              >
                 <b>
                   <u>{unreplied_task?.length}</u>
                 </b>{' '}
@@ -141,7 +146,11 @@ function EditorMainView(props) {
           <Card sx={{ p: 2 }}>
             <Typography>Followup Task</Typography>
             <Typography variant="h6">
-              <Link to={DEMO.CV_ML_RL_CENTER_LINK}>
+              <Link
+                to={DEMO.CV_ML_RL_CENTER_LINK}
+                component={LinkDom}
+                underline="hover"
+              >
                 <b>
                   <u>{follow_up_task?.length}</u>
                 </b>{' '}
@@ -154,7 +163,11 @@ function EditorMainView(props) {
           <Card sx={{ p: 2 }}>
             <Typography># of my students</Typography>
             <Typography variant="h6">
-              <Link to={DEMO.STUDENT_APPLICATIONS_LINK}>
+              <Link
+                to={DEMO.STUDENT_APPLICATIONS_LINK}
+                component={LinkDom}
+                underline="hover"
+              >
                 <b>
                   <u>
                     {
@@ -194,8 +207,7 @@ function EditorMainView(props) {
                     <TableCell>
                       <Link
                         to={`${DEMO.ASSIGN_EDITOR_LINK}`}
-                        style={{ textDecoration: 'none' }}
-                        className="text-info"
+                        component={LinkDom}
                       >
                         Assign Editors
                       </Link>
@@ -217,7 +229,11 @@ function EditorMainView(props) {
               <Typography>
                 <b style={{ color: 'red' }}>active:</b> students decide
                 programs. These will be shown in{' '}
-                <Link to={`${DEMO.CV_ML_RL_DASHBOARD_LINK}`}>
+                <Link
+                  to={`${DEMO.CV_ML_RL_DASHBOARD_LINK}`}
+                  component={LinkDom}
+                  underline="hover"
+                >
                   Tasks Dashboard
                 </Link>
               </Typography>

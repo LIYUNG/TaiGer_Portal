@@ -188,15 +188,50 @@ function ApplicationProgress(props) {
         )}
         {application.decided === 'O' ? (
           application.closed === 'O' ? (
-            <TableCell>Close</TableCell>
+            <TableCell>
+              <Typography
+                color={
+                  application.decided === 'O'
+                    ? application.closed === 'O'
+                      ? 'success.light'
+                      : 'error.main'
+                    : 'grey'
+                }
+                fontWeight="bold"
+              >
+                Close
+              </Typography>
+            </TableCell>
           ) : (
             <TableCell>
-              {application_deadline_calculator(props.student, application)}
+              <Typography
+                color={
+                  application.decided === 'O'
+                    ? application.closed === 'O'
+                      ? 'success.light'
+                      : 'error.main'
+                    : 'grey'
+                }
+                fontWeight="bold"
+              >
+                {application_deadline_calculator(props.student, application)}
+              </Typography>
             </TableCell>
           )
         ) : (
           <TableCell title="Not decided yet">
-            {application_deadline_calculator(props.student, application)}
+            <Typography
+              color={
+                application.decided === 'O'
+                  ? application.closed === 'O'
+                    ? 'success.light'
+                    : 'error.main'
+                  : 'grey'
+              }
+              fontWeight="bold"
+            >
+              {application_deadline_calculator(props.student, application)}
+            </Typography>
           </TableCell>
         )}
         {application.decided === 'O' ? (

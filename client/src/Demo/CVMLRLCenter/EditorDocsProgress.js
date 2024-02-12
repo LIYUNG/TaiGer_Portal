@@ -526,8 +526,14 @@ function EditorDocsProgress(props) {
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
         <Grid container spacing={2}>
           <Grid item xs={1} md={1}>
-            {application.decided === '-' || application.decided === 'X' ? (
-              <>Undecided</>
+            {application.decided === '-' ? (
+              <Typography variant="body1" color="grey" sx={{ mr: 2 }}>
+                Undecided
+              </Typography>
+            ) : application.decided === 'X' ? (
+              <Typography variant="body1" color="grey" sx={{ mr: 2 }}>
+                Not wanted
+              </Typography>
             ) : application.closed === 'O' ? (
               <>
                 <ImCheckmark
@@ -543,12 +549,24 @@ function EditorDocsProgress(props) {
             )}
           </Grid>
           <Grid item xs={1} md={1}>
-            {
-              application.doc_modification_thread?.filter(
-                (doc) => doc.isFinalVersion
-              ).length
-            }
-            /{application.doc_modification_thread?.length || 0}
+            <Typography
+              variant="body1"
+              color={
+                application.decided === 'O'
+                  ? application.closed === 'O'
+                    ? 'success.light'
+                    : 'error.main'
+                  : 'grey'
+              }
+              sx={{ mr: 2 }}
+            >
+              {
+                application.doc_modification_thread?.filter(
+                  (doc) => doc.isFinalVersion
+                ).length
+              }
+              /{application.doc_modification_thread?.length || 0}
+            </Typography>
           </Grid>
           <Grid item xs={8} md={8} sx={{ display: 'flex' }}>
             <Typography

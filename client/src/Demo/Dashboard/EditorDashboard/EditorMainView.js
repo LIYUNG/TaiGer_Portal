@@ -58,8 +58,8 @@ function EditorMainView(props) {
   const open_tasks_arr = open_tasks_with_editors(props.students);
   const task_distribution = open_tasks_arr
     .filter(({ isFinalVersion }) => isFinalVersion !== true)
-    .map(({ deadline, file_type, show }) => {
-      return { deadline, file_type, show };
+    .map(({ deadline, file_type, show, isPotentials }) => {
+      return { deadline, file_type, show, isPotentials };
     });
   const open_distr = frequencyDistribution(task_distribution);
 

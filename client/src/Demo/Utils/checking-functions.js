@@ -670,7 +670,6 @@ export const isEnglishOK = (program, student) => {
   return true;
 };
 
-
 export const application_date_calculator = (student, application) => {
   if (application.closed === 'O') {
     return 'CLOSE';
@@ -1101,7 +1100,9 @@ export const is_program_ml_rl_essay_finished = (application) => {
   // check ML, RL, Essay
   return (
     application.doc_modification_thread?.length === 0 ||
-    application.doc_modification_thread?.every((thread) => thread.isFinalVersion)
+    application.doc_modification_thread?.every(
+      (thread) => thread.isFinalVersion
+    )
   );
 };
 
@@ -1413,6 +1414,7 @@ export const open_tasks_with_editors = (students) => {
           editors: student.editors,
           agents: student.agents,
           show: true,
+          isPotentials: false,
           thread_id: thread.doc_thread_id._id.toString(),
           deadline: CVDeadline,
           aged_days: parseInt(
@@ -1459,6 +1461,7 @@ export const open_tasks_with_editors = (students) => {
               ) || '-',
             program_id: application.programId._id.toString(),
             show: application.decided === 'O' ? true : false,
+            isPotentials: application.decided === '-' ? true : false,
             thread_id: thread.doc_thread_id._id.toString(),
             document_name: `${thread.doc_thread_id.file_type} - ${application.programId.school} - ${application.programId.degree} -${application.programId.program_name}`,
             latest_reply:
@@ -1723,13 +1726,20 @@ export const frequencyDistribution = (tasks) => {
             show: map[tasks[i].deadline].show + 1,
             potentials: map[tasks[i].deadline].potentials
           }
-        : {
+        : tasks[i].isPotentials
+        ? {
             show: map[tasks[i].deadline].show,
             potentials: map[tasks[i].deadline].potentials + 1
           }
+        : {
+            show: map[tasks[i].deadline].show,
+            potentials: map[tasks[i].deadline].potentials
+          }
       : tasks[i].show
       ? { show: 1, potentials: 0 }
-      : { show: 0, potentials: 1 };
+      : tasks[i].isPotentials
+      ? { show: 0, potentials: 1 }
+      : { show: 0, potentials: 0 };
   }
   return map;
 };

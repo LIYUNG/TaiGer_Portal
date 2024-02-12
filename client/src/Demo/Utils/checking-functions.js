@@ -670,6 +670,55 @@ export const isEnglishOK = (program, student) => {
   return true;
 };
 
+
+export const application_date_calculator = (student, application) => {
+  if (application.closed === 'O') {
+    return 'CLOSE';
+  }
+  if (application.closed === 'X') {
+    return 'WITHDRAW';
+  }
+  const { application_start, semester } = application.programId;
+
+  if (!application_start) {
+    return 'No Data';
+  }
+  let application_year = '<TBD>';
+  if (student.application_preference?.expected_application_date !== '') {
+    application_year = parseInt(
+      student.application_preference.expected_application_date
+    );
+  }
+  if (!application_start) {
+    return `${application_year}-<TBD>`;
+  }
+  if (application_start.includes('olling')) {
+    // include Rolling
+    return `${application_year}-Rolling`;
+  }
+  let deadline_month = parseInt(
+    application.programId.application_start.split('-')[0]
+  );
+
+  if (semester === undefined) {
+    return 'Err';
+  }
+  if (semester === 'WS') {
+    if (deadline_month > 9) {
+      application_year = application_year - 1;
+    }
+  }
+  if (semester === 'SS') {
+    if (deadline_month > 3) {
+      application_year = application_year - 1;
+    }
+  }
+
+  return `${application_year}/${
+    application.programId.application_start.split('-')[0]
+  }/${application.programId.application_start.split('-')[1]}`;
+};
+
 export const application_deadline_calculator = (student, application) => {
   if (application.closed === 'O') {
     return 'CLOSE';

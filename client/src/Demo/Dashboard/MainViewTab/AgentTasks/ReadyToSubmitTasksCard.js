@@ -8,7 +8,8 @@ import {
   TableBody,
   TableCell,
   TableHead,
-  TableRow
+  TableRow,
+  Typography
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
@@ -17,10 +18,12 @@ import {
   is_program_ml_rl_essay_ready,
   is_the_uni_assist_vpd_uploaded,
   is_program_closed,
-  application_deadline_calculator
+  application_deadline_calculator,
+  application_date_calculator
 } from '../../../Utils/checking-functions';
 import DEMO from '../../../../store/constant';
 import { useAuth } from '../../../../components/AuthProvider';
+import { isInTheFuture } from '../../../Utils/contants';
 
 const ReadyToSubmitTasks = (props) => {
   return (
@@ -48,7 +51,36 @@ const ReadyToSubmitTasks = (props) => {
                 </Link>
               </TableCell>
               <TableCell>
-                {application_deadline_calculator(props.student, application)}
+                {/* isInTheFuture */}
+                <Typography
+                  variant="body2"
+                  fontWeight={
+                    isInTheFuture(
+                      application_date_calculator(props.student, application)
+                    )
+                      ? ''
+                      : 'bold'
+                  }
+                >
+                  {application_date_calculator(props.student, application)}
+                </Typography>
+              </TableCell>
+              <TableCell>
+                <Typography
+                  variant="body2"
+                  fontWeight={
+                    isInTheFuture(
+                      application_deadline_calculator(
+                        props.student,
+                        application
+                      )
+                    )
+                      ? 'bold'
+                      : ''
+                  }
+                >
+                  {application_deadline_calculator(props.student, application)}
+                </Typography>
               </TableCell>
               <TableCell>
                 <b className="text-warning">{application.programId.degree}</b>
@@ -90,6 +122,7 @@ function ReadyToSubmitTasksCard(props) {
           <TableHead>
             <TableRow>
               <TableCell>{t('Student')}</TableCell>
+              <TableCell>{t('Start')}</TableCell>
               <TableCell>{t('Deadline')}</TableCell>
               <TableCell>
                 {t('Semester')} - {t('Degree')} - {t('Program')}

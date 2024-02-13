@@ -401,6 +401,7 @@ function ButtonSetUploaded(props) {
         open={ButtonSetUploadedState.showPreview}
         onClose={closePreviewWindow}
         aria-labelledby="contained-modal-title-vcenter2"
+        width="100%"
         size="xl"
       >
         <Typography id="contained-d-title-vcenter">{props.path}</Typography>

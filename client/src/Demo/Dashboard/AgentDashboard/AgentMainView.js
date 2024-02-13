@@ -1,6 +1,7 @@
 import React, { Fragment, useState } from 'react';
 import { Link as LinkDom } from 'react-router-dom';
-import { BsExclamationTriangle, BsX } from 'react-icons/bs';
+import { BsX } from 'react-icons/bs';
+import ReportProblemIcon from '@mui/icons-material/ReportProblem';
 import { useTranslation } from 'react-i18next';
 import {
   Grid,
@@ -108,7 +109,7 @@ function AgentMainView(props) {
           (student, i) => (
             <Card key={i} sx={{ padding: 2, mb: 1 }}>
               <Typography style={{ textAlign: 'left' }}>
-                <BsExclamationTriangle size={18} />
+                <ReportProblemIcon size={18} />
                 <b className="mx-2">Reminder:</b> There are new base documents
                 uploaded by{' '}
                 <b>

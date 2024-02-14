@@ -87,6 +87,19 @@ export const translation_resources = {
         'Based on the applications, Uni-Assist is NOT needed.',
       'Course Analysis explanation button': 'More explanation',
       'To Do Tasks': 'To Do Tasks',
+      'New feedback from your Editor': 'New feedback from your Editor',
+      'New tasks are assigned to you': 'New tasks are assigned to you',
+      'It looks like you did not decide programs':
+        'It looks like you did not decide programs',
+      'Some of Base Documents are rejected':
+        'Some of Base Documents are rejected',
+      'Some of Base Documents are still missing':
+        'Some of Base Documents are still missing',
+      Attention: 'Attention',
+      'Do you want to set the application of':
+        'Do you want to set the application of',
+      'Do you want to reset the result of the application of':
+        'Do you want to reset the result of the application of',
       'Please finish it as soon as possible':
         'Please finish it as soon as possible',
       'Please complete My Survey so that your agent can understand your situation':
@@ -310,7 +323,7 @@ export const translation_resources = {
       'Have you received the interview invitation from this program?':
         '您是否收到此學程的面試邀請通知？若有的話請告知我們，我們會盡速安排與 TaiGer 面試官做模擬面試',
       'Change your result': '更改申請結果',
-      'New agent is assigned to you': '新的顧問以指派給您。',
+      'New agent is assigned to you': '新的顧問已指派給您。',
       'Course Analysis banner':
         '此份課程分析僅供選課參考。請仔細看過每個向度所缺的課程，並對照學校之後學期是否有開期課程，抓出來，並和您的 Agent 討論。',
       'Course Analysis description':
@@ -333,6 +346,15 @@ export const translation_resources = {
         '根據您的欲申請的學程， 您並不需要處理 Uni-Assist 第三方學歷認證流程。',
       'Course Analysis explanation button': '點我詳細解說',
       'To Do Tasks': '待辦事項清單',
+      'New feedback from your Editor': '您有來自編輯的新回復',
+      'New tasks are assigned to you': '有新的任務指派給你',
+      'It looks like you did not decide programs': '您仍有科系尚未決定',
+      'Some of Base Documents are rejected': '你有上傳的文件不合格',
+      'Some of Base Documents are still missing': '你有缺少文件',
+      Attention: '注意',
+      'Do you want to set the application of': '您確定要設定此申請',
+      'Do you want to reset the result of the application of':
+        '您確定要重設申請結果嗎？',
       'Please finish it as soon as possible': '請您盡速處理以下事項',
       'Please complete My Survey so that your agent can understand your situation':
         '請完成問卷，您的Agent才能了解您的狀況',

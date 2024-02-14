@@ -265,7 +265,7 @@ export default function ApplicationProgressCard(props) {
             Attention
           </Typography>
           <Typography id="modal-modal-description" sx={{ my: 2 }}>
-            Do you want to reset the result of the application of{' '}
+            {t('Do you want to reset the result of the application of')}{' '}
             <b>{`${application.programId.school}-${application.programId.degree}-${application.programId.program_name}`}</b>
             ?
           </Typography>
@@ -294,12 +294,12 @@ export default function ApplicationProgressCard(props) {
       <ModalNew open={showSetResultModal} onClose={closeSetResultModal}>
         <Box>
           <Typography id="modal-modal-title" variant="h6" component="h2">
-            Attention
+            {t('Attention')}
           </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            Do you want to set the application of{' '}
+          <Typography id="modal-modal-description" sx={{ my: 2 }}>
+            {t('Do you want to set the application of')}{' '}
             <b>{`${application.programId.school}-${application.programId.degree}-${application.programId.program_name}`}</b>{' '}
-            as <b>{resultState === 'O' ? t('Admitted') : t('Rejected')}</b>?
+            <b>{resultState === 'O' ? t('Admitted') : t('Rejected')}</b>?
           </Typography>
           <Button
             color={resultState === 'O' ? 'primary' : 'secondary'}

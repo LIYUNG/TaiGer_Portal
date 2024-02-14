@@ -164,7 +164,7 @@ function StudentDashboard(props) {
                 bg={'primary'}
                 title={'info'}
                 path={`${DEMO.UNI_ASSIST_LINK}`}
-                text={'New agent is assigned to you.'}
+                text={`${t('New agent is assigned to you')}`}
                 link_name={''}
                 removeBanner={removeBanner}
                 notification_key={'isRead_new_agent_assigned'}
@@ -196,7 +196,7 @@ function StudentDashboard(props) {
                 bg={'danger'}
                 title={'warning'}
                 path={`${DEMO.CV_ML_RL_CENTER_LINK}`}
-                text={'New feedback from your Editor. See'}
+                text={`${t('New feedback from your Editor')}. See`}
                 link_name={
                   <>
                     CV/ML/RL Center
@@ -220,7 +220,7 @@ function StudentDashboard(props) {
                 bg={'danger'}
                 title={'warning'}
                 path={`${DEMO.CV_ML_RL_CENTER_LINK}`}
-                text={'New tasks are assigned to you. See'}
+                text={`${t('New tasks are assigned to you')}. See`}
                 link_name={
                   <>
                     CV/ML/RL Center
@@ -244,7 +244,7 @@ function StudentDashboard(props) {
                 bg={'danger'}
                 title={'warning'}
                 path={`${DEMO.STUDENT_APPLICATIONS_LINK}`}
-                text={'It looks like you did not decide programs'}
+                text={`${t('It looks like you did not decide programs')} `}
                 link_name={
                   <>
                     Application Overview
@@ -268,7 +268,7 @@ function StudentDashboard(props) {
                 bg={'danger'}
                 title={'warning'}
                 path={`${DEMO.BASE_DOCUMENTS_LINK}`}
-                text={'Some of Base Documents are still missing'}
+                text={`${t('Some of Base Documents are still missing')}`}
                 link_name={
                   <>
                     Base Documents
@@ -292,7 +292,7 @@ function StudentDashboard(props) {
                 bg={'danger'}
                 title={'warning'}
                 path={`${DEMO.BASE_DOCUMENTS_LINK}`}
-                text={'Some of Base Documents are rejected'}
+                text={`${t('Some of Base Documents are rejected')} `}
                 link_name={
                   <>
                     Base Documents

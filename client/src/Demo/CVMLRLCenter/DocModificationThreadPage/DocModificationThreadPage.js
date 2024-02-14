@@ -73,10 +73,9 @@ function DocModificationThreadPage() {
     });
 
   useEffect(() => {
-    // document.removeEventListener('click', handleClickOutside);
-    document.addEventListener('mousedown', handleClickOutside);
-    getMessagThread(documentsthreadId).then(
-      (resp) => {
+    const fetchData = async () => {
+      try {
+        const resp = await getMessagThread(documentsthreadId);
         const { success, data, editors, agents, deadline, conflict_list } =
           resp.data;
         const { status } = resp;
@@ -107,8 +106,7 @@ function DocModificationThreadPage() {
             res_status: status
           }));
         }
-      },
-      (error) => {
+      } catch (error) {
         setDocModificationThreadPageState((prevState) => ({
           ...prevState,
           isLoaded: true,
@@ -116,7 +114,10 @@ function DocModificationThreadPage() {
           res_status: 500
         }));
       }
-    );
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    fetchData();
   }, [documentsthreadId]);
 
   const closeSetAsFinalFileModelWindow = () => {

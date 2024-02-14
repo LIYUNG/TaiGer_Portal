@@ -30,7 +30,7 @@ import {
   getStudentInput,
   putStudentInput,
   resetStudentInput
-} from '../../../api';
+  } from '../../../api';
 import { TabTitle } from '../../Utils/TabTitle';
 import DEMO from '../../../store/constant';
 import { useAuth } from '../../../components/AuthProvider';
@@ -59,8 +59,9 @@ function DocModificationThreadInput() {
     });
 
   useEffect(() => {
-    getStudentInput(documentsthreadId).then(
-      (resp) => {
+    const fetchData = async () => {
+      try {
+        const resp = await getStudentInput(documentsthreadId);
         const { success, data, editors, agents, deadline } = resp.data;
         const { status } = resp;
         let temp_question = [];
@@ -113,8 +114,7 @@ function DocModificationThreadInput() {
             res_status: status
           }));
         }
-      },
-      (error) => {
+      } catch (error) {
         setDocModificationThreadInputState((prevState) => ({
           ...prevState,
           isLoaded: true,
@@ -122,7 +122,8 @@ function DocModificationThreadInput() {
           res_status: 500
         }));
       }
-    );
+    };
+    fetchData();
   }, []);
 
   const ConfirmError = () => {

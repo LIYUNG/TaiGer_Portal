@@ -153,7 +153,7 @@ const SurveyEditableComponent = (props) => {
           </Typography>
           {survey.academic_background?.language?.english_isPassed === '-' ||
           !survey.academic_background?.language?.english_isPassed ? (
-            <li>Do you need English Test?</li>
+            <li>{t('Do you need English Test')}?</li>
           ) : survey.academic_background?.language?.english_isPassed === 'X' &&
             parseInt(
               getNumberOfDays(
@@ -203,7 +203,7 @@ const SurveyEditableComponent = (props) => {
                 new Date()
               )
             ) > 1 ? (
-            <li>GRE Test passed ?</li>
+            <li>{t('GRE Test passed ?')}</li>
           ) : survey.academic_background?.language?.gre_isPassed === 'X' &&
             survey.academic_background?.language?.gre_test_date === '' ? (
             <li>GRE Test Date not given</li>
@@ -212,7 +212,7 @@ const SurveyEditableComponent = (props) => {
           )}
           {survey.academic_background?.language?.gmat_isPassed === '-' ||
           !survey.academic_background?.language?.gmat_isPassed ? (
-            <li>Do you need GMAT Test?</li>
+            <li>{t('Do you need GMAT Test')}?</li>
           ) : survey.academic_background?.language?.gmat_isPassed === 'X' &&
             parseInt(
               getNumberOfDays(
@@ -220,7 +220,7 @@ const SurveyEditableComponent = (props) => {
                 new Date()
               )
             ) > 1 ? (
-            <li>GMAT Test passed ?</li>
+            <li>{t('GMAT Test passed ?')}</li>
           ) : survey.academic_background?.language?.gmat_isPassed === 'X' &&
             survey.academic_background?.language?.gmat_test_date === '' ? (
             <li>GMAT Test Date not given</li>
@@ -637,7 +637,8 @@ const SurveyEditableComponent = (props) => {
                     : '/'
                 }
                 target="_blank"
-                className="text-info" rel="noreferrer"
+                className="text-info"
+                rel="noreferrer"
               >
                 <Button
                   variant="outlined"

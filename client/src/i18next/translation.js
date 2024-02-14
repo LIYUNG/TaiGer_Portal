@@ -79,6 +79,15 @@ export const translation_resources = {
         'Student should access the analysed page in their course page.',
       'Last analysis at': 'Last analysis at',
       'Last update at': 'Last update at',
+      'Application Preference From Survey':
+        'Application Preference From Survey',
+      'Academic Background Survey': 'Academic Background Survey',
+      'Application Preference': 'Application Preference',
+      'Languages Test and Certificates': 'Languages Test and Certificates',
+      'Do you need English Test': 'Do you need English Test',
+      'GRE Test passed ?': 'GRE Test passed ?',
+      'GMAT Test passed ?': 'GMAT Test passed ?',
+      'Do you need GMAT Test': 'Do you need GMAT Test',
       'The following program needs uni-assist process, please check if paid, uploaded document and upload VPD here':
         'The following program needs uni-assist process, please check if paid, uploaded document and upload VPD here',
       'Instructions: Follow the documentations in':
@@ -96,6 +105,7 @@ export const translation_resources = {
       'Some of Base Documents are still missing':
         'Some of Base Documents are still missing',
       Attention: 'Attention',
+      Instructions: 'Instructions',
       'Do you want to set the application of':
         'Do you want to set the application of',
       'Do you want to reset the result of the application of':
@@ -202,6 +212,8 @@ export const translation_resources = {
       'Supplementary Form Required?': 'Supplementary Form Required?',
       'Supplementary Form Requirements': 'Supplementary Form Requirements',
       'ECTS Requirements': 'ECTS Requirements',
+      'Please register and provide credentials':
+        'Please register and provide credentials',
       'My Students Application Overview': 'My Students Application Overview',
       'My Active Student Overview': 'My Active Student Overview',
       'My Archived Students': 'My Archived Students',
@@ -214,9 +226,11 @@ export const translation_resources = {
       'Target Application Fields': 'Target Application Fields',
       'Target Year': 'Target Year',
       'Tuition Fees': 'Tuition Fees',
+      'Read More': 'Read More',
       Comments: 'Comments',
       Country: 'Country',
       Program: 'Program',
+      Programs: 'Programs',
       Degree: 'Degree',
       Delete: 'Delete',
       Deadline: 'Deadline',
@@ -227,6 +241,7 @@ export const translation_resources = {
       Password: 'Password',
       'Forgot Password': 'Forgot Password',
       Login: 'Login',
+      Link: 'Link',
       'Meeting Link': 'Meeting Link',
       Notes: 'Notes',
       Update: 'Update',
@@ -338,6 +353,14 @@ export const translation_resources = {
         '學生也可以在他們的填寫課程頁面找到課程分析連結。',
       'Last analysis at': '最後分析於',
       'Last update at': '最後更新於',
+      'Application Preference From Survey': '根據問卷的申請科系偏好',
+      'Academic Background Survey': '學術背景問卷',
+      'Application Preference': '申請科系偏好',
+      'Languages Test and Certificates': '語言考試語檢定',
+      'Do you need English Test': '您需要英語檢定嗎',
+      'GRE Test passed ?': 'GRE 考試通過嗎 ?',
+      'GMAT Test passed ?': 'GMAT 考試通過嗎 ?',
+      'Do you need GMAT Test': '您需要 GMAT 考試嗎',
       'The following program needs uni-assist process, please check if paid, uploaded document and upload VPD here':
         '以下學程需要額外處理 Uni-Assist，請確認是否上傳文件、付款並上傳 VPD 文件於此處',
       'Instructions: Follow the documentations in':
@@ -352,6 +375,7 @@ export const translation_resources = {
       'Some of Base Documents are rejected': '你有上傳的文件不合格',
       'Some of Base Documents are still missing': '你有缺少文件',
       Attention: '注意',
+      Instructions: '說明',
       'Do you want to set the application of': '您確定要設定此申請',
       'Do you want to reset the result of the application of':
         '您確定要重設申請結果嗎？',
@@ -479,6 +503,7 @@ export const translation_resources = {
       'Supplementary Form Required?': '需要 Supplementary Form?',
       'Supplementary Form Requirements': 'Supplementary Form 要求',
       'ECTS Requirements': 'ECTS 要求',
+      'Please register and provide credentials': '請註冊帳號密碼並更新至此',
       'My Students Application Overview': '我的學生申請總攬',
       'My Active Student Overview': '我的學生總攬',
       'My Archived Students': '我的過往學生',
@@ -490,8 +515,10 @@ export const translation_resources = {
       'Target Application Fields': '預計申請領域',
       'Target Year': '預計申請年度',
       'Tuition Fees': '學費',
+      'Read More': '讀我更多',
       Comments: '註記',
       Program: '學程',
+      Programs: '學程',
       Country: '國家',
       Degree: '學位',
       Deadline: '截止日期',
@@ -503,6 +530,7 @@ export const translation_resources = {
       Password: '密碼',
       'Forgot Password': '忘記密碼',
       Login: '登入',
+      Link: '連結',
       'Meeting Link': '會議連結',
       Notes: '筆記欄',
       Update: '更新',

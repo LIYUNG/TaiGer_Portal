@@ -44,13 +44,14 @@ const {
   getStudentInput,
   putStudentInput,
   resetStudentInput,
-  getSurveyInput,
+  getSurveyInputs,
   postSurveyInput,
   putSurveyInput,
   resetSurveyInput
 } = require('../controllers/documents_modification');
 const {
-  docThreadMultitenant_filter
+  docThreadMultitenant_filter,
+  surveyMultitenantFilter
 } = require('../middlewares/documentThreadMultitenantFilter');
 
 const router = Router();
@@ -88,21 +89,23 @@ router
 
 // Survey input
 router
-  .route('/survey-input/:surveyInputId')
+  .route('/survey-input/:studentId/:programId?/:fileType?')
   .get(
     getMessagesRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
-    // docThreadMultitenant_filter,
-    getSurveyInput
-  ).put(
+    surveyMultitenantFilter,
+    getSurveyInputs
+  )
+  .put(
     putThreadInputRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
-    // docThreadMultitenant_filter,
+    surveyMultitenantFilter,
     putSurveyInput
-  ).delete(
+  )
+  .delete(
     resetThreadInputRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
-    // docThreadMultitenant_filter,
+    surveyMultitenantFilter,
     resetSurveyInput
   );
 
@@ -111,10 +114,9 @@ router
   .post(
     putThreadInputRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
-    // docThreadMultitenant_filter,
+    surveyMultitenantFilter,
     postSurveyInput
   );
-
 
 router
   .route('/overview')

@@ -45,6 +45,7 @@ const {
   putStudentInput,
   resetStudentInput,
   getSurveyInputs,
+  getSurveyInputsByThreadId,
   postSurveyInput,
   putSurveyInput,
   resetSurveyInput
@@ -89,13 +90,16 @@ router
 
 // Survey input
 router
-  .route('/survey-input/:studentId/:programId?/:fileType?')
+  .route('/survey-input/threads/:messagesThreadId')
   .get(
     getMessagesRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     surveyMultitenantFilter,
-    getSurveyInputs
-  )
+    getSurveyInputsByThreadId
+  );
+
+router
+  .route('/survey-input/:surveyInputId')
   .put(
     putThreadInputRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
@@ -107,6 +111,15 @@ router
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     surveyMultitenantFilter,
     resetSurveyInput
+  );
+
+router
+  .route('/survey-input/:studentId/:programId?/:fileType?')
+  .get(
+    getMessagesRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
+    surveyMultitenantFilter,
+    getSurveyInputs
   );
 
 router

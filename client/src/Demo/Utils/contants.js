@@ -76,6 +76,28 @@ let FILE_DONT_CARE_SYMBOL = (
   <BsDash size={18} color="lightgray" title="Not needed" />
 );
 
+export const prepQuestions = (thread) => {
+  let questions = [];
+  if (
+    thread?.file_type?.includes('RL') ||
+    thread?.file_type?.includes('Recommendation')
+  ) {
+    questions = RLQuestions(thread);
+  } else {
+    switch (thread?.file_type) {
+      case 'ML':
+        questions = MLQuestions(thread);
+        break;
+      case 'CV':
+        questions = CVQuestions();
+        break;
+      default:
+        questions = [];
+    }
+  }
+  return questions;
+};
+
 export const CVQuestions = () => {
   return [
     {

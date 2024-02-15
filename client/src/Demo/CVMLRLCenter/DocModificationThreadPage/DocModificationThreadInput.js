@@ -15,6 +15,7 @@ import { useTranslation } from 'react-i18next';
 import ErrorPage from '../../Utils/ErrorPage';
 import ModalMain from '../../Utils/ModalHandler/ModalMain';
 import {
+  prepQuestions,
   CVQuestions,
   MLQuestions,
   RLQuestions,
@@ -30,7 +31,7 @@ import {
   getStudentInput,
   putStudentInput,
   resetStudentInput
-  } from '../../../api';
+} from '../../../api';
 import { TabTitle } from '../../Utils/TabTitle';
 import DEMO from '../../../store/constant';
 import { useAuth } from '../../../components/AuthProvider';
@@ -62,26 +63,8 @@ function DocModificationThreadInput() {
     const fetchData = async () => {
       try {
         const resp = await getStudentInput(documentsthreadId);
-        const { success, data, editors, agents, deadline } = resp.data;
+        const { success, data } = resp.data;
         const { status } = resp;
-        let temp_question = [];
-        if (
-          data?.file_type?.includes('RL') ||
-          data?.file_type?.includes('Recommendation')
-        ) {
-          temp_question = RLQuestions(data);
-        } else {
-          switch (data?.file_type) {
-            case 'ML':
-              temp_question = MLQuestions(data);
-              break;
-            case 'CV':
-              temp_question = CVQuestions();
-              break;
-            default:
-              temp_question = [];
-          }
-        }
 
         if (success) {
           setDocModificationThreadInputState((prevState) => ({
@@ -94,14 +77,11 @@ function DocModificationThreadInput() {
                   updatedAt: data?.student_input.updatedAt
                 }
               : {
-                  input_content: temp_question,
+                  input_content: prepQuestions(data),
                   updatedAt: data?.student_input?.updatedAt
                 },
             document_requirements: {},
             editor_requirements: {},
-            editors,
-            agents,
-            deadline,
             isLoaded: true,
             documentsthreadId: documentsthreadId,
 

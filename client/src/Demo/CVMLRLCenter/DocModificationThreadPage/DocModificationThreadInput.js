@@ -1,14 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Form, Placeholder } from 'react-bootstrap';
+import { Row, Col, Placeholder } from 'react-bootstrap';
 import {
   Box,
   Breadcrumbs,
   Button,
   Card,
+  Checkbox,
+  InputLabel,
+  MenuItem,
   CircularProgress,
   Link,
-  Typography
+  FormGroup,
+  FormControl,
+  FormLabel,
+  TextField,
+  Typography,
+  Select
 } from '@mui/material';
+
 import { Link as LinkDom, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
@@ -121,6 +130,7 @@ function DocModificationThreadInput() {
     }));
   };
 
+  // eslint-disable-next-line no-unused-vars
   const onChange = (e) => {
     const id = e.target.id;
     const ans = e.target.value;
@@ -266,47 +276,6 @@ function DocModificationThreadInput() {
       }
     );
   };
-
-  // Example usage
-  // const mockApiCall = async (data, timeout = 1000) => {
-  //   return new Promise((resolve) => {
-  //     setTimeout(() => {
-  //       resolve(data);
-  //     }, timeout);
-  //   });
-  // };
-  // Example usage
-  // const fetchData = async () => {
-  //   try {
-  //     // Simulate an API call with a 2-second delay
-  //     const result = await mockApiCall(
-  //       `testing mocked api call testing mocked api call
-  //       testing mocked api call
-  //       testing mocked api call
-  //       testing mocked api call
-  //       testing mocked api call
-  //       testing mocked api call
-  //       testing mocked api call
-  //       testing mocked api call
-  //       testing mocked api call
-  //       testing mocked api call
-  //       testing mocked api call
-  //       testing mocked api call
-  //       testing mocked api call
-  //       testing mocked api call
-  //       testing mocked api call`,
-  //       2000
-  //     );
-
-  //     setDocModificationThreadInputState((prevState) => ({
-  //       ...prevState,
-  //       isLoaded: true,
-  //       isGenerating: false,
-  //       data: result,
-  //       success: true
-  //     }));
-  //   } catch (error) {}
-  // };
 
   const onSubmit = async () => {
     setDocModificationThreadInputState((prevState) => ({
@@ -495,18 +464,18 @@ function DocModificationThreadInput() {
         {docModificationThreadInputState.surveyInputs?.general?.surveyContent.map(
           (qa, i) => (
             <Col key={i} md={qa.width || 12}>
-              <Form className="mb-2" key={i}>
-                <Form.Group controlId={qa.question_id}>
-                  <Form.Label>{qa.question}</Form.Label>
-                  <Form.Control
-                    as="textarea"
-                    rows={qa.rows || '1'}
+              <form className="mb-2" key={i}>
+                <FormGroup>
+                  <FormLabel>{qa.question}</FormLabel>
+                  <TextField
+                    multiline={true}
+                    // rows={qa.rows || '1'}
                     placeholder={qa.placeholder}
                     defaultValue={qa.answer}
-                    onChange={onChange}
-                  ></Form.Control>
-                </Form.Group>
-              </Form>
+                    // onChange={onChange}
+                  />
+                </FormGroup>
+              </form>
             </Col>
           )
         )}
@@ -514,18 +483,18 @@ function DocModificationThreadInput() {
         {docModificationThreadInputState.surveyInputs?.specific?.surveyContent.map(
           (qa, i) => (
             <Col key={i} md={qa.width || 12}>
-              <Form className="mb-2" key={i}>
-                <Form.Group controlId={qa.question_id}>
-                  <Form.Label>{qa.question}</Form.Label>
-                  <Form.Control
-                    as="textarea"
-                    rows={qa.rows || '1'}
+              <form className="mb-2" key={i}>
+                <FormGroup>
+                  <FormLabel>{qa.question}</FormLabel>
+                  <TextField
+                    multiline={true}
+                    // rows={qa.rows || '1'}
                     placeholder={qa.placeholder}
                     defaultValue={qa.answer}
-                    onChange={onChange}
-                  ></Form.Control>
-                </Form.Group>
-              </Form>
+                    // onChange={onChange}
+                  />
+                </FormGroup>
+              </form>
             </Col>
           )
         )}
@@ -533,17 +502,17 @@ function DocModificationThreadInput() {
           (qa, i) => (
             <Col key={i} md={qa.width || 12}>
               <Form className="mb-2" key={i}>
-                <Form.Group controlId={qa.question_id}>
-                  <Form.Label>{qa.question}</Form.Label>
-                  <Form.Control
+                <FormGroup controlId={qa.question_id}>
+                  <FormLabel>{qa.question}</FormLabel>
+                  <Select
                     as="textarea"
                     rows={qa.rows || '1'}
                     placeholder={qa.placeholder}
                     defaultValue={qa.answer}
                     onChange={onChange}
-                  ></Form.Control>
-                </Form.Group>
-              </Form>
+                  ></Select>
+                </FormGroup>
+              </form>
             </Col>
           )
         )} */}
@@ -604,70 +573,71 @@ function DocModificationThreadInput() {
 
       {is_TaiGer_role(user) && (
         <Card sx={{ p: 2 }}>
-          <Form>
-            <Form.Group controlId="useProgramRequirementData">
-              <Form.Label>Use program&apos;s requirements?</Form.Label>
-              <Form.Check
+          <form>
+            <FormGroup controlId="useProgramRequirementData">
+              <FormLabel>Use program&apos;s requirements?</FormLabel>
+              <Checkbox
                 type="checkbox"
                 checked={
                   docModificationThreadInputState.editor_requirements
                     ?.useProgramRequirementData
                 }
                 onChange={onChangeEditorRequirements}
-              ></Form.Check>
-            </Form.Group>
-          </Form>
+              ></Checkbox>
+            </FormGroup>
+          </form>
 
-          <Form>
-            <Form.Group controlId="outputLanguage">
-              <Form.Label>Output language?</Form.Label>
-              <Form.Control
-                defaultValue="English"
-                onChange={(e) => {
-                  onChangeEditorRequirements(e);
-                }}
-                as="select"
-              >
-                <option value="English">{t('English')}</option>
-                <option value="German">{t('German')}</option>
-              </Form.Control>
-            </Form.Group>
-          </Form>
+          <FormControl fullWidth>
+            <InputLabel id="output-lang-label">Output language?</InputLabel>
+            <Select
+              labelId="output-lang-label"
+              id="output-lang-select"
+              value="English"
+              label="Language"
+              onChange={(e) => {
+                onChangeEditorRequirements(e);
+              }}
+            >
+              <MenuItem value="English">English</MenuItem>
+              <MenuItem value="German">German</MenuItem>
+            </Select>
+          </FormControl>
 
-          <Form>
-            <Form.Group controlId="gptModel">
-              <Form.Label>GPT Model language?</Form.Label>
-              <Form.Control
+          <form>
+            <FormGroup controlId="gptModel">
+              <InputLabel id="gpt-model-label">GPT Model?</InputLabel>
+              <Select
                 defaultValue="gpt-3.5-turbo"
                 onChange={(e) => {
                   onChangeEditorRequirements(e);
                 }}
-                as="select"
               >
-                <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
-                <option value="gpt-3.5-turbo-16k">gpt-3.5-turbo-16k</option>
-                <option value="gpt-4">gpt-4</option>
-                <option value="gpt-4-32k">gpt-4-32k</option>
-                <option value="text-embedding-ada-002">
+                <MenuItem value="gpt-3.5-turbo">gpt-3.5-turbo</MenuItem>
+                <MenuItem value="gpt-3.5-turbo-16k">gpt-3.5-turbo-16k</MenuItem>
+                <MenuItem value="gpt-4">gpt-4</MenuItem>
+                <MenuItem value="gpt-4-32k">gpt-4-32k</MenuItem>
+                <MenuItem value="text-embedding-ada-002">
                   text-embedding-ada-002
-                </option>
-                <option value="gpt-4-1106-preview">gpt-4-1106-preview</option>
-              </Form.Control>
-            </Form.Group>
-          </Form>
+                </MenuItem>
+                <MenuItem value="gpt-4-1106-preview">
+                  gpt-4-1106-preview
+                </MenuItem>
+              </Select>
+            </FormGroup>
+          </form>
 
-          <Form>
-            <Form.Group controlId="additionalPrompt">
-              <Form.Label>Additional requirement?</Form.Label>
-              <Form.Control
+          <form>
+            <FormGroup controlId="additionalPrompt">
+              <FormLabel>Additional requirement?</FormLabel>
+              <FormControl
                 onChange={(e) => {
                   onChangeEditorRequirements(e);
                 }}
                 placeholder="the length should be within 10000 characters / words, paragraph structure, etc."
                 as="textarea"
-              ></Form.Control>
-            </Form.Group>
-          </Form>
+              ></FormControl>
+            </FormGroup>
+          </form>
 
           <br />
           <Button

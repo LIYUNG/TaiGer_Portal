@@ -311,12 +311,16 @@ const getSurveyInputDocuments = async (studentId, programId, fileType) => {
       ...(fileType ? { fileType } : {}),
       ...(programId ? { programId: { $in: [programId, null] } } : {})
     })
-    .populate('studentId', 'firstname lastname role')
     .select('programId fileType surveyType surveyContent createdAt updatedAt')
-    .populate('programId')
     .lean()
     .exec();
-  return document;
+
+  const surveys = {
+    general: document.find((doc) => !doc.programId),
+    specific: document.find((doc) => doc.programId)
+  };
+
+  return surveys;
 };
 
 const getSurveyInputs = asyncHandler(async (req, res, next) => {

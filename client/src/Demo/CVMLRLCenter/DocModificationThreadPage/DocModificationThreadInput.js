@@ -14,13 +14,7 @@ import { useTranslation } from 'react-i18next';
 
 import ErrorPage from '../../Utils/ErrorPage';
 import ModalMain from '../../Utils/ModalHandler/ModalMain';
-import {
-  prepQuestions,
-  CVQuestions,
-  MLQuestions,
-  RLQuestions,
-  convertDate
-} from '../../Utils/contants';
+import { prepQuestions, convertDate } from '../../Utils/contants';
 import {
   LinkableNewlineText,
   getRequirement,
@@ -28,9 +22,11 @@ import {
 } from '../../Utils/checking-functions';
 import {
   cvmlrlAi2,
+  getMessagThread,
   getStudentInput,
+  getSurveyInputsByThreadId,
   putStudentInput,
-  resetStudentInput
+  resetSurveyInput
 } from '../../../api';
 import { TabTitle } from '../../Utils/TabTitle';
 import DEMO from '../../../store/constant';
@@ -62,29 +58,40 @@ function DocModificationThreadInput() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const resp = await getStudentInput(documentsthreadId);
-        const { success, data } = resp.data;
-        const { status } = resp;
+        const threadResp = await getMessagThread(documentsthreadId);
+        const { data: threadData } = threadResp.data;
+        const inputResp = await getStudentInput(documentsthreadId);
+        const { success, data, status } = inputResp.data;
+
+        const surveyResp = await getSurveyInputsByThreadId(documentsthreadId);
+        const { data: surveyData } = surveyResp.data;
+
+        const studentInput = data?.student_input?.input_content
+          ? {
+              input_content: JSON.parse(data?.student_input?.input_content),
+              updatedAt: data?.student_input.updatedAt
+            }
+          : {
+              input_content: prepQuestions(data),
+              updatedAt: data?.student_input?.updatedAt
+            };
+
+        const surveyInputs = {
+          general: surveyData?.general,
+          specific: surveyData?.specific
+        };
 
         if (success) {
           setDocModificationThreadInputState((prevState) => ({
             ...prevState,
             success,
-            thread: data,
-            student_input: data?.student_input?.input_content
-              ? {
-                  input_content: JSON.parse(data?.student_input?.input_content),
-                  updatedAt: data?.student_input.updatedAt
-                }
-              : {
-                  input_content: prepQuestions(data),
-                  updatedAt: data?.student_input?.updatedAt
-                },
+            thread: threadData,
+            surveyInputs: surveyInputs,
+            student_input: studentInput,
             document_requirements: {},
             editor_requirements: {},
             isLoaded: true,
             documentsthreadId: documentsthreadId,
-
             res_status: status
           }));
         } else {
@@ -157,76 +164,49 @@ function DocModificationThreadInput() {
     }));
   };
   const onReset = () => {
-    setDocModificationThreadInputState({
-      isResetting: true
-    });
-    resetStudentInput(documentsthreadId).then(
-      (resp) => {
-        const { success } = resp.data;
-        const { status } = resp;
-
-        let temp_question = [];
-        if (
-          docModificationThreadInputState.thread?.file_type?.includes('RL') ||
-          docModificationThreadInputState.thread?.file_type?.includes(
-            'Recommendation'
-          )
-        ) {
-          temp_question = RLQuestions(docModificationThreadInputState.thread);
-        } else {
-          switch (docModificationThreadInputState.thread?.file_type) {
-            case 'ML':
-              temp_question = MLQuestions(
-                docModificationThreadInputState.thread
-              );
-              break;
-            case 'CV':
-              temp_question = CVQuestions();
-              break;
-            default:
-              temp_question = [];
-          }
-        }
-
-        if (success) {
-          setDocModificationThreadInputState((prevState) => ({
-            ...prevState,
-            success,
-            student_input: {
-              input_content: temp_question,
-              updatedAt: new Date()
-            },
-            isResetting: false,
-            isLoaded: true,
-            res_status: status
-          }));
-        } else {
-          setDocModificationThreadInputState((prevState) => ({
-            ...prevState,
-            isLoaded: true,
-            isResetting: false,
-            res_status: status
-          }));
-        }
-      },
-      (error) => {
-        setDocModificationThreadInputState((prevState) => ({
-          ...prevState,
-          isLoaded: true,
-          isResetting: false,
-          error,
-          res_status: 500
-        }));
-      }
-    );
     setDocModificationThreadInputState((prevState) => ({
       ...prevState,
-      student_input: {
-        ...prevState.student_input,
-        input_content: [],
-        updatedAt: new Date()
-      }
+      isResetting: true
     }));
+
+    const resetInput = async (surveyInputs) => {
+      if (!surveyInputs?.specific) {
+        return;
+      }
+      await resetSurveyInput(surveyInputs.specific._id.toString());
+    };
+
+    try {
+      resetInput(docModificationThreadInputState.surveyInputs);
+    } catch (error) {
+      setDocModificationThreadInputState((prevState) => ({
+        ...prevState,
+        isLoaded: true,
+        isResetting: false,
+        error,
+        res_status: 500
+      }));
+    }
+    setDocModificationThreadInputState((prevState) => {
+      const surveyInputs = prevState && prevState.surveyInputs;
+      const specific = surveyInputs && surveyInputs.specific;
+
+      if (surveyInputs && specific) {
+        return {
+          ...prevState,
+          isResetting: false,
+          surveyInputs: {
+            ...surveyInputs,
+            specific: {
+              ...specific,
+              surveyContent: [],
+              updatedAt: new Date()
+            }
+          }
+        };
+      }
+      return { ...prevState, isResetting: false };
+    });
   };
 
   const onSubmitInput = (student_input, informEditor) => {
@@ -501,7 +481,7 @@ function DocModificationThreadInput() {
       </Card>
 
       <Card sx={{ p: 2 }}>
-        <Typography variant="h6">
+        <Typography variant="h5">
           Please answer the following questions in <b>English</b>{' '}
           {docModificationThreadInputState.thread.program_id?.lang?.includes(
             'German'
@@ -510,7 +490,9 @@ function DocModificationThreadInput() {
             : ''}
           !
         </Typography>
-        {docModificationThreadInputState.student_input?.input_content.map(
+
+        <Typography variant="h6">General</Typography>
+        {docModificationThreadInputState.surveyInputs?.general?.surveyContent.map(
           (qa, i) => (
             <Col key={i} md={qa.width || 12}>
               <Form className="mb-2" key={i}>
@@ -528,6 +510,43 @@ function DocModificationThreadInput() {
             </Col>
           )
         )}
+        <Typography variant="h7">Program</Typography>
+        {docModificationThreadInputState.surveyInputs?.specific?.surveyContent.map(
+          (qa, i) => (
+            <Col key={i} md={qa.width || 12}>
+              <Form className="mb-2" key={i}>
+                <Form.Group controlId={qa.question_id}>
+                  <Form.Label>{qa.question}</Form.Label>
+                  <Form.Control
+                    as="textarea"
+                    rows={qa.rows || '1'}
+                    placeholder={qa.placeholder}
+                    defaultValue={qa.answer}
+                    onChange={onChange}
+                  ></Form.Control>
+                </Form.Group>
+              </Form>
+            </Col>
+          )
+        )}
+        {/* {docModificationThreadInputState.student_input?.input_content.map(
+          (qa, i) => (
+            <Col key={i} md={qa.width || 12}>
+              <Form className="mb-2" key={i}>
+                <Form.Group controlId={qa.question_id}>
+                  <Form.Label>{qa.question}</Form.Label>
+                  <Form.Control
+                    as="textarea"
+                    rows={qa.rows || '1'}
+                    placeholder={qa.placeholder}
+                    defaultValue={qa.answer}
+                    onChange={onChange}
+                  ></Form.Control>
+                </Form.Group>
+              </Form>
+            </Col>
+          )
+        )} */}
         <Button
           size="small"
           variant="contained"

@@ -376,6 +376,23 @@ export const deleteAMessageInCommunicationThread = (
   request.delete(
     `/api/communications/${student_id}/${communication_messageId}`
   );
+
+export const getSurveyInputs = (studentId, programId, fileType) =>
+  request.get(
+    `/api/document-threads/survey-input/${studentId}/${programId}/${fileType}`
+  );
+export const getSurveyInputsByThreadId = (documentsthreadId) =>
+  request.get(
+    `/api/document-threads/survey-input/threads/${documentsthreadId}`
+  );
+export const putSurveyInput = (surveyId, input, informEditor) =>
+  request.get(`/api/document-threads/survey-input/${surveyId}`, {
+    input,
+    informEditor
+  });
+export const resetSurveyInput = (surveyId) =>
+  request.delete(`/api/document-threads/survey-input/${surveyId}`);
+
 export const getStudentInput = (documentsthreadId) =>
   request.get(`/api/document-threads/student-input/${documentsthreadId}`);
 export const resetStudentInput = (documentsthreadId) =>

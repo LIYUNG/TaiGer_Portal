@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Placeholder } from 'react-bootstrap';
+import { Placeholder } from 'react-bootstrap';
 import {
+  Grid,
   Box,
   Breadcrumbs,
   Button,
@@ -354,6 +355,7 @@ function DocModificationThreadInput() {
   };
 
   const { isLoaded, res_status } = docModificationThreadInputState;
+
   if (!isLoaded && !docModificationThreadInputState.thread) {
     return <Loading />;
   }
@@ -361,9 +363,10 @@ function DocModificationThreadInput() {
   if (res_status >= 400) {
     return <ErrorPage res_status={res_status} />;
   }
+
   let docName;
-  const student_name = `${docModificationThreadInputState.thread.student_id.firstname} ${docModificationThreadInputState.thread.student_id.lastname}`;
-  if (docModificationThreadInputState.thread.program_id) {
+  const student_name = `${docModificationThreadInputState.thread?.student_id?.firstname} ${docModificationThreadInputState.thread?.student_id?.lastname}`;
+  if (docModificationThreadInputState.thread?.program_id) {
     docName =
       docModificationThreadInputState.thread.program_id.school +
       '-(' +
@@ -429,11 +432,11 @@ function DocModificationThreadInput() {
         </Card>
       )}
       {docModificationThreadInputState.thread.isFinalVersion && (
-        <Row className="sticky-top">
+        <Grid className="sticky-top">
           <Typography>
             Status: <b>Close</b>
           </Typography>
-        </Row>
+        </Grid>
       )}
 
       <Card sx={{ p: 2 }}>
@@ -461,28 +464,30 @@ function DocModificationThreadInput() {
         </Typography>
 
         <Typography variant="h6">General</Typography>
-        {docModificationThreadInputState.surveyInputs?.general?.surveyContent.map(
-          (qa, i) => (
-            <Col key={i} md={qa.width || 12}>
-              <form className="mb-2" key={i}>
-                <FormGroup>
-                  <FormLabel>{qa.question}</FormLabel>
-                  <TextField
-                    multiline={true}
-                    // rows={qa.rows || '1'}
-                    placeholder={qa.placeholder}
-                    defaultValue={qa.answer}
-                    // onChange={onChange}
-                  />
-                </FormGroup>
-              </form>
-            </Col>
-          )
-        )}
+        <Grid container spacing={4}>
+          {docModificationThreadInputState.surveyInputs?.general?.surveyContent.map(
+            (qa, i) => (
+              <Grid item md={qa.width || 12} xs={12} sm={6} key={i}>
+                <form className="mb-2" key={i}>
+                  <FormGroup>
+                    <FormLabel>{qa.question}</FormLabel>
+                    <TextField
+                      multiline={true}
+                      // rows={qa.rows || '1'}
+                      placeholder={qa.placeholder}
+                      defaultValue={qa.answer}
+                      // onChange={onChange}
+                    />
+                  </FormGroup>
+                </form>
+              </Grid>
+            )
+          )}
+        </Grid>
         <Typography variant="h7">Program</Typography>
         {docModificationThreadInputState.surveyInputs?.specific?.surveyContent.map(
           (qa, i) => (
-            <Col key={i} md={qa.width || 12}>
+            <Grid item md={qa.width || 12} xs={12} sm={6} key={i}>
               <form className="mb-2" key={i}>
                 <FormGroup>
                   <FormLabel>{qa.question}</FormLabel>
@@ -495,27 +500,9 @@ function DocModificationThreadInput() {
                   />
                 </FormGroup>
               </form>
-            </Col>
+            </Grid>
           )
         )}
-        {/* {docModificationThreadInputState.student_input?.input_content.map(
-          (qa, i) => (
-            <Col key={i} md={qa.width || 12}>
-              <Form className="mb-2" key={i}>
-                <FormGroup controlId={qa.question_id}>
-                  <FormLabel>{qa.question}</FormLabel>
-                  <Select
-                    as="textarea"
-                    rows={qa.rows || '1'}
-                    placeholder={qa.placeholder}
-                    defaultValue={qa.answer}
-                    onChange={onChange}
-                  ></Select>
-                </FormGroup>
-              </form>
-            </Col>
-          )
-        )} */}
         <Button
           size="small"
           variant="contained"
@@ -574,7 +561,7 @@ function DocModificationThreadInput() {
       {is_TaiGer_role(user) && (
         <Card sx={{ p: 2 }}>
           <form>
-            <FormGroup controlId="useProgramRequirementData">
+            <FormGroup>
               <FormLabel>Use program&apos;s requirements?</FormLabel>
               <Checkbox
                 type="checkbox"
@@ -604,7 +591,7 @@ function DocModificationThreadInput() {
           </FormControl>
 
           <form>
-            <FormGroup controlId="gptModel">
+            <FormGroup>
               <InputLabel id="gpt-model-label">GPT Model?</InputLabel>
               <Select
                 defaultValue="gpt-3.5-turbo"
@@ -627,7 +614,7 @@ function DocModificationThreadInput() {
           </form>
 
           <form>
-            <FormGroup controlId="additionalPrompt">
+            <FormGroup>
               <FormLabel>Additional requirement?</FormLabel>
               <FormControl
                 onChange={(e) => {
@@ -659,6 +646,7 @@ function DocModificationThreadInput() {
               t('Generate')
             )}
           </Button>
+          
           {docModificationThreadInputState.isGenerating &&
           !docModificationThreadInputState.data ? (
             <Placeholder as={Card.Text} animation="glow">

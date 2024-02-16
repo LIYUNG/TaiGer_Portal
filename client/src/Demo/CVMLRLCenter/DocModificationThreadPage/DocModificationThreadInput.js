@@ -555,7 +555,7 @@ function DocModificationThreadInput() {
         <span style={{ float: 'right' }}>
           Updated At:{' '}
           {convertDate(
-            docModificationThreadInputState.student_input?.updatedAt
+            docModificationThreadInputState.surveyInputs?.specific?.updatedAt
           )}
         </span>
       </Card>

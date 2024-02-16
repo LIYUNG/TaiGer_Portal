@@ -31,7 +31,10 @@ const surveyInputSchema = new mongoose.Schema({
     immutable: true,
     default: () => Date.now()
   },
-  updatedAt: Date
+  updatedAt: {
+    type: Date,
+    default: () => Date.now()
+  }
 });
 
 surveyInputSchema.index(

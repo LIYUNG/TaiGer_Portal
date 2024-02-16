@@ -33,7 +33,6 @@ import {
 import {
   cvmlrlAi2,
   getMessagThread,
-  getStudentInput,
   getSurveyInputsByThreadId,
   putStudentInput,
   resetSurveyInput
@@ -70,27 +69,26 @@ function DocModificationThreadInput() {
     const fetchData = async () => {
       try {
         const threadResp = await getMessagThread(documentsthreadId);
-        const { data: threadData } = threadResp.data;
-        const inputResp = await getStudentInput(documentsthreadId);
-        const { success, data, status } = inputResp.data;
-
+        const { success, data: threadData, status } = threadResp.data;
         const surveyResp = await getSurveyInputsByThreadId(documentsthreadId);
         const { data: surveyData } = surveyResp.data;
-
-        const studentInput = data?.student_input?.input_content
-          ? {
-              input_content: JSON.parse(data?.student_input?.input_content),
-              updatedAt: data?.student_input.updatedAt
-            }
-          : {
-              input_content: prepQuestions(data),
-              updatedAt: data?.student_input?.updatedAt
-            };
 
         const surveyInputs = {
           general: surveyData?.general,
           specific: surveyData?.specific
         };
+
+        // TODO: prepQuestion if not defined
+        if (!surveyInputs?.general) {
+          surveyInputs.general = {
+            surveyContent: prepQuestions(threadData)
+          };
+        }
+        if (!surveyInputs?.specific) {
+          surveyInputs.specific = {
+            surveyContent: prepQuestions(threadData)
+          };
+        }
 
         if (success) {
           setDocModificationThreadInputState((prevState) => ({
@@ -98,7 +96,6 @@ function DocModificationThreadInput() {
             success,
             thread: threadData,
             surveyInputs: surveyInputs,
-            student_input: studentInput,
             document_requirements: {},
             editor_requirements: {},
             isLoaded: true,

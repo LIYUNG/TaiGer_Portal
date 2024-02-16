@@ -48,6 +48,7 @@ function DocModificationThreadInput() {
   const { user } = useAuth();
   const { t } = useTranslation();
   const { documentsthreadId } = useParams();
+  const [editMode, setEditMode] = useState(false);
   const [docModificationThreadInputState, setDocModificationThreadInputState] =
     useState({
       error: '',
@@ -376,7 +377,7 @@ function DocModificationThreadInput() {
       ' ' +
       docModificationThreadInputState.thread.file_type;
   } else {
-    docName = docModificationThreadInputState.thread.file_type;
+    docName = docModificationThreadInputState.thread?.file_type;
   }
   TabTitle(`${student_name} ${docName}`);
   return (
@@ -395,7 +396,7 @@ function DocModificationThreadInput() {
           color="inherit"
           component={LinkDom}
           to={`${DEMO.DOCUMENT_MODIFICATION_LINK(
-            docModificationThreadInputState.thread._id.toString()
+            docModificationThreadInputState.thread?._id.toString()
           )}`}
         >
           {student_name} {'   '}
@@ -431,7 +432,7 @@ function DocModificationThreadInput() {
           </Typography>
         </Card>
       )}
-      {docModificationThreadInputState.thread.isFinalVersion && (
+      {docModificationThreadInputState.thread?.isFinalVersion && (
         <Grid className="sticky-top">
           <Typography>
             Status: <b>Close</b>
@@ -455,7 +456,7 @@ function DocModificationThreadInput() {
       <Card sx={{ p: 2 }}>
         <Typography variant="h5">
           Please answer the following questions in <b>English</b>{' '}
-          {docModificationThreadInputState.thread.program_id?.lang?.includes(
+          {docModificationThreadInputState.thread?.program_id?.lang?.includes(
             'German'
           )
             ? '( or German if you like ) '
@@ -464,6 +465,9 @@ function DocModificationThreadInput() {
         </Typography>
 
         <Typography variant="h6">General</Typography>
+        <Button onClick={() => setEditMode((prevMode) => !prevMode)}>
+          {editMode ? 'Disable Edit Mode' : 'Enable Edit Mode'}
+        </Button>
         <Grid container spacing={4}>
           {docModificationThreadInputState.surveyInputs?.general?.surveyContent.map(
             (qa, i) => (
@@ -473,9 +477,10 @@ function DocModificationThreadInput() {
                     <FormLabel>{qa.question}</FormLabel>
                     <TextField
                       multiline={true}
-                      // rows={qa.rows || '1'}
+                      rows={qa.rows || '1'}
                       placeholder={qa.placeholder}
                       defaultValue={qa.answer}
+                      disabled={!editMode}
                       // onChange={onChange}
                     />
                   </FormGroup>
@@ -493,7 +498,7 @@ function DocModificationThreadInput() {
                   <FormLabel>{qa.question}</FormLabel>
                   <TextField
                     multiline={true}
-                    // rows={qa.rows || '1'}
+                    rows={qa.rows || '1'}
                     placeholder={qa.placeholder}
                     defaultValue={qa.answer}
                     // onChange={onChange}
@@ -560,112 +565,124 @@ function DocModificationThreadInput() {
 
       {is_TaiGer_role(user) && (
         <Card sx={{ p: 2 }}>
-          <form>
-            <FormGroup>
-              <FormLabel>Use program&apos;s requirements?</FormLabel>
-              <Checkbox
-                type="checkbox"
-                checked={
-                  docModificationThreadInputState.editor_requirements
-                    ?.useProgramRequirementData
-                }
-                onChange={onChangeEditorRequirements}
-              ></Checkbox>
-            </FormGroup>
-          </form>
+          <Grid container spacing={2}>
+            <Grid item xs={12} md={6}>
+              <form>
+                <FormGroup>
+                  <FormLabel>{t("Use program's requirements?")}</FormLabel>
+                  <Checkbox
+                    type="checkbox"
+                    checked={
+                      docModificationThreadInputState.editor_requirements
+                        ?.useProgramRequirementData
+                    }
+                    onChange={onChangeEditorRequirements}
+                  />
+                </FormGroup>
+              </form>
+            </Grid>
 
-          <FormControl fullWidth>
-            <InputLabel id="output-lang-label">Output language?</InputLabel>
-            <Select
-              labelId="output-lang-label"
-              id="output-lang-select"
-              value="English"
-              label="Language"
-              onChange={(e) => {
-                onChangeEditorRequirements(e);
-              }}
-            >
-              <MenuItem value="English">English</MenuItem>
-              <MenuItem value="German">German</MenuItem>
-            </Select>
-          </FormControl>
+            <Grid item xs={12} md={6}>
+              <FormControl fullWidth>
+                <InputLabel id="output-lang-label">Output language?</InputLabel>
+                <Select
+                  labelId="output-lang-label"
+                  id="output-lang-select"
+                  value="English"
+                  label="Language"
+                  onChange={(e) => {
+                    onChangeEditorRequirements(e);
+                  }}
+                >
+                  <MenuItem value="English">English</MenuItem>
+                  <MenuItem value="German">German</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
 
-          <form>
-            <FormGroup>
-              <InputLabel id="gpt-model-label">GPT Model?</InputLabel>
-              <Select
-                defaultValue="gpt-3.5-turbo"
-                onChange={(e) => {
-                  onChangeEditorRequirements(e);
-                }}
+            <Grid item xs={12} md={6}>
+              <form>
+                <FormGroup>
+                  <InputLabel id="gpt-model-label">GPT Model?</InputLabel>
+                  <Select
+                    defaultValue="gpt-3.5-turbo"
+                    onChange={(e) => {
+                      onChangeEditorRequirements(e);
+                    }}
+                  >
+                    <MenuItem value="gpt-3.5-turbo">gpt-3.5-turbo</MenuItem>
+                    <MenuItem value="gpt-3.5-turbo-16k">
+                      gpt-3.5-turbo-16k
+                    </MenuItem>
+                    <MenuItem value="gpt-4">gpt-4</MenuItem>
+                    <MenuItem value="gpt-4-32k">gpt-4-32k</MenuItem>
+                    <MenuItem value="text-embedding-ada-002">
+                      text-embedding-ada-002
+                    </MenuItem>
+                    <MenuItem value="gpt-4-1106-preview">
+                      gpt-4-1106-preview
+                    </MenuItem>
+                  </Select>
+                </FormGroup>
+              </form>
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+              <form>
+                <FormGroup>
+                  <FormLabel>Additional requirement?</FormLabel>
+                  <FormControl
+                    onChange={(e) => {
+                      onChangeEditorRequirements(e);
+                    }}
+                    placeholder="the length should be within 10000 characters / words, paragraph structure, etc."
+                    as="textarea"
+                  />
+                </FormGroup>
+              </form>
+            </Grid>
+
+            <Grid item xs={12}>
+              <Button
+                size="small"
+                color="primary"
+                variant="contained"
+                disabled={docModificationThreadInputState.isGenerating}
+                onClick={onSubmit}
               >
-                <MenuItem value="gpt-3.5-turbo">gpt-3.5-turbo</MenuItem>
-                <MenuItem value="gpt-3.5-turbo-16k">gpt-3.5-turbo-16k</MenuItem>
-                <MenuItem value="gpt-4">gpt-4</MenuItem>
-                <MenuItem value="gpt-4-32k">gpt-4-32k</MenuItem>
-                <MenuItem value="text-embedding-ada-002">
-                  text-embedding-ada-002
-                </MenuItem>
-                <MenuItem value="gpt-4-1106-preview">
-                  gpt-4-1106-preview
-                </MenuItem>
-              </Select>
-            </FormGroup>
-          </form>
+                {docModificationThreadInputState.isGenerating ? (
+                  <>
+                    <CircularProgress />
+                    {'  Generating'}
+                  </>
+                ) : docModificationThreadInputState.isGenerated ? (
+                  'Regenerate'
+                ) : (
+                  'Generate'
+                )}
+              </Button>
+            </Grid>
 
-          <form>
-            <FormGroup>
-              <FormLabel>Additional requirement?</FormLabel>
-              <FormControl
-                onChange={(e) => {
-                  onChangeEditorRequirements(e);
-                }}
-                placeholder="the length should be within 10000 characters / words, paragraph structure, etc."
-                as="textarea"
-              ></FormControl>
-            </FormGroup>
-          </form>
-
-          <br />
-          <Button
-            size="small"
-            color="primary"
-            variant="contained"
-            disabled={docModificationThreadInputState.isGenerating}
-            onClick={onSubmit}
-          >
-            {docModificationThreadInputState.isGenerating ? (
-              <>
-                <CircularProgress />
-                {'  '}
-                {t('Generating')}
-              </>
-            ) : docModificationThreadInputState.isGenerated ? (
-              t('Regenerate')
+            {docModificationThreadInputState.isGenerating &&
+            !docModificationThreadInputState.data ? (
+              <Placeholder as={Card.Text} animation="glow">
+                <Placeholder xs={7} /> <Placeholder xs={5} />{' '}
+                <Placeholder xs={4} /> <Placeholder xs={8} />{' '}
+                <Placeholder xs={2} /> <Placeholder xs={3} />{' '}
+                <Placeholder xs={2} /> <Placeholder xs={3} />{' '}
+                <Placeholder xs={10} /> <Placeholder xs={1} />{' '}
+                <Placeholder xs={2} /> <Placeholder xs={3} />{' '}
+                <Placeholder xs={9} /> <Placeholder xs={2} />{' '}
+                <Placeholder xs={2} /> <Placeholder xs={3} />{' '}
+                <Placeholder xs={1} /> <Placeholder xs={9} />{' '}
+                <Placeholder xs={4} /> <Placeholder xs={8} />
+              </Placeholder>
             ) : (
-              t('Generate')
+              <LinkableNewlineText
+                text={docModificationThreadInputState.data}
+              ></LinkableNewlineText>
             )}
-          </Button>
-          
-          {docModificationThreadInputState.isGenerating &&
-          !docModificationThreadInputState.data ? (
-            <Placeholder as={Card.Text} animation="glow">
-              <Placeholder xs={7} /> <Placeholder xs={5} />{' '}
-              <Placeholder xs={4} /> <Placeholder xs={8} />{' '}
-              <Placeholder xs={2} /> <Placeholder xs={3} />{' '}
-              <Placeholder xs={2} /> <Placeholder xs={3} />{' '}
-              <Placeholder xs={10} /> <Placeholder xs={1} />{' '}
-              <Placeholder xs={2} /> <Placeholder xs={3} />{' '}
-              <Placeholder xs={9} /> <Placeholder xs={2} />{' '}
-              <Placeholder xs={2} /> <Placeholder xs={3} />{' '}
-              <Placeholder xs={1} /> <Placeholder xs={9} />{' '}
-              <Placeholder xs={4} /> <Placeholder xs={8} />
-            </Placeholder>
-          ) : (
-            <LinkableNewlineText
-              text={docModificationThreadInputState.data}
-            ></LinkableNewlineText>
-          )}
+          </Grid>
         </Card>
       )}
     </Box>

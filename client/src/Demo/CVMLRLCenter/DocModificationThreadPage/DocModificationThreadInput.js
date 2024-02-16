@@ -182,7 +182,9 @@ function DocModificationThreadInput() {
       if (!surveyInputs?.specific) {
         return;
       }
-      await resetSurveyInput(surveyInputs.specific._id.toString());
+
+      surveyInputs.specific?._id &&
+        resetSurveyInput(surveyInputs.specific?._id?.toString());
     };
 
     try {
@@ -208,7 +210,7 @@ function DocModificationThreadInput() {
             ...surveyInputs,
             specific: {
               ...specific,
-              surveyContent: [],
+              surveyContent: prepQuestions(prevState.thread),
               updatedAt: new Date()
             }
           }

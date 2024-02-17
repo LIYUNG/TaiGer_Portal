@@ -18,7 +18,8 @@ const {
   sendSetAsFinalProgramSpecificFileForStudentEmail,
   sendSetAsFinalProgramSpecificFileForAgentEmail,
   assignDocumentTaskToEditorEmail,
-  assignDocumentTaskToStudentEmail
+  assignDocumentTaskToStudentEmail,
+  sendAssignEssayWriterReminderEmail
   // sendSomeReminderEmail,
 } = require('../services/email');
 const logger = require('../services/logger');
@@ -1038,8 +1039,21 @@ const postMessages = asyncHandler(async (req, res) => {
       for (let i = 0; i < student.agents.length; i += 1) {
         // inform active-agent
         if (isNotArchiv(student)) {
-          if (isNotArchiv(student.agents[i])) {
+          if (isNotArchiv(student.agents[i]) && document_thread.file_type != "Essay") {
             await sendAssignEditorReminderEmail(
+              {
+                firstname: student.agents[i].firstname,
+                lastname: student.agents[i].lastname,
+                address: student.agents[i].email
+              },
+              {
+                student_firstname: student.firstname,
+                student_id: student._id.toString(),
+                student_lastname: student.lastname
+              }
+            );
+          } else {
+            await sendAssignEssayWriterReminderEmail(
               {
                 firstname: student.agents[i].firstname,
                 lastname: student.agents[i].lastname,
@@ -1062,18 +1076,33 @@ const postMessages = asyncHandler(async (req, res) => {
         .lean();
       if (permissions) {
         for (let x = 0; x < permissions.length; x += 1) {
-          await sendAssignEditorReminderEmail(
-            {
-              firstname: permissions[x].user_id.firstname,
-              lastname: permissions[x].user_id.lastname,
-              address: permissions[x].user_id.email
-            },
-            {
-              student_firstname: student.firstname,
-              student_id: student._id.toString(),
-              student_lastname: student.lastname
-            }
-          );
+          if (document_thread.file_type != "Essay"){
+            await sendAssignEditorReminderEmail(
+              {
+                firstname: permissions[x].user_id.firstname,
+                lastname: permissions[x].user_id.lastname,
+                address: permissions[x].user_id.email
+              },
+              {
+                student_firstname: student.firstname,
+                student_id: student._id.toString(),
+                student_lastname: student.lastname
+              }
+            );
+          } else {
+              await sendAssignEssayWriterReminderEmail(
+                {
+                  firstname: permissions[x].user_id.firstname,
+                  lastname: permissions[x].user_id.lastname,
+                  address: permissions[x].user_id.email
+                },
+                {
+                  student_firstname: student.firstname,
+                  student_id: student._id.toString(),
+                  student_lastname: student.lastname
+                }
+              );
+          }
         }
       }
     } else {

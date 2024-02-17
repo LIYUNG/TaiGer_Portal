@@ -27,7 +27,8 @@ const {
   getArchivStudent,
   updateStudentsArchivStatus,
   assignAgentToStudent,
-  assignEditorToStudent,
+  // assignEditorToStudent,
+  assignEssayWriterToStudent,
   createApplication,
   ToggleProgramStatus,
   deleteApplication,
@@ -194,7 +195,8 @@ router
     permit(Role.Admin, Role.Manager, Role.Editor),
     multitenant_filter,
     permission_canAssignEditor_filter,
-    assignEditorToStudent,
+    // assignEditorToStudent,
+    assignEssayWriterToStudent,
     logAccess
   );
 

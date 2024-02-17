@@ -1357,6 +1357,7 @@ export const open_tasks = (students) => {
           file_type: thread.doc_thread_id.file_type,
           student_id: student._id.toString(),
           thread_id: thread.doc_thread_id._id.toString(),
+          outsourced_user_id: thread.doc_thread_id._id.outsourced_user_id,
           deadline: CVDeadline,
           show: true,
           aged_days: parseInt(
@@ -1401,6 +1402,7 @@ export const open_tasks = (students) => {
             program_id: application.programId._id.toString(),
             show: application.decided === 'O' ? true : false,
             thread_id: thread.doc_thread_id._id.toString(),
+            outsourced_user_id: thread.doc_thread_id._id.outsourced_user_id,
             document_name: `${thread.doc_thread_id.file_type} - ${application.programId.school} - ${application.programId.degree} -${application.programId.program_name}`,
             latest_reply:
               thread.doc_thread_id.messages.length > 0
@@ -1439,6 +1441,7 @@ export const open_tasks_with_editors = (students) => {
           agents: student.agents,
           show: true,
           thread_id: thread.doc_thread_id._id.toString(),
+          outsourced_user_id: thread.doc_thread_id._id.outsourced_user_id,
           deadline: CVDeadline,
           aged_days: parseInt(
             getNumberOfDays(thread.doc_thread_id.updatedAt, new Date())
@@ -1485,6 +1488,7 @@ export const open_tasks_with_editors = (students) => {
             program_id: application.programId._id.toString(),
             show: application.decided === 'O' ? true : false,
             thread_id: thread.doc_thread_id._id.toString(),
+            outsourced_user_id: thread.doc_thread_id._id.outsourced_user_id,
             document_name: `${thread.doc_thread_id.file_type} - ${application.programId.school} - ${application.programId.degree} -${application.programId.program_name}`,
             latest_reply:
               thread.doc_thread_id.messages &&

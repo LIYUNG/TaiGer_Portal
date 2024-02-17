@@ -2192,6 +2192,37 @@ Please check the <a href="${PROGRAM_URL(
   return sendEmail(recipient, subject, message);
 };
 
+const sendAssignEssayWriterReminderEmail = async (recipient, payload) => {
+  const subject = '[DO NOT IGNORE] Assign Essay Writer Reminder';
+  const message = `\
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+
+<p>${payload.student_firstname} - ${
+    payload.student_lastname
+  } has uploaded Essay his/her CVMLRL Center, <b>but she/he did not have any Essay Writer yet.</b></p>
+
+<p><b>Please assign an Essay Writer to the student <a href="${BASE_DOCUMENT_FOR_AGENT_URL(
+    payload.student_id
+  )}">${payload.student_firstname} - ${payload.student_lastname}</a></b></p>
+
+<br />
+<p>${SPLIT_LINE}</p>
+
+<p>${payload.student_firstname} - ${
+    payload.student_lastname
+  } 上傳了一份Essay至他的 CVMLRL Cetner，但他目前並無任何Essay Writer。</p>
+
+<p><b>請指派 Essay Writer 給學生 <a href="${BASE_DOCUMENT_FOR_AGENT_URL(
+    payload.student_id
+  )}">${payload.student_firstname} - ${payload.student_lastname}</a></b></p>
+<br />
+<p>${TAIGER_SIGNATURE}</p>
+
+`; // should be for admin/editor/agent/student
+
+  return sendEmail(recipient, subject, message);
+};
+
 module.exports = {
   verifySMTPConfig,
   updateNotificationEmail,
@@ -2242,5 +2273,6 @@ module.exports = {
   MeetingReminderEmail,
   UnconfirmedMeetingReminderEmail,
   TicketCreatedAgentEmail,
-  TicketResolvedStudentEmail
+  TicketResolvedStudentEmail,
+  sendAssignEssayWriterReminderEmail
 };

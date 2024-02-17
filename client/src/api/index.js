@@ -390,6 +390,13 @@ export const putSurveyInput = (surveyId, input, informEditor) =>
     input,
     informEditor
   });
+
+export const postSurveyInput = (input, informEditor) =>
+  request.post(`/api/document-threads/survey-input/`, {
+    input,
+    informEditor
+  });
+
 export const resetSurveyInput = (surveyId) =>
   request.delete(`/api/document-threads/survey-input/${surveyId}`);
 

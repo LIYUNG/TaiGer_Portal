@@ -36,6 +36,7 @@ import {
   getMessagThread,
   getSurveyInputsByThreadId,
   putSurveyInput,
+  postSurveyInput,
   resetSurveyInput
 } from '../../../api';
 import { TabTitle } from '../../Utils/TabTitle';
@@ -263,21 +264,21 @@ function DocModificationThreadInput() {
         const threadResp = await getMessagThread(documentsthreadId);
         const { success, data: threadData, status } = threadResp.data;
         const surveyResp = await getSurveyInputsByThreadId(documentsthreadId);
-        const { data: surveyData } = surveyResp.data;
-
-        const surveyInputs = {
-          general: surveyData?.general,
-          specific: surveyData?.specific
-        };
+        const { data: surveyInputs } = surveyResp.data;
 
         // TODO: prepQuestion if not defined
         if (!surveyInputs?.general) {
           surveyInputs.general = {
+            studentId: threadData.student_id._id,
+            fileType: threadData.file_type,
             surveyContent: prepQuestions(threadData)
           };
         }
         if (!surveyInputs?.specific) {
           surveyInputs.specific = {
+            studentId: threadData.student_id._id,
+            programId: threadData.program_id._id,
+            fileType: threadData.file_type,
             surveyContent: prepQuestions(threadData)
           };
         }
@@ -435,25 +436,25 @@ function DocModificationThreadInput() {
     });
   };
 
+  const updateSurveyInput = async (surveyInput, informEditor) => {
+    if (!surveyInput._id) {
+      return await postSurveyInput(surveyInput, informEditor);
+    }
+    return await putSurveyInput(surveyInput._id, surveyInput, informEditor);
+  };
+
   const submitInput = async (surveyInputs, informEditor) => {
     try {
       let success = true;
       let status = {};
       if (surveyInputs?.general) {
-        const surveyInput = surveyInputs.general;
-        const res = await putSurveyInput(
-          surveyInput._id.toString(),
-          surveyInput,
-          informEditor
-        );
+        const res = await updateSurveyInput(surveyInputs.general, informEditor);
         success = success && res.data;
         status['general'] = res;
       }
       if (surveyInputs?.specific) {
-        const surveyInput = surveyInputs.specific;
-        const res = await putSurveyInput(
-          surveyInput._id.toString(),
-          surveyInput,
+        const res = await updateSurveyInput(
+          surveyInputs.specific,
           informEditor
         );
         success = success && res.data;

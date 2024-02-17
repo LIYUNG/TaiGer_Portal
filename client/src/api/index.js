@@ -386,7 +386,7 @@ export const getSurveyInputsByThreadId = (documentsthreadId) =>
     `/api/document-threads/survey-input/threads/${documentsthreadId}`
   );
 export const putSurveyInput = (surveyId, input, informEditor) =>
-  request.get(`/api/document-threads/survey-input/${surveyId}`, {
+  request.put(`/api/document-threads/survey-input/${surveyId}`, {
     input,
     informEditor
   });

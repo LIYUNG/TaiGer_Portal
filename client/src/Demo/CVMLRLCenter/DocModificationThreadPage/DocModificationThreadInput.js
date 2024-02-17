@@ -35,7 +35,7 @@ import {
   cvmlrlAi2,
   getMessagThread,
   getSurveyInputsByThreadId,
-  putStudentInput,
+  putSurveyInput,
   resetSurveyInput
 } from '../../../api';
 import { TabTitle } from '../../Utils/TabTitle';
@@ -67,6 +67,8 @@ const ProgressButton = ({
 const SurveyForm = ({
   title,
   surveyInputs,
+  onChange,
+  surveyType = 'program',
   useEditSwitch = false,
   defaultEditState = true
 }) => {
@@ -92,8 +94,13 @@ const SurveyForm = ({
               <FormGroup>
                 <FormLabel>{questionItem.question}</FormLabel>
                 <TextField
+                  inputProps={{
+                    id: questionItem.questionId,
+                    survey: surveyType
+                  }}
                   key={index}
                   defaultValue={questionItem.answer}
+                  onChange={onChange}
                   disabled={!editMode}
                 />
               </FormGroup>
@@ -315,18 +322,39 @@ function DocModificationThreadInput() {
   // eslint-disable-next-line no-unused-vars
   const onChange = (e) => {
     const id = e.target.id;
-    const ans = e.target.value;
-    const temp_student_input = {
-      ...docModificationThreadInputState.student_input
-    };
-    const temp_q = temp_student_input.input_content.find(
-      (qa) => qa.question_id === id
+    const answer = e.target.value;
+    const survey = e.target.getAttribute('survey');
+    const surveyInput =
+      survey === 'general'
+        ? {
+            ...docModificationThreadInputState.surveyInputs.general
+          }
+        : {
+            ...docModificationThreadInputState.surveyInputs.specific
+          };
+
+    const questionItem = surveyInput.surveyContent.find(
+      (question) => question.questionId === id
     );
-    temp_q.answer = ans;
-    setDocModificationThreadInputState((prevState) => ({
-      ...prevState,
-      student_input: temp_student_input
-    }));
+
+    questionItem['answer'] = answer;
+    if (survey === 'general') {
+      setDocModificationThreadInputState((prevState) => ({
+        ...prevState,
+        surveyInputs: {
+          ...prevState.surveyInputs,
+          general: surveyInput
+        }
+      }));
+    } else {
+      setDocModificationThreadInputState((prevState) => ({
+        ...prevState,
+        surveyInputs: {
+          ...prevState.surveyInputs,
+          specific: surveyInput
+        }
+      }));
+    }
   };
 
   // eslint-disable-next-line no-unused-vars
@@ -405,7 +433,69 @@ function DocModificationThreadInput() {
     });
   };
 
-  const onSubmitInput = (student_input, informEditor) => {
+  const submitInput = async (surveyInputs, informEditor) => {
+    try {
+      let success = false;
+      let status = {};
+      if (surveyInputs?.general) {
+        const surveyInput = surveyInputs.general;
+        const res = await putSurveyInput(
+          surveyInput._id.toString(),
+          surveyInput,
+          informEditor
+        );
+        success = success && res.data;
+        status['general'] = res;
+        console.log('-->', surveyInput, res);
+      }
+      if (surveyInputs?.specific) {
+        const surveyInput = surveyInputs.specific;
+        const res = await putSurveyInput(
+          surveyInput._id.toString(),
+          surveyInput,
+          informEditor
+        );
+        success = success && res;
+        status['specific'] = res;
+        console.log('-->', surveyInput, res);
+      }
+
+      if (success) {
+        setDocModificationThreadInputState((prevState) => ({
+          ...prevState,
+          success,
+          isSaving: false,
+          isSubmitting: false,
+          surveyInputs: {
+            ...docModificationThreadInputState.surveyInputs,
+            updatedAt: new Date()
+          },
+          isLoaded: true,
+          res_status: status
+        }));
+      } else {
+        setDocModificationThreadInputState((prevState) => ({
+          ...prevState,
+          isLoaded: true,
+          isSaving: false,
+          isSubmitting: false,
+          res_status: status
+        }));
+      }
+    } catch (error) {
+      console.log('error', error);
+      setDocModificationThreadInputState((prevState) => ({
+        ...prevState,
+        isLoaded: true,
+        isSaving: false,
+        isSubmitting: false,
+        error,
+        res_status: 500
+      }));
+    }
+  };
+
+  const onSubmitInput = (surveyInputs, informEditor) => {
     if (informEditor) {
       setDocModificationThreadInputState((prevState) => ({
         ...prevState,
@@ -417,50 +507,8 @@ function DocModificationThreadInput() {
         isSaving: true
       }));
     }
-
-    putStudentInput(
-      documentsthreadId,
-      JSON.stringify(student_input.input_content),
-      informEditor
-    ).then(
-      (resp) => {
-        const { success } = resp.data;
-        const { status } = resp;
-
-        if (success) {
-          setDocModificationThreadInputState((prevState) => ({
-            ...prevState,
-            success,
-            isSaving: false,
-            isSubmitting: false,
-            student_input: {
-              ...docModificationThreadInputState.student_input,
-              updatedAt: new Date()
-            },
-            isLoaded: true,
-            res_status: status
-          }));
-        } else {
-          setDocModificationThreadInputState((prevState) => ({
-            ...prevState,
-            isLoaded: true,
-            isSaving: false,
-            isSubmitting: false,
-            res_status: status
-          }));
-        }
-      },
-      (error) => {
-        setDocModificationThreadInputState((prevState) => ({
-          ...prevState,
-          isLoaded: true,
-          isSaving: false,
-          isSubmitting: false,
-          error,
-          res_status: 500
-        }));
-      }
-    );
+    console.log('submitting');
+    submitInput(surveyInputs, informEditor);
   };
 
   // eslint-disable-next-line no-unused-vars
@@ -629,6 +677,8 @@ function DocModificationThreadInput() {
         <SurveyForm
           title="General"
           surveyInputs={docModificationThreadInputState.surveyInputs.general}
+          surveyType="general"
+          onChange={onChange}
           useEditSwitch={true}
           defaultEditState={false}
         ></SurveyForm>
@@ -636,6 +686,8 @@ function DocModificationThreadInput() {
         <SurveyForm
           title="Program"
           surveyInputs={docModificationThreadInputState.surveyInputs.specific}
+          surveyType="program"
+          onChange={onChange}
         ></SurveyForm>
 
         <ProgressButton
@@ -645,7 +697,7 @@ function DocModificationThreadInput() {
           color="primary"
           disabled={docModificationThreadInputState.isSubmitting}
           onClick={() =>
-            onSubmitInput(docModificationThreadInputState.student_input, true)
+            onSubmitInput(docModificationThreadInputState.surveyInputs, true)
           }
         />
 
@@ -657,7 +709,7 @@ function DocModificationThreadInput() {
           variant="outlined"
           disabled={docModificationThreadInputState.isSaving}
           onClick={() =>
-            onSubmitInput(docModificationThreadInputState.student_input, false)
+            onSubmitInput(docModificationThreadInputState.surveyInputs, false)
           }
         />
 

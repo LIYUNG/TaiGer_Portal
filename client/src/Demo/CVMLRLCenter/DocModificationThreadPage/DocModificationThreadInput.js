@@ -100,6 +100,8 @@ const SurveyForm = ({
                   }}
                   key={index}
                   defaultValue={questionItem.answer}
+                  multiline
+                  rows={questionItem.rows || 3}
                   onChange={onChange}
                   disabled={!editMode}
                 />
@@ -446,7 +448,6 @@ function DocModificationThreadInput() {
         );
         success = success && res.data;
         status['general'] = res;
-        console.log('-->', surveyInput, res);
       }
       if (surveyInputs?.specific) {
         const surveyInput = surveyInputs.specific;
@@ -457,7 +458,6 @@ function DocModificationThreadInput() {
         );
         success = success && res;
         status['specific'] = res;
-        console.log('-->', surveyInput, res);
       }
 
       if (success) {
@@ -483,7 +483,6 @@ function DocModificationThreadInput() {
         }));
       }
     } catch (error) {
-      console.log('error', error);
       setDocModificationThreadInputState((prevState) => ({
         ...prevState,
         isLoaded: true,
@@ -507,7 +506,6 @@ function DocModificationThreadInput() {
         isSaving: true
       }));
     }
-    console.log('submitting');
     submitInput(surveyInputs, informEditor);
   };
 

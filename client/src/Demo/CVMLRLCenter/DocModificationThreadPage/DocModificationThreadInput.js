@@ -100,6 +100,7 @@ const SurveyForm = ({
           <Switch
             onClick={(event) => {
               event.stopPropagation(); // Prevent event propagation
+              setCollapseOpen(!editMode);
               setEditMode((prevMode) => !prevMode);
             }}
           />

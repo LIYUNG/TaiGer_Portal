@@ -1,32 +1,45 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
-  Row,
-  Col,
-  Card,
-  Form,
+  Box,
   Button,
-  Offcanvas,
-  OverlayTrigger,
-  Tooltip
-} from 'react-bootstrap';
+  Breadcrumbs,
+  Card,
+  Link,
+  MenuItem,
+  Select,
+  TextField,
+  Typography,
+  Grid,
+  FormControl,
+  InputLabel,
+  Badge
+} from '@mui/material';
+import LinkIcon from '@mui/icons-material/Link';
+import { Link as LinkDom } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
-import Aux from '../../hoc/_Aux';
 import {
-  ENGLISH_CERTIFICATE_OPTIONS,
-  GERMAN_CERTIFICATE_OPTIONS,
+  BACHELOR_GRADUATE_STATUS_OPTIONS,
+  DEGREE_ARRAY_OPTIONS,
+  DUAL_STATE_OPTIONS,
+  ENGLISH_CERTIFICATE_ARRAY_OPTIONS,
+  GERMAN_CERTIFICATE_ARRAY_OPTIONS,
   GMAT_CERTIFICATE_OPTIONS,
-  GRE_CERTIFICATE_OPTIONS,
+  GRE_CERTIFICATE_ARRAY_OPTIONS,
+  HIG_SCHOOL_TRI_STATE_OPTIONS,
   IS_PASSED_OPTIONS,
+  SEMESTER_ARRAY_OPTIONS,
   TRI_STATE_OPTIONS,
   convertDate
 } from '../Utils/contants';
-import { FiExternalLink } from 'react-icons/fi';
 import {
   check_academic_background_filled,
   check_languages_filled,
   check_application_preference_filled,
-  // showButtonIfMyStudent,
-  missing_survey_fields_list
+  MissingSurveyFieldsList,
+  is_TaiGer_Admin,
+  is_TaiGer_Student,
+  Bayerische_Formel
 } from '../Utils/checking-functions';
 import {
   APPLICATION_YEARS_FUTURE,
@@ -35,1805 +48,1467 @@ import {
   getNumberOfDays
 } from '../Utils/contants';
 import Banner from '../../components/Banner/Banner';
-import InputFormSelect from './InputForms/InputFormSelect';
-import { AiFillQuestionCircle } from 'react-icons/ai';
-class SurveyEditableComponent extends React.Component {
-  state = {
-    error: null,
-    timeouterror: null,
-    unauthorizederror: null,
-    role: '',
-    survey_link: this.props.survey_link,
-    isLoaded: this.props.isLoaded,
-    academic_background: this.props.academic_background,
-    application_preference: this.props.application_preference,
-    updateconfirmed: false,
-    changed_academic: false,
-    changed_language: false,
-    changed_application_preference: false,
-    baseDocsflagOffcanvas: false,
-    baseDocsflagOffcanvasButtonDisable: false
-  };
-  componentDidUpdate(prevProps, prevState) {
-    // 常見用法（別忘了比較 prop）：
-    if (
-      prevProps.student_id !== this.props.student_id ||
-      prevProps.academic_background !== this.props.academic_background ||
-      prevProps.application_preference !== this.props.application_preference
-    ) {
-      this.setState((state) => ({
-        ...state,
-        academic_background: this.props.academic_background,
-        application_preference: this.props.application_preference
-      }));
-    }
-    if (
-      prevProps.academic_background.university !==
-      this.props.academic_background.university
-    ) {
-      this.setState((state) => ({
-        ...state,
-        changed_academic: false
-      }));
-    }
-    if (
-      prevProps.academic_background.language !==
-      this.props.academic_background.language
-    ) {
-      this.setState((state) => ({
-        ...state,
-        changed_language: false
-      }));
-    }
-    if (
-      prevProps.application_preference !== this.props.application_preference
-    ) {
-      this.setState((state) => ({
-        ...state,
-        changed_application_preference: false
-      }));
-    }
-  }
-  closeOffcanvasWindow = () => {
-    this.setState((state) => ({ ...state, baseDocsflagOffcanvas: false }));
+import { useAuth } from '../../components/AuthProvider';
+import { appConfig } from '../../config';
+import DEMO from '../../store/constant';
+import { useSurvey } from '../../components/SurveyProvider';
+import ModalNew from '../../components/Modal';
+
+const SurveyEditableComponent = (props) => {
+  const {
+    handleChangeAcademic,
+    handleChangeLanguage,
+    handleChangeApplicationPreference,
+    handleAcademicBackgroundSubmit,
+    handleSurveyLanguageSubmit,
+    handleApplicationPreferenceSubmit,
+    updateDocLink,
+    onChangeURL,
+    survey
+  } = useSurvey();
+  const [surveyEditableComponentState, setSurveyEditableComponentState] =
+    useState({
+      baseDocsflagOffcanvas: false,
+      baseDocsflagOffcanvasButtonDisable: false
+    });
+  const { user } = useAuth();
+  const { t } = useTranslation();
+
+  const closeOffcanvasWindow = () => {
+    setSurveyEditableComponentState((prevState) => ({
+      ...prevState,
+      baseDocsflagOffcanvas: false
+    }));
   };
 
-  openOffcanvasWindow = () => {
-    this.setState((state) => ({ ...state, baseDocsflagOffcanvas: true }));
+  const openOffcanvasWindow = () => {
+    setSurveyEditableComponentState((prevState) => ({
+      ...prevState,
+      baseDocsflagOffcanvas: true
+    }));
   };
 
-  updateDocLink = (e) => {
+  const handleUpdateDocLink = (e) => {
     e.preventDefault();
-    this.setState((state) => ({
-      ...state,
+    setSurveyEditableComponentState((prevState) => ({
+      ...prevState,
       baseDocsflagOffcanvasButtonDisable: true
     }));
-    this.props.updateDocLink(
-      this.state.survey_link,
-      profile_name_list.Grading_System
-    ); // this.props.k is the grading system name
-    this.setState((state) => ({
-      ...state,
+    updateDocLink(survey.survey_link, profile_name_list.Grading_System); // props.k is the grading system name
+    setSurveyEditableComponentState((prevState) => ({
+      ...prevState,
       baseDocsflagOffcanvasButtonDisable: false,
       baseDocsflagOffcanvas: false
     }));
   };
 
-  onChangeURL = (e) => {
-    e.preventDefault();
-    const url_temp = e.target.value;
-    this.setState((state) => ({
-      ...state,
-      survey_link: url_temp
-    }));
-  };
+  // const renderTooltipApplicationYear = (props) => (
+  //   <Tooltip id="tooltip-disabled" {...props}>
+  //     請填上預計申請入學年度，您的申請必須要在這個預計入學年度和預計入學學期前完成。各學校申請截止
+  //     Deadline 會依照你的預計入學年度和學期為您做計算。
+  //   </Tooltip>
+  // );
 
-  handleChange_ApplicationPreference = (e) => {
-    e.preventDefault();
-    var application_preference_temp = { ...this.state.application_preference };
-    application_preference_temp[e.target.id] = e.target.value;
-    this.setState((state) => ({
-      ...state,
-      changed_application_preference: true,
-      application_preference: application_preference_temp
-    }));
-  };
-
-  handleChange_Academic = (e) => {
-    e.preventDefault();
-    var university_temp = { ...this.state.academic_background.university };
-    university_temp[e.target.id] = e.target.value;
-    this.setState((state) => ({
-      ...state,
-      changed_academic: true,
-      academic_background: {
-        ...state.academic_background,
-        university: university_temp
-      }
-    }));
-  };
-
-  handleChange_Language = (e) => {
-    e.preventDefault();
-    var language_temp = { ...this.state.academic_background.language };
-    language_temp[e.target.id] = e.target.value;
-    this.setState((state) => ({
-      ...state,
-      changed_language: true,
-      academic_background: {
-        ...state.academic_background,
-        language: language_temp
-      }
-    }));
-  };
-
-  Bayerische_Formel = (high, low, my) => {
-    if (high - low !== 0) {
-      var Germen_note = 1 + (3 * (high - my)) / (high - low);
-      return Germen_note.toFixed(2);
-    }
-    return 0;
-  };
-
-  onHide = () => {
-    this.setState({
-      updateconfirmed: false
-    });
-  };
-
-  setmodalhide = () => {
-    this.setState({
-      updateconfirmed: false
-    });
-  };
-
-  renderTooltipApplicationYear = (props) => (
-    <Tooltip id="tooltip-disabled" {...props}>
-      請填上預計申請入學年度，您的申請必須要在這個預計入學年度和預計入學學期前完成。各學校申請截止
-      Deadline 會依照你的預計入學年度和學期為您做計算。
-    </Tooltip>
-  );
-
-  renderTooltipApplicationSemester = (props) => (
-    <Tooltip id="tooltip-disabled" {...props}>
-      請填上預計入學學期，您的申請必須會在這個時間之前結束。各學校申請截止
-      Deadline 會依照你的預計入學年度和學期為您做計算。
-    </Tooltip>
-  );
-  render() {
-    const isReadonly = false;
-    return (
-      <Aux>
-        {(!check_academic_background_filled(this.props.academic_background) ||
-          !check_application_preference_filled(
-            this.props.application_preference
-          )) && (
-          <Row>
-            <Col>
-              <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
-                <Card.Body>
-                  <b>請盡速填好以下問卷問題，這將會影響Agent處理您的申請進度</b>
+  // const renderTooltipApplicationSemester = (props) => (
+  //   <Tooltip id="tooltip-disabled" {...props}>
+  //     請填上預計入學學期，您的申請必須會在這個時間之前結束。各學校申請截止
+  //     Deadline 會依照你的預計入學年度和學期為您做計算。
+  //   </Tooltip>
+  // );
+  return (
+    <Box>
+      {is_TaiGer_Student(user) && (
+        <Breadcrumbs aria-label="breadcrumb">
+          <Link
+            underline="hover"
+            color="inherit"
+            component={LinkDom}
+            to={`${DEMO.DASHBOARD_LINK}`}
+          >
+            {appConfig.companyName}
+          </Link>
+          <Typography color="text.primary">{t('My Survey')}</Typography>
+        </Breadcrumbs>
+      )}
+      {(!check_academic_background_filled(survey.academic_background) ||
+        !check_application_preference_filled(
+          survey.application_preference
+        )) && (
+        <Card sx={{ padding: 2 }}>
+          <Typography fontWeight="bold">
+            {t('The followings information are still missing')}
+          </Typography>
+          <MissingSurveyFieldsList
+            academic_background={survey.academic_background}
+            application_preference={survey.application_preference}
+          />
+        </Card>
+      )}
+      {!check_languages_filled(survey.academic_background) && (
+        <Card sx={{ padding: 2 }}>
+          <Typography fontWeight="bold">
+            {t(
+              'Your language skills and certificates information are still missing or not up-to-date'
+            )}
+          </Typography>
+          {survey.academic_background?.language?.english_isPassed === '-' ||
+          !survey.academic_background?.language?.english_isPassed ? (
+            <li>{t('Do you need English Test')}?</li>
+          ) : survey.academic_background?.language?.english_isPassed === 'X' &&
+            parseInt(
+              getNumberOfDays(
+                survey.academic_background?.language?.english_test_date,
+                new Date()
+              )
+            ) > 1 ? (
+            <li>{t('English Passed ? (IELTS 6.5 / TOEFL 88)')}</li>
+          ) : survey.academic_background?.language?.english_isPassed === 'X' &&
+            survey.academic_background?.language?.english_test_date === '' ? (
+            <li>English Test Date missing !</li>
+          ) : (
+            <></>
+          )}
+          {survey.academic_background?.language?.german_isPassed === '-' ||
+          !survey.academic_background?.language?.german_isPassed ? (
+            <li>
+              {t(
+                'German Passed ? (Set Not need if applying English taught programs.)'
+              )}
+            </li>
+          ) : survey.academic_background?.language?.german_isPassed === 'X' &&
+            parseInt(
+              getNumberOfDays(
+                survey.academic_background?.language?.german_test_date,
+                new Date()
+              )
+            ) > 1 ? (
+            <li>
+              {t(
+                'German Passed ? (Set Not need if applying English taught programs.)'
+              )}
+            </li>
+          ) : survey.academic_background?.language?.german_isPassed === 'X' &&
+            survey.academic_background?.language?.german_test_date === '' ? (
+            <li>{t('Expected German Test Date')}</li>
+          ) : (
+            <></>
+          )}
+          {survey.academic_background?.language?.gre_isPassed === '-' ||
+          !survey.academic_background?.language?.gre_isPassed ? (
+            <li>Do you need GRE Test?</li>
+          ) : survey.academic_background?.language?.gre_isPassed === 'X' &&
+            parseInt(
+              getNumberOfDays(
+                survey.academic_background?.language?.gre_test_date,
+                new Date()
+              )
+            ) > 1 ? (
+            <li>{t('GRE Test passed ?')}</li>
+          ) : survey.academic_background?.language?.gre_isPassed === 'X' &&
+            survey.academic_background?.language?.gre_test_date === '' ? (
+            <li>GRE Test Date not given</li>
+          ) : (
+            <></>
+          )}
+          {survey.academic_background?.language?.gmat_isPassed === '-' ||
+          !survey.academic_background?.language?.gmat_isPassed ? (
+            <li>{t('Do you need GMAT Test')}?</li>
+          ) : survey.academic_background?.language?.gmat_isPassed === 'X' &&
+            parseInt(
+              getNumberOfDays(
+                survey.academic_background?.language?.gmat_test_date,
+                new Date()
+              )
+            ) > 1 ? (
+            <li>{t('GMAT Test passed ?')}</li>
+          ) : survey.academic_background?.language?.gmat_isPassed === 'X' &&
+            survey.academic_background?.language?.gmat_test_date === '' ? (
+            <li>GMAT Test Date not given</li>
+          ) : (
+            <></>
+          )}
+        </Card>
+      )}
+      <Box>
+        <Card sx={{ mt: 2, padding: 2 }}>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <Typography variant="h6">
+                {t('Academic Background Survey')}
+              </Typography>
+              <Typography variant="body1">{t('High School')}</Typography>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                id="attended_high_school"
+                name="attended_high_school"
+                error={
+                  survey.academic_background?.university
+                    ?.attended_high_school === ''
+                }
+                helperText={
+                  survey.academic_background?.university
+                    ?.attended_high_school === '' &&
+                  'Please provide High school name'
+                }
+                label={t('High School Name (English)')}
+                variant="outlined"
+                placeholder="Taipei First Girls' High School"
+                value={
+                  survey.academic_background?.university
+                    ?.attended_high_school || ''
+                }
+                onChange={(e) => handleChangeAcademic(e)}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                labelid="high_school_isGraduated"
+                name="high_school_isGraduated"
+                id="high_school_isGraduated"
+                error={
+                  survey.academic_background?.university
+                    ?.high_school_isGraduated === '-'
+                }
+                helperText={
+                  survey.academic_background?.university
+                    ?.high_school_isGraduated === '-' &&
+                  'Please provide High school graduation info'
+                }
+                select
+                value={
+                  survey.academic_background?.university
+                    ?.high_school_isGraduated || '-'
+                }
+                label={t('High School already graduated')}
+                onChange={(e) => handleChangeAcademic(e)}
+              >
+                {HIG_SCHOOL_TRI_STATE_OPTIONS.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {t(option.label)}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              {survey.academic_background?.university
+                ?.high_school_isGraduated !== '-' && (
+                <>
+                  <TextField
+                    fullWidth
+                    id="high_school_graduated_year"
+                    name="high_school_graduated_year"
+                    label={`${
+                      survey.academic_background?.university
+                        .high_school_isGraduated === 'Yes'
+                        ? t('High School Graduate Year')
+                        : survey.academic_background?.university
+                            .high_school_isGraduated === 'No'
+                        ? t('High School Graduate leaved Year')
+                        : survey.academic_background?.university
+                            ?.high_school_isGraduated === 'pending' &&
+                          t('Expected High School Graduate Year')
+                    }`}
+                    variant="outlined"
+                    placeholder="2016"
+                    value={
+                      survey.academic_background?.university
+                        ?.high_school_graduated_year
+                        ? survey.academic_background.university
+                            .high_school_graduated_year
+                        : ''
+                    }
+                    onChange={(e) => handleChangeAcademic(e)}
+                  />
                   <br />
-                  The followings information are still missing:{' '}
-                  {missing_survey_fields_list(
-                    this.props.academic_background,
-                    this.props.application_preference
-                  )}
-                </Card.Body>
-              </Card>
-            </Col>
-          </Row>
-        )}
-        {!check_languages_filled(this.props.academic_background) && (
-          <Row>
-            <Col>
-              <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
-                <Card.Body>
-                  <b>
-                    請盡速更新您的語言檢定資訊，這將會影響Agent了解您的申請時程
-                  </b>
-                  <br />
-                  Your <b>language skills and certificates</b> information are
-                  still missing or not up-to-date:
-                  {this.props.academic_background.language?.english_isPassed ===
-                    '-' ||
-                  !this.props.academic_background.language?.english_isPassed ? (
-                    <li>Do you need English Test?</li>
-                  ) : this.props.academic_background.language
-                      ?.english_isPassed === 'X' &&
-                    parseInt(
-                      getNumberOfDays(
-                        this.props.academic_background.language
-                          ?.english_test_date,
-                        new Date()
-                      )
-                    ) > 1 ? (
-                    <li>English Test passed?</li>
-                  ) : this.props.academic_background.language
-                      ?.english_isPassed === 'X' &&
-                    this.props.academic_background.language
-                      ?.english_test_date === '' ? (
-                    <li>English Test Date missing !</li>
-                  ) : (
-                    <></>
-                  )}
-                  {this.props.academic_background.language?.german_isPassed ===
-                    '-' ||
-                  !this.props.academic_background.language?.german_isPassed ? (
-                    <li>Do you need German Test?</li>
-                  ) : this.props.academic_background.language
-                      ?.german_isPassed === 'X' &&
-                    parseInt(
-                      getNumberOfDays(
-                        this.props.academic_background.language
-                          ?.german_test_date,
-                        new Date()
-                      )
-                    ) > 1 ? (
-                    <li>German Test passed ?</li>
-                  ) : this.props.academic_background.language
-                      ?.german_isPassed === 'X' &&
-                    this.props.academic_background.language
-                      ?.german_test_date === '' ? (
-                    <li>German Test Date not given</li>
-                  ) : (
-                    <></>
-                  )}
-                  {this.props.academic_background.language?.gre_isPassed ===
-                    '-' ||
-                  !this.props.academic_background.language?.gre_isPassed ? (
-                    <li>Do you need GRE Test?</li>
-                  ) : this.props.academic_background.language?.gre_isPassed ===
-                      'X' &&
-                    parseInt(
-                      getNumberOfDays(
-                        this.props.academic_background.language?.gre_test_date,
-                        new Date()
-                      )
-                    ) > 1 ? (
-                    <li>GRE Test passed ?</li>
-                  ) : this.props.academic_background.language?.gre_isPassed ===
-                      'X' &&
-                    this.props.academic_background.language?.gre_test_date ===
-                      '' ? (
-                    <li>GRE Test Date not given</li>
-                  ) : (
-                    <></>
-                  )}
-                  {this.props.academic_background.language?.gmat_isPassed ===
-                    '-' ||
-                  !this.props.academic_background.language?.gmat_isPassed ? (
-                    <li>Do you need GMAT Test?</li>
-                  ) : this.props.academic_background.language?.gmat_isPassed ===
-                      'X' &&
-                    parseInt(
-                      getNumberOfDays(
-                        this.props.academic_background.language?.gmat_test_date,
-                        new Date()
-                      )
-                    ) > 1 ? (
-                    <li>GMAT Test passed ?</li>
-                  ) : this.props.academic_background.language?.gmat_isPassed ===
-                      'X' &&
-                    this.props.academic_background.language?.gmat_test_date ===
-                      '' ? (
-                    <li>GMAT Test Date not given</li>
-                  ) : (
-                    <></>
-                  )}
-                </Card.Body>
-              </Card>
-            </Col>
-          </Row>
-        )}
-        <Row>
-          <Col>
-            <Card className="my-0 mx-0" bg={'dark'} text={'white'}>
-              <Card.Header>
-                <Card.Title className="my-0 mx-0 text-light">
-                  Academic Background Surney
-                </Card.Title>
-              </Card.Header>
-              <Card.Body>
-                <Row>
-                  <h4 className="my-2 mx-0 text-light">High School</h4>
-                </Row>
-                <Row>
-                  <Col md={6}>
-                    <Form.Group controlId="attended_high_school">
-                      <Form.Label className="my-0 mx-0 text-light">
-                        High School Name (English)
-                      </Form.Label>
-                      <Form.Control
-                        type="text"
-                        readOnly={isReadonly}
-                        placeholder="Taipei First Girls' High School"
-                        onChange={(e) => this.handleChange_Academic(e)}
-                        value={
-                          this.state.academic_background.university &&
-                          this.state.academic_background.university
-                            .attended_high_school
-                            ? this.state.academic_background.university
-                                .attended_high_school
-                            : ''
-                        }
-                      />
-                    </Form.Group>
-                    <br />
-                  </Col>
-                </Row>
-                <Row>
-                  <Col md={6}>
-                    <Form.Group controlId="high_school_isGraduated">
-                      <Form.Label className="my-0 mx-0 text-light">
-                        High School already graduated ?
-                      </Form.Label>
-                      <Form.Control
-                        as="select"
-                        disabled={isReadonly}
-                        value={
-                          this.state.academic_background?.university
-                            ?.high_school_isGraduated
-                            ? this.state.academic_background.university
-                                .high_school_isGraduated
-                            : '-'
-                        }
-                        onChange={(e) => this.handleChange_Academic(e)}
-                      >
-                        <>{TRI_STATE_OPTIONS()}</>
-                        <option value="pending">Not finished yet</option>
-                      </Form.Control>
-                    </Form.Group>
-                    <br />
-                  </Col>
-                  {this.state.academic_background?.university
-                    ?.high_school_isGraduated !== '-' && (
-                    <Col md={6}>
-                      <Form.Group controlId="high_school_graduated_year">
-                        <Form.Label className="my-0 mx-0 text-light">
-                          {this.state.academic_background.university
-                            .high_school_isGraduated === 'Yes' &&
-                            'High School Graduate Year'}
-                          {this.state.academic_background.university
-                            .high_school_isGraduated === 'pending' &&
-                            'Expected High School Graduate Year'}
-                          {this.state.academic_background.university
-                            .high_school_isGraduated === 'No' &&
-                            'High School Graduate leaved Year'}
-                        </Form.Label>
-                        <Form.Control
-                          type="text"
-                          readOnly={isReadonly}
-                          placeholder="2022"
-                          value={
-                            this.state.academic_background?.university
-                              ?.high_school_graduated_year
-                              ? this.state.academic_background.university
-                                  .high_school_graduated_year
-                              : ''
-                          }
-                          onChange={(e) => this.handleChange_Academic(e)}
-                        />
-                      </Form.Group>
-                      <br />
-                    </Col>
-                  )}
-                </Row>
-                <Row>
-                  <h4 className="my-2 mx-0 text-light">
-                    University (Bachelor degree)
-                  </h4>
-                </Row>
-                <Row>
-                  <Col md={6}>
-                    <Form.Group controlId="attended_university">
-                      <Form.Label className="my-0 mx-0 text-light">
-                        University Name (English)
-                      </Form.Label>
-                      <Form.Control
-                        type="text"
-                        placeholder="National Taiwan University / Not study yet"
-                        readOnly={isReadonly}
-                        onChange={(e) => this.handleChange_Academic(e)}
-                        value={
-                          this.state.academic_background?.university
-                            ?.attended_university
-                            ? this.state.academic_background.university
-                                .attended_university
-                            : ''
-                        }
-                      />
-                    </Form.Group>
-                  </Col>
-                  <Col md={6}>
-                    <Form.Group controlId="attended_university_program">
-                      <Form.Label className="my-0 mx-0 text-light">
-                        University Program (English) (Put together if double
-                        major)
-                      </Form.Label>
-                      <Form.Control
-                        type="text"
-                        readOnly={isReadonly}
-                        placeholder="B.Sc, Mechanical Engineering / Not study yet"
-                        value={
-                          this.state.academic_background?.university
-                            ?.attended_university_program
-                            ? this.state.academic_background.university
-                                .attended_university_program
-                            : ''
-                        }
-                        onChange={(e) => this.handleChange_Academic(e)}
-                      />
-                    </Form.Group>
-                    <br />
-                  </Col>
-                </Row>
-                <Row>
-                  <Col md={6}>
-                    <Form.Group controlId="isGraduated">
-                      <Form.Label className="my-0 mx-0 text-light">
-                        Already Bachelor graduated ?
-                      </Form.Label>
-                      <Form.Control
-                        as="select"
-                        disabled={isReadonly}
-                        value={
-                          this.state.academic_background.university &&
-                          this.state.academic_background.university.isGraduated
-                            ? this.state.academic_background.university
-                                .isGraduated
-                            : '-'
-                        }
-                        onChange={(e) => this.handleChange_Academic(e)}
-                      >
-                        <option value="-">-</option>
-                        <option value="Yes">Yes 已畢業</option>
-                        <option value="No">No 未開始就讀</option>
-                        <option value="pending">
-                          Not finished yet 就讀中，尚未畢業
-                        </option>
-                      </Form.Control>
-                    </Form.Group>
-                    <br />
-                  </Col>
-                  {this.state.academic_background?.university?.isGraduated !==
+                </>
+              )}
+            </Grid>
+            <Grid item xs={12} sm={6}></Grid>
+          </Grid>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <Typography variant="body1" sx={{ mt: 2 }}>
+                {t('University (Bachelor degree)')}
+              </Typography>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                labelid="isGraduated"
+                name="isGraduated"
+                id="isGraduated"
+                error={
+                  survey.academic_background?.university?.isGraduated === '-'
+                }
+                helperText={
+                  survey.academic_background?.university?.isGraduated === '-' &&
+                  'Please provide Bachelor info.'
+                }
+                select
+                value={
+                  survey.academic_background?.university?.isGraduated || '-'
+                }
+                label={t('Already Bachelor graduated ?')}
+                onChange={(e) => handleChangeAcademic(e)}
+              >
+                {BACHELOR_GRADUATE_STATUS_OPTIONS.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+            {['Yes', 'pending'].includes(
+              survey.academic_background?.university?.isGraduated
+            ) && (
+              <>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth
+                    id="attended_university"
+                    name="attended_university"
+                    error={
+                      survey.academic_background?.university
+                        ?.attended_university === ''
+                    }
+                    helperText={
+                      survey.academic_background?.university
+                        ?.attended_university === '' &&
+                      'Please provide University name info.'
+                    }
+                    label={t('University Name (Bachelor degree)')}
+                    variant="outlined"
+                    placeholder="National Yilan University"
+                    value={
+                      survey.academic_background?.university
+                        ?.attended_university || ''
+                    }
+                    onChange={(e) => handleChangeAcademic(e)}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth
+                    id="attended_university_program"
+                    name="attended_university_program"
+                    label={t('Program Name / Not study yet')}
+                    error={
+                      survey.academic_background?.university
+                        ?.attended_university_program === ''
+                    }
+                    helperText={
+                      survey.academic_background?.university
+                        ?.attended_university_program === '' &&
+                      'Please provide program name info.'
+                    }
+                    variant="outlined"
+                    placeholder="B.Sc. Electrical Engineering"
+                    value={
+                      survey.academic_background?.university
+                        ?.attended_university_program || ''
+                    }
+                    onChange={(e) => handleChangeAcademic(e)}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  {survey.academic_background?.university?.isGraduated !==
                     '-' &&
-                    this.state.academic_background?.university?.isGraduated !==
+                    survey.academic_background?.university?.isGraduated !==
                       'No' && (
-                      <Col md={6}>
-                        <Form.Group controlId="expected_grad_date">
-                          <Form.Label className="my-0 mx-0 text-light">
-                            {this.state.academic_background.university
-                              .isGraduated === 'No' && 'Leaved Year'}
-                            {this.state.academic_background.university
-                              .isGraduated === 'Yes' && 'Graduated Year'}
-                            {this.state.academic_background.university
-                              .isGraduated === 'pending' &&
-                              'Expected Graduate Year'}
-                          </Form.Label>
-                          <Form.Control
-                            as="select"
-                            disabled={isReadonly}
-                            value={
-                              this.state.academic_background?.university
-                                ?.expected_grad_date
-                                ? this.state.academic_background.university
-                                    .expected_grad_date
-                                : ''
-                            }
-                            onChange={(e) => this.handleChange_Academic(e)}
-                          >
-                            <option value="">Please Select</option>
-                            <>{APPLICATION_YEARS_FUTURE()}</>
-                          </Form.Control>
-                        </Form.Group>
-                      </Col>
+                      <TextField
+                        fullWidth
+                        labelid="expected_grad_date"
+                        name="expected_grad_date"
+                        id="expected_grad_date"
+                        error={
+                          survey.academic_background?.university
+                            ?.expected_grad_date === '-'
+                        }
+                        helperText={
+                          survey.academic_background?.university
+                            ?.expected_grad_date === '-' &&
+                          'Please provide graduate date info.'
+                        }
+                        select
+                        value={
+                          survey.academic_background?.university
+                            ?.expected_grad_date || '-'
+                        }
+                        label={`${
+                          survey?.academic_background?.university
+                            .isGraduated === 'No'
+                            ? t('Leaved Year')
+                            : survey?.academic_background?.university
+                                .isGraduated === 'Yes'
+                            ? t('Graduated Year')
+                            : t('Expected Graduate Year')
+                        }`}
+                        onChange={(e) => handleChangeAcademic(e)}
+                      >
+                        {APPLICATION_YEARS_FUTURE().map((option) => (
+                          <MenuItem key={option.value} value={option.value}>
+                            {option.label}
+                          </MenuItem>
+                        ))}
+                      </TextField>
                     )}
-                </Row>
-                <Row>
-                  <Col md={6}>
-                    <InputFormSelect
-                      prop_name={'Has_Exchange_Experience'}
-                      title={'Exchange Student Experience ?'}
-                      isReadonly={isReadonly}
-                      value={
-                        this.state.academic_background?.university
-                          ?.Has_Exchange_Experience
-                          ? this.state.academic_background.university
-                              .Has_Exchange_Experience
-                          : '-'
-                      }
-                      OPTIONS={TRI_STATE_OPTIONS()}
-                      handleChange={this.handleChange_Academic}
-                    />
-                    <br />
-                  </Col>
-                  <Col md={6}>
-                    <InputFormSelect
-                      prop_name={'Has_Internship_Experience'}
-                      title={'Internship Experience ?'}
-                      isReadonly={isReadonly}
-                      value={
-                        this.state.academic_background?.university
-                          ?.Has_Internship_Experience
-                          ? this.state.academic_background.university
-                              .Has_Internship_Experience
-                          : '-'
-                      }
-                      OPTIONS={TRI_STATE_OPTIONS()}
-                      handleChange={this.handleChange_Academic}
-                    />
-                    <br />
-                  </Col>
-                </Row>
-                <Row>
-                  <Col md={6}>
-                    <InputFormSelect
-                      prop_name={'Has_Working_Experience'}
-                      title={'Full-Time Job Experience ?'}
-                      isReadonly={isReadonly}
-                      value={
-                        this.state.academic_background?.university
-                          ?.Has_Working_Experience
-                          ? this.state.academic_background.university
-                              .Has_Working_Experience
-                          : '-'
-                      }
-                      OPTIONS={TRI_STATE_OPTIONS()}
-                      handleChange={this.handleChange_Academic}
-                    />
-                    <br />
-                  </Col>
-                </Row>
-                <Row>
-                  <Col md={6}>
-                    <Form.Group controlId="Highest_GPA_Uni">
-                      <Form.Label className="my-0 mx-0 text-light">
-                        Highest Score GPA of your university program
-                        <a
-                          href={
-                            this.state.survey_link &&
-                            this.state.survey_link != ''
-                              ? this.state.survey_link
-                              : '/'
-                          }
-                          target="_blank"
-                          className="text-info"
-                        >
-                          <FiExternalLink
-                            className="mx-1 mb-1"
-                            style={{ cursor: 'pointer' }}
-                          />
-                        </a>
-                        {this.props.user.role === 'Admin' && (
-                          <a
-                            onClick={this.openOffcanvasWindow}
-                            style={{ cursor: 'pointer' }}
-                          >
-                            [Edit]
-                          </a>
-                        )}
-                      </Form.Label>
-                      <Form.Control
-                        type="number"
-                        readOnly={isReadonly}
-                        placeholder="4.3"
-                        value={
-                          this.state.academic_background?.university
-                            ?.Highest_GPA_Uni
-                        }
-                        onChange={(e) => this.handleChange_Academic(e)}
-                      />
-                    </Form.Group>
-                  </Col>
-                  <Col md={6}>
-                    <Form.Group controlId="Passing_GPA_Uni">
-                      <Form.Label className="my-0 mx-0 text-light">
-                        Passing Score GPA of your university program
-                        <a
-                          href={
-                            this.state.survey_link &&
-                            this.state.survey_link != ''
-                              ? this.state.survey_link
-                              : '/'
-                          }
-                          target="_blank"
-                          className="text-info"
-                        >
-                          <FiExternalLink
-                            className="mx-1 mb-1"
-                            style={{ cursor: 'pointer' }}
-                          />
-                        </a>
-                        {this.props.user.role === 'Admin' && (
-                          <a
-                            onClick={this.openOffcanvasWindow}
-                            style={{ cursor: 'pointer' }}
-                          >
-                            [Edit]
-                          </a>
-                        )}
-                      </Form.Label>
-                      <Form.Control
-                        type="number"
-                        readOnly={isReadonly}
-                        placeholder="1.7"
-                        value={
-                          this.state.academic_background?.university
-                            ?.Passing_GPA_Uni
-                        }
-                        onChange={(e) => this.handleChange_Academic(e)}
-                      />
-                    </Form.Group>
-                    <br />
-                  </Col>
-                </Row>
-                <Row>
-                  <Col md={6}>
-                    <Form.Group controlId="My_GPA_Uni">
-                      <Form.Label className="my-0 mx-0 text-light">
-                        My GPA
-                        <a
-                          href={
-                            this.state.survey_link &&
-                            this.state.survey_link != ''
-                              ? this.state.survey_link
-                              : '/'
-                          }
-                          target="_blank"
-                          className="text-info"
-                        >
-                          <FiExternalLink
-                            className="mx-1 mb-1"
-                            style={{ cursor: 'pointer' }}
-                          />
-                        </a>
-                        {this.props.user.role === 'Admin' && (
-                          <a
-                            onClick={this.openOffcanvasWindow}
-                            style={{ cursor: 'pointer' }}
-                          >
-                            [Edit]
-                          </a>
-                        )}
-                      </Form.Label>
-                      <Form.Control
-                        type="number"
-                        readOnly={isReadonly}
-                        placeholder="3.8"
-                        value={
-                          this.state.academic_background?.university?.My_GPA_Uni
-                        }
-                        onChange={(e) => this.handleChange_Academic(e)}
-                      />
-                    </Form.Group>
-                  </Col>
-                  <Col md={6}>
-                    <Form.Group controlId="bayerische_formel">
-                      <Form.Label className="my-0 mx-0 text-light">
-                        Corresponding German GPA System:
-                      </Form.Label>
-                      <p className="text-info">
-                        {this.state.academic_background?.university
-                          ?.My_GPA_Uni &&
-                        this.state.academic_background?.university
-                          ?.Passing_GPA_Uni &&
-                        this.state.academic_background?.university
-                          ?.Highest_GPA_Uni
-                          ? this.Bayerische_Formel(
-                              this.state.academic_background.university
-                                .Highest_GPA_Uni,
-                              this.state.academic_background.university
-                                .Passing_GPA_Uni,
-                              this.state.academic_background.university
-                                .My_GPA_Uni
-                            )
-                          : 0}
-                      </p>
-                    </Form.Group>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth
+                    labelid="Has_Exchange_Experience"
+                    name="Has_Exchange_Experience"
+                    id="Has_Exchange_Experience"
+                    error={
+                      survey.academic_background?.university
+                        ?.Has_Exchange_Experience === '-'
+                    }
+                    helperText={
+                      survey.academic_background?.university
+                        ?.Has_Exchange_Experience === '-' &&
+                      'Please provide university exchange student info.'
+                    }
+                    select
+                    value={
+                      survey.academic_background?.university
+                        ?.Has_Exchange_Experience || '-'
+                    }
+                    label={t('Exchange Student Experience ?')}
+                    onChange={(e) => handleChangeAcademic(e)}
+                  >
+                    {DUAL_STATE_OPTIONS.map((option) => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </Grid>
+              </>
+            )}
 
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                labelid="Has_Internship_Experience"
+                name="Has_Internship_Experience"
+                id={t('Internship Experience ?')}
+                error={
+                  survey.academic_background?.university
+                    ?.Has_Internship_Experience === '-'
+                }
+                helperText={
+                  survey.academic_background?.university
+                    ?.Has_Internship_Experience === '-' &&
+                  'Please provide internship experience info.'
+                }
+                select
+                value={
+                  survey.academic_background?.university
+                    ?.Has_Internship_Experience || '-'
+                }
+                label={t('Internship Experience ?')}
+                onChange={(e) => handleChangeAcademic(e)}
+              >
+                {DUAL_STATE_OPTIONS.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                name="Has_Working_Experience"
+                id="Full-TimeJobExperience"
+                error={
+                  survey.academic_background?.university
+                    ?.Has_Working_Experience === '-'
+                }
+                helperText={
+                  survey.academic_background?.university
+                    ?.Has_Working_Experience === '-' &&
+                  'Please provide full-time working experience info.'
+                }
+                select
+                value={
+                  survey.academic_background?.university
+                    ?.Has_Working_Experience || '-'
+                }
+                label={t('Full-Time Job Experience ?')}
+                onChange={(e) => handleChangeAcademic(e)}
+              >
+                {DUAL_STATE_OPTIONS.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                id="Highest_GPA_Uni"
+                name="Highest_GPA_Uni"
+                error={
+                  survey.academic_background?.university?.Highest_GPA_Uni ===
+                    '0' ||
+                  survey.academic_background?.university?.Highest_GPA_Uni ===
+                    null
+                }
+                helperText={
+                  (survey.academic_background?.university?.Highest_GPA_Uni ===
+                    '0' ||
+                    survey.academic_background?.university?.Highest_GPA_Uni ===
+                      null) &&
+                  'Please provide highest GPA from your university.'
+                }
+                label={t('Highest Score GPA of your university program')}
+                type="number"
+                placeholder="4.3"
+                value={
+                  survey.academic_background?.university?.Highest_GPA_Uni || 0
+                }
+                onChange={(e) => handleChangeAcademic(e)}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                id="Passing_GPA_Uni"
+                name="Passing_GPA_Uni"
+                error={
+                  survey.academic_background?.university?.Passing_GPA_Uni ===
+                    '0' ||
+                  survey.academic_background?.university?.Passing_GPA_Uni ===
+                    null
+                }
+                helperText={
+                  (survey.academic_background?.university?.Passing_GPA_Uni ===
+                    '0' ||
+                    survey.academic_background?.university?.Passing_GPA_Uni ===
+                      null) &&
+                  'Please provide passing GPA from your university.'
+                }
+                label={t('Passing Score GPA of your university program')}
+                type="number"
+                placeholder="1.7"
+                value={
+                  survey.academic_background?.university?.Passing_GPA_Uni || 0
+                }
+                onChange={(e) => handleChangeAcademic(e)}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                id="My_GPA_Uni"
+                name="My_GPA_Uni"
+                label={t('My GPA')}
+                type="number"
+                placeholder="3.7"
+                error={
+                  survey.academic_background?.university?.My_GPA_Uni === '0' ||
+                  survey.academic_background?.university?.My_GPA_Uni === null
+                }
+                helperText={
+                  (survey.academic_background?.university?.My_GPA_Uni === '0' ||
+                    survey.academic_background?.university?.My_GPA_Uni ===
+                      null) &&
+                  'Please provide passing GPA from your university.'
+                }
+                value={survey.academic_background?.university?.My_GPA_Uni || 0}
+                onChange={(e) => handleChangeAcademic(e)}
+              />
+            </Grid>
+            <Grid item xs={12} sm={12}>
+              <Typography>
+                {t(
+                  'About Higest GPA / Lowest passed GPA and my GPA, please follow this:'
+                )}
+              </Typography>
+              <a
+                href={
+                  survey.survey_link && survey.survey_link != ''
+                    ? survey.survey_link
+                    : '/'
+                }
+                target="_blank"
+                className="text-info"
+                rel="noreferrer"
+              >
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  startIcon={<LinkIcon />}
+                >
+                  {t('Explanation')}
+                </Button>
+              </a>
+              {is_TaiGer_Admin(user) && (
+                <Button
+                  onClick={openOffcanvasWindow}
+                  style={{ cursor: 'pointer' }}
+                >
+                  {t('Edit')}
+                </Button>
+              )}
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Typography>{t('Corresponding German GPA System')}:</Typography>
+              <Typography>
+                {survey.academic_background?.university?.My_GPA_Uni &&
+                survey.academic_background?.university?.Passing_GPA_Uni &&
+                survey.academic_background?.university?.Highest_GPA_Uni
+                  ? Bayerische_Formel(
+                      survey.academic_background.university.Highest_GPA_Uni,
+                      survey.academic_background.university.Passing_GPA_Uni,
+                      survey.academic_background.university.My_GPA_Uni
+                    )
+                  : 0}
+              </Typography>
+            </Grid>
+            <Grid item xs={12} sm={6}></Grid>
+            <Grid item xs={12}>
+              <Typography variant="body2" sx={{ mt: 2 }}>
+                {t('Last update at')}:{' '}
+                {survey.academic_background?.university?.updatedAt
+                  ? convertDate(
+                      survey.academic_background?.university.updatedAt
+                    )
+                  : ''}
+                {user.archiv !== true && (
+                  <>
                     <br />
-                  </Col>
-                </Row>
-                <Row>
-                  <Col md={10} className="my-0 mx-0 text-light">
-                    <br />
-                    {/* <br /> */}
-                    Last update at:{' '}
-                    {this.props.academic_background?.university?.updatedAt
-                      ? convertDate(
-                          this.props.academic_background.university.updatedAt
+                    <Button
+                      color="primary"
+                      variant="contained"
+                      disabled={!survey.changed_academic}
+                      onClick={(e) =>
+                        handleAcademicBackgroundSubmit(
+                          e,
+                          survey.academic_background.university
                         )
-                      : ''}
-                  </Col>
-                  {this.props.user.archiv !== true && (
-                    <Col md={2}>
-                      <br />
-                      {this.props.singlestudentpage_fromtaiger ? (
-                        <>
-                          <Button
-                            variant="primary"
-                            disabled={!this.state.changed_academic}
-                            onClick={(e) =>
-                              this.props.handleSubmit_AcademicBackground_root(
-                                e,
-                                this.state.academic_background.university
-                              )
-                            }
-                          >
-                            Update
-                          </Button>
-                          <br />
-                        </>
-                      ) : (
-                        <>
-                          <Button
-                            variant="primary"
-                            disabled={!this.state.changed_academic}
-                            onClick={(e) =>
-                              this.props.handleSubmit_AcademicBackground(
-                                e,
-                                this.state.academic_background.university
-                              )
-                            }
-                          >
-                            Update
-                          </Button>
-                          <br />
-                        </>
-                      )}
-                    </Col>
-                  )}
-                </Row>
-              </Card.Body>
-            </Card>
-            <Card className="my-4 mx-0" bg={'dark'} text={'white'}>
-              <Card.Header>
-                <Card.Title className="my-0 mx-0 text-light">
-                  Application Preference
-                </Card.Title>
-              </Card.Header>
-              <Card.Body>
-                <Row>
-                  <Col md={6}>
-                    <Form.Group controlId="expected_application_date">
-                      <Form.Label className="mb-2 mx-0 text-light">
-                        預計要入學的年度 Expected Application Year{' '}
-                        <OverlayTrigger
-                          placement="top"
-                          delay={{ show: 250, hide: 400 }}
-                          overlay={this.renderTooltipApplicationYear}
-                        >
-                          <span className="d-inline-block">
-                            <AiFillQuestionCircle
-                              size={24}
-                              color="dodgerblue  "
-                            />
-                          </span>
-                        </OverlayTrigger>
-                      </Form.Label>
-                      <Form.Control
-                        as="select"
-                        disabled={isReadonly}
-                        value={
-                          this.state.application_preference &&
-                          this.state.application_preference
-                            .expected_application_date
-                            ? this.state.application_preference
-                                .expected_application_date
-                            : ''
-                        }
-                        onChange={(e) =>
-                          this.handleChange_ApplicationPreference(e)
-                        }
-                      >
-                        <option value="">Please Select</option>
-                        <>{EXPECTATION_APPLICATION_YEARS()}</>
-                      </Form.Control>
-                    </Form.Group>
-                    <br />
-                  </Col>
-                  <Col md={6}>
-                    <Form.Group controlId="expected_application_semester">
-                      <Form.Label className="mb-2 mx-0 text-light">
-                        預計要入學的學期 Expected Application Semester{' '}
-                        <OverlayTrigger
-                          placement="top"
-                          delay={{ show: 250, hide: 400 }}
-                          overlay={this.renderTooltipApplicationSemester}
-                        >
-                          <span className="d-inline-block">
-                            <AiFillQuestionCircle
-                              size={24}
-                              color="dodgerblue  "
-                            />
-                          </span>
-                        </OverlayTrigger>
-                      </Form.Label>
-                      <Form.Control
-                        as="select"
-                        disabled={isReadonly}
-                        value={
-                          this.state.application_preference &&
-                          this.state.application_preference
-                            .expected_application_semester
-                            ? this.state.application_preference
-                                .expected_application_semester
-                            : ''
-                        }
-                        onChange={(e) =>
-                          this.handleChange_ApplicationPreference(e)
-                        }
-                      >
-                        <option value="">Please Select</option>
-                        <option value="WS">
-                          Winter Semester (Semester begins on October)
-                        </option>
-                        <option value="SS">
-                          Summer Semester (Semester begins on April)
-                        </option>
-                        {/* <option value="WSSS">Winter + Summer Semester</option> */}
-                      </Form.Control>
-                    </Form.Group>
-                    <br />
-                  </Col>
-                </Row>
-                <Row>
-                  <Col md={6}>
-                    <Form>
-                      <Form.Group
-                        controlId="target_application_field"
-                        className="my-0 mx-0"
-                      >
-                        <Form.Label className="my-0 mx-0 text-light">
-                          Target Application Fields
-                        </Form.Label>
-                        <Form.Control
-                          type="text"
-                          maxLength={40}
-                          readOnly={isReadonly}
-                          placeholder="Data Science, Comupter Science, etc. (max. 40 characters)"
-                          value={
-                            this.state.application_preference &&
-                            this.state.application_preference
-                              .target_application_field
-                              ? this.state.application_preference
-                                  .target_application_field
-                              : ''
-                          }
-                          onChange={(e) =>
-                            this.handleChange_ApplicationPreference(e)
-                          }
-                        />
-                      </Form.Group>
-                    </Form>
-                  </Col>
-                  <Col md={6}>
-                    <Form>
-                      <Form.Group controlId="target_degree">
-                        <Form.Label className="my-0 mx-0 text-light">
-                          Target Degree Programs
-                        </Form.Label>
-                        <Form.Control
-                          as="select"
-                          disabled={isReadonly}
-                          value={
-                            this.state.application_preference &&
-                            this.state.application_preference.target_degree
-                              ? this.state.application_preference.target_degree
-                              : ''
-                          }
-                          onChange={(e) =>
-                            this.handleChange_ApplicationPreference(e)
-                          }
-                        >
-                          <option value="">Please Select</option>
-                          <option value="Bachelor">Bachelor</option>
-                          <option value="Master">Master</option>
-                          <option value="BachelorMaster">
-                            Bachelor and Master
-                          </option>
-                        </Form.Control>
-                      </Form.Group>
-                    </Form>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col md={6}>
-                    <Form>
-                      <Form.Group
-                        controlId="application_outside_germany"
-                        className="my-4 mx-0"
-                      >
-                        <Form.Label className="my-0 mx-0 text-light">
-                          Considering universities outside Germany?
-                        </Form.Label>
-                        <Form.Control
-                          disabled={isReadonly}
-                          as="select"
-                          value={
-                            this.state.application_preference &&
-                            this.state.application_preference
-                              .application_outside_germany
-                              ? this.state.application_preference
-                                  .application_outside_germany
-                              : '-'
-                          }
-                          onChange={(e) =>
-                            this.handleChange_ApplicationPreference(e)
-                          }
-                        >
-                          <option value="-">Please Select</option>
-                          <option>Yes</option>
-                          <option>No</option>
-                        </Form.Control>
-                      </Form.Group>
-                    </Form>
-                  </Col>
-                  <Col md={6}>
-                    <Form>
-                      <Form.Group
-                        controlId="considered_privat_universities"
-                        className="my-4 mx-0"
-                      >
-                        <Form.Label className="my-0 mx-0 text-light">
-                          Considering private universities? (Tuition Fee: ~15000
-                          EURO/year)
-                        </Form.Label>
-                        <Form.Control
-                          as="select"
-                          disabled={isReadonly}
-                          value={
-                            this.state.application_preference &&
-                            this.state.application_preference
-                              .considered_privat_universities
-                              ? this.state.application_preference
-                                  .considered_privat_universities
-                              : '-'
-                          }
-                          onChange={(e) =>
-                            this.handleChange_ApplicationPreference(e)
-                          }
-                        >
-                          <option value="-">Please Select</option>
-                          <option value="Yes">Yes</option>
-                          <option value="No">No</option>
-                          <option value="NotSure">Not Sure</option>
-                        </Form.Control>
-                      </Form.Group>
-                    </Form>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col md={12}>
-                    <Form>
-                      <Form.Group
-                        controlId="special_wished"
-                        className="my-0 mx-0"
-                      >
-                        <Form.Label className="my-0 mx-0 text-light">
-                          Other wish
-                        </Form.Label>{' '}
-                        <div className="d-flex align-items-center">
-                          {/* Wrap label and input in a flex container */}
-                          <Form.Control
-                            as="textarea"
-                            maxLength={1000}
-                            rows="5"
-                            placeholder="Example: QS Ranking 300, 只要德國"
-                            value={
-                              this.state.application_preference &&
-                              this.state.application_preference.special_wished
-                                ? this.state.application_preference
-                                    .special_wished
-                                : ''
-                            }
-                            onChange={(e) =>
-                              this.handleChange_ApplicationPreference(e)
-                            }
-                            className="mr-2"
-                          ></Form.Control>
-                        </div>
-                      </Form.Group>
-                    </Form>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col>
-                    <span className="text-light">
-                      {this.state.application_preference.special_wished
-                        ?.length || 0}
-                      /1000
-                    </span>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col md={10} className="my-0 mx-0 text-light">
-                    <br />
-                    Last update at:{' '}
-                    {this.props.application_preference &&
-                    this.props.application_preference.updatedAt
-                      ? convertDate(this.props.application_preference.updatedAt)
-                      : ''}
-                  </Col>
-                  {this.props.user.archiv !== true && (
-                    <Col md={2}>
-                      <br />
-                      {this.props.singlestudentpage_fromtaiger ? (
-                        <>
-                          <Button
-                            variant="primary"
-                            disabled={
-                              !this.state.changed_application_preference
-                            }
-                            onClick={(e) =>
-                              this.props.handleSubmit_ApplicationPreference_root(
-                                e,
-                                this.state.application_preference
-                              )
-                            }
-                          >
-                            Update
-                          </Button>
-                          <br />
-                        </>
-                      ) : (
-                        <>
-                          <Button
-                            variant="primary"
-                            disabled={
-                              !this.state.changed_application_preference
-                            }
-                            onClick={(e) =>
-                              this.props.handleSubmit_ApplicationPreference(
-                                e,
-                                this.state.application_preference
-                              )
-                            }
-                          >
-                            Update
-                          </Button>
-
-                          <br />
-                        </>
-                      )}
-                    </Col>
-                  )}
-                </Row>
-              </Card.Body>
-            </Card>
-            <Card className="my-4 mx-0" bg={'dark'} text={'white'}>
-              <Card.Header>
-                <Card.Title className="my-0 mx-0 text-light">
-                  Languages Test and Certificates
-                </Card.Title>
-              </Card.Header>
-              <Card.Body>
+                      }
+                      sx={{ mt: 2 }}
+                    >
+                      {t('Update')}
+                    </Button>
+                  </>
+                )}
+              </Typography>
+            </Grid>
+          </Grid>
+        </Card>
+        <Card sx={{ mt: 2, padding: 2 }}>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <Typography variant="h6">
+                {t('Application Preference')}
+              </Typography>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                labelid="expected_application_date"
+                name="expected_application_date"
+                id="expected_application_date"
+                error={
+                  survey.application_preference?.expected_application_date ===
+                  ''
+                }
+                helperText={
+                  survey.application_preference?.expected_application_date ===
+                    '' && 'Please provide the info.'
+                }
+                select
+                value={
+                  survey.application_preference?.expected_application_date || ''
+                }
+                label={t('Expected Application Year?')}
+                onChange={(e) => handleChangeApplicationPreference(e)}
+              >
+                {EXPECTATION_APPLICATION_YEARS().map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                labelid="expected_application_semester"
+                name="expected_application_semester"
+                id="expected_application_semester"
+                error={
+                  survey.application_preference
+                    ?.expected_application_semester === ''
+                }
+                helperText={
+                  survey.application_preference
+                    ?.expected_application_semester === '' &&
+                  'Please provide the info.'
+                }
+                select
+                value={
+                  survey?.application_preference
+                    ?.expected_application_semester || ''
+                }
+                label={t('Expected Application Semester?')}
+                onChange={(e) => handleChangeApplicationPreference(e)}
+              >
+                {SEMESTER_ARRAY_OPTIONS.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                id="target_application_field"
+                name="target_application_field"
+                error={
+                  survey.application_preference?.target_application_field === ''
+                }
+                helperText={
+                  survey.application_preference?.target_application_field ===
+                    '' && 'Please provide the info.'
+                }
+                label={t('Target Application Fields')}
+                variant="outlined"
+                placeholder="Data Science, Comupter Science, etc. (max. 40 characters)"
+                value={
+                  survey.application_preference?.target_application_field || ''
+                }
+                onChange={(e) => handleChangeApplicationPreference(e)}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                labelid="target_degree"
+                name="target_degree"
+                id="target_degree"
+                error={survey.application_preference?.target_degree === ''}
+                helperText={
+                  survey.application_preference?.target_degree === '' &&
+                  'Please provide the info.'
+                }
+                select
+                label={t('Target Degree Programs')}
+                value={survey.application_preference?.target_degree || ''}
+                onChange={(e) => handleChangeApplicationPreference(e)}
+              >
+                {DEGREE_ARRAY_OPTIONS.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                labelid="application_outside_germany"
+                name="application_outside_germany"
+                id="application_outside_germany"
+                error={
+                  survey.application_preference?.application_outside_germany ===
+                  '-'
+                }
+                helperText={
+                  survey.application_preference?.application_outside_germany ===
+                    '-' && 'Please provide the info.'
+                }
+                select
+                label={t('Considering universities outside Germany?')}
+                value={
+                  survey?.application_preference?.application_outside_germany ||
+                  '-'
+                }
+                onChange={(e) => handleChangeApplicationPreference(e)}
+              >
+                {TRI_STATE_OPTIONS.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                labelid="considered_privat_universities"
+                name="considered_privat_universities"
+                id="considered_privat_universities"
+                error={
+                  survey.application_preference
+                    ?.considered_privat_universities === '-'
+                }
+                helperText={
+                  survey.application_preference
+                    ?.considered_privat_universities === '-' &&
+                  'Please provide the info.'
+                }
+                select
+                label={t(
+                  'Considering private universities? (Tuition Fee: ~15000 EURO/year)'
+                )}
+                value={
+                  survey.application_preference
+                    ?.considered_privat_universities || ''
+                }
+                onChange={(e) => handleChangeApplicationPreference(e)}
+              >
+                {TRI_STATE_OPTIONS.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                id="special_wished"
+                name="special_wished"
+                label={t('Other wish')}
+                variant="outlined"
+                multiline
+                inputProps={{ maxLength: 600 }}
+                placeholder="Example: QS Ranking 300, 只要德國"
+                value={survey.application_preference?.special_wished || ''}
+                onChange={(e) => handleChangeApplicationPreference(e)}
+                minRows={5}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Badge>
+                {survey?.application_preference?.special_wished?.length || 0}
+                /600
+              </Badge>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Typography variant="body2" sx={{ mt: 2 }}>
+                {t('Last update at')}:{' '}
+                {survey.application_preference?.updatedAt
+                  ? convertDate(survey.application_preference.updatedAt)
+                  : ''}
+              </Typography>
+              {user.archiv !== true && (
+                <>
+                  <br />
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    disabled={!survey.changed_application_preference}
+                    onClick={(e) =>
+                      handleApplicationPreferenceSubmit(
+                        e,
+                        survey.application_preference
+                      )
+                    }
+                  >
+                    {t('Update')}
+                  </Button>
+                </>
+              )}
+            </Grid>
+          </Grid>
+        </Card>
+        <Card sx={{ mt: 2, padding: 2 }}>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <Typography variant="h6">
+                {t('Languages Test and Certificates')}
+              </Typography>
+              <Banner
+                ReadOnlyMode={true}
+                bg={'primary'}
+                title={'warning'}
+                path={'/'}
+                text={
+                  '若還沒考過，請在 Passed 處選 No，並填上檢定以及預計考試時間。若不需要（如德語），請填 Not Needed。方便顧問了解你的進度。'
+                }
+                link_name={''}
+                removeBanner={<></>}
+                notification_key={undefined}
+              />
+              {(survey.academic_background?.language?.english_isPassed ===
+                'X' ||
+                survey.academic_background?.language?.german_isPassed === 'X' ||
+                survey.academic_background?.language?.gre_isPassed === 'X' ||
+                survey.academic_background?.language?.gmat_isPassed ===
+                  'X') && (
                 <Banner
                   ReadOnlyMode={true}
-                  bg={'primary'}
-                  title={'Info:'}
+                  bg={'danger'}
+                  title={'warning'}
                   path={'/'}
                   text={
-                    '若還沒考過，請在 Passed 處選 No，並填上檢定以及預計考試時間。若不需要（如德語），請填 Not Needed。方便顧問了解你的進度。'
+                    <>
+                      報名考試時，請確認 <b>護照</b> 有無過期。
+                    </>
                   }
                   link_name={''}
-                  removeBanner={this.removeBanner}
-                  notification_key={'x'}
+                  removeBanner={<></>}
+                  notification_key={undefined}
                 />
-                {(this.state.academic_background?.language?.english_isPassed ===
-                  'X' ||
-                  this.state.academic_background?.language?.german_isPassed ===
-                    'X' ||
-                  this.state.academic_background?.language?.gre_isPassed ===
-                    'X' ||
-                  this.state.academic_background?.language?.gmat_isPassed ===
-                    'X') && (
-                  <Banner
-                    ReadOnlyMode={true}
-                    bg={'danger'}
-                    title={'Reminder:'}
-                    path={'/'}
-                    text={
-                      <>
-                        報名考試時，請確認 <b>護照</b> 有無過期。
-                      </>
+              )}
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                error={
+                  survey.academic_background?.language?.english_isPassed === '-'
+                }
+                helperText={
+                  survey.academic_background?.language?.english_isPassed ===
+                    '-' && 'Please provide English info.'
+                }
+                select
+                labelid="english_isPassed"
+                id="english_isPassed"
+                name="english_isPassed"
+                value={
+                  survey.academic_background?.language?.english_isPassed || '-'
+                }
+                label={t('English Passed ? (IELTS 6.5 / TOEFL 88)')}
+                onChange={handleChangeLanguage}
+              >
+                {IS_PASSED_OPTIONS.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+            {(survey?.academic_background?.language?.english_isPassed === 'O' ||
+              survey?.academic_background?.language?.english_isPassed ===
+                'X') && (
+              <Grid item xs={12} sm={6}>
+                <FormControl fullWidth>
+                  <InputLabel id="english_certificate">
+                    {t('English Certificate')}
+                  </InputLabel>
+                  <Select
+                    id="english_certificate"
+                    name="english_certificate"
+                    value={
+                      survey.academic_background?.language
+                        ?.english_certificate || ''
                     }
-                    link_name={''}
-                    removeBanner={this.removeBanner}
-                    notification_key={'x'}
-                  />
+                    label={t('English Certificate')}
+                    onChange={handleChangeLanguage}
+                  >
+                    {ENGLISH_CERTIFICATE_ARRAY_OPTIONS.map((option) => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+            )}
+            {survey?.academic_background?.language?.english_isPassed ===
+              'O' && (
+              <Grid item xs={12} sm={4}>
+                <TextField
+                  fullWidth
+                  id="english_score"
+                  name="english_score"
+                  label="Overall"
+                  type="number"
+                  placeholder={`${
+                    survey.academic_background.language.english_certificate ===
+                    'IELTS'
+                      ? '6.5'
+                      : '92'
+                  } `}
+                  value={
+                    survey.academic_background?.language?.english_score || 0
+                  }
+                  disabled={
+                    survey.academic_background.language &&
+                    survey.academic_background.language.english_certificate ===
+                      'No'
+                      ? true
+                      : false
+                  }
+                  onChange={(e) => handleChangeLanguage(e)}
+                />
+              </Grid>
+            )}
+            {survey?.academic_background?.language?.english_isPassed ===
+              'O' && (
+              <Grid item xs={12} sm={2}>
+                <TextField
+                  fullWidth
+                  id="english_score_reading"
+                  name="english_score_reading"
+                  label="Reading"
+                  type="number"
+                  placeholder={`${
+                    survey.academic_background.language.english_certificate ===
+                    'IELTS'
+                      ? '6.5'
+                      : '21'
+                  } `}
+                  value={
+                    survey.academic_background?.language
+                      ?.english_score_reading || 0
+                  }
+                  disabled={
+                    survey.academic_background?.language
+                      ?.english_certificate === 'No'
+                      ? true
+                      : false
+                  }
+                  onChange={(e) => handleChangeLanguage(e)}
+                />
+              </Grid>
+            )}
+            {survey?.academic_background?.language?.english_isPassed ===
+              'O' && (
+              <Grid item xs={12} sm={2}>
+                <TextField
+                  fullWidth
+                  id="english_score_listening"
+                  name="english_score_listening"
+                  label="Listening"
+                  type="number"
+                  placeholder={`${
+                    survey.academic_background.language.english_certificate ===
+                    'IELTS'
+                      ? '6.5'
+                      : '21'
+                  } `}
+                  value={
+                    survey.academic_background?.language
+                      ?.english_score_listening || 0
+                  }
+                  disabled={
+                    survey.academic_background?.language
+                      ?.english_certificate === 'No'
+                      ? true
+                      : false
+                  }
+                  onChange={(e) => handleChangeLanguage(e)}
+                />
+              </Grid>
+            )}
+            {survey?.academic_background?.language?.english_isPassed ===
+              'O' && (
+              <Grid item xs={12} sm={2}>
+                <TextField
+                  fullWidth
+                  id="english_score_writing"
+                  name="english_score_writing"
+                  label="Writing"
+                  type="number"
+                  placeholder={`${
+                    survey.academic_background.language.english_certificate ===
+                    'IELTS'
+                      ? '6.5'
+                      : '21'
+                  } `}
+                  value={
+                    survey.academic_background?.language
+                      ?.english_score_writing || ''
+                  }
+                  disabled={
+                    survey.academic_background?.language
+                      ?.english_certificate === 'No'
+                      ? true
+                      : false
+                  }
+                  onChange={(e) => handleChangeLanguage(e)}
+                />
+              </Grid>
+            )}
+            {survey?.academic_background?.language?.english_isPassed ===
+              'O' && (
+              <Grid item xs={12} sm={2}>
+                <TextField
+                  fullWidth
+                  id="english_score_speaking"
+                  name="english_score_speaking"
+                  label="Speaking"
+                  type="number"
+                  placeholder={`${
+                    survey.academic_background.language.english_certificate ===
+                    'IELTS'
+                      ? '6.5'
+                      : '21'
+                  } `}
+                  value={
+                    survey.academic_background?.language
+                      ?.english_score_speaking || ''
+                  }
+                  disabled={
+                    survey.academic_background?.language
+                      ?.english_certificate === 'No'
+                      ? true
+                      : false
+                  }
+                  onChange={(e) => handleChangeLanguage(e)}
+                />
+              </Grid>
+            )}
+            {survey?.academic_background?.language?.english_isPassed ===
+              'X' && (
+              <Grid item xs={12} lg={12} sx={{ mb: 2 }}>
+                <TextField
+                  fullWidth
+                  id="english_test_date"
+                  name="english_test_date"
+                  label={t('Expected English Test Date')}
+                  type="date"
+                  value={
+                    survey.academic_background?.language?.english_test_date ||
+                    ''
+                  }
+                  disabled={
+                    survey.academic_background?.language
+                      ?.english_certificate === 'No'
+                      ? true
+                      : false
+                  }
+                  onChange={(e) => handleChangeLanguage(e)}
+                />
+              </Grid>
+            )}
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                labelid="german_isPassed"
+                id="german_isPassed"
+                name="german_isPassed"
+                error={
+                  survey.academic_background?.language?.german_isPassed === '-'
+                }
+                helperText={
+                  survey.academic_background?.language?.german_isPassed ===
+                    '-' && 'Please provide German test info.'
+                }
+                select
+                value={survey.academic_background?.language?.german_isPassed}
+                label={t(
+                  'German Passed ? (Set Not need if applying English taught programs.)'
                 )}
-                <Row>
-                  <Col md={4}>
-                    <InputFormSelect
-                      prop_name={'english_isPassed'}
-                      title={'English Passed ? (IELTS 6.5 / TOEFL 88)'}
-                      isReadonly={isReadonly}
-                      value={
-                        this.state.academic_background?.language
-                          ?.english_isPassed
-                      }
-                      OPTIONS={IS_PASSED_OPTIONS()}
-                      handleChange={this.handleChange_Language}
-                    />
-                  </Col>
-                  {this.state.academic_background.language &&
-                  this.state.academic_background.language.english_isPassed &&
-                  (this.state.academic_background.language.english_isPassed ===
-                    'O' ||
-                    this.state.academic_background.language.english_isPassed ===
-                      'X') ? (
-                    this.state.academic_background.language.english_isPassed ===
-                    'O' ? (
-                      <>
-                        <Col md={4}>
-                          <InputFormSelect
-                            prop_name={'english_certificate'}
-                            title={'English Certificate'}
-                            isReadonly={isReadonly}
-                            value={
-                              this.state.academic_background?.language
-                                ?.english_certificate
-                                ? this.state.academic_background.language
-                                    .english_certificate
-                                : ''
-                            }
-                            OPTIONS={ENGLISH_CERTIFICATE_OPTIONS()}
-                            handleChange={this.handleChange_Language}
-                          />
-                        </Col>
-                        <Col md={4}>
-                          <Form.Group controlId="english_score">
-                            <Form.Label className="my-0 mx-0 text-light">
-                              Overall
-                            </Form.Label>
-                            <Form.Control
-                              type="text"
-                              readOnly={isReadonly}
-                              placeholder={`${
-                                this.state.academic_background.language
-                                  .english_certificate === 'IELTS'
-                                  ? '6.5'
-                                  : '92'
-                              } `}
-                              value={
-                                this.state.academic_background.language &&
-                                this.state.academic_background.language
-                                  .english_score
-                                  ? this.state.academic_background.language
-                                      .english_score
-                                  : ''
-                              }
-                              disabled={
-                                this.state.academic_background.language &&
-                                this.state.academic_background.language
-                                  .english_certificate === 'No'
-                                  ? true
-                                  : false
-                              }
-                              onChange={(e) => this.handleChange_Language(e)}
-                            />
-                          </Form.Group>
-                          <br />
-                        </Col>
-                        <Col md={3}>
-                          <Form.Group controlId="english_score_reading">
-                            <Form.Label className="my-0 mx-0 text-light">
-                              Reading
-                            </Form.Label>
-                            <Form.Control
-                              type="text"
-                              readOnly={isReadonly}
-                              placeholder={`${
-                                this.state.academic_background.language
-                                  .english_certificate === 'IELTS'
-                                  ? '7.5'
-                                  : '21'
-                              } `}
-                              value={
-                                this.state.academic_background?.language
-                                  ?.english_score_reading
-                                  ? this.state.academic_background.language
-                                      .english_score_reading
-                                  : ''
-                              }
-                              disabled={
-                                this.state.academic_background.language
-                                  ?.english_certificate === 'No'
-                                  ? true
-                                  : false
-                              }
-                              onChange={(e) => this.handleChange_Language(e)}
-                            />
-                          </Form.Group>
-                          <br />
-                        </Col>
-                        <Col md={3}>
-                          <Form.Group controlId="english_score_listening">
-                            <Form.Label className="my-0 mx-0 text-light">
-                              Listening
-                            </Form.Label>
-                            <Form.Control
-                              type="text"
-                              readOnly={isReadonly}
-                              placeholder={`${
-                                this.state.academic_background.language
-                                  .english_certificate === 'IELTS'
-                                  ? '6.0'
-                                  : '21'
-                              } `}
-                              value={
-                                this.state.academic_background?.language
-                                  ?.english_score_listening
-                                  ? this.state.academic_background.language
-                                      .english_score_listening
-                                  : ''
-                              }
-                              disabled={
-                                this.state.academic_background?.language
-                                  ?.english_certificate === 'No'
-                                  ? true
-                                  : false
-                              }
-                              onChange={(e) => this.handleChange_Language(e)}
-                            />
-                          </Form.Group>
-                          <br />
-                        </Col>
-                        <Col md={3}>
-                          <Form.Group controlId="english_score_writing">
-                            <Form.Label className="my-0 mx-0 text-light">
-                              Writing
-                            </Form.Label>
-                            <Form.Control
-                              type="text"
-                              readOnly={isReadonly}
-                              placeholder={`${
-                                this.state.academic_background.language
-                                  .english_certificate === 'IELTS'
-                                  ? '6.5'
-                                  : '21'
-                              } `}
-                              value={
-                                this.state.academic_background?.language
-                                  ?.english_score_writing
-                                  ? this.state.academic_background.language
-                                      .english_score_writing
-                                  : ''
-                              }
-                              disabled={
-                                this.state.academic_background?.language
-                                  ?.english_certificate === 'No'
-                                  ? true
-                                  : false
-                              }
-                              onChange={(e) => this.handleChange_Language(e)}
-                            />
-                          </Form.Group>
-                          <br />
-                        </Col>
-                        <Col md={3}>
-                          <Form.Group controlId="english_score_speaking">
-                            <Form.Label className="my-0 mx-0 text-light">
-                              Speaking
-                            </Form.Label>
-                            <Form.Control
-                              type="text"
-                              readOnly={isReadonly}
-                              placeholder={`${
-                                this.state.academic_background.language
-                                  .english_certificate === 'IELTS'
-                                  ? '6.5'
-                                  : '21'
-                              } `}
-                              value={
-                                this.state.academic_background?.language
-                                  ?.english_score_speaking
-                                  ? this.state.academic_background.language
-                                      .english_score_speaking
-                                  : ''
-                              }
-                              disabled={
-                                this.state.academic_background?.language
-                                  ?.english_certificate === 'No'
-                                  ? true
-                                  : false
-                              }
-                              onChange={(e) => this.handleChange_Language(e)}
-                            />
-                          </Form.Group>
-                          <br />
-                        </Col>
-                      </>
-                    ) : (
-                      <>
-                        <Col md={4}>
-                          <InputFormSelect
-                            prop_name={'english_certificate'}
-                            title={'Expected English Certificate'}
-                            isReadonly={isReadonly}
-                            value={
-                              this.state.academic_background?.language
-                                ?.english_certificate
-                                ? this.state.academic_background.language
-                                    .english_certificate
-                                : ''
-                            }
-                            OPTIONS={ENGLISH_CERTIFICATE_OPTIONS()}
-                            handleChange={this.handleChange_Language}
-                          />
-                        </Col>
-                        <Col md={4}>
-                          <Form.Group controlId="english_test_date">
-                            <Form.Label className="my-0 mx-0 text-light">
-                              Expected Test Date
-                            </Form.Label>
-                            <Form.Control
-                              type="date"
-                              readOnly={isReadonly}
-                              value={
-                                this.state.academic_background.language &&
-                                this.state.academic_background.language
-                                  .english_test_date
-                                  ? this.state.academic_background.language
-                                      .english_test_date
-                                  : ''
-                              }
-                              placeholder="Date of English Test"
-                              onChange={(e) => this.handleChange_Language(e)}
-                            />
-                          </Form.Group>
-                        </Col>
-                      </>
-                    )
-                  ) : (
-                    <></>
-                  )}
-                </Row>
-                <Row>
-                  <Col md={4}>
-                    <InputFormSelect
-                      prop_name={'german_isPassed'}
-                      title={
-                        <>
-                          German Passed ? (Set <b>Not need</b> if applying
-                          English taught programs.)
-                        </>
-                      }
-                      isReadonly={isReadonly}
-                      value={
-                        this.state.academic_background?.language
-                          ?.german_isPassed
-                      }
-                      OPTIONS={IS_PASSED_OPTIONS()}
-                      handleChange={this.handleChange_Language}
-                    />
-                  </Col>
-                  {this.state.academic_background?.language?.german_isPassed &&
-                  (this.state.academic_background?.language?.german_isPassed ===
-                    'O' ||
-                    this.state.academic_background?.language
-                      ?.german_isPassed === 'X') ? (
-                    this.state.academic_background?.language
-                      ?.german_isPassed === 'O' ? (
-                      <>
-                        <Col md={4}>
-                          <Form.Group
-                            className="mt-3 mx-0"
-                            controlId="german_certificate"
-                          >
-                            <Form.Label className="my-0 mx-0 text-light">
-                              German Certificate
-                            </Form.Label>
-                            <Form.Control
-                              as="select"
-                              disabled={isReadonly}
-                              value={
-                                this.state.academic_background?.language
-                                  ?.german_certificate
-                                  ? this.state.academic_background.language
-                                      .german_certificate
-                                  : ''
-                              }
-                              onChange={(e) => this.handleChange_Language(e)}
-                            >
-                              <>{GERMAN_CERTIFICATE_OPTIONS()}</>
-                            </Form.Control>
-                          </Form.Group>
-                        </Col>
-                        <Col md={4}>
-                          <Form.Group
-                            className="mt-3 mx-0"
-                            controlId="german_score"
-                          >
-                            <Form.Label className="my-0 mx-0 text-light">
-                              German Test Score
-                            </Form.Label>
-                            <Form.Control
-                              type="text"
-                              readOnly={isReadonly}
-                              placeholder="(i.e. TestDaF: 4, or DSH: 2) "
-                              value={
-                                this.state.academic_background?.language
-                                  ?.german_score
-                                  ? this.state.academic_background.language
-                                      .german_score
-                                  : ''
-                              }
-                              disabled={
-                                this.state.academic_background?.language
-                                  ?.german_certificate === 'No'
-                                  ? true
-                                  : false
-                              }
-                              onChange={(e) => this.handleChange_Language(e)}
-                            />
-                          </Form.Group>
-                          <br />
-                        </Col>
-                      </>
-                    ) : (
-                      <>
-                        <Col md={4}>
-                          <Form.Group
-                            className="mt-3 mx-0"
-                            controlId="german_certificate"
-                          >
-                            <Form.Label className="my-0 mx-0 text-light">
-                              German Certificate
-                            </Form.Label>
-                            <Form.Control
-                              as="select"
-                              disabled={isReadonly}
-                              value={
-                                this.state.academic_background.language &&
-                                this.state.academic_background.language
-                                  .german_certificate
-                                  ? this.state.academic_background.language
-                                      .german_certificate
-                                  : ''
-                              }
-                              onChange={(e) => this.handleChange_Language(e)}
-                            >
-                              <>{GERMAN_CERTIFICATE_OPTIONS()}</>
-                            </Form.Control>
-                          </Form.Group>
-                        </Col>
-                        <Col md={4}>
-                          <Form.Group
-                            className="mt-3 mx-0"
-                            controlId="german_test_date"
-                          >
-                            <Form.Label className="my-0 mx-0 text-light">
-                              Expected Test Date
-                            </Form.Label>
-                            <Form.Control
-                              type="date"
-                              readOnly={isReadonly}
-                              value={
-                                this.state.academic_background.language &&
-                                this.state.academic_background.language
-                                  .german_test_date
-                                  ? this.state.academic_background.language
-                                      .german_test_date
-                                  : ''
-                              }
-                              placeholder="Date of Germa Test"
-                              onChange={(e) => this.handleChange_Language(e)}
-                            />
-                          </Form.Group>
-                        </Col>
-                      </>
-                    )
-                  ) : (
-                    <></>
-                  )}
-                </Row>
-                <Row>
-                  <Col md={4}>
-                    <InputFormSelect
-                      prop_name={'gre_isPassed'}
-                      title={'GRE Test ? (At least V145 Q160 )'}
-                      isReadonly={isReadonly}
-                      value={
-                        this.state.academic_background?.language?.gre_isPassed
-                      }
-                      OPTIONS={IS_PASSED_OPTIONS()}
-                      handleChange={this.handleChange_Language}
-                    />
-                  </Col>
-                  {this.state.academic_background?.language?.gre_isPassed &&
-                  (this.state.academic_background.language.gre_isPassed ===
-                    'O' ||
-                    this.state.academic_background.language.gre_isPassed ===
-                      'X') ? (
-                    this.state.academic_background.language.gre_isPassed ===
-                    'O' ? (
-                      <>
-                        <Col md={4}>
-                          <InputFormSelect
-                            prop_name={'gre_certificate'}
-                            title={'GRE Certificate'}
-                            isReadonly={isReadonly}
-                            value={
-                              this.state.academic_background?.language
-                                ?.gre_certificate
-                                ? this.state.academic_background.language
-                                    .gre_certificate
-                                : ''
-                            }
-                            OPTIONS={GRE_CERTIFICATE_OPTIONS()}
-                            handleChange={this.handleChange_Language}
-                          />
-                        </Col>
-                        <Col md={4}>
-                          <Form.Group controlId="gre_score">
-                            <Form.Label className="my-0 mx-0 text-light">
-                              GRE Test Score
-                            </Form.Label>
-                            <Form.Control
-                              type="text"
-                              readOnly={isReadonly}
-                              placeholder="(i.e. V152Q167A3.5) "
-                              value={
-                                this.state.academic_background?.language
-                                  ?.gre_score
-                                  ? this.state.academic_background.language
-                                      .gre_score
-                                  : ''
-                              }
-                              disabled={
-                                this.state.academic_background?.language
-                                  ?.gre_certificate === 'No'
-                                  ? true
-                                  : false
-                              }
-                              onChange={(e) => this.handleChange_Language(e)}
-                            />
-                          </Form.Group>
-                          <br />
-                        </Col>
-                      </>
-                    ) : (
-                      <>
-                        <Col md={4}>
-                          <InputFormSelect
-                            prop_name={'gre_certificate'}
-                            title={'Expected GRE Certificate'}
-                            isReadonly={isReadonly}
-                            value={
-                              this.state.academic_background?.language
-                                ?.gre_certificate
-                                ? this.state.academic_background.language
-                                    .gre_certificate
-                                : ''
-                            }
-                            OPTIONS={GRE_CERTIFICATE_OPTIONS()}
-                            handleChange={this.handleChange_Language}
-                          />
-                        </Col>
-                        <Col md={4}>
-                          <Form.Group controlId="gre_test_date">
-                            <Form.Label className="my-0 mx-0 text-light">
-                              Expected Test Date
-                            </Form.Label>
-                            <Form.Control
-                              type="date"
-                              readOnly={isReadonly}
-                              value={
-                                this.state.academic_background?.language
-                                  ?.gre_test_date
-                                  ? this.state.academic_background.language
-                                      .gre_test_date
-                                  : ''
-                              }
-                              placeholder="Date of GRE General/Subject Test"
-                              onChange={(e) => this.handleChange_Language(e)}
-                            />
-                          </Form.Group>
-                        </Col>
-                      </>
-                    )
-                  ) : (
-                    <></>
-                  )}
-                </Row>
-                <Row>
-                  <Col md={4}>
-                    <InputFormSelect
-                      prop_name={'gmat_isPassed'}
-                      title={'GMAT Test ? (At least 600 )'}
-                      isReadonly={isReadonly}
-                      value={
-                        this.state.academic_background?.language?.gmat_isPassed
-                      }
-                      OPTIONS={IS_PASSED_OPTIONS()}
-                      handleChange={this.handleChange_Language}
-                    />
-                  </Col>
-                  {this.state.academic_background?.language?.gmat_isPassed &&
-                  (this.state.academic_background.language.gmat_isPassed ===
-                    'O' ||
-                    this.state.academic_background.language.gmat_isPassed ===
-                      'X') ? (
-                    this.state.academic_background.language.gmat_isPassed ===
-                    'O' ? (
-                      <>
-                        <Col md={4}>
-                          <InputFormSelect
-                            prop_name={'gmat_certificate'}
-                            title={'GMAT Certificate'}
-                            isReadonly={isReadonly}
-                            value={
-                              this.state.academic_background?.language
-                                ?.gmat_certificate
-                                ? this.state.academic_background.language
-                                    .gmat_certificate
-                                : ''
-                            }
-                            OPTIONS={GMAT_CERTIFICATE_OPTIONS()}
-                            handleChange={this.handleChange_Language}
-                          />
-                        </Col>
-                        <Col md={4}>
-                          <Form.Group controlId="gmat_score">
-                            <Form.Label className="my-0 mx-0 text-light">
-                              GMAT Test Score
-                            </Form.Label>
-                            <Form.Control
-                              type="text"
-                              readOnly={isReadonly}
-                              placeholder="(i.e. 550, 620) "
-                              value={
-                                this.state.academic_background?.language
-                                  ?.gmat_score
-                                  ? this.state.academic_background.language
-                                      .gmat_score
-                                  : ''
-                              }
-                              disabled={
-                                this.state.academic_background?.language
-                                  ?.gmat_certificate === 'No'
-                                  ? true
-                                  : false
-                              }
-                              onChange={(e) => this.handleChange_Language(e)}
-                            />
-                          </Form.Group>
-                          <br />
-                        </Col>
-                      </>
-                    ) : (
-                      <>
-                        <Col md={4}>
-                          <InputFormSelect
-                            prop_name={'gmat_certificate'}
-                            title={'Expected GMAT Certificate'}
-                            isReadonly={isReadonly}
-                            value={
-                              this.state.academic_background?.language
-                                ?.gmat_certificate
-                                ? this.state.academic_background.language
-                                    .gmat_certificate
-                                : ''
-                            }
-                            OPTIONS={GMAT_CERTIFICATE_OPTIONS()}
-                            handleChange={this.handleChange_Language}
-                          />
-                        </Col>
-                        <Col md={4}>
-                          <Form.Group controlId="gmat_test_date">
-                            <Form.Label className="my-0 mx-0 text-light">
-                              Expected Test Date
-                            </Form.Label>
-                            <Form.Control
-                              type="date"
-                              readOnly={isReadonly}
-                              value={
-                                this.state.academic_background.language &&
-                                this.state.academic_background.language
-                                  .gmat_test_date
-                                  ? this.state.academic_background.language
-                                      .gmat_test_date
-                                  : ''
-                              }
-                              placeholder="Date of GMAT Phyical/Online Test"
-                              onChange={(e) => this.handleChange_Language(e)}
-                            />
-                          </Form.Group>
-                        </Col>
-                      </>
-                    )
-                  ) : (
-                    <></>
-                  )}
-                </Row>
-                <Row>
-                  <Col md={10} className="my-0 mx-0 text-light">
-                    <br />
-                    Last update at:{' '}
-                    {this.props.academic_background.language &&
-                    this.props.academic_background.language.updatedAt
-                      ? convertDate(
-                          this.props.academic_background.language.updatedAt
-                        )
-                      : ''}
-                  </Col>
-                  {this.props.user.archiv !== true && (
-                    <Col md={2}>
-                      <br />
-                      {this.props.singlestudentpage_fromtaiger ? (
-                        <>
-                          <Button
-                            variant="primary"
-                            disabled={!this.state.changed_language}
-                            onClick={(e) =>
-                              this.props.handleSubmit_Language_root(
-                                e,
-                                this.state.academic_background.language
-                              )
-                            }
-                          >
-                            Update
-                          </Button>
+                onChange={handleChangeLanguage}
+              >
+                {IS_PASSED_OPTIONS.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+            {(survey?.academic_background?.language?.german_isPassed === 'O' ||
+              survey?.academic_background?.language?.german_isPassed ===
+                'X') && (
+              <Grid item xs={12} sm={6}>
+                <FormControl fullWidth>
+                  <InputLabel id="german_certificate">
+                    {t('German Certificate')}
+                  </InputLabel>
+                  <Select
+                    id="german_certificate"
+                    name="german_certificate"
+                    value={
+                      survey.academic_background?.language
+                        ?.german_certificate || ''
+                    }
+                    label={t('German Certificate')}
+                    onChange={handleChangeLanguage}
+                  >
+                    {GERMAN_CERTIFICATE_ARRAY_OPTIONS.map((option) => (
+                      <MenuItem
+                        key={option.value}
+                        value={option.value}
+                        disabled={option.disabled}
+                      >
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+            )}
+            {survey?.academic_background?.language?.german_isPassed === 'O' && (
+              <Grid item xs={12} sm={12}>
+                <TextField
+                  fullWidth
+                  id="german_score"
+                  name="german_score"
+                  label={t('German Test Score')}
+                  placeholder="(i.e. TestDaF: 4, or DSH: 2) "
+                  value={
+                    survey.academic_background?.language?.german_score || ''
+                  }
+                  disabled={
+                    survey.academic_background?.language?.german_certificate ===
+                    'No'
+                      ? true
+                      : false
+                  }
+                  onChange={(e) => handleChangeLanguage(e)}
+                />
+              </Grid>
+            )}
+            {survey?.academic_background?.language?.german_isPassed === 'X' && (
+              <Grid item xs={12} sm={12}>
+                <TextField
+                  fullWidth
+                  id="german_test_date"
+                  name="german_test_date"
+                  label={t('Expected German Test Date')}
+                  type="date"
+                  value={
+                    survey.academic_background?.language?.german_test_date || ''
+                  }
+                  onChange={(e) => handleChangeLanguage(e)}
+                />
+              </Grid>
+            )}
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                error={
+                  survey.academic_background?.language?.gre_isPassed === '-'
+                }
+                helperText={
+                  survey.academic_background?.language?.gre_isPassed === '-' &&
+                  'Please provide GRE info.'
+                }
+                labelid="gre_isPassed"
+                select
+                id="gre_isPassed"
+                name="gre_isPassed"
+                value={survey.academic_background?.language?.gre_isPassed}
+                label="GRE Test ? (At least V145 Q160 )"
+                onChange={handleChangeLanguage}
+              >
+                {IS_PASSED_OPTIONS.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+            {(survey.academic_background?.language?.gre_isPassed === 'O' ||
+              survey.academic_background?.language?.gre_isPassed === 'X') && (
+              <Grid item xs={12} sm={6}>
+                <FormControl fullWidth>
+                  <InputLabel id="gre_certificate">{t('GRE Test')}</InputLabel>
+                  <Select
+                    id="gre_certificate"
+                    name="gre_certificate"
+                    value={
+                      survey.academic_background?.language?.gre_certificate ||
+                      ''
+                    }
+                    label="GRE Test"
+                    onChange={handleChangeLanguage}
+                  >
+                    {GRE_CERTIFICATE_ARRAY_OPTIONS.map((option) => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+            )}
 
-                          <br />
-                        </>
-                      ) : (
-                        <>
-                          <Button
-                            variant="primary"
-                            disabled={!this.state.changed_language}
-                            onClick={(e) =>
-                              this.props.handleSubmit_Language(
-                                e,
-                                this.state.academic_background.language
-                              )
-                            }
-                          >
-                            Update
-                          </Button>
-                          <br />
-                        </>
-                      )}
-                    </Col>
-                  )}
-                </Row>
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
-        <Offcanvas
-          show={this.state.baseDocsflagOffcanvas}
-          onHide={this.closeOffcanvasWindow}
-          placement="end"
+            {survey.academic_background?.language?.gre_isPassed === 'O' &&
+              survey.academic_background?.language?.gre_certificate !== '' && (
+                <Grid item xs={12} sm={12}>
+                  <TextField
+                    fullWidth
+                    id="gre_score"
+                    name="gre_score"
+                    label={t('GRE Test Score')}
+                    variant="outlined"
+                    placeholder="(i.e. V152Q167A3.5) "
+                    value={
+                      survey.academic_background?.language?.gre_score || ''
+                    }
+                    disabled={
+                      survey.academic_background?.language?.gre_certificate ===
+                      'No'
+                        ? true
+                        : false
+                    }
+                    onChange={(e) => handleChangeLanguage(e)}
+                  />
+                </Grid>
+              )}
+            {survey.academic_background?.language.gre_isPassed === 'X' && (
+              <Grid item xs={12} sm={12}>
+                <TextField
+                  fullWidth
+                  type="date"
+                  name="gre_test_date"
+                  label={t('Expected GRE Test Date')}
+                  value={
+                    survey.academic_background?.language?.gre_test_date || ''
+                  }
+                  placeholder="Date of GRE General/Subject Test"
+                  onChange={(e) => handleChangeLanguage(e)}
+                />
+              </Grid>
+            )}
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                select
+                labelid="gmat_isPassed"
+                error={
+                  survey.academic_background?.language?.gmat_isPassed === '-'
+                }
+                helperText={
+                  survey.academic_background?.language?.gmat_isPassed === '-' &&
+                  'Please provide GMAT info.'
+                }
+                id="gmat_isPassed"
+                name="gmat_isPassed"
+                value={survey.academic_background?.language?.gmat_isPassed}
+                label="GMAT Test ? (At least 600 )"
+                onChange={handleChangeLanguage}
+              >
+                {IS_PASSED_OPTIONS.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+            {(survey.academic_background?.language?.gmat_isPassed === 'O' ||
+              survey.academic_background?.language?.gmat_isPassed === 'X') && (
+              <Grid item xs={12} sm={6}>
+                <FormControl fullWidth>
+                  <InputLabel id="gmat_certificate">
+                    {t('GMAT Test')}
+                  </InputLabel>
+                  <Select
+                    id="gmat_certificate"
+                    name="gmat_certificate"
+                    value={
+                      survey.academic_background?.language?.gmat_certificate ||
+                      ''
+                    }
+                    label="GMAT Test"
+                    onChange={handleChangeLanguage}
+                  >
+                    {GMAT_CERTIFICATE_OPTIONS.map((option) => (
+                      <MenuItem
+                        key={option.value}
+                        value={option.value}
+                        disabled={option.disabled}
+                      >
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+            )}
+            {survey.academic_background?.language?.gmat_isPassed === 'O' &&
+              survey.academic_background?.language?.gmat_certificate !== '' && (
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth
+                    id="gmat_score"
+                    name="gmat_score"
+                    label={t('GMAT Test Score')}
+                    variant="outlined"
+                    placeholder="(i.e. 550, 620) "
+                    value={
+                      survey.academic_background?.language?.gmat_score || ''
+                    }
+                    disabled={
+                      survey.academic_background?.language?.gmat_certificate ===
+                      'No'
+                        ? true
+                        : false
+                    }
+                    onChange={(e) => handleChangeLanguage(e)}
+                  />
+                </Grid>
+              )}
+            {survey.academic_background?.language?.gmat_isPassed === 'X' && (
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  id="gmat_test_date"
+                  name="gmat_test_date"
+                  label={t('Expected Test Date')}
+                  type="date"
+                  value={
+                    survey.academic_background?.language?.gmat_test_date || ''
+                  }
+                  onChange={(e) => handleChangeLanguage(e)}
+                />
+              </Grid>
+            )}
+          </Grid>
+          <Box>
+            <Typography variant="body2" sx={{ mt: 2 }}>
+              {t('Last update at')}:
+              {survey.academic_background?.language &&
+              survey.academic_background?.language.updatedAt
+                ? convertDate(survey.academic_background?.language.updatedAt)
+                : ''}
+              {user.archiv !== true && (
+                <>
+                  <br />
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    disabled={!survey.changed_language}
+                    onClick={(e) =>
+                      handleSurveyLanguageSubmit(
+                        e,
+                        survey.academic_background.language
+                      )
+                    }
+                    sx={{ mt: 2 }}
+                  >
+                    {t('Update')}
+                  </Button>
+                </>
+              )}{' '}
+            </Typography>
+          </Box>
+        </Card>
+      </Box>
+      <ModalNew
+        open={surveyEditableComponentState.baseDocsflagOffcanvas}
+        onClose={closeOffcanvasWindow}
+      >
+        <Typography variant="h6">{t('Edit')}</Typography>
+        <TextField
+          label={`Documentation Link for ${props.docName}`}
+          placeholder="https://taigerconsultancy-portal.com/docs/search/12345678"
+          value={survey.survey_link}
+          onChange={(e) => onChangeURL(e)}
+        />
+        <Button
+          onClick={(e) => handleUpdateDocLink(e)}
+          disabled={survey.baseDocsflagOffcanvasButtonDisable}
         >
-          <Offcanvas.Header closeButton>
-            <Offcanvas.Title>Edit</Offcanvas.Title>
-          </Offcanvas.Header>
-          <Offcanvas.Body>
-            <Form.Group className="mb-3">
-              <Form.Label>
-                Documentation Link for <b>{this.props.docName}</b>
-              </Form.Label>
-              <Form.Control
-                placeholder="https://taigerconsultancy-portal.com/docs/search/12345678"
-                value={this.state.survey_link}
-                onChange={(e) => this.onChangeURL(e)}
-              />
-            </Form.Group>
-            <Button
-              onClick={(e) => this.updateDocLink(e)}
-              disabled={this.state.baseDocsflagOffcanvasButtonDisable}
-            >
-              Save
-            </Button>
-          </Offcanvas.Body>
-        </Offcanvas>
-      </Aux>
-    );
-  }
-}
+          {t('Save')}
+        </Button>
+      </ModalNew>
+    </Box>
+  );
+};
 
 export default SurveyEditableComponent;

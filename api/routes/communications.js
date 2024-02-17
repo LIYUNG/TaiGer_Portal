@@ -43,7 +43,7 @@ router
   .route('/ping/all')
   .get(
     getNumberUnreadMessagesRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     getUnreadNumberMessages
   );
 

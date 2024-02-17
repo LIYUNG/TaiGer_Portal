@@ -1,87 +1,92 @@
-import React from 'react';
-import { Row, Col, Card, Spinner } from 'react-bootstrap';
-import Aux from '../../hoc/_Aux';
+import React, { useEffect, useState } from 'react';
+import { Link as LinkDom, Navigate } from 'react-router-dom';
+import { Box, Breadcrumbs, Link, Typography } from '@mui/material';
+
 import AdmissionsTable from './AdmissionsTable';
 import ErrorPage from '../Utils/ErrorPage';
-import { spinner_style } from '../Utils/contants';
 import { is_TaiGer_role } from '../Utils/checking-functions';
-
 import { getAdmissions } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import { appConfig } from '../../config';
+import { useAuth } from '../../components/AuthProvider';
+import Loading from '../../components/Loading/Loading';
 
-class Admissions extends React.Component {
-  state = {
+function Admissions() {
+  const { user } = useAuth();
+  const [admissionsState, setAdmissionsState] = useState({
     error: '',
     isLoaded: false,
     students: [],
     success: false,
     res_status: 0
-  };
+  });
 
-  componentDidMount() {
+  useEffect(() => {
     getAdmissions().then(
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
         if (success) {
-          this.setState({
+          setAdmissionsState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             students: data,
             success: success,
             res_status: status
-          });
+          }));
         } else {
-          this.setState({
+          setAdmissionsState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             res_status: status
-          });
+          }));
         }
       },
       (error) => {
-        this.setState((state) => ({
-          ...state,
+        setAdmissionsState((prevState) => ({
+          ...prevState,
           isLoaded: true,
           error,
           res_status: 500
         }));
       }
     );
+  }, []);
+
+  if (!is_TaiGer_role(user)) {
+    return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
+  }
+  TabTitle(`${appConfig.companyName} Admissions`);
+  const { res_status, isLoaded } = admissionsState;
+
+  if (!isLoaded && !admissionsState.data) {
+    return <Loading />;
   }
 
-  render() {
-    if (!is_TaiGer_role(this.props.user)) {
-      return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
-    }
-    TabTitle(`${appConfig.companyName} Admissions`);
-    const { res_status, isLoaded } = this.state;
+  if (res_status >= 400) {
+    return <ErrorPage res_status={res_status} />;
+  }
 
-    if (!isLoaded && !this.state.data) {
-      return (
-        <div style={spinner_style}>
-          <Spinner animation="border" role="status">
-            <span className="visually-hidden"></span>
-          </Spinner>
-        </div>
-      );
-    }
-
-    if (res_status >= 400) {
-      return <ErrorPage res_status={res_status} />;
-    }
-
-    if (this.state.success) {
-      return (
-        <Aux>
-          <Row>
-            <Col>
-              <AdmissionsTable students={this.state.students} />
-            </Col>
-          </Row>
-        </Aux>
-      );
-    }
+  if (admissionsState.success) {
+    return (
+      <Box>
+        <Breadcrumbs aria-label="breadcrumb">
+          <Link
+            underline="hover"
+            color="inherit"
+            component={LinkDom}
+            to={`${DEMO.DASHBOARD_LINK}`}
+          >
+            {appConfig.companyName}
+          </Link>
+          <Typography color="text.primary">
+            {appConfig.companyName} Admissions
+          </Typography>
+        </Breadcrumbs>
+        <AdmissionsTable students={admissionsState.students} />
+      </Box>
+    );
   }
 }
 

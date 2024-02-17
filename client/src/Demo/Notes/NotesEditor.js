@@ -1,16 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import {
-  Row,
-  Col,
-  Button,
-  OverlayTrigger,
-  Tooltip,
-  Card
-} from 'react-bootstrap';
+import { Button, Tooltip, Card } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import EditorSimple from '../../components/EditorJs/EditorSimple';
 
 function NotesEditor(props) {
+  const { t } = useTranslation();
   let [statedata, setStatedata] = useState({
     editorState: props.editorState,
     buttonDisabled: true
@@ -18,7 +13,7 @@ function NotesEditor(props) {
   useEffect(() => {
     setStatedata((state) => ({
       ...state,
-      editorState: props.editorState,
+      editorState: props.editorState
     }));
   }, [props.editorState]);
   const handleEditorChange = (content) => {
@@ -29,11 +24,6 @@ function NotesEditor(props) {
     }));
   };
 
-  const renderTooltip = (props) => (
-    <Tooltip id="tooltip-disabled" {...props}>
-      Please write some text to improve the communication and understanding.
-    </Tooltip>
-  );
   const handleClickSave = (e, editorState) => {
     setStatedata((state) => ({
       ...state,
@@ -44,56 +34,48 @@ function NotesEditor(props) {
 
   return (
     <>
-      <Row style={{ textDecoration: 'none' }}>
-        <Col className="my-0 mx-0">
-          <Card border="dark">
-            <Card.Body border="dark">
-              <EditorSimple
-                holder={`${props.notes_id}`}
-                thread={props.thread}
-                defaultHeight={0}
-                readOnly={props.readOnly}
-                handleEditorChange={handleEditorChange}
-                editorState={props.editorState}
-                setStatedata={setStatedata}
-              />
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-      {!props.readOnly && (
-        <Row>
-          <Col className="my-0 mx-0">
-            {!statedata.editorState.blocks ||
-            statedata.editorState.blocks.length === 0 ||
-            statedata.buttonDisabled ||
-            props.buttonDisabled ? (
-              <OverlayTrigger
-                placement="right"
-                delay={{ show: 250, hide: 400 }}
-                overlay={renderTooltip}
-              >
-                <span className="d-inline-block">
-                  <Button
-                    size="sm"
-                    disabled={true}
-                    style={{ pointerEvents: 'none' }}
-                  >
-                    Save
-                  </Button>
-                </span>
-              </OverlayTrigger>
-            ) : (
+      <Card sx={{ padding: 4, mb: 2, minHeight: 200 }}>
+        <EditorSimple
+          holder={`${props.notes_id}`}
+          thread={props.thread}
+          defaultHeight={0}
+          readOnly={props.readOnly}
+          handleEditorChange={handleEditorChange}
+          editorState={props.editorState}
+          setStatedata={setStatedata}
+        />
+      </Card>
+      {!props.readOnly &&
+        (!statedata.editorState.blocks ||
+        statedata.editorState.blocks.length === 0 ||
+        statedata.buttonDisabled ||
+        props.buttonDisabled ? (
+          <Tooltip title="Please write some text to improve the communication and understanding.">
+            <span>
               <Button
-                size="sm"
+                fullWidth
+                variant="outlined"
+                disabled={true}
+                // style={{ pointerEvents: 'none' }}
+              >
+                {t('Save')}
+              </Button>
+            </span>
+          </Tooltip>
+        ) : (
+          <Tooltip title="Please write some text to improve the communication and understanding.">
+            <span>
+              <Button
+                fullWidth
+                color="primary"
+                variant="contained"
                 onClick={(e) => handleClickSave(e, statedata.editorState)}
               >
-                Save
+                {t('Save')}
               </Button>
-            )}
-          </Col>
-        </Row>
-      )}
+            </span>
+          </Tooltip>
+        ))}
     </>
   );
 }

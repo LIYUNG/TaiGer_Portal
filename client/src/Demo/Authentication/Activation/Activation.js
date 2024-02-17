@@ -1,18 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
+import { Button, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
-import './../../../assets/scss/style.scss';
-import Aux from '../../../hoc/_Aux';
 import { activation, resendActivation } from '../../../api/index';
-import Footer from '../../../components/Footer/Footer';
-import { appConfig } from '../../../config';
+import AuthWrapper from '../../../components/AuthWrapper';
 
-export default function Activation(props) {
-  const { t, i18n } = useTranslation();
-  const query = new URLSearchParams(props.location.search);
-  const [email, setEmail] = useState(query.get('email'));
-  const [token, setToken] = useState(query.get('token'));
+export default function Activation() {
+  const { t } = useTranslation();
+  const query = new URLSearchParams(window.location.search);
+  const email = query.get('email');
+  const token = query.get('token');
   const [activationsuccess, setActivationSuccess] = React.useState(false);
   const [emailsent, setEmailsent] = React.useState(false);
 
@@ -43,112 +41,54 @@ export default function Activation(props) {
       }
     } catch (err) {
       // TODO: handle error
-      // console.log(err);
     }
   };
 
-  const handleonClick = async (e) => {
+  const handleonClick = async () => {
     window.location.reload(false);
   };
   // if return 200, then show Start button, otherwise, resend the activation email with token.
-  if (activationsuccess) {
-    return (
-      <Aux>
-        <div className="auth-wrapper">
-          <div className="auth-content">
-            <form>
-              <div className="card-body text-center">
-                <img
-                  className="img-radius"
-                  src={appConfig.LoginPageLogo}
-                  alt="Generic placeholder"
-                />
-                <p className="mb-4">Account activated</p>
-                <div className="input-group mb-4">
-                  <p className="mb-0 text-success">
-                    You have activated the account successfully!
-                  </p>
-                </div>
-                <button
-                  className="btn btn-primary shadow-2 mb-4"
-                  onClick={() => handleonClick()}
-                >
-                  Start
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </Aux>
-    );
-  } else {
-    if (emailsent) {
-      return (
-        <Aux>
-          <div className="auth-wrapper">
-            <div className="auth-content">
-              <form>
-                <div className="card-body text-center">
-                  <img
-                    className="img-radius"
-                    src={appConfig.LoginPageLogo}
-                    alt="Generic placeholder"
-                  />
-                  <p className="mb-4 mb-2 text-light"></p>
-                  <p className="mb-2 text-light">
-                    {t('Confirmation Email sent')}
-                  </p>
-                  <div className="input-group mb-2">
-                    <p className="mb-0 text-success">
-                      {t(
-                        'The new activation link is sent to the following address'
-                      )}
-                      :
-                    </p>
-                  </div>
-                  <p className="mb-4 text-secondary">{email}</p>
-                </div>
-                <Footer />
-              </form>
-            </div>
-          </div>
-        </Aux>
-      );
-    } else {
-      return (
-        <Aux>
-          <div className="auth-wrapper">
-            <div className="auth-content">
-              <form>
-                <div className="card-body text-center">
-                  <img
-                    className="img-radius"
-                    src={appConfig.LoginPageLogo}
-                    alt="Generic placeholder"
-                  />
-                  <p className="mb-4"></p>
-                  <p className="mb-4">Link Expired</p>
-                  <div className="input-group mb-4">
-                    <p className="mb-0 text-secondary">
-                      The activation link is expired. Please request another
-                      activation link!
-                    </p>
-                  </div>
-                  <button
-                    className="btn btn-primary shadow-2 mb-4"
-                    onClick={(e) => handleResendSubmit(e)}
-                  >
-                    Resend
-                  </button>
-                </div>
-                <Footer />
-              </form>
-            </div>
-          </div>
-        </Aux>
-      );
-    }
-  }
+  return (
+    <AuthWrapper>
+      {activationsuccess && (
+        <>
+          <Typography>{t('Account activated')}</Typography>
+          <Typography>
+            {t('You have activated the account successfully!')}
+          </Typography>
+          <Button color="primary" onClick={() => handleonClick()}>
+            {t('Start')}
+          </Button>
+        </>
+      )}
+      {!activationsuccess && emailsent && (
+        <>
+          <Typography>{t('Confirmation Email sent')}</Typography>
+          <Typography>
+            {t('The new activation link is sent to the following address')}:
+          </Typography>
+          <Typography>{email}</Typography>
+        </>
+      )}
+      {!activationsuccess && !emailsent && (
+        <>
+          <Typography>{t('Link Expired')}</Typography>
+          <Typography>
+            {t(
+              'The activation link is expired. Please request another activation link!'
+            )}
+          </Typography>
+          <Button
+            color="primary"
+            variant="contained"
+            onClick={(e) => handleResendSubmit(e)}
+          >
+            {t('Resend')}
+          </Button>
+        </>
+      )}
+    </AuthWrapper>
+  );
 }
 
 Activation.propTypes = {

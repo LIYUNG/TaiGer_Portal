@@ -1,6 +1,7 @@
 const DEMO = {
   ASSIGN_AGENT_LINK: '/assignment/agents',
   ASSIGN_EDITOR_LINK: '/assignment/editors',
+  ACCOUNTING_LINK: '/internal/accounting',
   ACCOUNTING_USER_ID_LINK: (user_id) => {
     return `/internal/accounting/users/${user_id}`;
   },
@@ -24,6 +25,9 @@ const DEMO = {
   DOCUMENT_MODIFICATION_LINK: (thread_id) => {
     return `/document-modification/${thread_id}`;
   },
+  DOCS_ROOT_LINK: (category) => {
+    return `/docs/${category}`;
+  },
   DOCUMENT_MODIFICATION_INPUT_LINK: (thread_id) => {
     return `/document-modification/student-input/${thread_id}`;
   },
@@ -31,7 +35,11 @@ const DEMO = {
   EVENT_STUDENT_STUDENTID_LINK: (student_id) => {
     return `/events/students/${student_id}`;
   },
-  EVENT_TAIGER_LINK: '/events/taiger',
+  EVENT_TAIGER_LINK: (user_id) => {
+    return `/events/taiger/${user_id}`;
+  },
+  EVENT_TAIGER_USERID_LINK: '/events/taiger',
+  FORGOT_PASSWORD_LINK: '/account/forgot-password',
   INTERVIEW_LINK: '/interview-training',
   INTERVIEW_SINGLE_LINK: (interview_id) => {
     return `/interview-training/${interview_id}`;
@@ -39,9 +47,11 @@ const DEMO = {
   INTERNAL_WIDGET_LINK: (user_id) => {
     return `/internal/widgets/${user_id}`;
   },
-  INTERNAL_LOGS_LINK: (user_id) => {
+  INTERNAL_LOGS_LINK: '/internal/logs',
+  INTERNAL_LOGS_USER_ID_LINK: (user_id) => {
     return `/internal/logs/${user_id}`;
   },
+  LOGIN_LINK: '/account/login',
   MY_INTERVIEW_LINK: '/interview-training/my-interviews',
   PROFILE: '/profile',
   PROFILE_STUDENT_LINK: (user_id) => {
@@ -89,6 +99,7 @@ const DEMO = {
   TEAM_MANAGER_LINK: (manager_id) => {
     return `/teams/managers/${manager_id}`;
   },
+  TEAM_MEMBERS_LINK: '/teams/members',
   UNI_ASSIST_DOCS_LINK: '/docs/uniassist',
   UNI_ASSIST_LINK: '/uni-assist'
 };

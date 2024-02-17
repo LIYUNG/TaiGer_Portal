@@ -1,49 +1,46 @@
-import React from "react";
-import { Form, Button } from "react-bootstrap";
+import React, { useState } from 'react';
+import { Form, Button } from 'react-bootstrap';
 
-class UploadFileForm extends React.Component {
-  state = {
-    FileName: "",
-    text: "",
+function UploadFileForm(props) {
+  const [uploadFileFormState, setUploadFileFormState] = useState({
+    FileName: '',
+    text: ''
+  });
+
+  const handleContentChange = (e) => {
+    setUploadFileFormState((prevState) => ({
+      ...prevState,
+      FileName: e.target.value
+    }));
   };
 
-  handleContentChange = (e) => {
-    this.setState({ FileName: e.target.value });
-  };
-
-  handleChange = (value) => {
-    this.setState({ text: value });
-  };
-
-  handleSubmit = () => {
-    this.props.onFormSubmit(
-      this.props.student._id,
-      this.props.application.programId._id,
-      this.state.FileName
+  const handleSubmit = () => {
+    props.onFormSubmit(
+      props.student._id,
+      props.application.programId._id,
+      uploadFileFormState.FileName
     );
   };
 
-  render() {
-    const submitText = this.props.student._id ? "Update" : "Create";
+  const submitText = props.student._id ? 'Update' : 'Create';
 
-    return (
-      <>
-        <Form.Group className="mb-3">
-          <Form.Control
-            as="textarea"
-            rows="1"
-            onChange={this.handleContentChange}
-            defaultValue={this.state.FileName}
-            placeholder="Content"
-          />
-        </Form.Group>
-        <Button onClick={this.handleSubmit}>{submitText}</Button>
-        <Button onClick={this.props.onFormClose} variant="light">
-          Cancel
-        </Button>
-      </>
-    );
-  }
+  return (
+    <>
+      <Form.Group className="mb-3">
+        <Form.Control
+          as="textarea"
+          rows="1"
+          onChange={handleContentChange}
+          defaultValue={uploadFileFormState.FileName}
+          placeholder="Content"
+        />
+      </Form.Group>
+      <Button onClick={handleSubmit}>{submitText}</Button>
+      <Button onClick={props.onFormClose} variant="light">
+        Cancel
+      </Button>
+    </>
+  );
 }
 
 export default UploadFileForm;

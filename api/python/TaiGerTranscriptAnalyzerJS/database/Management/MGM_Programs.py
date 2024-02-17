@@ -104,7 +104,7 @@ def TUM_CONSUMER_SCIENCE(transcript_sorted_group_map, df_transcript_array, df_ca
     # Create transcript_sorted_group to program_category mapping
     # Statistik, Empirische Forschungsmethoden, Quantitative Methoden, Mathematik
     PROG_SPEC_EMPIRIAL_METHODE_PARAM = {
-        'Program_Category': 'BWL, Quantitative Method, Mathematik', 'Required_ECTS': 15}  # 15 PUnkto
+        'Program_Category': 'Quantitative Method, Mathematik', 'Required_ECTS': 15}  # 15 PUnkto
     #  Bachelorarbeit, eines Projekts, eines wissenschaftlichen Aufsatzes
     PROG_SPEC_BACHELORARBEIT_PARAM = {
         'Program_Category': 'Bachelor Thesis', 'Required_ECTS': 5}                # 5 Punkte

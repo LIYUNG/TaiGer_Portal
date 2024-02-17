@@ -1,40 +1,39 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Spinner, Row, Col } from 'react-bootstrap';
-import { Redirect } from 'react-router-dom';
+import { Navigate, useParams, Link as LinkDom } from 'react-router-dom';
+import { Box, Breadcrumbs, Card, Link, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-import Aux from '../../../hoc/_Aux';
 import {
   getLast180DaysObject,
-  getLast180DaysSet,
-  spinner_style,
+  // getLast180DaysSet,
   transformObjectToArray
 } from '../../Utils/contants';
 import ErrorPage from '../../Utils/ErrorPage';
 import { is_TaiGer_Admin } from '../../Utils/checking-functions';
-
 import { getUserLog } from '../../../api';
 import { TabTitle } from '../../Utils/TabTitle';
 import DEMO from '../../../store/constant';
 import LogLineChart from '../../../components/Charts/LogLineChart';
 import { appConfig } from '../../../config';
-import { TopBar } from '../../../components/TopBar/TopBar';
+import { useAuth } from '../../../components/AuthProvider';
+import Loading from '../../../components/Loading/Loading';
 
-function PortalSingleUserLog(props) {
-  const { t, i18n } = useTranslation();
-  const [PortalSingleUserLogState, setPortalSingleUserLogState] =
-    useState({
-      error: '',
-      role: '',
-      isLoaded: false,
-      logs: null,
-      success: false,
-      range: 180,
-      res_status: 0
-    });
+function PortalSingleUserLog() {
+  const { user_id } = useParams();
+  const { user } = useAuth();
+  const { t } = useTranslation();
+  const [PortalSingleUserLogState, setPortalSingleUserLogState] = useState({
+    error: '',
+    role: '',
+    isLoaded: false,
+    logs: null,
+    success: false,
+    range: 180,
+    res_status: 0
+  });
 
   useEffect(() => {
-    getUserLog(props.match.params.user_id).then(
+    getUserLog(user_id).then(
       (resp) => {
         const { data, success, user } = resp.data;
         const { status } = resp;
@@ -64,22 +63,16 @@ function PortalSingleUserLog(props) {
         }));
       }
     );
-  }, [props.match.params.user_id]);
+  }, [user_id]);
 
-  if (!is_TaiGer_Admin(props.user)) {
-    return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
+  if (!is_TaiGer_Admin(user)) {
+    return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
   }
   TabTitle(`${appConfig.companyName} User Logs`);
   const { res_status, isLoaded } = PortalSingleUserLogState;
 
   if (!isLoaded) {
-    return (
-      <div style={spinner_style}>
-        <Spinner animation="border" role="status">
-          <span className="visually-hidden"></span>
-        </Spinner>
-      </div>
-    );
+    return <Loading />;
   }
 
   if (res_status >= 400) {
@@ -94,35 +87,47 @@ function PortalSingleUserLog(props) {
     a.date > b.date ? 1 : -1
   );
   return (
-    <Aux>
-      <TopBar>
-        {t('User')}&nbsp;
-        <b>
+    <Box>
+      <Breadcrumbs aria-label="breadcrumb">
+        <Link
+          underline="hover"
+          color="inherit"
+          component={LinkDom}
+          to={`${DEMO.DASHBOARD_LINK}`}
+        >
+          {appConfig.companyName}
+        </Link>
+        <Link
+          underline="hover"
+          color="inherit"
+          component={LinkDom}
+          to={`${DEMO.INTERNAL_LOGS_LINK}`}
+        >
+          {t('User Logs')}
+        </Link>
+        <Typography color="text.primary">
           {PortalSingleUserLogState.user?.firstname}{' '}
-          {PortalSingleUserLogState.user?.lastname}
-        </b>{' '}
-        Logs
-      </TopBar>
+          {PortalSingleUserLogState.user?.lastname} Logs
+        </Typography>
+      </Breadcrumbs>
       <Card>
-        <Card.Body>
-          <LogLineChart data={dataToBeUsed} />
-          <br />
-          <hh5>API calls detail:</hh5>
-          <br />
-          <br />
-          {PortalSingleUserLogState.logs
-            .sort((a, b) => (a.date > b.date ? -1 : 1))
-            .map((log, idx) => (
-              <li key={idx}>
-                {log.user_id?.firstname} {log.user_id?.lastname} {log.date}
-                {log.apiCallCount}
-                {log.apiPath}
-                {log.operation}
-              </li>
-            ))}
-        </Card.Body>
+        <LogLineChart data={dataToBeUsed} />
+        <br />
+        <hh5>API calls detail:</hh5>
+        <br />
+        <br />
+        {PortalSingleUserLogState.logs
+          .sort((a, b) => (a.date > b.date ? -1 : 1))
+          .map((log, idx) => (
+            <li key={idx}>
+              {log.user_id?.firstname} {log.user_id?.lastname} {log.date}
+              {log.apiCallCount}
+              {log.apiPath}
+              {log.operation}
+            </li>
+          ))}
       </Card>
-    </Aux>
+    </Box>
   );
 }
 

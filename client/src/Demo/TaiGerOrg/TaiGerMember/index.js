@@ -1,23 +1,36 @@
-import React from 'react';
-import { Card, Spinner, Row, Col } from 'react-bootstrap';
-import { Redirect, Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import {
+  Box,
+  Breadcrumbs,
+  Card,
+  Link,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Typography
+} from '@mui/material';
+import { Navigate, Link as LinkDom } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
-import Aux from '../../../hoc/_Aux';
-import { spinner_style } from '../../Utils/contants';
 import ErrorPage from '../../Utils/ErrorPage';
 import {
   is_TaiGer_Admin,
   is_TaiGer_role
 } from '../../Utils/checking-functions';
 
-import { getTeamMembers, updateUserPermission } from '../../../api';
+import { getTeamMembers } from '../../../api';
 import { TabTitle } from '../../Utils/TabTitle';
 import DEMO from '../../../store/constant';
 import { appConfig } from '../../../config';
-import { TopBar } from '../../../components/TopBar/TopBar';
+import { useAuth } from '../../../components/AuthProvider';
+import Loading from '../../../components/Loading/Loading';
 
-class TaiGerMember extends React.Component {
-  state = {
+function TaiGerMember() {
+  const { user } = useAuth();
+  const { t } = useTranslation();
+  const [taiGerMemberState, setTaiGerMember] = useState({
     error: '',
     role: '',
     isLoaded: false,
@@ -30,193 +43,147 @@ class TaiGerMember extends React.Component {
     user_permissions: [],
     teams: null,
     res_status: 0
-  };
+  });
 
-  componentDidMount() {
+  useEffect(() => {
     getTeamMembers().then(
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
         if (success) {
-          this.setState({
+          setTaiGerMember((prevState) => ({
+            ...prevState,
             isLoaded: true,
             teams: data,
             success: success,
             res_status: status
-          });
+          }));
         } else {
-          this.setState({
+          setTaiGerMember((prevState) => ({
+            ...prevState,
             isLoaded: true,
             res_status: status
-          });
+          }));
         }
       },
       (error) => {
-        this.setState((state) => ({
-          ...state,
+        setTaiGerMember((prevState) => ({
+          ...prevState,
           isLoaded: true,
           error,
           res_status: 500
         }));
       }
     );
+  }, []);
+
+  if (!is_TaiGer_role(user)) {
+    return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
+  }
+  TabTitle(`${appConfig.companyName} Team Member`);
+  const { res_status, isLoaded } = taiGerMemberState;
+
+  if (!isLoaded && !taiGerMemberState.teams) {
+    return <Loading />;
   }
 
-  setModalShow = (user_firstname, user_lastname, user_id, permissions) => {
-    this.setState({
-      modalShow: true,
-      firstname: user_firstname,
-      lastname: user_lastname,
-      selected_user_id: user_id,
-      user_permissions: permissions
-    });
-  };
-
-  setModalHide = () => {
-    this.setState({
-      modalShow: false
-    });
-  };
-
-  onUpdatePermissions = (e, permissions) => {
-    e.preventDefault();
-    updateUserPermission(this.state.selected_user_id, permissions).then(
-      (resp) => {
-        const { data, success } = resp.data;
-        const { status } = resp;
-        if (success) {
-          let teams_temp = [...this.state.teams];
-          let team_member = teams_temp.find(
-            (member) => member._id.toString() === this.state.selected_user_id
-          );
-          team_member.permissions = [data];
-          this.setState({
-            isLoaded: true,
-            modalShow: false,
-            teams: teams_temp,
-            firstname: '',
-            lastname: '',
-            selected_user_id: '',
-            success: success,
-            res_status: status
-          });
-        } else {
-          this.setState({
-            isLoaded: true,
-            res_status: status
-          });
-        }
-      },
-      (error) => {
-        this.setState((state) => ({
-          ...state,
-          isLoaded: true,
-          error,
-          res_status: 500
-        }));
-      }
-    );
-  };
-
-  render() {
-    if (!is_TaiGer_role(this.props.user)) {
-      return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
-    }
-    TabTitle(`${appConfig.companyName} Team Member`);
-    const { res_status, isLoaded } = this.state;
-
-    if (!isLoaded && !this.state.teams) {
-      return (
-        <div style={spinner_style}>
-          <Spinner animation="border" role="status">
-            <span className="visually-hidden"></span>
-          </Spinner>
-        </div>
-      );
-    }
-
-    if (res_status >= 400) {
-      return <ErrorPage res_status={res_status} />;
-    }
-    const admins = this.state.teams.filter((member) => member.role === 'Admin');
-    const agents = this.state.teams.filter((member) => member.role === 'Agent');
-    const editors = this.state.teams.filter(
-      (member) => member.role === 'Editor'
-    );
-    return (
-      <Aux>
-        <TopBar>{appConfig.companyName} Team Member</TopBar>
-        <Card>
-          <Card.Body>
-            {is_TaiGer_Admin(this.props.user) && (
-              <>
-                <h4>Admin:</h4>
-                {admins.map((admin, i) => (
-                  <p key={i}>
-                    <b>
-                      <Link
-                        to={`${DEMO.TEAM_ADMIN_LINK(admin._id.toString())}`}
-                      >
-                        {admin.firstname} {admin.lastname}
-                      </Link>
-                    </b>
-                  </p>
-                ))}
-              </>
-            )}
-
-            <h4>Agent:</h4>
-            <table>
-              <thead>
-                <tr>
-                  <th>Name</th>
-                </tr>
-              </thead>
-              <tbody>
-                {agents.map((agent, i) => (
-                  <tr key={i}>
-                    <td>
-                      <b>
-                        <Link
-                          to={`${DEMO.TEAM_AGENT_LINK(agent._id.toString())}`}
-                        >
-                          {agent.firstname} {agent.lastname}{' '}
-                        </Link>
-                      </b>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-
-            <h4>Editor:</h4>
-            <table>
-              <thead>
-                <tr>
-                  <th>Name</th>
-                </tr>
-              </thead>
-              <tbody>
-                {editors.map((editor, i) => (
-                  <tr key={i}>
-                    <td>
-                      <b>
-                        <Link
-                          to={`${DEMO.TEAM_EDITOR_LINK(editor._id.toString())}`}
-                        >
-                          {editor.firstname} {editor.lastname}{' '}
-                        </Link>
-                      </b>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </Card.Body>
-        </Card>
-      </Aux>
-    );
+  if (res_status >= 400) {
+    return <ErrorPage res_status={res_status} />;
   }
+  const admins = taiGerMemberState.teams.filter(
+    (member) => member.role === 'Admin'
+  );
+  const agents = taiGerMemberState.teams.filter(
+    (member) => member.role === 'Agent'
+  );
+  const editors = taiGerMemberState.teams.filter(
+    (member) => member.role === 'Editor'
+  );
+  return (
+    <Box>
+      <Breadcrumbs aria-label="breadcrumb">
+        <Link
+          underline="hover"
+          color="inherit"
+          component={LinkDom}
+          to={`${DEMO.DASHBOARD_LINK}`}
+        >
+          {appConfig.companyName}
+        </Link>
+        <Typography color="text.primary">
+          {appConfig.companyName} Team Member
+        </Typography>
+      </Breadcrumbs>
+      <Card>
+        {is_TaiGer_Admin(user) && (
+          <>
+            <Typography variant="h5">Admin:</Typography>
+            {admins.map((admin, i) => (
+              <p key={i}>
+                <b>
+                  <Link
+                    to={`${DEMO.TEAM_ADMIN_LINK(admin._id.toString())}`}
+                    component={LinkDom}
+                  >
+                    {admin.firstname} {admin.lastname}
+                  </Link>
+                </b>
+              </p>
+            ))}
+          </>
+        )}
+
+        <Typography variant="h5">{t('Agent')}:</Typography>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>{t('Name')}</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {agents.map((agent, i) => (
+              <TableRow key={i}>
+                <TableCell>
+                  <b>
+                    <Link
+                      to={`${DEMO.TEAM_AGENT_LINK(agent._id.toString())}`}
+                      component={LinkDom}
+                    >
+                      {agent.firstname} {agent.lastname}{' '}
+                    </Link>
+                  </b>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+        <Typography variant="h5">{t('Editor')}:</Typography>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Name</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {editors.map((editor, i) => (
+              <TableRow key={i}>
+                <TableCell>
+                  <b>
+                    <Link
+                      to={`${DEMO.TEAM_EDITOR_LINK(editor._id.toString())}`}
+                      component={LinkDom}
+                    >
+                      {editor.firstname} {editor.lastname}{' '}
+                    </Link>
+                  </b>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </Card>
+    </Box>
+  );
 }
 
 export default TaiGerMember;

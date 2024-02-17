@@ -1,21 +1,27 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Spinner } from 'react-bootstrap';
+import {
+  Button,
+  CircularProgress,
+  Link,
+  Grid,
+  TextField,
+  Typography
+} from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-import './../../../assets/scss/style.scss';
-import Aux from '../../../hoc/_Aux';
 import { forgotPassword } from '../../../api';
-import Footer from '../../../components/Footer/Footer';
-import { appConfig } from '../../../config';
+import AuthWrapper from '../../../components/AuthWrapper';
+import DEMO from '../../../store/constant';
 
 export default function ResetPasswordRequest() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const [emailaddress, setEmailaddress] = useState();
   const [emailSent, setEmailSent] = useState(false);
   const [buttonDisable, setButtonDisable] = useState(false);
   const emailValidation = () => {
     const regex =
+      // eslint-disable-next-line no-useless-escape
       /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
     if (!emailaddress || regex.test(emailaddress) === false) {
       return false;
@@ -39,100 +45,62 @@ export default function ResetPasswordRequest() {
       } catch (err) {
         setButtonDisable(false);
         // TODO: error handler
-        // console.log(err);
       }
     } else {
       alert('Email is not valid');
     }
   };
-  if (emailSent) {
-    return (
-      <Aux>
-        <div className="auth-wrapper">
-          <div className="auth-content">
-            <div>
-              <div className="card-body text-center">
-                <img
-                  className="mb-3 img-radius"
-                  src={appConfig.LoginPageLogo}
-                  alt="Generic placeholder"
-                />
-                <h3 className="mb-3 text-light">{t('Reset Login Password')}</h3>
-                <p className="mb-3 text-light">
-                  {t(
-                    'Password reset email is already sent to your give email address'
-                  )}
-                  <br />
-                  {t('Please have a check')}
-                </p>
-                <p className="mb-2 text-light">
-                  {t('Already have an account')}?{' '}
-                  <NavLink to="/login">
-                    <p className="text-info">Login</p>
-                  </NavLink>
-                </p>
-                <Footer />
-              </div>
-            </div>
-          </div>
-        </div>
-      </Aux>
-    );
-  } else {
-    return (
-      <Aux>
-        <div className="auth-wrapper">
-          <div className="auth-content">
-            <form onSubmit={handleSubmit}>
-              <div className="card-body text-center">
-                <img
-                  className="mb-3 img-radius"
-                  src={appConfig.LoginPageLogo}
-                  alt="Generic placeholder"
-                />
-                <p className="mb-4"></p>
-                <h3 className="mb-4 text-light">{t('Reset Login Password')}</h3>
-                <p className="mb-4 text-light">
-                  {t('Please provide the email that you provided to us before')}
-                </p>
-                <div className="input-group mb-3">
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Email"
-                    onChange={(e) => setEmailaddress(e.target.value)}
-                  />
-                </div>
-                <button
-                  size="sm"
-                  type="submit"
-                  disabled={buttonDisable}
-                  className="btn btn-success text-secondary shadow-2 mb-2"
-                >
-                  {buttonDisable ? (
-                    <Spinner
-                      animation="border"
-                      role="status"
-                      variant="light"
-                      size="sm"
-                    >
-                      <span className="visually-hidden"></span>
-                    </Spinner>
-                  ) : (
-                    `${t('Reset')}`
-                  )}
-                </button>
-                <p className="mb-2 text-light"></p>
-                {t('Already have an account')}?{' '}
-                <NavLink to="/login">
-                  <p className="text-info">{t('Login')}</p>
-                </NavLink>
-                <Footer />
-              </div>
-            </form>
-          </div>
-        </div>
-      </Aux>
-    );
-  }
+  return (
+    <AuthWrapper>
+      <Typography component="h1" variant="h5" sx={{ my: 2 }}>
+        {t('Reset Login Password')}
+      </Typography>
+      {emailSent ? (
+        <>
+          <Typography>
+            {t(
+              'Password reset email is already sent to your give email address'
+            )}
+            <br />
+            {t('Please have a check')}
+          </Typography>
+        </>
+      ) : (
+        <>
+          <Typography component="h1" variant="h6">
+            {t('Please provide the email that you provided to us before')}
+          </Typography>
+          <TextField
+            id="email"
+            margin="normal"
+            required
+            fullWidth
+            label={t('Email Address')}
+            type="email"
+            autoComplete="email"
+            onChange={(e) => setEmailaddress(e.target.value)}
+          />
+          <Button
+            color="primary"
+            variant="contained"
+            onClick={handleSubmit}
+            disabled={buttonDisable}
+            sx={{ mt: 2 }}
+          >
+            {buttonDisable ? <CircularProgress /> : `${t('Reset')}`}
+          </Button>
+        </>
+      )}
+      <Grid container spacing={2} sx={{ my: 2 }}>
+        <Grid item xs={6} sx={{ textAlign: 'right' }}>
+          <Typography>{t('Already have an account')}?</Typography>
+        </Grid>
+        <Grid item xs={6}>
+          <Link to={DEMO.LOGIN_LINK} component={NavLink}>
+            <Typography>{t('Login')}</Typography>
+          </Link>
+        </Grid>
+      </Grid>
+    </AuthWrapper>
+  );
 }

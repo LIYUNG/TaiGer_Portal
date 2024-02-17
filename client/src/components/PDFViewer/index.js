@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { BsDownload, BsZoomIn, BsZoomOut } from 'react-icons/bs';
 import { pdfjs, Document, Page } from 'react-pdf';
-import { Button } from 'react-bootstrap';
+import { Button, Typography } from '@mui/material';
+import DownloadIcon from '@mui/icons-material/Download';
+import ZoomInIcon from '@mui/icons-material/ZoomIn';
+import ZoomOutIcon from '@mui/icons-material/ZoomOut';
 
 import { getProfilePdf } from '../../api';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
@@ -9,11 +11,9 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/$
 
 const PDFViewer = (student_id, path) => {
   const [pdfData, setPdfData] = useState(null);
-  const [pageNumber, setPageNumber] = useState(1);
   const [pageWidth, setPageWidth] = useState(null);
   const [numPages, setNumPages] = useState(null);
   const containerRef = useRef(null);
-  const [zoomModalOpen, setZoomModalOpen] = useState(false);
   const [zoomLevel, setZoomLevel] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -31,12 +31,12 @@ const PDFViewer = (student_id, path) => {
   };
 
   const handleZoomIn = () => {
-    setZoomLevel(zoomLevel + 0.2);
+    setZoomLevel(zoomLevel * 1.414);
   };
 
   const handleZoomOut = () => {
     if (zoomLevel > 0.2) {
-      setZoomLevel(zoomLevel - 0.2);
+      setZoomLevel(zoomLevel / 1.414);
     }
   };
 
@@ -62,7 +62,7 @@ const PDFViewer = (student_id, path) => {
         <>
           <div
             ref={containerRef}
-            style={{ width: '100%', height: '600px', overflow: 'auto' }}
+            style={{ width: '100%', height: '60vh', overflow: 'auto' }}
             onScroll={handleScroll}
           >
             <Document
@@ -81,19 +81,28 @@ const PDFViewer = (student_id, path) => {
               ))}
             </Document>
           </div>
-          <p>
-            Current Page: {currentPage} of {numPages}
-          </p>
+          <Typography>
+            {currentPage} of {numPages}
+          </Typography>
           <div>
-            <Button size="sm" onClick={handleZoomIn}>
-              <BsZoomIn />
-            </Button>
-            <Button size="sm" onClick={handleZoomOut}>
-              <BsZoomOut />
-            </Button>
-            <Button size="sm" onClick={handleDownload}>
-              <BsDownload /> Download
-            </Button>
+            <Button
+              size="small"
+              variant="outlined"
+              onClick={handleZoomIn}
+              startIcon={<ZoomInIcon />}
+            ></Button>
+            <Button
+              size="small"
+              variant="outlined"
+              onClick={handleZoomOut}
+              startIcon={<ZoomOutIcon />}
+            ></Button>
+            <Button
+              size="small"
+              variant="outlined"
+              onClick={handleDownload}
+              startIcon={<DownloadIcon />}
+            ></Button>
           </div>
         </>
       ) : (

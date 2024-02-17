@@ -1,31 +1,47 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link as LinkDom } from 'react-router-dom';
+import UndoIcon from '@mui/icons-material/Undo';
+import CheckIcon from '@mui/icons-material/Check';
+import CloseIcon from '@mui/icons-material/Close';
+import { Card, Collapse, CardContent, Typography, Box } from '@mui/material';
 import {
-  Card,
-  Collapse,
-  ProgressBar,
   Button,
-  Modal,
-  Spinner
-} from 'react-bootstrap';
+  Link,
+  LinearProgress,
+  CircularProgress,
+  linearProgressClasses,
+  styled
+} from '@mui/material';
 import { useTranslation } from 'react-i18next';
-
-import {
-  application_deadline_calculator,
-  progressBarCounter
-} from '../../Demo/Utils/checking-functions';
 import {
   AiFillCheckCircle,
   AiFillCloseCircle,
   AiOutlineFieldTime,
-  AiOutlineStop,
-  AiOutlineUndo
+  AiOutlineStop
 } from 'react-icons/ai';
-import ApplicationProgressCardBody from './ApplicationProgressCardBody';
 import { FiExternalLink } from 'react-icons/fi';
+
+import ApplicationProgressCardBody from './ApplicationProgressCardBody';
 import { updateStudentApplicationResult } from '../../api';
-import { spinner_style2 } from '../../Demo/Utils/contants';
 import DEMO from '../../store/constant';
+import {
+  application_deadline_calculator,
+  progressBarCounter
+} from '../../Demo/Utils/checking-functions';
+import ModalNew from '../Modal';
+
+const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
+  height: 10,
+  borderRadius: 5,
+  [`&.${linearProgressClasses.colorPrimary}`]: {
+    backgroundColor:
+      theme.palette.grey[theme.palette.mode === 'light' ? 200 : 800]
+  },
+  [`& .${linearProgressClasses.bar}`]: {
+    borderRadius: 5,
+    backgroundColor: theme.palette.mode === 'light' ? '#1a90ff' : '#308fe8'
+  }
+}));
 
 export default function ApplicationProgressCard(props) {
   const [isCollapse, setIsCollapse] = useState(false);
@@ -34,7 +50,7 @@ export default function ApplicationProgressCard(props) {
   const [resultState, setResultState] = useState('-');
   const [showUndoModal, setShowUndoModal] = useState(false);
   const [showSetResultModal, setShowSetResultModal] = useState(false);
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const handleToggle = () => {
     setIsCollapse(!isCollapse);
@@ -76,14 +92,14 @@ export default function ApplicationProgressCard(props) {
           setIsLoading(false);
         }
       },
-      (error) => {}
+      () => {}
     );
   };
   return (
-    <Card className="my-0 mx-0">
-      <Card.Header onClick={handleToggle} style={{ cursor: 'pointer' }}>
-        <Card.Title>
-          <p>
+    <>
+      <Card>
+        <CardContent onClick={handleToggle}>
+          <Typography sx={{ fontSize: 16 }} color="text.secondary" gutterBottom>
             {application_deadline_calculator(props.student, application) ===
             'CLOSE' ? (
               <>
@@ -121,104 +137,110 @@ export default function ApplicationProgressCard(props) {
                 {application_deadline_calculator(props.student, application)}
               </span>
             )}
-          </p>
-          <p className="mb-0">
+          </Typography>
+          <Typography sx={{ fontSize: 16 }} color="text.secondary" gutterBottom>
             <img
               src={`/assets/logo/country_logo/svg/${application?.programId.country}.svg`}
               alt="Logo"
               style={{ maxWidth: '20px', maxHeight: '20px' }}
             />{' '}
-            <b>{application?.programId?.school}</b>
-          </p>
-          <p>
-            {application?.programId?.degree}{' '}
-            {application?.programId?.program_name}{' '}
-            {application?.programId?.semester}{' '}
             <Link
+              underline="hover"
               to={`${DEMO.SINGLE_PROGRAM_LINK(
                 application?.programId?._id?.toString()
               )}`}
+              component={LinkDom}
               target="_blank"
               onClick={(e) => e.stopPropagation()}
             >
-              <FiExternalLink />
+              <b>{application?.programId?.school}</b> <FiExternalLink />
             </Link>
-          </p>
+          </Typography>
+
+          <Typography variant="p" component="div">
+            {application?.programId?.degree}{' '}
+            {application?.programId?.program_name}{' '}
+            {application?.programId?.semester}{' '}
+          </Typography>
           {application_deadline_calculator(props.student, application) ===
             'CLOSE' &&
             application.admission === '-' && (
               <>
-                <p>
+                <Typography variant="p" component="div" sx={{ my: 1 }}>
                   {t(
                     'Have you received the interview invitation from this program?'
                   )}
-                </p>
-                <p>
+                </Typography>
+                <Typography variant="p" component="div" sx={{ my: 1 }}>
                   <Button
-                    variant="primary"
+                    color="primary"
+                    variant="contained"
                     disabled
-                    size="sm"
-                    onClick={(e) => console.log('Book clicked')}
+                    size="small"
+                    onClick={() => console.log('Book clicked')}
                   >
-                    Coming soon
+                    {t('Coming soon')}
                   </Button>
-                </p>
+                </Typography>
               </>
             )}
           {application_deadline_calculator(props.student, application) ===
             'CLOSE' &&
             (application.admission === '-' ? (
-              <p>{t('Tell me about your result')} : </p>
+              <Typography>{t('Tell me about your result')} : </Typography>
             ) : (
               <Button
-                variant="outline-secondary"
-                size="sm"
+                variant="outlined"
+                color="secondary"
+                size="small"
                 title="Undo"
                 onClick={(e) => openUndoModal(e)}
+                startIcon={<UndoIcon />}
+                sx={{ my: 1 }}
               >
-                <AiOutlineUndo size={16} />
-                &nbsp;
                 {t('Change your result')}
               </Button>
             ))}
-
-          <p>
-            {application_deadline_calculator(props.student, application) ===
-            'CLOSE' ? (
-              <>
-                {application.admission === '-' && (
-                  <>
-                    <Button
-                      variant="primary"
-                      size="sm"
-                      onClick={(e) => openSetResultModal(e, 'O')}
-                    >
-                      {t('Admitted')}
-                    </Button>
-                    <Button
-                      variant="danger"
-                      size="sm"
-                      onClick={(e) => openSetResultModal(e, 'X')}
-                    >
-                      {t('Rejected')}
-                    </Button>
-                  </>
-                )}
-              </>
-            ) : (
-              ''
+          {application_deadline_calculator(props.student, application) ===
+            'CLOSE' &&
+            application.admission === '-' && (
+              <Box sx={{ my: 1 }}>
+                <Button
+                  sx={{ mr: 1 }}
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                  onClick={(e) => openSetResultModal(e, 'O')}
+                  startIcon={<CheckIcon />}
+                >
+                  {t('Admitted')}
+                </Button>
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  size="small"
+                  onClick={(e) => openSetResultModal(e, 'X')}
+                  startIcon={<CloseIcon />}
+                >
+                  {t('Rejected')}
+                </Button>
+              </Box>
             )}
-          </p>
-          <p style={{ display: 'flex', alignItems: 'center' }}>
-            <ProgressBar
-              now={
+          <Typography
+            variant="body1"
+            component="div"
+            style={{ display: 'flex', alignItems: 'center' }}
+          >
+            <BorderLinearProgress
+              variant="determinate"
+              value={
                 application_deadline_calculator(props.student, application) ===
                 'CLOSE'
                   ? 100
                   : progressBarCounter(props.student, application)
               }
               style={{ flex: 1, marginRight: '10px' }}
-              className="custom-progress-bar-container" // Apply your specific class here
+              className="custom-progress-bar-container" // Apply your specific classhere
             />
             <span>
               {`${
@@ -228,77 +250,66 @@ export default function ApplicationProgressCard(props) {
                   : progressBarCounter(props.student, application)
               }%`}
             </span>
-          </p>
-        </Card.Title>
-      </Card.Header>
-      <Collapse in={isCollapse}>
-        <Card.Body>
+          </Typography>
+        </CardContent>
+        <Collapse in={isCollapse}>
           <ApplicationProgressCardBody
             student={props.student}
             application={application}
           />
-        </Card.Body>
-      </Collapse>
-      <Modal show={showUndoModal} onHide={closeUndoModal} centered size="sm">
-        <Modal.Header>Attention</Modal.Header>
-        <Modal.Body>
-          Do you want to <b>undo</b> the result of{' '}
-          <b>{`${application.programId.school}-${application.programId.degree}-${application.programId.program_name}`}</b>
-          ?
-        </Modal.Body>
-        <Modal.Footer>
+        </Collapse>
+      </Card>
+      <ModalNew open={showUndoModal} onClose={closeUndoModal} size="small">
+        <Box>
+          <Typography id="modal-modal-title" variant="h6">
+            Attention
+          </Typography>
+          <Typography id="modal-modal-description" sx={{ my: 2 }}>
+            {t('Do you want to reset the result of the application of')}{' '}
+            <b>{`${application.programId.school}-${application.programId.degree}-${application.programId.program_name}`}</b>
+            ?
+          </Typography>
           <Button
-            variant="secondary"
+            color="secondary"
+            variant="contained"
             disabled={isLoading}
-            size="sm"
+            size="small"
             title="Undo"
+            sx={{ mr: 1 }}
             onClick={(e) => handleUpdateResult(e, '-')}
           >
-            {isLoading ? (
-              <div style={spinner_style2}>
-                <Spinner animation="border" size="sm" role="status">
-                  <span className="visually-hidden"></span>
-                </Spinner>
-              </div>
-            ) : (
-              t('Confirm')
-            )}
+            {isLoading ? <CircularProgress size="small" /> : t('Confirm')}
           </Button>
           <Button
-            variant="outline-secondary"
-            size="sm"
+            color="secondary"
+            variant="outlined"
+            size="small"
             title="Undo"
             onClick={closeUndoModal}
           >
             {t('Cancel')}
           </Button>
-        </Modal.Footer>
-      </Modal>
-      <Modal
-        show={showSetResultModal}
-        onHide={closeSetResultModal}
-        centered
-        size="sm"
-      >
-        <Modal.Header>Attention</Modal.Header>
-        <Modal.Body>
-          Do you want to set the application of{' '}
-          <b>{`${application.programId.school}-${application.programId.degree}-${application.programId.program_name}`}</b>{' '}
-          as <b>{resultState === 'O' ? t('Admitted') : t('Rejected')}</b>?
-        </Modal.Body>
-        <Modal.Footer>
+        </Box>
+      </ModalNew>
+      <ModalNew open={showSetResultModal} onClose={closeSetResultModal}>
+        <Box>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            {t('Attention')}
+          </Typography>
+          <Typography id="modal-modal-description" sx={{ my: 2 }}>
+            {t('Do you want to set the application of')}{' '}
+            <b>{`${application.programId.school}-${application.programId.degree}-${application.programId.program_name}`}</b>{' '}
+            <b>{resultState === 'O' ? t('Admitted') : t('Rejected')}</b>?
+          </Typography>
           <Button
-            variant={resultState === 'O' ? 'primary' : 'danger'}
+            color={resultState === 'O' ? 'primary' : 'secondary'}
+            variant="outlined"
             disabled={isLoading}
-            size="sm"
+            size="small"
             onClick={(e) => handleUpdateResult(e, resultState)}
           >
             {isLoading ? (
-              <div style={spinner_style2}>
-                <Spinner animation="border" size="sm" role="status">
-                  <span className="visually-hidden"></span>
-                </Spinner>
-              </div>
+              <CircularProgress size="small" />
             ) : resultState === 'O' ? (
               t('Admitted')
             ) : (
@@ -306,15 +317,17 @@ export default function ApplicationProgressCard(props) {
             )}
           </Button>
           <Button
-            variant="outline-secondary"
-            size="sm"
+            color="secondary"
+            variant="outlined"
+            size="small"
             title="Undo"
+            sx={{ ml: 1 }}
             onClick={closeSetResultModal}
           >
             Cancel
           </Button>
-        </Modal.Footer>
-      </Modal>
-    </Card>
+        </Box>
+      </ModalNew>
+    </>
   );
 }

@@ -1,120 +1,140 @@
-import React from 'react';
-import { Dropdown, DropdownButton } from 'react-bootstrap';
+import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import {
+  Button,
+  Link,
+  Menu,
+  MenuItem,
+  TableCell,
+  TableRow,
+  Typography
+} from '@mui/material';
+import { Link as LinkDom } from 'react-router-dom';
 
 import EditEditorsSubpage from '../StudDocsOverview/EditEditorsSubpage';
 import { is_TaiGer_role } from '../../../Utils/checking-functions';
-import { Link } from 'react-router-dom';
 import DEMO from '../../../../store/constant';
+import { useAuth } from '../../../../components/AuthProvider';
 
-class NoEditorsStudentsCard extends React.Component {
-  state = {
+function NoEditorsStudentsCard(props) {
+  const { user } = useAuth();
+  const [noEditorsStudentsCardState, setNoEditorsStudentsCardState] = useState({
     showEditorPage: false
+  });
+
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+  const { t } = useTranslation();
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
   };
 
-  setEditorModalhide = () => {
-    this.setState({
+  const setEditorModalhide = () => {
+    setNoEditorsStudentsCardState((prevState) => ({
+      ...prevState,
       showEditorPage: false
-    });
+    }));
   };
 
-  startEditingEditor = (student) => {
-    this.props.editEditor(student);
-    this.setState({
+  const startEditingEditor = () => {
+    setNoEditorsStudentsCardState((prevState) => ({
+      ...prevState,
       subpage: 2,
       showEditorPage: true
-    });
+    }));
   };
 
-  submitUpdateEditorlist = (e, updateEditorList, student_id) => {
+  const submitUpdateEditorlist = (e, updateEditorList, student_id) => {
     e.preventDefault();
-    this.setEditorModalhide();
-    this.props.submitUpdateEditorlist(e, updateEditorList, student_id);
+    setEditorModalhide();
+    props.submitUpdateEditorlist(e, updateEditorList, student_id);
   };
 
-  render() {
-    if (
-      this.props.student.editors === undefined ||
-      this.props.student.editors.length === 0
-    ) {
-      return (
-        <>
-          <tr>
-            {is_TaiGer_role(this.props.user) && !this.props.isArchivPage && (
-              <td>
-                <DropdownButton
-                  size="sm"
-                  title="Option"
-                  variant="primary"
-                  id={`dropdown-variants-${this.props.student._id}`}
-                  key={this.props.student._id}
-                >
-                  <Dropdown.Item
-                    eventKey="2"
-                    onClick={() => this.startEditingEditor(this.props.student)}
-                  >
-                    Edit Editor
-                  </Dropdown.Item>
-                </DropdownButton>
-              </td>
-            )}
-            <td>
-              <Link
-                className="text-info"
-                to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-                  this.props.student._id.toString(),
-                  DEMO.PROFILE
-                )}`}
+  if (
+    props.student.editors === undefined ||
+    props.student.editors.length === 0
+  ) {
+    return (
+      <>
+        <TableRow>
+          {is_TaiGer_role(user) && !props.isArchivPage && (
+            <TableCell>
+              <Button
+                size="small"
+                id="basic-button"
+                variant="contained"
+                aria-controls={open ? 'basic-menu' : undefined}
+                aria-haspopup="true"
+                aria-expanded={open ? 'true' : undefined}
+                onClick={handleClick}
               >
-                {this.props.student.firstname}, {this.props.student.lastname}
-              </Link>
-            </td>
-            <td>{this.props.student.email}</td>
-            <td>
-              {this.props.student.needEditor ? (
-                <span className="text-danger">
-                  <b>Ready to Assign</b>
-                </span>
-              ) : (
-                ''
-              )}
-            </td>
-            <td>
-              {this.props.student.application_preference
-                .expected_application_date || (
-                <p className="text-danger">TBD</p>
-              )}
-            </td>
-            <td>
-              {!this.props.student.agents ||
-              this.props.student.agents.length === 0 ? (
-                <p className="text-secondary">
-                  <b>No Agent</b>
-                </p>
-              ) : (
-                this.props.student.agents.map(
-                  (agent, i) => `${agent.firstname} ${agent.lastname} `
-                )
-              )}
-            </td>
-          </tr>
-          {is_TaiGer_role(this.props.user) && (
-            <>
-              <EditEditorsSubpage
-                student={this.props.student}
-                editor_list={this.props.editor_list}
-                show={this.state.showEditorPage}
-                onHide={this.setEditorModalhide}
-                setmodalhide={this.setEditorModalhide}
-                updateEditorList={this.props.updateEditorList}
-                submitUpdateEditorlist={this.submitUpdateEditorlist}
-              />
-            </>
+                {t('Option')}
+              </Button>
+              <Menu
+                id="basic-menu"
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleClose}
+                MenuListProps={{
+                  'aria-labelledby': 'basic-button'
+                }}
+              >
+                <MenuItem onClick={() => startEditingEditor()}>
+                  Edit Editor
+                </MenuItem>
+              </Menu>
+            </TableCell>
           )}
-        </>
-      );
-    } else {
-      return <></>;
-    }
+          <TableCell>
+            <Link
+              component={LinkDom}
+              to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                props.student._id.toString(),
+                DEMO.PROFILE
+              )}`}
+            >
+              {props.student.firstname}, {props.student.lastname}
+            </Link>
+          </TableCell>
+          <TableCell>{props.student.email}</TableCell>
+          <TableCell>
+            {props.student.needEditor ? (
+              <Typography fontWeight="bold">Ready to Assign</Typography>
+            ) : (
+              '-'
+            )}
+          </TableCell>
+          <TableCell>
+            {props.student.application_preference.expected_application_date || (
+              <Typography>TBD</Typography>
+            )}
+          </TableCell>
+          <TableCell>
+            {!props.student.agents || props.student.agents.length === 0 ? (
+              <Typography fontWeight="bold">No Agent</Typography>
+            ) : (
+              props.student.agents.map((agent, i) => (
+                <Typography key={i}>{`${agent.firstname}`}</Typography>
+              ))
+            )}
+          </TableCell>
+        </TableRow>
+        {is_TaiGer_role(user) && noEditorsStudentsCardState.showEditorPage && (
+          <EditEditorsSubpage
+            student={props.student}
+            show={noEditorsStudentsCardState.showEditorPage}
+            onHide={setEditorModalhide}
+            setmodalhide={setEditorModalhide}
+            submitUpdateEditorlist={submitUpdateEditorlist}
+          />
+        )}
+      </>
+    );
+  } else {
+    return <></>;
   }
 }
 

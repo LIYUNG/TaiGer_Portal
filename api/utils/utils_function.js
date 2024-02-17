@@ -1136,10 +1136,9 @@ const MeetingDailyReminderChecker = async () => {
   console.log('Meeting attendees reminded');
 };
 
+// every day reminder
 const UnconfirmedMeetingDailyReminderChecker = async () => {
   const currentDate = new Date();
-  const twentyFourHoursLater = new Date(currentDate);
-  twentyFourHoursLater.setHours(currentDate.getHours() + 24);
 
   // Only future meeting within 24 hours, not past
   const upcomingEvents = await Event.find({

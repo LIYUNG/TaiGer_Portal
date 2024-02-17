@@ -1,21 +1,25 @@
-import React from 'react';
-import { Row, Col, Spinner, Card } from 'react-bootstrap';
-import { Redirect } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Navigate, useParams, Link as LinkDom } from 'react-router-dom';
+import { Box, Breadcrumbs, Link, Typography } from '@mui/material';
 
-import Aux from '../../hoc/_Aux';
 import TabStudBackgroundDashboard from '../Dashboard/MainViewTab/StudDocsOverview/TabStudBackgroundDashboard';
-import { SYMBOL_EXPLANATION, spinner_style } from '../Utils/contants';
+import { SYMBOL_EXPLANATION } from '../Utils/contants';
 import { is_TaiGer_role } from '../Utils/checking-functions';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
-
 import { getArchivStudents, updateArchivStudents } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
-import { TopBar } from '../../components/TopBar/TopBar';
+import { useAuth } from '../../components/AuthProvider';
+import Loading from '../../components/Loading/Loading';
+import { appConfig } from '../../config';
+import { useTranslation } from 'react-i18next';
 
-class ArchivStudents extends React.Component {
-  state = {
+function ArchivStudents() {
+  const { user } = useAuth();
+  const { t } = useTranslation();
+  const { user_id } = useParams();
+  const [archivStudentsState, setArchivStudentsState] = useState({
     error: '',
     isLoaded: false,
     students: [],
@@ -24,90 +28,58 @@ class ArchivStudents extends React.Component {
     res_status: 0,
     res_modal_status: 0,
     res_modal_message: ''
-  };
+  });
 
-  componentDidMount() {
-    const TaiGerStaffId =
-      this.props.match.params.user_id || this.props.user._id.toString();
+  useEffect(() => {
+    const TaiGerStaffId = user_id || user._id.toString();
     getArchivStudents(TaiGerStaffId).then(
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
         if (success) {
-          this.setState({
+          setArchivStudentsState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             students: data,
             success: success,
             res_status: status
-          });
+          }));
         } else {
-          this.setState({
+          setArchivStudentsState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             res_status: status
-          });
+          }));
         }
       },
       (error) => {
-        this.setState((state) => ({
-          ...state,
+        setArchivStudentsState((prevState) => ({
+          ...prevState,
           isLoaded: true,
           error,
           res_status: 500
         }));
       }
     );
-  }
+  }, [archivStudentsState.isLoaded]);
 
-  componentDidUpdate(prevProps, prevState) {
-    if (this.state.isLoaded === false) {
-      const TaiGerStaffId =
-        this.props.match.params.user_id || this.props.user._id.toString();
-      getArchivStudents(TaiGerStaffId).then(
-        (resp) => {
-          const { data, success } = resp.data;
-          const { status } = resp;
-          if (success) {
-            this.setState({
-              isLoaded: true,
-              students: data,
-              success: success,
-              res_status: status
-            });
-          } else {
-            this.setState({
-              isLoaded: true,
-              res_status: status
-            });
-          }
-        },
-        (error) => {
-          this.setState((state) => ({
-            ...state,
-            isLoaded: true,
-            error,
-            res_status: 500
-          }));
-        }
-      );
-    }
-  }
-
-  updateStudentArchivStatus = (studentId, isArchived) => {
+  const updateStudentArchivStatus = (studentId, isArchived) => {
     updateArchivStudents(studentId, isArchived).then(
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
         if (success) {
-          this.setState({
+          setArchivStudentsState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             students: data,
             success: success,
             res_modal_status: status
-          });
+          }));
         } else {
           const { message } = resp.data;
-          this.setState((state) => ({
-            ...state,
+          setArchivStudentsState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             res_modal_status: status,
             res_modal_message: message
@@ -115,75 +87,75 @@ class ArchivStudents extends React.Component {
         }
       },
       (error) => {
-        const { statusText } = resp;
-        this.setState((state) => ({
-          ...state,
+        setArchivStudentsState((prevState) => ({
+          ...prevState,
           isLoaded: true,
           error,
           res_modal_status: 500,
-          res_modal_message: statusText
+          res_modal_message: ''
         }));
       }
     );
   };
 
-  ConfirmError = () => {
-    this.setState((state) => ({
-      ...state,
+  const ConfirmError = () => {
+    setArchivStudentsState((prevState) => ({
+      ...prevState,
       res_modal_status: 0,
       res_modal_message: ''
     }));
   };
 
-  render() {
-    if (!is_TaiGer_role(this.props.user)) {
-      return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
-    }
-    TabTitle('Archiv Student');
-    const { res_status, isLoaded, res_modal_status, res_modal_message } =
-      this.state;
+  if (!is_TaiGer_role(user)) {
+    return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
+  }
+  TabTitle('Archiv Student');
+  const { res_status, isLoaded, res_modal_status, res_modal_message } =
+    archivStudentsState;
 
-    if (!isLoaded && !this.state.data) {
-      return (
-        <div style={spinner_style}>
-          <Spinner animation="border" role="status">
-            <span className="visually-hidden"></span>
-          </Spinner>
-        </div>
-      );
-    }
+  if (!isLoaded && !archivStudentsState.data) {
+    return <Loading />;
+  }
 
-    if (res_status >= 400) {
-      return <ErrorPage res_status={res_status} />;
-    }
+  if (res_status >= 400) {
+    return <ErrorPage res_status={res_status} />;
+  }
 
-    if (this.state.success) {
-      return (
-        <Aux>
-          <TopBar>
-            My Archived Students {` (${this.state.students.length})`}
-          </TopBar>
-          {res_modal_status >= 400 && (
-            <ModalMain
-              ConfirmError={this.ConfirmError}
-              res_modal_status={res_modal_status}
-              res_modal_message={res_modal_message}
-            />
-          )}
-          <Row>
-            <Col>
-              <TabStudBackgroundDashboard
-                user={this.props.user}
-                students={this.state.students}
-                updateStudentArchivStatus={this.updateStudentArchivStatus}
-                isArchivPage={this.state.isArchivPage}
-                SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
-              />
-            </Col>
-          </Row>
-        </Aux>
-      );
-    }
+  if (archivStudentsState.success) {
+    return (
+      <Box>
+        <Breadcrumbs aria-label="breadcrumb">
+          <Link
+            underline="hover"
+            color="inherit"
+            component={LinkDom}
+            to={`${DEMO.DASHBOARD_LINK}`}
+          >
+            {appConfig.companyName}
+          </Link>
+          <Typography color="text.primary">
+            {t('My Archived Students')}{' '}
+            {` (${archivStudentsState.students.length})`}
+          </Typography>
+        </Breadcrumbs>
+        {res_modal_status >= 400 && (
+          <ModalMain
+            ConfirmError={ConfirmError}
+            res_modal_status={res_modal_status}
+            res_modal_message={res_modal_message}
+          />
+        )}
+        <Box sx={{ mt: 2 }}>
+          <TabStudBackgroundDashboard
+            user={user}
+            students={archivStudentsState.students}
+            updateStudentArchivStatus={updateStudentArchivStatus}
+            isArchivPage={archivStudentsState.isArchivPage}
+            SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
+          />
+        </Box>
+      </Box>
+    );
   }
 }
 

@@ -1,15 +1,26 @@
-import React, { Component } from 'react';
-import { Row, Col, Spinner, Button, Card, Modal, Badge } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link as LinkDom, useParams } from 'react-router-dom';
+import DownloadIcon from '@mui/icons-material/Download';
 import { FiExternalLink } from 'react-icons/fi';
+import { useTranslation } from 'react-i18next';
+import {
+  Typography,
+  Badge,
+  Button,
+  Card,
+  Link,
+  Box,
+  CircularProgress,
+  Grid,
+  Breadcrumbs,
+  Avatar
+} from '@mui/material';
 
-import Aux from '../../../hoc/_Aux';
 import MessageList from './MessageList';
 import DocThreadEditor from './DocThreadEditor';
 import ErrorPage from '../../Utils/ErrorPage';
 import ModalMain from '../../Utils/ModalHandler/ModalMain';
-import { spinner_style, templatelist } from '../../Utils/contants';
-
+import { stringAvatar, templatelist } from '../../Utils/contants';
 import {
   LinkableNewlineText,
   getRequirement,
@@ -18,7 +29,6 @@ import {
   is_TaiGer_role
 } from '../../Utils/checking-functions';
 import { BASE_URL } from '../../../api/request';
-
 import {
   SubmitMessageWithAttachment,
   getMessagThread,
@@ -29,41 +39,50 @@ import { TabTitle } from '../../Utils/TabTitle';
 import DEMO from '../../../store/constant';
 import FilesList from './FilesList';
 import { appConfig } from '../../../config';
+import { useAuth } from '../../../components/AuthProvider';
+import Loading from '../../../components/Loading/Loading';
+import ModalNew from '../../../components/Modal';
 
-class DocModificationThreadPage extends Component {
-  state = {
-    error: '',
-    file: null,
-    componentRef: React.createRef(),
-    isLoaded: false,
-    isFilesListOpen: '', // TODO: 'open' to open, useRef(), please refer chatList implementation
-    isSubmissionLoaded: true,
-    articles: [],
-    isEdit: false,
-    thread: null,
-    buttonDisabled: false,
-    editorState: {},
-    expand: true,
-    editors: [],
-    agents: [],
-    conflict_list: [],
-    deadline: '',
-    SetAsFinalFileModel: false,
-    accordionKeys: [0], // to expand all]
-    res_status: 0,
-    res_modal_status: 0,
-    res_modal_message: ''
-  };
-  componentDidMount() {
-    // document.removeEventListener('click', this.handleClickOutside);
-    document.addEventListener('mousedown', this.handleClickOutside);
-    getMessagThread(this.props.match.params.documentsthreadId).then(
+function DocModificationThreadPage() {
+  const { user } = useAuth();
+  const { t } = useTranslation();
+  const { documentsthreadId } = useParams();
+  const [docModificationThreadPageState, setDocModificationThreadPageState] =
+    useState({
+      error: '',
+      file: null,
+      componentRef: React.createRef(),
+      isLoaded: false,
+      isFilesListOpen: false,
+      isSubmissionLoaded: true,
+      articles: [],
+      isEdit: false,
+      thread: null,
+      buttonDisabled: false,
+      editorState: {},
+      expand: true,
+      editors: [],
+      agents: [],
+      conflict_list: [],
+      deadline: '',
+      SetAsFinalFileModel: false,
+      accordionKeys: [0], // to expand all]
+      res_status: 0,
+      res_modal_status: 0,
+      res_modal_message: ''
+    });
+
+  useEffect(() => {
+    // document.removeEventListener('click', handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
+    getMessagThread(documentsthreadId).then(
       (resp) => {
         const { success, data, editors, agents, deadline, conflict_list } =
           resp.data;
         const { status } = resp;
         if (success) {
-          this.setState({
+          setDocModificationThreadPageState((prevState) => ({
+            ...prevState,
             success,
             thread: data,
             editors,
@@ -71,7 +90,7 @@ class DocModificationThreadPage extends Component {
             deadline,
             conflict_list,
             isLoaded: true,
-            documentsthreadId: this.props.match.params.documentsthreadId,
+            documentsthreadId: documentsthreadId,
             file: null,
             // accordionKeys: new Array(data.messages.length)
             //   .fill()
@@ -80,107 +99,120 @@ class DocModificationThreadPage extends Component {
               .fill()
               .map((x, i) => (i === data.messages.length - 1 ? i : -1)), // to collapse all
             res_status: status
-          });
+          }));
         } else {
-          this.setState({
+          setDocModificationThreadPageState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             res_status: status
-          });
+          }));
         }
       },
       (error) => {
-        this.setState((state) => ({
-          ...state,
+        setDocModificationThreadPageState((prevState) => ({
+          ...prevState,
           isLoaded: true,
           error,
           res_status: 500
         }));
       }
     );
-  }
+  }, [documentsthreadId]);
 
-  closeSetAsFinalFileModelWindow = () => {
-    this.setState((state) => ({
-      ...state,
+  const closeSetAsFinalFileModelWindow = () => {
+    setDocModificationThreadPageState((prevState) => ({
+      ...prevState,
       SetAsFinalFileModel: false
     }));
   };
 
-  onFileChange = (e) => {
+  const onFileChange = (e) => {
     e.preventDefault();
     const file_num = e.target.files.length;
     if (file_num <= 3) {
-      this.setState({ file: Array.from(e.target.files) });
+      setDocModificationThreadPageState((prevState) => ({
+        ...prevState,
+        file: Array.from(e.target.files)
+      }));
     } else {
-      this.setState({
+      setDocModificationThreadPageState((prevState) => ({
+        ...prevState,
         res_modal_message: 'You can only select up to 3 files.',
         res_modal_status: 423
-      });
+      }));
     }
   };
 
-  ConfirmError = () => {
-    this.setState((state) => ({
-      ...state,
+  const ConfirmError = () => {
+    setDocModificationThreadPageState((prevState) => ({
+      ...prevState,
       res_modal_status: 0,
       res_modal_message: ''
     }));
   };
 
-  singleExpandtHandler = (idx) => {
-    let accordionKeys = [...this.state.accordionKeys];
+  const singleExpandtHandler = (idx) => {
+    let accordionKeys = [...docModificationThreadPageState.accordionKeys];
     accordionKeys[idx] = accordionKeys[idx] !== idx ? idx : -1;
-    this.setState((state) => ({
-      ...state,
+    setDocModificationThreadPageState((prevState) => ({
+      ...prevState,
       accordionKeys: accordionKeys
     }));
   };
 
-  AllCollapsetHandler = () => {
-    this.setState((state) => ({
-      ...state,
+  const AllCollapsetHandler = () => {
+    setDocModificationThreadPageState((prevState) => ({
+      ...prevState,
       expand: false,
-      accordionKeys: new Array(this.state.thread.messages.length)
+      accordionKeys: new Array(
+        docModificationThreadPageState.thread.messages.length
+      )
         .fill()
-        .map((x, i) => -1) // to collapse all]
+        .map(() => -1) // to collapse all]
     }));
   };
 
-  AllExpandtHandler = () => {
-    this.setState((state) => ({
-      ...state,
+  const AllExpandtHandler = () => {
+    setDocModificationThreadPageState((prevState) => ({
+      ...prevState,
       expand: true,
-      accordionKeys: new Array(this.state.thread.messages.length)
+      accordionKeys: new Array(
+        docModificationThreadPageState.thread.messages.length
+      )
         .fill()
         .map((x, i) => i) // to expand all]
     }));
   };
 
-  handleClickSave = (e, editorState) => {
+  const handleClickSave = (e, editorState) => {
     e.preventDefault();
-    this.setState({ buttonDisabled: true });
+    setDocModificationThreadPageState((prevState) => ({
+      ...prevState,
+      buttonDisabled: true
+    }));
     var message = JSON.stringify(editorState);
     const formData = new FormData();
 
-    if (this.state.file) {
-      this.state.file.forEach((file) => {
+    if (docModificationThreadPageState.file) {
+      docModificationThreadPageState.file.forEach((file) => {
         formData.append('files', file);
       });
     }
 
-    // formData.append('files', this.state.file);
+    // formData.append('files', docModificationThreadPageState.file);
     formData.append('message', message);
 
     SubmitMessageWithAttachment(
-      this.state.documentsthreadId,
-      this.state.thread.student_id._id,
+      docModificationThreadPageState.documentsthreadId,
+      docModificationThreadPageState.thread.student_id._id,
       formData
     ).then(
       (resp) => {
         const { success, data } = resp.data;
         const { status } = resp;
         if (success) {
-          this.setState({
+          setDocModificationThreadPageState((prevState) => ({
+            ...prevState,
             success,
             file: null,
             editorState: {},
@@ -188,39 +220,42 @@ class DocModificationThreadPage extends Component {
             isLoaded: true,
             buttonDisabled: false,
             accordionKeys: [
-              ...this.state.accordionKeys,
+              ...docModificationThreadPageState.accordionKeys,
               data.messages.length - 1
             ],
             res_modal_status: status
-          });
+          }));
         } else {
           // TODO: what if data is oversize? data type not match?
           const { message } = resp.data;
-          this.setState({
+          setDocModificationThreadPageState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             buttonDisabled: false,
             res_modal_message: message,
             res_modal_status: status
-          });
+          }));
         }
       },
       (error) => {
-        const { statusText } = resp;
-        this.setState((state) => ({
-          ...state,
+        setDocModificationThreadPageState((prevState) => ({
+          ...prevState,
           isLoaded: true,
           error,
           res_modal_status: 500,
-          res_modal_message: statusText
+          res_modal_message: ''
         }));
       }
     );
-    this.setState((state) => ({ ...state, in_edit_mode: false }));
+    setDocModificationThreadPageState((prevState) => ({
+      ...prevState,
+      in_edit_mode: false
+    }));
   };
 
-  handleAsFinalFile = (doc_thread_id, student_id, program_id) => {
-    this.setState((state) => ({
-      ...state,
+  const handleAsFinalFile = (doc_thread_id, student_id, program_id) => {
+    setDocModificationThreadPageState((prevState) => ({
+      ...prevState,
       doc_thread_id,
       student_id,
       program_id,
@@ -228,29 +263,29 @@ class DocModificationThreadPage extends Component {
     }));
   };
 
-  ConfirmSetAsFinalFileHandler = (e) => {
+  const ConfirmSetAsFinalFileHandler = (e) => {
     e.preventDefault();
-    this.setState((state) => ({
-      ...state,
+    setDocModificationThreadPageState((prevState) => ({
+      ...prevState,
       isSubmissionLoaded: false // false to reload everything
     }));
-    const temp_program_id = this.state.program_id
-      ? this.state.program_id._id.toString()
+    const temp_program_id = docModificationThreadPageState.program_id
+      ? docModificationThreadPageState.program_id._id.toString()
       : undefined;
     SetFileAsFinal(
-      this.state.doc_thread_id,
-      this.state.student_id,
+      docModificationThreadPageState.doc_thread_id,
+      docModificationThreadPageState.student_id,
       temp_program_id
     ).then(
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
         if (success) {
-          this.setState((state) => ({
-            ...state,
+          setDocModificationThreadPageState((prevState) => ({
+            ...prevState,
             isSubmissionLoaded: true,
             thread: {
-              ...state.thread,
+              ...prevState.thread,
               isFinalVersion: data.isFinalVersion,
               updatedAt: data.updatedAt
             },
@@ -260,646 +295,646 @@ class DocModificationThreadPage extends Component {
           }));
         } else {
           const { message } = resp.data;
-          this.setState({
+          setDocModificationThreadPageState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             isSubmissionLoaded: true,
             res_modal_message: message,
             res_modal_status: status
-          });
+          }));
         }
       },
       (error) => {
-        const { statusText } = resp;
-        this.setState((state) => ({
-          ...state,
+        setDocModificationThreadPageState((prevState) => ({
+          ...prevState,
           isLoaded: true,
           error,
           res_modal_status: 500,
-          res_modal_message: statusText
+          res_modal_message: ''
         }));
       }
     );
   };
 
-  onDeleteSingleMessage = (e, message_id) => {
+  const onDeleteSingleMessage = (e, message_id) => {
     e.preventDefault();
-    this.setState((state) => ({
-      ...state,
+    setDocModificationThreadPageState((prevState) => ({
+      ...prevState,
       isLoaded: false
     }));
-    deleteAMessageInThread(this.state.documentsthreadId, message_id).then(
+    deleteAMessageInThread(
+      docModificationThreadPageState.documentsthreadId,
+      message_id
+    ).then(
       (resp) => {
         const { success } = resp.data;
         const { status } = resp;
         if (success) {
           // TODO: remove that message
-          var new_messages = [...this.state.thread.messages];
-          let idx = this.state.thread.messages.findIndex(
+          var new_messages = [
+            ...docModificationThreadPageState.thread.messages
+          ];
+          let idx = docModificationThreadPageState.thread.messages.findIndex(
             (message) => message._id.toString() === message_id
           );
           if (idx !== -1) {
             new_messages.splice(idx, 1);
           }
-          this.setState((state) => ({
-            ...state,
+          setDocModificationThreadPageState((prevState) => ({
+            ...prevState,
             success,
             isLoaded: true,
             thread: {
-              ...this.state.thread,
+              ...docModificationThreadPageState.thread,
               messages: new_messages
             },
             buttonDisabled: false,
-            // accordionKeys: [
-            //   ...this.state.accordionKeys,
-            //   new_messages.length - 1
-            // ],
             res_modal_status: status
           }));
         } else {
           // TODO: what if data is oversize? data type not match?
           const { message } = resp.data;
-          this.setState({
+          setDocModificationThreadPageState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             buttonDisabled: false,
             res_modal_message: message,
             res_modal_status: status
-          });
+          }));
         }
       },
       (error) => {
-        const { statusText } = resp;
-        this.setState((state) => ({
-          ...state,
+        setDocModificationThreadPageState((prevState) => ({
+          ...prevState,
           isLoaded: true,
           error,
           res_modal_status: 500,
-          res_modal_message: statusText
+          res_modal_message: ''
         }));
       }
     );
-    this.setState((state) => ({ ...state, in_edit_mode: false }));
+    setDocModificationThreadPageState((prevState) => ({
+      ...prevState,
+      in_edit_mode: false
+    }));
   };
 
-  handleClickOutside = (event) => {
+  const handleClickOutside = (event) => {
     if (
-      this.state.componentRef.current &&
-      !this.state.componentRef.current.contains(event.target)
+      docModificationThreadPageState.componentRef.current &&
+      !docModificationThreadPageState.componentRef.current.contains(
+        event.target
+      )
     ) {
       // Clicked outside the component, trigger props.closed
-      this.handleCloseFileList();
+      handleCloseFileList();
     }
   };
 
-  handleOpenFileList = (event) => {
-    this.setState({ isFilesListOpen: 'open' });
+  const handleOpenFileList = () => {
+    setDocModificationThreadPageState((prevState) => ({
+      ...prevState,
+      isFilesListOpen: true
+    }));
   };
 
-  handleCloseFileList = (event) => {
-    this.setState({ isFilesListOpen: '' });
+  const handleCloseFileList = () => {
+    setDocModificationThreadPageState((prevState) => ({
+      ...prevState,
+      isFilesListOpen: false
+    }));
   };
 
-  render() {
-    const {
-      isLoaded,
-      isFilesListOpen,
-      isSubmissionLoaded,
-      conflict_list,
-      res_status,
-      res_modal_status,
-      res_modal_message
-    } = this.state;
+  const {
+    isLoaded,
+    isFilesListOpen,
+    isSubmissionLoaded,
+    conflict_list,
+    res_status,
+    res_modal_status,
+    res_modal_message
+  } = docModificationThreadPageState;
 
-    if (!isLoaded && !this.state.thread) {
-      return (
-        <div style={spinner_style}>
-          <Spinner animation="border" role="status">
-            <span className="visually-hidden"></span>
-          </Spinner>
-        </div>
-      );
-    }
+  if (!isLoaded && !docModificationThreadPageState.thread) {
+    return <Loading />;
+  }
 
-    if (res_status >= 400) {
-      return <ErrorPage res_status={res_status} />;
-    }
-    let widths = [];
-    if (this.state.thread.file_type === 'CV') {
+  if (res_status >= 400) {
+    return <ErrorPage res_status={res_status} />;
+  }
+  let widths = [];
+  if (docModificationThreadPageState.thread.file_type === 'CV') {
+    widths = [9, 2, 1];
+  } else {
+    if (is_TaiGer_Student(user)) {
+      widths = [10, 2];
+    } else {
       widths = [9, 2, 1];
-    } else {
-      if (is_TaiGer_Student(this.props.user)) {
-        widths = [10, 2];
-      } else {
-        widths = [9, 2, 1];
-      }
     }
+  }
 
-    // Only CV, ML RL has instructions and template.
-    let template_obj = templatelist.find(
-      ({ prop, alias }) =>
-        prop.includes(this.state.thread.file_type.split('_')[0]) ||
-        alias.includes(this.state.thread.file_type.split('_')[0])
-    );
-    let docName;
-    const student_name = `${this.state.thread.student_id.firstname} ${this.state.thread.student_id.lastname}`;
-    if (this.state.thread.program_id) {
-      docName =
-        this.state.thread.program_id.school +
-        '-(' +
-        this.state.thread.program_id.degree +
-        ') ' +
-        this.state.thread.program_id.program_name +
-        ' ' +
-        this.state.thread.file_type;
-    } else {
-      docName = this.state.thread.file_type;
-    }
-    TabTitle(`${student_name} ${docName}`);
-    return (
-      <Aux>
-        {!isLoaded && (
-          <div style={spinner_style}>
-            <Spinner animation="border" role="status">
-              <span className="visually-hidden"></span>
-            </Spinner>
-          </div>
-        )}
-        <div
-          className={`header-user-list ${isFilesListOpen}`}
-          ref={this.state.componentRef}
+  // Only CV, ML RL has instructions and template.
+  let template_obj = templatelist.find(
+    ({ prop, alias }) =>
+      prop.includes(
+        docModificationThreadPageState.thread.file_type.split('_')[0]
+      ) ||
+      alias.includes(
+        docModificationThreadPageState.thread.file_type.split('_')[0]
+      )
+  );
+  let docName;
+  const student_name = `${docModificationThreadPageState.thread.student_id.firstname} ${docModificationThreadPageState.thread.student_id.lastname}`;
+  if (docModificationThreadPageState.thread.program_id) {
+    docName =
+      docModificationThreadPageState.thread.program_id.school +
+      '-(' +
+      docModificationThreadPageState.thread.program_id.degree +
+      ') ' +
+      docModificationThreadPageState.thread.program_id.program_name +
+      ' ' +
+      docModificationThreadPageState.thread.file_type;
+  } else {
+    docName = docModificationThreadPageState.thread.file_type;
+  }
+  TabTitle(`${student_name} ${docName}`);
+  return (
+    <Box>
+      {!isLoaded && <Loading />}
+      <Breadcrumbs aria-label="breadcrumb">
+        <Link
+          underline="hover"
+          color="inherit"
+          component={LinkDom}
+          to={`${DEMO.DASHBOARD_LINK}`}
         >
-          <div className="h-list-header">
-            <h4>Files Overview</h4>
-          </div>
-          <div>
-            <FilesList
-              documentsthreadId={this.state.documentsthreadId}
-              accordionKeys={this.state.accordionKeys}
-              singleExpandtHandler={this.singleExpandtHandler}
-              thread={this.state.thread}
-              isLoaded={this.state.isLoaded}
-              user={this.props.user}
-              onDeleteSingleMessage={this.onDeleteSingleMessage}
-            />
-          </div>
-        </div>
-        <Row>
-          <Card className="mb-2 mx-0">
-            <Card.Header>
-              <h4 className="mt-1 ms-0" style={{ textAlign: 'left' }}>
-                <Link
-                  className="text-primary"
-                  to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-                    this.state.thread.student_id._id.toString(),
-                    DEMO.PROFILE
-                  )}`}
-                >
-                  <b>{student_name}</b>
-                </Link>
-                {'   '}
-                {docName}
-                {' Discussion thread'}
-                {'   '}
-                <span
-                  className="text-light mb-0 me-2 "
-                  style={{ float: 'right' }}
-                >
-                  <Button
-                    size="sm"
-                    variant="secondary"
-                    onClick={this.handleOpenFileList}
-                  >
-                    View all Files
-                  </Button>
-                  {this.state.expand ? (
-                    <Button
-                      className="btn-sm float-right"
-                      onClick={() => this.AllCollapsetHandler()}
-                    >
-                      Collapse
-                    </Button>
-                  ) : (
-                    <Button
-                      className="btn-sm float-right"
-                      onClick={() => this.AllExpandtHandler()}
-                    >
-                      Expand
-                    </Button>
+          {appConfig.companyName}
+        </Link>
+        <Typography variant="body1" color="text.primary">
+          <Link
+            underline="hover"
+            color="inherit"
+            component={LinkDom}
+            to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+              docModificationThreadPageState.thread.student_id._id.toString(),
+              DEMO.PROFILE
+            )}`}
+          >
+            {student_name}
+            {'   '}
+            {docName}
+            {' Discussion thread'}
+            {'   '}
+          </Link>
+        </Typography>
+        <span style={{ float: 'right' }}>
+          <Button
+            variant="outlined"
+            size="small"
+            color="secondary"
+            onClick={handleOpenFileList}
+          >
+            {t('View all Files')}
+          </Button>
+          {docModificationThreadPageState.expand ? (
+            <Button
+              color="secondary"
+              variant="outlined"
+              size="small"
+              onClick={() => AllCollapsetHandler()}
+            >
+              {t('Collapse')}
+            </Button>
+          ) : (
+            <Button
+              color="secondary"
+              variant="outlined"
+              size="small"
+              onClick={() => AllExpandtHandler()}
+            >
+              {t('Expand')}
+            </Button>
+          )}
+        </span>
+      </Breadcrumbs>
+      <ModalNew
+        open={isFilesListOpen}
+        onClose={handleCloseFileList}
+        // ref={docModificationThreadPageState.componentRef}
+      >
+        <Typography>Files Overview</Typography>
+        <FilesList
+          documentsthreadId={docModificationThreadPageState.documentsthreadId}
+          accordionKeys={docModificationThreadPageState.accordionKeys}
+          singleExpandtHandler={singleExpandtHandler}
+          thread={docModificationThreadPageState.thread}
+          isLoaded={docModificationThreadPageState.isLoaded}
+          user={user}
+          onDeleteSingleMessage={onDeleteSingleMessage}
+        />
+      </ModalNew>
+      <Card></Card>
+      {docModificationThreadPageState.thread.isFinalVersion && (
+        <Card>
+          <Typography>
+            Status: <b>Close</b>
+          </Typography>
+        </Card>
+      )}
+
+      <Card sx={{ p: 2 }}>
+        <Grid container spacing={2}>
+          <Grid item md={widths[0]}>
+            <Typography>Instruction</Typography>
+            {template_obj ? (
+              <>
+                <Typography variant="body1">
+                  {t(
+                    `Please fill our ${appConfig.companyName} template and attach the filled template and reply in English in this discussion. Any process question`
                   )}
-                </span>
-              </h4>
-            </Card.Header>
-          </Card>
-        </Row>
-        {this.state.thread.isFinalVersion && (
-          <Row className="sticky-top">
-            <Card className="mb-2 mx-0" bg={'success'} text={'white'}>
-              <Card.Header>
-                <Card.Title as="h5" className="text-light">
-                  Status: <b>Close</b>
-                </Card.Title>
-              </Card.Header>
-            </Card>
-          </Row>
-        )}
-        <Row className="pb-2">
-          <Col className="px-0">
-            <Card className="my-0 mx-0">
-              <Card.Body>
-                <Row>
-                  <Col md={widths[0]}>
-                    <h5>Instruction</h5>
-                    {template_obj ? (
-                      <>
-                        <p>
-                          請填好我們的 {appConfig.companyName}
-                          Template，並在這個討論串夾帶在和您的 Editor
-                          討論。回覆時請用 <b>英語(English)</b>{' '}
-                          好讓外籍顧問方便溝通。有任何流程疑問{' '}
-                          <Link to={`${DEMO.CV_ML_RL_DOCS_LINK}`}>
-                            <Button size="sm" variant="info">
-                              點我
-                            </Button>
-                          </Link>
-                          <br />
-                          Please fill our {appConfig.companyName} template and
-                          attach the filled template and reply in
-                          <b> English</b> in this discussion. Any process
-                          question:{' '}
-                          <Link to={`${DEMO.CV_ML_RL_DOCS_LINK}`}>
-                            <Button size="sm" variant="info">
-                              Read More
-                            </Button>
-                          </Link>
-                        </p>
-                        <p>
-                          模板下載 Download template:{' '}
-                          {template_obj ? (
-                            template_obj.prop.includes('RL') ||
-                            template_obj.alias.includes('Recommendation') ? (
-                              <b>
-                                教授：
-                                <a
-                                  href={`${BASE_URL}/api/account/files/template/${'RL_academic_survey_lock'}`}
-                                  target="_blank"
-                                >
-                                  <Button size="sm" variant="secondary">
-                                    <b>Link [點我下載]</b>
-                                  </Button>
-                                </a>
-                                主管：
-                                <a
-                                  href={`${BASE_URL}/api/account/files/template/${`RL_employer_survey_lock`}`}
-                                  target="_blank"
-                                >
-                                  <Button size="sm" variant="secondary">
-                                    <b>Link [點我下載]</b>
-                                  </Button>
-                                </a>
-                                {/* or &nbsp;
+                  :
+                </Typography>
+                <LinkDom to={`${DEMO.CV_ML_RL_DOCS_LINK}`}>
+                  <Button size="small" variant="contained" color="info">
+                    {t('Read More')}
+                  </Button>
+                </LinkDom>
+                <Typography variant="body1">
+                  {t('Download template')}:{' '}
+                  {template_obj ? (
+                    template_obj.prop.includes('RL') ||
+                    template_obj.alias.includes('Recommendation') ? (
+                      <b>
+                        {t('Professor')}：
+                        <a
+                          href={`${BASE_URL}/api/account/files/template/${'RL_academic_survey_lock'}`}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          <Button
+                            variant="contained"
+                            size="small"
+                            color="secondary"
+                            startIcon={<DownloadIcon />}
+                          >
+                            {t('Download')}
+                          </Button>
+                        </a>
+                        {t('Supervisor')}：
+                        <a
+                          href={`${BASE_URL}/api/account/files/template/${`RL_employer_survey_lock`}`}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          <Button
+                            variant="contained"
+                            size="small"
+                            color="secondary"
+                            startIcon={<DownloadIcon />}
+                          >
+                            {t('Download')}
+                          </Button>
+                        </a>
+                        {/* or &nbsp;
                                 <Link
                                   to={`${DEMO.DOCUMENT_MODIFICATION_INPUT_LINK(
-                                    this.state.documentsthreadId
+                                    docModificationThreadPageState.documentsthreadId
                                   )}`}
                                   // target="_blank"
                                 >
                                   <Button size="sm">線上填寫</Button>
                                 </Link> */}
-                              </b>
-                            ) : (
-                              <b>
-                                <a
-                                  href={`${BASE_URL}/api/account/files/template/${template_obj.prop}`}
-                                  target="_blank"
-                                >
-                                  <Button size="sm" variant="secondary">
-                                    <b>Link [點我下載]</b>
-                                  </Button>
-                                </a>
-                                {is_TaiGer_role(this.props.user) && (
-                                  <>
-                                    <br></br>
-                                    <Link
-                                      to={`${DEMO.DOCUMENT_MODIFICATION_INPUT_LINK(
-                                        this.state.documentsthreadId
-                                      )}`}
-                                    >
-                                      <Button size="xl" variant="danger">
-                                        <Badge>Beta</Badge> &nbsp;{' '}
-                                        <b>Editor Helper</b>
-                                      </Button>
-                                    </Link>
-                                  </>
-                                )}
-                              </b>
-                            )
-                          ) : (
-                            <>Not available</>
-                          )}
-                        </p>
-                      </>
+                      </b>
                     ) : (
-                      <>
-                        <p>
-                          {this.state.thread.file_type === 'Portfolio'
-                            ? 'Please upload the portfolio in Microsoft Word form here so that your Editor can help you for the text modification'
-                            : this.state.thread.file_type ===
-                              'Supplementary_Form'
-                            ? '請填好這個 program 的 Supplementory Form / Curriculum Analysis，並在這討論串夾帶該檔案 (通常為 .xls, xlsm, .pdf 檔) 上傳。'
-                            : '-'}
-                        </p>
-                      </>
-                    )}
-
-                    <h6>
-                      <b>Requirements:</b>
-                      {is_TaiGer_AdminAgent(this.props.user) &&
-                        this.state.thread.program_id && (
-                          <Link
-                            to={`${DEMO.SINGLE_PROGRAM_LINK(
-                              this.state.thread.program_id._id.toString()
-                            )}`}
-                            target="_blank"
+                      <b>
+                        <a
+                          href={`${BASE_URL}/api/account/files/template/${template_obj.prop}`}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          <Button
+                            variant="contained"
+                            size="small"
+                            color="secondary"
+                            startIcon={<DownloadIcon />}
                           >
-                            {' '}
-                            [Update]
-                          </Link>
-                        )}
-                    </h6>
-                    {this.state.thread.program_id ? (
-                      <>
-                        <LinkableNewlineText
-                          text={getRequirement(this.state.thread)}
-                        />
-                      </>
-                    ) : (
-                      <p>No</p>
-                    )}
-                  </Col>
-                  <Col md={widths[1]}>
-                    <h6>
-                      <b>Agent:</b>
-                      {this.state.agents.map((agent, i) => (
-                        <p>
-                          {is_TaiGer_role(this.props.user) ? (
-                            <Link
-                              to={`${DEMO.TEAM_AGENT_LINK(
-                                agent._id.toString()
+                            {t('Download')}
+                          </Button>
+                        </a>
+                        {is_TaiGer_role(user) && (
+                          <>
+                            <br></br>
+                            <LinkDom
+                              to={`${DEMO.DOCUMENT_MODIFICATION_INPUT_LINK(
+                                docModificationThreadPageState.documentsthreadId
                               )}`}
-                              target="_blank"
                             >
-                              {agent.firstname} {agent.lastname}
-                            </Link>
-                          ) : (
-                            <>
-                              {agent.firstname} {agent.lastname}
-                            </>
-                          )}
-                        </p>
-                      ))}
-                    </h6>
-                    <h6>
-                      <b>Editor:</b>
-                      {this.state.editors.map((editor, i) => (
-                        <p>
-                          {is_TaiGer_role(this.props.user) ? (
-                            <Link
-                              to={`${DEMO.TEAM_EDITOR_LINK(
-                                editor._id.toString()
-                              )}`}
-                              target="_blank"
-                            >
-                              {editor.firstname} {editor.lastname}
-                            </Link>
-                          ) : (
-                            <>
-                              {editor.firstname} {editor.lastname}
-                            </>
-                          )}
-                        </p>
-                      ))}
-                    </h6>
-
-                    <h6>
-                      <b>Deadline:</b>
-                      {is_TaiGer_AdminAgent(this.props.user) &&
-                        this.state.thread.program_id && (
-                          <Link
-                            to={`${DEMO.SINGLE_PROGRAM_LINK(
-                              this.state.thread.program_id._id.toString()
-                            )}`}
-                            target="_blank"
-                          >
-                            {' '}
-                            [Update]
-                          </Link>
+                              <Button
+                                color="secondary"
+                                variant="contained"
+                                sx={{ my: 2 }}
+                              >
+                                <Badge>Beta</Badge> &nbsp; <b>Editor Helper</b>
+                              </Button>
+                            </LinkDom>
+                          </>
                         )}
-                    </h6>
-                    <p>{this.state.deadline}</p>
-                  </Col>
-                  {this.state.thread.file_type === 'CV' ? (
-                    <Col md={widths[2]}>
-                      <h6>
-                        <b>Profile photo:</b>
-                        <img
-                          // className="d-block w-100"
-                          src={`${BASE_URL}/api/students/${this.state.thread.student_id._id}/files/Passport_Photo`}
-                          height="100%"
-                          width="100%"
-                        />
-                      </h6>
-                      If image not shown, please go to{' '}
-                      <a href="/base-documents">
-                        <b>Base Documents</b>
-                        <FiExternalLink
-                          className="mx-1 mb-1"
-                          style={{ cursor: 'pointer' }}
-                        />
-                      </a>{' '}
-                      and upload the Passport Photo.
-                    </Col>
-                  ) : (
-                    !is_TaiGer_Student(this.props.user) && (
-                      <Col md={widths[2]}>
-                        <h6>
-                          <b>Conflict:</b>
-                        </h6>
-                        {conflict_list.length === 0
-                          ? 'None'
-                          : conflict_list.map((conflict_student) => (
-                              <p>
-                                <Link
-                                  to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-                                    conflict_student._id.toString(),
-                                    '/CV_ML_RL'
-                                  )}`}
-                                >
-                                  <b>
-                                    {conflict_student.firstname}{' '}
-                                    {conflict_student.lastname}
-                                  </b>
-                                </Link>
-                              </p>
-                            ))}
-                      </Col>
+                      </b>
                     )
+                  ) : (
+                    <>Not available</>
                   )}
-                </Row>
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
-        <Row>
-          <MessageList
-            documentsthreadId={this.state.documentsthreadId}
-            accordionKeys={this.state.accordionKeys}
-            singleExpandtHandler={this.singleExpandtHandler}
-            thread={this.state.thread}
-            isLoaded={this.state.isLoaded}
-            user={this.props.user}
-            onDeleteSingleMessage={this.onDeleteSingleMessage}
-          />
-        </Row>
-        {this.props.user.archiv !== true ? (
-          <Row>
-            <Card className="my-0 mx-0">
-              <Card.Header>
-                <Card.Title as="h5">
-                  {this.props.user.firstname} {this.props.user.lastname}
-                </Card.Title>
-              </Card.Header>
-              <Card.Body>
-                {this.state.thread.isFinalVersion ? (
-                  <Row style={{ textDecoration: 'none' }}>
-                    <Col className="my-0 mx-0">
-                      This discussion thread is close.
-                    </Col>
-                  </Row>
-                ) : (
-                  <Row style={{ textDecoration: 'none' }}>
-                    <Col className="my-0 mx-0">
-                      <DocThreadEditor
-                        thread={this.state.thread}
-                        buttonDisabled={this.state.buttonDisabled}
-                        doc_title={'this.state.doc_title'}
-                        editorState={this.state.editorState}
-                        handleClickSave={this.handleClickSave}
-                        file={this.state.file}
-                        onFileChange={this.onFileChange}
-                      />
-                    </Col>
-                  </Row>
+                </Typography>
+              </>
+            ) : (
+              <>
+                <Typography>
+                  {docModificationThreadPageState.thread.file_type ===
+                  'Portfolio'
+                    ? 'Please upload the portfolio in Microsoft Word form here so that your Editor can help you for the text modification'
+                    : docModificationThreadPageState.thread.file_type ===
+                      'Supplementary_Form'
+                    ? '請填好這個 program 的 Supplementory Form / Curriculum Analysis，並在這討論串夾帶該檔案 (通常為 .xls, xlsm, .pdf 檔) 上傳。'
+                    : '-'}
+                </Typography>
+              </>
+            )}
+            <Box>
+              <Typography variant="body1" fontWeight="bold">
+                {t('Requirements')}:
+              </Typography>
+              {is_TaiGer_AdminAgent(user) &&
+                docModificationThreadPageState.thread.program_id && (
+                  <Link
+                    underline="hover"
+                    to={`${DEMO.SINGLE_PROGRAM_LINK(
+                      docModificationThreadPageState.thread.program_id._id.toString()
+                    )}`}
+                    component={LinkDom}
+                    target="_blank"
+                  >
+                    [{t('Update')}]
+                  </Link>
                 )}
-              </Card.Body>
-            </Card>
-          </Row>
-        ) : (
-          <Row>
-            <Card className="my-0 mx-0">
-              <Card.Body>
-                <Row style={{ textDecoration: 'none' }}>
-                  <Col className="my-0 mx-0">
-                    Your service is finished. Therefore, you are in read only
-                    mode.
-                  </Col>
-                </Row>
-              </Card.Body>
-            </Card>
-          </Row>
-        )}
-        {is_TaiGer_role(this.props.user) &&
-          (!this.state.thread.isFinalVersion ? (
-            <Row className="mt-2">
-              {
-                <Button
-                  variant="success"
-                  onClick={(e) =>
-                    this.handleAsFinalFile(
-                      this.state.thread._id,
-                      this.state.thread.student_id._id,
-                      this.state.thread.program_id,
-                      this.state.thread.isFinalVersion
-                    )
-                  }
-                >
-                  {isSubmissionLoaded ? (
-                    'Mark as finished'
-                  ) : (
-                    <Spinner animation="border" role="status" size="sm">
-                      <span className="visually-hidden"></span>
-                    </Spinner>
-                  )}
-                </Button>
-              }
-            </Row>
+            </Box>
+            {docModificationThreadPageState.thread.program_id ? (
+              <>
+                <LinkableNewlineText
+                  text={getRequirement(docModificationThreadPageState.thread)}
+                />
+              </>
+            ) : (
+              <Typography>{t('No')}</Typography>
+            )}
+          </Grid>
+          <Grid item md={widths[1]}>
+            <Typography variant="body1" fontWeight="bold">
+              {t('Agent')}:
+            </Typography>
+            {docModificationThreadPageState.agents.map((agent, i) => (
+              <Typography key={i}>
+                {is_TaiGer_role(user) ? (
+                  <Link
+                    underline="hover"
+                    component={LinkDom}
+                    to={`${DEMO.TEAM_AGENT_LINK(agent._id.toString())}`}
+                    target="_blank"
+                  >
+                    {agent.firstname} {agent.lastname}
+                  </Link>
+                ) : (
+                  <>
+                    {agent.firstname} {agent.lastname}
+                  </>
+                )}
+              </Typography>
+            ))}
+            <Typography variant="body1" fontWeight="bold">
+              {t('Editor')}:
+            </Typography>
+            {docModificationThreadPageState.editors.map((editor, i) => (
+              <Typography key={i}>
+                {is_TaiGer_role(user) ? (
+                  <Link
+                    underline="hover"
+                    component={LinkDom}
+                    to={`${DEMO.TEAM_EDITOR_LINK(editor._id.toString())}`}
+                    target="_blank"
+                  >
+                    {editor.firstname} {editor.lastname}
+                  </Link>
+                ) : (
+                  <>
+                    {editor.firstname} {editor.lastname}
+                  </>
+                )}
+              </Typography>
+            ))}
+
+            <Typography variant="body1">
+              <b>{t('Deadline')}:</b>
+              {is_TaiGer_AdminAgent(user) &&
+                docModificationThreadPageState.thread.program_id && (
+                  <Link
+                    underline="hover"
+                    component={LinkDom}
+                    to={`${DEMO.SINGLE_PROGRAM_LINK(
+                      docModificationThreadPageState.thread.program_id._id.toString()
+                    )}`}
+                    target="_blank"
+                  >
+                    {' '}
+                    [Update]
+                  </Link>
+                )}
+            </Typography>
+            <Typography variant="string">
+              {docModificationThreadPageState.deadline}
+            </Typography>
+          </Grid>
+          {docModificationThreadPageState.thread.file_type === 'CV' ? (
+            <Grid md={widths[2]}>
+              <h6>
+                <b>Profile photo:</b>
+                <img
+                  // className="d-block w-100"
+                  src={`${BASE_URL}/api/students/${docModificationThreadPageState.thread.student_id._id}/files/Passport_Photo`}
+                  height="100%"
+                  width="100%"
+                />
+              </h6>
+              If image not shown, please go to{' '}
+              <Link underline="hover" to="/base-documents" component={LinkDom}>
+                <b>Base Documents</b>
+                <FiExternalLink style={{ cursor: 'pointer' }} />
+              </Link>
+              and upload the Passport Photo.
+            </Grid>
           ) : (
-            <Row className="mt-2">
-              {
-                <Button
-                  variant="danger"
-                  onClick={(e) =>
-                    this.handleAsFinalFile(
-                      this.state.thread._id,
-                      this.state.thread.student_id._id,
-                      this.state.thread.program_id,
-                      this.state.thread.isFinalVersion
-                    )
-                  }
-                >
-                  {isSubmissionLoaded ? (
-                    'Mark as open'
-                  ) : (
-                    <Spinner animation="border" role="status" size="sm">
-                      <span className="visually-hidden"></span>
-                    </Spinner>
-                  )}
-                </Button>
-              }
-            </Row>
-          ))}
-        <Modal
-          show={this.state.SetAsFinalFileModel}
-          onHide={this.closeSetAsFinalFileModelWindow}
-          aria-labelledby="contained-modal-title-vcenter"
-          centered
+            !is_TaiGer_Student(user) && (
+              <Grid md={widths[2]}>
+                <Typography variant="body1">{t('Conflict')}:</Typography>
+                {conflict_list.length === 0
+                  ? 'None'
+                  : conflict_list.map((conflict_student, j) => (
+                      <Typography key={j}>
+                        <LinkDom
+                          to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                            conflict_student._id.toString(),
+                            '/CV_ML_RL'
+                          )}`}
+                        >
+                          <b>
+                            {conflict_student.firstname}{' '}
+                            {conflict_student.lastname}
+                          </b>
+                        </LinkDom>
+                      </Typography>
+                    ))}
+              </Grid>
+            )
+          )}
+        </Grid>
+      </Card>
+      <MessageList
+        documentsthreadId={docModificationThreadPageState.documentsthreadId}
+        accordionKeys={docModificationThreadPageState.accordionKeys}
+        singleExpandtHandler={singleExpandtHandler}
+        thread={docModificationThreadPageState.thread}
+        isLoaded={docModificationThreadPageState.isLoaded}
+        user={user}
+        onDeleteSingleMessage={onDeleteSingleMessage}
+      />
+      {user.archiv !== true ? (
+        <Card
+          sx={{
+            p: 2,
+            overflowWrap: 'break-word', // Add this line
+            maxWidth: window.innerWidth - 64,
+            marginTop: '1px',
+            '& .MuiAvatar-root': {
+              width: 32,
+              height: 32,
+              ml: -0.5,
+              mr: 1
+            }
+          }}
         >
-          <Modal.Header>
-            <Modal.Title id="contained-modal-title-vcenter">
-              Warning
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            Do you want to set{' '}
+          <Avatar {...stringAvatar(`${user.firstname} ${user.lastname}`)} />
+          <Typography
+            variant="body1"
+            sx={{ mt: 1 }}
+            style={{ marginLeft: '10px', flex: 1 }}
+          >
             <b>
-              {student_name} {docName}
-            </b>{' '}
-            as <b>{this.state.thread.isFinalVersion ? 'open' : 'final'}</b>?
-          </Modal.Body>
-          <Modal.Footer>
-            <Button
-              disabled={!isLoaded || !isSubmissionLoaded}
-              onClick={(e) => this.ConfirmSetAsFinalFileHandler(e)}
-            >
-              {isSubmissionLoaded ? (
-                'Yes'
-              ) : (
-                <Spinner animation="border" role="status" size="sm">
-                  <span className="visually-hidden"></span>
-                </Spinner>
-              )}
-            </Button>
-            <Button onClick={this.closeSetAsFinalFileModelWindow}>No</Button>
-          </Modal.Footer>
-        </Modal>
-        {res_modal_status >= 400 && (
-          <ModalMain
-            ConfirmError={this.ConfirmError}
-            res_modal_status={res_modal_status}
-            res_modal_message={res_modal_message}
-          />
-        )}
-      </Aux>
-    );
-  }
+              {user.firstname} {user.lastname}
+            </b>
+          </Typography>
+          {docModificationThreadPageState.thread.isFinalVersion ? (
+            <Typography>This discussion thread is close.</Typography>
+          ) : (
+            <DocThreadEditor
+              thread={docModificationThreadPageState.thread}
+              buttonDisabled={docModificationThreadPageState.buttonDisabled}
+              doc_title={'docModificationThreadPageState.doc_title'}
+              editorState={docModificationThreadPageState.editorState}
+              handleClickSave={handleClickSave}
+              file={docModificationThreadPageState.file}
+              onFileChange={onFileChange}
+            />
+          )}
+        </Card>
+      ) : (
+        <Card>
+          <Typography>
+            Your service is finished. Therefore, you are in read only mode.
+          </Typography>
+        </Card>
+      )}
+      {is_TaiGer_role(user) &&
+        (!docModificationThreadPageState.thread.isFinalVersion ? (
+          <Button
+            fullWidth
+            variant="contained"
+            color="success"
+            onClick={() =>
+              handleAsFinalFile(
+                docModificationThreadPageState.thread._id,
+                docModificationThreadPageState.thread.student_id._id,
+                docModificationThreadPageState.thread.program_id,
+                docModificationThreadPageState.thread.isFinalVersion
+              )
+            }
+            sx={{ mt: 2 }}
+          >
+            {isSubmissionLoaded ? t('Mark as finished') : <CircularProgress />}
+          </Button>
+        ) : (
+          <Button
+            fullWidth
+            variant="outlined"
+            color="secondary"
+            onClick={() =>
+              handleAsFinalFile(
+                docModificationThreadPageState.thread._id,
+                docModificationThreadPageState.thread.student_id._id,
+                docModificationThreadPageState.thread.program_id,
+                docModificationThreadPageState.thread.isFinalVersion
+              )
+            }
+            sx={{ mt: 2 }}
+          >
+            {isSubmissionLoaded ? t('Mark as open') : <CircularProgress />}
+          </Button>
+        ))}
+      <ModalNew
+        open={docModificationThreadPageState.SetAsFinalFileModel}
+        onClose={closeSetAsFinalFileModelWindow}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box>
+          <Typography variant="h6">{t('Warning')}</Typography>
+          Do you want to set{' '}
+          <b>
+            {student_name} {docName}
+          </b>{' '}
+          as{' '}
+          <b>
+            {docModificationThreadPageState.thread.isFinalVersion
+              ? 'open'
+              : 'final'}
+          </b>
+          ?
+          <br />
+          <br />
+          <Button
+            color="primary"
+            variant="contained"
+            disabled={!isLoaded || !isSubmissionLoaded}
+            onClick={(e) => ConfirmSetAsFinalFileHandler(e)}
+            sx={{ mr: 2 }}
+          >
+            {isSubmissionLoaded ? t('Yes') : <CircularProgress />}
+          </Button>
+          <Button
+            color="secondary"
+            variant="outlined"
+            onClick={closeSetAsFinalFileModelWindow}
+          >
+            {t('No')}
+          </Button>
+        </Box>
+      </ModalNew>
+      {res_modal_status >= 400 && (
+        <ModalMain
+          ConfirmError={ConfirmError}
+          res_modal_status={res_modal_status}
+          res_modal_message={res_modal_message}
+        />
+      )}
+    </Box>
+  );
 }
 
 export default DocModificationThreadPage;

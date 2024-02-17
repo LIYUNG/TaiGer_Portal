@@ -1,13 +1,17 @@
-import React from 'react';
-import { Card, Spinner, Row, Col, Button } from 'react-bootstrap';
-import { Redirect, Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Navigate, Link as LinkDom, useParams } from 'react-router-dom';
+import {
+  Box,
+  Breadcrumbs,
+  Button,
+  Card,
+  Link,
+  Typography
+} from '@mui/material';
 
-import Aux from '../../hoc/_Aux';
 import CVMLRLOverview from '../CVMLRLCenter/CVMLRLOverview';
 import ErrorPage from '../Utils/ErrorPage';
-
 import { getEditor } from '../../api';
-import { spinner_style } from '../Utils/contants';
 import {
   frequencyDistribution,
   is_TaiGer_role,
@@ -17,10 +21,13 @@ import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import TasksDistributionBarChart from '../../components/Charts/TasksDistributionBarChart';
 import { appConfig } from '../../config';
-import { TopBar } from '../../components/TopBar/TopBar';
+import { useAuth } from '../../components/AuthProvider';
+import Loading from '../../components/Loading/Loading';
 
-class EditorPage extends React.Component {
-  state = {
+function EditorPage() {
+  const { user_id } = useParams();
+  const { user } = useAuth();
+  const [editorPageState, setEditorPageState] = useState({
     error: '',
     role: '',
     isLoaded: false,
@@ -29,174 +36,144 @@ class EditorPage extends React.Component {
     editor: null,
     students: null,
     res_status: 0
-  };
-
-  componentDidMount() {
-    getEditor(this.props.match.params.user_id).then(
+  });
+  useEffect(() => {
+    getEditor(user_id).then(
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
         if (success) {
-          this.setState({
+          setEditorPageState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             editor: data.editor,
             students: data.students,
             success: success,
             res_status: status
-          });
+          }));
         } else {
-          this.setState({
+          setEditorPageState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             res_status: status
-          });
+          }));
         }
       },
       (error) => {
-        this.setState((state) => ({
-          ...state,
+        setEditorPageState((prevState) => ({
+          ...prevState,
           isLoaded: true,
           error,
           res_status: 500
         }));
       }
     );
+  }, [user_id]);
+
+  if (!is_TaiGer_role(user)) {
+    return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
+  }
+  const { res_status, isLoaded } = editorPageState;
+
+  if (!isLoaded && !editorPageState.editor && !editorPageState.students) {
+    return <Loading />;
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevProps.match.params.user_id !== this.props.match.params.user_id) {
-      getEditor(this.props.match.params.user_id).then(
-        (resp) => {
-          const { data, success } = resp.data;
-          const { status } = resp;
-          if (success) {
-            this.setState({
-              isLoaded: true,
-              editor: data.editor,
-              students: data.students,
-              success: success,
-              res_status: status
-            });
-          } else {
-            this.setState({
-              isLoaded: true,
-              res_status: status
-            });
-          }
-        },
-        (error) => {
-          this.setState((state) => ({
-            ...state,
-            isLoaded: true,
-            error,
-            res_status: 500
-          }));
-        }
-      );
-    }
+  if (res_status >= 400) {
+    return <ErrorPage res_status={res_status} />;
   }
+  TabTitle(
+    `Editor: ${editorPageState.editor.firstname}, ${editorPageState.editor.lastname}`
+  );
 
-  render() {
-    if (!is_TaiGer_role(this.props.user)) {
-      return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
-    }
-    const { res_status, isLoaded } = this.state;
-
-    if (!isLoaded && !this.state.editor && !this.state.students) {
-      return (
-        <div style={spinner_style}>
-          <Spinner animation="border" role="status">
-            <span className="visually-hidden"></span>
-          </Spinner>
-        </div>
-      );
-    }
-
-    if (res_status >= 400) {
-      return <ErrorPage res_status={res_status} />;
-    }
-    TabTitle(
-      `Editor: ${this.state.editor.firstname}, ${this.state.editor.lastname}`
-    );
-
-    const open_tasks_arr = open_tasks_with_editors(this.state.students);
-    const task_distribution = open_tasks_arr
-      .filter(({ isFinalVersion, show }) => isFinalVersion !== true)
-      .map(({ deadline, file_type, show }) => {
-        return { deadline, file_type, show };
-      });
-    const open_distr = frequencyDistribution(task_distribution);
-
-    const sort_date = Object.keys(open_distr).sort();
-
-    const sorted_date_freq_pair = [];
-    sort_date.forEach((date, i) => {
-      sorted_date_freq_pair.push({
-        name: `${date}`,
-        active: open_distr[date].show,
-        potentials: open_distr[date].potentials
-      });
+  const open_tasks_arr = open_tasks_with_editors(editorPageState.students);
+  const task_distribution = open_tasks_arr
+    .filter(({ isFinalVersion }) => isFinalVersion !== true)
+    .map(({ deadline, file_type, show, isPotentials }) => {
+      return { deadline, file_type, show, isPotentials };
     });
+  const open_distr = frequencyDistribution(task_distribution);
 
-    return (
-      <Aux>
-        <TopBar>
-          {appConfig.companyName} Team Editor:{' '}
-          <b>
-            {this.state.editor.firstname} {this.state.editor.lastname}
-          </b>
-          {` (${this.state.students.length})`}
-        </TopBar>
-        <Row>
-          <Col md={12}>
-            <Card>
-              <Card.Header text={'dark'}>
-                <Card.Title>
-                  <Row>
-                    <Col className="my-0 mx-0">
-                      {this.state.editor.firstname} {this.state.editor.lastname}{' '}
-                      Open Tasks Distribution
-                    </Col>
-                  </Row>
-                </Card.Title>
-              </Card.Header>
-              <Card.Body>
-                Tasks distribute among the date. Note that CVs, MLs, RLs, and
-                Essay are mixed together.
-                <p className="my-0">
-                  <b style={{ color: 'red' }}>active:</b> students decide
-                  programs. These will be shown in{' '}
-                  <Link to={`${DEMO.CV_ML_RL_DASHBOARD_LINK}`}>
-                    Tasks Dashboard
-                  </Link>
-                </p>
-                <p className="my-0">
-                  <b style={{ color: '#A9A9A9' }}>potentials:</b> students do
-                  not decide programs yet. But the tasks will be potentially
-                  active when they decided.
-                </p>
-                <TasksDistributionBarChart data={sorted_date_freq_pair} />
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
-        <CVMLRLOverview
-          isLoaded={this.state.isLoaded}
-          user={this.state.editor}
-          success={this.state.success}
-          students={this.state.students}
-        />
-        <Row className="my-2 mx-0">
-          <Link
-            to={`${DEMO.TEAM_EDITOR_ARCHIV_LINK(
-              this.state.editor._id.toString()
-            )}`}
-          >
-            <Button>See Archiv Student</Button>
-          </Link>
-        </Row>
-      </Aux>
-    );
-  }
+  const sort_date = Object.keys(open_distr).sort();
+
+  const sorted_date_freq_pair = [];
+  sort_date.forEach((date) => {
+    sorted_date_freq_pair.push({
+      name: `${date}`,
+      active: open_distr[date].show,
+      potentials: open_distr[date].potentials
+    });
+  });
+
+  return (
+    <Box>
+      <Breadcrumbs aria-label="breadcrumb">
+        <Link
+          underline="hover"
+          color="inherit"
+          component={LinkDom}
+          to={`${DEMO.DASHBOARD_LINK}`}
+        >
+          {appConfig.companyName}
+        </Link>
+        <Link
+          underline="hover"
+          color="inherit"
+          component={LinkDom}
+          to={`${DEMO.TEAM_MEMBERS_LINK}`}
+        >
+          {appConfig.companyName} Team
+        </Link>
+        <Typography color="text.primary">
+          {editorPageState.editor.firstname} {editorPageState.editor.lastname}
+          {` (${editorPageState.students.length})`}
+        </Typography>
+      </Breadcrumbs>
+      <Box>
+        <Card sx={{ p: 2 }}>
+          <Typography variant="h5">
+            {editorPageState.editor.firstname} {editorPageState.editor.lastname}{' '}
+            Open Tasks Distribution
+          </Typography>
+          <Typography>
+            Tasks distribute among the date. Note that CVs, MLs, RLs, and Essay
+            are mixed together.
+          </Typography>
+          <Typography>
+            <b style={{ color: 'red' }}>active:</b> students decide programs.
+            These will be shown in{' '}
+            <LinkDom to={`${DEMO.CV_ML_RL_DASHBOARD_LINK}`}>
+              Tasks Dashboard
+            </LinkDom>
+          </Typography>
+          <Typography>
+            <b style={{ color: '#A9A9A9' }}>potentials:</b> students do not
+            decide programs yet. But the tasks will be potentially active when
+            they decided.
+          </Typography>
+          <TasksDistributionBarChart data={sorted_date_freq_pair} />
+        </Card>
+      </Box>
+      <CVMLRLOverview
+        isLoaded={editorPageState.isLoaded}
+        user={editorPageState.editor}
+        success={editorPageState.success}
+        students={editorPageState.students}
+      />
+      <Box>
+        <Link
+          component={LinkDom}
+          to={`${DEMO.TEAM_EDITOR_ARCHIV_LINK(
+            editorPageState.editor._id.toString()
+          )}`}
+        >
+          <Button color="primary" variant="contained">
+            See Archiv Student
+          </Button>
+        </Link>
+      </Box>
+    </Box>
+  );
 }
 
 export default EditorPage;

@@ -1,19 +1,19 @@
-import React from 'react';
-import { Spinner } from 'react-bootstrap';
-import { Redirect } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Navigate } from 'react-router-dom';
+import { Box } from '@mui/material';
 
-import Aux from '../../hoc/_Aux';
 import NotesCard from './NotesCard';
-import { spinner_style } from '../Utils/contants';
 import { is_TaiGer_role } from '../Utils/checking-functions';
 import ErrorPage from '../Utils/ErrorPage';
-
 import { getStudentNotes } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
+import { useAuth } from '../../components/AuthProvider';
+import Loading from '../../components/Loading/Loading';
 
-class Notes extends React.Component {
-  state = {
+function Notes(props) {
+  const { user } = useAuth();
+  const [notesState, setNotesState] = useState({
     error: '',
     role: '',
     isLoaded: false,
@@ -23,10 +23,10 @@ class Notes extends React.Component {
     application_preference: {},
     updateconfirmed: false,
     res_status: 0
-  };
+  });
 
-  componentDidMount() {
-    getStudentNotes(this.props.student_id).then(
+  useEffect(() => {
+    getStudentNotes(props.student_id).then(
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
@@ -41,104 +41,55 @@ class Notes extends React.Component {
           initialEditorState = { time: new Date(), blocks: [] };
         }
         if (success) {
-          this.setState({
+          setNotesState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             notes: initialEditorState,
             success: success,
             res_status: status
-          });
+          }));
         } else {
-          this.setState({
+          setNotesState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             res_status: status
-          });
+          }));
         }
       },
       (error) => {
-        this.setState((state) => ({
-          ...state,
+        setNotesState((prevState) => ({
+          ...prevState,
           isLoaded: true,
           error,
           res_status: 500
         }));
       }
     );
+  }, [props.student_id]);
+
+  if (!is_TaiGer_role(user)) {
+    return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
+  }
+  TabTitle('Academic Background Survey');
+  const { res_status, isLoaded } = notesState;
+
+  if (!isLoaded) {
+    return <Loading />;
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevProps.student_id !== this.props.student_id) {
-      getStudentNotes(this.props.student_id).then(
-        (resp) => {
-          const { data, success } = resp.data;
-          var initialEditorState = null;
-          if (data?.notes !== '{}') {
-            try {
-              initialEditorState = JSON.parse(data.notes);
-            } catch (e) {
-              initialEditorState = { time: new Date(), blocks: [] };
-            }
-          } else {
-            initialEditorState = { time: new Date(), blocks: [] };
-          }
-          const { status } = resp;
-          if (success) {
-            this.setState({
-              isLoaded: true,
-              notes: initialEditorState,
-              success: success,
-              res_status: status
-            });
-          } else {
-            this.setState({
-              isLoaded: true,
-              res_status: status
-            });
-          }
-        },
-        (error) => {
-          this.setState((state) => ({
-            ...state,
-            isLoaded: true,
-            error,
-            res_status: 500
-          }));
-        }
-      );
-    }
+  if (res_status >= 400) {
+    return <ErrorPage res_status={res_status} />;
   }
-
-  render() {
-    if (!is_TaiGer_role(this.props.user)) {
-      return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
-    }
-    TabTitle('Academic Background Survey');
-    const { res_status, isLoaded } = this.state;
-
-    if (!isLoaded) {
-      return (
-        <div style={spinner_style}>
-          <Spinner animation="border" role="status">
-            <span className="visually-hidden"></span>
-          </Spinner>
-        </div>
-      );
-    }
-
-    if (res_status >= 400) {
-      return <ErrorPage res_status={res_status} />;
-    }
-    return (
-      <Aux>
-        <NotesCard
-          role={this.props.user.role}
-          notes={this.state.notes}
-          isLoaded={this.state.isLoaded}
-          user={this.props.user}
-          student_id={this.props.student_id}
-        />
-      </Aux>
-    );
-  }
+  return (
+    <Box>
+      <NotesCard
+        notes={notesState.notes}
+        isLoaded={notesState.isLoaded}
+        user={user}
+        student_id={props.student_id}
+      />
+    </Box>
+  );
 }
 
 export default Notes;

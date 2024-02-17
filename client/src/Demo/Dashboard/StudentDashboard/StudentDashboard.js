@@ -1,7 +1,20 @@
 import React, { useState } from 'react';
-import { Row, Col, Table, Card, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { BsExclamationTriangle } from 'react-icons/bs';
+import { FiExternalLink } from 'react-icons/fi';
+import { AiOutlineCalendar } from 'react-icons/ai';
+import {
+  Alert,
+  Box,
+  Button,
+  Card,
+  Grid,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Typography
+} from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import Banner from '../../../components/Banner/Banner';
@@ -18,13 +31,11 @@ import ErrorPage from '../../Utils/ErrorPage';
 
 import { updateBanner } from '../../../api';
 import DEMO from '../../../store/constant';
-import { FiExternalLink } from 'react-icons/fi';
-import { AiOutlineCalendar } from 'react-icons/ai';
 import ApplicationProgressCard from '../../../components/ApplicationProgressCard/ApplicationProgressCard';
 import { appConfig } from '../../../config';
 
 function StudentDashboard(props) {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const [studentDashboardState, setStudentDashboardState] = useState({
     error: '',
     student: props.student,
@@ -73,16 +84,11 @@ function StudentDashboard(props) {
 
   const hasUpcomingAppointment = false;
   const read_thread = (
-    <RespondedThreads
-      user={props.user}
-      role={props.role}
-      student={studentDashboardState.student}
-    />
+    <RespondedThreads student={studentDashboardState.student} />
   );
 
   const student_tasks = (
     <StudentTasksResponsive
-      role={props.role}
       student={studentDashboardState.student}
       isCoursesFilled={props.isCoursesFilled}
     />
@@ -92,315 +98,321 @@ function StudentDashboard(props) {
   return (
     <>
       {student.archiv && (
-        <Row className="sticky-top">
-          <Col>
-            <Card className="mb-2 mx-0" bg={'success'} text={'white'}>
-              <Card.Header>
-                <Card.Title as="h5" className="text-light">
-                  Status: <b>Close</b> - Your {appConfig.companyName} Portal
-                  Service is terminated.
-                </Card.Title>
-              </Card.Header>
-            </Card>
-          </Col>
-        </Row>
+        <Card>
+          Status: <b>Close</b> - Your {appConfig.companyName} Portal Service is
+          terminated.
+        </Card>
       )}
-      {student.notification &&
-        !student.notification.isRead_survey_not_complete &&
-        !check_academic_background_filled(student.academic_background) && (
-          <Banner
-            ReadOnlyMode={props.ReadOnlyMode}
-            bg={'danger'}
-            title={'Reminder:'}
-            path={`${DEMO.SURVEY_LINK}`}
-            text={'It looks like you did not finish survey. See'}
-            link_name={
-              <>
-                Survey
-                <FiExternalLink
-                  className="mx-1 mb-1"
-                  style={{ cursor: 'pointer' }}
-                />
-              </>
-            }
-            removeBanner={removeBanner}
-            notification_key={'isRead_survey_not_complete'}
-          />
-        )}
 
-      {student.notification &&
-        !student.notification.isRead_uni_assist_task_assigned &&
-        appConfig.vpdEnable &&
-        !is_all_uni_assist_vpd_uploaded(student) && (
-          <Banner
-            ReadOnlyMode={props.ReadOnlyMode}
-            bg={'danger'}
-            title={'Reminder:'}
-            path={`${DEMO.UNI_ASSIST_LINK}`}
-            text={'Please go to Uni-Assist to apply or to get VPD'}
-            link_name={
-              <>
-                Uni-Assist
-                <FiExternalLink
-                  className="mx-1 mb-1"
-                  style={{ cursor: 'pointer' }}
-                />
-              </>
-            }
-            removeBanner={removeBanner}
-            notification_key={'isRead_uni_assist_task_assigned'}
-          />
-        )}
-      {/* new agents assigned banner */}
-      {student.notification &&
-        !student.notification.isRead_new_agent_assigned && (
-          <Banner
-            ReadOnlyMode={props.ReadOnlyMode}
-            bg={'primary'}
-            title={'Info:'}
-            path={`${DEMO.UNI_ASSIST_LINK}`}
-            text={'New agent is assigned to you.'}
-            link_name={''}
-            removeBanner={removeBanner}
-            notification_key={'isRead_new_agent_assigned'}
-          />
-        )}
-      {/* new editors assigned banner */}
-      {student.notification &&
-        !student.notification.isRead_new_editor_assigned && (
-          <Banner
-            ReadOnlyMode={props.ReadOnlyMode}
-            bg={'primary'}
-            title={'Info:'}
-            path={`${DEMO.UNI_ASSIST_LINK}`}
-            text={'New editor is assigned to you.'}
-            link_name={''}
-            removeBanner={removeBanner}
-            notification_key={'isRead_new_editor_assigned'}
-          />
-        )}
-      {/* new CV ML RL Essay message */}
-      {student.notification &&
-        !student.notification.isRead_new_cvmlrl_messsage && (
-          <Banner
-            ReadOnlyMode={props.ReadOnlyMode}
-            bg={'danger'}
-            title={'Reminder:'}
-            path={`${DEMO.CV_ML_RL_CENTER_LINK}`}
-            text={'New feedback from your Editor. See'}
-            link_name={
-              <>
-                CV/ML/RL Center
-                <FiExternalLink
-                  className="mx-1 mb-1"
-                  style={{ cursor: 'pointer' }}
-                />
-              </>
-            }
-            removeBanner={removeBanner}
-            notification_key={'isRead_new_cvmlrl_messsage'}
-          />
-        )}
-      {/* TODO: check function : new cv ml rl tasks are asigned to you */}
-      {student.notification &&
-        !student.notification.isRead_new_cvmlrl_tasks_created && (
-          <Banner
-            ReadOnlyMode={props.ReadOnlyMode}
-            bg={'danger'}
-            title={'Reminder:'}
-            path={`${DEMO.CV_ML_RL_CENTER_LINK}`}
-            text={'New tasks are assigned to you. See'}
-            link_name={
-              <>
-                CV/ML/RL Center
-                <FiExternalLink
-                  className="mx-1 mb-1"
-                  style={{ cursor: 'pointer' }}
-                />
-              </>
-            }
-            removeBanner={removeBanner}
-            notification_key={'isRead_new_cvmlrl_tasks_created'}
-          />
-        )}
-      {student.notification &&
-        !student.notification.isRead_new_programs_assigned &&
-        !check_applications_to_decided(student) && (
-          <Banner
-            ReadOnlyMode={props.ReadOnlyMode}
-            bg={'danger'}
-            title={'Reminder:'}
-            path={`${DEMO.STUDENT_APPLICATIONS_LINK}`}
-            text={'It looks like you did not decide programs'}
-            link_name={
-              <>
-                Application Overview
-                <FiExternalLink
-                  className="mx-1 mb-1"
-                  style={{ cursor: 'pointer' }}
-                />
-              </>
-            }
-            removeBanner={removeBanner}
-            notification_key={'isRead_new_programs_assigned'}
-          />
-        )}
-      {student.notification &&
-        !student.notification.isRead_base_documents_missing &&
-        are_base_documents_missing(student) && (
-          <Banner
-            ReadOnlyMode={props.ReadOnlyMode}
-            bg={'danger'}
-            title={'Reminder:'}
-            path={`${DEMO.BASE_DOCUMENTS_LINK}`}
-            text={'Some of Base Documents are still missing'}
-            link_name={
-              <>
-                Base Documents
-                <FiExternalLink
-                  className="mx-1 mb-1"
-                  style={{ cursor: 'pointer' }}
-                />
-              </>
-            }
-            removeBanner={removeBanner}
-            notification_key={'isRead_base_documents_missing'}
-          />
-        )}
-      {student.notification &&
-        !student.notification.isRead_base_documents_rejected &&
-        isBaseDocumentsRejected(student) && (
-          <Banner
-            ReadOnlyMode={props.ReadOnlyMode}
-            bg={'danger'}
-            title={'Reminder:'}
-            path={`${DEMO.BASE_DOCUMENTS_LINK}`}
-            text={'Some of Base Documents are rejected'}
-            link_name={
-              <>
-                Base Documents
-                <FiExternalLink
-                  className="mx-1 mb-1"
-                  style={{ cursor: 'pointer' }}
-                />
-              </>
-            }
-            removeBanner={removeBanner}
-            notification_key={'isRead_base_documents_rejected'}
-          />
-        )}
-      <Row>
-        <Col md={8}>
-          <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
-            <Card.Header>
-              <Card.Title className="my-0 mx-0 text-light">
-                <BsExclamationTriangle size={18} /> {t('To Do Tasks')}
-                &nbsp;:&nbsp;
-                {t('Please finish it as soon as possible')}
-              </Card.Title>
-            </Card.Header>
-            <Table
-              responsive
-              bordered
-              hover
-              className="my-0 mx-0"
-              variant="dark"
-              text="light"
-              size="sm"
-            >
-              <thead>
-                <tr>
-                  <th>Tasks</th>
-                  <th>Description</th>
-                  <th>Last Update</th>
-                </tr>
-              </thead>
-              <tbody>{student_tasks}</tbody>
-            </Table>
-          </Card>
-        </Col>
-        <Col md={4}>
-          {appConfig.meetingEnable && (
-            <Card className="my-2 mx-0" bg={'secondary'} text={'light'}>
-              <Card.Header>
-                <Card.Title className="my-0 mx-0 text-light">
-                  <AiOutlineCalendar size={24} /> 時段預約
-                </Card.Title>
-              </Card.Header>
-              <Card.Body style={{ background: 'black', color: 'white' }}>
-                <Row>
-                  <Col md={4}>
-                    {student?.agents?.some((agent) =>
-                      [
-                        '639baebf8b84944b872cf648', //Leo
-                        '6475a149635df78e3a5b937b', //Lily
-                        '638b8f70be60d7999c6b649d', //Sydney
-                        '63b9a43af7b3a4a141267cd3' // David
-                      ].includes(agent._id.toString())
-                    ) ? (
-                      <Link
-                        to={`${DEMO.EVENT_STUDENT_STUDENTID_LINK(
-                          student._id.toString()
-                        )}`}
-                      >
-                        <Button size="sm">預約</Button>
-                      </Link>
-                    ) : (
-                      <span className="text-light">Coming soon</span>
-                    )}
-                  </Col>
-                  <Col md={8} style={{ color: 'white' }}>
-                    {hasUpcomingAppointment ? (
-                      <></>
-                    ) : (
-                      <>
-                        想要一次密集討論？ 可以預訂顧問 Office hour 時段討論。
-                      </>
-                    )}
-                  </Col>
-                </Row>
-              </Card.Body>
-            </Card>
+      <Grid container spacing={2} sx={{ mt: 0 }}>
+        {student.notification &&
+          !student.notification.isRead_survey_not_complete &&
+          !check_academic_background_filled(student.academic_background) && (
+            <Grid item xs={12}>
+              <Banner
+                ReadOnlyMode={props.ReadOnlyMode}
+                bg={'danger'}
+                title={'warning'}
+                path={`${DEMO.SURVEY_LINK}`}
+                text={'It looks like you did not finish survey. See'}
+                link_name={
+                  <>
+                    {t('Survey')}
+                    <FiExternalLink
+                      className="mx-1 mb-1"
+                      style={{ cursor: 'pointer' }}
+                    />
+                  </>
+                }
+                removeBanner={removeBanner}
+                notification_key={'isRead_survey_not_complete'}
+              />
+            </Grid>
           )}
 
-          <Card className="my-2 mx-0" bg={'dark'} text={'light'}>
-            <Card.Header>
-              <Card.Title className="my-0 mx-0 text-light">
-                Pending: 等待 Editor 回復
-              </Card.Title>
-            </Card.Header>
-            <Table
-              responsive
-              bordered
-              hover
-              className="my-0 mx-0"
-              variant="dark"
-              text="light"
-              size="sm"
-            >
-              <thead>
-                <tr>
-                  <th>Documents</th>
-                  <th>Last Update</th>
-                </tr>
-              </thead>
-              <tbody>{read_thread}</tbody>
+        {student.notification &&
+          !student.notification.isRead_uni_assist_task_assigned &&
+          appConfig.vpdEnable &&
+          !is_all_uni_assist_vpd_uploaded(student) && (
+            <Grid item xs={12}>
+              <Banner
+                ReadOnlyMode={props.ReadOnlyMode}
+                bg={'danger'}
+                title={'warning'}
+                path={`${DEMO.UNI_ASSIST_LINK}`}
+                text={'Please go to Uni-Assist to apply or to get VPD'}
+                link_name={
+                  <>
+                    Uni-Assist
+                    <FiExternalLink
+                      className="mx-1 mb-1"
+                      style={{ cursor: 'pointer' }}
+                    />
+                  </>
+                }
+                removeBanner={removeBanner}
+                notification_key={'isRead_uni_assist_task_assigned'}
+              />
+            </Grid>
+          )}
+        {/* new agents assigned banner */}
+        {student.notification &&
+          !student.notification.isRead_new_agent_assigned && (
+            <Grid item xs={12}>
+              <Banner
+                ReadOnlyMode={props.ReadOnlyMode}
+                bg={'primary'}
+                title={'info'}
+                path={`${DEMO.UNI_ASSIST_LINK}`}
+                text={`${t('New agent is assigned to you')}`}
+                link_name={''}
+                removeBanner={removeBanner}
+                notification_key={'isRead_new_agent_assigned'}
+              />
+            </Grid>
+          )}
+        {/* new editors assigned banner */}
+        {student.notification &&
+          !student.notification.isRead_new_editor_assigned && (
+            <Grid item xs={12}>
+              <Banner
+                ReadOnlyMode={props.ReadOnlyMode}
+                bg={'primary'}
+                title={'info'}
+                path={`${DEMO.UNI_ASSIST_LINK}`}
+                text={'New editor is assigned to you.'}
+                link_name={''}
+                removeBanner={removeBanner}
+                notification_key={'isRead_new_editor_assigned'}
+              />
+            </Grid>
+          )}
+        {/* new CV ML RL Essay message */}
+        {student.notification &&
+          !student.notification.isRead_new_cvmlrl_messsage && (
+            <Grid item xs={12}>
+              <Banner
+                ReadOnlyMode={props.ReadOnlyMode}
+                bg={'danger'}
+                title={'warning'}
+                path={`${DEMO.CV_ML_RL_CENTER_LINK}`}
+                text={`${t('New feedback from your Editor')}. See`}
+                link_name={
+                  <>
+                    CV/ML/RL Center
+                    <FiExternalLink
+                      className="mx-1 mb-1"
+                      style={{ cursor: 'pointer' }}
+                    />
+                  </>
+                }
+                removeBanner={removeBanner}
+                notification_key={'isRead_new_cvmlrl_messsage'}
+              />
+            </Grid>
+          )}
+        {/* TODO: check function : new cv ml rl tasks are asigned to you */}
+        {student.notification &&
+          !student.notification.isRead_new_cvmlrl_tasks_created && (
+            <Grid item xs={12}>
+              <Banner
+                ReadOnlyMode={props.ReadOnlyMode}
+                bg={'danger'}
+                title={'warning'}
+                path={`${DEMO.CV_ML_RL_CENTER_LINK}`}
+                text={`${t('New tasks are assigned to you')}. See`}
+                link_name={
+                  <>
+                    CV/ML/RL Center
+                    <FiExternalLink
+                      className="mx-1 mb-1"
+                      style={{ cursor: 'pointer' }}
+                    />
+                  </>
+                }
+                removeBanner={removeBanner}
+                notification_key={'isRead_new_cvmlrl_tasks_created'}
+              />
+            </Grid>
+          )}
+        {student.notification &&
+          !student.notification.isRead_new_programs_assigned &&
+          !check_applications_to_decided(student) && (
+            <Grid item xs={12}>
+              <Banner
+                ReadOnlyMode={props.ReadOnlyMode}
+                bg={'danger'}
+                title={'warning'}
+                path={`${DEMO.STUDENT_APPLICATIONS_LINK}`}
+                text={`${t('It looks like you did not decide programs')} `}
+                link_name={
+                  <>
+                    Application Overview
+                    <FiExternalLink
+                      className="mx-1 mb-1"
+                      style={{ cursor: 'pointer' }}
+                    />
+                  </>
+                }
+                removeBanner={removeBanner}
+                notification_key={'isRead_new_programs_assigned'}
+              />
+            </Grid>
+          )}
+        {student.notification &&
+          !student.notification.isRead_base_documents_missing &&
+          are_base_documents_missing(student) && (
+            <Grid item xs={12}>
+              <Banner
+                ReadOnlyMode={props.ReadOnlyMode}
+                bg={'danger'}
+                title={'warning'}
+                path={`${DEMO.BASE_DOCUMENTS_LINK}`}
+                text={`${t('Some of Base Documents are still missing')}`}
+                link_name={
+                  <>
+                    Base Documents
+                    <FiExternalLink
+                      className="mx-1 mb-1"
+                      style={{ cursor: 'pointer' }}
+                    />
+                  </>
+                }
+                removeBanner={removeBanner}
+                notification_key={'isRead_base_documents_missing'}
+              />
+            </Grid>
+          )}
+        {student.notification &&
+          !student.notification.isRead_base_documents_rejected &&
+          isBaseDocumentsRejected(student) && (
+            <Grid item xs={12}>
+              <Banner
+                ReadOnlyMode={props.ReadOnlyMode}
+                bg={'danger'}
+                title={'warning'}
+                path={`${DEMO.BASE_DOCUMENTS_LINK}`}
+                text={`${t('Some of Base Documents are rejected')} `}
+                link_name={
+                  <>
+                    Base Documents
+                    <FiExternalLink
+                      className="mx-1 mb-1"
+                      style={{ cursor: 'pointer' }}
+                    />
+                  </>
+                }
+                removeBanner={removeBanner}
+                notification_key={'isRead_base_documents_rejected'}
+              />
+            </Grid>
+          )}
+
+        <Grid item xs={12} md={8}>
+          <Card>
+            <Alert severity="error">
+              {t('To Do Tasks')} &nbsp;:&nbsp;
+              {t('Please finish it as soon as possible')}
+            </Alert>
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  <TableCell>{t('Tasks')}</TableCell>
+                  <TableCell>{t('Description')}</TableCell>
+                  <TableCell>{t('Last update')}</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>{student_tasks}</TableBody>
             </Table>
           </Card>
-        </Col>
-      </Row>
-      <Row>
+        </Grid>
+        <Grid item xs={12} md={4}>
+          <Box>
+            {appConfig.meetingEnable && (
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <Card sx={{ p: 2 }}>
+                    <Grid container spacing={2}>
+                      <Grid item xs={12}>
+                        <Typography>
+                          <AiOutlineCalendar size={24} /> 時段預約
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={12}>
+                        {hasUpcomingAppointment ? (
+                          <></>
+                        ) : (
+                          <Typography>
+                            想要一次密集討論？ 可以預訂顧問 Office hour
+                            時段討論。
+                          </Typography>
+                        )}
+                      </Grid>
+                      <Grid item xs={12}>
+                        {student?.agents?.length !== 0 ? (
+                          <Link
+                            to={`${DEMO.EVENT_STUDENT_STUDENTID_LINK(
+                              student._id.toString()
+                            )}`}
+                          >
+                            <Button
+                              fullWidth
+                              size="small"
+                              color="primary"
+                              variant="contained"
+                            >
+                              預約
+                            </Button>
+                          </Link>
+                        ) : (
+                          <span className="text-light">Wait for Agent</span>
+                        )}
+                      </Grid>
+                    </Grid>
+                  </Card>
+                </Grid>
+                <Grid item xs={12}>
+                  <Card>
+                    <Grid container spacing={2}>
+                      <Grid item xs={12}>
+                        <Typography
+                          variant="h6"
+                          sx={{ marginLeft: 2, marginTop: 1 }}
+                        >
+                          Pending: 等待 Editor 回復
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={12}>
+                        <Table size="small">
+                          <TableHead>
+                            <TableRow>
+                              <TableCell>{t('Documents')}</TableCell>
+                              <TableCell>{t('Last update')}</TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>{read_thread}</TableBody>
+                        </Table>
+                      </Grid>
+                    </Grid>
+                  </Card>
+                </Grid>
+              </Grid>
+            )}
+          </Box>
+        </Grid>
+      </Grid>
+      <Grid container spacing={2} sx={{ mt: 0 }}>
         {student.applications
           ?.filter((app) => app.decided === 'O')
           .map((application, idx) => (
-            <Col md={4} key={idx}>
+            <Grid item xs={12} sm={6} md={4} lg={3} key={idx}>
               <ApplicationProgressCard
                 student={student}
                 application={application}
               />
-            </Col>
+            </Grid>
           ))}
-      </Row>
+      </Grid>
     </>
   );
 }

@@ -1,10 +1,7 @@
-import React from 'react';
-import { Spinner } from 'react-bootstrap';
-import { Redirect } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Navigate, useParams } from 'react-router-dom';
 
-import SingleDocView from './SingleDocView';
 import SingleDocEdit from './SingleDocEdit';
-import { spinner_style } from '../Utils/contants';
 import { is_TaiGer_role } from '../Utils/checking-functions';
 import ErrorPage from '../Utils/ErrorPage';
 
@@ -13,9 +10,14 @@ import {
   getInternalDocumentation
 } from '../../api';
 import DEMO from '../../store/constant';
+import { useAuth } from '../../components/AuthProvider';
+import Loading from '../../components/Loading/Loading';
+import DocPageView from './DocPageView';
 
-class SingleDoc extends React.Component {
-  state = {
+function SingleDoc(props) {
+  const { documentation_id } = useParams();
+  const { user } = useAuth();
+  const [singleInternalDocState, setSingleInternalDocState] = useState({
     error: '',
     isLoaded: false,
     success: false,
@@ -23,14 +25,19 @@ class SingleDoc extends React.Component {
     isEdit: false,
     internal: false,
     res_status: 0
-  };
-  componentDidMount() {
-    getInternalDocumentation(this.props.match.params.documentation_id).then(
+  });
+
+  useEffect(() => {
+    getInternalDocumentation(documentation_id).then(
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
         if (!data) {
-          this.setState({ isLoaded: true, pagenotfounderror: true });
+          setSingleInternalDocState((prevState) => ({
+            ...prevState,
+            isLoaded: true,
+            pagenotfounderror: true
+          }));
         }
         if (success) {
           var initialEditorState = null;
@@ -41,7 +48,8 @@ class SingleDoc extends React.Component {
             initialEditorState = {};
           }
           initialEditorState = JSON.parse(data.text);
-          this.setState({
+          setSingleInternalDocState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             document_title: data.title,
             category: data.category,
@@ -50,116 +58,116 @@ class SingleDoc extends React.Component {
             author,
             success: success,
             res_status: status
-          });
+          }));
         } else {
-          this.setState({
+          setSingleInternalDocState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             res_status: status
-          });
+          }));
         }
       },
       (error) => {
-        this.setState({
+        setSingleInternalDocState((prevState) => ({
+          ...prevState,
           isLoaded: true,
-          error: true
-        });
+          error: error
+        }));
       }
     );
-  }
+  }, []);
 
-  handleClickEditToggle = (e) => {
-    this.setState((state) => ({ ...state, isEdit: !this.state.isEdit }));
+  const handleClickEditToggle = () => {
+    setSingleInternalDocState((prevState) => ({
+      ...prevState,
+      isEdit: !singleInternalDocState.isEdit
+    }));
   };
-  handleClickSave = (e, category, doc_title, editorState) => {
+  const handleClickSave = (e, category, doc_title, editorState) => {
     e.preventDefault();
     const message = JSON.stringify(editorState);
     const msg = {
       title: doc_title,
       category,
-      prop: this.props.item,
+      prop: props.item,
       text: message
     };
-    updateInternalDocumentation(
-      this.props.match.params.documentation_id,
-      msg
-    ).then(
+    updateInternalDocumentation(documentation_id, msg).then(
       (resp) => {
         const { success, data } = resp.data;
         const { status } = resp;
         if (success) {
-          this.setState({
+          setSingleInternalDocState((prevState) => ({
+            ...prevState,
             success,
             document_title: data.title,
             editorState,
-            isEdit: !this.state.isEdit,
+            isEdit: !singleInternalDocState.isEdit,
             author: data.author,
             isLoaded: true,
             res_status: status
-          });
+          }));
         } else {
-          this.setState({
+          setSingleInternalDocState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             res_status: status
-          });
+          }));
         }
       },
       (error) => {
-        this.setState({ error });
+        setSingleInternalDocState((prevState) => ({
+          ...prevState,
+          error
+        }));
       }
     );
-    this.setState((state) => ({ ...state, in_edit_mode: false }));
+    setSingleInternalDocState((prevState) => ({
+      ...prevState,
+      in_edit_mode: false
+    }));
   };
 
-  render() {
-    if (!is_TaiGer_role(this.props.user)) {
-      return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
-    }
+  if (!is_TaiGer_role(user)) {
+    return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
+  }
 
-    const { res_status, editorState, isLoaded } = this.state;
+  const { res_status, editorState, isLoaded } = singleInternalDocState;
 
-    if (!isLoaded && !editorState) {
-      return (
-        <div style={spinner_style}>
-          <Spinner animation="border" role="status">
-            <span className="visually-hidden"></span>
-          </Spinner>
-        </div>
-      );
-    }
+  if (!isLoaded && !editorState) {
+    return <Loading />;
+  }
 
-    if (res_status >= 400) {
-      return <ErrorPage res_status={res_status} />;
-    }
+  if (res_status >= 400) {
+    return <ErrorPage res_status={res_status} />;
+  }
 
-    if (this.state.isEdit) {
-      return (
-        <SingleDocEdit
-          category={this.state.category}
-          internal={this.state.internal}
-          document={document}
-          document_title={this.state.document_title}
-          editorState={this.state.editorState}
-          author={this.state.author}
-          isLoaded={isLoaded}
-          handleClickEditToggle={this.handleClickEditToggle}
-          handleClickSave={this.handleClickSave}
-        />
-      );
-    } else {
-      return (
-        <SingleDocView
-          category={this.state.category}
-          internal={this.state.internal}
-          document={document}
-          document_title={this.state.document_title}
-          editorState={this.state.editorState}
-          author={this.state.author}
-          isLoaded={isLoaded}
-          user={this.props.user}
-          handleClickEditToggle={this.handleClickEditToggle}
-        />
-      );
-    }
+  if (singleInternalDocState.isEdit) {
+    return (
+      <SingleDocEdit
+        category={singleInternalDocState.category}
+        internal={singleInternalDocState.internal}
+        document={document}
+        document_title={singleInternalDocState.document_title}
+        editorState={singleInternalDocState.editorState}
+        author={singleInternalDocState.author}
+        isLoaded={isLoaded}
+        handleClickEditToggle={handleClickEditToggle}
+        handleClickSave={handleClickSave}
+      />
+    );
+  } else {
+    return (
+      <DocPageView
+        category={singleInternalDocState.category}
+        internal={singleInternalDocState.internal}
+        document={document}
+        document_title={singleInternalDocState.document_title}
+        editorState={singleInternalDocState.editorState}
+        author={singleInternalDocState.author}
+        handleClickEditToggle={handleClickEditToggle}
+      />
+    );
   }
 }
 export default SingleDoc;

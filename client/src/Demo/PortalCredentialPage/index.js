@@ -1,27 +1,27 @@
 import React from 'react';
-import { Redirect } from 'react-router-dom';
+import { Navigate, useParams } from 'react-router-dom';
+import 'react-datasheet-grid/dist/style.css';
+
 import { is_TaiGer_Student } from '../Utils/checking-functions';
 import DEMO from '../../store/constant';
 import PortalCredentialsCard from './PortalCredentialsCard';
-import 'react-datasheet-grid/dist/style.css';
+import { useAuth } from '../../components/AuthProvider';
 
 export default function PortalCredentialPage(props) {
-  if (
-    !is_TaiGer_Student(props.user) &&
-    !props.match?.params.student_id &&
-    !props.student_id
-  ) {
-    return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
+  const { student_id } = useParams();
+  const { user } = useAuth();
+  if (!is_TaiGer_Student(user) && !student_id && !props.student_id) {
+    return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
   }
-  const student_id = props.match?.params.student_id
-    ? props.match?.params.student_id
-    : is_TaiGer_Student(props.user)
-    ? props.user._id.toString()
+  const studentId = student_id
+    ? student_id
+    : is_TaiGer_Student(user)
+    ? user._id.toString()
     : props.student_id;
   return (
     <PortalCredentialsCard
-      user={props.user}
-      student_id={student_id}
+      user={user}
+      student_id={studentId}
       showTitle={props.showTitle | false}
     />
   );

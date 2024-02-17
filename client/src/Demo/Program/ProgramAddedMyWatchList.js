@@ -1,38 +1,30 @@
-import React from "react";
-import { Modal } from "react-bootstrap";
-import { Button } from "react-bootstrap";
+import React from 'react';
+import { Button, Typography } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
-class ProgramAddedMyWatchList extends React.Component {
-  render() {
-    return (
-      <Modal
-        show={this.props.modalShowNAddMyWatchList}
-        onHide={this.props.setModalHideDDelete}
-        size="md"
-        aria-labelledby="contained-modal-title-vcenter"
-        centered
+import ModalNew from '../../components/Modal';
+
+function ProgramAddedMyWatchList(props) {
+  const {t} = useTranslation()
+  return (
+    <ModalNew
+      open={props.modalShowNAddMyWatchList}
+      onClose={props.setModalHideDDelete}
+      aria-labelledby="contained-modal-title-vcenter"
+    >
+      <Typography>Success</Typography>
+      <Typography>
+        {props.uni_name} - {props.program_name} is added to my watch list.
+      </Typography>
+
+      <Button
+        color="primary"
+        variant="contained"
+        onClick={() => props.setModalHide_AddToMyWatchList()}
       >
-        <Modal.Header closeButton>
-          <Modal.Title>Success</Modal.Title>
-        </Modal.Header>
-
-        <Modal.Body>
-          <p>
-            {this.props.uni_name} - {this.props.program_name} is added to my
-            watch list.
-          </p>
-        </Modal.Body>
-
-        <Modal.Footer>
-          <Button
-            variant="primary"
-            onClick={() => this.props.setModalHide_AddToMyWatchList()}
-          >
-            OK
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    );
-  }
+        {t{'Ok'}}
+      </Button>
+    </ModalNew>
+  );
 }
 export default ProgramAddedMyWatchList;

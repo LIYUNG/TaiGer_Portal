@@ -1277,7 +1277,7 @@ const sendNewApplicationMessageInThreadEmail = async (recipient, msg) => {
 
 const sendNewGeneraldocMessageInThreadEmail = async (recipient, msg) => {
   const thread_url = `${THREAD_URL}/${msg.thread_id}`;
-  const subject = `[Update] ${msg.writer_firstname} ${msg.writer_lastname} prodvides a new message > ${msg.student_firstname} ${msg.student_lastname} - ${msg.uploaded_documentname} / ${msg.writer_firstname} ${msg.writer_lastname} has new update for ${msg.student_firstname} ${msg.student_lastname} - ${msg.uploaded_documentname}!`;
+  const subject = `[Update - ${msg.uploaded_documentname}] ${msg.writer_firstname} ${msg.writer_lastname} prodvides a new message > ${msg.student_firstname} ${msg.student_lastname} - ${msg.uploaded_documentname} / ${msg.writer_firstname} ${msg.writer_lastname} has new update for ${msg.student_firstname} ${msg.student_lastname} - ${msg.uploaded_documentname}!`;
   const message = `\
 <p>${ENGLISH_BELOW}</p>
 
@@ -2062,7 +2062,7 @@ const MeetingCancelledReminderEmail = async (recipient, payload) => {
 const MeetingReminderEmail = async (recipient, payload) => {
   const subject = `[Meeting Reminder] ${recipient.firstname} ${recipient.lastname}`;
   const message = `\
-[會議討論體醒]
+[會議討論提醒]
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 <br />
 <p> 請於約定時間(時間請見 TaiGer Portal)該時間準時點擊以下連結： </p>
@@ -2092,7 +2092,7 @@ const MeetingReminderEmail = async (recipient, payload) => {
 const UnconfirmedMeetingReminderEmail = async (recipient, payload) => {
   const subject = `[TODO now] Meeting to confirm reminder ${recipient.firstname} ${recipient.lastname}`;
   const message = `\
-[會議時間確認體醒]
+[會議時間確認提醒]
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 <p> 您有一個尚未確認的討論時段與 ${payload.firstname} ${payload.lastname}</p>
 <p> 請上去 <a href="${

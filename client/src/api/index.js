@@ -186,7 +186,7 @@ export const WidgetanalyzedFileDownload = (adminId) =>
   });
 export const transcriptanalyser_test = (studentId, category, language) =>
   request.post(`/api/account/transcript/${studentId}/${category}/${language}`);
-export const analyzedFileDownload_test = (studentId, filename) =>
+export const analyzedFileDownload_test = (studentId) =>
   request.get(`/api/account/transcript/${studentId}`, {
     responseType: 'blob'
   });
@@ -454,8 +454,9 @@ export const updateStudentNotes = (student_id, notes) =>
   request.put(`/api/notes/${student_id}`, { notes });
 
 // Time Slot events:
+export const getActiveEventsNumber = () => request.get(`/api/events/ping`);
 export const getAllEvents = () => request.get(`/api/events/all`);
-export const getEvents = (student_id) => request.get(`/api/events`);
+export const getEvents = () => request.get(`/api/events`);
 export const postEvent = (event) => request.post(`/api/events`, event);
 export const confirmEvent = (event_id, updated_event) =>
   request.put(`/api/events/${event_id}/confirm`, updated_event);

@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Spinner } from 'react-bootstrap';
+import { Card } from 'react-bootstrap';
+import { Box, Breadcrumbs, Link, Typography } from '@mui/material';
+import { Navigate, Link as LinkDom } from 'react-router-dom';
 
-import Aux from '../../hoc/_Aux';
-import { spinner_style } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
-
 import { getAllCVMLRLOverview } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import { is_TaiGer_role } from '../Utils/checking-functions';
-import { Redirect } from 'react-router-dom';
 import DEMO from '../../store/constant';
-import { TopBar } from '../../components/TopBar/TopBar';
+import { useAuth } from '../../components/AuthProvider';
+import { appConfig } from '../../config';
+import Loading from '../../components/Loading/Loading';
 
-function EssayDashboard(props) {
+function EssayDashboard() {
+  const { user } = useAuth();
   const [essayDashboardState, setEssayDashboardState] = useState({
     error: '',
     isLoaded: false,
@@ -62,19 +63,13 @@ function EssayDashboard(props) {
     );
   }, []);
 
-  if (!is_TaiGer_role(props.user)) {
-    return <Redirect to={`${DEMO.DASHBOARD_LINK}`} />;
+  if (!is_TaiGer_role(user)) {
+    return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
   }
   const { res_status, isLoaded } = essayDashboardState;
   TabTitle('CV ML RL Center');
   if (!isLoaded && !essayDashboardState.students) {
-    return (
-      <div style={spinner_style}>
-        <Spinner animation="border" role="status">
-          <span className="visually-hidden"></span>
-        </Spinner>
-      </div>
-    );
+    return <Loading />;
   }
 
   if (res_status >= 400) {
@@ -82,10 +77,20 @@ function EssayDashboard(props) {
   }
 
   return (
-    <Aux>
-      <TopBar>Essay Dashboard</TopBar>
-        <Card>Coming soon</Card>
-    </Aux>
+    <Box>
+      <Breadcrumbs aria-label="breadcrumb">
+        <Link
+          underline="hover"
+          color="inherit"
+          component={LinkDom}
+          to={`${DEMO.DASHBOARD_LINK}`}
+        >
+          {appConfig.companyName}
+        </Link>
+        <Typography color="text.primary">Essay Dashboard</Typography>
+      </Breadcrumbs>
+      <Card>Coming soon</Card>
+    </Box>
   );
 }
 

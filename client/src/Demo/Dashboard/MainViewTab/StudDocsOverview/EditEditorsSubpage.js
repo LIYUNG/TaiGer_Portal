@@ -1,98 +1,134 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Form, Modal } from 'react-bootstrap';
-import { Button } from 'react-bootstrap';
+import {
+  Button,
+  Checkbox,
+  CircularProgress,
+  FormControlLabel,
+  Table,
+  TableBody,
+  TableCell,
+  TableRow,
+  Typography
+} from '@mui/material';
+import { useTranslation } from 'react-i18next';
+
+import ModalNew from '../../../../components/Modal';
+import { getEditors } from '../../../../api';
+
 function EditEditorsSubpage(props) {
-  // edit Editor subpage
   const [checkboxState, setCheckboxState] = useState({});
+  const [isLoaded, setIsLoaded] = useState(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
-    // Initialize the state with checked checkboxes based on the student's agents
-    const initialCheckboxState = {};
-    props.editor_list?.forEach((editor, i) => {
-      initialCheckboxState[editor._id] = props.student.editors
-        ? props.student.editors.some((a) => a._id === editor._id)
-        : false;
-    });
-    setCheckboxState(initialCheckboxState);
-  }, [props.editor_list, props.student.editors]);
+    // Initialize the state with checked checkboxes based on the student's editors
+    getEditors().then(
+      (resp) => {
+        // TODO: check success
+        const { data, success } = resp.data;
+        if (success) {
+          const editors = data; //get all editors
+          const { editors: student_editors } = props.student;
+          const updateEditorList = editors.reduce(
+            (prev, { _id }) => ({
+              ...prev,
+              [_id]: student_editors
+                ? student_editors.findIndex(
+                    (student_agent) => student_agent._id === _id
+                  ) > -1
+                : false
+            }),
+            {}
+          );
+          setCheckboxState({ editors, updateEditorList });
+          setIsLoaded(true);
+        } else {
+          setIsLoaded(true);
+        }
+      },
+      () => {
+        setIsLoaded(true);
+      }
+    );
+  }, [props.student.editors]);
 
   const handleChangeEditorlist = (e) => {
     const { value } = e.target;
     setCheckboxState((prevState) => ({
       ...prevState,
-      [value]: !prevState[value]
+      updateEditorList: {
+        ...prevState.updateEditorList,
+        [value]: !prevState.updateEditorList[value]
+      }
     }));
   };
 
   return (
-    <Modal
-      show={props.show}
-      onHide={props.onHide}
-      size="l"
+    <ModalNew
+      open={props.show}
+      onClose={props.onHide}
+      size="large"
       aria-labelledby="contained-modal-title-vcenter"
-      centered
     >
-      <Modal.Header>
-        <Modal.Title id="contained-modal-title-vcenter">
-          Editor for {props.student.firstname} - {props.student.lastname}
-        </Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <h4>Editor:</h4>
-        <Table size="sm">
-          <tbody>
-            {props.editor_list ? (
-              props.editor_list.map((editor, i) => (
-                <tr key={i + 1}>
-                  <th>
-                    <Form.Group>
-                      <Form.Check
-                        custom
-                        type="checkbox"
-                        name="student_id"
-                        defaultChecked={
-                          props.student.editors
-                            ? props.student.editors.some(
-                                (e) => e._id === editor._id
-                              )
-                            : false
+      {isLoaded ? (
+        <>
+          <Typography variant="h6">
+            Editor for {props.student.firstname} - {props.student.lastname}
+          </Typography>
+          <Typography variant="h6">{t('Editor')}: </Typography>
+          <Table size="small">
+            <TableBody>
+              {checkboxState.editors ? (
+                checkboxState.editors.map((editor, i) => (
+                  <TableRow key={i + 1}>
+                    <TableCell>
+                      <FormControlLabel
+                        label={`${editor.lastname} ${editor.firstname}`}
+                        control={
+                          <Checkbox
+                            checked={
+                              checkboxState?.updateEditorList[editor._id] ||
+                              false
+                            }
+                            onChange={(e) => handleChangeEditorlist(e)}
+                            value={editor._id}
+                          />
                         }
-                        onChange={(e) => handleChangeEditorlist(e)}
-                        value={editor._id}
-                        id={'editor' + i + 1}
                       />
-                    </Form.Group>
-                  </th>
-                  <td>
-                    <h5 className="my-0">
-                      {editor.firstname} {editor.lastname}
-                    </h5>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td>
-                  <h5 className="my-0"> No Editor</h5>
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </Table>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button
-          onClick={(e) =>
-            props.submitUpdateEditorlist(e, checkboxState, props.student._id)
-          }
-        >
-          Update
-        </Button>
-        <Button onClick={props.onHide} variant="light">
-          Cancel
-        </Button>
-      </Modal.Footer>
-    </Modal>
+                    </TableCell>
+                    <TableCell></TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell>
+                    <Typography variant="h6">{t('No Editor')}</Typography>
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+          <Button
+            color="primary"
+            variant="contained"
+            onClick={(e) =>
+              props.submitUpdateEditorlist(
+                e,
+                checkboxState.updateEditorList,
+                props.student._id
+              )
+            }
+          >
+            {t('Update')}
+          </Button>
+          <Button variant="outlined" onClick={props.onHide}>
+            {t('Cancel')}
+          </Button>
+        </>
+      ) : (
+        <CircularProgress size={24} />
+      )}
+    </ModalNew>
   );
 }
 export default EditEditorsSubpage;

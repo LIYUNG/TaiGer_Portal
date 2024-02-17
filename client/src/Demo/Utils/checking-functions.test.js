@@ -1,6 +1,18 @@
 // import { render, screen } from '@testing-library/react';
 // import App from './App/index';
-import { is_TaiGer_role, is_TaiGer_AdminAgent, is_TaiGer_Admin } from './checking-functions';
+import {
+  is_TaiGer_role,
+  is_TaiGer_AdminAgent,
+  is_TaiGer_Admin,
+  is_cv_assigned,
+  isCVFinished,
+  is_TaiGer_Editor,
+  is_TaiGer_Student,
+  is_TaiGer_Agent,
+  calculateDisplayLength,
+  truncateText,
+  Bayerische_Formel
+} from './checking-functions';
 
 const userStudent = { role: 'Student' };
 const userAgent = { role: 'Agent' };
@@ -27,5 +39,109 @@ describe('Role checking', () => {
     expect(is_TaiGer_Admin(userAgent)).toEqual(false);
     expect(is_TaiGer_Admin(userEditor)).toEqual(false);
     expect(is_TaiGer_Admin(userAdmin)).toEqual(true);
+  });
+
+  test('is_TaiGer_Editor', () => {
+    expect(is_TaiGer_Editor(userStudent)).toEqual(false);
+    expect(is_TaiGer_Editor(userAgent)).toEqual(false);
+    expect(is_TaiGer_Editor(userEditor)).toEqual(true);
+    expect(is_TaiGer_Editor(userAdmin)).toEqual(false);
+  });
+
+  test('is_TaiGer_Agent', () => {
+    expect(is_TaiGer_Agent(userStudent)).toEqual(false);
+    expect(is_TaiGer_Agent(userAgent)).toEqual(true);
+    expect(is_TaiGer_Agent(userEditor)).toEqual(false);
+    expect(is_TaiGer_Agent(userAdmin)).toEqual(false);
+  });
+
+  test('is_TaiGer_Student', () => {
+    expect(is_TaiGer_Student(userStudent)).toEqual(true);
+    expect(is_TaiGer_Student(userAgent)).toEqual(false);
+    expect(is_TaiGer_Student(userEditor)).toEqual(false);
+    expect(is_TaiGer_Student(userAdmin)).toEqual(false);
+  });
+
+  test('is_cv_assigned', () => {
+    const studentHasCVTask = {
+      role: 'Student',
+      generaldocs_threads: [{ doc_thread_id: { file_type: 'CV' } }]
+    };
+    const studentHasNoCVTask = {
+      role: 'Student',
+      generaldocs_threads: [{ doc_thread_id: { file_type: 'RL_A' } }]
+    };
+    expect(is_cv_assigned(studentHasCVTask)).toEqual(true);
+    expect(is_cv_assigned(studentHasNoCVTask)).toEqual(false);
+  });
+
+  test('calculateDisplayLength', () => {
+    const text_1 = '中文';
+    const text_2 = '中文 abc';
+    const text_3 = 'abc def';
+    expect(calculateDisplayLength(text_1)).toEqual(4);
+    expect(calculateDisplayLength(text_2)).toEqual(8);
+    expect(calculateDisplayLength(text_3)).toEqual(7);
+  });
+
+  test('truncateText', () => {
+    const text_1 = '中文 abc';
+    const text_2 = '中文 abcabcabcabcabcabc';
+    expect(truncateText(text_1, 5)).toEqual('中文 ...');
+    expect(truncateText(text_2, 100)).toEqual('中文 abcabcabcabcabcabc');
+  });
+
+  test('Bayerische_Formel', () => {
+    const system_1_1 = { high: 4, low: 2, my: 2 };
+    const system_1_2 = { high: 4, low: 2, my: 4 };
+    const system_1_3 = { high: 4, low: 2, my: 3 };
+    const system_2_1 = { high: 4.3, low: 1.7, my: 4.3 };
+    const system_2_2 = { high: 4.3, low: 1.7, my: 1.7 };
+    const system_2_3 = { high: 4.3, low: 1.7, my: 3 };
+    expect(
+      parseFloat(
+        Bayerische_Formel(system_1_1.high, system_1_1.low, system_1_1.my)
+      )
+    ).toEqual(4);
+    expect(
+      parseFloat(
+        Bayerische_Formel(system_1_2.high, system_1_2.low, system_1_2.my)
+      )
+    ).toEqual(1);
+    expect(
+      parseFloat(
+        Bayerische_Formel(system_1_3.high, system_1_3.low, system_1_3.my)
+      )
+    ).toEqual(2.5);
+    expect(
+      parseFloat(
+        Bayerische_Formel(system_2_1.high, system_2_1.low, system_2_1.my)
+      )
+    ).toEqual(1);
+    expect(
+      parseFloat(
+        Bayerische_Formel(system_2_2.high, system_2_2.low, system_2_2.my)
+      )
+    ).toEqual(4);
+    expect(
+      parseFloat(
+        Bayerische_Formel(system_2_3.high, system_2_3.low, system_2_3.my)
+      )
+    ).toEqual(2.5);
+  });
+
+  test('isCVFinished', () => {
+    const studentIsCVFinished = {
+      role: 'Student',
+      generaldocs_threads: [
+        { doc_thread_id: { file_type: 'CV' }, isFinalVersion: true }
+      ]
+    };
+    const studentIsCVNotFinished = {
+      role: 'Student',
+      generaldocs_threads: [{ doc_thread_id: { file_type: 'CV' } }]
+    };
+    expect(isCVFinished(studentIsCVFinished)).toEqual(true);
+    expect(isCVFinished(studentIsCVNotFinished)).toEqual(false);
   });
 });

@@ -1,8 +1,16 @@
-import React from 'react';
-import { Dropdown, DropdownButton } from 'react-bootstrap';
+import React, { useState } from 'react';
+import {
+  Button,
+  Link,
+  Menu,
+  MenuItem,
+  TableCell,
+  TableRow
+} from '@mui/material';
+import { useTranslation } from 'react-i18next';
+import { Link as LinkDom } from 'react-router-dom';
 
 import { UserlistHeader, convertDate, getDate } from '../Utils/contants';
-import { Link } from 'react-router-dom';
 import DEMO from '../../store/constant';
 import {
   is_TaiGer_Agent,
@@ -11,99 +19,123 @@ import {
 } from '../Utils/checking-functions';
 
 function User(props) {
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+  const { t } = useTranslation();
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
   if (props.success) {
     return (
-      <tr key={props.user._id}>
-        <th>
+      <TableRow key={props.user._id}>
+        <TableCell>
           {props.user.role !== 'Admin' && (
-            <DropdownButton
-              size="sm"
-              title="Option"
-              variant="primary"
-              id={`dropdown-variants-${props.user._id}`}
-              key={props.user._id}
-            >
-              <Dropdown.Item
-                eventKey="2"
-                onClick={() =>
-                  props.setModalShow(
-                    props.user.firstname,
-                    props.user.lastname,
-                    props.user.role,
-                    props.user._id
-                  )
-                }
+            <>
+              <Button
+                id="basic-button"
+                variant="contained"
+                size="small"
+                aria-controls={open ? 'basic-menu' : undefined}
+                aria-haspopup="true"
+                aria-expanded={open ? 'true' : undefined}
+                onClick={handleClick}
               >
-                Set User as...
-              </Dropdown.Item>
-              <Dropdown.Item
-                eventKey="4"
-                onClick={() =>
-                  props.setModalArchiv(
-                    props.user.firstname,
-                    props.user.lastname,
-                    props.user._id.toString(),
-                    props.user.archiv
-                  )
-                }
+                {t('Option')}
+              </Button>
+              <Menu
+                id="basic-menu"
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleClose}
+                MenuListProps={{
+                  'aria-labelledby': 'basic-button'
+                }}
               >
-                {props.user.archiv === true ? 'Activate' : 'Archiv'}
-              </Dropdown.Item>
-              <Dropdown.Item
-                eventKey="3"
-                onClick={() =>
-                  props.setModalShowDelete(
-                    props.user.firstname,
-                    props.user.lastname,
-                    props.user._id
-                  )
-                }
-              >
-                Delete
-              </Dropdown.Item>
-            </DropdownButton>
+                <MenuItem
+                  onClick={() =>
+                    props.setModalShow(
+                      props.user.firstname,
+                      props.user.lastname,
+                      props.user.role,
+                      props.user._id
+                    )
+                  }
+                >
+                  Set User as...
+                </MenuItem>
+                <MenuItem
+                  onClick={() =>
+                    props.setModalArchiv(
+                      props.user.firstname,
+                      props.user.lastname,
+                      props.user._id.toString(),
+                      props.user.archiv
+                    )
+                  }
+                >
+                  {props.user.archiv === true ? t('Activate') : t('Archiv')}
+                </MenuItem>
+                <MenuItem
+                  onClick={() =>
+                    props.setModalShowDelete(
+                      props.user.firstname,
+                      props.user.lastname,
+                      props.user._id
+                    )
+                  }
+                >
+                  {t('Delete')}
+                </MenuItem>
+              </Menu>
+            </>
           )}
-        </th>
+        </TableCell>
         {UserlistHeader.map((y, k) => (
-          <td key={k}>
+          <TableCell key={k}>
             {typeof props.user[y.prop] == 'boolean' ? (
               props.user[y.prop] ? (
-                'Yes'
+                t('Yes')
               ) : (
-                'No'
+                t('No')
               )
             ) : is_TaiGer_Student(props.user) ? (
               <Link
-                className="text-info"
+                underline="hover"
                 to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                   props.user._id.toString(),
                   DEMO.PROFILE
                 )}`}
+                component={LinkDom}
               >
                 {props.user[y.prop]}
               </Link>
             ) : is_TaiGer_Agent(props.user) ? (
               <Link
-                className="text-info"
+                underline="hover"
                 to={`${DEMO.TEAM_AGENT_LINK(props.user._id.toString())}`}
+                component={LinkDom}
               >
                 {props.user[y.prop]}
               </Link>
             ) : is_TaiGer_Editor(props.user) ? (
               <Link
-                className="text-info"
+                underline="hover"
                 to={`${DEMO.TEAM_EDITOR_LINK(props.user._id.toString())}`}
+                component={LinkDom}
               >
                 {props.user[y.prop]}
               </Link>
             ) : (
               props.user[y.prop]
             )}
-          </td>
+          </TableCell>
         ))}
-        <td>{getDate(props.user.createdAt)}</td>
-        <td>{convertDate(props.user.lastLoginAt)}</td>
-      </tr>
+        <TableCell>{getDate(props.user.createdAt)}</TableCell>
+        <TableCell>{convertDate(props.user.lastLoginAt)}</TableCell>
+      </TableRow>
     );
   } else {
     return <></>;

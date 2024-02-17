@@ -20,7 +20,7 @@ function DocPageEdit(props) {
   };
   return (
     <>
-      <Card sx={{ mt: 2 }}>
+      <Card sx={{ px: 8, py: 2, mt: 2 }}>
         <DocumentsListItemsEditor
           category={props.category}
           doc_title={'not_used'}

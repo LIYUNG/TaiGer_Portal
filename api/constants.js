@@ -193,6 +193,8 @@ const General_Docs = [
   'Recommendation_Letter_A',
   'Recommendation_Letter_B',
   'Recommendation_Letter_C',
+  'Form_A',
+  'Form_B',
   'CV',
   'Others'
 ];

@@ -18,7 +18,7 @@ import {
 import { Link as LinkDom, useParams } from 'react-router-dom';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import { BsExclamationTriangle } from 'react-icons/bs';
+import ReportProblemIcon from '@mui/icons-material/ReportProblem';
 import TimezoneSelect from 'react-timezone-select';
 import { useTranslation } from 'react-i18next';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
@@ -363,7 +363,7 @@ function Profile() {
                   aria-controls="panel1-content"
                   id="panel1-header"
                 >
-                  <BsExclamationTriangle size={18} />
+                  <ReportProblemIcon size={18} />
                   <b className="mx-2">{t('Reminder')}:</b> Please fill your
                 </AccordionSummary>
                 <AccordionDetails>

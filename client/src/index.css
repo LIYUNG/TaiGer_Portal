@@ -3,6 +3,11 @@ body {
   padding: 0px;
   font-family: Roboto;
 }
+
+.ce-paragraph[data-placeholder][contenteditable="false"]:empty {
+  display: none;
+}
+
 .ce-block__content,
 .ce-toolbar__content {
   max-width: unset;

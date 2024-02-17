@@ -211,8 +211,8 @@ function InternalDashboard() {
   const open_tasks_arr = open_tasks_with_editors(students_details);
   const task_distribution = open_tasks_arr
     .filter(({ isFinalVersion }) => isFinalVersion !== true)
-    .map(({ deadline, file_type, show }) => {
-      return { deadline, file_type, show };
+    .map(({ deadline, file_type, show, isPotentials }) => {
+      return { deadline, file_type, show, isPotentials };
     });
   const open_distr = frequencyDistribution(task_distribution);
   const sort_date = Object.keys(open_distr).sort();
@@ -260,10 +260,11 @@ function InternalDashboard() {
           show
       ).length,
       potentials: open_tasks_arr.filter(
-        ({ editors, isFinalVersion, show }) =>
+        ({ editors, isFinalVersion, show, isPotentials }) =>
           editors.findIndex((ed) => ed._id == editor._id) !== -1 &&
           isFinalVersion !== true &&
-          !show
+          !show &&
+          isPotentials
       ).length
       // color: colors[i]
     });

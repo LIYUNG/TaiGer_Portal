@@ -11,7 +11,8 @@ import {
   Typography
 } from '@mui/material';
 import { Link } from 'react-router-dom';
-import { BsExclamationTriangle, BsX } from 'react-icons/bs';
+import { BsX } from 'react-icons/bs';
+import ReportProblemIcon from '@mui/icons-material/ReportProblem';
 
 import BaseDocumentCheckingTasks from '../MainViewTab/AgentTasks/BaseDocumentCheckingTasks';
 import StudentsAgentEditor from '../MainViewTab/StudentsAgentEditor/StudentsAgentEditor';
@@ -147,7 +148,7 @@ function ManagerMainView(props) {
                   className="text-light my-3 mx-3"
                   style={{ textAlign: 'left' }}
                 >
-                  <BsExclamationTriangle size={18} />
+                  <ReportProblemIcon size={18} />
                   <b className="mx-2">Reminder:</b> There are new base documents
                   uploaded by{' '}
                   <b>
@@ -263,8 +264,7 @@ function ManagerMainView(props) {
             <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
               <Card.Header className="py-0 px-0">
                 <Card.Title className="my-2 mx-2 text-light" as={'h5'}>
-                  <BsExclamationTriangle size={18} /> Check uploaded base
-                  documents:
+                  <ReportProblemIcon size={18} /> Check uploaded base documents:
                 </Card.Title>
               </Card.Header>
               <Card.Body className="py-0 px-0 card-scrollable-body">
@@ -302,7 +302,7 @@ function ManagerMainView(props) {
           <Grid item xs={6}>
             <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
               <Typography variant="h6">
-                <BsExclamationTriangle size={18} /> No Program Selected Yet:
+                <ReportProblemIcon size={18} /> No Program Selected Yet:
               </Typography>
               <Table size="small">
                 <TableHead>

@@ -1,7 +1,8 @@
 import React from 'react';
 import { Grid, Button, Link, Typography } from '@mui/material';
 import { Link as LinkDom } from 'react-router-dom';
-import { AiOutlineDelete, AiOutlineCheck, AiOutlineUndo } from 'react-icons/ai';
+import CheckIcon from '@mui/icons-material/Check';
+import { AiOutlineDelete, AiOutlineUndo } from 'react-icons/ai';
 import { IoCheckmarkCircle } from 'react-icons/io5';
 import { useTranslation } from 'react-i18next';
 
@@ -79,13 +80,13 @@ function EditableFile_Thread(props) {
               title="Final Version"
             />
           ) : (
-            <AiOutlineCheck
-              size={24}
-              color="white"
-              style={{ cursor: 'pointer' }}
+            <Button
+              size="small"
+              variant="outlined"
               title="Set as final version"
               onClick={() => handleAsFinalFileThread(documenName, true)}
-            />
+              startIcon={<CheckIcon size={24} color="success" />}
+            ></Button>
           )}
         </Grid>
         <Grid item xs={1}>

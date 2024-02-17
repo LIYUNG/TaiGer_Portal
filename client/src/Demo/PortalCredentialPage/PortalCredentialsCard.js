@@ -262,9 +262,9 @@ export default function PortalCredentialsCard(props) {
 
       <Card sx={{ padding: 2 }}>
         <Typography>
-          請到下列各學校網站 [<b>Link</b>]{' '}
+          請到下列各學校網站 [<b>{t('Link')}</b>]{' '}
           申請該校的申請平台帳號密碼，並在此頁面提供帳號密碼，方便日後Agent為您登入檢查上傳文件正確性。若有
-          [<b>Instructions</b>]{' '}
+          [<b>{t('Instructions')}</b>]{' '}
           連結，請點入連結，依照裡面教學完成。填完帳號密碼，請務必點擊{' '}
           <Button color="primary" variant="contained" size="small">
             {t('Update')}
@@ -353,7 +353,7 @@ export default function PortalCredentialsCard(props) {
                           bg={'danger'}
                           title={'warning'}
                           path={'/'}
-                          text={'Please register and provide credentials here:'}
+                          text={t('Please register and provide credentials')}
                           link_name={''}
                           // removeBanner={this.removeBanner}
                           notification_key={undefined}

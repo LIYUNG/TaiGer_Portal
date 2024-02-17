@@ -1,5 +1,5 @@
 import React from 'react';
-import { BsExclamationTriangle } from 'react-icons/bs';
+import ReportProblemIcon from '@mui/icons-material/ReportProblem';
 import {
   Card,
   Grid,
@@ -25,8 +25,8 @@ function AdminMainView(props) {
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <Card>
-            <Typography variant="h6">
-              <BsExclamationTriangle size={18} /> Admin {t('To Do Tasks')}:
+            <Typography variant="h6" sx={{ px: 2 }}>
+              <ReportProblemIcon /> Admin {t('To Do Tasks')}:
             </Typography>
             <Table size="small">
               <TableHead>

@@ -36,6 +36,8 @@ function ToggleableUploadFileForm(props) {
           <MenuItem value="Recommendation_Letter_C">
             Recommendation Letter (C)
           </MenuItem>
+          <MenuItem value="Form_A">Form A</MenuItem>
+          <MenuItem value="Form_B">Form B</MenuItem>
           <MenuItem value="Others">Others</MenuItem>
         </Select>
       </FormControl>

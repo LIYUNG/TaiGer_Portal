@@ -29,8 +29,7 @@ import {
   num_uni_assist_vpd_needed,
   num_uni_assist_vpd_uploaded,
   to_register_application_portals,
-  needUpdateCourseSelection,
-  STUDENT_COURSES_LINK
+  needUpdateCourseSelection
 } from '../../../Utils/checking-functions';
 import { profile_list, statuses } from '../../../Utils/contants';
 import DEMO from '../../../../store/constant';
@@ -427,7 +426,7 @@ function AgentReviewing(props) {
         </TableCell>
         <TableCell>
           <Link
-            to={`${STUDENT_COURSES_LINK(props.student._id.toString())}`}
+            to={`${DEMO.COURSES_INPUT_LINK(props.student._id.toString())}`}
             component={LinkDom}
           >
             {needUpdateCourseSelection(props.student)}

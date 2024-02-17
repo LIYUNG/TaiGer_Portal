@@ -812,17 +812,20 @@ function StudentApplicationsTableTemplate(props) {
             subheader={<li />}
           >
             <ListItem>
-              Target field:{' '}
+              {t('Target Application Fields')}:{' '}
               <b>
                 {props.student.application_preference?.target_application_field}
               </b>
             </ListItem>
             <ListItem>
-              Target degree:{' '}
+              {t('Target Degree Programs')}:{' '}
               <b>{props.student.application_preference?.target_degree}</b>
             </ListItem>
             <ListItem>
-              Accept Private University?:{' '}
+              {t(
+                'Considering private universities? (Tuition Fee: ~15000 EURO/year)'
+              )}
+              :{' '}
               <b>
                 {
                   props.student.application_preference
@@ -831,7 +834,7 @@ function StudentApplicationsTableTemplate(props) {
               </b>
             </ListItem>
             <ListItem>
-              Consider outside Germany:{' '}
+              {t('Considering universities outside Germany?')}:{' '}
               <b>
                 {
                   props.student.application_preference
@@ -840,7 +843,7 @@ function StudentApplicationsTableTemplate(props) {
               </b>
             </ListItem>
             <ListItem>
-              Other wish:{' '}
+              {t('Other wish')}:
               <TextField
                 id="special_wished"
                 multiline
@@ -877,28 +880,6 @@ function StudentApplicationsTableTemplate(props) {
                   onMouseDown={handleInputBlur}
                   onChange={handleInputChange}
                 />
-                {/* <Form>
-                  <Form.Group className="my-0 mx-0">
-                    <Form.Label className="mb-2 mx-0 text-light">
-                      Find the student and import his/her progams to{' '}
-                      <b>
-                        {
-                          studentApplicationsTableTemplateState.student
-                            .firstname
-                        }{' '}
-                        {studentApplicationsTableTemplateState.student.lastname}
-                      </b>
-                    </Form.Label>
-                    <Form.Control
-                      type="text"
-                      className="search-input"
-                      placeholder={'Search student...'}
-                      value={studentApplicationsTableTemplateState.searchTerm}
-                      onMouseDown={handleInputBlur}
-                      onChange={handleInputChange}
-                    ></Form.Control>
-                  </Form.Group>
-                </Form> */}
                 {studentApplicationsTableTemplateState.isResultsVisible &&
                   (studentApplicationsTableTemplateState.searchResults?.length >
                   0 ? (
@@ -1058,7 +1039,7 @@ function StudentApplicationsTableTemplate(props) {
                     <TableRow>
                       {props.role !== 'Student' && <TableCell></TableCell>}
                       {programstatuslist.map((doc, index) => (
-                        <TableCell key={index}>{doc.name}</TableCell>
+                        <TableCell key={index}>{t(doc.name)}</TableCell>
                       ))}
                     </TableRow>
                   </TableHead>

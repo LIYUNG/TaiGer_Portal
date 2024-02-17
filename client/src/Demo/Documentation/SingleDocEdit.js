@@ -1,9 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { Form } from 'react-bootstrap';
+import {
+  Typography,
+  Card,
+  FormControl,
+  Select,
+  MenuItem,
+  TextField
+} from '@mui/material';
 
 import DocumentsListItemsEditor from './DocumentsListItemsEditor';
 import { valid_categories, valid_internal_categories } from '../Utils/contants';
-import { Typography, Card, FormControl, Select, MenuItem } from '@mui/material';
 
 function SingleDocEdit(props) {
   const [singleDocEditState, setSingleDocEdit] = useState({
@@ -50,7 +56,7 @@ function SingleDocEdit(props) {
 
   return (
     <>
-      <Card sx={{ p: 2, mt: 2 }}>
+      <Card sx={{ px: 8, py: 2, mt: 2 }}>
         {props.internal ? (
           <>
             <Typography variant="body1">
@@ -98,14 +104,14 @@ function SingleDocEdit(props) {
             </FormControl>
           </>
         )}
-        <Form.Group controlId="document_title">
-          <Form.Control
-            type="text"
-            placeholder="Title"
-            onChange={(e) => handleChange(e)}
-            defaultValue={props.document_title}
-          />
-        </Form.Group>
+        <TextField
+          fullWidth
+          size="small"
+          type="text"
+          placeholder="Title"
+          onChange={(e) => handleChange(e)}
+          defaultValue={props.document_title}
+        />
         <DocumentsListItemsEditor
           doc_title={singleDocEditState.doc_title}
           editorState={props.editorState}

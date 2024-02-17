@@ -950,6 +950,33 @@ const postMessages = asyncHandler(async (req, res) => {
   res.status(200).send({ success: true, data: document_thread2 });
 
   if (user.role === Role.Student) {
+    if (['Form_A', 'Form_B'].includes(document_thread.file_type)) {
+      // Inform Agent
+      for (let i = 0; i < student.agents.length; i += 1) {
+        if (isNotArchiv(student)) {
+          if (isNotArchiv(student.agents[i])) {
+            // if supplementary form, inform Agent.
+            await sendNewGeneraldocMessageInThreadEmail(
+              {
+                firstname: student.agents[i].firstname,
+                lastname: student.agents[i].lastname,
+                address: student.agents[i].email
+              },
+              {
+                writer_firstname: user.firstname,
+                writer_lastname: user.lastname,
+                student_firstname: student.firstname,
+                student_lastname: student.lastname,
+                uploaded_documentname: document_thread.file_type,
+                thread_id: document_thread._id.toString(),
+                uploaded_updatedAt: new Date()
+              }
+            );
+          }
+        }
+      }
+      return;
+    }
     // If no editor, inform agent to assign
     if (!student.editors || student.editors.length === 0) {
       await Student.findByIdAndUpdate(user._id, { needEditor: true }, {});
@@ -1062,8 +1089,7 @@ const postMessages = asyncHandler(async (req, res) => {
                 student_lastname: student.lastname,
                 uploaded_documentname: document_thread.file_type,
                 thread_id: document_thread._id.toString(),
-                uploaded_updatedAt: new Date(),
-                message
+                uploaded_updatedAt: new Date()
               }
             );
           }

@@ -21,9 +21,9 @@ export default function ModalNew(props) {
           top: '50%',
           left: '50%',
           transform: 'translate(-50%, -50%)',
-          // width: 400, // Adjust the width as needed
+          width: props.width || '60%', // Adjust the width as needed
           maxWidth: '80%', // Set a maximum width if desired
-          maxHeight: '90vh', // Set a maximum height
+          maxHeight: props.height || '80vh', // Set a maximum height
           overflow: 'auto', // Enable scrolling
           bgcolor: 'background.paper',
           boxShadow: 24,

@@ -41,9 +41,6 @@ const {
   deleteAMessageInThread,
   postImageInThread,
   postMessages,
-  getStudentInput,
-  putStudentInput,
-  resetStudentInput,
   getSurveyInputs,
   getSurveyInputsByThreadId,
   postSurveyInput,
@@ -65,27 +62,6 @@ router
     getMessagesRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
     getAllCVMLRLOverview
-  );
-// TODO: multitenant
-router
-  .route('/student-input/:messagesThreadId')
-  .get(
-    getMessagesRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
-    docThreadMultitenant_filter,
-    getStudentInput
-  )
-  .put(
-    putThreadInputRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
-    docThreadMultitenant_filter,
-    putStudentInput
-  )
-  .delete(
-    resetThreadInputRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
-    docThreadMultitenant_filter,
-    resetStudentInput
   );
 
 // Survey input

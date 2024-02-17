@@ -437,7 +437,7 @@ function DocModificationThreadInput() {
 
   const submitInput = async (surveyInputs, informEditor) => {
     try {
-      let success = false;
+      let success = true;
       let status = {};
       if (surveyInputs?.general) {
         const surveyInput = surveyInputs.general;
@@ -456,7 +456,7 @@ function DocModificationThreadInput() {
           surveyInput,
           informEditor
         );
-        success = success && res;
+        success = success && res.data;
         status['specific'] = res;
       }
 
@@ -467,8 +467,14 @@ function DocModificationThreadInput() {
           isSaving: false,
           isSubmitting: false,
           surveyInputs: {
-            ...docModificationThreadInputState.surveyInputs,
-            updatedAt: new Date()
+            general: {
+              ...docModificationThreadInputState.surveyInputs.general,
+              updatedAt: new Date()
+            },
+            specific: {
+              ...docModificationThreadInputState.surveyInputs.specific,
+              updatedAt: new Date()
+            }
           },
           isLoaded: true,
           res_status: status

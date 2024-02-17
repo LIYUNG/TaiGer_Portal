@@ -12,7 +12,6 @@ import {
   MenuItem,
   CircularProgress,
   Link,
-  FormGroup,
   FormControl,
   FormLabel,
   TextField,
@@ -29,12 +28,13 @@ import ModalMain from '../../Utils/ModalHandler/ModalMain';
 import { prepQuestions, convertDate } from '../../Utils/contants';
 import {
   LinkableNewlineText,
-  getRequirement
+  getRequirement,
+  is_TaiGer_role
 } from '../../Utils/checking-functions';
 import {
   cvmlrlAi2,
   getMessagThread,
-  getSurveyInputsByThreadId,
+  getSurveyInputs,
   putSurveyInput,
   postSurveyInput,
   resetSurveyInput
@@ -76,9 +76,9 @@ const SurveyForm = ({
   const [editMode, setEditMode] = useState(defaultEditState);
 
   return (
-    <>
+    <Box>
       {title && (
-        <>
+        <Box>
           <Typography variant="h5" gutterBottom>
             {title}
             {useEditSwitch && (
@@ -86,32 +86,32 @@ const SurveyForm = ({
             )}
           </Typography>
           <Divider />
-        </>
+          <Box marginTop={2} />
+        </Box>
       )}
-      <Grid container>
-        <form>
-          {surveyInputs.surveyContent.map((questionItem, index) => (
-            <Grid item key={index}>
-              <FormGroup>
-                <FormLabel>{questionItem.question}</FormLabel>
-                <TextField
-                  inputProps={{
-                    id: questionItem.questionId,
-                    survey: surveyType
-                  }}
-                  key={index}
-                  defaultValue={questionItem.answer}
-                  multiline
-                  rows={questionItem.rows || 3}
-                  onChange={onChange}
-                  disabled={!editMode}
-                />
-              </FormGroup>
-            </Grid>
-          ))}
-        </form>
+
+      <Grid container sx={{ gap: 1 }}>
+        {surveyInputs.surveyContent.map((questionItem, index) => (
+          <Grid item key={index} xs={12}>
+            <FormControl fullWidth>
+              <FormLabel>{questionItem.question}</FormLabel>
+              <TextField
+                inputProps={{
+                  id: questionItem.questionId,
+                  survey: surveyType
+                }}
+                key={index}
+                value={questionItem.answer}
+                multiline
+                rows={questionItem.rows || 3}
+                onChange={onChange}
+                disabled={!editMode}
+              />
+            </FormControl>
+          </Grid>
+        ))}
       </Grid>
-    </>
+    </Box>
   );
 };
 
@@ -121,7 +121,7 @@ const InputGenerator = (docModificationThreadInputState) => {
       <Grid container spacing={2}>
         <Grid item xs={12} md={6}>
           <form>
-            <FormGroup>
+            <FormControl>
               <FormLabel>Use program&apos;s requirements?</FormLabel>
               <Checkbox
                 type="checkbox"
@@ -131,7 +131,7 @@ const InputGenerator = (docModificationThreadInputState) => {
                 }
                 // onChange={onChangeEditorRequirements}
               />
-            </FormGroup>
+            </FormControl>
           </form>
         </Grid>
 
@@ -155,7 +155,7 @@ const InputGenerator = (docModificationThreadInputState) => {
 
         <Grid item xs={12} md={6}>
           <form>
-            <FormGroup>
+            <FormControl>
               <InputLabel id="gpt-model-label">GPT Model?</InputLabel>
               <Select
                 defaultValue="gpt-3.5-turbo"
@@ -174,13 +174,13 @@ const InputGenerator = (docModificationThreadInputState) => {
                   gpt-4-1106-preview
                 </MenuItem>
               </Select>
-            </FormGroup>
+            </FormControl>
           </form>
         </Grid>
 
         <Grid item xs={12} md={6}>
           <form>
-            <FormGroup>
+            <FormControl>
               <FormLabel>Additional requirement?</FormLabel>
               <FormControl
                 // onChange={(e) => {
@@ -189,7 +189,7 @@ const InputGenerator = (docModificationThreadInputState) => {
                 placeholder="the length should be within 10000 characters / words, paragraph structure, etc."
                 as="textarea"
               />
-            </FormGroup>
+            </FormControl>
           </form>
         </Grid>
 
@@ -263,7 +263,12 @@ function DocModificationThreadInput() {
       try {
         const threadResp = await getMessagThread(documentsthreadId);
         const { success, data: threadData, status } = threadResp.data;
-        const surveyResp = await getSurveyInputsByThreadId(documentsthreadId);
+        // const surveyResp = await getSurveyInputsByThreadId(documentsthreadId);
+        const surveyResp = await getSurveyInputs(
+          threadData.student_id._id,
+          threadData.program_id._id,
+          threadData.file_type
+        );
         const { data: surveyInputs } = surveyResp.data;
 
         // TODO: prepQuestion if not defined
@@ -669,73 +674,107 @@ function DocModificationThreadInput() {
       </Card>
 
       <Card sx={{ p: 2 }}>
-        <Typography variant="h5">
-          Please answer the following questions in <b>English</b>{' '}
-          {docModificationThreadInputState.thread?.program_id?.lang?.includes(
-            'German'
-          )
-            ? '( or German if you like ) '
-            : ''}
-          !
-        </Typography>
+        <Grid container sx={{ gap: 2 }}>
+          <Grid item xs={12}>
+            <Typography variant="h5">
+              Please answer the following questions in <b>English</b>{' '}
+              {docModificationThreadInputState.thread?.program_id?.lang?.includes(
+                'German'
+              )
+                ? '( or German if you like ) '
+                : ''}
+              !
+            </Typography>
+          </Grid>
 
-        <SurveyForm
-          title="General"
-          surveyInputs={docModificationThreadInputState.surveyInputs.general}
-          surveyType="general"
-          onChange={onChange}
-          useEditSwitch={true}
-          defaultEditState={false}
-        ></SurveyForm>
+          <Grid item xs={12}>
+            <SurveyForm
+              title="General"
+              surveyInputs={
+                docModificationThreadInputState.surveyInputs.general
+              }
+              surveyType="general"
+              onChange={onChange}
+              useEditSwitch={true}
+              defaultEditState={false}
+            ></SurveyForm>
+          </Grid>
 
-        <SurveyForm
-          title="Program"
-          surveyInputs={docModificationThreadInputState.surveyInputs.specific}
-          surveyType="program"
-          onChange={onChange}
-        ></SurveyForm>
-
-        <ProgressButton
-          isProgress={docModificationThreadInputState.isSubmitting}
-          size="small"
-          variant="contained"
-          color="primary"
-          disabled={docModificationThreadInputState.isSubmitting}
-          onClick={() =>
-            onSubmitInput(docModificationThreadInputState.surveyInputs, true)
-          }
-        />
-
-        <ProgressButton
-          label="Save as draft"
-          progressLabel="Saving"
-          size="small"
-          color="secondary"
-          variant="outlined"
-          disabled={docModificationThreadInputState.isSaving}
-          onClick={() =>
-            onSubmitInput(docModificationThreadInputState.surveyInputs, false)
-          }
-        />
-
-        <ProgressButton
-          label="Reset"
-          progressLabel="Resetting"
-          isProgress={docModificationThreadInputState.isResetting}
-          variant="secondary"
-          size="sm"
-          onClick={() => onReset()}
-        />
-
-        <span style={{ float: 'right' }}>
-          Updated At:{' '}
-          {convertDate(
-            docModificationThreadInputState.surveyInputs?.specific?.updatedAt
-          )}
-        </span>
+          <Grid item xs={12}>
+            <SurveyForm
+              title="Program"
+              surveyInputs={
+                docModificationThreadInputState.surveyInputs.specific
+              }
+              surveyType="program"
+              onChange={onChange}
+            ></SurveyForm>
+          </Grid>
+          <Grid container alignItems="center">
+            <Grid
+              item
+              xs={3}
+              sx={{ gap: 1 }}
+              container
+              justifyContent="flex-start"
+            >
+              <ProgressButton
+                isProgress={docModificationThreadInputState.isSubmitting}
+                size="small"
+                variant="contained"
+                color="primary"
+                disabled={docModificationThreadInputState.isSubmitting}
+                onClick={() =>
+                  onSubmitInput(
+                    docModificationThreadInputState.surveyInputs,
+                    true
+                  )
+                }
+              />
+              <ProgressButton
+                label="Save as draft"
+                progressLabel="Saving"
+                size="small"
+                color="secondary"
+                variant="outlined"
+                disabled={docModificationThreadInputState.isSaving}
+                onClick={() =>
+                  onSubmitInput(
+                    docModificationThreadInputState.surveyInputs,
+                    false
+                  )
+                }
+              />
+              <ProgressButton
+                label="Reset"
+                progressLabel="Resetting"
+                isProgress={docModificationThreadInputState.isResetting}
+                variant="secondary"
+                size="sm"
+                onClick={() => onReset()}
+              />
+            </Grid>
+            <Grid item xs={6} />
+            {/* Add an empty grid item to push the "Updated At" text to the right */}
+            <Grid item xs={3} container justifyContent="flex-end">
+              {' '}
+              {/* Align the "Updated At" text to the right */}
+              <span>
+                Updated At:{' '}
+                {convertDate(
+                  docModificationThreadInputState.surveyInputs?.specific
+                    ?.updatedAt
+                )}
+              </span>
+            </Grid>
+          </Grid>
+        </Grid>
       </Card>
 
-      <InputGenerator docModificationThreadInputState />
+      {/* GPT input generation -> only for internal users */}
+      {is_TaiGer_role(user) && (
+        <InputGenerator docModificationThreadInputState />
+      )}
     </Box>
   );
 }

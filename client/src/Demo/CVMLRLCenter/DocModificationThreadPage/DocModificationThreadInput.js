@@ -1,4 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import { Link as LinkDom, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+
 import { Placeholder } from 'react-bootstrap';
 import {
   Grid,
@@ -7,10 +10,12 @@ import {
   Button,
   Card,
   Checkbox,
+  Collapse,
+  CircularProgress,
   Divider,
   InputLabel,
+  IconButton,
   MenuItem,
-  CircularProgress,
   Link,
   FormControl,
   FormLabel,
@@ -19,9 +24,7 @@ import {
   Select,
   Switch
 } from '@mui/material';
-
-import { Link as LinkDom, useParams } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
+import { KeyboardArrowUp, KeyboardArrowDown } from '@mui/icons-material';
 
 import ErrorPage from '../../Utils/ErrorPage';
 import ModalMain from '../../Utils/ModalHandler/ModalMain';
@@ -74,43 +77,63 @@ const SurveyForm = ({
   defaultEditState = true
 }) => {
   const [editMode, setEditMode] = useState(defaultEditState);
+  const [collapseOpen, setCollapseOpen] = useState(true);
+
+  const handleTitleClick = () => {
+    setCollapseOpen((prevOpen) => !prevOpen);
+  };
 
   return (
     <Box>
-      {title && (
-        <Box>
-          <Typography variant="h5" gutterBottom>
-            {title}
-            {useEditSwitch && (
-              <Switch onClick={() => setEditMode((prevMode) => !prevMode)} />
-            )}
-          </Typography>
-          <Divider />
-          <Box marginTop={2} />
-        </Box>
-      )}
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          cursor: 'pointer'
+        }}
+        onClick={handleTitleClick}
+      >
+        <Typography variant="h5" gutterBottom>
+          {title}
+        </Typography>
+        {useEditSwitch && (
+          <Switch
+            onClick={(event) => {
+              event.stopPropagation(); // Prevent event propagation
+              setEditMode((prevMode) => !prevMode);
+            }}
+          />
+        )}
+        <IconButton sx={{ marginLeft: 'auto' }} onClick={handleTitleClick}>
+          {collapseOpen ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+        </IconButton>
+      </Box>
+      <Divider />
+      <Box marginTop={2} />
 
-      <Grid container sx={{ gap: 1 }}>
-        {surveyInputs.surveyContent.map((questionItem, index) => (
-          <Grid item key={index} xs={12}>
-            <FormControl fullWidth>
-              <FormLabel>{questionItem.question}</FormLabel>
-              <TextField
-                inputProps={{
-                  id: questionItem.questionId,
-                  survey: surveyType
-                }}
-                key={index}
-                value={questionItem.answer}
-                multiline
-                rows={questionItem.rows || 3}
-                onChange={onChange}
-                disabled={!editMode}
-              />
-            </FormControl>
-          </Grid>
-        ))}
-      </Grid>
+      <Collapse in={collapseOpen}>
+        <Grid container sx={{ gap: 1 }}>
+          {surveyInputs.surveyContent.map((questionItem, index) => (
+            <Grid item key={index} xs={12}>
+              <FormControl fullWidth>
+                <FormLabel>{questionItem.question}</FormLabel>
+                <TextField
+                  inputProps={{
+                    id: questionItem.questionId,
+                    survey: surveyType
+                  }}
+                  key={index}
+                  value={questionItem.answer}
+                  multiline
+                  rows={questionItem.rows || 3}
+                  onChange={onChange}
+                  disabled={!editMode}
+                />
+              </FormControl>
+            </Grid>
+          ))}
+        </Grid>
+      </Collapse>
     </Box>
   );
 };

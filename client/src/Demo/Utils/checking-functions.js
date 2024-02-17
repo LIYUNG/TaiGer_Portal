@@ -278,9 +278,6 @@ export const is_any_base_documents_uploaded = (students) => {
   }
   return false;
 };
-export const STUDENT_COURSES_LINK = (student_Id) => {
-  return `/my-courses/${student_Id}`;
-};
 
 export const needUpdateCourseSelection = (student) => {
   // necessary if never updated course and is studying

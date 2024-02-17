@@ -53,7 +53,7 @@ export const truncateText = (text, maxLength) => {
 
   return truncatedText;
 };
-
+// TODO test
 export const LinkableNewlineText = ({ text }) => {
   const textStyle = {
     whiteSpace: 'pre-line' // Preserve newlines and wrap text
@@ -119,6 +119,7 @@ export const getRequirement = (thread) => {
   }
 };
 
+// TODO: test
 export const NewlineText = (props) => {
   const text = props.text;
 

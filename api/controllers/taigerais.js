@@ -57,7 +57,6 @@ const generate = async (input, model) => {
     messages: [{ role: 'user', content: input || 'where is BMW Headquarter?' }],
     model
   });
-  // console.log(response.choices[0]?.message);
   return response.choices[0]?.message;
 };
 const generate_streaming = async (input, model) =>
@@ -71,12 +70,7 @@ const TaiGerAiGeneral = asyncHandler(async (req, res, next) => {
   const { user } = req;
   const { prompt, model } = req.body;
   const stream = await generate_streaming(prompt, model || 'gpt-3.5-turbo');
-  // let starttime = Date.now();
   for await (const part of stream) {
-    // const chunkTime = (Date.now() - starttime) / 1000;
-    // process.stdout.write(JSON.stringify(part.choices[0]?.delta || ''));
-    // console.log(' chunk time:', chunkTime);
-    // here express will stream the response
     res.write(part.choices[0]?.delta.content || '');
   }
   res.end();
@@ -92,10 +86,7 @@ const cvmlrlAi = asyncHandler(async (req, res, next) => {
     file_type,
     student_id
   } = req.body;
-  // console.log(student_input);
-  // console.log(document_requirements);
   const parsed_editor_requirements = JSON.parse(editor_requirements);
-  // console.log(parsed_editor_requirements);
   let student_info = {};
 
   try {
@@ -131,25 +122,11 @@ const cvmlrlAi = asyncHandler(async (req, res, next) => {
     });
   }
 
-  // console.log('Show prompt');
-  // console.log('========================');
-  // console.log(concat_prompt);
-  // const chatGPTOutput = await generate(
-  //   concat_prompt,
-  //   parsed_editor_requirements.gptModel || 'gpt-3.5-turbo'
-  // );
-  // res.send({ success: true, data: chatGPTOutput?.content });
-
   const stream = await generate_streaming(
     concat_prompt,
     parsed_editor_requirements.gptModel || 'gpt-3.5-turbo'
   );
-  // let starttime = Date.now();
   for await (const part of stream) {
-    // const chunkTime = (Date.now() - starttime) / 1000;
-    // process.stdout.write(JSON.stringify(part.choices[0]?.delta || ''));
-    // console.log(' chunk time:', chunkTime);
-    // here express will stream the response
     res.write(part.choices[0]?.delta.content || '');
   }
   res.end();

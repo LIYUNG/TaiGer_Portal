@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Link as LinkDom, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
-import { Placeholder } from 'react-bootstrap';
 import {
   Grid,
   Box,
@@ -18,9 +17,11 @@ import {
   MenuItem,
   Link,
   FormControl,
+  FormControlLabel,
   FormLabel,
   TextField,
   Typography,
+  OutlinedInput,
   Select,
   Switch
 } from '@mui/material';
@@ -28,6 +29,8 @@ import { KeyboardArrowUp, KeyboardArrowDown } from '@mui/icons-material';
 
 import ErrorPage from '../../Utils/ErrorPage';
 import ModalMain from '../../Utils/ModalHandler/ModalMain';
+
+// eslint-disable-next-line no-unused-vars
 import { prepQuestions, convertDate } from '../../Utils/contants';
 import {
   LinkableNewlineText,
@@ -79,41 +82,60 @@ const SurveyForm = ({
   const [editMode, setEditMode] = useState(defaultEditState);
   const [collapseOpen, setCollapseOpen] = useState(true);
 
-  const handleTitleClick = () => {
+  const handleTitleClick = (e) => {
+    e.stopPropagation();
     setCollapseOpen((prevOpen) => !prevOpen);
   };
 
   return (
-    <Box>
-      <Box
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          cursor: 'pointer'
-        }}
-        onClick={handleTitleClick}
-      >
-        <Typography variant="h5" gutterBottom>
-          {title}
-        </Typography>
-        {useEditSwitch && (
-          <Switch
-            onClick={(event) => {
-              event.stopPropagation(); // Prevent event propagation
-              setCollapseOpen(!editMode);
-              setEditMode((prevMode) => !prevMode);
+    <Box sx={{ justifyContent: 'flex-end' }}>
+      {title && (
+        <>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              cursor: 'pointer'
             }}
-          />
-        )}
-        <IconButton sx={{ marginLeft: 'auto' }} onClick={handleTitleClick}>
-          {collapseOpen ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
-        </IconButton>
-      </Box>
-      <Divider />
-      <Box marginTop={2} />
-
-      <Collapse in={collapseOpen}>
-        <Grid container sx={{ gap: 1 }}>
+            onClick={handleTitleClick}
+          >
+            <Grid container justifyContent="space-between" alignItems="center">
+              <Grid item container alignItems="center">
+                <Grid item>
+                  <IconButton onClick={handleTitleClick}>
+                    {collapseOpen ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+                  </IconButton>
+                </Grid>
+                <Grid item>
+                  <Typography variant="h5" gutterBottom>
+                    {title}
+                  </Typography>
+                </Grid>
+                {useEditSwitch && (
+                  <Grid item>
+                    <Switch
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        setCollapseOpen(!editMode);
+                        setEditMode((prevMode) => !prevMode);
+                      }}
+                    />
+                  </Grid>
+                )}
+                <Grid item sx={{ marginLeft: 'auto' }}>
+                  <Typography variant="body2">
+                    Last Modified: {convertDate(surveyInputs?.updatedAt)}
+                  </Typography>
+                </Grid>
+              </Grid>
+            </Grid>
+          </Box>
+          <Divider />
+          <Box marginTop={2} />
+        </>
+      )}
+      <Grid container sx={{ gap: 1 }}>
+        <Collapse in={collapseOpen}>
           {surveyInputs.surveyContent.map((questionItem, index) => (
             <Grid item key={index} xs={12}>
               <FormControl fullWidth>
@@ -133,88 +155,138 @@ const SurveyForm = ({
               </FormControl>
             </Grid>
           ))}
-        </Grid>
-      </Collapse>
+        </Collapse>
+      </Grid>
     </Box>
   );
 };
 
-const InputGenerator = (docModificationThreadInputState) => {
+const InputGenerator = ({
+  editor_requirements,
+  data,
+  isGenerating,
+  isGenerated,
+  onChange,
+  onGenerate
+}) => {
+  data = `
+  [Your Name]
+  [Your Address]
+  [City, State, Zip Code]
+  [Email Address]
+  [Phone Number]
+
+  [Date]
+
+  Admissions Committee
+  Bielefeld University
+  [University Address]
+  Bielefeld, Germany
+
+  Dear Admissions Committee,
+
+  I am writing to express my strong interest in the M.Sc. program
+  at Bielefeld University. With a passion for [specific field of
+  study], I am excited about the opportunity to further my
+  education and contribute to the academic community at your
+  esteemed institution.
+
+  // ... (remaining text)
+
+  Thank you for considering my application. I look forward to the
+  opportunity to further discuss my qualifications and aspirations
+  with you.
+
+  Sincerely,
+
+  Testing-Student Chen
+  ---
+
+  firstname: Testing-Student
+  lastname: Chen
+`;
+
   return (
-    <Card sx={{ p: 2 }}>
+    <>
+      <Typography variant="h5" gutterBottom>
+        GPT Document Generation
+      </Typography>
+      <Divider />
+      <Box marginTop={2} />
       <Grid container spacing={2}>
-        <Grid item xs={12} md={6}>
-          <form>
-            <FormControl>
-              <FormLabel>Use program&apos;s requirements?</FormLabel>
-              <Checkbox
-                type="checkbox"
-                checked={
-                  docModificationThreadInputState.editor_requirements
-                    ?.useProgramRequirementData
-                }
-                // onChange={onChangeEditorRequirements}
-              />
-            </FormControl>
-          </form>
-        </Grid>
+        <Grid item xs={12} md={2}>
+          <Grid container spacing={1}>
+            <Grid item xs={12}>
+              <FormControl>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      name="useProgramRequirementData"
+                      type="checkbox"
+                      checked={editor_requirements?.useProgramRequirementData}
+                      onChange={onChange}
+                      sx={{ '& .MuiSvgIcon-root': { fontSize: '1.5rem' } }}
+                    />
+                  }
+                  label="Use program's requirement"
+                />
+              </FormControl>
+            </Grid>
+            <Grid item xs={12}>
+              <FormControl fullWidth>
+                <InputLabel id="output-lang-label">Output language</InputLabel>
+                <Select
+                  labelId="output-lang-label"
+                  input={<OutlinedInput label="Output language" />}
+                  id="output-lang-select"
+                  name="outputLanguage"
+                  onChange={onChange}
+                >
+                  <MenuItem value="English">English</MenuItem>
+                  <MenuItem value="German">German</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
 
-        <Grid item xs={12} md={6}>
+            <Grid item xs={12}>
+              <FormControl fullWidth>
+                <InputLabel id="gpt-model-label">GPT Model</InputLabel>
+                <Select
+                  labelId="gpt-model-label"
+                  input={<OutlinedInput label="GPT Model" />}
+                  id="gpt-model-select"
+                  name="gptModel"
+                  onChange={onChange}
+                >
+                  <MenuItem value="gpt-3.5-turbo">gpt-3.5-turbo</MenuItem>
+                  <MenuItem value="gpt-3.5-turbo-16k">
+                    gpt-3.5-turbo-16k
+                  </MenuItem>
+                  <MenuItem value="gpt-4">gpt-4</MenuItem>
+                  <MenuItem value="gpt-4-32k">gpt-4-32k</MenuItem>
+                  <MenuItem value="text-embedding-ada-002">
+                    text-embedding-ada-002
+                  </MenuItem>
+                  <MenuItem value="gpt-4-1106-preview">
+                    gpt-4-1106-preview
+                  </MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+          </Grid>
+        </Grid>
+        <Grid item xs={12} md={5}>
           <FormControl fullWidth>
-            <InputLabel id="output-lang-label">Output language?</InputLabel>
-            <Select
-              labelId="output-lang-label"
-              id="output-lang-select"
-              value="English"
-              label="Language"
-              // onChange={(e) => {
-              //   onChangeEditorRequirements(e);
-              // }}
-            >
-              <MenuItem value="English">English</MenuItem>
-              <MenuItem value="German">German</MenuItem>
-            </Select>
+            <FormLabel>Additional requirement</FormLabel>
+            <TextField
+              id="additional-requirement"
+              name="additionalPrompt"
+              onChange={onChange}
+              placeholder="The length should be within 10000 characters / words, paragraph structure, etc."
+              multiline
+              rows={5}
+            />
           </FormControl>
-        </Grid>
-
-        <Grid item xs={12} md={6}>
-          <form>
-            <FormControl>
-              <InputLabel id="gpt-model-label">GPT Model?</InputLabel>
-              <Select
-                defaultValue="gpt-3.5-turbo"
-                // onChange={(e) => {
-                //   onChangeEditorRequirements(e);
-                // }}
-              >
-                <MenuItem value="gpt-3.5-turbo">gpt-3.5-turbo</MenuItem>
-                <MenuItem value="gpt-3.5-turbo-16k">gpt-3.5-turbo-16k</MenuItem>
-                <MenuItem value="gpt-4">gpt-4</MenuItem>
-                <MenuItem value="gpt-4-32k">gpt-4-32k</MenuItem>
-                <MenuItem value="text-embedding-ada-002">
-                  text-embedding-ada-002
-                </MenuItem>
-                <MenuItem value="gpt-4-1106-preview">
-                  gpt-4-1106-preview
-                </MenuItem>
-              </Select>
-            </FormControl>
-          </form>
-        </Grid>
-
-        <Grid item xs={12} md={6}>
-          <form>
-            <FormControl>
-              <FormLabel>Additional requirement?</FormLabel>
-              <FormControl
-                // onChange={(e) => {
-                //   onChangeEditorRequirements(e);
-                // }}
-                placeholder="the length should be within 10000 characters / words, paragraph structure, etc."
-                as="textarea"
-              />
-            </FormControl>
-          </form>
         </Grid>
 
         <Grid item xs={12}>
@@ -222,15 +294,15 @@ const InputGenerator = (docModificationThreadInputState) => {
             size="small"
             color="primary"
             variant="contained"
-            disabled={docModificationThreadInputState.isGenerating}
-            // onClick={onSubmit}
+            disabled={isGenerating}
+            onClick={onGenerate}
           >
-            {docModificationThreadInputState.isGenerating ? (
+            {isGenerating ? (
               <>
                 <CircularProgress />
                 {'  Generating'}
               </>
-            ) : docModificationThreadInputState.isGenerated ? (
+            ) : isGenerated ? (
               'Regenerate'
             ) : (
               'Generate'
@@ -238,36 +310,22 @@ const InputGenerator = (docModificationThreadInputState) => {
           </Button>
         </Grid>
 
-        {docModificationThreadInputState.isGenerating &&
-        !docModificationThreadInputState.data ? (
-          <Placeholder as={Card.Text} animation="glow">
-            <Placeholder xs={7} /> <Placeholder xs={5} /> <Placeholder xs={4} />{' '}
-            <Placeholder xs={8} /> <Placeholder xs={2} /> <Placeholder xs={3} />{' '}
-            <Placeholder xs={2} /> <Placeholder xs={3} />{' '}
-            <Placeholder xs={10} /> <Placeholder xs={1} />{' '}
-            <Placeholder xs={2} /> <Placeholder xs={3} /> <Placeholder xs={9} />{' '}
-            <Placeholder xs={2} /> <Placeholder xs={2} /> <Placeholder xs={3} />{' '}
-            <Placeholder xs={1} /> <Placeholder xs={9} /> <Placeholder xs={4} />{' '}
-            <Placeholder xs={8} />
-          </Placeholder>
-        ) : (
-          <LinkableNewlineText
-            text={docModificationThreadInputState.data}
-          ></LinkableNewlineText>
-        )}
+        <Grid item xs={12}>
+          {(!isGenerating || data) && <LinkableNewlineText text={data} />}
+        </Grid>
       </Grid>
-    </Card>
+    </>
   );
 };
 
 function DocModificationThreadInput() {
-  // eslint-disable-next-line no-unused-vars
   const { user } = useAuth();
   const { t } = useTranslation();
   const { documentsthreadId } = useParams();
   const [docModificationThreadInputState, setDocModificationThreadInputState] =
     useState({
       error: '',
+      // isGenerating: true,
       isGenerating: false,
       isGenerated: false,
       isFirstDataArrived: false,
@@ -287,7 +345,6 @@ function DocModificationThreadInput() {
       try {
         const threadResp = await getMessagThread(documentsthreadId);
         const { success, data: threadData, status } = threadResp.data;
-        // const surveyResp = await getSurveyInputsByThreadId(documentsthreadId);
         const surveyResp = await getSurveyInputs(
           threadData.student_id._id,
           threadData.program_id._id,
@@ -351,7 +408,6 @@ function DocModificationThreadInput() {
     }));
   };
 
-  // eslint-disable-next-line no-unused-vars
   const onChange = (e) => {
     const id = e.target.id;
     const answer = e.target.value;
@@ -389,16 +445,15 @@ function DocModificationThreadInput() {
     }
   };
 
-  // eslint-disable-next-line no-unused-vars
   const onChangeEditorRequirements = (e) => {
-    const id = e.target.id;
-    if (id === 'useProgramRequirementData') {
+    const name = e.target.name;
+    if (name === 'useProgramRequirementData') {
       const checked = e.target.checked;
       setDocModificationThreadInputState((prevState) => ({
         ...prevState,
         editor_requirements: {
           ...docModificationThreadInputState.editor_requirements,
-          [id]: checked
+          [name]: checked
         },
         document_requirements: checked
           ? getRequirement(docModificationThreadInputState.thread)
@@ -412,7 +467,7 @@ function DocModificationThreadInput() {
       ...prevState,
       editor_requirements: {
         ...prevState.editor_requirements,
-        [id]: ans
+        [name]: ans
       }
     }));
   };
@@ -545,8 +600,7 @@ function DocModificationThreadInput() {
     submitInput(surveyInputs, informEditor);
   };
 
-  // eslint-disable-next-line no-unused-vars
-  const onSubmit = async () => {
+  const onGenerate = async () => {
     setDocModificationThreadInputState((prevState) => ({
       ...prevState,
       isGenerating: true
@@ -557,11 +611,10 @@ function DocModificationThreadInput() {
         data: ''
       }));
     }
-    // Mock
-    // fetchData();
-    let program_full_name = '';
+
+    let programFullName = '';
     if (docModificationThreadInputState.thread.program_id) {
-      program_full_name =
+      programFullName =
         docModificationThreadInputState.thread.program_id.school +
         '-(' +
         docModificationThreadInputState.thread.program_id.degree +
@@ -579,7 +632,7 @@ function DocModificationThreadInput() {
       ),
       student_id:
         docModificationThreadInputState.thread.student_id._id.toString(),
-      program_full_name: program_full_name,
+      program_full_name: programFullName,
       file_type: docModificationThreadInputState.thread.file_type
     });
 
@@ -672,7 +725,7 @@ function DocModificationThreadInput() {
           {' Discussion thread'}
           {'   '}
         </Link>
-        <Typography>{t('Input')}</Typography>
+        <Typography>Survey Input</Typography>
       </Breadcrumbs>
 
       {!isLoaded && <Loading />}
@@ -684,7 +737,7 @@ function DocModificationThreadInput() {
         />
       )}
 
-      <Card sx={{ p: 2 }}>
+      <Card sx={{ p: 2, mb: 2 }}>
         <Typography fontWeight="bold">Requirements:</Typography>
         {docModificationThreadInputState.thread?.program_id ? (
           <>
@@ -697,7 +750,7 @@ function DocModificationThreadInput() {
         )}
       </Card>
 
-      <Card sx={{ p: 2 }}>
+      <Card sx={{ p: 2, mb: 2 }}>
         <Grid container sx={{ gap: 2 }}>
           <Grid item xs={12}>
             <Typography variant="h5">
@@ -710,6 +763,10 @@ function DocModificationThreadInput() {
               !
             </Typography>
           </Grid>
+
+          {/* {docModificationThreadInputState?.thread?.file_type !== 'ML' && (
+
+          )} */}
 
           <Grid item xs={12}>
             <SurveyForm
@@ -734,70 +791,67 @@ function DocModificationThreadInput() {
               onChange={onChange}
             ></SurveyForm>
           </Grid>
-          <Grid container alignItems="center">
-            <Grid
-              item
-              xs={3}
-              sx={{ gap: 1 }}
-              container
-              justifyContent="flex-start"
-            >
-              <ProgressButton
-                isProgress={docModificationThreadInputState.isSubmitting}
-                size="small"
-                variant="contained"
-                color="primary"
-                disabled={docModificationThreadInputState.isSubmitting}
-                onClick={() =>
-                  onSubmitInput(
-                    docModificationThreadInputState.surveyInputs,
-                    true
-                  )
-                }
-              />
-              <ProgressButton
-                label="Save as draft"
-                progressLabel="Saving"
-                size="small"
-                color="secondary"
-                variant="outlined"
-                disabled={docModificationThreadInputState.isSaving}
-                onClick={() =>
-                  onSubmitInput(
-                    docModificationThreadInputState.surveyInputs,
-                    false
-                  )
-                }
-              />
-              <ProgressButton
-                label="Reset"
-                progressLabel="Resetting"
-                isProgress={docModificationThreadInputState.isResetting}
-                variant="secondary"
-                size="sm"
-                onClick={() => onReset()}
-              />
-            </Grid>
-            <Grid item xs={6} />
-            {/* Add an empty grid item to push the "Updated At" text to the right */}
-            <Grid item xs={3} container justifyContent="flex-end">
-              {' '}
-              {/* Align the "Updated At" text to the right */}
-              <span>
-                Updated At:{' '}
-                {convertDate(
-                  docModificationThreadInputState.surveyInputs?.specific
-                    ?.updatedAt
-                )}
-              </span>
-            </Grid>
+
+          <Grid
+            item
+            xs={3}
+            sx={{ gap: 1 }}
+            container
+            justifyContent="flex-start"
+          >
+            <ProgressButton
+              isProgress={docModificationThreadInputState.isSubmitting}
+              size="small"
+              variant="contained"
+              color="primary"
+              disabled={docModificationThreadInputState.isSubmitting}
+              onClick={() =>
+                onSubmitInput(
+                  docModificationThreadInputState.surveyInputs,
+                  true
+                )
+              }
+            />
+            <ProgressButton
+              label="Save as draft"
+              progressLabel="Saving"
+              size="small"
+              color="secondary"
+              variant="outlined"
+              disabled={docModificationThreadInputState.isSaving}
+              onClick={() =>
+                onSubmitInput(
+                  docModificationThreadInputState.surveyInputs,
+                  false
+                )
+              }
+            />
+            <ProgressButton
+              label="Reset"
+              progressLabel="Resetting"
+              isProgress={docModificationThreadInputState.isResetting}
+              variant="secondary"
+              size="small"
+              onClick={() => onReset()}
+            />
           </Grid>
         </Grid>
       </Card>
 
       {/* GPT input generation -> only for internal users */}
       {is_TaiGer_role(user) && (
-        <InputGenerator docModificationThreadInputState />
+        <Card sx={{ p: 2, mb: 2 }}>
+          <InputGenerator
+            editor_requirements={
+              docModificationThreadInputState.editor_requirements
+            }
+            data={docModificationThreadInputState.data}
+            isGenerating={docModificationThreadInputState.isGenerating}
+            isGenerated={docModificationThreadInputState.isGenerated}
+            onChange={onChangeEditorRequirements}
+            onGenerate={onGenerate}
+          />
+        </Card>
       )}
     </Box>
   );

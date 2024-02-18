@@ -99,34 +99,39 @@ const SurveyForm = ({
             }}
             onClick={handleTitleClick}
           >
-            <Grid container justifyContent="space-between" alignItems="center">
-              <Grid item container alignItems="center">
+            <Grid
+              container
+              sx={{ gap: 1 }}
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <Grid item>
+                <IconButton onClick={handleTitleClick}>
+                  {collapseOpen ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+                </IconButton>
+              </Grid>
+              <Grid item>
+                <Typography variant="h5">{title}</Typography>
+              </Grid>
+              {useEditSwitch && (
                 <Grid item>
-                  <IconButton onClick={handleTitleClick}>
-                    {collapseOpen ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
-                  </IconButton>
+                  <Switch
+                    size="small"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      setCollapseOpen(!editMode);
+                      setEditMode((prevMode) => !prevMode);
+                    }}
+                  />
                 </Grid>
-                <Grid item>
-                  <Typography variant="h5" gutterBottom>
-                    {title}
-                  </Typography>
-                </Grid>
-                {useEditSwitch && (
-                  <Grid item>
-                    <Switch
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        setCollapseOpen(!editMode);
-                        setEditMode((prevMode) => !prevMode);
-                      }}
-                    />
-                  </Grid>
-                )}
-                <Grid item sx={{ marginLeft: 'auto' }}>
-                  <Typography variant="body2">
-                    Last Modified: {convertDate(surveyInputs?.updatedAt)}
-                  </Typography>
-                </Grid>
+              )}
+              <Grid item sx={{ marginLeft: 'auto' }}>
+                <Typography variant="body2">
+                  Last Modified:{' '}
+                  {surveyInputs?.updatedAt
+                    ? convertDate(surveyInputs?.updatedAt)
+                    : '[NEW]'}
+                </Typography>
               </Grid>
             </Grid>
           </Box>
@@ -134,7 +139,7 @@ const SurveyForm = ({
           <Box marginTop={2} />
         </>
       )}
-      <Grid container sx={{ gap: 1 }}>
+      <Grid container sx={{ gap: 5 }}>
         <Collapse in={collapseOpen}>
           {surveyInputs.surveyContent.map((questionItem, index) => (
             <Grid item key={index} xs={12}>
@@ -147,6 +152,7 @@ const SurveyForm = ({
                   }}
                   key={index}
                   value={questionItem.answer}
+                  placeholder={questionItem.placeholder}
                   multiline
                   rows={questionItem.rows || 3}
                   onChange={onChange}
@@ -222,14 +228,6 @@ const InputGenerator = ({
                   onChange={onChange}
                 >
                   <MenuItem value="gpt-3.5-turbo">gpt-3.5-turbo</MenuItem>
-                  <MenuItem value="gpt-3.5-turbo-16k">
-                    gpt-3.5-turbo-16k
-                  </MenuItem>
-                  <MenuItem value="gpt-4">gpt-4</MenuItem>
-                  <MenuItem value="gpt-4-32k">gpt-4-32k</MenuItem>
-                  <MenuItem value="text-embedding-ada-002">
-                    text-embedding-ada-002
-                  </MenuItem>
                   <MenuItem value="gpt-4-1106-preview">
                     gpt-4-1106-preview
                   </MenuItem>
@@ -328,7 +326,7 @@ function DocModificationThreadInput() {
             studentId: threadData.student_id._id,
             programId: threadData.program_id._id,
             fileType: threadData.file_type,
-            surveyContent: prepQuestions(threadData)
+            surveyContent: prepQuestions(threadData, true)
           };
         }
 
@@ -761,7 +759,7 @@ function DocModificationThreadInput() {
 
           <Grid
             item
-            xs={3}
+            xs={12}
             sx={{ gap: 1 }}
             container
             justifyContent="flex-start"

@@ -76,7 +76,7 @@ let FILE_DONT_CARE_SYMBOL = (
   <BsDash size={18} color="lightgray" title="Not needed" />
 );
 
-export const prepQuestions = (thread) => {
+export const prepQuestions = (thread, isSpecific) => {
   let questions = [];
   if (
     thread?.file_type?.includes('RL') ||
@@ -86,7 +86,7 @@ export const prepQuestions = (thread) => {
   } else {
     switch (thread?.file_type) {
       case 'ML':
-        questions = MLQuestions(thread);
+        questions = MLQuestions(thread, isSpecific);
         break;
       case 'CV':
         questions = CVQuestions();
@@ -292,13 +292,52 @@ export const RLQuestions = () => {
   ];
 };
 
-export const MLQuestions = (thread) => {
+export const MLQuestions = (thread, isSpecific) => {
+  if (isSpecific) {
+    return [
+      {
+        questionId: 'q6',
+        question: `6. Why do you want to study in ${
+          COUNTRIES_MAPPING[thread?.program_id?.country] || 'this country'
+        } and not in your home country or any other country?`,
+        width: 12,
+        rows: '2',
+        answer: ''
+      },
+      {
+        questionId: 'q7',
+        question: `7. Why should the ${thread?.program_id?.school} select you as their student? What can you contribute to the universities?`,
+        width: 12,
+        rows: '2',
+        answer: ''
+      },
+      {
+        questionId: 'q8',
+        question: `8. Why do you want to study exactly at the ${
+          thread?.program_id
+            ? `${thread.program_id?.school} - ${thread.program_id?.program_name}`
+            : ``
+        } ? What is special about them?`,
+        width: 12,
+        rows: '2',
+        answer: ''
+      },
+      {
+        questionId: 'q9',
+        question:
+          '9. Any missing requirements or anything else you want to tell us?',
+        width: 12,
+        rows: '2',
+        answer: ''
+      }
+    ];
+  }
+
   return [
     {
       questionId: 'q1',
-      question: `1. Why do you want to study in ${
-        COUNTRIES_MAPPING[thread?.program_id?.country] || 'this country'
-      } and not in your home country or any other country?`,
+      question:
+        '1. What is your dream job you want to do after you have graduated? What do you want to become professionally?',
       width: 12,
       rows: '2',
       answer: ''
@@ -306,7 +345,7 @@ export const MLQuestions = (thread) => {
     {
       questionId: 'q2',
       question:
-        '2. What is your dream job you want to do after you have graduated? What do you want to become professionally?',
+        '2. Why do you think your field of interest (= area of the programs you want to apply for) is important now and in the future?',
       width: 12,
       rows: '2',
       answer: ''
@@ -314,7 +353,7 @@ export const MLQuestions = (thread) => {
     {
       questionId: 'q3',
       question:
-        '3. Why do you think your field of interest (= area of the programs you want to apply for) is important now and in the future?',
+        '3. How did your previous education/academic experience (學術界的相關經驗) prepare you for your future studies? What did you learn so far? (e.g. courses, projects, achievements, …)',
       width: 12,
       rows: '2',
       answer: ''
@@ -322,7 +361,7 @@ export const MLQuestions = (thread) => {
     {
       questionId: 'q4',
       question:
-        '4. How did your previous education/academic experience (學術界的相關經驗) prepare you for your future studies? What did you learn so far? (e.g. courses, projects, achievements, …)',
+        '5. How did your previous practical experience (實習、工作的相關經驗) prepare you for your future studies? What did you learn? (e.g. experiences during internship/jobs/…)',
       width: 12,
       rows: '2',
       answer: ''
@@ -330,41 +369,7 @@ export const MLQuestions = (thread) => {
     {
       questionId: 'q5',
       question:
-        '5. How did your previous practical experience (實習、工作的相關經驗) prepare you for your future studies? What did you learn? (e.g. experiences during internship/jobs/…)',
-      width: 12,
-      rows: '2',
-      answer: ''
-    },
-    {
-      questionId: 'q6',
-      question:
-        '6. What are your 3 biggest strengths? (abilities, personal characteristics, …)',
-      width: 12,
-      rows: '2',
-      answer: ''
-    },
-    {
-      questionId: 'q7',
-      question: `7. Why should the ${thread?.program_id?.school} select you as their student? What can you contribute to the universities?`,
-      width: 12,
-      rows: '2',
-      answer: ''
-    },
-    {
-      questionId: 'q8',
-      question: `8. Why do you want to study exactly at the ${
-        thread?.program_id
-          ? `${thread.program_id?.school} - ${thread.program_id?.program_name}`
-          : ``
-      } ? What is special about them?`,
-      width: 12,
-      rows: '2',
-      answer: ''
-    },
-    {
-      questionId: 'q9',
-      question:
-        '9. Any missing requirements or anything else you want to tell us?',
+        '5. What are your 3 biggest strengths? (abilities, personal characteristics, …)',
       width: 12,
       rows: '2',
       answer: ''

@@ -169,43 +169,6 @@ const InputGenerator = ({
   onChange,
   onGenerate
 }) => {
-  data = `
-  [Your Name]
-  [Your Address]
-  [City, State, Zip Code]
-  [Email Address]
-  [Phone Number]
-
-  [Date]
-
-  Admissions Committee
-  Bielefeld University
-  [University Address]
-  Bielefeld, Germany
-
-  Dear Admissions Committee,
-
-  I am writing to express my strong interest in the M.Sc. program
-  at Bielefeld University. With a passion for [specific field of
-  study], I am excited about the opportunity to further my
-  education and contribute to the academic community at your
-  esteemed institution.
-
-  // ... (remaining text)
-
-  Thank you for considering my application. I look forward to the
-  opportunity to further discuss my qualifications and aspirations
-  with you.
-
-  Sincerely,
-
-  Testing-Student Chen
-  ---
-
-  firstname: Testing-Student
-  lastname: Chen
-`;
-
   return (
     <>
       <Typography variant="h5" gutterBottom>
@@ -620,10 +583,14 @@ function DocModificationThreadInput() {
         docModificationThreadInputState.thread.program_id.degree +
         ') ';
     }
+
+    const studentInput = [
+      ...docModificationThreadInputState.surveyInputs.general.surveyContent,
+      ...docModificationThreadInputState.surveyInputs.specific.surveyContent
+    ];
+
     const response = await cvmlrlAi2({
-      student_input: JSON.stringify(
-        docModificationThreadInputState.student_input
-      ),
+      student_input: JSON.stringify(studentInput),
       document_requirements: JSON.stringify(
         docModificationThreadInputState.document_requirements
       ),

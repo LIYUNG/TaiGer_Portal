@@ -54,6 +54,7 @@ function ButtonSetRejected(props) {
     rejectProfileFileModel: props.rejectProfileFileModel,
     baseDocsflagOffcanvas: false,
     baseDocsflagOffcanvasButtonDisable: false,
+    acceptProfileFileModel: false,
     res_modal_status: 0,
     res_modal_message: ''
   });
@@ -246,6 +247,23 @@ function ButtonSetRejected(props) {
           res_modal_message: ''
         }));
       }
+    );
+  };
+
+  const closeAcceptWarningWindow = () => {
+    setButtonSetRejectedState((prevState) => ({
+      ...prevState,
+      acceptProfileFileModel: false
+    }));
+  };
+
+  const onUpdateProfileFilefromstudent = (e) => {
+    e.preventDefault();
+    props.onUpdateProfileFilefromstudent(
+      buttonSetRejectedState.category,
+      buttonSetRejectedState.student_id,
+      buttonSetRejectedState.status,
+      buttonSetRejectedState.feedback
     );
   };
 
@@ -470,7 +488,7 @@ function ButtonSetRejected(props) {
               )
             }
           >
-            {t('Ok')}
+            {t('Accept')}
           </Button>
         )}
         <Button
@@ -480,6 +498,39 @@ function ButtonSetRejected(props) {
           onClick={closePreviewWindow}
         >
           {!buttonSetRejectedState.isLoaded ? <CircularProgress /> : t('Close')}
+        </Button>
+      </ModalNew>
+      <ModalNew
+        open={buttonSetRejectedState.acceptProfileFileModel}
+        onClose={closeAcceptWarningWindow}
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Typography variant="h5">Warning</Typography>
+
+        <Typography sx={{ my: 2 }}>
+          {buttonSetRejectedState.category} is a valid and can be used for the
+          application?
+        </Typography>
+
+        <Button
+          color="primary"
+          variant="contained"
+          disabled={!buttonSetRejectedState.isLoaded}
+          onClick={(e) => onUpdateProfileFilefromstudent(e)}
+        >
+          {!buttonSetRejectedState.isLoaded ? (
+            <CircularProgress size={24} />
+          ) : (
+            t('Yes')
+          )}
+        </Button>
+        <Button
+          color="primary"
+          variant="outlined"
+          onClick={closeAcceptWarningWindow}
+        >
+          {t('No')}
         </Button>
       </ModalNew>
       <OffcanvasBaseDocument

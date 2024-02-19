@@ -44,8 +44,6 @@ function StudDocsDashboard(props) {
             component={LinkDom}
           >
             {agent.firstname}
-            {', '}
-            {agent.lastname}
           </Link>
         </Typography>
         <Typography variant="body2">{agent.email}</Typography>
@@ -66,8 +64,6 @@ function StudDocsDashboard(props) {
             component={LinkDom}
           >
             {editor.firstname}
-            {', '}
-            {editor.lastname}
           </Link>
         </Typography>
         <Typography variant="body2">{editor.email}</Typography>

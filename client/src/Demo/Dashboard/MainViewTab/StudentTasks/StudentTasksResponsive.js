@@ -14,7 +14,8 @@ import {
   is_all_uni_assist_vpd_uploaded,
   are_base_documents_missing,
   to_register_application_portals,
-  is_personal_data_filled
+  is_personal_data_filled,
+  isProgramDecided
 } from '../../../Utils/checking-functions';
 import { appConfig } from '../../../../config';
 
@@ -79,7 +80,7 @@ function StudentTasksResponsive(props) {
               {!application_doc_thread.isFinalVersion &&
                 application_doc_thread.latest_message_left_by_id !==
                   props.student._id.toString() &&
-                application.decided === 'O' && (
+                isProgramDecided(application) && (
                   <>
                     <TableCell>
                       <Link

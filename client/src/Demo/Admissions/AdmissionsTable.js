@@ -22,6 +22,10 @@ import { matchSorter } from 'match-sorter';
 
 import DEMO from '../../store/constant';
 import { CustomTabPanel, a11yProps } from '../../components/Tabs';
+import {
+  isProgramDecided,
+  isProgramSubmitted
+} from '../Utils/checking-functions';
 
 // Define a default UI for filtering
 function DefaultColumnFilter({
@@ -340,8 +344,8 @@ function AdmissionsTable(props) {
       agents_name_string += `${agent.firstname} `;
     }
     student.applications.map((application) => {
-      if (application.decided === 'O') {
-        if (application.closed === 'O') {
+      if (isProgramDecided(application)) {
+        if (isProgramSubmitted(application)) {
           if (application.admission === 'O') {
             admissions_table.push({
               _id: student._id,

@@ -19,6 +19,7 @@ import { updateAgentBanner } from '../../../api';
 import { appConfig } from '../../../config';
 import {
   isAnyCVNotAssigned,
+  isProgramDecided,
   is_any_base_documents_uploaded,
   is_any_programs_ready_to_submit,
   is_any_vpd_missing,
@@ -96,7 +97,7 @@ function AgentMainView(props) {
   const applications_arr = programs_refactor(props.students)
     .filter(
       (application) =>
-        application.decided === 'O' &&
+        isProgramDecided(application) &&
         application.closed === '-' &&
         application.program_name !== 'No Program'
     )

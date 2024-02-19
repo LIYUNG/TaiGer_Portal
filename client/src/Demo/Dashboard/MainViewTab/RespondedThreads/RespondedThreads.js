@@ -4,6 +4,7 @@ import { Link, TableCell, TableRow } from '@mui/material';
 
 import DEMO from '../../../../store/constant';
 import { convertDate } from '../../../Utils/contants';
+import { isProgramDecided } from '../../../Utils/checking-functions';
 
 function RespondedThreads(props) {
   var unread_general_generaldocs;
@@ -52,7 +53,7 @@ function RespondedThreads(props) {
               {!application_doc_thread.isFinalVersion &&
                 application_doc_thread.latest_message_left_by_id ===
                   props.student._id.toString() &&
-                application.decided === 'O' && (
+                isProgramDecided(application) && (
                   <>
                     <TableCell>
                       <Link

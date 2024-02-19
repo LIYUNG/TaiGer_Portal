@@ -15,7 +15,7 @@ import {
   Typography
 } from '@mui/material';
 
-import { is_TaiGer_role } from '../Utils/checking-functions';
+import { isProgramDecided, is_TaiGer_role } from '../Utils/checking-functions';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import {
@@ -290,7 +290,7 @@ function InterviewTraining() {
     available_interview_request_programs = student.applications
       .filter(
         (application) =>
-          application.decided === 'O' &&
+          isProgramDecided(application) &&
           application.admission !== 'O' &&
           application.admission !== 'X' &&
           !interviewslist.find(

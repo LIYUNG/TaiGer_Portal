@@ -3,6 +3,7 @@ import { FiExternalLink } from 'react-icons/fi';
 import { Link as LinkDom } from 'react-router-dom';
 import {
   Box,
+  Button,
   Link,
   Table,
   TableBody,
@@ -11,6 +12,7 @@ import {
   TableRow
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import LinkIcon from '@mui/icons-material/Link';
 
 import ButtonSetUploaded from './ButtonSetUploaded';
 import ButtonSetAccepted from './ButtonSetAccepted';
@@ -437,15 +439,10 @@ function BaseDocument_StudentView(props) {
         text={
           <>
             每個檔案都有注意事項。請務必上傳文件前，點選各文件名稱旁的說明連結圖示
-            &quot;
-            <b>
-              <FiExternalLink
-                className="mx-1 mb-1"
-                style={{ cursor: 'pointer' }}
-              />
-            </b>
-            &quot; 並查看文件要求，照著我們的要求上傳，Agent
-            會再檢查文件是否沒問題。
+            <Button size="small" variant="outlined" startIcon={<LinkIcon />}>
+              {t('Read More')}
+            </Button>
+            並查看文件要求，照著我們的要求上傳，Agent 會再檢查文件是否沒問題。
           </>
         }
         link_name={''}

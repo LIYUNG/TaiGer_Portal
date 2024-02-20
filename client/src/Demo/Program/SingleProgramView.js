@@ -257,29 +257,83 @@ function SingleProgramView(props) {
           </CustomTabPanel>
         </Grid>
         <Grid item xs={12} md={4}>
-          <Card>
-            {/* {isLoading ? (
-              <div>Loading...</div>
-            ) : error ? (
-              <div>Error: {error}</div>
-            ) : (
-              <div
-                id="server-rendered-container"
-                dangerouslySetInnerHTML={{ __html: searchResultsHtml }}
-              />
-            )} */}
-            {/* <iframe
-              src={`https://www.bing.com/search?q=${props.program.school.replace(
-                ' ',
-                '+'
-              )}+${props.program.program_name.replace(
-                ' ',
-                '+'
-              )}+${props.program.degree.replace(' ', '+')}`}
-              width="100%"
-              height="600"
-            ></iframe> */}
-          </Card>
+          {is_TaiGer_role(user) && (
+            <>
+              <Card className="card-with-scroll" sx={{ p: 2 }}>
+                <Typography variant="string">Who has applied this?</Typography>
+                <div className="card-scrollable-body">
+                  <Table size="small">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>{t('Name')}</TableCell>
+                        <TableCell>{t('Year')}</TableCell>
+                        <TableCell>{t('Admission')}</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {props.students.map((student, i) => (
+                        <TableRow key={i}>
+                          <TableCell>
+                            <Link
+                              to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                                student._id.toString(),
+                                DEMO.PROFILE
+                              )}`}
+                            >
+                              {student.firstname} {student.lastname}
+                            </Link>
+                          </TableCell>
+                          <TableCell>
+                            {student.application_preference
+                              ? student.application_preference
+                                  .expected_application_date
+                              : '-'}
+                          </TableCell>
+                          <TableCell>
+                            {student.applications.find(
+                              (application) =>
+                                application.programId.toString() ===
+                                props.programId
+                            )
+                              ? student.applications.find(
+                                  (application) =>
+                                    application.programId.toString() ===
+                                    props.programId
+                                ).admission
+                              : ''}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                  <Typography variant="string" sx={{ mt: 2 }}>
+                    O: admitted, X: rejected, -: not confirmed{' '}
+                  </Typography>
+                </div>
+              </Card>
+              <Card className="card-with-scroll">
+                <div className="card-scrollable-body">
+                  <ProgramReport
+                    uni_name={props.program.school}
+                    program_name={props.program.program_name}
+                    program_id={props.program._id.toString()}
+                  />
+                </div>
+              </Card>
+              <Card>
+                <Typography>
+                  {appConfig.companyName} {t('Program Assistant')}
+                </Typography>
+                <Button
+                  color="primary"
+                  variant="contained"
+                  onClick={props.programListAssistant}
+                >
+                  {t('Fetch')}
+                </Button>
+              </Card>
+            </>
+          )}
         </Grid>
       </Grid>
       {/* TODO: reuse the following for program comparison! */}

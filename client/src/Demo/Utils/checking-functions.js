@@ -1596,6 +1596,8 @@ export const programs_refactor = (students) => {
           toefl: application.programId.toefl,
           ielts: application.programId.ielts,
           testdaf: application.programId.testdaf,
+          whoupdated: application.programId.whoupdated,
+          updatedAt: application.programId.updatedAt,
           program_id: application.programId._id.toString(),
           application_deadline: application_deadline_calculator(
             student,

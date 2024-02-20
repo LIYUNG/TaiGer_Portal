@@ -379,6 +379,7 @@ function SingleProgram() {
         {is_TaiGer_AdminAgent(user) && (
           <>
             <Button
+              variant="outlined"
               color="secondary"
               size="small"
               onClick={() => handleClick()}
@@ -386,17 +387,18 @@ function SingleProgram() {
               {t('Edit')}
             </Button>
             <Button
+              variant="outlined"
               color="primary"
               size="small"
-              variant="secondary"
               onClick={() => setModalShow2()}
             >
               {t('Assign')}
             </Button>
             {is_TaiGer_Admin(user) && (
               <Button
+                variant="outlined"
                 size="small"
-                variant="danger"
+                color="error"
                 onClick={() => setModalShowDDelete()}
               >
                 {t('Delete')}

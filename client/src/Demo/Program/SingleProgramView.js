@@ -177,6 +177,81 @@ function SingleProgramView(props) {
                     </Grid>
                   </Fragment>
                 ))}
+                {props.program.application_portal_a && (
+                  <>
+                    <Grid item xs={12} md={4}>
+                      <Typography fontWeight="bold">Portal Link 1</Typography>
+                    </Grid>
+                    <Grid item xs={12} md={8}>
+                      <LinkableNewlineText
+                        text={props.program.application_portal_a}
+                      />
+                    </Grid>
+
+                    <Grid item xs={12} md={4}>
+                      <Typography fontWeight="bold">
+                        Portal Instructions 1
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={12} md={8}>
+                      <LinkableNewlineText
+                        text={props.program.application_portal_a_instructions}
+                      />
+                    </Grid>
+                  </>
+                )}
+                {props.program.application_portal_b && (
+                  <>
+                    <Grid item xs={12} md={4}>
+                      <Typography fontWeight="bold">Portal Link 2</Typography>
+                    </Grid>
+                    <Grid item xs={12} md={8}>
+                      <LinkableNewlineText
+                        text={props.program.application_portal_b}
+                      />
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                      <Typography fontWeight="bold">
+                        Portal Instructions 2
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={12} md={8}>
+                      <LinkableNewlineText
+                        text={props.program.application_portal_b_instructions}
+                      />
+                    </Grid>
+                  </>
+                )}
+                <Grid item xs={12} md={4}>
+                  <Typography fontWeight="bold">{t('Website')}</Typography>
+                </Grid>
+                <Grid item xs={12} md={8}>
+                  <LinkableNewlineText text={props.program.website} />
+                </Grid>
+                <Grid item xs={12} md={4}>
+                  <Typography fontWeight="bold">{t('Last update')}</Typography>
+                </Grid>
+                <Grid item xs={12} md={8}>
+                  <Typography fontWeight="bold">
+                    {convertDate(props.program.updatedAt)}
+                  </Typography>
+                </Grid>
+                {is_TaiGer_AdminAgent(user) && (
+                  <>
+                    <Grid item xs={12} md={4}>
+                      <Typography>{t('Updated by')}</Typography>
+                    </Grid>
+                    <Grid item xs={12} md={8}>
+                      <Typography>{props.program.whoupdated}</Typography>
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                      <Typography>{t('Group')}</Typography>
+                    </Grid>
+                    <Grid item xs={12} md={8}>
+                      <Typography>{props.program.study_group_flag}</Typography>
+                    </Grid>
+                  </>
+                )}
               </Grid>
             </Card>
           </CustomTabPanel>

@@ -476,6 +476,7 @@ function DocModificationThreadInput() {
     } else {
       setDocModificationThreadInputState((prevState) => ({
         ...prevState,
+        isChanged: true,
         surveyInputs: {
           ...prevState.surveyInputs,
           specific: surveyInput

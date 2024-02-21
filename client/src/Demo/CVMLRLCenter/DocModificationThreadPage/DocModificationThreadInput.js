@@ -15,6 +15,7 @@ import {
   InputLabel,
   IconButton,
   MenuItem,
+  Modal,
   Link,
   FormControl,
   FormControlLabel,
@@ -23,14 +24,13 @@ import {
   Typography,
   OutlinedInput,
   Select,
-  Switch
+  Switch,
+  Paper
 } from '@mui/material';
 import { KeyboardArrowUp, KeyboardArrowDown } from '@mui/icons-material';
 
 import ErrorPage from '../../Utils/ErrorPage';
 import ModalMain from '../../Utils/ModalHandler/ModalMain';
-
-// eslint-disable-next-line no-unused-vars
 import { prepQuestions, convertDate } from '../../Utils/contants';
 import {
   LinkableNewlineText,
@@ -42,8 +42,7 @@ import {
   getMessagThread,
   getSurveyInputs,
   putSurveyInput,
-  postSurveyInput,
-  resetSurveyInput
+  postSurveyInput
 } from '../../../api';
 import { TabTitle } from '../../Utils/TabTitle';
 import DEMO from '../../../store/constant';
@@ -51,23 +50,99 @@ import { useAuth } from '../../../components/AuthProvider';
 import Loading from '../../../components/Loading/Loading';
 import { appConfig } from '../../../config';
 
+// words, sentances, paragraphs, pages
+// const type2width = {'words': 5, 'sentances': 10, 'paragraphs': 100, 'pages': 100};
+// const type2rows = {'words': 1, 'sentances': 1, 'paragraphs': 6, 'pages': 15};
+
+const ConfirmationModal = ({
+  isModalOpen,
+  setModalOpen,
+  title,
+  description,
+  onYes,
+  onNo,
+  onCancel = () => {}
+}) => {
+  const handleActionYes = () => {
+    onYes();
+    handleModalClose();
+  };
+
+  const handleActionNo = () => {
+    onNo();
+    handleModalClose();
+  };
+
+  const handleActionCancel = () => {
+    onCancel();
+    handleModalClose();
+  };
+
+  const handleModalClose = () => {
+    setModalOpen(false);
+  };
+
+  return (
+    <Modal open={isModalOpen} onClose={handleModalClose}>
+      <Paper
+        style={{
+          padding: 16,
+          maxWidth: 300,
+          margin: 'auto',
+          marginTop: 'calc(50vh - 100px)'
+        }}
+      >
+        <Typography variant="h6">{title}</Typography>
+        <Typography variant="body1" sx={{ marginBottom: 2 }}>
+          {description}
+        </Typography>
+
+        <Button variant="contained" color="primary" onClick={handleActionYes}>
+          Yes
+        </Button>
+
+        <Button
+          variant="contained"
+          onClick={handleActionNo}
+          sx={{ marginLeft: 1 }}
+        >
+          No
+        </Button>
+        <Button
+          variant="contained"
+          onClick={handleActionCancel}
+          sx={{
+            marginLeft: 1,
+            float: 'right'
+          }}
+        >
+          Cancel
+        </Button>
+      </Paper>
+    </Modal>
+  );
+};
+
 const ProgressButton = ({
   label = 'Submit',
   progressLabel = 'Submitting',
+  onClick,
   isProgress,
   ...buttonProps
 }) => {
   return (
-    <Button {...buttonProps}>
-      {isProgress ? (
-        <>
-          <CircularProgress />
-          {progressLabel}
-        </>
-      ) : (
-        label
-      )}
-    </Button>
+    <>
+      <Button {...buttonProps} onClick={onClick}>
+        {isProgress ? (
+          <>
+            <CircularProgress size={15} sx={{ marginRight: '0.5rem' }} />
+            {progressLabel}
+          </>
+        ) : (
+          label
+        )}
+      </Button>
+    </>
   );
 };
 
@@ -209,6 +284,7 @@ const InputGenerator = ({
                   input={<OutlinedInput label="Output language" />}
                   id="output-lang-select"
                   name="outputLanguage"
+                  value="English"
                   onChange={onChange}
                 >
                   <MenuItem value="English">English</MenuItem>
@@ -225,6 +301,7 @@ const InputGenerator = ({
                   input={<OutlinedInput label="GPT Model" />}
                   id="gpt-model-select"
                   name="gptModel"
+                  value="gpt-3.5-turbo"
                   onChange={onChange}
                 >
                   <MenuItem value="gpt-3.5-turbo">gpt-3.5-turbo</MenuItem>
@@ -251,24 +328,16 @@ const InputGenerator = ({
         </Grid>
 
         <Grid item xs={12}>
-          <Button
+          <ProgressButton
             size="small"
             color="primary"
             variant="contained"
             disabled={isGenerating}
             onClick={onGenerate}
-          >
-            {isGenerating ? (
-              <>
-                <CircularProgress />
-                {'  Generating'}
-              </>
-            ) : isGenerated ? (
-              'Regenerate'
-            ) : (
-              'Generate'
-            )}
-          </Button>
+            isProgress={isGenerating}
+            label={!isGenerated ? 'Generate' : 'Regenerate'}
+            progressLabel="Generating"
+          />
         </Grid>
 
         <Grid item xs={12}>
@@ -283,10 +352,10 @@ function DocModificationThreadInput() {
   const { user } = useAuth();
   const { t } = useTranslation();
   const { documentsthreadId } = useParams();
+  const [isModalOpen, setModalOpen] = useState(false);
   const [docModificationThreadInputState, setDocModificationThreadInputState] =
     useState({
       error: '',
-      // isGenerating: true,
       isGenerating: false,
       isGenerated: false,
       isFirstDataArrived: false,
@@ -431,54 +500,6 @@ function DocModificationThreadInput() {
         [name]: ans
       }
     }));
-  };
-
-  const onReset = () => {
-    setDocModificationThreadInputState((prevState) => ({
-      ...prevState,
-      isResetting: true
-    }));
-
-    const resetInput = async (surveyInputs) => {
-      if (!surveyInputs?.specific) {
-        return;
-      }
-
-      surveyInputs.specific?._id &&
-        resetSurveyInput(surveyInputs.specific?._id?.toString());
-    };
-
-    try {
-      resetInput(docModificationThreadInputState.surveyInputs);
-    } catch (error) {
-      setDocModificationThreadInputState((prevState) => ({
-        ...prevState,
-        isLoaded: true,
-        isResetting: false,
-        error,
-        res_status: 500
-      }));
-    }
-    setDocModificationThreadInputState((prevState) => {
-      const surveyInputs = prevState && prevState.surveyInputs;
-      const specific = surveyInputs && surveyInputs.specific;
-
-      if (surveyInputs && specific) {
-        return {
-          ...prevState,
-          isResetting: false,
-          surveyInputs: {
-            ...surveyInputs,
-            specific: {
-              ...specific,
-              surveyContent: prepQuestions(prevState.thread),
-              updatedAt: new Date()
-            }
-          }
-        };
-      }
-      return { ...prevState, isResetting: false };
-    });
   };
 
   const updateSurveyInput = async (surveyInput, informEditor) => {
@@ -668,6 +689,19 @@ function DocModificationThreadInput() {
 
   return (
     <Box>
+      {/* { title, description, onYes, onNo, onCancel } */}
+      <ConfirmationModal
+        isModalOpen={isModalOpen}
+        setModalOpen={setModalOpen}
+        title="Notify Editor"
+        description="Do you want to notify the editors about the changes?"
+        onYes={() =>
+          onSubmitInput(docModificationThreadInputState.surveyInputs, true)
+        }
+        onNo={() =>
+          onSubmitInput(docModificationThreadInputState.surveyInputs, false)
+        }
+      />
       <Breadcrumbs aria-label="breadcrumb">
         <Link
           underline="hover"
@@ -765,39 +799,13 @@ function DocModificationThreadInput() {
             justifyContent="flex-start"
           >
             <ProgressButton
+              label="Submit"
               isProgress={docModificationThreadInputState.isSubmitting}
               size="small"
               variant="contained"
               color="primary"
               disabled={docModificationThreadInputState.isSubmitting}
-              onClick={() =>
-                onSubmitInput(
-                  docModificationThreadInputState.surveyInputs,
-                  true
-                )
-              }
-            />
-            <ProgressButton
-              label="Save as draft"
-              progressLabel="Saving"
-              size="small"
-              color="secondary"
-              variant="outlined"
-              disabled={docModificationThreadInputState.isSaving}
-              onClick={() =>
-                onSubmitInput(
-                  docModificationThreadInputState.surveyInputs,
-                  false
-                )
-              }
-            />
-            <ProgressButton
-              label="Reset"
-              progressLabel="Resetting"
-              isProgress={docModificationThreadInputState.isResetting}
-              variant="secondary"
-              size="small"
-              onClick={() => onReset()}
+              onClick={() => setModalOpen(true)}
             />
           </Grid>
         </Grid>

@@ -25,9 +25,9 @@ import {
   Typography,
   OutlinedInput,
   Select,
-  Switch,
   Paper
 } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
 import { KeyboardArrowUp, KeyboardArrowDown } from '@mui/icons-material';
 
 import ErrorPage from '../../Utils/ErrorPage';
@@ -152,11 +152,10 @@ const SurveyForm = ({
   surveyInputs,
   onChange,
   surveyType = 'program',
-  useEditSwitch = false,
-  defaultEditState = true
+  useEditSwitch = false
 }) => {
   // if not title provided -> not toggle switch -> must be editable
-  const [editMode, setEditMode] = useState(!title || defaultEditState);
+  const [editMode, setEditMode] = useState(!title);
   const [collapseOpen, setCollapseOpen] = useState(true);
 
   const handleTitleClick = (e) => {
@@ -192,14 +191,19 @@ const SurveyForm = ({
               </Grid>
               {useEditSwitch && (
                 <Grid item>
-                  <Switch
+                  <Button
                     size="small"
                     onClick={(event) => {
                       event.stopPropagation();
-                      setCollapseOpen(!editMode);
+                      // setCollapseOpen(!editMode);
                       setEditMode((prevMode) => !prevMode);
                     }}
-                  />
+                  >
+                    <EditIcon
+                      color={editMode ? 'disabled' : 'primary'}
+                      fontSize="small"
+                    />
+                  </Button>
                 </Grid>
               )}
               <Grid item sx={{ marginLeft: 'auto' }}>

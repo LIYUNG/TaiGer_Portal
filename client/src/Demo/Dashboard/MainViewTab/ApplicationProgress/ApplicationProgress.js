@@ -5,6 +5,9 @@ import { AiFillEdit } from 'react-icons/ai';
 import { getNumberOfDays } from '../../../Utils/contants';
 import {
   application_deadline_calculator,
+  isProgramDecided,
+  isProgramSubmitted,
+  isProgramWithdraw,
   is_TaiGer_Editor,
   is_TaiGer_Student
 } from '../../../Utils/checking-functions';
@@ -91,8 +94,8 @@ function ApplicationProgress(props) {
           >
             <Typography
               color={
-                application.decided === 'O'
-                  ? application.closed === 'O'
+                isProgramDecided(application)
+                  ? isProgramSubmitted(application)
                     ? 'success.light'
                     : 'error.main'
                   : 'grey'
@@ -111,8 +114,8 @@ function ApplicationProgress(props) {
           >
             <Typography
               color={
-                application.decided === 'O'
-                  ? application.closed === 'O'
+                isProgramDecided(application)
+                  ? isProgramSubmitted(application)
                     ? 'success.light'
                     : 'error.main'
                   : 'grey'
@@ -131,8 +134,8 @@ function ApplicationProgress(props) {
           >
             <Typography
               color={
-                application.decided === 'O'
-                  ? application.closed === 'O'
+                isProgramDecided(application)
+                  ? isProgramSubmitted(application)
                     ? 'success.light'
                     : 'error.main'
                   : 'grey'
@@ -143,10 +146,10 @@ function ApplicationProgress(props) {
             </Typography>
           </Link>
         </TableCell>
-        {application.decided === 'O' ? (
+        {isProgramDecided(application) ? (
           <TableCell
             className={`mb-1 ${
-              application.closed === 'O' ? 'text-warning' : 'text-info'
+              isProgramSubmitted(application) ? 'text-warning' : 'text-info'
             }`}
           >
             {application.programId.semester}
@@ -156,8 +159,8 @@ function ApplicationProgress(props) {
             {application.programId.semester}
           </TableCell>
         )}
-        {application.decided === 'O' ? (
-          application.closed === 'O' ? (
+        {isProgramDecided(application) ? (
+          isProgramSubmitted(application) ? (
             <TableCell className="mb-1 text-warning">
               {application.programId.toefl ? application.programId.toefl : '-'}
             </TableCell>
@@ -171,8 +174,8 @@ function ApplicationProgress(props) {
             {application.programId.toefl ? application.programId.toefl : '-'}
           </TableCell>
         )}
-        {application.decided === 'O' ? (
-          application.closed === 'O' ? (
+        {isProgramDecided(application) ? (
+          isProgramSubmitted(application) ? (
             <TableCell className="mb-1 text-warning">
               {application.programId.ielts ? application.programId.ielts : '-'}
             </TableCell>
@@ -186,13 +189,13 @@ function ApplicationProgress(props) {
             {application.programId.ielts ? application.programId.ielts : '-'}
           </TableCell>
         )}
-        {application.decided === 'O' ? (
-          application.closed === 'O' ? (
+        {isProgramDecided(application) ? (
+          isProgramSubmitted(application) ? (
             <TableCell>
               <Typography
                 color={
-                  application.decided === 'O'
-                    ? application.closed === 'O'
+                  isProgramDecided(application)
+                    ? isProgramSubmitted(application)
                       ? 'success.light'
                       : 'error.main'
                     : 'grey'
@@ -206,8 +209,8 @@ function ApplicationProgress(props) {
             <TableCell>
               <Typography
                 color={
-                  application.decided === 'O'
-                    ? application.closed === 'O'
+                  isProgramDecided(application)
+                    ? isProgramSubmitted(application)
                       ? 'success.light'
                       : 'error.main'
                     : 'grey'
@@ -222,8 +225,8 @@ function ApplicationProgress(props) {
           <TableCell title="Not decided yet">
             <Typography
               color={
-                application.decided === 'O'
-                  ? application.closed === 'O'
+                isProgramDecided(application)
+                  ? isProgramSubmitted(application)
                     ? 'success.light'
                     : 'error.main'
                   : 'grey'
@@ -234,10 +237,10 @@ function ApplicationProgress(props) {
             </Typography>
           </TableCell>
         )}
-        {application.decided === 'O' ? (
+        {isProgramDecided(application) ? (
           <TableCell
             className={`mb-1 ${
-              application.closed === 'O' ? 'text-warning' : 'text-info'
+              isProgramSubmitted(application) ? 'text-warning' : 'text-info'
             }`}
           >
             O
@@ -247,15 +250,15 @@ function ApplicationProgress(props) {
         ) : (
           <TableCell className="mb-1 text-danger">?</TableCell>
         )}
-        {application.closed === 'O' ? (
+        {isProgramSubmitted(application) ? (
           <TableCell
             className={`mb-1 ${
-              application.closed === 'O' ? 'text-warning' : 'text-info'
+              isProgramSubmitted(application) ? 'text-warning' : 'text-info'
             }`}
           >
             O
           </TableCell>
-        ) : application.closed === 'X' ? (
+        ) : isProgramWithdraw(application) ? (
           <TableCell>X</TableCell>
         ) : (
           <TableCell className="mb-1 text-danger">?</TableCell>
@@ -268,7 +271,7 @@ function ApplicationProgress(props) {
           <TableCell className="mb-1 text-danger">?</TableCell>
         )}
         <TableCell>
-          {application.closed === 'O'
+          {isProgramSubmitted(application)
             ? '-'
             : application.programId.application_deadline
             ? getNumberOfDays(

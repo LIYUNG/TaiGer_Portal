@@ -21,7 +21,10 @@ import { useTranslation } from 'react-i18next';
 import ManualFiles from './ManualFiles';
 import {
   LinkableNewlineText,
-  application_deadline_calculator
+  application_deadline_calculator,
+  isProgramDecided,
+  isProgramSubmitted,
+  isProgramWithdraw
 } from '../Utils/checking-functions';
 import { spinner_style2 } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
@@ -534,7 +537,7 @@ function EditorDocsProgress(props) {
               <Typography variant="body1" color="grey" sx={{ mr: 2 }}>
                 Not wanted
               </Typography>
-            ) : application.closed === 'O' ? (
+            ) : isProgramSubmitted(application) ? (
               <>
                 <ImCheckmark
                   size={16}
@@ -542,7 +545,7 @@ function EditorDocsProgress(props) {
                   title="This program is closed"
                 />
               </>
-            ) : application.closed === 'X' ? (
+            ) : isProgramWithdraw(application) ? (
               <Typography fontWeight="bold">{t('WITHDRAW')}</Typography>
             ) : (
               <Typography fontWeight="bold">{t('In progress')}</Typography>
@@ -552,8 +555,8 @@ function EditorDocsProgress(props) {
             <Typography
               variant="body1"
               color={
-                application.decided === 'O'
-                  ? application.closed === 'O'
+                isProgramDecided(application)
+                  ? isProgramSubmitted(application)
                     ? 'success.light'
                     : 'error.main'
                   : 'grey'
@@ -572,8 +575,8 @@ function EditorDocsProgress(props) {
             <Typography
               variant="body1"
               color={
-                application.decided === 'O'
-                  ? application.closed === 'O'
+                isProgramDecided(application)
+                  ? isProgramSubmitted(application)
                     ? 'success.light'
                     : 'error.main'
                   : 'grey'

@@ -1,6 +1,14 @@
-import React from 'react';
-import { Dropdown, DropdownButton } from 'react-bootstrap';
-import { Link, Typography, TableCell, TableRow, Box } from '@mui/material';
+import React, { useState } from 'react';
+import {
+  Link,
+  Typography,
+  TableCell,
+  TableRow,
+  Box,
+  Menu,
+  MenuItem,
+  Button
+} from '@mui/material';
 import { Link as LinkDom } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
@@ -10,7 +18,16 @@ import { useAuth } from '../../../../components/AuthProvider';
 function StudDocsDashboard(props) {
   const { user } = useAuth();
   const { t } = useTranslation();
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
   const updateStudentArchivStatus = (studentId, isArchived) => {
+    setAnchorEl(null);
     props.updateStudentArchivStatus(studentId, isArchived);
   };
 
@@ -27,8 +44,6 @@ function StudDocsDashboard(props) {
             component={LinkDom}
           >
             {agent.firstname}
-            {', '}
-            {agent.lastname}
           </Link>
         </Typography>
         <Typography variant="body2">{agent.email}</Typography>
@@ -49,8 +64,6 @@ function StudDocsDashboard(props) {
             component={LinkDom}
           >
             {editor.firstname}
-            {', '}
-            {editor.lastname}
           </Link>
         </Typography>
         <Typography variant="body2">{editor.email}</Typography>
@@ -71,43 +84,42 @@ function StudDocsDashboard(props) {
         title={props.student.archiv === true ? 'Closed' : 'Open'}
       >
         <TableCell align="left">
-          {props.isDashboard && user.role !== 'Editor' && (
-            <DropdownButton
-              size="sm"
-              className="mx-0"
-              title="Option"
-              variant="primary"
-              id={`dropdown-variants-${props.student._id}`}
-              key={props.student._id}
-            >
-              <Dropdown.Item
-                eventKey="5"
-                onClick={() =>
-                  updateStudentArchivStatus(props.student._id, true)
-                }
+          {user.role !== 'Editor' && (
+            <>
+              <Button
+                id="basic-button"
+                variant="contained"
+                size="small"
+                aria-controls={open ? 'basic-menu' : undefined}
+                aria-haspopup="true"
+                aria-expanded={open ? 'true' : undefined}
+                onClick={handleClick}
               >
-                Move to Archiv
-              </Dropdown.Item>
-            </DropdownButton>
-          )}
-          {props.isArchivPage && user.role !== 'Editor' && (
-            <DropdownButton
-              size="sm"
-              className="mx-0"
-              title="Option"
-              variant="primary"
-              id={`dropdown-variants-${props.student._id}`}
-              key={props.student._id}
-            >
-              <Dropdown.Item
-                eventKey="6"
-                onClick={() =>
-                  updateStudentArchivStatus(props.student._id, false)
-                }
+                {t('Option')}
+              </Button>
+              <Menu
+                id={`dropdown-variants-${props.student._id}`}
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleClose}
+                MenuListProps={{
+                  'aria-labelledby': 'basic-button'
+                }}
               >
-                Move to Active
-              </Dropdown.Item>
-            </DropdownButton>
+                <MenuItem
+                  onClick={() =>
+                    updateStudentArchivStatus(
+                      props.student._id,
+                      props.isDashboard || false
+                    )
+                  }
+                >
+                  {props.isDashboard
+                    ? t('Move to Archiv')
+                    : t('Move to Active')}
+                </MenuItem>
+              </Menu>
+            </>
           )}
         </TableCell>
         <TableCell align="left">

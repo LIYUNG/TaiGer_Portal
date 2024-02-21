@@ -34,7 +34,9 @@ import {
   isCVFinished,
   application_deadline_calculator,
   is_TaiGer_Student,
-  is_TaiGer_Admin
+  is_TaiGer_Admin,
+  isProgramSubmitted,
+  isProgramDecided
 } from '../Utils/checking-functions';
 import OverlayButton from '../../components/Overlay/OverlayButton';
 import Banner from '../../components/Banner/Banner';
@@ -606,7 +608,7 @@ function StudentApplicationsTableTemplate(props) {
               </Link>
             </TableCell>
             <TableCell>
-              {application.closed === 'O' ? (
+              {isProgramSubmitted(application) ? (
                 <Typography key={application_idx}>Close</Typography>
               ) : (
                 <Typography key={application_idx}>
@@ -631,10 +633,10 @@ function StudentApplicationsTableTemplate(props) {
                 </Select>
               </FormControl>
             </TableCell>
-            {application.decided === 'O' ? (
+            {isProgramDecided(application) ? (
               <TableCell>
                 {/* When all thread finished */}
-                {application.closed === 'O' ||
+                {isProgramSubmitted(application) ||
                 (is_program_ml_rl_essay_ready(application) &&
                   isCVFinished(studentApplicationsTableTemplateState.student) &&
                   (!appConfig.vpdEnable ||
@@ -677,7 +679,8 @@ function StudentApplicationsTableTemplate(props) {
             ) : (
               <TableCell></TableCell>
             )}
-            {application.decided === 'O' && application.closed === 'O' ? (
+            {isProgramDecided(application) &&
+            isProgramSubmitted(application) ? (
               <TableCell>
                 <FormControl fullWidth>
                   <Select
@@ -723,7 +726,7 @@ function StudentApplicationsTableTemplate(props) {
 
             <TableCell>
               <p className="mb-1 text-info" key={application_idx}>
-                {application.closed === 'O'
+                {isProgramSubmitted(application)
                   ? '-'
                   : application.programId.application_deadline
                   ? getNumberOfDays(

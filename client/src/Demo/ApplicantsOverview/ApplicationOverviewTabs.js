@@ -16,7 +16,11 @@ import PropTypes from 'prop-types';
 import { Link as LinkDom } from 'react-router-dom';
 import { matchSorter } from 'match-sorter';
 
-import { programs_refactor, is_TaiGer_role } from '../Utils/checking-functions';
+import {
+  programs_refactor,
+  is_TaiGer_role,
+  isProgramDecided
+} from '../Utils/checking-functions';
 import {
   Search,
   SearchIconWrapper,
@@ -29,6 +33,7 @@ import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
 import { CustomTabPanel, a11yProps } from '../../components/Tabs';
 import { useTranslation } from 'react-i18next';
+import ProgramUpdateStatusTable from './ProgramUpdateStatusTable';
 
 function fuzzyTextFilterFn(rows, id, filterValue) {
   return matchSorter(rows, filterValue, { keys: [(row) => row.values[id]] });
@@ -230,6 +235,11 @@ function ApplicationOverviewTabs(props) {
           >
             <Tab label={t('Active Student List')} {...a11yProps(0)} />
             <Tab label={t('Application Overview')} {...a11yProps(1)} />
+            <Tab label={t('Programs Update Status')} {...a11yProps(2)} />
+            <Tab
+              label={t('Decided Programs Update Status')}
+              {...a11yProps(3)}
+            />
           </Tabs>
         </Box>
         <CustomTabPanel value={value} index={0}>
@@ -244,6 +254,20 @@ function ApplicationOverviewTabs(props) {
           <AdvancedTable
             columns={applicationFileOverviewHeader}
             data={applications_arr}
+          />
+        </CustomTabPanel>
+        <CustomTabPanel value={value} index={2}>
+          <ProgramUpdateStatusTable
+            columns={applicationFileOverviewHeader}
+            data={applications_arr}
+          />
+        </CustomTabPanel>
+        <CustomTabPanel value={value} index={3}>
+          <ProgramUpdateStatusTable
+            columns={applicationFileOverviewHeader}
+            data={applications_arr.filter((application) =>
+              isProgramDecided(application)
+            )}
           />
         </CustomTabPanel>
       </Box>

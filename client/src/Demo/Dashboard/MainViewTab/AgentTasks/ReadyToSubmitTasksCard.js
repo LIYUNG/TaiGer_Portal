@@ -19,7 +19,8 @@ import {
   is_the_uni_assist_vpd_uploaded,
   is_program_closed,
   application_deadline_calculator,
-  application_date_calculator
+  application_date_calculator,
+  isProgramDecided
 } from '../../../Utils/checking-functions';
 import DEMO from '../../../../store/constant';
 import { useAuth } from '../../../../components/AuthProvider';
@@ -31,7 +32,7 @@ const ReadyToSubmitTasks = (props) => {
       {/* check program reday to be submitted */}
       {props.student.applications.map(
         (application, i) =>
-          application.decided === 'O' &&
+          isProgramDecided(application) &&
           isCVFinished(props.student) &&
           is_program_ml_rl_essay_ready(application) &&
           is_the_uni_assist_vpd_uploaded(application) &&

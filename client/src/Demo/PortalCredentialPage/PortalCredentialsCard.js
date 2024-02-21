@@ -23,6 +23,7 @@ import DEMO from '../../store/constant';
 import { appConfig } from '../../config';
 import Loading from '../../components/Loading/Loading';
 import ModalNew from '../../components/Modal';
+import { isProgramDecided } from '../Utils/checking-functions';
 
 export default function PortalCredentialsCard(props) {
   const { t } = useTranslation();
@@ -279,7 +280,7 @@ export default function PortalCredentialsCard(props) {
 
         {statedata.applications.map((application, i) => (
           <Fragment key={i}>
-            {application.decided === 'O' && (
+            {isProgramDecided(application) && (
               <>
                 <Divider></Divider>
                 <Grid container spacing={2}>

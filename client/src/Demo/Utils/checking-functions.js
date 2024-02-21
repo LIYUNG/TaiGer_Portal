@@ -672,10 +672,10 @@ export const isEnglishOK = (program, student) => {
 };
 
 export const application_date_calculator = (student, application) => {
-  if (application.closed === 'O') {
+  if (isProgramSubmitted(application)) {
     return 'CLOSE';
   }
-  if (application.closed === 'X') {
+  if (isProgramWithdraw(application)) {
     return 'WITHDRAW';
   }
   const { application_start, semester } = application.programId;
@@ -1146,6 +1146,18 @@ export const is_program_ml_rl_essay_ready = (application) => {
   return true;
 };
 
+export const isProgramDecided = (application) => {
+  return application.decided === 'O';
+};
+
+export const isProgramSubmitted = (application) => {
+  return application.closed === 'O';
+};
+
+export const isProgramWithdraw = (application) => {
+  return application.closed === 'X';
+};
+
 export const is_program_closed = (application) => {
   if (application.closed === 'O' || application.closed === 'X') {
     return true;
@@ -1521,6 +1533,8 @@ export const programs_refactor = (students) => {
           toefl: application.programId.toefl,
           ielts: application.programId.ielts,
           testdaf: application.programId.testdaf,
+          whoupdated: application.programId.whoupdated,
+          updatedAt: application.programId.updatedAt,
           program_id: application.programId._id.toString(),
           application_deadline: application_deadline_calculator(
             student,

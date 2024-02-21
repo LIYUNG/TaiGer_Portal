@@ -29,7 +29,9 @@ import {
   num_uni_assist_vpd_needed,
   num_uni_assist_vpd_uploaded,
   to_register_application_portals,
-  needUpdateCourseSelection
+  needUpdateCourseSelection,
+  isProgramSubmitted,
+  isProgramDecided
 } from '../../../Utils/checking-functions';
 import { profile_list, statuses } from '../../../Utils/contants';
 import DEMO from '../../../../store/constant';
@@ -485,7 +487,7 @@ function AgentReviewing(props) {
               props.student.applications.filter((application) =>
                 application.doc_modification_thread?.some(
                   (thread) =>
-                    application.decided === 'O' &&
+                    isProgramDecided(application) &&
                     thread.doc_thread_id.isFinalVersion &&
                     thread.doc_thread_id.file_type === 'ML'
                 )
@@ -496,7 +498,7 @@ function AgentReviewing(props) {
               props.student.applications.filter((application) =>
                 application.doc_modification_thread?.some(
                   (thread) =>
-                    application.decided === 'O' &&
+                    isProgramDecided(application) &&
                     thread.doc_thread_id.file_type === 'ML'
                 )
               ).length
@@ -515,7 +517,7 @@ function AgentReviewing(props) {
               props.student.applications.filter((application) =>
                 application.doc_modification_thread?.some(
                   (thread) =>
-                    application.decided === 'O' &&
+                    isProgramDecided(application) &&
                     thread.doc_thread_id.isFinalVersion &&
                     (thread.doc_thread_id.file_type.includes('RL') ||
                       thread.doc_thread_id.file_type.includes('Recommendation'))
@@ -527,7 +529,7 @@ function AgentReviewing(props) {
               props.student.applications.filter((application) =>
                 application.doc_modification_thread?.some(
                   (thread) =>
-                    application.decided === 'O' &&
+                    isProgramDecided(application) &&
                     (thread.doc_thread_id.file_type.includes('RL') ||
                       thread.doc_thread_id.file_type.includes('Recommendation'))
                 )
@@ -547,7 +549,7 @@ function AgentReviewing(props) {
               props.student.applications.filter((application) =>
                 application.doc_modification_thread?.some(
                   (thread) =>
-                    application.decided === 'O' &&
+                    isProgramDecided(application) &&
                     thread.doc_thread_id.isFinalVersion &&
                     thread.doc_thread_id.file_type.includes('Essay')
                 )
@@ -558,7 +560,7 @@ function AgentReviewing(props) {
               props.student.applications.filter((application) =>
                 application.doc_modification_thread?.some(
                   (thread) =>
-                    application.decided === 'O' &&
+                    isProgramDecided(application) &&
                     thread.doc_thread_id.file_type.includes('Essay')
                 )
               ).length
@@ -628,8 +630,8 @@ function AgentReviewing(props) {
           {
             props.student.applications.filter(
               (application) =>
-                application.closed === 'O' &&
-                application.decided === 'O' &&
+                isProgramSubmitted(application) &&
+                isProgramDecided(application) &&
                 application.admission === '-'
             ).length
           }
@@ -637,8 +639,8 @@ function AgentReviewing(props) {
           {
             props.student.applications.filter(
               (application) =>
-                application.closed === 'O' &&
-                application.decided === 'O' &&
+                isProgramSubmitted(application) &&
+                isProgramDecided(application) &&
                 application.admission === 'O'
             ).length
           }
@@ -646,8 +648,8 @@ function AgentReviewing(props) {
           {
             props.student.applications.filter(
               (application) =>
-                application.closed === 'O' &&
-                application.decided === 'O' &&
+                isProgramSubmitted(application) &&
+                isProgramDecided(application) &&
                 application.admission === 'X'
             ).length
           }

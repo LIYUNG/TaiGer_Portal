@@ -21,7 +21,8 @@ import { BASE_URL } from '../../api/request';
 import {
   is_TaiGer_AdminAgent,
   DocumentStatus,
-  check_student_needs_uni_assist
+  check_student_needs_uni_assist,
+  isProgramDecided
 } from '../Utils/checking-functions';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
@@ -443,7 +444,7 @@ function UniAssistListCard(props) {
       <Box key={i}>
         {application.programId.uni_assist &&
           application.programId.uni_assist.includes('Yes') &&
-          application.decided === 'O' && (
+          isProgramDecided(application) && (
             <Grid container spacing={2}>
               <Grid item xs={12} sx={{ display: 'flex' }}>
                 <Typography variant="body1" sx={{ mr: 2 }}>

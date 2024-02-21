@@ -379,7 +379,9 @@ export const deleteAMessageInCommunicationThread = (
 
 export const getSurveyInputs = (studentId, programId, fileType) =>
   request.get(
-    `/api/document-threads/survey-input/${studentId}/${programId}/${fileType}`
+    `/api/document-threads/survey-input/${studentId}/${fileType}/${
+      programId || ''
+    }`
   );
 export const getSurveyInputsByThreadId = (documentsthreadId) =>
   request.get(

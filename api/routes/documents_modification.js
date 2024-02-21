@@ -90,7 +90,7 @@ router
   );
 
 router
-  .route('/survey-input/:studentId/:programId?/:fileType?')
+  .route('/survey-input/:studentId/:fileType/:programId?')
   .get(
     getMessagesRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),

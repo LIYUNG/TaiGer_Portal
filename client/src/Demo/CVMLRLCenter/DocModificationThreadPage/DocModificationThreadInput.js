@@ -154,7 +154,8 @@ const SurveyForm = ({
   useEditSwitch = false,
   defaultEditState = true
 }) => {
-  const [editMode, setEditMode] = useState(defaultEditState);
+  // if not title provided -> not toggle switch -> must be editable
+  const [editMode, setEditMode] = useState(!title || defaultEditState);
   const [collapseOpen, setCollapseOpen] = useState(true);
 
   const handleTitleClick = (e) => {
@@ -237,6 +238,16 @@ const SurveyForm = ({
             </Grid>
           ))}
         </Collapse>
+        {!title && (
+          <Grid item sx={{ marginLeft: 'auto' }}>
+            <Typography variant="body2">
+              Last Modified:{' '}
+              {surveyInputs?.updatedAt
+                ? convertDate(surveyInputs?.updatedAt)
+                : '[NEW]'}
+            </Typography>
+          </Grid>
+        )}
       </Grid>
     </Box>
   );
@@ -362,7 +373,6 @@ function DocModificationThreadInput() {
       isSaving: false,
       isResetting: false,
       isSubmitting: false,
-      student_input: [],
       editor_requirements: {},
       data: '',
       res_status: 0,
@@ -377,7 +387,7 @@ function DocModificationThreadInput() {
         const { success, data: threadData, status } = threadResp.data;
         const surveyResp = await getSurveyInputs(
           threadData.student_id._id,
-          threadData.program_id._id,
+          threadData?.program_id?._id,
           threadData.file_type
         );
         const { data: surveyInputs } = surveyResp.data;
@@ -390,7 +400,7 @@ function DocModificationThreadInput() {
             surveyContent: prepQuestions(threadData)
           };
         }
-        if (!surveyInputs?.specific) {
+        if (threadData?.program_id?._id && !surveyInputs?.specific) {
           surveyInputs.specific = {
             studentId: threadData.student_id._id,
             programId: threadData.program_id._id,
@@ -398,6 +408,7 @@ function DocModificationThreadInput() {
             surveyContent: prepQuestions(threadData, true)
           };
         }
+        console.log('surveyInputs', surveyInputs);
 
         if (success) {
           setDocModificationThreadInputState((prevState) => ({
@@ -604,8 +615,10 @@ function DocModificationThreadInput() {
     }
 
     const studentInput = [
-      ...docModificationThreadInputState.surveyInputs.general.surveyContent,
-      ...docModificationThreadInputState.surveyInputs.specific.surveyContent
+      ...(docModificationThreadInputState.surveyInputs.general?.surveyContent ||
+        []),
+      ...(docModificationThreadInputState.surveyInputs.specific
+        ?.surveyContent || [])
     ];
 
     const response = await cvmlrlAi2({
@@ -763,33 +776,34 @@ function DocModificationThreadInput() {
             </Typography>
           </Grid>
 
-          {/* {docModificationThreadInputState?.thread?.file_type !== 'ML' && (
-
-          )} */}
-
           <Grid item xs={12}>
             <SurveyForm
-              title="General"
+              title={
+                docModificationThreadInputState?.thread?.file_type === 'ML'
+                  ? 'General'
+                  : null
+              }
               surveyInputs={
                 docModificationThreadInputState.surveyInputs.general
               }
               surveyType="general"
               onChange={onChange}
               useEditSwitch={true}
-              defaultEditState={false}
             ></SurveyForm>
           </Grid>
 
-          <Grid item xs={12}>
-            <SurveyForm
-              title="Program"
-              surveyInputs={
-                docModificationThreadInputState.surveyInputs.specific
-              }
-              surveyType="program"
-              onChange={onChange}
-            ></SurveyForm>
-          </Grid>
+          {docModificationThreadInputState?.thread?.file_type === 'ML' && (
+            <Grid item xs={12}>
+              <SurveyForm
+                title="Program"
+                surveyInputs={
+                  docModificationThreadInputState.surveyInputs?.specific
+                }
+                surveyType="program"
+                onChange={onChange}
+              ></SurveyForm>
+            </Grid>
+          )}
 
           <Grid
             item

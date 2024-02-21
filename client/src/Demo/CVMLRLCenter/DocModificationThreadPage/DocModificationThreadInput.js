@@ -3,6 +3,7 @@ import { Link as LinkDom, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import {
+  Alert,
   Grid,
   Box,
   Breadcrumbs,
@@ -254,7 +255,7 @@ const SurveyForm = ({
 };
 
 const InputGenerator = ({
-  editor_requirements,
+  editorRequirements,
   data,
   isGenerating,
   isGenerated,
@@ -278,7 +279,7 @@ const InputGenerator = ({
                     <Checkbox
                       name="useProgramRequirementData"
                       type="checkbox"
-                      checked={editor_requirements?.useProgramRequirementData}
+                      checked={editorRequirements?.useProgramRequirementData}
                       onChange={onChange}
                       sx={{ '& .MuiSvgIcon-root': { fontSize: '1.5rem' } }}
                     />
@@ -367,13 +368,12 @@ function DocModificationThreadInput() {
   const [docModificationThreadInputState, setDocModificationThreadInputState] =
     useState({
       error: '',
+      isUnchangeAlert: false,
+      isChanged: false,
       isGenerating: false,
       isGenerated: false,
-      isFirstDataArrived: false,
-      isSaving: false,
-      isResetting: false,
       isSubmitting: false,
-      editor_requirements: {},
+      editorRequirements: {},
       data: '',
       res_status: 0,
       res_modal_status: 0,
@@ -391,8 +391,6 @@ function DocModificationThreadInput() {
           threadData.file_type
         );
         const { data: surveyInputs } = surveyResp.data;
-
-        // TODO: prepQuestion if not defined
         if (!surveyInputs?.general) {
           surveyInputs.general = {
             studentId: threadData.student_id._id,
@@ -408,7 +406,6 @@ function DocModificationThreadInput() {
             surveyContent: prepQuestions(threadData, true)
           };
         }
-        console.log('surveyInputs', surveyInputs);
 
         if (success) {
           setDocModificationThreadInputState((prevState) => ({
@@ -417,7 +414,7 @@ function DocModificationThreadInput() {
             thread: threadData,
             surveyInputs: surveyInputs,
             document_requirements: {},
-            editor_requirements: {},
+            editorRequirements: {},
             isLoaded: true,
             documentsthreadId: documentsthreadId,
             res_status: status
@@ -470,6 +467,7 @@ function DocModificationThreadInput() {
     if (survey === 'general') {
       setDocModificationThreadInputState((prevState) => ({
         ...prevState,
+        isChanged: true,
         surveyInputs: {
           ...prevState.surveyInputs,
           general: surveyInput
@@ -492,8 +490,8 @@ function DocModificationThreadInput() {
       const checked = e.target.checked;
       setDocModificationThreadInputState((prevState) => ({
         ...prevState,
-        editor_requirements: {
-          ...docModificationThreadInputState.editor_requirements,
+        editorRequirements: {
+          ...docModificationThreadInputState.editorRequirements,
           [name]: checked
         },
         document_requirements: checked
@@ -506,8 +504,8 @@ function DocModificationThreadInput() {
     const ans = e.target.value;
     setDocModificationThreadInputState((prevState) => ({
       ...prevState,
-      editor_requirements: {
-        ...prevState.editor_requirements,
+      editorRequirements: {
+        ...prevState.editorRequirements,
         [name]: ans
       }
     }));
@@ -521,6 +519,10 @@ function DocModificationThreadInput() {
   };
 
   const submitInput = async (surveyInputs, informEditor) => {
+    setDocModificationThreadInputState((prevState) => ({
+      ...prevState,
+      isSubmitting: true
+    }));
     try {
       let success = true;
       let status = {};
@@ -542,8 +544,9 @@ function DocModificationThreadInput() {
         setDocModificationThreadInputState((prevState) => ({
           ...prevState,
           success,
-          isSaving: false,
           isSubmitting: false,
+          isChanged: false,
+          isUnchangeAlert: false,
           surveyInputs: {
             general: {
               ...docModificationThreadInputState.surveyInputs.general,
@@ -561,8 +564,9 @@ function DocModificationThreadInput() {
         setDocModificationThreadInputState((prevState) => ({
           ...prevState,
           isLoaded: true,
-          isSaving: false,
           isSubmitting: false,
+          isChanged: false,
+          isUnchangeAlert: false,
           res_status: status
         }));
       }
@@ -570,27 +574,31 @@ function DocModificationThreadInput() {
       setDocModificationThreadInputState((prevState) => ({
         ...prevState,
         isLoaded: true,
-        isSaving: false,
         isSubmitting: false,
+        isChanged: false,
+        isUnchangeAlert: false,
         error,
         res_status: 500
       }));
     }
   };
 
-  const onSubmitInput = (surveyInputs, informEditor) => {
-    if (informEditor) {
+  const onSubmit = () => {
+    if (!docModificationThreadInputState.isChanged) {
+      console.log('No change');
+      // Scroll to the alert smoothly
+      const alertElement = document.getElementById('alert-message');
+      if (alertElement) {
+        alertElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+
       setDocModificationThreadInputState((prevState) => ({
         ...prevState,
-        isSubmitting: true
+        isUnchangeAlert: true
       }));
-    } else {
-      setDocModificationThreadInputState((prevState) => ({
-        ...prevState,
-        isSaving: true
-      }));
+      return;
     }
-    submitInput(surveyInputs, informEditor);
+    setModalOpen(true);
   };
 
   const onGenerate = async () => {
@@ -627,7 +635,7 @@ function DocModificationThreadInput() {
         docModificationThreadInputState.document_requirements
       ),
       editor_requirements: JSON.stringify(
-        docModificationThreadInputState.editor_requirements
+        docModificationThreadInputState.editorRequirements
       ),
       student_id:
         docModificationThreadInputState.thread.student_id._id.toString(),
@@ -640,7 +648,6 @@ function DocModificationThreadInput() {
         ...prevState,
         isLoaded: true,
         data: prevState.data + ' \n ================================= \n',
-        isFirstDataArrived: false,
         isGenerating: false,
         isGenerated: true,
         res_modal_status: response.status
@@ -658,7 +665,6 @@ function DocModificationThreadInput() {
         }
         setDocModificationThreadInputState((prevState) => ({
           ...prevState,
-          isFirstDataArrived: true,
           data: prevState.data + value
         }));
       }
@@ -666,7 +672,6 @@ function DocModificationThreadInput() {
         ...prevState,
         isLoaded: true,
         data: prevState.data + ' \n ================================= \n',
-        isFirstDataArrived: false,
         isGenerating: false,
         isGenerated: true,
         res_modal_status: response.status
@@ -702,17 +707,16 @@ function DocModificationThreadInput() {
 
   return (
     <Box>
-      {/* { title, description, onYes, onNo, onCancel } */}
       <ConfirmationModal
         isModalOpen={isModalOpen}
         setModalOpen={setModalOpen}
         title="Notify Editor"
         description="Do you want to notify the editors about the changes?"
         onYes={() =>
-          onSubmitInput(docModificationThreadInputState.surveyInputs, true)
+          submitInput(docModificationThreadInputState.surveyInputs, true)
         }
         onNo={() =>
-          onSubmitInput(docModificationThreadInputState.surveyInputs, false)
+          submitInput(docModificationThreadInputState.surveyInputs, false)
         }
       />
       <Breadcrumbs aria-label="breadcrumb">
@@ -776,6 +780,16 @@ function DocModificationThreadInput() {
             </Typography>
           </Grid>
 
+          {docModificationThreadInputState.isUnchangeAlert && (
+            <Grid item xs={12}>
+              <Alert id="alert-message" severity="error" sx={{ mt: 2 }}>
+                <Typography variant="body1" fontWeight="bold">
+                  {t('No changes made. Please make changes before submitting.')}
+                </Typography>
+              </Alert>
+            </Grid>
+          )}
+
           <Grid item xs={12}>
             <SurveyForm
               title={
@@ -819,7 +833,7 @@ function DocModificationThreadInput() {
               variant="contained"
               color="primary"
               disabled={docModificationThreadInputState.isSubmitting}
-              onClick={() => setModalOpen(true)}
+              onClick={onSubmit}
             />
           </Grid>
         </Grid>
@@ -829,8 +843,8 @@ function DocModificationThreadInput() {
       {is_TaiGer_role(user) && (
         <Card sx={{ p: 2, mb: 2 }}>
           <InputGenerator
-            editor_requirements={
-              docModificationThreadInputState.editor_requirements
+            editorRequirements={
+              docModificationThreadInputState.editorRequirements
             }
             data={docModificationThreadInputState.data}
             isGenerating={docModificationThreadInputState.isGenerating}

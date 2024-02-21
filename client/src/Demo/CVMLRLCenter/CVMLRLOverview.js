@@ -208,33 +208,24 @@ function CVMLRLOverview(props) {
     (open_task) =>
       open_task.show &&
       !open_task.isFinalVersion &&
-      is_new_message_status(user, open_task) &&
-        (
-            (open_task.file_type === "Essay" && open_task.outsourced_user_id === user.id) ||
-            open_task.file_type !== "Essay"
-        )
+      is_new_message_status(user, open_task) 
+      // open_task.file_type !== "Essay"
   );
   const cvmlrl_followup_v2 = open_tasks_arr.filter(
     (open_task) =>
       open_task.show &&
       !open_task.isFinalVersion &&
       is_pending_status(user, open_task) &&
-      open_task.latest_message_left_by_id !== '' &&
-        (
-            (open_task.file_type === "Essay" && open_task.outsourced_user_id === user.id) ||
-            open_task.file_type !== "Essay"
-        )
+      open_task.latest_message_left_by_id !== '' 
+      // open_task.file_type !== "Essay"
   );
   const cvmlrl_pending_progress_v2 = open_tasks_arr.filter(
     (open_task) =>
       open_task.show &&
       !open_task.isFinalVersion &&
       is_pending_status(user, open_task) &&
-      open_task.latest_message_left_by_id === '' &&
-        (
-            (open_task.file_type === "Essay" && open_task.outsourced_user_id === user.id) ||
-            open_task.file_type !== "Essay"
-        )
+      open_task.latest_message_left_by_id === '' 
+      // open_task.file_type !== "Essay"
   );
   const cvmlrl_closed_v2 = open_tasks_arr.filter(
     (open_task) => open_task.show && open_task.isFinalVersion

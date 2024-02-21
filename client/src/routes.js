@@ -146,6 +146,10 @@ const AgentsAssignment = React.lazy(() =>
 const EditorsAssignment = React.lazy(() =>
   import('./Demo/AssignmentAgentsEditors/AssignEditors/index')
 );
+
+// const EssayWritersAssignment = React.lazy(() =>
+//   import('./Demo/AssignmentAgentsEditors/AssignEssayWriters/index')
+// );
 // TODO: conditional configuration.
 const routes = [
   {
@@ -162,6 +166,12 @@ const routes = [
         errorElement: <DefaultErrorPage />,
         loader: getStudentsLoader,
         element: <EditorsAssignment />
+      },
+      {
+        path: 'essay-writers',
+        errorElement: <DefaultErrorPage />,
+        loader: getStudentsLoader,
+        element: <EssayWritersAssignment />
       }
     ]
   },

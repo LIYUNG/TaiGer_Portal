@@ -30,10 +30,16 @@ const {
   isNotArchiv,
   CVDeadline_Calculator
 } = require('../constants');
+const {
+  informEditorNewStudentEmail,
+  informStudentTheirEditorEmail,
+  informAgentStudentAssignedEmail
+} = require('../services/email');
 
 const { AWS_S3_BUCKET_NAME, API_ORIGIN } = require('../config');
 const Permission = require('../models/Permission');
 const { s3 } = require('../aws/index');
+const mongoose = require('mongoose');
 
 const ThreadS3GarbageCollector = async () => {
   try {
@@ -1833,6 +1839,129 @@ const deleteAMessageInThread = asyncHandler(async (req, res) => {
   await student.save();
 });
 
+// () TODO email : agent better notification
+// () TODO email : student better notification
+const assignEssayWritersToEssayTask = asyncHandler(async (req, res, next) => {
+  const {
+    params: { messagesThreadId },
+    body: editorsId
+  } = req;
+
+  const keys = Object.keys(editorsId);
+  const essayDocumentThreads = await Documentthread.find({
+        _id: messagesThreadId,
+        file_type: 'Essay'
+      });
+  // TODO: data validation for studentId, editorsId
+  let updated_editor_id = [];
+  let before_change_editor_arr = essayDocumentThreads.outsourced_user_id;
+  let to_be_informed_editors = [];
+  let updated_editor = [];
+  for (let i = 0; i < keys.length; i += 1) {
+    if (editorsId[keys[i]]) {
+      updated_editor_id.push(keys[i]);
+      
+      const editor = await Editor.findById(keys[i]);
+      updated_editor.push({
+        firstname: editor.firstname,
+        lastname: editor.lastname,
+        email: editor.email
+      });
+      if (before_change_editor_arr && !before_change_editor_arr.includes(keys[i])) {
+        to_be_informed_editors.push({
+          firstname: editor.firstname,
+          lastname: editor.lastname,
+          archiv: editor.archiv,
+          email: editor.email
+        });
+      } else if (!before_change_editor_arr) {
+        to_be_informed_editors.push({
+          firstname: editor.firstname,
+          lastname: editor.lastname,
+          archiv: editor.archiv,
+          email: editor.email
+        });
+      }
+    }
+  }
+  // student.notification.isRead_new_editor_assigned = false;
+  for (const documentThread of essayDocumentThreads) {
+    // Update the outsourced_user_id field for each document
+    documentThread.outsourced_user_id = updated_editor_id;
+    // Save the changes to the document
+    await documentThread.save();
+  }
+
+  const studentId = essayDocumentThreads[0].student_id
+  const student = await Student.findById(studentId)
+  const student_upated = await Student.findById(studentId)
+    .populate('applications.programId agents editors')
+    .populate(
+      'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
+      '-messages'
+    )
+    .exec();
+
+  res.status(200).send({ success: true, essay_writers: to_be_informed_editors });
+  
+  console.log('student:', student)
+  console.log('essayDocumentThreads[0].student_id:', essayDocumentThreads[0].student_id.toString())
+  for (let i = 0; i < to_be_informed_editors.length; i += 1) {
+    if (isNotArchiv(student)) {
+      if (isNotArchiv(to_be_informed_editors[i])) {
+        await informEditorNewStudentEmail(
+          {
+            firstname: to_be_informed_editors[i].firstname,
+            lastname: to_be_informed_editors[i].lastname,
+            address: to_be_informed_editors[i].email
+          },
+          {
+            std_firstname: student.firstname,
+            std_lastname: student.lastname,
+            std_id: student._id.toString()
+          }
+        );
+      }
+    }
+  }
+  // TODO: inform Agent for assigning editor.
+  for (let i = 0; i < student_upated.agents.length; i += 1) {
+    if (isNotArchiv(student)) {
+      if (isNotArchiv(student_upated.agents[i])) {
+        await informAgentStudentAssignedEmail(
+          {
+            firstname: student_upated.agents[i].firstname,
+            lastname: student_upated.agents[i].lastname,
+            address: student_upated.agents[i].email
+          },
+          {
+            std_firstname: student.firstname,
+            std_lastname: student.lastname,
+            std_id: student._id.toString(),
+            editors: student_upated.editors
+          }
+        );
+      }
+    }
+  }
+
+  if (updated_editor.length !== 0) {
+    if (isNotArchiv(student)) {
+      await informStudentTheirEditorEmail(
+        {
+          firstname: student.firstname,
+          lastname: student.lastname,
+          address: student.email
+        },
+        {
+          editors: updated_editor
+        }
+      );
+    }
+  }
+  next();
+});
+
 module.exports = {
   ThreadS3GarbageCollector,
   getAllCVMLRLOverview,
@@ -1850,5 +1979,6 @@ module.exports = {
   SetStatusMessagesThread,
   deleteGeneralMessagesThread,
   deleteProgramSpecificMessagesThread,
-  deleteAMessageInThread
+  deleteAMessageInThread,
+  assignEssayWritersToEssayTask
 };

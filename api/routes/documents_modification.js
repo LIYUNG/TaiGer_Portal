@@ -43,11 +43,18 @@ const {
   postMessages,
   getStudentInput,
   putStudentInput,
-  resetStudentInput
+  resetStudentInput,
+  assignEssayWritersToEssayTask
 } = require('../controllers/documents_modification');
 const {
   docThreadMultitenant_filter
 } = require('../middlewares/documentThreadMultitenantFilter');
+const {
+  permission_canAssignEditor_filter,
+  permission_canAssignAgent_filter,
+  permission_canAccessStudentDatabase_filter
+} = require('../middlewares/permission-filter');
+const { logAccess } = require('../utils/log/log');
 
 const router = Router();
 
@@ -113,6 +120,18 @@ router
   );
 
 router
+  .route('/:messagesThreadId/essay')
+  .post(
+    filter_archiv_user,
+    postMessagesRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Editor),
+    multitenant_filter,
+    permission_canAssignEditor_filter,
+    assignEssayWritersToEssayTask,
+    logAccess
+  );
+
+router
   .route('/:messagesThreadId/:studentId')
   .put(
     filter_archiv_user,
@@ -171,7 +190,7 @@ router
     MessagesImageThreadUpload,
     postImageInThread
   );
-
+ 
 // Multitenant-filter in call-back function
 router
   .route('/:messagesThreadId')

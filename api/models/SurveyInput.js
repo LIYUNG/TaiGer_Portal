@@ -6,9 +6,14 @@ const { documentType, STUDENT_INPUT_STATUS_E } = require('./Documentthread');
 const contentType = ['sentence', 'paragraph', 'essay'];
 
 const surveyInputSchema = new mongoose.Schema({
-  studentId: { type: ObjectId, required: true, ref: 'User' },
-  programId: { type: ObjectId, ref: 'Program' },
-  fileType: { type: String, required: true, enum: documentType },
+  studentId: { type: ObjectId, immutable: true, required: true, ref: 'User' },
+  programId: { type: ObjectId, immutable: true, ref: 'Program' },
+  fileType: {
+    type: String,
+    immutable: true,
+    required: true,
+    enum: documentType
+  },
   surveyContent: [
     {
       questionId: String,

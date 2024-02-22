@@ -326,19 +326,6 @@ const getSurveyInputDocuments = async (studentId, programId, fileType) => {
 const getSurveyInputs = asyncHandler(async (req, res, next) => {
   const {
     user,
-    params: { studentId, programId, fileType }
-  } = req;
-  const surveyDocument = await getSurveyInputDocuments(
-    studentId,
-    programId,
-    fileType
-  );
-  res.status(200).send({ success: true, data: surveyDocument });
-});
-
-const getSurveyInputsByThreadId = asyncHandler(async (req, res, next) => {
-  const {
-    user,
     params: { messagesThreadId }
   } = req;
   const threadDocument = await Documentthread.findById(messagesThreadId);
@@ -348,7 +335,13 @@ const getSurveyInputsByThreadId = asyncHandler(async (req, res, next) => {
     threadDocument.program_id,
     threadDocument.file_type
   );
-  res.status(200).send({ success: true, data: surveyDocument });
+
+  document = {
+    ...threadDocument.toObject(),
+    surveyInputs: surveyDocument
+  };
+
+  res.status(200).send({ success: true, data: document });
 });
 
 const postSurveyInput = asyncHandler(async (req, res, next) => {
@@ -1850,7 +1843,6 @@ module.exports = {
   ThreadS3GarbageCollector,
   getAllCVMLRLOverview,
   getSurveyInputs,
-  getSurveyInputsByThreadId,
   postSurveyInput,
   putSurveyInput,
   resetSurveyInput,

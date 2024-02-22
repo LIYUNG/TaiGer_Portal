@@ -40,7 +40,6 @@ import {
 } from '../../Utils/checking-functions';
 import {
   cvmlrlAi2,
-  getMessagThread,
   getSurveyInputs,
   putSurveyInput,
   postSurveyInput
@@ -371,6 +370,7 @@ function DocModificationThreadInput() {
   const [isModalOpen, setModalOpen] = useState(false);
   const [docModificationThreadInputState, setDocModificationThreadInputState] =
     useState({
+      documentsthreadId: documentsthreadId,
       error: '',
       isUnchangeAlert: false,
       isChanged: false,
@@ -387,14 +387,13 @@ function DocModificationThreadInput() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const threadResp = await getMessagThread(documentsthreadId);
+        const threadResp = await getSurveyInputs(documentsthreadId);
         const { success, data: threadData, status } = threadResp.data;
-        const surveyResp = await getSurveyInputs(
-          threadData.student_id._id,
-          threadData?.program_id?._id,
-          threadData.file_type
-        );
-        const { data: surveyInputs } = surveyResp.data;
+        const surveyInputs = threadData?.surveyInputs;
+
+        console.log('threadData', threadData);
+        console.log('surveyInputs', surveyInputs);
+
         if (!surveyInputs?.general) {
           surveyInputs.general = {
             studentId: threadData.student_id._id,
@@ -420,7 +419,7 @@ function DocModificationThreadInput() {
             document_requirements: {},
             editorRequirements: {},
             isLoaded: true,
-            documentsthreadId: documentsthreadId,
+
             res_status: status
           }));
         } else {
@@ -440,7 +439,7 @@ function DocModificationThreadInput() {
       }
     };
     fetchData();
-  }, []);
+  }, [documentsthreadId]);
 
   const ConfirmError = () => {
     setDocModificationThreadInputState((prevState) => ({

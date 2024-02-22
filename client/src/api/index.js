@@ -377,16 +377,9 @@ export const deleteAMessageInCommunicationThread = (
     `/api/communications/${student_id}/${communication_messageId}`
   );
 
-export const getSurveyInputs = (studentId, programId, fileType) =>
-  request.get(
-    `/api/document-threads/survey-input/${studentId}/${fileType}/${
-      programId || ''
-    }`
-  );
-export const getSurveyInputsByThreadId = (documentsthreadId) =>
-  request.get(
-    `/api/document-threads/survey-input/threads/${documentsthreadId}`
-  );
+export const getSurveyInputs = (documentsthreadId) =>
+  request.get(`/api/document-threads/${documentsthreadId}/survey-inputs`);
+
 export const putSurveyInput = (surveyId, input, informEditor) =>
   request.put(`/api/document-threads/survey-input/${surveyId}`, {
     input,

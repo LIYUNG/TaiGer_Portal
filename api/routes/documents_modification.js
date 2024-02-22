@@ -42,7 +42,6 @@ const {
   postImageInThread,
   postMessages,
   getSurveyInputs,
-  getSurveyInputsByThreadId,
   postSurveyInput,
   putSurveyInput,
   resetSurveyInput
@@ -64,16 +63,6 @@ router
     getAllCVMLRLOverview
   );
 
-// Survey input
-router
-  .route('/survey-input/threads/:messagesThreadId')
-  .get(
-    getMessagesRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
-    docThreadMultitenant_filter,
-    getSurveyInputsByThreadId
-  );
-
 router
   .route('/survey-input/:surveyInputId')
   .put(
@@ -87,15 +76,6 @@ router
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     surveyMultitenantFilter,
     resetSurveyInput
-  );
-
-router
-  .route('/survey-input/:studentId/:fileType/:programId?')
-  .get(
-    getMessagesRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
-    surveyMultitenantFilter,
-    getSurveyInputs
   );
 
 router
@@ -198,6 +178,16 @@ router
   );
 
 // Multitenant-filter in call-back function
+
+router
+  .route('/:messagesThreadId/survey-inputs')
+  .get(
+    getMessagesRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
+    docThreadMultitenant_filter,
+    getSurveyInputs
+  );
+
 router
   .route('/:messagesThreadId')
   .get(

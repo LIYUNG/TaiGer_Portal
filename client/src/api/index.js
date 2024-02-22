@@ -383,7 +383,10 @@ export const getSurveyInputs = (studentId, programId, fileType) =>
       programId || ''
     }`
   );
-
+export const getSurveyInputsByThreadId = (documentsthreadId) =>
+  request.get(
+    `/api/document-threads/survey-input/threads/${documentsthreadId}`
+  );
 export const putSurveyInput = (surveyId, input, informEditor) =>
   request.put(`/api/document-threads/survey-input/${surveyId}`, {
     input,

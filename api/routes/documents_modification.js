@@ -70,7 +70,7 @@ router
   .get(
     getMessagesRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
-    surveyMultitenantFilter,
+    docThreadMultitenant_filter,
     getSurveyInputsByThreadId
   );
 

@@ -151,10 +151,10 @@ const SurveyForm = ({
   surveyInputs,
   onChange,
   surveyType = 'program',
-  useEditSwitch = false
+  useEditButton = false
 }) => {
   // if not title provided -> not toggle switch -> must be editable
-  const [editMode, setEditMode] = useState(!title);
+  const [editMode, setEditMode] = useState(!title || !useEditButton);
   const [collapseOpen, setCollapseOpen] = useState(true);
 
   const handleTitleClick = (e) => {
@@ -188,7 +188,7 @@ const SurveyForm = ({
               <Grid item>
                 <Typography variant="h5">{title}</Typography>
               </Grid>
-              {useEditSwitch && (
+              {useEditButton && (
                 <Grid item>
                   <Button
                     size="small"
@@ -806,7 +806,7 @@ function DocModificationThreadInput() {
               }
               surveyType="general"
               onChange={onChange}
-              useEditSwitch={true}
+              useEditButton={true}
             ></SurveyForm>
           </Grid>
 

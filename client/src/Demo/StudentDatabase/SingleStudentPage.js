@@ -14,7 +14,8 @@ import {
   TableRow,
   TableCell,
   Breadcrumbs,
-  Alert
+  Alert,
+  TableContainer
 } from '@mui/material';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
@@ -286,6 +287,8 @@ function SingleStudentPage() {
             <Tabs
               value={value}
               onChange={handleChange}
+              variant="scrollable"
+              scrollButtons="auto"
               indicatorColor="primary"
               aria-label="basic tabs example"
             >
@@ -300,53 +303,57 @@ function SingleStudentPage() {
             </Tabs>
           </Box>
           <CustomTabPanel value={value} index={0}>
-            <Table size="small">
-              <TableHead>
-                <TableRow>
-                  <TableCell></TableCell>
-                  {is_TaiGer_Student(user) || is_TaiGer_Guest(user) ? (
-                    <></>
-                  ) : (
-                    <>
-                      <TableCell title={`Selected So far / Promised`}>
-                        #
-                      </TableCell>
-                    </>
-                  )}
-                  {programstatuslist.map((doc, index) => (
-                    <TableCell key={index}>{doc.name}</TableCell>
-                  ))}
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                <ApplicationProgress student={singleStudentPage.student} />
-              </TableBody>
-            </Table>
+            <TableContainer style={{ overflowX: 'auto' }}>
+              <Table size="small">
+                <TableHead>
+                  <TableRow>
+                    <TableCell></TableCell>
+                    {is_TaiGer_Student(user) || is_TaiGer_Guest(user) ? (
+                      <></>
+                    ) : (
+                      <>
+                        <TableCell title={`Selected So far / Promised`}>
+                          #
+                        </TableCell>
+                      </>
+                    )}
+                    {programstatuslist.map((doc, index) => (
+                      <TableCell key={index}>{doc.name}</TableCell>
+                    ))}
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  <ApplicationProgress student={singleStudentPage.student} />
+                </TableBody>
+              </Table>
+            </TableContainer>
           </CustomTabPanel>
           <CustomTabPanel value={value} index={1}>
-            <Table size="small">
-              <TableHead>
-                <TableRow>
-                  <TableCell></TableCell>
-                  <TableCell>First-, Last Name</TableCell>
-                  <TableCell>{t('Agents')}</TableCell>
-                  <TableCell>{t('Editors')}</TableCell>
-                  <TableCell>{t('Year')}</TableCell>
-                  <TableCell>{t('Semester')}</TableCell>
-                  <TableCell>{t('Degree')}</TableCell>
-                  {header.map((name, index) => (
-                    <TableCell key={index}>{t(`${name}`)}</TableCell>
-                  ))}
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                <StudentsAgentEditor
-                  student={singleStudentPage.student}
-                  submitUpdateAgentlist={submitUpdateAgentlist}
-                  submitUpdateEditorlist={submitUpdateEditorlist}
-                />
-              </TableBody>
-            </Table>
+            <TableContainer style={{ overflowX: 'auto' }}>
+              <Table size="small">
+                <TableHead>
+                  <TableRow>
+                    <TableCell></TableCell>
+                    <TableCell>First-, Last Name</TableCell>
+                    <TableCell>{t('Agents')}</TableCell>
+                    <TableCell>{t('Editors')}</TableCell>
+                    <TableCell>{t('Year')}</TableCell>
+                    <TableCell>{t('Semester')}</TableCell>
+                    <TableCell>{t('Degree')}</TableCell>
+                    {header.map((name, index) => (
+                      <TableCell key={index}>{t(`${name}`)}</TableCell>
+                    ))}
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  <StudentsAgentEditor
+                    student={singleStudentPage.student}
+                    submitUpdateAgentlist={submitUpdateAgentlist}
+                    submitUpdateEditorlist={submitUpdateEditorlist}
+                  />
+                </TableBody>
+              </Table>
+            </TableContainer>
             <BaseDocument_StudentView
               base_docs_link={base_docs_link}
               student={singleStudentPage.student}

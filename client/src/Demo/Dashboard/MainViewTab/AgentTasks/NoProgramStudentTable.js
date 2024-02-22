@@ -32,7 +32,7 @@ function NoProgramStudentTable(props) {
         student.agents.some((agent) => agent._id === user._id.toString())
       )
     ) && (
-      <Card sx={{ padding: 2, mb: 2 }}>
+      <Card sx={{ mb: 2 }}>
         <Alert severity="error">No Program Selected Yet</Alert>
         <Table size="small">
           <TableHead>

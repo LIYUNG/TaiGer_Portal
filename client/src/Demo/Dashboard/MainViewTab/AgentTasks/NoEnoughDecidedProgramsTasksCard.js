@@ -96,7 +96,7 @@ function NoEnoughDecidedProgramsTasksCard(props) {
       />
     ));
   return (
-    <Card>
+    <Card sx={{ mb: 2 }}>
       <Alert severity="error">{t('No Enough Program Decided Tasks')}:</Alert>
       <Table size="small">
         <TableHead>

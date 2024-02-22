@@ -113,7 +113,7 @@ function ReadyToSubmitTasksCard(props) {
     ));
 
   return (
-    <Card className="card-with-scroll" sx={{ padding: 2, mb: 2 }}>
+    <Card className="card-with-scroll" sx={{ mb: 2 }}>
       <Alert severity="error">
         {t('Ready To Submit Tasks')} ( ML/ RL/ Essay are finished. Please submit
         application asap.):

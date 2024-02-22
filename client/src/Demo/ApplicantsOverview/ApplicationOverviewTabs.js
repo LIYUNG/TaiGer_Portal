@@ -9,7 +9,8 @@ import {
   TableRow,
   Tabs,
   Tab,
-  Box
+  Box,
+  TableContainer
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import PropTypes from 'prop-types';
@@ -109,102 +110,110 @@ const AdvancedTable = ({ data, columns }) => {
           onChange={(e) => setFilterText(e.target.value)}
         />
       </Search>
-      <Table size="small">
-        <TableHead>
-          <TableRow>
-            {columns.map((column, idx) => (
-              <TableCell
-                key={idx}
-                onClick={() => handleSort(`${column.accessor}`)}
-              >
-                {column.Header}
-                <span>
-                  {sortConfig.key === column.accessor
-                    ? sortConfig.direction === 'ascending'
-                      ? ' 🔽'
-                      : sortConfig.direction === 'descending'
-                      ? ' 🔼'
-                      : ' ⮃'
-                    : ' ⮃'}
-                </span>
-              </TableCell>
-            ))}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {sortedData.map((item, index) => (
-            <React.Fragment key={index}>
-              <TableRow
-                title={
-                  item.decided === 'O'
-                    ? item.closed === 'O'
-                      ? 'Closed'
-                      : item.closed === 'X'
-                      ? 'Withdraw'
-                      : 'In Progress'
-                    : 'Not Decided Yet'
-                }
-              >
-                {columns.map((column, idx) =>
-                  column.accessor === 'firstname_lastname' ? (
-                    <TableCell key={idx} onClick={() => handleCollapse(index)}>
-                      <Link
-                        to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-                          item.student_id,
-                          '/profile'
-                        )}`}
-                        component={LinkDom}
-                        target="_blank"
+      <TableContainer style={{ overflowX: 'auto' }}>
+        <Table size="small">
+          <TableHead>
+            <TableRow>
+              {columns.map((column, idx) => (
+                <TableCell
+                  key={idx}
+                  onClick={() => handleSort(`${column.accessor}`)}
+                >
+                  {column.Header}
+                  <span>
+                    {sortConfig.key === column.accessor
+                      ? sortConfig.direction === 'ascending'
+                        ? ' 🔽'
+                        : sortConfig.direction === 'descending'
+                        ? ' 🔼'
+                        : ' ⮃'
+                      : ' ⮃'}
+                  </span>
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {sortedData.map((item, index) => (
+              <React.Fragment key={index}>
+                <TableRow
+                  title={
+                    item.decided === 'O'
+                      ? item.closed === 'O'
+                        ? 'Closed'
+                        : item.closed === 'X'
+                        ? 'Withdraw'
+                        : 'In Progress'
+                      : 'Not Decided Yet'
+                  }
+                >
+                  {columns.map((column, idx) =>
+                    column.accessor === 'firstname_lastname' ? (
+                      <TableCell
+                        key={idx}
+                        onClick={() => handleCollapse(index)}
                       >
-                        {item[column.accessor]}
-                      </Link>
-                    </TableCell>
-                  ) : (
-                    <TableCell key={idx} onClick={() => handleCollapse(index)}>
-                      {column.accessor === 'program' &&
-                      item.program_id !== '-' ? (
                         <Link
-                          to={`${DEMO.SINGLE_PROGRAM_LINK(item.program_id)}`}
+                          to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                            item.student_id,
+                            '/profile'
+                          )}`}
                           component={LinkDom}
                           target="_blank"
                         >
                           {item[column.accessor]}
                         </Link>
-                      ) : (
-                        <span
-                          className={
-                            item.decided === 'O'
-                              ? item.closed === 'O'
-                                ? 'text-warning'
-                                : 'text-info'
-                              : 'text-secondary'
-                          }
-                        >
-                          {item[column.accessor]}
-                        </span>
-                      )}
-                    </TableCell>
-                  )
-                )}
-              </TableRow>
-              {collapsedRows[index] && (
-                <Card>
-                  <TableBody>
-                    <TableRow>
-                      <TableCell>
-                        <ApplicationProgressCardBody
-                          student={item.student}
-                          application={item.application}
-                        />
                       </TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Card>
-              )}
-            </React.Fragment>
-          ))}
-        </TableBody>
-      </Table>
+                    ) : (
+                      <TableCell
+                        key={idx}
+                        onClick={() => handleCollapse(index)}
+                      >
+                        {column.accessor === 'program' &&
+                        item.program_id !== '-' ? (
+                          <Link
+                            to={`${DEMO.SINGLE_PROGRAM_LINK(item.program_id)}`}
+                            component={LinkDom}
+                            target="_blank"
+                          >
+                            {item[column.accessor]}
+                          </Link>
+                        ) : (
+                          <span
+                            className={
+                              item.decided === 'O'
+                                ? item.closed === 'O'
+                                  ? 'text-warning'
+                                  : 'text-info'
+                                : 'text-secondary'
+                            }
+                          >
+                            {item[column.accessor]}
+                          </span>
+                        )}
+                      </TableCell>
+                    )
+                  )}
+                </TableRow>
+                {collapsedRows[index] && (
+                  <Card>
+                    <TableBody>
+                      <TableRow>
+                        <TableCell>
+                          <ApplicationProgressCardBody
+                            student={item.student}
+                            application={item.application}
+                          />
+                        </TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Card>
+                )}
+              </React.Fragment>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </Fragment>
   );
 };

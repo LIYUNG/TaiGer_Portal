@@ -30,7 +30,7 @@ function TabStudBackgroundDashboard(props) {
   );
   let header = Object.values(academic_background_header);
   return (
-    <TableContainer component={Paper}>
+    <TableContainer component={Paper} style={{ overflowX: 'auto' }}>
       <Table size="small">
         <TableHead>
           <TableRow>

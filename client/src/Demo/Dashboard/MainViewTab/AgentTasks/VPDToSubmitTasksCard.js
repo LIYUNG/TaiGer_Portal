@@ -9,7 +9,8 @@ import {
   TableRow,
   Alert,
   Card,
-  Typography
+  Typography,
+  TableContainer
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
@@ -86,19 +87,21 @@ function VPDToSubmitTasksCard(props) {
       <VPDToSubmitTasks key={i} role={user.role} student={student} />
     ));
   return (
-    <Card sx={{ padding: 2, mb: 2 }}>
+    <Card sx={{ mb: 2 }}>
       <Alert severity="error">VPD missing:</Alert>
-      <Table size="small">
-        <TableHead>
-          <TableRow>
-            <TableCell>{t('Student')}</TableCell>
-            <TableCell>{t('Status')}</TableCell>
-            <TableCell>{t('Deadline')}</TableCell>
-            <TableCell>{t('Program')}</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>{vpd_to_submit_tasks}</TableBody>
-      </Table>
+      <TableContainer style={{ overflowX: 'auto' }}>
+        <Table size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell>{t('Student')}</TableCell>
+              <TableCell>{t('Status')}</TableCell>
+              <TableCell>{t('Deadline')}</TableCell>
+              <TableCell>{t('Program')}</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>{vpd_to_submit_tasks}</TableBody>
+        </Table>
+      </TableContainer>
     </Card>
   );
 }

@@ -8,7 +8,8 @@ import {
   TableCell,
   TableHead,
   TableRow,
-  Alert
+  Alert,
+  TableContainer
 } from '@mui/material';
 
 import BaseDocumentCheckingTasks from '../../MainViewTab/AgentTasks/BaseDocumentCheckingTasks';
@@ -28,18 +29,20 @@ function BaseDocumentCheckingTable(props) {
 
   return (
     <Box>
-      <Card sx={{ padding: 2, mb: 2 }}>
+      <Card sx={{ mb: 2 }}>
         <Alert severity="error">{t('Check uploaded base documents')}:</Alert>
-        <Table size="small">
-          <TableHead>
-            <TableRow>
-              <TableCell>{t('Student')}</TableCell>
-              <TableCell>{t('Document Type')}</TableCell>
-              <TableCell>{t('Upload Time')}</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>{base_documents_checking_tasks}</TableBody>
-        </Table>
+        <TableContainer style={{ overflowX: 'auto' }}>
+          <Table size="small">
+            <TableHead>
+              <TableRow>
+                <TableCell>{t('Student')}</TableCell>
+                <TableCell>{t('Document Type')}</TableCell>
+                <TableCell>{t('Upload Time')}</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>{base_documents_checking_tasks}</TableBody>
+          </Table>
+        </TableContainer>
       </Card>
     </Box>
   );

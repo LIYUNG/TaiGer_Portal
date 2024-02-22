@@ -74,7 +74,7 @@ function CVAssignTasksCard(props) {
     <>
       <Card sx={{ mb: 2 }}>
         <Alert severity="error">
-          <Typography variant="string">{t('CV Not Assigned Yet')}</Typography>
+          <Typography>{t('CV Not Assigned Yet')}</Typography>
         </Alert>
         <Table size="small">
           <TableHead>

@@ -9,7 +9,8 @@ import {
   TableHead,
   TableRow,
   Alert,
-  TableContainer
+  TableContainer,
+  Typography
 } from '@mui/material';
 
 import BaseDocumentCheckingTasks from '../../MainViewTab/AgentTasks/BaseDocumentCheckingTasks';
@@ -30,7 +31,9 @@ function BaseDocumentCheckingTable(props) {
   return (
     <Box>
       <Card sx={{ mb: 2 }}>
-        <Alert severity="error">{t('Check uploaded base documents')}:</Alert>
+        <Alert severity="error">
+          <Typography>{t('Check uploaded base documents')}:</Typography>
+        </Alert>
         <TableContainer style={{ overflowX: 'auto' }}>
           <Table size="small">
             <TableHead>

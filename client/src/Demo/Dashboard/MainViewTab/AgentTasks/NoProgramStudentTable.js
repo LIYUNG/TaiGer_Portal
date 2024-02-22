@@ -7,7 +7,8 @@ import {
   TableCell,
   TableHead,
   TableRow,
-  Alert
+  Alert,
+  Typography
 } from '@mui/material';
 
 import { anyStudentWithoutApplicationSelection } from '../../../Utils/checking-functions';
@@ -33,7 +34,9 @@ function NoProgramStudentTable(props) {
       )
     ) && (
       <Card sx={{ mb: 2 }}>
-        <Alert severity="error">No Program Selected Yet</Alert>
+        <Alert severity="error">
+          <Typography>No Program Selected Yet</Typography>
+        </Alert>
         <Table size="small">
           <TableHead>
             <TableRow>

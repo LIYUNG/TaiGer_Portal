@@ -88,7 +88,9 @@ function VPDToSubmitTasksCard(props) {
     ));
   return (
     <Card sx={{ mb: 2 }}>
-      <Alert severity="error">VPD missing:</Alert>
+      <Alert severity="error">
+        <Typography>VPD missing:</Typography>
+      </Alert>
       <TableContainer style={{ overflowX: 'auto' }}>
         <Table size="small">
           <TableHead>

@@ -240,6 +240,8 @@ function ApplicationOverviewTabs(props) {
           <Tabs
             value={value}
             onChange={handleChange}
+            variant="scrollable"
+            scrollButtons="auto"
             aria-label="basic tabs example"
           >
             <Tab label={t('Active Student List')} {...a11yProps(0)} />

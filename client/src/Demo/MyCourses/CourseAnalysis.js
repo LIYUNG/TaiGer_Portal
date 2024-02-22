@@ -387,15 +387,6 @@ export default function CourseAnalysis() {
             )}
           </Card>
         ))}
-        {/* <Tabs
-          value={value}
-          onChange={handleChange}
-          aria-label="course analysis tabs"
-        >
-          {statedata.sheetNames.map((sheetName, i) => (
-            <Tab key={`${sheetName}`} label={sheetName} {...a11yProps(i)}></Tab>
-          ))}
-        </Tabs> */}
         {t('Last update')} {convertDate(statedata.LastModified)}
       </Card>
     </Box>

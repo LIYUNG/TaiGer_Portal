@@ -50,6 +50,7 @@ function AdmissionsTable(props) {
                 name: `${student.firstname}, ${student.lastname}`,
                 editors: editors_name_string,
                 agents: agents_name_string,
+                program_id: application.programId._id,
                 school: application.programId.school,
                 degree: application.programId.degree,
                 program_name: application.programId.program_name,
@@ -65,6 +66,7 @@ function AdmissionsTable(props) {
               name: `${student.firstname}, ${student.lastname}`,
               editors: editors_name_string,
               agents: agents_name_string,
+              program_id: application.programId._id,
               school: application.programId.school,
               degree: application.programId.degree,
               program_name: application.programId.program_name,
@@ -115,8 +117,42 @@ function AdmissionsTable(props) {
       width: 100
     },
     { field: 'editors', headerName: t('Editors'), width: 100 },
-    { field: 'school', headerName: t('School'), width: 250 },
-    { field: 'program_name', headerName: t('Program'), width: 250 },
+    {
+      field: 'school',
+      headerName: t('School'),
+      width: 250,
+      renderCell: (params) => {
+        const linkUrl = `${DEMO.SINGLE_PROGRAM_LINK(params.row.program_id)}`;
+        return (
+          <Link
+            underline="hover"
+            to={linkUrl}
+            component={LinkDom}
+            target="_blank"
+          >
+            {params.value}
+          </Link>
+        );
+      }
+    },
+    {
+      field: 'program_name',
+      headerName: t('Program'),
+      width: 250,
+      renderCell: (params) => {
+        const linkUrl = `${DEMO.SINGLE_PROGRAM_LINK(params.row.program_id)}`;
+        return (
+          <Link
+            underline="hover"
+            to={linkUrl}
+            component={LinkDom}
+            target="_blank"
+          >
+            {params.value}
+          </Link>
+        );
+      }
+    },
     { field: 'degree', headerName: t('Degree'), width: 120 },
     {
       field: 'application_year',

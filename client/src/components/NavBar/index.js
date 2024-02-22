@@ -4,7 +4,7 @@ import { Link as LinkDom, Navigate, useNavigate } from 'react-router-dom';
 
 import { useTheme } from '@mui/material/styles';
 import { styled } from '@mui/material/styles';
-import AppBar from '@mui/material/AppBar';
+import MuiAppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
@@ -31,7 +31,7 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import MailIcon from '@mui/icons-material/Mail';
-import { Avatar, Collapse, Link, Tooltip } from '@mui/material';
+import { Avatar, Collapse, Link, Tooltip, useMediaQuery } from '@mui/material';
 
 import {
   getActiveEventsNumber,
@@ -177,15 +177,17 @@ const ExcludeMenu = {
 };
 
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
-  ({ theme, open }) => ({
+  ({ theme, open, isMobile }) => ({
     flexGrow: 1,
     padding: theme.spacing(3),
+    width: `calc(100% - ${drawerWidth}px)`,
     transition: theme.transitions.create('margin', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen
     }),
-    marginLeft: `-${drawerWidth}px`,
+    marginLeft: isMobile ? 0 : `-${drawerWidth}px`,
     ...(open && {
+      width: `calc(100% - ${drawerWidth}px)`,
       transition: theme.transitions.create('margin', {
         easing: theme.transitions.easing.easeOut,
         duration: theme.transitions.duration.enteringScreen
@@ -194,6 +196,25 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
     })
   })
 );
+
+const AppBar = styled(MuiAppBar, {
+  shouldForwardProp: (prop) => prop !== 'open'
+})(({ theme, open, isMobile }) => ({
+  transition: theme.transitions.create(['margin', 'width'], {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen
+  }),
+  // width: `calc(100% - ${0}px)`,
+  marginLeft: isMobile ? 0 : `-${drawerWidth}px`,
+  ...(open && {
+    width: isMobile ? '100%' : `calc(100% - ${drawerWidth}px)`,
+    // marginLeft: isMobile ? `${drawerWidth}px` : 0,
+    transition: theme.transitions.create(['margin', 'width'], {
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen
+    })
+  })
+}));
 
 const DrawerHeader = styled('div')(({ theme }) => ({
   display: 'flex',
@@ -208,9 +229,9 @@ function NavBar(props) {
   const { t } = useTranslation();
   const { user, isAuthenticated, isLoaded, logout } = useAuth();
   const theme = useTheme();
-  const [open, setOpen] = useState(false);
   const [menuItemOpen, setMenuItemOpen] = useState({});
-
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const [open, setOpen] = useState(isMobile ? false : true);
   const [navState, setNavState] = useState({
     listOpen: false,
     dropdownShow: false,
@@ -297,7 +318,8 @@ function NavBar(props) {
     setNavState({ unreadCount: 0 });
   };
 
-  const handleDrawerOpen = () => {
+  const handleDrawerOpen = (e) => {
+    e.stopPropagation();
     setOpen(true);
   };
 
@@ -522,16 +544,21 @@ function NavBar(props) {
           minHeight: '100vh',
           display: 'flex'
         }}
+        onClick={() => {
+          if (isMobile) {
+            handleDrawerClose();
+          }
+        }}
       >
         <CssBaseline />
-        <AppBar position="fixed" open={open}>
+        <AppBar position="fixed" open={open} isMobile={isMobile}>
           <Toolbar>
             <IconButton
               color="inherit"
               aria-label="open drawer"
-              onClick={handleDrawerOpen}
+              onClick={(e) => handleDrawerOpen(e)}
               edge="start"
-              sx={{ mr: 2, ...(open && { display: 'none' }) }}
+              sx={{ mr: 2, ...(!isMobile && open && { display: 'none' }) }}
             >
               <MenuIcon />
             </IconButton>
@@ -616,7 +643,8 @@ function NavBar(props) {
               boxSizing: 'border-box'
             }
           }}
-          variant="persistent"
+          // variant="persistent"
+          variant={isMobile ? 'temporary' : 'persistent'}
           anchor="left"
           open={open}
         >
@@ -638,15 +666,16 @@ function NavBar(props) {
               menuItem.children ? (
                 <Box key={menuItem.id}>
                   <ListItemButton
-                    onClick={() =>
+                    onClick={(e) => {
+                      e.stopPropagation();
                       setMenuItemOpen((prevState) => ({
                         ...prevState,
                         [menuItem.id]:
                           prevState[menuItem.id] === undefined
                             ? true
                             : !prevState[menuItem.id]
-                      }))
-                    }
+                      }));
+                    }}
                   >
                     <ListItemIcon>{/* <InboxIcon /> */}</ListItemIcon>
                     <ListItemText primary={t(`${menuItem.title}`)} />
@@ -698,7 +727,7 @@ function NavBar(props) {
           </List>
           <Divider />
         </Drawer>
-        <Main open={open}>
+        <Main open={open} isMobile={isMobile}>
           <DrawerHeader />
           {props.children}
           {renderMobileMenu}

@@ -42,7 +42,6 @@ const {
   postImageInThread,
   postMessages,
   getSurveyInputs,
-  getSurveyInputsByThreadId,
   postSurveyInput,
   putSurveyInput,
   resetSurveyInput
@@ -65,15 +64,6 @@ router
   );
 
 // Survey input
-router
-  .route('/survey-input/threads/:messagesThreadId')
-  .get(
-    getMessagesRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
-    docThreadMultitenant_filter,
-    getSurveyInputsByThreadId
-  );
-
 router
   .route('/survey-input/:surveyInputId')
   .put(

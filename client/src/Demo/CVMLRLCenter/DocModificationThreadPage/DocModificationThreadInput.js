@@ -50,9 +50,8 @@ import { useAuth } from '../../../components/AuthProvider';
 import Loading from '../../../components/Loading/Loading';
 import { appConfig } from '../../../config';
 
-// words, sentances, paragraphs, pages
-// const type2width = {'words': 5, 'sentances': 10, 'paragraphs': 100, 'pages': 100};
-// const type2rows = {'words': 1, 'sentances': 1, 'paragraphs': 6, 'pages': 15};
+// const type2width = { word: 10, sentence: 12, paragraph: 12, essay: 12 };
+const type2rows = { word: 1, sentence: 1, paragraph: 4, essay: 10 };
 
 const ConfirmationModal = ({
   isModalOpen,
@@ -194,7 +193,6 @@ const SurveyForm = ({
                     size="small"
                     onClick={(event) => {
                       event.stopPropagation();
-                      // setCollapseOpen(!editMode);
                       setEditMode((prevMode) => !prevMode);
                     }}
                   >
@@ -234,7 +232,7 @@ const SurveyForm = ({
                   value={questionItem.answer}
                   placeholder={questionItem.placeholder}
                   multiline
-                  rows={questionItem.rows || 3}
+                  rows={type2rows[questionItem.type] || 3}
                   onChange={onChange}
                   disabled={!editMode}
                 />
@@ -419,7 +417,6 @@ function DocModificationThreadInput() {
             document_requirements: {},
             editorRequirements: {},
             isLoaded: true,
-
             res_status: status
           }));
         } else {
@@ -589,8 +586,6 @@ function DocModificationThreadInput() {
 
   const onSubmit = () => {
     if (!docModificationThreadInputState.isChanged) {
-      console.log('No change');
-      // Scroll to the alert smoothly
       const alertElement = document.getElementById('alert-message');
       if (alertElement) {
         alertElement.scrollIntoView({ behavior: 'smooth', block: 'center' });

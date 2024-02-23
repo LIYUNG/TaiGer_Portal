@@ -76,6 +76,13 @@ let FILE_DONT_CARE_SYMBOL = (
   <BsDash size={18} color="lightgray" title="Not needed" />
 );
 
+export const questionType = {
+  word: 'word',
+  sentence: 'sentence',
+  paragraph: 'paragraph',
+  essay: 'essay'
+};
+
 export const prepQuestions = (thread, isSpecific) => {
   let questions = [];
   if (
@@ -103,31 +110,28 @@ export const CVQuestions = () => {
     {
       questionId: 'q1',
       question: `1. Survey not ready`,
-      width: 3,
+      type: questionType.word,
       answer: ''
     },
     {
       questionId: 'q2',
       question: `2. Survey not ready`,
       placeholder: '',
-      width: 3,
-      rows: '1',
+      type: questionType.sentence,
       answer: ''
     },
     {
       questionId: 'q3',
       question: `3. Survey not ready`,
       placeholder: '',
-      width: 3,
-      rows: '1',
+      type: questionType.paragraph,
       answer: ''
     },
     {
       questionId: 'q4',
       question: `4. Survey not ready`,
       placeholder: '',
-      width: 3,
-      rows: '1',
+      type: questionType.essay,
       answer: ''
     }
   ];
@@ -139,72 +143,63 @@ export const RLQuestions = () => {
       questionId: 'q1',
       question: `1. Referrer's position`,
       placeholder: 'Professor',
-      width: 4,
-      rows: '1',
+      type: questionType.word,
       answer: ''
     },
     {
       questionId: 'q2',
       question: `2. Referrer's firstname`,
       placeholder: 'Hao',
-      width: 4,
-      rows: '1',
+      type: questionType.word,
       answer: ''
     },
     {
       questionId: 'q3',
       question: `3. Referrer's lastname`,
       placeholder: 'Chen',
-      width: 4,
-      rows: '1',
+      type: questionType.word,
       answer: ''
     },
     {
       questionId: 'q4',
       question: `4. Referrer's institute's phone number`,
       placeholder: '+886-9123-456-789',
-      width: 6,
-      rows: '1',
+      type: questionType.sentence,
       answer: ''
     },
     {
       questionId: 'q5',
       question: `5. Referrer's institute email`,
       placeholder: 'chao@ntu.edu.tw',
-      width: 6,
-      rows: '1',
+      type: questionType.sentence,
       answer: ''
     },
     {
       questionId: 'q6',
       question: `6. Institute name`,
       placeholder: 'National Taiwan University',
-      width: 3,
-      rows: '1',
+      type: questionType.sentence,
       answer: ''
     },
     {
       questionId: 'q7',
       question: `7. Institute location`,
       placeholder: 'Taipei',
-      width: 3,
-      rows: '1',
+      type: questionType.word,
       answer: ''
     },
     {
       questionId: 'q8',
       question: `8. Institute address`,
       placeholder: 'No. 1, Sec. 4, Roosevelt Rd., Taipei 10617, Taiwan',
-      width: 3,
-      rows: '1',
+      type: questionType.sentence,
       answer: ''
     },
     {
       questionId: 'q9',
       question: `9. Institute phone number`,
       placeholder: ' +886-2-3366-3366 ',
-      width: 3,
-      rows: '1',
+      type: questionType.sentence,
       answer: ''
     },
     {
@@ -212,8 +207,7 @@ export const RLQuestions = () => {
       question: `10. Professor Met Student in which course or Lab`,
       placeholder:
         'Introduction to Image Processing, Computer Vision and Deep learning',
-      width: 12,
-      rows: '1',
+      type: questionType.sentence,
       answer: ''
     },
     {
@@ -221,8 +215,7 @@ export const RLQuestions = () => {
       question: `11. Student's academic/extracurricular activity performance 1`,
       placeholder:
         'Mr. Xiao-Ming Wang impressed me deeply with his inquisitiveness in classes to scrutinize which has been taught. I remembered that he started to ask me course-relevant questions in my course. It was rare and commendable because many of the students began to review and prepare for the course materials before exams. He was able to catch up with the main ideas and to integrate them into a whole and to initiate questions for further clarification and present critical remarks for deeper thinking. All his remarkable diligence and intelligence reflected on his excellent performance in homework and exams. Actually, he got 96 out of 100 (A+) as a final grade in my course, which was one of the highest scores among my class.',
-      width: 12,
-      rows: '4',
+      type: questionType.paragraph,
       answer: ''
     },
     {
@@ -230,22 +223,19 @@ export const RLQuestions = () => {
       question: `12. Student's academic/extracurricular activity performance 2`,
       placeholder:
         'Even though Mr. Xiao-Ming Wang’s main major was mechanical Engineering, he demonstrated his enthusiasm for computer vision and machine learning. He was able to connect these different subjects and apply learned knowledge in different fields.',
-      width: 12,
-      rows: '4',
+      type: questionType.paragraph,
       answer: ''
     },
     {
       questionId: 'q13',
       question: `13. Student's academic/extracurricular activity performance 2`,
-      width: 12,
-      rows: '2',
+      type: questionType.paragraph,
       answer: ''
     },
     {
       questionId: 'q14',
       question: `14. Student's academic/extracurricular activity performance 3`,
-      width: 12,
-      rows: '2',
+      type: questionType.paragraph,
       answer: ''
     },
     {
@@ -253,8 +243,7 @@ export const RLQuestions = () => {
       question: `15. Student's outstanding characteristic 1`,
       placeholder:
         'Mr. Xiao-Ming Wang was also good at hands-on engineering. I saw him finished his work soon and then helped his classmates many times. He endowed with great teamwork spirit and was very willing to help others in need',
-      width: 12,
-      rows: '4',
+      type: questionType.paragraph,
       answer: ''
     },
     {
@@ -262,15 +251,13 @@ export const RLQuestions = () => {
       question: `16. Student's outstanding characteristic 2`,
       placeholder:
         'Mr. Xiao-Ming Wang  is a diligent student and willing to learn and try new challenges, I could notice these characteristics based on his performance and attitude in the course',
-      width: 12,
-      rows: '4',
+      type: questionType.paragraph,
       answer: ''
     },
     {
       questionId: 'q17',
       question: `17. Student's outstanding characteristic 3`,
-      width: 12,
-      rows: '1',
+      type: questionType.paragraph,
       answer: ''
     },
     {
@@ -278,15 +265,13 @@ export const RLQuestions = () => {
       question: `18. Student's Interpersonal skills 1`,
       placeholder:
         'Mr. Xiao-Ming Wang was very friendly and helpful toward Classmate.',
-      width: 12,
-      rows: '1',
+      type: questionType.paragraph,
       answer: ''
     },
     {
       questionId: 'q19',
       question: `19. Student's Interpersonal skills 2`,
-      width: 12,
-      rows: '1',
+      type: questionType.paragraph,
       answer: ''
     }
   ];
@@ -300,15 +285,13 @@ export const MLQuestions = (thread, isSpecific) => {
         question: `6. Why do you want to study in ${
           COUNTRIES_MAPPING[thread?.program_id?.country] || 'this country'
         } and not in your home country or any other country?`,
-        width: 12,
-        rows: '2',
+        type: questionType.paragraph,
         answer: ''
       },
       {
         questionId: 'q7',
         question: `7. Why should the ${thread?.program_id?.school} select you as their student? What can you contribute to the universities?`,
-        width: 12,
-        rows: '2',
+        type: questionType.paragraph,
         answer: ''
       },
       {
@@ -318,16 +301,14 @@ export const MLQuestions = (thread, isSpecific) => {
             ? `${thread.program_id?.school} - ${thread.program_id?.program_name}`
             : ``
         } ? What is special about them?`,
-        width: 12,
-        rows: '2',
+        type: questionType.paragraph,
         answer: ''
       },
       {
         questionId: 'q9',
         question:
           '9. Any missing requirements or anything else you want to tell us?',
-        width: 12,
-        rows: '2',
+        type: questionType.paragraph,
         answer: ''
       }
     ];
@@ -338,40 +319,35 @@ export const MLQuestions = (thread, isSpecific) => {
       questionId: 'q1',
       question:
         '1. What is your dream job you want to do after you have graduated? What do you want to become professionally?',
-      width: 12,
-      rows: '2',
+      type: questionType.paragraph,
       answer: ''
     },
     {
       questionId: 'q2',
       question:
         '2. Why do you think your field of interest (= area of the programs you want to apply for) is important now and in the future?',
-      width: 12,
-      rows: '2',
+      type: questionType.paragraph,
       answer: ''
     },
     {
       questionId: 'q3',
       question:
         '3. How did your previous education/academic experience (學術界的相關經驗) prepare you for your future studies? What did you learn so far? (e.g. courses, projects, achievements, …)',
-      width: 12,
-      rows: '2',
+      type: questionType.paragraph,
       answer: ''
     },
     {
       questionId: 'q4',
       question:
         '5. How did your previous practical experience (實習、工作的相關經驗) prepare you for your future studies? What did you learn? (e.g. experiences during internship/jobs/…)',
-      width: 12,
-      rows: '2',
+      type: questionType.paragraph,
       answer: ''
     },
     {
       questionId: 'q5',
       question:
         '5. What are your 3 biggest strengths? (abilities, personal characteristics, …)',
-      width: 12,
-      rows: '2',
+      type: questionType.paragraph,
       answer: ''
     }
   ];

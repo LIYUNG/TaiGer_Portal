@@ -19,10 +19,10 @@ const surveyInputSchema = new mongoose.Schema({
       questionId: String,
       question: String,
       answer: String,
-      // frontend styling
-      rows: String,
-      width: Number,
-      // more generic style -> for later
+      type: {
+        type: String,
+        enum: ['word', 'sentence', 'paragraph', 'essay']
+      },
       contentType: { type: String, enum: contentType }
     }
   ],

@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const {
   Types: { ObjectId }
 } = require('mongoose');
-const { documentType, STUDENT_INPUT_STATUS_E } = require('./Documentthread');
+const { STUDENT_INPUT_STATUS_E } = require('./Documentthread');
 const contentType = ['sentence', 'paragraph', 'essay'];
 
 const surveyInputSchema = new mongoose.Schema({
@@ -12,7 +12,6 @@ const surveyInputSchema = new mongoose.Schema({
     type: String,
     immutable: true,
     required: true,
-    enum: documentType
   },
   surveyContent: [
     {

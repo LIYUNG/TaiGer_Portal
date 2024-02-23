@@ -41,12 +41,14 @@ const {
   deleteAMessageInThread,
   postImageInThread,
   postMessages,
-  getStudentInput,
-  putStudentInput,
-  resetStudentInput
+  getSurveyInputs,
+  postSurveyInput,
+  putSurveyInput,
+  resetSurveyInput
 } = require('../controllers/documents_modification');
 const {
-  docThreadMultitenant_filter
+  docThreadMultitenant_filter,
+  surveyMultitenantFilter
 } = require('../middlewares/documentThreadMultitenantFilter');
 
 const router = Router();
@@ -60,26 +62,29 @@ router
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
     getAllCVMLRLOverview
   );
-// TODO: multitenant
+
 router
-  .route('/student-input/:messagesThreadId')
-  .get(
-    getMessagesRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
-    docThreadMultitenant_filter,
-    getStudentInput
-  )
+  .route('/survey-input/:surveyInputId')
   .put(
     putThreadInputRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
-    docThreadMultitenant_filter,
-    putStudentInput
+    surveyMultitenantFilter,
+    putSurveyInput
   )
   .delete(
     resetThreadInputRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
-    docThreadMultitenant_filter,
-    resetStudentInput
+    surveyMultitenantFilter,
+    resetSurveyInput
+  );
+
+router
+  .route('/survey-input')
+  .post(
+    putThreadInputRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
+    surveyMultitenantFilter,
+    postSurveyInput
   );
 
 router
@@ -173,6 +178,16 @@ router
   );
 
 // Multitenant-filter in call-back function
+
+router
+  .route('/:messagesThreadId/survey-inputs')
+  .get(
+    getMessagesRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
+    docThreadMultitenant_filter,
+    getSurveyInputs
+  );
+
 router
   .route('/:messagesThreadId')
   .get(

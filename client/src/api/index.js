@@ -376,15 +376,25 @@ export const deleteAMessageInCommunicationThread = (
   request.delete(
     `/api/communications/${student_id}/${communication_messageId}`
   );
-export const getStudentInput = (documentsthreadId) =>
-  request.get(`/api/document-threads/student-input/${documentsthreadId}`);
-export const resetStudentInput = (documentsthreadId) =>
-  request.delete(`/api/document-threads/student-input/${documentsthreadId}`);
-export const putStudentInput = (documentsthreadId, input, informEditor) =>
-  request.put(`/api/document-threads/student-input/${documentsthreadId}`, {
+
+export const getSurveyInputs = (documentsthreadId) =>
+  request.get(`/api/document-threads/${documentsthreadId}/survey-inputs`);
+
+export const putSurveyInput = (surveyId, input, informEditor) =>
+  request.put(`/api/document-threads/survey-input/${surveyId}`, {
     input,
     informEditor
   });
+
+export const postSurveyInput = (input, informEditor) =>
+  request.post(`/api/document-threads/survey-input/`, {
+    input,
+    informEditor
+  });
+
+export const resetSurveyInput = (surveyId) =>
+  request.delete(`/api/document-threads/survey-input/${surveyId}`);
+
 export const getMessagThread = (documentsthreadId) =>
   request.get(`/api/document-threads/${documentsthreadId}`);
 export const deleteAMessageInThread = (documentsthreadId, messageId) =>

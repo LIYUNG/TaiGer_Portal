@@ -520,7 +520,7 @@ if (appConfig.vpdEnable) {
 
 if (appConfig.AIEnable) {
   routes.push({
-    path: '/document-modification/student-input/:documentsthreadId',
+    path: '/document-modification/:documentsthreadId/survey',
     exact: true,
     name: 'CVMLRL Modification Thread',
     Component: CVMLRL_Modification_ThreadInput

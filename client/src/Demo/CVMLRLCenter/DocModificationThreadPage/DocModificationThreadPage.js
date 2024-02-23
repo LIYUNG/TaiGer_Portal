@@ -5,7 +5,6 @@ import { FiExternalLink } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
 import {
   Typography,
-  Badge,
   Button,
   Card,
   Link,
@@ -73,10 +72,9 @@ function DocModificationThreadPage() {
     });
 
   useEffect(() => {
-    // document.removeEventListener('click', handleClickOutside);
-    document.addEventListener('mousedown', handleClickOutside);
-    getMessagThread(documentsthreadId).then(
-      (resp) => {
+    const fetchData = async () => {
+      try {
+        const resp = await getMessagThread(documentsthreadId);
         const { success, data, editors, agents, deadline, conflict_list } =
           resp.data;
         const { status } = resp;
@@ -107,8 +105,7 @@ function DocModificationThreadPage() {
             res_status: status
           }));
         }
-      },
-      (error) => {
+      } catch (error) {
         setDocModificationThreadPageState((prevState) => ({
           ...prevState,
           isLoaded: true,
@@ -116,7 +113,10 @@ function DocModificationThreadPage() {
           res_status: 500
         }));
       }
-    );
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    fetchData();
   }, [documentsthreadId]);
 
   const closeSetAsFinalFileModelWindow = () => {
@@ -595,15 +595,6 @@ function DocModificationThreadPage() {
                             {t('Download')}
                           </Button>
                         </a>
-                        {/* or &nbsp;
-                                <Link
-                                  to={`${DEMO.DOCUMENT_MODIFICATION_INPUT_LINK(
-                                    docModificationThreadPageState.documentsthreadId
-                                  )}`}
-                                  // target="_blank"
-                                >
-                                  <Button size="sm">線上填寫</Button>
-                                </Link> */}
                       </b>
                     ) : (
                       <b>
@@ -621,9 +612,9 @@ function DocModificationThreadPage() {
                             {t('Download')}
                           </Button>
                         </a>
+                        <br />
                         {is_TaiGer_role(user) && (
                           <>
-                            <br></br>
                             <LinkDom
                               to={`${DEMO.DOCUMENT_MODIFICATION_INPUT_LINK(
                                 docModificationThreadPageState.documentsthreadId
@@ -634,7 +625,7 @@ function DocModificationThreadPage() {
                                 variant="contained"
                                 sx={{ my: 2 }}
                               >
-                                <Badge>Beta</Badge> &nbsp; <b>Editor Helper</b>
+                                Editor Helper
                               </Button>
                             </LinkDom>
                           </>

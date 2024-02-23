@@ -162,7 +162,7 @@ const SurveyForm = ({
   };
 
   return (
-    <Box sx={{ justifyContent: 'flex-end' }}>
+    <Box>
       {title && (
         <>
           <Box
@@ -217,10 +217,20 @@ const SurveyForm = ({
           <Box marginTop={2} />
         </>
       )}
-      <Grid container sx={{ gap: 5 }}>
-        <Collapse in={collapseOpen}>
+      {!title && (
+        <Box sx={{ marginLeft: 'auto', textAlign: 'right' }}>
+          <Typography variant="body2">
+            Last Modified:{' '}
+            {surveyInputs?.updatedAt
+              ? convertDate(surveyInputs?.updatedAt)
+              : '[NEW]'}
+          </Typography>
+        </Box>
+      )}
+      <Collapse in={collapseOpen}>
+        <Grid container fullWidth sx={{ gap: 1 }}>
           {surveyInputs.surveyContent.map((questionItem, index) => (
-            <Grid item key={index} xs={12}>
+            <Grid item fullWidth key={index} xs={12}>
               <FormControl fullWidth>
                 <FormLabel>{questionItem.question}</FormLabel>
                 <TextField
@@ -239,18 +249,8 @@ const SurveyForm = ({
               </FormControl>
             </Grid>
           ))}
-        </Collapse>
-        {!title && (
-          <Grid item sx={{ marginLeft: 'auto' }}>
-            <Typography variant="body2">
-              Last Modified:{' '}
-              {surveyInputs?.updatedAt
-                ? convertDate(surveyInputs?.updatedAt)
-                : '[NEW]'}
-            </Typography>
-          </Grid>
-        )}
-      </Grid>
+        </Grid>
+      </Collapse>
     </Box>
   );
 };

@@ -50,7 +50,7 @@ import { useAuth } from '../../../components/AuthProvider';
 import Loading from '../../../components/Loading/Loading';
 import { appConfig } from '../../../config';
 
-// const type2width = { word: 10, sentence: 12, paragraph: 12, essay: 12 };
+const type2width = { word: 3, sentence: 5, paragraph: 12, essay: 12 };
 const type2rows = { word: 1, sentence: 1, paragraph: 4, essay: 10 };
 
 const ConfirmationModal = ({
@@ -230,7 +230,12 @@ const SurveyForm = ({
       <Collapse in={collapseOpen}>
         <Grid container fullWidth sx={{ gap: 1 }}>
           {surveyInputs.surveyContent.map((questionItem, index) => (
-            <Grid item fullWidth key={index} xs={12}>
+            <Grid
+              item
+              key={index}
+              sm={type2width[questionItem.type] || 3}
+              xs={12}
+            >
               <FormControl fullWidth>
                 <FormLabel>{questionItem.question}</FormLabel>
                 <TextField

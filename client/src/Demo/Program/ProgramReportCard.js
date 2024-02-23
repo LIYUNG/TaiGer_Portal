@@ -7,7 +7,8 @@ import {
   TableBody,
   TableCell,
   TableHead,
-  TableRow
+  TableRow,
+  Typography
 } from '@mui/material';
 import { Link as LinkDom } from 'react-router-dom';
 
@@ -114,8 +115,10 @@ function ProgramReportCard() {
     </TableRow>
   ));
   return (
-    <Card className="card-with-scroll">
-      <Alert severity="error">{t('Program Update Request')}:</Alert>
+    <Card>
+      <Alert severity="error">
+        <Typography>{t('Program Update Request')}:</Typography>
+      </Alert>
       <div className="card-scrollable-body">
         <Table size="small">
           <TableHead>

@@ -15,6 +15,7 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableContainer,
   TableHead,
   TableRow,
   TextField,
@@ -1037,17 +1038,19 @@ function StudentApplicationsTableTemplate(props) {
                   removeBanner={<></>}
                   notification_key={undefined}
                 />
-                <Table size="small">
-                  <TableHead>
-                    <TableRow>
-                      {props.role !== 'Student' && <TableCell></TableCell>}
-                      {programstatuslist.map((doc, index) => (
-                        <TableCell key={index}>{t(doc.name)}</TableCell>
-                      ))}
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>{applying_university_info}</TableBody>
-                </Table>
+                <TableContainer style={{ overflowX: 'auto' }}>
+                  <Table size="small">
+                    <TableHead>
+                      <TableRow>
+                        {props.role !== 'Student' && <TableCell></TableCell>}
+                        {programstatuslist.map((doc, index) => (
+                          <TableCell key={index}>{t(doc.name)}</TableCell>
+                        ))}
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>{applying_university_info}</TableBody>
+                  </Table>
+                </TableContainer>
               </Box>
             </Card>
             <Box>

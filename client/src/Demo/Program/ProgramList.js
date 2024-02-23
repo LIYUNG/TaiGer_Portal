@@ -51,7 +51,7 @@ function ProgramList(props) {
   });
   const [filters, setFilters] = useState({});
   const [rowSelectionModel, setRowSelectionModel] = React.useState([]);
-  console.log(rowSelectionModel);
+
   let [programs, setPrograms] = useState({
     programIds: [],
     schools: [],

@@ -12,7 +12,8 @@ import {
   TableCell,
   TableRow,
   Alert,
-  Typography
+  Typography,
+  Box
 } from '@mui/material';
 
 import { updateAgentBanner } from '../../../api';
@@ -104,161 +105,163 @@ function AgentMainView(props) {
     .sort((a, b) => (a.application_deadline > b.application_deadline ? 1 : -1));
 
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={12} sm={12}>
-        {agentMainViewState.notification?.isRead_new_base_docs_uploaded?.map(
-          (student, i) => (
-            <Card key={i} sx={{ padding: 2, mb: 1 }}>
-              <Typography style={{ textAlign: 'left' }}>
-                <ReportProblemIcon size={18} />
-                <b className="mx-2">Reminder:</b> There are new base documents
-                uploaded by{' '}
-                <b>
-                  {student.student_firstname} {student.student_lastname}
-                </b>{' '}
-                <Link
-                  underline="hover"
-                  to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-                    student.student_id,
-                    DEMO.PROFILE
-                  )}`}
-                  component={LinkDom}
-                >
-                  Base Document
-                </Link>{' '}
-                <span style={{ float: 'right', cursor: 'pointer' }}>
-                  <BsX
-                    size={18}
-                    onClick={(e) =>
-                      removeAgentBanner(
-                        e,
-                        'isRead_new_base_docs_uploaded',
-                        student.student_id
-                      )
-                    }
-                  />
-                </span>
-              </Typography>
-            </Card>
-          )
-        )}
-      </Grid>
-      <Grid item xs={12} sm={12}>
-        <Card className="card-with-scroll" sx={{ padding: 2, mb: 2, mt: 2 }}>
-          <Alert severity="error">
-            {t('Upcoming Applications')} (Decided):
-          </Alert>
-          <div className="card-scrollable-body">
-            <Table size="small">
-              <TableBody>
-                {applications_arr.map((application, idx) => (
-                  <Fragment key={idx}>
-                    <TableRow
-                      className="text-black"
-                      onClick={() => handleCollapse(idx)}
-                    >
-                      <TableCell>
-                        <Link
-                          underline="hover"
-                          to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-                            application.student_id,
-                            DEMO.PROFILE
-                          )}`}
-                          component={LinkDom}
-                        >
-                          <b>{application.firstname_lastname} </b>
-                        </Link>
-                      </TableCell>
-                      <TableCell>{application.application_deadline}</TableCell>
-                      <TableCell>{application.school}</TableCell>
-                      <TableCell>
-                        {progressBarCounter(
-                          application.student,
-                          application.application
-                        )}
-                        %
-                      </TableCell>
-                      <TableCell>{application.program_name}</TableCell>
-                    </TableRow>
-                    {agentMainViewState.collapsedRows[idx] && (
-                      <TableRow>
-                        <TableCell colSpan="12">
-                          <ApplicationProgressCardBody
-                            student={application.student}
-                            application={application.application}
-                          />
-                        </TableCell>
-                      </TableRow>
-                    )}
-                  </Fragment>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-        </Card>
-      </Grid>
-      <Grid item xs={12} sm={12}>
-        <ProgramReportCard />
-      </Grid>
-      {is_any_programs_ready_to_submit(
-        props.students.filter((student) =>
-          student.agents.some((agent) => agent._id === user._id.toString())
-        )
-      ) && (
-        <Grid item sm={12} md={6}>
-          <ReadyToSubmitTasksCard students={props.students} user={user} />
+    <Box sx={{ mb: 2 }}>
+      <Grid container spacing={2}>
+        <Grid item xs={12} sm={12}>
+          {agentMainViewState.notification?.isRead_new_base_docs_uploaded?.map(
+            (student, i) => (
+              <Card key={i} sx={{ mb: 2 }}>
+                <Typography style={{ textAlign: 'left' }}>
+                  <ReportProblemIcon size={18} />
+                  <b className="mx-2">Reminder:</b> There are new base documents
+                  uploaded by{' '}
+                  <b>
+                    {student.student_firstname} {student.student_lastname}
+                  </b>{' '}
+                  <Link
+                    underline="hover"
+                    to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                      student.student_id,
+                      DEMO.PROFILE
+                    )}`}
+                    component={LinkDom}
+                  >
+                    Base Document
+                  </Link>{' '}
+                  <span style={{ float: 'right', cursor: 'pointer' }}>
+                    <BsX
+                      size={18}
+                      onClick={(e) =>
+                        removeAgentBanner(
+                          e,
+                          'isRead_new_base_docs_uploaded',
+                          student.student_id
+                        )
+                      }
+                    />
+                  </span>
+                </Typography>
+              </Card>
+            )
+          )}
         </Grid>
-      )}
-      {appConfig.vpdEnable &&
-        is_any_vpd_missing(
+        <Grid item xs={12} sm={12}>
+          <Card>
+            <Alert severity="error">
+              <Typography> {t('Upcoming Applications')} (Decided):</Typography>
+            </Alert>
+            <div className="card-scrollable-body">
+              <Table size="small">
+                <TableBody>
+                  {applications_arr.map((application, idx) => (
+                    <Fragment key={idx}>
+                      <TableRow
+                        className="text-black"
+                        onClick={() => handleCollapse(idx)}
+                      >
+                        <TableCell>
+                          <Link
+                            underline="hover"
+                            to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                              application.student_id,
+                              DEMO.PROFILE
+                            )}`}
+                            component={LinkDom}
+                          >
+                            <b>{application.firstname_lastname} </b>
+                          </Link>
+                        </TableCell>
+                        <TableCell>
+                          {application.application_deadline}
+                        </TableCell>
+                        <TableCell>{application.school}</TableCell>
+                        <TableCell>
+                          {progressBarCounter(
+                            application.student,
+                            application.application
+                          )}
+                          %
+                        </TableCell>
+                        <TableCell>{application.program_name}</TableCell>
+                      </TableRow>
+                      {agentMainViewState.collapsedRows[idx] && (
+                        <TableRow>
+                          <TableCell colSpan="12">
+                            <ApplicationProgressCardBody
+                              student={application.student}
+                              application={application.application}
+                            />
+                          </TableCell>
+                        </TableRow>
+                      )}
+                    </Fragment>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </Card>
+        </Grid>
+        <Grid item xs={12} sm={12}>
+          <ProgramReportCard />
+        </Grid>
+        {is_any_programs_ready_to_submit(
+          props.students.filter((student) =>
+            student.agents.some((agent) => agent._id === user._id.toString())
+          )
+        ) && (
+          <Grid item sm={12} md={6}>
+            <ReadyToSubmitTasksCard students={props.students} user={user} />
+          </Grid>
+        )}
+        {appConfig.vpdEnable &&
+          is_any_vpd_missing(
+            props.students.filter((student) =>
+              student.agents.some((agent) => agent._id === user._id.toString())
+            )
+          ) && (
+            <Grid item xs={12} sm={6}>
+              <VPDToSubmitTasksCard students={props.students} user={user} />
+            </Grid>
+          )}
+        {is_any_base_documents_uploaded(
           props.students.filter((student) =>
             student.agents.some((agent) => agent._id === user._id.toString())
           )
         ) && (
           <Grid item xs={12} sm={6}>
-            <VPDToSubmitTasksCard students={props.students} user={user} />
+            <BaseDocumentCheckingTable students={props.students} />
           </Grid>
         )}
-      {is_any_base_documents_uploaded(
-        props.students.filter((student) =>
-          student.agents.some((agent) => agent._id === user._id.toString())
-        )
-      ) && (
-        <Grid item xs={12} sm={6}>
-          <BaseDocumentCheckingTable students={props.students} />
-        </Grid>
-      )}
 
-      <Grid item xs={12} sm={6}>
-        {isAnyCVNotAssigned(
-          props.students.filter((student) =>
-            student.agents.some((agent) => agent._id === user._id.toString())
-          )
-        ) && <CVAssignTasksCard students={props.students} user={user} />}
-      </Grid>
-      <Grid item xs={12} sm={6}>
-        <NoProgramStudentTable students={props.students} />
-      </Grid>
-      <Grid item xs={12} sm={6}>
-        <Card sx={{ padding: 2, mb: 2 }}>
+        <Grid item xs={12} sm={6}>
+          {isAnyCVNotAssigned(
+            props.students.filter((student) =>
+              student.agents.some((agent) => agent._id === user._id.toString())
+            )
+          ) && <CVAssignTasksCard students={props.students} user={user} />}
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <NoProgramStudentTable students={props.students} />
+        </Grid>
+        <Grid item xs={12} sm={6}>
           <NoEnoughDecidedProgramsTasksCard
             students={props.students}
             user={user}
           />
-        </Card>
+        </Grid>
+        <Grid item xs={12} sm={12}>
+          <Card>
+            <StudentsAgentEditorWrapper
+              students={props.students}
+              documentslist={props.documentslist}
+              submitUpdateAgentlist={props.submitUpdateAgentlist}
+              isDashboard={props.isDashboard}
+              updateStudentArchivStatus={props.updateStudentArchivStatus}
+            />
+          </Card>
+        </Grid>
       </Grid>
-      <Grid item xs={12} sm={12}>
-        <Card>
-          <StudentsAgentEditorWrapper
-            students={props.students}
-            documentslist={props.documentslist}
-            submitUpdateAgentlist={props.submitUpdateAgentlist}
-            isDashboard={props.isDashboard}
-            updateStudentArchivStatus={props.updateStudentArchivStatus}
-          />
-        </Card>
-      </Grid>
-    </Grid>
+    </Box>
   );
 }
 

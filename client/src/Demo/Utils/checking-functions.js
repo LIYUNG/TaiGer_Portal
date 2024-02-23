@@ -1333,6 +1333,36 @@ export const check_generaldocs = (student) => {
   }
 };
 
+export const getNumberOfFilesByStudent = (messages, student_id) => {
+  if (!messages) {
+    return 0;
+  }
+  let file_count = 0;
+  let message_count = 0;
+  for (const message of messages) {
+    if (message.user_id?._id?.toString() === student_id) {
+      file_count += message.file?.length || 0;
+      message_count += 1;
+    }
+  }
+  return `${message_count}/${file_count}`;
+};
+
+export const getNumberOfFilesByEditor = (messages, student_id) => {
+  if (!messages) {
+    return 0;
+  }
+  let file_count = 0;
+  let message_count = 0;
+  for (const message of messages) {
+    if (message.user_id?._id.toString() !== student_id) {
+      file_count += message.file?.length || 0;
+      message_count += 1;
+    }
+  }
+  return `${message_count}/${file_count}`;
+};
+
 const latestReplyInfo = (thread) => {
   const messages = thread.messages;
   if (!messages || messages?.length <= 0) {
@@ -1369,7 +1399,15 @@ const prepGeneralTask = (student, thread) => {
     deadline: CVDeadline,
     show: true,
     document_name: `${thread.doc_thread_id.file_type}`,
-    days_left: daysLeftMin
+    days_left: daysLeftMin,
+    number_input_from_student: getNumberOfFilesByStudent(
+      thread.doc_thread_id.messages,
+      student._id.toString()
+    ),
+    number_input_from_editors: getNumberOfFilesByEditor(
+      thread.doc_thread_id.messages,
+      student._id.toString()
+    )
   };
 };
 

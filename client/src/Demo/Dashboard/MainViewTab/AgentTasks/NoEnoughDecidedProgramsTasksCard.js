@@ -9,7 +9,8 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  Alert
+  Alert,
+  Typography
 } from '@mui/material';
 
 import {
@@ -96,8 +97,10 @@ function NoEnoughDecidedProgramsTasksCard(props) {
       />
     ));
   return (
-    <Card>
-      <Alert severity="error">{t('No Enough Program Decided Tasks')}:</Alert>
+    <Card sx={{ mb: 2 }}>
+      <Alert severity="error">
+        <Typography>{t('No Enough Program Decided Tasks')}:</Typography>
+      </Alert>
       <Table size="small">
         <TableHead>
           <TableRow>

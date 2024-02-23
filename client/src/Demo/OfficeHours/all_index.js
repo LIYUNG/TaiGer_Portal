@@ -830,6 +830,8 @@ function AllOfficeHours() {
               <Tabs
                 value={value}
                 onChange={handleChangeTab}
+                variant="scrollable"
+                scrollButtons="auto"
                 indicatorColor="primary"
                 aria-label="basic tabs example"
               >

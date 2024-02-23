@@ -1335,11 +1335,14 @@ export const check_generaldocs = (student) => {
 
 const latestReplyInfo = (thread) => {
   const messages = thread.messages;
-  if (messages.length <= 0) {
+  if (!messages || messages?.length <= 0) {
     return '- None - ';
   }
-  const latestMessageUser = messages[messages.length - 1].user_id;
-  return `${latestMessageUser.firstname} ${latestMessageUser.lastname}`;
+  const latestMessageUser = messages[messages?.length - 1]?.user_id;
+  return (
+    latestMessageUser &&
+    `${latestMessageUser?.firstname} ${latestMessageUser?.lastname}`
+  );
 };
 
 const prepTask = (student, thread) => {

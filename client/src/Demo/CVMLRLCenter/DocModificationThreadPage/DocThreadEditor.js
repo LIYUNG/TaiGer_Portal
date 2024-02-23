@@ -64,7 +64,10 @@ function DocThreadEditor(props) {
             fullWidth
             size="small"
             type="file"
-            multiple
+            // multiple
+            inputProps={{
+              multiple: true
+            }}
             onChange={(e) => props.onFileChange(e)}
           />
           {/* <Form.Group controlId="formFile">

@@ -29,7 +29,7 @@ const DEMO = {
     return `/docs/${category}`;
   },
   DOCUMENT_MODIFICATION_INPUT_LINK: (thread_id) => {
-    return `/document-modification/student-input/${thread_id}`;
+    return `/document-modification/${thread_id}/survey`;
   },
   EVENT_STUDENT_LINK: '/events/students',
   EVENT_STUDENT_STUDENTID_LINK: (student_id) => {

@@ -7,6 +7,7 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableContainer,
   TableHead,
   TableRow,
   Typography
@@ -113,25 +114,29 @@ function ReadyToSubmitTasksCard(props) {
     ));
 
   return (
-    <Card className="card-with-scroll" sx={{ padding: 2, mb: 2 }}>
+    <Card sx={{ mb: 2 }}>
       <Alert severity="error">
-        {t('Ready To Submit Tasks')} ( ML/ RL/ Essay are finished. Please submit
-        application asap.):
+        <Typography>
+          {t('Ready To Submit Tasks')} ( ML/ RL/ Essay are finished. Please
+          submit application asap.):
+        </Typography>
       </Alert>
       <div className="card-scrollable-body">
-        <Table size="small">
-          <TableHead>
-            <TableRow>
-              <TableCell>{t('Student')}</TableCell>
-              <TableCell>{t('Start')}</TableCell>
-              <TableCell>{t('Deadline')}</TableCell>
-              <TableCell>
-                {t('Semester')} - {t('Degree')} - {t('Program')}
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>{ready_to_submit_tasks}</TableBody>
-        </Table>
+        <TableContainer style={{ overflowX: 'auto' }}>
+          <Table size="small">
+            <TableHead>
+              <TableRow>
+                <TableCell>{t('Student')}</TableCell>
+                <TableCell>{t('Start')}</TableCell>
+                <TableCell>{t('Deadline')}</TableCell>
+                <TableCell>
+                  {t('Semester')} - {t('Degree')} - {t('Program')}
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>{ready_to_submit_tasks}</TableBody>
+          </Table>
+        </TableContainer>
       </div>
     </Card>
   );

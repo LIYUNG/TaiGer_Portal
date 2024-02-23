@@ -8,6 +8,7 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableContainer,
   TableHead,
   TableRow
 } from '@mui/material';
@@ -475,21 +476,23 @@ function BaseDocument_StudentView(props) {
         removeBanner={undefined}
         notification_key={undefined}
       />
-      <Table size="small">
-        <TableHead>
-          <TableRow>
-            <TableCell>{t('Status')}</TableCell>
-            <TableCell>{t('File Name')}</TableCell>
-            <TableCell>{t('Updated')}</TableCell>
-            <TableCell></TableCell>
-            <TableCell></TableCell>
-            <TableCell></TableCell>
-            <TableCell></TableCell>
-            <TableCell>{t('Delete')}</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>{file_information}</TableBody>
-      </Table>
+      <TableContainer style={{ overflowX: 'auto' }}>
+        <Table size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell>{t('Status')}</TableCell>
+              <TableCell>{t('File Name')}</TableCell>
+              <TableCell>{t('Updated')}</TableCell>
+              <TableCell></TableCell>
+              <TableCell></TableCell>
+              <TableCell></TableCell>
+              <TableCell></TableCell>
+              <TableCell>{t('Delete')}</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>{file_information}</TableBody>
+        </Table>
+      </TableContainer>
       {SYMBOL_EXPLANATION}
       {res_modal_status >= 400 && (
         <ModalMain

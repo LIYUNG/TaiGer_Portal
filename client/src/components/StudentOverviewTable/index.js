@@ -4,6 +4,7 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableContainer,
   TableHead,
   TableRow
 } from '@mui/material';
@@ -20,18 +21,20 @@ function StudentOverviewTable(props) {
 
   return (
     <Card>
-      <Table size="small">
-        <TableHead>
-          <TableRow>
-            {studentOverviewTableHeader.map((header, idx) => (
-              <TableCell key={idx} align="left">
-                {t(`${header}`)}
-              </TableCell>
-            ))}
-          </TableRow>
-        </TableHead>
-        <TableBody>{agent_reviewing}</TableBody>
-      </Table>
+      <TableContainer style={{ overflowX: 'auto' }}>
+        <Table size="small">
+          <TableHead>
+            <TableRow>
+              {studentOverviewTableHeader.map((header, idx) => (
+                <TableCell key={idx} align="left">
+                  {t(`${header}`)}
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>{agent_reviewing}</TableBody>
+        </Table>
+      </TableContainer>
     </Card>
   );
 }

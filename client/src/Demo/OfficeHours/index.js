@@ -872,6 +872,8 @@ function OfficeHours() {
             <Tabs
               value={value}
               onChange={handleChangeValue}
+              variant="scrollable"
+              scrollButtons="auto"
               aria-label="basic tabs example"
             >
               <Tab label="Calender" {...a11yProps(0)} />

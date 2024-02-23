@@ -156,7 +156,7 @@ function SortTable2({ columns, data }) {
               {headerGroup.headers.map((column, i) =>
                 // Add the sorting props to control sorting. For this example
                 // we can add them into the header props
-                [0, 2, 4, 7].includes(i) ? (
+                [0, 2, 3, 4, 5, 9].includes(i) ? (
                   <TableCell key={i}>
                     {column.canFilter ? column.render('Filter') : null}
                   </TableCell>

@@ -1386,7 +1386,15 @@ const prepTask = (student, thread) => {
       getNumberOfDays(thread.doc_thread_id.updatedAt, new Date())
     ),
     latest_reply: latestReplyInfo(thread.doc_thread_id),
-    updatedAt: convertDate(thread.doc_thread_id.updatedAt)
+    updatedAt: convertDate(thread.doc_thread_id.updatedAt),
+    number_input_from_student: getNumberOfFilesByStudent(
+      thread.doc_thread_id.messages,
+      student._id.toString()
+    ),
+    number_input_from_editors: getNumberOfFilesByEditor(
+      thread.doc_thread_id.messages,
+      student._id.toString()
+    )
   };
 };
 
@@ -1399,15 +1407,7 @@ const prepGeneralTask = (student, thread) => {
     deadline: CVDeadline,
     show: true,
     document_name: `${thread.doc_thread_id.file_type}`,
-    days_left: daysLeftMin,
-    number_input_from_student: getNumberOfFilesByStudent(
-      thread.doc_thread_id.messages,
-      student._id.toString()
-    ),
-    number_input_from_editors: getNumberOfFilesByEditor(
-      thread.doc_thread_id.messages,
-      student._id.toString()
-    )
+    days_left: daysLeftMin
   };
 };
 

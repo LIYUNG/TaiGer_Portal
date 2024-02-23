@@ -12,10 +12,6 @@ const documentThreadsSchema = new mongoose.Schema({
   program_id: { type: ObjectId, ref: 'Program' },
   outsourced_user_id: [{ type: ObjectId, ref: 'User' }],
   file_type: { type: String, require: true }, // Change to threadType
-  isSpecific: {
-    type: Boolean,
-    default: true
-  },
   isFinalVersion: {
     type: Boolean,
     default: false

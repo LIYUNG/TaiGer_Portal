@@ -8,6 +8,7 @@ import {
   Box,
   Breadcrumbs,
   Button,
+  Chip,
   Card,
   Checkbox,
   Collapse,
@@ -145,6 +146,20 @@ const ProgressButton = ({
   );
 };
 
+const LastModifiedText = ({ updatedAt }) => {
+  return (
+    <>
+      {updatedAt ? (
+        <Typography variant="body2">
+          Last Modified: <strong>{convertDate(updatedAt)}</strong>
+        </Typography>
+      ) : (
+        <Chip color="secondary" variant="outlined" size="small" label="New" />
+      )}
+    </>
+  );
+};
+
 const SurveyForm = ({
   title,
   surveyInputs,
@@ -152,8 +167,10 @@ const SurveyForm = ({
   surveyType = 'program',
   useEditButton = false
 }) => {
-  // if not title provided -> not toggle switch -> must be editable
-  const [editMode, setEditMode] = useState(!title || !useEditButton);
+  // editable by default no title, no edit button, or new survey
+  const [editMode, setEditMode] = useState(
+    !title || !useEditButton || !surveyInputs?.updatedAt
+  );
   const [collapseOpen, setCollapseOpen] = useState(true);
 
   const handleTitleClick = (e) => {
@@ -204,12 +221,7 @@ const SurveyForm = ({
                 </Grid>
               )}
               <Grid item sx={{ marginLeft: 'auto' }}>
-                <Typography variant="body2">
-                  Last Modified:{' '}
-                  {surveyInputs?.updatedAt
-                    ? convertDate(surveyInputs?.updatedAt)
-                    : '[NEW]'}
-                </Typography>
+                <LastModifiedText updatedAt={surveyInputs?.updatedAt} />
               </Grid>
             </Grid>
           </Box>
@@ -219,12 +231,7 @@ const SurveyForm = ({
       )}
       {!title && (
         <Box sx={{ marginLeft: 'auto', textAlign: 'right' }}>
-          <Typography variant="body2">
-            Last Modified:{' '}
-            {surveyInputs?.updatedAt
-              ? convertDate(surveyInputs?.updatedAt)
-              : '[NEW]'}
-          </Typography>
+          <LastModifiedText updatedAt={surveyInputs?.updatedAt} />
         </Box>
       )}
       <Collapse in={collapseOpen}>
@@ -261,7 +268,7 @@ const SurveyForm = ({
 };
 
 const InputGenerator = ({
-  editorRequirements,
+  isChecked,
   data,
   isGenerating,
   isGenerated,
@@ -285,7 +292,7 @@ const InputGenerator = ({
                     <Checkbox
                       name="useProgramRequirementData"
                       type="checkbox"
-                      checked={editorRequirements?.useProgramRequirementData}
+                      checked={isChecked}
                       onChange={onChange}
                       sx={{ '& .MuiSvgIcon-root': { fontSize: '1.5rem' } }}
                     />
@@ -393,10 +400,6 @@ function DocModificationThreadInput() {
         const threadResp = await getSurveyInputs(documentsthreadId);
         const { success, data: threadData, status } = threadResp.data;
         const surveyInputs = threadData?.surveyInputs;
-
-        console.log('threadData', threadData);
-        console.log('surveyInputs', surveyInputs);
-
         if (!surveyInputs?.general) {
           surveyInputs.general = {
             studentId: threadData.student_id._id,
@@ -693,6 +696,10 @@ function DocModificationThreadInput() {
     return <ErrorPage res_status={res_status} />;
   }
 
+  if (docModificationThreadInputState?.thread.file_type.includes('RL')) {
+    return <ErrorPage res_status={403} />;
+  }
+
   let docName;
   const student_name = `${docModificationThreadInputState.thread?.student_id?.firstname} ${docModificationThreadInputState.thread?.student_id?.lastname}`;
   if (docModificationThreadInputState.thread?.program_id) {
@@ -745,7 +752,7 @@ function DocModificationThreadInput() {
           {' Discussion thread'}
           {'   '}
         </Link>
-        <Typography>Survey Input</Typography>
+        <Typography>Survey</Typography>
       </Breadcrumbs>
 
       {!isLoaded && <Loading />}
@@ -839,6 +846,11 @@ function DocModificationThreadInput() {
               disabled={docModificationThreadInputState.isSubmitting}
               onClick={onSubmit}
             />
+            <LinkDom to=".." relative="path">
+              <Button color="secondary" variant="contained">
+                Back
+              </Button>
+            </LinkDom>
           </Grid>
         </Grid>
       </Card>
@@ -847,8 +859,9 @@ function DocModificationThreadInput() {
       {is_TaiGer_role(user) && (
         <Card sx={{ p: 2, mb: 2 }}>
           <InputGenerator
-            editorRequirements={
-              docModificationThreadInputState.editorRequirements
+            isChecked={
+              docModificationThreadInputState?.editorRequirements
+                ?.useProgramRequirementData
             }
             data={docModificationThreadInputState.data}
             isGenerating={docModificationThreadInputState.isGenerating}

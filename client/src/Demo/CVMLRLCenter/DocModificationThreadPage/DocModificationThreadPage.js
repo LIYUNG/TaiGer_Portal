@@ -5,7 +5,6 @@ import { FiExternalLink } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
 import {
   Typography,
-  Badge,
   Button,
   Card,
   Link,
@@ -596,15 +595,6 @@ function DocModificationThreadPage() {
                             {t('Download')}
                           </Button>
                         </a>
-                        {/* or &nbsp;
-                                <Link
-                                  to={`${DEMO.DOCUMENT_MODIFICATION_INPUT_LINK(
-                                    docModificationThreadPageState.documentsthreadId
-                                  )}`}
-                                  // target="_blank"
-                                >
-                                  <Button size="sm">線上填寫</Button>
-                                </Link> */}
                       </b>
                     ) : (
                       <b>
@@ -622,9 +612,9 @@ function DocModificationThreadPage() {
                             {t('Download')}
                           </Button>
                         </a>
+                        <br />
                         {is_TaiGer_role(user) && (
                           <>
-                            <br></br>
                             <LinkDom
                               to={`${DEMO.DOCUMENT_MODIFICATION_INPUT_LINK(
                                 docModificationThreadPageState.documentsthreadId
@@ -635,7 +625,7 @@ function DocModificationThreadPage() {
                                 variant="contained"
                                 sx={{ my: 2 }}
                               >
-                                <Badge>Beta</Badge> &nbsp; <b>Editor Helper</b>
+                                Editor Helper
                               </Button>
                             </LinkDom>
                           </>

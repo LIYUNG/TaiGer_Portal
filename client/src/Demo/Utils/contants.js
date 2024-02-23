@@ -1539,6 +1539,26 @@ export const cvmlrl_overview_header = [
     accessor: 'aged_days'
   },
   {
+    Header: (
+      <>
+        #EditorInput
+        <br />
+        Message/Files
+      </>
+    ),
+    accessor: 'number_input_from_editors'
+  },
+  {
+    Header: (
+      <>
+        #StudentInput
+        <br />
+        Message/Files
+      </>
+    ),
+    accessor: 'number_input_from_student'
+  },
+  {
     Header: 'Last Update',
     accessor: 'updatedAt'
   }
@@ -1840,6 +1860,26 @@ export const taskTashboardHeader = [
     Header: 'Ages Days',
     accessor: 'aged_days',
     filter: 'fuzzyText'
+  },
+  {
+    Header: (
+      <>
+        #EditorInput
+        <br />
+        Message/Files
+      </>
+    ),
+    accessor: 'number_input_from_editors'
+  },
+  {
+    Header: (
+      <>
+        #StudentInput
+        <br />
+        Message/Files
+      </>
+    ),
+    accessor: 'number_input_from_student'
   },
   {
     Header: 'Last Update',

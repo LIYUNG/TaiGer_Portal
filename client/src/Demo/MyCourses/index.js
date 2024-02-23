@@ -630,10 +630,10 @@ export default function MyCourses() {
         {is_TaiGer_AdminAgent(user) && (
           <>
             <Grid container spacing={2}>
-              <Grid item xs={12} sx={{ marginX: 2 }}>
+              <Grid item xs={12}>
                 <Typography variant="h6">{t('Courses Analysis')}</Typography>
               </Grid>
-              <Grid item xs={12} sx={{ marginX: 2 }}>
+              <Grid item xs={12}>
                 <FormControl fullWidth>
                   <InputLabel id="select-target-group">
                     {t('Select Target Group')}
@@ -654,8 +654,8 @@ export default function MyCourses() {
                   </Select>
                 </FormControl>
               </Grid>
-              <Grid item xs={12} sx={{ marginX: 2 }}>
-                <FormControl fullWidth sx={{ marginBottom: 2 }}>
+              <Grid item xs={12}>
+                <FormControl fullWidth sx={{ marginBottom: 1 }}>
                   <InputLabel id="demo-simple-select-label">
                     {t('Select Language')}
                   </InputLabel>
@@ -672,11 +672,11 @@ export default function MyCourses() {
                   </Select>
                 </FormControl>
               </Grid>
-              <Grid item xs={12} sx={{ marginX: 2 }}>
+              <Grid item xs={12}>
                 <Button
+                  fullWidth
                   color="primary"
                   variant="contained"
-                  size="small"
                   onClick={onAnalyse}
                   disabled={
                     statedata.isAnalysing ||

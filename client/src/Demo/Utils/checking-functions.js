@@ -1330,6 +1330,36 @@ export const check_generaldocs = (student) => {
   }
 };
 
+export const getNumberOfFilesByStudent = (messages, student_id) => {
+  if (!messages) {
+    return 0;
+  }
+  let file_count = 0;
+  let message_count = 0;
+  for (const message of messages) {
+    if (message.user_id?._id?.toString() === student_id) {
+      file_count += message.file?.length || 0;
+      message_count += 1;
+    }
+  }
+  return `${message_count}/${file_count}`;
+};
+
+export const getNumberOfFilesByEditor = (messages, student_id) => {
+  if (!messages) {
+    return 0;
+  }
+  let file_count = 0;
+  let message_count = 0;
+  for (const message of messages) {
+    if (message.user_id?._id.toString() !== student_id) {
+      file_count += message.file?.length || 0;
+      message_count += 1;
+    }
+  }
+  return `${message_count}/${file_count}`;
+};
+
 export const open_tasks = (students) => {
   const tasks = [];
   for (const student of students) {
@@ -1341,6 +1371,14 @@ export const open_tasks = (students) => {
           latest_message_left_by_id: thread.latest_message_left_by_id,
           isFinalVersion: thread.isFinalVersion,
           file_type: thread.doc_thread_id.file_type,
+          number_input_from_student: getNumberOfFilesByStudent(
+            thread.doc_thread_id.messages,
+            student._id.toString()
+          ),
+          number_input_from_editors: getNumberOfFilesByEditor(
+            thread.doc_thread_id.messages,
+            student._id.toString()
+          ),
           student_id: student._id.toString(),
           thread_id: thread.doc_thread_id._id.toString(),
           deadline: CVDeadline,
@@ -1372,6 +1410,14 @@ export const open_tasks = (students) => {
             latest_message_left_by_id: thread.latest_message_left_by_id,
             isFinalVersion: thread.isFinalVersion,
             file_type: thread.doc_thread_id.file_type,
+            number_input_from_student: getNumberOfFilesByStudent(
+              thread.doc_thread_id.messages,
+              student._id.toString()
+            ),
+            number_input_from_editors: getNumberOfFilesByEditor(
+              thread.doc_thread_id.messages,
+              student._id.toString()
+            ),
             student_id: student._id.toString(),
             deadline: application_deadline_calculator(student, application),
             aged_days: parseInt(
@@ -1420,6 +1466,14 @@ export const open_tasks_with_editors = (students) => {
           latest_message_left_by_id: thread.latest_message_left_by_id,
           isFinalVersion: thread.isFinalVersion,
           file_type: thread.doc_thread_id.file_type,
+          number_input_from_student: getNumberOfFilesByStudent(
+            thread.doc_thread_id.messages,
+            student._id.toString()
+          ),
+          number_input_from_editors: getNumberOfFilesByEditor(
+            thread.doc_thread_id.messages,
+            student._id.toString()
+          ),
           student_id: student._id.toString(),
           editors: student.editors,
           agents: student.agents,
@@ -1455,6 +1509,14 @@ export const open_tasks_with_editors = (students) => {
             latest_message_left_by_id: thread.latest_message_left_by_id,
             isFinalVersion: thread.isFinalVersion,
             file_type: thread.doc_thread_id.file_type,
+            number_input_from_student: getNumberOfFilesByStudent(
+              thread.doc_thread_id.messages,
+              student._id.toString()
+            ),
+            number_input_from_editors: getNumberOfFilesByEditor(
+              thread.doc_thread_id.messages,
+              student._id.toString()
+            ),
             student_id: student._id.toString(),
             editors: student.editors,
             agents: student.agents,

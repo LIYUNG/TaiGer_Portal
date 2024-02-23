@@ -1541,7 +1541,7 @@ export const cvmlrl_overview_header = [
   {
     Header: (
       <>
-        #EditorInput
+        #EditorFeedback
         <br />
         Message/Files
       </>
@@ -1864,7 +1864,7 @@ export const taskTashboardHeader = [
   {
     Header: (
       <>
-        #EditorInput
+        #EditorFeedback
         <br />
         Message/Files
       </>

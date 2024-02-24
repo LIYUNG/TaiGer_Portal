@@ -60,6 +60,10 @@ const STUDENT_INPUT_STATUS_E = {
   BLOCKED: 'blocked'
 };
 
+documentThreadsSchema.index(
+  { student_id: 1, program_id: 1, file_type: 1 },
+  { unique: true }
+);
 const Documentthread = mongoose.model('Documentthread', documentThreadsSchema);
 module.exports = {
   Documentthread,

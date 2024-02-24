@@ -18,7 +18,7 @@ const ATTRIBUTES = [
   { value: 3, name: 'Urgent' },
   { value: 4, name: 'Slow Response' },
   { value: 5, name: 'Disappear' },
-  { value: 6, name: 'High-IQ' },
+  { value: 6, name: 'Low-IQ' },
   { value: 7, name: 'Refunded' }
 ];
 

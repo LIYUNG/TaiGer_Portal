@@ -373,7 +373,7 @@ const getStudents = asyncHandler(async (req, res, next) => {
         '-messages'
       )
       .select(
-        '+applications.portal_credentials.application_portal_a.account +applications.portal_credentials.application_portal_a.password +applications.portal_credentials.application_portal_b.account +applications.portal_credentials.application_portal_b.password'
+        '-attributes +applications.portal_credentials.application_portal_a.account +applications.portal_credentials.application_portal_a.password +applications.portal_credentials.application_portal_b.account +applications.portal_credentials.application_portal_b.password'
       )
       .lean();
 

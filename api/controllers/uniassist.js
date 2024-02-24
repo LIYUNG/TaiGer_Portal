@@ -36,6 +36,7 @@ const getStudentUniAssist = asyncHandler(async (req, res) => {
       'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
       '-messages'
     )
+    .select('-attributes')
     .lean();
   res.status(200).send({ success: true, data: student });
 });

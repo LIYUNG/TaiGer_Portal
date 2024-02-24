@@ -21,13 +21,15 @@ import {
 import { is_TaiGer_Student } from '../../../Utils/checking-functions';
 import DEMO from '../../../../store/constant';
 import { useAuth } from '../../../../components/AuthProvider';
+import EditAttributesSubpage from '../StudDocsOverview/EditAttributesSubpage';
 
 function StudentsAgentEditor(props) {
   const { user } = useAuth();
   const { t } = useTranslation();
   const [studentsAgentEditor, setStudentsAgentEditor] = useState({
     showAgentPage: false,
-    showEditorPage: false
+    showEditorPage: false,
+    showAttributesPage: false
   });
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -66,12 +68,28 @@ function StudentsAgentEditor(props) {
     }));
   };
 
+  const setAttributeModalhide = () => {
+    setStudentsAgentEditor((prevState) => ({
+      ...prevState,
+      showAttributesPage: false
+    }));
+  };
+
   const startEditingEditor = () => {
     setAnchorEl(null);
     setStudentsAgentEditor((prevState) => ({
       ...prevState,
       subpage: 2,
       showEditorPage: true
+    }));
+  };
+
+  const startEditingAttributes = () => {
+    setAnchorEl(null);
+    setStudentsAgentEditor((prevState) => ({
+      ...prevState,
+      subpage: 3,
+      showAttributesPage: true
     }));
   };
 
@@ -83,6 +101,11 @@ function StudentsAgentEditor(props) {
   const submitUpdateEditorlist = (e, updateEditorList, student_id) => {
     setEditorModalhide();
     props.submitUpdateEditorlist(e, updateEditorList, student_id);
+  };
+
+  const submitUpdateAttributeslist = (e, updateAttributesList, student_id) => {
+    setAttributeModalhide();
+    props.submitUpdateAttributeslist(e, updateAttributesList, student_id);
   };
 
   let studentsAgent;
@@ -160,11 +183,16 @@ function StudentsAgentEditor(props) {
                 }}
               >
                 <MenuItem onClick={() => startEditingAgent()}>
-                  Edit Agent
+                  {t('Edit Agent')}
                 </MenuItem>
                 <MenuItem onClick={() => startEditingEditor()}>
-                  Edit Editor
+                  {t('Edit Editor')}
                 </MenuItem>
+                {!is_TaiGer_Editor(user) && (
+                  <MenuItem onClick={() => startEditingAttributes()}>
+                    {t('Configure Attribute')}
+                  </MenuItem>
+                )}
                 {props.isDashboard && !is_TaiGer_Editor(user) && (
                   <MenuItem
                     onClick={() =>
@@ -279,6 +307,14 @@ function StudentsAgentEditor(props) {
               show={studentsAgentEditor.showEditorPage}
               onHide={setEditorModalhide}
               submitUpdateEditorlist={submitUpdateEditorlist}
+            />
+          )}
+          {studentsAgentEditor.showAttributesPage && (
+            <EditAttributesSubpage
+              student={props.student}
+              show={studentsAgentEditor.showAttributesPage}
+              onHide={setAttributeModalhide}
+              submitUpdateAttributeslist={submitUpdateAttributeslist}
             />
           )}
         </>

@@ -83,11 +83,14 @@ export const updateArchivUser = (user_id, isArchived) =>
   });
 
 // Student APIs
-export const updateAgents = (agentsId, id) =>
-  request.post(`/api/students/${id}/agents`, agentsId);
+export const updateAgents = (agentsId, studentId) =>
+  request.post(`/api/students/${studentId}/agents`, agentsId);
 
-export const updateEditors = (editorsId, id) =>
-  request.post(`/api/students/${id}/editors`, editorsId);
+export const updateEditors = (editorsId, studentId) =>
+  request.post(`/api/students/${studentId}/editors`, editorsId);
+
+export const updateAttributes = (attributesId, studentId) =>
+  request.post(`/api/students/${studentId}/attributes`, attributesId);
 
 export const assignProgramToStudent = (studentId, program_ids) =>
   request.post(`/api/students/${studentId}/applications`, {

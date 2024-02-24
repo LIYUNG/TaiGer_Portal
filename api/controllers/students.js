@@ -795,6 +795,26 @@ const assignEditorToStudent = asyncHandler(async (req, res, next) => {
   next();
 });
 
+const assignAttributesToStudent = asyncHandler(async (req, res, next) => {
+  const {
+    params: { studentId },
+    body: attributesId
+  } = req;
+  console.log(attributesId);
+  await Student.findByIdAndUpdate(studentId, { attributes: attributesId }, {});
+
+  const student_upated = await Student.findById(studentId)
+    .populate('applications.programId agents editors')
+    .populate(
+      'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
+      '-messages'
+    )
+    .exec();
+
+  res.status(200).send({ success: true, data: student_upated });
+  next();
+});
+
 const ToggleProgramStatus = asyncHandler(async (req, res, next) => {
   const {
     params: { studentId, program_id }
@@ -1127,6 +1147,7 @@ module.exports = {
   updateStudentsArchivStatus,
   assignAgentToStudent,
   assignEditorToStudent,
+  assignAttributesToStudent,
   ToggleProgramStatus,
   getStudentApplications,
   createApplication,

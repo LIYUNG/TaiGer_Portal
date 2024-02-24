@@ -434,6 +434,18 @@ const Student = User.discriminator(
         type: String,
         default: ''
       },
+      attributes: [
+        {
+          value: {
+            type: Number,
+            required: true
+          },
+          name: {
+            type: String,
+            required: true
+          }
+        }
+      ],
       profile: [
         {
           name: {

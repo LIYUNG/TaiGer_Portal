@@ -951,7 +951,6 @@ const createApplication = asyncHandler(async (req, res, next) => {
             const newThread = new Documentthread({
               student_id: studentId,
               file_type: RLs_CONSTANT[j],
-              program_id: new_programIds[i],
               updatedAt: new Date()
             });
             const threadEntry = application.doc_modification_thread.create({

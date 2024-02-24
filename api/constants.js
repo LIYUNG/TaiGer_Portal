@@ -190,6 +190,9 @@ const FILE_MAPPING_TABLE = {
 };
 const RLs_CONSTANT = ['RL_A', 'RL_B', 'RL_C'];
 const General_Docs = [
+  'RL_A',
+  'RL_B',
+  'RL_C',
   'Recommendation_Letter_A',
   'Recommendation_Letter_B',
   'Recommendation_Letter_C',

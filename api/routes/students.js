@@ -33,7 +33,8 @@ const {
   deleteApplication,
   getAllActiveStudents,
   getAllArchivStudents,
-  getStudentApplications
+  getStudentApplications,
+  assignAttributesToStudent
 } = require('../controllers/students');
 const {
   saveProfileFilePath,
@@ -195,6 +196,17 @@ router
     multitenant_filter,
     permission_canAssignEditor_filter,
     assignEditorToStudent,
+    logAccess
+  );
+
+router
+  .route('/:studentId/attributes')
+  .post(
+    filter_archiv_user,
+    GeneralPOSTRequestRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Editor, Role.Agent),
+    InnerTaigerMultitenantFilter,
+    assignAttributesToStudent,
     logAccess
   );
 

@@ -11,9 +11,11 @@ import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
 import { appConfig } from '../../config';
 import Loading from '../../components/Loading/Loading';
+import { useTranslation } from 'react-i18next';
 
 function indexAll() {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [indexAllState, setIndexAllState] = useState({
     error: '',
     isLoaded: false,
@@ -87,7 +89,7 @@ function indexAll() {
         >
           {appConfig.companyName}
         </Link>
-        <Typography color="text.primary">Tasks Dashboard</Typography>
+        <Typography color="text.primary">{t('Tasks Dashboard')}</Typography>
       </Breadcrumbs>
       <CVMLRLDashboard
         isLoaded={indexAllState.isLoaded}

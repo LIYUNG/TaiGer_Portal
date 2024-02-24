@@ -1382,6 +1382,7 @@ const prepTask = (student, thread) => {
     isFinalVersion: thread.isFinalVersion,
     file_type: thread.doc_thread_id.file_type,
     student_id: student._id.toString(),
+    attributes: student.attributes,
     aged_days: parseInt(
       getNumberOfDays(thread.doc_thread_id.updatedAt, new Date())
     ),

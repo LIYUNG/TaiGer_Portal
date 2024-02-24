@@ -21,7 +21,12 @@ const {
   informAgentStudentAssignedEmail
 } = require('../services/email');
 
-const { RLs_CONSTANT, isNotArchiv, ManagerType } = require('../constants');
+const {
+  GENERAL_RLs_CONSTANT,
+  RLs_CONSTANT,
+  isNotArchiv,
+  ManagerType
+} = require('../constants');
 const Permission = require('../models/Permission');
 const Course = require('../models/Course');
 
@@ -940,7 +945,7 @@ const createApplication = asyncHandler(async (req, res, next) => {
         );
         const generalRLcount = await Documentthread.find({
           _id: { $in: genThreadIds },
-          file_type: { $regex: /RL_/ }
+          file_type: { $regex: /Recommendation_Letter_/ }
         }).count();
 
         if (generalRLcount < nrRLrequired) {
@@ -950,7 +955,7 @@ const createApplication = asyncHandler(async (req, res, next) => {
           for (let j = generalRLcount; j < nrRLrequired; j += 1) {
             const newThread = new Documentthread({
               student_id: studentId,
-              file_type: RLs_CONSTANT[j],
+              file_type: GENERAL_RLs_CONSTANT[j],
               updatedAt: new Date()
             });
             const threadEntry = application.doc_modification_thread.create({

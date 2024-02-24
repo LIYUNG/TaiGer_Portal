@@ -189,10 +189,12 @@ const FILE_MAPPING_TABLE = {
   Supplementary_Form: 'Supplementary Form'
 };
 const RLs_CONSTANT = ['RL_A', 'RL_B', 'RL_C'];
+const GENERAL_RLs_CONSTANT = [
+  'Recommendation_Letter_A',
+  'Recommendation_Letter_B',
+  'Recommendation_Letter_C'
+];
 const General_Docs = [
-  'RL_A',
-  'RL_B',
-  'RL_C',
   'Recommendation_Letter_A',
   'Recommendation_Letter_B',
   'Recommendation_Letter_C',
@@ -1590,6 +1592,7 @@ module.exports = {
   TaskStatus,
   FILE_MAPPING_TABLE,
   RLs_CONSTANT,
+  GENERAL_RLs_CONSTANT,
   General_Docs,
   base_documents_summary,
   is_deadline_within30days_needed,

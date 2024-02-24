@@ -938,17 +938,16 @@ const createApplication = asyncHandler(async (req, res, next) => {
         const genThreadIds = student.generaldocs_threads.map(
           (thread) => thread.doc_thread_id
         );
-        const generaldocs_threads = await Documentthread.find({
-          _id: { $in: genThreadIds }
-        });
-        const generalRLThreads = generaldocs_threads.filter((thread) =>
-          thread.file_type.includes('RL_')
-        );
-        if (generalRLThreads.length < nrRLrequired) {
+        const generalRLcount = await Documentthread.find({
+          _id: { $in: genThreadIds },
+          file_type: { $regex: /RL_/ }
+        }).count();
+
+        if (generalRLcount < nrRLrequired) {
           // create general RL tasks
           console.log('Create general RL tasks!');
 
-          for (let j = generalRLThreads.length; j < nrRLrequired; j += 1) {
+          for (let j = generalRLcount; j < nrRLrequired; j += 1) {
             const newThread = new Documentthread({
               student_id: studentId,
               file_type: RLs_CONSTANT[j],

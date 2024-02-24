@@ -330,16 +330,18 @@ const getSurveyInputs = asyncHandler(async (req, res, next) => {
   } = req;
   const threadDocument = await Documentthread.findById(messagesThreadId)
     .populate('student_id', 'firstname lastname email')
-    .populate('program_id', 'school program_name degree lang');
+    .populate('program_id', 'school program_name degree lang')
+    .lean()
+    .exec();
 
   const surveyDocument = await getSurveyInputDocuments(
-    threadDocument.student_id,
-    threadDocument.program_id,
+    threadDocument.student_id._id.toString(),
+    threadDocument?.program_id._id.toString(),
     threadDocument.file_type
   );
 
   document = {
-    ...threadDocument.toObject(),
+    ...threadDocument,
     surveyInputs: surveyDocument
   };
 

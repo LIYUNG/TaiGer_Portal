@@ -205,9 +205,9 @@ const AppBar = styled(MuiAppBar, {
     duration: theme.transitions.duration.leavingScreen
   }),
   // width: `calc(100% - ${0}px)`,
-  marginLeft: ismobile ? 0 : `-${drawerWidth}px`,
+  marginLeft: ismobile === 'true' ? 0 : `-${drawerWidth}px`,
   ...(open && {
-    width: ismobile ? '100%' : `calc(100% - ${drawerWidth}px)`,
+    width: ismobile === 'true' ? '100%' : `calc(100% - ${drawerWidth}px)`,
     // marginLeft: ismobile ? `${drawerWidth}px` : 0,
     transition: theme.transitions.create(['margin', 'width'], {
       easing: theme.transitions.easing.easeOut,

@@ -484,12 +484,12 @@ function AgentReviewing(props) {
             component={LinkDom}
           >
             {
-              props.student.applications.filter((application) =>
+              props.student.applications?.filter((application) =>
                 application.doc_modification_thread?.some(
                   (thread) =>
                     isProgramDecided(application) &&
-                    thread.doc_thread_id.isFinalVersion &&
-                    thread.doc_thread_id.file_type === 'ML'
+                    thread.doc_thread_id?.isFinalVersion &&
+                    thread.doc_thread_id?.file_type === 'ML'
                 )
               ).length
             }
@@ -499,7 +499,7 @@ function AgentReviewing(props) {
                 application.doc_modification_thread?.some(
                   (thread) =>
                     isProgramDecided(application) &&
-                    thread.doc_thread_id.file_type === 'ML'
+                    thread.doc_thread_id?.file_type === 'ML'
                 )
               ).length
             }
@@ -518,9 +518,9 @@ function AgentReviewing(props) {
                 application.doc_modification_thread?.some(
                   (thread) =>
                     isProgramDecided(application) &&
-                    thread.doc_thread_id.isFinalVersion &&
-                    (thread.doc_thread_id.file_type.includes('RL') ||
-                      thread.doc_thread_id.file_type.includes('Recommendation'))
+                    thread.doc_thread_id?.isFinalVersion &&
+                    (thread.doc_thread_id?.file_type.includes('RL') ||
+                      thread.doc_thread_id?.file_type.includes('Recommendation'))
                 )
               ).length
             }
@@ -530,8 +530,8 @@ function AgentReviewing(props) {
                 application.doc_modification_thread?.some(
                   (thread) =>
                     isProgramDecided(application) &&
-                    (thread.doc_thread_id.file_type.includes('RL') ||
-                      thread.doc_thread_id.file_type.includes('Recommendation'))
+                    (thread.doc_thread_id?.file_type.includes('RL') ||
+                      thread.doc_thread_id?.file_type.includes('Recommendation'))
                 )
               ).length
             }
@@ -550,8 +550,8 @@ function AgentReviewing(props) {
                 application.doc_modification_thread?.some(
                   (thread) =>
                     isProgramDecided(application) &&
-                    thread.doc_thread_id.isFinalVersion &&
-                    thread.doc_thread_id.file_type.includes('Essay')
+                    thread.doc_thread_id?.isFinalVersion &&
+                    thread.doc_thread_id?.file_type.includes('Essay')
                 )
               ).length
             }
@@ -561,7 +561,7 @@ function AgentReviewing(props) {
                 application.doc_modification_thread?.some(
                   (thread) =>
                     isProgramDecided(application) &&
-                    thread.doc_thread_id.file_type.includes('Essay')
+                    thread.doc_thread_id?.file_type.includes('Essay')
                 )
               ).length
             }

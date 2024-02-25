@@ -106,7 +106,7 @@ function ManualFiles(props) {
                           'yes' &&
                         props.application.doc_modification_thread.findIndex(
                           (thread) =>
-                            thread.doc_thread_id.file_type ===
+                            thread.doc_thread_id?.file_type ===
                             file_category_const[doc_reqired_key]
                         ) === -1 && (
                           <li key={i}>

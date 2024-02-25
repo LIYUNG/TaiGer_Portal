@@ -21,7 +21,8 @@ import { useTranslation } from 'react-i18next';
 
 import {
   taskTashboardHeader,
-  cvmlrl_overview_closed_header
+  cvmlrl_overview_closed_header,
+  COLORS
 } from '../Utils/contants';
 import {
   is_TaiGer_role,
@@ -227,9 +228,16 @@ function SortTable2({ columns, data, user }) {
                       {is_TaiGer_role(user) && (
                         <>
                           <br />
-                          {row.original.attributes?.map((attribute) => (
-                            <Chip label={attribute.name} key={attribute._id} />
-                          ))}
+                          {row.original.attributes?.map(
+                            (attribute) =>
+                              [1, 3].includes(attribute.value) && (
+                                <Chip
+                                  label={attribute.name}
+                                  key={attribute._id}
+                                  color={COLORS[attribute.value]}
+                                />
+                              )
+                          )}
                         </>
                       )}
                     </TableCell>

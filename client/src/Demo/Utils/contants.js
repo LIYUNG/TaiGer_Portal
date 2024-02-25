@@ -832,6 +832,27 @@ export const program_fields_special_documents = [
   }
 ];
 
+export const ATTRIBUTES = [
+  { value: 1, name: 'Demanding' },
+  { value: 2, name: 'Parents Pushing' },
+  { value: 3, name: 'Urgent' },
+  { value: 4, name: 'Slow Response' },
+  { value: 5, name: 'Disappear' },
+  { value: 6, name: 'Low-IQ' },
+  { value: 7, name: 'Refunded' }
+];
+
+export const COLORS = [
+  'primary',
+  'secondary',
+  'secondary',
+  'info',
+  'error',
+  'primary',
+  'primary',
+  'primary'
+];
+
 export const program_fields_special_notes = [
   {
     name: 'ECTS Requirements',

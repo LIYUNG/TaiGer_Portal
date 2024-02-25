@@ -36,7 +36,8 @@ import {
   profile_name_list,
   convertDate,
   programstatuslist,
-  academic_background_header
+  academic_background_header,
+  COLORS
 } from '../Utils/contants';
 import {
   is_TaiGer_Guest,
@@ -296,7 +297,11 @@ function SingleStudentPage() {
         </Box>
         <Box>
           {singleStudentPage.student.attributes?.map((attribute) => (
-            <Chip label={attribute.name} key={attribute._id} />
+            <Chip
+              label={attribute.name}
+              key={attribute._id}
+              color={COLORS[attribute.value]}
+            />
           ))}
           {/* <Chip
             onClick={() => {}}

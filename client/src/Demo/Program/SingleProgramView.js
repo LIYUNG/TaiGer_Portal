@@ -1,6 +1,7 @@
 import React, { Fragment, useState } from 'react';
 import { Link as LinkDom } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import {
   Box,
   Button,
@@ -18,6 +19,7 @@ import {
 } from '@mui/material';
 
 import {
+  is_TaiGer_Admin,
   is_TaiGer_AdminAgent,
   is_TaiGer_role,
   LinkableNewlineText
@@ -258,6 +260,38 @@ function SingleProgramView(props) {
               </Grid>
             </Card>
           </CustomTabPanel>
+          {is_TaiGer_AdminAgent(user) && (
+            <>
+              <Button
+                fullWidth
+                variant="contained"
+                color="info"
+                size="small"
+                onClick={() => props.handleClick()}
+              >
+                {t('Edit')}
+              </Button>
+              <Button
+                fullWidth
+                variant="outlined"
+                color="primary"
+                size="small"
+                onClick={() => props.setModalShow2()}
+              >
+                {t('Assign')}
+              </Button>
+              {is_TaiGer_Admin(user) && (
+                <Button
+                  variant="outlined"
+                  size="small"
+                  color="error"
+                  onClick={() => props.setModalShowDDelete()}
+                >
+                  {t('Delete')}
+                </Button>
+              )}
+            </>
+          )}
         </Grid>
         <Grid item xs={12} md={4}>
           <Box sx={{ my: 2 }}>
@@ -266,8 +300,13 @@ function SingleProgramView(props) {
               to={`https://www.google.com/search?q=${props.program.school}+${props.program.program_name}+${props.program.degree}`}
               target="_blank"
             >
-              <Button fullWidth color="primary" variant="contained">
-                Find in Google
+              <Button
+                fullWidth
+                color="primary"
+                variant="contained"
+                endIcon={<OpenInNewIcon />}
+              >
+                {t('Find in Google')}
               </Button>
             </Link>
           </Box>

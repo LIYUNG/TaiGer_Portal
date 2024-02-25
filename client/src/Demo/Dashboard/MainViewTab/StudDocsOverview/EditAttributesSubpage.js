@@ -11,16 +11,7 @@ import {
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import { useTranslation } from 'react-i18next';
-
-const ATTRIBUTES = [
-  { value: 1, name: 'Demanding' },
-  { value: 2, name: 'Parents Pushing' },
-  { value: 3, name: 'Urgent' },
-  { value: 4, name: 'Slow Response' },
-  { value: 5, name: 'Disappear' },
-  { value: 6, name: 'Low-IQ' },
-  { value: 7, name: 'Refunded' }
-];
+import { ATTRIBUTES } from '../../../Utils/contants';
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;

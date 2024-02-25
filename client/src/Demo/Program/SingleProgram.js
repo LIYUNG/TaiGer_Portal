@@ -14,11 +14,7 @@ import ProgramDeleteWarning from './ProgramDeleteWarning';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import { TabTitle } from '../Utils/TabTitle';
-import {
-  is_TaiGer_AdminAgent,
-  is_TaiGer_Admin,
-  is_TaiGer_role
-} from '../Utils/checking-functions';
+import { is_TaiGer_role } from '../Utils/checking-functions';
 import { deleteProgram } from '../../api';
 import ProgramListSubpage from './ProgramListSubpage';
 import DEMO from '../../store/constant';
@@ -368,37 +364,11 @@ function SingleProgram() {
           students={students}
           programId={programId}
           programListAssistant={programListAssistant}
+          handleClick={handleClick}
+          setModalShow2={setModalShow2}
+          setModalShowDDelete={setModalShowDDelete}
         />
-        {is_TaiGer_AdminAgent(user) && (
-          <>
-            <Button
-              variant="outlined"
-              color="secondary"
-              size="small"
-              onClick={() => handleClick()}
-            >
-              {t('Edit')}
-            </Button>
-            <Button
-              variant="outlined"
-              color="primary"
-              size="small"
-              onClick={() => setModalShow2()}
-            >
-              {t('Assign')}
-            </Button>
-            {is_TaiGer_Admin(user) && (
-              <Button
-                variant="outlined"
-                size="small"
-                color="error"
-                onClick={() => setModalShowDDelete()}
-              >
-                {t('Delete')}
-              </Button>
-            )}
-          </>
-        )}
+
         <ProgramDeleteWarning
           deleteProgramWarning={singleProgramState.deleteProgramWarning}
           setModalHideDDelete={setModalHideDDelete}

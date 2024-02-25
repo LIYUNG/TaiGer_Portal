@@ -51,7 +51,16 @@ function ApplicantsOverview() {
             : `${user.firstname} ${user.lastname} Applications Overview`}
         </Typography>
       </Breadcrumbs>
-      <ApplicationOverviewTabs user={user} students={students} />
+      <ApplicationOverviewTabs
+        user={user}
+        students={students.filter(
+          (student) =>
+            student.editors.some(
+              (editor) => editor._id === user._id.toString()
+            ) ||
+            student.agents.some((agent) => agent._id === user._id.toString())
+        )}
+      />
     </Box>
   );
 }

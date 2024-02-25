@@ -69,13 +69,15 @@ function SingleProgramView(props) {
             <Tabs
               value={value}
               onChange={handleChange}
+              variant="scrollable"
+              scrollButtons="auto"
               aria-label="basic tabs example"
             >
-              <Tab label="Overview" {...a11yProps(0)} />
-              <Tab label="Application Deadline" {...a11yProps(1)} />
-              <Tab label="Specific Requirements" {...a11yProps(2)} />
-              <Tab label="Special Documents" {...a11yProps(3)} />
-              <Tab label="Others" {...a11yProps(4)} />
+              <Tab label={t('Overview')} {...a11yProps(0)} />
+              <Tab label={t('Application Deadline')} {...a11yProps(1)} />
+              <Tab label={t('Specific Requirements')} {...a11yProps(2)} />
+              <Tab label={t('Special Documents')} {...a11yProps(3)} />
+              <Tab label={t('Others')} {...a11yProps(4)} />
             </Tabs>
           </Box>
           <CustomTabPanel value={value} index={0}>

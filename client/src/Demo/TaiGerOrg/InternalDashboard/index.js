@@ -378,6 +378,8 @@ function InternalDashboard() {
         <Tabs
           value={value}
           onChange={handleChange}
+          variant="scrollable"
+          scrollButtons="auto"
           aria-label="basic tabs example"
         >
           <Tab label="Overview" {...a11yProps(0)} />

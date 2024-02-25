@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  Chip,
   Link,
   Table,
   TableBody,
@@ -130,6 +131,14 @@ function SortTable({ columns, data, user, handleAsFinalFile }) {
                       >
                         {cell.render('Cell')}
                       </Link>
+                      {is_TaiGer_role(user) && (
+                        <>
+                          <br />
+                          {row.original.attributes?.map((attribute) => (
+                            <Chip label={attribute.name} key={attribute._id} />
+                          ))}
+                        </>
+                      )}
                     </TableCell>
                   ) : j === 6 ? (
                     cell.value > 14 ? (

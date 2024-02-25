@@ -849,6 +849,21 @@ function NewProgramEdit(props) {
             </FormControl>
           </Grid>
           <Grid item xs={6} md={6}>
+            <Typography variant="body1">{t('Tuition Fees')}</Typography>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <TextField
+              fullWidth
+              size="small"
+              type="text"
+              id="tuition_fees"
+              name="tuition_fees"
+              placeholder="https://...."
+              onChange={(e) => handleChange(e)}
+              value={initStates.program.tuition_fees || ''}
+            />
+          </Grid>
+          <Grid item xs={6} md={6}>
             <Typography variant="body1">FPSO</Typography>
           </Grid>
           <Grid item xs={6} md={6}>

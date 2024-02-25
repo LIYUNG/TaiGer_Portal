@@ -255,6 +255,7 @@ function AgentMainView(props) {
               students={props.students}
               documentslist={props.documentslist}
               submitUpdateAgentlist={props.submitUpdateAgentlist}
+              submitUpdateAttributeslist={props.submitUpdateAttributeslist}
               isDashboard={props.isDashboard}
               updateStudentArchivStatus={props.updateStudentArchivStatus}
             />

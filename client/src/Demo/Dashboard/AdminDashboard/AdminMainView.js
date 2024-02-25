@@ -52,6 +52,7 @@ function AdminMainView(props) {
             updateStudentArchivStatus={props.updateStudentArchivStatus}
             submitUpdateAgentlist={props.submitUpdateAgentlist}
             submitUpdateEditorlist={props.submitUpdateEditorlist}
+            submitUpdateAttributeslist={props.submitUpdateAttributeslist}
             isDashboard={props.isDashboard}
           />
         </Grid>

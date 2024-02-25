@@ -1382,6 +1382,7 @@ const prepTask = (student, thread) => {
     isFinalVersion: thread.isFinalVersion,
     file_type: thread.doc_thread_id.file_type,
     student_id: student._id.toString(),
+    attributes: student.attributes,
     aged_days: parseInt(
       getNumberOfDays(thread.doc_thread_id.updatedAt, new Date())
     ),
@@ -1744,7 +1745,7 @@ export const isDocumentsMissingAssign = (application) => {
         application.programId[keys[i]] === 'yes' &&
         application.doc_modification_thread.findIndex(
           (thread) =>
-            thread.doc_thread_id.file_type === file_category_const[keys[i]]
+            thread.doc_thread_id?.file_type === file_category_const[keys[i]]
         ) === -1);
   }
   return flag;

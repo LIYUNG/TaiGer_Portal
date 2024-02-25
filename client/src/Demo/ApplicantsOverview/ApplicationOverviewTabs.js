@@ -257,7 +257,8 @@ function ApplicationOverviewTabs(props) {
           {is_TaiGer_role(user) && (
             <TabStudBackgroundDashboard
               students={props.students}
-              isArchivPage={false}
+              updateStudentArchivStatus={props.updateStudentArchivStatus}
+              isDashboard={true}
             />
           )}
         </CustomTabPanel>

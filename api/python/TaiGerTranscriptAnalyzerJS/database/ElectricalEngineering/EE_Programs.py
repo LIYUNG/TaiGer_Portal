@@ -710,7 +710,8 @@ def TUM_ASIA_IC_DESIGN(transcript_sorted_group_map, df_transcript_array, df_cate
     WriteToExcel(writer, program_name, program_category, program_category_map,
                  transcript_sorted_group_map, df_transcript_array_temp, df_category_courses_sugesstion_data_temp, column_len_array)
 
-
+# FPSO: https://www.etit.kit.edu/rd_download/MHB/MHB_BSc23_ETIT_WS23-82-048-H-2023_v1_2023-10-20_de.pdf
+# Year 2023
 def KIT_EI(transcript_sorted_group_map, df_transcript_array, df_category_courses_sugesstion_data, writer):
     program_name = 'KIT_EI'
     print("Create " + program_name + " sheet")
@@ -727,11 +728,13 @@ def KIT_EI(transcript_sorted_group_map, df_transcript_array, df_category_courses
 
     # Create transcript_sorted_group to program_category mapping
     PROG_SPEC_MATH_PHY_PARAM = {
-        'Program_Category': 'Mathematics Physics Fundamental', 'Required_ECTS': 40}
+        'Program_Category': 'Mathematics Physics Fundamental', 'Required_ECTS': 42}
     PROG_SPEC_ELECTRICAL_ENGINEERING_PARAM = {
-        'Program_Category': 'Electical Engineering', 'Required_ECTS': 51}
+        'Program_Category': 'Electical Engineering', 'Required_ECTS': 28}
+    PROG_SPEC_SYSTEM_ENGINEERING_PARAM = {
+        'Program_Category': 'System Engineering', 'Required_ECTS': 14}
     PROG_SPEC_INFORMATION_TECHNOLOGY_ENG_PARAM = {
-        'Program_Category': 'Information technology', 'Required_ECTS': 39}
+        'Program_Category': 'Information technology', 'Required_ECTS': 19}
     PROG_SPEC_OTHERS = {
         'Program_Category': 'Others', 'Required_ECTS': 0}
 
@@ -739,6 +742,7 @@ def KIT_EI(transcript_sorted_group_map, df_transcript_array, df_category_courses
     program_category = [
         PROG_SPEC_MATH_PHY_PARAM,  # 數學
         PROG_SPEC_ELECTRICAL_ENGINEERING_PARAM,  # 基礎電機
+        PROG_SPEC_SYSTEM_ENGINEERING_PARAM, # 基礎系統
         PROG_SPEC_INFORMATION_TECHNOLOGY_ENG_PARAM,  # 基礎資工
         PROG_SPEC_OTHERS  # 其他
     ]
@@ -753,15 +757,15 @@ def KIT_EI(transcript_sorted_group_map, df_transcript_array, df_category_courses
         PROG_SPEC_INFORMATION_TECHNOLOGY_ENG_PARAM,  # 資訊
         PROG_SPEC_INFORMATION_TECHNOLOGY_ENG_PARAM,  # 程式
         PROG_SPEC_OTHERS,  # 軟體工程
-        PROG_SPEC_INFORMATION_TECHNOLOGY_ENG_PARAM,  # 控制系統
+        PROG_SPEC_SYSTEM_ENGINEERING_PARAM,  # 控制系統
         PROG_SPEC_ELECTRICAL_ENGINEERING_PARAM,  # 電子
         PROG_SPEC_ELECTRICAL_ENGINEERING_PARAM,  # 電子實驗
         PROG_SPEC_ELECTRICAL_ENGINEERING_PARAM,  # 電路
-        PROG_SPEC_INFORMATION_TECHNOLOGY_ENG_PARAM,  # 訊號系統
+        PROG_SPEC_SYSTEM_ENGINEERING_PARAM,  # 訊號系統
         PROG_SPEC_ELECTRICAL_ENGINEERING_PARAM,  # 電磁
         PROG_SPEC_ELECTRICAL_ENGINEERING_PARAM,  # 電力電子
         PROG_SPEC_INFORMATION_TECHNOLOGY_ENG_PARAM,  # 通訊
-        PROG_SPEC_ELECTRICAL_ENGINEERING_PARAM,  # 半導體
+        PROG_SPEC_MATH_PHY_PARAM,  # 半導體
         PROG_SPEC_OTHERS,  # 電子材料
         PROG_SPEC_ELECTRICAL_ENGINEERING_PARAM,  # 進階電磁理論
         PROG_SPEC_OTHERS,  # 電機專業選修

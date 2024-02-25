@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Breadcrumbs, Link, Typography, Box } from '@mui/material';
 import { Navigate, Link as LinkDom, useLoaderData } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -9,13 +9,49 @@ import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
 import { appConfig } from '../../config';
+import { updateArchivStudents } from '../../api';
 
 function ApplicantsOverview() {
   const { user } = useAuth();
   const {
     data: { data: students }
   } = useLoaderData();
+  const [applicantsOverviewState, setApplicantsOverviewState] = useState({
+    students
+  });
   const { t } = useTranslation();
+
+  const updateStudentArchivStatus = (studentId, isArchived) => {
+    updateArchivStudents(studentId, isArchived).then(
+      (resp) => {
+        const { data, success } = resp.data;
+        const { status } = resp;
+        if (success) {
+          setApplicantsOverviewState((prevState) => ({
+            ...prevState,
+            students: data,
+            success: success,
+            res_modal_status: status
+          }));
+        } else {
+          const { message } = resp.data;
+          setApplicantsOverviewState((prevState) => ({
+            ...prevState,
+            res_modal_status: status,
+            res_modal_message: message
+          }));
+        }
+      },
+      (error) => {
+        setApplicantsOverviewState((prevState) => ({
+          ...prevState,
+          error,
+          res_modal_status: 500,
+          res_modal_message: ''
+        }));
+      }
+    );
+  };
 
   if (
     user.role !== 'Admin' &&
@@ -53,7 +89,8 @@ function ApplicantsOverview() {
       </Breadcrumbs>
       <ApplicationOverviewTabs
         user={user}
-        students={students.filter(
+        updateStudentArchivStatus={updateStudentArchivStatus}
+        students={applicantsOverviewState.students.filter(
           (student) =>
             student.editors.some(
               (editor) => editor._id === user._id.toString()

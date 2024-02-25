@@ -472,6 +472,8 @@ function CVMLRLDashboard(props) {
         <Tabs
           value={value}
           onChange={handleChange}
+          variant="scrollable"
+          scrollButtons="auto"
           aria-label="basic tabs example"
         >
           <Tab label="Open" {...a11yProps(0)} />

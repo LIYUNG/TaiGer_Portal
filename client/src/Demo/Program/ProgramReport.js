@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Card, CircularProgress, Typography } from '@mui/material';
+import {
+  Button,
+  Card,
+  CircularProgress,
+  Grid,
+  Typography
+} from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -244,39 +250,54 @@ function ProgramReport(props) {
     return <CircularProgress />;
   }
   const tickets = programReportState.tickets.map((ticket, i) => (
-    <Card key={i}>
-      <Button
-        size="small"
-        color="primary"
-        variant="contained"
-        onClick={() => handleReportUpdateClick(ticket)}
-      >
-        {t('Update')}
-      </Button>
-      <Button
-        size="small"
-        color="secondary"
-        variant="contained"
-        disabled={ticket.status === 'resolved'}
-        onClick={() => handleReportDeleteClick(ticket)}
-      >
-        {t('Delete')}
-      </Button>
-      <Typography>
-        {t('Description')}: {NewlineText({ text: ticket.description })}
-      </Typography>
-      <Typography>
-        {t('Status at')}: {ticket.status}
-      </Typography>
-      <Typography>
-        {t('Feedback at')}: {NewlineText({ text: ticket.feedback })}
-      </Typography>
-      <Typography>
-        {t('updated at')}: {convertDate(ticket.updatedAt)}
-      </Typography>
-      <Typography>
-        {t('created at')}: {convertDate(ticket.createdAt)}
-      </Typography>
+    <Card key={i} sx={{ p: 2 }}>
+      <Grid container spacing={1}>
+        <Grid item xs={12}>
+          <Typography>
+            <b>{t('Status at')}:</b> {ticket.status}
+          </Typography>
+        </Grid>
+        <Grid item xs={12}>
+          <Typography>
+            <b>{t('Description')}:</b>{' '}
+            {NewlineText({ text: ticket.description })}
+          </Typography>
+        </Grid>
+        <Grid item xs={12}>
+          <Typography>
+            <b>{t('Feedback at')}:</b> {NewlineText({ text: ticket.feedback })}
+          </Typography>
+        </Grid>
+        <Grid item xs={12}>
+          <Typography>
+            {t('updated at')}: {convertDate(ticket.updatedAt)}
+          </Typography>
+        </Grid>
+        <Grid item xs={12}>
+          <Typography>
+            {t('created at')}: {convertDate(ticket.createdAt)}
+          </Typography>
+        </Grid>
+        <Grid item xs={12}>
+          <Button
+            size="small"
+            color="primary"
+            variant="contained"
+            onClick={() => handleReportUpdateClick(ticket)}
+          >
+            {t('Update')}
+          </Button>
+          <Button
+            size="small"
+            color="secondary"
+            variant="contained"
+            disabled={ticket.status === 'resolved'}
+            onClick={() => handleReportDeleteClick(ticket)}
+          >
+            {t('Delete')}
+          </Button>
+        </Grid>
+      </Grid>
     </Card>
   ));
   return (

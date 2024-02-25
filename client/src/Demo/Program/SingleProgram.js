@@ -17,12 +17,10 @@ import { TabTitle } from '../Utils/TabTitle';
 import {
   is_TaiGer_AdminAgent,
   is_TaiGer_Admin,
-  is_TaiGer_Student,
   is_TaiGer_role
 } from '../Utils/checking-functions';
 import { deleteProgram } from '../../api';
 import ProgramListSubpage from './ProgramListSubpage';
-import ProgramReport from './ProgramReport';
 import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
@@ -294,7 +292,7 @@ function SingleProgram() {
 
   if (isDeleted) {
     return (
-      <Card>
+      <Card sx={{ p: 2 }}>
         <Typography variant="h5">The program is deleted</Typography>
         <Typography>
           <LinkDom to={`${DEMO.PROGRAMS}`}>
@@ -319,11 +317,6 @@ function SingleProgram() {
           handleSubmit_Program={handleSubmit_Program}
           handleClick={handleClick}
         />
-        {/* <SingleProgramEdit
-          program={program}
-          handleSubmit_Program={handleSubmit_Program}
-          handleClick={handleClick}
-        /> */}
       </>
     );
   } else {
@@ -405,13 +398,6 @@ function SingleProgram() {
               </Button>
             )}
           </>
-        )}
-        {is_TaiGer_Student(user) && (
-          <ProgramReport
-            uni_name={program.school}
-            program_name={program.program_name}
-            program_id={program._id.toString()}
-          />
         )}
         <ProgramDeleteWarning
           deleteProgramWarning={singleProgramState.deleteProgramWarning}

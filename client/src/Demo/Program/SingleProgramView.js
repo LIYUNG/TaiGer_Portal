@@ -1,4 +1,5 @@
 import React, { Fragment, useState } from 'react';
+import { Link as LinkDom } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   Box,
@@ -50,7 +51,7 @@ function SingleProgramView(props) {
 
   return (
     <>
-      <Box>
+      <Box sx={{ my: 1 }}>
         <Banner
           ReadOnlyMode={true}
           bg={'primary'}
@@ -257,6 +258,26 @@ function SingleProgramView(props) {
           </CustomTabPanel>
         </Grid>
         <Grid item xs={12} md={4}>
+          <Box sx={{ my: 2 }}>
+            <Link
+              component={LinkDom}
+              to={`https://www.google.com/search?q=${props.program.school}+${props.program.program_name}+${props.program.degree}`}
+              target="_blank"
+            >
+              <Button fullWidth color="primary" variant="contained">
+                Find in Google
+              </Button>
+            </Link>
+          </Box>
+          <Card className="card-with-scroll">
+            <div className="card-scrollable-body">
+              <ProgramReport
+                uni_name={props.program.school}
+                program_name={props.program.program_name}
+                program_id={props.program._id.toString()}
+              />
+            </div>
+          </Card>
           {is_TaiGer_role(user) && (
             <>
               <Card className="card-with-scroll" sx={{ p: 2 }}>
@@ -309,15 +330,6 @@ function SingleProgramView(props) {
                   <Typography variant="string" sx={{ mt: 2 }}>
                     O: admitted, X: rejected, -: not confirmed{' '}
                   </Typography>
-                </div>
-              </Card>
-              <Card className="card-with-scroll">
-                <div className="card-scrollable-body">
-                  <ProgramReport
-                    uni_name={props.program.school}
-                    program_name={props.program.program_name}
-                    program_id={props.program._id.toString()}
-                  />
                 </div>
               </Card>
               <Card>

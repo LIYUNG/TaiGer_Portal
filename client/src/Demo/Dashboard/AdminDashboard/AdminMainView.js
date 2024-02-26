@@ -22,7 +22,7 @@ function AdminMainView(props) {
 
   return (
     <>
-      <Grid container spacing={2}>
+      <Grid container spacing={2} sx={{ mt: 0 }}>
         <Grid item xs={12} md={6}>
           <Card>
             <Typography variant="h6">

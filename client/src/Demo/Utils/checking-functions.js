@@ -4,16 +4,30 @@ import { getNumberOfDays, convertDate, profile_list } from './contants';
 import { useTranslation } from 'react-i18next';
 import { Link } from '@mui/material';
 import { Link as LinkDom } from 'react-router-dom';
+
+// Tested
 export const is_TaiGer_role = (user) =>
   user?.role === 'Admin' || user?.role === 'Agent' || user?.role === 'Editor';
+
+// Tested
 export const is_TaiGer_AdminAgent = (user) =>
   user?.role === 'Admin' || user?.role === 'Agent';
+
+// Tested
 export const is_TaiGer_Admin = (user) => user?.role === 'Admin';
+
+// Tested
 export const is_TaiGer_Editor = (user) => user?.role === 'Editor';
+
+// Tested
 export const is_TaiGer_Agent = (user) => user?.role === 'Agent';
+
 export const is_TaiGer_Manager = (user) => user?.role === 'Manager';
+
+// Tested
 export const is_TaiGer_Student = (user) => user?.role === 'Student';
 export const is_TaiGer_Guest = (user) => user?.role === 'Guest';
+
 export const DocumentStatus = {
   Uploaded: 'uploaded',
   Missing: 'missing',
@@ -22,6 +36,7 @@ export const DocumentStatus = {
   NotNeeded: 'notneeded'
 };
 
+// Tested
 export const calculateDisplayLength = (text) => {
   let length = 0;
   for (let i = 0; i < text.length; i++) {
@@ -86,6 +101,7 @@ export const LinkableNewlineText = ({ text }) => {
   );
 };
 
+// Tested
 export const Bayerische_Formel = (high, low, my) => {
   if (high - low !== 0) {
     var Germen_note = 1 + (3 * (high - my)) / (high - low);
@@ -1146,14 +1162,17 @@ export const is_program_ml_rl_essay_ready = (application) => {
   return true;
 };
 
+// Tested
 export const isProgramDecided = (application) => {
   return application.decided === 'O';
 };
 
+// Tested
 export const isProgramSubmitted = (application) => {
   return application.closed === 'O';
 };
 
+// Tested
 export const isProgramWithdraw = (application) => {
   return application.closed === 'X';
 };
@@ -1649,6 +1668,7 @@ export const getNextProgramName = (student) => {
     .sort((a, b) => (a.application_deadline > b.application_deadline ? 1 : -1));
   return getNextProgram.length !== 0 ? getNextProgram[0].program : '-';
 };
+
 export const getNextProgramDeadline = (student) => {
   const getNextProgram = programs_refactor([student])
     .filter(
@@ -1659,6 +1679,7 @@ export const getNextProgramDeadline = (student) => {
     ? getNextProgram[0].application_deadline
     : '-';
 };
+
 export const getNextProgramDayleft = (student) => {
   const getNextProgram = programs_refactor([student])
     .filter(
@@ -1667,6 +1688,7 @@ export const getNextProgramDayleft = (student) => {
     .sort((a, b) => (a.application_deadline > b.application_deadline ? 1 : -1));
   return getNextProgram.length !== 0 ? getNextProgram[0].days_left : '-';
 };
+
 export const getNextProgramStatus = (student) => {
   const getNextProgram = programs_refactor([student])
     .filter(

@@ -11,7 +11,10 @@ import {
   is_TaiGer_Agent,
   calculateDisplayLength,
   truncateText,
-  Bayerische_Formel
+  Bayerische_Formel,
+  isProgramDecided,
+  isProgramSubmitted,
+  isProgramWithdraw
 } from './checking-functions';
 
 const userStudent = { role: 'Student' };
@@ -143,5 +146,42 @@ describe('Role checking', () => {
     };
     expect(isCVFinished(studentIsCVFinished)).toEqual(true);
     expect(isCVFinished(studentIsCVNotFinished)).toEqual(false);
+  });
+
+  test('isProgramDecided', () => {
+    const application_decided = {
+      decided: 'O'
+    };
+    const application_not_decided_yet = {
+      decided: '-'
+    };
+    const application_decided_no = {
+      decided: '-'
+    };
+    expect(isProgramDecided(application_decided)).toEqual(true);
+    expect(isProgramDecided(application_not_decided_yet)).toEqual(false);
+    expect(isProgramDecided(application_decided_no)).toEqual(false);
+  });
+
+  test('isProgramSubmitted', () => {
+    const application_closed = {
+      closed: 'O'
+    };
+    const application_open = {
+      closed: '-'
+    };
+    expect(isProgramSubmitted(application_open)).toEqual(false);
+    expect(isProgramSubmitted(application_closed)).toEqual(true);
+  });
+
+  test('isProgramWithdraw', () => {
+    const application_withdraw = {
+      closed: 'X'
+    };
+    const application_open = {
+      closed: '-'
+    };
+    expect(isProgramWithdraw(application_withdraw)).toEqual(true);
+    expect(isProgramWithdraw(application_open)).toEqual(false);
   });
 });

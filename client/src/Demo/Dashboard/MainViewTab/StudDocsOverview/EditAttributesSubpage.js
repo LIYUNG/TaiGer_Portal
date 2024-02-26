@@ -56,8 +56,8 @@ function EditAttributesSubpage(props) {
           <TextField
             {...params}
             variant="standard"
-            label="Timeslots"
-            placeholder="Timeslots"
+            label="Attribute"
+            placeholder="Demanding"
           />
         )}
       />

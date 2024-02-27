@@ -20,12 +20,12 @@ import DEMO from '../../../store/constant';
 
 function AssignEssayWritersPage(props) { //props = combinedLoader
   const { t } = useTranslation();
-  const no_editor_students = props.students.map((student, i) => (
+  const no_writer_essays = props.essayDocumentThreads.map((essayDocumentThread, i) => (
     <NoWritersEssaysCard
       key={i}
-      student={student}
+      // student={student}
       submitUpdateEditorlist={props.submitUpdateEditorlist}
-      essayDocumentThreads={props.essayDocumentThreads}
+      essayDocumentThread={essayDocumentThread}
     />
   ));
 
@@ -56,7 +56,7 @@ function AssignEssayWritersPage(props) { //props = combinedLoader
               <TableCell>{t('Agent(s)')}</TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>{no_editor_students}</TableBody>
+          <TableBody>{no_writer_essays}</TableBody>
         </Table>
       </Card>
     </Box>

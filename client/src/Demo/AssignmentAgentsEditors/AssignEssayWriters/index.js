@@ -29,28 +29,28 @@ function AssignEssayWriters() {
     essayDocumentThreads: essayDocumentThreads
   });
 
-  const submitUpdateEditorlist = (e, updateEditorList, student_id) => {
+  const submitUpdateEditorlist = (e, updateEditorList, essayDocumentThread_id) => {
     e.preventDefault();
-    UpdateEditorlist(e, updateEditorList, student_id);
+    UpdateEditorlist(e, updateEditorList, essayDocumentThread_id);
   };
   // (editor_id, documentsthreadId)
-  const UpdateEditorlist = (e, updateEditorList, student_id) => {
+  const UpdateEditorlist = (e, updateEditorList, essayDocumentThread_id) => {
     e.preventDefault();
-    updateEssayWriter(updateEditorList, student_id).then(
+    updateEssayWriter(updateEditorList, essayDocumentThread_id).then(
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
         // console.log('data:', data)// return student object
         if (success) {
-          var students_temp = [...assignEditorsState.students];
-          var studentIdx = students_temp.findIndex(
-            ({ _id }) => _id === student_id
+          var essays_temp = [...assignEditorsState.essayDocumentThreads];
+          var essayIdx = essays_temp.findIndex(
+            ({ _id }) => _id === essayDocumentThread_id
           );
-          students_temp[studentIdx] = data; // data is single student updated
+          essays_temp[essayIdx] = data; // data is single student updated
           setAssignEditorsState((prevState) => ({
             ...prevState,
             isLoaded: true, //false to reload everything
-            students: students_temp,
+            essayDocumentThreads: essays_temp,
             success: success,
             updateEditorList: [],
             res_modal_status: status
@@ -100,7 +100,7 @@ function AssignEssayWriters() {
         />
       )}
       <AssignEssayWritersPage
-        students={assignEditorsState.students}
+        // students={assignEditorsState.students}
         updateEditorList={assignEditorsState.updateEditorList}
         submitUpdateEditorlist={submitUpdateEditorlist}
         essayDocumentThreads={assignEditorsState.essayDocumentThreads}

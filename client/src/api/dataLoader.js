@@ -20,6 +20,17 @@ export async function getStudentsLoader() {
   }
 }
 
+export async function getEssaysLoader() {
+  const response = await getEssays();
+  // console.log(response);
+  // console.log(response.statusText);
+  if (response.status >= 400) {
+    throw json({ message: response.statusText }, { status: response.status });
+  } else {
+    return response;
+  }
+}
+
 export async function getAllActiveStudentsLoader() {
   const response = await getAllActiveStudents();
   if (response.status >= 400) {

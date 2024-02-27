@@ -31,12 +31,12 @@ import { appConfig } from '../../config';
 
 function Dashboard() {
   const { user } = useAuth();
+  const Data = useLoaderData()
+  console.log('Data123:', Data)
   const {
     students: { data: students, isCoursesFilled, notification },
     essays: { data: essayDocumentThreads}
   } = useLoaderData();
-  // const Data = useLoaderData()
-  // console.log('Data:', Data)
   const { t } = useTranslation();
   const [dashboardState, setDashboardState] = useState({
     error: '',

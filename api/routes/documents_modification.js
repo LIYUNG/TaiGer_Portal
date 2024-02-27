@@ -68,6 +68,18 @@ router
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
     getAllCVMLRLOverview
   );
+
+router
+  .route('/essay')
+  .get(
+    filter_archiv_user,
+    getMessageFileRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
+    // permission_canAccessStudentDatabase_filter,
+    getAllEssays,
+    // logAccess
+  );
+
 // TODO: multitenant
 router
   .route('/student-input/:messagesThreadId')
@@ -222,17 +234,6 @@ router
     InnerTaigerMultitenantFilter,
     doc_thread_ops_validator,
     deleteProgramSpecificMessagesThread
-  );
-
-router
-  .route('/essay/all')
-  .get(
-    filter_archiv_user,
-    getMessageFileRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
-    permission_canAccessStudentDatabase_filter,
-    getAllEssays,
-    logAccess
   );
 
 module.exports = router;

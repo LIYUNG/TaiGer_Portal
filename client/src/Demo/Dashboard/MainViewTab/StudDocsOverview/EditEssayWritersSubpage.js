@@ -20,20 +20,23 @@ function EditEssayWritersSubpage(props) {
   const [isLoaded, setIsLoaded] = useState(false);
   const { t } = useTranslation();
 
+  console.log("essayDocumentThread in subpage:", props.essayDocumentThread)//undefined
   useEffect(() => {
     // Initialize the state with checked checkboxes based on the student's editors
     getEssayWriters().then(
       (resp) => {
         // TODO: check success
         const { data, success } = resp.data;
+        console.log("if success:", success)
         if (success) {
           const editors = data; //need to change to get all essay writers
-          const { editors: student_editors } = props.student;
+          const { outsourced_user_id: student_essay_writers } = props.essayDocumentThread;
+          
           const updateEditorList = editors.reduce(
             (prev, { _id }) => ({
               ...prev,
-              [_id]: student_editors
-                ? student_editors.findIndex(
+              [_id]: student_essay_writers
+                ? student_essay_writers.findIndex(
                     (student_agent) => student_agent._id === _id
                   ) > -1
                 : false
@@ -50,7 +53,7 @@ function EditEssayWritersSubpage(props) {
         setIsLoaded(true);
       }
     );
-  }, [props.student.editors]);
+  }, [props.essayDocumentThread.outsourced_user_id]);
 
   const handleChangeEditorlist = (e) => {
     const { value } = e.target;
@@ -74,7 +77,7 @@ function EditEssayWritersSubpage(props) {
         <>
           <Typography variant="h6">
             {/* Essay Writer for {props.student.firstname} - {props.student.lastname} */}
-            Essay Writer for {props.essayDocumentThread}
+            Essay Writer for {props.essayDocumentThread._id}
           </Typography>
           <Typography variant="h6">{t('Essay Writer')}: </Typography>
           <Table size="small">

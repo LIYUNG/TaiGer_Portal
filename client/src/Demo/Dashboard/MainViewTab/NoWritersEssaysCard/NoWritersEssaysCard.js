@@ -2,18 +2,18 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Button,
-  Link,
+  // Link,
   Menu,
   MenuItem,
   TableCell,
   TableRow,
-  Typography
+  // Typography
 } from '@mui/material';
-import { Link as LinkDom } from 'react-router-dom';
+// import { Link as LinkDom } from 'react-router-dom';
 
 import EditEssayWritersSubpage from '../StudDocsOverview/EditEssayWritersSubpage';
 import { is_TaiGer_role } from '../../../Utils/checking-functions';
-import DEMO from '../../../../store/constant';
+// import DEMO from '../../../../store/constant';
 import { useAuth } from '../../../../components/AuthProvider';
 
 function NoWritersEssaysCard(props) {
@@ -58,9 +58,11 @@ function NoWritersEssaysCard(props) {
     props.submitUpdateEditorlist(e, updateEditorList, essayDocumentThread_id);
   };
 
+  // console.log('outsource:', props.essayDocumentThread_id.outsourced_user_id)
+  console.log('essayDocumentThread in noWriterEssaysCard', props.essayDocumentThread)
   if (
-    props.essayDocumentThread_id.outsourced_user_id === undefined ||
-    props.essayDocumentThread_id.outsourced_user_id.length === 0
+    props.essayDocumentThread.outsourced_user_id === undefined ||
+    props.essayDocumentThread.outsourced_user_id.length === 0
   ) {
     return (
       <>
@@ -93,7 +95,7 @@ function NoWritersEssaysCard(props) {
               </Menu>
             </TableCell>
           )}
-          <TableCell>
+          {/* <TableCell>
             <Link
               component={LinkDom}
               to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
@@ -125,16 +127,16 @@ function NoWritersEssaysCard(props) {
                 <Typography key={i}>{`${agent.firstname}`}</Typography>
               ))
             )}
-          </TableCell>
+          </TableCell> */}
         </TableRow>
         {is_TaiGer_role(user) && noEditorsStudentsCardState.showEditorPage && (
           <EditEssayWritersSubpage
-            student={props.student}
+            // student={props.student}
             show={noEditorsStudentsCardState.showEditorPage}
             onHide={setEditorModalhide}
             setmodalhide={setEditorModalhide}
             submitUpdateEditorlist={submitUpdateEditorlist}
-            essayDocumentThreads={props.essayDocumentThreads}
+            essayDocumentThread={props.essayDocumentThread}
           />
         )}
       </>

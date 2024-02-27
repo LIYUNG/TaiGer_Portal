@@ -6,6 +6,7 @@ import {
   getMyAcademicBackgroundLoader,
   getStudentAndDocLinksLoader,
   getStudentsLoader,
+  // getEssaysLoader,
   combinedLoader
 } from './api/dataLoader';
 import DefaultErrorPage from './Demo/Utils/DefaultErrorPage';

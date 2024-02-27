@@ -5,7 +5,7 @@ import { Link, TableCell, TableRow } from '@mui/material';
 import {
   does_student_have_agents,
   does_student_have_editors,
-  does_student_have_essay_writer,
+  does_essay_have_writers,
   is_num_Program_Not_specified
 } from '../../../Utils/checking-functions';
 import DEMO from '../../../../store/constant';
@@ -13,7 +13,6 @@ import { useTranslation } from 'react-i18next';
 
 function AdminTasks(props) {
   const { t } = useTranslation();
-  const essayDocumentThreads = props.document_thread;
   const missing_number_of_applications_students = props.students.map(
     (student, i) =>
       is_num_Program_Not_specified(student) && (
@@ -66,8 +65,7 @@ function AdminTasks(props) {
           <TableCell></TableCell>
         </TableRow>
       )}
-      {/* props.document_thread */}
-      {/* {!does_essay_have_essay_writer(essayDocumentThreads) && (
+      {!does_essay_have_writers(props.essayDocumentThreads) && (
         <TableRow>
           <TableCell>
             <Link to={`${DEMO.ASSIGN_ESSAY_WRITER_LINK}`} component={LinkDom}>
@@ -77,7 +75,7 @@ function AdminTasks(props) {
           <TableCell>Please assign essay writers</TableCell>
           <TableCell></TableCell>
         </TableRow>
-      )} */}
+      )}
       {/* assign number of application according to contract */}
       {missing_number_of_applications_students}
     </>

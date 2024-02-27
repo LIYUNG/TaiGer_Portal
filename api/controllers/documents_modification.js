@@ -1902,10 +1902,10 @@ const assignEssayWritersToEssayTask = asyncHandler(async (req, res, next) => {
     )
     .exec();
 
-  res.status(200).send({ success: true, essay_writers: to_be_informed_editors });
+  res.status(200).send({ success: true, data: essayDocumentThreads });
   
-  console.log('student:', student)
-  console.log('essayDocumentThreads[0].student_id:', essayDocumentThreads[0].student_id.toString())
+  // console.log('student:', student)
+  // console.log('essayDocumentThreads[0].student_id:', essayDocumentThreads[0].student_id.toString())
   for (let i = 0; i < to_be_informed_editors.length; i += 1) {
     if (isNotArchiv(student)) {
       if (isNotArchiv(to_be_informed_editors[i])) {
@@ -1962,6 +1962,14 @@ const assignEssayWritersToEssayTask = asyncHandler(async (req, res, next) => {
   next();
 });
 
+const getAllEssays = asyncHandler(async (req, res, next) => {
+  const essayDocumentThreads = await Documentthread.find({
+    file_type: 'Essay'
+  })
+  res.status(200).send({ success: true, data: essayDocumentThreads });
+  next();
+});
+
 module.exports = {
   ThreadS3GarbageCollector,
   getAllCVMLRLOverview,
@@ -1980,5 +1988,6 @@ module.exports = {
   deleteGeneralMessagesThread,
   deleteProgramSpecificMessagesThread,
   deleteAMessageInThread,
-  assignEssayWritersToEssayTask
+  assignEssayWritersToEssayTask,
+  getAllEssays
 };

@@ -5,7 +5,8 @@ import {
   getApplicationStudentLoader,
   getMyAcademicBackgroundLoader,
   getStudentAndDocLinksLoader,
-  getStudentsLoader
+  getStudentsLoader,
+  combinedLoader
 } from './api/dataLoader';
 import DefaultErrorPage from './Demo/Utils/DefaultErrorPage';
 
@@ -147,9 +148,9 @@ const EditorsAssignment = React.lazy(() =>
   import('./Demo/AssignmentAgentsEditors/AssignEditors/index')
 );
 
-// const EssayWritersAssignment = React.lazy(() =>
-//   import('./Demo/AssignmentAgentsEditors/AssignEssayWriters/index')
-// );
+const EssayWritersAssignment = React.lazy(() =>
+  import('./Demo/AssignmentAgentsEditors/AssignEssayWriters/index')
+);
 // TODO: conditional configuration.
 const routes = [
   {
@@ -170,7 +171,7 @@ const routes = [
       {
         path: 'essay-writers',
         errorElement: <DefaultErrorPage />,
-        loader: getStudentsLoader,
+        loader: combinedLoader,
         element: <EssayWritersAssignment />
       }
     ]
@@ -178,7 +179,7 @@ const routes = [
   {
     path: '/dashboard/default',
     errorElement: <DefaultErrorPage />,
-    loader: getStudentsLoader,
+    loader: combinedLoader,
     element: <DashboardDefault />
   },
   {

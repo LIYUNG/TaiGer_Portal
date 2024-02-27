@@ -837,6 +837,15 @@ export const does_student_have_editors = (students) => {
   return true;
 };
 
+export const does_essay_have_writers = (essayDocumentThreads) => {
+  for (let i = 0; i < essayDocumentThreads.length; i += 1) {
+    if (essayDocumentThreads[i].outsourced_user_id === undefined || essayDocumentThreads[i].outsourced_user_id.length === 0) {
+      return false;
+    }
+  }
+  return true;
+};
+
 export const check_applications_decision_from_student = (student) => {
   if (!student.applications) {
     return false;

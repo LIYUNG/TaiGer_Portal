@@ -44,7 +44,8 @@ const {
   getStudentInput,
   putStudentInput,
   resetStudentInput,
-  assignEssayWritersToEssayTask
+  assignEssayWritersToEssayTask,
+  getAllEssays
 } = require('../controllers/documents_modification');
 const {
   docThreadMultitenant_filter
@@ -221,6 +222,17 @@ router
     InnerTaigerMultitenantFilter,
     doc_thread_ops_validator,
     deleteProgramSpecificMessagesThread
+  );
+
+router
+  .route('/essay/all')
+  .get(
+    filter_archiv_user,
+    getMessageFileRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
+    permission_canAccessStudentDatabase_filter,
+    getAllEssays,
+    logAccess
   );
 
 module.exports = router;

@@ -5,7 +5,8 @@ import {
   getArchivStudents,
   getStudentAndDocLinks,
   getApplicationStudent,
-  getMyAcademicBackground
+  getMyAcademicBackground,
+  getEssays
 } from '.';
 
 export async function getStudentsLoader() {
@@ -64,4 +65,27 @@ export async function getMyAcademicBackgroundLoader() {
   } else {
     return response;
   }
+}
+
+export async function combinedLoader() {
+  // Fetch data from both getEssays and getStudents
+  const [essaysResponse, studentsResponse] = await Promise.all([
+    getEssays(),
+    getStudents()
+  ]);
+
+  // Check if any response has a status code >= 400
+  if (essaysResponse.status >= 400 || studentsResponse.status >= 400) {
+    const error = {
+      message: 'Error fetching data',
+      status: essaysResponse.status >= 400 ? essaysResponse.status : studentsResponse.status
+    };
+    throw error;
+  }
+
+  // Return an object containing both essays and students data
+  return {
+    essays: essaysResponse.data, // Assuming essaysResponse.data contains the essays data
+    students: studentsResponse.data // Assuming studentsResponse.data contains the students data
+  };
 }

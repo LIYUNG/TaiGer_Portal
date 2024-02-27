@@ -32,8 +32,11 @@ import { appConfig } from '../../config';
 function Dashboard() {
   const { user } = useAuth();
   const {
-    data: { data: students, isCoursesFilled, notification }
+    students: { data: students, isCoursesFilled, notification },
+    essays: { data: essayDocumentThreads}
   } = useLoaderData();
+  // const Data = useLoaderData()
+  // console.log('Data:', Data)
   const { t } = useTranslation();
   const [dashboardState, setDashboardState] = useState({
     error: '',
@@ -49,7 +52,8 @@ function Dashboard() {
     isCoursesFilled: isCoursesFilled,
     res_status: 0,
     res_modal_message: '',
-    res_modal_status: 0
+    res_modal_status: 0,
+    essayDocumentThreads: essayDocumentThreads
   });
 
   const submitUpdateAgentlist = (e, updateAgentList, student_id) => {
@@ -264,6 +268,7 @@ function Dashboard() {
           submitUpdateEditorlist={submitUpdateEditorlist}
           updateStudentArchivStatus={updateStudentArchivStatus}
           isDashboard={dashboardState.isDashboard}
+          essayDocumentThreads={dashboardState.essayDocumentThreads}
         />
       )}
       {is_TaiGer_Manager(user) && (

@@ -43,7 +43,7 @@ class ResizeObserver {
 
 const routes = [
   {
-    path: '/application-overview',
+    path: '/student-applications',
     element: <ApplicantsOverview />,
     errorElement: <div>Error</div>,
     loader: () => {
@@ -61,7 +61,7 @@ describe('ApplicantsOverview', () => {
       user: { role: 'Agent', _id: '639baebf8b84944b872cf648' }
     });
     const router = createMemoryRouter(routes, {
-      initialEntries: ['/application-overview']
+      initialEntries: ['/student-applications']
     });
     render(<RouterProvider router={router} />);
 

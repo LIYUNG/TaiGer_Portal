@@ -235,7 +235,7 @@ const SurveyForm = ({
         </Box>
       )}
       <Collapse in={collapseOpen}>
-        <Grid container fullWidth sx={{ gap: 1 }}>
+        <Grid container sx={{ gap: 1 }}>
           {surveyInputs.surveyContent.map((questionItem, index) => (
             <Grid
               item
@@ -497,6 +497,7 @@ function DocModificationThreadInput() {
     const name = e.target.name;
     if (name === 'useProgramRequirementData') {
       const checked = e.target.checked;
+      console.log('checked', checked);
       setDocModificationThreadInputState((prevState) => ({
         ...prevState,
         editorRequirements: {
@@ -861,7 +862,7 @@ function DocModificationThreadInput() {
           <InputGenerator
             isChecked={
               docModificationThreadInputState?.editorRequirements
-                ?.useProgramRequirementData
+                ?.useProgramRequirementData || false
             }
             data={docModificationThreadInputState.data}
             isGenerating={docModificationThreadInputState.isGenerating}

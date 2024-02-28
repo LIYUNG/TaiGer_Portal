@@ -87,6 +87,11 @@ function ProgramUpdateStatusTable(props) {
         disableDensitySelector
         columns={c2}
         slots={{ toolbar: GridToolbar }}
+        slotProps={{
+          toolbar: {
+            showQuickFilter: true
+          }
+        }}
       />
     </Box>
   );

@@ -1537,6 +1537,7 @@ export const programs_refactor = (students) => {
       student.applications.length === 0
     ) {
       applications.push({
+        id: `${student._id.toString()}-`,
         target_year: `${
           student.application_preference?.expected_application_date || '-'
         } ${
@@ -1574,6 +1575,7 @@ export const programs_refactor = (students) => {
     } else {
       for (const application of student.applications) {
         applications.push({
+          id: `${student._id.toString()}-${application.programId._id.toString()}`,
           target_year: `${
             student.application_preference?.expected_application_date || '-'
           } ${

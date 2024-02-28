@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import {
   Box,
   Button,
+  Chip,
   Link,
   Menu,
   MenuItem,
@@ -22,6 +23,7 @@ import { is_TaiGer_Student } from '../../../Utils/checking-functions';
 import DEMO from '../../../../store/constant';
 import { useAuth } from '../../../../components/AuthProvider';
 import EditAttributesSubpage from '../StudDocsOverview/EditAttributesSubpage';
+import { COLORS } from '../../../Utils/contants';
 
 function StudentsAgentEditor(props) {
   const { user } = useAuth();
@@ -231,6 +233,15 @@ function StudentsAgentEditor(props) {
               </Link>
             </Typography>
             <span className="mb-0 text-secondary">{props.student.email}</span>
+            {is_TaiGer_role(user) &&
+              props.student.attributes?.map((attribute) => (
+                <Chip
+                  size="small"
+                  label={attribute.name}
+                  key={attribute._id}
+                  color={COLORS[attribute.value]}
+                />
+              ))}
           </TableCell>
         ) : (
           <></>

@@ -232,6 +232,7 @@ function SortTable2({ columns, data, user }) {
                             (attribute) =>
                               [1, 3].includes(attribute.value) && (
                                 <Chip
+                                  size="small"
                                   label={attribute.name}
                                   key={attribute._id}
                                   color={COLORS[attribute.value]}

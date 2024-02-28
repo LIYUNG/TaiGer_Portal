@@ -3,7 +3,7 @@ import { Link as LinkDom } from 'react-router-dom';
 import { Box, Link } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import DEMO from '../../store/constant';
-import { DataGrid } from '@mui/x-data-grid';
+import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 
 function ProgramUpdateStatusTable(props) {
   const { t } = useTranslation();
@@ -86,6 +86,7 @@ function ProgramUpdateStatusTable(props) {
         disableColumnMenu
         disableDensitySelector
         columns={c2}
+        slots={{ toolbar: GridToolbar }}
       />
     </Box>
   );

@@ -839,7 +839,8 @@ export const ATTRIBUTES = [
   { value: 4, name: 'Slow Response' },
   { value: 5, name: 'Disappear' },
   { value: 6, name: 'Low-IQ' },
-  { value: 7, name: 'Refunded' }
+  { value: 7, name: 'Refunded' },
+  { value: 8, name: 'Done' }
 ];
 
 export const COLORS = [
@@ -850,6 +851,7 @@ export const COLORS = [
   'error',
   'primary',
   'primary',
+  'success',
   'primary'
 ];
 

@@ -11,7 +11,7 @@ function ProgramConflict(props) {
       <Link
         to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
           studs_id[i],
-          DEMO.PROFILE
+          DEMO.PROFILE_HASH
         )}`}
         component={LinkDom}
       >

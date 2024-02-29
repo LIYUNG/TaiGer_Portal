@@ -160,7 +160,7 @@ fuzzyTextFilterFn.autoRemove = (val) => !val;
 //                         <Link
 //                           to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
 //                             item.student_id,
-//                             '/profile'
+//                             DEMO.PROFILE_HASH
 //                           )}`}
 //                           component={LinkDom}
 //                           target="_blank"
@@ -277,7 +277,7 @@ function ApplicationOverviewTabs(props) {
       renderCell: (params) => {
         const linkUrl = `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
           params.row.student_id,
-          '/profile'
+          DEMO.PROFILE_HASH
         )}`;
         return (
           <Link

@@ -106,7 +106,7 @@ function User(props) {
                 underline="hover"
                 to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                   props.user._id.toString(),
-                  DEMO.PROFILE
+                  DEMO.PROFILE_HASH
                 )}`}
                 component={LinkDom}
               >

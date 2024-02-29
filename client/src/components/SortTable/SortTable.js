@@ -111,7 +111,7 @@ function SortTable({ columns, data, user, handleAsFinalFile }) {
                         target="_blank"
                         to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                           row.original.student_id,
-                          '/profile'
+                          DEMO.PROFILE_HASH
                         )}`}
                         component={LinkDom}
                       >

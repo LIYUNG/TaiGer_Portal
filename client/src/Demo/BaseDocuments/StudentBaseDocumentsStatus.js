@@ -48,7 +48,7 @@ function StudentBaseDocumentsStatus(props) {
 
   const student_profile_path = `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
     props.student._id,
-    '/profile'
+    DEMO.PROFILE_HASH
   )}`;
   var file_information;
   for (var i = 0; i < profile_list_keys.length; i++) {

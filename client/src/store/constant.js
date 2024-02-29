@@ -54,6 +54,14 @@ const DEMO = {
   LOGIN_LINK: '/account/login',
   MY_INTERVIEW_LINK: '/interview-training/my-interviews',
   PROFILE: '/profile',
+  APPLICATION_HASH: '#applications',
+  PROFILE_HASH: '#profile',
+  CVMLRL_HASH: '#cvmlrl',
+  PORTAL_HASH: '#portal',
+  UNIASSIST_HASH: '#uniassist',
+  SURVEY_HASH: '#survey',
+  COURSES_HASH: '#courses',
+  NOTES_HASH: '#notes',
   PROFILE_STUDENT_LINK: (user_id) => {
     return `/profile/${user_id}`;
   },

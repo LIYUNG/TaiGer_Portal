@@ -15,6 +15,7 @@ import {
   StyledInputBase
 } from '../../../Demo/Utils/contants';
 import { Box } from '@mui/material';
+import DEMO from '../../../store/constant';
 
 const NavSearch = () => {
   // const history = useHistory();
@@ -98,7 +99,12 @@ const NavSearch = () => {
   };
 
   const onClickStudentHandler = (result) => {
-    navigate(`/student-database/${result._id.toString()}/profile`);
+    navigate(
+      `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+        result._id.toString(),
+        DEMO.PROFILE_HASH
+      )}`
+    );
 
     setSearchResults([]);
     setIsResultsVisible(false);

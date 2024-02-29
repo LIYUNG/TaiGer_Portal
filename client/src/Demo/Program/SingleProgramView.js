@@ -339,7 +339,7 @@ function SingleProgramView(props) {
                             <Link
                               to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                                 student._id.toString(),
-                                DEMO.PROFILE
+                                DEMO.PROFILE_HASH
                               )}`}
                             >
                               {student.firstname} {student.lastname}
@@ -596,7 +596,7 @@ function SingleProgramView(props) {
                                 <Link
                                   to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                                     student._id.toString(),
-                                    DEMO.PROFILE
+                                    DEMO.PROFILE_HASH
                                   )}`}
                                 >
                                   {student.firstname} {student.lastname}

@@ -97,7 +97,7 @@ function AdmissionsTable(props) {
       renderCell: (params) => {
         const linkUrl = `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
           params.row.student_id,
-          '/profile'
+          DEMO.PROFILE_HASH
         )}`;
         return (
           <Link

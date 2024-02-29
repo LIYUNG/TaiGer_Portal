@@ -133,7 +133,7 @@ function StudDocsDashboard(props) {
           <Link
             to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
               props.student._id,
-              '/background'
+              DEMO.PROFILE_HASH
             )}`}
             component={LinkDom}
           >

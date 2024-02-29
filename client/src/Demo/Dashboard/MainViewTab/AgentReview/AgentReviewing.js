@@ -112,7 +112,7 @@ function AgentReviewing(props) {
           <Link
             to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
               props.student._id,
-              DEMO.PROFILE
+              DEMO.PROFILE_HASH
             )}`}
             component={LinkDom}
           >
@@ -125,7 +125,7 @@ function AgentReviewing(props) {
           <Link
             to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
               props.student._id,
-              DEMO.PROFILE
+              DEMO.PROFILE_HASH
             )}`}
             component={LinkDom}
           >
@@ -260,7 +260,7 @@ function AgentReviewing(props) {
           <Link
             to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
               props.student._id,
-              '/background'
+              DEMO.PROFILE_HASH
             )}`}
             component={LinkDom}
             style={{ textDecoration: 'none' }}
@@ -288,7 +288,7 @@ function AgentReviewing(props) {
           <Link
             to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
               props.student._id,
-              DEMO.PROFILE
+              DEMO.PROFILE_HASH
             )}`}
             component={LinkDom}
           >
@@ -315,7 +315,7 @@ function AgentReviewing(props) {
             <Link
               to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                 props.student._id,
-                '/background'
+                DEMO.PROFILE_HASH
               )}`}
               component={LinkDom}
             >
@@ -329,7 +329,7 @@ function AgentReviewing(props) {
                 <Link
                   to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                     props.student._id,
-                    '/background'
+                    DEMO.SURVEY_HASH
                   )}`}
                   component={LinkDom}
                 >
@@ -376,7 +376,7 @@ function AgentReviewing(props) {
                 <Link
                   to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                     props.student._id,
-                    '/background'
+                    DEMO.SURVEY_HASH
                   )}`}
                   component={LinkDom}
                 >
@@ -438,7 +438,7 @@ function AgentReviewing(props) {
           <Link
             to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
               props.student._id,
-              '/CV_ML_RL'
+              DEMO.CVMLRL_HASH
             )}`}
             component={LinkDom}
           >
@@ -478,7 +478,7 @@ function AgentReviewing(props) {
           <Link
             to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
               props.student._id,
-              '/CV_ML_RL'
+              DEMO.CVMLRL_HASH
             )}`}
             className="text-info"
             component={LinkDom}
@@ -509,7 +509,7 @@ function AgentReviewing(props) {
           <Link
             to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
               props.student._id,
-              '/CV_ML_RL'
+              DEMO.CVMLRL_HASH
             )}`}
             component={LinkDom}
           >
@@ -520,7 +520,9 @@ function AgentReviewing(props) {
                     isProgramDecided(application) &&
                     thread.doc_thread_id?.isFinalVersion &&
                     (thread.doc_thread_id?.file_type.includes('RL') ||
-                      thread.doc_thread_id?.file_type.includes('Recommendation'))
+                      thread.doc_thread_id?.file_type.includes(
+                        'Recommendation'
+                      ))
                 )
               ).length
             }
@@ -531,7 +533,9 @@ function AgentReviewing(props) {
                   (thread) =>
                     isProgramDecided(application) &&
                     (thread.doc_thread_id?.file_type.includes('RL') ||
-                      thread.doc_thread_id?.file_type.includes('Recommendation'))
+                      thread.doc_thread_id?.file_type.includes(
+                        'Recommendation'
+                      ))
                 )
               ).length
             }
@@ -541,7 +545,7 @@ function AgentReviewing(props) {
           <Link
             to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
               props.student._id,
-              '/CV_ML_RL'
+              DEMO.CVMLRL_HASH
             )}`}
             component={LinkDom}
           >
@@ -600,7 +604,7 @@ function AgentReviewing(props) {
           <Link
             to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
               props.student._id,
-              DEMO.UNI_ASSIST_LINK
+              DEMO.UNIASSIST_HASH
             )}`}
             component={LinkDom}
           >

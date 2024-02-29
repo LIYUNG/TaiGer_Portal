@@ -644,6 +644,28 @@ export const profile_name_list = {
   Grading_System: 'Grading_System'
 };
 
+export const SINGLE_STUDENT_TABS = {
+  applications: 0,
+  profile: 1,
+  cvmlrl: 2,
+  portal: 3,
+  uniassist: 4,
+  survey: 5,
+  courses: 6,
+  notes: 7
+};
+
+export const SINGLE_STUDENT_REVERSED_TABS = {
+  0: 'applications',
+  1: 'profile',
+  2: 'cvmlrl',
+  3: 'portal',
+  4: 'uniassist',
+  5: 'survey',
+  6: 'courses',
+  7: 'notes'
+};
+
 export const spinner_style = {
   position: 'fixed',
   top: '40%',

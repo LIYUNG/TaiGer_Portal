@@ -1,5 +1,10 @@
 import React, { useState } from 'react';
-import { Navigate, Link as LinkDom, useLoaderData } from 'react-router-dom';
+import {
+  Navigate,
+  Link as LinkDom,
+  useLoaderData,
+  useLocation
+} from 'react-router-dom';
 import {
   Tabs,
   Tab,
@@ -15,8 +20,7 @@ import {
   TableCell,
   Breadcrumbs,
   Alert,
-  TableContainer,
-  Chip
+  TableContainer
 } from '@mui/material';
 // import AddIcon from '@mui/icons-material/Add';
 import PropTypes from 'prop-types';
@@ -37,7 +41,8 @@ import {
   convertDate,
   programstatuslist,
   academic_background_header,
-  COLORS
+  SINGLE_STUDENT_TABS,
+  SINGLE_STUDENT_REVERSED_TABS
 } from '../Utils/contants';
 import {
   is_TaiGer_Guest,
@@ -82,10 +87,13 @@ function SingleStudentPage() {
     res_modal_message: '',
     res_modal_status: 0
   });
-  const [value, setValue] = useState(0);
-
+  const { hash } = useLocation();
+  const [value, setValue] = useState(
+    SINGLE_STUDENT_TABS[hash.replace('#', '')] || 0
+  );
   const handleChange = (event, newValue) => {
     setValue(newValue);
+    window.location.hash = SINGLE_STUDENT_REVERSED_TABS[newValue];
   };
 
   const submitUpdateAgentlist = (e, updateAgentList, student_id) => {
@@ -294,20 +302,6 @@ function SingleStudentPage() {
               <AiFillEdit color="red" size={24} />
             </Link>
           </Breadcrumbs>
-        </Box>
-        <Box>
-          {singleStudentPage.student.attributes?.map((attribute) => (
-            <Chip
-              label={attribute.name}
-              key={attribute._id}
-              color={COLORS[attribute.value]}
-            />
-          ))}
-          {/* <Chip
-            onClick={() => {}}
-            onDelete={() => {}}
-            deleteIcon={<AddIcon />}
-          /> */}
         </Box>
         <Box>
           <Box style={{ textAlign: 'left' }}>

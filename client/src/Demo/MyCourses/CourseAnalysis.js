@@ -286,7 +286,7 @@ export default function CourseAnalysis() {
             component={LinkDom}
             to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
               statedata.studentId,
-              '/profile'
+              DEMO.PROFILE_HASH
             )}`}
           >
             {statedata.student_name}

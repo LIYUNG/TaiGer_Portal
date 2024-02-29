@@ -244,7 +244,7 @@ const routes = [
     Component: StudentDatabase
   },
   {
-    path: '/student-database/:studentId/:tab',
+    path: '/student-database/:studentId',
     errorElement: <DefaultErrorPage />,
     loader: getStudentAndDocLinksLoader,
     element: <SingleStudentPage />

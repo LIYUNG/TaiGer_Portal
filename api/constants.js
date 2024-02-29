@@ -15,29 +15,27 @@ const FORGOT_PASSWORD_URL = new URL('/forgot-password', ORIGIN).href;
 
 const CVMLRL_CENTER_URL = new URL('/cv-ml-rl-center', ORIGIN).href;
 const CVMLRL_FOR_EDITOR_URL = (studentId) =>
-  new URL(`/student-database/${studentId}/CV_ML_RL`, ORIGIN).href;
+  new URL(`/student-database/${studentId}#cvmlrl`, ORIGIN).href;
 const UNI_ASSIST_FOR_STUDENT_URL = new URL('/uni-assist', ORIGIN).href;
 const UNI_ASSIST_FOR_AGENT_URL = (studentId) =>
-  new URL(`/student-database/${studentId}/uni-assist`, ORIGIN).href;
+  new URL(`/student-database/${studentId}#uniassist`, ORIGIN).href;
 const THREAD_URL = new URL('/document-modification', ORIGIN).href;
 const ARCHIVED_STUDENTS_URL = new URL('/archiv/students', ORIGIN).href;
 const BASE_DOCUMENT_URL = new URL('/base-documents', ORIGIN).href;
 const BASE_DOCUMENT_FOR_AGENT_URL = (studentId) =>
-  new URL(`/student-database/${studentId}/profile`, ORIGIN).href;
+  new URL(`/student-database/${studentId}#profile`, ORIGIN).href;
 const STUDENT_COMMUNICATION_THREAD_URL = (studentId) =>
   new URL(`/communications/${studentId}`, ORIGIN).href;
 const TEMPLATE_DOWNLOAD_URL = new URL('/download', ORIGIN).href;
 const STUDENT_APPLICATION_URL = new URL('/student-applications', ORIGIN).href;
 const STUDENT_SURVEY_URL = new URL('/survey', ORIGIN).href;
 const SURVEY_URL_FOR_AGENT_URL = (studentId) =>
-  new URL(`/student-database/${studentId}/background`, ORIGIN).href;
+  new URL(`/student-database/${studentId}#survey`, ORIGIN).href;
 const SETTINGS_URL = new URL('/settings', ORIGIN).href;
 const PROFILE_URL = new URL('/profile', ORIGIN).href;
 const TEAMS_URL = new URL('/teams', ORIGIN).href;
-const STUDENT_BACKGROUND_FOR_AGENT_URL = (studentId) =>
-  new URL(`/student-database/${studentId}/background`, ORIGIN).href;
 const STUDENT_PROFILE_FOR_AGENT_URL = (studentId) =>
-  new URL(`/student-database/${studentId}/profile`, ORIGIN).href;
+  new URL(`/student-database/${studentId}#profile`, ORIGIN).href;
 const STUDENT_COURSE_URL = (studentId) =>
   new URL(`/my-courses/${studentId}`, ORIGIN).href;
 const STUDENT_ANALYSED_COURSE_URL = (studentId) =>
@@ -1633,7 +1631,6 @@ module.exports = {
   STUDENT_SURVEY_URL,
   SETTINGS_URL,
   PROFILE_URL,
-  STUDENT_BACKGROUND_FOR_AGENT_URL,
   STUDENT_PROFILE_FOR_AGENT_URL,
   STUDENT_COURSE_URL,
   STUDENT_ANALYSED_COURSE_URL,

@@ -298,7 +298,7 @@ const getAllCVMLRLOverview = asyncHandler(async (req, res) => {
     })
     .populate('editors agents', 'firstname lastname')
     .select(
-      'applications generaldocs_threads firstname lastname application_preference '
+      'applications generaldocs_threads firstname lastname application_preference attributes'
     )
     .lean();
   res.status(200).send({ success: true, data: students });
@@ -553,7 +553,7 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
         }
       })
       .select(
-        'applications generaldocs_threads firstname lastname application_preference '
+        'applications generaldocs_threads firstname lastname application_preference attributes'
       )
       .lean();
     res.status(200).send({ success: true, data: students });
@@ -583,7 +583,7 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
         }
       })
       .select(
-        'applications applications generaldocs_threads firstname lastname application_preference'
+        'applications applications generaldocs_threads firstname lastname application_preference attributes'
       )
       .lean()
       .exec();
@@ -615,7 +615,7 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
         }
       })
       .select(
-        'applications applications generaldocs_threads firstname lastname application_preference'
+        'applications applications generaldocs_threads firstname lastname application_preference attributes'
       );
     res.status(200).send({ success: true, data: students });
   } else if (user.role === Role.Student) {

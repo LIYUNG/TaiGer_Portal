@@ -74,7 +74,7 @@ function index() {
   }
 
   return (
-    <Box>
+    <Box data-testid="cvmlrlcenter_component">
       <Breadcrumbs aria-label="breadcrumb">
         <Link
           underline="hover"

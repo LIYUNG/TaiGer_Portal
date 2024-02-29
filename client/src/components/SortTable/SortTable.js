@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  Chip,
   Link,
   Table,
   TableBody,
@@ -14,6 +15,7 @@ import { AiOutlineCheck, AiOutlineUndo } from 'react-icons/ai';
 
 import { is_TaiGer_role } from '../../Demo/Utils/checking-functions';
 import DEMO from '../../store/constant';
+import { COLORS } from '../../Demo/Utils/contants';
 
 function SortTable({ columns, data, user, handleAsFinalFile }) {
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
@@ -130,6 +132,22 @@ function SortTable({ columns, data, user, handleAsFinalFile }) {
                       >
                         {cell.render('Cell')}
                       </Link>
+                      {is_TaiGer_role(user) && (
+                        <>
+                          <br />
+                          {row.original.attributes?.map(
+                            (attribute) =>
+                              [1, 3].includes(attribute.value) && (
+                                <Chip
+                                  size="small"
+                                  label={attribute.name}
+                                  key={attribute._id}
+                                  color={COLORS[attribute.value]}
+                                />
+                              )
+                          )}
+                        </>
+                      )}
                     </TableCell>
                   ) : j === 6 ? (
                     cell.value > 14 ? (

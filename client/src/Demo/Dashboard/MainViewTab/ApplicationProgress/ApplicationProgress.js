@@ -13,7 +13,7 @@ import {
 } from '../../../Utils/checking-functions';
 import DEMO from '../../../../store/constant';
 import { useAuth } from '../../../../components/AuthProvider';
-import { Link, TableCell, TableRow, Typography } from '@mui/material';
+import { Box, Link, TableCell, TableRow, Typography } from '@mui/material';
 
 function ApplicationProgress(props) {
   const { user } = useAuth();
@@ -65,23 +65,25 @@ function ApplicationProgress(props) {
           )}
         </TableCell>
         {!is_TaiGer_Student(user) ? (
-          <TableCell title="Selected / Should be selected">
-            {props.student.applying_program_count ? (
-              props.student.applications.length <
-              props.student.applying_program_count ? (
-                <Typography className="text-danger">
-                  <b>{props.student.applications.length}</b> /{' '}
-                  {props.student.applying_program_count}
-                </Typography>
+          <TableCell>
+            <Box title="Selected / Should be selected">
+              {props.student.applying_program_count ? (
+                props.student.applications.length <
+                props.student.applying_program_count ? (
+                  <Typography className="text-danger">
+                    <b>{props.student.applications.length}</b> /{' '}
+                    {props.student.applying_program_count}
+                  </Typography>
+                ) : (
+                  <Typography className="text-info">
+                    {props.student.applications.length} /{' '}
+                    {props.student.applying_program_count}
+                  </Typography>
+                )
               ) : (
-                <Typography className="text-info">
-                  {props.student.applications.length} /{' '}
-                  {props.student.applying_program_count}
-                </Typography>
-              )
-            ) : (
-              <b className="text-danger">0</b>
-            )}
+                <b className="text-danger">0</b>
+              )}
+            </Box>
           </TableCell>
         ) : (
           <></>

@@ -571,7 +571,7 @@ function EditorDocsProgress(props) {
               /{application.doc_modification_thread?.length || 0}
             </Typography>
           </Grid>
-          <Grid item xs={8} md={8} sx={{ display: 'flex' }}>
+          <Grid item xs={8} md={8}>
             <Typography
               variant="body1"
               color={

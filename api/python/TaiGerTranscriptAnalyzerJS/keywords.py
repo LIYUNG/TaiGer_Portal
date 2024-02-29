@@ -451,7 +451,7 @@ ELECTRO_CIRCUIT_KEY_WORDS = ['電路', '數位邏輯', '數位系統', '邏輯�
 ELECTRO_CIRCUIT_ANTI_KEY_WORDS = [
     '超大型', '專題', '倫理', '素養', '進階', '藝術', '高頻', '微波']
 ELECTRO_CIRCUIT_KEY_WORDS_EN = [
-    'circuit', 'signal', 'fpga', 'hdl', '數位邏輯', 'logic']
+    'circuit', 'fpga', 'hdl', '數位邏輯', 'logic']
 ELECTRO_CIRCUIT_ANTI_KEY_WORDS_EN = ['超大型', '專題']
 
 # 訊號系統

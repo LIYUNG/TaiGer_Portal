@@ -106,18 +106,25 @@ function StudDocsDashboard(props) {
                   'aria-labelledby': 'basic-button'
                 }}
               >
-                <MenuItem
-                  onClick={() =>
-                    updateStudentArchivStatus(
-                      props.student._id,
-                      props.isDashboard || false
-                    )
-                  }
-                >
-                  {props.isDashboard
-                    ? t('Move to Archiv')
-                    : t('Move to Active')}
-                </MenuItem>
+                {props.isDashboard && (
+                  <MenuItem
+                    onClick={() =>
+                      updateStudentArchivStatus(props.student._id, true)
+                    }
+                  >
+                    {t('Move to Archiv')}
+                  </MenuItem>
+                )}
+
+                {props.isArchivPage && (
+                  <MenuItem
+                    onClick={() =>
+                      updateStudentArchivStatus(props.student._id, false)
+                    }
+                  >
+                    {t('Move to Active')}
+                  </MenuItem>
+                )}
               </Menu>
             </>
           )}

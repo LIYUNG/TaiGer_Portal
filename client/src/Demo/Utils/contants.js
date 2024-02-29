@@ -794,22 +794,29 @@ export const convertDate = (date) => {
     return dat + ', ' + time;
   }
 };
-
-export const program_fields = [
+export const program_fields_overview = [
   { name: 'School', prop: 'school' },
   { name: 'Program', prop: 'program_name' },
   { name: 'Degree', prop: 'degree' },
   { name: 'Semester', prop: 'semester' },
   { name: 'Teaching Language', prop: 'lang' },
-  { name: 'GPA Requirement (German system)', prop: 'gpa_requirement' },
+  { name: 'GPA Requirement (German system)', prop: 'gpa_requirement' }
+];
+
+export const program_fields_application_dates = [
   { name: 'Application Start (MM-DD)', prop: 'application_start' },
-  { name: 'Application Deadline (MM-DD)', prop: 'application_deadline' },
-  { name: 'Need Uni-Assist?', prop: 'uni_assist' },
+  { name: 'Application Deadline (MM-DD)', prop: 'application_deadline' }
+];
+
+export const program_fields_languages_test = [
   { name: 'TOEFL Requirement', prop: 'toefl' },
   { name: 'IELTS Requirement', prop: 'ielts' },
   { name: 'TestDaF Requirement', prop: 'testdaf' },
   { name: 'GRE Requirement', prop: 'gre' },
-  { name: 'GMAT Requirement', prop: 'gmat' },
+  { name: 'GMAT Requirement', prop: 'gmat' }
+];
+
+export const program_fields_special_documents = [
   { name: 'ML Required?', prop: 'ml_required' },
   { name: 'ML Requirements', prop: 'ml_requirements' },
   { name: 'RL Required?', prop: 'rl_required' },
@@ -822,16 +829,55 @@ export const program_fields = [
   {
     name: 'Supplementary Form Requirements',
     prop: 'supplementary_form_requirements'
-  },
+  }
+];
+
+export const ATTRIBUTES = [
+  { value: 1, name: 'Demanding' },
+  { value: 2, name: 'Parents Pushing' },
+  { value: 3, name: 'Urgent' },
+  { value: 4, name: 'Slow Response' },
+  { value: 5, name: 'Disappear' },
+  { value: 6, name: 'Low-IQ' },
+  { value: 7, name: 'Refunded' },
+  { value: 8, name: 'Done' }
+];
+
+export const COLORS = [
+  'primary',
+  'secondary',
+  'secondary',
+  'info',
+  'error',
+  'primary',
+  'primary',
+  'success',
+  'primary'
+];
+
+export const program_fields_special_notes = [
   {
     name: 'ECTS Requirements',
     prop: 'ects_requirements'
   },
+  { name: 'Need Uni-Assist?', prop: 'uni_assist' },
   { name: 'Special Notes', prop: 'special_notes' },
-  { name: 'Comments', prop: 'comments' },
+  { name: 'Comments', prop: 'comments' }
+];
+
+export const program_fields_others = [
   { name: 'Tuition Fees', prop: 'tuition_fees' },
   { name: 'FPSO', prop: 'fpso' },
   { name: 'Country', prop: 'country' }
+];
+
+export const program_fields = [
+  ...program_fields_overview,
+  ...program_fields_application_dates,
+  ...program_fields_languages_test,
+  ...program_fields_special_documents,
+  ...program_fields_special_notes,
+  ...program_fields_others
 ];
 
 export const convertDate_ux_friendly = (date) => {

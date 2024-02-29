@@ -50,6 +50,7 @@ import DEMO from '../../../store/constant';
 import { useAuth } from '../../../components/AuthProvider';
 import Loading from '../../../components/Loading/Loading';
 import { appConfig } from '../../../config';
+import { SubmitMessageWithAttachment } from '../../../api';
 
 const type2width = { word: 3, sentence: 5, paragraph: 12, essay: 12 };
 const type2rows = { word: 1, sentence: 1, paragraph: 4, essay: 10 };
@@ -497,7 +498,6 @@ function DocModificationThreadInput() {
     const name = e.target.name;
     if (name === 'useProgramRequirementData') {
       const checked = e.target.checked;
-      console.log('checked', checked);
       setDocModificationThreadInputState((prevState) => ({
         ...prevState,
         editorRequirements: {
@@ -522,6 +522,7 @@ function DocModificationThreadInput() {
   };
 
   const updateSurveyInput = async (surveyInput, informEditor) => {
+    console.log(surveyInput, surveyInput);
     if (!surveyInput._id) {
       return await postSurveyInput(surveyInput, informEditor);
     }
@@ -551,6 +552,23 @@ function DocModificationThreadInput() {
       }
 
       if (success) {
+        const message = {
+          blocks: [
+            {
+              data: { text: '<b>Notification: Survey Updated.</b>' },
+              type: 'paragraph'
+            }
+          ]
+        };
+        console.log('message', message);
+        const formData = new FormData();
+        formData.append('message', JSON.stringify(message));
+        SubmitMessageWithAttachment(
+          docModificationThreadInputState?.documentsthreadId,
+          docModificationThreadInputState.thread?.student_id._id,
+          formData
+        );
+
         setDocModificationThreadInputState((prevState) => ({
           ...prevState,
           success,

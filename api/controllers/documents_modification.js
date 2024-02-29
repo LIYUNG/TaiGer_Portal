@@ -336,7 +336,7 @@ const getSurveyInputs = asyncHandler(async (req, res, next) => {
 
   const surveyDocument = await getSurveyInputDocuments(
     threadDocument.student_id._id.toString(),
-    threadDocument?.program_id._id.toString(),
+    threadDocument?.program_id && threadDocument?.program_id._id.toString(),
     threadDocument.file_type
   );
 

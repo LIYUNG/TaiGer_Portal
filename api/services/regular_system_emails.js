@@ -37,6 +37,9 @@ const transporter = isDev()
       auth: {
         user: SMTP_USERNAME,
         pass: SMTP_PASSWORD
+      },
+      tls: {
+        rejectUnauthorized: false
       }
     })
   : createTransport({

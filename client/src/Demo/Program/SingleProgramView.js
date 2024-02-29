@@ -341,6 +341,7 @@ function SingleProgramView(props) {
                                 student._id.toString(),
                                 DEMO.PROFILE_HASH
                               )}`}
+                              component={LinkDom}
                             >
                               {student.firstname} {student.lastname}
                             </Link>
@@ -598,6 +599,7 @@ function SingleProgramView(props) {
                                     student._id.toString(),
                                     DEMO.PROFILE_HASH
                                   )}`}
+                                  component={LinkDom}
                                 >
                                   {student.firstname} {student.lastname}
                                 </Link>

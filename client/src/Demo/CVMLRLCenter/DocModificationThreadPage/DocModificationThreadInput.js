@@ -523,7 +523,7 @@ function DocModificationThreadInput() {
 
   const updateSurveyInput = async (surveyInput, informEditor) => {
     console.log(surveyInput, surveyInput);
-    if (!surveyInput._id) {
+    if (!surveyInput?._id) {
       return await postSurveyInput(surveyInput, informEditor);
     }
     return await putSurveyInput(surveyInput._id, surveyInput, informEditor);
@@ -580,10 +580,14 @@ function DocModificationThreadInput() {
               ...docModificationThreadInputState.surveyInputs.general,
               updatedAt: new Date()
             },
-            specific: {
-              ...docModificationThreadInputState.surveyInputs.specific,
-              updatedAt: new Date()
-            }
+            ...(docModificationThreadInputState.surveyInputs.specific
+              ? {
+                  specific: {
+                    ...docModificationThreadInputState.surveyInputs.specific,
+                    updatedAt: new Date()
+                  }
+                }
+              : {})
           },
           isLoaded: true,
           res_status: status

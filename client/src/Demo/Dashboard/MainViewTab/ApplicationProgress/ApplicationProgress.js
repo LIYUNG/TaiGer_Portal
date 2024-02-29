@@ -13,7 +13,7 @@ import {
 } from '../../../Utils/checking-functions';
 import DEMO from '../../../../store/constant';
 import { useAuth } from '../../../../components/AuthProvider';
-import { Box, Link, TableCell, TableRow, Typography } from '@mui/material';
+import { Link, TableCell, TableRow, Typography } from '@mui/material';
 
 function ApplicationProgress(props) {
   const { user } = useAuth();
@@ -66,29 +66,27 @@ function ApplicationProgress(props) {
         </TableCell>
         {!is_TaiGer_Student(user) ? (
           <TableCell>
-            <Box title="Selected / Should be selected">
-              {props.student.applying_program_count ? (
-                props.student.applications.length <
-                props.student.applying_program_count ? (
-                  <Typography className="text-danger">
-                    <b>{props.student.applications.length}</b> /{' '}
-                    {props.student.applying_program_count}
-                  </Typography>
-                ) : (
-                  <Typography className="text-info">
-                    {props.student.applications.length} /{' '}
-                    {props.student.applying_program_count}
-                  </Typography>
-                )
+            {props.student.applying_program_count ? (
+              props.student.applications.length <
+              props.student.applying_program_count ? (
+                <Typography className="text-danger">
+                  <b>{props.student.applications.length}</b> /{' '}
+                  {props.student.applying_program_count}
+                </Typography>
               ) : (
-                <b className="text-danger">0</b>
-              )}
-            </Box>
+                <Typography className="text-info">
+                  {props.student.applications.length} /{' '}
+                  {props.student.applying_program_count}
+                </Typography>
+              )
+            ) : (
+              <b className="text-danger">0</b>
+            )}
           </TableCell>
         ) : (
           <></>
         )}
-        <TableCell title={application.decided !== 'O' && 'Not decided yet'}>
+        <TableCell>
           <Link
             to={DEMO.SINGLE_PROGRAM_LINK(application.programId._id.toString())}
             component={LinkDom}
@@ -108,7 +106,7 @@ function ApplicationProgress(props) {
             </Typography>
           </Link>
         </TableCell>
-        <TableCell title={application.decided !== 'O' && 'Not decided yet'}>
+        <TableCell>
           <Link
             to={DEMO.SINGLE_PROGRAM_LINK(application.programId._id.toString())}
             component={LinkDom}
@@ -128,7 +126,7 @@ function ApplicationProgress(props) {
             </Typography>
           </Link>
         </TableCell>
-        <TableCell title={application.decided !== 'O' && 'Not decided yet'}>
+        <TableCell>
           <Link
             to={DEMO.SINGLE_PROGRAM_LINK(application.programId._id.toString())}
             component={LinkDom}
@@ -157,9 +155,7 @@ function ApplicationProgress(props) {
             {application.programId.semester}
           </TableCell>
         ) : (
-          <TableCell className="mb-1 text-secondary" title="Not decided yet">
-            {application.programId.semester}
-          </TableCell>
+          <TableCell>{application.programId.semester}</TableCell>
         )}
         {isProgramDecided(application) ? (
           isProgramSubmitted(application) ? (
@@ -172,7 +168,7 @@ function ApplicationProgress(props) {
             </TableCell>
           )
         ) : (
-          <TableCell className="mb-1 text-secondary" title="Not decided yet">
+          <TableCell className="mb-1 text-secondary">
             {application.programId.toefl ? application.programId.toefl : '-'}
           </TableCell>
         )}
@@ -187,7 +183,7 @@ function ApplicationProgress(props) {
             </TableCell>
           )
         ) : (
-          <TableCell className="mb-1 text-secondary" title="Not decided yet">
+          <TableCell className="mb-1 text-secondary">
             {application.programId.ielts ? application.programId.ielts : '-'}
           </TableCell>
         )}
@@ -224,7 +220,7 @@ function ApplicationProgress(props) {
             </TableCell>
           )
         ) : (
-          <TableCell title="Not decided yet">
+          <TableCell>
             <Typography
               color={
                 isProgramDecided(application)

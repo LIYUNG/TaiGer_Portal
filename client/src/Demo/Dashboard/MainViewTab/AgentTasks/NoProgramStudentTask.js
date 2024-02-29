@@ -15,7 +15,7 @@ function NoProgramStudentTask(props) {
             <Link
               to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                 props.student._id.toString(),
-                DEMO.UNIASSIST_HASH
+                DEMO.APPLICATION_HASH
               )}`}
               component={LinkDom}
             >

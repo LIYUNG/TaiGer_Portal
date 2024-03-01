@@ -18,6 +18,9 @@ const DEMO = {
   COMMUNICATIONS_LINK: (student_id) => {
     return `/communications/${student_id}`;
   },
+  EMBEDDED_COMMUNICATIONS_LINK: (student_id) => {
+    return `/communications/t/${student_id}`;
+  },
   CV_ML_RL_CENTER_LINK: '/cv-ml-rl-center',
   CV_ML_RL_DOCS_LINK: '/docs/cv-ml-rl',
   CV_ML_RL_DASHBOARD_LINK: '/dashboard/cv-ml-rl',

@@ -6,8 +6,8 @@ import {
   ListItem,
   ListItemButton,
   ListItemIcon,
-  ListItemText,
-  Typography
+  Typography,
+  useTheme
 } from '@mui/material';
 
 import {
@@ -16,11 +16,26 @@ import {
 } from '../../../../Demo/Utils/contants';
 import DEMO from '../../../../store/constant';
 import { truncateText } from '../../../../Demo/Utils/checking-functions';
+import { RxDotFilled } from 'react-icons/rx';
 
 const friend = (props) => {
   const { student_id } = useParams();
+  const theme = useTheme();
   return (
-    <ListItem key={props.data?._id?.toString()} disablePadding>
+    <ListItem
+      key={props.data?._id?.toString()}
+      sx={{
+        backgroundColor: props.data?.latestCommunication?.readBy.includes(
+          props.activeId
+        )
+          ? theme.palette.background.secondary
+          : theme.palette.info.main, // Set your desired background color
+        '&:hover': {
+          backgroundColor: '#a0a0a0' // Set a different color on hover if needed
+        }
+      }}
+      disablePadding
+    >
       <ListItemButton
         component={LinkDom}
         to={`${DEMO.EMBEDDED_COMMUNICATIONS_LINK(props.data?._id?.toString())}`}
@@ -50,17 +65,24 @@ const friend = (props) => {
                 }${
                   props.data.lastname_chinese ? props.data.lastname_chinese : ''
                 }`,
-                15
+                22
+              )}
+              {props.data?.latestCommunication?.user_id !== props.activeId && (
+                <RxDotFilled
+                  size={18}
+                  title="Not Reply Yet"
+                  style={{ marginLeft: '4px' }}
+                />
+              )}
+            </Typography>
+            <Typography variant="body1" color="text.primary">
+              {convertDate_ux_friendly(
+                props.data?.latestCommunication?.createdAt
               )}
             </Typography>
           </Box>
         </ListItemIcon>
-        <ListItemText
-          sx={{ pr: 4 }}
-          primary={convertDate_ux_friendly(
-            props.data?.latestCommunication?.createdAt
-          )}
-        />
+
         {/* <Box
           style={{
             textAlign: 'right',

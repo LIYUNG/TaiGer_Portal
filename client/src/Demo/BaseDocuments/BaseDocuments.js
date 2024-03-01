@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { Link as LinkDom } from 'react-router-dom';
 import {
   Box,
+  Button,
+  CircularProgress,
   Breadcrumbs,
   Card,
   Link,
@@ -13,6 +15,8 @@ import {
   TableHead,
   TableRow
 } from '@mui/material';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import CloseIcon from '@mui/icons-material/Close';
 
 import StudentBaseDocumentsStatus from './StudentBaseDocumentsStatus';
 import BaseDocument_StudentView from './BaseDocument_StudentView';
@@ -23,7 +27,14 @@ import {
 } from '../Utils/contants';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import ErrorPage from '../Utils/ErrorPage';
-import { is_TaiGer_role } from '../Utils/checking-functions';
+import {
+  is_TaiGer_role,
+  is_TaiGer_Editor,
+  is_TaiGer_Student
+} from '../Utils/checking-functions';
+import ModalNew from '../../components/Modal';
+import FilePreview from '../../components/FilePreview/FilePreview';
+import { BASE_URL } from '../../api/request';
 
 import { getStudentsAndDocLinks } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
@@ -34,6 +45,10 @@ import Loading from '../../components/Loading/Loading';
 
 function BaseDocuments() {
   const { user } = useAuth();
+  const {
+    studentBaseDocumentsStatusState,
+    setStudentBaseDocumentsStatusState
+  } = useState({ showPreview: false, preview_path: '#', isLoaded: true });
   const { t } = useTranslation();
   const [baseDocumentsState, setBaseDocumentsState] = useState({
     error: '',
@@ -130,6 +145,37 @@ function BaseDocuments() {
     )
   );
 
+  const closePreviewWindow = () => {
+    setStudentBaseDocumentsStatusState((prevState) => ({
+      ...prevState,
+      showPreview: false
+    }));
+  };
+
+  const onUpdateProfileDocStatus = (e, category, student_id, status) => {
+    e.preventDefault();
+    console.log(category);
+    console.log(student_id);
+    console.log(status);
+    // if (status === 'accepted') {
+    //   setButtonSetAcceptedState((prevState) => ({
+    //     ...prevState,
+    //     student_id,
+    //     category,
+    //     status,
+    //     acceptProfileFileModel: true
+    //   }));
+    // } else {
+    //   setButtonSetAcceptedState((prevState) => ({
+    //     ...prevState,
+    //     student_id,
+    //     category,
+    //     status,
+    //     rejectProfileFileModel: true
+    //   }));
+    // }
+  };
+
   return (
     <Box>
       <Breadcrumbs aria-label="breadcrumb">
@@ -167,6 +213,64 @@ function BaseDocuments() {
           res_modal_message={res_modal_message}
         />
       )}
+      <ModalNew
+        open={studentBaseDocumentsStatusState?.showPreview || false}
+        onClose={closePreviewWindow}
+        aria-labelledby="contained-modal-title-vcenter2"
+      >
+        <Typography id="contained-d-title-vcenter">{"props.path"}</Typography>
+        <FilePreview
+          path={studentBaseDocumentsStatusState?.preview_path}
+          student_id={studentBaseDocumentsStatusState?.student_id.toString()}
+        />
+        {"abc.pdf".split('.')[1] !== 'pdf' && (
+          <a
+            href={`${BASE_URL}/api/students/${studentBaseDocumentsStatusState?.student_id.toString()}/files/${
+              "props.path"
+            }`}
+            download
+            target="_blank"
+            rel="noreferrer"
+          >
+            <Button
+              size="small"
+              color="primary"
+              variant="contained"
+              title="Download"
+              startIcon={<FileDownloadIcon />}
+            >
+              {t('Download')}
+            </Button>
+          </a>
+        )}
+        {!(is_TaiGer_Editor(user) || is_TaiGer_Student(user)) && (
+          <Button
+            variant="contained"
+            color="secondary"
+            size="small"
+            disabled={!studentBaseDocumentsStatusState?.isLoaded}
+            onClick={(e) =>
+              onUpdateProfileDocStatus(
+                e,
+                "props.k",
+                studentBaseDocumentsStatusState?.student_id,
+                'rejected'
+              )
+            }
+            startIcon={<CloseIcon />}
+            sx={{ mr: 2 }}
+          >
+            {t('Reject')}
+          </Button>
+        )}
+        <Button size="small" variant="outlined" onClick={closePreviewWindow}>
+          {!studentBaseDocumentsStatusState?.isLoaded ? (
+            <CircularProgress />
+          ) : (
+            t('Close')
+          )}
+        </Button>
+      </ModalNew>
     </Box>
   );
 }

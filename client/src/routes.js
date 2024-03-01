@@ -19,6 +19,11 @@ const ArchivStudent = React.lazy(() => import('./Demo/ArchivStudent/index'));
 const CommunicationSinglePage = React.lazy(() =>
   import('./Demo/Communications/CommunicationSinglePage')
 );
+
+const CommunicationExpandPage = React.lazy(() =>
+  import('./Demo/Communications/CommunicationExpandPage')
+);
+
 const UniAssist = React.lazy(() => import('./Demo/UniAssist/index'));
 const PortalCredentialPage = React.lazy(() =>
   import('./Demo/PortalCredentialPage/index')
@@ -560,6 +565,12 @@ if (appConfig.messengerEnable) {
     exact: true,
     name: 'My Chat',
     Component: CommunicationSinglePage
+  });
+  routes.push({
+    path: '/communications/t/:student_id',
+    exact: true,
+    name: 'All Chat',
+    Component: CommunicationExpandPage
   });
 }
 

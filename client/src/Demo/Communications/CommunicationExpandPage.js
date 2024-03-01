@@ -347,7 +347,7 @@ function CommunicationExpandPage() {
               <Card key={student._id}>{student?.firstname}</Card>
             ))} */}
         </Grid>
-        <Grid item xs md>
+        <Grid item xs md style={{marginLeft: '8px' }}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <Breadcrumbs aria-label="breadcrumb">

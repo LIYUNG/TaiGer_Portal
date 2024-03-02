@@ -49,6 +49,7 @@ function CommunicationExpandPage() {
     useState({
       error: '',
       isLoaded: false,
+      messagesLoaded: false,
       thread: null,
       name: 1,
       upperThread: [],
@@ -69,7 +70,7 @@ function CommunicationExpandPage() {
   useEffect(() => {
     setCommunicationExpandPageState((prevState) => ({
       ...prevState,
-      isLoaded: false
+      messagesLoaded: false
     }));
     getCommunicationThread(student_id).then(
       (resp) => {
@@ -81,6 +82,7 @@ function CommunicationExpandPage() {
             success,
             thread: data.reverse(),
             upperThread: [],
+            messagesLoaded: true,
             isLoaded: true,
             student_id: student_id,
             student,
@@ -95,6 +97,7 @@ function CommunicationExpandPage() {
         } else {
           setCommunicationExpandPageState((prevState) => ({
             ...prevState,
+            messagesLoaded: true,
             isLoaded: true,
             res_status: status
           }));
@@ -103,6 +106,7 @@ function CommunicationExpandPage() {
       (error) => {
         setCommunicationExpandPageState((prevState) => ({
           ...prevState,
+          messagesLoaded: true,
           isLoaded: true,
           error,
           res_status: 500
@@ -139,7 +143,7 @@ function CommunicationExpandPage() {
               ...data.reverse(),
               ...communicationExpandPageState.upperThread
             ],
-            isLoaded: true,
+            messagesLoaded: true,
             student,
             pageNumber: communicationExpandPageState.pageNumber + 1,
             uppderaccordionKeys: [
@@ -163,7 +167,7 @@ function CommunicationExpandPage() {
         } else {
           setCommunicationExpandPageState((prevState) => ({
             ...prevState,
-            isLoaded: true,
+            messagesLoaded: true,
             res_status: status
           }));
         }
@@ -171,7 +175,7 @@ function CommunicationExpandPage() {
       (error) => {
         setCommunicationExpandPageState((prevState) => ({
           ...prevState,
-          isLoaded: true,
+          messagesLoaded: true,
           error,
           res_status: 500
         }));
@@ -200,7 +204,7 @@ function CommunicationExpandPage() {
             success,
             editorState: {},
             thread: [...communicationExpandPageState.thread, ...data],
-            isLoaded: true,
+            messagesLoaded: true,
             buttonDisabled: false,
             accordionKeys: [
               ...communicationExpandPageState.accordionKeys,
@@ -213,7 +217,7 @@ function CommunicationExpandPage() {
           const { message } = resp.data;
           setCommunicationExpandPageState((prevState) => ({
             ...prevState,
-            isLoaded: true,
+            messagesLoaded: true,
             buttonDisabled: false,
             res_modal_message: message,
             res_modal_status: status
@@ -223,7 +227,7 @@ function CommunicationExpandPage() {
       (error) => {
         setCommunicationExpandPageState((prevState) => ({
           ...prevState,
-          isLoaded: true,
+          messagesLoaded: true,
           error,
           res_modal_status: 500,
           res_modal_message: error
@@ -236,7 +240,7 @@ function CommunicationExpandPage() {
     e.preventDefault();
     setCommunicationExpandPageState((prevState) => ({
       ...prevState,
-      isLoaded: false
+      messagesLoaded: false
     }));
     deleteAMessageInCommunicationThread(student_id, message_id).then(
       (resp) => {
@@ -263,7 +267,7 @@ function CommunicationExpandPage() {
           setCommunicationExpandPageState((prevState) => ({
             ...prevState,
             success,
-            isLoaded: true,
+            messagesLoaded: true,
             upperThread: new_upper_messages,
             thread: new_messages,
             buttonDisabled: false,
@@ -274,7 +278,7 @@ function CommunicationExpandPage() {
           const { message } = resp.data;
           setCommunicationExpandPageState((prevState) => ({
             ...prevState,
-            isLoaded: true,
+            messagesLoaded: true,
             buttonDisabled: false,
             res_modal_message: message,
             res_modal_status: status
@@ -284,7 +288,7 @@ function CommunicationExpandPage() {
       (error) => {
         setCommunicationExpandPageState((prevState) => ({
           ...prevState,
-          isLoaded: true,
+          messagesLoaded: true,
           error,
           res_modal_status: 500,
           res_modal_message: ''
@@ -302,8 +306,13 @@ function CommunicationExpandPage() {
     setOpen(false);
   };
 
-  const { isLoaded, res_status, res_modal_status, res_modal_message } =
-    communicationExpandPageState;
+  const {
+    messagesLoaded,
+    isLoaded,
+    res_status,
+    res_modal_status,
+    res_modal_message
+  } = communicationExpandPageState;
 
   if (!isLoaded && !communicationExpandPageState.thread) {
     return <Loading />;
@@ -422,194 +431,201 @@ function CommunicationExpandPage() {
               />
             </Drawer>
           </Box>
-          <div
-            style={{
-              height: window.innerHeight - 112 - 40,
-              overflow: 'hidden'
-            }}
-          >
+          {messagesLoaded ? (
             <div
               style={{
-                overflowY: 'auto' /* Enable vertical scrolling */,
-                maxHeight:
-                  window.innerHeight -
-                  112 -
-                  40 /* Adjusted max height, considering header */
+                height: window.innerHeight - 112 - 40,
+                overflow: 'hidden'
               }}
             >
-              <Fragment>
-                <Grid container spacing={2}>
-                  <Grid item xs={12} sm={9}>
-                    <Box variant="body1">
-                      <List>
-                        <ListItem>
-                          <Typography fontWeight="bold">
-                            1. 請把{' '}
+              <div
+                style={{
+                  overflowY: 'auto' /* Enable vertical scrolling */,
+                  maxHeight:
+                    window.innerHeight -
+                    112 -
+                    40 /* Adjusted max height, considering header */
+                }}
+              >
+                <Fragment>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} sm={9}>
+                      <Box variant="body1">
+                        <List>
+                          <ListItem>
+                            <Typography fontWeight="bold">
+                              1. 請把{' '}
+                              <Link
+                                to={
+                                  is_TaiGer_Student(user)
+                                    ? `${DEMO.SURVEY_LINK}`
+                                    : `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                                        communicationExpandPageState.student_id,
+                                        DEMO.SURVEY_HASH
+                                      )}`
+                                }
+                                component={LinkDom}
+                                target="_blank"
+                              >
+                                {t('My Survey')}{' '}
+                                <FiExternalLink
+                                  className="mx-0 mb-1"
+                                  style={{ cursor: 'pointer' }}
+                                />
+                              </Link>
+                              填好,{' '}
+                              <Link
+                                to={
+                                  is_TaiGer_Student(user)
+                                    ? `${DEMO.BASE_DOCUMENTS_LINK}`
+                                    : `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                                        communicationExpandPageState.student_id,
+                                        DEMO.PROFILE_HASH
+                                      )}`
+                                }
+                                component={LinkDom}
+                                target="_blank"
+                              >
+                                Base Document{' '}
+                                <FiExternalLink style={{ cursor: 'pointer' }} />
+                              </Link>
+                              , 文件有的都盡量先掃描上傳,{' '}
+                              <Link
+                                to={`${DEMO.COURSES_LINK}/${communicationExpandPageState.student_id}`}
+                                component={LinkDom}
+                                target="_blank"
+                              >
+                                {t('My Courses')}{' '}
+                                <FiExternalLink
+                                  className="mx-0 mb-1"
+                                  style={{ cursor: 'pointer' }}
+                                />
+                              </Link>
+                              課程填好，之後 Agent 在回答問題時比較能掌握狀況。
+                            </Typography>
+                          </ListItem>
+                        </List>
+                      </Box>
+                    </Grid>
+                    <Grid item xs={12} sm={3}>
+                      <Typography fontWeight="bold">{t('Agents')}:</Typography>
+                      {communicationExpandPageState.student?.agents?.map(
+                        (agent, i) => (
+                          <Typography key={i}>
                             <Link
-                              to={
-                                is_TaiGer_Student(user)
-                                  ? `${DEMO.SURVEY_LINK}`
-                                  : `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-                                      communicationExpandPageState.student_id,
-                                      DEMO.SURVEY_HASH
-                                    )}`
-                              }
+                              to={`${DEMO.TEAM_AGENT_PROFILE_LINK(
+                                agent._id.toString()
+                              )}`}
                               component={LinkDom}
-                              target="_blank"
-                            >
-                              {t('My Survey')}{' '}
-                              <FiExternalLink
-                                className="mx-0 mb-1"
-                                style={{ cursor: 'pointer' }}
-                              />
-                            </Link>
-                            填好,{' '}
-                            <Link
-                              to={
-                                is_TaiGer_Student(user)
-                                  ? `${DEMO.BASE_DOCUMENTS_LINK}`
-                                  : `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-                                      communicationExpandPageState.student_id,
-                                      DEMO.PROFILE_HASH
-                                    )}`
-                              }
-                              component={LinkDom}
-                              target="_blank"
-                            >
-                              Base Document{' '}
-                              <FiExternalLink style={{ cursor: 'pointer' }} />
-                            </Link>
-                            , 文件有的都盡量先掃描上傳,{' '}
-                            <Link
-                              to={`${DEMO.COURSES_LINK}/${communicationExpandPageState.student_id}`}
-                              component={LinkDom}
-                              target="_blank"
-                            >
-                              {t('My Courses')}{' '}
-                              <FiExternalLink
-                                className="mx-0 mb-1"
-                                style={{ cursor: 'pointer' }}
-                              />
-                            </Link>
-                            課程填好，之後 Agent 在回答問題時比較能掌握狀況。
+                            >{`${agent.firstname} ${agent.lastname}`}</Link>
                           </Typography>
-                        </ListItem>
-                      </List>
-                    </Box>
-                  </Grid>
-                  <Grid item xs={12} sm={3}>
-                    <Typography fontWeight="bold">{t('Agents')}:</Typography>
-                    {communicationExpandPageState.student?.agents?.map(
-                      (agent, i) => (
-                        <Typography key={i}>
-                          <Link
-                            to={`${DEMO.TEAM_AGENT_PROFILE_LINK(
-                              agent._id.toString()
-                            )}`}
-                            component={LinkDom}
-                          >{`${agent.firstname} ${agent.lastname}`}</Link>
-                        </Typography>
-                      )
-                    )}
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Button
-                      fullWidth
-                      color="secondary"
-                      variant="outlined"
-                      onClick={handleLoadMessages}
-                      disabled={communicationExpandPageState.loadButtonDisabled}
-                      sx={{ mb: 2 }}
-                    >
-                      {t('Load')}
-                    </Button>
-                    <Box>
-                      {communicationExpandPageState.upperThread.length > 0 && (
+                        )
+                      )}
+                    </Grid>
+                    <Grid item xs={12}>
+                      <Button
+                        fullWidth
+                        color="secondary"
+                        variant="outlined"
+                        onClick={handleLoadMessages}
+                        disabled={
+                          communicationExpandPageState.loadButtonDisabled
+                        }
+                        sx={{ mb: 2 }}
+                      >
+                        {t('Load')}
+                      </Button>
+                      <Box>
+                        {communicationExpandPageState.upperThread.length >
+                          0 && (
+                          <MessageList
+                            accordionKeys={
+                              communicationExpandPageState.uppderaccordionKeys
+                            }
+                            student_id={communicationExpandPageState.student._id.toString()}
+                            isUpperMessagList={true}
+                            thread={communicationExpandPageState.upperThread}
+                            isLoaded={communicationExpandPageState.isLoaded}
+                            user={user}
+                            onDeleteSingleMessage={onDeleteSingleMessage}
+                          />
+                        )}
                         <MessageList
                           accordionKeys={
-                            communicationExpandPageState.uppderaccordionKeys
+                            communicationExpandPageState.accordionKeys
                           }
                           student_id={communicationExpandPageState.student._id.toString()}
-                          isUpperMessagList={true}
-                          thread={communicationExpandPageState.upperThread}
+                          isUpperMessagList={false}
+                          thread={communicationExpandPageState.thread}
                           isLoaded={communicationExpandPageState.isLoaded}
                           user={user}
                           onDeleteSingleMessage={onDeleteSingleMessage}
                         />
-                      )}
-                      <MessageList
-                        accordionKeys={
-                          communicationExpandPageState.accordionKeys
-                        }
-                        student_id={communicationExpandPageState.student._id.toString()}
-                        isUpperMessagList={false}
-                        thread={communicationExpandPageState.thread}
-                        isLoaded={communicationExpandPageState.isLoaded}
-                        user={user}
-                        onDeleteSingleMessage={onDeleteSingleMessage}
-                      />
-                    </Box>
-                    {communicationExpandPageState.student.archiv !== true ? (
-                      <Box>
-                        <Grid container spacing={2}>
-                          <Grid item xs={12}>
-                            <Card
-                              sx={{
-                                padding: 2,
-                                maxWidth: window.innerWidth - 64,
-                                pt: 2,
-                                '& .MuiAvatar-root': {
-                                  width: 32,
-                                  height: 32,
-                                  ml: -0.5,
-                                  mr: 1
-                                }
-                              }}
-                            >
-                              <Avatar
-                                {...stringAvatar(
-                                  `${user.firstname} ${user.lastname}`
-                                )}
-                              />
-                              <Typography
-                                style={{ marginLeft: '10px', flex: 1 }}
-                              >
-                                {user.firstname} {user.lastname}
-                              </Typography>
-
-                              <CommunicationThreadEditor
-                                thread={communicationExpandPageState.thread}
-                                buttonDisabled={
-                                  communicationExpandPageState.buttonDisabled
-                                }
-                                editorState={
-                                  communicationExpandPageState.editorState
-                                }
-                                handleClickSave={handleClickSave}
-                              />
-                            </Card>
-                          </Grid>
-                        </Grid>
                       </Box>
-                    ) : (
-                      <Card>
-                        {t(
-                          'The service is finished. Therefore, it is readonly.'
-                        )}
-                      </Card>
-                    )}
-                    {res_modal_status >= 400 && (
-                      <ModalMain
-                        ConfirmError={ConfirmError}
-                        res_modal_status={res_modal_status}
-                        res_modal_message={res_modal_message}
-                      />
-                    )}
+                      {communicationExpandPageState.student.archiv !== true ? (
+                        <Box>
+                          <Grid container spacing={2}>
+                            <Grid item xs={12}>
+                              <Card
+                                sx={{
+                                  padding: 2,
+                                  maxWidth: window.innerWidth - 64,
+                                  pt: 2,
+                                  '& .MuiAvatar-root': {
+                                    width: 32,
+                                    height: 32,
+                                    ml: -0.5,
+                                    mr: 1
+                                  }
+                                }}
+                              >
+                                <Avatar
+                                  {...stringAvatar(
+                                    `${user.firstname} ${user.lastname}`
+                                  )}
+                                />
+                                <Typography
+                                  style={{ marginLeft: '10px', flex: 1 }}
+                                >
+                                  {user.firstname} {user.lastname}
+                                </Typography>
+
+                                <CommunicationThreadEditor
+                                  thread={communicationExpandPageState.thread}
+                                  buttonDisabled={
+                                    communicationExpandPageState.buttonDisabled
+                                  }
+                                  editorState={
+                                    communicationExpandPageState.editorState
+                                  }
+                                  handleClickSave={handleClickSave}
+                                />
+                              </Card>
+                            </Grid>
+                          </Grid>
+                        </Box>
+                      ) : (
+                        <Card>
+                          {t(
+                            'The service is finished. Therefore, it is readonly.'
+                          )}
+                        </Card>
+                      )}
+                      {res_modal_status >= 400 && (
+                        <ModalMain
+                          ConfirmError={ConfirmError}
+                          res_modal_status={res_modal_status}
+                          res_modal_message={res_modal_message}
+                        />
+                      )}
+                    </Grid>
                   </Grid>
-                </Grid>
-              </Fragment>
+                </Fragment>
+              </div>
             </div>
-          </div>
+          ) : (
+            <Loading />
+          )}
         </Grid>
       </Grid>
     </Box>

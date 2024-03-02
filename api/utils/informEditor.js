@@ -6,11 +6,7 @@ const {
   sendNewGeneraldocMessageInThreadEmail
 } = require('../services/email');
 
-// sendAssignEditorReminderEmail
-// sendNewApplicationMessageInThreadEmail
-// sendNewGeneraldocMessageInThreadEmail
-
-const informStaff = async (user, staff, student, fileType, message) => {
+const informStaff = async (user, staff, student, fileType, thread, message) => {
   await sendNewApplicationMessageInThreadEmail(
     {
       firstname: staff.firstname,
@@ -23,9 +19,9 @@ const informStaff = async (user, staff, student, fileType, message) => {
       student_firstname: student.firstname,
       student_lastname: student.lastname,
       uploaded_documentname: fileType,
-      // school: document_thread.program_id.school,
-      // program_name: document_thread.program_id.program_name,
-      // thread_id: document_thread._id.toString(),
+      school: thread.program_id.school,
+      program_name: thread.program_id.program_name,
+      thread_id: thread._id.toString(),
       uploaded_updatedAt: new Date(),
       message
     }
@@ -83,7 +79,7 @@ const informNoEditor = async (student) => {
   }
 };
 
-const informOnSurveyUpdate = async (user, survey) => {
+const informOnSurveyUpdate = async (user, survey, thread) => {
   if (user.role !== Role.Student) {
     return;
   }
@@ -136,7 +132,7 @@ const informOnSurveyUpdate = async (user, survey) => {
             student_firstname: student.firstname,
             student_lastname: student.lastname,
             uploaded_documentname: fileType,
-            //   thread_id: document_thread._id.toString(),
+            thread_id: thread._id.toString(),
             uploaded_updatedAt: new Date(),
             message
           };

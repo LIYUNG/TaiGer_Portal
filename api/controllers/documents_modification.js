@@ -357,133 +357,22 @@ const postSurveyInput = asyncHandler(async (req, res, next) => {
   });
   await newSurveyInput.save();
   res.status(200).send({ success: true });
-if (informEditor) {
-    // TODO: inform editor
-    if (user.role === Role.Student) {
-      // If no editor, inform agent to assign
-      if (!student.editors || student.editors.length === 0) {
-        await Student.findByIdAndUpdate(user._id, { needEditor: true }, {});
-        for (let i = 0; i < student.agents.length; i += 1) {
-          // inform active-agent
-          if (isNotArchiv(student)) {
-            if (isNotArchiv(student.agents[i])) {
-              await sendAssignEditorReminderEmail(
-                {
-                  firstname: student.agents[i].firstname,
-                  lastname: student.agents[i].lastname,
-                  address: student.agents[i].email
-                },
-                {
-                  student_firstname: student.firstname,
-                  student_id: student._id.toString(),
-                  student_lastname: student.lastname
-                }
-              );
-            }
-          }
-        }
-        // inform editor-lead
-        const permissions = await Permission.find({
-          canAssignEditors: true
-        })
-          .populate('user_id', 'firstname lastname email')
-          .lean();
-        if (permissions) {
-          for (let x = 0; x < permissions.length; x += 1) {
-            await sendAssignEditorReminderEmail(
-              {
-                firstname: permissions[x].user_id.firstname,
-                lastname: permissions[x].user_id.lastname,
-                address: permissions[x].user_id.email
-              },
-              {
-                student_firstname: student.firstname,
-                student_id: student._id.toString(),
-                student_lastname: student.lastname
-              }
-            );
-          }
-        }
-      } else {
-        if (document_thread.file_type === 'Supplementary_Form') {
-          // Inform Agent
-          for (let i = 0; i < student.agents.length; i += 1) {
-            if (isNotArchiv(student)) {
-              if (isNotArchiv(student.agents[i])) {
-                // if supplementary form, inform Agent.
-                await sendNewApplicationMessageInThreadEmail(
-                  {
-                    firstname: student.agents[i].firstname,
-                    lastname: student.agents[i].lastname,
-                    address: student.agents[i].email
-                  },
-                  {
-                    writer_firstname: user.firstname,
-                    writer_lastname: user.lastname,
-                    student_firstname: student.firstname,
-                    student_lastname: student.lastname,
-                    uploaded_documentname: document_thread.file_type,
-                    school: document_thread.program_id.school,
-                    program_name: document_thread.program_id.program_name,
-                    thread_id: document_thread._id.toString(),
-                    uploaded_updatedAt: new Date(),
-                    message
-                  }
-                );
-              }
-            }
-          }
-        } else {
-          // Inform Editor
-          for (let i = 0; i < student.editors.length; i += 1) {
-            if (document_thread.program_id) {
-              if (isNotArchiv(student) && isNotArchiv(student.editors[i])) {
-                await sendNewApplicationMessageInThreadEmail(
-                  {
-                    firstname: student.editors[i].firstname,
-                    lastname: student.editors[i].lastname,
-                    address: student.editors[i].email
-                  },
-                  {
-                    writer_firstname: user.firstname,
-                    writer_lastname: user.lastname,
-                    student_firstname: student.firstname,
-                    student_lastname: student.lastname,
-                    uploaded_documentname: document_thread.file_type,
-                    school: document_thread.program_id.school,
-                    program_name: document_thread.program_id.program_name,
-                    thread_id: document_thread._id.toString(),
-                    uploaded_updatedAt: new Date(),
-                    message
-                  }
-                );
-              }
-            } else if (
-              isNotArchiv(student) &&
-              isNotArchiv(student.editors[i])
-            ) {
-              await sendNewGeneraldocMessageInThreadEmail(
-                {
-                  firstname: student.editors[i].firstname,
-                  lastname: student.editors[i].lastname,
-                  address: student.editors[i].email
-                },
-                {
-                  writer_firstname: user.firstname,
-                  writer_lastname: user.lastname,
-                  student_firstname: student.firstname,
-                  student_lastname: student.lastname,
-                  uploaded_documentname: document_thread.file_type,
-                  thread_id: document_thread._id.toString(),
-                  uploaded_updatedAt: new Date(),
-                  message
-                }
-              );
-            }
-          }
-        }
-      }
-    }
+
+  const thread = await Documentthread.findOne({
+    student_id: newSurvey.studentId,
+    program_id: newSurvey.programId,
+    file_type: newSurvey.fileType
+  })
+    .populate('program_id')
+    .lean();
+
+  // Create message notification
+  await addMessageInThread(
+    'Automatic Notification: Survey Input has been updated.',
+    thread?._id
+  );
+  if (informEditor) {
+    informOnSurveyUpdate(user, newSurvey, thread);
   }
 });
 
@@ -493,19 +382,35 @@ const putSurveyInput = asyncHandler(async (req, res, next) => {
     params: { surveyInputId }
   } = req;
   const { input, informEditor } = req.body;
-  const newSurvey = await surveyInput.findByIdAndUpdate(
-    surveyInputId,
-    {
-      ...input,
-      surveyStatus: STUDENT_INPUT_STATUS_E.PRODIVDED,
-      updatedAt: new Date()
-    },
-    { upsert: false }
-  );
+  const newSurvey = await surveyInput
+    .findByIdAndUpdate(
+      surveyInputId,
+      {
+        ...input,
+        surveyStatus: STUDENT_INPUT_STATUS_E.PRODIVDED,
+        updatedAt: new Date()
+      },
+      { upsert: false }
+    )
+    .lean();
   res.status(200).send({ success: true });
 
+  const thread = await Documentthread.findOne({
+    student_id: newSurvey.studentId,
+    program_id: newSurvey.programId,
+    file_type: newSurvey.fileType
+  })
+    .populate('program_id')
+    .lean();
+
+  // Create message notification
+  await addMessageInThread(
+    'Automatic Notification: Survey Input has been updated.',
+    thread?._id
+  );
+
   if (informEditor) {
-    informOnSurveyUpdate(user, newSurvey);
+    informOnSurveyUpdate(user, newSurvey, thread);
   }
 });
 
@@ -968,6 +873,29 @@ const postImageInThread = asyncHandler(async (req, res) => {
   imageurl = imageurl.replace(/\\/g, '/');
   return res.send({ success: true, data: imageurl });
 });
+
+const addMessageInThread = async (message, threadId, userId) => {
+  const thread = await Documentthread.findById(threadId);
+  if (!thread) {
+    throw new ErrorResponse(403, 'Invalid message thread id');
+  }
+  const msg = JSON.stringify({
+    blocks: [
+      {
+        data: { text: message },
+        type: 'paragraph'
+      }
+    ]
+  });
+  const newMessage = {
+    user_id: userId,
+    message: msg,
+    createdAt: new Date()
+  };
+  thread.messages.push(newMessage);
+  thread.updatedAt = new Date();
+  await thread.save();
+};
 
 // (O) notification email works
 const postMessages = asyncHandler(async (req, res) => {

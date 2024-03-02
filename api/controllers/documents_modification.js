@@ -335,6 +335,13 @@ const getSurveyInputs = asyncHandler(async (req, res, next) => {
     .lean()
     .exec();
 
+  if (!threadDocument) {
+    logger.error(
+      `getSurveyInputs: Invalid message thread id! (${messagesThreadId})`
+    );
+    throw new ErrorResponse(400, 'Invalid message thread id');
+  }
+
   const surveyDocument = await getSurveyInputDocuments(
     threadDocument.student_id._id.toString(),
     threadDocument?.program_id && threadDocument?.program_id._id.toString(),

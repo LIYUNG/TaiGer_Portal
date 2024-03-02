@@ -726,6 +726,9 @@ function NavBar(props) {
             )}
           </List>
           <Divider />
+          <div style={{ position: 'relative', bottom: 0, width: '100%' }}>
+            <Footer />
+          </div>
         </Drawer>
         <Main open={open} ismobile={ismobile.toString()}>
           <DrawerHeader />
@@ -735,7 +738,6 @@ function NavBar(props) {
           <RenderMenu />
         </Main>
       </Box>
-      <Footer />
     </>
   );
 }

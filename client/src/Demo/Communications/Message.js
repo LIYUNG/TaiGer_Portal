@@ -6,7 +6,8 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
-  Box
+  Box,
+  Card
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { RiCloseFill } from 'react-icons/ri';
@@ -154,14 +155,16 @@ function Message(props) {
           </Box>
         </AccordionSummary>
         <AccordionDetails>
-          <EditorSimple
-            holder={`${props.message._id.toString()}`}
-            readOnly={true}
-            imageEnable={false}
-            handleClickSave={props.handleClickSave}
-            editorState={messageState.editorState}
-            defaultHeight={0}
-          />
+          <Card>
+            <EditorSimple
+              holder={`${props.message._id.toString()}`}
+              readOnly={true}
+              imageEnable={false}
+              handleClickSave={props.handleClickSave}
+              editorState={messageState.editorState}
+              defaultHeight={0}
+            />
+          </Card>
         </AccordionDetails>
       </Accordion>
       {/* TODOL consider to move it to the parent! It render many time! as message increase */}

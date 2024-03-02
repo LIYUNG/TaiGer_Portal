@@ -51,7 +51,7 @@ function CommunicationExpandPage() {
       isLoaded: false,
       messagesLoaded: false,
       thread: null,
-      name: 1,
+      count: 1,
       upperThread: [],
       buttonDisabled: false,
       editorState: {},
@@ -84,6 +84,7 @@ function CommunicationExpandPage() {
             upperThread: [],
             messagesLoaded: true,
             isLoaded: true,
+            count: prevState.count + 1,
             student_id: student_id,
             student,
             // accordionKeys: new Array(data.length)
@@ -97,6 +98,7 @@ function CommunicationExpandPage() {
         } else {
           setCommunicationExpandPageState((prevState) => ({
             ...prevState,
+            count: prevState.count + 1,
             messagesLoaded: true,
             isLoaded: true,
             res_status: status
@@ -106,6 +108,7 @@ function CommunicationExpandPage() {
       (error) => {
         setCommunicationExpandPageState((prevState) => ({
           ...prevState,
+          count: prevState.count + 1,
           messagesLoaded: true,
           isLoaded: true,
           error,
@@ -144,6 +147,7 @@ function CommunicationExpandPage() {
               ...communicationExpandPageState.upperThread
             ],
             messagesLoaded: true,
+            count: prevState.count + 1,
             student,
             pageNumber: communicationExpandPageState.pageNumber + 1,
             uppderaccordionKeys: [
@@ -167,6 +171,7 @@ function CommunicationExpandPage() {
         } else {
           setCommunicationExpandPageState((prevState) => ({
             ...prevState,
+            count: prevState.count + 1,
             messagesLoaded: true,
             res_status: status
           }));
@@ -175,6 +180,7 @@ function CommunicationExpandPage() {
       (error) => {
         setCommunicationExpandPageState((prevState) => ({
           ...prevState,
+          count: prevState.count + 1,
           messagesLoaded: true,
           error,
           res_status: 500
@@ -202,6 +208,7 @@ function CommunicationExpandPage() {
           setCommunicationExpandPageState((prevState) => ({
             ...prevState,
             success,
+            count: prevState.count + 1,
             editorState: {},
             thread: [...communicationExpandPageState.thread, ...data],
             messagesLoaded: true,
@@ -218,6 +225,7 @@ function CommunicationExpandPage() {
           setCommunicationExpandPageState((prevState) => ({
             ...prevState,
             messagesLoaded: true,
+            count: prevState.count + 1,
             buttonDisabled: false,
             res_modal_message: message,
             res_modal_status: status
@@ -229,6 +237,7 @@ function CommunicationExpandPage() {
           ...prevState,
           messagesLoaded: true,
           error,
+          count: prevState.count + 1,
           res_modal_status: 500,
           res_modal_message: error
         }));
@@ -268,6 +277,7 @@ function CommunicationExpandPage() {
             ...prevState,
             success,
             messagesLoaded: true,
+            count: prevState.count + 1,
             upperThread: new_upper_messages,
             thread: new_messages,
             buttonDisabled: false,
@@ -289,6 +299,7 @@ function CommunicationExpandPage() {
         setCommunicationExpandPageState((prevState) => ({
           ...prevState,
           messagesLoaded: true,
+          count: prevState.count + 1,
           error,
           res_modal_status: 500,
           res_modal_message: ''
@@ -375,7 +386,7 @@ function CommunicationExpandPage() {
                 }}
               >
                 <MemoizedEmbeddedChatList
-                  name={communicationExpandPageState.name}
+                  count={communicationExpandPageState.count}
                 />
               </div>
             </div>
@@ -427,7 +438,7 @@ function CommunicationExpandPage() {
               anchor="left"
             >
               <MemoizedEmbeddedChatList
-                name={communicationExpandPageState.name}
+                count={communicationExpandPageState.count}
               />
             </Drawer>
           </Box>

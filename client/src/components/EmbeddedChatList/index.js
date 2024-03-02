@@ -23,7 +23,6 @@ const EmbeddedChatList = (props) => {
     students: [],
     isLoaded: true
   });
-  console.log(props.name);
   useEffect(() => {
     setEmbeddedChatListState((prevState) => ({
       ...prevState,
@@ -58,7 +57,7 @@ const EmbeddedChatList = (props) => {
         }));
       }
     );
-  }, []);
+  }, [props.count]);
 
   useEffect(() => {
     if (chatListState.searchMode) {
@@ -170,6 +169,6 @@ const EmbeddedChatList = (props) => {
   );
 };
 
-  const MemoizedEmbeddedChatList = React.memo(EmbeddedChatList);
+const MemoizedEmbeddedChatList = React.memo(EmbeddedChatList);
 
 export default MemoizedEmbeddedChatList;

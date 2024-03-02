@@ -368,7 +368,7 @@ const postSurveyInput = asyncHandler(async (req, res, next) => {
 
   // Create message notification
   await addMessageInThread(
-    'Automatic Notification: Survey Input has been updated.',
+    `Automatic Notification: Survey Input has been updated by ${user.firstname} ${user.lastname}.`,
     thread?._id
   );
   if (informEditor) {
@@ -405,7 +405,7 @@ const putSurveyInput = asyncHandler(async (req, res, next) => {
 
   // Create message notification
   await addMessageInThread(
-    'Automatic Notification: Survey Input has been updated.',
+    `Automatic Notification: Survey Input has been updated by ${user.firstname} ${user.lastname}.`,
     thread?._id
   );
 

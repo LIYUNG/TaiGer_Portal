@@ -341,38 +341,6 @@ function CommunicationExpandPage() {
         handleDrawerClose();
       }}
     >
-      <Box className="sticky-top" sx={{ display: { xs: 'flex', md: 'none' } }}>
-        <IconButton
-          color="inherit"
-          aria-label="open drawer"
-          onClick={(e) => handleDrawerOpen(e)}
-          edge="start"
-          sx={{ ml: 2, ...(!ismobile && open && { display: 'none' }) }}
-        >
-          <ArrowBackIcon />
-        </IconButton>
-        <Avatar {...stringAvatar(student_name_english)}></Avatar>
-        <Card>
-          <Typography variant="body1" fontWeight="bold" sx={{ ml: 1, mt: 1 }}>
-            {student_name_english}
-          </Typography>
-        </Card>
-        <Drawer
-          sx={{
-            width: '300px',
-            flexShrink: 0,
-            '& .MuiDrawer-paper': {
-              width: '300px',
-              boxSizing: 'border-box'
-            }
-          }}
-          open={open}
-          variant="temporary"
-          anchor="left"
-        >
-          <MemoizedEmbeddedChatList name={communicationExpandPageState.name} />
-        </Drawer>
-      </Box>
       <Grid container>
         <Grid
           item
@@ -391,7 +359,7 @@ function CommunicationExpandPage() {
             >
               <div
                 style={{
-                  overflowY: 'scroll' /* Enable vertical scrolling */,
+                  overflowY: 'auto' /* Enable vertical scrolling */,
                   maxHeight:
                     window.innerHeight -
                     112 /* Adjusted max height, considering header */
@@ -409,9 +377,54 @@ function CommunicationExpandPage() {
           </Box>
         </Grid>
         <Grid item xs md style={{ marginLeft: '8px' }}>
+          <Box
+            className="sticky-top"
+            sx={{
+              display: 'flex'
+            }}
+          >
+            {ismobile && (
+              <IconButton
+                color="inherit"
+                aria-label="open drawer"
+                onClick={(e) => handleDrawerOpen(e)}
+                edge="start"
+              >
+                <ArrowBackIcon />
+              </IconButton>
+            )}
+
+            <Avatar {...stringAvatar(student_name_english)}></Avatar>
+            <Card>
+              <Typography
+                variant="body1"
+                fontWeight="bold"
+                sx={{ ml: 1, mt: 1 }}
+              >
+                {student_name_english}
+              </Typography>
+            </Card>
+            <Drawer
+              sx={{
+                width: '300px',
+                flexShrink: 0,
+                '& .MuiDrawer-paper': {
+                  width: '300px',
+                  boxSizing: 'border-box'
+                }
+              }}
+              open={open}
+              variant="temporary"
+              anchor="left"
+            >
+              <MemoizedEmbeddedChatList
+                name={communicationExpandPageState.name}
+              />
+            </Drawer>
+          </Box>
           <div
             style={{
-              height: window.innerHeight - 112,
+              height: window.innerHeight - 112 - 40,
               overflow: 'hidden'
             }}
           >
@@ -420,7 +433,8 @@ function CommunicationExpandPage() {
                 overflowY: 'auto' /* Enable vertical scrolling */,
                 maxHeight:
                   window.innerHeight -
-                  112 /* Adjusted max height, considering header */
+                  112 -
+                  40 /* Adjusted max height, considering header */
               }}
             >
               <Fragment>

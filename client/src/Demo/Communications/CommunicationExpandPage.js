@@ -341,49 +341,44 @@ function CommunicationExpandPage() {
         handleDrawerClose();
       }}
     >
+      <Box className="sticky-top" sx={{ display: { xs: 'flex', md: 'none' } }}>
+        <IconButton
+          color="inherit"
+          aria-label="open drawer"
+          onClick={(e) => handleDrawerOpen(e)}
+          edge="start"
+          sx={{ ml: 2, ...(!ismobile && open && { display: 'none' }) }}
+        >
+          <ArrowBackIcon />
+        </IconButton>
+        <Avatar {...stringAvatar(student_name_english)}></Avatar>
+        <Card>
+          <Typography variant="body1" fontWeight="bold" sx={{ ml: 1, mt: 1 }}>
+            {student_name_english}
+          </Typography>
+        </Card>
+        <Drawer
+          sx={{
+            width: '300px',
+            flexShrink: 0,
+            '& .MuiDrawer-paper': {
+              width: '300px',
+              boxSizing: 'border-box'
+            }
+          }}
+          open={open}
+          variant="temporary"
+          anchor="left"
+        >
+          <MemoizedEmbeddedChatList name={communicationExpandPageState.name} />
+        </Drawer>
+      </Box>
       <Grid container>
-        <Grid item style={{ width: '300px', marginLeft: '-24px' }}>
-          <Box
-            className="sticky-top"
-            sx={{ display: { xs: 'flex', md: 'none' } }}
-          >
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              onClick={(e) => handleDrawerOpen(e)}
-              edge="start"
-              sx={{ ml: 2, ...(!ismobile && open && { display: 'none' }) }}
-            >
-              <ArrowBackIcon />
-            </IconButton>
-            <Avatar {...stringAvatar(student_name_english)}></Avatar>
-            <Card>
-              <Typography
-                variant="body1"
-                fontWeight="bold"
-                sx={{ ml: 1, mt: 1 }}
-              >
-                {student_name_english}
-              </Typography>
-            </Card>
-            <Drawer
-              sx={{
-                width: '300px',
-                flexShrink: 0,
-                '& .MuiDrawer-paper': {
-                  width: '300px',
-                  boxSizing: 'border-box'
-                }
-              }}
-              open={open}
-              variant="temporary"
-              anchor="left"
-            >
-              <MemoizedEmbeddedChatList
-                name={communicationExpandPageState.name}
-              />
-            </Drawer>
-          </Box>
+        <Grid
+          item
+          style={{ width: '300px', marginLeft: '-24px' }}
+          sx={{ display: { xs: 'none', md: 'flex' } }}
+        >
           <Box
             className="sticky-top"
             sx={{ display: { xs: 'none', md: 'flex' } }}

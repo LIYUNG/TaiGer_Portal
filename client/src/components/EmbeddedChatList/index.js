@@ -24,10 +24,6 @@ const EmbeddedChatList = (props) => {
     isLoaded: true
   });
   useEffect(() => {
-    setEmbeddedChatListState((prevState) => ({
-      ...prevState,
-      isLoaded: false
-    }));
     getMyCommunicationThread().then(
       (resp) => {
         const { success, data } = resp.data;

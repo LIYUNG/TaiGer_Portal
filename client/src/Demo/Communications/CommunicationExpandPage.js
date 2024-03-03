@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 import { Link as LinkDom, Navigate, useParams } from 'react-router-dom';
 import { FiExternalLink } from 'react-icons/fi';
 import {
@@ -14,7 +14,8 @@ import {
   useMediaQuery,
   useTheme,
   Drawer,
-  IconButton
+  IconButton,
+  CircularProgress
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -43,7 +44,7 @@ function CommunicationExpandPage() {
   const { t } = useTranslation();
   const theme = useTheme();
   const ismobile = useMediaQuery(theme.breakpoints.down('md'));
-  console.log(ismobile);
+  // console.log(ismobile);
 
   const [communicationExpandPageState, setCommunicationExpandPageState] =
     useState({
@@ -66,6 +67,13 @@ function CommunicationExpandPage() {
     });
 
   const [open, setOpen] = useState(false);
+  const scrollableRef = useRef(null);
+  console.log(communicationExpandPageState.count);
+  const scrollToBottom = () => {
+    if (scrollableRef.current) {
+      scrollableRef.current.scrollTop = scrollableRef.current.scrollHeight;
+    }
+  };
 
   useEffect(() => {
     setCommunicationExpandPageState((prevState) => ({
@@ -95,6 +103,7 @@ function CommunicationExpandPage() {
               .map((x, i) => (i >= data.length - 2 ? i : -1)), // only expand latest 2
             res_status: status
           }));
+          scrollToBottom();
         } else {
           setCommunicationExpandPageState((prevState) => ({
             ...prevState,
@@ -457,6 +466,7 @@ function CommunicationExpandPage() {
                     112 -
                     40 /* Adjusted max height, considering header */
                 }}
+                ref={scrollableRef}
               >
                 <Fragment>
                   <Grid container spacing={2}>
@@ -465,7 +475,6 @@ function CommunicationExpandPage() {
                         <List>
                           <ListItem>
                             <Typography fontWeight="bold">
-                              1. 請把{' '}
                               <Link
                                 to={
                                   is_TaiGer_Student(user)
@@ -484,7 +493,6 @@ function CommunicationExpandPage() {
                                   style={{ cursor: 'pointer' }}
                                 />
                               </Link>
-                              填好,{' '}
                               <Link
                                 to={
                                   is_TaiGer_Student(user)
@@ -500,7 +508,6 @@ function CommunicationExpandPage() {
                                 Base Document{' '}
                                 <FiExternalLink style={{ cursor: 'pointer' }} />
                               </Link>
-                              , 文件有的都盡量先掃描上傳,{' '}
                               <Link
                                 to={`${DEMO.COURSES_LINK}/${communicationExpandPageState.student_id}`}
                                 component={LinkDom}
@@ -512,7 +519,6 @@ function CommunicationExpandPage() {
                                   style={{ cursor: 'pointer' }}
                                 />
                               </Link>
-                              課程填好，之後 Agent 在回答問題時比較能掌握狀況。
                             </Typography>
                           </ListItem>
                         </List>
@@ -635,7 +641,7 @@ function CommunicationExpandPage() {
               </div>
             </div>
           ) : (
-            <Loading />
+            <CircularProgress />
           )}
         </Grid>
       </Grid>

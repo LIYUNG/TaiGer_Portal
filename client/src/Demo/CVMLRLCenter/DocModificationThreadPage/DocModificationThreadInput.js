@@ -308,7 +308,7 @@ function DocModificationThreadInput() {
   const { t } = useTranslation();
   const { documentsthreadId } = useParams();
   // const [isLoaded, setIsLoaded] = useState(false);
-  // const [thread, setThread] = useState({});
+  const [thread, setThread] = useState({});
   const [isChanged, setIsChanged] = useState(false);
   const [isFinalVersion, setIsFinalVersion] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -346,10 +346,9 @@ function DocModificationThreadInput() {
         }
 
         if (success) {
+          setThread(threadData);
           setDocModificationThreadInputState((prevState) => ({
             ...prevState,
-            success,
-            thread: threadData,
             surveyInputs: surveyInputs,
             document_requirements: {},
             editorRequirements: {},
@@ -430,9 +429,7 @@ function DocModificationThreadInput() {
           ...docModificationThreadInputState.editorRequirements,
           [name]: checked
         },
-        document_requirements: checked
-          ? getRequirement(docModificationThreadInputState.thread)
-          : ''
+        document_requirements: checked ? getRequirement(thread) : ''
       }));
       return;
     }
@@ -479,7 +476,6 @@ function DocModificationThreadInput() {
       if (success) {
         setDocModificationThreadInputState((prevState) => ({
           ...prevState,
-          success,
           surveyInputs: {
             general: {
               ...docModificationThreadInputState.surveyInputs.general,
@@ -536,12 +532,9 @@ function DocModificationThreadInput() {
     }));
 
     let programFullName = '';
-    if (docModificationThreadInputState.thread.program_id) {
+    if (thread.program_id) {
       programFullName =
-        docModificationThreadInputState.thread.program_id.school +
-        '-(' +
-        docModificationThreadInputState.thread.program_id.degree +
-        ') ';
+        thread.program_id.school + '-(' + thread.program_id.degree + ') ';
     }
 
     const studentInput = [
@@ -559,10 +552,9 @@ function DocModificationThreadInput() {
       editor_requirements: JSON.stringify(
         docModificationThreadInputState.editorRequirements
       ),
-      student_id:
-        docModificationThreadInputState.thread.student_id._id.toString(),
+      student_id: thread.student_id._id.toString(),
       program_full_name: programFullName,
-      file_type: docModificationThreadInputState.thread.file_type
+      file_type: thread.file_type
     });
 
     if (response.status === 403) {
@@ -601,7 +593,7 @@ function DocModificationThreadInput() {
 
   const { isLoaded, res_status } = docModificationThreadInputState;
 
-  if (!isLoaded && !docModificationThreadInputState.thread) {
+  if (!isLoaded && !Object.keys(thread).length) {
     return <Loading />;
   }
 
@@ -614,18 +606,18 @@ function DocModificationThreadInput() {
   }
 
   let docName;
-  const student_name = `${docModificationThreadInputState.thread?.student_id?.firstname} ${docModificationThreadInputState.thread?.student_id?.lastname}`;
-  if (docModificationThreadInputState.thread?.program_id) {
+  const student_name = `${thread?.student_id?.firstname} ${thread?.student_id?.lastname}`;
+  if (thread?.program_id) {
     docName =
-      docModificationThreadInputState.thread.program_id.school +
+      thread.program_id.school +
       '-(' +
-      docModificationThreadInputState.thread.program_id.degree +
+      thread.program_id.degree +
       ') ' +
-      docModificationThreadInputState.thread.program_id.program_name +
+      thread.program_id.program_name +
       ' ' +
-      docModificationThreadInputState.thread.file_type;
+      thread.file_type;
   } else {
-    docName = docModificationThreadInputState.thread?.file_type;
+    docName = thread?.file_type;
   }
   TabTitle(`${student_name} ${docName}`);
 
@@ -644,9 +636,7 @@ function DocModificationThreadInput() {
           underline="hover"
           color="inherit"
           component={LinkDom}
-          to={`${DEMO.DOCUMENT_MODIFICATION_LINK(
-            docModificationThreadInputState.thread?._id.toString()
-          )}`}
+          to={`${DEMO.DOCUMENT_MODIFICATION_LINK(thread?._id.toString())}`}
         >
           {student_name} {'   '}
           {docName}
@@ -667,11 +657,9 @@ function DocModificationThreadInput() {
 
       <Card sx={{ p: 2, mb: 2 }}>
         <Typography fontWeight="bold">Requirements:</Typography>
-        {docModificationThreadInputState.thread?.program_id ? (
+        {thread?.program_id ? (
           <>
-            <LinkableNewlineText
-              text={getRequirement(docModificationThreadInputState.thread)}
-            />
+            <LinkableNewlineText text={getRequirement(thread)} />
           </>
         ) : (
           <Typography>{t('No')}</Typography>
@@ -683,9 +671,7 @@ function DocModificationThreadInput() {
           <Grid item xs={12}>
             <Typography variant="h5">
               Please answer the following questions in <b>English</b>{' '}
-              {docModificationThreadInputState.thread?.program_id?.lang?.includes(
-                'German'
-              )
+              {thread?.program_id?.lang?.includes('German')
                 ? '( or German if you like ) '
                 : ''}
               !

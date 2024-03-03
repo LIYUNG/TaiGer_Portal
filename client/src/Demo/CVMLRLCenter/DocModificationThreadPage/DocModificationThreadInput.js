@@ -201,7 +201,6 @@ const InputGenerator = ({
   isChecked,
   data,
   isGenerating,
-  isGenerated,
   onChange,
   onGenerate
 }) => {
@@ -290,7 +289,7 @@ const InputGenerator = ({
             disabled={isGenerating}
             onClick={onGenerate}
             isProgress={isGenerating}
-            label={!isGenerated ? 'Generate' : 'Regenerate'}
+            label={!data ? 'Generate' : 'Regenerate'}
             progressLabel="Generating"
           />
         </Grid>
@@ -309,14 +308,13 @@ function DocModificationThreadInput() {
   const { documentsthreadId } = useParams();
   const [isChanged, setIsChanged] = useState(false);
   const [isFinalVersion, setIsFinalVersion] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [docModificationThreadInputState, setDocModificationThreadInputState] =
     useState({
       documentsthreadId: documentsthreadId,
       error: '',
       isUnchangeAlert: false,
-      isGenerating: false,
-      isGenerated: false,
-      isSubmitting: false,
       editorRequirements: {},
       data: '',
       res_status: 0,
@@ -458,10 +456,7 @@ function DocModificationThreadInput() {
   };
 
   const submitInput = async (surveyInputs, informEditor) => {
-    setDocModificationThreadInputState((prevState) => ({
-      ...prevState,
-      isSubmitting: true
-    }));
+    setIsSubmitting(true);
     try {
       let success = true;
       let status = {};
@@ -479,11 +474,11 @@ function DocModificationThreadInput() {
         status['specific'] = res;
       }
       setIsChanged(false);
+      setIsSubmitting(false);
       if (success) {
         setDocModificationThreadInputState((prevState) => ({
           ...prevState,
           success,
-          isSubmitting: false,
           isUnchangeAlert: false,
           surveyInputs: {
             general: {
@@ -506,17 +501,16 @@ function DocModificationThreadInput() {
         setDocModificationThreadInputState((prevState) => ({
           ...prevState,
           isLoaded: true,
-          isSubmitting: false,
           isUnchangeAlert: false,
           res_status: status
         }));
       }
     } catch (error) {
       setIsChanged(false);
+      setIsSubmitting(false);
       setDocModificationThreadInputState((prevState) => ({
         ...prevState,
         isLoaded: true,
-        isSubmitting: false,
         isUnchangeAlert: false,
         error,
         res_status: 500
@@ -541,16 +535,12 @@ function DocModificationThreadInput() {
   };
 
   const onGenerate = async () => {
+    setIsGenerating(true);
+    // reset data to empty (in case of re-generate)
     setDocModificationThreadInputState((prevState) => ({
       ...prevState,
-      isGenerating: true
+      data: ''
     }));
-    if (docModificationThreadInputState.isGenerated) {
-      setDocModificationThreadInputState((prevState) => ({
-        ...prevState,
-        data: ''
-      }));
-    }
 
     let programFullName = '';
     if (docModificationThreadInputState.thread.program_id) {
@@ -583,11 +573,11 @@ function DocModificationThreadInput() {
     });
 
     if (response.status === 403) {
+      setIsGenerating(false);
       setDocModificationThreadInputState((prevState) => ({
         ...prevState,
         isLoaded: true,
         data: prevState.data + ' \n ================================= \n',
-        isGenerating: false,
         isGenerated: true,
         res_modal_status: response.status
       }));
@@ -607,12 +597,11 @@ function DocModificationThreadInput() {
           data: prevState.data + value
         }));
       }
+      setIsGenerating(false);
       setDocModificationThreadInputState((prevState) => ({
         ...prevState,
         isLoaded: true,
         data: prevState.data + ' \n ================================= \n',
-        isGenerating: false,
-        isGenerated: true,
         res_modal_status: response.status
       }));
     }
@@ -781,11 +770,11 @@ function DocModificationThreadInput() {
           >
             <ProgressButton
               label="Submit"
-              isProgress={docModificationThreadInputState.isSubmitting}
+              isProgress={isSubmitting}
               size="small"
               variant="contained"
               color="primary"
-              disabled={docModificationThreadInputState.isSubmitting}
+              disabled={isSubmitting}
               onClick={onSubmit}
             />
             <LinkDom to=".." relative="path">
@@ -806,8 +795,7 @@ function DocModificationThreadInput() {
                 ?.useProgramRequirementData || false
             }
             data={docModificationThreadInputState.data}
-            isGenerating={docModificationThreadInputState.isGenerating}
-            isGenerated={docModificationThreadInputState.isGenerated}
+            isGenerating={isGenerating}
             onChange={onChangeEditorRequirements}
             onGenerate={onGenerate}
           />

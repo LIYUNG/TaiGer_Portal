@@ -822,7 +822,8 @@ export const program_fields_overview = [
   { name: 'Degree', prop: 'degree' },
   { name: 'Semester', prop: 'semester' },
   { name: 'Teaching Language', prop: 'lang' },
-  { name: 'GPA Requirement (German system)', prop: 'gpa_requirement' }
+  { name: 'GPA Requirement (German system)', prop: 'gpa_requirement' },
+  { name: 'Website', prop: 'website' }
 ];
 
 export const program_fields_application_dates = [

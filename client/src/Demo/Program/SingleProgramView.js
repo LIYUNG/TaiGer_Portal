@@ -235,12 +235,6 @@ function SingleProgramView(props) {
                   </>
                 )}
                 <Grid item xs={12} md={4}>
-                  <Typography fontWeight="bold">{t('Website')}</Typography>
-                </Grid>
-                <Grid item xs={12} md={8}>
-                  <LinkableNewlineText text={props.program.website} />
-                </Grid>
-                <Grid item xs={12} md={4}>
                   <Typography fontWeight="bold">{t('Last update')}</Typography>
                 </Grid>
                 <Grid item xs={12} md={8}>

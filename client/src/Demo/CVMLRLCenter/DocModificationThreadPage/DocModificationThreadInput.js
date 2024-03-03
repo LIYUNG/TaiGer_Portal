@@ -94,12 +94,13 @@ const SurveyForm = ({
   surveyInputs,
   onChange,
   surveyType = 'program',
-  useEditButton = false,
+  disableEdit = false,
+  showEditButton = false,
   isCollapse = true
 }) => {
   // editable by default no title, no edit button, or new survey
   const [editMode, setEditMode] = useState(
-    !title || !useEditButton || !surveyInputs?.updatedAt
+    !title || !showEditButton || !surveyInputs?.updatedAt
   );
   const [collapseOpen, setCollapseOpen] = useState(isCollapse);
 
@@ -134,7 +135,7 @@ const SurveyForm = ({
               <Grid item>
                 <Typography variant="h5">{title}</Typography>
               </Grid>
-              {useEditButton && (
+              {showEditButton && (
                 <Grid item>
                   <Button
                     size="small"
@@ -186,7 +187,7 @@ const SurveyForm = ({
                   multiline
                   rows={type2rows[questionItem.type] || 3}
                   onChange={onChange}
-                  disabled={!editMode}
+                  disabled={disableEdit || !editMode}
                 />
               </FormControl>
             </Grid>
@@ -578,7 +579,6 @@ function DocModificationThreadInput() {
         ...prevState,
         isLoaded: true,
         data: prevState.data + ' \n ================================= \n',
-        isGenerated: true,
         res_modal_status: response.status
       }));
     } else {
@@ -721,6 +721,7 @@ function DocModificationThreadInput() {
                 docModificationThreadInputState.surveyInputs.general
               }
               surveyType="general"
+              disableEdit={isFinalVersion}
               onChange={onChange}
               isCollapse={
                 !docModificationThreadInputState?.surveyInputs?.general
@@ -737,6 +738,7 @@ function DocModificationThreadInput() {
                   docModificationThreadInputState.surveyInputs?.specific
                 }
                 surveyType="program"
+                disableEdit={isFinalVersion}
                 onChange={onChange}
               ></SurveyForm>
             </Grid>

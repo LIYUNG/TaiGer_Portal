@@ -307,15 +307,15 @@ function DocModificationThreadInput() {
   const { user } = useAuth();
   const { t } = useTranslation();
   const { documentsthreadId } = useParams();
+  // const [isLoaded, setIsLoaded] = useState(false);
+  // const [thread, setThread] = useState({});
   const [isChanged, setIsChanged] = useState(false);
   const [isFinalVersion, setIsFinalVersion] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showUnchangeAlert, setShowUnchangeAlert] = useState(false);
   const [docModificationThreadInputState, setDocModificationThreadInputState] =
     useState({
-      documentsthreadId: documentsthreadId,
-      error: '',
-      isUnchangeAlert: false,
       editorRequirements: {},
       data: '',
       res_status: 0,
@@ -367,7 +367,6 @@ function DocModificationThreadInput() {
         setDocModificationThreadInputState((prevState) => ({
           ...prevState,
           isLoaded: true,
-          error,
           res_status: 500
         }));
       }
@@ -476,11 +475,11 @@ function DocModificationThreadInput() {
       }
       setIsChanged(false);
       setIsSubmitting(false);
+      setShowUnchangeAlert(false);
       if (success) {
         setDocModificationThreadInputState((prevState) => ({
           ...prevState,
           success,
-          isUnchangeAlert: false,
           surveyInputs: {
             general: {
               ...docModificationThreadInputState.surveyInputs.general,
@@ -502,7 +501,6 @@ function DocModificationThreadInput() {
         setDocModificationThreadInputState((prevState) => ({
           ...prevState,
           isLoaded: true,
-          isUnchangeAlert: false,
           res_status: status
         }));
       }
@@ -512,8 +510,6 @@ function DocModificationThreadInput() {
       setDocModificationThreadInputState((prevState) => ({
         ...prevState,
         isLoaded: true,
-        isUnchangeAlert: false,
-        error,
         res_status: 500
       }));
     }
@@ -525,11 +521,7 @@ function DocModificationThreadInput() {
       if (alertElement) {
         alertElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
-
-      setDocModificationThreadInputState((prevState) => ({
-        ...prevState,
-        isUnchangeAlert: true
-      }));
+      setShowUnchangeAlert(true);
       return;
     }
     submitInput(docModificationThreadInputState.surveyInputs, isFinalVersion);
@@ -700,7 +692,7 @@ function DocModificationThreadInput() {
             </Typography>
           </Grid>
 
-          {docModificationThreadInputState.isUnchangeAlert && (
+          {showUnchangeAlert && (
             <Grid item xs={12}>
               <Alert id="alert-message" severity="error" sx={{ mt: 2 }}>
                 <Typography variant="body1" fontWeight="bold">

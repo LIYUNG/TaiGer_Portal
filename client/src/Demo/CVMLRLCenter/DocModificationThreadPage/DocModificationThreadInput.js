@@ -737,7 +737,7 @@ function DocModificationThreadInput() {
               surveyType="general"
               onChange={onChange}
               isCollapse={
-                docModificationThreadInputState?.surveyInputs?.general
+                !docModificationThreadInputState?.surveyInputs?.general
                   ?.updatedAt
               }
             ></SurveyForm>

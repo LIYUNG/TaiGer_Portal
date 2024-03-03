@@ -94,13 +94,14 @@ const SurveyForm = ({
   surveyInputs,
   onChange,
   surveyType = 'program',
-  useEditButton = false
+  useEditButton = false,
+  isCollapse = true
 }) => {
   // editable by default no title, no edit button, or new survey
   const [editMode, setEditMode] = useState(
     !title || !useEditButton || !surveyInputs?.updatedAt
   );
-  const [collapseOpen, setCollapseOpen] = useState(true);
+  const [collapseOpen, setCollapseOpen] = useState(isCollapse);
 
   const handleTitleClick = (e) => {
     e.stopPropagation();
@@ -726,7 +727,7 @@ function DocModificationThreadInput() {
           <Grid item xs={12}>
             <SurveyForm
               title={
-                docModificationThreadInputState?.thread?.file_type === 'ML'
+                docModificationThreadInputState.surveyInputs?.specific
                   ? 'General'
                   : null
               }
@@ -735,7 +736,10 @@ function DocModificationThreadInput() {
               }
               surveyType="general"
               onChange={onChange}
-              useEditButton={true}
+              isCollapse={
+                docModificationThreadInputState?.surveyInputs?.general
+                  ?.updatedAt
+              }
             ></SurveyForm>
           </Grid>
 

@@ -307,13 +307,13 @@ function DocModificationThreadInput() {
   const { user } = useAuth();
   const { t } = useTranslation();
   const { documentsthreadId } = useParams();
+  const [isChanged, setIsChanged] = useState(false);
   const [isFinalVersion, setIsFinalVersion] = useState(false);
   const [docModificationThreadInputState, setDocModificationThreadInputState] =
     useState({
       documentsthreadId: documentsthreadId,
       error: '',
       isUnchangeAlert: false,
-      isChanged: false,
       isGenerating: false,
       isGenerated: false,
       isSubmitting: false,
@@ -402,10 +402,10 @@ function DocModificationThreadInput() {
     );
 
     questionItem['answer'] = answer;
+    setIsChanged(true);
     if (survey === 'general') {
       setDocModificationThreadInputState((prevState) => ({
         ...prevState,
-        isChanged: true,
         surveyInputs: {
           ...prevState.surveyInputs,
           general: surveyInput
@@ -414,7 +414,6 @@ function DocModificationThreadInput() {
     } else {
       setDocModificationThreadInputState((prevState) => ({
         ...prevState,
-        isChanged: true,
         surveyInputs: {
           ...prevState.surveyInputs,
           specific: surveyInput
@@ -479,13 +478,12 @@ function DocModificationThreadInput() {
         success = success && res.data;
         status['specific'] = res;
       }
-
+      setIsChanged(false);
       if (success) {
         setDocModificationThreadInputState((prevState) => ({
           ...prevState,
           success,
           isSubmitting: false,
-          isChanged: false,
           isUnchangeAlert: false,
           surveyInputs: {
             general: {
@@ -509,17 +507,16 @@ function DocModificationThreadInput() {
           ...prevState,
           isLoaded: true,
           isSubmitting: false,
-          isChanged: false,
           isUnchangeAlert: false,
           res_status: status
         }));
       }
     } catch (error) {
+      setIsChanged(false);
       setDocModificationThreadInputState((prevState) => ({
         ...prevState,
         isLoaded: true,
         isSubmitting: false,
-        isChanged: false,
         isUnchangeAlert: false,
         error,
         res_status: 500
@@ -528,7 +525,7 @@ function DocModificationThreadInput() {
   };
 
   const onSubmit = () => {
-    if (!docModificationThreadInputState.isChanged) {
+    if (!isChanged) {
       const alertElement = document.getElementById('alert-message');
       if (alertElement) {
         alertElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -765,10 +762,7 @@ function DocModificationThreadInput() {
                     type="checkbox"
                     checked={isFinalVersion}
                     onChange={(e) => {
-                      setDocModificationThreadInputState((prevState) => ({
-                        ...prevState,
-                        isChanged: true
-                      }));
+                      setIsChanged(true);
                       setIsFinalVersion(e.target.checked);
                     }}
                   />

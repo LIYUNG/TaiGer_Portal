@@ -91,7 +91,7 @@ const LastModifiedText = ({ updatedAt }) => {
 
 const SurveyForm = ({
   title,
-  surveyInputs,
+  surveyInput,
   onChange,
   surveyType = 'program',
   disableEdit = false,
@@ -100,7 +100,7 @@ const SurveyForm = ({
 }) => {
   // editable by default no title, no edit button, or new survey
   const [editMode, setEditMode] = useState(
-    !title || !showEditButton || !surveyInputs?.updatedAt
+    !title || !showEditButton || !surveyInput?.updatedAt
   );
   const [collapseOpen, setCollapseOpen] = useState(isCollapse);
 
@@ -152,7 +152,7 @@ const SurveyForm = ({
                 </Grid>
               )}
               <Grid item sx={{ marginLeft: 'auto' }}>
-                <LastModifiedText updatedAt={surveyInputs?.updatedAt} />
+                <LastModifiedText updatedAt={surveyInput?.updatedAt} />
               </Grid>
             </Grid>
           </Box>
@@ -162,12 +162,12 @@ const SurveyForm = ({
       )}
       {!title && (
         <Box sx={{ marginLeft: 'auto', textAlign: 'right' }}>
-          <LastModifiedText updatedAt={surveyInputs?.updatedAt} />
+          <LastModifiedText updatedAt={surveyInput?.updatedAt} />
         </Box>
       )}
       <Collapse in={collapseOpen}>
         <Grid container sx={{ gap: 1 }}>
-          {surveyInputs.surveyContent.map((questionItem, index) => (
+          {surveyInput.surveyContent.map((questionItem, index) => (
             <Grid
               item
               key={index}
@@ -309,12 +309,18 @@ function DocModificationThreadInput() {
   const { documentsthreadId } = useParams();
   const [isLoaded, setIsLoaded] = useState(false);
   const [thread, setThread] = useState({});
-  const [isChanged, setIsChanged] = useState(false);
+  const [isChanged, setIsChanged] = useState({
+    general: false,
+    specific: false
+  });
   const [isFinalVersion, setIsFinalVersion] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showUnchangeAlert, setShowUnchangeAlert] = useState(false);
-  // const [surveyInputs, surveyInputs] = useState({specific: {}, general: {});
+  const [surveyInputs, setSurveyInputs] = useState({
+    general: {},
+    specific: {}
+  });
   const [gptData, setgptData] = useState('');
   const [docModificationThreadInputState, setDocModificationThreadInputState] =
     useState({
@@ -349,6 +355,7 @@ function DocModificationThreadInput() {
         setIsLoaded(true);
         if (success) {
           setThread(threadData);
+          setSurveyInputs({ ...surveyInputs });
           setDocModificationThreadInputState((prevState) => ({
             ...prevState,
             surveyInputs: surveyInputs,
@@ -387,10 +394,10 @@ function DocModificationThreadInput() {
     const surveyInput =
       survey === 'general'
         ? {
-            ...docModificationThreadInputState.surveyInputs.general
+            ...surveyInputs.general
           }
         : {
-            ...docModificationThreadInputState.surveyInputs.specific
+            ...surveyInputs.specific
           };
 
     const questionItem = surveyInput.surveyContent.find(
@@ -398,7 +405,10 @@ function DocModificationThreadInput() {
     );
 
     questionItem['answer'] = answer;
-    setIsChanged(true);
+    setIsChanged((prevState) => ({
+      ...prevState,
+      [survey]: true
+    }));
     if (survey === 'general') {
       setDocModificationThreadInputState((prevState) => ({
         ...prevState,
@@ -407,7 +417,9 @@ function DocModificationThreadInput() {
           general: surveyInput
         }
       }));
-    } else {
+      return;
+    }
+    if (survey === 'program') {
       setDocModificationThreadInputState((prevState) => ({
         ...prevState,
         surveyInputs: {
@@ -415,6 +427,7 @@ function DocModificationThreadInput() {
           specific: surveyInput
         }
       }));
+      return;
     }
   };
 
@@ -444,63 +457,55 @@ function DocModificationThreadInput() {
   };
 
   const updateSurveyInput = async (surveyInput, informEditor) => {
+    let newSurvey;
     if (!surveyInput?._id) {
-      return await postSurveyInput(surveyInput, informEditor);
+      newSurvey = await postSurveyInput(surveyInput, informEditor);
+    } else {
+      newSurvey = await putSurveyInput(
+        surveyInput._id,
+        surveyInput,
+        informEditor
+      );
     }
-    return await putSurveyInput(surveyInput._id, surveyInput, informEditor);
+    return newSurvey;
   };
 
   const submitInput = async (surveyInputs, informEditor) => {
-    setIsSubmitting(true);
     try {
-      let success = true;
-      let status = {};
-      if (surveyInputs?.general) {
-        const res = await updateSurveyInput(surveyInputs.general, informEditor);
-        success = success && res.data;
-        status['general'] = res;
+      let allStatus = {};
+      if (isChanged?.general && surveyInputs?.general) {
+        const {
+          status,
+          data: { success, data }
+        } = await updateSurveyInput(surveyInputs.general, informEditor);
+
+        allStatus['general'] = status;
+        if (success) {
+          setSurveyInputs((prevState) => ({
+            ...prevState,
+            general: data
+          }));
+        }
       }
-      if (surveyInputs?.specific) {
-        const res = await updateSurveyInput(
-          surveyInputs.specific,
-          informEditor
-        );
-        success = success && res.data;
-        status['specific'] = res;
+      if (isChanged?.specific && surveyInputs?.specific) {
+        const {
+          status,
+          data: { success, data }
+        } = await updateSurveyInput(surveyInputs.specific, informEditor);
+        allStatus['specific'] = status;
+        if (success) {
+          setSurveyInputs((prevState) => ({
+            ...prevState,
+            specific: data
+          }));
+        }
       }
-      setIsChanged(false);
-      setIsSubmitting(false);
-      setIsLoaded(true);
-      setShowUnchangeAlert(false);
-      if (success) {
-        setDocModificationThreadInputState((prevState) => ({
-          ...prevState,
-          surveyInputs: {
-            general: {
-              ...docModificationThreadInputState.surveyInputs.general,
-              updatedAt: new Date()
-            },
-            ...(docModificationThreadInputState.surveyInputs.specific
-              ? {
-                  specific: {
-                    ...docModificationThreadInputState.surveyInputs.specific,
-                    updatedAt: new Date()
-                  }
-                }
-              : {})
-          },
-          res_status: status
-        }));
-      } else {
-        setDocModificationThreadInputState((prevState) => ({
-          ...prevState,
-          res_status: status
-        }));
-      }
+
+      setDocModificationThreadInputState((prevState) => ({
+        ...prevState,
+        res_status: allStatus
+      }));
     } catch (error) {
-      setIsChanged(false);
-      setIsSubmitting(false);
-      setIsLoaded(true);
       setDocModificationThreadInputState((prevState) => ({
         ...prevState,
         res_status: 500
@@ -508,8 +513,8 @@ function DocModificationThreadInput() {
     }
   };
 
-  const onSubmit = () => {
-    if (!isChanged) {
+  const onSubmit = async () => {
+    if (!isChanged.general && !isChanged.specific) {
       const alertElement = document.getElementById('alert-message');
       if (alertElement) {
         alertElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -517,7 +522,12 @@ function DocModificationThreadInput() {
       setShowUnchangeAlert(true);
       return;
     }
-    submitInput(docModificationThreadInputState.surveyInputs, isFinalVersion);
+    setIsSubmitting(true);
+    await submitInput(surveyInputs, isFinalVersion);
+    setIsChanged({ general: false, specific: false });
+    setIsSubmitting(false);
+    setIsLoaded(true);
+    setShowUnchangeAlert(false);
   };
 
   const onGenerate = async () => {
@@ -535,10 +545,8 @@ function DocModificationThreadInput() {
     }
 
     const studentInput = [
-      ...(docModificationThreadInputState.surveyInputs.general?.surveyContent ||
-        []),
-      ...(docModificationThreadInputState.surveyInputs.specific
-        ?.surveyContent || [])
+      ...(surveyInputs.general?.surveyContent || []),
+      ...(surveyInputs.specific?.surveyContent || [])
     ];
 
     const response = await cvmlrlAi2({
@@ -683,35 +691,30 @@ function DocModificationThreadInput() {
             </Grid>
           )}
 
-          <Grid item xs={12}>
-            <SurveyForm
-              title={
-                docModificationThreadInputState.surveyInputs?.specific
-                  ? 'General'
-                  : null
-              }
-              surveyInputs={
-                docModificationThreadInputState.surveyInputs.general
-              }
-              surveyType="general"
-              disableEdit={isFinalVersion}
-              onChange={onChange}
-            ></SurveyForm>
-          </Grid>
-
-          {thread?.file_type === 'ML' && (
+          {Object.keys(surveyInputs?.general).length > 0 && (
             <Grid item xs={12}>
               <SurveyForm
-                title="Program"
-                surveyInputs={
-                  docModificationThreadInputState.surveyInputs?.specific
-                }
-                surveyType="program"
+                title={thread?.program_id ? 'General' : null}
+                surveyInput={surveyInputs.general}
+                surveyType="general"
                 disableEdit={isFinalVersion}
                 onChange={onChange}
               ></SurveyForm>
             </Grid>
           )}
+
+          {thread?.program_id &&
+            Object.keys(surveyInputs?.specific).length > 0 && (
+              <Grid item xs={12}>
+                <SurveyForm
+                  title="Program"
+                  surveyInput={surveyInputs.specific}
+                  surveyType="specific"
+                  disableEdit={isFinalVersion}
+                  onChange={onChange}
+                ></SurveyForm>
+              </Grid>
+            )}
 
           <Grid item xs={12}>
             <FormControl>
@@ -722,7 +725,7 @@ function DocModificationThreadInput() {
                     type="checkbox"
                     checked={isFinalVersion}
                     onChange={(e) => {
-                      setIsChanged(true);
+                      setIsChanged({ general: true, specific: true });
                       setIsFinalVersion(e.target.checked);
                     }}
                   />

@@ -938,7 +938,11 @@ const createApplication = asyncHandler(async (req, res, next) => {
           `createApplication ${new_programIds[i]}: RL required is not a number`
         );
       }
-      if (program.is_rl_general) {
+
+      const isRLGeneral = program.is_rl_general;
+      const NoRLGeneralFlag = isRLGeneral === undefined || isRLGeneral === null;
+      // create general RL tasks if flag is true, or no flag and no requirement
+      if (isRLGeneral || (NoRLGeneralFlag && !program.rl_requirements)) {
         // check if general RL is created, if not, create ones!
         const genThreadIds = student.generaldocs_threads.map(
           (thread) => thread.doc_thread_id

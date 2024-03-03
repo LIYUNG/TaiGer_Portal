@@ -1,10 +1,35 @@
 const { Student } = require('../models/User');
+const { Documentthread } = require('../models/Documentthread');
+const { Role } = require('../models/User');
 const { isArchiv } = require('../constants');
 const {
   sendNewApplicationMessageInThreadEmail,
   sendAssignEditorReminderEmail,
   sendNewGeneraldocMessageInThreadEmail
 } = require('../services/email');
+
+const addMessageInThread = async (message, threadId, userId) => {
+  const thread = await Documentthread.findById(threadId);
+  if (!thread) {
+    throw new ErrorResponse(403, 'Invalid message thread id');
+  }
+  const msg = JSON.stringify({
+    blocks: [
+      {
+        data: { text: message },
+        type: 'paragraph'
+      }
+    ]
+  });
+  const newMessage = {
+    user_id: userId,
+    message: msg,
+    createdAt: new Date()
+  };
+  thread.messages.push(newMessage);
+  thread.updatedAt = new Date();
+  await thread.save();
+};
 
 const informStaff = async (user, staff, student, fileType, thread, message) => {
   await sendNewApplicationMessageInThreadEmail(
@@ -80,6 +105,12 @@ const informNoEditor = async (student) => {
 };
 
 const informOnSurveyUpdate = async (user, survey, thread) => {
+  // Create message notification
+  await addMessageInThread(
+    `Automatic Notification: Survey Input has been updated by ${user.firstname} ${user.lastname}.`,
+    thread?._id
+  );
+
   if (user.role !== Role.Student) {
     return;
   }

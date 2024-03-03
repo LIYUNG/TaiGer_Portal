@@ -365,20 +365,14 @@ const postSurveyInput = asyncHandler(async (req, res, next) => {
   await newSurveyInput.save();
   res.status(200).send({ success: true });
 
-  const thread = await Documentthread.findOne({
-    student_id: newSurvey.studentId,
-    program_id: newSurvey.programId,
-    file_type: newSurvey.fileType
-  })
-    .populate('program_id')
-    .lean();
-
-  // Create message notification
-  await addMessageInThread(
-    `Automatic Notification: Survey Input has been updated by ${user.firstname} ${user.lastname}.`,
-    thread?._id
-  );
   if (informEditor) {
+    const thread = await Documentthread.findOne({
+      student_id: newSurvey.studentId,
+      program_id: newSurvey.programId,
+      file_type: newSurvey.fileType
+    })
+      .populate('program_id')
+      .lean();
     informOnSurveyUpdate(user, newSurvey, thread);
   }
 });
@@ -402,21 +396,14 @@ const putSurveyInput = asyncHandler(async (req, res, next) => {
     .lean();
   res.status(200).send({ success: true });
 
-  const thread = await Documentthread.findOne({
-    student_id: newSurvey.studentId,
-    program_id: newSurvey.programId,
-    file_type: newSurvey.fileType
-  })
-    .populate('program_id')
-    .lean();
-
-  // Create message notification
-  await addMessageInThread(
-    `Automatic Notification: Survey Input has been updated by ${user.firstname} ${user.lastname}.`,
-    thread?._id
-  );
-
   if (informEditor) {
+    const thread = await Documentthread.findOne({
+      student_id: newSurvey.studentId,
+      program_id: newSurvey.programId,
+      file_type: newSurvey.fileType
+    })
+      .populate('program_id')
+      .lean();
     informOnSurveyUpdate(user, newSurvey, thread);
   }
 });
@@ -433,7 +420,14 @@ const resetSurveyInput = asyncHandler(async (req, res, next) => {
   });
   res.status(200).send({ success: true });
   if (informEditor) {
-    // TODO: inform editor
+    const thread = await Documentthread.findOne({
+      student_id: newSurvey.studentId,
+      program_id: newSurvey.programId,
+      file_type: newSurvey.fileType
+    })
+      .populate('program_id')
+      .lean();
+    informOnSurveyUpdate(user, newSurvey, thread);
   }
 });
 
@@ -880,29 +874,6 @@ const postImageInThread = asyncHandler(async (req, res) => {
   imageurl = imageurl.replace(/\\/g, '/');
   return res.send({ success: true, data: imageurl });
 });
-
-const addMessageInThread = async (message, threadId, userId) => {
-  const thread = await Documentthread.findById(threadId);
-  if (!thread) {
-    throw new ErrorResponse(403, 'Invalid message thread id');
-  }
-  const msg = JSON.stringify({
-    blocks: [
-      {
-        data: { text: message },
-        type: 'paragraph'
-      }
-    ]
-  });
-  const newMessage = {
-    user_id: userId,
-    message: msg,
-    createdAt: new Date()
-  };
-  thread.messages.push(newMessage);
-  thread.updatedAt = new Date();
-  await thread.save();
-};
 
 // (O) notification email works
 const postMessages = asyncHandler(async (req, res) => {

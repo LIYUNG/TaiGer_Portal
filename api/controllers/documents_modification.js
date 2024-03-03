@@ -358,12 +358,12 @@ const getSurveyInputs = asyncHandler(async (req, res, next) => {
 
 const postSurveyInput = asyncHandler(async (req, res, next) => {
   const { input, informEditor } = req.body;
-  const newSurveyInput = new surveyInput({
+  const newSurvey = new surveyInput({
     ...input,
     createdAt: new Date()
   });
-  await newSurveyInput.save();
-  res.status(200).send({ success: true });
+  await newSurvey.save();
+  res.status(200).send({ success: true, data: newSurvey });
 
   if (informEditor) {
     const thread = await Documentthread.findOne({
@@ -383,28 +383,28 @@ const putSurveyInput = asyncHandler(async (req, res, next) => {
     params: { surveyInputId }
   } = req;
   const { input, informEditor } = req.body;
-  const newSurvey = await surveyInput
+  const updatedSurvey = await surveyInput
     .findByIdAndUpdate(
       surveyInputId,
       {
         ...input,
-        surveyStatus: STUDENT_INPUT_STATUS_E.PRODIVDED,
         updatedAt: new Date()
       },
-      { upsert: false }
+      { upsert: false, new: true }
     )
     .lean();
-  res.status(200).send({ success: true });
+
+  res.status(200).send({ success: true, data: updatedSurvey });
 
   if (informEditor) {
     const thread = await Documentthread.findOne({
-      student_id: newSurvey.studentId,
-      program_id: newSurvey.programId,
-      file_type: newSurvey.fileType
+      student_id: updatedSurvey.studentId,
+      program_id: updatedSurvey.programId,
+      file_type: updatedSurvey.fileType
     })
       .populate('program_id')
       .lean();
-    informOnSurveyUpdate(user, newSurvey, thread);
+    informOnSurveyUpdate(user, updatedSurvey, thread);
   }
 });
 
@@ -412,13 +412,17 @@ const resetSurveyInput = asyncHandler(async (req, res, next) => {
   const {
     params: { surveyInputId }
   } = req;
-  const { input, informEditor } = req.body;
-  await surveyInput.findByIdAndUpdate(surveyInputId, {
-    $unset: {
-      'surveyContent.$[].answer': 1
-    }
-  });
-  res.status(200).send({ success: true });
+  const { informEditor } = req.body;
+  const updatedSurvey = await surveyInput.findByIdAndUpdate(
+    surveyInputId,
+    {
+      $unset: {
+        'surveyContent.$[].answer': 1
+      }
+    },
+    { upsert: false, new: true }
+  );
+  res.status(200).send({ success: true, data: updatedSurvey });
   if (informEditor) {
     const thread = await Documentthread.findOne({
       student_id: newSurvey.studentId,

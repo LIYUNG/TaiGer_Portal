@@ -307,17 +307,18 @@ function DocModificationThreadInput() {
   const { user } = useAuth();
   const { t } = useTranslation();
   const { documentsthreadId } = useParams();
-  // const [isLoaded, setIsLoaded] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
   const [thread, setThread] = useState({});
   const [isChanged, setIsChanged] = useState(false);
   const [isFinalVersion, setIsFinalVersion] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showUnchangeAlert, setShowUnchangeAlert] = useState(false);
+  // const [surveyInputs, surveyInputs] = useState({specific: {}, general: {});
+  const [gptData, setgptData] = useState('');
   const [docModificationThreadInputState, setDocModificationThreadInputState] =
     useState({
       editorRequirements: {},
-      data: '',
       res_status: 0,
       res_modal_status: 0,
       res_modal_message: ''
@@ -345,6 +346,7 @@ function DocModificationThreadInput() {
           };
         }
 
+        setIsLoaded(true);
         if (success) {
           setThread(threadData);
           setDocModificationThreadInputState((prevState) => ({
@@ -352,20 +354,17 @@ function DocModificationThreadInput() {
             surveyInputs: surveyInputs,
             document_requirements: {},
             editorRequirements: {},
-            isLoaded: true,
             res_status: status
           }));
         } else {
           setDocModificationThreadInputState((prevState) => ({
             ...prevState,
-            isLoaded: true,
             res_status: status
           }));
         }
       } catch (error) {
         setDocModificationThreadInputState((prevState) => ({
           ...prevState,
-          isLoaded: true,
           res_status: 500
         }));
       }
@@ -445,7 +444,6 @@ function DocModificationThreadInput() {
   };
 
   const updateSurveyInput = async (surveyInput, informEditor) => {
-    console.log(surveyInput, surveyInput);
     if (!surveyInput?._id) {
       return await postSurveyInput(surveyInput, informEditor);
     }
@@ -472,6 +470,7 @@ function DocModificationThreadInput() {
       }
       setIsChanged(false);
       setIsSubmitting(false);
+      setIsLoaded(true);
       setShowUnchangeAlert(false);
       if (success) {
         setDocModificationThreadInputState((prevState) => ({
@@ -490,22 +489,20 @@ function DocModificationThreadInput() {
                 }
               : {})
           },
-          isLoaded: true,
           res_status: status
         }));
       } else {
         setDocModificationThreadInputState((prevState) => ({
           ...prevState,
-          isLoaded: true,
           res_status: status
         }));
       }
     } catch (error) {
       setIsChanged(false);
       setIsSubmitting(false);
+      setIsLoaded(true);
       setDocModificationThreadInputState((prevState) => ({
         ...prevState,
-        isLoaded: true,
         res_status: 500
       }));
     }
@@ -557,12 +554,14 @@ function DocModificationThreadInput() {
       file_type: thread.file_type
     });
 
+    setIsLoaded(true);
     if (response.status === 403) {
       setIsGenerating(false);
+      setgptData(
+        (prevData) => prevData + ' \n ================================= \n'
+      );
       setDocModificationThreadInputState((prevState) => ({
         ...prevState,
-        isLoaded: true,
-        data: prevState.data + ' \n ================================= \n',
         res_modal_status: response.status
       }));
     } else {
@@ -576,22 +575,18 @@ function DocModificationThreadInput() {
         if (done) {
           break;
         }
-        setDocModificationThreadInputState((prevState) => ({
-          ...prevState,
-          data: prevState.data + value
-        }));
+        setgptData((prevData) => prevData + value);
       }
       setIsGenerating(false);
       setDocModificationThreadInputState((prevState) => ({
         ...prevState,
-        isLoaded: true,
         data: prevState.data + ' \n ================================= \n',
         res_modal_status: response.status
       }));
     }
   };
 
-  const { isLoaded, res_status } = docModificationThreadInputState;
+  const { res_status } = docModificationThreadInputState;
 
   if (!isLoaded && !Object.keys(thread).length) {
     return <Loading />;
@@ -601,7 +596,7 @@ function DocModificationThreadInput() {
     return <ErrorPage res_status={res_status} />;
   }
 
-  if (docModificationThreadInputState?.thread.file_type.includes('RL')) {
+  if (thread?.file_type.includes('RL')) {
     return <ErrorPage res_status={403} />;
   }
 
@@ -701,14 +696,10 @@ function DocModificationThreadInput() {
               surveyType="general"
               disableEdit={isFinalVersion}
               onChange={onChange}
-              isCollapse={
-                !docModificationThreadInputState?.surveyInputs?.general
-                  ?.updatedAt
-              }
             ></SurveyForm>
           </Grid>
 
-          {docModificationThreadInputState?.thread?.file_type === 'ML' && (
+          {thread?.file_type === 'ML' && (
             <Grid item xs={12}>
               <SurveyForm
                 title="Program"
@@ -774,7 +765,7 @@ function DocModificationThreadInput() {
               docModificationThreadInputState?.editorRequirements
                 ?.useProgramRequirementData || false
             }
-            data={docModificationThreadInputState.data}
+            data={gptData}
             isGenerating={isGenerating}
             onChange={onChangeEditorRequirements}
             onGenerate={onGenerate}

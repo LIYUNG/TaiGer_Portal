@@ -92,8 +92,7 @@ const getProgram = asyncHandler(async (req, res) => {
         applications: {
           $elemMatch: {
             programId: req.params.programId,
-            decided: 'O',
-            closed: 'O'
+            decided: 'O'
           }
         }
       }).select(
@@ -113,8 +112,7 @@ const getProgram = asyncHandler(async (req, res) => {
       applications: {
         $elemMatch: {
           programId: req.params.programId,
-          decided: 'O',
-          closed: 'O'
+          decided: 'O'
         }
       }
     }).select(

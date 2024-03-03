@@ -22,6 +22,8 @@ import {
   is_TaiGer_Admin,
   is_TaiGer_AdminAgent,
   is_TaiGer_role,
+  isProgramSubmitted,
+  isProgramWithdraw,
   LinkableNewlineText
 } from '../Utils/checking-functions';
 import {
@@ -46,9 +48,14 @@ function SingleProgramView(props) {
   const { user } = useAuth();
   const { t } = useTranslation();
   const [value, setValue] = useState(0);
+  const [studentsTabValue, setStudentsTabValue] = useState(0);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
+  };
+
+  const handleStudentsTabChange = (event, newValue) => {
+    setStudentsTabValue(newValue);
   };
 
   return (
@@ -326,56 +333,124 @@ function SingleProgramView(props) {
           {is_TaiGer_role(user) && (
             <>
               <Card className="card-with-scroll" sx={{ p: 2 }}>
-                <Typography variant="string">Who has applied this?</Typography>
                 <div className="card-scrollable-body">
-                  <Table size="small">
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>{t('Name')}</TableCell>
-                        <TableCell>{t('Year')}</TableCell>
-                        <TableCell>{t('Admission')}</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {props.students.map((student, i) => (
-                        <TableRow key={i}>
-                          <TableCell>
-                            <Link
-                              to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-                                student._id.toString(),
-                                DEMO.PROFILE_HASH
-                              )}`}
-                              component={LinkDom}
-                            >
-                              {student.firstname} {student.lastname}
-                            </Link>
-                          </TableCell>
-                          <TableCell>
-                            {student.application_preference
-                              ? student.application_preference
-                                  .expected_application_date
-                              : '-'}
-                          </TableCell>
-                          <TableCell>
-                            {student.applications.find(
+                  <Tabs
+                    value={studentsTabValue}
+                    onChange={handleStudentsTabChange}
+                    variant="scrollable"
+                    scrollButtons="auto"
+                    aria-label="basic tabs example"
+                  >
+                    <Tab label="In Progress" {...a11yProps(0)} />
+                    <Tab label="Closed" {...a11yProps(1)} />
+                  </Tabs>
+                  <CustomTabPanel value={studentsTabValue} index={0}>
+                    <Table size="small">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>{t('Name')}</TableCell>
+                          <TableCell>{t('Year')}</TableCell>
+                          <TableCell>{t('Status')}</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {props.students
+                          .filter((student) =>
+                            student.applications.some(
                               (application) =>
                                 application.programId.toString() ===
-                                props.programId
+                                  props.programId &&
+                                !isProgramSubmitted(application) &&
+                                !isProgramWithdraw(application)
                             )
-                              ? student.applications.find(
-                                  (application) =>
-                                    application.programId.toString() ===
-                                    props.programId
-                                ).admission
-                              : ''}
-                          </TableCell>
+                          )
+                          .map((student, i) => (
+                            <TableRow key={i}>
+                              <TableCell>
+                                <Link
+                                  to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                                    student._id.toString(),
+                                    DEMO.PROFILE_HASH
+                                  )}`}
+                                  component={LinkDom}
+                                >
+                                  {student.firstname} {student.lastname}
+                                </Link>
+                              </TableCell>
+                              <TableCell>
+                                {student.application_preference
+                                  ? student.application_preference
+                                      .expected_application_date
+                                  : '-'}
+                              </TableCell>
+                              <TableCell>Open</TableCell>
+                            </TableRow>
+                          ))}
+                      </TableBody>
+                    </Table>
+                  </CustomTabPanel>
+                  <CustomTabPanel value={studentsTabValue} index={1}>
+                    <Table size="small">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>{t('Name')}</TableCell>
+                          <TableCell>{t('Year')}</TableCell>
+                          <TableCell>{t('Admission')}</TableCell>
                         </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                  <Typography variant="string" sx={{ mt: 2 }}>
-                    O: admitted, X: rejected, -: not confirmed{' '}
-                  </Typography>
+                      </TableHead>
+                      <TableBody>
+                        {props.students
+                          .filter((student) =>
+                            student.applications.some(
+                              (application) =>
+                                application.programId.toString() ===
+                                  props.programId &&
+                                (isProgramSubmitted(application) ||
+                                  isProgramWithdraw(application))
+                            )
+                          )
+                          .map((student, i) => (
+                            <TableRow key={i}>
+                              <TableCell>
+                                <Link
+                                  to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                                    student._id.toString(),
+                                    DEMO.PROFILE_HASH
+                                  )}`}
+                                  component={LinkDom}
+                                >
+                                  {student.firstname} {student.lastname}
+                                </Link>
+                              </TableCell>
+                              <TableCell>
+                                {student.application_preference
+                                  ? student.application_preference
+                                      .expected_application_date
+                                  : '-'}
+                              </TableCell>
+                              <TableCell>
+                                {isProgramWithdraw(
+                                  student.applications.find(
+                                    (application) =>
+                                      application.programId.toString() ===
+                                      props.programId
+                                  )
+                                )
+                                  ? 'WITHDRAW'
+                                  : student.applications.find(
+                                      (application) =>
+                                        application.programId.toString() ===
+                                        props.programId
+                                    ).admission}
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                      </TableBody>
+                    </Table>
+                    <Typography variant="string" sx={{ mt: 2 }}>
+                      O: admitted, X: rejected, -: not confirmed{' '}
+                    </Typography>
+                  </CustomTabPanel>
                 </div>
               </Card>
               <Card>

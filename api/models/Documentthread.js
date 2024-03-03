@@ -16,18 +16,6 @@ const documentThreadsSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
-  student_input: {
-    input_content: {
-      type: String,
-      default: ''
-    },
-    input_status: {
-      type: String,
-      default: ''
-    },
-    updatedAt: Date,
-    createdAt: Date
-  },
   messages: [
     {
       user_id: { type: ObjectId, ref: 'User' },

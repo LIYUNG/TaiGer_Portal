@@ -17,7 +17,6 @@ import {
   InputLabel,
   IconButton,
   MenuItem,
-  Modal,
   Link,
   FormControl,
   FormControlLabel,
@@ -25,8 +24,7 @@ import {
   TextField,
   Typography,
   OutlinedInput,
-  Select,
-  Paper
+  Select
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import { KeyboardArrowUp, KeyboardArrowDown } from '@mui/icons-material';
@@ -53,75 +51,6 @@ import { appConfig } from '../../../config';
 
 const type2width = { word: 3, sentence: 5, paragraph: 12, essay: 12 };
 const type2rows = { word: 1, sentence: 1, paragraph: 4, essay: 10 };
-
-const ConfirmationModal = ({
-  isModalOpen,
-  setModalOpen,
-  title,
-  description,
-  onYes,
-  onNo,
-  onCancel = () => {}
-}) => {
-  const handleActionYes = () => {
-    onYes();
-    handleModalClose();
-  };
-
-  const handleActionNo = () => {
-    onNo();
-    handleModalClose();
-  };
-
-  const handleActionCancel = () => {
-    onCancel();
-    handleModalClose();
-  };
-
-  const handleModalClose = () => {
-    setModalOpen(false);
-  };
-
-  return (
-    <Modal open={isModalOpen} onClose={handleModalClose}>
-      <Paper
-        style={{
-          padding: 16,
-          maxWidth: 300,
-          margin: 'auto',
-          marginTop: 'calc(50vh - 100px)'
-        }}
-      >
-        <Typography variant="h6">{title}</Typography>
-        <Typography variant="body1" sx={{ marginBottom: 2 }}>
-          {description}
-        </Typography>
-
-        <Button variant="contained" color="primary" onClick={handleActionYes}>
-          Yes
-        </Button>
-
-        <Button
-          variant="contained"
-          onClick={handleActionNo}
-          sx={{ marginLeft: 1 }}
-        >
-          No
-        </Button>
-        <Button
-          variant="contained"
-          onClick={handleActionCancel}
-          sx={{
-            marginLeft: 1,
-            float: 'right'
-          }}
-        >
-          Cancel
-        </Button>
-      </Paper>
-    </Modal>
-  );
-};
 
 const ProgressButton = ({
   label = 'Submit',
@@ -377,7 +306,7 @@ function DocModificationThreadInput() {
   const { user } = useAuth();
   const { t } = useTranslation();
   const { documentsthreadId } = useParams();
-  const [isModalOpen, setModalOpen] = useState(false);
+  const [isFinalVersion, setIsFinalVersion] = useState(false);
   const [docModificationThreadInputState, setDocModificationThreadInputState] =
     useState({
       documentsthreadId: documentsthreadId,
@@ -610,7 +539,7 @@ function DocModificationThreadInput() {
       }));
       return;
     }
-    setModalOpen(true);
+    submitInput(docModificationThreadInputState.surveyInputs, isFinalVersion);
   };
 
   const onGenerate = async () => {
@@ -723,18 +652,6 @@ function DocModificationThreadInput() {
 
   return (
     <Box>
-      <ConfirmationModal
-        isModalOpen={isModalOpen}
-        setModalOpen={setModalOpen}
-        title="Notify Editor"
-        description="Do you want to notify the editors about the changes?"
-        onYes={() =>
-          submitInput(docModificationThreadInputState.surveyInputs, true)
-        }
-        onNo={() =>
-          submitInput(docModificationThreadInputState.surveyInputs, false)
-        }
-      />
       <Breadcrumbs aria-label="breadcrumb">
         <Link
           underline="hover"
@@ -834,6 +751,28 @@ function DocModificationThreadInput() {
               ></SurveyForm>
             </Grid>
           )}
+
+          <Grid item xs={12}>
+            <FormControl>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    name="isFinalVersion"
+                    type="checkbox"
+                    checked={isFinalVersion}
+                    onChange={(e) => {
+                      setDocModificationThreadInputState((prevState) => ({
+                        ...prevState,
+                        isChanged: true
+                      }));
+                      setIsFinalVersion(e.target.checked);
+                    }}
+                  />
+                }
+                label="Is Final Version?"
+              />
+            </FormControl>
+          </Grid>
 
           <Grid
             item

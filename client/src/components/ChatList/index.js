@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import SearchIcon from '@mui/icons-material/Search';
 import { Box, ListItem, MenuItem, Skeleton, Typography } from '@mui/material';
-import FullscreenIcon from '@mui/icons-material/Fullscreen';
+
 import Friends from './Friends';
 import { getMyCommunicationThread, getQueryStudentResults } from '../../api';
 import { useAuth } from '../AuthProvider';
@@ -137,11 +137,7 @@ const ChatList = (props) => {
       <ListItem onClick={(e) => e.stopPropagation()}>
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Box>
-            <Typography>Chat</Typography>
-          </Box>
-          <Box style={{ textAlign: 'left' }}>
-            <Typography style={{ float: 'right' }}></Typography>
-            <Typography><FullscreenIcon /></Typography>
+            <Typography variant="h6">Chat</Typography>
           </Box>
         </Box>
       </ListItem>

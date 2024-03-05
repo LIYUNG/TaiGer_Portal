@@ -113,21 +113,17 @@ function StudentsAgentEditor(props) {
   let studentsAgent;
   let studentsEditor;
   if (props.student.agents === undefined || props.student.agents.length === 0) {
-    studentsAgent = <Typography>{t('No Agent assigned')}</Typography>;
+    studentsAgent = t('No Agent assigned');
   } else {
     studentsAgent = props.student.agents.map((agent) => (
       <Fragment key={agent._id}>
-        <Typography variant="string">
-          <Link
-            to={`${DEMO.TEAM_AGENT_LINK(agent._id.toString())}`}
-            component={LinkDom}
-          >
-            {agent.firstname}
-          </Link>
-        </Typography>
+        <Link
+          to={`${DEMO.TEAM_AGENT_LINK(agent._id.toString())}`}
+          component={LinkDom}
+        >
+          {agent.firstname}
+        </Link>
         &nbsp;
-        {/* <br />
-        <Typography variant="string">{agent.email}</Typography> */}
       </Fragment>
     ));
   }
@@ -135,29 +131,21 @@ function StudentsAgentEditor(props) {
     props.student.editors === undefined ||
     props.student.editors.length === 0
   ) {
-    studentsEditor = <Typography>{t('No Editor assigned')}</Typography>;
+    studentsEditor = t('No Editor assigned');
   } else {
     studentsEditor = props.student.editors.map((editor) => (
       <Box key={editor._id}>
-        <Typography variant="string">
-          <Link
-            to={`${DEMO.TEAM_EDITOR_LINK(editor._id.toString())}`}
-            component={LinkDom}
-          >
-            {`${editor.firstname}`}
-          </Link>
-        </Typography>
+        <Link
+          to={`${DEMO.TEAM_EDITOR_LINK(editor._id.toString())}`}
+          component={LinkDom}
+        >
+          {`${editor.firstname}`}
+        </Link>
         &nbsp;
-        {/* <br />
-        <Typography variant="string">{editor.email}</Typography> */}
       </Box>
     ));
   }
-  const target_application_field = props.student.application_preference
-    ? props.student.application_preference.target_application_field || (
-        <span>TBD</span>
-      )
-    : '';
+
   return (
     <>
       <TableRow>
@@ -219,7 +207,7 @@ function StudentsAgentEditor(props) {
         </TableCell>
         {!is_TaiGer_Student(user) ? (
           <TableCell>
-            <Typography className="mb-0">
+            <Typography variant="body2" fontWeight="bold">
               <Link
                 to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                   props.student._id,
@@ -246,60 +234,76 @@ function StudentsAgentEditor(props) {
         ) : (
           <></>
         )}
-        <TableCell>{studentsAgent}</TableCell>
-        <TableCell>{studentsEditor}</TableCell>
         <TableCell>
-          {props.student.application_preference.expected_application_date || (
-            <Typography>TBD</Typography>
-          )}
+          <Typography variant="body2">{studentsAgent}</Typography>
         </TableCell>
         <TableCell>
-          {props.student.application_preference
-            .expected_application_semester || <Typography>TBD</Typography>}
+          <Typography variant="body2">{studentsEditor}</Typography>
         </TableCell>
         <TableCell>
-          {props.student.application_preference.target_degree || (
-            <Typography>TBD</Typography>
-          )}
+          <Typography variant="body2">
+            {props.student.application_preference.expected_application_date ||
+              'TBD'}
+          </Typography>
         </TableCell>
         <TableCell>
-          <Typography fontWeight="bold">
+          <Typography variant="body2">
+            {props.student.application_preference
+              .expected_application_semester || 'TBD'}
+          </Typography>
+        </TableCell>
+        <TableCell>
+          <Typography variant="body2">
+            {props.student.application_preference.target_degree || 'TBD'}
+          </Typography>
+        </TableCell>
+        <TableCell>
+          <Typography fontWeight="bold" variant="body2">
             {props.student.academic_background.university.attended_university ||
               'TBD'}
           </Typography>
-          <Typography>
+          <Typography variant="body2">
             {props.student.academic_background.university
               .attended_university_program || 'TBD'}
           </Typography>
         </TableCell>
-        <TableCell>{target_application_field}</TableCell>
         <TableCell>
-          {props.student.academic_background.language.english_certificate || (
-            <Typography>TBD</Typography>
-          )}
-          {props.student.academic_background.language.german_certificate || (
-            <Typography>TBD</Typography>
-          )}
+          <Typography variant="body2">
+            {props.student?.application_preference?.target_application_field ||
+              'TBD'}
+          </Typography>
         </TableCell>
         <TableCell>
-          {props.student.academic_background.language.english_score || (
-            <span>TBD</span>
-          )}
-          {props.student.academic_background.language.german_score || (
-            <span>TBD</span>
-          )}
+          <Typography variant="body2">
+            {props.student.academic_background.language.english_certificate ||
+              'TBD'}
+          </Typography>
+          <Typography variant="body2">
+            {props.student.academic_background.language.german_certificate ||
+              'TBD'}
+          </Typography>
         </TableCell>
         <TableCell>
-          {(props.student.academic_background.language.english_isPassed ===
-            'X' &&
-            props.student.academic_background.language.english_test_date) || (
-            <span>TBD</span>
-          )}
-          {(props.student.academic_background.language.german_isPassed ===
-            'X' &&
-            props.student.academic_background.language.german_test_date) || (
-            <span>TBD</span>
-          )}
+          <Typography variant="body2">
+            {props.student.academic_background.language.english_score || 'TBD'}
+          </Typography>
+          <Typography variant="body2">
+            {props.student.academic_background.language.german_score || 'TBD'}
+          </Typography>
+        </TableCell>
+        <TableCell>
+          <Typography variant="body2">
+            {(props.student.academic_background.language.english_isPassed ===
+              'X' &&
+              props.student.academic_background.language.english_test_date) ||
+              'TBD'}
+          </Typography>
+          <Typography variant="body2">
+            {(props.student.academic_background.language.german_isPassed ===
+              'X' &&
+              props.student.academic_background.language.german_test_date) ||
+              'TBD'}
+          </Typography>
         </TableCell>
       </TableRow>
       {is_TaiGer_role(user) && (

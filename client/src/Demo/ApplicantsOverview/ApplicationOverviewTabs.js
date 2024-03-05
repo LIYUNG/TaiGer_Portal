@@ -23,7 +23,8 @@ import { matchSorter } from 'match-sorter';
 import {
   programs_refactor,
   is_TaiGer_role,
-  isProgramDecided
+  isProgramDecided,
+  isProgramWithdraw
 } from '../Utils/checking-functions';
 import {
   // Search,
@@ -242,15 +243,17 @@ function ApplicationOverviewTabs(props) {
     }));
   };
 
-  const filteredRows = applications_arr.filter((row) => {
-    return Object.keys(filters).every((field) => {
-      const filterValue = filters[field];
-      return (
-        filterValue === '' ||
-        row[field]?.toString().toLowerCase().includes(filterValue)
-      );
+  const filteredRows = applications_arr
+    .filter((app) => isProgramDecided(app) && !isProgramWithdraw(app))
+    .filter((row) => {
+      return Object.keys(filters).every((field) => {
+        const filterValue = filters[field];
+        return (
+          filterValue === '' ||
+          row[field]?.toString().toLowerCase().includes(filterValue)
+        );
+      });
     });
-  });
 
   const handleClose = () => {
     setAnchorEl(null);

@@ -310,7 +310,7 @@ function SingleStudentPage() {
                 underline="hover"
                 color="inherit"
                 component={LinkDom}
-                to={`${DEMO.COMMUNICATIONS_LINK(
+                to={`${DEMO.COMMUNICATIONS_TAIGER_MODE_LINK(
                   singleStudentPage.student._id
                 )}`}
                 sx={{ mr: 1 }}

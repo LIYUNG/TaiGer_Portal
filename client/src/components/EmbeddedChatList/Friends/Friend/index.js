@@ -38,7 +38,9 @@ const friend = (props) => {
     >
       <ListItemButton
         component={LinkDom}
-        to={`${DEMO.EMBEDDED_COMMUNICATIONS_LINK(props.data?._id?.toString())}`}
+        to={`${DEMO.COMMUNICATIONS_TAIGER_MODE_LINK(
+          props.data?._id?.toString()
+        )}`}
         selected={props.data?._id?.toString() === student_id}
         title={`${props.data.firstname} ${props.data.lastname} ${
           props.data.firstname_chinese ? props.data.firstname_chinese : ''

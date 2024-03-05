@@ -16,9 +16,9 @@ const DEMO = {
   },
   COURSES_ANALYSIS_EXPLANATION_LINK: '/docs/search/64c3817811e606a89a10ea47',
   COMMUNICATIONS_LINK: (student_id) => {
-    return `/communications/${student_id}`;
+    return `/communications/std/${student_id}`;
   },
-  EMBEDDED_COMMUNICATIONS_LINK: (student_id) => {
+  COMMUNICATIONS_TAIGER_MODE_LINK: (student_id) => {
     return `/communications/t/${student_id}`;
   },
   CV_ML_RL_CENTER_LINK: '/cv-ml-rl-center',

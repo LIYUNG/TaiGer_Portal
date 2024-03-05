@@ -561,7 +561,7 @@ if (appConfig.meetingEnable) {
 
 if (appConfig.messengerEnable) {
   routes.push({
-    path: '/communications/:student_id',
+    path: '/communications/std/:student_id',
     exact: true,
     name: 'My Chat',
     Component: CommunicationSinglePage

@@ -44,7 +44,6 @@ function CommunicationExpandPage() {
   const { t } = useTranslation();
   const theme = useTheme();
   const ismobile = useMediaQuery(theme.breakpoints.down('md'));
-  // console.log(ismobile);
 
   const [communicationExpandPageState, setCommunicationExpandPageState] =
     useState({
@@ -68,14 +67,32 @@ function CommunicationExpandPage() {
 
   const [open, setOpen] = useState(false);
   const scrollableRef = useRef(null);
-  console.log(communicationExpandPageState.count);
   const scrollToBottom = () => {
     if (scrollableRef.current) {
       scrollableRef.current.scrollTop = scrollableRef.current.scrollHeight;
     }
   };
+  const [windowInnerWidth, setWindowInnerWidth] = useState(window.innerWidth);
 
   useEffect(() => {
+    const handleResize = () => {
+      setWindowInnerWidth(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [windowInnerWidth]);
+
+  useEffect(() => {
+    if (!student_id) {
+      setCommunicationExpandPageState((prevState) => ({
+        ...prevState,
+        isLoaded: true
+      }));
+    }
     setCommunicationExpandPageState((prevState) => ({
       ...prevState,
       messagesLoaded: false
@@ -325,7 +342,11 @@ function CommunicationExpandPage() {
   const handleDrawerClose = () => {
     setOpen(false);
   };
-
+  const DrawerChatMemo = () => {
+    return (
+      <MemoizedEmbeddedChatList count={communicationExpandPageState.count} />
+    );
+  };
   const {
     messagesLoaded,
     isLoaded,
@@ -376,10 +397,7 @@ function CommunicationExpandPage() {
           style={{ width: '300px', marginLeft: '-24px' }}
           sx={{ display: { xs: 'none', md: 'flex' } }}
         >
-          <Box
-            className="sticky-top"
-            sx={{ display: { xs: 'none', md: 'flex' } }}
-          >
+          <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
             <div
               style={{
                 height: window.innerHeight - 112,
@@ -399,10 +417,6 @@ function CommunicationExpandPage() {
                 />
               </div>
             </div>
-
-            {/* {communicationExpandPageState?.students?.map((student) => (
-              <Card key={student._id}>{student?.firstname}</Card>
-            ))} */}
           </Box>
         </Grid>
         <Grid item xs md style={{ marginLeft: '8px' }}>
@@ -424,7 +438,7 @@ function CommunicationExpandPage() {
             )}
 
             <Avatar {...stringAvatar(student_name_english)}></Avatar>
-            <Card>
+            <Box>
               <Typography
                 variant="body1"
                 fontWeight="bold"
@@ -432,127 +446,132 @@ function CommunicationExpandPage() {
               >
                 {student_name_english}
               </Typography>
-            </Card>
-            <Drawer
-              sx={{
-                width: '300px',
-                flexShrink: 0,
-                '& .MuiDrawer-paper': {
-                  width: '300px',
-                  boxSizing: 'border-box'
-                }
-              }}
-              open={open}
-              variant="temporary"
-              anchor="left"
-            >
-              <MemoizedEmbeddedChatList
-                count={communicationExpandPageState.count}
-              />
-            </Drawer>
+            </Box>
           </Box>
-          {messagesLoaded ? (
-            <div
-              style={{
-                height: window.innerHeight - 112 - 40,
-                overflow: 'hidden'
-              }}
-            >
+          <Drawer
+            sx={{
+              width: '300px',
+              flexShrink: 0,
+              '& .MuiDrawer-paper': {
+                width: '300px',
+                boxSizing: 'border-box'
+              }
+            }}
+            open={open}
+            variant="temporary"
+            anchor="left"
+          >
+            <DrawerChatMemo />
+          </Drawer>
+          {!student_id && <Typography>Empty</Typography>}
+          {student_id &&
+            (messagesLoaded ? (
               <div
                 style={{
-                  overflowY: 'auto' /* Enable vertical scrolling */,
-                  maxHeight:
-                    window.innerHeight -
-                    112 -
-                    40 /* Adjusted max height, considering header */
+                  height: window.innerHeight - 112 - 40,
+                  overflow: 'hidden'
                 }}
-                ref={scrollableRef}
               >
-                <Fragment>
-                  <Grid container spacing={2}>
-                    <Grid item xs={12} sm={9}>
-                      <Box variant="body1">
-                        <List>
-                          <ListItem>
-                            <Typography fontWeight="bold">
+                <div
+                  style={{
+                    overflowY: 'auto' /* Enable vertical scrolling */,
+                    maxHeight:
+                      window.innerHeight -
+                      112 -
+                      40 /* Adjusted max height, considering header */
+                  }}
+                  ref={scrollableRef}
+                >
+                  <Fragment>
+                    <Grid container spacing={2}>
+                      <Grid item xs={12} sm={9}>
+                        <Box variant="body1">
+                          <List>
+                            <ListItem>
+                              <Typography fontWeight="bold">
+                                <Link
+                                  to={
+                                    is_TaiGer_Student(user)
+                                      ? `${DEMO.SURVEY_LINK}`
+                                      : `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                                          communicationExpandPageState.student_id,
+                                          DEMO.SURVEY_HASH
+                                        )}`
+                                  }
+                                  component={LinkDom}
+                                  target="_blank"
+                                >
+                                  {t('My Survey')}{' '}
+                                  <FiExternalLink
+                                    className="mx-0 mb-1"
+                                    style={{ cursor: 'pointer' }}
+                                  />
+                                </Link>
+                                <Link
+                                  to={
+                                    is_TaiGer_Student(user)
+                                      ? `${DEMO.BASE_DOCUMENTS_LINK}`
+                                      : `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                                          communicationExpandPageState.student_id,
+                                          DEMO.PROFILE_HASH
+                                        )}`
+                                  }
+                                  component={LinkDom}
+                                  target="_blank"
+                                >
+                                  Base Document{' '}
+                                  <FiExternalLink
+                                    style={{ cursor: 'pointer' }}
+                                  />
+                                </Link>
+                                <Link
+                                  to={`${DEMO.COURSES_LINK}/${communicationExpandPageState.student_id}`}
+                                  component={LinkDom}
+                                  target="_blank"
+                                >
+                                  {t('My Courses')}{' '}
+                                  <FiExternalLink
+                                    className="mx-0 mb-1"
+                                    style={{ cursor: 'pointer' }}
+                                  />
+                                </Link>
+                              </Typography>
+                            </ListItem>
+                          </List>
+                        </Box>
+                      </Grid>
+                      <Grid item xs={12} sm={3}>
+                        <Typography fontWeight="bold">
+                          {t('Agents')}:
+                        </Typography>
+                        {communicationExpandPageState.student?.agents?.map(
+                          (agent, i) => (
+                            <Typography key={i}>
                               <Link
-                                to={
-                                  is_TaiGer_Student(user)
-                                    ? `${DEMO.SURVEY_LINK}`
-                                    : `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-                                        communicationExpandPageState.student_id,
-                                        DEMO.SURVEY_HASH
-                                      )}`
-                                }
+                                to={`${DEMO.TEAM_AGENT_PROFILE_LINK(
+                                  agent._id.toString()
+                                )}`}
                                 component={LinkDom}
-                                target="_blank"
-                              >
-                                {t('My Survey')}{' '}
-                                <FiExternalLink
-                                  className="mx-0 mb-1"
-                                  style={{ cursor: 'pointer' }}
-                                />
-                              </Link>
-                              <Link
-                                to={
-                                  is_TaiGer_Student(user)
-                                    ? `${DEMO.BASE_DOCUMENTS_LINK}`
-                                    : `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-                                        communicationExpandPageState.student_id,
-                                        DEMO.PROFILE_HASH
-                                      )}`
-                                }
-                                component={LinkDom}
-                                target="_blank"
-                              >
-                                Base Document{' '}
-                                <FiExternalLink style={{ cursor: 'pointer' }} />
-                              </Link>
-                              <Link
-                                to={`${DEMO.COURSES_LINK}/${communicationExpandPageState.student_id}`}
-                                component={LinkDom}
-                                target="_blank"
-                              >
-                                {t('My Courses')}{' '}
-                                <FiExternalLink
-                                  className="mx-0 mb-1"
-                                  style={{ cursor: 'pointer' }}
-                                />
-                              </Link>
+                              >{`${agent.firstname} ${agent.lastname}`}</Link>
                             </Typography>
-                          </ListItem>
-                        </List>
-                      </Box>
-                    </Grid>
-                    <Grid item xs={12} sm={3}>
-                      <Typography fontWeight="bold">{t('Agents')}:</Typography>
-                      {communicationExpandPageState.student?.agents?.map(
-                        (agent, i) => (
-                          <Typography key={i}>
-                            <Link
-                              to={`${DEMO.TEAM_AGENT_PROFILE_LINK(
-                                agent._id.toString()
-                              )}`}
-                              component={LinkDom}
-                            >{`${agent.firstname} ${agent.lastname}`}</Link>
-                          </Typography>
-                        )
-                      )}
-                    </Grid>
-                    <Grid item xs={12}>
-                      <Button
-                        fullWidth
-                        color="secondary"
-                        variant="outlined"
-                        onClick={handleLoadMessages}
-                        disabled={
-                          communicationExpandPageState.loadButtonDisabled
-                        }
-                        sx={{ mb: 2 }}
-                      >
-                        {t('Load')}
-                      </Button>
-                      <Box>
+                          )
+                        )}
+                      </Grid>
+                      <Grid item xs={12}>
+                        <Button
+                          fullWidth
+                          color="secondary"
+                          variant="outlined"
+                          onClick={handleLoadMessages}
+                          disabled={
+                            communicationExpandPageState.loadButtonDisabled
+                          }
+                          sx={{ mb: 2 }}
+                        >
+                          {t('Load')}
+                        </Button>
+                      </Grid>
+                      <Grid item xs={12}>
                         {communicationExpandPageState.upperThread.length >
                           0 && (
                           <MessageList
@@ -565,6 +584,7 @@ function CommunicationExpandPage() {
                             isLoaded={communicationExpandPageState.isLoaded}
                             user={user}
                             onDeleteSingleMessage={onDeleteSingleMessage}
+                            isTaiGerView={true}
                           />
                         )}
                         <MessageList
@@ -577,72 +597,75 @@ function CommunicationExpandPage() {
                           isLoaded={communicationExpandPageState.isLoaded}
                           user={user}
                           onDeleteSingleMessage={onDeleteSingleMessage}
+                          isTaiGerView={true}
                         />
-                      </Box>
-                      {communicationExpandPageState.student.archiv !== true ? (
-                        <Box>
-                          <Grid container spacing={2}>
-                            <Grid item xs={12}>
-                              <Card
-                                sx={{
-                                  padding: 2,
-                                  maxWidth: window.innerWidth - 64,
-                                  pt: 2,
-                                  '& .MuiAvatar-root': {
-                                    width: 32,
-                                    height: 32,
-                                    ml: -0.5,
-                                    mr: 1
-                                  }
-                                }}
-                              >
-                                <Avatar
-                                  {...stringAvatar(
-                                    `${user.firstname} ${user.lastname}`
-                                  )}
-                                />
-                                <Typography
-                                  style={{ marginLeft: '10px', flex: 1 }}
+                        {communicationExpandPageState.student.archiv !==
+                        true ? (
+                          <Card>
+                            <Grid container spacing={2}>
+                              <Grid item xs={12}>
+                                <Card
+                                  sx={{
+                                    padding: 2,
+                                    ...(!ismobile && {
+                                      maxWidth: windowInnerWidth - 664
+                                    }),
+                                    pt: 2,
+                                    '& .MuiAvatar-root': {
+                                      width: 32,
+                                      height: 32,
+                                      ml: -0.5,
+                                      mr: 1
+                                    }
+                                  }}
                                 >
-                                  {user.firstname} {user.lastname}
-                                </Typography>
+                                  <Avatar
+                                    {...stringAvatar(
+                                      `${user.firstname} ${user.lastname}`
+                                    )}
+                                  />
+                                  <Box style={{ marginLeft: '10px', flex: 1 }}>
+                                    <Typography>
+                                      {user.firstname} {user.lastname}
+                                    </Typography>
+                                  </Box>
 
-                                <CommunicationThreadEditor
-                                  thread={communicationExpandPageState.thread}
-                                  buttonDisabled={
-                                    communicationExpandPageState.buttonDisabled
-                                  }
-                                  editorState={
-                                    communicationExpandPageState.editorState
-                                  }
-                                  handleClickSave={handleClickSave}
-                                />
-                              </Card>
+                                  <CommunicationThreadEditor
+                                    thread={communicationExpandPageState.thread}
+                                    buttonDisabled={
+                                      communicationExpandPageState.buttonDisabled
+                                    }
+                                    editorState={
+                                      communicationExpandPageState.editorState
+                                    }
+                                    handleClickSave={handleClickSave}
+                                  />
+                                </Card>
+                              </Grid>
                             </Grid>
-                          </Grid>
-                        </Box>
-                      ) : (
-                        <Card>
-                          {t(
-                            'The service is finished. Therefore, it is readonly.'
-                          )}
-                        </Card>
-                      )}
-                      {res_modal_status >= 400 && (
-                        <ModalMain
-                          ConfirmError={ConfirmError}
-                          res_modal_status={res_modal_status}
-                          res_modal_message={res_modal_message}
-                        />
-                      )}
+                          </Card>
+                        ) : (
+                          <Card>
+                            {t(
+                              'The service is finished. Therefore, it is readonly.'
+                            )}
+                          </Card>
+                        )}
+                        {res_modal_status >= 400 && (
+                          <ModalMain
+                            ConfirmError={ConfirmError}
+                            res_modal_status={res_modal_status}
+                            res_modal_message={res_modal_message}
+                          />
+                        )}
+                      </Grid>
                     </Grid>
-                  </Grid>
-                </Fragment>
+                  </Fragment>
+                </div>
               </div>
-            </div>
-          ) : (
-            <CircularProgress />
-          )}
+            ) : (
+              <CircularProgress />
+            ))}
         </Grid>
       </Grid>
     </Box>

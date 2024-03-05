@@ -14,6 +14,7 @@ function MessageList(props) {
       lastupdate={props.lastupdate}
       isLoaded={props.isLoaded}
       onDeleteSingleMessage={props.onDeleteSingleMessage}
+      isTaiGerView={props.isTaiGerView}
     />
   ));
   return <>{thread}</>;

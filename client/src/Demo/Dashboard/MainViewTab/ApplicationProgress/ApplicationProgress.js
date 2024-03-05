@@ -36,6 +36,7 @@ function ApplicationProgress(props) {
             <Link
               to={`${DEMO.STUDENT_APPLICATIONS_ID_LINK(props.student._id)}`}
               component={LinkDom}
+              underline='hover'
             >
               <AiFillEdit color="grey" size={16} />
             </Link>
@@ -64,6 +65,7 @@ function ApplicationProgress(props) {
             <Link
               to={`${DEMO.STUDENT_APPLICATIONS_ID_LINK(props.student._id)}`}
               component={LinkDom}
+              underline="hover"
             >
               <AiFillEdit color="grey" size={16} />
             </Link>
@@ -95,6 +97,7 @@ function ApplicationProgress(props) {
           <Link
             to={DEMO.SINGLE_PROGRAM_LINK(application.programId._id.toString())}
             component={LinkDom}
+            underline="hover"
             target="_blank"
           >
             <Typography
@@ -115,6 +118,7 @@ function ApplicationProgress(props) {
           <Link
             to={DEMO.SINGLE_PROGRAM_LINK(application.programId._id.toString())}
             component={LinkDom}
+            underline="hover"
             target="_blank"
           >
             <Typography
@@ -135,6 +139,7 @@ function ApplicationProgress(props) {
           <Link
             to={DEMO.SINGLE_PROGRAM_LINK(application.programId._id.toString())}
             component={LinkDom}
+            underline="hover"
             target="_blank"
           >
             <Typography

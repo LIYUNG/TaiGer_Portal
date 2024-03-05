@@ -11,6 +11,10 @@ import { BsDash } from 'react-icons/bs';
 import { BiCommentDots } from 'react-icons/bi';
 import { styled, alpha } from '@mui/material/styles';
 import { InputBase } from '@mui/material';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CancelIcon from '@mui/icons-material/Cancel';
+import HelpIcon from '@mui/icons-material/Help';
+import { green, red, grey } from '@mui/material/colors';
 
 import { appConfig } from '../../config';
 
@@ -58,26 +62,40 @@ export const menuWidth = 350;
 export const EmbeddedChatListWidth = 300;
 
 export const DECISION_STATUS_E = {
-  OK_SYMBOL: <IoCheckmarkCircle size={18} color="limegreen" title="Decided" />,
-  NOT_OK_SYMBOL: <AiFillCloseCircle size={18} color="red" title="Decided No" />,
+  OK_SYMBOL: (
+    <CheckCircleIcon size={18} style={{ color: green[500] }} title="Decided" />
+  ),
+  NOT_OK_SYMBOL: (
+    <CancelIcon size={18} style={{ color: red[700] }} title="Decided No" />
+  ),
   UNKNOWN_SYMBOL: (
-    <AiFillQuestionCircle size={18} color="lightgray" title="Not sure" />
+    <HelpIcon size={18} style={{ color: grey[400] }} title="Not sure" />
   )
 };
 export const SUBMISSION_STATUS_E = {
   OK_SYMBOL: (
-    <IoCheckmarkCircle size={18} color="limegreen" title="Submitted" />
+    <CheckCircleIcon
+      size={18}
+      style={{ color: green[500] }}
+      title="Submitted"
+    />
   ),
-  NOT_OK_SYMBOL: <AiFillCloseCircle size={18} color="red" title="Withdraw" />,
+  NOT_OK_SYMBOL: (
+    <CancelIcon size={18} style={{ color: red[700] }} title="Withdraw" />
+  ),
   UNKNOWN_SYMBOL: (
-    <AiFillQuestionCircle size={18} color="lightgray" title="In Progress" />
+    <HelpIcon size={18} style={{ color: grey[400] }} title="In Progress" />
   )
 };
 export const ADMISSION_STATUS_E = {
-  OK_SYMBOL: <IoCheckmarkCircle size={18} color="limegreen" title="Admitted" />,
-  NOT_OK_SYMBOL: <AiFillCloseCircle size={18} color="red" title="Rejected" />,
+  OK_SYMBOL: (
+    <CheckCircleIcon size={18} style={{ color: green[500] }} title="Admitted" />
+  ),
+  NOT_OK_SYMBOL: (
+    <CancelIcon size={18} style={{ color: red[700] }} title="Rejected" />
+  ),
   UNKNOWN_SYMBOL: (
-    <AiFillQuestionCircle size={18} color="lightgray" title="Pending" />
+    <HelpIcon size={18} style={{ color: grey[400] }} title="Pending" />
   )
 };
 

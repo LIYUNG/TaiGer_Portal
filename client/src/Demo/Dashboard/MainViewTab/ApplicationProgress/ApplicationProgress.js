@@ -102,7 +102,7 @@ function ApplicationProgress(props) {
                 isProgramDecided(application)
                   ? isProgramSubmitted(application)
                     ? 'success.light'
-                    : 'error.main'
+                    : 'text.primary'
                   : 'grey'
               }
               fontWeight="bold"
@@ -122,7 +122,7 @@ function ApplicationProgress(props) {
                 isProgramDecided(application)
                   ? isProgramSubmitted(application)
                     ? 'success.light'
-                    : 'error.main'
+                    : 'text.primary'
                   : 'grey'
               }
               fontWeight="bold"
@@ -142,7 +142,7 @@ function ApplicationProgress(props) {
                 isProgramDecided(application)
                   ? isProgramSubmitted(application)
                     ? 'success.light'
-                    : 'error.main'
+                    : 'text.primary'
                   : 'grey'
               }
               fontWeight="bold"
@@ -164,7 +164,7 @@ function ApplicationProgress(props) {
         )}
         {isProgramDecided(application) ? (
           isProgramSubmitted(application) ? (
-            <TableCell className="mb-1 text-warning">
+            <TableCell>
               {application.programId.toefl ? application.programId.toefl : '-'}
             </TableCell>
           ) : (
@@ -179,7 +179,7 @@ function ApplicationProgress(props) {
         )}
         {isProgramDecided(application) ? (
           isProgramSubmitted(application) ? (
-            <TableCell className="mb-1 text-warning">
+            <TableCell>
               {application.programId.ielts ? application.programId.ielts : '-'}
             </TableCell>
           ) : (
@@ -200,7 +200,7 @@ function ApplicationProgress(props) {
                   isProgramDecided(application)
                     ? isProgramSubmitted(application)
                       ? 'success.light'
-                      : 'error.main'
+                      : 'text.primary'
                     : 'grey'
                 }
                 fontWeight="bold"
@@ -215,7 +215,7 @@ function ApplicationProgress(props) {
                   isProgramDecided(application)
                     ? isProgramSubmitted(application)
                       ? 'success.light'
-                      : 'error.main'
+                      : 'text.primary'
                     : 'grey'
                 }
                 fontWeight="bold"
@@ -231,7 +231,7 @@ function ApplicationProgress(props) {
                 isProgramDecided(application)
                   ? isProgramSubmitted(application)
                     ? 'success.light'
-                    : 'error.main'
+                    : 'text.primary'
                   : 'grey'
               }
               fontWeight="bold"
@@ -241,43 +241,25 @@ function ApplicationProgress(props) {
           </TableCell>
         )}
         {isProgramDecided(application) ? (
-          <TableCell
-            className={`mb-1 ${
-              isProgramSubmitted(application) ? 'text-warning' : 'text-info'
-            }`}
-          >
-            {DECISION_STATUS_E.OK_SYMBOL}
-          </TableCell>
+          <TableCell>{DECISION_STATUS_E.OK_SYMBOL}</TableCell>
         ) : application.decided === 'X' ? (
           <TableCell> {DECISION_STATUS_E.NOT_OK_SYMBOL}</TableCell>
         ) : (
-          <TableCell className="mb-1 text-danger">
-            {DECISION_STATUS_E.UNKNOWN_SYMBOL}
-          </TableCell>
+          <TableCell>{DECISION_STATUS_E.UNKNOWN_SYMBOL}</TableCell>
         )}
         {isProgramSubmitted(application) ? (
-          <TableCell
-            className={`mb-1 ${
-              isProgramSubmitted(application) ? 'text-warning' : 'text-info'
-            }`}
-          >
-            {SUBMISSION_STATUS_E.OK_SYMBOL}
-          </TableCell>
+          <TableCell>{SUBMISSION_STATUS_E.OK_SYMBOL}</TableCell>
         ) : isProgramWithdraw(application) ? (
           <TableCell> {SUBMISSION_STATUS_E.NOT_OK_SYMBOL}</TableCell>
         ) : (
-          <TableCell className="mb-1 text-danger">
-            {SUBMISSION_STATUS_E.UNKNOWN_SYMBOL}
-          </TableCell>
+          <TableCell>{SUBMISSION_STATUS_E.UNKNOWN_SYMBOL}</TableCell>
         )}
         {application.admission === 'O' ? (
           <TableCell> {ADMISSION_STATUS_E.OK_SYMBOL}</TableCell>
         ) : application.admission === 'X' ? (
           <TableCell> {ADMISSION_STATUS_E.NOT_OK_SYMBOL}</TableCell>
         ) : (
-          <TableCell className="mb-1 text-danger">
-            {ADMISSION_STATUS_E.UNKNOWN_SYMBOL}
-          </TableCell>
+          <TableCell>{ADMISSION_STATUS_E.UNKNOWN_SYMBOL}</TableCell>
         )}
         <TableCell>
           {isProgramSubmitted(application)

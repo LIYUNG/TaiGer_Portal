@@ -58,7 +58,7 @@ const friend = (props) => {
               flex: 1
             }}
           >
-            <Typography variant="body1" color="text.primary">
+            <Typography variant="body1" fontWeight="bold" color="text.primary">
               {truncateText(
                 `${props.data.firstname} ${props.data.lastname} ${
                   props.data.firstname_chinese

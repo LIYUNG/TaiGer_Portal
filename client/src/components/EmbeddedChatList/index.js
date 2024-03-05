@@ -10,7 +10,7 @@ import {
   Search,
   SearchIconWrapper,
   StyledInputBase,
-  menuWidth
+  EmbeddedChatListWidth
 } from '../../Demo/Utils/contants';
 
 const EmbeddedChatList = (props) => {
@@ -21,7 +21,7 @@ const EmbeddedChatList = (props) => {
     success: false,
     searchMode: false,
     students: [],
-    isLoaded: true
+    isLoaded: false
   });
   useEffect(() => {
     getMyCommunicationThread().then(
@@ -146,7 +146,7 @@ const EmbeddedChatList = (props) => {
         <PerfectScrollbar>
           {[0, 1, 2, 3].map((x, i) => (
             <MenuItem key={i}>
-              <Skeleton variant="rectangular" width={menuWidth} height={40} />
+              <Skeleton variant="rectangular" width={EmbeddedChatListWidth} height={40} />
             </MenuItem>
           ))}
         </PerfectScrollbar>

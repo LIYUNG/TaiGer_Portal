@@ -356,8 +356,8 @@ function SingleProgramView(props) {
                       <TableHead>
                         <TableRow>
                           <TableCell>{t('Name')}</TableCell>
-                          <TableCell>{t('Year')}</TableCell>
-                          <TableCell>{t('Status')}</TableCell>
+                          <TableCell>{t('Agent')}</TableCell>
+                          <TableCell>{t('Editor')}</TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -385,12 +385,33 @@ function SingleProgramView(props) {
                                 </Link>
                               </TableCell>
                               <TableCell>
-                                {student.application_preference
-                                  ? student.application_preference
-                                      .expected_application_date
-                                  : '-'}
+                                {student.agents?.map((agent) => (
+                                  <Link
+                                    to={`${DEMO.TEAM_AGENT_LINK(
+                                      agent._id.toString()
+                                    )}`}
+                                    component={LinkDom}
+                                    key={agent._id}
+                                    sx={{ mr: 1 }}
+                                  >
+                                    {agent.firstname}
+                                  </Link>
+                                ))}
                               </TableCell>
-                              <TableCell>Open</TableCell>
+                              <TableCell>
+                                {student.editors?.map((editor) => (
+                                  <Link
+                                    to={`${DEMO.TEAM_EDITOR_LINK(
+                                      editor._id.toString()
+                                    )}`}
+                                    component={LinkDom}
+                                    key={editor._id}
+                                    sx={{ mr: 1 }}
+                                  >
+                                    {editor.firstname}
+                                  </Link>
+                                ))}
+                              </TableCell>
                             </TableRow>
                           ))}
                       </TableBody>

@@ -2,7 +2,12 @@ import React from 'react';
 import { Link as LinkDom } from 'react-router-dom';
 import { AiFillEdit } from 'react-icons/ai';
 
-import { getNumberOfDays } from '../../../Utils/contants';
+import {
+  ADMISSION_STATUS_E,
+  DECISION_STATUS_E,
+  SUBMISSION_STATUS_E,
+  getNumberOfDays
+} from '../../../Utils/contants';
 import {
   application_deadline_calculator,
   isProgramDecided,
@@ -241,12 +246,14 @@ function ApplicationProgress(props) {
               isProgramSubmitted(application) ? 'text-warning' : 'text-info'
             }`}
           >
-            O
+            {DECISION_STATUS_E.OK_SYMBOL}
           </TableCell>
         ) : application.decided === 'X' ? (
-          <TableCell>X</TableCell>
+          <TableCell> {DECISION_STATUS_E.NOT_OK_SYMBOL}</TableCell>
         ) : (
-          <TableCell className="mb-1 text-danger">?</TableCell>
+          <TableCell className="mb-1 text-danger">
+            {DECISION_STATUS_E.UNKNOWN_SYMBOL}
+          </TableCell>
         )}
         {isProgramSubmitted(application) ? (
           <TableCell
@@ -254,19 +261,23 @@ function ApplicationProgress(props) {
               isProgramSubmitted(application) ? 'text-warning' : 'text-info'
             }`}
           >
-            O
+            {SUBMISSION_STATUS_E.OK_SYMBOL}
           </TableCell>
         ) : isProgramWithdraw(application) ? (
-          <TableCell>X</TableCell>
+          <TableCell> {SUBMISSION_STATUS_E.NOT_OK_SYMBOL}</TableCell>
         ) : (
-          <TableCell className="mb-1 text-danger">?</TableCell>
+          <TableCell className="mb-1 text-danger">
+            {SUBMISSION_STATUS_E.UNKNOWN_SYMBOL}
+          </TableCell>
         )}
         {application.admission === 'O' ? (
-          <TableCell>O</TableCell>
+          <TableCell> {ADMISSION_STATUS_E.OK_SYMBOL}</TableCell>
         ) : application.admission === 'X' ? (
-          <TableCell>X</TableCell>
+          <TableCell> {ADMISSION_STATUS_E.NOT_OK_SYMBOL}</TableCell>
         ) : (
-          <TableCell className="mb-1 text-danger">?</TableCell>
+          <TableCell className="mb-1 text-danger">
+            {ADMISSION_STATUS_E.UNKNOWN_SYMBOL}
+          </TableCell>
         )}
         <TableCell>
           {isProgramSubmitted(application)

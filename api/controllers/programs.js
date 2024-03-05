@@ -73,9 +73,11 @@ const getProgram = asyncHandler(async (req, res) => {
               closed: 'O'
             }
           }
-        }).select(
-          'firstname lastname applications application_preference.expected_application_date'
-        );
+        })
+          .populate('agents editors', 'firstname')
+          .select(
+            'firstname lastname applications application_preference.expected_application_date'
+          );
 
         return res.send({ success: true, data: program, students });
       }
@@ -95,9 +97,11 @@ const getProgram = asyncHandler(async (req, res) => {
             decided: 'O'
           }
         }
-      }).select(
-        'firstname lastname applications application_preference.expected_application_date'
-      );
+      })
+        .populate('agents editors', 'firstname')
+        .select(
+          'firstname lastname applications application_preference.expected_application_date'
+        );
 
       res.send({ success: true, data: value, students });
     } else {
@@ -115,9 +119,11 @@ const getProgram = asyncHandler(async (req, res) => {
           decided: 'O'
         }
       }
-    }).select(
-      'firstname lastname applications application_preference.expected_application_date'
-    );
+    })
+      .populate('agents editors', 'firstname')
+      .select(
+        'firstname lastname applications application_preference.expected_application_date'
+      );
     const program = await Program.findById(req.params.programId);
     if (!program) {
       logger.error('getProgram: Invalid program id');

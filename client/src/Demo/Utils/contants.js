@@ -56,6 +56,30 @@ export const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 export const menuWidth = 350;
 
+export const DECISION_STATUS_E = {
+  OK_SYMBOL: <IoCheckmarkCircle size={18} color="limegreen" title="Decided" />,
+  NOT_OK_SYMBOL: <AiFillCloseCircle size={18} color="red" title="Decided No" />,
+  UNKNOWN_SYMBOL: (
+    <AiFillQuestionCircle size={18} color="lightgray" title="Not sure" />
+  )
+};
+export const SUBMISSION_STATUS_E = {
+  OK_SYMBOL: (
+    <IoCheckmarkCircle size={18} color="limegreen" title="Submitted" />
+  ),
+  NOT_OK_SYMBOL: <AiFillCloseCircle size={18} color="red" title="Withdraw" />,
+  UNKNOWN_SYMBOL: (
+    <AiFillQuestionCircle size={18} color="lightgray" title="In Progress" />
+  )
+};
+export const ADMISSION_STATUS_E = {
+  OK_SYMBOL: <IoCheckmarkCircle size={18} color="limegreen" title="Admitted" />,
+  NOT_OK_SYMBOL: <AiFillCloseCircle size={18} color="red" title="Rejected" />,
+  UNKNOWN_SYMBOL: (
+    <AiFillQuestionCircle size={18} color="lightgray" title="Pending" />
+  )
+};
+
 let FILE_OK_SYMBOL = (
   <IoCheckmarkCircle size={18} color="limegreen" title="Valid Document" />
 );

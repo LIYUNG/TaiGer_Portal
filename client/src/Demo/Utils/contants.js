@@ -822,7 +822,6 @@ export const program_fields_overview = [
   { name: 'Degree', prop: 'degree' },
   { name: 'Semester', prop: 'semester' },
   { name: 'Teaching Language', prop: 'lang' },
-  { name: 'GPA Requirement (German system)', prop: 'gpa_requirement' },
   { name: 'Website', prop: 'website' }
 ];
 
@@ -832,6 +831,7 @@ export const program_fields_application_dates = [
 ];
 
 export const program_fields_languages_test = [
+  { name: 'GPA Requirement (German system)', prop: 'gpa_requirement' },
   { name: 'TOEFL Requirement', prop: 'toefl' },
   { name: 'IELTS Requirement', prop: 'ielts' },
   { name: 'TestDaF Requirement', prop: 'testdaf' },
@@ -890,8 +890,7 @@ export const program_fields_special_notes = [
 
 export const program_fields_others = [
   { name: 'Tuition Fees', prop: 'tuition_fees' },
-  { name: 'FPSO', prop: 'fpso' },
-  { name: 'Country', prop: 'country' }
+  { name: 'FPSO', prop: 'fpso' }
 ];
 
 export const program_fields = [
@@ -1098,7 +1097,7 @@ export const COUNTRIES_ARRAY_OPTIONS = [
   { value: 'fi', label: 'Finland' },
   { value: 'fr', label: 'France' },
   { value: 'de', label: 'Germany' },
-  { value: 'eu', label: 'Europe' },
+  { value: 'eu', label: 'EU (Various Locations)' },
   { value: 'gr', label: 'Greece' },
   { value: 'hk', label: 'Hong Kong' },
   { value: 'hu', label: 'Hungary' },

@@ -189,6 +189,19 @@ function SingleProgramView(props) {
                     </Grid>
                   </Fragment>
                 ))}
+                <Grid item xs={12} md={4}>
+                  <Typography fontWeight="bold">{t(`Country`)}</Typography>
+                </Grid>
+                <Grid item xs={12} md={8}>
+                  <span>
+                    <img
+                      src={`/assets/logo/country_logo/svg/${props.program.country}.svg`}
+                      alt="Logo"
+                      style={{ maxWidth: '32px', maxHeight: '32px' }}
+                      title={COUNTRIES_MAPPING[props.program.country]}
+                    />
+                  </span>
+                </Grid>
                 {props.program.application_portal_a && (
                   <>
                     <Grid item xs={12} md={4}>

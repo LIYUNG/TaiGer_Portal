@@ -1098,6 +1098,7 @@ export const COUNTRIES_ARRAY_OPTIONS = [
   { value: 'fi', label: 'Finland' },
   { value: 'fr', label: 'France' },
   { value: 'de', label: 'Germany' },
+  { value: 'eu', label: 'Europe' },
   { value: 'gr', label: 'Greece' },
   { value: 'hk', label: 'Hong Kong' },
   { value: 'hu', label: 'Hungary' },

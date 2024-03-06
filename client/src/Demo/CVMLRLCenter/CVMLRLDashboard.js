@@ -204,7 +204,7 @@ function SortTable2({ columns, data, user }) {
                             component={LinkDom}
                           >
                             <Typography>
-                              <b>{`${editor.firstname} ${editor.lastname}`}</b>
+                              <b>{`${editor.firstname}`}</b>
                             </Typography>
                           </Link>
                         ))
@@ -485,8 +485,18 @@ function CVMLRLDashboard(props) {
           scrollButtons="auto"
           aria-label="basic tabs example"
         >
-          <Tab label="Open" {...a11yProps(0)} />
-          <Tab label="Closed" {...a11yProps(1)} />
+          <Tab
+            label={`In Progress (${cvmlrl_active_tasks?.length || 0})`}
+            {...a11yProps(0)}
+          />
+          <Tab
+            label={`No Input (${cvmlrl_idle_tasks?.length || 0})`}
+            {...a11yProps(1)}
+          />
+          <Tab
+            label={`Closed (${cvmlrl_closed_v2?.length || 0})`}
+            {...a11yProps(2)}
+          />
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
@@ -507,6 +517,8 @@ function CVMLRLDashboard(props) {
           user={user}
           data={cvmlrl_active_tasks}
         />
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={1}>
         <Banner
           ReadOnlyMode={true}
           bg={'info'}
@@ -523,7 +535,7 @@ function CVMLRLDashboard(props) {
           data={cvmlrl_idle_tasks}
         />
       </CustomTabPanel>
-      <CustomTabPanel value={value} index={1}>
+      <CustomTabPanel value={value} index={2}>
         <Banner
           ReadOnlyMode={true}
           bg={'success'}

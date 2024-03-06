@@ -17,6 +17,7 @@ import StorageIcon from '@mui/icons-material/Storage';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import ArticleIcon from '@mui/icons-material/Article';
 import BarChartIcon from '@mui/icons-material/BarChart';
+import Diversity3Icon from '@mui/icons-material/Diversity3';
 import EuroIcon from '@mui/icons-material/Euro';
 import VpnKeyIcon from '@mui/icons-material/VpnKey';
 import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
@@ -296,7 +297,7 @@ export const MenuSidebar = [
     id: 'my-students',
     title: 'My Students',
     type: 'collapse',
-    icon: 'feather icon-users',
+    icon: <PersonOutlineOutlinedIcon />,
     children: [
       {
         id: 'my-students-application-overview',
@@ -427,7 +428,7 @@ export const MenuSidebar = [
     id: 'all-students',
     title: 'All Students',
     type: 'collapse',
-    icon: 'feather icon-users',
+    icon: <GroupOutlinedIcon />,
     children: all_students_nestedList
   },
   {
@@ -435,7 +436,7 @@ export const MenuSidebar = [
     title: 'Tools',
     type: 'collapse',
     classes: 'nav-item',
-    icon: 'feather icon-codepen',
+    icon: <HelpOutlineIcon />,
     children: [
       {
         id: 'course-analyser',
@@ -453,7 +454,7 @@ export const MenuSidebar = [
     title: `${appConfig.companyName} Teams`,
     type: 'collapse',
     classes: 'nav-item',
-    icon: 'fa fa-coffee',
+    icon: <Diversity3Icon />,
     children: taiger_teams_items
   },
   {
@@ -469,7 +470,7 @@ export const MenuSidebar = [
     title: 'Docs Database',
     type: 'collapse',
     classes: 'nav-item',
-    icon: 'feather icon-codepen',
+    icon: <StorageIcon />,
     children: [
       {
         id: 'documents-creation',

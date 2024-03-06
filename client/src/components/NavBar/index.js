@@ -677,7 +677,7 @@ function NavBar(props) {
                       }));
                     }}
                   >
-                    <ListItemIcon>{/* <InboxIcon /> */}</ListItemIcon>
+                    <ListItemIcon>{menuItem.icon}</ListItemIcon>
                     <ListItemText primary={t(`${menuItem.title}`)} />
                     {menuItemOpen[menuItem.id] ? (
                       <ExpandLess />

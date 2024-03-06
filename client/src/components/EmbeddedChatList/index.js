@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import PerfectScrollbar from 'react-perfect-scrollbar';
 import SearchIcon from '@mui/icons-material/Search';
 import { MenuItem, Skeleton } from '@mui/material';
 
@@ -142,24 +141,23 @@ const EmbeddedChatList = (props) => {
           onChange={handleInputChange}
         />
       </Search>
-      {!chatListState.isLoaded && (
-        <PerfectScrollbar>
-          {[0, 1, 2, 3].map((x, i) => (
-            <MenuItem key={i}>
-              <Skeleton variant="rectangular" width={EmbeddedChatListWidth} height={40} />
-            </MenuItem>
-          ))}
-        </PerfectScrollbar>
-      )}
+      {!chatListState.isLoaded &&
+        [0, 1, 2, 3].map((i) => (
+          <MenuItem key={i}>
+            <Skeleton
+              variant="rectangular"
+              width={EmbeddedChatListWidth}
+              height={40}
+            />
+          </MenuItem>
+        ))}
       {chatListState.isLoaded && (
-        <PerfectScrollbar>
-          <Friends
-            user={user}
-            students={
-              chatListState.searchMode ? searchResults : chatListState.students
-            }
-          />
-        </PerfectScrollbar>
+        <Friends
+          user={user}
+          students={
+            chatListState.searchMode ? searchResults : chatListState.students
+          }
+        />
       )}
     </>
   );

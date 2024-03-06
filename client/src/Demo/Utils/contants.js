@@ -59,7 +59,7 @@ export const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export const menuWidth = 350;
-export const EmbeddedChatListWidth = 300;
+export const EmbeddedChatListWidth = 290;
 
 export const DECISION_STATUS_E = {
   OK_SYMBOL: (

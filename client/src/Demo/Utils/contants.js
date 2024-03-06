@@ -1596,11 +1596,6 @@ export const cvmlrl_overview_closed_header = [
     filter: 'fuzzyText'
   },
   {
-    Header: 'Action',
-    accessor: 'action',
-    filter: 'fuzzyText'
-  },
-  {
     Header: 'Status',
     accessor: 'status',
     filter: 'fuzzyText'
@@ -1624,11 +1619,6 @@ export const cvmlrl_overview_header = [
   {
     Header: 'First-, Last Name',
     accessor: 'firstname_lastname',
-    filter: 'fuzzyText'
-  },
-  {
-    Header: 'Action',
-    accessor: 'action',
     filter: 'fuzzyText'
   },
   {

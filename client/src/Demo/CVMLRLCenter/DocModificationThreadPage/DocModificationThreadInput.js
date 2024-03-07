@@ -75,13 +75,23 @@ const ProgressButton = ({
   );
 };
 
-const LastModifiedText = ({ updatedAt }) => {
+const LastModifiedText = ({ updatedAt, isFinalVersion }) => {
   return (
     <>
       {updatedAt ? (
-        <Typography variant="body2">
-          Last Modified: <strong>{convertDate(updatedAt)}</strong>
-        </Typography>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 1,
+            justifyContent: 'right'
+          }}
+        >
+          <Typography variant="body2" flexItem>
+            Last Modified: <strong>{convertDate(updatedAt)}</strong>
+          </Typography>
+          {isFinalVersion && <Chip color="info" size="medium" label="Final" />}
+        </Box>
       ) : (
         <Chip color="secondary" variant="outlined" size="small" label="New" />
       )}
@@ -102,7 +112,7 @@ const SurveyForm = ({
   const [editMode, setEditMode] = useState(
     !title || !showEditButton || !surveyInput?.updatedAt
   );
-  const [collapseOpen, setCollapseOpen] = useState(isCollapse);
+  const [collapseOpen, setCollapseOpen] = useState(isCollapse || !title);
 
   const handleTitleClick = (e) => {
     e.stopPropagation();
@@ -152,7 +162,10 @@ const SurveyForm = ({
                 </Grid>
               )}
               <Grid item sx={{ marginLeft: 'auto' }}>
-                <LastModifiedText updatedAt={surveyInput?.updatedAt} />
+                <LastModifiedText
+                  updatedAt={surveyInput?.updatedAt}
+                  isFinalVersion={surveyInput?.isFinalVersion}
+                />
               </Grid>
             </Grid>
           </Box>
@@ -162,7 +175,10 @@ const SurveyForm = ({
       )}
       {!title && (
         <Box sx={{ marginLeft: 'auto', textAlign: 'right' }}>
-          <LastModifiedText updatedAt={surveyInput?.updatedAt} />
+          <LastModifiedText
+            updatedAt={surveyInput?.updatedAt}
+            isFinalVersion={surveyInput?.isFinalVersion}
+          />
         </Box>
       )}
       <Collapse in={collapseOpen}>
@@ -187,7 +203,9 @@ const SurveyForm = ({
                   multiline
                   rows={type2rows[questionItem.type] || 3}
                   onChange={onChange}
-                  disabled={disableEdit || !editMode}
+                  disabled={
+                    surveyInput?.isFinalVersion || disableEdit || !editMode
+                  }
                 />
               </FormControl>
             </Grid>
@@ -335,16 +353,16 @@ function DocModificationThreadInput() {
       try {
         const threadResp = await getSurveyInputs(documentsthreadId);
         const { success, data: threadData, status } = threadResp.data;
-        const surveyInputs = threadData?.surveyInputs;
-        if (!surveyInputs?.general) {
-          surveyInputs.general = {
+        const surveyData = threadData?.surveyInputs || {};
+        if (!surveyData?.general) {
+          surveyData.general = {
             studentId: threadData.student_id._id,
             fileType: threadData.file_type,
             surveyContent: prepQuestions(threadData)
           };
         }
-        if (threadData?.program_id?._id && !surveyInputs?.specific) {
-          surveyInputs.specific = {
+        if (threadData?.program_id?._id && !surveyData?.specific) {
+          surveyData.specific = {
             studentId: threadData.student_id._id,
             programId: threadData.program_id._id,
             fileType: threadData.file_type,
@@ -355,10 +373,9 @@ function DocModificationThreadInput() {
         setIsLoaded(true);
         if (success) {
           setThread(threadData);
-          setSurveyInputs({ ...surveyInputs });
+          setSurveyInputs({ ...surveyData });
           setDocModificationThreadInputState((prevState) => ({
             ...prevState,
-            surveyInputs: surveyInputs,
             document_requirements: {},
             editorRequirements: {},
             res_status: status

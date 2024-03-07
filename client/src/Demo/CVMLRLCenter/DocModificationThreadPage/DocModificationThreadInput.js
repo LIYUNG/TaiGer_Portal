@@ -391,44 +391,28 @@ function DocModificationThreadInput() {
     const id = e.target.id;
     const answer = e.target.value;
     const survey = e.target.getAttribute('survey');
-    const surveyInput =
-      survey === 'general'
-        ? {
-            ...surveyInputs.general
-          }
-        : {
-            ...surveyInputs.specific
-          };
 
-    const questionItem = surveyInput.surveyContent.find(
-      (question) => question.questionId === id
-    );
+    setSurveyInputs((prevState) => {
+      const surveyInput =
+        survey === 'general'
+          ? {
+              ...prevState.general
+            }
+          : {
+              ...prevState.specific
+            };
 
-    questionItem['answer'] = answer;
+      const questionItem = surveyInput.surveyContent.find(
+        (question) => question.questionId === id
+      );
+      questionItem['answer'] = answer;
+      return prevState;
+    });
+
     setIsChanged((prevState) => ({
       ...prevState,
       [survey]: true
     }));
-    if (survey === 'general') {
-      setDocModificationThreadInputState((prevState) => ({
-        ...prevState,
-        surveyInputs: {
-          ...prevState.surveyInputs,
-          general: surveyInput
-        }
-      }));
-      return;
-    }
-    if (survey === 'program') {
-      setDocModificationThreadInputState((prevState) => ({
-        ...prevState,
-        surveyInputs: {
-          ...prevState.surveyInputs,
-          specific: surveyInput
-        }
-      }));
-      return;
-    }
   };
 
   const onChangeEditorRequirements = (e) => {
@@ -470,14 +454,18 @@ function DocModificationThreadInput() {
     return newSurvey;
   };
 
-  const submitInput = async (surveyInputs, informEditor) => {
+  const submitInput = async () => {
     try {
       let allStatus = {};
       if (isChanged?.general && surveyInputs?.general) {
+        const genIsFinalVersion = !thread?.program_id && isFinalVersion;
         const {
           status,
           data: { success, data }
-        } = await updateSurveyInput(surveyInputs.general, informEditor);
+        } = await updateSurveyInput(
+          { ...surveyInputs.general, isFinalVersion: genIsFinalVersion },
+          genIsFinalVersion
+        );
 
         allStatus['general'] = status;
         if (success) {
@@ -491,7 +479,10 @@ function DocModificationThreadInput() {
         const {
           status,
           data: { success, data }
-        } = await updateSurveyInput(surveyInputs.specific, informEditor);
+        } = await updateSurveyInput(
+          { ...surveyInputs.specific, isFinalVersion },
+          isFinalVersion
+        );
         allStatus['specific'] = status;
         if (success) {
           setSurveyInputs((prevState) => ({
@@ -698,6 +689,7 @@ function DocModificationThreadInput() {
                 surveyInput={surveyInputs.general}
                 surveyType="general"
                 disableEdit={isFinalVersion}
+                isCollapse={!surveyInputs?.general?.updatedAt}
                 onChange={onChange}
               ></SurveyForm>
             </Grid>

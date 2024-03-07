@@ -378,13 +378,13 @@ function SingleProgram() {
           program_id={program._id.toString()}
         />
         <ProgramListSubpage
-          userId={user._id.toString()}
           show={singleProgramState.modalShowAssignWindow}
           setModalHide={setModalHide}
           uni_name={[program.school]}
           program_name={[program.program_name]}
           handleSetStudentId={handleSetStudentId}
           isButtonDisable={singleProgramState.isAssigning}
+          studentId={singleProgramState.student_id}
           onSubmitAddToStudentProgramList={onSubmitAddToStudentProgramList}
         />
         <ModalNew

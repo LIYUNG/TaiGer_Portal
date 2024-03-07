@@ -220,7 +220,7 @@ function StudentsAgentEditor(props) {
                 {props.student.firstname_chinese}
               </Link>
             </Typography>
-            <span className="mb-0 text-secondary">{props.student.email}</span>
+            <Typography variant="body2">{props.student.email}</Typography>
             {is_TaiGer_role(user) &&
               props.student.attributes?.map((attribute) => (
                 <Chip

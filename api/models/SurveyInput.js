@@ -19,6 +19,7 @@ const surveyInputSchema = new mongoose.Schema({
   },
   surveyContent: [
     {
+      _id: false,
       questionId: String,
       question: String,
       answer: String,

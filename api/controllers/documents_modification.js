@@ -312,7 +312,9 @@ const getSurveyInputDocuments = async (studentId, programId, fileType) => {
       ...(fileType ? { fileType } : {}),
       ...(programId ? { programId: { $in: [programId, null] } } : {})
     })
-    .select('programId fileType surveyType surveyContent createdAt updatedAt')
+    .select(
+      'programId fileType surveyType surveyContent isFinalVersion createdAt updatedAt'
+    )
     .lean()
     .exec();
 

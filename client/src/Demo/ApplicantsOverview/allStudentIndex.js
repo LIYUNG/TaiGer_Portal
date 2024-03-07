@@ -6,11 +6,9 @@ import { useTranslation } from 'react-i18next';
 import ApplicationOverviewTabs from './ApplicationOverviewTabs';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
-import { useAuth } from '../../components/AuthProvider';
 import { appConfig } from '../../config';
 
 function AllApplicantsOverview() {
-  const { user } = useAuth();
   const { t } = useTranslation();
   const {
     data: { data: students }
@@ -33,7 +31,7 @@ function AllApplicantsOverview() {
           {t('All Students Applications Overview')}
         </Typography>
       </Breadcrumbs>
-      <ApplicationOverviewTabs user={user} students={students} />
+      <ApplicationOverviewTabs students={students} />
     </Box>
   );
 }

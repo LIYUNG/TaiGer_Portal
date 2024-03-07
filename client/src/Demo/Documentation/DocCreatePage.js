@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { Form } from 'react-bootstrap';
 import { Navigate, Link as LinkDom } from 'react-router-dom';
 import {
   Box,
   Breadcrumbs,
   Button,
   Card,
+  FormControl,
   Grid,
+  InputLabel,
   Link,
+  MenuItem,
+  Select,
+  TextField,
   Typography
 } from '@mui/material';
 
@@ -298,29 +302,36 @@ function DocCreatePage(props) {
       {DocCreatePageState.isEdit ? (
         <>
           <Card sx={{ mt: 2, p: 4 }}>
-            <Form.Group controlId="decided">
-              <Form.Control
-                as="select"
+            <FormControl fullWidth size="small">
+              <InputLabel id="select-target-group">
+                {t('Select Target Group')}
+              </InputLabel>
+              <Select
+                labelId="decided"
+                label="Select target group"
+                name="decided"
+                id="decided"
                 onChange={(e) => handleChange_category(e)}
               >
-                <option value={''}>Select Document Category</option>
+                <MenuItem value={''}>Select Document Category</MenuItem>
                 {valid_categories.map((cat, i) => (
-                  <option value={cat.key} key={i}>
+                  <MenuItem value={cat.key} key={i}>
                     {cat.value}
-                  </option>
+                  </MenuItem>
                 ))}
-                {/* <option value={'X'}>No</option>
-                            <option value={'O'}>Yes</option> */}
-              </Form.Control>
-            </Form.Group>
-            <Form.Group controlId="doc_title">
-              <Form.Control
-                type="text"
-                placeholder="title"
-                defaultValue={''}
-                onChange={(e) => handleChange_doc_title(e)}
-              />
-            </Form.Group>
+              </Select>
+            </FormControl>
+            <TextField
+              size="small"
+              id={'doc_title'}
+              label={'title'}
+              type="text"
+              placeholder="title"
+              defaultValue={''}
+              onChange={(e) => handleChange_doc_title(e)}
+              sx={{ mt: 1 }}
+            />
+
             <DocumentsListItemsEditor
               category={DocCreatePageState.category}
               doc_title={DocCreatePageState.doc_title}

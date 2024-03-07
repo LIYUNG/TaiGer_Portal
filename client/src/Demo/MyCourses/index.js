@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import DownloadIcon from '@mui/icons-material/Download';
-import { Form } from 'react-bootstrap';
 import {
   Box,
   Breadcrumbs,
   Button,
   Card,
+  Checkbox,
   CircularProgress,
   FormControl,
+  FormControlLabel,
   Grid,
   InputLabel,
   Link,
@@ -587,18 +588,16 @@ export default function MyCourses() {
       </Card>
       {is_TaiGer_AdminAgent(user) && (
         <Box sx={{ mt: 2 }}>
-          <Form>
-            <Form.Group>
-              <Form.Check
-                type="checkbox"
-                className="text-default"
-                label={`Lock Table 1 preventing student modifying it.`}
-                value={'is locked'}
+          <FormControlLabel
+            label={`Lock Table 1 preventing student modifying it.`}
+            control={
+              <Checkbox
                 checked={statedata.table_data_string_locked}
                 onChange={(e) => handleLockTable(e)}
+                value={'is locked'}
               />
-            </Form.Group>
-          </Form>
+            }
+          />
         </Box>
       )}
       <Typography variant="body2" sx={{ my: 2 }}>

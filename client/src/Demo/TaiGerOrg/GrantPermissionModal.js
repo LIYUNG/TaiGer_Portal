@@ -1,12 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { Form } from 'react-bootstrap';
+import React, { useState } from 'react';
 import {
   Button,
+  Checkbox,
+  FormControl,
+  FormControlLabel,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableRow,
+  TextField,
   Typography
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -16,19 +19,22 @@ import ModalNew from '../../components/Modal';
 function GrantPermissionModal(props) {
   const { t } = useTranslation();
   const [grantPermissionModalState, setGrantPermissionModalState] = useState({
-    permissions: [],
+    permissions:
+      props.user_permissions.length > 0
+        ? props.user_permissions[0]
+        : { canAssignEditors: false, canAssignAgents: false },
     changed: false
   });
-
-  useEffect(() => {
-    setGrantPermissionModalState((prevState) => ({
-      ...prevState,
-      permissions:
-        props.user_permissions.length > 0
-          ? props.user_permissions[0]
-          : { canAssignEditors: false, canAssignAgents: false }
-    }));
-  }, []);
+  console.log(grantPermissionModalState.permissions);
+  // useEffect(() => {
+  //   setGrantPermissionModalState((prevState) => ({
+  //     ...prevState,
+  //     permissions:
+  //       props.user_permissions.length > 0
+  //         ? props.user_permissions[0]
+  //         : { canAssignEditors: false, canAssignAgents: false }
+  //   }));
+  // }, []);
 
   const onChangePermissions = (e) => {
     const { value, checked } = e.target;
@@ -94,16 +100,21 @@ function GrantPermissionModal(props) {
             <TableRow key={i + 1}>
               <TableCell>{permission[1]}</TableCell>
               <TableCell>
-                <Form.Group>
-                  <Form.Check
-                    type="checkbox"
-                    checked={
-                      grantPermissionModalState.permissions[permission[0]]
+                <FormControl>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        type="checkbox"
+                        checked={
+                          grantPermissionModalState.permissions[permission[0]]
+                        }
+                        onChange={(e) => onChangePermissions(e)}
+                        value={permission[0]}
+                        sx={{ '& .MuiSvgIcon-root': { fontSize: '1.5rem' } }}
+                      />
                     }
-                    onChange={(e) => onChangePermissions(e)}
-                    value={permission[0]}
                   />
-                </Form.Group>
+                </FormControl>
               </TableCell>
             </TableRow>
           ))}
@@ -111,17 +122,18 @@ function GrantPermissionModal(props) {
             <TableRow key={j + 1000}>
               <TableCell>{permission_quota[1]}</TableCell>
               <TableCell>
-                <Form.Group>
-                  <Form.Control
-                    type="number"
-                    placeholder="1000"
-                    id={permission_quota[0]}
-                    value={
-                      grantPermissionModalState.permissions[permission_quota[0]]
-                    }
-                    onChange={(e) => onChangePermissions_Quota(e)}
-                  />
-                </Form.Group>
+                <TextField
+                  fullWidth
+                  placeholder="1000"
+                  id={permission_quota[0]}
+                  name={permission_quota[0]}
+                  label="Quota"
+                  type="number"
+                  value={
+                    grantPermissionModalState.permissions[permission_quota[0]]
+                  }
+                  onChange={(e) => onChangePermissions_Quota(e)}
+                />
               </TableCell>
             </TableRow>
           ))}

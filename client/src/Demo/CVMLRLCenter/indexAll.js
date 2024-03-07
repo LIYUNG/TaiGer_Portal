@@ -36,6 +36,7 @@ function indexAll() {
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
+        // console.log('cvmlrl dashboard students:', data)
         if (success) {
           setIndexAllState((prevState) => ({
             ...prevState,
@@ -62,7 +63,7 @@ function indexAll() {
       }
     );
   }, []);
-
+  // console.log('test in dashboard cvmlrl')
   if (!is_TaiGer_role(user)) {
     return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
   }

@@ -139,7 +139,7 @@ router
     postMessagesRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Editor),
     multitenant_filter,
-    permission_canAssignEditor_filter,
+    // permission_canAssignEditor_filter,
     assignEssayWritersToEssayTask,
     logAccess
   );

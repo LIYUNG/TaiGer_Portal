@@ -1411,9 +1411,11 @@ export const open_tasks = (students) => {
 export const open_tasks_with_editors = (students) => {
   const tasks = [];
   for (const student of students) {
+    // console.log('student in open_task_with_editors', student)
     if (student.archiv !== true) {
       const { CVDeadline, daysLeftMin } = GetCVDeadline(student);
       for (const thread of student.generaldocs_threads) {
+        // console.log('thread:', thread)
         tasks.push({
           firstname_lastname: `${student.firstname}, ${student.lastname}`,
           latest_message_left_by_id: thread.latest_message_left_by_id,

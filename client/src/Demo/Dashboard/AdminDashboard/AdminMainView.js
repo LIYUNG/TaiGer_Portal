@@ -18,6 +18,7 @@ import StudentsAgentEditorWrapper from '../MainViewTab/StudentsAgentEditor/Stude
 
 function AdminMainView(props) {
   const { t } = useTranslation();
+  // console.log('students in adminMainView:', props.students)
   const admin_tasks = <AdminTasks students={props.students} essayDocumentThreads={props.essayDocumentThreads}/>;
 
   return (

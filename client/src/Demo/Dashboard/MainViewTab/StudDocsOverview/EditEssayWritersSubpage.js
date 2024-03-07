@@ -20,14 +20,14 @@ function EditEssayWritersSubpage(props) {
   const [isLoaded, setIsLoaded] = useState(false);
   const { t } = useTranslation();
 
-  console.log("essayDocumentThread in subpage:", props.essayDocumentThread)//undefined
+  // console.log("essayDocumentThread in subpage:", props.essayDocumentThread)//undefined
   useEffect(() => {
     // Initialize the state with checked checkboxes based on the student's editors
     getEssayWriters().then(
       (resp) => {
         // TODO: check success
         const { data, success } = resp.data;
-        console.log("if success:", success)
+        // console.log("if success:", success)
         if (success) {
           const editors = data; //need to change to get all essay writers
           const { outsourced_user_id: student_essay_writers } = props.essayDocumentThread;

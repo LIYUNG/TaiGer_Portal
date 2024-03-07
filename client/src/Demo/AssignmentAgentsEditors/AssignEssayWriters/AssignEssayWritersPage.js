@@ -20,10 +20,12 @@ import DEMO from '../../../store/constant';
 
 function AssignEssayWritersPage(props) { //props = combinedLoader
   const { t } = useTranslation();
+  // console.log('essaythread in assign page:', props.essayDocumentThreads)
+  // console.log("student in assign page:", props.students)
   const no_writer_essays = props.essayDocumentThreads.map((essayDocumentThread, i) => (
     <NoWritersEssaysCard
       key={i}
-      // student={student}
+      students={props.students}
       submitUpdateEditorlist={props.submitUpdateEditorlist}
       essayDocumentThread={essayDocumentThread}
     />

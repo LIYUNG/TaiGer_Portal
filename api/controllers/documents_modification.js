@@ -621,6 +621,7 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
       )
       .lean()
       .exec();
+      // console.log('student:', student)
     res.status(200).send({ success: true, data: [student] });
   } else {
     // Guest
@@ -1846,7 +1847,7 @@ const assignEssayWritersToEssayTask = asyncHandler(async (req, res, next) => {
     params: { messagesThreadId },
     body: editorsId
   } = req;
-
+  console.log('message in controller:', messagesThreadId)
   const keys = Object.keys(editorsId);
   const essayDocumentThreads = await Documentthread.find({
         _id: messagesThreadId,
@@ -1963,8 +1964,46 @@ const assignEssayWritersToEssayTask = asyncHandler(async (req, res, next) => {
 });
 
 const getAllEssays = asyncHandler(async (req, res, next) => {
+  const documentthread_idList = [
+    '645c117f7a60fbae9b99dac1',
+    '645c11527a60fbae9b99da9e',
+    '645c20ab0adb82f113b25bc3',
+    '64502555667fd91451277573',
+    '645c223e9d1f88b4acb90bd9',
+    '645c117f7a60fbae9b99dac1',
+    '645c11527a60fbae9b99da9e',
+    '645c20ab0adb82f113b25bc3',
+    '64502555667fd91451277573',
+    '645c223e9d1f88b4acb90bd9',
+    '645c117f7a60fbae9b99dac1',
+    '645c11527a60fbae9b99da9e',
+    '645c20ab0adb82f113b25bc3',
+    '645c117f7a60fbae9b99dac1',
+    '645c11527a60fbae9b99da9e',
+    '645c20ab0adb82f113b25bc3',
+    '64502555667fd91451277573',
+    '645c223e9d1f88b4acb90bd9',
+    '646686dd9e442b2df29cd0c9',
+    '63fa0c391302260c572bbbeb',
+    '63ffdb051302260c572bead9',
+    '645eaa7bf099af9f85a76469',
+    '63c554db2f294a90f28a82a9',
+    '63ffdad31302260c572bea8d',
+    '645c117f7a60fbae9b99dac1',
+    '645c11527a60fbae9b99da9e',
+    '645c20ab0adb82f113b25bc3',
+    '64502555667fd91451277573',
+    '645c223e9d1f88b4acb90bd9',
+    '646686dd9e442b2df29cd0c9',
+    '63fa0c391302260c572bbbeb',
+    '63ffdb051302260c572bead9',
+    '645eaa7bf099af9f85a76469',
+    '63c554db2f294a90f28a82a9',
+    '63ffdad31302260c572bea8d'
+]
   const essayDocumentThreads = await Documentthread.find({
-    file_type: 'Essay'
+    file_type: 'Essay',
+    _id: { $nin: documentthread_idList }
   })
   res.status(200).send({ success: true, data: essayDocumentThreads });
   next();

@@ -2,26 +2,21 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Button,
-  // Link,
+  Link,
   Menu,
   MenuItem,
   TableCell,
   TableRow,
-  // Typography
+  Typography
 } from '@mui/material';
-// import { Link as LinkDom } from 'react-router-dom';
+import { Link as LinkDom } from 'react-router-dom';
 
 import EditEssayWritersSubpage from '../StudDocsOverview/EditEssayWritersSubpage';
 import { is_TaiGer_role } from '../../../Utils/checking-functions';
-// import DEMO from '../../../../store/constant';
+import DEMO from '../../../../store/constant';
 import { useAuth } from '../../../../components/AuthProvider';
 
 function NoWritersEssaysCard(props) {
-  // <NoWritersEssaysCard
-  //     key={i}
-  //     essays={essays}
-  //     submitUpdateEditorlist={props.submitUpdateEditorlist}
-  //   />
   const { user } = useAuth();
   const [noEditorsStudentsCardState, setNoEditorsStudentsCardState] = useState({
     showEditorPage: false
@@ -58,12 +53,25 @@ function NoWritersEssaysCard(props) {
     props.submitUpdateEditorlist(e, updateEditorList, essayDocumentThread_id);
   };
 
-  // console.log('outsource:', props.essayDocumentThread_id.outsourced_user_id)
-  console.log('essayDocumentThread in noWriterEssaysCard', props.essayDocumentThread)
+  const findStudentsWithDocumentthread = (students, essayDocumentThread) => {
+    const studentsWithDocumentthread = students.filter(student => {
+      return student._id.toString() === essayDocumentThread.student_id.toString();
+    });
+    if (studentsWithDocumentthread[0] === undefined){
+      // console.log("essayDocumentThread:", essayDocumentThread._id)
+      // console.log(studentsWithDocumentthread[0])
+      return null;
+    } else {
+      return studentsWithDocumentthread[0];
+    }
+  };
+  const student = findStudentsWithDocumentthread(props.students, props.essayDocumentThread)
   if (
     props.essayDocumentThread.outsourced_user_id === undefined ||
-    props.essayDocumentThread.outsourced_user_id.length === 0
+    props.essayDocumentThread.outsourced_user_id.length === 0 ||
+    (student !== null)
   ) {
+    // console.log("studnet inside filter", student)
     return (
       <>
         <TableRow>
@@ -95,43 +103,43 @@ function NoWritersEssaysCard(props) {
               </Menu>
             </TableCell>
           )}
-          {/* <TableCell>
+          <TableCell>
             <Link
               component={LinkDom}
               to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-                props.student._id.toString(),
+                student?._id.toString(),
                 DEMO.PROFILE
               )}`}
             >
-              {props.student.firstname}, {props.student.lastname}
+              {student?.firstname}, {student.lastname}
             </Link>
           </TableCell>
-          <TableCell>{props.student.email}</TableCell>
+          <TableCell>{student?.email}</TableCell>
           <TableCell>
-            {props.student.needEditor ? (
+            {student?.needEditor ? (
               <Typography fontWeight="bold">Ready to Assign</Typography>
             ) : (
               '-'
             )}
           </TableCell>
           <TableCell>
-            {props.student.application_preference.expected_application_date || (
+            {student?.application_preference.expected_application_date || (
               <Typography>TBD</Typography>
             )}
           </TableCell>
           <TableCell>
-            {!props.student.agents || props.student.agents.length === 0 ? (
+            {!student?.agents || student?.agents.length === 0 ? (
               <Typography fontWeight="bold">No Agent</Typography>
             ) : (
-              props.student.agents.map((agent, i) => (
+              student?.agents.map((agent, i) => (
                 <Typography key={i}>{`${agent.firstname}`}</Typography>
               ))
             )}
-          </TableCell> */}
+          </TableCell>
         </TableRow>
         {is_TaiGer_role(user) && noEditorsStudentsCardState.showEditorPage && (
           <EditEssayWritersSubpage
-            // student={props.student}
+            student={student}
             show={noEditorsStudentsCardState.showEditorPage}
             onHide={setEditorModalhide}
             setmodalhide={setEditorModalhide}

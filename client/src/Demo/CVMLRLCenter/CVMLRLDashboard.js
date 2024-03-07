@@ -267,6 +267,7 @@ CustomTabPanel.propTypes = {
 };
 
 function CVMLRLDashboard(props) {
+  // console.log('students in CVMLRLDashboard:', props.students)
   const { user } = useAuth();
   const { t } = useTranslation();
   const [cVMLRLDashboardState, setCVMLRLDashboardState] = useState({
@@ -429,7 +430,7 @@ function CVMLRLDashboard(props) {
   if (!isLoaded && !cVMLRLDashboardState.students) {
     return <Loading />;
   }
-
+  // console.log('cVMLRLDashboardState.students in CVMLRLDashboard', cVMLRLDashboardState.students)
   const open_tasks_arr = open_tasks_with_editors(cVMLRLDashboardState.students);
   const open_tasks_arr2 = open_tasks(cVMLRLDashboardState.students);
 

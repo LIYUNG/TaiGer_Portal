@@ -16,6 +16,7 @@ function AssignEssayWriters() {
     students: { data: students },
     essays: { data: essayDocumentThreads}
   } = useLoaderData();
+  // console.log("students in fun assignEssayWriter", students)
   const [assignEditorsState, setAssignEditorsState] = useState({
     error: '',
     editor_list: [],
@@ -42,6 +43,7 @@ function AssignEssayWriters() {
         const { status } = resp;
         // console.log('data:', data)// return student object
         if (success) {
+          console.log('success in index')
           var essays_temp = [...assignEditorsState.essayDocumentThreads];
           var essayIdx = essays_temp.findIndex(
             ({ _id }) => _id === essayDocumentThread_id
@@ -66,6 +68,7 @@ function AssignEssayWriters() {
         }
       },
       (error) => {
+        console.log('error in index')
         setAssignEditorsState((prevState) => ({
           ...prevState,
           isLoaded: true,
@@ -100,7 +103,7 @@ function AssignEssayWriters() {
         />
       )}
       <AssignEssayWritersPage
-        // students={assignEditorsState.students}
+        students={assignEditorsState.students}
         updateEditorList={assignEditorsState.updateEditorList}
         submitUpdateEditorlist={submitUpdateEditorlist}
         essayDocumentThreads={assignEditorsState.essayDocumentThreads}

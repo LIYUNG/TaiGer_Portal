@@ -596,7 +596,7 @@ function EditorDocsProgress(props) {
               <AiOutlineLink />
             </Link>
           </Grid>
-          <Grid item sx={2} md={2}>
+          <Grid item xs={2} md={2}>
             <Typography>
               Deadline:{' '}
               {application_deadline_calculator(

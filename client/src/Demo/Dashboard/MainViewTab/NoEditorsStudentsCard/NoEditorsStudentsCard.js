@@ -93,7 +93,7 @@ function NoEditorsStudentsCard(props) {
               component={LinkDom}
               to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                 props.student._id.toString(),
-                DEMO.PROFILE
+                DEMO.PROFILE_HASH
               )}`}
             >
               {props.student.firstname}, {props.student.lastname}

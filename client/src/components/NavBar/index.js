@@ -677,7 +677,7 @@ function NavBar(props) {
                       }));
                     }}
                   >
-                    <ListItemIcon>{/* <InboxIcon /> */}</ListItemIcon>
+                    <ListItemIcon>{menuItem.icon}</ListItemIcon>
                     <ListItemText primary={t(`${menuItem.title}`)} />
                     {menuItemOpen[menuItem.id] ? (
                       <ExpandLess />
@@ -726,6 +726,9 @@ function NavBar(props) {
             )}
           </List>
           <Divider />
+          <div style={{ position: 'relative', bottom: 0, width: '100%' }}>
+            <Footer />
+          </div>
         </Drawer>
         <Main open={open} ismobile={ismobile.toString()}>
           <DrawerHeader />
@@ -735,7 +738,6 @@ function NavBar(props) {
           <RenderMenu />
         </Main>
       </Box>
-      <Footer />
     </>
   );
 }

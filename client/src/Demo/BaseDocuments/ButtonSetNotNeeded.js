@@ -178,22 +178,6 @@ function ButtonSetNotNeeded(props) {
                   }
                 />
               </Button>
-              // <Form.Group controlId={`${props.k}`}>
-              //   <Form.Label>
-              //     <IoMdCloudUpload color={'white'} size={32} />
-              //   </Form.Label>
-              //   <Form.Control
-              //     hidden
-              //     type="file"
-              //     onChange={(e) =>
-              //       handleGeneralDocSubmit(
-              //         e,
-              //         props.k,
-              //         buttonSetNotNeededState.student_id
-              //       )
-              //     }
-              //   />
-              // </Form.Group>
             )}
           </TableCell>
         </>

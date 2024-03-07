@@ -424,12 +424,12 @@ function DocModificationThreadPage() {
   }
   let widths = [];
   if (docModificationThreadPageState.thread.file_type === 'CV') {
-    widths = [9, 2, 1];
+    widths = [8, 2, 2];
   } else {
     if (is_TaiGer_Student(user)) {
       widths = [10, 2];
     } else {
-      widths = [9, 2, 1];
+      widths = [8, 2, 2];
     }
   }
 
@@ -477,7 +477,7 @@ function DocModificationThreadPage() {
             component={LinkDom}
             to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
               docModificationThreadPageState.thread.student_id._id.toString(),
-              DEMO.PROFILE
+              DEMO.PROFILE_HASH
             )}`}
           >
             {student_name}
@@ -744,7 +744,7 @@ function DocModificationThreadPage() {
             </Typography>
           </Grid>
           {docModificationThreadPageState.thread.file_type === 'CV' ? (
-            <Grid md={widths[2]}>
+            <Grid item md={widths[2]}>
               <h6>
                 <b>Profile photo:</b>
                 <img
@@ -763,7 +763,7 @@ function DocModificationThreadPage() {
             </Grid>
           ) : (
             !is_TaiGer_Student(user) && (
-              <Grid md={widths[2]}>
+              <Grid item md={widths[2]}>
                 <Typography variant="body1">{t('Conflict')}:</Typography>
                 {conflict_list.length === 0
                   ? 'None'
@@ -772,7 +772,7 @@ function DocModificationThreadPage() {
                         <LinkDom
                           to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                             conflict_student._id.toString(),
-                            '/CV_ML_RL'
+                            DEMO.CVMLRL_HASH
                           )}`}
                         >
                           <b>

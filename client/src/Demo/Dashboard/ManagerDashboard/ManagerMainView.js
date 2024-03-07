@@ -158,7 +158,7 @@ function ManagerMainView(props) {
                   <Link
                     to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                       student.student_id,
-                      DEMO.PROFILE
+                      DEMO.PROFILE_HASH
                     )}`}
                     style={{ textDecoration: 'none' }}
                     className="text-info"
@@ -203,7 +203,7 @@ function ManagerMainView(props) {
                             <Link
                               to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                                 application.student_id,
-                                DEMO.PROFILE
+                                DEMO.PROFILE_HASH
                               )}`}
                             >
                               {application.firstname_lastname}

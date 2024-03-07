@@ -6,7 +6,9 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
-  Box
+  Box,
+  useTheme,
+  useMediaQuery
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { RiCloseFill } from 'react-icons/ri';
@@ -29,7 +31,8 @@ function Message(props) {
     isLoaded: false,
     deleteMessageModalShow: false
   });
-
+  const theme = useTheme();
+  const ismobile = useMediaQuery(theme.breakpoints.down('md'));
   useEffect(() => {
     var initialEditorState = null;
     if (props.message.message && props.message.message !== '{}') {
@@ -98,7 +101,8 @@ function Message(props) {
         disableGutters
         sx={{
           overflowWrap: 'break-word', // Add this line
-          maxWidth: window.innerWidth - 64,
+          ...(props.isTaiGerView &&
+            !ismobile && { maxWidth: window.innerWidth - 664 }),
           marginTop: '1px',
           '& .MuiAvatar-root': {
             width: 32,
@@ -154,14 +158,16 @@ function Message(props) {
           </Box>
         </AccordionSummary>
         <AccordionDetails>
-          <EditorSimple
-            holder={`${props.message._id.toString()}`}
-            readOnly={true}
-            imageEnable={false}
-            handleClickSave={props.handleClickSave}
-            editorState={messageState.editorState}
-            defaultHeight={0}
-          />
+          <Box>
+            <EditorSimple
+              holder={`${props.message._id.toString()}`}
+              readOnly={true}
+              imageEnable={false}
+              handleClickSave={props.handleClickSave}
+              editorState={messageState.editorState}
+              defaultHeight={0}
+            />
+          </Box>
         </AccordionDetails>
       </Accordion>
       {/* TODOL consider to move it to the parent! It render many time! as message increase */}

@@ -479,7 +479,7 @@ export default function MyCourses() {
             component={LinkDom}
             to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
               statedata.student._id.toString(),
-              '/profile'
+              DEMO.PROFILE_HASH
             )}`}
           >
             {statedata.student.firstname} {statedata.student.lastname}

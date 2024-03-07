@@ -488,13 +488,12 @@ function ProgramList(props) {
           ) : (
             <ProgramListSubpage
               show={tableStates.modalShowAssignWindow}
-              assignProgram={assignProgram}
               setModalHide={setModalHide}
               uni_name={programs.schools}
               program_name={programs.program_names}
               handleSetStudentId={handleSetStudentId}
-              isAssigning={tableStates.isAssigning}
               isButtonDisable={tableStates.isButtonDisable}
+              studentId={studentId}
               onSubmitAddToStudentProgramList={onSubmitAddToStudentProgramList}
             />
           )}

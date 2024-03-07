@@ -4,7 +4,7 @@ import { Navigate, Link as LinkDom, useLoaderData } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import ApplicationOverviewTabs from './ApplicationOverviewTabs';
-import { is_TaiGer_role } from '../Utils/checking-functions';
+import { is_TaiGer_Student, is_TaiGer_role } from '../Utils/checking-functions';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
@@ -53,21 +53,22 @@ function ApplicantsOverview() {
     );
   };
 
-  if (
-    user.role !== 'Admin' &&
-    user.role !== 'Editor' &&
-    user.role !== 'Agent' &&
-    user.role !== 'Student'
-  ) {
-    return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
-  }
-  if (user.role === 'Student') {
+  if (is_TaiGer_Student(user)) {
     return (
       <Navigate
         to={`${DEMO.STUDENT_APPLICATIONS_LINK}/${user._id.toString()}`}
       />
     );
   }
+  if (!is_TaiGer_role(user)) {
+    return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
+  }
+
+  const myStudents = applicantsOverviewState.students.filter(
+    (student) =>
+      student.editors.some((editor) => editor._id === user._id.toString()) ||
+      student.agents.some((agent) => agent._id === user._id.toString())
+  );
   TabTitle('Applications Overview');
 
   return (
@@ -88,15 +89,8 @@ function ApplicantsOverview() {
         </Typography>
       </Breadcrumbs>
       <ApplicationOverviewTabs
-        user={user}
         updateStudentArchivStatus={updateStudentArchivStatus}
-        students={applicantsOverviewState.students.filter(
-          (student) =>
-            student.editors.some(
-              (editor) => editor._id === user._id.toString()
-            ) ||
-            student.agents.some((agent) => agent._id === user._id.toString())
-        )}
+        students={myStudents}
       />
     </Box>
   );

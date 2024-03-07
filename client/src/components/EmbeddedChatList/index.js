@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import PerfectScrollbar from 'react-perfect-scrollbar';
 import SearchIcon from '@mui/icons-material/Search';
-import { Box, ListItem, MenuItem, Skeleton, Typography } from '@mui/material';
+import { MenuItem, Skeleton } from '@mui/material';
 
 import Friends from './Friends';
 import { getMyCommunicationThread, getQueryStudentResults } from '../../api';
@@ -10,31 +9,26 @@ import {
   Search,
   SearchIconWrapper,
   StyledInputBase,
-  menuWidth
+  EmbeddedChatListWidth
 } from '../../Demo/Utils/contants';
 
-const ChatList = (props) => {
+const EmbeddedChatList = (props) => {
   const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
-  const [chatListState, setChatListState] = useState({
+  const [chatListState, setEmbeddedChatListState] = useState({
     success: false,
     searchMode: false,
     students: [],
-    isLoaded: true
+    isLoaded: false
   });
-
   useEffect(() => {
-    setChatListState((prevState) => ({
-      ...prevState,
-      isLoaded: false
-    }));
     getMyCommunicationThread().then(
       (resp) => {
         const { success, data } = resp.data;
         const { status } = resp;
         if (success) {
-          setChatListState((prevState) => ({
+          setEmbeddedChatListState((prevState) => ({
             ...prevState,
             success,
             students: data.students,
@@ -42,7 +36,7 @@ const ChatList = (props) => {
             res_status: status
           }));
         } else {
-          setChatListState((prevState) => ({
+          setEmbeddedChatListState((prevState) => ({
             ...prevState,
             isLoaded: true,
             res_status: status
@@ -50,7 +44,7 @@ const ChatList = (props) => {
         }
       },
       (error) => {
-        setChatListState((prevState) => ({
+        setEmbeddedChatListState((prevState) => ({
           ...prevState,
           isLoaded: true,
           error,
@@ -58,11 +52,11 @@ const ChatList = (props) => {
         }));
       }
     );
-  }, []);
+  }, [props.count]);
 
   useEffect(() => {
     if (chatListState.searchMode) {
-      setChatListState((prevState) => ({
+      setEmbeddedChatListState((prevState) => ({
         ...prevState,
         isLoaded: false
       }));
@@ -71,7 +65,7 @@ const ChatList = (props) => {
           fetchSearchResults();
         } else {
           setSearchResults([]);
-          setChatListState((prevState) => ({
+          setEmbeddedChatListState((prevState) => ({
             ...prevState,
             isLoaded: true
           }));
@@ -88,14 +82,14 @@ const ChatList = (props) => {
       const response = await getQueryStudentResults(searchTerm);
       if (response.data.success) {
         setSearchResults(response.data?.data?.students);
-        setChatListState((prevState) => ({
+        setEmbeddedChatListState((prevState) => ({
           ...prevState,
           isLoaded: true
         }));
       } else {
         setSearchTerm('');
         setSearchResults([]);
-        setChatListState((prevState) => ({
+        setEmbeddedChatListState((prevState) => ({
           ...prevState,
           res_modal_status: 401,
           res_modal_message: 'Session expired. Please refresh.',
@@ -105,7 +99,7 @@ const ChatList = (props) => {
     } catch (error) {
       setSearchTerm('');
       setSearchResults([]);
-      setChatListState((prevState) => ({
+      setEmbeddedChatListState((prevState) => ({
         ...prevState,
         isLoaded: true,
         res_modal_status: 403,
@@ -117,14 +111,14 @@ const ChatList = (props) => {
   const handleInputChange = (e) => {
     if (e.target.value !== '') {
       setSearchTerm(e.target.value);
-      setChatListState((prevState) => ({
+      setEmbeddedChatListState((prevState) => ({
         ...prevState,
         searchMode: true,
         isLoaded: false
       }));
     } else {
       setSearchTerm('');
-      setChatListState((prevState) => ({
+      setEmbeddedChatListState((prevState) => ({
         ...prevState,
         searchMode: false,
         isLoaded: true
@@ -134,13 +128,6 @@ const ChatList = (props) => {
 
   return (
     <>
-      <ListItem onClick={(e) => e.stopPropagation()}>
-        <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Box>
-            <Typography variant="h6">Chat</Typography>
-          </Box>
-        </Box>
-      </ListItem>
       <Search>
         <SearchIconWrapper>
           <SearchIcon />
@@ -154,28 +141,32 @@ const ChatList = (props) => {
           onChange={handleInputChange}
         />
       </Search>
-      {!chatListState.isLoaded && (
-        <PerfectScrollbar>
-          {[0, 1, 2, 3].map((x, i) => (
-            <MenuItem key={i}>
-              <Skeleton variant="rectangular" width={menuWidth} height={40} />
-            </MenuItem>
-          ))}
-        </PerfectScrollbar>
-      )}
+      {!chatListState.isLoaded &&
+        [0, 1, 2, 3, 4, 5, 6].map((i) => (
+          <MenuItem key={i}>
+            <Skeleton variant="circular" width={40} height={40} />
+            <Skeleton
+              variant="rectangular"
+              width={EmbeddedChatListWidth - 50}
+              height={54}
+              style={{
+                marginLeft: '10px'
+              }}
+            />
+          </MenuItem>
+        ))}
       {chatListState.isLoaded && (
-        <PerfectScrollbar>
-          <Friends
-            handleCloseChat={props.handleCloseChat}
-            user={user}
-            students={
-              chatListState.searchMode ? searchResults : chatListState.students
-            }
-          />
-        </PerfectScrollbar>
+        <Friends
+          user={user}
+          students={
+            chatListState.searchMode ? searchResults : chatListState.students
+          }
+        />
       )}
     </>
   );
 };
 
-export default ChatList;
+const MemoizedEmbeddedChatList = React.memo(EmbeddedChatList);
+
+export default MemoizedEmbeddedChatList;

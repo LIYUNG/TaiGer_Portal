@@ -173,7 +173,7 @@ function InterviewItems(props) {
                 underline="hover"
                 to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                   interview.student_id._id.toString(),
-                  DEMO.PROFILE
+                  DEMO.PROFILE_HASH
                 )}`}
                 component={LinkDom}
               >

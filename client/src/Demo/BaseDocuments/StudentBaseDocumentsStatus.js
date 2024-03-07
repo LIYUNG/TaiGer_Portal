@@ -48,7 +48,7 @@ function StudentBaseDocumentsStatus(props) {
 
   const student_profile_path = `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
     props.student._id,
-    '/profile'
+    DEMO.PROFILE_HASH
   )}`;
   var file_information;
   for (var i = 0; i < profile_list_keys.length; i++) {
@@ -80,17 +80,15 @@ function StudentBaseDocumentsStatus(props) {
     } else if (object_init[k] === DocumentStatus.Accepted) {
       return (
         <TableCell key={i}>
-          <Link
-            to={student_profile_path}
-            style={{ textDecoration: 'none' }}
-            className="text-info"
-          >
-            <IoCheckmarkCircle
-              size={24}
-              color="limegreen"
-              title="Valid Document"
-            />
-          </Link>
+          <IoCheckmarkCircle
+            size={24}
+            color="limegreen"
+            title="Valid Document"
+            style={{ textDecoration: 'none', cursor: 'pointer' }}
+            onClick={() => {
+              console.log(object_init[k]);
+            }}
+          />
         </TableCell>
       );
     } else if (object_init[k] === DocumentStatus.Rejected) {

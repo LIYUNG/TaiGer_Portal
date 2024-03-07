@@ -1,39 +1,30 @@
 import React from 'react';
+import { Link as LinkDom, useParams } from 'react-router-dom';
 import {
   Avatar,
   Box,
-  Divider,
-  Grid,
-  MenuItem,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
   Typography,
   useTheme
 } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
-import { RxDotFilled } from 'react-icons/rx';
 
 import {
   convertDate_ux_friendly,
-  menuWidth,
   stringAvatar
 } from '../../../../Demo/Utils/contants';
 import DEMO from '../../../../store/constant';
 import { truncateText } from '../../../../Demo/Utils/checking-functions';
+import { RxDotFilled } from 'react-icons/rx';
 
 const friend = (props) => {
-  const navigate = useNavigate();
+  const { student_id } = useParams();
   const theme = useTheme();
-  const handleToChat = () => {
-    props.handleCloseChat();
-    navigate(
-      `${DEMO.COMMUNICATIONS_TAIGER_MODE_LINK(props.data?._id?.toString())}`
-    );
-  };
-
   return (
-    <MenuItem
-      onClick={handleToChat}
+    <ListItem
+      key={props.data?._id?.toString()}
       sx={{
-        width: menuWidth,
         backgroundColor: props.data?.latestCommunication?.readBy.includes(
           props.activeId
         )
@@ -43,12 +34,19 @@ const friend = (props) => {
           backgroundColor: '#a0a0a0' // Set a different color on hover if needed
         }
       }}
-      title={`${props.data.firstname} ${props.data.lastname} ${
-        props.data.firstname_chinese ? props.data.firstname_chinese : ''
-      }${props.data.lastname_chinese ? props.data.lastname_chinese : ''}`}
+      disablePadding
     >
-      <Grid container justifyContent="space-between" alignItems="center">
-        <Grid item style={{ display: 'flex', alignItems: 'center' }}>
+      <ListItemButton
+        component={LinkDom}
+        to={`${DEMO.COMMUNICATIONS_TAIGER_MODE_LINK(
+          props.data?._id?.toString()
+        )}`}
+        selected={props.data?._id?.toString() === student_id}
+        title={`${props.data.firstname} ${props.data.lastname} ${
+          props.data.firstname_chinese ? props.data.firstname_chinese : ''
+        }${props.data.lastname_chinese ? props.data.lastname_chinese : ''}`}
+      >
+        <ListItemIcon>
           <Avatar
             alt={`${props.data.firstname} ${props.data.lastname}`}
             {...stringAvatar(`${props.data.firstname} ${props.data.lastname}`)}
@@ -60,7 +58,7 @@ const friend = (props) => {
               flex: 1
             }}
           >
-            <Typography variant="body1" color="text.primary">
+            <Typography variant="body1" fontWeight="bold" color="text.primary">
               {truncateText(
                 `${props.data.firstname} ${props.data.lastname} ${
                   props.data.firstname_chinese
@@ -69,19 +67,8 @@ const friend = (props) => {
                 }${
                   props.data.lastname_chinese ? props.data.lastname_chinese : ''
                 }`,
-                17
+                22
               )}
-            </Typography>
-          </Box>
-        </Grid>
-        <Grid item>
-          <Box
-            style={{
-              textAlign: 'right',
-              padding: '8px 16px'
-            }}
-          >
-            <Typography variant="body2">
               {props.data?.latestCommunication?.user_id !== props.activeId && (
                 <RxDotFilled
                   size={18}
@@ -89,17 +76,35 @@ const friend = (props) => {
                   style={{ marginLeft: '4px' }}
                 />
               )}
-              {props.data?.latestCommunication?.createdAt &&
-                convertDate_ux_friendly(
-                  props.data.latestCommunication.createdAt
-                )}
+            </Typography>
+            <Typography variant="body1" color="text.primary">
+              {convertDate_ux_friendly(
+                props.data?.latestCommunication?.createdAt
+              )}
             </Typography>
           </Box>
-        </Grid>
-      </Grid>
+        </ListItemIcon>
 
-      <Divider />
-    </MenuItem>
+        {/* <Box
+          style={{
+            textAlign: 'right',
+            padding: '8px 16px'
+          }}
+        >
+          <Typography variant="body2">
+            {props.data?.latestCommunication?.user_id !== props.activeId && (
+              <RxDotFilled
+                size={18}
+                title="Not Reply Yet"
+                style={{ marginLeft: '4px' }}
+              />
+            )}
+            {props.data?.latestCommunication?.createdAt &&
+              convertDate_ux_friendly(props.data.latestCommunication.createdAt)}
+          </Typography>
+        </Box> */}
+      </ListItemButton>
+    </ListItem>
   );
 };
 

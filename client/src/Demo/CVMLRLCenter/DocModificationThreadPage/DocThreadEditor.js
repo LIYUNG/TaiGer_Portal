@@ -49,34 +49,15 @@ function DocThreadEditor(props) {
           </Card>
         </Grid>
         <Grid item xs={12}>
-          {/* <Input
-            fullWidth
-            inputComponent="input"
-            inputProps={{ multiple: true }}
-            type="file"
-            onChange={(e) => props.onFileChange(e)}
-            // inputRef={this.fileInputRef}
-          /> */}
-          {/* <Button type="submit" variant="contained" color="primary">
-              Submit
-            </Button> */}
           <TextField
             fullWidth
             size="small"
             type="file"
-            // multiple
             inputProps={{
               multiple: true
             }}
             onChange={(e) => props.onFileChange(e)}
           />
-          {/* <Form.Group controlId="formFile">
-            <Form.Control
-              type="file"
-              multiple
-              onChange={(e) => props.onFileChange(e)}
-            />
-          </Form.Group> */}
         </Grid>
         <Grid item xs={12}>
           (Choose max. 3 files with different extensions: .pdf, .docx, .jgp, and

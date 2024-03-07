@@ -131,7 +131,7 @@ function EditorPage() {
       </Breadcrumbs>
       <Box>
         <Card sx={{ p: 2 }}>
-          <Typography variant="h5">
+          <Typography variant="h6">
             {editorPageState.editor.firstname} {editorPageState.editor.lastname}{' '}
             Open Tasks Distribution
           </Typography>

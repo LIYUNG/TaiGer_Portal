@@ -19,13 +19,6 @@ function SurveyComponent() {
     }));
   };
 
-  // const onHide = () => {
-  //   setSurveyComponentState((prevState) => ({
-  //     ...prevState,
-  //     updateconfirmed: false
-  //   }));
-  // };
-
   const { res_modal_message, res_modal_status } = surveyComponentState;
 
   return (
@@ -38,18 +31,6 @@ function SurveyComponent() {
         />
       )}
       <SurveyEditableComponent />
-      {/* <ModalNew
-        open={surveyComponentState.updateconfirmed}
-        onClose={onHide}
-        size="sm"
-        aria-labelledby="contained-modal-title-vcenter"
-      >
-        <Typography>{t('Update success')}</Typography>
-        {t('Academic Background Survey is updated successfully!')}
-        <Button color="primary" variant="outlined" onClick={onHide}>
-          {t('Close')}
-        </Button>
-      </ModalNew> */}
     </Box>
   );
 }

@@ -84,7 +84,7 @@ function NoAgentsStudentsCard(props) {
             <Link
               to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                 props.student._id,
-                DEMO.PROFILE
+                DEMO.PROFILE_HASH
               )}`}
               component={LinkDom}
             >

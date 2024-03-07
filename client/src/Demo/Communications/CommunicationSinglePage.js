@@ -55,6 +55,20 @@ function CommunicationSinglePage() {
       res_modal_status: 0,
       res_modal_message: ''
     });
+
+  const [windowInnerWidth, setWindowInnerWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowInnerWidth(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [windowInnerWidth]);
   useEffect(() => {
     setCommunicationSinglePageState((prevState) => ({
       ...prevState,
@@ -337,7 +351,7 @@ function CommunicationSinglePage() {
                   component={LinkDom}
                   to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                     communicationSinglePageState.student_id,
-                    '/profile'
+                    DEMO.PROFILE_HASH
                   )}`}
                 >
                   {student_name}
@@ -362,7 +376,7 @@ function CommunicationSinglePage() {
                           ? `${DEMO.SURVEY_LINK}`
                           : `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                               communicationSinglePageState.student_id,
-                              '/background'
+                              DEMO.SURVEY_HASH
                             )}`
                       }
                       component={LinkDom}
@@ -381,7 +395,7 @@ function CommunicationSinglePage() {
                           ? `${DEMO.BASE_DOCUMENTS_LINK}`
                           : `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                               communicationSinglePageState.student_id,
-                              '/profile'
+                              DEMO.PROFILE_HASH
                             )}`
                       }
                       component={LinkDom}

@@ -1569,7 +1569,8 @@ export const programs_refactor = (students) => {
         cv: '-',
         ml_rl: '-',
         ready: '-',
-        show: '-',
+        show: false,
+        isPotentials: true,
         status: '-'
       });
     } else {
@@ -1603,6 +1604,7 @@ export const programs_refactor = (students) => {
             student,
             application
           ),
+          isPotentials: application.decided === '-',
           decided: application.decided,
           closed: application.closed,
           admission: application.admission,

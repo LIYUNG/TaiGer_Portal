@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Form } from 'react-bootstrap';
 import {
   Button,
+  Checkbox,
   CircularProgress,
+  FormControlLabel,
   Table,
   TableBody,
   TableCell,
@@ -90,19 +91,18 @@ function ProgramListSubpage(props) {
           {programListSubpageState.students.map((student, i) => (
             <TableRow key={i}>
               <TableCell>
-                <Form.Group>
-                  <Form.Check
-                    type="radio"
-                    name="student_id"
-                    value={student._id}
-                    id={student._id}
-                    onChange={props.handleSetStudentId}
-                  />
-                </Form.Group>
+                <FormControlLabel
+                  label={`${student.firstname}, ${student.lastname}`}
+                  control={
+                    <Checkbox
+                      checked={props.studentId === student._id}
+                      onChange={props.handleSetStudentId}
+                      value={student._id}
+                    />
+                  }
+                />
               </TableCell>
-              <TableCell>
-                {student.firstname}, {student.lastname}
-              </TableCell>
+              <TableCell></TableCell>
             </TableRow>
           ))}
         </TableBody>

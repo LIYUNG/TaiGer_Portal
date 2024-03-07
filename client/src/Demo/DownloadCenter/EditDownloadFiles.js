@@ -1,12 +1,13 @@
 import React from 'react';
-import { Col, Form } from 'react-bootstrap';
 import {
   Table,
   Button,
   TableBody,
   TableRow,
   TableCell,
-  CircularProgress
+  CircularProgress,
+  TextField,
+  Box
 } from '@mui/material';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { useTranslation } from 'react-i18next';
@@ -38,7 +39,7 @@ function EditDownloadFiles(props) {
         <TableCell>{template.name}</TableCell>
         <TableCell>
           {is_TaiGer_Admin(user) && (
-            <Col>
+            <Box>
               {object_init[template.prop] === 'uploaded' ? (
                 <Button
                   variant="contained"
@@ -52,31 +53,33 @@ function EditDownloadFiles(props) {
                   <AiOutlineDelete size={16} />
                 </Button>
               ) : (
-                <Col>
-                  <Form.Group controlId="formFile">
-                    <Form.Control
-                      type="file"
-                      onChange={(e) => props.onFileChange(e)}
-                    />
-                  </Form.Group>
-                </Col>
+                <TextField
+                  fullWidth
+                  size="small"
+                  type="file"
+                  inputProps={{
+                    multiple: false
+                  }}
+                  onChange={(e) => props.onFileChange(e)}
+                />
               )}
-            </Col>
+            </Box>
           )}
         </TableCell>
         <TableCell>
           {object_init[template.prop] === 'uploaded' ? (
-            <Col>
+            <Box>
               <a
                 href={`${BASE_URL}/api/account/files/template/${template.prop}`}
                 target="_blank"
-                className="text-info" rel="noreferrer"
+                className="text-info"
+                rel="noreferrer"
               >
                 <Button color="primary" variant="contained" size="small">
                   {t('Download')}
                 </Button>
               </a>
-            </Col>
+            </Box>
           ) : is_TaiGer_Admin(user) ? (
             <Button
               size="small"

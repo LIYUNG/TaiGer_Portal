@@ -11,6 +11,10 @@ import { BsDash } from 'react-icons/bs';
 import { BiCommentDots } from 'react-icons/bi';
 import { styled, alpha } from '@mui/material/styles';
 import { InputBase } from '@mui/material';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CancelIcon from '@mui/icons-material/Cancel';
+import HelpIcon from '@mui/icons-material/Help';
+import { green, red, grey } from '@mui/material/colors';
 
 import { appConfig } from '../../config';
 
@@ -55,6 +59,45 @@ export const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export const menuWidth = 350;
+export const EmbeddedChatListWidth = 290;
+
+export const DECISION_STATUS_E = {
+  OK_SYMBOL: (
+    <CheckCircleIcon size={18} style={{ color: green[500] }} title="Decided" />
+  ),
+  NOT_OK_SYMBOL: (
+    <CancelIcon size={18} style={{ color: red[700] }} title="Decided No" />
+  ),
+  UNKNOWN_SYMBOL: (
+    <HelpIcon size={18} style={{ color: grey[400] }} title="Not sure" />
+  )
+};
+export const SUBMISSION_STATUS_E = {
+  OK_SYMBOL: (
+    <CheckCircleIcon
+      size={18}
+      style={{ color: green[500] }}
+      title="Submitted"
+    />
+  ),
+  NOT_OK_SYMBOL: (
+    <CancelIcon size={18} style={{ color: red[700] }} title="Withdraw" />
+  ),
+  UNKNOWN_SYMBOL: (
+    <HelpIcon size={18} style={{ color: grey[400] }} title="In Progress" />
+  )
+};
+export const ADMISSION_STATUS_E = {
+  OK_SYMBOL: (
+    <CheckCircleIcon size={18} style={{ color: green[500] }} title="Admitted" />
+  ),
+  NOT_OK_SYMBOL: (
+    <CancelIcon size={18} style={{ color: red[700] }} title="Rejected" />
+  ),
+  UNKNOWN_SYMBOL: (
+    <HelpIcon size={18} style={{ color: grey[400] }} title="Pending" />
+  )
+};
 
 let FILE_OK_SYMBOL = (
   <IoCheckmarkCircle size={18} color="limegreen" title="Valid Document" />
@@ -644,6 +687,28 @@ export const profile_name_list = {
   Grading_System: 'Grading_System'
 };
 
+export const SINGLE_STUDENT_TABS = {
+  applications: 0,
+  profile: 1,
+  cvmlrl: 2,
+  portal: 3,
+  uniassist: 4,
+  survey: 5,
+  courses: 6,
+  notes: 7
+};
+
+export const SINGLE_STUDENT_REVERSED_TABS = {
+  0: 'applications',
+  1: 'profile',
+  2: 'cvmlrl',
+  3: 'portal',
+  4: 'uniassist',
+  5: 'survey',
+  6: 'courses',
+  7: 'notes'
+};
+
 export const spinner_style = {
   position: 'fixed',
   top: '40%',
@@ -800,7 +865,7 @@ export const program_fields_overview = [
   { name: 'Degree', prop: 'degree' },
   { name: 'Semester', prop: 'semester' },
   { name: 'Teaching Language', prop: 'lang' },
-  { name: 'GPA Requirement (German system)', prop: 'gpa_requirement' }
+  { name: 'Website', prop: 'website' }
 ];
 
 export const program_fields_application_dates = [
@@ -809,6 +874,7 @@ export const program_fields_application_dates = [
 ];
 
 export const program_fields_languages_test = [
+  { name: 'GPA Requirement (German system)', prop: 'gpa_requirement' },
   { name: 'TOEFL Requirement', prop: 'toefl' },
   { name: 'IELTS Requirement', prop: 'ielts' },
   { name: 'TestDaF Requirement', prop: 'testdaf' },
@@ -867,8 +933,7 @@ export const program_fields_special_notes = [
 
 export const program_fields_others = [
   { name: 'Tuition Fees', prop: 'tuition_fees' },
-  { name: 'FPSO', prop: 'fpso' },
-  { name: 'Country', prop: 'country' }
+  { name: 'FPSO', prop: 'fpso' }
 ];
 
 export const program_fields = [
@@ -1075,6 +1140,7 @@ export const COUNTRIES_ARRAY_OPTIONS = [
   { value: 'fi', label: 'Finland' },
   { value: 'fr', label: 'France' },
   { value: 'de', label: 'Germany' },
+  { value: 'eu', label: 'EU (Various Locations)' },
   { value: 'gr', label: 'Greece' },
   { value: 'hk', label: 'Hong Kong' },
   { value: 'hu', label: 'Hungary' },
@@ -1530,11 +1596,6 @@ export const cvmlrl_overview_closed_header = [
     filter: 'fuzzyText'
   },
   {
-    Header: 'Action',
-    accessor: 'action',
-    filter: 'fuzzyText'
-  },
-  {
     Header: 'Status',
     accessor: 'status',
     filter: 'fuzzyText'
@@ -1558,11 +1619,6 @@ export const cvmlrl_overview_header = [
   {
     Header: 'First-, Last Name',
     accessor: 'firstname_lastname',
-    filter: 'fuzzyText'
-  },
-  {
-    Header: 'Action',
-    accessor: 'action',
     filter: 'fuzzyText'
   },
   {

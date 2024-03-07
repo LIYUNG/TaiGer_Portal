@@ -22,6 +22,8 @@ import {
   is_TaiGer_Admin,
   is_TaiGer_AdminAgent,
   is_TaiGer_role,
+  isProgramSubmitted,
+  isProgramWithdraw,
   LinkableNewlineText
 } from '../Utils/checking-functions';
 import {
@@ -46,9 +48,14 @@ function SingleProgramView(props) {
   const { user } = useAuth();
   const { t } = useTranslation();
   const [value, setValue] = useState(0);
+  const [studentsTabValue, setStudentsTabValue] = useState(0);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
+  };
+
+  const handleStudentsTabChange = (event, newValue) => {
+    setStudentsTabValue(newValue);
   };
 
   return (
@@ -182,6 +189,19 @@ function SingleProgramView(props) {
                     </Grid>
                   </Fragment>
                 ))}
+                <Grid item xs={12} md={4}>
+                  <Typography fontWeight="bold">{t(`Country`)}</Typography>
+                </Grid>
+                <Grid item xs={12} md={8}>
+                  <span>
+                    <img
+                      src={`/assets/logo/country_logo/svg/${props.program.country}.svg`}
+                      alt="Logo"
+                      style={{ maxWidth: '32px', maxHeight: '32px' }}
+                      title={COUNTRIES_MAPPING[props.program.country]}
+                    />
+                  </span>
+                </Grid>
                 {props.program.application_portal_a && (
                   <>
                     <Grid item xs={12} md={4}>
@@ -227,12 +247,6 @@ function SingleProgramView(props) {
                     </Grid>
                   </>
                 )}
-                <Grid item xs={12} md={4}>
-                  <Typography fontWeight="bold">{t('Website')}</Typography>
-                </Grid>
-                <Grid item xs={12} md={8}>
-                  <LinkableNewlineText text={props.program.website} />
-                </Grid>
                 <Grid item xs={12} md={4}>
                   <Typography fontWeight="bold">{t('Last update')}</Typography>
                 </Grid>
@@ -297,7 +311,11 @@ function SingleProgramView(props) {
           <Box sx={{ my: 2 }}>
             <Link
               component={LinkDom}
-              to={`https://www.google.com/search?q=${props.program.school}+${props.program.program_name}+${props.program.degree}`}
+              to={`https://www.google.com/search?q=${
+                props.program.school
+              }+${props.program.program_name?.replace('&', 'and')}+${
+                props.program.degree
+              }`}
               target="_blank"
             >
               <Button
@@ -322,55 +340,145 @@ function SingleProgramView(props) {
           {is_TaiGer_role(user) && (
             <>
               <Card className="card-with-scroll" sx={{ p: 2 }}>
-                <Typography variant="string">Who has applied this?</Typography>
                 <div className="card-scrollable-body">
-                  <Table size="small">
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>{t('Name')}</TableCell>
-                        <TableCell>{t('Year')}</TableCell>
-                        <TableCell>{t('Admission')}</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {props.students.map((student, i) => (
-                        <TableRow key={i}>
-                          <TableCell>
-                            <Link
-                              to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-                                student._id.toString(),
-                                DEMO.PROFILE
-                              )}`}
-                            >
-                              {student.firstname} {student.lastname}
-                            </Link>
-                          </TableCell>
-                          <TableCell>
-                            {student.application_preference
-                              ? student.application_preference
-                                  .expected_application_date
-                              : '-'}
-                          </TableCell>
-                          <TableCell>
-                            {student.applications.find(
+                  <Tabs
+                    value={studentsTabValue}
+                    onChange={handleStudentsTabChange}
+                    variant="scrollable"
+                    scrollButtons="auto"
+                    aria-label="basic tabs example"
+                  >
+                    <Tab label="In Progress" {...a11yProps(0)} />
+                    <Tab label="Closed" {...a11yProps(1)} />
+                  </Tabs>
+                  <CustomTabPanel value={studentsTabValue} index={0}>
+                    <Table size="small">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>{t('Name')}</TableCell>
+                          <TableCell>{t('Agent')}</TableCell>
+                          <TableCell>{t('Editor')}</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {props.students
+                          .filter((student) =>
+                            student.applications.some(
                               (application) =>
                                 application.programId.toString() ===
-                                props.programId
+                                  props.programId &&
+                                !isProgramSubmitted(application) &&
+                                !isProgramWithdraw(application)
                             )
-                              ? student.applications.find(
-                                  (application) =>
-                                    application.programId.toString() ===
-                                    props.programId
-                                ).admission
-                              : ''}
-                          </TableCell>
+                          )
+                          .map((student, i) => (
+                            <TableRow key={i}>
+                              <TableCell>
+                                <Link
+                                  to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                                    student._id.toString(),
+                                    DEMO.PROFILE_HASH
+                                  )}`}
+                                  component={LinkDom}
+                                >
+                                  {student.firstname} {student.lastname}
+                                </Link>
+                              </TableCell>
+                              <TableCell>
+                                {student.agents?.map((agent) => (
+                                  <Link
+                                    to={`${DEMO.TEAM_AGENT_LINK(
+                                      agent._id.toString()
+                                    )}`}
+                                    component={LinkDom}
+                                    key={agent._id}
+                                    sx={{ mr: 1 }}
+                                  >
+                                    {agent.firstname}
+                                  </Link>
+                                ))}
+                              </TableCell>
+                              <TableCell>
+                                {student.editors?.map((editor) => (
+                                  <Link
+                                    to={`${DEMO.TEAM_EDITOR_LINK(
+                                      editor._id.toString()
+                                    )}`}
+                                    component={LinkDom}
+                                    key={editor._id}
+                                    sx={{ mr: 1 }}
+                                  >
+                                    {editor.firstname}
+                                  </Link>
+                                ))}
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                      </TableBody>
+                    </Table>
+                  </CustomTabPanel>
+                  <CustomTabPanel value={studentsTabValue} index={1}>
+                    <Table size="small">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>{t('Name')}</TableCell>
+                          <TableCell>{t('Year')}</TableCell>
+                          <TableCell>{t('Admission')}</TableCell>
                         </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                  <Typography variant="string" sx={{ mt: 2 }}>
-                    O: admitted, X: rejected, -: not confirmed{' '}
-                  </Typography>
+                      </TableHead>
+                      <TableBody>
+                        {props.students
+                          .filter((student) =>
+                            student.applications.some(
+                              (application) =>
+                                application.programId.toString() ===
+                                  props.programId &&
+                                (isProgramSubmitted(application) ||
+                                  isProgramWithdraw(application))
+                            )
+                          )
+                          .map((student, i) => (
+                            <TableRow key={i}>
+                              <TableCell>
+                                <Link
+                                  to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                                    student._id.toString(),
+                                    DEMO.PROFILE_HASH
+                                  )}`}
+                                  component={LinkDom}
+                                >
+                                  {student.firstname} {student.lastname}
+                                </Link>
+                              </TableCell>
+                              <TableCell>
+                                {student.application_preference
+                                  ? student.application_preference
+                                      .expected_application_date
+                                  : '-'}
+                              </TableCell>
+                              <TableCell>
+                                {isProgramWithdraw(
+                                  student.applications.find(
+                                    (application) =>
+                                      application.programId.toString() ===
+                                      props.programId
+                                  )
+                                )
+                                  ? 'WITHDRAW'
+                                  : student.applications.find(
+                                      (application) =>
+                                        application.programId.toString() ===
+                                        props.programId
+                                    ).admission}
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                      </TableBody>
+                    </Table>
+                    <Typography variant="string" sx={{ mt: 2 }}>
+                      O: admitted, X: rejected, -: not confirmed{' '}
+                    </Typography>
+                  </CustomTabPanel>
                 </div>
               </Card>
               <Card>
@@ -596,8 +704,9 @@ function SingleProgramView(props) {
                                 <Link
                                   to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                                     student._id.toString(),
-                                    DEMO.PROFILE
+                                    DEMO.PROFILE_HASH
                                   )}`}
+                                  component={LinkDom}
                                 >
                                   {student.firstname} {student.lastname}
                                 </Link>

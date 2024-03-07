@@ -1,36 +1,25 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
-  // Card,
   Link,
-  // Table,
-  // TableBody,
-  // TableCell,
-  // TableHead,
-  // TableRow,
   Tabs,
   Tab,
   Box,
-  // TableContainer,
   Typography,
   TextField,
-  Popover
+  Popover,
+  Card
 } from '@mui/material';
-// import SearchIcon from '@mui/icons-material/Search';
 import PropTypes from 'prop-types';
 import { Link as LinkDom } from 'react-router-dom';
-import { matchSorter } from 'match-sorter';
 
 import {
-  programs_refactor,
+  frequencyDistribution,
   is_TaiGer_role,
-  isProgramDecided
+  isProgramDecided,
+  isProgramWithdraw,
+  programs_refactor
 } from '../Utils/checking-functions';
-import {
-  // Search,
-  // SearchIconWrapper,
-  // StyledInputBase,
-  applicationFileOverviewHeader
-} from '../Utils/contants';
+import { applicationFileOverviewHeader } from '../Utils/contants';
 import TabStudBackgroundDashboard from '../Dashboard/MainViewTab/StudDocsOverview/TabStudBackgroundDashboard';
 import ApplicationProgressCardBody from '../../components/ApplicationProgressCard/ApplicationProgressCardBody';
 import DEMO from '../../store/constant';
@@ -39,182 +28,7 @@ import { CustomTabPanel, a11yProps } from '../../components/Tabs';
 import { useTranslation } from 'react-i18next';
 import ProgramUpdateStatusTable from './ProgramUpdateStatusTable';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
-
-function fuzzyTextFilterFn(rows, id, filterValue) {
-  return matchSorter(rows, filterValue, { keys: [(row) => row.values[id]] });
-}
-
-// Let the table remove the filter if the string is empty
-fuzzyTextFilterFn.autoRemove = (val) => !val;
-
-// const AdvancedTable = ({ data, columns }) => {
-//   const [sortConfig, setSortConfig] = useState({
-//     key: null,
-//     direction: 'ascending'
-//   });
-//   const [collapsedRows, setCollapsedRows] = useState({});
-//   const [filterText, setFilterText] = useState('');
-
-//   const handleSort = (key) => {
-//     let direction = 'ascending';
-//     if (sortConfig.key === key && sortConfig.direction === 'ascending') {
-//       direction = 'descending';
-//     }
-//     setSortConfig({ key, direction });
-//   };
-
-//   const handleCollapse = (index) => {
-//     setCollapsedRows({
-//       ...collapsedRows,
-//       [index]: !collapsedRows[index]
-//     });
-//   };
-
-//   const filteredData = data.filter(
-//     (item) =>
-//       item.target_year?.toLowerCase().includes(filterText.toLowerCase()) ||
-//       item.firstname_lastname
-//         ?.toLowerCase()
-//         .includes(filterText.toLowerCase()) ||
-//       item.program?.toLowerCase().includes(filterText.toLowerCase()) ||
-//       item.deadline?.toLowerCase().includes(filterText.toLowerCase()) ||
-//       item.agents?.toLowerCase().includes(filterText.toLowerCase()) ||
-//       item.editors?.toLowerCase().includes(filterText.toLowerCase()) ||
-//       item.days_left
-//         ?.toString()
-//         .toLowerCase()
-//         .includes(filterText.toLowerCase()) ||
-//       item.status?.toString().toLowerCase().includes(filterText.toLowerCase())
-//   );
-
-//   const sortedData = [...filteredData].sort((a, b) => {
-//     if (sortConfig.key) {
-//       if (a[sortConfig.key] < b[sortConfig.key]) {
-//         return sortConfig.direction === 'ascending' ? -1 : 1;
-//       }
-//       if (a[sortConfig.key] > b[sortConfig.key]) {
-//         return sortConfig.direction === 'ascending' ? 1 : -1;
-//       }
-//     }
-//     return 0;
-//   });
-
-//   return (
-//     <Fragment>
-//       <Search>
-//         <SearchIconWrapper>
-//           <SearchIcon />
-//         </SearchIconWrapper>
-//         <StyledInputBase
-//           id="search-friends"
-//           placeholder="Search…"
-//           inputProps={{ 'aria-label': 'search' }}
-//           value={filterText}
-//           onClick={(e) => e.stopPropagation()}
-//           onChange={(e) => setFilterText(e.target.value)}
-//         />
-//       </Search>
-//       <TableContainer style={{ overflowX: 'auto' }}>
-//         <Table size="small">
-//           <TableHead>
-//             <TableRow>
-//               {columns.map((column, idx) => (
-//                 <TableCell
-//                   key={idx}
-//                   onClick={() => handleSort(`${column.accessor}`)}
-//                 >
-//                   {column.Header}
-//                   <span>
-//                     {sortConfig.key === column.accessor
-//                       ? sortConfig.direction === 'ascending'
-//                         ? ' 🔽'
-//                         : sortConfig.direction === 'descending'
-//                         ? ' 🔼'
-//                         : ' ⮃'
-//                       : ' ⮃'}
-//                   </span>
-//                 </TableCell>
-//               ))}
-//             </TableRow>
-//           </TableHead>
-//           <TableBody>
-//             {sortedData.map((item, index) => (
-//               <React.Fragment key={index}>
-//                 <TableRow
-//                   title={
-//                     item.decided === 'O'
-//                       ? item.closed === 'O'
-//                         ? 'Closed'
-//                         : item.closed === 'X'
-//                         ? 'Withdraw'
-//                         : 'In Progress'
-//                       : 'Not Decided Yet'
-//                   }
-//                 >
-//                   {columns.map((column, idx) =>
-//                     column.accessor === 'firstname_lastname' ? (
-//                       <TableCell
-//                         key={idx}
-//                         onClick={() => handleCollapse(index)}
-//                       >
-//                         <Link
-//                           to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-//                             item.student_id,
-//                             '/profile'
-//                           )}`}
-//                           component={LinkDom}
-//                           target="_blank"
-//                         >
-//                           {item[column.accessor]}
-//                         </Link>
-//                       </TableCell>
-//                     ) : (
-//                       <TableCell
-//                         key={idx}
-//                         onClick={() => handleCollapse(index)}
-//                       >
-//                         {column.accessor === 'program' &&
-//                         item.program_id !== '-' ? (
-//                           <Link
-//                             to={`${DEMO.SINGLE_PROGRAM_LINK(item.program_id)}`}
-//                             component={LinkDom}
-//                             target="_blank"
-//                           >
-//                             {item[column.accessor]}
-//                           </Link>
-//                         ) : (
-//                           <span
-//                             className={
-//                               item.decided === 'O'
-//                                 ? item.closed === 'O'
-//                                   ? 'text-warning'
-//                                   : 'text-info'
-//                                 : 'text-secondary'
-//                             }
-//                           >
-//                             {item[column.accessor]}
-//                           </span>
-//                         )}
-//                       </TableCell>
-//                     )
-//                   )}
-//                 </TableRow>
-//                 {collapsedRows[index] && (
-//                   <Card>
-//                     <ApplicationProgressCardBody
-//                       student={item.student}
-//                       application={item.application}
-//                     />
-//                   </Card>
-//                 )}
-//               </React.Fragment>
-//             ))}
-//           </TableBody>
-//         </Table>
-//       </TableContainer>
-//     </Fragment>
-//   );
-// };
+import TasksDistributionBarChart from '../../components/Charts/TasksDistributionBarChart';
 
 CustomTabPanel.propTypes = {
   children: PropTypes.node,
@@ -225,14 +39,17 @@ CustomTabPanel.propTypes = {
 function ApplicationOverviewTabs(props) {
   const { user } = useAuth();
   const { t } = useTranslation();
-  const applications_arr = programs_refactor(props.students);
   const [value, setValue] = useState(0);
   const [filters, setFilters] = useState({});
   const [anchorEl, setAnchorEl] = useState(null);
+
   const [hoveredRowData, setClickedRowData] = useState(null);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+  const open_applications_arr = useMemo(() => {
+    return programs_refactor(props.students);
+  }, [props.students]);
 
   const handleFilterChange = (event, column) => {
     const { value } = event.target;
@@ -242,15 +59,35 @@ function ApplicationOverviewTabs(props) {
     }));
   };
 
-  const filteredRows = applications_arr.filter((row) => {
-    return Object.keys(filters).every((field) => {
-      const filterValue = filters[field];
-      return (
-        filterValue === '' ||
-        row[field]?.toString().toLowerCase().includes(filterValue)
-      );
+  const applications_distribution = open_applications_arr.map(
+    ({ deadline, file_type, isPotentials, show }) => {
+      return { deadline, file_type, isPotentials, show };
+    }
+  );
+  const open_distr = frequencyDistribution(applications_distribution);
+
+  const sort_date = Object.keys(open_distr).sort();
+
+  const sorted_date_freq_pair = [];
+  sort_date.forEach((date) => {
+    sorted_date_freq_pair.push({
+      name: `${date}`,
+      active: open_distr[date].show,
+      potentials: open_distr[date].potentials
     });
   });
+
+  const filteredRows = open_applications_arr
+    .filter((app) => isProgramDecided(app) && !isProgramWithdraw(app))
+    .filter((row) => {
+      return Object.keys(filters).every((field) => {
+        const filterValue = filters[field];
+        return (
+          filterValue === '' ||
+          row[field]?.toString().toLowerCase().includes(filterValue)
+        );
+      });
+    });
 
   const handleClose = () => {
     setAnchorEl(null);
@@ -277,7 +114,7 @@ function ApplicationOverviewTabs(props) {
       renderCell: (params) => {
         const linkUrl = `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
           params.row.student_id,
-          '/profile'
+          DEMO.PROFILE_HASH
         )}`;
         return (
           <Link
@@ -326,6 +163,18 @@ function ApplicationOverviewTabs(props) {
   return (
     <>
       <Box sx={{ width: '100%' }}>
+        <Card sx={{ p: 2 }}>
+          <Typography variant="h6">Open Applications Distribution</Typography>
+          <Typography>
+            <b style={{ color: 'red' }}>active:</b> students decided programs.
+          </Typography>
+          <Typography>
+            <b style={{ color: '#A9A9A9' }}>potentials:</b> students do not
+            decide programs yet. But the applications will be potentially
+            activated when they would decide.
+          </Typography>
+          <TasksDistributionBarChart data={sorted_date_freq_pair} />
+        </Card>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <Tabs
             value={value}
@@ -431,21 +280,17 @@ function ApplicationOverviewTabs(props) {
               {/* </div> */}
             </Popover>
           </div>
-          {/* <AdvancedTable
-            columns={applicationFileOverviewHeader}
-            data={applications_arr}
-          /> */}
         </CustomTabPanel>
         <CustomTabPanel value={value} index={2}>
           <ProgramUpdateStatusTable
             columns={applicationFileOverviewHeader}
-            data={applications_arr}
+            data={open_applications_arr}
           />
         </CustomTabPanel>
         <CustomTabPanel value={value} index={3}>
           <ProgramUpdateStatusTable
             columns={applicationFileOverviewHeader}
-            data={applications_arr.filter((application) =>
+            data={open_applications_arr.filter((application) =>
               isProgramDecided(application)
             )}
           />

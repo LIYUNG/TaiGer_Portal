@@ -359,6 +359,7 @@ const getSurveyInputs = asyncHandler(async (req, res, next) => {
 });
 
 const postSurveyInput = asyncHandler(async (req, res, next) => {
+  const { user } = req;
   const { input, informEditor } = req.body;
   const newSurvey = new surveyInput({
     ...input,
@@ -411,6 +412,7 @@ const putSurveyInput = asyncHandler(async (req, res, next) => {
 });
 
 const resetSurveyInput = asyncHandler(async (req, res, next) => {
+  const { user } = req;
   const {
     params: { surveyInputId }
   } = req;

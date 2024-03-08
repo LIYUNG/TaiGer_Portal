@@ -107,13 +107,13 @@ const informNoEditor = async (student) => {
 const informOnSurveyUpdate = async (user, survey, thread) => {
   // Create message notification
   await addMessageInThread(
-    `Automatic Notification: Survey Input has been updated by ${user.firstname} ${user.lastname}.`,
+    `Automatic Notification: Survey has been finalized by ${user.firstname} ${user.lastname}.`,
     thread?._id
   );
 
-  if (user.role !== Role.Student) {
-    return;
-  }
+  // if (user.role !== Role.Student) {
+  //   return;
+  // }
 
   const student = await Student.findById(survey.studentId)
     .populate('agents editors', 'firstname lastname email')
@@ -124,9 +124,7 @@ const informOnSurveyUpdate = async (user, survey, thread) => {
   const noEditor = !agents || agents.length === 0;
   const programId = survey?.programId?.toString();
   const fileType = survey?.fileType;
-
-  const message = `Survey has been updated by ${user.firstname} ${user.lastname}`;
-
+  const message = `Survey has been finalized by ${user.firstname} ${user.lastname}`;
   if (isArchiv(student)) {
     return;
   }

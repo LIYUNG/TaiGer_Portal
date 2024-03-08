@@ -2,4 +2,4 @@ version: 2
 
 sca:
   ignored-paths:
-    - client/src/test/**
+    - client/src/test/

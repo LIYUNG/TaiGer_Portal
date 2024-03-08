@@ -1,5 +1,5 @@
 version: 2
 
-sca:
+secret:
   ignored-paths:
-    - client/src/test/
+    - "client/src/test/*"

@@ -12,10 +12,7 @@ import {
   RouterProvider,
   createMemoryRouter
 } from 'react-router-dom';
-const students = [
-  { firstname: 'student1', lastname: 'Wang', role: 'Student' },
-  { firstname: 'student2', lastname: 'Lin', role: 'Student' }
-];
+
 import { mockSingleData } from '../../test/testingStudentData';
 
 jest.mock('axios');
@@ -54,7 +51,7 @@ const routes = [
 
 describe('ApplicantsOverview', () => {
   window.ResizeObserver = ResizeObserver;
-  test('agent dashboard not crash', async () => {
+  test('ApplicationsOverview not crash', async () => {
     getStudents.mockResolvedValue({ data: mockSingleData });
     getProgramTickets.mockResolvedValue({ data: { success: true, data: [] } });
     useAuth.mockReturnValue({
@@ -64,12 +61,6 @@ describe('ApplicantsOverview', () => {
       initialEntries: ['/student-applications']
     });
     render(<RouterProvider router={router} />);
-
-    // Example
-    // const buttonElement = screen.getByRole('button');
-    // userEvent.click(buttonElement);
-    // const outputElement = screen.getByText('good to see you', { exact: false });
-    // expect(outputElement).toBeInTheDocument(1);
 
     await waitFor(() => {
       // TODO

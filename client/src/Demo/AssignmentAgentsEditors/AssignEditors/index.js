@@ -87,7 +87,7 @@ function AssignEditors() {
   const { res_modal_status, res_modal_message } = assignEditorsState;
 
   return (
-    <Box>
+    <Box data-testid="assignment_editors">
       {res_modal_status >= 400 && (
         <ModalMain
           ConfirmError={ConfirmError}

@@ -70,7 +70,7 @@ function Admissions() {
 
   if (admissionsState.success) {
     return (
-      <Box>
+      <Box data-testid="admissinos_page">
         <Breadcrumbs aria-label="breadcrumb">
           <Link
             underline="hover"

@@ -45,7 +45,8 @@ const {
   putStudentInput,
   resetStudentInput,
   assignEssayWritersToEssayTask,
-  getAllEssays
+  getAllEssays,
+  clearEssayWriters
 } = require('../controllers/documents_modification');
 const {
   docThreadMultitenant_filter
@@ -76,7 +77,8 @@ router
     getMessageFileRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
     // permission_canAccessStudentDatabase_filter,
-    getAllEssays,
+    // clearEssayWriters,
+    getAllEssays
     // logAccess
   );
 

@@ -516,7 +516,7 @@ const routes = [
   {
     path: '/',
     errorElement: <DefaultErrorPage />,
-    loader: getStudentsLoader,
+    loader: combinedLoader,
     element: <DashboardDefault />
   }
 ];

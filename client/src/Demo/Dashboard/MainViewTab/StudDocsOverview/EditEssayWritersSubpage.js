@@ -27,11 +27,10 @@ function EditEssayWritersSubpage(props) {
       (resp) => {
         // TODO: check success
         const { data, success } = resp.data;
-        // console.log("if success:", success)
+        console.log("if success:", success)
         if (success) {
           const editors = data; //need to change to get all essay writers
           const { outsourced_user_id: student_essay_writers } = props.essayDocumentThread;
-          
           const updateEditorList = editors.reduce(
             (prev, { _id }) => ({
               ...prev,

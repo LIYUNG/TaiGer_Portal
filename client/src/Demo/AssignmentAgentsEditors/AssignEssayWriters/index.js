@@ -43,7 +43,7 @@ function AssignEssayWriters() {
         const { status } = resp;
         // console.log('data:', data)// return student object
         if (success) {
-          console.log('success in index')
+          // console.log('success in index')
           var essays_temp = [...assignEditorsState.essayDocumentThreads];
           var essayIdx = essays_temp.findIndex(
             ({ _id }) => _id === essayDocumentThread_id

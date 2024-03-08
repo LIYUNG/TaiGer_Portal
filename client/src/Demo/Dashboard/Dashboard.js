@@ -37,6 +37,7 @@ function Dashboard() {
     students: { data: students, isCoursesFilled, notification },
     essays: { data: essayDocumentThreads}
   } = useLoaderData();
+  // console.log('essayDocumentThreads:', essayDocumentThreads)
   const { t } = useTranslation();
   const [dashboardState, setDashboardState] = useState({
     error: '',

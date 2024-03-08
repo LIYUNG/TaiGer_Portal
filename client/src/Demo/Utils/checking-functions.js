@@ -4,16 +4,30 @@ import { getNumberOfDays, convertDate, profile_list } from './contants';
 import { useTranslation } from 'react-i18next';
 import { Link } from '@mui/material';
 import { Link as LinkDom } from 'react-router-dom';
+
+// Tested
 export const is_TaiGer_role = (user) =>
   user?.role === 'Admin' || user?.role === 'Agent' || user?.role === 'Editor';
+
+// Tested
 export const is_TaiGer_AdminAgent = (user) =>
   user?.role === 'Admin' || user?.role === 'Agent';
+
+// Tested
 export const is_TaiGer_Admin = (user) => user?.role === 'Admin';
+
+// Tested
 export const is_TaiGer_Editor = (user) => user?.role === 'Editor';
+
+// Tested
 export const is_TaiGer_Agent = (user) => user?.role === 'Agent';
+
 export const is_TaiGer_Manager = (user) => user?.role === 'Manager';
+
+// Tested
 export const is_TaiGer_Student = (user) => user?.role === 'Student';
 export const is_TaiGer_Guest = (user) => user?.role === 'Guest';
+
 export const DocumentStatus = {
   Uploaded: 'uploaded',
   Missing: 'missing',
@@ -22,6 +36,7 @@ export const DocumentStatus = {
   NotNeeded: 'notneeded'
 };
 
+// Tested
 export const calculateDisplayLength = (text) => {
   let length = 0;
   for (let i = 0; i < text.length; i++) {
@@ -50,9 +65,16 @@ export const truncateText = (text, maxLength) => {
   if (currentLength > maxLength) {
     truncatedText += '...';
   }
-
   return truncatedText;
 };
+
+export const file_category_const = {
+  ml_required: 'ML',
+  essay_required: 'Essay',
+  portfolio_required: 'Portfolio',
+  supplementary_form_required: 'Supplementary_Form'
+};
+
 // TODO test
 export const LinkableNewlineText = ({ text }) => {
   const textStyle = {
@@ -79,6 +101,7 @@ export const LinkableNewlineText = ({ text }) => {
   );
 };
 
+// Tested
 export const Bayerische_Formel = (high, low, my) => {
   if (high - low !== 0) {
     var Germen_note = 1 + (3 * (high - my)) / (high - low);
@@ -88,35 +111,31 @@ export const Bayerische_Formel = (high, low, my) => {
 };
 
 export const getRequirement = (thread) => {
-  if (thread.file_type.includes('Essay')) {
-    return thread.program_id.essay_required === 'yes'
-      ? thread.program_id.essay_requirements || 'No'
-      : 'No';
-  } else if (thread.file_type.includes('ML')) {
-    if (thread.program_id.ml_required === 'yes') {
-      return thread.program_id.ml_requirements || 'No';
-    } else {
-      return 'No';
-    }
-  } else if (thread.file_type.includes('Portfolio')) {
-    if (thread.program_id.portfolio_required === 'yes') {
-      return thread.program_id.portfolio_requirements || 'No';
-    } else {
-      return 'No';
-    }
-  } else if (thread.file_type.includes('Supplementary_Form')) {
-    if (thread.program_id.supplementary_form_required === 'yes') {
-      return thread.program_id.supplementary_form_requirements || 'No';
-    } else {
-      return 'No';
-    }
-  } else if (thread.file_type.includes('RL')) {
-    if (['1', '2', '3'].includes(thread.program_id.rl_required)) {
-      return thread.program_id.rl_requirements || 'No';
-    } else {
-      return 'No';
-    }
+  const fileType = thread.file_type;
+  const program = thread.program_id;
+
+  if (fileType.includes('Essay') && program.essay_required === 'yes') {
+    return program.essay_requirements || 'No';
   }
+  if (fileType.includes('ML') && program.ml_required === 'yes') {
+    return program.ml_requirements || 'No';
+  }
+  if (fileType.includes('Portfolio') || program.portfolio_required === 'yes') {
+    return program.portfolio_requirements || 'No';
+  }
+  if (
+    fileType.includes('Supplementary_Form') &&
+    program.supplementary_form_required === 'yes'
+  ) {
+    return program.supplementary_form_requirements || 'No';
+  }
+  if (
+    fileType.includes('RL') &&
+    ['1', '2', '3'].includes(program.rl_required)
+  ) {
+    return program.rl_requirements || 'No';
+  }
+  return 'No';
 };
 
 // TODO: test
@@ -669,10 +688,10 @@ export const isEnglishOK = (program, student) => {
 };
 
 export const application_date_calculator = (student, application) => {
-  if (application.closed === 'O') {
+  if (isProgramSubmitted(application)) {
     return 'CLOSE';
   }
-  if (application.closed === 'X') {
+  if (isProgramWithdraw(application)) {
     return 'WITHDRAW';
   }
   const { application_start, semester } = application.programId;
@@ -831,15 +850,6 @@ export const does_student_have_agents = (students) => {
 export const does_student_have_editors = (students) => {
   for (let i = 0; i < students.length; i += 1) {
     if (students[i].editors === undefined || students[i].editors.length === 0) {
-      return false;
-    }
-  }
-  return true;
-};
-
-export const does_essay_have_writers = (essayDocumentThreads) => {
-  for (let i = 0; i < essayDocumentThreads.length; i += 1) {
-    if (essayDocumentThreads[i].outsourced_user_id === undefined || essayDocumentThreads[i].outsourced_user_id.length === 0) {
       return false;
     }
   }
@@ -1152,6 +1162,21 @@ export const is_program_ml_rl_essay_ready = (application) => {
   return true;
 };
 
+// Tested
+export const isProgramDecided = (application) => {
+  return application.decided === 'O';
+};
+
+// Tested
+export const isProgramSubmitted = (application) => {
+  return application.closed === 'O';
+};
+
+// Tested
+export const isProgramWithdraw = (application) => {
+  return application.closed === 'X';
+};
+
 export const is_program_closed = (application) => {
   if (application.closed === 'O' || application.closed === 'X') {
     return true;
@@ -1327,80 +1352,114 @@ export const check_generaldocs = (student) => {
   }
 };
 
+export const getNumberOfFilesByStudent = (messages, student_id) => {
+  if (!messages) {
+    return 0;
+  }
+  let file_count = 0;
+  let message_count = 0;
+  for (const message of messages) {
+    if (message.user_id?._id?.toString() === student_id) {
+      file_count += message.file?.length || 0;
+      message_count += 1;
+    }
+  }
+  return `${message_count}/${file_count}`;
+};
+
+export const getNumberOfFilesByEditor = (messages, student_id) => {
+  if (!messages) {
+    return 0;
+  }
+  let file_count = 0;
+  let message_count = 0;
+  for (const message of messages) {
+    if (message.user_id?._id.toString() !== student_id) {
+      file_count += message.file?.length || 0;
+      message_count += 1;
+    }
+  }
+  return `${message_count}/${file_count}`;
+};
+
+const latestReplyInfo = (thread) => {
+  const messages = thread.messages;
+  if (!messages || messages?.length <= 0) {
+    return '- None - ';
+  }
+  const latestMessageUser = messages[messages?.length - 1]?.user_id;
+  return (
+    latestMessageUser &&
+    `${latestMessageUser?.firstname} ${latestMessageUser?.lastname}`
+  );
+};
+
+const prepTask = (student, thread) => {
+  return {
+    firstname_lastname: `${student.firstname}, ${student.lastname}`,
+    latest_message_left_by_id: thread.latest_message_left_by_id,
+    isFinalVersion: thread.isFinalVersion,
+    file_type: thread.doc_thread_id.file_type,
+    student_id: student._id.toString(),
+    attributes: student.attributes,
+    aged_days: parseInt(
+      getNumberOfDays(thread.doc_thread_id.updatedAt, new Date())
+    ),
+    latest_reply: latestReplyInfo(thread.doc_thread_id),
+    updatedAt: convertDate(thread.doc_thread_id.updatedAt),
+    number_input_from_student: getNumberOfFilesByStudent(
+      thread.doc_thread_id.messages,
+      student._id.toString()
+    ),
+    number_input_from_editors: getNumberOfFilesByEditor(
+      thread.doc_thread_id.messages,
+      student._id.toString()
+    )
+  };
+};
+
+// student.generaldocs_threads
+const prepGeneralTask = (student, thread) => {
+  const { CVDeadline, daysLeftMin } = GetCVDeadline(student);
+  return {
+    ...prepTask(student, thread),
+    thread_id: thread.doc_thread_id._id.toString(),
+    deadline: CVDeadline,
+    show: true,
+    document_name: `${thread.doc_thread_id.file_type}`,
+    days_left: daysLeftMin
+  };
+};
+
+// student.applications -> application.doc_modification_thread
+const prepApplicationTask = (student, application, thread) => {
+  return {
+    ...prepTask(student, thread),
+    thread_id: thread.doc_thread_id._id.toString(),
+    program_id: application.programId._id.toString(),
+    deadline: application_deadline_calculator(student, application),
+    show: application.decided === 'O' ? true : false,
+    document_name: `${thread.doc_thread_id.file_type} - ${application.programId.school} - ${application.programId.degree} -${application.programId.program_name}`,
+    days_left:
+      parseInt(
+        getNumberOfDays(
+          new Date(),
+          application_deadline_calculator(student, application)
+        )
+      ) || '-'
+  };
+};
+
 export const open_tasks = (students) => {
   const tasks = [];
   for (const student of students) {
     if (student.archiv !== true) {
-      const { CVDeadline, daysLeftMin } = GetCVDeadline(student);
       for (const thread of student.generaldocs_threads) {
-        tasks.push({
-          firstname_lastname: `${student.firstname}, ${student.lastname}`,
-          latest_message_left_by_id: thread.latest_message_left_by_id,
-          isFinalVersion: thread.isFinalVersion,
-          file_type: thread.doc_thread_id.file_type,
-          student_id: student._id.toString(),
-          thread_id: thread.doc_thread_id._id.toString(),
-          outsourced_user_id: thread.doc_thread_id._id.outsourced_user_id,
-          deadline: CVDeadline,
-          show: true,
-          aged_days: parseInt(
-            getNumberOfDays(thread.doc_thread_id.updatedAt, new Date())
-          ),
-          days_left: daysLeftMin,
-          document_name: `${thread.doc_thread_id.file_type}`,
-          latest_reply:
-            thread.doc_thread_id.messages.length > 0
-              ? `${
-                  thread.doc_thread_id.messages[
-                    thread.doc_thread_id.messages.length - 1
-                  ].user_id.firstname
-                } ${
-                  thread.doc_thread_id.messages[
-                    thread.doc_thread_id.messages.length - 1
-                  ].user_id.lastname
-                }`
-              : 'Empty',
-          updatedAt: convertDate(thread.doc_thread_id.updatedAt)
-        });
+        tasks.push(prepGeneralTask(student, thread));
       }
       for (const application of student.applications) {
         for (const thread of application.doc_modification_thread) {
-          tasks.push({
-            firstname_lastname: `${student.firstname}, ${student.lastname}`,
-            latest_message_left_by_id: thread.latest_message_left_by_id,
-            isFinalVersion: thread.isFinalVersion,
-            file_type: thread.doc_thread_id.file_type,
-            student_id: student._id.toString(),
-            deadline: application_deadline_calculator(student, application),
-            aged_days: parseInt(
-              getNumberOfDays(thread.doc_thread_id.updatedAt, new Date())
-            ),
-            days_left:
-              parseInt(
-                getNumberOfDays(
-                  new Date(),
-                  application_deadline_calculator(student, application)
-                )
-              ) || '-',
-            program_id: application.programId._id.toString(),
-            show: application.decided === 'O' ? true : false,
-            thread_id: thread.doc_thread_id._id.toString(),
-            outsourced_user_id: thread.doc_thread_id._id.outsourced_user_id,
-            document_name: `${thread.doc_thread_id.file_type} - ${application.programId.school} - ${application.programId.degree} -${application.programId.program_name}`,
-            latest_reply:
-              thread.doc_thread_id.messages.length > 0
-                ? `${
-                    thread.doc_thread_id.messages[
-                      thread.doc_thread_id.messages.length - 1
-                    ].user_id.firstname
-                  } ${
-                    thread.doc_thread_id.messages[
-                      thread.doc_thread_id.messages.length - 1
-                    ].user_id.lastname
-                  }`
-                : 'Empty',
-            updatedAt: convertDate(thread.doc_thread_id.updatedAt)
-          });
+          tasks.push(prepApplicationTask(student, application, thread));
         }
       }
     }
@@ -1411,86 +1470,22 @@ export const open_tasks = (students) => {
 export const open_tasks_with_editors = (students) => {
   const tasks = [];
   for (const student of students) {
-    // console.log('student in open_task_with_editors', student)
     if (student.archiv !== true) {
-      const { CVDeadline, daysLeftMin } = GetCVDeadline(student);
       for (const thread of student.generaldocs_threads) {
-        // console.log('thread:', thread)
         tasks.push({
-          firstname_lastname: `${student.firstname}, ${student.lastname}`,
-          latest_message_left_by_id: thread.latest_message_left_by_id,
-          isFinalVersion: thread.isFinalVersion,
-          file_type: thread.doc_thread_id.file_type,
-          student_id: student._id.toString(),
-          editors: student.editors,
-          agents: student.agents,
-          show: true,
+          ...prepGeneralTask(student, thread),
           isPotentials: false,
-          thread_id: thread.doc_thread_id._id.toString(),
-          outsourced_user_id: thread.doc_thread_id._id.outsourced_user_id,
-          deadline: CVDeadline,
-          aged_days: parseInt(
-            getNumberOfDays(thread.doc_thread_id.updatedAt, new Date())
-          ),
-          days_left: daysLeftMin,
-          document_name: `${thread.doc_thread_id.file_type}`,
-          latest_reply:
-            thread.doc_thread_id.messages &&
-            thread.doc_thread_id.messages.length > 0
-              ? `${
-                  thread.doc_thread_id.messages[
-                    thread.doc_thread_id.messages.length - 1
-                  ].user_id.firstname
-                } ${
-                  thread.doc_thread_id.messages[
-                    thread.doc_thread_id.messages.length - 1
-                  ].user_id.lastname
-                }`
-              : 'Empty',
-          updatedAt: convertDate(thread.doc_thread_id.updatedAt)
+          editors: student.editors,
+          agents: student.agents
         });
       }
       for (const application of student.applications) {
         for (const thread of application.doc_modification_thread) {
           tasks.push({
-            firstname_lastname: `${student.firstname}, ${student.lastname}`,
-            latest_message_left_by_id: thread.latest_message_left_by_id,
-            isFinalVersion: thread.isFinalVersion,
-            file_type: thread.doc_thread_id.file_type,
-            student_id: student._id.toString(),
-            editors: student.editors,
-            agents: student.agents,
-            deadline: application_deadline_calculator(student, application),
-            aged_days: parseInt(
-              getNumberOfDays(thread.doc_thread_id.updatedAt, new Date())
-            ),
-            days_left:
-              parseInt(
-                getNumberOfDays(
-                  new Date(),
-                  application_deadline_calculator(student, application)
-                )
-              ) || '-',
-            program_id: application.programId._id.toString(),
-            show: application.decided === 'O' ? true : false,
+            ...prepApplicationTask(student, application, thread),
             isPotentials: application.decided === '-' ? true : false,
-            thread_id: thread.doc_thread_id._id.toString(),
-            outsourced_user_id: thread.doc_thread_id._id.outsourced_user_id,
-            document_name: `${thread.doc_thread_id.file_type} - ${application.programId.school} - ${application.programId.degree} -${application.programId.program_name}`,
-            latest_reply:
-              thread.doc_thread_id.messages &&
-              thread.doc_thread_id.messages.length > 0
-                ? `${
-                    thread.doc_thread_id.messages[
-                      thread.doc_thread_id.messages.length - 1
-                    ].user_id.firstname
-                  } ${
-                    thread.doc_thread_id.messages[
-                      thread.doc_thread_id.messages.length - 1
-                    ].user_id.lastname
-                  }`
-                : 'Empty',
-            updatedAt: convertDate(thread.doc_thread_id.updatedAt)
+            editors: student.editors,
+            agents: student.agents
           });
         }
       }
@@ -1542,6 +1537,7 @@ export const programs_refactor = (students) => {
       student.applications.length === 0
     ) {
       applications.push({
+        id: `${student._id.toString()}-`,
         target_year: `${
           student.application_preference?.expected_application_date || '-'
         } ${
@@ -1573,12 +1569,14 @@ export const programs_refactor = (students) => {
         cv: '-',
         ml_rl: '-',
         ready: '-',
-        show: '-',
+        show: false,
+        isPotentials: true,
         status: '-'
       });
     } else {
       for (const application of student.applications) {
         applications.push({
+          id: `${student._id.toString()}-${application.programId._id.toString()}`,
           target_year: `${
             student.application_preference?.expected_application_date || '-'
           } ${
@@ -1599,11 +1597,14 @@ export const programs_refactor = (students) => {
           toefl: application.programId.toefl,
           ielts: application.programId.ielts,
           testdaf: application.programId.testdaf,
+          whoupdated: application.programId.whoupdated,
+          updatedAt: application.programId.updatedAt,
           program_id: application.programId._id.toString(),
           application_deadline: application_deadline_calculator(
             student,
             application
           ),
+          isPotentials: application.decided === '-',
           decided: application.decided,
           closed: application.closed,
           admission: application.admission,
@@ -1671,6 +1672,7 @@ export const getNextProgramName = (student) => {
     .sort((a, b) => (a.application_deadline > b.application_deadline ? 1 : -1));
   return getNextProgram.length !== 0 ? getNextProgram[0].program : '-';
 };
+
 export const getNextProgramDeadline = (student) => {
   const getNextProgram = programs_refactor([student])
     .filter(
@@ -1681,6 +1683,7 @@ export const getNextProgramDeadline = (student) => {
     ? getNextProgram[0].application_deadline
     : '-';
 };
+
 export const getNextProgramDayleft = (student) => {
   const getNextProgram = programs_refactor([student])
     .filter(
@@ -1689,6 +1692,7 @@ export const getNextProgramDayleft = (student) => {
     .sort((a, b) => (a.application_deadline > b.application_deadline ? 1 : -1));
   return getNextProgram.length !== 0 ? getNextProgram[0].days_left : '-';
 };
+
 export const getNextProgramStatus = (student) => {
   const getNextProgram = programs_refactor([student])
     .filter(
@@ -1757,13 +1761,6 @@ export const frequencyDistribution = (tasks) => {
   return map;
 };
 
-export const file_category_const = {
-  ml_required: 'ML',
-  essay_required: 'Essay',
-  portfolio_required: 'Portfolio',
-  supplementary_form_required: 'Supplementary_Form'
-};
-
 export const isDocumentsMissingAssign = (application) => {
   const keys = Object.keys(file_category_const);
   let flag = false;
@@ -1774,8 +1771,17 @@ export const isDocumentsMissingAssign = (application) => {
         application.programId[keys[i]] === 'yes' &&
         application.doc_modification_thread.findIndex(
           (thread) =>
-            thread.doc_thread_id.file_type === file_category_const[keys[i]]
+            thread.doc_thread_id?.file_type === file_category_const[keys[i]]
         ) === -1);
   }
   return flag;
+};
+
+export const does_essay_have_writers = (essayDocumentThreads) => {
+  for (let i = 0; i < essayDocumentThreads.length; i += 1) {
+    if (essayDocumentThreads[i].outsourced_user_id === undefined || essayDocumentThreads[i].outsourced_user_id.length === 0) {
+      return false;
+    }
+  }
+  return true;
 };

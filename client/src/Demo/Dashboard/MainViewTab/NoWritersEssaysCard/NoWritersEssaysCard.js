@@ -55,23 +55,16 @@ function NoWritersEssaysCard(props) {
 
   const findStudentsWithDocumentthread = (students, essayDocumentThread) => {
     const studentsWithDocumentthread = students.filter(student => {
-      return student._id.toString() === essayDocumentThread.student_id.toString();
+      return student?._id?.toString() === essayDocumentThread?.student_id?.toString();
     });
-    if (studentsWithDocumentthread[0] === undefined){
-      // console.log("essayDocumentThread:", essayDocumentThread._id)
-      // console.log(studentsWithDocumentthread[0])
-      return null;
-    } else {
-      return studentsWithDocumentthread[0];
-    }
+    return studentsWithDocumentthread[0];
   };
   const student = findStudentsWithDocumentthread(props.students, props.essayDocumentThread)
+  console.log('student in card', student)
   if (
     props.essayDocumentThread.outsourced_user_id === undefined ||
-    props.essayDocumentThread.outsourced_user_id.length === 0 ||
-    (student !== null)
+    props.essayDocumentThread.outsourced_user_id.length === 0 
   ) {
-    // console.log("studnet inside filter", student)
     return (
       <>
         <TableRow>
@@ -106,17 +99,28 @@ function NoWritersEssaysCard(props) {
           <TableCell>
             <Link
               component={LinkDom}
+              to={`${DEMO.DOCUMENT_MODIFICATION_LINK(
+                props.essayDocumentThread?._id?.toString()
+              )}`}
+            >
+              {props.essayDocumentThread?.file_type}
+            </Link>
+          </TableCell>
+          <TableCell>
+            <Link
+              component={LinkDom}
               to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                 student?._id.toString(),
                 DEMO.PROFILE
               )}`}
             >
-              {student?.firstname}, {student.lastname}
+              {student?.firstname}, {student?.lastname}
             </Link>
           </TableCell>
           <TableCell>{student?.email}</TableCell>
           <TableCell>
-            {student?.needEditor ? (
+            {(props.essayDocumentThread.outsourced_user_id === undefined ||
+    props.essayDocumentThread.outsourced_user_id.length === 0) ? (
               <Typography fontWeight="bold">Ready to Assign</Typography>
             ) : (
               '-'

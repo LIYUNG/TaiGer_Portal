@@ -35,6 +35,9 @@ const {
   informStudentTheirEditorEmail,
   informAgentStudentAssignedEmail
 } = require('../services/email');
+// const {
+//   getAllActiveStudents
+// } = require('./students')
 
 const { AWS_S3_BUCKET_NAME, API_ORIGIN } = require('../config');
 const Permission = require('../models/Permission');
@@ -850,6 +853,7 @@ const getMessages = asyncHandler(async (req, res) => {
     user,
     params: { messagesThreadId }
   } = req;
+  console.log('check cast error:', messagesThreadId)
   const document_thread = await Documentthread.findById(messagesThreadId)
     .populate(
       'student_id',
@@ -1963,6 +1967,15 @@ const assignEssayWritersToEssayTask = asyncHandler(async (req, res, next) => {
   next();
 });
 
+const clearEssayWriters = asyncHandler(async (req, res, next) => {
+  const clearEssayWriters = await Documentthread.updateMany(
+    { outsourced_user_id: { $exists: true } }, // Match documents where outsourced_user_id field exists
+    { $set: { outsourced_user_id: [] } } // Set outsourced_user_id field to an empty array
+  )
+  res.status(200).send({ success: true });
+  next();
+});
+
 const getAllEssays = asyncHandler(async (req, res, next) => {
   const documentthread_idList = [
     '645c117f7a60fbae9b99dac1',
@@ -2028,5 +2041,6 @@ module.exports = {
   deleteProgramSpecificMessagesThread,
   deleteAMessageInThread,
   assignEssayWritersToEssayTask,
-  getAllEssays
+  getAllEssays,
+  clearEssayWriters
 };

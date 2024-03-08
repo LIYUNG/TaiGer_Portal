@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Form } from 'react-bootstrap';
 import { Link as LinkDom } from 'react-router-dom';
 import {
   Button,
+  Checkbox,
   CircularProgress,
+  FormControlLabel,
   Link,
   TableCell,
   TableRow,
@@ -418,19 +419,20 @@ function ButtonSetUploaded(props) {
                 base_documents_checklist[props.k].length !== 0 &&
                 'Check list: Please check the following points so that you can flag this document as valid.'}
             </Typography>
-            <Typography>
-              {base_documents_checklist[props.k]
-                ? base_documents_checklist[props.k].map((check_item, i) => (
-                    <Form.Check
-                      key={i}
-                      type={'checkbox'}
-                      id={`${check_item}-${i}`}
-                      label={`${check_item}`}
-                      onChange={(e) => onChecked(e)}
-                    />
-                  ))
-                : t('No')}
-            </Typography>
+            {base_documents_checklist[props.k]
+              ? base_documents_checklist[props.k].map((check_item, i) => (
+                  <FormControlLabel
+                    key={i}
+                    label={`${check_item}`}
+                    control={
+                      <Checkbox
+                        id={`${check_item}-${i}`}
+                        onChange={(e) => onChecked(e)}
+                      />
+                    }
+                  />
+                ))
+              : t('No')}
           </>
         )}
         {props.path.split('.')[1] !== 'pdf' && (

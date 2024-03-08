@@ -70,7 +70,7 @@ function StudentOverviewPage() {
   }
 
   return (
-    <Box>
+    <Box data-testid="student_overview">
       <Breadcrumbs aria-label="breadcrumb">
         <Link
           underline="hover"

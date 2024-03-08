@@ -1,15 +1,15 @@
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
-import Admissions from './Admissions';
+import StudentOverviewPage from '.';
 import 'react-i18next';
-import { getAdmissions } from '../../api';
+import { getAllActiveStudents } from '../../api';
 import axios from 'axios';
 import { request } from '../../api/request';
-import { useAuth } from '../../components/AuthProvider';
+import { useAuth } from '../../components/AuthProvider/index';
 import { MemoryRouter } from 'react-router-dom';
 
-import { mockAdmissionsData } from '../../test/testingAdmissionsData';
+import { mockSingleData } from '../../test/testingStudentData';
 
 jest.mock('axios');
 jest.mock('request');
@@ -26,7 +26,6 @@ jest.mock('react-i18next', () => ({
 }));
 
 jest.mock('../../components/AuthProvider');
-const mockedAxios = jest.Mocked;
 
 class ResizeObserver {
   observe() {}
@@ -34,24 +33,31 @@ class ResizeObserver {
   unobserve() {}
 }
 
-describe('Admissions page checking', () => {
+describe('StudentOverviewPage', () => {
   window.ResizeObserver = ResizeObserver;
-  test('Admissions page not crash', async () => {
-    getAdmissions.mockResolvedValue({ data: mockAdmissionsData });
+  test('StudentOverview page not crash', async () => {
+    getAllActiveStudents.mockResolvedValue({ data: mockSingleData });
     useAuth.mockReturnValue({
       user: { role: 'Agent', _id: '639baebf8b84944b872cf648' }
     });
     render(
       <MemoryRouter>
-        <Admissions />
+        <StudentOverviewPage />
       </MemoryRouter>
     );
 
+    // Example
+    // const buttonElement = screen.getByRole('button');
+    // userEvent.click(buttonElement);
+    // const outputElement = screen.getByText('good to see you', { exact: false });
+    // expect(outputElement).toBeInTheDocument(1);
+
     await waitFor(() => {
       // TODO
-      expect(screen.getByTestId('admissinos_page')).toHaveTextContent(
-        'Admissions'
+      expect(screen.getByTestId('student_overview')).toHaveTextContent(
+        'Agent'
       );
+      // expect(1).toBe(1);
     });
   });
 });

@@ -87,7 +87,7 @@ const LastModifiedText = ({ updatedAt, isFinalVersion }) => {
             justifyContent: 'right'
           }}
         >
-          <Typography variant="body2" flexItem>
+          <Typography variant="body2">
             Last Modified: <strong>{convertDate(updatedAt)}</strong>
           </Typography>
           {isFinalVersion && <Chip color="info" size="medium" label="Final" />}
@@ -475,6 +475,7 @@ function DocModificationThreadInput() {
     try {
       let allStatus = {};
       if (isChanged?.general && surveyInputs?.general) {
+        // only set final if general survey, where programId not present
         const genIsFinalVersion = !thread?.program_id && isFinalVersion;
         const {
           status,
@@ -632,6 +633,10 @@ function DocModificationThreadInput() {
   }
   TabTitle(`${student_name} ${docName}`);
 
+  const isFinalLocked =
+    (thread?.program_id && surveyInputs?.specific?.isFinalVersion) ||
+    surveyInputs?.general?.isFinalVersion;
+
   return (
     <Box>
       <Breadcrumbs aria-label="breadcrumb">
@@ -705,7 +710,7 @@ function DocModificationThreadInput() {
                 title={thread?.program_id ? 'General' : null}
                 surveyInput={surveyInputs.general}
                 surveyType="general"
-                disableEdit={isFinalVersion}
+                disableEdit={isFinalLocked || isFinalVersion}
                 isCollapse={!surveyInputs?.general?.updatedAt}
                 onChange={onChange}
               ></SurveyForm>
@@ -732,7 +737,8 @@ function DocModificationThreadInput() {
                   <Checkbox
                     name="isFinalVersion"
                     type="checkbox"
-                    checked={isFinalVersion}
+                    checked={isFinalLocked || isFinalVersion}
+                    disabled={isFinalLocked}
                     onChange={(e) => {
                       setIsChanged({ general: true, specific: true });
                       setIsFinalVersion(e.target.checked);
@@ -751,15 +757,17 @@ function DocModificationThreadInput() {
             container
             justifyContent="flex-start"
           >
-            <ProgressButton
-              label="Submit"
-              isProgress={isSubmitting}
-              size="small"
-              variant="contained"
-              color="primary"
-              disabled={isSubmitting}
-              onClick={onSubmit}
-            />
+            {!isFinalLocked && (
+              <ProgressButton
+                label="Submit"
+                isProgress={isSubmitting}
+                size="small"
+                variant="contained"
+                color="primary"
+                disabled={isSubmitting}
+                onClick={onSubmit}
+              />
+            )}
             <LinkDom to=".." relative="path">
               <Button color="secondary" variant="contained">
                 Back

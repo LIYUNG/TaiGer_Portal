@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Collapse } from 'react-bootstrap';
 import { Link as LinkDom } from 'react-router-dom';
 import {
   Accordion,
+  Collapse,
   AccordionDetails,
   AccordionSummary,
   Button,

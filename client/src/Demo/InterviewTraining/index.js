@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Form } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
 import { Link as LinkDom } from 'react-router-dom';
 import {
   Box,
@@ -12,7 +12,9 @@ import {
   TableCell,
   TableHead,
   TableRow,
-  Typography
+  Typography,
+  TextField,
+  MenuItem
 } from '@mui/material';
 
 import { isProgramDecided, is_TaiGer_role } from '../Utils/checking-functions';
@@ -32,7 +34,6 @@ import { useAuth } from '../../components/AuthProvider';
 import { appConfig } from '../../config';
 import Loading from '../../components/Loading/Loading';
 import ModalNew from '../../components/Modal';
-import { useTranslation } from 'react-i18next';
 
 function InterviewTraining() {
   const { user } = useAuth();
@@ -266,9 +267,6 @@ function InterviewTraining() {
     }));
   };
 
-  // if (!is_TaiGer_role(user)) {
-  //   return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
-  // }
   const {
     res_status,
     isLoaded,
@@ -348,7 +346,9 @@ function InterviewTraining() {
             {t('Back')}
           </Button>
           <Card>
-            <Typography variant="h6">Provide Interview Information</Typography>
+            <Typography variant="h6">
+              {t('Provide Interview Information')}
+            </Typography>
             <Table>
               <TableHead>
                 <TableRow>
@@ -358,86 +358,99 @@ function InterviewTraining() {
               </TableHead>
               <TableBody>
                 <TableRow>
-                  <TableCell>Interview Date</TableCell>
+                  <TableCell>{t('Interview Date')}</TableCell>
                   <TableCell>
-                    <Form>
-                      <Form.Group controlId="interview_date">
-                        <Form.Control
-                          type="date"
-                          //   value={''}
-                          placeholder="Date of Interview"
-                          onChange={(e) => handleChange_InterviewTraining(e)}
-                        />
-                      </Form.Group>
-                    </Form>
+                    <TextField
+                      name="interview_date"
+                      type="date"
+                      required
+                      fullWidth
+                      id="interview_date"
+                      placeholder="Date of Interview"
+                      label={`${t('Date of Interview')}`}
+                      InputLabelProps={{
+                        shrink: true
+                      }}
+                      value={''}
+                      onChange={(e) => handleChange_InterviewTraining(e)}
+                    />
                   </TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell>Interview time</TableCell>
+                  <TableCell>{t('Interview time')}</TableCell>
                   <TableCell>
-                    <Form>
-                      <Form.Group controlId="interview_time">
-                        <Form.Control
-                          type="text"
-                          //   value={''}
-                          placeholder="Date of Interview"
-                          onChange={(e) => handleChange_InterviewTraining(e)}
-                        />
-                      </Form.Group>
-                    </Form>
+                    <TextField
+                      name="interview_time"
+                      type="text"
+                      required
+                      fullWidth
+                      id="interview_time"
+                      placeholder="Interview time"
+                      label={`${t('Interview time')}`}
+                      InputLabelProps={{
+                        shrink: true
+                      }}
+                      value={''}
+                      onChange={(e) => handleChange_InterviewTraining(e)}
+                    />
                   </TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell>Interview duration</TableCell>
+                  <TableCell>{t('Interview duration')}</TableCell>
                   <TableCell>
-                    <Form>
-                      <Form.Group controlId="interview_duration">
-                        <Form.Control
-                          type="text"
-                          //   value={''}
-                          placeholder="1 hour"
-                          onChange={(e) => handleChange_InterviewTraining(e)}
-                        />
-                      </Form.Group>
-                    </Form>
+                    <TextField
+                      name="interview_duration"
+                      type="text"
+                      required
+                      fullWidth
+                      id="interview_duration"
+                      placeholder="Interview duration"
+                      label={`${t('Interview duration')}`}
+                      InputLabelProps={{
+                        shrink: true
+                      }}
+                      value={''}
+                      onChange={(e) => handleChange_InterviewTraining(e)}
+                    />
                   </TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell>Interview University</TableCell>
+                  <TableCell>{t('Interview University')}</TableCell>
                   <TableCell>
-                    <Form>
-                      <Form.Group controlId="program_id">
-                        <Form.Control
-                          as="select"
-                          onChange={(e) => handleChange_InterviewTraining(e)}
-                        >
-                          <option value={''}>Select Document Category</option>
-                          {!is_TaiGer_role(user) &&
-                            available_interview_request_programs.map(
-                              (cat, i) => (
-                                <option value={cat.key} key={i}>
-                                  {cat.value}
-                                </option>
-                              )
-                            )}
-                        </Form.Control>
-                      </Form.Group>
-                    </Form>
+                    <TextField
+                      fullWidth
+                      name="program_id"
+                      id="program_id"
+                      select
+                      onChange={(e) => handleChange_InterviewTraining(e)}
+                    >
+                      <MenuItem value={''}>Select Document Category</MenuItem>
+                      {!is_TaiGer_role(user) &&
+                        available_interview_request_programs.map((cat, i) => (
+                          <MenuItem value={cat.key} key={i}>
+                            {cat.value}
+                          </MenuItem>
+                        ))}
+                    </TextField>
                   </TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell>Interviewer</TableCell>
+                  <TableCell>{t('Interviewer')}</TableCell>
                   <TableCell>
-                    <Form>
-                      <Form.Group controlId="interviewer">
-                        <Form.Control
-                          type="text"
-                          //   value={''}
-                          placeholder="Prof. Sebastian"
-                          onChange={(e) => handleChange_InterviewTraining(e)}
-                        />
-                      </Form.Group>
-                    </Form>
+                    <TextField
+                      name="interviewer"
+                      type="text"
+                      required
+                      fullWidth
+                      id="interviewer"
+                      placeholder="Prof. Sebastian"
+                      label={`${t('Interviewer')}`}
+                      InputLabelProps={{
+                        shrink: true
+                      }}
+                      value={''}
+                      onChange={(e) => handleChange_InterviewTraining(e)}
+                    />
                   </TableCell>
                 </TableRow>
               </TableBody>
@@ -502,7 +515,10 @@ function InterviewTraining() {
       >
         <Typography variant="h6">Warning</Typography>
         Do you want to delete the interview request of{' '}
-        <b>{interviewTrainingState.interview_name_toBeDelete}</b>?
+        <Typography fontWeight="bold">
+          {interviewTrainingState.interview_name_toBeDelete}
+        </Typography>
+        ?
         <Button
           color="primary"
           variant="contained"

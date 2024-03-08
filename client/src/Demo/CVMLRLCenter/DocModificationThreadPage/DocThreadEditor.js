@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import SendIcon from '@mui/icons-material/Send';
 
 import EditorSimple from '../../../components/EditorJs/EditorSimple';
-import { Button, Grid, Card, TextField } from '@mui/material';
+import { Button, Grid, Card, TextField, Tooltip } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 function DocThreadEditor(props) {
@@ -23,12 +22,6 @@ function DocThreadEditor(props) {
       editorState: content
     }));
   };
-
-  const renderTooltip = (props) => (
-    <Tooltip id="tooltip-disabled" {...props}>
-      Please write some text to improve the communication and understanding.
-    </Tooltip>
-  );
 
   return (
     <>
@@ -67,23 +60,20 @@ function DocThreadEditor(props) {
           {!statedata.editorState.blocks ||
           statedata.editorState.blocks.length === 0 ||
           props.buttonDisabled ? (
-            <OverlayTrigger
-              placement="right"
-              delay={{ show: 250, hide: 400 }}
-              overlay={renderTooltip}
+            <Tooltip
+              title={t(
+                'Please write some text to improve the communication and understanding.'
+              )}
+              placement="top"
             >
-              <span className="d-inline-block">
-                <Button
-                  color="primary"
-                  variant="contained"
-                  disabled={true}
-                  style={{ pointerEvents: 'none' }}
-                  startIcon={<SendIcon />}
-                >
-                  {t('Send')}
-                </Button>
-              </span>
-            </OverlayTrigger>
+              <Button
+                color="secondary"
+                variant="outlined"
+                startIcon={<SendIcon />}
+              >
+                {t('Send')}
+              </Button>
+            </Tooltip>
           ) : (
             <Button
               color="primary"

@@ -14,9 +14,7 @@ import {
   useLoaderData
 } from 'react-router-dom';
 
-import {
-  mockTwoNoAgentNoStudentsData
-} from '../../../test/testingNoAgentNoEditorStudentData';
+import { mockTwoNoAgentNoStudentsData } from '../../../test/testingNoAgentNoEditorStudentData';
 import { RouterProvider } from 'react-router-dom';
 
 jest.mock('axios');
@@ -79,12 +77,6 @@ describe('Admin AssignEditors', () => {
       initialEntries: ['/assignment/editors']
     });
     render(<RouterProvider router={router} />);
-
-    // Example
-    // const buttonElement = screen.getByRole('button');
-    // userEvent.click(buttonElement);
-    // const outputElement = screen.getByText('good to see you', { exact: false });
-    // expect(outputElement).toBeInTheDocument(1);
 
     await waitFor(() => {
       expect(screen.getByTestId('assignment_editors')).toHaveTextContent(

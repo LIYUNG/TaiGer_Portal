@@ -19,6 +19,7 @@ import {
   LANGUAGES_ARRAY_OPTIONS,
   SEMESTER_ARRAY_OPTIONS,
   UNI_ASSIST_ARRAY_OPTIONS,
+  YES_NO_BOOLEAN_OPTIONS,
   field_alert
 } from '../Utils/contants';
 import { appConfig } from '../../config';
@@ -29,6 +30,7 @@ function NewProgramEdit(props) {
     program: props.program || {},
     school_name_set: new Set(props.programs?.map((program) => program.school))
   });
+
   const [searchResults, setSearchResults] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const searchContainerRef = useRef(null);
@@ -74,7 +76,10 @@ function NewProgramEdit(props) {
   const handleChange = (e) => {
     e.preventDefault();
     var program_temp = { ...initStates.program };
-    program_temp[e.target.name] = e.target.value.trimLeft();
+    program_temp[e.target.name] =
+      typeof e.target.value === 'string'
+        ? e.target.value.trimLeft()
+        : e.target.value;
     setInitStates((initStates) => ({
       ...initStates,
       program: program_temp
@@ -560,6 +565,31 @@ function NewProgramEdit(props) {
               </Select>
             </FormControl>
           </Grid>
+
+          <Grid item xs={6} md={6}>
+            <Typography variant="body1">
+              {t('RL Program specific?')} *
+            </Typography>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <FormControl fullWidth>
+              <Select
+                size="small"
+                labelId="is_rl_specific"
+                name="is_rl_specific"
+                id="is_rl_specific"
+                onChange={(e) => handleChange(e)}
+                value={initStates.program?.is_rl_specific}
+              >
+                {YES_NO_BOOLEAN_OPTIONS.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+
           <Grid item xs={6} md={6}>
             <Typography variant="body1">{t('RL Requirements?')}</Typography>
           </Grid>

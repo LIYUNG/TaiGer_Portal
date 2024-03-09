@@ -58,6 +58,13 @@ function SingleProgramView(props) {
     setStudentsTabValue(newValue);
   };
 
+  const convertToText = (value) => {
+    if (!value) return ''; // undefined or null
+    if (typeof value === 'string') return value;
+    if (typeof value === 'boolean') return value ? 'Yes' : 'No';
+    if (Array.isArray(value)) return value.join(', ');
+  };
+
   return (
     <>
       <Box sx={{ my: 1 }}>
@@ -164,7 +171,7 @@ function SingleProgramView(props) {
                     </Grid>
                     <Grid item xs={12} md={8}>
                       <LinkableNewlineText
-                        text={props.program[program_field.prop]}
+                        text={convertToText(props.program[program_field.prop])}
                       />
                     </Grid>
                   </Fragment>

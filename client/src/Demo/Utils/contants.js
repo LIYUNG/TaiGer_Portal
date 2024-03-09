@@ -886,6 +886,7 @@ export const program_fields_special_documents = [
   { name: 'ML Required?', prop: 'ml_required' },
   { name: 'ML Requirements', prop: 'ml_requirements' },
   { name: 'RL Required?', prop: 'rl_required' },
+  { name: 'RL Program specific?', prop: 'is_rl_specific' },
   { name: 'RL Requirements', prop: 'rl_requirements' },
   { name: 'Essay Required?', prop: 'essay_required' },
   { name: 'Essay Requirements', prop: 'essay_requirements' },
@@ -1038,6 +1039,11 @@ export const field_alert = (program) => {
     return;
   }
 };
+
+export const YES_NO_BOOLEAN_OPTIONS = [
+  { value: true, label: 'Yes' },
+  { value: false, label: 'No' }
+];
 
 export const DEGREE_CATOGARY_ARRAY_OPTIONS = [
   { value: '', label: 'Please Select' },

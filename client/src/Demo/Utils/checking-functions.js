@@ -69,6 +69,7 @@ export const truncateText = (text, maxLength) => {
 };
 
 export const file_category_const = {
+  rl_required: 'RL',
   ml_required: 'ML',
   essay_required: 'Essay',
   portfolio_required: 'Portfolio',
@@ -1761,18 +1762,38 @@ export const frequencyDistribution = (tasks) => {
   return map;
 };
 
-export const isDocumentsMissingAssign = (application) => {
-  const keys = Object.keys(file_category_const);
-  let flag = false;
-  for (let i = 0; i < keys.length; i += 1) {
-    flag =
-      flag ||
-      (application.decided === 'O' &&
-        application.programId[keys[i]] === 'yes' &&
-        application.doc_modification_thread.findIndex(
-          (thread) =>
-            thread.doc_thread_id?.file_type === file_category_const[keys[i]]
-        ) === -1);
+export const checkIsRLspecific = (program) => {
+  const isRLSpecific = program?.is_rl_specific;
+  const NoRLSpecificFlag = isRLSpecific === undefined || isRLSpecific === null;
+  return isRLSpecific || (NoRLSpecificFlag && program?.rl_requirements);
+};
+
+export const getMissingDocs = (application) => {
+  let missingDocs = [];
+  for (let docName of Object.keys(file_category_const)) {
+    if (
+      application?.programId[docName] === 'yes' &&
+      application?.doc_modification_thread?.findIndex(
+        (thread) =>
+          thread.doc_thread_id?.file_type === file_category_const[docName]
+      ) === -1
+    )
+      missingDocs.push(file_category_const[docName]);
   }
-  return flag;
+
+  if (checkIsRLspecific(application?.programId)) {
+    const nrRLNeeded = parseInt(application.programId.rl_required);
+    const nrSpecificRL = application.doc_modification_thread.filter((thread) =>
+      thread.doc_thread_id?.file_type?.startsWith('RL_')
+    ).length;
+    if (nrRLNeeded > nrSpecificRL) {
+      missingDocs.push(`RL x ${nrRLNeeded - nrSpecificRL}`);
+    }
+  }
+
+  return missingDocs;
+};
+
+export const isDocumentsMissingAssign = (application) => {
+  return getMissingDocs(application).length > 0;
 };

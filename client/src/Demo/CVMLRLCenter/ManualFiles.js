@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Card, Grid, Link, Typography } from '@mui/material';
+import { Alert, Button, Card, Grid, Link, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { Link as LinkDom } from 'react-router-dom';
 
@@ -9,6 +9,7 @@ import {
   check_generaldocs,
   file_category_const,
   isDocumentsMissingAssign,
+  getMissingDocs,
   is_TaiGer_role,
   is_program_closed,
   is_program_ml_rl_essay_finished
@@ -56,6 +57,7 @@ function ManualFiles(props) {
     setCategory(e.target.value);
   };
 
+  const isDocMissing = isDocumentsMissingAssign(props.application);
   const create_generaldoc_reminder = check_generaldocs(props.student);
   const required_doc_keys = Object.keys(file_category_const);
 
@@ -90,8 +92,8 @@ function ManualFiles(props) {
             )}
             {props.filetype === 'ProgramSpecific' && (
               <Grid item xs={12}>
-                {isDocumentsMissingAssign(props.application) && (
-                  <Card>
+                {isDocMissing && (
+                  <Alert severity="warning">
                     <Typography variant="string">
                       Please assign the following documents to the student for{' '}
                     </Typography>
@@ -100,21 +102,12 @@ function ManualFiles(props) {
                       {props.application.programId.program_name}
                     </b>
                     :{' '}
-                    {required_doc_keys.map(
-                      (doc_reqired_key, i) =>
-                        props.application.programId[doc_reqired_key] ===
-                          'yes' &&
-                        props.application.doc_modification_thread.findIndex(
-                          (thread) =>
-                            thread.doc_thread_id?.file_type ===
-                            file_category_const[doc_reqired_key]
-                        ) === -1 && (
-                          <li key={i}>
-                            <b>{file_category_const[doc_reqired_key]}</b>
-                          </li>
-                        )
-                    )}
-                  </Card>
+                    {getMissingDocs(props.application)?.map((doc, i) => (
+                      <li key={i}>
+                        <b>{doc}</b>
+                      </li>
+                    ))}
+                  </Alert>
                 )}
               </Grid>
             )}
@@ -122,7 +115,7 @@ function ManualFiles(props) {
               <Grid item xs={12}>
                 <Typography variant="string" sx={{ my: 2 }}>
                   <b>
-                    Ths following tasks are not visible in tasks dashboard and
+                    This following tasks are not visible in tasks dashboard and
                     CV/ML/RL/Center. Please
                     {
                       <Link

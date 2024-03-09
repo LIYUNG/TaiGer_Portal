@@ -1,5 +1,10 @@
 import React, { useState } from 'react';
-import { Navigate, Link as LinkDom, useLoaderData } from 'react-router-dom';
+import {
+  Navigate,
+  Link as LinkDom,
+  useLoaderData,
+  useLocation
+} from 'react-router-dom';
 import {
   Tabs,
   Tab,
@@ -17,6 +22,7 @@ import {
   Alert,
   TableContainer
 } from '@mui/material';
+// import AddIcon from '@mui/icons-material/Add';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { AiFillEdit } from 'react-icons/ai';
@@ -34,7 +40,9 @@ import {
   profile_name_list,
   convertDate,
   programstatuslist,
-  academic_background_header
+  academic_background_header,
+  SINGLE_STUDENT_TABS,
+  SINGLE_STUDENT_REVERSED_TABS
 } from '../Utils/contants';
 import {
   is_TaiGer_Guest,
@@ -42,7 +50,7 @@ import {
   is_TaiGer_role
 } from '../Utils/checking-functions';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
-import { updateAgents, updateEditors } from '../../api';
+import { updateAgents, updateAttributes, updateEditors } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import PortalCredentialPage from '../PortalCredentialPage';
@@ -79,10 +87,13 @@ function SingleStudentPage() {
     res_modal_message: '',
     res_modal_status: 0
   });
-  const [value, setValue] = useState(0);
-
+  const { hash } = useLocation();
+  const [value, setValue] = useState(
+    SINGLE_STUDENT_TABS[hash.replace('#', '')] || 0
+  );
   const handleChange = (event, newValue) => {
     setValue(newValue);
+    window.location.hash = SINGLE_STUDENT_REVERSED_TABS[newValue];
   };
 
   const submitUpdateAgentlist = (e, updateAgentList, student_id) => {
@@ -93,6 +104,11 @@ function SingleStudentPage() {
   const submitUpdateEditorlist = (e, updateEditorList, student_id) => {
     e.preventDefault();
     UpdateEditorlist(e, updateEditorList, student_id);
+  };
+
+  const submitUpdateAttributeslist = (e, updateEditorList, student_id) => {
+    e.preventDefault();
+    UpdateAttributeslist(e, updateEditorList, student_id);
   };
 
   const UpdateAgentlist = (e, updateAgentList, student_id) => {
@@ -137,6 +153,45 @@ function SingleStudentPage() {
   const UpdateEditorlist = (e, updateEditorList, student_id) => {
     e.preventDefault();
     updateEditors(updateEditorList, student_id).then(
+      (resp) => {
+        const { data, success } = resp.data;
+        const { status } = resp;
+        if (success) {
+          var students_temp = { ...singleStudentPage.student };
+          students_temp = data; // datda is single student updated
+          setSingleStudentPage((prevState) => ({
+            ...prevState,
+            isLoaded: true, //false to reload everything
+            student: students_temp,
+            success: success,
+            updateAgentList: [],
+            res_modal_status: status
+          }));
+        } else {
+          const { message } = resp.data;
+          setSingleStudentPage((prevState) => ({
+            ...prevState,
+            isLoaded: true,
+            res_modal_message: message,
+            res_modal_status: status
+          }));
+        }
+      },
+      (error) => {
+        setSingleStudentPage((prevState) => ({
+          ...prevState,
+          isLoaded: true,
+          error,
+          res_modal_status: 500,
+          res_modal_message: ''
+        }));
+      }
+    );
+  };
+
+  const UpdateAttributeslist = (e, updateAttributesList, student_id) => {
+    e.preventDefault();
+    updateAttributes(updateAttributesList, student_id).then(
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
@@ -255,7 +310,7 @@ function SingleStudentPage() {
                 underline="hover"
                 color="inherit"
                 component={LinkDom}
-                to={`${DEMO.COMMUNICATIONS_LINK(
+                to={`${DEMO.COMMUNICATIONS_TAIGER_MODE_LINK(
                   singleStudentPage.student._id
                 )}`}
                 sx={{ mr: 1 }}
@@ -350,6 +405,7 @@ function SingleStudentPage() {
                     student={singleStudentPage.student}
                     submitUpdateAgentlist={submitUpdateAgentlist}
                     submitUpdateEditorlist={submitUpdateEditorlist}
+                    submitUpdateAttributeslist={submitUpdateAttributeslist}
                   />
                 </TableBody>
               </Table>

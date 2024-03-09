@@ -15,7 +15,6 @@ import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import AccountCircle from '@mui/icons-material/AccountCircle';
-import MoreIcon from '@mui/icons-material/MoreVert';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import Settings from '@mui/icons-material/Settings';
@@ -177,7 +176,7 @@ const ExcludeMenu = {
 };
 
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
-  ({ theme, open, isMobile }) => ({
+  ({ theme, open, ismobile }) => ({
     flexGrow: 1,
     padding: theme.spacing(3),
     width: `calc(100% - ${drawerWidth}px)`,
@@ -185,7 +184,7 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen
     }),
-    marginLeft: isMobile ? 0 : `-${drawerWidth}px`,
+    marginLeft: ismobile === 'true' ? 0 : `-${drawerWidth}px`,
     ...(open && {
       width: `calc(100% - ${drawerWidth}px)`,
       transition: theme.transitions.create('margin', {
@@ -199,16 +198,16 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
 
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== 'open'
-})(({ theme, open, isMobile }) => ({
+})(({ theme, open, ismobile }) => ({
   transition: theme.transitions.create(['margin', 'width'], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen
   }),
   // width: `calc(100% - ${0}px)`,
-  marginLeft: isMobile ? 0 : `-${drawerWidth}px`,
+  marginLeft: ismobile === 'true' ? 0 : `-${drawerWidth}px`,
   ...(open && {
-    width: isMobile ? '100%' : `calc(100% - ${drawerWidth}px)`,
-    // marginLeft: isMobile ? `${drawerWidth}px` : 0,
+    width: ismobile === 'true' ? '100%' : `calc(100% - ${drawerWidth}px)`,
+    // marginLeft: ismobile ? `${drawerWidth}px` : 0,
     transition: theme.transitions.create(['margin', 'width'], {
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen
@@ -230,8 +229,8 @@ function NavBar(props) {
   const { user, isAuthenticated, isLoaded, logout } = useAuth();
   const theme = useTheme();
   const [menuItemOpen, setMenuItemOpen] = useState({});
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-  const [open, setOpen] = useState(isMobile ? false : true);
+  const ismobile = useMediaQuery(theme.breakpoints.down('md'));
+  const [open, setOpen] = useState(ismobile ? false : true);
   const [navState, setNavState] = useState({
     listOpen: false,
     dropdownShow: false,
@@ -333,10 +332,6 @@ function NavBar(props) {
 
   const handleMobileMenuClose = () => {
     setMobileMoreAnchorEl(null);
-  };
-
-  const handleMobileMenuOpen = (event) => {
-    setMobileMoreAnchorEl(event.currentTarget);
   };
 
   const handleClose = () => {
@@ -545,20 +540,20 @@ function NavBar(props) {
           display: 'flex'
         }}
         onClick={() => {
-          if (isMobile) {
+          if (ismobile) {
             handleDrawerClose();
           }
         }}
       >
         <CssBaseline />
-        <AppBar position="fixed" open={open} isMobile={isMobile}>
+        <AppBar position="fixed" open={open} ismobile={ismobile.toString()}>
           <Toolbar>
             <IconButton
               color="inherit"
               aria-label="open drawer"
               onClick={(e) => handleDrawerOpen(e)}
               edge="start"
-              sx={{ mr: 2, ...(!isMobile && open && { display: 'none' }) }}
+              sx={{ mr: 2, ...(!ismobile && open && { display: 'none' }) }}
             >
               <MenuIcon />
             </IconButton>
@@ -602,7 +597,7 @@ function NavBar(props) {
                 </IconButton>
               )}
 
-              <Tooltip title="Account settings">
+              <Tooltip title="Account settings" placement="bottom-start">
                 <IconButton
                   size="large"
                   edge="end"
@@ -621,16 +616,57 @@ function NavBar(props) {
               </Tooltip>
             </Box>
             <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
-              <IconButton
-                size="large"
-                aria-label="show more"
-                aria-controls={mobileMenuId}
-                aria-haspopup="true"
-                onClick={handleMobileMenuOpen}
-                color="inherit"
-              >
-                <MoreIcon />
-              </IconButton>
+              {(is_TaiGer_Agent(user) || is_TaiGer_Student(user)) && (
+                <IconButton
+                  size="large"
+                  aria-label="show active event"
+                  onClick={handleNavigateCalendar}
+                  color="inherit"
+                >
+                  <Badge badgeContent={navState.activeEventCount} color="error">
+                    <CalendarMonthIcon />
+                  </Badge>
+                </IconButton>
+              )}
+              {!is_TaiGer_Editor(user) && (
+                <IconButton
+                  size="large"
+                  aria-label="show unread new messages"
+                  aria-controls={chatId}
+                  aria-haspopup="true"
+                  onClick={handleOpenChat}
+                  color="inherit"
+                >
+                  <Badge badgeContent={navState.unreadCount} color="error">
+                    <MailIcon />
+                  </Badge>
+                </IconButton>
+              )}
+              <Tooltip title="Account settings" placement="bottom-start">
+                <IconButton
+                  size="large"
+                  edge="end"
+                  aria-label="account of current user"
+                  aria-controls={menuId}
+                  aria-haspopup="true"
+                  onClick={handleProfileMenuOpen}
+                  color="inherit"
+                  sx={{
+                    '& .MuiAvatar-root': {
+                      width: 32,
+                      height: 32,
+                      ml: -0.5,
+                      mr: 1
+                    }
+                  }}
+                >
+                  <Avatar
+                    {...stringAvatar(`${user?.firstname} ${user?.lastname}`)}
+                    size="small"
+                    title={`${user?.firstname} ${user?.lastname}`}
+                  />
+                </IconButton>
+              </Tooltip>
             </Box>
           </Toolbar>
         </AppBar>
@@ -644,7 +680,7 @@ function NavBar(props) {
             }
           }}
           // variant="persistent"
-          variant={isMobile ? 'temporary' : 'persistent'}
+          variant={ismobile ? 'temporary' : 'persistent'}
           anchor="left"
           open={open}
         >
@@ -677,7 +713,7 @@ function NavBar(props) {
                       }));
                     }}
                   >
-                    <ListItemIcon>{/* <InboxIcon /> */}</ListItemIcon>
+                    <ListItemIcon>{menuItem.icon}</ListItemIcon>
                     <ListItemText primary={t(`${menuItem.title}`)} />
                     {menuItemOpen[menuItem.id] ? (
                       <ExpandLess />
@@ -726,8 +762,11 @@ function NavBar(props) {
             )}
           </List>
           <Divider />
+          <div style={{ position: 'relative', bottom: 0, width: '100%' }}>
+            <Footer />
+          </div>
         </Drawer>
-        <Main open={open} isMobile={isMobile}>
+        <Main open={open} ismobile={ismobile.toString()}>
           <DrawerHeader />
           {props.children}
           {renderMobileMenu}
@@ -735,7 +774,6 @@ function NavBar(props) {
           <RenderMenu />
         </Main>
       </Box>
-      <Footer />
     </>
   );
 }

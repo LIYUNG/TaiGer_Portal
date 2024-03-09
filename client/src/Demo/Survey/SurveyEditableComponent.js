@@ -1032,7 +1032,7 @@ const SurveyEditableComponent = (props) => {
                       : '92'
                   } `}
                   value={
-                    survey.academic_background?.language?.english_score || 0
+                    survey.academic_background?.language?.english_score || ''
                   }
                   disabled={
                     survey.academic_background.language &&
@@ -1062,7 +1062,7 @@ const SurveyEditableComponent = (props) => {
                   } `}
                   value={
                     survey.academic_background?.language
-                      ?.english_score_reading || 0
+                      ?.english_score_reading || ''
                   }
                   disabled={
                     survey.academic_background?.language
@@ -1091,7 +1091,7 @@ const SurveyEditableComponent = (props) => {
                   } `}
                   value={
                     survey.academic_background?.language
-                      ?.english_score_listening || 0
+                      ?.english_score_listening || ''
                   }
                   disabled={
                     survey.academic_background?.language

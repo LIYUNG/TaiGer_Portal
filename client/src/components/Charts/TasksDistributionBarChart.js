@@ -12,7 +12,7 @@ import {
 
 const TasksDistributionBarChart = ({ data }) => {
   return (
-    <ResponsiveContainer width="100%" height={300}>
+    <ResponsiveContainer width="100%" height={250}>
       <BarChart
         data={data}
         margin={{

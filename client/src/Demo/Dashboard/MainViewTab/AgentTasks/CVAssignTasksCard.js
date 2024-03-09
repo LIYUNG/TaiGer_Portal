@@ -32,7 +32,7 @@ function CVAssignTasksCard(props) {
               <Link
                 to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                   props.student._id.toString(),
-                  '/CV_ML_RL'
+                  DEMO.CVMLRL_HASH
                 )}`}
                 component={LinkDom}
               >

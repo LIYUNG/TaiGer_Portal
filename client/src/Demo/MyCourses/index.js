@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import DownloadIcon from '@mui/icons-material/Download';
-import { Form } from 'react-bootstrap';
 import {
   Box,
   Breadcrumbs,
   Button,
   Card,
+  Checkbox,
   CircularProgress,
   FormControl,
+  FormControlLabel,
   Grid,
   InputLabel,
   Link,
@@ -15,6 +16,7 @@ import {
   ListItem,
   MenuItem,
   Select,
+  TableContainer,
   Typography
 } from '@mui/material';
 import { DataSheetGrid, textColumn, keyColumn } from 'react-datasheet-grid';
@@ -478,7 +480,7 @@ export default function MyCourses() {
             component={LinkDom}
             to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
               statedata.student._id.toString(),
-              '/profile'
+              DEMO.PROFILE_HASH
             )}`}
           >
             {statedata.student.firstname} {statedata.student.lastname}
@@ -486,66 +488,66 @@ export default function MyCourses() {
         )}
         <Typography color="text.primary">My Courses</Typography>
       </Breadcrumbs>
-      <Card sx={{ mt: 2, padding: 2, minWidth: '450px' }}>
+      {/* <Card sx={{ mt: 2, padding: 2, minWidth: '450px' }}> */}
+      <Typography variant="h6" sx={{ pt: 2 }}>
+        請把大學及碩士成績單 上面出現的所有課程填入這個表單內
+      </Typography>
+      <Box>
         <Typography variant="h6">
-          請把大學及碩士成績單 上面出現的所有課程填入這個表單內
+          Please fill <b>all your courses in the Bachelor&apos;s study</b> in
+          this table
         </Typography>
-        <Box>
-          <Typography variant="h6">
-            Please fill <b>all your courses in the Bachelor&apos;s study</b> in
-            this table
-          </Typography>
-          <List>
-            <ListItem>
-              <Typography variant="body1">
-                若您仍是高中生、申請大學部者，請忽略此表格
-              </Typography>
-            </ListItem>
-            <ListItem>
-              <Typography variant="body1">
-                若有交換，請填入交換時的修過的課
-              </Typography>
-            </ListItem>
-            <ListItem>
-              <Typography variant="body1">
-                若有在大學部時期修過的碩士課程也可以放上去
-              </Typography>
-            </ListItem>
-            <ListItem>
-              <Typography variant="body1">
-                若有同名課程(如微積分一、微積分二)，請各自獨立一行，不能自行疊加在一行
-              </Typography>
-            </ListItem>
-            <ListItem>
-              <Typography variant="body1">
-                若你已就讀碩士或仍然是碩士班在學，請將碩士班課程標記&quot;碩士&quot;在，Grades那行。
-              </Typography>
-            </ListItem>
-            <ListItem>
-              <Typography variant="body1">
-                若目前尚未畢業，請每學期選完課確定下學課表後更新這個表單
-              </Typography>
-            </ListItem>
-          </List>
-        </Box>
-        <Typography variant="h6">
-          <b>表格一</b>：請放 {appConfig.companyName} 服務開始<b>前</b>
-          已經修過的課程
-        </Typography>
-        <Typography sx={{ my: 1 }}>
-          您只需在 {appConfig.companyName} 服務開始初期更新一次
-          <b>表格一</b>
-          ，往後新的學期，新課程請更新在
-          <b>表格二</b>
-        </Typography>
-        <Typography sx={{ mb: 1 }}>
-          若您已畢業，只需更新<b>表格一</b>即可。
-        </Typography>
+        <List>
+          <ListItem>
+            <Typography variant="body1">
+              若您仍是高中生、申請大學部者，請忽略此表格
+            </Typography>
+          </ListItem>
+          <ListItem>
+            <Typography variant="body1">
+              若有交換，請填入交換時的修過的課
+            </Typography>
+          </ListItem>
+          <ListItem>
+            <Typography variant="body1">
+              若有在大學部時期修過的碩士課程也可以放上去
+            </Typography>
+          </ListItem>
+          <ListItem>
+            <Typography variant="body1">
+              若有同名課程(如微積分一、微積分二)，請各自獨立一行，不能自行疊加在一行
+            </Typography>
+          </ListItem>
+          <ListItem>
+            <Typography variant="body1">
+              若你已就讀碩士或仍然是碩士班在學，請將碩士班課程標記&quot;碩士&quot;在，Grades那行。
+            </Typography>
+          </ListItem>
+          <ListItem>
+            <Typography variant="body1">
+              若目前尚未畢業，請每學期選完課確定下學課表後更新這個表單
+            </Typography>
+          </ListItem>
+        </List>
+      </Box>
+      <Typography variant="h6">
+        <b>表格一</b>：請放 {appConfig.companyName} 服務開始<b>前</b>
+        已經修過的課程
+      </Typography>
+      <Typography sx={{ my: 1 }}>
+        您只需在 {appConfig.companyName} 服務開始初期更新一次
+        <b>表格一</b>
+        ，往後新的學期，新課程請更新在
+        <b>表格二</b>
+      </Typography>
+      <Typography sx={{ mb: 1 }}>
+        若您已畢業，只需更新<b>表格一</b>即可。
+      </Typography>
+      <TableContainer style={{ overflowX: 'auto' }}>
         <DataSheetGrid
           id={1}
           style={{ minWidth: '450px' }}
           height={6000}
-          readOnly={true}
           disableContextMenu={false}
           disableExpandSelection={false}
           headerRowHeight={30}
@@ -557,16 +559,18 @@ export default function MyCourses() {
           }
           columns={columns}
         />
-        <Card sx={{ mt: 2, backgroundColor: '#e3e3e3' }}>
-          <Typography variant="h6" sx={{ p: 2 }}>
-            <b>表格二</b>：請放 {appConfig.companyName} 服務開始<b>後</b>
-            所選的修課程
-          </Typography>
-          <Typography sx={{ px: 2, pb: 2 }}>
-            如此一來顧問才能了解哪些課程是 {appConfig.companyName}
-            服務開始後要求修的課程。到畢業前所有新修的課程， 只需更新
-            <b>表格二</b>。
-          </Typography>
+      </TableContainer>
+      <Card sx={{ mt: 2, backgroundColor: '#e3e3e3' }}>
+        <Typography variant="h6" sx={{ p: 2 }}>
+          <b>表格二</b>：請放 {appConfig.companyName} 服務開始<b>後</b>
+          所選的修課程
+        </Typography>
+        <Typography sx={{ px: 2, pb: 2 }}>
+          如此一來顧問才能了解哪些課程是 {appConfig.companyName}
+          服務開始後要求修的課程。到畢業前所有新修的課程， 只需更新
+          <b>表格二</b>。
+        </Typography>
+        <TableContainer style={{ overflowX: 'auto' }}>
           <DataSheetGrid
             id={2}
             style={{ minWidth: '450px' }}
@@ -580,43 +584,42 @@ export default function MyCourses() {
             onChange={onChange_taiger_guided}
             columns={columns}
           />
-        </Card>
-        {is_TaiGer_AdminAgent(user) && (
-          <Box sx={{ mt: 2 }}>
-            <Form>
-              <Form.Group>
-                <Form.Check
-                  type="checkbox"
-                  className="text-default"
-                  label={`Lock Table 1 preventing student modifying it.`}
-                  value={'is locked'}
-                  checked={statedata.table_data_string_locked}
-                  onChange={(e) => handleLockTable(e)}
-                />
-              </Form.Group>
-            </Form>
-          </Box>
-        )}
-        <Typography variant="body2" sx={{ my: 2 }}>
-          {t('Last update')}&nbsp;
-          {convertDate(statedata.updatedAt)}
-        </Typography>
-        <Button
-          color="primary"
-          variant="contained"
-          size="small"
-          onClick={onSubmit}
-          disabled={statedata.isUpdating}
-          sx={{ mb: 2 }}
-        >
-          {statedata.isUpdating ? <CircularProgress size={16} /> : t('Update')}
-        </Button>
-        <Typography variant="body2">
-          {t(
-            'After you updated the course table, please contact your agent for your course analysis.'
-          )}
-        </Typography>
+        </TableContainer>
       </Card>
+      {is_TaiGer_AdminAgent(user) && (
+        <Box sx={{ mt: 2 }}>
+          <FormControlLabel
+            label={`Lock Table 1 preventing student modifying it.`}
+            control={
+              <Checkbox
+                checked={statedata.table_data_string_locked}
+                onChange={(e) => handleLockTable(e)}
+                value={'is locked'}
+              />
+            }
+          />
+        </Box>
+      )}
+      <Typography variant="body2" sx={{ my: 2 }}>
+        {t('Last update')}&nbsp;
+        {convertDate(statedata.updatedAt)}
+      </Typography>
+      <Button
+        color="primary"
+        variant="contained"
+        size="small"
+        onClick={onSubmit}
+        disabled={statedata.isUpdating}
+        sx={{ mb: 2 }}
+      >
+        {statedata.isUpdating ? <CircularProgress size={16} /> : t('Update')}
+      </Button>
+      <Typography variant="body2">
+        {t(
+          'After you updated the course table, please contact your agent for your course analysis.'
+        )}
+      </Typography>
+      {/* </Card> */}
       {is_TaiGer_Guest(user) && (
         <Card sx={{ mt: 2 }}>
           <Typography>

@@ -1,7 +1,8 @@
 import React, { Fragment, useState } from 'react';
-import { Row, Col, Card } from 'react-bootstrap';
 import {
   Alert,
+  Box,
+  Card,
   Grid,
   Table,
   TableBody,
@@ -142,110 +143,99 @@ function ManagerMainView(props) {
     <>
       {managerMainViewState.notification?.isRead_new_base_docs_uploaded.map(
         (student, i) => (
-          <Row key={i}>
-            <Col>
-              <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
-                <p
-                  className="text-light my-3 mx-3"
-                  style={{ textAlign: 'left' }}
+          <Box key={i}>
+            <Card>
+              <Typography style={{ textAlign: 'left' }}>
+                <ReportProblemIcon size={18} />
+                <b className="mx-2">Reminder:</b> There are new base documents
+                uploaded by{' '}
+                <b>
+                  {student.student_firstname} {student.student_lastname}
+                </b>{' '}
+                <Link
+                  to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                    student.student_id,
+                    DEMO.PROFILE_HASH
+                  )}`}
+                  style={{ textDecoration: 'none' }}
+                  className="text-info"
                 >
-                  <ReportProblemIcon size={18} />
-                  <b className="mx-2">Reminder:</b> There are new base documents
-                  uploaded by{' '}
-                  <b>
-                    {student.student_firstname} {student.student_lastname}
-                  </b>{' '}
-                  <Link
-                    to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-                      student.student_id,
-                      DEMO.PROFILE
-                    )}`}
-                    style={{ textDecoration: 'none' }}
-                    className="text-info"
-                  >
-                    Base Document
-                  </Link>{' '}
-                  <span style={{ float: 'right', cursor: 'pointer' }}>
-                    <BsX
-                      size={18}
-                      onClick={(e) =>
-                        removeAgentBanner(
-                          e,
-                          'isRead_new_base_docs_uploaded',
-                          student.student_id
-                        )
-                      }
-                    />
-                  </span>
-                </p>
-              </Card>
-            </Col>
-          </Row>
+                  Base Document
+                </Link>{' '}
+                <span style={{ float: 'right', cursor: 'pointer' }}>
+                  <BsX
+                    size={18}
+                    onClick={(e) =>
+                      removeAgentBanner(
+                        e,
+                        'isRead_new_base_docs_uploaded',
+                        student.student_id
+                      )
+                    }
+                  />
+                </span>
+              </Typography>
+            </Card>
+          </Box>
         )
       )}
-      <Row>
-        <Col md={12}>
-          <Card className="card-with-scroll">
-            <Alert severity="error">
-              {t('Upcoming Applications')} (Decided):
-            </Alert>
-            <div className="card-scrollable-body">
-              <Table size="small">
-                <TableBody>
-                  {applications_arr.map((application, idx) => (
-                    <Fragment key={idx}>
-                      <TableRow
-                        className="text-black"
-                        onClick={() => handleCollapse(idx)}
-                      >
-                        <TableCell>
-                          <b>
-                            <Link
-                              to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-                                application.student_id,
-                                DEMO.PROFILE
-                              )}`}
-                            >
-                              {application.firstname_lastname}
-                            </Link>
-                          </b>
-                        </TableCell>
-                        <TableCell>
-                          {application.application_deadline}
-                        </TableCell>
-                        <TableCell>{application.school}</TableCell>
-                        <TableCell>
-                          {progressBarCounter(
-                            application.student,
-                            application.application
-                          )}
-                          %
-                        </TableCell>
-                        <TableCell>{application.program_name}</TableCell>
+      <Box>
+        <div className="card-with-scroll">
+          <Alert severity="error">
+            {t('Upcoming Applications')} (Decided):
+          </Alert>
+          <div className="card-scrollable-body">
+            <Table size="small">
+              <TableBody>
+                {applications_arr.map((application, idx) => (
+                  <Fragment key={idx}>
+                    <TableRow
+                      className="text-black"
+                      onClick={() => handleCollapse(idx)}
+                    >
+                      <TableCell>
+                        <b>
+                          <Link
+                            to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                              application.student_id,
+                              DEMO.PROFILE_HASH
+                            )}`}
+                          >
+                            {application.firstname_lastname}
+                          </Link>
+                        </b>
+                      </TableCell>
+                      <TableCell>{application.application_deadline}</TableCell>
+                      <TableCell>{application.school}</TableCell>
+                      <TableCell>
+                        {progressBarCounter(
+                          application.student,
+                          application.application
+                        )}
+                        %
+                      </TableCell>
+                      <TableCell>{application.program_name}</TableCell>
+                    </TableRow>
+                    {managerMainViewState.collapsedRows[idx] && (
+                      <TableRow>
+                        <td colSpan="12">
+                          <ApplicationProgressCardBody
+                            student={application.student}
+                            application={application.application}
+                          />
+                        </td>
                       </TableRow>
-                      {managerMainViewState.collapsedRows[idx] && (
-                        <TableRow>
-                          <td colSpan="12">
-                            <ApplicationProgressCardBody
-                              student={application.student}
-                              application={application.application}
-                            />
-                          </td>
-                        </TableRow>
-                      )}
-                    </Fragment>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          </Card>
-        </Col>
-      </Row>
+                    )}
+                  </Fragment>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </div>
+      </Box>
       <Grid container spacing={2}>
         {/* TODO: add a program update request ticket card (independent component?) */}
-        {/* <Col md={6}> */}
         <ProgramReportCard />
-        {/* </Col> */}
         {is_any_programs_ready_to_submit(
           props.students.filter((student) =>
             student.agents.some((agent) => agent._id === user._id.toString())
@@ -261,34 +251,28 @@ function ManagerMainView(props) {
             student.agents.some((agent) => agent._id === user._id.toString())
           )
         ) && (
-          <Col md={6}>
-            <Card className="my-2 mx-0" bg={'danger'} text={'light'}>
-              <Card.Header className="py-0 px-0">
-                <Card.Title className="my-2 mx-2 text-light" as={'h5'}>
-                  <ReportProblemIcon size={18} /> Check uploaded base documents:
-                </Card.Title>
-              </Card.Header>
-              <Card.Body className="py-0 px-0 card-scrollable-body">
-                <Table
-                  bordered
-                  hover
-                  className="my-0 mx-0"
-                  variant="dark"
-                  text="light"
-                  size="sm"
-                >
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Student</TableCell>
-                      <TableCell>Base Document</TableCell>
-                      <TableCell>Upload Time</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>{base_documents_checking_tasks}</TableBody>
-                </Table>
-              </Card.Body>
-            </Card>
-          </Col>
+          <Card>
+            <ReportProblemIcon size={18} /> Check uploaded base documents:
+            <Box className="py-0 px-0 card-scrollable-body">
+              <Table
+                bordered
+                hover
+                className="my-0 mx-0"
+                variant="dark"
+                text="light"
+                size="sm"
+              >
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Student</TableCell>
+                    <TableCell>Base Document</TableCell>
+                    <TableCell>Upload Time</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>{base_documents_checking_tasks}</TableBody>
+              </Table>
+            </Box>
+          </Card>
         )}
         {isAnyCVNotAssigned(
           props.students.filter((student) =>
@@ -322,7 +306,7 @@ function ManagerMainView(props) {
           user={user}
         />
       </Grid>
-      <Row>
+      <Box>
         <Table size="small">
           <TableHead>
             <TableRow>
@@ -342,7 +326,7 @@ function ManagerMainView(props) {
           </TableHead>
           <TableBody>{students_agent_editor}</TableBody>
         </Table>
-      </Row>
+      </Box>
     </>
   );
 }

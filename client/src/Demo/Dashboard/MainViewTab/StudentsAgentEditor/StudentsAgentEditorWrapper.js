@@ -34,6 +34,7 @@ function StudentsAgentEditorWrapper(props) {
       updateStudentArchivStatus={props.updateStudentArchivStatus}
       submitUpdateAgentlist={props.submitUpdateAgentlist}
       submitUpdateEditorlist={props.submitUpdateEditorlist}
+      submitUpdateAttributeslist={props.submitUpdateAttributeslist}
       isDashboard={props.isDashboard}
     />
   ));

@@ -221,8 +221,6 @@ function Profile() {
   };
 
   const onTimeStartChange2 = (e, newValues, day) => {
-    console.log(e.target);
-    console.log(newValues);
     setProfileState((prevState) => ({
       ...prevState,
       officehours: {

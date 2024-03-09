@@ -144,6 +144,7 @@ function MessageContainer(props) {
             buttonDisabled={messageContainerState.buttonDisabled}
             handleClickSave={updateMessage}
             handleCancelEdit={handleCancelEdit}
+            isTaiGerView={props.isTaiGerView}
           />
         </>
       ) : (
@@ -156,6 +157,7 @@ function MessageContainer(props) {
           isLoaded={props.isLoaded}
           onDeleteSingleMessage={props.onDeleteSingleMessage}
           onEditMode={onEditMode}
+          isTaiGerView={props.isTaiGerView}
         />
       )}
     </>

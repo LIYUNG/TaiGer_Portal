@@ -29,6 +29,7 @@ import {
 import OffcanvasBaseDocument from '../../components/Offcanvas/OffcanvasBaseDocument';
 import { useAuth } from '../../components/AuthProvider';
 import ModalNew from '../../components/Modal';
+import AcceptProfileFileModel from './AcceptedFilePreviewModal';
 
 function ButtonSetAccepted(props) {
   const { user } = useAuth();
@@ -344,59 +345,76 @@ function ButtonSetAccepted(props) {
           <Button onClick={closeRejectWarningWindow}>{t('No')}</Button>
         </Box>
       </ModalNew>
-      <ModalNew
-        open={buttonSetAcceptedState.showPreview}
-        onClose={closePreviewWindow}
-        aria-labelledby="contained-modal-title-vcenter2"
-      >
-        <Typography id="contained-d-title-vcenter">{props.path}</Typography>
-        <FilePreview
-          path={buttonSetAcceptedState.preview_path}
-          student_id={buttonSetAcceptedState.student_id.toString()}
-        />
-        {props.path.split('.')[1] !== 'pdf' && (
-          <a
-            href={`${BASE_URL}/api/students/${buttonSetAcceptedState.student_id.toString()}/files/${
-              props.path
-            }`}
-            download
-            target="_blank" rel="noreferrer"
-          >
-            <Button
-              size="small"
-              color="primary"
-              variant="contained"
-              title="Download"
-              startIcon={<FileDownloadIcon />}
+      <AcceptProfileFileModel
+        showPreview={buttonSetAcceptedState.showPreview}
+        closePreviewWindow={closePreviewWindow}
+        path={props.path}
+        preview_path={buttonSetAcceptedState.preview_path}
+        student_id={buttonSetAcceptedState.student_id}
+        isLoaded={buttonSetAcceptedState.isLoaded}
+        k={props.k}
+        onUpdateProfileDocStatus={onUpdateProfileDocStatus}
+      />
+      {false && (
+        <ModalNew
+          open={buttonSetAcceptedState.showPreview}
+          onClose={closePreviewWindow}
+          aria-labelledby="contained-modal-title-vcenter2"
+        >
+          <Typography id="contained-d-title-vcenter">{props.path}</Typography>
+          <FilePreview
+            path={buttonSetAcceptedState.preview_path}
+            student_id={buttonSetAcceptedState.student_id.toString()}
+          />
+          {props.path.split('.')[1] !== 'pdf' && (
+            <a
+              href={`${BASE_URL}/api/students/${buttonSetAcceptedState.student_id.toString()}/files/${
+                props.path
+              }`}
+              download
+              target="_blank"
+              rel="noreferrer"
             >
-              {t('Download')}
+              <Button
+                size="small"
+                color="primary"
+                variant="contained"
+                title="Download"
+                startIcon={<FileDownloadIcon />}
+              >
+                {t('Download')}
+              </Button>
+            </a>
+          )}
+          {!(is_TaiGer_Editor(user) || is_TaiGer_Student(user)) && (
+            <Button
+              variant="contained"
+              color="secondary"
+              size="small"
+              disabled={!buttonSetAcceptedState.isLoaded}
+              onClick={(e) =>
+                onUpdateProfileDocStatus(
+                  e,
+                  props.k,
+                  buttonSetAcceptedState.student_id,
+                  'rejected'
+                )
+              }
+              startIcon={<CloseIcon />}
+              sx={{ mr: 2 }}
+            >
+              {t('Reject')}
             </Button>
-          </a>
-        )}
-        {!(is_TaiGer_Editor(user) || is_TaiGer_Student(user)) && (
-          <Button
-            variant="contained"
-            color="secondary"
-            size="small"
-            disabled={!buttonSetAcceptedState.isLoaded}
-            onClick={(e) =>
-              onUpdateProfileDocStatus(
-                e,
-                props.k,
-                buttonSetAcceptedState.student_id,
-                'rejected'
-              )
-            }
-            startIcon={<CloseIcon />}
-            sx={{ mr: 2 }}
-          >
-            {t('Reject')}
+          )}
+          <Button size="small" variant="outlined" onClick={closePreviewWindow}>
+            {!buttonSetAcceptedState.isLoaded ? (
+              <CircularProgress />
+            ) : (
+              t('Close')
+            )}
           </Button>
-        )}
-        <Button size="small" variant="outlined" onClick={closePreviewWindow}>
-          {!buttonSetAcceptedState.isLoaded ? <CircularProgress /> : t('Close')}
-        </Button>
-      </ModalNew>
+        </ModalNew>
+      )}
       <OffcanvasBaseDocument
         open={buttonSetAcceptedState.baseDocsflagOffcanvas}
         onHide={closeOffcanvasWindow}

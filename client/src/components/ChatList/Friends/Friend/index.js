@@ -24,7 +24,9 @@ const friend = (props) => {
   const theme = useTheme();
   const handleToChat = () => {
     props.handleCloseChat();
-    navigate(`${DEMO.COMMUNICATIONS_LINK(props.data?._id?.toString())}`);
+    navigate(
+      `${DEMO.COMMUNICATIONS_TAIGER_MODE_LINK(props.data?._id?.toString())}`
+    );
   };
 
   return (

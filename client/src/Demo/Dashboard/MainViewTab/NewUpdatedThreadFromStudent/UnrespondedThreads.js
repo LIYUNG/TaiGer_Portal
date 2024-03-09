@@ -39,7 +39,7 @@ function UnrespondedThreads(props) {
                         ? `${DEMO.CV_ML_RL_CENTER_LINK}`
                         : `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                             props.student._id,
-                            '/CV_ML_RL'
+                            DEMO.CVMLRL_HASH
                           )}`
                     }
                     className="text-info"
@@ -86,7 +86,7 @@ function UnrespondedThreads(props) {
                             ? `${DEMO.CV_ML_RL_CENTER_LINK}`
                             : `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                                 props.student._id,
-                                '/CV_ML_RL'
+                                DEMO.CVMLRL_HASH
                               )}`
                         }
                         className="text-info"

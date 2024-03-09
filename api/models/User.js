@@ -418,6 +418,17 @@ const applicationSchema = new Schema({
   admission: { type: String, default: '-' }
 });
 
+const attributeSchema = new Schema({
+  value: {
+    type: Number,
+    required: true
+  },
+  name: {
+    type: String,
+    required: true
+  }
+});
+
 const Student = User.discriminator(
   'Student',
   new Schema(
@@ -434,6 +445,12 @@ const Student = User.discriminator(
         type: String,
         default: ''
       },
+      attributes: [
+        {
+          type: attributeSchema,
+          required: true
+        }
+      ],
       profile: [
         {
           name: {

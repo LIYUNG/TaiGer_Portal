@@ -1,6 +1,6 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { Alert, Typography } from '@mui/material';
+import { Link as LinkDom } from 'react-router-dom';
+import { Alert, Link, Typography } from '@mui/material';
 
 export default function Banner(props) {
   return (
@@ -17,11 +17,7 @@ export default function Banner(props) {
         <b className="mx-2">{props.title ? props.title : 'Reminder'}</b>
         {':'}
         {props.text}
-        <Link
-          to={`${props.path}`}
-          style={{ textDecoration: 'none' }}
-          className="text-info"
-        >
+        <Link to={`${props.path}`} component={LinkDom}>
           {props.link_name}
         </Link>{' '}
         {/* <span style={{ float: 'right', cursor: 'pointer' }}>

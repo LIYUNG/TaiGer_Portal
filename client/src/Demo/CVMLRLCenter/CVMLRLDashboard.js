@@ -10,7 +10,8 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  TableHead
+  TableHead,
+  Chip
 } from '@mui/material';
 import PropTypes from 'prop-types';
 import { useTable, useSortBy, useFilters, useGlobalFilter } from 'react-table';
@@ -20,9 +21,11 @@ import { useTranslation } from 'react-i18next';
 
 import {
   taskTashboardHeader,
-  cvmlrl_overview_closed_header
+  cvmlrl_overview_closed_header,
+  COLORS
 } from '../Utils/contants';
 import {
+  is_TaiGer_role,
   open_tasks,
   open_tasks_with_editors
 } from '../Utils/checking-functions';
@@ -62,7 +65,7 @@ function DefaultColumnFilter({
   );
 }
 
-function SortTable2({ columns, data }) {
+function SortTable2({ columns, data, user }) {
   const { t } = useTranslation();
   const filterTypes = React.useMemo(
     () => ({
@@ -179,12 +182,12 @@ function SortTable2({ columns, data }) {
                         target="_blank"
                         to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                           row.original.student_id,
-                          '/profile'
+                          DEMO.PROFILE_HASH
                         )}`}
                         component={LinkDom}
                       >
                         <Typography fontWeight="bold">
-                          {cell.render('Cell')}
+                          {cell.render('Cell')}{' '}
                         </Typography>
                       </Link>
                     </TableCell>
@@ -201,7 +204,7 @@ function SortTable2({ columns, data }) {
                             component={LinkDom}
                           >
                             <Typography>
-                              <b>{`${editor.firstname} ${editor.lastname}`}</b>
+                              <b>{`${editor.firstname}`}</b>
                             </Typography>
                           </Link>
                         ))
@@ -222,6 +225,22 @@ function SortTable2({ columns, data }) {
                       >
                         {cell.render('Cell')}
                       </Link>
+                      {is_TaiGer_role(user) && (
+                        <>
+                          <br />
+                          {row.original.attributes?.map(
+                            (attribute) =>
+                              [1, 3].includes(attribute.value) && (
+                                <Chip
+                                  size="small"
+                                  label={attribute.name}
+                                  key={attribute._id}
+                                  color={COLORS[attribute.value]}
+                                />
+                              )
+                          )}
+                        </>
+                      )}
                     </TableCell>
                   ) : j === 6 ? (
                     cell.value > 14 ? (
@@ -462,10 +481,22 @@ function CVMLRLDashboard(props) {
         <Tabs
           value={value}
           onChange={handleChange}
+          variant="scrollable"
+          scrollButtons="auto"
           aria-label="basic tabs example"
         >
-          <Tab label="Open" {...a11yProps(0)} />
-          <Tab label="Closed" {...a11yProps(1)} />
+          <Tab
+            label={`In Progress (${cvmlrl_active_tasks?.length || 0})`}
+            {...a11yProps(0)}
+          />
+          <Tab
+            label={`No Input (${cvmlrl_idle_tasks?.length || 0})`}
+            {...a11yProps(1)}
+          />
+          <Tab
+            label={`Closed (${cvmlrl_closed_v2?.length || 0})`}
+            {...a11yProps(2)}
+          />
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
@@ -481,7 +512,13 @@ function CVMLRLDashboard(props) {
           removeBanner={<></>}
           notification_key={undefined}
         />
-        <SortTable2 columns={taskTashboardHeader} data={cvmlrl_active_tasks} />
+        <SortTable2
+          columns={taskTashboardHeader}
+          user={user}
+          data={cvmlrl_active_tasks}
+        />
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={1}>
         <Banner
           ReadOnlyMode={true}
           bg={'info'}
@@ -492,9 +529,13 @@ function CVMLRLDashboard(props) {
           removeBanner={<></>}
           notification_key={undefined}
         />
-        <SortTable2 columns={taskTashboardHeader} data={cvmlrl_idle_tasks} />
+        <SortTable2
+          columns={taskTashboardHeader}
+          user={user}
+          data={cvmlrl_idle_tasks}
+        />
       </CustomTabPanel>
-      <CustomTabPanel value={value} index={1}>
+      <CustomTabPanel value={value} index={2}>
         <Banner
           ReadOnlyMode={true}
           bg={'success'}

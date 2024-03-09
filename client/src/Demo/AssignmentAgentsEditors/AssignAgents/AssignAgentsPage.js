@@ -7,6 +7,7 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableContainer,
   TableHead,
   TableRow,
   Typography
@@ -43,17 +44,19 @@ function AssignAgentsPage(props) {
       </Breadcrumbs>
       <Card sx={{ p: 2 }}>
         <Typography variant="h6">{t('No Agents Students')}</Typography>
-        <Table size="small">
-          <TableHead>
-            <TableRow>
-              <TableCell></TableCell>
-              <TableCell>First-, Last Name</TableCell>
-              <TableCell>Email</TableCell>
-              <TableCell>Target Year</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>{no_agent_students}</TableBody>
-        </Table>
+        <TableContainer style={{ overflowX: 'auto' }}>
+          <Table size="small">
+            <TableHead>
+              <TableRow>
+                <TableCell></TableCell>
+                <TableCell>First-, Last Name</TableCell>
+                <TableCell>Email</TableCell>
+                <TableCell>Target Year</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>{no_agent_students}</TableBody>
+          </Table>
+        </TableContainer>
       </Card>
     </Box>
   );

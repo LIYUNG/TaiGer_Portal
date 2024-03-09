@@ -9,7 +9,9 @@ const localAuth = (req, res, next) => {
       return next(new ErrorResponse(403, 'Inactivated account'));
     }
 
-    if (!user) return next(new ErrorResponse(401, 'The current password is wrong.'));
+    if (!user) {
+      return next(new ErrorResponse(401, 'The current password is wrong.'));
+    }
     req.user = user;
     next();
   })(req, res, next);
@@ -19,8 +21,14 @@ const protect = (req, res, next) => {
   passport.authenticate('jwt', { session: false }, (err, user) => {
     if (err) return next(err);
 
-    if (!user) return next(new ErrorResponse(401, 'Session expired. Please refresh and log in again.'));
-
+    if (!user) {
+      return next(
+        new ErrorResponse(
+          401,
+          'Session expired. Please refresh and log in again.'
+        )
+      );
+    }
     req.user = user;
     next();
   })(req, res, next);

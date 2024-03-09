@@ -36,10 +36,32 @@ function MyStudentsOverview() {
           {appConfig.companyName}
         </Link>
         <Typography color="text.primary">
-          {t('My Active Student Overview')} ({students?.length})
+          {t('My Active Student Overview')} (
+          {
+            students?.filter(
+              (student) =>
+                student.editors.some(
+                  (editor) => editor._id === user._id.toString()
+                ) ||
+                student.agents.some(
+                  (agent) => agent._id === user._id.toString()
+                )
+            ).length
+          }
+          )
         </Typography>
       </Breadcrumbs>
-      <StudentOverviewTable title="All" students={students} user={user} />
+      <StudentOverviewTable
+        title="All"
+        students={students?.filter(
+          (student) =>
+            student.editors.some(
+              (editor) => editor._id === user._id.toString()
+            ) ||
+            student.agents.some((agent) => agent._id === user._id.toString())
+        )}
+        user={user}
+      />
     </Box>
   );
 }

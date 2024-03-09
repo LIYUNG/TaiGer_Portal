@@ -14,7 +14,8 @@ import {
   updateArchivStudents,
   updateProfileDocumentStatus,
   updateAgents,
-  updateEditors
+  updateEditors,
+  updateAttributes
 } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import {
@@ -62,6 +63,11 @@ function Dashboard() {
     UpdateEditorlist(e, updateEditorList, student_id);
   };
 
+  const submitUpdateAttributeslist = (e, updateEditorList, student_id) => {
+    e.preventDefault();
+    UpdateAttributeslist(e, updateEditorList, student_id);
+  };
+
   const UpdateAgentlist = (e, updateAgentList, student_id) => {
     e.preventDefault();
     updateAgents(updateAgentList, student_id).then(
@@ -107,6 +113,48 @@ function Dashboard() {
   const UpdateEditorlist = (e, updateEditorList, student_id) => {
     e.preventDefault();
     updateEditors(updateEditorList, student_id).then(
+      (resp) => {
+        const { data, success } = resp.data;
+        const { status } = resp;
+        if (success) {
+          var students_temp = [...dashboardState.students];
+          var studentIdx = students_temp.findIndex(
+            ({ _id }) => _id === student_id
+          );
+          students_temp[studentIdx] = data; // datda is single student updated
+          setDashboardState((prevState) => ({
+            ...prevState,
+            isLoaded: true, //false to reload everything
+            students: students_temp,
+            success: success,
+            updateAgentList: [],
+            res_modal_status: status
+          }));
+        } else {
+          const { message } = resp.data;
+          setDashboardState((prevState) => ({
+            ...prevState,
+            isLoaded: true,
+            res_modal_message: message,
+            res_modal_status: status
+          }));
+        }
+      },
+      (error) => {
+        setDashboardState((prevState) => ({
+          ...prevState,
+          isLoaded: true,
+          error,
+          res_modal_status: 500,
+          res_modal_message: ''
+        }));
+      }
+    );
+  };
+
+  const UpdateAttributeslist = (e, updateAttributesList, student_id) => {
+    e.preventDefault();
+    updateAttributes(updateAttributesList, student_id).then(
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
@@ -262,6 +310,7 @@ function Dashboard() {
           students={dashboardState.students}
           submitUpdateAgentlist={submitUpdateAgentlist}
           submitUpdateEditorlist={submitUpdateEditorlist}
+          submitUpdateAttributeslist={submitUpdateAttributeslist}
           updateStudentArchivStatus={updateStudentArchivStatus}
           isDashboard={dashboardState.isDashboard}
         />
@@ -281,6 +330,7 @@ function Dashboard() {
           students={dashboardState.students}
           notification={dashboardState.notification}
           submitUpdateAgentlist={submitUpdateAgentlist}
+          submitUpdateAttributeslist={submitUpdateAttributeslist}
           updateStudentArchivStatus={updateStudentArchivStatus}
           isDashboard={dashboardState.isDashboard}
           onUpdateProfileFilefromstudent={onUpdateProfileFilefromstudent}

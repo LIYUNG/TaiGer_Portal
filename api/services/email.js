@@ -17,17 +17,15 @@ const {
   BASE_DOCUMENT_FOR_AGENT_URL,
   TEMPLATE_DOWNLOAD_URL,
   STUDENT_APPLICATION_URL,
-  STUDENT_SURVEY_URL,
   SETTINGS_URL,
   STUDENT_COURSE_URL,
-  STUDENT_BACKGROUND_FOR_AGENT_URL,
+  SURVEY_URL_FOR_AGENT_URL,
   TAIGER_SIGNATURE,
   SPLIT_LINE,
   ENGLISH_BELOW,
   CONTACT_AGENT,
   STUDENT_COMMUNICATION_THREAD_URL,
   STUDENT_ANALYSED_COURSE_URL,
-  JITSI_MEET_URL,
   JITSI_MEET_INSTRUCTIONS_URL,
   AGENT_CALENDAR_EVENTS_URL,
   STUDENT_CALENDAR_EVENTS_URL,
@@ -50,6 +48,9 @@ const transporter = isDev()
       auth: {
         user: SMTP_USERNAME,
         pass: SMTP_PASSWORD
+      },
+      tls: {
+        rejectUnauthorized: false
       }
     })
   : createTransport({
@@ -813,7 +814,7 @@ const informAgentNewStudentEmail = async (recipient, msg) => {
 
 <p>${msg.std_firstname} ${msg.std_lastname} 將被指配給您。</p>
 
-<p>請至 ${STUDENT_BACKGROUND_FOR_AGENT_URL(
+<p>請至 ${SURVEY_URL_FOR_AGENT_URL(
     msg.std_id
   )} 查看他的背景問卷並與她/他打聲招呼！</p>
 
@@ -825,7 +826,7 @@ const informAgentNewStudentEmail = async (recipient, msg) => {
 
 <p>${msg.std_firstname} ${msg.std_lastname} will be your student!</p>
 
-<p>Please see the survey ${STUDENT_BACKGROUND_FOR_AGENT_URL(msg.std_id)}</p>
+<p>Please see the survey ${SURVEY_URL_FOR_AGENT_URL(msg.std_id)}</p>
 
 <p>and say hello to your student!</p>
 

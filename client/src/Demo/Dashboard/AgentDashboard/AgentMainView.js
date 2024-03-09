@@ -122,7 +122,7 @@ function AgentMainView(props) {
                     underline="hover"
                     to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                       student.student_id,
-                      DEMO.PROFILE
+                      DEMO.PROFILE_HASH
                     )}`}
                     component={LinkDom}
                   >
@@ -164,7 +164,7 @@ function AgentMainView(props) {
                             underline="hover"
                             to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                               application.student_id,
-                              DEMO.PROFILE
+                              DEMO.PROFILE_HASH
                             )}`}
                             component={LinkDom}
                           >
@@ -255,6 +255,7 @@ function AgentMainView(props) {
               students={props.students}
               documentslist={props.documentslist}
               submitUpdateAgentlist={props.submitUpdateAgentlist}
+              submitUpdateAttributeslist={props.submitUpdateAttributeslist}
               isDashboard={props.isDashboard}
               updateStudentArchivStatus={props.updateStudentArchivStatus}
             />

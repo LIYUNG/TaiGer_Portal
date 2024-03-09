@@ -90,6 +90,7 @@ const logout = (req, res) => {
 const verify = (req, res) => {
   const { user } = req;
   const token = generateAuthToken(user);
+  user.attributes = [];
   res
     .cookie('x-auth', token, { httpOnly: true, sameSite: 'none', secure: true })
     .status(200)

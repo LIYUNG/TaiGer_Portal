@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Form } from 'react-bootstrap';
 import {
   Box,
   Badge,
@@ -11,7 +10,11 @@ import {
   Link,
   Breadcrumbs,
   Tabs,
-  Tab
+  Tab,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem
 } from '@mui/material';
 import { AiFillCheckCircle } from 'react-icons/ai';
 import { Navigate, useParams, Link as LinkDom } from 'react-router-dom';
@@ -846,6 +849,8 @@ function TaiGerOfficeHours() {
               <Tabs
                 value={value}
                 onChange={handleChangeTab}
+                variant="scrollable"
+                scrollButtons="auto"
                 indicatorColor="primary"
                 aria-label="basic tabs example"
               >
@@ -903,9 +908,11 @@ function TaiGerOfficeHours() {
       >
         <Typography variant="h6">{t('Edit')}</Typography>
         <TextField
+          fullWidth
           type="textarea"
           maxLength={2000}
           label="請寫下想討論的主題"
+          multiline
           rows="10"
           placeholder="Example：我想定案選校、選課，我想討論簽證，德語班。"
           value={taiGerOfficeHoursState.event_temp.description || ''}
@@ -939,23 +946,29 @@ function TaiGerOfficeHours() {
           )
         </Typography>
         <br />
-        <Form>
-          <Form.Label>Time Slot</Form.Label>
-          <Form.Control
-            as="select"
+        <FormControl fullWidth>
+          <InputLabel id="time-slot">{t('Time Slot')}</InputLabel>
+          <Select
+            labelId="study_group"
+            label="Select target group"
+            name="study_group"
+            id="study_group"
             onChange={(e) => handleUpdateTimeSlot(e)}
-            value={new Date(taiGerOfficeHoursState.event_temp.start)}
+            value={new Date(taiGerOfficeHoursState.event_temp.start).toString()}
           >
             {available_termins
               .sort((a, b) => (a.start < b.start ? -1 : 1))
               .map((time_slot) => (
-                <option value={`${time_slot.start}`} key={`${time_slot.start}`}>
+                <MenuItem
+                  value={`${time_slot.start}`}
+                  key={`${time_slot.start}`}
+                >
                   {time_slot.start.toLocaleString()} to{' '}
                   {time_slot.end.toLocaleString()}
-                </option>
+                </MenuItem>
               ))}
-          </Form.Control>
-        </Form>
+          </Select>
+        </FormControl>
         <Button
           color="secondary"
           variant="outlined"

@@ -2,13 +2,12 @@ import React, { useState, useEffect, useRef } from 'react';
 import {
   Box,
   Button,
-  Card,
   Breadcrumbs,
   Link,
   Typography,
-  Grid,
   Select,
-  MenuItem
+  MenuItem,
+  TableContainer
 } from '@mui/material';
 import { DataSheetGrid, textColumn, keyColumn } from 'react-datasheet-grid';
 import * as XLSX from 'xlsx/xlsx.mjs';
@@ -39,8 +38,6 @@ export default function CourseAnalysis() {
   let [statedata, setStatedata] = useState({
     error: '',
     isLoaded: false,
-    coursesdata: {},
-    analysis: {},
     sheets: {},
     sheetNames: [],
     success: false,
@@ -48,9 +45,6 @@ export default function CourseAnalysis() {
     excel_file: {},
     studentId: '',
     file: '',
-    analyzed_course: '',
-    isAnalysing: false,
-    isUpdating: false,
     isDownloading: false,
     LastModified: '',
     res_status: 0,
@@ -84,8 +78,7 @@ export default function CourseAnalysis() {
                 file_name: actualFileName,
                 LastModified,
                 sheetNames,
-                res_modal_status: status,
-                isUpdating: false
+                res_modal_status: status
               }));
             });
           } else {
@@ -94,8 +87,7 @@ export default function CourseAnalysis() {
               ...state,
               isLoaded: true,
               res_modal_status: status,
-              res_modal_message: statusText,
-              isUpdating: false
+              res_modal_message: statusText
             }));
           }
         },
@@ -105,8 +97,7 @@ export default function CourseAnalysis() {
             isLoaded: true,
             error,
             res_modal_status: 500,
-            res_modal_message: '',
-            isUpdating: false
+            res_modal_message: ''
           }));
         }
       );
@@ -139,8 +130,7 @@ export default function CourseAnalysis() {
                 file_name: actualFileName,
                 LastModified,
                 sheetNames,
-                res_modal_status: status,
-                isUpdating: false
+                res_modal_status: status
               }));
             });
           } else {
@@ -149,8 +139,7 @@ export default function CourseAnalysis() {
               ...state,
               isLoaded: true,
               res_modal_status: status,
-              res_modal_message: statusText,
-              isUpdating: false
+              res_modal_message: statusText
             }));
           }
         },
@@ -160,8 +149,7 @@ export default function CourseAnalysis() {
             isLoaded: true,
             error,
             res_modal_status: 500,
-            res_modal_message: '',
-            isUpdating: false
+            res_modal_message: ''
           }));
         }
       );
@@ -298,7 +286,7 @@ export default function CourseAnalysis() {
             component={LinkDom}
             to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
               statedata.studentId,
-              '/profile'
+              DEMO.PROFILE_HASH
             )}`}
           >
             {statedata.student_name}
@@ -318,77 +306,64 @@ export default function CourseAnalysis() {
         </Link>
         <Typography color="text.primary">{t('Courses Analysis')}</Typography>
       </Breadcrumbs>
-      <Card sx={{ p: 2 }}>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <Typography variant="body1">
-              {t('Course Analysis banner')}
-            </Typography>
-          </Grid>
-          <Grid item xs={12}>
-            <Typography variant="body1">
-              {t('Course Analysis description')}
-            </Typography>
-          </Grid>
-          <Grid item xs={12}>
-            <Button
-              size="small"
-              color="primary"
-              variant="contained"
-              onClick={() => navigate(DEMO.COURSES_ANALYSIS_EXPLANATION_LINK)}
-              sx={{ mr: 2 }}
-            >
-              {t('Course Analysis explanation button')}
-            </Button>
-            <Button
-              size="small"
-              color="secondary"
-              variant="contained"
-              onClick={() => onDownload()}
-            >
-              {t('Download')} Excel
-            </Button>
-          </Grid>
-          <Grid item xs={12}>
-            <Typography>{t('Programs')}:</Typography>
-          </Grid>
-          <Grid item xs={12} sx={{ mb: 2 }}>
-            <Select
-              fullWidth
-              size="small"
-              value={value}
-              onChange={handleChange}
-              aria-label="course analysis tabs"
-            >
-              {statedata.sheetNames.map((sheetName, i) => (
-                <MenuItem key={sheetName} value={i}>
-                  {sheetName}
-                </MenuItem>
-              ))}
-            </Select>
-          </Grid>
-        </Grid>
+      {/* <Card sx={{ p: 2 }}> */}
+      <Typography variant="body1" sx={{ pt: 2 }}>
+        {t('Course Analysis banner')}
+      </Typography>
+      <Typography variant="body1" sx={{ py: 2 }}>
+        {t('Course Analysis description')}
+      </Typography>
+      <Button
+        size="small"
+        color="primary"
+        variant="contained"
+        onClick={() => navigate(DEMO.COURSES_ANALYSIS_EXPLANATION_LINK)}
+        sx={{ mr: 2 }}
+      >
+        {t('Course Analysis explanation button')}
+      </Button>
+      <Button
+        size="small"
+        color="secondary"
+        variant="contained"
+        onClick={() => onDownload()}
+      >
+        {t('Download')} Excel
+      </Button>
+      <Typography variant="body1" sx={{ pt: 2, pb: 1 }}>
+        {t('Programs')}:
+      </Typography>
+      <Select
+        fullWidth
+        size="small"
+        value={value}
+        onChange={handleChange}
+        aria-label="course analysis tabs"
+        sx={{ mb: 2 }}
+      >
         {statedata.sheetNames.map((sheetName, i) => (
-          <Card key={i} sx={{ minWidth: '800px' }}>
-            {value === i && (
-              <DataSheetGrid
-                ref={ref}
-                height={6000}
-                style={{ minWidth: '450px' }}
-                disableContextMenu={true}
-                // disableExpandSelection={false}
-                headerRowHeight={30}
-                rowHeight={25}
-                value={statedata.sheets[sheetName]}
-                // autoAddRow={true}
-                disabled={true}
-                columns={columns}
-              />
-            )}
-          </Card>
+          <MenuItem key={sheetName} value={i}>
+            {sheetName}
+          </MenuItem>
         ))}
-        {t('Last update')} {convertDate(statedata.LastModified)}
-      </Card>
+      </Select>
+      <TableContainer style={{ overflowX: 'auto' }}>
+        <DataSheetGrid
+          ref={ref}
+          height={6000}
+          style={{ minWidth: '450px' }}
+          disableContextMenu={true}
+          disableExpandSelection={false}
+          headerRowHeight={30}
+          rowHeight={25}
+          value={statedata.sheets[statedata.sheetNames[value]]}
+          // autoAddRow={true}
+          disabled={true}
+          columns={columns}
+        />
+      </TableContainer>
+      {t('Last update')} {convertDate(statedata.LastModified)}
+      {/* </Card> */}
     </Box>
   );
 }

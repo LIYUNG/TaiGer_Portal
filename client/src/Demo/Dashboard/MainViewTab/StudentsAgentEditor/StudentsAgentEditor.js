@@ -2,8 +2,8 @@ import React, { Fragment, useState } from 'react';
 import { Link as LinkDom } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
-  Box,
   Button,
+  Chip,
   Link,
   Menu,
   MenuItem,
@@ -21,13 +21,16 @@ import {
 import { is_TaiGer_Student } from '../../../Utils/checking-functions';
 import DEMO from '../../../../store/constant';
 import { useAuth } from '../../../../components/AuthProvider';
+import EditAttributesSubpage from '../StudDocsOverview/EditAttributesSubpage';
+import { COLORS } from '../../../Utils/contants';
 
 function StudentsAgentEditor(props) {
   const { user } = useAuth();
   const { t } = useTranslation();
   const [studentsAgentEditor, setStudentsAgentEditor] = useState({
     showAgentPage: false,
-    showEditorPage: false
+    showEditorPage: false,
+    showAttributesPage: false
   });
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -66,12 +69,28 @@ function StudentsAgentEditor(props) {
     }));
   };
 
+  const setAttributeModalhide = () => {
+    setStudentsAgentEditor((prevState) => ({
+      ...prevState,
+      showAttributesPage: false
+    }));
+  };
+
   const startEditingEditor = () => {
     setAnchorEl(null);
     setStudentsAgentEditor((prevState) => ({
       ...prevState,
       subpage: 2,
       showEditorPage: true
+    }));
+  };
+
+  const startEditingAttributes = () => {
+    setAnchorEl(null);
+    setStudentsAgentEditor((prevState) => ({
+      ...prevState,
+      subpage: 3,
+      showAttributesPage: true
     }));
   };
 
@@ -85,24 +104,25 @@ function StudentsAgentEditor(props) {
     props.submitUpdateEditorlist(e, updateEditorList, student_id);
   };
 
+  const submitUpdateAttributeslist = (e, updateAttributesList, student_id) => {
+    setAttributeModalhide();
+    props.submitUpdateAttributeslist(e, updateAttributesList, student_id);
+  };
+
   let studentsAgent;
   let studentsEditor;
   if (props.student.agents === undefined || props.student.agents.length === 0) {
-    studentsAgent = <Typography>{t('No Agent assigned')}</Typography>;
+    studentsAgent = t('No Agent assigned');
   } else {
     studentsAgent = props.student.agents.map((agent) => (
       <Fragment key={agent._id}>
-        <Typography variant="string">
-          <Link
-            to={`${DEMO.TEAM_AGENT_LINK(agent._id.toString())}`}
-            component={LinkDom}
-          >
-            {agent.firstname}
-          </Link>
-        </Typography>
+        <Link
+          to={`${DEMO.TEAM_AGENT_LINK(agent._id.toString())}`}
+          component={LinkDom}
+        >
+          {agent.firstname}
+        </Link>
         &nbsp;
-        {/* <br />
-        <Typography variant="string">{agent.email}</Typography> */}
       </Fragment>
     ));
   }
@@ -110,29 +130,21 @@ function StudentsAgentEditor(props) {
     props.student.editors === undefined ||
     props.student.editors.length === 0
   ) {
-    studentsEditor = <Typography>{t('No Editor assigned')}</Typography>;
+    studentsEditor = t('No Editor assigned');
   } else {
     studentsEditor = props.student.editors.map((editor) => (
-      <Box key={editor._id}>
-        <Typography variant="string">
-          <Link
-            to={`${DEMO.TEAM_EDITOR_LINK(editor._id.toString())}`}
-            component={LinkDom}
-          >
-            {`${editor.firstname}`}
-          </Link>
-        </Typography>
+      <Fragment key={editor._id}>
+        <Link
+          to={`${DEMO.TEAM_EDITOR_LINK(editor._id.toString())}`}
+          component={LinkDom}
+        >
+          {`${editor.firstname}`}
+        </Link>
         &nbsp;
-        {/* <br />
-        <Typography variant="string">{editor.email}</Typography> */}
-      </Box>
+      </Fragment>
     ));
   }
-  const target_application_field = props.student.application_preference
-    ? props.student.application_preference.target_application_field || (
-        <span>TBD</span>
-      )
-    : '';
+
   return (
     <>
       <TableRow>
@@ -160,11 +172,16 @@ function StudentsAgentEditor(props) {
                 }}
               >
                 <MenuItem onClick={() => startEditingAgent()}>
-                  Edit Agent
+                  {t('Edit Agent')}
                 </MenuItem>
                 <MenuItem onClick={() => startEditingEditor()}>
-                  Edit Editor
+                  {t('Edit Editor')}
                 </MenuItem>
+                {!is_TaiGer_Editor(user) && (
+                  <MenuItem onClick={() => startEditingAttributes()}>
+                    {t('Configure Attribute')}
+                  </MenuItem>
+                )}
                 {props.isDashboard && !is_TaiGer_Editor(user) && (
                   <MenuItem
                     onClick={() =>
@@ -189,11 +206,11 @@ function StudentsAgentEditor(props) {
         </TableCell>
         {!is_TaiGer_Student(user) ? (
           <TableCell>
-            <Typography className="mb-0">
+            <Typography variant="body2" fontWeight="bold">
               <Link
                 to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                   props.student._id,
-                  '/background'
+                  DEMO.PROFILE_HASH
                 )}`}
                 component={LinkDom}
               >
@@ -202,65 +219,90 @@ function StudentsAgentEditor(props) {
                 {props.student.firstname_chinese}
               </Link>
             </Typography>
-            <span className="mb-0 text-secondary">{props.student.email}</span>
+            <Typography variant="body2">{props.student.email}</Typography>
+            {is_TaiGer_role(user) &&
+              props.student.attributes?.map((attribute) => (
+                <Chip
+                  size="small"
+                  label={attribute.name}
+                  key={attribute._id}
+                  color={COLORS[attribute.value]}
+                />
+              ))}
           </TableCell>
         ) : (
           <></>
         )}
-        <TableCell>{studentsAgent}</TableCell>
-        <TableCell>{studentsEditor}</TableCell>
         <TableCell>
-          {props.student.application_preference.expected_application_date || (
-            <Typography>TBD</Typography>
-          )}
+          <Typography variant="body2">{studentsAgent}</Typography>
         </TableCell>
         <TableCell>
-          {props.student.application_preference
-            .expected_application_semester || <Typography>TBD</Typography>}
+          <Typography variant="body2">{studentsEditor}</Typography>
         </TableCell>
         <TableCell>
-          {props.student.application_preference.target_degree || (
-            <Typography>TBD</Typography>
-          )}
+          <Typography variant="body2">
+            {props.student.application_preference.expected_application_date ||
+              'TBD'}
+          </Typography>
         </TableCell>
         <TableCell>
-          <Typography fontWeight="bold">
+          <Typography variant="body2">
+            {props.student.application_preference
+              .expected_application_semester || 'TBD'}
+          </Typography>
+        </TableCell>
+        <TableCell>
+          <Typography variant="body2">
+            {props.student.application_preference.target_degree || 'TBD'}
+          </Typography>
+        </TableCell>
+        <TableCell>
+          <Typography fontWeight="bold" variant="body2">
             {props.student.academic_background.university.attended_university ||
               'TBD'}
           </Typography>
-          <Typography>
+          <Typography variant="body2">
             {props.student.academic_background.university
               .attended_university_program || 'TBD'}
           </Typography>
         </TableCell>
-        <TableCell>{target_application_field}</TableCell>
         <TableCell>
-          {props.student.academic_background.language.english_certificate || (
-            <Typography>TBD</Typography>
-          )}
-          {props.student.academic_background.language.german_certificate || (
-            <Typography>TBD</Typography>
-          )}
+          <Typography variant="body2">
+            {props.student?.application_preference?.target_application_field ||
+              'TBD'}
+          </Typography>
         </TableCell>
         <TableCell>
-          {props.student.academic_background.language.english_score || (
-            <span>TBD</span>
-          )}
-          {props.student.academic_background.language.german_score || (
-            <span>TBD</span>
-          )}
+          <Typography variant="body2">
+            {props.student.academic_background.language.english_certificate ||
+              'TBD'}
+          </Typography>
+          <Typography variant="body2">
+            {props.student.academic_background.language.german_certificate ||
+              'TBD'}
+          </Typography>
         </TableCell>
         <TableCell>
-          {(props.student.academic_background.language.english_isPassed ===
-            'X' &&
-            props.student.academic_background.language.english_test_date) || (
-            <span>TBD</span>
-          )}
-          {(props.student.academic_background.language.german_isPassed ===
-            'X' &&
-            props.student.academic_background.language.german_test_date) || (
-            <span>TBD</span>
-          )}
+          <Typography variant="body2">
+            {props.student.academic_background.language.english_score || 'TBD'}
+          </Typography>
+          <Typography variant="body2">
+            {props.student.academic_background.language.german_score || 'TBD'}
+          </Typography>
+        </TableCell>
+        <TableCell>
+          <Typography variant="body2">
+            {(props.student.academic_background.language.english_isPassed ===
+              'X' &&
+              props.student.academic_background.language.english_test_date) ||
+              'TBD'}
+          </Typography>
+          <Typography variant="body2">
+            {(props.student.academic_background.language.german_isPassed ===
+              'X' &&
+              props.student.academic_background.language.german_test_date) ||
+              'TBD'}
+          </Typography>
         </TableCell>
       </TableRow>
       {is_TaiGer_role(user) && (
@@ -279,6 +321,14 @@ function StudentsAgentEditor(props) {
               show={studentsAgentEditor.showEditorPage}
               onHide={setEditorModalhide}
               submitUpdateEditorlist={submitUpdateEditorlist}
+            />
+          )}
+          {studentsAgentEditor.showAttributesPage && (
+            <EditAttributesSubpage
+              student={props.student}
+              show={studentsAgentEditor.showAttributesPage}
+              onHide={setAttributeModalhide}
+              submitUpdateAttributeslist={submitUpdateAttributeslist}
             />
           )}
         </>

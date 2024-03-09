@@ -245,8 +245,22 @@ function CVMLRLOverview(props) {
           scrollButtons="auto"
           aria-label="basic tabs example"
         >
-          <Tab label="Open" {...a11yProps(0)} />
-          <Tab label="Closed" {...a11yProps(1)} />
+          <Tab
+            label={`TODO (${cvmlrl_new_message_v2?.length || 0}) `}
+            {...a11yProps(0)}
+          />
+          <Tab
+            label={`FOLLOW UP (${cvmlrl_followup_v2?.length || 0})`}
+            {...a11yProps(1)}
+          />
+          <Tab
+            label={`NO ACTION (${cvmlrl_pending_progress_v2?.length || 0})`}
+            {...a11yProps(2)}
+          />
+          <Tab
+            label={`CLOSED (${cvmlrl_closed_v2?.length || 0})`}
+            {...a11yProps(3)}
+          />
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
@@ -266,6 +280,8 @@ function CVMLRLOverview(props) {
           user={user}
           handleAsFinalFile={handleAsFinalFile}
         />
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={1}>
         <Banner
           ReadOnlyMode={true}
           bg={'primary'}
@@ -282,6 +298,8 @@ function CVMLRLOverview(props) {
           user={user}
           handleAsFinalFile={handleAsFinalFile}
         />
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={2}>
         <Banner
           ReadOnlyMode={true}
           bg={'info'}
@@ -303,7 +321,7 @@ function CVMLRLOverview(props) {
           handleAsFinalFile={handleAsFinalFile}
         />
       </CustomTabPanel>
-      <CustomTabPanel value={value} index={1}>
+      <CustomTabPanel value={value} index={3}>
         <Banner
           ReadOnlyMode={true}
           bg={'success'}

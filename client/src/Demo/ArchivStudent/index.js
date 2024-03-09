@@ -123,7 +123,7 @@ function ArchivStudents() {
 
   if (archivStudentsState.success) {
     return (
-      <Box>
+      <Box data-testid="archiv_student_component">
         <Breadcrumbs aria-label="breadcrumb">
           <Link
             underline="hover"

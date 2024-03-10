@@ -1769,6 +1769,10 @@ export const checkIsRLspecific = (program) => {
 };
 
 export const getMissingDocs = (application) => {
+  if (!application) {
+    return [];
+  }
+
   let missingDocs = [];
   for (let docName of Object.keys(file_category_const)) {
     if (
@@ -1781,19 +1785,55 @@ export const getMissingDocs = (application) => {
       missingDocs.push(file_category_const[docName]);
   }
 
-  if (checkIsRLspecific(application?.programId)) {
-    const nrRLNeeded = parseInt(application.programId.rl_required);
-    const nrSpecificRL = application.doc_modification_thread.filter((thread) =>
-      thread.doc_thread_id?.file_type?.startsWith('RL_')
-    ).length;
-    if (nrRLNeeded > nrSpecificRL) {
-      missingDocs.push(`RL x ${nrRLNeeded - nrSpecificRL}`);
-    }
+  const nrRLNeeded = parseInt(application.programId.rl_required);
+  const nrSpecificRL = application?.doc_modification_thread.filter((thread) =>
+    thread.doc_thread_id?.file_type?.startsWith('RL_')
+  ).length;
+  if (
+    nrRLNeeded > 0 &&
+    checkIsRLspecific(application?.programId) &&
+    nrRLNeeded > nrSpecificRL
+  ) {
+    missingDocs.push(`RL x ${nrRLNeeded - nrSpecificRL}`);
   }
 
   return missingDocs;
 };
 
+export const getExtraDocs = (application) => {
+  if (!application) {
+    return [];
+  }
+
+  let extraDocs = [];
+  for (let docName of Object.keys(file_category_const)) {
+    if (
+      application?.programId[docName] !== 'yes' &&
+      application?.doc_modification_thread?.findIndex(
+        (thread) =>
+          thread.doc_thread_id?.file_type === file_category_const[docName]
+      ) !== -1
+    )
+      extraDocs.push(file_category_const[docName]);
+  }
+
+  const nrRLNeeded = parseInt(application.programId.rl_required);
+  const nrSpecificRL = application?.doc_modification_thread.filter((thread) =>
+    thread.doc_thread_id?.file_type?.startsWith('RL_')
+  ).length;
+  if (
+    nrRLNeeded > 0 &&
+    !checkIsRLspecific(application?.programId) &&
+    nrRLNeeded < nrSpecificRL
+  ) {
+    extraDocs.push(`RL x ${nrSpecificRL - nrRLNeeded}`);
+  }
+  return extraDocs;
+};
+
 export const isDocumentsMissingAssign = (application) => {
+  if (!application) {
+    return false;
+  }
   return getMissingDocs(application).length > 0;
 };

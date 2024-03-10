@@ -8,8 +8,8 @@ import ToggleableUploadFileForm from './ToggleableUploadFileForm';
 import {
   check_generaldocs,
   file_category_const,
-  isDocumentsMissingAssign,
   getMissingDocs,
+  getExtraDocs,
   is_TaiGer_role,
   is_program_closed,
   is_program_ml_rl_essay_finished
@@ -57,7 +57,13 @@ function ManualFiles(props) {
     setCategory(e.target.value);
   };
 
-  const isDocMissing = isDocumentsMissingAssign(props.application);
+  let missingDocs = [];
+  let extraDocs = [];
+  if (!props.filetype !== 'General') {
+    missingDocs = getMissingDocs(props.application);
+    extraDocs = getExtraDocs(props.application);
+  }
+
   const create_generaldoc_reminder = check_generaldocs(props.student);
   const required_doc_keys = Object.keys(file_category_const);
 
@@ -91,25 +97,40 @@ function ManualFiles(props) {
               </Grid>
             )}
             {props.filetype === 'ProgramSpecific' && (
-              <Grid item xs={12}>
-                {isDocMissing && (
-                  <Alert severity="warning">
-                    <Typography variant="string">
-                      Please assign the following documents to the student for{' '}
-                    </Typography>
-                    <b>
-                      {props.application.programId.school}{' '}
-                      {props.application.programId.program_name}
-                    </b>
-                    :{' '}
-                    {getMissingDocs(props.application)?.map((doc, i) => (
-                      <li key={i}>
-                        <b>{doc}</b>
-                      </li>
-                    ))}
-                  </Alert>
-                )}
-              </Grid>
+              <>
+                <Grid item xs={12}>
+                  {missingDocs.length > 0 && (
+                    <Alert severity="error">
+                      <Typography variant="string">
+                        Please assign the following missing document for this
+                        application:
+                      </Typography>
+
+                      {missingDocs?.map((doc, i) => (
+                        <li key={i}>
+                          <b>{doc}</b>
+                        </li>
+                      ))}
+                    </Alert>
+                  )}
+                </Grid>
+                <Grid item xs={12}>
+                  {extraDocs.length > 0 && (
+                    <Alert severity="warning">
+                      <Typography variant="string">
+                        The following document is not required for this
+                        application:
+                      </Typography>
+
+                      {extraDocs?.map((doc, i) => (
+                        <li key={i}>
+                          <b>{doc}</b>
+                        </li>
+                      ))}
+                    </Alert>
+                  )}
+                </Grid>
+              </>
             )}
             {props.application?.decided !== 'O' && (
               <Grid item xs={12}>

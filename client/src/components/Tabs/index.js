@@ -6,6 +6,7 @@ export const CustomTabPanel = (props) => {
 
   return (
     <div
+      data-testid={`custom_tab_panel-${index}`}
       role="tabpanel"
       hidden={value !== index}
       id={`simple-tabpanel-${index}`}

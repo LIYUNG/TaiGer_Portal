@@ -356,7 +356,7 @@ export const mockSingleData = {
           },
           reject_reason: '',
           finalEnrolment: false,
-          decided: '-',
+          decided: 'O',
           closed: '-',
           admission: '-',
           _id: '659749e498c0cfc70acb7155',

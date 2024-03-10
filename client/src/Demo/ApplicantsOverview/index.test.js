@@ -63,11 +63,36 @@ describe('ApplicantsOverview', () => {
     render(<RouterProvider router={router} />);
 
     await waitFor(() => {
-      // TODO
       expect(
         screen.getByTestId('application_overview_component')
       ).toHaveTextContent('Agents');
-      // expect(1).toBe(1);
+    });
+  });
+
+  test('ApplicationsOverview switching tabs not crash', async () => {
+    getStudents.mockResolvedValue({ data: mockSingleData });
+    getProgramTickets.mockResolvedValue({ data: { success: true, data: [] } });
+    useAuth.mockReturnValue({
+      user: { role: 'Agent', _id: '639baebf8b84944b872cf648' }
+    });
+    const router = createMemoryRouter(routes, {
+      initialEntries: ['/student-applications']
+    });
+    render(<RouterProvider router={router} />);
+
+    await waitFor(() => {});
+    const buttonElement = screen.getByTestId(
+      'application_overview_component_application_overview_tab'
+    );
+    userEvent.click(buttonElement);
+    // TODO
+    await waitFor(() => {
+      // expect(screen.getByTestId('custom_tab_panel-1')).not.toHaveTextContent(
+      //   'Weihenstephan-Triesdorf University of Applied Sciences'
+      // );
+      // expect(screen.getByTestId('custom_tab_panel')).toHaveTextContent(
+      //   'Technische Universi'
+      // );
     });
   });
 });

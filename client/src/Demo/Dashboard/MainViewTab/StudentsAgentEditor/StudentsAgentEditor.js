@@ -2,7 +2,6 @@ import React, { Fragment, useState } from 'react';
 import { Link as LinkDom } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
-  Box,
   Button,
   Chip,
   Link,
@@ -134,7 +133,7 @@ function StudentsAgentEditor(props) {
     studentsEditor = t('No Editor assigned');
   } else {
     studentsEditor = props.student.editors.map((editor) => (
-      <Box key={editor._id}>
+      <Fragment key={editor._id}>
         <Link
           to={`${DEMO.TEAM_EDITOR_LINK(editor._id.toString())}`}
           component={LinkDom}
@@ -142,7 +141,7 @@ function StudentsAgentEditor(props) {
           {`${editor.firstname}`}
         </Link>
         &nbsp;
-      </Box>
+      </Fragment>
     ));
   }
 

@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
-import { Form } from 'react-bootstrap';
-import { Button, Typography } from '@mui/material';
+import {
+  Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  Typography
+} from '@mui/material';
 import ModalNew from '../../components/Modal';
 import { useTranslation } from 'react-i18next';
 
@@ -38,19 +44,25 @@ function GrantManagerModal(props) {
         Set {props.firstname} - {props.lastname} as Manager:
       </Typography>
       <Typography>
-        <Form>
-          <Form.Group controlId="manager_type">
-            <Form.Label>Configure Manager Type</Form.Label>
-            <Form.Control as="select" controlId onChange={onChange}>
-              <option>Please Select</option>
-              <option value="Agent">Agent Manager</option>
-              <option value="Editor">Editor Manager</option>
-              <option value="AgentAndEditor">
-                Both Agent and Editor Manager
-              </option>
-            </Form.Control>
-          </Form.Group>
-        </Form>
+        <FormControl fullWidth>
+          <InputLabel id="select-manager-type">
+            {t('Configure Manager Type')}
+          </InputLabel>
+          <Select
+            labelId="manager_type"
+            label="Select target group"
+            name="manager_type"
+            id="manager_type"
+            onChange={onChange}
+          >
+            <MenuItem value="">Please Select</MenuItem>
+            <MenuItem value="Agent">Agent Manager</MenuItem>
+            <MenuItem value="Editor">Editor Manager</MenuItem>
+            <MenuItem value="AgentAndEditor">
+              Both Agent and Editor Manager
+            </MenuItem>
+          </Select>
+        </FormControl>
         <br />
         configure agents
         <br />

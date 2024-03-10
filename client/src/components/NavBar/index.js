@@ -15,7 +15,6 @@ import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import AccountCircle from '@mui/icons-material/AccountCircle';
-import MoreIcon from '@mui/icons-material/MoreVert';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import Settings from '@mui/icons-material/Settings';
@@ -335,10 +334,6 @@ function NavBar(props) {
     setMobileMoreAnchorEl(null);
   };
 
-  const handleMobileMenuOpen = (event) => {
-    setMobileMoreAnchorEl(event.currentTarget);
-  };
-
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -602,7 +597,7 @@ function NavBar(props) {
                 </IconButton>
               )}
 
-              <Tooltip title="Account settings">
+              <Tooltip title="Account settings" placement="bottom-start">
                 <IconButton
                   size="large"
                   edge="end"
@@ -621,16 +616,57 @@ function NavBar(props) {
               </Tooltip>
             </Box>
             <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
-              <IconButton
-                size="large"
-                aria-label="show more"
-                aria-controls={mobileMenuId}
-                aria-haspopup="true"
-                onClick={handleMobileMenuOpen}
-                color="inherit"
-              >
-                <MoreIcon />
-              </IconButton>
+              {(is_TaiGer_Agent(user) || is_TaiGer_Student(user)) && (
+                <IconButton
+                  size="large"
+                  aria-label="show active event"
+                  onClick={handleNavigateCalendar}
+                  color="inherit"
+                >
+                  <Badge badgeContent={navState.activeEventCount} color="error">
+                    <CalendarMonthIcon />
+                  </Badge>
+                </IconButton>
+              )}
+              {!is_TaiGer_Editor(user) && (
+                <IconButton
+                  size="large"
+                  aria-label="show unread new messages"
+                  aria-controls={chatId}
+                  aria-haspopup="true"
+                  onClick={handleOpenChat}
+                  color="inherit"
+                >
+                  <Badge badgeContent={navState.unreadCount} color="error">
+                    <MailIcon />
+                  </Badge>
+                </IconButton>
+              )}
+              <Tooltip title="Account settings" placement="bottom-start">
+                <IconButton
+                  size="large"
+                  edge="end"
+                  aria-label="account of current user"
+                  aria-controls={menuId}
+                  aria-haspopup="true"
+                  onClick={handleProfileMenuOpen}
+                  color="inherit"
+                  sx={{
+                    '& .MuiAvatar-root': {
+                      width: 32,
+                      height: 32,
+                      ml: -0.5,
+                      mr: 1
+                    }
+                  }}
+                >
+                  <Avatar
+                    {...stringAvatar(`${user?.firstname} ${user?.lastname}`)}
+                    size="small"
+                    title={`${user?.firstname} ${user?.lastname}`}
+                  />
+                </IconButton>
+              </Tooltip>
             </Box>
           </Toolbar>
         </AppBar>

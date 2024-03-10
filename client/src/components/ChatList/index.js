@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import PerfectScrollbar from 'react-perfect-scrollbar';
+// import PerfectScrollbar from 'react-perfect-scrollbar';
 import SearchIcon from '@mui/icons-material/Search';
 import { Box, ListItem, MenuItem, Skeleton, Typography } from '@mui/material';
 
@@ -155,16 +155,16 @@ const ChatList = (props) => {
         />
       </Search>
       {!chatListState.isLoaded && (
-        <PerfectScrollbar>
-          {[0, 1, 2, 3].map((x, i) => (
+        // <PerfectScrollbar>
+          [0, 1, 2, 3].map((x, i) => (
             <MenuItem key={i}>
               <Skeleton variant="rectangular" width={menuWidth} height={40} />
             </MenuItem>
-          ))}
-        </PerfectScrollbar>
+          ))
+        // </PerfectScrollbar>
       )}
       {chatListState.isLoaded && (
-        <PerfectScrollbar>
+        // <PerfectScrollbar>
           <Friends
             handleCloseChat={props.handleCloseChat}
             user={user}
@@ -172,7 +172,7 @@ const ChatList = (props) => {
               chatListState.searchMode ? searchResults : chatListState.students
             }
           />
-        </PerfectScrollbar>
+        // </PerfectScrollbar>
       )}
     </>
   );

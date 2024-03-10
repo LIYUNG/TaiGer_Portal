@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Link as LinkDom } from 'react-router-dom';
-import { Col, Form } from 'react-bootstrap';
 import {
   Button,
   CircularProgress,
@@ -184,29 +183,21 @@ function ButtonSetNotNeeded(props) {
       )}
       <TableCell></TableCell>
       <TableCell>
-        <Col>
-          <Form
-            onSubmit={(e) =>
-              onUpdateProfileDocStatus(
-                e,
-                props.k,
-                buttonSetNotNeededState.student_id,
-                'missing'
-              )
-            }
-          >
-            <Form.Group controlId={`${props.k}`}>
-              <Button
-                color="secondary"
-                variant="contained"
-                size="small"
-                type="submit"
-              >
-                {t('Set Needed')}
-              </Button>
-            </Form.Group>
-          </Form>
-        </Col>
+        <Button
+          color="secondary"
+          variant="contained"
+          size="small"
+          onClick={(e) =>
+            onUpdateProfileDocStatus(
+              e,
+              props.k,
+              buttonSetNotNeededState.student_id,
+              'missing'
+            )
+          }
+        >
+          {t('Set Needed')}
+        </Button>
       </TableCell>
       <TableCell></TableCell>
       <TableCell></TableCell>
@@ -227,14 +218,18 @@ function ButtonSetNotNeeded(props) {
           document?
         </Typography>
 
-        {!buttonSetNotNeededState.isLoaded && <CircularProgress />}
-        <Button
-          disabled={!buttonSetNotNeededState.isLoaded}
-          onClick={(e) => onUpdateProfileFilefromstudent(e)}
-        >
-          {t('Yes')}
-        </Button>
-        <Button onClick={closeSetNeededWindow}>No</Button>
+        {!buttonSetNotNeededState.isLoaded ? (
+          <CircularProgress />
+        ) : (
+          <Button
+            disabled={!buttonSetNotNeededState.isLoaded}
+            onClick={(e) => onUpdateProfileFilefromstudent(e)}
+          >
+            {t('Yes')}
+          </Button>
+        )}
+
+        <Button onClick={closeSetNeededWindow}>{t('No')}</Button>
       </ModalNew>
       <OffcanvasBaseDocument
         open={buttonSetNotNeededState.baseDocsflagOffcanvas}

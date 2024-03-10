@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Form } from 'react-bootstrap';
 import { Navigate, Link as LinkDom } from 'react-router-dom';
 import {
   Box,
@@ -8,7 +7,11 @@ import {
   Button,
   Grid,
   Link,
-  Typography
+  Typography,
+  FormControl,
+  Select,
+  MenuItem,
+  TextField
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
@@ -295,27 +298,29 @@ function InternalDocCreatePage(props) {
           <Card>
             {internalDocCreatePageState.isEdit ? (
               <>
-                <Form.Group controlId="decided">
-                  <Form.Control
-                    as="select"
+                <FormControl fullWidth>
+                  <Select
+                    size="small"
+                    labelId="category"
+                    name="category"
+                    id="category"
                     onChange={(e) => handleChange_category(e)}
                   >
-                    <option value={''}>Select Document Category</option>
+                    <MenuItem value={''}>Select Document Category</MenuItem>
                     {valid_internal_categories.map((cat, i) => (
-                      <option value={cat.key} key={i}>
+                      <MenuItem value={cat.key} key={i}>
                         {cat.value}
-                      </option>
+                      </MenuItem>
                     ))}
-                  </Form.Control>
-                </Form.Group>
-                <Form.Group controlId="doc_title" className="mb-4">
-                  <Form.Control
-                    type="text"
-                    placeholder="Title"
-                    defaultValue={''}
-                    onChange={(e) => handleChange_doc_title(e)}
-                  />
-                </Form.Group>
+                  </Select>
+                </FormControl>
+                <TextField
+                  size="small"
+                  type="text"
+                  placeholder="Title"
+                  defaultValue={''}
+                  onChange={(e) => handleChange_doc_title(e)}
+                />
                 <DocumentsListItemsEditor
                   category={internalDocCreatePageState.category}
                   doc_title={internalDocCreatePageState.doc_title}

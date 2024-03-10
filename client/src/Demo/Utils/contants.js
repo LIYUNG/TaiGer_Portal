@@ -900,14 +900,25 @@ export const program_fields_special_documents = [
 ];
 
 export const ATTRIBUTES = [
-  { value: 1, name: 'Demanding' },
-  { value: 2, name: 'Parents Pushing' },
-  { value: 3, name: 'Urgent' },
-  { value: 4, name: 'Slow Response' },
-  { value: 5, name: 'Disappear' },
-  { value: 6, name: 'Low-IQ' },
-  { value: 7, name: 'Refunded' },
-  { value: 8, name: 'Done' }
+  {
+    value: 1,
+    name: 'Demanding',
+    definition:
+      'Reply within 3 days, but not necessary providing pdf output. Need extra care only. Expecting quick response.'
+  },
+  { value: 2, name: 'Parents Pushing', definition: '' },
+  {
+    value: 3,
+    name: 'Urgent',
+    definition:
+      'In addition to deadline, due to student personal reason, professor required, competitive offer, rolling process or even parents pushing and want to closed asap.'
+  },
+  { value: 4, name: 'Slow Response', definition: '' },
+  { value: 5, name: 'Disappear', definition: '' },
+  { value: 6, name: 'Low-IQ', definition: '' },
+  { value: 7, name: 'Refunded', definition: '' },
+  { value: 8, name: 'Done', definition: '' },
+  { value: 9, name: 'Redund-Risk', definition: '' }
 ];
 
 export const COLORS = [

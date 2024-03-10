@@ -7,6 +7,7 @@ import {
   TableCell,
   TableHead,
   TableRow,
+  Tooltip,
   Typography
 } from '@mui/material';
 import { useTable, useSortBy, useFilters } from 'react-table';
@@ -14,7 +15,7 @@ import { Link as LinkDom } from 'react-router-dom';
 
 import { is_TaiGer_role } from '../../Demo/Utils/checking-functions';
 import DEMO from '../../store/constant';
-import { COLORS } from '../../Demo/Utils/contants';
+import { ATTRIBUTES, COLORS } from '../../Demo/Utils/contants';
 
 function SortTable({ columns, data, user }) {
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
@@ -120,13 +121,19 @@ function SortTable({ columns, data, user }) {
                           <br />
                           {row.original.attributes?.map(
                             (attribute) =>
-                              [1, 3].includes(attribute.value) && (
-                                <Chip
-                                  size="small"
-                                  label={attribute.name}
+                              [1, 3, 9].includes(attribute.value) && (
+                                <Tooltip
+                                  title={
+                                    ATTRIBUTES[attribute.value - 1].definition
+                                  }
                                   key={attribute._id}
-                                  color={COLORS[attribute.value]}
-                                />
+                                >
+                                  <Chip
+                                    size="small"
+                                    label={attribute.name}
+                                    color={COLORS[attribute.value]}
+                                  />
+                                </Tooltip>
                               )
                           )}
                         </>

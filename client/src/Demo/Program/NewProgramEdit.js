@@ -51,17 +51,13 @@ function NewProgramEdit(props) {
     };
   }, [searchTerm]);
 
-  const fetchSearchResults = async () => {
-    try {
-      setSearchResults(
-        [...schoolNameSet].filter((school) =>
-          school.toLowerCase().includes(program.school.toLowerCase())
-        )
-      );
-      setIsResultsVisible(true);
-    } catch (error) {
-      /* empty */
-    }
+  const fetchSearchResults = () => {
+    setSearchResults(
+      [...schoolNameSet].filter((school) =>
+        school.toLowerCase().includes(program.school.toLowerCase())
+      )
+    );
+    setIsResultsVisible(true);
   };
   const handleClickOutside = (event) => {
     // Check if the click target is outside of the search container and result list

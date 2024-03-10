@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import {
   Button,
   Card,
@@ -112,6 +113,13 @@ function NewProgramEdit(props) {
   };
   return (
     <>
+      <Button
+        size="small"
+        color="secondary"
+        onClick={() => props.handleClick()}
+      >
+        <ArrowBackIcon fontSize="small" /> Back
+      </Button>
       <Card sx={{ p: 2 }}>
         <Grid container>
           <Grid item xs={6} md={6}>

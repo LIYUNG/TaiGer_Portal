@@ -1825,13 +1825,13 @@ export const getExtraDocs = (application) => {
   const nrSpecificRL = application?.doc_modification_thread.filter((thread) =>
     thread.doc_thread_id?.file_type?.startsWith('RL_')
   ).length;
-  if (nrRLNeeded > 0 && nrRLNeeded < nrSpecificRL) {
-    const neededCount = !checkIsRLspecific(application?.programId)
-      ? 0
-      : nrRLNeeded;
+  const nrSpecRLNeeded = !checkIsRLspecific(application?.programId)
+    ? 0
+    : nrRLNeeded;
+  if (nrRLNeeded > 0 && nrSpecRLNeeded < nrSpecificRL) {
     extraDocs.push(
-      `RL - ${neededCount} needed, ${nrSpecificRL} provided (${
-        nrSpecificRL - neededCount
+      `RL - ${nrSpecRLNeeded} needed, ${nrSpecificRL} provided (${
+        nrSpecificRL - nrSpecRLNeeded
       } can be removed)`
     );
   }

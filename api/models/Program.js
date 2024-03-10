@@ -110,6 +110,9 @@ const programModule = {
   rl_requirements: {
     type: String
   },
+  is_rl_specific: {
+    type: Boolean
+  },
   essay_required: {
     type: String
   },

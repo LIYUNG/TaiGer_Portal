@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import {
   Button,
   Card,
@@ -19,6 +20,7 @@ import {
   LANGUAGES_ARRAY_OPTIONS,
   SEMESTER_ARRAY_OPTIONS,
   UNI_ASSIST_ARRAY_OPTIONS,
+  YES_NO_BOOLEAN_OPTIONS,
   field_alert
 } from '../Utils/contants';
 import { appConfig } from '../../config';
@@ -29,6 +31,7 @@ function NewProgramEdit(props) {
     program: props.program || {},
     school_name_set: new Set(props.programs?.map((program) => program.school))
   });
+
   const [searchResults, setSearchResults] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const searchContainerRef = useRef(null);
@@ -74,7 +77,10 @@ function NewProgramEdit(props) {
   const handleChange = (e) => {
     e.preventDefault();
     var program_temp = { ...initStates.program };
-    program_temp[e.target.name] = e.target.value.trimLeft();
+    program_temp[e.target.name] =
+      typeof e.target.value === 'string'
+        ? e.target.value.trimLeft()
+        : e.target.value;
     setInitStates((initStates) => ({
       ...initStates,
       program: program_temp
@@ -107,133 +113,130 @@ function NewProgramEdit(props) {
   };
   return (
     <>
+      <Button
+        size="small"
+        color="secondary"
+        onClick={() => props.handleClick()}
+      >
+        <ArrowBackIcon fontSize="small" /> Back
+      </Button>
       <Card sx={{ p: 2 }}>
         <Grid container>
           <Grid item xs={6} md={6}>
             <Typography variant="body1">{t('School')} *</Typography>
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="body1">
-              <div className="search-container-school" ref={searchContainerRef}>
-                <TextField
-                  fullWidth
-                  size="small"
-                  type="text"
-                  id="school"
-                  name="school"
-                  placeholder="National Taiwan University"
-                  onChange={(e) => handleChange(e)}
-                  value={initStates.program.school || searchTerm}
-                />
+            <div className="search-container-school" ref={searchContainerRef}>
+              <TextField
+                fullWidth
+                size="small"
+                type="text"
+                id="school"
+                name="school"
+                placeholder="National Taiwan University"
+                onChange={(e) => handleChange(e)}
+                value={initStates.program.school || searchTerm}
+              />
 
-                {/* {loading && <div>Loading...</div>} */}
-                {props.programs && searchResults.length > 0
-                  ? isResultsVisible && (
-                      <div className="search-results result-list">
-                        {searchResults.map((result, i) => (
-                          <li
-                            onClick={() => onClickResultHandler(result)}
-                            key={i}
-                          >
-                            {`${result}`}
-                          </li>
-                        ))}
-                      </div>
-                    )
-                  : props.programs &&
-                    isResultsVisible && (
-                      <div className="search-results result-list">
-                        <li>No result</li>
-                      </div>
-                    )}
-              </div>
-            </Typography>
+              {/* {loading && <div>Loading...</div>} */}
+              {props.programs && searchResults.length > 0
+                ? isResultsVisible && (
+                    <div className="search-results result-list">
+                      {searchResults.map((result, i) => (
+                        <li
+                          onClick={() => onClickResultHandler(result)}
+                          key={i}
+                        >
+                          {`${result}`}
+                        </li>
+                      ))}
+                    </div>
+                  )
+                : props.programs &&
+                  isResultsVisible && (
+                    <div className="search-results result-list">
+                      <li>No result</li>
+                    </div>
+                  )}
+            </div>
           </Grid>
           <Grid item xs={6} md={6}>
             <Typography variant="body1">{t('Program')} *</Typography>
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="body1">
-              <TextField
-                fullWidth
-                size="small"
-                type="text"
-                id="program_name"
-                name="program_name"
-                placeholder="Electrical Engineering"
-                onChange={(e) => handleChange(e)}
-                value={initStates.program.program_name || ''}
-              />
-            </Typography>
+            <TextField
+              fullWidth
+              size="small"
+              type="text"
+              id="program_name"
+              name="program_name"
+              placeholder="Electrical Engineering"
+              onChange={(e) => handleChange(e)}
+              value={initStates.program.program_name || ''}
+            />
           </Grid>
           <Grid item xs={6} md={6}>
             <Typography variant="body1">{t('Degree')} *</Typography>
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="body1">
-              <FormControl fullWidth>
-                <Select
-                  size="small"
-                  labelId="degree"
-                  name="degree"
-                  id="degree"
-                  onChange={(e) => handleChange(e)}
-                  value={initStates.program.degree}
-                >
-                  {DEGREE_CATOGARY_ARRAY_OPTIONS.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Typography>
+            <FormControl fullWidth>
+              <Select
+                size="small"
+                labelId="degree"
+                name="degree"
+                id="degree"
+                onChange={(e) => handleChange(e)}
+                value={initStates.program.degree}
+              >
+                {DEGREE_CATOGARY_ARRAY_OPTIONS.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </Grid>
           <Grid item xs={6} md={6}>
             <Typography variant="body1">{t('Semester')} *</Typography>
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="body1">
-              <FormControl fullWidth>
-                <Select
-                  size="small"
-                  labelId="semester"
-                  name="semester"
-                  id="semester"
-                  onChange={(e) => handleChange(e)}
-                  value={initStates.program.semester || ''}
-                >
-                  {SEMESTER_ARRAY_OPTIONS.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Typography>
+            <FormControl fullWidth>
+              <Select
+                size="small"
+                labelId="semester"
+                name="semester"
+                id="semester"
+                onChange={(e) => handleChange(e)}
+                value={initStates.program.semester || ''}
+              >
+                {SEMESTER_ARRAY_OPTIONS.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </Grid>
           <Grid item xs={6} md={6}>
             <Typography variant="body1">{t('Teaching Language')}*</Typography>
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="body1">
-              <FormControl fullWidth>
-                <Select
-                  size="small"
-                  labelId="lang"
-                  name="lang"
-                  id="lang"
-                  onChange={(e) => handleChange(e)}
-                  value={initStates.program.lang || '-'}
-                >
-                  {LANGUAGES_ARRAY_OPTIONS.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Typography>
+            <FormControl fullWidth>
+              <Select
+                size="small"
+                labelId="lang"
+                name="lang"
+                id="lang"
+                onChange={(e) => handleChange(e)}
+                value={initStates.program.lang || '-'}
+              >
+                {LANGUAGES_ARRAY_OPTIONS.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </Grid>
           <Grid item xs={6} md={6}>
             <Typography variant="body1">
@@ -241,18 +244,16 @@ function NewProgramEdit(props) {
             </Typography>
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="body1">
-              <TextField
-                fullWidth
-                size="small"
-                type="text"
-                id="gpa_requirement"
-                name="gpa_requirement"
-                placeholder="2,5"
-                onChange={(e) => handleChange(e)}
-                value={initStates.program.gpa_requirement || ''}
-              />
-            </Typography>
+            <TextField
+              fullWidth
+              size="small"
+              type="text"
+              id="gpa_requirement"
+              name="gpa_requirement"
+              placeholder="2,5"
+              onChange={(e) => handleChange(e)}
+              value={initStates.program.gpa_requirement || ''}
+            />
           </Grid>
           <Grid item xs={6} md={6}>
             <Typography variant="body1">
@@ -260,18 +261,16 @@ function NewProgramEdit(props) {
             </Typography>
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="body1">
-              <TextField
-                fullWidth
-                size="small"
-                type="text"
-                id="application_start"
-                name="application_start"
-                placeholder="04-01"
-                onChange={(e) => handleChange(e)}
-                value={initStates.program.application_start || ''}
-              />
-            </Typography>
+            <TextField
+              fullWidth
+              size="small"
+              type="text"
+              id="application_start"
+              name="application_start"
+              placeholder="04-01"
+              onChange={(e) => handleChange(e)}
+              value={initStates.program.application_start || ''}
+            />
           </Grid>
           <Grid item xs={6} md={6}>
             <Typography variant="body1">
@@ -279,18 +278,16 @@ function NewProgramEdit(props) {
             </Typography>
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="body1">
-              <TextField
-                fullWidth
-                size="small"
-                type="text"
-                id="application_deadline"
-                name="application_deadline"
-                placeholder="05-31"
-                onChange={(e) => handleChange(e)}
-                value={initStates.program.application_deadline || ''}
-              />
-            </Typography>
+            <TextField
+              fullWidth
+              size="small"
+              type="text"
+              id="application_deadline"
+              name="application_deadline"
+              placeholder="05-31"
+              onChange={(e) => handleChange(e)}
+              value={initStates.program.application_deadline || ''}
+            />
           </Grid>
           {appConfig.vpdEnable && (
             <>
@@ -298,24 +295,22 @@ function NewProgramEdit(props) {
                 <Typography variant="body1">{t('Need Uni-Assist?')}</Typography>
               </Grid>
               <Grid item xs={6} md={6}>
-                <Typography variant="body1">
-                  <FormControl fullWidth>
-                    <Select
-                      size="small"
-                      labelId="uni_assist"
-                      name="uni_assist"
-                      id="uni_assist"
-                      onChange={(e) => handleChange(e)}
-                      value={initStates.program.uni_assist || 'No'}
-                    >
-                      {UNI_ASSIST_ARRAY_OPTIONS.map((option) => (
-                        <MenuItem key={option.value} value={option.value}>
-                          {option.label}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </Typography>
+                <FormControl fullWidth>
+                  <Select
+                    size="small"
+                    labelId="uni_assist"
+                    name="uni_assist"
+                    id="uni_assist"
+                    onChange={(e) => handleChange(e)}
+                    value={initStates.program.uni_assist || 'No'}
+                  >
+                    {UNI_ASSIST_ARRAY_OPTIONS.map((option) => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
               </Grid>
             </>
           )}
@@ -323,18 +318,16 @@ function NewProgramEdit(props) {
             <Typography variant="body1">{t('TOEFL Requirement')}</Typography>
           </Grid>
           <Grid item xs={2} md={2}>
-            <Typography variant="body1">
-              <TextField
-                fullWidth
-                size="small"
-                type="text"
-                id="toefl"
-                name="toefl"
-                placeholder="88"
-                onChange={(e) => handleChange(e)}
-                value={initStates.program.toefl || ''}
-              />
-            </Typography>
+            <TextField
+              fullWidth
+              size="small"
+              type="text"
+              id="toefl"
+              name="toefl"
+              placeholder="88"
+              onChange={(e) => handleChange(e)}
+              value={initStates.program.toefl || ''}
+            />
           </Grid>
           <Grid item xs={1} md={1}>
             <TextField
@@ -392,18 +385,16 @@ function NewProgramEdit(props) {
             <Typography variant="body1">{t('IELTS Requirement')}</Typography>
           </Grid>
           <Grid item xs={2} md={2}>
-            <Typography variant="body1">
-              <TextField
-                fullWidth
-                size="small"
-                type="text"
-                id="ielts"
-                name="ielts"
-                placeholder="6.5"
-                onChange={(e) => handleChange(e)}
-                value={initStates.program.ielts || ''}
-              />
-            </Typography>
+            <TextField
+              fullWidth
+              size="small"
+              type="text"
+              id="ielts"
+              name="ielts"
+              placeholder="6.5"
+              onChange={(e) => handleChange(e)}
+              value={initStates.program.ielts || ''}
+            />
           </Grid>
           <Grid item xs={1} md={1}>
             <TextField
@@ -560,6 +551,31 @@ function NewProgramEdit(props) {
               </Select>
             </FormControl>
           </Grid>
+
+          <Grid item xs={6} md={6}>
+            <Typography variant="body1">
+              {t('RL Program specific?')} *
+            </Typography>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <FormControl fullWidth>
+              <Select
+                size="small"
+                labelId="is_rl_specific"
+                name="is_rl_specific"
+                id="is_rl_specific"
+                onChange={(e) => handleChange(e)}
+                value={initStates.program?.is_rl_specific}
+              >
+                {YES_NO_BOOLEAN_OPTIONS.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+
           <Grid item xs={6} md={6}>
             <Typography variant="body1">{t('RL Requirements?')}</Typography>
           </Grid>

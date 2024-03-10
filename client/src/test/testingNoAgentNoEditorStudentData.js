@@ -1,27 +1,11 @@
-export const mockSingleData = {
+export const mockSingleNoAgentNoStudentData = {
   success: true,
   notification: {},
   data: [
     {
       _id: 'g1',
-      agents: [
-        {
-          _id: '639baebf8b84944b872cf648',
-          firstname: 'Leo',
-          lastname: 'TaiGer',
-          email: 'agent@gmail.com',
-          role: 'Agent'
-        }
-      ],
-      editors: [
-        {
-          _id: '64479a4d10496d3fe022834f',
-          firstname: 'Editor',
-          lastname: 'TaiGer',
-          email: 'editor@gmail.com',
-          role: 'Editor'
-        }
-      ],
+      agents: [],
+      editors: [],
       applying_program_count: 5,
       firstname: 'Testing-Student',
       lastname: 'Wang',
@@ -356,7 +340,7 @@ export const mockSingleData = {
           },
           reject_reason: '',
           finalEnrolment: false,
-          decided: 'O',
+          decided: '-',
           closed: '-',
           admission: '-',
           _id: '659749e498c0cfc70acb7155',
@@ -472,7 +456,7 @@ export const mockSingleData = {
   ]
 };
 
-export const mockTwoData = {
+export const mockTwoNoAgentNoStudentsData = {
   success: true,
   notification: {},
   data: [
@@ -480,24 +464,16 @@ export const mockTwoData = {
       _id: '64844b8687c9c3e882379d44',
       agents: [
         {
-          _id: '639baebf8b84944b872cf648',
-          firstname: 'Agent',
-          lastname: 'firstnameAgent',
-          email: 'agent@gmail.com',
+          _id: '638b8f70be60d7999c6b649d',
+          firstname: 'AgentFirstname',
+          lastname: 'AgentLastname',
+          email: 'taiger.agent@gmail.com',
           role: 'Agent'
         }
       ],
-      editors: [
-        {
-          _id: '64479a4d10496d3fe022834f',
-          firstname: 'editor',
-          lastname: 'firstnameEditor',
-          email: 'editor@gmail.com',
-          role: 'Editor'
-        }
-      ],
+      editors: [],
       applying_program_count: 5,
-      firstname: 'TestStudent1',
+      firstname: 'TestStudent-HasAgent-NoEditor',
       lastname: 'Lee',
       email: 'lee.teststudent1@gmail.com',
       archiv: false,
@@ -945,26 +921,18 @@ export const mockTwoData = {
     },
     {
       _id: '2',
-      agents: [
-        {
-          _id: '639baebf8b84944b872cf648',
-          firstname: 'Leo',
-          lastname: 'firstnameAgent',
-          email: 'taiger.leoc@gmail.com',
-          role: 'Agent'
-        }
-      ],
+      agents: [],
       editors: [
         {
-          _id: '64479a4d10496d3fe022834f',
-          firstname: 'editor',
-          lastname: 'firstnameEditor',
-          email: 'taiger.sols@gmail.com',
+          _id: '638b8f70be60d7999c6b649d',
+          firstname: 'EditorFirstname',
+          lastname: 'EditorLastname',
+          email: 'taiger.editor@gmail.com',
           role: 'Editor'
         }
       ],
       applying_program_count: 5,
-      firstname: 'TestStudent2',
+      firstname: 'Student-NoAgent-HasEditor',
       lastname: 'Chen',
       email: 'chen.teststudent2@gmail.com',
       archiv: false,
@@ -1002,8 +970,7 @@ export const mockTwoData = {
           high_school_isGraduated: 'Yes',
           attended_high_school: 'Song Shan senior high school ',
           high_school_graduated_year: '2020',
-          attended_university:
-            'National Taipei University',
+          attended_university: 'National Taipei University',
           attended_university_program: 'International Management ',
           isGraduated: 'pending',
           expected_grad_date: '2024',

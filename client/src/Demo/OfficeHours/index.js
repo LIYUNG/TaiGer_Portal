@@ -76,8 +76,6 @@ function OfficeHours() {
     success: false,
     agents: {},
     hasEvents: false,
-    updateconfirmed: false,
-    updatecredentialconfirmed: false,
     isDeleteModalOpen: false,
     isEditModalOpen: false,
     isConfirmModalOpen: false,

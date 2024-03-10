@@ -72,12 +72,6 @@ describe('Dashboard', () => {
     });
     render(<RouterProvider router={router} />);
 
-    // Example
-    // const buttonElement = screen.getByRole('button');
-    // userEvent.click(buttonElement);
-    // const outputElement = screen.getByText('good to see you', { exact: false });
-    // expect(outputElement).toBeInTheDocument(1);
-
     await waitFor(() => {
       // TODO
       expect(screen.getByTestId('dashoboard_component')).toHaveTextContent(
@@ -99,13 +93,6 @@ describe('Student Dashboard', () => {
       initialEntries: ['/dashboard']
     });
     render(<RouterProvider router={router} />);
-
-    // Example
-    // const buttonElement = screen.getByRole('button');
-    // userEvent.click(buttonElement);
-    // const outputElement = screen.getByText('good to see you', { exact: false });
-    // expect(outputElement).toBeInTheDocument(1);
-
     await waitFor(() => {
       // TODO
       expect(screen.getByTestId('dashoboard_component')).toHaveTextContent(
@@ -154,12 +141,6 @@ describe('Admin Dashboard', () => {
       initialEntries: ['/dashboard']
     });
     render(<RouterProvider router={router} />);
-
-    // Example
-    // const buttonElement = screen.getByRole('button');
-    // userEvent.click(buttonElement);
-    // const outputElement = screen.getByText('good to see you', { exact: false });
-    // expect(outputElement).toBeInTheDocument(1);
 
     await waitFor(() => {
       // TODO

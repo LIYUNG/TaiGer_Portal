@@ -86,7 +86,7 @@ function AssignAgents() {
   const { res_modal_status, res_modal_message } = assignAgentsState;
 
   return (
-    <Box>
+    <Box data-testid="assignment_agents">
       {res_modal_status >= 400 && (
         <ModalMain
           ConfirmError={ConfirmError}

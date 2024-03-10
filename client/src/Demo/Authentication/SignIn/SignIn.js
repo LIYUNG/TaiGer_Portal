@@ -26,15 +26,6 @@ export default function SignIn() {
   const [reactivateAccount, setReactivateAccount] = useState(false);
   const { t } = useTranslation();
 
-  const emailValidation = () => {
-    const regex =
-      // eslint-disable-next-line no-useless-escape
-      /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-    if (!emailaddress || regex.test(emailaddress) === false) {
-      return false;
-    }
-    return true;
-  };
   const setuserdata2 = (resp) => {
     try {
       if (resp) {
@@ -84,24 +75,19 @@ export default function SignIn() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (emailValidation()) {
-      if (!password) {
-        alert('Password please!');
-        setButtondisable(false);
-      } else {
-        try {
-          const resp = await Login({ email: emailaddress, password });
-          setuserdata2(resp);
-          setButtondisable(false);
-        } catch (err) {
-          // TODO: handle error
-          alert('Server is busy! Please try in 5 minutes later.');
-          setButtondisable(false);
-        }
-      }
-    } else {
-      alert('Email is not valid');
+    if (!password) {
+      alert('Password please!');
       setButtondisable(false);
+    } else {
+      try {
+        const resp = await Login({ email: emailaddress, password });
+        setuserdata2(resp);
+        setButtondisable(false);
+      } catch (err) {
+        // TODO: handle error
+        alert('Server is busy! Please try in 5 minutes later.');
+        setButtondisable(false);
+      }
     }
   };
 

@@ -160,7 +160,7 @@ function UsersTable() {
   const admin_list = userTableState.users.filter((usr) => is_TaiGer_Admin(usr));
 
   return (
-    <Box>
+    <Box data-testid="users_table_page">
       {res_modal_status >= 400 && (
         <ModalMain
           ConfirmError={ConfirmError}
@@ -195,18 +195,22 @@ function UsersTable() {
           aria-label="basic tabs example"
         >
           <Tab
+            data-testid="users_table_page_student_tab"
             label={`${t('Student')} (${student_list?.length})`}
             {...a11yProps(0)}
           />
           <Tab
+            data-testid="users_table_page_agent_tab"
             label={`${t('Agents')} (${agent_list.length})`}
             {...a11yProps(1)}
           />
           <Tab
+            data-testid="users_table_page_editor_tab"
             label={`${t('Editor')} (${editor_list.length})`}
             {...a11yProps(2)}
           />
           <Tab
+            data-testid="users_table_page_admin_tab"
             label={`${t('Admin')} (${admin_list.length})`}
             {...a11yProps(3)}
           />

@@ -326,7 +326,7 @@ function CommunicationSinglePage() {
     return <Loading />;
   }
   return (
-    <>
+    <Box data-testid="communication_student_page">
       {communicationSinglePageState.student?.archiv && (
         <TopBar>
           Status: <b>Close</b>
@@ -524,7 +524,7 @@ function CommunicationSinglePage() {
           res_modal_message={res_modal_message}
         />
       )}
-    </>
+    </Box>
   );
 }
 

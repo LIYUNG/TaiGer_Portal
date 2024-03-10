@@ -68,8 +68,6 @@ function TaiGerOfficeHours() {
     hasEvents: false,
     students: null,
     student_id: '',
-    updateconfirmed: false,
-    updatecredentialconfirmed: false,
     isDeleteModalOpen: false,
     isEditModalOpen: false,
     isConfirmModalOpen: false,

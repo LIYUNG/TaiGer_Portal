@@ -1,15 +1,15 @@
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
-import MyCourses from './index';
+import SingleProgram from './SingleProgram';
 import 'react-i18next';
-import { getMycourses } from '../../api';
+import { getProgram, getProgramTicket } from '../../api';
 import axios from 'axios';
 import { request } from '../../api/request';
 import { useAuth } from '../../components/AuthProvider';
 import { MemoryRouter, useParams } from 'react-router-dom';
 
-import { exampleCourse } from '../../test/testingCourseData';
+import { mockSingleProgramNoStudentsData } from '../../test/testingSingleProgramPageData';
 
 jest.mock('axios');
 jest.mock('request');
@@ -31,6 +31,7 @@ jest.mock('react-router-dom', () => ({
 }));
 
 jest.mock('../../components/AuthProvider');
+const mockedAxios = jest.Mocked;
 
 class ResizeObserver {
   observe() {}
@@ -38,18 +39,18 @@ class ResizeObserver {
   unobserve() {}
 }
 
-describe('Course input pag checking', () => {
+describe('Single Program Page checking', () => {
   window.ResizeObserver = ResizeObserver;
-
-  test('My Course not crash', async () => {
-    getMycourses.mockResolvedValue({ data: exampleCourse });
+  test('page not crash', async () => {
+    getProgram.mockResolvedValue({ data: mockSingleProgramNoStudentsData });
+    getProgramTicket.mockResolvedValue({ data: { success: true, data: [] } });
     useAuth.mockReturnValue({
-      user: { role: 'Agent', _id: '639baebf8b84944b872cf648' }
+      user: { role: 'Student', _id: '639baebf8b84944b872cf648' }
     });
-    useParams.mockReturnValue({ student_id: '6483036b87c9c3e8823755ec' });
+    useParams.mockReturnValue({ programId: '2532fde46751651538084485' });
     render(
       <MemoryRouter>
-        <MyCourses />
+        <SingleProgram />
       </MemoryRouter>
     );
 
@@ -60,11 +61,9 @@ describe('Course input pag checking', () => {
     // expect(outputElement).toBeInTheDocument(1);
 
     await waitFor(() => {
-      // TODO
-      expect(screen.getByTestId('student_course_view')).toHaveTextContent(
-        '請把'
+      expect(screen.getByTestId('single_program_page')).toHaveTextContent(
+        '(TUM)'
       );
-      // expect(1).toBe(1);
     });
   });
 });

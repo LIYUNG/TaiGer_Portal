@@ -1,15 +1,15 @@
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
-import MyCourses from './index';
+import Admissions from './Admissions';
 import 'react-i18next';
-import { getMycourses } from '../../api';
+import { getAdmissions } from '../../api';
 import axios from 'axios';
 import { request } from '../../api/request';
 import { useAuth } from '../../components/AuthProvider';
-import { MemoryRouter, useParams } from 'react-router-dom';
+import { MemoryRouter } from 'react-router-dom';
 
-import { exampleCourse } from '../../test/testingCourseData';
+import { mockAdmissionsData } from '../../test/testingAdmissionsData';
 
 jest.mock('axios');
 jest.mock('request');
@@ -25,12 +25,8 @@ jest.mock('react-i18next', () => ({
   initReactI18next: { type: '3rdParty', init: () => {} }
 }));
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useParams: jest.fn()
-}));
-
 jest.mock('../../components/AuthProvider');
+const mockedAxios = jest.Mocked;
 
 class ResizeObserver {
   observe() {}
@@ -38,33 +34,24 @@ class ResizeObserver {
   unobserve() {}
 }
 
-describe('Course input pag checking', () => {
+describe('Admissions page checking', () => {
   window.ResizeObserver = ResizeObserver;
-
-  test('My Course not crash', async () => {
-    getMycourses.mockResolvedValue({ data: exampleCourse });
+  test('Admissions page not crash', async () => {
+    getAdmissions.mockResolvedValue({ data: mockAdmissionsData });
     useAuth.mockReturnValue({
       user: { role: 'Agent', _id: '639baebf8b84944b872cf648' }
     });
-    useParams.mockReturnValue({ student_id: '6483036b87c9c3e8823755ec' });
     render(
       <MemoryRouter>
-        <MyCourses />
+        <Admissions />
       </MemoryRouter>
     );
 
-    // Example
-    // const buttonElement = screen.getByRole('button');
-    // userEvent.click(buttonElement);
-    // const outputElement = screen.getByText('good to see you', { exact: false });
-    // expect(outputElement).toBeInTheDocument(1);
-
     await waitFor(() => {
       // TODO
-      expect(screen.getByTestId('student_course_view')).toHaveTextContent(
-        '請把'
+      expect(screen.getByTestId('admissinos_page')).toHaveTextContent(
+        'Admissions'
       );
-      // expect(1).toBe(1);
     });
   });
 });

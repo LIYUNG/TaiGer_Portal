@@ -1794,7 +1794,11 @@ export const getMissingDocs = (application) => {
     checkIsRLspecific(application?.programId) &&
     nrRLNeeded > nrSpecificRL
   ) {
-    missingDocs.push(`RL x ${nrRLNeeded - nrSpecificRL}`);
+    missingDocs.push(
+      `RL - ${nrRLNeeded} needed, ${nrSpecificRL} provided (${
+        nrRLNeeded - nrSpecificRL
+      } must be added)`
+    );
   }
 
   return missingDocs;
@@ -1821,12 +1825,15 @@ export const getExtraDocs = (application) => {
   const nrSpecificRL = application?.doc_modification_thread.filter((thread) =>
     thread.doc_thread_id?.file_type?.startsWith('RL_')
   ).length;
-  if (
-    nrRLNeeded > 0 &&
-    !checkIsRLspecific(application?.programId) &&
-    nrRLNeeded < nrSpecificRL
-  ) {
-    extraDocs.push(`RL x ${nrSpecificRL - nrRLNeeded}`);
+  if (nrRLNeeded > 0 && nrRLNeeded < nrSpecificRL) {
+    const neededCount = !checkIsRLspecific(application?.programId)
+      ? 0
+      : nrRLNeeded;
+    extraDocs.push(
+      `RL - ${neededCount} needed, ${nrSpecificRL} provided (${
+        nrSpecificRL - neededCount
+      } can be removed)`
+    );
   }
   return extraDocs;
 };

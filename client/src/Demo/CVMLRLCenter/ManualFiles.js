@@ -210,7 +210,7 @@ function ManualFiles(props) {
                     : 'Mark Submitted'}
                 </Button>
               )}
-              <Typography>Requirements:</Typography>
+              <Typography>Veiw requirements:</Typography>
               {required_doc_keys.map(
                 (doc_reqired_key, i) =>
                   props.application.programId[doc_reqired_key] === 'yes' && (

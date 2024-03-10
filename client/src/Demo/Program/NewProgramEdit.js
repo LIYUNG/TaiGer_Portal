@@ -27,11 +27,10 @@ import { appConfig } from '../../config';
 
 function NewProgramEdit(props) {
   const { t } = useTranslation();
-  let [initStates, setInitStates] = useState({
-    program: props.program || {},
-    school_name_set: new Set(props.programs?.map((program) => program.school))
-  });
-
+  const [program, setProgram] = useState(props.program || {});
+  const schoolNameSet = new Set(
+    props.programs?.map((program) => program.school)
+  );
   const [searchResults, setSearchResults] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const searchContainerRef = useRef(null);
@@ -55,8 +54,8 @@ function NewProgramEdit(props) {
   const fetchSearchResults = async () => {
     try {
       setSearchResults(
-        [...initStates.school_name_set].filter((school) =>
-          school.toLowerCase().includes(initStates.program.school.toLowerCase())
+        [...schoolNameSet].filter((school) =>
+          school.toLowerCase().includes(program.school.toLowerCase())
         )
       );
       setIsResultsVisible(true);
@@ -76,15 +75,12 @@ function NewProgramEdit(props) {
   };
   const handleChange = (e) => {
     e.preventDefault();
-    var program_temp = { ...initStates.program };
+    var program_temp = { ...program };
     program_temp[e.target.name] =
       typeof e.target.value === 'string'
         ? e.target.value.trimLeft()
         : e.target.value;
-    setInitStates((initStates) => ({
-      ...initStates,
-      program: program_temp
-    }));
+    setProgram(program_temp);
     if (e.target.id === 'school') {
       setSearchTerm(e.target.value.trimLeft());
     }
@@ -101,13 +97,7 @@ function NewProgramEdit(props) {
 
   const onClickResultHandler = (result) => {
     setSearchResults([]);
-    setInitStates((initStates) => ({
-      ...initStates,
-      program: {
-        ...initStates.program,
-        school: result
-      }
-    }));
+    setProgram((preState) => ({ ...preState.program, school: result }));
     setIsResultsVisible(false);
     setSearchTerm('');
   };
@@ -135,7 +125,7 @@ function NewProgramEdit(props) {
                 name="school"
                 placeholder="National Taiwan University"
                 onChange={(e) => handleChange(e)}
-                value={initStates.program.school || searchTerm}
+                value={program.school || searchTerm}
               />
 
               {/* {loading && <div>Loading...</div>} */}
@@ -172,7 +162,7 @@ function NewProgramEdit(props) {
               name="program_name"
               placeholder="Electrical Engineering"
               onChange={(e) => handleChange(e)}
-              value={initStates.program.program_name || ''}
+              value={program.program_name || ''}
             />
           </Grid>
           <Grid item xs={6} md={6}>
@@ -186,7 +176,7 @@ function NewProgramEdit(props) {
                 name="degree"
                 id="degree"
                 onChange={(e) => handleChange(e)}
-                value={initStates.program.degree}
+                value={program.degree}
               >
                 {DEGREE_CATOGARY_ARRAY_OPTIONS.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
@@ -207,7 +197,7 @@ function NewProgramEdit(props) {
                 name="semester"
                 id="semester"
                 onChange={(e) => handleChange(e)}
-                value={initStates.program.semester || ''}
+                value={program.semester || ''}
               >
                 {SEMESTER_ARRAY_OPTIONS.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
@@ -228,7 +218,7 @@ function NewProgramEdit(props) {
                 name="lang"
                 id="lang"
                 onChange={(e) => handleChange(e)}
-                value={initStates.program.lang || '-'}
+                value={program.lang || '-'}
               >
                 {LANGUAGES_ARRAY_OPTIONS.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
@@ -252,7 +242,7 @@ function NewProgramEdit(props) {
               name="gpa_requirement"
               placeholder="2,5"
               onChange={(e) => handleChange(e)}
-              value={initStates.program.gpa_requirement || ''}
+              value={program.gpa_requirement || ''}
             />
           </Grid>
           <Grid item xs={6} md={6}>
@@ -269,7 +259,7 @@ function NewProgramEdit(props) {
               name="application_start"
               placeholder="04-01"
               onChange={(e) => handleChange(e)}
-              value={initStates.program.application_start || ''}
+              value={program.application_start || ''}
             />
           </Grid>
           <Grid item xs={6} md={6}>
@@ -286,7 +276,7 @@ function NewProgramEdit(props) {
               name="application_deadline"
               placeholder="05-31"
               onChange={(e) => handleChange(e)}
-              value={initStates.program.application_deadline || ''}
+              value={program.application_deadline || ''}
             />
           </Grid>
           {appConfig.vpdEnable && (
@@ -302,7 +292,7 @@ function NewProgramEdit(props) {
                     name="uni_assist"
                     id="uni_assist"
                     onChange={(e) => handleChange(e)}
-                    value={initStates.program.uni_assist || 'No'}
+                    value={program.uni_assist || 'No'}
                   >
                     {UNI_ASSIST_ARRAY_OPTIONS.map((option) => (
                       <MenuItem key={option.value} value={option.value}>
@@ -326,7 +316,7 @@ function NewProgramEdit(props) {
               name="toefl"
               placeholder="88"
               onChange={(e) => handleChange(e)}
-              value={initStates.program.toefl || ''}
+              value={program.toefl || ''}
             />
           </Grid>
           <Grid item xs={1} md={1}>
@@ -339,7 +329,7 @@ function NewProgramEdit(props) {
               label={t('Reading')}
               placeholder="21"
               onChange={(e) => handleChange(e)}
-              value={initStates.program.toefl_reading || ''}
+              value={program.toefl_reading || ''}
             />
           </Grid>
           <Grid item xs={1} md={1}>
@@ -352,7 +342,7 @@ function NewProgramEdit(props) {
               label={t('Listening')}
               placeholder="21"
               onChange={(e) => handleChange(e)}
-              value={initStates.program.toefl_listening || ''}
+              value={program.toefl_listening || ''}
             />
           </Grid>
           <Grid item xs={1} md={1}>
@@ -365,7 +355,7 @@ function NewProgramEdit(props) {
               label={t('Speaking')}
               placeholder="21"
               onChange={(e) => handleChange(e)}
-              value={initStates.program.toefl_speaking || ''}
+              value={program.toefl_speaking || ''}
             />
           </Grid>
           <Grid item xs={1} md={1}>
@@ -378,7 +368,7 @@ function NewProgramEdit(props) {
               label={t('Writing')}
               placeholder="21"
               onChange={(e) => handleChange(e)}
-              value={initStates.program.toefl_writing || ''}
+              value={program.toefl_writing || ''}
             />
           </Grid>
           <Grid item xs={6} md={6}>
@@ -393,7 +383,7 @@ function NewProgramEdit(props) {
               name="ielts"
               placeholder="6.5"
               onChange={(e) => handleChange(e)}
-              value={initStates.program.ielts || ''}
+              value={program.ielts || ''}
             />
           </Grid>
           <Grid item xs={1} md={1}>
@@ -406,7 +396,7 @@ function NewProgramEdit(props) {
               label={t('Reading')}
               placeholder="6.5"
               onChange={(e) => handleChange(e)}
-              value={initStates.program.ielts_reading || ''}
+              value={program.ielts_reading || ''}
             />
           </Grid>
           <Grid item xs={1} md={1}>
@@ -419,7 +409,7 @@ function NewProgramEdit(props) {
               label={t('Listening')}
               placeholder="6.5"
               onChange={(e) => handleChange(e)}
-              value={initStates.program.ielts_listening || ''}
+              value={program.ielts_listening || ''}
             />
           </Grid>
           <Grid item xs={1} md={1}>
@@ -432,7 +422,7 @@ function NewProgramEdit(props) {
               label={t('Speaking')}
               placeholder="6.5"
               onChange={(e) => handleChange(e)}
-              value={initStates.program.ielts_speaking || ''}
+              value={program.ielts_speaking || ''}
             />
           </Grid>
           <Grid item xs={1} md={1}>
@@ -445,7 +435,7 @@ function NewProgramEdit(props) {
               label={t('Writing')}
               placeholder="6.5"
               onChange={(e) => handleChange(e)}
-              value={initStates.program.ielts_writing || ''}
+              value={program.ielts_writing || ''}
             />
           </Grid>
           <Grid item xs={6} md={6}>
@@ -460,7 +450,7 @@ function NewProgramEdit(props) {
               name="testdaf"
               placeholder="4"
               onChange={(e) => handleChange(e)}
-              value={initStates.program.testdaf || ''}
+              value={program.testdaf || ''}
             />
           </Grid>
           <Grid item xs={6} md={6}>
@@ -475,7 +465,7 @@ function NewProgramEdit(props) {
               name="gre"
               placeholder="V145Q160"
               onChange={(e) => handleChange(e)}
-              value={initStates.program.gre || ''}
+              value={program.gre || ''}
             />
           </Grid>
           <Grid item xs={6} md={6}>
@@ -490,7 +480,7 @@ function NewProgramEdit(props) {
               name="gmat"
               placeholder="640"
               onChange={(e) => handleChange(e)}
-              value={initStates.program.gmat || ''}
+              value={program.gmat || ''}
             />
           </Grid>
           <Grid item xs={6} md={6}>
@@ -504,7 +494,7 @@ function NewProgramEdit(props) {
                 name="ml_required"
                 id="ml_required"
                 onChange={(e) => handleChange(e)}
-                value={initStates.program.ml_required || 'no'}
+                value={program.ml_required || 'no'}
               >
                 {BINARY_STATE_ARRAY_OPTIONS.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
@@ -528,7 +518,7 @@ function NewProgramEdit(props) {
               name="ml_requirements"
               placeholder="1200-1500words"
               onChange={(e) => handleChange(e)}
-              value={initStates.program.ml_requirements || ''}
+              value={program.ml_requirements || ''}
             />
           </Grid>
           <Grid item xs={6} md={6}>
@@ -542,7 +532,7 @@ function NewProgramEdit(props) {
                 name="rl_required"
                 id="rl_required"
                 onChange={(e) => handleChange(e)}
-                value={initStates.program.rl_required || '0'}
+                value={program.rl_required || '0'}
               >
                 <MenuItem value="0">no</MenuItem>
                 <MenuItem value="1">yes - 1</MenuItem>
@@ -565,7 +555,7 @@ function NewProgramEdit(props) {
                 name="is_rl_specific"
                 id="is_rl_specific"
                 onChange={(e) => handleChange(e)}
-                value={initStates.program?.is_rl_specific}
+                value={program?.is_rl_specific}
               >
                 {YES_NO_BOOLEAN_OPTIONS.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
@@ -590,7 +580,7 @@ function NewProgramEdit(props) {
               name="rl_requirements"
               placeholder="1 page"
               onChange={(e) => handleChange(e)}
-              value={initStates.program.rl_requirements || ''}
+              value={program.rl_requirements || ''}
             />
           </Grid>
           <Grid item xs={6} md={6}>
@@ -604,7 +594,7 @@ function NewProgramEdit(props) {
                 name="essay_required"
                 id="essay_required"
                 onChange={(e) => handleChange(e)}
-                value={initStates.program.essay_required || ''}
+                value={program.essay_required || ''}
               >
                 {BINARY_STATE_ARRAY_OPTIONS.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
@@ -628,7 +618,7 @@ function NewProgramEdit(props) {
               name="essay_requirements"
               placeholder="2000 words"
               onChange={(e) => handleChange(e)}
-              value={initStates.program.essay_requirements || ''}
+              value={program.essay_requirements || ''}
             />
           </Grid>
           <Grid item xs={6} md={6}>
@@ -642,7 +632,7 @@ function NewProgramEdit(props) {
                 name="portfolio_required"
                 id="portfolio_required"
                 onChange={(e) => handleChange(e)}
-                value={initStates.program.portfolio_required || ''}
+                value={program.portfolio_required || ''}
               >
                 {BINARY_STATE_ARRAY_OPTIONS.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
@@ -668,7 +658,7 @@ function NewProgramEdit(props) {
               name="portfolio_requirements"
               placeholder="2000 words"
               onChange={(e) => handleChange(e)}
-              value={initStates.program.portfolio_requirements || ''}
+              value={program.portfolio_requirements || ''}
             />
           </Grid>
           <Grid item xs={6} md={6}>
@@ -684,7 +674,7 @@ function NewProgramEdit(props) {
                 name="supplementary_form_required"
                 id="supplementary_form_required"
                 onChange={(e) => handleChange(e)}
-                value={initStates.program.supplementary_form_required || ''}
+                value={program.supplementary_form_required || ''}
               >
                 {BINARY_STATE_ARRAY_OPTIONS.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
@@ -710,7 +700,7 @@ function NewProgramEdit(props) {
               name="supplementary_form_requirements"
               placeholder="fill the form"
               onChange={(e) => handleChange(e)}
-              value={initStates.program.supplementary_form_requirements || ''}
+              value={program.supplementary_form_requirements || ''}
             />
           </Grid>
           <Grid item xs={6} md={6}>
@@ -727,7 +717,7 @@ function NewProgramEdit(props) {
               name="ects_requirements"
               placeholder="Mathematics 20 ECTS, Electrical Engineering 15 ECTS, Computer architecture 8 ECTS..."
               onChange={(e) => handleChange(e)}
-              value={initStates.program.ects_requirements || ''}
+              value={program.ects_requirements || ''}
             />
           </Grid>
           <Grid item xs={6} md={6}>
@@ -744,7 +734,7 @@ function NewProgramEdit(props) {
               name="special_notes"
               placeholder="Hard copy"
               onChange={(e) => handleChange(e)}
-              value={initStates.program.special_notes || ''}
+              value={program.special_notes || ''}
             />
           </Grid>
           <Grid item xs={6} md={6}>
@@ -761,7 +751,7 @@ function NewProgramEdit(props) {
               name="comments"
               placeholder="Hard copy"
               onChange={(e) => handleChange(e)}
-              value={initStates.program.comments || ''}
+              value={program.comments || ''}
             />
           </Grid>
           <Grid item xs={6} md={6}>
@@ -776,7 +766,7 @@ function NewProgramEdit(props) {
               name="application_portal_a"
               placeholder="https://...."
               onChange={(e) => handleChange(e)}
-              value={initStates.program.application_portal_a || ''}
+              value={program.application_portal_a || ''}
             />
           </Grid>
           <Grid item xs={6} md={6}>
@@ -793,7 +783,7 @@ function NewProgramEdit(props) {
               name="application_portal_a_instructions"
               placeholder="https://...."
               onChange={(e) => handleChange(e)}
-              value={initStates.program.application_portal_a_instructions || ''}
+              value={program.application_portal_a_instructions || ''}
             />
           </Grid>
           <Grid item xs={6} md={6}>
@@ -808,7 +798,7 @@ function NewProgramEdit(props) {
               name="application_portal_b"
               placeholder="https://...."
               onChange={(e) => handleChange(e)}
-              value={initStates.program.application_portal_b || ''}
+              value={program.application_portal_b || ''}
             />
           </Grid>
           <Grid item xs={6} md={6}>
@@ -825,7 +815,7 @@ function NewProgramEdit(props) {
               name="application_portal_b_instructions"
               placeholder="https://...."
               onChange={(e) => handleChange(e)}
-              value={initStates.program.application_portal_b_instructions || ''}
+              value={program.application_portal_b_instructions || ''}
             />
           </Grid>
           <Grid item xs={6} md={6}>
@@ -840,7 +830,7 @@ function NewProgramEdit(props) {
               name="website"
               placeholder="https://...."
               onChange={(e) => handleChange(e)}
-              value={initStates.program.website || ''}
+              value={program.website || ''}
             />
           </Grid>
           <Grid item xs={6} md={6}>
@@ -854,7 +844,7 @@ function NewProgramEdit(props) {
                 name="country"
                 id="country"
                 onChange={(e) => handleChange(e)}
-                value={initStates.program.country || '-'}
+                value={program.country || '-'}
               >
                 {COUNTRIES_ARRAY_OPTIONS.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
@@ -876,7 +866,7 @@ function NewProgramEdit(props) {
               name="tuition_fees"
               placeholder="https://...."
               onChange={(e) => handleChange(e)}
-              value={initStates.program.tuition_fees || ''}
+              value={program.tuition_fees || ''}
             />
           </Grid>
           <Grid item xs={6} md={6}>
@@ -891,7 +881,7 @@ function NewProgramEdit(props) {
               name="fpso"
               placeholder="https://...."
               onChange={(e) => handleChange(e)}
-              value={initStates.program.fpso || ''}
+              value={program.fpso || ''}
             />
           </Grid>
           <Grid item xs={6} md={6}>
@@ -906,7 +896,7 @@ function NewProgramEdit(props) {
               name="study_group_flag"
               placeholder="ee"
               onChange={(e) => handleChange(e)}
-              value={initStates.program.study_group_flag || ''}
+              value={program.study_group_flag || ''}
             />
           </Grid>
         </Grid>
@@ -916,7 +906,7 @@ function NewProgramEdit(props) {
           size="small"
           color="primary"
           variant="contained"
-          onClick={(e) => handleSubmit_Program(e, initStates.program)}
+          onClick={(e) => handleSubmit_Program(e, program)}
           sx={{ my: 1 }}
         >
           {props.program ? t('Update') : t('Create')}

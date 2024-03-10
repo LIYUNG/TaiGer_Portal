@@ -1777,10 +1777,10 @@ export const getMissingDocs = (application) => {
   for (let docName of Object.keys(file_category_const)) {
     if (
       application?.programId[docName] === 'yes' &&
-      application?.doc_modification_thread?.findIndex(
+      !application?.doc_modification_thread?.some(
         (thread) =>
           thread.doc_thread_id?.file_type === file_category_const[docName]
-      ) === -1
+      )
     )
       missingDocs.push(file_category_const[docName]);
   }
@@ -1813,10 +1813,10 @@ export const getExtraDocs = (application) => {
   for (let docName of Object.keys(file_category_const)) {
     if (
       application?.programId[docName] !== 'yes' &&
-      application?.doc_modification_thread?.findIndex(
+      application?.doc_modification_thread?.some(
         (thread) =>
           thread.doc_thread_id?.file_type === file_category_const[docName]
-      ) !== -1
+      )
     )
       extraDocs.push(file_category_const[docName]);
   }

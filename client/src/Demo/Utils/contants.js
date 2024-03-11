@@ -1003,7 +1003,7 @@ export const isProgramValid = (program) => {
   }
 };
 
-export const field_alert = (program) => {
+export const showFieldAlert = (program) => {
   if (!program.school) {
     alert('Please fill School name completely');
     return;

@@ -21,7 +21,7 @@ import {
   SEMESTER_ARRAY_OPTIONS,
   UNI_ASSIST_ARRAY_OPTIONS,
   YES_NO_BOOLEAN_OPTIONS,
-  field_alert
+  showFieldAlert
 } from '../Utils/contants';
 import { appConfig } from '../../config';
 
@@ -89,7 +89,7 @@ function NewProgramEdit(props) {
       e.preventDefault();
       props.handleSubmit_Program(program);
     } else {
-      field_alert(program);
+      showFieldAlert(program);
     }
   };
 

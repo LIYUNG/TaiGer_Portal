@@ -13,7 +13,7 @@ import {
 } from '@mui/material';
 
 import {
-  AddValidProgram,
+  isProgramValid,
   BINARY_STATE_ARRAY_OPTIONS,
   COUNTRIES_ARRAY_OPTIONS,
   DEGREE_CATOGARY_ARRAY_OPTIONS,
@@ -27,14 +27,15 @@ import { appConfig } from '../../config';
 
 function NewProgramEdit(props) {
   const { t } = useTranslation();
+  const [isChanged, setIsChanged] = useState(false);
   const [program, setProgram] = useState(props.program || {});
-  const schoolNameSet = new Set(
-    props.programs?.map((program) => program.school)
-  );
   const [searchResults, setSearchResults] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const searchContainerRef = useRef(null);
   const [isResultsVisible, setIsResultsVisible] = useState(false);
+  const schoolNameSet = new Set(
+    props.programs?.map((program) => program.school)
+  );
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
@@ -71,7 +72,7 @@ function NewProgramEdit(props) {
   };
   const handleChange = (e) => {
     e.preventDefault();
-    var program_temp = { ...program };
+    let program_temp = { ...program };
     program_temp[e.target.name] =
       typeof e.target.value === 'string'
         ? e.target.value.trimLeft()
@@ -80,10 +81,11 @@ function NewProgramEdit(props) {
     if (e.target.id === 'school') {
       setSearchTerm(e.target.value.trimLeft());
     }
+    setIsChanged(true);
   };
 
-  const handleSubmit_Program = (e, program) => {
-    if (AddValidProgram(program)) {
+  const handleSubmit = (e, program) => {
+    if (isProgramValid(program)) {
       e.preventDefault();
       props.handleSubmit_Program(program);
     } else {
@@ -902,7 +904,8 @@ function NewProgramEdit(props) {
           size="small"
           color="primary"
           variant="contained"
-          onClick={(e) => handleSubmit_Program(e, program)}
+          onClick={(e) => handleSubmit(e, program)}
+          disabled={!isChanged}
           sx={{ my: 1 }}
         >
           {props.program ? t('Update') : t('Create')}

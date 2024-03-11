@@ -709,7 +709,7 @@ export const application_date_calculator = (student, application) => {
   if (!application_start) {
     return `${application_year}-<TBD>`;
   }
-  if (application_start.includes('olling')) {
+  if (application_start?.toLowerCase()?.includes('rolling')) {
     // include Rolling
     return `${application_year}-Rolling`;
   }
@@ -757,7 +757,7 @@ export const application_deadline_calculator = (student, application) => {
   if (!application_deadline) {
     return `${application_year}-<TBD>`;
   }
-  if (application_deadline.includes('olling')) {
+  if (application_deadline?.toLowerCase()?.includes('rolling')) {
     // include Rolling
     return `${application_year}-Rolling`;
   }
@@ -799,7 +799,7 @@ export const GetCVDeadline = (student) => {
         student,
         application
       );
-      if (applicationDeadline?.includes('olling')) {
+      if (applicationDeadline?.toLowerCase()?.includes('rolling')) {
         hasRolling = true;
         daysLeftRollingMin = '-';
         CVDeadlineRolling = applicationDeadline;

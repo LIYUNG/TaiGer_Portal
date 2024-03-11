@@ -1,8 +1,4 @@
-const {
-  model,
-  Schema,
-  Types: { ObjectId }
-} = require('mongoose');
+const { model, Schema } = require('mongoose');
 
 const Degree = {
   bachelor_sc: 'B.Sc',
@@ -183,38 +179,12 @@ const programModule = {
 };
 
 const programSchema = new Schema(programModule, { timestamps: true });
-
-const program_keys = Object.keys(programModule);
-const programAiModule = {};
-program_keys.forEach((key, i) => {
-  programAiModule[key] = {
-    Result: {
-      type: String
-    },
-    Source: {
-      type: String
-    }
-  };
-});
-
-const programAiSchema = new Schema(
-  {
-    ...programAiModule,
-    program_id: { type: ObjectId, ref: 'Program' },
-    ai_generated: {
-      type: String
-    }
-  },
-  { timestamps: true }
-);
-
 programSchema.index({ school: 'text', program_name: 'text' });
 
 const Program = model('Program', programSchema);
-const ProgramAi = model('ProgramAi', programAiSchema);
 
 module.exports = {
+  programModule,
   Degree,
-  Program,
-  ProgramAi
+  Program
 };

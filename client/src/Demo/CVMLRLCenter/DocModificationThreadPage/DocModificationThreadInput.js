@@ -785,9 +785,6 @@ function DocModificationThreadInput() {
         <Card sx={{ p: 2, mb: 2 }}>
           <InputGenerator
             isChecked={editorRequirements?.useProgramRequirementData || false}
-            language="English"
-            gptModel="gpt-3.5-turbo"
-            additionalRequirement=""
             data={gptData}
             isGenerating={isGenerating}
             onChange={onChangeEditorRequirements}

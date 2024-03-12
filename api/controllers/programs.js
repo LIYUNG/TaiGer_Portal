@@ -176,16 +176,7 @@ const updateProgram = asyncHandler(async (req, res) => {
   delete fields_root.semester;
   delete fields_root.application_start;
   delete fields_root.application_deadline;
-  // Update same program but other semester common data
-  await Program.updateMany(
-    {
-      school: fields.school,
-      program_name: fields.program_name,
-      degree: fields.degree
-    },
-    fields_root,
-    {}
-  );
+
   const program = await Program.findByIdAndUpdate(
     req.params.programId,
     fields,
@@ -193,6 +184,17 @@ const updateProgram = asyncHandler(async (req, res) => {
       new: true
     }
   );
+
+  // Update same program but other semester common data
+  await Program.updateMany(
+    {
+      school: program.school,
+      program_name: program.program_name,
+      degree: program.degree
+    },
+    fields_root
+  );
+
   // Delete cache key for image, pdf, docs, file here.
   const value = one_month_cache.del(req.originalUrl);
   if (value === 1) {

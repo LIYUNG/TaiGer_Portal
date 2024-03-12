@@ -28,11 +28,14 @@ import { appConfig } from '../../config';
 function NewProgramEdit(props) {
   const { t } = useTranslation();
   const [isChanged, setIsChanged] = useState(false);
-  const [program, setProgram] = useState(props.program || {});
+  const initProgram = props.program;
+  const [programChanges, setProgramChanges] = useState({});
+  const program = { ...initProgram, ...programChanges };
   const [searchResults, setSearchResults] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const searchContainerRef = useRef(null);
   const [isResultsVisible, setIsResultsVisible] = useState(false);
+  console.log('initProgram', initProgram);
   const schoolNameSet = new Set(
     props.programs?.map((program) => program.school)
   );
@@ -72,22 +75,26 @@ function NewProgramEdit(props) {
   };
   const handleChange = (e) => {
     e.preventDefault();
-    let program_temp = { ...program };
-    program_temp[e.target.name] =
+    const key = e.target.name;
+    const value =
       typeof e.target.value === 'string'
         ? e.target.value.trimLeft()
         : e.target.value;
-    setProgram(program_temp);
+    setProgramChanges((preState) => ({
+      ...preState,
+      [key]: value
+    }));
+
     if (e.target.id === 'school') {
-      setSearchTerm(e.target.value.trimLeft());
+      setSearchTerm(value.trimLeft());
     }
     setIsChanged(true);
   };
 
-  const handleSubmit = (e, program) => {
+  const handleSubmit = (e, program, programChanges) => {
     if (isProgramValid(program)) {
       e.preventDefault();
-      props.handleSubmit_Program(program);
+      props.handleSubmit_Program({ _id: program._id, ...programChanges });
     } else {
       showFieldAlert(program);
     }
@@ -95,10 +102,11 @@ function NewProgramEdit(props) {
 
   const onClickResultHandler = (result) => {
     setSearchResults([]);
-    setProgram((preState) => ({ ...preState.program, school: result }));
+    setProgramChanges((preState) => ({ ...preState.program, school: result }));
     setIsResultsVisible(false);
     setSearchTerm('');
   };
+
   return (
     <>
       <Button
@@ -904,7 +912,7 @@ function NewProgramEdit(props) {
           size="small"
           color="primary"
           variant="contained"
-          onClick={(e) => handleSubmit(e, program)}
+          onClick={(e) => handleSubmit(e, program, programChanges)}
           disabled={!isChanged}
           sx={{ my: 1 }}
         >

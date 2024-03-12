@@ -105,15 +105,19 @@ const informNoEditor = async (student) => {
 };
 
 const informOnSurveyUpdate = async (user, survey, thread) => {
+  // placeholder for automatic notification user id
+  const notificationUser = undefined;
+
   // Create message notification
   await addMessageInThread(
     `Automatic Notification: Survey has been finalized by ${user.firstname} ${user.lastname}.`,
-    thread?._id
+    thread?._id,
+    notificationUser
   );
 
-  // if (user.role !== Role.Student) {
-  //   return;
-  // }
+  if (user.role !== Role.Student) {
+    return;
+  }
 
   const student = await Student.findById(survey.studentId)
     .populate('agents editors', 'firstname lastname email')

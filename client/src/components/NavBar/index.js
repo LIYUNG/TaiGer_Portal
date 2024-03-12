@@ -714,7 +714,9 @@ function NavBar(props) {
                     }}
                   >
                     <ListItemIcon>{menuItem.icon}</ListItemIcon>
-                    <ListItemText primary={t(`${menuItem.title}`)} />
+                    <ListItemText
+                      primary={t(`${menuItem.title}`, { ns: 'common' })}
+                    />
                     {menuItemOpen[menuItem.id] ? (
                       <ExpandLess />
                     ) : (
@@ -741,7 +743,11 @@ function NavBar(props) {
                             selected={subMenuItem.url === location.pathname}
                           >
                             <ListItemIcon>{subMenuItem.icon}</ListItemIcon>
-                            <ListItemText primary={t(`${subMenuItem.title}`)} />
+                            <ListItemText
+                              primary={t(`${subMenuItem.title}`, {
+                                ns: 'common'
+                              })}
+                            />
                           </ListItemButton>
                         ))}
                     </List>
@@ -755,7 +761,11 @@ function NavBar(props) {
                     selected={menuItem.url === location.pathname}
                   >
                     <ListItemIcon>{menuItem.icon}</ListItemIcon>
-                    <ListItemText primary={t(`${menuItem.title}`)} />
+                    <ListItemText
+                      primary={t(`${menuItem.title}`, {
+                        ns: 'common'
+                      })}
+                    />
                   </ListItemButton>
                 </ListItem>
               )

@@ -117,8 +117,8 @@ function ReadyToSubmitTasksCard(props) {
     <Card sx={{ mb: 2 }}>
       <Alert severity="error">
         <Typography>
-          {t('Ready To Submit Tasks')} ( ML/ RL/ Essay are finished. Please
-          submit application asap.):
+          {t('Ready To Submit Tasks', { ns: 'dashboard' })} ( ML/ RL/ Essay are
+          finished. Please submit application asap.):
         </Typography>
       </Alert>
       <div className="card-scrollable-body">

@@ -303,7 +303,9 @@ function Dashboard() {
         >
           {appConfig.companyName}
         </Link>
-        <Typography color="text.primary">{t('Dashboard')}</Typography>
+        <Typography color="text.primary">
+          {t('Dashboard', { ns: 'dashboard' })}
+        </Typography>
       </Breadcrumbs>
       {is_TaiGer_Admin(user) && (
         <AdminMainView

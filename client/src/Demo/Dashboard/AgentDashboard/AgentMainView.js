@@ -148,7 +148,10 @@ function AgentMainView(props) {
         <Grid item xs={12} sm={12}>
           <Card>
             <Alert severity="error">
-              <Typography> {t('Upcoming Applications')} (Decided):</Typography>
+              <Typography>
+                {' '}
+                {t('Upcoming Applications', { ns: 'dashboard' })} (Decided):
+              </Typography>
             </Alert>
             <div className="card-scrollable-body">
               <Table size="small">

@@ -257,7 +257,7 @@ const InputGenerator = ({
                   input={<OutlinedInput label="Output language" />}
                   id="output-lang-select"
                   name="outputLanguage"
-                  value="English"
+                  defaultValue=""
                   onChange={onChange}
                 >
                   <MenuItem value="English">English</MenuItem>
@@ -274,7 +274,7 @@ const InputGenerator = ({
                   input={<OutlinedInput label="GPT Model" />}
                   id="gpt-model-select"
                   name="gptModel"
-                  value="gpt-3.5-turbo"
+                  defaultValue=""
                   onChange={onChange}
                 >
                   <MenuItem value="gpt-3.5-turbo">gpt-3.5-turbo</MenuItem>
@@ -340,6 +340,7 @@ function DocModificationThreadInput() {
     specific: {}
   });
   const [gptData, setgptData] = useState('');
+  // const [generatorState, setGeneratorState] = useState({});
   const [docModificationThreadInputState, setDocModificationThreadInputState] =
     useState({
       editorRequirements: {},
@@ -542,10 +543,7 @@ function DocModificationThreadInput() {
   const onGenerate = async () => {
     setIsGenerating(true);
     // reset data to empty (in case of re-generate)
-    setDocModificationThreadInputState((prevState) => ({
-      ...prevState,
-      data: ''
-    }));
+    setgptData('');
 
     let programFullName = '';
     if (thread.program_id) {
@@ -595,9 +593,11 @@ function DocModificationThreadInput() {
         setgptData((prevData) => prevData + value);
       }
       setIsGenerating(false);
+      setgptData(
+        (prevData) => prevData + ' \n ================================= \n'
+      );
       setDocModificationThreadInputState((prevState) => ({
         ...prevState,
-        data: prevState.data + ' \n ================================= \n',
         res_modal_status: response.status
       }));
     }
@@ -613,7 +613,7 @@ function DocModificationThreadInput() {
     return <ErrorPage res_status={res_status} />;
   }
 
-  if (thread?.file_type.includes('RL')) {
+  if (thread?.file_type?.includes('RL')) {
     return <ErrorPage res_status={403} />;
   }
 
@@ -636,6 +636,9 @@ function DocModificationThreadInput() {
   const isFinalLocked =
     (thread?.program_id && surveyInputs?.specific?.isFinalVersion) ||
     surveyInputs?.general?.isFinalVersion;
+
+  const editorRequirements =
+    docModificationThreadInputState?.editorRequirements;
 
   return (
     <Box>
@@ -781,10 +784,10 @@ function DocModificationThreadInput() {
       {is_TaiGer_role(user) && (
         <Card sx={{ p: 2, mb: 2 }}>
           <InputGenerator
-            isChecked={
-              docModificationThreadInputState?.editorRequirements
-                ?.useProgramRequirementData || false
-            }
+            isChecked={editorRequirements?.useProgramRequirementData || false}
+            language="English"
+            gptModel="gpt-3.5-turbo"
+            additionalRequirement=""
             data={gptData}
             isGenerating={isGenerating}
             onChange={onChangeEditorRequirements}

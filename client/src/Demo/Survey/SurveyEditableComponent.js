@@ -127,7 +127,9 @@ const SurveyEditableComponent = (props) => {
           >
             {appConfig.companyName}
           </Link>
-          <Typography color="text.primary">{t('My Survey')}</Typography>
+          <Typography color="text.primary">
+            {t('My Survey', { ns: 'common' })}
+          </Typography>
         </Breadcrumbs>
       )}
       {(!check_academic_background_filled(survey.academic_background) ||

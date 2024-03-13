@@ -382,7 +382,7 @@ function CommunicationSinglePage() {
                       component={LinkDom}
                       target="_blank"
                     >
-                      {t('My Survey')}{' '}
+                      {t('My Survey', { ns: 'common' })}{' '}
                       <FiExternalLink
                         className="mx-0 mb-1"
                         style={{ cursor: 'pointer' }}
@@ -401,7 +401,7 @@ function CommunicationSinglePage() {
                       component={LinkDom}
                       target="_blank"
                     >
-                      Base Document{' '}
+                      {t('My Documents', { ns: 'common' })}{' '}
                       <FiExternalLink style={{ cursor: 'pointer' }} />
                     </Link>
                     , 文件有的都盡量先掃描上傳,{' '}
@@ -410,7 +410,7 @@ function CommunicationSinglePage() {
                       component={LinkDom}
                       target="_blank"
                     >
-                      {t('My Courses')}{' '}
+                      {t('My Courses', { ns: 'common' })}{' '}
                       <FiExternalLink
                         className="mx-0 mb-1"
                         style={{ cursor: 'pointer' }}

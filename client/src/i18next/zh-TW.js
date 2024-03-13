@@ -21,6 +21,7 @@ export const translation_zh_TW = {
     'All Application Overview': '所有申請總攬',
     'Tasks Dashboard': '撰寫任務中心',
     'Program Conflict': '重疊申請總攬',
+    'Calendar': '行事曆',
     'Calendar Events': '行事曆',
     'My Students': '我的學生',
     'My Survey': '我的問卷',
@@ -45,15 +46,19 @@ export const translation_zh_TW = {
     'Program List': '科系資料庫',
     'User List': '使用者名單',
     Tools: '工具',
-    'Course Analyser': '課程分析器'
+    'Course Analyser': '課程分析器',
+    Messages: '訊息'
   },
   dashboard: {
     Dashboard: '主控台',
     'Upcoming Applications': '即將截止的申請',
     'Ready To Submit Tasks': '資料完整，可以送出申請之學程'
   },
+  programList: {},
+  backgroundProfile: {},
+  courses: {},
+  interviews: {},
   translation: {
-    'Welcome to React': '歡迎 react-i18next',
     'Interview Training Time': '面試訓練時間',
     'Interview Date': '面試時間',
     'Interview Program': '面試學程',
@@ -63,12 +68,9 @@ export const translation_zh_TW = {
     'Application Overview': '申請總攬',
     'Programs Update Status': '學程更新狀況',
     'Decided Programs Update Status': '已確定申請學程更新狀況',
-
     'Do you want to delete': '您想要刪除',
     'Do you want to cancel this meeting?': '您想要取消這次會議嗎?',
-
     [`Please fill our ${appConfig.companyName} template and attach the filled template and reply in English in this discussion. Any process question`]: `請填好我們的 ${appConfig.companyName} Template，並在這個討論串夾帶在和您的 Editor 討論。回覆時請用 英語(English) 好讓外籍顧問方便溝通。有任何流程疑問`,
-
     'Teaching Language': '教學語言',
     'Tell me about your result': '請告訴我們您的申請結果',
     'Have you received the interview invitation from this program?':

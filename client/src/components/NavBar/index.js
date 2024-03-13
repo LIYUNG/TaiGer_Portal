@@ -500,7 +500,7 @@ function NavBar(props) {
               <MailIcon />
             </Badge>
           </IconButton>
-          <Typography>{t('Messages')}</Typography>
+          <Typography>{t('Messages', { ns: 'common' })}</Typography>
         </MenuItem>
       )}
       <MenuItem onClick={handleProfileMenuOpen}>

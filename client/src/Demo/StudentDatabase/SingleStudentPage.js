@@ -283,7 +283,7 @@ function SingleStudentPage() {
               component={LinkDom}
               to={`${DEMO.STUDENT_DATABASE_LINK}`}
             >
-              {t('Student Database')}
+              {t('Student Database', { ns: 'common' })}
             </Link>
             <Typography color="text.primary">
               {t('Student')} {singleStudentPage.student.firstname}
@@ -347,14 +347,26 @@ function SingleStudentPage() {
               indicatorColor="primary"
               aria-label="basic tabs example"
             >
-              <Tab label={t('Application Overview')} {...a11yProps(0)} />
-              <Tab label={t('Profile Overview')} {...a11yProps(1)} />
-              <Tab label={t('CV ML RL')} {...a11yProps(2)} />
-              <Tab label={t('Portal')} {...a11yProps(3)} />
-              <Tab label={t('Uni-Assist')} {...a11yProps(4)} />
-              <Tab label={t('My Survey')} {...a11yProps(5)} />
-              <Tab label={t('My Courses')} {...a11yProps(6)} />
-              <Tab label={t('Notes')} {...a11yProps(7)} />
+              <Tab
+                label={t('Applications Overview', { ns: 'common' })}
+                {...a11yProps(0)}
+              />
+              <Tab
+                label={t('Documents', { ns: 'common' })}
+                {...a11yProps(1)}
+              />
+              <Tab label={t('CV ML RL', { ns: 'common' })} {...a11yProps(2)} />
+              <Tab label={t('Portal', { ns: 'common' })} {...a11yProps(3)} />
+              <Tab
+                label={t('Uni-Assist', { ns: 'common' })}
+                {...a11yProps(4)}
+              />
+              <Tab label={t('My Survey', { ns: 'common' })} {...a11yProps(5)} />
+              <Tab
+                label={t('My Courses', { ns: 'common' })}
+                {...a11yProps(6)}
+              />
+              <Tab label={t('Notes', { ns: 'common' })} {...a11yProps(7)} />
             </Tabs>
           </Box>
           <CustomTabPanel value={value} index={0}>

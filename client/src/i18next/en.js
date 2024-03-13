@@ -21,6 +21,7 @@ export const translation_en = {
     'All Application Overview': 'All Application Overview',
     'Tasks Dashboard': 'Tasks Dashboard',
     'Program Conflict': 'Program Conflict',
+    Calendar: 'Calendar',
     'Calendar Events': 'Calendar Events',
     'My Students': 'My Students',
     'My Survey': 'My Survey',
@@ -45,16 +46,19 @@ export const translation_en = {
     'Program List': 'Program List',
     'User List': 'User List',
     Tools: 'Tools',
-    'Course Analyser': 'Course Analyser'
+    'Course Analyser': 'Course Analyser',
+    Messages: 'Messages'
   },
   dashboard: {
     Dashboard: 'Dashboard',
     'Upcoming Applications': 'Upcoming Applications',
     'Ready To Submit Tasks': 'Ready To Submit Tasks'
   },
+  programList: {},
+  backgroundProfile: {},
+  courses: {},
+  interviews: {},
   translation: {
-    'Welcome to React': 'Welcome to React and react-i18next',
-
     'Interview Training Time': 'Interview Training Time',
     'Interview Date': 'Interview Date',
     'Interview Program': 'Interview Program',
@@ -63,13 +67,10 @@ export const translation_en = {
     'Application Overview': 'Application Overview',
     'Programs Update Status': 'Programs Update Status',
     'Decided Programs Update Status': 'Decided Programs Update Status',
-
     'Do you want to delete': 'Do you want to delete',
     'Do you want to cancel this meeting?':
       'Do you want to cancel this meeting?',
-
     [`Please fill our ${appConfig.companyName} template and attach the filled template and reply in English in this discussion. Any process question`]: `Please fill our ${appConfig.companyName} template and attach the filled template and reply in English in this discussion. Any process question`,
-
     'Teaching Language': 'Teaching Language',
     'Tell me about your result': 'Tell me about your result',
     'Have you received the interview invitation from this program?':

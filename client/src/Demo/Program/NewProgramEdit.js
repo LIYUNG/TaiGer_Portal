@@ -35,7 +35,6 @@ function NewProgramEdit(props) {
   const [searchTerm, setSearchTerm] = useState('');
   const searchContainerRef = useRef(null);
   const [isResultsVisible, setIsResultsVisible] = useState(false);
-  console.log('initProgram', initProgram);
   const schoolNameSet = new Set(
     props.programs?.map((program) => program.school)
   );

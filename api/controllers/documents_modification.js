@@ -1671,8 +1671,23 @@ const SetStatusMessagesThread = asyncHandler(async (req, res) => {
   }
 });
 
+const deleteGeneralThread = async (studentId, threadId) => {
+  // Delete folder
+  let directory = path.join(studentId, threadId);
+  logger.info('Trying to delete message thread and folder');
+  directory = directory.replace(/\\/g, '/');
+
+  emptyS3Directory(AWS_S3_BUCKET_NAME, directory);
+  await Documentthread.findByIdAndDelete(threadId);
+  await Student.findByIdAndUpdate(studentId, {
+    $pull: {
+      generaldocs_threads: { doc_thread_id: { _id: threadId } }
+    }
+  });
+};
+
 // () TODO email : notification
-const deleteGeneralMessagesThread = asyncHandler(async (req, res) => {
+const handleDeleteGeneralThread = asyncHandler(async (req, res) => {
   const {
     params: { messagesThreadId, studentId }
   } = req;
@@ -1681,69 +1696,58 @@ const deleteGeneralMessagesThread = asyncHandler(async (req, res) => {
   const student = await Student.findById(studentId);
 
   if (!to_be_delete_thread) {
-    logger.error('deleteGeneralMessagesThread: Invalid message thread id');
+    logger.error('handleDeleteGeneralThread: Invalid message thread id');
     throw new ErrorResponse(403, 'Invalid message thread id');
   }
   if (!student) {
-    logger.error('deleteGeneralMessagesThread: Invalid student id id');
+    logger.error('handleDeleteGeneralThread: Invalid student id id');
     throw new ErrorResponse(403, 'Invalid student id id');
   }
 
-  // Delete folder
-  let directory = path.join(studentId, messagesThreadId);
-  logger.info('Trying to delete message thread and folder');
-  directory = directory.replace(/\\/g, '/');
-
-  emptyS3Directory(AWS_S3_BUCKET_NAME, directory);
-  await Documentthread.findByIdAndDelete(messagesThreadId);
-  await Student.findByIdAndUpdate(studentId, {
-    $pull: {
-      generaldocs_threads: { doc_thread_id: { _id: messagesThreadId } }
-    }
-  });
-
+  await deleteGeneralThread(studentId, messagesThreadId);
   res.status(200).send({ success: true });
 });
 
+const deleteProgramThread = async (studentId, programId, threadId) => {
+  // Before delete the thread, please delete all of the files in the thread!!
+  // Delete folder
+  let directory = path.join(studentId, threadId);
+  logger.info('Trying to delete message thread and folder');
+  directory = directory.replace(/\\/g, '/');
+  emptyS3Directory(AWS_S3_BUCKET_NAME, directory);
+
+  await Student.findOneAndUpdate(
+    { _id: studentId, 'applications.programId': programId },
+    {
+      $pull: {
+        'applications.$.doc_modification_thread': {
+          doc_thread_id: { _id: threadId }
+        }
+      }
+    }
+  );
+  await Documentthread.findByIdAndDelete(threadId);
+};
+
 // (-) TODO email : notification
-const deleteProgramSpecificMessagesThread = asyncHandler(async (req, res) => {
+const handleDeleteProgramThread = asyncHandler(async (req, res) => {
   const {
     params: { messagesThreadId, program_id, studentId }
   } = req;
 
   const to_be_delete_thread = await Documentthread.findById(messagesThreadId);
   if (!to_be_delete_thread) {
-    logger.error(
-      'deleteProgramSpecificMessagesThread: Invalid message thread id!'
-    );
+    logger.error('handleDeleteProgramThread: Invalid message thread id!');
     throw new ErrorResponse(403, 'Invalid message thread id');
   }
 
   const student = await Student.findById(studentId);
   if (!student) {
-    logger.error('deleteProgramSpecificMessagesThread: Invalid student id!');
+    logger.error('handleDeleteProgramThread: Invalid student id!');
     throw new ErrorResponse(403, 'Invalid student id');
   }
 
-  // Before delete the thread, please delete all of the files in the thread!!
-  // Delete folder
-  let directory = path.join(studentId, messagesThreadId);
-  logger.info('Trying to delete message thread and folder');
-  directory = directory.replace(/\\/g, '/');
-  emptyS3Directory(AWS_S3_BUCKET_NAME, directory);
-
-  await Student.findOneAndUpdate(
-    { _id: studentId, 'applications.programId': program_id },
-    {
-      $pull: {
-        'applications.$.doc_modification_thread': {
-          doc_thread_id: { _id: messagesThreadId }
-        }
-      }
-    }
-  );
-  await Documentthread.findByIdAndDelete(messagesThreadId);
-
+  await deleteProgramThread(studentId, program_id, messagesThreadId);
   res.status(200).send({ success: true });
 });
 
@@ -1857,7 +1861,7 @@ module.exports = {
   postImageInThread,
   postMessages,
   SetStatusMessagesThread,
-  deleteGeneralMessagesThread,
-  deleteProgramSpecificMessagesThread,
+  handleDeleteGeneralThread,
+  handleDeleteProgramThread,
   deleteAMessageInThread
 };

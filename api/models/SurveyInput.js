@@ -11,10 +11,15 @@ const surveyInputSchema = new mongoose.Schema({
   fileType: {
     type: String,
     immutable: true,
-    required: true,
+    required: true
+  },
+  isFinalVersion: {
+    type: Boolean,
+    default: false
   },
   surveyContent: [
     {
+      _id: false,
       questionId: String,
       question: String,
       answer: String,

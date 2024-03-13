@@ -112,8 +112,10 @@ export const Bayerische_Formel = (high, low, my) => {
 };
 
 export const getRequirement = (thread) => {
+  if (!thread) return false;
   const fileType = thread.file_type;
   const program = thread.program_id;
+  if (!fileType || !program) return false;
 
   if (fileType.includes('Essay') && program.essay_required === 'yes') {
     return program.essay_requirements || 'No';

@@ -112,6 +112,11 @@ const isNotArchiv = (user) => {
   }
   return false;
 };
+
+const isArchiv = (user) => {
+  return !!user.archiv;
+};
+
 const application_deadline_calculator = (student, application) => {
   if (application.closed === 'O') {
     return 'CLOSE';
@@ -1615,6 +1620,7 @@ module.exports = {
   getNumberOfDays,
   CVDeadline_Calculator,
   isNotArchiv,
+  isArchiv,
   check_english_language_passed,
   check_german_language_passed,
   check_languages_filled,

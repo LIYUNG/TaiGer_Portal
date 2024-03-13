@@ -10,6 +10,7 @@ const {
 } = require('../models/Documentthread');
 const surveyInput = require('../models/SurveyInput');
 const { emptyS3Directory } = require('../utils/utils_function');
+const { informOnSurveyUpdate } = require('../utils/informEditor');
 const {
   sendNewApplicationMessageInThreadEmail,
   sendAssignEditorReminderEmail,
@@ -311,7 +312,9 @@ const getSurveyInputDocuments = async (studentId, programId, fileType) => {
       ...(fileType ? { fileType } : {}),
       ...(programId ? { programId: { $in: [programId, null] } } : {})
     })
-    .select('programId fileType surveyType surveyContent createdAt updatedAt')
+    .select(
+      'programId fileType surveyType surveyContent isFinalVersion createdAt updatedAt'
+    )
     .lean()
     .exec();
 
@@ -330,16 +333,25 @@ const getSurveyInputs = asyncHandler(async (req, res, next) => {
   } = req;
   const threadDocument = await Documentthread.findById(messagesThreadId)
     .populate('student_id', 'firstname lastname email')
-    .populate('program_id', 'school program_name degree lang');
+    .populate('program_id', 'school program_name degree lang')
+    .lean()
+    .exec();
+
+  if (!threadDocument) {
+    logger.error(
+      `getSurveyInputs: Invalid message thread id! (${messagesThreadId})`
+    );
+    throw new ErrorResponse(400, 'Invalid message thread id');
+  }
 
   const surveyDocument = await getSurveyInputDocuments(
-    threadDocument.student_id,
-    threadDocument.program_id,
+    threadDocument.student_id._id.toString(),
+    threadDocument?.program_id && threadDocument?.program_id._id.toString(),
     threadDocument.file_type
   );
 
   document = {
-    ...threadDocument.toObject(),
+    ...threadDocument,
     surveyInputs: surveyDocument
   };
 
@@ -347,140 +359,24 @@ const getSurveyInputs = asyncHandler(async (req, res, next) => {
 });
 
 const postSurveyInput = asyncHandler(async (req, res, next) => {
+  const { user } = req;
   const { input, informEditor } = req.body;
-  const newSurveyInput = new surveyInput({
+  const newSurvey = new surveyInput({
     ...input,
     createdAt: new Date()
   });
-  await newSurveyInput.save();
-  res.status(200).send({ success: true });
+  await newSurvey.save();
+  res.status(200).send({ success: true, data: newSurvey });
+
   if (informEditor) {
-    // TODO: inform editor
-    // if (user.role === Role.Student) {
-    //   // If no editor, inform agent to assign
-    //   if (!student.editors || student.editors.length === 0) {
-    //     await Student.findByIdAndUpdate(user._id, { needEditor: true }, {});
-    //     for (let i = 0; i < student.agents.length; i += 1) {
-    //       // inform active-agent
-    //       if (isNotArchiv(student)) {
-    //         if (isNotArchiv(student.agents[i])) {
-    //           await sendAssignEditorReminderEmail(
-    //             {
-    //               firstname: student.agents[i].firstname,
-    //               lastname: student.agents[i].lastname,
-    //               address: student.agents[i].email
-    //             },
-    //             {
-    //               student_firstname: student.firstname,
-    //               student_id: student._id.toString(),
-    //               student_lastname: student.lastname
-    //             }
-    //           );
-    //         }
-    //       }
-    //     }
-    //     // inform editor-lead
-    //     const permissions = await Permission.find({
-    //       canAssignEditors: true
-    //     })
-    //       .populate('user_id', 'firstname lastname email')
-    //       .lean();
-    //     if (permissions) {
-    //       for (let x = 0; x < permissions.length; x += 1) {
-    //         await sendAssignEditorReminderEmail(
-    //           {
-    //             firstname: permissions[x].user_id.firstname,
-    //             lastname: permissions[x].user_id.lastname,
-    //             address: permissions[x].user_id.email
-    //           },
-    //           {
-    //             student_firstname: student.firstname,
-    //             student_id: student._id.toString(),
-    //             student_lastname: student.lastname
-    //           }
-    //         );
-    //       }
-    //     }
-    //   } else {
-    //     if (document_thread.file_type === 'Supplementary_Form') {
-    //       // Inform Agent
-    //       for (let i = 0; i < student.agents.length; i += 1) {
-    //         if (isNotArchiv(student)) {
-    //           if (isNotArchiv(student.agents[i])) {
-    //             // if supplementary form, inform Agent.
-    //             await sendNewApplicationMessageInThreadEmail(
-    //               {
-    //                 firstname: student.agents[i].firstname,
-    //                 lastname: student.agents[i].lastname,
-    //                 address: student.agents[i].email
-    //               },
-    //               {
-    //                 writer_firstname: user.firstname,
-    //                 writer_lastname: user.lastname,
-    //                 student_firstname: student.firstname,
-    //                 student_lastname: student.lastname,
-    //                 uploaded_documentname: document_thread.file_type,
-    //                 school: document_thread.program_id.school,
-    //                 program_name: document_thread.program_id.program_name,
-    //                 thread_id: document_thread._id.toString(),
-    //                 uploaded_updatedAt: new Date(),
-    //                 message
-    //               }
-    //             );
-    //           }
-    //         }
-    //       }
-    //     } else {
-    //       // Inform Editor
-    //       for (let i = 0; i < student.editors.length; i += 1) {
-    //         if (document_thread.program_id) {
-    //           if (isNotArchiv(student) && isNotArchiv(student.editors[i])) {
-    //             await sendNewApplicationMessageInThreadEmail(
-    //               {
-    //                 firstname: student.editors[i].firstname,
-    //                 lastname: student.editors[i].lastname,
-    //                 address: student.editors[i].email
-    //               },
-    //               {
-    //                 writer_firstname: user.firstname,
-    //                 writer_lastname: user.lastname,
-    //                 student_firstname: student.firstname,
-    //                 student_lastname: student.lastname,
-    //                 uploaded_documentname: document_thread.file_type,
-    //                 school: document_thread.program_id.school,
-    //                 program_name: document_thread.program_id.program_name,
-    //                 thread_id: document_thread._id.toString(),
-    //                 uploaded_updatedAt: new Date(),
-    //                 message
-    //               }
-    //             );
-    //           }
-    //         } else if (
-    //           isNotArchiv(student) &&
-    //           isNotArchiv(student.editors[i])
-    //         ) {
-    //           await sendNewGeneraldocMessageInThreadEmail(
-    //             {
-    //               firstname: student.editors[i].firstname,
-    //               lastname: student.editors[i].lastname,
-    //               address: student.editors[i].email
-    //             },
-    //             {
-    //               writer_firstname: user.firstname,
-    //               writer_lastname: user.lastname,
-    //               student_firstname: student.firstname,
-    //               student_lastname: student.lastname,
-    //               uploaded_documentname: document_thread.file_type,
-    //               thread_id: document_thread._id.toString(),
-    //               uploaded_updatedAt: new Date(),
-    //               message
-    //             }
-    //           );
-    //         }
-    //       }
-    //     }
-    //   }
-    // }
+    const thread = await Documentthread.findOne({
+      student_id: newSurvey.studentId,
+      program_id: newSurvey.programId,
+      file_type: newSurvey.fileType
+    })
+      .populate('program_id')
+      .lean();
+    informOnSurveyUpdate(user, newSurvey, thread);
   }
 });
 
@@ -490,34 +386,56 @@ const putSurveyInput = asyncHandler(async (req, res, next) => {
     params: { surveyInputId }
   } = req;
   const { input, informEditor } = req.body;
-  await surveyInput.findByIdAndUpdate(
-    surveyInputId,
-    {
-      ...input,
-      surveyStatus: STUDENT_INPUT_STATUS_E.PRODIVDED,
-      updatedAt: new Date()
-    },
-    { upsert: false }
-  );
-  res.status(200).send({ success: true });
+  const updatedSurvey = await surveyInput
+    .findByIdAndUpdate(
+      surveyInputId,
+      {
+        ...input,
+        updatedAt: new Date()
+      },
+      { upsert: false, new: true }
+    )
+    .lean();
+
+  res.status(200).send({ success: true, data: updatedSurvey });
+
   if (informEditor) {
-    // TODO: inform editor
+    const thread = await Documentthread.findOne({
+      student_id: updatedSurvey.studentId,
+      program_id: updatedSurvey.programId,
+      file_type: updatedSurvey.fileType
+    })
+      .populate('program_id')
+      .lean();
+    informOnSurveyUpdate(user, updatedSurvey, thread);
   }
 });
 
 const resetSurveyInput = asyncHandler(async (req, res, next) => {
+  const { user } = req;
   const {
     params: { surveyInputId }
   } = req;
-  const { input, informEditor } = req.body;
-  await surveyInput.findByIdAndUpdate(surveyInputId, {
-    $unset: {
-      'surveyContent.$[].answer': 1
-    }
-  });
-  res.status(200).send({ success: true });
+  const { informEditor } = req.body;
+  const updatedSurvey = await surveyInput.findByIdAndUpdate(
+    surveyInputId,
+    {
+      $unset: {
+        'surveyContent.$[].answer': 1
+      }
+    },
+    { upsert: false, new: true }
+  );
+  res.status(200).send({ success: true, data: updatedSurvey });
   if (informEditor) {
-    // TODO: inform editor
+    const thread = await Documentthread.findOne({
+      student_id: newSurvey.studentId,
+      program_id: newSurvey.programId,
+      file_type: newSurvey.fileType
+    })
+      .populate('program_id')
+      .lean();
+    informOnSurveyUpdate(user, newSurvey, thread);
   }
 });
 

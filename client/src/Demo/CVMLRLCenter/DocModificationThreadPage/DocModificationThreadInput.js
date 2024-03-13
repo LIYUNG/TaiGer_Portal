@@ -17,7 +17,6 @@ import {
   InputLabel,
   IconButton,
   MenuItem,
-  Modal,
   Link,
   FormControl,
   FormControlLabel,
@@ -25,8 +24,7 @@ import {
   TextField,
   Typography,
   OutlinedInput,
-  Select,
-  Paper
+  Select
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import { KeyboardArrowUp, KeyboardArrowDown } from '@mui/icons-material';
@@ -54,75 +52,6 @@ import { appConfig } from '../../../config';
 const type2width = { word: 3, sentence: 5, paragraph: 12, essay: 12 };
 const type2rows = { word: 1, sentence: 1, paragraph: 4, essay: 10 };
 
-const ConfirmationModal = ({
-  isModalOpen,
-  setModalOpen,
-  title,
-  description,
-  onYes,
-  onNo,
-  onCancel = () => {}
-}) => {
-  const handleActionYes = () => {
-    onYes();
-    handleModalClose();
-  };
-
-  const handleActionNo = () => {
-    onNo();
-    handleModalClose();
-  };
-
-  const handleActionCancel = () => {
-    onCancel();
-    handleModalClose();
-  };
-
-  const handleModalClose = () => {
-    setModalOpen(false);
-  };
-
-  return (
-    <Modal open={isModalOpen} onClose={handleModalClose}>
-      <Paper
-        style={{
-          padding: 16,
-          maxWidth: 300,
-          margin: 'auto',
-          marginTop: 'calc(50vh - 100px)'
-        }}
-      >
-        <Typography variant="h6">{title}</Typography>
-        <Typography variant="body1" sx={{ marginBottom: 2 }}>
-          {description}
-        </Typography>
-
-        <Button variant="contained" color="primary" onClick={handleActionYes}>
-          Yes
-        </Button>
-
-        <Button
-          variant="contained"
-          onClick={handleActionNo}
-          sx={{ marginLeft: 1 }}
-        >
-          No
-        </Button>
-        <Button
-          variant="contained"
-          onClick={handleActionCancel}
-          sx={{
-            marginLeft: 1,
-            float: 'right'
-          }}
-        >
-          Cancel
-        </Button>
-      </Paper>
-    </Modal>
-  );
-};
-
 const ProgressButton = ({
   label = 'Submit',
   progressLabel = 'Submitting',
@@ -146,13 +75,23 @@ const ProgressButton = ({
   );
 };
 
-const LastModifiedText = ({ updatedAt }) => {
+const LastModifiedText = ({ updatedAt, isFinalVersion }) => {
   return (
     <>
       {updatedAt ? (
-        <Typography variant="body2">
-          Last Modified: <strong>{convertDate(updatedAt)}</strong>
-        </Typography>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 1,
+            justifyContent: 'right'
+          }}
+        >
+          <Typography variant="body2">
+            Last Modified: <strong>{convertDate(updatedAt)}</strong>
+          </Typography>
+          {isFinalVersion && <Chip color="info" size="medium" label="Final" />}
+        </Box>
       ) : (
         <Chip color="secondary" variant="outlined" size="small" label="New" />
       )}
@@ -162,16 +101,18 @@ const LastModifiedText = ({ updatedAt }) => {
 
 const SurveyForm = ({
   title,
-  surveyInputs,
+  surveyInput,
   onChange,
   surveyType = 'program',
-  useEditButton = false
+  disableEdit = false,
+  showEditButton = false,
+  isCollapse = true
 }) => {
   // editable by default no title, no edit button, or new survey
   const [editMode, setEditMode] = useState(
-    !title || !useEditButton || !surveyInputs?.updatedAt
+    !title || !showEditButton || !surveyInput?.updatedAt
   );
-  const [collapseOpen, setCollapseOpen] = useState(true);
+  const [collapseOpen, setCollapseOpen] = useState(isCollapse || !title);
 
   const handleTitleClick = (e) => {
     e.stopPropagation();
@@ -204,7 +145,7 @@ const SurveyForm = ({
               <Grid item>
                 <Typography variant="h5">{title}</Typography>
               </Grid>
-              {useEditButton && (
+              {showEditButton && (
                 <Grid item>
                   <Button
                     size="small"
@@ -221,7 +162,10 @@ const SurveyForm = ({
                 </Grid>
               )}
               <Grid item sx={{ marginLeft: 'auto' }}>
-                <LastModifiedText updatedAt={surveyInputs?.updatedAt} />
+                <LastModifiedText
+                  updatedAt={surveyInput?.updatedAt}
+                  isFinalVersion={surveyInput?.isFinalVersion}
+                />
               </Grid>
             </Grid>
           </Box>
@@ -231,12 +175,15 @@ const SurveyForm = ({
       )}
       {!title && (
         <Box sx={{ marginLeft: 'auto', textAlign: 'right' }}>
-          <LastModifiedText updatedAt={surveyInputs?.updatedAt} />
+          <LastModifiedText
+            updatedAt={surveyInput?.updatedAt}
+            isFinalVersion={surveyInput?.isFinalVersion}
+          />
         </Box>
       )}
       <Collapse in={collapseOpen}>
-        <Grid container fullWidth sx={{ gap: 1 }}>
-          {surveyInputs.surveyContent.map((questionItem, index) => (
+        <Grid container sx={{ gap: 1 }}>
+          {surveyInput.surveyContent.map((questionItem, index) => (
             <Grid
               item
               key={index}
@@ -256,7 +203,9 @@ const SurveyForm = ({
                   multiline
                   rows={type2rows[questionItem.type] || 3}
                   onChange={onChange}
-                  disabled={!editMode}
+                  disabled={
+                    surveyInput?.isFinalVersion || disableEdit || !editMode
+                  }
                 />
               </FormControl>
             </Grid>
@@ -271,7 +220,6 @@ const InputGenerator = ({
   isChecked,
   data,
   isGenerating,
-  isGenerated,
   onChange,
   onGenerate
 }) => {
@@ -309,7 +257,7 @@ const InputGenerator = ({
                   input={<OutlinedInput label="Output language" />}
                   id="output-lang-select"
                   name="outputLanguage"
-                  value="English"
+                  defaultValue=""
                   onChange={onChange}
                 >
                   <MenuItem value="English">English</MenuItem>
@@ -326,7 +274,7 @@ const InputGenerator = ({
                   input={<OutlinedInput label="GPT Model" />}
                   id="gpt-model-select"
                   name="gptModel"
-                  value="gpt-3.5-turbo"
+                  defaultValue=""
                   onChange={onChange}
                 >
                   <MenuItem value="gpt-3.5-turbo">gpt-3.5-turbo</MenuItem>
@@ -360,7 +308,7 @@ const InputGenerator = ({
             disabled={isGenerating}
             onClick={onGenerate}
             isProgress={isGenerating}
-            label={!isGenerated ? 'Generate' : 'Regenerate'}
+            label={!data ? 'Generate' : 'Regenerate'}
             progressLabel="Generating"
           />
         </Grid>
@@ -377,18 +325,25 @@ function DocModificationThreadInput() {
   const { user } = useAuth();
   const { t } = useTranslation();
   const { documentsthreadId } = useParams();
-  const [isModalOpen, setModalOpen] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [thread, setThread] = useState({});
+  const [isChanged, setIsChanged] = useState({
+    general: false,
+    specific: false
+  });
+  const [isFinalVersion, setIsFinalVersion] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showUnchangeAlert, setShowUnchangeAlert] = useState(false);
+  const [surveyInputs, setSurveyInputs] = useState({
+    general: {},
+    specific: {}
+  });
+  const [gptData, setgptData] = useState('');
+  // const [generatorState, setGeneratorState] = useState({});
   const [docModificationThreadInputState, setDocModificationThreadInputState] =
     useState({
-      documentsthreadId: documentsthreadId,
-      error: '',
-      isUnchangeAlert: false,
-      isChanged: false,
-      isGenerating: false,
-      isGenerated: false,
-      isSubmitting: false,
       editorRequirements: {},
-      data: '',
       res_status: 0,
       res_modal_status: 0,
       res_modal_message: ''
@@ -399,16 +354,16 @@ function DocModificationThreadInput() {
       try {
         const threadResp = await getSurveyInputs(documentsthreadId);
         const { success, data: threadData, status } = threadResp.data;
-        const surveyInputs = threadData?.surveyInputs;
-        if (!surveyInputs?.general) {
-          surveyInputs.general = {
+        const surveyData = threadData?.surveyInputs || {};
+        if (!surveyData?.general) {
+          surveyData.general = {
             studentId: threadData.student_id._id,
             fileType: threadData.file_type,
             surveyContent: prepQuestions(threadData)
           };
         }
-        if (threadData?.program_id?._id && !surveyInputs?.specific) {
-          surveyInputs.specific = {
+        if (threadData?.program_id?._id && !surveyData?.specific) {
+          surveyData.specific = {
             studentId: threadData.student_id._id,
             programId: threadData.program_id._id,
             fileType: threadData.file_type,
@@ -416,29 +371,25 @@ function DocModificationThreadInput() {
           };
         }
 
+        setIsLoaded(true);
         if (success) {
+          setThread(threadData);
+          setSurveyInputs({ ...surveyData });
           setDocModificationThreadInputState((prevState) => ({
             ...prevState,
-            success,
-            thread: threadData,
-            surveyInputs: surveyInputs,
             document_requirements: {},
             editorRequirements: {},
-            isLoaded: true,
             res_status: status
           }));
         } else {
           setDocModificationThreadInputState((prevState) => ({
             ...prevState,
-            isLoaded: true,
             res_status: status
           }));
         }
       } catch (error) {
         setDocModificationThreadInputState((prevState) => ({
           ...prevState,
-          isLoaded: true,
-          error,
           res_status: 500
         }));
       }
@@ -458,39 +409,28 @@ function DocModificationThreadInput() {
     const id = e.target.id;
     const answer = e.target.value;
     const survey = e.target.getAttribute('survey');
-    const surveyInput =
-      survey === 'general'
-        ? {
-            ...docModificationThreadInputState.surveyInputs.general
-          }
-        : {
-            ...docModificationThreadInputState.surveyInputs.specific
-          };
 
-    const questionItem = surveyInput.surveyContent.find(
-      (question) => question.questionId === id
-    );
+    setSurveyInputs((prevState) => {
+      const surveyInput =
+        survey === 'general'
+          ? {
+              ...prevState.general
+            }
+          : {
+              ...prevState.specific
+            };
 
-    questionItem['answer'] = answer;
-    if (survey === 'general') {
-      setDocModificationThreadInputState((prevState) => ({
-        ...prevState,
-        isChanged: true,
-        surveyInputs: {
-          ...prevState.surveyInputs,
-          general: surveyInput
-        }
-      }));
-    } else {
-      setDocModificationThreadInputState((prevState) => ({
-        ...prevState,
-        isChanged: true,
-        surveyInputs: {
-          ...prevState.surveyInputs,
-          specific: surveyInput
-        }
-      }));
-    }
+      const questionItem = surveyInput.surveyContent.find(
+        (question) => question.questionId === id
+      );
+      questionItem['answer'] = answer;
+      return prevState;
+    });
+
+    setIsChanged((prevState) => ({
+      ...prevState,
+      [survey]: true
+    }));
   };
 
   const onChangeEditorRequirements = (e) => {
@@ -503,9 +443,7 @@ function DocModificationThreadInput() {
           ...docModificationThreadInputState.editorRequirements,
           [name]: checked
         },
-        document_requirements: checked
-          ? getRequirement(docModificationThreadInputState.thread)
-          : ''
+        document_requirements: checked ? getRequirement(thread) : ''
       }));
       return;
     }
@@ -521,119 +459,101 @@ function DocModificationThreadInput() {
   };
 
   const updateSurveyInput = async (surveyInput, informEditor) => {
-    if (!surveyInput._id) {
-      return await postSurveyInput(surveyInput, informEditor);
+    let newSurvey;
+    if (!surveyInput?._id) {
+      newSurvey = await postSurveyInput(surveyInput, informEditor);
+    } else {
+      newSurvey = await putSurveyInput(
+        surveyInput._id,
+        surveyInput,
+        informEditor
+      );
     }
-    return await putSurveyInput(surveyInput._id, surveyInput, informEditor);
+    return newSurvey;
   };
 
-  const submitInput = async (surveyInputs, informEditor) => {
-    setDocModificationThreadInputState((prevState) => ({
-      ...prevState,
-      isSubmitting: true
-    }));
+  const submitInput = async () => {
     try {
-      let success = true;
-      let status = {};
-      if (surveyInputs?.general) {
-        const res = await updateSurveyInput(surveyInputs.general, informEditor);
-        success = success && res.data;
-        status['general'] = res;
-      }
-      if (surveyInputs?.specific) {
-        const res = await updateSurveyInput(
-          surveyInputs.specific,
-          informEditor
+      let allStatus = {};
+      if (isChanged?.general && surveyInputs?.general) {
+        // only set final if general survey, where programId not present
+        const genIsFinalVersion = !thread?.program_id && isFinalVersion;
+        const {
+          status,
+          data: { success, data }
+        } = await updateSurveyInput(
+          { ...surveyInputs.general, isFinalVersion: genIsFinalVersion },
+          genIsFinalVersion
         );
-        success = success && res.data;
-        status['specific'] = res;
+
+        allStatus['general'] = status;
+        if (success) {
+          setSurveyInputs((prevState) => ({
+            ...prevState,
+            general: data
+          }));
+        }
+      }
+      if (isChanged?.specific && surveyInputs?.specific) {
+        const {
+          status,
+          data: { success, data }
+        } = await updateSurveyInput(
+          { ...surveyInputs.specific, isFinalVersion },
+          isFinalVersion
+        );
+        allStatus['specific'] = status;
+        if (success) {
+          setSurveyInputs((prevState) => ({
+            ...prevState,
+            specific: data
+          }));
+        }
       }
 
-      if (success) {
-        setDocModificationThreadInputState((prevState) => ({
-          ...prevState,
-          success,
-          isSubmitting: false,
-          isChanged: false,
-          isUnchangeAlert: false,
-          surveyInputs: {
-            general: {
-              ...docModificationThreadInputState.surveyInputs.general,
-              updatedAt: new Date()
-            },
-            specific: {
-              ...docModificationThreadInputState.surveyInputs.specific,
-              updatedAt: new Date()
-            }
-          },
-          isLoaded: true,
-          res_status: status
-        }));
-      } else {
-        setDocModificationThreadInputState((prevState) => ({
-          ...prevState,
-          isLoaded: true,
-          isSubmitting: false,
-          isChanged: false,
-          isUnchangeAlert: false,
-          res_status: status
-        }));
-      }
+      setDocModificationThreadInputState((prevState) => ({
+        ...prevState,
+        res_status: allStatus
+      }));
     } catch (error) {
       setDocModificationThreadInputState((prevState) => ({
         ...prevState,
-        isLoaded: true,
-        isSubmitting: false,
-        isChanged: false,
-        isUnchangeAlert: false,
-        error,
         res_status: 500
       }));
     }
   };
 
-  const onSubmit = () => {
-    if (!docModificationThreadInputState.isChanged) {
+  const onSubmit = async () => {
+    if (!isChanged.general && !isChanged.specific) {
       const alertElement = document.getElementById('alert-message');
       if (alertElement) {
         alertElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
-
-      setDocModificationThreadInputState((prevState) => ({
-        ...prevState,
-        isUnchangeAlert: true
-      }));
+      setShowUnchangeAlert(true);
       return;
     }
-    setModalOpen(true);
+    setIsSubmitting(true);
+    await submitInput(surveyInputs, isFinalVersion);
+    setIsChanged({ general: false, specific: false });
+    setIsSubmitting(false);
+    setIsLoaded(true);
+    setShowUnchangeAlert(false);
   };
 
   const onGenerate = async () => {
-    setDocModificationThreadInputState((prevState) => ({
-      ...prevState,
-      isGenerating: true
-    }));
-    if (docModificationThreadInputState.isGenerated) {
-      setDocModificationThreadInputState((prevState) => ({
-        ...prevState,
-        data: ''
-      }));
-    }
+    setIsGenerating(true);
+    // reset data to empty (in case of re-generate)
+    setgptData('');
 
     let programFullName = '';
-    if (docModificationThreadInputState.thread.program_id) {
+    if (thread.program_id) {
       programFullName =
-        docModificationThreadInputState.thread.program_id.school +
-        '-(' +
-        docModificationThreadInputState.thread.program_id.degree +
-        ') ';
+        thread.program_id.school + '-(' + thread.program_id.degree + ') ';
     }
 
     const studentInput = [
-      ...(docModificationThreadInputState.surveyInputs.general?.surveyContent ||
-        []),
-      ...(docModificationThreadInputState.surveyInputs.specific
-        ?.surveyContent || [])
+      ...(surveyInputs.general?.surveyContent || []),
+      ...(surveyInputs.specific?.surveyContent || [])
     ];
 
     const response = await cvmlrlAi2({
@@ -644,19 +564,19 @@ function DocModificationThreadInput() {
       editor_requirements: JSON.stringify(
         docModificationThreadInputState.editorRequirements
       ),
-      student_id:
-        docModificationThreadInputState.thread.student_id._id.toString(),
+      student_id: thread.student_id._id.toString(),
       program_full_name: programFullName,
-      file_type: docModificationThreadInputState.thread.file_type
+      file_type: thread.file_type
     });
 
+    setIsLoaded(true);
     if (response.status === 403) {
+      setIsGenerating(false);
+      setgptData(
+        (prevData) => prevData + ' \n ================================= \n'
+      );
       setDocModificationThreadInputState((prevState) => ({
         ...prevState,
-        isLoaded: true,
-        data: prevState.data + ' \n ================================= \n',
-        isGenerating: false,
-        isGenerated: true,
         res_modal_status: response.status
       }));
     } else {
@@ -670,25 +590,22 @@ function DocModificationThreadInput() {
         if (done) {
           break;
         }
-        setDocModificationThreadInputState((prevState) => ({
-          ...prevState,
-          data: prevState.data + value
-        }));
+        setgptData((prevData) => prevData + value);
       }
+      setIsGenerating(false);
+      setgptData(
+        (prevData) => prevData + ' \n ================================= \n'
+      );
       setDocModificationThreadInputState((prevState) => ({
         ...prevState,
-        isLoaded: true,
-        data: prevState.data + ' \n ================================= \n',
-        isGenerating: false,
-        isGenerated: true,
         res_modal_status: response.status
       }));
     }
   };
 
-  const { isLoaded, res_status } = docModificationThreadInputState;
+  const { res_status } = docModificationThreadInputState;
 
-  if (!isLoaded && !docModificationThreadInputState.thread) {
+  if (!isLoaded && !Object.keys(thread).length) {
     return <Loading />;
   }
 
@@ -696,40 +613,35 @@ function DocModificationThreadInput() {
     return <ErrorPage res_status={res_status} />;
   }
 
-  if (docModificationThreadInputState?.thread.file_type.includes('RL')) {
+  if (thread?.file_type?.includes('RL')) {
     return <ErrorPage res_status={403} />;
   }
 
   let docName;
-  const student_name = `${docModificationThreadInputState.thread?.student_id?.firstname} ${docModificationThreadInputState.thread?.student_id?.lastname}`;
-  if (docModificationThreadInputState.thread?.program_id) {
+  const student_name = `${thread?.student_id?.firstname} ${thread?.student_id?.lastname}`;
+  if (thread?.program_id) {
     docName =
-      docModificationThreadInputState.thread.program_id.school +
+      thread.program_id.school +
       '-(' +
-      docModificationThreadInputState.thread.program_id.degree +
+      thread.program_id.degree +
       ') ' +
-      docModificationThreadInputState.thread.program_id.program_name +
+      thread.program_id.program_name +
       ' ' +
-      docModificationThreadInputState.thread.file_type;
+      thread.file_type;
   } else {
-    docName = docModificationThreadInputState.thread?.file_type;
+    docName = thread?.file_type;
   }
   TabTitle(`${student_name} ${docName}`);
 
+  const isFinalLocked =
+    (thread?.program_id && surveyInputs?.specific?.isFinalVersion) ||
+    surveyInputs?.general?.isFinalVersion;
+
+  const editorRequirements =
+    docModificationThreadInputState?.editorRequirements;
+
   return (
     <Box>
-      <ConfirmationModal
-        isModalOpen={isModalOpen}
-        setModalOpen={setModalOpen}
-        title="Notify Editor"
-        description="Do you want to notify the editors about the changes?"
-        onYes={() =>
-          submitInput(docModificationThreadInputState.surveyInputs, true)
-        }
-        onNo={() =>
-          submitInput(docModificationThreadInputState.surveyInputs, false)
-        }
-      />
       <Breadcrumbs aria-label="breadcrumb">
         <Link
           underline="hover"
@@ -743,9 +655,7 @@ function DocModificationThreadInput() {
           underline="hover"
           color="inherit"
           component={LinkDom}
-          to={`${DEMO.DOCUMENT_MODIFICATION_LINK(
-            docModificationThreadInputState.thread?._id.toString()
-          )}`}
+          to={`${DEMO.DOCUMENT_MODIFICATION_LINK(thread?._id.toString())}`}
         >
           {student_name} {'   '}
           {docName}
@@ -766,11 +676,9 @@ function DocModificationThreadInput() {
 
       <Card sx={{ p: 2, mb: 2 }}>
         <Typography fontWeight="bold">Requirements:</Typography>
-        {docModificationThreadInputState.thread?.program_id ? (
+        {thread?.program_id ? (
           <>
-            <LinkableNewlineText
-              text={getRequirement(docModificationThreadInputState.thread)}
-            />
+            <LinkableNewlineText text={getRequirement(thread)} />
           </>
         ) : (
           <Typography>{t('No')}</Typography>
@@ -782,16 +690,14 @@ function DocModificationThreadInput() {
           <Grid item xs={12}>
             <Typography variant="h5">
               Please answer the following questions in <b>English</b>{' '}
-              {docModificationThreadInputState.thread?.program_id?.lang?.includes(
-                'German'
-              )
+              {thread?.program_id?.lang?.includes('German')
                 ? '( or German if you like ) '
                 : ''}
               !
             </Typography>
           </Grid>
 
-          {docModificationThreadInputState.isUnchangeAlert && (
+          {showUnchangeAlert && (
             <Grid item xs={12}>
               <Alert id="alert-message" severity="error" sx={{ mt: 2 }}>
                 <Typography variant="body1" fontWeight="bold">
@@ -801,34 +707,51 @@ function DocModificationThreadInput() {
             </Grid>
           )}
 
-          <Grid item xs={12}>
-            <SurveyForm
-              title={
-                docModificationThreadInputState?.thread?.file_type === 'ML'
-                  ? 'General'
-                  : null
-              }
-              surveyInputs={
-                docModificationThreadInputState.surveyInputs.general
-              }
-              surveyType="general"
-              onChange={onChange}
-              useEditButton={true}
-            ></SurveyForm>
-          </Grid>
-
-          {docModificationThreadInputState?.thread?.file_type === 'ML' && (
+          {Object.keys(surveyInputs?.general).length > 0 && (
             <Grid item xs={12}>
               <SurveyForm
-                title="Program"
-                surveyInputs={
-                  docModificationThreadInputState.surveyInputs?.specific
-                }
-                surveyType="program"
+                title={thread?.program_id ? 'General' : null}
+                surveyInput={surveyInputs.general}
+                surveyType="general"
+                disableEdit={isFinalLocked || isFinalVersion}
+                isCollapse={!surveyInputs?.general?.updatedAt}
                 onChange={onChange}
               ></SurveyForm>
             </Grid>
           )}
+
+          {thread?.program_id &&
+            Object.keys(surveyInputs?.specific).length > 0 && (
+              <Grid item xs={12}>
+                <SurveyForm
+                  title="Program"
+                  surveyInput={surveyInputs.specific}
+                  surveyType="specific"
+                  disableEdit={isFinalVersion}
+                  onChange={onChange}
+                ></SurveyForm>
+              </Grid>
+            )}
+
+          <Grid item xs={12}>
+            <FormControl>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    name="isFinalVersion"
+                    type="checkbox"
+                    checked={isFinalLocked || isFinalVersion}
+                    disabled={isFinalLocked}
+                    onChange={(e) => {
+                      setIsChanged({ general: true, specific: true });
+                      setIsFinalVersion(e.target.checked);
+                    }}
+                  />
+                }
+                label="Is Final Version?"
+              />
+            </FormControl>
+          </Grid>
 
           <Grid
             item
@@ -837,15 +760,17 @@ function DocModificationThreadInput() {
             container
             justifyContent="flex-start"
           >
-            <ProgressButton
-              label="Submit"
-              isProgress={docModificationThreadInputState.isSubmitting}
-              size="small"
-              variant="contained"
-              color="primary"
-              disabled={docModificationThreadInputState.isSubmitting}
-              onClick={onSubmit}
-            />
+            {!isFinalLocked && (
+              <ProgressButton
+                label="Submit"
+                isProgress={isSubmitting}
+                size="small"
+                variant="contained"
+                color="primary"
+                disabled={isSubmitting}
+                onClick={onSubmit}
+              />
+            )}
             <LinkDom to=".." relative="path">
               <Button color="secondary" variant="contained">
                 Back
@@ -859,13 +784,9 @@ function DocModificationThreadInput() {
       {is_TaiGer_role(user) && (
         <Card sx={{ p: 2, mb: 2 }}>
           <InputGenerator
-            isChecked={
-              docModificationThreadInputState?.editorRequirements
-                ?.useProgramRequirementData
-            }
-            data={docModificationThreadInputState.data}
-            isGenerating={docModificationThreadInputState.isGenerating}
-            isGenerated={docModificationThreadInputState.isGenerated}
+            isChecked={editorRequirements?.useProgramRequirementData || false}
+            data={gptData}
+            isGenerating={isGenerating}
             onChange={onChangeEditorRequirements}
             onGenerate={onGenerate}
           />

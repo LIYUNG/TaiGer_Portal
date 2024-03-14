@@ -267,7 +267,7 @@ const EditorNew = (props) => {
             onClick={(e) => props.handleClickSave(e, editorState)}
             sx={{ marginRight: 1 }}
           >
-            {t('Save')}
+            {t('Save', { ns: 'common' })}
           </Button>
           <Button
             onClick={(e) => props.handleClickEditToggle(e)}

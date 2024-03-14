@@ -87,7 +87,7 @@ function User(props) {
                     )
                   }
                 >
-                  {t('Delete')}
+                  {t('Delete', { ns: 'common' })}
                 </MenuItem>
               </Menu>
             </>

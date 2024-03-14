@@ -173,7 +173,7 @@ function AgentProfile() {
                       />
                     </>
                   ) : (
-                    <Typography>{t('Close')}</Typography>
+                    <Typography>{t('Close', { ns: 'common' })}</Typography>
                   )}
                 </Grid>
               ))}

@@ -78,7 +78,7 @@ function ProgramReportUpdateModal(props) {
         variant="outlined"
         onClick={props.setReportUpdateModalHide}
       >
-        {t('Close')}
+        {t('Close', { ns: 'common' })}
       </Button>
     </ModalNew>
   );

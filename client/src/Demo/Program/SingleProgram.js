@@ -409,7 +409,7 @@ function SingleProgram() {
             variant="contained"
             onClick={onHideAssignSuccessWindow}
           >
-            {t('Close')}
+            {t('Close', { ns: 'common' })}
           </Button>
         </ModalNew>
       </Box>

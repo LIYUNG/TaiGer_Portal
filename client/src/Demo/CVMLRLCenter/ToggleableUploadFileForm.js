@@ -87,7 +87,7 @@ function ToggleableUploadFileForm(props) {
               )
             }
           >
-            {t('Create')}
+            {t('Add Task', { ns: 'common' })}
           </Button>
         ) : (
           <Button
@@ -102,7 +102,7 @@ function ToggleableUploadFileForm(props) {
               )
             }
           >
-            {t('Create')}
+            {t('Add Task', { ns: 'common' })}
           </Button>
         )}
       </Grid>

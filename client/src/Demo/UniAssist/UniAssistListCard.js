@@ -594,7 +594,7 @@ function UniAssistListCard(props) {
                             size="small"
                             startIcon={<DeleteIcon />}
                           >
-                            {t('Delete')}
+                            {t('Delete', { ns: 'common' })}
                           </Button>
                         </Grid>
                       </>
@@ -690,7 +690,7 @@ function UniAssistListCard(props) {
                             size="small"
                             startIcon={<DeleteIcon />}
                           >
-                            {t('Delete')}
+                            {t('Delete', { ns: 'common' })}
                           </Button>
                         </Grid>
                       </>

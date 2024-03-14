@@ -318,7 +318,7 @@ function SingleStudentPage() {
                 <Button color="primary" variant="contained" size="small">
                   <BsMessenger color="white" size={16} />
                   &nbsp;
-                  <b>{t('Message')}</b>
+                  <b>{t('Message', { ns: 'common' })}</b>
                 </Button>
               </Link>
               {t('Last Login')}:&nbsp;
@@ -405,7 +405,9 @@ function SingleStudentPage() {
                     <TableCell>{t('Semester')}</TableCell>
                     <TableCell>{t('Degree')}</TableCell>
                     {header.map((name, index) => (
-                      <TableCell key={index}>{t(`${name}`)}</TableCell>
+                      <TableCell key={index}>
+                        {t(`${name}`, { ns: 'common' })}
+                      </TableCell>
                     ))}
                   </TableRow>
                 </TableHead>

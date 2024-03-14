@@ -272,7 +272,7 @@ function ButtonSetAccepted(props) {
             }
             startIcon={<DeleteIcon />}
           >
-            {t('Delete')}
+            {t('Delete', { ns: 'common' })}
           </Button>
         )}
       </TableCell>
@@ -410,7 +410,7 @@ function ButtonSetAccepted(props) {
             {!buttonSetAcceptedState.isLoaded ? (
               <CircularProgress />
             ) : (
-              t('Close')
+              t('Close', { ns: 'common' })
             )}
           </Button>
         </ModalNew>

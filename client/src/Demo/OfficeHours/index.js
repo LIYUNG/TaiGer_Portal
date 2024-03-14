@@ -726,7 +726,7 @@ function OfficeHours() {
               variant="contained"
               onClick={handleConfirmAppointmentModalClose}
             >
-              {t('Close')}
+              {t('Close', { ns: 'common' })}
             </Button>
           </ModalNew>
           <ModalNew
@@ -842,7 +842,7 @@ function OfficeHours() {
               {OfficeHoursState.BookButtonDisable ? (
                 <CircularProgress size={16} />
               ) : (
-                t('Delete')
+                t('Delete', { ns: 'common' })
               )}
             </Button>
           </ModalNew>

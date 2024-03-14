@@ -335,7 +335,7 @@ const routes = [
   {
     path: '/base-documents',
     exact: true,
-    name: 'Base Documents',
+    name: 'Documents',
     Component: BaseDocuments
   },
   {

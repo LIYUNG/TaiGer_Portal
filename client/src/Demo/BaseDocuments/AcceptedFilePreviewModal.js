@@ -73,7 +73,7 @@ function AcceptProfileFileModel(props) {
         variant="outlined"
         onClick={props.closePreviewWindow}
       >
-        {!props.isLoaded ? <CircularProgress /> : t('Close')}
+        {!props.isLoaded ? <CircularProgress /> : t('Close', { ns: 'common' })}
       </Button>
     </ModalNew>
   );

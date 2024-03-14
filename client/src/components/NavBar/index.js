@@ -66,7 +66,7 @@ const ExcludeMenu = {
     `${appConfig.companyName} Members`,
     'Tasks Overview',
     'Uni-Assist Tasks',
-    'Base Documents',
+    'Documents',
     'My Tasks Overview',
     'Applications Overview',
     'CV/ML/RL Center',
@@ -104,7 +104,7 @@ const ExcludeMenu = {
     'Map',
     'Applications Overview',
     'CV/ML/RL Center',
-    'Base Documents',
+    'Documents',
     'Interview Training',
     `${appConfig.companyName} Admissions`,
     'Internal Docs',
@@ -484,7 +484,7 @@ function NavBar(props) {
               <CalendarMonthIcon />
             </Badge>
           </IconButton>
-          <Typography>{t('Calendar')}</Typography>
+          <Typography>{t('Calendar', { ns: 'common' })}</Typography>
         </MenuItem>
       )}
       {!is_TaiGer_Editor(user) && (

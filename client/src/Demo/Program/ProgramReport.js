@@ -285,7 +285,7 @@ function ProgramReport(props) {
             variant="contained"
             onClick={() => handleReportUpdateClick(ticket)}
           >
-            {t('Update')}
+            {t('Update', { ns: 'common' })}
           </Button>
           <Button
             size="small"
@@ -294,7 +294,7 @@ function ProgramReport(props) {
             disabled={ticket.status === 'resolved'}
             onClick={() => handleReportDeleteClick(ticket)}
           >
-            {t('Delete')}
+            {t('Delete', { ns: 'common' })}
           </Button>
         </Grid>
       </Grid>

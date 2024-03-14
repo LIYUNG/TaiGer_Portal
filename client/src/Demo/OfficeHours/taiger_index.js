@@ -800,7 +800,7 @@ function TaiGerOfficeHours() {
               size="small"
               onClick={handleConfirmAppointmentModalClose}
             >
-              {t('Close')}
+              {t('Close', { ns: 'common' })}
             </Button>
           </ModalNew>
           <ModalNew
@@ -826,7 +826,7 @@ function TaiGerOfficeHours() {
               {taiGerOfficeHoursState.BookButtonDisable ? (
                 <CircularProgress size={16} />
               ) : (
-                t('Delete')
+                t('Delete', { ns: 'common' })
               )}
             </Button>
           </ModalNew>

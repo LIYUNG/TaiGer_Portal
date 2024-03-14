@@ -383,7 +383,7 @@ export default function CourseWidget() {
         <Typography variant="h6">{t('Confirmation')}</Typography>
         <Typography>{t('Update transcript successfully')}</Typography>
         <Button color="primary" variant="contained" onClick={closeModal}>
-          {t('Close')}
+          {t('Close', { ns: 'common' })}
         </Button>
       </ModalNew>
       <ModalNew
@@ -398,7 +398,7 @@ export default function CourseWidget() {
           variant="contained"
           onClick={closeanalysisSuccessModal}
         >
-          {t('Close')}
+          {t('Close', { ns: 'common' })}
         </Button>
       </ModalNew>
     </Box>

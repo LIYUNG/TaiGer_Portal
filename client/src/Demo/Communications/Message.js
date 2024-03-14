@@ -20,11 +20,13 @@ import { stringAvatar, convertDate } from '../Utils/contants';
 import { useAuth } from '../../components/AuthProvider';
 import ModalNew from '../../components/Modal';
 import Loading from '../../components/Loading/Loading';
+import { useTranslation } from 'react-i18next';
 // import { useWindowWidth } from '@react-hook/window-size';
 
 function Message(props) {
   // const onlyWidth = useWindowWidth();
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [messageState, setMessageState] = useState({
     editorState: null,
     message_id: '',
@@ -186,10 +188,12 @@ function Message(props) {
           variant="contained"
           onClick={onDeleteSingleMessage}
         >
-          {props.isLoaded ? 'Delete' : 'Pending'}
+          {props.isLoaded
+            ? t('Delete', { ns: 'common' })
+            : t('Pending', { ns: 'common' })}
         </Button>
         <Button variant="outlined" onClick={onHidedeleteMessageModalShow}>
-          Cancel
+          {t('Cancel', { ns: 'common' })}
         </Button>
       </ModalNew>
     </>

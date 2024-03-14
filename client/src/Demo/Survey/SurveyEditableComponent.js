@@ -1506,7 +1506,7 @@ const SurveyEditableComponent = (props) => {
           onClick={(e) => handleUpdateDocLink(e)}
           disabled={survey.baseDocsflagOffcanvasButtonDisable}
         >
-          {t('Save')}
+          {t('Save', { ns: 'common' })}
         </Button>
       </ModalNew>
     </Box>

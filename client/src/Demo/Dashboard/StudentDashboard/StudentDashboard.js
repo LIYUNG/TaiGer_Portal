@@ -317,7 +317,7 @@ function StudentDashboard(props) {
             <Table size="small">
               <TableHead>
                 <TableRow>
-                  <TableCell>{t('Tasks')}</TableCell>
+                  <TableCell>{t('Tasks', { ns: 'common' })}</TableCell>
                   <TableCell>{t('Description')}</TableCell>
                   <TableCell>{t('Last update')}</TableCell>
                 </TableRow>
@@ -386,7 +386,9 @@ function StudentDashboard(props) {
                         <Table size="small">
                           <TableHead>
                             <TableRow>
-                              <TableCell>{t('Documents')}</TableCell>
+                              <TableCell>
+                                {t('Documents', { ns: 'common' })}
+                              </TableCell>
                               <TableCell>{t('Last update')}</TableCell>
                             </TableRow>
                           </TableHead>

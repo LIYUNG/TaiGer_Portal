@@ -170,7 +170,7 @@ function UploadedFilePreviewModal(props) {
           {!UploadedFilePreviewModalState.isLoaded ? (
             <CircularProgress size={24} />
           ) : (
-            t('Submit')
+            t('Submit', { ns: 'common' })
           )}
         </Button>
         <Button onClick={closeRejectWarningWindow}>No</Button>
@@ -314,7 +314,7 @@ function UploadedFilePreviewModal(props) {
           {!UploadedFilePreviewModalState.isLoaded ? (
             <CircularProgress size={24} />
           ) : (
-            t('Close')
+            t('Close', { ns: 'common' })
           )}
         </Button>
       </ModalNew>

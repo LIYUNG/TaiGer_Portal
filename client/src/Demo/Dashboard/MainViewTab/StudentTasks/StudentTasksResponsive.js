@@ -132,7 +132,7 @@ function StudentTasksResponsive(props) {
               to={`${DEMO.SURVEY_LINK}`}
               component={LinkDom}
             >
-              {t('My Survey')}
+              {t('My Survey', { ns: 'common' })}
               <FiExternalLink
                 className="mx-1 mb-1"
                 style={{ cursor: 'pointer' }}
@@ -182,7 +182,7 @@ function StudentTasksResponsive(props) {
               to={`${DEMO.STUDENT_APPLICATIONS_LINK}`}
               component={LinkDom}
             >
-              {t('My Applications')}
+              {t('My Applications', { ns: 'common' })}
               <FiExternalLink
                 className="mx-1 mb-1"
                 style={{ cursor: 'pointer' }}
@@ -249,7 +249,7 @@ function StudentTasksResponsive(props) {
               to={`${DEMO.BASE_DOCUMENTS_LINK}`}
               component={LinkDom}
             >
-              {t('My Documents')}
+              {t('My Documents', { ns: 'common' })}
               <FiExternalLink
                 className="mx-1 mb-1"
                 style={{ cursor: 'pointer' }}
@@ -272,7 +272,7 @@ function StudentTasksResponsive(props) {
               to={`${DEMO.PORTALS_MANAGEMENT_LINK}`}
               component={LinkDom}
             >
-              {t('Portals Management')}
+              {t('Portals Management', { ns: 'common' })}
               <FiExternalLink
                 className="mx-1 mb-1"
                 style={{ cursor: 'pointer' }}

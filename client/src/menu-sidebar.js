@@ -180,7 +180,7 @@ let documentations_nestedList = [
   },
   {
     id: 'base-documents',
-    title: 'Base Documents',
+    title: 'Documents',
     type: 'item',
     url: '/docs/base-documents',
     icon: <InsertDriveFileIcon />,
@@ -310,7 +310,7 @@ export const MenuSidebar = [
       },
       {
         id: 'base_documents',
-        title: 'Base Documents',
+        title: 'Documents',
         type: 'item',
         url: '/base-documents',
         classes: 'nav-item',

@@ -350,7 +350,7 @@ function ButtonSetRejected(props) {
             }
             startIcon={<DeleteIcon />}
           >
-            {t('Delete')}
+            {t('Delete', { ns: 'common' })}
           </Button>
         </TableCell>
       ) : (
@@ -429,11 +429,11 @@ function ButtonSetRejected(props) {
                 {!buttonSetRejectedState.isLoaded ? (
                   <CircularProgress size={24} />
                 ) : (
-                  t('Update')
+                  t('Update', { ns: 'common' })
                 )}
               </Button>
               <Button onClick={closeCommentWindow} variant="light">
-                {t('Close')}
+                {t('Close', { ns: 'common' })}
               </Button>
             </Box>
           </>
@@ -497,7 +497,11 @@ function ButtonSetRejected(props) {
           size="small"
           onClick={closePreviewWindow}
         >
-          {!buttonSetRejectedState.isLoaded ? <CircularProgress /> : t('Close')}
+          {!buttonSetRejectedState.isLoaded ? (
+            <CircularProgress />
+          ) : (
+            t('Close', { ns: 'common' })
+          )}
         </Button>
       </ModalNew>
       <ModalNew

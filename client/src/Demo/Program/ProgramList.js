@@ -511,7 +511,7 @@ function ProgramList(props) {
         </Typography>
         <Typography>
           <Button variant="outlined" onClick={onHideAssignSuccessWindow}>
-            {t('Close')}
+            {t('Close', { ns: 'common' })}
           </Button>
         </Typography>
       </ModalNew>

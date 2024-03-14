@@ -556,7 +556,7 @@ function Profile() {
                       />
                     </>
                   ) : (
-                    <span>{t('Close')}</span>
+                    <span>{t('Close', { ns: 'common' })}</span>
                   )}
                 </Box>
               ))}
@@ -582,7 +582,7 @@ function Profile() {
         <br />
         <div style={{ marginTop: 'auto', textAlign: 'right' }}>
           <Button color="primary" variant="contained" onClick={setmodalhide}>
-            {t('Close')}
+            {t('Close', { ns: 'common' })}
           </Button>
         </div>
       </ModalNew>
@@ -600,7 +600,7 @@ function Profile() {
             variant="contained"
             onClick={() => onHideOfficeHoursConfirmed()}
           >
-            {t('Close')}
+            {t('Close', { ns: 'common' })}
           </Button>
         </div>
       </ModalNew>

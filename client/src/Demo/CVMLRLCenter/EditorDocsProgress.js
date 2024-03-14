@@ -782,7 +782,7 @@ function EditorDocsProgress(props) {
           variant="outlined"
           onClick={close_Requirements_ModalWindow}
         >
-          {t('Close')}
+          {t('Close', { ns: 'common' })}
         </Button>
       </ModalNew>
       <ModalNew
@@ -799,7 +799,7 @@ function EditorDocsProgress(props) {
           variant="contained"
           onClick={closeDocExistedWindow}
         >
-          {t('Close')}
+          {t('Close', { ns: 'common' })}
         </Button>
       </ModalNew>
       <ModalNew
@@ -818,14 +818,14 @@ function EditorDocsProgress(props) {
           disabled={!isLoaded}
           onClick={SubmitProgramStatusHandler}
         >
-          {t('Yes')}
+          {t('Yes', { ns: 'common' })}
         </Button>
         <Button
           color="primary"
           variant="outlined"
           onClick={closeSetProgramStatusModel}
         >
-          {t('Close')}
+          {t('Close', { ns: 'common' })}
         </Button>
       </ModalNew>
     </Box>

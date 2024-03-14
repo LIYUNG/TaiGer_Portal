@@ -1202,7 +1202,7 @@ function StudentApplicationsTableTemplate(props) {
                   onClick={onHideModalDeleteApplication}
                   variant="outlined"
                 >
-                  {t('Close')}
+                  {t('Close', { ns: 'common' })}
                 </Button>
               </Box>
             </ModalNew>
@@ -1226,7 +1226,7 @@ function StudentApplicationsTableTemplate(props) {
                   size="small"
                   onClick={onHideUpdatedApplicationWindow}
                 >
-                  {t('Close')}
+                  {t('Close', { ns: 'common' })}
                 </Button>
               </Typography>
             </ModalNew>

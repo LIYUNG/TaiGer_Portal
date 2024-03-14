@@ -810,7 +810,7 @@ function AllOfficeHours() {
               {allOfficeHoursState.BookButtonDisable ? (
                 <CircularProgress size={16} />
               ) : (
-                t('Delete')
+                t('Delete', { ns: 'common' })
               )}
             </Button>
           </ModalNew>

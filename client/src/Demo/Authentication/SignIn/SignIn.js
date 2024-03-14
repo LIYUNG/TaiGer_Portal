@@ -107,8 +107,8 @@ export default function SignIn() {
   } else {
     return (
       <AuthWrapper>
-        <Typography component="h1" variant="h5">
-          {t('Sign in')}
+        <Typography component="h1" variant="h5" sx={{ mt: 1 }}>
+          {t('Sign in', { ns: 'auth' })}
         </Typography>
         <form onSubmit={(e) => onLoginSubmit(e, true)}>
           <TextField
@@ -134,7 +134,7 @@ export default function SignIn() {
           {!loginsuccess && (
             <Typography>Email or password is not correct.</Typography>
           )}
-          <Button sx={{ mt: 3 }} fullWidth type="submit" variant="contained">
+          <Button sx={{ mt: 2 }} fullWidth type="submit" variant="contained">
             {buttondisable ? (
               <CircularProgress
                 size={24}
@@ -142,11 +142,11 @@ export default function SignIn() {
                 color="secondary"
               />
             ) : (
-              <Typography>{`${t('Login')}`}</Typography>
+              <Typography>{`${t('Login', { ns: 'auth' })}`}</Typography>
             )}
           </Button>
         </form>
-        <Grid container spacing={2} sx={{ my: 2 }}>
+        <Grid container spacing={2} sx={{ my: 1 }}>
           <Grid item xs={6} sx={{ textAlign: 'right' }}>
             <Typography>{t('Forgot Password')}?</Typography>
           </Grid>

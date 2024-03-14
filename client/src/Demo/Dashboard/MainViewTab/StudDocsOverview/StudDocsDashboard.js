@@ -95,7 +95,7 @@ function StudDocsDashboard(props) {
                 aria-expanded={open ? 'true' : undefined}
                 onClick={handleClick}
               >
-                {t('Option')}
+                {t('Option', { ns: 'common' })}
               </Button>
               <Menu
                 id={`dropdown-variants-${props.student._id}`}

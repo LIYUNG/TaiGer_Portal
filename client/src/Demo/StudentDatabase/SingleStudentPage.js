@@ -321,7 +321,7 @@ function SingleStudentPage() {
                   <b>{t('Message', { ns: 'common' })}</b>
                 </Button>
               </Link>
-              {t('Last Login')}:&nbsp;
+              {t('Last Login', { ns: 'auth' })}:&nbsp;
               {convertDate(singleStudentPage.student.lastLoginAt)}{' '}
               <Button
                 size="small"

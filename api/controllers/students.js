@@ -1079,7 +1079,23 @@ const createApplication = asyncHandler(async (req, res, next) => {
         updatedAt: new Date(),
         createdAt: new Date()
       });
-
+      temp.student_id = studentId;
+      application.doc_modification_thread.push(temp);
+      await new_doc_thread.save();
+    }
+    // Create curriculum analysis task
+    if (program.curriculum_analysis_required === 'yes') {
+      const new_doc_thread = new Documentthread({
+        student_id: studentId,
+        file_type: 'Curriculum_Analysis',
+        program_id: new_programIds[i],
+        updatedAt: new Date()
+      });
+      const temp = application.doc_modification_thread.create({
+        doc_thread_id: new_doc_thread._id,
+        updatedAt: new Date(),
+        createdAt: new Date()
+      });
       temp.student_id = studentId;
       application.doc_modification_thread.push(temp);
       await new_doc_thread.save();

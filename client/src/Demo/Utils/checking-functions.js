@@ -133,6 +133,12 @@ export const getRequirement = (thread) => {
     return program.supplementary_form_requirements || 'No';
   }
   if (
+    fileType.includes('Curriculum_Analysis') &&
+    program.curriculum_analysis_required === 'yes'
+  ) {
+    return program.curriculum_analysis_requirements || 'No';
+  }
+  if (
     fileType.includes('RL') &&
     ['1', '2', '3'].includes(program.rl_required)
   ) {

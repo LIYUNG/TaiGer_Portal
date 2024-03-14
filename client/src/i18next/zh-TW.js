@@ -1,8 +1,15 @@
 import { appConfig } from '../config';
 
 export const translation_zh_TW = {
+  auth: {
+    Login: '登入',
+    'Sign in': '登入',
+    'Sign up': '註冊',
+    'Last Login': '最近登入'
+  },
   common: {
     Dashboard: '主控台',
+    Option: '選項',
     [`${appConfig.companyName} Teams`]: `${appConfig.companyName} 團隊`,
     [`${appConfig.companyName} Admissions`]: `${appConfig.companyName} 榜單`,
     [`${appConfig.companyName} Members`]: `${appConfig.companyName} 成員`,
@@ -75,7 +82,10 @@ export const translation_zh_TW = {
   dashboard: {
     Dashboard: '主控台',
     'Upcoming Applications': '即將截止的申請',
-    'Ready To Submit Tasks': '資料完整，可以送出申請之學程'
+    'Ready To Submit Tasks': '資料完整，可以送出申請之學程',
+    'Edit Agent': '編輯顧問',
+    'Edit Editor': '編輯寫手',
+    'Configure Attribute': '編輯特質'
   },
   programList: {},
   backgroundProfile: {},
@@ -300,7 +310,6 @@ export const translation_zh_TW = {
     Error: '錯誤',
     Password: '密碼',
     'Forgot Password': '忘記密碼',
-    Login: '登入',
     Link: '連結',
     'Meeting Link': '會議連結',
     Update: '更新',
@@ -328,7 +337,6 @@ export const translation_zh_TW = {
     'Last update': '最後更新於',
     'Upload Time': '上傳時間',
     Upload: '上傳',
-    'Last Login': '最近登入',
     'Log Out': '登出',
     Yes: '是',
     No: '否',

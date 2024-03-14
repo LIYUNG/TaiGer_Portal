@@ -1,8 +1,15 @@
 import { appConfig } from '../config';
 
 export const translation_en = {
+  auth: {
+    Login: 'Login',
+    'Sign in': 'Sign in',
+    'Sign up': 'Sign up',
+    'Last Login': 'Last Login'
+  },
   common: {
     Dashboard: 'Dashboard',
+    Option: 'Option',
     [`${appConfig.companyName} Teams`]: `${appConfig.companyName} Teams`,
     [`${appConfig.companyName} Admissions`]: `${appConfig.companyName} Admissions`,
     [`${appConfig.companyName} Members`]: `${appConfig.companyName} Members`,
@@ -75,7 +82,10 @@ export const translation_en = {
   dashboard: {
     Dashboard: 'Dashboard',
     'Upcoming Applications': 'Upcoming Applications',
-    'Ready To Submit Tasks': 'Ready To Submit Tasks'
+    'Ready To Submit Tasks': 'Ready To Submit Tasks',
+    'Edit Agent': 'Edit Agent',
+    'Edit Editor': 'Edit Editor',
+    'Configure Attribute': 'Configure Attribute'
   },
   programList: {},
   backgroundProfile: {},
@@ -283,7 +293,6 @@ export const translation_en = {
     Error: 'Error',
     Password: 'Password',
     'Forgot Password': 'Forgot Password',
-    Login: 'Login',
     Link: 'Link',
     'Meeting Link': 'Meeting Link',
     Notes: 'Notes',
@@ -312,7 +321,6 @@ export const translation_en = {
     'Last update': 'Last update at',
     'Upload Time': 'Upload Time',
     Upload: 'Upload',
-    'Last Login': 'Last Login',
     'Log Out': 'Log Out',
     Yes: 'Yes',
     No: 'No',

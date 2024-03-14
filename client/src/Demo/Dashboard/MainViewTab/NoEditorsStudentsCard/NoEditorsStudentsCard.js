@@ -71,7 +71,7 @@ function NoEditorsStudentsCard(props) {
                 aria-expanded={open ? 'true' : undefined}
                 onClick={handleClick}
               >
-                {t('Option')}
+                {t('Option', { ns: 'common' })}
               </Button>
               <Menu
                 id="basic-menu"

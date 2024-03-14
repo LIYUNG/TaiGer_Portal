@@ -60,6 +60,9 @@ function ToggleableUploadFileForm(props) {
           <MenuItem value="Portfolio">Portfolio</MenuItem>
           <MenuItem value="Internship_Form">Internship Form</MenuItem>
           <MenuItem value="Supplementary_Form">Supplementary Form</MenuItem>
+          <MenuItem value="Curriculum_Analysis">
+            Curriculum Analysis
+          </MenuItem>
           <MenuItem value="Scholarship_Form">Scholarship Form / ML</MenuItem>
           <MenuItem value="RL_A">RL (Referee A)</MenuItem>
           <MenuItem value="RL_B">RL (Referee B)</MenuItem>

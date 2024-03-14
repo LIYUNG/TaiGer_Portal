@@ -131,6 +131,15 @@ const programModule = {
   supplementary_form_requirements: {
     type: String
   },
+  curriculum_analysis_required: {
+    type: String
+  },
+  curriculum_analysis_requirements: {
+    type: String
+  },
+  module_description_required: {
+    type: String
+  },
   ects_requirements: {
     type: String
   },

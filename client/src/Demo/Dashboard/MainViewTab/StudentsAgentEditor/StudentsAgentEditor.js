@@ -160,7 +160,7 @@ function StudentsAgentEditor(props) {
                 aria-expanded={open ? 'true' : undefined}
                 onClick={handleClick}
               >
-                {t('Option')}
+                {t('Option', { ns: 'common' })}
               </Button>
               <Menu
                 id="basic-menu"
@@ -172,14 +172,14 @@ function StudentsAgentEditor(props) {
                 }}
               >
                 <MenuItem onClick={() => startEditingAgent()}>
-                  {t('Edit Agent')}
+                  {t('Edit Agent', { ns: 'dashboard' })}
                 </MenuItem>
                 <MenuItem onClick={() => startEditingEditor()}>
-                  {t('Edit Editor')}
+                  {t('Edit Editor', { ns: 'dashboard' })}
                 </MenuItem>
                 {!is_TaiGer_Editor(user) && (
                   <MenuItem onClick={() => startEditingAttributes()}>
-                    {t('Configure Attribute')}
+                    {t('Configure Attribute', { ns: 'dashboard' })}
                   </MenuItem>
                 )}
                 {props.isDashboard && !is_TaiGer_Editor(user) && (

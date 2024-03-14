@@ -265,7 +265,7 @@ function UsersList(props) {
         <TableCell key={i}>{t(`${x.name}`)}</TableCell>
       ))}
       <TableCell>{t('Created At')}</TableCell>
-      <TableCell>{t('Last Login')}</TableCell>
+      <TableCell>{t('Last Login', { ns: 'auth' })}</TableCell>
     </TableRow>
   );
 

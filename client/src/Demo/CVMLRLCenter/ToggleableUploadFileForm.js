@@ -8,7 +8,30 @@ import {
 } from '@mui/material';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-
+const GENERAL_FILTE_TYPE = [
+  { name: 'Please Select', value: '' },
+  { name: 'CV', value: 'CV' },
+  { name: 'Recommendation Letter (A)', value: 'Recommendation_Letter_A' },
+  { name: 'Recommendation Letter (B)', value: 'Recommendation_Letter_B' },
+  { name: 'Recommendation Letter (C)', value: 'Recommendation_Letter_C' },
+  { name: 'Form A', value: 'Form_A' },
+  { name: 'Form_B', value: 'Form_B' },
+  { name: 'Others', value: 'Others' }
+];
+const PROGRAM_SPECIFIC_FILTE_TYPE = [
+  { name: 'Please Select', value: '' },
+  { name: 'ML', value: 'ML' },
+  { name: 'Essay', value: 'Essay' },
+  { name: 'Portfolio', value: 'Portfolio' },
+  { name: 'Internship Form', value: 'Internship_Form' },
+  { name: 'Supplementary Form', value: 'Supplementary_Form' },
+  { name: 'Curriculum_Analysis', value: 'Curriculum_Analysis' },
+  { name: 'Scholarship Form / ML', value: 'Scholarship_Form' },
+  { name: 'RL (Referee A)', value: 'RL_A' },
+  { name: 'RL (Referee B)', value: 'RL_B' },
+  { name: 'RL (Referee C)', value: 'RL_C' },
+  { name: 'Others', value: 'Others' }
+];
 function ToggleableUploadFileForm(props) {
   const { t } = useTranslation();
   var drop_list;
@@ -25,38 +48,15 @@ function ToggleableUploadFileForm(props) {
           onChange={(e) => props.handleSelect(e)}
           value={props.category}
         >
-          <MenuItem value="">Please Select</MenuItem>
-          <MenuItem value="CV">CV</MenuItem>
-          <MenuItem value="Recommendation_Letter_A">
-            Recommendation Letter (A)
-          </MenuItem>
-          <MenuItem value="Recommendation_Letter_B">
-            Recommendation Letter (B)
-          </MenuItem>
-          <MenuItem value="Recommendation_Letter_C">
-            Recommendation Letter (C)
-          </MenuItem>
-          <MenuItem value="Form_A">Form A</MenuItem>
-          <MenuItem value="Form_B">Form B</MenuItem>
-          <MenuItem value="Others">Others</MenuItem>
+          {GENERAL_FILTE_TYPE.map((option) => (
+            <MenuItem key={option.value} value={option.value}>
+              {option.name}
+            </MenuItem>
+          ))}
         </Select>
       </FormControl>
     );
   } else {
-    const PROGRAM_SPECIFIC_FILTE_TYPE = [
-      { name: 'Please Select', value: '' },
-      { name: 'ML', value: 'ML' },
-      { name: 'Essay', value: 'Essay' },
-      { name: 'Portfolio', value: 'Portfolio' },
-      { name: 'Internship Form', value: 'Internship_Form' },
-      { name: 'Supplementary Form', value: 'Supplementary_Form' },
-      { name: 'Curriculum_Analysis', value: 'Curriculum_Analysis' },
-      { name: 'Scholarship Form / ML', value: 'Scholarship_Form' },
-      { name: 'RL (Referee A)', value: 'RL_A' },
-      { name: 'RL (Referee B)', value: 'RL_B' },
-      { name: 'RL (Referee C)', value: 'RL_C' },
-      { name: 'Others', value: 'Others' }
-    ];
     drop_list = (
       <FormControl fullWidth size="small">
         <InputLabel id="thread_category">{t('Category')}</InputLabel>

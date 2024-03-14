@@ -358,7 +358,7 @@ function SingleStudentPage() {
                 label={t('Uni-Assist', { ns: 'common' })}
                 {...a11yProps(4)}
               />
-              <Tab label={t('My Survey', { ns: 'common' })} {...a11yProps(5)} />
+              <Tab label={t('Profile', { ns: 'common' })} {...a11yProps(5)} />
               <Tab
                 label={t('My Courses', { ns: 'common' })}
                 {...a11yProps(6)}

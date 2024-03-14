@@ -486,7 +486,7 @@ export default function MyCourses() {
             {statedata.student.firstname} {statedata.student.lastname}
           </Link>
         )}
-        <Typography color="text.primary">My Courses</Typography>
+        <Typography color="text.primary">{t('My Courses')}</Typography>
       </Breadcrumbs>
       {/* <Card sx={{ mt: 2, padding: 2, minWidth: '450px' }}> */}
       <Typography variant="h6" sx={{ pt: 2 }}>

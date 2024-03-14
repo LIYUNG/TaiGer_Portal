@@ -159,7 +159,7 @@ function StudentTasksResponsive(props) {
                 to={`${DEMO.COURSES_LINK}`}
                 component={LinkDom}
               >
-                {t('My Courses')}
+                {t('My Courses', { ns: 'common' })}
                 <FiExternalLink
                   className="mx-1 mb-1"
                   style={{ cursor: 'pointer' }}

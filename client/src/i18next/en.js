@@ -67,6 +67,7 @@ export const translation_en = {
     Tools: 'Tools',
     'Course Analyser': 'Course Analyser',
     Save: 'Save',
+    Success: 'Success',
     Message: 'Message',
     Messages: 'Messages'
   },
@@ -77,7 +78,14 @@ export const translation_en = {
   },
   programList: {},
   backgroundProfile: {},
-  courses: {},
+  cvmlrl: {
+    'Note: if the documents are not closed but locate here, it is becaue the applications are already submitted. The documents can safely closed eventually.':
+      'Note: if the documents are not closed but locate here, it is becaue the applications are already submitted. The documents can safely closed eventually.'
+  },
+  courses: {
+    'Update transcript successfully! Your agent will be notified and will analyse your courses as soon as possible.':
+      'Update transcript successfully! Your agent will be notified and will analyse your courses as soon as possible.'
+  },
   interviews: {},
   portalManagement: {
     'Update portal credentials successfully':

@@ -67,6 +67,7 @@ export const translation_zh_TW = {
     Tools: '工具',
     'Course Analyser': '課程分析器',
     Save: '儲存',
+    Success: '成功',
     Message: '訊息',
     Messages: '訊息'
   },
@@ -77,7 +78,14 @@ export const translation_zh_TW = {
   },
   programList: {},
   backgroundProfile: {},
-  courses: {},
+  cvmlrl: {
+    'Note: if the documents are not closed but locate here, it is becaue the applications are already submitted. The documents can safely closed eventually.':
+      'Note: 如果文件並沒有關閉並出現在這區，是因為申請已經送出。該文件可以安全地被關閉。'
+  },
+  courses: {
+    'Update transcript successfully! Your agent will be notified and will analyse your courses as soon as possible.':
+      '課程更新成功！您的顧問已被通知，並將會盡快為您分析您的課程匹配度。'
+  },
   interviews: {},
   portalManagement: {
     'Update portal credentials successfully': '帳號密碼更新成功'

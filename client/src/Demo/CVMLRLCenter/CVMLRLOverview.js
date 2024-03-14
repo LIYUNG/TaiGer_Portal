@@ -340,7 +340,8 @@ function CVMLRLOverview(props) {
         />
         <Typography variant="body2">
           {t(
-            'Note: if the documents are not closed but locate here, it is becaue the applications are already submitted. The documents can safely closed eventually.'
+            'Note: if the documents are not closed but locate here, it is becaue the applications are already submitted. The documents can safely closed eventually.',
+            { ns: 'cvmlrl' }
           )}
         </Typography>
       </CustomTabPanel>

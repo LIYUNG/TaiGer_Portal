@@ -380,7 +380,9 @@ export default function CourseWidget() {
         onClose={closeModal}
         aria-labelledby="contained-modal-title-vcenter"
       >
-        <Typography variant="h6">{t('Confirmation')}</Typography>
+        <Typography variant="h6">
+          {t('Confirmation', { ns: 'common' })}
+        </Typography>
         <Typography>{t('Update transcript successfully')}</Typography>
         <Button color="primary" variant="contained" onClick={closeModal}>
           {t('Close', { ns: 'common' })}

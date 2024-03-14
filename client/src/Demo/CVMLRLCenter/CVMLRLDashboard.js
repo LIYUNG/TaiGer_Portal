@@ -555,9 +555,10 @@ function CVMLRLDashboard(props) {
           notification_key={undefined}
         />
         <Typography sx={{ p: 2 }}>
-          Note: if the documents are not closed but locate here, it is becaue
-          the applications are already submitted. The documents can safely
-          closed eventually.
+          {t(
+            'Note: if the documents are not closed but locate here, it is because the applications are already submitted. The documents can safely closed eventually.',
+            { ns: 'cvmlrl' }
+          )}
         </Typography>
         <SortTable
           columns={cvmlrl_overview_closed_header}

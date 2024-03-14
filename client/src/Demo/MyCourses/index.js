@@ -742,15 +742,16 @@ export default function MyCourses() {
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
-        <Typography>{t('Confirmation')}</Typography>
+        <Typography>{t('Confirmation', { ns: 'common' })}</Typography>
         <Typography>
           {t(
-            'Update transcript successfully! Your agent will be notified and will analyse your courses as soon as possible.'
+            'Update transcript successfully! Your agent will be notified and will analyse your courses as soon as possible.',
+            { ns: 'courses' }
           )}
         </Typography>
         <Typography>
           <Button color="primary" variant="contained" onClick={closeModal}>
-            Close
+            {t('Close', { ns: 'common' })}
           </Button>
         </Typography>
       </ModalNew>
@@ -760,7 +761,7 @@ export default function MyCourses() {
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
-        <Typography>{t('Success')}</Typography>
+        <Typography>{t('Success', { ns: 'common' })}</Typography>
         <Typography>
           {t('Courses analysed successfully!')}
           <b>
@@ -776,7 +777,7 @@ export default function MyCourses() {
             variant="contained"
             onClick={closeanalysisSuccessModal}
           >
-            {t('Ok')}
+            {t('Close', { ns: 'common' })}
           </Button>
         </Typography>
       </ModalNew>

@@ -190,7 +190,7 @@ function ApplicationOverviewTabs(props) {
             />
             <Tab
               data-testid="application_overview_component_application_overview_tab"
-              label={t('Application Overview')}
+              label={t('Application Overview', { ns: 'common' })}
               {...a11yProps(1)}
             />
             <Tab

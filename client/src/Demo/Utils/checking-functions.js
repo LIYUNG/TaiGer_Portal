@@ -1761,7 +1761,12 @@ export const frequencyDistribution = (tasks) => {
       ? { show: 0, potentials: 1 }
       : { show: 0, potentials: 0 };
   }
-  return map;
+  const filteredMap = Object.fromEntries(
+    Object.entries(map).filter(
+      ([, value]) => value.show !== 0 || value.potentials !== 0
+    )
+  );
+  return filteredMap;
 };
 
 export const checkIsRLspecific = (program) => {

@@ -247,7 +247,7 @@ function StudentDashboard(props) {
                 text={`${t('It looks like you did not decide programs')} `}
                 link_name={
                   <>
-                    Application Overview
+                    {t('Application Overview', { ns: 'common' })}
                     <FiExternalLink
                       className="mx-1 mb-1"
                       style={{ cursor: 'pointer' }}

@@ -343,7 +343,7 @@ export const MenuSidebar = [
   },
   {
     id: 'academicsurvey',
-    title: 'My Survey',
+    title: 'My Profile',
     type: 'item',
     url: '/survey',
     icon: <ArticleIcon />

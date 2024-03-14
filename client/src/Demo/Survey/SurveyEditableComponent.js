@@ -128,7 +128,7 @@ const SurveyEditableComponent = (props) => {
             {appConfig.companyName}
           </Link>
           <Typography color="text.primary">
-            {t('My Survey', { ns: 'common' })}
+            {t('Profile', { ns: 'common' })}
           </Typography>
         </Breadcrumbs>
       )}

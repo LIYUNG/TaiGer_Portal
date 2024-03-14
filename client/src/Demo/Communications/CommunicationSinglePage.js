@@ -382,7 +382,7 @@ function CommunicationSinglePage() {
                       component={LinkDom}
                       target="_blank"
                     >
-                      {t('My Survey', { ns: 'common' })}{' '}
+                      {t('Profile', { ns: 'common' })}{' '}
                       <FiExternalLink
                         className="mx-0 mb-1"
                         style={{ cursor: 'pointer' }}

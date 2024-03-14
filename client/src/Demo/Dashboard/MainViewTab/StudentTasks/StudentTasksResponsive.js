@@ -132,7 +132,7 @@ function StudentTasksResponsive(props) {
               to={`${DEMO.SURVEY_LINK}`}
               component={LinkDom}
             >
-              {t('My Survey', { ns: 'common' })}
+              {t('Profile', { ns: 'common' })}
               <FiExternalLink
                 className="mx-1 mb-1"
                 style={{ cursor: 'pointer' }}
@@ -141,7 +141,7 @@ function StudentTasksResponsive(props) {
           </TableCell>
           <TableCell>
             {t(
-              'Please complete My Survey so that your agent can understand your situation'
+              'Please complete Profile so that your agent can understand your situation'
             )}
           </TableCell>
           <TableCell></TableCell>

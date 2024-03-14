@@ -464,7 +464,7 @@ function BaseDocument_StudentView(props) {
               component={LinkDom}
               target="_blank"
             >
-              My Survey{' '}
+              {t('Profile', { ns: 'common' })}{' '}
               <FiExternalLink
                 className="mx-1 mb-1"
                 style={{ cursor: 'pointer' }}

@@ -501,7 +501,7 @@ function CommunicationExpandPage() {
                                   component={LinkDom}
                                   target="_blank"
                                 >
-                                  {t('My Survey')}{' '}
+                                  {t('Profile', { ns: 'common' })}{' '}
                                   <FiExternalLink
                                     className="mx-0 mb-1"
                                     style={{ cursor: 'pointer' }}

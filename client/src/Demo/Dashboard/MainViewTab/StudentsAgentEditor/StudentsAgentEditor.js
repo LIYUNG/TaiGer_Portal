@@ -188,7 +188,7 @@ function StudentsAgentEditor(props) {
                       updateStudentArchivStatus(props.student._id, true)
                     }
                   >
-                    {t('Move to Archiv')}
+                    {t('Move to Archiv', { ns: 'common' })}
                   </MenuItem>
                 )}
                 {props.isArchivPage && !is_TaiGer_Editor(user) && (

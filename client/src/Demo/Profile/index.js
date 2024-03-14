@@ -481,7 +481,7 @@ function Profile() {
       {!user_id && is_TaiGer_Agent(user) && (
         <>
           <Card sx={{ padding: 2, mb: 2 }}>
-            <Typography>{t('Profile')}</Typography>
+            <Typography>{t('Profile', { ns: 'common' })}</Typography>
 
             <h5 className="text-light">{t('Introduction')}</h5>
             {user.selfIntroduction}

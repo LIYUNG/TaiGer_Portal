@@ -45,7 +45,7 @@ function TabStudBackgroundDashboard(props) {
             <TableCell align="left">{t('Degree')}</TableCell>
             {header.map((name, index) => (
               <TableCell key={index} align="left">
-                {t(`${name}`)}
+                {t(`${name}`, { ns: 'common' })}
               </TableCell>
             ))}
           </TableRow>

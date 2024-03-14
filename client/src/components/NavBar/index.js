@@ -513,7 +513,7 @@ function NavBar(props) {
         >
           <AccountCircle />
         </IconButton>
-        <Typography>{t('Profile')}</Typography>
+        <Typography>{t('Profile', { ns: 'common' })}</Typography>
       </MenuItem>
     </Menu>
   );

@@ -47,13 +47,14 @@ function VPDToSubmitTasks(props) {
                 {is_uni_assist_paid_and_docs_uploaded(application) ? (
                   <>
                     <TableCell className="text-warning">
-                      {t('Paid')}, {t('Waiting VPD')}
+                      {t('Paid', { ns: 'common' })},{' '}
+                      {t('Waiting VPD result', { ns: 'common' })}
                     </TableCell>
                   </>
                 ) : (
                   <TableCell>
                     <Typography color="text.secondary">
-                      {t('Not paid')}
+                      {t('Not paid', { ns: 'common' })}
                     </Typography>
                   </TableCell>
                 )}
@@ -96,7 +97,7 @@ function VPDToSubmitTasksCard(props) {
           <TableHead>
             <TableRow>
               <TableCell>{t('Student')}</TableCell>
-              <TableCell>{t('Status')}</TableCell>
+              <TableCell>{t('Status', { ns: 'common' })}</TableCell>
               <TableCell>{t('Deadline')}</TableCell>
               <TableCell>{t('Program')}</TableCell>
             </TableRow>

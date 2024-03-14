@@ -252,7 +252,7 @@ const StudentCourseSelectionReminderEmail = async (recipient, payload) => {
 
 <p>為了您和 Agent 的溝通順暢，盡速更新課程，您的 Agent 會在您更新課程後，為您盡快分析課程。</p>
 
-<p>若您已經大學畢業，或是尚未就讀大學，請更新 <a href="${STUDENT_SURVEY_URL}">My Survey</a> 中 <b>Already Bachelor graduated ?</b> 為<b>Yes 已畢業</b> 或是<b>No 未開始就讀</b> ，您將不會在收到此 Email</p>
+<p>若您已經大學畢業，或是尚未就讀大學，請更新 <a href="${STUDENT_SURVEY_URL}">My Profile</a> 中 <b>Already Bachelor graduated ?</b> 為<b>Yes 已畢業</b> 或是<b>No 未開始就讀</b> ，您將不會在收到此 Email</p>
 
 <p>${TAIGER_SIGNATURE}</p>
 
@@ -274,7 +274,7 @@ const AgentCourseSelectionReminderEmail = async (recipient, payload) => {
 
 <p>若學生已經大學畢業，或是尚未就讀大學，請更新 <a href="${SURVEY_URL_FOR_AGENT_URL(
     payload.student._id.toString()
-  )}">My Survey</a> 中 <b>Already Bachelor graduated ?</b> 為<b>Yes 已畢業</b> 或是<b>No 未開始就讀</b> ，您將不會在收到此 Email</p>
+  )}">My Profile</a> 中 <b>Already Bachelor graduated ?</b> 為<b>Yes 已畢業</b> 或是<b>No 未開始就讀</b> ，您將不會在收到此 Email</p>
 
 <p>${TAIGER_SIGNATURE}</p>
 

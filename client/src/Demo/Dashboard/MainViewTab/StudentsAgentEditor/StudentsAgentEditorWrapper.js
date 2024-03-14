@@ -55,7 +55,9 @@ function StudentsAgentEditorWrapper(props) {
             <TableCell>{t('Semester')}</TableCell>
             <TableCell>{t('Degree')}</TableCell>
             {header.map((name, index) => (
-              <TableCell key={index}>{t(`${name}`)}</TableCell>
+              <TableCell key={index}>
+                {t(`${name}`, { ns: 'common' })}
+              </TableCell>
             ))}
           </TableRow>
         </TableHead>

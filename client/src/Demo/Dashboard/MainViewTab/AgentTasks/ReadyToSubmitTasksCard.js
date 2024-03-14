@@ -127,7 +127,7 @@ function ReadyToSubmitTasksCard(props) {
             <TableHead>
               <TableRow>
                 <TableCell>{t('Student')}</TableCell>
-                <TableCell>{t('Start')}</TableCell>
+                <TableCell>{t('Start', { ns: 'common' })}</TableCell>
                 <TableCell>{t('Deadline')}</TableCell>
                 <TableCell>
                   {t('Semester')} - {t('Degree')} - {t('Program')}

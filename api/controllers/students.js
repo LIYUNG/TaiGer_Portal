@@ -1100,6 +1100,23 @@ const createApplication = asyncHandler(async (req, res, next) => {
       application.doc_modification_thread.push(temp);
       await new_doc_thread.save();
     }
+    // Create scholarship form / ML task
+    if (program.scholarship_form_required === 'yes') {
+      const new_doc_thread = new Documentthread({
+        student_id: studentId,
+        file_type: 'Scholarship_Form',
+        program_id: new_programIds[i],
+        updatedAt: new Date()
+      });
+      const temp = application.doc_modification_thread.create({
+        doc_thread_id: new_doc_thread._id,
+        updatedAt: new Date(),
+        createdAt: new Date()
+      });
+      temp.student_id = studentId;
+      application.doc_modification_thread.push(temp);
+      await new_doc_thread.save();
+    }
     student.notification.isRead_new_programs_assigned = false;
     student.applications.push(application);
   }

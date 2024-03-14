@@ -139,6 +139,12 @@ export const getRequirement = (thread) => {
     return program.curriculum_analysis_requirements || 'No';
   }
   if (
+    fileType.includes('Scholarship_Form') &&
+    program.scholarship_form_required === 'yes'
+  ) {
+    return program.scholarship_form_requirements || 'No';
+  }
+  if (
     fileType.includes('RL') &&
     ['1', '2', '3'].includes(program.rl_required)
   ) {

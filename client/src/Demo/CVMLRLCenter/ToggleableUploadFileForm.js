@@ -43,6 +43,20 @@ function ToggleableUploadFileForm(props) {
       </FormControl>
     );
   } else {
+    const PROGRAM_SPECIFIC_FILTE_TYPE = [
+      { name: 'Please Select', value: '' },
+      { name: 'ML', value: 'ML' },
+      { name: 'Essay', value: 'Essay' },
+      { name: 'Portfolio', value: 'Portfolio' },
+      { name: 'Internship Form', value: 'Internship_Form' },
+      { name: 'Supplementary Form', value: 'Supplementary_Form' },
+      { name: 'Curriculum_Analysis', value: 'Curriculum_Analysis' },
+      { name: 'Scholarship Form / ML', value: 'Scholarship_Form' },
+      { name: 'RL (Referee A)', value: 'RL_A' },
+      { name: 'RL (Referee B)', value: 'RL_B' },
+      { name: 'RL (Referee C)', value: 'RL_C' },
+      { name: 'Others', value: 'Others' }
+    ];
     drop_list = (
       <FormControl fullWidth size="small">
         <InputLabel id="thread_category">{t('Category')}</InputLabel>
@@ -54,20 +68,11 @@ function ToggleableUploadFileForm(props) {
           label={t('Category')}
           onChange={(e) => props.handleSelect(e)}
         >
-          <MenuItem value="">Please Select</MenuItem>
-          <MenuItem value="ML">ML</MenuItem>
-          <MenuItem value="Essay">Essay</MenuItem>
-          <MenuItem value="Portfolio">Portfolio</MenuItem>
-          <MenuItem value="Internship_Form">Internship Form</MenuItem>
-          <MenuItem value="Supplementary_Form">Supplementary Form</MenuItem>
-          <MenuItem value="Curriculum_Analysis">
-            Curriculum Analysis
-          </MenuItem>
-          <MenuItem value="Scholarship_Form">Scholarship Form / ML</MenuItem>
-          <MenuItem value="RL_A">RL (Referee A)</MenuItem>
-          <MenuItem value="RL_B">RL (Referee B)</MenuItem>
-          <MenuItem value="RL_C">RL (Referee C)</MenuItem>
-          <MenuItem value="Others">Others</MenuItem>
+          {PROGRAM_SPECIFIC_FILTE_TYPE.map((option) => (
+            <MenuItem key={option.value} value={option.value}>
+              {option.name}
+            </MenuItem>
+          ))}
         </Select>
       </FormControl>
     );

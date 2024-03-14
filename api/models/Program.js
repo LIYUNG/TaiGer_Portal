@@ -137,6 +137,12 @@ const programModule = {
   curriculum_analysis_requirements: {
     type: String
   },
+  scholarship_form_required: {
+    type: String
+  },
+  scholarship_form_requirements: {
+    type: String
+  },
   module_description_required: {
     type: String
   },

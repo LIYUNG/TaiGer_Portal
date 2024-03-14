@@ -897,10 +897,21 @@ export const program_fields_special_documents = [
     name: 'Supplementary Form Requirements',
     prop: 'supplementary_form_requirements'
   },
-  { name: 'Curriculum Analysis Required?', prop: 'curriculum_analysis_required' },
+  {
+    name: 'Curriculum Analysis Required?',
+    prop: 'curriculum_analysis_required'
+  },
   {
     name: 'Curriculum Analysis Requirements',
     prop: 'curriculum_analysis_requirements'
+  },
+  {
+    name: 'Scholarship Form / ML Required?',
+    prop: 'scholarship_form_required'
+  },
+  {
+    name: 'Scholarship Form / ML Requirements',
+    prop: 'scholarship_form_requirements'
   }
 ];
 

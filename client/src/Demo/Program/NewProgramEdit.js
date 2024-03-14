@@ -31,7 +31,7 @@ function NewProgramEdit(props) {
     program: props.program || {},
     school_name_set: new Set(props.programs?.map((program) => program.school))
   });
-
+  const [isChanged, setIsChanged] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const searchContainerRef = useRef(null);
@@ -85,8 +85,10 @@ function NewProgramEdit(props) {
       ...initStates,
       program: program_temp
     }));
+    setIsChanged(true);
     if (e.target.id === 'school') {
       setSearchTerm(e.target.value.trimLeft());
+      setIsChanged(true);
     }
   };
 
@@ -916,6 +918,7 @@ function NewProgramEdit(props) {
           size="small"
           color="primary"
           variant="contained"
+          disabled={!isChanged}
           onClick={(e) => handleSubmit_Program(e, initStates.program)}
           sx={{ my: 1 }}
         >

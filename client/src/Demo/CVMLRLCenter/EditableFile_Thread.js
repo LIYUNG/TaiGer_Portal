@@ -6,7 +6,7 @@ import { AiOutlineDelete, AiOutlineUndo } from 'react-icons/ai';
 import { IoCheckmarkCircle } from 'react-icons/io5';
 import { useTranslation } from 'react-i18next';
 
-import { is_TaiGer_role } from '../Utils/checking-functions';
+import { is_TaiGer_role, latestReplyInfo } from '../Utils/checking-functions';
 import { convertDate } from '../Utils/contants';
 import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
@@ -106,7 +106,7 @@ function EditableFile_Thread(props) {
             <></>
           )}
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={4}>
           <Link
             to={DEMO.DOCUMENT_MODIFICATION_LINK(
               props.thread.doc_thread_id?._id
@@ -120,6 +120,9 @@ function EditableFile_Thread(props) {
         </Grid>
         <Grid item xs={2}>
           {convertDate(props.thread.doc_thread_id?.updatedAt)}
+        </Grid>
+        <Grid item xs={2}>
+          {latestReplyInfo(props.thread.doc_thread_id)}
         </Grid>
         {is_TaiGer_role(user) && (
           <Grid item xs={1}>

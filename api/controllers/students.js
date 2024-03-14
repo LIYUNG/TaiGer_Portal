@@ -60,10 +60,22 @@ const getStudentAndDocLinks = asyncHandler(async (req, res, next) => {
       'applications.programId',
       'school program_name toefl toefl_reading toefl_listening toefl_writing toefl_speaking ielts ielts_reading ielts_listening ielts_writing ielts_speaking testdaf gre gmat degree semester country application_deadline ml_required ml_requirements rl_required is_rl_specific uni_assist rl_requirements essay_required essay_requirements portfolio_required portfolio_requirements supplementary_form_required supplementary_form_requirements application_portal_a application_portal_b'
     )
-    .populate(
-      'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
-      '-messages'
-    )
+    .populate({
+      path: 'generaldocs_threads.doc_thread_id',
+      select: 'file_type isFinalVersion updatedAt messages.file',
+      populate: {
+        path: 'messages.user_id',
+        select: 'firstname lastname'
+      }
+    })
+    .populate({
+      path: 'applications.doc_modification_thread.doc_thread_id',
+      select: 'file_type isFinalVersion updatedAt messages.file',
+      populate: {
+        path: 'messages.user_id',
+        select: 'firstname lastname'
+      }
+    })
     .select(
       '-taigerai +applications.portal_credentials.application_portal_a.account +applications.portal_credentials.application_portal_a.password +applications.portal_credentials.application_portal_b.account +applications.portal_credentials.application_portal_b.password'
     )

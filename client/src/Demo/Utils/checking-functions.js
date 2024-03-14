@@ -1385,8 +1385,8 @@ export const getNumberOfFilesByEditor = (messages, student_id) => {
   return `${message_count}/${file_count}`;
 };
 
-const latestReplyInfo = (thread) => {
-  const messages = thread.messages;
+export const latestReplyInfo = (thread) => {
+  const messages = thread?.messages;
   if (!messages || messages?.length <= 0) {
     return '- None - ';
   }

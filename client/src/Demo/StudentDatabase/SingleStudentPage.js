@@ -119,7 +119,7 @@ function SingleStudentPage() {
         const { status } = resp;
         if (success) {
           var students_temp = { ...singleStudentPage.student };
-          students_temp = data; // datda is single student updated
+          students_temp.agents = data.agents; // datda is single student updated
           setSingleStudentPage((prevState) => ({
             ...prevState,
             isLoaded: true, //false to reload everything
@@ -158,7 +158,7 @@ function SingleStudentPage() {
         const { status } = resp;
         if (success) {
           var students_temp = { ...singleStudentPage.student };
-          students_temp = data; // datda is single student updated
+          students_temp.editors = data.editors; // datda is single student updated
           setSingleStudentPage((prevState) => ({
             ...prevState,
             isLoaded: true, //false to reload everything
@@ -197,7 +197,7 @@ function SingleStudentPage() {
         const { status } = resp;
         if (success) {
           var students_temp = { ...singleStudentPage.student };
-          students_temp = data; // datda is single student updated
+          students_temp.attributes = data.attributes; // datda is single student updated
           setSingleStudentPage((prevState) => ({
             ...prevState,
             isLoaded: true, //false to reload everything
@@ -351,10 +351,7 @@ function SingleStudentPage() {
                 label={t('Applications Overview', { ns: 'common' })}
                 {...a11yProps(0)}
               />
-              <Tab
-                label={t('Documents', { ns: 'common' })}
-                {...a11yProps(1)}
-              />
+              <Tab label={t('Documents', { ns: 'common' })} {...a11yProps(1)} />
               <Tab label={t('CV ML RL', { ns: 'common' })} {...a11yProps(2)} />
               <Tab label={t('Portal', { ns: 'common' })} {...a11yProps(3)} />
               <Tab

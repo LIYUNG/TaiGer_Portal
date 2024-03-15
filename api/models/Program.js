@@ -1,4 +1,5 @@
 const { model, Schema } = require('mongoose');
+const { Student } = require('./User');
 
 const Degree = {
   bachelor_sc: 'B.Sc',
@@ -179,10 +180,51 @@ const programModule = {
 };
 
 const programSchema = new Schema(programModule, { timestamps: true });
+programSchema.pre(['updateOne', 'updateMany', 'update'], async function () {
+  const condition = this.getQuery();
+  this._originals = await this.model.find(condition).lean();
+});
+
+const isCrucialChanges = (changes) => {
+  const crucialChanges = [
+    'ml_required',
+    'rl_required',
+    'essay_required',
+    'portfolio_required',
+    'supplementary_form_required'
+  ];
+  for (let change in changes) {
+    if (crucialChanges.includes(change)) {
+      return true;
+    }
+  }
+  return false;
+};
+
+programSchema.post(['updateOne', 'updateMany', 'update'], async function () {
+  const docs = this._originals;
+  delete this._originals;
+  const changes = this.getUpdate().$set;
+  if (!isCrucialChanges(changes)) {
+    return;
+  }
+
+  for (let doc of docs) {
+    const programId = doc._id;
+    console.log(`programId: ${programId}`);
+    const affectedStudents = await Student.find({
+      applications: {
+        $elemMatch: {
+          programId: programId
+        }
+      }
+    }).lean();
+    console.log(`affectedStudents: ${affectedStudents}`);
+  }
+});
+
 programSchema.index({ school: 'text', program_name: 'text' });
-
 const Program = model('Program', programSchema);
-
 module.exports = {
   programModule,
   Degree,

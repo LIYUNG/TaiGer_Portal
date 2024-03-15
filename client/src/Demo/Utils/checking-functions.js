@@ -1752,6 +1752,9 @@ export const numStudentYearDistribution = (students) => {
 export const frequencyDistribution = (tasks) => {
   const map = {};
   for (let i = 0; i < tasks.length; i++) {
+    if (tasks[i].deadline === 'CLOSE' || tasks[i].deadline === 'WITHDRAW') {
+      continue;
+    }
     map[tasks[i].deadline] = map[tasks[i].deadline]
       ? tasks[i].show
         ? {
@@ -1775,7 +1778,10 @@ export const frequencyDistribution = (tasks) => {
   }
   const filteredMap = Object.fromEntries(
     Object.entries(map).filter(
-      ([, value]) => value.show !== 0 || value.potentials !== 0
+      ([key, value]) =>
+        ((value.show !== 0 || value.potentials !== 0) &&
+          getNumberOfDays(new Date(), key) < 365) ||
+        key.includes('Rolling')
     )
   );
   return filteredMap;

@@ -38,6 +38,7 @@ import { useAuth } from '../../../components/AuthProvider';
 import StudentsAgentEditorWrapper from '../MainViewTab/StudentsAgentEditor/StudentsAgentEditorWrapper';
 import NoProgramStudentTable from '../MainViewTab/AgentTasks/NoProgramStudentTable';
 import BaseDocumentCheckingTable from '../MainViewTab/AgentTasks/BaseDocumentCheckingTable';
+import ProgramSpecificDocumentCheckCard from '../MainViewTab/AgentTasks/ProgramSpecificDocumentCheckCard';
 
 function AgentMainView(props) {
   const { user } = useAuth();
@@ -245,6 +246,9 @@ function AgentMainView(props) {
         </Grid>
         <Grid item xs={12} sm={6}>
           <NoProgramStudentTable students={props.students} />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <ProgramSpecificDocumentCheckCard students={props.students} />
         </Grid>
         <Grid item xs={12} sm={6}>
           <NoEnoughDecidedProgramsTasksCard

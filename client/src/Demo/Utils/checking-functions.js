@@ -921,6 +921,29 @@ export const check_application_selection = (student) => {
   return true;
 };
 
+export const has_agent_program_specific_tasks = (student) => {
+  if (!student.applications) {
+    return false;
+  }
+  if (student.applications.length === 0) {
+    return false;
+  }
+  for (const application of student.applications) {
+    if (isProgramDecided(application)) {
+      for (const thread of application.doc_modification_thread) {
+        if (
+          ['Supplementary_Form', 'Curriculum_Analysis'].includes(
+            thread.doc_thread_id?.file_type
+          )
+        ) {
+          return true;
+        }
+      }
+    }
+  }
+  return false;
+};
+
 export const anyStudentWithoutApplicationSelection = (students) => {
   let flag = false;
   for (let i = 0; i < students.length; i += 1) {

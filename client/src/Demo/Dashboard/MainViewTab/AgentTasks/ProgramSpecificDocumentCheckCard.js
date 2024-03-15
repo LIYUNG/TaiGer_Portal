@@ -35,9 +35,7 @@ function ProgramSpecificDocumentCheckCard(props) {
         <TableHead>
           <TableRow>
             <TableCell>{t('Student Name')}</TableCell>
-            <TableCell>
-              {t('Year')}/{t('Semester')}
-            </TableCell>
+            <TableCell>{t('Deadline')}</TableCell>
             <TableCell>{t('Documents', { ns: 'common' })}</TableCell>
           </TableRow>
         </TableHead>

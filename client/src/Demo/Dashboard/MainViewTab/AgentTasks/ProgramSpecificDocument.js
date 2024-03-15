@@ -2,7 +2,10 @@ import React from 'react';
 import { Link as LinkDom } from 'react-router-dom';
 import { Link, TableCell, TableRow } from '@mui/material';
 
-import { has_agent_program_specific_tasks } from '../../../Utils/checking-functions';
+import {
+  application_date_calculator,
+  has_agent_program_specific_tasks
+} from '../../../Utils/checking-functions';
 import DEMO from '../../../../store/constant';
 
 function ProgramSpecificDocument(props) {
@@ -30,15 +33,7 @@ function ProgramSpecificDocument(props) {
                     </Link>
                   </TableCell>
                   <TableCell>
-                    {props.student.application_preference
-                      ?.expected_application_date || (
-                      <span className="text-danger">TBD</span>
-                    )}
-                    {'/'}
-                    {props.student.application_preference
-                      ?.expected_application_semester || (
-                      <span className="text-danger">TBD</span>
-                    )}
+                    {application_date_calculator(props.student, application)}
                   </TableCell>
                   <TableCell>
                     <Link

@@ -3,7 +3,7 @@ import { Link as LinkDom } from 'react-router-dom';
 import { Link, TableCell, TableRow } from '@mui/material';
 
 import {
-  application_date_calculator,
+  application_deadline_calculator,
   has_agent_program_specific_tasks
 } from '../../../Utils/checking-functions';
 import DEMO from '../../../../store/constant';
@@ -33,7 +33,10 @@ function ProgramSpecificDocument(props) {
                     </Link>
                   </TableCell>
                   <TableCell>
-                    {application_date_calculator(props.student, application)}
+                    {application_deadline_calculator(
+                      props.student,
+                      application
+                    )}
                   </TableCell>
                   <TableCell>
                     <Link

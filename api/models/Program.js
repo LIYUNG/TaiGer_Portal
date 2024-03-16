@@ -1,5 +1,9 @@
 const { model, Schema } = require('mongoose');
-const { Student } = require('./User');
+const logger = require('../services/logger');
+const {
+  findAffectedStudents,
+  isCrucialChanges
+} = require('../utils/modelHelper/programChange');
 
 const Degree = {
   bachelor_sc: 'B.Sc',
@@ -185,22 +189,6 @@ programSchema.pre(['updateOne', 'updateMany', 'update'], async function () {
   this._originals = await this.model.find(condition).lean();
 });
 
-const isCrucialChanges = (changes) => {
-  const crucialChanges = [
-    'ml_required',
-    'rl_required',
-    'essay_required',
-    'portfolio_required',
-    'supplementary_form_required'
-  ];
-  for (let change in changes) {
-    if (crucialChanges.includes(change)) {
-      return true;
-    }
-  }
-  return false;
-};
-
 programSchema.post(['updateOne', 'updateMany', 'update'], async function () {
   const docs = this._originals;
   delete this._originals;
@@ -211,15 +199,14 @@ programSchema.post(['updateOne', 'updateMany', 'update'], async function () {
 
   for (let doc of docs) {
     const programId = doc._id;
+    logger.info(
+      `ProgramHook - Crucial changes detected on Program (Id=${programId}): ${JSON.stringify(
+        changes
+      )}`
+    );
     console.log(`programId: ${programId}`);
-    const affectedStudents = await Student.find({
-      applications: {
-        $elemMatch: {
-          programId: programId
-        }
-      }
-    }).lean();
-    console.log(`affectedStudents: ${affectedStudents}`);
+    const studentThreadsMap = await findAffectedStudents(programId);
+    console.log(`affectedStudents: ${JSON.stringify(studentThreadsMap)}`);
   }
 });
 

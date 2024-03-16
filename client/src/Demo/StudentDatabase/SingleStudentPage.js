@@ -50,7 +50,12 @@ import {
   is_TaiGer_role
 } from '../Utils/checking-functions';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
-import { updateAgents, updateAttributes, updateEditors } from '../../api';
+import {
+  updateAgents,
+  updateArchivStudents,
+  updateAttributes,
+  updateEditors
+} from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import PortalCredentialPage from '../PortalCredentialPage';
@@ -213,6 +218,43 @@ function SingleStudentPage() {
             isLoaded: true,
             res_modal_message: message,
             res_modal_status: status
+          }));
+        }
+      },
+      (error) => {
+        setSingleStudentPage((prevState) => ({
+          ...prevState,
+          isLoaded: true,
+          error,
+          res_modal_status: 500,
+          res_modal_message: ''
+        }));
+      }
+    );
+  };
+
+  const updateStudentArchivStatus = (studentId, isArchived) => {
+    updateArchivStudents(studentId, isArchived).then(
+      (resp) => {
+        const { success } = resp.data;
+        const { status } = resp;
+        if (success) {
+          let student_temp = { ...singleStudentPage.student };
+          student_temp.archiv = isArchived;
+          setSingleStudentPage((prevState) => ({
+            ...prevState,
+            isLoaded: true,
+            student: student_temp,
+            success: success,
+            res_modal_status: status
+          }));
+        } else {
+          const { message } = resp.data;
+          setSingleStudentPage((prevState) => ({
+            ...prevState,
+            isLoaded: true,
+            res_modal_status: status,
+            res_modal_message: message
           }));
         }
       },
@@ -414,6 +456,7 @@ function SingleStudentPage() {
                 <TableBody>
                   <StudentsAgentEditor
                     student={singleStudentPage.student}
+                    updateStudentArchivStatus={updateStudentArchivStatus}
                     submitUpdateAgentlist={submitUpdateAgentlist}
                     submitUpdateEditorlist={submitUpdateEditorlist}
                     submitUpdateAttributeslist={submitUpdateAttributeslist}

@@ -28,6 +28,8 @@ export const is_TaiGer_Manager = (user) => user?.role === 'Manager';
 export const is_TaiGer_Student = (user) => user?.role === 'Student';
 export const is_TaiGer_Guest = (user) => user?.role === 'Guest';
 
+export const is_User_Archived = (user) => user?.archiv === true;
+
 export const DocumentStatus = {
   Uploaded: 'uploaded',
   Missing: 'missing',

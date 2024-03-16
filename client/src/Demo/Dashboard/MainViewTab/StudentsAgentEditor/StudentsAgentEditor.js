@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import {
   Button,
   Chip,
+  CircularProgress,
   Link,
   Menu,
   MenuItem,
@@ -16,13 +17,15 @@ import EditAgentsSubpage from '../StudDocsOverview/EditAgentsSubpage';
 import EditEditorsSubpage from '../StudDocsOverview/EditEditorsSubpage';
 import {
   is_TaiGer_Editor,
-  is_TaiGer_role
+  is_TaiGer_role,
+  is_User_Archived
 } from '../../../Utils/checking-functions';
 import { is_TaiGer_Student } from '../../../Utils/checking-functions';
 import DEMO from '../../../../store/constant';
 import { useAuth } from '../../../../components/AuthProvider';
 import EditAttributesSubpage from '../StudDocsOverview/EditAttributesSubpage';
 import { COLORS } from '../../../Utils/contants';
+import ModalNew from '../../../../components/Modal';
 
 function StudentsAgentEditor(props) {
   const { user } = useAuth();
@@ -30,8 +33,10 @@ function StudentsAgentEditor(props) {
   const [studentsAgentEditor, setStudentsAgentEditor] = useState({
     showAgentPage: false,
     showEditorPage: false,
-    showAttributesPage: false
+    showAttributesPage: false,
+    showArchivModalPage: false
   });
+  const [isLoading, setIsLoading] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -43,7 +48,10 @@ function StudentsAgentEditor(props) {
 
   const updateStudentArchivStatus = (student_id, archiv) => {
     setAnchorEl(null);
+    setIsLoading(true);
     props.updateStudentArchivStatus(student_id, archiv);
+    setArchivModalhide();
+    setIsLoading(false);
   };
 
   const setAgentModalhide = () => {
@@ -73,6 +81,22 @@ function StudentsAgentEditor(props) {
     setStudentsAgentEditor((prevState) => ({
       ...prevState,
       showAttributesPage: false
+    }));
+  };
+
+  const setArchivModalOpen = () => {
+    setAnchorEl(null);
+    setStudentsAgentEditor((prevState) => ({
+      ...prevState,
+      subpage: 4,
+      showArchivModalPage: true
+    }));
+  };
+
+  const setArchivModalhide = () => {
+    setStudentsAgentEditor((prevState) => ({
+      ...prevState,
+      showArchivModalPage: false
     }));
   };
 
@@ -182,22 +206,11 @@ function StudentsAgentEditor(props) {
                     {t('Configure Attribute', { ns: 'dashboard' })}
                   </MenuItem>
                 )}
-                {props.isDashboard && !is_TaiGer_Editor(user) && (
-                  <MenuItem
-                    onClick={() =>
-                      updateStudentArchivStatus(props.student._id, true)
-                    }
-                  >
-                    {t('Move to Archiv', { ns: 'common' })}
-                  </MenuItem>
-                )}
-                {props.isArchivPage && !is_TaiGer_Editor(user) && (
-                  <MenuItem
-                    onClick={() =>
-                      updateStudentArchivStatus(props.student._id, false)
-                    }
-                  >
-                    {t('Move to Active')}
+                {!is_TaiGer_Editor(user) && (
+                  <MenuItem onClick={() => setArchivModalOpen()}>
+                    {is_User_Archived(props.student)
+                      ? t('Move to Active', { ns: 'common' })
+                      : t('Move to Archiv', { ns: 'common' })}
                   </MenuItem>
                 )}
               </Menu>
@@ -330,6 +343,39 @@ function StudentsAgentEditor(props) {
               onHide={setAttributeModalhide}
               submitUpdateAttributeslist={submitUpdateAttributeslist}
             />
+          )}
+          {studentsAgentEditor.showArchivModalPage && (
+            <ModalNew
+              open={studentsAgentEditor.showArchivModalPage}
+              size="sm"
+              onClose={setArchivModalhide}
+              aria-labelledby="contained-modal-title-vcenter"
+            >
+              <Typography sx={{ mb: 2 }}>
+                Do you want to move {props.student.firstname}{' '}
+                {props.student.lastname} to{' '}
+                {is_User_Archived(props.student) ? t('Active') : t('Archiv')}
+              </Typography>
+              <Button
+                color="primary"
+                variant="contained"
+                onClick={() =>
+                  updateStudentArchivStatus(
+                    props.student._id,
+                    !is_User_Archived(props.student)
+                  )
+                }
+              >
+                {isLoading ? (
+                  <CircularProgress size={24} />
+                ) : (
+                  t('Submit', { ns: 'common' })
+                )}
+              </Button>
+              <Button onClick={setArchivModalhide}>
+                {t('Cancel', { ns: 'common' })}
+              </Button>
+            </ModalNew>
           )}
         </>
       )}

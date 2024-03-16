@@ -35,7 +35,6 @@ function StudentsAgentEditorWrapper(props) {
       submitUpdateAgentlist={props.submitUpdateAgentlist}
       submitUpdateEditorlist={props.submitUpdateEditorlist}
       submitUpdateAttributeslist={props.submitUpdateAttributeslist}
-      isDashboard={props.isDashboard}
     />
   ));
   let header = Object.values(academic_background_header);

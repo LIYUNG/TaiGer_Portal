@@ -4,7 +4,6 @@ import { Link as LinkDom } from 'react-router-dom';
 import { Box, Breadcrumbs, Link, Typography } from '@mui/material';
 
 import TabStudBackgroundDashboard from '../Dashboard/MainViewTab/StudDocsOverview/TabStudBackgroundDashboard';
-import { SYMBOL_EXPLANATION } from '../Utils/contants';
 import { is_TaiGer_role } from '../Utils/checking-functions';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
@@ -137,11 +136,9 @@ function AllArchivStudents() {
         </Breadcrumbs>
         <Box sx={{ mt: 2 }}>
           <TabStudBackgroundDashboard
-            user={user}
             students={allArchivStudentsState.students}
             updateStudentArchivStatus={updateStudentArchivStatus}
             isArchivPage={allArchivStudentsState.isArchivPage}
-            SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
           />
         </Box>
         {res_modal_status >= 400 && (

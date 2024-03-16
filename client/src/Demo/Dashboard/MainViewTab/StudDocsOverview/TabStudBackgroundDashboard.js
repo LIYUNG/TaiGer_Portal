@@ -12,12 +12,21 @@ import {
 import StudDocsDashboard from './StudDocsDashboard';
 import { academic_background_header } from '../../../Utils/contants';
 import { useTranslation } from 'react-i18next';
+// import StudentsAgentEditor from '../StudentsAgentEditor/StudentsAgentEditor';
 
 function TabStudBackgroundDashboard(props) {
   const { t } = useTranslation();
   const stdlist = (
     <TableBody>
       {props.students.map((student, i) => (
+        // <StudentsAgentEditor
+        //   key={i}
+        //   student={student}
+        //   updateStudentArchivStatus={updateStudentArchivStatus}
+        //   submitUpdateAgentlist={submitUpdateAgentlist}
+        //   submitUpdateEditorlist={submitUpdateEditorlist}
+        //   submitUpdateAttributeslist={submitUpdateAttributeslist}
+        // />
         <StudDocsDashboard
           key={i}
           student={student}

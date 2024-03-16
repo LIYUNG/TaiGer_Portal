@@ -51,7 +51,6 @@ function AdminMainView(props) {
             submitUpdateAgentlist={props.submitUpdateAgentlist}
             submitUpdateEditorlist={props.submitUpdateEditorlist}
             submitUpdateAttributeslist={props.submitUpdateAttributeslist}
-            isDashboard={props.isDashboard}
           />
         </Grid>
       </Grid>

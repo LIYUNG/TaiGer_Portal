@@ -125,7 +125,6 @@ function StudentDatabase() {
         <Box>
           <Card>
             <TabStudBackgroundDashboard
-              user={user}
               students={studentDatabaseState.students}
               updateStudentArchivStatus={updateStudentArchivStatus}
               isArchivPage={studentDatabaseState.isArchivPage}

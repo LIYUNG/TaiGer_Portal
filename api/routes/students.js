@@ -148,7 +148,7 @@ router
     GeneralGETRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
     permission_canAccessStudentDatabase_filter,
-    multitenant_filter,
+    InnerTaigerMultitenantFilter,
     getArchivStudent,
     logAccess
   )
@@ -157,7 +157,6 @@ router
     GeneralPOSTRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
     permission_canAccessStudentDatabase_filter,
-    multitenant_filter,
     InnerTaigerMultitenantFilter,
     updateStudentsArchivStatus,
     logAccess
@@ -181,7 +180,7 @@ router
     filter_archiv_user,
     GeneralPOSTRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent),
-    multitenant_filter,
+    InnerTaigerMultitenantFilter,
     permission_canAssignAgent_filter,
     assignAgentToStudent,
     logAccess
@@ -193,7 +192,7 @@ router
     filter_archiv_user,
     GeneralPOSTRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Editor),
-    multitenant_filter,
+    InnerTaigerMultitenantFilter,
     permission_canAssignEditor_filter,
     assignEditorToStudent,
     logAccess

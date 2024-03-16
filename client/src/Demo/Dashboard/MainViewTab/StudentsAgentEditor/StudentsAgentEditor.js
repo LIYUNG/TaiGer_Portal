@@ -171,7 +171,12 @@ function StudentsAgentEditor(props) {
 
   return (
     <>
-      <TableRow>
+      <TableRow
+        style={{
+          backgroundColor: props.student.archiv === true ? '#1de9b6' : ''
+        }}
+        title={props.student.archiv === true ? 'Closed' : 'Open'}
+      >
         <TableCell>
           {is_TaiGer_role(user) && !props.isArchivPage && (
             <>

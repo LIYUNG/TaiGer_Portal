@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Breadcrumbs, Link, Typography, Box } from '@mui/material';
 import { Navigate, Link as LinkDom, useLoaderData } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -9,49 +9,24 @@ import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
 import { appConfig } from '../../config';
-import { updateArchivStudents } from '../../api';
+import useStudents from '../../hooks/useStudents';
 
 function ApplicantsOverview() {
   const { user } = useAuth();
   const {
-    data: { data: students }
+    data: { data: fetchedStudents }
   } = useLoaderData();
-  const [applicantsOverviewState, setApplicantsOverviewState] = useState({
-    students
+  const {
+    students,
+    submitUpdateAgentlist,
+    submitUpdateEditorlist,
+    submitUpdateAttributeslist,
+    updateStudentArchivStatus
+  } = useStudents({
+    students: fetchedStudents
   });
-  const { t } = useTranslation();
 
-  const updateStudentArchivStatus = (studentId, isArchived) => {
-    updateArchivStudents(studentId, isArchived).then(
-      (resp) => {
-        const { data, success } = resp.data;
-        const { status } = resp;
-        if (success) {
-          setApplicantsOverviewState((prevState) => ({
-            ...prevState,
-            students: data,
-            success: success,
-            res_modal_status: status
-          }));
-        } else {
-          const { message } = resp.data;
-          setApplicantsOverviewState((prevState) => ({
-            ...prevState,
-            res_modal_status: status,
-            res_modal_message: message
-          }));
-        }
-      },
-      (error) => {
-        setApplicantsOverviewState((prevState) => ({
-          ...prevState,
-          error,
-          res_modal_status: 500,
-          res_modal_message: ''
-        }));
-      }
-    );
-  };
+  const { t } = useTranslation();
 
   if (is_TaiGer_Student(user)) {
     return (
@@ -64,7 +39,7 @@ function ApplicantsOverview() {
     return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
   }
 
-  const myStudents = applicantsOverviewState.students.filter(
+  const myStudents = students.filter(
     (student) =>
       student.editors.some((editor) => editor._id === user._id.toString()) ||
       student.agents.some((agent) => agent._id === user._id.toString())
@@ -90,6 +65,9 @@ function ApplicantsOverview() {
       </Breadcrumbs>
       <ApplicationOverviewTabs
         updateStudentArchivStatus={updateStudentArchivStatus}
+        submitUpdateAgentlist={submitUpdateAgentlist}
+        submitUpdateEditorlist={submitUpdateEditorlist}
+        submitUpdateAttributeslist={submitUpdateAttributeslist}
         students={myStudents}
       />
     </Box>

@@ -41,7 +41,7 @@ function Dashboard() {
     onUpdateProfileFilefromstudent,
     ConfirmError
   } = useStudents({ students: fetchedStudents, isCoursesFilled, notification });
-  console.log(students);
+
   TabTitle('Home Page');
 
   return (

@@ -209,6 +209,9 @@ function ApplicationOverviewTabs(props) {
           {is_TaiGer_role(user) && (
             <TabStudBackgroundDashboard
               students={props.students}
+              submitUpdateAgentlist={props.submitUpdateAgentlist}
+              submitUpdateEditorlist={props.submitUpdateEditorlist}
+              submitUpdateAttributeslist={props.submitUpdateAttributeslist}
               updateStudentArchivStatus={props.updateStudentArchivStatus}
               isDashboard={true}
             />

@@ -157,7 +157,7 @@ const createProgram = asyncHandler(async (req, res) => {
   if (programs.length > 0) {
     logger.error('createProgram: same program existed!');
     throw new ErrorResponse(
-      429,
+      403,
       'This program is already existed! Considering update the existing one.'
     );
   }

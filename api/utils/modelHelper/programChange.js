@@ -29,15 +29,31 @@ const findAffectedStudents = async (programId) => {
   const studentsThreadMap = {};
   for (let student of students) {
     const application = student.applications.find(
-      (application) => application.programId === programId
+      (application) => application.programId.toString() === programId.toString()
     );
-    studentsThreadMap[student._id] = application?.doc_modification_thread || [];
+    const threadIds =
+      application?.doc_modification_thread.map((thread) => thread._id) || [];
+    studentsThreadMap[student._id] = threadIds;
   }
   return studentsThreadMap;
 };
 
+const getProgramReqiredDocs = (program) => {
+  const docRequired = {};
+  docRequired.ml = program.ml_required.toLowerCase() === 'yes' ? 1 : 0;
+  docRequired.rl = parseInt(program.rl_required);
+  docRequired.essay = program.essay_required.toLowerCase() === 'yes' ? 1 : 0;
+  docRequired.portfolio =
+    program.portfolio_required.toLowerCase() === 'yes' ? 1 : 0;
+  docRequired.supplementaryForm =
+    program.supplementary_form_required.toLowerCase() === 'yes' ? 1 : 0;
+  return docRequired;
+};
+
 const handleMissingThreads = async (program, studentsThreadMap) => {
   console.log('handleMissingThreads ->', program, studentsThreadMap);
+  const requirement = getProgramReqiredDocs(program);
+  console.log('requirement ->', requirement);
 };
 
 module.exports = {

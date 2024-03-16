@@ -2,7 +2,8 @@ const { model, Schema } = require('mongoose');
 const logger = require('../services/logger');
 const {
   findAffectedStudents,
-  isCrucialChanges
+  isCrucialChanges,
+  handleMissingThreads
 } = require('../utils/modelHelper/programChange');
 
 const Degree = {
@@ -185,28 +186,38 @@ const programModule = {
 
 const programSchema = new Schema(programModule, { timestamps: true });
 programSchema.pre(['updateOne', 'updateMany', 'update'], async function () {
-  const condition = this.getQuery();
-  this._originals = await this.model.find(condition).lean();
+  try {
+    const condition = this.getQuery();
+    this._originals = await this.model.find(condition).lean();
+  } catch (error) {
+    logger.error(`ProgramHook - Error on pre hook: ${error}`);
+  }
 });
 
 programSchema.post(['updateOne', 'updateMany', 'update'], async function () {
-  const docs = this._originals;
-  delete this._originals;
-  const changes = this.getUpdate().$set;
-  if (!isCrucialChanges(changes)) {
-    return;
-  }
+  try {
+    const docs = this._originals;
+    delete this._originals;
+    const changes = this.getUpdate().$set;
+    if (!isCrucialChanges(changes)) {
+      return;
+    }
 
-  for (let doc of docs) {
-    const programId = doc._id;
-    logger.info(
-      `ProgramHook - Crucial changes detected on Program (Id=${programId}): ${JSON.stringify(
-        changes
-      )}`
-    );
-    console.log(`programId: ${programId}`);
-    const studentThreadsMap = await findAffectedStudents(programId);
-    console.log(`affectedStudents: ${JSON.stringify(studentThreadsMap)}`);
+    for (let doc of docs) {
+      const programId = doc._id;
+      logger.info(
+        `ProgramHook - Crucial changes detected on Program (Id=${programId}): ${JSON.stringify(
+          changes
+        )}`
+      );
+      const studentThreadsMap = await findAffectedStudents(programId);
+      await handleMissingThreads(doc, studentThreadsMap);
+      logger.info(
+        `ProgramHook - Post hook executed successfully. (Id=${programId})`
+      );
+    }
+  } catch (error) {
+    logger.error(`ProgramHook - Error on post hook: ${error}`);
   }
 });
 

@@ -73,7 +73,9 @@ export const file_category_const = {
   ml_required: 'ML',
   essay_required: 'Essay',
   portfolio_required: 'Portfolio',
-  supplementary_form_required: 'Supplementary_Form'
+  supplementary_form_required: 'Supplementary_Form',
+  scholarship_form_required: 'Scholarship_Form',
+  curriculum_analysis_required: 'Curriculum_Analysis'
 };
 
 // TODO test

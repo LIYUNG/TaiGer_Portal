@@ -24,13 +24,13 @@ export const FetchStudentLayer = ({ studentId }) => {
   }, []);
   if (!isLoaded) {
     return (
-      <Box sx={{ width: window.innerWidth }}>
+      <Box sx={{ width: window.innerWidth - 60 }}>
         <CircularProgress />
       </Box>
     );
   }
   return (
-    <Box sx={{ width: window.innerWidth }}>
+    <Box sx={{ width: window.innerWidth - 60 }}>
       <SingleStudentPageMainContent
         survey_link={studentData.survey_link}
         base_docs_link={studentData.base_docs_link}

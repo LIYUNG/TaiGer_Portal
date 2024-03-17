@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useRef, useState } from 'react';
-import { Navigate, useParams } from 'react-router-dom';
+import { Link as LinkDom, Navigate, useParams } from 'react-router-dom';
 import {
   Avatar,
   Box,
@@ -13,7 +13,8 @@ import {
   Drawer,
   IconButton,
   CircularProgress,
-  Menu
+  Menu,
+  Link
   // MenuItem
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -343,12 +344,12 @@ function CommunicationExpandPage() {
   };
 
   const handleStudentDetailModalOpen = (event) => {
-    // e.stopPropagation();
+    event.stopPropagation();
     setAnchorStudentDetailEl(event.currentTarget);
   };
 
-  const handleStudentDetailModalClose = () => {
-    // e.stopPropagation();
+  const handleStudentDetailModalClose = (event) => {
+    event.stopPropagation();
     setAnchorStudentDetailEl(null);
   };
 
@@ -373,19 +374,7 @@ function CommunicationExpandPage() {
       sx={{
         overflowX: 'auto' /* Enable vertical scrolling */,
         filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-        height: window.innerHeight - 64,
-        '&::before': {
-          content: '""',
-          display: 'block',
-          position: 'absolute',
-          top: 0,
-          right: 14,
-          width: 10,
-          height: 10,
-          bgcolor: 'background.paper',
-          transform: 'translateY(-50%) rotate(45deg)',
-          zIndex: 0
-        }
+        height: window.innerHeight - 64
       }}
     >
       <ListItem sx={{ py: 1 }}>
@@ -497,13 +486,21 @@ function CommunicationExpandPage() {
                 </IconButton>
               )}
               <Avatar {...stringAvatar(student_name_english)}></Avatar>
-              <Typography
-                variant="body1"
-                fontWeight="bold"
-                sx={{ ml: 1, mt: 1 }}
+              <Link
+                to={DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                  student_id,
+                  DEMO.PROFILE_HASH
+                )}
+                component={LinkDom}
               >
-                {student_name_english}
-              </Typography>
+                <Typography
+                  variant="body1"
+                  fontWeight="bold"
+                  sx={{ ml: 1, mt: 1 }}
+                >
+                  {student_name_english}
+                </Typography>
+              </Link>
             </Box>
             <Box sx={{ flexGrow: 1 }} />
             <Box sx={{ mr: 1, md: 'flex' }}>

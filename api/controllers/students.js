@@ -58,7 +58,7 @@ const getStudentAndDocLinks = asyncHandler(async (req, res, next) => {
     .populate('agents editors', 'firstname lastname email')
     .populate(
       'applications.programId',
-      'school program_name toefl toefl_reading toefl_listening toefl_writing toefl_speaking ielts ielts_reading ielts_listening ielts_writing ielts_speaking testdaf gre gmat degree semester country application_deadline ml_required ml_requirements rl_required is_rl_specific uni_assist rl_requirements essay_required essay_requirements portfolio_required portfolio_requirements supplementary_form_required supplementary_form_requirements application_portal_a application_portal_b'
+      'school program_name toefl toefl_reading toefl_listening toefl_writing toefl_speaking ielts ielts_reading ielts_listening ielts_writing ielts_speaking testdaf gre gmat degree semester country application_deadline ml_required ml_requirements rl_required is_rl_specific uni_assist rl_requirements essay_required essay_requirements portfolio_required portfolio_requirements supplementary_form_required supplementary_form_requirements curriculum_analysis_required scholarship_form_required application_portal_a application_portal_b'
     )
     .populate({
       path: 'generaldocs_threads.doc_thread_id',

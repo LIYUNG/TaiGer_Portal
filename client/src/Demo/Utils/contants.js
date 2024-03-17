@@ -915,6 +915,21 @@ export const program_fields_special_documents = [
   }
 ];
 
+export const program_fields_special_notes = [
+  {
+    name: 'ECTS Requirements',
+    prop: 'ects_requirements'
+  },
+  { name: 'Need Uni-Assist?', prop: 'uni_assist' },
+  { name: 'Special Notes', prop: 'special_notes' },
+  { name: 'Comments', prop: 'comments' }
+];
+
+export const program_fields_others = [
+  { name: 'Tuition Fees', prop: 'tuition_fees' },
+  { name: 'FPSO', prop: 'fpso' }
+];
+
 export const ATTRIBUTES = [
   {
     value: 1,
@@ -947,21 +962,6 @@ export const COLORS = [
   'primary',
   'success',
   'primary'
-];
-
-export const program_fields_special_notes = [
-  {
-    name: 'ECTS Requirements',
-    prop: 'ects_requirements'
-  },
-  { name: 'Need Uni-Assist?', prop: 'uni_assist' },
-  { name: 'Special Notes', prop: 'special_notes' },
-  { name: 'Comments', prop: 'comments' }
-];
-
-export const program_fields_others = [
-  { name: 'Tuition Fees', prop: 'tuition_fees' },
-  { name: 'FPSO', prop: 'fpso' }
 ];
 
 export const program_fields = [

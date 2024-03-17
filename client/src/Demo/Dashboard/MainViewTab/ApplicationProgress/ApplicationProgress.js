@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link as LinkDom } from 'react-router-dom';
-import { AiFillEdit } from 'react-icons/ai';
+import { Link, TableCell, TableRow, Typography } from '@mui/material';
 
 import {
   ADMISSION_STATUS_E,
@@ -12,16 +12,11 @@ import {
   application_deadline_calculator,
   isProgramDecided,
   isProgramSubmitted,
-  isProgramWithdraw,
-  is_TaiGer_Editor,
-  is_TaiGer_Student
+  isProgramWithdraw
 } from '../../../Utils/checking-functions';
 import DEMO from '../../../../store/constant';
-import { useAuth } from '../../../../components/AuthProvider';
-import { Link, TableCell, TableRow, Typography } from '@mui/material';
 
 function ApplicationProgress(props) {
-  const { user } = useAuth();
   var applying_university;
 
   var today = new Date();
@@ -31,18 +26,6 @@ function ApplicationProgress(props) {
   ) {
     applying_university = (
       <>
-        <TableCell>
-          {!is_TaiGer_Editor(user) && !props.isArchivPage && (
-            <Link
-              to={`${DEMO.STUDENT_APPLICATIONS_ID_LINK(props.student._id)}`}
-              component={LinkDom}
-              underline='hover'
-            >
-              <AiFillEdit color="grey" size={16} />
-            </Link>
-          )}
-        </TableCell>
-        <TableCell></TableCell>
         <TableCell>No University</TableCell>
         <TableCell>No Program</TableCell>
         <TableCell>No Degree</TableCell>
@@ -59,40 +42,6 @@ function ApplicationProgress(props) {
   } else {
     applying_university = props.student.applications.map((application, i) => (
       <TableRow key={i}>
-        <TableCell>
-          {/* If my own student */}
-          {!is_TaiGer_Editor(user) && !props.isArchivPage && (
-            <Link
-              to={`${DEMO.STUDENT_APPLICATIONS_ID_LINK(props.student._id)}`}
-              component={LinkDom}
-              underline="hover"
-            >
-              <AiFillEdit color="grey" size={16} />
-            </Link>
-          )}
-        </TableCell>
-        {!is_TaiGer_Student(user) ? (
-          <TableCell>
-            {props.student.applying_program_count ? (
-              props.student.applications.length <
-              props.student.applying_program_count ? (
-                <Typography className="text-danger">
-                  <b>{props.student.applications.length}</b> /{' '}
-                  {props.student.applying_program_count}
-                </Typography>
-              ) : (
-                <Typography className="text-info">
-                  {props.student.applications.length} /{' '}
-                  {props.student.applying_program_count}
-                </Typography>
-              )
-            ) : (
-              <b className="text-danger">0</b>
-            )}
-          </TableCell>
-        ) : (
-          <></>
-        )}
         <TableCell>
           <Link
             to={DEMO.SINGLE_PROGRAM_LINK(application.programId._id.toString())}

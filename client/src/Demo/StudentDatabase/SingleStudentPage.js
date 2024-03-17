@@ -5,6 +5,7 @@ import {
   useLoaderData,
   useLocation
 } from 'react-router-dom';
+import EditIcon from '@mui/icons-material/Edit';
 import {
   Tabs,
   Tab,
@@ -22,7 +23,6 @@ import {
   Alert,
   TableContainer
 } from '@mui/material';
-// import AddIcon from '@mui/icons-material/Add';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { AiFillEdit } from 'react-icons/ai';
@@ -44,11 +44,7 @@ import {
   SINGLE_STUDENT_TABS,
   SINGLE_STUDENT_REVERSED_TABS
 } from '../Utils/contants';
-import {
-  is_TaiGer_Guest,
-  is_TaiGer_Student,
-  is_TaiGer_role
-} from '../Utils/checking-functions';
+import { is_TaiGer_Editor, is_TaiGer_role } from '../Utils/checking-functions';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import {
   updateAgents,
@@ -64,6 +60,7 @@ import { TopBar } from '../../components/TopBar/TopBar';
 import { useAuth } from '../../components/AuthProvider';
 import { CustomTabPanel, a11yProps } from '../../components/Tabs';
 import { SurveyProvider } from '../../components/SurveyProvider';
+import ProgramDetailsComparisonTable from '../Program/ProgramDetailsComparisonTable';
 
 CustomTabPanel.propTypes = {
   children: PropTypes.node,
@@ -82,6 +79,7 @@ function SingleStudentPage() {
     isLoaded: {},
     isLoaded2: false,
     taiger_view: true,
+    detailedView: false,
     student: data,
     base_docs_link: base_docs_link,
     survey_link: survey_link.find(
@@ -276,6 +274,13 @@ function SingleStudentPage() {
       taiger_view: !singleStudentPage.taiger_view
     }));
   };
+
+  const onChangeProgramsDetailView = () => {
+    setSingleStudentPage((prevState) => ({
+      ...prevState,
+      detailedView: !prevState.detailedView
+    }));
+  };
   const ConfirmError = () => {
     setSingleStudentPage((prevState) => ({
       ...prevState,
@@ -380,7 +385,6 @@ function SingleStudentPage() {
       {singleStudentPage.taiger_view ? (
         <>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-            {/* TODO: subpath tab for URL */}
             <Tabs
               value={value}
               onChange={handleChange}
@@ -409,30 +413,74 @@ function SingleStudentPage() {
             </Tabs>
           </Box>
           <CustomTabPanel value={value} index={0}>
-            <TableContainer style={{ overflowX: 'auto' }}>
-              <Table size="small">
-                <TableHead>
-                  <TableRow>
-                    <TableCell></TableCell>
-                    {is_TaiGer_Student(user) || is_TaiGer_Guest(user) ? (
-                      <></>
-                    ) : (
-                      <>
-                        <TableCell title={`Selected So far / Promised`}>
-                          #
-                        </TableCell>
-                      </>
-                    )}
-                    {programstatuslist.map((doc, index) => (
-                      <TableCell key={index}>{doc.name}</TableCell>
-                    ))}
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  <ApplicationProgress student={singleStudentPage.student} />
-                </TableBody>
-              </Table>
-            </TableContainer>
+            <Box sx={{ display: 'flex', mx: 2 }}>
+              <Button
+                color="secondary"
+                variant="contained"
+                onClick={onChangeProgramsDetailView}
+              >
+                {singleStudentPage.detailedView
+                  ? t('Simple View')
+                  : t('Details View')}
+              </Button>
+              {!is_TaiGer_Editor(user) && (
+                <Link
+                  to={`${DEMO.STUDENT_APPLICATIONS_ID_LINK(
+                    singleStudentPage.student._id
+                  )}`}
+                  component={LinkDom}
+                  underline="hover"
+                  sx={{ mx: 2 }}
+                >
+                  <Button
+                    color="secondary"
+                    variant="contained"
+                    startIcon={<EditIcon />}
+                  >
+                    {t('Edit')}
+                  </Button>
+                </Link>
+              )}
+              <Typography variant="body1">
+                Applications (Selected / Contract):
+              </Typography>
+              {singleStudentPage.student.applying_program_count ? (
+                singleStudentPage.student.applications.length <
+                singleStudentPage.student.applying_program_count ? (
+                  <Typography className="text-danger">
+                    <b>{singleStudentPage.student.applications.length}</b> /{' '}
+                    {singleStudentPage.student.applying_program_count}
+                  </Typography>
+                ) : (
+                  <Typography className="text-info">
+                    {singleStudentPage.student.applications.length} /{' '}
+                    {singleStudentPage.student.applying_program_count}
+                  </Typography>
+                )
+              ) : (
+                <b className="text-danger">0</b>
+              )}
+            </Box>
+            {singleStudentPage.detailedView ? (
+              <ProgramDetailsComparisonTable
+                applications={singleStudentPage.student?.applications}
+              />
+            ) : (
+              <TableContainer style={{ overflowX: 'auto' }}>
+                <Table size="small">
+                  <TableHead>
+                    <TableRow>
+                      {programstatuslist.map((doc, index) => (
+                        <TableCell key={index}>{doc.name}</TableCell>
+                      ))}
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    <ApplicationProgress student={singleStudentPage.student} />
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            )}
           </CustomTabPanel>
           <CustomTabPanel value={value} index={1}>
             <TableContainer style={{ overflowX: 'auto' }}>

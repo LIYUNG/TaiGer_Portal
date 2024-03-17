@@ -1,25 +1,24 @@
 import React, { Fragment, useEffect, useRef, useState } from 'react';
-import { Link as LinkDom, Navigate, useParams } from 'react-router-dom';
-import { FiExternalLink } from 'react-icons/fi';
+import { Navigate, useParams } from 'react-router-dom';
 import {
   Avatar,
   Box,
   Card,
   Button,
-  Link,
   Grid,
   Typography,
-  List,
   ListItem,
   useMediaQuery,
   useTheme,
   Drawer,
   IconButton,
-  CircularProgress
+  CircularProgress,
+  Menu
+  // MenuItem
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import MessageList from './MessageList';
 import CommunicationThreadEditor from './CommunicationThreadEditor';
 import ErrorPage from '../Utils/ErrorPage';
@@ -32,11 +31,12 @@ import {
 } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
-import { is_TaiGer_Student, is_TaiGer_role } from '../Utils/checking-functions';
+import { is_TaiGer_role } from '../Utils/checking-functions';
 import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
 import { stringAvatar } from '../Utils/contants';
 import MemoizedEmbeddedChatList from '../../components/EmbeddedChatList';
+import { FetchStudentLayer } from '../StudentDatabase/FetchStudentLayer';
 
 function CommunicationExpandPage() {
   const { student_id } = useParams();
@@ -66,6 +66,9 @@ function CommunicationExpandPage() {
     });
 
   const [open, setOpen] = useState(false);
+  const [anchorStudentDetailEl, setAnchorStudentDetailEl] = useState(null);
+  const isStudentDetailModalOpen = Boolean(anchorStudentDetailEl);
+
   const scrollableRef = useRef(null);
   const scrollToBottom = () => {
     if (scrollableRef.current) {
@@ -339,6 +342,16 @@ function CommunicationExpandPage() {
     setOpen(true);
   };
 
+  const handleStudentDetailModalOpen = (event) => {
+    // e.stopPropagation();
+    setAnchorStudentDetailEl(event.currentTarget);
+  };
+
+  const handleStudentDetailModalClose = () => {
+    // e.stopPropagation();
+    setAnchorStudentDetailEl(null);
+  };
+
   const handleDrawerClose = () => {
     setOpen(false);
   };
@@ -347,6 +360,45 @@ function CommunicationExpandPage() {
       <MemoizedEmbeddedChatList count={communicationExpandPageState.count} />
     );
   };
+
+  const dropdownId = 'primary-student-modal';
+  const StudentDetailModal = () => (
+    <Menu
+      anchorEl={anchorStudentDetailEl}
+      id={dropdownId}
+      open={isStudentDetailModalOpen}
+      onClose={handleStudentDetailModalClose}
+      transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+      anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
+      sx={{
+        overflowX: 'auto' /* Enable vertical scrolling */,
+        filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+        mt: 1.5,
+        height: window.innerHeight - 64,
+        '&::before': {
+          content: '""',
+          display: 'block',
+          position: 'absolute',
+          top: 0,
+          right: 14,
+          width: 10,
+          height: 10,
+          bgcolor: 'background.paper',
+          transform: 'translateY(-50%) rotate(45deg)',
+          zIndex: 0
+        }
+      }}
+    >
+      <ListItem sx={{ p: 1 }}>
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Box>
+            <FetchStudentLayer studentId={student_id} />
+          </Box>
+        </Box>
+      </ListItem>
+    </Menu>
+  );
+
   const {
     messagesLoaded,
     isLoaded,
@@ -378,6 +430,7 @@ function CommunicationExpandPage() {
   // const template_input = JSON.parse(
   //   `{"time":1689452160435,"blocks":[{"id":"WHsFbpmWmH","type":"paragraph","data":{"text":"<b>我的問題：</b>"}},{"id":"F8K_f07R8l","type":"paragraph","data":{"text":"&lt;Example&gt; 我想選課，不知道下學期要選什麼"}},{"id":"yYUL0bYWSB","type":"paragraph","data":{"text":"<b>我想和顧問討論</b>："}},{"id":"wJu56jmAKC","type":"paragraph","data":{"text":"&lt;Example&gt; 課程符合度最佳化"}}],"version":"2.27.2"}`
   // );
+
   TabTitle(`${student_name}`);
   if (!is_TaiGer_role(user)) {
     return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
@@ -385,16 +438,18 @@ function CommunicationExpandPage() {
   if (!isLoaded) {
     return <Loading />;
   }
+
   return (
     <Box
       onClick={() => {
         handleDrawerClose();
       }}
+      style={{ marginLeft: '-24px', marginRight: '-18px' }}
     >
       <Grid container>
         <Grid
           item
-          style={{ width: '300px', marginLeft: '-24px' }}
+          style={{ width: '300px' }}
           sx={{ display: { xs: 'none', md: 'flex' } }}
         >
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
@@ -419,26 +474,30 @@ function CommunicationExpandPage() {
             </div>
           </Box>
         </Grid>
-        <Grid item xs md style={{ marginLeft: '8px' }}>
+        <Grid item xs md>
           <Box
             className="sticky-top"
             sx={{
               display: 'flex'
             }}
           >
-            {ismobile && (
-              <IconButton
-                color="inherit"
-                aria-label="open drawer"
-                onClick={(e) => handleDrawerOpen(e)}
-                edge="start"
-              >
-                <ArrowBackIcon />
-              </IconButton>
-            )}
-
-            <Avatar {...stringAvatar(student_name_english)}></Avatar>
-            <Box>
+            <Box
+              sx={{
+                display: 'flex'
+              }}
+            >
+              {ismobile && (
+                <IconButton
+                  color="inherit"
+                  aria-label="open drawer"
+                  style={{ marginLeft: '4px' }}
+                  onClick={(e) => handleDrawerOpen(e)}
+                  edge="start"
+                >
+                  <ArrowBackIcon />
+                </IconButton>
+              )}
+              <Avatar {...stringAvatar(student_name_english)}></Avatar>
               <Typography
                 variant="body1"
                 fontWeight="bold"
@@ -446,6 +505,20 @@ function CommunicationExpandPage() {
               >
                 {student_name_english}
               </Typography>
+            </Box>
+            <Box sx={{ flexGrow: 1 }} />
+            <Box sx={{ mr: 1, md: 'flex' }}>
+              <IconButton
+                color="inherit"
+                aria-label="open-more"
+                aria-id={dropdownId}
+                aria-controls={dropdownId}
+                aria-haspopup="true"
+                onClick={handleStudentDetailModalOpen}
+                edge="end"
+              >
+                <MoreVertIcon />
+              </IconButton>
             </Box>
           </Box>
           <Drawer
@@ -483,80 +556,7 @@ function CommunicationExpandPage() {
                   ref={scrollableRef}
                 >
                   <Fragment>
-                    <Grid container spacing={2}>
-                      <Grid item xs={12} sm={9}>
-                        <Box variant="body1">
-                          <List>
-                            <ListItem>
-                              <Typography fontWeight="bold">
-                                <Link
-                                  to={
-                                    is_TaiGer_Student(user)
-                                      ? `${DEMO.SURVEY_LINK}`
-                                      : `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-                                          communicationExpandPageState.student_id,
-                                          DEMO.SURVEY_HASH
-                                        )}`
-                                  }
-                                  component={LinkDom}
-                                  target="_blank"
-                                >
-                                  {t('Profile', { ns: 'common' })}{' '}
-                                  <FiExternalLink
-                                    className="mx-0 mb-1"
-                                    style={{ cursor: 'pointer' }}
-                                  />
-                                </Link>
-                                <Link
-                                  to={
-                                    is_TaiGer_Student(user)
-                                      ? `${DEMO.BASE_DOCUMENTS_LINK}`
-                                      : `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-                                          communicationExpandPageState.student_id,
-                                          DEMO.PROFILE_HASH
-                                        )}`
-                                  }
-                                  component={LinkDom}
-                                  target="_blank"
-                                >
-                                  Base Document{' '}
-                                  <FiExternalLink
-                                    style={{ cursor: 'pointer' }}
-                                  />
-                                </Link>
-                                <Link
-                                  to={`${DEMO.COURSES_LINK}/${communicationExpandPageState.student_id}`}
-                                  component={LinkDom}
-                                  target="_blank"
-                                >
-                                  {t('My Courses')}{' '}
-                                  <FiExternalLink
-                                    className="mx-0 mb-1"
-                                    style={{ cursor: 'pointer' }}
-                                  />
-                                </Link>
-                              </Typography>
-                            </ListItem>
-                          </List>
-                        </Box>
-                      </Grid>
-                      <Grid item xs={12} sm={3}>
-                        <Typography fontWeight="bold">
-                          {t('Agents')}:
-                        </Typography>
-                        {communicationExpandPageState.student?.agents?.map(
-                          (agent, i) => (
-                            <Typography key={i}>
-                              <Link
-                                to={`${DEMO.TEAM_AGENT_PROFILE_LINK(
-                                  agent._id.toString()
-                                )}`}
-                                component={LinkDom}
-                              >{`${agent.firstname} ${agent.lastname}`}</Link>
-                            </Typography>
-                          )
-                        )}
-                      </Grid>
+                    <Grid container>
                       <Grid item xs={12}>
                         <Button
                           fullWidth
@@ -619,17 +619,6 @@ function CommunicationExpandPage() {
                                     }
                                   }}
                                 >
-                                  <Avatar
-                                    {...stringAvatar(
-                                      `${user.firstname} ${user.lastname}`
-                                    )}
-                                  />
-                                  <Box style={{ marginLeft: '10px', flex: 1 }}>
-                                    <Typography>
-                                      {user.firstname} {user.lastname}
-                                    </Typography>
-                                  </Box>
-
                                   <CommunicationThreadEditor
                                     thread={communicationExpandPageState.thread}
                                     buttonDisabled={
@@ -667,6 +656,9 @@ function CommunicationExpandPage() {
               <CircularProgress />
             ))}
         </Grid>
+        <Box sx={{ marginLeft: 0 }}>
+          <StudentDetailModal />
+        </Box>
       </Grid>
     </Box>
   );

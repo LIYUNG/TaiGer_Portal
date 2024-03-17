@@ -68,10 +68,11 @@ CustomTabPanel.propTypes = {
   value: PropTypes.number.isRequired
 };
 
-function SingleStudentPage() {
-  const {
-    data: { survey_link, base_docs_link, data }
-  } = useLoaderData();
+export const SingleStudentPageMainContent = ({
+  survey_link,
+  base_docs_link,
+  data
+}) => {
   const { user } = useAuth();
   const { t } = useTranslation();
   const [singleStudentPage, setSingleStudentPage] = useState({
@@ -90,6 +91,7 @@ function SingleStudentPage() {
     res_modal_message: '',
     res_modal_status: 0
   });
+
   const { hash } = useLocation();
   const [value, setValue] = useState(
     SINGLE_STUDENT_TABS[hash.replace('#', '')] || 0
@@ -582,6 +584,19 @@ function SingleStudentPage() {
         </>
       )}
     </>
+  );
+};
+
+function SingleStudentPage() {
+  const {
+    data: { survey_link, base_docs_link, data }
+  } = useLoaderData();
+  return (
+    <SingleStudentPageMainContent
+      survey_link={survey_link}
+      base_docs_link={base_docs_link}
+      data={data}
+    />
   );
 }
 export default SingleStudentPage;

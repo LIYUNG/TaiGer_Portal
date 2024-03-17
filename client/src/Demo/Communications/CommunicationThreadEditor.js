@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, Tooltip } from '@mui/material';
+import { Avatar, Box, Button, Tooltip, Typography } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import { useTranslation } from 'react-i18next';
 
 import EditorSimple from '../../components/EditorJs/EditorSimple';
+import { useAuth } from '../../components/AuthProvider';
+import { stringAvatar } from '../Utils/contants';
 
 function CommunicationThreadEditor(props) {
   const { t } = useTranslation();
+  const { user } = useAuth();
   let [statedata, setStatedata] = useState({
     editorState: props.editorState
   });
@@ -26,10 +29,21 @@ function CommunicationThreadEditor(props) {
   return (
     <>
       <Box
+        style={{
+          my: 1,
+          display: 'flex'
+        }}
+      >
+        <Avatar {...stringAvatar(`${user.firstname} ${user.lastname}`)} />
+        <Typography>
+          {user.firstname} {user.lastname}
+        </Typography>
+      </Box>
+      <Box
         sx={{
           py: 4,
           px: 4,
-          mb: 1,
+          my: 1,
           borderRadius: '5px',
           border: '1px solid #ccc'
         }}
@@ -58,7 +72,7 @@ function CommunicationThreadEditor(props) {
           >
             <Button
               variant="outlined"
-              color='secondary'
+              color="secondary"
               // disabled={true}
               // style={{ pointerEvents: 'none' }}
               startIcon={<SendIcon />}

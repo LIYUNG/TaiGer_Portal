@@ -104,7 +104,7 @@ function Message(props) {
         sx={{
           overflowWrap: 'break-word', // Add this line
           ...(props.isTaiGerView &&
-            !ismobile && { maxWidth: window.innerWidth - 664 }),
+            !ismobile && { maxWidth: window.innerWidth - 664 +32 }),
           marginTop: '1px',
           '& .MuiAvatar-root': {
             width: 32,

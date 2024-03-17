@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Link as LinkDom, useParams } from 'react-router-dom';
 import { FiExternalLink } from 'react-icons/fi';
 import {
-  Avatar,
   Box,
   Card,
   Button,
@@ -31,7 +30,6 @@ import { is_TaiGer_Student, is_TaiGer_role } from '../Utils/checking-functions';
 import { appConfig } from '../../config';
 import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
-import { stringAvatar } from '../Utils/contants';
 import { TopBar } from '../../components/TopBar/TopBar';
 
 function CommunicationSinglePage() {
@@ -384,7 +382,6 @@ function CommunicationSinglePage() {
                     >
                       {t('Profile', { ns: 'common' })}{' '}
                       <FiExternalLink
-                        className="mx-0 mb-1"
                         style={{ cursor: 'pointer' }}
                       />
                     </Link>
@@ -412,7 +409,6 @@ function CommunicationSinglePage() {
                     >
                       {t('My Courses', { ns: 'common' })}{' '}
                       <FiExternalLink
-                        className="mx-0 mb-1"
                         style={{ cursor: 'pointer' }}
                       />
                     </Link>
@@ -497,13 +493,6 @@ function CommunicationSinglePage() {
                   }
                 }}
               >
-                <Avatar
-                  {...stringAvatar(`${user.firstname} ${user.lastname}`)}
-                />
-                <Typography style={{ marginLeft: '10px', flex: 1 }}>
-                  {user.firstname} {user.lastname}
-                </Typography>
-
                 <CommunicationThreadEditor
                   thread={communicationSinglePageState.thread}
                   buttonDisabled={communicationSinglePageState.buttonDisabled}

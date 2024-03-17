@@ -373,7 +373,6 @@ function CommunicationExpandPage() {
       sx={{
         overflowX: 'auto' /* Enable vertical scrolling */,
         filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-        mt: 1.5,
         height: window.innerHeight - 64,
         '&::before': {
           content: '""',
@@ -389,7 +388,7 @@ function CommunicationExpandPage() {
         }
       }}
     >
-      <ListItem sx={{ p: 1 }}>
+      <ListItem sx={{ py: 1 }}>
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Box>
             <FetchStudentLayer studentId={student_id} />

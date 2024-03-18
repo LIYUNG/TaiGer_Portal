@@ -289,7 +289,7 @@ const SurveyEditableComponent = (props) => {
               >
                 {HIG_SCHOOL_TRI_STATE_OPTIONS.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
-                    {t(option.label)}
+                    {t(option.label, { ns: 'common' })}
                   </MenuItem>
                 ))}
               </TextField>
@@ -333,7 +333,7 @@ const SurveyEditableComponent = (props) => {
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <Typography variant="body1" sx={{ mt: 2 }}>
-                {t('University (Bachelor degree)')}
+                {t('University (Bachelor degree)', { ns: 'survey' })}
               </Typography>
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -880,7 +880,7 @@ const SurveyEditableComponent = (props) => {
                 fullWidth
                 id="special_wished"
                 name="special_wished"
-                label={t('Other wish')}
+                label={t('Other wish', { ns: 'survey' })}
                 variant="outlined"
                 multiline
                 inputProps={{ maxLength: 600 }}

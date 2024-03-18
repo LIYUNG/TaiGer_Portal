@@ -186,14 +186,16 @@ function EditorMainView(props) {
         <Grid item xs={12} md={3}>
           <Card sx={{ p: 2 }}>
             <Typography>XXXXXX</Typography>
-            <Typography variant="h6">Coming soon</Typography>
+            <Typography variant="h6">
+              {t('Coming soon', { ns: 'common' })}
+            </Typography>
           </Card>
         </Grid>
         {!does_student_have_editors(props.students) && (
           <Grid item xs={12} md={12}>
             <Card sx={{ p: 2 }}>
-              <Typography>
-                <b>To Do Task</b>{' '}
+              <Typography fontWeight="bold">
+                {t('To Do Tasks', { ns: 'common' })}{' '}
               </Typography>
               <Table size="small">
                 <TableHead>

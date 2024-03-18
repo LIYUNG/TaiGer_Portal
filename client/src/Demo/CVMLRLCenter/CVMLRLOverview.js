@@ -370,7 +370,7 @@ function CVMLRLOverview(props) {
             variant="outlined"
             onClick={closeSetAsFinalFileModelWindow}
           >
-            {t('No')}
+            {t('No', { ns: 'common' })}
           </Button>
         </Typography>
       </ModalNew>

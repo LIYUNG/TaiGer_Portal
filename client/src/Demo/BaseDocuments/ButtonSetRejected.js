@@ -389,7 +389,7 @@ function ButtonSetRejected(props) {
           {!buttonSetRejectedState.isLoaded ? <CircularProgress /> : t('Yes')}
         </Button>
         <Button onClick={closeWarningWindow} variant="outlined">
-          {t('No')}
+          {t('No', { ns: 'common' })}
         </Button>
       </ModalNew>
       <ModalNew
@@ -534,7 +534,7 @@ function ButtonSetRejected(props) {
           variant="outlined"
           onClick={closeAcceptWarningWindow}
         >
-          {t('No')}
+          {t('No', { ns: 'common' })}
         </Button>
       </ModalNew>
       <OffcanvasBaseDocument

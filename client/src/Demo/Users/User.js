@@ -97,9 +97,9 @@ function User(props) {
           <TableCell key={k}>
             {typeof props.user[y.prop] == 'boolean' ? (
               props.user[y.prop] ? (
-                t('Yes')
+                t('Yes', { ns: 'common' })
               ) : (
-                t('No')
+                t('No', { ns: 'common' })
               )
             ) : is_TaiGer_Student(props.user) ? (
               <Link

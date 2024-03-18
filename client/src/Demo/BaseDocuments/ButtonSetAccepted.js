@@ -342,7 +342,7 @@ function ButtonSetAccepted(props) {
               t('Yes')
             )}
           </Button>
-          <Button onClick={closeRejectWarningWindow}>{t('No')}</Button>
+          <Button onClick={closeRejectWarningWindow}>{t('No', { ns: 'common' })}</Button>
         </Box>
       </ModalNew>
       <AcceptProfileFileModel

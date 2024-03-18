@@ -675,7 +675,7 @@ function DocModificationThreadPage() {
                 />
               </>
             ) : (
-              <Typography>{t('No')}</Typography>
+              <Typography>{t('No', { ns: 'common' })}</Typography>
             )}
           </Grid>
           <Grid item md={widths[1]}>
@@ -906,14 +906,18 @@ function DocModificationThreadPage() {
             onClick={(e) => ConfirmSetAsFinalFileHandler(e)}
             sx={{ mr: 2 }}
           >
-            {isSubmissionLoaded ? t('Yes') : <CircularProgress />}
+            {isSubmissionLoaded ? (
+              t('Yes', { ns: 'common' })
+            ) : (
+              <CircularProgress />
+            )}
           </Button>
           <Button
             color="secondary"
             variant="outlined"
             onClick={closeSetAsFinalFileModelWindow}
           >
-            {t('No')}
+            {t('No', { ns: 'common' })}
           </Button>
         </Box>
       </ModalNew>

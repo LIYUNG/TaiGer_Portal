@@ -717,7 +717,8 @@ function OfficeHours() {
                 <CircularProgress size={16} />
               ) : (
                 <>
-                  <AiFillCheckCircle color="limegreen" size={16} /> {t('Yes')}
+                  <AiFillCheckCircle color="limegreen" size={16} />{' '}
+                  {t('Yes', { ns: 'common' })}
                 </>
               )}
             </Button>

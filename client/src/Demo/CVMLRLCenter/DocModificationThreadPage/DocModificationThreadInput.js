@@ -681,7 +681,7 @@ function DocModificationThreadInput() {
             <LinkableNewlineText text={getRequirement(thread)} />
           </>
         ) : (
-          <Typography>{t('No')}</Typography>
+          <Typography>{t('No', { ns: 'common' })}</Typography>
         )}
       </Card>
 

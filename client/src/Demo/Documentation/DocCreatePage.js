@@ -380,9 +380,9 @@ function DocCreatePage(props) {
         </Typography>
         <Typography>
           <Button disabled={!isLoaded} onClick={handleDeleteDoc}>
-            {t('Yes')}
+            {t('Yes', { ns: 'common' })}
           </Button>
-          <Button onClick={closeDeleteDocModalWindow}>{t('No')}</Button>
+          <Button onClick={closeDeleteDocModalWindow}>{t('No', { ns: 'common' })}</Button>
         </Typography>
       </ModalNew>
     </Box>

@@ -629,8 +629,8 @@ function StudentApplicationsTableTemplate(props) {
                   value={application.decided}
                 >
                   <MenuItem value={'-'}>-</MenuItem>
-                  <MenuItem value={'X'}>No</MenuItem>
-                  <MenuItem value={'O'}>Yes</MenuItem>
+                  <MenuItem value={'X'}>{t('No', { ns: 'common' })}</MenuItem>
+                  <MenuItem value={'O'}>{t('Yes', { ns: 'common' })}</MenuItem>
                 </Select>
               </FormControl>
             </TableCell>
@@ -704,22 +704,6 @@ function StudentApplicationsTableTemplate(props) {
                     ))}
                   </Select>
                 </FormControl>
-                {/* <Form.Group controlId="admission">
-                  <Form.Control
-                    as="select"
-                    onChange={(e) => handleChange(e, application_idx)}
-                    disabled={
-                      !(
-                        application.closed !== '-' && application.closed !== 'X'
-                      )
-                    }
-                    value={application.admission}
-                  >
-                    <option value={'-'}>-</option>
-                    <option value={'X'}>No</option>
-                    <option value={'O'}>Yes</option>
-                  </Form.Control>
-                </Form.Group> */}
               </TableCell>
             ) : (
               <TableCell></TableCell>
@@ -847,7 +831,7 @@ function StudentApplicationsTableTemplate(props) {
               </b>
             </ListItem>
             <ListItem>
-              {t('Other wish')}:
+              {t('Other wish', { ns: 'survey' })}:
               <TextField
                 id="special_wished"
                 multiline
@@ -1142,7 +1126,7 @@ function StudentApplicationsTableTemplate(props) {
                   {studentApplicationsTableTemplateState.isButtonDisable ? (
                     <CircularProgress size={16} />
                   ) : (
-                    t('Yes')
+                    t('Yes', { ns: 'common' })
                   )}
                 </Button>
                 <Button
@@ -1151,7 +1135,7 @@ function StudentApplicationsTableTemplate(props) {
                   size="small"
                   onClick={onHideimportedStudentModalOpen}
                 >
-                  {t('No')}
+                  {t('No', { ns: 'common' })}
                 </Button>
               </Typography>
             </ModalNew>
@@ -1196,7 +1180,7 @@ function StudentApplicationsTableTemplate(props) {
                   onClick={handleDeleteConfirm}
                   sx={{ mr: 2 }}
                 >
-                  {t('Yes')}
+                  {t('Yes', { ns: 'common' })}
                 </Button>
                 <Button
                   onClick={onHideModalDeleteApplication}

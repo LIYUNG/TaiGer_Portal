@@ -205,7 +205,7 @@ function UploadedFilePreviewModal(props) {
           variant="outlined"
           onClick={closeAcceptWarningWindow}
         >
-          {t('No')}
+          {t('No', { ns: 'common' })}
         </Button>
       </ModalNew>
       <ModalNew
@@ -240,7 +240,7 @@ function UploadedFilePreviewModal(props) {
                       onChange={(e) => onChecked(e)}
                     />
                   ))
-                : t('No')}
+                : t('No', { ns: 'common' })}
             </Typography>
           </>
         )}

@@ -8,8 +8,10 @@ export const translation_en = {
     'Last Login': 'Last Login'
   },
   common: {
+    'Coming soon': 'Coming soon',
     Dashboard: 'Dashboard',
     Option: 'Option',
+    'In progress': 'In progress',
     'Not paid': 'Not paid',
     Paid: 'Paid',
     'Waiting VPD result': 'Waiting VPD result',
@@ -86,7 +88,13 @@ export const translation_en = {
     Save: 'Save',
     Success: 'Success',
     Message: 'Message',
-    Messages: 'Messages'
+    Messages: 'Messages',
+    WITHDRAW: 'WITHDRAW',
+    Yes: 'Yes',
+    No: 'No',
+    Ok: 'Ok',
+    Submitted: 'Submitted',
+    Download: 'Download'
   },
   dashboard: {
     Dashboard: 'Dashboard',
@@ -94,7 +102,9 @@ export const translation_en = {
     'Ready To Submit Tasks': 'Ready To Submit Tasks',
     'Edit Agent': 'Edit Agent',
     'Edit Editor': 'Edit Editor',
-    'Configure Attribute': 'Configure Attribute'
+    'Configure Attribute': 'Configure Attribute',
+    'Please complete Profile so that your agent can understand your situation':
+      'Please complete Profile so that your agent can understand your situation'
   },
   programList: {},
   backgroundProfile: {},
@@ -103,13 +113,37 @@ export const translation_en = {
       'Note: if the documents are not closed but locate here, it is becaue the applications are already submitted. The documents can safely closed eventually.'
   },
   courses: {
+    'Please complete My Courses table. The agent will provide you with course analysis and courses suggestion.':
+      'Please complete My Courses table. The agent will provide you with course analysis and courses suggestion.',
+    'Course Analysis banner':
+      'The course analysis provided is for reference purposes only. Please carefully review the courses missing in each category and cross-reference whether your university offers those courses in the upcoming semesters. Once you have identified them, discuss with your Agent.',
+    'Course Analysis description':
+      'On the General page, courses are roughly categorized according to your major category, while the remaining tabs provide an analysis of the curriculum match for benchmark programs. You will notice that each school has different requirements for the major course category, and each category corresponds to a Required_ECTS, which represents the credits you need to complete for the courses (ECTS轉換, 1.5 times the credits in Taiwan). You must exceed the Required_ECTS for a specific category to meet the degree requirements. If there are any deficiencies of credits in any categories, please refer to the rightmost column of each Program Tab table for the 建議修課 for each category.',
+    'After you updated the course table, please contact your agent for your course analysis.':
+      'After you updated the course table, please contact your agent for your course analysis.',
+    'Courses analysed successfully!': 'Courses analysed successfully!',
+    'The student will receive an email notification and the analysed course URL link.':
+      'The student will receive an email notification and the analysed course URL link.',
+    'Courses Analysis': 'Courses Analysis',
+    'Student should access the analysed page in their course page.':
+      'Student should access the analysed page in their course page.',
+    'Last analysis at': 'Last analysis at',
     'Update transcript successfully! Your agent will be notified and will analyse your courses as soon as possible.':
-      'Update transcript successfully! Your agent will be notified and will analyse your courses as soon as possible.'
+      'Update transcript successfully! Your agent will be notified and will analyse your courses as soon as possible.',
+    'View Online': 'View Online',
+    'No analysis yet': 'No analysis yet'
   },
   interviews: {},
   portalManagement: {
     'Update portal credentials successfully':
       'Update portal credentials successfully'
+  },
+  survey: {
+    'Please complete My Survey so that your agent can understand your situation':
+      'Please complete My Survey so that your agent can understand your situation',
+    'Expected English Test Date': 'Expected English Test Date',
+    'University (Bachelor degree)': 'University (Bachelor degree)',
+    'Other wish': 'Other wish'
   },
   translation: {
     'Interview Training Time': 'Interview Training Time',
@@ -129,19 +163,6 @@ export const translation_en = {
       'Have you received the interview invitation from this program? Request an interview training with TaiGer trainer!',
     'Change your result': 'Change your result',
     'New agent is assigned to you': 'New agent is assigned to you.',
-    'Course Analysis banner':
-      'The course analysis provided is for reference purposes only. Please carefully review the courses missing in each category and cross-reference whether your university offers those courses in the upcoming semesters. Once you have identified them, discuss with your Agent.',
-    'Course Analysis description':
-      'On the General page, courses are roughly categorized according to your major category, while the remaining tabs provide an analysis of the curriculum match for benchmark programs. You will notice that each school has different requirements for the major course category, and each category corresponds to a Required_ECTS, which represents the credits you need to complete for the courses (ECTS轉換, 1.5 times the credits in Taiwan). You must exceed the Required_ECTS for a specific category to meet the degree requirements. If there are any deficiencies of credits in any categories, please refer to the rightmost column of each Program Tab table for the 建議修課 for each category.',
-    'After you updated the course table, please contact your agent for your course analysis.':
-      'After you updated the course table, please contact your agent for your course analysis.',
-    'Courses analysed successfully!': 'Courses analysed successfully!',
-    'The student will receive an email notification and the analysed course URL link.':
-      'The student will receive an email notification and the analysed course URL link.',
-    'Courses Analysis': 'Courses Analysis',
-    'Student should access the analysed page in their course page.':
-      'Student should access the analysed page in their course page.',
-    'Last analysis at': 'Last analysis at',
     'Last update at': 'Last update at',
     'Application Preference From Survey': 'Application Preference From Survey',
     'Academic Background Survey': 'Academic Background Survey',
@@ -175,11 +196,7 @@ export const translation_en = {
       'Do you want to reset the result of the application of',
     'Please finish it as soon as possible':
       'Please finish it as soon as possible',
-    'Please complete My Survey so that your agent can understand your situation':
-      'Please complete My Survey so that your agent can understand your situation',
-    'Expected English Test Date': 'Expected English Test Date',
-    'Please complete My Courses table. The agent will provide you with course analysis and courses suggestion.':
-      'Please complete My Courses table. The agent will provide you with course analysis and courses suggestion.',
+
     "Please refer to the programs provided by the agent and visit the school's program website for detailed information. Complete the school selection before the start of the application season.":
       "Please refer to the programs provided by the agent and visit the school's program website for detailed information. Complete the school selection before the start of the application season.",
     'Please upload documents as soon as possible. The agent needs them to understand your academic background.':
@@ -311,10 +328,6 @@ export const translation_en = {
     School: 'School',
     Semester: 'Semester',
     Student: 'Student',
-    Submitted: 'Submitted',
-    Download: 'Download',
-    'View Online': 'View Online',
-    'No analysis yet': 'No analysis yet',
     Admitted: 'Admitted',
     Rejected: 'Rejected',
     'Personal Data': 'Personal Data',
@@ -329,9 +342,6 @@ export const translation_en = {
     'Last update': 'Last update at',
     'Upload Time': 'Upload Time',
     Upload: 'Upload',
-    'Log Out': 'Log Out',
-    Yes: 'Yes',
-    No: 'No',
-    Ok: 'Ok'
+    'Log Out': 'Log Out'
   }
 };

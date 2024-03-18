@@ -8,8 +8,10 @@ export const translation_zh_TW = {
     'Last Login': '最近登入'
   },
   common: {
+    'Coming soon': '即將開放',
     Dashboard: '主控台',
     Option: '選項',
+    'In progress': '進行中',
     'Not paid': '尚未付款',
     Paid: '已付款',
     'Waiting VPD result': '等待 VPD 結果',
@@ -86,7 +88,13 @@ export const translation_zh_TW = {
     Save: '儲存',
     Success: '成功',
     Message: '訊息',
-    Messages: '訊息'
+    Messages: '訊息',
+    WITHDRAW: '撤回',
+    Yes: '是',
+    No: '否',
+    Ok: '確定',
+    Submitted: '已送出',
+    Download: '下載'
   },
   dashboard: {
     Dashboard: '主控台',
@@ -94,7 +102,9 @@ export const translation_zh_TW = {
     'Ready To Submit Tasks': '資料完整，可以送出申請之學程',
     'Edit Agent': '編輯顧問',
     'Edit Editor': '編輯寫手',
-    'Configure Attribute': '編輯特質'
+    'Configure Attribute': '編輯特質',
+    'Please complete Profile so that your agent can understand your situation':
+      '請完成背景資料填寫，好讓您的故未能掌握您的狀況'
   },
   programList: {},
   backgroundProfile: {},
@@ -103,12 +113,35 @@ export const translation_zh_TW = {
       'Note: 如果文件並沒有關閉並出現在這區，是因為申請已經送出。該文件可以安全地被關閉。'
   },
   courses: {
+    'Please complete My Courses table. The agent will provide you with course analysis and courses suggestion.':
+      '請完成我的修課，Agent 將會為您提供課程分析以及修課建議。',
+    'Course Analysis banner':
+      '此份課程分析僅供選課參考。請仔細看過每個向度所缺的課程，並對照學校之後學期是否有開期課程，抓出來，並和您的 Agent 討論。',
+    'Course Analysis description':
+      '在 General 頁面，為大略依照您主修向度做分類，其餘的 Tabs 為指標性學校的課程匹配度分析。你會看到每個學校會要求的向度會不一樣，每個向度會對應一個 Required_ECTS，代表你修的課程學分（經過 ECTS轉換 (1.5x 台灣學分)換算後），必須超過該向度的 Required_ECTS 才算達到該項度要求。若有缺少學分、向度，請參考每個 Program Tab 表格最右側，每個向度的 建議修課名單',
+    'After you updated the course table, please contact your agent for your course analysis.':
+      '在更新課表後，請聯絡您的顧問關於您的課程分析和選課建議',
+    'Courses analysed successfully!': '課程分析成功！',
+    'The student will receive an email notification and the analysed course URL link.':
+      '學生會收到 email 通知，並收到課程分析的連結。',
+    'Courses Analysis': '課程分析',
+    'Student should access the analysed page in their course page.':
+      '學生也可以在他們的填寫課程頁面找到課程分析連結。',
+    'Last analysis at': '最後分析於',
     'Update transcript successfully! Your agent will be notified and will analyse your courses as soon as possible.':
-      '課程更新成功！您的顧問已被通知，並將會盡快為您分析您的課程匹配度。'
+      '課程更新成功！您的顧問已被通知，並將會盡快為您分析您的課程匹配度。',
+    'View Online': '線上檢視',
+    'No analysis yet': '尚未分析'
   },
   interviews: {},
   portalManagement: {
     'Update portal credentials successfully': '帳號密碼更新成功'
+  },
+  survey: {
+    'Please complete My Survey so that your agent can understand your situation':
+      '請完成問卷，您的Agent才能了解您的狀況',
+    'University (Bachelor degree)': '大學 (學士學位)',
+    'Other wish': '其他需求'
   },
   translation: {
     'Interview Training Time': '面試訓練時間',
@@ -128,19 +161,7 @@ export const translation_zh_TW = {
       '您是否收到此學程的面試邀請通知？若有的話請告知我們，我們會盡速安排與 TaiGer 面試官做模擬面試',
     'Change your result': '更改申請結果',
     'New agent is assigned to you': '新的顧問已指派給您。',
-    'Course Analysis banner':
-      '此份課程分析僅供選課參考。請仔細看過每個向度所缺的課程，並對照學校之後學期是否有開期課程，抓出來，並和您的 Agent 討論。',
-    'Course Analysis description':
-      '在 General 頁面，為大略依照您主修向度做分類，其餘的 Tabs 為指標性學校的課程匹配度分析。你會看到每個學校會要求的向度會不一樣，每個向度會對應一個 Required_ECTS，代表你修的課程學分（經過 ECTS轉換 (1.5x 台灣學分)換算後），必須超過該向度的 Required_ECTS 才算達到該項度要求。若有缺少學分、向度，請參考每個 Program Tab 表格最右側，每個向度的 建議修課名單',
-    'After you updated the course table, please contact your agent for your course analysis.':
-      '在更新課表後，請聯絡您的顧問關於您的課程分析和選課建議',
-    'Courses analysed successfully!': '課程分析成功！',
-    'The student will receive an email notification and the analysed course URL link.':
-      '學生會收到 email 通知，並收到課程分析的連結。',
-    'Courses Analysis': '課程分析',
-    'Student should access the analysed page in their course page.':
-      '學生也可以在他們的填寫課程頁面找到課程分析連結。',
-    'Last analysis at': '最後分析於',
+
     'Last update at': '最後更新於',
     'Application Preference From Survey': '根據問卷的申請科系偏好',
     'Academic Background Survey': '學術背景問卷',
@@ -169,12 +190,10 @@ export const translation_zh_TW = {
     'Do you want to reset the result of the application of':
       '您確定要重設申請結果嗎？',
     'Please finish it as soon as possible': '請您盡速處理以下事項',
-    'Please complete My Survey so that your agent can understand your situation':
-      '請完成問卷，您的Agent才能了解您的狀況',
+
     'Expected English Test Date': '預計英語檢定考試日期',
     'Expected German Test Date': '預計德語檢定考試日期',
-    'Please complete My Courses table. The agent will provide you with course analysis and courses suggestion.':
-      '請完成我的修課，Agent 將會為您提供課程分析以及修課建議。',
+
     "Please refer to the programs provided by the agent and visit the school's program website for detailed information. Complete the school selection before the start of the application season.":
       '請參考Agent提供的Program，並到學校學程網站了解詳細資訊，於申請季開始前完成選校',
     'Please upload documents as soon as possible. The agent needs them to understand your academic background.':
@@ -327,10 +346,6 @@ export const translation_zh_TW = {
     School: '學校',
     Semester: '學期',
     Student: '學生',
-    Submitted: '已送出',
-    Download: '下載',
-    'View Online': '線上檢視',
-    'No analysis yet': '尚未分析',
     Admitted: '錄取',
     Rejected: '沒錄取',
     'Personal Data': '個人資料',
@@ -345,9 +360,6 @@ export const translation_zh_TW = {
     'Last update': '最後更新於',
     'Upload Time': '上傳時間',
     Upload: '上傳',
-    'Log Out': '登出',
-    Yes: '是',
-    No: '否',
-    Ok: '確定'
+    'Log Out': '登出'
   }
 };

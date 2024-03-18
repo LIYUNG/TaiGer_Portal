@@ -774,7 +774,8 @@ function AllOfficeHours() {
                 <CircularProgress size={16} />
               ) : (
                 <>
-                  <AiFillCheckCircle color="limegreen" size={16} /> {t('Yes')}
+                  <AiFillCheckCircle color="limegreen" size={16} />{' '}
+                  {t('Yes', { ns: 'common' })}
                 </>
               )}
             </Button>
@@ -783,7 +784,7 @@ function AllOfficeHours() {
               variant="outlined"
               onClick={handleConfirmAppointmentModalClose}
             >
-              Close
+              {t('Close', { ns: 'common' })}
             </Button>
           </ModalNew>
           <ModalNew

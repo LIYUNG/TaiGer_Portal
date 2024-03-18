@@ -546,9 +546,13 @@ function EditorDocsProgress(props) {
                 />
               </>
             ) : isProgramWithdraw(application) ? (
-              <Typography fontWeight="bold">{t('WITHDRAW')}</Typography>
+              <Typography fontWeight="bold">
+                {(t('WITHDRAW'), { ns: 'common' })}
+              </Typography>
             ) : (
-              <Typography fontWeight="bold">{t('In progress')}</Typography>
+              <Typography fontWeight="bold">
+                {(t('In progress'), { ns: 'common' })}
+              </Typography>
             )}
           </Grid>
           <Grid item xs={1} md={1}>
@@ -730,7 +734,7 @@ function EditorDocsProgress(props) {
           variant="outlined"
           onClick={closeWarningWindow}
         >
-          {t('No')}
+          {t('No', { ns: 'common' })}
         </Button>
       </ModalNew>
       <ModalNew
@@ -765,7 +769,7 @@ function EditorDocsProgress(props) {
           variant="outlined"
           onClick={closeSetAsFinalFileModelWindow}
         >
-          {t('No')}
+          {t('No', { ns: 'common' })}
         </Button>
       </ModalNew>
       <ModalNew

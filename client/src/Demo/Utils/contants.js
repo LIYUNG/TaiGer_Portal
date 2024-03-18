@@ -61,6 +61,15 @@ export const StyledInputBase = styled(InputBase)(({ theme }) => ({
 export const menuWidth = 350;
 export const EmbeddedChatListWidth = 290;
 
+export const CVMLRL_DOC_PRECHECK_STATUS_E = {
+  OK_SYMBOL: (
+    <CheckCircleIcon size={18} style={{ color: green[500] }} title="Decided" />
+  ),
+  NOT_OK_SYMBOL: (
+    <CancelIcon size={18} style={{ color: red[700] }} title="Decided No" />
+  )
+};
+
 export const DECISION_STATUS_E = {
   OK_SYMBOL: (
     <CheckCircleIcon size={18} style={{ color: green[500] }} title="Decided" />

@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link as LinkDom, useParams } from 'react-router-dom';
+import JSZip from 'jszip';
+import * as XLSX from 'xlsx';
 import DownloadIcon from '@mui/icons-material/Download';
 import { FiExternalLink } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
@@ -14,6 +16,8 @@ import {
   Breadcrumbs,
   Avatar
 } from '@mui/material';
+import { pdfjs } from 'react-pdf'; // Library for rendering PDFs
+pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
 import MessageList from './MessageList';
 import DocThreadEditor from './DocThreadEditor';
@@ -70,6 +74,7 @@ function DocModificationThreadPage() {
       res_modal_status: 0,
       res_modal_message: ''
     });
+  const [checkResult, setCheckResult] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -130,10 +135,148 @@ function DocModificationThreadPage() {
     e.preventDefault();
     const file_num = e.target.files.length;
     if (file_num <= 3) {
-      setDocModificationThreadPageState((prevState) => ({
-        ...prevState,
-        file: Array.from(e.target.files)
-      }));
+      if (!e.target.files) {
+        return;
+      }
+      if (!is_TaiGer_role(user)) {
+        setDocModificationThreadPageState((prevState) => ({
+          ...prevState,
+          file: Array.from(e.target.files)
+        }));
+        return;
+      }
+      // Ensure a file is selected
+      // TODO: make array
+      const checkPromises = new Array(e.target.files?.length);
+      for (let i = 0; i < e.target.files?.length; i++) {
+        const fl = e.target.files[i];
+        const extension = fl.name?.split('.').pop().toLowerCase();
+
+        const promise = new Promise((resolve, reject) => {
+          if (extension === 'pdf') {
+            const reader = new FileReader();
+            reader.onload = async (event) => {
+              const checkPoints = {
+                corretFirstname: {
+                  value: false,
+                  text: 'NOT Dectect student first name in the document'
+                }
+              };
+              const checkPoints_temp = Object.assign({}, checkPoints);
+              try {
+                const content = event.target.result;
+                const typedarray = new Uint8Array(content);
+                const pdf = await pdfjs.getDocument(typedarray).promise;
+                let text = '';
+                for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+                  const page = await pdf.getPage(pageNum);
+                  const pageTextContent = await page.getTextContent();
+                  pageTextContent.items.forEach((item) => {
+                    text += item.str + ' ';
+                  });
+                }
+                if (
+                  text
+                    .toLowerCase()
+                    .includes(
+                      docModificationThreadPageState.thread.student_id.firstname.toLowerCase()
+                    )
+                ) {
+                  checkPoints_temp.corretFirstname.value = true;
+                  checkPoints_temp.corretFirstname.text =
+                    checkPoints_temp.corretFirstname.text.replace('NOT ', '');
+                }
+                resolve(checkPoints_temp);
+              } catch (error) {
+                console.error('Error reading PDF file:', error);
+                checkPoints_temp.error.value = true;
+                checkPoints_temp.error.text = error;
+                reject(checkPoints_temp);
+              }
+            };
+            reader.readAsArrayBuffer(fl);
+          } else if (extension === 'docx') {
+            const checkPoints = {
+              corretFirstname: {
+                value: false,
+                text: 'NOT Dectect student first name in the document'
+              }
+            };
+            const checkPoints_temp2 = Object.assign({}, checkPoints);
+            const reader = new FileReader();
+            reader.onload = async (event) => {
+              const content = event.target.result;
+              const textContent = await extractTextFromDocx(content);
+              if (
+                textContent
+                  .toLowerCase()
+                  .includes(
+                    docModificationThreadPageState.thread.student_id.firstname.toLowerCase()
+                  )
+              ) {
+                checkPoints_temp2.corretFirstname.value = true;
+                checkPoints_temp2.corretFirstname.text =
+                  checkPoints_temp2.corretFirstname.text.replace('NOT ', '');
+              }
+              resolve(checkPoints_temp2);
+            };
+            reader.readAsArrayBuffer(fl);
+          } else if (extension === 'xlsx') {
+            const checkPoints = {
+              corretFirstname: {
+                value: false,
+                text: 'NOT Dectect student first name in the document'
+              }
+            };
+            const checkPoints_temp3 = Object.assign({}, checkPoints);
+            const reader = new FileReader();
+            reader.onload = async (event) => {
+              const data = new Uint8Array(event.target.result);
+              const workbook = XLSX.read(data, { type: 'array' });
+              let text = '';
+              workbook.SheetNames.forEach((sheetName) => {
+                const sheet = workbook.Sheets[sheetName];
+                text += XLSX.utils.sheet_to_csv(sheet);
+              });
+              if (
+                text
+                  .toLowerCase()
+                  .includes(
+                    docModificationThreadPageState.thread.student_id.firstname.toLowerCase()
+                  )
+              ) {
+                checkPoints_temp3.corretFirstname.value = true;
+                checkPoints_temp3.corretFirstname.text =
+                  checkPoints_temp3.corretFirstname.text.replace('NOT ', '');
+              }
+              resolve(checkPoints_temp3);
+            };
+            reader.readAsArrayBuffer(fl);
+          } else {
+            const checkPoints = {};
+            const checkPoints_temp4 = Object.assign({}, checkPoints);
+            const reader = new FileReader();
+            reader.onload = async (event) => {
+              console.log(event);
+
+              resolve(checkPoints_temp4);
+            };
+            reader.readAsArrayBuffer(fl);
+          }
+        });
+        checkPromises[i] = promise;
+      }
+      Promise.all(checkPromises)
+        .then((results) => {
+          setCheckResult(results);
+          setDocModificationThreadPageState((prevState) => ({
+            ...prevState,
+            file: Array.from(e.target.files)
+          }));
+        })
+        .catch((error) => {
+          console.error('Error processing files:', error);
+        });
     } else {
       setDocModificationThreadPageState((prevState) => ({
         ...prevState,
@@ -141,6 +284,14 @@ function DocModificationThreadPage() {
         res_modal_status: 423
       }));
     }
+  };
+
+  const extractTextFromDocx = async (arrayBuffer) => {
+    const zip = await JSZip.loadAsync(arrayBuffer);
+    const documentXml = await zip.file('word/document.xml').async('string');
+    // Extract text from the XML content
+    const textContent = documentXml.replace(/<[^>]+>/g, ''); // Strip HTML tags
+    return textContent;
   };
 
   const ConfirmError = () => {
@@ -832,6 +983,7 @@ function DocModificationThreadPage() {
               handleClickSave={handleClickSave}
               file={docModificationThreadPageState.file}
               onFileChange={onFileChange}
+              checkResult={checkResult}
             />
           )}
         </Card>

@@ -2,11 +2,23 @@ import React, { useEffect, useState } from 'react';
 import SendIcon from '@mui/icons-material/Send';
 
 import EditorSimple from '../../../components/EditorJs/EditorSimple';
-import { Button, Grid, Card, TextField, Tooltip } from '@mui/material';
+import {
+  Button,
+  Grid,
+  Card,
+  TextField,
+  Tooltip,
+  Typography,
+  Box
+} from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { CVMLRL_DOC_PRECHECK_STATUS_E } from '../../Utils/contants';
+import { is_TaiGer_role } from '../../Utils/checking-functions';
+import { useAuth } from '../../../components/AuthProvider';
 
 function DocThreadEditor(props) {
   const { t } = useTranslation();
+  const { user } = useAuth();
   let [statedata, setStatedata] = useState({
     editorState: props.editorState
   });
@@ -16,6 +28,7 @@ function DocThreadEditor(props) {
       editorState: props.editorState
     }));
   }, [props.editorState]);
+
   const handleEditorChange = (content) => {
     setStatedata((state) => ({
       ...state,
@@ -23,6 +36,8 @@ function DocThreadEditor(props) {
     }));
   };
 
+  console.log(props.checkResult);
+  console.log(props.checkResult?.length);
   return (
     <>
       <Grid container spacing={2}>
@@ -41,6 +56,31 @@ function DocThreadEditor(props) {
             />
           </Card>
         </Grid>
+        {/* TODO: show checking result: 
+        1. contain student name for each file, 
+        2. CV: no gap
+         */}
+        {is_TaiGer_role(user) && (
+          <Grid item xs={12}>
+            {props.file?.map((fl, i) => (
+              <Box key={`${fl.name}${i}`}>
+                <Typography>{fl.name} :</Typography>
+                {Object.keys(props.checkResult[i]).map((ky) => (
+                  <Typography
+                    key={props.checkResult[i][ky].text}
+                    sx={{ ml: 2 }}
+                  >
+                    {props.checkResult[i][ky].value
+                      ? CVMLRL_DOC_PRECHECK_STATUS_E.OK_SYMBOL
+                      : CVMLRL_DOC_PRECHECK_STATUS_E.NOT_OK_SYMBOL}
+                    {props.checkResult[i][ky].text}
+                  </Typography>
+                ))}
+              </Box>
+            ))}
+          </Grid>
+        )}
+
         <Grid item xs={12}>
           <TextField
             fullWidth
@@ -52,6 +92,7 @@ function DocThreadEditor(props) {
             onChange={(e) => props.onFileChange(e)}
           />
         </Grid>
+
         <Grid item xs={12}>
           (Choose max. 3 files with different extensions: .pdf, .docx, .jgp, and
           overall 2MB!)

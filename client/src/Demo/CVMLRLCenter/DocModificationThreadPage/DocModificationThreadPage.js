@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link as LinkDom, useParams } from 'react-router-dom';
+import JSZip from 'jszip';
 import DownloadIcon from '@mui/icons-material/Download';
 import { FiExternalLink } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
@@ -133,9 +134,14 @@ function DocModificationThreadPage() {
     e.preventDefault();
     const file_num = e.target.files.length;
     if (file_num <= 3) {
-      console.log('file changed!');
       if (!e.target.files) {
-        console.log('file null!');
+        return;
+      }
+      if (!is_TaiGer_role(user)) {
+        setDocModificationThreadPageState((prevState) => ({
+          ...prevState,
+          file: Array.from(e.target.files)
+        }));
         return;
       }
       // Ensure a file is selected
@@ -143,7 +149,6 @@ function DocModificationThreadPage() {
       const checkPromises = new Array(e.target.files?.length);
       for (let i = 0; i < e.target.files?.length; i++) {
         const fl = e.target.files[i];
-        console.log(fl.name);
         const extension = fl.name?.split('.').pop().toLowerCase();
 
         const promise = new Promise((resolve, reject) => {
@@ -153,7 +158,7 @@ function DocModificationThreadPage() {
               const checkPoints = {
                 corretFirstname: {
                   value: false,
-                  text: 'Dectect same name in the document'
+                  text: 'NOT Dectect student first name in the document'
                 }
               };
               const checkPoints_temp = Object.assign({}, checkPoints);
@@ -176,8 +181,9 @@ function DocModificationThreadPage() {
                   )
                 ) {
                   checkPoints_temp.corretFirstname.value = true;
+                  checkPoints_temp.corretFirstname.text =
+                    checkPoints_temp.corretFirstname.text.replace('NOT ', '');
                 }
-                checkPoints_temp.name = { text: extension };
                 resolve(checkPoints_temp);
               } catch (error) {
                 console.error('Error reading PDF file:', error);
@@ -191,13 +197,23 @@ function DocModificationThreadPage() {
             const checkPoints = {
               corretFirstname: {
                 value: false,
-                text: 'Dectect same name in the document'
+                text: 'NOT Dectect student first name in the document'
               }
             };
             const checkPoints_temp2 = Object.assign({}, checkPoints);
             const reader = new FileReader();
             reader.onload = async (event) => {
-              console.log(event.target.result);
+              const content = event.target.result;
+              const textContent = await extractTextFromDocx(content);
+              if (
+                textContent.includes(
+                  docModificationThreadPageState.thread.student_id.firstname
+                )
+              ) {
+                checkPoints_temp2.corretFirstname.value = true;
+                checkPoints_temp2.corretFirstname.text =
+                  checkPoints_temp2.corretFirstname.text.replace('NOT ', '');
+              }
               resolve(checkPoints_temp2);
             };
             reader.readAsArrayBuffer(fl);
@@ -205,7 +221,7 @@ function DocModificationThreadPage() {
             const checkPoints = {
               corretFirstname: {
                 value: false,
-                text: 'Dectect same name in the document'
+                text: 'NOT Dectect student first name in the document'
               }
             };
             const checkPoints_temp3 = Object.assign({}, checkPoints);
@@ -239,6 +255,14 @@ function DocModificationThreadPage() {
         res_modal_status: 423
       }));
     }
+  };
+
+  const extractTextFromDocx = async (arrayBuffer) => {
+    const zip = await JSZip.loadAsync(arrayBuffer);
+    const documentXml = await zip.file('word/document.xml').async('string');
+    // Extract text from the XML content
+    const textContent = documentXml.replace(/<[^>]+>/g, ''); // Strip HTML tags
+    return textContent;
   };
 
   const ConfirmError = () => {

@@ -13,9 +13,12 @@ import {
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { CVMLRL_DOC_PRECHECK_STATUS_E } from '../../Utils/contants';
+import { is_TaiGer_role } from '../../Utils/checking-functions';
+import { useAuth } from '../../../components/AuthProvider';
 
 function DocThreadEditor(props) {
   const { t } = useTranslation();
+  const { user } = useAuth();
   let [statedata, setStatedata] = useState({
     editorState: props.editorState
   });
@@ -57,21 +60,27 @@ function DocThreadEditor(props) {
         1. contain student name for each file, 
         2. CV: no gap
          */}
-        <Grid item xs={12}>
-          {props.file?.map((fl, i) => (
-            <Box key={`${fl.name}${i}`}>
-              <Typography>{fl.name} :</Typography>
-              {Object.keys(props.checkResult[i]).map((ky) => (
-                <Typography key={props.checkResult[i][ky].text} sx={{ ml: 2 }}>
-                  {props.checkResult[i][ky].value
-                    ? CVMLRL_DOC_PRECHECK_STATUS_E.OK_SYMBOL
-                    : CVMLRL_DOC_PRECHECK_STATUS_E.NOT_OK_SYMBOL}
-                  {props.checkResult[i][ky].text}
-                </Typography>
-              ))}
-            </Box>
-          ))}
-        </Grid>
+        {is_TaiGer_role(user) && (
+          <Grid item xs={12}>
+            {props.file?.map((fl, i) => (
+              <Box key={`${fl.name}${i}`}>
+                <Typography>{fl.name} :</Typography>
+                {Object.keys(props.checkResult[i]).map((ky) => (
+                  <Typography
+                    key={props.checkResult[i][ky].text}
+                    sx={{ ml: 2 }}
+                  >
+                    {props.checkResult[i][ky].value
+                      ? CVMLRL_DOC_PRECHECK_STATUS_E.OK_SYMBOL
+                      : CVMLRL_DOC_PRECHECK_STATUS_E.NOT_OK_SYMBOL}
+                    {props.checkResult[i][ky].text}
+                  </Typography>
+                ))}
+              </Box>
+            ))}
+          </Grid>
+        )}
+
         <Grid item xs={12}>
           <TextField
             fullWidth

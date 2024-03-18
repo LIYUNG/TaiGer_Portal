@@ -159,7 +159,7 @@ function DocModificationThreadPage() {
               const checkPoints = {
                 corretFirstname: {
                   value: false,
-                  text: 'NOT Dectect student first name in the document'
+                  text: 'NOT Detected student first name in the document'
                 }
               };
               const checkPoints_temp = Object.assign({}, checkPoints);
@@ -199,7 +199,7 @@ function DocModificationThreadPage() {
             const checkPoints = {
               corretFirstname: {
                 value: false,
-                text: 'NOT Dectect student first name in the document'
+                text: 'NOT Detected student first name in the document'
               }
             };
             const checkPoints_temp2 = Object.assign({}, checkPoints);
@@ -225,7 +225,7 @@ function DocModificationThreadPage() {
             const checkPoints = {
               corretFirstname: {
                 value: false,
-                text: 'NOT Dectect student first name in the document'
+                text: 'NOT Detected student first name in the document'
               }
             };
             const checkPoints_temp3 = Object.assign({}, checkPoints);

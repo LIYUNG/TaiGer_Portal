@@ -39,6 +39,36 @@ import { stringAvatar } from '../Utils/contants';
 import MemoizedEmbeddedChatList from '../../components/EmbeddedChatList';
 import { FetchStudentLayer } from '../StudentDatabase/FetchStudentLayer';
 
+const StudentDetailModal = ({
+  open,
+  anchorStudentDetailEl,
+  dropdownId,
+  handleStudentDetailModalClose,
+  student_id
+}) => (
+  <Menu
+    anchorEl={anchorStudentDetailEl}
+    id={dropdownId}
+    open={open}
+    onClose={handleStudentDetailModalClose}
+    transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+    anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
+    sx={{
+      filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+      height: window.innerHeight - 56
+    }}
+  >
+    <ListItem sx={{ py: 1 }}>
+      <Box display="flex" justifyContent="space-between" alignItems="center">
+        <Box>
+          <FetchStudentLayer studentId={student_id} />
+        </Box>
+      </Box>
+    </ListItem>
+  </Menu>
+);
+const MemorizedStudentDetailModal = React.memo(StudentDetailModal);
+
 function CommunicationExpandPage() {
   const { student_id } = useParams();
   const { user } = useAuth();
@@ -363,28 +393,6 @@ function CommunicationExpandPage() {
   };
 
   const dropdownId = 'primary-student-modal';
-  const StudentDetailModal = () => (
-    <Menu
-      anchorEl={anchorStudentDetailEl}
-      id={dropdownId}
-      open={isStudentDetailModalOpen}
-      onClose={handleStudentDetailModalClose}
-      transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-      anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
-      sx={{
-        filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-        height: window.innerHeight - 56
-      }}
-    >
-      <ListItem sx={{ py: 1 }}>
-        <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Box>
-            <FetchStudentLayer studentId={student_id} />
-          </Box>
-        </Box>
-      </ListItem>
-    </Menu>
-  );
 
   const {
     messagesLoaded,
@@ -511,7 +519,6 @@ function CommunicationExpandPage() {
               <IconButton
                 color="inherit"
                 aria-label="open-more"
-                aria-id={dropdownId}
                 aria-controls={dropdownId}
                 aria-haspopup="true"
                 onClick={handleStudentDetailModalOpen}
@@ -566,7 +573,7 @@ function CommunicationExpandPage() {
                           disabled={
                             communicationExpandPageState.loadButtonDisabled
                           }
-                          size='small'
+                          size="small"
                           sx={{ my: 1 }}
                         >
                           {t('Load')}
@@ -658,7 +665,13 @@ function CommunicationExpandPage() {
             ))}
         </Grid>
         <Box sx={{ marginLeft: 0 }}>
-          <StudentDetailModal />
+          <MemorizedStudentDetailModal
+            open={isStudentDetailModalOpen}
+            anchorStudentDetailEl={anchorStudentDetailEl}
+            dropdownId={dropdownId}
+            handleStudentDetailModalClose={handleStudentDetailModalClose}
+            student_id={student_id}
+          />
         </Box>
       </Grid>
     </Box>

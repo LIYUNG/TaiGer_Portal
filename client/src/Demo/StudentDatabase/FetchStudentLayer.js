@@ -8,6 +8,7 @@ export const FetchStudentLayer = ({ studentId }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [, setError] = useState(null);
   useEffect(() => {
+    console.log(window.innerWidth);
     getStudentAndDocLinks(studentId).then(
       (resp) => {
         const {
@@ -21,7 +22,7 @@ export const FetchStudentLayer = ({ studentId }) => {
         setIsLoaded(true);
       }
     );
-  }, []);
+  }, [studentId]);
   if (!isLoaded) {
     return (
       <Box sx={{ width: window.innerWidth - 60 }}>

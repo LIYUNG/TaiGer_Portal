@@ -547,11 +547,11 @@ function EditorDocsProgress(props) {
               </>
             ) : isProgramWithdraw(application) ? (
               <Typography fontWeight="bold">
-                {(t('WITHDRAW'), { ns: 'common' })}
+                {t('WITHDRAW', { ns: 'common' })}
               </Typography>
             ) : (
               <Typography fontWeight="bold">
-                {(t('In progress'), { ns: 'common' })}
+                {t('In progress', { ns: 'common' })}
               </Typography>
             )}
           </Grid>
@@ -721,7 +721,7 @@ function EditorDocsProgress(props) {
           sx={{ mr: 1 }}
         >
           {isLoaded ? (
-            t('Yes')
+            t('Yes', { ns: 'common' })
           ) : (
             <div style={spinner_style2}>
               <CircularProgress />
@@ -757,7 +757,7 @@ function EditorDocsProgress(props) {
           onClick={ConfirmSetAsFinalFileHandler}
         >
           {isLoaded ? (
-            t('Yes')
+            t('Yes', { ns: 'common' })
           ) : (
             <div style={spinner_style2}>
               <CircularProgress />

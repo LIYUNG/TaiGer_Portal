@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link as LinkDom, useParams } from 'react-router-dom';
 import JSZip from 'jszip';
+import * as XLSX from 'xlsx';
 import DownloadIcon from '@mui/icons-material/Download';
 import { FiExternalLink } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
@@ -162,7 +163,6 @@ function DocModificationThreadPage() {
                 }
               };
               const checkPoints_temp = Object.assign({}, checkPoints);
-              console.log(checkPoints_temp);
               try {
                 const content = event.target.result;
                 const typedarray = new Uint8Array(content);
@@ -176,9 +176,11 @@ function DocModificationThreadPage() {
                   });
                 }
                 if (
-                  text.includes(
-                    docModificationThreadPageState.thread.student_id.firstname
-                  )
+                  text
+                    .toLowerCase()
+                    .includes(
+                      docModificationThreadPageState.thread.student_id.firstname.toLowerCase()
+                    )
                 ) {
                   checkPoints_temp.corretFirstname.value = true;
                   checkPoints_temp.corretFirstname.text =
@@ -206,9 +208,11 @@ function DocModificationThreadPage() {
               const content = event.target.result;
               const textContent = await extractTextFromDocx(content);
               if (
-                textContent.includes(
-                  docModificationThreadPageState.thread.student_id.firstname
-                )
+                textContent
+                  .toLowerCase()
+                  .includes(
+                    docModificationThreadPageState.thread.student_id.firstname.toLowerCase()
+                  )
               ) {
                 checkPoints_temp2.corretFirstname.value = true;
                 checkPoints_temp2.corretFirstname.text =
@@ -217,7 +221,7 @@ function DocModificationThreadPage() {
               resolve(checkPoints_temp2);
             };
             reader.readAsArrayBuffer(fl);
-          } else {
+          } else if (extension === 'xlsx') {
             const checkPoints = {
               corretFirstname: {
                 value: false,
@@ -227,18 +231,43 @@ function DocModificationThreadPage() {
             const checkPoints_temp3 = Object.assign({}, checkPoints);
             const reader = new FileReader();
             reader.onload = async (event) => {
-              console.log(event.target.result);
+              const data = new Uint8Array(event.target.result);
+              const workbook = XLSX.read(data, { type: 'array' });
+              let text = '';
+              workbook.SheetNames.forEach((sheetName) => {
+                const sheet = workbook.Sheets[sheetName];
+                text += XLSX.utils.sheet_to_csv(sheet);
+              });
+              if (
+                text
+                  .toLowerCase()
+                  .includes(
+                    docModificationThreadPageState.thread.student_id.firstname.toLowerCase()
+                  )
+              ) {
+                checkPoints_temp3.corretFirstname.value = true;
+                checkPoints_temp3.corretFirstname.text =
+                  checkPoints_temp3.corretFirstname.text.replace('NOT ', '');
+              }
               resolve(checkPoints_temp3);
+            };
+            reader.readAsArrayBuffer(fl);
+          } else {
+            const checkPoints = {};
+            const checkPoints_temp4 = Object.assign({}, checkPoints);
+            const reader = new FileReader();
+            reader.onload = async (event) => {
+              console.log(event);
+
+              resolve(checkPoints_temp4);
             };
             reader.readAsArrayBuffer(fl);
           }
         });
         checkPromises[i] = promise;
       }
-      console.log(checkPromises);
       Promise.all(checkPromises)
         .then((results) => {
-          console.log(results);
           setCheckResult(results);
           setDocModificationThreadPageState((prevState) => ({
             ...prevState,
@@ -246,7 +275,7 @@ function DocModificationThreadPage() {
           }));
         })
         .catch((error) => {
-          console.error('Error processing PDF files:', error);
+          console.error('Error processing files:', error);
         });
     } else {
       setDocModificationThreadPageState((prevState) => ({

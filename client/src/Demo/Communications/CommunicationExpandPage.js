@@ -372,9 +372,8 @@ function CommunicationExpandPage() {
       transformOrigin={{ horizontal: 'right', vertical: 'top' }}
       anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
       sx={{
-        overflowX: 'auto' /* Enable vertical scrolling */,
         filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-        height: window.innerHeight - 64
+        height: window.innerHeight - 56
       }}
     >
       <ListItem sx={{ py: 1 }}>
@@ -432,7 +431,12 @@ function CommunicationExpandPage() {
       onClick={() => {
         handleDrawerClose();
       }}
-      style={{ marginLeft: '-24px', marginRight: '-18px' }}
+      style={{
+        marginLeft: '-24px',
+        marginRight: '-18px',
+        marginTop: '-18px',
+        marginBottom: '-24px'
+      }}
     >
       <Grid container>
         <Grid
@@ -443,7 +447,7 @@ function CommunicationExpandPage() {
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
             <div
               style={{
-                height: window.innerHeight - 112,
+                height: window.innerHeight - 70,
                 overflow: 'hidden'
               }}
             >
@@ -452,7 +456,7 @@ function CommunicationExpandPage() {
                   overflowY: 'auto' /* Enable vertical scrolling */,
                   maxHeight:
                     window.innerHeight -
-                    112 /* Adjusted max height, considering header */
+                    70 /* Adjusted max height, considering header */
                 }}
               >
                 <MemoizedEmbeddedChatList
@@ -503,7 +507,7 @@ function CommunicationExpandPage() {
               </Link>
             </Box>
             <Box sx={{ flexGrow: 1 }} />
-            <Box sx={{ mr: 1, md: 'flex' }}>
+            <Box sx={{ mr: 2, md: 'flex' }}>
               <IconButton
                 color="inherit"
                 aria-label="open-more"
@@ -537,7 +541,7 @@ function CommunicationExpandPage() {
             (messagesLoaded ? (
               <div
                 style={{
-                  height: window.innerHeight - 112 - 40,
+                  height: window.innerHeight - 70 - 40,
                   overflow: 'hidden'
                 }}
               >
@@ -546,7 +550,7 @@ function CommunicationExpandPage() {
                     overflowY: 'auto' /* Enable vertical scrolling */,
                     maxHeight:
                       window.innerHeight -
-                      112 -
+                      70 -
                       40 /* Adjusted max height, considering header */
                   }}
                   ref={scrollableRef}
@@ -562,7 +566,8 @@ function CommunicationExpandPage() {
                           disabled={
                             communicationExpandPageState.loadButtonDisabled
                           }
-                          sx={{ mb: 2 }}
+                          size='small'
+                          sx={{ my: 1 }}
                         >
                           {t('Load')}
                         </Button>

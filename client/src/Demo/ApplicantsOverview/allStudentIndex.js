@@ -28,6 +28,9 @@ function AllApplicantsOverview() {
           {appConfig.companyName}
         </Link>
         <Typography color="text.primary">
+          {t('All Students', { ns: 'common' })}
+        </Typography>
+        <Typography color="text.primary">
           {t('All Students Applications Overview')}
         </Typography>
       </Breadcrumbs>

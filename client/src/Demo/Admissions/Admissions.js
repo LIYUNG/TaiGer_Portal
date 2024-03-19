@@ -11,9 +11,11 @@ import DEMO from '../../store/constant';
 import { appConfig } from '../../config';
 import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
+import { useTranslation } from 'react-i18next';
 
 function Admissions() {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [admissionsState, setAdmissionsState] = useState({
     error: '',
     isLoaded: false,
@@ -81,7 +83,10 @@ function Admissions() {
             {appConfig.companyName}
           </Link>
           <Typography color="text.primary">
-            {appConfig.companyName} Admissions
+            {t('All Students', { ns: 'common' })}
+          </Typography>
+          <Typography color="text.primary">
+            {t(`${appConfig.companyName} Admissions`, { ns: 'common' })}
           </Typography>
         </Breadcrumbs>
         <AdmissionsTable students={admissionsState.students} />

@@ -85,7 +85,7 @@ function AllBaseDocuments() {
   const { res_status, isLoaded, res_modal_status, res_modal_message } =
     baseDocumentsState;
 
-  TabTitle('Base Documents');
+  TabTitle(t('All Documents', { ns: 'common' }));
 
   if (!isLoaded && !baseDocumentsState.students) {
     return <Loading />;
@@ -120,7 +120,12 @@ function AllBaseDocuments() {
         >
           {appConfig.companyName}
         </Link>
-        <Typography color="text.primary">{t('Base Documents')}</Typography>
+        <Typography color="text.primary">
+          {t('All Students', { ns: 'common' })}
+        </Typography>
+        <Typography color="text.primary">
+          {t('All Documents', { ns: 'common' })}
+        </Typography>
       </Breadcrumbs>
       {is_TaiGer_role(user) && (
         <Table size="small">

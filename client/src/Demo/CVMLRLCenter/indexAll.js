@@ -89,7 +89,12 @@ function indexAll() {
         >
           {appConfig.companyName}
         </Link>
-        <Typography color="text.primary">{t('Tasks Dashboard')}</Typography>
+        <Typography color="text.primary">
+          {t('All Students', { ns: 'common' })}
+        </Typography>
+        <Typography color="text.primary">
+          {t('Tasks Dashboard', { ns: 'common' })}
+        </Typography>
       </Breadcrumbs>
       <CVMLRLDashboard
         isLoaded={indexAllState.isLoaded}

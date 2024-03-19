@@ -4,6 +4,7 @@ const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
 const { Role, Agent, Student, Editor } = require('../models/User');
 const { one_month_cache } = require('../cache/node-cache');
+const { Program } = require('../models/Program');
 const {
   Documentthread,
   STUDENT_INPUT_STATUS_E
@@ -754,6 +755,61 @@ const initGeneralMessagesThread = asyncHandler(async (req, res) => {
   }
 });
 
+const createApplicationThread = async (studentId, programId, fileType) => {
+  const threadExisted = await Documentthread.findOne({
+    student_id: studentId,
+    program_id: programId,
+    file_type: fileType
+  });
+
+  if (threadExisted) {
+    logger.error(
+      'initApplicationMessagesThread: Document Thread already existed!'
+    );
+    throw new ErrorResponse(409, 'Document Thread already existed!');
+  }
+
+  const student = await Student.findById(studentId)
+    .populate('applications.programId')
+    .exec();
+
+  if (!student) {
+    logger.info('initApplicationMessagesThread: Invalid student id!');
+    throw new ErrorResponse(403, 'Invalid student id');
+  }
+
+  const appIdx = student.applications.findIndex(
+    (app) => app.programId._id == programId
+  );
+
+  if (appIdx === -1) {
+    logger.info('initApplicationMessagesThread: Invalid application id!');
+    throw new ErrorResponse(403, 'Invalid application id');
+  }
+
+  const newThread = new Documentthread({
+    student_id: studentId,
+    file_type: fileType,
+    program_id: programId,
+    updatedAt: new Date()
+  });
+
+  const newAppRecord = student.applications[
+    appIdx
+  ].doc_modification_thread.create({
+    doc_thread_id: newThread,
+    updatedAt: new Date(),
+    createdAt: new Date()
+  });
+  student.applications[appIdx].doc_modification_thread.push(newAppRecord);
+  student.notification.isRead_new_cvmlrl_tasks_created = false;
+  await student.save();
+  await newThread.save();
+  return newAppRecord;
+};
+
+// const deleteApplicationThread = async (req, res) => {};
+
 // (O) email inform Editor
 // (O) email inform Student
 const initApplicationMessagesThread = asyncHandler(async (req, res) => {
@@ -761,89 +817,21 @@ const initApplicationMessagesThread = asyncHandler(async (req, res) => {
     params: { studentId, program_id, document_category }
   } = req;
 
+  const newAppRecord = await createApplicationThread(
+    studentId,
+    program_id,
+    document_category
+  );
+  res.status(200).send({ success: true, data: newAppRecord });
+
   const student = await Student.findById(studentId)
     .populate('applications.programId')
     .populate('agents editors', 'firstname lastname email')
     .exec();
-
-  if (!student) {
-    logger.info('initApplicationMessagesThread: Invalid student id!');
-    throw new ErrorResponse(403, 'Invalid student id');
-  }
-  const application = student.applications.find(
-    ({ programId }) => programId._id == program_id
+  const program = await Program.findById(program_id).select(
+    'school program_name'
   );
-
-  if (!application) {
-    logger.info('initApplicationMessagesThread: Invalid application id!');
-    throw new ErrorResponse(403, 'Invalid application id');
-  }
-
-  const doc_thread_existed = await Documentthread.findOne({
-    student_id: studentId,
-    file_type: document_category,
-    program_id
-  });
-
-  if (doc_thread_existed) {
-    // should add the existing one thread to student application
-    const thread_in_student_application_existed =
-      application.doc_modification_thread.find(
-        ({ doc_thread_id }) =>
-          doc_thread_id.toString() == doc_thread_existed._id.toString()
-      );
-    // if thread existed but not in student application thread, then add it.
-    if (!thread_in_student_application_existed) {
-      // console.log('Pass 1.1');
-      const app = application.doc_modification_thread.create({
-        doc_thread_id: doc_thread_existed,
-        updatedAt: new Date(),
-        createdAt: new Date()
-      });
-      application.doc_modification_thread.push(app);
-      student.notification.isRead_new_cvmlrl_tasks_created = false;
-
-      await student.save();
-      return res.status(200).send({ success: true, data: app });
-    }
-    // console.log('Pass 1.2');
-    logger.error(
-      'initApplicationMessagesThread: Document Thread already existed!'
-    );
-    throw new ErrorResponse(409, 'Document Thread already existed!');
-  }
-
-  // minor TODO: if thread not existed but some deprecated one in doc_modification_thread?
-
-  const new_doc_thread = new Documentthread({
-    student_id: studentId,
-    file_type: document_category,
-    program_id,
-    updatedAt: new Date()
-  });
-
-  const idx = student.applications.findIndex(
-    ({ programId }) => programId._id == program_id
-  );
-  const temp = student.applications[idx].doc_modification_thread.create({
-    doc_thread_id: new_doc_thread,
-    updatedAt: new Date(),
-    createdAt: new Date()
-  });
-  student.applications[idx].doc_modification_thread.push(temp);
-  student.notification.isRead_new_cvmlrl_tasks_created = false;
-  await student.save();
-  await new_doc_thread.save();
-
-  const student2 = await Student.findById(studentId)
-    .populate('applications.programId generaldocs_threads.doc_thread_id')
-    .populate(
-      'applications.doc_modification_thread.doc_thread_id',
-      'file_type updatedAt'
-    );
-  res.status(200).send({ success: true, data: temp });
-
-  const documentname = `${document_category} - ${application.programId.school} - ${application.programId.program_name}`;
+  const documentname = `${document_category} - ${program.school} - ${program.program_name}`;
   for (let i = 0; i < student.editors.length; i += 1) {
     if (isNotArchiv(student)) {
       await assignDocumentTaskToEditorEmail(
@@ -853,23 +841,27 @@ const initApplicationMessagesThread = asyncHandler(async (req, res) => {
           address: student.editors[i].email
         },
         {
-          student_firstname: student2.firstname,
-          student_lastname: student2.lastname,
-          thread_id: new_doc_thread._id,
+          student_firstname: student.firstname,
+          student_lastname: student.lastname,
+          thread_id: newAppRecord.doc_thread_id._id,
           documentname,
           updatedAt: new Date()
         }
       );
     }
   }
-  if (isNotArchiv(student2)) {
+  if (isNotArchiv(student)) {
     await assignDocumentTaskToStudentEmail(
       {
-        firstname: student2.firstname,
-        lastname: student2.lastname,
-        address: student2.email
+        firstname: student.firstname,
+        lastname: student.lastname,
+        address: student.email
       },
-      { documentname, updatedAt: new Date(), thread_id: new_doc_thread._id }
+      {
+        documentname,
+        updatedAt: new Date(),
+        thread_id: newAppRecord.doc_thread_id._id
+      }
     );
   }
 });
@@ -1708,7 +1700,7 @@ const handleDeleteGeneralThread = asyncHandler(async (req, res) => {
   res.status(200).send({ success: true });
 });
 
-const deleteProgramThread = async (studentId, programId, threadId) => {
+const deleteApplicationThread = async (studentId, programId, threadId) => {
   // Before delete the thread, please delete all of the files in the thread!!
   // Delete folder
   let directory = path.join(studentId, threadId);
@@ -1747,7 +1739,7 @@ const handleDeleteProgramThread = asyncHandler(async (req, res) => {
     throw new ErrorResponse(403, 'Invalid student id');
   }
 
-  await deleteProgramThread(studentId, program_id, messagesThreadId);
+  await deleteApplicationThread(studentId, program_id, messagesThreadId);
   res.status(200).send({ success: true });
 });
 
@@ -1854,6 +1846,7 @@ module.exports = {
   resetSurveyInput,
   getCVMLRLOverview,
   initGeneralMessagesThread,
+  createApplicationThread,
   initApplicationMessagesThread,
   getMessages,
   getMessageImageDownload,
@@ -1861,6 +1854,7 @@ module.exports = {
   postImageInThread,
   postMessages,
   SetStatusMessagesThread,
+  deleteApplicationThread,
   handleDeleteGeneralThread,
   handleDeleteProgramThread,
   deleteAMessageInThread

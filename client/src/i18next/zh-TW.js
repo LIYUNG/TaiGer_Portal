@@ -65,6 +65,7 @@ export const translation_zh_TW = {
     Courses: '修課',
     'My Courses': '我的修課',
     'My Documents': '我的文件',
+    'All Documents': '所有文件',
     'Essay Dashboard': '論文中心',
     'Interview Training': '面試訓練',
     'Student Database': '學生資料庫',

@@ -31,6 +31,11 @@ const PortalCredentialPage = React.lazy(() =>
 const BaseDocuments = React.lazy(() =>
   import('./Demo/BaseDocuments/BaseDocuments')
 );
+
+const AllBaseDocuments = React.lazy(() =>
+  import('./Demo/BaseDocuments/AllBaseDocuments')
+);
+
 const MyCourses = React.lazy(() => import('./Demo/MyCourses/index'));
 const MyCoursesAnalysis = React.lazy(() =>
   import('./Demo/MyCourses/CourseAnalysis')
@@ -337,6 +342,12 @@ const routes = [
     exact: true,
     name: 'Documents',
     Component: BaseDocuments
+  },
+  {
+    path: '/all-base-documents',
+    exact: true,
+    name: 'Akk Documents',
+    Component: AllBaseDocuments
   },
   {
     path: '/portal-informations',

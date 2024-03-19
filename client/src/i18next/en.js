@@ -65,6 +65,7 @@ export const translation_en = {
     Courses: 'Courses',
     'My Courses': 'My Courses',
     'My Documents': 'My Documents',
+    'All Documents': 'All Documents',
     'Essay Dashboard': 'Essay Dashboard',
     'Interview Training': 'Interview Training',
     'Student Database': 'Student Database',

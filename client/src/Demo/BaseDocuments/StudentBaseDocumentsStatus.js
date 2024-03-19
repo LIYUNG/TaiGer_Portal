@@ -24,6 +24,7 @@ import AcceptProfileFileModel from './AcceptedFilePreviewModal';
 import ModalNew from '../../components/Modal';
 import { updateProfileDocumentStatus } from '../../api';
 import { useTranslation } from 'react-i18next';
+import ModalMain from '../Utils/ModalHandler/ModalMain';
 
 function StudentBaseDocumentsStatus(props) {
   const { t } = useTranslation();
@@ -45,7 +46,9 @@ function StudentBaseDocumentsStatus(props) {
       rejectProfileFileModel: false,
       acceptProfileFileModel: false,
       baseDocsflagOffcanvas: false,
-      baseDocsflagOffcanvasButtonDisable: false
+      baseDocsflagOffcanvasButtonDisable: false,
+      res_modal_status: 0,
+      res_modal_message: ''
     });
 
   const showPreview = (e, path, doc_key) => {
@@ -160,6 +163,15 @@ function StudentBaseDocumentsStatus(props) {
       }));
     }
   };
+
+  const ConfirmError = () => {
+    setStudentBaseDocumentsStatusState((prevState) => ({
+      ...prevState,
+      res_modal_status: 0,
+      res_modal_message: ''
+    }));
+  };
+
   let keys2 = Object.keys(profile_list);
   let object_init = {};
   keys2.forEach((key) => {
@@ -281,9 +293,17 @@ function StudentBaseDocumentsStatus(props) {
 
   return (
     <>
+      {studentBaseDocumentsStatusState.res_modal_status >= 400 && (
+        <ModalMain
+          ConfirmError={ConfirmError}
+          res_modal_status={studentBaseDocumentsStatusState.res_modal_status}
+          res_modal_message={studentBaseDocumentsStatusState.res_modal_message}
+        />
+      )}
       <TableCell>
         <Link to={student_profile_path} component={LinkDom}>
-          {studentBaseDocumentsStatusState.student.firstname} {studentBaseDocumentsStatusState.student.lastname}
+          {studentBaseDocumentsStatusState.student.firstname}{' '}
+          {studentBaseDocumentsStatusState.student.lastname}
         </Link>
       </TableCell>
       {file_information}

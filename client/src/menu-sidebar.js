@@ -38,7 +38,7 @@ let application_overview = [
     target: false
   },
   {
-    id: 'base_documents',
+    id: 'my-documents',
     title: 'My Documents',
     type: 'item',
     url: '/base-documents',
@@ -48,7 +48,7 @@ let application_overview = [
     breadcrumbs: false
   },
   {
-    id: 'editor_center',
+    id: 'cvmlrl-overview',
     title: 'CV ML RL Overview',
     type: 'item',
     url: '/cv-ml-rl-center',
@@ -75,7 +75,6 @@ if (appConfig.vpdEnable) {
     title: 'Uni-Assist Tasks',
     type: 'item',
     url: '/uni-assist',
-    classes: 'nav-item',
     icon: <DrawIcon />,
     target: false,
     breadcrumbs: false
@@ -88,15 +87,20 @@ let all_students_nestedList = [
     title: 'All Application Overview',
     type: 'item',
     url: '/all-students-applications',
-    classes: 'nav-item',
     icon: <AssignmentTurnedInOutlinedIcon />
+  },
+  {
+    id: 'all-base-documents-overview',
+    title: 'All Documents',
+    type: 'item',
+    url: '/all-base-documents',
+    icon: <InsertDriveFileIcon />
   },
   {
     id: 'tasks_dashboard',
     title: 'Tasks Dashboard',
     type: 'item',
     url: '/dashboard/cv-ml-rl',
-    classes: 'nav-item',
     icon: <BorderColorOutlinedIcon />
   },
   {
@@ -104,7 +108,6 @@ let all_students_nestedList = [
     title: 'Essay Dashboard',
     type: 'item',
     url: '/dashboard/essay',
-    classes: 'nav-item',
     icon: <BorderColorOutlinedIcon />
   },
   {
@@ -112,7 +115,6 @@ let all_students_nestedList = [
     title: 'Interview Training',
     type: 'item',
     icon: <HeadsetMicOutlinedIcon />,
-    classes: 'nav-item',
     url: '/interview-training'
   },
   {
@@ -120,7 +122,6 @@ let all_students_nestedList = [
     title: 'Student Overview',
     type: 'item',
     url: '/students-overview/all',
-    classes: 'nav-item',
     icon: <GroupOutlinedIcon />
   },
   {
@@ -309,7 +310,7 @@ export const MenuSidebar = [
         breadcrumbs: false
       },
       {
-        id: 'base_documents',
+        id: 'base-documents',
         title: 'Documents',
         type: 'item',
         url: '/base-documents',

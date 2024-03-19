@@ -206,9 +206,10 @@ function DocModificationThreadPage() {
             const reader = new FileReader();
             reader.onload = async (event) => {
               const content = event.target.result;
-              const textContent = await extractTextFromDocx(content);
+              const { headerText, textContent, footerText } =
+                await extractTextFromDocx(content);
               if (
-                textContent
+                `${headerText}${textContent}${footerText}`
                   .toLowerCase()
                   .includes(
                     docModificationThreadPageState.thread.student_id.firstname.toLowerCase()
@@ -217,6 +218,17 @@ function DocModificationThreadPage() {
                 checkPoints_temp2.corretFirstname.value = true;
                 checkPoints_temp2.corretFirstname.text =
                   checkPoints_temp2.corretFirstname.text.replace('NOT ', '');
+              }
+              console.log(`${headerText}${footerText}`);
+              if (`${headerText}${footerText}` !== '') {
+                checkPoints_temp2.metadata = {
+                  hasMetadata: true,
+                  metaData: `
+                  Potential Risky Metadata: 
+                  Header:${headerText}
+                  
+                  Footer:${footerText}.`
+                };
               }
               resolve(checkPoints_temp2);
             };
@@ -288,10 +300,29 @@ function DocModificationThreadPage() {
 
   const extractTextFromDocx = async (arrayBuffer) => {
     const zip = await JSZip.loadAsync(arrayBuffer);
-    const documentXml = await zip.file('word/document.xml').async('string');
+    const documentXml = await zip.file('word/document.xml')?.async('string');
     // Extract text from the XML content
-    const textContent = documentXml.replace(/<[^>]+>/g, ''); // Strip HTML tags
-    return textContent;
+    let textContent = documentXml?.replace(/<[^>]+>/g, ''); // Strip HTML tags
+    // Extract header text if present
+    let headerText = '';
+    const headerXml = await zip
+      .file('word/header1.xml')
+      ?.async('string')
+      .catch(() => ''); // Assuming there's only one header
+    if (headerXml) {
+      headerText = headerXml.replace(/<[^>]+>/g, ''); // Strip XML tags
+    }
+
+    // Extract footer text if present
+    let footerText = '';
+    const footerXml = await zip
+      .file('word/footer1.xml')
+      ?.async('string')
+      .catch(() => ''); // Assuming there's only one footer
+    if (footerXml) {
+      footerText = footerXml?.replace(/<[^>]+>/g, ''); // Strip XML tags
+    }
+    return { headerText, textContent, footerText };
   };
 
   const ConfirmError = () => {

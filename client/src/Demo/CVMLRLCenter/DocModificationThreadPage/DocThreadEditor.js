@@ -74,6 +74,8 @@ function DocThreadEditor(props) {
                       ? CVMLRL_DOC_PRECHECK_STATUS_E.OK_SYMBOL
                       : CVMLRL_DOC_PRECHECK_STATUS_E.NOT_OK_SYMBOL}
                     {props.checkResult[i][ky].text}
+                    {props.checkResult[i][ky].hasMetadata &&
+                      props.checkResult[i][ky].metaData}
                   </Typography>
                 ))}
               </Box>

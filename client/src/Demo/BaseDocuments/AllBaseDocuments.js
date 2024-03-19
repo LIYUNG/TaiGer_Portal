@@ -23,7 +23,7 @@ import ModalMain from '../Utils/ModalHandler/ModalMain';
 import ErrorPage from '../Utils/ErrorPage';
 import { is_TaiGer_role } from '../Utils/checking-functions';
 
-import { getAllStudents } from '../../api';
+import { getAllActiveStudents } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import { useAuth } from '../../components/AuthProvider';
 import DEMO from '../../store/constant';
@@ -48,7 +48,7 @@ function AllBaseDocuments() {
   });
 
   useEffect(() => {
-    getAllStudents().then(
+    getAllActiveStudents().then(
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;

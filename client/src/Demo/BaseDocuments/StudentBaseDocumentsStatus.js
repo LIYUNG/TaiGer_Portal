@@ -6,21 +6,34 @@ import {
   AiFillCloseCircle,
   AiOutlineFieldTime
 } from 'react-icons/ai';
-import { Link, TableCell } from '@mui/material';
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Link,
+  TableCell,
+  TextField,
+  Typography
+} from '@mui/material';
 import { BsDash } from 'react-icons/bs';
 
 import { profile_list } from '../Utils/contants';
 import { DocumentStatus } from '../Utils/checking-functions';
 import DEMO from '../../store/constant';
 import AcceptProfileFileModel from './AcceptedFilePreviewModal';
+import ModalNew from '../../components/Modal';
+import { updateProfileDocumentStatus } from '../../api';
+import { useTranslation } from 'react-i18next';
 
 function StudentBaseDocumentsStatus(props) {
+  const { t } = useTranslation();
   const [studentBaseDocumentsStatusState, setStudentBaseDocumentsStatusState] =
     useState({
       student: props.student,
       link: props.link,
       student_id: props.student._id.toString(),
       category: '',
+      doc_key: '',
       docName: '',
       comments: '',
       feedback: '',
@@ -35,12 +48,20 @@ function StudentBaseDocumentsStatus(props) {
       baseDocsflagOffcanvasButtonDisable: false
     });
 
-  const showPreview = (e, path) => {
+  const showPreview = (e, path, doc_key) => {
     e.preventDefault();
     setStudentBaseDocumentsStatusState((prevState) => ({
       ...prevState,
       showPreview: true,
-      preview_path: path
+      preview_path: path,
+      doc_key: doc_key
+    }));
+  };
+
+  const closeRejectWarningWindow = () => {
+    setStudentBaseDocumentsStatusState((prevState) => ({
+      ...prevState,
+      rejectProfileFileModel: false
     }));
   };
 
@@ -49,6 +70,74 @@ function StudentBaseDocumentsStatus(props) {
       ...prevState,
       showPreview: false
     }));
+  };
+  const handleRejectMessage = (e, rejectmessage) => {
+    e.preventDefault();
+    setStudentBaseDocumentsStatusState((prevState) => ({
+      ...prevState,
+      feedback: rejectmessage
+    }));
+  };
+
+  const onUpdateProfileFilefromstudent = (e) => {
+    e.preventDefault();
+    setStudentBaseDocumentsStatusState((prevState) => ({
+      ...prevState,
+      isLoaded: false
+    }));
+    updateProfileDocumentStatus(
+      studentBaseDocumentsStatusState.category,
+      studentBaseDocumentsStatusState.student_id,
+      studentBaseDocumentsStatusState.status,
+      studentBaseDocumentsStatusState.feedback
+    ).then(
+      (resp) => {
+        const { data, success } = resp.data;
+        const { status } = resp;
+        if (success) {
+          setStudentBaseDocumentsStatusState((prevState) => ({
+            ...prevState,
+            student: data,
+            success,
+            showPreview: false,
+            rejectProfileFileModel: false,
+            isLoaded: {
+              ...prevState.isLoaded,
+              [studentBaseDocumentsStatusState.category]: true
+            },
+            res_modal_status: status
+          }));
+        } else {
+          // TODO: redesign, modal ist better!
+          const { message } = resp.data;
+          setStudentBaseDocumentsStatusState((prevState) => ({
+            ...prevState,
+            isLoaded: {
+              ...prevState.isLoaded,
+              [studentBaseDocumentsStatusState.category]: true
+            },
+            showPreview: false,
+            rejectProfileFileModel: false,
+            res_modal_message: message,
+            res_modal_status: status
+          }));
+        }
+      },
+      (error) => {
+        setStudentBaseDocumentsStatusState((prevState) => ({
+          ...prevState,
+          isLoaded: {
+            ...prevState.isLoaded,
+            [studentBaseDocumentsStatusState.category]: true
+          },
+          error,
+          showPreview: false,
+          rejectProfileFileModel: false,
+          res_modal_status: 500,
+          res_modal_message: ''
+        }));
+      }
+    );
   };
 
   const onUpdateProfileDocStatus = (e, category, student_id, status) => {
@@ -77,7 +166,7 @@ function StudentBaseDocumentsStatus(props) {
     object_init[key] = { status: DocumentStatus.Missing };
   });
 
-  if (props.student.profile) {
+  if (studentBaseDocumentsStatusState.student.profile) {
     studentBaseDocumentsStatusState.student.profile.forEach((profile) => {
       let document_split = profile.path.replace(/\\/g, '/');
       let document_name = document_split.split('/')[1];
@@ -101,7 +190,7 @@ function StudentBaseDocumentsStatus(props) {
   let profile_list_keys = Object.keys(profile_list);
 
   const student_profile_path = `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-    props.student._id,
+    studentBaseDocumentsStatusState.student._id,
     DEMO.PROFILE_HASH
   )}`;
   var file_information;
@@ -140,7 +229,7 @@ function StudentBaseDocumentsStatus(props) {
             title="Valid Document"
             style={{ textDecoration: 'none', cursor: 'pointer' }}
             onClick={(e) => {
-              showPreview(e, object_init[k].path);
+              showPreview(e, object_init[k].path, k);
               console.log(object_init[k].status);
             }}
           />
@@ -194,7 +283,7 @@ function StudentBaseDocumentsStatus(props) {
     <>
       <TableCell>
         <Link to={student_profile_path} component={LinkDom}>
-          {props.student.firstname} {props.student.lastname}
+          {studentBaseDocumentsStatusState.student.firstname} {studentBaseDocumentsStatusState.student.lastname}
         </Link>
       </TableCell>
       {file_information}
@@ -205,9 +294,40 @@ function StudentBaseDocumentsStatus(props) {
         preview_path={studentBaseDocumentsStatusState.preview_path}
         student_id={studentBaseDocumentsStatusState.student_id}
         isLoaded={studentBaseDocumentsStatusState.isLoaded}
-        k={props.k}
+        k={studentBaseDocumentsStatusState.doc_key}
         onUpdateProfileDocStatus={onUpdateProfileDocStatus}
       />
+      <ModalNew
+        open={studentBaseDocumentsStatusState.rejectProfileFileModel}
+        onClose={closeRejectWarningWindow}
+        aria-labelledby="contained-modal-title-vcenter"
+      >
+        <Typography variant="h6">Warning</Typography>
+        <Typography variant="body1">
+          Please give a reason why the uploaded{' '}
+          {studentBaseDocumentsStatusState.category} is invalied?
+        </Typography>
+        <TextField
+          type="text"
+          placeholder="ex. Poor scanned quality."
+          onChange={(e) => handleRejectMessage(e, e.target.value)}
+        />
+        <Box>
+          <Button
+            disabled={studentBaseDocumentsStatusState.feedback === ''}
+            onClick={(e) => onUpdateProfileFilefromstudent(e)}
+          >
+            {!studentBaseDocumentsStatusState.isLoaded ? (
+              <CircularProgress size={24} />
+            ) : (
+              t('Yes')
+            )}
+          </Button>
+          <Button onClick={closeRejectWarningWindow}>
+            {t('No', { ns: 'common' })}
+          </Button>
+        </Box>
+      </ModalNew>
     </>
   );
 }

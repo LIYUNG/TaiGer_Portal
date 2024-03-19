@@ -13,6 +13,8 @@ import { styled, alpha } from '@mui/material/styles';
 import { InputBase } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
+import BugReportIcon from '@mui/icons-material/BugReport';
+import WarningIcon from '@mui/icons-material/Warning';
 import HelpIcon from '@mui/icons-material/Help';
 import { green, red, grey } from '@mui/material/colors';
 
@@ -67,6 +69,12 @@ export const CVMLRL_DOC_PRECHECK_STATUS_E = {
   ),
   NOT_OK_SYMBOL: (
     <CancelIcon size={18} style={{ color: red[700] }} title="Decided No" />
+  ),
+  RISK_SYMBOL: (
+    <BugReportIcon size={18} style={{ color: grey[400] }} title="Risk" />
+  ),
+  WARNING_SYMBOK: (
+    <WarningIcon size={18} style={{ color: red[700] }} title="Warning" />
   )
 };
 

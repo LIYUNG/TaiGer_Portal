@@ -224,7 +224,7 @@ function DocModificationThreadPage() {
                 checkPoints_temp2.metadata = {
                   hasMetadata: true,
                   metaData: `
-                  Potential Risky Metadata: 
+                  Potential Risky Metadata, please double check if this is safe: 
                   Header:${headerText}
                   
                   Footer:${footerText}.`
@@ -310,7 +310,7 @@ function DocModificationThreadPage() {
       ?.async('string')
       .catch(() => ''); // Assuming there's only one header
     if (headerXml) {
-      headerText = headerXml.replace(/<[^>]+>/g, ''); // Strip XML tags
+      headerText = headerXml?.replace(/<[^>]+>/g, ''); // Strip XML tags
     }
 
     // Extract footer text if present

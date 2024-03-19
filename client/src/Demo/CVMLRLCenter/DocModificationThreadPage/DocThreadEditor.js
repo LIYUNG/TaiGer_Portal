@@ -70,7 +70,9 @@ function DocThreadEditor(props) {
                     key={props.checkResult[i][ky].text}
                     sx={{ ml: 2 }}
                   >
-                    {props.checkResult[i][ky].value
+                    {props.checkResult[i][ky].value === undefined
+                      ? CVMLRL_DOC_PRECHECK_STATUS_E.WARNING_SYMBOK
+                      : props.checkResult[i][ky].value
                       ? CVMLRL_DOC_PRECHECK_STATUS_E.OK_SYMBOL
                       : CVMLRL_DOC_PRECHECK_STATUS_E.NOT_OK_SYMBOL}
                     {props.checkResult[i][ky].text}

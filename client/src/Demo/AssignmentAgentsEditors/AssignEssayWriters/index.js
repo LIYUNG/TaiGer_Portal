@@ -30,12 +30,12 @@ function AssignEssayWriters() {
     essayDocumentThreads: essayDocumentThreads
   });
 
-  const submitUpdateEditorlist = (e, updateEditorList, essayDocumentThread_id) => {
+  const submitUpdateEssayWriterlist = (e, updateEditorList, essayDocumentThread_id) => {
     e.preventDefault();
-    UpdateEditorlist(e, updateEditorList, essayDocumentThread_id);
+    UpdateEssayWriterlist(e, updateEditorList, essayDocumentThread_id);
   };
   // (editor_id, documentsthreadId)
-  const UpdateEditorlist = (e, updateEditorList, essayDocumentThread_id) => {
+  const UpdateEssayWriterlist = (e, updateEditorList, essayDocumentThread_id) => {
     e.preventDefault();
     updateEssayWriter(updateEditorList, essayDocumentThread_id).then(
       (resp) => {
@@ -105,7 +105,7 @@ function AssignEssayWriters() {
       <AssignEssayWritersPage
         students={assignEditorsState.students}
         updateEditorList={assignEditorsState.updateEditorList}
-        submitUpdateEditorlist={submitUpdateEditorlist}
+        submitUpdateEssayWriterlist={submitUpdateEssayWriterlist}
         essayDocumentThreads={assignEditorsState.essayDocumentThreads}
       />
     </Box>

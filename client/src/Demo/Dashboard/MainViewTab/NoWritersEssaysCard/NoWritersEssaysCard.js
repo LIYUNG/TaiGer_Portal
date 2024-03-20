@@ -47,14 +47,14 @@ function NoWritersEssaysCard(props) {
     }));
   };
 
-  const submitUpdateEditorlist = (
+  const submitUpdateEssayWriterlist = (
     e,
-    updateEditorList,
+    updateEssayWriterList,
     essayDocumentThread_id
   ) => {
     e.preventDefault();
     setEditorModalhide();
-    props.submitUpdateEditorlist(e, updateEditorList, essayDocumentThread_id);
+    props.submitUpdateEssayWriterlist(e, updateEssayWriterList, essayDocumentThread_id);
   };
 
   const findStudentsWithDocumentthread = (students, essayDocumentThread) => {
@@ -113,10 +113,10 @@ function NoWritersEssaysCard(props) {
               )}`}
             >
               {props.essayDocumentThread?.file_type}
-              {props.essayDocumentThread?.program_id.school}
-              {props.essayDocumentThread?.program_id.program_name}
-              {props.essayDocumentThread?.program_id.degree}
-              {props.essayDocumentThread?.program_id.semester}
+              {props.essayDocumentThread?.program_id?.school}
+              {props.essayDocumentThread?.program_id?.program_name}
+              {props.essayDocumentThread?.program_id?.degree}
+              {props.essayDocumentThread?.program_id?.semester}
             </Link>
           </TableCell>
           <TableCell>
@@ -161,7 +161,7 @@ function NoWritersEssaysCard(props) {
             show={noEditorsStudentsCardState.showEditorPage}
             onHide={setEditorModalhide}
             setmodalhide={setEditorModalhide}
-            submitUpdateEditorlist={submitUpdateEditorlist}
+            submitUpdateEssayWriterlist={submitUpdateEssayWriterlist}
             essayDocumentThread={props.essayDocumentThread}
           />
         )}

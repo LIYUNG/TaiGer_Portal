@@ -808,7 +808,6 @@ const getMessages = asyncHandler(async (req, res) => {
     user,
     params: { messagesThreadId }
   } = req;
-  console.log('check cast error:', messagesThreadId);
   const document_thread = await Documentthread.findById(messagesThreadId)
     .populate(
       'student_id',
@@ -816,6 +815,7 @@ const getMessages = asyncHandler(async (req, res) => {
     )
     .populate('messages.user_id', 'firstname lastname role')
     .populate('program_id')
+    .populate('outsourced_user_id', 'firstname lastname role')
     .lean()
     .exec();
 
@@ -1811,10 +1811,17 @@ const assignEssayWritersToEssayTask = asyncHandler(async (req, res, next) => {
   } = req;
   console.log('message in controller:', messagesThreadId);
   const keys = Object.keys(editorsId);
-  const essayDocumentThreads = await Documentthread.find({
-    _id: messagesThreadId,
-    file_type: 'Essay'
-  });
+  const essayDocumentThreads = await Documentthread.findById(messagesThreadId)
+    .populate('student_id')
+    .populate({
+      path: 'student_id',
+      populate: {
+        path: 'agents',
+        model: 'User'
+      }
+    })
+    .populate('program_id', 'school program_name degree application_deadline')
+    .select('-messages');
   // TODO: data validation for studentId, editorsId
   let updated_editor_id = [];
   let before_change_editor_arr = essayDocumentThreads.outsourced_user_id;
@@ -1851,14 +1858,12 @@ const assignEssayWritersToEssayTask = asyncHandler(async (req, res, next) => {
     }
   }
   // student.notification.isRead_new_editor_assigned = false;
-  for (const documentThread of essayDocumentThreads) {
-    // Update the outsourced_user_id field for each document
-    documentThread.outsourced_user_id = updated_editor_id;
-    // Save the changes to the document
-    await documentThread.save();
-  }
+  // Update the outsourced_user_id field for each document
+  essayDocumentThreads.outsourced_user_id = updated_editor_id;
+  // Save the changes to the document
+  await essayDocumentThreads.save();
 
-  const studentId = essayDocumentThreads[0].student_id;
+  const studentId = essayDocumentThreads.student_id;
   const student = await Student.findById(studentId);
   const student_upated = await Student.findById(studentId)
     .populate('applications.programId agents editors')

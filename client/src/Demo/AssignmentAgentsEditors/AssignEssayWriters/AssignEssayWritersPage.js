@@ -29,7 +29,7 @@ function AssignEssayWritersPage(props) {
       <NoWritersEssaysCard
         key={i}
         students={props.students}
-        submitUpdateEditorlist={props.submitUpdateEditorlist}
+        submitUpdateEssayWriterlist={props.submitUpdateEssayWriterlist}
         essayDocumentThread={essayDocumentThread}
       />
     ));

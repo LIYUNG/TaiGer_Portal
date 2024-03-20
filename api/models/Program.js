@@ -3,7 +3,7 @@ const logger = require('../services/logger');
 const {
   findAffectedStudents,
   isCrucialChanges,
-  handleMissingThreads
+  handleThreadDelta
 } = require('../utils/modelHelper/programChange');
 
 const Degree = {
@@ -211,7 +211,7 @@ programSchema.post(['updateOne', 'updateMany', 'update'], async function () {
         )}`
       );
       const studentThreadsMap = await findAffectedStudents(programId);
-      await handleMissingThreads(doc, studentThreadsMap);
+      await handleThreadDelta(doc, studentThreadsMap);
       logger.info(
         `ProgramHook - Post hook executed successfully. (Id=${programId})`
       );

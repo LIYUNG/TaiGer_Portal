@@ -1,4 +1,9 @@
 const { Student } = require('../../models/User');
+const { Documentthread } = require('../../models/Documentthread');
+const {
+  createApplicationThread,
+  deleteApplicationThread
+} = require('../../controllers/documents_modification');
 const logger = require('../../services/logger');
 
 const isCrucialChanges = (changes) => {
@@ -32,13 +37,15 @@ const findAffectedStudents = async (programId) => {
       (application) => application.programId.toString() === programId.toString()
     );
     const threadIds =
-      application?.doc_modification_thread.map((thread) => thread._id) || [];
+      application?.doc_modification_thread.map((thread) =>
+        thread.doc_thread_id.toString()
+      ) || [];
     studentsThreadMap[student._id] = threadIds;
   }
   return studentsThreadMap;
 };
 
-const getProgramReqiredDocs = (program) => {
+const getProgramReqiredTypeCount = (program) => {
   const docRequired = {};
   docRequired.ml = program.ml_required.toLowerCase() === 'yes' ? 1 : 0;
   docRequired.rl = parseInt(program.rl_required);
@@ -50,14 +57,37 @@ const getProgramReqiredDocs = (program) => {
   return docRequired;
 };
 
-const handleMissingThreads = async (program, studentsThreadMap) => {
-  console.log('handleMissingThreads ->', program, studentsThreadMap);
-  const requirement = getProgramReqiredDocs(program);
-  console.log('requirement ->', requirement);
+const handleThreadDelta = async (program, studentsThreadMap) => {
+  const requirement = getProgramReqiredTypeCount(program);
+  console.log('handleThreadDelta ->', program, requirement, studentsThreadMap);
+  for (let studentId in studentsThreadMap) {
+    threadIds = studentsThreadMap[studentId];
+    const types1 = await Documentthread.find(
+      {
+        student_id: studentId,
+        program_id: program._id
+      },
+      { _id: 0 }
+    )
+      .select('file_type')
+      .lean();
+    const types2 = await Documentthread.find(
+      { _id: { $in: threadIds } },
+      { _id: 0 }
+    )
+      .select('file_type')
+      .lean();
+    console.log(
+      'handleThreadDelta ->',
+      studentId,
+      types1.map((type) => type.file_type),
+      types2.map((type) => type.file_type)
+    );
+  }
 };
 
 module.exports = {
   isCrucialChanges,
   findAffectedStudents,
-  handleMissingThreads
+  handleThreadDelta
 };

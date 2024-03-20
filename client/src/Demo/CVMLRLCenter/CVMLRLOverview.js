@@ -1,30 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import {
-  Button,
-  Tabs,
-  Tab,
-  Box,
-  Typography,
-  CircularProgress
-} from '@mui/material';
+import { Tabs, Tab, Box, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
 
 import {
-  is_new_message_status,
-  is_pending_status,
   cvmlrl_overview_header,
   cvmlrl_overview_closed_header
 } from '../Utils/contants';
-import { is_TaiGer_role, open_tasks } from '../Utils/checking-functions';
+import { is_TaiGer_role } from '../Utils/checking-functions';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
-import { SetFileAsFinal } from '../../api';
 import Banner from '../../components/Banner/Banner';
 import SortTable from '../../components/SortTable/SortTable';
 import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
 import { CustomTabPanel, a11yProps } from '../../components/Tabs';
 import { useTranslation } from 'react-i18next';
-import ModalNew from '../../components/Modal';
 
 CustomTabPanel.propTypes = {
   children: PropTypes.node,
@@ -64,131 +53,6 @@ function CVMLRLOverview(props) {
     }));
   }, [props.students]);
 
-  const closeSetAsFinalFileModelWindow = () => {
-    setCVMLRLOverviewState((prevState) => ({
-      ...prevState,
-      SetAsFinalFileModel: false
-    }));
-  };
-  const ConfirmSetAsFinalFileHandler = () => {
-    setCVMLRLOverviewState((prevState) => ({
-      ...prevState,
-      isLoaded: false // false to reload everything
-    }));
-    SetFileAsFinal(
-      cVMLRLOverviewState.doc_thread_id,
-      cVMLRLOverviewState.student_id,
-      cVMLRLOverviewState.program_id
-    ).then(
-      (resp) => {
-        const { data, success } = resp.data;
-        const { status } = resp;
-        if (success) {
-          let temp_students = [...cVMLRLOverviewState.students];
-          let student_temp_idx = temp_students.findIndex(
-            (student) =>
-              student._id.toString() === cVMLRLOverviewState.student_id
-          );
-          if (cVMLRLOverviewState.program_id) {
-            let application_idx = temp_students[
-              student_temp_idx
-            ].applications.findIndex(
-              (application) =>
-                application.programId._id.toString() ===
-                cVMLRLOverviewState.program_id
-            );
-
-            let thread_idx = temp_students[student_temp_idx].applications[
-              application_idx
-            ].doc_modification_thread.findIndex(
-              (thread) =>
-                thread.doc_thread_id._id.toString() ===
-                cVMLRLOverviewState.doc_thread_id
-            );
-
-            temp_students[student_temp_idx].applications[
-              application_idx
-            ].doc_modification_thread[thread_idx].isFinalVersion =
-              data.isFinalVersion;
-
-            temp_students[student_temp_idx].applications[
-              application_idx
-            ].doc_modification_thread[thread_idx].updatedAt = data.updatedAt;
-            temp_students[student_temp_idx].applications[
-              application_idx
-            ].doc_modification_thread[thread_idx].doc_thread_id.updatedAt =
-              data.updatedAt;
-          } else {
-            let general_doc_idx = temp_students[
-              student_temp_idx
-            ].generaldocs_threads.findIndex(
-              (thread) =>
-                thread.doc_thread_id._id.toString() ===
-                cVMLRLOverviewState.doc_thread_id
-            );
-            temp_students[student_temp_idx].generaldocs_threads[
-              general_doc_idx
-            ].isFinalVersion = data.isFinalVersion;
-
-            temp_students[student_temp_idx].generaldocs_threads[
-              general_doc_idx
-            ].updatedAt = data.updatedAt;
-
-            temp_students[student_temp_idx].generaldocs_threads[
-              general_doc_idx
-            ].doc_thread_id.updatedAt = data.updatedAt;
-          }
-
-          setCVMLRLOverviewState((prevState) => ({
-            ...prevState,
-            docName: '',
-            isLoaded: true,
-            students: temp_students,
-            success: success,
-            SetAsFinalFileModel: false,
-            isFinalVersion: false,
-            res_modal_status: status
-          }));
-        } else {
-          const { message } = resp.data;
-          setCVMLRLOverviewState((prevState) => ({
-            ...prevState,
-            isLoaded: true,
-            res_modal_message: message,
-            res_modal_status: status
-          }));
-        }
-      },
-      (error) => {
-        setCVMLRLOverviewState((prevState) => ({
-          ...prevState,
-          isLoaded: true,
-          error,
-          res_modal_status: 500,
-          res_modal_message: ''
-        }));
-      }
-    );
-  };
-
-  const handleAsFinalFile = (
-    doc_thread_id,
-    student_id,
-    program_id,
-    docName,
-    isFinalVersion
-  ) => {
-    setCVMLRLOverviewState((prevState) => ({
-      ...prevState,
-      doc_thread_id,
-      student_id,
-      program_id,
-      docName,
-      SetAsFinalFileModel: true,
-      isFinalVersion
-    }));
-  };
-
   const ConfirmError = () => {
     setCVMLRLOverviewState((prevState) => ({
       ...prevState,
@@ -203,30 +67,6 @@ function CVMLRLOverview(props) {
     return <Loading />;
   }
 
-  const open_tasks_arr = open_tasks(cVMLRLOverviewState.students);
-  const cvmlrl_new_message_v2 = open_tasks_arr.filter(
-    (open_task) =>
-      open_task.show &&
-      !open_task.isFinalVersion &&
-      is_new_message_status(user, open_task)
-  );
-  const cvmlrl_followup_v2 = open_tasks_arr.filter(
-    (open_task) =>
-      open_task.show &&
-      !open_task.isFinalVersion &&
-      is_pending_status(user, open_task) &&
-      open_task.latest_message_left_by_id !== ''
-  );
-  const cvmlrl_pending_progress_v2 = open_tasks_arr.filter(
-    (open_task) =>
-      open_task.show &&
-      !open_task.isFinalVersion &&
-      is_pending_status(user, open_task) &&
-      open_task.latest_message_left_by_id === ''
-  );
-  const cvmlrl_closed_v2 = open_tasks_arr.filter(
-    (open_task) => open_task.show && open_task.isFinalVersion
-  );
   return (
     <>
       {res_modal_status >= 400 && (
@@ -246,19 +86,19 @@ function CVMLRLOverview(props) {
           aria-label="basic tabs example"
         >
           <Tab
-            label={`TODO (${cvmlrl_new_message_v2?.length || 0}) `}
+            label={`TODO (${props.new_message_tasks?.length || 0}) `}
             {...a11yProps(0)}
           />
           <Tab
-            label={`FOLLOW UP (${cvmlrl_followup_v2?.length || 0})`}
+            label={`FOLLOW UP (${props.followup_tasks?.length || 0})`}
             {...a11yProps(1)}
           />
           <Tab
-            label={`NO ACTION (${cvmlrl_pending_progress_v2?.length || 0})`}
+            label={`NO ACTION (${props.pending_progress_tasks?.length || 0})`}
             {...a11yProps(2)}
           />
           <Tab
-            label={`CLOSED (${cvmlrl_closed_v2?.length || 0})`}
+            label={`CLOSED (${props.closed_tasks?.length || 0})`}
             {...a11yProps(3)}
           />
         </Tabs>
@@ -276,9 +116,8 @@ function CVMLRLOverview(props) {
         />
         <SortTable
           columns={cvmlrl_overview_header}
-          data={cvmlrl_new_message_v2}
+          data={props.new_message_tasks}
           user={user}
-          handleAsFinalFile={handleAsFinalFile}
         />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
@@ -294,9 +133,8 @@ function CVMLRLOverview(props) {
         />
         <SortTable
           columns={cvmlrl_overview_header}
-          data={cvmlrl_followup_v2}
+          data={props.followup_tasks}
           user={user}
-          handleAsFinalFile={handleAsFinalFile}
         />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
@@ -316,9 +154,8 @@ function CVMLRLOverview(props) {
         />
         <SortTable
           columns={cvmlrl_overview_header}
-          data={cvmlrl_pending_progress_v2}
+          data={props.pending_progress_tasks}
           user={user}
-          handleAsFinalFile={handleAsFinalFile}
         />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={3}>
@@ -334,9 +171,8 @@ function CVMLRLOverview(props) {
         />
         <SortTable
           columns={cvmlrl_overview_closed_header}
-          data={cvmlrl_closed_v2}
+          data={props.closed_tasks}
           user={user}
-          handleAsFinalFile={handleAsFinalFile}
         />
         <Typography variant="body2">
           {t(
@@ -345,35 +181,6 @@ function CVMLRLOverview(props) {
           )}
         </Typography>
       </CustomTabPanel>
-      <ModalNew
-        open={cVMLRLOverviewState.SetAsFinalFileModel}
-        onClose={closeSetAsFinalFileModelWindow}
-        aria-labelledby="contained-modal-title-vcenter"
-        centered
-      >
-        <Typography>{t('Warning')}</Typography>
-        <Typography>
-          Do you want to set {cVMLRLOverviewState.docName} as{' '}
-          {cVMLRLOverviewState.isFinalVersion ? 'open' : 'final'} for student?
-        </Typography>
-        <Typography>
-          <Button
-            color="primary"
-            variant="contained"
-            disabled={!isLoaded}
-            onClick={ConfirmSetAsFinalFileHandler}
-          >
-            {isLoaded ? t('Yes') : <CircularProgress />}
-          </Button>
-          <Button
-            color="primary"
-            variant="outlined"
-            onClick={closeSetAsFinalFileModelWindow}
-          >
-            {t('No', { ns: 'common' })}
-          </Button>
-        </Typography>
-      </ModalNew>
     </>
   );
 }

@@ -46,6 +46,7 @@ const CoursesAnalysisWidget = React.lazy(() =>
 const CVMLRLGenerator = React.lazy(() =>
   import('./Demo/TaiGerAI/CVMLRLGenerator')
 );
+const AgentSupportDocuments = React.lazy(() => import('./Demo/CVMLRLCenter/index'));
 const CVMLRLOverview = React.lazy(() => import('./Demo/CVMLRLCenter/index'));
 const CVMLRLDashboard = React.lazy(() =>
   import('./Demo/CVMLRLCenter/indexAll')
@@ -344,9 +345,15 @@ const routes = [
     Component: BaseDocuments
   },
   {
+    path: '/agent-support-documents',
+    exact: true,
+    name: 'AgentSupportDocuments',
+    Component: AgentSupportDocuments
+  },
+  {
     path: '/all-base-documents',
     exact: true,
-    name: 'Akk Documents',
+    name: 'All Documents',
     Component: AllBaseDocuments
   },
   {

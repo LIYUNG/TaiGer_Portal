@@ -808,8 +808,6 @@ const createApplicationThread = async (studentId, programId, fileType) => {
   return newAppRecord;
 };
 
-// const deleteApplicationThread = async (req, res) => {};
-
 // (O) email inform Editor
 // (O) email inform Student
 const initApplicationMessagesThread = asyncHandler(async (req, res) => {

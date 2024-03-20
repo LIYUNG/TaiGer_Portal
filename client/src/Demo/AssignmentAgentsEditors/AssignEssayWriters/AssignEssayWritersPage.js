@@ -23,16 +23,16 @@ function AssignEssayWritersPage(props) {
   const { t } = useTranslation();
   // console.log('essaythread in assign page:', props.essayDocumentThreads)
   // console.log("student in assign page:", props.students)
-  const no_writer_essays = props.essayDocumentThreads.map(
-    (essayDocumentThread, i) => (
+  const no_writer_essays = props.essayDocumentThreads
+    .filter((thread) => !thread.isFinalVersion)
+    .map((essayDocumentThread, i) => (
       <NoWritersEssaysCard
         key={i}
         students={props.students}
         submitUpdateEditorlist={props.submitUpdateEditorlist}
         essayDocumentThread={essayDocumentThread}
       />
-    )
-  );
+    ));
 
   return (
     <Box>

@@ -1,15 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Breadcrumbs, Link, Typography, Card } from '@mui/material';
+import { Box, Breadcrumbs, Link, Typography } from '@mui/material';
 import { Navigate, Link as LinkDom } from 'react-router-dom';
 
 import ErrorPage from '../Utils/ErrorPage';
 import { getAllCVMLRLOverview } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
-import { is_TaiGer_role } from '../Utils/checking-functions';
+import {
+  file_category_const,
+  is_TaiGer_role,
+  open_tasks
+} from '../Utils/checking-functions';
 import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
 import { appConfig } from '../../config';
 import Loading from '../../components/Loading/Loading';
+import CVMLRLOverview from '../CVMLRLCenter/CVMLRLOverview';
+import { is_new_message_status, is_pending_status } from '../Utils/contants';
 
 function EssayDashboard() {
   const { user } = useAuth();
@@ -66,7 +72,7 @@ function EssayDashboard() {
     return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
   }
   const { res_status, isLoaded } = essayDashboardState;
-  TabTitle('CV ML RL Center');
+  TabTitle('Essay Dashboard');
   if (!isLoaded && !essayDashboardState.students) {
     return <Loading />;
   }
@@ -74,6 +80,45 @@ function EssayDashboard() {
   if (res_status >= 400) {
     return <ErrorPage res_status={res_status} />;
   }
+
+  const open_tasks_arr = open_tasks(essayDashboardState.students).filter(
+    (open_task) =>
+      [file_category_const.essay_required].includes(open_task.file_type)
+  );
+
+  const no_essay_writer_tasks = open_tasks_arr.filter(
+    (open_task) =>
+      open_task.show &&
+      !open_task.isFinalVersion &&
+      (!open_tasks_arr.outsourced_user_id ||
+        open_tasks_arr.outsourced_user_id?.length === 0)
+  );
+  const new_message_tasks = open_tasks_arr.filter(
+    (open_task) =>
+      open_task.show &&
+      !open_task.isFinalVersion &&
+      is_new_message_status(user, open_task)
+  );
+
+  const followup_tasks = open_tasks_arr.filter(
+    (open_task) =>
+      open_task.show &&
+      !open_task.isFinalVersion &&
+      is_pending_status(user, open_task) &&
+      open_task.latest_message_left_by_id !== ''
+  );
+
+  const pending_progress_tasks = open_tasks_arr.filter(
+    (open_task) =>
+      open_task.show &&
+      !open_task.isFinalVersion &&
+      is_pending_status(user, open_task) &&
+      open_task.latest_message_left_by_id === ''
+  );
+
+  const closed_tasks = open_tasks_arr.filter(
+    (open_task) => open_task.show && open_task.isFinalVersion
+  );
 
   return (
     <Box>
@@ -88,7 +133,18 @@ function EssayDashboard() {
         </Link>
         <Typography color="text.primary">Essay Dashboard</Typography>
       </Breadcrumbs>
-      <Card>Coming soon</Card>
+      {no_essay_writer_tasks.map((task) => (
+        <Typography key={task.thread_id}>{task.document_name}</Typography>
+      ))}
+      <CVMLRLOverview
+        isLoaded={essayDashboardState.isLoaded}
+        success={essayDashboardState.success}
+        students={essayDashboardState.students}
+        new_message_tasks={new_message_tasks}
+        followup_tasks={followup_tasks}
+        pending_progress_tasks={pending_progress_tasks}
+        closed_tasks={closed_tasks}
+      />
     </Box>
   );
 }

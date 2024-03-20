@@ -129,7 +129,6 @@ router.route('/essays/all').get(
   filter_archiv_user,
   postMessagesRateLimiter,
   permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
-  multitenant_filter,
   // permission_canAssignEditor_filter,
   getAllActiveEssays,
   logAccess

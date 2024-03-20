@@ -1940,45 +1940,39 @@ const clearEssayWriters = asyncHandler(async (req, res, next) => {
 
 const getAllActiveEssays = asyncHandler(async (req, res, next) => {
   // TODO
-  const essayDocumentThreads = await Documentthread.find({
-    file_type: 'Essay'
-  }).populate('student_id');
+
   try {
-    const result = await Documentthread.aggregate([
-      {
-        $lookup: {
-          from: 'users', // Assuming the collection name for student documents is 'students'
-          localField: 'student_id',
-          foreignField: '_id',
-          as: 'student_id'
-        }
-      },
-      {
-        $unwind: '$student_id.applications'
-      },
-      {
-        $unwind: '$student_id.applications.doc_modification_thread'
-      },
-      {
-        $match: {
-          $expr: {
-            $eq: [
-              '$_id',
-              '$student_id.applications.doc_modification_thread.doc_thread_id'
-            ]
+    const essayDocumentThreads = await Documentthread.find({
+      file_type: 'Essay'
+    })
+      .populate('student_id')
+      .populate('program_id', 'school program_name degree application_deadline')
+      .select('-messages')
+      .lean();
+
+    const matchingDocuments = [];
+    // console.log(essayDocumentThreads);
+    for (const doc of essayDocumentThreads) {
+      if (doc.student_id && !doc.student_id.archiv) {
+        for (const application of doc.student_id?.applications || []) {
+          if (application.decided === 'O') {
+            for (const thread of application?.doc_modification_thread || []) {
+              if (doc._id.toString() === thread.doc_thread_id.toString()) {
+                matchingDocuments.push(doc);
+                break;
+              }
+            }
           }
         }
       }
-    ]).exec();
-
-    console.log(result);
+    }
+    res.status(200).send({ success: true, data: matchingDocuments });
+    next();
     // Handle matched data
   } catch (error) {
     console.error(error);
-    // Handle error
+    throw new ErrorResponse(403, 'Invalid ThreadId');
   }
-  res.status(200).send({ success: true, data: essayDocumentThreads });
-  next();
 });
 
 module.exports = {

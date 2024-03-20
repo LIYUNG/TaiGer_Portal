@@ -54,7 +54,7 @@ const routes = [
     element: <Dashboard />,
     errorElement: <div>Error</div>,
     loader: () => {
-      return { data: mockSingleData };
+      return { data: mockSingleData, essays: { data: [] } };
     }
   }
 ];

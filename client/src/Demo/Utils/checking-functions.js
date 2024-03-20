@@ -1457,6 +1457,7 @@ const prepTask = (student, thread) => {
     firstname_lastname: `${student.firstname}, ${student.lastname}`,
     latest_message_left_by_id: thread.latest_message_left_by_id,
     isFinalVersion: thread.isFinalVersion,
+    outsourced_user_id: thread.outsourced_user_id,
     file_type: thread.doc_thread_id.file_type,
     student_id: student._id.toString(),
     attributes: student.attributes,
@@ -1915,7 +1916,10 @@ export const isDocumentsMissingAssign = (application) => {
 
 export const does_essay_have_writers = (essayDocumentThreads) => {
   for (let i = 0; i < essayDocumentThreads.length; i += 1) {
-    if (essayDocumentThreads[i].outsourced_user_id === undefined || essayDocumentThreads[i].outsourced_user_id.length === 0) {
+    if (
+      essayDocumentThreads[i].outsourced_user_id === undefined ||
+      essayDocumentThreads[i].outsourced_user_id.length === 0
+    ) {
       return false;
     }
   }

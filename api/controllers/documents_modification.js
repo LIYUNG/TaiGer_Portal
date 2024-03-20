@@ -579,7 +579,7 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
       )
       .lean()
       .exec();
-      // console.log('student:', student)
+    // console.log('student:', student)
     res.status(200).send({ success: true, data: [student] });
   } else {
     // Guest
@@ -808,7 +808,7 @@ const getMessages = asyncHandler(async (req, res) => {
     user,
     params: { messagesThreadId }
   } = req;
-  console.log('check cast error:', messagesThreadId)
+  console.log('check cast error:', messagesThreadId);
   const document_thread = await Documentthread.findById(messagesThreadId)
     .populate(
       'student_id',
@@ -1033,7 +1033,10 @@ const postMessages = asyncHandler(async (req, res) => {
       for (let i = 0; i < student.agents.length; i += 1) {
         // inform active-agent
         if (isNotArchiv(student)) {
-          if (isNotArchiv(student.agents[i]) && document_thread.file_type != "Essay") {
+          if (
+            isNotArchiv(student.agents[i]) &&
+            document_thread.file_type !== 'Essay'
+          ) {
             await sendAssignEditorReminderEmail(
               {
                 firstname: student.agents[i].firstname,
@@ -1070,7 +1073,7 @@ const postMessages = asyncHandler(async (req, res) => {
         .lean();
       if (permissions) {
         for (let x = 0; x < permissions.length; x += 1) {
-          if (document_thread.file_type != "Essay"){
+          if (document_thread.file_type !== 'Essay') {
             await sendAssignEditorReminderEmail(
               {
                 firstname: permissions[x].user_id.firstname,
@@ -1084,18 +1087,18 @@ const postMessages = asyncHandler(async (req, res) => {
               }
             );
           } else {
-              await sendAssignEssayWriterReminderEmail(
-                {
-                  firstname: permissions[x].user_id.firstname,
-                  lastname: permissions[x].user_id.lastname,
-                  address: permissions[x].user_id.email
-                },
-                {
-                  student_firstname: student.firstname,
-                  student_id: student._id.toString(),
-                  student_lastname: student.lastname
-                }
-              );
+            await sendAssignEssayWriterReminderEmail(
+              {
+                firstname: permissions[x].user_id.firstname,
+                lastname: permissions[x].user_id.lastname,
+                address: permissions[x].user_id.email
+              },
+              {
+                student_firstname: student.firstname,
+                student_id: student._id.toString(),
+                student_lastname: student.lastname
+              }
+            );
           }
         }
       }
@@ -1806,12 +1809,12 @@ const assignEssayWritersToEssayTask = asyncHandler(async (req, res, next) => {
     params: { messagesThreadId },
     body: editorsId
   } = req;
-  console.log('message in controller:', messagesThreadId)
+  console.log('message in controller:', messagesThreadId);
   const keys = Object.keys(editorsId);
   const essayDocumentThreads = await Documentthread.find({
-        _id: messagesThreadId,
-        file_type: 'Essay'
-      });
+    _id: messagesThreadId,
+    file_type: 'Essay'
+  });
   // TODO: data validation for studentId, editorsId
   let updated_editor_id = [];
   let before_change_editor_arr = essayDocumentThreads.outsourced_user_id;
@@ -1820,14 +1823,17 @@ const assignEssayWritersToEssayTask = asyncHandler(async (req, res, next) => {
   for (let i = 0; i < keys.length; i += 1) {
     if (editorsId[keys[i]]) {
       updated_editor_id.push(keys[i]);
-      
+
       const editor = await Editor.findById(keys[i]);
       updated_editor.push({
         firstname: editor.firstname,
         lastname: editor.lastname,
         email: editor.email
       });
-      if (before_change_editor_arr && !before_change_editor_arr.includes(keys[i])) {
+      if (
+        before_change_editor_arr &&
+        !before_change_editor_arr.includes(keys[i])
+      ) {
         to_be_informed_editors.push({
           firstname: editor.firstname,
           lastname: editor.lastname,
@@ -1852,8 +1858,8 @@ const assignEssayWritersToEssayTask = asyncHandler(async (req, res, next) => {
     await documentThread.save();
   }
 
-  const studentId = essayDocumentThreads[0].student_id
-  const student = await Student.findById(studentId)
+  const studentId = essayDocumentThreads[0].student_id;
+  const student = await Student.findById(studentId);
   const student_upated = await Student.findById(studentId)
     .populate('applications.programId agents editors')
     .populate(
@@ -1863,7 +1869,7 @@ const assignEssayWritersToEssayTask = asyncHandler(async (req, res, next) => {
     .exec();
 
   res.status(200).send({ success: true, data: essayDocumentThreads });
-  
+
   // console.log('student:', student)
   // console.log('essayDocumentThreads[0].student_id:', essayDocumentThreads[0].student_id.toString())
   for (let i = 0; i < to_be_informed_editors.length; i += 1) {
@@ -1923,56 +1929,54 @@ const assignEssayWritersToEssayTask = asyncHandler(async (req, res, next) => {
 });
 
 const clearEssayWriters = asyncHandler(async (req, res, next) => {
-  const clearEssayWriters = await Documentthread.updateMany(
-    { outsourced_user_id: { $exists: true } }, // Match documents where outsourced_user_id field exists
+  await Documentthread.updateMany(
+    // Match documents where outsourced_user_id field exists
+    { outsourced_user_id: { $exists: true } },
     { $set: { outsourced_user_id: [] } } // Set outsourced_user_id field to an empty array
-  )
+  );
   res.status(200).send({ success: true });
   next();
 });
 
-const getAllEssays = asyncHandler(async (req, res, next) => {
-  const documentthread_idList = [
-    '645c117f7a60fbae9b99dac1',
-    '645c11527a60fbae9b99da9e',
-    '645c20ab0adb82f113b25bc3',
-    '64502555667fd91451277573',
-    '645c223e9d1f88b4acb90bd9',
-    '645c117f7a60fbae9b99dac1',
-    '645c11527a60fbae9b99da9e',
-    '645c20ab0adb82f113b25bc3',
-    '64502555667fd91451277573',
-    '645c223e9d1f88b4acb90bd9',
-    '645c117f7a60fbae9b99dac1',
-    '645c11527a60fbae9b99da9e',
-    '645c20ab0adb82f113b25bc3',
-    '645c117f7a60fbae9b99dac1',
-    '645c11527a60fbae9b99da9e',
-    '645c20ab0adb82f113b25bc3',
-    '64502555667fd91451277573',
-    '645c223e9d1f88b4acb90bd9',
-    '646686dd9e442b2df29cd0c9',
-    '63fa0c391302260c572bbbeb',
-    '63ffdb051302260c572bead9',
-    '645eaa7bf099af9f85a76469',
-    '63c554db2f294a90f28a82a9',
-    '63ffdad31302260c572bea8d',
-    '645c117f7a60fbae9b99dac1',
-    '645c11527a60fbae9b99da9e',
-    '645c20ab0adb82f113b25bc3',
-    '64502555667fd91451277573',
-    '645c223e9d1f88b4acb90bd9',
-    '646686dd9e442b2df29cd0c9',
-    '63fa0c391302260c572bbbeb',
-    '63ffdb051302260c572bead9',
-    '645eaa7bf099af9f85a76469',
-    '63c554db2f294a90f28a82a9',
-    '63ffdad31302260c572bea8d'
-]
+const getAllActiveEssays = asyncHandler(async (req, res, next) => {
+  // TODO
   const essayDocumentThreads = await Documentthread.find({
-    file_type: 'Essay',
-    _id: { $nin: documentthread_idList }
-  })
+    file_type: 'Essay'
+  }).populate('student_id');
+  try {
+    const result = await Documentthread.aggregate([
+      {
+        $lookup: {
+          from: 'users', // Assuming the collection name for student documents is 'students'
+          localField: 'student_id',
+          foreignField: '_id',
+          as: 'student_id'
+        }
+      },
+      {
+        $unwind: '$student_id.applications'
+      },
+      {
+        $unwind: '$student_id.applications.doc_modification_thread'
+      },
+      {
+        $match: {
+          $expr: {
+            $eq: [
+              '$_id',
+              '$student_id.applications.doc_modification_thread.doc_thread_id'
+            ]
+          }
+        }
+      }
+    ]).exec();
+
+    console.log(result);
+    // Handle matched data
+  } catch (error) {
+    console.error(error);
+    // Handle error
+  }
   res.status(200).send({ success: true, data: essayDocumentThreads });
   next();
 });
@@ -1997,6 +2001,6 @@ module.exports = {
   deleteProgramSpecificMessagesThread,
   deleteAMessageInThread,
   assignEssayWritersToEssayTask,
-  getAllEssays,
+  getAllActiveEssays,
   clearEssayWriters
 };

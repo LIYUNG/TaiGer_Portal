@@ -193,8 +193,8 @@ const routes = [
   {
     path: '/dashboard/default',
     errorElement: <DefaultErrorPage />,
-    // loader: combinedLoader,
-    loader: getStudentsLoader,
+    loader: combinedLoader,
+    // loader: getStudentsLoader,
     element: <DashboardDefault />
   },
   {

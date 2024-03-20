@@ -26,14 +26,13 @@ import useStudents from '../../hooks/useStudents';
 
 function Dashboard() {
   const { user } = useAuth();
-  // const Data = useLoaderData()
-  // console.log('Data123:', Data)
+  const Data = useLoaderData()
+  console.log('Data123:', Data)
   const {
-    data: { data: fetchedStudents, isCoursesFilled, notification }
-    // ,
-    // essays: { data: essayDocumentThreads }
+    data: { data: fetchedStudents, isCoursesFilled, notification },
+    essays: { data: essayDocumentThreads }
   } = useLoaderData();
-  // console.log('essayDocumentThreads:', essayDocumentThreads)
+  console.log('essayDocumentThreads:', essayDocumentThreads);
   const { t } = useTranslation();
   const {
     students,
@@ -78,7 +77,7 @@ function Dashboard() {
           submitUpdateEditorlist={submitUpdateEditorlist}
           submitUpdateAttributeslist={submitUpdateAttributeslist}
           updateStudentArchivStatus={updateStudentArchivStatus}
-          // essayDocumentThreads={essayDocumentThreads}
+          essayDocumentThreads={essayDocumentThreads}
         />
       )}
       {is_TaiGer_Manager(user) && (

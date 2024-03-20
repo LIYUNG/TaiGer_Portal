@@ -6,7 +6,7 @@ import {
   getStudentAndDocLinks,
   getApplicationStudent,
   getMyAcademicBackground,
-  getEssays
+  getAllActiveEssays
 } from '.';
 
 export async function getStudentsLoader() {
@@ -20,8 +20,8 @@ export async function getStudentsLoader() {
   }
 }
 
-export async function getEssaysLoader() {
-  const response = await getEssays();
+export async function getAllActiveEssaysLoader() {
+  const response = await getAllActiveEssays();
   // console.log(response);
   // console.log(response.statusText);
   if (response.status >= 400) {
@@ -79,9 +79,9 @@ export async function getMyAcademicBackgroundLoader() {
 }
 
 export async function combinedLoader() {
-  // Fetch data from both getEssays and getStudents
+  // Fetch data from both getAllActiveEssays and getStudents
   const [essaysResponse, studentsResponse] = await Promise.all([
-    getEssays(),
+    getAllActiveEssays(),
     getStudents()
   ]);
 
@@ -97,6 +97,6 @@ export async function combinedLoader() {
   // Return an object containing both essays and students data
   return {
     essays: essaysResponse.data, // Assuming essaysResponse.data contains the essays data
-    students: studentsResponse.data // Assuming studentsResponse.data contains the students data
+    data: studentsResponse.data // Assuming studentsResponse.data contains the students data
   };
 }

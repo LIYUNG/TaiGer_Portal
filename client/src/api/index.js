@@ -249,7 +249,8 @@ export const SetFileAsFinal = (documentsthreadId, studentId, program_id) =>
 export const updateEssayWriter = (editor_id, documentsthreadId) =>
   request.post(`/api/document-threads/${documentsthreadId}/essay`, editor_id)
 
-export const getEssays = () => request.get(`/api/document-threads/essay`);
+export const getAllActiveEssays = () =>
+  request.get(`/api/document-threads/essays/all`);
 
 // Portal Informations APIs
 export const getPortalCredentials = (student_id) =>

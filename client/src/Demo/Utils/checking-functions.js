@@ -70,6 +70,17 @@ export const truncateText = (text, maxLength) => {
   return truncatedText;
 };
 
+export const FILE_TYPE_E = {
+  rl_required: 'RL',
+  ml_required: 'ML',
+  essay_required: 'Essay',
+  portfolio_required: 'Portfolio',
+  supplementary_form_required: 'Supplementary_Form',
+  scholarship_form_required: 'Scholarship_Form',
+  curriculum_analysis_required: 'Curriculum_Analysis',
+  others: 'Others'
+};
+
 export const file_category_const = {
   rl_required: 'RL',
   ml_required: 'ML',
@@ -80,6 +91,11 @@ export const file_category_const = {
   curriculum_analysis_required: 'Curriculum_Analysis'
 };
 
+export const AGENT_SUPPORT_DOCUMENTS_A = [
+  FILE_TYPE_E.curriculum_analysis_required,
+  FILE_TYPE_E.supplementary_form_required,
+  FILE_TYPE_E.others
+];
 // TODO test
 export const LinkableNewlineText = ({ text }) => {
   const textStyle = {

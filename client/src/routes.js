@@ -46,7 +46,9 @@ const CoursesAnalysisWidget = React.lazy(() =>
 const CVMLRLGenerator = React.lazy(() =>
   import('./Demo/TaiGerAI/CVMLRLGenerator')
 );
-const AgentSupportDocuments = React.lazy(() => import('./Demo/CVMLRLCenter/index'));
+const AgentSupportDocuments = React.lazy(() =>
+  import('./Demo/AgentSupportDocuments/index')
+);
 const CVMLRLOverview = React.lazy(() => import('./Demo/CVMLRLCenter/index'));
 const CVMLRLDashboard = React.lazy(() =>
   import('./Demo/CVMLRLCenter/indexAll')

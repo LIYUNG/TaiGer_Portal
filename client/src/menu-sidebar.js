@@ -327,7 +327,7 @@ export const MenuSidebar = [
       },
       {
         id: 'agent-support-documents',
-        title: 'Agents Support',
+        title: 'Agent Support',
         type: 'item',
         url: '/agent-support-documents',
         icon: <BorderColorIcon />,

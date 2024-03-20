@@ -25,6 +25,7 @@ import ErrorPage from '../../Utils/ErrorPage';
 import ModalMain from '../../Utils/ModalHandler/ModalMain';
 import { stringAvatar, templatelist } from '../../Utils/contants';
 import {
+  AGENT_SUPPORT_DOCUMENTS_A,
   LinkableNewlineText,
   getRequirement,
   is_TaiGer_AdminAgent,
@@ -903,6 +904,14 @@ function DocModificationThreadPage() {
                 )}
               </Typography>
             ))}
+            {is_TaiGer_role(user) &&
+              [...AGENT_SUPPORT_DOCUMENTS_A].includes(
+                docModificationThreadPageState.thread.file_type
+              ) && (
+                <Button size="small" color="primary" variant="contained">
+                  {t('Add Editor')}
+                </Button>
+              )}
 
             <Typography variant="body1">
               <b>{t('Deadline')}:</b>

@@ -7,6 +7,7 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableContainer,
   TableHead,
   TableRow,
   Typography
@@ -19,7 +20,8 @@ import {
   is_the_uni_assist_vpd_uploaded,
   is_program_closed,
   application_deadline_calculator,
-  application_date_calculator
+  application_date_calculator,
+  isProgramDecided
 } from '../../../Utils/checking-functions';
 import DEMO from '../../../../store/constant';
 import { useAuth } from '../../../../components/AuthProvider';
@@ -31,7 +33,7 @@ const ReadyToSubmitTasks = (props) => {
       {/* check program reday to be submitted */}
       {props.student.applications.map(
         (application, i) =>
-          application.decided === 'O' &&
+          isProgramDecided(application) &&
           isCVFinished(props.student) &&
           is_program_ml_rl_essay_ready(application) &&
           is_the_uni_assist_vpd_uploaded(application) &&
@@ -41,7 +43,7 @@ const ReadyToSubmitTasks = (props) => {
                 <Link
                   to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                     props.student._id.toString(),
-                    '/CV_ML_RL'
+                    DEMO.CVMLRL_HASH
                   )}`}
                   component={LinkDom}
                 >
@@ -112,25 +114,29 @@ function ReadyToSubmitTasksCard(props) {
     ));
 
   return (
-    <Card className="card-with-scroll" sx={{ padding: 2, mb: 2 }}>
+    <Card sx={{ mb: 2 }}>
       <Alert severity="error">
-        {t('Ready To Submit Tasks')} ( ML/ RL/ Essay are finished. Please submit
-        application asap.):
+        <Typography>
+          {t('Ready To Submit Tasks', { ns: 'dashboard' })} ( ML/ RL/ Essay are
+          finished. Please submit application asap.):
+        </Typography>
       </Alert>
       <div className="card-scrollable-body">
-        <Table size="small">
-          <TableHead>
-            <TableRow>
-              <TableCell>{t('Student')}</TableCell>
-              <TableCell>{t('Start')}</TableCell>
-              <TableCell>{t('Deadline')}</TableCell>
-              <TableCell>
-                {t('Semester')} - {t('Degree')} - {t('Program')}
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>{ready_to_submit_tasks}</TableBody>
-        </Table>
+        <TableContainer style={{ overflowX: 'auto' }}>
+          <Table size="small">
+            <TableHead>
+              <TableRow>
+                <TableCell>{t('Student')}</TableCell>
+                <TableCell>{t('Start', { ns: 'common' })}</TableCell>
+                <TableCell>{t('Deadline')}</TableCell>
+                <TableCell>
+                  {t('Semester')} - {t('Degree')} - {t('Program')}
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>{ready_to_submit_tasks}</TableBody>
+          </Table>
+        </TableContainer>
       </div>
     </Card>
   );

@@ -11,6 +11,12 @@ import { BsDash } from 'react-icons/bs';
 import { BiCommentDots } from 'react-icons/bi';
 import { styled, alpha } from '@mui/material/styles';
 import { InputBase } from '@mui/material';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CancelIcon from '@mui/icons-material/Cancel';
+import BugReportIcon from '@mui/icons-material/BugReport';
+import WarningIcon from '@mui/icons-material/Warning';
+import HelpIcon from '@mui/icons-material/Help';
+import { green, red, grey } from '@mui/material/colors';
 
 import { appConfig } from '../../config';
 
@@ -55,6 +61,60 @@ export const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export const menuWidth = 350;
+export const EmbeddedChatListWidth = 290;
+
+export const CVMLRL_DOC_PRECHECK_STATUS_E = {
+  OK_SYMBOL: (
+    <CheckCircleIcon size={18} style={{ color: green[500] }} title="Decided" />
+  ),
+  NOT_OK_SYMBOL: (
+    <CancelIcon size={18} style={{ color: red[700] }} title="Decided No" />
+  ),
+  RISK_SYMBOL: (
+    <BugReportIcon size={18} style={{ color: grey[400] }} title="Risk" />
+  ),
+  WARNING_SYMBOK: (
+    <WarningIcon size={18} style={{ color: red[700] }} title="Warning" />
+  )
+};
+
+export const DECISION_STATUS_E = {
+  OK_SYMBOL: (
+    <CheckCircleIcon size={18} style={{ color: green[500] }} title="Decided" />
+  ),
+  NOT_OK_SYMBOL: (
+    <CancelIcon size={18} style={{ color: red[700] }} title="Decided No" />
+  ),
+  UNKNOWN_SYMBOL: (
+    <HelpIcon size={18} style={{ color: grey[400] }} title="Not sure" />
+  )
+};
+export const SUBMISSION_STATUS_E = {
+  OK_SYMBOL: (
+    <CheckCircleIcon
+      size={18}
+      style={{ color: green[500] }}
+      title="Submitted"
+    />
+  ),
+  NOT_OK_SYMBOL: (
+    <CancelIcon size={18} style={{ color: red[700] }} title="Withdraw" />
+  ),
+  UNKNOWN_SYMBOL: (
+    <HelpIcon size={18} style={{ color: grey[400] }} title="In Progress" />
+  )
+};
+export const ADMISSION_STATUS_E = {
+  OK_SYMBOL: (
+    <CheckCircleIcon size={18} style={{ color: green[500] }} title="Admitted" />
+  ),
+  NOT_OK_SYMBOL: (
+    <CancelIcon size={18} style={{ color: red[700] }} title="Rejected" />
+  ),
+  UNKNOWN_SYMBOL: (
+    <HelpIcon size={18} style={{ color: grey[400] }} title="Pending" />
+  )
+};
 
 let FILE_OK_SYMBOL = (
   <IoCheckmarkCircle size={18} color="limegreen" title="Valid Document" />
@@ -76,36 +136,62 @@ let FILE_DONT_CARE_SYMBOL = (
   <BsDash size={18} color="lightgray" title="Not needed" />
 );
 
+export const questionType = {
+  word: 'word',
+  sentence: 'sentence',
+  paragraph: 'paragraph',
+  essay: 'essay'
+};
+
+export const prepQuestions = (thread, isSpecific) => {
+  let questions = [];
+  if (
+    thread?.file_type?.includes('RL') ||
+    thread?.file_type?.includes('Recommendation')
+  ) {
+    questions = RLQuestions(thread);
+  } else {
+    switch (thread?.file_type) {
+      case 'ML':
+        questions = MLQuestions(thread, isSpecific);
+        break;
+      case 'CV':
+        questions = CVQuestions();
+        break;
+      default:
+        questions = [];
+    }
+  }
+  return questions;
+};
+
 export const CVQuestions = () => {
   return [
     {
-      question_id: 'q1',
+      questionId: 'q1',
       question: `1. Survey not ready`,
-      width: 3,
+      type: questionType.word,
       answer: ''
     },
     {
-      question_id: 'q2',
+      questionId: 'q2',
       question: `2. Survey not ready`,
       placeholder: '',
-      width: 3,
-      rows: '1',
+      type: questionType.sentence,
       answer: ''
     },
     {
-      question_id: 'q3',
+      questionId: 'q3',
       question: `3. Survey not ready`,
       placeholder: '',
-      width: 3,
-      rows: '1',
+      type: questionType.paragraph,
       answer: ''
     },
     {
-      question_id: 'q4',
+      questionId: 'q4',
       question: `4. Survey not ready`,
       placeholder: '',
-      width: 3,
-      rows: '1',
+      type: questionType.essay,
       answer: ''
     }
   ];
@@ -114,237 +200,214 @@ export const CVQuestions = () => {
 export const RLQuestions = () => {
   return [
     {
-      question_id: 'q1',
+      questionId: 'q1',
       question: `1. Referrer's position`,
       placeholder: 'Professor',
-      width: 4,
-      rows: '1',
+      type: questionType.word,
       answer: ''
     },
     {
-      question_id: 'q2',
+      questionId: 'q2',
       question: `2. Referrer's firstname`,
       placeholder: 'Hao',
-      width: 4,
-      rows: '1',
+      type: questionType.word,
       answer: ''
     },
     {
-      question_id: 'q3',
+      questionId: 'q3',
       question: `3. Referrer's lastname`,
       placeholder: 'Chen',
-      width: 4,
-      rows: '1',
+      type: questionType.word,
       answer: ''
     },
     {
-      question_id: 'q4',
+      questionId: 'q4',
       question: `4. Referrer's institute's phone number`,
       placeholder: '+886-9123-456-789',
-      width: 6,
-      rows: '1',
+      type: questionType.sentence,
       answer: ''
     },
     {
-      question_id: 'q5',
+      questionId: 'q5',
       question: `5. Referrer's institute email`,
       placeholder: 'chao@ntu.edu.tw',
-      width: 6,
-      rows: '1',
+      type: questionType.sentence,
       answer: ''
     },
     {
-      question_id: 'q6',
+      questionId: 'q6',
       question: `6. Institute name`,
       placeholder: 'National Taiwan University',
-      width: 3,
-      rows: '1',
+      type: questionType.sentence,
       answer: ''
     },
     {
-      question_id: 'q7',
+      questionId: 'q7',
       question: `7. Institute location`,
       placeholder: 'Taipei',
-      width: 3,
-      rows: '1',
+      type: questionType.word,
       answer: ''
     },
     {
-      question_id: 'q8',
+      questionId: 'q8',
       question: `8. Institute address`,
       placeholder: 'No. 1, Sec. 4, Roosevelt Rd., Taipei 10617, Taiwan',
-      width: 3,
-      rows: '1',
+      type: questionType.sentence,
       answer: ''
     },
     {
-      question_id: 'q9',
+      questionId: 'q9',
       question: `9. Institute phone number`,
       placeholder: ' +886-2-3366-3366 ',
-      width: 3,
-      rows: '1',
+      type: questionType.sentence,
       answer: ''
     },
     {
-      question_id: 'q10',
+      questionId: 'q10',
       question: `10. Professor Met Student in which course or Lab`,
       placeholder:
         'Introduction to Image Processing, Computer Vision and Deep learning',
-      width: 12,
-      rows: '1',
+      type: questionType.sentence,
       answer: ''
     },
     {
-      question_id: 'q11',
+      questionId: 'q11',
       question: `11. Student's academic/extracurricular activity performance 1`,
       placeholder:
         'Mr. Xiao-Ming Wang impressed me deeply with his inquisitiveness in classes to scrutinize which has been taught. I remembered that he started to ask me course-relevant questions in my course. It was rare and commendable because many of the students began to review and prepare for the course materials before exams. He was able to catch up with the main ideas and to integrate them into a whole and to initiate questions for further clarification and present critical remarks for deeper thinking. All his remarkable diligence and intelligence reflected on his excellent performance in homework and exams. Actually, he got 96 out of 100 (A+) as a final grade in my course, which was one of the highest scores among my class.',
-      width: 12,
-      rows: '4',
+      type: questionType.paragraph,
       answer: ''
     },
     {
-      question_id: 'q12',
+      questionId: 'q12',
       question: `12. Student's academic/extracurricular activity performance 2`,
       placeholder:
         'Even though Mr. Xiao-Ming Wang’s main major was mechanical Engineering, he demonstrated his enthusiasm for computer vision and machine learning. He was able to connect these different subjects and apply learned knowledge in different fields.',
-      width: 12,
-      rows: '4',
+      type: questionType.paragraph,
       answer: ''
     },
     {
-      question_id: 'q13',
+      questionId: 'q13',
       question: `13. Student's academic/extracurricular activity performance 2`,
-      width: 12,
-      rows: '2',
+      type: questionType.paragraph,
       answer: ''
     },
     {
-      question_id: 'q14',
+      questionId: 'q14',
       question: `14. Student's academic/extracurricular activity performance 3`,
-      width: 12,
-      rows: '2',
+      type: questionType.paragraph,
       answer: ''
     },
     {
-      question_id: 'q15',
+      questionId: 'q15',
       question: `15. Student's outstanding characteristic 1`,
       placeholder:
         'Mr. Xiao-Ming Wang was also good at hands-on engineering. I saw him finished his work soon and then helped his classmates many times. He endowed with great teamwork spirit and was very willing to help others in need',
-      width: 12,
-      rows: '4',
+      type: questionType.paragraph,
       answer: ''
     },
     {
-      question_id: 'q16',
+      questionId: 'q16',
       question: `16. Student's outstanding characteristic 2`,
       placeholder:
         'Mr. Xiao-Ming Wang  is a diligent student and willing to learn and try new challenges, I could notice these characteristics based on his performance and attitude in the course',
-      width: 12,
-      rows: '4',
+      type: questionType.paragraph,
       answer: ''
     },
     {
-      question_id: 'q17',
+      questionId: 'q17',
       question: `17. Student's outstanding characteristic 3`,
-      width: 12,
-      rows: '1',
+      type: questionType.paragraph,
       answer: ''
     },
     {
-      question_id: 'q18',
+      questionId: 'q18',
       question: `18. Student's Interpersonal skills 1`,
       placeholder:
         'Mr. Xiao-Ming Wang was very friendly and helpful toward Classmate.',
-      width: 12,
-      rows: '1',
+      type: questionType.paragraph,
       answer: ''
     },
     {
-      question_id: 'q19',
+      questionId: 'q19',
       question: `19. Student's Interpersonal skills 2`,
-      width: 12,
-      rows: '1',
+      type: questionType.paragraph,
       answer: ''
     }
   ];
 };
 
-export const MLQuestions = (thread) => {
+export const MLQuestions = (thread, isSpecific) => {
+  if (isSpecific) {
+    return [
+      {
+        questionId: 'q6',
+        question: `6. Why do you want to study in ${
+          COUNTRIES_MAPPING[thread?.program_id?.country] || 'this country'
+        } and not in your home country or any other country?`,
+        type: questionType.paragraph,
+        answer: ''
+      },
+      {
+        questionId: 'q7',
+        question: `7. Why should the ${thread?.program_id?.school} select you as their student? What can you contribute to the universities?`,
+        type: questionType.paragraph,
+        answer: ''
+      },
+      {
+        questionId: 'q8',
+        question: `8. Why do you want to study exactly at the ${
+          thread?.program_id
+            ? `${thread.program_id?.school} - ${thread.program_id?.program_name}`
+            : ``
+        } ? What is special about them?`,
+        type: questionType.paragraph,
+        answer: ''
+      },
+      {
+        questionId: 'q9',
+        question:
+          '9. Any missing requirements or anything else you want to tell us?',
+        type: questionType.paragraph,
+        answer: ''
+      }
+    ];
+  }
+
   return [
     {
-      question_id: 'q1',
-      question: `1. Why do you want to study in ${
-        COUNTRIES_MAPPING[thread?.program_id?.country] || 'this country'
-      } and not in your home country or any other country?`,
-      width: 12,
-      rows: '2',
-      answer: ''
-    },
-    {
-      question_id: 'q2',
+      questionId: 'q1',
       question:
-        '2. What is your dream job you want to do after you have graduated? What do you want to become professionally?',
-      width: 12,
-      rows: '2',
+        '1. What is your dream job you want to do after you have graduated? What do you want to become professionally?',
+      type: questionType.paragraph,
       answer: ''
     },
     {
-      question_id: 'q3',
+      questionId: 'q2',
       question:
-        '3. Why do you think your field of interest (= area of the programs you want to apply for) is important now and in the future?',
-      width: 12,
-      rows: '2',
+        '2. Why do you think your field of interest (= area of the programs you want to apply for) is important now and in the future?',
+      type: questionType.paragraph,
       answer: ''
     },
     {
-      question_id: 'q4',
+      questionId: 'q3',
       question:
-        '4. How did your previous education/academic experience (學術界的相關經驗) prepare you for your future studies? What did you learn so far? (e.g. courses, projects, achievements, …)',
-      width: 12,
-      rows: '2',
+        '3. How did your previous education/academic experience (學術界的相關經驗) prepare you for your future studies? What did you learn so far? (e.g. courses, projects, achievements, …)',
+      type: questionType.paragraph,
       answer: ''
     },
     {
-      question_id: 'q5',
+      questionId: 'q4',
       question:
         '5. How did your previous practical experience (實習、工作的相關經驗) prepare you for your future studies? What did you learn? (e.g. experiences during internship/jobs/…)',
-      width: 12,
-      rows: '2',
+      type: questionType.paragraph,
       answer: ''
     },
     {
-      question_id: 'q6',
+      questionId: 'q5',
       question:
-        '6. What are your 3 biggest strengths? (abilities, personal characteristics, …)',
-      width: 12,
-      rows: '2',
-      answer: ''
-    },
-    {
-      question_id: 'q7',
-      question: `7. Why should the ${thread?.program_id?.school} select you as their student? What can you contribute to the universities?`,
-      width: 12,
-      rows: '2',
-      answer: ''
-    },
-    {
-      question_id: 'q8',
-      question: `8. Why do you want to study exactly at the ${
-        thread?.program_id
-          ? `${thread.program_id?.school} - ${thread.program_id?.program_name}`
-          : ``
-      } ? What is special about them?`,
-      width: 12,
-      rows: '2',
-      answer: ''
-    },
-    {
-      question_id: 'q9',
-      question:
-        '9. Any missing requirements or anything else you want to tell us?',
-      width: 12,
-      rows: '2',
+        '5. What are your 3 biggest strengths? (abilities, personal characteristics, …)',
+      type: questionType.paragraph,
       answer: ''
     }
   ];
@@ -641,6 +704,28 @@ export const profile_name_list = {
   Grading_System: 'Grading_System'
 };
 
+export const SINGLE_STUDENT_TABS = {
+  applications: 0,
+  profile: 1,
+  cvmlrl: 2,
+  portal: 3,
+  uniassist: 4,
+  survey: 5,
+  courses: 6,
+  notes: 7
+};
+
+export const SINGLE_STUDENT_REVERSED_TABS = {
+  0: 'applications',
+  1: 'profile',
+  2: 'cvmlrl',
+  3: 'portal',
+  4: 'uniassist',
+  5: 'survey',
+  6: 'courses',
+  7: 'notes'
+};
+
 export const spinner_style = {
   position: 'fixed',
   top: '40%',
@@ -791,25 +876,34 @@ export const convertDate = (date) => {
     return dat + ', ' + time;
   }
 };
-
-export const program_fields = [
+export const program_fields_overview = [
   { name: 'School', prop: 'school' },
   { name: 'Program', prop: 'program_name' },
   { name: 'Degree', prop: 'degree' },
   { name: 'Semester', prop: 'semester' },
   { name: 'Teaching Language', prop: 'lang' },
-  { name: 'GPA Requirement (German system)', prop: 'gpa_requirement' },
+  { name: 'Website', prop: 'website' }
+];
+
+export const program_fields_application_dates = [
   { name: 'Application Start (MM-DD)', prop: 'application_start' },
-  { name: 'Application Deadline (MM-DD)', prop: 'application_deadline' },
-  { name: 'Need Uni-Assist?', prop: 'uni_assist' },
+  { name: 'Application Deadline (MM-DD)', prop: 'application_deadline' }
+];
+
+export const program_fields_languages_test = [
+  { name: 'GPA Requirement (German system)', prop: 'gpa_requirement' },
   { name: 'TOEFL Requirement', prop: 'toefl' },
   { name: 'IELTS Requirement', prop: 'ielts' },
   { name: 'TestDaF Requirement', prop: 'testdaf' },
   { name: 'GRE Requirement', prop: 'gre' },
-  { name: 'GMAT Requirement', prop: 'gmat' },
+  { name: 'GMAT Requirement', prop: 'gmat' }
+];
+
+export const program_fields_special_documents = [
   { name: 'ML Required?', prop: 'ml_required' },
   { name: 'ML Requirements', prop: 'ml_requirements' },
   { name: 'RL Required?', prop: 'rl_required' },
+  { name: 'RL Program specific?', prop: 'is_rl_specific' },
   { name: 'RL Requirements', prop: 'rl_requirements' },
   { name: 'Essay Required?', prop: 'essay_required' },
   { name: 'Essay Requirements', prop: 'essay_requirements' },
@@ -821,14 +915,79 @@ export const program_fields = [
     prop: 'supplementary_form_requirements'
   },
   {
+    name: 'Curriculum Analysis Required?',
+    prop: 'curriculum_analysis_required'
+  },
+  {
+    name: 'Curriculum Analysis Requirements',
+    prop: 'curriculum_analysis_requirements'
+  },
+  {
+    name: 'Scholarship Form / ML Required?',
+    prop: 'scholarship_form_required'
+  },
+  {
+    name: 'Scholarship Form / ML Requirements',
+    prop: 'scholarship_form_requirements'
+  }
+];
+
+export const program_fields_special_notes = [
+  {
     name: 'ECTS Requirements',
     prop: 'ects_requirements'
   },
+  { name: 'Need Uni-Assist?', prop: 'uni_assist' },
   { name: 'Special Notes', prop: 'special_notes' },
-  { name: 'Comments', prop: 'comments' },
+  { name: 'Comments', prop: 'comments' }
+];
+
+export const program_fields_others = [
   { name: 'Tuition Fees', prop: 'tuition_fees' },
-  { name: 'FPSO', prop: 'fpso' },
-  { name: 'Country', prop: 'country' }
+  { name: 'FPSO', prop: 'fpso' }
+];
+
+export const ATTRIBUTES = [
+  {
+    value: 1,
+    name: 'Demanding',
+    definition:
+      'Reply within 3 days, but not necessary providing pdf output. Need extra care only. Expecting quick response.'
+  },
+  { value: 2, name: 'Parents Pushing', definition: '' },
+  {
+    value: 3,
+    name: 'Urgent',
+    definition:
+      'In addition to deadline, due to student personal reason, professor required, competitive offer, rolling process or even parents pushing and want to closed asap.'
+  },
+  { value: 4, name: 'Slow Response', definition: '' },
+  { value: 5, name: 'Disappear', definition: '' },
+  { value: 6, name: 'Low-IQ', definition: '' },
+  { value: 7, name: 'Refunded', definition: '' },
+  { value: 8, name: 'Done', definition: '' },
+  { value: 9, name: 'Redund-Risk', definition: '' }
+];
+
+export const COLORS = [
+  'primary',
+  'secondary',
+  'secondary',
+  'info',
+  'error',
+  'primary',
+  'primary',
+  'success',
+  'primary'
+];
+
+export const program_fields = [
+  ...program_fields_overview,
+  ...program_fields_application_dates,
+  ...program_fields_languages_test,
+  ...program_fields_special_documents,
+  ...program_fields_special_notes,
+  ...program_fields_others
 ];
 
 export const convertDate_ux_friendly = (date) => {
@@ -924,6 +1083,11 @@ export const field_alert = (program) => {
     return;
   }
 };
+
+export const YES_NO_BOOLEAN_OPTIONS = [
+  { value: true, label: 'Yes' },
+  { value: false, label: 'No' }
+];
 
 export const DEGREE_CATOGARY_ARRAY_OPTIONS = [
   { value: '', label: 'Please Select' },
@@ -1026,6 +1190,7 @@ export const COUNTRIES_ARRAY_OPTIONS = [
   { value: 'fi', label: 'Finland' },
   { value: 'fr', label: 'France' },
   { value: 'de', label: 'Germany' },
+  { value: 'eu', label: 'EU (Various Locations)' },
   { value: 'gr', label: 'Greece' },
   { value: 'hk', label: 'Hong Kong' },
   { value: 'hu', label: 'Hungary' },
@@ -1481,11 +1646,6 @@ export const cvmlrl_overview_closed_header = [
     filter: 'fuzzyText'
   },
   {
-    Header: 'Action',
-    accessor: 'action',
-    filter: 'fuzzyText'
-  },
-  {
     Header: 'Status',
     accessor: 'status',
     filter: 'fuzzyText'
@@ -1512,11 +1672,6 @@ export const cvmlrl_overview_header = [
     filter: 'fuzzyText'
   },
   {
-    Header: 'Action',
-    accessor: 'action',
-    filter: 'fuzzyText'
-  },
-  {
     Header: 'Latest Reply',
     accessor: 'latest_reply',
     filter: 'fuzzyText'
@@ -1537,6 +1692,26 @@ export const cvmlrl_overview_header = [
   {
     Header: 'Ages Days',
     accessor: 'aged_days'
+  },
+  {
+    Header: (
+      <>
+        #EditorFeedback
+        <br />
+        Message/Files
+      </>
+    ),
+    accessor: 'number_input_from_editors'
+  },
+  {
+    Header: (
+      <>
+        #StudentInput
+        <br />
+        Message/Files
+      </>
+    ),
+    accessor: 'number_input_from_student'
   },
   {
     Header: 'Last Update',
@@ -1840,6 +2015,26 @@ export const taskTashboardHeader = [
     Header: 'Ages Days',
     accessor: 'aged_days',
     filter: 'fuzzyText'
+  },
+  {
+    Header: (
+      <>
+        #EditorFeedback
+        <br />
+        Message/Files
+      </>
+    ),
+    accessor: 'number_input_from_editors'
+  },
+  {
+    Header: (
+      <>
+        #StudentInput
+        <br />
+        Message/Files
+      </>
+    ),
+    accessor: 'number_input_from_student'
   },
   {
     Header: 'Last Update',

@@ -142,7 +142,7 @@ export default function ApplicationProgressCard(props) {
             <img
               src={`/assets/logo/country_logo/svg/${application?.programId.country}.svg`}
               alt="Logo"
-              style={{ maxWidth: '20px', maxHeight: '20px' }}
+              style={{ maxWidth: '24px', maxHeight: '24px' }}
             />{' '}
             <Link
               underline="hover"
@@ -179,7 +179,7 @@ export default function ApplicationProgressCard(props) {
                     size="small"
                     onClick={() => console.log('Book clicked')}
                   >
-                    {t('Coming soon')}
+                    {t('Coming soon', { ns: 'common' })}
                   </Button>
                 </Typography>
               </>

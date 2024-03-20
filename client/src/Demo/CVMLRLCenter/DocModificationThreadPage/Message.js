@@ -227,10 +227,12 @@ function Message(props) {
               color="primary"
               onClick={onDeleteSingleMessage}
             >
-              {props.isLoaded ? t('Delete') : t('Pending')}
+              {props.isLoaded
+                ? t('Delete', { ns: 'common' })
+                : t('Pending', { ns: 'common' })}
             </Button>
             <Button onClick={onHidedeleteMessageModalShow} variant="light">
-              {t('Cancel')}
+              {t('Cancel', { ns: 'common' })}
             </Button>
           </Box>
         </Box>

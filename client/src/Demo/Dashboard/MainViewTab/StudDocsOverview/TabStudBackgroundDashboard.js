@@ -9,28 +9,29 @@ import {
   Paper
 } from '@mui/material';
 
-import StudDocsDashboard from './StudDocsDashboard';
 import { academic_background_header } from '../../../Utils/contants';
 import { useTranslation } from 'react-i18next';
+import StudentsAgentEditor from '../StudentsAgentEditor/StudentsAgentEditor';
 
 function TabStudBackgroundDashboard(props) {
   const { t } = useTranslation();
   const stdlist = (
     <TableBody>
       {props.students.map((student, i) => (
-        <StudDocsDashboard
+        <StudentsAgentEditor
           key={i}
           student={student}
           updateStudentArchivStatus={props.updateStudentArchivStatus}
-          isDashboard={props.isDashboard}
-          isArchivPage={props.isArchivPage}
+          submitUpdateAgentlist={props.submitUpdateAgentlist}
+          submitUpdateEditorlist={props.submitUpdateEditorlist}
+          submitUpdateAttributeslist={props.submitUpdateAttributeslist}
         />
       ))}
     </TableBody>
   );
   let header = Object.values(academic_background_header);
   return (
-    <TableContainer component={Paper}>
+    <TableContainer component={Paper} style={{ overflowX: 'auto' }}>
       <Table size="small">
         <TableHead>
           <TableRow>
@@ -45,7 +46,7 @@ function TabStudBackgroundDashboard(props) {
             <TableCell align="left">{t('Degree')}</TableCell>
             {header.map((name, index) => (
               <TableCell key={index} align="left">
-                {t(`${name}`)}
+                {t(`${name}`, { ns: 'common' })}
               </TableCell>
             ))}
           </TableRow>

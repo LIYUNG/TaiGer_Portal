@@ -25,7 +25,7 @@ export default function OffcanvasBaseDocument(props) {
         onClick={(e) => props.updateDocLink(e)}
         disabled={props.baseDocsflagOffcanvasButtonDisable}
       >
-        {t('Save')}
+        {t('Save', { ns: 'common' })}
       </Button>
     </ModalNew>
   );

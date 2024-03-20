@@ -110,6 +110,9 @@ const programModule = {
   rl_requirements: {
     type: String
   },
+  is_rl_specific: {
+    type: Boolean
+  },
   essay_required: {
     type: String
   },
@@ -126,6 +129,21 @@ const programModule = {
     type: String
   },
   supplementary_form_requirements: {
+    type: String
+  },
+  curriculum_analysis_required: {
+    type: String
+  },
+  curriculum_analysis_requirements: {
+    type: String
+  },
+  scholarship_form_required: {
+    type: String
+  },
+  scholarship_form_requirements: {
+    type: String
+  },
+  module_description_required: {
     type: String
   },
   ects_requirements: {

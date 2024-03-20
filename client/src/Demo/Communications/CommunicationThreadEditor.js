@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { OverlayTrigger, Tooltip } from 'react-bootstrap';
-import { Box, Button } from '@mui/material';
+import { Avatar, Box, Button, Tooltip, Typography } from '@mui/material';
+import SendIcon from '@mui/icons-material/Send';
 import { useTranslation } from 'react-i18next';
 
 import EditorSimple from '../../components/EditorJs/EditorSimple';
+import { useAuth } from '../../components/AuthProvider';
+import { stringAvatar } from '../Utils/contants';
 
 function CommunicationThreadEditor(props) {
   const { t } = useTranslation();
+  const { user } = useAuth();
   let [statedata, setStatedata] = useState({
     editorState: props.editorState
   });
@@ -23,19 +26,24 @@ function CommunicationThreadEditor(props) {
     }));
   };
 
-  const renderTooltip = (props) => (
-    <Tooltip id="tooltip-disabled" {...props}>
-      Please write some text to improve the communication and understanding.
-    </Tooltip>
-  );
-
   return (
     <>
+      <Box
+        style={{
+          my: 1,
+          display: 'flex'
+        }}
+      >
+        <Avatar {...stringAvatar(`${user.firstname} ${user.lastname}`)} />
+        <Typography>
+          {user.firstname} {user.lastname}
+        </Typography>
+      </Box>
       <Box
         sx={{
           py: 4,
           px: 4,
-          mb: 1,
+          my: 1,
           borderRadius: '5px',
           border: '1px solid #ccc'
         }}
@@ -56,29 +64,38 @@ function CommunicationThreadEditor(props) {
         {!statedata.editorState.blocks ||
         statedata.editorState.blocks.length === 0 ||
         props.buttonDisabled ? (
-          <OverlayTrigger
-            placement="right"
-            delay={{ show: 250, hide: 400 }}
-            overlay={renderTooltip}
+          <Tooltip
+            title={t(
+              'Please write some text to improve the communication and understanding.'
+            )}
+            placement="top"
           >
-            <span className="d-inline-block">
-              <Button
-                variant="outlined"
-                disabled={true}
-                style={{ pointerEvents: 'none' }}
-              >
-                Send
-              </Button>
-            </span>
-          </OverlayTrigger>
+            <Button
+              variant="outlined"
+              color="secondary"
+              // disabled={true}
+              // style={{ pointerEvents: 'none' }}
+              startIcon={<SendIcon />}
+            >
+              Send
+            </Button>
+          </Tooltip>
         ) : (
-          <Button
-            color="primary"
-            variant="contained"
-            onClick={(e) => props.handleClickSave(e, statedata.editorState)}
+          <Tooltip
+            title={t(
+              'Please write some text to improve the communication and understanding.'
+            )}
+            placement="top"
           >
-            {t('Send')}
-          </Button>
+            <Button
+              color="primary"
+              variant="contained"
+              startIcon={<SendIcon />}
+              onClick={(e) => props.handleClickSave(e, statedata.editorState)}
+            >
+              {t('Send')}
+            </Button>
+          </Tooltip>
         )}
         {props.showCancelButton && (
           <Button

@@ -136,7 +136,7 @@ export default function EventConfirmationCard(props) {
                     underline="hover"
                     to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                       requester._id.toString(),
-                      '/profile'
+                      DEMO.PROFILE_HASH
                     )}`}
                     component={LinkDom}
                     key={x}
@@ -335,7 +335,7 @@ export default function EventConfirmationCard(props) {
                       }
                       startIcon={<DeleteIcon />}
                     >
-                      {t('Delete')}
+                      {t('Delete', { ns: 'common' })}
                     </Button>
                   </span>
                 </Typography>

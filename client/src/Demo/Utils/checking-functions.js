@@ -28,6 +28,8 @@ export const is_TaiGer_Manager = (user) => user?.role === 'Manager';
 export const is_TaiGer_Student = (user) => user?.role === 'Student';
 export const is_TaiGer_Guest = (user) => user?.role === 'Guest';
 
+export const is_User_Archived = (user) => user?.archiv === true;
+
 export const DocumentStatus = {
   Uploaded: 'uploaded',
   Missing: 'missing',
@@ -68,13 +70,32 @@ export const truncateText = (text, maxLength) => {
   return truncatedText;
 };
 
-export const file_category_const = {
+export const FILE_TYPE_E = {
+  rl_required: 'RL',
   ml_required: 'ML',
   essay_required: 'Essay',
   portfolio_required: 'Portfolio',
-  supplementary_form_required: 'Supplementary_Form'
+  supplementary_form_required: 'Supplementary_Form',
+  scholarship_form_required: 'Scholarship_Form',
+  curriculum_analysis_required: 'Curriculum_Analysis',
+  others: 'Others'
 };
 
+export const file_category_const = {
+  rl_required: 'RL',
+  ml_required: 'ML',
+  essay_required: 'Essay',
+  portfolio_required: 'Portfolio',
+  supplementary_form_required: 'Supplementary_Form',
+  scholarship_form_required: 'Scholarship_Form',
+  curriculum_analysis_required: 'Curriculum_Analysis'
+};
+
+export const AGENT_SUPPORT_DOCUMENTS_A = [
+  FILE_TYPE_E.curriculum_analysis_required,
+  FILE_TYPE_E.supplementary_form_required,
+  FILE_TYPE_E.others
+];
 // TODO test
 export const LinkableNewlineText = ({ text }) => {
   const textStyle = {
@@ -111,8 +132,10 @@ export const Bayerische_Formel = (high, low, my) => {
 };
 
 export const getRequirement = (thread) => {
+  if (!thread) return false;
   const fileType = thread.file_type;
   const program = thread.program_id;
+  if (!fileType || !program) return false;
 
   if (fileType.includes('Essay') && program.essay_required === 'yes') {
     return program.essay_requirements || 'No';
@@ -128,6 +151,18 @@ export const getRequirement = (thread) => {
     program.supplementary_form_required === 'yes'
   ) {
     return program.supplementary_form_requirements || 'No';
+  }
+  if (
+    fileType.includes('Curriculum_Analysis') &&
+    program.curriculum_analysis_required === 'yes'
+  ) {
+    return program.curriculum_analysis_requirements || 'No';
+  }
+  if (
+    fileType.includes('Scholarship_Form') &&
+    program.scholarship_form_required === 'yes'
+  ) {
+    return program.scholarship_form_requirements || 'No';
   }
   if (
     fileType.includes('RL') &&
@@ -906,6 +941,29 @@ export const check_application_selection = (student) => {
   return true;
 };
 
+export const has_agent_program_specific_tasks = (student) => {
+  if (!student.applications) {
+    return false;
+  }
+  if (student.applications.length === 0) {
+    return false;
+  }
+  for (const application of student.applications) {
+    if (isProgramDecided(application)) {
+      for (const thread of application.doc_modification_thread) {
+        if (
+          ['Supplementary_Form', 'Curriculum_Analysis'].includes(
+            thread.doc_thread_id?.file_type
+          )
+        ) {
+          return true;
+        }
+      }
+    }
+  }
+  return false;
+};
+
 export const anyStudentWithoutApplicationSelection = (students) => {
   let flag = false;
   for (let i = 0; i < students.length; i += 1) {
@@ -1382,8 +1440,8 @@ export const getNumberOfFilesByEditor = (messages, student_id) => {
   return `${message_count}/${file_count}`;
 };
 
-const latestReplyInfo = (thread) => {
-  const messages = thread.messages;
+export const latestReplyInfo = (thread) => {
+  const messages = thread?.messages;
   if (!messages || messages?.length <= 0) {
     return '- None - ';
   }
@@ -1737,6 +1795,9 @@ export const numStudentYearDistribution = (students) => {
 export const frequencyDistribution = (tasks) => {
   const map = {};
   for (let i = 0; i < tasks.length; i++) {
+    if (tasks[i].deadline === 'CLOSE' || tasks[i].deadline === 'WITHDRAW') {
+      continue;
+    }
     map[tasks[i].deadline] = map[tasks[i].deadline]
       ? tasks[i].show
         ? {
@@ -1758,23 +1819,98 @@ export const frequencyDistribution = (tasks) => {
       ? { show: 0, potentials: 1 }
       : { show: 0, potentials: 0 };
   }
-  return map;
+  const filteredMap = Object.fromEntries(
+    Object.entries(map).filter(
+      ([key, value]) =>
+        ((value.show !== 0 || value.potentials !== 0) &&
+          getNumberOfDays(new Date(), key) < 365) ||
+        key.includes('Rolling')
+    )
+  );
+  return filteredMap;
+};
+
+export const checkIsRLspecific = (program) => {
+  const isRLSpecific = program?.is_rl_specific;
+  const NoRLSpecificFlag = isRLSpecific === undefined || isRLSpecific === null;
+  return isRLSpecific || (NoRLSpecificFlag && program?.rl_requirements);
+};
+
+export const getMissingDocs = (application) => {
+  if (!application) {
+    return [];
+  }
+
+  let missingDocs = [];
+  for (let docName of Object.keys(file_category_const)) {
+    if (
+      application?.programId[docName] === 'yes' &&
+      !application?.doc_modification_thread?.some(
+        (thread) =>
+          thread.doc_thread_id?.file_type === file_category_const[docName]
+      )
+    )
+      missingDocs.push(file_category_const[docName]);
+  }
+
+  const nrRLNeeded = parseInt(application.programId.rl_required);
+  const nrSpecificRL = application?.doc_modification_thread.filter((thread) =>
+    thread.doc_thread_id?.file_type?.startsWith('RL_')
+  ).length;
+  if (
+    nrRLNeeded > 0 &&
+    checkIsRLspecific(application?.programId) &&
+    nrRLNeeded > nrSpecificRL
+  ) {
+    missingDocs.push(
+      `RL - ${nrRLNeeded} needed, ${nrSpecificRL} provided (${
+        nrRLNeeded - nrSpecificRL
+      } must be added)`
+    );
+  }
+
+  return missingDocs;
+};
+
+export const getExtraDocs = (application) => {
+  if (!application) {
+    return [];
+  }
+
+  let extraDocs = [];
+  for (let docName of Object.keys(file_category_const)) {
+    if (
+      application?.programId[docName] !== 'yes' &&
+      application?.doc_modification_thread?.some(
+        (thread) =>
+          thread.doc_thread_id?.file_type === file_category_const[docName]
+      )
+    )
+      extraDocs.push(file_category_const[docName]);
+  }
+
+  const nrRLNeeded = parseInt(application.programId.rl_required);
+  const nrSpecificRL = application?.doc_modification_thread.filter((thread) =>
+    thread.doc_thread_id?.file_type?.startsWith('RL_')
+  ).length;
+  const nrSpecRLNeeded = !checkIsRLspecific(application?.programId)
+    ? 0
+    : nrRLNeeded;
+  if (nrRLNeeded > 0 && nrSpecRLNeeded < nrSpecificRL) {
+    extraDocs.push(
+      `RL - ${nrSpecRLNeeded} needed, ${nrSpecificRL} provided (${
+        nrSpecificRL - nrSpecRLNeeded
+      } can be removed)`
+    );
+  }
+  return extraDocs;
 };
 
 export const isDocumentsMissingAssign = (application) => {
-  const keys = Object.keys(file_category_const);
-  let flag = false;
-  for (let i = 0; i < keys.length; i += 1) {
-    flag =
-      flag ||
-      (application.decided === 'O' &&
-        application.programId[keys[i]] === 'yes' &&
-        application.doc_modification_thread.findIndex(
-          (thread) =>
-            thread.doc_thread_id?.file_type === file_category_const[keys[i]]
-        ) === -1);
+  if (!application) {
+    return false;
   }
-  return flag;
+  return getMissingDocs(application).length > 0;
 };
 
 export const does_essay_have_writers = (essayDocumentThreads) => {

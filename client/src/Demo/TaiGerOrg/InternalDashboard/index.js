@@ -28,6 +28,8 @@ import { useTranslation } from 'react-i18next';
 import ErrorPage from '../../Utils/ErrorPage';
 import {
   frequencyDistribution,
+  isProgramDecided,
+  isProgramSubmitted,
   is_TaiGer_role,
   numStudentYearDistribution,
   open_tasks_with_editors,
@@ -168,10 +170,10 @@ function InternalDashboard() {
   const application_status = ['Open', 'Close'];
   const applications_decided = programs_refactor(students_details).filter(
     (application) =>
-      application.program_id !== '-' && application.decided === 'O'
+      application.program_id !== '-' && isProgramDecided(application)
   );
-  const applications_submitted = applications_decided.filter(
-    (application) => application.closed === 'O'
+  const applications_submitted = applications_decided.filter((application) =>
+    isProgramSubmitted(application)
   );
   const obj = {
     Open: applications_decided.length - applications_submitted.length,
@@ -376,6 +378,8 @@ function InternalDashboard() {
         <Tabs
           value={value}
           onChange={handleChange}
+          variant="scrollable"
+          scrollButtons="auto"
           aria-label="basic tabs example"
         >
           <Tab label="Overview" {...a11yProps(0)} />

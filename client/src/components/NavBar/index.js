@@ -4,7 +4,7 @@ import { Link as LinkDom, Navigate, useNavigate } from 'react-router-dom';
 
 import { useTheme } from '@mui/material/styles';
 import { styled } from '@mui/material/styles';
-import AppBar from '@mui/material/AppBar';
+import MuiAppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
@@ -15,7 +15,6 @@ import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import AccountCircle from '@mui/icons-material/AccountCircle';
-import MoreIcon from '@mui/icons-material/MoreVert';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import Settings from '@mui/icons-material/Settings';
@@ -31,7 +30,7 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import MailIcon from '@mui/icons-material/Mail';
-import { Avatar, Collapse, Link, Tooltip } from '@mui/material';
+import { Avatar, Collapse, Link, Tooltip, useMediaQuery } from '@mui/material';
 
 import {
   getActiveEventsNumber,
@@ -67,7 +66,7 @@ const ExcludeMenu = {
     `${appConfig.companyName} Members`,
     'Tasks Overview',
     'Uni-Assist Tasks',
-    'Base Documents',
+    'Documents',
     'My Tasks Overview',
     'Applications Overview',
     'CV/ML/RL Center',
@@ -105,7 +104,7 @@ const ExcludeMenu = {
     'Map',
     'Applications Overview',
     'CV/ML/RL Center',
-    'Base Documents',
+    'Documents',
     'Interview Training',
     `${appConfig.companyName} Admissions`,
     'Internal Docs',
@@ -122,7 +121,7 @@ const ExcludeMenu = {
     'Tools',
     'Menu Levels',
     'My Courses',
-    'My Survey',
+    'My Profile',
     'Tasks Overview',
     'Portals Management',
     'Applications Overview',
@@ -142,7 +141,7 @@ const ExcludeMenu = {
     'Tools',
     'Menu Levels',
     'My Courses',
-    'My Survey',
+    'My Profile',
     'Tasks Overview',
     'Portals Management',
     'Applications Overview',
@@ -162,7 +161,7 @@ const ExcludeMenu = {
     'Applications Overview',
     'Menu Levels',
     'My Courses',
-    'My Survey',
+    'My Profile',
     'Portals Management',
     'Applications Overview',
     'Uni-Assist Tasks',
@@ -177,15 +176,17 @@ const ExcludeMenu = {
 };
 
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
-  ({ theme, open }) => ({
+  ({ theme, open, ismobile }) => ({
     flexGrow: 1,
     padding: theme.spacing(3),
+    width: `calc(100% - ${drawerWidth}px)`,
     transition: theme.transitions.create('margin', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen
     }),
-    marginLeft: `-${drawerWidth}px`,
+    marginLeft: ismobile === 'true' ? 0 : `-${drawerWidth}px`,
     ...(open && {
+      width: `calc(100% - ${drawerWidth}px)`,
       transition: theme.transitions.create('margin', {
         easing: theme.transitions.easing.easeOut,
         duration: theme.transitions.duration.enteringScreen
@@ -194,6 +195,25 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
     })
   })
 );
+
+const AppBar = styled(MuiAppBar, {
+  shouldForwardProp: (prop) => prop !== 'open'
+})(({ theme, open, ismobile }) => ({
+  transition: theme.transitions.create(['margin', 'width'], {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen
+  }),
+  // width: `calc(100% - ${0}px)`,
+  marginLeft: ismobile === 'true' ? 0 : `-${drawerWidth}px`,
+  ...(open && {
+    width: ismobile === 'true' ? '100%' : `calc(100% - ${drawerWidth}px)`,
+    // marginLeft: ismobile ? `${drawerWidth}px` : 0,
+    transition: theme.transitions.create(['margin', 'width'], {
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen
+    })
+  })
+}));
 
 const DrawerHeader = styled('div')(({ theme }) => ({
   display: 'flex',
@@ -208,9 +228,9 @@ function NavBar(props) {
   const { t } = useTranslation();
   const { user, isAuthenticated, isLoaded, logout } = useAuth();
   const theme = useTheme();
-  const [open, setOpen] = useState(false);
   const [menuItemOpen, setMenuItemOpen] = useState({});
-
+  const ismobile = useMediaQuery(theme.breakpoints.down('md'));
+  const [open, setOpen] = useState(ismobile ? false : true);
   const [navState, setNavState] = useState({
     listOpen: false,
     dropdownShow: false,
@@ -297,7 +317,8 @@ function NavBar(props) {
     setNavState({ unreadCount: 0 });
   };
 
-  const handleDrawerOpen = () => {
+  const handleDrawerOpen = (e) => {
+    e.stopPropagation();
     setOpen(true);
   };
 
@@ -311,10 +332,6 @@ function NavBar(props) {
 
   const handleMobileMenuClose = () => {
     setMobileMoreAnchorEl(null);
-  };
-
-  const handleMobileMenuOpen = (event) => {
-    setMobileMoreAnchorEl(event.currentTarget);
   };
 
   const handleClose = () => {
@@ -467,7 +484,7 @@ function NavBar(props) {
               <CalendarMonthIcon />
             </Badge>
           </IconButton>
-          <Typography>{t('Calendar')}</Typography>
+          <Typography>{t('Calendar', { ns: 'common' })}</Typography>
         </MenuItem>
       )}
       {!is_TaiGer_Editor(user) && (
@@ -483,7 +500,7 @@ function NavBar(props) {
               <MailIcon />
             </Badge>
           </IconButton>
-          <Typography>{t('Messages')}</Typography>
+          <Typography>{t('Messages', { ns: 'common' })}</Typography>
         </MenuItem>
       )}
       <MenuItem onClick={handleProfileMenuOpen}>
@@ -496,7 +513,7 @@ function NavBar(props) {
         >
           <AccountCircle />
         </IconButton>
-        <Typography>{t('Profile')}</Typography>
+        <Typography>{t('Profile', { ns: 'common' })}</Typography>
       </MenuItem>
     </Menu>
   );
@@ -522,16 +539,21 @@ function NavBar(props) {
           minHeight: '100vh',
           display: 'flex'
         }}
+        onClick={() => {
+          if (ismobile) {
+            handleDrawerClose();
+          }
+        }}
       >
         <CssBaseline />
-        <AppBar position="fixed" open={open}>
+        <AppBar position="fixed" open={open} ismobile={ismobile.toString()}>
           <Toolbar>
             <IconButton
               color="inherit"
               aria-label="open drawer"
-              onClick={handleDrawerOpen}
+              onClick={(e) => handleDrawerOpen(e)}
               edge="start"
-              sx={{ mr: 2, ...(open && { display: 'none' }) }}
+              sx={{ mr: 2, ...(!ismobile && open && { display: 'none' }) }}
             >
               <MenuIcon />
             </IconButton>
@@ -575,7 +597,7 @@ function NavBar(props) {
                 </IconButton>
               )}
 
-              <Tooltip title="Account settings">
+              <Tooltip title="Account settings" placement="bottom-start">
                 <IconButton
                   size="large"
                   edge="end"
@@ -594,16 +616,57 @@ function NavBar(props) {
               </Tooltip>
             </Box>
             <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
-              <IconButton
-                size="large"
-                aria-label="show more"
-                aria-controls={mobileMenuId}
-                aria-haspopup="true"
-                onClick={handleMobileMenuOpen}
-                color="inherit"
-              >
-                <MoreIcon />
-              </IconButton>
+              {(is_TaiGer_Agent(user) || is_TaiGer_Student(user)) && (
+                <IconButton
+                  size="large"
+                  aria-label="show active event"
+                  onClick={handleNavigateCalendar}
+                  color="inherit"
+                >
+                  <Badge badgeContent={navState.activeEventCount} color="error">
+                    <CalendarMonthIcon />
+                  </Badge>
+                </IconButton>
+              )}
+              {!is_TaiGer_Editor(user) && (
+                <IconButton
+                  size="large"
+                  aria-label="show unread new messages"
+                  aria-controls={chatId}
+                  aria-haspopup="true"
+                  onClick={handleOpenChat}
+                  color="inherit"
+                >
+                  <Badge badgeContent={navState.unreadCount} color="error">
+                    <MailIcon />
+                  </Badge>
+                </IconButton>
+              )}
+              <Tooltip title="Account settings" placement="bottom-start">
+                <IconButton
+                  size="large"
+                  edge="end"
+                  aria-label="account of current user"
+                  aria-controls={menuId}
+                  aria-haspopup="true"
+                  onClick={handleProfileMenuOpen}
+                  color="inherit"
+                  sx={{
+                    '& .MuiAvatar-root': {
+                      width: 32,
+                      height: 32,
+                      ml: -0.5,
+                      mr: 1
+                    }
+                  }}
+                >
+                  <Avatar
+                    {...stringAvatar(`${user?.firstname} ${user?.lastname}`)}
+                    size="small"
+                    title={`${user?.firstname} ${user?.lastname}`}
+                  />
+                </IconButton>
+              </Tooltip>
             </Box>
           </Toolbar>
         </AppBar>
@@ -616,7 +679,8 @@ function NavBar(props) {
               boxSizing: 'border-box'
             }
           }}
-          variant="persistent"
+          // variant="persistent"
+          variant={ismobile ? 'temporary' : 'persistent'}
           anchor="left"
           open={open}
         >
@@ -638,18 +702,21 @@ function NavBar(props) {
               menuItem.children ? (
                 <Box key={menuItem.id}>
                   <ListItemButton
-                    onClick={() =>
+                    onClick={(e) => {
+                      e.stopPropagation();
                       setMenuItemOpen((prevState) => ({
                         ...prevState,
                         [menuItem.id]:
                           prevState[menuItem.id] === undefined
                             ? true
                             : !prevState[menuItem.id]
-                      }))
-                    }
+                      }));
+                    }}
                   >
-                    <ListItemIcon>{/* <InboxIcon /> */}</ListItemIcon>
-                    <ListItemText primary={t(`${menuItem.title}`)} />
+                    <ListItemIcon>{menuItem.icon}</ListItemIcon>
+                    <ListItemText
+                      primary={t(`${menuItem.title}`, { ns: 'common' })}
+                    />
                     {menuItemOpen[menuItem.id] ? (
                       <ExpandLess />
                     ) : (
@@ -676,7 +743,11 @@ function NavBar(props) {
                             selected={subMenuItem.url === location.pathname}
                           >
                             <ListItemIcon>{subMenuItem.icon}</ListItemIcon>
-                            <ListItemText primary={t(`${subMenuItem.title}`)} />
+                            <ListItemText
+                              primary={t(`${subMenuItem.title}`, {
+                                ns: 'common'
+                              })}
+                            />
                           </ListItemButton>
                         ))}
                     </List>
@@ -690,15 +761,22 @@ function NavBar(props) {
                     selected={menuItem.url === location.pathname}
                   >
                     <ListItemIcon>{menuItem.icon}</ListItemIcon>
-                    <ListItemText primary={t(`${menuItem.title}`)} />
+                    <ListItemText
+                      primary={t(`${menuItem.title}`, {
+                        ns: 'common'
+                      })}
+                    />
                   </ListItemButton>
                 </ListItem>
               )
             )}
           </List>
           <Divider />
+          <div style={{ position: 'relative', bottom: 0, width: '100%' }}>
+            <Footer />
+          </div>
         </Drawer>
-        <Main open={open}>
+        <Main open={open} ismobile={ismobile.toString()}>
           <DrawerHeader />
           {props.children}
           {renderMobileMenu}
@@ -706,7 +784,6 @@ function NavBar(props) {
           <RenderMenu />
         </Main>
       </Box>
-      <Footer />
     </>
   );
 }

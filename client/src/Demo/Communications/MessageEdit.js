@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { Tooltip, OverlayTrigger } from 'react-bootstrap';
 import {
   Button,
+  Tooltip,
   AccordionDetails,
   AccordionSummary,
   Typography
 } from '@mui/material';
+import SendIcon from '@mui/icons-material/Send';
+
 import { RiCloseFill } from 'react-icons/ri';
 import { Accordion, Avatar } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -58,12 +60,6 @@ function MessageEdit(props) {
       editorState: content
     }));
   };
-
-  const renderTooltip = (props) => (
-    <Tooltip id="tooltip-disabled" {...props}>
-      Please write some text to improve the communication and understanding.
-    </Tooltip>
-  );
 
   if (!props.editorState) {
     return <Loading />;
@@ -134,22 +130,20 @@ function MessageEdit(props) {
         {!messageEditState.editorState?.blocks ||
         messageEditState.editorState?.blocks.length === 0 ||
         props.buttonDisabled ? (
-          <OverlayTrigger
-            placement="right"
-            delay={{ show: 250, hide: 400 }}
-            overlay={renderTooltip}
+          <Tooltip
+            title={t(
+              'Please write some text to improve the communication and understanding.'
+            )}
+            placement="top"
           >
-            <span className="d-inline-block">
-              <Button
-                color="primary"
-                variant="contained"
-                disabled={true}
-                style={{ pointerEvents: 'none' }}
-              >
-                {t('Save')}
-              </Button>
-            </span>
-          </OverlayTrigger>
+            <Button
+              variant="outlined"
+              color="secondary"
+              startIcon={<SendIcon />}
+            >
+              {t('Save')}
+            </Button>
+          </Tooltip>
         ) : (
           <Button
             color="primary"
@@ -161,8 +155,9 @@ function MessageEdit(props) {
                 props.message._id.toString()
               )
             }
+            startIcon={<SendIcon />}
           >
-            {t('Save')}
+            {t('Save', { ns: 'common' })}
           </Button>
         )}
         <Button
@@ -191,10 +186,12 @@ function MessageEdit(props) {
             variant="danger"
             onClick={onDeleteSingleMessage}
           >
-            {props.isLoaded ? t('Delete') : t('Pending')}
+            {props.isLoaded
+              ? t('Delete', { ns: 'common' })
+              : t('Pending', { ns: 'common' })}
           </Button>
           <Button onClick={onHidedeleteMessageModalShow} variant="light">
-            {t('Cancel')}
+            {t('Cancel', { ns: 'common' })}
           </Button>
         </Typography>
       </ModalNew>

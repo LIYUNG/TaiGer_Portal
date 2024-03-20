@@ -11,9 +11,11 @@ import StudentOverviewTable from '../../components/StudentOverviewTable';
 import { useAuth } from '../../components/AuthProvider';
 import { appConfig } from '../../config';
 import Loading from '../../components/Loading/Loading';
+import { useTranslation } from 'react-i18next';
 
 function StudentOverviewPage() {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [StudentOverviewPageState, setStudentOverviewPageState] = useState({
     error: '',
     isLoaded: false,
@@ -70,7 +72,7 @@ function StudentOverviewPage() {
   }
 
   return (
-    <Box>
+    <Box data-testid="student_overview">
       <Breadcrumbs aria-label="breadcrumb">
         <Link
           underline="hover"
@@ -81,7 +83,10 @@ function StudentOverviewPage() {
           {appConfig.companyName}
         </Link>
         <Typography color="text.primary">
-          All Active Student Overview (
+          {t('All Students', { ns: 'common' })}
+        </Typography>
+        <Typography color="text.primary">
+          {t('All Active Student Overview', { ns: 'common' })} (
           {StudentOverviewPageState.students?.length})
         </Typography>
       </Breadcrumbs>

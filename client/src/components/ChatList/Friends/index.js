@@ -26,7 +26,7 @@ function Friends(props) {
   const friendList = props.students.map((f) => {
     return (
       <Friend
-        key={f.id}
+        key={f._id}
         data={f}
         activeId={props.user._id.toString()}
         handleCloseChat={props.handleCloseChat}

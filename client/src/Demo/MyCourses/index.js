@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import DownloadIcon from '@mui/icons-material/Download';
-import { Form } from 'react-bootstrap';
 import {
   Box,
   Breadcrumbs,
   Button,
   Card,
+  Checkbox,
   CircularProgress,
   FormControl,
+  FormControlLabel,
   Grid,
   InputLabel,
   Link,
@@ -15,6 +16,7 @@ import {
   ListItem,
   MenuItem,
   Select,
+  TableContainer,
   Typography
 } from '@mui/material';
 import { DataSheetGrid, textColumn, keyColumn } from 'react-datasheet-grid';
@@ -478,74 +480,76 @@ export default function MyCourses() {
             component={LinkDom}
             to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
               statedata.student._id.toString(),
-              '/profile'
+              DEMO.PROFILE_HASH
             )}`}
           >
             {statedata.student.firstname} {statedata.student.lastname}
           </Link>
         )}
-        <Typography color="text.primary">My Courses</Typography>
+        <Typography color="text.primary">
+          {t('My Courses', { ns: 'common' })}
+        </Typography>
       </Breadcrumbs>
-      <Card sx={{ mt: 2, padding: 2, minWidth: '450px' }}>
+      {/* <Card sx={{ mt: 2, padding: 2, minWidth: '450px' }}> */}
+      <Typography variant="h6" sx={{ pt: 2 }}>
+        請把大學及碩士成績單 上面出現的所有課程填入這個表單內
+      </Typography>
+      <Box>
         <Typography variant="h6">
-          請把大學及碩士成績單 上面出現的所有課程填入這個表單內
+          Please fill <b>all your courses in the Bachelor&apos;s study</b> in
+          this table
         </Typography>
-        <Box>
-          <Typography variant="h6">
-            Please fill <b>all your courses in the Bachelor&apos;s study</b> in
-            this table
-          </Typography>
-          <List>
-            <ListItem>
-              <Typography variant="body1">
-                若您仍是高中生、申請大學部者，請忽略此表格
-              </Typography>
-            </ListItem>
-            <ListItem>
-              <Typography variant="body1">
-                若有交換，請填入交換時的修過的課
-              </Typography>
-            </ListItem>
-            <ListItem>
-              <Typography variant="body1">
-                若有在大學部時期修過的碩士課程也可以放上去
-              </Typography>
-            </ListItem>
-            <ListItem>
-              <Typography variant="body1">
-                若有同名課程(如微積分一、微積分二)，請各自獨立一行，不能自行疊加在一行
-              </Typography>
-            </ListItem>
-            <ListItem>
-              <Typography variant="body1">
-                若你已就讀碩士或仍然是碩士班在學，請將碩士班課程標記&quot;碩士&quot;在，Grades那行。
-              </Typography>
-            </ListItem>
-            <ListItem>
-              <Typography variant="body1">
-                若目前尚未畢業，請每學期選完課確定下學課表後更新這個表單
-              </Typography>
-            </ListItem>
-          </List>
-        </Box>
-        <Typography variant="h6">
-          <b>表格一</b>：請放 {appConfig.companyName} 服務開始<b>前</b>
-          已經修過的課程
-        </Typography>
-        <Typography sx={{ my: 1 }}>
-          您只需在 {appConfig.companyName} 服務開始初期更新一次
-          <b>表格一</b>
-          ，往後新的學期，新課程請更新在
-          <b>表格二</b>
-        </Typography>
-        <Typography sx={{ mb: 1 }}>
-          若您已畢業，只需更新<b>表格一</b>即可。
-        </Typography>
+        <List>
+          <ListItem>
+            <Typography variant="body1">
+              若您仍是高中生、申請大學部者，請忽略此表格
+            </Typography>
+          </ListItem>
+          <ListItem>
+            <Typography variant="body1">
+              若有交換，請填入交換時的修過的課
+            </Typography>
+          </ListItem>
+          <ListItem>
+            <Typography variant="body1">
+              若有在大學部時期修過的碩士課程也可以放上去
+            </Typography>
+          </ListItem>
+          <ListItem>
+            <Typography variant="body1">
+              若有同名課程(如微積分一、微積分二)，請各自獨立一行，不能自行疊加在一行
+            </Typography>
+          </ListItem>
+          <ListItem>
+            <Typography variant="body1">
+              若你已就讀碩士或仍然是碩士班在學，請將碩士班課程標記&quot;碩士&quot;在，Grades那行。
+            </Typography>
+          </ListItem>
+          <ListItem>
+            <Typography variant="body1">
+              若目前尚未畢業，請每學期選完課確定下學課表後更新這個表單
+            </Typography>
+          </ListItem>
+        </List>
+      </Box>
+      <Typography variant="h6">
+        <b>表格一</b>：請放 {appConfig.companyName} 服務開始<b>前</b>
+        已經修過的課程
+      </Typography>
+      <Typography sx={{ my: 1 }}>
+        您只需在 {appConfig.companyName} 服務開始初期更新一次
+        <b>表格一</b>
+        ，往後新的學期，新課程請更新在
+        <b>表格二</b>
+      </Typography>
+      <Typography sx={{ mb: 1 }}>
+        若您已畢業，只需更新<b>表格一</b>即可。
+      </Typography>
+      <TableContainer style={{ overflowX: 'auto' }}>
         <DataSheetGrid
           id={1}
           style={{ minWidth: '450px' }}
           height={6000}
-          readOnly={true}
           disableContextMenu={false}
           disableExpandSelection={false}
           headerRowHeight={30}
@@ -557,16 +561,18 @@ export default function MyCourses() {
           }
           columns={columns}
         />
-        <Card sx={{ mt: 2, backgroundColor: '#e3e3e3' }}>
-          <Typography variant="h6" sx={{ p: 2 }}>
-            <b>表格二</b>：請放 {appConfig.companyName} 服務開始<b>後</b>
-            所選的修課程
-          </Typography>
-          <Typography sx={{ px: 2, pb: 2 }}>
-            如此一來顧問才能了解哪些課程是 {appConfig.companyName}
-            服務開始後要求修的課程。到畢業前所有新修的課程， 只需更新
-            <b>表格二</b>。
-          </Typography>
+      </TableContainer>
+      <Card sx={{ mt: 2, backgroundColor: '#e3e3e3' }}>
+        <Typography variant="h6" sx={{ p: 2 }}>
+          <b>表格二</b>：請放 {appConfig.companyName} 服務開始<b>後</b>
+          所選的修課程
+        </Typography>
+        <Typography sx={{ px: 2, pb: 2 }}>
+          如此一來顧問才能了解哪些課程是 {appConfig.companyName}
+          服務開始後要求修的課程。到畢業前所有新修的課程， 只需更新
+          <b>表格二</b>。
+        </Typography>
+        <TableContainer style={{ overflowX: 'auto' }}>
           <DataSheetGrid
             id={2}
             style={{ minWidth: '450px' }}
@@ -580,43 +586,43 @@ export default function MyCourses() {
             onChange={onChange_taiger_guided}
             columns={columns}
           />
-        </Card>
-        {is_TaiGer_AdminAgent(user) && (
-          <Box sx={{ mt: 2 }}>
-            <Form>
-              <Form.Group>
-                <Form.Check
-                  type="checkbox"
-                  className="text-default"
-                  label={`Lock Table 1 preventing student modifying it.`}
-                  value={'is locked'}
-                  checked={statedata.table_data_string_locked}
-                  onChange={(e) => handleLockTable(e)}
-                />
-              </Form.Group>
-            </Form>
-          </Box>
-        )}
-        <Typography variant="body2" sx={{ my: 2 }}>
-          {t('Last update')}&nbsp;
-          {convertDate(statedata.updatedAt)}
-        </Typography>
-        <Button
-          color="primary"
-          variant="contained"
-          size="small"
-          onClick={onSubmit}
-          disabled={statedata.isUpdating}
-          sx={{ mb: 2 }}
-        >
-          {statedata.isUpdating ? <CircularProgress size={16} /> : t('Update')}
-        </Button>
-        <Typography variant="body2">
-          {t(
-            'After you updated the course table, please contact your agent for your course analysis.'
-          )}
-        </Typography>
+        </TableContainer>
       </Card>
+      {is_TaiGer_AdminAgent(user) && (
+        <Box sx={{ mt: 2 }}>
+          <FormControlLabel
+            label={`Lock Table 1 preventing student modifying it.`}
+            control={
+              <Checkbox
+                checked={statedata.table_data_string_locked}
+                onChange={(e) => handleLockTable(e)}
+                value={'is locked'}
+              />
+            }
+          />
+        </Box>
+      )}
+      <Typography variant="body2" sx={{ my: 2 }}>
+        {t('Last update')}&nbsp;
+        {convertDate(statedata.updatedAt)}
+      </Typography>
+      <Button
+        color="primary"
+        variant="contained"
+        size="small"
+        onClick={onSubmit}
+        disabled={statedata.isUpdating}
+        sx={{ mb: 2 }}
+      >
+        {statedata.isUpdating ? <CircularProgress size={16} /> : t('Update')}
+      </Button>
+      <Typography variant="body2">
+        {t(
+          'After you updated the course table, please contact your agent for your course analysis.',
+          { ns: 'courses' }
+        )}
+      </Typography>
+      {/* </Card> */}
       {is_TaiGer_Guest(user) && (
         <Card sx={{ mt: 2 }}>
           <Typography>
@@ -630,10 +636,10 @@ export default function MyCourses() {
         {is_TaiGer_AdminAgent(user) && (
           <>
             <Grid container spacing={2}>
-              <Grid item xs={12} sx={{ marginX: 2 }}>
+              <Grid item xs={12}>
                 <Typography variant="h6">{t('Courses Analysis')}</Typography>
               </Grid>
-              <Grid item xs={12} sx={{ marginX: 2 }}>
+              <Grid item xs={12}>
                 <FormControl fullWidth>
                   <InputLabel id="select-target-group">
                     {t('Select Target Group')}
@@ -654,8 +660,8 @@ export default function MyCourses() {
                   </Select>
                 </FormControl>
               </Grid>
-              <Grid item xs={12} sx={{ marginX: 2 }}>
-                <FormControl fullWidth sx={{ marginBottom: 2 }}>
+              <Grid item xs={12}>
+                <FormControl fullWidth sx={{ marginBottom: 1 }}>
                   <InputLabel id="demo-simple-select-label">
                     {t('Select Language')}
                   </InputLabel>
@@ -672,11 +678,11 @@ export default function MyCourses() {
                   </Select>
                 </FormControl>
               </Grid>
-              <Grid item xs={12} sx={{ marginX: 2 }}>
+              <Grid item xs={12}>
                 <Button
+                  fullWidth
                   color="primary"
                   variant="contained"
-                  size="small"
                   onClick={onAnalyse}
                   disabled={
                     statedata.isAnalysing ||
@@ -692,7 +698,9 @@ export default function MyCourses() {
         )}
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <Typography variant="h6">{t('Courses Analysis')}</Typography>
+            <Typography variant="h6">
+              {t('Courses Analysis', { ns: 'courses' })}
+            </Typography>
           </Grid>
           <Grid item xs={12}>
             {statedata.analysis && statedata.analysis.isAnalysed ? (
@@ -707,7 +715,7 @@ export default function MyCourses() {
                     startIcon={<DownloadIcon />}
                     sx={{ marginRight: 2 }}
                   >
-                    {t('Download')}
+                    {t('Download', { ns: 'common' })}
                   </Button>
                   <LinkDom
                     to={`${DEMO.COURSES_ANALYSIS_RESULT_LINK(
@@ -716,19 +724,19 @@ export default function MyCourses() {
                     target="_blank"
                   >
                     <Button color="secondary" variant="contained" size="small">
-                      {t('View Online')}
+                      {t('View Online', { ns: 'courses' })}
                     </Button>
                   </LinkDom>
                 </Typography>
                 <Typography sx={{ mt: 2 }}>
-                  {t('Last analysis at')}:{' '}
+                  {t('Last analysis at', { ns: 'courses' })}:{' '}
                   {statedata.analysis
                     ? convertDate(statedata.analysis.updatedAt)
                     : ''}
                 </Typography>
               </>
             ) : (
-              <Typography>{t('No analysis yet')}</Typography>
+              <Typography>{t('No analysis yet', { ns: 'courses' })}</Typography>
             )}
           </Grid>
         </Grid>
@@ -739,15 +747,16 @@ export default function MyCourses() {
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
-        <Typography>{t('Confirmation')}</Typography>
+        <Typography>{t('Confirmation', { ns: 'common' })}</Typography>
         <Typography>
           {t(
-            'Update transcript successfully! Your agent will be notified and will analyse your courses as soon as possible.'
+            'Update transcript successfully! Your agent will be notified and will analyse your courses as soon as possible.',
+            { ns: 'courses' }
           )}
         </Typography>
         <Typography>
           <Button color="primary" variant="contained" onClick={closeModal}>
-            Close
+            {t('Close', { ns: 'common' })}
           </Button>
         </Typography>
       </ModalNew>
@@ -757,15 +766,18 @@ export default function MyCourses() {
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
-        <Typography>{t('Success')}</Typography>
+        <Typography>{t('Success', { ns: 'common' })}</Typography>
         <Typography>
-          {t('Courses analysed successfully!')}
+          {t('Courses analysed successfully!', { ns: 'courses' })}
           <b>
             {t(
-              'The student will receive an email notification and the analysed course URL link.'
+              'The student will receive an email notification and the analysed course URL link.',
+              { ns: 'courses' }
             )}
           </b>{' '}
-          {t('Student should access the analysed page in their course page.')}
+          {t('Student should access the analysed page in their course page.', {
+            ns: 'courses'
+          })}
         </Typography>
         <Typography>
           <Button
@@ -773,7 +785,7 @@ export default function MyCourses() {
             variant="contained"
             onClick={closeanalysisSuccessModal}
           >
-            {t('Ok')}
+            {t('Close', { ns: 'common' })}
           </Button>
         </Typography>
       </ModalNew>

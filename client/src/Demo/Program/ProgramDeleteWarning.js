@@ -21,14 +21,14 @@ function ProgramDeleteWarning(props) {
         variant="contained"
         onClick={() => props.RemoveProgramHandler(props.program_id)}
       >
-        {t('Yes')}
+        {t('Yes', { ns: 'common' })}
       </Button>
       <Button
         color="secondary"
         variant="outlined"
         onClick={props.setModalHideDDelete}
       >
-        {t('No')}
+        {t('No', { ns: 'common' })}
       </Button>
     </ModalNew>
   );

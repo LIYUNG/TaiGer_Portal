@@ -23,6 +23,7 @@ import DEMO from '../../store/constant';
 import { appConfig } from '../../config';
 import Loading from '../../components/Loading/Loading';
 import ModalNew from '../../components/Modal';
+import { isProgramDecided } from '../Utils/checking-functions';
 
 export default function PortalCredentialsCard(props) {
   const { t } = useTranslation();
@@ -279,7 +280,7 @@ export default function PortalCredentialsCard(props) {
 
         {statedata.applications.map((application, i) => (
           <Fragment key={i}>
-            {application.decided === 'O' && (
+            {isProgramDecided(application) && (
               <>
                 <Divider></Divider>
                 <Grid container spacing={2}>
@@ -501,10 +502,16 @@ export default function PortalCredentialsCard(props) {
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
-        <Typography variant="h5">{t('Confirmation')}</Typography>
-        <Typography>{t('Update portal credentials successfully')}</Typography>
+        <Typography variant="h5">
+          {t('Confirmation', { ns: 'common' })}
+        </Typography>
+        <Typography>
+          {t('Update portal credentials successfully', {
+            ns: 'portalManagement'
+          })}
+        </Typography>
         <Button color="primary" variant="outlined" onClick={closeModal}>
-          {t('Close')}
+          {t('Close', { ns: 'common' })}
         </Button>
       </ModalNew>
     </Box>

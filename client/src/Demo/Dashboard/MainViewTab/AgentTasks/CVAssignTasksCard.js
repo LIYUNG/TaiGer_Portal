@@ -32,7 +32,7 @@ function CVAssignTasksCard(props) {
               <Link
                 to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                   props.student._id.toString(),
-                  '/CV_ML_RL'
+                  DEMO.CVMLRL_HASH
                 )}`}
                 component={LinkDom}
               >
@@ -72,9 +72,9 @@ function CVAssignTasksCard(props) {
     ));
   return (
     <>
-      <Card sx={{ padding: 2, mb: 2 }}>
+      <Card sx={{ mb: 2 }}>
         <Alert severity="error">
-          <Typography variant="string">{t('CV Not Assigned Yet')}</Typography>
+          <Typography>{t('CV Not Assigned Yet')}</Typography>
         </Alert>
         <Table size="small">
           <TableHead>

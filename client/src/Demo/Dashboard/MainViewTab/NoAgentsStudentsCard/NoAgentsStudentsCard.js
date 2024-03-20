@@ -63,7 +63,7 @@ function NoAgentsStudentsCard(props) {
                 aria-expanded={open ? 'true' : undefined}
                 onClick={handleClick}
               >
-                {t('Option')}
+                {t('Option', { ns: 'common' })}
               </Button>
               <Menu
                 id="basic-menu"
@@ -75,7 +75,7 @@ function NoAgentsStudentsCard(props) {
                 }}
               >
                 <MenuItem onClick={() => startEditingAgent()}>
-                  Edit Agent
+                  {t('Edit Agent', { ns: 'dastboard' })}
                 </MenuItem>
               </Menu>
             </TableCell>
@@ -84,7 +84,7 @@ function NoAgentsStudentsCard(props) {
             <Link
               to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                 props.student._id,
-                DEMO.PROFILE
+                DEMO.PROFILE_HASH
               )}`}
               component={LinkDom}
             >

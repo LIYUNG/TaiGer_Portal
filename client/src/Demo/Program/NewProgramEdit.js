@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import {
   Button,
   Card,
@@ -19,6 +20,7 @@ import {
   LANGUAGES_ARRAY_OPTIONS,
   SEMESTER_ARRAY_OPTIONS,
   UNI_ASSIST_ARRAY_OPTIONS,
+  YES_NO_BOOLEAN_OPTIONS,
   field_alert
 } from '../Utils/contants';
 import { appConfig } from '../../config';
@@ -29,6 +31,7 @@ function NewProgramEdit(props) {
     program: props.program || {},
     school_name_set: new Set(props.programs?.map((program) => program.school))
   });
+  const [isChanged, setIsChanged] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const searchContainerRef = useRef(null);
@@ -74,13 +77,18 @@ function NewProgramEdit(props) {
   const handleChange = (e) => {
     e.preventDefault();
     var program_temp = { ...initStates.program };
-    program_temp[e.target.name] = e.target.value.trimLeft();
+    program_temp[e.target.name] =
+      typeof e.target.value === 'string'
+        ? e.target.value.trimLeft()
+        : e.target.value;
     setInitStates((initStates) => ({
       ...initStates,
       program: program_temp
     }));
+    setIsChanged(true);
     if (e.target.id === 'school') {
       setSearchTerm(e.target.value.trimLeft());
+      setIsChanged(true);
     }
   };
 
@@ -107,231 +115,222 @@ function NewProgramEdit(props) {
   };
   return (
     <>
+      <Button
+        size="small"
+        color="secondary"
+        onClick={() => props.handleClick()}
+      >
+        <ArrowBackIcon fontSize="small" /> Back
+      </Button>
       <Card sx={{ p: 2 }}>
         <Grid container>
           <Grid item xs={6} md={6}>
-            <Typography variant="h6">University *</Typography>
+            <Typography variant="body1">{t('School')} *</Typography>
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="h6">
-              <div className="search-container-school" ref={searchContainerRef}>
-                <TextField
-                  fullWidth
-                  size="small"
-                  type="text"
-                  id="school"
-                  name="school"
-                  placeholder="National Taiwan University"
-                  onChange={(e) => handleChange(e)}
-                  value={initStates.program.school || searchTerm}
-                />
-
-                {/* {loading && <div>Loading...</div>} */}
-                {props.programs && searchResults.length > 0
-                  ? isResultsVisible && (
-                      <div className="search-results result-list">
-                        {searchResults.map((result, i) => (
-                          <li
-                            onClick={() => onClickResultHandler(result)}
-                            key={i}
-                          >
-                            {`${result}`}
-                          </li>
-                        ))}
-                      </div>
-                    )
-                  : props.programs &&
-                    isResultsVisible && (
-                      <div className="search-results result-list">
-                        <li>No result</li>
-                      </div>
-                    )}
-              </div>
-            </Typography>
-          </Grid>
-          <Grid item xs={6} md={6}>
-            <Typography variant="h6">Program*</Typography>
-          </Grid>
-          <Grid item xs={6} md={6}>
-            <Typography variant="h6">
+            <div className="search-container-school" ref={searchContainerRef}>
               <TextField
                 fullWidth
                 size="small"
                 type="text"
-                id="program_name"
-                name="program_name"
-                placeholder="Electrical Engineering"
+                id="school"
+                name="school"
+                placeholder="National Taiwan University"
                 onChange={(e) => handleChange(e)}
-                value={initStates.program.program_name || ''}
+                value={initStates.program.school || searchTerm}
               />
-            </Typography>
+
+              {/* {loading && <div>Loading...</div>} */}
+              {props.programs && searchResults.length > 0
+                ? isResultsVisible && (
+                    <div className="search-results result-list">
+                      {searchResults.map((result, i) => (
+                        <li
+                          onClick={() => onClickResultHandler(result)}
+                          key={i}
+                        >
+                          {`${result}`}
+                        </li>
+                      ))}
+                    </div>
+                  )
+                : props.programs &&
+                  isResultsVisible && (
+                    <div className="search-results result-list">
+                      <li>No result</li>
+                    </div>
+                  )}
+            </div>
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="h6">Degree *</Typography>
+            <Typography variant="body1">{t('Program')} *</Typography>
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="h6">
-              <FormControl fullWidth>
-                <Select
-                  size="small"
-                  labelId="degree"
-                  name="degree"
-                  id="degree"
-                  onChange={(e) => handleChange(e)}
-                  value={initStates.program.degree}
-                >
-                  {DEGREE_CATOGARY_ARRAY_OPTIONS.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Typography>
+            <TextField
+              fullWidth
+              size="small"
+              type="text"
+              id="program_name"
+              name="program_name"
+              placeholder="Electrical Engineering"
+              onChange={(e) => handleChange(e)}
+              value={initStates.program.program_name || ''}
+            />
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="h6">Semester *</Typography>
+            <Typography variant="body1">{t('Degree')} *</Typography>
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="h6">
-              <FormControl fullWidth>
-                <Select
-                  size="small"
-                  labelId="semester"
-                  name="semester"
-                  id="semester"
-                  onChange={(e) => handleChange(e)}
-                  value={initStates.program.semester || ''}
-                >
-                  {SEMESTER_ARRAY_OPTIONS.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Typography>
+            <FormControl fullWidth>
+              <Select
+                size="small"
+                labelId="degree"
+                name="degree"
+                id="degree"
+                onChange={(e) => handleChange(e)}
+                value={initStates.program.degree}
+              >
+                {DEGREE_CATOGARY_ARRAY_OPTIONS.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="h6">Teaching Language*</Typography>
+            <Typography variant="body1">{t('Semester')} *</Typography>
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="h6">
-              <FormControl fullWidth>
-                <Select
-                  size="small"
-                  labelId="lang"
-                  name="lang"
-                  id="lang"
-                  onChange={(e) => handleChange(e)}
-                  value={initStates.program.lang || '-'}
-                >
-                  {LANGUAGES_ARRAY_OPTIONS.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Typography>
+            <FormControl fullWidth>
+              <Select
+                size="small"
+                labelId="semester"
+                name="semester"
+                id="semester"
+                onChange={(e) => handleChange(e)}
+                value={initStates.program.semester || ''}
+              >
+                {SEMESTER_ARRAY_OPTIONS.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="h6">
+            <Typography variant="body1">{t('Teaching Language')}*</Typography>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <FormControl fullWidth>
+              <Select
+                size="small"
+                labelId="lang"
+                name="lang"
+                id="lang"
+                onChange={(e) => handleChange(e)}
+                value={initStates.program.lang || '-'}
+              >
+                {LANGUAGES_ARRAY_OPTIONS.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <Typography variant="body1">
               GPA Requirement (German system)
             </Typography>
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="h6">
-              <TextField
-                fullWidth
-                size="small"
-                type="text"
-                id="gpa_requirement"
-                name="gpa_requirement"
-                placeholder="2,5"
-                onChange={(e) => handleChange(e)}
-                value={initStates.program.gpa_requirement || ''}
-              />
+            <TextField
+              fullWidth
+              size="small"
+              type="text"
+              id="gpa_requirement"
+              name="gpa_requirement"
+              placeholder="2,5"
+              onChange={(e) => handleChange(e)}
+              value={initStates.program.gpa_requirement || ''}
+            />
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <Typography variant="body1">
+              {t('Application Start')} (MM-DD)
             </Typography>
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="h6">Application Start (MM-DD)</Typography>
+            <TextField
+              fullWidth
+              size="small"
+              type="text"
+              id="application_start"
+              name="application_start"
+              placeholder="04-01"
+              onChange={(e) => handleChange(e)}
+              value={initStates.program.application_start || ''}
+            />
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="h6">
-              <TextField
-                fullWidth
-                size="small"
-                type="text"
-                id="application_start"
-                name="application_start"
-                placeholder="04-01"
-                onChange={(e) => handleChange(e)}
-                value={initStates.program.application_start || ''}
-              />
+            <Typography variant="body1">
+              {t('Application Deadline')} (MM-DD) *
             </Typography>
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="h6">Application Deadline (MM-DD) *</Typography>
-          </Grid>
-          <Grid item xs={6} md={6}>
-            <Typography variant="h6">
-              <TextField
-                fullWidth
-                size="small"
-                type="text"
-                id="application_deadline"
-                name="application_deadline"
-                placeholder="05-31"
-                onChange={(e) => handleChange(e)}
-                value={initStates.program.application_deadline || ''}
-              />
-            </Typography>
+            <TextField
+              fullWidth
+              size="small"
+              type="text"
+              id="application_deadline"
+              name="application_deadline"
+              placeholder="05-31"
+              onChange={(e) => handleChange(e)}
+              value={initStates.program.application_deadline || ''}
+            />
           </Grid>
           {appConfig.vpdEnable && (
             <>
               <Grid item xs={6} md={6}>
-                <Typography variant="h6">Need Uni-Assist?</Typography>
+                <Typography variant="body1">{t('Need Uni-Assist?')}</Typography>
               </Grid>
               <Grid item xs={6} md={6}>
-                <Typography variant="h6">
-                  <FormControl fullWidth>
-                    <Select
-                      size="small"
-                      labelId="uni_assist"
-                      name="uni_assist"
-                      id="uni_assist"
-                      onChange={(e) => handleChange(e)}
-                      value={initStates.program.uni_assist || 'No'}
-                    >
-                      {UNI_ASSIST_ARRAY_OPTIONS.map((option) => (
-                        <MenuItem key={option.value} value={option.value}>
-                          {option.label}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </Typography>
+                <FormControl fullWidth>
+                  <Select
+                    size="small"
+                    labelId="uni_assist"
+                    name="uni_assist"
+                    id="uni_assist"
+                    onChange={(e) => handleChange(e)}
+                    value={initStates.program.uni_assist || 'No'}
+                  >
+                    {UNI_ASSIST_ARRAY_OPTIONS.map((option) => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
               </Grid>
             </>
           )}
           <Grid item xs={6} md={6}>
-            <Typography variant="h6">{t('TOEFL Requirement')}</Typography>
+            <Typography variant="body1">{t('TOEFL Requirement')}</Typography>
           </Grid>
           <Grid item xs={2} md={2}>
-            <Typography variant="h6">
-              <TextField
-                fullWidth
-                size="small"
-                type="text"
-                id="toefl"
-                name="toefl"
-                placeholder="88"
-                onChange={(e) => handleChange(e)}
-                value={initStates.program.toefl || ''}
-              />
-            </Typography>
-          </Grid>{' '}
+            <TextField
+              fullWidth
+              size="small"
+              type="text"
+              id="toefl"
+              name="toefl"
+              placeholder="88"
+              onChange={(e) => handleChange(e)}
+              value={initStates.program.toefl || ''}
+            />
+          </Grid>
           <Grid item xs={1} md={1}>
             <TextField
               fullWidth
@@ -385,21 +384,19 @@ function NewProgramEdit(props) {
             />
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="h6">{t('IELTS Requirement')}</Typography>
+            <Typography variant="body1">{t('IELTS Requirement')}</Typography>
           </Grid>
           <Grid item xs={2} md={2}>
-            <Typography variant="h6">
-              <TextField
-                fullWidth
-                size="small"
-                type="text"
-                id="ielts"
-                name="ielts"
-                placeholder="6.5"
-                onChange={(e) => handleChange(e)}
-                value={initStates.program.ielts || ''}
-              />
-            </Typography>
+            <TextField
+              fullWidth
+              size="small"
+              type="text"
+              id="ielts"
+              name="ielts"
+              placeholder="6.5"
+              onChange={(e) => handleChange(e)}
+              value={initStates.program.ielts || ''}
+            />
           </Grid>
           <Grid item xs={1} md={1}>
             <TextField
@@ -454,7 +451,7 @@ function NewProgramEdit(props) {
             />
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="h6">{t('TestDaF Requirement')}</Typography>
+            <Typography variant="body1">{t('TestDaF Requirement')}</Typography>
           </Grid>
           <Grid item xs={6} md={6}>
             <TextField
@@ -469,7 +466,7 @@ function NewProgramEdit(props) {
             />
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="h6">{t('GRE Requirement')}</Typography>
+            <Typography variant="body1">{t('GRE Requirement')}</Typography>
           </Grid>
           <Grid item xs={6} md={6}>
             <TextField
@@ -484,7 +481,7 @@ function NewProgramEdit(props) {
             />
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="h6">{t('GMAT Requirement')}</Typography>
+            <Typography variant="body1">{t('GMAT Requirement')}</Typography>
           </Grid>
           <Grid item xs={6} md={6}>
             <TextField
@@ -499,7 +496,7 @@ function NewProgramEdit(props) {
             />
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="h6">{t('ML Required?')}*</Typography>
+            <Typography variant="body1">{t('ML Required?')}*</Typography>
           </Grid>
           <Grid item xs={6} md={6}>
             <FormControl fullWidth>
@@ -520,7 +517,7 @@ function NewProgramEdit(props) {
             </FormControl>
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="h6">{t('ML Requirements?')}</Typography>
+            <Typography variant="body1">{t('ML Requirements?')}</Typography>
           </Grid>
           <Grid item xs={6} md={6}>
             <TextField
@@ -537,7 +534,7 @@ function NewProgramEdit(props) {
             />
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="h6">RL Required? *</Typography>
+            <Typography variant="body1">{t('RL Required?')} *</Typography>
           </Grid>
           <Grid item xs={6} md={6}>
             <FormControl fullWidth>
@@ -556,8 +553,33 @@ function NewProgramEdit(props) {
               </Select>
             </FormControl>
           </Grid>
+
           <Grid item xs={6} md={6}>
-            <Typography variant="h6">{t('RL Requirements?')}</Typography>
+            <Typography variant="body1">
+              {t('RL Program specific?')} *
+            </Typography>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <FormControl fullWidth>
+              <Select
+                size="small"
+                labelId="is_rl_specific"
+                name="is_rl_specific"
+                id="is_rl_specific"
+                onChange={(e) => handleChange(e)}
+                value={initStates.program?.is_rl_specific}
+              >
+                {YES_NO_BOOLEAN_OPTIONS.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+
+          <Grid item xs={6} md={6}>
+            <Typography variant="body1">{t('RL Requirements?')}</Typography>
           </Grid>
           <Grid item xs={6} md={6}>
             <TextField
@@ -574,7 +596,7 @@ function NewProgramEdit(props) {
             />
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="h6">Essay Required? *</Typography>
+            <Typography variant="body1">{t('Essay Required?')} *</Typography>
           </Grid>
           <Grid item xs={6} md={6}>
             <FormControl fullWidth>
@@ -595,7 +617,7 @@ function NewProgramEdit(props) {
             </FormControl>
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="h6">Essay Requirements</Typography>
+            <Typography variant="body1">{t('Essay Requirements')}</Typography>
           </Grid>
           <Grid item xs={6} md={6}>
             <TextField
@@ -612,7 +634,7 @@ function NewProgramEdit(props) {
             />
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="h6">{t('Portfolio Required?')}</Typography>
+            <Typography variant="body1">{t('Portfolio Required?')}</Typography>
           </Grid>
           <Grid item xs={6} md={6}>
             <FormControl fullWidth>
@@ -633,7 +655,9 @@ function NewProgramEdit(props) {
             </FormControl>
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="h6">{t('Portfolio Requirements')}</Typography>
+            <Typography variant="body1">
+              {t('Portfolio Requirements')}
+            </Typography>
           </Grid>
           <Grid item xs={6} md={6}>
             <TextField
@@ -650,7 +674,9 @@ function NewProgramEdit(props) {
             />
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="h6">Supplementary Form Required?</Typography>
+            <Typography variant="body1">
+              {t('Supplementary Form Required?')}
+            </Typography>
           </Grid>
           <Grid item xs={6} md={6}>
             <FormControl fullWidth>
@@ -671,8 +697,8 @@ function NewProgramEdit(props) {
             </FormControl>
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="h6">
-              Supplementary Form Requirements
+            <Typography variant="body1">
+              {t('Supplementary Form Requirements')}
             </Typography>
           </Grid>
           <Grid item xs={6} md={6}>
@@ -690,7 +716,91 @@ function NewProgramEdit(props) {
             />
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="h6">ECTS Requirements</Typography>
+            <Typography variant="body1">
+              {t('Curriculum Analysis Required?')}
+            </Typography>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <FormControl fullWidth>
+              <Select
+                size="small"
+                labelId="curriculum_analysis_required"
+                name="curriculum_analysis_required"
+                id="curriculum_analysis_required"
+                onChange={(e) => handleChange(e)}
+                value={initStates.program.curriculum_analysis_required || ''}
+              >
+                {BINARY_STATE_ARRAY_OPTIONS.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <Typography variant="body1">
+              {t('Curriculum Analysis Requirements')}
+            </Typography>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <TextField
+              fullWidth
+              size="small"
+              type="text"
+              multiline
+              rows={4}
+              id="curriculum_analysis_requirements"
+              name="curriculum_analysis_requirements"
+              placeholder="fill the form"
+              onChange={(e) => handleChange(e)}
+              value={initStates.program.curriculum_analysis_requirements || ''}
+            />
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <Typography variant="body1">
+              {t('Scholarship Form / ML Required?')}
+            </Typography>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <FormControl fullWidth>
+              <Select
+                size="small"
+                labelId="scholarship_form_required"
+                name="scholarship_form_required"
+                id="scholarship_form_required"
+                onChange={(e) => handleChange(e)}
+                value={initStates.program.scholarship_form_required || ''}
+              >
+                {BINARY_STATE_ARRAY_OPTIONS.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <Typography variant="body1">
+              {t('Scholarship Form / ML Requirements')}
+            </Typography>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <TextField
+              fullWidth
+              size="small"
+              type="text"
+              multiline
+              rows={4}
+              id="scholarship_form_requirements"
+              name="scholarship_form_requirements"
+              placeholder="fill the form"
+              onChange={(e) => handleChange(e)}
+              value={initStates.program.scholarship_form_requirements || ''}
+            />
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <Typography variant="body1">{t('ECTS Requirements')}</Typography>
           </Grid>
           <Grid item xs={6} md={6}>
             <TextField
@@ -707,7 +817,7 @@ function NewProgramEdit(props) {
             />
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="h6">Special Notes</Typography>
+            <Typography variant="body1">{t('Special Notes')}</Typography>
           </Grid>
           <Grid item xs={6} md={6}>
             <TextField
@@ -724,7 +834,7 @@ function NewProgramEdit(props) {
             />
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="h6">Comments</Typography>
+            <Typography variant="body1">{t('Comments')}</Typography>
           </Grid>
           <Grid item xs={6} md={6}>
             <TextField
@@ -741,7 +851,7 @@ function NewProgramEdit(props) {
             />
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="h6">Portal 1 link url</Typography>
+            <Typography variant="body1">Portal 1 link url</Typography>
           </Grid>
           <Grid item xs={6} md={6}>
             <TextField
@@ -756,7 +866,7 @@ function NewProgramEdit(props) {
             />
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="h6">
+            <Typography variant="body1">
               Portal 1 {appConfig.companyName} Instrution link url
             </Typography>
           </Grid>
@@ -773,7 +883,7 @@ function NewProgramEdit(props) {
             />
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="h6">Portal 2 link url</Typography>
+            <Typography variant="body1">Portal 2 link url</Typography>
           </Grid>
           <Grid item xs={6} md={6}>
             <TextField
@@ -788,7 +898,7 @@ function NewProgramEdit(props) {
             />
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="h6">
+            <Typography variant="body1">
               Portal 2 {appConfig.companyName} Instrution link url
             </Typography>
           </Grid>
@@ -805,7 +915,7 @@ function NewProgramEdit(props) {
             />
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="h6">Website</Typography>
+            <Typography variant="body1">{t('Website')}</Typography>
           </Grid>
           <Grid item xs={6} md={6}>
             <TextField
@@ -820,7 +930,7 @@ function NewProgramEdit(props) {
             />
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="h6">Country*</Typography>
+            <Typography variant="body1">{t('Country')} *</Typography>
           </Grid>
           <Grid item xs={6} md={6}>
             <FormControl fullWidth>
@@ -841,7 +951,22 @@ function NewProgramEdit(props) {
             </FormControl>
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="h6">FPSO</Typography>
+            <Typography variant="body1">{t('Tuition Fees')}</Typography>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <TextField
+              fullWidth
+              size="small"
+              type="text"
+              id="tuition_fees"
+              name="tuition_fees"
+              placeholder="https://...."
+              onChange={(e) => handleChange(e)}
+              value={initStates.program.tuition_fees || ''}
+            />
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <Typography variant="body1">FPSO</Typography>
           </Grid>
           <Grid item xs={6} md={6}>
             <TextField
@@ -856,7 +981,7 @@ function NewProgramEdit(props) {
             />
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="h6">Group</Typography>
+            <Typography variant="body1">Group</Typography>
           </Grid>
           <Grid item xs={6} md={6}>
             <TextField
@@ -871,16 +996,20 @@ function NewProgramEdit(props) {
             />
           </Grid>
         </Grid>
-        <Typography variant="h6">*: Must fill fields</Typography>
+        <Typography variant="body1">*: Must fill fields</Typography>
         <Button
+          fullWidth
           size="small"
           color="primary"
           variant="contained"
+          disabled={!isChanged}
           onClick={(e) => handleSubmit_Program(e, initStates.program)}
+          sx={{ my: 1 }}
         >
           {props.program ? t('Update') : t('Create')}
         </Button>
         <Button
+          fullWidth
           size="small"
           color="secondary"
           variant="outlined"

@@ -27,81 +27,76 @@ const getTeamMembers = asyncHandler(async (req, res) => {
   res.status(200).send({ success: true, data: users });
 });
 
+const getFileTypeCount = async () => {
+  const counts = await Documentthread.aggregate([
+    { $match: { isFinalVersion: false } },
+    { $group: { _id: '$file_type', count: { $sum: 1 } } }
+  ]);
+  const fileTypeCounts = {};
+  counts.forEach((count) => {
+    if (
+      count._id.includes('RL_') ||
+      count._id.includes('Recommendation_Letter_')
+    ) {
+      fileTypeCounts['RL'] = {
+        count: (fileTypeCounts['RL']?.count || 0) + count.count
+      };
+    } else {
+      fileTypeCounts[count._id.toUpperCase()] = {
+        count: count.count
+      };
+    }
+  });
+  return fileTypeCounts;
+};
+
+const getAgentData = async (agent) => {
+  const agentStudents = await Student.find({
+    agents: agent._id,
+    $or: [{ archiv: { $exists: false } }, { archiv: false }]
+  }).lean();
+  const student_num_with_offer = agentStudents.filter((std) =>
+    std.applications.some((application) => application.admission === 'O')
+  ).length;
+  const agentData = {};
+  agentData._id = agent._id.toString();
+  agentData.firstname = agent.firstname;
+  agentData.lastname = agent.lastname;
+  agentData.student_num_no_offer =
+    agentStudents.length - student_num_with_offer;
+  agentData.student_num_with_offer = student_num_with_offer;
+  return agentData;
+};
+
+const getEditorData = async (editor) => {
+  const editorData = {};
+  editorData._id = editor._id.toString();
+  editorData.firstname = editor.firstname;
+  editorData.lastname = editor.lastname;
+  editorData.student_num = await Student.find({
+    editors: editor._id,
+    $or: [{ archiv: { $exists: false } }, { archiv: false }]
+  }).count();
+  return editorData;
+};
+
 const getStatistics = asyncHandler(async (req, res) => {
-  const documents_cv = await Documentthread.find({
-    isFinalVersion: false,
-    file_type: 'CV'
-  }).count();
-  // TODO: this include the tasks that created by not shown, because the programs are not decided.
-  // So that is why the number is more than what we actually see in UI.
-  // Case 2: if student in Archiv, but the tasks are still open!! then the number is not correct!
-  const documents_ml = await Documentthread.find({
-    isFinalVersion: false,
-    file_type: 'ML'
-  }).count();
-  const documents_rl = await Documentthread.find({
-    isFinalVersion: false,
-    $or: [
-      { file_type: 'RL_A' },
-      { file_type: 'RL_B' },
-      { file_type: 'RL_C' },
-      { file_type: 'Recommendation_Letter_A' },
-      { file_type: 'Recommendation_Letter_B' },
-      { file_type: 'Recommendation_Letter_C' }
-    ]
-  }).count();
-  const documents_essay = await Documentthread.find({
-    isFinalVersion: false,
-    file_type: 'Essay'
-  }).count();
-  const documents_data = {};
-  documents_data.CV = { count: documents_cv };
-  documents_data.ML = { count: documents_ml };
-  documents_data.RL = { count: documents_rl };
-  documents_data.ESSAY = { count: documents_essay };
   const agents = await Agent.find({
     $or: [{ archiv: { $exists: false } }, { archiv: false }]
   });
   const editors = await Editor.find({
     $or: [{ archiv: { $exists: false } }, { archiv: false }]
   });
-  const students = await Student.find()
-    .populate('agents editors', 'firstname lastname')
-    .populate('applications.programId')
-    .populate(
-      'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
-      '-messages'
-    );
-  const agents_data = [];
-  const editors_data = [];
-  for (let i = 0; i < agents.length; i += 1) {
-    const agent_students = await Student.find({
-      agents: agents[i]._id,
-      $or: [{ archiv: { $exists: false } }, { archiv: false }]
-    }).lean();
-    const student_num_with_offer = agent_students.filter((std) =>
-      std.applications.some((application) => application.admission === 'O')
-    ).length;
-    const Obj = {};
-    Obj._id = agents[i]._id.toString();
-    Obj.firstname = agents[i].firstname;
-    Obj.lastname = agents[i].lastname;
-    Obj.student_num_no_offer = agent_students.length - student_num_with_offer;
-    Obj.student_num_with_offer = student_num_with_offer;
-    agents_data.push(Obj);
-  }
-  for (let i = 0; i < editors.length; i += 1) {
-    const Obj = {};
-    Obj._id = editors[i]._id.toString();
-    Obj.firstname = editors[i].firstname;
-    Obj.lastname = editors[i].lastname;
-    Obj.student_num = await Student.find({
-      editors: editors[i]._id,
-      $or: [{ archiv: { $exists: false } }, { archiv: false }]
-    }).count();
-    editors_data.push(Obj);
-  }
-  const finished_docs = await Documentthread.find({
+
+  const agentsPromises = Promise.all(
+    agents.map((agent) => getAgentData(agent))
+  );
+  const editorsPromises = Promise.all(
+    editors.map((editor) => getEditorData(editor))
+  );
+
+  const documentsPromise = getFileTypeCount();
+  const finDocsPromise = Documentthread.find({
     isFinalVersion: true,
     $or: [
       { file_type: 'CV' },
@@ -116,19 +111,55 @@ const getStatistics = asyncHandler(async (req, res) => {
   })
     .populate('student_id', 'firstname lastname')
     .select('file_type messages.createdAt');
-  const users = await User.find({
+
+  const studentsPromise = Student.find()
+    .populate('agents editors', 'firstname lastname')
+    .populate('applications.programId')
+    .populate(
+      'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
+      '-messages'
+    );
+
+  const usersPromise = User.find({
     role: { $in: ['Admin', 'Agent', 'Editor'] }
   }).lean();
+
+  const archivCountPromise = Student.aggregate([
+    {
+      $group: {
+        _id: '$archiv',
+        count: { $sum: 1 }
+      }
+    }
+  ]);
+
+  const [
+    agents_data,
+    editors_data,
+    documentsData,
+    finishedDocs,
+    students,
+    users,
+    archivCount
+  ] = await Promise.all([
+    agentsPromises,
+    editorsPromises,
+    documentsPromise,
+    finDocsPromise,
+    studentsPromise,
+    usersPromise,
+    archivCountPromise
+  ]);
+
   res.status(200).send({
     success: true,
     data: users,
-    // documents_all_open,
-    documents: documents_data,
+    documents: documentsData,
     students: {
-      isClose: students.filter((student) => student.archiv === true).length,
-      isOpen: students.filter((student) => student.archiv !== true).length
+      isClose: archivCount.find((count) => count._id === true)?.count || 0,
+      isOpen: archivCount.find((count) => count._id === false)?.count || 0
     },
-    finished_docs,
+    finished_docs: finishedDocs,
     agents: agents_data,
     editors: editors_data,
     students_details: students,

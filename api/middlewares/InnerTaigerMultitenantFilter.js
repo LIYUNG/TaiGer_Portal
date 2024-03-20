@@ -21,7 +21,7 @@ const InnerTaigerMultitenantFilter = async (req, res, next) => {
       !permissions?.canModifyAllBaseDocuments
     ) {
       return next(
-        new ErrorResponse(429, 'Permission denied: Not allowed to access other students documents. Please contact administrator.')
+        new ErrorResponse(403, 'Permission denied: Not allowed to access other students documents. Please contact administrator.')
       );
     }
   }

@@ -76,8 +76,6 @@ function OfficeHours() {
     success: false,
     agents: {},
     hasEvents: false,
-    updateconfirmed: false,
-    updatecredentialconfirmed: false,
     isDeleteModalOpen: false,
     isEditModalOpen: false,
     isConfirmModalOpen: false,
@@ -719,7 +717,8 @@ function OfficeHours() {
                 <CircularProgress size={16} />
               ) : (
                 <>
-                  <AiFillCheckCircle color="limegreen" size={16} /> {t('Yes')}
+                  <AiFillCheckCircle color="limegreen" size={16} />{' '}
+                  {t('Yes', { ns: 'common' })}
                 </>
               )}
             </Button>
@@ -728,7 +727,7 @@ function OfficeHours() {
               variant="contained"
               onClick={handleConfirmAppointmentModalClose}
             >
-              {t('Close')}
+              {t('Close', { ns: 'common' })}
             </Button>
           </ModalNew>
           <ModalNew
@@ -844,7 +843,7 @@ function OfficeHours() {
               {OfficeHoursState.BookButtonDisable ? (
                 <CircularProgress size={16} />
               ) : (
-                t('Delete')
+                t('Delete', { ns: 'common' })
               )}
             </Button>
           </ModalNew>
@@ -872,6 +871,8 @@ function OfficeHours() {
             <Tabs
               value={value}
               onChange={handleChangeValue}
+              variant="scrollable"
+              scrollButtons="auto"
               aria-label="basic tabs example"
             >
               <Tab label="Calender" {...a11yProps(0)} />

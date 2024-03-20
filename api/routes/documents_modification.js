@@ -41,15 +41,15 @@ const {
   deleteAMessageInThread,
   postImageInThread,
   postMessages,
-  getStudentInput,
-  putStudentInput,
-  resetStudentInput,
+  getSurveyInputs,
+  postSurveyInput,
+  putSurveyInput,
   assignEssayWritersToEssayTask,
-  getAllEssays,
-  clearEssayWriters
+  resetSurveyInput
 } = require('../controllers/documents_modification');
 const {
-  docThreadMultitenant_filter
+  docThreadMultitenant_filter,
+  surveyMultitenantFilter
 } = require('../middlewares/documentThreadMultitenantFilter');
 const {
   permission_canAssignEditor_filter,
@@ -71,37 +71,27 @@ router
   );
 
 router
-  .route('/essay')
-  .get(
-    filter_archiv_user,
-    getMessageFileRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
-    // permission_canAccessStudentDatabase_filter,
-    // clearEssayWriters,
-    getAllEssays
-    // logAccess
-  );
-
-// TODO: multitenant
-router
-  .route('/student-input/:messagesThreadId')
-  .get(
-    getMessagesRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
-    docThreadMultitenant_filter,
-    getStudentInput
-  )
+  .route('/survey-input/:surveyInputId')
   .put(
     putThreadInputRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
-    docThreadMultitenant_filter,
-    putStudentInput
+    surveyMultitenantFilter,
+    putSurveyInput
   )
   .delete(
     resetThreadInputRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
-    docThreadMultitenant_filter,
-    resetStudentInput
+    surveyMultitenantFilter,
+    resetSurveyInput
+  );
+
+router
+  .route('/survey-input')
+  .post(
+    putThreadInputRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
+    surveyMultitenantFilter,
+    postSurveyInput
   );
 
 router
@@ -134,17 +124,15 @@ router
     initApplicationMessagesThread
   );
 
-router
-  .route('/:messagesThreadId/essay')
-  .post(
-    filter_archiv_user,
-    postMessagesRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Editor),
-    multitenant_filter,
-    // permission_canAssignEditor_filter,
-    assignEssayWritersToEssayTask,
-    logAccess
-  );
+router.route('/:messagesThreadId/essay').post(
+  filter_archiv_user,
+  postMessagesRateLimiter,
+  permit(Role.Admin, Role.Manager, Role.Editor),
+  multitenant_filter,
+  // permission_canAssignEditor_filter,
+  assignEssayWritersToEssayTask,
+  logAccess
+);
 
 router
   .route('/:messagesThreadId/:studentId')
@@ -205,8 +193,18 @@ router
     MessagesImageThreadUpload,
     postImageInThread
   );
- 
+
 // Multitenant-filter in call-back function
+
+router
+  .route('/:messagesThreadId/survey-inputs')
+  .get(
+    getMessagesRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
+    docThreadMultitenant_filter,
+    getSurveyInputs
+  );
+
 router
   .route('/:messagesThreadId')
   .get(

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Card, Grid, Link, Typography } from '@mui/material';
+import { Alert, Button, Card, Grid, Link, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { Link as LinkDom } from 'react-router-dom';
 
@@ -8,7 +8,8 @@ import ToggleableUploadFileForm from './ToggleableUploadFileForm';
 import {
   check_generaldocs,
   file_category_const,
-  isDocumentsMissingAssign,
+  getMissingDocs,
+  getExtraDocs,
   is_TaiGer_role,
   is_program_closed,
   is_program_ml_rl_essay_finished
@@ -56,6 +57,13 @@ function ManualFiles(props) {
     setCategory(e.target.value);
   };
 
+  let missingDocs = [];
+  let extraDocs = [];
+  if (!props.filetype !== 'General') {
+    missingDocs = getMissingDocs(props.application);
+    extraDocs = getExtraDocs(props.application);
+  }
+
   const create_generaldoc_reminder = check_generaldocs(props.student);
   const required_doc_keys = Object.keys(file_category_const);
 
@@ -67,8 +75,9 @@ function ManualFiles(props) {
             {props.filetype === 'General' && (
               <Grid item xs={12}>
                 <Typography>
-                  {t('General Documents')} ({t('CV')},{' '}
-                  {t('Recommendation Letters')})
+                  {t('General Documents', { ns: 'common' })} (
+                  {t('CV', { ns: 'common' })},{' '}
+                  {t('Recommendation Letters', { ns: 'common' })})
                 </Typography>
                 {create_generaldoc_reminder && (
                   <Card sx={{ p: 2, mb: 2 }}>
@@ -89,57 +98,64 @@ function ManualFiles(props) {
               </Grid>
             )}
             {props.filetype === 'ProgramSpecific' && (
-              <Grid item xs={12}>
-                {isDocumentsMissingAssign(props.application) && (
-                  <Card>
-                    <Typography variant="string">
-                      Please assign the following documents to the student for{' '}
-                    </Typography>
+              <>
+                <Grid item xs={12}>
+                  {missingDocs.length > 0 && (
+                    <Alert severity="error">
+                      <Typography variant="string">
+                        Please assign the following missing document for this
+                        application:
+                      </Typography>
+
+                      {missingDocs?.map((doc, i) => (
+                        <li key={i}>
+                          <b>{doc}</b>
+                        </li>
+                      ))}
+                    </Alert>
+                  )}
+                </Grid>
+                <Grid item xs={12}>
+                  {extraDocs.length > 0 && (
+                    <Alert severity="warning">
+                      <Typography variant="string">
+                        The following document is not required for this
+                        application:
+                      </Typography>
+
+                      {extraDocs?.map((doc, i) => (
+                        <li key={i}>
+                          <b>{doc}</b>
+                        </li>
+                      ))}
+                    </Alert>
+                  )}
+                </Grid>
+              </>
+            )}
+            {props.filetype === 'ProgramSpecific' &&
+              props.application?.decided !== 'O' && (
+                <Grid item xs={12}>
+                  <Typography variant="string" sx={{ my: 2 }}>
                     <b>
-                      {props.application.programId.school}{' '}
-                      {props.application.programId.program_name}
+                      This following tasks are not visible in tasks dashboard
+                      and CV/ML/RL/Center. Please
+                      {
+                        <Link
+                          to={`${DEMO.STUDENT_APPLICATIONS_ID_LINK(
+                            props.student._id.toString()
+                          )}`}
+                          component={LinkDom}
+                        >
+                          {' '}
+                          click here
+                        </Link>
+                      }{' '}
+                      to activate the application.
                     </b>
-                    :{' '}
-                    {required_doc_keys.map(
-                      (doc_reqired_key, i) =>
-                        props.application.programId[doc_reqired_key] ===
-                          'yes' &&
-                        props.application.doc_modification_thread.findIndex(
-                          (thread) =>
-                            thread.doc_thread_id.file_type ===
-                            file_category_const[doc_reqired_key]
-                        ) === -1 && (
-                          <li key={i}>
-                            <b>{file_category_const[doc_reqired_key]}</b>
-                          </li>
-                        )
-                    )}
-                  </Card>
-                )}
-              </Grid>
-            )}
-            {props.application?.decided !== 'O' && (
-              <Grid item xs={12}>
-                <Typography variant="string" sx={{ my: 2 }}>
-                  <b>
-                    Ths following tasks are not visible in tasks dashboard and
-                    CV/ML/RL/Center. Please
-                    {
-                      <Link
-                        to={`${DEMO.STUDENT_APPLICATIONS_ID_LINK(
-                          props.student._id.toString()
-                        )}`}
-                        component={LinkDom}
-                      >
-                        {' '}
-                        click here
-                      </Link>
-                    }{' '}
-                    to activate the application.
-                  </b>
-                </Typography>
-              </Grid>
-            )}
+                  </Typography>
+                </Grid>
+              )}
             <Grid item xs={12}>
               <ManualFilesList
                 student={props.student}
@@ -196,7 +212,7 @@ function ManualFiles(props) {
                     : 'Mark Submitted'}
                 </Button>
               )}
-              <Typography>Requirements:</Typography>
+              <Typography>Veiw requirements:</Typography>
               {required_doc_keys.map(
                 (doc_reqired_key, i) =>
                   props.application.programId[doc_reqired_key] === 'yes' && (

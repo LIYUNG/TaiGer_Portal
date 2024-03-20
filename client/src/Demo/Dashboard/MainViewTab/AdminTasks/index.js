@@ -37,7 +37,6 @@ function AdminTasks(props) {
               {student.firstname} {student.lastname}
             </b>
           </TableCell>
-          <TableCell></TableCell>
         </TableRow>
       )
   );
@@ -52,7 +51,6 @@ function AdminTasks(props) {
             </Link>
           </TableCell>
           <TableCell>{t('Please assign agents')}</TableCell>
-          <TableCell></TableCell>
         </TableRow>
       )}
       {!does_student_have_editors(props.students) && (
@@ -63,7 +61,6 @@ function AdminTasks(props) {
             </Link>
           </TableCell>
           <TableCell>Please assign editors</TableCell>
-          <TableCell></TableCell>
         </TableRow>
       )}
       {!does_essay_have_writers(props.students, props.essayDocumentThreads) && (

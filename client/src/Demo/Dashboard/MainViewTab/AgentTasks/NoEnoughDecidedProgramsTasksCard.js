@@ -9,7 +9,8 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  Alert
+  Alert,
+  Typography
 } from '@mui/material';
 
 import {
@@ -32,17 +33,17 @@ const NoEnoughDecidedProgramsTasks = (props) => {
               )}`}
               component={LinkDom}
             >
-              <b>
+              <Typography fontWeight="bold">
                 {props.student.firstname} {props.student.lastname}{' '}
-              </b>
-              {t('Applications')}
+                {t('Applications')}
+              </Typography>
             </Link>
           </TableCell>
           <TableCell>
             Contact Sales or Admin for the number of program of
-            <b>
+            <Typography fontWeight="bold">
               {props.student.firstname} {props.student.lastname}
-            </b>
+            </Typography>
           </TableCell>
           <TableCell></TableCell>
         </TableRow>
@@ -58,20 +59,25 @@ const NoEnoughDecidedProgramsTasks = (props) => {
                   )}`}
                   component={LinkDom}
                 >
-                  <b>
+                  <Typography fontWeight="bold">
                     {' '}
                     {props.student.firstname} {props.student.lastname}{' '}
-                  </b>
+                  </Typography>
                   Applications
                 </Link>
               </TableCell>
               <TableCell>
                 {t('Please select enough programs for')}{' '}
-                <b>
+                <Typography fontWeight="bold">
                   {props.student.firstname} {props.student.lastname}
-                </b>
+                </Typography>
               </TableCell>
-              <TableCell></TableCell>
+              <TableCell>
+                {
+                  props.student.application_preference
+                    ?.expected_application_date
+                }
+              </TableCell>
             </TableRow>
           )}
         </>
@@ -96,14 +102,16 @@ function NoEnoughDecidedProgramsTasksCard(props) {
       />
     ));
   return (
-    <Card>
-      <Alert severity="error">{t('No Enough Program Decided Tasks')}:</Alert>
+    <Card sx={{ mb: 2 }}>
+      <Alert severity="error">
+        <Typography>{t('No Enough Program Decided Tasks')}:</Typography>
+      </Alert>
       <Table size="small">
         <TableHead>
           <TableRow>
-            <TableCell>Tasks</TableCell>
-            <TableCell>Description</TableCell>
-            <TableCell>Last Update</TableCell>
+            <TableCell>{t('Tasks', { ns: 'common' })}</TableCell>
+            <TableCell>{t('Description')}</TableCell>
+            <TableCell>{t('Application Year', { ns: 'common' })}</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>{no_enough_programs_decided_tasks}</TableBody>

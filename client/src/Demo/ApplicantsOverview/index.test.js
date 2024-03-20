@@ -12,10 +12,7 @@ import {
   RouterProvider,
   createMemoryRouter
 } from 'react-router-dom';
-const students = [
-  { firstname: 'student1', lastname: 'Wang', role: 'Student' },
-  { firstname: 'student2', lastname: 'Lin', role: 'Student' }
-];
+
 import { mockSingleData } from '../../test/testingStudentData';
 
 jest.mock('axios');
@@ -43,7 +40,7 @@ class ResizeObserver {
 
 const routes = [
   {
-    path: '/application-overview',
+    path: '/student-applications',
     element: <ApplicantsOverview />,
     errorElement: <div>Error</div>,
     loader: () => {
@@ -54,29 +51,48 @@ const routes = [
 
 describe('ApplicantsOverview', () => {
   window.ResizeObserver = ResizeObserver;
-  test('agent dashboard not crash', async () => {
+  test('ApplicationsOverview not crash', async () => {
     getStudents.mockResolvedValue({ data: mockSingleData });
     getProgramTickets.mockResolvedValue({ data: { success: true, data: [] } });
     useAuth.mockReturnValue({
       user: { role: 'Agent', _id: '639baebf8b84944b872cf648' }
     });
     const router = createMemoryRouter(routes, {
-      initialEntries: ['/application-overview']
+      initialEntries: ['/student-applications']
     });
     render(<RouterProvider router={router} />);
 
-    // Example
-    // const buttonElement = screen.getByRole('button');
-    // userEvent.click(buttonElement);
-    // const outputElement = screen.getByText('good to see you', { exact: false });
-    // expect(outputElement).toBeInTheDocument(1);
-
     await waitFor(() => {
-      // TODO
       expect(
         screen.getByTestId('application_overview_component')
       ).toHaveTextContent('Agents');
-      // expect(1).toBe(1);
+    });
+  });
+
+  test('ApplicationsOverview switching tabs not crash', async () => {
+    getStudents.mockResolvedValue({ data: mockSingleData });
+    getProgramTickets.mockResolvedValue({ data: { success: true, data: [] } });
+    useAuth.mockReturnValue({
+      user: { role: 'Agent', _id: '639baebf8b84944b872cf648' }
+    });
+    const router = createMemoryRouter(routes, {
+      initialEntries: ['/student-applications']
+    });
+    render(<RouterProvider router={router} />);
+
+    await waitFor(() => {});
+    const buttonElement = screen.getByTestId(
+      'application_overview_component_application_overview_tab'
+    );
+    userEvent.click(buttonElement);
+    // TODO
+    await waitFor(() => {
+      // expect(screen.getByTestId('custom_tab_panel-1')).not.toHaveTextContent(
+      //   'Weihenstephan-Triesdorf University of Applied Sciences'
+      // );
+      // expect(screen.getByTestId('custom_tab_panel')).toHaveTextContent(
+      //   'Technische Universi'
+      // );
     });
   });
 });

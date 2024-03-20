@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Form } from 'react-bootstrap';
 import { Link as LinkDom } from 'react-router-dom';
 import {
   Button,
+  Checkbox,
   CircularProgress,
+  FormControlLabel,
   Link,
   TableCell,
   TableRow,
@@ -291,7 +292,7 @@ function ButtonSetUploaded(props) {
             }
             startIcon={<DeleteIcon />}
           >
-            {t('Delete')}
+            {t('Delete', { ns: 'common' })}
           </Button>
         )}
       </TableCell>
@@ -320,11 +321,11 @@ function ButtonSetUploaded(props) {
           {!ButtonSetUploadedState.isLoaded ? (
             <CircularProgress size={24} />
           ) : (
-            t('Yes')
+            t('Yes', { ns: 'common' })
           )}
         </Button>
         <Button variant="outlined" onClick={closeWarningWindow}>
-          {t('No')}
+          {t('No', { ns: 'common' })}
         </Button>
       </ModalNew>
       <ModalNew
@@ -359,7 +360,7 @@ function ButtonSetUploaded(props) {
           {!ButtonSetUploadedState.isLoaded ? (
             <CircularProgress size={24} />
           ) : (
-            t('Submit')
+            t('Submit', { ns: 'common' })
           )}
         </Button>
         <Button onClick={closeRejectWarningWindow}>No</Button>
@@ -394,7 +395,7 @@ function ButtonSetUploaded(props) {
           variant="outlined"
           onClick={closeAcceptWarningWindow}
         >
-          {t('No')}
+          {t('No', { ns: 'common' })}
         </Button>
       </ModalNew>
       <ModalNew
@@ -418,19 +419,20 @@ function ButtonSetUploaded(props) {
                 base_documents_checklist[props.k].length !== 0 &&
                 'Check list: Please check the following points so that you can flag this document as valid.'}
             </Typography>
-            <Typography>
-              {base_documents_checklist[props.k]
-                ? base_documents_checklist[props.k].map((check_item, i) => (
-                    <Form.Check
-                      key={i}
-                      type={'checkbox'}
-                      id={`${check_item}-${i}`}
-                      label={`${check_item}`}
-                      onChange={(e) => onChecked(e)}
-                    />
-                  ))
-                : t('No')}
-            </Typography>
+            {base_documents_checklist[props.k]
+              ? base_documents_checklist[props.k].map((check_item, i) => (
+                  <FormControlLabel
+                    key={i}
+                    label={`${check_item}`}
+                    control={
+                      <Checkbox
+                        id={`${check_item}-${i}`}
+                        onChange={(e) => onChecked(e)}
+                      />
+                    }
+                  />
+                ))
+              : t('No', { ns: 'common' })}
           </>
         )}
         {props.path.split('.')[1] !== 'pdf' && (
@@ -503,7 +505,7 @@ function ButtonSetUploaded(props) {
           {!ButtonSetUploadedState.isLoaded ? (
             <CircularProgress size={24} />
           ) : (
-            t('Close')
+            t('Close', { ns: 'common' })
           )}
         </Button>
       </ModalNew>

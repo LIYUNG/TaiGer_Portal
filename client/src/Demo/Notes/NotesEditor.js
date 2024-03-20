@@ -58,7 +58,7 @@ function NotesEditor(props) {
                 disabled={true}
                 // style={{ pointerEvents: 'none' }}
               >
-                {t('Save')}
+                {t('Save', { ns: 'common' })}
               </Button>
             </span>
           </Tooltip>
@@ -71,7 +71,7 @@ function NotesEditor(props) {
                 variant="contained"
                 onClick={(e) => handleClickSave(e, statedata.editorState)}
               >
-                {t('Save')}
+                {t('Save', { ns: 'common' })}
               </Button>
             </span>
           </Tooltip>

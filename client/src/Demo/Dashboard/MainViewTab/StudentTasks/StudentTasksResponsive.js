@@ -14,7 +14,8 @@ import {
   is_all_uni_assist_vpd_uploaded,
   are_base_documents_missing,
   to_register_application_portals,
-  is_personal_data_filled
+  is_personal_data_filled,
+  isProgramDecided
 } from '../../../Utils/checking-functions';
 import { appConfig } from '../../../../config';
 
@@ -79,7 +80,7 @@ function StudentTasksResponsive(props) {
               {!application_doc_thread.isFinalVersion &&
                 application_doc_thread.latest_message_left_by_id !==
                   props.student._id.toString() &&
-                application.decided === 'O' && (
+                isProgramDecided(application) && (
                   <>
                     <TableCell>
                       <Link
@@ -131,7 +132,7 @@ function StudentTasksResponsive(props) {
               to={`${DEMO.SURVEY_LINK}`}
               component={LinkDom}
             >
-              {t('My Survey')}
+              {t('Profile', { ns: 'common' })}
               <FiExternalLink
                 className="mx-1 mb-1"
                 style={{ cursor: 'pointer' }}
@@ -140,7 +141,8 @@ function StudentTasksResponsive(props) {
           </TableCell>
           <TableCell>
             {t(
-              'Please complete My Survey so that your agent can understand your situation'
+              'Please complete Profile so that your agent can understand your situation',
+              { ns: 'dashboard' }
             )}
           </TableCell>
           <TableCell></TableCell>
@@ -158,7 +160,7 @@ function StudentTasksResponsive(props) {
                 to={`${DEMO.COURSES_LINK}`}
                 component={LinkDom}
               >
-                {t('My Courses')}
+                {t('My Courses', { ns: 'common' })}
                 <FiExternalLink
                   className="mx-1 mb-1"
                   style={{ cursor: 'pointer' }}
@@ -167,7 +169,8 @@ function StudentTasksResponsive(props) {
             </TableCell>
             <TableCell>
               {t(
-                'Please complete My Courses table. The agent will provide you with course analysis and courses suggestion.'
+                'Please complete My Courses table. The agent will provide you with course analysis and courses suggestion.',
+                { ns: 'courses' }
               )}
             </TableCell>
             <TableCell></TableCell>
@@ -181,7 +184,7 @@ function StudentTasksResponsive(props) {
               to={`${DEMO.STUDENT_APPLICATIONS_LINK}`}
               component={LinkDom}
             >
-              {t('My Applications')}
+              {t('My Applications', { ns: 'common' })}
               <FiExternalLink
                 className="mx-1 mb-1"
                 style={{ cursor: 'pointer' }}
@@ -190,7 +193,8 @@ function StudentTasksResponsive(props) {
           </TableCell>
           <TableCell>
             {t(
-              "Please refer to the programs provided by the agent and visit the school's program website for detailed information. Complete the school selection before the start of the application season."
+              "Please refer to the programs provided by the agent and visit the school's program website for detailed information. Complete the school selection before the start of the application season.",
+              { ns: 'courses' }
             )}
           </TableCell>
           <TableCell></TableCell>
@@ -215,7 +219,8 @@ function StudentTasksResponsive(props) {
             </TableCell>
             <TableCell>
               {t(
-                'Please go to the Uni-Assist section, follow the instructions to complete'
+                'Please go to the Uni-Assist section, follow the instructions to complete',
+                { ns: 'courses' }
               )}
             </TableCell>
             <TableCell></TableCell>
@@ -234,7 +239,8 @@ function StudentTasksResponsive(props) {
           </TableCell>
           <TableCell>
             {t(
-              'Please be sure to update your Chinese and English names, as well as your date of birth information. This will affect the preparation of formal documents by the editor for you.'
+              'Please be sure to update your Chinese and English names, as well as your date of birth information. This will affect the preparation of formal documents by the editor for you.',
+              { ns: 'courses' }
             )}
           </TableCell>
           <TableCell></TableCell>
@@ -248,7 +254,7 @@ function StudentTasksResponsive(props) {
               to={`${DEMO.BASE_DOCUMENTS_LINK}`}
               component={LinkDom}
             >
-              {t('My Documents')}
+              {t('My Documents', { ns: 'common' })}
               <FiExternalLink
                 className="mx-1 mb-1"
                 style={{ cursor: 'pointer' }}
@@ -257,7 +263,8 @@ function StudentTasksResponsive(props) {
           </TableCell>
           <TableCell>
             {t(
-              'Please upload documents as soon as possible. The agent needs them to understand your academic background.'
+              'Please upload documents as soon as possible. The agent needs them to understand your academic background.',
+              { ns: 'courses' }
             )}
           </TableCell>
           <TableCell></TableCell>
@@ -271,7 +278,7 @@ function StudentTasksResponsive(props) {
               to={`${DEMO.PORTALS_MANAGEMENT_LINK}`}
               component={LinkDom}
             >
-              {t('Portals Management')}
+              {t('Portals Management', { ns: 'common' })}
               <FiExternalLink
                 className="mx-1 mb-1"
                 style={{ cursor: 'pointer' }}
@@ -280,7 +287,8 @@ function StudentTasksResponsive(props) {
           </TableCell>
           <TableCell>
             {t(
-              "Please go to each school's website to create an account and provide your login credentials. This will facilitate the agent in conducting pre-submission checks for you in the future."
+              "Please go to each school's website to create an account and provide your login credentials. This will facilitate the agent in conducting pre-submission checks for you in the future.",
+              { ns: 'courses' }
             )}
           </TableCell>
           <TableCell></TableCell>

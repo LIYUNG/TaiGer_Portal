@@ -21,7 +21,8 @@ import { BASE_URL } from '../../api/request';
 import {
   is_TaiGer_AdminAgent,
   DocumentStatus,
-  check_student_needs_uni_assist
+  check_student_needs_uni_assist,
+  isProgramDecided
 } from '../Utils/checking-functions';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
@@ -443,7 +444,7 @@ function UniAssistListCard(props) {
       <Box key={i}>
         {application.programId.uni_assist &&
           application.programId.uni_assist.includes('Yes') &&
-          application.decided === 'O' && (
+          isProgramDecided(application) && (
             <Grid container spacing={2}>
               <Grid item xs={12} sx={{ display: 'flex' }}>
                 <Typography variant="body1" sx={{ mr: 2 }}>
@@ -593,7 +594,7 @@ function UniAssistListCard(props) {
                             size="small"
                             startIcon={<DeleteIcon />}
                           >
-                            {t('Delete')}
+                            {t('Delete', { ns: 'common' })}
                           </Button>
                         </Grid>
                       </>
@@ -689,7 +690,7 @@ function UniAssistListCard(props) {
                             size="small"
                             startIcon={<DeleteIcon />}
                           >
-                            {t('Delete')}
+                            {t('Delete', { ns: 'common' })}
                           </Button>
                         </Grid>
                       </>
@@ -786,12 +787,14 @@ function UniAssistListCard(props) {
           uniAssistListCardState.isLoadedVPDConfirmation[
             uniAssistListCardState.program_id
           ] ? (
-            t('Yes')
+            t('Yes', { ns: 'common' })
           ) : (
             <CircularProgress size={16} />
           )}
         </Button>
-        <Button onClick={closeWarningWindow}>{t('No')}</Button>
+        <Button onClick={closeWarningWindow}>
+          {t('No', { ns: 'common' })}
+        </Button>
       </ModalNew>
       <ModalNew
         open={uniAssistListCardState.setAsNotNeededModel}
@@ -829,7 +832,7 @@ function UniAssistListCard(props) {
               uniAssistListCardState.isLoadedVPDConfirmation[
                 uniAssistListCardState.program_id
               ] ? (
-                t('Yes')
+                t('Yes', { ns: 'common' })
               ) : (
                 <CircularProgress size={16} />
               )}
@@ -839,7 +842,7 @@ function UniAssistListCard(props) {
               variant="outlined"
               onClick={closesetAsNotNeededWindow}
             >
-              {t('No')}
+              {t('No', { ns: 'common' })}
             </Button>
           </Grid>
         </Grid>

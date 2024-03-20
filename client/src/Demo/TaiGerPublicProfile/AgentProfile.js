@@ -1,6 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { Form } from 'react-bootstrap';
-import { Box, Button, Card, Link, Grid, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  Card,
+  Link,
+  Grid,
+  Typography,
+  Checkbox,
+  FormControl,
+  FormControlLabel
+} from '@mui/material';
 import TimezoneSelect from 'react-timezone-select';
 import { Link as LinkDom, useParams } from 'react-router-dom';
 import Select from 'react-select';
@@ -134,38 +143,37 @@ function AgentProfile() {
                 'Sunday'
               ].map((day, i) => (
                 <Grid item xs={12} key={i}>
-                  <Form>
-                    <Form.Check
-                      type="switch"
-                      id={`${day}`}
+                  <FormControl>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          name="useProgramRequirementData"
+                          type="checkbox"
+                          checked={
+                            agentProfileState.agent.officehours[day]?.active
+                          }
+                          sx={{ '& .MuiSvgIcon-root': { fontSize: '1.5rem' } }}
+                        />
+                      }
                       label={`${day}`}
-                      readOnly
-                      className={`${
-                        agentProfileState.agent.officehours[day]?.active
-                          ? 'text-light'
-                          : 'text-secondary'
-                      }`}
-                      checked={agentProfileState.agent.officehours[day]?.active}
                     />
-                  </Form>
-
+                  </FormControl>
                   {agentProfileState.agent.officehours &&
                   agentProfileState.agent.officehours[day]?.active ? (
                     <>
-                      <span>{t('Timeslots')}</span>
                       <Select
                         id={`${day}`}
+                        label={t('Timeslots')}
                         options={time_slots}
                         isMulti
                         isDisabled={true}
                         value={
                           agentProfileState.agent.officehours[day].time_slots
                         }
-                        // onChange={(e) => onTimeStartChange(e, day)}
                       />
                     </>
                   ) : (
-                    <span>{t('Close')}</span>
+                    <Typography>{t('Close', { ns: 'common' })}</Typography>
                   )}
                 </Grid>
               ))}

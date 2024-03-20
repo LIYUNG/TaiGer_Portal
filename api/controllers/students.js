@@ -21,7 +21,12 @@ const {
   informAgentStudentAssignedEmail
 } = require('../services/email');
 
-const { RLs_CONSTANT, isNotArchiv, ManagerType } = require('../constants');
+const {
+  GENERAL_RLs_CONSTANT,
+  RLs_CONSTANT,
+  isNotArchiv,
+  ManagerType
+} = require('../constants');
 const Permission = require('../models/Permission');
 const Course = require('../models/Course');
 const { ObjectId } = require('mongodb');
@@ -52,14 +57,23 @@ const getStudentAndDocLinks = asyncHandler(async (req, res, next) => {
 
   const student = await Student.findById(studentId)
     .populate('agents editors', 'firstname lastname email')
-    .populate(
-      'applications.programId',
-      'school program_name toefl toefl_reading toefl_listening toefl_writing toefl_speaking ielts ielts_reading ielts_listening ielts_writing ielts_speaking testdaf gre gmat degree semester country application_deadline ml_required ml_requirements rl_required uni_assist rl_requirements essay_required essay_requirements portfolio_required portfolio_requirements supplementary_form_required supplementary_form_requirements application_portal_a application_portal_b'
-    )
-    .populate(
-      'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
-      '-messages'
-    )
+    .populate('applications.programId')
+    .populate({
+      path: 'generaldocs_threads.doc_thread_id',
+      select: 'file_type isFinalVersion updatedAt messages.file',
+      populate: {
+        path: 'messages.user_id',
+        select: 'firstname lastname'
+      }
+    })
+    .populate({
+      path: 'applications.doc_modification_thread.doc_thread_id',
+      select: 'file_type isFinalVersion updatedAt messages.file',
+      populate: {
+        path: 'messages.user_id',
+        select: 'firstname lastname'
+      }
+    })
     .select(
       '-taigerai +applications.portal_credentials.application_portal_a.account +applications.portal_credentials.application_portal_a.password +applications.portal_credentials.application_portal_b.account +applications.portal_credentials.application_portal_b.password'
     )
@@ -374,7 +388,7 @@ const getStudents = asyncHandler(async (req, res, next) => {
         '-messages'
       )
       .select(
-        '+applications.portal_credentials.application_portal_a.account +applications.portal_credentials.application_portal_a.password +applications.portal_credentials.application_portal_b.account +applications.portal_credentials.application_portal_b.password'
+        '-attributes +applications.portal_credentials.application_portal_a.account +applications.portal_credentials.application_portal_a.password +applications.portal_credentials.application_portal_b.account +applications.portal_credentials.application_portal_b.password'
       )
       .lean();
 
@@ -796,6 +810,26 @@ const assignEditorToStudent = asyncHandler(async (req, res, next) => {
   next();
 });
 
+const assignAttributesToStudent = asyncHandler(async (req, res, next) => {
+  const {
+    params: { studentId },
+    body: attributesId
+  } = req;
+  console.log(attributesId);
+  await Student.findByIdAndUpdate(studentId, { attributes: attributesId }, {});
+
+  const student_upated = await Student.findById(studentId)
+    .populate('applications.programId agents editors')
+    .populate(
+      'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
+      '-messages'
+    )
+    .exec();
+
+  res.status(200).send({ success: true, data: student_upated });
+  next();
+});
+
 const ToggleProgramStatus = asyncHandler(async (req, res, next) => {
   const {
     params: { studentId, program_id }
@@ -928,35 +962,70 @@ const createApplication = asyncHandler(async (req, res, next) => {
       Number.isInteger(parseInt(program.rl_required)) >= 0
     ) {
       // TODO: if no specific requirement,
-
-      if (!program.rl_requirements) {
-        // check if general RL is created, if not, create ones!
-        if (!student.generaldocs_threads.find((thread) => thread.file_type)) {
-          // TODO: create general tasks, WARNING: be careful of racing condition.
-          console.log('Create general RL tasks!');
-        }
-        // if general existed, then do nothing.
-      } else {
-        // TODO: with requirements, create special tasks! WARNING: be careful of racing condition.
-        console.log('Create specific RL tasks!');
+      const nrRLrequired = parseInt(program.rl_required);
+      if (isNaN(nrRLrequired)) {
+        logger.error(
+          `createApplication ${new_programIds[i]}: RL required is not a number`
+        );
       }
 
-      for (let j = 0; j < parseInt(program.rl_required); j += 1) {
-        const new_doc_thread = new Documentthread({
-          student_id: studentId,
-          file_type: RLs_CONSTANT[j],
-          program_id: new_programIds[i],
-          updatedAt: new Date()
-        });
-        const temp = application.doc_modification_thread.create({
-          doc_thread_id: new_doc_thread._id,
-          updatedAt: new Date(),
-          createdAt: new Date()
-        });
+      const isRLSpecific = program.is_rl_specific;
+      const NoRLSpecificFlag =
+        isRLSpecific === undefined || isRLSpecific === null;
+      // create specific RL tag if flag is false, or no flag and no requirement
+      if (
+        isRLSpecific === false ||
+        (NoRLSpecificFlag && !program.rl_requirements)
+      ) {
+        // check if general RL is created, if not, create ones!
+        const genThreadIds = student.generaldocs_threads.map(
+          (thread) => thread.doc_thread_id
+        );
+        const generalRLcount = await Documentthread.find({
+          _id: { $in: genThreadIds },
+          file_type: { $regex: /Recommendation_Letter_/ }
+        }).count();
 
-        temp.student_id = studentId;
-        application.doc_modification_thread.push(temp);
-        await new_doc_thread.save();
+        if (generalRLcount < nrRLrequired) {
+          // create general RL tasks
+          console.log('Create general RL tasks!');
+
+          for (let j = generalRLcount; j < nrRLrequired; j += 1) {
+            const newThread = new Documentthread({
+              student_id: studentId,
+              file_type: GENERAL_RLs_CONSTANT[j],
+              updatedAt: new Date()
+            });
+            const threadEntry = application.doc_modification_thread.create({
+              doc_thread_id: newThread._id,
+              updatedAt: new Date(),
+              createdAt: new Date()
+            });
+
+            threadEntry.student_id = studentId;
+            student.generaldocs_threads.push(threadEntry);
+            await newThread.save();
+          }
+        }
+      } else {
+        console.log('Create specific RL tasks!');
+        for (let j = 0; j < nrRLrequired; j += 1) {
+          const newThread = new Documentthread({
+            student_id: studentId,
+            file_type: RLs_CONSTANT[j],
+            program_id: new_programIds[i],
+            updatedAt: new Date()
+          });
+          const threadEntry = application.doc_modification_thread.create({
+            doc_thread_id: newThread._id,
+            updatedAt: new Date(),
+            createdAt: new Date()
+          });
+
+          threadEntry.student_id = studentId;
+          application.doc_modification_thread.push(threadEntry);
+          await newThread.save();
+        }
       }
     }
     // Create essay task
@@ -1008,7 +1077,40 @@ const createApplication = asyncHandler(async (req, res, next) => {
         updatedAt: new Date(),
         createdAt: new Date()
       });
-
+      temp.student_id = studentId;
+      application.doc_modification_thread.push(temp);
+      await new_doc_thread.save();
+    }
+    // Create curriculum analysis task
+    if (program.curriculum_analysis_required === 'yes') {
+      const new_doc_thread = new Documentthread({
+        student_id: studentId,
+        file_type: 'Curriculum_Analysis',
+        program_id: new_programIds[i],
+        updatedAt: new Date()
+      });
+      const temp = application.doc_modification_thread.create({
+        doc_thread_id: new_doc_thread._id,
+        updatedAt: new Date(),
+        createdAt: new Date()
+      });
+      temp.student_id = studentId;
+      application.doc_modification_thread.push(temp);
+      await new_doc_thread.save();
+    }
+    // Create scholarship form / ML task
+    if (program.scholarship_form_required === 'yes') {
+      const new_doc_thread = new Documentthread({
+        student_id: studentId,
+        file_type: 'Scholarship_Form',
+        program_id: new_programIds[i],
+        updatedAt: new Date()
+      });
+      const temp = application.doc_modification_thread.create({
+        doc_thread_id: new_doc_thread._id,
+        updatedAt: new Date(),
+        createdAt: new Date()
+      });
       temp.student_id = studentId;
       application.doc_modification_thread.push(temp);
       await new_doc_thread.save();
@@ -1128,6 +1230,7 @@ module.exports = {
   updateStudentsArchivStatus,
   assignAgentToStudent,
   assignEditorToStudent,
+  assignAttributesToStudent,
   ToggleProgramStatus,
   getStudentApplications,
   createApplication,

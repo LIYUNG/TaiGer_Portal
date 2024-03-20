@@ -15,6 +15,7 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableContainer,
   TableHead,
   TableRow,
   TextField,
@@ -34,7 +35,9 @@ import {
   isCVFinished,
   application_deadline_calculator,
   is_TaiGer_Student,
-  is_TaiGer_Admin
+  is_TaiGer_Admin,
+  isProgramSubmitted,
+  isProgramDecided
 } from '../Utils/checking-functions';
 import OverlayButton from '../../components/Overlay/OverlayButton';
 import Banner from '../../components/Banner/Banner';
@@ -606,7 +609,7 @@ function StudentApplicationsTableTemplate(props) {
               </Link>
             </TableCell>
             <TableCell>
-              {application.closed === 'O' ? (
+              {isProgramSubmitted(application) ? (
                 <Typography key={application_idx}>Close</Typography>
               ) : (
                 <Typography key={application_idx}>
@@ -626,15 +629,15 @@ function StudentApplicationsTableTemplate(props) {
                   value={application.decided}
                 >
                   <MenuItem value={'-'}>-</MenuItem>
-                  <MenuItem value={'X'}>No</MenuItem>
-                  <MenuItem value={'O'}>Yes</MenuItem>
+                  <MenuItem value={'X'}>{t('No', { ns: 'common' })}</MenuItem>
+                  <MenuItem value={'O'}>{t('Yes', { ns: 'common' })}</MenuItem>
                 </Select>
               </FormControl>
             </TableCell>
-            {application.decided === 'O' ? (
+            {isProgramDecided(application) ? (
               <TableCell>
                 {/* When all thread finished */}
-                {application.closed === 'O' ||
+                {isProgramSubmitted(application) ||
                 (is_program_ml_rl_essay_ready(application) &&
                   isCVFinished(studentApplicationsTableTemplateState.student) &&
                   (!appConfig.vpdEnable ||
@@ -677,7 +680,8 @@ function StudentApplicationsTableTemplate(props) {
             ) : (
               <TableCell></TableCell>
             )}
-            {application.decided === 'O' && application.closed === 'O' ? (
+            {isProgramDecided(application) &&
+            isProgramSubmitted(application) ? (
               <TableCell>
                 <FormControl fullWidth>
                   <Select
@@ -700,22 +704,6 @@ function StudentApplicationsTableTemplate(props) {
                     ))}
                   </Select>
                 </FormControl>
-                {/* <Form.Group controlId="admission">
-                  <Form.Control
-                    as="select"
-                    onChange={(e) => handleChange(e, application_idx)}
-                    disabled={
-                      !(
-                        application.closed !== '-' && application.closed !== 'X'
-                      )
-                    }
-                    value={application.admission}
-                  >
-                    <option value={'-'}>-</option>
-                    <option value={'X'}>No</option>
-                    <option value={'O'}>Yes</option>
-                  </Form.Control>
-                </Form.Group> */}
               </TableCell>
             ) : (
               <TableCell></TableCell>
@@ -723,7 +711,7 @@ function StudentApplicationsTableTemplate(props) {
 
             <TableCell>
               <p className="mb-1 text-info" key={application_idx}>
-                {application.closed === 'O'
+                {isProgramSubmitted(application)
                   ? '-'
                   : application.programId.application_deadline
                   ? getNumberOfDays(
@@ -788,7 +776,7 @@ function StudentApplicationsTableTemplate(props) {
             component={LinkDom}
             to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
               props.student._id.toString(),
-              '/profile'
+              DEMO.PROFILE_HASH
             )}`}
           >
             {props.student.firstname} {props.student.lastname}
@@ -843,7 +831,7 @@ function StudentApplicationsTableTemplate(props) {
               </b>
             </ListItem>
             <ListItem>
-              {t('Other wish')}:
+              {t('Other wish', { ns: 'survey' })}:
               <TextField
                 id="special_wished"
                 multiline
@@ -1034,17 +1022,19 @@ function StudentApplicationsTableTemplate(props) {
                   removeBanner={<></>}
                   notification_key={undefined}
                 />
-                <Table size="small">
-                  <TableHead>
-                    <TableRow>
-                      {props.role !== 'Student' && <TableCell></TableCell>}
-                      {programstatuslist.map((doc, index) => (
-                        <TableCell key={index}>{t(doc.name)}</TableCell>
-                      ))}
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>{applying_university_info}</TableBody>
-                </Table>
+                <TableContainer style={{ overflowX: 'auto' }}>
+                  <Table size="small">
+                    <TableHead>
+                      <TableRow>
+                        {props.role !== 'Student' && <TableCell></TableCell>}
+                        {programstatuslist.map((doc, index) => (
+                          <TableCell key={index}>{t(doc.name)}</TableCell>
+                        ))}
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>{applying_university_info}</TableBody>
+                  </Table>
+                </TableContainer>
               </Box>
             </Card>
             <Box>
@@ -1136,7 +1126,7 @@ function StudentApplicationsTableTemplate(props) {
                   {studentApplicationsTableTemplateState.isButtonDisable ? (
                     <CircularProgress size={16} />
                   ) : (
-                    t('Yes')
+                    t('Yes', { ns: 'common' })
                   )}
                 </Button>
                 <Button
@@ -1145,7 +1135,7 @@ function StudentApplicationsTableTemplate(props) {
                   size="small"
                   onClick={onHideimportedStudentModalOpen}
                 >
-                  {t('No')}
+                  {t('No', { ns: 'common' })}
                 </Button>
               </Typography>
             </ModalNew>
@@ -1190,13 +1180,13 @@ function StudentApplicationsTableTemplate(props) {
                   onClick={handleDeleteConfirm}
                   sx={{ mr: 2 }}
                 >
-                  {t('Yes')}
+                  {t('Yes', { ns: 'common' })}
                 </Button>
                 <Button
                   onClick={onHideModalDeleteApplication}
                   variant="outlined"
                 >
-                  {t('Close')}
+                  {t('Close', { ns: 'common' })}
                 </Button>
               </Box>
             </ModalNew>
@@ -1220,7 +1210,7 @@ function StudentApplicationsTableTemplate(props) {
                   size="small"
                   onClick={onHideUpdatedApplicationWindow}
                 >
-                  {t('Close')}
+                  {t('Close', { ns: 'common' })}
                 </Button>
               </Typography>
             </ModalNew>

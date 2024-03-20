@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Link as LinkDom, useParams } from 'react-router-dom';
+import JSZip from 'jszip';
+import * as XLSX from 'xlsx';
 import DownloadIcon from '@mui/icons-material/Download';
 import { FiExternalLink } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
 import {
   Typography,
-  Badge,
   Button,
   Card,
   Link,
@@ -15,6 +16,8 @@ import {
   Breadcrumbs,
   Avatar
 } from '@mui/material';
+import { pdfjs } from 'react-pdf'; // Library for rendering PDFs
+pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
 import MessageList from './MessageList';
 import DocThreadEditor from './DocThreadEditor';
@@ -22,6 +25,7 @@ import ErrorPage from '../../Utils/ErrorPage';
 import ModalMain from '../../Utils/ModalHandler/ModalMain';
 import { stringAvatar, templatelist } from '../../Utils/contants';
 import {
+  AGENT_SUPPORT_DOCUMENTS_A,
   LinkableNewlineText,
   getRequirement,
   is_TaiGer_AdminAgent,
@@ -71,12 +75,12 @@ function DocModificationThreadPage() {
       res_modal_status: 0,
       res_modal_message: ''
     });
+  const [checkResult, setCheckResult] = useState([]);
 
   useEffect(() => {
-    // document.removeEventListener('click', handleClickOutside);
-    document.addEventListener('mousedown', handleClickOutside);
-    getMessagThread(documentsthreadId).then(
-      (resp) => {
+    const fetchData = async () => {
+      try {
+        const resp = await getMessagThread(documentsthreadId);
         const { success, data, editors, agents, deadline, conflict_list } =
           resp.data;
         const { status } = resp;
@@ -107,8 +111,7 @@ function DocModificationThreadPage() {
             res_status: status
           }));
         }
-      },
-      (error) => {
+      } catch (error) {
         setDocModificationThreadPageState((prevState) => ({
           ...prevState,
           isLoaded: true,
@@ -116,7 +119,10 @@ function DocModificationThreadPage() {
           res_status: 500
         }));
       }
-    );
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    fetchData();
   }, [documentsthreadId]);
 
   const closeSetAsFinalFileModelWindow = () => {
@@ -130,10 +136,160 @@ function DocModificationThreadPage() {
     e.preventDefault();
     const file_num = e.target.files.length;
     if (file_num <= 3) {
-      setDocModificationThreadPageState((prevState) => ({
-        ...prevState,
-        file: Array.from(e.target.files)
-      }));
+      if (!e.target.files) {
+        return;
+      }
+      if (!is_TaiGer_role(user)) {
+        setDocModificationThreadPageState((prevState) => ({
+          ...prevState,
+          file: Array.from(e.target.files)
+        }));
+        return;
+      }
+      // Ensure a file is selected
+      // TODO: make array
+      const checkPromises = new Array(e.target.files?.length);
+      for (let i = 0; i < e.target.files?.length; i++) {
+        const fl = e.target.files[i];
+        const extension = fl.name?.split('.').pop().toLowerCase();
+
+        const promise = new Promise((resolve, reject) => {
+          if (extension === 'pdf') {
+            const reader = new FileReader();
+            reader.onload = async (event) => {
+              const checkPoints = {
+                corretFirstname: {
+                  value: false,
+                  text: 'NOT Detected student first name in the document'
+                }
+              };
+              const checkPoints_temp = Object.assign({}, checkPoints);
+              try {
+                const content = event.target.result;
+                const typedarray = new Uint8Array(content);
+                const pdf = await pdfjs.getDocument(typedarray).promise;
+                let text = '';
+                for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+                  const page = await pdf.getPage(pageNum);
+                  const pageTextContent = await page.getTextContent();
+                  pageTextContent.items.forEach((item) => {
+                    text += item.str + ' ';
+                  });
+                }
+                if (
+                  text
+                    .toLowerCase()
+                    .includes(
+                      docModificationThreadPageState.thread.student_id.firstname.toLowerCase()
+                    )
+                ) {
+                  checkPoints_temp.corretFirstname.value = true;
+                  checkPoints_temp.corretFirstname.text =
+                    checkPoints_temp.corretFirstname.text.replace('NOT ', '');
+                }
+                resolve(checkPoints_temp);
+              } catch (error) {
+                console.error('Error reading PDF file:', error);
+                checkPoints_temp.error.value = true;
+                checkPoints_temp.error.text = error;
+                reject(checkPoints_temp);
+              }
+            };
+            reader.readAsArrayBuffer(fl);
+          } else if (extension === 'docx') {
+            const checkPoints = {
+              corretFirstname: {
+                value: false,
+                text: 'NOT Detected student first name in the document'
+              }
+            };
+            const checkPoints_temp2 = Object.assign({}, checkPoints);
+            const reader = new FileReader();
+            reader.onload = async (event) => {
+              const content = event.target.result;
+              const { headerText, textContent, footerText } =
+                await extractTextFromDocx(content);
+              if (
+                `${headerText}${textContent}${footerText}`
+                  .toLowerCase()
+                  .includes(
+                    docModificationThreadPageState.thread.student_id.firstname.toLowerCase()
+                  )
+              ) {
+                checkPoints_temp2.corretFirstname.value = true;
+                checkPoints_temp2.corretFirstname.text =
+                  checkPoints_temp2.corretFirstname.text.replace('NOT ', '');
+              }
+              console.log(`${headerText}${footerText}`);
+              if (`${headerText}${footerText}` !== '') {
+                checkPoints_temp2.metadata = {
+                  hasMetadata: true,
+                  metaData: `
+                  Potential Risky Metadata, please double check if this is safe: 
+                  Header:${headerText}
+                  
+                  Footer:${footerText}.`
+                };
+              }
+              resolve(checkPoints_temp2);
+            };
+            reader.readAsArrayBuffer(fl);
+          } else if (extension === 'xlsx') {
+            const checkPoints = {
+              corretFirstname: {
+                value: false,
+                text: 'NOT Detected student first name in the document'
+              }
+            };
+            const checkPoints_temp3 = Object.assign({}, checkPoints);
+            const reader = new FileReader();
+            reader.onload = async (event) => {
+              const data = new Uint8Array(event.target.result);
+              const workbook = XLSX.read(data, { type: 'array' });
+              let text = '';
+              workbook.SheetNames.forEach((sheetName) => {
+                const sheet = workbook.Sheets[sheetName];
+                text += XLSX.utils.sheet_to_csv(sheet);
+              });
+              if (
+                text
+                  .toLowerCase()
+                  .includes(
+                    docModificationThreadPageState.thread.student_id.firstname.toLowerCase()
+                  )
+              ) {
+                checkPoints_temp3.corretFirstname.value = true;
+                checkPoints_temp3.corretFirstname.text =
+                  checkPoints_temp3.corretFirstname.text.replace('NOT ', '');
+              }
+              resolve(checkPoints_temp3);
+            };
+            reader.readAsArrayBuffer(fl);
+          } else {
+            const checkPoints = {};
+            const checkPoints_temp4 = Object.assign({}, checkPoints);
+            const reader = new FileReader();
+            reader.onload = async (event) => {
+              console.log(event);
+
+              resolve(checkPoints_temp4);
+            };
+            reader.readAsArrayBuffer(fl);
+          }
+        });
+        checkPromises[i] = promise;
+      }
+      Promise.all(checkPromises)
+        .then((results) => {
+          setCheckResult(results);
+          setDocModificationThreadPageState((prevState) => ({
+            ...prevState,
+            file: Array.from(e.target.files)
+          }));
+        })
+        .catch((error) => {
+          console.error('Error processing files:', error);
+        });
     } else {
       setDocModificationThreadPageState((prevState) => ({
         ...prevState,
@@ -141,6 +297,33 @@ function DocModificationThreadPage() {
         res_modal_status: 423
       }));
     }
+  };
+
+  const extractTextFromDocx = async (arrayBuffer) => {
+    const zip = await JSZip.loadAsync(arrayBuffer);
+    const documentXml = await zip.file('word/document.xml')?.async('string');
+    // Extract text from the XML content
+    let textContent = documentXml?.replace(/<[^>]+>/g, ''); // Strip HTML tags
+    // Extract header text if present
+    let headerText = '';
+    const headerXml = await zip
+      .file('word/header1.xml')
+      ?.async('string')
+      .catch(() => ''); // Assuming there's only one header
+    if (headerXml) {
+      headerText = headerXml?.replace(/<[^>]+>/g, ''); // Strip XML tags
+    }
+
+    // Extract footer text if present
+    let footerText = '';
+    const footerXml = await zip
+      .file('word/footer1.xml')
+      ?.async('string')
+      .catch(() => ''); // Assuming there's only one footer
+    if (footerXml) {
+      footerText = footerXml?.replace(/<[^>]+>/g, ''); // Strip XML tags
+    }
+    return { headerText, textContent, footerText };
   };
 
   const ConfirmError = () => {
@@ -424,12 +607,12 @@ function DocModificationThreadPage() {
   }
   let widths = [];
   if (docModificationThreadPageState.thread.file_type === 'CV') {
-    widths = [9, 2, 1];
+    widths = [8, 2, 2];
   } else {
     if (is_TaiGer_Student(user)) {
       widths = [10, 2];
     } else {
-      widths = [9, 2, 1];
+      widths = [8, 2, 2];
     }
   }
 
@@ -477,7 +660,7 @@ function DocModificationThreadPage() {
             component={LinkDom}
             to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
               docModificationThreadPageState.thread.student_id._id.toString(),
-              DEMO.PROFILE
+              DEMO.PROFILE_HASH
             )}`}
           >
             {student_name}
@@ -595,15 +778,6 @@ function DocModificationThreadPage() {
                             {t('Download')}
                           </Button>
                         </a>
-                        {/* or &nbsp;
-                                <Link
-                                  to={`${DEMO.DOCUMENT_MODIFICATION_INPUT_LINK(
-                                    docModificationThreadPageState.documentsthreadId
-                                  )}`}
-                                  // target="_blank"
-                                >
-                                  <Button size="sm">線上填寫</Button>
-                                </Link> */}
                       </b>
                     ) : (
                       <b>
@@ -621,9 +795,9 @@ function DocModificationThreadPage() {
                             {t('Download')}
                           </Button>
                         </a>
+                        <br />
                         {is_TaiGer_role(user) && (
                           <>
-                            <br></br>
                             <LinkDom
                               to={`${DEMO.DOCUMENT_MODIFICATION_INPUT_LINK(
                                 docModificationThreadPageState.documentsthreadId
@@ -634,7 +808,7 @@ function DocModificationThreadPage() {
                                 variant="contained"
                                 sx={{ my: 2 }}
                               >
-                                <Badge>Beta</Badge> &nbsp; <b>Editor Helper</b>
+                                Editor Helper
                               </Button>
                             </LinkDom>
                           </>
@@ -684,7 +858,7 @@ function DocModificationThreadPage() {
                 />
               </>
             ) : (
-              <Typography>{t('No')}</Typography>
+              <Typography>{t('No', { ns: 'common' })}</Typography>
             )}
           </Grid>
           <Grid item md={widths[1]}>
@@ -730,6 +904,14 @@ function DocModificationThreadPage() {
                 )}
               </Typography>
             ))}
+            {is_TaiGer_role(user) &&
+              [...AGENT_SUPPORT_DOCUMENTS_A].includes(
+                docModificationThreadPageState.thread.file_type
+              ) && (
+                <Button size="small" color="primary" variant="contained">
+                  {t('Add Editor')}
+                </Button>
+              )}
 
             <Typography variant="body1">
               <b>{t('Deadline')}:</b>
@@ -753,7 +935,7 @@ function DocModificationThreadPage() {
             </Typography>
           </Grid>
           {docModificationThreadPageState.thread.file_type === 'CV' ? (
-            <Grid md={widths[2]}>
+            <Grid item md={widths[2]}>
               <h6>
                 <b>Profile photo:</b>
                 <img
@@ -772,7 +954,7 @@ function DocModificationThreadPage() {
             </Grid>
           ) : (
             !is_TaiGer_Student(user) && (
-              <Grid md={widths[2]}>
+              <Grid item md={widths[2]}>
                 <Typography variant="body1">{t('Conflict')}:</Typography>
                 {conflict_list.length === 0
                   ? 'None'
@@ -781,7 +963,7 @@ function DocModificationThreadPage() {
                         <LinkDom
                           to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                             conflict_student._id.toString(),
-                            '/CV_ML_RL'
+                            DEMO.CVMLRL_HASH
                           )}`}
                         >
                           <b>
@@ -841,6 +1023,7 @@ function DocModificationThreadPage() {
               handleClickSave={handleClickSave}
               file={docModificationThreadPageState.file}
               onFileChange={onFileChange}
+              checkResult={checkResult}
             />
           )}
         </Card>
@@ -915,14 +1098,18 @@ function DocModificationThreadPage() {
             onClick={(e) => ConfirmSetAsFinalFileHandler(e)}
             sx={{ mr: 2 }}
           >
-            {isSubmissionLoaded ? t('Yes') : <CircularProgress />}
+            {isSubmissionLoaded ? (
+              t('Yes', { ns: 'common' })
+            ) : (
+              <CircularProgress />
+            )}
           </Button>
           <Button
             color="secondary"
             variant="outlined"
             onClick={closeSetAsFinalFileModelWindow}
           >
-            {t('No')}
+            {t('No', { ns: 'common' })}
           </Button>
         </Box>
       </ModalNew>

@@ -1,13 +1,24 @@
 import React, { useEffect, useState } from 'react';
-import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import SendIcon from '@mui/icons-material/Send';
 
 import EditorSimple from '../../../components/EditorJs/EditorSimple';
-import { Button, Grid, Card, TextField } from '@mui/material';
+import {
+  Button,
+  Grid,
+  Card,
+  TextField,
+  Tooltip,
+  Typography,
+  Box
+} from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { CVMLRL_DOC_PRECHECK_STATUS_E } from '../../Utils/contants';
+import { is_TaiGer_role } from '../../Utils/checking-functions';
+import { useAuth } from '../../../components/AuthProvider';
 
 function DocThreadEditor(props) {
   const { t } = useTranslation();
+  const { user } = useAuth();
   let [statedata, setStatedata] = useState({
     editorState: props.editorState
   });
@@ -17,6 +28,7 @@ function DocThreadEditor(props) {
       editorState: props.editorState
     }));
   }, [props.editorState]);
+
   const handleEditorChange = (content) => {
     setStatedata((state) => ({
       ...state,
@@ -24,12 +36,8 @@ function DocThreadEditor(props) {
     }));
   };
 
-  const renderTooltip = (props) => (
-    <Tooltip id="tooltip-disabled" {...props}>
-      Please write some text to improve the communication and understanding.
-    </Tooltip>
-  );
-
+  console.log(props.checkResult);
+  console.log(props.checkResult?.length);
   return (
     <>
       <Grid container spacing={2}>
@@ -48,33 +56,47 @@ function DocThreadEditor(props) {
             />
           </Card>
         </Grid>
+        {/* TODO: show checking result: 
+        1. contain student name for each file, 
+        2. CV: no gap
+         */}
+        {is_TaiGer_role(user) && (
+          <Grid item xs={12}>
+            {props.file?.map((fl, i) => (
+              <Box key={`${fl.name}${i}`}>
+                <Typography>{fl.name} :</Typography>
+                {Object.keys(props.checkResult[i]).map((ky) => (
+                  <Typography
+                    key={props.checkResult[i][ky].text}
+                    sx={{ ml: 2 }}
+                  >
+                    {props.checkResult[i][ky].value === undefined
+                      ? CVMLRL_DOC_PRECHECK_STATUS_E.WARNING_SYMBOK
+                      : props.checkResult[i][ky].value
+                      ? CVMLRL_DOC_PRECHECK_STATUS_E.OK_SYMBOL
+                      : CVMLRL_DOC_PRECHECK_STATUS_E.NOT_OK_SYMBOL}
+                    {props.checkResult[i][ky].text}
+                    {props.checkResult[i][ky].hasMetadata &&
+                      props.checkResult[i][ky].metaData}
+                  </Typography>
+                ))}
+              </Box>
+            ))}
+          </Grid>
+        )}
+
         <Grid item xs={12}>
-          {/* <Input
-            fullWidth
-            inputComponent="input"
-            inputProps={{ multiple: true }}
-            type="file"
-            onChange={(e) => props.onFileChange(e)}
-            // inputRef={this.fileInputRef}
-          /> */}
-          {/* <Button type="submit" variant="contained" color="primary">
-              Submit
-            </Button> */}
           <TextField
             fullWidth
             size="small"
             type="file"
-            multiple
+            inputProps={{
+              multiple: true
+            }}
             onChange={(e) => props.onFileChange(e)}
           />
-          {/* <Form.Group controlId="formFile">
-            <Form.Control
-              type="file"
-              multiple
-              onChange={(e) => props.onFileChange(e)}
-            />
-          </Form.Group> */}
         </Grid>
+
         <Grid item xs={12}>
           (Choose max. 3 files with different extensions: .pdf, .docx, .jgp, and
           overall 2MB!)
@@ -83,23 +105,20 @@ function DocThreadEditor(props) {
           {!statedata.editorState.blocks ||
           statedata.editorState.blocks.length === 0 ||
           props.buttonDisabled ? (
-            <OverlayTrigger
-              placement="right"
-              delay={{ show: 250, hide: 400 }}
-              overlay={renderTooltip}
+            <Tooltip
+              title={t(
+                'Please write some text to improve the communication and understanding.'
+              )}
+              placement="top"
             >
-              <span className="d-inline-block">
-                <Button
-                  color="primary"
-                  variant="contained"
-                  disabled={true}
-                  style={{ pointerEvents: 'none' }}
-                  startIcon={<SendIcon />}
-                >
-                  {t('Send')}
-                </Button>
-              </span>
-            </OverlayTrigger>
+              <Button
+                color="secondary"
+                variant="outlined"
+                startIcon={<SendIcon />}
+              >
+                {t('Send')}
+              </Button>
+            </Tooltip>
           ) : (
             <Button
               color="primary"

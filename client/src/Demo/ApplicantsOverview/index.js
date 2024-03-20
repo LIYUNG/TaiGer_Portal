@@ -4,34 +4,46 @@ import { Navigate, Link as LinkDom, useLoaderData } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import ApplicationOverviewTabs from './ApplicationOverviewTabs';
-import { is_TaiGer_role } from '../Utils/checking-functions';
+import { is_TaiGer_Student, is_TaiGer_role } from '../Utils/checking-functions';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
 import { appConfig } from '../../config';
+import useStudents from '../../hooks/useStudents';
 
 function ApplicantsOverview() {
   const { user } = useAuth();
   const {
-    data: { data: students }
+    data: { data: fetchedStudents }
   } = useLoaderData();
+  const {
+    students,
+    submitUpdateAgentlist,
+    submitUpdateEditorlist,
+    submitUpdateAttributeslist,
+    updateStudentArchivStatus
+  } = useStudents({
+    students: fetchedStudents
+  });
+
   const { t } = useTranslation();
 
-  if (
-    user.role !== 'Admin' &&
-    user.role !== 'Editor' &&
-    user.role !== 'Agent' &&
-    user.role !== 'Student'
-  ) {
-    return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
-  }
-  if (user.role === 'Student') {
+  if (is_TaiGer_Student(user)) {
     return (
       <Navigate
         to={`${DEMO.STUDENT_APPLICATIONS_LINK}/${user._id.toString()}`}
       />
     );
   }
+  if (!is_TaiGer_role(user)) {
+    return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
+  }
+
+  const myStudents = students.filter(
+    (student) =>
+      student.editors.some((editor) => editor._id === user._id.toString()) ||
+      student.agents.some((agent) => agent._id === user._id.toString())
+  );
   TabTitle('Applications Overview');
 
   return (
@@ -51,7 +63,13 @@ function ApplicantsOverview() {
             : `${user.firstname} ${user.lastname} Applications Overview`}
         </Typography>
       </Breadcrumbs>
-      <ApplicationOverviewTabs user={user} students={students} />
+      <ApplicationOverviewTabs
+        updateStudentArchivStatus={updateStudentArchivStatus}
+        submitUpdateAgentlist={submitUpdateAgentlist}
+        submitUpdateEditorlist={submitUpdateEditorlist}
+        submitUpdateAttributeslist={submitUpdateAttributeslist}
+        students={myStudents}
+      />
     </Box>
   );
 }

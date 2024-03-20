@@ -1,30 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import {
-  useTable,
-  useFilters,
-  useGlobalFilter,
-  useAsyncDebounce,
-  useRowSelect,
-  usePagination
-} from 'react-table';
 import { Link as LinkDom, Navigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   Button,
-  Card,
-  Table,
-  TableRow,
-  TableBody,
-  TableHead,
-  TableCell,
   Breadcrumbs,
   Link,
   Typography,
-  InputBase,
-  Box
+  Box,
+  TextField
 } from '@mui/material';
-import { matchSorter } from 'match-sorter';
-import SearchIcon from '@mui/icons-material/Search';
+import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 
 import ProgramListSubpage from './ProgramListSubpage';
@@ -41,468 +26,6 @@ import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
 import { appConfig } from '../../config';
 import ModalNew from '../../components/Modal';
-
-// Define a default UI for filtering
-function GlobalFilter({ globalFilter, setGlobalFilter }) {
-  const { t } = useTranslation();
-  const [value, setValue] = React.useState(globalFilter);
-  const onChange = useAsyncDebounce((value) => {
-    setGlobalFilter(value || undefined);
-  }, 200);
-
-  return (
-    <span>
-      {t('Search')}:&nbsp;
-      <Box>
-        <SearchIcon />
-        <InputBase
-          value={value || ''}
-          onChange={(e) => {
-            setValue(e.target.value);
-            onChange(e.target.value);
-          }}
-          placeholder={` TUM, Management ...`}
-          style={{
-            fontSize: '0.9rem',
-            border: '0'
-          }}
-        />
-      </Box>
-    </span>
-  );
-}
-
-// Define a default UI for filtering
-function DefaultColumnFilter({
-  column: { filterValue, preFilteredRows, setFilter }
-}) {
-  const count = preFilteredRows.length;
-
-  return (
-    <input
-      value={filterValue || ''}
-      onChange={(e) => {
-        setFilter(e.target.value || undefined); // Set undefined to remove the filter entirely
-      }}
-      // size={10}
-      placeholder={`Search ${count} records...`}
-    />
-  );
-}
-
-// This is a custom filter UI for selecting
-// a unique option from a list
-function SelectColumnFilter({
-  column: { filterValue, setFilter, preFilteredRows, id }
-}) {
-  // Calculate the options for filtering
-  // using the preFilteredRows
-  const options = React.useMemo(() => {
-    const options = new Set();
-    preFilteredRows.forEach((row) => {
-      options.add(row.values[id]);
-    });
-    return [...options.values()];
-  }, [id, preFilteredRows]);
-
-  // Render a multi-select box
-  return (
-    <select
-      value={filterValue}
-      onChange={(e) => {
-        setFilter(e.target.value || undefined);
-      }}
-    >
-      <option value="">All</option>
-      {options.map((option, i) => (
-        <option key={i} value={option}>
-          {option}
-        </option>
-      ))}
-    </select>
-  );
-}
-
-// This is a custom filter UI that uses a
-// slider to set the filter value between a column's
-// min and max values
-// function SliderColumnFilter({
-//   column: { filterValue, setFilter, preFilteredRows, id }
-// }) {
-//   // Calculate the min and max
-//   // using the preFilteredRows
-
-//   const [min, max] = React.useMemo(() => {
-//     let min = preFilteredRows.length ? preFilteredRows[0].values[id] : 0;
-//     let max = preFilteredRows.length ? preFilteredRows[0].values[id] : 0;
-//     preFilteredRows.forEach((row) => {
-//       min = Math.min(row.values[id], min);
-//       max = Math.max(row.values[id], max);
-//     });
-//     return [min, max];
-//   }, [id, preFilteredRows]);
-
-//   return (
-//     <>
-//       <input
-//         type="range"
-//         min={min}
-//         max={max}
-//         value={filterValue || min}
-//         onChange={(e) => {
-//           setFilter(parseInt(e.target.value, 10));
-//         }}
-//       />
-//       <button onClick={() => setFilter(undefined)}>Off</button>
-//     </>
-//   );
-// }
-
-// This is a custom UI for our 'between' or number range
-// filter. It uses two number boxes and filters rows to
-// ones that have values between the two
-// function NumberRangeColumnFilter({
-//   column: { filterValue = [], preFilteredRows, setFilter, id }
-// }) {
-//   const [min, max] = React.useMemo(() => {
-//     let min = preFilteredRows.length ? preFilteredRows[0].values[id] : 0;
-//     let max = preFilteredRows.length ? preFilteredRows[0].values[id] : 0;
-//     preFilteredRows.forEach((row) => {
-//       min = Math.min(row.values[id], min);
-//       max = Math.max(row.values[id], max);
-//     });
-//     return [min, max];
-//   }, [id, preFilteredRows]);
-
-//   return (
-//     <div
-//       style={{
-//         display: 'flex'
-//       }}
-//     >
-//       <input
-//         value={filterValue[0] || ''}
-//         type="number"
-//         onChange={(e) => {
-//           const val = e.target.value;
-//           setFilter((old = []) => [
-//             val ? parseInt(val, 10) : undefined,
-//             old[1]
-//           ]);
-//         }}
-//         placeholder={`Min (${min})`}
-//         style={{
-//           width: '70px',
-//           marginRight: '0.5rem'
-//         }}
-//       />
-//       to
-//       <input
-//         value={filterValue[1] || ''}
-//         type="number"
-//         onChange={(e) => {
-//           const val = e.target.value;
-//           setFilter((old = []) => [
-//             old[0],
-//             val ? parseInt(val, 10) : undefined
-//           ]);
-//         }}
-//         placeholder={`Max (${max})`}
-//         style={{
-//           width: '70px',
-//           marginLeft: '0.5rem'
-//         }}
-//       />
-//     </div>
-//   );
-// }
-
-function fuzzyTextFilterFn(rows, id, filterValue) {
-  return matchSorter(rows, filterValue, { keys: [(row) => row.values[id]] });
-}
-
-// Let the table remove the filter if the string is empty
-fuzzyTextFilterFn.autoRemove = (val) => !val;
-
-// eslint-disable-next-line react/display-name
-const IndeterminateCheckbox = React.forwardRef(
-  ({ indeterminate, ...rest }, ref) => {
-    const defaultRef = React.useRef();
-    const resolvedRef = ref || defaultRef;
-
-    React.useEffect(() => {
-      resolvedRef.current.indeterminate = indeterminate;
-    }, [resolvedRef, indeterminate]);
-
-    return (
-      <>
-        <input type="checkbox" ref={resolvedRef} {...rest} />
-      </>
-    );
-  }
-);
-
-// Our table component
-function Table2(props) {
-  // let [modalShowAssignWindow, setModalShow] = useState(false);
-  const filterTypes = React.useMemo(
-    () => ({
-      // Add a new fuzzyTextFilterFn filter type.
-      fuzzyText: fuzzyTextFilterFn,
-      // Or, override the default text filter to use
-      // "startWith"
-      text: (rows, id, filterValue) => {
-        return rows.filter((row) => {
-          const rowValue = row.values[id];
-          return rowValue !== undefined
-            ? String(rowValue)
-                .toLowerCase()
-                .startsWith(String(filterValue).toLowerCase())
-            : true;
-        });
-      }
-    }),
-    []
-  );
-
-  const defaultColumn = React.useMemo(
-    () => ({
-      // Let's set up our default Filter UI
-      Filter: DefaultColumnFilter
-    }),
-    []
-  );
-
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    page,
-    prepareRow,
-    state,
-    visibleColumns,
-    canPreviousPage,
-    canNextPage,
-    pageOptions,
-    pageCount,
-    gotoPage,
-    nextPage,
-    previousPage,
-    setPageSize,
-    preGlobalFilteredRows,
-    setGlobalFilter,
-    // selectedFlatRows,
-    toggleAllRowsSelected,
-    state: { pageIndex, pageSize, selectedRowIds }
-  } = useTable(
-    {
-      columns: props.columns,
-      data: props.data,
-      initialState: { pageSize: 20 },
-      defaultColumn, // Be sure to pass the defaultColumn option
-      filterTypes
-      // autoResetSelectedRows: false,
-      // autoResetSelectedCell: false,
-      // autoResetSelectedColumn: false
-    },
-    useFilters, // useFilters!
-    useGlobalFilter, // useGlobalFilter!
-    usePagination,
-    useRowSelect,
-    (hooks) => {
-      hooks.visibleColumns.push((columns) => [
-        // Let's make a column for selection
-        {
-          id: 'selection',
-          // The header can use the table's getToggleAllRowsSelectedProps method
-          // to render a checkbox
-          Header: ({ getToggleAllRowsSelectedProps }) => (
-            <div>
-              <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
-            </div>
-          ),
-          // The cell can use the individual row's getToggleRowSelectedProps method
-          // to the render a checkbox
-          Cell: ({ row }) => (
-            <div>
-              <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
-            </div>
-          )
-        },
-        ...columns
-      ]);
-    }
-  );
-
-  // We don't want to render all of the rows for this example, so cap
-  // it for this use case
-  // const firstPageRows = rows.slice(0, 12);
-  useEffect(() => {
-    const data_idxes = Object.keys(selectedRowIds);
-    props.setPrograms({
-      programIds: data_idxes.map((idx) => props.data[idx]._id),
-      schools: data_idxes.map((idx) => props.data[idx].school),
-      program_names: data_idxes.map((idx) => props.data[idx].program_name),
-      degree: data_idxes.map((idx) => props.data[idx].degree),
-      semester: data_idxes.map((idx) => props.data[idx].semester)
-    });
-  }, [selectedRowIds]);
-
-  useEffect(() => {
-    // TODO: The following 2 callback only triggered when program assigned. (How?)
-    setGlobalFilter([]);
-    toggleAllRowsSelected(false);
-    props.setTableStates((state) => ({
-      ...state,
-      isAssigning: false
-    }));
-  }, [props.isAssigning]);
-
-  return (
-    <>
-      <Table size="small">
-        <TableHead>
-          <TableRow>
-            <TableCell
-              colSpan={visibleColumns.length}
-              style={{
-                textAlign: 'left'
-              }}
-            >
-              <span style={{ cursor: 'pointer' }}>
-                {props.programs.programIds.length !== 0 && (
-                  <PersonAddIcon onClick={props.setModalShow2} />
-                )}
-              </span>
-              <GlobalFilter
-                preGlobalFilteredRows={preGlobalFilteredRows}
-                globalFilter={state.globalFilter}
-                setGlobalFilter={setGlobalFilter}
-              />
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody></TableBody>
-      </Table>
-      <Table size="small" {...getTableProps()}>
-        <TableHead>
-          {headerGroups.map((headerGroup, k) => (
-            <TableRow key={k} {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column, x) => (
-                <TableCell key={x} {...column.getHeaderProps()}>
-                  {column.render('Header')}
-                  {/* Render the columns filter UI */}
-                  <div>{column.canFilter ? column.render('Filter') : null}</div>
-                </TableCell>
-              ))}
-            </TableRow>
-          ))}
-        </TableHead>
-        <TableBody {...getTableBodyProps()}>
-          {page.map((row, i) => {
-            prepareRow(row);
-            return (
-              <TableRow key={i} {...row.getRowProps()}>
-                {row.cells.map((cell, j) => {
-                  return (
-                    <TableCell key={j} {...cell.getCellProps()}>
-                      {j === 0 ? (
-                        <>{cell.render('Cell')}</>
-                      ) : (
-                        <Link
-                          target="_blank"
-                          to={`${DEMO.SINGLE_PROGRAM_LINK(row.original._id)}`}
-                          component={LinkDom}
-                        >
-                          {cell.render('Cell')}
-                        </Link>
-                      )}
-                    </TableCell>
-                  );
-                })}
-              </TableRow>
-            );
-          })}
-        </TableBody>
-      </Table>
-      <div>
-        <span
-          className="ms-4"
-          style={{ color: !canPreviousPage ? 'grey' : 'white' }}
-        >
-          <i
-            className="mx-1 feather icon-chevrons-left"
-            onClick={() => gotoPage(0)}
-            disabled={!canPreviousPage}
-          />
-        </span>
-        <span style={{ color: !canPreviousPage ? 'grey' : 'white' }}>
-          <i
-            className="mx-1 feather icon-chevron-left"
-            onClick={() => previousPage()}
-            disabled={!canPreviousPage}
-          />
-        </span>
-        <span style={{ color: !canNextPage ? 'grey' : 'white' }}>
-          <i
-            className="mx-1 feather icon-chevron-right"
-            onClick={() => nextPage()}
-            disabled={!canNextPage}
-          />
-        </span>
-        <span style={{ color: !canNextPage ? 'grey' : 'white' }}>
-          <i
-            className="mx-1 feather icon-chevrons-right"
-            onClick={() => gotoPage(pageCount - 1)}
-            disabled={!canNextPage}
-          />
-        </span>
-        <span className="text-light mx-2" style={{ float: 'right' }}>
-          Go to page:{' '}
-          <input
-            type="number"
-            defaultValue={pageIndex + 1}
-            onChange={(e) => {
-              const page = e.target.value ? Number(e.target.value) - 1 : 0;
-              gotoPage(page);
-            }}
-            style={{ width: '50px' }}
-          />
-          <strong className="mx-2">
-            {pageIndex + 1} / {pageOptions.length}
-          </strong>{' '}
-          <select
-            style={{ float: 'right' }}
-            value={pageSize}
-            onChange={(e) => {
-              setPageSize(Number(e.target.value));
-            }}
-          >
-            {[20, 40, 60, 80, 100].map((pageSize) => (
-              <option key={pageSize} value={pageSize}>
-                Show {pageSize}
-              </option>
-            ))}
-          </select>
-        </span>
-      </div>
-    </>
-  );
-}
-
-// Define a custom filter filter function!
-function filterGreaterThan(rows, id, filterValue) {
-  return rows.filter((row) => {
-    const rowValue = row.values[id];
-    return rowValue >= filterValue;
-  });
-}
-
-// This is an autoRemove method on the filter function that
-// when given the new filter value and returns true, the filter
-// will be automatically removed. Normally this is just an undefined
-// check, but here, we want to remove the filter if it's not a number
-filterGreaterThan.autoRemove = (val) => typeof val !== 'number';
 
 function ProgramList(props) {
   const { user } = useAuth();
@@ -526,6 +49,8 @@ function ProgramList(props) {
     error: '',
     res_status: 0
   });
+  const [filters, setFilters] = useState({});
+  const [rowSelectionModel, setRowSelectionModel] = React.useState([]);
 
   let [programs, setPrograms] = useState({
     programIds: [],
@@ -571,6 +96,33 @@ function ProgramList(props) {
     );
   }, []);
 
+  useEffect(() => {
+    const data_idxes = rowSelectionModel;
+    // console.log(data_idxes);
+    setPrograms({
+      programIds: data_idxes.map(
+        (idx) => statedata.programs.find((program) => program?._id === idx)?._id
+      ),
+      schools: data_idxes.map(
+        (idx) =>
+          statedata.programs.find((program) => program?._id === idx)?.school
+      ),
+      program_names: data_idxes.map(
+        (idx) =>
+          statedata.programs.find((program) => program?._id === idx)
+            ?.program_name
+      ),
+      degree: data_idxes.map(
+        (idx) =>
+          statedata.programs.find((program) => program?._id === idx)?.degree
+      ),
+      semester: data_idxes.map(
+        (idx) =>
+          statedata.programs.find((program) => program?._id === idx)?.semester
+      )
+    });
+  }, [rowSelectionModel]);
+
   const assignProgram = (assign_data) => {
     const { student_id, program_ids } = assign_data;
     setTableStates((state) => ({
@@ -593,6 +145,7 @@ function ProgramList(props) {
             success,
             res_modal_status: status
           }));
+          setRowSelectionModel([]);
         } else {
           const { message } = resp.data;
           setTableStates((state) => ({
@@ -638,7 +191,7 @@ function ProgramList(props) {
   const onSubmitAddToStudentProgramList = (e) => {
     e.preventDefault();
     const student_id = studentId;
-    assignProgram({ student_id, program_ids: programs.programIds });
+    assignProgram({ student_id, program_ids: rowSelectionModel });
   };
 
   const handleSetStudentId = (e) => {
@@ -703,80 +256,58 @@ function ProgramList(props) {
       modalShowAssignWindow: true
     }));
   };
-  const columns = React.useMemo(
-    () => [
-      {
-        Header: `${t('Program List')}`,
-        columns: [
-          {
-            Header: `${t('School')}`,
-            accessor: 'school',
-            Filter: SelectColumnFilter,
-            filter: 'fuzzyText'
-          },
-          {
-            Header: `${t('Program')}`,
-            accessor: 'program_name',
-            // Use our custom `fuzzyText` filter on this column
-            filter: 'fuzzyText'
-          },
-          {
-            Header: `${t('Country')}`,
-            accessor: 'country',
-            // Use our custom `fuzzyText` filter on this column
-            filter: 'fuzzyText'
-          },
-          {
-            Header: `${t('Degree')}`,
-            accessor: 'degree',
-            // Filter: SelectColumnFilter,
-            filter: 'fuzzyText'
-          },
-          {
-            Header: `${t('Semester')}`,
-            accessor: 'semester',
-            Filter: SelectColumnFilter,
-            filter: 'fuzzyText'
-          },
-          {
-            Header: `${t('Language')}`,
-            accessor: 'lang'
-            // Filter: NumberRangeColumnFilter,
-            // filter: 'between'
-          },
-          {
-            Header: 'TOEFL',
-            accessor: 'toefl'
-            // Filter: NumberRangeColumnFilter,
-            // filter: 'equals'
-          },
-          {
-            Header: 'IELTS',
-            accessor: 'ielts'
-            // Filter: NumberRangeColumnFilter,
-            // filter: 'between'
-          },
-          {
-            Header: 'GRE/GMAT',
-            accessor: 'gre'
-            // Filter: SliderColumnFilter,
-            // filter: filterGreaterThan
-          },
-          {
-            Header: `${t('Deadline')}`,
-            accessor: 'application_deadline'
-          },
-          {
-            Header: `${t('Last update')}`,
-            accessor: 'updatedAt'
-          }
-        ]
-      }
-    ],
-    []
-  );
 
-  // const data = React.useMemo(() => makeData(100000), []);
+  const c2 = [
+    {
+      field: 'school',
+      headerName: t('School'),
+      align: 'left',
+      headerAlign: 'left',
+      width: 250,
+      renderCell: (params) => {
+        const linkUrl = `${DEMO.SINGLE_PROGRAM_LINK(params.row.id)}`;
+        return (
+          <Link
+            underline="hover"
+            to={linkUrl}
+            component={LinkDom}
+            target="_blank"
+          >
+            {params.value}
+          </Link>
+        );
+      }
+    },
+    {
+      field: 'program_name',
+      headerName: t('Program'),
+      width: 250,
+      renderCell: (params) => {
+        const linkUrl = `${DEMO.SINGLE_PROGRAM_LINK(params.row.id)}`;
+        return (
+          <Link
+            underline="hover"
+            to={linkUrl}
+            component={LinkDom}
+            target="_blank"
+          >
+            {params.value}
+          </Link>
+        );
+      }
+    },
+    { field: 'country', headerName: t('Country'), width: 90 },
+    { field: 'degree', headerName: t('Degree'), width: 90 },
+    { field: 'semester', headerName: t('Semester'), width: 100 },
+    { field: 'lang', headerName: t('Language'), width: 120 },
+    { field: 'toefl', headerName: t('TOEFL'), width: 100 },
+    { field: 'ielts', headerName: t('IELTS'), width: 100 },
+    { field: 'gre', headerName: t('GRE'), width: 120 },
+    { field: 'gmat', headerName: t('GMAT'), width: 120 },
+    { field: 'application_deadline', headerName: t('Deadline'), width: 120 },
+    { field: 'updatedAt', headerName: t('Last updated'), width: 150 }
+  ];
+
   if (!statedata.isloaded && !statedata.programs) {
     return <Loading />;
   }
@@ -785,9 +316,38 @@ function ProgramList(props) {
     return <ErrorPage res_status={statedata.res_status} />;
   }
 
+  const handleFilterChange = (event, column) => {
+    const { value } = event.target;
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      [column.field]: value.toLowerCase()
+    }));
+  };
+
+  const transformedData = statedata.programs.map((row) => {
+    return {
+      ...row, // Spread the original row object
+      id: row._id // Map MongoDB _id to id property
+      // other properties...
+    };
+  });
+  const filteredRows = transformedData.filter((row) => {
+    return Object.keys(filters).every((field) => {
+      const filterValue = filters[field];
+      return (
+        filterValue === '' ||
+        row[field]?.toString().toLowerCase().includes(filterValue)
+      );
+    });
+  });
+
+  const stopPropagation = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+  };
+  // console.log(filters);
   return (
     <Box>
-      {' '}
       {tableStates.res_modal_status >= 400 && (
         <ModalMain
           ConfirmError={ConfirmError}
@@ -831,21 +391,87 @@ function ProgramList(props) {
           >
             {t('Add New Program')}
           </Button>
-          <Card>
-            <Table2
-              columns={columns}
-              data={statedata.programs}
-              programs={programs}
-              userId={user._id.toString()}
-              setModalShow2={setModalShow2}
-              setPrograms={setPrograms}
-              isAssigning={tableStates.isAssigning}
-              setTableStates={setTableStates}
+          {rowSelectionModel.length > 0 && (
+            <Button
+              size="small"
+              color="primary"
+              variant="contained"
+              onClick={setModalShow2}
+              startIcon={<PersonAddIcon />}
+            ></Button>
+          )}
+          <br />
+          {/* <Typography>Filter</Typography>
+          {c2.map((column) => (
+            <TextField
+              size="small"
+              key={column.field}
+              type="text"
+              placeholder={`${column.headerName}`}
+              onChange={(event) => handleFilterChange(event, column)}
             />
-          </Card>
+          ))} */}
+          <div style={{ height: '50%', width: '100%' }}>
+            <DataGrid
+              sx={{
+                '& .MuiDataGrid-columnHeaderTitle': {
+                  whiteSpace: 'normal',
+                  lineHeight: 'normal'
+                },
+                '& .MuiDataGrid-columnHeader': {
+                  // Forced to use important since overriding inline styles
+                  height: 'unset !important'
+                },
+                '& .MuiDataGrid-columnHeaders': {
+                  // Forced to use important since overriding inline styles
+                  maxHeight: '168px !important'
+                }
+              }}
+              density="compact"
+              rows={filteredRows}
+              disableColumnFilter
+              disableColumnMenu
+              disableDensitySelector
+              columns={c2.map((column) => ({
+                ...column,
+                renderHeader: () => (
+                  <Box>
+                    <Typography
+                      sx={{ my: 1 }}
+                    >{`${column.headerName}`}</Typography>
+                    <TextField
+                      size="small"
+                      type="text"
+                      placeholder={`${column.headerName}`}
+                      onClick={stopPropagation} // value={filterText[params.field] || ''}
+                      onChange={(event) => handleFilterChange(event, column)}
+                      sx={{ mb: 1 }}
+                    />
+                  </Box>
+                )
+              }))}
+              initialState={{
+                pagination: {
+                  paginationModel: { page: 0, pageSize: 20 }
+                }
+              }}
+              keepNonExistentRowsSelected
+              onRowSelectionModelChange={(newRowSelectionModel) => {
+                setRowSelectionModel(newRowSelectionModel);
+              }}
+              rowSelectionModel={rowSelectionModel}
+              pageSizeOptions={[10, 20, 50, 100]}
+              checkboxSelection
+              slots={{ toolbar: GridToolbar }}
+              slotProps={{
+                toolbar: {
+                  showQuickFilter: true
+                }
+              }}
+            />
+          </div>
           {props.isStudentApplicationPage ? (
             <ProgramListSingleStudentAssignSubpage
-              userId={user._id.toString()}
               student={props.student}
               show={tableStates.modalShowAssignWindow}
               assignProgram={assignProgram}
@@ -861,15 +487,13 @@ function ProgramList(props) {
             />
           ) : (
             <ProgramListSubpage
-              userId={user._id.toString()}
               show={tableStates.modalShowAssignWindow}
-              assignProgram={assignProgram}
               setModalHide={setModalHide}
               uni_name={programs.schools}
               program_name={programs.program_names}
               handleSetStudentId={handleSetStudentId}
-              isAssigning={tableStates.isAssigning}
               isButtonDisable={tableStates.isButtonDisable}
+              studentId={studentId}
               onSubmitAddToStudentProgramList={onSubmitAddToStudentProgramList}
             />
           )}
@@ -886,7 +510,9 @@ function ProgramList(props) {
           {t('Program(s) assigned to student successfully!')}
         </Typography>
         <Typography>
-          <Button onClick={onHideAssignSuccessWindow}>{t('Close')}</Button>
+          <Button variant="outlined" onClick={onHideAssignSuccessWindow}>
+            {t('Close', { ns: 'common' })}
+          </Button>
         </Typography>
       </ModalNew>
     </Box>

@@ -3,14 +3,17 @@ import { FiExternalLink } from 'react-icons/fi';
 import { Link as LinkDom } from 'react-router-dom';
 import {
   Box,
+  Button,
   Link,
   Table,
   TableBody,
   TableCell,
+  TableContainer,
   TableHead,
   TableRow
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import LinkIcon from '@mui/icons-material/Link';
 
 import ButtonSetUploaded from './ButtonSetUploaded';
 import ButtonSetAccepted from './ButtonSetAccepted';
@@ -437,15 +440,10 @@ function BaseDocument_StudentView(props) {
         text={
           <>
             每個檔案都有注意事項。請務必上傳文件前，點選各文件名稱旁的說明連結圖示
-            &quot;
-            <b>
-              <FiExternalLink
-                className="mx-1 mb-1"
-                style={{ cursor: 'pointer' }}
-              />
-            </b>
-            &quot; 並查看文件要求，照著我們的要求上傳，Agent
-            會再檢查文件是否沒問題。
+            <Button size="small" variant="outlined" startIcon={<LinkIcon />}>
+              {t('Read More')}
+            </Button>
+            並查看文件要求，照著我們的要求上傳，Agent 會再檢查文件是否沒問題。
           </>
         }
         link_name={''}
@@ -466,7 +464,7 @@ function BaseDocument_StudentView(props) {
               component={LinkDom}
               target="_blank"
             >
-              My Survey{' '}
+              {t('Profile', { ns: 'common' })}{' '}
               <FiExternalLink
                 className="mx-1 mb-1"
                 style={{ cursor: 'pointer' }}
@@ -478,21 +476,23 @@ function BaseDocument_StudentView(props) {
         removeBanner={undefined}
         notification_key={undefined}
       />
-      <Table size="small">
-        <TableHead>
-          <TableRow>
-            <TableCell>{t('Status')}</TableCell>
-            <TableCell>{t('File Name')}</TableCell>
-            <TableCell>{t('Updated')}</TableCell>
-            <TableCell></TableCell>
-            <TableCell></TableCell>
-            <TableCell></TableCell>
-            <TableCell></TableCell>
-            <TableCell>{t('Delete')}</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>{file_information}</TableBody>
-      </Table>
+      <TableContainer style={{ overflowX: 'auto' }}>
+        <Table size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell>{t('Status', { ns: 'common' })}</TableCell>
+              <TableCell>{t('File Name', { ns: 'common' })}</TableCell>
+              <TableCell>{t('Updated', { ns: 'common' })}</TableCell>
+              <TableCell></TableCell>
+              <TableCell></TableCell>
+              <TableCell></TableCell>
+              <TableCell></TableCell>
+              <TableCell>{t('Delete', { ns: 'common' })}</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>{file_information}</TableBody>
+        </Table>
+      </TableContainer>
       {SYMBOL_EXPLANATION}
       {res_modal_status >= 400 && (
         <ModalMain

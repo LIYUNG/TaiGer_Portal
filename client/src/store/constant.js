@@ -17,7 +17,10 @@ const DEMO = {
   },
   COURSES_ANALYSIS_EXPLANATION_LINK: '/docs/search/64c3817811e606a89a10ea47',
   COMMUNICATIONS_LINK: (student_id) => {
-    return `/communications/${student_id}`;
+    return `/communications/std/${student_id}`;
+  },
+  COMMUNICATIONS_TAIGER_MODE_LINK: (student_id) => {
+    return `/communications/t/${student_id}`;
   },
   CV_ML_RL_CENTER_LINK: '/cv-ml-rl-center',
   CV_ML_RL_DOCS_LINK: '/docs/cv-ml-rl',
@@ -30,7 +33,7 @@ const DEMO = {
     return `/docs/${category}`;
   },
   DOCUMENT_MODIFICATION_INPUT_LINK: (thread_id) => {
-    return `/document-modification/student-input/${thread_id}`;
+    return `/document-modification/${thread_id}/survey`;
   },
   EVENT_STUDENT_LINK: '/events/students',
   EVENT_STUDENT_STUDENTID_LINK: (student_id) => {
@@ -55,6 +58,14 @@ const DEMO = {
   LOGIN_LINK: '/account/login',
   MY_INTERVIEW_LINK: '/interview-training/my-interviews',
   PROFILE: '/profile',
+  APPLICATION_HASH: '#applications',
+  PROFILE_HASH: '#profile',
+  CVMLRL_HASH: '#cvmlrl',
+  PORTAL_HASH: '#portal',
+  UNIASSIST_HASH: '#uniassist',
+  SURVEY_HASH: '#survey',
+  COURSES_HASH: '#courses',
+  NOTES_HASH: '#notes',
   PROFILE_STUDENT_LINK: (user_id) => {
     return `/profile/${user_id}`;
   },

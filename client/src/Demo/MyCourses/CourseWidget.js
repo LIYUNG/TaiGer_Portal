@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Form } from 'react-bootstrap';
 import {
   Box,
   Breadcrumbs,
   Button,
   Card,
+  FormControl,
+  FormLabel,
+  InputLabel,
   Link,
+  MenuItem,
+  Select,
   Typography
 } from '@mui/material';
 import { DataSheetGrid, textColumn, keyColumn } from 'react-datasheet-grid';
@@ -305,33 +309,40 @@ export default function CourseWidget() {
           columns={columns}
         />
         <br />
-
-        <Form.Group controlId="study_group">
-          <Form.Label>Select target group</Form.Label>
-          <Form.Control
-            as="select"
+        <FormControl fullWidth>
+          <InputLabel id="select-target-group">
+            {t('Select Target Group')}
+          </InputLabel>
+          <Select
+            labelId="study_group"
+            label="Select target group"
+            name="study_group"
+            id="study_group"
             onChange={(e) => handleChange_study_group(e)}
           >
-            <option value={''}>Select Study Group</option>
+            <MenuItem value={''}>Select Study Group</MenuItem>
             {study_group.map((cat, i) => (
-              <option value={cat.key} key={i}>
+              <MenuItem value={cat.key} key={i}>
                 {cat.value}
-              </option>
+              </MenuItem>
             ))}
-          </Form.Control>
-        </Form.Group>
+          </Select>
+        </FormControl>
         <br />
-        <Form.Group controlId="analysis_language">
-          <Form.Label>Select language</Form.Label>
-          <Form.Control
-            as="select"
+        <FormControl fullWidth>
+          <FormLabel>Select language</FormLabel>
+          <Select
+            labelId="analysis_language"
+            label="Select language"
+            name="analysis_language"
+            id="analysis_language"
             onChange={(e) => handleChange_analysis_language(e)}
           >
-            <option value={''}>{t('Select Study Group')}</option>
-            <option value={'zh'}>中文</option>
-            <option value={'en'}>English (Beta Version)</option>
-          </Form.Control>
-        </Form.Group>
+            <MenuItem value={''}>{t('Select language')}</MenuItem>
+            <MenuItem value={'zh'}>中文</MenuItem>
+            <MenuItem value={'en'}>English (Beta Version)</MenuItem>
+          </Select>
+        </FormControl>
         <br />
         <Button
           color="primary"
@@ -354,6 +365,7 @@ export default function CourseWidget() {
               <Link
                 to={`${DEMO.INTERNAL_WIDGET_LINK(user._id.toString())}`}
                 target="_blank"
+                component={LinkDom}
               >
                 {t('View Online')}
               </Link>
@@ -368,10 +380,12 @@ export default function CourseWidget() {
         onClose={closeModal}
         aria-labelledby="contained-modal-title-vcenter"
       >
-        <Typography variant="h6">{t('Confirmation')}</Typography>
+        <Typography variant="h6">
+          {t('Confirmation', { ns: 'common' })}
+        </Typography>
         <Typography>{t('Update transcript successfully')}</Typography>
         <Button color="primary" variant="contained" onClick={closeModal}>
-          {t('Close')}
+          {t('Close', { ns: 'common' })}
         </Button>
       </ModalNew>
       <ModalNew
@@ -386,7 +400,7 @@ export default function CourseWidget() {
           variant="contained"
           onClick={closeanalysisSuccessModal}
         >
-          {t('Close')}
+          {t('Close', { ns: 'common' })}
         </Button>
       </ModalNew>
     </Box>

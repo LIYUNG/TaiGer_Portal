@@ -489,15 +489,7 @@ const postMessages = asyncHandler(async (req, res, next) => {
       .populate('student_id user_id', 'firstname lastname role')
       .sort({ createdAt: -1 }) // 0: latest!
       .limit(3); // show only first 3 limit items after skip.
-    // if (
-    //   communication_thread.length > 0 &&
-    //   communication_thread[0]?.user_id?._id.toString() === studentId
-    // ) {
-    //   throw new ErrorResponse(
-    //     429,
-    //     '過多訊息！請整理好您的問題一次發問，方便 Agent 一次回復。若 Agent 尚未回覆當前留言，請把問題集中於當前的留言，右上角鉛筆可以編輯。您的 Agent 會盡速回復您'
-    //   );
-    // }
+
     if (communication_thread.length === 3) {
       let flag = true;
       for (let i = 0; i < communication_thread.length; i += 1) {
@@ -513,7 +505,7 @@ const postMessages = asyncHandler(async (req, res, next) => {
       if (flag) {
         throw new ErrorResponse(
           429,
-          '過多訊息！請整理好您的問題一次發問，方便 Agent 一次回復。若 Agent 尚未回覆當前留言，請把問題集中於最新一次的留言，該留言右上角鉛筆可以編輯。您的 Agent 會盡速回復您！'
+          '您至多只能發連續三條訊息！請整理好您的問題一次發問，方便 Agent 一次回復。若 Agent 尚未回覆當前留言，請把問題集中於最新一次的留言，該留言右上角鉛筆可以編輯。您的 Agent 會盡速回復您！'
         );
       }
     }

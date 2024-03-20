@@ -9,7 +9,8 @@ import {
   TableRow,
   Alert,
   Card,
-  Typography
+  Typography,
+  TableContainer
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
@@ -36,7 +37,7 @@ function VPDToSubmitTasks(props) {
                   <Link
                     to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                       props.student._id.toString(),
-                      DEMO.UNI_ASSIST_LINK
+                      DEMO.UNIASSIST_HASH
                     )}`}
                     component={LinkDom}
                   >
@@ -46,13 +47,14 @@ function VPDToSubmitTasks(props) {
                 {is_uni_assist_paid_and_docs_uploaded(application) ? (
                   <>
                     <TableCell className="text-warning">
-                      {t('Paid')}, {t('Waiting VPD')}
+                      {t('Paid', { ns: 'common' })},{' '}
+                      {t('Waiting VPD result', { ns: 'common' })}
                     </TableCell>
                   </>
                 ) : (
                   <TableCell>
                     <Typography color="text.secondary">
-                      {t('Not paid')}
+                      {t('Not paid', { ns: 'common' })}
                     </Typography>
                   </TableCell>
                 )}
@@ -86,19 +88,23 @@ function VPDToSubmitTasksCard(props) {
       <VPDToSubmitTasks key={i} role={user.role} student={student} />
     ));
   return (
-    <Card sx={{ padding: 2, mb: 2 }}>
-      <Alert severity="error">VPD missing:</Alert>
-      <Table size="small">
-        <TableHead>
-          <TableRow>
-            <TableCell>{t('Student')}</TableCell>
-            <TableCell>{t('Status')}</TableCell>
-            <TableCell>{t('Deadline')}</TableCell>
-            <TableCell>{t('Program')}</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>{vpd_to_submit_tasks}</TableBody>
-      </Table>
+    <Card sx={{ mb: 2 }}>
+      <Alert severity="error">
+        <Typography>VPD missing:</Typography>
+      </Alert>
+      <TableContainer style={{ overflowX: 'auto' }}>
+        <Table size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell>{t('Student')}</TableCell>
+              <TableCell>{t('Status', { ns: 'common' })}</TableCell>
+              <TableCell>{t('Deadline')}</TableCell>
+              <TableCell>{t('Program')}</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>{vpd_to_submit_tasks}</TableBody>
+        </Table>
+      </TableContainer>
     </Card>
   );
 }

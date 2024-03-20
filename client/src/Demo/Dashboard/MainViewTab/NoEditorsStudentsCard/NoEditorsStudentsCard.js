@@ -71,7 +71,7 @@ function NoEditorsStudentsCard(props) {
                 aria-expanded={open ? 'true' : undefined}
                 onClick={handleClick}
               >
-                {t('Option')}
+                {t('Option', { ns: 'common' })}
               </Button>
               <Menu
                 id="basic-menu"
@@ -93,7 +93,7 @@ function NoEditorsStudentsCard(props) {
               component={LinkDom}
               to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                 props.student._id.toString(),
-                DEMO.PROFILE
+                DEMO.PROFILE_HASH
               )}`}
             >
               {props.student.firstname}, {props.student.lastname}

@@ -6,7 +6,9 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
-  Box
+  Box,
+  useTheme,
+  useMediaQuery
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { RiCloseFill } from 'react-icons/ri';
@@ -18,18 +20,21 @@ import { stringAvatar, convertDate } from '../Utils/contants';
 import { useAuth } from '../../components/AuthProvider';
 import ModalNew from '../../components/Modal';
 import Loading from '../../components/Loading/Loading';
+import { useTranslation } from 'react-i18next';
 // import { useWindowWidth } from '@react-hook/window-size';
 
 function Message(props) {
   // const onlyWidth = useWindowWidth();
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [messageState, setMessageState] = useState({
     editorState: null,
     message_id: '',
     isLoaded: false,
     deleteMessageModalShow: false
   });
-
+  const theme = useTheme();
+  const ismobile = useMediaQuery(theme.breakpoints.down('md'));
   useEffect(() => {
     var initialEditorState = null;
     if (props.message.message && props.message.message !== '{}') {
@@ -98,7 +103,8 @@ function Message(props) {
         disableGutters
         sx={{
           overflowWrap: 'break-word', // Add this line
-          maxWidth: window.innerWidth - 64,
+          ...(props.isTaiGerView &&
+            !ismobile && { maxWidth: window.innerWidth - 664 +32 }),
           marginTop: '1px',
           '& .MuiAvatar-root': {
             width: 32,
@@ -154,14 +160,16 @@ function Message(props) {
           </Box>
         </AccordionSummary>
         <AccordionDetails>
-          <EditorSimple
-            holder={`${props.message._id.toString()}`}
-            readOnly={true}
-            imageEnable={false}
-            handleClickSave={props.handleClickSave}
-            editorState={messageState.editorState}
-            defaultHeight={0}
-          />
+          <Box>
+            <EditorSimple
+              holder={`${props.message._id.toString()}`}
+              readOnly={true}
+              imageEnable={false}
+              handleClickSave={props.handleClickSave}
+              editorState={messageState.editorState}
+              defaultHeight={0}
+            />
+          </Box>
         </AccordionDetails>
       </Accordion>
       {/* TODOL consider to move it to the parent! It render many time! as message increase */}
@@ -180,10 +188,12 @@ function Message(props) {
           variant="contained"
           onClick={onDeleteSingleMessage}
         >
-          {props.isLoaded ? 'Delete' : 'Pending'}
+          {props.isLoaded
+            ? t('Delete', { ns: 'common' })
+            : t('Pending', { ns: 'common' })}
         </Button>
         <Button variant="outlined" onClick={onHidedeleteMessageModalShow}>
-          Cancel
+          {t('Cancel', { ns: 'common' })}
         </Button>
       </ModalNew>
     </>

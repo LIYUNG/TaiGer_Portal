@@ -21,7 +21,10 @@ import { useTranslation } from 'react-i18next';
 import ManualFiles from './ManualFiles';
 import {
   LinkableNewlineText,
-  application_deadline_calculator
+  application_deadline_calculator,
+  isProgramDecided,
+  isProgramSubmitted,
+  isProgramWithdraw
 } from '../Utils/checking-functions';
 import { spinner_style2 } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
@@ -534,7 +537,7 @@ function EditorDocsProgress(props) {
               <Typography variant="body1" color="grey" sx={{ mr: 2 }}>
                 Not wanted
               </Typography>
-            ) : application.closed === 'O' ? (
+            ) : isProgramSubmitted(application) ? (
               <>
                 <ImCheckmark
                   size={16}
@@ -542,18 +545,22 @@ function EditorDocsProgress(props) {
                   title="This program is closed"
                 />
               </>
-            ) : application.closed === 'X' ? (
-              <Typography fontWeight="bold">{t('WITHDRAW')}</Typography>
+            ) : isProgramWithdraw(application) ? (
+              <Typography fontWeight="bold">
+                {t('WITHDRAW', { ns: 'common' })}
+              </Typography>
             ) : (
-              <Typography fontWeight="bold">{t('In progress')}</Typography>
+              <Typography fontWeight="bold">
+                {t('In progress', { ns: 'common' })}
+              </Typography>
             )}
           </Grid>
           <Grid item xs={1} md={1}>
             <Typography
               variant="body1"
               color={
-                application.decided === 'O'
-                  ? application.closed === 'O'
+                isProgramDecided(application)
+                  ? isProgramSubmitted(application)
                     ? 'success.light'
                     : 'error.main'
                   : 'grey'
@@ -568,12 +575,12 @@ function EditorDocsProgress(props) {
               /{application.doc_modification_thread?.length || 0}
             </Typography>
           </Grid>
-          <Grid item xs={8} md={8} sx={{ display: 'flex' }}>
+          <Grid item xs={8} md={8}>
             <Typography
               variant="body1"
               color={
-                application.decided === 'O'
-                  ? application.closed === 'O'
+                isProgramDecided(application)
+                  ? isProgramSubmitted(application)
                     ? 'success.light'
                     : 'error.main'
                   : 'grey'
@@ -593,7 +600,7 @@ function EditorDocsProgress(props) {
               <AiOutlineLink />
             </Link>
           </Grid>
-          <Grid item sx={2} md={2}>
+          <Grid item xs={2} md={2}>
             <Typography>
               Deadline:{' '}
               {application_deadline_calculator(
@@ -714,7 +721,7 @@ function EditorDocsProgress(props) {
           sx={{ mr: 1 }}
         >
           {isLoaded ? (
-            t('Yes')
+            t('Yes', { ns: 'common' })
           ) : (
             <div style={spinner_style2}>
               <CircularProgress />
@@ -727,7 +734,7 @@ function EditorDocsProgress(props) {
           variant="outlined"
           onClick={closeWarningWindow}
         >
-          {t('No')}
+          {t('No', { ns: 'common' })}
         </Button>
       </ModalNew>
       <ModalNew
@@ -750,7 +757,7 @@ function EditorDocsProgress(props) {
           onClick={ConfirmSetAsFinalFileHandler}
         >
           {isLoaded ? (
-            t('Yes')
+            t('Yes', { ns: 'common' })
           ) : (
             <div style={spinner_style2}>
               <CircularProgress />
@@ -762,7 +769,7 @@ function EditorDocsProgress(props) {
           variant="outlined"
           onClick={closeSetAsFinalFileModelWindow}
         >
-          {t('No')}
+          {t('No', { ns: 'common' })}
         </Button>
       </ModalNew>
       <ModalNew
@@ -779,7 +786,7 @@ function EditorDocsProgress(props) {
           variant="outlined"
           onClick={close_Requirements_ModalWindow}
         >
-          {t('Close')}
+          {t('Close', { ns: 'common' })}
         </Button>
       </ModalNew>
       <ModalNew
@@ -796,7 +803,7 @@ function EditorDocsProgress(props) {
           variant="contained"
           onClick={closeDocExistedWindow}
         >
-          {t('Close')}
+          {t('Close', { ns: 'common' })}
         </Button>
       </ModalNew>
       <ModalNew
@@ -815,14 +822,14 @@ function EditorDocsProgress(props) {
           disabled={!isLoaded}
           onClick={SubmitProgramStatusHandler}
         >
-          {t('Yes')}
+          {t('Yes', { ns: 'common' })}
         </Button>
         <Button
           color="primary"
           variant="outlined"
           onClick={closeSetProgramStatusModel}
         >
-          {t('Close')}
+          {t('Close', { ns: 'common' })}
         </Button>
       </ModalNew>
     </Box>

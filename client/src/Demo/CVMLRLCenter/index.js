@@ -6,11 +6,12 @@ import CVMLRLOverview from './CVMLRLOverview';
 import ErrorPage from '../Utils/ErrorPage';
 import { getCVMLRLOverview } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
-import { is_TaiGer_role } from '../Utils/checking-functions';
+import { is_TaiGer_role, open_tasks } from '../Utils/checking-functions';
 import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
 import { appConfig } from '../../config';
 import Loading from '../../components/Loading/Loading';
+import { is_new_message_status, is_pending_status } from '../Utils/contants';
 
 function index() {
   const { user } = useAuth();
@@ -74,8 +75,36 @@ function index() {
     return <ErrorPage res_status={res_status} />;
   }
 
+  const open_tasks_arr = open_tasks(indexState.students);
+  const new_message_tasks = open_tasks_arr.filter(
+    (open_task) =>
+      open_task.show &&
+      !open_task.isFinalVersion &&
+      is_new_message_status(user, open_task)
+  );
+
+  const followup_tasks = open_tasks_arr.filter(
+    (open_task) =>
+      open_task.show &&
+      !open_task.isFinalVersion &&
+      is_pending_status(user, open_task) &&
+      open_task.latest_message_left_by_id !== ''
+  );
+
+  const pending_progress_tasks = open_tasks_arr.filter(
+    (open_task) =>
+      open_task.show &&
+      !open_task.isFinalVersion &&
+      is_pending_status(user, open_task) &&
+      open_task.latest_message_left_by_id === ''
+  );
+
+  const closed_tasks = open_tasks_arr.filter(
+    (open_task) => open_task.show && open_task.isFinalVersion
+  );
+
   return (
-    <Box>
+    <Box data-testid="cvmlrlcenter_component">
       <Breadcrumbs aria-label="breadcrumb">
         <Link
           underline="hover"
@@ -107,6 +136,10 @@ function index() {
         isLoaded={indexState.isLoaded}
         success={indexState.success}
         students={indexState.students}
+        new_message_tasks={new_message_tasks}
+        followup_tasks={followup_tasks}
+        pending_progress_tasks={pending_progress_tasks}
+        closed_tasks={closed_tasks}
       />
     </Box>
   );

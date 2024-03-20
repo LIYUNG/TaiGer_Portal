@@ -3,7 +3,6 @@ import { Navigate, useParams, Link as LinkDom } from 'react-router-dom';
 import { Box, Breadcrumbs, Link, Typography } from '@mui/material';
 
 import TabStudBackgroundDashboard from '../Dashboard/MainViewTab/StudDocsOverview/TabStudBackgroundDashboard';
-import { SYMBOL_EXPLANATION } from '../Utils/contants';
 import { is_TaiGer_role } from '../Utils/checking-functions';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
@@ -123,7 +122,7 @@ function ArchivStudents() {
 
   if (archivStudentsState.success) {
     return (
-      <Box>
+      <Box data-testid="archiv_student_component">
         <Breadcrumbs aria-label="breadcrumb">
           <Link
             underline="hover"
@@ -147,11 +146,9 @@ function ArchivStudents() {
         )}
         <Box sx={{ mt: 2 }}>
           <TabStudBackgroundDashboard
-            user={user}
             students={archivStudentsState.students}
             updateStudentArchivStatus={updateStudentArchivStatus}
             isArchivPage={archivStudentsState.isArchivPage}
-            SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
           />
         </Box>
       </Box>

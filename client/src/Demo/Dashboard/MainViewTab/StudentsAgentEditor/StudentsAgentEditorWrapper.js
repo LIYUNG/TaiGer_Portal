@@ -3,6 +3,7 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableContainer,
   TableHead,
   TableRow
 } from '@mui/material';
@@ -33,31 +34,35 @@ function StudentsAgentEditorWrapper(props) {
       updateStudentArchivStatus={props.updateStudentArchivStatus}
       submitUpdateAgentlist={props.submitUpdateAgentlist}
       submitUpdateEditorlist={props.submitUpdateEditorlist}
-      isDashboard={props.isDashboard}
+      submitUpdateAttributeslist={props.submitUpdateAttributeslist}
     />
   ));
   let header = Object.values(academic_background_header);
 
   return (
-    <Table size="small">
-      <TableHead>
-        <TableRow>
-          <TableCell></TableCell>
-          <TableCell>
-            First-, Last Name | 姓名 <br /> Email
-          </TableCell>
-          <TableCell>{t('Agents')}</TableCell>
-          <TableCell>{t('Editors')}</TableCell>
-          <TableCell>{t('Year')}</TableCell>
-          <TableCell>{t('Semester')}</TableCell>
-          <TableCell>{t('Degree')}</TableCell>
-          {header.map((name, index) => (
-            <TableCell key={index}>{t(`${name}`)}</TableCell>
-          ))}
-        </TableRow>
-      </TableHead>
-      <TableBody>{students_agent_editor}</TableBody>
-    </Table>
+    <TableContainer style={{ overflowX: 'auto' }}>
+      <Table size="small">
+        <TableHead>
+          <TableRow>
+            <TableCell></TableCell>
+            <TableCell>
+              First-, Last Name | 姓名 <br /> Email
+            </TableCell>
+            <TableCell>{t('Agents')}</TableCell>
+            <TableCell>{t('Editors')}</TableCell>
+            <TableCell>{t('Year')}</TableCell>
+            <TableCell>{t('Semester')}</TableCell>
+            <TableCell>{t('Degree')}</TableCell>
+            {header.map((name, index) => (
+              <TableCell key={index}>
+                {t(`${name}`, { ns: 'common' })}
+              </TableCell>
+            ))}
+          </TableRow>
+        </TableHead>
+        <TableBody>{students_agent_editor}</TableBody>
+      </Table>
+    </TableContainer>
   );
 }
 

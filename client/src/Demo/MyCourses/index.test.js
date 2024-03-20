@@ -31,7 +31,6 @@ jest.mock('react-router-dom', () => ({
 }));
 
 jest.mock('../../components/AuthProvider');
-const mockedAxios = jest.Mocked;
 
 class ResizeObserver {
   observe() {}
@@ -41,10 +40,8 @@ class ResizeObserver {
 
 describe('Course input pag checking', () => {
   window.ResizeObserver = ResizeObserver;
-  test('render not crashed', () => {
-    expect(1).toEqual(1);
-  });
-  test('dashboard not crash', async () => {
+
+  test('My Course not crash', async () => {
     getMycourses.mockResolvedValue({ data: exampleCourse });
     useAuth.mockReturnValue({
       user: { role: 'Agent', _id: '639baebf8b84944b872cf648' }

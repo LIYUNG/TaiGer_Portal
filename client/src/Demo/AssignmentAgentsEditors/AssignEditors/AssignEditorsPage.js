@@ -7,6 +7,7 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableContainer,
   TableHead,
   TableRow,
   Typography
@@ -43,19 +44,21 @@ function AssignEditorsPage(props) {
       </Breadcrumbs>
       <Card sx={{ p: 2 }}>
         <Typography variant="h6">{t('No Editors Students')}</Typography>
-        <Table size="small">
-          <TableHead>
-            <TableRow>
-              <TableCell></TableCell>
-              <TableCell>First-, Last Name</TableCell>
-              <TableCell>{t('Email')}</TableCell>
-              <TableCell>{t('Status')}</TableCell>
-              <TableCell>{t('Target Year<')}</TableCell>
-              <TableCell>{t('Agent(s)')}</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>{no_editor_students}</TableBody>
-        </Table>
+        <TableContainer style={{ overflowX: 'auto' }}>
+          <Table size="small">
+            <TableHead>
+              <TableRow>
+                <TableCell></TableCell>
+                <TableCell>First-, Last Name</TableCell>
+                <TableCell>{t('Email')}</TableCell>
+                <TableCell>{t('Status')}</TableCell>
+                <TableCell>{t('Target Year<')}</TableCell>
+                <TableCell>{t('Agent(s)')}</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>{no_editor_students}</TableBody>
+          </Table>
+        </TableContainer>
       </Card>
     </Box>
   );

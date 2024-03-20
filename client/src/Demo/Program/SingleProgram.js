@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Breadcrumbs, Button, Link, Typography } from '@mui/material';
+import {
+  Card,
+  Breadcrumbs,
+  Button,
+  Link,
+  Typography,
+  Box
+} from '@mui/material';
 import { Link as LinkDom, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
@@ -14,15 +21,9 @@ import ProgramDeleteWarning from './ProgramDeleteWarning';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import { TabTitle } from '../Utils/TabTitle';
-import {
-  is_TaiGer_AdminAgent,
-  is_TaiGer_Admin,
-  is_TaiGer_Student,
-  is_TaiGer_role
-} from '../Utils/checking-functions';
+import { is_TaiGer_role } from '../Utils/checking-functions';
 import { deleteProgram } from '../../api';
 import ProgramListSubpage from './ProgramListSubpage';
-import ProgramReport from './ProgramReport';
 import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
@@ -294,7 +295,7 @@ function SingleProgram() {
 
   if (isDeleted) {
     return (
-      <Card>
+      <Card sx={{ p: 2 }}>
         <Typography variant="h5">The program is deleted</Typography>
         <Typography>
           <LinkDom to={`${DEMO.PROGRAMS}`}>
@@ -306,7 +307,7 @@ function SingleProgram() {
   }
   if (singleProgramState.isEdit) {
     return (
-      <>
+      <Box data-testid="single_program_page_edit">
         {res_modal_status >= 400 && (
           <ModalMain
             ConfirmError={ConfirmError}
@@ -319,16 +320,11 @@ function SingleProgram() {
           handleSubmit_Program={handleSubmit_Program}
           handleClick={handleClick}
         />
-        {/* <SingleProgramEdit
-          program={program}
-          handleSubmit_Program={handleSubmit_Program}
-          handleClick={handleClick}
-        /> */}
-      </>
+      </Box>
     );
   } else {
     return (
-      <>
+      <Box data-testid="single_program_page">
         {res_modal_status >= 400 && (
           <ModalMain
             ConfirmError={ConfirmError}
@@ -375,42 +371,11 @@ function SingleProgram() {
           students={students}
           programId={programId}
           programListAssistant={programListAssistant}
+          handleClick={handleClick}
+          setModalShow2={setModalShow2}
+          setModalShowDDelete={setModalShowDDelete}
         />
-        {is_TaiGer_AdminAgent(user) && (
-          <>
-            <Button
-              color="secondary"
-              size="small"
-              onClick={() => handleClick()}
-            >
-              {t('Edit')}
-            </Button>
-            <Button
-              color="primary"
-              size="small"
-              variant="secondary"
-              onClick={() => setModalShow2()}
-            >
-              {t('Assign')}
-            </Button>
-            {is_TaiGer_Admin(user) && (
-              <Button
-                size="small"
-                variant="danger"
-                onClick={() => setModalShowDDelete()}
-              >
-                {t('Delete')}
-              </Button>
-            )}
-          </>
-        )}
-        {is_TaiGer_Student(user) && (
-          <ProgramReport
-            uni_name={program.school}
-            program_name={program.program_name}
-            program_id={program._id.toString()}
-          />
-        )}
+
         <ProgramDeleteWarning
           deleteProgramWarning={singleProgramState.deleteProgramWarning}
           setModalHideDDelete={setModalHideDDelete}
@@ -419,16 +384,18 @@ function SingleProgram() {
           RemoveProgramHandler={RemoveProgramHandler}
           program_id={program._id.toString()}
         />
-        <ProgramListSubpage
-          userId={user._id.toString()}
-          show={singleProgramState.modalShowAssignWindow}
-          setModalHide={setModalHide}
-          uni_name={[program.school]}
-          program_name={[program.program_name]}
-          handleSetStudentId={handleSetStudentId}
-          isButtonDisable={singleProgramState.isAssigning}
-          onSubmitAddToStudentProgramList={onSubmitAddToStudentProgramList}
-        />
+        {singleProgramState.modalShowAssignWindow && (
+          <ProgramListSubpage
+            show={singleProgramState.modalShowAssignWindow}
+            setModalHide={setModalHide}
+            uni_name={[program.school]}
+            program_name={[program.program_name]}
+            handleSetStudentId={handleSetStudentId}
+            isButtonDisable={singleProgramState.isAssigning}
+            studentId={singleProgramState.student_id}
+            onSubmitAddToStudentProgramList={onSubmitAddToStudentProgramList}
+          />
+        )}
         <ModalNew
           open={singleProgramState.modalShowAssignSuccessWindow}
           onClose={onHideAssignSuccessWindow}
@@ -442,10 +409,10 @@ function SingleProgram() {
             variant="contained"
             onClick={onHideAssignSuccessWindow}
           >
-            {t('Close')}
+            {t('Close', { ns: 'common' })}
           </Button>
         </ModalNew>
-      </>
+      </Box>
     );
   }
 }

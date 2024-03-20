@@ -54,6 +54,7 @@ function ButtonSetRejected(props) {
     rejectProfileFileModel: props.rejectProfileFileModel,
     baseDocsflagOffcanvas: false,
     baseDocsflagOffcanvasButtonDisable: false,
+    acceptProfileFileModel: false,
     res_modal_status: 0,
     res_modal_message: ''
   });
@@ -249,6 +250,23 @@ function ButtonSetRejected(props) {
     );
   };
 
+  const closeAcceptWarningWindow = () => {
+    setButtonSetRejectedState((prevState) => ({
+      ...prevState,
+      acceptProfileFileModel: false
+    }));
+  };
+
+  const onUpdateProfileFilefromstudent = (e) => {
+    e.preventDefault();
+    props.onUpdateProfileFilefromstudent(
+      buttonSetRejectedState.category,
+      buttonSetRejectedState.student_id,
+      buttonSetRejectedState.status,
+      buttonSetRejectedState.feedback
+    );
+  };
+
   const ConfirmError = () => {
     setButtonSetRejectedState((prevState) => ({
       ...prevState,
@@ -332,7 +350,7 @@ function ButtonSetRejected(props) {
             }
             startIcon={<DeleteIcon />}
           >
-            {t('Delete')}
+            {t('Delete', { ns: 'common' })}
           </Button>
         </TableCell>
       ) : (
@@ -371,7 +389,7 @@ function ButtonSetRejected(props) {
           {!buttonSetRejectedState.isLoaded ? <CircularProgress /> : t('Yes')}
         </Button>
         <Button onClick={closeWarningWindow} variant="outlined">
-          {t('No')}
+          {t('No', { ns: 'common' })}
         </Button>
       </ModalNew>
       <ModalNew
@@ -411,11 +429,11 @@ function ButtonSetRejected(props) {
                 {!buttonSetRejectedState.isLoaded ? (
                   <CircularProgress size={24} />
                 ) : (
-                  t('Update')
+                  t('Update', { ns: 'common' })
                 )}
               </Button>
               <Button onClick={closeCommentWindow} variant="light">
-                {t('Close')}
+                {t('Close', { ns: 'common' })}
               </Button>
             </Box>
           </>
@@ -470,7 +488,7 @@ function ButtonSetRejected(props) {
               )
             }
           >
-            {t('Ok')}
+            {t('Accept')}
           </Button>
         )}
         <Button
@@ -479,7 +497,44 @@ function ButtonSetRejected(props) {
           size="small"
           onClick={closePreviewWindow}
         >
-          {!buttonSetRejectedState.isLoaded ? <CircularProgress /> : t('Close')}
+          {!buttonSetRejectedState.isLoaded ? (
+            <CircularProgress />
+          ) : (
+            t('Close', { ns: 'common' })
+          )}
+        </Button>
+      </ModalNew>
+      <ModalNew
+        open={buttonSetRejectedState.acceptProfileFileModel}
+        onClose={closeAcceptWarningWindow}
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Typography variant="h5">Warning</Typography>
+
+        <Typography sx={{ my: 2 }}>
+          {buttonSetRejectedState.category} is a valid and can be used for the
+          application?
+        </Typography>
+
+        <Button
+          color="primary"
+          variant="contained"
+          disabled={!buttonSetRejectedState.isLoaded}
+          onClick={(e) => onUpdateProfileFilefromstudent(e)}
+        >
+          {!buttonSetRejectedState.isLoaded ? (
+            <CircularProgress size={24} />
+          ) : (
+            t('Yes')
+          )}
+        </Button>
+        <Button
+          color="primary"
+          variant="outlined"
+          onClick={closeAcceptWarningWindow}
+        >
+          {t('No', { ns: 'common' })}
         </Button>
       </ModalNew>
       <OffcanvasBaseDocument

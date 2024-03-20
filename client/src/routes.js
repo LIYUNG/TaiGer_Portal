@@ -21,6 +21,11 @@ const ArchivStudent = React.lazy(() => import('./Demo/ArchivStudent/index'));
 const CommunicationSinglePage = React.lazy(() =>
   import('./Demo/Communications/CommunicationSinglePage')
 );
+
+const CommunicationExpandPage = React.lazy(() =>
+  import('./Demo/Communications/CommunicationExpandPage')
+);
+
 const UniAssist = React.lazy(() => import('./Demo/UniAssist/index'));
 const PortalCredentialPage = React.lazy(() =>
   import('./Demo/PortalCredentialPage/index')
@@ -28,6 +33,11 @@ const PortalCredentialPage = React.lazy(() =>
 const BaseDocuments = React.lazy(() =>
   import('./Demo/BaseDocuments/BaseDocuments')
 );
+
+const AllBaseDocuments = React.lazy(() =>
+  import('./Demo/BaseDocuments/AllBaseDocuments')
+);
+
 const MyCourses = React.lazy(() => import('./Demo/MyCourses/index'));
 const MyCoursesAnalysis = React.lazy(() =>
   import('./Demo/MyCourses/CourseAnalysis')
@@ -37,6 +47,9 @@ const CoursesAnalysisWidget = React.lazy(() =>
 );
 const CVMLRLGenerator = React.lazy(() =>
   import('./Demo/TaiGerAI/CVMLRLGenerator')
+);
+const AgentSupportDocuments = React.lazy(() =>
+  import('./Demo/AgentSupportDocuments/index')
 );
 const CVMLRLOverview = React.lazy(() => import('./Demo/CVMLRLCenter/index'));
 const CVMLRLDashboard = React.lazy(() =>
@@ -256,7 +269,7 @@ const routes = [
     Component: StudentDatabase
   },
   {
-    path: '/student-database/:studentId/:tab',
+    path: '/student-database/:studentId',
     errorElement: <DefaultErrorPage />,
     loader: getStudentAndDocLinksLoader,
     element: <SingleStudentPage />
@@ -342,8 +355,20 @@ const routes = [
   {
     path: '/base-documents',
     exact: true,
-    name: 'Base Documents',
+    name: 'Documents',
     Component: BaseDocuments
+  },
+  {
+    path: '/agent-support-documents',
+    exact: true,
+    name: 'AgentSupportDocuments',
+    Component: AgentSupportDocuments
+  },
+  {
+    path: '/all-base-documents',
+    exact: true,
+    name: 'All Documents',
+    Component: AllBaseDocuments
   },
   {
     path: '/portal-informations',
@@ -532,7 +557,7 @@ if (appConfig.vpdEnable) {
 
 if (appConfig.AIEnable) {
   routes.push({
-    path: '/document-modification/student-input/:documentsthreadId',
+    path: '/document-modification/:documentsthreadId/survey',
     exact: true,
     name: 'CVMLRL Modification Thread',
     Component: CVMLRL_Modification_ThreadInput
@@ -568,10 +593,16 @@ if (appConfig.meetingEnable) {
 
 if (appConfig.messengerEnable) {
   routes.push({
-    path: '/communications/:student_id',
+    path: '/communications/std/:student_id',
     exact: true,
     name: 'My Chat',
     Component: CommunicationSinglePage
+  });
+  routes.push({
+    path: '/communications/t/:student_id',
+    exact: true,
+    name: 'All Chat',
+    Component: CommunicationExpandPage
   });
 }
 

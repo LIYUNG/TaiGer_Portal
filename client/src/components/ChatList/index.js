@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import PerfectScrollbar from 'react-perfect-scrollbar';
+// import PerfectScrollbar from 'react-perfect-scrollbar';
 import SearchIcon from '@mui/icons-material/Search';
-import { MenuItem, Skeleton } from '@mui/material';
+import { Box, ListItem, MenuItem, Skeleton, Typography } from '@mui/material';
 
 import Friends from './Friends';
 import { getMyCommunicationThread, getQueryStudentResults } from '../../api';
@@ -134,6 +134,13 @@ const ChatList = (props) => {
 
   return (
     <>
+      <ListItem onClick={(e) => e.stopPropagation()}>
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Box>
+            <Typography variant="h6">Chat</Typography>
+          </Box>
+        </Box>
+      </ListItem>
       <Search>
         <SearchIconWrapper>
           <SearchIcon />
@@ -148,16 +155,16 @@ const ChatList = (props) => {
         />
       </Search>
       {!chatListState.isLoaded && (
-        <PerfectScrollbar>
-          {[0, 1, 2, 3].map((x, i) => (
+        // <PerfectScrollbar>
+          [0, 1, 2, 3].map((x, i) => (
             <MenuItem key={i}>
               <Skeleton variant="rectangular" width={menuWidth} height={40} />
             </MenuItem>
-          ))}
-        </PerfectScrollbar>
+          ))
+        // </PerfectScrollbar>
       )}
       {chatListState.isLoaded && (
-        <PerfectScrollbar>
+        // <PerfectScrollbar>
           <Friends
             handleCloseChat={props.handleCloseChat}
             user={user}
@@ -165,7 +172,7 @@ const ChatList = (props) => {
               chatListState.searchMode ? searchResults : chatListState.students
             }
           />
-        </PerfectScrollbar>
+        // </PerfectScrollbar>
       )}
     </>
   );

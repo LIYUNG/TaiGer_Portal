@@ -1,25 +1,37 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Form, Placeholder } from 'react-bootstrap';
-import {
-  Box,
-  Breadcrumbs,
-  Button,
-  Card,
-  CircularProgress,
-  Link,
-  Typography
-} from '@mui/material';
 import { Link as LinkDom, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
+import {
+  Alert,
+  Grid,
+  Box,
+  Breadcrumbs,
+  Button,
+  Chip,
+  Card,
+  Checkbox,
+  Collapse,
+  CircularProgress,
+  Divider,
+  InputLabel,
+  IconButton,
+  MenuItem,
+  Link,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  TextField,
+  Typography,
+  OutlinedInput,
+  Select
+} from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import { KeyboardArrowUp, KeyboardArrowDown } from '@mui/icons-material';
+
 import ErrorPage from '../../Utils/ErrorPage';
 import ModalMain from '../../Utils/ModalHandler/ModalMain';
-import {
-  CVQuestions,
-  MLQuestions,
-  RLQuestions,
-  convertDate
-} from '../../Utils/contants';
+import { prepQuestions, convertDate } from '../../Utils/contants';
 import {
   LinkableNewlineText,
   getRequirement,
@@ -27,9 +39,9 @@ import {
 } from '../../Utils/checking-functions';
 import {
   cvmlrlAi2,
-  getStudentInput,
-  putStudentInput,
-  resetStudentInput
+  getSurveyInputs,
+  putSurveyInput,
+  postSurveyInput
 } from '../../../api';
 import { TabTitle } from '../../Utils/TabTitle';
 import DEMO from '../../../store/constant';
@@ -37,93 +49,353 @@ import { useAuth } from '../../../components/AuthProvider';
 import Loading from '../../../components/Loading/Loading';
 import { appConfig } from '../../../config';
 
+const type2width = { word: 3, sentence: 5, paragraph: 12, essay: 12 };
+const type2rows = { word: 1, sentence: 1, paragraph: 4, essay: 10 };
+
+const ProgressButton = ({
+  label = 'Submit',
+  progressLabel = 'Submitting',
+  onClick,
+  isProgress,
+  ...buttonProps
+}) => {
+  return (
+    <>
+      <Button {...buttonProps} onClick={onClick}>
+        {isProgress ? (
+          <>
+            <CircularProgress size={15} sx={{ marginRight: '0.5rem' }} />
+            {progressLabel}
+          </>
+        ) : (
+          label
+        )}
+      </Button>
+    </>
+  );
+};
+
+const LastModifiedText = ({ updatedAt, isFinalVersion }) => {
+  return (
+    <>
+      {updatedAt ? (
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 1,
+            justifyContent: 'right'
+          }}
+        >
+          <Typography variant="body2">
+            Last Modified: <strong>{convertDate(updatedAt)}</strong>
+          </Typography>
+          {isFinalVersion && <Chip color="info" size="medium" label="Final" />}
+        </Box>
+      ) : (
+        <Chip color="secondary" variant="outlined" size="small" label="New" />
+      )}
+    </>
+  );
+};
+
+const SurveyForm = ({
+  title,
+  surveyInput,
+  onChange,
+  surveyType = 'program',
+  disableEdit = false,
+  showEditButton = false,
+  isCollapse = true
+}) => {
+  // editable by default no title, no edit button, or new survey
+  const [editMode, setEditMode] = useState(
+    !title || !showEditButton || !surveyInput?.updatedAt
+  );
+  const [collapseOpen, setCollapseOpen] = useState(isCollapse || !title);
+
+  const handleTitleClick = (e) => {
+    e.stopPropagation();
+    setCollapseOpen((prevOpen) => !prevOpen);
+  };
+
+  return (
+    <Box>
+      {title && (
+        <>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              cursor: 'pointer'
+            }}
+            onClick={handleTitleClick}
+          >
+            <Grid
+              container
+              sx={{ gap: 1 }}
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <Grid item>
+                <IconButton onClick={handleTitleClick}>
+                  {collapseOpen ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+                </IconButton>
+              </Grid>
+              <Grid item>
+                <Typography variant="h5">{title}</Typography>
+              </Grid>
+              {showEditButton && (
+                <Grid item>
+                  <Button
+                    size="small"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      setEditMode((prevMode) => !prevMode);
+                    }}
+                  >
+                    <EditIcon
+                      color={editMode ? 'disabled' : 'primary'}
+                      fontSize="small"
+                    />
+                  </Button>
+                </Grid>
+              )}
+              <Grid item sx={{ marginLeft: 'auto' }}>
+                <LastModifiedText
+                  updatedAt={surveyInput?.updatedAt}
+                  isFinalVersion={surveyInput?.isFinalVersion}
+                />
+              </Grid>
+            </Grid>
+          </Box>
+          <Divider />
+          <Box marginTop={2} />
+        </>
+      )}
+      {!title && (
+        <Box sx={{ marginLeft: 'auto', textAlign: 'right' }}>
+          <LastModifiedText
+            updatedAt={surveyInput?.updatedAt}
+            isFinalVersion={surveyInput?.isFinalVersion}
+          />
+        </Box>
+      )}
+      <Collapse in={collapseOpen}>
+        <Grid container sx={{ gap: 1 }}>
+          {surveyInput.surveyContent.map((questionItem, index) => (
+            <Grid
+              item
+              key={index}
+              sm={type2width[questionItem.type] || 3}
+              xs={12}
+            >
+              <FormControl fullWidth>
+                <FormLabel>{questionItem.question}</FormLabel>
+                <TextField
+                  inputProps={{
+                    id: questionItem.questionId,
+                    survey: surveyType
+                  }}
+                  key={index}
+                  value={questionItem.answer}
+                  placeholder={questionItem.placeholder}
+                  multiline
+                  rows={type2rows[questionItem.type] || 3}
+                  onChange={onChange}
+                  disabled={
+                    surveyInput?.isFinalVersion || disableEdit || !editMode
+                  }
+                />
+              </FormControl>
+            </Grid>
+          ))}
+        </Grid>
+      </Collapse>
+    </Box>
+  );
+};
+
+const InputGenerator = ({
+  isChecked,
+  data,
+  isGenerating,
+  onChange,
+  onGenerate
+}) => {
+  return (
+    <>
+      <Typography variant="h5" gutterBottom>
+        GPT Document Generation
+      </Typography>
+      <Divider />
+      <Box marginTop={2} />
+      <Grid container spacing={2}>
+        <Grid item xs={12} md={2}>
+          <Grid container spacing={1}>
+            <Grid item xs={12}>
+              <FormControl>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      name="useProgramRequirementData"
+                      type="checkbox"
+                      checked={isChecked}
+                      onChange={onChange}
+                      sx={{ '& .MuiSvgIcon-root': { fontSize: '1.5rem' } }}
+                    />
+                  }
+                  label="Use program's requirement"
+                />
+              </FormControl>
+            </Grid>
+            <Grid item xs={12}>
+              <FormControl fullWidth>
+                <InputLabel id="output-lang-label">Output language</InputLabel>
+                <Select
+                  labelId="output-lang-label"
+                  input={<OutlinedInput label="Output language" />}
+                  id="output-lang-select"
+                  name="outputLanguage"
+                  defaultValue=""
+                  onChange={onChange}
+                >
+                  <MenuItem value="English">English</MenuItem>
+                  <MenuItem value="German">German</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+
+            <Grid item xs={12}>
+              <FormControl fullWidth>
+                <InputLabel id="gpt-model-label">GPT Model</InputLabel>
+                <Select
+                  labelId="gpt-model-label"
+                  input={<OutlinedInput label="GPT Model" />}
+                  id="gpt-model-select"
+                  name="gptModel"
+                  defaultValue=""
+                  onChange={onChange}
+                >
+                  <MenuItem value="gpt-3.5-turbo">gpt-3.5-turbo</MenuItem>
+                  <MenuItem value="gpt-4-1106-preview">
+                    gpt-4-1106-preview
+                  </MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+          </Grid>
+        </Grid>
+        <Grid item xs={12} md={5}>
+          <FormControl fullWidth>
+            <FormLabel>Additional requirement</FormLabel>
+            <TextField
+              id="additional-requirement"
+              name="additionalPrompt"
+              onChange={onChange}
+              placeholder="The length should be within 10000 characters / words, paragraph structure, etc."
+              multiline
+              rows={5}
+            />
+          </FormControl>
+        </Grid>
+
+        <Grid item xs={12}>
+          <ProgressButton
+            size="small"
+            color="primary"
+            variant="contained"
+            disabled={isGenerating}
+            onClick={onGenerate}
+            isProgress={isGenerating}
+            label={!data ? 'Generate' : 'Regenerate'}
+            progressLabel="Generating"
+          />
+        </Grid>
+
+        <Grid item xs={12}>
+          {(!isGenerating || data) && <LinkableNewlineText text={data} />}
+        </Grid>
+      </Grid>
+    </>
+  );
+};
+
 function DocModificationThreadInput() {
   const { user } = useAuth();
   const { t } = useTranslation();
   const { documentsthreadId } = useParams();
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [thread, setThread] = useState({});
+  const [isChanged, setIsChanged] = useState({
+    general: false,
+    specific: false
+  });
+  const [isFinalVersion, setIsFinalVersion] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showUnchangeAlert, setShowUnchangeAlert] = useState(false);
+  const [surveyInputs, setSurveyInputs] = useState({
+    general: {},
+    specific: {}
+  });
+  const [gptData, setgptData] = useState('');
+  // const [generatorState, setGeneratorState] = useState({});
   const [docModificationThreadInputState, setDocModificationThreadInputState] =
     useState({
-      error: '',
-      isGenerating: false,
-      isGenerated: false,
-      isFirstDataArrived: false,
-      isSaving: false,
-      isResetting: false,
-      isSubmitting: false,
-      student_input: [],
-      editor_requirements: {},
-      data: '',
+      editorRequirements: {},
       res_status: 0,
       res_modal_status: 0,
       res_modal_message: ''
     });
 
   useEffect(() => {
-    getStudentInput(documentsthreadId).then(
-      (resp) => {
-        const { success, data, editors, agents, deadline } = resp.data;
-        const { status } = resp;
-        let temp_question = [];
-        if (
-          data?.file_type?.includes('RL') ||
-          data?.file_type?.includes('Recommendation')
-        ) {
-          temp_question = RLQuestions(data);
-        } else {
-          switch (data?.file_type) {
-            case 'ML':
-              temp_question = MLQuestions(data);
-              break;
-            case 'CV':
-              temp_question = CVQuestions();
-              break;
-            default:
-              temp_question = [];
-          }
+    const fetchData = async () => {
+      try {
+        const threadResp = await getSurveyInputs(documentsthreadId);
+        const { success, data: threadData, status } = threadResp.data;
+        const surveyData = threadData?.surveyInputs || {};
+        if (!surveyData?.general) {
+          surveyData.general = {
+            studentId: threadData.student_id._id,
+            fileType: threadData.file_type,
+            surveyContent: prepQuestions(threadData)
+          };
+        }
+        if (threadData?.program_id?._id && !surveyData?.specific) {
+          surveyData.specific = {
+            studentId: threadData.student_id._id,
+            programId: threadData.program_id._id,
+            fileType: threadData.file_type,
+            surveyContent: prepQuestions(threadData, true)
+          };
         }
 
+        setIsLoaded(true);
         if (success) {
+          setThread(threadData);
+          setSurveyInputs({ ...surveyData });
           setDocModificationThreadInputState((prevState) => ({
             ...prevState,
-            success,
-            thread: data,
-            student_input: data?.student_input?.input_content
-              ? {
-                  input_content: JSON.parse(data?.student_input?.input_content),
-                  updatedAt: data?.student_input.updatedAt
-                }
-              : {
-                  input_content: temp_question,
-                  updatedAt: data?.student_input?.updatedAt
-                },
             document_requirements: {},
-            editor_requirements: {},
-            editors,
-            agents,
-            deadline,
-            isLoaded: true,
-            documentsthreadId: documentsthreadId,
-
+            editorRequirements: {},
             res_status: status
           }));
         } else {
           setDocModificationThreadInputState((prevState) => ({
             ...prevState,
-            isLoaded: true,
             res_status: status
           }));
         }
-      },
-      (error) => {
+      } catch (error) {
         setDocModificationThreadInputState((prevState) => ({
           ...prevState,
-          isLoaded: true,
-          error,
           res_status: 500
         }));
       }
-    );
-  }, []);
+    };
+    fetchData();
+  }, [documentsthreadId]);
 
   const ConfirmError = () => {
     setDocModificationThreadInputState((prevState) => ({
@@ -135,33 +407,43 @@ function DocModificationThreadInput() {
 
   const onChange = (e) => {
     const id = e.target.id;
-    const ans = e.target.value;
-    const temp_student_input = {
-      ...docModificationThreadInputState.student_input
-    };
-    const temp_q = temp_student_input.input_content.find(
-      (qa) => qa.question_id === id
-    );
-    temp_q.answer = ans;
-    setDocModificationThreadInputState((prevState) => ({
+    const answer = e.target.value;
+    const survey = e.target.getAttribute('survey');
+
+    setSurveyInputs((prevState) => {
+      const surveyInput =
+        survey === 'general'
+          ? {
+              ...prevState.general
+            }
+          : {
+              ...prevState.specific
+            };
+
+      const questionItem = surveyInput.surveyContent.find(
+        (question) => question.questionId === id
+      );
+      questionItem['answer'] = answer;
+      return prevState;
+    });
+
+    setIsChanged((prevState) => ({
       ...prevState,
-      student_input: temp_student_input
+      [survey]: true
     }));
   };
 
   const onChangeEditorRequirements = (e) => {
-    const id = e.target.id;
-    if (id === 'useProgramRequirementData') {
+    const name = e.target.name;
+    if (name === 'useProgramRequirementData') {
       const checked = e.target.checked;
       setDocModificationThreadInputState((prevState) => ({
         ...prevState,
-        editor_requirements: {
-          ...docModificationThreadInputState.editor_requirements,
-          [id]: checked
+        editorRequirements: {
+          ...docModificationThreadInputState.editorRequirements,
+          [name]: checked
         },
-        document_requirements: checked
-          ? getRequirement(docModificationThreadInputState.thread)
-          : ''
+        document_requirements: checked ? getRequirement(thread) : ''
       }));
       return;
     }
@@ -169,229 +451,132 @@ function DocModificationThreadInput() {
     const ans = e.target.value;
     setDocModificationThreadInputState((prevState) => ({
       ...prevState,
-      editor_requirements: {
-        ...prevState.editor_requirements,
-        [id]: ans
-      }
-    }));
-  };
-  const onReset = () => {
-    setDocModificationThreadInputState({
-      isResetting: true
-    });
-    resetStudentInput(documentsthreadId).then(
-      (resp) => {
-        const { success } = resp.data;
-        const { status } = resp;
-
-        let temp_question = [];
-        if (
-          docModificationThreadInputState.thread?.file_type?.includes('RL') ||
-          docModificationThreadInputState.thread?.file_type?.includes(
-            'Recommendation'
-          )
-        ) {
-          temp_question = RLQuestions(docModificationThreadInputState.thread);
-        } else {
-          switch (docModificationThreadInputState.thread?.file_type) {
-            case 'ML':
-              temp_question = MLQuestions(
-                docModificationThreadInputState.thread
-              );
-              break;
-            case 'CV':
-              temp_question = CVQuestions();
-              break;
-            default:
-              temp_question = [];
-          }
-        }
-
-        if (success) {
-          setDocModificationThreadInputState((prevState) => ({
-            ...prevState,
-            success,
-            student_input: {
-              input_content: temp_question,
-              updatedAt: new Date()
-            },
-            isResetting: false,
-            isLoaded: true,
-            res_status: status
-          }));
-        } else {
-          setDocModificationThreadInputState((prevState) => ({
-            ...prevState,
-            isLoaded: true,
-            isResetting: false,
-            res_status: status
-          }));
-        }
-      },
-      (error) => {
-        setDocModificationThreadInputState((prevState) => ({
-          ...prevState,
-          isLoaded: true,
-          isResetting: false,
-          error,
-          res_status: 500
-        }));
-      }
-    );
-    setDocModificationThreadInputState((prevState) => ({
-      ...prevState,
-      student_input: {
-        ...prevState.student_input,
-        input_content: [],
-        updatedAt: new Date()
+      editorRequirements: {
+        ...prevState.editorRequirements,
+        [name]: ans
       }
     }));
   };
 
-  const onSubmitInput = (student_input, informEditor) => {
-    if (informEditor) {
-      setDocModificationThreadInputState((prevState) => ({
-        ...prevState,
-        isSubmitting: true
-      }));
+  const updateSurveyInput = async (surveyInput, informEditor) => {
+    let newSurvey;
+    if (!surveyInput?._id) {
+      newSurvey = await postSurveyInput(surveyInput, informEditor);
     } else {
+      newSurvey = await putSurveyInput(
+        surveyInput._id,
+        surveyInput,
+        informEditor
+      );
+    }
+    return newSurvey;
+  };
+
+  const submitInput = async () => {
+    try {
+      let allStatus = {};
+      if (isChanged?.general && surveyInputs?.general) {
+        // only set final if general survey, where programId not present
+        const genIsFinalVersion = !thread?.program_id && isFinalVersion;
+        const {
+          status,
+          data: { success, data }
+        } = await updateSurveyInput(
+          { ...surveyInputs.general, isFinalVersion: genIsFinalVersion },
+          genIsFinalVersion
+        );
+
+        allStatus['general'] = status;
+        if (success) {
+          setSurveyInputs((prevState) => ({
+            ...prevState,
+            general: data
+          }));
+        }
+      }
+      if (isChanged?.specific && surveyInputs?.specific) {
+        const {
+          status,
+          data: { success, data }
+        } = await updateSurveyInput(
+          { ...surveyInputs.specific, isFinalVersion },
+          isFinalVersion
+        );
+        allStatus['specific'] = status;
+        if (success) {
+          setSurveyInputs((prevState) => ({
+            ...prevState,
+            specific: data
+          }));
+        }
+      }
+
       setDocModificationThreadInputState((prevState) => ({
         ...prevState,
-        isSaving: true
+        res_status: allStatus
+      }));
+    } catch (error) {
+      setDocModificationThreadInputState((prevState) => ({
+        ...prevState,
+        res_status: 500
       }));
     }
-
-    putStudentInput(
-      documentsthreadId,
-      JSON.stringify(student_input.input_content),
-      informEditor
-    ).then(
-      (resp) => {
-        const { success } = resp.data;
-        const { status } = resp;
-
-        if (success) {
-          setDocModificationThreadInputState((prevState) => ({
-            ...prevState,
-            success,
-            isSaving: false,
-            isSubmitting: false,
-            student_input: {
-              ...docModificationThreadInputState.student_input,
-              updatedAt: new Date()
-            },
-            isLoaded: true,
-            res_status: status
-          }));
-        } else {
-          setDocModificationThreadInputState((prevState) => ({
-            ...prevState,
-            isLoaded: true,
-            isSaving: false,
-            isSubmitting: false,
-            res_status: status
-          }));
-        }
-      },
-      (error) => {
-        setDocModificationThreadInputState((prevState) => ({
-          ...prevState,
-          isLoaded: true,
-          isSaving: false,
-          isSubmitting: false,
-          error,
-          res_status: 500
-        }));
-      }
-    );
   };
-
-  // Example usage
-  // const mockApiCall = async (data, timeout = 1000) => {
-  //   return new Promise((resolve) => {
-  //     setTimeout(() => {
-  //       resolve(data);
-  //     }, timeout);
-  //   });
-  // };
-  // Example usage
-  // const fetchData = async () => {
-  //   try {
-  //     // Simulate an API call with a 2-second delay
-  //     const result = await mockApiCall(
-  //       `testing mocked api call testing mocked api call
-  //       testing mocked api call
-  //       testing mocked api call
-  //       testing mocked api call
-  //       testing mocked api call
-  //       testing mocked api call
-  //       testing mocked api call
-  //       testing mocked api call
-  //       testing mocked api call
-  //       testing mocked api call
-  //       testing mocked api call
-  //       testing mocked api call
-  //       testing mocked api call
-  //       testing mocked api call
-  //       testing mocked api call`,
-  //       2000
-  //     );
-
-  //     setDocModificationThreadInputState((prevState) => ({
-  //       ...prevState,
-  //       isLoaded: true,
-  //       isGenerating: false,
-  //       data: result,
-  //       success: true
-  //     }));
-  //   } catch (error) {}
-  // };
 
   const onSubmit = async () => {
-    setDocModificationThreadInputState((prevState) => ({
-      ...prevState,
-      isGenerating: true
-    }));
-    if (docModificationThreadInputState.isGenerated) {
-      setDocModificationThreadInputState((prevState) => ({
-        ...prevState,
-        data: ''
-      }));
+    if (!isChanged.general && !isChanged.specific) {
+      const alertElement = document.getElementById('alert-message');
+      if (alertElement) {
+        alertElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      setShowUnchangeAlert(true);
+      return;
     }
-    // Mock
-    // fetchData();
-    let program_full_name = '';
-    if (docModificationThreadInputState.thread.program_id) {
-      program_full_name =
-        docModificationThreadInputState.thread.program_id.school +
-        '-(' +
-        docModificationThreadInputState.thread.program_id.degree +
-        ') ';
+    setIsSubmitting(true);
+    await submitInput(surveyInputs, isFinalVersion);
+    setIsChanged({ general: false, specific: false });
+    setIsSubmitting(false);
+    setIsLoaded(true);
+    setShowUnchangeAlert(false);
+  };
+
+  const onGenerate = async () => {
+    setIsGenerating(true);
+    // reset data to empty (in case of re-generate)
+    setgptData('');
+
+    let programFullName = '';
+    if (thread.program_id) {
+      programFullName =
+        thread.program_id.school + '-(' + thread.program_id.degree + ') ';
     }
+
+    const studentInput = [
+      ...(surveyInputs.general?.surveyContent || []),
+      ...(surveyInputs.specific?.surveyContent || [])
+    ];
+
     const response = await cvmlrlAi2({
-      student_input: JSON.stringify(
-        docModificationThreadInputState.student_input
-      ),
+      student_input: JSON.stringify(studentInput),
       document_requirements: JSON.stringify(
         docModificationThreadInputState.document_requirements
       ),
       editor_requirements: JSON.stringify(
-        docModificationThreadInputState.editor_requirements
+        docModificationThreadInputState.editorRequirements
       ),
-      student_id:
-        docModificationThreadInputState.thread.student_id._id.toString(),
-      program_full_name: program_full_name,
-      file_type: docModificationThreadInputState.thread.file_type
+      student_id: thread.student_id._id.toString(),
+      program_full_name: programFullName,
+      file_type: thread.file_type
     });
 
+    setIsLoaded(true);
     if (response.status === 403) {
+      setIsGenerating(false);
+      setgptData(
+        (prevData) => prevData + ' \n ================================= \n'
+      );
       setDocModificationThreadInputState((prevState) => ({
         ...prevState,
-        isLoaded: true,
-        data: prevState.data + ' \n ================================= \n',
-        isFirstDataArrived: false,
-        isGenerating: false,
-        isGenerated: true,
         res_modal_status: response.status
       }));
     } else {
@@ -405,47 +590,56 @@ function DocModificationThreadInput() {
         if (done) {
           break;
         }
-        setDocModificationThreadInputState((prevState) => ({
-          ...prevState,
-          isFirstDataArrived: true,
-          data: prevState.data + value
-        }));
+        setgptData((prevData) => prevData + value);
       }
+      setIsGenerating(false);
+      setgptData(
+        (prevData) => prevData + ' \n ================================= \n'
+      );
       setDocModificationThreadInputState((prevState) => ({
         ...prevState,
-        isLoaded: true,
-        data: prevState.data + ' \n ================================= \n',
-        isFirstDataArrived: false,
-        isGenerating: false,
-        isGenerated: true,
         res_modal_status: response.status
       }));
     }
   };
 
-  const { isLoaded, res_status } = docModificationThreadInputState;
-  if (!isLoaded && !docModificationThreadInputState.thread) {
+  const { res_status } = docModificationThreadInputState;
+
+  if (!isLoaded && !Object.keys(thread).length) {
     return <Loading />;
   }
 
   if (res_status >= 400) {
     return <ErrorPage res_status={res_status} />;
   }
+
+  if (thread?.file_type?.includes('RL')) {
+    return <ErrorPage res_status={403} />;
+  }
+
   let docName;
-  const student_name = `${docModificationThreadInputState.thread.student_id.firstname} ${docModificationThreadInputState.thread.student_id.lastname}`;
-  if (docModificationThreadInputState.thread.program_id) {
+  const student_name = `${thread?.student_id?.firstname} ${thread?.student_id?.lastname}`;
+  if (thread?.program_id) {
     docName =
-      docModificationThreadInputState.thread.program_id.school +
+      thread.program_id.school +
       '-(' +
-      docModificationThreadInputState.thread.program_id.degree +
+      thread.program_id.degree +
       ') ' +
-      docModificationThreadInputState.thread.program_id.program_name +
+      thread.program_id.program_name +
       ' ' +
-      docModificationThreadInputState.thread.file_type;
+      thread.file_type;
   } else {
-    docName = docModificationThreadInputState.thread.file_type;
+    docName = thread?.file_type;
   }
   TabTitle(`${student_name} ${docName}`);
+
+  const isFinalLocked =
+    (thread?.program_id && surveyInputs?.specific?.isFinalVersion) ||
+    surveyInputs?.general?.isFinalVersion;
+
+  const editorRequirements =
+    docModificationThreadInputState?.editorRequirements;
+
   return (
     <Box>
       <Breadcrumbs aria-label="breadcrumb">
@@ -461,17 +655,16 @@ function DocModificationThreadInput() {
           underline="hover"
           color="inherit"
           component={LinkDom}
-          to={`${DEMO.DOCUMENT_MODIFICATION_LINK(
-            docModificationThreadInputState.thread._id.toString()
-          )}`}
+          to={`${DEMO.DOCUMENT_MODIFICATION_LINK(thread?._id.toString())}`}
         >
           {student_name} {'   '}
           {docName}
           {' Discussion thread'}
           {'   '}
         </Link>
-        <Typography>{t('Input')}</Typography>
+        <Typography>Survey</Typography>
       </Breadcrumbs>
+
       {!isLoaded && <Loading />}
       {docModificationThreadInputState.res_modal_status >= 400 && (
         <ModalMain
@@ -480,234 +673,123 @@ function DocModificationThreadInput() {
           res_modal_message={docModificationThreadInputState.res_modal_message}
         />
       )}
-      {is_TaiGer_role(user) ? (
-        <Card sx={{ mt: 2 }}>
-          <Typography>
-            Beta testing: Please carefully review the generated output.
-          </Typography>
-        </Card>
-      ) : (
-        <Card sx={{ mt: 2 }}>
-          <Typography>Beta testing: don&apos;t use it.</Typography>
-        </Card>
-      )}
-      {is_TaiGer_role(user) && (
-        <Card sx={{ p: 2 }}>
-          <Typography variant="h6">
-            In case you don&apos;t have permission, please contact Travis.
-          </Typography>
-        </Card>
-      )}
-      {docModificationThreadInputState.thread.isFinalVersion && (
-        <Row className="sticky-top">
-          <Typography>
-            Status: <b>Close</b>
-          </Typography>
-        </Row>
-      )}
 
-      <Card sx={{ p: 2 }}>
+      <Card sx={{ p: 2, mb: 2 }}>
         <Typography fontWeight="bold">Requirements:</Typography>
-        {docModificationThreadInputState.thread?.program_id ? (
+        {thread?.program_id ? (
           <>
-            <LinkableNewlineText
-              text={getRequirement(docModificationThreadInputState.thread)}
-            />
+            <LinkableNewlineText text={getRequirement(thread)} />
           </>
         ) : (
-          <Typography>{t('No')}</Typography>
+          <Typography>{t('No', { ns: 'common' })}</Typography>
         )}
       </Card>
 
-      <Card sx={{ p: 2 }}>
-        <Typography variant="h6">
-          Please answer the following questions in <b>English</b>{' '}
-          {docModificationThreadInputState.thread.program_id?.lang?.includes(
-            'German'
-          )
-            ? '( or German if you like ) '
-            : ''}
-          !
-        </Typography>
-        {docModificationThreadInputState.student_input?.input_content.map(
-          (qa, i) => (
-            <Col key={i} md={qa.width || 12}>
-              <Form className="mb-2" key={i}>
-                <Form.Group controlId={qa.question_id}>
-                  <Form.Label>{qa.question}</Form.Label>
-                  <Form.Control
-                    as="textarea"
-                    rows={qa.rows || '1'}
-                    placeholder={qa.placeholder}
-                    defaultValue={qa.answer}
-                    onChange={onChange}
-                  ></Form.Control>
-                </Form.Group>
-              </Form>
-            </Col>
-          )
-        )}
-        <Button
-          size="small"
-          variant="contained"
-          color="primary"
-          disabled={docModificationThreadInputState.isSaving}
-          onClick={() =>
-            onSubmitInput(docModificationThreadInputState.student_input, true)
-          }
-        >
-          {docModificationThreadInputState.isSubmitting ? (
-            <>
-              <CircularProgress />
-              Submitting
-            </>
-          ) : (
-            'Submit'
+      <Card sx={{ p: 2, mb: 2 }}>
+        <Grid container sx={{ gap: 2 }}>
+          <Grid item xs={12}>
+            <Typography variant="h5">
+              Please answer the following questions in <b>English</b>{' '}
+              {thread?.program_id?.lang?.includes('German')
+                ? '( or German if you like ) '
+                : ''}
+              !
+            </Typography>
+          </Grid>
+
+          {showUnchangeAlert && (
+            <Grid item xs={12}>
+              <Alert id="alert-message" severity="error" sx={{ mt: 2 }}>
+                <Typography variant="body1" fontWeight="bold">
+                  {t('No changes made. Please make changes before submitting.')}
+                </Typography>
+              </Alert>
+            </Grid>
           )}
-        </Button>
-        <Button
-          size="small"
-          color="secondary"
-          variant="outlined"
-          disabled={docModificationThreadInputState.isSaving}
-          onClick={() =>
-            onSubmitInput(docModificationThreadInputState.student_input, false)
-          }
-        >
-          {docModificationThreadInputState.isSaving ? (
-            <>
-              <CircularProgress />
-              {t('Saving')}
-            </>
-          ) : (
-            t('Save as draft')
+
+          {Object.keys(surveyInputs?.general).length > 0 && (
+            <Grid item xs={12}>
+              <SurveyForm
+                title={thread?.program_id ? 'General' : null}
+                surveyInput={surveyInputs.general}
+                surveyType="general"
+                disableEdit={isFinalLocked || isFinalVersion}
+                isCollapse={!surveyInputs?.general?.updatedAt}
+                onChange={onChange}
+              ></SurveyForm>
+            </Grid>
           )}
-        </Button>
-        <Button variant="secondary" size="sm" onClick={() => onReset()}>
-          {docModificationThreadInputState.isResetting ? (
-            <>
-              <CircularProgress />
-              {'  '}
-              {t('Resetting')}
-            </>
-          ) : (
-            t('Reset')
-          )}
-        </Button>
-        <span style={{ float: 'right' }}>
-          Updated At:{' '}
-          {convertDate(
-            docModificationThreadInputState.student_input?.updatedAt
-          )}
-        </span>
-      </Card>
 
-      {is_TaiGer_role(user) && (
-        <Card sx={{ p: 2 }}>
-          <Form>
-            <Form.Group controlId="useProgramRequirementData">
-              <Form.Label>Use program&apos;s requirements?</Form.Label>
-              <Form.Check
-                type="checkbox"
-                checked={
-                  docModificationThreadInputState.editor_requirements
-                    ?.useProgramRequirementData
-                }
-                onChange={onChangeEditorRequirements}
-              ></Form.Check>
-            </Form.Group>
-          </Form>
-
-          <Form>
-            <Form.Group controlId="outputLanguage">
-              <Form.Label>Output language?</Form.Label>
-              <Form.Control
-                defaultValue="English"
-                onChange={(e) => {
-                  onChangeEditorRequirements(e);
-                }}
-                as="select"
-              >
-                <option value="English">{t('English')}</option>
-                <option value="German">{t('German')}</option>
-              </Form.Control>
-            </Form.Group>
-          </Form>
-
-          <Form>
-            <Form.Group controlId="gptModel">
-              <Form.Label>GPT Model language?</Form.Label>
-              <Form.Control
-                defaultValue="gpt-3.5-turbo"
-                onChange={(e) => {
-                  onChangeEditorRequirements(e);
-                }}
-                as="select"
-              >
-                <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
-                <option value="gpt-3.5-turbo-16k">gpt-3.5-turbo-16k</option>
-                <option value="gpt-4">gpt-4</option>
-                <option value="gpt-4-32k">gpt-4-32k</option>
-                <option value="text-embedding-ada-002">
-                  text-embedding-ada-002
-                </option>
-                <option value="gpt-4-1106-preview">gpt-4-1106-preview</option>
-              </Form.Control>
-            </Form.Group>
-          </Form>
-
-          <Form>
-            <Form.Group controlId="additionalPrompt">
-              <Form.Label>Additional requirement?</Form.Label>
-              <Form.Control
-                onChange={(e) => {
-                  onChangeEditorRequirements(e);
-                }}
-                placeholder="the length should be within 10000 characters / words, paragraph structure, etc."
-                as="textarea"
-              ></Form.Control>
-            </Form.Group>
-          </Form>
-
-          <br />
-          <Button
-            size="small"
-            color="primary"
-            variant="contained"
-            disabled={docModificationThreadInputState.isGenerating}
-            onClick={onSubmit}
-          >
-            {docModificationThreadInputState.isGenerating ? (
-              <>
-                <CircularProgress />
-                {'  '}
-                {t('Generating')}
-              </>
-            ) : docModificationThreadInputState.isGenerated ? (
-              t('Regenerate')
-            ) : (
-              t('Generate')
+          {thread?.program_id &&
+            Object.keys(surveyInputs?.specific).length > 0 && (
+              <Grid item xs={12}>
+                <SurveyForm
+                  title="Program"
+                  surveyInput={surveyInputs.specific}
+                  surveyType="specific"
+                  disableEdit={isFinalVersion}
+                  onChange={onChange}
+                ></SurveyForm>
+              </Grid>
             )}
-          </Button>
-          {docModificationThreadInputState.isGenerating &&
-          !docModificationThreadInputState.data ? (
-            <Placeholder as={Card.Text} animation="glow">
-              <Placeholder xs={7} /> <Placeholder xs={5} />{' '}
-              <Placeholder xs={4} /> <Placeholder xs={8} />{' '}
-              <Placeholder xs={2} /> <Placeholder xs={3} />{' '}
-              <Placeholder xs={2} /> <Placeholder xs={3} />{' '}
-              <Placeholder xs={10} /> <Placeholder xs={1} />{' '}
-              <Placeholder xs={2} /> <Placeholder xs={3} />{' '}
-              <Placeholder xs={9} /> <Placeholder xs={2} />{' '}
-              <Placeholder xs={2} /> <Placeholder xs={3} />{' '}
-              <Placeholder xs={1} /> <Placeholder xs={9} />{' '}
-              <Placeholder xs={4} /> <Placeholder xs={8} />
-            </Placeholder>
-          ) : (
-            <LinkableNewlineText
-              text={docModificationThreadInputState.data}
-            ></LinkableNewlineText>
-          )}
+
+          <Grid item xs={12}>
+            <FormControl>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    name="isFinalVersion"
+                    type="checkbox"
+                    checked={isFinalLocked || isFinalVersion}
+                    disabled={isFinalLocked}
+                    onChange={(e) => {
+                      setIsChanged({ general: true, specific: true });
+                      setIsFinalVersion(e.target.checked);
+                    }}
+                  />
+                }
+                label="Is Final Version?"
+              />
+            </FormControl>
+          </Grid>
+
+          <Grid
+            item
+            xs={12}
+            sx={{ gap: 1 }}
+            container
+            justifyContent="flex-start"
+          >
+            {!isFinalLocked && (
+              <ProgressButton
+                label="Submit"
+                isProgress={isSubmitting}
+                size="small"
+                variant="contained"
+                color="primary"
+                disabled={isSubmitting}
+                onClick={onSubmit}
+              />
+            )}
+            <LinkDom to=".." relative="path">
+              <Button color="secondary" variant="contained">
+                Back
+              </Button>
+            </LinkDom>
+          </Grid>
+        </Grid>
+      </Card>
+
+      {/* GPT input generation -> only for internal users */}
+      {is_TaiGer_role(user) && (
+        <Card sx={{ p: 2, mb: 2 }}>
+          <InputGenerator
+            isChecked={editorRequirements?.useProgramRequirementData || false}
+            data={gptData}
+            isGenerating={isGenerating}
+            onChange={onChangeEditorRequirements}
+            onGenerate={onGenerate}
+          />
         </Card>
       )}
     </Box>

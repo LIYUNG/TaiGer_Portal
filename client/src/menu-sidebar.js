@@ -17,6 +17,7 @@ import StorageIcon from '@mui/icons-material/Storage';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import ArticleIcon from '@mui/icons-material/Article';
 import BarChartIcon from '@mui/icons-material/BarChart';
+import Diversity3Icon from '@mui/icons-material/Diversity3';
 import EuroIcon from '@mui/icons-material/Euro';
 import VpnKeyIcon from '@mui/icons-material/VpnKey';
 import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
@@ -37,7 +38,7 @@ let application_overview = [
     target: false
   },
   {
-    id: 'base_documents',
+    id: 'my-documents',
     title: 'My Documents',
     type: 'item',
     url: '/base-documents',
@@ -47,7 +48,7 @@ let application_overview = [
     breadcrumbs: false
   },
   {
-    id: 'editor_center',
+    id: 'cvmlrl-overview',
     title: 'CV ML RL Overview',
     type: 'item',
     url: '/cv-ml-rl-center',
@@ -74,7 +75,6 @@ if (appConfig.vpdEnable) {
     title: 'Uni-Assist Tasks',
     type: 'item',
     url: '/uni-assist',
-    classes: 'nav-item',
     icon: <DrawIcon />,
     target: false,
     breadcrumbs: false
@@ -87,15 +87,20 @@ let all_students_nestedList = [
     title: 'All Application Overview',
     type: 'item',
     url: '/all-students-applications',
-    classes: 'nav-item',
     icon: <AssignmentTurnedInOutlinedIcon />
+  },
+  {
+    id: 'all-base-documents-overview',
+    title: 'All Documents',
+    type: 'item',
+    url: '/all-base-documents',
+    icon: <InsertDriveFileIcon />
   },
   {
     id: 'tasks_dashboard',
     title: 'Tasks Dashboard',
     type: 'item',
     url: '/dashboard/cv-ml-rl',
-    classes: 'nav-item',
     icon: <BorderColorOutlinedIcon />
   },
   {
@@ -103,7 +108,6 @@ let all_students_nestedList = [
     title: 'Essay Dashboard',
     type: 'item',
     url: '/dashboard/essay',
-    classes: 'nav-item',
     icon: <BorderColorOutlinedIcon />
   },
   {
@@ -111,7 +115,6 @@ let all_students_nestedList = [
     title: 'Interview Training',
     type: 'item',
     icon: <HeadsetMicOutlinedIcon />,
-    classes: 'nav-item',
     url: '/interview-training'
   },
   {
@@ -119,7 +122,6 @@ let all_students_nestedList = [
     title: 'Student Overview',
     type: 'item',
     url: '/students-overview/all',
-    classes: 'nav-item',
     icon: <GroupOutlinedIcon />
   },
   {
@@ -179,7 +181,7 @@ let documentations_nestedList = [
   },
   {
     id: 'base-documents',
-    title: 'Base Documents',
+    title: 'Documents',
     type: 'item',
     url: '/docs/base-documents',
     icon: <InsertDriveFileIcon />,
@@ -296,7 +298,7 @@ export const MenuSidebar = [
     id: 'my-students',
     title: 'My Students',
     type: 'collapse',
-    icon: 'feather icon-users',
+    icon: <PersonOutlineOutlinedIcon />,
     children: [
       {
         id: 'my-students-application-overview',
@@ -308,8 +310,8 @@ export const MenuSidebar = [
         breadcrumbs: false
       },
       {
-        id: 'base_documents',
-        title: 'Base Documents',
+        id: 'base-documents',
+        title: 'Documents',
         type: 'item',
         url: '/base-documents',
         classes: 'nav-item',
@@ -322,6 +324,15 @@ export const MenuSidebar = [
         url: '/students-overview',
         classes: 'nav-item',
         icon: <GroupOutlinedIcon />
+      },
+      {
+        id: 'agent-support-documents',
+        title: 'Agent Support',
+        type: 'item',
+        url: '/agent-support-documents',
+        icon: <BorderColorIcon />,
+        target: false,
+        breadcrumbs: false
       },
       {
         id: 'editor_center',
@@ -342,7 +353,7 @@ export const MenuSidebar = [
   },
   {
     id: 'academicsurvey',
-    title: 'My Survey',
+    title: 'My Profile',
     type: 'item',
     url: '/survey',
     icon: <ArticleIcon />
@@ -427,7 +438,7 @@ export const MenuSidebar = [
     id: 'all-students',
     title: 'All Students',
     type: 'collapse',
-    icon: 'feather icon-users',
+    icon: <GroupOutlinedIcon />,
     children: all_students_nestedList
   },
   {
@@ -435,7 +446,7 @@ export const MenuSidebar = [
     title: 'Tools',
     type: 'collapse',
     classes: 'nav-item',
-    icon: 'feather icon-codepen',
+    icon: <HelpOutlineIcon />,
     children: [
       {
         id: 'course-analyser',
@@ -453,7 +464,7 @@ export const MenuSidebar = [
     title: `${appConfig.companyName} Teams`,
     type: 'collapse',
     classes: 'nav-item',
-    icon: 'fa fa-coffee',
+    icon: <Diversity3Icon />,
     children: taiger_teams_items
   },
   {
@@ -469,7 +480,7 @@ export const MenuSidebar = [
     title: 'Docs Database',
     type: 'collapse',
     classes: 'nav-item',
-    icon: 'feather icon-codepen',
+    icon: <StorageIcon />,
     children: [
       {
         id: 'documents-creation',

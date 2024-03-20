@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Card } from 'react-bootstrap';
-import { Box, Breadcrumbs, Link, Typography } from '@mui/material';
+import { Box, Breadcrumbs, Link, Typography, Card } from '@mui/material';
 import { Navigate, Link as LinkDom } from 'react-router-dom';
 
 import ErrorPage from '../Utils/ErrorPage';

@@ -27,7 +27,7 @@ function FileItem(props) {
   }
 
   const files_info = props.message?.file.map((file, i) => (
-    <Card key={i}>
+    <Card key={i} sx={{ p: 1 }}>
       <span>
         <Link
           underline="hover"
@@ -68,6 +68,7 @@ function FileItem(props) {
             ></path>
           </svg>
         </Link>
+        by {props.message.user_id.firstname} {props.message.user_id.lastname}
       </span>
     </Card>
   ));

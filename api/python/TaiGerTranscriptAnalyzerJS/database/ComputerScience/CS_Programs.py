@@ -86,6 +86,113 @@ def TUM_CS(transcript_sorted_group_map, df_transcript_array, df_category_courses
     WriteToExcel(writer, program_name, program_category, program_category_map,
                  transcript_sorted_group_map, df_transcript_array_temp, df_category_courses_sugesstion_data_temp, column_len_array)
 
+# 2023
+
+
+def TUM_CS_DETAILED(transcript_sorted_group_map, df_transcript_array, df_category_courses_sugesstion_data, writer):
+    program_name = 'TUM_CS_DETAILED'
+    print("Create " + program_name + " sheet")
+    df_transcript_array_temp = []
+    df_category_courses_sugesstion_data_temp = []
+    for idx, df in enumerate(df_transcript_array):
+        df_transcript_array_temp.append(df.copy())
+    for idx, df in enumerate(df_category_courses_sugesstion_data):
+        df_category_courses_sugesstion_data_temp.append(df.copy())
+    #####################################################################
+    ############## Program Specific Parameters ##########################
+    #####################################################################
+
+    # Create transcript_sorted_group to program_category mapping
+    # https://campus.tum.de/tumonline/wbLv.wbShowLVDetail?pStpSpNr=950159179&pSpracheNr=2
+    PROG_SPEC_INTRO_INFO_PARAM = {
+        'Program_Category': 'Introduction_to_Informatics', 'Required_ECTS': 12}
+    PROG_SPEC_COMP_ARCH_PARAM = {
+        'Program_Category': 'Computer Architecture', 'Required_ECTS': 16}  # Computer Architecture: Organization and Technology
+    PROG_SPEC_SWE_PARAM = {
+        'Program_Category': 'Software_Engineering', 'Required_ECTS': 6}
+    PROG_SPEC_DB_PARAM = {
+        'Program_Category': 'Databases', 'Required_ECTS': 6}
+    PROG_SPEC_OS_PARAM = {
+        'Program_Category': 'Operating_Systems', 'Required_ECTS': 6}  # Operating Systems and System Software
+    PROG_SPEC_COMP_NETW_MODULE_PARAM = {
+        'Program_Category': 'Computer Network', 'Required_ECTS': 6}   # Computer Networks, Distributed Systems
+    PROG_SPEC_FUNC_PROG_MODULE_PARAM = {
+        'Program_Category': 'Functional_Programming', 'Required_ECTS': 5}
+    PROG_SPEC_ALGOR_DATA_STRUC_MODULE_PARAM = {
+        'Program_Category': 'Algorithms_Data_Structures', 'Required_ECTS': 6}
+    PROG_SPEC_THEORY_COMP_MODULE_PARAM = {
+        'Program_Category': 'Theory_of_Computation', 'Required_ECTS': 8}
+    PROG_SPEC_DISCRETE_STRUCTURE_MODULE_PARAM = {
+        'Program_Category': 'Discrete_Structures', 'Required_ECTS': 8}
+    PROG_SPEC_LINEAR_ALGEBRA_MODULE_PARAM = {
+        'Program_Category': 'Linear_Algebra', 'Required_ECTS': 8}
+    PROG_SPEC_CALCULUS_MODULE_PARAM = {
+        'Program_Category': 'Analysis_Calculus', 'Required_ECTS': 8}
+    PROG_SPEC_DISCRETE_PROB_MODULE_PARAM = {
+        'Program_Category': 'Discrete_Probability_Theory', 'Required_ECTS': 6}
+    PROG_SPEC_OTHERS = {
+        'Program_Category': 'Others', 'Required_ECTS': 0}
+
+    # This fixed to program course category.
+    program_category = [
+        PROG_SPEC_INTRO_INFO_PARAM,  # 計算機概論
+        PROG_SPEC_COMP_ARCH_PARAM,  # computer architecture
+        PROG_SPEC_SWE_PARAM,  # software engineering
+        PROG_SPEC_DB_PARAM,  # database
+        PROG_SPEC_OS_PARAM,  # OS
+        PROG_SPEC_COMP_NETW_MODULE_PARAM,  # 電腦網路
+        PROG_SPEC_FUNC_PROG_MODULE_PARAM,  # 函數程式
+        PROG_SPEC_ALGOR_DATA_STRUC_MODULE_PARAM,  # 演算法 資料結構
+        PROG_SPEC_THEORY_COMP_MODULE_PARAM,  # 運算
+        PROG_SPEC_DISCRETE_STRUCTURE_MODULE_PARAM,  # 離散
+        PROG_SPEC_LINEAR_ALGEBRA_MODULE_PARAM,  # 線性代數
+        PROG_SPEC_CALCULUS_MODULE_PARAM,  # 微積分 分析
+        PROG_SPEC_DISCRETE_PROB_MODULE_PARAM,  # 機率
+        PROG_SPEC_OTHERS  # 其他
+    ]
+
+    # Mapping table: same dimension as transcript_sorted_group/ The length depends on how fine the transcript is classified
+    # TODO: modify the original sorting list for IT
+    program_category_map = [
+        PROG_SPEC_INTRO_INFO_PARAM,  # 計算機概論
+        PROG_SPEC_OTHERS,  # 基礎電機電子
+        PROG_SPEC_INTRO_INFO_PARAM,  # 程式設計
+        PROG_SPEC_COMP_ARCH_PARAM,  # computer architecture
+        PROG_SPEC_SWE_PARAM,  # software engineering
+        PROG_SPEC_DB_PARAM,  # 資料庫
+        PROG_SPEC_OS_PARAM,  # 作業系統
+        PROG_SPEC_COMP_NETW_MODULE_PARAM,  # 電腦網路
+        PROG_SPEC_OTHERS,  # 數理邏輯
+        PROG_SPEC_OTHERS,  # 圖論
+        PROG_SPEC_FUNC_PROG_MODULE_PARAM,  # 正規方法
+        PROG_SPEC_FUNC_PROG_MODULE_PARAM,  # 函數程式
+        PROG_SPEC_ALGOR_DATA_STRUC_MODULE_PARAM,  # 演算法 資料結構
+        PROG_SPEC_THEORY_COMP_MODULE_PARAM,  # 可運算度 複雜度
+        PROG_SPEC_DISCRETE_STRUCTURE_MODULE_PARAM,  # 離散
+        PROG_SPEC_LINEAR_ALGEBRA_MODULE_PARAM,  # 線性代數
+        PROG_SPEC_LINEAR_ALGEBRA_MODULE_PARAM,  # 數值分析
+        PROG_SPEC_CALCULUS_MODULE_PARAM,  # 微積分 分析
+        PROG_SPEC_DISCRETE_PROB_MODULE_PARAM,  # 機率
+        PROG_SPEC_OTHERS,  # 進階資工
+        PROG_SPEC_OTHERS,  # 物理化學資工工程
+        PROG_SPEC_OTHERS,  # 商管經
+        PROG_SPEC_OTHERS,  # 其他
+    ]
+
+    # Development check
+    if len(program_category_map) != len(df_transcript_array):
+        print("program_category_map size: " + str(len(program_category_map)))
+        print("df_transcript_array size:  " + str(len(df_transcript_array)))
+        print("Please check the number of program_category_map again!")
+        sys.exit()
+
+    #####################################################################
+    ####################### End #########################################
+    #####################################################################
+
+    WriteToExcel(writer, program_name, program_category, program_category_map,
+                 transcript_sorted_group_map, df_transcript_array_temp, df_category_courses_sugesstion_data_temp, column_len_array)
+
 
 # https://www.rwth-aachen.de/global/show_document.asp?id=aaaaaaaaaqqnusm
 # Same as Data Science RWTH Aachen
@@ -1322,6 +1429,7 @@ def TUHH_DATA_SCIENCE(transcript_sorted_group_map, df_transcript_array, df_categ
 
 
 program_sort_function = [TUM_CS,
+                         TUM_CS_DETAILED,
                          RWTH_DATA_SCIENCE_CS_BG,
                          RWTH_DATA_SCIENCE_MATH_BG,
                          RWTH_SOFTWARE_SYS_ENG,

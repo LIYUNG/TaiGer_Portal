@@ -1946,6 +1946,13 @@ const getAllActiveEssays = asyncHandler(async (req, res, next) => {
       file_type: 'Essay'
     })
       .populate('student_id')
+      .populate({
+        path: 'student_id',
+        populate: {
+          path: 'agents',
+          model: 'User'
+        }
+      })
       .populate('program_id', 'school program_name degree application_deadline')
       .select('-messages')
       .lean();

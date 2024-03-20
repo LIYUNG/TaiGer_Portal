@@ -13,7 +13,7 @@ import { useAuth } from '../../../components/AuthProvider';
 function AssignEssayWriters() {
   const { user } = useAuth();
   const {
-    students: { data: students },
+    data: { data: students },
     essays: { data: essayDocumentThreads}
   } = useLoaderData();
   // console.log("students in fun assignEssayWriter", students)

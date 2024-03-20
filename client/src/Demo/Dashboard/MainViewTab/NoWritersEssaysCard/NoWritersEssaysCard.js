@@ -47,23 +47,32 @@ function NoWritersEssaysCard(props) {
     }));
   };
 
-  const submitUpdateEditorlist = (e, updateEditorList, essayDocumentThread_id) => {
+  const submitUpdateEditorlist = (
+    e,
+    updateEditorList,
+    essayDocumentThread_id
+  ) => {
     e.preventDefault();
     setEditorModalhide();
     props.submitUpdateEditorlist(e, updateEditorList, essayDocumentThread_id);
   };
 
   const findStudentsWithDocumentthread = (students, essayDocumentThread) => {
-    const studentsWithDocumentthread = students.filter(student => {
-      return student?._id?.toString() === essayDocumentThread?.student_id?.toString();
+    const studentsWithDocumentthread = students.filter((student) => {
+      return (
+        student?._id?.toString() === essayDocumentThread?.student_id?.toString()
+      );
     });
     return studentsWithDocumentthread[0];
   };
-  const student = findStudentsWithDocumentthread(props.students, props.essayDocumentThread)
-  console.log('student in card', student)
+  const student = findStudentsWithDocumentthread(
+    props.students,
+    props.essayDocumentThread
+  );
+  console.log('student in card', student);
   if (
     props.essayDocumentThread.outsourced_user_id === undefined ||
-    props.essayDocumentThread.outsourced_user_id.length === 0 
+    props.essayDocumentThread.outsourced_user_id.length === 0
   ) {
     return (
       <>
@@ -104,6 +113,10 @@ function NoWritersEssaysCard(props) {
               )}`}
             >
               {props.essayDocumentThread?.file_type}
+              {props.essayDocumentThread?.program_id.school}
+              {props.essayDocumentThread?.program_id.program_name}
+              {props.essayDocumentThread?.program_id.degree}
+              {props.essayDocumentThread?.program_id.semester}
             </Link>
           </TableCell>
           <TableCell>
@@ -114,28 +127,29 @@ function NoWritersEssaysCard(props) {
                 DEMO.PROFILE
               )}`}
             >
-              {student?.firstname}, {student?.lastname}
+              {props.essayDocumentThread.student_id?.firstname},{' '}
+              {props.essayDocumentThread.student_id?.lastname}
             </Link>
           </TableCell>
-          <TableCell>{student?.email}</TableCell>
+          <TableCell>{props.essayDocumentThread.student_id?.email}</TableCell>
           <TableCell>
-            {(props.essayDocumentThread.outsourced_user_id === undefined ||
-    props.essayDocumentThread.outsourced_user_id.length === 0) ? (
+            {props.essayDocumentThread.outsourced_user_id === undefined ||
+            props.essayDocumentThread.outsourced_user_id.length === 0 ? (
               <Typography fontWeight="bold">Ready to Assign</Typography>
             ) : (
               '-'
             )}
           </TableCell>
           <TableCell>
-            {student?.application_preference.expected_application_date || (
-              <Typography>TBD</Typography>
-            )}
+            {props.essayDocumentThread.student_id?.application_preference
+              .expected_application_date || <Typography>TBD</Typography>}
           </TableCell>
           <TableCell>
-            {!student?.agents || student?.agents.length === 0 ? (
+            {!props.essayDocumentThread.student_id?.agents ||
+            props.essayDocumentThread.student_id?.agents.length === 0 ? (
               <Typography fontWeight="bold">No Agent</Typography>
             ) : (
-              student?.agents.map((agent, i) => (
+              props.essayDocumentThread.student_id?.agents.map((agent, i) => (
                 <Typography key={i}>{`${agent.firstname}`}</Typography>
               ))
             )}

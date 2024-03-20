@@ -18,18 +18,21 @@ import NoWritersEssaysCard from '../../Dashboard/MainViewTab/NoWritersEssaysCard
 import { appConfig } from '../../../config';
 import DEMO from '../../../store/constant';
 
-function AssignEssayWritersPage(props) { //props = combinedLoader
+function AssignEssayWritersPage(props) {
+  //props = combinedLoader
   const { t } = useTranslation();
   // console.log('essaythread in assign page:', props.essayDocumentThreads)
   // console.log("student in assign page:", props.students)
-  const no_writer_essays = props.essayDocumentThreads.map((essayDocumentThread, i) => (
-    <NoWritersEssaysCard
-      key={i}
-      students={props.students}
-      submitUpdateEditorlist={props.submitUpdateEditorlist}
-      essayDocumentThread={essayDocumentThread}
-    />
-  ));
+  const no_writer_essays = props.essayDocumentThreads.map(
+    (essayDocumentThread, i) => (
+      <NoWritersEssaysCard
+        key={i}
+        students={props.students}
+        submitUpdateEditorlist={props.submitUpdateEditorlist}
+        essayDocumentThread={essayDocumentThread}
+      />
+    )
+  );
 
   return (
     <Box>
@@ -51,7 +54,7 @@ function AssignEssayWritersPage(props) { //props = combinedLoader
             <TableRow>
               <TableCell></TableCell>
               <TableCell>{t('Documents')}</TableCell>
-              <TableCell>First-, Last Name</TableCell>
+              <TableCell>{t('First-, Last Name')}</TableCell>
               <TableCell>{t('Email')}</TableCell>
               <TableCell>{t('Status')}</TableCell>
               <TableCell>{t('Target Year')}</TableCell>

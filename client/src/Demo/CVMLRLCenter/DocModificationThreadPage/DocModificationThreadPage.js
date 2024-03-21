@@ -399,7 +399,10 @@ function DocModificationThreadPage() {
             success,
             file: null,
             editorState: {},
-            thread: data,
+            thread: {
+              ...docModificationThreadPageState.thread,
+              messages: data?.messages
+            },
             isLoaded: true,
             buttonDisabled: false,
             accordionKeys: [

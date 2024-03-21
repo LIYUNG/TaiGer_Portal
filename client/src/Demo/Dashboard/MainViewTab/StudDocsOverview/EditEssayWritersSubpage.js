@@ -75,7 +75,6 @@ function EditEssayWritersSubpage(props) {
       {isLoaded ? (
         <>
           <Typography variant="h6">
-            {/* Essay Writer for {props.student.firstname} - {props.student.lastname} */}
             Essay Writer for {props.essayDocumentThread.file_type}-
             {props.essayDocumentThread.program_id?.school}-
             {props.essayDocumentThread.program_id?.program_name}

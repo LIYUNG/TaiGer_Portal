@@ -19,10 +19,7 @@ import { appConfig } from '../../../config';
 import DEMO from '../../../store/constant';
 
 function AssignEssayWritersPage(props) {
-  //props = combinedLoader
   const { t } = useTranslation();
-  // console.log('essaythread in assign page:', props.essayDocumentThreads)
-  // console.log("student in assign page:", props.students)
   const no_writer_essays = props.essayDocumentThreads
     .filter((thread) => !thread.isFinalVersion)
     .map((essayDocumentThread, i) => (

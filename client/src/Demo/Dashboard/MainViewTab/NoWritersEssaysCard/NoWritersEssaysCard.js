@@ -54,22 +54,13 @@ function NoWritersEssaysCard(props) {
   ) => {
     e.preventDefault();
     setEditorModalhide();
-    props.submitUpdateEssayWriterlist(e, updateEssayWriterList, essayDocumentThread_id);
+    props.submitUpdateEssayWriterlist(
+      e,
+      updateEssayWriterList,
+      essayDocumentThread_id
+    );
   };
 
-  const findStudentsWithDocumentthread = (students, essayDocumentThread) => {
-    const studentsWithDocumentthread = students.filter((student) => {
-      return (
-        student?._id?.toString() === essayDocumentThread?.student_id?.toString()
-      );
-    });
-    return studentsWithDocumentthread[0];
-  };
-  const student = findStudentsWithDocumentthread(
-    props.students,
-    props.essayDocumentThread
-  );
-  console.log('student in card', student);
   if (
     props.essayDocumentThread.outsourced_user_id === undefined ||
     props.essayDocumentThread.outsourced_user_id.length === 0
@@ -123,7 +114,7 @@ function NoWritersEssaysCard(props) {
             <Link
               component={LinkDom}
               to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-                student?._id.toString(),
+                props.essayDocumentThread.student_id?._id.toString(),
                 DEMO.PROFILE
               )}`}
             >
@@ -133,6 +124,7 @@ function NoWritersEssaysCard(props) {
           </TableCell>
           <TableCell>{props.essayDocumentThread.student_id?.email}</TableCell>
           <TableCell>
+            {/* TODO: adjust condition and backend returned data: message !== 0 && no outsourcer */}
             {props.essayDocumentThread.outsourced_user_id === undefined ||
             props.essayDocumentThread.outsourced_user_id.length === 0 ? (
               <Typography fontWeight="bold">Ready to Assign</Typography>
@@ -157,7 +149,6 @@ function NoWritersEssaysCard(props) {
         </TableRow>
         {is_TaiGer_role(user) && noEditorsStudentsCardState.showEditorPage && (
           <EditEssayWritersSubpage
-            student={student}
             show={noEditorsStudentsCardState.showEditorPage}
             onHide={setEditorModalhide}
             setmodalhide={setEditorModalhide}

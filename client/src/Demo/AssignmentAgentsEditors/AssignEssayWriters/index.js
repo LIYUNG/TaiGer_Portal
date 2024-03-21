@@ -5,7 +5,6 @@ import { Box } from '@mui/material';
 import AssignEssayWritersPage from './AssignEssayWritersPage';
 import ModalMain from '../../Utils/ModalHandler/ModalMain';
 import { updateEssayWriter } from '../../../api';
-// import { updateEditors } from '../../../api';
 import DEMO from '../../../store/constant';
 import { is_TaiGer_role } from '../../Utils/checking-functions';
 import { useAuth } from '../../../components/AuthProvider';
@@ -14,9 +13,8 @@ function AssignEssayWriters() {
   const { user } = useAuth();
   const {
     data: { data: students },
-    essays: { data: essayDocumentThreads}
+    essays: { data: essayDocumentThreads }
   } = useLoaderData();
-  // console.log("students in fun assignEssayWriter", students)
   const [assignEditorsState, setAssignEditorsState] = useState({
     error: '',
     editor_list: [],
@@ -30,20 +28,26 @@ function AssignEssayWriters() {
     essayDocumentThreads: essayDocumentThreads
   });
 
-  const submitUpdateEssayWriterlist = (e, updateEditorList, essayDocumentThread_id) => {
+  const submitUpdateEssayWriterlist = (
+    e,
+    updateEditorList,
+    essayDocumentThread_id
+  ) => {
     e.preventDefault();
     UpdateEssayWriterlist(e, updateEditorList, essayDocumentThread_id);
   };
-  // (editor_id, documentsthreadId)
-  const UpdateEssayWriterlist = (e, updateEditorList, essayDocumentThread_id) => {
+
+  const UpdateEssayWriterlist = (
+    e,
+    updateEditorList,
+    essayDocumentThread_id
+  ) => {
     e.preventDefault();
     updateEssayWriter(updateEditorList, essayDocumentThread_id).then(
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
-        // console.log('data:', data)// return student object
         if (success) {
-          // console.log('success in index')
           var essays_temp = [...assignEditorsState.essayDocumentThreads];
           var essayIdx = essays_temp.findIndex(
             ({ _id }) => _id === essayDocumentThread_id
@@ -68,7 +72,7 @@ function AssignEssayWriters() {
         }
       },
       (error) => {
-        console.log('error in index')
+        console.log('error in index');
         setAssignEditorsState((prevState) => ({
           ...prevState,
           isLoaded: true,

@@ -94,6 +94,7 @@ export const file_category_const = {
 export const AGENT_SUPPORT_DOCUMENTS_A = [
   FILE_TYPE_E.curriculum_analysis_required,
   FILE_TYPE_E.supplementary_form_required,
+  FILE_TYPE_E.essay_required,
   FILE_TYPE_E.others
 ];
 // TODO test

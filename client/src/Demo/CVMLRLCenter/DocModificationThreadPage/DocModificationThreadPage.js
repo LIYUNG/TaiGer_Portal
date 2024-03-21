@@ -887,7 +887,10 @@ function DocModificationThreadPage() {
               </Typography>
             ))}
             <Typography variant="body1" fontWeight="bold">
-              {t('Editor')}:
+              {docModificationThreadPageState.thread.file_type === 'Essay'
+                ? t('Essay Writer')
+                : t('Editor')}
+              :
             </Typography>
             {docModificationThreadPageState.thread?.outsourced_user_id?.map(
               (outsourcer) => (
@@ -909,33 +912,35 @@ function DocModificationThreadPage() {
                 </Typography>
               )
             )}
-            {docModificationThreadPageState.editors.map((editor, i) => (
-              <Typography key={i}>
-                {is_TaiGer_role(user) ? (
-                  <Link
-                    underline="hover"
-                    component={LinkDom}
-                    to={`${DEMO.TEAM_EDITOR_LINK(editor._id.toString())}`}
-                    target="_blank"
-                  >
-                    {editor.firstname} {editor.lastname}
-                  </Link>
-                ) : (
-                  <>
-                    {editor.firstname} {editor.lastname}
-                  </>
-                )}
-              </Typography>
-            ))}
+            {docModificationThreadPageState.thread?.file_type !== 'Essay' &&
+              docModificationThreadPageState.editors.map((editor, i) => (
+                <Typography key={i}>
+                  {is_TaiGer_role(user) ? (
+                    <Link
+                      underline="hover"
+                      component={LinkDom}
+                      to={`${DEMO.TEAM_EDITOR_LINK(editor._id.toString())}`}
+                      target="_blank"
+                    >
+                      {editor.firstname} {editor.lastname}
+                    </Link>
+                  ) : (
+                    <>
+                      {editor.firstname} {editor.lastname}
+                    </>
+                  )}
+                </Typography>
+              ))}
             {is_TaiGer_role(user) &&
               [...AGENT_SUPPORT_DOCUMENTS_A].includes(
                 docModificationThreadPageState.thread.file_type
               ) && (
                 <Button size="small" color="primary" variant="contained">
-                  {t('Add Editor')}
+                  {docModificationThreadPageState.thread.file_type === 'Essay'
+                    ? t('Add Essay Writer')
+                    : t('Add Editor')}
                 </Button>
               )}
-
             <Typography variant="body1">
               <b>{t('Deadline')}:</b>
               {is_TaiGer_AdminAgent(user) &&

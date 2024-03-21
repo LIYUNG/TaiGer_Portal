@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Breadcrumbs, Link, Typography } from '@mui/material';
 import { Navigate, Link as LinkDom } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import ErrorPage from '../Utils/ErrorPage';
 import { getAllCVMLRLOverview } from '../../api';
@@ -19,6 +20,7 @@ import { is_new_message_status, is_pending_status } from '../Utils/contants';
 
 function EssayDashboard() {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [essayDashboardState, setEssayDashboardState] = useState({
     error: '',
     isLoaded: false,
@@ -90,9 +92,13 @@ function EssayDashboard() {
     (open_task) =>
       open_task.show &&
       !open_task.isFinalVersion &&
-      (!open_tasks_arr.outsourced_user_id ||
-        open_tasks_arr.outsourced_user_id?.length === 0)
+      (open_task.outsourced_user_id === undefined ||
+        open_task.outsourced_user_id.length === 0)
   );
+  console.log(no_essay_writer_tasks);
+  console.log(![]);
+  console.log([]?.length === 0);
+  console.log(!undefined);
   const new_message_tasks = open_tasks_arr.filter(
     (open_task) =>
       open_task.show &&
@@ -131,10 +137,12 @@ function EssayDashboard() {
         >
           {appConfig.companyName}
         </Link>
-        <Typography color="text.primary">Essay Dashboard</Typography>
+        <Typography color="text.primary">{t('Essay Dashboard')}</Typography>
       </Breadcrumbs>
       {no_essay_writer_tasks.map((task) => (
-        <Typography key={task.thread_id}>{task.document_name}</Typography>
+        <Typography key={task.thread_id}>
+          {task.firstname_lastname} -{task.document_name}
+        </Typography>
       ))}
       <CVMLRLOverview
         isLoaded={essayDashboardState.isLoaded}

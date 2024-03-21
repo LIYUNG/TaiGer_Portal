@@ -89,7 +89,10 @@ export async function combinedLoader() {
   if (essaysResponse.status >= 400 || studentsResponse.status >= 400) {
     const error = {
       message: 'Error fetching data',
-      status: essaysResponse.status >= 400 ? essaysResponse.status : studentsResponse.status
+      status:
+        essaysResponse.status >= 400
+          ? essaysResponse.status
+          : studentsResponse.status
     };
     throw error;
   }

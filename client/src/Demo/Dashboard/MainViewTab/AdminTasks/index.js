@@ -60,7 +60,7 @@ function AdminTasks(props) {
               {t('Assign Editors')}
             </Link>
           </TableCell>
-          <TableCell>Please assign editors</TableCell>
+          <TableCell>{t('Please assign editors')}</TableCell>
         </TableRow>
       )}
       {!does_essay_have_writers(props.students, props.essayDocumentThreads) && (
@@ -70,8 +70,7 @@ function AdminTasks(props) {
               {t('Assign Essay Writer')}
             </Link>
           </TableCell>
-          <TableCell>Please assign essay writers</TableCell>
-          <TableCell></TableCell>
+          <TableCell>{t('Please assign essay writers')}</TableCell>
         </TableRow>
       )}
       {/* assign number of application according to contract */}

@@ -2021,40 +2021,46 @@ const clearEssayWriters = asyncHandler(async (req, res, next) => {
 
 const getAllActiveEssays = asyncHandler(async (req, res, next) => {
   // TODO
-
   try {
-    const essayDocumentThreads = await Documentthread.find({
-      file_type: 'Essay'
-    })
-      .populate('student_id')
-      .populate({
-        path: 'student_id',
-        populate: {
-          path: 'agents',
-          model: 'User'
-        }
-      })
-      .populate('program_id', 'school program_name degree application_deadline')
-      .select('-messages')
-      .lean();
-
     const matchingDocuments = [];
-    // console.log(essayDocumentThreads);
-    for (const doc of essayDocumentThreads) {
-      if (doc.student_id && !doc.student_id.archiv) {
-        for (const application of doc.student_id?.applications || []) {
-          if (application.decided === 'O') {
-            for (const thread of application?.doc_modification_thread || []) {
-              if (doc._id.toString() === thread.doc_thread_id.toString()) {
-                matchingDocuments.push(doc);
-                break;
+    const { user } = req;
+    if (user.role === Role.Student) {
+      res.status(200).send({ success: true, data: [] });
+    } else {
+      const essayDocumentThreads = await Documentthread.find({
+        file_type: 'Essay'
+      })
+        .populate('student_id')
+        .populate({
+          path: 'student_id',
+          populate: {
+            path: 'agents',
+            model: 'User'
+          }
+        })
+        .populate(
+          'program_id',
+          'school program_name degree application_deadline'
+        )
+        .select('-messages')
+        .lean();
+
+      for (const doc of essayDocumentThreads) {
+        if (doc.student_id && !doc.student_id.archiv) {
+          for (const application of doc.student_id?.applications || []) {
+            if (application.decided === 'O') {
+              for (const thread of application?.doc_modification_thread || []) {
+                if (doc._id.toString() === thread.doc_thread_id.toString()) {
+                  matchingDocuments.push(doc);
+                  break;
+                }
               }
             }
           }
         }
       }
+      res.status(200).send({ success: true, data: matchingDocuments });
     }
-    res.status(200).send({ success: true, data: matchingDocuments });
     next();
     // Handle matched data
   } catch (error) {

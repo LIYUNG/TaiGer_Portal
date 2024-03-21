@@ -886,6 +886,26 @@ function DocModificationThreadPage() {
             <Typography variant="body1" fontWeight="bold">
               {t('Editor')}:
             </Typography>
+            {docModificationThreadPageState.thread?.outsourced_user_id?.map(
+              (outsourcer) => (
+                <Typography key={outsourcer._id}>
+                  {is_TaiGer_role(user) ? (
+                    <Link
+                      underline="hover"
+                      component={LinkDom}
+                      to={`${DEMO.TEAM_EDITOR_LINK(outsourcer._id.toString())}`}
+                      target="_blank"
+                    >
+                      {outsourcer.firstname} {outsourcer.lastname}
+                    </Link>
+                  ) : (
+                    <>
+                      {outsourcer.firstname} {outsourcer.lastname}
+                    </>
+                  )}
+                </Typography>
+              )
+            )}
             {docModificationThreadPageState.editors.map((editor, i) => (
               <Typography key={i}>
                 {is_TaiGer_role(user) ? (

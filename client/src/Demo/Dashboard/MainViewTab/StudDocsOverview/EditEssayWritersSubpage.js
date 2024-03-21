@@ -76,7 +76,13 @@ function EditEssayWritersSubpage(props) {
         <>
           <Typography variant="h6">
             {/* Essay Writer for {props.student.firstname} - {props.student.lastname} */}
-            Essay Writer for {props.essayDocumentThread._id}
+            Essay Writer for {props.essayDocumentThread.file_type}-
+            {props.essayDocumentThread.program_id?.school}-
+            {props.essayDocumentThread.program_id?.program_name}
+            {props.essayDocumentThread.program_id?.degree}
+            {props.essayDocumentThread.program_id?.semester}
+            {props.essayDocumentThread.student_id?.firstname}
+            {props.essayDocumentThread.student_id?.lastname}
           </Typography>
           <Typography variant="h6">{t('Essay Writer')}: </Typography>
           <Table size="small">

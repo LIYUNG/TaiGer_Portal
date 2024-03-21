@@ -29,7 +29,8 @@ const {
   JITSI_MEET_INSTRUCTIONS_URL,
   AGENT_CALENDAR_EVENTS_URL,
   STUDENT_CALENDAR_EVENTS_URL,
-  PROGRAM_URL
+  PROGRAM_URL,
+  ESSAY_CENTER_URL
 } = require('../constants');
 
 const {
@@ -874,23 +875,23 @@ const informStudentTheirAgentEmail = async (recipient, msg) => {
 };
 
 const informAgentEssayAssignedEmail = async (recipient, msg) => {
-  const subject = `Editor assigned for ${msg.std_firstname} ${msg.std_lastname}`;
-  let editors = '';
-  for (let i = 0; i < msg.editors.length; i += 1) {
-    editors += `<li><b>${msg.editors[i].firstname} - ${msg.editors[i].lastname}</b> Email: ${msg.editors[i].email}</li>`;
+  const thread_url = `${THREAD_URL}/${msg.thread_id}`;
+  const docName = `${msg.program.school} ${msg.program.program_name}${msg.program.degree} ${msg.program.semester}`;
+  const subject = `Essay writer assigned for ${msg.std_firstname} ${msg.std_lastname}`;
+  let essay_writers = '';
+  for (let i = 0; i < msg.essay_writers.length; i += 1) {
+    essay_writers += `<li><b>${msg.essay_writers[i].firstname} - ${msg.essay_writers[i].lastname}</b> Email: ${msg.essay_writers[i].email}</li>`;
   }
   const message = `\
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-<p>The following editors are assigned to student ${msg.std_firstname} ${
-    msg.std_lastname
-  }!</p>
+<p>The following essay writers for <a href="${thread_url}">Essay - ${docName}</a>
 
-<p>${editors}</p>
+are assigned to student ${msg.std_firstname} ${msg.std_lastname}!</p>
 
-<p>Please go to <a href="${CVMLRL_FOR_EDITOR_URL(
-    msg.std_id
-  )}">TaiGer Portal</a> , and check if the CV task is created and say hello to your student!</p>
+<p>${essay_writers}</p>
+
+<p>Please go to <a href="${ESSAY_CENTER_URL}">Essay Center</a> , and check if the Essay task is assigned correctly!</p>
 
 <p>${TAIGER_SIGNATURE}</p>
 
@@ -926,15 +927,17 @@ const informAgentStudentAssignedEmail = async (recipient, msg) => {
 };
 
 const informEssayWriterNewEssayEmail = async (recipient, msg) => {
-  const subject = `New student ${msg.std_firstname} ${msg.std_lastname} assigned to you`;
+  const thread_url = `${THREAD_URL}/${msg.thread_id}`;
+  const docName = `${msg.program.school} - ${msg.program.program_name} - ${msg.program.degree} - ${msg.program.semester}`;
+  const subject = `New Essay ${docName} assigned to you`;
   const message = `\
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-<p>${msg.std_firstname} ${msg.std_lastname} will be your student!</p>
+<p><a href="${thread_url}">${docName} for ${msg.std_firstname} ${msg.std_lastname}</a> -  will be assigned to you!</p>
 
 <p>Please go to
-<a href="${CVMLRL_FOR_EDITOR_URL(msg.std_id)}">TaiGer Portal</a>
- , and check if the CV task is created and say hello to your student!</p>
+<a href="${ESSAY_CENTER_URL}">Essay Center</a> in TaiGer Portal
+ , and check if the Essay task is created and say hello to your student!</p>
 
 <p>${TAIGER_SIGNATURE}</p>
 
@@ -1016,9 +1019,11 @@ const informStudentArchivedStudentEmail = async (recipient, payload) => {
 };
 
 const informStudentTheirEssayWriterEmail = async (recipient, msg) => {
-  const subject = 'Your Essay Writor for your Essay';
-  var editor;
-  for (let i = 0; i < msg.editors.length; i++) {
+  const thread_url = `${THREAD_URL}/${msg.thread_id}`;
+  const docName = `${msg.program.school} - ${msg.program.program_name} - ${msg.program.degree} - ${msg.program.semester}`;
+  const subject = `Your Essay Writor for your Essay ${docName}`;
+  let editor;
+  for (let i = 0; i < msg.editors.length; i += 1) {
     if (i === 0) {
       editor = `${msg.editors[i].firstname} ${msg.editors[i].lastname}`;
     } else {
@@ -1030,9 +1035,9 @@ const informStudentTheirEssayWriterEmail = async (recipient, msg) => {
 
 <p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
 
-<p>從現在開始我們的外籍顧問 ${editor} 會正式開始幫你修改、潤飾申請資料，並且全權負責申請資料(動機信、推薦信、個人履歷)的製作。</p>
+<p>從現在開始我們的專業外籍論文編輯 ${editor} 會正式開始幫你修改、潤飾並且全權負責 Essay - ${docName}。</p>
 
-<p>若有任何疑問請直接與 ${editor} 在每個修改文件 <a href="${CVMLRL_CENTER_URL}">CV ML RL Center</a> 的討論串做溝通。</p>
+<p>若有任何疑問請直接與 ${editor} 在該文件 <a href="${thread_url}">Essay - ${docName}</a> 的討論串做溝通。</p>
 
 <p>如果有任何的技術上問題，請詢問您的顧問作協助。</p>
 
@@ -1044,13 +1049,13 @@ const informStudentTheirEssayWriterEmail = async (recipient, msg) => {
 
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-<p>Let me introduce our professional Editor ${editor}. From now on, ${editor} will be fully responsible for editing your application documents (CV, Motivation letters, Recommendation Letters).</p>
+<p>Let me introduce our professional Essay Writer ${editor}. From now on, ${editor} will be fully responsible for editing your Essay - ${docName}.</p>
 
-<p>Please directly provide your feedback to ${editor} in each documents discussion threads in the <a href="${CVMLRL_CENTER_URL}">CV ML RL Center</a>. </p>
+<p>Please directly provide your feedback to ${editor} in the document thread in the <a href="${thread_url}">Essay - ${docName}</a>. </p>
 
 <p>If you have any technical problems, please ask your agent for help.</p>
 
-<p>In each TaiGer Portal's CV/ML/RL Center document discussion thread, please use <b>English</b> to provide your feedback with your edtior.</p>
+<p>In each Portal's CV/ML/RL Center document discussion thread, please use <b>English</b> to provide your feedback with your edtior.</p>
 
 
 <p>${TAIGER_SIGNATURE}</p>

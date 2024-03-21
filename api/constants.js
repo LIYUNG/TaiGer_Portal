@@ -13,6 +13,7 @@ const RESEND_ACTIVATION_URL = new URL('/account/resend-activation', ORIGIN)
 const PASSWORD_RESET_URL = new URL('/account/reset-password', ORIGIN).href;
 const FORGOT_PASSWORD_URL = new URL('/forgot-password', ORIGIN).href;
 
+const ESSAY_CENTER_URL = new URL('/essay-center', ORIGIN).href;
 const CVMLRL_CENTER_URL = new URL('/cv-ml-rl-center', ORIGIN).href;
 const CVMLRL_FOR_EDITOR_URL = (studentId) =>
   new URL(`/student-database/${studentId}#cvmlrl`, ORIGIN).href;
@@ -1636,6 +1637,7 @@ module.exports = {
   TEAMS_URL,
   PASSWORD_RESET_URL,
   FORGOT_PASSWORD_URL,
+  ESSAY_CENTER_URL,
   CVMLRL_CENTER_URL,
   CVMLRL_FOR_EDITOR_URL,
   UNI_ASSIST_FOR_STUDENT_URL,

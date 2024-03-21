@@ -1457,7 +1457,7 @@ const prepTask = (student, thread) => {
     firstname_lastname: `${student.firstname}, ${student.lastname}`,
     latest_message_left_by_id: thread.latest_message_left_by_id,
     isFinalVersion: thread.isFinalVersion,
-    outsourced_user_id: thread.outsourced_user_id,
+    outsourced_user_id: thread.doc_thread_id?.outsourced_user_id,
     file_type: thread.doc_thread_id.file_type,
     student_id: student._id.toString(),
     attributes: student.attributes,

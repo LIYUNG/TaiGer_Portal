@@ -63,7 +63,9 @@ function AdminTasks(props) {
           <TableCell>{t('Please assign editors')}</TableCell>
         </TableRow>
       )}
-      {!does_essay_have_writers(props.essayDocumentThreads) && (
+      {!does_essay_have_writers(
+        props.essayDocumentThreads.filter((thread) => !thread.isFinalVersion)
+      ) && (
         <TableRow>
           <TableCell>
             <Link to={`${DEMO.ASSIGN_ESSAY_WRITER_LINK}`} component={LinkDom}>

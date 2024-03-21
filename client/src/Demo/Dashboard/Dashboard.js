@@ -104,6 +104,7 @@ function Dashboard() {
           students={students}
           updateStudentArchivStatus={updateStudentArchivStatus}
           submitUpdateEditorlist={submitUpdateEditorlist}
+          essayDocumentThreads={essayDocumentThreads}
         />
       )}
       {is_TaiGer_Student(user) && (

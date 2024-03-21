@@ -17,6 +17,7 @@ import TabProgramConflict from '../MainViewTab/ProgramConflict/TabProgramConflic
 import StudentsAgentEditor from '../MainViewTab/StudentsAgentEditor/StudentsAgentEditor';
 import TasksDistributionBarChart from '../../../components/Charts/TasksDistributionBarChart';
 import {
+  does_essay_have_writers,
   does_student_have_editors,
   frequencyDistribution,
   open_tasks_with_editors
@@ -191,7 +192,8 @@ function EditorMainView(props) {
             </Typography>
           </Card>
         </Grid>
-        {!does_student_have_editors(props.students) && (
+        {(!does_student_have_editors(props.students) ||
+          !does_essay_have_writers(props.essayDocumentThreads)) && (
           <Grid item xs={12} md={12}>
             <Card sx={{ p: 2 }}>
               <Typography fontWeight="bold">
@@ -217,6 +219,23 @@ function EditorMainView(props) {
                     <TableCell>Please assign editors</TableCell>
                     <TableCell></TableCell>
                   </TableRow>
+                  {!does_essay_have_writers(
+                    props.essayDocumentThreads?.filter(
+                      (thread) => !thread.isFinalVersion
+                    )
+                  ) && (
+                    <TableRow>
+                      <TableCell>
+                        <Link
+                          to={`${DEMO.ASSIGN_ESSAY_WRITER_LINK}`}
+                          component={LinkDom}
+                        >
+                          {t('Assign Essay Writer')}
+                        </Link>
+                      </TableCell>
+                      <TableCell>{t('Please assign essay writers')}</TableCell>
+                    </TableRow>
+                  )}
                 </TableBody>
               </Table>
             </Card>

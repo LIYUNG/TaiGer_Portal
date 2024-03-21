@@ -326,7 +326,8 @@ const getEssayWriters = asyncHandler(async (req, res, next) => {
     const permissions = await Permission.findOne({
       user_id: user._id.toString()
     });
-    if (permissions && permissions.canAssignEditors && permissions.isEssayWriters) {
+    // if (permissions && permissions.canAssignEditors && permissions.isEssayWriters) {
+    if (permissions && permissions.canAssignEditors) {
       const editors = await Editor.find({
         $or: [{ archiv: { $exists: false } }, { archiv: false }]
       }).select('firstname lastname');

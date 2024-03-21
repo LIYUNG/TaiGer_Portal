@@ -1,29 +1,38 @@
 const { ErrorResponse } = require('../common/errors');
+const { Documentthread } = require('../models/Documentthread');
 const Permission = require('../models/Permission');
 const { Role, Student } = require('../models/User');
 
 const InnerTaigerMultitenantFilter = async (req, res, next) => {
   const {
     user,
-    params: { studentId }
+    params: { studentId, messagesThreadId }
   } = req;
   if (user.role === Role.Editor || user.role === Role.Agent) {
     const student = await Student.findById(studentId).select('agents editors');
     const permissions = await Permission.findOne({ user_id: user._id });
-
-    if (
-      student.agents.findIndex(
-        (agent_id) => agent_id.toString() === user._id.toString()
-      ) === -1 &&
-      student.editors.findIndex(
-        (editor_id) => editor_id.toString() === user._id.toString()
-      ) === -1 &&
-      !permissions?.canModifyAllBaseDocuments
-    ) {
-      return next(
-        new ErrorResponse(403, 'Permission denied: Not allowed to access other students documents. Please contact administrator.')
+    let outsourcer_allowed_modify = false;
+    if (messagesThreadId) {
+      const document_thread = await Documentthread.findById(messagesThreadId);
+      outsourcer_allowed_modify = document_thread.outsourced_user_id.some(
+        (outsourcer_id) => outsourcer_id.toString() === user._id.toString()
       );
     }
+    if (
+      [...student.agents, ...student.editors].some(
+        (taiger_user) => taiger_user.toString() === user._id.toString()
+      ) ||
+      permissions?.canModifyAllBaseDocuments ||
+      outsourcer_allowed_modify
+    ) {
+      return next();
+    }
+    next(
+      new ErrorResponse(
+        403,
+        'Permission denied: Not allowed to access other students documents. Please contact administrator.'
+      )
+    );
   }
   next();
 };

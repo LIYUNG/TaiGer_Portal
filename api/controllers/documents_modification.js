@@ -30,12 +30,14 @@ const {
   General_Docs,
   application_deadline_calculator,
   isNotArchiv,
-  CVDeadline_Calculator
+  CVDeadline_Calculator,
+  EDITOR_SCOPE,
+  ESSAY_WRITER_SCOPE
 } = require('../constants');
 const {
-  informEditorNewStudentEmail,
-  informStudentTheirEditorEmail,
-  informAgentStudentAssignedEmail
+  informEssayWriterNewEssayEmail,
+  informStudentTheirEssayWriterEmail,
+  informAgentEssayAssignedEmail
 } = require('../services/email');
 // const {
 //   getAllActiveStudents
@@ -906,7 +908,7 @@ const postMessages = asyncHandler(async (req, res) => {
 
   const document_thread = await Documentthread.findById(
     messagesThreadId
-  ).populate('student_id program_id');
+  ).populate('student_id program_id outsourced_user_id');
   if (!document_thread) {
     logger.info('postMessages: Invalid message thread id');
     throw new ErrorResponse(403, 'Invalid message thread id');
@@ -1001,114 +1003,21 @@ const postMessages = asyncHandler(async (req, res) => {
   res.status(200).send({ success: true, data: document_thread2 });
 
   if (user.role === Role.Student) {
-    if (['Form_A', 'Form_B'].includes(document_thread.file_type)) {
+    if (
+      [
+        'Supplementary_Form',
+        'Curriculum_Analysis',
+        'Form_A',
+        'Form_B',
+        'Others'
+      ].includes(document_thread.file_type)
+    ) {
       // Inform Agent
-      for (let i = 0; i < student.agents.length; i += 1) {
-        if (isNotArchiv(student)) {
-          if (isNotArchiv(student.agents[i])) {
-            // if supplementary form, inform Agent.
-            await sendNewGeneraldocMessageInThreadEmail(
-              {
-                firstname: student.agents[i].firstname,
-                lastname: student.agents[i].lastname,
-                address: student.agents[i].email
-              },
-              {
-                writer_firstname: user.firstname,
-                writer_lastname: user.lastname,
-                student_firstname: student.firstname,
-                student_lastname: student.lastname,
-                uploaded_documentname: document_thread.file_type,
-                thread_id: document_thread._id.toString(),
-                uploaded_updatedAt: new Date()
-              }
-            );
-          }
-        }
-      }
-      return;
-    }
-    // If no editor, inform agent to assign
-    if (!student.editors || student.editors.length === 0) {
-      await Student.findByIdAndUpdate(user._id, { needEditor: true }, {});
-      for (let i = 0; i < student.agents.length; i += 1) {
-        // inform active-agent
-        if (isNotArchiv(student)) {
-          if (
-            isNotArchiv(student.agents[i]) &&
-            document_thread.file_type !== 'Essay'
-          ) {
-            await sendAssignEditorReminderEmail(
-              {
-                firstname: student.agents[i].firstname,
-                lastname: student.agents[i].lastname,
-                address: student.agents[i].email
-              },
-              {
-                student_firstname: student.firstname,
-                student_id: student._id.toString(),
-                student_lastname: student.lastname
-              }
-            );
-          } else {
-            await sendAssignEssayWriterReminderEmail(
-              {
-                firstname: student.agents[i].firstname,
-                lastname: student.agents[i].lastname,
-                address: student.agents[i].email
-              },
-              {
-                student_firstname: student.firstname,
-                student_id: student._id.toString(),
-                student_lastname: student.lastname
-              }
-            );
-          }
-        }
-      }
-      // inform editor-lead
-      const permissions = await Permission.find({
-        canAssignEditors: true
-      })
-        .populate('user_id', 'firstname lastname email')
-        .lean();
-      if (permissions) {
-        for (let x = 0; x < permissions.length; x += 1) {
-          if (document_thread.file_type !== 'Essay') {
-            await sendAssignEditorReminderEmail(
-              {
-                firstname: permissions[x].user_id.firstname,
-                lastname: permissions[x].user_id.lastname,
-                address: permissions[x].user_id.email
-              },
-              {
-                student_firstname: student.firstname,
-                student_id: student._id.toString(),
-                student_lastname: student.lastname
-              }
-            );
-          } else {
-            await sendAssignEssayWriterReminderEmail(
-              {
-                firstname: permissions[x].user_id.firstname,
-                lastname: permissions[x].user_id.lastname,
-                address: permissions[x].user_id.email
-              },
-              {
-                student_firstname: student.firstname,
-                student_id: student._id.toString(),
-                student_lastname: student.lastname
-              }
-            );
-          }
-        }
-      }
-    } else {
-      if (document_thread.file_type === 'Supplementary_Form') {
-        // Inform Agent
+      if (isNotArchiv(student)) {
         for (let i = 0; i < student.agents.length; i += 1) {
-          if (isNotArchiv(student)) {
-            if (isNotArchiv(student.agents[i])) {
+          // Inform Agent
+          if (isNotArchiv(student.agents[i])) {
+            if (document_thread.program_id) {
               // if supplementary form, inform Agent.
               await sendNewApplicationMessageInThreadEmail(
                 {
@@ -1129,7 +1038,74 @@ const postMessages = asyncHandler(async (req, res) => {
                   message
                 }
               );
+            } else {
+              // if supplementary form, inform Agent.
+              await sendNewGeneraldocMessageInThreadEmail(
+                {
+                  firstname: student.agents[i].firstname,
+                  lastname: student.agents[i].lastname,
+                  address: student.agents[i].email
+                },
+                {
+                  writer_firstname: user.firstname,
+                  writer_lastname: user.lastname,
+                  student_firstname: student.firstname,
+                  student_lastname: student.lastname,
+                  uploaded_documentname: document_thread.file_type,
+                  thread_id: document_thread._id.toString(),
+                  uploaded_updatedAt: new Date()
+                }
+              );
             }
+          }
+        }
+      }
+    }
+
+    // If no editor, inform agent and editor lead to assign (Exclude Essay tasks)
+    const Editor_Scope = Object.keys(EDITOR_SCOPE);
+    if (Editor_Scope.includes(document_thread.file_type)) {
+      if (!student.editors || student.editors.length === 0) {
+        await Student.findByIdAndUpdate(user._id, { needEditor: true }, {});
+        for (let i = 0; i < student.agents.length; i += 1) {
+          // inform active-agent
+          if (isNotArchiv(student)) {
+            if (isNotArchiv(student.agents[i])) {
+              await sendAssignEditorReminderEmail(
+                {
+                  firstname: student.agents[i].firstname,
+                  lastname: student.agents[i].lastname,
+                  address: student.agents[i].email
+                },
+                {
+                  student_firstname: student.firstname,
+                  student_id: student._id.toString(),
+                  student_lastname: student.lastname
+                }
+              );
+            }
+          }
+        }
+        // inform editor-lead
+        const permissions = await Permission.find({
+          canAssignEditors: true
+        })
+          .populate('user_id', 'firstname lastname email')
+          .lean();
+        if (permissions) {
+          for (let x = 0; x < permissions.length; x += 1) {
+            await sendAssignEditorReminderEmail(
+              {
+                firstname: permissions[x].user_id.firstname,
+                lastname: permissions[x].user_id.lastname,
+                address: permissions[x].user_id.email
+              },
+              {
+                student_firstname: student.firstname,
+                student_id: student._id.toString(),
+                student_lastname: student.lastname
+              }
+            );
           }
         }
       } else {
@@ -1163,6 +1139,105 @@ const postMessages = asyncHandler(async (req, res) => {
                 firstname: student.editors[i].firstname,
                 lastname: student.editors[i].lastname,
                 address: student.editors[i].email
+              },
+              {
+                writer_firstname: user.firstname,
+                writer_lastname: user.lastname,
+                student_firstname: student.firstname,
+                student_lastname: student.lastname,
+                uploaded_documentname: document_thread.file_type,
+                thread_id: document_thread._id.toString(),
+                uploaded_updatedAt: new Date()
+              }
+            );
+          }
+        }
+      }
+    }
+    // Essay-related only notification: if no essay writer: infor agent and editor lead
+    const Essay_Writer_Scope = Object.keys(ESSAY_WRITER_SCOPE);
+    if (Essay_Writer_Scope.includes(document_thread.file_type)) {
+      if (
+        !document_thread.outsourced_user_id ||
+        document_thread.outsourced_user_id.length === 0
+      ) {
+        await Student.findByIdAndUpdate(user._id, { needEditor: true }, {});
+        for (let i = 0; i < student.agents.length; i += 1) {
+          // inform active-agent
+          if (isNotArchiv(student)) {
+            await sendAssignEssayWriterReminderEmail(
+              {
+                firstname: student.agents[i].firstname,
+                lastname: student.agents[i].lastname,
+                address: student.agents[i].email
+              },
+              {
+                student_firstname: student.firstname,
+                student_id: student._id.toString(),
+                student_lastname: student.lastname
+              }
+            );
+          }
+        }
+        // inform editor-lead
+        const permissions = await Permission.find({
+          canAssignEditors: true
+        })
+          .populate('user_id', 'firstname lastname email')
+          .lean();
+        if (permissions) {
+          for (let x = 0; x < permissions.length; x += 1) {
+            await sendAssignEssayWriterReminderEmail(
+              {
+                firstname: permissions[x].user_id.firstname,
+                lastname: permissions[x].user_id.lastname,
+                address: permissions[x].user_id.email
+              },
+              {
+                student_firstname: student.firstname,
+                student_id: student._id.toString(),
+                student_lastname: student.lastname
+              }
+            );
+          }
+        }
+      } else {
+        // Inform outsourcer
+        for (let i = 0; i < document_thread.outsourced_user_id.length; i += 1) {
+          if (document_thread.program_id) {
+            if (
+              isNotArchiv(student) &&
+              isNotArchiv(document_thread.outsourced_user_id[i])
+            ) {
+              await sendNewApplicationMessageInThreadEmail(
+                {
+                  firstname: document_thread.outsourced_user_id[i].firstname,
+                  lastname: document_thread.outsourced_user_id[i].lastname,
+                  address: document_thread.outsourced_user_id[i].email
+                },
+                {
+                  writer_firstname: user.firstname,
+                  writer_lastname: user.lastname,
+                  student_firstname: student.firstname,
+                  student_lastname: student.lastname,
+                  uploaded_documentname: document_thread.file_type,
+                  school: document_thread.program_id.school,
+                  program_name: document_thread.program_id.program_name,
+                  thread_id: document_thread._id.toString(),
+                  uploaded_updatedAt: new Date(),
+                  message
+                }
+              );
+            }
+          } else if (
+            isNotArchiv(student) &&
+            isNotArchiv(document_thread.outsourced_user_id[i])
+          ) {
+            await sendNewGeneraldocMessageInThreadEmail(
+              {
+                firstname: document_thread.outsourced_user_id[i].firstname,
+                lastname: document_thread.outsourced_user_id[i].lastname,
+                address: document_thread.outsourced_user_id[i].email
               },
               {
                 writer_firstname: user.firstname,
@@ -1881,7 +1956,7 @@ const assignEssayWritersToEssayTask = asyncHandler(async (req, res, next) => {
   for (let i = 0; i < to_be_informed_editors.length; i += 1) {
     if (isNotArchiv(student)) {
       if (isNotArchiv(to_be_informed_editors[i])) {
-        await informEditorNewStudentEmail(
+        await informEssayWriterNewEssayEmail(
           {
             firstname: to_be_informed_editors[i].firstname,
             lastname: to_be_informed_editors[i].lastname,
@@ -1900,7 +1975,7 @@ const assignEssayWritersToEssayTask = asyncHandler(async (req, res, next) => {
   for (let i = 0; i < student_upated.agents.length; i += 1) {
     if (isNotArchiv(student)) {
       if (isNotArchiv(student_upated.agents[i])) {
-        await informAgentStudentAssignedEmail(
+        await informAgentEssayAssignedEmail(
           {
             firstname: student_upated.agents[i].firstname,
             lastname: student_upated.agents[i].lastname,
@@ -1919,7 +1994,7 @@ const assignEssayWritersToEssayTask = asyncHandler(async (req, res, next) => {
 
   if (updated_editor.length !== 0) {
     if (isNotArchiv(student)) {
-      await informStudentTheirEditorEmail(
+      await informStudentTheirEssayWriterEmail(
         {
           firstname: student.firstname,
           lastname: student.lastname,

@@ -873,6 +873,32 @@ const informStudentTheirAgentEmail = async (recipient, msg) => {
   return sendEmail(recipient, subject, message);
 };
 
+const informAgentEssayAssignedEmail = async (recipient, msg) => {
+  const subject = `Editor assigned for ${msg.std_firstname} ${msg.std_lastname}`;
+  let editors = '';
+  for (let i = 0; i < msg.editors.length; i += 1) {
+    editors += `<li><b>${msg.editors[i].firstname} - ${msg.editors[i].lastname}</b> Email: ${msg.editors[i].email}</li>`;
+  }
+  const message = `\
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+
+<p>The following editors are assigned to student ${msg.std_firstname} ${
+    msg.std_lastname
+  }!</p>
+
+<p>${editors}</p>
+
+<p>Please go to <a href="${CVMLRL_FOR_EDITOR_URL(
+    msg.std_id
+  )}">TaiGer Portal</a> , and check if the CV task is created and say hello to your student!</p>
+
+<p>${TAIGER_SIGNATURE}</p>
+
+`;
+
+  return sendEmail(recipient, subject, message);
+};
+
 const informAgentStudentAssignedEmail = async (recipient, msg) => {
   const subject = `Editor assigned for ${msg.std_firstname} ${msg.std_lastname}`;
   let editors = '';
@@ -891,6 +917,24 @@ const informAgentStudentAssignedEmail = async (recipient, msg) => {
 <p>Please go to <a href="${CVMLRL_FOR_EDITOR_URL(
     msg.std_id
   )}">TaiGer Portal</a> , and check if the CV task is created and say hello to your student!</p>
+
+<p>${TAIGER_SIGNATURE}</p>
+
+`;
+
+  return sendEmail(recipient, subject, message);
+};
+
+const informEssayWriterNewEssayEmail = async (recipient, msg) => {
+  const subject = `New student ${msg.std_firstname} ${msg.std_lastname} assigned to you`;
+  const message = `\
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+
+<p>${msg.std_firstname} ${msg.std_lastname} will be your student!</p>
+
+<p>Please go to
+<a href="${CVMLRL_FOR_EDITOR_URL(msg.std_id)}">TaiGer Portal</a>
+ , and check if the CV task is created and say hello to your student!</p>
 
 <p>${TAIGER_SIGNATURE}</p>
 
@@ -963,6 +1007,51 @@ const informStudentArchivedStudentEmail = async (recipient, payload) => {
 <p>Thank you! We wish you success in your future endeavors</p>
 
 <p>For any further questions, please contact you agent ${agent}</p>
+
+<p>${TAIGER_SIGNATURE}</p>
+
+`;
+
+  return sendEmail(recipient, subject, message);
+};
+
+const informStudentTheirEssayWriterEmail = async (recipient, msg) => {
+  const subject = 'Your Essay Writor for your Essay';
+  var editor;
+  for (let i = 0; i < msg.editors.length; i++) {
+    if (i === 0) {
+      editor = `${msg.editors[i].firstname} ${msg.editors[i].lastname}`;
+    } else {
+      editor += `, ${msg.editors[i].firstname} ${msg.editors[i].lastname}`;
+    }
+  }
+  const message = `\
+<p>${ENGLISH_BELOW}</p>
+
+<p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
+
+<p>從現在開始我們的外籍顧問 ${editor} 會正式開始幫你修改、潤飾申請資料，並且全權負責申請資料(動機信、推薦信、個人履歷)的製作。</p>
+
+<p>若有任何疑問請直接與 ${editor} 在每個修改文件 <a href="${CVMLRL_CENTER_URL}">CV ML RL Center</a> 的討論串做溝通。</p>
+
+<p>如果有任何的技術上問題，請詢問您的顧問作協助。</p>
+
+<p>在 Portal 的文件修改討論串，請用<b>英文</b>溝通。</p>
+
+<br />
+
+<p>${SPLIT_LINE}</p>
+
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+
+<p>Let me introduce our professional Editor ${editor}. From now on, ${editor} will be fully responsible for editing your application documents (CV, Motivation letters, Recommendation Letters).</p>
+
+<p>Please directly provide your feedback to ${editor} in each documents discussion threads in the <a href="${CVMLRL_CENTER_URL}">CV ML RL Center</a>. </p>
+
+<p>If you have any technical problems, please ask your agent for help.</p>
+
+<p>In each TaiGer Portal's CV/ML/RL Center document discussion thread, please use <b>English</b> to provide your feedback with your edtior.</p>
+
 
 <p>${TAIGER_SIGNATURE}</p>
 
@@ -2256,10 +2345,13 @@ module.exports = {
   sendSetAsFinalProgramSpecificFileForAgentEmail,
   assignDocumentTaskToEditorEmail,
   assignDocumentTaskToStudentEmail,
+  informAgentEssayAssignedEmail,
   informAgentStudentAssignedEmail,
+  informEssayWriterNewEssayEmail,
   informEditorNewStudentEmail,
   informEditorArchivedStudentEmail,
   informStudentArchivedStudentEmail,
+  informStudentTheirEssayWriterEmail,
   informStudentTheirEditorEmail,
   createApplicationToStudentEmail,
   AnalysedCoursesDataStudentEmail,

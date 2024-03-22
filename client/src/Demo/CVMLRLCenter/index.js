@@ -117,13 +117,16 @@ function index() {
   }
   console.log(essays);
   const open_essays_tasks_arr = open_essays_tasks(essays, user);
+  const open_tasks_without_essays_arr = open_tasks(indexState.students).filter(
+    (open_task) => !AGENT_SUPPORT_DOCUMENTS_A.includes(open_task.file_type)
+  );
   console.log(open_essays_tasks_arr);
   const open_tasks_arr = [
     ...open_essays_tasks_arr,
-    ...open_tasks(indexState.students)
+    ...open_tasks_without_essays_arr
   ].filter((open_task) => open_task.show && !open_task.isFinalVersion);
   const open_tasks_withMyEssay_arr = open_tasks_arr.filter((open_task) =>
-    AGENT_SUPPORT_DOCUMENTS_A.includes[open_task.file_type] &&
+    AGENT_SUPPORT_DOCUMENTS_A.includes(open_task.file_type) &&
     is_TaiGer_Editor(user)
       ? open_task.outsourced_user_id?.some(
           (outsourcedUser) =>

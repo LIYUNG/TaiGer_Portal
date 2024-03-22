@@ -1453,15 +1453,42 @@ export const latestReplyInfo = (thread) => {
   );
 };
 
-const prepTask = (student, thread) => {
+const prepTaskStudent = (student) => {
   return {
     firstname_lastname: `${student.firstname}, ${student.lastname}`,
+    student_id: student._id.toString(),
+    attributes: student.attributes
+  };
+};
+
+const prepEssayTaskThread = (student, thread) => {
+  return {
+    ...prepTaskStudent(student),
+    latest_message_left_by_id: thread.latest_message_left_by_id,
+    isFinalVersion: thread.isFinalVersion,
+    outsourced_user_id: thread?.outsourced_user_id,
+    file_type: thread.file_type,
+    aged_days: parseInt(getNumberOfDays(thread.updatedAt, new Date())),
+    latest_reply: latestReplyInfo(thread),
+    updatedAt: convertDate(thread.updatedAt),
+    number_input_from_student: getNumberOfFilesByStudent(
+      thread.messages,
+      student._id.toString()
+    ),
+    number_input_from_editors: getNumberOfFilesByEditor(
+      thread.messages,
+      student._id.toString()
+    )
+  };
+};
+
+const prepTask = (student, thread) => {
+  return {
+    ...prepTaskStudent(student),
     latest_message_left_by_id: thread.latest_message_left_by_id,
     isFinalVersion: thread.isFinalVersion,
     outsourced_user_id: thread.doc_thread_id?.outsourced_user_id,
     file_type: thread.doc_thread_id.file_type,
-    student_id: student._id.toString(),
-    attributes: student.attributes,
     aged_days: parseInt(
       getNumberOfDays(thread.doc_thread_id.updatedAt, new Date())
     ),
@@ -1488,6 +1515,39 @@ const prepGeneralTask = (student, thread) => {
     show: true,
     document_name: `${thread.doc_thread_id.file_type}`,
     days_left: daysLeftMin
+  };
+};
+
+const prepEssayTask = (essay, user) => {
+  return {
+    ...prepEssayTaskThread(essay.student_id, essay),
+    // ...prepTask(student, thread),
+    thread_id: essay._id.toString(),
+    program_id: essay.program_id._id.toString(),
+    deadline: application_deadline_calculator(essay.student_id, {
+      programId: essay.program_id
+    }),
+    show:
+      AGENT_SUPPORT_DOCUMENTS_A.includes(essay.file_type) &&
+      is_TaiGer_Editor(user)
+        ? essay.outsourced_user_id?.some(
+            (outsourcer) => outsourcer._id.toString() === user._id.toString()
+          ) || false
+        : is_TaiGer_Agent(user)
+        ? essay.student_id?.agents.some(
+            (agent) => agent._id.toString() === user._id.toString()
+          ) || false
+        : true,
+    document_name: `${essay.file_type} - ${essay.program_id.school} - ${essay.program_id.degree} -${essay.program_id.program_name}`,
+    days_left:
+      parseInt(
+        getNumberOfDays(
+          new Date(),
+          application_deadline_calculator(essay.student_id, {
+            programId: essay.program_id
+          })
+        )
+      ) || '-'
   };
 };
 
@@ -1523,6 +1583,19 @@ export const open_tasks = (students) => {
         }
       }
     }
+  }
+  return tasks;
+};
+
+export const open_essays_tasks = (essays, user) => {
+  const tasks = [];
+  for (const essay of essays) {
+    console.log(
+      essay.outsourced_user_id?.some(
+        (outsourcer) => outsourcer._id.toString() === user._id.toString()
+      )
+    );
+    tasks.push(prepEssayTask(essay, user));
   }
   return tasks;
 };

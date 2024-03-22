@@ -468,7 +468,8 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
       )
       .populate({
         path: 'generaldocs_threads.doc_thread_id',
-        select: 'file_type isFinalVersion updatedAt messages.file',
+        select:
+          'file_type isFinalVersion outsourced_user_id updatedAt messages.file',
         populate: {
           path: 'messages.user_id',
           select: 'firstname lastname'
@@ -476,7 +477,8 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
       })
       .populate({
         path: 'applications.doc_modification_thread.doc_thread_id',
-        select: 'file_type isFinalVersion updatedAt messages.file',
+        select:
+          'file_type isFinalVersion outsourced_user_id updatedAt messages.file',
         populate: {
           path: 'messages.user_id',
           select: 'firstname lastname'
@@ -498,7 +500,8 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
       )
       .populate({
         path: 'generaldocs_threads.doc_thread_id',
-        select: 'file_type isFinalVersion updatedAt messages.file',
+        select:
+          'file_type isFinalVersion outsourced_user_id updatedAt messages.file',
         populate: {
           path: 'messages.user_id',
           select: 'firstname lastname'
@@ -506,7 +509,8 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
       })
       .populate({
         path: 'applications.doc_modification_thread.doc_thread_id',
-        select: 'file_type isFinalVersion updatedAt messages.file',
+        select:
+          'file_type isFinalVersion outsourced_user_id updatedAt messages.file',
         populate: {
           path: 'messages.user_id',
           select: 'firstname lastname'
@@ -532,7 +536,7 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
         path: 'generaldocs_threads.doc_thread_id',
         select: 'file_type isFinalVersion updatedAt messages.file',
         populate: {
-          path: 'messages.user_id',
+          path: 'messages.user_id outsourced_user_id',
           select: 'firstname lastname'
         }
       })
@@ -540,7 +544,7 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
         path: 'applications.doc_modification_thread.doc_thread_id',
         select: 'file_type isFinalVersion updatedAt messages.file',
         populate: {
-          path: 'messages.user_id',
+          path: 'messages.user_id outsourced_user_id',
           select: 'firstname lastname'
         }
       })
@@ -564,7 +568,8 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
       )
       .populate({
         path: 'generaldocs_threads.doc_thread_id',
-        select: 'file_type isFinalVersion updatedAt messages.file',
+        select:
+          'file_type isFinalVersion outsourced_user_id updatedAt messages.file',
         populate: {
           path: 'messages.user_id',
           select: 'firstname lastname'
@@ -572,7 +577,8 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
       })
       .populate({
         path: 'applications.doc_modification_thread.doc_thread_id',
-        select: 'file_type isFinalVersion updatedAt messages.file',
+        select:
+          'file_type isFinalVersion outsourced_user_id updatedAt messages.file',
         populate: {
           path: 'messages.user_id',
           select: 'firstname lastname'
@@ -2141,14 +2147,15 @@ const getAllActiveEssays = asyncHandler(async (req, res, next) => {
       const essayDocumentThreads = await Documentthread.find({
         file_type: 'Essay'
       })
-        .populate('student_id')
+        .populate('student_id outsourced_user_id')
         .populate({
-          path: 'student_id',
+          path: 'student_id messages.user_id',
           populate: {
             path: 'agents',
             model: 'User'
           }
         })
+        .populate('messages.user_id', 'firstname lastname role')
         .populate(
           'program_id',
           'school program_name degree application_deadline'

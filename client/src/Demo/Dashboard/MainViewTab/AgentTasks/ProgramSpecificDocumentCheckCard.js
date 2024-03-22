@@ -34,7 +34,7 @@ function ProgramSpecificDocumentCheckCard(props) {
       <Table size="small">
         <TableHead>
           <TableRow>
-            <TableCell>{t('Student Name')}</TableCell>
+            <TableCell>{t('Student Name', { ns: 'common' })}</TableCell>
             <TableCell>{t('Deadline')}</TableCell>
             <TableCell>{t('Documents', { ns: 'common' })}</TableCell>
           </TableRow>

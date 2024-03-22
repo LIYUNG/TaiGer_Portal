@@ -35,7 +35,7 @@ const NoEnoughDecidedProgramsTasks = (props) => {
             >
               <Typography fontWeight="bold">
                 {props.student.firstname} {props.student.lastname}{' '}
-                {t('Applications')}
+                {t('Applications', { ns: 'common' })}
               </Typography>
             </Link>
           </TableCell>

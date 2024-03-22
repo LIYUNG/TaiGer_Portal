@@ -93,7 +93,6 @@ function ApplicationOverviewTabs(props) {
     setAnchorEl(null);
   };
   const handleRowClick = (event) => {
-    // console.log(event);
     setAnchorEl(event);
     const rowData = event.row;
     setClickedRowData(rowData || null);
@@ -158,7 +157,6 @@ function ApplicationOverviewTabs(props) {
     event.stopPropagation();
   };
   const open = Boolean(anchorEl);
-  // console.log(open);
 
   return (
     <>

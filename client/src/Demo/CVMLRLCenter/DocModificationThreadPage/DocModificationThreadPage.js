@@ -37,7 +37,8 @@ import {
   SubmitMessageWithAttachment,
   getMessagThread,
   deleteAMessageInThread,
-  SetFileAsFinal
+  SetFileAsFinal,
+  updateEssayWriter
 } from '../../../api';
 import { TabTitle } from '../../Utils/TabTitle';
 import DEMO from '../../../store/constant';
@@ -46,6 +47,7 @@ import { appConfig } from '../../../config';
 import { useAuth } from '../../../components/AuthProvider';
 import Loading from '../../../components/Loading/Loading';
 import ModalNew from '../../../components/Modal';
+import EditEssayWritersSubpage from '../../Dashboard/MainViewTab/StudDocsOverview/EditEssayWritersSubpage';
 
 function DocModificationThreadPage() {
   const { user } = useAuth();
@@ -58,6 +60,7 @@ function DocModificationThreadPage() {
       componentRef: React.createRef(),
       isLoaded: false,
       isFilesListOpen: false,
+      showEditorPage: false,
       isSubmissionLoaded: true,
       articles: [],
       isEdit: false,
@@ -220,7 +223,6 @@ function DocModificationThreadPage() {
                 checkPoints_temp2.corretFirstname.text =
                   checkPoints_temp2.corretFirstname.text.replace('NOT ', '');
               }
-              console.log(`${headerText}${footerText}`);
               if (`${headerText}${footerText}` !== '') {
                 checkPoints_temp2.metadata = {
                   hasMetadata: true,
@@ -584,6 +586,68 @@ function DocModificationThreadPage() {
     }));
   };
 
+  const setEditorModalhide = () => {
+    setDocModificationThreadPageState((prevState) => ({
+      ...prevState,
+      showEditorPage: false
+    }));
+  };
+
+  const startEditingEditor = () => {
+    setDocModificationThreadPageState((prevState) => ({
+      ...prevState,
+      subpage: 2,
+      showEditorPage: true
+    }));
+  };
+
+  const submitUpdateEssayWriterlist = (
+    e,
+    updateEssayWriterList,
+    essayDocumentThread_id
+  ) => {
+    e.preventDefault();
+    setEditorModalhide();
+    updateEssayWriter(updateEssayWriterList, essayDocumentThread_id).then(
+      (resp) => {
+        const { data, success } = resp.data;
+        const { status } = resp;
+        if (success) {
+          let essays_temp = {
+            ...docModificationThreadPageState.thread
+          };
+          essays_temp.outsourced_user_id = data.outsourced_user_id; // data is single student updated
+          setDocModificationThreadPageState((prevState) => ({
+            ...prevState,
+            isLoaded: true, //false to reload everything
+            thread: essays_temp,
+            success: success,
+            updateEditorList: [],
+            res_modal_status: status
+          }));
+        } else {
+          const { message } = resp.data;
+          setDocModificationThreadPageState((prevState) => ({
+            ...prevState,
+            isLoaded: true,
+            res_modal_message: message,
+            res_modal_status: status
+          }));
+        }
+      },
+      (error) => {
+        console.log('error in index');
+        setDocModificationThreadPageState((prevState) => ({
+          ...prevState,
+          isLoaded: true,
+          error,
+          res_modal_status: 500,
+          res_modal_message: ''
+        }));
+      }
+    );
+  };
+
   const handleCloseFileList = () => {
     setDocModificationThreadPageState((prevState) => ({
       ...prevState,
@@ -935,7 +999,12 @@ function DocModificationThreadPage() {
               [...AGENT_SUPPORT_DOCUMENTS_A].includes(
                 docModificationThreadPageState.thread.file_type
               ) && (
-                <Button size="small" color="primary" variant="contained">
+                <Button
+                  size="small"
+                  color="primary"
+                  variant="contained"
+                  onClick={startEditingEditor}
+                >
                   {docModificationThreadPageState.thread.file_type === 'Essay'
                     ? t('Add Essay Writer')
                     : t('Add Editor')}
@@ -1141,6 +1210,16 @@ function DocModificationThreadPage() {
           </Button>
         </Box>
       </ModalNew>
+      {is_TaiGer_role(user) &&
+        docModificationThreadPageState.showEditorPage && (
+          <EditEssayWritersSubpage
+            show={docModificationThreadPageState.showEditorPage}
+            onHide={setEditorModalhide}
+            setmodalhide={setEditorModalhide}
+            submitUpdateEssayWriterlist={submitUpdateEssayWriterlist}
+            essayDocumentThread={docModificationThreadPageState.thread}
+          />
+        )}
       {res_modal_status >= 400 && (
         <ModalMain
           ConfirmError={ConfirmError}

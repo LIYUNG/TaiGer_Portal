@@ -213,7 +213,7 @@ function EditorMainView(props) {
                         to={`${DEMO.ASSIGN_EDITOR_LINK}`}
                         component={LinkDom}
                       >
-                        Assign Editors
+                        {t('Assign Editors')}
                       </Link>
                     </TableCell>
                     <TableCell>Please assign editors</TableCell>
@@ -230,7 +230,7 @@ function EditorMainView(props) {
                           to={`${DEMO.ASSIGN_ESSAY_WRITER_LINK}`}
                           component={LinkDom}
                         >
-                          {t('Assign Essay Writer')}
+                          {t('Assign Essay Writer', { ns: 'common' })}
                         </Link>
                       </TableCell>
                       <TableCell>{t('Please assign essay writers')}</TableCell>

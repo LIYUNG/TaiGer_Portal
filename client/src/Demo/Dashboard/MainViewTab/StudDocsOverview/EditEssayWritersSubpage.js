@@ -20,7 +20,6 @@ function EditEssayWritersSubpage(props) {
   const [isLoaded, setIsLoaded] = useState(false);
   const { t } = useTranslation();
 
-  // console.log("essayDocumentThread in subpage:", props.essayDocumentThread)//undefined
   useEffect(() => {
     // Initialize the state with checked checkboxes based on the student's editors
     getEssayWriters().then(

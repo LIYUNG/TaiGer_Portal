@@ -1770,9 +1770,9 @@ const assignEssayTaskToEditorEmail = async (recipient, msg) => {
   const message = `\
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-${msg.student_firstname} ${msg.student_lastname} -  ${msg.documentname},
+<p>The Essay <b>${msg.documentname}</b> is created for ${msg.student_firstname} ${msg.student_lastname} -  ${msg.documentname},</p>
 
-<p>An Essay ${msg.documentname} is created for ${msg.student_firstname} ${msg.student_lastname} , <b>but this Essay does not have any Essay Writer yet.</b></p>
+<p>but this Essay does <b>not</b> have any Essay Writer yet.</p>
 
 <p><b>Please assign an Essay Writer to the Essay <a href="${THREAD_LINK}">${msg.student_firstname} ${msg.student_lastname} - ${msg.documentname}</a></b></p>
 

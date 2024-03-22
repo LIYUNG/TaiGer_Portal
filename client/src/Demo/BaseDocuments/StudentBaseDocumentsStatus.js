@@ -242,7 +242,6 @@ function StudentBaseDocumentsStatus(props) {
             style={{ textDecoration: 'none', cursor: 'pointer' }}
             onClick={(e) => {
               showPreview(e, object_init[k].path, k);
-              console.log(object_init[k].status);
             }}
           />
         </TableCell>

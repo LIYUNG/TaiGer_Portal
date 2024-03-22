@@ -35,7 +35,6 @@ function index() {
   useEffect(() => {
     getCVMLRLOverview().then(
       (resp) => {
-        console.log('test in cvmlrl dashboard')
         const { data, success } = resp.data;
         const { status } = resp;
         if (success) {
@@ -64,7 +63,6 @@ function index() {
       }
     );
   }, []);
-  // console.log('test')
   const { res_status, isLoaded } = indexState;
   TabTitle('CV ML RL Center');
   if (!isLoaded && !indexState.students) {

@@ -49,6 +49,7 @@ export const translation_zh_TW = {
     Delete: '刪除',
     Status: '狀態',
     Tasks: '任務',
+    'Assign Essay Writer': '指派論文編輯',
     'Application Year': '申請年',
     'Move to Archiv': '移至Archiv',
     'Archiv Students': '過往學生',
@@ -98,7 +99,10 @@ export const translation_zh_TW = {
     No: '否',
     Ok: '確定',
     Submitted: '已送出',
-    Download: '下載'
+    Download: '下載',
+    'To Do Tasks': '待辦事項清單',
+    'Agent Support': '顧問任務',
+    'Essay Center': '論文中心'
   },
   dashboard: {
     Dashboard: '主控台',
@@ -182,7 +186,6 @@ export const translation_zh_TW = {
     'Based on the applications, Uni-Assist is NOT needed':
       '根據您的欲申請的學程， 您並不需要處理 Uni-Assist 第三方學歷認證流程。',
     'Course Analysis explanation button': '點我詳細解說',
-    'To Do Tasks': '待辦事項清單',
     'New feedback from your Editor': '您有來自編輯的新回復',
     'New tasks are assigned to you': '有新的任務指派給你',
     'It looks like you did not decide programs': '您仍有科系尚未決定',
@@ -364,6 +367,7 @@ export const translation_zh_TW = {
     'Last update': '最後更新於',
     'Upload Time': '上傳時間',
     Upload: '上傳',
-    'Log Out': '登出'
+    'Log Out': '登出',
+    'Please assign essay writers': '請指派論文編輯'
   }
 };

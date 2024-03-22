@@ -26,13 +26,10 @@ import useStudents from '../../hooks/useStudents';
 
 function Dashboard() {
   const { user } = useAuth();
-  const Data = useLoaderData()
-  console.log('Data123:', Data)
   const {
     data: { data: fetchedStudents, isCoursesFilled, notification },
     essays: { data: essayDocumentThreads }
   } = useLoaderData();
-  console.log('essayDocumentThreads:', essayDocumentThreads);
   const { t } = useTranslation();
   const {
     students,

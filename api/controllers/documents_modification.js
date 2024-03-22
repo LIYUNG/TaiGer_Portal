@@ -2039,11 +2039,25 @@ const assignEssayWritersToEssayTask = asyncHandler(async (req, res, next) => {
       '-messages'
     )
     .exec();
+  const essayDocumentThreads_Updated = await Documentthread.findById(
+    messagesThreadId
+  )
+    .populate('student_id outsourced_user_id')
+    .populate({
+      path: 'student_id',
+      populate: {
+        path: 'agents',
+        model: 'User'
+      }
+    })
+    .populate(
+      'program_id',
+      'school program_name degree semester application_deadline'
+    )
+    .select('-messages')
+    .lean();
+  res.status(200).send({ success: true, data: essayDocumentThreads_Updated });
 
-  res.status(200).send({ success: true, data: essayDocumentThreads });
-
-  // console.log('student:', student)
-  // console.log('essayDocumentThreads[0].student_id:', essayDocumentThreads[0].student_id.toString())
   for (let i = 0; i < to_be_informed_essay_writer.length; i += 1) {
     if (isNotArchiv(student)) {
       if (isNotArchiv(to_be_informed_essay_writer[i])) {

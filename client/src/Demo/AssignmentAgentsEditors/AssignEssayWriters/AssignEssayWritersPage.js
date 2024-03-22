@@ -42,7 +42,9 @@ function AssignEssayWritersPage(props) {
         >
           {appConfig.companyName}
         </Link>
-        <Typography color="text.primary">Assign Essay Writers</Typography>
+        <Typography color="text.primary">
+          {t('Assign Essay Writer', { ns: 'common' })}
+        </Typography>
       </Breadcrumbs>
       <Card sx={{ p: 2 }}>
         <Typography variant="h6">{t('No Writers Essays')}</Typography>

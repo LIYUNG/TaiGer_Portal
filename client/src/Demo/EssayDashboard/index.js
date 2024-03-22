@@ -95,10 +95,7 @@ function EssayDashboard() {
       (open_task.outsourced_user_id === undefined ||
         open_task.outsourced_user_id.length === 0)
   );
-  console.log(no_essay_writer_tasks);
-  console.log(![]);
-  console.log([]?.length === 0);
-  console.log(!undefined);
+
   const new_message_tasks = open_tasks_arr.filter(
     (open_task) =>
       open_task.show &&

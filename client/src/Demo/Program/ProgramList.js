@@ -98,7 +98,6 @@ function ProgramList(props) {
 
   useEffect(() => {
     const data_idxes = rowSelectionModel;
-    // console.log(data_idxes);
     setPrograms({
       programIds: data_idxes.map(
         (idx) => statedata.programs.find((program) => program?._id === idx)?._id
@@ -345,7 +344,6 @@ function ProgramList(props) {
     event.preventDefault();
     event.stopPropagation();
   };
-  // console.log(filters);
   return (
     <Box>
       {tableStates.res_modal_status >= 400 && (

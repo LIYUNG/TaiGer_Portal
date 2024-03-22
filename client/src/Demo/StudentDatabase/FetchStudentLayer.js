@@ -8,7 +8,6 @@ export const FetchStudentLayer = ({ studentId }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [, setError] = useState(null);
   useEffect(() => {
-    console.log(window.innerWidth);
     getStudentAndDocLinks(studentId).then(
       (resp) => {
         const {

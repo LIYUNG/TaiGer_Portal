@@ -13,7 +13,6 @@ import { useTranslation } from 'react-i18next';
 
 function AdminTasks(props) {
   const { t } = useTranslation();
-  // console.log("students in adminTasks:", props.students)
   const missing_number_of_applications_students = props.students.map(
     (student, i) =>
       is_num_Program_Not_specified(student) && (
@@ -69,7 +68,7 @@ function AdminTasks(props) {
         <TableRow>
           <TableCell>
             <Link to={`${DEMO.ASSIGN_ESSAY_WRITER_LINK}`} component={LinkDom}>
-              {t('Assign Essay Writer')}
+              {t('Assign Essay Writer', { ns: 'common' })}
             </Link>
           </TableCell>
           <TableCell>{t('Please assign essay writers')}</TableCell>

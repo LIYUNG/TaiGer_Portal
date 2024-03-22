@@ -58,6 +58,7 @@ export const translation_en = {
     'Program Conflicts': 'Program Conflicts',
     'Tasks Dashboard': 'Tasks Dashboard',
     'Program Conflict': 'Program Conflict',
+    Category: 'Calendar',
     Calendar: 'Calendar',
     'Calendar Events': 'Calendar Events',
     'My Students': 'My Students',

@@ -58,6 +58,7 @@ export const translation_zh_TW = {
     'Program Conflicts': '重疊申請',
     'Tasks Dashboard': '撰寫任務中心',
     'Program Conflict': '重疊申請總攬',
+    Category: '種類',
     Calendar: '行事曆',
     'Calendar Events': '行事曆',
     'My Students': '我的學生',

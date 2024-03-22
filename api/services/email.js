@@ -1762,6 +1762,29 @@ on ${msg.uploaded_updatedAt} for ${msg.student_firstname} ${
   }
 };
 
+// For editor lead, english only
+const assignEssayTaskToEditorEmail = async (recipient, msg) => {
+  const subject = `[TODO] Assign Essay Writer to ${msg.student_firstname} ${msg.student_lastname} ${msg.documentname}`;
+  const THREAD_LINK = new URL(`/document-modification/${msg.thread_id}`, ORIGIN)
+    .href;
+  const message = `\
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+
+${msg.student_firstname} ${msg.student_lastname} -  ${msg.documentname},
+
+<p>An Essay ${msg.documentname} is created for ${msg.student_firstname} ${msg.student_lastname} , <b>but this Essay does not have any Essay Writer yet.</b></p>
+
+<p><b>Please assign an Essay Writer to the Essay <a href="${THREAD_LINK}">${msg.student_firstname} ${msg.student_lastname} - ${msg.documentname}</a></b></p>
+
+<p>If you have any question, feel free to contact your agent.</p>
+
+<p>${TAIGER_SIGNATURE}</p>
+
+`;
+
+  sendEmail(recipient, subject, message);
+};
+
 // For editor, english only
 const assignDocumentTaskToEditorEmail = async (recipient, msg) => {
   const subject = `[New Task] ${msg.student_firstname} ${msg.student_lastname} ${msg.documentname} is assigned to you!`;
@@ -2348,6 +2371,7 @@ module.exports = {
   sendNewGeneraldocMessageInThreadEmail,
   sendSetAsFinalProgramSpecificFileForStudentEmail,
   sendSetAsFinalProgramSpecificFileForAgentEmail,
+  assignEssayTaskToEditorEmail,
   assignDocumentTaskToEditorEmail,
   assignDocumentTaskToStudentEmail,
   informAgentEssayAssignedEmail,

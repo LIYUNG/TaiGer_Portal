@@ -21,7 +21,8 @@ const {
   sendSetAsFinalProgramSpecificFileForAgentEmail,
   assignDocumentTaskToEditorEmail,
   assignDocumentTaskToStudentEmail,
-  sendAssignEssayWriterReminderEmail
+  sendAssignEssayWriterReminderEmail,
+  assignEssayTaskToEditorEmail
   // sendSomeReminderEmail,
 } = require('../services/email');
 const logger = require('../services/logger');
@@ -775,23 +776,54 @@ const initApplicationMessagesThread = asyncHandler(async (req, res) => {
     );
   res.status(200).send({ success: true, data: temp });
 
+  const Essay_Writer_Scope = Object.keys(ESSAY_WRITER_SCOPE);
   const documentname = `${document_category} - ${application.programId.school} - ${application.programId.program_name}`;
+  if (Essay_Writer_Scope.includes(document_category)) {
+    const permissions = await Permission.find({
+      canAssignEditors: true
+    })
+      .populate('user_id', 'firstname lastname email')
+      .lean();
+    if (permissions) {
+      for (let x = 0; x < permissions.length; x += 1) {
+        await assignEssayTaskToEditorEmail(
+          {
+            firstname: permissions[x].user_id.firstname,
+            lastname: permissions[x].user_id.lastname,
+            address: permissions[x].user_id.email
+          },
+          {
+            student_firstname: student2.firstname,
+            student_lastname: student2.lastname,
+            student_id: student2._id.toString(),
+            thread_id: new_doc_thread._id,
+            documentname,
+            updatedAt: new Date()
+          }
+        );
+      }
+    }
+  }
+
   for (let i = 0; i < student.editors.length; i += 1) {
     if (isNotArchiv(student)) {
-      await assignDocumentTaskToEditorEmail(
-        {
-          firstname: student.editors[i].firstname,
-          lastname: student.editors[i].lastname,
-          address: student.editors[i].email
-        },
-        {
-          student_firstname: student2.firstname,
-          student_lastname: student2.lastname,
-          thread_id: new_doc_thread._id,
-          documentname,
-          updatedAt: new Date()
-        }
-      );
+      if (!Essay_Writer_Scope.includes(document_category)) {
+        // TODO: inform Edior lead to assign
+        await assignDocumentTaskToEditorEmail(
+          {
+            firstname: student.editors[i].firstname,
+            lastname: student.editors[i].lastname,
+            address: student.editors[i].email
+          },
+          {
+            student_firstname: student2.firstname,
+            student_lastname: student2.lastname,
+            thread_id: new_doc_thread._id,
+            documentname,
+            updatedAt: new Date()
+          }
+        );
+      }
     }
   }
   if (isNotArchiv(student2)) {

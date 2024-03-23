@@ -15,7 +15,7 @@ import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
 import { appConfig } from '../../config';
 import Loading from '../../components/Loading/Loading';
-import CVMLRLOverview from '../CVMLRLCenter/CVMLRLOverview';
+import EssayOverview from './EssayOverview';
 import { is_new_message_status, is_pending_status } from '../Utils/contants';
 
 function EssayDashboard() {
@@ -141,10 +141,11 @@ function EssayDashboard() {
           {task.firstname_lastname} -{task.document_name}
         </Typography>
       ))}
-      <CVMLRLOverview
+      <EssayOverview
         isLoaded={essayDashboardState.isLoaded}
         success={essayDashboardState.success}
         students={essayDashboardState.students}
+        no_essay_writer_tasks={no_essay_writer_tasks}
         new_message_tasks={new_message_tasks}
         followup_tasks={followup_tasks}
         pending_progress_tasks={pending_progress_tasks}

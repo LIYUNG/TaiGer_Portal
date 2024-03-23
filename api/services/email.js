@@ -29,8 +29,7 @@ const {
   JITSI_MEET_INSTRUCTIONS_URL,
   AGENT_CALENDAR_EVENTS_URL,
   STUDENT_CALENDAR_EVENTS_URL,
-  PROGRAM_URL,
-  ESSAY_CENTER_URL
+  PROGRAM_URL
 } = require('../constants');
 
 const {
@@ -891,7 +890,7 @@ are assigned to student ${msg.std_firstname} ${msg.std_lastname}!</p>
 
 <p>${essay_writers}</p>
 
-<p>Please go to <a href="${ESSAY_CENTER_URL}">Essay Center</a> , and check if the Essay task is assigned correctly!</p>
+<p>Please go to <a href="${CVMLRL_CENTER_URL}">CVMLRL Center</a> , and check if the Essay task is assigned correctly!</p>
 
 <p>${TAIGER_SIGNATURE}</p>
 
@@ -936,7 +935,7 @@ const informEssayWriterNewEssayEmail = async (recipient, msg) => {
 <p><a href="${thread_url}">${docName} for ${msg.std_firstname} ${msg.std_lastname}</a> -  will be assigned to you!</p>
 
 <p>Please go to
-<a href="${ESSAY_CENTER_URL}">Essay Center</a> in TaiGer Portal
+<a href="${CVMLRL_CENTER_URL}">CVMLRL Center</a> in TaiGer Portal
  , and check if the Essay task is created and say hello to your student!</p>
 
 <p>${TAIGER_SIGNATURE}</p>

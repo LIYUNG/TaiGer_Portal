@@ -11,8 +11,6 @@ import {
 
 export async function getStudentsLoader() {
   const response = await getStudents();
-  // console.log(response);
-  // console.log(response.statusText);
   if (response.status >= 400) {
     throw json({ message: response.statusText }, { status: response.status });
   } else {
@@ -22,8 +20,6 @@ export async function getStudentsLoader() {
 
 export async function getAllActiveEssaysLoader() {
   const response = await getAllActiveEssays();
-  // console.log(response);
-  // console.log(response.statusText);
   if (response.status >= 400) {
     throw json({ message: response.statusText }, { status: response.status });
   } else {

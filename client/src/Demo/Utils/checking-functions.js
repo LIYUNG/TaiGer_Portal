@@ -1461,10 +1461,16 @@ const prepTaskStudent = (student) => {
   };
 };
 
+// the messages[0] is already the latest message handled by backend query.
+const latestReplyUserId = (thread) => {
+  return thread.messages?.length > 0
+    ? thread.messages[0].user_id?._id.toString()
+    : '';
+};
 const prepEssayTaskThread = (student, thread) => {
   return {
     ...prepTaskStudent(student),
-    latest_message_left_by_id: thread.latest_message_left_by_id,
+    latest_message_left_by_id: latestReplyUserId(thread),
     isFinalVersion: thread.isFinalVersion,
     outsourced_user_id: thread?.outsourced_user_id,
     file_type: thread.file_type,

@@ -2142,11 +2142,10 @@ const getAllActiveEssays = asyncHandler(async (req, res, next) => {
     const matchingDocuments = [];
     const { user } = req;
     if (user.role === Role.Student) {
-      res.status(200).send({ success: true, data: [] });
-    } else {
-      const essayDocumentThreads = await Documentthread.find({
-        file_type: 'Essay'
-      })
+      const essayDocumentThreads = await Documentthread.find(
+        { student_id: user._id, file_type: 'Essay' },
+        { messages: { $slice: -1 } }
+      )
         .populate('student_id outsourced_user_id')
         .populate({
           path: 'student_id messages.user_id',
@@ -2158,9 +2157,45 @@ const getAllActiveEssays = asyncHandler(async (req, res, next) => {
         .populate('messages.user_id', 'firstname lastname role')
         .populate(
           'program_id',
-          'school program_name degree application_deadline'
+          'school program_name degree application_deadline semester'
         )
-        .select('-messages')
+        .lean();
+
+      for (const doc of essayDocumentThreads) {
+        if (doc.student_id && !doc.student_id.archiv) {
+          for (const application of doc.student_id?.applications || []) {
+            if (application.decided === 'O') {
+              for (const thread of application?.doc_modification_thread || []) {
+                if (doc._id.toString() === thread.doc_thread_id.toString()) {
+                  matchingDocuments.push(doc);
+                  break;
+                }
+              }
+            }
+          }
+        }
+      }
+      res.status(200).send({ success: true, data: matchingDocuments });
+    } else {
+      const essayDocumentThreads = await Documentthread.find(
+        {
+          file_type: 'Essay'
+        },
+        { messages: { $slice: -1 } }
+      )
+        .populate('student_id outsourced_user_id')
+        .populate({
+          path: 'student_id messages.user_id',
+          populate: {
+            path: 'agents',
+            model: 'User'
+          }
+        })
+        .populate('messages.user_id', 'firstname lastname role')
+        .populate(
+          'program_id',
+          'school program_name degree application_deadline semester'
+        )
         .lean();
 
       for (const doc of essayDocumentThreads) {

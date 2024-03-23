@@ -115,12 +115,11 @@ function index() {
   if (res_status >= 400) {
     return <ErrorPage res_status={res_status} />;
   }
-  console.log(essays);
+  // TODO:  Essay not shown for Student!
   const open_essays_tasks_arr = open_essays_tasks(essays, user);
   const open_tasks_without_essays_arr = open_tasks(indexState.students).filter(
     (open_task) => !AGENT_SUPPORT_DOCUMENTS_A.includes(open_task.file_type)
   );
-  console.log(open_essays_tasks_arr);
   const open_tasks_arr = [
     ...open_essays_tasks_arr,
     ...open_tasks_without_essays_arr

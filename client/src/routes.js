@@ -7,7 +7,8 @@ import {
   getStudentAndDocLinksLoader,
   getStudentsLoader,
   // getEssaysLoader,
-  combinedLoader
+  combinedLoader,
+  getAllActiveEssaysLoader
 } from './api/dataLoader';
 import DefaultErrorPage from './Demo/Utils/DefaultErrorPage';
 
@@ -56,7 +57,6 @@ const CVMLRLDashboard = React.lazy(() =>
   import('./Demo/CVMLRLCenter/indexAll')
 );
 const EssayDashboard = React.lazy(() => import('./Demo/EssayDashboard/index'));
-const EssayOutsourcerPage = React.lazy(() => import('./Demo/EssayDashboard/essayOutsourcerPage'));
 const AllApplicantsOverview = React.lazy(() =>
   import('./Demo/ApplicantsOverview/allStudentIndex')
 );
@@ -186,7 +186,7 @@ const routes = [
       {
         path: 'essay-writers',
         errorElement: <DefaultErrorPage />,
-        loader: combinedLoader,
+        loader: getAllActiveEssaysLoader,
         element: <EssayWritersAssignment />
       }
     ]
@@ -365,12 +365,6 @@ const routes = [
     exact: true,
     name: 'AgentSupportDocuments',
     Component: AgentSupportDocuments
-  },
-  {
-    path: '/essay-center',
-    exact: true,
-    name: 'EssayCenter',
-    Component: EssayOutsourcerPage
   },
   {
     path: '/all-base-documents',

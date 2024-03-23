@@ -335,15 +335,6 @@ export const MenuSidebar = [
         breadcrumbs: false
       },
       {
-        id: 'essay-center',
-        title: 'Essay Center',
-        type: 'item',
-        url: '/essay-center',
-        icon: <BorderColorIcon />,
-        target: false,
-        breadcrumbs: false
-      },
-      {
         id: 'editor_center',
         title: 'CV/ML/RL Center',
         type: 'item',

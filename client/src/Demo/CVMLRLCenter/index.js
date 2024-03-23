@@ -123,8 +123,8 @@ function index() {
   const open_tasks_arr = [
     ...open_essays_tasks_arr,
     ...open_tasks_without_essays_arr
-  ].filter((open_task) => open_task.show && !open_task.isFinalVersion);
-  const open_tasks_withMyEssay_arr = open_tasks_arr.filter((open_task) =>
+  ];
+  const tasks_withMyEssay_arr = open_tasks_arr.filter((open_task) =>
     [...AGENT_SUPPORT_DOCUMENTS_A, FILE_TYPE_E.essay_required].includes(
       open_task.file_type
     ) && is_TaiGer_Editor(user)
@@ -133,6 +133,9 @@ function index() {
             outsourcedUser._id.toString() === user._id.toString()
         )
       : true
+  );
+  const open_tasks_withMyEssay_arr = tasks_withMyEssay_arr.filter(
+    (open_task) => open_task.show && !open_task.isFinalVersion
   );
   const new_message_tasks = open_tasks_withMyEssay_arr.filter((open_task) =>
     is_new_message_status(user, open_task)
@@ -150,10 +153,9 @@ function index() {
       open_task.latest_message_left_by_id === ''
   );
 
-  const closed_tasks = [
-    ...open_essays_tasks_arr,
-    ...open_tasks_without_essays_arr
-  ].filter((open_task) => open_task.show && open_task.isFinalVersion);
+  const closed_tasks = tasks_withMyEssay_arr.filter(
+    (open_task) => open_task.show && open_task.isFinalVersion
+  );
 
   return (
     <Box data-testid="cvmlrlcenter_component">

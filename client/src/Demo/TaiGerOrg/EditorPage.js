@@ -136,8 +136,8 @@ function EditorPage() {
   const open_tasks_arr = [
     ...open_essays_tasks_arr,
     ...open_tasks_without_essays_arr
-  ].filter((open_task) => open_task.show && !open_task.isFinalVersion);
-  const open_tasks_withMyEssay_arr = open_tasks_arr.filter((open_task) =>
+  ];
+  const tasks_withMyEssay_arr = open_tasks_arr.filter((open_task) =>
     [...AGENT_SUPPORT_DOCUMENTS_A, FILE_TYPE_E.essay_required].includes(
       open_task.file_type
     )
@@ -146,6 +146,11 @@ function EditorPage() {
         )
       : true
   );
+
+  const open_tasks_withMyEssay_arr = tasks_withMyEssay_arr.filter(
+    (open_task) => open_task.show && !open_task.isFinalVersion
+  );
+
   // const open_tasks_arr = open_tasks_with_editors(editorPageState.students);
   const task_distribution = open_tasks_withMyEssay_arr
     .filter(({ isFinalVersion }) => isFinalVersion !== true)
@@ -190,10 +195,9 @@ function EditorPage() {
       open_task.latest_message_left_by_id === ''
   );
 
-  const closed_tasks = [
-    ...open_essays_tasks_arr,
-    ...open_tasks_without_essays_arr
-  ].filter((open_task) => open_task.show && open_task.isFinalVersion);
+  const closed_tasks = tasks_withMyEssay_arr.filter(
+    (open_task) => open_task.show && open_task.isFinalVersion
+  );
 
   return (
     <Box>

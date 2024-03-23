@@ -85,7 +85,9 @@ function EssayOverview(props) {
           aria-label="basic tabs example"
         >
           <Tab
-            label={`NO ESSAY WRITER (${props.new_message_tasks?.length || 0}) `}
+            label={`NO ESSAY WRITER (${
+              props.no_essay_writer_tasks?.length || 0
+            }) `}
             {...a11yProps(0)}
           />
           <Tab

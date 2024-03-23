@@ -14,6 +14,7 @@ import { useTranslation } from 'react-i18next';
 
 import ModalNew from '../../../../components/Modal';
 import { getEssayWriters } from '../../../../api';
+import { FILE_TYPE_E } from '../../../Utils/checking-functions';
 
 function EditEssayWritersSubpage(props) {
   const [checkboxState, setCheckboxState] = useState({});
@@ -22,35 +23,43 @@ function EditEssayWritersSubpage(props) {
 
   useEffect(() => {
     // Initialize the state with checked checkboxes based on the student's editors
-    getEssayWriters().then(
-      (resp) => {
-        // TODO: check success
-        const { data, success } = resp.data;
-        if (success) {
-          const editors = data; //need to change to get all essay writers
-          const { outsourced_user_id: student_essay_writers } =
-            props.essayDocumentThread;
-          const updateEditorList = editors.reduce(
-            (prev, { _id }) => ({
-              ...prev,
-              [_id]: student_essay_writers
-                ? student_essay_writers.findIndex(
-                    (student_agent) => student_agent._id === _id
-                  ) > -1
-                : false
-            }),
-            {}
-          );
-          setCheckboxState({ editors, updateEditorList });
-          setIsLoaded(true);
-        } else {
+    if (
+      [FILE_TYPE_E.essay_required].includes(props.essayDocumentThread.file_type)
+    ) {
+      getEssayWriters().then(
+        (resp) => {
+          // TODO: check success
+          const { data, success } = resp.data;
+          if (success) {
+            const editors = data; //need to change to get all essay writers
+            const { outsourced_user_id: student_essay_writers } =
+              props.essayDocumentThread;
+            const updateEditorList = editors.reduce(
+              (prev, { _id }) => ({
+                ...prev,
+                [_id]: student_essay_writers
+                  ? student_essay_writers.findIndex(
+                      (student_agent) => student_agent._id === _id
+                    ) > -1
+                  : false
+              }),
+              {}
+            );
+            setCheckboxState({ editors, updateEditorList });
+            setIsLoaded(true);
+          } else {
+            setIsLoaded(true);
+          }
+        },
+        () => {
           setIsLoaded(true);
         }
-      },
-      () => {
-        setIsLoaded(true);
-      }
-    );
+      );
+    } else {
+      // Add select editor list
+      //  setCheckboxState({ editors, updateEditorList });
+       setIsLoaded(true);
+    }
   }, [props.essayDocumentThread.outsourced_user_id]);
 
   const handleChangeEditorlist = (e) => {

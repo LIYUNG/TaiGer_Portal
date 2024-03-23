@@ -1228,6 +1228,13 @@ function DocModificationThreadPage() {
           <EditEssayWritersSubpage
             show={docModificationThreadPageState.showEditorPage}
             onHide={setEditorModalhide}
+            actor={
+              [FILE_TYPE_E.essay_required].includes(
+                docModificationThreadPageState.thread.file_type
+              )
+                ? 'Essay Writer'
+                : 'Editor'
+            }
             setmodalhide={setEditorModalhide}
             submitUpdateEssayWriterlist={submitUpdateEssayWriterlist}
             essayDocumentThread={docModificationThreadPageState.thread}

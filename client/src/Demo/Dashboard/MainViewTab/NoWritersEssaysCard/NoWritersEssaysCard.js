@@ -151,6 +151,7 @@ function NoWritersEssaysCard(props) {
           <EditEssayWritersSubpage
             show={noEditorsStudentsCardState.showEditorPage}
             onHide={setEditorModalhide}
+            actor={'Essay Writer'}
             setmodalhide={setEditorModalhide}
             submitUpdateEssayWriterlist={submitUpdateEssayWriterlist}
             essayDocumentThread={props.essayDocumentThread}

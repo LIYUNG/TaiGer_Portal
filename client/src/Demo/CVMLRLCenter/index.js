@@ -9,6 +9,7 @@ import { getAllActiveEssays, getCVMLRLOverview } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import {
   AGENT_SUPPORT_DOCUMENTS_A,
+  FILE_TYPE_E,
   is_TaiGer_Editor,
   is_TaiGer_role,
   open_essays_tasks,
@@ -117,15 +118,16 @@ function index() {
   // TODO:  Essay not shown for Student!
   const open_essays_tasks_arr = open_essays_tasks(essays, user);
   const open_tasks_without_essays_arr = open_tasks(indexState.students).filter(
-    (open_task) => !AGENT_SUPPORT_DOCUMENTS_A.includes(open_task.file_type)
+    (open_task) => ![FILE_TYPE_E.essay_required].includes(open_task.file_type)
   );
   const open_tasks_arr = [
     ...open_essays_tasks_arr,
     ...open_tasks_without_essays_arr
   ].filter((open_task) => open_task.show && !open_task.isFinalVersion);
   const open_tasks_withMyEssay_arr = open_tasks_arr.filter((open_task) =>
-    AGENT_SUPPORT_DOCUMENTS_A.includes(open_task.file_type) &&
-    is_TaiGer_Editor(user)
+    [...AGENT_SUPPORT_DOCUMENTS_A, FILE_TYPE_E.essay_required].includes(
+      open_task.file_type
+    ) && is_TaiGer_Editor(user)
       ? open_task.outsourced_user_id?.some(
           (outsourcedUser) =>
             outsourcedUser._id.toString() === user._id.toString()

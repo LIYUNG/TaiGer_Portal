@@ -26,6 +26,7 @@ import ModalMain from '../../Utils/ModalHandler/ModalMain';
 import { stringAvatar, templatelist } from '../../Utils/contants';
 import {
   AGENT_SUPPORT_DOCUMENTS_A,
+  FILE_TYPE_E,
   LinkableNewlineText,
   getRequirement,
   is_TaiGer_AdminAgent,
@@ -956,26 +957,34 @@ function DocModificationThreadPage() {
                 : t('Editor')}
               :
             </Typography>
-            {docModificationThreadPageState.thread?.outsourced_user_id?.map(
-              (outsourcer) => (
-                <Typography key={outsourcer._id}>
-                  {is_TaiGer_role(user) ? (
-                    <Link
-                      underline="hover"
-                      component={LinkDom}
-                      to={`${DEMO.TEAM_EDITOR_LINK(outsourcer._id.toString())}`}
-                      target="_blank"
-                    >
-                      {outsourcer.firstname} {outsourcer.lastname}
-                    </Link>
-                  ) : (
-                    <>
-                      {outsourcer.firstname} {outsourcer.lastname}
-                    </>
-                  )}
-                </Typography>
-              )
-            )}
+            {docModificationThreadPageState.thread?.file_type === 'Essay' &&
+              (docModificationThreadPageState.thread?.outsourced_user_id
+                ?.length > 0 ? (
+                docModificationThreadPageState.thread?.outsourced_user_id?.map(
+                  (outsourcer) => (
+                    <Typography key={outsourcer._id}>
+                      {is_TaiGer_role(user) ? (
+                        <Link
+                          underline="hover"
+                          component={LinkDom}
+                          to={`${DEMO.TEAM_EDITOR_LINK(
+                            outsourcer._id.toString()
+                          )}`}
+                          target="_blank"
+                        >
+                          {outsourcer.firstname} {outsourcer.lastname}
+                        </Link>
+                      ) : (
+                        <>
+                          {outsourcer.firstname} {outsourcer.lastname}
+                        </>
+                      )}
+                    </Typography>
+                  )
+                )
+              ) : (
+                <Typography>To Be Assigned</Typography>
+              ))}
             {docModificationThreadPageState.thread?.file_type !== 'Essay' &&
               docModificationThreadPageState.editors.map((editor, i) => (
                 <Typography key={i}>
@@ -996,9 +1005,10 @@ function DocModificationThreadPage() {
                 </Typography>
               ))}
             {is_TaiGer_role(user) &&
-              [...AGENT_SUPPORT_DOCUMENTS_A].includes(
-                docModificationThreadPageState.thread.file_type
-              ) && (
+              [
+                ...AGENT_SUPPORT_DOCUMENTS_A,
+                FILE_TYPE_E.essay_required
+              ].includes(docModificationThreadPageState.thread.file_type) && (
                 <Button
                   size="small"
                   color="primary"

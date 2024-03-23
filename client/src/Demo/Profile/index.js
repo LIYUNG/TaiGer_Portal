@@ -328,7 +328,7 @@ function Profile() {
             component={LinkDom}
             to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
               user_id,
-              DEMO.PROFILE
+              DEMO.PROFILE_HASH
             )}`}
           >
             {`${profileState.personaldata.firstname} ${

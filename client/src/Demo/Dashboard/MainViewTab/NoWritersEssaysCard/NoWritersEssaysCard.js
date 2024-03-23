@@ -115,7 +115,7 @@ function NoWritersEssaysCard(props) {
               component={LinkDom}
               to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                 props.essayDocumentThread.student_id?._id.toString(),
-                DEMO.PROFILE
+                DEMO.PROFILE_HASH
               )}`}
             >
               {props.essayDocumentThread.student_id?.firstname},{' '}

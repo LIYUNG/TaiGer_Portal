@@ -79,7 +79,6 @@ function index() {
         const { data, success } = resp.data;
         const { status } = resp;
         if (success) {
-          console.log(data);
           setIndexState((prevState) => ({
             ...prevState,
             isLoaded2: true,

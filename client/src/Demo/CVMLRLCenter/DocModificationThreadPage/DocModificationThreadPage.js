@@ -985,7 +985,10 @@ function DocModificationThreadPage() {
               ) : (
                 <Typography>To Be Assigned</Typography>
               ))}
-            {docModificationThreadPageState.thread?.file_type !== 'Essay' &&
+            {![
+              ...AGENT_SUPPORT_DOCUMENTS_A,
+              FILE_TYPE_E.essay_required
+            ].includes(docModificationThreadPageState.thread.file_type) &&
               docModificationThreadPageState.editors.map((editor, i) => (
                 <Typography key={i}>
                   {is_TaiGer_role(user) ? (

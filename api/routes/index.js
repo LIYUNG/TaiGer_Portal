@@ -27,6 +27,7 @@ const usersRouter = require('./users');
 const userlogsRouter = require('./userlogs');
 const widgetsRouter = require('./widget');
 const googleapisRouter = require('./googleapis');
+const essayWriterRouter = require('./essay-writers');
 
 const router = (app) => {
   const apiRouter = Router();
@@ -35,6 +36,7 @@ const router = (app) => {
   apiRouter.use('/students', studentsRouter);
   apiRouter.use('/agents', agentsRouter);
   apiRouter.use('/editors', editorsRouter);
+  apiRouter.use('/essay-writers', essayWriterRouter);
   apiRouter.use('/admissions', admissionsRouter);
   apiRouter.use('/courses', coursesRouter);
   apiRouter.use('/communications', communicationsRouter);

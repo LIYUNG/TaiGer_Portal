@@ -873,6 +873,38 @@ const informStudentTheirAgentEmail = async (recipient, msg) => {
   return sendEmail(recipient, subject, message);
 };
 
+const informAgentEssayAssignedEmail = async (recipient, msg) => {
+  const thread_url = `${THREAD_URL}/${msg.thread_id}`;
+  const docName = `${msg.program.school} ${msg.program.program_name}${msg.program.degree} ${msg.program.semester}`;
+  const subject = `${
+    msg.file_type === 'Essay' ? 'Essay writer' : 'Editor'
+  } assigned for ${msg.std_firstname} ${msg.std_lastname}`;
+  let essay_writers = '';
+  for (let i = 0; i < msg.essay_writers.length; i += 1) {
+    essay_writers += `<li><b>${msg.essay_writers[i].firstname} - ${msg.essay_writers[i].lastname}</b> Email: ${msg.essay_writers[i].email}</li>`;
+  }
+  const message = `\
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+
+<p>The following ${
+    msg.file_type === 'Essay' ? 'Essay writer' : 'Editor'
+  } for <a href="${thread_url}">${msg.file_type} - ${docName}</a>
+
+are assigned to student ${msg.std_firstname} ${msg.std_lastname}!</p>
+
+<p>${essay_writers}</p>
+
+<p>Please go to <a href="${CVMLRL_CENTER_URL}">CVMLRL Center</a> , and check if the ${
+    msg.file_type
+  } task is assigned correctly!</p>
+
+<p>${TAIGER_SIGNATURE}</p>
+
+`;
+
+  return sendEmail(recipient, subject, message);
+};
+
 const informAgentStudentAssignedEmail = async (recipient, msg) => {
   const subject = `Editor assigned for ${msg.std_firstname} ${msg.std_lastname}`;
   let editors = '';
@@ -891,6 +923,26 @@ const informAgentStudentAssignedEmail = async (recipient, msg) => {
 <p>Please go to <a href="${CVMLRL_FOR_EDITOR_URL(
     msg.std_id
   )}">TaiGer Portal</a> , and check if the CV task is created and say hello to your student!</p>
+
+<p>${TAIGER_SIGNATURE}</p>
+
+`;
+
+  return sendEmail(recipient, subject, message);
+};
+
+const informEssayWriterNewEssayEmail = async (recipient, msg) => {
+  const thread_url = `${THREAD_URL}/${msg.thread_id}`;
+  const docName = `${msg.program.school} - ${msg.program.program_name} - ${msg.program.degree} - ${msg.program.semester}`;
+  const subject = `New ${msg.file_type} ${docName} assigned to you`;
+  const message = `\
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+
+<p><a href="${thread_url}">${docName} for ${msg.std_firstname} ${msg.std_lastname}</a> -  will be assigned to you!</p>
+
+<p>Please go to
+<a href="${CVMLRL_CENTER_URL}">CVMLRL Center</a> in TaiGer Portal
+ , and check if the ${msg.file_type} task is created and say hello to your student!</p>
 
 <p>${TAIGER_SIGNATURE}</p>
 
@@ -963,6 +1015,67 @@ const informStudentArchivedStudentEmail = async (recipient, payload) => {
 <p>Thank you! We wish you success in your future endeavors</p>
 
 <p>For any further questions, please contact you agent ${agent}</p>
+
+<p>${TAIGER_SIGNATURE}</p>
+
+`;
+
+  return sendEmail(recipient, subject, message);
+};
+
+const informStudentTheirEssayWriterEmail = async (recipient, msg) => {
+  const thread_url = `${THREAD_URL}/${msg.thread_id}`;
+  const docName = `${msg.program.school} - ${msg.program.program_name} - ${msg.program.degree} - ${msg.program.semester}`;
+  const subject = `Your ${
+    msg.file_type === 'Essay' ? 'Essay Writor' : 'Editor'
+  } for your ${msg.file_type} ${docName}`;
+  let editor;
+  for (let i = 0; i < msg.editors.length; i += 1) {
+    if (i === 0) {
+      editor = `${msg.editors[i].firstname} ${msg.editors[i].lastname}`;
+    } else {
+      editor += `, ${msg.editors[i].firstname} ${msg.editors[i].lastname}`;
+    }
+  }
+  const message = `\
+<p>${ENGLISH_BELOW}</p>
+
+<p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
+
+<p>從現在開始我們的專業外籍${
+    msg.file_type === 'Essay' ? '論文' : ''
+  }編輯 ${editor} 會正式開始幫你修改及潤飾 ${msg.file_type} - ${docName}。</p>
+
+<p>若有任何疑問請直接與 ${editor} 在該文件 <a href="${thread_url}">${
+    msg.file_type
+  } - ${docName}</a> 的討論串做溝通。</p>
+
+<p>如果有任何的技術上問題，請詢問您的顧問作協助。</p>
+
+<p>在 Portal 的文件修改討論串，請用<b>英文</b>溝通。</p>
+
+<br />
+
+<p>${SPLIT_LINE}</p>
+
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+
+<p>Let me introduce our professional ${
+    msg.file_type === 'Essay' ? 'Essay Writer' : 'Editor'
+  } ${editor}. From now on, ${editor} will be fully responsible for editing your ${
+    msg.file_type
+  } - ${docName}.</p>
+
+<p>Please directly provide your feedback to ${editor} in the document thread in the <a href="${thread_url}">${
+    msg.file_type
+  } - ${docName}</a>. </p>
+
+<p>If you have any technical problems, please ask your agent for help.</p>
+
+<p>In each Portal's CV/ML/RL Center document discussion thread, please use <b>English</b> to provide your feedback with your ${
+    msg.file_type === 'Essay' ? 'Essay Writer' : 'Editor'
+  }.</p>
+
 
 <p>${TAIGER_SIGNATURE}</p>
 
@@ -1668,6 +1781,29 @@ on ${msg.uploaded_updatedAt} for ${msg.student_firstname} ${
   }
 };
 
+// For editor lead, english only
+const assignEssayTaskToEditorEmail = async (recipient, msg) => {
+  const subject = `[TODO] Assign Essay Writer to ${msg.student_firstname} ${msg.student_lastname} ${msg.documentname}`;
+  const THREAD_LINK = new URL(`/document-modification/${msg.thread_id}`, ORIGIN)
+    .href;
+  const message = `\
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+
+<p>The Essay <b>${msg.documentname}</b> is created for ${msg.student_firstname} ${msg.student_lastname} -  ${msg.documentname},</p>
+
+<p>but this Essay does <b>not</b> have any Essay Writer yet.</p>
+
+<p><b>Please assign an Essay Writer to the Essay <a href="${THREAD_LINK}">${msg.student_firstname} ${msg.student_lastname} - ${msg.documentname}</a></b></p>
+
+<p>If you have any question, feel free to contact your agent.</p>
+
+<p>${TAIGER_SIGNATURE}</p>
+
+`;
+
+  sendEmail(recipient, subject, message);
+};
+
 // For editor, english only
 const assignDocumentTaskToEditorEmail = async (recipient, msg) => {
   const subject = `[New Task] ${msg.student_firstname} ${msg.student_lastname} ${msg.documentname} is assigned to you!`;
@@ -2193,6 +2329,37 @@ Please check the <a href="${PROGRAM_URL(
   return sendEmail(recipient, subject, message);
 };
 
+const sendAssignEssayWriterReminderEmail = async (recipient, payload) => {
+  const subject = '[DO NOT IGNORE] Assign Essay Writer Reminder';
+  const message = `\
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+
+<p>${payload.student_firstname} - ${
+    payload.student_lastname
+  } has uploaded Essay his/her CVMLRL Center, <b>but she/he did not have any Essay Writer yet.</b></p>
+
+<p><b>Please assign an Essay Writer to the student <a href="${BASE_DOCUMENT_FOR_AGENT_URL(
+    payload.student_id
+  )}">${payload.student_firstname} - ${payload.student_lastname}</a></b></p>
+
+<br />
+<p>${SPLIT_LINE}</p>
+
+<p>${payload.student_firstname} - ${
+    payload.student_lastname
+  } 上傳了一份Essay至他的 CVMLRL Cetner，但他目前並無任何Essay Writer。</p>
+
+<p><b>請指派 Essay Writer 給學生 <a href="${BASE_DOCUMENT_FOR_AGENT_URL(
+    payload.student_id
+  )}">${payload.student_firstname} - ${payload.student_lastname}</a></b></p>
+<br />
+<p>${TAIGER_SIGNATURE}</p>
+
+`; // should be for admin/editor/agent/student
+
+  return sendEmail(recipient, subject, message);
+};
+
 module.exports = {
   verifySMTPConfig,
   updateNotificationEmail,
@@ -2223,12 +2390,16 @@ module.exports = {
   sendNewGeneraldocMessageInThreadEmail,
   sendSetAsFinalProgramSpecificFileForStudentEmail,
   sendSetAsFinalProgramSpecificFileForAgentEmail,
+  assignEssayTaskToEditorEmail,
   assignDocumentTaskToEditorEmail,
   assignDocumentTaskToStudentEmail,
+  informAgentEssayAssignedEmail,
   informAgentStudentAssignedEmail,
+  informEssayWriterNewEssayEmail,
   informEditorNewStudentEmail,
   informEditorArchivedStudentEmail,
   informStudentArchivedStudentEmail,
+  informStudentTheirEssayWriterEmail,
   informStudentTheirEditorEmail,
   createApplicationToStudentEmail,
   AnalysedCoursesDataStudentEmail,
@@ -2243,5 +2414,6 @@ module.exports = {
   MeetingReminderEmail,
   UnconfirmedMeetingReminderEmail,
   TicketCreatedAgentEmail,
-  TicketResolvedStudentEmail
+  TicketResolvedStudentEmail,
+  sendAssignEssayWriterReminderEmail
 };

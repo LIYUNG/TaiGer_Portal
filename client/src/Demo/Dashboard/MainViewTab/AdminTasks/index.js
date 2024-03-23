@@ -5,6 +5,7 @@ import { Link, TableCell, TableRow } from '@mui/material';
 import {
   does_student_have_agents,
   does_student_have_editors,
+  does_essay_have_writers,
   is_num_Program_Not_specified
 } from '../../../Utils/checking-functions';
 import DEMO from '../../../../store/constant';
@@ -58,7 +59,19 @@ function AdminTasks(props) {
               {t('Assign Editors')}
             </Link>
           </TableCell>
-          <TableCell>Please assign editors</TableCell>
+          <TableCell>{t('Please assign editors')}</TableCell>
+        </TableRow>
+      )}
+      {!does_essay_have_writers(
+        props.essayDocumentThreads.filter((thread) => !thread.isFinalVersion)
+      ) && (
+        <TableRow>
+          <TableCell>
+            <Link to={`${DEMO.ASSIGN_ESSAY_WRITER_LINK}`} component={LinkDom}>
+              {t('Assign Essay Writer', { ns: 'common' })}
+            </Link>
+          </TableCell>
+          <TableCell>{t('Please assign essay writers')}</TableCell>
         </TableRow>
       )}
       {/* assign number of application according to contract */}

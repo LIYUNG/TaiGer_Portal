@@ -1148,7 +1148,7 @@ function StudentApplicationsTableTemplate(props) {
               aria-labelledby="contained-modal-title-vcenter"
             >
               <Typography id="contained-modal-title-vcenter">
-                {t('Success')}
+                {t('Success',{ns:'common'})}
               </Typography>
               <Typography>
                 Program(s) imported to student successfully!

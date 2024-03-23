@@ -326,6 +326,15 @@ export const MenuSidebar = [
         icon: <GroupOutlinedIcon />
       },
       {
+        id: 'agent-support-documents',
+        title: 'Agent Support',
+        type: 'item',
+        url: '/agent-support-documents',
+        icon: <BorderColorIcon />,
+        target: false,
+        breadcrumbs: false
+      },
+      {
         id: 'editor_center',
         title: 'CV/ML/RL Center',
         type: 'item',

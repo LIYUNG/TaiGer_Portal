@@ -76,7 +76,6 @@ function CVMLRLOverview(props) {
           res_modal_message={res_modal_message}
         />
       )}
-
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs
           value={value}
@@ -86,24 +85,46 @@ function CVMLRLOverview(props) {
           aria-label="basic tabs example"
         >
           <Tab
-            label={`TODO (${props.new_message_tasks?.length || 0}) `}
+            label={`NO ESSAY WRITER (${props.new_message_tasks?.length || 0}) `}
             {...a11yProps(0)}
           />
           <Tab
-            label={`FOLLOW UP (${props.followup_tasks?.length || 0})`}
+            label={`TODO (${props.new_message_tasks?.length || 0}) `}
             {...a11yProps(1)}
           />
           <Tab
-            label={`NO ACTION (${props.pending_progress_tasks?.length || 0})`}
+            label={`FOLLOW UP (${props.followup_tasks?.length || 0})`}
             {...a11yProps(2)}
           />
           <Tab
-            label={`CLOSED (${props.closed_tasks?.length || 0})`}
+            label={`NO ACTION (${props.pending_progress_tasks?.length || 0})`}
             {...a11yProps(3)}
+          />
+          <Tab
+            label={`CLOSED (${props.closed_tasks?.length || 0})`}
+            {...a11yProps(4)}
           />
         </Tabs>
       </Box>
+
       <CustomTabPanel value={value} index={0}>
+        <Banner
+          ReadOnlyMode={true}
+          bg={'danger'}
+          title={'warning'}
+          path={'/'}
+          text={'Please assign essay writer to the following essays:'}
+          link_name={''}
+          removeBanner={<></>}
+          notification_key={undefined}
+        />
+        <SortTable
+          columns={cvmlrl_overview_header}
+          data={props.no_essay_writer_tasks}
+          user={user}
+        />
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={1}>
         <Banner
           ReadOnlyMode={true}
           bg={'danger'}
@@ -120,7 +141,7 @@ function CVMLRLOverview(props) {
           user={user}
         />
       </CustomTabPanel>
-      <CustomTabPanel value={value} index={1}>
+      <CustomTabPanel value={value} index={2}>
         <Banner
           ReadOnlyMode={true}
           bg={'primary'}
@@ -137,7 +158,7 @@ function CVMLRLOverview(props) {
           user={user}
         />
       </CustomTabPanel>
-      <CustomTabPanel value={value} index={2}>
+      <CustomTabPanel value={value} index={3}>
         <Banner
           ReadOnlyMode={true}
           bg={'info'}
@@ -158,7 +179,7 @@ function CVMLRLOverview(props) {
           user={user}
         />
       </CustomTabPanel>
-      <CustomTabPanel value={value} index={3}>
+      <CustomTabPanel value={value} index={4}>
         <Banner
           ReadOnlyMode={true}
           bg={'success'}

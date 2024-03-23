@@ -348,7 +348,7 @@ function SingleProgram() {
               component={LinkDom}
               to={`${DEMO.PROGRAMS}`}
             >
-              {t('Program List')}
+              {t('Program List', { ns: 'common' })}
             </Link>
           ) : (
             <Link
@@ -401,7 +401,7 @@ function SingleProgram() {
           onClose={onHideAssignSuccessWindow}
           aria-labelledby="contained-modal-title-vcenter"
         >
-          <Typography>{t('Success')}</Typography>
+          <Typography>{t('Success', { ns: 'common' })}</Typography>
           <Typography>Program(s) assigned to student successfully!</Typography>
           <Button
             size="small"

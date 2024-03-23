@@ -197,7 +197,7 @@ router
     assignEditorToStudent,
     logAccess
   );
-
+  
 router
   .route('/:studentId/attributes')
   .post(

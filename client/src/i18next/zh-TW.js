@@ -20,6 +20,7 @@ export const translation_zh_TW = {
     [`${appConfig.companyName} Members`]: `${appConfig.companyName} 成員`,
     [`${appConfig.companyName} Dashboard`]: `${appConfig.companyName} 總攬`,
     [`${appConfig.companyName} Accounting`]: `${appConfig.companyName} 會計`,
+    Applications: '申請',
     'Applications Overview': '申請總攬',
     'Application Overview': '申請總攬',
     'My Applications': '我的申請',
@@ -41,6 +42,7 @@ export const translation_zh_TW = {
     Score: 'Score',
     Start: '開始',
     Portal: 'Portal',
+    'Student Name': '學生姓名',
     'School / Program': '學校 / 科系',
     'English/German': '英語/德語',
     'Next Test Date': '下次考試時間',
@@ -49,6 +51,7 @@ export const translation_zh_TW = {
     Delete: '刪除',
     Status: '狀態',
     Tasks: '任務',
+    'Assign Essay Writer': '指派論文編輯',
     'Application Year': '申請年',
     'Move to Archiv': '移至Archiv',
     'Archiv Students': '過往學生',
@@ -58,6 +61,7 @@ export const translation_zh_TW = {
     'Program Conflicts': '重疊申請',
     'Tasks Dashboard': '撰寫任務中心',
     'Program Conflict': '重疊申請總攬',
+    Category: '種類',
     Calendar: '行事曆',
     'Calendar Events': '行事曆',
     'My Students': '我的學生',
@@ -97,7 +101,10 @@ export const translation_zh_TW = {
     No: '否',
     Ok: '確定',
     Submitted: '已送出',
-    Download: '下載'
+    Download: '下載',
+    'To Do Tasks': '待辦事項清單',
+    'Agent Support': '顧問任務',
+    'Essay Center': '論文中心'
   },
   dashboard: {
     Dashboard: '主控台',
@@ -181,7 +188,6 @@ export const translation_zh_TW = {
     'Based on the applications, Uni-Assist is NOT needed':
       '根據您的欲申請的學程， 您並不需要處理 Uni-Assist 第三方學歷認證流程。',
     'Course Analysis explanation button': '點我詳細解說',
-    'To Do Tasks': '待辦事項清單',
     'New feedback from your Editor': '您有來自編輯的新回復',
     'New tasks are assigned to you': '有新的任務指派給你',
     'It looks like you did not decide programs': '您仍有科系尚未決定',
@@ -363,6 +369,7 @@ export const translation_zh_TW = {
     'Last update': '最後更新於',
     'Upload Time': '上傳時間',
     Upload: '上傳',
-    'Log Out': '登出'
+    'Log Out': '登出',
+    'Please assign essay writers': '請指派論文編輯'
   }
 };

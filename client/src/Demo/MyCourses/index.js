@@ -766,7 +766,7 @@ export default function MyCourses() {
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
-        <Typography>{t('Success', { ns: 'common' })}</Typography>
+        <Typography>{t('Success',{ns:'common'}, { ns: 'common' })}</Typography>
         <Typography>
           {t('Courses analysed successfully!', { ns: 'courses' })}
           <b>

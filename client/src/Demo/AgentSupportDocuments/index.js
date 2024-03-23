@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Breadcrumbs, Link, Typography } from '@mui/material';
-import { Navigate, Link as LinkDom } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
+import { Link as LinkDom, Navigate } from 'react-router-dom';
+import { Box, Card, Breadcrumbs, Link, Typography } from '@mui/material';
 
+import CVMLRLOverview from '../CVMLRLCenter/CVMLRLOverview';
 import ErrorPage from '../Utils/ErrorPage';
-import { getAllCVMLRLOverview } from '../../api';
+import { getCVMLRLOverview } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import {
-  file_category_const,
+  AGENT_SUPPORT_DOCUMENTS_A,
   is_TaiGer_role,
   open_tasks
 } from '../Utils/checking-functions';
@@ -15,13 +15,13 @@ import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
 import { appConfig } from '../../config';
 import Loading from '../../components/Loading/Loading';
-import EssayOverview from './EssayOverview';
 import { is_new_message_status, is_pending_status } from '../Utils/contants';
+import { useTranslation } from 'react-i18next';
 
-function EssayDashboard() {
+function index() {
   const { user } = useAuth();
   const { t } = useTranslation();
-  const [essayDashboardState, setEssayDashboardState] = useState({
+  const [indexState, setIndexState] = useState({
     error: '',
     isLoaded: false,
     data: null,
@@ -39,33 +39,33 @@ function EssayDashboard() {
   });
 
   useEffect(() => {
-    getAllCVMLRLOverview().then(
+    getCVMLRLOverview().then(
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
         if (success) {
-          setEssayDashboardState({
-            ...essayDashboardState,
+          setIndexState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             students: data,
             success: success,
             res_status: status
-          });
+          }));
         } else {
-          setEssayDashboardState({
-            ...essayDashboardState,
+          setIndexState((prevState) => ({
+            ...prevState,
             isLoaded: true,
             res_status: status
-          });
+          }));
         }
       },
       (error) => {
-        setEssayDashboardState({
-          ...essayDashboardState,
+        setIndexState((prevState) => ({
+          ...prevState,
           isLoaded: true,
           error,
           res_status: 500
-        });
+        }));
       }
     );
   }, []);
@@ -73,9 +73,9 @@ function EssayDashboard() {
   if (!is_TaiGer_role(user)) {
     return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
   }
-  const { res_status, isLoaded } = essayDashboardState;
-  TabTitle('Essay Dashboard');
-  if (!isLoaded && !essayDashboardState.students) {
+  const { res_status, isLoaded } = indexState;
+  TabTitle('Agent Support Documents');
+  if (!isLoaded && !indexState.students) {
     return <Loading />;
   }
 
@@ -83,19 +83,9 @@ function EssayDashboard() {
     return <ErrorPage res_status={res_status} />;
   }
 
-  const open_tasks_arr = open_tasks(essayDashboardState.students).filter(
-    (open_task) =>
-      [file_category_const.essay_required].includes(open_task.file_type)
+  const open_tasks_arr = open_tasks(indexState.students).filter((open_task) =>
+    [...AGENT_SUPPORT_DOCUMENTS_A].includes(open_task.file_type)
   );
-
-  const no_essay_writer_tasks = open_tasks_arr.filter(
-    (open_task) =>
-      open_task.show &&
-      !open_task.isFinalVersion &&
-      (open_task.outsourced_user_id === undefined ||
-        open_task.outsourced_user_id.length === 0)
-  );
-
   const new_message_tasks = open_tasks_arr.filter(
     (open_task) =>
       open_task.show &&
@@ -124,7 +114,7 @@ function EssayDashboard() {
   );
 
   return (
-    <Box>
+    <Box data-testid="cvmlrlcenter_component">
       <Breadcrumbs aria-label="breadcrumb">
         <Link
           underline="hover"
@@ -134,18 +124,30 @@ function EssayDashboard() {
         >
           {appConfig.companyName}
         </Link>
-        <Typography color="text.primary">{t('Essay Dashboard')}</Typography>
-      </Breadcrumbs>
-      {no_essay_writer_tasks.map((task) => (
-        <Typography key={task.thread_id}>
-          {task.firstname_lastname} -{task.document_name}
+        <Typography color="text.primary">
+          {t('Agent Support Documents')}
         </Typography>
-      ))}
-      <EssayOverview
-        isLoaded={essayDashboardState.isLoaded}
-        success={essayDashboardState.success}
-        students={essayDashboardState.students}
-        no_essay_writer_tasks={no_essay_writer_tasks}
+      </Breadcrumbs>
+      {!is_TaiGer_role(user) && (
+        <Card sx={{ p: 2 }}>
+          <Typography variant="body1">Instructions</Typography>
+          若您為初次使用，可能無任何
+          Tasks。請聯絡您的顧問處理選校等，方能開始準備文件。
+          <br />
+          在此之前可以詳閱，了解之後與Editor之間的互動模式：
+          <Link
+            component={LinkDom}
+            to={`${DEMO.CV_ML_RL_DOCS_LINK}`}
+            target="_blank"
+          >
+            <b>Click me</b>
+          </Link>
+        </Card>
+      )}
+      <CVMLRLOverview
+        isLoaded={indexState.isLoaded}
+        success={indexState.success}
+        students={indexState.students}
         new_message_tasks={new_message_tasks}
         followup_tasks={followup_tasks}
         pending_progress_tasks={pending_progress_tasks}
@@ -155,4 +157,4 @@ function EssayDashboard() {
   );
 }
 
-export default EssayDashboard;
+export default index;

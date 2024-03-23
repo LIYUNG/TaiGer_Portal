@@ -48,6 +48,8 @@ export const getAgents = () => request.get('/api/agents');
 
 export const getEditors = () => request.get('/api/editors');
 
+export const getEssayWriters = () => request.get('/api/essay-writers');
+
 export const getStudents = () => request.get(`/api/students`);
 
 export const getAllStudents = () => request.get(`/api/students/all`);
@@ -244,6 +246,12 @@ export const SetFileAsFinal = (documentsthreadId, studentId, program_id) =>
     program_id
   });
 
+export const updateEssayWriter = (editor_id, documentsthreadId) =>
+  request.post(`/api/document-threads/${documentsthreadId}/essay`, editor_id)
+
+export const getAllActiveEssays = () =>
+  request.get(`/api/document-threads/essays/all`);
+
 // Portal Informations APIs
 export const getPortalCredentials = (student_id) =>
   request.get(`/api/portal-informations/${student_id}`);
@@ -327,6 +335,7 @@ export const updateArticle = (id, article) =>
 const getArticle = (type) => request.get(`/api/docs/${type}`);
 
 export const getApplicationArticle = () => getArticle('application');
+
 export const uploadDocumentThreadImage = (documentsthreadId, studentId, file) =>
   request.post(
     `/api/document-threads/image/${documentsthreadId}/${studentId}`,

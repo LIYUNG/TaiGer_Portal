@@ -3,7 +3,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import CVMLRLCenter from '.';
 import 'react-i18next';
-import { getCVMLRLOverview } from '../../api';
+import { getCVMLRLOverview, getAllActiveEssays } from '../../api';
 import { useAuth } from '../../components/AuthProvider/index';
 import { RouterProvider, createMemoryRouter } from 'react-router-dom';
 
@@ -45,6 +45,9 @@ describe('CVMLRLCenter', () => {
     getCVMLRLOverview.mockResolvedValue({
       data: mockSingleStudentCVMLRLFormatData
     });
+     getAllActiveEssays.mockResolvedValue({
+       data: { success: true, data: [] }
+     });
     useAuth.mockReturnValue({
       user: { role: 'Agent', _id: '639baebf8b84944b872cf648' }
     });
@@ -73,6 +76,9 @@ describe('CVMLRLCenter', () => {
   test('Student: cvmlrl center not crash', async () => {
     getCVMLRLOverview.mockResolvedValue({
       data: mockSingleStudentCVMLRLFormatData
+    });
+    getAllActiveEssays.mockResolvedValue({
+      data: { success: true, data: [] }
     });
     useAuth.mockReturnValue({
       user: { role: 'Student', _id: '6366287a94358b085b0fccf7' }

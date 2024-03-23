@@ -23,7 +23,9 @@ import TasksDistributionBarChart from '../../components/Charts/TasksDistribution
 import { appConfig } from '../../config';
 import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
+import { is_new_message_status, is_pending_status } from '../Utils/contants';
 
+// TODO TEST_CASE
 function EditorPage() {
   const { user_id } = useParams();
   const { user } = useAuth();
@@ -104,6 +106,35 @@ function EditorPage() {
       potentials: open_distr[date].potentials
     });
   });
+  // TODO: 
+  // essay tasks are missing for essay writer in this page.
+
+  const new_message_tasks = open_tasks_arr.filter(
+    (open_task) =>
+      open_task.show &&
+      !open_task.isFinalVersion &&
+      is_new_message_status(user, open_task)
+  );
+
+  const followup_tasks = open_tasks_arr.filter(
+    (open_task) =>
+      open_task.show &&
+      !open_task.isFinalVersion &&
+      is_pending_status(user, open_task) &&
+      open_task.latest_message_left_by_id !== ''
+  );
+
+  const pending_progress_tasks = open_tasks_arr.filter(
+    (open_task) =>
+      open_task.show &&
+      !open_task.isFinalVersion &&
+      is_pending_status(user, open_task) &&
+      open_task.latest_message_left_by_id === ''
+  );
+
+  const closed_tasks = open_tasks_arr.filter(
+    (open_task) => open_task.show && open_task.isFinalVersion
+  );
 
   return (
     <Box>
@@ -159,6 +190,10 @@ function EditorPage() {
         user={editorPageState.editor}
         success={editorPageState.success}
         students={editorPageState.students}
+        new_message_tasks={new_message_tasks}
+        followup_tasks={followup_tasks}
+        pending_progress_tasks={pending_progress_tasks}
+        closed_tasks={closed_tasks}
       />
       <Box>
         <Link

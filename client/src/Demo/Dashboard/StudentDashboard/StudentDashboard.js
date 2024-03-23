@@ -311,7 +311,7 @@ function StudentDashboard(props) {
         <Grid item xs={12} md={8}>
           <Card>
             <Alert severity="error">
-              {t('To Do Tasks')} &nbsp;:&nbsp;
+              {t('To Do Tasks', { ns: 'common' })} &nbsp;:&nbsp;
               {t('Please finish it as soon as possible')}
             </Alert>
             <Table size="small">

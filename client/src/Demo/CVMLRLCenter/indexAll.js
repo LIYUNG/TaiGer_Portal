@@ -64,7 +64,6 @@ function indexAll() {
       }
     );
   }, []);
-
   if (!is_TaiGer_role(user)) {
     return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
   }

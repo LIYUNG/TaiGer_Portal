@@ -36,8 +36,6 @@ function DocThreadEditor(props) {
     }));
   };
 
-  console.log(props.checkResult);
-  console.log(props.checkResult?.length);
   return (
     <>
       <Grid container spacing={2}>

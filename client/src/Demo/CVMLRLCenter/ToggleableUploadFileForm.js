@@ -39,12 +39,14 @@ function ToggleableUploadFileForm(props) {
   if (props.filetype === 'General') {
     drop_list = (
       <FormControl fullWidth size="small">
-        <InputLabel id="thread_category">{t('Category')}</InputLabel>
+        <InputLabel id="thread_category">
+          {t('Category', { ns: 'common' })}
+        </InputLabel>
         <Select
           labelId="thread_category"
           name="thread_category"
           id="thread_category"
-          label={t('Category')}
+          label={t('Category', { ns: 'common' })}
           onChange={(e) => props.handleSelect(e)}
           value={props.category}
         >
@@ -59,13 +61,15 @@ function ToggleableUploadFileForm(props) {
   } else {
     drop_list = (
       <FormControl fullWidth size="small">
-        <InputLabel id="thread_category">{t('Category')}</InputLabel>
+        <InputLabel id="thread_category">
+          {t('Category', { ns: 'common' })}
+        </InputLabel>
         <Select
           labelId="thread_category"
           name="thread_category"
           id="thread_category"
           value={props.category}
-          label={t('Category')}
+          label={t('Category', { ns: 'common' })}
           onChange={(e) => props.handleSelect(e)}
         >
           {PROGRAM_SPECIFIC_FILTE_TYPE.map((option) => (

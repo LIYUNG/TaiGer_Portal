@@ -1,25 +1,37 @@
 import React, { useEffect, useState } from 'react';
 import { Link as LinkDom } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Box, Card, Breadcrumbs, Link, Typography } from '@mui/material';
 
 import CVMLRLOverview from './CVMLRLOverview';
 import ErrorPage from '../Utils/ErrorPage';
-import { getCVMLRLOverview } from '../../api';
+import { getAllActiveEssays, getCVMLRLOverview } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
-import { is_TaiGer_role } from '../Utils/checking-functions';
+import {
+  AGENT_SUPPORT_DOCUMENTS_A,
+  FILE_TYPE_E,
+  is_TaiGer_Editor,
+  is_TaiGer_role,
+  open_essays_tasks,
+  open_tasks
+} from '../Utils/checking-functions';
 import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
 import { appConfig } from '../../config';
 import Loading from '../../components/Loading/Loading';
+import { is_new_message_status, is_pending_status } from '../Utils/contants';
 
 function index() {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [indexState, setIndexState] = useState({
     error: '',
     isLoaded: false,
+    isLoaded2: false,
     data: null,
     success: false,
     students: null,
+    essays: null,
     doc_thread_id: '',
     student_id: '',
     program_id: '',
@@ -62,16 +74,85 @@ function index() {
       }
     );
   }, []);
+  useEffect(() => {
+    getAllActiveEssays().then(
+      (resp) => {
+        const { data, success } = resp.data;
+        const { status } = resp;
+        if (success) {
+          setIndexState((prevState) => ({
+            ...prevState,
+            isLoaded2: true,
+            essays: data,
+            success: success,
+            res_status: status
+          }));
+        } else {
+          setIndexState((prevState) => ({
+            ...prevState,
+            isLoaded2: true,
+            res_status: status
+          }));
+        }
+      },
+      (error) => {
+        setIndexState((prevState) => ({
+          ...prevState,
+          isLoaded2: true,
+          error,
+          res_status: 500
+        }));
+      }
+    );
+  }, []);
 
-  const { res_status, isLoaded } = indexState;
-  TabTitle('CV ML RL Center');
-  if (!isLoaded && !indexState.students) {
+  const { res_status, isLoaded, isLoaded2, essays } = indexState;
+  TabTitle('CV ML RL Overview');
+  if ((!isLoaded && !indexState.students) || (!isLoaded2 && !essays)) {
     return <Loading />;
   }
 
   if (res_status >= 400) {
     return <ErrorPage res_status={res_status} />;
   }
+  // TODO:  Essay not shown for Student!
+  const open_essays_tasks_arr = open_essays_tasks(essays, user);
+  const open_tasks_without_essays_arr = open_tasks(indexState.students).filter(
+    (open_task) => ![FILE_TYPE_E.essay_required].includes(open_task.file_type)
+  );
+  const open_tasks_arr = [
+    ...open_essays_tasks_arr,
+    ...open_tasks_without_essays_arr
+  ].filter((open_task) => open_task.show && !open_task.isFinalVersion);
+  const open_tasks_withMyEssay_arr = open_tasks_arr.filter((open_task) =>
+    [...AGENT_SUPPORT_DOCUMENTS_A, FILE_TYPE_E.essay_required].includes(
+      open_task.file_type
+    ) && is_TaiGer_Editor(user)
+      ? open_task.outsourced_user_id?.some(
+          (outsourcedUser) =>
+            outsourcedUser._id.toString() === user._id.toString()
+        )
+      : true
+  );
+  const new_message_tasks = open_tasks_withMyEssay_arr.filter((open_task) =>
+    is_new_message_status(user, open_task)
+  );
+
+  const followup_tasks = open_tasks_withMyEssay_arr.filter(
+    (open_task) =>
+      is_pending_status(user, open_task) &&
+      open_task.latest_message_left_by_id !== ''
+  );
+
+  const pending_progress_tasks = open_tasks_withMyEssay_arr.filter(
+    (open_task) =>
+      is_pending_status(user, open_task) &&
+      open_task.latest_message_left_by_id === ''
+  );
+
+  const closed_tasks = open_tasks(indexState.students).filter(
+    (open_task) => open_task.show && open_task.isFinalVersion
+  );
 
   return (
     <Box data-testid="cvmlrlcenter_component">
@@ -84,7 +165,7 @@ function index() {
         >
           {appConfig.companyName}
         </Link>
-        <Typography color="text.primary">CV ML RL Overview</Typography>
+        <Typography color="text.primary">{t('CV ML RL Overview')}</Typography>
       </Breadcrumbs>
       {!is_TaiGer_role(user) && (
         <Card sx={{ p: 2 }}>
@@ -98,7 +179,7 @@ function index() {
             to={`${DEMO.CV_ML_RL_DOCS_LINK}`}
             target="_blank"
           >
-            <b>Click me</b>
+            <b>{t('Click me')}</b>
           </Link>
         </Card>
       )}
@@ -106,6 +187,10 @@ function index() {
         isLoaded={indexState.isLoaded}
         success={indexState.success}
         students={indexState.students}
+        new_message_tasks={new_message_tasks}
+        followup_tasks={followup_tasks}
+        pending_progress_tasks={pending_progress_tasks}
+        closed_tasks={closed_tasks}
       />
     </Box>
   );

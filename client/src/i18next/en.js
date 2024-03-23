@@ -20,6 +20,7 @@ export const translation_en = {
     [`${appConfig.companyName} Members`]: `${appConfig.companyName} Members`,
     [`${appConfig.companyName} Dashboard`]: `${appConfig.companyName} Dashboard`,
     [`${appConfig.companyName} Accounting`]: `${appConfig.companyName} Accounting`,
+    Applications: 'Applications',
     'Applications Overview': 'Applications Overview',
     'Application Overview': 'Application Overview',
     'My Applications': 'My Applications',
@@ -40,6 +41,7 @@ export const translation_en = {
     Target: 'Target',
     Score: 'Score',
     Start: 'Start',
+    'Student Name': 'Student Name',
     Portal: 'Portal',
     'School / Program': 'School / Program',
     'English/German': 'English/German',
@@ -49,6 +51,7 @@ export const translation_en = {
     Delete: 'Delete',
     Status: 'Status',
     Tasks: 'Tasks',
+    'Assign Essay Writer': 'Assign Essay Writer',
     'Application Year': 'Application Year',
     'Move to Archiv': 'Move to Archiv',
     'Archiv Students': 'Archiv Students',
@@ -58,6 +61,7 @@ export const translation_en = {
     'Program Conflicts': 'Program Conflicts',
     'Tasks Dashboard': 'Tasks Dashboard',
     'Program Conflict': 'Program Conflict',
+    Category: 'Calendar',
     Calendar: 'Calendar',
     'Calendar Events': 'Calendar Events',
     'My Students': 'My Students',
@@ -97,7 +101,10 @@ export const translation_en = {
     No: 'No',
     Ok: 'Ok',
     Submitted: 'Submitted',
-    Download: 'Download'
+    Download: 'Download',
+    'To Do Tasks': 'To Do Tasks',
+    'Agent Support': 'Agent Support',
+    'Essay Center': 'Essay Center'
   },
   dashboard: {
     Dashboard: 'Dashboard',
@@ -182,7 +189,6 @@ export const translation_en = {
     'Based on the applications, Uni-Assist is NOT needed':
       'Based on the applications, Uni-Assist is NOT needed.',
     'Course Analysis explanation button': 'More explanation',
-    'To Do Tasks': 'To Do Tasks',
     'New feedback from your Editor': 'New feedback from your Editor',
     'New tasks are assigned to you': 'New tasks are assigned to you',
     'It looks like you did not decide programs':
@@ -345,6 +351,7 @@ export const translation_en = {
     'Last update': 'Last update at',
     'Upload Time': 'Upload Time',
     Upload: 'Upload',
-    'Log Out': 'Log Out'
+    'Log Out': 'Log Out',
+    'Please assign essay writers': 'Please assign essay writers'
   }
 };

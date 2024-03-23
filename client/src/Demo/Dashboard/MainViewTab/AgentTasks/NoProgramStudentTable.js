@@ -40,7 +40,7 @@ function NoProgramStudentTable(props) {
         <Table size="small">
           <TableHead>
             <TableRow>
-              <TableCell>{t('Student Name')}</TableCell>
+              <TableCell>{t('Student Name', { ns: 'common' })}</TableCell>
               <TableCell>
                 {t('Year')}/{t('Semester')}
               </TableCell>

@@ -70,6 +70,17 @@ export const truncateText = (text, maxLength) => {
   return truncatedText;
 };
 
+export const FILE_TYPE_E = {
+  rl_required: 'RL',
+  ml_required: 'ML',
+  essay_required: 'Essay',
+  portfolio_required: 'Portfolio',
+  supplementary_form_required: 'Supplementary_Form',
+  scholarship_form_required: 'Scholarship_Form',
+  curriculum_analysis_required: 'Curriculum_Analysis',
+  others: 'Others'
+};
+
 export const file_category_const = {
   rl_required: 'RL',
   ml_required: 'ML',
@@ -80,6 +91,11 @@ export const file_category_const = {
   curriculum_analysis_required: 'Curriculum_Analysis'
 };
 
+export const AGENT_SUPPORT_DOCUMENTS_A = [
+  FILE_TYPE_E.curriculum_analysis_required,
+  FILE_TYPE_E.supplementary_form_required,
+  FILE_TYPE_E.others
+];
 // TODO test
 export const LinkableNewlineText = ({ text }) => {
   const textStyle = {
@@ -1436,14 +1452,48 @@ export const latestReplyInfo = (thread) => {
   );
 };
 
-const prepTask = (student, thread) => {
+const prepTaskStudent = (student) => {
   return {
     firstname_lastname: `${student.firstname}, ${student.lastname}`,
+    student_id: student._id.toString(),
+    attributes: student.attributes
+  };
+};
+
+// the messages[0] is already the latest message handled by backend query.
+const latestReplyUserId = (thread) => {
+  return thread.messages?.length > 0
+    ? thread.messages[0].user_id?._id.toString()
+    : '';
+};
+const prepEssayTaskThread = (student, thread) => {
+  return {
+    ...prepTaskStudent(student),
+    latest_message_left_by_id: latestReplyUserId(thread),
+    isFinalVersion: thread.isFinalVersion,
+    outsourced_user_id: thread?.outsourced_user_id,
+    file_type: thread.file_type,
+    aged_days: parseInt(getNumberOfDays(thread.updatedAt, new Date())),
+    latest_reply: latestReplyInfo(thread),
+    updatedAt: convertDate(thread.updatedAt),
+    number_input_from_student: getNumberOfFilesByStudent(
+      thread.messages,
+      student._id.toString()
+    ),
+    number_input_from_editors: getNumberOfFilesByEditor(
+      thread.messages,
+      student._id.toString()
+    )
+  };
+};
+
+const prepTask = (student, thread) => {
+  return {
+    ...prepTaskStudent(student),
     latest_message_left_by_id: thread.latest_message_left_by_id,
     isFinalVersion: thread.isFinalVersion,
+    outsourced_user_id: thread.doc_thread_id?.outsourced_user_id,
     file_type: thread.doc_thread_id.file_type,
-    student_id: student._id.toString(),
-    attributes: student.attributes,
     aged_days: parseInt(
       getNumberOfDays(thread.doc_thread_id.updatedAt, new Date())
     ),
@@ -1470,6 +1520,39 @@ const prepGeneralTask = (student, thread) => {
     show: true,
     document_name: `${thread.doc_thread_id.file_type}`,
     days_left: daysLeftMin
+  };
+};
+
+const prepEssayTask = (essay, user) => {
+  return {
+    ...prepEssayTaskThread(essay.student_id, essay),
+    // ...prepTask(student, thread),
+    thread_id: essay._id.toString(),
+    program_id: essay.program_id._id.toString(),
+    deadline: application_deadline_calculator(essay.student_id, {
+      programId: essay.program_id
+    }),
+    show:
+      AGENT_SUPPORT_DOCUMENTS_A.includes(essay.file_type) &&
+      is_TaiGer_Editor(user)
+        ? essay.outsourced_user_id?.some(
+            (outsourcer) => outsourcer._id.toString() === user._id.toString()
+          ) || false
+        : is_TaiGer_Agent(user)
+        ? essay.student_id?.agents.some(
+            (agent) => agent._id.toString() === user._id.toString()
+          ) || false
+        : true,
+    document_name: `${essay.file_type} - ${essay.program_id.school} - ${essay.program_id.degree} -${essay.program_id.program_name}`,
+    days_left:
+      parseInt(
+        getNumberOfDays(
+          new Date(),
+          application_deadline_calculator(essay.student_id, {
+            programId: essay.program_id
+          })
+        )
+      ) || '-'
   };
 };
 
@@ -1505,6 +1588,19 @@ export const open_tasks = (students) => {
         }
       }
     }
+  }
+  return tasks;
+};
+
+export const open_essays_tasks = (essays, user) => {
+  const tasks = [];
+  for (const essay of essays) {
+    console.log(
+      essay.outsourced_user_id?.some(
+        (outsourcer) => outsourcer._id.toString() === user._id.toString()
+      )
+    );
+    tasks.push(prepEssayTask(essay, user));
   }
   return tasks;
 };
@@ -1895,4 +1991,16 @@ export const isDocumentsMissingAssign = (application) => {
     return false;
   }
   return getMissingDocs(application).length > 0;
+};
+
+export const does_essay_have_writers = (essayDocumentThreads) => {
+  for (let i = 0; i < essayDocumentThreads.length; i += 1) {
+    if (
+      essayDocumentThreads[i].outsourced_user_id === undefined ||
+      essayDocumentThreads[i].outsourced_user_id.length === 0
+    ) {
+      return false;
+    }
+  }
+  return true;
 };

@@ -20,7 +20,9 @@ const {
   sendSetAsFinalProgramSpecificFileForStudentEmail,
   sendSetAsFinalProgramSpecificFileForAgentEmail,
   assignDocumentTaskToEditorEmail,
-  assignDocumentTaskToStudentEmail
+  assignDocumentTaskToStudentEmail,
+  sendAssignEssayWriterReminderEmail,
+  assignEssayTaskToEditorEmail
   // sendSomeReminderEmail,
 } = require('../services/email');
 const logger = require('../services/logger');
@@ -29,12 +31,23 @@ const {
   General_Docs,
   application_deadline_calculator,
   isNotArchiv,
-  CVDeadline_Calculator
+  CVDeadline_Calculator,
+  EDITOR_SCOPE,
+  ESSAY_WRITER_SCOPE
 } = require('../constants');
+const {
+  informEssayWriterNewEssayEmail,
+  informStudentTheirEssayWriterEmail,
+  informAgentEssayAssignedEmail
+} = require('../services/email');
+// const {
+//   getAllActiveStudents
+// } = require('./students')
 
 const { AWS_S3_BUCKET_NAME, API_ORIGIN } = require('../config');
 const Permission = require('../models/Permission');
 const { s3 } = require('../aws/index');
+const mongoose = require('mongoose');
 
 const ThreadS3GarbageCollector = async () => {
   try {
@@ -291,7 +304,8 @@ const getAllCVMLRLOverview = asyncHandler(async (req, res) => {
     })
     .populate({
       path: 'applications.doc_modification_thread.doc_thread_id',
-      select: 'file_type isFinalVersion updatedAt messages.file',
+      select:
+        'file_type outsourced_user_id isFinalVersion updatedAt messages.file',
       populate: {
         path: 'messages.user_id',
         select: 'firstname lastname'
@@ -454,7 +468,8 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
       )
       .populate({
         path: 'generaldocs_threads.doc_thread_id',
-        select: 'file_type isFinalVersion updatedAt messages.file',
+        select:
+          'file_type isFinalVersion outsourced_user_id updatedAt messages.file',
         populate: {
           path: 'messages.user_id',
           select: 'firstname lastname'
@@ -462,7 +477,8 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
       })
       .populate({
         path: 'applications.doc_modification_thread.doc_thread_id',
-        select: 'file_type isFinalVersion updatedAt messages.file',
+        select:
+          'file_type isFinalVersion outsourced_user_id updatedAt messages.file',
         populate: {
           path: 'messages.user_id',
           select: 'firstname lastname'
@@ -484,7 +500,8 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
       )
       .populate({
         path: 'generaldocs_threads.doc_thread_id',
-        select: 'file_type isFinalVersion updatedAt messages.file',
+        select:
+          'file_type isFinalVersion outsourced_user_id updatedAt messages.file',
         populate: {
           path: 'messages.user_id',
           select: 'firstname lastname'
@@ -492,7 +509,8 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
       })
       .populate({
         path: 'applications.doc_modification_thread.doc_thread_id',
-        select: 'file_type isFinalVersion updatedAt messages.file',
+        select:
+          'file_type isFinalVersion outsourced_user_id updatedAt messages.file',
         populate: {
           path: 'messages.user_id',
           select: 'firstname lastname'
@@ -518,7 +536,7 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
         path: 'generaldocs_threads.doc_thread_id',
         select: 'file_type isFinalVersion updatedAt messages.file',
         populate: {
-          path: 'messages.user_id',
+          path: 'messages.user_id outsourced_user_id',
           select: 'firstname lastname'
         }
       })
@@ -526,7 +544,7 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
         path: 'applications.doc_modification_thread.doc_thread_id',
         select: 'file_type isFinalVersion updatedAt messages.file',
         populate: {
-          path: 'messages.user_id',
+          path: 'messages.user_id outsourced_user_id',
           select: 'firstname lastname'
         }
       })
@@ -550,7 +568,8 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
       )
       .populate({
         path: 'generaldocs_threads.doc_thread_id',
-        select: 'file_type isFinalVersion updatedAt messages.file',
+        select:
+          'file_type isFinalVersion outsourced_user_id updatedAt messages.file',
         populate: {
           path: 'messages.user_id',
           select: 'firstname lastname'
@@ -558,7 +577,8 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
       })
       .populate({
         path: 'applications.doc_modification_thread.doc_thread_id',
-        select: 'file_type isFinalVersion updatedAt messages.file',
+        select:
+          'file_type isFinalVersion outsourced_user_id updatedAt messages.file',
         populate: {
           path: 'messages.user_id',
           select: 'firstname lastname'
@@ -569,6 +589,7 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
       )
       .lean()
       .exec();
+    // console.log('student:', student)
     res.status(200).send({ success: true, data: [student] });
   } else {
     // Guest
@@ -761,23 +782,54 @@ const initApplicationMessagesThread = asyncHandler(async (req, res) => {
     );
   res.status(200).send({ success: true, data: temp });
 
+  const Essay_Writer_Scope = Object.keys(ESSAY_WRITER_SCOPE);
   const documentname = `${document_category} - ${application.programId.school} - ${application.programId.program_name}`;
+  if (Essay_Writer_Scope.includes(document_category)) {
+    const permissions = await Permission.find({
+      canAssignEditors: true
+    })
+      .populate('user_id', 'firstname lastname email')
+      .lean();
+    if (permissions) {
+      for (let x = 0; x < permissions.length; x += 1) {
+        await assignEssayTaskToEditorEmail(
+          {
+            firstname: permissions[x].user_id.firstname,
+            lastname: permissions[x].user_id.lastname,
+            address: permissions[x].user_id.email
+          },
+          {
+            student_firstname: student2.firstname,
+            student_lastname: student2.lastname,
+            student_id: student2._id.toString(),
+            thread_id: new_doc_thread._id,
+            documentname,
+            updatedAt: new Date()
+          }
+        );
+      }
+    }
+  }
+
   for (let i = 0; i < student.editors.length; i += 1) {
     if (isNotArchiv(student)) {
-      await assignDocumentTaskToEditorEmail(
-        {
-          firstname: student.editors[i].firstname,
-          lastname: student.editors[i].lastname,
-          address: student.editors[i].email
-        },
-        {
-          student_firstname: student2.firstname,
-          student_lastname: student2.lastname,
-          thread_id: new_doc_thread._id,
-          documentname,
-          updatedAt: new Date()
-        }
-      );
+      if (!Essay_Writer_Scope.includes(document_category)) {
+        // TODO: inform Edior lead to assign
+        await assignDocumentTaskToEditorEmail(
+          {
+            firstname: student.editors[i].firstname,
+            lastname: student.editors[i].lastname,
+            address: student.editors[i].email
+          },
+          {
+            student_firstname: student2.firstname,
+            student_lastname: student2.lastname,
+            thread_id: new_doc_thread._id,
+            documentname,
+            updatedAt: new Date()
+          }
+        );
+      }
     }
   }
   if (isNotArchiv(student2)) {
@@ -804,6 +856,7 @@ const getMessages = asyncHandler(async (req, res) => {
     )
     .populate('messages.user_id', 'firstname lastname role')
     .populate('program_id')
+    .populate('outsourced_user_id', 'firstname lastname role')
     .lean()
     .exec();
 
@@ -893,7 +946,7 @@ const postMessages = asyncHandler(async (req, res) => {
 
   const document_thread = await Documentthread.findById(
     messagesThreadId
-  ).populate('student_id program_id');
+  ).populate('student_id program_id outsourced_user_id');
   if (!document_thread) {
     logger.info('postMessages: Invalid message thread id');
     throw new ErrorResponse(403, 'Invalid message thread id');
@@ -988,83 +1041,21 @@ const postMessages = asyncHandler(async (req, res) => {
   res.status(200).send({ success: true, data: document_thread2 });
 
   if (user.role === Role.Student) {
-    if (['Form_A', 'Form_B'].includes(document_thread.file_type)) {
+    if (
+      [
+        'Supplementary_Form',
+        'Curriculum_Analysis',
+        'Form_A',
+        'Form_B',
+        'Others'
+      ].includes(document_thread.file_type)
+    ) {
       // Inform Agent
-      for (let i = 0; i < student.agents.length; i += 1) {
-        if (isNotArchiv(student)) {
-          if (isNotArchiv(student.agents[i])) {
-            // if supplementary form, inform Agent.
-            await sendNewGeneraldocMessageInThreadEmail(
-              {
-                firstname: student.agents[i].firstname,
-                lastname: student.agents[i].lastname,
-                address: student.agents[i].email
-              },
-              {
-                writer_firstname: user.firstname,
-                writer_lastname: user.lastname,
-                student_firstname: student.firstname,
-                student_lastname: student.lastname,
-                uploaded_documentname: document_thread.file_type,
-                thread_id: document_thread._id.toString(),
-                uploaded_updatedAt: new Date()
-              }
-            );
-          }
-        }
-      }
-      return;
-    }
-    // If no editor, inform agent to assign
-    if (!student.editors || student.editors.length === 0) {
-      await Student.findByIdAndUpdate(user._id, { needEditor: true }, {});
-      for (let i = 0; i < student.agents.length; i += 1) {
-        // inform active-agent
-        if (isNotArchiv(student)) {
-          if (isNotArchiv(student.agents[i])) {
-            await sendAssignEditorReminderEmail(
-              {
-                firstname: student.agents[i].firstname,
-                lastname: student.agents[i].lastname,
-                address: student.agents[i].email
-              },
-              {
-                student_firstname: student.firstname,
-                student_id: student._id.toString(),
-                student_lastname: student.lastname
-              }
-            );
-          }
-        }
-      }
-      // inform editor-lead
-      const permissions = await Permission.find({
-        canAssignEditors: true
-      })
-        .populate('user_id', 'firstname lastname email')
-        .lean();
-      if (permissions) {
-        for (let x = 0; x < permissions.length; x += 1) {
-          await sendAssignEditorReminderEmail(
-            {
-              firstname: permissions[x].user_id.firstname,
-              lastname: permissions[x].user_id.lastname,
-              address: permissions[x].user_id.email
-            },
-            {
-              student_firstname: student.firstname,
-              student_id: student._id.toString(),
-              student_lastname: student.lastname
-            }
-          );
-        }
-      }
-    } else {
-      if (document_thread.file_type === 'Supplementary_Form') {
-        // Inform Agent
+      if (isNotArchiv(student)) {
         for (let i = 0; i < student.agents.length; i += 1) {
-          if (isNotArchiv(student)) {
-            if (isNotArchiv(student.agents[i])) {
+          // Inform Agent
+          if (isNotArchiv(student.agents[i])) {
+            if (document_thread.program_id) {
               // if supplementary form, inform Agent.
               await sendNewApplicationMessageInThreadEmail(
                 {
@@ -1085,7 +1076,74 @@ const postMessages = asyncHandler(async (req, res) => {
                   message
                 }
               );
+            } else {
+              // if supplementary form, inform Agent.
+              await sendNewGeneraldocMessageInThreadEmail(
+                {
+                  firstname: student.agents[i].firstname,
+                  lastname: student.agents[i].lastname,
+                  address: student.agents[i].email
+                },
+                {
+                  writer_firstname: user.firstname,
+                  writer_lastname: user.lastname,
+                  student_firstname: student.firstname,
+                  student_lastname: student.lastname,
+                  uploaded_documentname: document_thread.file_type,
+                  thread_id: document_thread._id.toString(),
+                  uploaded_updatedAt: new Date()
+                }
+              );
             }
+          }
+        }
+      }
+    }
+
+    // If no editor, inform agent and editor lead to assign (Exclude Essay tasks)
+    const Editor_Scope = Object.keys(EDITOR_SCOPE);
+    if (Editor_Scope.includes(document_thread.file_type)) {
+      if (!student.editors || student.editors.length === 0) {
+        await Student.findByIdAndUpdate(user._id, { needEditor: true }, {});
+        for (let i = 0; i < student.agents.length; i += 1) {
+          // inform active-agent
+          if (isNotArchiv(student)) {
+            if (isNotArchiv(student.agents[i])) {
+              await sendAssignEditorReminderEmail(
+                {
+                  firstname: student.agents[i].firstname,
+                  lastname: student.agents[i].lastname,
+                  address: student.agents[i].email
+                },
+                {
+                  student_firstname: student.firstname,
+                  student_id: student._id.toString(),
+                  student_lastname: student.lastname
+                }
+              );
+            }
+          }
+        }
+        // inform editor-lead
+        const permissions = await Permission.find({
+          canAssignEditors: true
+        })
+          .populate('user_id', 'firstname lastname email')
+          .lean();
+        if (permissions) {
+          for (let x = 0; x < permissions.length; x += 1) {
+            await sendAssignEditorReminderEmail(
+              {
+                firstname: permissions[x].user_id.firstname,
+                lastname: permissions[x].user_id.lastname,
+                address: permissions[x].user_id.email
+              },
+              {
+                student_firstname: student.firstname,
+                student_id: student._id.toString(),
+                student_lastname: student.lastname
+              }
+            );
           }
         }
       } else {
@@ -1119,6 +1177,105 @@ const postMessages = asyncHandler(async (req, res) => {
                 firstname: student.editors[i].firstname,
                 lastname: student.editors[i].lastname,
                 address: student.editors[i].email
+              },
+              {
+                writer_firstname: user.firstname,
+                writer_lastname: user.lastname,
+                student_firstname: student.firstname,
+                student_lastname: student.lastname,
+                uploaded_documentname: document_thread.file_type,
+                thread_id: document_thread._id.toString(),
+                uploaded_updatedAt: new Date()
+              }
+            );
+          }
+        }
+      }
+    }
+    // Essay-related only notification: if no essay writer: infor agent and editor lead
+    const Essay_Writer_Scope = Object.keys(ESSAY_WRITER_SCOPE);
+    if (Essay_Writer_Scope.includes(document_thread.file_type)) {
+      if (
+        !document_thread.outsourced_user_id ||
+        document_thread.outsourced_user_id.length === 0
+      ) {
+        await Student.findByIdAndUpdate(user._id, { needEditor: true }, {});
+        for (let i = 0; i < student.agents.length; i += 1) {
+          // inform active-agent
+          if (isNotArchiv(student)) {
+            await sendAssignEssayWriterReminderEmail(
+              {
+                firstname: student.agents[i].firstname,
+                lastname: student.agents[i].lastname,
+                address: student.agents[i].email
+              },
+              {
+                student_firstname: student.firstname,
+                student_id: student._id.toString(),
+                student_lastname: student.lastname
+              }
+            );
+          }
+        }
+        // inform editor-lead
+        const permissions = await Permission.find({
+          canAssignEditors: true
+        })
+          .populate('user_id', 'firstname lastname email')
+          .lean();
+        if (permissions) {
+          for (let x = 0; x < permissions.length; x += 1) {
+            await sendAssignEssayWriterReminderEmail(
+              {
+                firstname: permissions[x].user_id.firstname,
+                lastname: permissions[x].user_id.lastname,
+                address: permissions[x].user_id.email
+              },
+              {
+                student_firstname: student.firstname,
+                student_id: student._id.toString(),
+                student_lastname: student.lastname
+              }
+            );
+          }
+        }
+      } else {
+        // Inform outsourcer
+        for (let i = 0; i < document_thread.outsourced_user_id.length; i += 1) {
+          if (document_thread.program_id) {
+            if (
+              isNotArchiv(student) &&
+              isNotArchiv(document_thread.outsourced_user_id[i])
+            ) {
+              await sendNewApplicationMessageInThreadEmail(
+                {
+                  firstname: document_thread.outsourced_user_id[i].firstname,
+                  lastname: document_thread.outsourced_user_id[i].lastname,
+                  address: document_thread.outsourced_user_id[i].email
+                },
+                {
+                  writer_firstname: user.firstname,
+                  writer_lastname: user.lastname,
+                  student_firstname: student.firstname,
+                  student_lastname: student.lastname,
+                  uploaded_documentname: document_thread.file_type,
+                  school: document_thread.program_id.school,
+                  program_name: document_thread.program_id.program_name,
+                  thread_id: document_thread._id.toString(),
+                  uploaded_updatedAt: new Date(),
+                  message
+                }
+              );
+            }
+          } else if (
+            isNotArchiv(student) &&
+            isNotArchiv(document_thread.outsourced_user_id[i])
+          ) {
+            await sendNewGeneraldocMessageInThreadEmail(
+              {
+                firstname: document_thread.outsourced_user_id[i].firstname,
+                lastname: document_thread.outsourced_user_id[i].lastname,
+                address: document_thread.outsourced_user_id[i].email
               },
               {
                 writer_firstname: user.firstname,
@@ -1183,56 +1340,112 @@ const postMessages = asyncHandler(async (req, res) => {
   }
   if (user.role === Role.Agent || user.role === Role.Admin) {
     // Inform Editor
-    // const student = user;
-    for (let i = 0; i < student.editors.length; i += 1) {
-      if (document_thread.program_id) {
-        if (isNotArchiv(student)) {
-          if (isNotArchiv(student.editors[i])) {
-            await sendNewApplicationMessageInThreadEmail(
-              {
-                firstname: student.editors[i].firstname,
-                lastname: student.editors[i].lastname,
-                address: student.editors[i].email
-              },
-              {
-                writer_firstname: user.firstname,
-                writer_lastname: user.lastname,
-                student_firstname: student.firstname,
-                student_lastname: student.lastname,
-                uploaded_documentname: document_thread.file_type,
-                school: document_thread.program_id.school,
-                program_name: document_thread.program_id.program_name,
-                thread_id: document_thread._id.toString(),
-                uploaded_updatedAt: new Date(),
-                message
-              }
-            );
+    const Essay_Writer_Scope = Object.keys(ESSAY_WRITER_SCOPE);
+    if (Essay_Writer_Scope.includes(document_thread.file_type)) {
+      for (let i = 0; i < document_thread.outsourced_user_id.length; i += 1) {
+        if (document_thread.program_id) {
+          if (isNotArchiv(student)) {
+            if (isNotArchiv(student.editors[i])) {
+              await sendNewApplicationMessageInThreadEmail(
+                {
+                  firstname: document_thread.outsourced_user_id[i].firstname,
+                  lastname: document_thread.outsourced_user_id[i].lastname,
+                  address: document_thread.outsourced_user_id[i].email
+                },
+                {
+                  writer_firstname: user.firstname,
+                  writer_lastname: user.lastname,
+                  student_firstname: student.firstname,
+                  student_lastname: student.lastname,
+                  uploaded_documentname: document_thread.file_type,
+                  school: document_thread.program_id.school,
+                  program_name: document_thread.program_id.program_name,
+                  thread_id: document_thread._id.toString(),
+                  uploaded_updatedAt: new Date(),
+                  message
+                }
+              );
+            }
           }
-        }
-      } else {
-        if (isNotArchiv(student)) {
-          if (isNotArchiv(student.editors[i])) {
-            await sendNewGeneraldocMessageInThreadEmail(
-              {
-                firstname: student.editors[i].firstname,
-                lastname: student.editors[i].lastname,
-                address: student.editors[i].email
-              },
-              {
-                writer_firstname: user.firstname,
-                writer_lastname: user.lastname,
-                student_firstname: student.firstname,
-                student_lastname: student.lastname,
-                uploaded_documentname: document_thread.file_type,
-                thread_id: document_thread._id.toString(),
-                uploaded_updatedAt: new Date(),
-                message
-              }
-            );
+        } else {
+          if (isNotArchiv(student)) {
+            if (isNotArchiv(document_thread.outsourced_user_id[i])) {
+              await sendNewGeneraldocMessageInThreadEmail(
+                {
+                  firstname: document_thread.outsourced_user_id[i].firstname,
+                  lastname: document_thread.outsourced_user_id[i].lastname,
+                  address: document_thread.outsourced_user_id[i].email
+                },
+                {
+                  writer_firstname: user.firstname,
+                  writer_lastname: user.lastname,
+                  student_firstname: student.firstname,
+                  student_lastname: student.lastname,
+                  uploaded_documentname: document_thread.file_type,
+                  thread_id: document_thread._id.toString(),
+                  uploaded_updatedAt: new Date(),
+                  message
+                }
+              );
+            }
           }
         }
       }
     }
+
+    const Editor_Scope = Object.keys(EDITOR_SCOPE);
+    if (Editor_Scope.includes(document_thread.file_type)) {
+      for (let i = 0; i < student.editors.length; i += 1) {
+        if (document_thread.program_id) {
+          if (isNotArchiv(student)) {
+            if (isNotArchiv(student.editors[i])) {
+              await sendNewApplicationMessageInThreadEmail(
+                {
+                  firstname: student.editors[i].firstname,
+                  lastname: student.editors[i].lastname,
+                  address: student.editors[i].email
+                },
+                {
+                  writer_firstname: user.firstname,
+                  writer_lastname: user.lastname,
+                  student_firstname: student.firstname,
+                  student_lastname: student.lastname,
+                  uploaded_documentname: document_thread.file_type,
+                  school: document_thread.program_id.school,
+                  program_name: document_thread.program_id.program_name,
+                  thread_id: document_thread._id.toString(),
+                  uploaded_updatedAt: new Date(),
+                  message
+                }
+              );
+            }
+          }
+        } else {
+          if (isNotArchiv(student)) {
+            if (isNotArchiv(student.editors[i])) {
+              await sendNewGeneraldocMessageInThreadEmail(
+                {
+                  firstname: student.editors[i].firstname,
+                  lastname: student.editors[i].lastname,
+                  address: student.editors[i].email
+                },
+                {
+                  writer_firstname: user.firstname,
+                  writer_lastname: user.lastname,
+                  student_firstname: student.firstname,
+                  student_lastname: student.lastname,
+                  uploaded_documentname: document_thread.file_type,
+                  thread_id: document_thread._id.toString(),
+                  uploaded_updatedAt: new Date(),
+                  message
+                }
+              );
+            }
+          }
+        }
+      }
+    }
+
     // Inform student
     if (document_thread.program_id) {
       if (isNotArchiv(document_thread.student_id)) {
@@ -1759,6 +1972,258 @@ const deleteAMessageInThread = asyncHandler(async (req, res) => {
   await student.save();
 });
 
+// () TODO email : agent better notification
+// () TODO email : student better notification
+const assignEssayWritersToEssayTask = asyncHandler(async (req, res, next) => {
+  const {
+    params: { messagesThreadId },
+    body: editorsId
+  } = req;
+  const keys = Object.keys(editorsId);
+  const essayDocumentThreads = await Documentthread.findById(messagesThreadId)
+    .populate('student_id')
+    .populate({
+      path: 'student_id',
+      populate: {
+        path: 'agents',
+        model: 'User'
+      }
+    })
+    .populate(
+      'program_id',
+      'school program_name degree semester application_deadline'
+    )
+    .select('-messages');
+  // TODO: data validation for studentId, editorsId
+  let updated_essay_writer_id = [];
+  let before_change_essay_writer_arr = essayDocumentThreads.outsourced_user_id;
+  let to_be_informed_essay_writer = [];
+  let updated_editor = [];
+  for (let i = 0; i < keys.length; i += 1) {
+    if (editorsId[keys[i]]) {
+      updated_essay_writer_id.push(keys[i]);
+
+      const editor = await Editor.findById(keys[i]);
+      updated_editor.push({
+        firstname: editor.firstname,
+        lastname: editor.lastname,
+        email: editor.email
+      });
+      if (
+        before_change_essay_writer_arr &&
+        !before_change_essay_writer_arr.includes(keys[i])
+      ) {
+        to_be_informed_essay_writer.push({
+          firstname: editor.firstname,
+          lastname: editor.lastname,
+          archiv: editor.archiv,
+          email: editor.email
+        });
+      } else if (!before_change_essay_writer_arr) {
+        to_be_informed_essay_writer.push({
+          firstname: editor.firstname,
+          lastname: editor.lastname,
+          archiv: editor.archiv,
+          email: editor.email
+        });
+      }
+    }
+  }
+  // student.notification.isRead_new_editor_assigned = false;
+  // Update the outsourced_user_id field for each document
+  essayDocumentThreads.outsourced_user_id = updated_essay_writer_id;
+  // Save the changes to the document
+  await essayDocumentThreads.save();
+
+  const studentId = essayDocumentThreads.student_id;
+  const student = await Student.findById(studentId);
+  const student_upated = await Student.findById(studentId)
+    .populate('applications.programId agents editors')
+    .populate(
+      'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
+      '-messages'
+    )
+    .exec();
+  const essayDocumentThreads_Updated = await Documentthread.findById(
+    messagesThreadId
+  )
+    .populate('student_id outsourced_user_id')
+    .populate({
+      path: 'student_id',
+      populate: {
+        path: 'agents',
+        model: 'User'
+      }
+    })
+    .populate(
+      'program_id',
+      'school program_name degree semester application_deadline'
+    )
+    .select('-messages')
+    .lean();
+  res.status(200).send({ success: true, data: essayDocumentThreads_Updated });
+
+  for (let i = 0; i < to_be_informed_essay_writer.length; i += 1) {
+    if (isNotArchiv(student)) {
+      if (isNotArchiv(to_be_informed_essay_writer[i])) {
+        await informEssayWriterNewEssayEmail(
+          {
+            firstname: to_be_informed_essay_writer[i].firstname,
+            lastname: to_be_informed_essay_writer[i].lastname,
+            address: to_be_informed_essay_writer[i].email
+          },
+          {
+            std_firstname: student.firstname,
+            std_lastname: student.lastname,
+            std_id: student._id.toString(),
+            thread_id: essayDocumentThreads._id.toString(),
+            file_type: essayDocumentThreads.file_type,
+            program: essayDocumentThreads.program_id
+          }
+        );
+      }
+    }
+  }
+  // TODO: inform Agent for assigning editor.
+  for (let i = 0; i < student_upated.agents.length; i += 1) {
+    if (isNotArchiv(student)) {
+      if (isNotArchiv(student_upated.agents[i])) {
+        await informAgentEssayAssignedEmail(
+          {
+            firstname: student_upated.agents[i].firstname,
+            lastname: student_upated.agents[i].lastname,
+            address: student_upated.agents[i].email
+          },
+          {
+            std_firstname: student.firstname,
+            std_lastname: student.lastname,
+            std_id: student._id.toString(),
+            thread_id: essayDocumentThreads._id.toString(),
+            file_type: essayDocumentThreads.file_type,
+            essay_writers: to_be_informed_essay_writer,
+            program: essayDocumentThreads.program_id
+          }
+        );
+      }
+    }
+  }
+
+  if (updated_editor.length !== 0) {
+    if (isNotArchiv(student)) {
+      await informStudentTheirEssayWriterEmail(
+        {
+          firstname: student.firstname,
+          lastname: student.lastname,
+          address: student.email
+        },
+        {
+          program: essayDocumentThreads.program_id,
+          thread_id: essayDocumentThreads._id.toString(),
+          file_type: essayDocumentThreads.file_type,
+          editors: updated_editor
+        }
+      );
+    }
+  }
+  next();
+});
+
+const clearEssayWriters = asyncHandler(async (req, res, next) => {
+  await Documentthread.updateMany(
+    // Match documents where outsourced_user_id field exists
+    { outsourced_user_id: { $exists: true } },
+    { $set: { outsourced_user_id: [] } } // Set outsourced_user_id field to an empty array
+  );
+  res.status(200).send({ success: true });
+  next();
+});
+
+const getAllActiveEssays = asyncHandler(async (req, res, next) => {
+  // TODO
+  try {
+    const matchingDocuments = [];
+    const { user } = req;
+    if (user.role === Role.Student) {
+      const essayDocumentThreads = await Documentthread.find(
+        { student_id: user._id, file_type: 'Essay' },
+        { messages: { $slice: -1 } }
+      )
+        .populate('student_id outsourced_user_id')
+        .populate({
+          path: 'student_id messages.user_id',
+          populate: {
+            path: 'agents',
+            model: 'User'
+          }
+        })
+        .populate('messages.user_id', 'firstname lastname role')
+        .populate(
+          'program_id',
+          'school program_name degree application_deadline semester'
+        )
+        .lean();
+
+      for (const doc of essayDocumentThreads) {
+        if (doc.student_id && !doc.student_id.archiv) {
+          for (const application of doc.student_id?.applications || []) {
+            if (application.decided === 'O') {
+              for (const thread of application?.doc_modification_thread || []) {
+                if (doc._id.toString() === thread.doc_thread_id.toString()) {
+                  matchingDocuments.push(doc);
+                  break;
+                }
+              }
+            }
+          }
+        }
+      }
+      res.status(200).send({ success: true, data: matchingDocuments });
+    } else {
+      const essayDocumentThreads = await Documentthread.find(
+        {
+          file_type: 'Essay'
+        },
+        { messages: { $slice: -1 } }
+      )
+        .populate('student_id outsourced_user_id')
+        .populate({
+          path: 'student_id messages.user_id',
+          populate: {
+            path: 'agents',
+            model: 'User'
+          }
+        })
+        .populate('messages.user_id', 'firstname lastname role')
+        .populate(
+          'program_id',
+          'school program_name degree application_deadline semester'
+        )
+        .lean();
+
+      for (const doc of essayDocumentThreads) {
+        if (doc.student_id && !doc.student_id.archiv) {
+          for (const application of doc.student_id?.applications || []) {
+            if (application.decided === 'O') {
+              for (const thread of application?.doc_modification_thread || []) {
+                if (doc._id.toString() === thread.doc_thread_id.toString()) {
+                  matchingDocuments.push(doc);
+                  break;
+                }
+              }
+            }
+          }
+        }
+      }
+      res.status(200).send({ success: true, data: matchingDocuments });
+    }
+    next();
+    // Handle matched data
+  } catch (error) {
+    console.error(error);
+    throw new ErrorResponse(403, 'Invalid ThreadId');
+  }
+});
+
 module.exports = {
   ThreadS3GarbageCollector,
   getAllCVMLRLOverview,
@@ -1777,5 +2242,8 @@ module.exports = {
   SetStatusMessagesThread,
   deleteGeneralMessagesThread,
   deleteProgramSpecificMessagesThread,
-  deleteAMessageInThread
+  deleteAMessageInThread,
+  assignEssayWritersToEssayTask,
+  getAllActiveEssays,
+  clearEssayWriters
 };

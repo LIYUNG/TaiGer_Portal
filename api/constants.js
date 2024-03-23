@@ -180,7 +180,8 @@ const TaskStatus = {
   Pending: 'pending',
   NotNeeded: 'notneeded'
 };
-const FILE_MAPPING_TABLE = {
+
+const EDITOR_SCOPE = {
   CV: 'Curriculum Vitae',
   ML: 'Motivation Letter',
   Portfolio: 'Portfolio',
@@ -190,9 +191,12 @@ const FILE_MAPPING_TABLE = {
   Recommendation_Letter_A: 'Recommendation Letter',
   Recommendation_Letter_B: 'Recommendation Letter',
   Recommendation_Letter_C: 'Recommendation Letter',
-  Scholarship_Form: 'Scholarship',
-  Supplementary_Form: 'Supplementary Form'
+  Scholarship_Form: 'Scholarship'
 };
+const ESSAY_WRITER_SCOPE = {
+  Essay: 'Essay'
+};
+const FILE_MAPPING_TABLE = { ...EDITOR_SCOPE, ...ESSAY_WRITER_SCOPE };
 const RLs_CONSTANT = ['RL_A', 'RL_B', 'RL_C'];
 const GENERAL_RLs_CONSTANT = [
   'Recommendation_Letter_A',
@@ -1595,6 +1599,8 @@ module.exports = {
   DocumentStatus,
   CheckListStatus,
   TaskStatus,
+  EDITOR_SCOPE,
+  ESSAY_WRITER_SCOPE,
   FILE_MAPPING_TABLE,
   RLs_CONSTANT,
   GENERAL_RLs_CONSTANT,

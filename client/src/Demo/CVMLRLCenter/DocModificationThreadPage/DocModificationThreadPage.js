@@ -25,6 +25,8 @@ import ErrorPage from '../../Utils/ErrorPage';
 import ModalMain from '../../Utils/ModalHandler/ModalMain';
 import { stringAvatar, templatelist } from '../../Utils/contants';
 import {
+  AGENT_SUPPORT_DOCUMENTS_A,
+  FILE_TYPE_E,
   LinkableNewlineText,
   getRequirement,
   is_TaiGer_AdminAgent,
@@ -36,7 +38,8 @@ import {
   SubmitMessageWithAttachment,
   getMessagThread,
   deleteAMessageInThread,
-  SetFileAsFinal
+  SetFileAsFinal,
+  updateEssayWriter
 } from '../../../api';
 import { TabTitle } from '../../Utils/TabTitle';
 import DEMO from '../../../store/constant';
@@ -45,6 +48,7 @@ import { appConfig } from '../../../config';
 import { useAuth } from '../../../components/AuthProvider';
 import Loading from '../../../components/Loading/Loading';
 import ModalNew from '../../../components/Modal';
+import EditEssayWritersSubpage from '../../Dashboard/MainViewTab/StudDocsOverview/EditEssayWritersSubpage';
 
 function DocModificationThreadPage() {
   const { user } = useAuth();
@@ -57,6 +61,7 @@ function DocModificationThreadPage() {
       componentRef: React.createRef(),
       isLoaded: false,
       isFilesListOpen: false,
+      showEditorPage: false,
       isSubmissionLoaded: true,
       articles: [],
       isEdit: false,
@@ -219,7 +224,6 @@ function DocModificationThreadPage() {
                 checkPoints_temp2.corretFirstname.text =
                   checkPoints_temp2.corretFirstname.text.replace('NOT ', '');
               }
-              console.log(`${headerText}${footerText}`);
               if (`${headerText}${footerText}` !== '') {
                 checkPoints_temp2.metadata = {
                   hasMetadata: true,
@@ -398,7 +402,10 @@ function DocModificationThreadPage() {
             success,
             file: null,
             editorState: {},
-            thread: data,
+            thread: {
+              ...docModificationThreadPageState.thread,
+              messages: data?.messages
+            },
             isLoaded: true,
             buttonDisabled: false,
             accordionKeys: [
@@ -578,6 +585,68 @@ function DocModificationThreadPage() {
       ...prevState,
       isFilesListOpen: true
     }));
+  };
+
+  const setEditorModalhide = () => {
+    setDocModificationThreadPageState((prevState) => ({
+      ...prevState,
+      showEditorPage: false
+    }));
+  };
+
+  const startEditingEditor = () => {
+    setDocModificationThreadPageState((prevState) => ({
+      ...prevState,
+      subpage: 2,
+      showEditorPage: true
+    }));
+  };
+
+  const submitUpdateEssayWriterlist = (
+    e,
+    updateEssayWriterList,
+    essayDocumentThread_id
+  ) => {
+    e.preventDefault();
+    setEditorModalhide();
+    updateEssayWriter(updateEssayWriterList, essayDocumentThread_id).then(
+      (resp) => {
+        const { data, success } = resp.data;
+        const { status } = resp;
+        if (success) {
+          let essays_temp = {
+            ...docModificationThreadPageState.thread
+          };
+          essays_temp.outsourced_user_id = data.outsourced_user_id; // data is single student updated
+          setDocModificationThreadPageState((prevState) => ({
+            ...prevState,
+            isLoaded: true, //false to reload everything
+            thread: essays_temp,
+            success: success,
+            updateEditorList: [],
+            res_modal_status: status
+          }));
+        } else {
+          const { message } = resp.data;
+          setDocModificationThreadPageState((prevState) => ({
+            ...prevState,
+            isLoaded: true,
+            res_modal_message: message,
+            res_modal_status: status
+          }));
+        }
+      },
+      (error) => {
+        console.log('error in index');
+        setDocModificationThreadPageState((prevState) => ({
+          ...prevState,
+          isLoaded: true,
+          error,
+          res_modal_status: 500,
+          res_modal_message: ''
+        }));
+      }
+    );
   };
 
   const handleCloseFileList = () => {
@@ -883,27 +952,86 @@ function DocModificationThreadPage() {
               </Typography>
             ))}
             <Typography variant="body1" fontWeight="bold">
-              {t('Editor')}:
+              {docModificationThreadPageState.thread.file_type === 'Essay'
+                ? t('Essay Writer')
+                : t('Editor')}
+              :
             </Typography>
-            {docModificationThreadPageState.editors.map((editor, i) => (
-              <Typography key={i}>
-                {is_TaiGer_role(user) ? (
-                  <Link
-                    underline="hover"
-                    component={LinkDom}
-                    to={`${DEMO.TEAM_EDITOR_LINK(editor._id.toString())}`}
-                    target="_blank"
-                  >
-                    {editor.firstname} {editor.lastname}
-                  </Link>
-                ) : (
-                  <>
-                    {editor.firstname} {editor.lastname}
-                  </>
-                )}
-              </Typography>
-            ))}
-
+            {[
+              ...AGENT_SUPPORT_DOCUMENTS_A,
+              FILE_TYPE_E.essay_required
+            ].includes(docModificationThreadPageState.thread.file_type) &&
+              (docModificationThreadPageState.thread?.outsourced_user_id
+                ?.length > 0 ? (
+                docModificationThreadPageState.thread?.outsourced_user_id?.map(
+                  (outsourcer) => (
+                    <Typography key={outsourcer._id}>
+                      {is_TaiGer_role(user) ? (
+                        <Link
+                          underline="hover"
+                          component={LinkDom}
+                          to={`${DEMO.TEAM_EDITOR_LINK(
+                            outsourcer._id.toString()
+                          )}`}
+                          target="_blank"
+                        >
+                          {outsourcer.firstname} {outsourcer.lastname}
+                        </Link>
+                      ) : (
+                        <>
+                          {outsourcer.firstname} {outsourcer.lastname}
+                        </>
+                      )}
+                    </Typography>
+                  )
+                )
+              ) : (
+                <Typography>
+                  {[...AGENT_SUPPORT_DOCUMENTS_A].includes(
+                    docModificationThreadPageState.thread.file_type
+                  )
+                    ? 'If needed, editor can be added'
+                    : 'To Be Assigned'}
+                </Typography>
+              ))}
+            {![
+              ...AGENT_SUPPORT_DOCUMENTS_A,
+              FILE_TYPE_E.essay_required
+            ].includes(docModificationThreadPageState.thread.file_type) &&
+              docModificationThreadPageState.editors.map((editor, i) => (
+                <Typography key={i}>
+                  {is_TaiGer_role(user) ? (
+                    <Link
+                      underline="hover"
+                      component={LinkDom}
+                      to={`${DEMO.TEAM_EDITOR_LINK(editor._id.toString())}`}
+                      target="_blank"
+                    >
+                      {editor.firstname} {editor.lastname}
+                    </Link>
+                  ) : (
+                    <>
+                      {editor.firstname} {editor.lastname}
+                    </>
+                  )}
+                </Typography>
+              ))}
+            {is_TaiGer_role(user) &&
+              [
+                ...AGENT_SUPPORT_DOCUMENTS_A,
+                FILE_TYPE_E.essay_required
+              ].includes(docModificationThreadPageState.thread.file_type) && (
+                <Button
+                  size="small"
+                  color="primary"
+                  variant="contained"
+                  onClick={startEditingEditor}
+                >
+                  {docModificationThreadPageState.thread.file_type === 'Essay'
+                    ? t('Add Essay Writer')
+                    : t('Add Editor')}
+                </Button>
+              )}
             <Typography variant="body1">
               <b>{t('Deadline')}:</b>
               {is_TaiGer_AdminAgent(user) &&
@@ -1104,6 +1232,24 @@ function DocModificationThreadPage() {
           </Button>
         </Box>
       </ModalNew>
+      {is_TaiGer_role(user) &&
+        docModificationThreadPageState.showEditorPage && (
+          <EditEssayWritersSubpage
+            show={docModificationThreadPageState.showEditorPage}
+            onHide={setEditorModalhide}
+            actor={
+              [FILE_TYPE_E.essay_required].includes(
+                docModificationThreadPageState.thread.file_type
+              )
+                ? 'Essay Writer'
+                : 'Editor'
+            }
+            setmodalhide={setEditorModalhide}
+            submitUpdateEssayWriterlist={submitUpdateEssayWriterlist}
+            essayDocumentThread={docModificationThreadPageState.thread}
+            editors={docModificationThreadPageState.editors}
+          />
+        )}
       {res_modal_status >= 400 && (
         <ModalMain
           ConfirmError={ConfirmError}

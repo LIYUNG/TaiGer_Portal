@@ -393,7 +393,7 @@ export default function CourseWidget() {
         onClose={closeanalysisSuccessModal}
         aria-labelledby="contained-modal-title-vcenter"
       >
-        <Typography variant="h6">{t('Success')}</Typography>
+        <Typography variant="h6">{t('Success',{ns:'common'})}</Typography>
         <Typography>{t('Transcript analysed successfully!')}</Typography>
         <Button
           color="primary"

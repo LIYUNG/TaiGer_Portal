@@ -29,6 +29,7 @@ const {
 } = require('../constants');
 const Permission = require('../models/Permission');
 const Course = require('../models/Course');
+const { ObjectId } = require('mongodb');
 
 const getStudent = asyncHandler(async (req, res, next) => {
   const {

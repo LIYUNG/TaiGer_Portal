@@ -58,6 +58,7 @@ const {
   permission_canAccessStudentDatabase_filter
 } = require('../middlewares/permission-filter');
 const { logAccess } = require('../utils/log/log');
+const { editorIdsBodyFilter } = require('../middlewares/editorIdsBodyFilter');
 
 const router = Router();
 
@@ -139,7 +140,8 @@ router.route('/:messagesThreadId/essay').post(
   postMessagesRateLimiter,
   permit(Role.Admin, Role.Manager, Role.Editor, Role.Agent),
   // permission_canAssignEditor_filter,
-  // InnerTaigerMultitenantFilter,
+  InnerTaigerMultitenantFilter,
+  editorIdsBodyFilter,
   doc_thread_ops_validator,
   assignEssayWritersToEssayTask,
   logAccess

@@ -1979,7 +1979,6 @@ const assignEssayWritersToEssayTask = asyncHandler(async (req, res, next) => {
     params: { messagesThreadId },
     body: editorsId
   } = req;
-  console.log('message in controller:', messagesThreadId);
   const keys = Object.keys(editorsId);
   const essayDocumentThreads = await Documentthread.findById(messagesThreadId)
     .populate('student_id')
@@ -2078,6 +2077,7 @@ const assignEssayWritersToEssayTask = asyncHandler(async (req, res, next) => {
             std_lastname: student.lastname,
             std_id: student._id.toString(),
             thread_id: essayDocumentThreads._id.toString(),
+            file_type: essayDocumentThreads.file_type,
             program: essayDocumentThreads.program_id
           }
         );
@@ -2099,6 +2099,7 @@ const assignEssayWritersToEssayTask = asyncHandler(async (req, res, next) => {
             std_lastname: student.lastname,
             std_id: student._id.toString(),
             thread_id: essayDocumentThreads._id.toString(),
+            file_type: essayDocumentThreads.file_type,
             essay_writers: to_be_informed_essay_writer,
             program: essayDocumentThreads.program_id
           }
@@ -2118,6 +2119,7 @@ const assignEssayWritersToEssayTask = asyncHandler(async (req, res, next) => {
         {
           program: essayDocumentThreads.program_id,
           thread_id: essayDocumentThreads._id.toString(),
+          file_type: essayDocumentThreads.file_type,
           editors: updated_editor
         }
       );

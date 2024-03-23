@@ -21,7 +21,7 @@ CustomTabPanel.propTypes = {
   value: PropTypes.number.isRequired
 };
 
-function CVMLRLOverview(props) {
+function EssayOverview(props) {
   const { user } = useAuth();
   const { t } = useTranslation();
   const [cVMLRLOverviewState, setCVMLRLOverviewState] = useState({
@@ -206,4 +206,4 @@ function CVMLRLOverview(props) {
   );
 }
 
-export default CVMLRLOverview;
+export default EssayOverview;

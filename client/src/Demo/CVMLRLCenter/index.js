@@ -150,9 +150,10 @@ function index() {
       open_task.latest_message_left_by_id === ''
   );
 
-  const closed_tasks = open_tasks(indexState.students).filter(
-    (open_task) => open_task.show && open_task.isFinalVersion
-  );
+  const closed_tasks = [
+    ...open_essays_tasks_arr,
+    ...open_tasks_without_essays_arr
+  ].filter((open_task) => open_task.show && open_task.isFinalVersion);
 
   return (
     <Box data-testid="cvmlrlcenter_component">

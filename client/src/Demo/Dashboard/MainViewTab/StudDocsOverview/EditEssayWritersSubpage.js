@@ -58,7 +58,22 @@ function EditEssayWritersSubpage(props) {
     } else {
       // Add select editor list
       //  setCheckboxState({ editors, updateEditorList });
-       setIsLoaded(true);
+      const editors = props.editors; //need to change to get all essay writers
+      const { outsourced_user_id: student_editor } =
+        props.essayDocumentThread;
+      const updateEditorList = editors?.reduce(
+        (prev, { _id }) => ({
+          ...prev,
+          [_id]: student_editor
+            ? student_editor.findIndex(
+                (student_agent) => student_agent._id === _id
+              ) > -1
+            : false
+        }),
+        {}
+      );
+      setCheckboxState({ editors, updateEditorList });
+      setIsLoaded(true);
     }
   }, [props.essayDocumentThread.outsourced_user_id]);
 

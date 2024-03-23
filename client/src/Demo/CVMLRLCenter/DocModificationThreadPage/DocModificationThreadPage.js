@@ -957,7 +957,10 @@ function DocModificationThreadPage() {
                 : t('Editor')}
               :
             </Typography>
-            {docModificationThreadPageState.thread?.file_type === 'Essay' &&
+            {[
+              ...AGENT_SUPPORT_DOCUMENTS_A,
+              FILE_TYPE_E.essay_required
+            ].includes(docModificationThreadPageState.thread.file_type) &&
               (docModificationThreadPageState.thread?.outsourced_user_id
                 ?.length > 0 ? (
                 docModificationThreadPageState.thread?.outsourced_user_id?.map(
@@ -983,7 +986,13 @@ function DocModificationThreadPage() {
                   )
                 )
               ) : (
-                <Typography>To Be Assigned</Typography>
+                <Typography>
+                  {[...AGENT_SUPPORT_DOCUMENTS_A].includes(
+                    docModificationThreadPageState.thread.file_type
+                  )
+                    ? 'If needed, editor can be added'
+                    : 'To Be Assigned'}
+                </Typography>
               ))}
             {![
               ...AGENT_SUPPORT_DOCUMENTS_A,
@@ -1238,6 +1247,7 @@ function DocModificationThreadPage() {
             setmodalhide={setEditorModalhide}
             submitUpdateEssayWriterlist={submitUpdateEssayWriterlist}
             essayDocumentThread={docModificationThreadPageState.thread}
+            editors={docModificationThreadPageState.editors}
           />
         )}
       {res_modal_status >= 400 && (

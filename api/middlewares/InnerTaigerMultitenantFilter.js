@@ -27,7 +27,7 @@ const InnerTaigerMultitenantFilter = async (req, res, next) => {
           ));
     }
     studentId_temp = studentId || studentId_temp;
-    const student = await Student.findById(studentId || studentId_temp).select(
+    const student = await Student.findById(studentId_temp).select(
       'agents editors'
     );
     if (!student) {
@@ -42,7 +42,7 @@ const InnerTaigerMultitenantFilter = async (req, res, next) => {
       [...student.agents, ...student.editors].some(
         (taiger_user) => taiger_user.toString() === user._id.toString()
       ) ||
-      permissions?.canModifyAllBaseDocuments ||
+      permissions?.canAssignEditors ||
       outsourcer_allowed_modify
     ) {
       return next();

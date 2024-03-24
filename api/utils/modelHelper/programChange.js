@@ -1,5 +1,6 @@
 const { Student } = require('../../models/User');
 const { Documentthread } = require('../../models/Documentthread');
+const { RLs_CONSTANT } = require('../../constants.js');
 const {
   createApplicationThread,
   deleteApplicationThread
@@ -18,6 +19,7 @@ const isCrucialChanges = (changes) => {
   const crucialChanges = [
     'ml_required',
     'rl_required',
+    'is_rl_specific',
     'essay_required',
     'portfolio_required',
     'supplementary_form_required'
@@ -31,16 +33,20 @@ const isCrucialChanges = (changes) => {
 };
 
 const findAffectedStudents = async (programId) => {
-  const students = await Student.find({
+  // non-archived student has open application for program
+  let students = await Student.find({
     applications: {
       $elemMatch: {
         programId: programId,
         closed: '-'
       }
-    }
+    },
+    archive: { $ne: true }
   })
     .select('_id')
     .lean();
+
+  students = students.map((student) => student._id.toString());
   return students;
 };
 
@@ -50,14 +56,62 @@ const checkIsRLspecific = (program) => {
   return isRLSpecific || (NoRLSpecificFlag && program?.rl_requirements);
 };
 
+const handleRLDelta = async (program, studentId, threads) => {
+  const nrRLneeded = parseInt(program.rl_required);
+  if (!nrRLneeded) return;
+  const nrSpecRLNeeded = !checkIsRLspecific(program) ? 0 : nrRLneeded;
+
+  const existingRL = threads.filter((thread) =>
+    thread?.file_type?.startsWith('RL_')
+  );
+  existingRL
+    .sort((a, b) => a?.file_type?.localeCompare(b?.file_type))
+    .reverse();
+  const nrSpecificRL = existingRL.length;
+
+  // add missing RL
+  if (nrSpecRLNeeded > nrSpecificRL) {
+    const existingRLTypes = existingRL.map((thread) => thread.file_type);
+    const availableRLs = RLs_CONSTANT.filter(
+      (fileType) => !existingRLTypes.includes(fileType)
+    );
+    const missingRL = nrSpecRLNeeded - nrSpecificRL;
+    for (let i = 0; i < missingRL && i < availableRLs.length; i++) {
+      console.log('create RL thread:', studentId, program._id, availableRLs[i]);
+      await createApplicationThread(studentId, program._id, availableRLs[i]);
+    }
+  }
+
+  // remove extra RL
+  if (nrSpecRLNeeded < nrSpecificRL) {
+    const extraRL = nrSpecificRL - nrSpecRLNeeded;
+    for (let i = 0; i < extraRL && i < existingRL.length; i++) {
+      const thread = threads.find(
+        (thread) => thread.file_type === existingRL[i]?.file_type
+      );
+      if (thread?.messages?.length !== 0) {
+        logger.info(
+          `handleStudentDelta: thread deletion aborted (non-empty thread) for student ${studentId} and program ${program._id} with file type RL -> messages exist`
+        );
+        continue;
+      }
+      await deleteApplicationThread(
+        studentId?.toString(),
+        program._id?.toString(),
+        thread._id?.toString()
+      );
+    }
+  }
+};
+
 const handleStudentDelta = async (studentId, program) => {
   const studentProgramThreads = await Documentthread.find({
     student_id: studentId,
     program_id: program._id
   }).lean();
-  // const existingTypes = studentProgramThreads.map((type) => type.file_type);
 
   for (let fileType of Object.keys(FILETYPES)) {
+    // RL is handled separately
     if (FILETYPES[fileType] === 'RL') {
       continue;
     }
@@ -82,7 +136,6 @@ const handleStudentDelta = async (studentId, program) => {
         );
         continue;
       }
-      console.log('delete fileThread:', fileThread._id.toString());
       await deleteApplicationThread(
         studentId?.toString(),
         program._id?.toString(),
@@ -94,40 +147,14 @@ const handleStudentDelta = async (studentId, program) => {
     }
   }
 
-  let missingDocs = [];
-  let extraDocs = [];
-  const nrRLNeeded = parseInt(program.rl_required);
-  const nrSpecificRL = studentProgramThreads.filter((thread) =>
-    thread?.file_type?.startsWith('RL_')
-  ).length;
-  const nrSpecRLNeeded = !checkIsRLspecific(program) ? 0 : nrRLNeeded;
-
-  if (nrSpecRLNeeded !== 0) {
-    if (nrSpecRLNeeded > nrSpecificRL) {
-      missingDocs.push(
-        `RL - ${nrRLNeeded} needed, ${nrSpecificRL} provided (${
-          nrRLNeeded - nrSpecificRL
-        } must be added)`
-      );
-      if (nrSpecRLNeeded < nrSpecificRL) {
-        extraDocs.push(
-          `RL - ${nrSpecRLNeeded} needed, ${nrSpecificRL} provided (${
-            nrSpecificRL - nrSpecRLNeeded
-          } can be removed)`
-        );
-      }
-    }
-  }
-
-  // await createApplicationThread(studentId, programId, requiredType);
+  await handleRLDelta(program, studentId, studentProgramThreads);
 };
 
 const handleThreadDelta = async (program) => {
   const affectedStudents = await findAffectedStudents(program._id);
-  console.log('affectedStudents:', affectedStudents);
-  for (let student of affectedStudents) {
+  for (let studentId of affectedStudents) {
     try {
-      await handleStudentDelta(student._id, program);
+      await handleStudentDelta(studentId, program);
     } catch (error) {
       console.log('error:', error);
       logger.error(

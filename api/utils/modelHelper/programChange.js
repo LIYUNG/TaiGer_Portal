@@ -53,9 +53,7 @@ const handleStudentDelta = async (studentId, program) => {
   const studentProgramThreads = await Documentthread.find({
     student_id: studentId,
     program_id: program._id
-  })
-    .select('file_type')
-    .lean();
+  }).lean();
   // const existingTypes = studentProgramThreads.map((type) => type.file_type);
 
   for (let fileType of Object.keys(FILETYPES)) {
@@ -77,6 +75,12 @@ const handleStudentDelta = async (studentId, program) => {
         `handleStudentDelta: create thread for student ${studentId} and program ${program._id} with file type ${FILETYPES[fileType]}`
       );
     } else if (program[fileType]?.toLowerCase() !== 'yes' && fileThread) {
+      if (fileThread?.messages?.length !== 0) {
+        logger.info(
+          `handleStudentDelta: thread deletion aborted (non-empty thread) for student ${studentId} and program ${program._id} with file type ${FILETYPES[fileType]} -> messages exist`
+        );
+        continue;
+      }
       console.log('delete fileThread:', fileThread._id.toString());
       await deleteApplicationThread(
         studentId?.toString(),

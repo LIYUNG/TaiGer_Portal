@@ -1716,7 +1716,12 @@ const deleteApplicationThread = async (studentId, programId, threadId) => {
       }
     }
   );
-  await Documentthread.findByIdAndDelete(threadId);
+  const thread = await Documentthread.findByIdAndDelete(threadId);
+  await surveyInput.deleteOne({
+    studentId,
+    programId,
+    fileType: thread.file_type
+  });
 };
 
 // (-) TODO email : notification

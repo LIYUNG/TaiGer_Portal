@@ -1828,7 +1828,7 @@ export const getExtraDocs = (application) => {
   const nrSpecRLNeeded = !checkIsRLspecific(application?.programId)
     ? 0
     : nrRLNeeded;
-  if (nrRLNeeded > 0 && nrSpecRLNeeded < nrSpecificRL) {
+  if (nrSpecRLNeeded < nrSpecificRL) {
     extraDocs.push(
       `RL - ${nrSpecRLNeeded} needed, ${nrSpecificRL} provided (${
         nrSpecificRL - nrSpecRLNeeded

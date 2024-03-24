@@ -779,7 +779,7 @@ const createApplicationThread = async (studentId, programId, fileType) => {
   }
 
   const appIdx = student.applications.findIndex(
-    (app) => app.programId._id == programId
+    (app) => app.programId._id.toString() === programId.toString()
   );
 
   if (appIdx === -1) {

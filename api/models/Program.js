@@ -1,7 +1,6 @@
 const { model, Schema } = require('mongoose');
 const logger = require('../services/logger');
 const {
-  findAffectedStudents,
   isCrucialChanges,
   handleThreadDelta
 } = require('../utils/modelHelper/programChange');
@@ -204,14 +203,14 @@ programSchema.post(['updateOne', 'updateMany', 'update'], async function () {
     }
 
     for (let doc of docs) {
-      const programId = doc._id;
+      const updatedDoc = { ...doc, ...changes };
+      const programId = updatedDoc._id;
       logger.info(
         `ProgramHook - Crucial changes detected on Program (Id=${programId}): ${JSON.stringify(
           changes
         )}`
       );
-      const studentThreadsMap = await findAffectedStudents(programId);
-      await handleThreadDelta(doc, studentThreadsMap);
+      await handleThreadDelta(updatedDoc);
       logger.info(
         `ProgramHook - Post hook executed successfully. (Id=${programId})`
       );

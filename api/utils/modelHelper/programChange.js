@@ -34,7 +34,8 @@ const findAffectedStudents = async (programId) => {
   const students = await Student.find({
     applications: {
       $elemMatch: {
-        programId: programId
+        programId: programId,
+        closed: '-'
       }
     }
   })

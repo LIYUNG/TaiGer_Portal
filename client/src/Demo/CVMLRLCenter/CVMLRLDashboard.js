@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 
 import { c1 } from '../Utils/contants';
 import {
-  open_tasks,
+  // open_tasks,
   open_tasks_with_editors
 } from '../Utils/checking-functions';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
@@ -419,7 +419,7 @@ function CVMLRLDashboard(props) {
   }
   // console.log('cVMLRLDashboardState.students in CVMLRLDashboard', cVMLRLDashboardState.students)
   const open_tasks_arr = open_tasks_with_editors(cVMLRLDashboardState.students);
-  const open_tasks_arr2 = open_tasks(cVMLRLDashboardState.students);
+  // const open_tasks_arr2 = open_tasks(cVMLRLDashboardState.students);
 
   const cvmlrl_active_tasks = open_tasks_arr.filter(
     (open_task) =>
@@ -433,7 +433,7 @@ function CVMLRLDashboard(props) {
       !open_task.isFinalVersion &&
       open_task.latest_message_left_by_id === ''
   );
-  const cvmlrl_closed_v2 = open_tasks_arr2.filter(
+  const cvmlrl_closed_v2 = open_tasks_arr.filter(
     (open_task) => open_task.show && open_task.isFinalVersion
   );
 

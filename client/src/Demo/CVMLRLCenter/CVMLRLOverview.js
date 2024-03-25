@@ -1,8 +1,8 @@
-import React, { useMemo, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Tabs, Tab, Box, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
 
-import { c2 } from '../Utils/contants';
+import { c2, c2Student } from '../Utils/contants';
 import { is_TaiGer_role } from '../Utils/checking-functions';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import Banner from '../../components/Banner/Banner';
@@ -64,7 +64,7 @@ function CVMLRLOverview(props) {
     return <Loading />;
   }
 
-  const memoizedColumns = useMemo(() => c2, [c2]);
+  const memoizedColumns = is_TaiGer_role(user) ? c2 : c2Student;
 
   return (
     <>

@@ -2151,6 +2151,7 @@ const getAllActiveEssays = asyncHandler(async (req, res, next) => {
         .populate('student_id outsourced_user_id')
         .populate({
           path: 'student_id messages.user_id',
+          select: '-attributes',
           populate: {
             path: 'agents',
             model: 'User'

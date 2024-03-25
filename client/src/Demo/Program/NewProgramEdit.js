@@ -877,6 +877,174 @@ function NewProgramEdit(props) {
             />
           </Grid>
           <Grid item xs={6} md={6}>
+            <Typography variant="body1">
+              {t('Curriculum Analysis Required?')}
+            </Typography>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <FormControl fullWidth>
+              <Select
+                size="small"
+                labelId="curriculum_analysis_required"
+                name="curriculum_analysis_required"
+                id="curriculum_analysis_required"
+                onChange={(e) => handleChange(e)}
+                value={program.curriculum_analysis_required || ''}
+              >
+                {BINARY_STATE_ARRAY_OPTIONS.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <Typography variant="body1">
+              {t('Curriculum Analysis Requirements')}
+            </Typography>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <TextField
+              fullWidth
+              size="small"
+              type="text"
+              multiline
+              rows={4}
+              id="curriculum_analysis_requirements"
+              name="curriculum_analysis_requirements"
+              placeholder="fill the form"
+              onChange={(e) => handleChange(e)}
+              value={program.curriculum_analysis_requirements || ''}
+            />
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <Typography variant="body1">
+              {t('Scholarship Form / ML Required?')}
+            </Typography>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <FormControl fullWidth>
+              <Select
+                size="small"
+                labelId="scholarship_form_required"
+                name="scholarship_form_required"
+                id="scholarship_form_required"
+                onChange={(e) => handleChange(e)}
+                value={program.scholarship_form_required || ''}
+              >
+                {BINARY_STATE_ARRAY_OPTIONS.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <Typography variant="body1">
+              {t('Scholarship Form / ML Requirements')}
+            </Typography>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <TextField
+              fullWidth
+              size="small"
+              type="text"
+              multiline
+              rows={4}
+              id="scholarship_form_requirements"
+              name="scholarship_form_requirements"
+              placeholder="fill the form"
+              onChange={(e) => handleChange(e)}
+              value={program.scholarship_form_requirements || ''}
+            />
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <Typography variant="body1">
+              {t('Curriculum Analysis Required?')}
+            </Typography>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <FormControl fullWidth>
+              <Select
+                size="small"
+                labelId="curriculum_analysis_required"
+                name="curriculum_analysis_required"
+                id="curriculum_analysis_required"
+                onChange={(e) => handleChange(e)}
+                value={program.curriculum_analysis_required || ''}
+              >
+                {BINARY_STATE_ARRAY_OPTIONS.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <Typography variant="body1">
+              {t('Curriculum Analysis Requirements')}
+            </Typography>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <TextField
+              fullWidth
+              size="small"
+              type="text"
+              multiline
+              rows={4}
+              id="curriculum_analysis_requirements"
+              name="curriculum_analysis_requirements"
+              placeholder="fill the form"
+              onChange={(e) => handleChange(e)}
+              value={program.curriculum_analysis_requirements || ''}
+            />
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <Typography variant="body1">
+              {t('Scholarship Form / ML Required?')}
+            </Typography>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <FormControl fullWidth>
+              <Select
+                size="small"
+                labelId="scholarship_form_required"
+                name="scholarship_form_required"
+                id="scholarship_form_required"
+                onChange={(e) => handleChange(e)}
+                value={program.scholarship_form_required || ''}
+              >
+                {BINARY_STATE_ARRAY_OPTIONS.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <Typography variant="body1">
+              {t('Scholarship Form / ML Requirements')}
+            </Typography>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <TextField
+              fullWidth
+              size="small"
+              type="text"
+              multiline
+              rows={4}
+              id="scholarship_form_requirements"
+              name="scholarship_form_requirements"
+              placeholder="fill the form"
+              onChange={(e) => handleChange(e)}
+              value={program.scholarship_form_requirements || ''}
+            />
+          </Grid>
+          <Grid item xs={6} md={6}>
             <Typography variant="body1">{t('ECTS Requirements')}</Typography>
           </Grid>
           <Grid item xs={6} md={6}>

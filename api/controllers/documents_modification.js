@@ -12,6 +12,7 @@ const {
 const surveyInput = require('../models/SurveyInput');
 const { emptyS3Directory } = require('../utils/utils_function');
 const { informOnSurveyUpdate } = require('../utils/informEditor');
+const { informOnSurveyUpdate } = require('../utils/informEditor');
 const {
   sendNewApplicationMessageInThreadEmail,
   sendAssignEditorReminderEmail,
@@ -21,6 +22,9 @@ const {
   sendSetAsFinalProgramSpecificFileForStudentEmail,
   sendSetAsFinalProgramSpecificFileForAgentEmail,
   assignDocumentTaskToEditorEmail,
+  assignDocumentTaskToStudentEmail,
+  sendAssignEssayWriterReminderEmail,
+  assignEssayTaskToEditorEmail,
   assignDocumentTaskToStudentEmail,
   sendAssignEssayWriterReminderEmail,
   assignEssayTaskToEditorEmail
@@ -34,8 +38,19 @@ const {
   isNotArchiv,
   CVDeadline_Calculator,
   EDITOR_SCOPE,
+  ESSAY_WRITER_SCOPE,
+  CVDeadline_Calculator,
+  EDITOR_SCOPE,
   ESSAY_WRITER_SCOPE
 } = require('../constants');
+const {
+  informEssayWriterNewEssayEmail,
+  informStudentTheirEssayWriterEmail,
+  informAgentEssayAssignedEmail
+} = require('../services/email');
+// const {
+//   getAllActiveStudents
+// } = require('./students')
 const {
   informEssayWriterNewEssayEmail,
   informStudentTheirEssayWriterEmail,
@@ -785,10 +800,10 @@ const initApplicationMessagesThread = asyncHandler(async (req, res) => {
             address: permissions[x].user_id.email
           },
           {
-            student_firstname: student2.firstname,
-            student_lastname: student2.lastname,
-            student_id: student2._id.toString(),
-            thread_id: new_doc_thread._id,
+            student_firstname: student.firstname,
+            student_lastname: student.lastname,
+            student_id: student._id.toString(),
+            thread_id: newAppRecord._id,
             documentname,
             updatedAt: new Date()
           }
@@ -2246,5 +2261,8 @@ module.exports = {
   handleDeleteProgramThread,
   deleteAMessageInThread,
   getAllActiveEssays,
-  assignEssayWritersToEssayTask
+  assignEssayWritersToEssayTask,
+  assignEssayWritersToEssayTask,
+  getAllActiveEssays,
+  clearEssayWriters
 };

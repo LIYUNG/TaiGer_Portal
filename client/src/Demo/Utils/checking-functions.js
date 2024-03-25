@@ -1469,6 +1469,7 @@ const latestReplyUserId = (thread) => {
 const prepEssayTaskThread = (student, thread) => {
   return {
     ...prepTaskStudent(student),
+    id: thread._id?.toString(),
     latest_message_left_by_id: latestReplyUserId(thread),
     isFinalVersion: thread.isFinalVersion,
     outsourced_user_id: thread?.outsourced_user_id,
@@ -1490,6 +1491,7 @@ const prepEssayTaskThread = (student, thread) => {
 const prepTask = (student, thread) => {
   return {
     ...prepTaskStudent(student),
+    id: thread._id?.toString(),
     latest_message_left_by_id: thread.latest_message_left_by_id,
     isFinalVersion: thread.isFinalVersion,
     outsourced_user_id: thread.doc_thread_id?.outsourced_user_id,
@@ -1526,7 +1528,6 @@ const prepGeneralTask = (student, thread) => {
 const prepEssayTask = (essay, user) => {
   return {
     ...prepEssayTaskThread(essay.student_id, essay),
-    // ...prepTask(student, thread),
     thread_id: essay._id.toString(),
     program_id: essay.program_id._id.toString(),
     deadline: application_deadline_calculator(essay.student_id, {

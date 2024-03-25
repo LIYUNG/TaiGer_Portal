@@ -1,19 +1,18 @@
-import React, { useEffect, useState } from 'react';
-import { Tabs, Tab, Box, Typography } from '@mui/material';
+import React, { useMemo, useEffect, useState } from 'react';
+import { Link, Tabs, Tab, Box, Typography, Tooltip, Chip } from '@mui/material';
+import { Link as LinkDom } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
-import {
-  cvmlrl_overview_header,
-  cvmlrl_overview_closed_header
-} from '../Utils/contants';
+import { ATTRIBUTES, COLORS } from '../Utils/contants';
 import { is_TaiGer_role } from '../Utils/checking-functions';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import Banner from '../../components/Banner/Banner';
-import SortTable from '../../components/SortTable/SortTable';
 import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
 import { CustomTabPanel, a11yProps } from '../../components/Tabs';
 import { useTranslation } from 'react-i18next';
+import DEMO from '../../store/constant';
+import { MuiDataGrid } from '../../components/MuiDataGrid';
 
 CustomTabPanel.propTypes = {
   children: PropTypes.node,
@@ -67,6 +66,111 @@ function EssayOverview(props) {
     return <Loading />;
   }
 
+  const c2 = [
+    {
+      field: 'firstname_lastname',
+      headerName: t('First-, Last Name'),
+      align: 'left',
+      headerAlign: 'left',
+      width: 150,
+      renderCell: (params) => {
+        const linkUrl = `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+          params.row.student_id,
+          DEMO.PROFILE_HASH
+        )}`;
+        return (
+          <Link
+            underline="hover"
+            to={linkUrl}
+            component={LinkDom}
+            target="_blank"
+            title={params.value}
+          >
+            {params.value}
+          </Link>
+        );
+      }
+    },
+    {
+      field: 'latest_reply',
+      headerName: t('Latest Reply'),
+      width: 100
+    },
+    {
+      field: 'deadline',
+      headerName: t('Deadline'),
+      width: 100
+    },
+    {
+      field: 'days_left',
+      headerName: t('Days left'),
+      width: 80
+    },
+    {
+      field: 'document_name',
+      headerName: t('Document name'),
+      width: 380,
+      renderCell: (params) => {
+        const linkUrl = `${DEMO.DOCUMENT_MODIFICATION_LINK(
+          params.row.thread_id
+        )}`;
+        return (
+          <>
+            {params.row?.attributes?.map(
+              (attribute) =>
+                [1, 3, 9].includes(attribute.value) && (
+                  <Tooltip
+                    title={`${attribute.name}: ${
+                      ATTRIBUTES[attribute.value - 1].definition
+                    }`}
+                    key={attribute._id}
+                  >
+                    <Chip
+                      size="small"
+                      label={attribute.name[0]}
+                      color={COLORS[attribute.value]}
+                    >
+                      {attribute.name}
+                    </Chip>
+                  </Tooltip>
+                )
+            )}
+            <Link
+              underline="hover"
+              to={linkUrl}
+              component={LinkDom}
+              target="_blank"
+              title={params.value}
+            >
+              {params.value}
+            </Link>
+          </>
+        );
+      }
+    },
+    {
+      field: 'aged_days',
+      headerName: t('Aged days'),
+      width: 80
+    },
+    {
+      field: 'number_input_from_editors',
+      headerName: t('Editor Feedback (#Messages/#Files)'),
+      width: 80
+    },
+    {
+      field: 'number_input_from_student',
+      headerName: t('Student Feedback (#Messages/#Files)'),
+      width: 80
+    },
+    {
+      field: 'updatedAt',
+      headerName: t('Last Update'),
+      width: 100
+    }
+  ];
+  const memoizedColumns = useMemo(() => c2, [c2]);
+
   return (
     <>
       {res_modal_status >= 400 && (
@@ -108,7 +212,6 @@ function EssayOverview(props) {
           />
         </Tabs>
       </Box>
-
       <CustomTabPanel value={value} index={0}>
         <Banner
           ReadOnlyMode={true}
@@ -120,10 +223,9 @@ function EssayOverview(props) {
           removeBanner={<></>}
           notification_key={undefined}
         />
-        <SortTable
-          columns={cvmlrl_overview_header}
-          data={props.no_essay_writer_tasks}
-          user={user}
+        <MuiDataGrid
+          rows={props.no_essay_writer_tasks}
+          columns={memoizedColumns}
         />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
@@ -137,11 +239,7 @@ function EssayOverview(props) {
           removeBanner={<></>}
           notification_key={undefined}
         />
-        <SortTable
-          columns={cvmlrl_overview_header}
-          data={props.new_message_tasks}
-          user={user}
-        />
+        <MuiDataGrid rows={props.new_message_tasks} columns={memoizedColumns} />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
         <Banner
@@ -154,11 +252,7 @@ function EssayOverview(props) {
           removeBanner={<></>}
           notification_key={undefined}
         />
-        <SortTable
-          columns={cvmlrl_overview_header}
-          data={props.followup_tasks}
-          user={user}
-        />
+        <MuiDataGrid rows={props.followup_tasks} columns={memoizedColumns} />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={3}>
         <Banner
@@ -175,10 +269,9 @@ function EssayOverview(props) {
           removeBanner={<></>}
           notification_key={undefined}
         />
-        <SortTable
-          columns={cvmlrl_overview_header}
-          data={props.pending_progress_tasks}
-          user={user}
+        <MuiDataGrid
+          rows={props.pending_progress_tasks}
+          columns={memoizedColumns}
         />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={4}>
@@ -192,11 +285,7 @@ function EssayOverview(props) {
           removeBanner={<></>}
           notification_key={undefined}
         />
-        <SortTable
-          columns={cvmlrl_overview_closed_header}
-          data={props.closed_tasks}
-          user={user}
-        />
+        <MuiDataGrid rows={props.closed_tasks} columns={memoizedColumns} />
         <Typography variant="body2">
           {t(
             'Note: if the documents are not closed but locate here, it is becaue the applications are already submitted. The documents can safely closed eventually.',

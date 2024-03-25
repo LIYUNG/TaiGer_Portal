@@ -1,19 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useMemo, useEffect, useState } from 'react';
 import { Tabs, Tab, Box, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
 
-import {
-  cvmlrl_overview_header,
-  cvmlrl_overview_closed_header
-} from '../Utils/contants';
+import { c2 } from '../Utils/contants';
 import { is_TaiGer_role } from '../Utils/checking-functions';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import Banner from '../../components/Banner/Banner';
-import SortTable from '../../components/SortTable/SortTable';
 import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
 import { CustomTabPanel, a11yProps } from '../../components/Tabs';
 import { useTranslation } from 'react-i18next';
+import { MuiDataGrid } from '../../components/MuiDataGrid';
 
 CustomTabPanel.propTypes = {
   children: PropTypes.node,
@@ -67,6 +64,8 @@ function CVMLRLOverview(props) {
     return <Loading />;
   }
 
+  const memoizedColumns = useMemo(() => c2, [c2]);
+
   return (
     <>
       {res_modal_status >= 400 && (
@@ -114,11 +113,7 @@ function CVMLRLOverview(props) {
           removeBanner={<></>}
           notification_key={undefined}
         />
-        <SortTable
-          columns={cvmlrl_overview_header}
-          data={props.new_message_tasks}
-          user={user}
-        />
+        <MuiDataGrid rows={props.new_message_tasks} columns={memoizedColumns} />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
         <Banner
@@ -131,11 +126,7 @@ function CVMLRLOverview(props) {
           removeBanner={<></>}
           notification_key={undefined}
         />
-        <SortTable
-          columns={cvmlrl_overview_header}
-          data={props.followup_tasks}
-          user={user}
-        />
+        <MuiDataGrid rows={props.followup_tasks} columns={memoizedColumns} />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
         <Banner
@@ -152,10 +143,9 @@ function CVMLRLOverview(props) {
           removeBanner={<></>}
           notification_key={undefined}
         />
-        <SortTable
-          columns={cvmlrl_overview_header}
-          data={props.pending_progress_tasks}
-          user={user}
+        <MuiDataGrid
+          rows={props.pending_progress_tasks}
+          columns={memoizedColumns}
         />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={3}>
@@ -169,11 +159,7 @@ function CVMLRLOverview(props) {
           removeBanner={<></>}
           notification_key={undefined}
         />
-        <SortTable
-          columns={cvmlrl_overview_closed_header}
-          data={props.closed_tasks}
-          user={user}
-        />
+        <MuiDataGrid rows={props.closed_tasks} columns={memoizedColumns} />
         <Typography variant="body2">
           {t(
             'Note: if the documents are not closed but locate here, it is becaue the applications are already submitted. The documents can safely closed eventually.',

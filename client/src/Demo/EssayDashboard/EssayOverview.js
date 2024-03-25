@@ -1,9 +1,8 @@
 import React, { useMemo, useEffect, useState } from 'react';
-import { Link, Tabs, Tab, Box, Typography, Tooltip, Chip } from '@mui/material';
-import { Link as LinkDom } from 'react-router-dom';
+import { Tabs, Tab, Box, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
 
-import { ATTRIBUTES, COLORS } from '../Utils/contants';
+import { c2 } from '../Utils/contants';
 import { is_TaiGer_role } from '../Utils/checking-functions';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import Banner from '../../components/Banner/Banner';
@@ -11,7 +10,6 @@ import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
 import { CustomTabPanel, a11yProps } from '../../components/Tabs';
 import { useTranslation } from 'react-i18next';
-import DEMO from '../../store/constant';
 import { MuiDataGrid } from '../../components/MuiDataGrid';
 
 CustomTabPanel.propTypes = {
@@ -66,109 +64,6 @@ function EssayOverview(props) {
     return <Loading />;
   }
 
-  const c2 = [
-    {
-      field: 'firstname_lastname',
-      headerName: t('First-, Last Name'),
-      align: 'left',
-      headerAlign: 'left',
-      width: 150,
-      renderCell: (params) => {
-        const linkUrl = `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-          params.row.student_id,
-          DEMO.PROFILE_HASH
-        )}`;
-        return (
-          <Link
-            underline="hover"
-            to={linkUrl}
-            component={LinkDom}
-            target="_blank"
-            title={params.value}
-          >
-            {params.value}
-          </Link>
-        );
-      }
-    },
-    {
-      field: 'latest_reply',
-      headerName: t('Latest Reply'),
-      width: 100
-    },
-    {
-      field: 'deadline',
-      headerName: t('Deadline'),
-      width: 100
-    },
-    {
-      field: 'days_left',
-      headerName: t('Days left'),
-      width: 80
-    },
-    {
-      field: 'document_name',
-      headerName: t('Document name'),
-      width: 380,
-      renderCell: (params) => {
-        const linkUrl = `${DEMO.DOCUMENT_MODIFICATION_LINK(
-          params.row.thread_id
-        )}`;
-        return (
-          <>
-            {params.row?.attributes?.map(
-              (attribute) =>
-                [1, 3, 9].includes(attribute.value) && (
-                  <Tooltip
-                    title={`${attribute.name}: ${
-                      ATTRIBUTES[attribute.value - 1].definition
-                    }`}
-                    key={attribute._id}
-                  >
-                    <Chip
-                      size="small"
-                      label={attribute.name[0]}
-                      color={COLORS[attribute.value]}
-                    >
-                      {attribute.name}
-                    </Chip>
-                  </Tooltip>
-                )
-            )}
-            <Link
-              underline="hover"
-              to={linkUrl}
-              component={LinkDom}
-              target="_blank"
-              title={params.value}
-            >
-              {params.value}
-            </Link>
-          </>
-        );
-      }
-    },
-    {
-      field: 'aged_days',
-      headerName: t('Aged days'),
-      width: 80
-    },
-    {
-      field: 'number_input_from_editors',
-      headerName: t('Editor Feedback (#Messages/#Files)'),
-      width: 80
-    },
-    {
-      field: 'number_input_from_student',
-      headerName: t('Student Feedback (#Messages/#Files)'),
-      width: 80
-    },
-    {
-      field: 'updatedAt',
-      headerName: t('Last Update'),
-      width: 100
-    }
-  ];
   const memoizedColumns = useMemo(() => c2, [c2]);
 
   return (

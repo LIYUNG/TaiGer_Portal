@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { Box, Typography, TextField, Tooltip } from '@mui/material';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
+import { useTranslation } from 'react-i18next';
 
 export const MuiDataGrid = (props) => {
+  const { t } = useTranslation();
   const [filters, setFilters] = useState({});
   const handleFilterChange = (event, column) => {
     const { value } = event.target;
@@ -38,10 +40,17 @@ export const MuiDataGrid = (props) => {
         rows={props.rows.filter((row) => {
           return Object.keys(filters).every((field) => {
             const filterValue = filters[field];
-            return (
-              filterValue === '' ||
-              row[field]?.toString().toLowerCase().includes(filterValue)
-            );
+            if (row[field]?.length > 0) {
+              return (
+                filterValue === '' ||
+                JSON.stringify(row[field]).toLowerCase().includes(filterValue)
+              );
+            } else {
+              return (
+                filterValue === '' ||
+                row[field]?.toString().toLowerCase().includes(filterValue)
+              );
+            }
           });
         })}
         disableColumnFilter
@@ -51,10 +60,13 @@ export const MuiDataGrid = (props) => {
           ...column,
           renderHeader: () => (
             <Box>
-              <Tooltip title={`${column.headerName}`} key={column.headerName}>
+              <Tooltip
+                title={`${t('column.headerName')}`}
+                key={column.headerName}
+              >
                 <Typography
                   sx={{ my: 1 }}
-                  title={`${column.headerName}`}
+                  title={`${t('column.headerName')}`}
                 >{`${column.headerName}`}</Typography>
               </Tooltip>
               <TextField

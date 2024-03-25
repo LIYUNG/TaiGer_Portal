@@ -77,8 +77,16 @@ const handleRLDelta = async (program, studentId, threads) => {
     );
     const missingRL = nrSpecRLNeeded - nrSpecificRL;
     for (let i = 0; i < missingRL && i < availableRLs.length; i++) {
-      console.log('create RL thread:', studentId, program._id, availableRLs[i]);
-      await createApplicationThread(studentId, program._id, availableRLs[i]);
+      try {
+        await createApplicationThread(studentId, program._id, availableRLs[i]);
+        logger.error(
+          `handleStudentDelta: create thread for student ${studentId} and program ${program._id} with file type RL (${availableRLs[i]})`
+        );
+      } catch (error) {
+        logger.error(
+          `handleStudentDelta: error on thread creation for student ${studentId} and program ${program._id} with file type RL -> error: ${error}`
+        );
+      }
     }
   }
 
@@ -95,11 +103,20 @@ const handleRLDelta = async (program, studentId, threads) => {
         );
         continue;
       }
-      await deleteApplicationThread(
-        studentId?.toString(),
-        program._id?.toString(),
-        thread._id?.toString()
-      );
+      try {
+        await deleteApplicationThread(
+          studentId?.toString(),
+          program._id?.toString(),
+          thread._id?.toString()
+        );
+        logger.error(
+          `handleStudentDelta: delete thread for student ${studentId} and program ${program._id} with file type RL (${thread.file_type})`
+        );
+      } catch (error) {
+        logger.error(
+          `handleStudentDelta: error on thread deletion for student ${studentId} and program ${program._id} with file type RL -> error: ${error}`
+        );
+      }
     }
   }
 };
@@ -121,14 +138,20 @@ const handleStudentDelta = async (studentId, program) => {
     );
 
     if (program[fileType]?.toLowerCase() === 'yes' && !fileThread) {
-      await createApplicationThread(
-        studentId,
-        program._id,
-        FILETYPES[fileType]
-      );
-      logger.info(
-        `handleStudentDelta: create thread for student ${studentId} and program ${program._id} with file type ${FILETYPES[fileType]}`
-      );
+      try {
+        await createApplicationThread(
+          studentId,
+          program._id,
+          FILETYPES[fileType]
+        );
+        logger.info(
+          `handleStudentDelta: create thread for student ${studentId} and program ${program._id} with file type ${FILETYPES[fileType]}`
+        );
+      } catch (error) {
+        logger.error(
+          `handleStudentDelta: error on thread creation for student ${studentId} and program ${program._id} with file type ${FILETYPES[fileType]} -> error: ${error}`
+        );
+      }
     } else if (program[fileType]?.toLowerCase() !== 'yes' && fileThread) {
       if (fileThread?.messages?.length !== 0) {
         logger.info(
@@ -136,14 +159,20 @@ const handleStudentDelta = async (studentId, program) => {
         );
         continue;
       }
-      await deleteApplicationThread(
-        studentId?.toString(),
-        program._id?.toString(),
-        fileThread._id?.toString()
-      );
-      logger.info(
-        `handleStudentDelta: delete thread for student ${studentId} and program ${program._id} with file type ${FILETYPES[fileType]}`
-      );
+      try {
+        await deleteApplicationThread(
+          studentId?.toString(),
+          program._id?.toString(),
+          fileThread._id?.toString()
+        );
+        logger.info(
+          `handleStudentDelta: delete thread for student ${studentId} and program ${program._id} with file type ${FILETYPES[fileType]}`
+        );
+      } catch (error) {
+        logger.error(
+          `handleStudentDelta: error on thread deletion for student ${studentId} and program ${program._id} with file type ${FILETYPES[fileType]} -> error: ${error}`
+        );
+      }
     }
   }
 
@@ -158,7 +187,7 @@ const handleThreadDelta = async (program) => {
     } catch (error) {
       console.log('error:', error);
       logger.error(
-        `handleThreadDelta: error on student ${student._id} and program ${program._id}: ${error}`
+        `handleThreadDelta: error on student ${studentId} and program ${program._id}: ${error}`
       );
     }
   }

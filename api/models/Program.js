@@ -220,15 +220,22 @@ programSchema.post(['updateOne', 'updateMany', 'update'], async function () {
     for (let doc of docs) {
       const updatedDoc = { ...doc, ...changes };
       const programId = updatedDoc._id;
-      logger.info(
-        `ProgramHook - Crucial changes detected on Program (Id=${programId}): ${JSON.stringify(
-          changes
-        )}`
-      );
-      await handleThreadDelta(updatedDoc);
-      logger.info(
-        `ProgramHook - Post hook executed successfully. (Id=${programId})`
-      );
+
+      try {
+        logger.info(
+          `ProgramHook - Crucial changes detected on Program (Id=${programId}): ${JSON.stringify(
+            changes
+          )}`
+        );
+        await handleThreadDelta(updatedDoc);
+        logger.info(
+          `ProgramHook - Post hook executed successfully. (Id=${programId})`
+        );
+      } catch (error) {
+        logger.error(
+          `ProgramHook - Error on post hook (Id=${programId}): ${error}`
+        );
+      }
     }
   } catch (error) {
     logger.error(`ProgramHook - Error on post hook: ${error}`);

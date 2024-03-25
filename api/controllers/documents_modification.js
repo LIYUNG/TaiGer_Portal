@@ -12,7 +12,6 @@ const {
 const surveyInput = require('../models/SurveyInput');
 const { emptyS3Directory } = require('../utils/utils_function');
 const { informOnSurveyUpdate } = require('../utils/informEditor');
-const { informOnSurveyUpdate } = require('../utils/informEditor');
 const {
   sendNewApplicationMessageInThreadEmail,
   sendAssignEditorReminderEmail,
@@ -24,11 +23,7 @@ const {
   assignDocumentTaskToEditorEmail,
   assignDocumentTaskToStudentEmail,
   sendAssignEssayWriterReminderEmail,
-  assignEssayTaskToEditorEmail,
-  assignDocumentTaskToStudentEmail,
-  sendAssignEssayWriterReminderEmail,
   assignEssayTaskToEditorEmail
-  // sendSomeReminderEmail,
 } = require('../services/email');
 const logger = require('../services/logger');
 const {
@@ -38,9 +33,6 @@ const {
   isNotArchiv,
   CVDeadline_Calculator,
   EDITOR_SCOPE,
-  ESSAY_WRITER_SCOPE,
-  CVDeadline_Calculator,
-  EDITOR_SCOPE,
   ESSAY_WRITER_SCOPE
 } = require('../constants');
 const {
@@ -48,17 +40,6 @@ const {
   informStudentTheirEssayWriterEmail,
   informAgentEssayAssignedEmail
 } = require('../services/email');
-// const {
-//   getAllActiveStudents
-// } = require('./students')
-const {
-  informEssayWriterNewEssayEmail,
-  informStudentTheirEssayWriterEmail,
-  informAgentEssayAssignedEmail
-} = require('../services/email');
-// const {
-//   getAllActiveStudents
-// } = require('./students')
 
 const { AWS_S3_BUCKET_NAME, API_ORIGIN } = require('../config');
 const Permission = require('../models/Permission');

@@ -58,7 +58,6 @@ const checkIsRLspecific = (program) => {
 
 const handleRLDelta = async (program, studentId, threads) => {
   const nrRLneeded = parseInt(program.rl_required);
-  if (!nrRLneeded) return;
   const nrSpecRLNeeded = !checkIsRLspecific(program) ? 0 : nrRLneeded;
 
   const existingRL = threads.filter((thread) =>

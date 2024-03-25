@@ -292,7 +292,7 @@ function ButtonSetUploaded(props) {
             }
             startIcon={<DeleteIcon />}
           >
-            {t('Delete')}
+            {t('Delete', { ns: 'common' })}
           </Button>
         )}
       </TableCell>
@@ -321,11 +321,11 @@ function ButtonSetUploaded(props) {
           {!ButtonSetUploadedState.isLoaded ? (
             <CircularProgress size={24} />
           ) : (
-            t('Yes')
+            t('Yes', { ns: 'common' })
           )}
         </Button>
         <Button variant="outlined" onClick={closeWarningWindow}>
-          {t('No')}
+          {t('No', { ns: 'common' })}
         </Button>
       </ModalNew>
       <ModalNew
@@ -360,7 +360,7 @@ function ButtonSetUploaded(props) {
           {!ButtonSetUploadedState.isLoaded ? (
             <CircularProgress size={24} />
           ) : (
-            t('Submit')
+            t('Submit', { ns: 'common' })
           )}
         </Button>
         <Button onClick={closeRejectWarningWindow}>No</Button>
@@ -395,7 +395,7 @@ function ButtonSetUploaded(props) {
           variant="outlined"
           onClick={closeAcceptWarningWindow}
         >
-          {t('No')}
+          {t('No', { ns: 'common' })}
         </Button>
       </ModalNew>
       <ModalNew
@@ -432,7 +432,7 @@ function ButtonSetUploaded(props) {
                     }
                   />
                 ))
-              : t('No')}
+              : t('No', { ns: 'common' })}
           </>
         )}
         {props.path.split('.')[1] !== 'pdf' && (
@@ -505,7 +505,7 @@ function ButtonSetUploaded(props) {
           {!ButtonSetUploadedState.isLoaded ? (
             <CircularProgress size={24} />
           ) : (
-            t('Close')
+            t('Close', { ns: 'common' })
           )}
         </Button>
       </ModalNew>

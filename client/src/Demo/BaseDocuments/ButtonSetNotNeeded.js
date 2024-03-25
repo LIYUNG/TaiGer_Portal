@@ -229,7 +229,7 @@ function ButtonSetNotNeeded(props) {
           </Button>
         )}
 
-        <Button onClick={closeSetNeededWindow}>{t('No')}</Button>
+        <Button onClick={closeSetNeededWindow}>{t('No', { ns: 'common' })}</Button>
       </ModalNew>
       <OffcanvasBaseDocument
         open={buttonSetNotNeededState.baseDocsflagOffcanvas}

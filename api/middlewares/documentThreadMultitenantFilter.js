@@ -32,17 +32,20 @@ const surveyMultitenantFilter = async (req, res, next) => {
   } = req;
 
   if (user.role === Role.Student || user.role === Role.Guest) {
-    // Check for post/put request
+    // On POST: where surveyInputId not yet exist, check if created document is assign to the user
     const surveyDocument = req?.body?.input;
-    if (surveyDocument?.student_id !== user._id.toString()) {
+    if (
+      !surveyInputId &&
+      surveyDocument?.studentId.toString() !== user._id.toString()
+    ) {
       return next(
         new ErrorResponse(403, 'Not allowed to create/edit other resource.')
       );
     }
 
-    const surveyInputs = await surveyInput.find({ surveyInputId }).lean();
-
-    if (surveyInputs.student_id !== user._id.toString()) {
+    // On PUT/DELETE: use surveyInputId to validate the document belongs to the user
+    const surveyInputs = await surveyInput.findById(surveyInputId).lean();
+    if (surveyInputs.studentId.toString() !== user._id.toString()) {
       return next(
         new ErrorResponse(403, 'Not allowed to access other resource.')
       );

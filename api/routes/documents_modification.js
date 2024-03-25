@@ -44,12 +44,21 @@ const {
   getSurveyInputs,
   postSurveyInput,
   putSurveyInput,
-  resetSurveyInput
+  assignEssayWritersToEssayTask,
+  resetSurveyInput,
+  getAllActiveEssays
 } = require('../controllers/documents_modification');
 const {
   docThreadMultitenant_filter,
   surveyMultitenantFilter
 } = require('../middlewares/documentThreadMultitenantFilter');
+const {
+  permission_canAssignEditor_filter,
+  permission_canAssignAgent_filter,
+  permission_canAccessStudentDatabase_filter
+} = require('../middlewares/permission-filter');
+const { logAccess } = require('../utils/log/log');
+const { editorIdsBodyFilter } = require('../middlewares/editorIdsBodyFilter');
 
 const router = Router();
 
@@ -116,6 +125,27 @@ router
     InnerTaigerMultitenantFilter,
     initApplicationMessagesThread
   );
+
+router.route('/essays/all').get(
+  filter_archiv_user,
+  postMessagesRateLimiter,
+  permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
+  // permission_canAssignEditor_filter,
+  getAllActiveEssays,
+  logAccess
+);
+
+router.route('/:messagesThreadId/essay').post(
+  filter_archiv_user,
+  postMessagesRateLimiter,
+  permit(Role.Admin, Role.Manager, Role.Editor, Role.Agent),
+  // permission_canAssignEditor_filter,
+  InnerTaigerMultitenantFilter,
+  editorIdsBodyFilter,
+  doc_thread_ops_validator,
+  assignEssayWritersToEssayTask,
+  logAccess
+);
 
 router
   .route('/:messagesThreadId/:studentId')

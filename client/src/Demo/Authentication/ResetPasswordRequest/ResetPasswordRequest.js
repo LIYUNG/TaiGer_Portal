@@ -97,7 +97,7 @@ export default function ResetPasswordRequest() {
         </Grid>
         <Grid item xs={6}>
           <Link to={DEMO.LOGIN_LINK} component={NavLink}>
-            <Typography>{t('Login')}</Typography>
+            <Typography>{t('Login', { ns: 'auth' })}</Typography>
           </Link>
         </Grid>
       </Grid>

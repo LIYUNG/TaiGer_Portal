@@ -335,7 +335,7 @@ export default function EventConfirmationCard(props) {
                       }
                       startIcon={<DeleteIcon />}
                     >
-                      {t('Delete')}
+                      {t('Delete', { ns: 'common' })}
                     </Button>
                   </span>
                 </Typography>

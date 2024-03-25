@@ -12,9 +12,11 @@ import { Navigate, Link as LinkDom } from 'react-router-dom';
 import { useAuth } from '../../../components/AuthProvider';
 import { appConfig } from '../../../config';
 import Loading from '../../../components/Loading/Loading';
+import { useTranslation } from 'react-i18next';
 
 function ProgramConflictDashboard() {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [ProgramConflictDashboardState, setProgramConflictDashboardState] =
     useState({
       error: '',
@@ -95,7 +97,12 @@ function ProgramConflictDashboard() {
         >
           {appConfig.companyName}
         </Link>
-        <Typography color="text.primary">Program Conflicts</Typography>
+        <Typography color="text.primary">
+          {t('All Students', { ns: 'common' })}
+        </Typography>
+        <Typography color="text.primary">
+          {t('Program Conflicts', { ns: 'common' })}
+        </Typography>
       </Breadcrumbs>
       <TabProgramConflict students={ProgramConflictDashboardState.students} />
     </Box>

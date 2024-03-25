@@ -308,7 +308,7 @@ function SingleProgramView(props) {
                   color="error"
                   onClick={() => props.setModalShowDDelete()}
                 >
-                  {t('Delete')}
+                  {t('Delete', { ns: 'common' })}
                 </Button>
               )}
             </>

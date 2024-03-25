@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { register } from '../../../api';
 import AuthWrapper from '../../../components/AuthWrapper';
-import { Button, Typography } from '@mui/material';
+import { Button, CircularProgress, Typography } from '@mui/material';
 
 export default function SignUp1({ userData }) {
   const { t } = useTranslation();
@@ -124,11 +124,11 @@ export default function SignUp1({ userData }) {
           disabled={buttondisable}
           onClick={(e) => onButtonClick(e, true)}
         >
-          {buttondisable ? <CircularProgress /> : t('Sign up')}
+          {buttondisable ? <CircularProgress /> : t('Sign up', { ns: 'auth' })}
         </Button>
         <Typography>{t('Already have an account?')}</Typography>
         <NavLink to="/login">
-          <Typography>{t('Login')}</Typography>
+          <Typography>{t('Login', { ns: 'auth' })}</Typography>
         </NavLink>
       </AuthWrapper>
     );

@@ -11,6 +11,8 @@ const documentThreadsSchema = new mongoose.Schema({
   student_id: { type: ObjectId, require: true, ref: 'User' },
   program_id: { type: ObjectId, ref: 'Program' },
   outsourced_user_id: [{ type: ObjectId, ref: 'User' }],
+  pin_by_user_id: [{ type: ObjectId, ref: 'User' }],
+  flag_by_user_id: [{ type: ObjectId, ref: 'User' }],
   file_type: { type: String, require: true }, // Change to threadType
   isFinalVersion: {
     type: Boolean,

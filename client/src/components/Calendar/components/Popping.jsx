@@ -155,7 +155,7 @@ const Popping = ({
             size="small"
             onClick={handleClose}
           >
-            {t('Close')}
+            {t('Close', { ns: 'common' })}
           </Button>
         </ModalNew>
       );

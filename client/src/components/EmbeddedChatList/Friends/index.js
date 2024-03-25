@@ -22,7 +22,7 @@ function Friends(props) {
     );
   }
   const friendList = props.students.map((f) => {
-    return <Friend key={f.id} data={f} activeId={props.user._id.toString()} />;
+    return <Friend key={f._id} data={f} activeId={props.user._id.toString()} />;
   });
 
   return <Box>{friendList}</Box>;

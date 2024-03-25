@@ -63,7 +63,7 @@ function NoAgentsStudentsCard(props) {
                 aria-expanded={open ? 'true' : undefined}
                 onClick={handleClick}
               >
-                {t('Option')}
+                {t('Option', { ns: 'common' })}
               </Button>
               <Menu
                 id="basic-menu"
@@ -75,7 +75,7 @@ function NoAgentsStudentsCard(props) {
                 }}
               >
                 <MenuItem onClick={() => startEditingAgent()}>
-                  {t('Edit Agent')}
+                  {t('Edit Agent', { ns: 'dastboard' })}
                 </MenuItem>
               </Menu>
             </TableCell>

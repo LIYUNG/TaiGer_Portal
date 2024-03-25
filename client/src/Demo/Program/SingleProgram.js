@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Breadcrumbs, Button, Link, Typography } from '@mui/material';
+import {
+  Card,
+  Breadcrumbs,
+  Button,
+  Link,
+  Typography,
+  Box
+} from '@mui/material';
 import { Link as LinkDom, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
@@ -300,7 +307,7 @@ function SingleProgram() {
   }
   if (singleProgramState.isEdit) {
     return (
-      <>
+      <Box data-testid="single_program_page_edit">
         {res_modal_status >= 400 && (
           <ModalMain
             ConfirmError={ConfirmError}
@@ -313,11 +320,11 @@ function SingleProgram() {
           handleSubmit_Program={handleSubmit_Program}
           handleClick={handleClick}
         />
-      </>
+      </Box>
     );
   } else {
     return (
-      <>
+      <Box data-testid="single_program_page">
         {res_modal_status >= 400 && (
           <ModalMain
             ConfirmError={ConfirmError}
@@ -341,7 +348,7 @@ function SingleProgram() {
               component={LinkDom}
               to={`${DEMO.PROGRAMS}`}
             >
-              {t('Program List')}
+              {t('Program List', { ns: 'common' })}
             </Link>
           ) : (
             <Link
@@ -377,22 +384,24 @@ function SingleProgram() {
           RemoveProgramHandler={RemoveProgramHandler}
           program_id={program._id.toString()}
         />
-        <ProgramListSubpage
-          show={singleProgramState.modalShowAssignWindow}
-          setModalHide={setModalHide}
-          uni_name={[program.school]}
-          program_name={[program.program_name]}
-          handleSetStudentId={handleSetStudentId}
-          isButtonDisable={singleProgramState.isAssigning}
-          studentId={singleProgramState.student_id}
-          onSubmitAddToStudentProgramList={onSubmitAddToStudentProgramList}
-        />
+        {singleProgramState.modalShowAssignWindow && (
+          <ProgramListSubpage
+            show={singleProgramState.modalShowAssignWindow}
+            setModalHide={setModalHide}
+            uni_name={[program.school]}
+            program_name={[program.program_name]}
+            handleSetStudentId={handleSetStudentId}
+            isButtonDisable={singleProgramState.isAssigning}
+            studentId={singleProgramState.student_id}
+            onSubmitAddToStudentProgramList={onSubmitAddToStudentProgramList}
+          />
+        )}
         <ModalNew
           open={singleProgramState.modalShowAssignSuccessWindow}
           onClose={onHideAssignSuccessWindow}
           aria-labelledby="contained-modal-title-vcenter"
         >
-          <Typography>{t('Success')}</Typography>
+          <Typography>{t('Success', { ns: 'common' })}</Typography>
           <Typography>Program(s) assigned to student successfully!</Typography>
           <Button
             size="small"
@@ -400,10 +409,10 @@ function SingleProgram() {
             variant="contained"
             onClick={onHideAssignSuccessWindow}
           >
-            {t('Close')}
+            {t('Close', { ns: 'common' })}
           </Button>
         </ModalNew>
-      </>
+      </Box>
     );
   }
 }

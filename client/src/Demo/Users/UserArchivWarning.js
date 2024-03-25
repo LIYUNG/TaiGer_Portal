@@ -31,14 +31,14 @@ function UserArchivWarning(props) {
           )
         }
       >
-        {props.isLoaded ? t('Yes') : t('Loading')}
+        {props.isLoaded ? t('Yes', { ns: 'common' }) : t('Loading')}
       </Button>
       <Button
         color="primary"
         variant="outlined"
         onClick={props.setModalArchivHide}
       >
-        {t('No')}
+        {t('No', { ns: 'common' })}
       </Button>
     </ModalNew>
   );

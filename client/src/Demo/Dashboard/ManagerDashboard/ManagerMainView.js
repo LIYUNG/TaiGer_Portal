@@ -182,7 +182,7 @@ function ManagerMainView(props) {
       <Box>
         <div className="card-with-scroll">
           <Alert severity="error">
-            {t('Upcoming Applications')} (Decided):
+            {t('Upcoming Applications', { ns: 'dashboard' })} (Decided):
           </Alert>
           <div className="card-scrollable-body">
             <Table size="small">

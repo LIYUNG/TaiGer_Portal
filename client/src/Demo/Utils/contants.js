@@ -13,10 +13,14 @@ import { styled, alpha } from '@mui/material/styles';
 import { InputBase } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
+import BugReportIcon from '@mui/icons-material/BugReport';
+import WarningIcon from '@mui/icons-material/Warning';
 import HelpIcon from '@mui/icons-material/Help';
 import { green, red, grey } from '@mui/material/colors';
-
+import { Link, Tooltip, Chip } from '@mui/material';
+import { Link as LinkDom } from 'react-router-dom';
 import { appConfig } from '../../config';
+import DEMO from '../../store/constant';
 
 export const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -60,6 +64,21 @@ export const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 export const menuWidth = 350;
 export const EmbeddedChatListWidth = 290;
+
+export const CVMLRL_DOC_PRECHECK_STATUS_E = {
+  OK_SYMBOL: (
+    <CheckCircleIcon size={18} style={{ color: green[500] }} title="Decided" />
+  ),
+  NOT_OK_SYMBOL: (
+    <CancelIcon size={18} style={{ color: red[700] }} title="Decided No" />
+  ),
+  RISK_SYMBOL: (
+    <BugReportIcon size={18} style={{ color: grey[400] }} title="Risk" />
+  ),
+  WARNING_SYMBOK: (
+    <WarningIcon size={18} style={{ color: red[700] }} title="Warning" />
+  )
+};
 
 export const DECISION_STATUS_E = {
   OK_SYMBOL: (
@@ -896,30 +915,23 @@ export const program_fields_special_documents = [
   {
     name: 'Supplementary Form Requirements',
     prop: 'supplementary_form_requirements'
+  },
+  {
+    name: 'Curriculum Analysis Required?',
+    prop: 'curriculum_analysis_required'
+  },
+  {
+    name: 'Curriculum Analysis Requirements',
+    prop: 'curriculum_analysis_requirements'
+  },
+  {
+    name: 'Scholarship Form / ML Required?',
+    prop: 'scholarship_form_required'
+  },
+  {
+    name: 'Scholarship Form / ML Requirements',
+    prop: 'scholarship_form_requirements'
   }
-];
-
-export const ATTRIBUTES = [
-  { value: 1, name: 'Demanding' },
-  { value: 2, name: 'Parents Pushing' },
-  { value: 3, name: 'Urgent' },
-  { value: 4, name: 'Slow Response' },
-  { value: 5, name: 'Disappear' },
-  { value: 6, name: 'Low-IQ' },
-  { value: 7, name: 'Refunded' },
-  { value: 8, name: 'Done' }
-];
-
-export const COLORS = [
-  'primary',
-  'secondary',
-  'secondary',
-  'info',
-  'error',
-  'primary',
-  'primary',
-  'success',
-  'primary'
 ];
 
 export const program_fields_special_notes = [
@@ -935,6 +947,40 @@ export const program_fields_special_notes = [
 export const program_fields_others = [
   { name: 'Tuition Fees', prop: 'tuition_fees' },
   { name: 'FPSO', prop: 'fpso' }
+];
+
+export const ATTRIBUTES = [
+  {
+    value: 1,
+    name: 'Demanding',
+    definition:
+      'Reply within 3 days, but not necessary providing pdf output. Need extra care only. Expecting quick response.'
+  },
+  { value: 2, name: 'Parents Pushing', definition: '' },
+  {
+    value: 3,
+    name: 'Urgent',
+    definition:
+      'In addition to deadline, due to student personal reason, professor required, competitive offer, rolling process or even parents pushing and want to closed asap.'
+  },
+  { value: 4, name: 'Slow Response', definition: '' },
+  { value: 5, name: 'Disappear', definition: '' },
+  { value: 6, name: 'Low-IQ', definition: '' },
+  { value: 7, name: 'Refunded', definition: '' },
+  { value: 8, name: 'Done', definition: '' },
+  { value: 9, name: 'Redund-Risk', definition: '' }
+];
+
+export const COLORS = [
+  'primary',
+  'secondary',
+  'secondary',
+  'info',
+  'error',
+  'primary',
+  'primary',
+  'success',
+  'primary'
 ];
 
 export const program_fields = [
@@ -1618,6 +1664,320 @@ export const cvmlrl_overview_closed_header = [
     Header: 'Documents',
     accessor: 'document_name',
     filter: 'fuzzyText'
+  }
+];
+
+export const c1 = [
+  {
+    field: 'firstname_lastname',
+    headerName: 'First-, Last Name',
+    align: 'left',
+    headerAlign: 'left',
+    width: 150,
+    renderCell: (params) => {
+      const linkUrl = `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+        params.row.student_id,
+        DEMO.PROFILE_HASH
+      )}`;
+      return (
+        <Link
+          underline="hover"
+          to={linkUrl}
+          component={LinkDom}
+          target="_blank"
+          title={params.value}
+        >
+          {params.value}
+        </Link>
+      );
+    }
+  },
+  {
+    field: 'editors',
+    headerName: 'Editors',
+    align: 'left',
+    headerAlign: 'left',
+    width: 150,
+    renderCell: (params) => {
+      return params.value?.map((editor) => (
+        <Link
+          underline="hover"
+          to={DEMO.TEAM_EDITOR_LINK(editor._id.toString())}
+          component={LinkDom}
+          target="_blank"
+          title={editor.firstname}
+          key={`${editor._id.toString()}`}
+        >
+          {`${editor.firstname} `}
+        </Link>
+      ));
+    }
+  },
+  {
+    field: 'latest_reply',
+    headerName: 'Latest Reply',
+    width: 100
+  },
+  {
+    field: 'deadline',
+    headerName: 'Deadline',
+    width: 100
+  },
+  {
+    field: 'days_left',
+    headerName: 'Days left',
+    width: 80
+  },
+  {
+    field: 'document_name',
+    headerName: 'Document name',
+    width: 380,
+    renderCell: (params) => {
+      const linkUrl = `${DEMO.DOCUMENT_MODIFICATION_LINK(
+        params.row.thread_id
+      )}`;
+      return (
+        <>
+          {params.row?.attributes?.map(
+            (attribute) =>
+              [1, 3, 9].includes(attribute.value) && (
+                <Tooltip
+                  title={`${attribute.name}: ${
+                    ATTRIBUTES[attribute.value - 1].definition
+                  }`}
+                  key={attribute._id}
+                >
+                  <Chip
+                    size="small"
+                    label={attribute.name[0]}
+                    color={COLORS[attribute.value]}
+                  >
+                    {attribute.name}
+                  </Chip>
+                </Tooltip>
+              )
+          )}
+          <Link
+            underline="hover"
+            to={linkUrl}
+            component={LinkDom}
+            target="_blank"
+            title={params.value}
+          >
+            {params.value}
+          </Link>
+        </>
+      );
+    }
+  },
+  {
+    field: 'aged_days',
+    headerName: 'Aged days',
+    width: 80
+  },
+  {
+    field: 'number_input_from_editors',
+    headerName: 'Editor Feedback (#Messages/#Files)',
+    width: 80
+  },
+  {
+    field: 'number_input_from_student',
+    headerName: 'Student Feedback (#Messages/#Files)',
+    width: 80
+  },
+  {
+    field: 'updatedAt',
+    headerName: 'Last Update',
+    width: 100
+  }
+];
+
+export const c2Student = [
+  {
+    field: 'firstname_lastname',
+    headerName: 'First-, Last Name',
+    align: 'left',
+    headerAlign: 'left',
+    width: 150,
+    renderCell: (params) => {
+      const linkUrl = `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+        params.row.student_id,
+        DEMO.PROFILE_HASH
+      )}`;
+      return (
+        <Link
+          underline="hover"
+          to={linkUrl}
+          component={LinkDom}
+          target="_blank"
+          title={params.value}
+        >
+          {params.value}
+        </Link>
+      );
+    }
+  },
+  {
+    field: 'latest_reply',
+    headerName: 'Latest Reply',
+    width: 100
+  },
+  {
+    field: 'deadline',
+    headerName: 'Deadline',
+    width: 100
+  },
+  {
+    field: 'days_left',
+    headerName: 'Days left',
+    width: 80
+  },
+  {
+    field: 'document_name',
+    headerName: 'Document name',
+    width: 380,
+    renderCell: (params) => {
+      const linkUrl = `${DEMO.DOCUMENT_MODIFICATION_LINK(
+        params.row.thread_id
+      )}`;
+      return (
+        <>
+          <Link
+            underline="hover"
+            to={linkUrl}
+            component={LinkDom}
+            target="_blank"
+            title={params.value}
+          >
+            {params.value}
+          </Link>
+        </>
+      );
+    }
+  },
+  {
+    field: 'aged_days',
+    headerName: 'Aged days',
+    width: 80
+  },
+  {
+    field: 'number_input_from_editors',
+    headerName: 'Editor Feedback (#Messages/#Files)',
+    width: 80
+  },
+  {
+    field: 'number_input_from_student',
+    headerName: 'Student Feedback (#Messages/#Files)',
+    width: 80
+  },
+  {
+    field: 'updatedAt',
+    headerName: 'Last Update',
+    width: 100
+  }
+];
+
+export const c2 = [
+  {
+    field: 'firstname_lastname',
+    headerName: 'First-, Last Name',
+    align: 'left',
+    headerAlign: 'left',
+    width: 150,
+    renderCell: (params) => {
+      const linkUrl = `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+        params.row.student_id,
+        DEMO.PROFILE_HASH
+      )}`;
+      return (
+        <Link
+          underline="hover"
+          to={linkUrl}
+          component={LinkDom}
+          target="_blank"
+          title={params.value}
+        >
+          {params.value}
+        </Link>
+      );
+    }
+  },
+  {
+    field: 'latest_reply',
+    headerName: 'Latest Reply',
+    width: 100
+  },
+  {
+    field: 'deadline',
+    headerName: 'Deadline',
+    width: 100
+  },
+  {
+    field: 'days_left',
+    headerName: 'Days left',
+    width: 80
+  },
+  {
+    field: 'document_name',
+    headerName: 'Document name',
+    width: 380,
+    renderCell: (params) => {
+      const linkUrl = `${DEMO.DOCUMENT_MODIFICATION_LINK(
+        params.row.thread_id
+      )}`;
+      return (
+        <>
+          {params.row?.attributes?.map(
+            (attribute) =>
+              [1, 3, 9].includes(attribute.value) && (
+                <Tooltip
+                  title={`${attribute.name}: ${
+                    ATTRIBUTES[attribute.value - 1].definition
+                  }`}
+                  key={attribute._id}
+                >
+                  <Chip
+                    size="small"
+                    label={attribute.name[0]}
+                    color={COLORS[attribute.value]}
+                  >
+                    {attribute.name}
+                  </Chip>
+                </Tooltip>
+              )
+          )}
+          <Link
+            underline="hover"
+            to={linkUrl}
+            component={LinkDom}
+            target="_blank"
+            title={params.value}
+          >
+            {params.value}
+          </Link>
+        </>
+      );
+    }
+  },
+  {
+    field: 'aged_days',
+    headerName: 'Aged days',
+    width: 80
+  },
+  {
+    field: 'number_input_from_editors',
+    headerName: 'Editor Feedback (#Messages/#Files)',
+    width: 80
+  },
+  {
+    field: 'number_input_from_student',
+    headerName: 'Student Feedback (#Messages/#Files)',
+    width: 80
+  },
+  {
+    field: 'updatedAt',
+    headerName: 'Last Update',
+    width: 100
   }
 ];
 

@@ -29,6 +29,7 @@ const {
 } = require('../constants');
 const Permission = require('../models/Permission');
 const Course = require('../models/Course');
+const { ObjectId } = require('mongodb');
 
 const getStudent = asyncHandler(async (req, res, next) => {
   const {
@@ -56,14 +57,23 @@ const getStudentAndDocLinks = asyncHandler(async (req, res, next) => {
 
   const student = await Student.findById(studentId)
     .populate('agents editors', 'firstname lastname email')
-    .populate(
-      'applications.programId',
-      'school program_name toefl toefl_reading toefl_listening toefl_writing toefl_speaking ielts ielts_reading ielts_listening ielts_writing ielts_speaking testdaf gre gmat degree semester country application_deadline ml_required ml_requirements rl_required is_rl_specific uni_assist rl_requirements essay_required essay_requirements portfolio_required portfolio_requirements supplementary_form_required supplementary_form_requirements application_portal_a application_portal_b'
-    )
-    .populate(
-      'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
-      '-messages'
-    )
+    .populate('applications.programId')
+    .populate({
+      path: 'generaldocs_threads.doc_thread_id',
+      select: 'file_type isFinalVersion updatedAt messages.file',
+      populate: {
+        path: 'messages.user_id',
+        select: 'firstname lastname'
+      }
+    })
+    .populate({
+      path: 'applications.doc_modification_thread.doc_thread_id',
+      select: 'file_type isFinalVersion updatedAt messages.file',
+      populate: {
+        path: 'messages.user_id',
+        select: 'firstname lastname'
+      }
+    })
     .select(
       '-taigerai +applications.portal_credentials.application_portal_a.account +applications.portal_credentials.application_portal_a.password +applications.portal_credentials.application_portal_b.account +applications.portal_credentials.application_portal_b.password'
     )
@@ -1067,7 +1077,40 @@ const createApplication = asyncHandler(async (req, res, next) => {
         updatedAt: new Date(),
         createdAt: new Date()
       });
-
+      temp.student_id = studentId;
+      application.doc_modification_thread.push(temp);
+      await new_doc_thread.save();
+    }
+    // Create curriculum analysis task
+    if (program.curriculum_analysis_required === 'yes') {
+      const new_doc_thread = new Documentthread({
+        student_id: studentId,
+        file_type: 'Curriculum_Analysis',
+        program_id: new_programIds[i],
+        updatedAt: new Date()
+      });
+      const temp = application.doc_modification_thread.create({
+        doc_thread_id: new_doc_thread._id,
+        updatedAt: new Date(),
+        createdAt: new Date()
+      });
+      temp.student_id = studentId;
+      application.doc_modification_thread.push(temp);
+      await new_doc_thread.save();
+    }
+    // Create scholarship form / ML task
+    if (program.scholarship_form_required === 'yes') {
+      const new_doc_thread = new Documentthread({
+        student_id: studentId,
+        file_type: 'Scholarship_Form',
+        program_id: new_programIds[i],
+        updatedAt: new Date()
+      });
+      const temp = application.doc_modification_thread.create({
+        doc_thread_id: new_doc_thread._id,
+        updatedAt: new Date(),
+        createdAt: new Date()
+      });
       temp.student_id = studentId;
       application.doc_modification_thread.push(temp);
       await new_doc_thread.save();

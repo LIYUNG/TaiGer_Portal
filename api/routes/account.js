@@ -178,7 +178,7 @@ router
     logAccess
   );
 
-// My Survey for Students
+// My Profile for Students
 router
   .route('/survey')
   .get(

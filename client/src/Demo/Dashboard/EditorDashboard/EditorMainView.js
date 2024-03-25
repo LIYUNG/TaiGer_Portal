@@ -17,6 +17,7 @@ import TabProgramConflict from '../MainViewTab/ProgramConflict/TabProgramConflic
 import StudentsAgentEditor from '../MainViewTab/StudentsAgentEditor/StudentsAgentEditor';
 import TasksDistributionBarChart from '../../../components/Charts/TasksDistributionBarChart';
 import {
+  does_essay_have_writers,
   does_student_have_editors,
   frequencyDistribution,
   open_tasks_with_editors
@@ -186,14 +187,17 @@ function EditorMainView(props) {
         <Grid item xs={12} md={3}>
           <Card sx={{ p: 2 }}>
             <Typography>XXXXXX</Typography>
-            <Typography variant="h6">Coming soon</Typography>
+            <Typography variant="h6">
+              {t('Coming soon', { ns: 'common' })}
+            </Typography>
           </Card>
         </Grid>
-        {!does_student_have_editors(props.students) && (
+        {(!does_student_have_editors(props.students) ||
+          !does_essay_have_writers(props.essayDocumentThreads)) && (
           <Grid item xs={12} md={12}>
             <Card sx={{ p: 2 }}>
-              <Typography>
-                <b>To Do Task</b>{' '}
+              <Typography fontWeight="bold">
+                {t('To Do Tasks', { ns: 'common' })}{' '}
               </Typography>
               <Table size="small">
                 <TableHead>
@@ -209,12 +213,29 @@ function EditorMainView(props) {
                         to={`${DEMO.ASSIGN_EDITOR_LINK}`}
                         component={LinkDom}
                       >
-                        Assign Editors
+                        {t('Assign Editors')}
                       </Link>
                     </TableCell>
                     <TableCell>Please assign editors</TableCell>
                     <TableCell></TableCell>
                   </TableRow>
+                  {!does_essay_have_writers(
+                    props.essayDocumentThreads?.filter(
+                      (thread) => !thread.isFinalVersion
+                    )
+                  ) && (
+                    <TableRow>
+                      <TableCell>
+                        <Link
+                          to={`${DEMO.ASSIGN_ESSAY_WRITER_LINK}`}
+                          component={LinkDom}
+                        >
+                          {t('Assign Essay Writer', { ns: 'common' })}
+                        </Link>
+                      </TableCell>
+                      <TableCell>{t('Please assign essay writers')}</TableCell>
+                    </TableRow>
+                  )}
                 </TableBody>
               </Table>
             </Card>

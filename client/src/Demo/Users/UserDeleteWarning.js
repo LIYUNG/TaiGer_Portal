@@ -50,7 +50,11 @@ function UserDeleteWarning(props) {
           onClick={() => props.handleDeleteUser(props.selected_user_id)}
           sx={{ mr: 2 }}
         >
-          {props.isLoaded ? t('Yes') : <CircularProgress size={24} />}
+          {props.isLoaded ? (
+            t('Yes', { ns: 'comon' })
+          ) : (
+            <CircularProgress size={24} />
+          )}
         </Button>
         <Button
           size="small"
@@ -58,7 +62,7 @@ function UserDeleteWarning(props) {
           variant="outlined"
           onClick={props.setModalHideDDelete}
         >
-          {t('No')}
+          {t('No', { ns: 'common' })}
         </Button>
       </Box>
     </ModalNew>

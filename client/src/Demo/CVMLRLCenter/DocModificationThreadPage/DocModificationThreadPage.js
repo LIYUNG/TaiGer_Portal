@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link as LinkDom, useParams } from 'react-router-dom';
+import JSZip from 'jszip';
+import * as XLSX from 'xlsx';
 import DownloadIcon from '@mui/icons-material/Download';
 import { FiExternalLink } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
@@ -14,6 +16,8 @@ import {
   Breadcrumbs,
   Avatar
 } from '@mui/material';
+import { pdfjs } from 'react-pdf'; // Library for rendering PDFs
+pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
 import MessageList from './MessageList';
 import DocThreadEditor from './DocThreadEditor';
@@ -21,6 +25,8 @@ import ErrorPage from '../../Utils/ErrorPage';
 import ModalMain from '../../Utils/ModalHandler/ModalMain';
 import { stringAvatar, templatelist } from '../../Utils/contants';
 import {
+  AGENT_SUPPORT_DOCUMENTS_A,
+  FILE_TYPE_E,
   LinkableNewlineText,
   getRequirement,
   is_TaiGer_AdminAgent,
@@ -32,7 +38,8 @@ import {
   SubmitMessageWithAttachment,
   getMessagThread,
   deleteAMessageInThread,
-  SetFileAsFinal
+  SetFileAsFinal,
+  updateEssayWriter
 } from '../../../api';
 import { TabTitle } from '../../Utils/TabTitle';
 import DEMO from '../../../store/constant';
@@ -41,6 +48,7 @@ import { appConfig } from '../../../config';
 import { useAuth } from '../../../components/AuthProvider';
 import Loading from '../../../components/Loading/Loading';
 import ModalNew from '../../../components/Modal';
+import EditEssayWritersSubpage from '../../Dashboard/MainViewTab/StudDocsOverview/EditEssayWritersSubpage';
 
 function DocModificationThreadPage() {
   const { user } = useAuth();
@@ -53,6 +61,7 @@ function DocModificationThreadPage() {
       componentRef: React.createRef(),
       isLoaded: false,
       isFilesListOpen: false,
+      showEditorPage: false,
       isSubmissionLoaded: true,
       articles: [],
       isEdit: false,
@@ -70,6 +79,7 @@ function DocModificationThreadPage() {
       res_modal_status: 0,
       res_modal_message: ''
     });
+  const [checkResult, setCheckResult] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -130,10 +140,159 @@ function DocModificationThreadPage() {
     e.preventDefault();
     const file_num = e.target.files.length;
     if (file_num <= 3) {
-      setDocModificationThreadPageState((prevState) => ({
-        ...prevState,
-        file: Array.from(e.target.files)
-      }));
+      if (!e.target.files) {
+        return;
+      }
+      if (!is_TaiGer_role(user)) {
+        setDocModificationThreadPageState((prevState) => ({
+          ...prevState,
+          file: Array.from(e.target.files)
+        }));
+        return;
+      }
+      // Ensure a file is selected
+      // TODO: make array
+      const checkPromises = new Array(e.target.files?.length);
+      for (let i = 0; i < e.target.files?.length; i++) {
+        const fl = e.target.files[i];
+        const extension = fl.name?.split('.').pop().toLowerCase();
+
+        const promise = new Promise((resolve, reject) => {
+          if (extension === 'pdf') {
+            const reader = new FileReader();
+            reader.onload = async (event) => {
+              const checkPoints = {
+                corretFirstname: {
+                  value: false,
+                  text: 'NOT Detected student first name in the document'
+                }
+              };
+              const checkPoints_temp = Object.assign({}, checkPoints);
+              try {
+                const content = event.target.result;
+                const typedarray = new Uint8Array(content);
+                const pdf = await pdfjs.getDocument(typedarray).promise;
+                let text = '';
+                for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+                  const page = await pdf.getPage(pageNum);
+                  const pageTextContent = await page.getTextContent();
+                  pageTextContent.items.forEach((item) => {
+                    text += item.str + ' ';
+                  });
+                }
+                if (
+                  text
+                    .toLowerCase()
+                    .includes(
+                      docModificationThreadPageState.thread.student_id.firstname.toLowerCase()
+                    )
+                ) {
+                  checkPoints_temp.corretFirstname.value = true;
+                  checkPoints_temp.corretFirstname.text =
+                    checkPoints_temp.corretFirstname.text.replace('NOT ', '');
+                }
+                resolve(checkPoints_temp);
+              } catch (error) {
+                console.error('Error reading PDF file:', error);
+                checkPoints_temp.error.value = true;
+                checkPoints_temp.error.text = error;
+                reject(checkPoints_temp);
+              }
+            };
+            reader.readAsArrayBuffer(fl);
+          } else if (extension === 'docx') {
+            const checkPoints = {
+              corretFirstname: {
+                value: false,
+                text: 'NOT Detected student first name in the document'
+              }
+            };
+            const checkPoints_temp2 = Object.assign({}, checkPoints);
+            const reader = new FileReader();
+            reader.onload = async (event) => {
+              const content = event.target.result;
+              const { headerText, textContent, footerText } =
+                await extractTextFromDocx(content);
+              if (
+                `${headerText}${textContent}${footerText}`
+                  .toLowerCase()
+                  .includes(
+                    docModificationThreadPageState.thread.student_id.firstname.toLowerCase()
+                  )
+              ) {
+                checkPoints_temp2.corretFirstname.value = true;
+                checkPoints_temp2.corretFirstname.text =
+                  checkPoints_temp2.corretFirstname.text.replace('NOT ', '');
+              }
+              if (`${headerText}${footerText}` !== '') {
+                checkPoints_temp2.metadata = {
+                  hasMetadata: true,
+                  metaData: `
+                  Potential Risky Metadata, please double check if this is safe: 
+                  Header:${headerText}
+                  
+                  Footer:${footerText}.`
+                };
+              }
+              resolve(checkPoints_temp2);
+            };
+            reader.readAsArrayBuffer(fl);
+          } else if (extension === 'xlsx') {
+            const checkPoints = {
+              corretFirstname: {
+                value: false,
+                text: 'NOT Detected student first name in the document'
+              }
+            };
+            const checkPoints_temp3 = Object.assign({}, checkPoints);
+            const reader = new FileReader();
+            reader.onload = async (event) => {
+              const data = new Uint8Array(event.target.result);
+              const workbook = XLSX.read(data, { type: 'array' });
+              let text = '';
+              workbook.SheetNames.forEach((sheetName) => {
+                const sheet = workbook.Sheets[sheetName];
+                text += XLSX.utils.sheet_to_csv(sheet);
+              });
+              if (
+                text
+                  .toLowerCase()
+                  .includes(
+                    docModificationThreadPageState.thread.student_id.firstname.toLowerCase()
+                  )
+              ) {
+                checkPoints_temp3.corretFirstname.value = true;
+                checkPoints_temp3.corretFirstname.text =
+                  checkPoints_temp3.corretFirstname.text.replace('NOT ', '');
+              }
+              resolve(checkPoints_temp3);
+            };
+            reader.readAsArrayBuffer(fl);
+          } else {
+            const checkPoints = {};
+            const checkPoints_temp4 = Object.assign({}, checkPoints);
+            const reader = new FileReader();
+            reader.onload = async (event) => {
+              console.log(event);
+
+              resolve(checkPoints_temp4);
+            };
+            reader.readAsArrayBuffer(fl);
+          }
+        });
+        checkPromises[i] = promise;
+      }
+      Promise.all(checkPromises)
+        .then((results) => {
+          setCheckResult(results);
+          setDocModificationThreadPageState((prevState) => ({
+            ...prevState,
+            file: Array.from(e.target.files)
+          }));
+        })
+        .catch((error) => {
+          console.error('Error processing files:', error);
+        });
     } else {
       setDocModificationThreadPageState((prevState) => ({
         ...prevState,
@@ -141,6 +300,33 @@ function DocModificationThreadPage() {
         res_modal_status: 423
       }));
     }
+  };
+
+  const extractTextFromDocx = async (arrayBuffer) => {
+    const zip = await JSZip.loadAsync(arrayBuffer);
+    const documentXml = await zip.file('word/document.xml')?.async('string');
+    // Extract text from the XML content
+    let textContent = documentXml?.replace(/<[^>]+>/g, ''); // Strip HTML tags
+    // Extract header text if present
+    let headerText = '';
+    const headerXml = await zip
+      .file('word/header1.xml')
+      ?.async('string')
+      .catch(() => ''); // Assuming there's only one header
+    if (headerXml) {
+      headerText = headerXml?.replace(/<[^>]+>/g, ''); // Strip XML tags
+    }
+
+    // Extract footer text if present
+    let footerText = '';
+    const footerXml = await zip
+      .file('word/footer1.xml')
+      ?.async('string')
+      .catch(() => ''); // Assuming there's only one footer
+    if (footerXml) {
+      footerText = footerXml?.replace(/<[^>]+>/g, ''); // Strip XML tags
+    }
+    return { headerText, textContent, footerText };
   };
 
   const ConfirmError = () => {
@@ -216,7 +402,10 @@ function DocModificationThreadPage() {
             success,
             file: null,
             editorState: {},
-            thread: data,
+            thread: {
+              ...docModificationThreadPageState.thread,
+              messages: data?.messages
+            },
             isLoaded: true,
             buttonDisabled: false,
             accordionKeys: [
@@ -396,6 +585,68 @@ function DocModificationThreadPage() {
       ...prevState,
       isFilesListOpen: true
     }));
+  };
+
+  const setEditorModalhide = () => {
+    setDocModificationThreadPageState((prevState) => ({
+      ...prevState,
+      showEditorPage: false
+    }));
+  };
+
+  const startEditingEditor = () => {
+    setDocModificationThreadPageState((prevState) => ({
+      ...prevState,
+      subpage: 2,
+      showEditorPage: true
+    }));
+  };
+
+  const submitUpdateEssayWriterlist = (
+    e,
+    updateEssayWriterList,
+    essayDocumentThread_id
+  ) => {
+    e.preventDefault();
+    setEditorModalhide();
+    updateEssayWriter(updateEssayWriterList, essayDocumentThread_id).then(
+      (resp) => {
+        const { data, success } = resp.data;
+        const { status } = resp;
+        if (success) {
+          let essays_temp = {
+            ...docModificationThreadPageState.thread
+          };
+          essays_temp.outsourced_user_id = data.outsourced_user_id; // data is single student updated
+          setDocModificationThreadPageState((prevState) => ({
+            ...prevState,
+            isLoaded: true, //false to reload everything
+            thread: essays_temp,
+            success: success,
+            updateEditorList: [],
+            res_modal_status: status
+          }));
+        } else {
+          const { message } = resp.data;
+          setDocModificationThreadPageState((prevState) => ({
+            ...prevState,
+            isLoaded: true,
+            res_modal_message: message,
+            res_modal_status: status
+          }));
+        }
+      },
+      (error) => {
+        console.log('error in index');
+        setDocModificationThreadPageState((prevState) => ({
+          ...prevState,
+          isLoaded: true,
+          error,
+          res_modal_status: 500,
+          res_modal_message: ''
+        }));
+      }
+    );
   };
 
   const handleCloseFileList = () => {
@@ -675,7 +926,7 @@ function DocModificationThreadPage() {
                 />
               </>
             ) : (
-              <Typography>{t('No')}</Typography>
+              <Typography>{t('No', { ns: 'common' })}</Typography>
             )}
           </Grid>
           <Grid item md={widths[1]}>
@@ -701,27 +952,86 @@ function DocModificationThreadPage() {
               </Typography>
             ))}
             <Typography variant="body1" fontWeight="bold">
-              {t('Editor')}:
+              {docModificationThreadPageState.thread.file_type === 'Essay'
+                ? t('Essay Writer')
+                : t('Editor')}
+              :
             </Typography>
-            {docModificationThreadPageState.editors.map((editor, i) => (
-              <Typography key={i}>
-                {is_TaiGer_role(user) ? (
-                  <Link
-                    underline="hover"
-                    component={LinkDom}
-                    to={`${DEMO.TEAM_EDITOR_LINK(editor._id.toString())}`}
-                    target="_blank"
-                  >
-                    {editor.firstname} {editor.lastname}
-                  </Link>
-                ) : (
-                  <>
-                    {editor.firstname} {editor.lastname}
-                  </>
-                )}
-              </Typography>
-            ))}
-
+            {[
+              ...AGENT_SUPPORT_DOCUMENTS_A,
+              FILE_TYPE_E.essay_required
+            ].includes(docModificationThreadPageState.thread.file_type) &&
+              (docModificationThreadPageState.thread?.outsourced_user_id
+                ?.length > 0 ? (
+                docModificationThreadPageState.thread?.outsourced_user_id?.map(
+                  (outsourcer) => (
+                    <Typography key={outsourcer._id}>
+                      {is_TaiGer_role(user) ? (
+                        <Link
+                          underline="hover"
+                          component={LinkDom}
+                          to={`${DEMO.TEAM_EDITOR_LINK(
+                            outsourcer._id.toString()
+                          )}`}
+                          target="_blank"
+                        >
+                          {outsourcer.firstname} {outsourcer.lastname}
+                        </Link>
+                      ) : (
+                        <>
+                          {outsourcer.firstname} {outsourcer.lastname}
+                        </>
+                      )}
+                    </Typography>
+                  )
+                )
+              ) : (
+                <Typography>
+                  {[...AGENT_SUPPORT_DOCUMENTS_A].includes(
+                    docModificationThreadPageState.thread.file_type
+                  )
+                    ? 'If needed, editor can be added'
+                    : 'To Be Assigned'}
+                </Typography>
+              ))}
+            {![
+              ...AGENT_SUPPORT_DOCUMENTS_A,
+              FILE_TYPE_E.essay_required
+            ].includes(docModificationThreadPageState.thread.file_type) &&
+              docModificationThreadPageState.editors.map((editor, i) => (
+                <Typography key={i}>
+                  {is_TaiGer_role(user) ? (
+                    <Link
+                      underline="hover"
+                      component={LinkDom}
+                      to={`${DEMO.TEAM_EDITOR_LINK(editor._id.toString())}`}
+                      target="_blank"
+                    >
+                      {editor.firstname} {editor.lastname}
+                    </Link>
+                  ) : (
+                    <>
+                      {editor.firstname} {editor.lastname}
+                    </>
+                  )}
+                </Typography>
+              ))}
+            {is_TaiGer_role(user) &&
+              [
+                ...AGENT_SUPPORT_DOCUMENTS_A,
+                FILE_TYPE_E.essay_required
+              ].includes(docModificationThreadPageState.thread.file_type) && (
+                <Button
+                  size="small"
+                  color="primary"
+                  variant="contained"
+                  onClick={startEditingEditor}
+                >
+                  {docModificationThreadPageState.thread.file_type === 'Essay'
+                    ? t('Add Essay Writer')
+                    : t('Add Editor')}
+                </Button>
+              )}
             <Typography variant="body1">
               <b>{t('Deadline')}:</b>
               {is_TaiGer_AdminAgent(user) &&
@@ -832,6 +1142,7 @@ function DocModificationThreadPage() {
               handleClickSave={handleClickSave}
               file={docModificationThreadPageState.file}
               onFileChange={onFileChange}
+              checkResult={checkResult}
             />
           )}
         </Card>
@@ -906,17 +1217,39 @@ function DocModificationThreadPage() {
             onClick={(e) => ConfirmSetAsFinalFileHandler(e)}
             sx={{ mr: 2 }}
           >
-            {isSubmissionLoaded ? t('Yes') : <CircularProgress />}
+            {isSubmissionLoaded ? (
+              t('Yes', { ns: 'common' })
+            ) : (
+              <CircularProgress />
+            )}
           </Button>
           <Button
             color="secondary"
             variant="outlined"
             onClick={closeSetAsFinalFileModelWindow}
           >
-            {t('No')}
+            {t('No', { ns: 'common' })}
           </Button>
         </Box>
       </ModalNew>
+      {is_TaiGer_role(user) &&
+        docModificationThreadPageState.showEditorPage && (
+          <EditEssayWritersSubpage
+            show={docModificationThreadPageState.showEditorPage}
+            onHide={setEditorModalhide}
+            actor={
+              [FILE_TYPE_E.essay_required].includes(
+                docModificationThreadPageState.thread.file_type
+              )
+                ? 'Essay Writer'
+                : 'Editor'
+            }
+            setmodalhide={setEditorModalhide}
+            submitUpdateEssayWriterlist={submitUpdateEssayWriterlist}
+            essayDocumentThread={docModificationThreadPageState.thread}
+            editors={docModificationThreadPageState.editors}
+          />
+        )}
       {res_modal_status >= 400 && (
         <ModalMain
           ConfirmError={ConfirmError}

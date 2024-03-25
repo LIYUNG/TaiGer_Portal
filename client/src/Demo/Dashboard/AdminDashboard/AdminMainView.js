@@ -18,7 +18,12 @@ import StudentsAgentEditorWrapper from '../MainViewTab/StudentsAgentEditor/Stude
 
 function AdminMainView(props) {
   const { t } = useTranslation();
-  const admin_tasks = <AdminTasks students={props.students} />;
+  const admin_tasks = (
+    <AdminTasks
+      students={props.students}
+      essayDocumentThreads={props.essayDocumentThreads}
+    />
+  );
 
   return (
     <>
@@ -26,7 +31,9 @@ function AdminMainView(props) {
         <Grid item xs={12} md={6}>
           <Card>
             <Typography variant="h6">
-              <Alert severity="warning">Admin {t('To Do Tasks')}:</Alert>
+              <Alert severity="warning">
+                Admin {t('To Do Tasks', { ns: 'common' })}:
+              </Alert>
             </Typography>
             <Table size="small">
               <TableHead>
@@ -51,7 +58,6 @@ function AdminMainView(props) {
             submitUpdateAgentlist={props.submitUpdateAgentlist}
             submitUpdateEditorlist={props.submitUpdateEditorlist}
             submitUpdateAttributeslist={props.submitUpdateAttributeslist}
-            isDashboard={props.isDashboard}
           />
         </Grid>
       </Grid>

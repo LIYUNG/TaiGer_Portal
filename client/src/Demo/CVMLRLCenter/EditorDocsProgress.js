@@ -546,9 +546,13 @@ function EditorDocsProgress(props) {
                 />
               </>
             ) : isProgramWithdraw(application) ? (
-              <Typography fontWeight="bold">{t('WITHDRAW')}</Typography>
+              <Typography fontWeight="bold">
+                {t('WITHDRAW', { ns: 'common' })}
+              </Typography>
             ) : (
-              <Typography fontWeight="bold">{t('In progress')}</Typography>
+              <Typography fontWeight="bold">
+                {t('In progress', { ns: 'common' })}
+              </Typography>
             )}
           </Grid>
           <Grid item xs={1} md={1}>
@@ -717,7 +721,7 @@ function EditorDocsProgress(props) {
           sx={{ mr: 1 }}
         >
           {isLoaded ? (
-            t('Yes')
+            t('Yes', { ns: 'common' })
           ) : (
             <div style={spinner_style2}>
               <CircularProgress />
@@ -730,7 +734,7 @@ function EditorDocsProgress(props) {
           variant="outlined"
           onClick={closeWarningWindow}
         >
-          {t('No')}
+          {t('No', { ns: 'common' })}
         </Button>
       </ModalNew>
       <ModalNew
@@ -753,7 +757,7 @@ function EditorDocsProgress(props) {
           onClick={ConfirmSetAsFinalFileHandler}
         >
           {isLoaded ? (
-            t('Yes')
+            t('Yes', { ns: 'common' })
           ) : (
             <div style={spinner_style2}>
               <CircularProgress />
@@ -765,7 +769,7 @@ function EditorDocsProgress(props) {
           variant="outlined"
           onClick={closeSetAsFinalFileModelWindow}
         >
-          {t('No')}
+          {t('No', { ns: 'common' })}
         </Button>
       </ModalNew>
       <ModalNew
@@ -782,7 +786,7 @@ function EditorDocsProgress(props) {
           variant="outlined"
           onClick={close_Requirements_ModalWindow}
         >
-          {t('Close')}
+          {t('Close', { ns: 'common' })}
         </Button>
       </ModalNew>
       <ModalNew
@@ -799,7 +803,7 @@ function EditorDocsProgress(props) {
           variant="contained"
           onClick={closeDocExistedWindow}
         >
-          {t('Close')}
+          {t('Close', { ns: 'common' })}
         </Button>
       </ModalNew>
       <ModalNew
@@ -818,14 +822,14 @@ function EditorDocsProgress(props) {
           disabled={!isLoaded}
           onClick={SubmitProgramStatusHandler}
         >
-          {t('Yes')}
+          {t('Yes', { ns: 'common' })}
         </Button>
         <Button
           color="primary"
           variant="outlined"
           onClick={closeSetProgramStatusModel}
         >
-          {t('Close')}
+          {t('Close', { ns: 'common' })}
         </Button>
       </ModalNew>
     </Box>

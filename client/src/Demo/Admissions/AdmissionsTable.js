@@ -156,7 +156,7 @@ function AdmissionsTable(props) {
     { field: 'degree', headerName: t('Degree'), width: 120 },
     {
       field: 'application_year',
-      headerName: t('Application Year'),
+      headerName: t('Application Year', { ns: 'common' }),
       width: 120
     },
     { field: 'semester', headerName: t('Semester'), width: 120 }

@@ -76,7 +76,7 @@ export default function ResetPassword() {
           </Typography>
           <Typography>{t('Please login with your new password')}</Typography>
           <NavLink to={DEMO.LOGIN_LINK} sx={{ mb: 2 }}>
-            <Typography>{t('Login')}</Typography>
+            <Typography>{t('Login', { ns: 'auth' })}</Typography>
           </NavLink>
         </>
       ) : (
@@ -128,7 +128,7 @@ export default function ResetPassword() {
             </Grid>
             <Grid item xs={6}>
               <Link to={DEMO.LOGIN_LINK} sx={{ mb: 2 }} component={NavLink}>
-                <Typography>{t('Login')}</Typography>
+                <Typography>{t('Login', { ns: 'auth' })}</Typography>
               </Link>
             </Grid>
           </Grid>

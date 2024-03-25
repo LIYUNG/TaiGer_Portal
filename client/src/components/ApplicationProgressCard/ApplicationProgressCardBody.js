@@ -57,7 +57,7 @@ export default function ApplicationProgressCardBody(props) {
                 </Link>
               </ListItem>
             ) : (
-              <ListItem title="English Requirements not met with your input in My Survey">
+              <ListItem title="English Requirements not met with your input in Profile">
                 <Link
                   underline="hover"
                   color="inherit"

@@ -532,7 +532,7 @@ function InterviewTraining() {
           variant="outlined"
           onClick={closeDeleteDocModalWindow}
         >
-          {t('No')}
+          {t('No', { ns: 'common' })}
         </Button>
       </ModalNew>
     </Box>

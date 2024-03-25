@@ -65,7 +65,7 @@ function ProgramList(props) {
   if (!is_TaiGer_role(user)) {
     return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
   }
-  TabTitle(t('Program List'));
+  TabTitle(t('Program List', { ns: 'common' }));
   useEffect(() => {
     getPrograms().then(
       (resp) => {
@@ -98,7 +98,6 @@ function ProgramList(props) {
 
   useEffect(() => {
     const data_idxes = rowSelectionModel;
-    // console.log(data_idxes);
     setPrograms({
       programIds: data_idxes.map(
         (idx) => statedata.programs.find((program) => program?._id === idx)?._id
@@ -345,7 +344,6 @@ function ProgramList(props) {
     event.preventDefault();
     event.stopPropagation();
   };
-  // console.log(filters);
   return (
     <Box>
       {tableStates.res_modal_status >= 400 && (
@@ -371,7 +369,9 @@ function ProgramList(props) {
         >
           {appConfig.companyName}
         </Link>
-        <Typography color="text.primary">{t('Program List')}</Typography>
+        <Typography color="text.primary">
+          {t('Program List', { ns: 'common' })}
+        </Typography>
       </Breadcrumbs>
       {isCreationMode ? (
         <>
@@ -505,13 +505,13 @@ function ProgramList(props) {
         size="m"
         centered
       >
-        <Typography>{t('Success')}</Typography>
+        <Typography>{t('Success', { ns: 'common' })}</Typography>
         <Typography>
           {t('Program(s) assigned to student successfully!')}
         </Typography>
         <Typography>
           <Button variant="outlined" onClick={onHideAssignSuccessWindow}>
-            {t('Close')}
+            {t('Close', { ns: 'common' })}
           </Button>
         </Typography>
       </ModalNew>

@@ -35,7 +35,6 @@ function StudentsAgentEditorWrapper(props) {
       submitUpdateAgentlist={props.submitUpdateAgentlist}
       submitUpdateEditorlist={props.submitUpdateEditorlist}
       submitUpdateAttributeslist={props.submitUpdateAttributeslist}
-      isDashboard={props.isDashboard}
     />
   ));
   let header = Object.values(academic_background_header);
@@ -55,7 +54,9 @@ function StudentsAgentEditorWrapper(props) {
             <TableCell>{t('Semester')}</TableCell>
             <TableCell>{t('Degree')}</TableCell>
             {header.map((name, index) => (
-              <TableCell key={index}>{t(`${name}`)}</TableCell>
+              <TableCell key={index}>
+                {t(`${name}`, { ns: 'common' })}
+              </TableCell>
             ))}
           </TableRow>
         </TableHead>

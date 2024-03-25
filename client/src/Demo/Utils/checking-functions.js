@@ -28,6 +28,8 @@ export const is_TaiGer_Manager = (user) => user?.role === 'Manager';
 export const is_TaiGer_Student = (user) => user?.role === 'Student';
 export const is_TaiGer_Guest = (user) => user?.role === 'Guest';
 
+export const is_User_Archived = (user) => user?.archiv === true;
+
 export const DocumentStatus = {
   Uploaded: 'uploaded',
   Missing: 'missing',
@@ -68,14 +70,32 @@ export const truncateText = (text, maxLength) => {
   return truncatedText;
 };
 
+export const FILE_TYPE_E = {
+  rl_required: 'RL',
+  ml_required: 'ML',
+  essay_required: 'Essay',
+  portfolio_required: 'Portfolio',
+  supplementary_form_required: 'Supplementary_Form',
+  scholarship_form_required: 'Scholarship_Form',
+  curriculum_analysis_required: 'Curriculum_Analysis',
+  others: 'Others'
+};
+
 export const file_category_const = {
   rl_required: 'RL',
   ml_required: 'ML',
   essay_required: 'Essay',
   portfolio_required: 'Portfolio',
-  supplementary_form_required: 'Supplementary_Form'
+  supplementary_form_required: 'Supplementary_Form',
+  scholarship_form_required: 'Scholarship_Form',
+  curriculum_analysis_required: 'Curriculum_Analysis'
 };
 
+export const AGENT_SUPPORT_DOCUMENTS_A = [
+  FILE_TYPE_E.curriculum_analysis_required,
+  FILE_TYPE_E.supplementary_form_required,
+  FILE_TYPE_E.others
+];
 // TODO test
 export const LinkableNewlineText = ({ text }) => {
   const textStyle = {
@@ -112,8 +132,10 @@ export const Bayerische_Formel = (high, low, my) => {
 };
 
 export const getRequirement = (thread) => {
+  if (!thread) return false;
   const fileType = thread.file_type;
   const program = thread.program_id;
+  if (!fileType || !program) return false;
 
   if (fileType.includes('Essay') && program.essay_required === 'yes') {
     return program.essay_requirements || 'No';
@@ -129,6 +151,18 @@ export const getRequirement = (thread) => {
     program.supplementary_form_required === 'yes'
   ) {
     return program.supplementary_form_requirements || 'No';
+  }
+  if (
+    fileType.includes('Curriculum_Analysis') &&
+    program.curriculum_analysis_required === 'yes'
+  ) {
+    return program.curriculum_analysis_requirements || 'No';
+  }
+  if (
+    fileType.includes('Scholarship_Form') &&
+    program.scholarship_form_required === 'yes'
+  ) {
+    return program.scholarship_form_requirements || 'No';
   }
   if (
     fileType.includes('RL') &&
@@ -907,6 +941,29 @@ export const check_application_selection = (student) => {
   return true;
 };
 
+export const has_agent_program_specific_tasks = (student) => {
+  if (!student.applications) {
+    return false;
+  }
+  if (student.applications.length === 0) {
+    return false;
+  }
+  for (const application of student.applications) {
+    if (isProgramDecided(application)) {
+      for (const thread of application.doc_modification_thread) {
+        if (
+          ['Supplementary_Form', 'Curriculum_Analysis'].includes(
+            thread.doc_thread_id?.file_type
+          )
+        ) {
+          return true;
+        }
+      }
+    }
+  }
+  return false;
+};
+
 export const anyStudentWithoutApplicationSelection = (students) => {
   let flag = false;
   for (let i = 0; i < students.length; i += 1) {
@@ -1383,8 +1440,8 @@ export const getNumberOfFilesByEditor = (messages, student_id) => {
   return `${message_count}/${file_count}`;
 };
 
-const latestReplyInfo = (thread) => {
-  const messages = thread.messages;
+export const latestReplyInfo = (thread) => {
+  const messages = thread?.messages;
   if (!messages || messages?.length <= 0) {
     return '- None - ';
   }
@@ -1395,14 +1452,50 @@ const latestReplyInfo = (thread) => {
   );
 };
 
-const prepTask = (student, thread) => {
+const prepTaskStudent = (student) => {
   return {
     firstname_lastname: `${student.firstname}, ${student.lastname}`,
+    student_id: student._id.toString(),
+    attributes: student.attributes
+  };
+};
+
+// the messages[0] is already the latest message handled by backend query.
+const latestReplyUserId = (thread) => {
+  return thread.messages?.length > 0
+    ? thread.messages[0].user_id?._id.toString()
+    : '';
+};
+const prepEssayTaskThread = (student, thread) => {
+  return {
+    ...prepTaskStudent(student),
+    id: thread._id?.toString(),
+    latest_message_left_by_id: latestReplyUserId(thread),
+    isFinalVersion: thread.isFinalVersion,
+    outsourced_user_id: thread?.outsourced_user_id,
+    file_type: thread.file_type,
+    aged_days: parseInt(getNumberOfDays(thread.updatedAt, new Date())),
+    latest_reply: latestReplyInfo(thread),
+    updatedAt: convertDate(thread.updatedAt),
+    number_input_from_student: getNumberOfFilesByStudent(
+      thread.messages,
+      student._id.toString()
+    ),
+    number_input_from_editors: getNumberOfFilesByEditor(
+      thread.messages,
+      student._id.toString()
+    )
+  };
+};
+
+const prepTask = (student, thread) => {
+  return {
+    ...prepTaskStudent(student),
+    id: thread._id?.toString(),
     latest_message_left_by_id: thread.latest_message_left_by_id,
     isFinalVersion: thread.isFinalVersion,
+    outsourced_user_id: thread.doc_thread_id?.outsourced_user_id,
     file_type: thread.doc_thread_id.file_type,
-    student_id: student._id.toString(),
-    attributes: student.attributes,
     aged_days: parseInt(
       getNumberOfDays(thread.doc_thread_id.updatedAt, new Date())
     ),
@@ -1429,6 +1522,38 @@ const prepGeneralTask = (student, thread) => {
     show: true,
     document_name: `${thread.doc_thread_id.file_type}`,
     days_left: daysLeftMin
+  };
+};
+
+const prepEssayTask = (essay, user) => {
+  return {
+    ...prepEssayTaskThread(essay.student_id, essay),
+    thread_id: essay._id.toString(),
+    program_id: essay.program_id._id.toString(),
+    deadline: application_deadline_calculator(essay.student_id, {
+      programId: essay.program_id
+    }),
+    show:
+      AGENT_SUPPORT_DOCUMENTS_A.includes(essay.file_type) &&
+      is_TaiGer_Editor(user)
+        ? essay.outsourced_user_id?.some(
+            (outsourcer) => outsourcer._id.toString() === user._id.toString()
+          ) || false
+        : is_TaiGer_Agent(user)
+        ? essay.student_id?.agents.some(
+            (agent) => agent._id.toString() === user._id.toString()
+          ) || false
+        : true,
+    document_name: `${essay.file_type} - ${essay.program_id.school} - ${essay.program_id.degree} -${essay.program_id.program_name}`,
+    days_left:
+      parseInt(
+        getNumberOfDays(
+          new Date(),
+          application_deadline_calculator(essay.student_id, {
+            programId: essay.program_id
+          })
+        )
+      ) || '-'
   };
 };
 
@@ -1464,6 +1589,19 @@ export const open_tasks = (students) => {
         }
       }
     }
+  }
+  return tasks;
+};
+
+export const open_essays_tasks = (essays, user) => {
+  const tasks = [];
+  for (const essay of essays) {
+    console.log(
+      essay.outsourced_user_id?.some(
+        (outsourcer) => outsourcer._id.toString() === user._id.toString()
+      )
+    );
+    tasks.push(prepEssayTask(essay, user));
   }
   return tasks;
 };
@@ -1738,6 +1876,9 @@ export const numStudentYearDistribution = (students) => {
 export const frequencyDistribution = (tasks) => {
   const map = {};
   for (let i = 0; i < tasks.length; i++) {
+    if (tasks[i].deadline === 'CLOSE' || tasks[i].deadline === 'WITHDRAW') {
+      continue;
+    }
     map[tasks[i].deadline] = map[tasks[i].deadline]
       ? tasks[i].show
         ? {
@@ -1759,7 +1900,15 @@ export const frequencyDistribution = (tasks) => {
       ? { show: 0, potentials: 1 }
       : { show: 0, potentials: 0 };
   }
-  return map;
+  const filteredMap = Object.fromEntries(
+    Object.entries(map).filter(
+      ([key, value]) =>
+        ((value.show !== 0 || value.potentials !== 0) &&
+          getNumberOfDays(new Date(), key) < 365) ||
+        key.includes('Rolling')
+    )
+  );
+  return filteredMap;
 };
 
 export const checkIsRLspecific = (program) => {
@@ -1843,4 +1992,16 @@ export const isDocumentsMissingAssign = (application) => {
     return false;
   }
   return getMissingDocs(application).length > 0;
+};
+
+export const does_essay_have_writers = (essayDocumentThreads) => {
+  for (let i = 0; i < essayDocumentThreads.length; i += 1) {
+    if (
+      essayDocumentThreads[i].outsourced_user_id === undefined ||
+      essayDocumentThreads[i].outsourced_user_id.length === 0
+    ) {
+      return false;
+    }
+  }
+  return true;
 };

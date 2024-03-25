@@ -328,7 +328,7 @@ function Profile() {
             component={LinkDom}
             to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
               user_id,
-              DEMO.PROFILE
+              DEMO.PROFILE_HASH
             )}`}
           >
             {`${profileState.personaldata.firstname} ${
@@ -481,7 +481,7 @@ function Profile() {
       {!user_id && is_TaiGer_Agent(user) && (
         <>
           <Card sx={{ padding: 2, mb: 2 }}>
-            <Typography>{t('Profile')}</Typography>
+            <Typography>{t('Profile', { ns: 'common' })}</Typography>
 
             <h5 className="text-light">{t('Introduction')}</h5>
             {user.selfIntroduction}
@@ -556,7 +556,7 @@ function Profile() {
                       />
                     </>
                   ) : (
-                    <span>{t('Close')}</span>
+                    <span>{t('Close', { ns: 'common' })}</span>
                   )}
                 </Box>
               ))}
@@ -582,7 +582,7 @@ function Profile() {
         <br />
         <div style={{ marginTop: 'auto', textAlign: 'right' }}>
           <Button color="primary" variant="contained" onClick={setmodalhide}>
-            {t('Close')}
+            {t('Close', { ns: 'common' })}
           </Button>
         </div>
       </ModalNew>
@@ -600,7 +600,7 @@ function Profile() {
             variant="contained"
             onClick={() => onHideOfficeHoursConfirmed()}
           >
-            {t('Close')}
+            {t('Close', { ns: 'common' })}
           </Button>
         </div>
       </ModalNew>

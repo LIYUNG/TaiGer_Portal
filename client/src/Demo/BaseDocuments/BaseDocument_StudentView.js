@@ -464,7 +464,7 @@ function BaseDocument_StudentView(props) {
               component={LinkDom}
               target="_blank"
             >
-              My Survey{' '}
+              {t('Profile', { ns: 'common' })}{' '}
               <FiExternalLink
                 className="mx-1 mb-1"
                 style={{ cursor: 'pointer' }}
@@ -480,14 +480,14 @@ function BaseDocument_StudentView(props) {
         <Table size="small">
           <TableHead>
             <TableRow>
-              <TableCell>{t('Status')}</TableCell>
-              <TableCell>{t('File Name')}</TableCell>
-              <TableCell>{t('Updated')}</TableCell>
+              <TableCell>{t('Status', { ns: 'common' })}</TableCell>
+              <TableCell>{t('File Name', { ns: 'common' })}</TableCell>
+              <TableCell>{t('Updated', { ns: 'common' })}</TableCell>
               <TableCell></TableCell>
               <TableCell></TableCell>
               <TableCell></TableCell>
               <TableCell></TableCell>
-              <TableCell>{t('Delete')}</TableCell>
+              <TableCell>{t('Delete', { ns: 'common' })}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>{file_information}</TableBody>

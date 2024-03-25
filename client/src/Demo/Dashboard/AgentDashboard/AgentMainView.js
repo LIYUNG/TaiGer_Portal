@@ -38,6 +38,7 @@ import { useAuth } from '../../../components/AuthProvider';
 import StudentsAgentEditorWrapper from '../MainViewTab/StudentsAgentEditor/StudentsAgentEditorWrapper';
 import NoProgramStudentTable from '../MainViewTab/AgentTasks/NoProgramStudentTable';
 import BaseDocumentCheckingTable from '../MainViewTab/AgentTasks/BaseDocumentCheckingTable';
+import ProgramSpecificDocumentCheckCard from '../MainViewTab/AgentTasks/ProgramSpecificDocumentCheckCard';
 
 function AgentMainView(props) {
   const { user } = useAuth();
@@ -148,7 +149,10 @@ function AgentMainView(props) {
         <Grid item xs={12} sm={12}>
           <Card>
             <Alert severity="error">
-              <Typography> {t('Upcoming Applications')} (Decided):</Typography>
+              <Typography>
+                {' '}
+                {t('Upcoming Applications', { ns: 'dashboard' })} (Decided):
+              </Typography>
             </Alert>
             <div className="card-scrollable-body">
               <Table size="small">
@@ -242,6 +246,9 @@ function AgentMainView(props) {
         </Grid>
         <Grid item xs={12} sm={6}>
           <NoProgramStudentTable students={props.students} />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <ProgramSpecificDocumentCheckCard students={props.students} />
         </Grid>
         <Grid item xs={12} sm={6}>
           <NoEnoughDecidedProgramsTasksCard

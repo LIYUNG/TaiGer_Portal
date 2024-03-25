@@ -62,7 +62,7 @@ function ProgramReportModal(props) {
         variant="outlined"
         onClick={props.setReportModalHideDelete}
       >
-        {t('Close')}
+        {t('Close', { ns: 'common' })}
       </Button>
     </ModalNew>
   );

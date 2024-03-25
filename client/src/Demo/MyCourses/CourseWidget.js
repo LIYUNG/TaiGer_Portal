@@ -380,10 +380,12 @@ export default function CourseWidget() {
         onClose={closeModal}
         aria-labelledby="contained-modal-title-vcenter"
       >
-        <Typography variant="h6">{t('Confirmation')}</Typography>
+        <Typography variant="h6">
+          {t('Confirmation', { ns: 'common' })}
+        </Typography>
         <Typography>{t('Update transcript successfully')}</Typography>
         <Button color="primary" variant="contained" onClick={closeModal}>
-          {t('Close')}
+          {t('Close', { ns: 'common' })}
         </Button>
       </ModalNew>
       <ModalNew
@@ -391,14 +393,14 @@ export default function CourseWidget() {
         onClose={closeanalysisSuccessModal}
         aria-labelledby="contained-modal-title-vcenter"
       >
-        <Typography variant="h6">{t('Success')}</Typography>
+        <Typography variant="h6">{t('Success',{ns:'common'})}</Typography>
         <Typography>{t('Transcript analysed successfully!')}</Typography>
         <Button
           color="primary"
           variant="contained"
           onClick={closeanalysisSuccessModal}
         >
-          {t('Close')}
+          {t('Close', { ns: 'common' })}
         </Button>
       </ModalNew>
     </Box>

@@ -8,7 +8,30 @@ import {
 } from '@mui/material';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-
+const GENERAL_FILTE_TYPE = [
+  { name: 'Please Select', value: '' },
+  { name: 'CV', value: 'CV' },
+  { name: 'Recommendation Letter (A)', value: 'Recommendation_Letter_A' },
+  { name: 'Recommendation Letter (B)', value: 'Recommendation_Letter_B' },
+  { name: 'Recommendation Letter (C)', value: 'Recommendation_Letter_C' },
+  { name: 'Form A', value: 'Form_A' },
+  { name: 'Form_B', value: 'Form_B' },
+  { name: 'Others', value: 'Others' }
+];
+const PROGRAM_SPECIFIC_FILTE_TYPE = [
+  { name: 'Please Select', value: '' },
+  { name: 'ML', value: 'ML' },
+  { name: 'Essay', value: 'Essay' },
+  { name: 'Portfolio', value: 'Portfolio' },
+  { name: 'Internship Form', value: 'Internship_Form' },
+  { name: 'Supplementary Form', value: 'Supplementary_Form' },
+  { name: 'Curriculum_Analysis', value: 'Curriculum_Analysis' },
+  { name: 'Scholarship Form / ML', value: 'Scholarship_Form' },
+  { name: 'RL (Referee A)', value: 'RL_A' },
+  { name: 'RL (Referee B)', value: 'RL_B' },
+  { name: 'RL (Referee C)', value: 'RL_C' },
+  { name: 'Others', value: 'Others' }
+];
 function ToggleableUploadFileForm(props) {
   const { t } = useTranslation();
   var drop_list;
@@ -16,55 +39,44 @@ function ToggleableUploadFileForm(props) {
   if (props.filetype === 'General') {
     drop_list = (
       <FormControl fullWidth size="small">
-        <InputLabel id="thread_category">{t('Category')}</InputLabel>
+        <InputLabel id="thread_category">
+          {t('Category', { ns: 'common' })}
+        </InputLabel>
         <Select
           labelId="thread_category"
           name="thread_category"
           id="thread_category"
-          label={t('Category')}
+          label={t('Category', { ns: 'common' })}
           onChange={(e) => props.handleSelect(e)}
           value={props.category}
         >
-          <MenuItem value="">Please Select</MenuItem>
-          <MenuItem value="CV">CV</MenuItem>
-          <MenuItem value="Recommendation_Letter_A">
-            Recommendation Letter (A)
-          </MenuItem>
-          <MenuItem value="Recommendation_Letter_B">
-            Recommendation Letter (B)
-          </MenuItem>
-          <MenuItem value="Recommendation_Letter_C">
-            Recommendation Letter (C)
-          </MenuItem>
-          <MenuItem value="Form_A">Form A</MenuItem>
-          <MenuItem value="Form_B">Form B</MenuItem>
-          <MenuItem value="Others">Others</MenuItem>
+          {GENERAL_FILTE_TYPE.map((option) => (
+            <MenuItem key={option.value} value={option.value}>
+              {option.name}
+            </MenuItem>
+          ))}
         </Select>
       </FormControl>
     );
   } else {
     drop_list = (
       <FormControl fullWidth size="small">
-        <InputLabel id="thread_category">{t('Category')}</InputLabel>
+        <InputLabel id="thread_category">
+          {t('Category', { ns: 'common' })}
+        </InputLabel>
         <Select
           labelId="thread_category"
           name="thread_category"
           id="thread_category"
           value={props.category}
-          label={t('Category')}
+          label={t('Category', { ns: 'common' })}
           onChange={(e) => props.handleSelect(e)}
         >
-          <MenuItem value="">Please Select</MenuItem>
-          <MenuItem value="ML">ML</MenuItem>
-          <MenuItem value="Essay">Essay</MenuItem>
-          <MenuItem value="Portfolio">Portfolio</MenuItem>
-          <MenuItem value="Internship_Form">Internship Form</MenuItem>
-          <MenuItem value="Supplementary_Form">Supplementary Form</MenuItem>
-          <MenuItem value="Scholarship_Form">Scholarship Form / ML</MenuItem>
-          <MenuItem value="RL_A">RL (Referee A)</MenuItem>
-          <MenuItem value="RL_B">RL (Referee B)</MenuItem>
-          <MenuItem value="RL_C">RL (Referee C)</MenuItem>
-          <MenuItem value="Others">Others</MenuItem>
+          {PROGRAM_SPECIFIC_FILTE_TYPE.map((option) => (
+            <MenuItem key={option.value} value={option.value}>
+              {option.name}
+            </MenuItem>
+          ))}
         </Select>
       </FormControl>
     );
@@ -87,7 +99,7 @@ function ToggleableUploadFileForm(props) {
               )
             }
           >
-            {t('Create')}
+            {t('Add Task', { ns: 'common' })}
           </Button>
         ) : (
           <Button
@@ -102,7 +114,7 @@ function ToggleableUploadFileForm(props) {
               )
             }
           >
-            {t('Create')}
+            {t('Add Task', { ns: 'common' })}
           </Button>
         )}
       </Grid>

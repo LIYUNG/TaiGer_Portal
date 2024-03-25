@@ -93,7 +93,6 @@ function ApplicationOverviewTabs(props) {
     setAnchorEl(null);
   };
   const handleRowClick = (event) => {
-    // console.log(event);
     setAnchorEl(event);
     const rowData = event.row;
     setClickedRowData(rowData || null);
@@ -158,7 +157,6 @@ function ApplicationOverviewTabs(props) {
     event.stopPropagation();
   };
   const open = Boolean(anchorEl);
-  // console.log(open);
 
   return (
     <>
@@ -183,10 +181,23 @@ function ApplicationOverviewTabs(props) {
             scrollButtons="auto"
             aria-label="basic tabs example"
           >
-            <Tab label={t('Active Student List')} {...a11yProps(0)} />
-            <Tab label={t('Application Overview')} {...a11yProps(1)} />
-            <Tab label={t('Programs Update Status')} {...a11yProps(2)} />
             <Tab
+              data-testid="application_overview_component_active_student_list_tab"
+              label={t('Active Student List')}
+              {...a11yProps(0)}
+            />
+            <Tab
+              data-testid="application_overview_component_application_overview_tab"
+              label={t('Application Overview', { ns: 'common' })}
+              {...a11yProps(1)}
+            />
+            <Tab
+              data-testid="application_overview_component_programs_update_tab"
+              label={t('Programs Update Status')}
+              {...a11yProps(2)}
+            />
+            <Tab
+              data-testid="application_overview_component_decided_programs_update_tab"
               label={t('Decided Programs Update Status')}
               {...a11yProps(3)}
             />
@@ -196,6 +207,9 @@ function ApplicationOverviewTabs(props) {
           {is_TaiGer_role(user) && (
             <TabStudBackgroundDashboard
               students={props.students}
+              submitUpdateAgentlist={props.submitUpdateAgentlist}
+              submitUpdateEditorlist={props.submitUpdateEditorlist}
+              submitUpdateAttributeslist={props.submitUpdateAttributeslist}
               updateStudentArchivStatus={props.updateStudentArchivStatus}
               isDashboard={true}
             />

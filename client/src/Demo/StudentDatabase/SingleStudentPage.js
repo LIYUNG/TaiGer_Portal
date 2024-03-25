@@ -5,6 +5,7 @@ import {
   useLoaderData,
   useLocation
 } from 'react-router-dom';
+import EditIcon from '@mui/icons-material/Edit';
 import {
   Tabs,
   Tab,
@@ -22,7 +23,6 @@ import {
   Alert,
   TableContainer
 } from '@mui/material';
-// import AddIcon from '@mui/icons-material/Add';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { AiFillEdit } from 'react-icons/ai';
@@ -44,13 +44,14 @@ import {
   SINGLE_STUDENT_TABS,
   SINGLE_STUDENT_REVERSED_TABS
 } from '../Utils/contants';
-import {
-  is_TaiGer_Guest,
-  is_TaiGer_Student,
-  is_TaiGer_role
-} from '../Utils/checking-functions';
+import { is_TaiGer_Editor, is_TaiGer_role } from '../Utils/checking-functions';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
-import { updateAgents, updateAttributes, updateEditors } from '../../api';
+import {
+  updateAgents,
+  updateArchivStudents,
+  updateAttributes,
+  updateEditors
+} from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import PortalCredentialPage from '../PortalCredentialPage';
@@ -59,6 +60,7 @@ import { TopBar } from '../../components/TopBar/TopBar';
 import { useAuth } from '../../components/AuthProvider';
 import { CustomTabPanel, a11yProps } from '../../components/Tabs';
 import { SurveyProvider } from '../../components/SurveyProvider';
+import ProgramDetailsComparisonTable from '../Program/ProgramDetailsComparisonTable';
 
 CustomTabPanel.propTypes = {
   children: PropTypes.node,
@@ -66,10 +68,11 @@ CustomTabPanel.propTypes = {
   value: PropTypes.number.isRequired
 };
 
-function SingleStudentPage() {
-  const {
-    data: { survey_link, base_docs_link, data }
-  } = useLoaderData();
+export const SingleStudentPageMainContent = ({
+  survey_link,
+  base_docs_link,
+  data
+}) => {
   const { user } = useAuth();
   const { t } = useTranslation();
   const [singleStudentPage, setSingleStudentPage] = useState({
@@ -77,6 +80,7 @@ function SingleStudentPage() {
     isLoaded: {},
     isLoaded2: false,
     taiger_view: true,
+    detailedView: false,
     student: data,
     base_docs_link: base_docs_link,
     survey_link: survey_link.find(
@@ -87,6 +91,7 @@ function SingleStudentPage() {
     res_modal_message: '',
     res_modal_status: 0
   });
+
   const { hash } = useLocation();
   const [value, setValue] = useState(
     SINGLE_STUDENT_TABS[hash.replace('#', '')] || 0
@@ -119,7 +124,7 @@ function SingleStudentPage() {
         const { status } = resp;
         if (success) {
           var students_temp = { ...singleStudentPage.student };
-          students_temp = data; // datda is single student updated
+          students_temp.agents = data.agents; // datda is single student updated
           setSingleStudentPage((prevState) => ({
             ...prevState,
             isLoaded: true, //false to reload everything
@@ -158,7 +163,7 @@ function SingleStudentPage() {
         const { status } = resp;
         if (success) {
           var students_temp = { ...singleStudentPage.student };
-          students_temp = data; // datda is single student updated
+          students_temp.editors = data.editors; // datda is single student updated
           setSingleStudentPage((prevState) => ({
             ...prevState,
             isLoaded: true, //false to reload everything
@@ -197,7 +202,7 @@ function SingleStudentPage() {
         const { status } = resp;
         if (success) {
           var students_temp = { ...singleStudentPage.student };
-          students_temp = data; // datda is single student updated
+          students_temp.attributes = data.attributes; // datda is single student updated
           setSingleStudentPage((prevState) => ({
             ...prevState,
             isLoaded: true, //false to reload everything
@@ -228,10 +233,54 @@ function SingleStudentPage() {
     );
   };
 
+  const updateStudentArchivStatus = (studentId, isArchived) => {
+    updateArchivStudents(studentId, isArchived).then(
+      (resp) => {
+        const { success } = resp.data;
+        const { status } = resp;
+        if (success) {
+          let student_temp = { ...singleStudentPage.student };
+          student_temp.archiv = isArchived;
+          setSingleStudentPage((prevState) => ({
+            ...prevState,
+            isLoaded: true,
+            student: student_temp,
+            success: success,
+            res_modal_status: status
+          }));
+        } else {
+          const { message } = resp.data;
+          setSingleStudentPage((prevState) => ({
+            ...prevState,
+            isLoaded: true,
+            res_modal_status: status,
+            res_modal_message: message
+          }));
+        }
+      },
+      (error) => {
+        setSingleStudentPage((prevState) => ({
+          ...prevState,
+          isLoaded: true,
+          error,
+          res_modal_status: 500,
+          res_modal_message: ''
+        }));
+      }
+    );
+  };
+
   const onChangeView = () => {
     setSingleStudentPage((prevState) => ({
       ...prevState,
       taiger_view: !singleStudentPage.taiger_view
+    }));
+  };
+
+  const onChangeProgramsDetailView = () => {
+    setSingleStudentPage((prevState) => ({
+      ...prevState,
+      detailedView: !prevState.detailedView
     }));
   };
   const ConfirmError = () => {
@@ -283,7 +332,7 @@ function SingleStudentPage() {
               component={LinkDom}
               to={`${DEMO.STUDENT_DATABASE_LINK}`}
             >
-              {t('Student Database')}
+              {t('Student Database', { ns: 'common' })}
             </Link>
             <Typography color="text.primary">
               {t('Student')} {singleStudentPage.student.firstname}
@@ -318,10 +367,10 @@ function SingleStudentPage() {
                 <Button color="primary" variant="contained" size="small">
                   <BsMessenger color="white" size={16} />
                   &nbsp;
-                  <b>{t('Message')}</b>
+                  <b>{t('Message', { ns: 'common' })}</b>
                 </Button>
               </Link>
-              {t('Last Login')}:&nbsp;
+              {t('Last Login', { ns: 'auth' })}:&nbsp;
               {convertDate(singleStudentPage.student.lastLoginAt)}{' '}
               <Button
                 size="small"
@@ -338,7 +387,6 @@ function SingleStudentPage() {
       {singleStudentPage.taiger_view ? (
         <>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-            {/* TODO: subpath tab for URL */}
             <Tabs
               value={value}
               onChange={handleChange}
@@ -347,41 +395,94 @@ function SingleStudentPage() {
               indicatorColor="primary"
               aria-label="basic tabs example"
             >
-              <Tab label={t('Application Overview')} {...a11yProps(0)} />
-              <Tab label={t('Profile Overview')} {...a11yProps(1)} />
-              <Tab label={t('CV ML RL')} {...a11yProps(2)} />
-              <Tab label={t('Portal')} {...a11yProps(3)} />
-              <Tab label={t('Uni-Assist')} {...a11yProps(4)} />
-              <Tab label={t('My Survey')} {...a11yProps(5)} />
-              <Tab label={t('My Courses')} {...a11yProps(6)} />
-              <Tab label={t('Notes')} {...a11yProps(7)} />
+              <Tab
+                label={t('Applications Overview', { ns: 'common' })}
+                {...a11yProps(0)}
+              />
+              <Tab label={t('Documents', { ns: 'common' })} {...a11yProps(1)} />
+              <Tab label={t('CV ML RL', { ns: 'common' })} {...a11yProps(2)} />
+              <Tab label={t('Portal', { ns: 'common' })} {...a11yProps(3)} />
+              <Tab
+                label={t('Uni-Assist', { ns: 'common' })}
+                {...a11yProps(4)}
+              />
+              <Tab label={t('Profile', { ns: 'common' })} {...a11yProps(5)} />
+              <Tab
+                label={t('My Courses', { ns: 'common' })}
+                {...a11yProps(6)}
+              />
+              <Tab label={t('Notes', { ns: 'common' })} {...a11yProps(7)} />
             </Tabs>
           </Box>
           <CustomTabPanel value={value} index={0}>
-            <TableContainer style={{ overflowX: 'auto' }}>
-              <Table size="small">
-                <TableHead>
-                  <TableRow>
-                    <TableCell></TableCell>
-                    {is_TaiGer_Student(user) || is_TaiGer_Guest(user) ? (
-                      <></>
-                    ) : (
-                      <>
-                        <TableCell title={`Selected So far / Promised`}>
-                          #
-                        </TableCell>
-                      </>
-                    )}
-                    {programstatuslist.map((doc, index) => (
-                      <TableCell key={index}>{doc.name}</TableCell>
-                    ))}
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  <ApplicationProgress student={singleStudentPage.student} />
-                </TableBody>
-              </Table>
-            </TableContainer>
+            <Box sx={{ display: 'flex', mx: 2 }}>
+              <Button
+                color="secondary"
+                variant="contained"
+                onClick={onChangeProgramsDetailView}
+              >
+                {singleStudentPage.detailedView
+                  ? t('Simple View')
+                  : t('Details View')}
+              </Button>
+              {!is_TaiGer_Editor(user) && (
+                <Link
+                  to={`${DEMO.STUDENT_APPLICATIONS_ID_LINK(
+                    singleStudentPage.student._id
+                  )}`}
+                  component={LinkDom}
+                  underline="hover"
+                  sx={{ mx: 2 }}
+                >
+                  <Button
+                    color="secondary"
+                    variant="contained"
+                    startIcon={<EditIcon />}
+                  >
+                    {t('Edit')}
+                  </Button>
+                </Link>
+              )}
+              <Typography variant="body1">
+                Applications (Selected / Contract):
+              </Typography>
+              {singleStudentPage.student.applying_program_count ? (
+                singleStudentPage.student.applications.length <
+                singleStudentPage.student.applying_program_count ? (
+                  <Typography className="text-danger">
+                    <b>{singleStudentPage.student.applications.length}</b> /{' '}
+                    {singleStudentPage.student.applying_program_count}
+                  </Typography>
+                ) : (
+                  <Typography className="text-info">
+                    {singleStudentPage.student.applications.length} /{' '}
+                    {singleStudentPage.student.applying_program_count}
+                  </Typography>
+                )
+              ) : (
+                <b className="text-danger">0</b>
+              )}
+            </Box>
+            {singleStudentPage.detailedView ? (
+              <ProgramDetailsComparisonTable
+                applications={singleStudentPage.student?.applications}
+              />
+            ) : (
+              <TableContainer style={{ overflowX: 'auto' }}>
+                <Table size="small">
+                  <TableHead>
+                    <TableRow>
+                      {programstatuslist.map((doc, index) => (
+                        <TableCell key={index}>{doc.name}</TableCell>
+                      ))}
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    <ApplicationProgress student={singleStudentPage.student} />
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            )}
           </CustomTabPanel>
           <CustomTabPanel value={value} index={1}>
             <TableContainer style={{ overflowX: 'auto' }}>
@@ -396,13 +497,16 @@ function SingleStudentPage() {
                     <TableCell>{t('Semester')}</TableCell>
                     <TableCell>{t('Degree')}</TableCell>
                     {header.map((name, index) => (
-                      <TableCell key={index}>{t(`${name}`)}</TableCell>
+                      <TableCell key={index}>
+                        {t(`${name}`, { ns: 'common' })}
+                      </TableCell>
                     ))}
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   <StudentsAgentEditor
                     student={singleStudentPage.student}
+                    updateStudentArchivStatus={updateStudentArchivStatus}
                     submitUpdateAgentlist={submitUpdateAgentlist}
                     submitUpdateEditorlist={submitUpdateEditorlist}
                     submitUpdateAttributeslist={submitUpdateAttributeslist}
@@ -480,6 +584,19 @@ function SingleStudentPage() {
         </>
       )}
     </>
+  );
+};
+
+function SingleStudentPage() {
+  const {
+    data: { survey_link, base_docs_link, data }
+  } = useLoaderData();
+  return (
+    <SingleStudentPageMainContent
+      survey_link={survey_link}
+      base_docs_link={base_docs_link}
+      data={data}
+    />
   );
 }
 export default SingleStudentPage;

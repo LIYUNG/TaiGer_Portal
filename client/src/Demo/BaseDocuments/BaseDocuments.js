@@ -218,16 +218,14 @@ function BaseDocuments() {
         onClose={closePreviewWindow}
         aria-labelledby="contained-modal-title-vcenter2"
       >
-        <Typography id="contained-d-title-vcenter">{"props.path"}</Typography>
+        <Typography id="contained-d-title-vcenter">{'props.path'}</Typography>
         <FilePreview
           path={studentBaseDocumentsStatusState?.preview_path}
           student_id={studentBaseDocumentsStatusState?.student_id.toString()}
         />
-        {"abc.pdf".split('.')[1] !== 'pdf' && (
+        {'abc.pdf'.split('.')[1] !== 'pdf' && (
           <a
-            href={`${BASE_URL}/api/students/${studentBaseDocumentsStatusState?.student_id.toString()}/files/${
-              "props.path"
-            }`}
+            href={`${BASE_URL}/api/students/${studentBaseDocumentsStatusState?.student_id.toString()}/files/${'props.path'}`}
             download
             target="_blank"
             rel="noreferrer"
@@ -252,7 +250,7 @@ function BaseDocuments() {
             onClick={(e) =>
               onUpdateProfileDocStatus(
                 e,
-                "props.k",
+                'props.k',
                 studentBaseDocumentsStatusState?.student_id,
                 'rejected'
               )
@@ -267,7 +265,7 @@ function BaseDocuments() {
           {!studentBaseDocumentsStatusState?.isLoaded ? (
             <CircularProgress />
           ) : (
-            t('Close')
+            t('Close', { ns: 'common' })
           )}
         </Button>
       </ModalNew>

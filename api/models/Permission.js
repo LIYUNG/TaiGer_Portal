@@ -44,6 +44,10 @@ const permissionSchema = new mongoose.Schema(
       type: Boolean,
       default: false
     },
+    isEssayWriters: {
+      type: Boolean,
+      default: false
+    },
     updatedAt: Date
   },
   { timestamps: true }

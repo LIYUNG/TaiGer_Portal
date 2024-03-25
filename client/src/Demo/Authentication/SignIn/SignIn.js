@@ -26,15 +26,6 @@ export default function SignIn() {
   const [reactivateAccount, setReactivateAccount] = useState(false);
   const { t } = useTranslation();
 
-  const emailValidation = () => {
-    const regex =
-      // eslint-disable-next-line no-useless-escape
-      /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-    if (!emailaddress || regex.test(emailaddress) === false) {
-      return false;
-    }
-    return true;
-  };
   const setuserdata2 = (resp) => {
     try {
       if (resp) {
@@ -84,24 +75,19 @@ export default function SignIn() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (emailValidation()) {
-      if (!password) {
-        alert('Password please!');
-        setButtondisable(false);
-      } else {
-        try {
-          const resp = await Login({ email: emailaddress, password });
-          setuserdata2(resp);
-          setButtondisable(false);
-        } catch (err) {
-          // TODO: handle error
-          alert('Server is busy! Please try in 5 minutes later.');
-          setButtondisable(false);
-        }
-      }
-    } else {
-      alert('Email is not valid');
+    if (!password) {
+      alert('Password please!');
       setButtondisable(false);
+    } else {
+      try {
+        const resp = await Login({ email: emailaddress, password });
+        setuserdata2(resp);
+        setButtondisable(false);
+      } catch (err) {
+        // TODO: handle error
+        alert('Server is busy! Please try in 5 minutes later.');
+        setButtondisable(false);
+      }
     }
   };
 
@@ -121,8 +107,8 @@ export default function SignIn() {
   } else {
     return (
       <AuthWrapper>
-        <Typography component="h1" variant="h5">
-          {t('Sign in')}
+        <Typography component="h1" variant="h5" sx={{ mt: 1 }}>
+          {t('Sign in', { ns: 'auth' })}
         </Typography>
         <form onSubmit={(e) => onLoginSubmit(e, true)}>
           <TextField
@@ -148,7 +134,7 @@ export default function SignIn() {
           {!loginsuccess && (
             <Typography>Email or password is not correct.</Typography>
           )}
-          <Button sx={{ mt: 3 }} fullWidth type="submit" variant="contained">
+          <Button sx={{ mt: 2 }} fullWidth type="submit" variant="contained">
             {buttondisable ? (
               <CircularProgress
                 size={24}
@@ -156,11 +142,11 @@ export default function SignIn() {
                 color="secondary"
               />
             ) : (
-              <Typography>{`${t('Login')}`}</Typography>
+              <Typography>{`${t('Login', { ns: 'auth' })}`}</Typography>
             )}
           </Button>
         </form>
-        <Grid container spacing={2} sx={{ my: 2 }}>
+        <Grid container spacing={2} sx={{ my: 1 }}>
           <Grid item xs={6} sx={{ textAlign: 'right' }}>
             <Typography>{t('Forgot Password')}?</Typography>
           </Grid>

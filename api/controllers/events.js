@@ -274,7 +274,7 @@ const postEvent = asyncHandler(async (req, res, next) => {
       await write_NewEvent.save();
     } else {
       throw new ErrorResponse(
-        429,
+        403,
         'You are not allowed to book further timeslot, if you have already an upcoming timeslot of the agent.'
       );
     }
@@ -322,7 +322,7 @@ const postEvent = asyncHandler(async (req, res, next) => {
         await write_NewEvent.save();
       } else {
         throw new ErrorResponse(
-          429,
+          403,
           'You are not allowed to book further timeslot, if you have already an upcoming timeslot.'
         );
       }
@@ -348,7 +348,7 @@ const postEvent = asyncHandler(async (req, res, next) => {
         meetingConfirmationReminder(requester, user, updatedEvent.start);
       });
     } catch (err) {
-      throw new ErrorResponse(429, err.message);
+      throw new ErrorResponse(500, err.message);
     }
   }
   next();

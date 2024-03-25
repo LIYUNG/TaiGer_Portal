@@ -68,8 +68,6 @@ function TaiGerOfficeHours() {
     hasEvents: false,
     students: null,
     student_id: '',
-    updateconfirmed: false,
-    updatecredentialconfirmed: false,
     isDeleteModalOpen: false,
     isEditModalOpen: false,
     isConfirmModalOpen: false,
@@ -792,7 +790,8 @@ function TaiGerOfficeHours() {
                 <CircularProgress size={16} />
               ) : (
                 <>
-                  <AiFillCheckCircle color="limegreen" size={16} /> {t('Yes')}
+                  <AiFillCheckCircle color="limegreen" size={16} />{' '}
+                  {t('Yes', { ns: 'common' })}
                 </>
               )}
             </Button>
@@ -802,7 +801,7 @@ function TaiGerOfficeHours() {
               size="small"
               onClick={handleConfirmAppointmentModalClose}
             >
-              {t('Close')}
+              {t('Close', { ns: 'common' })}
             </Button>
           </ModalNew>
           <ModalNew
@@ -828,7 +827,7 @@ function TaiGerOfficeHours() {
               {taiGerOfficeHoursState.BookButtonDisable ? (
                 <CircularProgress size={16} />
               ) : (
-                t('Delete')
+                t('Delete', { ns: 'common' })
               )}
             </Button>
           </ModalNew>

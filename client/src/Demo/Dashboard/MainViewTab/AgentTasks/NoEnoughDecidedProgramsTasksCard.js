@@ -35,7 +35,7 @@ const NoEnoughDecidedProgramsTasks = (props) => {
             >
               <Typography fontWeight="bold">
                 {props.student.firstname} {props.student.lastname}{' '}
-                {t('Applications')}
+                {t('Applications', { ns: 'common' })}
               </Typography>
             </Link>
           </TableCell>
@@ -109,9 +109,9 @@ function NoEnoughDecidedProgramsTasksCard(props) {
       <Table size="small">
         <TableHead>
           <TableRow>
-            <TableCell>{t('Tasks')}</TableCell>
+            <TableCell>{t('Tasks', { ns: 'common' })}</TableCell>
             <TableCell>{t('Description')}</TableCell>
-            <TableCell>{t('Application Year')}</TableCell>
+            <TableCell>{t('Application Year', { ns: 'common' })}</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>{no_enough_programs_decided_tasks}</TableBody>

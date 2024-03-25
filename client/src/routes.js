@@ -5,7 +5,10 @@ import {
   getApplicationStudentLoader,
   getMyAcademicBackgroundLoader,
   getStudentAndDocLinksLoader,
-  getStudentsLoader
+  getStudentsLoader,
+  // getEssaysLoader,
+  combinedLoader,
+  getAllActiveEssaysLoader
 } from './api/dataLoader';
 import DefaultErrorPage from './Demo/Utils/DefaultErrorPage';
 
@@ -31,6 +34,11 @@ const PortalCredentialPage = React.lazy(() =>
 const BaseDocuments = React.lazy(() =>
   import('./Demo/BaseDocuments/BaseDocuments')
 );
+
+const AllBaseDocuments = React.lazy(() =>
+  import('./Demo/BaseDocuments/AllBaseDocuments')
+);
+
 const MyCourses = React.lazy(() => import('./Demo/MyCourses/index'));
 const MyCoursesAnalysis = React.lazy(() =>
   import('./Demo/MyCourses/CourseAnalysis')
@@ -40,6 +48,9 @@ const CoursesAnalysisWidget = React.lazy(() =>
 );
 const CVMLRLGenerator = React.lazy(() =>
   import('./Demo/TaiGerAI/CVMLRLGenerator')
+);
+const AgentSupportDocuments = React.lazy(() =>
+  import('./Demo/AgentSupportDocuments/index')
 );
 const CVMLRLOverview = React.lazy(() => import('./Demo/CVMLRLCenter/index'));
 const CVMLRLDashboard = React.lazy(() =>
@@ -151,6 +162,10 @@ const AgentsAssignment = React.lazy(() =>
 const EditorsAssignment = React.lazy(() =>
   import('./Demo/AssignmentAgentsEditors/AssignEditors/index')
 );
+
+const EssayWritersAssignment = React.lazy(() =>
+  import('./Demo/AssignmentAgentsEditors/AssignEssayWriters/index')
+);
 // TODO: conditional configuration.
 const routes = [
   {
@@ -167,13 +182,20 @@ const routes = [
         errorElement: <DefaultErrorPage />,
         loader: getStudentsLoader,
         element: <EditorsAssignment />
+      },
+      {
+        path: 'essay-writers',
+        errorElement: <DefaultErrorPage />,
+        loader: getAllActiveEssaysLoader,
+        element: <EssayWritersAssignment />
       }
     ]
   },
   {
     path: '/dashboard/default',
     errorElement: <DefaultErrorPage />,
-    loader: getStudentsLoader,
+    loader: combinedLoader,
+    // loader: getStudentsLoader,
     element: <DashboardDefault />
   },
   {
@@ -335,8 +357,20 @@ const routes = [
   {
     path: '/base-documents',
     exact: true,
-    name: 'Base Documents',
+    name: 'Documents',
     Component: BaseDocuments
+  },
+  {
+    path: '/agent-support-documents',
+    exact: true,
+    name: 'AgentSupportDocuments',
+    Component: AgentSupportDocuments
+  },
+  {
+    path: '/all-base-documents',
+    exact: true,
+    name: 'All Documents',
+    Component: AllBaseDocuments
   },
   {
     path: '/portal-informations',
@@ -509,7 +543,7 @@ const routes = [
   {
     path: '/',
     errorElement: <DefaultErrorPage />,
-    loader: getStudentsLoader,
+    loader: combinedLoader,
     element: <DashboardDefault />
   }
 ];

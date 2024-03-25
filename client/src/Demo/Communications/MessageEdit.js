@@ -157,7 +157,7 @@ function MessageEdit(props) {
             }
             startIcon={<SendIcon />}
           >
-            {t('Save')}
+            {t('Save', { ns: 'common' })}
           </Button>
         )}
         <Button
@@ -186,10 +186,12 @@ function MessageEdit(props) {
             variant="danger"
             onClick={onDeleteSingleMessage}
           >
-            {props.isLoaded ? t('Delete') : t('Pending')}
+            {props.isLoaded
+              ? t('Delete', { ns: 'common' })
+              : t('Pending', { ns: 'common' })}
           </Button>
           <Button onClick={onHidedeleteMessageModalShow} variant="light">
-            {t('Cancel')}
+            {t('Cancel', { ns: 'common' })}
           </Button>
         </Typography>
       </ModalNew>

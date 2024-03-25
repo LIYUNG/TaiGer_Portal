@@ -486,7 +486,9 @@ export default function MyCourses() {
             {statedata.student.firstname} {statedata.student.lastname}
           </Link>
         )}
-        <Typography color="text.primary">My Courses</Typography>
+        <Typography color="text.primary">
+          {t('My Courses', { ns: 'common' })}
+        </Typography>
       </Breadcrumbs>
       {/* <Card sx={{ mt: 2, padding: 2, minWidth: '450px' }}> */}
       <Typography variant="h6" sx={{ pt: 2 }}>
@@ -616,7 +618,8 @@ export default function MyCourses() {
       </Button>
       <Typography variant="body2">
         {t(
-          'After you updated the course table, please contact your agent for your course analysis.'
+          'After you updated the course table, please contact your agent for your course analysis.',
+          { ns: 'courses' }
         )}
       </Typography>
       {/* </Card> */}
@@ -695,7 +698,9 @@ export default function MyCourses() {
         )}
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <Typography variant="h6">{t('Courses Analysis')}</Typography>
+            <Typography variant="h6">
+              {t('Courses Analysis', { ns: 'courses' })}
+            </Typography>
           </Grid>
           <Grid item xs={12}>
             {statedata.analysis && statedata.analysis.isAnalysed ? (
@@ -710,7 +715,7 @@ export default function MyCourses() {
                     startIcon={<DownloadIcon />}
                     sx={{ marginRight: 2 }}
                   >
-                    {t('Download')}
+                    {t('Download', { ns: 'common' })}
                   </Button>
                   <LinkDom
                     to={`${DEMO.COURSES_ANALYSIS_RESULT_LINK(
@@ -719,19 +724,19 @@ export default function MyCourses() {
                     target="_blank"
                   >
                     <Button color="secondary" variant="contained" size="small">
-                      {t('View Online')}
+                      {t('View Online', { ns: 'courses' })}
                     </Button>
                   </LinkDom>
                 </Typography>
                 <Typography sx={{ mt: 2 }}>
-                  {t('Last analysis at')}:{' '}
+                  {t('Last analysis at', { ns: 'courses' })}:{' '}
                   {statedata.analysis
                     ? convertDate(statedata.analysis.updatedAt)
                     : ''}
                 </Typography>
               </>
             ) : (
-              <Typography>{t('No analysis yet')}</Typography>
+              <Typography>{t('No analysis yet', { ns: 'courses' })}</Typography>
             )}
           </Grid>
         </Grid>
@@ -742,15 +747,16 @@ export default function MyCourses() {
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
-        <Typography>{t('Confirmation')}</Typography>
+        <Typography>{t('Confirmation', { ns: 'common' })}</Typography>
         <Typography>
           {t(
-            'Update transcript successfully! Your agent will be notified and will analyse your courses as soon as possible.'
+            'Update transcript successfully! Your agent will be notified and will analyse your courses as soon as possible.',
+            { ns: 'courses' }
           )}
         </Typography>
         <Typography>
           <Button color="primary" variant="contained" onClick={closeModal}>
-            Close
+            {t('Close', { ns: 'common' })}
           </Button>
         </Typography>
       </ModalNew>
@@ -760,15 +766,18 @@ export default function MyCourses() {
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
-        <Typography>{t('Success')}</Typography>
+        <Typography>{t('Success',{ns:'common'}, { ns: 'common' })}</Typography>
         <Typography>
-          {t('Courses analysed successfully!')}
+          {t('Courses analysed successfully!', { ns: 'courses' })}
           <b>
             {t(
-              'The student will receive an email notification and the analysed course URL link.'
+              'The student will receive an email notification and the analysed course URL link.',
+              { ns: 'courses' }
             )}
           </b>{' '}
-          {t('Student should access the analysed page in their course page.')}
+          {t('Student should access the analysed page in their course page.', {
+            ns: 'courses'
+          })}
         </Typography>
         <Typography>
           <Button
@@ -776,7 +785,7 @@ export default function MyCourses() {
             variant="contained"
             onClick={closeanalysisSuccessModal}
           >
-            {t('Ok')}
+            {t('Close', { ns: 'common' })}
           </Button>
         </Typography>
       </ModalNew>

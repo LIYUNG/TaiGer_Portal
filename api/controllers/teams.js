@@ -320,6 +320,33 @@ const getArchivStudents = asyncHandler(async (req, res) => {
   }
 });
 
+const getEssayWriters = asyncHandler(async (req, res, next) => {
+  const { user } = req;
+  if (user.role === 'Editor') {
+    const permissions = await Permission.findOne({
+      user_id: user._id.toString()
+    });
+    // if (permissions && permissions.canAssignEditors && permissions.isEssayWriters) {
+    if (permissions && permissions.canAssignEditors) {
+      const editors = await Editor.find({
+        $or: [{ archiv: { $exists: false } }, { archiv: false }]
+      }).select('firstname lastname');
+      res.status(200).send({ success: true, data: editors });
+    } else {
+      logger.error('getEssayWriters: no permission');
+      throw new ErrorResponse(
+        403,
+        'You do not have the permission to do this action'
+      );
+    }
+  } else {
+    const editors = await Editor.find({
+      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+    }).select('firstname lastname');
+    res.status(200).send({ success: true, data: editors });
+  }
+});
+
 module.exports = {
   getTeamMembers,
   getStatistics,
@@ -329,5 +356,6 @@ module.exports = {
   getAgentProfile,
   getEditors,
   getSingleEditor,
-  getArchivStudents
+  getArchivStudents,
+  getEssayWriters
 };

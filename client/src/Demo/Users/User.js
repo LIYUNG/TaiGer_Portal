@@ -43,7 +43,7 @@ function User(props) {
                 aria-expanded={open ? 'true' : undefined}
                 onClick={handleClick}
               >
-                {t('Option')}
+                {t('Option', { ns: 'common' })}
               </Button>
               <Menu
                 id="basic-menu"
@@ -87,7 +87,7 @@ function User(props) {
                     )
                   }
                 >
-                  {t('Delete')}
+                  {t('Delete', { ns: 'common' })}
                 </MenuItem>
               </Menu>
             </>
@@ -97,9 +97,9 @@ function User(props) {
           <TableCell key={k}>
             {typeof props.user[y.prop] == 'boolean' ? (
               props.user[y.prop] ? (
-                t('Yes')
+                t('Yes', { ns: 'common' })
               ) : (
-                t('No')
+                t('No', { ns: 'common' })
               )
             ) : is_TaiGer_Student(props.user) ? (
               <Link

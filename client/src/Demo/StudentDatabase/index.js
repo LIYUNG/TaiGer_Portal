@@ -63,13 +63,18 @@ function StudentDatabase() {
   const updateStudentArchivStatus = (studentId, isArchived) => {
     updateArchivStudents(studentId, isArchived).then(
       (resp) => {
-        const { data, success } = resp.data;
+        const { success } = resp.data;
         const { status } = resp;
         if (success) {
+          let students_temp = [...studentDatabaseState.students];
+          let studentIdx = students_temp.findIndex(
+            ({ _id }) => _id === studentId
+          );
+          students_temp[studentIdx].archiv = isArchived;
           setStudentDatabaseState((prevState) => ({
             ...prevState,
             isLoaded: true,
-            students: data,
+            students: students_temp,
             success: success,
             res_status: status
           }));
@@ -125,7 +130,6 @@ function StudentDatabase() {
         <Box>
           <Card>
             <TabStudBackgroundDashboard
-              user={user}
               students={studentDatabaseState.students}
               updateStudentArchivStatus={updateStudentArchivStatus}
               isArchivPage={studentDatabaseState.isArchivPage}

@@ -75,8 +75,9 @@ function ManualFiles(props) {
             {props.filetype === 'General' && (
               <Grid item xs={12}>
                 <Typography>
-                  {t('General Documents')} ({t('CV')},{' '}
-                  {t('Recommendation Letters')})
+                  {t('General Documents', { ns: 'common' })} (
+                  {t('CV', { ns: 'common' })},{' '}
+                  {t('Recommendation Letters', { ns: 'common' })})
                 </Typography>
                 {create_generaldoc_reminder && (
                   <Card sx={{ p: 2, mb: 2 }}>
@@ -132,28 +133,29 @@ function ManualFiles(props) {
                 </Grid>
               </>
             )}
-            {props.application?.decided !== 'O' && (
-              <Grid item xs={12}>
-                <Typography variant="string" sx={{ my: 2 }}>
-                  <b>
-                    This following tasks are not visible in tasks dashboard and
-                    CV/ML/RL/Center. Please
-                    {
-                      <Link
-                        to={`${DEMO.STUDENT_APPLICATIONS_ID_LINK(
-                          props.student._id.toString()
-                        )}`}
-                        component={LinkDom}
-                      >
-                        {' '}
-                        click here
-                      </Link>
-                    }{' '}
-                    to activate the application.
-                  </b>
-                </Typography>
-              </Grid>
-            )}
+            {props.filetype === 'ProgramSpecific' &&
+              props.application?.decided !== 'O' && (
+                <Grid item xs={12}>
+                  <Typography variant="string" sx={{ my: 2 }}>
+                    <b>
+                      This following tasks are not visible in tasks dashboard
+                      and CV/ML/RL/Center. Please
+                      {
+                        <Link
+                          to={`${DEMO.STUDENT_APPLICATIONS_ID_LINK(
+                            props.student._id.toString()
+                          )}`}
+                          component={LinkDom}
+                        >
+                          {' '}
+                          click here
+                        </Link>
+                      }{' '}
+                      to activate the application.
+                    </b>
+                  </Typography>
+                </Grid>
+              )}
             <Grid item xs={12}>
               <ManualFilesList
                 student={props.student}

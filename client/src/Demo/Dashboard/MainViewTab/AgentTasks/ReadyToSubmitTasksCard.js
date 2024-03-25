@@ -117,8 +117,8 @@ function ReadyToSubmitTasksCard(props) {
     <Card sx={{ mb: 2 }}>
       <Alert severity="error">
         <Typography>
-          {t('Ready To Submit Tasks')} ( ML/ RL/ Essay are finished. Please
-          submit application asap.):
+          {t('Ready To Submit Tasks', { ns: 'dashboard' })} ( ML/ RL/ Essay are
+          finished. Please submit application asap.):
         </Typography>
       </Alert>
       <div className="card-scrollable-body">
@@ -127,7 +127,7 @@ function ReadyToSubmitTasksCard(props) {
             <TableHead>
               <TableRow>
                 <TableCell>{t('Student')}</TableCell>
-                <TableCell>{t('Start')}</TableCell>
+                <TableCell>{t('Start', { ns: 'common' })}</TableCell>
                 <TableCell>{t('Deadline')}</TableCell>
                 <TableCell>
                   {t('Semester')} - {t('Degree')} - {t('Program')}

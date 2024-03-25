@@ -66,7 +66,7 @@ const ExcludeMenu = {
     `${appConfig.companyName} Members`,
     'Tasks Overview',
     'Uni-Assist Tasks',
-    'Base Documents',
+    'Documents',
     'My Tasks Overview',
     'Applications Overview',
     'CV/ML/RL Center',
@@ -104,7 +104,7 @@ const ExcludeMenu = {
     'Map',
     'Applications Overview',
     'CV/ML/RL Center',
-    'Base Documents',
+    'Documents',
     'Interview Training',
     `${appConfig.companyName} Admissions`,
     'Internal Docs',
@@ -121,7 +121,7 @@ const ExcludeMenu = {
     'Tools',
     'Menu Levels',
     'My Courses',
-    'My Survey',
+    'My Profile',
     'Tasks Overview',
     'Portals Management',
     'Applications Overview',
@@ -141,7 +141,7 @@ const ExcludeMenu = {
     'Tools',
     'Menu Levels',
     'My Courses',
-    'My Survey',
+    'My Profile',
     'Tasks Overview',
     'Portals Management',
     'Applications Overview',
@@ -161,7 +161,7 @@ const ExcludeMenu = {
     'Applications Overview',
     'Menu Levels',
     'My Courses',
-    'My Survey',
+    'My Profile',
     'Portals Management',
     'Applications Overview',
     'Uni-Assist Tasks',
@@ -484,7 +484,7 @@ function NavBar(props) {
               <CalendarMonthIcon />
             </Badge>
           </IconButton>
-          <Typography>{t('Calendar')}</Typography>
+          <Typography>{t('Calendar', { ns: 'common' })}</Typography>
         </MenuItem>
       )}
       {!is_TaiGer_Editor(user) && (
@@ -500,7 +500,7 @@ function NavBar(props) {
               <MailIcon />
             </Badge>
           </IconButton>
-          <Typography>{t('Messages')}</Typography>
+          <Typography>{t('Messages', { ns: 'common' })}</Typography>
         </MenuItem>
       )}
       <MenuItem onClick={handleProfileMenuOpen}>
@@ -513,7 +513,7 @@ function NavBar(props) {
         >
           <AccountCircle />
         </IconButton>
-        <Typography>{t('Profile')}</Typography>
+        <Typography>{t('Profile', { ns: 'common' })}</Typography>
       </MenuItem>
     </Menu>
   );
@@ -714,7 +714,9 @@ function NavBar(props) {
                     }}
                   >
                     <ListItemIcon>{menuItem.icon}</ListItemIcon>
-                    <ListItemText primary={t(`${menuItem.title}`)} />
+                    <ListItemText
+                      primary={t(`${menuItem.title}`, { ns: 'common' })}
+                    />
                     {menuItemOpen[menuItem.id] ? (
                       <ExpandLess />
                     ) : (
@@ -741,7 +743,11 @@ function NavBar(props) {
                             selected={subMenuItem.url === location.pathname}
                           >
                             <ListItemIcon>{subMenuItem.icon}</ListItemIcon>
-                            <ListItemText primary={t(`${subMenuItem.title}`)} />
+                            <ListItemText
+                              primary={t(`${subMenuItem.title}`, {
+                                ns: 'common'
+                              })}
+                            />
                           </ListItemButton>
                         ))}
                     </List>
@@ -755,7 +761,11 @@ function NavBar(props) {
                     selected={menuItem.url === location.pathname}
                   >
                     <ListItemIcon>{menuItem.icon}</ListItemIcon>
-                    <ListItemText primary={t(`${menuItem.title}`)} />
+                    <ListItemText
+                      primary={t(`${menuItem.title}`, {
+                        ns: 'common'
+                      })}
+                    />
                   </ListItemButton>
                 </ListItem>
               )

@@ -23,7 +23,6 @@ function EditAttributesSubpage(props) {
   });
 
   const onAttributesChange = (e, newValues) => {
-    console.log(newValues);
     setCheckboxState((prevState) => ({
       ...prevState,
       updateAttributesList: newValues

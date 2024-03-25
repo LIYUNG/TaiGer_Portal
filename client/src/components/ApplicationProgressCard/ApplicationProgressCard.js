@@ -179,7 +179,7 @@ export default function ApplicationProgressCard(props) {
                     size="small"
                     onClick={() => console.log('Book clicked')}
                   >
-                    {t('Coming soon')}
+                    {t('Coming soon', { ns: 'common' })}
                   </Button>
                 </Typography>
               </>

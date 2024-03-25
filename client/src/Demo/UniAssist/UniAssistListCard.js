@@ -594,7 +594,7 @@ function UniAssistListCard(props) {
                             size="small"
                             startIcon={<DeleteIcon />}
                           >
-                            {t('Delete')}
+                            {t('Delete', { ns: 'common' })}
                           </Button>
                         </Grid>
                       </>
@@ -690,7 +690,7 @@ function UniAssistListCard(props) {
                             size="small"
                             startIcon={<DeleteIcon />}
                           >
-                            {t('Delete')}
+                            {t('Delete', { ns: 'common' })}
                           </Button>
                         </Grid>
                       </>
@@ -787,12 +787,14 @@ function UniAssistListCard(props) {
           uniAssistListCardState.isLoadedVPDConfirmation[
             uniAssistListCardState.program_id
           ] ? (
-            t('Yes')
+            t('Yes', { ns: 'common' })
           ) : (
             <CircularProgress size={16} />
           )}
         </Button>
-        <Button onClick={closeWarningWindow}>{t('No')}</Button>
+        <Button onClick={closeWarningWindow}>
+          {t('No', { ns: 'common' })}
+        </Button>
       </ModalNew>
       <ModalNew
         open={uniAssistListCardState.setAsNotNeededModel}
@@ -830,7 +832,7 @@ function UniAssistListCard(props) {
               uniAssistListCardState.isLoadedVPDConfirmation[
                 uniAssistListCardState.program_id
               ] ? (
-                t('Yes')
+                t('Yes', { ns: 'common' })
               ) : (
                 <CircularProgress size={16} />
               )}
@@ -840,7 +842,7 @@ function UniAssistListCard(props) {
               variant="outlined"
               onClick={closesetAsNotNeededWindow}
             >
-              {t('No')}
+              {t('No', { ns: 'common' })}
             </Button>
           </Grid>
         </Grid>

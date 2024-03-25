@@ -335,7 +335,7 @@ function InterviewItems(props) {
           size="small"
           onClick={toggleModal}
         >
-          {t('Close')}
+          {t('Close', { ns: 'common' })}
         </Button>
       </ModalNew>
     </>

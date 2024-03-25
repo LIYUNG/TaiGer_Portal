@@ -11,10 +11,13 @@ import {
 
 import CVMLRLOverview from '../CVMLRLCenter/CVMLRLOverview';
 import ErrorPage from '../Utils/ErrorPage';
-import { getEditor } from '../../api';
+import { getAllActiveEssays, getEditor } from '../../api';
 import {
+  AGENT_SUPPORT_DOCUMENTS_A,
+  FILE_TYPE_E,
   frequencyDistribution,
   is_TaiGer_role,
+  open_essays_tasks,
   open_tasks_with_editors
 } from '../Utils/checking-functions';
 import { TabTitle } from '../Utils/TabTitle';
@@ -23,7 +26,9 @@ import TasksDistributionBarChart from '../../components/Charts/TasksDistribution
 import { appConfig } from '../../config';
 import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
+import { is_new_message_status, is_pending_status } from '../Utils/contants';
 
+// TODO TEST_CASE
 function EditorPage() {
   const { user_id } = useParams();
   const { user } = useAuth();
@@ -31,6 +36,7 @@ function EditorPage() {
     error: '',
     role: '',
     isLoaded: false,
+    isLoaded2: false,
     data: null,
     success: false,
     editor: null,
@@ -70,12 +76,47 @@ function EditorPage() {
     );
   }, [user_id]);
 
+  useEffect(() => {
+    getAllActiveEssays().then(
+      (resp) => {
+        const { data, success } = resp.data;
+        const { status } = resp;
+        if (success) {
+          setEditorPageState((prevState) => ({
+            ...prevState,
+            isLoaded2: true,
+            essays: data,
+            success: success,
+            res_status: status
+          }));
+        } else {
+          setEditorPageState((prevState) => ({
+            ...prevState,
+            isLoaded2: true,
+            res_status: status
+          }));
+        }
+      },
+      (error) => {
+        setEditorPageState((prevState) => ({
+          ...prevState,
+          isLoaded2: true,
+          error,
+          res_status: 500
+        }));
+      }
+    );
+  }, []);
+
   if (!is_TaiGer_role(user)) {
     return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
   }
-  const { res_status, isLoaded } = editorPageState;
+  const { res_status, isLoaded, isLoaded2, essays } = editorPageState;
 
-  if (!isLoaded && !editorPageState.editor && !editorPageState.students) {
+  if (
+    (!isLoaded && !editorPageState.editor && !editorPageState.students) ||
+    (!isLoaded2 && !essays)
+  ) {
     return <Loading />;
   }
 
@@ -86,8 +127,32 @@ function EditorPage() {
     `Editor: ${editorPageState.editor.firstname}, ${editorPageState.editor.lastname}`
   );
 
-  const open_tasks_arr = open_tasks_with_editors(editorPageState.students);
-  const task_distribution = open_tasks_arr
+  const open_essays_tasks_arr = open_essays_tasks(essays, user);
+  const open_tasks_without_essays_arr = open_tasks_with_editors(
+    editorPageState.students
+  ).filter(
+    (open_task) => ![FILE_TYPE_E.essay_required].includes(open_task.file_type)
+  );
+  const open_tasks_arr = [
+    ...open_essays_tasks_arr,
+    ...open_tasks_without_essays_arr
+  ];
+  const tasks_withMyEssay_arr = open_tasks_arr.filter((open_task) =>
+    [...AGENT_SUPPORT_DOCUMENTS_A, FILE_TYPE_E.essay_required].includes(
+      open_task.file_type
+    )
+      ? open_task.outsourced_user_id?.some(
+          (outsourcedUser) => outsourcedUser._id.toString() === user_id
+        )
+      : true
+  );
+
+  const open_tasks_withMyEssay_arr = tasks_withMyEssay_arr.filter(
+    (open_task) => open_task.show && !open_task.isFinalVersion
+  );
+
+  // const open_tasks_arr = open_tasks_with_editors(editorPageState.students);
+  const task_distribution = open_tasks_withMyEssay_arr
     .filter(({ isFinalVersion }) => isFinalVersion !== true)
     .map(({ deadline, file_type, show, isPotentials }) => {
       return { deadline, file_type, show, isPotentials };
@@ -104,6 +169,35 @@ function EditorPage() {
       potentials: open_distr[date].potentials
     });
   });
+  // TODO:
+  // essay tasks are missing for essay writer in this page.
+
+  const new_message_tasks = open_tasks_withMyEssay_arr.filter(
+    (open_task) =>
+      open_task.show &&
+      !open_task.isFinalVersion &&
+      is_new_message_status(user, open_task)
+  );
+
+  const followup_tasks = open_tasks_withMyEssay_arr.filter(
+    (open_task) =>
+      open_task.show &&
+      !open_task.isFinalVersion &&
+      is_pending_status(user, open_task) &&
+      open_task.latest_message_left_by_id !== ''
+  );
+
+  const pending_progress_tasks = open_tasks_withMyEssay_arr.filter(
+    (open_task) =>
+      open_task.show &&
+      !open_task.isFinalVersion &&
+      is_pending_status(user, open_task) &&
+      open_task.latest_message_left_by_id === ''
+  );
+
+  const closed_tasks = tasks_withMyEssay_arr.filter(
+    (open_task) => open_task.show && open_task.isFinalVersion
+  );
 
   return (
     <Box>
@@ -159,6 +253,10 @@ function EditorPage() {
         user={editorPageState.editor}
         success={editorPageState.success}
         students={editorPageState.students}
+        new_message_tasks={new_message_tasks}
+        followup_tasks={followup_tasks}
+        pending_progress_tasks={pending_progress_tasks}
+        closed_tasks={closed_tasks}
       />
       <Box>
         <Link

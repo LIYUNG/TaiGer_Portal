@@ -3,6 +3,7 @@
 # generated file
 .VSCodeCounter
 .vscode
+.idea
 
 # dependencies
 node_modules

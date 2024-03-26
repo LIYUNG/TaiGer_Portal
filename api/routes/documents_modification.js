@@ -130,7 +130,6 @@ router.route('/essays/all').get(
   filter_archiv_user,
   postMessagesRateLimiter,
   permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
-  // permission_canAssignEditor_filter,
   getAllActiveEssays,
   logAccess
 );
@@ -139,8 +138,8 @@ router.route('/:messagesThreadId/essay').post(
   filter_archiv_user,
   postMessagesRateLimiter,
   permit(Role.Admin, Role.Manager, Role.Editor, Role.Agent),
-  // permission_canAssignEditor_filter,
-  InnerTaigerMultitenantFilter,
+  permission_canAssignEditor_filter,
+  // InnerTaigerMultitenantFilter,
   editorIdsBodyFilter,
   doc_thread_ops_validator,
   assignEssayWritersToEssayTask,

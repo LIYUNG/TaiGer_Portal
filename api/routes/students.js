@@ -180,7 +180,6 @@ router
     filter_archiv_user,
     GeneralPOSTRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent),
-    InnerTaigerMultitenantFilter,
     permission_canAssignAgent_filter,
     assignAgentToStudent,
     logAccess
@@ -192,7 +191,6 @@ router
     filter_archiv_user,
     GeneralPOSTRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Editor),
-    InnerTaigerMultitenantFilter,
     permission_canAssignEditor_filter,
     assignEditorToStudent,
     logAccess

@@ -3,6 +3,7 @@ const { Documentthread } = require('../models/Documentthread');
 const Permission = require('../models/Permission');
 const { Role, Student } = require('../models/User');
 
+// TODO: revert this, and create another filter for assign essay, agent support doc api.
 const InnerTaigerMultitenantFilter = async (req, res, next) => {
   const {
     user,
@@ -18,7 +19,7 @@ const InnerTaigerMultitenantFilter = async (req, res, next) => {
         .lean();
       studentId_temp = document_thread.student_id._id.toString();
       outsourcer_allowed_modify =
-        document_thread.outsourced_user_id.some(
+        document_thread.outsourced_user_id?.some(
           (outsourcer_id) => outsourcer_id.toString() === user._id.toString()
         ) ||
         (document_thread.file_type !== 'Essay' &&
@@ -42,7 +43,6 @@ const InnerTaigerMultitenantFilter = async (req, res, next) => {
       [...student.agents, ...student.editors].some(
         (taiger_user) => taiger_user.toString() === user._id.toString()
       ) ||
-      permissions?.canAssignAgents ||
       permissions?.canAssignEditors ||
       outsourcer_allowed_modify
     ) {

@@ -34,6 +34,35 @@ const getPrograms = asyncHandler(async (req, res) => {
   }
 });
 
+const getStudentByProgram = async (programId) => {
+  const students = await Student.find({
+    applications: {
+      $elemMatch: {
+        programId: programId,
+        decided: 'O'
+      }
+    }
+  })
+    .populate('agents editors', 'firstname')
+    .select(
+      'firstname lastname applications application_preference.expected_application_date'
+    )
+    .lean();
+
+  if (!students) {
+    return;
+  }
+
+  students.forEach((student) => {
+    student.application = student.applications.find(
+      (app) => app.programId.toString() === programId
+    );
+    delete student.applications;
+  });
+
+  return students;
+};
+
 const getProgram = asyncHandler(async (req, res) => {
   const { user } = req;
   // prevent student multitenancy
@@ -112,18 +141,7 @@ const getProgram = asyncHandler(async (req, res) => {
     user.role === 'Agent' ||
     user.role === 'Editor'
   ) {
-    const students = await Student.find({
-      applications: {
-        $elemMatch: {
-          programId: req.params.programId,
-          decided: 'O'
-        }
-      }
-    })
-      .populate('agents editors', 'firstname')
-      .select(
-        'firstname lastname applications application_preference.expected_application_date'
-      );
+    const students = await getStudentByProgram(req.params.programId);
     const program = await Program.findById(req.params.programId);
     if (!program) {
       logger.error('getProgram: Invalid program id');

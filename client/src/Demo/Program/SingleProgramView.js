@@ -22,8 +22,8 @@ import {
   is_TaiGer_Admin,
   is_TaiGer_AdminAgent,
   is_TaiGer_role,
-  isProgramSubmitted,
   isProgramWithdraw,
+  isApplicationOpen,
   LinkableNewlineText
 } from '../Utils/checking-functions';
 import {
@@ -370,14 +370,9 @@ function SingleProgramView(props) {
                       <TableBody>
                         {props.students
                           .filter((student) =>
-                            student.applications.some(
-                              (application) =>
-                                application.programId.toString() ===
-                                  props.programId &&
-                                !isProgramSubmitted(application) &&
-                                !isProgramWithdraw(application)
-                            )
+                            isApplicationOpen(student.application)
                           )
+
                           .map((student, i) => (
                             <TableRow key={i}>
                               <TableCell>
@@ -435,15 +430,10 @@ function SingleProgramView(props) {
                       </TableHead>
                       <TableBody>
                         {props.students
-                          .filter((student) =>
-                            student.applications.some(
-                              (application) =>
-                                application.programId.toString() ===
-                                  props.programId &&
-                                (isProgramSubmitted(application) ||
-                                  isProgramWithdraw(application))
-                            )
+                          .filter(
+                            (student) => !isApplicationOpen(student.application)
                           )
+
                           .map((student, i) => (
                             <TableRow key={i}>
                               <TableCell>
@@ -464,19 +454,9 @@ function SingleProgramView(props) {
                                   : '-'}
                               </TableCell>
                               <TableCell>
-                                {isProgramWithdraw(
-                                  student.applications.find(
-                                    (application) =>
-                                      application.programId.toString() ===
-                                      props.programId
-                                  )
-                                )
+                                {isProgramWithdraw(student.application)
                                   ? 'WITHDRAW'
-                                  : student.applications.find(
-                                      (application) =>
-                                        application.programId.toString() ===
-                                        props.programId
-                                    ).admission}
+                                  : student.application.admission}
                               </TableCell>
                             </TableRow>
                           ))}
@@ -725,16 +705,8 @@ function SingleProgramView(props) {
                                   : '-'}
                               </TableCell>
                               <TableCell>
-                                {student.applications.find(
-                                  (application) =>
-                                    application.programId.toString() ===
-                                    props.programId
-                                )
-                                  ? student.applications.find(
-                                      (application) =>
-                                        application.programId.toString() ===
-                                        props.programId
-                                    ).admission
+                                {student.application
+                                  ? student.application.admission
                                   : ''}
                               </TableCell>
                             </TableRow>

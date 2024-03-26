@@ -6,11 +6,21 @@ import {
   getStudentAndDocLinks,
   getApplicationStudent,
   getMyAcademicBackground,
-  getAllActiveEssays
+  getAllActiveEssays,
+  getAllStudents
 } from '.';
 
 export async function getStudentsLoader() {
   const response = await getStudents();
+  if (response.status >= 400) {
+    throw json({ message: response.statusText }, { status: response.status });
+  } else {
+    return response;
+  }
+}
+
+export async function getAllStudentsLoader() {
+  const response = await getAllStudents();
   if (response.status >= 400) {
     throw json({ message: response.statusText }, { status: response.status });
   } else {

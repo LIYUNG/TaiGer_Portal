@@ -7,7 +7,13 @@ import { getAllStudents, getProgramTickets } from '../../api';
 import axios from 'axios';
 import { request } from '../../api/request';
 import { useAuth } from '../../components/AuthProvider/index';
-import { MemoryRouter } from 'react-router-dom';
+import {
+  MemoryRouter,
+  Router,
+  createMemoryRouter,
+  useLoaderData,
+  RouterProvider
+} from 'react-router-dom';
 const students = [
   { firstname: 'student1', lastname: 'Wang', role: 'Student' },
   { firstname: 'student2', lastname: 'Lin', role: 'Student' }
@@ -37,19 +43,30 @@ class ResizeObserver {
   unobserve() {}
 }
 
+const routes = [
+  {
+    path: '/student-database',
+    element: <StudentDatabase />,
+    errorElement: <div>Error</div>,
+    loader: () => {
+      return { data: mockSingleData, essays: { data: [] } };
+    }
+  }
+];
+
 describe('StudentDatabase', () => {
   window.ResizeObserver = ResizeObserver;
-  test('agent dashboard not crash', async () => {
+  test('Student dashboard not crash', async () => {
     getAllStudents.mockResolvedValue({ data: mockSingleData });
     getProgramTickets.mockResolvedValue({ data: { success: true, data: [] } });
     useAuth.mockReturnValue({
       user: { role: 'Agent', _id: '639baebf8b84944b872cf648' }
     });
-    render(
-      <MemoryRouter>
-        <StudentDatabase />
-      </MemoryRouter>
-    );
+
+    const router = createMemoryRouter(routes, {
+      initialEntries: ['/student-database']
+    });
+    render(<RouterProvider router={router} />);
 
     // Example
     // const buttonElement = screen.getByRole('button');

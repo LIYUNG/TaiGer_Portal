@@ -7,12 +7,23 @@ import ApplicationOverviewTabs from './ApplicationOverviewTabs';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import { appConfig } from '../../config';
+import useStudents from '../../hooks/useStudents';
 
 function AllApplicantsOverview() {
   const { t } = useTranslation();
   const {
-    data: { data: students }
+    data: { data: fetchedStudents }
   } = useLoaderData();
+
+  const {
+    students,
+    submitUpdateAgentlist,
+    submitUpdateEditorlist,
+    submitUpdateAttributeslist,
+    updateStudentArchivStatus
+  } = useStudents({
+    students: fetchedStudents
+  });
 
   TabTitle('Applications Overview');
 
@@ -34,7 +45,13 @@ function AllApplicantsOverview() {
           {t('All Students Applications Overview')}
         </Typography>
       </Breadcrumbs>
-      <ApplicationOverviewTabs students={students} />
+      <ApplicationOverviewTabs
+        students={students}
+        updateStudentArchivStatus={updateStudentArchivStatus}
+        submitUpdateAgentlist={submitUpdateAgentlist}
+        submitUpdateEditorlist={submitUpdateEditorlist}
+        submitUpdateAttributeslist={submitUpdateAttributeslist}
+      />
     </Box>
   );
 }

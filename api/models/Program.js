@@ -1,8 +1,9 @@
+const { model, Schema } = require('mongoose');
+const logger = require('../services/logger');
 const {
-  model,
-  Schema,
-  Types: { ObjectId }
-} = require('mongoose');
+  isCrucialChanges,
+  handleThreadDelta
+} = require('../utils/modelHelper/programChange');
 
 const Degree = {
   bachelor_sc: 'B.Sc',
@@ -198,38 +199,53 @@ const programModule = {
 };
 
 const programSchema = new Schema(programModule, { timestamps: true });
-
-const program_keys = Object.keys(programModule);
-const programAiModule = {};
-program_keys.forEach((key, i) => {
-  programAiModule[key] = {
-    Result: {
-      type: String
-    },
-    Source: {
-      type: String
-    }
-  };
+programSchema.pre(['updateOne', 'updateMany', 'update'], async function () {
+  try {
+    const condition = this.getQuery();
+    this._originals = await this.model.find(condition).lean();
+  } catch (error) {
+    logger.error(`ProgramHook - Error on pre hook: ${error}`);
+  }
 });
 
-const programAiSchema = new Schema(
-  {
-    ...programAiModule,
-    program_id: { type: ObjectId, ref: 'Program' },
-    ai_generated: {
-      type: String
+programSchema.post(['updateOne', 'updateMany', 'update'], async function () {
+  try {
+    const docs = this._originals;
+    delete this._originals;
+    const changes = this.getUpdate().$set;
+    if (!isCrucialChanges(changes)) {
+      return;
     }
-  },
-  { timestamps: true }
-);
+
+    for (let doc of docs) {
+      const updatedDoc = { ...doc, ...changes };
+      const programId = updatedDoc._id;
+
+      try {
+        logger.info(
+          `ProgramHook - Crucial changes detected on Program (Id=${programId}): ${JSON.stringify(
+            changes
+          )}`
+        );
+        await handleThreadDelta(updatedDoc);
+        logger.info(
+          `ProgramHook - Post hook executed successfully. (Id=${programId})`
+        );
+      } catch (error) {
+        logger.error(
+          `ProgramHook - Error on post hook (Id=${programId}): ${error}`
+        );
+      }
+    }
+  } catch (error) {
+    logger.error(`ProgramHook - Error on post hook: ${error}`);
+  }
+});
 
 programSchema.index({ school: 'text', program_name: 'text' });
-
 const Program = model('Program', programSchema);
-const ProgramAi = model('ProgramAi', programAiSchema);
-
 module.exports = {
+  programModule,
   Degree,
-  Program,
-  ProgramAi
+  Program
 };

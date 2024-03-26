@@ -61,19 +61,16 @@ export const MuiDataGrid = (props) => {
           renderHeader: () => (
             <Box>
               <Tooltip
-                title={`${t('column.headerName')}`}
+                title={`${t(`${column.headerName}`)}`}
                 key={column.headerName}
               >
-                <Typography
-                  sx={{ my: 1 }}
-                  title={`${t('column.headerName')}`}
-                >{`${column.headerName}`}</Typography>
+                <Typography sx={{ my: 1 }}>{t(`${column.headerName}`)}</Typography>
               </Tooltip>
               <TextField
                 fullWidth
                 size="small"
                 type="text"
-                placeholder={`${column.headerName}`}
+                placeholder={t(`${column.headerName}`)}
                 onClick={stopPropagation}
                 value={filters[column.field] || ''}
                 onChange={(event) => handleFilterChange(event, column)}

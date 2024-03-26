@@ -36,8 +36,8 @@ const {
   getMessageImageDownload,
   getMessageFileDownload,
   SetStatusMessagesThread,
-  deleteGeneralMessagesThread,
-  deleteProgramSpecificMessagesThread,
+  handleDeleteGeneralThread,
+  handleDeleteProgramThread,
   deleteAMessageInThread,
   postImageInThread,
   postMessages,
@@ -173,7 +173,7 @@ router
     multitenant_filter,
     doc_thread_ops_validator,
     InnerTaigerMultitenantFilter,
-    deleteGeneralMessagesThread
+    handleDeleteGeneralThread
   );
 // TODO: multitenancy: check user id match user_id in message
 router
@@ -246,7 +246,7 @@ router
     multitenant_filter,
     InnerTaigerMultitenantFilter,
     doc_thread_ops_validator,
-    deleteProgramSpecificMessagesThread
+    handleDeleteProgramThread
   );
 
 module.exports = router;

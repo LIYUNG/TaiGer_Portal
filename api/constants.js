@@ -142,7 +142,7 @@ const application_deadline_calculator = (student, application) => {
   if (!application_deadline) {
     return `${application_year}-<TBD>`;
   }
-  if (application_deadline.includes('olling')) {
+  if (application_deadline?.toLowerCase()?.includes('rolling')) {
     // include Rolling
     return `${application_year}-Rolling`;
   }
@@ -1398,7 +1398,7 @@ const CVDeadline_Calculator = (student) => {
         student,
         student.applications[i]
       );
-      if (application_deadline_temp?.includes('olling')) {
+      if (application_deadline_temp?.toLowerCase()?.includes('rolling')) {
         hasRolling = true;
         CVDeadlineRolling = application_deadline_temp;
       }

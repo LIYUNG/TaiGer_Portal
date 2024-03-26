@@ -42,6 +42,7 @@ const InnerTaigerMultitenantFilter = async (req, res, next) => {
       [...student.agents, ...student.editors].some(
         (taiger_user) => taiger_user.toString() === user._id.toString()
       ) ||
+      permissions?.canAssignAgents ||
       permissions?.canAssignEditors ||
       outsourcer_allowed_modify
     ) {

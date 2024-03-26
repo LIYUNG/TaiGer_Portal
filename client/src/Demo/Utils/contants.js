@@ -1027,10 +1027,10 @@ const create_years = (start_year, end_year) => {
   return year_array;
 };
 
-export const AddValidProgram = (program) => {
+export const isProgramValid = (program) => {
   const pattern = /^(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/;
   if (
-    !program.application_deadline?.includes('olling') &&
+    !program.application_deadline?.toLowerCase()?.includes('rolling') &&
     !pattern.test(program.application_deadline)
   ) {
     return false;
@@ -1049,7 +1049,7 @@ export const AddValidProgram = (program) => {
   }
 };
 
-export const field_alert = (program) => {
+export const showFieldAlert = (program) => {
   if (!program.school) {
     alert('Please fill School name completely');
     return;
@@ -1076,7 +1076,7 @@ export const field_alert = (program) => {
   }
   const pattern = /^(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/;
   if (
-    !program.application_deadline?.includes('olling') &&
+    !program.application_deadline?.toLowerCase()?.includes('rolling') &&
     !pattern.test(program.application_deadline)
   ) {
     alert(
@@ -1938,6 +1938,7 @@ export const c2 = [
                 >
                   <Chip
                     size="small"
+                    data-testid={`chip-${attribute.name}`}
                     label={attribute.name[0]}
                     color={COLORS[attribute.value]}
                   >

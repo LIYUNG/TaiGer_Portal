@@ -5,7 +5,8 @@ const { spawn } = require('child_process');
 
 const { asyncHandler } = require('../middlewares/error-handler');
 const logger = require('../services/logger');
-const { Program, ProgramAi } = require('../models/Program');
+const { Program } = require('../models/Program');
+const { ProgramAI } = require('../models/ProgramAI');
 const { isProd } = require('../config');
 const { openAIClient } = require('../services/openai');
 const Permission = require('../models/Permission');
@@ -19,7 +20,7 @@ const processProgramListAi = asyncHandler(async (req, res, next) => {
     params: { programId }
   } = req;
   const program = await Program.findOne({ _id: programId }).lean();
-  const programai = await ProgramAi.findOne({ program_id: programId }).lean();
+  const programai = await ProgramAI.findOne({ program_id: programId }).lean();
   if (!program) {
     logger.error('no program found!');
     return res.send({ success: true, data: {} });

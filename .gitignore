@@ -3,9 +3,8 @@
 # generated file
 .VSCodeCounter
 .vscode
-/api/python/TaiGerProgramListAICrawler/app/tempDB
-/api/python/TaiGerTranscriptAnalyzerJS/__pycache__/*.pyc
-/api/python/TaiGerTranscriptAnalyzerJS/database/*/__pycache__
+.idea
+
 # dependencies
 node_modules
 /api/.pnp
@@ -14,6 +13,9 @@ node_modules
 /client/.pnp
 .pnp.js
 /api/tmp
+
+# local dev testing script
+/dev/
 
 # testing
 /api/coverage
@@ -25,6 +27,7 @@ node_modules
 /client/server_logs
 /client/public/assets/logo
 /client/public/assets/logo
+
 # misc
 .DS_Store
 .env.local
@@ -49,20 +52,16 @@ globalConfig.json
 
 # python
 /venv
-**/__pycache__
+**/__pycache__/**
+**/.ipynb_checkpoints/**
 
 # travis
+!/api/python/TaiGerProgramListAICrawler/logs/.gitkeep
+!/api/python/TaiGerProgramListAICrawler/result/.gitkeep
+/api/python/TaiGerProgramListAICrawler/app/tempDB
 /api/python/TaiGerProgramListAICrawler/.env
 /api/python/TaiGerProgramListAICrawler/logs/*
-!/api/python/TaiGerProgramListAICrawler/logs/.gitkeep
 /api/python/TaiGerProgramListAICrawler/result
-!/api/python/TaiGerProgramListAICrawler/result/.gitkeep
-api/python/TaiGerProgramListAICrawler/ipynb/.ipynb_checkpoints/*
-api/python/TaiGerProgramListAICrawler/*/__pycache__/
 /api/python/TaiGerProgramListAICrawler/*.pyc
 /api/python/TaiGerProgramListAICrawler/ipynb/tempDB/
 /api/python/TaiGerProgramListAICrawler/ipynb/vectorDatabase/
-
-# python venv
-/venv
-**/__pycache__/**

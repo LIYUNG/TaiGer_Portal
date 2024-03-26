@@ -1938,6 +1938,7 @@ export const c2 = [
                 >
                   <Chip
                     size="small"
+                    data-testid={`chip-${attribute.name}`}
                     label={attribute.name[0]}
                     color={COLORS[attribute.value]}
                   >

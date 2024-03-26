@@ -119,8 +119,8 @@ function StudentsAgentEditor(props) {
   };
 
   const submitUpdateAgentlist = (e, updateAgentList, student_id) => {
-    setAgentModalhide();
     props.submitUpdateAgentlist(e, updateAgentList, student_id);
+    setAgentModalhide();
   };
 
   const submitUpdateEditorlist = (e, updateEditorList, student_id) => {

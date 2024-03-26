@@ -8,7 +8,8 @@ import {
   getStudentsLoader,
   // getEssaysLoader,
   combinedLoader,
-  getAllActiveEssaysLoader
+  getAllActiveEssaysLoader,
+  getAllStudentsLoader
 } from './api/dataLoader';
 import DefaultErrorPage from './Demo/Utils/DefaultErrorPage';
 
@@ -268,6 +269,7 @@ const routes = [
     path: '/student-database',
     exact: true,
     name: 'StudentDatabase',
+    loader: getAllStudentsLoader,
     Component: StudentDatabase
   },
   {

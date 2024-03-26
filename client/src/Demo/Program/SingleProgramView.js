@@ -455,7 +455,7 @@ function SingleProgramView(props) {
                               </TableCell>
                               <TableCell>
                                 {isProgramWithdraw(student.application)
-                                  ? 'WITHDRAW'
+                                  ? 'WITHDREW'
                                   : student.application.admission}
                               </TableCell>
                             </TableRow>

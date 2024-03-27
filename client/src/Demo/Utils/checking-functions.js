@@ -1599,6 +1599,9 @@ export const open_tasks = (students) => {
 
 export const open_essays_tasks = (essays, user) => {
   const tasks = [];
+  if (!essays) {
+    return [];
+  }
   for (const essay of essays) {
     console.log(
       essay.outsourced_user_id?.some(

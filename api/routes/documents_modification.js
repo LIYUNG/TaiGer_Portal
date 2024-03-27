@@ -132,23 +132,24 @@ router
 router
   .route('/essays/all')
   .get(
-    filter_archiv_user,
     postMessagesRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     getAllActiveEssays,
     logAccess
   );
 
-router.route('/:messagesThreadId/essay').post(
-  filter_archiv_user,
-  postMessagesRateLimiter,
-  permit(Role.Admin, Role.Manager, Role.Editor, Role.Agent),
-  AssignOutsourcerFilter,
-  editorIdsBodyFilter,
-  doc_thread_ops_validator,
-  assignEssayWritersToEssayTask,
-  logAccess
-);
+router
+  .route('/:messagesThreadId/essay')
+  .post(
+    filter_archiv_user,
+    postMessagesRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Editor, Role.Agent),
+    AssignOutsourcerFilter,
+    editorIdsBodyFilter,
+    doc_thread_ops_validator,
+    assignEssayWritersToEssayTask,
+    logAccess
+  );
 
 router
   .route('/:messagesThreadId/:studentId')

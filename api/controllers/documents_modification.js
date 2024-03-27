@@ -304,7 +304,7 @@ const getAllCVMLRLOverview = asyncHandler(async (req, res) => {
       select:
         'file_type outsourced_user_id isFinalVersion updatedAt messages.file',
       populate: {
-        path: 'messages.user_id',
+        path: 'outsourced_user_id messages.user_id',
         select: 'firstname lastname'
       }
     })

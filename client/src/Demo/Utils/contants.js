@@ -1694,23 +1694,36 @@ export const c1 = [
   },
   {
     field: 'editors',
-    headerName: 'Editors',
+    headerName: 'Editors / Writer',
     align: 'left',
     headerAlign: 'left',
     width: 150,
     renderCell: (params) => {
-      return params.value?.map((editor) => (
-        <Link
-          underline="hover"
-          to={DEMO.TEAM_EDITOR_LINK(editor._id.toString())}
-          component={LinkDom}
-          target="_blank"
-          title={editor.firstname}
-          key={`${editor._id.toString()}`}
-        >
-          {`${editor.firstname} `}
-        </Link>
-      ));
+      return params.row.file_type === 'Essay'
+        ? params.row.outsourced_user_id?.map((outsourcer) => (
+            <Link
+              underline="hover"
+              to={DEMO.TEAM_EDITOR_LINK(outsourcer._id.toString())}
+              component={LinkDom}
+              target="_blank"
+              title={outsourcer.firstname}
+              key={`${outsourcer._id.toString()}`}
+            >
+              {`${outsourcer.firstname} `}
+            </Link>
+          ))
+        : params.value?.map((editor) => (
+            <Link
+              underline="hover"
+              to={DEMO.TEAM_EDITOR_LINK(editor._id.toString())}
+              component={LinkDom}
+              target="_blank"
+              title={editor.firstname}
+              key={`${editor._id.toString()}`}
+            >
+              {`${editor.firstname} `}
+            </Link>
+          ));
     }
   },
   {

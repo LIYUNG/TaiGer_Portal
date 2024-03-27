@@ -12,6 +12,8 @@ const FILETYPES = {
   ml_required: 'ML',
   essay_required: 'Essay',
   portfolio_required: 'Portfolio',
+  curriculum_analysis_required: 'Curriculum Analysis',
+  scholarship_form_required: 'Scholarship ML',
   supplementary_form_required: 'Supplementary_Form'
 };
 
@@ -22,6 +24,8 @@ const isCrucialChanges = (changes) => {
     'is_rl_specific',
     'essay_required',
     'portfolio_required',
+    'curriculum_analysis_required',
+    'scholarship_form_required',
     'supplementary_form_required'
   ];
   for (let change in changes) {

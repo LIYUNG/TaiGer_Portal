@@ -1235,6 +1235,10 @@ export const isProgramWithdraw = (application) => {
   return application.closed === 'X';
 };
 
+export const isApplicationOpen = (application) => {
+  return !isProgramSubmitted(application) && !isProgramWithdraw(application);
+};
+
 export const is_program_closed = (application) => {
   if (application.closed === 'O' || application.closed === 'X') {
     return true;

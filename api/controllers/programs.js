@@ -34,7 +34,7 @@ const getPrograms = asyncHandler(async (req, res) => {
   }
 });
 
-const getStudentByProgram = async (programId) => {
+const getStudentsByProgram = async (programId) => {
   const students = await Student.find({
     applications: {
       $elemMatch: {
@@ -141,7 +141,7 @@ const getProgram = asyncHandler(async (req, res) => {
     user.role === 'Agent' ||
     user.role === 'Editor'
   ) {
-    const students = await getStudentByProgram(req.params.programId);
+    const students = await getStudentsByProgram(req.params.programId);
     const program = await Program.findById(req.params.programId);
     if (!program) {
       logger.error('getProgram: Invalid program id');

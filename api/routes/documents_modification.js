@@ -59,6 +59,9 @@ const {
 } = require('../middlewares/permission-filter');
 const { logAccess } = require('../utils/log/log');
 const { editorIdsBodyFilter } = require('../middlewares/editorIdsBodyFilter');
+const {
+  AssignOutsourcerFilter
+} = require('../middlewares/AssignOutsourcerFilter');
 
 const router = Router();
 
@@ -126,20 +129,21 @@ router
     initApplicationMessagesThread
   );
 
-router.route('/essays/all').get(
-  filter_archiv_user,
-  postMessagesRateLimiter,
-  permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
-  getAllActiveEssays,
-  logAccess
-);
+router
+  .route('/essays/all')
+  .get(
+    filter_archiv_user,
+    postMessagesRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
+    getAllActiveEssays,
+    logAccess
+  );
 
 router.route('/:messagesThreadId/essay').post(
   filter_archiv_user,
   postMessagesRateLimiter,
   permit(Role.Admin, Role.Manager, Role.Editor, Role.Agent),
-  permission_canAssignEditor_filter,
-  // InnerTaigerMultitenantFilter,
+  AssignOutsourcerFilter,
   editorIdsBodyFilter,
   doc_thread_ops_validator,
   assignEssayWritersToEssayTask,

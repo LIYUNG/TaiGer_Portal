@@ -197,7 +197,7 @@ const SurveyEditableComponent = (props) => {
           )}
           {survey.academic_background?.language?.gre_isPassed === '-' ||
           !survey.academic_background?.language?.gre_isPassed ? (
-            <li>Do you need GRE Test?</li>
+            <li>{t('Do you need GRE Test')}</li>
           ) : survey.academic_background?.language?.gre_isPassed === 'X' &&
             parseInt(
               getNumberOfDays(
@@ -730,7 +730,7 @@ const SurveyEditableComponent = (props) => {
                 value={
                   survey.application_preference?.expected_application_date || ''
                 }
-                label={t('Expected Application Year?')}
+                label={t('Expected Application Year')}
                 onChange={(e) => handleChangeApplicationPreference(e)}
               >
                 {EXPECTATION_APPLICATION_YEARS().map((option) => (
@@ -760,7 +760,7 @@ const SurveyEditableComponent = (props) => {
                   survey?.application_preference
                     ?.expected_application_semester || ''
                 }
-                label={t('Expected Application Semester?')}
+                label={t('Expected Application Semester')}
                 onChange={(e) => handleChangeApplicationPreference(e)}
               >
                 {SEMESTER_ARRAY_OPTIONS.map((option) => (

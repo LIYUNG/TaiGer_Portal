@@ -482,7 +482,7 @@ function BaseDocument_StudentView(props) {
             <TableRow>
               <TableCell>{t('Status', { ns: 'common' })}</TableCell>
               <TableCell>{t('File Name', { ns: 'common' })}</TableCell>
-              <TableCell>{t('Updated', { ns: 'common' })}</TableCell>
+              <TableCell>{t('Update', { ns: 'common' })}</TableCell>
               <TableCell></TableCell>
               <TableCell></TableCell>
               <TableCell></TableCell>

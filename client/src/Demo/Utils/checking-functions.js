@@ -568,7 +568,7 @@ export const MissingSurveyFieldsList = ({
         <li>{t('Target Degree Programs')}</li>
       )}
       {application_preference?.considered_privat_universities === '-' && (
-        <li>{t('Considering private universities?')}</li>
+        <li>{t('Considering private universities')}</li>
       )}
       {application_preference?.application_outside_germany === '-' && (
         <li>{t('Considering universities outside Germany?')}</li>

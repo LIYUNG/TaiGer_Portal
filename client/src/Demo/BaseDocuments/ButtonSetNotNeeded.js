@@ -196,7 +196,7 @@ function ButtonSetNotNeeded(props) {
             )
           }
         >
-          {t('Set Needed')}
+          {t('Set Needed', { ns: 'common' })}
         </Button>
       </TableCell>
       <TableCell></TableCell>
@@ -225,11 +225,13 @@ function ButtonSetNotNeeded(props) {
             disabled={!buttonSetNotNeededState.isLoaded}
             onClick={(e) => onUpdateProfileFilefromstudent(e)}
           >
-            {t('Yes')}
+            {t('Yes', { ns: 'common' })}
           </Button>
         )}
 
-        <Button onClick={closeSetNeededWindow}>{t('No', { ns: 'common' })}</Button>
+        <Button onClick={closeSetNeededWindow}>
+          {t('No', { ns: 'common' })}
+        </Button>
       </ModalNew>
       <OffcanvasBaseDocument
         open={buttonSetNotNeededState.baseDocsflagOffcanvas}

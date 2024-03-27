@@ -203,7 +203,7 @@ function ButtonSetMissing(props) {
               )
             }
           >
-            {t('Set notneeded')}
+            {t('Set Not Needed', { ns: 'common' })}
           </Button>
         )}
       </TableCell>
@@ -228,7 +228,7 @@ function ButtonSetMissing(props) {
           disabled={!buttonSetMissing.isLoaded}
           onClick={(e) => onUpdateProfileFilefromstudent(e)}
         >
-          Yes
+          {t('Yes', { ns: 'common' })}
         </Button>
         <Button onClick={closeSetMissingWindow}>No</Button>
       </ModalNew>

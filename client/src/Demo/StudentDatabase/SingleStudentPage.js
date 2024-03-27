@@ -422,8 +422,8 @@ export const SingleStudentPageMainContent = ({
                 onClick={onChangeProgramsDetailView}
               >
                 {singleStudentPage.detailedView
-                  ? t('Simple View')
-                  : t('Details View')}
+                  ? t('Simple View', { ns: 'common' })
+                  : t('Details View', { ns: 'common' })}
               </Button>
               {!is_TaiGer_Editor(user) && (
                 <Link

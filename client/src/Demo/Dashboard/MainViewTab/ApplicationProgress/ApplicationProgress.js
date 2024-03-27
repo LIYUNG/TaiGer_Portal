@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link as LinkDom } from 'react-router-dom';
 import { Link, TableCell, TableRow, Typography } from '@mui/material';
-
+import { useTranslation } from 'react-i18next';
 import {
   ADMISSION_STATUS_E,
   DECISION_STATUS_E,
@@ -17,6 +17,7 @@ import {
 import DEMO from '../../../../store/constant';
 
 function ApplicationProgress(props) {
+  const { t } = useTranslation();
   var applying_university;
 
   var today = new Date();
@@ -25,11 +26,9 @@ function ApplicationProgress(props) {
     props.student.applications.length === 0
   ) {
     applying_university = (
-      <>
-        <TableCell>No University</TableCell>
-        <TableCell>No Program</TableCell>
-        <TableCell>No Degree</TableCell>
-        <TableCell>No Date</TableCell>
+      <TableRow>
+        <TableCell>{t('No University', { ns: 'common' })}</TableCell>
+        <TableCell>{t('No Program', { ns: 'common' })}</TableCell>
         <TableCell>-</TableCell>
         <TableCell>-</TableCell>
         <TableCell>-</TableCell>
@@ -37,7 +36,9 @@ function ApplicationProgress(props) {
         <TableCell>-</TableCell>
         <TableCell>-</TableCell>
         <TableCell>-</TableCell>
-      </>
+        <TableCell>-</TableCell>
+        <TableCell>-</TableCell>
+      </TableRow>
     );
   } else {
     applying_university = props.student.applications.map((application, i) => (
@@ -127,7 +128,7 @@ function ApplicationProgress(props) {
             </TableCell>
           )
         ) : (
-          <TableCell className="mb-1 text-secondary">
+          <TableCell>
             {application.programId.toefl ? application.programId.toefl : '-'}
           </TableCell>
         )}
@@ -142,7 +143,7 @@ function ApplicationProgress(props) {
             </TableCell>
           )
         ) : (
-          <TableCell className="mb-1 text-secondary">
+          <TableCell>
             {application.programId.ielts ? application.programId.ielts : '-'}
           </TableCell>
         )}
@@ -159,7 +160,7 @@ function ApplicationProgress(props) {
                 }
                 fontWeight="bold"
               >
-                Close
+                {t('Close')}
               </Typography>
             </TableCell>
           ) : (

@@ -633,10 +633,12 @@ function EditorDocsProgress(props) {
         application={null}
       />
       <Divider />
-      <Typography sx={{ mt: 2 }}>{t('Applications')}</Typography>
+      <Typography sx={{ mt: 2 }}>
+        {t('Applications', { ns: 'common' })}
+      </Typography>
       {/* TODO: simplify this! with array + function! */}
       {editorDocsProgressState.student.applications
-        ?.filter((app) => app.decided === 'O')
+        ?.filter((app) => isProgramDecided(app))
         .map((application, i) => (
           <div key={i}>
             <Accordion defaultExpanded={false} disableGutters>
@@ -655,12 +657,11 @@ function EditorDocsProgress(props) {
                 />
               </AccordionDetails>
             </Accordion>
-
             <Divider sx={{ my: 2 }} />
           </div>
         ))}
       {editorDocsProgressState.student.applications
-        ?.filter((app) => app.decided !== 'O')
+        ?.filter((app) => !isProgramDecided(app))
         .map((application, i) => (
           <div key={i}>
             <Accordion defaultExpanded={false} disableGutters>
@@ -679,7 +680,6 @@ function EditorDocsProgress(props) {
                 />
               </AccordionDetails>
             </Accordion>
-
             <Divider sx={{ my: 2 }} />
           </div>
         ))}
@@ -777,7 +777,9 @@ function EditorDocsProgress(props) {
         onClose={close_Requirements_ModalWindow}
         aria-labelledby="contained-modal-title-vcenter"
       >
-        <Typography variant="h6">{t('Special Requirements')}</Typography>
+        <Typography variant="h6">
+          {t('Special Requirements', { ns: 'common' })}
+        </Typography>
         <Typography>
           <LinkableNewlineText text={editorDocsProgressState.requirements} />
         </Typography>

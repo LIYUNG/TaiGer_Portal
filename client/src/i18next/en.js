@@ -92,6 +92,15 @@ export const translation_en = {
     'User List': 'User List',
     Tools: 'Tools',
     'Course Analyser': 'Course Analyser',
+    'Simple View': 'Simple View',
+    'Details View': 'Details View',
+    'No Program': 'No Program',
+    'No University': 'No University',
+    'Set Needed': 'Set Needed',
+    'Set Not Needed': 'Set Not Needed',
+    Update: 'Update',
+    'Special Requirements': 'Special Requirements',
+    '-': '-',
     Save: 'Save',
     Success: 'Success',
     Message: 'Message',
@@ -182,6 +191,7 @@ export const translation_en = {
     'GRE Test passed ?': 'GRE Test passed ?',
     'GMAT Test passed ?': 'GMAT Test passed ?',
     'Do you need GMAT Test': 'Do you need GMAT Test',
+    'Do you need GRE Test': 'Do you need GRE Test',
     'The following program needs uni-assist process, please check if paid, uploaded document and upload VPD here':
       'The following program needs uni-assist process, please check if paid, uploaded document and upload VPD here',
     'Instructions: Follow the documentations in':
@@ -228,6 +238,7 @@ export const translation_en = {
       'Considering universities outside Germany?',
     'My GPA': 'My GPA',
     'High School': 'High School',
+    'High School graduate status': 'High School graduate status',
     'High School Name (English)': 'High School Name (English)',
     'Passing Score GPA of your university program':
       'Passing Score GPA of your university program',
@@ -237,6 +248,9 @@ export const translation_en = {
       'About Higest GPA / Lowest passed GPA and my GPA, please follow this:',
     Explanation: 'Explanation',
     'Corresponding German GPA System': 'Corresponding German GPA System',
+    'Considering private universities': 'Considering private universities',
+    'Considering private universities? (Tuition Fee: ~15000 EURO/year)':
+      'Considering private universities? (Tuition Fee: ~15000 EURO/year)',
     'English Certificate': 'English Certificate',
     'German Certificate': 'German Certificate',
     'GRE Test': 'GRE Test',

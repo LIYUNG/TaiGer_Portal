@@ -1711,7 +1711,7 @@ export const c1 = [
             >
               {`${outsourcer.firstname} `}
             </Link>
-          ))
+          )) || []
         : params.value?.map((editor) => (
             <Link
               underline="hover"

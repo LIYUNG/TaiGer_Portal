@@ -1,5 +1,4 @@
 const { ErrorResponse } = require('../common/errors');
-const { Documentthread } = require('../models/Documentthread');
 const Permission = require('../models/Permission');
 const { Role, Student } = require('../models/User');
 

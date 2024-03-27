@@ -3,7 +3,6 @@ const { Documentthread } = require('../models/Documentthread');
 const Permission = require('../models/Permission');
 const { Role, Student } = require('../models/User');
 
-// TODO: revert this, and create another filter for assign essay, agent support doc api.
 // Editor Lead, student's agents and agent lead
 const AssignOutsourcerFilter = async (req, res, next) => {
   const {

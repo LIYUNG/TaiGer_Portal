@@ -136,11 +136,6 @@ function EssayDashboard() {
         </Link>
         <Typography color="text.primary">{t('Essay Dashboard')}</Typography>
       </Breadcrumbs>
-      {no_essay_writer_tasks.map((task) => (
-        <Typography key={task.thread_id}>
-          {task.firstname_lastname} -{task.document_name}
-        </Typography>
-      ))}
       <EssayOverview
         isLoaded={essayDashboardState.isLoaded}
         success={essayDashboardState.success}

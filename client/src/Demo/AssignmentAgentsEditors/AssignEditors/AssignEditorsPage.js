@@ -49,11 +49,13 @@ function AssignEditorsPage(props) {
             <TableHead>
               <TableRow>
                 <TableCell></TableCell>
-                <TableCell>First-, Last Name</TableCell>
-                <TableCell>{t('Email')}</TableCell>
-                <TableCell>{t('Status')}</TableCell>
-                <TableCell>{t('Target Year<')}</TableCell>
-                <TableCell>{t('Agent(s)')}</TableCell>
+                <TableCell>
+                  {t('First-, Last Name', { ns: 'common' })}
+                </TableCell>
+                <TableCell>{t('Email', { ns: 'common' })}</TableCell>
+                <TableCell>{t('Status', { ns: 'common' })}</TableCell>
+                <TableCell>{t('Target Year', { ns: 'common' })}</TableCell>
+                <TableCell>{t('Agents', { ns: 'common' })}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>{no_editor_students}</TableBody>

@@ -100,14 +100,14 @@ function ApplicationOverviewTabs(props) {
   const applicationFileOverviewMuiHeader = [
     {
       field: 'target_year',
-      headerName: t('Target'),
+      headerName: t('Target', { ns: 'common' }),
       align: 'left',
       headerAlign: 'left',
       width: 100
     },
     {
       field: 'firstname_lastname',
-      headerName: t('First-, Last Name'),
+      headerName: t('First-, Last Name', { ns: 'common' }),
       width: 180,
       renderCell: (params) => {
         const linkUrl = `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
@@ -126,11 +126,11 @@ function ApplicationOverviewTabs(props) {
         );
       }
     },
-    { field: 'agents', headerName: t('Agent'), width: 180 },
-    { field: 'editors', headerName: t('Editor'), width: 180 },
+    { field: 'agents', headerName: t('Agent', { ns: 'common' }), width: 180 },
+    { field: 'editors', headerName: t('Editor', { ns: 'common' }), width: 180 },
     {
       field: 'program',
-      headerName: t('Program'),
+      headerName: t('Program', { ns: 'common' }),
       width: 250,
       renderCell: (params) => {
         const linkUrl = `${DEMO.SINGLE_PROGRAM_LINK(params.row.program_id)}`;
@@ -146,9 +146,21 @@ function ApplicationOverviewTabs(props) {
         );
       }
     },
-    { field: 'deadline', headerName: t('Deadline'), width: 120 },
-    { field: 'days_left', headerName: t('Days left'), width: 120 },
-    { field: 'status', headerName: t('Status(%)'), width: 120 }
+    {
+      field: 'deadline',
+      headerName: t('Deadline', { ns: 'common' }),
+      width: 120
+    },
+    {
+      field: 'days_left',
+      headerName: t('Days left', { ns: 'common' }),
+      width: 120
+    },
+    {
+      field: 'status',
+      headerName: t('Status(%)', { ns: 'common' }),
+      width: 120
+    }
   ];
 
   const stopPropagation = (event) => {

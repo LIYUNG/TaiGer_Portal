@@ -37,13 +37,16 @@ function TabStudBackgroundDashboard(props) {
           <TableRow>
             <TableCell></TableCell>
             <TableCell align="left">
-              First-, Last Name | 姓名 <br /> Email
+              {t('First-, Last Name', { ns: 'common' })} <br />{' '}
+              {t('Email', { ns: 'common' })}
             </TableCell>
-            <TableCell align="left">{t('Agents')}</TableCell>
-            <TableCell align="left">{t('Editors')}</TableCell>
-            <TableCell align="left">{t('Year')}</TableCell>
-            <TableCell align="left">{t('Semester')}</TableCell>
-            <TableCell align="left">{t('Degree')}</TableCell>
+            <TableCell align="left">{t('Agents', { ns: 'common' })}</TableCell>
+            <TableCell align="left">{t('Editors', { ns: 'common' })}</TableCell>
+            <TableCell align="left">{t('Year', { ns: 'common' })}</TableCell>
+            <TableCell align="left">
+              {t('Semester', { ns: 'common' })}
+            </TableCell>
+            <TableCell align="left">{t('Degree', { ns: 'common' })}</TableCell>
             {header.map((name, index) => (
               <TableCell key={index} align="left">
                 {t(`${name}`, { ns: 'common' })}

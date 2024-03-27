@@ -277,13 +277,13 @@ function EditorMainView(props) {
               <TableRow>
                 <TableCell></TableCell>
                 <TableCell>
-                  First-, Last Name | 姓名 <br /> Email
+                  {t('First-, Last Name', { ns: 'common' })} <br /> Email
                 </TableCell>
-                <TableCell>{t('Agents')}</TableCell>
-                <TableCell>{t('Editors')}</TableCell>
-                <TableCell>{t('Year')}</TableCell>
-                <TableCell>{t('Semester')}</TableCell>
-                <TableCell>{t('Degree')}</TableCell>
+                <TableCell>{t('Agents', { ns: 'common' })}</TableCell>
+                <TableCell>{t('Editors', { ns: 'common' })}</TableCell>
+                <TableCell>{t('Year', { ns: 'common' })}</TableCell>
+                <TableCell>{t('Semester', { ns: 'common' })}</TableCell>
+                <TableCell>{t('Degree', { ns: 'common' })}</TableCell>
                 {header.map((name, index) => (
                   <TableCell key={index}>{name}</TableCell>
                 ))}

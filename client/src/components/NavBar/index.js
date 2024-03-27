@@ -438,7 +438,7 @@ function NavBar(props) {
         <ListItemIcon>
           <Settings fontSize="small" />
         </ListItemIcon>
-        {t('Settings')}
+        {t('Settings', { ns: 'common' })}
       </MenuItem>
       <MenuItem
         onClick={handleCloseLogout}
@@ -451,7 +451,7 @@ function NavBar(props) {
         <ListItemIcon>
           <Logout fontSize="small" />
         </ListItemIcon>
-        {t('Log Out')}
+        {t('Log Out', { ns: 'common' })}
       </MenuItem>
     </Menu>
   );

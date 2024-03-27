@@ -41,7 +41,7 @@ function ProgramUpdateStatusTable(props) {
     },
     {
       field: 'program_name',
-      headerName: t('Program'),
+      headerName: t('Program', { ns: 'common' }),
       width: 300,
       renderCell: (params) => {
         const linkUrl = `${DEMO.SINGLE_PROGRAM_LINK(params.row.id)}`;
@@ -57,10 +57,22 @@ function ProgramUpdateStatusTable(props) {
         );
       }
     },
-    { field: 'degree', headerName: t('Degree'), width: 120 },
-    { field: 'semester', headerName: t('Semester'), width: 120 },
-    { field: 'whoupdated', headerName: t('Updated by'), width: 120 },
-    { field: 'updatedAt', headerName: t('Last updated'), width: 150 }
+    { field: 'degree', headerName: t('Degree', { ns: 'common' }), width: 120 },
+    {
+      field: 'semester',
+      headerName: t('Semester', { ns: 'common' }),
+      width: 120
+    },
+    {
+      field: 'whoupdated',
+      headerName: t('Updated by', { ns: 'common' }),
+      width: 120
+    },
+    {
+      field: 'updatedAt',
+      headerName: t('Last updated', { ns: 'common' }),
+      width: 150
+    }
   ];
 
   return (

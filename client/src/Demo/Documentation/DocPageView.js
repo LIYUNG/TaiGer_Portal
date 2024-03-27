@@ -67,10 +67,10 @@ function DocPageView(props) {
         {is_TaiGer_AdminAgent(user) && (
           <>
             <Typography>
-              Updated at {convertDate(props.editorState.time)}
+              {t('Updated at')} {convertDate(props.editorState.time)}
             </Typography>
             <Typography>
-              Updated by {props.author ? props.author : '-'}
+              {t('Updated by')} {props.author ? props.author : '-'}
             </Typography>
           </>
         )}

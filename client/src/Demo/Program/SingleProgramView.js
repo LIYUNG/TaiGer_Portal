@@ -265,7 +265,9 @@ function SingleProgramView(props) {
                 {is_TaiGer_AdminAgent(user) && (
                   <>
                     <Grid item xs={12} md={4}>
-                      <Typography>{t('Updated by')}</Typography>
+                      <Typography>
+                        {t('Updated by', { ns: 'common' })}
+                      </Typography>
                     </Grid>
                     <Grid item xs={12} md={8}>
                       <Typography>{props.program.whoupdated}</Typography>
@@ -670,7 +672,9 @@ function SingleProgramView(props) {
                   {is_TaiGer_AdminAgent(user) && (
                     <>
                       <Grid item xs={12} md={4}>
-                        <Typography>{t('Updated by')}</Typography>
+                        <Typography>
+                          {t('Updated by', { ns: 'common' })}
+                        </Typography>
                       </Grid>
                       <Grid item xs={12} md={8}>
                         <Typography>{props.program.whoupdated}</Typography>

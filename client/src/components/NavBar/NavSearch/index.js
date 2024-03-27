@@ -178,7 +178,7 @@ const NavSearch = () => {
           <StyledInputBase
             autoFocus={false}
             inputProps={{ 'aria-label': 'search' }}
-            placeholder={`${t('Search')}...`}
+            placeholder={`${t('Search', { ns: 'common' })}...`}
             value={searchTerm}
             onMouseDown={handleInputBlur}
             onChange={handleInputChange}

@@ -90,7 +90,7 @@ function AdmissionsTable(props) {
   const c2 = [
     {
       field: 'name',
-      headerName: t('Name'),
+      headerName: t('Name', { ns: 'common' }),
       align: 'left',
       headerAlign: 'left',
       width: 150,
@@ -113,10 +113,14 @@ function AdmissionsTable(props) {
     },
     {
       field: 'agents',
-      headerName: t('Agents'),
+      headerName: t('Agents', { ns: 'common' }),
       width: 100
     },
-    { field: 'editors', headerName: t('Editors'), width: 100 },
+    {
+      field: 'editors',
+      headerName: t('Editors', { ns: 'common' }),
+      width: 100
+    },
     {
       field: 'school',
       headerName: t('School'),
@@ -137,7 +141,7 @@ function AdmissionsTable(props) {
     },
     {
       field: 'program_name',
-      headerName: t('Program'),
+      headerName: t('Program', { ns: 'common' }),
       width: 250,
       renderCell: (params) => {
         const linkUrl = `${DEMO.SINGLE_PROGRAM_LINK(params.row.program_id)}`;
@@ -153,13 +157,17 @@ function AdmissionsTable(props) {
         );
       }
     },
-    { field: 'degree', headerName: t('Degree'), width: 120 },
+    { field: 'degree', headerName: t('Degree', { ns: 'common' }), width: 120 },
     {
       field: 'application_year',
       headerName: t('Application Year', { ns: 'common' }),
       width: 120
     },
-    { field: 'semester', headerName: t('Semester'), width: 120 }
+    {
+      field: 'semester',
+      headerName: t('Semester', { ns: 'common' }),
+      width: 120
+    }
   ];
   const memoizedColumns = useMemo(() => c2, [c2]);
 

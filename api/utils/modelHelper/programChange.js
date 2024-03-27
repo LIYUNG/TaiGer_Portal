@@ -12,8 +12,8 @@ const FILETYPES = {
   ml_required: 'ML',
   essay_required: 'Essay',
   portfolio_required: 'Portfolio',
-  curriculum_analysis_required: 'Curriculum Analysis',
-  scholarship_form_required: 'Scholarship ML',
+  curriculum_analysis_required: 'Curriculum_Analysis',
+  scholarship_form_required: 'Scholarship_Form',
   supplementary_form_required: 'Supplementary_Form'
 };
 

@@ -19,7 +19,6 @@ import {
   isProgramWithdraw,
   programs_refactor
 } from '../Utils/checking-functions';
-import { applicationFileOverviewHeader } from '../Utils/contants';
 import TabStudBackgroundDashboard from '../Dashboard/MainViewTab/StudDocsOverview/TabStudBackgroundDashboard';
 import ApplicationProgressCardBody from '../../components/ApplicationProgressCard/ApplicationProgressCardBody';
 import DEMO from '../../store/constant';
@@ -148,7 +147,7 @@ function ApplicationOverviewTabs(props) {
       }
     },
     { field: 'deadline', headerName: t('Deadline'), width: 120 },
-    { field: 'days_left', headerName: t('Day left'), width: 120 },
+    { field: 'days_left', headerName: t('Days left'), width: 120 },
     { field: 'status', headerName: t('Status(%)'), width: 120 }
   ];
 
@@ -284,26 +283,20 @@ function ApplicationOverviewTabs(props) {
                 horizontal: 'left'
               }}
             >
-              {/* <div style={{ position: 'absolute', top: 0, left: 0 }}> */}
               <Typography>{hoveredRowData?.firstname_lastname}</Typography>
               <Typography>{hoveredRowData?.program}</Typography>
               <ApplicationProgressCardBody
                 student={hoveredRowData?.student}
                 application={hoveredRowData?.application}
               />
-              {/* </div> */}
             </Popover>
           </div>
         </CustomTabPanel>
         <CustomTabPanel value={value} index={2}>
-          <ProgramUpdateStatusTable
-            columns={applicationFileOverviewHeader}
-            data={open_applications_arr}
-          />
+          <ProgramUpdateStatusTable data={open_applications_arr} />
         </CustomTabPanel>
         <CustomTabPanel value={value} index={3}>
           <ProgramUpdateStatusTable
-            columns={applicationFileOverviewHeader}
             data={open_applications_arr.filter((application) =>
               isProgramDecided(application)
             )}

@@ -2,7 +2,7 @@ import React, { useMemo, useEffect, useState } from 'react';
 import { Tabs, Tab, Box, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
 
-import { c2 } from '../Utils/contants';
+import { c1 } from '../Utils/contants';
 import { is_TaiGer_role } from '../Utils/checking-functions';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import Banner from '../../components/Banner/Banner';
@@ -64,7 +64,7 @@ function EssayOverview(props) {
     return <Loading />;
   }
 
-  const memoizedColumns = useMemo(() => c2, [c2]);
+  const memoizedColumns = useMemo(() => c1, [c1]);
 
   return (
     <>

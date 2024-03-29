@@ -40,10 +40,12 @@ function ProgramTaskDelta(props) {
             </Link>
           </TableCell>
           <TableCell>
-            {deltas.add.map((missing) => missing.fileType + ', ')}
+            {deltas.add.map((missing) => missing.fileType).join(', ')}
           </TableCell>
           <TableCell>
-            {deltas.remove.map((extra) => extra.fileThread.file_type + ', ')}
+            {deltas.remove
+              .map((extra) => extra.fileThread.file_type)
+              .join(', ')}
           </TableCell>
         </TableRow>
       ))}

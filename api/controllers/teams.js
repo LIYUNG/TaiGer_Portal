@@ -56,9 +56,7 @@ const getActivePrograms = async () => {
 
 const getApplicationDeltaByProgram = async (programId) => {
   const students = await getStudentsByProgram(programId);
-  const program = await Program.findById(programId).select(
-    'school program_name degree semester'
-  );
+  const program = await Program.findById(programId);
   const deltas = {};
   for (let student of students) {
     if (student?.application) {
@@ -69,7 +67,10 @@ const getApplicationDeltaByProgram = async (programId) => {
       deltas[student._id].deltas = await findStudentDelta(student._id, program);
     }
   }
-  return deltas ? { program, students: deltas } : {};
+  const { school, program_name, degree, semester } = program;
+  return deltas
+    ? { program: { school, program_name, degree, semester }, students: deltas }
+    : {};
 };
 
 const getApplicationDeltas = asyncHandler(async (req, res) => {

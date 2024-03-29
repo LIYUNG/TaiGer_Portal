@@ -6,35 +6,31 @@ import DEMO from '../../../../store/constant';
 
 function ProgramTaskDelta(props) {
   const { students, program } = props;
-  const studentDeltas = Object.entries(students).map(([studentId, deltas]) => (
-    <>
-      <TableCell>
-        <div className="text-info" key={studentId}>
-          <Link
-            to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-              studentId,
-              DEMO.CVMLRL_HASH
-            )}`}
-            component={LinkDom}
-          >
-            {studentId}
-          </Link>
-        </div>
-      </TableCell>
-      <TableCell>
-        <div className="text-info" key={studentId + '-add'}>
-          {deltas.add.map((missing) => missing.fileType + ', ')}
-        </div>
-      </TableCell>
-      <TableCell>
-        <div className="text-info" key={studentId + '-remove'}>
-          {deltas.remove.map((extra) => extra.fileThread.file_type + ', ')}
-        </div>
-      </TableCell>
-    </>
+
+  const studentNames = Object.entries(students).map(([studentId]) => (
+    <div className="text-info" key={studentId}>
+      <Link
+        to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+          studentId,
+          DEMO.CVMLRL_HASH
+        )}`}
+        component={LinkDom}
+      >
+        {studentId}
+      </Link>
+    </div>
+  ));
+  const studentMissing = Object.entries(students).map(([studentId, deltas]) => (
+    <div className="text-info" key={studentId + '-add'}>
+      {deltas.add.map((missing) => missing.fileType + ', ')}
+    </div>
   ));
 
-  console.log(studentDeltas);
+  const studentExtra = Object.entries(students).map(([studentId, deltas]) => (
+    <div className="text-info" key={studentId + '-remove'}>
+      {deltas.remove.map((extra) => extra.fileThread.file_type + ', ')}
+    </div>
+  ));
 
   return (
     <TableBody>
@@ -54,7 +50,9 @@ function ProgramTaskDelta(props) {
             {program.count}
           </Link>
         </TableCell>
-        {studentDeltas}
+        <TableCell>{studentNames}</TableCell>
+        <TableCell>{studentMissing}</TableCell>
+        <TableCell>{studentExtra}</TableCell>
       </TableRow>
     </TableBody>
   );

@@ -5,32 +5,29 @@ import { Link, TableBody, TableCell, TableRow } from '@mui/material';
 import DEMO from '../../../../store/constant';
 
 function ProgramConflict(props) {
-  var studs_id = props.conflict_map[props.conf_program_id];
-  var stds = studs_id.map((k, i) => (
+  const { students, program } = props;
+
+  const stds = students.map((student, i) => (
     <div className="text-info" key={i}>
       <Link
         to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-          studs_id[i],
+          student.studentId,
           DEMO.PROFILE_HASH
         )}`}
         component={LinkDom}
       >
-        {props.students.find((stud) => stud._id === studs_id[i]).firstname},{' '}
-        {props.students.find((stud) => stud._id === studs_id[i]).lastname}
+        {student.firstname}, {student.lastname}
       </Link>
     </div>
   ));
-  var application_deadline = studs_id.map((k, i) => (
+  const applicationDeadline = students.map((student, i) => (
     <div className="text-info" key={i}>
-      {props.students.find((stud) => stud._id === studs_id[i]) &&
-      props.students.find((stud) => stud._id === studs_id[i])
-        .application_preference &&
-      props.students.find((stud) => stud._id === studs_id[i])
-        .application_preference.expected_application_date
-        ? props.students.find((stud) => stud._id === studs_id[i])
-            .application_preference.expected_application_date + '-'
+      {student &&
+      student.application_preference &&
+      student.application_preference.expected_application_date
+        ? student.application_preference.expected_application_date + '-'
         : ''}
-      {props.conflict_programs[props.conf_program_id].application_deadline}
+      {program.application_deadline}
     </div>
   ));
   return (
@@ -38,21 +35,21 @@ function ProgramConflict(props) {
       <TableRow>
         <TableCell>
           <Link
-            to={`${DEMO.SINGLE_PROGRAM_LINK(props.conf_program_id)}`}
+            to={`${DEMO.SINGLE_PROGRAM_LINK(program._id)}`}
             component={LinkDom}
           >
-            <b>{props.conflict_programs[props.conf_program_id].school}</b>
+            <b>{program.school}</b>
           </Link>
           <br></br>
           <Link
-            to={`${DEMO.SINGLE_PROGRAM_LINK(props.conf_program_id)}`}
+            to={`${DEMO.SINGLE_PROGRAM_LINK(program._id)}`}
             component={LinkDom}
           >
-            {props.conflict_programs[props.conf_program_id].program}
+            {program.program_name}
           </Link>
         </TableCell>
         <TableCell>{stds}</TableCell>
-        <TableCell>{application_deadline}</TableCell>
+        <TableCell>{applicationDeadline}</TableCell>
       </TableRow>
     </TableBody>
   );

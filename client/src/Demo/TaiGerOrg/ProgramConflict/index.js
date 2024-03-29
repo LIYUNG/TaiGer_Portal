@@ -5,7 +5,7 @@ import { TabTitle } from '../../Utils/TabTitle';
 import TabProgramConflict from '../../Dashboard/MainViewTab/ProgramConflict/TabProgramConflict';
 import ErrorPage from '../../Utils/ErrorPage';
 import ModalMain from '../../Utils/ModalHandler/ModalMain';
-import { getAllCVMLRLOverview } from '../../../api';
+import { getApplicationConflicts } from '../../../api';
 import { is_TaiGer_role } from '../../Utils/checking-functions';
 import DEMO from '../../../store/constant';
 import { Navigate, Link as LinkDom } from 'react-router-dom';
@@ -35,7 +35,7 @@ function ProgramConflictDashboard() {
     });
 
   useEffect(() => {
-    getAllCVMLRLOverview().then(
+    getApplicationConflicts().then(
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;

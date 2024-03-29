@@ -1,5 +1,8 @@
 const { Router } = require('express');
-const { GeneralGETRequestRateLimiter } = require('../middlewares/rate_limiter');
+const {
+  GeneralGETRequestRateLimiter,
+  getMessagesRateLimiter
+} = require('../middlewares/rate_limiter');
 const { protect, permit } = require('../middlewares/auth');
 const { multitenant_filter } = require('../middlewares/multitenant-filter');
 
@@ -8,7 +11,8 @@ const { filter_archiv_user } = require('../middlewares/limit_archiv_user');
 const { Role } = require('../models/User');
 
 const {
-  getApplicationStudent
+  getApplicationStudent,
+  getApplicationConflicts
 } = require('../controllers/student_applications');
 
 const {
@@ -18,6 +22,14 @@ const {
 const router = Router();
 
 router.use(protect);
+
+router
+  .route('/conflicts')
+  .get(
+    getMessagesRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
+    getApplicationConflicts
+  );
 
 router
   .route('/:studentId')

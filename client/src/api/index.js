@@ -67,6 +67,9 @@ export const getExpenses = () => request.get(`/api/expenses`);
 export const getApplicationConflicts = () =>
   request.get(`/api/student-applications/conflicts`);
 
+export const getApplicationTaskDeltas = () =>
+  request.get(`/api/student-applications/deltas`);
+
 export const getApplicationStudent = (studentId) =>
   request.get(`/api/student-applications/${studentId}`);
 

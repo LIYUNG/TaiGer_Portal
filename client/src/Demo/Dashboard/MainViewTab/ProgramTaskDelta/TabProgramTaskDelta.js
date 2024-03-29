@@ -1,28 +1,30 @@
 import React from 'react';
 import { Table, TableCell, TableHead, TableRow } from '@mui/material';
-
-import ProgramConflict from '../ProgramConflict/ProgramConflict';
+import ProgramTaskDelta from './ProgramTaskDelta';
 
 function TabProgramTaskDelta(props) {
-  const programConflicts = props.students.map((conflict, i) => (
-    <ProgramConflict
+  const { deltas } = props;
+
+  const taskDeltas = deltas.map((delta, i) => (
+    <ProgramTaskDelta
       key={i}
-      students={conflict.students}
-      program={conflict.program}
+      students={delta.students}
+      program={delta.program}
     />
   ));
   return (
     <>
-      {programConflicts.length !== 0 ? (
+      {taskDeltas.length !== 0 ? (
         <Table size="small">
           <TableHead>
             <TableRow>
               <TableCell>University / Programs</TableCell>
               <TableCell>First-, Last Name</TableCell>
-              <TableCell>Delta</TableCell>
+              <TableCell>Missing</TableCell>
+              <TableCell>Extra</TableCell>
             </TableRow>
           </TableHead>
-          {programConflicts}
+          {taskDeltas}
         </Table>
       ) : (
         <></>

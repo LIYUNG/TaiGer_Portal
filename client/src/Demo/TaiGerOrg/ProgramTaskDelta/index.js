@@ -5,7 +5,7 @@ import { TabTitle } from '../../Utils/TabTitle';
 import TabProgramTaskDelta from '../../Dashboard/MainViewTab/ProgramTaskDelta/TabProgramTaskDelta';
 import ErrorPage from '../../Utils/ErrorPage';
 import ModalMain from '../../Utils/ModalHandler/ModalMain';
-import { getApplicationConflicts } from '../../../api';
+import { getApplicationTaskDeltas } from '../../../api';
 import { is_TaiGer_role } from '../../Utils/checking-functions';
 import DEMO from '../../../store/constant';
 import { Navigate, Link as LinkDom } from 'react-router-dom';
@@ -23,7 +23,7 @@ function ProgramTaskDeltaDashboard() {
       agent_list: [],
       editor_list: [],
       isLoaded: false,
-      students: [],
+      data: [],
       updateAgentList: {},
       updateEditorList: {},
       success: false,
@@ -35,7 +35,7 @@ function ProgramTaskDeltaDashboard() {
     });
 
   useEffect(() => {
-    getApplicationConflicts().then(
+    getApplicationTaskDeltas().then(
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
@@ -43,7 +43,7 @@ function ProgramTaskDeltaDashboard() {
           setProgramTaskDeltaDashboardState((prevState) => ({
             ...prevState,
             isLoaded: true,
-            students: data,
+            data: data,
             success: success,
             res_status: status
           }));
@@ -72,7 +72,7 @@ function ProgramTaskDeltaDashboard() {
   const { res_modal_status, res_modal_message, isLoaded, res_status } =
     ProgramTaskDeltaDashboardState;
   TabTitle('Program Task Delta Dashboard');
-  if (!isLoaded || !ProgramTaskDeltaDashboardState.students) {
+  if (!isLoaded || !ProgramTaskDeltaDashboardState.data) {
     return <Loading />;
   }
   if (res_status >= 400) {
@@ -104,7 +104,7 @@ function ProgramTaskDeltaDashboard() {
           {t('Program Task Delta', { ns: 'common' })}
         </Typography>
       </Breadcrumbs>
-      <TabProgramTaskDelta students={ProgramTaskDeltaDashboardState.students} />
+      <TabProgramTaskDelta deltas={ProgramTaskDeltaDashboardState.data} />
     </Box>
   );
 }

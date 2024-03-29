@@ -110,7 +110,6 @@ const findRLDelta = async (program, studentId, threads) => {
 
   return delta;
 };
-
 const findStudentDelta = async (studentId, program) => {
   let delta = {
     add: [],
@@ -120,7 +119,14 @@ const findStudentDelta = async (studentId, program) => {
   const studentProgramThreads = await Documentthread.find({
     student_id: studentId,
     program_id: program._id
-  }).lean();
+  })
+    .select('file_type messages')
+    .lean();
+
+  studentProgramThreads.map((thread) => {
+    thread.messageSize = thread.messages.length;
+    delete thread.messages;
+  });
 
   for (let fileType of Object.keys(FILETYPES)) {
     if (FILETYPES[fileType] === 'RL') {
@@ -172,7 +178,7 @@ const handleStudentDelta = async (studentId, program) => {
     }
   }
   for (let extraDoc of studentDelta.remove) {
-    if (extraDoc?.fileThread?.messages?.length !== 0) {
+    if (extraDoc?.fileThread?.messageSize !== 0) {
       logger.info(
         `handleStudentDelta: thread deletion aborted (non-empty thread) for student ${studentId} and program ${program._id} with file type ${extraDoc.fileThread.fileType} -> messages exist`
       );

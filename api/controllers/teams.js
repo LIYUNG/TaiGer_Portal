@@ -6,6 +6,73 @@ const { User, Agent, Editor, Student, Role } = require('../models/User');
 const { Documentthread } = require('../models/Documentthread');
 const logger = require('../services/logger');
 const Permission = require('../models/Permission');
+const { getStudentsByProgram } = require('./programs');
+const { findStudentDelta } = require('../utils/modelHelper/programChange');
+
+const getActivePrograms = async () => {
+  const activePrograms = await User.aggregate([
+    {
+      $match: {
+        role: 'Student',
+        archiv: {
+          $ne: true
+        }
+      }
+    },
+    {
+      $project: {
+        applications: 1
+      }
+    },
+    {
+      $unwind: {
+        path: '$applications'
+      }
+    },
+    {
+      $match: {
+        'applications.closed': '-'
+      }
+    },
+    {
+      $group: {
+        _id: '$applications.programId',
+        count: {
+          $sum: 1
+        }
+      }
+    },
+    {
+      $sort: {
+        count: -1
+      }
+    }
+  ]);
+
+  return activePrograms;
+};
+
+const getApplicationDeltaByProgram = async (program) => {
+  const students = await getStudentsByProgram(program._id);
+  const deltas = {};
+  for (let student of students) {
+    if (student?.application) {
+      deltas[student._id] = await findStudentDelta(student._id, program);
+    }
+  }
+  return { program, students: deltas };
+};
+
+const getApplicationDeltas = asyncHandler(async (req, res) => {
+  const activePrograms = await getActivePrograms();
+  const deltaPromises = [];
+  for (let program of activePrograms) {
+    const programDeltaPromise = getApplicationDeltaByProgram(program);
+    deltaPromises.push(programDeltaPromise);
+  }
+  const deltas = await Promise.all(deltaPromises);
+  res.status(200).send({ success: true, data: deltas });
+});
 
 const getTeamMembers = asyncHandler(async (req, res) => {
   const users = await User.aggregate([
@@ -357,5 +424,6 @@ module.exports = {
   getEditors,
   getSingleEditor,
   getArchivStudents,
-  getEssayWriters
+  getEssayWriters,
+  getApplicationDeltas
 };

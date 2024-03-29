@@ -31,6 +31,7 @@ const getActivePrograms = async () => {
     },
     {
       $match: {
+        'applications.decided': 'O',
         'applications.closed': '-'
       }
     },
@@ -60,7 +61,7 @@ const getApplicationDeltaByProgram = async (program) => {
       deltas[student._id] = await findStudentDelta(student._id, program);
     }
   }
-  return { program, students: deltas };
+  return deltas ? { program, students: deltas } : {};
 };
 
 const getApplicationDeltas = asyncHandler(async (req, res) => {

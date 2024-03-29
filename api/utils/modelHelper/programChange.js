@@ -199,8 +199,6 @@ const handleStudentDelta = async (studentId, program) => {
       );
     }
   }
-
-  //await handleRLDelta(program, studentId, studentProgramThreads);
 };
 
 const handleThreadDelta = async (program) => {

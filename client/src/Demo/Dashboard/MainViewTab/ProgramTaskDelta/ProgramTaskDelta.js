@@ -7,35 +7,10 @@ import DEMO from '../../../../store/constant';
 function ProgramTaskDelta(props) {
   const { students, program } = props;
 
-  const studentNames = Object.entries(students).map(([studentId]) => (
-    <div className="text-info" key={studentId}>
-      <Link
-        to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-          studentId,
-          DEMO.CVMLRL_HASH
-        )}`}
-        component={LinkDom}
-      >
-        {studentId}
-      </Link>
-    </div>
-  ));
-  const studentMissing = Object.entries(students).map(([studentId, deltas]) => (
-    <div className="text-info" key={studentId + '-add'}>
-      {deltas.add.map((missing) => missing.fileType + ', ')}
-    </div>
-  ));
-
-  const studentExtra = Object.entries(students).map(([studentId, deltas]) => (
-    <div className="text-info" key={studentId + '-remove'}>
-      {deltas.remove.map((extra) => extra.fileThread.file_type + ', ')}
-    </div>
-  ));
-
   return (
     <TableBody>
       <TableRow>
-        <TableCell>
+        <TableCell rowSpan={Object.keys(students).length + 1}>
           <Link
             to={`${DEMO.SINGLE_PROGRAM_LINK(program._id)}`}
             component={LinkDom}
@@ -50,10 +25,28 @@ function ProgramTaskDelta(props) {
             {program.count}
           </Link>
         </TableCell>
-        <TableCell>{studentNames}</TableCell>
-        <TableCell>{studentMissing}</TableCell>
-        <TableCell>{studentExtra}</TableCell>
       </TableRow>
+      {Object.entries(students).map(([studentId, deltas]) => (
+        <TableRow className="text-info" key={studentId + '-add'}>
+          <TableCell>
+            <Link
+              to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                studentId,
+                DEMO.CVMLRL_HASH
+              )}`}
+              component={LinkDom}
+            >
+              studentNames {studentId}
+            </Link>
+          </TableCell>
+          <TableCell>
+            {deltas.add.map((missing) => missing.fileType + ', ')}
+          </TableCell>
+          <TableCell>
+            {deltas.remove.map((extra) => extra.fileThread.file_type + ', ')}
+          </TableCell>
+        </TableRow>
+      ))}
     </TableBody>
   );
 }

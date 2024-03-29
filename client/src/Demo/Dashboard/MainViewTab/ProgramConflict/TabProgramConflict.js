@@ -4,7 +4,7 @@ import { Table, TableCell, TableHead, TableRow } from '@mui/material';
 import ProgramConflict from './ProgramConflict';
 
 function TabProgramConflict(props) {
-  const program_conflict = props.students.map((conflict, i) => (
+  const programConflicts = props.students.map((conflict, i) => (
     <ProgramConflict
       key={i}
       students={conflict.students}
@@ -13,7 +13,7 @@ function TabProgramConflict(props) {
   ));
   return (
     <>
-      {program_conflict.length !== 0 ? (
+      {programConflicts.length !== 0 ? (
         <Table size="small">
           <TableHead>
             <TableRow>
@@ -22,7 +22,7 @@ function TabProgramConflict(props) {
               <TableCell>Deadline</TableCell>
             </TableRow>
           </TableHead>
-          {program_conflict}
+          {programConflicts}
         </Table>
       ) : (
         <></>

@@ -5,21 +5,13 @@ import { Link, TableBody, TableCell, TableRow } from '@mui/material';
 import DEMO from '../../../../store/constant';
 
 function ProgramTaskDelta(props) {
-  const { students, program } = props;
-
-  const deltaStudents = Object.fromEntries(
-    Object.entries(students).filter(
-      ([studentId, student]) =>
-        studentId &&
-        (student.deltas.add.length !== 0 || student.deltas.remove.length !== 0)
-    )
-  );
+  const { program, students } = props;
 
   return (
-    Object.keys(deltaStudents).length !== 0 && (
+    students.length !== 0 && (
       <TableBody>
         <TableRow>
-          <TableCell rowSpan={Object.keys(deltaStudents).length + 1}>
+          <TableCell rowSpan={students.length + 1}>
             <Link
               to={`${DEMO.SINGLE_PROGRAM_LINK(program._id)}`}
               component={LinkDom}
@@ -35,12 +27,12 @@ function ProgramTaskDelta(props) {
             </Link>
           </TableCell>
         </TableRow>
-        {Object.entries(deltaStudents).map(([studentId, student]) => (
-          <TableRow className="text-info" key={studentId + '-add'}>
+        {students.map((student, i) => (
+          <TableRow className="text-info" key={i}>
             <TableCell>
               <Link
                 to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-                  studentId,
+                  student._id,
                   DEMO.CVMLRL_HASH
                 )}`}
                 component={LinkDom}

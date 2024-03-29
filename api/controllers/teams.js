@@ -54,28 +54,40 @@ const getActivePrograms = async () => {
   return activePrograms;
 };
 
+const getStudentDeltas = async (student, program) => {
+  if (!student?.application) {
+    return;
+  }
+
+  const deltas = await findStudentDelta(student._id, program);
+  if (deltas?.add?.length === 0 && deltas?.remove?.length === 0) {
+    return;
+  }
+  const studentDelta = {
+    _id: student._id,
+    firstname: student.firstname,
+    lastname: student.lastname,
+    deltas
+  };
+  return studentDelta;
+};
+
 const getApplicationDeltaByProgram = async (programId) => {
   const students = await getStudentsByProgram(programId);
   const program = await Program.findById(programId);
-  const deltas = {};
+  const studentDeltaPromises = [];
   for (let student of students) {
-    if (!student?.application) {
-      continue;
-    }
-
-    const delta = await findStudentDelta(student._id, program);
-    if (delta?.add?.length === 0 && delta?.remove?.length === 0) {
-      continue;
-    }
-    deltas[student._id] = {
-      firstname: student.firstname,
-      lastname: student.lastname
-    };
-    deltas[student._id].deltas = delta;
+    const studentDelta = getStudentDeltas(student, program);
+    studentDeltaPromises.push(studentDelta);
   }
-  const { school, program_name, degree, semester } = program;
-  return Object.keys(deltas).length !== 0
-    ? { program: { school, program_name, degree, semester }, students: deltas }
+  let studentDeltas = await Promise.all(studentDeltaPromises);
+  studentDeltas = studentDeltas.filter((student) => student);
+  const { _id, school, program_name, degree, semester } = program;
+  return studentDeltas.length !== 0
+    ? {
+        program: { _id, school, program_name, degree, semester },
+        students: studentDeltas
+      }
     : {};
 };
 
@@ -87,12 +99,10 @@ const getApplicationDeltas = asyncHandler(async (req, res) => {
     deltaPromises.push(programDeltaPromise);
   }
   const deltas = await Promise.all(deltaPromises);
-  res
-    .status(200)
-    .send({
-      success: true,
-      data: deltas.filter((obj) => Object.keys(obj).length !== 0)
-    });
+  res.status(200).send({
+    success: true,
+    data: deltas.filter((obj) => Object.keys(obj).length !== 0)
+  });
 });
 
 const getTeamMembers = asyncHandler(async (req, res) => {

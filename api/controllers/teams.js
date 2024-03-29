@@ -3,6 +3,7 @@ const _ = require('lodash');
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
 const { User, Agent, Editor, Student, Role } = require('../models/User');
+const { Program } = require('../models/Program');
 const { Documentthread } = require('../models/Documentthread');
 const logger = require('../services/logger');
 const Permission = require('../models/Permission');
@@ -53,12 +54,19 @@ const getActivePrograms = async () => {
   return activePrograms;
 };
 
-const getApplicationDeltaByProgram = async (program) => {
-  const students = await getStudentsByProgram(program._id);
+const getApplicationDeltaByProgram = async (programId) => {
+  const students = await getStudentsByProgram(programId);
+  const program = await Program.findById(programId).select(
+    'school program_name degree semester'
+  );
   const deltas = {};
   for (let student of students) {
     if (student?.application) {
-      deltas[student._id] = await findStudentDelta(student._id, program);
+      deltas[student._id] = {
+        firstname: student.firstname,
+        lastname: student.lastname
+      };
+      deltas[student._id].deltas = await findStudentDelta(student._id, program);
     }
   }
   return deltas ? { program, students: deltas } : {};
@@ -68,7 +76,7 @@ const getApplicationDeltas = asyncHandler(async (req, res) => {
   const activePrograms = await getActivePrograms();
   const deltaPromises = [];
   for (let program of activePrograms) {
-    const programDeltaPromise = getApplicationDeltaByProgram(program);
+    const programDeltaPromise = getApplicationDeltaByProgram(program._id);
     deltaPromises.push(programDeltaPromise);
   }
   const deltas = await Promise.all(deltaPromises);

@@ -15,18 +15,18 @@ function ProgramTaskDelta(props) {
             to={`${DEMO.SINGLE_PROGRAM_LINK(program._id)}`}
             component={LinkDom}
           >
-            <b>{program._id}</b>
+            <b>{program.school}</b>
           </Link>
           <br />
           <Link
             to={`${DEMO.SINGLE_PROGRAM_LINK(program._id)}`}
             component={LinkDom}
           >
-            {program.count}
+            {program.program_name}
           </Link>
         </TableCell>
       </TableRow>
-      {Object.entries(students).map(([studentId, deltas]) => (
+      {Object.entries(students).map(([studentId, student]) => (
         <TableRow className="text-info" key={studentId + '-add'}>
           <TableCell>
             <Link
@@ -36,14 +36,14 @@ function ProgramTaskDelta(props) {
               )}`}
               component={LinkDom}
             >
-              studentNames {studentId}
+              {student.firstname + ', ' + student.lastname}
             </Link>
           </TableCell>
           <TableCell>
-            {deltas.add.map((missing) => missing.fileType).join(', ')}
+            {student.deltas.add.map((missing) => missing.fileType).join(', ')}
           </TableCell>
           <TableCell>
-            {deltas.remove
+            {student.deltas.remove
               .map((extra) => extra.fileThread.file_type)
               .join(', ')}
           </TableCell>

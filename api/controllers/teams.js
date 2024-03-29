@@ -59,16 +59,22 @@ const getApplicationDeltaByProgram = async (programId) => {
   const program = await Program.findById(programId);
   const deltas = {};
   for (let student of students) {
-    if (student?.application) {
-      deltas[student._id] = {
-        firstname: student.firstname,
-        lastname: student.lastname
-      };
-      deltas[student._id].deltas = await findStudentDelta(student._id, program);
+    if (!student?.application) {
+      continue;
     }
+
+    const delta = await findStudentDelta(student._id, program);
+    if (delta?.add?.length === 0 && delta?.remove?.length === 0) {
+      continue;
+    }
+    deltas[student._id] = {
+      firstname: student.firstname,
+      lastname: student.lastname
+    };
+    deltas[student._id].deltas = delta;
   }
   const { school, program_name, degree, semester } = program;
-  return deltas
+  return Object.keys(deltas).length !== 0
     ? { program: { school, program_name, degree, semester }, students: deltas }
     : {};
 };
@@ -81,7 +87,12 @@ const getApplicationDeltas = asyncHandler(async (req, res) => {
     deltaPromises.push(programDeltaPromise);
   }
   const deltas = await Promise.all(deltaPromises);
-  res.status(200).send({ success: true, data: deltas });
+  res
+    .status(200)
+    .send({
+      success: true,
+      data: deltas.filter((obj) => Object.keys(obj).length !== 0)
+    });
 });
 
 const getTeamMembers = asyncHandler(async (req, res) => {

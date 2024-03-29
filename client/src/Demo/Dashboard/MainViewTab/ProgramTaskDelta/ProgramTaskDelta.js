@@ -12,19 +12,22 @@ function ProgramTaskDelta(props) {
       <TableBody>
         <TableRow>
           <TableCell rowSpan={students.length + 1}>
-            <Link
-              to={`${DEMO.SINGLE_PROGRAM_LINK(program._id)}`}
-              component={LinkDom}
-            >
-              <b>{program.school}</b>
-            </Link>
-            <br />
-            <Link
-              to={`${DEMO.SINGLE_PROGRAM_LINK(program._id)}`}
-              component={LinkDom}
-            >
-              {program.program_name}
-            </Link>
+            <div>
+              <Link
+                to={`${DEMO.SINGLE_PROGRAM_LINK(program._id)}`}
+                component={LinkDom}
+              >
+                <b>{program.school}</b>
+              </Link>
+            </div>
+            <div>
+              <Link
+                to={`${DEMO.SINGLE_PROGRAM_LINK(program._id)}`}
+                component={LinkDom}
+              >
+                {program.program_name}
+              </Link>
+            </div>
           </TableCell>
         </TableRow>
         {students.map((student, i) => (

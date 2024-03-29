@@ -77,6 +77,9 @@ const SingleBalanceSheetOverview = React.lazy(() =>
 const ProgramConflict = React.lazy(() =>
   import('./Demo/TaiGerOrg/ProgramConflict/index')
 );
+const ProgramTaskDelta = React.lazy(() =>
+  import('./Demo/TaiGerOrg/ProgramTaskDelta/index')
+);
 const TaiGerPermissions = React.lazy(() => import('./Demo/TaiGerOrg/index'));
 const TaiGerUsersLog = React.lazy(() => import('./Demo/TaiGerOrg/Log/index'));
 const TaiGerUserLog = React.lazy(() =>
@@ -481,6 +484,12 @@ const routes = [
     exact: true,
     name: '',
     Component: ProgramConflict
+  },
+  {
+    path: '/internal/program-task-delta',
+    exact: true,
+    name: '',
+    Component: ProgramTaskDelta
   },
   {
     path: '/internal/accounting',

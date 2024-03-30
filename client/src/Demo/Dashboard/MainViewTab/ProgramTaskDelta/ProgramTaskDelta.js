@@ -11,7 +11,7 @@ function ProgramTaskDelta(props) {
     students?.length !== 0 && (
       <TableBody>
         <TableRow>
-          <TableCell rowSpan={students?.length + 1 || 1}>
+          <TableCell rowSpan={(students?.length || 0) + 1}>
             <div>
               <Link
                 to={`${DEMO.SINGLE_PROGRAM_LINK(program._id)}`}

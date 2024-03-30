@@ -6,30 +6,30 @@ import DEMO from '../../../../store/constant';
 
 function ProgramConflict(props) {
   const { students, program } = props;
-  console.log('students', students[0]);
+
   return (
     <TableBody>
       <TableRow>
-        <TableCell rowSpan={students.length + 1}>
+        <TableCell rowSpan={students?.length + 1}>
           <div>
             <Link
-              to={`${DEMO.SINGLE_PROGRAM_LINK(program._id)}`}
+              to={`${DEMO.SINGLE_PROGRAM_LINK(program?._id)}`}
               component={LinkDom}
             >
-              <b>{program.school}</b>
+              <b>{program?.school}</b>
             </Link>
           </div>
           <div>
             <Link
-              to={`${DEMO.SINGLE_PROGRAM_LINK(program._id)}`}
+              to={`${DEMO.SINGLE_PROGRAM_LINK(program?._id)}`}
               component={LinkDom}
             >
-              {program.program_name}
+              {program?.program_name}
             </Link>
           </div>
         </TableCell>
       </TableRow>
-      {students.map((student, i) => (
+      {students?.map((student, i) => (
         <TableRow key={i}>
           <TableCell>
             <Link

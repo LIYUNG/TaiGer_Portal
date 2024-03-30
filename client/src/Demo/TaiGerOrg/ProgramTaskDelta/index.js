@@ -71,7 +71,7 @@ function ProgramTaskDeltaDashboard() {
   }
   const { res_modal_status, res_modal_message, isLoaded, res_status } =
     ProgramTaskDeltaDashboardState;
-  TabTitle('Program Task Delta Dashboard');
+  TabTitle('Program Task Diff Dashboard');
   if (!isLoaded || !ProgramTaskDeltaDashboardState.data) {
     return <Loading />;
   }
@@ -101,7 +101,7 @@ function ProgramTaskDeltaDashboard() {
           {t('All Students', { ns: 'common' })}
         </Typography>
         <Typography color="text.primary">
-          {t('Program Task Delta', { ns: 'common' })}
+          {t('Program Task Diff', { ns: 'common' })}
         </Typography>
       </Breadcrumbs>
       <TabProgramTaskDelta deltas={ProgramTaskDeltaDashboardState.data} />

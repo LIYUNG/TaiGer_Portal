@@ -8,6 +8,7 @@ export const translation_zh_TW = {
     'Last Login': '最近登入'
   },
   common: {
+    'Program Task Diff': '學程文件差別對照表',
     'Coming soon': '即將開放',
     Agent: '顧問',
     Editor: '編輯',

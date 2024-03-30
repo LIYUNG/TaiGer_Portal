@@ -134,7 +134,7 @@ let all_students_nestedList = [
   },
   {
     id: 'internal_program-task-delta',
-    title: 'Program Task Delta',
+    title: 'Program Task Diff',
     type: 'item',
     icon: <DifferenceIcon />,
     url: '/internal/program-task-delta'

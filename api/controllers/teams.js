@@ -3,9 +3,106 @@ const _ = require('lodash');
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
 const { User, Agent, Editor, Student, Role } = require('../models/User');
+const { Program } = require('../models/Program');
 const { Documentthread } = require('../models/Documentthread');
 const logger = require('../services/logger');
 const Permission = require('../models/Permission');
+const { getStudentsByProgram } = require('./programs');
+const { findStudentDelta } = require('../utils/modelHelper/programChange');
+
+const getActivePrograms = async () => {
+  const activePrograms = await User.aggregate([
+    {
+      $match: {
+        role: 'Student',
+        archiv: {
+          $ne: true
+        }
+      }
+    },
+    {
+      $project: {
+        applications: 1
+      }
+    },
+    {
+      $unwind: {
+        path: '$applications'
+      }
+    },
+    {
+      $match: {
+        'applications.decided': 'O',
+        'applications.closed': '-'
+      }
+    },
+    {
+      $group: {
+        _id: '$applications.programId',
+        count: {
+          $sum: 1
+        }
+      }
+    },
+    {
+      $sort: {
+        count: -1
+      }
+    }
+  ]);
+
+  return activePrograms;
+};
+
+const getStudentDeltas = async (student, program) => {
+  const deltas = await findStudentDelta(student._id, program);
+  if (deltas?.add?.length === 0 && deltas?.remove?.length === 0) {
+    return;
+  }
+  const studentDelta = {
+    _id: student._id,
+    firstname: student.firstname,
+    lastname: student.lastname,
+    deltas
+  };
+  return studentDelta;
+};
+
+const getApplicationDeltaByProgram = async (programId) => {
+  const students = await getStudentsByProgram(programId);
+  const program = await Program.findById(programId);
+  const studentDeltaPromises = [];
+  for (let student of students) {
+    if (!student.application || student.application.closed !== '-') {
+      continue;
+    }
+    const studentDelta = getStudentDeltas(student, program);
+    studentDeltaPromises.push(studentDelta);
+  }
+  let studentDeltas = await Promise.all(studentDeltaPromises);
+  studentDeltas = studentDeltas.filter((student) => student);
+  const { _id, school, program_name, degree, semester } = program;
+  return studentDeltas.length !== 0
+    ? {
+        program: { _id, school, program_name, degree, semester },
+        students: studentDeltas
+      }
+    : {};
+};
+
+const getApplicationDeltas = asyncHandler(async (req, res) => {
+  const activePrograms = await getActivePrograms();
+  const deltaPromises = [];
+  for (let program of activePrograms) {
+    const programDeltaPromise = getApplicationDeltaByProgram(program._id);
+    deltaPromises.push(programDeltaPromise);
+  }
+  const deltas = await Promise.all(deltaPromises);
+  res.status(200).send({
+    success: true,
+    data: deltas.filter((obj) => Object.keys(obj).length !== 0)
+  });
+});
 
 const getTeamMembers = asyncHandler(async (req, res) => {
   const users = await User.aggregate([
@@ -357,5 +454,6 @@ module.exports = {
   getEditors,
   getSingleEditor,
   getArchivStudents,
-  getEssayWriters
+  getEssayWriters,
+  getApplicationDeltas
 };

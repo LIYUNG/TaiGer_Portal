@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Box, Breadcrumbs, Link, Typography } from '@mui/material';
 
 import { TabTitle } from '../../Utils/TabTitle';
-import TabProgramConflict from '../../Dashboard/MainViewTab/ProgramConflict/TabProgramConflict';
+import TabProgramTaskDelta from '../../Dashboard/MainViewTab/ProgramTaskDelta/TabProgramTaskDelta';
 import ErrorPage from '../../Utils/ErrorPage';
 import ModalMain from '../../Utils/ModalHandler/ModalMain';
-import { getApplicationConflicts } from '../../../api';
+import { getApplicationTaskDeltas } from '../../../api';
 import { is_TaiGer_role } from '../../Utils/checking-functions';
 import DEMO from '../../../store/constant';
 import { Navigate, Link as LinkDom } from 'react-router-dom';
@@ -14,16 +14,16 @@ import { appConfig } from '../../../config';
 import Loading from '../../../components/Loading/Loading';
 import { useTranslation } from 'react-i18next';
 
-function ProgramConflictDashboard() {
+function ProgramTaskDeltaDashboard() {
   const { user } = useAuth();
   const { t } = useTranslation();
-  const [ProgramConflictDashboardState, setProgramConflictDashboardState] =
+  const [ProgramTaskDeltaDashboardState, setProgramTaskDeltaDashboardState] =
     useState({
       error: '',
       agent_list: [],
       editor_list: [],
       isLoaded: false,
-      students: [],
+      data: [],
       updateAgentList: {},
       updateEditorList: {},
       success: false,
@@ -35,20 +35,20 @@ function ProgramConflictDashboard() {
     });
 
   useEffect(() => {
-    getApplicationConflicts().then(
+    getApplicationTaskDeltas().then(
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
         if (success) {
-          setProgramConflictDashboardState((prevState) => ({
+          setProgramTaskDeltaDashboardState((prevState) => ({
             ...prevState,
             isLoaded: true,
-            students: data,
+            data: data,
             success: success,
             res_status: status
           }));
         } else {
-          setProgramConflictDashboardState((prevState) => ({
+          setProgramTaskDeltaDashboardState((prevState) => ({
             ...prevState,
             isLoaded: true,
             res_status: status
@@ -56,7 +56,7 @@ function ProgramConflictDashboard() {
         }
       },
       (error) => {
-        setProgramConflictDashboardState((prevState) => ({
+        setProgramTaskDeltaDashboardState((prevState) => ({
           ...prevState,
           isLoaded: true,
           error,
@@ -70,9 +70,9 @@ function ProgramConflictDashboard() {
     return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
   }
   const { res_modal_status, res_modal_message, isLoaded, res_status } =
-    ProgramConflictDashboardState;
-  TabTitle('Program Conflict Dashboard');
-  if (!isLoaded || !ProgramConflictDashboardState.students) {
+    ProgramTaskDeltaDashboardState;
+  TabTitle('Program Task Diff Dashboard');
+  if (!isLoaded || !ProgramTaskDeltaDashboardState.data) {
     return <Loading />;
   }
   if (res_status >= 400) {
@@ -101,12 +101,12 @@ function ProgramConflictDashboard() {
           {t('All Students', { ns: 'common' })}
         </Typography>
         <Typography color="text.primary">
-          {t('Program Conflicts', { ns: 'common' })}
+          {t('Program Task Diff', { ns: 'common' })}
         </Typography>
       </Breadcrumbs>
-      <TabProgramConflict students={ProgramConflictDashboardState.students} />
+      <TabProgramTaskDelta deltas={ProgramTaskDeltaDashboardState.data} />
     </Box>
   );
 }
 
-export default ProgramConflictDashboard;
+export default ProgramTaskDeltaDashboard;

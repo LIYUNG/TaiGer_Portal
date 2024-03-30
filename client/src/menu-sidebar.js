@@ -26,6 +26,7 @@ import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import HistoryIcon from '@mui/icons-material/History';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import EqualizerIcon from '@mui/icons-material/Equalizer';
+import DifferenceIcon from '@mui/icons-material/Difference';
 import { appConfig } from './config';
 
 let application_overview = [
@@ -130,6 +131,13 @@ let all_students_nestedList = [
     type: 'item',
     icon: <AssignmentLateOutlinedIcon />,
     url: '/internal/program-conflict'
+  },
+  {
+    id: 'internal_program-task-delta',
+    title: 'Program Task Diff',
+    type: 'item',
+    icon: <DifferenceIcon />,
+    url: '/internal/program-task-delta'
   },
   {
     id: 'admissions_overview',

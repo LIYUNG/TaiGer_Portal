@@ -64,6 +64,12 @@ export const getAdmissions = () => request.get(`/api/admissions`);
 
 export const getExpenses = () => request.get(`/api/expenses`);
 
+export const getApplicationConflicts = () =>
+  request.get(`/api/student-applications/conflicts`);
+
+export const getApplicationTaskDeltas = () =>
+  request.get(`/api/student-applications/deltas`);
+
 export const getApplicationStudent = (studentId) =>
   request.get(`/api/student-applications/${studentId}`);
 
@@ -247,7 +253,7 @@ export const SetFileAsFinal = (documentsthreadId, studentId, program_id) =>
   });
 
 export const updateEssayWriter = (editor_id, documentsthreadId) =>
-  request.post(`/api/document-threads/${documentsthreadId}/essay`, editor_id)
+  request.post(`/api/document-threads/${documentsthreadId}/essay`, editor_id);
 
 export const getAllActiveEssays = () =>
   request.get(`/api/document-threads/essays/all`);

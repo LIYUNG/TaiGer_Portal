@@ -60,7 +60,12 @@ const checkIsRLspecific = (program) => {
   return isRLSpecific || (NoRLSpecificFlag && program?.rl_requirements);
 };
 
-const handleRLDelta = async (program, studentId, threads) => {
+const findRLDelta = async (program, studentId, threads) => {
+  let delta = {
+    add: [],
+    remove: []
+  };
+
   const nrRLneeded = parseInt(program.rl_required);
   const nrSpecRLNeeded = !checkIsRLspecific(program) ? 0 : nrRLneeded;
 
@@ -72,7 +77,7 @@ const handleRLDelta = async (program, studentId, threads) => {
     .reverse();
   const nrSpecificRL = existingRL.length;
 
-  // add missing RL
+  // find missing RL
   if (nrSpecRLNeeded > nrSpecificRL) {
     const existingRLTypes = existingRL.map((thread) => thread.file_type);
     const availableRLs = RLs_CONSTANT.filter(
@@ -80,106 +85,120 @@ const handleRLDelta = async (program, studentId, threads) => {
     );
     const missingRL = nrSpecRLNeeded - nrSpecificRL;
     for (let i = 0; i < missingRL && i < availableRLs.length; i++) {
-      try {
-        await createApplicationThread(studentId, program._id, availableRLs[i]);
-        logger.error(
-          `handleStudentDelta: create thread for student ${studentId} and program ${program._id} with file type RL (${availableRLs[i]})`
-        );
-      } catch (error) {
-        logger.error(
-          `handleStudentDelta: error on thread creation for student ${studentId} and program ${program._id} with file type RL -> error: ${error}`
-        );
-      }
+      delta.add.push({
+        studentId,
+        programId: program._id,
+        fileType: availableRLs[i]
+      });
     }
   }
 
-  // remove extra RL
+  // find extra RL
   if (nrSpecRLNeeded < nrSpecificRL) {
     const extraRL = nrSpecificRL - nrSpecRLNeeded;
     for (let i = 0; i < extraRL && i < existingRL.length; i++) {
-      const thread = threads.find(
+      const fileThread = threads.find(
         (thread) => thread.file_type === existingRL[i]?.file_type
       );
-      if (thread?.messages?.length !== 0) {
-        logger.info(
-          `handleStudentDelta: thread deletion aborted (non-empty thread) for student ${studentId} and program ${program._id} with file type RL -> messages exist`
-        );
-        continue;
-      }
-      try {
-        await deleteApplicationThread(
-          studentId?.toString(),
-          program._id?.toString(),
-          thread._id?.toString()
-        );
-        logger.error(
-          `handleStudentDelta: delete thread for student ${studentId} and program ${program._id} with file type RL (${thread.file_type})`
-        );
-      } catch (error) {
-        logger.error(
-          `handleStudentDelta: error on thread deletion for student ${studentId} and program ${program._id} with file type RL -> error: ${error}`
-        );
-      }
+      delta.remove.push({
+        studentId,
+        programId: program._id,
+        fileThread
+      });
     }
   }
-};
 
-const handleStudentDelta = async (studentId, program) => {
+  return delta;
+};
+const findStudentDelta = async (studentId, program) => {
+  let delta = {
+    add: [],
+    remove: []
+  };
+
   const studentProgramThreads = await Documentthread.find({
     student_id: studentId,
     program_id: program._id
-  }).lean();
+  })
+    .select('file_type messages')
+    .lean();
+
+  studentProgramThreads.map((thread) => {
+    thread.messageSize = thread.messages.length;
+    delete thread.messages;
+  });
 
   for (let fileType of Object.keys(FILETYPES)) {
-    // RL is handled separately
     if (FILETYPES[fileType] === 'RL') {
       continue;
     }
-
     const fileThread = studentProgramThreads.find(
       (thread) => thread.file_type === FILETYPES[fileType]
     );
 
     if (program[fileType]?.toLowerCase() === 'yes' && !fileThread) {
-      try {
-        await createApplicationThread(
-          studentId,
-          program._id,
-          FILETYPES[fileType]
-        );
-        logger.info(
-          `handleStudentDelta: create thread for student ${studentId} and program ${program._id} with file type ${FILETYPES[fileType]}`
-        );
-      } catch (error) {
-        logger.error(
-          `handleStudentDelta: error on thread creation for student ${studentId} and program ${program._id} with file type ${FILETYPES[fileType]} -> error: ${error}`
-        );
-      }
+      delta.add.push({
+        studentId,
+        programId: program._id,
+        fileType: FILETYPES[fileType]
+      });
     } else if (program[fileType]?.toLowerCase() !== 'yes' && fileThread) {
-      if (fileThread?.messages?.length !== 0) {
-        logger.info(
-          `handleStudentDelta: thread deletion aborted (non-empty thread) for student ${studentId} and program ${program._id} with file type ${FILETYPES[fileType]} -> messages exist`
-        );
-        continue;
-      }
-      try {
-        await deleteApplicationThread(
-          studentId?.toString(),
-          program._id?.toString(),
-          fileThread._id?.toString()
-        );
-        logger.info(
-          `handleStudentDelta: delete thread for student ${studentId} and program ${program._id} with file type ${FILETYPES[fileType]}`
-        );
-      } catch (error) {
-        logger.error(
-          `handleStudentDelta: error on thread deletion for student ${studentId} and program ${program._id} with file type ${FILETYPES[fileType]} -> error: ${error}`
-        );
-      }
+      delta.remove.push({
+        studentId,
+        programId: program._id,
+        fileThread
+      });
     }
   }
 
-  await handleRLDelta(program, studentId, studentProgramThreads);
+  const RLdelta = await findRLDelta(program, studentId, studentProgramThreads);
+  delta.add = delta.add.concat(RLdelta.add);
+  delta.remove = delta.remove.concat(RLdelta.remove);
+  return delta;
+};
+
+const handleStudentDelta = async (studentId, program) => {
+  const studentDelta = await findStudentDelta(studentId, program);
+  console.log('studentDelta:', studentDelta);
+
+  for (let missingDoc of studentDelta.add) {
+    try {
+      await createApplicationThread(
+        missingDoc.studentId.toString(),
+        missingDoc.programId.toString(),
+        missingDoc.fileType
+      );
+      logger.info(
+        `handleStudentDelta: create thread for student ${missingDoc.studentId} and program ${missingDoc.programId} with file type ${missingDoc.fileType}`
+      );
+    } catch (error) {
+      logger.error(
+        `handleStudentDelta: error on thread creation for student ${missingDoc.studentId} and program ${missingDoc.programId} with file type ${missingDoc.fileType} -> error: ${error}`
+      );
+    }
+  }
+  for (let extraDoc of studentDelta.remove) {
+    if (extraDoc?.fileThread?.messageSize !== 0) {
+      logger.info(
+        `handleStudentDelta: thread deletion aborted (non-empty thread) for student ${studentId} and program ${program._id} with file type ${extraDoc.fileThread.fileType} -> messages exist`
+      );
+      continue;
+    }
+    try {
+      await deleteApplicationThread(
+        extraDoc.studentId.toString(),
+        extraDoc.programId.toString(),
+        extraDoc.fileThread._id.toString()
+      );
+      logger.info(
+        `handleStudentDelta: delete thread for student ${extraDoc.studentId} and program ${extraDoc.programId} with file type ${extraDoc.fileThread.file_type}`
+      );
+    } catch (error) {
+      logger.error(
+        `handleStudentDelta: error on thread deletion for student ${extraDoc.studentId} and program ${extraDoc.programId} with file type ${extraDoc.fileThread.file_type} -> error: ${error}`
+      );
+    }
+  }
 };
 
 const handleThreadDelta = async (program) => {
@@ -199,5 +218,6 @@ const handleThreadDelta = async (program) => {
 module.exports = {
   isCrucialChanges,
   findAffectedStudents,
+  findStudentDelta,
   handleThreadDelta
 };

@@ -8,6 +8,7 @@ export const translation_en = {
     'Last Login': 'Last Login'
   },
   common: {
+    'Program Task Diff': 'Program Task Diff',
     'Coming soon': 'Coming soon',
     Agent: 'Agent',
     Editor: 'Editor',

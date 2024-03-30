@@ -44,6 +44,7 @@ const getStudentsByProgram = async (programId) => {
     }
   })
     .populate('agents editors', 'firstname')
+    .populate('applications.doc_modification_thread.doc_thread_id', 'file_type')
     .select(
       'firstname lastname applications application_preference.expected_application_date'
     )
@@ -55,7 +56,7 @@ const getStudentsByProgram = async (programId) => {
 
   students.forEach((student) => {
     student.application = student.applications.find(
-      (app) => app.programId.toString() === programId
+      (app) => app.programId.toString() === programId.toString()
     );
     delete student.applications;
   });
@@ -257,6 +258,7 @@ const deleteProgram = asyncHandler(async (req, res) => {
 });
 
 module.exports = {
+  getStudentsByProgram,
   getPrograms,
   getProgram,
   createProgram,

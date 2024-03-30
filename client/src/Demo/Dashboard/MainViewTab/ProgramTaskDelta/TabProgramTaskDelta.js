@@ -6,30 +6,32 @@ import {
   TableHead,
   TableRow
 } from '@mui/material';
+import ProgramTaskDelta from './ProgramTaskDelta';
 
-import ProgramConflict from './ProgramConflict';
+function TabProgramTaskDelta(props) {
+  const { deltas } = props;
 
-function TabProgramConflict(props) {
-  const programConflicts = props.students.map((conflict, i) => (
-    <ProgramConflict
+  const taskDeltas = deltas.map((delta, i) => (
+    <ProgramTaskDelta
       key={i}
-      students={conflict.students}
-      program={conflict.program}
+      students={delta.students}
+      program={delta.program}
     />
   ));
   return (
     <>
-      {programConflicts.length !== 0 ? (
+      {taskDeltas.length !== 0 ? (
         <TableContainer>
           <Table size="small">
             <TableHead>
               <TableRow>
                 <TableCell>University / Programs</TableCell>
                 <TableCell>Student Name</TableCell>
-                <TableCell>Deadline</TableCell>
+                <TableCell>Missing</TableCell>
+                <TableCell>Extra</TableCell>
               </TableRow>
             </TableHead>
-            {programConflicts}
+            {taskDeltas}
           </Table>
         </TableContainer>
       ) : (
@@ -39,4 +41,4 @@ function TabProgramConflict(props) {
   );
 }
 
-export default TabProgramConflict;
+export default TabProgramTaskDelta;

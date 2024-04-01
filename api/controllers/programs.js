@@ -14,7 +14,7 @@ const getPrograms = asyncHandler(async (req, res) => {
     const value = two_weeks_cache.get(req.originalUrl);
     if (value === undefined) {
       // cache miss
-      const programs = await Program.find().select(
+      const programs = await Program.find({ isArchiv: { $ne: true } }).select(
         '-study_group_flag -tuition_fees -website -special_notes -comments -optionalDocuments -requiredDocuments -uni_assist -daad_link -ml_required -ml_requirements -rl_required -essay_required -essay_requirements -application_portal_a -application_portal_b -fpso -program_duration -deprecated'
       );
       const success = two_weeks_cache.set(req.originalUrl, programs);
@@ -23,11 +23,10 @@ const getPrograms = asyncHandler(async (req, res) => {
       }
       return res.send({ success: true, data: programs });
     }
-    console.log('programs cache hit');
     res.send({ success: true, data: value });
   } else {
     // Option 2: No cache, good when programs are still frequently updated
-    const programs = await Program.find().select(
+    const programs = await Program.find({ isArchiv: { $ne: true } }).select(
       '-study_group_flag -tuition_fees -website -special_notes -comments -optionalDocuments -requiredDocuments -uni_assist -daad_link -ml_required -ml_requirements -rl_required -essay_required -essay_requirements -application_portal_a -application_portal_b -fpso -program_duration -deprecated'
     );
     res.send({ success: true, data: programs });
@@ -235,7 +234,7 @@ const deleteProgram = asyncHandler(async (req, res) => {
   // Check if anyone applied this program
   if (students.length === 0) {
     console.log('it can be deleted!');
-    await Program.findByIdAndDelete(req.params.programId);
+    await Program.findByIdAndUpdate(req.params.programId, { isArchiv: true });
     console.log('The program deleted!');
 
     const value = one_month_cache.del(req.originalUrl);

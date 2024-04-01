@@ -21,13 +21,15 @@ const Languages = {
 };
 
 const programModule = {
+  isArchiv: Boolean,
   school: {
     type: String,
-    default: ''
+    default: '',
+    required: true
   },
   program_name: {
     type: String,
-    default: ''
+    required: true
   },
   degree: {
     type: String

@@ -1,9 +1,6 @@
 const { model, Schema } = require('mongoose');
 const logger = require('../services/logger');
-const {
-  isCrucialChanges,
-  handleThreadDelta
-} = require('../utils/modelHelper/programChange');
+const { handleProgramChanges } = require('../utils/modelHelper/programChange');
 
 const { enableVersionControl } = require('../utils/modelHelper/versionControl');
 
@@ -204,57 +201,7 @@ const programModule = {
 
 const programSchema = new Schema(programModule, { timestamps: true });
 programSchema.plugin(enableVersionControl);
-
-programSchema.pre(
-  ['findOneAndUpdate', 'updateOne', 'updateMany', 'update'],
-  async function (doc) {
-    logger.info('--- program hook pre');
-    try {
-      const condition = this.getQuery();
-      this._originals = await this.model.find(condition).lean();
-    } catch (error) {
-      logger.error(`ProgramHook - Error on pre hook: ${error}`);
-    }
-  }
-);
-
-programSchema.post(
-  ['findOneAndUpdate', 'updateOne', 'updateMany', 'update'],
-  async function (doc) {
-    logger.info('--- program hook post');
-    try {
-      const docs = this._originals;
-      delete this._originals;
-      const changes = this.getUpdate().$set;
-      if (!isCrucialChanges(changes) || docs?.length === 0) {
-        return;
-      }
-
-      for (let doc of docs) {
-        const updatedDoc = { ...doc, ...changes };
-        const programId = updatedDoc._id;
-
-        try {
-          logger.info(
-            `ProgramHook - Crucial changes detected on Program (Id=${programId}): ${JSON.stringify(
-              changes
-            )}`
-          );
-          await handleThreadDelta(updatedDoc);
-          logger.info(
-            `ProgramHook - Post hook executed successfully. (Id=${programId})`
-          );
-        } catch (error) {
-          logger.error(
-            `ProgramHook - Error on post hook (Id=${programId}): ${error}`
-          );
-        }
-      }
-    } catch (error) {
-      logger.error(`ProgramHook - Error on post hook: ${error}`);
-    }
-  }
-);
+programSchema.plugin(handleProgramChanges);
 
 programSchema.index({ school: 1, program_name: 1 });
 const Program = model('Program', programSchema);

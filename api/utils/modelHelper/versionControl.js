@@ -1,5 +1,3 @@
-const mongoose = require('mongoose');
-
 const VC = require('../../models/VersionControl');
 const logger = require('../../services/logger');
 
@@ -72,4 +70,5 @@ const enableVersionControl = (schema) => {
   );
 };
 
+module.default = enableVersionControl;
 module.exports = { enableVersionControl };

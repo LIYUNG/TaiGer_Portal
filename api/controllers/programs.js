@@ -195,8 +195,8 @@ const updateProgram = asyncHandler(async (req, res) => {
   delete fields_root.application_start;
   delete fields_root.application_deadline;
 
-  const program = await Program.findByIdAndUpdate(
-    req.params.programId,
+  const program = await Program.findOneAndUpdate(
+    { _id: req.params.programId },
     fields,
     {
       new: true
@@ -206,6 +206,7 @@ const updateProgram = asyncHandler(async (req, res) => {
   // Update same program but other semester common data
   await Program.updateMany(
     {
+      _id: { $ne: req.params.programId },
       school: program.school,
       program_name: program.program_name,
       degree: program.degree

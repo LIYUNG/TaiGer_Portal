@@ -5,6 +5,8 @@ const {
   handleThreadDelta
 } = require('../utils/modelHelper/programChange');
 
+const { enableVersionControl } = require('../utils/modelHelper/versionControl');
+
 const Degree = {
   bachelor_sc: 'B.Sc',
   bachelor_eng: 'B.Eng',
@@ -201,48 +203,59 @@ const programModule = {
 };
 
 const programSchema = new Schema(programModule, { timestamps: true });
-programSchema.pre(['updateOne', 'updateMany', 'update'], async function () {
-  try {
-    const condition = this.getQuery();
-    this._originals = await this.model.find(condition).lean();
-  } catch (error) {
-    logger.error(`ProgramHook - Error on pre hook: ${error}`);
-  }
-});
+enableVersionControl('Program', programSchema);
 
-programSchema.post(['updateOne', 'updateMany', 'update'], async function () {
-  try {
-    const docs = this._originals;
-    delete this._originals;
-    const changes = this.getUpdate().$set;
-    if (!isCrucialChanges(changes)) {
-      return;
+programSchema.pre(
+  ['findOneAndUpdate', 'updateOne', 'updateMany', 'update'],
+  async function (doc) {
+    logger.info('--- program hook pre');
+    try {
+      const condition = this.getQuery();
+      this._originals = await this.model.find(condition).lean();
+      console.log('');
+    } catch (error) {
+      logger.error(`ProgramHook - Error on pre hook: ${error}`);
     }
+  }
+);
 
-    for (let doc of docs) {
-      const updatedDoc = { ...doc, ...changes };
-      const programId = updatedDoc._id;
-
-      try {
-        logger.info(
-          `ProgramHook - Crucial changes detected on Program (Id=${programId}): ${JSON.stringify(
-            changes
-          )}`
-        );
-        await handleThreadDelta(updatedDoc);
-        logger.info(
-          `ProgramHook - Post hook executed successfully. (Id=${programId})`
-        );
-      } catch (error) {
-        logger.error(
-          `ProgramHook - Error on post hook (Id=${programId}): ${error}`
-        );
+programSchema.post(
+  ['findOneAndUpdate', 'updateOne', 'updateMany', 'update'],
+  async function (doc) {
+    logger.info('--- program hook post');
+    try {
+      const docs = this._originals;
+      delete this._originals;
+      const changes = this.getUpdate().$set;
+      if (!isCrucialChanges(changes) || docs?.length === 0) {
+        return;
       }
+
+      for (let doc of docs) {
+        const updatedDoc = { ...doc, ...changes };
+        const programId = updatedDoc._id;
+
+        try {
+          logger.info(
+            `ProgramHook - Crucial changes detected on Program (Id=${programId}): ${JSON.stringify(
+              changes
+            )}`
+          );
+          await handleThreadDelta(updatedDoc);
+          logger.info(
+            `ProgramHook - Post hook executed successfully. (Id=${programId})`
+          );
+        } catch (error) {
+          logger.error(
+            `ProgramHook - Error on post hook (Id=${programId}): ${error}`
+          );
+        }
+      }
+    } catch (error) {
+      logger.error(`ProgramHook - Error on post hook: ${error}`);
     }
-  } catch (error) {
-    logger.error(`ProgramHook - Error on post hook: ${error}`);
   }
-});
+);
 
 programSchema.index({ school: 'text', program_name: 'text' });
 const Program = model('Program', programSchema);

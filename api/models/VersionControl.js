@@ -32,4 +32,5 @@ const versionControlSchema = new mongoose.Schema({
 
 versionControlSchema.index({ itemId: 1, collectionName: 1 });
 const VC = mongoose.model('VC', versionControlSchema);
-module.exports = VC;
+exports.default = VC;
+module.exports = { VC };

@@ -1,6 +1,7 @@
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
 const { Program } = require('../models/Program');
+const { VC } = require('../models/VersionControl');
 const { Role, Student } = require('../models/User');
 const logger = require('../services/logger');
 const { one_month_cache } = require('../cache/node-cache');
@@ -108,7 +109,12 @@ const getProgram = asyncHandler(async (req, res) => {
             'firstname lastname applications application_preference.expected_application_date'
           );
 
-        return res.send({ success: true, data: program, students });
+        const vc = await VC.find({
+          itemId: req.params.programId,
+          collectionName: 'Program'
+        }).lean();
+
+        return res.send({ success: true, data: program, students, vc });
       }
       return res.send({ success: true, data: program });
     }
@@ -132,7 +138,11 @@ const getProgram = asyncHandler(async (req, res) => {
           'firstname lastname applications application_preference.expected_application_date'
         );
 
-      res.send({ success: true, data: value, students });
+      const vc = await VC.find({
+        itemId: req.params.programId,
+        collectionName: 'Program'
+      }).lean();
+      res.send({ success: true, data: value, students, vc });
     } else {
       res.send({ success: true, data: value });
     }
@@ -147,7 +157,12 @@ const getProgram = asyncHandler(async (req, res) => {
       logger.error('getProgram: Invalid program id');
       throw new ErrorResponse(403, 'Invalid program id');
     }
-    res.send({ success: true, data: program, students });
+    const vc = await VC.find({
+      itemId: req.params.programId,
+      collectionName: 'Program'
+    }).lean();
+
+    res.send({ success: true, data: program, students, vc });
   } else {
     const program = await Program.findById(req.params.programId);
     if (!program) {

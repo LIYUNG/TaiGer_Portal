@@ -30,5 +30,6 @@ const versionControlSchema = new mongoose.Schema({
   changes: [changesSchema]
 });
 
+versionControlSchema.index({ itemId: 1, collectionName: 1 });
 const VC = mongoose.model('VC', versionControlSchema);
 module.exports = VC;

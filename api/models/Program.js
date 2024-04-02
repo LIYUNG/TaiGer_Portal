@@ -203,7 +203,7 @@ const programModule = {
 };
 
 const programSchema = new Schema(programModule, { timestamps: true });
-enableVersionControl('Program', programSchema);
+programSchema.plugin(enableVersionControl);
 
 programSchema.pre(
   ['findOneAndUpdate', 'updateOne', 'updateMany', 'update'],
@@ -212,7 +212,6 @@ programSchema.pre(
     try {
       const condition = this.getQuery();
       this._originals = await this.model.find(condition).lean();
-      console.log('');
     } catch (error) {
       logger.error(`ProgramHook - Error on pre hook: ${error}`);
     }
@@ -257,7 +256,7 @@ programSchema.post(
   }
 );
 
-programSchema.index({ school: 'text', program_name: 'text' });
+programSchema.index({ school: 1, program_name: 1 });
 const Program = model('Program', programSchema);
 module.exports = {
   programModule,

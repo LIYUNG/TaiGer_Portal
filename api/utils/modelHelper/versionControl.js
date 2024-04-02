@@ -18,16 +18,11 @@ const detectChanges = (a, b) => {
   return { changeFrom: original, chnageTo: changes, changedBy: b?.whoupdated };
 };
 
-const enableVersionControl = (collectionName, schema) => {
-  if (!schema instanceof mongoose.Schema) {
-    logger.warning(
-      `enableVersionControl - ${schema} (${collectionName}) not instance of mongoose.Schema. Ignoring version control.`
-    );
-    return;
-  }
+const enableVersionControl = (schema) => {
   schema.pre(
     ['findOneAndUpdate', 'updateOne', 'updateMany', 'update'],
     async function () {
+      const collectionName = this.model.modelName;
       try {
         const condition = this.getQuery();
         this._oldVersion = await this.model.find(condition).lean();
@@ -40,6 +35,7 @@ const enableVersionControl = (collectionName, schema) => {
   schema.post(
     ['findOneAndUpdate', 'updateOne', 'updateMany', 'update'],
     async function () {
+      const collectionName = this.model.modelName;
       try {
         const docs = this._oldVersion;
         delete this._oldVersion;

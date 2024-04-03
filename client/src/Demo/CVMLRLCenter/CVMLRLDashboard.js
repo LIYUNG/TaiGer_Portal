@@ -24,8 +24,6 @@ CustomTabPanel.propTypes = {
 };
 
 function CVMLRLDashboard(props) {
-  // console.log('students in CVMLRLDashboard:', props.students)
-  // const { user } = useAuth();
   const { t } = useTranslation();
   const [cVMLRLDashboardState, setCVMLRLDashboardState] = useState({
     error: '',

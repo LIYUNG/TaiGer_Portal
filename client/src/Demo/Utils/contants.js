@@ -1641,32 +1641,6 @@ export const studentOverviewTableHeader = [
   'open/offer/reject'
 ];
 
-export const cvmlrl_overview_closed_header = [
-  {
-    Header: 'First-, Last Name',
-    accessor: 'firstname_lastname',
-    filter: 'fuzzyText'
-  },
-  {
-    Header: 'Status',
-    accessor: 'status',
-    filter: 'fuzzyText'
-  },
-  {
-    Header: 'Deadline',
-    accessor: 'deadline'
-  },
-  {
-    Header: 'Last Update',
-    accessor: 'updatedAt'
-  },
-  {
-    Header: 'Documents',
-    accessor: 'document_name',
-    filter: 'fuzzyText'
-  }
-];
-
 export const c1 = [
   {
     field: 'firstname_lastname',
@@ -1697,7 +1671,7 @@ export const c1 = [
     headerName: 'Editors / Writer',
     align: 'left',
     headerAlign: 'left',
-    width: 150,
+    minWidth: 150,
     renderCell: (params) => {
       return params.row.file_type === 'Essay'
         ? params.row.outsourced_user_id?.map((outsourcer) => (
@@ -1729,22 +1703,22 @@ export const c1 = [
   {
     field: 'latest_reply',
     headerName: 'Latest Reply',
-    width: 100
+    minWidth: 100
   },
   {
     field: 'deadline',
     headerName: 'Deadline',
-    width: 100
+    minWidth: 100
   },
   {
     field: 'days_left',
     headerName: 'Days left',
-    width: 80
+    minWidth: 80
   },
   {
     field: 'document_name',
     headerName: 'Document name',
-    width: 380,
+    minWidth: 380,
     renderCell: (params) => {
       const linkUrl = `${DEMO.DOCUMENT_MODIFICATION_LINK(
         params.row.thread_id
@@ -1786,25 +1760,24 @@ export const c1 = [
   {
     field: 'aged_days',
     headerName: 'Aged days',
-    width: 80
+    minWidth: 80
   },
   {
     field: 'number_input_from_editors',
     headerName: 'Editor Feedback (#Messages/#Files)',
-    width: 80
+    minWidth: 80
   },
   {
     field: 'number_input_from_student',
     headerName: 'Student Feedback (#Messages/#Files)',
-    width: 80
+    minWidth: 80
   },
   {
     field: 'updatedAt',
     headerName: 'Last Update',
-    width: 100
+    minWidth: 100
   }
 ];
-
 export const c2Student = [
   {
     field: 'firstname_lastname',
@@ -1992,109 +1965,6 @@ export const c2 = [
     field: 'updatedAt',
     headerName: 'Last Update',
     width: 100
-  }
-];
-
-export const cvmlrl_overview_header = [
-  {
-    Header: 'First-, Last Name',
-    accessor: 'firstname_lastname',
-    filter: 'fuzzyText'
-  },
-  {
-    Header: 'Latest Reply',
-    accessor: 'latest_reply',
-    filter: 'fuzzyText'
-  },
-  {
-    Header: 'Deadline',
-    accessor: 'deadline'
-  },
-  {
-    Header: 'Days left',
-    accessor: 'days_left'
-  },
-  {
-    Header: 'Documents',
-    accessor: 'document_name',
-    filter: 'fuzzyText'
-  },
-  {
-    Header: 'Ages Days',
-    accessor: 'aged_days'
-  },
-  {
-    Header: (
-      <>
-        #EditorFeedback
-        <br />
-        Message/Files
-      </>
-    ),
-    accessor: 'number_input_from_editors'
-  },
-  {
-    Header: (
-      <>
-        #StudentInput
-        <br />
-        Message/Files
-      </>
-    ),
-    accessor: 'number_input_from_student'
-  },
-  {
-    Header: 'Last Update',
-    accessor: 'updatedAt'
-  }
-];
-
-export const cvmlrlclosedlist = [
-  {
-    name: 'Status',
-    prop: 'status'
-  },
-  {
-    name: 'Documents',
-    prop: 'documents'
-  },
-  {
-    name: 'Last Update',
-    prop: 'last_update'
-  },
-  {
-    name: 'Deadline',
-    prop: 'deadline'
-  },
-  {
-    name: 'Application',
-    prop: 'application'
-  }
-];
-export const program_progress_list_student = [
-  {
-    name: 'University',
-    prop: 'university'
-  },
-  {
-    name: 'Programs',
-    prop: 'programs'
-  },
-  {
-    name: 'Deadline',
-    prop: 'deadline'
-  },
-  {
-    name: 'Decided',
-    prop: 'decided'
-  },
-  {
-    name: 'Offer',
-    prop: 'offer'
-  },
-  {
-    name: 'Days left',
-    prop: 'days_left'
   }
 ];
 

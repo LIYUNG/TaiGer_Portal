@@ -1733,9 +1733,7 @@ export const c1 = [
                     size="small"
                     label={attribute.name[0]}
                     color={COLORS[attribute.value]}
-                  >
-                    {attribute.name}
-                  </Chip>
+                  />
                 </Tooltip>
               )
           )}
@@ -1922,9 +1920,7 @@ export const c2 = [
                     data-testid={`chip-${attribute.name}`}
                     label={attribute.name[0]}
                     color={COLORS[attribute.value]}
-                  >
-                    {attribute.name}
-                  </Chip>
+                  />
                 </Tooltip>
               )
           )}

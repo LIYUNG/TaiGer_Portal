@@ -8,6 +8,13 @@ export const translation_zh_TW = {
     'Last Login': '最近登入'
   },
   common: {
+    'Aged days': '離上次更新(天)',
+    'Document name': '文件名稱',
+    'Latest Reply': '最後回覆',
+    'Last Update': '最後更新於',
+    'Editor Feedback (#Messages/#Files)': '編輯回應 (#訊息/#檔案)',
+    'Student Feedback (#Messages/#Files)': '學生回應 (#訊息/#檔案)',
+    'Editors / Writer': '編輯 / 寫手',
     'Program Task Diff': '學程文件差別對照表',
     'Coming soon': '即將開放',
     Agent: '顧問',

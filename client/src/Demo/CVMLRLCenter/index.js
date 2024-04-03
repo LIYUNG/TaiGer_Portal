@@ -168,7 +168,9 @@ function index() {
         >
           {appConfig.companyName}
         </Link>
-        <Typography color="text.primary">{t('CV ML RL Overview')}</Typography>
+        <Typography color="text.primary">
+          {t('CV/ML/RL Center', { ns: 'common' })}
+        </Typography>
       </Breadcrumbs>
       {!is_TaiGer_role(user) && (
         <Card sx={{ p: 2 }}>

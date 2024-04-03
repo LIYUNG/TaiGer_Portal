@@ -8,6 +8,14 @@ export const translation_en = {
     'Last Login': 'Last Login'
   },
   common: {
+    'Aged days': 'Aged days',
+    'Document name': 'Document name',
+    'Latest Reply': 'Latest Reply',
+    'Last Update': 'Last Update',
+    'Editor Feedback (#Messages/#Files)': 'Editor Feedback (#Messages/#Files)',
+    'Student Feedback (#Messages/#Files)':
+      'Student Feedback (#Messages/#Files)',
+    'Editors / Writer': 'Editors / Writer',
     'Program Task Diff': 'Program Task Diff',
     'Coming soon': 'Coming soon',
     Agent: 'Agent',

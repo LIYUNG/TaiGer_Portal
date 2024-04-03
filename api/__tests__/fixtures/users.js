@@ -7,6 +7,8 @@ const generateUser = (role) => ({
   lastname: faker.name.findName(),
   email: faker.unique(faker.internet.email).toLowerCase(),
   password: faker.internet.password(10, false, /[0-9A-Z]/),
+  generaldocs_threads: [],
+  applications: [],
   isAccountActivated: true,
   archiv: false,
   birthday: '',

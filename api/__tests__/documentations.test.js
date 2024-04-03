@@ -85,7 +85,7 @@ describe('/api/docs/:category', () => {
     });
   });
 
-  test('POST should save/get/update/delete the new documentation in db', async () => {
+  test('POST should create a new documentation in db', async () => {
     const resp = await request(app).post(`/api/docs`).send(article);
     const { status, body } = resp;
     expect(status).toBe(200);
@@ -96,7 +96,7 @@ describe('/api/docs/:category', () => {
     article_id = new_article._id.toString();
   });
 
-  test('get uni-assist documentation in db', async () => {
+  test('GET uni-assist documentation in db', async () => {
     // Test Get Article:
     const resp2 = await request(app)
       .get(`/api/docs/${category_uniassist}`)
@@ -104,28 +104,28 @@ describe('/api/docs/:category', () => {
     expect(resp2.status).toBe(200);
   });
 
-  test('get certification documentation in db', async () => {
+  test('GET certification documentation in db', async () => {
     const resp2_cert = await request(app)
       .get(`/api/docs/${category_certification}`)
       .buffer();
     expect(resp2_cert.status).toBe(200);
   });
 
-  test('get application documentation in db', async () => {
+  test('GET application documentation in db', async () => {
     const resp2_app = await request(app)
       .get(`/api/docs/${category_application}`)
       .buffer();
     expect(resp2_app.status).toBe(200);
   });
 
-  test('get visa documentation in db', async () => {
+  test('GET visa documentation in db', async () => {
     const resp2_visa = await request(app)
       .get(`/api/docs/${category_visa}`)
       .buffer();
     expect(resp2_visa.status).toBe(200);
   });
 
-  test('put update documentation in db', async () => {
+  test('PUT update documentation in db', async () => {
     // test update doc status
     const resp5 = await request(app)
       .put(`/api/docs/${article_id}`)
@@ -137,7 +137,17 @@ describe('/api/docs/:category', () => {
     expect(new_article.text).toBe(Newarticle.text);
   });
 
-  test('delete documentation in db', async () => {
+  test('GET all documentation in db', async () => {
+    const resp4 = await request(app).get('/api/docs/all');
+    expect(resp4.body.success).toBe(true);
+  });
+
+  test('GET all internal documentation in db', async () => {
+    const resp4 = await request(app).get('/api/docs/internal/all');
+    expect(resp4.body.success).toBe(true);
+  });
+
+  test('DELETE documentation in db', async () => {
     // test delete
     const resp4 = await request(app).delete(`/api/docs/${article_id}`);
     expect(resp4.status).toBe(200);

@@ -857,7 +857,7 @@ describe('POST /api/document-threads/init/application/:studentId/:programId/:doc
 //   it.todo("should download the analyzed report");
 // });
 
-describe('POST /api/account/profile', () => {
+describe('POST /api/account/profile/:user_id', () => {
   const personaldata = { firstname: 'New_FirstName', lastname: 'New_LastName' };
   beforeEach(async () => {
     protect.mockImplementation(async (req, res, next) => {
@@ -868,7 +868,7 @@ describe('POST /api/account/profile', () => {
   });
   it('should update personal data', async () => {
     const resp = await request(app)
-      .post('/api/account/profile')
+      .post(`/api/account/profile/${student._ìd.toString()}`)
       .send({ personaldata });
     const { status, body } = resp;
     expect(status).toBe(200);

@@ -10,14 +10,10 @@ jest.mock('../middlewares/auth', () => {
   const passthrough = async (req, res, next) => next();
 
   return Object.assign({}, jest.requireActual('../middlewares/auth'), {
-    protect: passthrough,
-    permit: (...roles) => passthrough
+    protect: jest.fn().mockImplementation(passthrough),
+    permit: jest.fn().mockImplementation((...roles) => passthrough)
   });
 });
-
-beforeAll(async () => await db.connect());
-afterAll(async () => await db.clearDatabase());
-
 const admins = [...Array(2)].map(() => generateUser(Role.Admin));
 const agents = [...Array(3)].map(() => generateUser(Role.Agent));
 const editors = [...Array(3)].map(() => generateUser(Role.Editor));
@@ -25,10 +21,12 @@ const students = [...Array(5)].map(() => generateUser(Role.Student));
 const guests = [...Array(5)].map(() => generateUser(Role.Guest));
 const users = [...admins, ...agents, ...editors, ...students, ...guests];
 
-beforeEach(async () => {
+beforeAll(async () => {
+  await db.connect();
   await User.deleteMany();
   await User.insertMany(users);
 });
+afterAll(async () => await db.clearDatabase());
 
 describe('GET /api/users', () => {
   it('should return all users', async () => {
@@ -42,26 +40,26 @@ describe('GET /api/users', () => {
   });
 });
 
-// describe("PUT /api/users/:id", () => {
-//   it("should update a user", async () => {
-//     const { _id } = users[0];
-//     const { name, email } = generateUser();
+describe('POST /api/users/:id', () => {
+  it('should update a user', async () => {
+    const { _id } = users[0];
+    const { name, email } = generateUser();
 
-//     const resp = await request(app)
-//       .put(`/api/users/${_id}`)
-//       .send({ name, email });
-//     const { success, data } = resp.body;
+    const resp = await request(app)
+      .post(`/api/users/${_id}`)
+      .send({ name, email });
+    const { success, data } = resp.body;
 
-//     expect(resp.status).toBe(200);
-//     expect(success).toBe(true);
-//     expect(data).toMatchObject({ name, email });
+    expect(resp.status).toBe(200);
+    expect(success).toBe(true);
+    expect(data).toMatchObject({ name, email });
 
-//     const updatedUser = await User.findById(_id);
-//     expect(updatedUser).toMatchObject({ name, email });
-//   });
+    const updatedUser = await User.findById(_id);
+    expect(updatedUser).toMatchObject({ name, email });
+  });
 
-//   it.todo("should change user fields when updating it's role");
-// });
+  it.todo("should change user fields when updating it's role");
+});
 
 // describe("DELETE /api/users/:id", () => {
 //   it("should delete a user", async () => {
@@ -125,12 +123,13 @@ describe('GET /api/students/all', () => {
   it('should return all students', async () => {
     const resp = await request(app).get('/api/students/all');
     const { success, data } = resp.body;
+    expect(resp.status).toBe(200);
+    expect(success).toBe(true);
 
     const studentIds = students.map(({ _id }) => _id).sort();
     const receivedIds = data.map(({ _id }) => _id).sort();
-
-    expect(resp.status).toBe(200);
-    expect(success).toBe(true);
+    console.log(studentIds);
+    console.log(receivedIds);
     expect(receivedIds).toEqual(studentIds);
   });
 });

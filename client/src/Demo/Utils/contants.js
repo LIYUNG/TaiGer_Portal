@@ -968,7 +968,7 @@ export const ATTRIBUTES = [
   { value: 6, name: 'Low-IQ', definition: '' },
   { value: 7, name: 'Refunded', definition: '' },
   { value: 8, name: 'Done', definition: '' },
-  { value: 9, name: 'Redund-Risk', definition: '' }
+  { value: 9, name: 'Refund-Risk', definition: '' }
 ];
 
 export const COLORS = [
@@ -1701,11 +1701,6 @@ export const c1 = [
     }
   },
   {
-    field: 'latest_reply',
-    headerName: 'Latest Reply',
-    minWidth: 100
-  },
-  {
     field: 'deadline',
     headerName: 'Deadline',
     minWidth: 100
@@ -1773,6 +1768,11 @@ export const c1 = [
     minWidth: 80
   },
   {
+    field: 'latest_reply',
+    headerName: 'Latest Reply',
+    minWidth: 100
+  },
+  {
     field: 'updatedAt',
     headerName: 'Last Update',
     minWidth: 100
@@ -1802,11 +1802,6 @@ export const c2Student = [
         </Link>
       );
     }
-  },
-  {
-    field: 'latest_reply',
-    headerName: 'Latest Reply',
-    width: 100
   },
   {
     field: 'deadline',
@@ -1857,6 +1852,11 @@ export const c2Student = [
     width: 80
   },
   {
+    field: 'latest_reply',
+    headerName: 'Latest Reply',
+    width: 100
+  },
+  {
     field: 'updatedAt',
     headerName: 'Last Update',
     width: 100
@@ -1887,11 +1887,6 @@ export const c2 = [
         </Link>
       );
     }
-  },
-  {
-    field: 'latest_reply',
-    headerName: 'Latest Reply',
-    width: 100
   },
   {
     field: 'deadline',
@@ -1960,6 +1955,11 @@ export const c2 = [
     field: 'number_input_from_student',
     headerName: 'Student Feedback (#Messages/#Files)',
     width: 80
+  },
+  {
+    field: 'latest_reply',
+    headerName: 'Latest Reply',
+    width: 100
   },
   {
     field: 'updatedAt',

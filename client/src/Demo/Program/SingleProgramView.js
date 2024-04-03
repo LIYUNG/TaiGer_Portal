@@ -1,7 +1,9 @@
+/* eslint-disable */
 import React, { Fragment, useState } from 'react';
 import { Link as LinkDom } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import ArrowCircleRightOutlinedIcon from '@mui/icons-material/ArrowCircleRightOutlined';
 import {
   Box,
   Button,
@@ -43,6 +45,13 @@ import ProgramReport from './ProgramReport';
 import { appConfig } from '../../config';
 import { useAuth } from '../../components/AuthProvider';
 import { a11yProps, CustomTabPanel } from '../../components/Tabs';
+import styled from 'styled-components';
+
+const TableWrapper = styled.div`
+  .row-last {
+    border-bottom: 2px solid rgba(224, 224, 224, 1);
+  }
+`;
 
 function SingleProgramView(props) {
   const { user } = useAuth();
@@ -287,69 +296,72 @@ function SingleProgramView(props) {
 
           {props.vc && props.vc.changes.length > 0 && (
             <CustomTabPanel value={value} index={5}>
-              <Table size="small">
+              <Table borderAxis="both">
                 <TableHead>
                   <TableRow>
-                    <TableCell>{t('Field')}</TableCell>
-                    <TableCell>{t('Update')}</TableCell>
-                    <TableCell>{t('Original')}</TableCell>
-                    <TableCell>{t('Changed By')}</TableCell>
+                    <TableCell>
+                      <strong>{t('#')}</strong>
+                    </TableCell>
+                    <TableCell>
+                      <strong>{t('Changed By')}</strong>
+                    </TableCell>
+                    <TableCell>
+                      <strong>{t('Field')}</strong>
+                    </TableCell>
+                    <TableCell>
+                      <strong>{t('Original')}</strong>
+                    </TableCell>
+                    <TableCell></TableCell>
+                    <TableCell>
+                      <strong>{t('Updated')}</strong>
+                    </TableCell>
                   </TableRow>
                 </TableHead>
+
                 <TableBody>
-                  {props.vc.changes.map((change) => {
+                  {props.vc.changes.toReversed().map((change, index) => {
+                    const reverseIndex = props.vc.changes.length
+                      ? props.vc.changes.length - index
+                      : index;
                     const keys = Object.keys({
                       ...change.originalValues,
                       ...change.updatedValues
                     });
                     return (
                       <>
+                        <TableRow sx={'border-top: 3px solid #555'}></TableRow>
+                        <TableRow>
+                          <TableCell rowSpan={(keys?.length || 0) + 1}>
+                            {reverseIndex}
+                          </TableCell>
+                          <TableCell rowSpan={(keys?.length || 0) + 1}>
+                            <div>{change.changedBy}</div>
+                            <div>{convertDate(change.changedAt)}</div>
+                          </TableCell>
+                        </TableRow>
                         {keys.map((key, i) => (
                           <TableRow key={i}>
                             <TableCell>{key}</TableCell>
-                            <TableCell>{change.updatedValues[key]}</TableCell>
-                            <TableCell>{change.originalValues[key]}</TableCell>
+                            <TableCell>
+                              {change.originalValues
+                                ? change.originalValues[key]
+                                : ''}
+                            </TableCell>
+                            <TableCell>
+                              <ArrowCircleRightOutlinedIcon />
+                            </TableCell>
+                            <TableCell>
+                              {change.updatedValues
+                                ? change.updatedValues[key]
+                                : ''}
+                            </TableCell>
                           </TableRow>
                         ))}
-                        <TableRow>
-                          <TableCell rowSpan={(keys?.length || 0) + 1}>
-                            {change.changedBy}
-                          </TableCell>
-                        </TableRow>
                       </>
                     );
                   })}
                 </TableBody>
               </Table>
-
-              <Card>
-                {/* {props.vc.changes.map((change) => (
-                  <>
-                    <Typography fontWeight="bold">
-                      {convertDate(change.changedAt)}
-                    </Typography>
-                    <Typography fontWeight="bold">
-                      {change.changedBy}
-                    </Typography>
-                    <Grid container spacing={2}>
-                      {Object.keys(change.updatedValues).map((key, j) => (
-                        <Fragment key={j}>
-                          <Grid item xs={12} md={4}>
-                            <Typography fontWeight="bold">
-                              {t(`${key}`)}
-                            </Typography>
-                          </Grid>
-                          <Grid item xs={12} md={8}>
-                            <LinkableNewlineText
-                              text={change.updatedValues[key]}
-                            />
-                          </Grid>
-                        </Fragment>
-                      ))}
-                    </Grid>
-                  </>
-                ))} */}
-              </Card>
             </CustomTabPanel>
           )}
 

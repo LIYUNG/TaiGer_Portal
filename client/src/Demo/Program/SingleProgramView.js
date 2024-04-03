@@ -94,6 +94,7 @@ function SingleProgramView(props) {
               <Tab label={t('Specific Requirements')} {...a11yProps(2)} />
               <Tab label={t('Special Documents')} {...a11yProps(3)} />
               <Tab label={t('Others')} {...a11yProps(4)} />
+              <Tab label={t('Edit History')} {...a11yProps(5)} />
             </Tabs>
           </Box>
           <CustomTabPanel value={value} index={0}>
@@ -283,6 +284,75 @@ function SingleProgramView(props) {
               </Grid>
             </Card>
           </CustomTabPanel>
+
+          {props.vc && props.vc.changes.length > 0 && (
+            <CustomTabPanel value={value} index={5}>
+              <Table size="small">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>{t('Field')}</TableCell>
+                    <TableCell>{t('Update')}</TableCell>
+                    <TableCell>{t('Original')}</TableCell>
+                    <TableCell>{t('Changed By')}</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {props.vc.changes.map((change) => {
+                    const keys = Object.keys({
+                      ...change.originalValues,
+                      ...change.updatedValues
+                    });
+                    return (
+                      <>
+                        {keys.map((key, i) => (
+                          <TableRow key={i}>
+                            <TableCell>{key}</TableCell>
+                            <TableCell>{change.updatedValues[key]}</TableCell>
+                            <TableCell>{change.originalValues[key]}</TableCell>
+                          </TableRow>
+                        ))}
+                        <TableRow>
+                          <TableCell rowSpan={(keys?.length || 0) + 1}>
+                            {change.changedBy}
+                          </TableCell>
+                        </TableRow>
+                      </>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+
+              <Card>
+                {/* {props.vc.changes.map((change) => (
+                  <>
+                    <Typography fontWeight="bold">
+                      {convertDate(change.changedAt)}
+                    </Typography>
+                    <Typography fontWeight="bold">
+                      {change.changedBy}
+                    </Typography>
+                    <Grid container spacing={2}>
+                      {Object.keys(change.updatedValues).map((key, j) => (
+                        <Fragment key={j}>
+                          <Grid item xs={12} md={4}>
+                            <Typography fontWeight="bold">
+                              {t(`${key}`)}
+                            </Typography>
+                          </Grid>
+                          <Grid item xs={12} md={8}>
+                            <LinkableNewlineText
+                              text={change.updatedValues[key]}
+                            />
+                          </Grid>
+                        </Fragment>
+                      ))}
+                    </Grid>
+                  </>
+                ))} */}
+              </Card>
+            </CustomTabPanel>
+          )}
+
           {is_TaiGer_AdminAgent(user) && (
             <>
               <Button

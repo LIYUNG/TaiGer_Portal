@@ -346,7 +346,15 @@ function SingleProgramView(props) {
                         {keys.map((key, i) => (
                           <TableRow key={i}>
                             <TableCell>{key}</TableCell>
-                            <TableCell>
+                            <TableCell
+                              sx={{
+                                bgcolor:
+                                  change?.originalValues &&
+                                  change.originalValues[key]
+                                    ? 'none'
+                                    : 'grey.300'
+                              }}
+                            >
                               {change.originalValues
                                 ? change.originalValues[key]
                                 : ''}
@@ -354,7 +362,15 @@ function SingleProgramView(props) {
                             <TableCell>
                               <ArrowCircleRightOutlinedIcon />
                             </TableCell>
-                            <TableCell>
+                            <TableCell
+                              sx={{
+                                bgcolor:
+                                  change?.updatedValues &&
+                                  change.updatedValues[key]
+                                    ? 'none'
+                                    : 'grey.300'
+                              }}
+                            >
                               {change.updatedValues
                                 ? change.updatedValues[key]
                                 : ''}

@@ -295,8 +295,12 @@ function SingleProgramView(props) {
           </CustomTabPanel>
 
           {props.vc && props.vc.changes.length > 0 && (
-            <CustomTabPanel value={value} index={5}>
-              <Table borderAxis="both">
+            <CustomTabPanel
+              value={value}
+              index={5}
+              style={{ width: '100%', overflowY: 'auto' }}
+            >
+              <Table>
                 <TableHead>
                   <TableRow>
                     <TableCell>

@@ -2,8 +2,8 @@ const mongoose = require('mongoose');
 
 const changesSchema = new mongoose.Schema(
   {
-    changeFrom: Object,
-    chnageTo: { type: Object, required: true },
+    originalValues: Object,
+    updatedValues: { type: Object, required: true },
     changedAt: {
       type: Date,
       default: () => Date.now()
@@ -32,5 +32,4 @@ const versionControlSchema = new mongoose.Schema({
 
 versionControlSchema.index({ itemId: 1, collectionName: 1 });
 const VC = mongoose.model('VC', versionControlSchema);
-exports.default = VC;
-module.exports = { VC };
+module.exports = VC;

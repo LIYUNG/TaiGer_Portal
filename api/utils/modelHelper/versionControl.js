@@ -13,7 +13,11 @@ const detectChanges = (a, b) => {
       changes[key] = b[key];
     }
   }
-  return { changeFrom: original, chnageTo: changes, changedBy: b?.whoupdated };
+  return {
+    originalValues: original,
+    updatedValues: changes,
+    changedBy: b?.whoupdated
+  };
 };
 
 const enableVersionControl = (schema) => {

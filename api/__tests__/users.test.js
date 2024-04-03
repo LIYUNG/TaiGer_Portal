@@ -1,25 +1,22 @@
-const request = require("supertest");
+const request = require('supertest');
 
-const { app } = require("../app");
-const { connectToDatabase, disconnectFromDatabase } = require("../database");
-const { Role, User } = require("../models/User");
-const { generateUser } = require("./fixtures/users");
+const db = require('./fixtures/db');
+const { app } = require('../app');
+const { connectToDatabase, disconnectFromDatabase } = require('../database');
+const { Role, User } = require('../models/User');
+const { generateUser } = require('./fixtures/users');
 
-jest.mock("../middlewares/auth", () => {
+jest.mock('../middlewares/auth', () => {
   const passthrough = async (req, res, next) => next();
 
-  return Object.assign({}, jest.requireActual("../middlewares/auth"), {
+  return Object.assign({}, jest.requireActual('../middlewares/auth'), {
     protect: passthrough,
-    permit: (...roles) => passthrough,
+    permit: (...roles) => passthrough
   });
 });
 
-beforeAll(async () => {
-  jest.spyOn(console, "log").mockImplementation(jest.fn());
-  await connectToDatabase(global.__MONGO_URI__);
-});
-
-afterAll(disconnectFromDatabase);
+beforeAll(async () => await db.connect());
+afterAll(async () => await db.clearDatabase());
 
 const admins = [...Array(2)].map(() => generateUser(Role.Admin));
 const agents = [...Array(3)].map(() => generateUser(Role.Agent));
@@ -33,9 +30,9 @@ beforeEach(async () => {
   await User.insertMany(users);
 });
 
-describe("GET /api/users", () => {
-  it("should return all users", async () => {
-    const resp = await request(app).get("/api/users");
+describe('GET /api/users', () => {
+  it('should return all users', async () => {
+    const resp = await request(app).get('/api/users');
     const { success, data } = resp.body;
 
     expect(resp.status).toBe(200);
@@ -81,9 +78,9 @@ describe("GET /api/users", () => {
 // });
 
 // TODO: move below to their own files?
-describe("GET /api/agents", () => {
-  it("should return all agents", async () => {
-    const resp = await request(app).get("/api/agents");
+describe('GET /api/agents', () => {
+  it('should return all agents', async () => {
+    const resp = await request(app).get('/api/agents');
     const { success, data } = resp.body;
 
     const agentIds = agents.map(({ _id }) => _id).sort();
@@ -95,9 +92,9 @@ describe("GET /api/agents", () => {
   });
 });
 
-describe("GET /api/editors", () => {
-  it("should return all editors", async () => {
-    const resp = await request(app).get("/api/editors");
+describe('GET /api/editors', () => {
+  it('should return all editors', async () => {
+    const resp = await request(app).get('/api/editors');
     const { success, data } = resp.body;
 
     const editorIds = editors.map(({ _id }) => _id).sort();
@@ -124,9 +121,9 @@ describe("GET /api/editors", () => {
 //   });
 // });
 
-describe("GET /api/students/all", () => {
-  it("should return all students", async () => {
-    const resp = await request(app).get("/api/students/all");
+describe('GET /api/students/all', () => {
+  it('should return all students', async () => {
+    const resp = await request(app).get('/api/students/all');
     const { success, data } = resp.body;
 
     const studentIds = students.map(({ _id }) => _id).sort();

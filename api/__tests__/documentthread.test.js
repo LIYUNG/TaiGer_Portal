@@ -3,6 +3,7 @@ const path = require('path');
 const request = require('supertest');
 
 const { UPLOAD_PATH } = require('../config');
+const db = require('./fixtures/db');
 const { app } = require('../app');
 const { connectToDatabase, disconnectFromDatabase } = require('../database');
 const { Role, User, Agent, Editor, Student } = require('../models/User');
@@ -44,15 +45,8 @@ const requiredDocuments = ['transcript', 'resume'];
 const optionalDocuments = ['certificate', 'visa'];
 const program = generateProgram(requiredDocuments, optionalDocuments);
 
-const programs = [...Array(3)].map(() =>
-  generateProgram(requiredDocuments, optionalDocuments)
-);
-beforeAll(async () => {
-  jest.spyOn(console, 'log').mockImplementation(jest.fn());
-  await connectToDatabase(global.__MONGO_URI__);
-});
-
-afterAll(disconnectFromDatabase);
+beforeAll(async () => await db.connect());
+afterAll(async () => await db.clearDatabase());
 
 beforeEach(async () => {
   await User.deleteMany();
@@ -89,7 +83,9 @@ describe('POST /api/document-threads/:category', () => {
   });
 
   it('should save /get/update/delete the new documentation in db', async () => {
-    const resp = await request(app).post(`/api/document-threads/${thread_id}`).send(article);
+    const resp = await request(app)
+      .post(`/api/document-threads/${thread_id}`)
+      .send(article);
     const { status, body } = resp;
     expect(status).toBe(200);
     expect(body.success).toBe(true);

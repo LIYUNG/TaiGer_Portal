@@ -9,11 +9,10 @@ import {
   Typography
 } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import { BsDash } from 'react-icons/bs';
 import { useTranslation } from 'react-i18next';
 import LinkIcon from '@mui/icons-material/Link';
 
-import { convertDate } from '../Utils/contants';
+import { FILE_DONT_CARE_SYMBOL, convertDate } from '../Utils/contants';
 import OffcanvasBaseDocument from '../../components/Offcanvas/OffcanvasBaseDocument';
 import { is_TaiGer_Admin, is_TaiGer_Editor } from '../Utils/checking-functions';
 import { useAuth } from '../../components/AuthProvider';
@@ -123,9 +122,7 @@ function ButtonSetNotNeeded(props) {
   var ButttonRow_NotNeeded;
   ButttonRow_NotNeeded = (
     <TableRow>
-      <TableCell>
-        <BsDash size={24} color="lightgray" title="Not needed" />
-      </TableCell>
+      <TableCell>{FILE_DONT_CARE_SYMBOL}</TableCell>
       <TableCell>
         {props.docName}
         <Link

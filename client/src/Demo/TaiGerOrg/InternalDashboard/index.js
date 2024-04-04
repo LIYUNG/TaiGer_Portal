@@ -469,7 +469,8 @@ function InternalDashboard() {
           <Grid item xs={12} md={4}>
             <Card sx={{ p: 2 }}>
               <Typography>
-                {t('Agents')}: Number of active students per agent
+                {t('Agents', { ns: 'common' })}: Number of active students per
+                agent
               </Typography>
 
               <ResponsiveContainer width="100%" height={300}>
@@ -513,7 +514,7 @@ function InternalDashboard() {
           <Grid item xs={12} md={4}>
             <Card sx={{ p: 2 }}>
               <Typography>
-                {t('Editor')}: Number of active students per editor
+                {t('Editor', { ns: 'common' })}: Number of active students per editor
               </Typography>
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart
@@ -548,7 +549,7 @@ function InternalDashboard() {
           <Grid item xs={12} md={4}>
             <Card sx={{ p: 2 }}>
               <Typography>
-                {t('Editor')}:Number of open and potential tasks per editor
+                {t('Editor', { ns: 'common' })}:Number of open and potential tasks per editor
               </Typography>
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart

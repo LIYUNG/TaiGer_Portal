@@ -2,11 +2,6 @@ import React, { useState } from 'react';
 import { Link as LinkDom } from 'react-router-dom';
 import { IoCheckmarkCircle } from 'react-icons/io5';
 import {
-  AiFillQuestionCircle,
-  AiFillCloseCircle,
-  AiOutlineFieldTime
-} from 'react-icons/ai';
-import {
   Box,
   Button,
   CircularProgress,
@@ -15,9 +10,14 @@ import {
   TextField,
   Typography
 } from '@mui/material';
-import { BsDash } from 'react-icons/bs';
 
-import { profile_list } from '../Utils/contants';
+import {
+  FILE_DONT_CARE_SYMBOL,
+  FILE_MISSING_SYMBOL,
+  FILE_NOT_OK_SYMBOL,
+  FILE_UPLOADED_SYMBOL,
+  profile_list
+} from '../Utils/contants';
 import { DocumentStatus } from '../Utils/checking-functions';
 import DEMO from '../../store/constant';
 import AcceptProfileFileModel from './AcceptedFilePreviewModal';
@@ -224,11 +224,7 @@ function StudentBaseDocumentsStatus(props) {
             style={{ textDecoration: 'none' }}
             className="text-info"
           >
-            <AiOutlineFieldTime
-              size={24}
-              color="orange"
-              title="Uploaded successfully"
-            />
+            {FILE_UPLOADED_SYMBOL}
           </Link>
         </TableCell>
       );
@@ -254,7 +250,7 @@ function StudentBaseDocumentsStatus(props) {
             style={{ textDecoration: 'none' }}
             className="text-info"
           >
-            <AiFillCloseCircle size={24} color="red" title="Invalid Document" />
+            {FILE_NOT_OK_SYMBOL}
           </Link>
         </TableCell>
       );
@@ -267,7 +263,7 @@ function StudentBaseDocumentsStatus(props) {
             style={{ textDecoration: 'none' }}
             className="text-info"
           >
-            <BsDash size={24} color="lightgray" title="Not needed" />
+            {FILE_DONT_CARE_SYMBOL}
           </Link>
         </TableCell>
       );
@@ -279,11 +275,7 @@ function StudentBaseDocumentsStatus(props) {
             style={{ textDecoration: 'none' }}
             className="text-info"
           >
-            <AiFillQuestionCircle
-              size={24}
-              color="lightgray"
-              title="No Document uploaded"
-            />
+            {FILE_MISSING_SYMBOL}
           </Link>
         </TableCell>
       );

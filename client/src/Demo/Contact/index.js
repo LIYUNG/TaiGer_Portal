@@ -42,7 +42,7 @@ function Contact() {
   const your_editors = contactState.students[0].editors ? (
     contactState.students[0].editors.map((editor, i) => (
       <TableRow key={i}>
-        <TableCell>{t('Editor')}</TableCell>
+        <TableCell>{t('Editor', { ns: 'common' })}</TableCell>
         <TableCell>
           {editor.firstname} - {editor.lastname}
         </TableCell>

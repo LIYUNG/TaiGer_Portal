@@ -11,7 +11,6 @@ import {
   TextField,
   Typography
 } from '@mui/material';
-import { AiOutlineFieldTime } from 'react-icons/ai';
 import { useTranslation } from 'react-i18next';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -25,7 +24,7 @@ import {
   is_TaiGer_AdminAgent,
   is_TaiGer_Editor
 } from '../Utils/checking-functions';
-import { base_documents_checklist, convertDate } from '../Utils/contants';
+import { FILE_UPLOADED_SYMBOL, base_documents_checklist, convertDate } from '../Utils/contants';
 import { useAuth } from '../../components/AuthProvider';
 import ModalNew from '../../components/Modal';
 import FilePreview from '../../components/FilePreview/FilePreview';
@@ -229,13 +228,7 @@ function ButtonSetUploaded(props) {
   var ButttonRow_Uploaded;
   ButttonRow_Uploaded = (
     <TableRow>
-      <TableCell>
-        <AiOutlineFieldTime
-          size={24}
-          color="orange"
-          title="Uploaded successfully"
-        />
-      </TableCell>
+      <TableCell>{FILE_UPLOADED_SYMBOL}</TableCell>
       <TableCell>
         {props.docName}
         <Link
@@ -478,7 +471,7 @@ function ButtonSetUploaded(props) {
               startIcon={<CheckIcon />}
               sx={{ mr: 2 }}
             >
-              {t('Accept')}
+              {t('Accept', { ns: 'common' })}
             </Button>
             <Button
               variant="contained"

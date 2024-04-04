@@ -10,6 +10,9 @@ export const translation_zh_TW = {
   common: {
     Add: '新增',
     Account: '帳號',
+    Archiv: '封存',
+    Activate: '啟用',
+    Activated: '已啟用',
     'Aged days': '離上次更新(天)',
     'Document name': '文件名稱',
     'Latest Reply': '最後回覆',

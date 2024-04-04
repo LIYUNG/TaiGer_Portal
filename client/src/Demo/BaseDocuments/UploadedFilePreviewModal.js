@@ -287,7 +287,7 @@ function UploadedFilePreviewModal(props) {
               startIcon={<CheckIcon />}
               sx={{ mr: 2 }}
             >
-              {t('Accept')}
+              {t('Accept', { ns: 'common' })}
             </Button>
             <Button
               variant="contained"

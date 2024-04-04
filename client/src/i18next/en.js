@@ -10,6 +10,9 @@ export const translation_en = {
   common: {
     Add: 'Add',
     Account: 'Account',
+    Archiv: 'Archiv',
+    Activate: 'Activate',
+    Activated: 'Activated',
     'Aged days': 'Aged days',
     'Document name': 'Document name',
     'Latest Reply': 'Latest Reply',

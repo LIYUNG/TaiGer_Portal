@@ -368,7 +368,7 @@ function SingleProgramView(props) {
                         <TableRow>
                           <TableCell>{t('Name')}</TableCell>
                           <TableCell>{t('Agent')}</TableCell>
-                          <TableCell>{t('Editor')}</TableCell>
+                          <TableCell>{t('Editor', { ns: 'common' })}</TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>

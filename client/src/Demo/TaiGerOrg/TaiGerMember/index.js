@@ -157,7 +157,7 @@ function TaiGerMember() {
             ))}
           </TableBody>
         </Table>
-        <Typography variant="h5">{t('Editor')}:</Typography>
+        <Typography variant="h5">{t('Editor', { ns: 'common' })}:</Typography>
         <Table>
           <TableHead>
             <TableRow>

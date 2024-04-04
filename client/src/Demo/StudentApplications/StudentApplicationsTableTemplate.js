@@ -756,7 +756,7 @@ function StudentApplicationsTableTemplate(props) {
             onClick={closeProgramCorrectnessModal}
             sx={{ mt: 2 }}
           >
-            {t('Accept')}
+            {t('Accept', { ns: 'common' })}
           </Button>
         </ModalNew>
       )}

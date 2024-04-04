@@ -488,7 +488,7 @@ function ButtonSetRejected(props) {
               )
             }
           >
-            {t('Accept')}
+            {t('Accept', { ns: 'common' })}
           </Button>
         )}
         <Button

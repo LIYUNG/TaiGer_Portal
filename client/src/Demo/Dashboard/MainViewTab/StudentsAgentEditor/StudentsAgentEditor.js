@@ -359,7 +359,7 @@ function StudentsAgentEditor(props) {
               <Typography sx={{ mb: 2 }}>
                 Do you want to move {props.student.firstname}{' '}
                 {props.student.lastname} to{' '}
-                {is_User_Archived(props.student) ? t('Active') : t('Archiv')}
+                {is_User_Archived(props.student) ? t('Active') : t('Archiv', { ns: 'common' })}
               </Typography>
               <Button
                 color="primary"

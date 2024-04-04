@@ -8,7 +8,6 @@ import {
   TableRow,
   Typography
 } from '@mui/material';
-import { AiFillQuestionCircle } from 'react-icons/ai';
 import { useTranslation } from 'react-i18next';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import LinkIcon from '@mui/icons-material/Link';
@@ -23,6 +22,7 @@ import { useAuth } from '../../components/AuthProvider';
 import ModalNew from '../../components/Modal';
 import Loading from '../../components/Loading/Loading';
 import { VisuallyHiddenInput } from '../../components/Input';
+import { FILE_MISSING_SYMBOL } from '../Utils/contants';
 
 function ButtonSetMissing(props) {
   const { user } = useAuth();
@@ -129,13 +129,7 @@ function ButtonSetMissing(props) {
   var ButttonRow_Rejected;
   ButttonRow_Rejected = (
     <TableRow>
-      <TableCell>
-        <AiFillQuestionCircle
-          size={24}
-          color="lightgray"
-          title="No Document uploaded"
-        />
-      </TableCell>
+      <TableCell>{FILE_MISSING_SYMBOL}</TableCell>
       <TableCell>
         {props.docName}
         <Link

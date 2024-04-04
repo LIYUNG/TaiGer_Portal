@@ -529,7 +529,7 @@ function UniAssistListCard(props) {
                                 variant="outlined"
                                 startIcon={<CloudUploadIcon />}
                               >
-                                {t('Upload')} VPD
+                                {t('Upload', { ns: 'common' })} VPD
                                 <VisuallyHiddenInput
                                   type="file"
                                   onChange={(e) =>
@@ -570,7 +570,7 @@ function UniAssistListCard(props) {
                               size="small"
                               startIcon={<DownloadIcon />}
                             >
-                              {t('Download')}
+                              {t('Download', { ns: 'common' })}
                             </Button>
                           </a>
                         </Grid>
@@ -666,7 +666,7 @@ function UniAssistListCard(props) {
                               }
                               startIcon={<DownloadIcon />}
                             >
-                              {t('Download')}
+                              {t('Download', { ns: 'common' })}
                             </Button>
                           </a>
                         </Grid>
@@ -764,7 +764,7 @@ function UniAssistListCard(props) {
         onClose={closeWarningWindow}
         aria-labelledby="contained-modal-title-vcenter"
       >
-        <Typography variant="h6">{t('Warning')}</Typography>
+        <Typography variant="h6">{t('Warning', { ns: 'common' })}</Typography>
         <Typography sx={{ my: 2 }}>{t('Do you want to delete?')}</Typography>
         <Button
           variant="contained"
@@ -803,7 +803,7 @@ function UniAssistListCard(props) {
       >
         <Grid container spacing={2}>
           <Grid item md={12}>
-            <Typography variant="h6">{t('Warning')}</Typography>
+            <Typography variant="h6">{t('Warning', { ns: 'common' })}</Typography>
           </Grid>
           <Grid item md={12}>
             <Typography variant="string">

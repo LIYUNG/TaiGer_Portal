@@ -76,7 +76,7 @@ function EditDownloadFiles(props) {
                 rel="noreferrer"
               >
                 <Button color="primary" variant="contained" size="small">
-                  {t('Download')}
+                  {t('Download', { ns: 'common' })}
                 </Button>
               </a>
             </Box>

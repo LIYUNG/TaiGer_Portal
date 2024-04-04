@@ -270,7 +270,9 @@ function SingleProgramView(props) {
                   </>
                 )}
                 <Grid item xs={12} md={4}>
-                  <Typography fontWeight="bold">{t('Last update')}</Typography>
+                  <Typography fontWeight="bold">
+                    {t('Last update', { ns: 'common' })}
+                  </Typography>
                 </Grid>
                 <Grid item xs={12} md={8}>
                   <Typography fontWeight="bold">
@@ -400,7 +402,7 @@ function SingleProgramView(props) {
                   color="primary"
                   onClick={() => props.setModalShow2()}
                 >
-                  {t('Assign')}
+                  {t('Assign', { ns: 'common' })}
                 </Button>
               </Grid>
               <Grid item>
@@ -410,7 +412,7 @@ function SingleProgramView(props) {
                   color="info"
                   onClick={() => props.handleClick()}
                 >
-                  {t('Edit')}
+                  {t('Edit', { ns: 'common' })}
                 </Button>
               </Grid>
 
@@ -467,7 +469,7 @@ function SingleProgramView(props) {
                         <TableRow>
                           <TableCell>{t('Name')}</TableCell>
                           <TableCell>{t('Agent')}</TableCell>
-                          <TableCell>{t('Editor')}</TableCell>
+                          <TableCell>{t('Editor', { ns: 'common' })}</TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -527,7 +529,7 @@ function SingleProgramView(props) {
                       <TableHead>
                         <TableRow>
                           <TableCell>{t('Name')}</TableCell>
-                          <TableCell>{t('Year')}</TableCell>
+                          <TableCell>{t('Year', { ns: 'common' })}</TableCell>
                           <TableCell>{t('Admission')}</TableCell>
                         </TableRow>
                       </TableHead>
@@ -754,7 +756,7 @@ function SingleProgramView(props) {
                   </Grid>
                   <Grid item xs={12} md={4}>
                     <Typography fontWeight="bold">
-                      {t('Last update')}
+                      {t('Last update', { ns: 'common' })}
                     </Typography>
                   </Grid>
                   <Grid item xs={12} md={8}>
@@ -797,7 +799,7 @@ function SingleProgramView(props) {
                         <TableHead>
                           <TableRow>
                             <TableCell>{t('Name')}</TableCell>
-                            <TableCell>{t('Year')}</TableCell>
+                            <TableCell>{t('Year', { ns: 'common' })}</TableCell>
                             <TableCell>{t('Admission')}</TableCell>
                           </TableRow>
                         </TableHead>

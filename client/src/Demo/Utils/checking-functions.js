@@ -1603,11 +1603,6 @@ export const open_essays_tasks = (essays, user) => {
     return [];
   }
   for (const essay of essays) {
-    console.log(
-      essay.outsourced_user_id?.some(
-        (outsourcer) => outsourcer._id.toString() === user._id.toString()
-      )
-    );
     tasks.push(prepEssayTask(essay, user));
   }
   return tasks;

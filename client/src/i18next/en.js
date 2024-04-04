@@ -8,8 +8,25 @@ export const translation_en = {
     'Last Login': 'Last Login'
   },
   common: {
+    Add: 'Add',
+    Account: 'Account',
+    Archiv: 'Archiv',
+    Activate: 'Activate',
+    Activated: 'Activated',
+    'Aged days': 'Aged days',
+    'Document name': 'Document name',
+    'Latest Reply': 'Latest Reply',
+    'Last Update': 'Last Update',
+    'Editor Feedback (#Messages/#Files)': 'Editor Feedback (#Messages/#Files)',
+    'Student Feedback (#Messages/#Files)':
+      'Student Feedback (#Messages/#Files)',
+    'Editors / Writer': 'Editors / Writer',
     'Program Task Diff': 'Program Task Diff',
     'Coming soon': 'Coming soon',
+    'Please assign agents': 'Please assign agents',
+    'Please assign editors': 'Please assign editors',
+    'Please assign essay writers': 'Please assign essay writers',
+    'Program Selection': 'Program Selection',
     Agent: 'Agent',
     Editor: 'Editor',
     Program: 'Program',
@@ -54,7 +71,6 @@ export const translation_en = {
     'Upload Time': 'Upload Time',
     Upload: 'Upload',
     'Log Out': 'Log Out',
-    'Please assign essay writers': 'Please assign essay writers',
     Professor: 'Professor',
     Supervisor: 'Supervisor',
     Accept: 'Accept',
@@ -76,6 +92,7 @@ export const translation_en = {
     [`${appConfig.companyName} Dashboard`]: `${appConfig.companyName} Dashboard`,
     [`${appConfig.companyName} Accounting`]: `${appConfig.companyName} Accounting`,
     Applications: 'Applications',
+    'Course Analysis': 'Course Analysis',
     'Applications Overview': 'Applications Overview',
     'Application Overview': 'Application Overview',
     'My Applications': 'My Applications',
@@ -88,6 +105,9 @@ export const translation_en = {
     'CV/ML/RL Center': 'CV/ML/RL Center',
     'General Documents': 'General Documents',
     CV: 'CV',
+    ML: 'ML',
+    RL: 'RL',
+    Essay: 'Essay',
     'Recommendation Letters': 'Recommendation Letters',
     'Add Task': 'Add Task',
     Confirmation: 'Confirmation',
@@ -120,11 +140,13 @@ export const translation_en = {
     'My Students': 'My Students',
     Profile: 'Profile',
     'My Profile': 'My Profile',
+    Survey: 'Survey',
     'My Survey': 'My Survey',
     Courses: 'Courses',
     'My Courses': 'My Courses',
     'My Documents': 'My Documents',
     'All Documents': 'All Documents',
+    'All Documentations': 'All Documentations',
     'Essay Dashboard': 'Essay Dashboard',
     'Interview Training': 'Interview Training',
     'Student Database': 'Student Database',
@@ -165,7 +187,8 @@ export const translation_en = {
     Download: 'Download',
     'To Do Tasks': 'To Do Tasks',
     'Agent Support': 'Agent Support',
-    'Essay Center': 'Essay Center'
+    'Essay Center': 'Essay Center',
+    'User Logs': 'User Logs'
   },
   dashboard: {
     Dashboard: 'Dashboard',
@@ -177,13 +200,23 @@ export const translation_en = {
     'Please complete Profile so that your agent can understand your situation':
       'Please complete Profile so that your agent can understand your situation'
   },
+  documents: {
+    Reject: 'Reject'
+  },
   programList: {},
+  logs: {
+    'User Logs': 'User Logs'
+  },
   backgroundProfile: {},
   cvmlrl: {
     'Note: if the documents are not closed but locate here, it is becaue the applications are already submitted. The documents can safely closed eventually.':
       'Note: if the documents are not closed but locate here, it is becaue the applications are already submitted. The documents can safely closed eventually.'
   },
   courses: {
+    'Select Target Group': 'Select Target Group',
+    'Select language': 'Select language',
+    Analysing: 'Analysing',
+    Analyse: 'Analyse',
     'Please complete My Courses table. The agent will provide you with course analysis and courses suggestion.':
       'Please complete My Courses table. The agent will provide you with course analysis and courses suggestion.',
     'Course Analysis banner':

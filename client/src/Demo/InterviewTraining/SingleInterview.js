@@ -235,7 +235,7 @@ function SingleInterview() {
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
-        <Typography>{t('Warning')}</Typography>
+        <Typography>{t('Warning', { ns: 'common' })}</Typography>
         Do you want to delete the interview request of{' '}
         <b>{singleInterviewState.interview_name_toBeDelete}</b>?
         <Button disabled={!isLoaded} onClick={handleDeleteInterview}>

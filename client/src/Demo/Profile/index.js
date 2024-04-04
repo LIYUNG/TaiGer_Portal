@@ -475,7 +475,7 @@ function Profile() {
           }
           sx={{ mt: 3, mb: 2 }}
         >
-          {t('Update')}
+          {t('Update', { ns: 'common' })}
         </Button>
       </Box>
       {!user_id && is_TaiGer_Agent(user) && (
@@ -566,7 +566,7 @@ function Profile() {
                 disabled={!profileState.officehoursModifed}
                 onClick={handleSubmit_Officehours}
               >
-                {t('Update')}
+                {t('Update', { ns: 'common' })}
               </Button>
             </Card>
           )}

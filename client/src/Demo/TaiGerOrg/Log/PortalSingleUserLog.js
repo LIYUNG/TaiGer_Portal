@@ -81,7 +81,8 @@ function PortalSingleUserLog() {
 
   const last180DaysObject = getLast180DaysObject();
   PortalSingleUserLogState.logs.forEach((log) => {
-    last180DaysObject[log.date] += log.apiCallCount;
+    last180DaysObject[log.date].TOTAL += log.apiCallCount;
+    last180DaysObject[log.date][log.operation] += log.apiCallCount;
   });
   const dataToBeUsed = transformObjectToArray(last180DaysObject).sort((a, b) =>
     a.date > b.date ? 1 : -1

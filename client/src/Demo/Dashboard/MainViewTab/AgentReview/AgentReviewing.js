@@ -2,7 +2,7 @@ import React from 'react';
 import { Link as LinkDom } from 'react-router-dom';
 import { AiFillQuestionCircle } from 'react-icons/ai';
 import { Link, TableCell, TableRow, Typography } from '@mui/material';
-import { BsFillExclamationCircleFill, BsDash } from 'react-icons/bs';
+import { BsFillExclamationCircleFill } from 'react-icons/bs';
 import { IoCheckmarkCircle } from 'react-icons/io5';
 
 import {
@@ -33,7 +33,11 @@ import {
   isProgramSubmitted,
   isProgramDecided
 } from '../../../Utils/checking-functions';
-import { profile_list, statuses } from '../../../Utils/contants';
+import {
+  FILE_DONT_CARE_SYMBOL,
+  profile_list,
+  statuses
+} from '../../../Utils/contants';
 import DEMO from '../../../../store/constant';
 
 function AgentReviewing(props) {
@@ -578,7 +582,7 @@ function AgentReviewing(props) {
           >
             {props.student.applications?.length === 0 ? (
               <Typography title="Not needed">
-                <BsDash size={24} color="lightgray" className="mx-2" />
+                {FILE_DONT_CARE_SYMBOL}
               </Typography>
             ) : to_register_application_portals(props.student) ? (
               <Typography>
@@ -625,7 +629,7 @@ function AgentReviewing(props) {
               )
             ) : (
               <Typography title="Not needed">
-                <BsDash size={24} color="lightgray" className="mx-2" />
+                {FILE_DONT_CARE_SYMBOL}
               </Typography>
             )}
           </Link>

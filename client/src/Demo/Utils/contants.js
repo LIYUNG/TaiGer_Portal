@@ -1,22 +1,16 @@
 import React from 'react';
-import {
-  AiFillCloseCircle,
-  AiFillQuestionCircle,
-  AiOutlineFieldTime
-} from 'react-icons/ai';
 import { DateTime, IANAZone } from 'luxon';
 import moment from 'moment-timezone';
-import { IoCheckmarkCircle } from 'react-icons/io5';
-import { BsDash } from 'react-icons/bs';
-import { BiCommentDots } from 'react-icons/bi';
 import { styled, alpha } from '@mui/material/styles';
-import { InputBase } from '@mui/material';
+import { InputBase, Typography } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import BugReportIcon from '@mui/icons-material/BugReport';
 import WarningIcon from '@mui/icons-material/Warning';
 import HelpIcon from '@mui/icons-material/Help';
-import { green, red, grey } from '@mui/material/colors';
+import RemoveIcon from '@mui/icons-material/Remove';
+import QueryBuilderIcon from '@mui/icons-material/QueryBuilder';
+import { green, red, grey, orange } from '@mui/material/colors';
 import { Link, Tooltip, Chip } from '@mui/material';
 import { Link as LinkDom } from 'react-router-dom';
 import { appConfig } from '../../config';
@@ -118,24 +112,32 @@ export const ADMISSION_STATUS_E = {
   )
 };
 
-let FILE_OK_SYMBOL = (
-  <IoCheckmarkCircle size={18} color="limegreen" title="Valid Document" />
-);
-let FILE_NOT_OK_SYMBOL = (
-  <AiFillCloseCircle size={18} color="red" title="Invalid Document" />
-);
-let FILE_UPLOADED_SYMBOL = (
-  <AiOutlineFieldTime size={18} color="orange" title="Uploaded successfully" />
-);
-let FILE_MISSING_SYMBOL = (
-  <AiFillQuestionCircle
+export const FILE_OK_SYMBOL = (
+  <CheckCircleIcon
     size={18}
-    color="lightgray"
+    style={{ color: green[500] }}
+    title="Valid Document"
+  />
+);
+export const FILE_NOT_OK_SYMBOL = (
+  <CancelIcon size={18} style={{ color: red[700] }} title="Invalid Document" />
+);
+export const FILE_UPLOADED_SYMBOL = (
+  <QueryBuilderIcon
+    size={18}
+    style={{ color: orange[400] }}
+    title="Uploaded successfully"
+  />
+);
+export const FILE_MISSING_SYMBOL = (
+  <HelpIcon
+    size={18}
+    style={{ color: grey[400] }}
     title="No Document uploaded"
   />
 );
-let FILE_DONT_CARE_SYMBOL = (
-  <BsDash size={18} color="lightgray" title="Not needed" />
+export const FILE_DONT_CARE_SYMBOL = (
+  <RemoveIcon size={18} style={{ color: grey[400] }} title="Not needed" />
 );
 
 export const questionType = {
@@ -416,25 +418,24 @@ export const MLQuestions = (thread, isSpecific) => {
 };
 export const SYMBOL_EXPLANATION = (
   <>
-    <p className="text-secondary"> </p>
-    <p className="text-info">
+    <Typography>
       {FILE_OK_SYMBOL}: The document is valid and can be used in the
       application.
-    </p>
-    <p className="text-info">
+    </Typography>
+    <Typography>
       {FILE_NOT_OK_SYMBOL}: The document is invalid and cannot be used in the
       application. Please properly scan a new one.
-    </p>
-    <p className="text-info">
+    </Typography>
+    <Typography>
       {FILE_UPLOADED_SYMBOL}: The document is uploaded. Your agent will check it
       as soon as possible.
-    </p>
-    <p className="text-info">
+    </Typography>
+    <Typography>
       {FILE_MISSING_SYMBOL}: Please upload the copy of the document.
-    </p>
-    <p className="text-info">
+    </Typography>
+    <Typography>
       {FILE_DONT_CARE_SYMBOL}: This document is not needed.
-    </p>{' '}
+    </Typography>
   </>
 );
 export const daysOfWeek = [
@@ -478,7 +479,11 @@ export const NoonNightLabel = (start) => {
 export const transformObjectToArray = (inputObject) => {
   return Object.entries(inputObject).map(([date, apiCallCount]) => ({
     date,
-    apiCallCount
+    apiCallCount: apiCallCount.TOTAL,
+    get: apiCallCount.GET,
+    post: apiCallCount.POST,
+    put: apiCallCount.PUT,
+    delete: apiCallCount.DELETE
   }));
 };
 export const getLast180DaysSet = () => {
@@ -506,7 +511,13 @@ export const getLast180DaysObject = () => {
     currentDate.setDate(today.getDate() - i);
 
     const formattedDate = currentDate.toISOString().split('T')[0];
-    last180DaysObject[formattedDate] = 0;
+    last180DaysObject[formattedDate] = {
+      TOTAL: 0,
+      GET: 0,
+      PUT: 0,
+      POST: 0,
+      DELETE: 0
+    };
   }
 
   return last180DaysObject;
@@ -968,7 +979,7 @@ export const ATTRIBUTES = [
   { value: 6, name: 'Low-IQ', definition: '' },
   { value: 7, name: 'Refunded', definition: '' },
   { value: 8, name: 'Done', definition: '' },
-  { value: 9, name: 'Redund-Risk', definition: '' }
+  { value: 9, name: 'Refund-Risk', definition: '' }
 ];
 
 export const COLORS = [
@@ -1483,49 +1494,6 @@ export const DEGREE_ARRAY_OPTIONS = [
   { value: 'BachelorMaster', label: 'BachelorMaster' }
 ];
 
-export const return_thread_status = (user, thread) => {
-  if (thread.isFinalVersion) {
-    return (
-      <td className="my-0 text-info">
-        <IoCheckmarkCircle size={24} color="limegreen" title="Complete" />
-      </td>
-    );
-  }
-  if (
-    thread.latest_message_left_by_id === undefined ||
-    thread.latest_message_left_by_id === ''
-  ) {
-    if (user.role !== 'Student') {
-      return (
-        <td className="my-0 text-info">
-          <AiFillQuestionCircle
-            size={24}
-            color="lightgray"
-            title="Waiting feedback"
-          />
-        </td>
-      );
-    }
-  }
-  if (user._id.toString() === thread.latest_message_left_by_id) {
-    return (
-      <td className="my-0 text-info">
-        <AiFillQuestionCircle
-          size={24}
-          color="lightgray"
-          title="Waiting feedback"
-        />
-      </td>
-    );
-  } else {
-    return (
-      <td className="my-0 text-info">
-        <BiCommentDots size={24} color="red" title="New Message" />
-      </td>
-    );
-  }
-};
-
 export const is_not_started_tasks_status = (user, thread) => {
   if (thread.isFinalVersion) {
     return false;
@@ -1641,32 +1609,6 @@ export const studentOverviewTableHeader = [
   'open/offer/reject'
 ];
 
-export const cvmlrl_overview_closed_header = [
-  {
-    Header: 'First-, Last Name',
-    accessor: 'firstname_lastname',
-    filter: 'fuzzyText'
-  },
-  {
-    Header: 'Status',
-    accessor: 'status',
-    filter: 'fuzzyText'
-  },
-  {
-    Header: 'Deadline',
-    accessor: 'deadline'
-  },
-  {
-    Header: 'Last Update',
-    accessor: 'updatedAt'
-  },
-  {
-    Header: 'Documents',
-    accessor: 'document_name',
-    filter: 'fuzzyText'
-  }
-];
-
 export const c1 = [
   {
     field: 'firstname_lastname',
@@ -1697,7 +1639,7 @@ export const c1 = [
     headerName: 'Editors / Writer',
     align: 'left',
     headerAlign: 'left',
-    width: 150,
+    minWidth: 150,
     renderCell: (params) => {
       return params.row.file_type === 'Essay'
         ? params.row.outsourced_user_id?.map((outsourcer) => (
@@ -1727,24 +1669,19 @@ export const c1 = [
     }
   },
   {
-    field: 'latest_reply',
-    headerName: 'Latest Reply',
-    width: 100
-  },
-  {
     field: 'deadline',
     headerName: 'Deadline',
-    width: 100
+    minWidth: 100
   },
   {
     field: 'days_left',
     headerName: 'Days left',
-    width: 80
+    minWidth: 80
   },
   {
     field: 'document_name',
     headerName: 'Document name',
-    width: 380,
+    minWidth: 380,
     renderCell: (params) => {
       const linkUrl = `${DEMO.DOCUMENT_MODIFICATION_LINK(
         params.row.thread_id
@@ -1764,9 +1701,7 @@ export const c1 = [
                     size="small"
                     label={attribute.name[0]}
                     color={COLORS[attribute.value]}
-                  >
-                    {attribute.name}
-                  </Chip>
+                  />
                 </Tooltip>
               )
           )}
@@ -1786,25 +1721,29 @@ export const c1 = [
   {
     field: 'aged_days',
     headerName: 'Aged days',
-    width: 80
+    minWidth: 80
   },
   {
     field: 'number_input_from_editors',
     headerName: 'Editor Feedback (#Messages/#Files)',
-    width: 80
+    minWidth: 80
   },
   {
     field: 'number_input_from_student',
     headerName: 'Student Feedback (#Messages/#Files)',
-    width: 80
+    minWidth: 80
+  },
+  {
+    field: 'latest_reply',
+    headerName: 'Latest Reply',
+    minWidth: 100
   },
   {
     field: 'updatedAt',
     headerName: 'Last Update',
-    width: 100
+    minWidth: 100
   }
 ];
-
 export const c2Student = [
   {
     field: 'firstname_lastname',
@@ -1831,11 +1770,6 @@ export const c2Student = [
     }
   },
   {
-    field: 'latest_reply',
-    headerName: 'Latest Reply',
-    width: 100
-  },
-  {
     field: 'deadline',
     headerName: 'Deadline',
     width: 100
@@ -1882,6 +1816,11 @@ export const c2Student = [
     field: 'number_input_from_student',
     headerName: 'Student Feedback (#Messages/#Files)',
     width: 80
+  },
+  {
+    field: 'latest_reply',
+    headerName: 'Latest Reply',
+    width: 100
   },
   {
     field: 'updatedAt',
@@ -1914,11 +1853,6 @@ export const c2 = [
         </Link>
       );
     }
-  },
-  {
-    field: 'latest_reply',
-    headerName: 'Latest Reply',
-    width: 100
   },
   {
     field: 'deadline',
@@ -1954,9 +1888,7 @@ export const c2 = [
                     data-testid={`chip-${attribute.name}`}
                     label={attribute.name[0]}
                     color={COLORS[attribute.value]}
-                  >
-                    {attribute.name}
-                  </Chip>
+                  />
                 </Tooltip>
               )
           )}
@@ -1989,112 +1921,14 @@ export const c2 = [
     width: 80
   },
   {
+    field: 'latest_reply',
+    headerName: 'Latest Reply',
+    width: 100
+  },
+  {
     field: 'updatedAt',
     headerName: 'Last Update',
     width: 100
-  }
-];
-
-export const cvmlrl_overview_header = [
-  {
-    Header: 'First-, Last Name',
-    accessor: 'firstname_lastname',
-    filter: 'fuzzyText'
-  },
-  {
-    Header: 'Latest Reply',
-    accessor: 'latest_reply',
-    filter: 'fuzzyText'
-  },
-  {
-    Header: 'Deadline',
-    accessor: 'deadline'
-  },
-  {
-    Header: 'Days left',
-    accessor: 'days_left'
-  },
-  {
-    Header: 'Documents',
-    accessor: 'document_name',
-    filter: 'fuzzyText'
-  },
-  {
-    Header: 'Ages Days',
-    accessor: 'aged_days'
-  },
-  {
-    Header: (
-      <>
-        #EditorFeedback
-        <br />
-        Message/Files
-      </>
-    ),
-    accessor: 'number_input_from_editors'
-  },
-  {
-    Header: (
-      <>
-        #StudentInput
-        <br />
-        Message/Files
-      </>
-    ),
-    accessor: 'number_input_from_student'
-  },
-  {
-    Header: 'Last Update',
-    accessor: 'updatedAt'
-  }
-];
-
-export const cvmlrlclosedlist = [
-  {
-    name: 'Status',
-    prop: 'status'
-  },
-  {
-    name: 'Documents',
-    prop: 'documents'
-  },
-  {
-    name: 'Last Update',
-    prop: 'last_update'
-  },
-  {
-    name: 'Deadline',
-    prop: 'deadline'
-  },
-  {
-    name: 'Application',
-    prop: 'application'
-  }
-];
-export const program_progress_list_student = [
-  {
-    name: 'University',
-    prop: 'university'
-  },
-  {
-    name: 'Programs',
-    prop: 'programs'
-  },
-  {
-    name: 'Deadline',
-    prop: 'deadline'
-  },
-  {
-    name: 'Decided',
-    prop: 'decided'
-  },
-  {
-    name: 'Offer',
-    prop: 'offer'
-  },
-  {
-    name: 'Days left',
-    prop: 'days_left'
   }
 ];
 

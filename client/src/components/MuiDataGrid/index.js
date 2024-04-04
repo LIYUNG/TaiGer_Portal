@@ -18,24 +18,14 @@ export const MuiDataGrid = (props) => {
     event.preventDefault();
     event.stopPropagation();
   };
-
+  const autosizeOptions = {
+    includeHeaders: true,
+    includeOutliers: true,
+    expand: true
+  };
   return (
     <div style={{ height: '50%', width: '100%' }}>
       <DataGrid
-        sx={{
-          '& .MuiDataGrid-columnHeaderTitle': {
-            whiteSpace: 'normal',
-            lineHeight: 'normal'
-          },
-          '& .MuiDataGrid-columnHeader': {
-            // Forced to use important since overriding inline styles
-            height: 'unset !important'
-          },
-          '& .MuiDataGrid-columnHeaders': {
-            // Forced to use important since overriding inline styles
-            maxHeight: '168px !important'
-          }
-        }}
         density="compact"
         rows={props.rows.filter((row) => {
           return Object.keys(filters).every((field) => {
@@ -53,6 +43,9 @@ export const MuiDataGrid = (props) => {
             }
           });
         })}
+        columnHeaderHeight={130}
+        autosizeOnMount={true}
+        disableColumnResize={false}
         disableColumnFilter
         disableColumnMenu
         disableDensitySelector
@@ -61,16 +54,18 @@ export const MuiDataGrid = (props) => {
           renderHeader: () => (
             <Box>
               <Tooltip
-                title={`${t(`${column.headerName}`)}`}
+                title={`${t(`${column.headerName}`, { ns: 'common' })}`}
                 key={column.headerName}
               >
-                <Typography sx={{ my: 1 }}>{t(`${column.headerName}`)}</Typography>
+                <Typography sx={{ my: 1 }}>
+                  {t(`${column.headerName}`, { ns: 'common' })}
+                </Typography>
               </Tooltip>
               <TextField
                 fullWidth
                 size="small"
                 type="text"
-                placeholder={t(`${column.headerName}`)}
+                placeholder={t(`${column.headerName}`, { ns: 'common' })}
                 onClick={stopPropagation}
                 value={filters[column.field] || ''}
                 onChange={(event) => handleFilterChange(event, column)}
@@ -91,6 +86,7 @@ export const MuiDataGrid = (props) => {
             showQuickFilter: true
           }
         }}
+        autosizeOptions={autosizeOptions}
       ></DataGrid>
     </div>
   );

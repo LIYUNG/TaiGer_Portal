@@ -381,9 +381,7 @@ function CommunicationSinglePage() {
                       target="_blank"
                     >
                       {t('Profile', { ns: 'common' })}{' '}
-                      <FiExternalLink
-                        style={{ cursor: 'pointer' }}
-                      />
+                      <FiExternalLink style={{ cursor: 'pointer' }} />
                     </Link>
                     填好,{' '}
                     <Link
@@ -408,9 +406,7 @@ function CommunicationSinglePage() {
                       target="_blank"
                     >
                       {t('My Courses', { ns: 'common' })}{' '}
-                      <FiExternalLink
-                        style={{ cursor: 'pointer' }}
-                      />
+                      <FiExternalLink style={{ cursor: 'pointer' }} />
                     </Link>
                     課程填好，之後 Agent 在回答問題時比較能掌握狀況。
                   </Typography>
@@ -432,7 +428,9 @@ function CommunicationSinglePage() {
             </Box>
           </Grid>
           <Grid item xs={12} sm={3}>
-            <Typography fontWeight="bold">{t('Agents')}:</Typography>
+            <Typography fontWeight="bold">
+              {t('Agents', { ns: 'common' })}:
+            </Typography>
             {communicationSinglePageState.student?.agents?.map((agent, i) => (
               <Typography key={i}>
                 <Link

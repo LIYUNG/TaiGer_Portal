@@ -8,6 +8,7 @@ import {
   Link,
   Menu,
   MenuItem,
+  TableContainer,
   Table,
   TableBody,
   TableCell,
@@ -249,7 +250,7 @@ function TaiGerOrg() {
             aria-expanded={open ? 'true' : undefined}
             onClick={handleClick}
           >
-            {t('Edit')}
+            {t('Edit', { ns: 'common' })}
           </Button>
           <Menu
             id={`basic-menu`}
@@ -366,7 +367,7 @@ function TaiGerOrg() {
             aria-expanded={open ? 'true' : undefined}
             onClick={handleClick}
           >
-            {t('Edit')}
+            {t('Edit', { ns: 'common' })}
           </Button>
           <Menu
             id={`basic-menu`}
@@ -424,158 +425,80 @@ function TaiGerOrg() {
           </>
         )}
       </Card>
-      {/* <Card>
-        <Typography variant="h5">Manager:</Typography>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>{t('Name')}</TableCell>
-              <TableCell>Type</TableCell>
-              <TableCell>
-                Can User <br /> TaiGerAI
-              </TableCell>
-              <TableCell>
-                TaiGerAI <br /> Quota
-              </TableCell>
-              <TableCell>Permissions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {managers.map((manager, i) => (
-              <TableRow key={i}>
-                <TableCell>
-                  <b>
-                    <Link
-                      to={`${DEMO.TEAM_MANAGER_LINK(manager._id.toString())}`}
-                    >
-                      {manager.firstname} {manager.lastname}{' '}
-                    </Link>
-                  </b>
-                </TableCell>
-                <TableCell>
-                  {manager.permissions?.length > 0
-                    ? manager.permissions[0].canModifyProgramList
-                      ? 'O'
-                      : 'X'
-                    : 'x'}
-                </TableCell>
-                <TableCell>
-                  {manager.permissions?.length > 0
-                    ? manager.permissions[0].canModifyAllBaseDocuments
-                      ? 'O'
-                      : 'X'
-                    : 'x'}
-                </TableCell>
-                <TableCell>
-                  <Button
-                    id="basic-button"
-                    variant="contained"
-                    aria-controls={open ? 'basic-menu' : undefined}
-                    aria-haspopup="true"
-                    aria-expanded={open ? 'true' : undefined}
-                    onClick={handleClick}
-                  >
-                    {t('Edit')}
-                  </Button>
-                  <Menu
-                    id="basic-menu"
-                    anchorEl={anchorEl}
-                    disabled={!is_TaiGer_Admin(user)}
-                    open={open}
-                    onClose={handleClose}
-                    MenuListProps={{
-                      'aria-labelledby': 'basic-button'
-                    }}
-                  >
-                    <MenuItem
-                      onClick={() =>
-                        setModalShow(
-                          manager.firstname,
-                          manager.lastname,
-                          manager._id.toString(),
-                          manager.permissions
-                        )
-                      }
-                    >
-                      {t('Permission')}
-                    </MenuItem>
-                  </Menu>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </Card> */}
       <Card>
         <Typography variant="h5">{t('Agent')}:</Typography>
-        <Table size="small">
-          <TableHead>
-            <TableRow>
-              <TableCell>{t('Name')}</TableCell>
-              <TableCell>
-                Can modify
-                <br /> program list
-              </TableCell>
-              <TableCell>
-                Can modify all
-                <br /> Base Documents
-              </TableCell>
-              <TableCell>
-                Can Access <br /> AllChat
-              </TableCell>
-              <TableCell>
-                Can Assign <br /> Agents
-              </TableCell>
-              <TableCell>
-                Can Assign <br /> Editors
-              </TableCell>
-              <TableCell>
-                Can Modify <br /> Docs
-              </TableCell>
-              <TableCell>
-                Can Access <br /> Students
-              </TableCell>
-              <TableCell>
-                Can User <br /> TaiGerAI
-              </TableCell>
-              <TableCell>
-                TaiGerAI <br /> Quota
-              </TableCell>
-              <TableCell>Permissions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {agents.map((agent, i) => (
-              <AgentRow agent={agent} key={i} />
-            ))}
-          </TableBody>
-        </Table>
+        <TableContainer style={{ overflowX: 'auto' }}>
+          <Table size="small">
+            <TableHead>
+              <TableRow>
+                <TableCell>{t('Name')}</TableCell>
+                <TableCell>
+                  Can modify
+                  <br /> program list
+                </TableCell>
+                <TableCell>
+                  Can modify all
+                  <br /> Base Documents
+                </TableCell>
+                <TableCell>
+                  Can Access <br /> AllChat
+                </TableCell>
+                <TableCell>
+                  Can Assign <br /> Agents
+                </TableCell>
+                <TableCell>
+                  Can Assign <br /> Editors
+                </TableCell>
+                <TableCell>
+                  Can Modify <br /> Docs
+                </TableCell>
+                <TableCell>
+                  Can Access <br /> Students
+                </TableCell>
+                <TableCell>
+                  Can User <br /> TaiGerAI
+                </TableCell>
+                <TableCell>
+                  TaiGerAI <br /> Quota
+                </TableCell>
+                <TableCell>Permissions</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {agents.map((agent, i) => (
+                <AgentRow agent={agent} key={i} />
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </Card>
       <Card>
-        <Typography variant="h5">{t('Editor')}:</Typography>
-        <Table size="small">
-          <TableHead>
-            <TableRow>
-              <TableCell>Name</TableCell>
-              <TableCell>Can Assign Agents</TableCell>
-              <TableCell>Can Assign Editors</TableCell>
-              <TableCell>Can Modify Docs</TableCell>
-              <TableCell>Can Access Students</TableCell>
-              <TableCell>
-                Can User <br /> TaiGerAI
-              </TableCell>
-              <TableCell>
-                TaiGerAI <br /> Quota
-              </TableCell>
-              <TableCell>Permissions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {editors.map((editor, i) => (
-              <EditorRow editor={editor} key={i} />
-            ))}
-          </TableBody>
-        </Table>
+        <Typography variant="h5">{t('Editor', { ns: 'common' })}:</Typography>
+        <TableContainer style={{ overflowX: 'auto' }}>
+          <Table size="small">
+            <TableHead>
+              <TableRow>
+                <TableCell>Name</TableCell>
+                <TableCell>Can Assign Agents</TableCell>
+                <TableCell>Can Assign Editors</TableCell>
+                <TableCell>Can Modify Docs</TableCell>
+                <TableCell>Can Access Students</TableCell>
+                <TableCell>
+                  Can User <br /> TaiGerAI
+                </TableCell>
+                <TableCell>
+                  TaiGerAI <br /> Quota
+                </TableCell>
+                <TableCell>Permissions</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {editors.map((editor, i) => (
+                <EditorRow editor={editor} key={i} />
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </Card>
       {taiGerOrgState.modalShow && (
         <GrantPermissionModal

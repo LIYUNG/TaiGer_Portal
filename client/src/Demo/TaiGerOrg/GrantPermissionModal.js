@@ -145,7 +145,7 @@ function GrantPermissionModal(props) {
         disabled={!grantPermissionModalState.changed}
         onClick={(e) => onSubmitHandler(e)}
       >
-        {t('Update')}
+        {t('Update', { ns: 'common' })}
       </Button>
       <Button color="primary" variant="outlined" onClick={props.setModalHide}>
         {t('Cancel')}

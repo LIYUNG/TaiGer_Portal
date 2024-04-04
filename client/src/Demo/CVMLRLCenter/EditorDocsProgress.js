@@ -688,7 +688,7 @@ function EditorDocsProgress(props) {
         onClose={closeWarningWindow}
         aria-labelledby="contained-modal-title-vcenter"
       >
-        <Typography variant="h6">{t('Warning')}</Typography>
+        <Typography variant="h6">{t('Warning', { ns: 'common' })}</Typography>
         <Typography sx={{ my: 2 }}>
           Do you want to delete <b>{editorDocsProgressState.docName}</b>?
         </Typography>
@@ -743,7 +743,7 @@ function EditorDocsProgress(props) {
         aria-labelledby="contained-modal-title-vcenter"
       >
         <Typography variant="h6" sx={{ mb: 1 }}>
-          {t('Warning')}
+          {t('Warning', { ns: 'common' })}
         </Typography>
         <Typography sx={{ mb: 1 }}>
           Do you want to set {editorDocsProgressState.docName} as{' '}

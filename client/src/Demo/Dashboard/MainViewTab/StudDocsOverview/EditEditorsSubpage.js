@@ -75,7 +75,7 @@ function EditEditorsSubpage(props) {
           <Typography variant="h6">
             Editor for {props.student.firstname} - {props.student.lastname}
           </Typography>
-          <Typography variant="h6">{t('Editor')}: </Typography>
+          <Typography variant="h6">{t('Editor', { ns: 'common' })}: </Typography>
           <Table size="small">
             <TableBody>
               {checkboxState.editors ? (
@@ -119,7 +119,7 @@ function EditEditorsSubpage(props) {
               )
             }
           >
-            {t('Update')}
+            {t('Update', { ns: 'common' })}
           </Button>
           <Button variant="outlined" onClick={props.onHide}>
             {t('Cancel')}

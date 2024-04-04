@@ -90,7 +90,7 @@ export function ExtendableTable({ data }) {
                       <TableCell>{t('Amount')}</TableCell>
                       <TableCell>{t('Currency')}</TableCell>
                       <TableCell>{t('Status')}</TableCell>
-                      <TableCell>{t('Description')}</TableCell>
+                      <TableCell>{t('Description', { ns: 'common' })}</TableCell>
                       <TableCell>{t('UpdateAt')}</TableCell>
                     </TableRow>
                   </TableHead>

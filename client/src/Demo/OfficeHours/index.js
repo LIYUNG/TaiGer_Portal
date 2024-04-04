@@ -815,7 +815,7 @@ function OfficeHours() {
               {OfficeHoursState.BookButtonDisable ? (
                 <CircularProgress size={16} />
               ) : (
-                t('Update')
+                t('Update', { ns: 'common' })
               )}
             </Button>
           </ModalNew>

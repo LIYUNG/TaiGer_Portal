@@ -873,7 +873,7 @@ function AllOfficeHours() {
         size="xl"
         centered
       >
-        <Typography variant="h6">{t('Edit')}</Typography>
+        <Typography variant="h6">{t('Edit', { ns: 'common' })}</Typography>
         <Typography>請寫下想討論的主題</Typography>
         <TextField
           fullWidth
@@ -924,7 +924,7 @@ function AllOfficeHours() {
           {allOfficeHoursState.BookButtonDisable ? (
             <CircularProgress size={16} />
           ) : (
-            t('Update')
+            t('Update', { ns: 'common' })
           )}
         </Button>
       </ModalNew>

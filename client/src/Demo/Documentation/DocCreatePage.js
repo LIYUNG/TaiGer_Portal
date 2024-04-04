@@ -296,7 +296,7 @@ function DocCreatePage(props) {
         >
           {appConfig.companyName}
         </Link>
-        <Typography color="text.primary">{t('All Documentations')}</Typography>
+        <Typography color="text.primary">{t('All Documentations', { ns: 'common' })}</Typography>
       </Breadcrumbs>
 
       {DocCreatePageState.isEdit ? (
@@ -358,7 +358,7 @@ function DocCreatePage(props) {
           <Grid item xs={12}>
             {is_TaiGer_AdminAgent(user) && (
               <Button color="primary" variant="contained" onClick={handleClick}>
-                {t('Add')}
+                {t('Add', { ns: 'common' })}
               </Button>
             )}
           </Grid>
@@ -372,7 +372,7 @@ function DocCreatePage(props) {
         centered
       >
         <Typography id="contained-modal-title-vcenter">
-          {t('Warning')}
+          {t('Warning', { ns: 'common' })}
         </Typography>
         <Typography>
           Do you want to delete documentation of title:{' '}

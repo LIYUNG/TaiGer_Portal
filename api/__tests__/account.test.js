@@ -3,13 +3,12 @@ const path = require('path');
 const { spawn } = require('child_process');
 const EventEmitter = require('events');
 const request = require('supertest');
+const db = require('./fixtures/db');
 
 const { UPLOAD_PATH } = require('../config');
 const { app } = require('../app');
-const { connectToDatabase, disconnectFromDatabase } = require('../database');
 const { Role, User, Agent, Editor, Student } = require('../models/User');
 const { Program } = require('../models/Program');
-const { DocumentStatus } = require('../constants');
 const { generateUser } = require('./fixtures/users');
 const { generateProgram } = require('./fixtures/programs');
 const { protect } = require('../middlewares/auth');
@@ -60,12 +59,8 @@ const requiredDocuments = ['transcript', 'resume'];
 const optionalDocuments = ['certificate', 'visa'];
 const program = generateProgram(requiredDocuments, optionalDocuments);
 
-beforeAll(async () => {
-  jest.spyOn(console, 'log').mockImplementation(jest.fn());
-  await connectToDatabase(global.__MONGO_URI__);
-});
-
-afterAll(disconnectFromDatabase);
+beforeAll(async () => await db.connect());
+afterAll(async () => await db.clearDatabase());
 
 beforeEach(async () => {
   await User.deleteMany();
@@ -79,10 +74,6 @@ beforeEach(async () => {
   //   next();
   // });
 });
-
-// afterEach(() => {
-//   fs.rmSync(UPLOAD_PATH, { recursive: true, force: true });
-// });
 
 // user: Agent
 describe('POST /api/document-threads/init/application/:studentId/:programId/:document_category', () => {
@@ -866,7 +857,7 @@ describe('POST /api/document-threads/init/application/:studentId/:programId/:doc
 //   it.todo("should download the analyzed report");
 // });
 
-describe('POST /api/account/profile', () => {
+describe('POST /api/account/profile/:user_id', () => {
   const personaldata = { firstname: 'New_FirstName', lastname: 'New_LastName' };
   beforeEach(async () => {
     protect.mockImplementation(async (req, res, next) => {
@@ -877,7 +868,7 @@ describe('POST /api/account/profile', () => {
   });
   it('should update personal data', async () => {
     const resp = await request(app)
-      .post('/api/account/profile')
+      .post(`/api/account/profile/${student._ìd.toString()}`)
       .send({ personaldata });
     const { status, body } = resp;
     expect(status).toBe(200);

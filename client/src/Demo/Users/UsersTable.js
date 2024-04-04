@@ -192,26 +192,30 @@ function UsersTable() {
         <Tabs
           value={value}
           onChange={handleChange}
+          variant="scrollable"
+          scrollButtons="auto"
           aria-label="basic tabs example"
         >
           <Tab
             data-testid="users_table_page_student_tab"
-            label={`${t('Student')} (${student_list?.length})`}
+            label={`${t('Student', { ns: 'common' })} (${
+              student_list?.length
+            })`}
             {...a11yProps(0)}
           />
           <Tab
             data-testid="users_table_page_agent_tab"
-            label={`${t('Agents')} (${agent_list.length})`}
+            label={`${t('Agents', { ns: 'common' })} (${agent_list.length})`}
             {...a11yProps(1)}
           />
           <Tab
             data-testid="users_table_page_editor_tab"
-            label={`${t('Editor')} (${editor_list.length})`}
+            label={`${t('Editor', { ns: 'common' })} (${editor_list.length})`}
             {...a11yProps(2)}
           />
           <Tab
             data-testid="users_table_page_admin_tab"
-            label={`${t('Admin')} (${admin_list.length})`}
+            label={`${t('Admin', { ns: 'common' })} (${admin_list.length})`}
             {...a11yProps(3)}
           />
         </Tabs>

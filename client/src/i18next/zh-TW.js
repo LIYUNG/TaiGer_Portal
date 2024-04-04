@@ -8,8 +8,24 @@ export const translation_zh_TW = {
     'Last Login': '最近登入'
   },
   common: {
+    Add: '新增',
+    Account: '帳號',
+    Archiv: '封存',
+    Activate: '啟用',
+    Activated: '已啟用',
+    'Aged days': '離上次更新(天)',
+    'Document name': '文件名稱',
+    'Latest Reply': '最後回覆',
+    'Last Update': '最後更新於',
+    'Editor Feedback (#Messages/#Files)': '編輯回應 (#訊息/#檔案)',
+    'Student Feedback (#Messages/#Files)': '學生回應 (#訊息/#檔案)',
+    'Editors / Writer': '編輯 / 寫手',
     'Program Task Diff': '學程文件差別對照表',
     'Coming soon': '即將開放',
+    'Please assign agents': '請指派顧問',
+    'Please assign editors': '請指派編輯',
+    'Please assign essay writers': '請指派論文編輯',
+    'Program Selection': '選校',
     Agent: '顧問',
     Editor: '編輯',
     Program: '學程',
@@ -52,7 +68,6 @@ export const translation_zh_TW = {
     'Upload Time': '上傳時間',
     Upload: '上傳',
     'Log Out': '登出',
-    'Please assign essay writers': '請指派論文編輯',
     Professor: '教授',
     Supervisor: '主管',
     Accept: '接受',
@@ -74,6 +89,7 @@ export const translation_zh_TW = {
     [`${appConfig.companyName} Dashboard`]: `${appConfig.companyName} 總攬`,
     [`${appConfig.companyName} Accounting`]: `${appConfig.companyName} 會計`,
     Applications: '申請',
+    'Course Analysis': '課程分析',
     'Applications Overview': '申請總攬',
     'Application Overview': '申請總攬',
     'My Applications': '我的申請',
@@ -86,7 +102,10 @@ export const translation_zh_TW = {
     'CV/ML/RL Center': 'CV/ML/RL 中心',
     Notes: '筆記欄',
     'General Documents': '通用文件',
-    CV: '通用文件',
+    CV: '履歷',
+    ML: '動機信',
+    RL: '推薦信',
+    Essay: '小論文',
     'Recommendation Letters': '推薦信',
     'Add Task': '新增任務',
     Confirmation: '確認',
@@ -119,11 +138,13 @@ export const translation_zh_TW = {
     'My Students': '我的學生',
     Profile: '背景資料',
     'My Profile': '我的背景資料',
+    Survey: '問卷',
     'My Survey': '我的問卷',
     Courses: '修課',
     'My Courses': '我的修課',
     'My Documents': '我的文件',
     'All Documents': '所有文件',
+    'All Documentations': '所有說明',
     'Essay Dashboard': '論文中心',
     'Interview Training': '面試訓練',
     'Student Database': '學生資料庫',
@@ -165,7 +186,8 @@ export const translation_zh_TW = {
     Download: '下載',
     'To Do Tasks': '待辦事項清單',
     'Agent Support': '顧問任務',
-    'Essay Center': '論文中心'
+    'Essay Center': '論文中心',
+    'User Logs': '使用者紀錄'
   },
   dashboard: {
     Dashboard: '主控台',
@@ -177,13 +199,23 @@ export const translation_zh_TW = {
     'Please complete Profile so that your agent can understand your situation':
       '請完成背景資料填寫，好讓您的故未能掌握您的狀況'
   },
+  documents: {
+    Reject: '拒絕'
+  },
   programList: {},
+  logs: {
+    'User Logs': '使用者紀錄'
+  },
   backgroundProfile: {},
   cvmlrl: {
     'Note: if the documents are not closed but locate here, it is becaue the applications are already submitted. The documents can safely closed eventually.':
       'Note: 如果文件並沒有關閉並出現在這區，是因為申請已經送出。該文件可以安全地被關閉。'
   },
   courses: {
+    'Select Target Group': '選擇學群',
+    'Select language': '選擇語言',
+    Analysing: '分析中',
+    Analyse: '分析',
     'Please complete My Courses table. The agent will provide you with course analysis and courses suggestion.':
       '請完成我的修課，Agent 將會為您提供課程分析以及修課建議。',
     'Course Analysis banner':

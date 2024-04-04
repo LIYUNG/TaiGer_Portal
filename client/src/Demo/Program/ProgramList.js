@@ -279,7 +279,7 @@ function ProgramList(props) {
     },
     {
       field: 'program_name',
-      headerName: t('Program'),
+      headerName: t('Program', { ns: 'common' }),
       width: 250,
       renderCell: (params) => {
         const linkUrl = `${DEMO.SINGLE_PROGRAM_LINK(params.row.id)}`;
@@ -296,14 +296,14 @@ function ProgramList(props) {
       }
     },
     { field: 'country', headerName: t('Country'), width: 90 },
-    { field: 'degree', headerName: t('Degree'), width: 90 },
-    { field: 'semester', headerName: t('Semester'), width: 100 },
+    { field: 'degree', headerName: t('Degree', { ns: 'common' }), width: 90 },
+    { field: 'semester', headerName: t('Semester', { ns: 'common' }), width: 100 },
     { field: 'lang', headerName: t('Language'), width: 120 },
     { field: 'toefl', headerName: t('TOEFL'), width: 100 },
     { field: 'ielts', headerName: t('IELTS'), width: 100 },
     { field: 'gre', headerName: t('GRE'), width: 120 },
     { field: 'gmat', headerName: t('GMAT'), width: 120 },
-    { field: 'application_deadline', headerName: t('Deadline'), width: 120 },
+    { field: 'application_deadline', headerName: t('Deadline', { ns: 'common' }), width: 120 },
     { field: 'updatedAt', headerName: t('Last updated'), width: 150 }
   ];
 
@@ -401,32 +401,9 @@ function ProgramList(props) {
             ></Button>
           )}
           <br />
-          {/* <Typography>Filter</Typography>
-          {c2.map((column) => (
-            <TextField
-              size="small"
-              key={column.field}
-              type="text"
-              placeholder={`${column.headerName}`}
-              onChange={(event) => handleFilterChange(event, column)}
-            />
-          ))} */}
           <div style={{ height: '50%', width: '100%' }}>
             <DataGrid
-              sx={{
-                '& .MuiDataGrid-columnHeaderTitle': {
-                  whiteSpace: 'normal',
-                  lineHeight: 'normal'
-                },
-                '& .MuiDataGrid-columnHeader': {
-                  // Forced to use important since overriding inline styles
-                  height: 'unset !important'
-                },
-                '& .MuiDataGrid-columnHeaders': {
-                  // Forced to use important since overriding inline styles
-                  maxHeight: '168px !important'
-                }
-              }}
+              columnHeaderHeight={130}
               density="compact"
               rows={filteredRows}
               disableColumnFilter

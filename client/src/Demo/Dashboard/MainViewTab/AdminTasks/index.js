@@ -49,7 +49,7 @@ function AdminTasks(props) {
               {t('Assign Agents')}
             </Link>
           </TableCell>
-          <TableCell>{t('Please assign agents')}</TableCell>
+          <TableCell>{t('Please assign agents', { ns: 'common' })}</TableCell>
         </TableRow>
       )}
       {!does_student_have_editors(props.students) && (
@@ -59,7 +59,7 @@ function AdminTasks(props) {
               {t('Assign Editors')}
             </Link>
           </TableCell>
-          <TableCell>{t('Please assign editors')}</TableCell>
+          <TableCell>{t('Please assign editors', { ns: 'common' })}</TableCell>
         </TableRow>
       )}
       {!does_essay_have_writers(
@@ -71,7 +71,7 @@ function AdminTasks(props) {
               {t('Assign Essay Writer', { ns: 'common' })}
             </Link>
           </TableCell>
-          <TableCell>{t('Please assign essay writers')}</TableCell>
+          <TableCell>{t('Please assign essay writers', { ns: 'common' })}</TableCell>
         </TableRow>
       )}
       {/* assign number of application according to contract */}

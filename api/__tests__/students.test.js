@@ -3,8 +3,8 @@ const path = require('path');
 const request = require('supertest');
 
 const { UPLOAD_PATH } = require('../config');
+const db = require('./fixtures/db');
 const { app } = require('../app');
-const { connectToDatabase, disconnectFromDatabase } = require('../database');
 const { Role, User, Agent, Editor, Student } = require('../models/User');
 const { Program } = require('../models/Program');
 const { DocumentStatus } = require('../constants');
@@ -47,12 +47,9 @@ const program = generateProgram(requiredDocuments, optionalDocuments);
 const programs = [...Array(3)].map(() =>
   generateProgram(requiredDocuments, optionalDocuments)
 );
-beforeAll(async () => {
-  jest.spyOn(console, 'log').mockImplementation(jest.fn());
-  await connectToDatabase(global.__MONGO_URI__);
-});
 
-afterAll(disconnectFromDatabase);
+beforeAll(async () => await db.connect());
+afterAll(async () => await db.clearDatabase());
 
 beforeEach(async () => {
   await User.deleteMany();
@@ -98,7 +95,6 @@ describe('POST /api/students/:id/agents', () => {
 
     const updatedStudent = await Student.findById(studentId).lean();
     expect(updatedStudent.agents.map(String)).toEqual(agents_arr);
-
   });
 });
 
@@ -276,23 +272,23 @@ describe('POST /api/students/:studentId/files/:category', () => {
     });
   });
 
-  it('should return 400 when profile file type not .pdf .png, .jpg and .jpeg .docx', async () => {
+  it('should return 415 when profile file type not .pdf .png, .jpg and .jpeg .docx', async () => {
     const buffer_2MB_exe = Buffer.alloc(1024 * 1024 * 2); // 2 MB
     const resp2 = await request(app)
       .post(`/api/students/${studentId}/files/${category}`)
       .attach('file', buffer_2MB_exe, filename_invalid_ext);
 
-    expect(resp2.status).toBe(400);
+    expect(resp2.status).toBe(415);
     expect(resp2.body.success).toBe(false);
   });
 
-  it('should return 400 when profile size over 5 MB', async () => {
+  it('should return 413 when profile size over 5 MB', async () => {
     const buffer_10MB = Buffer.alloc(1024 * 1024 * 6); // 6 MB
     const resp2 = await request(app)
       .post(`/api/students/${studentId}/files/${category}`)
       .attach('file', buffer_10MB, filename);
 
-    expect(resp2.status).toBe(400);
+    expect(resp2.status).toBe(413);
     expect(resp2.body.success).toBe(false);
   });
 

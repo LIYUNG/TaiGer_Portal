@@ -10,7 +10,6 @@ import {
   TextField,
   Typography
 } from '@mui/material';
-import { IoCheckmarkCircle } from 'react-icons/io5';
 import { useTranslation } from 'react-i18next';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -19,7 +18,7 @@ import LinkIcon from '@mui/icons-material/Link';
 
 import { BASE_URL } from '../../api/request';
 import FilePreview from '../../components/FilePreview/FilePreview';
-import { convertDate } from '../Utils/contants';
+import { FILE_OK_SYMBOL, convertDate } from '../Utils/contants';
 import {
   is_TaiGer_Admin,
   is_TaiGer_AdminAgent,
@@ -213,9 +212,7 @@ function ButtonSetAccepted(props) {
   var ButttonRow_Accepted;
   ButttonRow_Accepted = (
     <TableRow>
-      <TableCell>
-        <IoCheckmarkCircle size={24} color="limegreen" title="Valid Document" />
-      </TableCell>
+      <TableCell>{FILE_OK_SYMBOL}</TableCell>
       <TableCell>
         {props.docName}
         <Link
@@ -247,7 +244,7 @@ function ButtonSetAccepted(props) {
           onClick={(e) => showPreview(e, props.path)}
           startIcon={<FileDownloadIcon />}
         >
-          {t('Download')}
+          {t('Download', { ns: 'common' })}
         </Button>
       </TableCell>
       <TableCell></TableCell>
@@ -310,7 +307,11 @@ function ButtonSetAccepted(props) {
           }
           onClick={(e) => onDeleteFilefromstudent(e)}
         >
-          {!buttonSetAcceptedState.isLoaded ? <CircularProgress /> : t('Yes')}
+          {!buttonSetAcceptedState.isLoaded ? (
+            <CircularProgress />
+          ) : (
+            t('Yes', { ns: 'common' })
+          )}
         </Button>
         <Button onClick={closeWarningWindow} variant="light">
           No
@@ -339,10 +340,12 @@ function ButtonSetAccepted(props) {
             {!buttonSetAcceptedState.isLoaded ? (
               <CircularProgress size={24} />
             ) : (
-              t('Yes')
+              t('Yes', { ns: 'common' })
             )}
           </Button>
-          <Button onClick={closeRejectWarningWindow}>{t('No', { ns: 'common' })}</Button>
+          <Button onClick={closeRejectWarningWindow}>
+            {t('No', { ns: 'common' })}
+          </Button>
         </Box>
       </ModalNew>
       <AcceptProfileFileModel
@@ -382,7 +385,7 @@ function ButtonSetAccepted(props) {
                 title="Download"
                 startIcon={<FileDownloadIcon />}
               >
-                {t('Download')}
+                {t('Download', { ns: 'common' })}
               </Button>
             </a>
           )}
@@ -403,7 +406,7 @@ function ButtonSetAccepted(props) {
               startIcon={<CloseIcon />}
               sx={{ mr: 2 }}
             >
-              {t('Reject')}
+              {t('Reject', { ns: 'documents' })}
             </Button>
           )}
           <Button size="small" variant="outlined" onClick={closePreviewWindow}>

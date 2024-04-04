@@ -237,7 +237,7 @@ function BaseDocuments() {
               title="Download"
               startIcon={<FileDownloadIcon />}
             >
-              {t('Download')}
+              {t('Download', { ns: 'common' })}
             </Button>
           </a>
         )}
@@ -258,7 +258,7 @@ function BaseDocuments() {
             startIcon={<CloseIcon />}
             sx={{ mr: 2 }}
           >
-            {t('Reject')}
+            {t('Reject', { ns: 'documents' })}
           </Button>
         )}
         <Button size="small" variant="outlined" onClick={closePreviewWindow}>

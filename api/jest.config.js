@@ -1,7 +1,9 @@
 module.exports = {
-  preset: "@shelf/jest-mongodb",
-  watchPathIgnorePatterns: ["globalConfig"],
-  testRegex: "/__tests__/.*\\.(test|spec)\\.jsx?$",
-  setupFilesAfterEnv: ["jest-extended"],
-  testTimeout: 60000,
+  testEnvironment: 'node',
+  preset: '@shelf/jest-mongodb',
+  watchPathIgnorePatterns: ['globalConfig'],
+  testRegex: '/__tests__/.*\\.(test|spec)\\.jsx?$',
+  setupFilesAfterEnv: ['jest-extended'],
+  transformIgnorePatterns: ['/node_modules/(?!(axios)/)'],
+  testTimeout: 60000
 };

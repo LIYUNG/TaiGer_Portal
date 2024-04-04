@@ -11,7 +11,6 @@ import {
   TextField,
   Typography
 } from '@mui/material';
-import { AiOutlineFieldTime } from 'react-icons/ai';
 import { useTranslation } from 'react-i18next';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -25,7 +24,7 @@ import {
   is_TaiGer_AdminAgent,
   is_TaiGer_Editor
 } from '../Utils/checking-functions';
-import { base_documents_checklist, convertDate } from '../Utils/contants';
+import { FILE_UPLOADED_SYMBOL, base_documents_checklist, convertDate } from '../Utils/contants';
 import { useAuth } from '../../components/AuthProvider';
 import ModalNew from '../../components/Modal';
 import FilePreview from '../../components/FilePreview/FilePreview';
@@ -229,13 +228,7 @@ function ButtonSetUploaded(props) {
   var ButttonRow_Uploaded;
   ButttonRow_Uploaded = (
     <TableRow>
-      <TableCell>
-        <AiOutlineFieldTime
-          size={24}
-          color="orange"
-          title="Uploaded successfully"
-        />
-      </TableCell>
+      <TableCell>{FILE_UPLOADED_SYMBOL}</TableCell>
       <TableCell>
         {props.docName}
         <Link
@@ -268,7 +261,7 @@ function ButtonSetUploaded(props) {
           startIcon={<FileDownloadIcon />}
           onClick={(e) => showPreview(e, props.path)}
         >
-          {t('Download')}
+          {t('Download', { ns: 'common' })}
         </Button>
       </TableCell>
       <TableCell></TableCell>
@@ -307,7 +300,7 @@ function ButtonSetUploaded(props) {
         onClose={closeWarningWindow}
         aria-labelledby="contained-modal-title-vcenter"
       >
-        <Typography variant="h5">{t('Warning')}</Typography>
+        <Typography variant="h5">{t('Warning', { ns: 'common' })}</Typography>
         <Typography sx={{ py: 2 }}>
           {t('Do you want to delete')} {props.docName}?
         </Typography>
@@ -334,7 +327,7 @@ function ButtonSetUploaded(props) {
         aria-labelledby="contained-modal-title-vcenter"
       >
         <Typography variant="h5" sx={{ mb: 2 }}>
-          {t('Warning')}
+          {t('Warning', { ns: 'common' })}
         </Typography>
         <Typography sx={{ mb: 2 }}>
           Please give a reason why the uploaded
@@ -387,7 +380,7 @@ function ButtonSetUploaded(props) {
           {!ButtonSetUploadedState.isLoaded ? (
             <CircularProgress size={24} />
           ) : (
-            t('Yes')
+            t('Yes', { ns: 'common' })
           )}
         </Button>
         <Button
@@ -451,7 +444,7 @@ function ButtonSetUploaded(props) {
               title="Download"
               startIcon={<FileDownloadIcon />}
             >
-              {t('Download')}
+              {t('Download', { ns: 'common' })}
             </Button>
           </a>
         )}
@@ -478,7 +471,7 @@ function ButtonSetUploaded(props) {
               startIcon={<CheckIcon />}
               sx={{ mr: 2 }}
             >
-              {t('Accept')}
+              {t('Accept', { ns: 'common' })}
             </Button>
             <Button
               variant="contained"
@@ -497,7 +490,7 @@ function ButtonSetUploaded(props) {
               startIcon={<CloseIcon />}
               sx={{ mr: 2 }}
             >
-              {t('Reject')}
+              {t('Reject', { ns: 'documents' })}
             </Button>
           </>
         )}

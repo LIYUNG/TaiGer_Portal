@@ -828,7 +828,7 @@ function DocModificationThreadPage() {
                             color="secondary"
                             startIcon={<DownloadIcon />}
                           >
-                            {t('Download')}
+                            {t('Download', { ns: 'common' })}
                           </Button>
                         </a>
                         {t('Supervisor')}：
@@ -843,7 +843,7 @@ function DocModificationThreadPage() {
                             color="secondary"
                             startIcon={<DownloadIcon />}
                           >
-                            {t('Download')}
+                            {t('Download', { ns: 'common' })}
                           </Button>
                         </a>
                       </b>
@@ -860,7 +860,7 @@ function DocModificationThreadPage() {
                             color="secondary"
                             startIcon={<DownloadIcon />}
                           >
-                            {t('Download')}
+                            {t('Download', { ns: 'common' })}
                           </Button>
                         </a>
                         <br />
@@ -915,7 +915,7 @@ function DocModificationThreadPage() {
                     component={LinkDom}
                     target="_blank"
                   >
-                    [{t('Update')}]
+                    [{t('Update', { ns: 'common' })}]
                   </Link>
                 )}
             </Box>
@@ -1033,7 +1033,7 @@ function DocModificationThreadPage() {
                 </Button>
               )}
             <Typography variant="body1">
-              <b>{t('Deadline')}:</b>
+              <b>{t('Deadline', { ns: 'common' })}:</b>
               {is_TaiGer_AdminAgent(user) &&
                 docModificationThreadPageState.thread.program_id && (
                   <Link
@@ -1196,7 +1196,7 @@ function DocModificationThreadPage() {
         aria-describedby="modal-modal-description"
       >
         <Box>
-          <Typography variant="h6">{t('Warning')}</Typography>
+          <Typography variant="h6">{t('Warning', { ns: 'common' })}</Typography>
           Do you want to set{' '}
           <b>
             {student_name} {docName}

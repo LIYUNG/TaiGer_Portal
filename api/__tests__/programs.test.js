@@ -1,5 +1,6 @@
 const request = require('supertest');
 
+const db = require('./fixtures/db');
 const { app } = require('../app');
 const { connectToDatabase, disconnectFromDatabase } = require('../database');
 const { Program } = require('../models/Program');
@@ -14,12 +15,8 @@ jest.mock('../middlewares/auth', () => {
   });
 });
 
-beforeAll(async () => {
-  jest.spyOn(console, 'log').mockImplementation(jest.fn());
-  await connectToDatabase(global.__MONGO_URI__);
-});
-
-afterAll(disconnectFromDatabase);
+beforeAll(async () => await db.connect());
+afterAll(async () => await db.clearDatabase());
 
 const programs = [...Array(5)].map(() => generateProgram());
 

@@ -168,7 +168,7 @@ function InterviewItems(props) {
         <AccordionDetails>
           <Grid container spacing={2}>
             <Grid item xs={12} md={6}>
-              <Typography variant="body1">{t('Student')}: </Typography>
+              <Typography variant="body1">{t('Student', { ns: 'common' })}: </Typography>
               <Link
                 underline="hover"
                 to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
@@ -208,7 +208,7 @@ function InterviewItems(props) {
             </Grid>
           </Grid>
           <Grid item xs={12}>
-            <Typography variant="body1">{t('Description')}</Typography>{' '}
+            <Typography variant="body1">{t('Description', { ns: 'common' })}</Typography>{' '}
           </Grid>
           <Grid item xs={12}>
             <NotesEditor
@@ -327,7 +327,7 @@ function InterviewItems(props) {
           size="small"
           onClick={updateTrainer}
         >
-          {t('Assign')}
+          {t('Assign', { ns: 'common' })}
         </Button>
         <Button
           color="secondary"

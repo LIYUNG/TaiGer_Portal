@@ -110,7 +110,7 @@ function NoEnoughDecidedProgramsTasksCard(props) {
         <TableHead>
           <TableRow>
             <TableCell>{t('Tasks', { ns: 'common' })}</TableCell>
-            <TableCell>{t('Description')}</TableCell>
+            <TableCell>{t('Description', { ns: 'common' })}</TableCell>
             <TableCell>{t('Application Year', { ns: 'common' })}</TableCell>
           </TableRow>
         </TableHead>

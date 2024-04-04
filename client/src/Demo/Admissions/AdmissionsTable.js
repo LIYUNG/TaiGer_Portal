@@ -1,8 +1,8 @@
 /* eslint-disable react/prop-types */
 import React, { useMemo, useState } from 'react';
 import { Link as LinkDom } from 'react-router-dom';
-import { Link, TextField } from '@mui/material';
-import { Tabs, Tab, Box, Typography } from '@mui/material';
+import { Link } from '@mui/material';
+import { Tabs, Tab, Box } from '@mui/material';
 import PropTypes from 'prop-types';
 
 import DEMO from '../../store/constant';
@@ -11,8 +11,8 @@ import {
   isProgramDecided,
   isProgramSubmitted
 } from '../Utils/checking-functions';
-import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { useTranslation } from 'react-i18next';
+import { MuiDataGrid } from '../../components/MuiDataGrid';
 
 CustomTabPanel.propTypes = {
   children: PropTypes.node,
@@ -24,7 +24,6 @@ function AdmissionsTable(props) {
   const students = props.students;
   const [value, setValue] = useState(0);
   const { t } = useTranslation();
-  const [filters, setFilters] = useState({});
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -171,19 +170,6 @@ function AdmissionsTable(props) {
   ];
   const memoizedColumns = useMemo(() => c2, [c2]);
 
-  const handleFilterChange = (event, column) => {
-    const { value } = event.target;
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      [column.field]: value.toLowerCase()
-    }));
-  };
-
-  const stopPropagation = (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-  };
-
   return (
     <>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -201,263 +187,16 @@ function AdmissionsTable(props) {
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
-        <div style={{ height: '50%', width: '100%' }}>
-          <DataGrid
-            sx={{
-              '& .MuiDataGrid-columnHeaderTitle': {
-                whiteSpace: 'normal',
-                lineHeight: 'normal'
-              },
-              '& .MuiDataGrid-columnHeader': {
-                // Forced to use important since overriding inline styles
-                height: 'unset !important'
-              },
-              '& .MuiDataGrid-columnHeaders': {
-                // Forced to use important since overriding inline styles
-                maxHeight: '168px !important'
-              }
-            }}
-            density="compact"
-            rows={admissions_table.filter((row) => {
-              return Object.keys(filters).every((field) => {
-                const filterValue = filters[field];
-                return (
-                  filterValue === '' ||
-                  row[field]?.toString().toLowerCase().includes(filterValue)
-                );
-              });
-            })}
-            disableColumnFilter
-            disableColumnMenu
-            disableDensitySelector
-            columns={memoizedColumns.map((column) => ({
-              ...column,
-              renderHeader: () => (
-                <Box>
-                  <Typography
-                    sx={{ my: 1 }}
-                  >{`${column.headerName}`}</Typography>
-                  <TextField
-                    size="small"
-                    type="text"
-                    placeholder={`${column.headerName}`}
-                    onClick={stopPropagation}
-                    value={filters[column.field] || ''}
-                    onChange={(event) => handleFilterChange(event, column)}
-                    sx={{ mb: 1 }}
-                  />
-                </Box>
-              )
-            }))}
-            initialState={{
-              pagination: {
-                paginationModel: { page: 0, pageSize: 20 }
-              }
-            }}
-            pageSizeOptions={[10, 20, 50, 100]}
-            slots={{ toolbar: GridToolbar }}
-            slotProps={{
-              toolbar: {
-                showQuickFilter: true
-              }
-            }}
-          />
-        </div>
+        <MuiDataGrid rows={admissions_table} columns={memoizedColumns} />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-        <div style={{ height: '50%', width: '100%' }}>
-          <DataGrid
-            sx={{
-              '& .MuiDataGrid-columnHeaderTitle': {
-                whiteSpace: 'normal',
-                lineHeight: 'normal'
-              },
-              '& .MuiDataGrid-columnHeader': {
-                // Forced to use important since overriding inline styles
-                height: 'unset !important'
-              },
-              '& .MuiDataGrid-columnHeaders': {
-                // Forced to use important since overriding inline styles
-                maxHeight: '168px !important'
-              }
-            }}
-            density="compact"
-            rows={rejections_table.filter((row) => {
-              return Object.keys(filters).every((field) => {
-                const filterValue = filters[field];
-                return (
-                  filterValue === '' ||
-                  row[field]?.toString().toLowerCase().includes(filterValue)
-                );
-              });
-            })}
-            disableColumnFilter
-            disableColumnMenu
-            disableDensitySelector
-            columns={memoizedColumns.map((column) => ({
-              ...column,
-              renderHeader: () => (
-                <Box>
-                  <Typography
-                    sx={{ my: 1 }}
-                  >{`${column.headerName}`}</Typography>
-                  <TextField
-                    size="small"
-                    type="text"
-                    placeholder={`${column.headerName}`}
-                    onClick={stopPropagation}
-                    value={filters[column.field] || ''}
-                    onChange={(event) => handleFilterChange(event, column)}
-                    sx={{ mb: 1 }}
-                  />
-                </Box>
-              )
-            }))}
-            initialState={{
-              pagination: {
-                paginationModel: { page: 0, pageSize: 20 }
-              }
-            }}
-            pageSizeOptions={[10, 20, 50, 100]}
-            slots={{ toolbar: GridToolbar }}
-            slotProps={{
-              toolbar: {
-                showQuickFilter: true
-              }
-            }}
-          />
-        </div>
-        {/* <Table2 header={'Rejections '} data={rejections_table} /> */}
+        <MuiDataGrid rows={rejections_table} columns={memoizedColumns} />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
-        <div style={{ height: '50%', width: '100%' }}>
-          <DataGrid
-            sx={{
-              '& .MuiDataGrid-columnHeaderTitle': {
-                whiteSpace: 'normal',
-                lineHeight: 'normal'
-              },
-              '& .MuiDataGrid-columnHeader': {
-                // Forced to use important since overriding inline styles
-                height: 'unset !important'
-              },
-              '& .MuiDataGrid-columnHeaders': {
-                // Forced to use important since overriding inline styles
-                maxHeight: '168px !important'
-              }
-            }}
-            density="compact"
-            rows={pending_table.filter((row) => {
-              return Object.keys(filters).every((field) => {
-                const filterValue = filters[field];
-                return (
-                  filterValue === '' ||
-                  row[field]?.toString().toLowerCase().includes(filterValue)
-                );
-              });
-            })}
-            disableColumnFilter
-            disableColumnMenu
-            disableDensitySelector
-            columns={memoizedColumns.map((column) => ({
-              ...column,
-              renderHeader: () => (
-                <Box>
-                  <Typography
-                    sx={{ my: 1 }}
-                  >{`${column.headerName}`}</Typography>
-                  <TextField
-                    size="small"
-                    type="text"
-                    placeholder={`${column.headerName}`}
-                    onClick={stopPropagation}
-                    value={filters[column.field] || ''}
-                    onChange={(event) => handleFilterChange(event, column)}
-                    sx={{ mb: 1 }}
-                  />
-                </Box>
-              )
-            }))}
-            initialState={{
-              pagination: {
-                paginationModel: { page: 0, pageSize: 20 }
-              }
-            }}
-            pageSizeOptions={[10, 20, 50, 100]}
-            slots={{ toolbar: GridToolbar }}
-            slotProps={{
-              toolbar: {
-                showQuickFilter: true
-              }
-            }}
-          />
-        </div>
-        {/* <Table2 header={'Pending'} data={pending_table} /> */}
+        <MuiDataGrid rows={pending_table} columns={memoizedColumns} />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={3}>
-        <div style={{ height: '50%', width: '100%' }}>
-          <DataGrid
-            sx={{
-              '& .MuiDataGrid-columnHeaderTitle': {
-                whiteSpace: 'normal',
-                lineHeight: 'normal'
-              },
-              '& .MuiDataGrid-columnHeader': {
-                // Forced to use important since overriding inline styles
-                height: 'unset !important'
-              },
-              '& .MuiDataGrid-columnHeaders': {
-                // Forced to use important since overriding inline styles
-                maxHeight: '168px !important'
-              }
-            }}
-            density="compact"
-            rows={not_yet_closed_table.filter((row) => {
-              return Object.keys(filters).every((field) => {
-                const filterValue = filters[field];
-                return (
-                  filterValue === '' ||
-                  row[field]?.toString().toLowerCase().includes(filterValue)
-                );
-              });
-            })}
-            disableColumnFilter
-            disableColumnMenu
-            disableDensitySelector
-            columns={memoizedColumns.map((column) => ({
-              ...column,
-              renderHeader: () => (
-                <Box>
-                  <Typography
-                    sx={{ my: 1 }}
-                  >{`${column.headerName}`}</Typography>
-                  <TextField
-                    size="small"
-                    type="text"
-                    placeholder={`${column.headerName}`}
-                    onClick={stopPropagation}
-                    value={filters[column.field] || ''}
-                    onChange={(event) => handleFilterChange(event, column)}
-                    sx={{ mb: 1 }}
-                  />
-                </Box>
-              )
-            }))}
-            initialState={{
-              pagination: {
-                paginationModel: { page: 0, pageSize: 20 }
-              }
-            }}
-            pageSizeOptions={[10, 20, 50, 100]}
-            slots={{ toolbar: GridToolbar }}
-            slotProps={{
-              toolbar: {
-                showQuickFilter: true
-              }
-            }}
-          />
-        </div>
-        {/* <Table2 header={'Not Closed Yet'} data={not_yet_closed_table} /> */}
+        <MuiDataGrid rows={not_yet_closed_table} columns={memoizedColumns} />
       </CustomTabPanel>
     </>
   );

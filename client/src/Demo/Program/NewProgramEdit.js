@@ -156,7 +156,7 @@ function NewProgramEdit(props) {
             </div>
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="body1">{t('Program')} *</Typography>
+            <Typography variant="body1">{t('Program', { ns: 'common' })} *</Typography>
           </Grid>
           <Grid item xs={6} md={6}>
             <TextField
@@ -171,7 +171,7 @@ function NewProgramEdit(props) {
             />
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="body1">{t('Degree')} *</Typography>
+            <Typography variant="body1">{t('Degree', { ns: 'common' })} *</Typography>
           </Grid>
           <Grid item xs={6} md={6}>
             <FormControl fullWidth>
@@ -192,7 +192,7 @@ function NewProgramEdit(props) {
             </FormControl>
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="body1">{t('Semester')} *</Typography>
+            <Typography variant="body1">{t('Semester', { ns: 'common' })} *</Typography>
           </Grid>
           <Grid item xs={6} md={6}>
             <FormControl fullWidth>
@@ -1000,7 +1000,7 @@ function NewProgramEdit(props) {
           disabled={!isChanged}
           sx={{ my: 1 }}
         >
-          {props.program ? t('Update') : t('Create')}
+          {props.program ? t('Update', { ns: 'common' }) : t('Create')}
         </Button>
         <Button
           fullWidth

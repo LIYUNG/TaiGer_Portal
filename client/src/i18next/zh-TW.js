@@ -172,7 +172,8 @@ export const translation_zh_TW = {
     Download: '下載',
     'To Do Tasks': '待辦事項清單',
     'Agent Support': '顧問任務',
-    'Essay Center': '論文中心'
+    'Essay Center': '論文中心',
+    'User Logs': '使用者紀錄'
   },
   dashboard: {
     Dashboard: '主控台',
@@ -185,6 +186,9 @@ export const translation_zh_TW = {
       '請完成背景資料填寫，好讓您的故未能掌握您的狀況'
   },
   programList: {},
+  logs: {
+    'User Logs': '使用者紀錄'
+  },
   backgroundProfile: {},
   cvmlrl: {
     'Note: if the documents are not closed but locate here, it is becaue the applications are already submitted. The documents can safely closed eventually.':
@@ -193,6 +197,8 @@ export const translation_zh_TW = {
   courses: {
     'Select Target Group': '選擇學群',
     'Select language': '選擇語言',
+    Analysing: '分析中',
+    Analyse: '分析',
     'Please complete My Courses table. The agent will provide you with course analysis and courses suggestion.':
       '請完成我的修課，Agent 將會為您提供課程分析以及修課建議。',
     'Course Analysis banner':

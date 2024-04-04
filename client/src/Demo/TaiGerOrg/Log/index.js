@@ -67,7 +67,7 @@ function TaiGerPortalUsersLog() {
   if (!is_TaiGer_Admin(user)) {
     return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
   }
-  TabTitle(`${appConfig.companyName} User Logs`);
+  TabTitle(`${appConfig.companyName} ${t('User Logs', { ns: 'common' })}`);
   const { res_status, isLoaded } = portalUsersLog;
 
   if (!isLoaded) {
@@ -81,7 +81,8 @@ function TaiGerPortalUsersLog() {
   // const last180DaysSet = getLast180DaysSet();
   const last180DaysObject = getLast180DaysObject();
   portalUsersLog.logs.forEach((log) => {
-    last180DaysObject[log.date] += log.apiCallCount;
+    last180DaysObject[log.date].TOTAL += log.apiCallCount;
+    last180DaysObject[log.date][log.operation] += log.apiCallCount;
   });
   const dataToBeUsed = transformObjectToArray(last180DaysObject).sort((a, b) =>
     a.date > b.date ? 1 : -1
@@ -98,7 +99,9 @@ function TaiGerPortalUsersLog() {
         >
           {appConfig.companyName}
         </Link>
-        <Typography color="text.primary">{t('User Logs')}</Typography>
+        <Typography color="text.primary">
+          {t('User Logs', { ns: 'logs' })}
+        </Typography>
       </Breadcrumbs>
       <Card sx={{ p: 2 }}>
         <LogLineChart data={dataToBeUsed} />

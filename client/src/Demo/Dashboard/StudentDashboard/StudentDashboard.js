@@ -318,8 +318,8 @@ function StudentDashboard(props) {
               <TableHead>
                 <TableRow>
                   <TableCell>{t('Tasks', { ns: 'common' })}</TableCell>
-                  <TableCell>{t('Description')}</TableCell>
-                  <TableCell>{t('Last update')}</TableCell>
+                  <TableCell>{t('Description', { ns: 'common' })}</TableCell>
+                  <TableCell>{t('Last update', { ns: 'common' })}</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>{student_tasks}</TableBody>
@@ -389,7 +389,9 @@ function StudentDashboard(props) {
                               <TableCell>
                                 {t('Documents', { ns: 'common' })}
                               </TableCell>
-                              <TableCell>{t('Last update')}</TableCell>
+                              <TableCell>
+                                {t('Last update', { ns: 'common' })}
+                              </TableCell>
                             </TableRow>
                           </TableHead>
                           <TableBody>{read_thread}</TableBody>

@@ -255,7 +255,9 @@ function SingleProgramView(props) {
                   </>
                 )}
                 <Grid item xs={12} md={4}>
-                  <Typography fontWeight="bold">{t('Last update')}</Typography>
+                  <Typography fontWeight="bold">
+                    {t('Last update', { ns: 'common' })}
+                  </Typography>
                 </Grid>
                 <Grid item xs={12} md={8}>
                   <Typography fontWeight="bold">
@@ -641,7 +643,7 @@ function SingleProgramView(props) {
                   </Grid>
                   <Grid item xs={12} md={4}>
                     <Typography fontWeight="bold">
-                      {t('Last update')}
+                      {t('Last update', { ns: 'common' })}
                     </Typography>
                   </Grid>
                   <Grid item xs={12} md={8}>

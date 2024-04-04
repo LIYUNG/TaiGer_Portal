@@ -478,7 +478,11 @@ export const NoonNightLabel = (start) => {
 export const transformObjectToArray = (inputObject) => {
   return Object.entries(inputObject).map(([date, apiCallCount]) => ({
     date,
-    apiCallCount
+    apiCallCount: apiCallCount.TOTAL,
+    get: apiCallCount.GET,
+    post: apiCallCount.POST,
+    put: apiCallCount.PUT,
+    delete: apiCallCount.DELETE
   }));
 };
 export const getLast180DaysSet = () => {
@@ -506,7 +510,13 @@ export const getLast180DaysObject = () => {
     currentDate.setDate(today.getDate() - i);
 
     const formattedDate = currentDate.toISOString().split('T')[0];
-    last180DaysObject[formattedDate] = 0;
+    last180DaysObject[formattedDate] = {
+      TOTAL: 0,
+      GET: 0,
+      PUT: 0,
+      POST: 0,
+      DELETE: 0
+    };
   }
 
   return last180DaysObject;

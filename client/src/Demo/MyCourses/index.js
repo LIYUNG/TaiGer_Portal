@@ -603,7 +603,7 @@ export default function MyCourses() {
         </Box>
       )}
       <Typography variant="body2" sx={{ my: 2 }}>
-        {t('Last update')}&nbsp;
+        {t('Last update', { ns: 'common' })}&nbsp;
         {convertDate(statedata.updatedAt)}
       </Typography>
       <Button
@@ -614,7 +614,11 @@ export default function MyCourses() {
         disabled={statedata.isUpdating}
         sx={{ mb: 2 }}
       >
-        {statedata.isUpdating ? <CircularProgress size={16} /> : t('Update')}
+        {statedata.isUpdating ? (
+          <CircularProgress size={16} />
+        ) : (
+          t('Update', { ns: 'common' })
+        )}
       </Button>
       <Typography variant="body2">
         {t(
@@ -637,18 +641,20 @@ export default function MyCourses() {
           <>
             <Grid container spacing={2}>
               <Grid item xs={12}>
-                <Typography variant="h6">{t('Courses Analysis')}</Typography>
+                <Typography variant="h6">
+                  {t('Courses Analysis', { ns: 'courses' })}
+                </Typography>
               </Grid>
               <Grid item xs={12}>
                 <FormControl fullWidth>
                   <InputLabel id="select-target-group">
-                    {t('Select Target Group')}
+                    {t('Select Target Group', { ns: 'courses' })}
                   </InputLabel>
                   <Select
                     labelId="select-label"
                     id="study_group"
                     value={statedata.study_group}
-                    label="Select target group"
+                    label={t('Select Target Group', { ns: 'courses' })}
                     onChange={handleChange_study_group}
                   >
                     <MenuItem value={''}>Select Study Group</MenuItem>
@@ -662,14 +668,14 @@ export default function MyCourses() {
               </Grid>
               <Grid item xs={12}>
                 <FormControl fullWidth sx={{ marginBottom: 1 }}>
-                  <InputLabel id="demo-simple-select-label">
-                    {t('Select Language')}
+                  <InputLabel id="select-language">
+                    {t('Select language', { ns: 'courses' })}
                   </InputLabel>
                   <Select
                     labelId="demo-simple-select-label"
                     id="analysis_language"
                     value={statedata.analysis_language}
-                    label="Select language"
+                    label={t('Select language', { ns: 'courses' })}
                     onChange={handleChange_analysis_language}
                   >
                     <MenuItem value={''}>Select Study Group</MenuItem>
@@ -697,7 +703,9 @@ export default function MyCourses() {
                     )
                   }
                 >
-                  {statedata.isAnalysing ? t('Analysing') : t('Analyse')}
+                  {statedata.isAnalysing
+                    ? t('Analysing', { ns: 'courses' })
+                    : t('Analyse', { ns: 'courses' })}
                 </Button>
               </Grid>
             </Grid>

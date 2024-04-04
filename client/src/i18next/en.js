@@ -173,7 +173,8 @@ export const translation_en = {
     Download: 'Download',
     'To Do Tasks': 'To Do Tasks',
     'Agent Support': 'Agent Support',
-    'Essay Center': 'Essay Center'
+    'Essay Center': 'Essay Center',
+    'User Logs': 'User Logs'
   },
   dashboard: {
     Dashboard: 'Dashboard',
@@ -186,6 +187,9 @@ export const translation_en = {
       'Please complete Profile so that your agent can understand your situation'
   },
   programList: {},
+  logs: {
+    'User Logs': 'User Logs'
+  },
   backgroundProfile: {},
   cvmlrl: {
     'Note: if the documents are not closed but locate here, it is becaue the applications are already submitted. The documents can safely closed eventually.':
@@ -194,6 +198,8 @@ export const translation_en = {
   courses: {
     'Select Target Group': 'Select Target Group',
     'Select language': 'Select language',
+    Analysing: 'Analysing',
+    Analyse: 'Analyse',
     'Please complete My Courses table. The agent will provide you with course analysis and courses suggestion.':
       'Please complete My Courses table. The agent will provide you with course analysis and courses suggestion.',
     'Course Analysis banner':

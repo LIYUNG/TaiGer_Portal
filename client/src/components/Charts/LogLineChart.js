@@ -86,6 +86,34 @@ const LogLineChart = ({ data }) => {
             activeDot={{ r: 8 }}
             dot={false}
           />
+          <Line
+            type="monotone"
+            dataKey="get"
+            stroke="#a0a0a0"
+            activeDot={{ r: 8 }}
+            dot={false}
+          />
+          <Line
+            type="monotone"
+            dataKey="post"
+            stroke="#0a0a0a"
+            activeDot={{ r: 8 }}
+            dot={false}
+          />
+          <Line
+            type="monotone"
+            dataKey="put"
+            stroke="#c6c6c6"
+            activeDot={{ r: 8 }}
+            dot={false}
+          />
+          <Line
+            type="monotone"
+            dataKey="delete"
+            stroke="#6b6b6b"
+            activeDot={{ r: 8 }}
+            dot={false}
+          />
         </LineChart>
       </ResponsiveContainer>
     </>

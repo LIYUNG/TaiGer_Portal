@@ -362,7 +362,7 @@ export default function CourseAnalysis() {
           columns={columns}
         />
       </TableContainer>
-      {t('Last update')} {convertDate(statedata.LastModified)}
+      {t('Last update', { ns: 'common' })} {convertDate(statedata.LastModified)}
       {/* </Card> */}
     </Box>
   );

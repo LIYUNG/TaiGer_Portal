@@ -353,7 +353,9 @@ export default function CourseWidget() {
             statedata.isAnalysing ? <CircularProgress size={24} /> : <></>
           }
         >
-          {statedata.isAnalysing ? t('Analysing') : t('Analyse')}
+          {statedata.isAnalysing
+            ? t('Analysing', { ns: 'courses' })
+            : t('Analyse', { ns: 'courses' })}
         </Button>
         <br />
         <br />

@@ -689,6 +689,13 @@ export default function MyCourses() {
                     statedata.study_group === '' ||
                     statedata.analysis_language === ''
                   }
+                  endIcon={
+                    statedata.isAnalysing ? (
+                      <CircularProgress size={24} />
+                    ) : (
+                      <></>
+                    )
+                  }
                 >
                   {statedata.isAnalysing ? t('Analysing') : t('Analyse')}
                 </Button>
@@ -766,7 +773,9 @@ export default function MyCourses() {
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
-        <Typography>{t('Success',{ns:'common'}, { ns: 'common' })}</Typography>
+        <Typography>
+          {t('Success', { ns: 'common' }, { ns: 'common' })}
+        </Typography>
         <Typography>
           {t('Courses analysed successfully!', { ns: 'courses' })}
           <b>

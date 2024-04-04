@@ -308,10 +308,10 @@ export default function CourseAnalysis() {
       </Breadcrumbs>
       {/* <Card sx={{ p: 2 }}> */}
       <Typography variant="body1" sx={{ pt: 2 }}>
-        {t('Course Analysis banner')}
+        {t('Course Analysis banner', { ns: 'courses' })}
       </Typography>
       <Typography variant="body1" sx={{ py: 2 }}>
-        {t('Course Analysis description')}
+        {t('Course Analysis description', { ns: 'courses' })}
       </Typography>
       <Button
         size="small"

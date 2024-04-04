@@ -3,9 +3,9 @@ import {
   Box,
   Breadcrumbs,
   Button,
+  CircularProgress,
   Card,
   FormControl,
-  FormLabel,
   InputLabel,
   Link,
   MenuItem,
@@ -48,7 +48,6 @@ export default function CourseWidget() {
       }
     ],
     analysis: {},
-    confirmModalWindowOpen: false,
     analysisSuccessModalWindowOpen: false,
     success: false,
     student: null,
@@ -222,13 +221,6 @@ export default function CourseWidget() {
     );
   };
 
-  const closeModal = () => {
-    setStatedata((state) => ({
-      ...state,
-      confirmModalWindowOpen: false
-    }));
-  };
-
   const closeanalysisSuccessModal = () => {
     setStatedata((state) => ({
       ...state,
@@ -311,7 +303,7 @@ export default function CourseWidget() {
         <br />
         <FormControl fullWidth>
           <InputLabel id="select-target-group">
-            {t('Select Target Group')}
+            {t('Select Target Group', { ns: 'courses' })}
           </InputLabel>
           <Select
             labelId="study_group"
@@ -329,11 +321,14 @@ export default function CourseWidget() {
           </Select>
         </FormControl>
         <br />
+        <br />
         <FormControl fullWidth>
-          <FormLabel>Select language</FormLabel>
+          <InputLabel id="select-language">
+            {t('Select language', { ns: 'courses' })}
+          </InputLabel>
           <Select
             labelId="analysis_language"
-            label="Select language"
+            label={t('Select language', { ns: 'courses' })}
             name="analysis_language"
             id="analysis_language"
             onChange={(e) => handleChange_analysis_language(e)}
@@ -344,6 +339,7 @@ export default function CourseWidget() {
           </Select>
         </FormControl>
         <br />
+        <br />
         <Button
           color="primary"
           variant="contained"
@@ -353,9 +349,14 @@ export default function CourseWidget() {
             statedata.study_group === '' ||
             statedata.analysis_language === ''
           }
+          endIcon={
+            statedata.isAnalysing ? <CircularProgress size={24} /> : <></>
+          }
         >
           {statedata.isAnalysing ? t('Analysing') : t('Analyse')}
         </Button>
+        <br />
+        <br />
         <Typography>
           {statedata.analysis && statedata.analysis.isAnalysed ? (
             <>
@@ -367,33 +368,20 @@ export default function CourseWidget() {
                 target="_blank"
                 component={LinkDom}
               >
-                {t('View Online')}
+                {t('View Online', { ns: 'courses' })}
               </Link>
             </>
           ) : (
-            t('No analysis yet')
+            t('No analysis yet', { ns: 'courses' })
           )}
         </Typography>
       </Card>
-      <ModalNew
-        open={statedata.confirmModalWindowOpen}
-        onClose={closeModal}
-        aria-labelledby="contained-modal-title-vcenter"
-      >
-        <Typography variant="h6">
-          {t('Confirmation', { ns: 'common' })}
-        </Typography>
-        <Typography>{t('Update transcript successfully')}</Typography>
-        <Button color="primary" variant="contained" onClick={closeModal}>
-          {t('Close', { ns: 'common' })}
-        </Button>
-      </ModalNew>
       <ModalNew
         open={statedata.analysisSuccessModalWindowOpen}
         onClose={closeanalysisSuccessModal}
         aria-labelledby="contained-modal-title-vcenter"
       >
-        <Typography variant="h6">{t('Success',{ns:'common'})}</Typography>
+        <Typography variant="h6">{t('Success', { ns: 'common' })}</Typography>
         <Typography>{t('Transcript analysed successfully!')}</Typography>
         <Button
           color="primary"

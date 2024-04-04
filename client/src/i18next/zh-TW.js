@@ -191,6 +191,8 @@ export const translation_zh_TW = {
       'Note: 如果文件並沒有關閉並出現在這區，是因為申請已經送出。該文件可以安全地被關閉。'
   },
   courses: {
+    'Select Target Group': '選擇學群',
+    'Select language': '選擇語言',
     'Please complete My Courses table. The agent will provide you with course analysis and courses suggestion.':
       '請完成我的修課，Agent 將會為您提供課程分析以及修課建議。',
     'Course Analysis banner':

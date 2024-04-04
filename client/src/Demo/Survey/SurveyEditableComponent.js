@@ -655,7 +655,7 @@ const SurveyEditableComponent = (props) => {
                   onClick={openOffcanvasWindow}
                   style={{ cursor: 'pointer' }}
                 >
-                  {t('Edit')}
+                  {t('Edit', { ns: 'common' })}
                 </Button>
               )}
             </Grid>
@@ -697,7 +697,7 @@ const SurveyEditableComponent = (props) => {
                       }
                       sx={{ mt: 2 }}
                     >
-                      {t('Update')}
+                      {t('Update', { ns: 'common' })}
                     </Button>
                   </>
                 )}
@@ -917,7 +917,7 @@ const SurveyEditableComponent = (props) => {
                       )
                     }
                   >
-                    {t('Update')}
+                    {t('Update', { ns: 'common' })}
                   </Button>
                 </>
               )}
@@ -1483,7 +1483,7 @@ const SurveyEditableComponent = (props) => {
                     }
                     sx={{ mt: 2 }}
                   >
-                    {t('Update')}
+                    {t('Update', { ns: 'common' })}
                   </Button>
                 </>
               )}{' '}
@@ -1495,7 +1495,7 @@ const SurveyEditableComponent = (props) => {
         open={surveyEditableComponentState.baseDocsflagOffcanvas}
         onClose={closeOffcanvasWindow}
       >
-        <Typography variant="h6">{t('Edit')}</Typography>
+        <Typography variant="h6">{t('Edit', { ns: 'common' })}</Typography>
         <TextField
           label={`Documentation Link for ${props.docName}`}
           placeholder="https://taigerconsultancy-portal.com/docs/search/12345678"

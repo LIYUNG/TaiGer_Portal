@@ -294,7 +294,7 @@ function SingleProgramView(props) {
                 size="small"
                 onClick={() => props.handleClick()}
               >
-                {t('Edit')}
+                {t('Edit', { ns: 'common' })}
               </Button>
               <Button
                 fullWidth
@@ -303,7 +303,7 @@ function SingleProgramView(props) {
                 size="small"
                 onClick={() => props.setModalShow2()}
               >
-                {t('Assign')}
+                {t('Assign', { ns: 'common' })}
               </Button>
               {is_TaiGer_Admin(user) && (
                 <Button
@@ -428,7 +428,7 @@ function SingleProgramView(props) {
                       <TableHead>
                         <TableRow>
                           <TableCell>{t('Name')}</TableCell>
-                          <TableCell>{t('Year')}</TableCell>
+                          <TableCell>{t('Year', { ns: 'common' })}</TableCell>
                           <TableCell>{t('Admission')}</TableCell>
                         </TableRow>
                       </TableHead>
@@ -686,7 +686,7 @@ function SingleProgramView(props) {
                         <TableHead>
                           <TableRow>
                             <TableCell>{t('Name')}</TableCell>
-                            <TableCell>{t('Year')}</TableCell>
+                            <TableCell>{t('Year', { ns: 'common' })}</TableCell>
                             <TableCell>{t('Admission')}</TableCell>
                           </TableRow>
                         </TableHead>

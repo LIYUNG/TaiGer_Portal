@@ -259,7 +259,7 @@ function ProgramReport(props) {
         </Grid>
         <Grid item xs={12}>
           <Typography>
-            <b>{t('Description')}:</b>{' '}
+            <b>{t('Description', { ns: 'common' })}:</b>{' '}
             {NewlineText({ text: ticket.description })}
           </Typography>
         </Grid>

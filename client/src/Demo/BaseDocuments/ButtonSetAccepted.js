@@ -247,7 +247,7 @@ function ButtonSetAccepted(props) {
           onClick={(e) => showPreview(e, props.path)}
           startIcon={<FileDownloadIcon />}
         >
-          {t('Download')}
+          {t('Download', { ns: 'common' })}
         </Button>
       </TableCell>
       <TableCell></TableCell>
@@ -310,7 +310,7 @@ function ButtonSetAccepted(props) {
           }
           onClick={(e) => onDeleteFilefromstudent(e)}
         >
-          {!buttonSetAcceptedState.isLoaded ? <CircularProgress /> : t('Yes')}
+          {!buttonSetAcceptedState.isLoaded ? <CircularProgress /> : t('Yes', { ns: 'common' })}
         </Button>
         <Button onClick={closeWarningWindow} variant="light">
           No
@@ -339,10 +339,12 @@ function ButtonSetAccepted(props) {
             {!buttonSetAcceptedState.isLoaded ? (
               <CircularProgress size={24} />
             ) : (
-              t('Yes')
+              t('Yes', { ns: 'common' })
             )}
           </Button>
-          <Button onClick={closeRejectWarningWindow}>{t('No', { ns: 'common' })}</Button>
+          <Button onClick={closeRejectWarningWindow}>
+            {t('No', { ns: 'common' })}
+          </Button>
         </Box>
       </ModalNew>
       <AcceptProfileFileModel
@@ -382,7 +384,7 @@ function ButtonSetAccepted(props) {
                 title="Download"
                 startIcon={<FileDownloadIcon />}
               >
-                {t('Download')}
+                {t('Download', { ns: 'common' })}
               </Button>
             </a>
           )}
@@ -403,7 +405,7 @@ function ButtonSetAccepted(props) {
               startIcon={<CloseIcon />}
               sx={{ mr: 2 }}
             >
-              {t('Reject')}
+              {t('Reject', { ns: 'documents' })}
             </Button>
           )}
           <Button size="small" variant="outlined" onClick={closePreviewWindow}>

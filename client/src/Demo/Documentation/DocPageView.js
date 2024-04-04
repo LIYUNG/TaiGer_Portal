@@ -81,7 +81,7 @@ function DocPageView(props) {
             variant="contained"
             onClick={() => props.handleClickEditToggle()}
           >
-            {t('Edit')}
+            {t('Edit', { ns: 'common' })}
           </Button>
         )}
       </Card>

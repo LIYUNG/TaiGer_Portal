@@ -8,7 +8,7 @@ export default function OffcanvasBaseDocument(props) {
   const { t } = useTranslation();
   return (
     <ModalNew open={props.open} onClose={props.onHide}>
-      <Typography variant="h6">{t('Edit')}</Typography>
+      <Typography variant="h6">{t('Edit', { ns: 'common' })}</Typography>
       <Typography variant="body1">
         Documentation Link for <b>{props.docName}</b>
       </Typography>

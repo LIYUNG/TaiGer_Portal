@@ -79,7 +79,7 @@ function ProgramListSubpage(props) {
       onClose={props.setModalHide}
       aria-labelledby="contained-modal-title-vcenter"
     >
-      {t('Assign')}{' '}
+      {t('Assign', { ns: 'common' })}{' '}
       {program_names.map((program_name, i) => (
         <Typography variant="body1" fontWeight="bold" key={i}>
           {program_name}
@@ -113,7 +113,7 @@ function ProgramListSubpage(props) {
         disabled={props.isButtonDisable}
         onClick={(e) => props.onSubmitAddToStudentProgramList(e)}
       >
-        {props.isButtonDisable ? <CircularProgress /> : t('Assign')}
+        {props.isButtonDisable ? <CircularProgress /> : t('Assign', { ns: 'common' })}
       </Button>
       <Button variant="outlined" onClick={props.setModalHide}>
         {t('Cancel')}

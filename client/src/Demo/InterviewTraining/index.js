@@ -501,7 +501,7 @@ function InterviewTraining() {
           {!is_TaiGer_role(user) &&
             available_interview_request_programs.length > 0 && (
               <Button size="small" onClick={handleClick}>
-                {t('Add')}
+                {t('Add', { ns: 'common' })}
               </Button>
             )}
         </>
@@ -525,7 +525,7 @@ function InterviewTraining() {
           disabled={!isLoaded}
           onClick={handleDeleteInterview}
         >
-          {t('Yes')}
+          {t('Yes', { ns: 'common' })}
         </Button>
         <Button
           color="secondary"

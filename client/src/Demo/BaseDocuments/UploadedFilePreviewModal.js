@@ -144,7 +144,7 @@ function UploadedFilePreviewModal(props) {
         aria-labelledby="contained-modal-title-vcenter"
       >
         <Typography variant="h5" sx={{ mb: 2 }}>
-          {t('Warning')}
+          {t('Warning', { ns: 'common' })}
         </Typography>
         <Typography sx={{ mb: 2 }}>
           Please give a reason why the uploaded
@@ -197,7 +197,7 @@ function UploadedFilePreviewModal(props) {
           {!UploadedFilePreviewModalState.isLoaded ? (
             <CircularProgress size={24} />
           ) : (
-            t('Yes')
+            t('Yes', { ns: 'common' })
           )}
         </Button>
         <Button
@@ -260,7 +260,7 @@ function UploadedFilePreviewModal(props) {
               title="Download"
               startIcon={<FileDownloadIcon />}
             >
-              {t('Download')}
+              {t('Download', { ns: 'common' })}
             </Button>
           </a>
         )}
@@ -306,7 +306,7 @@ function UploadedFilePreviewModal(props) {
               startIcon={<CloseIcon />}
               sx={{ mr: 2 }}
             >
-              {t('Reject')}
+              {t('Reject', { ns: 'documents' })}
             </Button>
           </>
         )}

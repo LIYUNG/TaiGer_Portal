@@ -314,7 +314,7 @@ function ButtonSetRejected(props) {
           startIcon={<FileDownloadIcon />}
           onClick={(e) => showPreview(e, props.path)}
         >
-          {t('Download')}
+          {t('Download', { ns: 'common' })}
         </Button>
       </TableCell>
       <TableCell></TableCell>
@@ -375,7 +375,7 @@ function ButtonSetRejected(props) {
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
-        <Typography variant="h5">{t('Warning')}</Typography>
+        <Typography variant="h5">{t('Warning', { ns: 'common' })}</Typography>
         <Typography sx={{ my: 2 }}>
           {t('Do you want to delete')} {props.docName}?
         </Typography>
@@ -386,7 +386,7 @@ function ButtonSetRejected(props) {
           onClick={(e) => onDeleteFilefromstudent(e)}
           sx={{ mr: 1 }}
         >
-          {!buttonSetRejectedState.isLoaded ? <CircularProgress /> : t('Yes')}
+          {!buttonSetRejectedState.isLoaded ? <CircularProgress /> : t('Yes', { ns: 'common' })}
         </Button>
         <Button onClick={closeWarningWindow} variant="outlined">
           {t('No', { ns: 'common' })}
@@ -468,7 +468,7 @@ function ButtonSetRejected(props) {
               title="Download"
               startIcon={<FileDownloadIcon />}
             >
-              {t('Download')}
+              {t('Download', { ns: 'common' })}
             </Button>
           </a>
         )}
@@ -526,7 +526,7 @@ function ButtonSetRejected(props) {
           {!buttonSetRejectedState.isLoaded ? (
             <CircularProgress size={24} />
           ) : (
-            t('Yes')
+            t('Yes', { ns: 'common' })
           )}
         </Button>
         <Button

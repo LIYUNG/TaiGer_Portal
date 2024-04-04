@@ -27,7 +27,7 @@ function StudentOverviewTable(props) {
             <TableRow>
               {studentOverviewTableHeader.map((header, idx) => (
                 <TableCell key={idx} align="left">
-                  {t(`${header}`)}
+                  {t(`${header}`, { ns: 'common' })}
                 </TableCell>
               ))}
             </TableRow>

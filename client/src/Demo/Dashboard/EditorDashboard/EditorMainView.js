@@ -233,7 +233,7 @@ function EditorMainView(props) {
                           {t('Assign Essay Writer', { ns: 'common' })}
                         </Link>
                       </TableCell>
-                      <TableCell>{t('Please assign essay writers')}</TableCell>
+                      <TableCell>{t('Please assign essay writers', { ns: 'common' })}</TableCell>
                     </TableRow>
                   )}
                 </TableBody>

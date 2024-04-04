@@ -339,7 +339,7 @@ function StudentBaseDocumentsStatus(props) {
             {!studentBaseDocumentsStatusState.isLoaded ? (
               <CircularProgress size={24} />
             ) : (
-              t('Yes')
+              t('Yes', { ns: 'common' })
             )}
           </Button>
           <Button onClick={closeRejectWarningWindow}>

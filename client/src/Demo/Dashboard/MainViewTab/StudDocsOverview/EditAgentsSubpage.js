@@ -120,7 +120,7 @@ function EditAgentsSubpage(props) {
               }
               sx={{ mr: 2 }}
             >
-              {t('Update')}
+              {t('Update', { ns: 'common' })}
             </Button>
             <Button color="secondary" variant="outlined" onClick={props.onHide}>
               {t('Cancel')}

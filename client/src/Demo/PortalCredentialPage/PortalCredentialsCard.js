@@ -263,12 +263,12 @@ export default function PortalCredentialsCard(props) {
 
       <Card sx={{ padding: 2 }}>
         <Typography>
-          請到下列各學校網站 [<b>{t('Link')}</b>]{' '}
+          請到下列各學校網站 [<b>{t('Link', { ns: 'common' })}</b>]{' '}
           申請該校的申請平台帳號密碼，並在此頁面提供帳號密碼，方便日後Agent為您登入檢查上傳文件正確性。若有
           [<b>{t('Instructions')}</b>]{' '}
           連結，請點入連結，依照裡面教學完成。填完帳號密碼，請務必點擊{' '}
           <Button color="primary" variant="contained" size="small">
-            {t('Update')}
+            {t('Update', { ns: 'common' })}
           </Button>
           儲存。
         </Typography>
@@ -325,7 +325,7 @@ export default function PortalCredentialsCard(props) {
                             application.programId._id.toString()
                           ]
                             ? t('Updating')
-                            : t('Update')}
+                            : t('Update', { ns: 'common' })}
                         </Button>
                       )}
                     </Typography>
@@ -367,13 +367,13 @@ export default function PortalCredentialsCard(props) {
                       sx={{ marginLeft: 0, marginTop: 0 }}
                     >
                       <Grid item xs={3}>
-                        <b>{t('Account')}</b>
+                        <b>{t('Account', { ns: 'common' })}</b>
                       </Grid>
                       <Grid item xs={3}>
-                        <b>{t('Password')}</b>
+                        <b>{t('Password', { ns: 'common' })}</b>
                       </Grid>
                       <Grid item xs={3}>
-                        <b>{t('Link')}</b>
+                        <b>{t('Link', { ns: 'common' })}</b>
                       </Grid>
                       <Grid item xs={3}>
                         <b>{t('Instructions')}</b>

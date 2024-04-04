@@ -134,7 +134,7 @@ function EssayDashboard() {
         >
           {appConfig.companyName}
         </Link>
-        <Typography color="text.primary">{t('Essay Dashboard')}</Typography>
+        <Typography color="text.primary">{t('Essay Dashboard', { ns: 'common' })}</Typography>
       </Breadcrumbs>
       <EssayOverview
         isLoaded={essayDashboardState.isLoaded}

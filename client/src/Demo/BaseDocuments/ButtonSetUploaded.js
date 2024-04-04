@@ -268,7 +268,7 @@ function ButtonSetUploaded(props) {
           startIcon={<FileDownloadIcon />}
           onClick={(e) => showPreview(e, props.path)}
         >
-          {t('Download')}
+          {t('Download', { ns: 'common' })}
         </Button>
       </TableCell>
       <TableCell></TableCell>
@@ -307,7 +307,7 @@ function ButtonSetUploaded(props) {
         onClose={closeWarningWindow}
         aria-labelledby="contained-modal-title-vcenter"
       >
-        <Typography variant="h5">{t('Warning')}</Typography>
+        <Typography variant="h5">{t('Warning', { ns: 'common' })}</Typography>
         <Typography sx={{ py: 2 }}>
           {t('Do you want to delete')} {props.docName}?
         </Typography>
@@ -334,7 +334,7 @@ function ButtonSetUploaded(props) {
         aria-labelledby="contained-modal-title-vcenter"
       >
         <Typography variant="h5" sx={{ mb: 2 }}>
-          {t('Warning')}
+          {t('Warning', { ns: 'common' })}
         </Typography>
         <Typography sx={{ mb: 2 }}>
           Please give a reason why the uploaded
@@ -387,7 +387,7 @@ function ButtonSetUploaded(props) {
           {!ButtonSetUploadedState.isLoaded ? (
             <CircularProgress size={24} />
           ) : (
-            t('Yes')
+            t('Yes', { ns: 'common' })
           )}
         </Button>
         <Button
@@ -451,7 +451,7 @@ function ButtonSetUploaded(props) {
               title="Download"
               startIcon={<FileDownloadIcon />}
             >
-              {t('Download')}
+              {t('Download', { ns: 'common' })}
             </Button>
           </a>
         )}
@@ -497,7 +497,7 @@ function ButtonSetUploaded(props) {
               startIcon={<CloseIcon />}
               sx={{ mr: 2 }}
             >
-              {t('Reject')}
+              {t('Reject', { ns: 'documents' })}
             </Button>
           </>
         )}

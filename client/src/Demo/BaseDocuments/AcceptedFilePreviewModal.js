@@ -44,7 +44,7 @@ function AcceptProfileFileModel(props) {
             title="Download"
             startIcon={<FileDownloadIcon />}
           >
-            {t('Download')}
+            {t('Download', { ns: 'common' })}
           </Button>
         </a>
       )}
@@ -65,7 +65,7 @@ function AcceptProfileFileModel(props) {
           startIcon={<CloseIcon />}
           sx={{ mr: 2 }}
         >
-          {t('Reject')}
+          {t('Reject', { ns: 'documents' })}
         </Button>
       )}
       <Button

@@ -328,7 +328,7 @@ export default function CourseAnalysis() {
         variant="contained"
         onClick={() => onDownload()}
       >
-        {t('Download')} Excel
+        {t('Download', { ns: 'common' })} Excel
       </Button>
       <Typography variant="body1" sx={{ pt: 2, pb: 1 }}>
         {t('Programs')}:

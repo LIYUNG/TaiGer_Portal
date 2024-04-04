@@ -165,7 +165,7 @@ function ButtonSetNotNeeded(props) {
                 variant="outlined"
                 startIcon={<CloudUploadIcon />}
               >
-                {t('Upload')}
+                {t('Upload', { ns: 'common' })}
                 <VisuallyHiddenInput
                   type="file"
                   onChange={(e) =>

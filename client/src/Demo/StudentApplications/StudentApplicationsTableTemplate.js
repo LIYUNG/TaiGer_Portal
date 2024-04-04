@@ -740,7 +740,7 @@ function StudentApplicationsTableTemplate(props) {
       {is_TaiGer_Student(user) && (
         <ModalNew open={showProgramCorrectnessReminderModal}>
           <Typography variant="h6" fontWeight="bold">
-            {t('Warning')}
+            {t('Warning', { ns: 'common' })}
           </Typography>
           <Typography
             variant="body1"
@@ -1055,7 +1055,7 @@ function StudentApplicationsTableTemplate(props) {
                 sx={{ mt: 2 }}
               >
                 {studentApplicationsTableTemplateState.isLoaded ? (
-                  t('Update')
+                  t('Update', { ns: 'common' })
                 ) : (
                   <CircularProgress size={16} />
                 )}
@@ -1166,7 +1166,7 @@ function StudentApplicationsTableTemplate(props) {
               aria-labelledby="contained-modal-title-vcenter"
             >
               <Typography variant="h6" sx={{ mb: 2 }}>
-                {t('Warning')}: {t('Delete an application')}
+                {t('Warning', { ns: 'common' })}: {t('Delete an application')}
               </Typography>
               <Typography>
                 This will delete all message and editted files in discussion.

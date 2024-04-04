@@ -19,7 +19,7 @@ function UserDeleteWarning(props) {
       aria-labelledby="contained-modal-title-vcenter"
     >
       <Typography variant="h6" fontWeight="bold">
-        {t('Warning')}
+        {t('Warning', { ns: 'common' })}
       </Typography>
       <Typography variant="body1">
         {t('Do you want to delete')}{' '}

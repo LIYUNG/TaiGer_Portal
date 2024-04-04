@@ -96,10 +96,10 @@ function VPDToSubmitTasksCard(props) {
         <Table size="small">
           <TableHead>
             <TableRow>
-              <TableCell>{t('Student')}</TableCell>
+              <TableCell>{t('Student', { ns: 'common' })}</TableCell>
               <TableCell>{t('Status', { ns: 'common' })}</TableCell>
-              <TableCell>{t('Deadline')}</TableCell>
-              <TableCell>{t('Program')}</TableCell>
+              <TableCell>{t('Deadline', { ns: 'common' })}</TableCell>
+              <TableCell>{t('Program', { ns: 'common' })}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>{vpd_to_submit_tasks}</TableBody>

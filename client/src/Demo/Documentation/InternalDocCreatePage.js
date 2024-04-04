@@ -347,7 +347,7 @@ function InternalDocCreatePage(props) {
                     variant="contained"
                     onClick={handleClickEditToggle}
                   >
-                    {t('Add')}
+                    {t('Add', { ns: 'common' })}
                   </Button>
                 )}
               </>
@@ -368,7 +368,7 @@ function InternalDocCreatePage(props) {
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
-        <Typography>{t('Warning')}</Typography>
+        <Typography>{t('Warning', { ns: 'common' })}</Typography>
         <Typography>
           Do you want to delete documentation of title:{' '}
           {internalDocCreatePageState.doc_title_toBeDelete}?

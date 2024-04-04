@@ -273,7 +273,7 @@ function CVMLRLDashboard(props) {
         onClose={closeSetAsFinalFileModelWindow}
         aria-labelledby="contained-modal-title-vcenter"
       >
-        <Typography variant="h5">{t('Warning')}</Typography>
+        <Typography variant="h5">{t('Warning', { ns: 'common' })}</Typography>
         <Typography>
           Do you want to set {cVMLRLDashboardState.docName} as{' '}
           {cVMLRLDashboardState.isFinalVersion ? 'open' : 'final'} for student?
@@ -283,7 +283,7 @@ function CVMLRLDashboard(props) {
           disabled={!isLoaded}
           onClick={ConfirmSetAsFinalFileHandler}
         >
-          {t('Yes')}
+          {t('Yes', { ns: 'common' })}
         </Button>
         <Button onClick={closeSetAsFinalFileModelWindow}>No</Button>
         {!isLoaded && <Loading />}

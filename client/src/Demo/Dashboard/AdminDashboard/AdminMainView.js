@@ -38,8 +38,8 @@ function AdminMainView(props) {
             <Table size="small">
               <TableHead>
                 <TableRow>
-                  <TableCell>{t('Tasks')}</TableCell>
-                  <TableCell>{t('Description')}</TableCell>
+                  <TableCell>{t('Tasks', { ns: 'common' })}</TableCell>
+                  <TableCell>{t('Description', { ns: 'common' })}</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>{admin_tasks}</TableBody>

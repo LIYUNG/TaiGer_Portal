@@ -175,7 +175,7 @@ function MessageEdit(props) {
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
-        <Typography>{t('Warning')}</Typography>
+        <Typography>{t('Warning', { ns: 'common' })}</Typography>
         <Typography>
           Do you wan to delete this message on{' '}
           <b>{convertDate(messageEditState.createdAt)}?</b>

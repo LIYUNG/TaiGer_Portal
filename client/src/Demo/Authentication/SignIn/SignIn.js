@@ -126,7 +126,7 @@ export default function SignIn() {
             margin="normal"
             required
             fullWidth
-            label={t('Password')}
+            label={t('Password', { ns: 'common' })}
             type="password"
             autoComplete="password"
             onChange={(e) => onChangePassword(e, e.target.value)}

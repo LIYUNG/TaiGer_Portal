@@ -39,7 +39,7 @@ function ProgramReportDeleteModal(props) {
       <Typography variant="body1">
         Do you want to delelete {props.uni_name} - {props.program_name} ticket?
       </Typography>
-      <Typography variant="body1">{t('Description')}</Typography>
+      <Typography variant="body1">{t('Description', { ns: 'common' })}</Typography>
       <TextField
         fullWidth
         type="textarea"

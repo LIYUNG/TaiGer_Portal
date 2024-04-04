@@ -196,7 +196,7 @@ function UsersTable() {
         >
           <Tab
             data-testid="users_table_page_student_tab"
-            label={`${t('Student')} (${student_list?.length})`}
+            label={`${t('Student', { ns: 'common' })} (${student_list?.length})`}
             {...a11yProps(0)}
           />
           <Tab

@@ -905,7 +905,7 @@ function TaiGerOfficeHours() {
         onClose={handleEditAppointmentModalClose}
         size="lg"
       >
-        <Typography variant="h6">{t('Edit')}</Typography>
+        <Typography variant="h6">{t('Edit', { ns: 'common' })}</Typography>
         <TextField
           fullWidth
           type="textarea"
@@ -988,7 +988,7 @@ function TaiGerOfficeHours() {
           {taiGerOfficeHoursState.BookButtonDisable ? (
             <CircularProgress size={16} />
           ) : (
-            t('Update')
+            t('Update', { ns: 'common' })
           )}
         </Button>
       </ModalNew>

@@ -8,6 +8,8 @@ export const translation_en = {
     'Last Login': 'Last Login'
   },
   common: {
+    Add: 'Add',
+    Account: 'Account',
     'Aged days': 'Aged days',
     'Document name': 'Document name',
     'Latest Reply': 'Latest Reply',
@@ -18,6 +20,10 @@ export const translation_en = {
     'Editors / Writer': 'Editors / Writer',
     'Program Task Diff': 'Program Task Diff',
     'Coming soon': 'Coming soon',
+    'Please assign agents': 'Please assign agents',
+    'Please assign editors': 'Please assign editors',
+    'Please assign essay writers': 'Please assign essay writers',
+    'Program Selection': 'Program Selection',
     Agent: 'Agent',
     Editor: 'Editor',
     Program: 'Program',
@@ -62,7 +68,6 @@ export const translation_en = {
     'Upload Time': 'Upload Time',
     Upload: 'Upload',
     'Log Out': 'Log Out',
-    'Please assign essay writers': 'Please assign essay writers',
     Professor: 'Professor',
     Supervisor: 'Supervisor',
     Accept: 'Accept',
@@ -84,6 +89,7 @@ export const translation_en = {
     [`${appConfig.companyName} Dashboard`]: `${appConfig.companyName} Dashboard`,
     [`${appConfig.companyName} Accounting`]: `${appConfig.companyName} Accounting`,
     Applications: 'Applications',
+    'Course Analysis': 'Course Analysis',
     'Applications Overview': 'Applications Overview',
     'Application Overview': 'Application Overview',
     'My Applications': 'My Applications',
@@ -96,6 +102,9 @@ export const translation_en = {
     'CV/ML/RL Center': 'CV/ML/RL Center',
     'General Documents': 'General Documents',
     CV: 'CV',
+    ML: 'ML',
+    RL: 'RL',
+    Essay: 'Essay',
     'Recommendation Letters': 'Recommendation Letters',
     'Add Task': 'Add Task',
     Confirmation: 'Confirmation',
@@ -128,11 +137,13 @@ export const translation_en = {
     'My Students': 'My Students',
     Profile: 'Profile',
     'My Profile': 'My Profile',
+    Survey: 'Survey',
     'My Survey': 'My Survey',
     Courses: 'Courses',
     'My Courses': 'My Courses',
     'My Documents': 'My Documents',
     'All Documents': 'All Documents',
+    'All Documentations': 'All Documentations',
     'Essay Dashboard': 'Essay Dashboard',
     'Interview Training': 'Interview Training',
     'Student Database': 'Student Database',
@@ -185,6 +196,9 @@ export const translation_en = {
     'Configure Attribute': 'Configure Attribute',
     'Please complete Profile so that your agent can understand your situation':
       'Please complete Profile so that your agent can understand your situation'
+  },
+  documents: {
+    Reject: 'Reject'
   },
   programList: {},
   logs: {

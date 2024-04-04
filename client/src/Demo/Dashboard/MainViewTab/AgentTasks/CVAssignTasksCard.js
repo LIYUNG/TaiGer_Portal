@@ -80,9 +80,9 @@ function CVAssignTasksCard(props) {
           <TableHead>
             <TableRow>
               <TableCell>Docs</TableCell>
-              <TableCell>{t('Student')}</TableCell>
+              <TableCell>{t('Student', { ns: 'common' })}</TableCell>
               <TableCell>
-                {t('Year')}/{t('Semester')}
+                {t('Year', { ns: 'common' })}/{t('Semester', { ns: 'common' })}
               </TableCell>
             </TableRow>
           </TableHead>

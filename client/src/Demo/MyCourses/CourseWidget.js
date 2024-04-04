@@ -363,7 +363,7 @@ export default function CourseWidget() {
           {statedata.analysis && statedata.analysis.isAnalysed ? (
             <>
               <Button onClick={onDownload} disabled={statedata.isDownloading}>
-                {t('Download')}
+                {t('Download', { ns: 'common' })}
               </Button>
               <Link
                 to={`${DEMO.INTERNAL_WIDGET_LINK(user._id.toString())}`}

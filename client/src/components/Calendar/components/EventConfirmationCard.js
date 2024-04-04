@@ -129,7 +129,7 @@ export default function EventConfirmationCard(props) {
             </Typography>
             <Typography variant="body1">
               <AiOutlineUser size={16} />
-              {t('Student')}:{' '}
+              {t('Student', { ns: 'common' })}:{' '}
               {props.event.requester_id?.map((requester, x) =>
                 is_TaiGer_role(user) ? (
                   <Link
@@ -226,7 +226,7 @@ export default function EventConfirmationCard(props) {
           <Grid item xs={12}>
             <Grid container justifyContent="space-between" alignItems="center">
               <Grid item>
-                <Typography variant="body1">{t('Description')}</Typography>
+                <Typography variant="body1">{t('Description', { ns: 'common' })}</Typography>
                 <Typography>{props.event.description}</Typography>
                 <span
                   style={{
@@ -323,7 +323,7 @@ export default function EventConfirmationCard(props) {
                       sx={{ mx: 2 }}
                       startIcon={<EditIcon />}
                     >
-                      {t('Update')}
+                      {t('Update', { ns: 'common' })}
                     </Button>
                     <Button
                       color="secondary"

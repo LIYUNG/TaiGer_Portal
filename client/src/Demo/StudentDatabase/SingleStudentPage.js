@@ -335,7 +335,7 @@ export const SingleStudentPageMainContent = ({
               {t('Student Database', { ns: 'common' })}
             </Link>
             <Typography color="text.primary">
-              {t('Student')} {singleStudentPage.student.firstname}
+              {t('Student', { ns: 'common' })} {singleStudentPage.student.firstname}
               {' ,'}
               {singleStudentPage.student.lastname}
               {' | '}
@@ -378,7 +378,7 @@ export const SingleStudentPageMainContent = ({
                 color="secondary"
                 onClick={onChangeView}
               >
-                {t('Switch View')}
+                {t('Switch View', { ns: 'common' })}
               </Button>
             </Typography>
           </Box>
@@ -439,7 +439,7 @@ export const SingleStudentPageMainContent = ({
                     variant="contained"
                     startIcon={<EditIcon />}
                   >
-                    {t('Edit')}
+                    {t('Edit', { ns: 'common' })}
                   </Button>
                 </Link>
               )}

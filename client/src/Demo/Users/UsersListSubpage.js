@@ -46,7 +46,7 @@ function UsersListSubpage(props) {
           onClick={(e) => props.onSubmit2(e)}
           sx={{ mr: 2 }}
         >
-          {t('Assign')}
+          {t('Assign', { ns: 'common' })}
         </Button>
         <Button color="primary" variant="outlined" onClick={props.setModalHide}>
           {t('Cancel')}

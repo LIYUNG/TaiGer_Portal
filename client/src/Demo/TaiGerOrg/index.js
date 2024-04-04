@@ -249,7 +249,7 @@ function TaiGerOrg() {
             aria-expanded={open ? 'true' : undefined}
             onClick={handleClick}
           >
-            {t('Edit')}
+            {t('Edit', { ns: 'common' })}
           </Button>
           <Menu
             id={`basic-menu`}
@@ -366,7 +366,7 @@ function TaiGerOrg() {
             aria-expanded={open ? 'true' : undefined}
             onClick={handleClick}
           >
-            {t('Edit')}
+            {t('Edit', { ns: 'common' })}
           </Button>
           <Menu
             id={`basic-menu`}
@@ -475,7 +475,7 @@ function TaiGerOrg() {
                     aria-expanded={open ? 'true' : undefined}
                     onClick={handleClick}
                   >
-                    {t('Edit')}
+                    {t('Edit', { ns: 'common' })}
                   </Button>
                   <Menu
                     id="basic-menu"

@@ -110,7 +110,7 @@ const getProgram = asyncHandler(async (req, res) => {
           );
 
         const vc = await VC.findOne({
-          itemId: req.params.programId,
+          docId: req.params.programId,
           collectionName: 'Program'
         }).lean();
 
@@ -139,7 +139,7 @@ const getProgram = asyncHandler(async (req, res) => {
         );
 
       const vc = await VC.findOne({
-        itemId: req.params.programId,
+        docId: req.params.programId,
         collectionName: 'Program'
       }).lean();
       res.send({ success: true, data: value, students, vc });
@@ -158,7 +158,7 @@ const getProgram = asyncHandler(async (req, res) => {
       throw new ErrorResponse(403, 'Invalid program id');
     }
     const vc = await VC.findOne({
-      itemId: req.params.programId,
+      docId: req.params.programId,
       collectionName: 'Program'
     }).lean();
 

@@ -18,18 +18,24 @@ const changesSchema = new mongoose.Schema(
 );
 
 const versionControlSchema = new mongoose.Schema({
-  itemId: {
+  docId: {
     type: mongoose.ObjectId,
     refPath: 'collectionName'
   },
   collectionName: {
     type: String,
-    required: true,
-    enum: ['Program']
+    required: true
   },
   changes: [changesSchema]
 });
 
-versionControlSchema.index({ itemId: 1, collectionName: 1 });
+versionControlSchema.statics.getVersion = async function (
+  docId,
+  collectionName
+) {
+  return await this.findOne({ docId, collectionName });
+};
+
+versionControlSchema.index({ docId: 1, collectionName: 1 });
 const VC = mongoose.model('VC', versionControlSchema);
 module.exports = VC;

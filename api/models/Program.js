@@ -1,4 +1,5 @@
 const { model, Schema } = require('mongoose');
+const { ObjectId } = Schema.Types;
 const logger = require('../services/logger');
 const { handleProgramChanges } = require('../utils/modelHelper/programChange');
 
@@ -196,7 +197,8 @@ const programModule = {
   },
   requiredDocuments: [String], // Not used
   optionalDocuments: [String], // not used
-  url: String
+  url: String,
+  vcId: ObjectId
 };
 
 const programSchema = new Schema(programModule, { timestamps: true });

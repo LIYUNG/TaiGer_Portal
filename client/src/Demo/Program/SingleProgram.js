@@ -371,7 +371,7 @@ function SingleProgram() {
           isLoaded={isLoaded}
           user={user}
           students={students}
-          vc={vc}
+          versions={vc}
           programId={programId}
           programListAssistant={programListAssistant}
           handleClick={handleClick}

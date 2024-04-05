@@ -3,7 +3,6 @@ import React, { Fragment, useState } from 'react';
 import { Link as LinkDom } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
-import ArrowCircleRightOutlinedIcon from '@mui/icons-material/ArrowCircleRightOutlined';
 import {
   Box,
   Button,
@@ -322,7 +321,6 @@ function SingleProgramView(props) {
                     <TableCell>
                       <strong>{t('Original')}</strong>
                     </TableCell>
-                    <TableCell></TableCell>
                     <TableCell>
                       <strong>{t('Updated')}</strong>
                     </TableCell>
@@ -340,7 +338,7 @@ function SingleProgramView(props) {
                     });
                     return (
                       <>
-                        <TableRow sx={'border-top: 3px solid #555'}></TableRow>
+                        <TableRow sx={'border-top: 2px solid #CCC'}></TableRow>
                         <TableRow>
                           <TableCell rowSpan={(keys?.length || 0) + 1}>
                             {reverseIndex}
@@ -365,9 +363,6 @@ function SingleProgramView(props) {
                               {change.originalValues
                                 ? change.originalValues[key]
                                 : ''}
-                            </TableCell>
-                            <TableCell>
-                              <ArrowCircleRightOutlinedIcon />
                             </TableCell>
                             <TableCell
                               sx={{

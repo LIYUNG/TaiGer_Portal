@@ -357,10 +357,10 @@ function SingleProgramView(props) {
                                   change?.originalValues &&
                                   change.originalValues[key]
                                     ? 'none'
-                                    : 'grey.300'
+                                    : 'grey.200'
                               }}
                             >
-                              {change.originalValues
+                              {change?.originalValues
                                 ? change.originalValues[key]
                                 : ''}
                             </TableCell>
@@ -370,10 +370,10 @@ function SingleProgramView(props) {
                                   change?.updatedValues &&
                                   change.updatedValues[key]
                                     ? 'none'
-                                    : 'grey.300'
+                                    : 'grey.200'
                               }}
                             >
-                              {change.updatedValues
+                              {change?.updatedValues
                                 ? change.updatedValues[key]
                                 : ''}
                             </TableCell>

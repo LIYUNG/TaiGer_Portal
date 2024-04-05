@@ -171,13 +171,14 @@ function SingleProgram() {
   const handleSubmit_Program = (program) => {
     updateProgram(program).then(
       (resp) => {
-        const { data, success } = resp.data;
+        const { data, success, vc } = resp.data;
         const { status } = resp;
         if (success) {
           setSingleProgramState((prevState) => ({
             ...prevState,
             isLoaded: true,
             program: data,
+            vc,
             success: success,
             isEdit: !singleProgramState.isEdit,
             res_modal_status: status

@@ -229,13 +229,18 @@ const updateProgram = asyncHandler(async (req, res) => {
     fields_root
   );
 
+  const vc = await VC.findOne({
+    docId: req.params.programId,
+    collectionName: 'Program'
+  }).lean();
+
   // Delete cache key for image, pdf, docs, file here.
   const value = one_month_cache.del(req.originalUrl);
   if (value === 1) {
     console.log('cache key deleted successfully due to update');
   }
 
-  return res.status(200).send({ success: true, data: program });
+  return res.status(200).send({ success: true, data: program, vc });
 });
 
 const deleteProgram = asyncHandler(async (req, res) => {

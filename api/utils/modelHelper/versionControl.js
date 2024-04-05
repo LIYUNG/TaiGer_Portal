@@ -38,7 +38,7 @@ const enableVersionControl = (schema) => {
     ['findOneAndUpdate', 'updateOne', 'updateMany', 'update'],
     async function () {
       const collectionName = this.model.modelName;
-      
+
       const docs = this._oldVersion;
       delete this._oldVersion;
       const changes = this.getUpdate().$set;
@@ -47,6 +47,14 @@ const enableVersionControl = (schema) => {
         const updatedDoc = { ...doc, ...changes };
         const objectId = updatedDoc._id;
         const docChanges = detectChanges(doc, updatedDoc);
+
+        // don't save if no changes
+        if (
+          Object.keys(docChanges.originalValues).length === 0 &&
+          Object.keys(docChanges.updatedValues).length === 0
+        ) {
+          continue;
+        }
 
         try {
           await VC.findOneAndUpdate(

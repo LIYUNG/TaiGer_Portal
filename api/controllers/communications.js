@@ -201,90 +201,65 @@ const getUnreadNumberMessages = asyncHandler(async (req, res) => {
     throw new ErrorResponse(401, 'Invalid TaiGer user');
   }
   const permissions = await Permission.findOne({ user_id: user._id });
+  let students;
   if (
     user.role === 'Admin' ||
     (user.role === 'Agent' && permissions?.canAccessAllChat)
   ) {
-    const students = await Student.find({
+    students = await Student.find({
       archiv: { $ne: true }
     })
-      .select('firstname lastname role')
+      .select('_id')
       .lean();
-    // Get only the last communication
-    const student_ids = students.map((stud, i) => stud._id);
-    const studentsWithCommunications = await Student.aggregate([
-      {
-        $lookup: {
-          from: 'communications',
-          localField: '_id',
-          foreignField: 'student_id',
-          as: 'communications'
-        }
-      },
-      {
-        $project: {
-          firstname: 1,
-          lastname: 1,
-          firstname_chinese: 1,
-          lastname_chinese: 1,
-          role: 1,
-          latestCommunication: {
-            $arrayElemAt: ['$communications', -1]
+  } else {
+    students = await Student.find({
+      archiv: { $ne: true },
+      agents: user._id.toString()
+    })
+      .select('_id')
+      .lean();
+  }
+  const studentIds = students.map((stud) => stud._id);
+  // 1. filter my students
+  // 2. pick the readBy array from the last message (sorted by createdAt)
+  // 3. check if I (user._id) am in the readBy array
+  // 4. filter out the ones where I am not in the readBy array -> not read
+  const unreadMessages = await Communication.aggregate([
+    { $match: { student_id: { $in: studentIds } } },
+    {
+      $group: {
+        _id: {
+          student_id: '$student_id'
+        },
+        readBys: {
+          $bottom: {
+            output: '$readBy',
+            sortBy: {
+              createdAt: 1
+            }
           }
         }
-      },
-      {
-        $match: {
-          'latestCommunication.student_id': { $in: student_ids },
-          'latestCommunication.readBy': { $nin: [user._id] }
-        }
-      }
-    ]);
-
-    return res.status(200).send({
-      success: true,
-      data: studentsWithCommunications.length
-    });
-  }
-  const students = await Student.find({
-    archiv: { $ne: true },
-    agents: user._id.toString()
-  })
-    .select('firstname lastname role')
-    .lean();
-  const studentIds = students.map((stud, i) => stud._id);
-  const studentsWithCommunications = await Student.aggregate([
-    {
-      $lookup: {
-        from: 'communications',
-        localField: '_id',
-        foreignField: 'student_id',
-        as: 'communications'
       }
     },
     {
       $project: {
-        firstname: 1,
-        lastname: 1,
-        firstname_chinese: 1,
-        lastname_chinese: 1,
-        role: 1,
-        latestCommunication: {
-          $arrayElemAt: ['$communications', -1]
+        _id: 1,
+        readBys: 1,
+        userRead: {
+          $in: [user._id, '$readBys']
         }
       }
     },
     {
       $match: {
-        'latestCommunication.student_id': { $in: studentIds },
-        'latestCommunication.readBy': { $nin: [user._id] }
+        userRead: false
       }
     }
   ]);
 
   return res.status(200).send({
     success: true,
-    data: studentsWithCommunications.length
+    data: unreadMessages.length
   });
 });
 
@@ -360,7 +335,7 @@ const getMyMessages = asyncHandler(async (req, res, next) => {
     })
       .select('firstname lastname role')
       .lean();
-    const student_ids = students.map((stud, i) => stud._id);
+    const studentIds = students.map((stud, i) => stud._id);
     const studentsWithCommunications = await Student.aggregate([
       {
         $lookup: {
@@ -384,7 +359,7 @@ const getMyMessages = asyncHandler(async (req, res, next) => {
       },
       {
         $match: {
-          'latestCommunication.student_id': { $in: student_ids }
+          'latestCommunication.student_id': { $in: studentIds }
         }
       },
       {

@@ -1,4 +1,3 @@
-/* eslint-disable */
 import React, { Fragment, useState } from 'react';
 import { Link as LinkDom } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -45,13 +44,6 @@ import ProgramReport from './ProgramReport';
 import { appConfig } from '../../config';
 import { useAuth } from '../../components/AuthProvider';
 import { a11yProps, CustomTabPanel } from '../../components/Tabs';
-import styled from 'styled-components';
-
-const TableWrapper = styled.div`
-  .row-last {
-    border-bottom: 2px solid rgba(224, 224, 224, 1);
-  }
-`;
 
 function SingleProgramView(props) {
   const { user } = useAuth();

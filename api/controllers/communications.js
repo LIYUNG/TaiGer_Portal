@@ -88,7 +88,7 @@ const getSearchUserMessages = asyncHandler(async (req, res, next) => {
       .lean();
     const students = await Student.find({
       agents: user._id.toString(),
-      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+      archiv: { $ne: true }
     })
       .select('firstname lastname role')
       .lean();
@@ -139,7 +139,7 @@ const getSearchMessageKeywords = asyncHandler(async (req, res) => {
   ]);
   if (user.role === 'Admin') {
     const students = await Student.find({
-      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+      archiv: { $ne: true }
     })
       .select('firstname lastname firstname_chinese lastname_chinese role')
       .lean();
@@ -206,7 +206,7 @@ const getUnreadNumberMessages = asyncHandler(async (req, res) => {
     (user.role === 'Agent' && permissions?.canAccessAllChat)
   ) {
     const students = await Student.find({
-      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+      archiv: { $ne: true }
     })
       .select('firstname lastname role')
       .lean();
@@ -247,12 +247,12 @@ const getUnreadNumberMessages = asyncHandler(async (req, res) => {
     });
   }
   const students = await Student.find({
-    agents: user._id.toString(),
-    $or: [{ archiv: { $exists: false } }, { archiv: false }]
+    archiv: { $ne: true },
+    agents: user._id.toString()
   })
     .select('firstname lastname role')
     .lean();
-  const student_ids = students.map((stud, i) => stud._id);
+  const studentIds = students.map((stud, i) => stud._id);
   const studentsWithCommunications = await Student.aggregate([
     {
       $lookup: {
@@ -276,7 +276,7 @@ const getUnreadNumberMessages = asyncHandler(async (req, res) => {
     },
     {
       $match: {
-        'latestCommunication.student_id': { $in: student_ids },
+        'latestCommunication.student_id': { $in: studentIds },
         'latestCommunication.readBy': { $nin: [user._id] }
       }
     }
@@ -307,7 +307,7 @@ const getMyMessages = asyncHandler(async (req, res, next) => {
     (user.role === 'Agent' && permissions?.canAccessAllChat)
   ) {
     const students = await Student.find({
-      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+      archiv: { $ne: true }
     })
       .select('firstname lastname role')
       .lean();
@@ -356,7 +356,7 @@ const getMyMessages = asyncHandler(async (req, res, next) => {
   } else {
     const students = await Student.find({
       agents: user._id.toString(),
-      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+      archiv: { $ne: true }
     })
       .select('firstname lastname role')
       .lean();

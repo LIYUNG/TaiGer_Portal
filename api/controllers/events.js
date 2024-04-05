@@ -143,7 +143,7 @@ const getEvents = asyncHandler(async (req, res, next) => {
       .lean();
     students = await Student.find({
       agents: user._id,
-      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+      archiv: { $ne: true }
     })
       .select('firstname lastname firstname_chinese lastname_chinese  email')
       .lean();
@@ -201,7 +201,7 @@ const getAllEvents = asyncHandler(async (req, res, next) => {
   const students = await Student.find({
     $and: [
       { $or: [{ agents: user._id }, { editors: user._id }] },
-      { $or: [{ archiv: { $exists: false } }, { archiv: false }] }
+      { archiv: { $ne: true } }
     ]
   })
     .select('firstname lastname firstname_chinese lastname_chinese  email')

@@ -50,7 +50,7 @@ const getExpense = asyncHandler(async (req, res) => {
   if (the_user.role === 'Agent') {
     const students = await Student.find({
       agents: the_user._id.toString(),
-      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+      archiv: { $ne: true }
     })
       .populate('agents editors', 'firstname lastname email')
       .populate('applications.programId')
@@ -73,7 +73,7 @@ const getExpense = asyncHandler(async (req, res) => {
   } else if (the_user.role === 'Editor') {
     const students = await Student.find({
       editors: the_user._id.toString(),
-      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+      archiv: { $ne: true }
     })
       .populate('agents editors', 'firstname lastname email')
       .populate('applications.programId')

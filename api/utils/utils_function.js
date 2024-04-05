@@ -79,7 +79,7 @@ const TasksReminderEmails_Editor_core = async () => {
   for (let j = 0; j < editors.length; j += 1) {
     const editor_students = await Student.find({
       editors: editors[j]._id,
-      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+      archiv: { $ne: true }
     })
       .populate('agents editors', 'firstname lastname email')
       .populate('applications.programId')
@@ -114,7 +114,7 @@ const TasksReminderEmails_Agent_core = async () => {
   for (let j = 0; j < agents.length; j += 1) {
     const agent_students = await Student.find({
       agents: agents[j]._id,
-      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+      archiv: { $ne: true }
     })
       .populate('agents editors', 'firstname lastname email')
       .populate('applications.programId')
@@ -145,7 +145,7 @@ const TasksReminderEmails_Student_core = async () => {
   // Only inform active student
   // TODO: deactivate or change email frequency (default 1 week.)
   const students = await Student.find({
-    $or: [{ archiv: { $exists: false } }, { archiv: false }]
+    archiv: { $ne: true }
   })
     .populate('agents editors', 'firstname lastname email')
     .populate('applications.programId')
@@ -518,7 +518,7 @@ const UrgentTasksReminderEmails_Student_core = async () => {
   // TODO: deactivate or change email frequency (default 1 week.)
   const trigger_days = 3;
   const students = await Student.find({
-    $or: [{ archiv: { $exists: false } }, { archiv: false }]
+    archiv: { $ne: true }
   })
     .populate('agents editors', 'firstname lastname email')
     .populate('applications.programId')
@@ -573,7 +573,7 @@ const UrgentTasksReminderEmails_Agent_core = async () => {
   for (let j = 0; j < agents.length; j += 1) {
     const agent_students = await Student.find({
       agents: agents[j]._id,
-      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+      archiv: { $ne: true }
     })
       .populate('agents editors', 'firstname lastname email')
       .populate('applications.programId')
@@ -664,7 +664,7 @@ const UrgentTasksReminderEmails_Editor_core = async () => {
   for (let j = 0; j < editors.length; j += 1) {
     const editor_students = await Student.find({
       editors: editors[j]._id,
-      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+      archiv: { $ne: true }
     })
       .populate('agents editors', 'firstname lastname email')
       .populate('applications.programId')
@@ -731,7 +731,7 @@ const UrgentTasksReminderEmails_Editor_core = async () => {
 
 const AssignEditorTasksReminderEmails = async () => {
   const students = await Student.find({
-    $or: [{ archiv: { $exists: false } }, { archiv: false }]
+    archiv: { $ne: true }
   })
     .populate('agents editors', 'firstname lastname email archiv')
     .populate('applications.programId')
@@ -972,10 +972,10 @@ const UpdateStatisticsData = async () => {
   documents_data.RL = { count: documents_rl };
   documents_data.ESSAY = { count: documents_essay };
   const agents = await Agent.find({
-    $or: [{ archiv: { $exists: false } }, { archiv: false }]
+    archiv: { $ne: true }
   });
   const editors = await Editor.find({
-    $or: [{ archiv: { $exists: false } }, { archiv: false }]
+    archiv: { $ne: true }
   });
   const students = await Student.find()
     .populate('agents editors', 'firstname lastname')
@@ -993,7 +993,7 @@ const UpdateStatisticsData = async () => {
     Obj.lastname = agents[i].lastname;
     Obj.student_num = await Student.find({
       agents: agents[i]._id,
-      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+      archiv: { $ne: true }
     }).count();
     agents_data.push(Obj);
   }
@@ -1004,7 +1004,7 @@ const UpdateStatisticsData = async () => {
     Obj.lastname = editors[i].lastname;
     Obj.student_num = await Student.find({
       editors: editors[i]._id,
-      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+      archiv: { $ne: true }
     }).count();
     editors_data.push(Obj);
   }

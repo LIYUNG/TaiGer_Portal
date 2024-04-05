@@ -109,7 +109,7 @@ const getTeamMembers = asyncHandler(async (req, res) => {
     {
       $match: {
         role: { $in: ['Admin', 'Agent', 'Editor'] },
-        $or: [{ archiv: { $exists: false } }, { archiv: false }]
+        archiv: { $ne: true }
       }
     },
     {
@@ -150,7 +150,7 @@ const getFileTypeCount = async () => {
 const getAgentData = async (agent) => {
   const agentStudents = await Student.find({
     agents: agent._id,
-    $or: [{ archiv: { $exists: false } }, { archiv: false }]
+    archiv: { $ne: true }
   }).lean();
   const student_num_with_offer = agentStudents.filter((std) =>
     std.applications.some((application) => application.admission === 'O')
@@ -172,17 +172,17 @@ const getEditorData = async (editor) => {
   editorData.lastname = editor.lastname;
   editorData.student_num = await Student.find({
     editors: editor._id,
-    $or: [{ archiv: { $exists: false } }, { archiv: false }]
+    archiv: { $ne: true }
   }).count();
   return editorData;
 };
 
 const getStatistics = asyncHandler(async (req, res) => {
   const agents = await Agent.find({
-    $or: [{ archiv: { $exists: false } }, { archiv: false }]
+    archiv: { $ne: true }
   });
   const editors = await Editor.find({
-    $or: [{ archiv: { $exists: false } }, { archiv: false }]
+    archiv: { $ne: true }
   });
 
   const agentsPromises = Promise.all(
@@ -272,7 +272,7 @@ const getAgents = asyncHandler(async (req, res, next) => {
     });
     if (permissions && permissions.canAssignAgents) {
       const agents = await Agent.find({
-        $or: [{ archiv: { $exists: false } }, { archiv: false }]
+        archiv: { $ne: true }
       }).select('firstname lastname');
       res.status(200).send({ success: true, data: agents });
     } else {
@@ -284,7 +284,7 @@ const getAgents = asyncHandler(async (req, res, next) => {
     }
   } else {
     const agents = await Agent.find({
-      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+      archiv: { $ne: true }
     }).select('firstname lastname');
     res.status(200).send({ success: true, data: agents });
   }
@@ -296,7 +296,7 @@ const getSingleAgent = asyncHandler(async (req, res, next) => {
   // query by agents field: student.agents include agent_id
   const students = await Student.find({
     agents: agent_id,
-    $or: [{ archiv: { $exists: false } }, { archiv: false }]
+    archiv: { $ne: true }
   })
     .populate('agents editors', 'firstname lastname email')
     .populate('applications.programId')
@@ -336,7 +336,7 @@ const getEditors = asyncHandler(async (req, res, next) => {
     });
     if (permissions && permissions.canAssignEditors) {
       const editors = await Editor.find({
-        $or: [{ archiv: { $exists: false } }, { archiv: false }]
+        archiv: { $ne: true }
       }).select('firstname lastname');
       res.status(200).send({ success: true, data: editors });
     } else {
@@ -348,7 +348,7 @@ const getEditors = asyncHandler(async (req, res, next) => {
     }
   } else {
     const editors = await Editor.find({
-      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+      archiv: { $ne: true }
     }).select('firstname lastname');
     res.status(200).send({ success: true, data: editors });
   }
@@ -360,7 +360,7 @@ const getSingleEditor = asyncHandler(async (req, res, next) => {
   // query by agents field: student.editors include editor_id
   const students = await Student.find({
     editors: editor_id,
-    $or: [{ archiv: { $exists: false } }, { archiv: false }]
+    archiv: { $ne: true }
   })
     .populate('agents editors', 'firstname lastname email')
     .populate('applications.programId')
@@ -426,7 +426,7 @@ const getEssayWriters = asyncHandler(async (req, res, next) => {
     // if (permissions && permissions.canAssignEditors && permissions.isEssayWriters) {
     if (permissions && permissions.canAssignEditors) {
       const editors = await Editor.find({
-        $or: [{ archiv: { $exists: false } }, { archiv: false }]
+        archiv: { $ne: true }
       }).select('firstname lastname');
       res.status(200).send({ success: true, data: editors });
     } else {
@@ -438,7 +438,7 @@ const getEssayWriters = asyncHandler(async (req, res, next) => {
     }
   } else {
     const editors = await Editor.find({
-      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+      archiv: { $ne: true }
     }).select('firstname lastname');
     res.status(200).send({ success: true, data: editors });
   }

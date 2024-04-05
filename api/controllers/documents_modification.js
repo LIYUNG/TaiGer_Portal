@@ -285,7 +285,7 @@ const SingleThreadThreadS3GarbageCollector = async (ThreadId) => {
 
 const getAllCVMLRLOverview = asyncHandler(async (req, res) => {
   const students = await Student.find({
-    $or: [{ archiv: { $exists: false } }, { archiv: false }]
+    archiv: { $ne: true }
   })
     .populate(
       'applications.programId',
@@ -457,7 +457,7 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
   } = req;
   if (user.role === Role.Admin) {
     const students = await Student.find({
-      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+      archiv: { $ne: true }
     })
       .populate(
         'applications.programId',
@@ -489,7 +489,7 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
   } else if (user.role === Role.Agent) {
     const students = await Student.find({
       agents: user._id,
-      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+      archiv: { $ne: true }
     })
       .populate(
         'applications.programId',
@@ -523,7 +523,7 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
   } else if (user.role === Role.Editor) {
     const students = await Student.find({
       editors: user._id,
-      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+      archiv: { $ne: true }
     })
       .populate(
         'applications.programId',

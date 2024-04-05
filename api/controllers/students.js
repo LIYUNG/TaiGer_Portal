@@ -149,7 +149,7 @@ const getAllArchivStudents = asyncHandler(async (req, res, next) => {
 
 const getAllActiveStudents = asyncHandler(async (req, res, next) => {
   const students = await Student.find({
-    $or: [{ archiv: { $exists: false } }, { archiv: false }]
+    archiv: { $ne: true }
   })
     .populate('agents editors', 'firstname lastname email')
     .populate('applications.programId')
@@ -205,7 +205,7 @@ const getStudents = asyncHandler(async (req, res, next) => {
   } = req;
   if (user.role === Role.Admin) {
     const students = await Student.find({
-      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+      archiv: { $ne: true }
     })
       .populate('agents editors', 'firstname lastname email')
       .populate('applications.programId')
@@ -240,7 +240,7 @@ const getStudents = asyncHandler(async (req, res, next) => {
     if (user.manager_type === ManagerType.Agent) {
       students = await Student.find({
         agents: { $in: user.agents },
-        $or: [{ archiv: { $exists: false } }, { archiv: false }]
+        archiv: { $ne: true }
       })
         .populate('agents editors', 'firstname lastname email')
         .populate('applications.programId')
@@ -256,7 +256,7 @@ const getStudents = asyncHandler(async (req, res, next) => {
     if (user.manager_type === ManagerType.Editor) {
       students = await Student.find({
         editors: { $in: user.editors },
-        $or: [{ archiv: { $exists: false } }, { archiv: false }]
+        archiv: { $ne: true }
       })
         .populate('agents editors', 'firstname lastname email')
         .populate('applications.programId')
@@ -278,7 +278,7 @@ const getStudents = asyncHandler(async (req, res, next) => {
               { editors: { $in: user.editors } }
             ]
           },
-          { $or: [{ archiv: { $exists: false } }, { archiv: false }] }
+          { archiv: { $ne: true } }
         ]
       })
         .populate('agents editors', 'firstname lastname email')
@@ -316,7 +316,7 @@ const getStudents = asyncHandler(async (req, res, next) => {
   } else if (user.role === Role.Agent) {
     const students = await Student.find({
       agents: user._id,
-      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+      archiv: { $ne: true }
     })
       .populate('agents editors', 'firstname lastname email')
       .populate('applications.programId')
@@ -353,7 +353,7 @@ const getStudents = asyncHandler(async (req, res, next) => {
     const permissions = await Permission.findOne({ user_id: user._id });
     if (permissions && permissions.canAssignEditors) {
       const students = await Student.find({
-        $or: [{ archiv: { $exists: false } }, { archiv: false }]
+        archiv: { $ne: true }
       })
         .populate('agents editors', 'firstname lastname email')
         .populate('applications.programId')
@@ -367,7 +367,7 @@ const getStudents = asyncHandler(async (req, res, next) => {
     } else {
       const students = await Student.find({
         editors: user._id,
-        $or: [{ archiv: { $exists: false } }, { archiv: false }]
+        archiv: { $ne: true }
       })
         .populate('agents editors', 'firstname lastname email')
         .populate('applications.programId')
@@ -415,7 +415,7 @@ const getStudentsAndDocLinks = asyncHandler(async (req, res, next) => {
   const { user } = req;
   if (user.role === Role.Admin) {
     const students = await Student.find({
-      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+      archiv: { $ne: true }
     })
       .select('firstname lastname profile')
       .lean();
@@ -423,7 +423,7 @@ const getStudentsAndDocLinks = asyncHandler(async (req, res, next) => {
   } else if (user.role === Role.Agent) {
     const students = await Student.find({
       agents: user._id,
-      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+      archiv: { $ne: true }
     })
       .select('firstname lastname profile')
       .lean()
@@ -434,7 +434,7 @@ const getStudentsAndDocLinks = asyncHandler(async (req, res, next) => {
   } else if (user.role === Role.Editor) {
     const students = await Student.find({
       editors: user._id,
-      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+      archiv: { $ne: true }
     })
       .select('firstname lastname profile')
       .select('-notification');
@@ -505,7 +505,7 @@ const updateStudentsArchivStatus = asyncHandler(async (req, res, next) => {
     // return dashboard students
     if (user.role === Role.Admin) {
       const students = await Student.find({
-        $or: [{ archiv: { $exists: false } }, { archiv: false }]
+        archiv: { $ne: true }
       })
         .populate('agents editors', 'firstname lastname email')
         .populate('applications.programId')
@@ -525,7 +525,7 @@ const updateStudentsArchivStatus = asyncHandler(async (req, res, next) => {
         console.log('with permission');
         console.log(permissions);
         const students = await Student.find({
-          $or: [{ archiv: { $exists: false } }, { archiv: false }]
+          archiv: { $ne: true }
         })
           .populate('agents editors', 'firstname lastname email')
           .populate('applications.programId')
@@ -539,7 +539,7 @@ const updateStudentsArchivStatus = asyncHandler(async (req, res, next) => {
       } else {
         const students = await Student.find({
           agents: user._id,
-          $or: [{ archiv: { $exists: false } }, { archiv: false }]
+          archiv: { $ne: true }
         })
           .populate('agents editors', 'firstname lastname email')
           .populate('applications.programId')
@@ -556,7 +556,7 @@ const updateStudentsArchivStatus = asyncHandler(async (req, res, next) => {
     } else if (user.role === Role.Editor) {
       const students = await Student.find({
         editors: user._id,
-        $or: [{ archiv: { $exists: false } }, { archiv: false }]
+        archiv: { $ne: true }
       })
         .populate('agents editors', 'firstname lastname email')
         .populate('applications.programId')

@@ -21,6 +21,7 @@ const isCrucialChanges = (changes) => {
   const crucialChanges = [
     'ml_required',
     'rl_required',
+    'rl_requirements',
     'is_rl_specific',
     'essay_required',
     'portfolio_required',
@@ -60,7 +61,8 @@ const checkIsRLspecific = (program) => {
   return isRLSpecific || (NoRLSpecificFlag && program?.rl_requirements);
 };
 
-const findRLDelta = async (program, studentId, threads) => {
+const findRLDelta = async (program, studentId, threads, options) => {
+  const { skipCompleted } = options || {};
   let delta = {
     add: [],
     remove: []
@@ -100,6 +102,9 @@ const findRLDelta = async (program, studentId, threads) => {
       const fileThread = threads.find(
         (thread) => thread.file_type === existingRL[i]?.file_type
       );
+      if (skipCompleted && fileThread.isFinalVersion) {
+        continue;
+      }
       delta.remove.push({
         studentId,
         programId: program._id,
@@ -110,7 +115,9 @@ const findRLDelta = async (program, studentId, threads) => {
 
   return delta;
 };
-const findStudentDelta = async (studentId, program) => {
+const findStudentDelta = async (studentId, program, options) => {
+  const { skipCompleted } = options || {};
+
   let delta = {
     add: [],
     remove: []
@@ -120,7 +127,7 @@ const findStudentDelta = async (studentId, program) => {
     student_id: studentId,
     program_id: program._id
   })
-    .select('file_type messages')
+    .select('file_type messages isFinalVersion')
     .lean();
 
   studentProgramThreads.map((thread) => {
@@ -143,6 +150,9 @@ const findStudentDelta = async (studentId, program) => {
         fileType: FILETYPES[fileType]
       });
     } else if (program[fileType]?.toLowerCase() !== 'yes' && fileThread) {
+      if (skipCompleted && fileThread.isFinalVersion) {
+        continue;
+      }
       delta.remove.push({
         studentId,
         programId: program._id,
@@ -151,7 +161,12 @@ const findStudentDelta = async (studentId, program) => {
     }
   }
 
-  const RLdelta = await findRLDelta(program, studentId, studentProgramThreads);
+  const RLdelta = await findRLDelta(
+    program,
+    studentId,
+    studentProgramThreads,
+    options || {}
+  );
   delta.add = delta.add.concat(RLdelta.add);
   delta.remove = delta.remove.concat(RLdelta.remove);
   return delta;

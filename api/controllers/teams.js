@@ -54,8 +54,8 @@ const getActivePrograms = async () => {
   return activePrograms;
 };
 
-const getStudentDeltas = async (student, program) => {
-  const deltas = await findStudentDelta(student._id, program);
+const getStudentDeltas = async (student, program, options) => {
+  const deltas = await findStudentDelta(student._id, program, options || {});
   if (deltas?.add?.length === 0 && deltas?.remove?.length === 0) {
     return;
   }
@@ -72,11 +72,12 @@ const getApplicationDeltaByProgram = async (programId) => {
   const students = await getStudentsByProgram(programId);
   const program = await Program.findById(programId);
   const studentDeltaPromises = [];
+  const options = { skipCompleted: true };
   for (let student of students) {
     if (!student.application || student.application.closed !== '-') {
       continue;
     }
-    const studentDelta = getStudentDeltas(student, program);
+    const studentDelta = getStudentDeltas(student, program, options);
     studentDeltaPromises.push(studentDelta);
   }
   let studentDeltas = await Promise.all(studentDeltaPromises);

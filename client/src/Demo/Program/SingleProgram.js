@@ -412,7 +412,11 @@ function SingleProgram() {
           aria-labelledby="contained-modal-title-vcenter"
         >
           <Typography>{t('Success', { ns: 'common' })}</Typography>
-          <Typography>Program(s) assigned to student successfully!</Typography>
+          <Typography>
+            {t('Program(s) assigned to student successfully!', {
+              ns: 'programList'
+            })}
+          </Typography>
           <Button
             size="small"
             color="primary"

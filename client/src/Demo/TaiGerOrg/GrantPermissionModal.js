@@ -25,16 +25,6 @@ function GrantPermissionModal(props) {
         : { canAssignEditors: false, canAssignAgents: false },
     changed: false
   });
-  console.log(grantPermissionModalState.permissions);
-  // useEffect(() => {
-  //   setGrantPermissionModalState((prevState) => ({
-  //     ...prevState,
-  //     permissions:
-  //       props.user_permissions.length > 0
-  //         ? props.user_permissions[0]
-  //         : { canAssignEditors: false, canAssignAgents: false }
-  //   }));
-  // }, []);
 
   const onChangePermissions = (e) => {
     const { value, checked } = e.target;
@@ -148,7 +138,7 @@ function GrantPermissionModal(props) {
         {t('Update', { ns: 'common' })}
       </Button>
       <Button color="primary" variant="outlined" onClick={props.setModalHide}>
-        {t('Cancel')}
+        {t('Cancel', { ns: 'common' })}
       </Button>
     </ModalNew>
   );

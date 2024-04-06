@@ -134,7 +134,7 @@ function AddUserModal(props) {
           variant="outlined"
           onClick={props.cloaseAddUserModal}
         >
-          {t('Cancel')}
+          {t('Cancel', { ns: 'common' })}
         </Button>
       </Box>
     </ModalNew>

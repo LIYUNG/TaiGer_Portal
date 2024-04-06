@@ -91,7 +91,7 @@ function EditAttributesSubpage(props) {
           {t('Update', { ns: 'common' })}
         </Button>
         <Button color="secondary" variant="outlined" onClick={props.onHide}>
-          {t('Cancel')}
+          {t('Cancel', { ns: 'common' })}
         </Button>
       </Box>
     </ModalNew>

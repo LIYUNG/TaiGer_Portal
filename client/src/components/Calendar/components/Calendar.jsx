@@ -266,7 +266,7 @@ const MyCalendar = (props) => {
                 {props.BookButtonDisable ? <CircularProgress /> : t('Create')}
               </Button>
               <Button variant="outlined" onClick={scheduler.close}>
-                {t('Cancel')}
+                {t('Cancel', { ns: 'common' })}
               </Button>
             </Box>
           </>
@@ -464,7 +464,7 @@ const MyCalendar = (props) => {
               {props.BookButtonDisable ? <CircularProgress /> : t('Create')}
             </Button>
             <Button variant="outlined" onClick={props.handleNewEventModalClose}>
-              {t('Cancel')}
+              {t('Cancel', { ns: 'common' })}
             </Button>
           </Box>
         </ModalNew>

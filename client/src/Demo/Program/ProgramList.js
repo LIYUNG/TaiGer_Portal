@@ -265,7 +265,7 @@ function ProgramList(props) {
   const c2 = [
     {
       field: 'school',
-      headerName: t('School'),
+      headerName: t('School', { ns: 'common' }),
       align: 'left',
       headerAlign: 'left',
       width: 250,
@@ -301,24 +301,28 @@ function ProgramList(props) {
         );
       }
     },
-    { field: 'country', headerName: t('Country'), width: 90 },
+    { field: 'country', headerName: t('Country', { ns: 'common' }), width: 90 },
     { field: 'degree', headerName: t('Degree', { ns: 'common' }), width: 90 },
     {
       field: 'semester',
       headerName: t('Semester', { ns: 'common' }),
       width: 100
     },
-    { field: 'lang', headerName: t('Language'), width: 120 },
-    { field: 'toefl', headerName: t('TOEFL'), width: 100 },
-    { field: 'ielts', headerName: t('IELTS'), width: 100 },
-    { field: 'gre', headerName: t('GRE'), width: 120 },
-    { field: 'gmat', headerName: t('GMAT'), width: 120 },
+    { field: 'lang', headerName: t('Language', { ns: 'common' }), width: 120 },
+    { field: 'toefl', headerName: t('TOEFL', { ns: 'common' }), width: 100 },
+    { field: 'ielts', headerName: t('IELTS', { ns: 'common' }), width: 100 },
+    { field: 'gre', headerName: t('GRE', { ns: 'common' }), width: 120 },
+    { field: 'gmat', headerName: t('GMAT', { ns: 'common' }), width: 120 },
     {
       field: 'application_deadline',
       headerName: t('Deadline', { ns: 'common' }),
       width: 120
     },
-    { field: 'updatedAt', headerName: t('Last updated'), width: 150 }
+    {
+      field: 'updatedAt',
+      headerName: t('Last update', { ns: 'common' }),
+      width: 150
+    }
   ];
 
   if (!statedata.isloaded && !statedata.programs) {
@@ -499,7 +503,9 @@ function ProgramList(props) {
       >
         <Typography>{t('Success', { ns: 'common' })}</Typography>
         <Typography>
-          {t('Program(s) assigned to student successfully!')}
+          {t('Program(s) assigned to student successfully!', {
+            ns: 'programList'
+          })}
         </Typography>
         <Typography>
           <Button variant="outlined" onClick={onHideAssignSuccessWindow}>

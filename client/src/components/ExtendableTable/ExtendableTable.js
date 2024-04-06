@@ -124,7 +124,7 @@ export function ExtendableTable({ data }) {
       <Table size="small">
         <TableHead>
           <TableRow>
-            <TableCell>{t('Name')}</TableCell>
+            <TableCell>{t('Name', { ns: 'common' })}</TableCell>
             <TableCell># {t('Applications')}</TableCell>
             <TableCell># {t('Transactions')}</TableCell>
             <TableCell>{t('Income')}</TableCell>

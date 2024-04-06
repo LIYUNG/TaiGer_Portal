@@ -56,7 +56,7 @@ function Contact() {
   const your_agents = contactState.students[0].agents ? (
     contactState.students[0].agents.map((agent, i) => (
       <TableRow key={i}>
-        <TableCell>{t('Agent')}</TableCell>
+        <TableCell>{t('Agent', { ns: 'common' })}</TableCell>
         <TableCell>
           <Link
             to={`${DEMO.TEAM_AGENT_PROFILE_LINK(agent._id.toString())}`}

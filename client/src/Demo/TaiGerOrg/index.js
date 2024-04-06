@@ -426,12 +426,12 @@ function TaiGerOrg() {
         )}
       </Card>
       <Card>
-        <Typography variant="h5">{t('Agent')}:</Typography>
+        <Typography variant="h5">{t('Agent', { ns: 'common' })}:</Typography>
         <TableContainer style={{ overflowX: 'auto' }}>
           <Table size="small">
             <TableHead>
               <TableRow>
-                <TableCell>{t('Name')}</TableCell>
+                <TableCell>{t('Name', { ns: 'common' })}</TableCell>
                 <TableCell>
                   Can modify
                   <br /> program list

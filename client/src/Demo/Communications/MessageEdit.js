@@ -165,7 +165,7 @@ function MessageEdit(props) {
           variant="outlined"
           onClick={(e) => props.handleCancelEdit(e)}
         >
-          {t('Cancel')}
+          {t('Cancel', { ns: 'common' })}
         </Button>
       </Accordion>
       {/* TODOL consider to move it to the parent! It render many time! as message increase */}

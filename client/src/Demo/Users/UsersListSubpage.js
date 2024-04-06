@@ -49,7 +49,7 @@ function UsersListSubpage(props) {
           {t('Assign', { ns: 'common' })}
         </Button>
         <Button color="primary" variant="outlined" onClick={props.setModalHide}>
-          {t('Cancel')}
+          {t('Cancel', { ns: 'common' })}
         </Button>
       </Box>
     </ModalNew>

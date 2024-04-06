@@ -119,7 +119,7 @@ export default function EventConfirmationCard(props) {
           <Grid item xs={12} md={6}>
             <Typography variant="body1">
               <AiOutlineUser size={16} />
-              {t('Agent')}:{' '}
+              {t('Agent', { ns: 'common' })}:{' '}
               {props.event.receiver_id?.map((receiver, x) => (
                 <span key={x}>
                   {receiver.firstname} {receiver.lastname}{' '}
@@ -182,7 +182,7 @@ export default function EventConfirmationCard(props) {
                       props.handleConfirmAppointmentModalOpen(e, props.event)
                     }
                   >
-                    <AiOutlineCheckCircle size={16} /> {t('Confirm')}
+                    <AiOutlineCheckCircle size={16} /> {t('Confirm', { ns: 'common' })}
                   </Button>{' '}
                   the time and get the meeting link
                 </span>
@@ -216,7 +216,7 @@ export default function EventConfirmationCard(props) {
                       props.handleConfirmAppointmentModalOpen(e, props.event)
                     }
                   >
-                    <AiOutlineCheckCircle size={16} /> {t('Confirm')}
+                    <AiOutlineCheckCircle size={16} /> {t('Confirm', { ns: 'common' })}
                   </Button>{' '}
                   the time and get the meeting link
                 </span>
@@ -279,7 +279,7 @@ export default function EventConfirmationCard(props) {
                           }
                           sx={{ mx: 2 }}
                         >
-                          <AiOutlineCheckCircle size={16} /> {t('Confirm')}
+                          <AiOutlineCheckCircle size={16} /> {t('Confirm', { ns: 'common' })}
                         </Button>
                       ))}
                     {is_TaiGer_Agent(user) &&
@@ -309,7 +309,7 @@ export default function EventConfirmationCard(props) {
                             )
                           }
                         >
-                          <AiOutlineCheckCircle size={16} /> {t('Confirm')}
+                          <AiOutlineCheckCircle size={16} /> {t('Confirm', { ns: 'common' })}
                         </Button>
                       ))}
                     <Button

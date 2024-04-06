@@ -85,7 +85,9 @@ function ProgramListSubpage(props) {
           {program_name}
         </Typography>
       ))}
-      <Typography variant="body1">{t('to the student')}:</Typography>
+      <Typography variant="body1">
+        {t('to the student', { ns: 'programList' })}:
+      </Typography>
       <Table size="small">
         <TableBody>
           {programListSubpageState.students.map((student, i) => (
@@ -113,10 +115,14 @@ function ProgramListSubpage(props) {
         disabled={props.isButtonDisable}
         onClick={(e) => props.onSubmitAddToStudentProgramList(e)}
       >
-        {props.isButtonDisable ? <CircularProgress /> : t('Assign', { ns: 'common' })}
+        {props.isButtonDisable ? (
+          <CircularProgress />
+        ) : (
+          t('Assign', { ns: 'common' })
+        )}
       </Button>
       <Button variant="outlined" onClick={props.setModalHide}>
-        {t('Cancel')}
+        {t('Cancel', { ns: 'common' })}
       </Button>
     </ModalNew>
   );

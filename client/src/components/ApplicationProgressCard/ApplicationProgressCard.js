@@ -287,7 +287,7 @@ export default function ApplicationProgressCard(props) {
             title="Undo"
             onClick={closeUndoModal}
           >
-            {t('Cancel')}
+            {t('Cancel', { ns: 'common' })}
           </Button>
         </Box>
       </ModalNew>

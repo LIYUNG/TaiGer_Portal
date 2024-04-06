@@ -157,7 +157,7 @@ function EditEssayWritersSubpage(props) {
             {t('Update', { ns: 'common' })}
           </Button>
           <Button variant="outlined" onClick={props.onHide}>
-            {t('Cancel')}
+            {t('Cancel', { ns: 'common' })}
           </Button>
         </>
       ) : (

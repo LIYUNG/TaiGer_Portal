@@ -75,14 +75,14 @@ function GrantManagerModal(props) {
           disabled={!grantManagerModalState.changed}
           onClick={(e) => onSubmitHandler(e)}
         >
-          {t('Confirm')}
+          {t('Confirm', { ns: 'common' })}
         </Button>
         <Button
           color="primary"
           variant="outlined"
           onClick={props.setManagerModalHide}
         >
-          {t('Cancel')}
+          {t('Cancel', { ns: 'common' })}
         </Button>
       </Typography>
     </ModalNew>

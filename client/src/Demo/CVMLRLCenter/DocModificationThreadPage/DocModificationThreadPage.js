@@ -931,7 +931,7 @@ function DocModificationThreadPage() {
           </Grid>
           <Grid item md={widths[1]}>
             <Typography variant="body1" fontWeight="bold">
-              {t('Agent')}:
+              {t('Agent', { ns: 'common' })}:
             </Typography>
             {docModificationThreadPageState.agents.map((agent, i) => (
               <Typography key={i}>

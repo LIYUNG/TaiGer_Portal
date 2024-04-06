@@ -274,7 +274,7 @@ const EditorNew = (props) => {
             size="small"
             variant="outlined"
           >
-            {t('Cancel')}
+            {t('Cancel', { ns: 'common' })}
           </Button>
         </>
       )}

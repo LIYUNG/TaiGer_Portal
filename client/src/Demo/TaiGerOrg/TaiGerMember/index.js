@@ -133,11 +133,11 @@ function TaiGerMember() {
           </>
         )}
 
-        <Typography variant="h5">{t('Agent')}:</Typography>
+        <Typography variant="h5">{t('Agent', { ns: 'common' })}:</Typography>
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>{t('Name')}</TableCell>
+              <TableCell>{t('Name', { ns: 'common' })}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

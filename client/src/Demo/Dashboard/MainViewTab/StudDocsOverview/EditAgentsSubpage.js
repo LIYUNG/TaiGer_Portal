@@ -103,7 +103,7 @@ function EditAgentsSubpage(props) {
           <Typography variant="h6">
             Agent for {props.student.firstname} - {props.student.lastname} to
           </Typography>
-          <Typography variant="body1">{t('Agent')}: </Typography>
+          <Typography variant="body1">{t('Agent', { ns: 'common' })}: </Typography>
           <Table size="small">
             <TableBody>{agentlist}</TableBody>
           </Table>
@@ -123,7 +123,7 @@ function EditAgentsSubpage(props) {
               {t('Update', { ns: 'common' })}
             </Button>
             <Button color="secondary" variant="outlined" onClick={props.onHide}>
-              {t('Cancel')}
+              {t('Cancel', { ns: 'common' })}
             </Button>
           </Box>
         </>

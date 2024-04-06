@@ -103,7 +103,7 @@ function CommunicationThreadEditor(props) {
             variant="outlined"
             onClick={(e) => props.handleClickSave(e, statedata.editorState)}
           >
-            {t('Cancel')}
+            {t('Cancel', { ns: 'common' })}
           </Button>
         )}
       </Box>

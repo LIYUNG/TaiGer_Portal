@@ -29,7 +29,7 @@ import { appConfig } from '../../config';
 function NewProgramEdit(props) {
   const { t } = useTranslation();
   const [isChanged, setIsChanged] = useState(false);
-  const initProgram = props.program || {};
+  const initProgram = props.program || { is_rl_specific: false };
   const [programChanges, setProgramChanges] = useState({});
   const program = { ...initProgram, ...programChanges };
   const [searchResults, setSearchResults] = useState([]);
@@ -123,7 +123,9 @@ function NewProgramEdit(props) {
       <Card sx={{ p: 2 }}>
         <Grid container>
           <Grid item xs={6} md={6}>
-            <Typography variant="body1">{t('School')} *</Typography>
+            <Typography variant="body1">
+              {t('School', { ns: 'common' })} *
+            </Typography>
           </Grid>
           <Grid item xs={6} md={6}>
             <div className="search-container-school" ref={searchContainerRef}>
@@ -190,7 +192,7 @@ function NewProgramEdit(props) {
                 name="degree"
                 id="degree"
                 onChange={(e) => handleChange(e)}
-                value={program.degree}
+                value={program.degree || ''}
               >
                 {DEGREE_CATOGARY_ARRAY_OPTIONS.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
@@ -224,7 +226,9 @@ function NewProgramEdit(props) {
             </FormControl>
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="body1">{t('Teaching Language')}*</Typography>
+            <Typography variant="body1">
+              {t('Teaching Language', { ns: 'common' })}*
+            </Typography>
           </Grid>
           <Grid item xs={6} md={6}>
             <FormControl fullWidth>
@@ -263,7 +267,7 @@ function NewProgramEdit(props) {
           </Grid>
           <Grid item xs={6} md={6}>
             <Typography variant="body1">
-              {t('Application Start')} (MM-DD)
+              {t('Application Start (MM-DD)', { ns: 'common' })}
             </Typography>
           </Grid>
           <Grid item xs={6} md={6}>
@@ -280,7 +284,7 @@ function NewProgramEdit(props) {
           </Grid>
           <Grid item xs={6} md={6}>
             <Typography variant="body1">
-              {t('Application Deadline')} (MM-DD) *
+              {t('Application Deadline', { ns: 'common' })} (MM-DD) *
             </Typography>
           </Grid>
           <Grid item xs={6} md={6}>
@@ -298,7 +302,9 @@ function NewProgramEdit(props) {
           {appConfig.vpdEnable && (
             <>
               <Grid item xs={6} md={6}>
-                <Typography variant="body1">{t('Need Uni-Assist?')}</Typography>
+                <Typography variant="body1">
+                  {t('Need Uni-Assist?', { ns: 'common' })}
+                </Typography>
               </Grid>
               <Grid item xs={6} md={6}>
                 <FormControl fullWidth>
@@ -321,7 +327,9 @@ function NewProgramEdit(props) {
             </>
           )}
           <Grid item xs={6} md={6}>
-            <Typography variant="body1">{t('TOEFL Requirement')}</Typography>
+            <Typography variant="body1">
+              {t('TOEFL Requirement', { ns: 'common' })}
+            </Typography>
           </Grid>
           <Grid item xs={2} md={2}>
             <TextField
@@ -342,7 +350,7 @@ function NewProgramEdit(props) {
               type="text"
               id="toefl_reading"
               name="toefl_reading"
-              label={t('Reading')}
+              label={t('Reading', { ns: 'common' })}
               placeholder="21"
               onChange={(e) => handleChange(e)}
               value={program.toefl_reading || ''}
@@ -355,7 +363,7 @@ function NewProgramEdit(props) {
               type="text"
               id="toefl_listening"
               name="toefl_listening"
-              label={t('Listening')}
+              label={t('Listening', { ns: 'common' })}
               placeholder="21"
               onChange={(e) => handleChange(e)}
               value={program.toefl_listening || ''}
@@ -368,7 +376,7 @@ function NewProgramEdit(props) {
               type="text"
               id="toefl_speaking"
               name="toefl_speaking"
-              label={t('Speaking')}
+              label={t('Speaking', { ns: 'common' })}
               placeholder="21"
               onChange={(e) => handleChange(e)}
               value={program.toefl_speaking || ''}
@@ -381,14 +389,16 @@ function NewProgramEdit(props) {
               type="text"
               id="toefl_writing"
               name="toefl_writing"
-              label={t('Writing')}
+              label={t('Writing', { ns: 'common' })}
               placeholder="21"
               onChange={(e) => handleChange(e)}
               value={program.toefl_writing || ''}
             />
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="body1">{t('IELTS Requirement')}</Typography>
+            <Typography variant="body1">
+              {t('IELTS Requirement', { ns: 'common' })}
+            </Typography>
           </Grid>
           <Grid item xs={2} md={2}>
             <TextField
@@ -409,7 +419,7 @@ function NewProgramEdit(props) {
               type="text"
               id="ielts_reading"
               name="ielts_reading"
-              label={t('Reading')}
+              label={t('Reading', { ns: 'common' })}
               placeholder="6.5"
               onChange={(e) => handleChange(e)}
               value={program.ielts_reading || ''}
@@ -422,7 +432,7 @@ function NewProgramEdit(props) {
               type="text"
               id="ielts_listening"
               name="ielts_listening"
-              label={t('Listening')}
+              label={t('Listening', { ns: 'common' })}
               placeholder="6.5"
               onChange={(e) => handleChange(e)}
               value={program.ielts_listening || ''}
@@ -435,7 +445,7 @@ function NewProgramEdit(props) {
               type="text"
               id="ielts_speaking"
               name="ielts_speaking"
-              label={t('Speaking')}
+              label={t('Speaking', { ns: 'common' })}
               placeholder="6.5"
               onChange={(e) => handleChange(e)}
               value={program.ielts_speaking || ''}
@@ -448,14 +458,16 @@ function NewProgramEdit(props) {
               type="text"
               id="ielts_writing"
               name="ielts_writing"
-              label={t('Writing')}
+              label={t('Writing', { ns: 'common' })}
               placeholder="6.5"
               onChange={(e) => handleChange(e)}
               value={program.ielts_writing || ''}
             />
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="body1">{t('TestDaF Requirement')}</Typography>
+            <Typography variant="body1">
+              {t('TestDaF Requirement', { ns: 'common' })}
+            </Typography>
           </Grid>
           <Grid item xs={6} md={6}>
             <TextField
@@ -470,7 +482,9 @@ function NewProgramEdit(props) {
             />
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="body1">{t('GRE Requirement')}</Typography>
+            <Typography variant="body1">
+              {t('GRE Requirement', { ns: 'common' })}
+            </Typography>
           </Grid>
           <Grid item xs={6} md={6}>
             <TextField
@@ -485,7 +499,9 @@ function NewProgramEdit(props) {
             />
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="body1">{t('GMAT Requirement')}</Typography>
+            <Typography variant="body1">
+              {t('GMAT Requirement', { ns: 'common' })}
+            </Typography>
           </Grid>
           <Grid item xs={6} md={6}>
             <TextField
@@ -500,7 +516,9 @@ function NewProgramEdit(props) {
             />
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="body1">{t('ML Required?')}*</Typography>
+            <Typography variant="body1">
+              {t('ML Required?', { ns: 'common' })}*
+            </Typography>
           </Grid>
           <Grid item xs={6} md={6}>
             <FormControl fullWidth>
@@ -521,7 +539,9 @@ function NewProgramEdit(props) {
             </FormControl>
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="body1">{t('ML Requirements?')}</Typography>
+            <Typography variant="body1">
+              {t('ML Requirements', { ns: 'common' })}?
+            </Typography>
           </Grid>
           <Grid item xs={6} md={6}>
             <TextField
@@ -538,7 +558,9 @@ function NewProgramEdit(props) {
             />
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="body1">{t('RL Required?')} *</Typography>
+            <Typography variant="body1">
+              {t('RL Required?', { ns: 'common' })} *
+            </Typography>
           </Grid>
           <Grid item xs={6} md={6}>
             <FormControl fullWidth>
@@ -557,10 +579,9 @@ function NewProgramEdit(props) {
               </Select>
             </FormControl>
           </Grid>
-
           <Grid item xs={6} md={6}>
             <Typography variant="body1">
-              {t('RL Program specific?')} *
+              {t('RL Program specific?', { ns: 'common' })} *
             </Typography>
           </Grid>
           <Grid item xs={6} md={6}>
@@ -581,9 +602,10 @@ function NewProgramEdit(props) {
               </Select>
             </FormControl>
           </Grid>
-
           <Grid item xs={6} md={6}>
-            <Typography variant="body1">{t('RL Requirements?')}</Typography>
+            <Typography variant="body1">
+              {t('RL Requirements', { ns: 'common' })}?
+            </Typography>
           </Grid>
           <Grid item xs={6} md={6}>
             <TextField
@@ -600,7 +622,9 @@ function NewProgramEdit(props) {
             />
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="body1">{t('Essay Required?')} *</Typography>
+            <Typography variant="body1">
+              {t('Essay Required?', { ns: 'common' })} *
+            </Typography>
           </Grid>
           <Grid item xs={6} md={6}>
             <FormControl fullWidth>
@@ -621,7 +645,9 @@ function NewProgramEdit(props) {
             </FormControl>
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="body1">{t('Essay Requirements')}</Typography>
+            <Typography variant="body1">
+              {t('Essay Requirements', { ns: 'common' })}
+            </Typography>
           </Grid>
           <Grid item xs={6} md={6}>
             <TextField
@@ -638,7 +664,9 @@ function NewProgramEdit(props) {
             />
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="body1">{t('Portfolio Required?')}</Typography>
+            <Typography variant="body1">
+              {t('Portfolio Required?', { ns: 'common' })}
+            </Typography>
           </Grid>
           <Grid item xs={6} md={6}>
             <FormControl fullWidth>
@@ -660,7 +688,7 @@ function NewProgramEdit(props) {
           </Grid>
           <Grid item xs={6} md={6}>
             <Typography variant="body1">
-              {t('Portfolio Requirements')}
+              {t('Portfolio Requirements', { ns: 'common' })}
             </Typography>
           </Grid>
           <Grid item xs={6} md={6}>
@@ -679,7 +707,7 @@ function NewProgramEdit(props) {
           </Grid>
           <Grid item xs={6} md={6}>
             <Typography variant="body1">
-              {t('Supplementary Form Required?')}
+              {t('Supplementary Form Required?', { ns: 'common' })}
             </Typography>
           </Grid>
           <Grid item xs={6} md={6}>
@@ -702,7 +730,7 @@ function NewProgramEdit(props) {
           </Grid>
           <Grid item xs={6} md={6}>
             <Typography variant="body1">
-              {t('Supplementary Form Requirements')}
+              {t('Supplementary Form Requirements', { ns: 'common' })}
             </Typography>
           </Grid>
           <Grid item xs={6} md={6}>
@@ -721,7 +749,7 @@ function NewProgramEdit(props) {
           </Grid>
           <Grid item xs={6} md={6}>
             <Typography variant="body1">
-              {t('Curriculum Analysis Required?')}
+              {t('Curriculum Analysis Required?', { ns: 'common' })}
             </Typography>
           </Grid>
           <Grid item xs={6} md={6}>
@@ -744,7 +772,7 @@ function NewProgramEdit(props) {
           </Grid>
           <Grid item xs={6} md={6}>
             <Typography variant="body1">
-              {t('Curriculum Analysis Requirements')}
+              {t('Curriculum Analysis Requirements', { ns: 'common' })}
             </Typography>
           </Grid>
           <Grid item xs={6} md={6}>
@@ -763,7 +791,7 @@ function NewProgramEdit(props) {
           </Grid>
           <Grid item xs={6} md={6}>
             <Typography variant="body1">
-              {t('Scholarship Form / ML Required?')}
+              {t('Scholarship Form / ML Required?', { ns: 'common' })}
             </Typography>
           </Grid>
           <Grid item xs={6} md={6}>
@@ -786,7 +814,7 @@ function NewProgramEdit(props) {
           </Grid>
           <Grid item xs={6} md={6}>
             <Typography variant="body1">
-              {t('Scholarship Form / ML Requirements')}
+              {t('Scholarship Form / ML Requirements', { ns: 'common' })}
             </Typography>
           </Grid>
           <Grid item xs={6} md={6}>
@@ -803,9 +831,10 @@ function NewProgramEdit(props) {
               value={program.scholarship_form_requirements || ''}
             />
           </Grid>
-
           <Grid item xs={6} md={6}>
-            <Typography variant="body1">{t('ECTS Requirements')}</Typography>
+            <Typography variant="body1">
+              {t('ECTS Requirements', { ns: 'common' })}
+            </Typography>
           </Grid>
           <Grid item xs={6} md={6}>
             <TextField
@@ -822,7 +851,9 @@ function NewProgramEdit(props) {
             />
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="body1">{t('Special Notes')}</Typography>
+            <Typography variant="body1">
+              {t('Special Notes', { ns: 'common' })}
+            </Typography>
           </Grid>
           <Grid item xs={6} md={6}>
             <TextField
@@ -839,7 +870,9 @@ function NewProgramEdit(props) {
             />
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="body1">{t('Comments')}</Typography>
+            <Typography variant="body1">
+              {t('Comments', { ns: 'common' })}
+            </Typography>
           </Grid>
           <Grid item xs={6} md={6}>
             <TextField
@@ -920,7 +953,9 @@ function NewProgramEdit(props) {
             />
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="body1">{t('Website')}</Typography>
+            <Typography variant="body1">
+              {t('Website', { ns: 'common' })}
+            </Typography>
           </Grid>
           <Grid item xs={6} md={6}>
             <TextField
@@ -935,7 +970,9 @@ function NewProgramEdit(props) {
             />
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="body1">{t('Country')} *</Typography>
+            <Typography variant="body1">
+              {t('Country', { ns: 'common' })} *
+            </Typography>
           </Grid>
           <Grid item xs={6} md={6}>
             <FormControl fullWidth>
@@ -956,7 +993,9 @@ function NewProgramEdit(props) {
             </FormControl>
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="body1">{t('Tuition Fees')}</Typography>
+            <Typography variant="body1">
+              {t('Tuition Fees', { ns: 'common' })}
+            </Typography>
           </Grid>
           <Grid item xs={6} md={6}>
             <TextField
@@ -1012,7 +1051,9 @@ function NewProgramEdit(props) {
           endIcon={props.isSubmitting ? <CircularProgress size={24} /> : null}
           sx={{ my: 1 }}
         >
-          {props.program ? t('Update', { ns: 'common' }) : t('Create')}
+          {props.program
+            ? t('Update', { ns: 'common' })
+            : t('Create', { ns: 'common' })}
         </Button>
         <Button
           fullWidth
@@ -1021,7 +1062,7 @@ function NewProgramEdit(props) {
           variant="outlined"
           onClick={() => props.handleClick()}
         >
-          {t('Cancel')}
+          {t('Cancel', { ns: 'common' })}
         </Button>
       </Card>
     </>

@@ -438,8 +438,8 @@ function SingleProgramView(props) {
                     <Table size="small">
                       <TableHead>
                         <TableRow>
-                          <TableCell>{t('Name')}</TableCell>
-                          <TableCell>{t('Agent')}</TableCell>
+                          <TableCell>{t('Name', { ns: 'common' })}</TableCell>
+                          <TableCell>{t('Agent', { ns: 'common' })}</TableCell>
                           <TableCell>{t('Editor', { ns: 'common' })}</TableCell>
                         </TableRow>
                       </TableHead>
@@ -499,7 +499,7 @@ function SingleProgramView(props) {
                     <Table size="small">
                       <TableHead>
                         <TableRow>
-                          <TableCell>{t('Name')}</TableCell>
+                          <TableCell>{t('Name', { ns: 'common' })}</TableCell>
                           <TableCell>{t('Year', { ns: 'common' })}</TableCell>
                           <TableCell>{t('Admission')}</TableCell>
                         </TableRow>
@@ -769,7 +769,7 @@ function SingleProgramView(props) {
                       <Table size="small">
                         <TableHead>
                           <TableRow>
-                            <TableCell>{t('Name')}</TableCell>
+                            <TableCell>{t('Name', { ns: 'common' })}</TableCell>
                             <TableCell>{t('Year', { ns: 'common' })}</TableCell>
                             <TableCell>{t('Admission')}</TableCell>
                           </TableRow>

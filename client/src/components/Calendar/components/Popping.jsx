@@ -68,7 +68,7 @@ const Popping = ({
             {newDescription?.length || 0}/{textLimit}
           </Badge>
           <FormControl fullWidth>
-            <InputLabel id="Agent">{t('Agent')}</InputLabel>
+            <InputLabel id="Agent">{t('Agent', { ns: 'common' })}</InputLabel>
             <Select
               labelId="Agent"
               name="Agent"
@@ -80,7 +80,7 @@ const Popping = ({
                     : ''
                   : ''
               }
-              label={t('Agent')}
+              label={t('Agent', { ns: 'common' })}
               onChange={handleChangeReceiver}
             >
               {is_TaiGer_Student(user) && (

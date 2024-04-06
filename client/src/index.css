@@ -4,13 +4,18 @@ body {
   font-family: Roboto;
 }
 
-.ce-paragraph[data-placeholder][contenteditable="false"]:empty {
+.ce-paragraph[data-placeholder][contenteditable='false']:empty {
   display: none;
 }
 
 .ce-block__content,
 .ce-toolbar__content {
   max-width: unset;
+}
+
+.ce-inline-toolbar {
+  color: black;
+  background-color: white;
 }
 
 .ct__content:not(.ct__content > *) {
@@ -105,5 +110,5 @@ body {
 
 .white-line {
   border: 1px solid white; /* Set the line color to white */
-  margin: 20px 0;          /* Adjust margin as needed */
+  margin: 20px 0; /* Adjust margin as needed */
 }

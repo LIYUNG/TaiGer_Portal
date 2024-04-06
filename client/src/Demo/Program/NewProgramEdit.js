@@ -7,6 +7,7 @@ import {
   FormControl,
   Grid,
   MenuItem,
+  CircularProgress,
   Select,
   TextField,
   Typography
@@ -1007,7 +1008,8 @@ function NewProgramEdit(props) {
           color="primary"
           variant="contained"
           onClick={(e) => handleSubmit(e, program, programChanges)}
-          disabled={!isChanged}
+          disabled={!isChanged || props.isSubmitting}
+          endIcon={props.isSubmitting ? <CircularProgress size={24} /> : null}
           sx={{ my: 1 }}
         >
           {props.program ? t('Update', { ns: 'common' }) : t('Create')}

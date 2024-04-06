@@ -30,6 +30,7 @@ import ModalNew from '../../components/Modal';
 function ProgramList(props) {
   const { user } = useAuth();
   const { t } = useTranslation();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   let [tableStates, setTableStates] = useState({
     success: false,
     isloaded: false,
@@ -203,12 +204,14 @@ function ProgramList(props) {
   };
 
   const handleSubmit_Program = (program) => {
+    setIsSubmitting(true);
     createProgram(program).then(
       (resp) => {
         const { data, success } = resp.data;
         const { status } = resp;
         if (success) {
           let new_program_list = [...statedata.programs, data];
+          setIsSubmitting(false);
           setStatedata((state) => ({
             ...state,
             success: success,
@@ -219,6 +222,7 @@ function ProgramList(props) {
           setIsCreationMode(!isCreationMode);
         } else {
           const { message } = resp.data;
+          setIsSubmitting(false);
           setStatedata((state) => ({
             ...state,
             isloaded: true,
@@ -227,12 +231,14 @@ function ProgramList(props) {
           }));
         }
       },
-      (error) =>
+      (error) => {
+        setIsSubmitting(false);
         setStatedata((state) => ({
           ...state,
           error,
           isloaded: true
-        }))
+        }));
+      }
     );
   };
 
@@ -297,13 +303,21 @@ function ProgramList(props) {
     },
     { field: 'country', headerName: t('Country'), width: 90 },
     { field: 'degree', headerName: t('Degree', { ns: 'common' }), width: 90 },
-    { field: 'semester', headerName: t('Semester', { ns: 'common' }), width: 100 },
+    {
+      field: 'semester',
+      headerName: t('Semester', { ns: 'common' }),
+      width: 100
+    },
     { field: 'lang', headerName: t('Language'), width: 120 },
     { field: 'toefl', headerName: t('TOEFL'), width: 100 },
     { field: 'ielts', headerName: t('IELTS'), width: 100 },
     { field: 'gre', headerName: t('GRE'), width: 120 },
     { field: 'gmat', headerName: t('GMAT'), width: 120 },
-    { field: 'application_deadline', headerName: t('Deadline', { ns: 'common' }), width: 120 },
+    {
+      field: 'application_deadline',
+      headerName: t('Deadline', { ns: 'common' }),
+      width: 120
+    },
     { field: 'updatedAt', headerName: t('Last updated'), width: 150 }
   ];
 
@@ -379,6 +393,7 @@ function ProgramList(props) {
             handleClick={onClickIsCreateApplicationMode}
             handleSubmit_Program={handleSubmit_Program}
             programs={statedata.programs}
+            isSubmitting={isSubmitting}
           />
         </>
       ) : (

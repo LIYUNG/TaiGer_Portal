@@ -35,6 +35,7 @@ function SingleProgram() {
   const { programId } = useParams();
   const { t } = useTranslation();
   const { user } = useAuth();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [singleProgramState, setSingleProgramState] = useState({
     error: '',
     isLoaded: false,
@@ -169,11 +170,13 @@ function SingleProgram() {
   };
 
   const handleSubmit_Program = (program) => {
+    setIsSubmitting(true);
     updateProgram(program).then(
       (resp) => {
         const { data, success, vc } = resp.data;
         const { status } = resp;
         if (success) {
+          setIsSubmitting(false);
           setSingleProgramState((prevState) => ({
             ...prevState,
             isLoaded: true,
@@ -185,6 +188,7 @@ function SingleProgram() {
           }));
         } else {
           const { message } = resp.data;
+          setIsSubmitting(false);
           setSingleProgramState((prevState) => ({
             ...prevState,
             isLoaded: true,
@@ -194,6 +198,7 @@ function SingleProgram() {
         }
       },
       (error) => {
+        setIsSubmitting(false);
         setSingleProgramState((prevState) => ({
           ...prevState,
           isLoaded: true,
@@ -321,6 +326,7 @@ function SingleProgram() {
         <NewProgramEdit
           program={program}
           handleSubmit_Program={handleSubmit_Program}
+          isSubmitting={isSubmitting}
           handleClick={handleClick}
         />
       </Box>

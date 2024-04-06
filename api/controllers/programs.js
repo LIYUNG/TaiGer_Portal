@@ -185,7 +185,8 @@ const createProgram = asyncHandler(async (req, res) => {
     school: new_program.school,
     program_name: new_program.program_name,
     degree: new_program.degree,
-    semester: new_program.semester
+    semester: new_program.semester,
+    isArchiv: { $ne: true }
   });
   if (programs.length > 0) {
     logger.error('createProgram: same program existed!');

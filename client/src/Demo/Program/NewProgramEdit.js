@@ -79,15 +79,19 @@ function NewProgramEdit(props) {
       typeof e.target.value === 'string'
         ? e.target.value.trimLeft()
         : e.target.value;
-    setProgramChanges((preState) => ({
-      ...preState,
-      [key]: value
-    }));
+
+    const newState = { ...programChanges };
+    if (value === initProgram[key] || (!initProgram[key] && value === '')) {
+      delete newState[key];
+    } else {
+      newState[key] = value;
+    }
+    setProgramChanges(newState);
 
     if (e.target.id === 'school') {
       setSearchTerm(value.trimLeft());
     }
-    setIsChanged(true);
+    setIsChanged(Object.keys(newState).length > 0 ? true : false);
   };
 
   const handleSubmit = (e, program, programChanges) => {
@@ -156,7 +160,9 @@ function NewProgramEdit(props) {
             </div>
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="body1">{t('Program', { ns: 'common' })} *</Typography>
+            <Typography variant="body1">
+              {t('Program', { ns: 'common' })} *
+            </Typography>
           </Grid>
           <Grid item xs={6} md={6}>
             <TextField
@@ -171,7 +177,9 @@ function NewProgramEdit(props) {
             />
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="body1">{t('Degree', { ns: 'common' })} *</Typography>
+            <Typography variant="body1">
+              {t('Degree', { ns: 'common' })} *
+            </Typography>
           </Grid>
           <Grid item xs={6} md={6}>
             <FormControl fullWidth>
@@ -192,7 +200,9 @@ function NewProgramEdit(props) {
             </FormControl>
           </Grid>
           <Grid item xs={6} md={6}>
-            <Typography variant="body1">{t('Semester', { ns: 'common' })} *</Typography>
+            <Typography variant="body1">
+              {t('Semester', { ns: 'common' })} *
+            </Typography>
           </Grid>
           <Grid item xs={6} md={6}>
             <FormControl fullWidth>

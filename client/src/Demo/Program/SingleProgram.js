@@ -56,7 +56,7 @@ function SingleProgram() {
   useEffect(() => {
     getProgram(programId).then(
       (resp) => {
-        const { data, success, students } = resp.data;
+        const { data, success, students, vc } = resp.data;
         const { status } = resp;
         if (success) {
           setSingleProgramState((prevState) => ({
@@ -64,6 +64,7 @@ function SingleProgram() {
             isLoaded: true,
             program: data,
             students,
+            vc,
             success: success,
             res_status: status
           }));
@@ -170,13 +171,14 @@ function SingleProgram() {
   const handleSubmit_Program = (program) => {
     updateProgram(program).then(
       (resp) => {
-        const { data, success } = resp.data;
+        const { data, success, vc } = resp.data;
         const { status } = resp;
         if (success) {
           setSingleProgramState((prevState) => ({
             ...prevState,
             isLoaded: true,
             program: data,
+            vc,
             success: success,
             isEdit: !singleProgramState.isEdit,
             res_modal_status: status
@@ -283,7 +285,8 @@ function SingleProgram() {
     res_modal_status,
     res_modal_message,
     program,
-    students
+    students,
+    vc
   } = singleProgramState;
   if (res_status >= 400) {
     return <ErrorPage res_status={res_status} />;
@@ -369,6 +372,7 @@ function SingleProgram() {
           isLoaded={isLoaded}
           user={user}
           students={students}
+          versions={vc}
           programId={programId}
           programListAssistant={programListAssistant}
           handleClick={handleClick}

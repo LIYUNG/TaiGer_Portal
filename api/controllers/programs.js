@@ -1,6 +1,7 @@
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
 const { Program } = require('../models/Program');
+const VC = require('../models/VersionControl');
 const { Role, Student } = require('../models/User');
 const logger = require('../services/logger');
 const { one_month_cache } = require('../cache/node-cache');
@@ -14,7 +15,7 @@ const getPrograms = asyncHandler(async (req, res) => {
     const value = two_weeks_cache.get(req.originalUrl);
     if (value === undefined) {
       // cache miss
-      const programs = await Program.find().select(
+      const programs = await Program.find({ isArchiv: { $ne: true } }).select(
         '-study_group_flag -tuition_fees -website -special_notes -comments -optionalDocuments -requiredDocuments -uni_assist -daad_link -ml_required -ml_requirements -rl_required -essay_required -essay_requirements -application_portal_a -application_portal_b -fpso -program_duration -deprecated'
       );
       const success = two_weeks_cache.set(req.originalUrl, programs);
@@ -23,11 +24,10 @@ const getPrograms = asyncHandler(async (req, res) => {
       }
       return res.send({ success: true, data: programs });
     }
-    console.log('programs cache hit');
     res.send({ success: true, data: value });
   } else {
     // Option 2: No cache, good when programs are still frequently updated
-    const programs = await Program.find().select(
+    const programs = await Program.find({ isArchiv: { $ne: true } }).select(
       '-study_group_flag -tuition_fees -website -special_notes -comments -optionalDocuments -requiredDocuments -uni_assist -daad_link -ml_required -ml_requirements -rl_required -essay_required -essay_requirements -application_portal_a -application_portal_b -fpso -program_duration -deprecated'
     );
     res.send({ success: true, data: programs });
@@ -109,7 +109,12 @@ const getProgram = asyncHandler(async (req, res) => {
             'firstname lastname applications application_preference.expected_application_date'
           );
 
-        return res.send({ success: true, data: program, students });
+        const vc = await VC.findOne({
+          docId: req.params.programId,
+          collectionName: 'Program'
+        }).lean();
+
+        return res.send({ success: true, data: program, students, vc });
       }
       return res.send({ success: true, data: program });
     }
@@ -133,7 +138,11 @@ const getProgram = asyncHandler(async (req, res) => {
           'firstname lastname applications application_preference.expected_application_date'
         );
 
-      res.send({ success: true, data: value, students });
+      const vc = await VC.findOne({
+        docId: req.params.programId,
+        collectionName: 'Program'
+      }).lean();
+      res.send({ success: true, data: value, students, vc });
     } else {
       res.send({ success: true, data: value });
     }
@@ -148,7 +157,12 @@ const getProgram = asyncHandler(async (req, res) => {
       logger.error('getProgram: Invalid program id');
       throw new ErrorResponse(403, 'Invalid program id');
     }
-    res.send({ success: true, data: program, students });
+    const vc = await VC.findOne({
+      docId: req.params.programId,
+      collectionName: 'Program'
+    }).lean();
+
+    res.send({ success: true, data: program, students, vc });
   } else {
     const program = await Program.findById(req.params.programId);
     if (!program) {
@@ -171,7 +185,8 @@ const createProgram = asyncHandler(async (req, res) => {
     school: new_program.school,
     program_name: new_program.program_name,
     degree: new_program.degree,
-    semester: new_program.semester
+    semester: new_program.semester,
+    isArchiv: { $ne: true }
   });
   if (programs.length > 0) {
     logger.error('createProgram: same program existed!');
@@ -196,8 +211,8 @@ const updateProgram = asyncHandler(async (req, res) => {
   delete fields_root.application_start;
   delete fields_root.application_deadline;
 
-  const program = await Program.findByIdAndUpdate(
-    req.params.programId,
+  const program = await Program.findOneAndUpdate(
+    { _id: req.params.programId },
     fields,
     {
       new: true
@@ -207,6 +222,7 @@ const updateProgram = asyncHandler(async (req, res) => {
   // Update same program but other semester common data
   await Program.updateMany(
     {
+      _id: { $ne: req.params.programId },
       school: program.school,
       program_name: program.program_name,
       degree: program.degree
@@ -214,13 +230,18 @@ const updateProgram = asyncHandler(async (req, res) => {
     fields_root
   );
 
+  const vc = await VC.findOne({
+    docId: req.params.programId,
+    collectionName: 'Program'
+  }).lean();
+
   // Delete cache key for image, pdf, docs, file here.
   const value = one_month_cache.del(req.originalUrl);
   if (value === 1) {
     console.log('cache key deleted successfully due to update');
   }
 
-  return res.status(200).send({ success: true, data: program });
+  return res.status(200).send({ success: true, data: program, vc });
 });
 
 const deleteProgram = asyncHandler(async (req, res) => {
@@ -235,7 +256,7 @@ const deleteProgram = asyncHandler(async (req, res) => {
   // Check if anyone applied this program
   if (students.length === 0) {
     console.log('it can be deleted!');
-    await Program.findByIdAndDelete(req.params.programId);
+    await Program.findByIdAndUpdate(req.params.programId, { isArchiv: true });
     console.log('The program deleted!');
 
     const value = one_month_cache.del(req.originalUrl);

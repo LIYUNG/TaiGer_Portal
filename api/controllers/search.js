@@ -71,7 +71,7 @@ const getQueryResults = asyncHandler(async (req, res, next) => {
     .lean();
 
   const programs = await Program.find(
-    { $text: { $search: req.query.q } },
+    { $text: { $search: req.query.q }, isArchiv: { $ne: true } },
     { score: { $meta: 'textScore' } }
   )
     .sort({ score: { $meta: 'textScore' } })

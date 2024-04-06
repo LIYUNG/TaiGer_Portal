@@ -6,6 +6,7 @@ import {
   Box,
   Button,
   Card,
+  CardContent,
   Link,
   Grid,
   Table,
@@ -49,6 +50,7 @@ function SingleProgramView(props) {
   const { t } = useTranslation();
   const [value, setValue] = useState(0);
   const [studentsTabValue, setStudentsTabValue] = useState(0);
+  const versions = props?.versions || {};
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -79,6 +81,7 @@ function SingleProgramView(props) {
           notification_key={undefined}
         />
       </Box>
+
       <Grid container spacing={2}>
         <Grid item xs={12} md={8}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -94,6 +97,9 @@ function SingleProgramView(props) {
               <Tab label={t('Specific Requirements')} {...a11yProps(2)} />
               <Tab label={t('Special Documents')} {...a11yProps(3)} />
               <Tab label={t('Others')} {...a11yProps(4)} />
+              {versions?.changes?.length > 0 && (
+                <Tab label={t('Edit History')} {...a11yProps(5)} />
+              )}
             </Tabs>
           </Box>
           <CustomTabPanel value={value} index={0}>
@@ -285,40 +291,115 @@ function SingleProgramView(props) {
               </Grid>
             </Card>
           </CustomTabPanel>
-          {is_TaiGer_AdminAgent(user) && (
-            <>
-              <Button
-                fullWidth
-                variant="contained"
-                color="info"
-                size="small"
-                onClick={() => props.handleClick()}
-              >
-                {t('Edit', { ns: 'common' })}
-              </Button>
-              <Button
-                fullWidth
-                variant="outlined"
-                color="primary"
-                size="small"
-                onClick={() => props.setModalShow2()}
-              >
-                {t('Assign', { ns: 'common' })}
-              </Button>
-              {is_TaiGer_Admin(user) && (
-                <Button
-                  variant="outlined"
-                  size="small"
-                  color="error"
-                  onClick={() => props.setModalShowDDelete()}
-                >
-                  {t('Delete', { ns: 'common' })}
-                </Button>
-              )}
-            </>
+
+          {versions?.changes?.length > 0 && (
+            <CustomTabPanel
+              value={value}
+              index={5}
+              style={{ width: '100%', overflowY: 'auto' }}
+            >
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>
+                      <strong>{t('#')}</strong>
+                    </TableCell>
+                    <TableCell>
+                      <strong>{t('Changed By')}</strong>
+                    </TableCell>
+                    <TableCell>
+                      <strong>{t('Field')}</strong>
+                    </TableCell>
+                    <TableCell>
+                      <strong>{t('Original')}</strong>
+                    </TableCell>
+                    <TableCell>
+                      <strong>{t('Updated')}</strong>
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+
+                <TableBody>
+                  {versions.changes.toReversed().map((change, index) => {
+                    const reverseIndex = versions.changes.length
+                      ? versions.changes.length - index
+                      : index;
+                    const keys = Object.keys({
+                      ...change.originalValues,
+                      ...change.updatedValues
+                    });
+                    return (
+                      <>
+                        <TableRow sx={'border-top: 2px solid #CCC'}></TableRow>
+                        <TableRow>
+                          <TableCell rowSpan={(keys?.length || 0) + 1}>
+                            {reverseIndex}
+                          </TableCell>
+                          <TableCell rowSpan={(keys?.length || 0) + 1}>
+                            <div>{change.changedBy}</div>
+                            <div>{convertDate(change.changedAt)}</div>
+                          </TableCell>
+                        </TableRow>
+                        {keys.map((key, i) => (
+                          <TableRow key={i}>
+                            <TableCell>{key}</TableCell>
+                            <TableCell>
+                              {change?.originalValues
+                                ? change.originalValues[key]
+                                : ''}
+                            </TableCell>
+                            <TableCell>
+                              {change?.updatedValues
+                                ? change.updatedValues[key]
+                                : ''}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </CustomTabPanel>
           )}
         </Grid>
         <Grid item xs={12} md={4}>
+          {is_TaiGer_AdminAgent(user) && (
+            <Grid container spacing={1} alignItems="center">
+              <Grid item>
+                <Button
+                  fullWidth
+                  variant="outlined"
+                  color="primary"
+                  onClick={() => props.setModalShow2()}
+                >
+                  {t('Assign', { ns: 'common' })}
+                </Button>
+              </Grid>
+              <Grid item>
+                <Button
+                  fullWidth
+                  variant="contained"
+                  color="info"
+                  onClick={() => props.handleClick()}
+                >
+                  {t('Edit', { ns: 'common' })}
+                </Button>
+              </Grid>
+
+              {is_TaiGer_Admin(user) && (
+                <Grid item>
+                  <Button
+                    variant="outlined"
+                    color="error"
+                    onClick={() => props.setModalShowDDelete()}
+                  >
+                    {t('Delete', { ns: 'common' })}
+                  </Button>
+                </Grid>
+              )}
+            </Grid>
+          )}
           <Box sx={{ my: 2 }}>
             <Link
               component={LinkDom}
@@ -339,15 +420,6 @@ function SingleProgramView(props) {
               </Button>
             </Link>
           </Box>
-          <Card className="card-with-scroll">
-            <div className="card-scrollable-body">
-              <ProgramReport
-                uni_name={props.program.school}
-                program_name={props.program.program_name}
-                program_id={props.program._id.toString()}
-              />
-            </div>
-          </Card>
           {is_TaiGer_role(user) && (
             <>
               <Card className="card-with-scroll" sx={{ p: 2 }}>
@@ -473,19 +545,31 @@ function SingleProgramView(props) {
                 </div>
               </Card>
               <Card>
-                <Typography>
-                  {appConfig.companyName} {t('Program Assistant')}
-                </Typography>
-                <Button
-                  color="primary"
-                  variant="contained"
-                  onClick={props.programListAssistant}
-                >
-                  {t('Fetch')}
-                </Button>
+                <CardContent>
+                  <Typography>
+                    {appConfig.companyName} {t('Program Assistant')}
+                  </Typography>
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    size="small"
+                    onClick={props.programListAssistant}
+                  >
+                    {t('Fetch')}
+                  </Button>
+                </CardContent>
               </Card>
             </>
           )}
+          <Card className="card-with-scroll">
+            <CardContent className="card-scrollable-body">
+              <ProgramReport
+                uni_name={props.program.school}
+                program_name={props.program.program_name}
+                program_id={props.program._id.toString()}
+              />
+            </CardContent>
+          </Card>
         </Grid>
       </Grid>
       {/* TODO: reuse the following for program comparison! */}

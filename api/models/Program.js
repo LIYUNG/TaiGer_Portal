@@ -1,9 +1,9 @@
 const { model, Schema } = require('mongoose');
+const { ObjectId } = Schema.Types;
 const logger = require('../services/logger');
-const {
-  isCrucialChanges,
-  handleThreadDelta
-} = require('../utils/modelHelper/programChange');
+const { handleProgramChanges } = require('../utils/modelHelper/programChange');
+
+const { enableVersionControl } = require('../utils/modelHelper/versionControl');
 
 const Degree = {
   bachelor_sc: 'B.Sc',
@@ -21,13 +21,15 @@ const Languages = {
 };
 
 const programModule = {
+  isArchiv: Boolean,
   school: {
     type: String,
-    default: ''
+    default: '',
+    required: true
   },
   program_name: {
     type: String,
-    default: ''
+    required: true
   },
   degree: {
     type: String
@@ -195,54 +197,15 @@ const programModule = {
   },
   requiredDocuments: [String], // Not used
   optionalDocuments: [String], // not used
-  url: String
+  url: String,
+  vcId: ObjectId
 };
 
 const programSchema = new Schema(programModule, { timestamps: true });
-programSchema.pre(['updateOne', 'updateMany', 'update'], async function () {
-  try {
-    const condition = this.getQuery();
-    this._originals = await this.model.find(condition).lean();
-  } catch (error) {
-    logger.error(`ProgramHook - Error on pre hook: ${error}`);
-  }
-});
+programSchema.plugin(enableVersionControl);
+programSchema.plugin(handleProgramChanges);
 
-programSchema.post(['updateOne', 'updateMany', 'update'], async function () {
-  try {
-    const docs = this._originals;
-    delete this._originals;
-    const changes = this.getUpdate().$set;
-    if (!isCrucialChanges(changes)) {
-      return;
-    }
-
-    for (let doc of docs) {
-      const updatedDoc = { ...doc, ...changes };
-      const programId = updatedDoc._id;
-
-      try {
-        logger.info(
-          `ProgramHook - Crucial changes detected on Program (Id=${programId}): ${JSON.stringify(
-            changes
-          )}`
-        );
-        await handleThreadDelta(updatedDoc);
-        logger.info(
-          `ProgramHook - Post hook executed successfully. (Id=${programId})`
-        );
-      } catch (error) {
-        logger.error(
-          `ProgramHook - Error on post hook (Id=${programId}): ${error}`
-        );
-      }
-    }
-  } catch (error) {
-    logger.error(`ProgramHook - Error on post hook: ${error}`);
-  }
-});
-
-programSchema.index({ school: 'text', program_name: 'text' });
+programSchema.index({ school: 1, program_name: 1 });
 const Program = model('Program', programSchema);
 module.exports = {
   programModule,

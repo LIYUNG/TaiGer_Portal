@@ -28,7 +28,7 @@ import { appConfig } from '../../config';
 function NewProgramEdit(props) {
   const { t } = useTranslation();
   const [isChanged, setIsChanged] = useState(false);
-  const initProgram = props.program;
+  const initProgram = props.program || {};
   const [programChanges, setProgramChanges] = useState({});
   const program = { ...initProgram, ...programChanges };
   const [searchResults, setSearchResults] = useState([]);

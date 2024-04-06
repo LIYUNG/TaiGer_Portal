@@ -903,10 +903,13 @@ export const program_fields_application_dates = [
   { name: 'Application Deadline (MM-DD)', prop: 'application_deadline' }
 ];
 
-export const program_fields_languages_test = [
-  { name: 'GPA Requirement (German system)', prop: 'gpa_requirement' },
+export const program_fields_english_languages_test = [
   { name: 'TOEFL Requirement', prop: 'toefl' },
-  { name: 'IELTS Requirement', prop: 'ielts' },
+  { name: 'IELTS Requirement', prop: 'ielts' }
+];
+
+export const program_fields_other_test = [
+  { name: 'GPA Requirement (German system)', prop: 'gpa_requirement' },
   { name: 'TestDaF Requirement', prop: 'testdaf' },
   { name: 'GRE Requirement', prop: 'gre' },
   { name: 'GMAT Requirement', prop: 'gmat' }
@@ -997,7 +1000,8 @@ export const COLORS = [
 export const program_fields = [
   ...program_fields_overview,
   ...program_fields_application_dates,
-  ...program_fields_languages_test,
+  ...program_fields_english_languages_test,
+  ...program_fields_other_test,
   ...program_fields_special_documents,
   ...program_fields_special_notes,
   ...program_fields_others

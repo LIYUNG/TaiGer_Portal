@@ -30,9 +30,9 @@ import {
 import {
   convertDate,
   COUNTRIES_MAPPING,
-  program_fields,
   program_fields_application_dates,
-  program_fields_languages_test,
+  program_fields_english_languages_test,
+  program_fields_other_test,
   program_fields_others,
   program_fields_overview,
   program_fields_special_documents,
@@ -93,9 +93,18 @@ function SingleProgramView(props) {
               aria-label="basic tabs example"
             >
               <Tab label={t('Overview')} {...a11yProps(0)} />
-              <Tab label={t('Application Deadline')} {...a11yProps(1)} />
-              <Tab label={t('Specific Requirements')} {...a11yProps(2)} />
-              <Tab label={t('Special Documents')} {...a11yProps(3)} />
+              <Tab
+                label={t('Application Deadline', { ns: 'common' })}
+                {...a11yProps(1)}
+              />
+              <Tab
+                label={t('Specific Requirements', { ns: 'common' })}
+                {...a11yProps(2)}
+              />
+              <Tab
+                label={t('Special Documents', { ns: 'common' })}
+                {...a11yProps(3)}
+              />
               <Tab label={t('Others')} {...a11yProps(4)} />
               {versions?.changes?.length > 0 && (
                 <Tab label={t('Edit History')} {...a11yProps(5)} />
@@ -109,7 +118,7 @@ function SingleProgramView(props) {
                   <Fragment key={i}>
                     <Grid item xs={12} md={4}>
                       <Typography fontWeight="bold">
-                        {t(`${program_field.name}`)}
+                        {t(`${program_field.name}`, { ns: 'common' })}
                       </Typography>
                     </Grid>
                     <Grid item xs={12} md={8}>
@@ -129,7 +138,7 @@ function SingleProgramView(props) {
                   <Fragment key={i}>
                     <Grid item xs={12} md={4}>
                       <Typography fontWeight="bold">
-                        {t(`${program_field.name}`)}
+                        {t(`${program_field.name}`, { ns: 'common' })}
                       </Typography>
                     </Grid>
                     <Grid item xs={12} md={8}>
@@ -145,14 +154,62 @@ function SingleProgramView(props) {
           <CustomTabPanel value={value} index={2}>
             <Card>
               <Grid container spacing={2} sx={{ p: 2 }}>
+                {program_fields_english_languages_test.map(
+                  (program_field, i) => (
+                    <Fragment key={i}>
+                      <Grid item xs={6} md={2}>
+                        <Typography fontWeight="bold">
+                          {t(`${program_field.name}`, { ns: 'common' })}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={6} md={2}>
+                        <LinkableNewlineText
+                          text={props.program[program_field.prop]}
+                        />
+                      </Grid>
+                      <Grid item xs={3} md={2}>
+                        {props.program[`${program_field.prop}_reading`] && (
+                          <Typography fontWeight="bold">
+                            {t('Reading', { ns: 'common' })}:{' '}
+                            {props.program[`${program_field.prop}_reading`]}
+                          </Typography>
+                        )}{' '}
+                      </Grid>
+                      <Grid item xs={3} md={2}>
+                        {props.program[`${program_field.prop}_listening`] && (
+                          <Typography fontWeight="bold">
+                            {t('Listening', { ns: 'common' })}:{' '}
+                            {props.program[`${program_field.prop}_listening`]}
+                          </Typography>
+                        )}{' '}
+                      </Grid>
+                      <Grid item xs={3} md={2}>
+                        {props.program[`${program_field.prop}_speaking`] && (
+                          <Typography fontWeight="bold">
+                            {t('Speaking', { ns: 'common' })}:{' '}
+                            {props.program[`${program_field.prop}_speaking`]}
+                          </Typography>
+                        )}{' '}
+                      </Grid>
+                      <Grid item xs={3} md={2}>
+                        {props.program[`${program_field.prop}_writing`] && (
+                          <Typography fontWeight="bold">
+                            {t('Writing', { ns: 'common' })}:{' '}
+                            {props.program[`${program_field.prop}_writing`]}
+                          </Typography>
+                        )}
+                      </Grid>
+                    </Fragment>
+                  )
+                )}
                 {[
-                  ...program_fields_languages_test,
+                  ...program_fields_other_test,
                   ...program_fields_special_notes
                 ].map((program_field, i) => (
                   <Fragment key={i}>
                     <Grid item xs={12} md={4}>
                       <Typography fontWeight="bold">
-                        {t(`${program_field.name}`)}
+                        {t(`${program_field.name}`, { ns: 'common' })}
                       </Typography>
                     </Grid>
                     <Grid item xs={12} md={8}>
@@ -172,7 +229,7 @@ function SingleProgramView(props) {
                   <Fragment key={i}>
                     <Grid item xs={12} md={4}>
                       <Typography fontWeight="bold">
-                        {t(`${program_field.name}`)}
+                        {t(`${program_field.name}`, { ns: 'common' })}
                       </Typography>
                     </Grid>
                     <Grid item xs={12} md={8}>
@@ -192,7 +249,7 @@ function SingleProgramView(props) {
                   <Fragment key={i}>
                     <Grid item xs={12} md={4}>
                       <Typography fontWeight="bold">
-                        {t(`${program_field.name}`)}
+                        {t(`${program_field.name}`, { ns: 'common' })}
                       </Typography>
                     </Grid>
                     <Grid item xs={12} md={8}>
@@ -203,7 +260,9 @@ function SingleProgramView(props) {
                   </Fragment>
                 ))}
                 <Grid item xs={12} md={4}>
-                  <Typography fontWeight="bold">{t(`Country`)}</Typography>
+                  <Typography fontWeight="bold">
+                    {t(`Country`, { ns: 'common' })}
+                  </Typography>
                 </Grid>
                 <Grid item xs={12} md={8}>
                   <span>
@@ -572,269 +631,6 @@ function SingleProgramView(props) {
           </Card>
         </Grid>
       </Grid>
-      {/* TODO: reuse the following for program comparison! */}
-      {false && (
-        <Box>
-          <Grid container spacing={2}>
-            <Grid item xs={12} md={is_TaiGer_role(user) ? 8 : 12}>
-              <Card sx={{ p: 2 }}>
-                <Grid container spacing={2}>
-                  {program_fields.map((program_field, i) =>
-                    program_field.prop.includes('ielts') ||
-                    program_field.prop.includes('toefl') ? (
-                      <Fragment key={i}>
-                        <Grid item xs={12} md={4}>
-                          <Typography fontWeight="bold">
-                            {t(`${program_field.name}`)}
-                          </Typography>
-                        </Grid>
-                        <Grid item xs={12} md={2}>
-                          <Typography fontWeight="bold">
-                            {props.program[program_field.prop]}
-                          </Typography>
-                        </Grid>
-                        <Grid item xs={12} md={6}>
-                          {props.program[`${program_field.prop}_reading`] && (
-                            <Typography fontWeight="bold">
-                              R:{' '}
-                              {props.program[`${program_field.prop}_reading`]}
-                            </Typography>
-                          )}{' '}
-                          {props.program[`${program_field.prop}_listening`] && (
-                            <Typography fontWeight="bold">
-                              L:{' '}
-                              {props.program[`${program_field.prop}_listening`]}
-                            </Typography>
-                          )}{' '}
-                          {props.program[`${program_field.prop}_speaking`] && (
-                            <Typography fontWeight="bold">
-                              S:{' '}
-                              {props.program[`${program_field.prop}_speaking`]}
-                            </Typography>
-                          )}{' '}
-                          {props.program[`${program_field.prop}_writing`] && (
-                            <Typography fontWeight="bold">
-                              W:{' '}
-                              {props.program[`${program_field.prop}_writing`]}
-                            </Typography>
-                          )}
-                        </Grid>
-                      </Fragment>
-                    ) : program_field.prop.includes('uni_assist') ? (
-                      appConfig.vpdEnable && (
-                        <Fragment key={i}>
-                          <Grid item xs={12} md={4}>
-                            <Typography fontWeight="bold">
-                              {t(`${program_field.name}`)}
-                            </Typography>
-                          </Grid>
-                          <Grid item xs={12} md={8}>
-                            <LinkableNewlineText
-                              text={props.program[program_field.prop]}
-                            />
-                          </Grid>
-                        </Fragment>
-                      )
-                    ) : program_field.prop.includes('country') ? (
-                      <Fragment key={i}>
-                        <Grid item xs={12} md={4}>
-                          <Typography fontWeight="bold">
-                            {t(`${program_field.name}`)}
-                          </Typography>
-                        </Grid>
-                        <Grid item xs={12} md={8}>
-                          <span>
-                            <img
-                              src={`/assets/logo/country_logo/svg/${
-                                props.program[program_field.prop]
-                              }.svg`}
-                              alt="Logo"
-                              style={{ maxWidth: '20px', maxHeight: '20px' }}
-                              title={
-                                COUNTRIES_MAPPING[
-                                  props.program[program_field.prop]
-                                ]
-                              }
-                            />
-                          </span>
-                        </Grid>
-                      </Fragment>
-                    ) : (
-                      <Fragment key={i}>
-                        <Grid item xs={12} md={4}>
-                          <Typography fontWeight="bold">
-                            {t(`${program_field.name}`)}
-                          </Typography>
-                        </Grid>
-                        <Grid item xs={12} md={8}>
-                          <LinkableNewlineText
-                            text={props.program[program_field.prop]}
-                          />
-                        </Grid>
-                      </Fragment>
-                    )
-                  )}
-                  {props.program.application_portal_a && (
-                    <>
-                      <Grid item xs={12} md={4}>
-                        <Typography fontWeight="bold">Portal Link 1</Typography>
-                      </Grid>
-                      <Grid item xs={12} md={8}>
-                        <LinkableNewlineText
-                          text={props.program.application_portal_a}
-                        />
-                      </Grid>
-
-                      <Grid item xs={12} md={4}>
-                        <Typography fontWeight="bold">
-                          Portal Instructions 1
-                        </Typography>
-                      </Grid>
-                      <Grid item xs={12} md={8}>
-                        <LinkableNewlineText
-                          text={props.program.application_portal_a_instructions}
-                        />
-                      </Grid>
-                    </>
-                  )}
-                  {props.program.application_portal_b && (
-                    <>
-                      <Grid item xs={12} md={4}>
-                        <Typography fontWeight="bold">Portal Link 2</Typography>
-                      </Grid>
-                      <Grid item xs={12} md={8}>
-                        <LinkableNewlineText
-                          text={props.program.application_portal_b}
-                        />
-                      </Grid>
-                      <Grid item xs={12} md={4}>
-                        <Typography fontWeight="bold">
-                          Portal Instructions 2
-                        </Typography>
-                      </Grid>
-                      <Grid item xs={12} md={8}>
-                        <LinkableNewlineText
-                          text={props.program.application_portal_b_instructions}
-                        />
-                      </Grid>
-                    </>
-                  )}
-                  <Grid item xs={12} md={4}>
-                    <Typography fontWeight="bold">{t('Website')}</Typography>
-                  </Grid>
-                  <Grid item xs={12} md={8}>
-                    <LinkableNewlineText text={props.program.website} />
-                  </Grid>
-                  <Grid item xs={12} md={4}>
-                    <Typography fontWeight="bold">
-                      {t('Last update', { ns: 'common' })}
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={12} md={8}>
-                    <Typography fontWeight="bold">
-                      {convertDate(props.program.updatedAt)}
-                    </Typography>
-                  </Grid>
-                  {is_TaiGer_AdminAgent(user) && (
-                    <>
-                      <Grid item xs={12} md={4}>
-                        <Typography>
-                          {t('Updated by', { ns: 'common' })}
-                        </Typography>
-                      </Grid>
-                      <Grid item xs={12} md={8}>
-                        <Typography>{props.program.whoupdated}</Typography>
-                      </Grid>
-                      <Grid item xs={12} md={4}>
-                        <Typography>{t('Group')}</Typography>
-                      </Grid>
-                      <Grid item xs={12} md={8}>
-                        <Typography>
-                          {props.program.study_group_flag}
-                        </Typography>
-                      </Grid>
-                    </>
-                  )}
-                </Grid>
-              </Card>
-            </Grid>
-            <Grid item xs={12} md={4}>
-              {is_TaiGer_role(user) && (
-                <>
-                  <Card className="card-with-scroll" sx={{ p: 2 }}>
-                    <Typography variant="string">
-                      Who has applied this?
-                    </Typography>
-                    <div className="card-scrollable-body">
-                      <Table size="small">
-                        <TableHead>
-                          <TableRow>
-                            <TableCell>{t('Name', { ns: 'common' })}</TableCell>
-                            <TableCell>{t('Year', { ns: 'common' })}</TableCell>
-                            <TableCell>{t('Admission')}</TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {props.students.map((student, i) => (
-                            <TableRow key={i}>
-                              <TableCell>
-                                <Link
-                                  to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-                                    student._id.toString(),
-                                    DEMO.PROFILE_HASH
-                                  )}`}
-                                  component={LinkDom}
-                                >
-                                  {student.firstname} {student.lastname}
-                                </Link>
-                              </TableCell>
-                              <TableCell>
-                                {student.application_preference
-                                  ? student.application_preference
-                                      .expected_application_date
-                                  : '-'}
-                              </TableCell>
-                              <TableCell>
-                                {student.application
-                                  ? student.application.admission
-                                  : ''}
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                      <Typography variant="string" sx={{ mt: 2 }}>
-                        O: admitted, X: rejected, -: not confirmed{' '}
-                      </Typography>
-                    </div>
-                  </Card>
-                  <Card className="card-with-scroll">
-                    <div className="card-scrollable-body">
-                      <ProgramReport
-                        uni_name={props.program.school}
-                        program_name={props.program.program_name}
-                        program_id={props.program._id.toString()}
-                      />
-                    </div>
-                  </Card>
-                  <Card>
-                    <Typography>
-                      {appConfig.companyName} {t('Program Assistant')}
-                    </Typography>
-                    <Button
-                      color="primary"
-                      variant="contained"
-                      onClick={props.programListAssistant}
-                    >
-                      {t('Fetch')}
-                    </Button>
-                  </Card>
-                </>
-              )}
-            </Grid>
-          </Grid>
-        </Box>
-      )}
     </>
   );
 }

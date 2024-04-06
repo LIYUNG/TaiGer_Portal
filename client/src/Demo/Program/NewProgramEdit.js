@@ -566,7 +566,7 @@ function NewProgramEdit(props) {
                 name="is_rl_specific"
                 id="is_rl_specific"
                 onChange={(e) => handleChange(e)}
-                value={program?.is_rl_specific || ''}
+                value={program.is_rl_specific}
               >
                 {YES_NO_BOOLEAN_OPTIONS.map((option) => (
                   <MenuItem key={option.value} value={option.value}>

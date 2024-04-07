@@ -3,6 +3,7 @@ import { Link as LinkDom } from 'react-router-dom';
 import UndoIcon from '@mui/icons-material/Undo';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
+import AddIcon from '@mui/icons-material/Add';
 import { Card, Collapse, CardContent, Typography, Box } from '@mui/material';
 import {
   Button,
@@ -221,6 +222,25 @@ export default function ApplicationProgressCard(props) {
             )}
           {application_deadline_calculator(props.student, application) ===
             'CLOSE' &&
+            application.admission !== '-' &&
+            (!application.admission_letter?.status ||
+              application.admission_letter?.status !== 'uploaded') && (
+              <Button
+                variant="outlined"
+                color="secondary"
+                size="small"
+                title="Undo"
+                onClick={(e) => openSetResultModal(e, application.admission)}
+                startIcon={<AddIcon />}
+                sx={{ my: 1 }}
+              >
+                {application.admission === 'O'
+                  ? t('Add Admission Letter')
+                  : t('Add Rejection Letter')}
+              </Button>
+            )}
+          {application_deadline_calculator(props.student, application) ===
+            'CLOSE' &&
             application.admission === '-' && (
               <>
                 <Typography variant="p" component="div" sx={{ my: 1 }}>
@@ -353,11 +373,13 @@ export default function ApplicationProgressCard(props) {
           <Typography id="modal-modal-title" variant="h6" component="h2">
             {t('Attention')}
           </Typography>
-          <Typography id="modal-modal-description" sx={{ my: 2 }}>
-            {t('Do you want to set the application of')}{' '}
-            <b>{`${application.programId.school}-${application.programId.degree}-${application.programId.program_name}`}</b>{' '}
-            <b>{resultState === 'O' ? t('Admitted') : t('Rejected')}</b>?
-          </Typography>
+          {application.admission === '-' && (
+            <Typography id="modal-modal-description" sx={{ my: 2 }}>
+              {t('Do you want to set the application of')}{' '}
+              <b>{`${application.programId.school}-${application.programId.degree}-${application.programId.program_name}`}</b>{' '}
+              <b>{resultState === 'O' ? t('Admitted') : t('Rejected')}</b>?
+            </Typography>
+          )}
           <Typography sx={{ my: 2 }}>
             {resultState === 'O'
               ? t(

@@ -223,12 +223,12 @@ const admission_letter_s3 = multerS3({
   },
   key: (req, file, cb) => {
     const { studentId, programId, result } = req.params;
-    const admission_status = result === 'O' ? 'Admitted' : 'Rejected';
+    const admission_status = result === 'O' ? 'Admission' : 'Rejection';
 
     Student.findById(studentId).then((student) => {
       if (student) {
         Program.findById(programId).then((program) => {
-          const program_name = `${program.school} ${program.program_name}`;
+          const program_name = `${program.school} ${program.program_name} ${program.degree} ${program.semester}`;
           let temp_name = `${student.lastname}_${
             student.firstname
           }_${program_name}_${admission_status}${path.extname(

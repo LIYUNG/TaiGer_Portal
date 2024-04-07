@@ -18,6 +18,21 @@ body {
   background-color: white;
 }
 
+.cdx-attaches__title {
+  color: black;
+  background-color: white;
+}
+
+.ce-toolbar__plus {
+  color: black;
+  background-color: white;
+}
+
+.ce-toolbar__settings-btn {
+  color: black;
+  background-color: white;
+}
+
 .ct__content:not(.ct__content > *) {
   /* Your styles for .ct__content */
   background-color: rgb(255, 255, 255);

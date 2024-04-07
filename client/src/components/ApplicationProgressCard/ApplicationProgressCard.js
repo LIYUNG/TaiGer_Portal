@@ -133,6 +133,7 @@ export default function ApplicationProgressCard(props) {
       },
       () => {
         setLetter(null);
+        setIsLoading(false);
       }
     );
   };
@@ -197,7 +198,6 @@ export default function ApplicationProgressCard(props) {
               <b>{application?.programId?.school}</b> <FiExternalLink />
             </Link>
           </Typography>
-
           <Typography variant="p" component="div">
             {application?.programId?.degree}{' '}
             {application?.programId?.program_name}{' '}
@@ -387,14 +387,9 @@ export default function ApplicationProgressCard(props) {
             }
             size="small"
             onClick={(e) => handleUpdateResult(e, resultState)}
+            startIcon={isLoading ? <CircularProgress size={24} /> : null}
           >
-            {isLoading ? (
-              <CircularProgress size="small" />
-            ) : resultState === 'O' ? (
-              t('Admitted')
-            ) : (
-              t('Rejected')
-            )}
+            {resultState === 'O' ? t('Admitted') : t('Rejected')}
           </Button>
           <Button
             color="secondary"

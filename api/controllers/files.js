@@ -929,11 +929,28 @@ const updateStudentApplicationResult = asyncHandler(async (req, res, next) => {
     logger.error('updateStudentApplicationResult: Invalid student Id');
     throw new ErrorResponse(403, 'Invalid student Id');
   }
-  if (result === '-') {
+
+  let updatedStudent;
+  if (req.file) {
+    const admission_letter_temp = {
+      status: DocumentStatus.Uploaded,
+      admission_file_path: path.join(req.file.metadata.path, req.file.key),
+      comments: '',
+      updatedAt: new Date()
+    };
+
+    updatedStudent = await Student.findOneAndUpdate(
+      { _id: studentId, 'applications.programId': programId },
+      {
+        'applications.$.admission': result,
+        'applications.$.admission_letter': admission_letter_temp
+      },
+      { new: true }
+    );
+  } else if (result === '-') {
     const app = student.applications.find(
       (application) => application.programId.toString() === programId
     );
-    console.log(app);
     const file_path = app.admission_letter?.admission_file_path;
     if (file_path && file_path !== '') {
       let document_split = file_path.replace(/\\/g, '/');
@@ -965,16 +982,12 @@ const updateStudentApplicationResult = asyncHandler(async (req, res, next) => {
         }
       }
     }
-  }
-  let updatedStudent;
-  if (req.file) {
     const admission_letter_temp = {
-      status: DocumentStatus.Uploaded,
-      admission_file_path: path.join(req.file.metadata.path, req.file.key),
+      status: '',
+      admission_file_path: '',
       comments: '',
       updatedAt: new Date()
     };
-
     updatedStudent = await Student.findOneAndUpdate(
       { _id: studentId, 'applications.programId': programId },
       {
@@ -984,7 +997,6 @@ const updateStudentApplicationResult = asyncHandler(async (req, res, next) => {
       { new: true }
     );
   } else {
-    // TODO: to check if existed letter, delete!
     updatedStudent = await Student.findOneAndUpdate(
       { _id: studentId, 'applications.programId': programId },
       {
@@ -993,6 +1005,7 @@ const updateStudentApplicationResult = asyncHandler(async (req, res, next) => {
       { new: true }
     );
   }
+
   const udpatedApplication = updatedStudent.applications.find(
     (application) => application.programId.toString() === programId
   );

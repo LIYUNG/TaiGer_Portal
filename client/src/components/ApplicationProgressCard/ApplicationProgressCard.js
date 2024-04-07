@@ -102,7 +102,9 @@ export default function ApplicationProgressCard(props) {
     console.log(letter);
     console.log(application);
     const formData = new FormData();
-    formData.append('file', letter);
+    if (letter) {
+      formData.append('file', letter);
+    }
     updateStudentApplicationResult(
       props.student._id.toString(),
       application.programId._id.toString(),
@@ -116,14 +118,18 @@ export default function ApplicationProgressCard(props) {
           application_tmep.admission = result;
           application_tmep.admission_letter = data.admission_letter;
           setApplication(application_tmep);
+          setLetter(null);
           setShowUndoModal(false);
           setShowSetResultModal(false);
           setIsLoading(false);
         } else {
+          setLetter(null);
           setIsLoading(false);
         }
       },
-      () => {}
+      () => {
+        setLetter(null);
+      }
     );
   };
   return (

@@ -13,6 +13,7 @@ import {
 } from '../Utils/checking-functions';
 import { useTranslation } from 'react-i18next';
 import { MuiDataGrid } from '../../components/MuiDataGrid';
+import { BASE_URL } from '../../api/request';
 
 CustomTabPanel.propTypes = {
   children: PropTypes.node,
@@ -53,6 +54,9 @@ function AdmissionsTable(props) {
                 school: application.programId.school,
                 degree: application.programId.degree,
                 program_name: application.programId.program_name,
+                admission: application.admission,
+                admission_file_path:
+                  application.admission_letter?.admission_file_path,
                 application_year:
                   student.application_preference?.expected_application_date,
                 semester: application.programId.semester
@@ -166,6 +170,32 @@ function AdmissionsTable(props) {
       field: 'semester',
       headerName: t('Semester', { ns: 'common' }),
       width: 120
+    },
+    {
+      field: 'admission_file_path',
+      headerName: t('Admission Letter', { ns: 'common' }),
+      width: 150,
+      renderCell: (params) => {
+        const linkUrl = `${BASE_URL}/api/admissions/${params.row.admission_file_path?.replace(
+          /\\/g,
+          '/'
+        )}`;
+        return (
+          <Link
+            underline="hover"
+            to={linkUrl}
+            component={LinkDom}
+            target="_blank"
+          >
+            {params.row.admission_file_path !== '' &&
+              (params.row.admission === 'O'
+                ? 'Admission Letter'
+                : params.row.admission === 'X'
+                ? 'Rejection Letter'
+                : '')}
+          </Link>
+        );
+      }
     }
   ];
   const memoizedColumns = useMemo(() => c2, [c2]);

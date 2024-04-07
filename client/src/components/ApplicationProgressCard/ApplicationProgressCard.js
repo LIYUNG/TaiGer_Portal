@@ -52,6 +52,7 @@ export default function ApplicationProgressCard(props) {
   const [resultState, setResultState] = useState('-');
   const [hasFile, setHasFile] = useState(false);
   const [letter, setLetter] = useState(null);
+  const [returnedMessage, setReturnedMessage] = useState('');
   const [showUndoModal, setShowUndoModal] = useState(false);
   const [showSetResultModal, setShowSetResultModal] = useState(false);
   const { t } = useTranslation();
@@ -98,6 +99,7 @@ export default function ApplicationProgressCard(props) {
   const handleUpdateResult = (e, result) => {
     e.stopPropagation();
     setIsLoading(true);
+    setReturnedMessage('');
     console.log(hasFile);
     console.log(letter);
     console.log(application);
@@ -123,7 +125,9 @@ export default function ApplicationProgressCard(props) {
           setShowSetResultModal(false);
           setIsLoading(false);
         } else {
+          const { message } = res.data;
           setLetter(null);
+          setReturnedMessage(message);
           setIsLoading(false);
         }
       },
@@ -368,8 +372,12 @@ export default function ApplicationProgressCard(props) {
             size="small"
             type="file"
             onChange={(e) => onFileChange(e)}
-            sx={{ mb: 2 }}
           />
+          {returnedMessage !== '' && (
+            <Typography style={{ color: 'red' }} sx={{ mb: 2 }}>
+              {returnedMessage}
+            </Typography>
+          )}
           <Button
             color={resultState === 'O' ? 'primary' : 'secondary'}
             variant="outlined"

@@ -929,6 +929,44 @@ const updateStudentApplicationResult = asyncHandler(async (req, res, next) => {
     logger.error('updateStudentApplicationResult: Invalid student Id');
     throw new ErrorResponse(403, 'Invalid student Id');
   }
+  if (result === '-') {
+    const app = student.applications.find(
+      (application) => application.programId.toString() === programId
+    );
+    console.log(app);
+    const file_path = app.admission_letter?.admission_file_path;
+    if (file_path && file_path !== '') {
+      let document_split = file_path.replace(/\\/g, '/');
+      document_split = document_split.split('/');
+      const fileKey = document_split[2];
+      let directory = `${document_split[0]}/${document_split[1]}`;
+      logger.info('Trying to delete file', fileKey);
+      directory = path.join(AWS_S3_BUCKET_NAME, directory);
+      directory = directory.replace(/\\/g, '/');
+      const options = {
+        Key: fileKey,
+        Bucket: directory
+      };
+      try {
+        s3.deleteObject(options, (error, data) => {
+          if (error) {
+            logger.error('deleteObject');
+            logger.error(error);
+          }
+          const value = two_month_cache.del(fileKey);
+          if (value === 1) {
+            console.log('Admission cache key deleted successfully');
+          }
+        });
+      } catch (err) {
+        if (err) {
+          logger.error('deleteTemplate: ', err);
+          throw new ErrorResponse(500, 'Error occurs while deleting');
+        }
+      }
+    }
+  }
+  let updatedStudent;
   if (req.file) {
     const admission_letter_temp = {
       status: DocumentStatus.Uploaded,
@@ -937,24 +975,28 @@ const updateStudentApplicationResult = asyncHandler(async (req, res, next) => {
       updatedAt: new Date()
     };
 
-    await Student.findOneAndUpdate(
+    updatedStudent = await Student.findOneAndUpdate(
       { _id: studentId, 'applications.programId': programId },
       {
         'applications.$.admission': result,
         'applications.$.admission_letter': admission_letter_temp
-      }
+      },
+      { new: true }
     );
   } else {
     // TODO: to check if existed letter, delete!
-    await Student.findOneAndUpdate(
+    updatedStudent = await Student.findOneAndUpdate(
       { _id: studentId, 'applications.programId': programId },
       {
         'applications.$.admission': result
-      }
+      },
+      { new: true }
     );
   }
-
-  res.status(200).send({ success: true });
+  const udpatedApplication = updatedStudent.applications.find(
+    (application) => application.programId.toString() === programId
+  );
+  res.status(200).send({ success: true, data: udpatedApplication });
   if (user.role === 'Student') {
     // TODO: add email informing agent.
     // TODO: add email informing editor.

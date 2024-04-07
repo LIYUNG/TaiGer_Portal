@@ -110,10 +110,11 @@ export default function ApplicationProgressCard(props) {
       formData
     ).then(
       (res) => {
-        const { success } = res.data;
+        const { success, data } = res.data;
         if (success) {
           const application_tmep = { ...application };
           application_tmep.admission = result;
+          application_tmep.admission_letter = data.admission_letter;
           setApplication(application_tmep);
           setShowUndoModal(false);
           setShowSetResultModal(false);
@@ -192,7 +193,7 @@ export default function ApplicationProgressCard(props) {
             {application?.programId?.program_name}{' '}
             {application?.programId?.semester}{' '}
           </Typography>
-          {application.admission === 'O' &&
+          {(application.admission === 'O' || application.admission === 'X') &&
             application.admission_letter?.status === 'uploaded' && (
               <a
                 href={`${BASE_URL}/api/admissions/${application.admission_letter?.admission_file_path.replace(
@@ -203,7 +204,9 @@ export default function ApplicationProgressCard(props) {
                 className="text-info"
                 rel="noreferrer"
               >
-                Admission Letter
+                {application.admission === 'O'
+                  ? t('Admission Letter')
+                  : t('Rejection Letter')}
               </a>
             )}
           {application_deadline_calculator(props.student, application) ===

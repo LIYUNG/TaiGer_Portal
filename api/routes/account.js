@@ -15,7 +15,10 @@ const {
 } = require('../middlewares/InnerTaigerMultitenantFilter');
 const { Role } = require('../models/User');
 const { protect, permit } = require('../middlewares/auth');
-const { TemplatefileUpload } = require('../middlewares/file-upload');
+const {
+  TemplatefileUpload,
+  admissionUpload
+} = require('../middlewares/file-upload');
 
 const {
   processTranscript_test,
@@ -40,7 +43,10 @@ const {
   updateStudentApplicationResult
 } = require('../controllers/files');
 
-const { updateCredentials, updateOfficehours } = require('../controllers/account');
+const {
+  updateCredentials,
+  updateOfficehours
+} = require('../controllers/account');
 const { localAuth } = require('../middlewares/auth');
 const { logAccess } = require('../utils/log/log');
 
@@ -102,14 +108,16 @@ router
     UpdateStudentApplications,
     logAccess
   );
+
 router
-  .route('/applications/result/:studentId')
-  .put(
+  .route('/applications/result/:studentId/:programId/:result')
+  .post(
     filter_archiv_user,
     GeneralPUTRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Student),
     multitenant_filter,
     InnerTaigerMultitenantFilter,
+    admissionUpload,
     updateStudentApplicationResult,
     logAccess
   );

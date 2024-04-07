@@ -412,6 +412,18 @@ const applicationSchema = new Schema({
     type: String,
     default: ''
   },
+  admission_letter: {
+    status: {
+      type: String,
+      default: 'notstarted'
+    },
+    admission_file_path: {
+      type: String,
+      default: ''
+    },
+    comments: { type: String, default: '' },
+    updatedAt: Date
+  },
   finalEnrolment: { type: Boolean, default: false },
   decided: { type: String, default: '-' },
   closed: { type: String, default: '-' },

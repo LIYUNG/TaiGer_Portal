@@ -100,8 +100,7 @@ const storage_vpd_s3 = multerS3({
 
     // TODO: check studentId exist
     let directory = path.join(studentId);
-    directory = directory.replace(/\\/g, '/'); // g>> replace all!
-    // var directory = studentId;
+    directory = directory.replace(/\\/g, '/');
     cb(null, { fieldName: file.fieldname, path: directory });
   },
   key: (req, file, cb) => {
@@ -205,6 +204,66 @@ const doc_docs_s3 = multerS3({
     // const fileName = id + path.extname(file.originalname);
     const fileName = file.originalname;
     cb(null, fileName);
+  }
+});
+
+const admission_letter_s3 = multerS3({
+  s3,
+  bucket: (req, file, cb) => {
+    const { studentId } = req.params;
+    let directory = path.join(AWS_S3_BUCKET_NAME, studentId, 'admission');
+    directory = directory.replace(/\\/g, '/');
+    cb(null, directory);
+  },
+  metadata: (req, file, cb) => {
+    const { studentId } = req.params;
+    let directory = path.join(studentId, 'admission');
+    directory = directory.replace(/\\/g, '/'); // g>> replace all!
+    cb(null, { fieldName: file.fieldname, path: directory });
+  },
+  key: (req, file, cb) => {
+    const { studentId, programId, result } = req.params;
+    const admission_status = result === 'O' ? 'Admitted' : 'Rejected';
+
+    Student.findById(studentId).then((student) => {
+      if (student) {
+        Program.findById(programId).then((program) => {
+          const program_name = `${program.school} ${program.program_name}`;
+          let temp_name = `${student.lastname}_${
+            student.firstname
+          }_${program_name}_${admission_status}${path.extname(
+            file.originalname
+          )}`;
+          temp_name = temp_name.replace(/ /g, '_');
+          temp_name = temp_name.replace(/\//g, '_');
+          cb(null, temp_name);
+        });
+      }
+    });
+  }
+});
+
+const upload_admission_letter_s3 = multer({
+  storage: admission_letter_s3,
+  limits: { fileSize: MAX_FILE_SIZE_MB },
+  fileFilter: (req, file, cb) => {
+    if (!ALLOWED_MIME_PDF_TYPES.includes(file.mimetype)) {
+      return cb(new ErrorResponse(415, 'Only .pdf format is allowed'));
+    }
+    const fileSize = parseInt(req.headers['content-length'], 10);
+    if (fileSize > MAX_FILE_SIZE_MB) {
+      return cb(
+        new ErrorResponse(
+          413,
+          `您的檔案不得超過 ${
+            MAX_FILE_SIZE_MB / (1024 * 1024)
+          } MB / File size is limited to ${
+            MAX_FILE_SIZE_MB / (1024 * 1024)
+          } MB!`
+        )
+      );
+    }
+    cb(null, true);
   }
 });
 
@@ -506,6 +565,7 @@ const upload = multer({ storage });
 
 module.exports = {
   imageUpload: upload_doc_image_s3.single('file'),
+  admissionUpload: upload_admission_letter_s3.single('file'),
   documentationDocsUpload: upload_doc_docs_s3.single('file'),
   VPDfileUpload: upload_vpd_s3.single('file'),
   ProfilefileUpload: upload_profile_s3.single('file'),

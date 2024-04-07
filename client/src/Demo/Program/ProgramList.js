@@ -398,6 +398,7 @@ function ProgramList(props) {
             handleSubmit_Program={handleSubmit_Program}
             programs={statedata.programs}
             isSubmitting={isSubmitting}
+            type={'create'}
           />
         </>
       ) : (

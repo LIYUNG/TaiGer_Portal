@@ -328,6 +328,7 @@ function SingleProgram() {
           handleSubmit_Program={handleSubmit_Program}
           isSubmitting={isSubmitting}
           handleClick={handleClick}
+          type={'edit'}
         />
       </Box>
     );

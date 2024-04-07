@@ -25,9 +25,12 @@ import {
   showFieldAlert
 } from '../Utils/contants';
 import { appConfig } from '../../config';
+import { is_TaiGer_Admin } from '../Utils/checking-functions';
+import { useAuth } from '../../components/AuthProvider';
 
 function NewProgramEdit(props) {
   const { t } = useTranslation();
+  const { user } = useAuth();
   const [isChanged, setIsChanged] = useState(false);
   const initProgram = props.program || { is_rl_specific: false };
   const [programChanges, setProgramChanges] = useState({});
@@ -137,6 +140,10 @@ function NewProgramEdit(props) {
                 name="school"
                 placeholder="National Taiwan University"
                 onChange={(e) => handleChange(e)}
+                InputProps={{
+                  readOnly: props.type === 'edit' && !is_TaiGer_Admin(user),
+                  disableUnderline: true
+                }}
                 value={program.school || searchTerm}
               />
 
@@ -176,6 +183,10 @@ function NewProgramEdit(props) {
               name="program_name"
               placeholder="Electrical Engineering"
               onChange={(e) => handleChange(e)}
+              InputProps={{
+                readOnly: props.type === 'edit' && !is_TaiGer_Admin(user),
+                disableUnderline: true
+              }}
               value={program.program_name || ''}
             />
           </Grid>
@@ -192,6 +203,7 @@ function NewProgramEdit(props) {
                 name="degree"
                 id="degree"
                 onChange={(e) => handleChange(e)}
+                disabled={props.type === 'edit' && !is_TaiGer_Admin(user)}
                 value={program.degree || ''}
               >
                 {DEGREE_CATOGARY_ARRAY_OPTIONS.map((option) => (
@@ -215,6 +227,7 @@ function NewProgramEdit(props) {
                 name="semester"
                 id="semester"
                 onChange={(e) => handleChange(e)}
+                disabled={props.type === 'edit'}
                 value={program.semester || ''}
               >
                 {SEMESTER_ARRAY_OPTIONS.map((option) => (

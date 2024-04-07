@@ -73,7 +73,7 @@ function NotesCard(props) {
     <>
       <NotesEditor
         thread={notesCardState.thread}
-        notes_id={'editorjs'}
+        notes_id={`notes-${props.student_id}`}
         // buttonDisabled={notesCardState.buttonDisabled}
         editorState={props.notes}
         unique_id={props.student_id}

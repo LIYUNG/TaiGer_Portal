@@ -146,6 +146,7 @@ function ManualFiles(props) {
                             props.student._id.toString()
                           )}`}
                           component={LinkDom}
+                          target="_blank"
                         >
                           {' '}
                           click here

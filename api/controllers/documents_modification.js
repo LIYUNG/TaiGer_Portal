@@ -4,11 +4,7 @@ const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
 const { Role, Agent, Student, Editor } = require('../models/User');
 const { one_month_cache } = require('../cache/node-cache');
-const { Program } = require('../models/Program');
-const {
-  Documentthread,
-  STUDENT_INPUT_STATUS_E
-} = require('../models/Documentthread');
+const { Documentthread } = require('../models/Documentthread');
 const surveyInput = require('../models/SurveyInput');
 const { emptyS3Directory } = require('../utils/utils_function');
 const { informOnSurveyUpdate } = require('../utils/informEditor');
@@ -761,9 +757,9 @@ const initApplicationMessagesThread = asyncHandler(async (req, res) => {
     .populate('applications.programId')
     .populate('agents editors', 'firstname lastname email')
     .exec();
-  const program = await Program.findById(program_id).select(
-    'school program_name'
-  );
+  const program = student.applications.find(
+    (app) => app.programId._id.toString() === program_id
+  )?.programId;
   const Essay_Writer_Scope = Object.keys(ESSAY_WRITER_SCOPE);
   const documentname = `${document_category} - ${program.school} - ${program.program_name}`;
   if (Essay_Writer_Scope.includes(document_category)) {
@@ -796,7 +792,6 @@ const initApplicationMessagesThread = asyncHandler(async (req, res) => {
   for (let i = 0; i < student.editors.length; i += 1) {
     if (isNotArchiv(student)) {
       if (!Essay_Writer_Scope.includes(document_category)) {
-        // TODO: inform Edior lead to assign
         await assignDocumentTaskToEditorEmail(
           {
             firstname: student.editors[i].firstname,

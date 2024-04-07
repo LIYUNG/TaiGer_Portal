@@ -35,29 +35,13 @@ function EditableFile_Thread(props) {
 
   let fileStatus;
   let documenName;
-  let school_program_name;
   if (props.application) {
-    school_program_name =
-      props.application.programId.school +
-      ' - ' +
-      props.application.programId.degree +
-      ' - ' +
-      props.application.programId.program_name;
-    documenName =
-      props.student.firstname +
-      ' - ' +
-      props.student.lastname +
-      ' ' +
-      school_program_name +
-      ' ' +
-      props.thread.doc_thread_id?.file_type;
+    documenName = props.thread.doc_thread_id?.file_type;
     // program_deadline = props.application.programId.application_deadline
   } else {
     documenName =
-      props.student.firstname +
+      'General' +
       ' - ' +
-      props.student.lastname +
-      ' ' +
       props.thread.doc_thread_id?.file_type;
   }
 
@@ -112,6 +96,7 @@ function EditableFile_Thread(props) {
               props.thread.doc_thread_id?._id
             )}
             component={LinkDom}
+            target="_blank"
           >
             <Typography color={props.decided === 'O' ? 'primary' : 'grey'}>
               {documenName}

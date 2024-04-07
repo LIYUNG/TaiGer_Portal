@@ -7,7 +7,9 @@ const {
   getAdmissionsYear
 } = require('../controllers/admissions');
 const { filter_archiv_user } = require('../middlewares/limit_archiv_user');
-const { permission_canAccessStudentDatabase_filter } = require('../middlewares/permission-filter');
+const {
+  permission_canAccessStudentDatabase_filter
+} = require('../middlewares/permission-filter');
 
 const router = Router();
 router.use(protect);

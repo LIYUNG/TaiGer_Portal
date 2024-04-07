@@ -219,15 +219,12 @@ export const UpdateStudentApplications = (
     applying_program_count
   });
 
-export const updateStudentApplicationResult = (
-  studentId,
-  application_id,
-  result
-) =>
-  request.put(`/api/account/applications/result/${studentId}`, {
-    application_id,
-    result
-  });
+export const updateStudentApplicationResult = (studentId, programId, result, data) =>
+  request.post(
+    `/api/account/applications/result/${studentId}/${programId}/${result}`,
+
+    data
+  );
 
 export const deleteGenralFileThread = (documentsthreadId, studentId) =>
   request.delete(`/api/document-threads/${documentsthreadId}/${studentId}`);

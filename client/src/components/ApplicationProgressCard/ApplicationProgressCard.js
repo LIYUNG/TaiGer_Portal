@@ -10,7 +10,8 @@ import {
   LinearProgress,
   CircularProgress,
   linearProgressClasses,
-  styled
+  styled,
+  TextField
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import {
@@ -48,6 +49,8 @@ export default function ApplicationProgressCard(props) {
   const [isLoading, setIsLoading] = useState(false);
   const [application, setApplication] = useState(props.application);
   const [resultState, setResultState] = useState('-');
+  const [hasFile, setHasFile] = useState(false);
+  const [letter, setLetter] = useState(null);
   const [showUndoModal, setShowUndoModal] = useState(false);
   const [showSetResultModal, setShowSetResultModal] = useState(false);
   const { t } = useTranslation();
@@ -60,24 +63,50 @@ export default function ApplicationProgressCard(props) {
     e.stopPropagation();
     setShowUndoModal(true);
   };
+
   const closeUndoModal = () => {
     setShowUndoModal(false);
   };
+
   const openSetResultModal = (e, result) => {
     e.stopPropagation();
     setShowSetResultModal(true);
     setResultState(result);
   };
+
   const closeSetResultModal = () => {
     setShowSetResultModal(false);
   };
+  const onFileChange = (e) => {
+    e.preventDefault();
+    if (!e.target.files) {
+      setLetter(null);
+      setHasFile(false);
+      return;
+    }
+    const file_num = e.target.files.length;
+    if (file_num >= 1) {
+      setLetter(e.target.files[0]);
+      setHasFile(true);
+    } else {
+      setLetter(null);
+      setHasFile(false);
+    }
+  };
+
   const handleUpdateResult = (e, result) => {
     e.stopPropagation();
     setIsLoading(true);
+    console.log(hasFile);
+    console.log(letter);
+    console.log(application);
+    const formData = new FormData();
+    formData.append('file', letter);
     updateStudentApplicationResult(
       props.student._id.toString(),
-      application._id.toString(),
-      result
+      application.programId._id.toString(),
+      result,
+      formData
     ).then(
       (res) => {
         const { success } = res.data;
@@ -301,10 +330,29 @@ export default function ApplicationProgressCard(props) {
             <b>{`${application.programId.school}-${application.programId.degree}-${application.programId.program_name}`}</b>{' '}
             <b>{resultState === 'O' ? t('Admitted') : t('Rejected')}</b>?
           </Typography>
+          <Typography sx={{ my: 2 }}>
+            {resultState === 'O'
+              ? t(
+                  'Attach Admission Letter or Admission Email pdf or Email screenshot'
+                )
+              : t(
+                  'Attach Rejection Letter or Admission Email pdf or Email screenshot'
+                )}
+          </Typography>
+          <TextField
+            fullWidth
+            size="small"
+            type="file"
+            onChange={(e) => onFileChange(e)}
+            sx={{ mb: 2 }}
+          />
           <Button
             color={resultState === 'O' ? 'primary' : 'secondary'}
             variant="outlined"
-            disabled={isLoading}
+            disabled={
+              isLoading
+              // || !hasFile
+            }
             size="small"
             onClick={(e) => handleUpdateResult(e, resultState)}
           >

@@ -145,12 +145,8 @@ const processTranscript_test = asyncHandler(async (req, res, next) => {
     logger.log('error');
     logger.log(err);
     exitCode_Python = err;
-    // res.sendStatus(500);
-    // res.status(500).send({ success: false });
   });
-  // python.on('data', (data) => {
-  //   console.error(`stderr: ${data}`);
-  // });
+
   python.on('close', (code) => {
     if (code === 0) {
       courses.analysis.isAnalysed = true;
@@ -165,7 +161,7 @@ const processTranscript_test = asyncHandler(async (req, res, next) => {
       const cache_key = `${url_split[1]}/${url_split[2]}/${url_split[3]}/${url_split[4]}`;
       const success = one_month_cache.del(cache_key);
       if (success === 1) {
-        console.log('cache key deleted successfully');
+        logger.info('cache key deleted successfully');
       }
       exitCode_Python = 0;
       res.status(200).send({ success: true, data: courses.analysis });
@@ -235,19 +231,19 @@ const processTranscript_api = asyncHandler(async (req, res, next) => {
     courses.save();
 
     const url_split = req.originalUrl.split('/');
-    
+
     // temporary workaround before full migration
     // const cache_key = `${url_split[1]}/${url_split[2]}/${url_split[3]}/${url_split[4]}`;
     const cache_key = `${url_split[1]}/${url_split[2]}/transcript/${url_split[4]}`;
 
     const success = one_month_cache.del(cache_key);
     if (success === 1) {
-      console.log('cache key deleted successfully');
+      logger.info('cache key deleted successfully');
     }
     res.status(200).send({ success: true, data: courses.analysis });
     // TODO: send analysed link email to student
   } catch (err) {
-    console.log(err);
+    logger.info(err);
     res.status(403).send({ message: 'analyze failed' });
   }
 
@@ -313,7 +309,7 @@ const downloadXLSX = asyncHandler(async (req, res, next) => {
     s3.getObject(options, (err, data) => {
       // Handle any error and exit
       if (!data || !data.Body) {
-        console.log('File not found in S3');
+        logger.info('File not found in S3');
         // You can handle this case as needed, e.g., send a 404 response
         return res.status(404).send(err);
       }
@@ -322,7 +318,7 @@ const downloadXLSX = asyncHandler(async (req, res, next) => {
 
       const success = one_month_cache.set(cache_key, data.Body);
       if (success) {
-        console.log('cache set successfully');
+        logger.info('cache set successfully');
       }
 
       res.attachment(fileKey_converted);
@@ -331,7 +327,7 @@ const downloadXLSX = asyncHandler(async (req, res, next) => {
       next();
     });
   } else {
-    console.log('cache hit');
+    logger.info('cache hit');
     const fileKey_converted = encodeURIComponent(fileKey); // Use the encoding necessary
     res.attachment(fileKey_converted);
     res.end(value);

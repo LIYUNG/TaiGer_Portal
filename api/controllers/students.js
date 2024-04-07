@@ -522,8 +522,8 @@ const updateStudentsArchivStatus = asyncHandler(async (req, res, next) => {
     } else if (user.role === Role.Agent) {
       const permissions = await Permission.findOne({ user_id: user._id });
       if (permissions && permissions.canAssignAgents) {
-        console.log('with permission');
-        console.log(permissions);
+        logger.info('with permission');
+        logger.info(permissions);
         const students = await Student.find({
           $or: [{ archiv: { $exists: false } }, { archiv: false }]
         })
@@ -815,7 +815,6 @@ const assignAttributesToStudent = asyncHandler(async (req, res, next) => {
     params: { studentId },
     body: attributesId
   } = req;
-  console.log(attributesId);
   await Student.findByIdAndUpdate(studentId, { attributes: attributesId }, {});
 
   const student_upated = await Student.findById(studentId)
@@ -988,7 +987,7 @@ const createApplication = asyncHandler(async (req, res, next) => {
 
         if (generalRLcount < nrRLrequired) {
           // create general RL tasks
-          console.log('Create general RL tasks!');
+          logger.info('Create general RL tasks!');
 
           for (let j = generalRLcount; j < nrRLrequired; j += 1) {
             const newThread = new Documentthread({
@@ -1008,7 +1007,7 @@ const createApplication = asyncHandler(async (req, res, next) => {
           }
         }
       } else {
-        console.log('Create specific RL tasks!');
+        logger.info('Create specific RL tasks!');
         for (let j = 0; j < nrRLrequired; j += 1) {
           const newThread = new Documentthread({
             student_id: studentId,
@@ -1211,7 +1210,7 @@ const deleteApplication = asyncHandler(async (req, res, next) => {
     ).populate('applications.programId');
     res.status(200).send({ success: true, data: student_updated.applications });
   } catch (err) {
-    logger.error('Your Application folder not empty!', err);
+    logger.error(`Your Application folder not empty! ${err}`);
     throw new ErrorResponse(500, 'Your Application folder not empty!');
   }
   next();

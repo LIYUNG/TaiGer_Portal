@@ -582,7 +582,6 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
       )
       .lean()
       .exec();
-    // console.log('student:', student)
     res.status(200).send({ success: true, data: [student] });
   } else {
     // Guest
@@ -622,7 +621,6 @@ const initGeneralMessagesThread = asyncHandler(async (req, res) => {
       );
     // if thread existed but not in student application thread, then add it.
     if (!thread_in_student_generaldoc_existed) {
-      // console.log('Pass 1.1');
       const app = student.generaldocs_threads.create({
         doc_thread_id: doc_thread_existed,
         updatedAt: new Date(),
@@ -1497,7 +1495,7 @@ const getMessageImageDownload = asyncHandler(async (req, res) => {
     s3.getObject(options, (err, data) => {
       // Handle any error and exit
       if (!data || !data.Body) {
-        console.log('File not found in S3');
+        logger.info('File not found in S3');
         // You can handle this case as needed, e.g., send a 404 response
         return res.status(404).send(err);
       }
@@ -1505,14 +1503,14 @@ const getMessageImageDownload = asyncHandler(async (req, res) => {
       // No error happened
       const success = one_month_cache.set(cache_key, data.Body);
       if (success) {
-        console.log('image cache set successfully');
+        logger.info('image cache set successfully');
       }
 
       res.attachment(file_name);
       return res.end(data.Body);
     });
   } else {
-    console.log('cache hit');
+    logger.info('cache hit');
     res.attachment(file_name);
     return res.end(value);
   }
@@ -1572,12 +1570,11 @@ const getMessageFileDownload = asyncHandler(async (req, res) => {
     req.originalUrl.split('/')[5].split('.')[1]
   )}`;
   const value = one_month_cache.get(cache_key); // file name
-  // console.log(cache_key);
   if (value === undefined) {
     s3.getObject(options, (err, data) => {
       // Handle any error and exit
       if (!data || !data.Body) {
-        console.log('File not found in S3');
+        logger.info('File not found in S3');
         // You can handle this case as needed, e.g., send a 404 response
         return res.status(404).send(err);
       }
@@ -1585,14 +1582,14 @@ const getMessageFileDownload = asyncHandler(async (req, res) => {
       // No error happened
       const success = one_month_cache.set(cache_key, data.Body);
       if (success) {
-        console.log('thread file cache set successfully');
+        logger.info('thread file cache set successfully');
       }
 
       res.attachment(fileKey);
       return res.end(data.Body);
     });
   } else {
-    console.log('thread file cache hit');
+    logger.info('thread file cache hit');
     res.attachment(fileKey);
     return res.end(value);
   }
@@ -1656,7 +1653,7 @@ const SetStatusMessagesThread = asyncHandler(async (req, res) => {
     });
     if (document_thread.isFinalVersion) {
       // cleanup
-      console.log('cleanup prgraom thread');
+      logger.info('cleanup prgraom thread');
       await SingleThreadThreadS3GarbageCollector(messagesThreadId);
     }
     if (isNotArchiv(student)) {
@@ -1732,7 +1729,7 @@ const SetStatusMessagesThread = asyncHandler(async (req, res) => {
     });
     if (document_thread.isFinalVersion) {
       // cleanup
-      console.log('cleanup cv');
+      logger.info('cleanup cv');
       await SingleThreadThreadS3GarbageCollector(messagesThreadId);
     }
     if (isNotArchiv(student)) {
@@ -1905,11 +1902,9 @@ const deleteAMessageInThread = asyncHandler(async (req, res) => {
     const cache_key = `${messageId}${encodeURIComponent(
       msg.file[i].name.split('.')[1]
     )}`;
-    // console.log(cache_key);
     const value = one_month_cache.del(cache_key);
-    // console.log(value);
     if (value === 1) {
-      console.log('file cache key deleted successfully');
+      logger.info('file cache key deleted successfully');
     }
   }
   // Don't need so delete in S3 , will delete by garbage collector
@@ -2210,7 +2205,7 @@ const getAllActiveEssays = asyncHandler(async (req, res, next) => {
     next();
     // Handle matched data
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     throw new ErrorResponse(403, 'Invalid ThreadId');
   }
 });

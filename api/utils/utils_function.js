@@ -103,7 +103,7 @@ const TasksReminderEmails_Editor_core = async () => {
       }
     }
   }
-  console.log('Editor reminder email sent');
+  logger.info('Editor reminder email sent');
 };
 
 const TasksReminderEmails_Agent_core = async () => {
@@ -138,7 +138,7 @@ const TasksReminderEmails_Agent_core = async () => {
       }
     }
   }
-  console.log('Agent reminder email sent');
+  logger.info('Agent reminder email sent');
 };
 
 const TasksReminderEmails_Student_core = async () => {
@@ -166,7 +166,7 @@ const TasksReminderEmails_Student_core = async () => {
       { student: students[j] }
     );
   }
-  console.log('Student reminder email sent');
+  logger.info('Student reminder email sent');
 };
 
 // Weekly called.
@@ -409,7 +409,7 @@ const documentthreads_transformer = (documentthreads) => {
 };
 // Daily called.
 const MongoDBDataBaseDailySnapshot = async () => {
-  console.log('database snapshot');
+  logger.info('database snapshot');
   const data_category = [
     'users',
     'courses',
@@ -493,7 +493,6 @@ const MongoDBDataBaseDailySnapshot = async () => {
     const jsonObject = data_json[data_category[i]];
 
     // Convert JSON to string
-    console.log(data_category[i]);
     const jsonString = JSON.stringify(jsonObject);
     s3.putObject(
       {
@@ -504,9 +503,9 @@ const MongoDBDataBaseDailySnapshot = async () => {
       },
       (error, data) => {
         if (error) {
-          console.log(`Error uploading ${data_category[i]}.json:`, error);
+          logger.error(`Error uploading ${data_category[i]}.json:`, error);
         } else {
-          console.log(`${data_category[i]}.json uploaded successfully`);
+          logger.info(`${data_category[i]}.json uploaded successfully`);
         }
       }
     );
@@ -532,7 +531,7 @@ const UrgentTasksReminderEmails_Student_core = async () => {
   // (O): Check if student applications deadline within 30 days
   for (let j = 0; j < students.length; j += 1) {
     if (is_deadline_within30days_needed(students[j])) {
-      console.log(`Escalate: ${students[j].firstname} ${students[j].lastname}`);
+      logger.info(`Escalate: ${students[j].firstname} ${students[j].lastname}`);
       await StudentApplicationsDeadline_Within30Days_DailyReminderEmail(
         {
           firstname: students[j].firstname,
@@ -541,13 +540,13 @@ const UrgentTasksReminderEmails_Student_core = async () => {
         },
         { student: students[j], trigger_days }
       );
-      console.log(
+      logger.info(
         `Daily urgent emails sent to ${students[j].firstname} ${students[j].lastname}`
       );
     }
     // (O): Check if student threads no reply (need to response) more than 3 days (Should configurable)
     if (is_cv_ml_rl_reminder_needed(students[j], students[j], trigger_days)) {
-      console.log(`Escalate: ${students[j].firstname} ${students[j].lastname}`);
+      logger.info(`Escalate: ${students[j].firstname} ${students[j].lastname}`);
       await StudentCVMLRLEssay_NoReplyAfter3Days_DailyReminderEmail(
         {
           firstname: students[j].firstname,
@@ -556,7 +555,7 @@ const UrgentTasksReminderEmails_Student_core = async () => {
         },
         { student: students[j], trigger_days }
       );
-      console.log(
+      logger.info(
         `Daily2 urgent emails sent to ${students[j].firstname} ${students[j].lastname}`
       );
     }
@@ -604,7 +603,7 @@ const UrgentTasksReminderEmails_Agent_core = async () => {
       }
       if (deadline_within30days_flag) {
         if (cv_ml_rl_3days_flag) {
-          console.log(`Escalate: ${agents[j].firstname} ${agents[j].lastname}`);
+          logger.info(`Escalate: ${agents[j].firstname} ${agents[j].lastname}`);
           await AgentApplicationsDeadline_Within30Days_DailyReminderEmail(
             {
               firstname: agents[j].firstname,
@@ -630,7 +629,7 @@ const UrgentTasksReminderEmails_Agent_core = async () => {
               trigger_days: escalation_trigger_3days
             }
           );
-          console.log(
+          logger.info(
             `Deadline urgent emails sent to ${agents[j].firstname} ${agents[j].lastname}`
           );
         }
@@ -695,7 +694,7 @@ const UrgentTasksReminderEmails_Editor_core = async () => {
 
       if (deadline_within30days_flag) {
         if (cv_ml_rl_3days_flag) {
-          console.log(
+          logger.info(
             `Escalate: ${editors[j].firstname} ${editors[j].lastname}`
           );
           await EditorCVMLRLEssayDeadline_Within30Days_DailyReminderEmail(
@@ -706,12 +705,12 @@ const UrgentTasksReminderEmails_Editor_core = async () => {
             },
             { students: editor_students }
           );
-          console.log(
+          logger.info(
             `Daily urgent emails sent to ${editors[j].firstname} ${editors[j].lastname}`
           );
         }
       } else if (cv_ml_rl_7days_flag) {
-        console.log(`Escalate: ${editors[j].firstname} ${editors[j].lastname}`);
+        logger.info(`Escalate: ${editors[j].firstname} ${editors[j].lastname}`);
         await EditorCVMLRLEssay_NoReplyAfter7Days_DailyReminderEmail(
           {
             firstname: editors[j].firstname,
@@ -790,7 +789,7 @@ const AssignEditorTasksReminderEmails = async () => {
       }
     }
   }
-  console.log('Assign editor reminded');
+  logger.info('Assign editor reminded');
 };
 
 const UrgentTasksReminderEmails = async () => {
@@ -827,9 +826,7 @@ const NextSemesterCourseSelectionStudentReminderEmails = async () => {
       }
     }
   ]);
-  // console.log(studentsWithCourses[0]);
-  // console.log(studentsWithCourses[1]);
-  // console.log(studentsWithCourses[2]);
+
   for (let j = 0; j < studentsWithCourses.length; j += 1) {
     if (isNotArchiv(studentsWithCourses[j])) {
       if (needUpdateCourseSelection(studentsWithCourses[j])) {
@@ -1133,7 +1130,7 @@ const MeetingDailyReminderChecker = async () => {
     }
   }
 
-  console.log('Meeting attendees reminded');
+  logger.info('Meeting attendees reminded');
 };
 
 // every day reminder
@@ -1191,7 +1188,7 @@ const UnconfirmedMeetingDailyReminderChecker = async () => {
     }
   }
 
-  console.log('Unconfirmed Meeting attendee reminded');
+  logger.info('Unconfirmed Meeting attendee reminded');
 };
 
 module.exports = {

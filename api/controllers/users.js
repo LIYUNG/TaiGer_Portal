@@ -49,7 +49,7 @@ const UserS3GarbageCollector = async () => {
           emptyS3Directory(AWS_S3_BUCKET_NAME, `${Obj.Prefix}`);
         }
       } catch (err) {
-        console.log(err);
+        logger.error(err);
       }
     }
   }
@@ -150,7 +150,6 @@ const updateUser = asyncHandler(async (req, res) => {
   }).lean();
   const updated_user = await User.findById(user_id);
   res.status(200).send({ success: true, data: new_user });
-  console.log(updated_user);
 
   // Email inform user, the updated status
   await updateNotificationEmail(
@@ -209,8 +208,8 @@ const deleteUser = asyncHandler(async (req, res) => {
       { multi: true }
     );
     await User.findByIdAndDelete(user_id);
-    console.log('delete agent user');
-    console.log(students);
+    logger.info('delete agent user');
+    logger.info(students);
   }
 
   if (user_deleting.role === Role.Editor) {
@@ -225,8 +224,7 @@ const deleteUser = asyncHandler(async (req, res) => {
       { multi: true }
     );
     await User.findByIdAndDelete(user_id);
-    console.log('delete editor user');
-    console.log(students);
+    logger.info('delete editor user');
   }
 
   if (

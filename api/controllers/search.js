@@ -27,7 +27,6 @@ const getQueryPublicResults = asyncHandler(async (req, res, next) => {
   // TODO: search for student
   // search thread, cv ml rl, public doc,
 
-  //   console.log(students);
   res.status(200).send({
     success: true,
     data: documentations.sort((a, b) => b.score - a.score)

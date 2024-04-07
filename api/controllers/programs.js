@@ -20,7 +20,7 @@ const getPrograms = asyncHandler(async (req, res) => {
       );
       const success = two_weeks_cache.set(req.originalUrl, programs);
       if (success) {
-        console.log('programs cache set successfully');
+        logger.info('programs cache set successfully');
       }
       return res.send({ success: true, data: programs });
     }
@@ -88,7 +88,7 @@ const getProgram = asyncHandler(async (req, res) => {
       }
       const success = one_month_cache.set(req.originalUrl, program);
       if (success) {
-        console.log('programs cache set successfully');
+        logger.info('programs cache set successfully');
       }
       if (
         user.role === 'Admin' ||
@@ -118,7 +118,7 @@ const getProgram = asyncHandler(async (req, res) => {
       }
       return res.send({ success: true, data: program });
     }
-    console.log('programs cache hit');
+    logger.info('programs cache hit');
 
     if (
       user.role === 'Admin' ||
@@ -238,7 +238,7 @@ const updateProgram = asyncHandler(async (req, res) => {
   // Delete cache key for image, pdf, docs, file here.
   const value = one_month_cache.del(req.originalUrl);
   if (value === 1) {
-    console.log('cache key deleted successfully due to update');
+    logger.info('cache key deleted successfully due to update');
   }
 
   return res.status(200).send({ success: true, data: program, vc });
@@ -255,18 +255,17 @@ const deleteProgram = asyncHandler(async (req, res) => {
   }).select('firstname lastname applications.programId');
   // Check if anyone applied this program
   if (students.length === 0) {
-    console.log('it can be deleted!');
+    logger.info('it can be deleted!');
     await Program.findByIdAndUpdate(req.params.programId, { isArchiv: true });
-    console.log('The program deleted!');
+    logger.info('The program deleted!');
 
     const value = one_month_cache.del(req.originalUrl);
     if (value === 1) {
-      console.log('cache key deleted successfully due to delete');
+      logger.info('cache key deleted successfully due to delete');
     }
   } else {
-    console.log('it can not be deleted!');
-    console.log('The following students have these programs!');
-    console.log(students);
+    logger.error('it can not be deleted!');
+    logger.error('The following students have these programs!');
     // Make sure delete failed to user (Admin)
     logger.error('deleteProgram: some students have these programs');
     throw new ErrorResponse(423, 'This program can not be deleted!');
@@ -274,7 +273,7 @@ const deleteProgram = asyncHandler(async (req, res) => {
   res.status(200).send({ success: true });
   if (students.length === 0) {
     await Ticket.deleteMany({ program_id: req.params.programId });
-    console.log('Delete Tickets!');
+    logger.info('Delete Tickets!');
   }
 });
 

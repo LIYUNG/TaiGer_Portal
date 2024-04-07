@@ -34,20 +34,19 @@ const getAdmissionLetter = asyncHandler(async (req, res, next) => {
   // download the file via aws s3 here
   const fileKey = fileName;
   let directory = `${studentId}/admission`;
-  logger.info('Trying to download admission letter:', fileKey);
+  logger.info(`Trying to download admission letter: ${fileKey}`);
   directory = path.join(AWS_S3_BUCKET_NAME, directory);
   directory = directory.replace(/\\/g, '/');
   const options = {
     Key: fileKey,
     Bucket: directory
   };
-  console.log(fileKey);
   const value = two_month_cache.get(fileKey);
   if (value === undefined) {
     s3.getObject(options, (err, data) => {
       // Handle any error and exit
       if (!data || !data.Body) {
-        console.log('File not found in S3');
+        logger.info('File not found in S3');
         // You can handle this case as needed, e.g., send a 404 response
         return res.status(404).send(err);
       }
@@ -55,7 +54,7 @@ const getAdmissionLetter = asyncHandler(async (req, res, next) => {
       // No error happened
       const success = two_month_cache.set(fileKey, data.Body);
       if (success) {
-        console.log('Admission letter cache set successfully');
+        logger.info('Admission letter cache set successfully');
       }
 
       res.attachment(fileKey);
@@ -63,7 +62,7 @@ const getAdmissionLetter = asyncHandler(async (req, res, next) => {
       next();
     });
   } else {
-    console.log('Admission letter cache hit');
+    logger.info('Admission letter cache hit');
     res.attachment(fileKey);
     res.end(value);
     next();

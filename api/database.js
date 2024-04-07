@@ -1,8 +1,9 @@
 const mongoose = require('mongoose');
+const logger = require('./services/logger');
 
 const connectToDatabase = async (uri, timeoutMS = 5000) => {
   mongoose.connection.on('error', () => {
-    console.error('Database connection error');
+    logger.error('Database connection error');
   });
 
   const { connection } = await mongoose.connect(uri, {

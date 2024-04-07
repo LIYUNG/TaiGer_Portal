@@ -53,7 +53,7 @@ const processProgramListAi = asyncHandler(async (req, res, next) => {
 });
 
 const generate = async (input, model) => {
-  console.log(`model = ${model}`);
+  logger.info(`model = ${model}`);
   const response = await openAIClient.chat.completions.create({
     messages: [{ role: 'user', content: input || 'where is BMW Headquarter?' }],
     model

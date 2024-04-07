@@ -65,10 +65,10 @@ const DocumentationS3GarbageCollector = async () => {
     // 1. documentation
     if (deleteParams.Delete.Objects.length > 0) {
       await s3.deleteObjects(deleteParams).promise();
-      console.log('Deleted redundant files and image for documentation.');
-      console.log(deleteParams.Delete.Objects);
+      logger.info('Deleted redundant files and image for documentation.');
+      logger.info(deleteParams.Delete.Objects);
     } else {
-      console.log('Nothing to be deleted for documentation.');
+      logger.info('Nothing to be deleted for documentation.');
     }
 
     // if (listedObjectsPublic.IsTruncated) await emptyS3Directory(bucket, dir);
@@ -124,7 +124,7 @@ const updateDocumentationPage = asyncHandler(async (req, res) => {
   );
   const success = one_month_cache.set(req.url, doc_page_existed);
   if (success) {
-    console.log('cache set update successfully');
+    logger.info('cache set update successfully');
   }
   return res.status(201).send({ success: true, data: doc_page_existed });
 });
@@ -156,17 +156,17 @@ const getCategoryDocumentationsPage = asyncHandler(async (req, res) => {
   const value = one_month_cache.get(req.url);
   if (value === undefined) {
     // cache miss
-    console.log('cache miss');
+    logger.info('cache miss');
     const docspage = await Docspage.findOne({
       category: req.params.category
     });
     const success = one_month_cache.set(req.url, docspage);
     if (success) {
-      console.log('cache set successfully');
+      logger.info('cache set successfully');
     }
     return res.send({ success: true, data: !docspage ? {} : docspage });
   }
-  console.log('cache hit');
+  logger.info('cache hit');
   return res.send({ success: true, data: !value ? {} : value });
 });
 
@@ -244,11 +244,11 @@ const getDocFile = asyncHandler(async (req, res) => {
   const value = one_month_cache.get(req.originalUrl);
   if (value === undefined) {
     // cache miss
-    console.log(`cache miss: ${req.originalUrl}`);
+    logger.info(`cache miss: ${req.originalUrl}`);
     s3.getObject(options, (err, data) => {
       // Handle any error and exit
       if (!data || !data.Body) {
-        console.log('File not found in S3');
+        logger.info('File not found in S3');
         // You can handle this case as needed, e.g., send a 404 response
         return res.status(404).send(err);
       }
@@ -257,13 +257,13 @@ const getDocFile = asyncHandler(async (req, res) => {
       const objectData = data.Body.toString('utf-8'); // Use the encoding necessary
       const success = one_month_cache.set(req.originalUrl, data.Body);
       if (success) {
-        console.log('cache set successfully');
+        logger.info('cache set successfully');
       }
       res.attachment(object_key);
       return res.end(data.Body);
     });
   } else {
-    console.log('cache hit');
+    logger.info('cache hit');
     res.attachment(object_key);
     return res.end(value);
   }
@@ -283,7 +283,7 @@ const uploadDocDocs = asyncHandler(async (req, res) => {
   );
   // encodeURIComponent convert chinese to url match charater %E7%94%B3%E8%AB%8 etc.
   if (value === 1) {
-    console.log('cache key deleted successfully');
+    logger.info('cache key deleted successfully');
   }
   return res.send({
     success: true,

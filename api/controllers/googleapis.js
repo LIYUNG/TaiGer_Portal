@@ -250,9 +250,9 @@ const awsSendEmail = asyncHandler(async (req, res) => {
   };
   ses.sendEmail(params, (err, data) => {
     if (err) {
-      console.error('Error sending email:', err);
+      logger.error(`Error sending email: ${err}`);
     } else {
-      console.log('Email sent:', data);
+      logger.info('Email sent:', data);
       res.send({ msg: 'Done' });
     }
   });

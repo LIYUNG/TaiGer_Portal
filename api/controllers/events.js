@@ -11,6 +11,7 @@ const {
   MeetingAdjustReminderEmail,
   MeetingCancelledReminderEmail
 } = require('../services/email');
+const logger = require('../services/logger');
 
 const MeetingAdjustReminder = (receiver, user, meeting_event) => {
   MeetingAdjustReminderEmail(
@@ -236,7 +237,7 @@ const showEvent = asyncHandler(async (req, res, next) => {
     res.status(200).json(event);
     next();
   } catch (err) {
-    console.log(err);
+    logger.info(err);
     throw new ErrorResponse(400, err);
   }
 });
@@ -244,7 +245,6 @@ const showEvent = asyncHandler(async (req, res, next) => {
 const postEvent = asyncHandler(async (req, res, next) => {
   const { user } = req;
   const newEvent = req.body;
-  // console.log(newEvent);
   let events;
   if (user.role === Role.Student) {
     let write_NewEvent;
@@ -266,8 +266,6 @@ const postEvent = asyncHandler(async (req, res, next) => {
       .populate('requester_id receiver_id', 'firstname lastname email')
       .lean();
     // Check if there is already booked upcoming events
-    // console.log(events.length);
-    // console.log(events.length);
     if (events.length === 0) {
       // TODO: additional check if the timeslot is in agent office hour?
       write_NewEvent = await Event.create(newEvent);
@@ -389,10 +387,6 @@ const confirmEvent = asyncHandler(async (req, res, next) => {
       }
     }
     updated_event.end = new Date(date.getTime() + 60000 * 30);
-    // console.log(date.toISOString());
-    // console.log(date.toISOString().replace(/:/g, '_'));
-    // console.log(date.toISOString().replace(/:/g, '_').replace(/\./g, '_'));
-    // console.log(updated_event.meetingLink);
     const event = await Event.findByIdAndUpdate(event_id, updated_event, {
       upsert: false,
       new: true
@@ -419,7 +413,7 @@ const confirmEvent = asyncHandler(async (req, res, next) => {
     }
     next();
   } catch (err) {
-    console.log(err);
+    logger.error(err);
     throw new ErrorResponse(400, err);
   }
 });
@@ -466,7 +460,7 @@ const updateEvent = asyncHandler(async (req, res, next) => {
     }
     next();
   } catch (err) {
-    console.log(err);
+    logger.error(err);
     throw new ErrorResponse(400, err);
   }
 });

@@ -85,7 +85,7 @@ const deleteTemplate = asyncHandler(async (req, res, next) => {
       }
       const value = two_month_cache.del(fileKey);
       if (value === 1) {
-        console.log('Template cache key deleted successfully');
+        logger.info('Template cache key deleted successfully');
       }
     });
   } catch (err) {
@@ -158,13 +158,12 @@ const downloadTemplateFile = asyncHandler(async (req, res, next) => {
     Bucket: directory
   };
 
-  console.log(fileKey);
   const value = two_month_cache.get(fileKey); // vpd name
   if (value === undefined) {
     s3.getObject(options, (err, data) => {
       // Handle any error and exit
       if (!data || !data.Body) {
-        console.log('File not found in S3');
+        logger.info('File not found in S3');
         // You can handle this case as needed, e.g., send a 404 response
         return res.status(404).send(err);
       }
@@ -172,7 +171,7 @@ const downloadTemplateFile = asyncHandler(async (req, res, next) => {
       // No error happened
       const success = two_month_cache.set(fileKey, data.Body);
       if (success) {
-        console.log('Template file cache set successfully');
+        logger.info('Template file cache set successfully');
       }
 
       res.attachment(fileKey);
@@ -180,7 +179,7 @@ const downloadTemplateFile = asyncHandler(async (req, res, next) => {
       next();
     });
   } else {
-    console.log('Template file cache hit');
+    logger.info('Template file cache hit');
     res.attachment(fileKey);
     res.end(value);
     next();
@@ -215,7 +214,6 @@ const saveProfileFilePath = asyncHandler(async (req, res, next) => {
     if (user.role === Role.Student) {
       // TODO: add notification for agents
       for (let i = 0; i < student.agents.length; i += 1) {
-        // console.log(student.agents[i]._id.toString());
         const agent = await Agent.findById(student.agents[i]._id.toString());
         if (agent.agent_notification) {
           const temp_student =
@@ -282,7 +280,6 @@ const saveProfileFilePath = asyncHandler(async (req, res, next) => {
     if (user.role === Role.Student) {
       // TODO: notify agents
       for (let i = 0; i < student.agents.length; i += 1) {
-        // console.log(student.agents[i]._id.toString());
         const agent = await Agent.findById(student.agents[i]._id.toString());
         if (agent.agent_notification) {
           const temp_student =
@@ -557,7 +554,7 @@ const downloadVPDFile = asyncHandler(async (req, res, next) => {
   document_split = document_split.split('/');
   const fileKey = document_split[1];
   let directory = path.join(AWS_S3_BUCKET_NAME, document_split[0]);
-  logger.info(`Trying to download ${fileType} file`, fileKey);
+  logger.info(`Trying to download ${fileType} file`);
 
   directory = directory.replace(/\\/g, '/');
   const options = {
@@ -571,7 +568,7 @@ const downloadVPDFile = asyncHandler(async (req, res, next) => {
     s3.getObject(options, (err, data) => {
       // Handle any error and exit
       if (!data || !data.Body) {
-        console.log('File not found in S3');
+        logger.info('File not found in S3');
         // You can handle this case as needed, e.g., send a 404 response
         return res.status(404).send(err);
       }
@@ -579,7 +576,7 @@ const downloadVPDFile = asyncHandler(async (req, res, next) => {
       // No error happened
       const success = one_month_cache.set(cache_key, data.Body);
       if (success) {
-        console.log('VPD file cache set successfully');
+        logger.info('VPD file cache set successfully');
       }
 
       res.attachment(fileKey);
@@ -587,7 +584,7 @@ const downloadVPDFile = asyncHandler(async (req, res, next) => {
       next();
     });
   } else {
-    console.log('VPD file cache hit');
+    logger.info('VPD file cache hit');
     res.attachment(fileKey);
     res.end(value);
     next();
@@ -624,7 +621,7 @@ const downloadProfileFileURL = asyncHandler(async (req, res, next) => {
   document_split = document_split.split('/');
   const fileKey = document_split[1];
   let directory = document_split[0];
-  logger.info('Trying to download profile file', fileKey);
+  logger.info(`Trying to download profile file ${fileKey}`);
   directory = path.join(AWS_S3_BUCKET_NAME, directory);
   directory = directory.replace(/\\/g, '/');
   const options = {
@@ -632,14 +629,13 @@ const downloadProfileFileURL = asyncHandler(async (req, res, next) => {
     Bucket: directory
   };
 
-  console.log(fileKey);
   const cache_key = `${studentId}${fileKey}`;
   const value = one_month_cache.get(cache_key); // vpd name
   if (value === undefined) {
     s3.getObject(options, (err, data) => {
       // Handle any error and exit
       if (!data || !data.Body) {
-        console.log('File not found in S3');
+        logger.info('File not found in S3');
         // You can handle this case as needed, e.g., send a 404 response
         return res.status(404).send(err);
       }
@@ -647,7 +643,7 @@ const downloadProfileFileURL = asyncHandler(async (req, res, next) => {
       // No error happened
       const success = one_month_cache.set(cache_key, data.Body);
       if (success) {
-        console.log('Profile file cache set successfully');
+        logger.info('Profile file cache set successfully');
       }
 
       res.attachment(fileKey);
@@ -655,7 +651,7 @@ const downloadProfileFileURL = asyncHandler(async (req, res, next) => {
       next();
     });
   } else {
-    console.log('Profile file cache hit');
+    logger.info('Profile file cache hit');
     res.attachment(fileKey);
     res.end(value);
     next();
@@ -972,12 +968,12 @@ const updateStudentApplicationResult = asyncHandler(async (req, res, next) => {
           }
           const value = two_month_cache.del(fileKey);
           if (value === 1) {
-            console.log('Admission cache key deleted successfully');
+            logger.info('Admission cache key deleted successfully');
           }
         });
       } catch (err) {
         if (err) {
-          logger.error('deleteTemplate: ', err);
+          logger.error(`Error: deleteTemplate: ${err}`);
           throw new ErrorResponse(500, 'Error occurs while deleting');
         }
       }
@@ -1064,7 +1060,7 @@ const deleteProfileFile = asyncHandler(async (req, res, next) => {
         student.save();
         const value = one_month_cache.del(cache_key);
         if (value === 1) {
-          console.log('Profile cache key deleted successfully');
+          logger.info('Profile cache key deleted successfully');
         }
         res.status(200).send({ success: true, data: document });
         next();
@@ -1127,7 +1123,7 @@ const deleteVPDFile = asyncHandler(async (req, res, next) => {
   document_split = document_split.split('/');
   const fileKey = document_split[1];
   let directory = path.join(AWS_S3_BUCKET_NAME, document_split[0]);
-  logger.info('Trying to delete file', fileKey);
+  logger.info(`Trying to delete file ${fileKey}`);
   directory = directory.replace(/\\/g, '/');
 
   const options = {
@@ -1152,7 +1148,7 @@ const deleteVPDFile = asyncHandler(async (req, res, next) => {
         const cache_key = `${studentId}${fileKey}`;
         const value = one_month_cache.del(cache_key);
         if (value === 1) {
-          console.log('VPD cache key deleted successfully');
+          logger.info('VPD cache key deleted successfully');
         }
         res.status(200).send({ success: true });
         next();

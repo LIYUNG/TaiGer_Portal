@@ -30,6 +30,7 @@ import {
   progressBarCounter
 } from '../../Demo/Utils/checking-functions';
 import ModalNew from '../Modal';
+import { BASE_URL } from '../../api/request';
 
 const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
   height: 10,
@@ -191,6 +192,20 @@ export default function ApplicationProgressCard(props) {
             {application?.programId?.program_name}{' '}
             {application?.programId?.semester}{' '}
           </Typography>
+          {application.admission === 'O' &&
+            application.admission_letter?.status === 'uploaded' && (
+              <a
+                href={`${BASE_URL}/api/admissions/${application.admission_letter?.admission_file_path.replace(
+                  /\\/g,
+                  '/'
+                )}`}
+                target="_blank"
+                className="text-info"
+                rel="noreferrer"
+              >
+                Admission Letter
+              </a>
+            )}
           {application_deadline_calculator(props.student, application) ===
             'CLOSE' &&
             application.admission === '-' && (

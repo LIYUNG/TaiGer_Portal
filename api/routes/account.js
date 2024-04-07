@@ -108,6 +108,7 @@ router
     UpdateStudentApplications,
     logAccess
   );
+
 router
   .route('/applications/result/:studentId/:programId/:result')
   .post(

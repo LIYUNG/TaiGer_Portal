@@ -1,8 +1,12 @@
-// const path = require('path');
+const path = require('path');
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
 const { Role, User, Student } = require('../models/User');
 const async = require('async');
+const logger = require('../services/logger');
+const { two_month_cache } = require('../cache/node-cache');
+const { AWS_S3_BUCKET_NAME } = require('../config');
+const { s3 } = require('../aws');
 
 const getAdmissions = asyncHandler(async (req, res) => {
   const { user } = req;
@@ -16,6 +20,56 @@ const getAdmissions = asyncHandler(async (req, res) => {
   res.status(200).send({ success: true, data: students });
 });
 
+const getAdmissionLetter = asyncHandler(async (req, res, next) => {
+  const {
+    user,
+    params: { studentId, fileName }
+  } = req;
+  // Check authorized role
+  if (user.role === Role.Guest) {
+    logger.error('getAdmissionLetter: Invalid role!');
+    throw new ErrorResponse(403, 'Invalid role');
+  }
+  // AWS S3
+  // download the file via aws s3 here
+  const fileKey = fileName;
+  let directory = `${studentId}/admission`;
+  logger.info('Trying to download admission letter:', fileKey);
+  directory = path.join(AWS_S3_BUCKET_NAME, directory);
+  directory = directory.replace(/\\/g, '/');
+  const options = {
+    Key: fileKey,
+    Bucket: directory
+  };
+  console.log(fileKey);
+  const value = two_month_cache.get(fileKey);
+  if (value === undefined) {
+    s3.getObject(options, (err, data) => {
+      // Handle any error and exit
+      if (!data || !data.Body) {
+        console.log('File not found in S3');
+        // You can handle this case as needed, e.g., send a 404 response
+        return res.status(404).send(err);
+      }
+
+      // No error happened
+      const success = two_month_cache.set(fileKey, data.Body);
+      if (success) {
+        console.log('Admission letter cache set successfully');
+      }
+
+      res.attachment(fileKey);
+      res.end(data.Body);
+      next();
+    });
+  } else {
+    console.log('Admission letter cache hit');
+    res.attachment(fileKey);
+    res.end(value);
+    next();
+  }
+});
+
 const getAdmissionsYear = asyncHandler(async (req, res) => {
   const { applications_year } = req.params;
   const tasks = await Student.find({ student_id: applications_year });
@@ -24,5 +78,6 @@ const getAdmissionsYear = asyncHandler(async (req, res) => {
 
 module.exports = {
   getAdmissions,
+  getAdmissionLetter,
   getAdmissionsYear
 };

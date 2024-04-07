@@ -219,10 +219,14 @@ export const UpdateStudentApplications = (
     applying_program_count
   });
 
-export const updateStudentApplicationResult = (studentId, programId, result, data) =>
+export const updateStudentApplicationResult = (
+  studentId,
+  programId,
+  result,
+  data
+) =>
   request.post(
     `/api/account/applications/result/${studentId}/${programId}/${result}`,
-
     data
   );
 

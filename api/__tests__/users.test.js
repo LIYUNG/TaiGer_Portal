@@ -2,7 +2,6 @@ const request = require('supertest');
 
 const db = require('./fixtures/db');
 const { app } = require('../app');
-const { connectToDatabase, disconnectFromDatabase } = require('../database');
 const { Role, User } = require('../models/User');
 const { generateUser } = require('./fixtures/users');
 const { protect } = require('../middlewares/auth');
@@ -30,13 +29,11 @@ beforeAll(async () => {
 afterAll(async () => await db.clearDatabase());
 
 describe('GET /api/users', () => {
-  beforeEach(async () => {
-    protect.mockImplementation(async (req, res, next) => {
-      // req.user = await User.findById(agentId);
-      const admin = admins[0];
-      req.user = admin;
-      next();
-    });
+  protect.mockImplementation(async (req, res, next) => {
+    // req.user = await User.findById(agentId);
+    const admin = admins[0];
+    req.user = admin;
+    next();
   });
 
   it('should return all users', async () => {

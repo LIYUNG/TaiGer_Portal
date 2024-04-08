@@ -6,11 +6,17 @@ const { UPLOAD_PATH } = require('../config');
 const db = require('./fixtures/db');
 const { app } = require('../app');
 const { Role, User, Agent, Editor, Student } = require('../models/User');
-const { Program } = require('../models/Program');
 const { DocumentStatus } = require('../constants');
 const { generateUser } = require('./fixtures/users');
+const { protect, permit } = require('../middlewares/auth');
+const {
+  InnerTaigerMultitenantFilter
+} = require('../middlewares/InnerTaigerMultitenantFilter');
+const {
+  permission_canAccessStudentDatabase_filter
+} = require('../middlewares/permission-filter');
 const { generateProgram } = require('./fixtures/programs');
-const { protect } = require('../middlewares/auth');
+const { Program } = require('../models/Program');
 
 jest.mock('../middlewares/auth', () => {
   const passthrough = async (req, res, next) => next();
@@ -19,6 +25,32 @@ jest.mock('../middlewares/auth', () => {
     protect: jest.fn().mockImplementation(passthrough),
     permit: jest.fn().mockImplementation((...roles) => passthrough)
   });
+});
+
+jest.mock('../middlewares/InnerTaigerMultitenantFilter', () => {
+  const passthrough = async (req, res, next) => next();
+
+  return Object.assign(
+    {},
+    jest.requireActual('../middlewares/permission-filter'),
+    {
+      InnerTaigerMultitenantFilter: jest.fn().mockImplementation(passthrough)
+    }
+  );
+});
+
+jest.mock('../middlewares/permission-filter', () => {
+  const passthrough = async (req, res, next) => next();
+
+  return Object.assign(
+    {},
+    jest.requireActual('../middlewares/permission-filter'),
+    {
+      permission_canAccessStudentDatabase_filter: jest
+        .fn()
+        .mockImplementation(passthrough)
+    }
+  );
 });
 
 const admin = generateUser(Role.Admin);
@@ -40,23 +72,18 @@ const users = [
   student2
 ];
 
+const programs = [...Array(2)].map(() => generateProgram());
+
 const requiredDocuments = ['transcript', 'resume'];
 const optionalDocuments = ['certificate', 'visa'];
-const program = generateProgram(requiredDocuments, optionalDocuments);
-
-const programs = [...Array(3)].map(() =>
-  generateProgram(requiredDocuments, optionalDocuments)
-);
 
 beforeAll(async () => await db.connect());
 afterAll(async () => await db.clearDatabase());
 
 beforeEach(async () => {
   await User.deleteMany();
-  await User.insertMany(users);
-
   await Program.deleteMany();
-  await Program.create(program);
+  await User.insertMany(users);
   await Program.insertMany(programs);
 });
 
@@ -65,11 +92,9 @@ afterEach(() => {
 });
 
 describe('POST /api/students/:id/agents', () => {
-  beforeEach(async () => {
-    protect.mockImplementation(async (req, res, next) => {
-      req.user = await User.findById(admin._id);
-      next();
-    });
+  protect.mockImplementation(async (req, res, next) => {
+    req.user = admin;
+    next();
   });
 
   it('should assign agent(s) to student', async () => {
@@ -99,6 +124,10 @@ describe('POST /api/students/:id/agents', () => {
 });
 
 describe('POST /api/students/:id/editors', () => {
+  protect.mockImplementation(async (req, res, next) => {
+    req.user = admin;
+    next();
+  });
   it('should assign editors to student', async () => {
     const { _id: studentId } = student;
     const { _id: editorId } = editors[0];
@@ -131,17 +160,24 @@ describe('POST /api/students/:id/editors', () => {
 
 // Agent should create applications (programs) to student
 describe('POST /api/students/:studentId/applications', () => {
-  beforeEach(async () => {
-    protect.mockImplementation(async (req, res, next) => {
-      req.user = await User.findById(agent._id);
-      next();
-    });
+  protect.mockImplementation(async (req, res, next) => {
+    req.user = agent;
+    next();
   });
+  permission_canAccessStudentDatabase_filter.mockImplementation(
+    async (req, res, next) => {
+      next();
+    }
+  );
+  InnerTaigerMultitenantFilter.mockImplementation(async (req, res, next) => {
+    next();
+  });
+
   it('should create an application for student', async () => {
     const { _id: studentId } = student;
-    var programs_arr = [];
+    let programs_arr = [];
     programs.forEach((pro) => {
-      programs_arr.push(pro._id);
+      programs_arr.push(pro._id.toString());
     });
     const resp = await request(app)
       .post(`/api/students/${studentId}/applications`)
@@ -265,11 +301,9 @@ describe('POST /api/students/:studentId/files/:category', () => {
 
   var temp_name;
 
-  beforeEach(async () => {
-    protect.mockImplementation(async (req, res, next) => {
-      req.user = await User.findById(student._id);
-      next();
-    });
+  protect.mockImplementation(async (req, res, next) => {
+    req.user = student;
+    next();
   });
 
   it('should return 415 when profile file type not .pdf .png, .jpg and .jpeg .docx', async () => {
@@ -364,24 +398,29 @@ describe('POST /api/students/:studentId/files/:category', () => {
 // user: Agent
 describe('POST /api/students/:studentId/files/:category', () => {
   const { _id: studentId } = student;
-  const { _id: student2Id } = student2;
   const filename = 'my-file.pdf'; // will be overwrite to docName
   const category = 'Bachelor_Transcript';
 
-  var temp_name;
+  let temp_name;
 
-  beforeEach(async () => {
-    protect.mockImplementation(async (req, res, next) => {
-      req.user = await User.findById(agent._id);
+  permit.mockImplementation(async (req, res, next) => {
+    req.user = agent;
+    next();
+  });
+  permission_canAccessStudentDatabase_filter.mockImplementation(
+    async (req, res, next) => {
       next();
-    });
+    }
+  );
+  InnerTaigerMultitenantFilter.mockImplementation(async (req, res, next) => {
+    next();
   });
 
   it.each([
-    ['my-file.exe', 400, false],
+    ['my-file.exe', 415, false],
     ['my-file.pdf', 201, true]
   ])(
-    'should return 400 when profile file type not .pdf .png, .jpg and .jpeg .docx',
+    'should return 415 when profile file type not .pdf .png, .jpg and .jpeg .docx',
     async (File_Name, status, success) => {
       const buffer_1MB_exe = Buffer.alloc(1024 * 1024 * 1); // 1 MB
       const resp2 = await request(app)
@@ -393,13 +432,13 @@ describe('POST /api/students/:studentId/files/:category', () => {
     }
   );
 
-  it('should return 400 when profile size over 5 MB', async () => {
+  it('should return 413 when profile size over 5 MB', async () => {
     const buffer_10MB = Buffer.alloc(1024 * 1024 * 6); // 6 MB
     const resp2 = await request(app)
       .post(`/api/students/${studentId}/files/${category}`)
       .attach('file', buffer_10MB, filename);
 
-    expect(resp2.status).toBe(400);
+    expect(resp2.status).toBe(413);
     expect(resp2.body.success).toBe(false);
   });
 

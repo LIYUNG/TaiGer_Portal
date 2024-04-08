@@ -5,6 +5,7 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableContainer,
   TableHead,
   TableRow,
   Typography
@@ -117,20 +118,25 @@ function AssignEssayWritersPage(props) {
       )}
       <Card sx={{ p: 2 }}>
         <Typography variant="h6">{t('No Writers Essays')}</Typography>
-        <Table size="small">
-          <TableHead>
-            <TableRow>
-              <TableCell></TableCell>
-              <TableCell>{t('Documents', { ns: 'common' })}</TableCell>
-              <TableCell>{t('First-, Last Name', { ns: 'common' })}</TableCell>
-              <TableCell>{t('Email', { ns: 'common' })}</TableCell>
-              <TableCell>{t('Status', { ns: 'common' })}</TableCell>
-              <TableCell>{t('Target Year', { ns: 'common' })}</TableCell>
-              <TableCell>{t('Agents', { ns: 'common' })}</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>{no_writer_essays}</TableBody>
-        </Table>
+        <TableContainer style={{ overflowX: 'auto' }}>
+          <Table size="small">
+            <TableHead>
+              <TableRow>
+                <TableCell></TableCell>
+                <TableCell>{t('Documents', { ns: 'common' })}</TableCell>
+                <TableCell>
+                  {t('First-, Last Name', { ns: 'common' })}
+                </TableCell>
+                <TableCell>{t('Email', { ns: 'common' })}</TableCell>
+                <TableCell>{t('Status', { ns: 'common' })}</TableCell>
+                <TableCell>{t('Target Year', { ns: 'common' })}</TableCell>
+                <TableCell>{t('Editors', { ns: 'common' })}</TableCell>
+                <TableCell>{t('Agents', { ns: 'common' })}</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>{no_writer_essays}</TableBody>
+          </Table>
+        </TableContainer>
       </Card>
     </Box>
   );

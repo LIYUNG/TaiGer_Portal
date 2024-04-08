@@ -137,6 +137,16 @@ function NoWritersEssaysCard(props) {
               .expected_application_date || <Typography>TBD</Typography>}
           </TableCell>
           <TableCell>
+            {!props.essayDocumentThread.student_id?.editors ||
+            props.essayDocumentThread.student_id?.editors.length === 0 ? (
+              <Typography fontWeight="bold">No Editor</Typography>
+            ) : (
+              props.essayDocumentThread.student_id?.editors.map((editor, i) => (
+                <Typography key={i}>{`${editor.firstname}`}</Typography>
+              ))
+            )}
+          </TableCell>
+          <TableCell>
             {!props.essayDocumentThread.student_id?.agents ||
             props.essayDocumentThread.student_id?.agents.length === 0 ? (
               <Typography fontWeight="bold">No Agent</Typography>

@@ -2175,7 +2175,7 @@ const getAllActiveEssays = asyncHandler(async (req, res, next) => {
         .populate({
           path: 'student_id messages.user_id',
           populate: {
-            path: 'agents',
+            path: 'agents editors',
             model: 'User'
           }
         })

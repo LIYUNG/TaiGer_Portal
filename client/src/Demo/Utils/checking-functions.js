@@ -1460,7 +1460,9 @@ const prepTaskStudent = (student) => {
   return {
     firstname_lastname: `${student.firstname}, ${student.lastname}`,
     student_id: student._id.toString(),
-    attributes: student.attributes
+    attributes: student.attributes,
+    agents: student.agents,
+    editors: student.editors
   };
 };
 

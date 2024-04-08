@@ -868,7 +868,7 @@ describe('POST /api/account/profile/:user_id', () => {
   });
   it('should update personal data', async () => {
     const resp = await request(app)
-      .post(`/api/account/profile/${student._ìd.toString()}`)
+      .post(`/api/account/profile/${student._id.toString()}`)
       .send({ personaldata });
     const { status, body } = resp;
     expect(status).toBe(200);

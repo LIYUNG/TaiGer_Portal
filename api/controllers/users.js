@@ -122,7 +122,7 @@ const updateUser = asyncHandler(async (req, res) => {
   const {
     params: { user_id }
   } = req;
-  const fields = _.pick(req.body, ['name', 'email', 'role']);
+  const fields = _.pick(req.body, ['email', 'role']);
   // TODO: check if email in use already and if role is valid
   if (fields.role === Role.Admin) {
     logger.warn(`updateUser: User role is changed to ${fields.role}`);

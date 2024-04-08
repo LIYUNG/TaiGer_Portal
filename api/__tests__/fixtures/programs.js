@@ -1,5 +1,5 @@
-const { ObjectId } = require("mongoose").Types;
-const faker = require("faker");
+const { ObjectId } = require('mongoose').Types;
+const faker = require('faker');
 
 // const { Degree } = require("../../models/Program");
 
@@ -9,13 +9,14 @@ const generateProgram = (requiredDocuments, optionalDocuments) => ({
   program_name: faker.lorem.word(),
   degree: faker.lorem.word(),
   website: faker.internet.url(),
-  semester: "summer",
+  semester: 'summer',
   application_start: faker.date.recent(),
   application_deadline: faker.date.future(),
-  requiredDocuments: requiredDocuments,
-  optionalDocuments: optionalDocuments,
+  isArchiv: false,
+  requiredDocuments,
+  optionalDocuments
 });
 
 module.exports = {
-  generateProgram,
+  generateProgram
 };

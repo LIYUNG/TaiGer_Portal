@@ -2,9 +2,17 @@ const request = require('supertest');
 
 const db = require('./fixtures/db');
 const { app } = require('../app');
-const { connectToDatabase, disconnectFromDatabase } = require('../database');
 const { Program } = require('../models/Program');
 const { generateProgram } = require('./fixtures/programs');
+const { generateUser } = require('./fixtures/users');
+const { protect } = require('../middlewares/auth');
+const { Role } = require('../models/User');
+
+const admins = [...Array(2)].map(() => generateUser(Role.Admin));
+const agents = [...Array(3)].map(() => generateUser(Role.Agent));
+const editors = [...Array(3)].map(() => generateUser(Role.Editor));
+const students = [...Array(5)].map(() => generateUser(Role.Student));
+const users = [...admins, ...agents, ...editors, ...students];
 
 jest.mock('../middlewares/auth', () => {
   const passthrough = async (req, res, next) => next();
@@ -14,18 +22,25 @@ jest.mock('../middlewares/auth', () => {
     permit: (...roles) => passthrough
   });
 });
-
-beforeAll(async () => await db.connect());
-afterAll(async () => await db.clearDatabase());
-
 const programs = [...Array(5)].map(() => generateProgram());
 
-beforeEach(async () => {
+beforeAll(async () => {
+  await db.connect();
   await Program.deleteMany();
   await Program.insertMany(programs);
 });
+afterAll(async () => await db.clearDatabase());
+
 
 describe('GET /api/programs', () => {
+  beforeEach(async () => {
+    protect.mockImplementation(async (req, res, next) => {
+      // req.user = await User.findById(agentId);
+      const admin = admins[0];
+      req.user = admin;
+      next();
+    });
+  });
   it('should return all programs', async () => {
     const resp = await request(app).get('/api/programs');
     const { success, data } = resp.body;

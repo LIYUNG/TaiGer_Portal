@@ -5,6 +5,7 @@ const { app } = require('../app');
 const { connectToDatabase, disconnectFromDatabase } = require('../database');
 const { Role, User } = require('../models/User');
 const { generateUser } = require('./fixtures/users');
+const { protect } = require('../middlewares/auth');
 
 jest.mock('../middlewares/auth', () => {
   const passthrough = async (req, res, next) => next();
@@ -29,6 +30,15 @@ beforeAll(async () => {
 afterAll(async () => await db.clearDatabase());
 
 describe('GET /api/users', () => {
+  beforeEach(async () => {
+    protect.mockImplementation(async (req, res, next) => {
+      // req.user = await User.findById(agentId);
+      const admin = admins[0];
+      req.user = admin;
+      next();
+    });
+  });
+
   it('should return all users', async () => {
     const resp = await request(app).get('/api/users');
     const { success, data } = resp.body;
@@ -39,41 +49,6 @@ describe('GET /api/users', () => {
     expect(data.length).toBe(users.length);
   });
 });
-
-describe('POST /api/users/:id', () => {
-  it('should update a user', async () => {
-    const { _id } = users[0];
-    const { name, email } = generateUser();
-
-    const resp = await request(app)
-      .post(`/api/users/${_id}`)
-      .send({ name, email });
-    const { success, data } = resp.body;
-
-    expect(resp.status).toBe(200);
-    expect(success).toBe(true);
-    expect(data).toMatchObject({ name, email });
-
-    const updatedUser = await User.findById(_id);
-    expect(updatedUser).toMatchObject({ name, email });
-  });
-
-  it.todo("should change user fields when updating it's role");
-});
-
-// describe("DELETE /api/users/:id", () => {
-//   it("should delete a user", async () => {
-//     const { _id } = users[0];
-
-//     const resp = await request(app).delete(`/api/users/${_id}`);
-
-//     expect(resp.status).toBe(200);
-//     expect(resp.body.success).toBe(true);
-
-//     const deletedUser = await User.findById(_id);
-//     expect(deletedUser).toBe(null);
-//   });
-// });
 
 // TODO: move below to their own files?
 describe('GET /api/agents', () => {
@@ -104,6 +79,71 @@ describe('GET /api/editors', () => {
   });
 });
 
+describe('GET /api/students/all', () => {
+  it('should return all students', async () => {
+    const resp = await request(app).get('/api/students/all');
+    const { success, data } = resp.body;
+    expect(resp.status).toBe(200);
+    expect(success).toBe(true);
+
+    const studentIds = students.map(({ _id }) => _id).sort();
+    const receivedIds = data.map(({ _id }) => _id).sort();
+    expect(receivedIds).toEqual(studentIds);
+  });
+});
+
+describe('POST /api/users/:id', () => {
+  it('should update user role', async () => {
+    const { _id } = users[3];
+    const { email, role } = generateUser(Role.Editor);
+
+    const resp = await request(app)
+      .post(`/api/users/${_id}`)
+      .send({ email, role });
+    const { success, data } = resp.body;
+
+    expect(resp.status).toBe(200);
+    expect(success).toBe(true);
+    expect(data).toMatchObject({
+      role: Role.Editor,
+      email
+    });
+
+    const updatedUser = await User.findById(_id);
+    expect(updatedUser).toMatchObject({
+      role: Role.Editor,
+      email
+    });
+  });
+
+  it('should not update Admin role', async () => {
+    const { _id } = users[5];
+    const { email, role } = generateUser(Role.Admin);
+
+    const resp = await request(app)
+      .post(`/api/users/${_id}`)
+      .send({ email, role });
+    const { success } = resp.body;
+
+    expect(resp.status).toBe(409);
+    expect(success).toBe(false);
+  });
+});
+
+describe('DELETE /api/users/:id', () => {
+  it('should delete a user', async () => {
+    const { _id } = users[0];
+
+    const resp = await request(app).delete(`/api/users/${_id}`);
+
+    expect(resp.status).toBe(200);
+    expect(resp.body.success).toBe(true);
+
+    const deletedUser = await User.findById(_id);
+    expect(deletedUser).toBe(null);
+  });
+});
+
 // //TODO: token-specific API!!!
 // describe("GET /api/students", () => {
 //   it("should return role-specific students", async () => {
@@ -118,21 +158,6 @@ describe('GET /api/editors', () => {
 //     // expect(receivedIds).toEqual(studentIds);
 //   });
 // });
-
-describe('GET /api/students/all', () => {
-  it('should return all students', async () => {
-    const resp = await request(app).get('/api/students/all');
-    const { success, data } = resp.body;
-    expect(resp.status).toBe(200);
-    expect(success).toBe(true);
-
-    const studentIds = students.map(({ _id }) => _id).sort();
-    const receivedIds = data.map(({ _id }) => _id).sort();
-    console.log(studentIds);
-    console.log(receivedIds);
-    expect(receivedIds).toEqual(studentIds);
-  });
-});
 
 // TODO: token-specific API!!!
 // describe("GET /api/students/archiv", () => {

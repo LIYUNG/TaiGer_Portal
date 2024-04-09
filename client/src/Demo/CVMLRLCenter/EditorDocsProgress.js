@@ -24,8 +24,11 @@ import {
   application_deadline_calculator,
   isProgramDecided,
   isProgramSubmitted,
-  isProgramWithdraw
+  isProgramWithdraw,
+  getMissingDocs,
+  getExtraDocs
 } from '../Utils/checking-functions';
+
 import { spinner_style2 } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
@@ -651,6 +654,8 @@ function EditorDocsProgress(props) {
                   application={application}
                   openRequirements_ModalWindow={openRequirements_ModalWindow}
                   filetype={'ProgramSpecific'}
+                  missingDocs={getMissingDocs(application)}
+                  extraDocs={getExtraDocs(application)}
                   handleProgramStatus={handleProgramStatus}
                   initGeneralFileThread={initGeneralFileThread}
                   initProgramSpecificFileThread={initProgramSpecificFileThread}

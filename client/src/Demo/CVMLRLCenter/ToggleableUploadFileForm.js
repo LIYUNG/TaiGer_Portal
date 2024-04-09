@@ -8,7 +8,7 @@ import {
 } from '@mui/material';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-const GENERAL_FILTE_TYPE = [
+const GENERAL_FILE_TYPE = [
   { name: 'Please Select', value: '' },
   { name: 'CV', value: 'CV' },
   { name: 'Recommendation Letter (A)', value: 'Recommendation_Letter_A' },
@@ -18,7 +18,7 @@ const GENERAL_FILTE_TYPE = [
   { name: 'Form B', value: 'Form_B' },
   { name: 'Others', value: 'Others' }
 ];
-const PROGRAM_SPECIFIC_FILTE_TYPE = [
+const PROGRAM_SPECIFIC_FILE_TYPE = [
   { name: 'Please Select', value: '' },
   { name: 'ML', value: 'ML' },
   { name: 'Essay', value: 'Essay' },
@@ -34,57 +34,33 @@ const PROGRAM_SPECIFIC_FILTE_TYPE = [
 ];
 function ToggleableUploadFileForm(props) {
   const { t } = useTranslation();
-  var drop_list;
+  const FILETYPE =
+    props.filetype === 'General'
+      ? GENERAL_FILE_TYPE
+      : PROGRAM_SPECIFIC_FILE_TYPE;
 
-  if (props.filetype === 'General') {
-    drop_list = (
-      <FormControl fullWidth size="small">
-        <InputLabel id="thread_category">
-          {t('Category', { ns: 'common' })}
-        </InputLabel>
-        <Select
-          labelId="thread_category"
-          name="thread_category"
-          id="thread_category"
-          label={t('Category', { ns: 'common' })}
-          onChange={(e) => props.handleSelect(e)}
-          value={props.category}
-        >
-          {GENERAL_FILTE_TYPE.map((option) => (
-            <MenuItem key={option.value} value={option.value}>
-              {option.name}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-    );
-  } else {
-    drop_list = (
-      <FormControl fullWidth size="small">
-        <InputLabel id="thread_category">
-          {t('Category', { ns: 'common' })}
-        </InputLabel>
-        <Select
-          labelId="thread_category"
-          name="thread_category"
-          id="thread_category"
-          value={props.category}
-          label={t('Category', { ns: 'common' })}
-          onChange={(e) => props.handleSelect(e)}
-        >
-          {PROGRAM_SPECIFIC_FILTE_TYPE.map((option) => (
-            <MenuItem key={option.value} value={option.value}>
-              {option.name}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-    );
-  }
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12} md={8}>
-        {drop_list}
+      <Grid item xs={8} md={8}>
+        <FormControl fullWidth size="small">
+          <InputLabel id="thread_category">
+            {t('Category', { ns: 'common' })}
+          </InputLabel>
+          <Select
+            labelId="thread_category"
+            name="thread_category"
+            id="thread_category"
+            label={t('Category', { ns: 'common' })}
+            onChange={(e) => props.handleSelect(e)}
+            value={props.category}
+          >
+            {FILETYPE.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
       </Grid>
       <Grid item xs={12} md={4}>
         {props.filetype === 'General' ? (

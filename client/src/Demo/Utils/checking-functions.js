@@ -1410,7 +1410,6 @@ export const checkGeneraldocs = (student) => {
     generaldocs_threads?.filter((thread) =>
       thread.doc_thread_id.file_type.includes('Recommendation_Letter_')
     ).length || 0;
-  console.log(generalRLcount, generalRLneeded);
 
   if (!isCVcreated) {
     missingDocs.push('CV');

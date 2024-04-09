@@ -636,17 +636,25 @@ function EditorDocsProgress(props) {
           res_modal_message={res_modal_message}
         />
       )}
-      <ManualFiles
-        onDeleteFileThread={onDeleteFileThread}
-        handleAsFinalFile={handleAsFinalFile}
-        student={editorDocsProgressState.student}
-        filetype={'General'}
-        initGeneralFileThread={initGeneralFileThread}
-        initProgramSpecificFileThread={initProgramSpecificFileThread}
-        application={null}
-      />
-      <Divider />
-      <Typography sx={{ mt: 2 }}>
+      <Typography variant="h6">
+        {t('General Documents', { ns: 'common' })} ({t('CV', { ns: 'common' })},{' '}
+        {t('Recommendation Letters', { ns: 'common' })})
+      </Typography>
+      <Accordion defaultExpanded={false} disableGutters>
+        <AccordionDetails>
+          <ManualFiles
+            onDeleteFileThread={onDeleteFileThread}
+            handleAsFinalFile={handleAsFinalFile}
+            student={editorDocsProgressState.student}
+            filetype={'General'}
+            initGeneralFileThread={initGeneralFileThread}
+            initProgramSpecificFileThread={initProgramSpecificFileThread}
+            application={null}
+          />
+        </AccordionDetails>
+      </Accordion>
+      <Divider sx={{ mt: 2 }} />
+      <Typography variant="h6" sx={{ mt: 2 }}>
         {t('Applications', { ns: 'common' })}
       </Typography>
       {applications.map((application, i) => (

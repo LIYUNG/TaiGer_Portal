@@ -13,6 +13,7 @@ const generateProgram = (requiredDocuments, optionalDocuments) => ({
   application_start: faker.date.recent(),
   application_deadline: faker.date.future(),
   isArchiv: false,
+  ml_required: true,
   requiredDocuments,
   optionalDocuments
 });

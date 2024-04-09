@@ -18,8 +18,8 @@ jest.mock('../middlewares/auth', () => {
   const passthrough = async (req, res, next) => next();
 
   return Object.assign({}, jest.requireActual('../middlewares/auth'), {
-    protect: passthrough,
-    permit: (...roles) => passthrough
+    protect: jest.fn().mockImplementation(passthrough),
+    permit: jest.fn().mockImplementation((...roles) => passthrough)
   });
 });
 const programs = [...Array(5)].map(() => generateProgram());
@@ -31,15 +31,11 @@ beforeAll(async () => {
 });
 afterAll(async () => await db.clearDatabase());
 
-
 describe('GET /api/programs', () => {
-  beforeEach(async () => {
-    protect.mockImplementation(async (req, res, next) => {
-      // req.user = await User.findById(agentId);
-      const admin = admins[0];
-      req.user = admin;
-      next();
-    });
+  protect.mockImplementation(async (req, res, next) => {
+    const admin = admins[0];
+    req.user = admin;
+    next();
   });
   it('should return all programs', async () => {
     const resp = await request(app).get('/api/programs');

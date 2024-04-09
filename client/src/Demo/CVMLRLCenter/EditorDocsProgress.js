@@ -617,6 +617,16 @@ function EditorDocsProgress(props) {
     );
   }
 
+  const decidedApplication =
+    editorDocsProgressState.student.applications?.filter((app) =>
+      isProgramDecided(app)
+    );
+  const notDecidedApplication =
+    editorDocsProgressState.student.applications?.filter(
+      (app) => !isProgramDecided(app)
+    );
+  const applications = [...decidedApplication, ...notDecidedApplication];
+
   return (
     <Box>
       {res_modal_status >= 400 && (
@@ -639,55 +649,29 @@ function EditorDocsProgress(props) {
       <Typography sx={{ mt: 2 }}>
         {t('Applications', { ns: 'common' })}
       </Typography>
-      {/* TODO: simplify this! with array + function! */}
-      {editorDocsProgressState.student.applications
-        ?.filter((app) => isProgramDecided(app))
-        .map((application, i) => (
-          <div key={i}>
-            <Accordion defaultExpanded={false} disableGutters>
-              <ApplicationAccordionSummary application={application} />
-              <AccordionDetails>
-                <ManualFiles
-                  onDeleteFileThread={onDeleteFileThread}
-                  handleAsFinalFile={handleAsFinalFile}
-                  student={editorDocsProgressState.student}
-                  application={application}
-                  openRequirements_ModalWindow={openRequirements_ModalWindow}
-                  filetype={'ProgramSpecific'}
-                  missingDocs={getMissingDocs(application)}
-                  extraDocs={getExtraDocs(application)}
-                  handleProgramStatus={handleProgramStatus}
-                  initGeneralFileThread={initGeneralFileThread}
-                  initProgramSpecificFileThread={initProgramSpecificFileThread}
-                />
-              </AccordionDetails>
-            </Accordion>
-            <Divider sx={{ my: 2 }} />
-          </div>
-        ))}
-      {editorDocsProgressState.student.applications
-        ?.filter((app) => !isProgramDecided(app))
-        .map((application, i) => (
-          <div key={i}>
-            <Accordion defaultExpanded={false} disableGutters>
-              <ApplicationAccordionSummary application={application} />
-              <AccordionDetails>
-                <ManualFiles
-                  onDeleteFileThread={onDeleteFileThread}
-                  handleAsFinalFile={handleAsFinalFile}
-                  student={editorDocsProgressState.student}
-                  application={application}
-                  openRequirements_ModalWindow={openRequirements_ModalWindow}
-                  filetype={'ProgramSpecific'}
-                  handleProgramStatus={handleProgramStatus}
-                  initGeneralFileThread={initGeneralFileThread}
-                  initProgramSpecificFileThread={initProgramSpecificFileThread}
-                />
-              </AccordionDetails>
-            </Accordion>
-            <Divider sx={{ my: 2 }} />
-          </div>
-        ))}
+      {applications.map((application, i) => (
+        <div key={i}>
+          <Accordion defaultExpanded={false} disableGutters>
+            <ApplicationAccordionSummary application={application} />
+            <AccordionDetails>
+              <ManualFiles
+                onDeleteFileThread={onDeleteFileThread}
+                handleAsFinalFile={handleAsFinalFile}
+                student={editorDocsProgressState.student}
+                application={application}
+                openRequirements_ModalWindow={openRequirements_ModalWindow}
+                filetype={'ProgramSpecific'}
+                missingDocs={getMissingDocs(application)}
+                extraDocs={getExtraDocs(application)}
+                handleProgramStatus={handleProgramStatus}
+                initGeneralFileThread={initGeneralFileThread}
+                initProgramSpecificFileThread={initProgramSpecificFileThread}
+              />
+            </AccordionDetails>
+          </Accordion>
+          <Divider sx={{ my: 2 }} />
+        </div>
+      ))}
       <ModalNew
         open={editorDocsProgressState.deleteFileWarningModel}
         onClose={closeWarningWindow}

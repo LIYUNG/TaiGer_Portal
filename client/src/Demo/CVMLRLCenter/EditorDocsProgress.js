@@ -636,6 +636,16 @@ function EditorDocsProgress(props) {
     );
   const applications = [...decidedApplication, ...notDecidedApplication];
 
+  const decidedApplication =
+    editorDocsProgressState.student.applications?.filter((app) =>
+      isProgramDecided(app)
+    );
+  const notDecidedApplication =
+    editorDocsProgressState.student.applications?.filter(
+      (app) => !isProgramDecided(app)
+    );
+  const applications = [...decidedApplication, ...notDecidedApplication];
+
   return (
     <Box>
       {res_modal_status >= 400 && (

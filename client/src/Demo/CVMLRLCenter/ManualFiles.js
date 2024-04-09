@@ -8,8 +8,6 @@ import ToggleableUploadFileForm from './ToggleableUploadFileForm';
 import {
   check_generaldocs,
   file_category_const,
-  getMissingDocs,
-  getExtraDocs,
   is_TaiGer_role,
   is_program_closed,
   is_program_ml_rl_essay_finished
@@ -21,6 +19,7 @@ function ManualFiles(props) {
   const { user } = useAuth();
   const { t } = useTranslation();
   const [categoryState, setCategory] = useState('');
+  const { missingDocs, extraDocs } = props;
 
   const handleCreateGeneralMessageThread = (e, studentId, fileCategory) => {
     e.preventDefault();
@@ -57,71 +56,63 @@ function ManualFiles(props) {
     setCategory(e.target.value);
   };
 
-  let missingDocs = [];
-  let extraDocs = [];
-  if (!props.filetype !== 'General') {
-    missingDocs = getMissingDocs(props.application);
-    extraDocs = getExtraDocs(props.application);
-  }
-
   const create_generaldoc_reminder = check_generaldocs(props.student);
   const required_doc_keys = Object.keys(file_category_const);
 
   return (
-    <>
-      <Grid container spacing={2}>
-        <Grid item xs={12} md={10}>
-          <Grid container spacing={2}>
-            {props.filetype === 'General' && (
+    <Grid container spacing={2}>
+      <Grid item xs={12} md={10}>
+        <Grid container spacing={2}>
+          {props.filetype === 'General' && (
+            <Grid item xs={12}>
+              <Typography>
+                {t('General Documents', { ns: 'common' })} (
+                {t('CV', { ns: 'common' })},{' '}
+                {t('Recommendation Letters', { ns: 'common' })})
+              </Typography>
+              {create_generaldoc_reminder && (
+                <Card sx={{ p: 2, mb: 2 }}>
+                  <Typography>
+                    The following general documents are not started yet, please{' '}
+                    <b>create</b> the discussion thread below:{' '}
+                    {props.student.generaldocs_threads &&
+                      props.student.generaldocs_threads.findIndex(
+                        (thread) => thread.doc_thread_id.file_type === 'CV'
+                      ) === -1 && (
+                        <li>
+                          <b>{t('CV')}</b>
+                        </li>
+                      )}
+                  </Typography>
+                </Card>
+              )}
+            </Grid>
+          )}
+          {props.filetype === 'ProgramSpecific' && (
+            <>
               <Grid item xs={12}>
-                <Typography>
-                  {t('General Documents', { ns: 'common' })} (
-                  {t('CV', { ns: 'common' })},{' '}
-                  {t('Recommendation Letters', { ns: 'common' })})
-                </Typography>
-                {create_generaldoc_reminder && (
-                  <Card sx={{ p: 2, mb: 2 }}>
-                    <Typography>
-                      The following general documents are not started yet,
-                      please <b>create</b> the discussion thread below:{' '}
-                      {props.student.generaldocs_threads &&
-                        props.student.generaldocs_threads.findIndex(
-                          (thread) => thread.doc_thread_id.file_type === 'CV'
-                        ) === -1 && (
-                          <li>
-                            <b>{t('CV')}</b>
-                          </li>
-                        )}
+                {missingDocs?.length > 0 && (
+                  <Alert severity="error">
+                    <Typography variant="string">
+                      Please assign the following missing document for this
+                      application:
                     </Typography>
-                  </Card>
+
+                    {missingDocs?.map((doc, i) => (
+                      <li key={i}>
+                        <b>{doc}</b>
+                      </li>
+                    ))}
+                  </Alert>
                 )}
               </Grid>
-            )}
-            {props.filetype === 'ProgramSpecific' && (
-              <>
-                <Grid item xs={12}>
-                  {missingDocs.length > 0 && (
-                    <Alert severity="error">
-                      <Typography variant="string">
-                        Please assign the following missing document for this
-                        application:
-                      </Typography>
-
-                      {missingDocs?.map((doc, i) => (
-                        <li key={i}>
-                          <b>{doc}</b>
-                        </li>
-                      ))}
-                    </Alert>
-                  )}
-                </Grid>
-                <Grid item xs={12}>
-                  {extraDocs.length > 0 && (
-                    <Alert severity="warning">
-                      <Typography variant="string">
-                        The following document is not required for this
-                        application:
-                      </Typography>
+              <Grid item xs={12}>
+                {extraDocs?.length > 0 && (
+                  <Alert severity="warning">
+                    <Typography variant="string">
+                      The following document is not required for this
+                      application:
+                    </Typography>
 
                       {extraDocs?.map((doc, i) => (
                         <li key={i}>
@@ -170,6 +161,7 @@ function ManualFiles(props) {
                 (!props.application ||
                   (props.application && props.application.closed !== 'O')) && (
                   <ToggleableUploadFileForm
+                    role={user.role}
                     user={user}
                     student={props.student}
                     handleSelect={handleSelect}
@@ -203,8 +195,7 @@ function ManualFiles(props) {
                   onClick={() =>
                     props.handleProgramStatus(
                       props.student._id.toString(),
-                      props.application.programId._id.toString(),
-                      is_program_closed(props.application)
+                      props.application.programId._id.toString()
                     )
                   }
                 >
@@ -256,7 +247,6 @@ function ManualFiles(props) {
           )}
         </Grid>
       </Grid>
-    </>
   );
 }
 

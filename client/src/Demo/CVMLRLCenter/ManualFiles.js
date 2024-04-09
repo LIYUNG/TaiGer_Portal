@@ -51,6 +51,44 @@ function TaskDeltaInfoBox(props) {
   );
 }
 
+function TaskDeltaInfoBox(props) {
+  const { missingDocs, extraDocs } = props;
+  return (
+    <>
+      <Grid item xs={12}>
+        {missingDocs?.length > 0 && (
+          <Alert severity="error">
+            <Typography variant="string">
+              Please assign the following missing document for this application:
+            </Typography>
+
+            {missingDocs?.map((doc, i) => (
+              <li key={i}>
+                <b>{doc}</b>
+              </li>
+            ))}
+          </Alert>
+        )}
+      </Grid>
+      <Grid item xs={12}>
+        {extraDocs?.length > 0 && (
+          <Alert severity="warning">
+            <Typography variant="string">
+              The following document is not required for this application:
+            </Typography>
+
+            {extraDocs?.map((doc, i) => (
+              <li key={i}>
+                <b>{doc}</b>
+              </li>
+            ))}
+          </Alert>
+        )}
+      </Grid>
+    </>
+  );
+}
+
 function ManualFiles(props) {
   const { user } = useAuth();
   const [categoryState, setCategory] = useState('');

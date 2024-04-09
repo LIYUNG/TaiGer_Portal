@@ -1391,19 +1391,44 @@ export const is_all_uni_assist_vpd_uploaded = (student) => {
   return true;
 };
 
-export const check_generaldocs = (student) => {
-  if (!student.generaldocs_threads) {
-    return false;
-  }
-  if (
-    student.generaldocs_threads.findIndex(
+export const checkGeneraldocs = (student) => {
+  let missingDocs = [];
+  let extraDocs = [];
+  const { generaldocs_threads, applications } = student;
+  const isCVcreated =
+    generaldocs_threads?.findIndex(
       (thread) => thread.doc_thread_id.file_type === 'CV'
-    ) === -1
-  ) {
-    return true;
-  } else {
-    return false;
+    ) !== -1;
+
+  const appGeneralRLneeded = applications?.map((app) => {
+    return checkIsRLspecific(app?.programId)
+      ? 0
+      : parseInt(app.programId?.rl_required);
+  });
+  const generalRLneeded = Math.max(...appGeneralRLneeded);
+  const generalRLcount =
+    generaldocs_threads?.filter((thread) =>
+      thread.doc_thread_id.file_type.includes('Recommendation_Letter_')
+    ).length || 0;
+  console.log(generalRLcount, generalRLneeded);
+
+  if (!isCVcreated) {
+    missingDocs.push('CV');
   }
+
+  if (generalRLcount < generalRLneeded) {
+    missingDocs.push(
+      'Recommendation Letter x ' + (generalRLneeded - generalRLcount)
+    );
+  }
+
+  if (generalRLcount > generalRLneeded) {
+    extraDocs.push(
+      'Recommendation Letter x ' + (generalRLcount - generalRLneeded)
+    );
+  }
+
+  return { missingDocs, extraDocs };
 };
 
 export const getNumberOfFilesByStudent = (messages, student_id) => {

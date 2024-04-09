@@ -210,7 +210,7 @@ export const translation_en = {
     'Program Conflicts': 'Program Conflicts',
     'Tasks Dashboard': 'Tasks Dashboard',
     'Program Conflict': 'Program Conflict',
-    Category: 'Calendar',
+    Category: 'Category',
     Calendar: 'Calendar',
     'Calendar Events': 'Calendar Events',
     'To Calendar': 'To Calendar',

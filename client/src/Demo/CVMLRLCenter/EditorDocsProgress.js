@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link as LinkDom } from 'react-router-dom';
 import {
+  Alert,
   Box,
   Button,
   CircularProgress,
@@ -25,6 +26,7 @@ import {
   isProgramDecided,
   isProgramSubmitted,
   isProgramWithdraw,
+  check_generaldocs,
   getMissingDocs,
   getExtraDocs
 } from '../Utils/checking-functions';
@@ -616,6 +618,9 @@ function EditorDocsProgress(props) {
       </AccordionSummary>
     );
   }
+  const create_generaldoc_reminder = check_generaldocs(
+    editorDocsProgressState.student
+  );
 
   const decidedApplication =
     editorDocsProgressState.student.applications?.filter((app) =>
@@ -642,6 +647,22 @@ function EditorDocsProgress(props) {
       </Typography>
       <Accordion defaultExpanded={false} disableGutters>
         <AccordionDetails>
+          {create_generaldoc_reminder && (
+            <Alert sx={{ mb: 2 }} severity="warning">
+              <Typography>
+                The following general documents are not started yet, please{' '}
+                <b>create</b> the discussion thread below:{' '}
+                {editorDocsProgressState.student.generaldocs_threads &&
+                  editorDocsProgressState.student.generaldocs_threads.findIndex(
+                    (thread) => thread.doc_thread_id.file_type === 'CV'
+                  ) === -1 && (
+                    <li>
+                      <b>{t('CV')}</b>
+                    </li>
+                  )}
+              </Typography>
+            </Alert>
+          )}
           <ManualFiles
             onDeleteFileThread={onDeleteFileThread}
             handleAsFinalFile={handleAsFinalFile}

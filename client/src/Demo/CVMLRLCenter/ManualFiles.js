@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
 import { Alert, Button, Grid, Link, Typography } from '@mui/material';
-import { useTranslation } from 'react-i18next';
 import { Link as LinkDom } from 'react-router-dom';
 
 import ManualFilesList from './ManualFilesList';
 import ToggleableUploadFileForm from './ToggleableUploadFileForm';
 import {
-  check_generaldocs,
   file_category_const,
   is_TaiGer_role,
   is_program_closed,
@@ -55,7 +53,6 @@ function TaskDeltaInfoBox(props) {
 
 function ManualFiles(props) {
   const { user } = useAuth();
-  const { t } = useTranslation();
   const [categoryState, setCategory] = useState('');
   const { missingDocs, extraDocs } = props;
 
@@ -93,34 +90,12 @@ function ManualFiles(props) {
     e.preventDefault();
     setCategory(e.target.value);
   };
-
-  const create_generaldoc_reminder = check_generaldocs(props.student);
   const required_doc_keys = Object.keys(file_category_const);
 
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} md={10}>
         <Grid container spacing={2}>
-          {props.filetype === 'General' && (
-            <Grid item xs={12}>
-              {create_generaldoc_reminder && (
-                <Alert severity="warning">
-                  <Typography>
-                    The following general documents are not started yet, please{' '}
-                    <b>create</b> the discussion thread below:{' '}
-                    {props.student.generaldocs_threads &&
-                      props.student.generaldocs_threads.findIndex(
-                        (thread) => thread.doc_thread_id.file_type === 'CV'
-                      ) === -1 && (
-                        <li>
-                          <b>{t('CV')}</b>
-                        </li>
-                      )}
-                  </Typography>
-                </Alert>
-              )}
-            </Grid>
-          )}
           {(missingDocs || extraDocs) && (
             <TaskDeltaInfoBox missingDocs={missingDocs} extraDocs={extraDocs} />
           )}

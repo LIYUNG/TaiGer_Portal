@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link as LinkDom } from 'react-router-dom';
 import {
   Alert,
+  Alert,
   Box,
   Button,
   CircularProgress,
@@ -27,6 +28,7 @@ import {
   isProgramDecided,
   isProgramSubmitted,
   isProgramWithdraw,
+  check_generaldocs,
   checkGeneraldocs,
   getMissingDocs,
   getExtraDocs
@@ -547,9 +549,7 @@ function EditorDocsProgress(props) {
               </Typography>
             ) : isProgramSubmitted(application) ? (
               <>
-                <IconButton>
-                  {FILE_OK_SYMBOL}
-                </IconButton>
+                <IconButton>{FILE_OK_SYMBOL}</IconButton>
               </>
             ) : isProgramWithdraw(application) ? (
               <Typography fontWeight="bold">
@@ -625,16 +625,6 @@ function EditorDocsProgress(props) {
   const { missingDocs, extraDocs } = checkGeneraldocs(
     editorDocsProgressState.student
   );
-
-  const decidedApplication =
-    editorDocsProgressState.student.applications?.filter((app) =>
-      isProgramDecided(app)
-    );
-  const notDecidedApplication =
-    editorDocsProgressState.student.applications?.filter(
-      (app) => !isProgramDecided(app)
-    );
-  const applications = [...decidedApplication, ...notDecidedApplication];
 
   const decidedApplication =
     editorDocsProgressState.student.applications?.filter((app) =>

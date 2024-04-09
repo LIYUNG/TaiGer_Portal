@@ -62,7 +62,7 @@ function ManualFiles(props) {
       alert('Please select file type');
     } else {
       props.initGeneralFileThread(e, studentId, fileCategory);
-      setCategory({ category: '' });
+      setCategory('');
     }
   };
 

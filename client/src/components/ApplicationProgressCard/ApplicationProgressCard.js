@@ -101,9 +101,6 @@ export default function ApplicationProgressCard(props) {
     e.stopPropagation();
     setIsLoading(true);
     setReturnedMessage('');
-    console.log(hasFile);
-    console.log(letter);
-    console.log(application);
     const formData = new FormData();
     if (letter) {
       formData.append('file', letter);

@@ -75,7 +75,6 @@ function AssignEssayWritersPage(props) {
         }
       },
       (error) => {
-        console.log('error in index');
         setAssignEditorsState((prevState) => ({
           ...prevState,
           isLoaded: true,

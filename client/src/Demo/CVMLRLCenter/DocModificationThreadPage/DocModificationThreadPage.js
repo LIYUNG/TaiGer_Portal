@@ -193,7 +193,6 @@ function DocModificationThreadPage() {
                 }
                 resolve(checkPoints_temp);
               } catch (error) {
-                console.error('Error reading PDF file:', error);
                 checkPoints_temp.error.value = true;
                 checkPoints_temp.error.text = error;
                 reject(checkPoints_temp);
@@ -273,8 +272,6 @@ function DocModificationThreadPage() {
             const checkPoints_temp4 = Object.assign({}, checkPoints);
             const reader = new FileReader();
             reader.onload = async (event) => {
-              console.log(event);
-
               resolve(checkPoints_temp4);
             };
             reader.readAsArrayBuffer(fl);
@@ -291,7 +288,11 @@ function DocModificationThreadPage() {
           }));
         })
         .catch((error) => {
-          console.error('Error processing files:', error);
+          setDocModificationThreadPageState((prevState) => ({
+            ...prevState,
+            res_modal_message: error,
+            res_modal_status: 500
+          }));
         });
     } else {
       setDocModificationThreadPageState((prevState) => ({
@@ -637,7 +638,6 @@ function DocModificationThreadPage() {
         }
       },
       (error) => {
-        console.log('error in index');
         setDocModificationThreadPageState((prevState) => ({
           ...prevState,
           isLoaded: true,

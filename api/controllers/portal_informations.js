@@ -39,7 +39,6 @@ const getPortalCredentials = asyncHandler(async (req, res) => {
 const createPortalCredentials = asyncHandler(async (req, res) => {
   const { studentId, programId } = req.params;
   const credentials = req.body;
-  // console.log(credentials);
   const student = await Student.findById(studentId);
   const application = student.applications.find(
     (appli) => appli.programId.toString() === programId

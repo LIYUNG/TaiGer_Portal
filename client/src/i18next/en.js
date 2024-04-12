@@ -9,6 +9,7 @@ export const translation_en = {
   },
   common: {
     Add: 'Add',
+    'I Agree': 'I Agree',
     Account: 'Account',
     Archiv: 'Archiv',
     Activate: 'Activate',

@@ -9,6 +9,7 @@ export const translation_zh_TW = {
   },
   common: {
     Add: '新增',
+    'I Agree': '我同意',
     Account: '帳號',
     Archiv: '封存',
     Activate: '啟用',

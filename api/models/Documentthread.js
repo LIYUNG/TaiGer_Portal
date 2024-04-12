@@ -18,6 +18,10 @@ const documentThreadsSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  isOriginAuthorDeclarationConfirmedByStudent: {
+    type: Boolean,
+    default: false
+  },
   messages: [
     {
       user_id: { type: ObjectId, ref: 'User' },

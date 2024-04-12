@@ -349,6 +349,18 @@ export const uploadDocumentThreadImage = (documentsthreadId, studentId, file) =>
     file
   );
 
+export const putOriginAuthorConfirmedByStudent = (
+  documentsthreadId,
+  studentId,
+  checked
+) =>
+  request.put(
+    `/api/document-threads/${documentsthreadId}/${studentId}/origin-author`,
+    {
+      checked
+    }
+  );
+
 export const SubmitMessageWithAttachment = (
   documentsthreadId,
   studentId,

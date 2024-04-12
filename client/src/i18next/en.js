@@ -240,6 +240,10 @@ export const translation_en = {
       'Please complete Profile so that your agent can understand your situation'
   },
   documents: {
+    confirmDocument:
+      '{{studentName}} {{studentNameZh}} confirms that {{docName}} was completed without the assistance of AI. I agree to this term and take full responsibility for the edited content.',
+    notConfirmDocument:
+      '{{studentName}} {{studentNameZh}} did not confirm that {{docName}} was completed without the assistance of AI.',
     Reject: 'Reject'
   },
   programList: {

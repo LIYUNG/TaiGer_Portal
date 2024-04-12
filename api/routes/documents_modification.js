@@ -46,7 +46,8 @@ const {
   putSurveyInput,
   assignEssayWritersToEssayTask,
   resetSurveyInput,
-  getAllActiveEssays
+  getAllActiveEssays,
+  putOriginAuthorConfirmedByStudent
 } = require('../controllers/documents_modification');
 const {
   docThreadMultitenant_filter,
@@ -149,6 +150,15 @@ router
     doc_thread_ops_validator,
     assignEssayWritersToEssayTask,
     logAccess
+  );
+
+router
+  .route('/:messagesThreadId/:studentId/origin-author')
+  .put(
+    SetStatusMessagesThreadRateLimiter,
+    permit(Role.Student),
+    multitenant_filter,
+    putOriginAuthorConfirmedByStudent
   );
 
 router

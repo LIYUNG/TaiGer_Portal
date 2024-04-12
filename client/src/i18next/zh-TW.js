@@ -242,6 +242,10 @@ export const translation_zh_TW = {
       '請完成背景資料填寫，好讓您的故未能掌握您的狀況'
   },
   documents: {
+    confirmDocument:
+      '{{studentName}} {{studentNameZh}} 確認 {{docName}} 這份文件皆無用 AI 輔助完成，我同意此條款並對編修後的內容全權負責。',
+    notConfirmDocument:
+      '{{studentName}} {{studentNameZh}} 尚未確認 {{docName}} 這份文件皆無用 AI 輔助完成。',
     Reject: '拒絕'
   },
   programList: {

@@ -831,7 +831,7 @@ const getMessages = asyncHandler(async (req, res) => {
   const document_thread = await Documentthread.findById(messagesThreadId)
     .populate(
       'student_id',
-      'firstname lastname role agents editors application_preference'
+      'firstname lastname firstname_chinese lastname_chinese role agents editors application_preference'
     )
     .populate('messages.user_id', 'firstname lastname role')
     .populate('program_id')
@@ -1529,6 +1529,17 @@ const getMessageFileDownload = asyncHandler(async (req, res) => {
     throw new ErrorResponse(403, 'thread not found');
   }
 
+  if (
+    document_thread.file_type === 'Essay' &&
+    !document_thread.isOriginAuthorDeclarationConfirmedByStudent
+  ) {
+    logger.error('getMessageFileDownload: Please declare origin author and condition term.');
+    throw new ErrorResponse(
+      403,
+      'Please declare origin author and condition term.'
+    );
+  }
+
   // (O) Multitenancy check
   if (
     user.role === Role.Student &&
@@ -1593,6 +1604,30 @@ const getMessageFileDownload = asyncHandler(async (req, res) => {
     res.attachment(fileKey);
     return res.end(value);
   }
+});
+
+const putOriginAuthorConfirmedByStudent = asyncHandler(async (req, res) => {
+  const {
+    params: { messagesThreadId },
+    body: { checked }
+  } = req;
+
+  const document_thread = await Documentthread.findByIdAndUpdate(
+    messagesThreadId,
+    { isOriginAuthorDeclarationConfirmedByStudent: checked },
+    { new: true }
+  );
+
+  if (!document_thread) {
+    logger.error(
+      'putOriginAuthorConfirmedByStudent: Invalid message thread id'
+    );
+    throw new ErrorResponse(403, 'Invalid message thread id');
+  }
+
+  res.status(200).send({
+    success: true
+  });
 });
 
 // (O) notification student email works
@@ -2226,6 +2261,7 @@ module.exports = {
   getMessageFileDownload,
   postImageInThread,
   postMessages,
+  putOriginAuthorConfirmedByStudent,
   SetStatusMessagesThread,
   deleteApplicationThread,
   handleDeleteGeneralThread,
@@ -2233,7 +2269,5 @@ module.exports = {
   deleteAMessageInThread,
   getAllActiveEssays,
   assignEssayWritersToEssayTask,
-  assignEssayWritersToEssayTask,
-  getAllActiveEssays,
   clearEssayWriters
 };

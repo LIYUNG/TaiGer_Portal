@@ -5,15 +5,21 @@ import * as XLSX from 'xlsx';
 import DownloadIcon from '@mui/icons-material/Download';
 import { FiExternalLink } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
+import { green, grey } from '@mui/material/colors';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import HelpIcon from '@mui/icons-material/Help';
 import {
   Typography,
   Button,
+  FormControlLabel,
+  Checkbox,
   Card,
   Link,
   Box,
   CircularProgress,
   Grid,
   Breadcrumbs,
+  useTheme,
   Avatar
 } from '@mui/material';
 import { pdfjs } from 'react-pdf'; // Library for rendering PDFs
@@ -39,7 +45,8 @@ import {
   getMessagThread,
   deleteAMessageInThread,
   SetFileAsFinal,
-  updateEssayWriter
+  updateEssayWriter,
+  putOriginAuthorConfirmedByStudent
 } from '../../../api';
 import { TabTitle } from '../../Utils/TabTitle';
 import DEMO from '../../../store/constant';
@@ -52,6 +59,7 @@ import EditEssayWritersSubpage from '../../Dashboard/MainViewTab/StudDocsOvervie
 
 function DocModificationThreadPage() {
   const { user } = useAuth();
+  const theme = useTheme();
   const { t } = useTranslation();
   const { documentsthreadId } = useParams();
   const [docModificationThreadPageState, setDocModificationThreadPageState] =
@@ -80,7 +88,10 @@ function DocModificationThreadPage() {
       res_modal_message: ''
     });
   const [checkResult, setCheckResult] = useState([]);
-
+  const [openOriginAuthorModal, setOpenOriginAuthorModal] = useState(false);
+  const [originAuthorConfirmed, setOriginAuthorConfirmed] = useState(false);
+  const [originAuthorCheckboxConfirmed, setOriginAuthorCheckboxConfirmed] =
+    useState(false);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -89,6 +100,10 @@ function DocModificationThreadPage() {
           resp.data;
         const { status } = resp;
         if (success) {
+          setOriginAuthorConfirmed(
+            data?.isOriginAuthorDeclarationConfirmedByStudent
+          );
+
           setDocModificationThreadPageState((prevState) => ({
             ...prevState,
             success,
@@ -271,7 +286,7 @@ function DocModificationThreadPage() {
             const checkPoints = {};
             const checkPoints_temp4 = Object.assign({}, checkPoints);
             const reader = new FileReader();
-            reader.onload = async (event) => {
+            reader.onload = async () => {
               resolve(checkPoints_temp4);
             };
             reader.readAsArrayBuffer(fl);
@@ -369,6 +384,48 @@ function DocModificationThreadPage() {
         .fill()
         .map((x, i) => i) // to expand all]
     }));
+  };
+
+  const postOriginAuthorConfirmed = (checked) => {
+    setOriginAuthorConfirmed(checked);
+    putOriginAuthorConfirmedByStudent(
+      docModificationThreadPageState.documentsthreadId,
+      docModificationThreadPageState.thread.student_id._id,
+      originAuthorCheckboxConfirmed
+    ).then(
+      (resp) => {
+        const { success } = resp.data;
+        const { status } = resp;
+        if (success) {
+          setDocModificationThreadPageState((prevState) => ({
+            ...prevState,
+            success,
+            thread: {
+              ...docModificationThreadPageState.thread,
+              isOriginAuthorDeclarationConfirmedByStudent: true
+            }
+          }));
+        } else {
+          const { message } = resp.data;
+          setDocModificationThreadPageState((prevState) => ({
+            ...prevState,
+            isLoaded: true,
+            buttonDisabled: false,
+            res_modal_message: message,
+            res_modal_status: status
+          }));
+        }
+      },
+      (error) => {
+        setDocModificationThreadPageState((prevState) => ({
+          ...prevState,
+          isLoaded: true,
+          error,
+          res_modal_status: 500,
+          res_modal_message: ''
+        }));
+      }
+    );
   };
 
   const handleClickSave = (e, editorState) => {
@@ -696,6 +753,7 @@ function DocModificationThreadPage() {
   );
   let docName;
   const student_name = `${docModificationThreadPageState.thread.student_id.firstname} ${docModificationThreadPageState.thread.student_id.lastname}`;
+  const student_name_zh = `${docModificationThreadPageState.thread.student_id.lastname_chinese}${docModificationThreadPageState.thread.student_id.firstname_chinese}`;
   if (docModificationThreadPageState.thread.program_id) {
     docName =
       docModificationThreadPageState.thread.program_id.school +
@@ -712,6 +770,45 @@ function DocModificationThreadPage() {
   return (
     <Box>
       {!isLoaded && <Loading />}
+      {docModificationThreadPageState.thread?.file_type === 'Essay' &&
+      originAuthorConfirmed ? (
+        <Box className="sticky-top">
+          <Typography variant="body1">
+            <CheckCircleIcon
+              size={18}
+              style={{ color: green[500] }}
+              title="Agree"
+            />
+            &nbsp;
+            {t('confirmDocument', {
+              ns: 'documents',
+              studentName: student_name,
+              studentNameZh: student_name_zh,
+              docName
+            })}
+            &nbsp;
+            <span
+              onClick={() => setOpenOriginAuthorModal(!openOriginAuthorModal)}
+              style={{ color: theme.palette.primary.main, cursor: 'pointer' }}
+            >
+              {t('Read More')}
+            </span>
+          </Typography>
+        </Box>
+      ) : (
+        <Box className="sticky-top">
+          <Typography variant="body1">
+            <HelpIcon size={18} style={{ color: grey[400] }} />
+            &nbsp;
+            {t('notConfirmDocument', {
+              ns: 'documents',
+              studentName: student_name,
+              studentNameZh: student_name_zh,
+              docName
+            })}
+          </Typography>
+        </Box>
+      )}
       <Breadcrumbs aria-label="breadcrumb">
         <Link
           underline="hover"
@@ -721,22 +818,20 @@ function DocModificationThreadPage() {
         >
           {appConfig.companyName}
         </Link>
+        <Link
+          underline="hover"
+          color="inherit"
+          component={LinkDom}
+          to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+            docModificationThreadPageState.thread.student_id._id.toString(),
+            DEMO.PROFILE_HASH
+          )}`}
+        >
+          {student_name}
+        </Link>
         <Typography variant="body1" color="text.primary">
-          <Link
-            underline="hover"
-            color="inherit"
-            component={LinkDom}
-            to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-              docModificationThreadPageState.thread.student_id._id.toString(),
-              DEMO.PROFILE_HASH
-            )}`}
-          >
-            {student_name}
-            {'   '}
-            {docName}
-            {' Discussion thread'}
-            {'   '}
-          </Link>
+          {docName}
+          {' Discussion thread'}
         </Typography>
         <span style={{ float: 'right' }}>
           <Button
@@ -1192,6 +1287,80 @@ function DocModificationThreadPage() {
             {isSubmissionLoaded ? t('Mark as open') : <CircularProgress />}
           </Button>
         ))}
+      <ModalNew
+        open={
+          (docModificationThreadPageState.thread.file_type === 'Essay' &&
+            is_TaiGer_Student(user) &&
+            !originAuthorConfirmed) ||
+          openOriginAuthorModal
+        }
+        onClose={() => {}}
+        aria-labelledby="modal-orginal-declaration"
+      >
+        <Box>
+          <Typography variant="h6">{t('Warning', { ns: 'common' })}</Typography>
+          <Typography variant="body1">
+            各位同學您好，
+            今年開始德國學校已大量使用人工智慧技術來檢測申請文件(小論文/大論文/作業等等的內容)。為了確保台德學生的權益，我們需要向大家說明幾項重要事情。我們協助您撰寫小論文的過程中，我們會提出明確的寫作建議，包括內容走向、文章結構和文獻使用等建議。我們的目標是指導您完成一篇具有高質量的文章，以符合學校的申請要求。
+            在撰寫過程中，我們首先會對您的文章內容提出指導方向，但請注意，我們的指導僅限於內文走向架構以及撰寫大原則，並不包括「重寫」或「編譯」。且內容草稿完成後，我們的外籍顧問將進行第二階段的潤稿，我們外籍顧問僅對您的英文進行修改。在此步驟中，我們將專注於英文文法的修訂，而不涉及文字重組或整篇文章重新論述或全篇改寫。
+            請放心，我們的英文編修過程將使用word文檔中的reviewing
+            mode修訂功能，以便您隨時查看修訂情況。我們建議您仔細審閱每一處修訂，並自行決定是否接受或拒絕修訂。如果您勾選「接受」英文編修建議，代表學生已同意此建議並對編修後的內容全權負責。
+            然而，請注意，儘管我們致力於提供最優質的服務，但我們無法保證學校或其他機構不會對您的文章提出抄襲或是使用人工智慧技術的質疑。若因為任何原因導致您的文章不符合學校的標準，本公司不對相關事件負責。
+            感謝您對我們的信任和合作。如果您有任何疑問或需要進一步的幫助，請隨時與我們聯繫。我們期待與您共同完成優秀的小論文。
+          </Typography>
+          <FormControlLabel
+            label={`我 (${student_name} ${student_name_zh}) 確認 ${docName} 這份文件皆無用 AI 輔助完成，我同意此條款並對編修後的內容全權負責。`}
+            control={
+              <Checkbox
+                checked={
+                  originAuthorCheckboxConfirmed ||
+                  docModificationThreadPageState.thread
+                    .isOriginAuthorDeclarationConfirmedByStudent
+                }
+                disabled={
+                  docModificationThreadPageState.thread
+                    .isOriginAuthorDeclarationConfirmedByStudent
+                }
+                onChange={() =>
+                  setOriginAuthorCheckboxConfirmed(
+                    !originAuthorCheckboxConfirmed
+                  )
+                }
+              />
+            }
+          />
+          <br />
+          {docModificationThreadPageState.thread
+            ?.isOriginAuthorDeclarationConfirmedByStudent ? (
+            <Button
+              fullWidth
+              color="primary"
+              variant="contained"
+              onClick={() => setOpenOriginAuthorModal(!openOriginAuthorModal)}
+              sx={{ mr: 2 }}
+            >
+              {t('Close', { ns: 'common' })}
+            </Button>
+          ) : (
+            <Button
+              fullWidth
+              color="primary"
+              variant="contained"
+              disabled={!originAuthorCheckboxConfirmed}
+              onClick={() =>
+                postOriginAuthorConfirmed(originAuthorCheckboxConfirmed)
+              }
+              sx={{ mr: 2 }}
+            >
+              {isSubmissionLoaded ? (
+                t('Agree', { ns: 'common' })
+              ) : (
+                <CircularProgress />
+              )}
+            </Button>
+          )}
+        </Box>
+      </ModalNew>
       <ModalNew
         open={docModificationThreadPageState.SetAsFinalFileModel}
         onClose={closeSetAsFinalFileModelWindow}

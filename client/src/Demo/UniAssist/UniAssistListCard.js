@@ -455,7 +455,7 @@ function UniAssistListCard(props) {
           application.uni_assist?.vpd_paid_confirmation_file_path === '' &&
           application.uni_assist?.vpd_file_path === '' &&
           !application.uni_assist?.isPaid &&
-          application.uni_assist?.status !== 'notneeded' && (
+          application.uni_assist?.status !== DocumentStatus.NotNeeded && (
             <Button
               size="small"
               variant="contained"
@@ -471,7 +471,7 @@ function UniAssistListCard(props) {
               {t('Set Not Needed')}
             </Button>
           )}
-        {application.uni_assist?.status === 'notneeded' &&
+        {application.uni_assist?.status === DocumentStatus.NotNeeded &&
           is_TaiGer_AdminAgent(user) && (
             <Button
               size="small"
@@ -512,13 +512,13 @@ function UniAssistListCard(props) {
             <ProgramName application={application} />
             <SetNeedButtons application={application} />
 
-            {application.uni_assist?.status === 'notneeded' && (
+            {application.uni_assist?.status === DocumentStatus.NotNeeded && (
               <Typography variant="string">
                 Uni-assist is not necessary as it can be reused from another
                 program.
               </Typography>
             )}
-            {application.uni_assist?.status !== 'notneeded' && (
+            {application.uni_assist?.status !== DocumentStatus.NotNeeded && (
               <Box>
                 {is_TaiGer_AdminAgent(user) && (
                   <FormControlLabel
@@ -563,32 +563,37 @@ function UniAssistListCard(props) {
                   {!application.uni_assist ||
                   application.uni_assist.status === DocumentStatus.Missing ||
                   application.uni_assist.status === 'notstarted' ? (
-                    <>
-                      {uniAssistListCardState.isLoaded2[
-                        `${application.programId._id.toString()}`
-                      ] ? (
-                        <Button
-                          component="label"
-                          size="small"
-                          variant="outlined"
-                          startIcon={<CloudUploadIcon />}
-                        >
-                          {t('Upload', { ns: 'common' })} VPD
-                          <VisuallyHiddenInput
-                            type="file"
-                            onChange={(e) =>
-                              handleUniAssistDocSubmit(
-                                e,
-                                uniAssistListCardState.student._id.toString(),
-                                application.programId._id.toString()
-                              )
-                            }
-                          />
-                        </Button>
-                      ) : (
-                        <CircularProgress size={16} />
-                      )}
-                    </>
+                    <Button
+                      component="label"
+                      size="small"
+                      variant="outlined"
+                      disabled={
+                        !uniAssistListCardState.isLoaded2[
+                          application.programId._id.toString()
+                        ]
+                      }
+                      startIcon={
+                        !uniAssistListCardState.isLoaded2[
+                          application.programId._id.toString()
+                        ] ? (
+                          <CircularProgress size={16} />
+                        ) : (
+                          <CloudUploadIcon />
+                        )
+                      }
+                    >
+                      {t('Upload', { ns: 'common' })} VPD
+                      <VisuallyHiddenInput
+                        type="file"
+                        onChange={(e) =>
+                          handleUniAssistDocSubmit(
+                            e,
+                            uniAssistListCardState.student._id.toString(),
+                            application.programId._id.toString()
+                          )
+                        }
+                      />
+                    </Button>
                   ) : (
                     <>
                       <a
@@ -607,7 +612,7 @@ function UniAssistListCard(props) {
                           size="small"
                           startIcon={<DownloadIcon />}
                         >
-                          {t('Download', { ns: 'common' })}
+                          {t('Download', { ns: 'common' })} VPD
                         </Button>
                       </a>
                       <Button
@@ -629,7 +634,7 @@ function UniAssistListCard(props) {
                         size="small"
                         startIcon={<DeleteIcon />}
                       >
-                        {t('Delete', { ns: 'common' })}
+                        {t('Delete', { ns: 'common' })} VPD
                       </Button>
                     </>
                   )}

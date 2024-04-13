@@ -982,7 +982,13 @@ export const ATTRIBUTES = [
   { value: 6, name: 'Low-IQ', definition: '' },
   { value: 7, name: 'Refunded', definition: '' },
   { value: 8, name: 'Done', definition: '' },
-  { value: 9, name: 'Refund-Risk', definition: '' }
+  { value: 9, name: 'Refund-Risk', definition: '' },
+  {
+    value: 10,
+    name: 'English-Risk',
+    definition:
+      'English not passed yet. Please double check if English is passed and if tasks need to be processed.'
+  }
 ];
 
 export const COLORS = [
@@ -1694,7 +1700,7 @@ export const c1 = [
         <>
           {params.row?.attributes?.map(
             (attribute) =>
-              [1, 3, 9].includes(attribute.value) && (
+              [1, 3, 9, 10].includes(attribute.value) && (
                 <Tooltip
                   title={`${attribute.name}: ${
                     ATTRIBUTES[attribute.value - 1].definition
@@ -1840,7 +1846,7 @@ export const essay_dashboard_table_column = [
         <>
           {params.row?.attributes?.map(
             (attribute) =>
-              [1, 3, 9].includes(attribute.value) && (
+              [1, 3, 9, 10].includes(attribute.value) && (
                 <Tooltip
                   title={`${attribute.name}: ${
                     ATTRIBUTES[attribute.value - 1].definition
@@ -2027,7 +2033,7 @@ export const c2 = [
         <>
           {params.row?.attributes?.map(
             (attribute) =>
-              [1, 3, 9].includes(attribute.value) && (
+              [1, 3, 9, 10].includes(attribute.value) && (
                 <Tooltip
                   title={`${attribute.name}: ${
                     ATTRIBUTES[attribute.value - 1].definition

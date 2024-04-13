@@ -1268,6 +1268,21 @@ export const is_any_programs_ready_to_submit = (students) => {
   return false;
 };
 
+export const is_vpd_missing = (application) => {
+  if (!application.uni_assist) {
+    return true;
+  }
+  if (
+    application.uni_assist &&
+    (application.uni_assist.status !== DocumentStatus.Uploaded ||
+      application.uni_assist.vpd_file_path === '')
+  ) {
+    return true;
+  }
+
+  return false;
+};
+
 export const is_any_vpd_missing = (students) => {
   if (students) {
     for (let i = 0; i < students.length; i += 1) {

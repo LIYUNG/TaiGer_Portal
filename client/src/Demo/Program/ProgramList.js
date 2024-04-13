@@ -262,7 +262,7 @@ function ProgramList(props) {
     }));
   };
 
-  const c2 = [
+  const programListColumn = [
     {
       field: 'school',
       headerName: t('School', { ns: 'common' }),
@@ -429,7 +429,7 @@ function ProgramList(props) {
               disableColumnFilter
               disableColumnMenu
               disableDensitySelector
-              columns={c2.map((column) => ({
+              columns={programListColumn.map((column) => ({
                 ...column,
                 renderHeader: () => (
                   <Box>

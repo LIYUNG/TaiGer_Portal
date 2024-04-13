@@ -90,7 +90,7 @@ function AdmissionsTable(props) {
   let pending_table = applicationResultsArray(students, '-');
   let not_yet_closed_table = applicationResultsArray(students, '--');
 
-  const c2 = [
+  const admisstionTableColumns = [
     {
       field: 'name',
       headerName: t('Name', { ns: 'common' }),
@@ -198,7 +198,7 @@ function AdmissionsTable(props) {
       }
     }
   ];
-  const memoizedColumns = useMemo(() => c2, [c2]);
+  const memoizedColumns = useMemo(() => admisstionTableColumns, [admisstionTableColumns]);
 
   return (
     <>

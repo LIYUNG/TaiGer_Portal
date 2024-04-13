@@ -53,6 +53,10 @@ function index() {
             ...prevState,
             isLoaded: true,
             students: data,
+            open_tasks_without_essays_arr: open_tasks(data).filter(
+              (open_task) =>
+                ![FILE_TYPE_E.essay_required].includes(open_task.file_type)
+            ),
             success: success,
             res_status: status
           }));
@@ -83,7 +87,7 @@ function index() {
           setIndexState((prevState) => ({
             ...prevState,
             isLoaded2: true,
-            essays: data,
+            essays: open_essays_tasks(data, user),
             success: success,
             res_status: status
           }));
@@ -106,7 +110,13 @@ function index() {
     );
   }, []);
 
-  const { res_status, isLoaded, isLoaded2, essays } = indexState;
+  const {
+    res_status,
+    isLoaded,
+    isLoaded2,
+    essays,
+    open_tasks_without_essays_arr
+  } = indexState;
   TabTitle('CV ML RL Overview');
   if ((!isLoaded && !indexState.students) || (!isLoaded2 && !essays)) {
     return <Loading />;
@@ -115,15 +125,47 @@ function index() {
   if (res_status >= 400) {
     return <ErrorPage res_status={res_status} />;
   }
-  // TODO:  Essay not shown for Student!
-  const open_essays_tasks_arr = open_essays_tasks(essays, user);
-  const open_tasks_without_essays_arr = open_tasks(indexState.students).filter(
-    (open_task) => ![FILE_TYPE_E.essay_required].includes(open_task.file_type)
-  );
-  const open_tasks_arr = [
-    ...open_essays_tasks_arr,
-    ...open_tasks_without_essays_arr
-  ];
+
+  const handleFavoriteToggle = (id) => {
+    const updatedEssays = indexState.essays?.map((row) =>
+      row.id === id
+        ? {
+            ...row,
+            flag_by_user_id: row.flag_by_user_id?.includes(user._id.toString())
+              ? row.flag_by_user_id?.filter(
+                  (userId) => userId !== user._id.toString()
+                )
+              : row.flag_by_user_id?.length > 0
+              ? [...row.flag_by_user_id, user._id.toString()]
+              : [user._id.toString()]
+          }
+        : row
+    );
+    const updatedOpenTasksWithoutEssaysArr =
+      indexState.open_tasks_without_essays_arr?.map((row) =>
+        row.id === id
+          ? {
+              ...row,
+              flag_by_user_id: row.flag_by_user_id?.includes(
+                user._id.toString()
+              )
+                ? row.flag_by_user_id?.filter(
+                    (userId) => userId !== user._id.toString()
+                  )
+                : row.flag_by_user_id?.length > 0
+                ? [...row.flag_by_user_id, user._id.toString()]
+                : [user._id.toString()]
+            }
+          : row
+      );
+    setIndexState((prevState) => ({
+      ...prevState,
+      essays: updatedEssays,
+      open_tasks_without_essays_arr: updatedOpenTasksWithoutEssaysArr
+    }));
+  };
+
+  const open_tasks_arr = [...essays, ...open_tasks_without_essays_arr];
   const tasks_withMyEssay_arr = open_tasks_arr.filter((open_task) =>
     [...AGENT_SUPPORT_DOCUMENTS_A, FILE_TYPE_E.essay_required].includes(
       open_task.file_type
@@ -196,6 +238,7 @@ function index() {
         followup_tasks={followup_tasks}
         pending_progress_tasks={pending_progress_tasks}
         closed_tasks={closed_tasks}
+        handleFavoriteToggle={handleFavoriteToggle}
       />
     </Box>
   );

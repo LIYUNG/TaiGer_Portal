@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Tabs, Tab, Box, Typography } from '@mui/material';
+import { Link as LinkDom } from 'react-router-dom';
+import { Tabs, Tab, Box, Typography, Link, Tooltip, Chip } from '@mui/material';
 import PropTypes from 'prop-types';
+import IconButton from '@mui/material/IconButton';
+import StarBorderRoundedIcon from '@mui/icons-material/StarBorderRounded';
+import StarRoundedIcon from '@mui/icons-material/StarRounded';
 
-import { c2, c2Student } from '../Utils/contants';
+import { ATTRIBUTES, COLORS, c2Student } from '../Utils/contants';
 import { is_TaiGer_role } from '../Utils/checking-functions';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import Banner from '../../components/Banner/Banner';
@@ -11,6 +15,7 @@ import Loading from '../../components/Loading/Loading';
 import { CustomTabPanel, a11yProps } from '../../components/Tabs';
 import { useTranslation } from 'react-i18next';
 import { MuiDataGrid } from '../../components/MuiDataGrid';
+import DEMO from '../../store/constant';
 
 CustomTabPanel.propTypes = {
   children: PropTypes.node,
@@ -63,6 +68,121 @@ function CVMLRLOverview(props) {
   if (!isLoaded && !cVMLRLOverviewState.students) {
     return <Loading />;
   }
+
+  const c2 = [
+    {
+      field: 'firstname_lastname',
+      headerName: 'First-, Last Name',
+      align: 'left',
+      headerAlign: 'left',
+      width: 200,
+      renderCell: (params) => {
+        const linkUrl = `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+          params.row.student_id,
+          DEMO.PROFILE_HASH
+        )}`;
+        return (
+          <>
+            <IconButton onClick={() => props.handleFavoriteToggle(params.row.id)}>
+              {params.row.flag_by_user_id?.includes(user._id.toString()) ? (
+                <StarRoundedIcon color={params.value ? 'primary' : 'action'} />
+              ) : (
+                <StarBorderRoundedIcon
+                  color={params.value ? 'primary' : 'action'}
+                />
+              )}
+            </IconButton>
+
+            <Link
+              underline="hover"
+              to={linkUrl}
+              component={LinkDom}
+              target="_blank"
+              title={params.value}
+            >
+              {params.value}
+            </Link>
+          </>
+        );
+      }
+    },
+    {
+      field: 'deadline',
+      headerName: 'Deadline',
+      width: 100
+    },
+    {
+      field: 'days_left',
+      headerName: 'Days left',
+      width: 80
+    },
+    {
+      field: 'document_name',
+      headerName: 'Document name',
+      width: 380,
+      renderCell: (params) => {
+        const linkUrl = `${DEMO.DOCUMENT_MODIFICATION_LINK(
+          params.row.thread_id
+        )}`;
+        return (
+          <>
+            {params.row?.attributes?.map(
+              (attribute) =>
+                [1, 3, 9, 10].includes(attribute.value) && (
+                  <Tooltip
+                    title={`${attribute.name}: ${
+                      ATTRIBUTES[attribute.value - 1].definition
+                    }`}
+                    key={attribute._id}
+                  >
+                    <Chip
+                      size="small"
+                      data-testid={`chip-${attribute.name}`}
+                      label={attribute.name[0]}
+                      color={COLORS[attribute.value]}
+                    />
+                  </Tooltip>
+                )
+            )}
+            <Link
+              underline="hover"
+              to={linkUrl}
+              component={LinkDom}
+              target="_blank"
+              title={params.value}
+            >
+              {params.value}
+            </Link>
+          </>
+        );
+      }
+    },
+    {
+      field: 'aged_days',
+      headerName: 'Aged days',
+      width: 80
+    },
+    {
+      field: 'number_input_from_editors',
+      headerName: 'Editor Feedback (#Messages/#Files)',
+      width: 80
+    },
+    {
+      field: 'number_input_from_student',
+      headerName: 'Student Feedback (#Messages/#Files)',
+      width: 80
+    },
+    {
+      field: 'latest_reply',
+      headerName: 'Latest Reply',
+      width: 100
+    },
+    {
+      field: 'updatedAt',
+      headerName: 'Last Update',
+      width: 100
+    }
+  ];
 
   const memoizedColumns = is_TaiGer_role(user) ? c2 : c2Student;
 

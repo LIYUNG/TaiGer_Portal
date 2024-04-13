@@ -6,7 +6,7 @@ import IconButton from '@mui/material/IconButton';
 import StarBorderRoundedIcon from '@mui/icons-material/StarBorderRounded';
 import StarRoundedIcon from '@mui/icons-material/StarRounded';
 
-import { ATTRIBUTES, COLORS, c2Student } from '../Utils/contants';
+import { ATTRIBUTES, COLORS } from '../Utils/contants';
 import { is_TaiGer_role } from '../Utils/checking-functions';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import Banner from '../../components/Banner/Banner';
@@ -83,7 +83,9 @@ function CVMLRLOverview(props) {
         )}`;
         return (
           <>
-            <IconButton onClick={() => props.handleFavoriteToggle(params.row.id)}>
+            <IconButton
+              onClick={() => props.handleFavoriteToggle(params.row.id)}
+            >
               {params.row.flag_by_user_id?.includes(user._id.toString()) ? (
                 <StarRoundedIcon color={params.value ? 'primary' : 'action'} />
               ) : (
@@ -92,7 +94,6 @@ function CVMLRLOverview(props) {
                 />
               )}
             </IconButton>
-
             <Link
               underline="hover"
               to={linkUrl}
@@ -144,6 +145,104 @@ function CVMLRLOverview(props) {
                   </Tooltip>
                 )
             )}
+            <Link
+              underline="hover"
+              to={linkUrl}
+              component={LinkDom}
+              target="_blank"
+              title={params.value}
+            >
+              {params.value}
+            </Link>
+          </>
+        );
+      }
+    },
+    {
+      field: 'aged_days',
+      headerName: 'Aged days',
+      width: 80
+    },
+    {
+      field: 'number_input_from_editors',
+      headerName: 'Editor Feedback (#Messages/#Files)',
+      width: 80
+    },
+    {
+      field: 'number_input_from_student',
+      headerName: 'Student Feedback (#Messages/#Files)',
+      width: 80
+    },
+    {
+      field: 'latest_reply',
+      headerName: 'Latest Reply',
+      width: 100
+    },
+    {
+      field: 'updatedAt',
+      headerName: 'Last Update',
+      width: 100
+    }
+  ];
+
+  const c2Student = [
+    {
+      field: 'firstname_lastname',
+      headerName: 'First-, Last Name',
+      align: 'left',
+      headerAlign: 'left',
+      width: 150,
+      renderCell: (params) => {
+        const linkUrl = `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+          params.row.student_id,
+          DEMO.PROFILE_HASH
+        )}`;
+        return (
+          <>
+            <IconButton
+              onClick={() => props.handleFavoriteToggle(params.row.id)}
+            >
+              {params.row.flag_by_user_id?.includes(user._id.toString()) ? (
+                <StarRoundedIcon color={params.value ? 'primary' : 'action'} />
+              ) : (
+                <StarBorderRoundedIcon
+                  color={params.value ? 'primary' : 'action'}
+                />
+              )}
+            </IconButton>
+            <Link
+              underline="hover"
+              to={linkUrl}
+              component={LinkDom}
+              target="_blank"
+              title={params.value}
+            >
+              {params.value}
+            </Link>
+          </>
+        );
+      }
+    },
+    {
+      field: 'deadline',
+      headerName: 'Deadline',
+      width: 100
+    },
+    {
+      field: 'days_left',
+      headerName: 'Days left',
+      width: 80
+    },
+    {
+      field: 'document_name',
+      headerName: 'Document name',
+      width: 380,
+      renderCell: (params) => {
+        const linkUrl = `${DEMO.DOCUMENT_MODIFICATION_LINK(
+          params.row.thread_id
+        )}`;
+        return (
+          <>
             <Link
               underline="hover"
               to={linkUrl}

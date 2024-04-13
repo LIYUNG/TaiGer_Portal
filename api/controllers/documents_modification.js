@@ -462,7 +462,7 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
       .populate({
         path: 'generaldocs_threads.doc_thread_id',
         select:
-          'file_type isFinalVersion outsourced_user_id updatedAt messages.file',
+          'file_type isFinalVersion outsourced_user_id flag_by_user_id updatedAt messages.file',
         populate: {
           path: 'messages.user_id',
           select: 'firstname lastname'
@@ -471,7 +471,7 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
       .populate({
         path: 'applications.doc_modification_thread.doc_thread_id',
         select:
-          'file_type isFinalVersion outsourced_user_id updatedAt messages.file',
+          'file_type isFinalVersion outsourced_user_id flag_by_user_id updatedAt messages.file',
         populate: {
           path: 'messages.user_id',
           select: 'firstname lastname'
@@ -494,7 +494,7 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
       .populate({
         path: 'generaldocs_threads.doc_thread_id',
         select:
-          'file_type isFinalVersion outsourced_user_id updatedAt messages.file',
+          'file_type isFinalVersion outsourced_user_id flag_by_user_id updatedAt messages.file',
         populate: {
           path: 'messages.user_id',
           select: 'firstname lastname'
@@ -503,7 +503,7 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
       .populate({
         path: 'applications.doc_modification_thread.doc_thread_id',
         select:
-          'file_type isFinalVersion outsourced_user_id updatedAt messages.file',
+          'file_type isFinalVersion outsourced_user_id flag_by_user_id updatedAt messages.file',
         populate: {
           path: 'messages.user_id',
           select: 'firstname lastname'
@@ -527,7 +527,8 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
       )
       .populate({
         path: 'generaldocs_threads.doc_thread_id',
-        select: 'file_type isFinalVersion updatedAt messages.file',
+        select:
+          'file_type isFinalVersion updatedAt flag_by_user_id messages.file',
         populate: {
           path: 'messages.user_id outsourced_user_id',
           select: 'firstname lastname'
@@ -535,7 +536,8 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
       })
       .populate({
         path: 'applications.doc_modification_thread.doc_thread_id',
-        select: 'file_type isFinalVersion updatedAt messages.file',
+        select:
+          'file_type isFinalVersion updatedAt flag_by_user_id messages.file',
         populate: {
           path: 'messages.user_id outsourced_user_id',
           select: 'firstname lastname'
@@ -562,7 +564,7 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
       .populate({
         path: 'generaldocs_threads.doc_thread_id',
         select:
-          'file_type isFinalVersion outsourced_user_id updatedAt messages.file',
+          'file_type isFinalVersion outsourced_user_id flag_by_user_id updatedAt messages.file',
         populate: {
           path: 'messages.user_id',
           select: 'firstname lastname'
@@ -571,7 +573,7 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
       .populate({
         path: 'applications.doc_modification_thread.doc_thread_id',
         select:
-          'file_type isFinalVersion outsourced_user_id updatedAt messages.file',
+          'file_type isFinalVersion outsourced_user_id flag_by_user_id updatedAt messages.file',
         populate: {
           path: 'messages.user_id',
           select: 'firstname lastname'
@@ -823,6 +825,40 @@ const initApplicationMessagesThread = asyncHandler(async (req, res) => {
       }
     );
   }
+});
+
+const putThreadFavorite = asyncHandler(async (req, res, next) => {
+  const {
+    user,
+    params: { messagesThreadId }
+  } = req;
+  const thread = await Documentthread.findById(messagesThreadId);
+  if (!thread) {
+    logger.error('putThreadFavorite: Invalid message thread id!');
+    throw new ErrorResponse(403, 'Invalid message thread id');
+  }
+
+  if (thread.flag_by_user_id?.includes(user._id.toString())) {
+    await Documentthread.findByIdAndUpdate(
+      messagesThreadId,
+      {
+        $pull: { flag_by_user_id: user._id.toString() } // Remove user id if already present
+      },
+      {}
+    );
+  } else {
+    await Documentthread.findByIdAndUpdate(
+      messagesThreadId,
+      {
+        $addToSet: { flag_by_user_id: user._id.toString() } // Add user id if not already present
+      },
+      {}
+    );
+  }
+
+  res.status(200).send({
+    success: true
+  });
 });
 
 const getMessages = asyncHandler(async (req, res) => {
@@ -2269,6 +2305,7 @@ module.exports = {
   getMessageFileDownload,
   postImageInThread,
   postMessages,
+  putThreadFavorite,
   putOriginAuthorConfirmedByStudent,
   SetStatusMessagesThread,
   deleteApplicationThread,

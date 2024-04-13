@@ -1494,6 +1494,7 @@ const prepEssayTaskThread = (student, thread) => {
     latest_message_left_by_id: latestReplyUserId(thread),
     isFinalVersion: thread.isFinalVersion,
     outsourced_user_id: thread?.outsourced_user_id,
+    flag_by_user_id: thread?.flag_by_user_id,
     file_type: thread.file_type,
     aged_days: parseInt(getNumberOfDays(thread.updatedAt, new Date())),
     latest_reply: latestReplyInfo(thread),
@@ -1512,9 +1513,9 @@ const prepEssayTaskThread = (student, thread) => {
 const prepTask = (student, thread) => {
   return {
     ...prepTaskStudent(student),
-    id: thread._id?.toString(),
+    id: thread.doc_thread_id._id.toString(),
     latest_message_left_by_id: thread.latest_message_left_by_id,
-    flag_by_user_id: thread.flag_by_user_id,
+    flag_by_user_id: thread.doc_thread_id?.flag_by_user_id,
     isFinalVersion: thread.isFinalVersion,
     outsourced_user_id: thread.doc_thread_id?.outsourced_user_id,
     file_type: thread.doc_thread_id.file_type,

@@ -5,7 +5,11 @@ import { Box, Card, Breadcrumbs, Link, Typography } from '@mui/material';
 
 import CVMLRLOverview from './CVMLRLOverview';
 import ErrorPage from '../Utils/ErrorPage';
-import { getAllActiveEssays, getCVMLRLOverview } from '../../api';
+import {
+  getAllActiveEssays,
+  getCVMLRLOverview,
+  putThreadFavorite
+} from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import {
   AGENT_SUPPORT_DOCUMENTS_A,
@@ -19,7 +23,11 @@ import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
 import { appConfig } from '../../config';
 import Loading from '../../components/Loading/Loading';
-import { is_my_fav_message_status, is_new_message_status, is_pending_status } from '../Utils/contants';
+import {
+  is_my_fav_message_status,
+  is_new_message_status,
+  is_pending_status
+} from '../Utils/contants';
 
 function index() {
   const { user } = useAuth();
@@ -163,6 +171,25 @@ function index() {
       essays: updatedEssays,
       open_tasks_without_essays_arr: updatedOpenTasksWithoutEssaysArr
     }));
+    putThreadFavorite(id).then(
+      (resp) => {
+        const { success } = resp.data;
+        const { status } = resp;
+        if (!success) {
+          setIndexState((prevState) => ({
+            ...prevState,
+            res_status: status
+          }));
+        }
+      },
+      (error) => {
+        setIndexState((prevState) => ({
+          ...prevState,
+          error,
+          res_status: 500
+        }));
+      }
+    );
   };
 
   const open_tasks_arr = [...essays, ...open_tasks_without_essays_arr];

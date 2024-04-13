@@ -1532,6 +1532,7 @@ const getMessageFileDownload = asyncHandler(async (req, res) => {
   }
 
   if (
+    user.role === 'Student' &&
     document_thread.file_type === 'Essay' &&
     !document_thread.isOriginAuthorDeclarationConfirmedByStudent
   ) {

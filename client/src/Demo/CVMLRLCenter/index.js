@@ -19,7 +19,7 @@ import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
 import { appConfig } from '../../config';
 import Loading from '../../components/Loading/Loading';
-import { is_new_message_status, is_pending_status } from '../Utils/contants';
+import { is_my_fav_message_status, is_new_message_status, is_pending_status } from '../Utils/contants';
 
 function index() {
   const { user } = useAuth();
@@ -183,6 +183,10 @@ function index() {
     is_new_message_status(user, open_task)
   );
 
+  const fav_message_tasks = open_tasks_withMyEssay_arr.filter((open_task) =>
+    is_my_fav_message_status(user, open_task)
+  );
+
   const followup_tasks = open_tasks_withMyEssay_arr.filter(
     (open_task) =>
       is_pending_status(user, open_task) &&
@@ -235,6 +239,7 @@ function index() {
         success={indexState.success}
         students={indexState.students}
         new_message_tasks={new_message_tasks}
+        fav_message_tasks={fav_message_tasks}
         followup_tasks={followup_tasks}
         pending_progress_tasks={pending_progress_tasks}
         closed_tasks={closed_tasks}

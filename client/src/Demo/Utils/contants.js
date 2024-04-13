@@ -1537,6 +1537,10 @@ export const is_new_message_status = (user, thread) => {
   }
 };
 
+export const is_my_fav_message_status = (user, thread) => {
+  return thread.flag_by_user_id?.includes(user._id.toString());
+};
+
 export const DELETE_STYLE = 'danger';
 export const REJECT_STYLE = 'secondary';
 export const ACCEPT_STYLE = 'success';

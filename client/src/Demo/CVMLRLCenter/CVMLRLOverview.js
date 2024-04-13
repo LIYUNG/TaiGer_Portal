@@ -209,16 +209,20 @@ function CVMLRLOverview(props) {
             {...a11yProps(0)}
           />
           <Tab
-            label={`FOLLOW UP (${props.followup_tasks?.length || 0})`}
+            label={`My Favorites (${props.fav_message_tasks?.length || 0})`}
             {...a11yProps(1)}
           />
           <Tab
-            label={`NO ACTION (${props.pending_progress_tasks?.length || 0})`}
+            label={`FOLLOW UP (${props.followup_tasks?.length || 0})`}
             {...a11yProps(2)}
           />
           <Tab
-            label={`CLOSED (${props.closed_tasks?.length || 0})`}
+            label={`NO ACTION (${props.pending_progress_tasks?.length || 0})`}
             {...a11yProps(3)}
+          />
+          <Tab
+            label={`CLOSED (${props.closed_tasks?.length || 0})`}
+            {...a11yProps(4)}
           />
         </Tabs>
       </Box>
@@ -246,9 +250,22 @@ function CVMLRLOverview(props) {
           removeBanner={<></>}
           notification_key={undefined}
         />
-        <MuiDataGrid rows={props.followup_tasks} columns={memoizedColumns} />
+        <MuiDataGrid rows={props.fav_message_tasks} columns={memoizedColumns} />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
+        <Banner
+          ReadOnlyMode={true}
+          bg={'primary'}
+          title={'info'}
+          path={'/'}
+          text={'Follow up'}
+          link_name={''}
+          removeBanner={<></>}
+          notification_key={undefined}
+        />
+        <MuiDataGrid rows={props.followup_tasks} columns={memoizedColumns} />
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={3}>
         <Banner
           ReadOnlyMode={true}
           bg={'info'}
@@ -268,7 +285,7 @@ function CVMLRLOverview(props) {
           columns={memoizedColumns}
         />
       </CustomTabPanel>
-      <CustomTabPanel value={value} index={3}>
+      <CustomTabPanel value={value} index={4}>
         <Banner
           ReadOnlyMode={true}
           bg={'success'}

@@ -108,6 +108,10 @@ function EssayOverview(props) {
             label={`CLOSED (${props.closed_tasks?.length || 0})`}
             {...a11yProps(4)}
           />
+          <Tab
+            label={`All (${props.all_active_message_tasks?.length || 0})`}
+            {...a11yProps(5)}
+          />
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
@@ -190,6 +194,22 @@ function EssayOverview(props) {
             { ns: 'cvmlrl' }
           )}
         </Typography>
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={5}>
+        <Banner
+          ReadOnlyMode={true}
+          bg={'info'}
+          title={'info'}
+          path={'/'}
+          text={'All Essays'}
+          link_name={''}
+          removeBanner={<></>}
+          notification_key={undefined}
+        />
+        <MuiDataGrid
+          rows={props.all_active_message_tasks}
+          columns={memoizedColumns}
+        />
       </CustomTabPanel>
     </>
   );

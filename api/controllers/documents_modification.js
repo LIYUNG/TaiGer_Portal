@@ -753,7 +753,7 @@ const initApplicationMessagesThread = asyncHandler(async (req, res) => {
 
   const student = await Student.findById(studentId)
     .populate('applications.programId')
-    .populate('agents editors', 'firstname lastname email')
+    .populate('agents editors', 'firstname lastname email archiv')
     .exec();
   const program = student.applications.find(
     (app) => app.programId._id.toString() === program_id
@@ -764,31 +764,33 @@ const initApplicationMessagesThread = asyncHandler(async (req, res) => {
     const permissions = await Permission.find({
       canAssignEditors: true
     })
-      .populate('user_id', 'firstname lastname email')
+      .populate('user_id', 'firstname lastname email archiv')
       .lean();
     if (permissions) {
       for (let x = 0; x < permissions.length; x += 1) {
-        await assignEssayTaskToEditorEmail(
-          {
-            firstname: permissions[x].user_id.firstname,
-            lastname: permissions[x].user_id.lastname,
-            address: permissions[x].user_id.email
-          },
-          {
-            student_firstname: student.firstname,
-            student_lastname: student.lastname,
-            student_id: student._id.toString(),
-            thread_id: newAppRecord._id,
-            documentname,
-            updatedAt: new Date()
-          }
-        );
+        if (isNotArchiv(permissions[x].user_id)) {
+          await assignEssayTaskToEditorEmail(
+            {
+              firstname: permissions[x].user_id.firstname,
+              lastname: permissions[x].user_id.lastname,
+              address: permissions[x].user_id.email
+            },
+            {
+              student_firstname: student.firstname,
+              student_lastname: student.lastname,
+              student_id: student._id.toString(),
+              thread_id: newAppRecord.doc_thread_id._id,
+              documentname,
+              updatedAt: new Date()
+            }
+          );
+        }
       }
     }
   }
 
   for (let i = 0; i < student.editors.length; i += 1) {
-    if (isNotArchiv(student)) {
+    if (isNotArchiv(student.editors[i])) {
       if (!Essay_Writer_Scope.includes(document_category)) {
         await assignDocumentTaskToEditorEmail(
           {
@@ -1533,7 +1535,9 @@ const getMessageFileDownload = asyncHandler(async (req, res) => {
     document_thread.file_type === 'Essay' &&
     !document_thread.isOriginAuthorDeclarationConfirmedByStudent
   ) {
-    logger.error('getMessageFileDownload: Please declare origin author and condition term.');
+    logger.error(
+      'getMessageFileDownload: Please declare origin author and condition term.'
+    );
     throw new ErrorResponse(
       403,
       'Please declare origin author and condition term.'

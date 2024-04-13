@@ -771,51 +771,51 @@ function DocModificationThreadPage() {
     <Box>
       {!isLoaded && <Loading />}
       {docModificationThreadPageState.thread?.file_type === 'Essay' &&
-      originAuthorConfirmed ? (
-        <Box className="sticky-top">
-          <Typography variant="body1">
-            <CheckCircleIcon
-              size={18}
-              style={{ color: green[500] }}
-              title="Agree"
-            />
-            &nbsp;
-            {t('confirmDocument', {
-              ns: 'documents',
-              studentName: student_name,
-              studentNameZh: student_name_zh,
-              docName
-            })}
-            &nbsp;
-            <span
-              onClick={() => setOpenOriginAuthorModal(!openOriginAuthorModal)}
-              style={{ color: theme.palette.primary.main, cursor: 'pointer' }}
-            >
-              {t('Read More')}
-            </span>
-          </Typography>
-        </Box>
-      ) : (
-        <Box className="sticky-top">
-          <Typography variant="body1">
-            <HelpIcon size={18} style={{ color: grey[400] }} />
-            &nbsp;
-            {t('notConfirmDocument', {
-              ns: 'documents',
-              studentName: student_name,
-              studentNameZh: student_name_zh,
-              docName
-            })}{' '}
-            &nbsp;
-            <span
-              onClick={() => setOpenOriginAuthorModal(!openOriginAuthorModal)}
-              style={{ color: theme.palette.primary.main, cursor: 'pointer' }}
-            >
-              {t('Read More')}
-            </span>
-          </Typography>
-        </Box>
-      )}
+        (originAuthorConfirmed ? (
+          <Box className="sticky-top">
+            <Typography variant="body1">
+              <CheckCircleIcon
+                size={18}
+                style={{ color: green[500] }}
+                title="Agree"
+              />
+              &nbsp;
+              {t('confirmDocument', {
+                ns: 'documents',
+                studentName: student_name,
+                studentNameZh: student_name_zh,
+                docName
+              })}
+              &nbsp;
+              <span
+                onClick={() => setOpenOriginAuthorModal(!openOriginAuthorModal)}
+                style={{ color: theme.palette.primary.main, cursor: 'pointer' }}
+              >
+                {t('Read More')}
+              </span>
+            </Typography>
+          </Box>
+        ) : (
+          <Box className="sticky-top">
+            <Typography variant="body1">
+              <HelpIcon size={18} style={{ color: grey[400] }} />
+              &nbsp;
+              {t('notConfirmDocument', {
+                ns: 'documents',
+                studentName: student_name,
+                studentNameZh: student_name_zh,
+                docName
+              })}{' '}
+              &nbsp;
+              <span
+                onClick={() => setOpenOriginAuthorModal(!openOriginAuthorModal)}
+                style={{ color: theme.palette.primary.main, cursor: 'pointer' }}
+              >
+                {t('Read More')}
+              </span>
+            </Typography>
+          </Box>
+        ))}
       <Breadcrumbs aria-label="breadcrumb">
         <Link
           underline="hover"

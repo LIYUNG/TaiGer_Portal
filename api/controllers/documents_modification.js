@@ -1618,7 +1618,10 @@ const putOriginAuthorConfirmedByStudent = asyncHandler(async (req, res) => {
 
   const document_thread = await Documentthread.findByIdAndUpdate(
     messagesThreadId,
-    { isOriginAuthorDeclarationConfirmedByStudent: checked },
+    {
+      isOriginAuthorDeclarationConfirmedByStudent: checked,
+      isOriginAuthorDeclarationConfirmedByStudentTimestamp: new Date()
+    },
     { new: true }
   );
 

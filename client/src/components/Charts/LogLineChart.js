@@ -78,7 +78,7 @@ const LogLineChart = ({ data }) => {
               position: 'insideLeft'
             }}
           />
-          <Tooltip />
+          <Tooltip labelStyle={{ color: 'black' }} />
           <Line
             type="monotone"
             dataKey="apiCallCount"

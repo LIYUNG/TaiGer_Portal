@@ -41,7 +41,7 @@ function ProgramDistributionChart({ data, x_key }) {
           fill="#8884d8"
           label={{ position: 'top' }}
         />
-        <Tooltip />
+        <Tooltip labelStyle={{ color: 'black' }} />
         <Legend />
       </BarChart>
     </ResponsiveContainer>

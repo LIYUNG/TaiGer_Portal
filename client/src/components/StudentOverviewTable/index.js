@@ -4,10 +4,7 @@ import { AiFillQuestionCircle } from 'react-icons/ai';
 import { IoCheckmarkCircle } from 'react-icons/io5';
 import { Link as LinkDom } from 'react-router-dom';
 
-import {
-  profile_list,
-  statuses
-} from '../../Demo/Utils/contants';
+import { profile_list, statuses } from '../../Demo/Utils/contants';
 import { MuiDataGrid } from '../MuiDataGrid';
 import {
   areProgramsDecidedMoreThanContract,
@@ -104,16 +101,11 @@ function StudentOverviewTable(props) {
 
       let numb_uni_assist_vpd_needed = num_uni_assist_vpd_needed(student);
       let numb_uni_assist_vpd_uploaded = num_uni_assist_vpd_uploaded(student);
+      let target_degree = student.application_preference?.target_degree || '';
       let expected_application_year =
-        student.application_preference &&
-        student.application_preference.expected_application_date
-          ? student.application_preference.expected_application_date
-          : '';
+        student.application_preference?.expected_application_date || '';
       let expected_application_semster =
-        student.application_preference &&
-        student.application_preference.expected_application_semester
-          ? student.application_preference.expected_application_semester
-          : '';
+        student.application_preference?.expected_application_semester || '';
 
       transformedStudents.push({
         ...prepTaskStudent(student),
@@ -123,6 +115,7 @@ function StudentOverviewTable(props) {
         }`,
         id: student._id.toString(),
         student,
+        target_degree,
         isGraduated:
           student.academic_background?.university?.high_school_isGraduated ===
           'Yes'
@@ -268,6 +261,13 @@ function StudentOverviewTable(props) {
       align: 'left',
       headerAlign: 'left',
       width: 100
+    },
+    {
+      field: 'target_degree',
+      headerName: 'Target Degree',
+      align: 'left',
+      headerAlign: 'left',
+      width: 80
     },
     {
       field: 'agents',

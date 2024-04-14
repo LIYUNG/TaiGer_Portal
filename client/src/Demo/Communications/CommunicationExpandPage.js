@@ -616,7 +616,7 @@ function CommunicationExpandPage() {
                                   sx={{
                                     padding: 2,
                                     ...(!ismobile && {
-                                      maxWidth: windowInnerWidth - 664
+                                      maxWidth: windowInnerWidth - 664 + 32
                                     }),
                                     pt: 2,
                                     '& .MuiAvatar-root': {

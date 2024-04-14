@@ -152,12 +152,14 @@ export default function EventConfirmationCard(props) {
                 )
               )}
             </Typography>
-            <Typography variant="h6">{t('Meeting Link')} :</Typography>
+            <Typography variant="h6">
+              {t('Meeting Link', { ns: 'common' })} :
+            </Typography>
             {is_TaiGer_Student(user) &&
               (props.event.isConfirmedRequester ? (
                 props.event.isConfirmedReceiver ? (
                   props.disabled ? (
-                    `${t('Meeting Link')} expired'`
+                    `${t('Meeting Link', { ns: 'common' })} expired'`
                   ) : (
                     <Link
                       to={`${props.event.meetingLink}`}
@@ -182,7 +184,8 @@ export default function EventConfirmationCard(props) {
                       props.handleConfirmAppointmentModalOpen(e, props.event)
                     }
                   >
-                    <AiOutlineCheckCircle size={16} /> {t('Confirm', { ns: 'common' })}
+                    <AiOutlineCheckCircle size={16} />{' '}
+                    {t('Confirm', { ns: 'common' })}
                   </Button>{' '}
                   the time and get the meeting link
                 </span>
@@ -216,7 +219,8 @@ export default function EventConfirmationCard(props) {
                       props.handleConfirmAppointmentModalOpen(e, props.event)
                     }
                   >
-                    <AiOutlineCheckCircle size={16} /> {t('Confirm', { ns: 'common' })}
+                    <AiOutlineCheckCircle size={16} />{' '}
+                    {t('Confirm', { ns: 'common' })}
                   </Button>{' '}
                   the time and get the meeting link
                 </span>
@@ -226,7 +230,9 @@ export default function EventConfirmationCard(props) {
           <Grid item xs={12}>
             <Grid container justifyContent="space-between" alignItems="center">
               <Grid item>
-                <Typography variant="body1">{t('Description', { ns: 'common' })}</Typography>
+                <Typography variant="body1">
+                  {t('Description', { ns: 'common' })}
+                </Typography>
                 <Typography>{props.event.description}</Typography>
                 <span
                   style={{
@@ -263,7 +269,7 @@ export default function EventConfirmationCard(props) {
                             onClick={(e) => e.stopPropagation()}
                             startIcon={<HourglassBottomIcon />}
                           >
-                            {t('Pending')}
+                            {t('Pending', { ns: 'common' })}
                           </Button>
                         )
                       ) : (
@@ -279,7 +285,8 @@ export default function EventConfirmationCard(props) {
                           }
                           sx={{ mx: 2 }}
                         >
-                          <AiOutlineCheckCircle size={16} /> {t('Confirm', { ns: 'common' })}
+                          <AiOutlineCheckCircle size={16} />{' '}
+                          {t('Confirm', { ns: 'common' })}
                         </Button>
                       ))}
                     {is_TaiGer_Agent(user) &&
@@ -294,7 +301,7 @@ export default function EventConfirmationCard(props) {
                             title="Wait for confirmation"
                             startIcon={<HourglassBottomIcon />}
                           >
-                            {t('Pending')}
+                            {t('Pending', { ns: 'common' })}
                           </Button>
                         )
                       ) : (
@@ -309,7 +316,8 @@ export default function EventConfirmationCard(props) {
                             )
                           }
                         >
-                          <AiOutlineCheckCircle size={16} /> {t('Confirm', { ns: 'common' })}
+                          <AiOutlineCheckCircle size={16} />{' '}
+                          {t('Confirm', { ns: 'common' })}
                         </Button>
                       ))}
                     <Button

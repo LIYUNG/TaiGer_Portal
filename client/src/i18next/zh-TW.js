@@ -95,6 +95,7 @@ export const translation_zh_TW = {
     'Tuition Fees': '學費',
     'Must fill fields': '必填欄位',
     Create: '新增',
+    Pending: '等待中',
     Admitted: '錄取',
     Rejected: '沒錄取',
     'Personal Data': '個人資料',
@@ -178,6 +179,7 @@ export const translation_zh_TW = {
     Category: '種類',
     Calendar: '行事曆',
     'Calendar Events': '行事曆',
+    'To Calendar': '前往行事曆',
     'My Students': '我的學生',
     Profile: '背景資料',
     'My Profile': '我的背景資料',
@@ -230,7 +232,11 @@ export const translation_zh_TW = {
     'To Do Tasks': '待辦事項清單',
     'Agent Support': '顧問任務',
     'Essay Center': '論文中心',
-    'User Logs': '使用者紀錄'
+    'User Logs': '使用者紀錄',
+    Upcoming: '即將到來',
+    'No upcoming event': '無新預約討論',
+    'Time Slot': '時段',
+    Past: '過去'
   },
   dashboard: {
     Dashboard: '主控台',
@@ -257,6 +263,12 @@ export const translation_zh_TW = {
     'User Logs': '使用者紀錄'
   },
   backgroundProfile: {},
+  admissions: {
+    'Pending Result': '等待結果',
+    'Not Closed Yet': '尚未送出',
+    Admissions: '錄取',
+    Rejections: '拒絕'
+  },
   cvmlrl: {
     'Note: if the documents are not closed but locate here, it is becaue the applications are already submitted. The documents can safely closed eventually.':
       'Note: 如果文件並沒有關閉並出現在這區，是因為申請已經送出。該文件可以安全地被關閉。'

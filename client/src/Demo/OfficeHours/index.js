@@ -630,7 +630,9 @@ function OfficeHours() {
               ))}
           <Card>
             <Box>
-              <Typography variant="h6">{t('Upcoming')}</Typography>
+              <Typography variant="h6">
+                {t('Upcoming', { ns: 'common' })}
+              </Typography>
               <Typography>
                 {events?.filter(
                   (event) =>
@@ -661,12 +663,12 @@ function OfficeHours() {
                           }
                         />
                       ))
-                  : t('No upcoming event')}
+                  : t('No upcoming event', { ns: 'common' })}
               </Typography>
             </Box>
           </Card>
           <Card>
-            <Typography variant="h6">Past</Typography>
+            <Typography variant="h6">{t('Past', { ns: 'common' })}</Typography>
             <Typography>
               {events
                 ?.filter((event) => !isInTheFuture(event.end))
@@ -769,7 +771,9 @@ function OfficeHours() {
               ))}
             </Typography>
             <FormControl fullWidth sx={{ my: 2 }}>
-              <InputLabel id="Time_Slot">{t('Time Slot')}</InputLabel>
+              <InputLabel id="Time_Slot">
+                {t('Time Slot', { ns: 'common' })}
+              </InputLabel>
               <Select
                 size="small"
                 id="time_slot"

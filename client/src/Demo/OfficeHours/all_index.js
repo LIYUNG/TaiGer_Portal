@@ -661,7 +661,7 @@ function AllOfficeHours() {
             size="small"
             onClick={switchCalendarAndMyBookedEvents}
           >
-            {t('To Calendar')}
+            {t('To Calendar', { ns: 'common' })}
           </Button>
           {events?.filter(
             (event) =>
@@ -691,7 +691,9 @@ function AllOfficeHours() {
                 />
               ))}
           <Card>
-            <Typography variant="h6">{t('Upcoming')}</Typography>
+            <Typography variant="h6">
+              {t('Upcoming', { ns: 'common' })}
+            </Typography>
             {events?.filter(
               (event) =>
                 isInTheFuture(event.end) &&
@@ -722,10 +724,10 @@ function AllOfficeHours() {
                       }
                     />
                   ))
-              : 'No upcoming event'}
+              : t('No upcoming event', { ns: 'common' })}
           </Card>
           <Card>
-            <Typography variant="h6">{t('Past')}</Typography>
+            <Typography variant="h6">{t('Past', { ns: 'common' })}</Typography>
             {events
               ?.filter((event) => !isInTheFuture(event.end))
               .sort((a, b) => a.start > b.start)

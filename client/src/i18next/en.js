@@ -95,6 +95,7 @@ export const translation_en = {
     'Tuition Fees': 'Tuition Fees',
     'Must fill fields': 'Must fill fields',
     Create: 'Create',
+    Pending: 'Pending',
     Admitted: 'Admitted',
     Rejected: 'Rejected',
     'Personal Data': 'Personal Data',
@@ -177,6 +178,7 @@ export const translation_en = {
     Category: 'Calendar',
     Calendar: 'Calendar',
     'Calendar Events': 'Calendar Events',
+    'To Calendar': 'To Calendar',
     'My Students': 'My Students',
     Profile: 'Profile',
     'My Profile': 'My Profile',
@@ -228,7 +230,11 @@ export const translation_en = {
     'To Do Tasks': 'To Do Tasks',
     'Agent Support': 'Agent Support',
     'Essay Center': 'Essay Center',
-    'User Logs': 'User Logs'
+    'User Logs': 'User Logs',
+    Upcoming: 'Upcoming',
+    'No upcoming event': 'No upcoming event',
+    'Time Slot': 'Time Slot',
+    Past: 'Past'
   },
   dashboard: {
     Dashboard: 'Dashboard',
@@ -256,6 +262,12 @@ export const translation_en = {
     'User Logs': 'User Logs'
   },
   backgroundProfile: {},
+  admissions: {
+    'Pending Result': 'Pending Result',
+    'Not Closed Yet': 'Not Closed Yet',
+    Admissions: 'Admissions',
+    Rejections: 'Rejections'
+  },
   cvmlrl: {
     'Note: if the documents are not closed but locate here, it is becaue the applications are already submitted. The documents can safely closed eventually.':
       'Note: if the documents are not closed but locate here, it is becaue the applications are already submitted. The documents can safely closed eventually.'

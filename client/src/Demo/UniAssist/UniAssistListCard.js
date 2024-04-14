@@ -522,7 +522,7 @@ function UniAssistListCard(props) {
               <Box>
                 {is_TaiGer_AdminAgent(user) && (
                   <FormControlLabel
-                    label={`Upload files and Paid`}
+                    label={`All document uploaded to Uni-Assist and paid, waiting for VPD`}
                     disabled={
                       !(
                         !application.uni_assist ||

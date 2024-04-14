@@ -234,7 +234,8 @@ export const translation_en = {
     Upcoming: 'Upcoming',
     'No upcoming event': 'No upcoming event',
     'Time Slot': 'Time Slot',
-    Past: 'Past'
+    Past: 'Past',
+    Chat: 'Chat'
   },
   dashboard: {
     Dashboard: 'Dashboard',

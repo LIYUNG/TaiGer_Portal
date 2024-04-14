@@ -42,9 +42,11 @@ const friend = (props) => {
           props.data?._id?.toString()
         )}`}
         selected={props.data?._id?.toString() === student_id}
-        title={`${props.data.firstname} ${props.data.lastname} ${
-          props.data.firstname_chinese ? props.data.firstname_chinese : ''
-        }${props.data.lastname_chinese ? props.data.lastname_chinese : ''}`}
+        title={`${
+          props.data.lastname_chinese ? props.data.lastname_chinese : ''
+        }${props.data.firstname_chinese ? props.data.firstname_chinese : ''}${
+          props.data.firstname
+        } ${props.data.lastname}`}
       >
         <ListItemIcon>
           <Avatar
@@ -60,13 +62,13 @@ const friend = (props) => {
           >
             <Typography variant="body1" fontWeight="bold" color="text.primary">
               {truncateText(
-                `${props.data.firstname} ${props.data.lastname} ${
+                `${
+                  props.data.lastname_chinese ? props.data.lastname_chinese : ''
+                }${
                   props.data.firstname_chinese
                     ? props.data.firstname_chinese
                     : ''
-                }${
-                  props.data.lastname_chinese ? props.data.lastname_chinese : ''
-                }`,
+                } ${props.data.firstname} ${props.data.lastname}`,
                 22
               )}
               {props.data?.latestCommunication?.user_id !== props.activeId && (

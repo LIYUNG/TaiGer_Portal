@@ -236,7 +236,8 @@ export const translation_zh_TW = {
     Upcoming: '即將到來',
     'No upcoming event': '無新預約討論',
     'Time Slot': '時段',
-    Past: '過去'
+    Past: '過去',
+    Chat: '訊息'
   },
   dashboard: {
     Dashboard: '主控台',

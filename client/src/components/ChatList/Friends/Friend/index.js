@@ -43,9 +43,11 @@ const friend = (props) => {
           backgroundColor: '#a0a0a0' // Set a different color on hover if needed
         }
       }}
-      title={`${props.data.firstname} ${props.data.lastname} ${
-        props.data.firstname_chinese ? props.data.firstname_chinese : ''
-      }${props.data.lastname_chinese ? props.data.lastname_chinese : ''}`}
+      title={`${
+        props.data.lastname_chinese ? props.data.lastname_chinese : ''
+      }${props.data.firstname_chinese ? props.data.firstname_chinese : ''} ${
+        props.data.firstname
+      } ${props.data.lastname}`}
     >
       <Grid container justifyContent="space-between" alignItems="center">
         <Grid item style={{ display: 'flex', alignItems: 'center' }}>
@@ -62,14 +64,14 @@ const friend = (props) => {
           >
             <Typography variant="body1" color="text.primary">
               {truncateText(
-                `${props.data.firstname} ${props.data.lastname} ${
+                `${
+                  props.data.lastname_chinese ? props.data.lastname_chinese : ''
+                }${
                   props.data.firstname_chinese
                     ? props.data.firstname_chinese
                     : ''
-                }${
-                  props.data.lastname_chinese ? props.data.lastname_chinese : ''
-                }`,
-                17
+                } ${props.data.firstname} ${props.data.lastname}`,
+                18
               )}
             </Typography>
           </Box>

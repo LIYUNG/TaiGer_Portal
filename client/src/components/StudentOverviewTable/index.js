@@ -551,7 +551,7 @@ function StudentOverviewTable(props) {
       renderCell: (params) => {
         return (
           <Link
-            to={`${DEMO.COURSES_INPUT_LINK(params.row._id)}`}
+            to={`${DEMO.COURSES_INPUT_LINK(params.row.id)}`}
             component={LinkDom}
           >
             {params.value}

@@ -21,7 +21,6 @@ import { useAuth } from '../../components/AuthProvider';
 import ModalNew from '../../components/Modal';
 import Loading from '../../components/Loading/Loading';
 import { useTranslation } from 'react-i18next';
-// import { useWindowWidth } from '@react-hook/window-size';
 
 function Message(props) {
   // const onlyWidth = useWindowWidth();

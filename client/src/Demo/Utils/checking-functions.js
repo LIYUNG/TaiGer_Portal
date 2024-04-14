@@ -336,11 +336,11 @@ export const is_any_base_documents_uploaded = (students) => {
 export const needUpdateCourseSelection = (student) => {
   // necessary if never updated course and is studying
   if (!student.courses) {
-    return <span className="text-danger">No Input</span>;
+    return 'No Input';
   }
   // necessary if never analyzed and is studying
   if (!student.courses.analysis?.updatedAt) {
-    return <>No Anaylsis</>;
+    return 'No Anaylsis';
   }
   // necessary if courses or analysis expired 39 daays and is studying
   const course_aged_days = parseInt(
@@ -362,7 +362,7 @@ export const needUpdateCourseSelection = (student) => {
   ) {
     const trigger_days = 62;
     if (course_aged_days > trigger_days || analyse_aged_days > trigger_days) {
-      return <span className="text-danger">Expired</span>;
+      return 'Expired';
     }
   }
 
@@ -371,9 +371,9 @@ export const needUpdateCourseSelection = (student) => {
     student.academic_background?.university?.isGraduated === 'Yes' ||
     student.academic_background?.university?.isGraduated === 'No'
   ) {
-    return <>Graduated</>;
+    return 'Graduated';
   }
-  return <span className="text-warning">OK</span>;
+  return 'OK';
 };
 
 export const to_register_application_portals = (student) => {
@@ -1857,23 +1857,21 @@ export const getNextProgramStatus = (student) => {
       (application) => application.decided === 'O' && application.closed === '-'
     )
     .sort((a, b) => (a.application_deadline > b.application_deadline ? 1 : -1));
-  return getNextProgram.length !== 0 ? (
-    // <span
-    //   className={`${
-    //     progressBarCounter(student, getNextProgram[0].application) < 100
-    //       ? progressBarCounter(student, getNextProgram[0].application) < 75
-    //         ? progressBarCounter(student, getNextProgram[0].application) < 30
-    //           ? 'text-danger' // 15 > x
-    //           : 'text-secondary' // 60 > x > 15
-    //         : 'text-warning' // 100 > x >60
-    //       : ''
-    //   }`}
-    // >
+  return getNextProgram.length !== 0
+    ? // <span
+      //   className={`${
+      //     progressBarCounter(student, getNextProgram[0].application) < 100
+      //       ? progressBarCounter(student, getNextProgram[0].application) < 75
+      //         ? progressBarCounter(student, getNextProgram[0].application) < 30
+      //           ? 'text-danger' // 15 > x
+      //           : 'text-secondary' // 60 > x > 15
+      //         : 'text-warning' // 100 > x >60
+      //       : ''
+      //   }`}
+      // >
       `${progressBarCounter(student, getNextProgram[0].application)} %`
-    // </span>
-  ) : (
-    '-'
-  );
+    : // </span>
+      '-';
 };
 
 export const numStudentYearDistribution = (students) => {

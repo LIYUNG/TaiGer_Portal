@@ -2,11 +2,9 @@ import React, { useMemo } from 'react';
 import { Card, Link, Typography } from '@mui/material';
 import { AiFillQuestionCircle } from 'react-icons/ai';
 import { IoCheckmarkCircle } from 'react-icons/io5';
-import { BsFillExclamationCircleFill } from 'react-icons/bs';
 import { Link as LinkDom } from 'react-router-dom';
 
 import {
-  FILE_DONT_CARE_SYMBOL,
   profile_list,
   statuses
 } from '../../Demo/Utils/contants';
@@ -134,6 +132,81 @@ function StudentOverviewTable(props) {
             : 'No',
         academic_background: student.academic_background,
         isMissingBaseDocs,
+        CV: !isCVFinished_b
+          ? isCVAssigned
+            ? 'In Progress'
+            : 'Not Created'
+          : 'Done',
+        ML: `${
+          student.applications?.filter((application) =>
+            application.doc_modification_thread?.some(
+              (thread) =>
+                isProgramDecided(application) &&
+                thread.doc_thread_id?.isFinalVersion &&
+                thread.doc_thread_id?.file_type === 'ML'
+            )
+          ).length
+        }/${
+          student.applications.filter((application) =>
+            application.doc_modification_thread?.some(
+              (thread) =>
+                isProgramDecided(application) &&
+                thread.doc_thread_id?.file_type === 'ML'
+            )
+          ).length
+        }`,
+        RL: `${
+          student.applications.filter((application) =>
+            application.doc_modification_thread?.some(
+              (thread) =>
+                isProgramDecided(application) &&
+                thread.doc_thread_id?.isFinalVersion &&
+                (thread.doc_thread_id?.file_type.includes('RL') ||
+                  thread.doc_thread_id?.file_type.includes('Recommendation'))
+            )
+          ).length
+        }/${
+          student.applications.filter((application) =>
+            application.doc_modification_thread?.some(
+              (thread) =>
+                isProgramDecided(application) &&
+                (thread.doc_thread_id?.file_type.includes('RL') ||
+                  thread.doc_thread_id?.file_type.includes('Recommendation'))
+            )
+          ).length
+        }`,
+        Essay: `${
+          student.applications.filter((application) =>
+            application.doc_modification_thread?.some(
+              (thread) =>
+                isProgramDecided(application) &&
+                thread.doc_thread_id?.isFinalVersion &&
+                thread.doc_thread_id?.file_type.includes('Essay')
+            )
+          ).length
+        }/${
+          student.applications.filter((application) =>
+            application.doc_modification_thread?.some(
+              (thread) =>
+                isProgramDecided(application) &&
+                thread.doc_thread_id?.file_type.includes('Essay')
+            )
+          ).length
+        }`,
+        Portals: `${
+          student.applications?.length === 0
+            ? '-'
+            : to_register_application_portals(student)
+            ? 'Missing'
+            : 'Complete'
+        }`,
+        uniassist: `${
+          is_uni_assist_needed
+            ? isall_uni_assist_vpd_uploaded
+              ? 'Done'
+              : `(${numb_uni_assist_vpd_uploaded}/${numb_uni_assist_vpd_needed}) Incomplete `
+            : '-'
+        }`,
         total_base_docs_needed,
         isEnglishPassed,
         isGermanPassed,
@@ -141,8 +214,10 @@ function StudentOverviewTable(props) {
         nextProgramDeadline: getNextProgramDeadline(student),
         nextProgramDayleft: getNextProgramDayleft(student),
         nextProgramStatus: getNextProgramStatus(student),
-        isSurveyCompleted,
+        survey: isSurveyCompleted ? 'Yes' : 'No',
+        basedocument: `${total_accepted_base_docs_needed}/${total_base_docs_needed}`,
         total_accepted_base_docs_needed,
+        courseAnalysis: needUpdateCourseSelection(student),
         num_apps_decided,
         num_apps_closed,
         areProgramsAllDecided,
@@ -197,7 +272,7 @@ function StudentOverviewTable(props) {
     {
       field: 'agents',
       headerName: 'Agents',
-      width: 100,
+      width: 80,
       renderCell: (params) => {
         return params.row.agents?.map((agent) => (
           <Link
@@ -216,7 +291,7 @@ function StudentOverviewTable(props) {
     {
       field: 'editors',
       headerName: 'Editors',
-      width: 100,
+      width: 80,
       renderCell: (params) => {
         return params.row.editors?.map((editor) => (
           <Link
@@ -235,7 +310,7 @@ function StudentOverviewTable(props) {
     {
       field: 'isGraduated',
       headerName: 'Graduated',
-      width: 100
+      width: 70
     },
     {
       field: 'program_selection',
@@ -341,15 +416,15 @@ function StudentOverviewTable(props) {
     {
       field: 'nextProgramDayleft',
       headerName: 'Next Program Days left',
-      width: 100
+      width: 70
     },
     {
       field: 'nextProgramStatus',
       headerName: 'Next Program status',
-      width: 100
+      width: 70
     },
     {
-      field: 'Survey',
+      field: 'survey',
       headerName: 'Survey',
       width: 100,
       renderCell: (params) => {
@@ -362,15 +437,7 @@ function StudentOverviewTable(props) {
             component={LinkDom}
             style={{ textDecoration: 'none' }}
           >
-            {params.row.isSurveyCompleted ? (
-              <Typography title="complete">
-                <IoCheckmarkCircle size={24} color="limegreen" />
-              </Typography>
-            ) : (
-              <Typography title="incomplete">
-                <AiFillQuestionCircle size={24} color="lightgray" />
-              </Typography>
-            )}
+            {params.value}
           </Link>
         );
       }
@@ -388,17 +455,7 @@ function StudentOverviewTable(props) {
             )}`}
             component={LinkDom}
           >
-            <Typography
-              title={params.row.isMissingBaseDocs ? 'incomplete' : 'complete'}
-            >
-              {params.row.isMissingBaseDocs ? (
-                <AiFillQuestionCircle size={24} color="lightgray" />
-              ) : (
-                <IoCheckmarkCircle size={24} color="limegreen" />
-              )}
-              {params.row.total_accepted_base_docs_needed}/
-              {params.row.total_base_docs_needed}
-            </Typography>
+            {params.value}
           </Link>
         );
       }
@@ -497,7 +554,7 @@ function StudentOverviewTable(props) {
             to={`${DEMO.COURSES_INPUT_LINK(params.row._id)}`}
             component={LinkDom}
           >
-            {needUpdateCourseSelection(params.row.student)}
+            {params.value}
           </Link>
         );
       }
@@ -515,33 +572,7 @@ function StudentOverviewTable(props) {
             )}`}
             component={LinkDom}
           >
-            {!params.row.isCVFinished_b ? (
-              params.row.isCVAssigned ? (
-                <Typography>
-                  <AiFillQuestionCircle
-                    size={24}
-                    color="lightgray"
-                    title="Working"
-                  />
-                </Typography>
-              ) : (
-                <Typography>
-                  <BsFillExclamationCircleFill
-                    size={23}
-                    color="red"
-                    title="Not created yet"
-                  />
-                </Typography>
-              )
-            ) : (
-              <Typography>
-                <IoCheckmarkCircle
-                  size={24}
-                  color="limegreen"
-                  title="complete"
-                />
-              </Typography>
-            )}
+            {params.value}
           </Link>
         );
       }
@@ -549,7 +580,7 @@ function StudentOverviewTable(props) {
     {
       field: 'ML',
       headerName: 'ML',
-      width: 100,
+      width: 80,
       renderCell: (params) => {
         return (
           <Link
@@ -560,26 +591,7 @@ function StudentOverviewTable(props) {
             className="text-info"
             component={LinkDom}
           >
-            {
-              params.row.student.applications?.filter((application) =>
-                application.doc_modification_thread?.some(
-                  (thread) =>
-                    isProgramDecided(application) &&
-                    thread.doc_thread_id?.isFinalVersion &&
-                    thread.doc_thread_id?.file_type === 'ML'
-                )
-              ).length
-            }
-            /
-            {
-              params.row.student.applications.filter((application) =>
-                application.doc_modification_thread?.some(
-                  (thread) =>
-                    isProgramDecided(application) &&
-                    thread.doc_thread_id?.file_type === 'ML'
-                )
-              ).length
-            }
+            {params.value}
           </Link>
         );
       }
@@ -587,7 +599,7 @@ function StudentOverviewTable(props) {
     {
       field: 'RL',
       headerName: 'RL',
-      width: 100,
+      width: 80,
       renderCell: (params) => {
         return (
           <Link
@@ -597,32 +609,7 @@ function StudentOverviewTable(props) {
             )}`}
             component={LinkDom}
           >
-            {
-              params.row.student.applications.filter((application) =>
-                application.doc_modification_thread?.some(
-                  (thread) =>
-                    isProgramDecided(application) &&
-                    thread.doc_thread_id?.isFinalVersion &&
-                    (thread.doc_thread_id?.file_type.includes('RL') ||
-                      thread.doc_thread_id?.file_type.includes(
-                        'Recommendation'
-                      ))
-                )
-              ).length
-            }
-            /
-            {
-              params.row.student.applications.filter((application) =>
-                application.doc_modification_thread?.some(
-                  (thread) =>
-                    isProgramDecided(application) &&
-                    (thread.doc_thread_id?.file_type.includes('RL') ||
-                      thread.doc_thread_id?.file_type.includes(
-                        'Recommendation'
-                      ))
-                )
-              ).length
-            }
+            {params.value}
           </Link>
         );
       }
@@ -630,7 +617,7 @@ function StudentOverviewTable(props) {
     {
       field: 'Essay',
       headerName: 'Essay',
-      width: 100,
+      width: 80,
       renderCell: (params) => {
         return (
           <Link
@@ -640,26 +627,7 @@ function StudentOverviewTable(props) {
             )}`}
             component={LinkDom}
           >
-            {
-              params.row.student.applications.filter((application) =>
-                application.doc_modification_thread?.some(
-                  (thread) =>
-                    isProgramDecided(application) &&
-                    thread.doc_thread_id?.isFinalVersion &&
-                    thread.doc_thread_id?.file_type.includes('Essay')
-                )
-              ).length
-            }
-            /
-            {
-              params.row.student.applications.filter((application) =>
-                application.doc_modification_thread?.some(
-                  (thread) =>
-                    isProgramDecided(application) &&
-                    thread.doc_thread_id?.file_type.includes('Essay')
-                )
-              ).length
-            }
+            {params.value}
           </Link>
         );
       }
@@ -674,27 +642,7 @@ function StudentOverviewTable(props) {
             to={`${DEMO.PORTALS_MANAGEMENT_STUDENTID_LINK(params.row.id)}`}
             component={LinkDom}
           >
-            {params.row.student.applications?.length === 0 ? (
-              <Typography title="Not needed">
-                {FILE_DONT_CARE_SYMBOL}
-              </Typography>
-            ) : to_register_application_portals(params.row.student) ? (
-              <Typography>
-                <AiFillQuestionCircle
-                  size={24}
-                  color="lightgray"
-                  title="Missing"
-                />
-              </Typography>
-            ) : (
-              <Typography>
-                <IoCheckmarkCircle
-                  size={24}
-                  color="limegreen"
-                  title="complete"
-                />
-              </Typography>
-            )}
+            {params.value}
           </Link>
         );
       }
@@ -712,27 +660,7 @@ function StudentOverviewTable(props) {
             )}`}
             component={LinkDom}
           >
-            {params.row.is_uni_assist_needed ? (
-              params.row.isall_uni_assist_vpd_uploaded ? (
-                <Typography title="complete">
-                  <IoCheckmarkCircle
-                    size={24}
-                    color="limegreen"
-                    title="Complete"
-                  />
-                </Typography>
-              ) : (
-                <Typography title="incomplete">
-                  <AiFillQuestionCircle size={24} color="lightgray" />(
-                  {params.row.numb_uni_assist_vpd_uploaded}/
-                  {params.row.numb_uni_assist_vpd_needed})
-                </Typography>
-              )
-            ) : (
-              <Typography title="Not needed">
-                {FILE_DONT_CARE_SYMBOL}
-              </Typography>
-            )}
+            {params.value}
           </Link>
         );
       }

@@ -1131,8 +1131,7 @@ export const num_uni_assist_vpd_uploaded = (student) => {
     if (
       application.decided === 'O' &&
       application.programId.uni_assist &&
-      (application.programId.uni_assist.includes('VPD') ||
-        application.programId.uni_assist.includes('FULL')) &&
+      application.programId.uni_assist.includes('VPD') &&
       application.uni_assist &&
       application.uni_assist.status !== DocumentStatus.NotNeeded &&
       (application.uni_assist.status === DocumentStatus.Uploaded ||
@@ -1153,8 +1152,7 @@ export const num_uni_assist_vpd_needed = (student) => {
     if (
       student.applications[j].decided === 'O' &&
       student.applications[j].programId.uni_assist &&
-      (student.applications[j].programId.uni_assist.includes('VPD') ||
-        student.applications[j].programId.uni_assist.includes('FULL'))
+      student.applications[j].programId.uni_assist.includes('VPD')
     ) {
       if (!student.applications[j].uni_assist) {
         continue;

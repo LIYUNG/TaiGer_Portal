@@ -47,6 +47,7 @@ router.use(protect);
 router
   .route('/')
   .post(
+    filter_archiv_user,
     permit(Role.Admin, Role.Agent),
     permission_canModifyDocs_filter,
     createDocumentation
@@ -176,7 +177,12 @@ router
   );
 router
   .route('/search/:doc_id')
-  .get(DocumentationGETRateLimiter, prohibit(Role.Guest), getDocumentation);
+  .get(
+    filter_archiv_user,
+    DocumentationGETRateLimiter,
+    prohibit(Role.Guest),
+    getDocumentation
+  );
 
 router
   .route('/:id')

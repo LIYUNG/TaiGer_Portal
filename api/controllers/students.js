@@ -842,7 +842,7 @@ const ToggleProgramStatus = asyncHandler(async (req, res, next) => {
     );
   if (!student) {
     logger.error('ToggleProgramStatus: Invalid student id');
-    throw new ErrorResponse(403, 'Invalid student id');
+    throw new ErrorResponse(404, 'Student not found');
   }
 
   const application = student.applications.find(
@@ -850,7 +850,7 @@ const ToggleProgramStatus = asyncHandler(async (req, res, next) => {
   );
   if (!application) {
     logger.error('ToggleProgramStatus: Invalid application id');
-    throw new ErrorResponse(403, 'Invalid application id');
+    throw new ErrorResponse(404, 'Application not found');
   }
   application.closed = application.closed === 'O' ? '-' : 'O';
   await student.save();
@@ -1155,7 +1155,7 @@ const deleteApplication = asyncHandler(async (req, res, next) => {
     .lean();
   if (!student) {
     logger.error('deleteApplication: Invalid student id');
-    throw new ErrorResponse(403, 'Invalid student id');
+    throw new ErrorResponse(404, 'Student not found');
   }
 
   const application = student.applications.find(
@@ -1163,7 +1163,7 @@ const deleteApplication = asyncHandler(async (req, res, next) => {
   );
   if (!application) {
     logger.error('deleteApplication: Invalid application id');
-    throw new ErrorResponse(403, 'Invalid application id');
+    throw new ErrorResponse(404, 'Application not found');
   }
 
   // checking if delete is safe?

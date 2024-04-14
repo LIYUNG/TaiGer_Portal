@@ -84,7 +84,7 @@ const getProgram = asyncHandler(async (req, res) => {
       const program = await Program.findById(req.params.programId);
       if (!program) {
         logger.error('getProgram: Invalid program id');
-        throw new ErrorResponse(403, 'Invalid program id');
+        throw new ErrorResponse(404, 'Program not found');
       }
       const success = one_month_cache.set(req.originalUrl, program);
       if (success) {
@@ -155,7 +155,7 @@ const getProgram = asyncHandler(async (req, res) => {
     const program = await Program.findById(req.params.programId);
     if (!program) {
       logger.error('getProgram: Invalid program id');
-      throw new ErrorResponse(403, 'Invalid program id');
+      throw new ErrorResponse(404, 'Program not found');
     }
     const vc = await VC.findOne({
       docId: req.params.programId,
@@ -167,7 +167,7 @@ const getProgram = asyncHandler(async (req, res) => {
     const program = await Program.findById(req.params.programId);
     if (!program) {
       logger.error('getProgram: Invalid program id');
-      throw new ErrorResponse(403, 'Invalid program id');
+      throw new ErrorResponse(404, 'Program not found');
     }
     res.send({ success: true, data: program });
   }

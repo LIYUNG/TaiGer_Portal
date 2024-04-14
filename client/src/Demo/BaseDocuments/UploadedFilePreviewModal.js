@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Form } from 'react-bootstrap';
-import { Button, CircularProgress, TextField, Typography } from '@mui/material';
+import {
+  Button,
+  CircularProgress,
+  TextField,
+  Typography,
+  FormControlLabel,
+  Checkbox
+} from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import CheckIcon from '@mui/icons-material/Check';
@@ -229,19 +235,20 @@ function UploadedFilePreviewModal(props) {
                 base_documents_checklist[props.k].length !== 0 &&
                 'Check list: Please check the following points so that you can flag this document as valid.'}
             </Typography>
-            <Typography>
-              {base_documents_checklist[props.k]
-                ? base_documents_checklist[props.k].map((check_item, i) => (
-                    <Form.Check
-                      key={i}
-                      type={'checkbox'}
-                      id={`${check_item}-${i}`}
-                      label={`${check_item}`}
-                      onChange={(e) => onChecked(e)}
-                    />
-                  ))
-                : t('No', { ns: 'common' })}
-            </Typography>
+            {base_documents_checklist[props.k]
+              ? base_documents_checklist[props.k].map((check_item, i) => (
+                  <FormControlLabel
+                    key={i}
+                    label={`${check_item}`}
+                    control={
+                      <Checkbox
+                        id={`${check_item}-${i}`}
+                        onChange={(e) => onChecked(e)}
+                      />
+                    }
+                  />
+                ))
+              : t('No', { ns: 'common' })}
           </>
         )}
         {props.path.split('.')[1] !== 'pdf' && (

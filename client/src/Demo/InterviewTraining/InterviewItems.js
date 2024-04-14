@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
-import { ListGroup } from 'react-bootstrap';
 import { Link as LinkDom } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Checkbox,
+  List,
+  ListItemText,
+  ListItemIcon,
+  ListItemButton,
   Box,
   Link,
   Button,
@@ -168,7 +172,9 @@ function InterviewItems(props) {
         <AccordionDetails>
           <Grid container spacing={2}>
             <Grid item xs={12} md={6}>
-              <Typography variant="body1">{t('Student', { ns: 'common' })}: </Typography>
+              <Typography variant="body1">
+                {t('Student', { ns: 'common' })}:{' '}
+              </Typography>
               <Link
                 underline="hover"
                 to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
@@ -208,7 +214,9 @@ function InterviewItems(props) {
             </Grid>
           </Grid>
           <Grid item xs={12}>
-            <Typography variant="body1">{t('Description', { ns: 'common' })}</Typography>{' '}
+            <Typography variant="body1">
+              {t('Description', { ns: 'common' })}
+            </Typography>{' '}
           </Grid>
           <Grid item xs={12}>
             <NotesEditor
@@ -303,24 +311,34 @@ function InterviewItems(props) {
         </AccordionDetails>
       </Accordion>
       <ModalNew open={showModal} size="small" centered onClose={toggleModal}>
-        <Typography>Assign Trainer</Typography>
-        {editors?.map((editor, i) => (
-          <ListGroup as="ul" key={i}>
-            <ListGroup.Item
-              as="li"
-              active={trainerId.has(editor._id.toString())}
-              action
+        <Typography>{t('Assign Trainer')}</Typography>
+        <List>
+          {editors?.map((editor, i) => (
+            <ListItemButton
+              key={i}
+              role={undefined}
               onClick={() =>
                 modifyTrainer(
                   editor._id.toString(),
                   trainerId.has(editor._id.toString())
                 )
               }
+              dense
             >
-              {editor.firstname} {editor.lastname}
-            </ListGroup.Item>
-          </ListGroup>
-        ))}
+              <ListItemIcon>
+                <Checkbox
+                  edge="start"
+                  checked={trainerId.has(editor._id.toString())}
+                  tabIndex={-1}
+                  disableRipple
+                />
+              </ListItemIcon>
+              <ListItemText
+                primary={`${editor.firstname} ${editor.lastname}`}
+              />
+            </ListItemButton>
+          ))}
+        </List>
         <Button
           color="primary"
           variant="contained"

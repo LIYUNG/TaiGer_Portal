@@ -1469,7 +1469,7 @@ export const latestReplyInfo = (thread) => {
   );
 };
 
-const prepTaskStudent = (student) => {
+export const prepTaskStudent = (student) => {
   return {
     firstname_lastname: `${student.firstname}, ${student.lastname}`,
     student_id: student._id.toString(),
@@ -1858,19 +1858,19 @@ export const getNextProgramStatus = (student) => {
     )
     .sort((a, b) => (a.application_deadline > b.application_deadline ? 1 : -1));
   return getNextProgram.length !== 0 ? (
-    <span
-      className={`${
-        progressBarCounter(student, getNextProgram[0].application) < 100
-          ? progressBarCounter(student, getNextProgram[0].application) < 75
-            ? progressBarCounter(student, getNextProgram[0].application) < 30
-              ? 'text-danger' // 15 > x
-              : 'text-secondary' // 60 > x > 15
-            : 'text-warning' // 100 > x >60
-          : ''
-      }`}
-    >
-      {`${progressBarCounter(student, getNextProgram[0].application)} %`}
-    </span>
+    // <span
+    //   className={`${
+    //     progressBarCounter(student, getNextProgram[0].application) < 100
+    //       ? progressBarCounter(student, getNextProgram[0].application) < 75
+    //         ? progressBarCounter(student, getNextProgram[0].application) < 30
+    //           ? 'text-danger' // 15 > x
+    //           : 'text-secondary' // 60 > x > 15
+    //         : 'text-warning' // 100 > x >60
+    //       : ''
+    //   }`}
+    // >
+      `${progressBarCounter(student, getNextProgram[0].application)} %`
+    // </span>
   ) : (
     '-'
   );

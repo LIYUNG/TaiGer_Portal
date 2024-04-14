@@ -441,8 +441,7 @@ function UniAssistListCard(props) {
           )}`}
           component={LinkDom}
         >
-          {application.programId.school} {application.programId.program_name}{' '}
-          {application.programId.uni_assist}
+          {`${application.programId.school} ${application.programId.program_name} - ${application.programId.semester} - ${application.programId.degree} - ${application.programId.uni_assist}`}
         </Link>
       </Typography>
     );

@@ -675,8 +675,8 @@ const SurveyEditableComponent = (props) => {
                         survey.academic_background.university.My_GPA_Uni
                       )}
                     </b>{' '}
-                    = 1 + (3 * (highest - my)) / (high - passing) = 1 + (3 * (
-                    {survey.academic_background?.university?.Highest_GPA_Uni} -{' '}
+                    = 1 + (3 * (highest - my)) / (highest - passing) = 1 + (3 *
+                    ({survey.academic_background?.university?.Highest_GPA_Uni} -{' '}
                     {survey.academic_background?.university?.My_GPA_Uni})) / (
                     {survey.academic_background?.university?.Highest_GPA_Uni} -{' '}
                     {survey.academic_background?.university?.Passing_GPA_Uni})

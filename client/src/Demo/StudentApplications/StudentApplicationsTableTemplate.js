@@ -10,6 +10,10 @@ import {
   Link,
   List,
   ListItem,
+  ListItemButton,
+  ListItemText,
+  ListItemIcon,
+  Checkbox,
   MenuItem,
   Select,
   Table,
@@ -77,6 +81,7 @@ function StudentApplicationsTableTemplate(props) {
     isLoaded: props.isLoaded,
     importedStudent: '',
     importedStudentPrograms: [],
+    program_ids: [],
     importedStudentModalOpen: false,
     isButtonDisable: false,
     isImportingStudentPrograms: false,
@@ -184,11 +189,15 @@ function StudentApplicationsTableTemplate(props) {
       (res) => {
         const { data, success } = res.data;
         const { status } = res;
+        console.log(data);
         if (success) {
           setStudentApplicationsTableTemplateState((prevState) => ({
             ...prevState,
             isImportingStudentPrograms: false,
             importedStudentPrograms: data,
+            program_ids: data?.map((program) =>
+              program.programId._id.toString()
+            ),
             res_modal_status: status
           }));
         } else {
@@ -286,10 +295,7 @@ function StudentApplicationsTableTemplate(props) {
   };
 
   const handleImportProgramsConfirm = () => {
-    const program_ids =
-      studentApplicationsTableTemplateState.importedStudentPrograms.map(
-        (program) => program.programId._id.toString()
-      );
+    const program_ids = studentApplicationsTableTemplateState.program_ids;
     setStudentApplicationsTableTemplateState((prevState) => ({
       ...prevState,
       isButtonDisable: true
@@ -370,6 +376,28 @@ function StudentApplicationsTableTemplate(props) {
         }));
       }
     );
+  };
+
+  const modifyImportingPrograms = (new_programId, isActive) => {
+    let importing_program_ids_existing = [
+      ...studentApplicationsTableTemplateState.program_ids
+    ];
+    console.log(importing_program_ids_existing);
+    if (isActive) {
+      importing_program_ids_existing = importing_program_ids_existing.filter(
+        (item) => item !== new_programId
+      );
+      setStudentApplicationsTableTemplateState((prevState) => ({
+        ...prevState,
+        program_ids: importing_program_ids_existing
+      }));
+    } else {
+      importing_program_ids_existing.push(new_programId);
+      setStudentApplicationsTableTemplateState((prevState) => ({
+        ...prevState,
+        program_ids: importing_program_ids_existing
+      }));
+    }
   };
 
   const handleSubmit = (e, student_id) => {
@@ -943,7 +971,7 @@ function StudentApplicationsTableTemplate(props) {
           <Grid container spacing={2}>
             <Grid item xs={4}>
               <Typography variant="h6">
-                {t('Applying Program Count')}:{' '}
+                {t('Applying Program Count', { ns: 'common' })}:{' '}
               </Typography>
             </Grid>
             {is_TaiGer_Admin(user) ? (
@@ -1028,7 +1056,9 @@ function StudentApplicationsTableTemplate(props) {
                       <TableRow>
                         {props.role !== 'Student' && <TableCell></TableCell>}
                         {programstatuslist.map((doc, index) => (
-                          <TableCell key={index}>{t(doc.name)}</TableCell>
+                          <TableCell key={index}>
+                            {t(doc.name, { ns: 'common' })}
+                          </TableCell>
                         ))}
                       </TableRow>
                     </TableHead>
@@ -1103,14 +1133,41 @@ function StudentApplicationsTableTemplate(props) {
                 {studentApplicationsTableTemplateState.isImportingStudentPrograms ? (
                   <CircularProgress size={16} />
                 ) : (
-                  studentApplicationsTableTemplateState.importedStudentPrograms?.map(
-                    (app, i) => (
-                      <li key={i}>
-                        {`${app.programId?.school} - ${app.programId?.program_name} ${app.programId?.degree} 
-                          ${app.programId?.semester}`}
-                      </li>
-                    )
-                  ) || []
+                  <List>
+                    {studentApplicationsTableTemplateState.importedStudentPrograms?.map(
+                      (app, i) => (
+                        <ListItemButton
+                          key={i}
+                          role={undefined}
+                          onClick={() =>
+                            modifyImportingPrograms(
+                              app.programId._id.toString(),
+                              studentApplicationsTableTemplateState.program_ids?.some(
+                                (program_id) =>
+                                  program_id === app.programId._id.toString()
+                              )
+                            )
+                          }
+                          dense
+                        >
+                          <ListItemIcon>
+                            <Checkbox
+                              edge="start"
+                              checked={studentApplicationsTableTemplateState.program_ids?.some(
+                                (program_id) =>
+                                  program_id === app.programId._id.toString()
+                              )}
+                              tabIndex={-1}
+                              disableRipple
+                            />
+                          </ListItemIcon>
+                          <ListItemText
+                            primary={`${app.programId?.school} - ${app.programId?.program_name} ${app.programId?.degree} ${app.programId?.semester}`}
+                          />
+                        </ListItemButton>
+                      )
+                    ) || []}
+                  </List>
                 )}
               </Typography>
               <Typography>
@@ -1148,7 +1205,7 @@ function StudentApplicationsTableTemplate(props) {
               aria-labelledby="contained-modal-title-vcenter"
             >
               <Typography id="contained-modal-title-vcenter">
-                {t('Success',{ns:'common'})}
+                {t('Success', { ns: 'common' })}
               </Typography>
               <Typography>
                 Program(s) imported to student successfully!
@@ -1166,7 +1223,8 @@ function StudentApplicationsTableTemplate(props) {
               aria-labelledby="contained-modal-title-vcenter"
             >
               <Typography variant="h6" sx={{ mb: 2 }}>
-                {t('Warning', { ns: 'common' })}: {t('Delete an application')}
+                {t('Warning', { ns: 'common' })}:{' '}
+                {t('Delete an application', { ns: 'common' })}
               </Typography>
               <Typography>
                 This will delete all message and editted files in discussion.
@@ -1201,7 +1259,9 @@ function StudentApplicationsTableTemplate(props) {
             >
               <Typography id="contained-modal-title-vcenter">Info:</Typography>
               <Typography>
-                {t('Applications status updated successfully!')}
+                {t('Applications status updated successfully!', {
+                  ns: 'common'
+                })}
               </Typography>
               <Typography>
                 <Button

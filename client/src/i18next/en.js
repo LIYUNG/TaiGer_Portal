@@ -97,6 +97,8 @@ export const translation_en = {
     'Must fill fields': 'Must fill fields',
     Create: 'Create',
     Pending: 'Pending',
+    Decided: 'Decided',
+    Offer: 'Offer',
     Admitted: 'Admitted',
     Rejected: 'Rejected',
     'Personal Data': 'Personal Data',
@@ -181,6 +183,8 @@ export const translation_en = {
     Calendar: 'Calendar',
     'Calendar Events': 'Calendar Events',
     'To Calendar': 'To Calendar',
+    'Delete an application': 'Delete an application',
+    'Applying Program Count': 'Applying Program Count',
     'My Students': 'My Students',
     Profile: 'Profile',
     'My Profile': 'My Profile',
@@ -238,7 +242,10 @@ export const translation_en = {
     'Time Slot': 'Time Slot',
     Past: 'Past',
     Chat: 'Chat',
-    'Upload file': 'Upload file'
+    'Upload file': 'Upload file',
+    University: 'University',
+    'Applications status updated successfully!':
+      'Applications status updated successfully!'
   },
   dashboard: {
     Dashboard: 'Dashboard',

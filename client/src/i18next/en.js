@@ -237,7 +237,8 @@ export const translation_en = {
     'No upcoming event': 'No upcoming event',
     'Time Slot': 'Time Slot',
     Past: 'Past',
-    Chat: 'Chat'
+    Chat: 'Chat',
+    'Upload file': 'Upload file'
   },
   dashboard: {
     Dashboard: 'Dashboard',
@@ -301,6 +302,12 @@ export const translation_en = {
     'No analysis yet': 'No analysis yet'
   },
   interviews: {},
+  uniassist: {
+    'All document uploaded to Uni-Assist and paid, waiting for VPD':
+      'All document uploaded to Uni-Assist and paid, waiting for VPD',
+    'uni-assist full':
+      'This is uni-assit full-responsible application. Please apply this program via uni-assist when your documents are finished. You do not need VPD.'
+  },
   portalManagement: {
     'Update portal credentials successfully':
       'Update portal credentials successfully'

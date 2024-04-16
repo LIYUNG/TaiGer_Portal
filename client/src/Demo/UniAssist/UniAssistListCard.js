@@ -449,7 +449,7 @@ function UniAssistListCard(props) {
 
   const SetNeedButtons = ({ application }) => {
     return (
-      <>
+      <span>
         {is_TaiGer_AdminAgent(user) &&
           application.uni_assist?.vpd_paid_confirmation_file_path === '' &&
           application.uni_assist?.vpd_file_path === '' &&
@@ -467,7 +467,7 @@ function UniAssistListCard(props) {
                 )
               }
             >
-              {t('Set Not Needed')}
+              {t('Set Not Needed', { ns: 'common' })}
             </Button>
           )}
         {application.uni_assist?.status === DocumentStatus.NotNeeded &&
@@ -487,7 +487,7 @@ function UniAssistListCard(props) {
               {t('Set needed')}
             </Button>
           )}
-      </>
+      </span>
     );
   };
 
@@ -508,9 +508,10 @@ function UniAssistListCard(props) {
       <Box key={i} sx={{ mb: 2 }}>
         {application.programId.uni_assist?.includes('Yes-VPD') && (
           <>
-            <ProgramName application={application} />
-            <SetNeedButtons application={application} />
-
+            <Box sx={{ display: 'flex' }}>
+              <ProgramName application={application} />
+              <SetNeedButtons application={application} />
+            </Box>
             {application.uni_assist?.status === DocumentStatus.NotNeeded && (
               <Typography variant="string">
                 Uni-assist is not necessary as it can be reused from another
@@ -521,7 +522,10 @@ function UniAssistListCard(props) {
               <Box>
                 {is_TaiGer_AdminAgent(user) && (
                   <FormControlLabel
-                    label={`All document uploaded to Uni-Assist and paid, waiting for VPD`}
+                    label={t(
+                      `All document uploaded to Uni-Assist and paid, waiting for VPD`,
+                      { ns: 'uniassist' }
+                    )}
                     disabled={
                       !(
                         !application.uni_assist ||
@@ -664,10 +668,18 @@ function UniAssistListCard(props) {
                             component="label"
                             size="small"
                             color="secondary"
+                            disabled={
+                              !(
+                                !application.uni_assist ||
+                                application.uni_assist.status ===
+                                  DocumentStatus.Missing ||
+                                application.uni_assist.status === 'notstarted'
+                              )
+                            }
                             variant="outlined"
                             startIcon={<CloudUploadIcon />}
                           >
-                            {t('Upload file')}
+                            {t('Upload file', { ns: 'common' })}
                             <VisuallyHiddenInput
                               type="file"
                               onChange={(e) =>
@@ -742,9 +754,7 @@ function UniAssistListCard(props) {
             </Grid>
             <Grid item xs={12}>
               <Typography>
-                This is uni-assit full-responsible application. Please apply
-                this program via uni-assist when your documents are finished.
-                You do not need VPD.
+                {t('uni-assist full', { ns: 'uniassist' })}
               </Typography>
             </Grid>
           </Grid>

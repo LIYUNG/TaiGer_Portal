@@ -780,6 +780,7 @@ const UpdateStudentApplications = asyncHandler(async (req, res, next) => {
       }
     }
     application.admission = applications[i].admission;
+    application.finalEnrolment = applications[i].finalEnrolment;
   }
   if (user.role === Role.Admin) {
     student.applying_program_count = parseInt(applying_program_count);

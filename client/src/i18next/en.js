@@ -246,7 +246,8 @@ export const translation_en = {
     'Upload file': 'Upload file',
     University: 'University',
     'Applications status updated successfully!':
-      'Applications status updated successfully!'
+      'Applications status updated successfully!',
+    'Final Decision': 'Final Decision'
   },
   dashboard: {
     Dashboard: 'Dashboard',

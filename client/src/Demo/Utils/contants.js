@@ -1801,6 +1801,10 @@ export const programstatuslist = [
     prop: 'offer'
   },
   {
+    name: 'Final Decision',
+    prop: 'finalEnrolment'
+  },
+  {
     name: 'Days left',
     prop: 'days_left'
   }

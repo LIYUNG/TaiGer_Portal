@@ -247,7 +247,8 @@ export const translation_zh_TW = {
     Chat: '訊息',
     'Upload file': '上傳檔案',
     University: '大學',
-    'Applications status updated successfully!': '申請狀態更新成功!'
+    'Applications status updated successfully!': '申請狀態更新成功!',
+    'Final Decision': '決定就讀'
   },
   dashboard: {
     Dashboard: '主控台',

@@ -41,7 +41,8 @@ import {
   is_TaiGer_Student,
   is_TaiGer_Admin,
   isProgramSubmitted,
-  isProgramDecided
+  isProgramDecided,
+  isProgramAdmitted
 } from '../Utils/checking-functions';
 import OverlayButton from '../../components/Overlay/OverlayButton';
 import Banner from '../../components/Banner/Banner';
@@ -540,6 +541,9 @@ function StudentApplicationsTableTemplate(props) {
           <TableCell>
             <Typography>- </Typography>
           </TableCell>
+          <TableCell>
+            <Typography>- </Typography>
+          </TableCell>
         </TableRow>
       </>
     );
@@ -680,9 +684,15 @@ function StudentApplicationsTableTemplate(props) {
                       onChange={(e) => handleChange(e, application_idx)}
                       disabled={application.admission !== '-'}
                     >
-                      <MenuItem value="-">Not Yet</MenuItem>
-                      <MenuItem value="X">Withdraw</MenuItem>
-                      <MenuItem value="O">Submitted</MenuItem>
+                      <MenuItem value="-">
+                        {t('Not Yet', { ns: 'common' })}
+                      </MenuItem>
+                      <MenuItem value="X">
+                        {t('Withdraw', { ns: 'common' })}
+                      </MenuItem>
+                      <MenuItem value="O">
+                        {t('Submitted', { ns: 'common' })}
+                      </MenuItem>
                     </Select>
                   </FormControl>
                 ) : (
@@ -727,7 +737,7 @@ function StudentApplicationsTableTemplate(props) {
                   >
                     {IS_SUBMITTED_STATE_OPTIONS.map((option) => (
                       <MenuItem key={option.value} value={option.value}>
-                        {option.label}
+                        {t(option.label, { ns: 'common' })}
                       </MenuItem>
                     ))}
                   </Select>
@@ -736,7 +746,31 @@ function StudentApplicationsTableTemplate(props) {
             ) : (
               <TableCell></TableCell>
             )}
-
+            {isProgramDecided(application) &&
+            isProgramSubmitted(application) &&
+            isProgramAdmitted(application) ? (
+              <TableCell>
+                <FormControl fullWidth>
+                  <Select
+                    size="small"
+                    labelId="finalEnrolment"
+                    name="finalEnrolment"
+                    id="finalEnrolment"
+                    defaultValue={application.finalEnrolment ?? false}
+                    onChange={(e) => handleChange(e, application_idx)}
+                  >
+                    <MenuItem value={false}>
+                      {t('No', { ns: 'common' })}
+                    </MenuItem>
+                    <MenuItem value={true}>
+                      {t('Yes', { ns: 'common' })}
+                    </MenuItem>
+                  </Select>
+                </FormControl>
+              </TableCell>
+            ) : (
+              <TableCell></TableCell>
+            )}
             <TableCell>
               <p className="mb-1 text-info" key={application_idx}>
                 {isProgramSubmitted(application)

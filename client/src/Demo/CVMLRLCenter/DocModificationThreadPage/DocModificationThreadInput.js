@@ -655,14 +655,24 @@ function DocModificationThreadInput() {
           underline="hover"
           color="inherit"
           component={LinkDom}
+          to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+            thread?.student_id?._id.toString(),
+            DEMO.CVMLRL_HASH
+          )}`}
+        >
+          {student_name}
+        </Link>
+        <Link
+          underline="hover"
+          color="inherit"
+          component={LinkDom}
           to={`${DEMO.DOCUMENT_MODIFICATION_LINK(thread?._id.toString())}`}
         >
-          {student_name} {'   '}
           {docName}
           {' Discussion thread'}
           {'   '}
         </Link>
-        <Typography>Survey</Typography>
+        <Typography>{t('Survey')}</Typography>
       </Breadcrumbs>
 
       {!isLoaded && <Loading />}

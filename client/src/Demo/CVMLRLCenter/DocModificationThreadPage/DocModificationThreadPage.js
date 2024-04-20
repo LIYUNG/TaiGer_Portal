@@ -831,7 +831,7 @@ function DocModificationThreadPage() {
           component={LinkDom}
           to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
             docModificationThreadPageState.thread.student_id._id.toString(),
-            DEMO.PROFILE_HASH
+            DEMO.CVMLRL_HASH
           )}`}
         >
           {student_name}

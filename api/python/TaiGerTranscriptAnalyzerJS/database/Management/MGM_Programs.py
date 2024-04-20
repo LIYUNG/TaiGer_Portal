@@ -629,8 +629,8 @@ def TUM_MGM_DIGITALTECH(transcript_sorted_group_map, df_transcript_array, df_cat
         'Program_Category': 'Operations Research', 'Required_ECTS': 5}            # 10 Punkte
     PROG_SPEC_VWL_PARAM = {
         'Program_Category': 'Volkswirtschaftliche Module', 'Required_ECTS': 10}
-    PROG_SPEC_ENG_SCIENCE_MATH_PARAM = {
-        'Program_Category': 'Engineering, Science, Math', 'Required_ECTS': 5}
+    PROG_SPEC_PROGRAMMING_PARAM = {
+        'Program_Category': 'Programming', 'Required_ECTS': 5}
     PROG_SPEC_OTHERS = {
         'Program_Category': 'Others', 'Required_ECTS': 0}
 
@@ -640,28 +640,28 @@ def TUM_MGM_DIGITALTECH(transcript_sorted_group_map, df_transcript_array, df_cat
         PROG_SPEC_EMPIRIAL_METHODE_PARAM,
         PROG_SPEC_OPERATION_RESEARCH_PARAM,  # 作業研究
         PROG_SPEC_VWL_PARAM,  # 經濟
-        PROG_SPEC_ENG_SCIENCE_MATH_PARAM,  # 工程 數學 自然科學
+        PROG_SPEC_PROGRAMMING_PARAM,  # 程式
         PROG_SPEC_OTHERS  # 其他
     ]
 
     # Mapping table: same dimension as transcript_sorted_group/ The length depends on how fine the transcript is classified
     program_category_map = [
-        PROG_SPEC_ENG_SCIENCE_MATH_PARAM,  # 微積分
-        PROG_SPEC_ENG_SCIENCE_MATH_PARAM,  # 數學
+        PROG_SPEC_OTHERS,  # 微積分
+        PROG_SPEC_OTHERS,  # 數學
         PROG_SPEC_VWL_PARAM,  # 經濟
         PROG_SPEC_EMPIRIAL_METHODE_PARAM,  # 計量經濟
         PROG_SPEC_BWL_PARAM,  # 企業
         PROG_SPEC_BWL_PARAM,  # 管理
         PROG_SPEC_BWL_PARAM,  # 會計
-        PROG_SPEC_ENG_SCIENCE_MATH_PARAM,  # 統計
+        PROG_SPEC_OTHERS,  # 統計
         PROG_SPEC_BWL_PARAM,  # 金融
         PROG_SPEC_BWL_PARAM,  # 行銷
         PROG_SPEC_OPERATION_RESEARCH_PARAM,  # 作業研究
         PROG_SPEC_EMPIRIAL_METHODE_PARAM,  # 觀察研究
-        PROG_SPEC_ENG_SCIENCE_MATH_PARAM,  # 基礎資工
-        PROG_SPEC_ENG_SCIENCE_MATH_PARAM,  # 程式
-        PROG_SPEC_ENG_SCIENCE_MATH_PARAM,  # 資料科學
-        PROG_SPEC_ENG_SCIENCE_MATH_PARAM,  # 資訊系統
+        PROG_SPEC_OTHERS,  # 基礎資工
+        PROG_SPEC_PROGRAMMING_PARAM,  # 程式
+        PROG_SPEC_OTHERS,  # 資料科學
+        PROG_SPEC_OTHERS,  # 資訊系統
         PROG_SPEC_OTHERS,  # 資料庫
         PROG_SPEC_OTHERS,  # 永續
         PROG_SPEC_OTHERS,  # 論文

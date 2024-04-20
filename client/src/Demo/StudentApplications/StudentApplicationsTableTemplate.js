@@ -730,7 +730,8 @@ function StudentApplicationsTableTemplate(props) {
                     disabled={
                       !(
                         application.closed !== '-' && application.closed !== 'X'
-                      )
+                      ) ||
+                      (application.finalEnrolment ?? false)
                     }
                     defaultValue={application.admission ?? '-'}
                     onChange={(e) => handleChange(e, application_idx)}

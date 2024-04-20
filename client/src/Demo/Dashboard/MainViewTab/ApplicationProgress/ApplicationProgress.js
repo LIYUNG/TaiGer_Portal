@@ -216,6 +216,11 @@ function ApplicationProgress(props) {
         ) : (
           <TableCell>{ADMISSION_STATUS_E.UNKNOWN_SYMBOL}</TableCell>
         )}
+        {application.finalEnrolment ? (
+          <TableCell> {ADMISSION_STATUS_E.OK_SYMBOL}</TableCell>
+        ) : (
+          <TableCell>{ADMISSION_STATUS_E.UNKNOWN_SYMBOL}</TableCell>
+        )}
         <TableCell>
           {isProgramSubmitted(application)
             ? '-'

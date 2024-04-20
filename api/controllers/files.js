@@ -120,14 +120,9 @@ const uploadTemplate = asyncHandler(async (req, res, next) => {
 
 const downloadTemplateFile = asyncHandler(async (req, res, next) => {
   const {
-    user,
     params: { category_name }
   } = req;
-  // Check authorized role
-  if (user.role === Role.Guest) {
-    logger.error('downloadTemplateFile: Invalid role!');
-    throw new ErrorResponse(403, 'Invalid role');
-  }
+
   const template = await Template.findOne({ category_name });
   // AWS S3
   // download the file via aws s3 here
@@ -183,8 +178,8 @@ const saveProfileFilePath = asyncHandler(async (req, res, next) => {
     .populate('agents editors', 'firstname lastname email archiv')
     .populate('applications.programId');
   if (!student) {
-    logger.error('saveProfileFilePath: Invalid student id!');
-    throw new ErrorResponse(403, 'Invalid student id');
+    logger.error(`saveProfileFilePath: Invalid student id ${studentId}`);
+    throw new ErrorResponse(404, 'student id not found');
   }
   let document = student.profile.find(({ name }) => name === category);
   if (!document) {
@@ -406,7 +401,7 @@ const saveVPDFilePath = asyncHandler(async (req, res, next) => {
 
   if (!student) {
     logger.error('saveVPDFilePath: Invalid student id!');
-    throw new ErrorResponse(403, 'Invalid student id');
+    throw new ErrorResponse(404, 'Invalid student id');
   }
   const app = student.applications.find(
     (application) => application.programId._id.toString() === program_id
@@ -660,9 +655,9 @@ const updateProfileDocumentStatus = asyncHandler(async (req, res, next) => {
     .populate('agents editors', 'firstname lastname email');
   if (!student) {
     logger.error(
-      'updateProfileDocumentStatus: Invalid student Id or application Id'
+      `updateProfileDocumentStatus: Invalid student Id ${studentId}`
     );
-    throw new ErrorResponse(403, 'Invalid student Id or application Id');
+    throw new ErrorResponse(404, 'Invalid student Id');
   }
   let document = student.profile.find(({ name }) => name === category);
   try {
@@ -736,7 +731,7 @@ const UpdateStudentApplications = asyncHandler(async (req, res, next) => {
   let new_task_flag = false;
   if (!student) {
     logger.error('UpdateStudentApplications: Invalid student id');
-    throw new ErrorResponse(403, 'Invalid student id');
+    throw new ErrorResponse(404, 'Invalid student id');
   }
   const new_app_decided_idx = [];
   for (let i = 0; i < applications.length; i += 1) {
@@ -749,7 +744,7 @@ const UpdateStudentApplications = asyncHandler(async (req, res, next) => {
     if (!application) {
       logger.error('UpdateStudentApplications: Invalid document status');
       throw new ErrorResponse(
-        403,
+        404,
         'Invalid application. Please refresh the page and try updating again.'
       );
     }
@@ -908,7 +903,7 @@ const updateStudentApplicationResult = asyncHandler(async (req, res, next) => {
   const student = await Student.findById(studentId);
   if (!student) {
     logger.error('updateStudentApplicationResult: Invalid student Id');
-    throw new ErrorResponse(403, 'Invalid student Id');
+    throw new ErrorResponse(404, 'Invalid student Id');
   }
 
   let updatedStudent;
@@ -1006,18 +1001,18 @@ const deleteProfileFile = asyncHandler(async (req, res, next) => {
   });
 
   if (!student) {
-    logger.error('deleteProfileFile: Invalid student Id or application Id');
-    throw new ErrorResponse(403, 'Invalid student Id or application Id');
+    logger.error(`deleteProfileFile: Student Id not found ${studentId}`);
+    throw new ErrorResponse(404, 'Student Id not found');
   }
 
   const document = student.profile.find(({ name }) => name === category);
   if (!document) {
     logger.error('deleteProfileFile: Invalid document name');
-    throw new ErrorResponse(403, 'Invalid document name');
+    throw new ErrorResponse(404, 'Document name not found');
   }
   if (!document.path) {
     logger.error('deleteProfileFile: File not exist');
-    throw new ErrorResponse(403, 'File not exist');
+    throw new ErrorResponse(404, 'Document File not found');
   }
 
   let document_split = document.path.replace(/\\/g, '/');
@@ -1069,8 +1064,8 @@ const deleteVPDFile = asyncHandler(async (req, res, next) => {
     .populate('agents editors', 'firstname lastname email');
 
   if (!student) {
-    logger.error('deleteVPDFile: Invalid student Id or application Id');
-    throw new ErrorResponse(403, 'Invalid student Id or application Id');
+    logger.error(`deleteVPDFile: Invalid student Id ${studentId}`);
+    throw new ErrorResponse(404, 'Invalid student Id');
   }
 
   const app = student.applications.find(
@@ -1078,12 +1073,12 @@ const deleteVPDFile = asyncHandler(async (req, res, next) => {
   );
   if (!app) {
     logger.error('deleteVPDFile: Invalid applications name');
-    throw new ErrorResponse(403, 'Invalid applications name');
+    throw new ErrorResponse(404, 'Applications name not found');
   }
   if (fileType === 'VPD') {
     if (!app.uni_assist.vpd_file_path) {
       logger.error('deleteVPDFile: VPD File not exist');
-      throw new ErrorResponse(403, 'VPD File not exist');
+      throw new ErrorResponse(404, 'VPD File not exist');
     }
   }
   if (fileType === 'VPDConfirmation') {
@@ -1091,7 +1086,7 @@ const deleteVPDFile = asyncHandler(async (req, res, next) => {
       logger.error(
         'deleteVPDConfirmationFile: VPD Confirmation File not exist'
       );
-      throw new ErrorResponse(403, 'VPD Confirmation File not exist');
+      throw new ErrorResponse(404, 'VPD Confirmation File not exist');
     }
   }
   let document_split = '';

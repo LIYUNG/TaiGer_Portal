@@ -606,7 +606,7 @@ const initGeneralMessagesThread = asyncHandler(async (req, res) => {
 
   if (!student) {
     logger.info('initGeneralMessagesThread: Invalid student id');
-    throw new ErrorResponse(403, 'Invalid student id');
+    throw new ErrorResponse(404, 'Student Id not found');
   }
 
   const doc_thread_existed = await Documentthread.findOne({
@@ -955,7 +955,7 @@ const postMessages = asyncHandler(async (req, res) => {
   ).populate('student_id program_id outsourced_user_id');
   if (!document_thread) {
     logger.info('postMessages: Invalid message thread id');
-    throw new ErrorResponse(403, 'Invalid message thread id');
+    throw new ErrorResponse(404, 'Thread Id not found');
   }
 
   if (document_thread.isFinalVersion) {
@@ -1553,7 +1553,7 @@ const getMessageFileDownload = asyncHandler(async (req, res) => {
   const document_thread = await Documentthread.findById(messagesThreadId);
   if (!document_thread) {
     logger.error('getMessageFileDownload: thread not found!');
-    throw new ErrorResponse(403, 'thread not found');
+    throw new ErrorResponse(404, 'Thread Id not found');
   }
 
   if (
@@ -1655,7 +1655,7 @@ const putOriginAuthorConfirmedByStudent = asyncHandler(async (req, res) => {
     logger.error(
       'putOriginAuthorConfirmedByStudent: Invalid message thread id'
     );
-    throw new ErrorResponse(403, 'Invalid message thread id');
+    throw new ErrorResponse(404, 'Thread Id not found');
   }
 
   res.status(200).send({

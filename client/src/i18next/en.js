@@ -169,6 +169,7 @@ export const translation_en = {
     Delete: 'Delete',
     Status: 'Status',
     Tasks: 'Tasks',
+    'Essay Writer': 'Essay Writer',
     'Assign Essay Writer': 'Assign Essay Writer',
     'Application Year': 'Application Year',
     'Move to Archiv': 'Move to Archiv',
@@ -280,6 +281,20 @@ export const translation_en = {
     Rejections: 'Rejections'
   },
   cvmlrl: {
+    'cv-instructions':
+      'Please fill out our template and upload it here in order to facilitate us obtaining complete information for CV editing.',
+    'cv-requirements-1':
+      '1. Do not omit any important information; the CV should cover all periods since high school, including any job searches, preparation for study abroad exams, retakes, etc., and provide explanations where necessary.',
+    'cv-requirements-1.1':
+      'In a CV, it is advisable to avoid any gaps exceeding three months.',
+    'cv-requirements-2':
+      '2. Please do not upload only a PDF file; we need a Word file to assist you with editing.',
+    'cv-reminder-1':
+      'Please note that if you decide not to fill out our template and upload your own original English CV, please ensure the 1. 2. points above.',
+    'cv-reminder-2':
+      'If you use Canva to edit and generate your resume, please share editing permissions with us to facilitate modifications. Based on experience, CVs provided by oneself tend to lack information. Please cross-reference our template with your existing CV to avoid Editors being unable to proceed due to missing information.',
+    'rl-requirements-1':
+      '1. The Email of the referee should be their institute. Gmail, Hotmail etc. are not acceptable.',
     'Note: if the documents are not closed but locate here, it is becaue the applications are already submitted. The documents can safely closed eventually.':
       'Note: if the documents are not closed but locate here, it is becaue the applications are already submitted. The documents can safely closed eventually.'
   },

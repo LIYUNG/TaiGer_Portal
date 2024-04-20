@@ -902,9 +902,11 @@ function DocModificationThreadPage() {
             {template_obj ? (
               <>
                 <Typography variant="body1">
-                  {t(
-                    `Please fill our ${appConfig.companyName} template and attach the filled template and reply in English in this discussion. Any process question`
-                  )}
+                  {docModificationThreadPageState.thread.file_type === 'CV'
+                    ? t('cv-instructions', { ns: 'cvmlrl' })
+                    : t(
+                        `Please fill our ${appConfig.companyName} template and attach the filled template and reply in English in this discussion. Any process question`
+                      )}
                   :
                 </Typography>
                 <LinkDom to={`${DEMO.CV_ML_RL_DOCS_LINK}`}>
@@ -1031,7 +1033,37 @@ function DocModificationThreadPage() {
                 />
               </>
             ) : (
-              <Typography>{t('No', { ns: 'common' })}</Typography>
+              <>
+                {docModificationThreadPageState.thread.file_type === 'CV' ? (
+                  <>
+                    <Typography>
+                      {t('cv-requirements-1', { ns: 'cvmlrl' })}
+                      {` `}
+                      <b>{t('cv-requirements-1.1', { ns: 'cvmlrl' })}</b>
+                    </Typography>
+                    <Typography>
+                      {t('cv-requirements-2', { ns: 'cvmlrl' })}
+                    </Typography>
+                    <Typography>
+                      {t('cv-reminder-1', { ns: 'cvmlrl' })}
+                    </Typography>
+                    <Typography>
+                      {t('cv-reminder-2', { ns: 'cvmlrl' })}
+                    </Typography>
+                  </>
+                ) : template_obj?.prop.includes('RL') ||
+                  template_obj?.alias.includes('Recommendation') ? (
+                  <>
+                    <Typography>
+                      {t('rl-requirements-1', { ns: 'cvmlrl' })}
+                    </Typography>
+                  </>
+                ) : (
+                  <>
+                    <Typography>{t('No', { ns: 'common' })}</Typography>
+                  </>
+                )}
+              </>
             )}
           </Grid>
           <Grid item md={widths[1]}>

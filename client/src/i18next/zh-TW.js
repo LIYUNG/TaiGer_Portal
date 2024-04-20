@@ -170,6 +170,7 @@ export const translation_zh_TW = {
     Delete: '刪除',
     Status: '狀態',
     Tasks: '任務',
+    'Essay Writer': '論文編輯',
     'Assign Essay Writer': '指派論文編輯',
     'Application Year': '申請年',
     'Move to Archiv': '移至Archiv',
@@ -280,6 +281,19 @@ export const translation_zh_TW = {
     Rejections: '拒絕'
   },
   cvmlrl: {
+    'cv-instructions':
+      '請填寫我們的模板並上傳至此處，方便我們獲取完整的訊息進行履歷的編修。',
+    'cv-requirements-1':
+      '1. 不要遺漏任何重要資訊，履歷上需覆蓋自高中起的所有時段，有任何找工作、準備留學考試、重考等等經歷都必須提及並解釋',
+    'cv-requirements-1.1': '履歷上忌諱有空白超過三格月以上時間',
+    'cv-requirements-2':
+      '2. 請不要只上傳pdf 檔案，我們需要word 檔案來幫助你編修',
+    'cv-reminder-1':
+      '請注意，若你決定不填寫我們的模板，而上傳你自己原有的英文履歷，請務必確認上述 1. 2. 點。',
+    'cv-reminder-2':
+      '如果你使用Canva編輯並生成履歷，請你將你的檔案編輯權限分享給我們，方便我們進行修改。根據經驗，您自行提供的CV易容易缺少資料，請交叉比對我們的模板和你現有的 CV，避免 Editor 因缺少資料而無法進行。',
+    'rl-requirements-1':
+      '1. 推薦人的 Email 必須是他們的機構 Email。 Gmail, Hotmail 等，學校通常不會接受。',
     'Note: if the documents are not closed but locate here, it is becaue the applications are already submitted. The documents can safely closed eventually.':
       'Note: 如果文件並沒有關閉並出現在這區，是因為申請已經送出。該文件可以安全地被關閉。'
   },

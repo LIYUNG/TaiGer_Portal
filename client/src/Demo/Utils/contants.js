@@ -982,7 +982,13 @@ export const ATTRIBUTES = [
   { value: 6, name: 'Low-IQ', definition: '' },
   { value: 7, name: 'Refunded', definition: '' },
   { value: 8, name: 'Done', definition: '' },
-  { value: 9, name: 'Refund-Risk', definition: '' }
+  { value: 9, name: 'Refund-Risk', definition: '' },
+  {
+    value: 10,
+    name: 'English-Risk',
+    definition:
+      'English not passed yet. Please double check if English is passed and if tasks need to be processed.'
+  }
 ];
 
 export const COLORS = [
@@ -1531,6 +1537,10 @@ export const is_new_message_status = (user, thread) => {
   }
 };
 
+export const is_my_fav_message_status = (user, thread) => {
+  return thread.flag_by_user_id?.includes(user._id.toString());
+};
+
 export const DELETE_STYLE = 'danger';
 export const REJECT_STYLE = 'secondary';
 export const ACCEPT_STYLE = 'success';
@@ -1694,7 +1704,7 @@ export const c1 = [
         <>
           {params.row?.attributes?.map(
             (attribute) =>
-              [1, 3, 9].includes(attribute.value) && (
+              [1, 3, 9, 10].includes(attribute.value) && (
                 <Tooltip
                   title={`${attribute.name}: ${
                     ATTRIBUTES[attribute.value - 1].definition
@@ -1840,7 +1850,7 @@ export const essay_dashboard_table_column = [
         <>
           {params.row?.attributes?.map(
             (attribute) =>
-              [1, 3, 9].includes(attribute.value) && (
+              [1, 3, 9, 10].includes(attribute.value) && (
                 <Tooltip
                   title={`${attribute.name}: ${
                     ATTRIBUTES[attribute.value - 1].definition
@@ -1892,194 +1902,6 @@ export const essay_dashboard_table_column = [
     field: 'updatedAt',
     headerName: 'Last Update',
     minWidth: 100
-  }
-];
-
-export const c2Student = [
-  {
-    field: 'firstname_lastname',
-    headerName: 'First-, Last Name',
-    align: 'left',
-    headerAlign: 'left',
-    width: 150,
-    renderCell: (params) => {
-      const linkUrl = `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-        params.row.student_id,
-        DEMO.PROFILE_HASH
-      )}`;
-      return (
-        <Link
-          underline="hover"
-          to={linkUrl}
-          component={LinkDom}
-          target="_blank"
-          title={params.value}
-        >
-          {params.value}
-        </Link>
-      );
-    }
-  },
-  {
-    field: 'deadline',
-    headerName: 'Deadline',
-    width: 100
-  },
-  {
-    field: 'days_left',
-    headerName: 'Days left',
-    width: 80
-  },
-  {
-    field: 'document_name',
-    headerName: 'Document name',
-    width: 380,
-    renderCell: (params) => {
-      const linkUrl = `${DEMO.DOCUMENT_MODIFICATION_LINK(
-        params.row.thread_id
-      )}`;
-      return (
-        <>
-          <Link
-            underline="hover"
-            to={linkUrl}
-            component={LinkDom}
-            target="_blank"
-            title={params.value}
-          >
-            {params.value}
-          </Link>
-        </>
-      );
-    }
-  },
-  {
-    field: 'aged_days',
-    headerName: 'Aged days',
-    width: 80
-  },
-  {
-    field: 'number_input_from_editors',
-    headerName: 'Editor Feedback (#Messages/#Files)',
-    width: 80
-  },
-  {
-    field: 'number_input_from_student',
-    headerName: 'Student Feedback (#Messages/#Files)',
-    width: 80
-  },
-  {
-    field: 'latest_reply',
-    headerName: 'Latest Reply',
-    width: 100
-  },
-  {
-    field: 'updatedAt',
-    headerName: 'Last Update',
-    width: 100
-  }
-];
-
-export const c2 = [
-  {
-    field: 'firstname_lastname',
-    headerName: 'First-, Last Name',
-    align: 'left',
-    headerAlign: 'left',
-    width: 150,
-    renderCell: (params) => {
-      const linkUrl = `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-        params.row.student_id,
-        DEMO.PROFILE_HASH
-      )}`;
-      return (
-        <Link
-          underline="hover"
-          to={linkUrl}
-          component={LinkDom}
-          target="_blank"
-          title={params.value}
-        >
-          {params.value}
-        </Link>
-      );
-    }
-  },
-  {
-    field: 'deadline',
-    headerName: 'Deadline',
-    width: 100
-  },
-  {
-    field: 'days_left',
-    headerName: 'Days left',
-    width: 80
-  },
-  {
-    field: 'document_name',
-    headerName: 'Document name',
-    width: 380,
-    renderCell: (params) => {
-      const linkUrl = `${DEMO.DOCUMENT_MODIFICATION_LINK(
-        params.row.thread_id
-      )}`;
-      return (
-        <>
-          {params.row?.attributes?.map(
-            (attribute) =>
-              [1, 3, 9].includes(attribute.value) && (
-                <Tooltip
-                  title={`${attribute.name}: ${
-                    ATTRIBUTES[attribute.value - 1].definition
-                  }`}
-                  key={attribute._id}
-                >
-                  <Chip
-                    size="small"
-                    data-testid={`chip-${attribute.name}`}
-                    label={attribute.name[0]}
-                    color={COLORS[attribute.value]}
-                  />
-                </Tooltip>
-              )
-          )}
-          <Link
-            underline="hover"
-            to={linkUrl}
-            component={LinkDom}
-            target="_blank"
-            title={params.value}
-          >
-            {params.value}
-          </Link>
-        </>
-      );
-    }
-  },
-  {
-    field: 'aged_days',
-    headerName: 'Aged days',
-    width: 80
-  },
-  {
-    field: 'number_input_from_editors',
-    headerName: 'Editor Feedback (#Messages/#Files)',
-    width: 80
-  },
-  {
-    field: 'number_input_from_student',
-    headerName: 'Student Feedback (#Messages/#Files)',
-    width: 80
-  },
-  {
-    field: 'latest_reply',
-    headerName: 'Latest Reply',
-    width: 100
-  },
-  {
-    field: 'updatedAt',
-    headerName: 'Last Update',
-    width: 100
   }
 ];
 

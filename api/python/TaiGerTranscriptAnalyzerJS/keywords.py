@@ -312,7 +312,8 @@ ALGORITHM_DATASTRUCTURE_ANTI_KEY_WORDS_EN = ['asdgladfj']
 # 理論資工
 THEORY_COMPUTATION_KEY_WORDS = ['計算機理論', '原理', '可計算', '計算理論']
 THEORY_COMPUTATION_ANTI_KEY_WORDS = ['asdgladfj', '經濟', '遊戲', '憲法']
-THEORY_COMPUTATION_KEY_WORDS_EN = ['theoretical compu', '原理', 'computabili', 'computable', 'complexity theor']
+THEORY_COMPUTATION_KEY_WORDS_EN = [
+    'theoretical compu', '原理', 'computabili', 'computable', 'complexity theor']
 THEORY_COMPUTATION_ANTI_KEY_WORDS_EN = ['asdgladfj']
 
 # 商管經
@@ -349,7 +350,8 @@ ECONOMICS_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
 BUSINESS_KEY_WORDS = ['企業', '商事', '商管', '電子商務']
 BUSINESS_ANTI_KEY_WORDS = ['asdgladfj;l', '資料', '寫作', '英文', '英語']
 BUSINESS_KEY_WORDS_EN = ['business', 'commerce']
-BUSINESS_ANTI_KEY_WORDS_EN = ['asdgladfj;l', 'information', 'writing', 'english']
+BUSINESS_ANTI_KEY_WORDS_EN = ['asdgladfj;l',
+                              'information', 'writing', 'english']
 
 # 計量經濟
 ECONOMETRICS_KEY_WORDS = ['計量經濟', '經濟計量', '數量方法']
@@ -393,7 +395,8 @@ EP_RESEARCH_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
 FINANCE_KEY_WORDS = ['金融', '投資', '貨幣',
                      '資本市場', '財務', '期貨', '選擇權', '債券']
 FINANCE_ANTI_KEY_WORDS = ['asdgladfj;l', '專題', '經濟']
-FINANCE_KEY_WORDS_EN = ['financ', 'stock', 'options', 'currenc', 'bond']
+FINANCE_KEY_WORDS_EN = ['financ', 'stock',
+                        'options', 'currenc', 'bond', 'money', 'banking', 'futures']
 FINANCE_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
 
 # 行銷

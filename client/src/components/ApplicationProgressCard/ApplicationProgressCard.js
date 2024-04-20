@@ -51,7 +51,7 @@ export default function ApplicationProgressCard(props) {
   const [isLoading, setIsLoading] = useState(false);
   const [application, setApplication] = useState(props.application);
   const [resultState, setResultState] = useState('-');
-  const [hasFile, setHasFile] = useState(false);
+  // const [hasFile, setHasFile] = useState(false);
   const [letter, setLetter] = useState(null);
   const [returnedMessage, setReturnedMessage] = useState('');
   const [showUndoModal, setShowUndoModal] = useState(false);
@@ -84,16 +84,16 @@ export default function ApplicationProgressCard(props) {
     e.preventDefault();
     if (!e.target.files) {
       setLetter(null);
-      setHasFile(false);
+      // setHasFile(false);
       return;
     }
     const file_num = e.target.files.length;
     if (file_num >= 1) {
       setLetter(e.target.files[0]);
-      setHasFile(true);
+      // setHasFile(true);
     } else {
       setLetter(null);
-      setHasFile(false);
+      // setHasFile(false);
     }
   };
 
@@ -101,9 +101,6 @@ export default function ApplicationProgressCard(props) {
     e.stopPropagation();
     setIsLoading(true);
     setReturnedMessage('');
-    console.log(hasFile);
-    console.log(letter);
-    console.log(application);
     const formData = new FormData();
     if (letter) {
       formData.append('file', letter);

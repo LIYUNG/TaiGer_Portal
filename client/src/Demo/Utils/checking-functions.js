@@ -336,11 +336,11 @@ export const is_any_base_documents_uploaded = (students) => {
 export const needUpdateCourseSelection = (student) => {
   // necessary if never updated course and is studying
   if (!student.courses) {
-    return <span className="text-danger">No Input</span>;
+    return 'No Input';
   }
   // necessary if never analyzed and is studying
   if (!student.courses.analysis?.updatedAt) {
-    return <>No Anaylsis</>;
+    return 'No Anaylsis';
   }
   // necessary if courses or analysis expired 39 daays and is studying
   const course_aged_days = parseInt(
@@ -362,7 +362,7 @@ export const needUpdateCourseSelection = (student) => {
   ) {
     const trigger_days = 62;
     if (course_aged_days > trigger_days || analyse_aged_days > trigger_days) {
-      return <span className="text-danger">Expired</span>;
+      return 'Expired';
     }
   }
 
@@ -371,9 +371,9 @@ export const needUpdateCourseSelection = (student) => {
     student.academic_background?.university?.isGraduated === 'Yes' ||
     student.academic_background?.university?.isGraduated === 'No'
   ) {
-    return <>Graduated</>;
+    return 'Graduated';
   }
-  return <span className="text-warning">OK</span>;
+  return 'OK';
 };
 
 export const to_register_application_portals = (student) => {
@@ -1131,8 +1131,7 @@ export const num_uni_assist_vpd_uploaded = (student) => {
     if (
       application.decided === 'O' &&
       application.programId.uni_assist &&
-      (application.programId.uni_assist.includes('VPD') ||
-        application.programId.uni_assist.includes('FULL')) &&
+      application.programId.uni_assist.includes('VPD') &&
       application.uni_assist &&
       application.uni_assist.status !== DocumentStatus.NotNeeded &&
       (application.uni_assist.status === DocumentStatus.Uploaded ||
@@ -1153,8 +1152,7 @@ export const num_uni_assist_vpd_needed = (student) => {
     if (
       student.applications[j].decided === 'O' &&
       student.applications[j].programId.uni_assist &&
-      (student.applications[j].programId.uni_assist.includes('VPD') ||
-        student.applications[j].programId.uni_assist.includes('FULL'))
+      student.applications[j].programId.uni_assist.includes('VPD')
     ) {
       if (!student.applications[j].uni_assist) {
         continue;
@@ -1263,6 +1261,21 @@ export const is_any_programs_ready_to_submit = (students) => {
         }
       }
     }
+  }
+
+  return false;
+};
+
+export const is_vpd_missing = (application) => {
+  if (!application.uni_assist) {
+    return true;
+  }
+  if (
+    application.uni_assist &&
+    (application.uni_assist.status !== DocumentStatus.Uploaded ||
+      application.uni_assist.vpd_file_path === '')
+  ) {
+    return true;
   }
 
   return false;
@@ -1480,7 +1493,7 @@ export const latestReplyInfo = (thread) => {
   );
 };
 
-const prepTaskStudent = (student) => {
+export const prepTaskStudent = (student) => {
   return {
     firstname_lastname: `${student.firstname}, ${student.lastname}`,
     student_id: student._id.toString(),
@@ -1503,6 +1516,7 @@ const prepEssayTaskThread = (student, thread) => {
     latest_message_left_by_id: latestReplyUserId(thread),
     isFinalVersion: thread.isFinalVersion,
     outsourced_user_id: thread?.outsourced_user_id,
+    flag_by_user_id: thread?.flag_by_user_id,
     file_type: thread.file_type,
     aged_days: parseInt(getNumberOfDays(thread.updatedAt, new Date())),
     latest_reply: latestReplyInfo(thread),
@@ -1521,8 +1535,9 @@ const prepEssayTaskThread = (student, thread) => {
 const prepTask = (student, thread) => {
   return {
     ...prepTaskStudent(student),
-    id: thread._id?.toString(),
+    id: thread.doc_thread_id._id.toString(),
     latest_message_left_by_id: thread.latest_message_left_by_id,
+    flag_by_user_id: thread.doc_thread_id?.flag_by_user_id,
     isFinalVersion: thread.isFinalVersion,
     outsourced_user_id: thread.doc_thread_id?.outsourced_user_id,
     file_type: thread.doc_thread_id.file_type,
@@ -1866,23 +1881,21 @@ export const getNextProgramStatus = (student) => {
       (application) => application.decided === 'O' && application.closed === '-'
     )
     .sort((a, b) => (a.application_deadline > b.application_deadline ? 1 : -1));
-  return getNextProgram.length !== 0 ? (
-    <span
-      className={`${
-        progressBarCounter(student, getNextProgram[0].application) < 100
-          ? progressBarCounter(student, getNextProgram[0].application) < 75
-            ? progressBarCounter(student, getNextProgram[0].application) < 30
-              ? 'text-danger' // 15 > x
-              : 'text-secondary' // 60 > x > 15
-            : 'text-warning' // 100 > x >60
-          : ''
-      }`}
-    >
-      {`${progressBarCounter(student, getNextProgram[0].application)} %`}
-    </span>
-  ) : (
-    '-'
-  );
+  return getNextProgram.length !== 0
+    ? // <span
+      //   className={`${
+      //     progressBarCounter(student, getNextProgram[0].application) < 100
+      //       ? progressBarCounter(student, getNextProgram[0].application) < 75
+      //         ? progressBarCounter(student, getNextProgram[0].application) < 30
+      //           ? 'text-danger' // 15 > x
+      //           : 'text-secondary' // 60 > x > 15
+      //         : 'text-warning' // 100 > x >60
+      //       : ''
+      //   }`}
+      // >
+      `${progressBarCounter(student, getNextProgram[0].application)} %`
+    : // </span>
+      '-';
 };
 
 export const numStudentYearDistribution = (students) => {

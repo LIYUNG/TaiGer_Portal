@@ -120,6 +120,13 @@ const postMessagesRateLimiter = rateLimit({
   legacyHeaders: false // Disable the `X-RateLimit-*` headers
 });
 
+const putMessagesRateLimiter = rateLimit({
+  windowMs: 30 * 60 * 1000, // 30 minutes
+  max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false // Disable the `X-RateLimit-*` headers
+});
+
 const postMessagesImageRateLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
@@ -291,6 +298,7 @@ module.exports = {
   RemoveNotificationRateLimiter,
   updateCredentialRateLimiter,
   postMessagesRateLimiter,
+  putMessagesRateLimiter,
   postMessagesImageRateLimiter,
   getNumberUnreadMessagesRateLimiter,
   getMessagesRateLimiter,

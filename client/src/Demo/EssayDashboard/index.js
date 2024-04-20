@@ -123,6 +123,10 @@ function EssayDashboard() {
     (open_task) => open_task.show && open_task.isFinalVersion
   );
 
+  const all_active_message_tasks = open_tasks_arr.filter(
+    (open_task) => open_task.show
+  );
+
   return (
     <Box>
       <Breadcrumbs aria-label="breadcrumb">
@@ -134,7 +138,9 @@ function EssayDashboard() {
         >
           {appConfig.companyName}
         </Link>
-        <Typography color="text.primary">{t('Essay Dashboard', { ns: 'common' })}</Typography>
+        <Typography color="text.primary">
+          {t('Essay Dashboard', { ns: 'common' })}
+        </Typography>
       </Breadcrumbs>
       <EssayOverview
         isLoaded={essayDashboardState.isLoaded}
@@ -145,6 +151,7 @@ function EssayDashboard() {
         followup_tasks={followup_tasks}
         pending_progress_tasks={pending_progress_tasks}
         closed_tasks={closed_tasks}
+        all_active_message_tasks={all_active_message_tasks}
       />
     </Box>
   );

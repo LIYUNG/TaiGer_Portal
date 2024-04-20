@@ -419,7 +419,7 @@ const loadMessages = asyncHandler(async (req, res, next) => {
     .populate('agents', 'firstname lastname email role');
   if (!student) {
     logger.error('getMessages: Invalid student id!');
-    throw new ErrorResponse(403, 'Invalid student id');
+    throw new ErrorResponse(404, 'Student tot found');
   }
   const skipAmount = (pageNumber - 1) * pageSize;
   const communication_thread = await Communication.find({
@@ -452,7 +452,7 @@ const getMessages = asyncHandler(async (req, res, next) => {
     .populate('agents', 'firstname lastname email role');
   if (!student) {
     logger.error('getMessages: Invalid student id!');
-    throw new ErrorResponse(403, 'Invalid student id');
+    throw new ErrorResponse(404, 'Student not found');
   }
   let communication_thread;
   communication_thread = await Communication.find({
@@ -593,7 +593,7 @@ const updateAMessageInThread = asyncHandler(async (req, res, next) => {
   );
   if (!thread) {
     logger.error('updateAMessageInThread : Invalid message thread id');
-    throw new ErrorResponse(403, 'Invalid message thread id');
+    throw new ErrorResponse(404, 'Thread not found');
   }
   thread.message = JSON.stringify(req.body);
   await thread.save();

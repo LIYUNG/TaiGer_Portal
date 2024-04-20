@@ -9,10 +9,12 @@ export const translation_zh_TW = {
   },
   common: {
     Add: '新增',
+    'I Agree': '我同意',
     Account: '帳號',
     Archiv: '封存',
     Activate: '啟用',
     Activated: '已啟用',
+    'Target Degree': '目標學位',
     'Aged days': '離上次更新(天)',
     'Document name': '文件名稱',
     'Latest Reply': '最後回覆',
@@ -94,6 +96,9 @@ export const translation_zh_TW = {
     'Tuition Fees': '學費',
     'Must fill fields': '必填欄位',
     Create: '新增',
+    Pending: '等待中',
+    Decided: '決定',
+    Offer: '錄取',
     Admitted: '錄取',
     Rejected: '沒錄取',
     'Personal Data': '個人資料',
@@ -129,6 +134,7 @@ export const translation_zh_TW = {
     [`${appConfig.companyName} Members`]: `${appConfig.companyName} 成員`,
     [`${appConfig.companyName} Dashboard`]: `${appConfig.companyName} 總攬`,
     [`${appConfig.companyName} Accounting`]: `${appConfig.companyName} 會計`,
+    Application: '申請',
     Applications: '申請',
     'Course Analysis': '課程分析',
     'Applications Overview': '申請總攬',
@@ -177,6 +183,9 @@ export const translation_zh_TW = {
     Category: '種類',
     Calendar: '行事曆',
     'Calendar Events': '行事曆',
+    'To Calendar': '前往行事曆',
+    'Delete an application': '刪除申請',
+    'Applying Program Count': '申請間數',
     'My Students': '我的學生',
     Profile: '背景資料',
     'My Profile': '我的背景資料',
@@ -229,7 +238,15 @@ export const translation_zh_TW = {
     'To Do Tasks': '待辦事項清單',
     'Agent Support': '顧問任務',
     'Essay Center': '論文中心',
-    'User Logs': '使用者紀錄'
+    'User Logs': '使用者紀錄',
+    Upcoming: '即將到來',
+    'No upcoming event': '無新預約討論',
+    'Time Slot': '時段',
+    Past: '過去',
+    Chat: '訊息',
+    'Upload file': '上傳檔案',
+    University: '大學',
+    'Applications status updated successfully!': '申請狀態更新成功!'
   },
   dashboard: {
     Dashboard: '主控台',
@@ -242,6 +259,10 @@ export const translation_zh_TW = {
       '請完成背景資料填寫，好讓您的故未能掌握您的狀況'
   },
   documents: {
+    confirmDocument:
+      '{{studentName}} {{studentNameZh}} 確認 {{docName}} 這份文件皆無用 AI 輔助完成，我同意此條款並對編修後的內容全權負責。',
+    notConfirmDocument:
+      '{{studentName}} {{studentNameZh}} 尚未確認 {{docName}} 這份文件皆無用 AI 輔助完成。',
     Reject: '拒絕'
   },
   programList: {
@@ -252,6 +273,12 @@ export const translation_zh_TW = {
     'User Logs': '使用者紀錄'
   },
   backgroundProfile: {},
+  admissions: {
+    'Pending Result': '等待結果',
+    'Not Closed Yet': '尚未送出',
+    Admissions: '錄取',
+    Rejections: '拒絕'
+  },
   cvmlrl: {
     'Note: if the documents are not closed but locate here, it is becaue the applications are already submitted. The documents can safely closed eventually.':
       'Note: 如果文件並沒有關閉並出現在這區，是因為申請已經送出。該文件可以安全地被關閉。'
@@ -280,6 +307,12 @@ export const translation_zh_TW = {
       '課程更新成功！您的顧問已被通知，並將會盡快為您分析您的課程匹配度。',
     'View Online': '線上檢視',
     'No analysis yet': '尚未分析'
+  },
+  uniassist: {
+    'All document uploaded to Uni-Assist and paid, waiting for VPD':
+      '所有檔案已上傳到uni-assist並且已付款，等待 VPD 中',
+    'uni-assist full':
+      'Uni-Assist 會全權負責轉交申請給學校。您的檔案全部完成後請全部上傳到 Uni-Assist 以及 Program 繳費上傳處。此 Program 不需要VPD'
   },
   interviews: {},
   portalManagement: {

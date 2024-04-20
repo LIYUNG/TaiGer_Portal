@@ -11,6 +11,9 @@ import {
   Checkbox,
   Box
 } from '@mui/material';
+import { green, grey } from '@mui/material/colors';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import HelpIcon from '@mui/icons-material/Help';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DownloadIcon from '@mui/icons-material/Download';
@@ -428,6 +431,66 @@ function UniAssistListCard(props) {
     }));
   };
 
+  const ProgramName = ({ application }) => {
+    return (
+      <Typography variant="body1" sx={{ mr: 2 }}>
+        <Link
+          underline="hover"
+          to={`${DEMO.SINGLE_PROGRAM_LINK(
+            application.programId._id.toString()
+          )}`}
+          component={LinkDom}
+        >
+          {`${application.programId.school} ${application.programId.program_name} - ${application.programId.semester} - ${application.programId.degree} - ${application.programId.uni_assist}`}
+        </Link>
+      </Typography>
+    );
+  };
+
+  const SetNeedButtons = ({ application }) => {
+    return (
+      <span>
+        {is_TaiGer_AdminAgent(user) &&
+          application.uni_assist?.vpd_paid_confirmation_file_path === '' &&
+          application.uni_assist?.vpd_file_path === '' &&
+          !application.uni_assist?.isPaid &&
+          application.uni_assist?.status !== DocumentStatus.NotNeeded && (
+            <Button
+              size="small"
+              variant="contained"
+              color="success"
+              onClick={(e) =>
+                opensetAsNotNeededWindow(
+                  e,
+                  uniAssistListCardState.student._id.toString(),
+                  application.programId._id.toString()
+                )
+              }
+            >
+              {t('Set Not Needed', { ns: 'common' })}
+            </Button>
+          )}
+        {application.uni_assist?.status === DocumentStatus.NotNeeded &&
+          is_TaiGer_AdminAgent(user) && (
+            <Button
+              size="small"
+              color="success"
+              variant="outlined"
+              onClick={(e) =>
+                opensetAsNotNeededWindow(
+                  e,
+                  uniAssistListCardState.student._id.toString(),
+                  application.programId._id.toString()
+                )
+              }
+            >
+              {t('Set needed')}
+            </Button>
+          )}
+      </span>
+    );
+  };
+
   const { res_status, isLoaded, res_modal_status, res_modal_message } =
     uniAssistListCardState;
 
@@ -439,300 +502,265 @@ function UniAssistListCard(props) {
     return <ErrorPage res_status={res_status} />;
   }
 
-  const app_name = uniAssistListCardState.student.applications.map(
-    (application, i) => (
-      <Box key={i}>
-        {application.programId.uni_assist &&
-          application.programId.uni_assist.includes('Yes') &&
-          isProgramDecided(application) && (
-            <Grid container spacing={2}>
-              <Grid item xs={12} sx={{ display: 'flex' }}>
-                <Typography variant="body1" sx={{ mr: 2 }}>
-                  <Link
-                    underline="hover"
-                    to={`${DEMO.SINGLE_PROGRAM_LINK(
-                      application.programId._id.toString()
-                    )}`}
-                    component={LinkDom}
-                  >
-                    {application.programId.school}{' '}
-                    {application.programId.program_name}{' '}
-                    {application.programId.uni_assist}
-                  </Link>
-                </Typography>
-                {is_TaiGer_AdminAgent(user) &&
-                  application.uni_assist?.vpd_paid_confirmation_file_path ===
-                    '' &&
-                  application.uni_assist?.vpd_file_path === '' &&
-                  !application.uni_assist?.isPaid && (
-                    <Button
-                      size="small"
-                      variant="contained"
-                      color="success"
-                      onClick={(e) =>
-                        opensetAsNotNeededWindow(
-                          e,
-                          uniAssistListCardState.student._id.toString(),
-                          application.programId._id.toString()
-                        )
-                      }
-                    >
-                      {t('Set Not Needed')}
-                    </Button>
-                  )}
-                {application.uni_assist?.status === 'notneeded' &&
-                  is_TaiGer_AdminAgent(user) && (
-                    <Button
-                      size="small"
-                      color="success"
-                      variant="outlined"
-                      onClick={(e) =>
-                        opensetAsNotNeededWindow(
-                          e,
-                          uniAssistListCardState.student._id.toString(),
-                          application.programId._id.toString()
-                        )
-                      }
-                    >
-                      {t('Set needed')}
-                    </Button>
-                  )}
-              </Grid>
-              <Grid item xs={12}>
-                {application.uni_assist?.status === 'notneeded' ? (
-                  <Grid container>
-                    <Grid item xs={6}>
-                      <Typography variant="string">
-                        Uni-assist is not necessary as it can be reused from
-                        another program.
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={6}></Grid>
-                  </Grid>
-                ) : (
-                  <Grid container>
-                    {!application.uni_assist ||
-                    application.uni_assist.status === DocumentStatus.Missing ||
-                    application.uni_assist.status === 'notstarted' ? (
-                      <>
-                        {uniAssistListCardState.isLoaded2[
-                          `${application.programId._id.toString()}`
-                        ] ? (
-                          <>
-                            <Grid item xs={1}>
-                              <Typography variant="body1">VPD</Typography>
-                            </Grid>
-                            <Grid item xs={2}>
-                              <Button
-                                component="label"
-                                size="small"
-                                variant="outlined"
-                                startIcon={<CloudUploadIcon />}
-                              >
-                                {t('Upload', { ns: 'common' })} VPD
-                                <VisuallyHiddenInput
-                                  type="file"
-                                  onChange={(e) =>
-                                    handleUniAssistDocSubmit(
-                                      e,
-                                      uniAssistListCardState.student._id.toString(),
-                                      application.programId._id.toString()
-                                    )
-                                  }
-                                />
-                              </Button>
-                            </Grid>
-                            <Grid item xs={2}></Grid>
-                          </>
-                        ) : (
-                          <CircularProgress size={16} />
-                        )}
-                      </>
-                    ) : (
-                      <>
-                        <Grid item xs={2}>
-                          <Typography variant="h6">VPD</Typography>
-                        </Grid>
-                        <Grid item xs={2}>
-                          <a
-                            href={`${BASE_URL}/api/students/${uniAssistListCardState.student._id.toString()}/vpd/${application.programId._id.toString()}/VPD`}
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            <Button
-                              title="Download"
-                              disabled={
-                                !uniAssistListCardState.isLoaded2[
-                                  application.programId._id.toString()
-                                ]
-                              }
-                              variant="contained"
-                              size="small"
-                              startIcon={<DownloadIcon />}
-                            >
-                              {t('Download', { ns: 'common' })}
-                            </Button>
-                          </a>
-                        </Grid>
-                        <Grid item xs={2}>
-                          <Button
-                            onClick={(e) =>
-                              onDeleteVPDFileWarningPopUp(
-                                e,
-                                uniAssistListCardState.student._id.toString(),
-                                application.programId._id.toString(),
-                                'VPD'
-                              )
-                            }
-                            disabled={
-                              !uniAssistListCardState.isLoaded2[
-                                application.programId._id.toString()
-                              ]
-                            }
-                            variant="contained"
-                            color="error"
-                            size="small"
-                            startIcon={<DeleteIcon />}
-                          >
-                            {t('Delete', { ns: 'common' })}
-                          </Button>
-                        </Grid>
-                      </>
+  const app_name = uniAssistListCardState.student.applications
+    .filter((application) => isProgramDecided(application))
+    .map((application, i) => (
+      <Box key={i} sx={{ mb: 2 }}>
+        {application.programId.uni_assist?.includes('Yes-VPD') && (
+          <>
+            <Box sx={{ display: 'flex' }}>
+              <ProgramName application={application} />
+              <SetNeedButtons application={application} />
+            </Box>
+            {application.uni_assist?.status === DocumentStatus.NotNeeded && (
+              <Typography variant="string">
+                Uni-assist is not necessary as it can be reused from another
+                program.
+              </Typography>
+            )}
+            {application.uni_assist?.status !== DocumentStatus.NotNeeded && (
+              <Box>
+                {is_TaiGer_AdminAgent(user) && (
+                  <FormControlLabel
+                    label={t(
+                      `All document uploaded to Uni-Assist and paid, waiting for VPD`,
+                      { ns: 'uniassist' }
                     )}
-                    {!application.uni_assist?.vpd_paid_confirmation_file_path ||
-                    application.uni_assist?.vpd_paid_confirmation_file_path ===
-                      '' ? (
-                      <>
-                        {uniAssistListCardState.isLoadedVPDConfirmation[
-                          `${application.programId._id.toString()}`
-                        ] ? (
-                          <>
-                            <Grid item md={2}>
-                              <Typography>
-                                Confirmation Form (if applicable)
-                              </Typography>
-                            </Grid>
-                            <Grid item md={2}>
-                              <Button
-                                component="label"
-                                size="small"
-                                color="secondary"
-                                variant="outlined"
-                                startIcon={<CloudUploadIcon />}
-                              >
-                                {t('Upload file')}
-                                <VisuallyHiddenInput
-                                  type="file"
-                                  onChange={(e) =>
-                                    handleUniAssistVPDPaidConfirmationDocSubmit(
-                                      e,
-                                      uniAssistListCardState.student._id.toString(),
-                                      application.programId._id.toString()
-                                    )
-                                  }
-                                />
-                              </Button>
-                            </Grid>
-                            <Grid item md={2}></Grid>
-                          </>
-                        ) : (
-                          <Grid item md={2}>
-                            <CircularProgress size={16} />
-                          </Grid>
-                        )}
-                      </>
-                    ) : (
-                      <>
-                        <Grid item md={2}>
-                          <Typography variant="string">
-                            Confirmation Form (if applicable)
-                          </Typography>
-                        </Grid>
-                        <Grid item md={2}>
-                          <a
-                            href={`${BASE_URL}/api/students/${uniAssistListCardState.student._id.toString()}/vpd/${application.programId._id.toString()}/VPDConfirmation`}
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            <Button
-                              title="Download"
-                              variant="contained"
-                              color="primary"
-                              size="small"
-                              disabled={
-                                !uniAssistListCardState.isLoaded2[
-                                  application.programId._id.toString()
-                                ]
-                              }
-                              startIcon={<DownloadIcon />}
-                            >
-                              {t('Download', { ns: 'common' })}
-                            </Button>
-                          </a>
-                        </Grid>
-                        <Grid item md={2}>
-                          <Button
-                            color="error"
-                            onClick={(e) =>
-                              onDeleteVPDFileWarningPopUp(
-                                e,
-                                uniAssistListCardState.student._id.toString(),
-                                application.programId._id.toString(),
-                                'VPDConfirmation'
-                              )
-                            }
-                            disabled={
-                              !uniAssistListCardState.isLoadedVPDConfirmation[
-                                application.programId._id.toString()
-                              ]
-                            }
-                            variant="contained"
-                            size="small"
-                            startIcon={<DeleteIcon />}
-                          >
-                            {t('Delete', { ns: 'common' })}
-                          </Button>
-                        </Grid>
-                      </>
-                    )}
-                    {(!application.uni_assist ||
-                      application.uni_assist.status ===
-                        DocumentStatus.Missing ||
-                      application.uni_assist.status === 'notstarted') && (
-                      <>
-                        {is_TaiGer_AdminAgent(user) && (
-                          <>
-                            <Grid>
-                              <FormControlLabel
-                                label={`Upload files and Paid`}
-                                control={
-                                  <Checkbox
-                                    checked={application.uni_assist.isPaid}
-                                    onChange={(e) =>
-                                      onCheckHandler(
-                                        e,
-                                        uniAssistListCardState.student._id.toString(),
-                                        application.programId._id.toString(),
-                                        !application.uni_assist.isPaid
-                                      )
-                                    }
-                                  />
-                                }
-                              />
-                            </Grid>
-                            <Grid></Grid>
-                          </>
-                        )}
-                      </>
-                    )}
-                  </Grid>
+                    disabled={
+                      !(
+                        !application.uni_assist ||
+                        application.uni_assist.status ===
+                          DocumentStatus.Missing ||
+                        application.uni_assist.status === 'notstarted'
+                      )
+                    }
+                    control={
+                      <Checkbox
+                        checked={application.uni_assist.isPaid}
+                        onChange={(e) =>
+                          onCheckHandler(
+                            e,
+                            uniAssistListCardState.student._id.toString(),
+                            application.programId._id.toString(),
+                            !application.uni_assist.isPaid
+                          )
+                        }
+                      />
+                    }
+                  />
                 )}
-              </Grid>
+                <Typography variant="body1">
+                  {!(
+                    !application.uni_assist ||
+                    application.uni_assist.status === DocumentStatus.Missing ||
+                    application.uni_assist.status === 'notstarted'
+                  ) && (
+                    <CheckCircleIcon size={18} style={{ color: green[500] }} />
+                  )}
+                  {(!application.uni_assist ||
+                    application.uni_assist.status === DocumentStatus.Missing ||
+                    application.uni_assist.status === 'notstarted') && (
+                    <HelpIcon size={18} style={{ color: grey[400] }} />
+                  )}
+                  &nbsp; VPD &nbsp;
+                  {!application.uni_assist ||
+                  application.uni_assist.status === DocumentStatus.Missing ||
+                  application.uni_assist.status === 'notstarted' ? (
+                    <Button
+                      component="label"
+                      size="small"
+                      variant="outlined"
+                      disabled={
+                        !uniAssistListCardState.isLoaded2[
+                          application.programId._id.toString()
+                        ]
+                      }
+                      startIcon={
+                        !uniAssistListCardState.isLoaded2[
+                          application.programId._id.toString()
+                        ] ? (
+                          <CircularProgress size={16} />
+                        ) : (
+                          <CloudUploadIcon />
+                        )
+                      }
+                    >
+                      {t('Upload', { ns: 'common' })} VPD
+                      <VisuallyHiddenInput
+                        type="file"
+                        onChange={(e) =>
+                          handleUniAssistDocSubmit(
+                            e,
+                            uniAssistListCardState.student._id.toString(),
+                            application.programId._id.toString()
+                          )
+                        }
+                      />
+                    </Button>
+                  ) : (
+                    <>
+                      <a
+                        href={`${BASE_URL}/api/students/${uniAssistListCardState.student._id.toString()}/vpd/${application.programId._id.toString()}/VPD`}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        <Button
+                          title="Download"
+                          disabled={
+                            !uniAssistListCardState.isLoaded2[
+                              application.programId._id.toString()
+                            ]
+                          }
+                          variant="contained"
+                          size="small"
+                          startIcon={<DownloadIcon />}
+                        >
+                          {t('Download', { ns: 'common' })} VPD
+                        </Button>
+                      </a>
+                      <Button
+                        onClick={(e) =>
+                          onDeleteVPDFileWarningPopUp(
+                            e,
+                            uniAssistListCardState.student._id.toString(),
+                            application.programId._id.toString(),
+                            'VPD'
+                          )
+                        }
+                        disabled={
+                          !uniAssistListCardState.isLoaded2[
+                            application.programId._id.toString()
+                          ]
+                        }
+                        variant="contained"
+                        color="error"
+                        size="small"
+                        startIcon={<DeleteIcon />}
+                      >
+                        {t('Delete', { ns: 'common' })} VPD
+                      </Button>
+                    </>
+                  )}
+                </Typography>
+                <Typography>
+                  {!(
+                    !application.uni_assist?.vpd_paid_confirmation_file_path ||
+                    application.uni_assist?.vpd_paid_confirmation_file_path ===
+                      ''
+                  ) && (
+                    <CheckCircleIcon size={18} style={{ color: green[500] }} />
+                  )}
+                  {(!application.uni_assist?.vpd_paid_confirmation_file_path ||
+                    application.uni_assist?.vpd_paid_confirmation_file_path ===
+                      '') && (
+                    <HelpIcon size={18} style={{ color: grey[400] }} />
+                  )}
+                  &nbsp;Confirmation Form (if applicable)&nbsp;
+                  {!application.uni_assist?.vpd_paid_confirmation_file_path ||
+                  application.uni_assist?.vpd_paid_confirmation_file_path ===
+                    '' ? (
+                    <>
+                      {uniAssistListCardState.isLoadedVPDConfirmation[
+                        `${application.programId._id.toString()}`
+                      ] ? (
+                        <>
+                          <Button
+                            component="label"
+                            size="small"
+                            color="secondary"
+                            disabled={
+                              !(
+                                !application.uni_assist ||
+                                application.uni_assist.status ===
+                                  DocumentStatus.Missing ||
+                                application.uni_assist.status === 'notstarted'
+                              )
+                            }
+                            variant="outlined"
+                            startIcon={<CloudUploadIcon />}
+                          >
+                            {t('Upload file', { ns: 'common' })}
+                            <VisuallyHiddenInput
+                              type="file"
+                              onChange={(e) =>
+                                handleUniAssistVPDPaidConfirmationDocSubmit(
+                                  e,
+                                  uniAssistListCardState.student._id.toString(),
+                                  application.programId._id.toString()
+                                )
+                              }
+                            />
+                          </Button>
+                        </>
+                      ) : (
+                        <CircularProgress size={16} />
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      <a
+                        href={`${BASE_URL}/api/students/${uniAssistListCardState.student._id.toString()}/vpd/${application.programId._id.toString()}/VPDConfirmation`}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        <Button
+                          title="Download"
+                          variant="contained"
+                          color="primary"
+                          size="small"
+                          disabled={
+                            !uniAssistListCardState.isLoaded2[
+                              application.programId._id.toString()
+                            ]
+                          }
+                          startIcon={<DownloadIcon />}
+                        >
+                          {t('Download', { ns: 'common' })}
+                        </Button>
+                      </a>
+
+                      <Button
+                        color="error"
+                        onClick={(e) =>
+                          onDeleteVPDFileWarningPopUp(
+                            e,
+                            uniAssistListCardState.student._id.toString(),
+                            application.programId._id.toString(),
+                            'VPDConfirmation'
+                          )
+                        }
+                        disabled={
+                          !uniAssistListCardState.isLoadedVPDConfirmation[
+                            application.programId._id.toString()
+                          ]
+                        }
+                        variant="contained"
+                        size="small"
+                        startIcon={<DeleteIcon />}
+                      >
+                        {t('Delete', { ns: 'common' })}
+                      </Button>
+                    </>
+                  )}
+                </Typography>
+              </Box>
+            )}
+          </>
+        )}
+        {application.programId.uni_assist?.includes('Yes-FULL') && (
+          <Grid container spacing={2}>
+            <Grid item xs={12} sx={{ display: 'flex' }}>
+              <ProgramName application={application} />
             </Grid>
-          )}
+            <Grid item xs={12}>
+              <Typography>
+                {t('uni-assist full', { ns: 'uniassist' })}
+              </Typography>
+            </Grid>
+          </Grid>
+        )}
       </Box>
-    )
-  );
+    ));
   return (
     <>
       {res_modal_status >= 400 && (
@@ -803,7 +831,9 @@ function UniAssistListCard(props) {
       >
         <Grid container spacing={2}>
           <Grid item md={12}>
-            <Typography variant="h6">{t('Warning', { ns: 'common' })}</Typography>
+            <Typography variant="h6">
+              {t('Warning', { ns: 'common' })}
+            </Typography>
           </Grid>
           <Grid item md={12}>
             <Typography variant="string">

@@ -355,7 +355,9 @@ function CommunicationSinglePage() {
                   {student_name}
                 </Link>
               )}
-              <Typography color="text.primary">Messege</Typography>
+              <Typography color="text.primary">
+                {t('Messege', { ns: 'common' })}
+              </Typography>
             </Breadcrumbs>
           </Grid>
           <Grid item xs={12} sm={9}>

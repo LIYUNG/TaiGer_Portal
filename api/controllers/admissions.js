@@ -25,11 +25,7 @@ const getAdmissionLetter = asyncHandler(async (req, res, next) => {
     user,
     params: { studentId, fileName }
   } = req;
-  // Check authorized role
-  if (user.role === Role.Guest) {
-    logger.error('getAdmissionLetter: Invalid role!');
-    throw new ErrorResponse(403, 'Invalid role');
-  }
+
   // AWS S3
   // download the file via aws s3 here
   const fileKey = fileName;

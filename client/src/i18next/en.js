@@ -9,10 +9,12 @@ export const translation_en = {
   },
   common: {
     Add: 'Add',
+    'I Agree': 'I Agree',
     Account: 'Account',
     Archiv: 'Archiv',
     Activate: 'Activate',
     Activated: 'Activated',
+    'Target Degree': 'Target Degree',
     'Aged days': 'Aged days',
     'Document name': 'Document name',
     'Latest Reply': 'Latest Reply',
@@ -94,6 +96,9 @@ export const translation_en = {
     'Tuition Fees': 'Tuition Fees',
     'Must fill fields': 'Must fill fields',
     Create: 'Create',
+    Pending: 'Pending',
+    Decided: 'Decided',
+    Offer: 'Offer',
     Admitted: 'Admitted',
     Rejected: 'Rejected',
     'Personal Data': 'Personal Data',
@@ -129,6 +134,7 @@ export const translation_en = {
     [`${appConfig.companyName} Members`]: `${appConfig.companyName} Members`,
     [`${appConfig.companyName} Dashboard`]: `${appConfig.companyName} Dashboard`,
     [`${appConfig.companyName} Accounting`]: `${appConfig.companyName} Accounting`,
+    Application: 'Application',
     Applications: 'Applications',
     'Course Analysis': 'Course Analysis',
     'Applications Overview': 'Applications Overview',
@@ -176,6 +182,9 @@ export const translation_en = {
     Category: 'Category',
     Calendar: 'Calendar',
     'Calendar Events': 'Calendar Events',
+    'To Calendar': 'To Calendar',
+    'Delete an application': 'Delete an application',
+    'Applying Program Count': 'Applying Program Count',
     'My Students': 'My Students',
     Profile: 'Profile',
     'My Profile': 'My Profile',
@@ -227,7 +236,16 @@ export const translation_en = {
     'To Do Tasks': 'To Do Tasks',
     'Agent Support': 'Agent Support',
     'Essay Center': 'Essay Center',
-    'User Logs': 'User Logs'
+    'User Logs': 'User Logs',
+    Upcoming: 'Upcoming',
+    'No upcoming event': 'No upcoming event',
+    'Time Slot': 'Time Slot',
+    Past: 'Past',
+    Chat: 'Chat',
+    'Upload file': 'Upload file',
+    University: 'University',
+    'Applications status updated successfully!':
+      'Applications status updated successfully!'
   },
   dashboard: {
     Dashboard: 'Dashboard',
@@ -240,6 +258,10 @@ export const translation_en = {
       'Please complete Profile so that your agent can understand your situation'
   },
   documents: {
+    confirmDocument:
+      '{{studentName}} {{studentNameZh}} confirms that {{docName}} was completed without the assistance of AI. I agree to this term and take full responsibility for the edited content.',
+    notConfirmDocument:
+      '{{studentName}} {{studentNameZh}} did not confirm that {{docName}} was completed without the assistance of AI.',
     Reject: 'Reject'
   },
   programList: {
@@ -251,6 +273,12 @@ export const translation_en = {
     'User Logs': 'User Logs'
   },
   backgroundProfile: {},
+  admissions: {
+    'Pending Result': 'Pending Result',
+    'Not Closed Yet': 'Not Closed Yet',
+    Admissions: 'Admissions',
+    Rejections: 'Rejections'
+  },
   cvmlrl: {
     'Note: if the documents are not closed but locate here, it is becaue the applications are already submitted. The documents can safely closed eventually.':
       'Note: if the documents are not closed but locate here, it is becaue the applications are already submitted. The documents can safely closed eventually.'
@@ -281,6 +309,12 @@ export const translation_en = {
     'No analysis yet': 'No analysis yet'
   },
   interviews: {},
+  uniassist: {
+    'All document uploaded to Uni-Assist and paid, waiting for VPD':
+      'All document uploaded to Uni-Assist and paid, waiting for VPD',
+    'uni-assist full':
+      'This is uni-assit full-responsible application. Please apply this program via uni-assist when your documents are finished. You do not need VPD.'
+  },
   portalManagement: {
     'Update portal credentials successfully':
       'Update portal credentials successfully'

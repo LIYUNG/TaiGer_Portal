@@ -18,7 +18,7 @@ function ProgramUpdateStatusTable(props) {
     }
   });
 
-  const c2 = [
+  const programUpdateColumn = [
     {
       field: 'school',
       headerName: t('School'),
@@ -83,7 +83,7 @@ function ProgramUpdateStatusTable(props) {
         disableColumnFilter
         disableColumnMenu
         disableDensitySelector
-        columns={c2}
+        columns={programUpdateColumn}
         slots={{ toolbar: GridToolbar }}
         slotProps={{
           toolbar: {

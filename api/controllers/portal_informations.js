@@ -15,7 +15,7 @@ const getPortalCredentials = asyncHandler(async (req, res) => {
   const student = await Student.findById(studentId)
     .populate(
       'applications.programId',
-      'school program_name application_portal_a application_portal_b application_portal_a_instructions application_portal_b_instructions'
+      'school program_name semester degree application_portal_a application_portal_b application_portal_a_instructions application_portal_b_instructions'
     )
     .select(
       'firstname lastname agents editors applications.decided applications.portal_credentials.application_portal_a applications.portal_credentials.application_portal_b'
@@ -39,7 +39,6 @@ const getPortalCredentials = asyncHandler(async (req, res) => {
 const createPortalCredentials = asyncHandler(async (req, res) => {
   const { studentId, programId } = req.params;
   const credentials = req.body;
-  // console.log(credentials);
   const student = await Student.findById(studentId);
   const application = student.applications.find(
     (appli) => appli.programId.toString() === programId

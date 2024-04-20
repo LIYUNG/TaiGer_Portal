@@ -165,7 +165,8 @@ const SingleThreadThreadS3GarbageCollector = async (ThreadId) => {
     // TODO: could be bottleneck if number of thread increase.
     const doc_thread = await Documentthread.findById(ThreadId);
     if (!doc_thread) {
-      throw new ErrorResponse(403, 'Invalid ThreadId');
+      logger.error('SingleThreadThreadS3GarbageCollector Invalid ThreadId');
+      throw new ErrorResponse(404, 'Thread not found');
     }
 
     const deleteParams = {
@@ -462,7 +463,7 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
       .populate({
         path: 'generaldocs_threads.doc_thread_id',
         select:
-          'file_type isFinalVersion outsourced_user_id updatedAt messages.file',
+          'file_type isFinalVersion outsourced_user_id flag_by_user_id updatedAt messages.file',
         populate: {
           path: 'messages.user_id',
           select: 'firstname lastname'
@@ -471,7 +472,7 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
       .populate({
         path: 'applications.doc_modification_thread.doc_thread_id',
         select:
-          'file_type isFinalVersion outsourced_user_id updatedAt messages.file',
+          'file_type isFinalVersion outsourced_user_id flag_by_user_id updatedAt messages.file',
         populate: {
           path: 'messages.user_id',
           select: 'firstname lastname'
@@ -494,7 +495,7 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
       .populate({
         path: 'generaldocs_threads.doc_thread_id',
         select:
-          'file_type isFinalVersion outsourced_user_id updatedAt messages.file',
+          'file_type isFinalVersion outsourced_user_id flag_by_user_id updatedAt messages.file',
         populate: {
           path: 'messages.user_id',
           select: 'firstname lastname'
@@ -503,7 +504,7 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
       .populate({
         path: 'applications.doc_modification_thread.doc_thread_id',
         select:
-          'file_type isFinalVersion outsourced_user_id updatedAt messages.file',
+          'file_type isFinalVersion outsourced_user_id flag_by_user_id updatedAt messages.file',
         populate: {
           path: 'messages.user_id',
           select: 'firstname lastname'
@@ -527,7 +528,8 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
       )
       .populate({
         path: 'generaldocs_threads.doc_thread_id',
-        select: 'file_type isFinalVersion updatedAt messages.file',
+        select:
+          'file_type isFinalVersion updatedAt flag_by_user_id messages.file',
         populate: {
           path: 'messages.user_id outsourced_user_id',
           select: 'firstname lastname'
@@ -535,7 +537,8 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
       })
       .populate({
         path: 'applications.doc_modification_thread.doc_thread_id',
-        select: 'file_type isFinalVersion updatedAt messages.file',
+        select:
+          'file_type isFinalVersion updatedAt flag_by_user_id messages.file',
         populate: {
           path: 'messages.user_id outsourced_user_id',
           select: 'firstname lastname'
@@ -562,7 +565,7 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
       .populate({
         path: 'generaldocs_threads.doc_thread_id',
         select:
-          'file_type isFinalVersion outsourced_user_id updatedAt messages.file',
+          'file_type isFinalVersion outsourced_user_id flag_by_user_id updatedAt messages.file',
         populate: {
           path: 'messages.user_id',
           select: 'firstname lastname'
@@ -571,7 +574,7 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
       .populate({
         path: 'applications.doc_modification_thread.doc_thread_id',
         select:
-          'file_type isFinalVersion outsourced_user_id updatedAt messages.file',
+          'file_type isFinalVersion outsourced_user_id flag_by_user_id updatedAt messages.file',
         populate: {
           path: 'messages.user_id',
           select: 'firstname lastname'
@@ -603,7 +606,7 @@ const initGeneralMessagesThread = asyncHandler(async (req, res) => {
 
   if (!student) {
     logger.info('initGeneralMessagesThread: Invalid student id');
-    throw new ErrorResponse(403, 'Invalid student id');
+    throw new ErrorResponse(404, 'Student Id not found');
   }
 
   const doc_thread_existed = await Documentthread.findOne({
@@ -704,7 +707,7 @@ const createApplicationThread = async (studentId, programId, fileType) => {
 
   if (!student) {
     logger.info('initApplicationMessagesThread: Invalid student id!');
-    throw new ErrorResponse(403, 'Invalid student id');
+    throw new ErrorResponse(404, 'Student not found');
   }
 
   const appIdx = student.applications.findIndex(
@@ -713,7 +716,7 @@ const createApplicationThread = async (studentId, programId, fileType) => {
 
   if (appIdx === -1) {
     logger.info('initApplicationMessagesThread: Invalid application id!');
-    throw new ErrorResponse(403, 'Invalid application id');
+    throw new ErrorResponse(404, 'Application not found');
   }
 
   const newThread = new Documentthread({
@@ -753,7 +756,7 @@ const initApplicationMessagesThread = asyncHandler(async (req, res) => {
 
   const student = await Student.findById(studentId)
     .populate('applications.programId')
-    .populate('agents editors', 'firstname lastname email')
+    .populate('agents editors', 'firstname lastname email archiv')
     .exec();
   const program = student.applications.find(
     (app) => app.programId._id.toString() === program_id
@@ -764,31 +767,33 @@ const initApplicationMessagesThread = asyncHandler(async (req, res) => {
     const permissions = await Permission.find({
       canAssignEditors: true
     })
-      .populate('user_id', 'firstname lastname email')
+      .populate('user_id', 'firstname lastname email archiv')
       .lean();
     if (permissions) {
       for (let x = 0; x < permissions.length; x += 1) {
-        await assignEssayTaskToEditorEmail(
-          {
-            firstname: permissions[x].user_id.firstname,
-            lastname: permissions[x].user_id.lastname,
-            address: permissions[x].user_id.email
-          },
-          {
-            student_firstname: student.firstname,
-            student_lastname: student.lastname,
-            student_id: student._id.toString(),
-            thread_id: newAppRecord._id,
-            documentname,
-            updatedAt: new Date()
-          }
-        );
+        if (isNotArchiv(permissions[x].user_id)) {
+          await assignEssayTaskToEditorEmail(
+            {
+              firstname: permissions[x].user_id.firstname,
+              lastname: permissions[x].user_id.lastname,
+              address: permissions[x].user_id.email
+            },
+            {
+              student_firstname: student.firstname,
+              student_lastname: student.lastname,
+              student_id: student._id.toString(),
+              thread_id: newAppRecord.doc_thread_id._id,
+              documentname,
+              updatedAt: new Date()
+            }
+          );
+        }
       }
     }
   }
 
   for (let i = 0; i < student.editors.length; i += 1) {
-    if (isNotArchiv(student)) {
+    if (isNotArchiv(student.editors[i])) {
       if (!Essay_Writer_Scope.includes(document_category)) {
         await assignDocumentTaskToEditorEmail(
           {
@@ -823,6 +828,40 @@ const initApplicationMessagesThread = asyncHandler(async (req, res) => {
   }
 });
 
+const putThreadFavorite = asyncHandler(async (req, res, next) => {
+  const {
+    user,
+    params: { messagesThreadId }
+  } = req;
+  const thread = await Documentthread.findById(messagesThreadId);
+  if (!thread) {
+    logger.error('putThreadFavorite: Invalid message thread id!');
+    throw new ErrorResponse(404, 'Thread not found');
+  }
+
+  if (thread.flag_by_user_id?.includes(user._id.toString())) {
+    await Documentthread.findByIdAndUpdate(
+      messagesThreadId,
+      {
+        $pull: { flag_by_user_id: user._id.toString() } // Remove user id if already present
+      },
+      {}
+    );
+  } else {
+    await Documentthread.findByIdAndUpdate(
+      messagesThreadId,
+      {
+        $addToSet: { flag_by_user_id: user._id.toString() } // Add user id if not already present
+      },
+      {}
+    );
+  }
+
+  res.status(200).send({
+    success: true
+  });
+});
+
 const getMessages = asyncHandler(async (req, res) => {
   const {
     user,
@@ -831,7 +870,7 @@ const getMessages = asyncHandler(async (req, res) => {
   const document_thread = await Documentthread.findById(messagesThreadId)
     .populate(
       'student_id',
-      'firstname lastname role agents editors application_preference'
+      'firstname lastname firstname_chinese lastname_chinese role agents editors application_preference'
     )
     .populate('messages.user_id', 'firstname lastname role')
     .populate('program_id')
@@ -839,18 +878,6 @@ const getMessages = asyncHandler(async (req, res) => {
     .lean()
     .exec();
 
-  if (!document_thread) {
-    logger.error('getMessages: Invalid message thread id!');
-    throw new ErrorResponse(403, 'Invalid message thread id');
-  }
-
-  // Multitenant-filter: Check student can only access their own thread!!!!
-  if (user.role === Role.Student) {
-    if (document_thread.student_id._id.toString() !== user._id.toString()) {
-      logger.error('getMessages: Unauthorized request!');
-      throw new ErrorResponse(403, 'Unauthorized request');
-    }
-  }
   const agents = await Agent.find({
     _id: document_thread.student_id.agents
   }).select('firstname lastname');
@@ -928,7 +955,7 @@ const postMessages = asyncHandler(async (req, res) => {
   ).populate('student_id program_id outsourced_user_id');
   if (!document_thread) {
     logger.info('postMessages: Invalid message thread id');
-    throw new ErrorResponse(403, 'Invalid message thread id');
+    throw new ErrorResponse(404, 'Thread Id not found');
   }
 
   if (document_thread.isFinalVersion) {
@@ -1526,7 +1553,21 @@ const getMessageFileDownload = asyncHandler(async (req, res) => {
   const document_thread = await Documentthread.findById(messagesThreadId);
   if (!document_thread) {
     logger.error('getMessageFileDownload: thread not found!');
-    throw new ErrorResponse(403, 'thread not found');
+    throw new ErrorResponse(404, 'Thread Id not found');
+  }
+
+  if (
+    user.role === 'Student' &&
+    document_thread.file_type === 'Essay' &&
+    !document_thread.isOriginAuthorDeclarationConfirmedByStudent
+  ) {
+    logger.error(
+      'getMessageFileDownload: Please declare origin author and condition term.'
+    );
+    throw new ErrorResponse(
+      403,
+      'Please declare origin author and condition term.'
+    );
   }
 
   // (O) Multitenancy check
@@ -1543,7 +1584,7 @@ const getMessageFileDownload = asyncHandler(async (req, res) => {
   );
   if (!message) {
     logger.error('getMessageFileDownload: message not found!');
-    throw new ErrorResponse(403, 'message not found');
+    throw new ErrorResponse(404, 'Message not found');
   }
 
   const file = message.file.find(
@@ -1551,7 +1592,7 @@ const getMessageFileDownload = asyncHandler(async (req, res) => {
   );
   if (!file) {
     logger.error('getMessageFileDownload: file not found!');
-    throw new ErrorResponse(403, 'file not found');
+    throw new ErrorResponse(404, 'file not found');
   }
 
   let path_split = file.path.replace(/\\/g, '/');
@@ -1595,6 +1636,33 @@ const getMessageFileDownload = asyncHandler(async (req, res) => {
   }
 });
 
+const putOriginAuthorConfirmedByStudent = asyncHandler(async (req, res) => {
+  const {
+    params: { messagesThreadId },
+    body: { checked }
+  } = req;
+
+  const document_thread = await Documentthread.findByIdAndUpdate(
+    messagesThreadId,
+    {
+      isOriginAuthorDeclarationConfirmedByStudent: checked,
+      isOriginAuthorDeclarationConfirmedByStudentTimestamp: new Date()
+    },
+    { new: true }
+  );
+
+  if (!document_thread) {
+    logger.error(
+      'putOriginAuthorConfirmedByStudent: Invalid message thread id'
+    );
+    throw new ErrorResponse(404, 'Thread Id not found');
+  }
+
+  res.status(200).send({
+    success: true
+  });
+});
+
 // (O) notification student email works
 // (O) notification agent email works
 const SetStatusMessagesThread = asyncHandler(async (req, res) => {
@@ -1613,11 +1681,11 @@ const SetStatusMessagesThread = asyncHandler(async (req, res) => {
     );
   if (!document_thread) {
     logger.error('SetStatusMessagesThread: Invalid message thread id');
-    throw new ErrorResponse(403, 'Invalid message thread id');
+    throw new ErrorResponse(404, 'Thread not found');
   }
   if (!student) {
     logger.error('SetStatusMessagesThread: Invalid student id');
-    throw new ErrorResponse(403, 'Invalid student id id');
+    throw new ErrorResponse(404, 'Student not found');
   }
   logger.info('program_id ', program_id);
   if (program_id) {
@@ -1626,7 +1694,7 @@ const SetStatusMessagesThread = asyncHandler(async (req, res) => {
     );
     if (!student_application) {
       logger.error('SetStatusMessagesThread: application not found');
-      throw new ErrorResponse(403, 'application not found');
+      throw new ErrorResponse(404, 'Application not found');
     }
 
     const application_thread = student_application.doc_modification_thread.find(
@@ -1634,7 +1702,7 @@ const SetStatusMessagesThread = asyncHandler(async (req, res) => {
     );
     if (!application_thread) {
       logger.error('SetStatusMessagesThread: application thread not found');
-      throw new ErrorResponse(403, 'thread not found');
+      throw new ErrorResponse(404, 'Thread not found');
     }
 
     application_thread.isFinalVersion = !application_thread.isFinalVersion;
@@ -1712,7 +1780,7 @@ const SetStatusMessagesThread = asyncHandler(async (req, res) => {
     );
     if (!generaldocs_thread) {
       logger.error('SetStatusMessagesThread: generaldoc thread not found');
-      throw new ErrorResponse(403, 'thread not found');
+      throw new ErrorResponse(404, 'Thread not found');
     }
     generaldocs_thread.isFinalVersion = !generaldocs_thread.isFinalVersion;
     generaldocs_thread.updatedAt = new Date();
@@ -1806,11 +1874,11 @@ const handleDeleteGeneralThread = asyncHandler(async (req, res) => {
 
   if (!to_be_delete_thread) {
     logger.error('handleDeleteGeneralThread: Invalid message thread id');
-    throw new ErrorResponse(403, 'Invalid message thread id');
+    throw new ErrorResponse(404, 'Message not found');
   }
   if (!student) {
     logger.error('handleDeleteGeneralThread: Invalid student id id');
-    throw new ErrorResponse(403, 'Invalid student id id');
+    throw new ErrorResponse(404, 'Student not found');
   }
 
   await deleteGeneralThread(studentId, messagesThreadId);
@@ -1852,13 +1920,13 @@ const handleDeleteProgramThread = asyncHandler(async (req, res) => {
   const to_be_delete_thread = await Documentthread.findById(messagesThreadId);
   if (!to_be_delete_thread) {
     logger.error('handleDeleteProgramThread: Invalid message thread id!');
-    throw new ErrorResponse(403, 'Invalid message thread id');
+    throw new ErrorResponse(404, 'Message not found');
   }
 
   const student = await Student.findById(studentId);
   if (!student) {
     logger.error('handleDeleteProgramThread: Invalid student id!');
-    throw new ErrorResponse(403, 'Invalid student id');
+    throw new ErrorResponse(404, 'Student not found');
   }
 
   await deleteApplicationThread(studentId, program_id, messagesThreadId);
@@ -1875,7 +1943,7 @@ const deleteAMessageInThread = asyncHandler(async (req, res) => {
   const thread = await Documentthread.findById(messagesThreadId);
   if (!thread) {
     logger.error('deleteAMessageInThread : Invalid message thread id');
-    throw new ErrorResponse(403, 'Invalid message thread id');
+    throw new ErrorResponse(404, 'Thread not found');
   }
   if (thread.isFinalVersion) {
     logger.error('deleteAMessageInThread : FinalVersion is read only');
@@ -1887,7 +1955,7 @@ const deleteAMessageInThread = asyncHandler(async (req, res) => {
 
   if (!msg) {
     logger.error('deleteAMessageInThread : Invalid message id');
-    throw new ErrorResponse(403, 'Invalid message id');
+    throw new ErrorResponse(404, 'Message not found');
   }
   // Prevent multitenant
   if (msg.user_id.toString() !== user._id.toString()) {
@@ -2226,6 +2294,8 @@ module.exports = {
   getMessageFileDownload,
   postImageInThread,
   postMessages,
+  putThreadFavorite,
+  putOriginAuthorConfirmedByStudent,
   SetStatusMessagesThread,
   deleteApplicationThread,
   handleDeleteGeneralThread,
@@ -2233,7 +2303,5 @@ module.exports = {
   deleteAMessageInThread,
   getAllActiveEssays,
   assignEssayWritersToEssayTask,
-  assignEssayWritersToEssayTask,
-  getAllActiveEssays,
   clearEssayWriters
 };

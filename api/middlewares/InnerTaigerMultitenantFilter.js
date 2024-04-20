@@ -12,12 +12,7 @@ const InnerTaigerMultitenantFilter = async (req, res, next) => {
 
     const student = await Student.findById(studentId).select('agents editors');
     if (!student) {
-      next(
-        new ErrorResponse(
-          403,
-          'Permission denied: Not allowed to access other students documents. Please contact administrator.'
-        )
-      );
+      next(new ErrorResponse(404, 'Student not found'));
     }
     if (
       ![...student.agents, ...student.editors].some(

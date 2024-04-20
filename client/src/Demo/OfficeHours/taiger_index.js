@@ -672,7 +672,7 @@ function TaiGerOfficeHours() {
             size="small"
             onClick={switchCalendarAndMyBookedEvents}
           >
-            {t('To Calendar')}
+            {t('To Calendar', { ns: 'common' })}
           </Button>
           {events?.filter(
             (event) =>
@@ -702,7 +702,9 @@ function TaiGerOfficeHours() {
                 />
               ))}
           <Card>
-            <Typography variant="h6">{t('Upcoming')}</Typography>
+            <Typography variant="h6">
+              {t('Upcoming', { ns: 'common' })}
+            </Typography>
             <Box>
               {events?.filter(
                 (event) =>
@@ -733,11 +735,11 @@ function TaiGerOfficeHours() {
                         }
                       />
                     ))
-                : 'No upcoming event'}
+                : t('No upcoming event', { ns: 'common' })}
             </Box>
           </Card>
           <Card>
-            <Typography variant="h6">Past</Typography>
+            <Typography variant="h6">{t('Past', { ns: 'common' })}</Typography>
             <Box>
               {events
                 ?.filter((event) => !isInTheFuture(event.end))
@@ -946,7 +948,9 @@ function TaiGerOfficeHours() {
         </Typography>
         <br />
         <FormControl fullWidth>
-          <InputLabel id="time-slot">{t('Time Slot')}</InputLabel>
+          <InputLabel id="time-slot">
+            {t('Time Slot', { ns: 'common' })}
+          </InputLabel>
           <Select
             labelId="study_group"
             label="Select target group"

@@ -571,7 +571,7 @@ const SurveyEditableComponent = (props) => {
                 label={t('Highest Score GPA of your university program')}
                 type="number"
                 placeholder="4.3"
-                value={
+                defaultValue={
                   survey.academic_background?.university?.Highest_GPA_Uni || 0
                 }
                 onChange={(e) => handleChangeAcademic(e)}
@@ -598,7 +598,7 @@ const SurveyEditableComponent = (props) => {
                 label={t('Passing Score GPA of your university program')}
                 type="number"
                 placeholder="1.7"
-                value={
+                defaultValue={
                   survey.academic_background?.university?.Passing_GPA_Uni || 0
                 }
                 onChange={(e) => handleChangeAcademic(e)}
@@ -622,7 +622,9 @@ const SurveyEditableComponent = (props) => {
                       null) &&
                   'Please provide passing GPA from your university.'
                 }
-                value={survey.academic_background?.university?.My_GPA_Uni || 0}
+                defaultValue={
+                  survey.academic_background?.university?.My_GPA_Uni || 0
+                }
                 onChange={(e) => handleChangeAcademic(e)}
               />
             </Grid>
@@ -659,21 +661,31 @@ const SurveyEditableComponent = (props) => {
                 </Button>
               )}
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={12}>
               <Typography>{t('Corresponding German GPA System')}:</Typography>
               <Typography>
                 {survey.academic_background?.university?.My_GPA_Uni &&
                 survey.academic_background?.university?.Passing_GPA_Uni &&
-                survey.academic_background?.university?.Highest_GPA_Uni
-                  ? Bayerische_Formel(
-                      survey.academic_background.university.Highest_GPA_Uni,
-                      survey.academic_background.university.Passing_GPA_Uni,
-                      survey.academic_background.university.My_GPA_Uni
-                    )
-                  : 0}
+                survey.academic_background?.university?.Highest_GPA_Uni ? (
+                  <>
+                    <b>
+                      {Bayerische_Formel(
+                        survey.academic_background.university.Highest_GPA_Uni,
+                        survey.academic_background.university.Passing_GPA_Uni,
+                        survey.academic_background.university.My_GPA_Uni
+                      )}
+                    </b>{' '}
+                    = 1 + (3 * (highest - my)) / (highest - passing) = 1 + (3 *
+                    ({survey.academic_background?.university?.Highest_GPA_Uni} -{' '}
+                    {survey.academic_background?.university?.My_GPA_Uni})) / (
+                    {survey.academic_background?.university?.Highest_GPA_Uni} -{' '}
+                    {survey.academic_background?.university?.Passing_GPA_Uni})
+                  </>
+                ) : (
+                  0
+                )}
               </Typography>
             </Grid>
-            <Grid item xs={12} sm={6}></Grid>
             <Grid item xs={12}>
               <Typography variant="body2" sx={{ mt: 2 }}>
                 {t('Last update at')}:{' '}

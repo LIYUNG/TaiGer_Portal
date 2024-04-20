@@ -281,7 +281,7 @@ const downloadXLSX = asyncHandler(async (req, res, next) => {
   });
   if (!course) {
     logger.error('downloadXLSX: Invalid student id');
-    throw new ErrorResponse(403, 'Invalid student id');
+    throw new ErrorResponse(404, 'Course not found');
   }
 
   if (!course.analysis.isAnalysed || !course.analysis.path) {
@@ -338,7 +338,7 @@ const downloadXLSX = asyncHandler(async (req, res, next) => {
 const deleteCourse = asyncHandler(async (req, res) => {
   const course = await Course.findById(req.params.id);
   if (!course) {
-    return res.status(403).send({ error: 'Course not found' });
+    return res.status(404).send({ error: 'Course not found' });
   }
   await Course.findByIdAndDelete(req.params.id);
   return res.send({ success: true });

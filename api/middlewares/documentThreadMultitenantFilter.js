@@ -2,6 +2,7 @@ const { ErrorResponse } = require('../common/errors');
 const { Documentthread } = require('../models/Documentthread');
 const surveyInput = require('../models/SurveyInput');
 const { Role } = require('../models/User');
+const logger = require('../services/logger');
 
 const docThreadMultitenant_filter = async (req, res, next) => {
   const {
@@ -14,11 +15,18 @@ const docThreadMultitenant_filter = async (req, res, next) => {
       .select('student_id')
       .lean();
     if (!document_thread) {
-      return next(new ErrorResponse(404, 'Thread not found!'));
+      logger.warn(`${req.originalUrl}: Thread not found!`);
+      return next(
+        new ErrorResponse(404, `${req.originalUrl}: Thread not found!`)
+      );
     }
     if (document_thread.student_id?._id.toString() !== user._id.toString()) {
+      logger.warn(`${req.originalUrl}: Not allowed to access other resource.`);
       return next(
-        new ErrorResponse(403, 'Not allowed to access other resource.')
+        new ErrorResponse(
+          403,
+          `${req.originalUrl}: Not allowed to access other resource.`
+        )
       );
     }
   }

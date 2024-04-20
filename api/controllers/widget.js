@@ -16,9 +16,9 @@ const WidgetProcessTranscript = asyncHandler(async (req, res, next) => {
     body: { courses, table_data_string_taiger_guided }
   } = req;
   const stringified_courses = JSON.stringify(JSON.stringify(courses));
-  const stringified_courses_taiger_guided = JSON.stringify(JSON.stringify(
-    table_data_string_taiger_guided
-  ));
+  const stringified_courses_taiger_guided = JSON.stringify(
+    JSON.stringify(table_data_string_taiger_guided)
+  );
   let exitCode_Python = -1;
   const studentId = req.user._id.toString();
   const python_command = isProd() ? 'python3' : 'python';
@@ -42,18 +42,14 @@ const WidgetProcessTranscript = asyncHandler(async (req, res, next) => {
     { stdio: 'inherit' }
   );
   python.on('data', (data) => {
-    console.log(`stdout: ${data}`);
+    logger.info(`stdout: ${data}`);
   });
   python.on('error', (err) => {
-    console.log('error');
-    console.log(err);
+    logger.error('error');
+    logger.error(err);
     exitCode_Python = err;
-    // res.sendStatus(500);
-    // res.status(500).send({ success: false });
   });
-  // python.on('data', (data) => {
-  //   console.error(`stderr: ${data}`);
-  // });
+
   python.on('close', (code) => {
     if (code === 0) {
       const metadata = {
@@ -102,7 +98,7 @@ const WidgetdownloadXLSX = asyncHandler(async (req, res, next) => {
   s3.getObject(options, (err, data) => {
     // Handle any error and exit
     if (!data || !data.Body) {
-      console.log('File not found in S3');
+      logger.error('File not found in S3');
       // You can handle this case as needed, e.g., send a 404 response
       return res.status(404).send(err);
     }

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Card } from 'react-bootstrap';
 import { Link as LinkDom } from 'react-router-dom';
 import {
   Accordion,
@@ -97,51 +96,49 @@ function Message(props) {
     : false;
   const full_name = `${firstname} ${lastname}`;
   const files_info = props.message.file.map((file, i) => (
-    <Card key={i} className="my-0">
-      <Card.Body className="py-2 px-0">
-        <span>
-          {/* /api/document-threads/${documentsthreadId}/${messageId}/${file_key} */}
-          <Link
-            underline="hover"
-            to={`${BASE_URL}/api/document-threads/${
-              props.documentsthreadId
-            }/${props.message._id.toString()}/${
-              file.path.replace(/\\/g, '/').split('/')[2]
-            }`}
-            component={LinkDom}
-            target="_blank"
+    <Box key={i}>
+      <span>
+        {/* /api/document-threads/${documentsthreadId}/${messageId}/${file_key} */}
+        <Link
+          underline="hover"
+          to={`${BASE_URL}/api/document-threads/${
+            props.documentsthreadId
+          }/${props.message._id.toString()}/${
+            file.path.replace(/\\/g, '/').split('/')[2]
+          }`}
+          component={LinkDom}
+          target="_blank"
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
           >
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 16 16"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <FileIcon
-                extension={file.name.split('.').pop()}
-                {...defaultStyles[file.name.split('.').pop()]}
-              />
-            </svg>
-            {file.name}
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="m7 10 4.86 4.86c.08.08.2.08.28 0L17 10"
-                stroke="#000"
-                strokeWidth="2"
-                strokeLinecap="round"
-              ></path>
-            </svg>
-          </Link>
-        </span>
-      </Card.Body>
-    </Card>
+            <FileIcon
+              extension={file.name.split('.').pop()}
+              {...defaultStyles[file.name.split('.').pop()]}
+            />
+          </svg>
+          {file.name}
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="m7 10 4.86 4.86c.08.08.2.08.28 0L17 10"
+              stroke="#000"
+              strokeWidth="2"
+              strokeLinecap="round"
+            ></path>
+          </svg>
+        </Link>
+      </span>
+    </Box>
   ));
 
   return (
@@ -192,21 +189,19 @@ function Message(props) {
           </Typography>
         </AccordionSummary>
         <AccordionDetails in={props.accordionKeys[props.idx] === props.idx}>
-          <Card.Body>
-            {/* {JSON.stringify(messageState.editorState)} */}
-            {/* <section>
+          {/* {JSON.stringify(messageState.editorState)} */}
+          {/* <section>
               <Output data={messageState.editorState} />
             </section> */}
-            <EditorSimple
-              holder={`${props.message._id.toString()}`}
-              readOnly={true}
-              imageEnable={true}
-              handleClickSave={props.handleClickSave}
-              editorState={messageState.editorState}
-              defaultHeight={0}
-            />
-            {files_info}
-          </Card.Body>
+          <EditorSimple
+            holder={`${props.message._id.toString()}`}
+            readOnly={true}
+            imageEnable={true}
+            handleClickSave={props.handleClickSave}
+            editorState={messageState.editorState}
+            defaultHeight={0}
+          />
+          {files_info}
         </AccordionDetails>
       </Accordion>
       <ModalNew

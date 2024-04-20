@@ -33,8 +33,7 @@ const TasksDistributionBarChart = ({ data }) => {
         />
         <YAxis allowDecimals={false} />
         <Legend verticalAlign="top" />
-        <Tooltip />
-
+        <Tooltip labelStyle={{ color: 'black' }} />
         <Bar
           dataKey="active"
           fill="#FF0000"

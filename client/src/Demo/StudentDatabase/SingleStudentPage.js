@@ -335,7 +335,8 @@ export const SingleStudentPageMainContent = ({
               {t('Student Database', { ns: 'common' })}
             </Link>
             <Typography color="text.primary">
-              {t('Student', { ns: 'common' })} {singleStudentPage.student.firstname}
+              {t('Student', { ns: 'common' })}{' '}
+              {singleStudentPage.student.firstname}
               {' ,'}
               {singleStudentPage.student.lastname}
               {' | '}
@@ -432,6 +433,7 @@ export const SingleStudentPageMainContent = ({
                   )}`}
                   component={LinkDom}
                   underline="hover"
+                  target="_blank"
                   sx={{ mx: 2 }}
                 >
                   <Button
@@ -554,15 +556,19 @@ export const SingleStudentPageMainContent = ({
             </SurveyProvider>
           </CustomTabPanel>
           <CustomTabPanel value={value} index={6}>
-            <LinkDom
+            <Link
               to={`${DEMO.COURSES_INPUT_LINK(
                 singleStudentPage.student._id.toString()
               )}`}
+              component={LinkDom}
+              underline="hover"
+              rel="noreferrer"
+              target="_blank"
             >
               <Button color="primary" variant="contained">
                 Go to My Courses{' '}
               </Button>
-            </LinkDom>
+            </Link>
           </CustomTabPanel>
           <CustomTabPanel value={value} index={7}>
             <Typography fontWeight="bold">

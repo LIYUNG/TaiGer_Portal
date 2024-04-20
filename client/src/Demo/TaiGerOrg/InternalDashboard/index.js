@@ -428,7 +428,7 @@ function InternalDashboard() {
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="name" />
                   <YAxis allowDecimals={false} />
-                  {/* <Tooltip /> */}
+                  <Tooltip labelStyle={{ color: 'black' }} />
                   {/* <Legend /> */}
                   <Bar dataKey="uv" fill="#8884d8" label={{ position: 'top' }}>
                     {students_years_pair.map((entry, index) => (
@@ -455,7 +455,7 @@ function InternalDashboard() {
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="name" />
                   <YAxis allowDecimals={false} />
-                  {/* <Tooltip /> */}
+                  <Tooltip labelStyle={{ color: 'black' }} />
                   {/* <Legend /> */}
                   <Bar dataKey="uv" fill="#8884d8" label={{ position: 'top' }}>
                     {documents_data.map((entry, index) => (
@@ -487,7 +487,7 @@ function InternalDashboard() {
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis type="number" allowDecimals={false} />
                   <YAxis type="category" dataKey="key" interval={0} />
-                  <Tooltip />
+                  <Tooltip labelStyle={{ color: 'black' }} />
                   {/* <Legend /> */}
                   <Bar
                     dataKey="student_num_no_offer"
@@ -514,7 +514,8 @@ function InternalDashboard() {
           <Grid item xs={12} md={4}>
             <Card sx={{ p: 2 }}>
               <Typography>
-                {t('Editor', { ns: 'common' })}: Number of active students per editor
+                {t('Editor', { ns: 'common' })}: Number of active students per
+                editor
               </Typography>
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart
@@ -530,7 +531,7 @@ function InternalDashboard() {
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis type="number" allowDecimals={false} />
                   <YAxis type="category" dataKey="key" interval={0} />
-                  <Tooltip />
+                  <Tooltip labelStyle={{ color: 'black' }} />
                   {/* <Legend /> */}
                   <Bar
                     dataKey="student_num"
@@ -549,7 +550,8 @@ function InternalDashboard() {
           <Grid item xs={12} md={4}>
             <Card sx={{ p: 2 }}>
               <Typography>
-                {t('Editor', { ns: 'common' })}:Number of open and potential tasks per editor
+                {t('Editor', { ns: 'common' })}:Number of open and potential
+                tasks per editor
               </Typography>
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart
@@ -565,7 +567,7 @@ function InternalDashboard() {
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis type="number" allowDecimals={false} />
                   <YAxis type="category" dataKey="name" interval={0} />
-                  <Tooltip />
+                  <Tooltip labelStyle={{ color: 'black' }} />
                   {/* <Legend /> */}
                   <Bar
                     dataKey="active"
@@ -605,7 +607,7 @@ function InternalDashboard() {
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="name" />
                   <YAxis allowDecimals={false} />
-                  {/* <Tooltip /> */}
+                  <Tooltip labelStyle={{ color: 'black' }} />
                   {/* <Legend /> */}
                   <Bar dataKey="uv" fill="#8884d8" label={{ position: 'top' }}>
                     {applications_data.map((entry, index) => (
@@ -632,7 +634,7 @@ function InternalDashboard() {
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="name" />
                   <YAxis allowDecimals={false} />
-                  {/* <Tooltip /> */}
+                  <Tooltip labelStyle={{ color: 'black' }} />
                   {/* <Legend /> */}
                   <Bar dataKey="uv" fill="#8884d8" label={{ position: 'top' }}>
                     {admissions_data.map((entry, index) => (
@@ -676,7 +678,7 @@ function InternalDashboard() {
                       position="insideLeft"
                     />
                   </YAxis>
-                  <Tooltip />
+                  <Tooltip labelStyle={{ color: 'black' }} />
                   <Legend />
                   <Bar dataKey="duration" fill="#8884d8" />
                 </BarChart>
@@ -712,7 +714,7 @@ function InternalDashboard() {
                       position="insideLeft"
                     />
                   </YAxis>
-                  <Tooltip />
+                  <Tooltip labelStyle={{ color: 'black' }} />
                   <Legend />
                   <Bar dataKey="duration" fill="#8884d8" />
                 </BarChart>
@@ -748,7 +750,7 @@ function InternalDashboard() {
                       position="insideLeft"
                     />
                   </YAxis>
-                  <Tooltip />
+                  <Tooltip labelStyle={{ color: 'black' }} />
                   <Legend />
                   <Bar dataKey="duration" fill="#8884d8" />
                 </BarChart>

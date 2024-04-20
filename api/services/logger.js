@@ -1,4 +1,10 @@
 const winston = require('winston');
+const WinstonCloudWatch = require('winston-cloudwatch');
+const {
+  AWS_S3_ACCESS_KEY_ID,
+  AWS_S3_ACCESS_KEY,
+  isProd
+} = require('../config');
 
 const options = {
   file: {
@@ -16,17 +22,29 @@ const options = {
     format: winston.format.combine(
       winston.format.colorize(),
       winston.format.simple()
-    ),
+    )
   }
 };
 
-const logger = winston.createLogger({
-  levels: winston.config.npm.levels,
-  transports: [
-    new winston.transports.File(options.file),
-    new winston.transports.Console(options.console)
-  ],
-  exitOnError: false
-});
+const logger = isProd()
+  ? winston.createLogger({
+      transports: [
+        new WinstonCloudWatch({
+          logGroupName: 'taiger-portal-dev',
+          logStreamName: 'backend-log-dev',
+          awsRegion: 'us-west-2',
+          awsAccessKeyId: AWS_S3_ACCESS_KEY_ID,
+          awsSecretKey: AWS_S3_ACCESS_KEY
+        })
+      ]
+    })
+  : winston.createLogger({
+      levels: winston.config.npm.levels,
+      transports: [
+        new winston.transports.File(options.file),
+        new winston.transports.Console(options.console)
+      ],
+      exitOnError: false
+    });
 
 module.exports = logger;

@@ -9,7 +9,8 @@ const {
   GeneralDELETERequestRateLimiter,
   getMessageFileRateLimiter,
   putThreadInputRateLimiter,
-  resetThreadInputRateLimiter
+  resetThreadInputRateLimiter,
+  putMessagesRateLimiter
 } = require('../middlewares/rate_limiter');
 const { filter_archiv_user } = require('../middlewares/limit_archiv_user');
 const { multitenant_filter } = require('../middlewares/multitenant-filter');
@@ -46,7 +47,9 @@ const {
   putSurveyInput,
   assignEssayWritersToEssayTask,
   resetSurveyInput,
-  getAllActiveEssays
+  getAllActiveEssays,
+  putOriginAuthorConfirmedByStudent,
+  putThreadFavorite
 } = require('../controllers/documents_modification');
 const {
   docThreadMultitenant_filter,
@@ -149,6 +152,26 @@ router
     doc_thread_ops_validator,
     assignEssayWritersToEssayTask,
     logAccess
+  );
+
+router
+  .route('/:messagesThreadId/favorite')
+  .put(
+    filter_archiv_user,
+    putMessagesRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Editor, Role.Agent, Role.Student),
+    docThreadMultitenant_filter,
+    putThreadFavorite,
+    logAccess
+  );
+
+router
+  .route('/:messagesThreadId/:studentId/origin-author')
+  .put(
+    SetStatusMessagesThreadRateLimiter,
+    permit(Role.Student),
+    multitenant_filter,
+    putOriginAuthorConfirmedByStudent
   );
 
 router

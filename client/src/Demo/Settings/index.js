@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Grid,
+  Box,
   Button,
+  Breadcrumbs,
+  Link,
   TextField,
   Typography,
   CircularProgress,
-  Card,
   FormControl,
+  FormLabel,
   RadioGroup,
   FormControlLabel,
   Radio
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { Link as LinkDom } from 'react-router-dom';
 
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
@@ -21,14 +24,16 @@ import { TabTitle } from '../Utils/TabTitle';
 import { useAuth } from '../../components/AuthProvider';
 import ModalNew from '../../components/Modal';
 import { useCustomTheme } from '../../components/ThemeProvider';
+import { appConfig } from '../../config';
+import DEMO from '../../store/constant';
 
 function Settings() {
   const { isDarkMode, toggleDarkMode } = useCustomTheme();
   const { t } = useTranslation();
   const { user, logout } = useAuth();
+
   const [settingsState, setSettingsState] = useState({
     error: '',
-    role: '',
     isLoaded: false,
     data: null,
     success: false,
@@ -135,7 +140,21 @@ function Settings() {
   }
 
   return (
-    <Grid container spacing={2}>
+    <Box>
+      <Breadcrumbs aria-label="breadcrumb">
+        <Link
+          underline="hover"
+          color="inherit"
+          component={LinkDom}
+          to={`${DEMO.DASHBOARD_LINK}`}
+        >
+          {appConfig.companyName}
+        </Link>
+        <Typography color="text.primary">
+          {t('Settings', { ns: 'common' })}
+        </Typography>
+      </Breadcrumbs>
+
       {res_modal_status >= 400 && (
         <ModalMain
           ConfirmError={ConfirmError}
@@ -143,83 +162,78 @@ function Settings() {
           res_modal_message={res_modal_message}
         />
       )}
-      <Grid item xs={12}>
-        <Typography variant="h5">{t('Settings')}</Typography>
-      </Grid>
-      <Grid item xs={12} md={6}>
-        <Card sx={{ p: 2 }}>
-          <Typography variant="h6">{t('Reset Login Password')}</Typography>
-          <TextField
+
+      <Box sx={{ mx: 2 }}>
+        <Typography variant="h6">{t('Preference')}</Typography>
+        <FormControl>
+          <FormLabel id="demo-row-radio-buttons-group-label">
+            {t('Theme', { ns: 'common' })}
+          </FormLabel>{' '}
+          <RadioGroup
             fullWidth
-            id="current_password"
-            margin="normal"
-            required
-            label={`${t('Current Password')}`}
-            autoComplete="off"
-            type="password"
-            onChange={(e) => handleChange_Credentials(e)}
-          />
-          <TextField
-            fullWidth
-            id="new_password"
-            margin="normal"
-            required
-            label={`${t('Enter New Password')}`}
-            autoComplete="off"
-            type="password"
-            onChange={(e) => handleChange_Credentials(e)}
-          />
-          <TextField
-            fullWidth
-            id="new_password_again"
-            margin="normal"
-            required
-            label={`${t('Enter New Password Again')}`}
-            autoComplete="off"
-            type="password"
-            onChange={(e) => handleChange_Credentials(e)}
-          />
-          <Button
-            fullWidth
-            disabled={
-              settingsState.credentials.current_password === '' ||
-              settingsState.credentials.new_password === '' ||
-              settingsState.credentials.new_password_again === ''
-            }
-            color="primary"
-            variant="contained"
-            onClick={(e) =>
-              handleSubmit_Credentials(e, settingsState.credentials, user.email)
-            }
+            row
+            aria-labelledby="demo-controlled-radio-buttons-group"
+            name="controlled-radio-buttons-group"
+            value={isDarkMode}
+            onChange={toggleDarkMode}
           >
-            {t('Reset Password')}
-          </Button>
-        </Card>
-      </Grid>
-      <Grid item xs={12} md={6}>
-        <Card sx={{ p: 2 }}>
-          <Typography>{t('Theme')}</Typography>
-          <FormControl>
-            <RadioGroup
-              aria-labelledby="demo-controlled-radio-buttons-group"
-              name="controlled-radio-buttons-group"
-              value={isDarkMode}
-              onChange={toggleDarkMode}
-            >
-              <FormControlLabel value={true} control={<Radio />} label="Dark" />
-              <FormControlLabel
-                value={false}
-                control={<Radio />}
-                label="Light"
-              />
-            </RadioGroup>
-          </FormControl>
-        </Card>
-      </Grid>
-      <Grid item xs={12} md={6}>
-        <Typography>{t('Notification')}</Typography>
-        <Typography>{t('Comming soon')}</Typography>
-      </Grid>
+            <FormControlLabel value={true} control={<Radio />} label="Dark" />
+            <FormControlLabel value={false} control={<Radio />} label="Light" />
+          </RadioGroup>
+        </FormControl>
+      </Box>
+
+      <Box sx={{ p: 2 }}>
+        <Typography variant="h6">{t('Account')}</Typography>
+        <Typography>{t('Reset Login Password')}</Typography>
+        <TextField
+          fullWidth
+          id="current_password"
+          size="small"
+          required
+          label={`${t('Current Password')}`}
+          autoComplete="off"
+          type="password"
+          onChange={(e) => handleChange_Credentials(e)}
+          sx={{ my: 1 }}
+        />
+        <TextField
+          fullWidth
+          id="new_password"
+          size="small"
+          required
+          label={`${t('Enter New Password')}`}
+          autoComplete="off"
+          type="password"
+          onChange={(e) => handleChange_Credentials(e)}
+          sx={{ mb: 1 }}
+        />
+        <TextField
+          fullWidth
+          id="new_password_again"
+          size="small"
+          required
+          label={`${t('Enter New Password Again')}`}
+          autoComplete="off"
+          type="password"
+          onChange={(e) => handleChange_Credentials(e)}
+          sx={{ mb: 1 }}
+        />
+        <Button
+          disabled={
+            settingsState.credentials.current_password === '' ||
+            settingsState.credentials.new_password === '' ||
+            settingsState.credentials.new_password_again === ''
+          }
+          color="primary"
+          variant="contained"
+          onClick={(e) =>
+            handleSubmit_Credentials(e, settingsState.credentials, user.email)
+          }
+        >
+          {t('Reset Password')}
+        </Button>
+      </Box>
       <ModalNew
         open={settingsState.updatecredentialconfirmed}
         onClose={setmodalhideUpdateCredentials}
@@ -242,7 +256,7 @@ function Settings() {
           </Button>
         </div>
       </ModalNew>
-    </Grid>
+    </Box>
   );
 }
 

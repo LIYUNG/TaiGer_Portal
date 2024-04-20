@@ -259,6 +259,9 @@ export const updateEssayWriter = (editor_id, documentsthreadId) =>
 export const getAllActiveEssays = () =>
   request.get(`/api/document-threads/essays/all`);
 
+export const putThreadFavorite = (documentsthreadId) =>
+  request.put(`/api/document-threads/${documentsthreadId}/favorite`);
+
 // Portal Informations APIs
 export const getPortalCredentials = (student_id) =>
   request.get(`/api/portal-informations/${student_id}`);
@@ -347,6 +350,18 @@ export const uploadDocumentThreadImage = (documentsthreadId, studentId, file) =>
   request.post(
     `/api/document-threads/image/${documentsthreadId}/${studentId}`,
     file
+  );
+
+export const putOriginAuthorConfirmedByStudent = (
+  documentsthreadId,
+  studentId,
+  checked
+) =>
+  request.put(
+    `/api/document-threads/${documentsthreadId}/${studentId}/origin-author`,
+    {
+      checked
+    }
   );
 
 export const SubmitMessageWithAttachment = (

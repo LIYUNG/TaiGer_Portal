@@ -29,7 +29,7 @@ const getTicket = asyncHandler(async (req, res) => {
   const ticket = await Ticket.findById(req.params.ticketId);
   if (!ticket) {
     logger.error('getTicket: Invalid ticket id');
-    throw new ErrorResponse(403, 'Invalid ticket id');
+    throw new ErrorResponse(404, 'Ticket not found');
   }
   res.send({ success: true, data: ticket });
 });

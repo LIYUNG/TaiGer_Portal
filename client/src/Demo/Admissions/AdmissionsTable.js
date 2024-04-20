@@ -90,10 +90,10 @@ function AdmissionsTable(props) {
   let pending_table = applicationResultsArray(students, '-');
   let not_yet_closed_table = applicationResultsArray(students, '--');
 
-  const c2 = [
+  const admisstionTableColumns = [
     {
       field: 'name',
-      headerName: t('Name', { ns: 'common' }),
+      headerName: 'Name',
       align: 'left',
       headerAlign: 'left',
       width: 150,
@@ -116,17 +116,17 @@ function AdmissionsTable(props) {
     },
     {
       field: 'agents',
-      headerName: t('Agents', { ns: 'common' }),
+      headerName: 'Agents',
       width: 100
     },
     {
       field: 'editors',
-      headerName: t('Editors', { ns: 'common' }),
+      headerName: 'Editors',
       width: 100
     },
     {
       field: 'school',
-      headerName: t('School'),
+      headerName: 'School',
       width: 250,
       renderCell: (params) => {
         const linkUrl = `${DEMO.SINGLE_PROGRAM_LINK(params.row.program_id)}`;
@@ -144,7 +144,7 @@ function AdmissionsTable(props) {
     },
     {
       field: 'program_name',
-      headerName: t('Program', { ns: 'common' }),
+      headerName: 'Program',
       width: 250,
       renderCell: (params) => {
         const linkUrl = `${DEMO.SINGLE_PROGRAM_LINK(params.row.program_id)}`;
@@ -160,20 +160,20 @@ function AdmissionsTable(props) {
         );
       }
     },
-    { field: 'degree', headerName: t('Degree', { ns: 'common' }), width: 120 },
+    { field: 'degree', headerName: 'Degree', width: 120 },
     {
       field: 'application_year',
-      headerName: t('Application Year', { ns: 'common' }),
+      headerName: 'Application Year',
       width: 120
     },
     {
       field: 'semester',
-      headerName: t('Semester', { ns: 'common' }),
+      headerName: 'Semester',
       width: 120
     },
     {
       field: 'admission_file_path',
-      headerName: t('Admission Letter', { ns: 'common' }),
+      headerName: 'Admission Letter',
       width: 150,
       renderCell: (params) => {
         const linkUrl = `${BASE_URL}/api/admissions/${params.row.admission_file_path?.replace(
@@ -198,7 +198,7 @@ function AdmissionsTable(props) {
       }
     }
   ];
-  const memoizedColumns = useMemo(() => c2, [c2]);
+  const memoizedColumns = useMemo(() => admisstionTableColumns, [admisstionTableColumns]);
 
   return (
     <>
@@ -210,10 +210,10 @@ function AdmissionsTable(props) {
           scrollButtons="auto"
           aria-label="basic tabs example"
         >
-          <Tab label="Admissions" {...a11yProps(0)} />
-          <Tab label="Rejections" {...a11yProps(1)} />
-          <Tab label="Pending" {...a11yProps(2)} />
-          <Tab label="Not Closed Yet" {...a11yProps(3)} />
+          <Tab label={t('Admissions', { ns: 'admissions' })} {...a11yProps(0)} />
+          <Tab label={t('Rejections', { ns: 'admissions' })} {...a11yProps(1)} />
+          <Tab label={t('Pending Result', { ns: 'admissions' })} {...a11yProps(2)} />
+          <Tab label={t('Not Closed Yet', { ns: 'admissions' })} {...a11yProps(3)} />
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>

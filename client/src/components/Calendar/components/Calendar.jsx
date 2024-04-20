@@ -190,13 +190,13 @@ const MyCalendar = (props) => {
               </span>
               <br />
               <FormControl fullWidth sx={{ my: 2 }}>
-                <InputLabel id="time_slot">{t('Time Slot')}</InputLabel>
+                <InputLabel id="time_slot">{t('Time Slot', { ns: 'common' })}</InputLabel>
                 <Select
                   labelId="Time_Slot"
                   name="Time_Slot"
                   id="Time_Slot"
                   value={new Date(scheduler.state.start.value) || ''}
-                  label={'Time Slot'}
+                  label={t('Time Slot', { ns: 'common' })}
                   onChange={props.handleUpdateTimeSlot}
                 >
                   <MenuItem value="">Please Select</MenuItem>
@@ -400,13 +400,15 @@ const MyCalendar = (props) => {
             </span>
             <br />
             <FormControl fullWidth sx={{ my: 2 }}>
-              <InputLabel id="time_slot">{t('Time Slot')}</InputLabel>
+              <InputLabel id="time_slot">
+                {t('Time Slot', { ns: 'common' })}
+              </InputLabel>
               <Select
                 labelId="Time_Slot"
                 name="Time_Slot"
                 id="Time_Slot"
                 value={props.newEventStart}
-                label={'Time Slot'}
+                label={t('Time Slot', { ns: 'common' })}
                 onChange={props.handleUpdateTimeSlot}
               >
                 {available_termins

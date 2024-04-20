@@ -183,9 +183,12 @@ function CVMLRLDashboard(props) {
       !open_task.isFinalVersion &&
       open_task.latest_message_left_by_id === ''
   );
+
   const cvmlrl_closed_v2 = open_tasks_arr.filter(
     (open_task) => open_task.show && open_task.isFinalVersion
   );
+
+  const cvmlrl_all_v2 = open_tasks_arr.filter((open_task) => open_task.show);
 
   const memoizedColumns = useMemo(() => c1, [c1]);
 
@@ -217,6 +220,10 @@ function CVMLRLDashboard(props) {
           />
           <Tab
             label={`Closed (${cvmlrl_closed_v2?.length || 0})`}
+            {...a11yProps(2)}
+          />
+          <Tab
+            label={`All (${cvmlrl_all_v2?.length || 0})`}
             {...a11yProps(2)}
           />
         </Tabs>
@@ -267,6 +274,19 @@ function CVMLRLDashboard(props) {
           )}
         </Typography>
         <MuiDataGrid rows={cvmlrl_closed_v2} columns={memoizedColumns} />
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={3}>
+        <Banner
+          ReadOnlyMode={true}
+          bg={'success'}
+          title={'info'}
+          path={'/'}
+          text={'All tasks'}
+          link_name={''}
+          removeBanner={<></>}
+          notification_key={undefined}
+        />
+        <MuiDataGrid rows={cvmlrl_all_v2} columns={memoizedColumns} />
       </CustomTabPanel>
       <ModalNew
         open={cVMLRLDashboardState.SetAsFinalFileModel}

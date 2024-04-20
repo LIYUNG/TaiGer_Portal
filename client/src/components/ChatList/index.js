@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-// import PerfectScrollbar from 'react-perfect-scrollbar';
 import SearchIcon from '@mui/icons-material/Search';
 import { Box, ListItem, MenuItem, Skeleton, Typography } from '@mui/material';
 
@@ -12,9 +11,11 @@ import {
   StyledInputBase,
   menuWidth
 } from '../../Demo/Utils/contants';
+import { useTranslation } from 'react-i18next';
 
 const ChatList = (props) => {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [chatListState, setChatListState] = useState({
@@ -137,7 +138,7 @@ const ChatList = (props) => {
       <ListItem onClick={(e) => e.stopPropagation()}>
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Box>
-            <Typography variant="h6">Chat</Typography>
+            <Typography variant="h6">{t('Chat', { ns: 'common' })}</Typography>
           </Box>
         </Box>
       </ListItem>
@@ -154,25 +155,20 @@ const ChatList = (props) => {
           onChange={handleInputChange}
         />
       </Search>
-      {!chatListState.isLoaded && (
-        // <PerfectScrollbar>
-          [0, 1, 2, 3].map((x, i) => (
-            <MenuItem key={i}>
-              <Skeleton variant="rectangular" width={menuWidth} height={40} />
-            </MenuItem>
-          ))
-        // </PerfectScrollbar>
-      )}
+      {!chatListState.isLoaded &&
+        [0, 1, 2, 3].map((x, i) => (
+          <MenuItem key={i}>
+            <Skeleton variant="rectangular" width={menuWidth} height={40} />
+          </MenuItem>
+        ))}
       {chatListState.isLoaded && (
-        // <PerfectScrollbar>
-          <Friends
-            handleCloseChat={props.handleCloseChat}
-            user={user}
-            students={
-              chatListState.searchMode ? searchResults : chatListState.students
-            }
-          />
-        // </PerfectScrollbar>
+        <Friends
+          handleCloseChat={props.handleCloseChat}
+          user={user}
+          students={
+            chatListState.searchMode ? searchResults : chatListState.students
+          }
+        />
       )}
     </>
   );

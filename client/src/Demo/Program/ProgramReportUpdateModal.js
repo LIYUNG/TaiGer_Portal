@@ -65,13 +65,14 @@ function ProgramReportUpdateModal(props) {
         color="primary"
         variant="contained"
         onClick={() =>
-          props.submitProgramUpdateReport(
-            props.ticket._id.toString(),
-            programReportUpdateModalState.ticket
-          )
+          props.submitProgramUpdateReport(props.ticket._id.toString(), {
+            ...programReportUpdateModalState.ticket,
+            status: 'resolved'
+          })
         }
+        sx={{ mr: 1 }}
       >
-        {t('Update ticket')}
+        {t('Resolve ticket')}
       </Button>
       <Button
         color="secondary"

@@ -76,16 +76,8 @@ const DocumentationS3GarbageCollector = async () => {
 };
 
 const updateInternalDocumentationPage = asyncHandler(async (req, res) => {
-  const { user } = req;
   const fields = _.omit(req.body, '_id');
-  if (
-    user.role !== Role.Admin &&
-    user.role !== Role.Agent &&
-    user.role !== Role.Editor
-  ) {
-    logger.error('updateInternalDocumentationPage : Not authorized');
-    throw new ErrorResponse(403, 'Not authorized');
-  }
+
   fields.author = `${req.user.firstname} ${req.user.lastname}`;
   const interna_doc_page_existed = await Docspage.findOneAndUpdate(
     { category: 'internal' },
@@ -99,15 +91,6 @@ const updateInternalDocumentationPage = asyncHandler(async (req, res) => {
 });
 
 const getInternalDocumentationsPage = asyncHandler(async (req, res) => {
-  const { user } = req;
-  if (
-    user.role !== Role.Admin &&
-    user.role !== Role.Agent &&
-    user.role !== Role.Editor
-  ) {
-    logger.error('getCategoryDocumentationsPage : Not authorized');
-    throw new ErrorResponse(403, 'Not authorized');
-  }
   const docspage = await Docspage.findOne({
     category: 'internal'
   });

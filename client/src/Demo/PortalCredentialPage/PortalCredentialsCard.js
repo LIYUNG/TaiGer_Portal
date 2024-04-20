@@ -292,9 +292,7 @@ export default function PortalCredentialsCard(props) {
                         target="_blank"
                       >
                         <b>
-                          {application.programId.school}
-                          {' - '}
-                          {application.programId.program_name}
+                          {`${application.programId.school} - ${application.programId.program_name} - ${application.programId.semester} - ${application.programId.degree}`}
                         </b>
                       </Link>{' '}
                       {(application.programId.application_portal_a ||

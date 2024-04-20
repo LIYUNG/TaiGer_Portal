@@ -18,7 +18,6 @@ export const SurveyProvider = ({ children, value }) => {
       ...surveyState.academic_background?.university
     };
     university_temp[e.target.name] = e.target.value;
-    console.log(university_temp);
     setSurveyState((prevState) => ({
       ...prevState,
       changed_academic: true,

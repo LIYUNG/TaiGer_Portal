@@ -302,6 +302,10 @@ function EssayOverview(props) {
         <MuiDataGrid
           rows={props.no_essay_writer_tasks}
           columns={memoizedColumns}
+          columnVisibilityModel={{
+            number_input_from_editors: false,
+            number_input_from_student: false
+          }}
         />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
@@ -315,7 +319,14 @@ function EssayOverview(props) {
           removeBanner={<></>}
           notification_key={undefined}
         />
-        <MuiDataGrid rows={props.new_message_tasks} columns={memoizedColumns} />
+        <MuiDataGrid
+          rows={props.new_message_tasks}
+          columns={memoizedColumns}
+          columnVisibilityModel={{
+            number_input_from_editors: false,
+            number_input_from_student: false
+          }}
+        />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
         <Banner
@@ -328,7 +339,14 @@ function EssayOverview(props) {
           removeBanner={<></>}
           notification_key={undefined}
         />
-        <MuiDataGrid rows={props.fav_message_tasks} columns={memoizedColumns} />
+        <MuiDataGrid
+          rows={props.fav_message_tasks}
+          columns={memoizedColumns}
+          columnVisibilityModel={{
+            number_input_from_editors: false,
+            number_input_from_student: false
+          }}
+        />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={3}>
         <Banner
@@ -341,7 +359,14 @@ function EssayOverview(props) {
           removeBanner={<></>}
           notification_key={undefined}
         />
-        <MuiDataGrid rows={props.followup_tasks} columns={memoizedColumns} />
+        <MuiDataGrid
+          rows={props.followup_tasks}
+          columns={memoizedColumns}
+          columnVisibilityModel={{
+            number_input_from_editors: false,
+            number_input_from_student: false
+          }}
+        />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={4}>
         <Banner
@@ -361,6 +386,10 @@ function EssayOverview(props) {
         <MuiDataGrid
           rows={props.pending_progress_tasks}
           columns={memoizedColumns}
+          columnVisibilityModel={{
+            number_input_from_editors: false,
+            number_input_from_student: false
+          }}
         />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={5}>
@@ -374,7 +403,14 @@ function EssayOverview(props) {
           removeBanner={<></>}
           notification_key={undefined}
         />
-        <MuiDataGrid rows={props.closed_tasks} columns={memoizedColumns} />
+        <MuiDataGrid
+          rows={props.closed_tasks}
+          columns={memoizedColumns}
+          columnVisibilityModel={{
+            number_input_from_editors: false,
+            number_input_from_student: false
+          }}
+        />
         <Typography variant="body2">
           {t(
             'Note: if the documents are not closed but locate here, it is becaue the applications are already submitted. The documents can safely closed eventually.',
@@ -396,6 +432,10 @@ function EssayOverview(props) {
         <MuiDataGrid
           rows={props.all_active_message_tasks}
           columns={memoizedColumns}
+          columnVisibilityModel={{
+            number_input_from_editors: false,
+            number_input_from_student: false
+          }}
         />
       </CustomTabPanel>
     </>

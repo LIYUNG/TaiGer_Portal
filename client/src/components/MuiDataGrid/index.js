@@ -75,6 +75,9 @@ export const MuiDataGrid = (props) => {
           )
         }))}
         initialState={{
+          columns: {
+            columnVisibilityModel: { ...props.columnVisibilityModel }
+          },
           pagination: {
             paginationModel: { page: 0, pageSize: 20 }
           }

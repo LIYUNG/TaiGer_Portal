@@ -75,7 +75,7 @@ function CVMLRLOverview(props) {
       headerName: 'First-, Last Name',
       align: 'left',
       headerAlign: 'left',
-      width: 200,
+      minWidth: 200,
       renderCell: (params) => {
         const linkUrl = `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
           params.row.student_id,
@@ -110,17 +110,17 @@ function CVMLRLOverview(props) {
     {
       field: 'deadline',
       headerName: 'Deadline',
-      width: 100
+      minWidth: 100
     },
     {
       field: 'days_left',
       headerName: 'Days left',
-      width: 80
+      minWidth: 80
     },
     {
       field: 'document_name',
       headerName: 'Document name',
-      width: 380,
+      minWidth: 380,
       renderCell: (params) => {
         const linkUrl = `${DEMO.DOCUMENT_MODIFICATION_LINK(
           params.row.thread_id
@@ -161,27 +161,27 @@ function CVMLRLOverview(props) {
     {
       field: 'aged_days',
       headerName: 'Aged days',
-      width: 80
+      minWidth: 80
     },
     {
       field: 'number_input_from_editors',
       headerName: 'Editor Feedback (#Messages/#Files)',
-      width: 80
+      minWidth: 80
     },
     {
       field: 'number_input_from_student',
       headerName: 'Student Feedback (#Messages/#Files)',
-      width: 80
+      minWidth: 80
     },
     {
       field: 'latest_reply',
       headerName: 'Latest Reply',
-      width: 100
+      minWidth: 100
     },
     {
       field: 'updatedAt',
       headerName: 'Last Update',
-      width: 100
+      minWidth: 100
     }
   ];
 
@@ -336,7 +336,14 @@ function CVMLRLOverview(props) {
           removeBanner={<></>}
           notification_key={undefined}
         />
-        <MuiDataGrid rows={props.new_message_tasks} columns={memoizedColumns} />
+        <MuiDataGrid
+          rows={props.new_message_tasks}
+          columns={memoizedColumns}
+          columnVisibilityModel={{
+            number_input_from_editors: false,
+            number_input_from_student: false
+          }}
+        />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
         <Banner
@@ -349,7 +356,14 @@ function CVMLRLOverview(props) {
           removeBanner={<></>}
           notification_key={undefined}
         />
-        <MuiDataGrid rows={props.fav_message_tasks} columns={memoizedColumns} />
+        <MuiDataGrid
+          rows={props.fav_message_tasks}
+          columns={memoizedColumns}
+          columnVisibilityModel={{
+            number_input_from_editors: false,
+            number_input_from_student: false
+          }}
+        />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
         <Banner
@@ -362,7 +376,14 @@ function CVMLRLOverview(props) {
           removeBanner={<></>}
           notification_key={undefined}
         />
-        <MuiDataGrid rows={props.followup_tasks} columns={memoizedColumns} />
+        <MuiDataGrid
+          rows={props.followup_tasks}
+          columns={memoizedColumns}
+          columnVisibilityModel={{
+            number_input_from_editors: false,
+            number_input_from_student: false
+          }}
+        />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={3}>
         <Banner
@@ -382,6 +403,10 @@ function CVMLRLOverview(props) {
         <MuiDataGrid
           rows={props.pending_progress_tasks}
           columns={memoizedColumns}
+          columnVisibilityModel={{
+            number_input_from_editors: false,
+            number_input_from_student: false
+          }}
         />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={4}>
@@ -395,7 +420,14 @@ function CVMLRLOverview(props) {
           removeBanner={<></>}
           notification_key={undefined}
         />
-        <MuiDataGrid rows={props.closed_tasks} columns={memoizedColumns} />
+        <MuiDataGrid
+          rows={props.closed_tasks}
+          columns={memoizedColumns}
+          columnVisibilityModel={{
+            number_input_from_editors: false,
+            number_input_from_student: false
+          }}
+        />
         <Typography variant="body2">
           {t(
             'Note: if the documents are not closed but locate here, it is becaue the applications are already submitted. The documents can safely closed eventually.',

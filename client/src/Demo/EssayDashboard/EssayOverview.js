@@ -1,8 +1,19 @@
 import React, { useMemo, useEffect, useState } from 'react';
-import { Tabs, Tab, Box, Typography } from '@mui/material';
+import {
+  Tabs,
+  Tab,
+  Box,
+  Typography,
+  Link,
+  Tooltip,
+  Chip,
+  IconButton
+} from '@mui/material';
+import { Link as LinkDom } from 'react-router-dom';
+import StarBorderRoundedIcon from '@mui/icons-material/StarBorderRounded';
+import StarRoundedIcon from '@mui/icons-material/StarRounded';
 import PropTypes from 'prop-types';
 
-import { essay_dashboard_table_column } from '../Utils/contants';
 import { is_TaiGer_role } from '../Utils/checking-functions';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import Banner from '../../components/Banner/Banner';
@@ -11,6 +22,8 @@ import Loading from '../../components/Loading/Loading';
 import { CustomTabPanel, a11yProps } from '../../components/Tabs';
 import { useTranslation } from 'react-i18next';
 import { MuiDataGrid } from '../../components/MuiDataGrid';
+import DEMO from '../../store/constant';
+import { ATTRIBUTES, COLORS } from '../Utils/contants';
 
 CustomTabPanel.propTypes = {
   children: PropTypes.node,
@@ -63,7 +76,164 @@ function EssayOverview(props) {
   if (!isLoaded && !cVMLRLOverviewState.students) {
     return <Loading />;
   }
-
+  const essay_dashboard_table_column = [
+    {
+      field: 'firstname_lastname',
+      headerName: 'First-, Last Name',
+      align: 'left',
+      headerAlign: 'left',
+      width: 150,
+      renderCell: (params) => {
+        const linkUrl = `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+          params.row.student_id,
+          DEMO.PROFILE_HASH
+        )}`;
+        return (
+          <>
+            <IconButton
+              onClick={() => props.handleFavoriteToggle(params.row.id)}
+            >
+              {params.row.flag_by_user_id?.includes(user._id.toString()) ? (
+                <StarRoundedIcon color={params.value ? 'primary' : 'action'} />
+              ) : (
+                <StarBorderRoundedIcon
+                  color={params.value ? 'primary' : 'action'}
+                />
+              )}
+            </IconButton>
+            <Link
+              underline="hover"
+              to={linkUrl}
+              component={LinkDom}
+              target="_blank"
+              title={params.value}
+            >
+              {params.value}
+            </Link>
+          </>
+        );
+      }
+    },
+    {
+      field: 'outsourced_user_id',
+      headerName: 'Essay Writer',
+      align: 'left',
+      headerAlign: 'left',
+      minWidth: 120,
+      renderCell: (params) => {
+        return (
+          params.row.outsourced_user_id?.map((outsourcer) => (
+            <Link
+              underline="hover"
+              to={DEMO.TEAM_EDITOR_LINK(outsourcer._id.toString())}
+              component={LinkDom}
+              target="_blank"
+              title={outsourcer.firstname}
+              key={`${outsourcer._id.toString()}`}
+            >
+              {`${outsourcer.firstname} `}
+            </Link>
+          )) || []
+        );
+      }
+    },
+    {
+      field: 'editors',
+      headerName: 'Editors',
+      align: 'left',
+      headerAlign: 'left',
+      minWidth: 120,
+      renderCell: (params) => {
+        return params.row.editors?.map((editor) => (
+          <Link
+            underline="hover"
+            to={DEMO.TEAM_EDITOR_LINK(editor._id.toString())}
+            component={LinkDom}
+            target="_blank"
+            title={editor.firstname}
+            key={`${editor._id.toString()}`}
+          >
+            {`${editor.firstname} `}
+          </Link>
+        ));
+      }
+    },
+    {
+      field: 'deadline',
+      headerName: 'Deadline',
+      minWidth: 100
+    },
+    {
+      field: 'days_left',
+      headerName: 'Days left',
+      minWidth: 80
+    },
+    {
+      field: 'document_name',
+      headerName: 'Document name',
+      minWidth: 380,
+      renderCell: (params) => {
+        const linkUrl = `${DEMO.DOCUMENT_MODIFICATION_LINK(
+          params.row.thread_id
+        )}`;
+        return (
+          <>
+            {params.row?.attributes?.map(
+              (attribute) =>
+                [1, 3, 9, 10].includes(attribute.value) && (
+                  <Tooltip
+                    title={`${attribute.name}: ${
+                      ATTRIBUTES[attribute.value - 1].definition
+                    }`}
+                    key={attribute._id}
+                  >
+                    <Chip
+                      size="small"
+                      label={attribute.name[0]}
+                      color={COLORS[attribute.value]}
+                    />
+                  </Tooltip>
+                )
+            )}
+            <Link
+              underline="hover"
+              to={linkUrl}
+              component={LinkDom}
+              target="_blank"
+              title={params.value}
+            >
+              {params.value}
+            </Link>
+          </>
+        );
+      }
+    },
+    {
+      field: 'aged_days',
+      headerName: 'Aged days',
+      minWidth: 80
+    },
+    {
+      field: 'number_input_from_editors',
+      headerName: 'Editor Feedback (#Messages/#Files)',
+      minWidth: 80
+    },
+    {
+      field: 'number_input_from_student',
+      headerName: 'Student Feedback (#Messages/#Files)',
+      minWidth: 80
+    },
+    {
+      field: 'latest_reply',
+      headerName: 'Latest Reply',
+      minWidth: 100
+    },
+    {
+      field: 'updatedAt',
+      headerName: 'Last Update',
+      minWidth: 100
+    }
+  ];
   const memoizedColumns = useMemo(
     () => essay_dashboard_table_column,
     [essay_dashboard_table_column]
@@ -97,20 +267,24 @@ function EssayOverview(props) {
             {...a11yProps(1)}
           />
           <Tab
-            label={`FOLLOW UP (${props.followup_tasks?.length || 0})`}
+            label={`My Favorites (${props.fav_message_tasks?.length || 0})`}
             {...a11yProps(2)}
           />
           <Tab
-            label={`NO ACTION (${props.pending_progress_tasks?.length || 0})`}
+            label={`FOLLOW UP (${props.followup_tasks?.length || 0})`}
             {...a11yProps(3)}
           />
           <Tab
-            label={`CLOSED (${props.closed_tasks?.length || 0})`}
+            label={`NO ACTION (${props.pending_progress_tasks?.length || 0})`}
             {...a11yProps(4)}
           />
           <Tab
-            label={`All (${props.all_active_message_tasks?.length || 0})`}
+            label={`CLOSED (${props.closed_tasks?.length || 0})`}
             {...a11yProps(5)}
+          />
+          <Tab
+            label={`All (${props.all_active_message_tasks?.length || 0})`}
+            {...a11yProps(6)}
           />
         </Tabs>
       </Box>
@@ -136,7 +310,7 @@ function EssayOverview(props) {
           bg={'danger'}
           title={'warning'}
           path={'/'}
-          text={'Please reply:'}
+          text={'Follow up'}
           link_name={''}
           removeBanner={<></>}
           notification_key={undefined}
@@ -149,6 +323,19 @@ function EssayOverview(props) {
           bg={'primary'}
           title={'info'}
           path={'/'}
+          text={'My Favorite'}
+          link_name={''}
+          removeBanner={<></>}
+          notification_key={undefined}
+        />
+        <MuiDataGrid rows={props.fav_message_tasks} columns={memoizedColumns} />
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={3}>
+        <Banner
+          ReadOnlyMode={true}
+          bg={'primary'}
+          title={'info'}
+          path={'/'}
           text={'Follow up'}
           link_name={''}
           removeBanner={<></>}
@@ -156,7 +343,7 @@ function EssayOverview(props) {
         />
         <MuiDataGrid rows={props.followup_tasks} columns={memoizedColumns} />
       </CustomTabPanel>
-      <CustomTabPanel value={value} index={3}>
+      <CustomTabPanel value={value} index={4}>
         <Banner
           ReadOnlyMode={true}
           bg={'info'}
@@ -176,7 +363,7 @@ function EssayOverview(props) {
           columns={memoizedColumns}
         />
       </CustomTabPanel>
-      <CustomTabPanel value={value} index={4}>
+      <CustomTabPanel value={value} index={5}>
         <Banner
           ReadOnlyMode={true}
           bg={'success'}
@@ -195,7 +382,7 @@ function EssayOverview(props) {
           )}
         </Typography>
       </CustomTabPanel>
-      <CustomTabPanel value={value} index={5}>
+      <CustomTabPanel value={value} index={6}>
         <Banner
           ReadOnlyMode={true}
           bg={'info'}

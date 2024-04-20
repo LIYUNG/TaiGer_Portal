@@ -4,7 +4,7 @@ import { Navigate, Link as LinkDom } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import ErrorPage from '../Utils/ErrorPage';
-import { getAllCVMLRLOverview } from '../../api';
+import { getAllCVMLRLOverview, putThreadFavorite } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import {
   file_category_const,
@@ -16,7 +16,11 @@ import { useAuth } from '../../components/AuthProvider';
 import { appConfig } from '../../config';
 import Loading from '../../components/Loading/Loading';
 import EssayOverview from './EssayOverview';
-import { is_new_message_status, is_pending_status } from '../Utils/contants';
+import {
+  is_my_fav_message_status,
+  is_new_message_status,
+  is_pending_status
+} from '../Utils/contants';
 
 function EssayDashboard() {
   const { user } = useAuth();
@@ -31,6 +35,7 @@ function EssayDashboard() {
     student_id: '',
     program_id: '',
     SetAsFinalFileModel: false,
+    open_tasks_arr: null,
     isFinalVersion: false,
     status: '', //reject, accept... etc
     res_status: 0,
@@ -48,6 +53,9 @@ function EssayDashboard() {
             ...essayDashboardState,
             isLoaded: true,
             students: data,
+            open_tasks_arr: open_tasks(data).filter((open_task) =>
+              [file_category_const.essay_required].includes(open_task.file_type)
+            ),
             success: success,
             res_status: status
           });
@@ -70,12 +78,52 @@ function EssayDashboard() {
     );
   }, []);
 
+  const handleFavoriteToggle = (id) => {
+    const updatedOpenTasksArr = essayDashboardState.open_tasks_arr?.map((row) =>
+      row.id === id
+        ? {
+            ...row,
+            flag_by_user_id: row.flag_by_user_id?.includes(user._id.toString())
+              ? row.flag_by_user_id?.filter(
+                  (userId) => userId !== user._id.toString()
+                )
+              : row.flag_by_user_id?.length > 0
+              ? [...row.flag_by_user_id, user._id.toString()]
+              : [user._id.toString()]
+          }
+        : row
+    );
+    setEssayDashboardState((prevState) => ({
+      ...prevState,
+      open_tasks_arr: updatedOpenTasksArr
+    }));
+    putThreadFavorite(id).then(
+      (resp) => {
+        const { success } = resp.data;
+        const { status } = resp;
+        if (!success) {
+          setEssayDashboardState((prevState) => ({
+            ...prevState,
+            res_status: status
+          }));
+        }
+      },
+      (error) => {
+        setEssayDashboardState((prevState) => ({
+          ...prevState,
+          error,
+          res_status: 500
+        }));
+      }
+    );
+  };
+
   if (!is_TaiGer_role(user)) {
     return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
   }
-  const { res_status, isLoaded } = essayDashboardState;
+  const { res_status, isLoaded, open_tasks_arr } = essayDashboardState;
   TabTitle('Essay Dashboard');
-  if (!isLoaded && !essayDashboardState.students) {
+  if (!isLoaded && (!essayDashboardState.students || !open_tasks_arr)) {
     return <Loading />;
   }
 
@@ -83,47 +131,40 @@ function EssayDashboard() {
     return <ErrorPage res_status={res_status} />;
   }
 
-  const open_tasks_arr = open_tasks(essayDashboardState.students).filter(
+  const open_tasks_withMyEssay_arr = essayDashboardState.open_tasks_arr?.filter(
+    (open_task) => open_task.show && !open_task.isFinalVersion
+  );
+  const no_essay_writer_tasks = open_tasks_withMyEssay_arr?.filter(
     (open_task) =>
-      [file_category_const.essay_required].includes(open_task.file_type)
+      open_task.outsourced_user_id === undefined ||
+      open_task.outsourced_user_id.length === 0
   );
 
-  const no_essay_writer_tasks = open_tasks_arr.filter(
-    (open_task) =>
-      open_task.show &&
-      !open_task.isFinalVersion &&
-      (open_task.outsourced_user_id === undefined ||
-        open_task.outsourced_user_id.length === 0)
+  const new_message_tasks = open_tasks_withMyEssay_arr?.filter((open_task) =>
+    is_new_message_status(user, open_task)
   );
 
-  const new_message_tasks = open_tasks_arr.filter(
-    (open_task) =>
-      open_task.show &&
-      !open_task.isFinalVersion &&
-      is_new_message_status(user, open_task)
+  const fav_message_tasks = open_tasks_withMyEssay_arr?.filter((open_task) =>
+    is_my_fav_message_status(user, open_task)
   );
 
-  const followup_tasks = open_tasks_arr.filter(
+  const followup_tasks = open_tasks_withMyEssay_arr?.filter(
     (open_task) =>
-      open_task.show &&
-      !open_task.isFinalVersion &&
       is_pending_status(user, open_task) &&
       open_task.latest_message_left_by_id !== ''
   );
 
-  const pending_progress_tasks = open_tasks_arr.filter(
+  const pending_progress_tasks = open_tasks_withMyEssay_arr?.filter(
     (open_task) =>
-      open_task.show &&
-      !open_task.isFinalVersion &&
       is_pending_status(user, open_task) &&
       open_task.latest_message_left_by_id === ''
   );
 
-  const closed_tasks = open_tasks_arr.filter(
+  const closed_tasks = essayDashboardState.open_tasks_arr?.filter(
     (open_task) => open_task.show && open_task.isFinalVersion
   );
 
-  const all_active_message_tasks = open_tasks_arr.filter(
+  const all_active_message_tasks = essayDashboardState.open_tasks_arr?.filter(
     (open_task) => open_task.show
   );
 
@@ -148,10 +189,12 @@ function EssayDashboard() {
         students={essayDashboardState.students}
         no_essay_writer_tasks={no_essay_writer_tasks}
         new_message_tasks={new_message_tasks}
+        fav_message_tasks={fav_message_tasks}
         followup_tasks={followup_tasks}
         pending_progress_tasks={pending_progress_tasks}
         closed_tasks={closed_tasks}
         all_active_message_tasks={all_active_message_tasks}
+        handleFavoriteToggle={handleFavoriteToggle}
       />
     </Box>
   );

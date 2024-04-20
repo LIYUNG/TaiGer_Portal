@@ -290,7 +290,8 @@ const getAllCVMLRLOverview = asyncHandler(async (req, res) => {
     )
     .populate({
       path: 'generaldocs_threads.doc_thread_id',
-      select: 'file_type isFinalVersion updatedAt messages.file',
+      select:
+        'file_type flag_by_user_id isFinalVersion updatedAt messages.file',
       populate: {
         path: 'messages.user_id',
         select: 'firstname lastname'
@@ -299,7 +300,7 @@ const getAllCVMLRLOverview = asyncHandler(async (req, res) => {
     .populate({
       path: 'applications.doc_modification_thread.doc_thread_id',
       select:
-        'file_type outsourced_user_id isFinalVersion updatedAt messages.file',
+        'file_type flag_by_user_id outsourced_user_id isFinalVersion updatedAt messages.file',
       populate: {
         path: 'outsourced_user_id messages.user_id',
         select: 'firstname lastname'

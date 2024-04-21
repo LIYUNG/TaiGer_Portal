@@ -108,7 +108,7 @@ function BaseDocuments() {
   };
 
   const closeRejectWarningWindow = () => {
-    setStudentBaseDocumentsStatusState((prevState) => ({
+    setBaseDocumentsState((prevState) => ({
       ...prevState,
       rejectProfileFileModel: false
     }));

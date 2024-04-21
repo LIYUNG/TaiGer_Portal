@@ -14,13 +14,37 @@ import {
 import { useTranslation } from 'react-i18next';
 
 import AdminTasks from '../MainViewTab/AdminTasks/index';
-import StudentsAgentEditorWrapper from '../MainViewTab/StudentsAgentEditor/StudentsAgentEditorWrapper';
+import useStudents from '../../../hooks/useStudents';
+import ModalMain from '../../Utils/ModalHandler/ModalMain';
+import TabStudBackgroundDashboard from '../MainViewTab/StudDocsOverview/TabStudBackgroundDashboard';
 
 function AdminMainView(props) {
   const { t } = useTranslation();
+  const {
+    res_modal_status,
+    res_modal_message,
+    ConfirmError,
+    students: initStudents,
+    submitUpdateAgentlist,
+    submitUpdateEditorlist,
+    submitUpdateAttributeslist,
+    updateStudentArchivStatus
+  } = useStudents({
+    students: props.students
+  });
+  const students = initStudents
+    ?.filter((student) => !student.archiv)
+    .sort((a, b) =>
+      a.agents.length === 0 && a.agents.length < b.agents.length
+        ? -2
+        : a.editors.length < b.editors.length
+        ? -1
+        : 1
+    );
+
   const admin_tasks = (
     <AdminTasks
-      students={props.students}
+      students={students}
       essayDocumentThreads={props.essayDocumentThreads}
     />
   );
@@ -52,15 +76,22 @@ function AdminMainView(props) {
           </Card>
         </Grid>
         <Grid item xs={12}>
-          <StudentsAgentEditorWrapper
-            students={props.students}
-            updateStudentArchivStatus={props.updateStudentArchivStatus}
-            submitUpdateAgentlist={props.submitUpdateAgentlist}
-            submitUpdateEditorlist={props.submitUpdateEditorlist}
-            submitUpdateAttributeslist={props.submitUpdateAttributeslist}
+          <TabStudBackgroundDashboard
+            students={students?.filter((student) => !student.archiv)}
+            submitUpdateAgentlist={submitUpdateAgentlist}
+            submitUpdateEditorlist={submitUpdateEditorlist}
+            submitUpdateAttributeslist={submitUpdateAttributeslist}
+            updateStudentArchivStatus={updateStudentArchivStatus}
           />
         </Grid>
       </Grid>
+      {res_modal_status >= 400 && (
+        <ModalMain
+          ConfirmError={ConfirmError}
+          res_modal_status={res_modal_status}
+          res_modal_message={res_modal_message}
+        />
+      )}
     </>
   );
 }

@@ -9,22 +9,12 @@ import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
 import { appConfig } from '../../config';
-import useStudents from '../../hooks/useStudents';
 
 function ApplicantsOverview() {
   const { user } = useAuth();
   const {
     data: { data: fetchedStudents }
   } = useLoaderData();
-  const {
-    students,
-    submitUpdateAgentlist,
-    submitUpdateEditorlist,
-    submitUpdateAttributeslist,
-    updateStudentArchivStatus
-  } = useStudents({
-    students: fetchedStudents
-  });
 
   const { t } = useTranslation();
 
@@ -39,7 +29,7 @@ function ApplicantsOverview() {
     return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
   }
 
-  const myStudents = students.filter(
+  const myStudents = fetchedStudents.filter(
     (student) =>
       student.editors.some((editor) => editor._id === user._id.toString()) ||
       student.agents.some((agent) => agent._id === user._id.toString())
@@ -63,13 +53,7 @@ function ApplicantsOverview() {
             : `${user.firstname} ${user.lastname} Applications Overview`}
         </Typography>
       </Breadcrumbs>
-      <ApplicationOverviewTabs
-        updateStudentArchivStatus={updateStudentArchivStatus}
-        submitUpdateAgentlist={submitUpdateAgentlist}
-        submitUpdateEditorlist={submitUpdateEditorlist}
-        submitUpdateAttributeslist={submitUpdateAttributeslist}
-        students={myStudents}
-      />
+      <ApplicationOverviewTabs students={myStudents} />
     </Box>
   );
 }

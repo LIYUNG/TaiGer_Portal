@@ -23,7 +23,6 @@ function ArchivStudents() {
     isLoaded: false,
     students: [],
     success: false,
-    isArchivPage: true,
     res_status: 0,
     res_modal_status: 0,
     res_modal_message: ''
@@ -148,7 +147,6 @@ function ArchivStudents() {
           <TabStudBackgroundDashboard
             students={archivStudentsState.students}
             updateStudentArchivStatus={updateStudentArchivStatus}
-            isArchivPage={archivStudentsState.isArchivPage}
           />
         </Box>
       </Box>

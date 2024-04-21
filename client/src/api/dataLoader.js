@@ -3,6 +3,7 @@ import {
   getStudents,
   getAllActiveStudents,
   getArchivStudents,
+  getAllArchivedStudents,
   getStudentAndDocLinks,
   getApplicationStudent,
   getMyAcademicBackground,
@@ -48,6 +49,15 @@ export async function getAllActiveStudentsLoader() {
 
 export async function getArchivStudentsLoader() {
   const response = await getArchivStudents();
+  if (response.status >= 400) {
+    throw json({ message: response.statusText }, { status: response.status });
+  } else {
+    return response;
+  }
+}
+
+export async function getAllArchivedStudentsLoader() {
+  const response = await getAllArchivedStudents();
   if (response.status >= 400) {
     throw json({ message: response.statusText }, { status: response.status });
   } else {

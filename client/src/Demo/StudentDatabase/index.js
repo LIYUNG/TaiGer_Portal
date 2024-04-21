@@ -9,6 +9,7 @@ import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
 import { appConfig } from '../../config';
 import useStudents from '../../hooks/useStudents';
+import ModalMain from '../Utils/ModalHandler/ModalMain';
 
 function StudentDatabase() {
   const { user } = useAuth();
@@ -16,6 +17,9 @@ function StudentDatabase() {
     data: { data: fetchedAllStudents }
   } = useLoaderData();
   const {
+    res_modal_status,
+    res_modal_message,
+    ConfirmError,
     students,
     submitUpdateAgentlist,
     submitUpdateEditorlist,
@@ -56,6 +60,13 @@ function StudentDatabase() {
           />
         </Card>
       </Box>
+      {res_modal_status >= 400 && (
+        <ModalMain
+          ConfirmError={ConfirmError}
+          res_modal_status={res_modal_status}
+          res_modal_message={res_modal_message}
+        />
+      )}
     </Box>
   );
 }

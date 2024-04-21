@@ -28,6 +28,8 @@ import { useTranslation } from 'react-i18next';
 import ProgramUpdateStatusTable from './ProgramUpdateStatusTable';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import TasksDistributionBarChart from '../../components/Charts/TasksDistributionBarChart';
+import useStudents from '../../hooks/useStudents';
+import ModalMain from '../Utils/ModalHandler/ModalMain';
 
 CustomTabPanel.propTypes = {
   children: PropTypes.node,
@@ -41,14 +43,25 @@ function ApplicationOverviewTabs(props) {
   const [value, setValue] = useState(0);
   const [filters, setFilters] = useState({});
   const [anchorEl, setAnchorEl] = useState(null);
-
+  const {
+    res_modal_status,
+    res_modal_message,
+    ConfirmError,
+    students,
+    submitUpdateAgentlist,
+    submitUpdateEditorlist,
+    submitUpdateAttributeslist,
+    updateStudentArchivStatus
+  } = useStudents({
+    students: props.students
+  });
   const [hoveredRowData, setClickedRowData] = useState(null);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
   const open_applications_arr = useMemo(() => {
-    return programs_refactor(props.students);
-  }, [props.students]);
+    return programs_refactor(students?.filter((student) => !student.archiv));
+  }, [students]);
 
   const handleFilterChange = (event, column) => {
     const { value } = event.target;
@@ -217,12 +230,11 @@ function ApplicationOverviewTabs(props) {
         <CustomTabPanel value={value} index={0}>
           {is_TaiGer_role(user) && (
             <TabStudBackgroundDashboard
-              students={props.students}
-              submitUpdateAgentlist={props.submitUpdateAgentlist}
-              submitUpdateEditorlist={props.submitUpdateEditorlist}
-              submitUpdateAttributeslist={props.submitUpdateAttributeslist}
-              updateStudentArchivStatus={props.updateStudentArchivStatus}
-              isDashboard={true}
+              students={students?.filter((student) => !student.archiv)}
+              submitUpdateAgentlist={submitUpdateAgentlist}
+              submitUpdateEditorlist={submitUpdateEditorlist}
+              submitUpdateAttributeslist={submitUpdateAttributeslist}
+              updateStudentArchivStatus={updateStudentArchivStatus}
             />
           )}
         </CustomTabPanel>
@@ -302,6 +314,13 @@ function ApplicationOverviewTabs(props) {
           />
         </CustomTabPanel>
       </Box>
+      {res_modal_status >= 400 && (
+        <ModalMain
+          ConfirmError={ConfirmError}
+          res_modal_status={res_modal_status}
+          res_modal_message={res_modal_message}
+        />
+      )}
     </>
   );
 }

@@ -9,7 +9,8 @@ import {
   // getEssaysLoader,
   combinedLoader,
   getAllActiveEssaysLoader,
-  getAllStudentsLoader
+  getAllStudentsLoader,
+  getAllArchivedStudentsLoader
 } from './api/dataLoader';
 import DefaultErrorPage from './Demo/Utils/DefaultErrorPage';
 
@@ -216,9 +217,9 @@ const routes = [
   },
   {
     path: '/archiv/students/all',
-    exact: true,
-    name: 'Archiv Students',
-    Component: AllArchivStudent
+    errorElement: <DefaultErrorPage />,
+    loader: getAllArchivedStudentsLoader,
+    element: <AllArchivStudent />
   },
   {
     path: '/programs/:programId',

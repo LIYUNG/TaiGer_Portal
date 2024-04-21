@@ -35,19 +35,35 @@ import ReadyToSubmitTasksCard from '../MainViewTab/AgentTasks/ReadyToSubmitTasks
 import NoEnoughDecidedProgramsTasksCard from '../MainViewTab/AgentTasks/NoEnoughDecidedProgramsTasksCard';
 import VPDToSubmitTasksCard from '../MainViewTab/AgentTasks/VPDToSubmitTasksCard';
 import { useAuth } from '../../../components/AuthProvider';
-import StudentsAgentEditorWrapper from '../MainViewTab/StudentsAgentEditor/StudentsAgentEditorWrapper';
 import NoProgramStudentTable from '../MainViewTab/AgentTasks/NoProgramStudentTable';
 import BaseDocumentCheckingTable from '../MainViewTab/AgentTasks/BaseDocumentCheckingTable';
 import ProgramSpecificDocumentCheckCard from '../MainViewTab/AgentTasks/ProgramSpecificDocumentCheckCard';
+import ModalMain from '../../Utils/ModalHandler/ModalMain';
+import TabStudBackgroundDashboard from '../MainViewTab/StudDocsOverview/TabStudBackgroundDashboard';
+import useStudents from '../../../hooks/useStudents';
 
 function AgentMainView(props) {
   const { user } = useAuth();
   const { t } = useTranslation();
+  const {
+    res_modal_status,
+    res_modal_message,
+    ConfirmError,
+    students: initStudents,
+    submitUpdateAgentlist,
+    submitUpdateEditorlist,
+    submitUpdateAttributeslist,
+    updateStudentArchivStatus
+  } = useStudents({
+    students: props.students
+  });
   const [agentMainViewState, setAgentMainViewState] = useState({
     error: '',
     notification: props.notification,
     collapsedRows: {}
   });
+
+  const students = initStudents?.filter((student) => !student.archiv);
 
   const removeAgentBanner = (e, notification_key, student_id) => {
     e.preventDefault();
@@ -96,7 +112,7 @@ function AgentMainView(props) {
     });
   };
 
-  const applications_arr = programs_refactor(props.students)
+  const applications_arr = programs_refactor(students)
     .filter(
       (application) =>
         isProgramDecided(application) &&
@@ -209,66 +225,69 @@ function AgentMainView(props) {
           <ProgramReportCard />
         </Grid>
         {is_any_programs_ready_to_submit(
-          props.students.filter((student) =>
+          students.filter((student) =>
             student.agents.some((agent) => agent._id === user._id.toString())
           )
         ) && (
           <Grid item sm={12} md={6}>
-            <ReadyToSubmitTasksCard students={props.students} user={user} />
+            <ReadyToSubmitTasksCard students={students} user={user} />
           </Grid>
         )}
         {appConfig.vpdEnable &&
           is_any_vpd_missing(
-            props.students.filter((student) =>
+            students.filter((student) =>
               student.agents.some((agent) => agent._id === user._id.toString())
             )
           ) && (
             <Grid item xs={12} sm={6}>
-              <VPDToSubmitTasksCard students={props.students} user={user} />
+              <VPDToSubmitTasksCard students={students} user={user} />
             </Grid>
           )}
         {is_any_base_documents_uploaded(
-          props.students.filter((student) =>
+          students.filter((student) =>
             student.agents.some((agent) => agent._id === user._id.toString())
           )
         ) && (
           <Grid item xs={12} sm={6}>
-            <BaseDocumentCheckingTable students={props.students} />
+            <BaseDocumentCheckingTable students={students} />
           </Grid>
         )}
 
         <Grid item xs={12} sm={6}>
           {isAnyCVNotAssigned(
-            props.students.filter((student) =>
+            students.filter((student) =>
               student.agents.some((agent) => agent._id === user._id.toString())
             )
-          ) && <CVAssignTasksCard students={props.students} user={user} />}
+          ) && <CVAssignTasksCard students={students} user={user} />}
         </Grid>
         <Grid item xs={12} sm={6}>
-          <NoProgramStudentTable students={props.students} />
+          <NoProgramStudentTable students={students} />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <ProgramSpecificDocumentCheckCard students={props.students} />
+          <ProgramSpecificDocumentCheckCard students={students} />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <NoEnoughDecidedProgramsTasksCard
-            students={props.students}
-            user={user}
-          />
+          <NoEnoughDecidedProgramsTasksCard students={students} user={user} />
         </Grid>
         <Grid item xs={12} sm={12}>
           <Card>
-            <StudentsAgentEditorWrapper
-              students={props.students}
-              documentslist={props.documentslist}
-              submitUpdateAgentlist={props.submitUpdateAgentlist}
-              submitUpdateAttributeslist={props.submitUpdateAttributeslist}
-              isDashboard={props.isDashboard}
-              updateStudentArchivStatus={props.updateStudentArchivStatus}
+            <TabStudBackgroundDashboard
+              students={students?.filter((student) => !student.archiv)}
+              submitUpdateAgentlist={submitUpdateAgentlist}
+              submitUpdateEditorlist={submitUpdateEditorlist}
+              submitUpdateAttributeslist={submitUpdateAttributeslist}
+              updateStudentArchivStatus={updateStudentArchivStatus}
             />
           </Card>
         </Grid>
       </Grid>
+      {res_modal_status >= 400 && (
+        <ModalMain
+          ConfirmError={ConfirmError}
+          res_modal_status={res_modal_status}
+          res_modal_message={res_modal_message}
+        />
+      )}
     </Box>
   );
 }

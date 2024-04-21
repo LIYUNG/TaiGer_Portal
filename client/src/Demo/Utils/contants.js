@@ -980,7 +980,7 @@ export const ATTRIBUTES = [
   { value: 4, name: 'Slow Response', definition: '' },
   { value: 5, name: 'Disappear', definition: '' },
   { value: 6, name: 'Low-IQ', definition: '' },
-  { value: 7, name: 'Refunded', definition: '' },
+  { value: 7, name: 'Refunding', definition: '' },
   { value: 8, name: 'Done', definition: '' },
   { value: 9, name: 'Refund-Risk', definition: '' },
   {
@@ -988,6 +988,12 @@ export const ATTRIBUTES = [
     name: 'English-Risk',
     definition:
       'English not passed yet. Please double check if English is passed and if tasks need to be processed.'
+  },
+  {
+    value: 11,
+    name: 'German-Risk',
+    definition:
+      'German not passed yet. Please double check if German is passed and if tasks need to be processed.'
   }
 ];
 
@@ -1704,7 +1710,7 @@ export const c1 = [
         <>
           {params.row?.attributes?.map(
             (attribute) =>
-              [1, 3, 9, 10].includes(attribute.value) && (
+              [1, 3, 9, 10, 11].includes(attribute.value) && (
                 <Tooltip
                   title={`${attribute.name}: ${
                     ATTRIBUTES[attribute.value - 1].definition

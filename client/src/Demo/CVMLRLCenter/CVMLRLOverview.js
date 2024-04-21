@@ -129,7 +129,7 @@ function CVMLRLOverview(props) {
           <>
             {params.row?.attributes?.map(
               (attribute) =>
-                [1, 3, 9, 10].includes(attribute.value) && (
+                [1, 3, 9, 10, 11].includes(attribute.value) && (
                   <Tooltip
                     title={`${attribute.name}: ${
                       ATTRIBUTES[attribute.value - 1].definition

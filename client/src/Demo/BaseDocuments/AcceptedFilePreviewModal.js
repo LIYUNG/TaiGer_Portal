@@ -26,11 +26,11 @@ function AcceptProfileFileModel(props) {
       <Typography id="contained-d-title-vcenter">{props.path}</Typography>
       <FilePreview
         path={props.preview_path}
-        student_id={props.student_id.toString()}
+        student_id={props.student_id?.toString()}
       />
       {props.path?.split('.')[1] !== 'pdf' && (
         <a
-          href={`${BASE_URL}/api/students/${props.student_id.toString()}/files/${
+          href={`${BASE_URL}/api/students/${props.student_id?.toString()}/files/${
             props.path
           }`}
           download

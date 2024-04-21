@@ -417,7 +417,8 @@ const getStudentsAndDocLinks = asyncHandler(async (req, res, next) => {
     const students = await Student.find({
       $or: [{ archiv: { $exists: false } }, { archiv: false }]
     })
-      .select('firstname lastname profile')
+      .populate('agents', 'firstname lastname email')
+      .select('firstname firstname_chinese lastname lastname_chinese profile')
       .lean();
     res.status(200).send({ success: true, data: students, base_docs_link: {} });
   } else if (user.role === Role.Agent) {
@@ -425,7 +426,8 @@ const getStudentsAndDocLinks = asyncHandler(async (req, res, next) => {
       agents: user._id,
       $or: [{ archiv: { $exists: false } }, { archiv: false }]
     })
-      .select('firstname lastname profile')
+      .populate('agents', 'firstname lastname email')
+      .select('firstname firstname_chinese lastname lastname_chinese profile')
       .lean()
       .exec();
 
@@ -436,7 +438,8 @@ const getStudentsAndDocLinks = asyncHandler(async (req, res, next) => {
       editors: user._id,
       $or: [{ archiv: { $exists: false } }, { archiv: false }]
     })
-      .select('firstname lastname profile')
+      .populate('agents', 'firstname lastname email')
+      .select('firstname firstname_chinese lastname lastname_chinese profile')
       .select('-notification');
     const base_docs_link = await Basedocumentationslink.find({
       category: 'base-documents'
@@ -452,7 +455,7 @@ const getStudentsAndDocLinks = asyncHandler(async (req, res, next) => {
       {}
     );
     const student = await Student.findById(user._id.toString())
-      .select('firstname lastname profile')
+      .select('firstname firstname_chinese lastname lastname_chinese profile')
       .lean()
       .exec();
     const base_docs_link = await Basedocumentationslink.find({

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   updateAgents,
   updateArchivStudents,
@@ -23,6 +23,13 @@ function useStudents(props) {
     res_modal_message: '',
     res_modal_status: 0
   });
+
+  useEffect(() => {
+    setStudentsState((prevState) => ({
+      ...prevState,
+      students: props.students
+    }));
+  }, [props.students]);
 
   const submitUpdateAgentlist = (e, updateAgentList, student_id) => {
     e.preventDefault();

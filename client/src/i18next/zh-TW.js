@@ -11,7 +11,7 @@ export const translation_zh_TW = {
     Add: '新增',
     'I Agree': '我同意',
     Account: '帳號',
-    Archiv: '封存',
+    Archive: '封存',
     Activate: '啟用',
     Activated: '已啟用',
     'Target Degree': '目標學位',
@@ -249,6 +249,8 @@ export const translation_zh_TW = {
     University: '大學',
     'Applications status updated successfully!': '申請狀態更新成功!',
     'Final Decision': '決定就讀',
+    'Move to archive statement':
+      '你是否想要將 {{studentName}} 移至{{status}}？',
     'Inform student for archive':
       '[注意] 勾選，學生將會被 Email 告知他的 Portal 服務結束。對於消失已久學生，強烈建議不要Email通知。封存之前請諮詢你的主管。對於正常錄取結束的學生，請勾選，已表示 Portal 服務正式結束。'
   },

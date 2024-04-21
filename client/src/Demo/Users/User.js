@@ -76,7 +76,7 @@ function User(props) {
                     )
                   }
                 >
-                  {props.user.archiv === true ? t('Activate', { ns: 'common' }) : t('Archiv', { ns: 'common' })}
+                  {props.user.archiv === true ? t('Activate', { ns: 'common' }) : t('Archive', { ns: 'common' })}
                 </MenuItem>
                 <MenuItem
                   onClick={() =>

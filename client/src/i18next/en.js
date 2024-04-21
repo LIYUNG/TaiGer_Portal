@@ -11,7 +11,7 @@ export const translation_en = {
     Add: 'Add',
     'I Agree': 'I Agree',
     Account: 'Account',
-    Archiv: 'Archiv',
+    Archive: 'Archive',
     Activate: 'Activate',
     Activated: 'Activated',
     'Target Degree': 'Target Degree',
@@ -248,6 +248,8 @@ export const translation_en = {
     'Applications status updated successfully!':
       'Applications status updated successfully!',
     'Final Decision': 'Final Decision',
+    'Move to archive statement':
+      'Do you want to move {{studentName}} to {{status}}?',
     'Inform student for archive':
       '[Attention]  By checking this, the student will be informed that their service in the Portal ends. For disappeared students, highly recommanded not to inform. Please consult with your manager. For those who got admissions and start studying, please inform them as official close.'
   },

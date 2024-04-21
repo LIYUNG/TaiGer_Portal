@@ -361,11 +361,15 @@ function StudentsAgentEditor(props) {
               aria-labelledby="contained-modal-title-vcenter"
             >
               <Typography sx={{ mb: 2 }}>
-                Do you want to move {props.student.firstname}{' '}
-                {props.student.lastname} to{' '}
-                {is_User_Archived(props.student)
-                  ? t('Active')
-                  : t('Archiv', { ns: 'common' })}
+                {t('Move to archive statement', {
+                  ns: 'common',
+                  studentName: `${props.student.firstname} ${props.student.lastname}`,
+                  status: `${
+                    is_User_Archived(props.student)
+                      ? t('Active')
+                      : t('Archive', { ns: 'common' })
+                  }`
+                })}
               </Typography>
               <FormControlLabel
                 label={t('Inform student for archive', { ns: 'common' })}

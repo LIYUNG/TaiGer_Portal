@@ -250,7 +250,7 @@ export const translation_zh_TW = {
     'Applications status updated successfully!': '申請狀態更新成功!',
     'Final Decision': '決定就讀',
     'Inform student for archive':
-      'Email 給學生，告知他的 Portal 服務結束。對於消失已久學生，強烈建議不要Email通知。封存之前請諮詢你的主管。對於正常錄取結束的學生，請勾選，已表示 Portal 服務正式結束。'
+      '[注意] 勾選，學生將會被 Email 告知他的 Portal 服務結束。對於消失已久學生，強烈建議不要Email通知。封存之前請諮詢你的主管。對於正常錄取結束的學生，請勾選，已表示 Portal 服務正式結束。'
   },
   dashboard: {
     Dashboard: '主控台',

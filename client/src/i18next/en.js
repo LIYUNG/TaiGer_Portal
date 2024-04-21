@@ -249,7 +249,7 @@ export const translation_en = {
       'Applications status updated successfully!',
     'Final Decision': 'Final Decision',
     'Inform student for archive':
-      'Email thte student that their service in the Portal ends. For disappeared students, highly recommanded not to inform. Please consult with your manager. For those who got admissions and start studying, please inform them as official close.'
+      '[Attention]  By checking this, the student will be informed that their service in the Portal ends. For disappeared students, highly recommanded not to inform. Please consult with your manager. For those who got admissions and start studying, please inform them as official close.'
   },
   dashboard: {
     Dashboard: 'Dashboard',

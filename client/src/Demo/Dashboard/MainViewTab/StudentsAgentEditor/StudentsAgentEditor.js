@@ -368,7 +368,7 @@ function StudentsAgentEditor(props) {
                   : t('Archiv', { ns: 'common' })}
               </Typography>
               <FormControlLabel
-                label={t('Inform student for archive')}
+                label={t('Inform student for archive', { ns: 'common' })}
                 control={
                   <Checkbox
                     id={`Inform student`}

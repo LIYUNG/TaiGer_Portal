@@ -56,7 +56,6 @@ import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import PortalCredentialPage from '../PortalCredentialPage';
 import { appConfig } from '../../config';
-import { TopBar } from '../../components/TopBar/TopBar';
 import { useAuth } from '../../components/AuthProvider';
 import { CustomTabPanel, a11yProps } from '../../components/Tabs';
 import { SurveyProvider } from '../../components/SurveyProvider';
@@ -311,9 +310,11 @@ export const SingleStudentPageMainContent = ({
         />
       )}
       {singleStudentPage.student.archiv && (
-        <TopBar>
-          Status: <b>Close</b>
-        </TopBar>
+        <Card sx={{ p: 2 }}>
+          <Typography variant="h5" color="red">
+            Status: <b>Close</b>
+          </Typography>
+        </Card>
       )}
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Box>

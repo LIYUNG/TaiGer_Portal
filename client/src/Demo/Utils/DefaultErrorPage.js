@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Card } from '@mui/material';
+import { Box, Card, Typography } from '@mui/material';
 import { useRouteError } from 'react-router-dom';
 
 function DefaultErrorPage() {
@@ -7,32 +7,24 @@ function DefaultErrorPage() {
   if (error.status === 500) {
     return (
       <Box>
-        <Card>
-          {error.status}: Server Error.{error.data?.message}
+        <Card sx={{ p: 2 }}>
+          <Typography variant="h6" component="h3">
+            {error.status}: Server Error.{error.data?.message}
+          </Typography>
         </Card>
       </Box>
     );
-  } else if (error.status === 404) {
+  } else if (
+    error.status === 403 ||
+    error.status === 401 ||
+    error.status === 404
+  ) {
     return (
       <Box>
-        <Card>
-          {error.status}: {error.data?.message}
-        </Card>
-      </Box>
-    );
-  } else if (error.status === 401) {
-    return (
-      <Box>
-        <Card>
-          {error.status}: Unauthorized. {error.data?.message}
-        </Card>
-      </Box>
-    );
-  } else if (error.status === 403) {
-    return (
-      <Box>
-        <Card>
-          {error.status}: Forbidden. {error.data?.message}
+        <Card sx={{ p: 2 }}>
+          <Typography variant="h6" component="h3">
+            {error.status}: {error.data?.message}
+          </Typography>
         </Card>
       </Box>
     );

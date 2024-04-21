@@ -98,9 +98,15 @@ function StudentDashboard(props) {
   return (
     <>
       {student.archiv && (
-        <Card>
-          Status: <b>Close</b> - Your {appConfig.companyName} Portal Service is
-          terminated.
+        <Card sx={{ p: 2 }}>
+          <Typography variant="h5" color="red">
+            Status: <b>Close</b> - Your {appConfig.companyName} Portal Service
+            is terminated.
+          </Typography>
+          <Typography variant="body1" color="red">
+            Your account is deactivated. If you have any question, please
+            contact the administrator: contact@taigerconsultancy.com
+          </Typography>
         </Card>
       )}
 

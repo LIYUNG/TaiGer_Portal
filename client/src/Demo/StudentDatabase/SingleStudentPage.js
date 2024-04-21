@@ -233,8 +233,8 @@ export const SingleStudentPageMainContent = ({
     );
   };
 
-  const updateStudentArchivStatus = (studentId, isArchived) => {
-    updateArchivStudents(studentId, isArchived).then(
+  const updateStudentArchivStatus = (studentId, isArchived, shouldInform) => {
+    updateArchivStudents(studentId, isArchived, shouldInform).then(
       (resp) => {
         const { success } = resp.data;
         const { status } = resp;

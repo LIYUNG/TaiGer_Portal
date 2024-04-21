@@ -173,7 +173,7 @@ export const translation_zh_TW = {
     'Essay Writer': '論文編輯',
     'Assign Essay Writer': '指派論文編輯',
     'Application Year': '申請年',
-    'Move to Archiv': '移至Archiv',
+    'Move to Archive': '移至 Archive',
     'Archiv Students': '過往學生',
     'All Students': '所有學生',
     'All Active Student Overview': '所有活躍學生',
@@ -248,7 +248,9 @@ export const translation_zh_TW = {
     'Upload file': '上傳檔案',
     University: '大學',
     'Applications status updated successfully!': '申請狀態更新成功!',
-    'Final Decision': '決定就讀'
+    'Final Decision': '決定就讀',
+    'Inform student for archive':
+      'Email 給學生，告知他的 Portal 服務結束。對於消失已久學生，強烈建議不要Email通知。封存之前請諮詢你的主管。對於正常錄取結束的學生，請勾選，已表示 Portal 服務正式結束。'
   },
   dashboard: {
     Dashboard: '主控台',

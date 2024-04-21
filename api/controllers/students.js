@@ -490,7 +490,7 @@ const updateStudentsArchivStatus = asyncHandler(async (req, res, next) => {
   const {
     user,
     params: { studentId },
-    body: { isArchived }
+    body: { isArchived, shouldInform }
   } = req;
 
   // TODO: data validation for isArchived and studentId
@@ -525,8 +525,6 @@ const updateStudentsArchivStatus = asyncHandler(async (req, res, next) => {
     } else if (user.role === Role.Agent) {
       const permissions = await Permission.findOne({ user_id: user._id });
       if (permissions && permissions.canAssignAgents) {
-        logger.info('with permission');
-        logger.info(permissions);
         const students = await Student.find({
           $or: [{ archiv: { $exists: false } }, { archiv: false }]
         })
@@ -587,14 +585,17 @@ const updateStudentsArchivStatus = asyncHandler(async (req, res, next) => {
         }
       );
     }
-    await informStudentArchivedStudentEmail(
-      {
-        firstname: student.firstname,
-        lastname: student.lastname,
-        address: student.email
-      },
-      { student }
-    );
+    if (shouldInform) {
+      logger.info(`Inform ${student.firstname} ${student.lastname} to archive`);
+      await informStudentArchivedStudentEmail(
+        {
+          firstname: student.firstname,
+          lastname: student.lastname,
+          address: student.email
+        },
+        { student }
+      );
+    }
   } else {
     if (user.role === Role.Admin) {
       const students = await Student.find({ archiv: true })

@@ -82,8 +82,11 @@ export const getStudent = (studentId) =>
 export const getArchivStudents = (TaiGerStaffId) =>
   request.get(`/api/teams/archiv/${TaiGerStaffId}`);
 
-export const updateArchivStudents = (studentId, isArchived) =>
-  request.post(`/api/students/archiv/${studentId}`, { isArchived: isArchived });
+export const updateArchivStudents = (studentId, isArchived, shouldInform) =>
+  request.post(`/api/students/archiv/${studentId}`, {
+    isArchived,
+    shouldInform
+  });
 
 export const updateArchivUser = (user_id, isArchived) =>
   request.post(`/api/users/archiv/${user_id}`, {

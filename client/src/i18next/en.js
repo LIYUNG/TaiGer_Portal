@@ -172,7 +172,7 @@ export const translation_en = {
     'Essay Writer': 'Essay Writer',
     'Assign Essay Writer': 'Assign Essay Writer',
     'Application Year': 'Application Year',
-    'Move to Archiv': 'Move to Archiv',
+    'Move to Archive': 'Move to Archive',
     'Archiv Students': 'Archiv Students',
     'All Students': 'All Students',
     'All Active Student Overview': 'All Active Student Overview',
@@ -247,7 +247,9 @@ export const translation_en = {
     University: 'University',
     'Applications status updated successfully!':
       'Applications status updated successfully!',
-    'Final Decision': 'Final Decision'
+    'Final Decision': 'Final Decision',
+    'Inform student for archive':
+      'Email thte student that their service in the Portal ends. For disappeared students, highly recommanded not to inform. Please consult with your manager. For those who got admissions and start studying, please inform them as official close.'
   },
   dashboard: {
     Dashboard: 'Dashboard',

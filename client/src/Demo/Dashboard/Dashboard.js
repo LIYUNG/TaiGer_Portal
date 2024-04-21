@@ -73,7 +73,6 @@ function Dashboard() {
           submitUpdateAgentlist={submitUpdateAgentlist}
           submitUpdateEditorlist={submitUpdateEditorlist}
           submitUpdateAttributeslist={submitUpdateAttributeslist}
-          updateStudentArchivStatus={updateStudentArchivStatus}
           essayDocumentThreads={essayDocumentThreads}
         />
       )}
@@ -92,7 +91,6 @@ function Dashboard() {
           notification={notification}
           submitUpdateAgentlist={submitUpdateAgentlist}
           submitUpdateAttributeslist={submitUpdateAttributeslist}
-          updateStudentArchivStatus={updateStudentArchivStatus}
           onUpdateProfileFilefromstudent={onUpdateProfileFilefromstudent}
         />
       )}

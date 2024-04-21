@@ -5,6 +5,8 @@ import {
   Button,
   Chip,
   CircularProgress,
+  FormControlLabel,
+  Checkbox,
   Link,
   Menu,
   MenuItem,
@@ -37,6 +39,7 @@ function StudentsAgentEditor(props) {
     showArchivModalPage: false
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [shouldInform, setShouldInform] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -46,12 +49,13 @@ function StudentsAgentEditor(props) {
     setAnchorEl(null);
   };
 
-  const updateStudentArchivStatus = (student_id, archiv) => {
+  const updateStudentArchivStatus = (student_id, archiv, shouldInform) => {
     setAnchorEl(null);
     setIsLoading(true);
-    props.updateStudentArchivStatus(student_id, archiv);
+    props.updateStudentArchivStatus(student_id, archiv, shouldInform);
     setArchivModalhide();
     setIsLoading(false);
+    setShouldInform(false);
   };
 
   const setAgentModalhide = () => {
@@ -215,7 +219,7 @@ function StudentsAgentEditor(props) {
                   <MenuItem onClick={() => setArchivModalOpen()}>
                     {is_User_Archived(props.student)
                       ? t('Move to Active', { ns: 'common' })
-                      : t('Move to Archiv', { ns: 'common' })}
+                      : t('Move to Archive', { ns: 'common' })}
                   </MenuItem>
                 )}
               </Menu>
@@ -359,15 +363,29 @@ function StudentsAgentEditor(props) {
               <Typography sx={{ mb: 2 }}>
                 Do you want to move {props.student.firstname}{' '}
                 {props.student.lastname} to{' '}
-                {is_User_Archived(props.student) ? t('Active') : t('Archiv', { ns: 'common' })}
+                {is_User_Archived(props.student)
+                  ? t('Active')
+                  : t('Archiv', { ns: 'common' })}
               </Typography>
+              <FormControlLabel
+                label={t('Inform student for archive')}
+                control={
+                  <Checkbox
+                    id={`Inform student`}
+                    checked={shouldInform}
+                    onChange={() => setShouldInform(!shouldInform)}
+                  />
+                }
+              />
+              <br />
               <Button
                 color="primary"
                 variant="contained"
                 onClick={() =>
                   updateStudentArchivStatus(
                     props.student._id,
-                    !is_User_Archived(props.student)
+                    !is_User_Archived(props.student),
+                    shouldInform
                   )
                 }
               >

@@ -271,10 +271,9 @@ const routes = [
   },
   {
     path: '/student-database',
-    exact: true,
-    name: 'StudentDatabase',
+    errorElement: <DefaultErrorPage />,
     loader: getAllStudentsLoader,
-    Component: StudentDatabase
+    element: <StudentDatabase />
   },
   {
     path: '/student-database/:studentId',

@@ -120,6 +120,7 @@ const getEvents = asyncHandler(async (req, res, next) => {
       receiver_id: { $in: agents_ids },
       requester_id: { $nin: [user._id] }
     })
+      .populate('receiver_id', 'firstname lastname email')
       .select('start')
       .lean();
     return res.status(200).send({
@@ -257,7 +258,6 @@ const postEvent = asyncHandler(async (req, res, next) => {
       $or: [
         {
           start: newEvent.start,
-          requester_id: newEvent.requester_id, // Same requester_id
           receiver_id: newEvent.receiver_id // Same receiver_id
         }, // Start date is the same as the provided date
         {

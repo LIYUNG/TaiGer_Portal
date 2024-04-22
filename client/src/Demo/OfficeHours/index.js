@@ -539,28 +539,34 @@ function OfficeHours() {
                       getTimezoneOffset(
                         Intl.DateTimeFormat().resolvedOptions().timeZone
                       ) - getTimezoneOffset(agent.timezone);
+                    console.log(booked_events);
+                    console.log(agent._id);
                     const condition = booked_events.some(
                       (booked_event) =>
                         new Date(booked_event.start).toISOString() ===
-                        shiftDateByOffset(
-                          new Date(year, month - 1, day, hour, minutes),
-                          time_difference
-                        ).toISOString()
+                          shiftDateByOffset(
+                            new Date(year, month - 1, day, hour, minutes),
+                            time_difference
+                          ).toISOString() &&
+                        booked_event.receiver_id?.some(
+                          (receiver) => receiver._id === agent._id
+                        )
                     );
                     const end_date = new Date(test_date);
                     end_date.setMinutes(end_date.getMinutes() + 30);
+                    const available_time_slot = {
+                      id: j * 10 + i * 100 + x * 1000 + 1,
+                      title: `${user.firstname} ${user.lastname} ${
+                        user.firstname_chinese || ''
+                      } ${user.lastname_chinese || ''}`,
+                      start: new Date(test_date),
+                      end: end_date,
+                      provider: agent
+                    };
                     if (condition) {
                       return [];
                     } else {
-                      return {
-                        id: j * 10 + i * 100 + x * 1000 + 1,
-                        title: `${user.firstname} ${user.lastname} ${
-                          user.firstname_chinese || ''
-                        } ${user.lastname_chinese || ''}`,
-                        start: new Date(test_date),
-                        end: end_date,
-                        provider: agent
-                      };
+                      return available_time_slot;
                     }
                   }
                 );

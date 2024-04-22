@@ -245,6 +245,7 @@ const showEvent = asyncHandler(async (req, res, next) => {
 const postEvent = asyncHandler(async (req, res, next) => {
   const { user } = req;
   const newEvent = req.body;
+  console.log(newEvent);
   let events;
   if (user.role === Role.Student) {
     let write_NewEvent;
@@ -255,7 +256,11 @@ const postEvent = asyncHandler(async (req, res, next) => {
     const currentDate = new Date();
     events = await Event.find({
       $or: [
-        { start: newEvent.start }, // Start date is the same as the provided date
+        {
+          start: newEvent.start,
+          requester_id: newEvent.requester_id, // Same requester_id
+          receiver_id: newEvent.receiver_id // Same receiver_id
+        }, // Start date is the same as the provided date
         {
           start: { $gt: currentDate }, // Start date is in the future
           requester_id: newEvent.requester_id, // Same requester_id
@@ -271,6 +276,7 @@ const postEvent = asyncHandler(async (req, res, next) => {
       write_NewEvent = await Event.create(newEvent);
       await write_NewEvent.save();
     } else {
+      logger.error('Student book a conflicting event in this time slot.');
       throw new ErrorResponse(
         403,
         'You are not allowed to book further timeslot, if you have already an upcoming timeslot of the agent.'
@@ -319,6 +325,7 @@ const postEvent = asyncHandler(async (req, res, next) => {
         write_NewEvent = await Event.create(newEvent);
         await write_NewEvent.save();
       } else {
+        logger.error('TaiGer user books a conflicting event in this time slot.');
         throw new ErrorResponse(
           403,
           'You are not allowed to book further timeslot, if you have already an upcoming timeslot.'

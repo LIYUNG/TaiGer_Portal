@@ -48,10 +48,13 @@ function ModalMain(props) {
           <Typography variant="h6">{t('Error')}</Typography>
           <Box>
             {res_modal_status === 403 && (
-              <Typography>
-                Operation forbidden. Please contact {appConfig.companyName} for
-                more detail.
-              </Typography>
+              <>
+                <Typography>
+                  Operation forbidden. Please contact {appConfig.companyName}{' '}
+                  for more detail.
+                </Typography>
+                <Typography>{res_modal_message}</Typography>
+              </>
             )}
             {res_modal_status === 404 && <>404: {res_modal_message}</>}
             {res_modal_status === 413 && (

@@ -503,6 +503,7 @@ const postMessages = asyncHandler(async (req, res, next) => {
         }
       }
       if (flag) {
+        logger.error(`Too much message by ${studentId}`);
         throw new ErrorResponse(
           429,
           '您至多只能發連續三條訊息！請整理好您的問題一次發問，方便 Agent 一次回復。若 Agent 尚未回覆當前留言，請把問題集中於最新一次的留言，該留言右上角鉛筆可以編輯。您的 Agent 會盡速回復您！'
@@ -513,6 +514,7 @@ const postMessages = asyncHandler(async (req, res, next) => {
   try {
     JSON.parse(message);
   } catch (e) {
+    logger.error(`message collapse ${message}`);
     throw new ErrorResponse(400, 'message collapse');
   }
 
@@ -605,7 +607,6 @@ const updateAMessageInThread = asyncHandler(async (req, res, next) => {
 const deleteAMessageInCommunicationThread = asyncHandler(
   async (req, res, next) => {
     const {
-      user,
       params: { messageId }
     } = req;
 
@@ -615,6 +616,7 @@ const deleteAMessageInCommunicationThread = asyncHandler(
       res.status(200).send({ success: true });
       next();
     } catch (e) {
+      logger.error(`Delete error for messageId ${messageId}`);
       throw new ErrorResponse(400, 'message collapse');
     }
   }

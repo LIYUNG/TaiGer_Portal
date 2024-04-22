@@ -245,7 +245,6 @@ const showEvent = asyncHandler(async (req, res, next) => {
 const postEvent = asyncHandler(async (req, res, next) => {
   const { user } = req;
   const newEvent = req.body;
-  console.log(newEvent);
   let events;
   if (user.role === Role.Student) {
     let write_NewEvent;
@@ -325,7 +324,9 @@ const postEvent = asyncHandler(async (req, res, next) => {
         write_NewEvent = await Event.create(newEvent);
         await write_NewEvent.save();
       } else {
-        logger.error('TaiGer user books a conflicting event in this time slot.');
+        logger.error(
+          'TaiGer user books a conflicting event in this time slot.'
+        );
         throw new ErrorResponse(
           403,
           'You are not allowed to book further timeslot, if you have already an upcoming timeslot.'
@@ -353,6 +354,7 @@ const postEvent = asyncHandler(async (req, res, next) => {
         meetingConfirmationReminder(requester, user, updatedEvent.start);
       });
     } catch (err) {
+      logger.error(`postEvent: ${err.message}`);
       throw new ErrorResponse(500, err.message);
     }
   }
@@ -390,7 +392,8 @@ const confirmEvent = asyncHandler(async (req, res, next) => {
           .replace(/:/g, '_')
           .replace(/\./g, '_')}_${user._id.toString()}`;
       } else {
-        throw new ErrorResponse(429, 'No event found!');
+        logger.error('confirmEvent: No event found!');
+        throw new ErrorResponse(404, 'No event found!');
       }
     }
     updated_event.end = new Date(date.getTime() + 60000 * 30);

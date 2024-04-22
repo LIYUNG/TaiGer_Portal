@@ -966,6 +966,7 @@ const postMessages = asyncHandler(async (req, res) => {
   try {
     JSON.parse(message);
   } catch (e) {
+    logger.error(`Thread message collapse ${message}`);
     throw new ErrorResponse(400, 'message collapse');
   }
   // Check student can only access their own thread!!!!
@@ -988,6 +989,7 @@ const postMessages = asyncHandler(async (req, res) => {
       );
       const uniqueFileExtensions = new Set(fileExtensions);
       if (fileExtensions.length !== uniqueFileExtensions.size) {
+        logger.error('Error: Duplicate file extensions found!');
         throw new ErrorResponse(
           423,
           'Error: Duplicate file extensions found. Due to the system automatical naming mechanism, the files with same extension (said .pdf) will be overwritten. You can not upload 2 same files extension (2 .pdf or 2 .docx) at the same message. But 1 .pdf and 1 .docx are allowed.'

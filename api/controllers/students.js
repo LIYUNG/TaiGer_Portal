@@ -1175,6 +1175,9 @@ const deleteApplication = asyncHandler(async (req, res, next) => {
     if (
       application.doc_modification_thread[i].doc_thread_id.messages.length !== 0
     ) {
+      logger.error(
+        'deleteApplication: Some ML/RL/Essay discussion threads are existed and not empty.'
+      );
       throw new ErrorResponse(
         409,
         `Some ML/RL/Essay discussion threads are existed and not empty. 

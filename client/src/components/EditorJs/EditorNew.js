@@ -17,6 +17,7 @@ import Underline from '@editorjs/underline';
 import AttachesTool from '@editorjs/attaches';
 // import AttachesTool from '@editorjs/liyungc-attaches';
 // import LinkTool from '@editorjs/link';
+import Warning from '@editorjs/warning';
 import ColorPlugin from 'editorjs-text-color-plugin';
 import TextAlign from '@canburaks/text-align-editorjs';
 
@@ -237,6 +238,7 @@ const EditorNew = (props) => {
             }
           }
         },
+        warning: Warning,
         inlineCode: {
           class: InlineCode
           // shortcut: 'CMD+SHIFT+M'

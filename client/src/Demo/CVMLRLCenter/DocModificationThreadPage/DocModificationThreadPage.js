@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link as LinkDom, useParams } from 'react-router-dom';
 import JSZip from 'jszip';
+import jsPDF from 'jspdf';
 import * as XLSX from 'xlsx';
 import DownloadIcon from '@mui/icons-material/Download';
 import { FiExternalLink } from 'react-icons/fi';
@@ -500,6 +501,28 @@ function DocModificationThreadPage() {
     }));
   };
 
+  function generatePDF() {
+    const doc = new jsPDF();
+
+    // Styled text
+    doc.setFont('times');
+    // doc.setFontStyle('italic');
+    doc.setFontSize(16);
+    doc.text('Styled Text Content', 10, 20);
+
+    // Timestamp
+    const timestamp = new Date().toLocaleString();
+    doc.setFontSize(12);
+    doc.text(`Timestamp: ${timestamp}`, 10, 40);
+
+    // Signature
+    doc.setFontSize(14);
+    doc.text('Signature:', 10, 60);
+
+    // Output
+    doc.save('document.pdf');
+  }
+
   const handleAsFinalFile = (doc_thread_id, student_id, program_id) => {
     setDocModificationThreadPageState((prevState) => ({
       ...prevState,
@@ -816,6 +839,8 @@ function DocModificationThreadPage() {
             </Typography>
           </Box>
         ))}
+      {/* TODO */}
+      {false && <button onClick={generatePDF}>Generate PDF</button>}
       <Breadcrumbs aria-label="breadcrumb">
         <Link
           underline="hover"
@@ -894,7 +919,6 @@ function DocModificationThreadPage() {
           </Typography>
         </Card>
       )}
-
       <Card sx={{ p: 2 }}>
         <Grid container spacing={2}>
           <Grid item md={widths[0]}>

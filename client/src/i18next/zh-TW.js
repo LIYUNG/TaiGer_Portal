@@ -280,6 +280,12 @@ export const translation_zh_TW = {
   },
   backgroundProfile: {},
   admissions: {
+    'Attach Admission Letter or Admission Email pdf or Email screenshot':
+      '請夾帶錄取信 PDF 或是錄取 Email 通知存成 PDF 上傳',
+    'Attach Rejection Letter or Admission Email pdf or Email screenshot':
+      '請夾帶拒絕信 PDF 或是拒絕 Email 通知存成 PDF 上傳',
+    'Your agents and editors will receive your application result notification.':
+      '您的顧問與編輯將會收到您的申請結果通知。',
     'Pending Result': '等待結果',
     'Not Closed Yet': '尚未送出',
     Admissions: '錄取',

@@ -280,6 +280,12 @@ export const translation_en = {
   },
   backgroundProfile: {},
   admissions: {
+    'Attach Admission Letter or Admission Email pdf or Email screenshot':
+      'Attach Admission Letter or Admission Email pdf or Email screenshot',
+    'Attach Rejection Letter or Rejection Email pdf or Email screenshot':
+      'Attach Rejection Letter or Rejection Email pdf or Email screenshot',
+    'Your agents and editors will receive your application result notification.':
+      'Your agents and editors will receive your application result notification.',
     'Pending Result': 'Pending Result',
     'Not Closed Yet': 'Not Closed Yet',
     Admissions: 'Admissions',

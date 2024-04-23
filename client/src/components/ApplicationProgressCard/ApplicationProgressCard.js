@@ -287,7 +287,7 @@ export default function ApplicationProgressCard(props) {
                   onClick={(e) => openSetResultModal(e, 'O')}
                   startIcon={<CheckIcon />}
                 >
-                  {t('Admitted')}
+                  {t('Admitted', { ns: 'common' })}
                 </Button>
                 <Button
                   variant="outlined"
@@ -296,7 +296,7 @@ export default function ApplicationProgressCard(props) {
                   onClick={(e) => openSetResultModal(e, 'X')}
                   startIcon={<CloseIcon />}
                 >
-                  {t('Rejected')}
+                  {t('Rejected', { ns: 'common' })}
                 </Button>
               </Box>
             )}
@@ -378,16 +378,23 @@ export default function ApplicationProgressCard(props) {
             <Typography id="modal-modal-description" sx={{ my: 2 }}>
               {t('Do you want to set the application of')}{' '}
               <b>{`${application.programId.school}-${application.programId.degree}-${application.programId.program_name}`}</b>{' '}
-              <b>{resultState === 'O' ? t('Admitted') : t('Rejected')}</b>?
+              <b>
+                {resultState === 'O'
+                  ? t('Admitted', { ns: 'common' })
+                  : t('Rejected', { ns: 'common' })}
+              </b>
+              ?
             </Typography>
           )}
           <Typography sx={{ my: 2 }}>
             {resultState === 'O'
               ? t(
-                  'Attach Admission Letter or Admission Email pdf or Email screenshot'
+                  'Attach Admission Letter or Admission Email pdf or Email screenshot',
+                  { ns: 'admissions' }
                 )
               : t(
-                  'Attach Rejection Letter or Admission Email pdf or Email screenshot'
+                  'Attach Rejection Letter or Admission Email pdf or Email screenshot',
+                  { ns: 'admissions' }
                 )}
           </Typography>
           <TextField
@@ -395,7 +402,14 @@ export default function ApplicationProgressCard(props) {
             size="small"
             type="file"
             onChange={(e) => onFileChange(e)}
+            sx={{ mb: 2 }}
           />
+          <Typography variant="body2" sx={{ mb: 2 }}>
+            {t(
+              'Your agents and editors will receive your application result notification.',
+              { ns: 'admissions' }
+            )}
+          </Typography>
           {returnedMessage !== '' && (
             <Typography style={{ color: 'red' }} sx={{ mb: 2 }}>
               {returnedMessage}
@@ -403,7 +417,7 @@ export default function ApplicationProgressCard(props) {
           )}
           <Button
             color={resultState === 'O' ? 'primary' : 'secondary'}
-            variant="outlined"
+            variant="contained"
             disabled={
               isLoading
               // || !hasFile
@@ -412,7 +426,9 @@ export default function ApplicationProgressCard(props) {
             onClick={(e) => handleUpdateResult(e, resultState)}
             startIcon={isLoading ? <CircularProgress size={24} /> : null}
           >
-            {resultState === 'O' ? t('Admitted') : t('Rejected')}
+            {resultState === 'O'
+              ? t('Admitted', { ns: 'common' })
+              : t('Rejected', { ns: 'common' })}
           </Button>
           <Button
             color="secondary"
@@ -422,7 +438,7 @@ export default function ApplicationProgressCard(props) {
             sx={{ ml: 1 }}
             onClick={closeSetResultModal}
           >
-            Cancel
+            {t('Cancel', { ns: 'common' })}
           </Button>
         </Box>
       </ModalNew>

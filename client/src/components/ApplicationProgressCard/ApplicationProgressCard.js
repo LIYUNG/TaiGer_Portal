@@ -336,7 +336,7 @@ export default function ApplicationProgressCard(props) {
       <ModalNew open={showUndoModal} onClose={closeUndoModal} size="small">
         <Box>
           <Typography id="modal-modal-title" variant="h6">
-            Attention
+            {t('Attention')}
           </Typography>
           <Typography id="modal-modal-description" sx={{ my: 2 }}>
             {t('Do you want to reset the result of the application of')}{' '}
@@ -352,7 +352,11 @@ export default function ApplicationProgressCard(props) {
             sx={{ mr: 1 }}
             onClick={(e) => handleUpdateResult(e, '-')}
           >
-            {isLoading ? <CircularProgress size="small" /> : t('Confirm')}
+            {isLoading ? (
+              <CircularProgress size="small" />
+            ) : (
+              t('Confirm', { ns: 'common' })
+            )}
           </Button>
           <Button
             color="secondary"

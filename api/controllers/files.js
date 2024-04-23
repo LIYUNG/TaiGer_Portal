@@ -20,7 +20,8 @@ const {
   sendChangedProfileFileStatusEmail,
   UpdateStudentApplicationsEmail,
   NewMLRLEssayTasksEmail,
-  NewMLRLEssayTasksEmailFromTaiGer
+  NewMLRLEssayTasksEmailFromTaiGer,
+  AdmissionResultInformEmailToTaiGer
   // sendSomeReminderEmail,
 } = require('../services/email');
 const { AWS_S3_BUCKET_NAME, AWS_S3_PUBLIC_BUCKET_NAME } = require('../config');
@@ -901,7 +902,9 @@ const updateStudentApplicationResult = asyncHandler(async (req, res, next) => {
   const { studentId, programId, result } = req.params;
   const { user } = req;
 
-  const student = await Student.findById(studentId);
+  const student = await Student.findById(studentId)
+    .populate('agents editors', 'firstname lastname email')
+    .populate('applications.programId');
   if (!student) {
     logger.error('updateStudentApplicationResult: Invalid student Id');
     throw new ErrorResponse(404, 'Invalid student Id');
@@ -926,7 +929,7 @@ const updateStudentApplicationResult = asyncHandler(async (req, res, next) => {
     );
   } else if (result === '-') {
     const app = student.applications.find(
-      (application) => application.programId.toString() === programId
+      (application) => application.programId?._id.toString() === programId
     );
     const file_path = app.admission_letter?.admission_file_path;
     if (file_path && file_path !== '') {
@@ -986,10 +989,51 @@ const updateStudentApplicationResult = asyncHandler(async (req, res, next) => {
   const udpatedApplication = updatedStudent.applications.find(
     (application) => application.programId.toString() === programId
   );
+  const udpatedApplicationForEmail = student.applications.find(
+    (application) => application.programId?.id.toString() === programId
+  );
   res.status(200).send({ success: true, data: udpatedApplication });
   if (user.role === 'Student') {
     // TODO: add email informing agent.
-    // TODO: add email informing editor.
+    if (result !== '-') {
+      for (let i = 0; i < student.agents?.length; i += 1) {
+        if (isNotArchiv(student.agents[i])) {
+          await AdmissionResultInformEmailToTaiGer(
+            {
+              firstname: student.agents[i].firstname,
+              lastname: student.agents[i].lastname,
+              address: student.agents[i].email
+            },
+            {
+              student_firstname: student.firstname,
+              student_lastname: student.lastname,
+              udpatedApplication: udpatedApplicationForEmail,
+              result
+            }
+          );
+        }
+      }
+      for (let i = 0; i < student.editors?.length; i += 1) {
+        if (isNotArchiv(student.editors[i])) {
+          await AdmissionResultInformEmailToTaiGer(
+            {
+              firstname: student.editors[i].firstname,
+              lastname: student.editors[i].lastname,
+              address: student.editors[i].email
+            },
+            {
+              student_firstname: student.firstname,
+              student_lastname: student.lastname,
+              udpatedApplication: udpatedApplicationForEmail,
+              result
+            }
+          );
+        }
+      }
+      logger.info(
+        'admission or rejection inform email sent to agents and editors'
+      );
+    }
   }
   next();
 });

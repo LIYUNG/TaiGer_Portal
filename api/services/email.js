@@ -1352,6 +1352,23 @@ ${applications_name}
   return sendEmail(recipient, subject, message);
 };
 
+// For editor, agents
+const AdmissionResultInformEmailToTaiGer = async (recipient, msg) => {
+  const result = msg.result === 'O' ? 'Admission' : 'Rejection';
+  const applications_name = `${msg.udpatedApplication.programId.school} ${msg.udpatedApplication.programId.program_name} ${msg.udpatedApplication.programId.degree} ${msg.udpatedApplication.programId.semester}`;
+  const subject = `[${result}] ${msg.student_firstname} ${msg.student_lastname} has received ${result} from ${applications_name}`;
+  const message = `\
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+
+<p>${msg.student_firstname} ${msg.student_lastname} has received <b>${result}</b> from ${applications_name} </p>
+
+<p>${TAIGER_SIGNATURE}</p>
+
+`; // should be for admin/editor/agent/student
+
+  return sendEmail(recipient, subject, message);
+};
+
 const sendNewApplicationMessageInThreadEmail = async (recipient, msg) => {
   const thread_url = `${THREAD_URL}/${msg.thread_id}`;
   const subject = `[Update] ${msg.writer_firstname} ${msg.writer_lastname} sent a new message > ${msg.school} ${msg.program_name} ${msg.uploaded_documentname}!`;
@@ -2386,6 +2403,7 @@ module.exports = {
   informStudentTheirAgentEmail,
   sendSetAsFinalGeneralFileForAgentEmail,
   sendSetAsFinalGeneralFileForStudentEmail,
+  AdmissionResultInformEmailToTaiGer,
   sendNewApplicationMessageInThreadEmail,
   sendNewGeneraldocMessageInThreadEmail,
   sendSetAsFinalProgramSpecificFileForStudentEmail,

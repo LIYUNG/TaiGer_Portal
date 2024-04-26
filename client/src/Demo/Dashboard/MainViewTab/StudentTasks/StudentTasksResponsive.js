@@ -15,7 +15,8 @@ import {
   are_base_documents_missing,
   to_register_application_portals,
   is_personal_data_filled,
-  isProgramDecided
+  isProgramDecided,
+  all_applications_results_updated
 } from '../../../Utils/checking-functions';
 import { appConfig } from '../../../../config';
 
@@ -200,6 +201,26 @@ function StudentTasksResponsive(props) {
           <TableCell></TableCell>
         </TableRow>
       )}
+      {!all_applications_results_updated(props.student) && (
+        <TableRow>
+          <TableCell>
+            <Link
+              underline="hover"
+              to={`${DEMO.STUDENT_APPLICATIONS_LINK}`}
+              component={LinkDom}
+            >
+              {t('Application Results', { ns: 'common' })}
+              <FiExternalLink style={{ cursor: 'pointer' }} />
+            </Link>
+          </TableCell>
+          <TableCell>
+            {t('Please update your applications results to us', {
+              ns: 'common'
+            })}
+          </TableCell>
+          <TableCell></TableCell>
+        </TableRow>
+      )}
       {/* check uni-assist */}
       {appConfig.vpdEnable &&
         !is_all_uni_assist_vpd_uploaded(props.student) && (
@@ -230,7 +251,7 @@ function StudentTasksResponsive(props) {
         <TableRow>
           <TableCell>
             <Link underline="hover" to={`${DEMO.PROFILE}`} component={LinkDom}>
-              {t('Personal Data')}
+              {t('Personal Data', { ns: 'common' })}
               <FiExternalLink
                 className="mx-1 mb-1"
                 style={{ cursor: 'pointer' }}

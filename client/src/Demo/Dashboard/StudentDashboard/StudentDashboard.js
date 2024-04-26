@@ -186,7 +186,7 @@ function StudentDashboard(props) {
                 bg={'primary'}
                 title={'info'}
                 path={`${DEMO.UNI_ASSIST_LINK}`}
-                text={'New editor is assigned to you.'}
+                text={t('New editor is assigned to you.', { ns: 'common' })}
                 link_name={''}
                 removeBanner={removeBanner}
                 notification_key={'isRead_new_editor_assigned'}

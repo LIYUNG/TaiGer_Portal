@@ -14,6 +14,7 @@ export const translation_en = {
     Archive: 'Archive',
     Activate: 'Activate',
     Activated: 'Activated',
+    'Application Results': 'Application Results',
     'Target Degree': 'Target Degree',
     'Aged days': 'Aged days',
     'Document name': 'Document name',
@@ -247,11 +248,14 @@ export const translation_en = {
     University: 'University',
     'Applications status updated successfully!':
       'Applications status updated successfully!',
+    'Please update your applications results to us':
+      'Please update your applications results to us',
     'Final Decision': 'Final Decision',
     'Move to archive statement':
       'Do you want to move {{studentName}} to {{status}}?',
     'Inform student for archive':
-      '[Attention]  By checking this, the student will be informed that their service in the Portal ends. For disappeared students, highly recommanded not to inform. Please consult with your manager. For those who got admissions and start studying, please inform them as official close.'
+      '[Attention]  By checking this, the student will be informed that their service in the Portal ends. For disappeared students, highly recommanded not to inform. Please consult with your manager. For those who got admissions and start studying, please inform them as official close.',
+    'New editor is assigned to you.': 'New editor is assigned to you.'
   },
   dashboard: {
     Dashboard: 'Dashboard',
@@ -332,7 +336,17 @@ export const translation_en = {
     'Update transcript successfully! Your agent will be notified and will analyse your courses as soon as possible.':
       'Update transcript successfully! Your agent will be notified and will analyse your courses as soon as possible.',
     'View Online': 'View Online',
-    'No analysis yet': 'No analysis yet'
+    'No analysis yet': 'No analysis yet',
+    'Please upload documents as soon as possible. The agent needs them to understand your academic background.':
+      'Please upload documents as soon as possible. The agent needs them to understand your academic background.',
+    'Please be sure to update your Chinese and English names, as well as your date of birth information. This will affect the preparation of formal documents by the editor for you.':
+      'Please be sure to update your Chinese and English names, as well as your date of birth information. This will affect the preparation of formal documents by the editor for you.',
+    "Please refer to the programs provided by the agent and visit the school's program website for detailed information. Complete the school selection before the start of the application season.":
+      "Please refer to the programs provided by the agent and visit the school's program website for detailed information. Complete the school selection before the start of the application season.",
+    "Please go to each school's website to create an account and provide your login credentials. This will facilitate the agent in conducting pre-submission checks for you in the future.":
+      "Please go to each school's website to create an account and provide your login credentials. This will facilitate the agent in conducting pre-submission checks for you in the future.",
+    'Please go to the Uni-Assist section, follow the instructions to complete':
+      'Please go to the Uni-Assist section, follow the instructions to complete the account registration, upload documents, and apply for the VPD (Vorprüfungsdokumentation).'
   },
   interviews: {},
   uniassist: {
@@ -402,17 +416,6 @@ export const translation_en = {
       'Do you want to reset the result of the application of',
     'Please finish it as soon as possible':
       'Please finish it as soon as possible',
-
-    "Please refer to the programs provided by the agent and visit the school's program website for detailed information. Complete the school selection before the start of the application season.":
-      "Please refer to the programs provided by the agent and visit the school's program website for detailed information. Complete the school selection before the start of the application season.",
-    'Please upload documents as soon as possible. The agent needs them to understand your academic background.':
-      'Please upload documents as soon as possible. The agent needs them to understand your academic background.',
-    "Please go to each school's website to create an account and provide your login credentials. This will facilitate the agent in conducting pre-submission checks for you in the future.":
-      "Please go to each school's website to create an account and provide your login credentials. This will facilitate the agent in conducting pre-submission checks for you in the future.",
-    'Please be sure to update your Chinese and English names, as well as your date of birth information. This will affect the preparation of formal documents by the editor for you.':
-      'Please be sure to update your Chinese and English names, as well as your date of birth information. This will affect the preparation of formal documents by the editor for you.',
-    'Please go to the Uni-Assist section, follow the instructions to complete':
-      'Please go to the Uni-Assist section, follow the instructions to complete the account registration, upload documents, and apply for the VPD (Vorprüfungsdokumentation).',
     'Check uploaded base documents': 'Check uploaded base documents',
     'No Enough Program Decided Tasks': 'No Enough Program Decided Tasks',
     'Please select enough programs for': 'Please select enough programs for',

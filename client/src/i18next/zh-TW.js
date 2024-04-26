@@ -14,6 +14,7 @@ export const translation_zh_TW = {
     Archive: '封存',
     Activate: '啟用',
     Activated: '已啟用',
+    'Application Results': '申請結果',
     'Target Degree': '目標學位',
     'Aged days': '離上次更新(天)',
     'Document name': '文件名稱',
@@ -248,11 +249,13 @@ export const translation_zh_TW = {
     'Upload file': '上傳檔案',
     University: '大學',
     'Applications status updated successfully!': '申請狀態更新成功!',
+    'Please update your applications results to us': '請更新您的錄取結果給我們',
     'Final Decision': '決定就讀',
     'Move to archive statement':
       '你是否想要將 {{studentName}} 移至{{status}}？',
     'Inform student for archive':
-      '[注意] 勾選，學生將會被 Email 告知他的 Portal 服務結束。對於消失已久學生，強烈建議不要Email通知。封存之前請諮詢你的主管。對於正常錄取結束的學生，請勾選，已表示 Portal 服務正式結束。'
+      '[注意] 勾選，學生將會被 Email 告知他的 Portal 服務結束。對於消失已久學生，強烈建議不要Email通知。封存之前請諮詢你的主管。對於正常錄取結束的學生，請勾選，已表示 Portal 服務正式結束。',
+    'New editor is assigned to you.': '新的編輯已指派給您。'
   },
   dashboard: {
     Dashboard: '主控台',
@@ -331,7 +334,17 @@ export const translation_zh_TW = {
     'Update transcript successfully! Your agent will be notified and will analyse your courses as soon as possible.':
       '課程更新成功！您的顧問已被通知，並將會盡快為您分析您的課程匹配度。',
     'View Online': '線上檢視',
-    'No analysis yet': '尚未分析'
+    'No analysis yet': '尚未分析',
+    'Please upload documents as soon as possible. The agent needs them to understand your academic background.':
+      '請盡速上傳各類成績單和證書等的文件。Agent才能了解你學術背。',
+    'Please be sure to update your Chinese and English names, as well as your date of birth information. This will affect the preparation of formal documents by the editor for you.':
+      '請務必更新你中英文姓名、生日資料。這會影響Editor為您正式文件準備。',
+    "Please refer to the programs provided by the agent and visit the school's program website for detailed information. Complete the school selection before the start of the application season.":
+      '請參考Agent提供的Program，並到學校學程網站了解詳細資訊，於申請季開始前完成選校',
+    "Please go to each school's website to create an account and provide your login credentials. This will facilitate the agent in conducting pre-submission checks for you in the future.":
+      '請到各學校網站辦理帳號並提供您的帳號密碼，方便Agent日後為您做送出前檢查',
+    'Please go to the Uni-Assist section, follow the instructions to complete':
+      '請至 Uni-Assist 專區，依照指示完成帳號申請，上傳文件，申請 VPD'
   },
   uniassist: {
     'All document uploaded to Uni-Assist and paid, waiting for VPD':
@@ -395,20 +408,8 @@ export const translation_zh_TW = {
     'Do you want to reset the result of the application of':
       '您確定要重設申請結果嗎？',
     'Please finish it as soon as possible': '請您盡速處理以下事項',
-
     'Expected English Test Date': '預計英語檢定考試日期',
     'Expected German Test Date': '預計德語檢定考試日期',
-
-    "Please refer to the programs provided by the agent and visit the school's program website for detailed information. Complete the school selection before the start of the application season.":
-      '請參考Agent提供的Program，並到學校學程網站了解詳細資訊，於申請季開始前完成選校',
-    'Please upload documents as soon as possible. The agent needs them to understand your academic background.':
-      '請盡速上傳各類成績單和證書等的文件。Agent才能了解你學術背。',
-    'Please be sure to update your Chinese and English names, as well as your date of birth information. This will affect the preparation of formal documents by the editor for you.':
-      '請務必更新你中英文姓名、生日資料。這會影響Editor為您正式文件準備。',
-    "Please go to each school's website to create an account and provide your login credentials. This will facilitate the agent in conducting pre-submission checks for you in the future.":
-      '請到各學校網站辦理帳號並提供您的帳號密碼，方便Agent日後為您做送出前檢查',
-    'Please go to the Uni-Assist section, follow the instructions to complete':
-      '請至 Uni-Assist 專區，依照指示完成帳號申請，上傳文件，申請 VPD',
     'Check uploaded base documents': '請確認學生上傳的文件',
     'No Enough Program Decided Tasks': '尚未選足申請學校數量',
     'Please select enough programs for': '請選擇足夠的學程給',

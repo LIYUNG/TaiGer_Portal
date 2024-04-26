@@ -345,7 +345,9 @@ function Profile() {
           </Link>
         )}
 
-        <Typography color="text.primary">{t('Personal Data')}</Typography>
+        <Typography color="text.primary">
+          {t('Personal Data', { ns: 'common' })}
+        </Typography>
       </Breadcrumbs>
       <Box component="form" noValidate sx={{ mt: 3 }}>
         <Grid container spacing={2}>

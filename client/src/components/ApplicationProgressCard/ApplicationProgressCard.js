@@ -147,21 +147,21 @@ export default function ApplicationProgressCard(props) {
                   <>
                     <AiFillCheckCircle color="limegreen" size={16} />
                     &nbsp;
-                    {t('Submitted')}
+                    {t('Submitted', { ns: 'common' })}
                   </>
                 )}
                 {application.admission === 'O' && (
                   <>
                     <AiFillCheckCircle color="lightblue" size={16} />
                     &nbsp;
-                    {t('Admitted')}
+                    {t('Admitted', { ns: 'common' })}
                   </>
                 )}
                 {application.admission === 'X' && (
                   <>
                     <AiFillCloseCircle color="red" size={16} />
                     &nbsp;
-                    {t('Rejected')}
+                    {t('Rejected', { ns: 'common' })}
                   </>
                 )}
               </>

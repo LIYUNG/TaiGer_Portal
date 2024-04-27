@@ -173,6 +173,9 @@ function index() {
           {appConfig.companyName}
         </Link>
         <Typography color="text.primary">
+          {t('My Students', { ns: 'common' })}
+        </Typography>
+        <Typography color="text.primary">
           {t('Agent Support Documents')}
         </Typography>
       </Breadcrumbs>

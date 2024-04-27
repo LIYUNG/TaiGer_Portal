@@ -97,7 +97,12 @@ function BaseDocuments() {
         >
           {appConfig.companyName}
         </Link>
-        <Typography color="text.primary">{t('Base Documents')}</Typography>
+        <Typography color="text.primary">
+          {t('My Students', { ns: 'common' })}
+        </Typography>
+        <Typography color="text.primary">
+          {t('Base Documents', { ns: 'common' })}
+        </Typography>
       </Breadcrumbs>
 
       {is_TaiGer_role(user) ? (

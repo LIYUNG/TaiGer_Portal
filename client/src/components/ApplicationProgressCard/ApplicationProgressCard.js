@@ -213,8 +213,8 @@ export default function ApplicationProgressCard(props) {
                 rel="noreferrer"
               >
                 {application.admission === 'O'
-                  ? t('Admission Letter')
-                  : t('Rejection Letter')}
+                  ? t('Admission Letter', { ns: 'admissions' })
+                  : t('Rejection Letter', { ns: 'admissions' })}
               </a>
             )}
           {application_deadline_calculator(props.student, application) ===
@@ -232,8 +232,8 @@ export default function ApplicationProgressCard(props) {
                 sx={{ my: 1 }}
               >
                 {application.admission === 'O'
-                  ? t('Add Admission Letter')
-                  : t('Add Rejection Letter')}
+                  ? t('Add Admission Letter', { ns: 'admissions' })
+                  : t('Add Rejection Letter', { ns: 'admissions' })}
               </Button>
             )}
           {application_deadline_calculator(props.student, application) ===

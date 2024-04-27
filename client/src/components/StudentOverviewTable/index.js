@@ -444,7 +444,7 @@ function StudentOverviewTable(props) {
     },
     {
       field: 'basedocument',
-      headerName: 'Base Documents',
+      headerName: 'Documents',
       width: 100,
       renderCell: (params) => {
         return (

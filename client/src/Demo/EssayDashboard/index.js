@@ -180,6 +180,9 @@ function EssayDashboard() {
           {appConfig.companyName}
         </Link>
         <Typography color="text.primary">
+          {t('All Students', { ns: 'common' })}
+        </Typography>
+        <Typography color="text.primary">
           {t('Essay Dashboard', { ns: 'common' })}
         </Typography>
       </Breadcrumbs>

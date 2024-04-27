@@ -29,7 +29,9 @@ function ProgramSpecificDocumentCheckCard(props) {
   return (
     <Card sx={{ mb: 2 }}>
       <Alert severity="error">
-        <Typography>Program Specific Documents Check</Typography>
+        <Typography>
+          {t('Program Specific Documents Check', { ns: 'common' })}
+        </Typography>
       </Alert>
       <Table size="small">
         <TableHead>

@@ -35,7 +35,9 @@ function NoProgramStudentTable(props) {
     ) && (
       <Card sx={{ mb: 2 }}>
         <Alert severity="error">
-          <Typography>No Program Selected Yet</Typography>
+          <Typography>
+            {t('No Program Selected Yet', { ns: 'common' })}
+          </Typography>
         </Alert>
         <Table size="small">
           <TableHead>

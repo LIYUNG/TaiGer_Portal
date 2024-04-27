@@ -280,7 +280,9 @@ export const translation_zh_TW = {
       '你是否想要將 {{studentName}} 移至{{status}}？',
     'Inform student for archive':
       '[注意] 勾選，學生將會被 Email 告知他的 Portal 服務結束。對於消失已久學生，強烈建議不要Email通知。封存之前請諮詢你的主管。對於正常錄取結束的學生，請勾選，已表示 Portal 服務正式結束。',
-    'New editor is assigned to you.': '新的編輯已指派給您。'
+    'New editor is assigned to you.': '新的編輯已指派給您。',
+    'No Program Selected Yet': '尚未選擇任何科系',
+    'Program Specific Documents Check': '科系要求特定文件'
   },
   dashboard: {
     Dashboard: '主控台',

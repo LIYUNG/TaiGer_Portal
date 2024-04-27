@@ -39,8 +39,8 @@ function BaseDocumentCheckingTable(props) {
             <TableHead>
               <TableRow>
                 <TableCell>{t('Student', { ns: 'common' })}</TableCell>
-                <TableCell>{t('Document Type')}</TableCell>
-                <TableCell>{t('Upload Time')}</TableCell>
+                <TableCell>{t('Document Type', { ns: 'common' })}</TableCell>
+                <TableCell>{t('Upload Time', { ns: 'common' })}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>{base_documents_checking_tasks}</TableBody>

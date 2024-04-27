@@ -230,7 +230,7 @@ function ButtonSetUploaded(props) {
     <TableRow>
       <TableCell>{FILE_UPLOADED_SYMBOL}</TableCell>
       <TableCell>
-        {props.docName}
+        {t(props.docName, { ns: 'common' })}
         <Link
           to={
             ButtonSetUploadedState.link && ButtonSetUploadedState.link != ''

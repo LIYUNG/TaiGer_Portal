@@ -148,7 +148,7 @@ export default function SignIn() {
         </form>
         <Grid container spacing={2} sx={{ my: 1 }}>
           <Grid item xs={6} sx={{ textAlign: 'right' }}>
-            <Typography>{t('Forgot Password')}?</Typography>
+            <Typography>{t('Forgot Password', { ns: 'common' })}?</Typography>
           </Grid>
           <Grid item xs={6}>
             <Link to={DEMO.FORGOT_PASSWORD_LINK} component={NavLink}>

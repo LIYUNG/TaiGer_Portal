@@ -215,7 +215,7 @@ const General_Docs = [
 const profile_list = {
   High_School_Diploma: 'High School Diploma',
   High_School_Transcript: 'High School Transcript',
-  University_Entrance_Examination_GSAT: 'GSAT/SAT/TVE Test (學測/統測)',
+  University_Entrance_Examination_GSAT: 'GSAT/SAT/TVE Test',
   Bachelor_Certificate: 'Bachelor Certificate/Enrolment',
   Bachelor_Transcript: 'Bachelor Transcript',
   Englisch_Certificate: 'TOEFL or IELTS',

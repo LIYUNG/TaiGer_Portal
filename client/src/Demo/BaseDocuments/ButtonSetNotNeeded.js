@@ -124,7 +124,7 @@ function ButtonSetNotNeeded(props) {
     <TableRow>
       <TableCell>{FILE_DONT_CARE_SYMBOL}</TableCell>
       <TableCell>
-        {props.docName}
+        {t(props.docName, { ns: 'common' })}
         <Link
           to={
             buttonSetNotNeededState.link && buttonSetNotNeededState.link != ''

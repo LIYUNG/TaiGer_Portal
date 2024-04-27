@@ -264,9 +264,9 @@ function ManagerMainView(props) {
               >
                 <TableHead>
                   <TableRow>
-                    <TableCell>Student</TableCell>
-                    <TableCell>Base Document</TableCell>
-                    <TableCell>Upload Time</TableCell>
+                    <TableCell>{t('Student', { ns: 'common' })}</TableCell>
+                    <TableCell>{t('Base Documents', { ns: 'common' })}</TableCell>
+                    <TableCell>{t('Upload Time', { ns: 'common' })}</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>{base_documents_checking_tasks}</TableBody>

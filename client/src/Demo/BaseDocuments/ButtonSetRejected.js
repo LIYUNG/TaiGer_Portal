@@ -283,7 +283,7 @@ function ButtonSetRejected(props) {
         <AiFillCloseCircle size={24} color="red" title="Invalid Document" />
       </TableCell>
       <TableCell>
-        {props.docName}
+        {t(props.docName, { ns: 'common' })}
         <Link
           to={
             buttonSetRejectedState.link && buttonSetRejectedState.link != ''
@@ -386,7 +386,11 @@ function ButtonSetRejected(props) {
           onClick={(e) => onDeleteFilefromstudent(e)}
           sx={{ mr: 1 }}
         >
-          {!buttonSetRejectedState.isLoaded ? <CircularProgress /> : t('Yes', { ns: 'common' })}
+          {!buttonSetRejectedState.isLoaded ? (
+            <CircularProgress />
+          ) : (
+            t('Yes', { ns: 'common' })
+          )}
         </Button>
         <Button onClick={closeWarningWindow} variant="outlined">
           {t('No', { ns: 'common' })}
@@ -398,7 +402,7 @@ function ButtonSetRejected(props) {
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
-        <Typography variant="h6">{t('Comments')}</Typography>
+        <Typography variant="h6">{t('Comments', { ns: 'common' })}</Typography>
         {is_TaiGer_Student(user) ? (
           <>
             <Typography>{buttonSetRejectedState.comments}</Typography>

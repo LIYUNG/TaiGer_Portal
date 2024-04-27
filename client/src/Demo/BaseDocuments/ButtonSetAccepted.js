@@ -214,7 +214,7 @@ function ButtonSetAccepted(props) {
     <TableRow>
       <TableCell>{FILE_OK_SYMBOL}</TableCell>
       <TableCell>
-        {props.docName}
+        {t(props.docName, { ns: 'common' })}
         <Link
           to={
             buttonSetAcceptedState.link && buttonSetAcceptedState.link != ''

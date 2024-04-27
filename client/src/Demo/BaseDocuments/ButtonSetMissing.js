@@ -131,7 +131,7 @@ function ButtonSetMissing(props) {
     <TableRow>
       <TableCell>{FILE_MISSING_SYMBOL}</TableCell>
       <TableCell>
-        {props.docName}
+        {t(props.docName, { ns: 'common' })}
         <Link
           to={
             buttonSetMissing.link && buttonSetMissing.link != ''

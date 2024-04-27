@@ -87,7 +87,11 @@ export default function ResetPasswordRequest() {
             disabled={buttonDisable}
             sx={{ mt: 2 }}
           >
-            {buttonDisable ? <CircularProgress /> : `${t('Reset')}`}
+            {buttonDisable ? (
+              <CircularProgress />
+            ) : (
+              `${t('Reset', { ns: 'common' })}`
+            )}
           </Button>
         </>
       )}

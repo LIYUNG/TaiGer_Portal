@@ -118,7 +118,11 @@ export default function ResetPassword() {
             disabled={buttonDisable}
             sx={{ mb: 2 }}
           >
-            {buttonDisable ? <CircularProgress /> : `${t('Reset')}`}
+            {buttonDisable ? (
+              <CircularProgress />
+            ) : (
+              `${t('Reset', { ns: 'common' })}`
+            )}
           </Button>
           <Grid container spacing={2} sx={{ my: 2 }}>
             <Grid item xs={6} sx={{ textAlign: 'right' }}>

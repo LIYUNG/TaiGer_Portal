@@ -160,7 +160,7 @@ function ApplicationProgress(props) {
                 }
                 fontWeight="bold"
               >
-                {t('Close')}
+                {t('Close', { ns: 'common' })}
               </Typography>
             </TableCell>
           ) : (

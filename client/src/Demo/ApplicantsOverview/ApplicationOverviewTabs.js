@@ -186,14 +186,19 @@ function ApplicationOverviewTabs(props) {
     <>
       <Box sx={{ width: '100%' }}>
         <Card sx={{ p: 2 }}>
-          <Typography variant="h6">Open Applications Distribution</Typography>
-          <Typography>
-            <b style={{ color: 'red' }}>active:</b> students decided programs.
+          <Typography variant="h6">
+            {t('Open Applications Distribution', { ns: 'common' })}
           </Typography>
           <Typography>
-            <b style={{ color: '#A9A9A9' }}>potentials:</b> students do not
-            decide programs yet. But the applications will be potentially
-            activated when they would decide.
+            <b style={{ color: 'red' }}>active:</b>{' '}
+            {t('Students decided programs', { ns: 'common' })}
+          </Typography>
+          <Typography>
+            <b style={{ color: '#A9A9A9' }}>potentials:</b>{' '}
+            {t(
+              'Students do not decide programs yet. But the applications will be potentially activated when they would decide',
+              { ns: 'common' }
+            )}
           </Typography>
           <TasksDistributionBarChart data={sorted_date_freq_pair} />
         </Card>

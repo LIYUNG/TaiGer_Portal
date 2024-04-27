@@ -176,6 +176,10 @@ export const translation_en = {
     'Target Year /Semester': 'Target Year /Semester',
     'Admission Letter': 'Admission Letter',
     'Rejection Letter': 'Rejection Letter',
+    'Open Applications Distribution': 'Open Applications Distribution',
+    'Students decided programs': 'Students decided programs',
+    'Students do not decide programs yet. But the applications will be potentially activated when they would decide':
+      'Students do not decide programs yet. But the applications will be potentially activated when they would decide',
     Confirmation: 'Confirmation',
     Close: 'Close',
     Score: 'Score',

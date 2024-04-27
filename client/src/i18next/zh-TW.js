@@ -177,6 +177,10 @@ export const translation_zh_TW = {
     'Target Year /Semester': '申請年/學期',
     'Admission Letter': '錄取信',
     'Rejection Letter': '拒絕信',
+    'Open Applications Distribution': '進行中的申請分布',
+    'Students decided programs': '學生已決定申請科系',
+    'Students do not decide programs yet. But the applications will be potentially activated when they would decide':
+      '學生尚未決定的科系。但這些科系可能將會改為申請，一旦學生確定。',
     Confirmation: '確認',
     Close: '關閉',
     Score: 'Score',

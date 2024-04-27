@@ -507,7 +507,7 @@ function StudentApplicationsTableTemplate(props) {
     applying_university_info = (
       <>
         <TableRow>
-          {props.role !== 'Student' && <TableCell></TableCell>}
+          {!is_TaiGer_Student(user) && <TableCell></TableCell>}
           <TableCell>
             <Typography> No University</Typography>
           </TableCell>
@@ -552,7 +552,7 @@ function StudentApplicationsTableTemplate(props) {
       studentApplicationsTableTemplateState.student.applications.map(
         (application, application_idx) => (
           <TableRow key={application_idx}>
-            {props.role !== 'Student' && (
+            {!is_TaiGer_Student(user) && (
               <TableCell>
                 <Button
                   color="primary"
@@ -970,7 +970,6 @@ function StudentApplicationsTableTemplate(props) {
       {studentApplicationsTableTemplateState.isProgramAssignMode ? (
         <>
           <ProgramList
-            user={user}
             student={props.student}
             isStudentApplicationPage={true}
           />
@@ -1089,7 +1088,7 @@ function StudentApplicationsTableTemplate(props) {
                   <Table size="small">
                     <TableHead>
                       <TableRow>
-                        {props.role !== 'Student' && <TableCell></TableCell>}
+                        {!is_TaiGer_Student(user) && <TableCell></TableCell>}
                         {programstatuslist.map((doc, index) => (
                           <TableCell key={index}>
                             {t(doc.name, { ns: 'common' })}

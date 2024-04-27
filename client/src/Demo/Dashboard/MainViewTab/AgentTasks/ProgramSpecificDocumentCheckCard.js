@@ -22,9 +22,7 @@ function ProgramSpecificDocumentCheckCard(props) {
     .filter((student) =>
       student.agents.some((agent) => agent._id === user._id.toString())
     )
-    .map((student, i) => (
-      <ProgramSpecificDocument key={i} role={user.role} student={student} />
-    ));
+    .map((student, i) => <ProgramSpecificDocument key={i} student={student} />);
 
   return (
     <Card sx={{ mb: 2 }}>

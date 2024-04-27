@@ -39,10 +39,7 @@ function EditableFile_Thread(props) {
     documenName = props.thread.doc_thread_id?.file_type;
     // program_deadline = props.application.programId.application_deadline
   } else {
-    documenName =
-      'General' +
-      ' - ' +
-      props.thread.doc_thread_id?.file_type;
+    documenName = 'General' + ' - ' + props.thread.doc_thread_id?.file_type;
   }
 
   fileStatus = (
@@ -75,7 +72,7 @@ function EditableFile_Thread(props) {
         </Grid>
         <Grid item xs={1}>
           {props.thread.isFinalVersion ? (
-            user.role !== 'Student' && user.role !== 'Guest' ? (
+            is_TaiGer_role(user) ? (
               <AiOutlineUndo
                 size={24}
                 color="red"

@@ -15,6 +15,7 @@ import { Link, Tooltip, Chip } from '@mui/material';
 import { Link as LinkDom } from 'react-router-dom';
 import { appConfig } from '../../config';
 import DEMO from '../../store/constant';
+import { is_TaiGer_Student } from './checking-functions';
 
 export const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -1532,7 +1533,7 @@ export const is_new_message_status = (user, thread) => {
     thread.latest_message_left_by_id === undefined ||
     thread.latest_message_left_by_id === ''
   ) {
-    if (user.role !== 'Student') {
+    if (!is_TaiGer_Student(user)) {
       return false;
     }
   }

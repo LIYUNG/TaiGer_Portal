@@ -571,7 +571,7 @@ function TaiGerOfficeHours() {
     }));
   };
 
-  if (user.role !== 'Agent') {
+  if (!is_TaiGer_Agent(user)) {
     return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
   }
   const {

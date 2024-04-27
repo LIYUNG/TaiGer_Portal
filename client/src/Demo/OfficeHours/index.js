@@ -70,7 +70,6 @@ function OfficeHours() {
   const { t } = useTranslation();
   const [OfficeHoursState, setOfficeHoursState] = useState({
     error: '',
-    role: '',
     isLoaded: false,
     data: null,
     success: false,
@@ -486,7 +485,7 @@ function OfficeHours() {
     }));
   };
 
-  if (user.role !== 'Student') {
+  if (!is_TaiGer_Student(user)) {
     return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
   }
   const {

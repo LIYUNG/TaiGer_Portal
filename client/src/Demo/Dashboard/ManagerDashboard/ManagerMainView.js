@@ -117,16 +117,14 @@ function ManagerMainView(props) {
       student.agents.some((agent) => agent._id === user._id.toString())
     )
     .map((student, i) => (
-      <BaseDocumentCheckingTasks key={i} role={user.role} student={student} />
+      <BaseDocumentCheckingTasks key={i} student={student} />
     ));
 
   const no_programs_student_tasks = props.students
     .filter((student) =>
       student.agents.some((agent) => agent._id === user._id.toString())
     )
-    .map((student, i) => (
-      <NoProgramStudentTask key={i} role={user.role} student={student} />
-    ));
+    .map((student, i) => <NoProgramStudentTask key={i} student={student} />);
 
   const applications_arr = programs_refactor(props.students)
     .filter(
@@ -265,7 +263,9 @@ function ManagerMainView(props) {
                 <TableHead>
                   <TableRow>
                     <TableCell>{t('Student', { ns: 'common' })}</TableCell>
-                    <TableCell>{t('Base Documents', { ns: 'common' })}</TableCell>
+                    <TableCell>
+                      {t('Base Documents', { ns: 'common' })}
+                    </TableCell>
                     <TableCell>{t('Upload Time', { ns: 'common' })}</TableCell>
                   </TableRow>
                 </TableHead>

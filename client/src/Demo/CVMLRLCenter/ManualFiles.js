@@ -170,7 +170,6 @@ function ManualFiles(props) {
                 (!props.application ||
                   (props.application && props.application.closed !== 'O')) && (
                   <ToggleableUploadFileForm
-                    role={user.role}
                     user={user}
                     student={props.student}
                     handleSelect={handleSelect}

@@ -67,7 +67,7 @@ function CVAssignTasksCard(props) {
     )
     .map((student, i) => (
       <TableRow key={i}>
-        <CVAssignTasks key={i} role={user.role} student={student} />
+        <CVAssignTasks key={i} student={student} />
       </TableRow>
     ));
   return (

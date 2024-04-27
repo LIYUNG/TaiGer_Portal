@@ -4,12 +4,10 @@ import { useParams } from 'react-router-dom';
 import StudentApplicationsTableTemplate from './StudentApplicationsTableTemplate';
 import ErrorPage from '../Utils/ErrorPage';
 import { getApplicationStudent } from '../../api';
-import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
 
 function StudentApplicationsIndividual() {
   const { student_id } = useParams();
-  const { user } = useAuth();
   const [studentApplicationsIndividual, setStudentApplicationsIndividual] =
     useState({
       error: '',
@@ -63,8 +61,6 @@ function StudentApplicationsIndividual() {
   return (
     <StudentApplicationsTableTemplate
       isLoaded={isLoaded}
-      role={user.role}
-      user={user}
       student={studentApplicationsIndividual.student}
     />
   );

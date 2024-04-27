@@ -25,7 +25,7 @@ function BaseDocumentCheckingTable(props) {
       student.agents.some((agent) => agent._id === user._id.toString())
     )
     .map((student, i) => (
-      <BaseDocumentCheckingTasks key={i} role={user.role} student={student} />
+      <BaseDocumentCheckingTasks key={i} student={student} />
     ));
 
   return (

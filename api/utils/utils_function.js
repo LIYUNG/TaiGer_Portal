@@ -1196,7 +1196,7 @@ const findActiveDocumentThreads = async () => {
       const activeDocumentThreads = [];
       const students = await Student.find();
       for (const student of students){
-          if (student.archiv != true){
+          if (student.archiv !== true){
               for (const thread of student.generaldocs_threads){
                   activeDocumentThreads.push(thread.doc_thread_id);
               };
@@ -1204,8 +1204,33 @@ const findActiveDocumentThreads = async () => {
       };
       return activeDocumentThreads;
   } catch (error) {
-      console.log("Error finding active document threads:", error);
+      logger.error("Error finding active document threads:", error);
       return [];
+  };
+};
+
+const findValidInterval = async(validDocumentThread_id) => {
+  try {
+    const validDocumentThread = await Document.findById(validDocumentThread_id);
+    for (const msg of validDocumentThread.messages){
+      const msg_1 = null;
+      const msg_2 = null;
+      try {
+        const user = await User.findById(msg.user_id);
+        if (user.role === "Student") {
+          msg_1 = msg;
+        } else {
+          msg_2 = msg;
+        }
+      } catch (error) {
+        logger.error("Error finding message user_id:", error);
+      };
+      // calculate interval, store values into Interval Collection
+    }
+    
+
+  } catch (error){
+    logger.error("Error finding valid interval:", error);
   };
 };
 

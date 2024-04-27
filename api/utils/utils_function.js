@@ -1191,6 +1191,24 @@ const UnconfirmedMeetingDailyReminderChecker = async () => {
   logger.info('Unconfirmed Meeting attendee reminded');
 };
 
+const findActiveDocumentThreads = async () => {
+  try {
+      const activeDocumentThreads = [];
+      const students = await Student.find();
+      for (const student of students){
+          if (student.archiv != true){
+              for (const thread of student.generaldocs_threads){
+                  activeDocumentThreads.push(thread.doc_thread_id);
+              };
+          };
+      };
+      return activeDocumentThreads;
+  } catch (error) {
+      console.log("Error finding active document threads:", error);
+      return [];
+  };
+};
+
 module.exports = {
   emptyS3Directory,
   TasksReminderEmails,

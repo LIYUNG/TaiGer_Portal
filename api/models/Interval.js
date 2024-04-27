@@ -29,7 +29,7 @@ const IntervalSchema = new Schema({
     required: true
   },
   interval: {
-    type:{Number, default: 0},
+    type: {Number, default: 0},
     required: true
   },
   updatedAt: {

@@ -57,6 +57,7 @@ import { useAuth } from '../../../components/AuthProvider';
 import Loading from '../../../components/Loading/Loading';
 import ModalNew from '../../../components/Modal';
 import EditEssayWritersSubpage from '../../Dashboard/MainViewTab/StudDocsOverview/EditEssayWritersSubpage';
+import { TopBar } from '../../../components/TopBar/TopBar';
 
 function DocModificationThreadPage() {
   const { user } = useAuth();
@@ -912,13 +913,7 @@ function DocModificationThreadPage() {
         />
       </ModalNew>
       <Card></Card>
-      {docModificationThreadPageState.thread.isFinalVersion && (
-        <Card>
-          <Typography>
-            Status: <b>Close</b>
-          </Typography>
-        </Card>
-      )}
+      {docModificationThreadPageState.thread.isFinalVersion && <TopBar />}
       <Card sx={{ p: 2 }}>
         <Grid container spacing={2}>
           <Grid item md={widths[0]}>

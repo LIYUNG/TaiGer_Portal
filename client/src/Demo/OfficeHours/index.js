@@ -539,8 +539,6 @@ function OfficeHours() {
                       getTimezoneOffset(
                         Intl.DateTimeFormat().resolvedOptions().timeZone
                       ) - getTimezoneOffset(agent.timezone);
-                    console.log(booked_events);
-                    console.log(agent._id);
                     const condition = booked_events.some(
                       (booked_event) =>
                         new Date(booked_event.start).toISOString() ===

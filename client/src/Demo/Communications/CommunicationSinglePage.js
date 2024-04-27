@@ -325,11 +325,7 @@ function CommunicationSinglePage() {
   }
   return (
     <Box data-testid="communication_student_page">
-      {communicationSinglePageState.student?.archiv && (
-        <TopBar>
-          Status: <b>Close</b>
-        </TopBar>
-      )}
+      {communicationSinglePageState.student?.archiv && <TopBar />}
       <>
         <Grid container spacing={2}>
           <Grid item xs={12}>

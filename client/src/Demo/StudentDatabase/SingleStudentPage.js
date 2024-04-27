@@ -28,6 +28,7 @@ import { useTranslation } from 'react-i18next';
 import { AiFillEdit } from 'react-icons/ai';
 import { BsMessenger } from 'react-icons/bs';
 
+import { TopBar } from '../../components/TopBar/TopBar';
 import BaseDocument_StudentView from '../BaseDocuments/BaseDocument_StudentView';
 import EditorDocsProgress from '../CVMLRLCenter/EditorDocsProgress';
 import UniAssistListCard from '../UniAssist/UniAssistListCard';
@@ -309,13 +310,7 @@ export const SingleStudentPageMainContent = ({
           res_modal_message={res_modal_message}
         />
       )}
-      {singleStudentPage.student.archiv && (
-        <Card sx={{ p: 2 }}>
-          <Typography variant="h5" color="red">
-            Status: <b>Close</b>
-          </Typography>
-        </Card>
-      )}
+      {singleStudentPage.student.archiv && <TopBar />}
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Box>
           <Breadcrumbs aria-label="breadcrumb">

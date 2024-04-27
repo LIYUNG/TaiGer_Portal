@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import {
   confirmEvent,
   deleteEvent,
+  getAllEvents,
   getEvents,
   postEvent,
   updateEvent
@@ -33,7 +34,6 @@ function useCalendarEvents(props) {
     newReceiver: '',
     BookButtonDisable: false,
     newDescription: '',
-    newEventTitle: '',
     newEventStart: null,
     newEventEnd: null,
     isNewEventModalOpen: false,
@@ -43,40 +43,75 @@ function useCalendarEvents(props) {
   });
 
   useEffect(() => {
-    getEvents().then(
-      (resp) => {
-        const { data, agents, booked_events, students, hasEvents, success } =
-          resp.data;
-        const { status } = resp;
-        if (success) {
+    if (props.isAll) {
+      getAllEvents().then(
+        (resp) => {
+          const { data, agents, hasEvents, students, success } = resp.data;
+          const { status } = resp;
+          if (success) {
+            setCalendarEventsState((prevState) => ({
+              ...prevState,
+              isLoaded: true,
+              agents,
+              hasEvents,
+              events: data,
+              students,
+              success: success,
+              res_status: status
+            }));
+          } else {
+            setCalendarEventsState((prevState) => ({
+              ...prevState,
+              isLoaded: true,
+              res_status: status
+            }));
+          }
+        },
+        (error) => {
           setCalendarEventsState((prevState) => ({
             ...prevState,
             isLoaded: true,
-            agents,
-            hasEvents,
-            students,
-            events: data,
-            booked_events,
-            success: success,
-            res_status: status
-          }));
-        } else {
-          setCalendarEventsState((prevState) => ({
-            ...prevState,
-            isLoaded: true,
-            res_status: status
+            error,
+            res_status: 500
           }));
         }
-      },
-      (error) => {
-        setCalendarEventsState((prevState) => ({
-          ...prevState,
-          isLoaded: true,
-          error,
-          res_status: 500
-        }));
-      }
-    );
+      );
+    } else {
+      getEvents().then(
+        (resp) => {
+          const { data, agents, booked_events, students, hasEvents, success } =
+            resp.data;
+          const { status } = resp;
+          if (success) {
+            setCalendarEventsState((prevState) => ({
+              ...prevState,
+              isLoaded: true,
+              agents,
+              hasEvents,
+              students,
+              events: data,
+              booked_events,
+              success: success,
+              res_status: status
+            }));
+          } else {
+            setCalendarEventsState((prevState) => ({
+              ...prevState,
+              isLoaded: true,
+              res_status: status
+            }));
+          }
+        },
+        (error) => {
+          setCalendarEventsState((prevState) => ({
+            ...prevState,
+            isLoaded: true,
+            error,
+            res_status: 500
+          }));
+        }
+      );
+    }
   }, [props.user_id]);
 
   // Only Agent can request
@@ -515,7 +550,6 @@ function useCalendarEvents(props) {
     setCalendarEventsState((prevState) => ({
       ...prevState,
       isNewEventModalOpen: false,
-      newEventTitle: '',
       newDescription: ''
     }));
   };
@@ -598,7 +632,6 @@ function useCalendarEvents(props) {
     selectedEvent: calendarEventsState.selectedEvent,
     newEventStart: calendarEventsState.newEventStart,
     newEventEnd: calendarEventsState.newEventEnd,
-    newEventTitle: calendarEventsState.newEventTitle,
     isNewEventModalOpen: calendarEventsState.isNewEventModalOpen,
     isDeleteModalOpen: calendarEventsState.isDeleteModalOpen,
     students: calendarEventsState.students,

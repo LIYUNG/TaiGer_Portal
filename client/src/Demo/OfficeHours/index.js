@@ -78,7 +78,6 @@ function OfficeHours() {
     newDescription,
     selectedEvent,
     newEventEnd,
-    newEventTitle,
     isNewEventModalOpen,
     isDeleteModalOpen,
     handleConfirmAppointmentModalOpen,
@@ -103,7 +102,7 @@ function OfficeHours() {
     res_modal_message,
     res_modal_status,
     ConfirmError
-  } = useCalendarEvents(user_id);
+  } = useCalendarEvents({ user_id });
 
   const [value, setValue] = useState(0);
 
@@ -532,7 +531,6 @@ function OfficeHours() {
               newDescription={newDescription}
               selectedEvent={selectedEvent}
               newEventEnd={newEventEnd}
-              newEventTitle={newEventTitle}
               isNewEventModalOpen={isNewEventModalOpen}
             />
           </CustomTabPanel>

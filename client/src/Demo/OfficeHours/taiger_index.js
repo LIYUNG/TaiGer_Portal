@@ -67,7 +67,6 @@ function TaiGerOfficeHours() {
     selectedEvent,
     newEventStart,
     newEventEnd,
-    newEventTitle,
     isNewEventModalOpen,
     isDeleteModalOpen,
     available_termins_full,
@@ -98,7 +97,7 @@ function TaiGerOfficeHours() {
     res_modal_message,
     res_modal_status,
     ConfirmError
-  } = useCalendarEvents(user_id);
+  } = useCalendarEvents({ user_id });
 
   const handleChangeTab = (event, newValue) => {
     setValue(newValue);
@@ -385,7 +384,6 @@ function TaiGerOfficeHours() {
                 newDescription={newDescription}
                 selectedEvent={selectedEvent}
                 newEventEnd={newEventEnd}
-                newEventTitle={newEventTitle}
                 isNewEventModalOpen={isNewEventModalOpen}
               />
             </CustomTabPanel>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Badge,
@@ -32,19 +32,9 @@ import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import { useTranslation } from 'react-i18next';
 
-import {
-  confirmEvent,
-  deleteEvent,
-  getEvents,
-  postEvent,
-  updateEvent
-} from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import MyCalendar from '../../components/Calendar/components/Calendar';
-import {
-  is_TaiGer_Agent,
-  is_TaiGer_Student
-} from '../Utils/checking-functions';
+import { is_TaiGer_Agent } from '../Utils/checking-functions';
 import EventConfirmationCard from '../../components/Calendar/components/EventConfirmationCard';
 import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
@@ -52,538 +42,71 @@ import Loading from '../../components/Loading/Loading';
 import ModalNew from '../../components/Modal';
 import { appConfig } from '../../config';
 import { a11yProps, CustomTabPanel } from '../../components/Tabs';
+import { CreateNewEventModal } from '../../components/Calendar/components/CreateNewEventModal';
+import useCalendarEvents from '../../hooks/useCalendarEvents';
 
 function TaiGerOfficeHours() {
   const { user } = useAuth();
   const { user_id } = useParams();
   const { t } = useTranslation();
   const [value, setValue] = useState(0);
-  const [taiGerOfficeHoursState, setTaiGerOfficeHours] = useState({
-    error: '',
-    role: '',
-    isLoaded: false,
-    data: null,
-    success: false,
-    agents: {},
-    hasEvents: false,
-    students: null,
-    student_id: '',
-    isDeleteModalOpen: false,
-    isEditModalOpen: false,
-    isConfirmModalOpen: false,
-    event_temp: {},
-    event_id: '',
-    BookButtonDisable: false,
-    selectedEvent: {},
-    newReceiver: '',
-    newDescription: '',
-    newEventTitle: '',
-    newEventStart: null,
-    newEventEnd: null,
-    isNewEventModalOpen: false,
-    selected_year: 0,
-    selected_month: 0,
-    selected_day: 0,
-    res_status: 0,
-    res_modal_message: '',
-    res_modal_status: 0
-  });
-
-  useEffect(() => {
-    getEvents().then(
-      (resp) => {
-        const { data, agents, hasEvents, students, success } = resp.data;
-        const { status } = resp;
-        if (success) {
-          setTaiGerOfficeHours((prevState) => ({
-            ...prevState,
-            isLoaded: true,
-            agents,
-            hasEvents,
-            events: data,
-            students,
-            success: success,
-            res_status: status
-          }));
-        } else {
-          setTaiGerOfficeHours((prevState) => ({
-            ...prevState,
-            isLoaded: true,
-            res_status: status
-          }));
-        }
-      },
-      (error) => {
-        setTaiGerOfficeHours((prevState) => ({
-          ...prevState,
-          isLoaded: true,
-          error,
-          res_status: 500
-        }));
-      }
-    );
-  }, [user_id]);
-
-  const handleConfirmAppointmentModal = (e, event_id, updated_event) => {
-    e.preventDefault();
-    setTaiGerOfficeHours((prevState) => ({
-      ...prevState,
-      BookButtonDisable: true
-    }));
-    confirmEvent(event_id, updated_event).then(
-      (resp) => {
-        const { data, success } = resp.data;
-        const { status } = resp;
-        const temp_events = [...taiGerOfficeHoursState.events];
-        let found_event_idx = temp_events.findIndex(
-          (temp_event) => temp_event._id.toString() === event_id
-        );
-        if (found_event_idx >= 0) {
-          temp_events[found_event_idx] = data;
-        }
-        if (success) {
-          setTaiGerOfficeHours((prevState) => ({
-            ...prevState,
-            isLoaded: true,
-            isConfirmModalOpen: false,
-            events: temp_events,
-            event_temp: {},
-            event_id: '',
-            BookButtonDisable: false,
-            isDeleteModalOpen: false,
-            success: success,
-            res_status: status
-          }));
-        } else {
-          setTaiGerOfficeHours((prevState) => ({
-            ...prevState,
-            isLoaded: true,
-            event_temp: {},
-            event_id: '',
-            BookButtonDisable: false,
-            res_status: status
-          }));
-        }
-      },
-      (error) => {
-        setTaiGerOfficeHours((prevState) => ({
-          ...prevState,
-          isLoaded: true,
-          error,
-          BookButtonDisable: false,
-          res_status: 500
-        }));
-      }
-    );
-  };
-
-  const handleEditAppointmentModal = (e, event_id, updated_event) => {
-    e.preventDefault();
-    setTaiGerOfficeHours((prevState) => ({
-      ...prevState,
-      BookButtonDisable: true
-    }));
-    updateEvent(event_id, updated_event).then(
-      (resp) => {
-        const { data, success } = resp.data;
-        const { status } = resp;
-        let temp_events = [...taiGerOfficeHoursState.events];
-        let found_event_idx = temp_events.findIndex(
-          (temp_event) => temp_event._id.toString() === event_id
-        );
-        if (found_event_idx >= 0) {
-          temp_events[found_event_idx] = data;
-        }
-        if (success) {
-          setTaiGerOfficeHours((prevState) => ({
-            ...prevState,
-            isLoaded: true,
-            isEditModalOpen: false,
-            events: temp_events,
-            event_temp: {},
-            event_id: '',
-            BookButtonDisable: false,
-            isDeleteModalOpen: false,
-            success: success,
-            res_status: status
-          }));
-        } else {
-          setTaiGerOfficeHours((prevState) => ({
-            ...prevState,
-            isLoaded: true,
-            event_temp: {},
-            BookButtonDisable: false,
-            event_id: '',
-            res_status: status
-          }));
-        }
-      },
-      (error) => {
-        setTaiGerOfficeHours((prevState) => ({
-          ...prevState,
-          isLoaded: true,
-          error,
-          BookButtonDisable: false,
-          res_status: 500
-        }));
-      }
-    );
-  };
-
-  const handleDeleteAppointmentModal = (e, event_id) => {
-    e.preventDefault();
-    setTaiGerOfficeHours((prevState) => ({
-      ...prevState,
-      BookButtonDisable: true
-    }));
-    deleteEvent(event_id).then(
-      (resp) => {
-        const { data, agents, hasEvents, success } = resp.data;
-        const { status } = resp;
-        if (success) {
-          setTaiGerOfficeHours((prevState) => ({
-            ...prevState,
-            isLoaded: true,
-            agents,
-            hasEvents,
-            events: data,
-            event_id: '',
-            BookButtonDisable: false,
-            isDeleteModalOpen: false,
-            success: success,
-            res_status: status
-          }));
-        } else {
-          setTaiGerOfficeHours((prevState) => ({
-            ...prevState,
-            isLoaded: true,
-            event_id: '',
-            res_status: status
-          }));
-        }
-      },
-      (error) => {
-        setTaiGerOfficeHours((prevState) => ({
-          ...prevState,
-          isLoaded: true,
-          error,
-          BookButtonDisable: false,
-          res_status: 500
-        }));
-      }
-    );
-  };
-
-  const handleModalBook = (e) => {
-    const eventWrapper = { ...taiGerOfficeHoursState.selectedEvent };
-    if (is_TaiGer_Student(user)) {
-      eventWrapper.requester_id = user._id.toString();
-      eventWrapper.description = taiGerOfficeHoursState.newDescription;
-      eventWrapper.receiver_id = taiGerOfficeHoursState.newReceiver;
-    }
-    e.preventDefault();
-    setTaiGerOfficeHours((prevState) => ({
-      ...prevState,
-      BookButtonDisable: true
-    }));
-    postEvent(eventWrapper).then(
-      (resp) => {
-        const { success, data } = resp.data;
-        const { status } = resp;
-        const events_temp = [...taiGerOfficeHoursState.events];
-        events_temp.push(data);
-        if (success) {
-          setTaiGerOfficeHours((prevState) => ({
-            ...prevState,
-            success,
-            isLoaded: true,
-            newDescription: '',
-            newReceiver: '',
-            selectedEvent: {},
-            events: data,
-            BookButtonDisable: false,
-            hasEvents: true,
-            isDeleteModalOpen: false,
-            res_modal_status: status
-          }));
-        } else {
-          // TODO: what if data is oversize? data type not match?
-          const { message } = resp.data;
-          setTaiGerOfficeHours((prevState) => ({
-            ...prevState,
-            success,
-            isLoaded: true,
-            newDescription: '',
-            newReceiver: '',
-            selectedEvent: {},
-            isDeleteModalOpen: false,
-            BookButtonDisable: false,
-            res_modal_message: message,
-            res_modal_status: status
-          }));
-        }
-      },
-      (error) => {
-        setTaiGerOfficeHours((prevState) => ({
-          ...prevState,
-          error,
-          isLoaded: true,
-          newDescription: '',
-          newReceiver: '',
-          selectedEvent: {},
-          isDeleteModalOpen: false,
-          BookButtonDisable: false
-        }));
-      }
-    );
-  };
-
-  // Only Agent can request
-  const handleModalCreateEvent = (newEvent) => {
-    const eventWrapper = { ...newEvent };
-    if (is_TaiGer_Agent(user)) {
-      const temp_std = taiGerOfficeHoursState.students.find(
-        (std) => std._id.toString() === taiGerOfficeHoursState.student_id
-      );
-      eventWrapper.title = `${temp_std.firstname} ${temp_std.lastname} ${temp_std.firstname_chinese} ${temp_std.lastname_chinese}`;
-      eventWrapper.requester_id = taiGerOfficeHoursState.student_id;
-      eventWrapper.receiver_id = user._id.toString();
-    }
-    // e.preventDefault();
-    setTaiGerOfficeHours((prevState) => ({
-      ...prevState,
-      BookButtonDisable: true
-    }));
-    postEvent(eventWrapper).then(
-      (resp) => {
-        const { success, data } = resp.data;
-        const { status } = resp;
-        const events_temp = [...taiGerOfficeHoursState.events];
-        events_temp.push(data);
-        if (success) {
-          setTaiGerOfficeHours((prevState) => ({
-            ...prevState,
-            success,
-            isLoaded: true,
-            newDescription: '',
-            newReceiver: '',
-            selectedEvent: {},
-            student_id: '',
-            isNewEventModalOpen: false,
-            events: data,
-            newEvent: {},
-            BookButtonDisable: false,
-            hasEvents: true,
-            isDeleteModalOpen: false,
-            res_modal_status: status
-          }));
-        } else {
-          // TODO: what if data is oversize? data type not match?
-          const { message } = resp.data;
-          setTaiGerOfficeHours((prevState) => ({
-            ...prevState,
-            success,
-            isLoaded: true,
-            newDescription: '',
-            newReceiver: '',
-            selectedEvent: {},
-            isNewEventModalOpen: false,
-            isDeleteModalOpen: false,
-            BookButtonDisable: false,
-            res_modal_message: message,
-            res_modal_status: status
-          }));
-        }
-      },
-      (error) => {
-        setTaiGerOfficeHours((prevState) => ({
-          ...prevState,
-          error,
-          isLoaded: true,
-          newDescription: '',
-          newReceiver: '',
-          isNewEventModalOpen: false,
-          selectedEvent: {},
-          isDeleteModalOpen: false,
-          BookButtonDisable: false
-        }));
-      }
-    );
-  };
-
-  const handleUpdateDescription = (e) => {
-    const new_description_temp = e.target.value;
-    setTaiGerOfficeHours((prevState) => ({
-      ...prevState,
-      event_temp: {
-        ...prevState.event_temp,
-        description: new_description_temp
-      }
-    }));
-  };
+  const {
+    events,
+    agents,
+    hasEvents,
+    booked_events,
+    res_status,
+    isLoaded,
+    isConfirmModalOpen,
+    event_id,
+    event_temp,
+    BookButtonDisable,
+    isEditModalOpen,
+    newReceiver,
+    newDescription,
+    selectedEvent,
+    newEventStart,
+    newEventEnd,
+    newEventTitle,
+    isNewEventModalOpen,
+    isDeleteModalOpen,
+    available_termins_full,
+    student_id,
+    students,
+    handleConfirmAppointmentModalOpen,
+    handleEditAppointmentModalOpen,
+    handleModalBook,
+    handleUpdateDescription,
+    handleEditAppointmentModal,
+    handleConfirmAppointmentModal,
+    handleDeleteAppointmentModal,
+    handleUpdateTimeSlot,
+    handleUpdateTimeSlotAgent,
+    handleConfirmAppointmentModalClose,
+    handleEditAppointmentModalClose,
+    handleDeleteAppointmentModalClose,
+    handleDeleteAppointmentModalOpen,
+    handleModalClose,
+    handleChangeReceiver,
+    handleSelectEvent,
+    handleChange,
+    handleSelectSlotAgent,
+    handleNewEventModalClose,
+    switchCalendarAndMyBookedEvents,
+    handleModalCreateEvent,
+    handleSelectStudent,
+    res_modal_message,
+    res_modal_status,
+    ConfirmError
+  } = useCalendarEvents(user_id);
 
   const handleChangeTab = (event, newValue) => {
     setValue(newValue);
   };
 
-  const handleUpdateTimeSlot = (e) => {
-    const new_timeslot_temp = e.target.value;
-    setTaiGerOfficeHours((prevState) => ({
-      ...prevState,
-      event_temp: {
-        ...prevState.event_temp,
-        start: new_timeslot_temp
-      },
-      newEventStart: new_timeslot_temp
-    }));
-  };
-
-  const handleSelectStudent = (e) => {
-    const student_id = e.target.value;
-    setTaiGerOfficeHours((prevState) => ({
-      ...prevState,
-      student_id: student_id
-    }));
-  };
-
-  const handleConfirmAppointmentModalClose = () => {
-    setTaiGerOfficeHours((prevState) => ({
-      ...prevState,
-      isConfirmModalOpen: false
-    }));
-  };
-  const handleEditAppointmentModalClose = () => {
-    setTaiGerOfficeHours((prevState) => ({
-      ...prevState,
-      isEditModalOpen: false
-    }));
-  };
-
-  const handleDeleteAppointmentModalClose = () => {
-    setTaiGerOfficeHours((prevState) => ({
-      ...prevState,
-      isDeleteModalOpen: false
-    }));
-  };
-  const handleConfirmAppointmentModalOpen = (e, event) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setTaiGerOfficeHours((prevState) => ({
-      ...prevState,
-      isConfirmModalOpen: true,
-      event_temp: event,
-      event_id: event._id.toString()
-    }));
-  };
-  const handleEditAppointmentModalOpen = (e, event) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setTaiGerOfficeHours((prevState) => ({
-      ...prevState,
-      isEditModalOpen: true,
-      event_temp: event,
-      event_id: event._id.toString()
-    }));
-  };
-
-  const handleDeleteAppointmentModalOpen = (e, event) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setTaiGerOfficeHours((prevState) => ({
-      ...prevState,
-      isDeleteModalOpen: true,
-      event_id: event._id.toString()
-    }));
-  };
-
-  const ConfirmError = () => {
-    setTaiGerOfficeHours((prevState) => ({
-      ...prevState,
-      res_modal_status: 0,
-      res_modal_message: ''
-    }));
-  };
-
-  // Calendar handler:
-  const handleSelectEvent = (event) => {
-    setTaiGerOfficeHours((prevState) => ({
-      ...prevState,
-      isEditModalOpen: true,
-      event_temp: event,
-      event_id: event._id.toString()
-    }));
-  };
-  const handleChange = (e) => {
-    const description_temp = e.target.value;
-    setTaiGerOfficeHours((prevState) => ({
-      ...prevState,
-      newDescription: description_temp
-    }));
-  };
-  const handleModalClose = () => {
-    setTaiGerOfficeHours((prevState) => ({
-      ...prevState,
-      selectedEvent: {},
-      newDescription: '',
-      newReceiver: ''
-    }));
-  };
-  const handleChangeReceiver = (e) => {
-    const receiver_temp = e.target.value;
-    setTaiGerOfficeHours((prevState) => ({
-      ...prevState,
-      newReceiver: receiver_temp
-    }));
-  };
-
-  const handleSelectSlot = (slotInfo) => {
-    // When an empty date slot is clicked, open the modal to create a new event
-    const Some_Date = new Date(slotInfo.start); //bug
-    const year = Some_Date.getFullYear();
-    const month = Some_Date.getMonth() + 1;
-    const day = Some_Date.getDate();
-
-    setTaiGerOfficeHours((prevState) => ({
-      ...prevState,
-      newEventStart: slotInfo.start,
-      newEventEnd: slotInfo.end,
-      isNewEventModalOpen: true,
-      selected_year: year,
-      selected_month: month,
-      selected_day: day
-    }));
-  };
-
-  const handleNewEventModalClose = () => {
-    // Close the modal for creating a new event
-    setTaiGerOfficeHours((prevState) => ({
-      ...prevState,
-      isNewEventModalOpen: false,
-      newEventTitle: '',
-      newDescription: ''
-    }));
-  };
-
-  const switchCalendarAndMyBookedEvents = () => {
-    setTaiGerOfficeHours((prevState) => ({
-      ...prevState,
-      hasEvents: !taiGerOfficeHoursState.hasEvents
-    }));
-  };
-
   if (!is_TaiGer_Agent(user)) {
     return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
   }
-  const {
-    hasEvents,
-    events,
-    agents,
-    students,
-    res_status,
-    isLoaded,
-    res_modal_status,
-    res_modal_message
-  } = taiGerOfficeHoursState;
 
   if (!isLoaded || !students) {
     return <Loading />;
@@ -635,13 +158,7 @@ function TaiGerOfficeHours() {
         : []
     )
   );
-  const booked_events = events.map((event) => ({
-    ...event,
-    id: event._id.toString(),
-    start: new Date(event.start),
-    end: new Date(event.end),
-    provider: event.requester_id[0]
-  }));
+
   return (
     <Box>
       {res_modal_status >= 400 && (
@@ -763,7 +280,7 @@ function TaiGerOfficeHours() {
             </Box>
           </Card>
           <ModalNew
-            open={taiGerOfficeHoursState.isConfirmModalOpen}
+            open={isConfirmModalOpen}
             onClose={handleConfirmAppointmentModalClose}
             centered
           >
@@ -776,19 +293,15 @@ function TaiGerOfficeHours() {
               variant="contained"
               size="small"
               disabled={
-                taiGerOfficeHoursState.event_id === '' ||
-                taiGerOfficeHoursState.event_temp?.description?.length === 0 ||
-                taiGerOfficeHoursState.BookButtonDisable
+                event_id === '' ||
+                event_temp?.description?.length === 0 ||
+                BookButtonDisable
               }
               onClick={(e) =>
-                handleConfirmAppointmentModal(
-                  e,
-                  taiGerOfficeHoursState.event_id,
-                  taiGerOfficeHoursState.event_temp
-                )
+                handleConfirmAppointmentModal(e, event_id, event_temp)
               }
             >
-              {taiGerOfficeHoursState.BookButtonDisable ? (
+              {BookButtonDisable ? (
                 <CircularProgress size={16} />
               ) : (
                 <>
@@ -807,7 +320,7 @@ function TaiGerOfficeHours() {
             </Button>
           </ModalNew>
           <ModalNew
-            open={taiGerOfficeHoursState.isDeleteModalOpen}
+            open={isDeleteModalOpen}
             onClose={handleDeleteAppointmentModalClose}
             centered
             size="lg"
@@ -818,15 +331,10 @@ function TaiGerOfficeHours() {
               color="secondary"
               variant="contained"
               size="small"
-              disabled={
-                taiGerOfficeHoursState.event_id === '' ||
-                taiGerOfficeHoursState.BookButtonDisable
-              }
-              onClick={(e) =>
-                handleDeleteAppointmentModal(e, taiGerOfficeHoursState.event_id)
-              }
+              disabled={event_id === '' || BookButtonDisable}
+              onClick={(e) => handleDeleteAppointmentModal(e, event_id)}
             >
-              {taiGerOfficeHoursState.BookButtonDisable ? (
+              {BookButtonDisable ? (
                 <CircularProgress size={16} />
               ) : (
                 t('Delete', { ns: 'common' })
@@ -868,23 +376,17 @@ function TaiGerOfficeHours() {
                 handleChange={handleChange}
                 handleModalClose={handleModalClose}
                 handleChangeReceiver={handleChangeReceiver}
-                handleSelectSlot={handleSelectSlot}
+                handleSelectSlot={handleSelectSlotAgent}
                 handleSelectStudent={handleSelectStudent}
-                student_id={taiGerOfficeHoursState.student_id}
                 handleNewEventModalClose={handleNewEventModalClose}
                 handleModalBook={handleModalBook}
                 handleModalCreateEvent={handleModalCreateEvent}
-                newReceiver={taiGerOfficeHoursState.newReceiver}
-                newDescription={taiGerOfficeHoursState.newDescription}
-                selectedEvent={taiGerOfficeHoursState.selectedEvent}
-                newEventStart={taiGerOfficeHoursState.newEventStart}
-                newEventEnd={taiGerOfficeHoursState.newEventEnd}
-                newEventTitle={taiGerOfficeHoursState.newEventTitle}
-                selected_year={taiGerOfficeHoursState.selected_year}
-                selected_month={taiGerOfficeHoursState.selected_month}
-                selected_day={taiGerOfficeHoursState.selected_day}
-                students={taiGerOfficeHoursState.students}
-                isNewEventModalOpen={taiGerOfficeHoursState.isNewEventModalOpen}
+                newReceiver={newReceiver}
+                newDescription={newDescription}
+                selectedEvent={selectedEvent}
+                newEventEnd={newEventEnd}
+                newEventTitle={newEventTitle}
+                isNewEventModalOpen={isNewEventModalOpen}
               />
             </CustomTabPanel>
             <CustomTabPanel value={value} index={1}>
@@ -903,7 +405,7 @@ function TaiGerOfficeHours() {
         </>
       )}
       <ModalNew
-        open={taiGerOfficeHoursState.isEditModalOpen}
+        open={isEditModalOpen}
         onClose={handleEditAppointmentModalClose}
         size="lg"
       >
@@ -916,29 +418,21 @@ function TaiGerOfficeHours() {
           multiline
           rows="10"
           placeholder="Example：我想定案選校、選課，我想討論簽證，德語班。"
-          value={taiGerOfficeHoursState.event_temp.description || ''}
-          isInvalid={
-            taiGerOfficeHoursState.event_temp.description?.length > 2000
-          }
+          value={event_temp.description || ''}
+          isInvalid={event_temp.description?.length > 2000}
           onChange={(e) => handleUpdateDescription(e)}
         />
         <Badge
-          bg={`${
-            taiGerOfficeHoursState.event_temp.description?.length > 2000
-              ? 'danger'
-              : 'primary'
-          }`}
+          bg={`${event_temp.description?.length > 2000 ? 'danger' : 'primary'}`}
         >
-          {taiGerOfficeHoursState.event_temp.description?.length || 0}/{2000}
+          {event_temp.description?.length || 0}/{2000}
         </Badge>
         <Typography variant="body1">Student: </Typography>
-        {taiGerOfficeHoursState.event_temp?.requester_id?.map(
-          (requester, idx) => (
-            <Typography fontWeight="bold" key={idx}>
-              {requester.firstname} {requester.lastname}
-            </Typography>
-          )
-        )}
+        {event_temp?.requester_id?.map((requester, idx) => (
+          <Typography fontWeight="bold" key={idx}>
+            {requester.firstname} {requester.lastname}
+          </Typography>
+        ))}
         <Typography>
           Time zone: {user.timezone}. (Please update it in{' '}
           <a href="/profile" target="_blank">
@@ -957,7 +451,7 @@ function TaiGerOfficeHours() {
             name="study_group"
             id="study_group"
             onChange={(e) => handleUpdateTimeSlot(e)}
-            value={new Date(taiGerOfficeHoursState.event_temp.start).toString()}
+            value={new Date(event_temp.start).toString()}
           >
             {available_termins
               .sort((a, b) => (a.start < b.start ? -1 : 1))
@@ -977,25 +471,35 @@ function TaiGerOfficeHours() {
           variant="outlined"
           size="small"
           disabled={
-            taiGerOfficeHoursState.event_id === '' ||
-            taiGerOfficeHoursState.event_temp?.description?.length === 0 ||
-            taiGerOfficeHoursState.BookButtonDisable
+            event_id === '' ||
+            event_temp?.description?.length === 0 ||
+            BookButtonDisable
           }
-          onClick={(e) =>
-            handleEditAppointmentModal(
-              e,
-              taiGerOfficeHoursState.event_id,
-              taiGerOfficeHoursState.event_temp
-            )
-          }
+          onClick={(e) => handleEditAppointmentModal(e, event_id, event_temp)}
         >
-          {taiGerOfficeHoursState.BookButtonDisable ? (
+          {BookButtonDisable ? (
             <CircularProgress size={16} />
           ) : (
             t('Update', { ns: 'common' })
           )}
         </Button>
       </ModalNew>
+      {is_TaiGer_Agent(user) && (
+        <CreateNewEventModal
+          // {...props}
+          events={events}
+          newEventStart={newEventStart}
+          handleModalCreateEvent={handleModalCreateEvent}
+          isNewEventModalOpen={isNewEventModalOpen}
+          handleNewEventModalClose={handleNewEventModalClose}
+          handleUpdateTimeSlot={handleUpdateTimeSlotAgent}
+          student_id={student_id}
+          BookButtonDisable={BookButtonDisable}
+          handleSelectStudent={handleSelectStudent}
+          students={students}
+          available_termins={available_termins_full}
+        />
+      )}
     </Box>
   );
 }

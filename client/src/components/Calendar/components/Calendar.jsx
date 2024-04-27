@@ -7,61 +7,18 @@ import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import Popping from './Popping';
 import { useTheme } from '@mui/material';
-import {
-  NoonNightLabel,
-  getUTCWithDST,
-  stringToColor,
-  time_slots
-} from '../../../Demo/Utils/contants';
+import { NoonNightLabel, stringToColor } from '../../../Demo/Utils/contants';
 import {
   is_TaiGer_Agent,
   is_TaiGer_Student
 } from '../../../Demo/Utils/checking-functions';
 import { useAuth } from '../../AuthProvider';
-import { CreateNewEventModal } from './CreateNewEventModal';
 
 const localizer = momentLocalizer(moment);
 
 const MyCalendar = (props) => {
   const { user } = useAuth();
   const theme = useTheme();
-  let available_termins = [];
-  function getAvailableTermins({
-    selected_day,
-    selected_month,
-    selected_year
-  }) {
-    return time_slots.flatMap((time_slot, j) => {
-      const year = selected_year;
-      const month = selected_month;
-      const day = selected_day;
-
-      const test_date = getUTCWithDST(
-        year,
-        month,
-        day,
-        user.timezone,
-        time_slot.value
-      );
-      const start_date = new Date(test_date);
-      const end_date = new Date(start_date);
-      end_date.setMinutes(end_date.getMinutes() + 30);
-      return {
-        id: j * 10,
-        title: `${start_date.getHours()}:${time_slot.value.split(':')[1]}`,
-        start: start_date,
-        end: end_date
-        // provider: agent
-      };
-    });
-  }
-  if (is_TaiGer_Agent(user) && props.selected_year) {
-    available_termins = getAvailableTermins({
-      selected_day: props.selected_day,
-      selected_month: props.selected_month,
-      selected_year: props.selected_year
-    });
-  }
 
   const eventPropGetter = (event) => {
     // Default background color for other events
@@ -329,9 +286,6 @@ const MyCalendar = (props) => {
         event={props.selectedEvent}
         user={user}
       />
-      {is_TaiGer_Agent(user) && (
-        <CreateNewEventModal {...props} available_termins={available_termins} />
-      )}
     </>
   );
 };

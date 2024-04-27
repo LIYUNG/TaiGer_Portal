@@ -6,8 +6,12 @@ import {
   postEvent,
   updateEvent
 } from '../api';
-import { is_TaiGer_Student } from '../Demo/Utils/checking-functions';
+import {
+  is_TaiGer_Agent,
+  is_TaiGer_Student
+} from '../Demo/Utils/checking-functions';
 import { useAuth } from '../components/AuthProvider';
+import { getUTCWithDST, time_slots } from '../Demo/Utils/contants';
 
 function useCalendarEvents(props) {
   const { user } = useAuth();
@@ -17,6 +21,7 @@ function useCalendarEvents(props) {
     data: null,
     success: false,
     agents: {},
+    student_id: '',
     hasEvents: false,
     isDeleteModalOpen: false,
     isEditModalOpen: false,
@@ -40,7 +45,8 @@ function useCalendarEvents(props) {
   useEffect(() => {
     getEvents().then(
       (resp) => {
-        const { data, agents, booked_events, hasEvents, success } = resp.data;
+        const { data, agents, booked_events, students, hasEvents, success } =
+          resp.data;
         const { status } = resp;
         if (success) {
           setCalendarEventsState((prevState) => ({
@@ -48,6 +54,7 @@ function useCalendarEvents(props) {
             isLoaded: true,
             agents,
             hasEvents,
+            students,
             events: data,
             booked_events,
             success: success,
@@ -71,6 +78,79 @@ function useCalendarEvents(props) {
       }
     );
   }, [props.user_id]);
+
+  // Only Agent can request
+  const handleModalCreateEvent = (newEvent) => {
+    const eventWrapper = { ...newEvent };
+    if (is_TaiGer_Agent(user)) {
+      const temp_std = calendarEventsState.students.find(
+        (std) => std._id.toString() === calendarEventsState.student_id
+      );
+      eventWrapper.title = `${temp_std.firstname} ${temp_std.lastname} ${temp_std.firstname_chinese} ${temp_std.lastname_chinese}`;
+      eventWrapper.requester_id = calendarEventsState.student_id;
+      eventWrapper.receiver_id = user._id.toString();
+    }
+    // e.preventDefault();
+    setCalendarEventsState((prevState) => ({
+      ...prevState,
+      BookButtonDisable: true
+    }));
+    postEvent(eventWrapper).then(
+      (resp) => {
+        const { success, data } = resp.data;
+        const { status } = resp;
+        const events_temp = [...calendarEventsState.events];
+        events_temp.push(data);
+        if (success) {
+          setCalendarEventsState((prevState) => ({
+            ...prevState,
+            success,
+            isLoaded: true,
+            newDescription: '',
+            newReceiver: '',
+            selectedEvent: {},
+            student_id: '',
+            isNewEventModalOpen: false,
+            events: data,
+            newEvent: {},
+            BookButtonDisable: false,
+            hasEvents: true,
+            isDeleteModalOpen: false,
+            res_modal_status: status
+          }));
+        } else {
+          // TODO: what if data is oversize? data type not match?
+          const { message } = resp.data;
+          setCalendarEventsState((prevState) => ({
+            ...prevState,
+            success,
+            isLoaded: true,
+            newDescription: '',
+            newReceiver: '',
+            selectedEvent: {},
+            isNewEventModalOpen: false,
+            isDeleteModalOpen: false,
+            BookButtonDisable: false,
+            res_modal_message: message,
+            res_modal_status: status
+          }));
+        }
+      },
+      (error) => {
+        setCalendarEventsState((prevState) => ({
+          ...prevState,
+          error,
+          isLoaded: true,
+          newDescription: '',
+          newReceiver: '',
+          isNewEventModalOpen: false,
+          selectedEvent: {},
+          isDeleteModalOpen: false,
+          BookButtonDisable: false
+        }));
+      }
+    );
+  };
 
   const handleModalBook = (e) => {
     e.preventDefault();
@@ -327,6 +407,18 @@ function useCalendarEvents(props) {
     }));
   };
 
+  const handleUpdateTimeSlotAgent = (e) => {
+    const new_timeslot_temp = e.target.value;
+    setCalendarEventsState((prevState) => ({
+      ...prevState,
+      event_temp: {
+        ...prevState.event_temp,
+        start: new_timeslot_temp
+      },
+      newEventStart: new_timeslot_temp
+    }));
+  };
+
   const handleConfirmAppointmentModalClose = () => {
     setCalendarEventsState((prevState) => ({
       ...prevState,
@@ -400,6 +492,24 @@ function useCalendarEvents(props) {
     }));
   };
 
+  const handleSelectSlotAgent = (slotInfo) => {
+    // When an empty date slot is clicked, open the modal to create a new event
+    const Some_Date = new Date(slotInfo.start); //bug
+    const year = Some_Date.getFullYear();
+    const month = Some_Date.getMonth() + 1;
+    const day = Some_Date.getDate();
+
+    setCalendarEventsState((prevState) => ({
+      ...prevState,
+      newEventStart: slotInfo.start,
+      newEventEnd: slotInfo.end,
+      isNewEventModalOpen: true,
+      selected_year: year,
+      selected_month: month,
+      selected_day: day
+    }));
+  };
+
   const handleNewEventModalClose = () => {
     // Close the modal for creating a new event
     setCalendarEventsState((prevState) => ({
@@ -425,6 +535,52 @@ function useCalendarEvents(props) {
     }));
   };
 
+  const handleSelectStudent = (e) => {
+    const student_id = e.target.value;
+    setCalendarEventsState((prevState) => ({
+      ...prevState,
+      student_id: student_id
+    }));
+  };
+
+  let available_termins_full = [];
+  function getAvailableTermins({
+    selected_day,
+    selected_month,
+    selected_year
+  }) {
+    return time_slots.flatMap((time_slot, j) => {
+      const year = selected_year;
+      const month = selected_month;
+      const day = selected_day;
+
+      const test_date = getUTCWithDST(
+        year,
+        month,
+        day,
+        user.timezone,
+        time_slot.value
+      );
+      const start_date = new Date(test_date);
+      const end_date = new Date(start_date);
+      end_date.setMinutes(end_date.getMinutes() + 30);
+      return {
+        id: j * 10,
+        title: `${start_date.getHours()}:${time_slot.value.split(':')[1]}`,
+        start: start_date,
+        end: end_date
+        // provider: agent
+      };
+    });
+  }
+  if (is_TaiGer_Agent(user) && calendarEventsState.selected_year) {
+    available_termins_full = getAvailableTermins({
+      selected_day: calendarEventsState.selected_day,
+      selected_month: calendarEventsState.selected_month,
+      selected_year: calendarEventsState.selected_year
+    });
+  }
+
   return {
     events: calendarEventsState.events,
     agents: calendarEventsState.agents,
@@ -445,6 +601,9 @@ function useCalendarEvents(props) {
     newEventTitle: calendarEventsState.newEventTitle,
     isNewEventModalOpen: calendarEventsState.isNewEventModalOpen,
     isDeleteModalOpen: calendarEventsState.isDeleteModalOpen,
+    students: calendarEventsState.students,
+    student_id: calendarEventsState.student_id,
+    available_termins_full: available_termins_full,
     handleConfirmAppointmentModalOpen: handleConfirmAppointmentModalOpen,
     handleEditAppointmentModalOpen: handleEditAppointmentModalOpen,
     handleModalBook: handleModalBook,
@@ -453,6 +612,7 @@ function useCalendarEvents(props) {
     handleConfirmAppointmentModal: handleConfirmAppointmentModal,
     handleDeleteAppointmentModal: handleDeleteAppointmentModal,
     handleUpdateTimeSlot: handleUpdateTimeSlot,
+    handleUpdateTimeSlotAgent: handleUpdateTimeSlotAgent,
     handleConfirmAppointmentModalClose: handleConfirmAppointmentModalClose,
     handleEditAppointmentModalClose: handleEditAppointmentModalClose,
     handleDeleteAppointmentModalClose: handleDeleteAppointmentModalClose,
@@ -462,8 +622,11 @@ function useCalendarEvents(props) {
     handleSelectEvent: handleSelectEvent,
     handleChange: handleChange,
     handleSelectSlot: handleSelectSlot,
+    handleSelectSlotAgent: handleSelectSlotAgent,
     handleNewEventModalClose: handleNewEventModalClose,
     switchCalendarAndMyBookedEvents: switchCalendarAndMyBookedEvents,
+    handleModalCreateEvent: handleModalCreateEvent,
+    handleSelectStudent: handleSelectStudent,
     res_modal_message: calendarEventsState.res_modal_message,
     res_modal_status: calendarEventsState.res_modal_status,
     ConfirmError

@@ -77,7 +77,6 @@ function OfficeHours() {
     newReceiver,
     newDescription,
     selectedEvent,
-    newEventStart,
     newEventEnd,
     newEventTitle,
     isNewEventModalOpen,
@@ -518,15 +517,7 @@ function OfficeHours() {
               />
             )}
             <MyCalendar
-              events={
-                // events?.filter(
-                //   (event) =>
-                //     getNumberOfDays(new Date(), event.start) >= -1
-                // ).length !== 0
-                //   ? []
-                //   :
-                [...available_termins]
-              }
+              events={[...available_termins]}
               user={user}
               handleSelectEvent={handleSelectEvent}
               handleUpdateTimeSlot={handleUpdateTimeSlot}
@@ -540,7 +531,6 @@ function OfficeHours() {
               newReceiver={newReceiver}
               newDescription={newDescription}
               selectedEvent={selectedEvent}
-              newEventStart={newEventStart}
               newEventEnd={newEventEnd}
               newEventTitle={newEventTitle}
               isNewEventModalOpen={isNewEventModalOpen}
@@ -550,7 +540,7 @@ function OfficeHours() {
             {available_termins
               .sort((a, b) => (a.start < b.start ? -1 : 1))
               .map((time_slot, j) => (
-                <Card key={j} className="my-0 mx-0">
+                <Card key={j}>
                   <Typography variant="h6">
                     {time_slot.start?.toLocaleString()} to{' '}
                     {time_slot.end?.toLocaleString()}

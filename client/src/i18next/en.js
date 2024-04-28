@@ -282,7 +282,11 @@ export const translation_en = {
       '[Attention]  By checking this, the student will be informed that their service in the Portal ends. For disappeared students, highly recommanded not to inform. Please consult with your manager. For those who got admissions and start studying, please inform them as official close.',
     'New editor is assigned to you.': 'New editor is assigned to you.',
     'No Program Selected Yet': 'No Program Selected Yet',
-    'Program Specific Documents Check': 'Program Specific Documents Check'
+    'Program Specific Documents Check': 'Program Specific Documents Check',
+    'It looks like you did not finish survey. See':
+      'It looks like you did not finish survey. See',
+    'Student View': 'Student View',
+    'Wait for Agent': 'Wait for Agent'
   },
   dashboard: {
     Dashboard: 'Dashboard',

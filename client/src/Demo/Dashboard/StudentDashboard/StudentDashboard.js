@@ -120,7 +120,9 @@ function StudentDashboard(props) {
                 bg={'danger'}
                 title={'warning'}
                 path={`${DEMO.SURVEY_LINK}`}
-                text={'It looks like you did not finish survey. See'}
+                text={t('It looks like you did not finish survey. See', {
+                  ns: 'common'
+                })}
                 link_name={
                   <>
                     {t('Survey')}
@@ -371,7 +373,9 @@ function StudentDashboard(props) {
                             </Button>
                           </Link>
                         ) : (
-                          <span className="text-light">Wait for Agent</span>
+                          <span className="text-light">
+                            {t('Wait for Agent', { ns: 'common' })}
+                          </span>
                         )}
                       </Grid>
                     </Grid>

@@ -578,7 +578,7 @@ export const SingleStudentPageMainContent = ({
         <>
           <Alert severity="error" sx={{ mt: 2 }}>
             <Typography variant="body1" fontWeight="bold">
-              {t('Student View')}
+              {t('Student View', { ns: 'common' })}
             </Typography>
           </Alert>
           <StudentDashboard

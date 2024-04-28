@@ -462,9 +462,10 @@ function SingleProgramView(props) {
           <Box sx={{ my: 2 }}>
             <Link
               component={LinkDom}
-              to={`https://www.google.com/search?q=${
-                props.program.school
-              }+${props.program.program_name?.replace('&', 'and')}+${
+              to={`https://www.google.com/search?q=${props.program.school?.replace(
+                '&',
+                'and'
+              )}+${props.program.program_name?.replace('&', 'and')}+${
                 props.program.degree
               }`}
               target="_blank"

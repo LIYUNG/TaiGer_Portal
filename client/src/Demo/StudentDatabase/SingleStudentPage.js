@@ -310,7 +310,6 @@ export const SingleStudentPageMainContent = ({
           res_modal_message={res_modal_message}
         />
       )}
-      {singleStudentPage.student.archiv && <TopBar />}
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Box>
           <Breadcrumbs aria-label="breadcrumb">
@@ -381,6 +380,7 @@ export const SingleStudentPageMainContent = ({
           </Box>
         </Box>
       </Box>
+      {singleStudentPage.student.archiv && <TopBar />}
       {singleStudentPage.taiger_view ? (
         <>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>

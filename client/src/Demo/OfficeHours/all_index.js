@@ -148,7 +148,6 @@ function AllOfficeHours() {
               .map((event, i) => (
                 <EventConfirmationCard
                   key={i}
-                  user={user}
                   event={event}
                   handleConfirmAppointmentModalOpen={
                     handleConfirmAppointmentModalOpen
@@ -182,7 +181,6 @@ function AllOfficeHours() {
                   .map((event, i) => (
                     <EventConfirmationCard
                       key={i}
-                      user={user}
                       event={event}
                       handleConfirmAppointmentModalOpen={
                         handleConfirmAppointmentModalOpen
@@ -305,7 +303,6 @@ function AllOfficeHours() {
             <CustomTabPanel value={value} index={0}>
               <MyCalendar
                 events={[...booked_events]}
-                user={user}
                 handleSelectEvent={handleSelectEvent}
                 handleUpdateTimeSlot={handleUpdateTimeSlotAgent}
                 handleChange={handleChange}

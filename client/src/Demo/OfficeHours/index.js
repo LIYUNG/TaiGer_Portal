@@ -232,7 +232,6 @@ function OfficeHours() {
               .map((event, i) => (
                 <EventConfirmationCard
                   key={i}
-                  user={user}
                   event={event}
                   handleConfirmAppointmentModalOpen={
                     handleConfirmAppointmentModalOpen
@@ -267,7 +266,6 @@ function OfficeHours() {
                       .map((event, i) => (
                         <EventConfirmationCard
                           key={i}
-                          user={user}
                           event={event}
                           handleConfirmAppointmentModalOpen={
                             handleConfirmAppointmentModalOpen
@@ -292,7 +290,6 @@ function OfficeHours() {
                 .map((event, i) => (
                   <EventConfirmationCard
                     key={i}
-                    user={user}
                     event={event}
                     handleConfirmAppointmentModalOpen={
                       handleConfirmAppointmentModalOpen
@@ -517,7 +514,6 @@ function OfficeHours() {
             )}
             <MyCalendar
               events={[...available_termins]}
-              user={user}
               handleSelectEvent={handleSelectEvent}
               handleUpdateTimeSlot={handleUpdateTimeSlot}
               handleChange={handleChange}

@@ -204,7 +204,6 @@ function TaiGerOfficeHours() {
               .map((event, i) => (
                 <EventConfirmationCard
                   key={i}
-                  user={user}
                   event={event}
                   handleConfirmAppointmentModalOpen={
                     handleConfirmAppointmentModalOpen
@@ -238,7 +237,6 @@ function TaiGerOfficeHours() {
                     .map((event, i) => (
                       <EventConfirmationCard
                         key={i}
-                        user={user}
                         event={event}
                         handleConfirmAppointmentModalOpen={
                           handleConfirmAppointmentModalOpen
@@ -262,7 +260,6 @@ function TaiGerOfficeHours() {
                 .map((event, i) => (
                   <EventConfirmationCard
                     key={i}
-                    user={user}
                     event={event}
                     handleConfirmAppointmentModalOpen={
                       handleConfirmAppointmentModalOpen
@@ -369,7 +366,6 @@ function TaiGerOfficeHours() {
             <CustomTabPanel value={value} index={0}>
               <MyCalendar
                 events={[...booked_events]}
-                user={user}
                 handleSelectEvent={handleSelectEvent}
                 handleUpdateTimeSlot={handleUpdateTimeSlot}
                 handleChange={handleChange}

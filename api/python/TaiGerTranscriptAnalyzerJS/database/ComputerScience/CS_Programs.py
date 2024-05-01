@@ -70,6 +70,7 @@ def TUM_CS(transcript_sorted_group_map, df_transcript_array, df_category_courses
         PROG_SPEC_OTHERS,  # 物理化學資工工程
         PROG_SPEC_OTHERS,  # 商管經
         PROG_SPEC_OTHERS,  # 資管
+        PROG_SPEC_OTHERS,  # 遊戲
         PROG_SPEC_OTHERS,  # 訊號
         PROG_SPEC_OTHERS,  # 其他
     ]
@@ -179,6 +180,7 @@ def TUM_CS_DETAILED(transcript_sorted_group_map, df_transcript_array, df_categor
         PROG_SPEC_OTHERS,  # 物理化學資工工程
         PROG_SPEC_OTHERS,  # 商管經
         PROG_SPEC_OTHERS,  # 資管
+        PROG_SPEC_OTHERS,  # 遊戲
         PROG_SPEC_OTHERS,  # 訊號
         PROG_SPEC_OTHERS,  # 其他
     ]
@@ -295,6 +297,7 @@ def RWTH_DATA_SCIENCE_CS_BG(transcript_sorted_group_map, df_transcript_array, df
         PROG_SPEC_OTHERS,  # 物理化學資工工程
         PROG_SPEC_OTHERS,  # 商管經
         PROG_SPEC_OTHERS,  # 資管
+        PROG_SPEC_OTHERS,  # 遊戲
         PROG_SPEC_OTHERS,  # 訊號
         PROG_SPEC_OTHERS,  # 其他
     ]
@@ -376,6 +379,7 @@ def RWTH_DATA_SCIENCE_MATH_BG(transcript_sorted_group_map, df_transcript_array, 
         PROG_SPEC_OTHERS,  # 物理化學資工工程
         PROG_SPEC_OTHERS,  # 商管經
         PROG_SPEC_OTHERS,  # 資管
+        PROG_SPEC_OTHERS,  # 遊戲
         PROG_SPEC_OTHERS,  # 訊號
         PROG_SPEC_OTHERS,  # 其他
     ]
@@ -491,6 +495,7 @@ def RWTH_SOFTWARE_SYS_ENG(transcript_sorted_group_map, df_transcript_array, df_c
         PROG_SPEC_OTHERS,  # 物理化學資工工程
         PROG_SPEC_OTHERS,  # 商管經
         PROG_SPEC_OTHERS,  # 資管
+        PROG_SPEC_OTHERS,  # 遊戲
         PROG_SPEC_OTHERS,  # 訊號
         PROG_SPEC_OTHERS,  # 其他
     ]
@@ -606,6 +611,7 @@ def RWTH_MEDIA_INFO(transcript_sorted_group_map, df_transcript_array, df_categor
         PROG_SPEC_OTHERS,  # 物理化學資工工程
         PROG_SPEC_OTHERS,  # 商管經
         PROG_SPEC_OTHERS,  # 資管
+        PROG_SPEC_OTHERS,  # 遊戲
         PROG_SPEC_OTHERS,  # 訊號
         PROG_SPEC_OTHERS,  # 其他
     ]
@@ -695,6 +701,7 @@ def FU_BERLIN_DATA_SCIENCE(transcript_sorted_group_map, df_transcript_array, df_
         PROG_SPEC_OTHERS,  # 物理化學資工工程
         PROG_SPEC_OTHERS,  # 商管經
         PROG_SPEC_OTHERS,  # 資管
+        PROG_SPEC_OTHERS,  # 遊戲
         PROG_SPEC_OTHERS,  # 訊號
         PROG_SPEC_OTHERS,  # 其他
     ]
@@ -779,6 +786,7 @@ def TU_BERLIN_COMPUTER_SCIENCE(transcript_sorted_group_map, df_transcript_array,
         PROG_SPEC_OTHERS,  # 物理化學資工工程
         PROG_SPEC_OTHERS,  # 商管經
         PROG_SPEC_OTHERS,  # 資管
+        PROG_SPEC_OTHERS,  # 遊戲
         PROG_SPEC_OTHERS,  # 訊號
         PROG_SPEC_OTHERS,  # 其他
     ]
@@ -884,6 +892,7 @@ def TUM_DATA_ENGINEERING_ANALYTICS(transcript_sorted_group_map, df_transcript_ar
         PROG_SPEC_OTHERS,  # 物理化學資工工程
         PROG_SPEC_OTHERS,  # 商管經
         PROG_SPEC_OTHERS,  # 資管
+        PROG_SPEC_OTHERS,  # 遊戲
         PROG_SPEC_OTHERS,  # 訊號
         PROG_SPEC_OTHERS,  # 其他
     ]
@@ -968,6 +977,7 @@ def TU_Delft_CS(transcript_sorted_group_map, df_transcript_array, df_category_co
         PROG_SPEC_OTHERS,  # 物理化學資工工程
         PROG_SPEC_OTHERS,  # 商管經
         PROG_SPEC_OTHERS,  # 資管
+        PROG_SPEC_OTHERS,  # 遊戲
         PROG_SPEC_OTHERS,  # 訊號
         PROG_SPEC_OTHERS,  # 其他
     ]
@@ -1042,6 +1052,7 @@ def RWTH_DDS(transcript_sorted_group_map, df_transcript_array, df_category_cours
         PROG_SPEC_NS_INFO_ENG_PARAM,  # 物理化學工程
         PROG_SPEC_OTHERS,  # 商管經
         PROG_SPEC_OTHERS,  # 資管
+        PROG_SPEC_OTHERS,  # 遊戲
         PROG_SPEC_OTHERS,  # 訊號
         PROG_SPEC_OTHERS,  # 其他
     ]
@@ -1120,6 +1131,7 @@ def RWTH_TIME(transcript_sorted_group_map, df_transcript_array, df_category_cour
         PROG_SPEC_NS_INFO_ENG_PARAM,  # 物理化學工程
         PROG_SPEC_BA_BI_PARAM,  # 商管經
         PROG_SPEC_OTHERS,  # 資管
+        PROG_SPEC_OTHERS,  # 遊戲
         PROG_SPEC_OTHERS,  # 訊號
         PROG_SPEC_OTHERS,  # 其他
     ]
@@ -1198,6 +1210,7 @@ def UNI_GOETTINGEN_APPLIED_CS(transcript_sorted_group_map, df_transcript_array, 
         PROG_SPEC_MATH_NS_ENG_PARAM,  # 物理化學工程
         PROG_SPEC_OTHERS,  # 商管經
         PROG_SPEC_OTHERS,  # 資管
+        PROG_SPEC_OTHERS,  # 遊戲
         PROG_SPEC_OTHERS,  # 訊號
         PROG_SPEC_OTHERS,  # 其他
     ]
@@ -1274,6 +1287,7 @@ def TUM_MATH_DATA_SCI_MATH_BACKGROUND(transcript_sorted_group_map, df_transcript
         PROG_SPEC_OTHERS,  # 物理化學工程
         PROG_SPEC_OTHERS,  # 商管經
         PROG_SPEC_OTHERS,  # 資管
+        PROG_SPEC_OTHERS,  # 遊戲
         PROG_SPEC_OTHERS,  # 訊號
         PROG_SPEC_OTHERS,  # 其他
     ]
@@ -1348,6 +1362,7 @@ def TUM_MATH_DATA_SCI_CS_BACKGROUND(transcript_sorted_group_map, df_transcript_a
         PROG_SPEC_OTHERS,  # 物理化學工程
         PROG_SPEC_OTHERS,  # 商管經
         PROG_SPEC_OTHERS,  # 資管
+        PROG_SPEC_OTHERS,  # 遊戲
         PROG_SPEC_OTHERS,  # 訊號
         PROG_SPEC_OTHERS,  # 其他
     ]
@@ -1445,6 +1460,7 @@ def TUHH_DATA_SCIENCE(transcript_sorted_group_map, df_transcript_array, df_categ
         PROG_SPEC_OTHERS,  # 物理化學工程
         PROG_SPEC_OTHERS,  # 商管經
         PROG_SPEC_OTHERS,  # 資管
+        PROG_SPEC_OTHERS,  # 遊戲
         PROG_SPEC_OTHERS,  # 訊號
         PROG_SPEC_OTHERS,  # 其他
     ]
@@ -1476,7 +1492,7 @@ def TUM_CS_GAMES_ENGINEERING(transcript_sorted_group_map, df_transcript_array, d
     # Create transcript_sorted_group to program_category mapping
     # https://campus.tum.de/tumonline/wbLv.wbShowLVDetail?pStpSpNr=950159179&pSpracheNr=2
     PROG_SPEC_GAMING_PARAM = {
-        'Program_Category': 'Introduction_to_Informatics', 'Required_ECTS': 38}
+        'Program_Category': 'Games Engineering', 'Required_ECTS': 38}
     PROG_SPEC_INTRO_INFO_PARAM = {
         'Program_Category': 'Introduction_to_Informatics', 'Required_ECTS': 44}
     PROG_SPEC_MATH_MODULE_PARAM = {
@@ -1518,6 +1534,7 @@ def TUM_CS_GAMES_ENGINEERING(transcript_sorted_group_map, df_transcript_array, d
         PROG_SPEC_OTHERS,  # 物理化學資工工程
         PROG_SPEC_OTHERS,  # 商管經
         PROG_SPEC_OTHERS,  # 資管
+        PROG_SPEC_GAMING_PARAM,  # 遊戲
         PROG_SPEC_OTHERS,  # 訊號
         PROG_SPEC_OTHERS,  # 其他
     ]
@@ -1600,6 +1617,7 @@ def TUM_INFO_ENGINEERING(transcript_sorted_group_map, df_transcript_array, df_ca
         PROG_SPEC_OTHERS,  # 物理化學資工工程
         PROG_SPEC_OTHERS,  # 商管經
         PROG_SPEC_INFORMATION_SYSTEM_PARAM,  # 資管
+        PROG_SPEC_OTHERS,  # 遊戲
         PROG_SPEC_CYBER_SYSTEMS_MODULE_PARAM,  # 訊號
         PROG_SPEC_OTHERS,  # 其他
     ]

@@ -286,7 +286,7 @@ MATHEMATICAL_LOGIC_PROG_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
 
 # 圖論
 MATHEMATICAL_GRAPH_THEORY_KEY_WORDS = ['圖論', '圖形', '圖型']
-MATHEMATICAL_GRAPH_THEORY_ANTI_KEY_WORDS = ['asdgladfj;l', '設計']
+MATHEMATICAL_GRAPH_THEORY_ANTI_KEY_WORDS = ['asdgladfj;l', '設計', '實時']
 MATHEMATICAL_GRAPH_THEORY_KEY_WORDS_EN = ['graph theor']
 MATHEMATICAL_GRAPH_THEORY_ANTI_KEY_WORDS_EN = ['asdgladfj;l', '設計']
 
@@ -323,6 +323,12 @@ CS_BA_BI_ENG_ANTI_KEY_WORDS = ['asdgladfj;l', '畢業', '社會', '人力']
 CS_BA_BI_ENG_KEY_WORDS_EN = ['語音',  '分散式']
 CS_BA_BI_ENG_ANTI_KEY_WORDS_EN = ['asdgladfj;l', '畢業', '社會', '人力']
 
+# 遊戲
+GAMING_MODULES_KEY_WORDS = ['遊戲', '實時電腦圖型', '電腦遊戲', '社群遊戲', '遊戲工程']
+GAMING_MODULES_ANTI_KEY_WORDS = ['asdgladfj;l', '理論']
+GAMING_MODULES_KEY_WORDS_EN = ['gaming', 'games', 'real time computer graphic', 'computer gam', 'social gaming', 'games engineering']
+GAMING_MODULES_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
+
 # 訊號
 CYBER_SIGNAL_PROCESSING_KEY_WORDS = ['訊號處理', '虛實', '嵌入式']
 CYBER_SIGNAL_PROCESSING_ANTI_KEY_WORDS = ['asdgladfj;l']
@@ -340,7 +346,7 @@ ADVANCED_COMPUTER_SCIENCE_ANTI_KEY_WORDS_EN = ['asdgladfj;l', '畢業']
 
 # 物理化學工程
 CS_PHY_CHEM_NS_ENG_KEY_WORDS = ['物理', '化學', '生物', '工程']
-CS_PHY_CHEM_NS_ENG_ANTI_KEY_WORDS = ['asdgladfj;l', '畢業', '社會', '人力']
+CS_PHY_CHEM_NS_ENG_ANTI_KEY_WORDS = ['asdgladfj;l', '畢業', '社會', '人力', '遊戲']
 CS_PHY_CHEM_NS_ENG_KEY_WORDS_EN = ['physi',  'chemi']
 CS_PHY_CHEM_NS_ENG_ANTI_KEY_WORDS_EN = ['asdgladfj;l', '畢業', '社會', '人力']
 
@@ -532,7 +538,7 @@ EE_ADVANCED_ELECTRO_ANTI_KEY_WORDS_EN = ['ethnic', '素養']
 # 專業應用課程
 EE_APPLICATION_ORIENTED_KEY_WORDS = ['生醫', '光機電', '電腦', '微系統', '物聯網', '聲學', '微機電', '控制',
                                      '影像', '深度學習', '光電', '應用', '綠能', '雲端運算', '醫學工程', '再生能源']
-EE_APPLICATION_ORIENTED_ANTI_KEY_WORDS = ['倫理', '素養', '入門', '經濟', '微波', '政策']
+EE_APPLICATION_ORIENTED_ANTI_KEY_WORDS = ['倫理', '素養', '入門', '經濟', '微波', '政策', '遊戲']
 EE_APPLICATION_ORIENTED_KEY_WORDS_EN = ['生醫', 'neuro', '光機電', 'mems', 'iot', 'accoustics', 'solar',
                                         'image', 'deep learning', 'optoelectronics', '應用', 'green', 'cloud', 'medical', 'renewable']
 EE_APPLICATION_ORIENTED_ANTI_KEY_WORDS_EN = ['ethnic', '素養']

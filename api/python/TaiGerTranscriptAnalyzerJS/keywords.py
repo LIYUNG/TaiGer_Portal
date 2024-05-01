@@ -323,6 +323,11 @@ CS_BA_BI_ENG_ANTI_KEY_WORDS = ['asdgladfj;l', '畢業', '社會', '人力']
 CS_BA_BI_ENG_KEY_WORDS_EN = ['語音',  '分散式']
 CS_BA_BI_ENG_ANTI_KEY_WORDS_EN = ['asdgladfj;l', '畢業', '社會', '人力']
 
+# 訊號
+CYBER_SIGNAL_PROCESSING_KEY_WORDS = ['訊號處理', '虛實', '嵌入式']
+CYBER_SIGNAL_PROCESSING_ANTI_KEY_WORDS = ['asdgladfj;l']
+CYBER_SIGNAL_PROCESSING_KEY_WORDS_EN = ['cyber', 'signal process']
+CYBER_SIGNAL_PROCESSING_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
 
 # 進階資工
 ADVANCED_COMPUTER_SCIENCE_KEY_WORDS = ['語音', '推薦', '機器學習', '通訊原理', '自然語言', '高等', '網頁', '視窗',

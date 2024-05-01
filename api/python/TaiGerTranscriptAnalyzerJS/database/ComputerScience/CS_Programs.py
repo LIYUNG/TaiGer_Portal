@@ -69,6 +69,8 @@ def TUM_CS(transcript_sorted_group_map, df_transcript_array, df_category_courses
         PROG_SPEC_OTHERS,  # 進階資工
         PROG_SPEC_OTHERS,  # 物理化學資工工程
         PROG_SPEC_OTHERS,  # 商管經
+        PROG_SPEC_OTHERS,  # 資管
+        PROG_SPEC_OTHERS,  # 訊號
         PROG_SPEC_OTHERS,  # 其他
     ]
 
@@ -176,6 +178,8 @@ def TUM_CS_DETAILED(transcript_sorted_group_map, df_transcript_array, df_categor
         PROG_SPEC_OTHERS,  # 進階資工
         PROG_SPEC_OTHERS,  # 物理化學資工工程
         PROG_SPEC_OTHERS,  # 商管經
+        PROG_SPEC_OTHERS,  # 資管
+        PROG_SPEC_OTHERS,  # 訊號
         PROG_SPEC_OTHERS,  # 其他
     ]
 
@@ -290,6 +294,8 @@ def RWTH_DATA_SCIENCE_CS_BG(transcript_sorted_group_map, df_transcript_array, df
         PROG_SPEC_OTHERS,  # 進階資工
         PROG_SPEC_OTHERS,  # 物理化學資工工程
         PROG_SPEC_OTHERS,  # 商管經
+        PROG_SPEC_OTHERS,  # 資管
+        PROG_SPEC_OTHERS,  # 訊號
         PROG_SPEC_OTHERS,  # 其他
     ]
 
@@ -369,6 +375,8 @@ def RWTH_DATA_SCIENCE_MATH_BG(transcript_sorted_group_map, df_transcript_array, 
         PROG_SPEC_OTHERS,  # 進階資工
         PROG_SPEC_OTHERS,  # 物理化學資工工程
         PROG_SPEC_OTHERS,  # 商管經
+        PROG_SPEC_OTHERS,  # 資管
+        PROG_SPEC_OTHERS,  # 訊號
         PROG_SPEC_OTHERS,  # 其他
     ]
 
@@ -482,6 +490,8 @@ def RWTH_SOFTWARE_SYS_ENG(transcript_sorted_group_map, df_transcript_array, df_c
         PROG_SPEC_OTHERS,  # 進階資工
         PROG_SPEC_OTHERS,  # 物理化學資工工程
         PROG_SPEC_OTHERS,  # 商管經
+        PROG_SPEC_OTHERS,  # 資管
+        PROG_SPEC_OTHERS,  # 訊號
         PROG_SPEC_OTHERS,  # 其他
     ]
 
@@ -595,6 +605,8 @@ def RWTH_MEDIA_INFO(transcript_sorted_group_map, df_transcript_array, df_categor
         PROG_SPEC_OTHERS,  # 進階資工
         PROG_SPEC_OTHERS,  # 物理化學資工工程
         PROG_SPEC_OTHERS,  # 商管經
+        PROG_SPEC_OTHERS,  # 資管
+        PROG_SPEC_OTHERS,  # 訊號
         PROG_SPEC_OTHERS,  # 其他
     ]
 
@@ -682,6 +694,8 @@ def FU_BERLIN_DATA_SCIENCE(transcript_sorted_group_map, df_transcript_array, df_
         PROG_SPEC_CS_MODULE_PARAM,  # 進階資工
         PROG_SPEC_OTHERS,  # 物理化學資工工程
         PROG_SPEC_OTHERS,  # 商管經
+        PROG_SPEC_OTHERS,  # 資管
+        PROG_SPEC_OTHERS,  # 訊號
         PROG_SPEC_OTHERS,  # 其他
     ]
 
@@ -764,6 +778,8 @@ def TU_BERLIN_COMPUTER_SCIENCE(transcript_sorted_group_map, df_transcript_array,
         PROG_SPEC_ADVANCED_INFO_PARAM,  # 進階資工
         PROG_SPEC_OTHERS,  # 物理化學資工工程
         PROG_SPEC_OTHERS,  # 商管經
+        PROG_SPEC_OTHERS,  # 資管
+        PROG_SPEC_OTHERS,  # 訊號
         PROG_SPEC_OTHERS,  # 其他
     ]
 
@@ -867,6 +883,8 @@ def TUM_DATA_ENGINEERING_ANALYTICS(transcript_sorted_group_map, df_transcript_ar
         PROG_SPEC_OTHERS,  # 進階資工
         PROG_SPEC_OTHERS,  # 物理化學資工工程
         PROG_SPEC_OTHERS,  # 商管經
+        PROG_SPEC_OTHERS,  # 資管
+        PROG_SPEC_OTHERS,  # 訊號
         PROG_SPEC_OTHERS,  # 其他
     ]
 
@@ -949,6 +967,8 @@ def TU_Delft_CS(transcript_sorted_group_map, df_transcript_array, df_category_co
         PROG_SPEC_DATA_INFO_SYS_PARAM,  # 進階資工
         PROG_SPEC_OTHERS,  # 物理化學資工工程
         PROG_SPEC_OTHERS,  # 商管經
+        PROG_SPEC_OTHERS,  # 資管
+        PROG_SPEC_OTHERS,  # 訊號
         PROG_SPEC_OTHERS,  # 其他
     ]
 
@@ -1021,6 +1041,8 @@ def RWTH_DDS(transcript_sorted_group_map, df_transcript_array, df_category_cours
         PROG_SPEC_NS_INFO_ENG_PARAM,  # 進階資工
         PROG_SPEC_NS_INFO_ENG_PARAM,  # 物理化學工程
         PROG_SPEC_OTHERS,  # 商管經
+        PROG_SPEC_OTHERS,  # 資管
+        PROG_SPEC_OTHERS,  # 訊號
         PROG_SPEC_OTHERS,  # 其他
     ]
 
@@ -1097,6 +1119,8 @@ def RWTH_TIME(transcript_sorted_group_map, df_transcript_array, df_category_cour
         PROG_SPEC_NS_INFO_ENG_PARAM,  # 進階資工
         PROG_SPEC_NS_INFO_ENG_PARAM,  # 物理化學工程
         PROG_SPEC_BA_BI_PARAM,  # 商管經
+        PROG_SPEC_OTHERS,  # 資管
+        PROG_SPEC_OTHERS,  # 訊號
         PROG_SPEC_OTHERS,  # 其他
     ]
 
@@ -1173,6 +1197,8 @@ def UNI_GOETTINGEN_APPLIED_CS(transcript_sorted_group_map, df_transcript_array, 
         PROG_SPEC_ADV_CS_MATH_PARAM,  # 進階資工
         PROG_SPEC_MATH_NS_ENG_PARAM,  # 物理化學工程
         PROG_SPEC_OTHERS,  # 商管經
+        PROG_SPEC_OTHERS,  # 資管
+        PROG_SPEC_OTHERS,  # 訊號
         PROG_SPEC_OTHERS,  # 其他
     ]
 
@@ -1247,6 +1273,8 @@ def TUM_MATH_DATA_SCI_MATH_BACKGROUND(transcript_sorted_group_map, df_transcript
         PROG_SPEC_INFO_PARAM,  # 進階資工
         PROG_SPEC_OTHERS,  # 物理化學工程
         PROG_SPEC_OTHERS,  # 商管經
+        PROG_SPEC_OTHERS,  # 資管
+        PROG_SPEC_OTHERS,  # 訊號
         PROG_SPEC_OTHERS,  # 其他
     ]
 
@@ -1319,6 +1347,8 @@ def TUM_MATH_DATA_SCI_CS_BACKGROUND(transcript_sorted_group_map, df_transcript_a
         PROG_SPEC_INFO_PARAM,  # 進階資工
         PROG_SPEC_OTHERS,  # 物理化學工程
         PROG_SPEC_OTHERS,  # 商管經
+        PROG_SPEC_OTHERS,  # 資管
+        PROG_SPEC_OTHERS,  # 訊號
         PROG_SPEC_OTHERS,  # 其他
     ]
 
@@ -1414,6 +1444,8 @@ def TUHH_DATA_SCIENCE(transcript_sorted_group_map, df_transcript_array, df_categ
         PROG_SPEC_MACHINE_LEARNING_PARAM,  # 進階資工
         PROG_SPEC_OTHERS,  # 物理化學工程
         PROG_SPEC_OTHERS,  # 商管經
+        PROG_SPEC_OTHERS,  # 資管
+        PROG_SPEC_OTHERS,  # 訊號
         PROG_SPEC_OTHERS,  # 其他
     ]
 
@@ -1426,6 +1458,167 @@ def TUHH_DATA_SCIENCE(transcript_sorted_group_map, df_transcript_array, df_categ
 
     WriteToExcel(writer, program_name, program_category, program_category_map,
                  transcript_sorted_group_map, df_transcript_array_temp, df_category_courses_sugesstion_data_temp, column_len_array)
+
+
+def TUM_CS_GAMES_ENGINEERING(transcript_sorted_group_map, df_transcript_array, df_category_courses_sugesstion_data, writer):
+    program_name = 'TUM_CS_GAMES_ENGINEERING'
+    print("Create " + program_name + " sheet")
+    df_transcript_array_temp = []
+    df_category_courses_sugesstion_data_temp = []
+    for idx, df in enumerate(df_transcript_array):
+        df_transcript_array_temp.append(df.copy())
+    for idx, df in enumerate(df_category_courses_sugesstion_data):
+        df_category_courses_sugesstion_data_temp.append(df.copy())
+    #####################################################################
+    ############## Program Specific Parameters ##########################
+    #####################################################################
+
+    # Create transcript_sorted_group to program_category mapping
+    # https://campus.tum.de/tumonline/wbLv.wbShowLVDetail?pStpSpNr=950159179&pSpracheNr=2
+    PROG_SPEC_GAMING_PARAM = {
+        'Program_Category': 'Introduction_to_Informatics', 'Required_ECTS': 38}
+    PROG_SPEC_INTRO_INFO_PARAM = {
+        'Program_Category': 'Introduction_to_Informatics', 'Required_ECTS': 44}
+    PROG_SPEC_MATH_MODULE_PARAM = {
+        'Program_Category': 'Mathematics', 'Required_ECTS': 30}
+    PROG_SPEC_OTHERS = {
+        'Program_Category': 'Others', 'Required_ECTS': 0}
+
+    # This fixed to program course category.
+    program_category = [
+        PROG_SPEC_GAMING_PARAM,      # 遊戲
+        PROG_SPEC_INTRO_INFO_PARAM,  # 計算機概論
+        PROG_SPEC_MATH_MODULE_PARAM,  # 數學
+        PROG_SPEC_OTHERS  # 其他
+    ]
+
+    # Mapping table: same dimension as transcript_sorted_group/ The length depends on how fine the transcript is classified
+    # TODO: modify the original sorting list for IT
+    program_category_map = [
+        PROG_SPEC_INTRO_INFO_PARAM,  # 計算機概論
+        PROG_SPEC_OTHERS,  # 基礎電機電子
+        PROG_SPEC_INTRO_INFO_PARAM,  # 程式設計
+        PROG_SPEC_INTRO_INFO_PARAM,  # computer architecture
+        PROG_SPEC_INTRO_INFO_PARAM,  # software engineering
+        PROG_SPEC_INTRO_INFO_PARAM,  # 資料庫
+        PROG_SPEC_INTRO_INFO_PARAM,  # 作業系統
+        PROG_SPEC_INTRO_INFO_PARAM,  # 電腦網路
+        PROG_SPEC_OTHERS,  # 數理邏輯
+        PROG_SPEC_OTHERS,  # 圖論
+        PROG_SPEC_OTHERS,  # 正規方法
+        PROG_SPEC_OTHERS,  # 函數程式
+        PROG_SPEC_INTRO_INFO_PARAM,  # 演算法 資料結構
+        PROG_SPEC_INTRO_INFO_PARAM,  # 可運算度 複雜度
+        PROG_SPEC_MATH_MODULE_PARAM,  # 離散
+        PROG_SPEC_MATH_MODULE_PARAM,  # 線性代數
+        PROG_SPEC_MATH_MODULE_PARAM,  # 數值分析
+        PROG_SPEC_MATH_MODULE_PARAM,  # 微積分 分析
+        PROG_SPEC_MATH_MODULE_PARAM,  # 機率
+        PROG_SPEC_OTHERS,  # 進階資工
+        PROG_SPEC_OTHERS,  # 物理化學資工工程
+        PROG_SPEC_OTHERS,  # 商管經
+        PROG_SPEC_OTHERS,  # 資管
+        PROG_SPEC_OTHERS,  # 訊號
+        PROG_SPEC_OTHERS,  # 其他
+    ]
+
+    # Development check
+    if len(program_category_map) != len(df_transcript_array):
+        print("program_category_map size: " + str(len(program_category_map)))
+        print("df_transcript_array size:  " + str(len(df_transcript_array)))
+        print("Please check the number of program_category_map again!")
+        sys.exit()
+
+    #####################################################################
+    ####################### End #########################################
+    #####################################################################
+
+    WriteToExcel(writer, program_name, program_category, program_category_map,
+                 transcript_sorted_group_map, df_transcript_array_temp, df_category_courses_sugesstion_data_temp, column_len_array)
+
+# 2024
+def TUM_INFO_ENGINEERING(transcript_sorted_group_map, df_transcript_array, df_category_courses_sugesstion_data, writer):
+    program_name = 'TUM_INFO_ENGINEERING'
+    print("Create " + program_name + " sheet")
+    df_transcript_array_temp = []
+    df_category_courses_sugesstion_data_temp = []
+    for idx, df in enumerate(df_transcript_array):
+        df_transcript_array_temp.append(df.copy())
+    for idx, df in enumerate(df_category_courses_sugesstion_data):
+        df_category_courses_sugesstion_data_temp.append(df.copy())
+    #####################################################################
+    ############## Program Specific Parameters ##########################
+    #####################################################################
+
+    # Create transcript_sorted_group to program_category mapping
+    PROG_SPEC_INTRO_INFO_PARAM = {
+        'Program_Category': 'Introduction_to_Informatics', 'Required_ECTS': 40}
+    PROG_SPEC_THEORY_COMP_MODULE_PARAM = {
+        'Program_Category': 'Theory_of_Computation', 'Required_ECTS': 5}
+    PROG_SPEC_CYBER_SYSTEMS_MODULE_PARAM = {
+        'Program_Category': 'Cyber_System and Signal Processing', 'Required_ECTS': 5}
+    PROG_SPEC_INFORMATION_SYSTEM_PARAM = {
+        'Program_Category': 'Information System', 'Required_ECTS': 5}
+    PROG_SPEC_MATH_MODULE_PARAM = {
+        'Program_Category': 'Math, Discrete Math, Linear Algebra, Probability', 'Required_ECTS': 25}
+    PROG_SPEC_OTHERS = {
+        'Program_Category': 'Others', 'Required_ECTS': 0}
+
+    # This fixed to program course category.
+    program_category = [
+        PROG_SPEC_INTRO_INFO_PARAM,  # 計算機概論
+        PROG_SPEC_THEORY_COMP_MODULE_PARAM,  # 計算理論
+        PROG_SPEC_CYBER_SYSTEMS_MODULE_PARAM,  # 訊號處理 虛實整合
+        PROG_SPEC_INFORMATION_SYSTEM_PARAM,      # 資管
+        PROG_SPEC_MATH_MODULE_PARAM,  # 數學
+        PROG_SPEC_OTHERS  # 其他
+    ]
+
+    # Mapping table: same dimension as transcript_sorted_group/ The length depends on how fine the transcript is classified
+    # TODO: modify the original sorting list for IT
+    program_category_map = [
+        PROG_SPEC_INTRO_INFO_PARAM,  # 計算機概論
+        PROG_SPEC_OTHERS,  # 基礎電機電子
+        PROG_SPEC_INTRO_INFO_PARAM,  # 程式設計
+        PROG_SPEC_INTRO_INFO_PARAM,  # computer architecture
+        PROG_SPEC_INTRO_INFO_PARAM,  # software engineering
+        PROG_SPEC_INTRO_INFO_PARAM,  # 資料庫
+        PROG_SPEC_INTRO_INFO_PARAM,  # 作業系統
+        PROG_SPEC_INTRO_INFO_PARAM,  # 電腦網路
+        PROG_SPEC_OTHERS,  # 數理邏輯
+        PROG_SPEC_OTHERS,  # 圖論
+        PROG_SPEC_OTHERS,  # 正規方法
+        PROG_SPEC_OTHERS,  # 函數程式
+        PROG_SPEC_INTRO_INFO_PARAM,  # 演算法 資料結構
+        PROG_SPEC_THEORY_COMP_MODULE_PARAM,  # 可運算度 複雜度
+        PROG_SPEC_MATH_MODULE_PARAM,  # 離散
+        PROG_SPEC_MATH_MODULE_PARAM,  # 線性代數
+        PROG_SPEC_OTHERS,  # 數值分析
+        PROG_SPEC_OTHERS,  # 微積分 分析
+        PROG_SPEC_MATH_MODULE_PARAM,  # 機率
+        PROG_SPEC_OTHERS,  # 進階資工
+        PROG_SPEC_OTHERS,  # 物理化學資工工程
+        PROG_SPEC_OTHERS,  # 商管經
+        PROG_SPEC_INFORMATION_SYSTEM_PARAM,  # 資管
+        PROG_SPEC_CYBER_SYSTEMS_MODULE_PARAM,  # 訊號
+        PROG_SPEC_OTHERS,  # 其他
+    ]
+
+    # Development check
+    if len(program_category_map) != len(df_transcript_array):
+        print("program_category_map size: " + str(len(program_category_map)))
+        print("df_transcript_array size:  " + str(len(df_transcript_array)))
+        print("Please check the number of program_category_map again!")
+        sys.exit()
+
+    #####################################################################
+    ####################### End #########################################
+    #####################################################################
+
+    WriteToExcel(writer, program_name, program_category, program_category_map,
+                 transcript_sorted_group_map, df_transcript_array_temp, df_category_courses_sugesstion_data_temp, column_len_array)
+
+
 
 
 program_sort_function = [TUM_CS,
@@ -1442,4 +1635,5 @@ program_sort_function = [TUM_CS,
                          RWTH_TIME,
                          UNI_GOETTINGEN_APPLIED_CS,
                          TUM_MATH_DATA_SCI_MATH_BACKGROUND,
-                         TUM_MATH_DATA_SCI_CS_BACKGROUND, TUHH_DATA_SCIENCE]
+                         TUM_MATH_DATA_SCI_CS_BACKGROUND,
+                         TUHH_DATA_SCIENCE, TUM_CS_GAMES_ENGINEERING, TUM_INFO_ENGINEERING]

@@ -199,7 +199,7 @@ function ProgramList(props) {
       modalShowAssignSuccessWindow: false
     }));
     if (props.isStudentApplicationPage) {
-      window.location.reload(true);
+      navigate(DEMO.STUDENT_APPLICATIONS_ID_LINK(studentId));
     }
   };
 
@@ -349,6 +349,7 @@ function ProgramList(props) {
   }
 
   const handleFilterChange = (event, column) => {
+    event.preventDefault();
     const { value } = event.target;
     const searchParams = new URLSearchParams(window.location.search);
     searchParams.set(column.field, value.toLowerCase());
@@ -356,7 +357,9 @@ function ProgramList(props) {
       ...prevFilters,
       [column.field]: value.toLowerCase()
     }));
-    navigate(`${window.location.pathname}?${searchParams.toString()}`);
+    if (!props.isStudentApplicationPage) {
+      navigate(`${window.location.pathname}?${searchParams.toString()}`);
+    }
   };
 
   const transformedData = statedata.programs.map((row) => {

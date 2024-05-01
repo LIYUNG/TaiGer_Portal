@@ -13,6 +13,7 @@ import {
   getAllArchivedStudentsLoader
 } from './api/dataLoader';
 import DefaultErrorPage from './Demo/Utils/DefaultErrorPage';
+import StudentApplicationsAssignPage from './Demo/StudentApplications/assignPage';
 
 const DashboardDefault = React.lazy(() => import('./Demo/Dashboard/Dashboard'));
 
@@ -262,6 +263,12 @@ const routes = [
     errorElement: <DefaultErrorPage />,
     loader: getApplicationStudentLoader,
     element: <StudentApplications />
+  },
+  {
+    path: '/student-applications/edit/:student_id',
+    errorElement: <DefaultErrorPage />,
+    loader: getApplicationStudentLoader,
+    element: <StudentApplicationsAssignPage />
   },
   {
     path: '/users',

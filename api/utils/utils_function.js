@@ -1192,6 +1192,11 @@ const UnconfirmedMeetingDailyReminderChecker = async () => {
   logger.info('Unconfirmed Meeting attendee reminded');
 };
 
+function CalculateInterval(message1, message2){
+  const intervalInDay = Math.abs(message1.updatedAt - message2.updatedAt) / (1000*60*60*24);
+  return intervalInDay
+};
+
 const GroupCommunicationByStudent = async () => {
   try {
     const communications = await Communication.find()
@@ -1258,10 +1263,7 @@ const FindIntervalInCommunications = async () => {
     });
   } catch (error){
     logger.error('error find valid interval');
-=======
-function calculateInterval(message1, message2){
-  const intervalInDay = Math.abs(message1.updatedAt - message2.updatedAt) / (1000*60*60*24);
-  return intervalInDay
+  }
 };
 
 const findActiveDocumentThreads = async () => {

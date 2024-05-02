@@ -1268,93 +1268,73 @@ const FindIntervalInCommunications = async () => {
 
 const findActiveDocumentThreads = async () => {
   try {
-      const activeDocumentThreads = [];
-      const students = await Student.find();
-      for (const student of students){
-          if (student.archiv !== true){
-              for (const thread of student.generaldocs_threads){
-                  activeDocumentThreads.push(thread.doc_thread_id);
-              };
-          };
+    const activeDocumentThreads = [];
+    const students = await Student.find();
+    for (const student of students){
+      if (student.archiv !== true){
+        for (const thread of student.generaldocs_threads){
+          activeDocumentThreads.push(thread.doc_thread_id);
+        };
       };
-      return activeDocumentThreads;
+    };
+    return activeDocumentThreads;
   } catch (error) {
-      logger.error("Error finding active document threads:", error);
-      return [];
+    logger.error("Error finding active document threads:", error);
+    return [];
   };
 };
 
-const findValidInterval = async(validDocumentThread) => {
+const FindValidInterval = async(validDocumentThread) => {
   let thread;
   try {
-      thread = await Documentthread.findById(validDocumentThread.toString())
-      .populate('student_id', 'role')
-      .lean();
+    thread = await Documentthread.findById(validDocumentThread.toString())
+    .populate('student_id', 'role')
+    .lean();
   } catch (error){
-      logger.error('error finding valid documentthread');
+    logger.error('error finding valid documentthread');
   };
   if (thread.messages.length > 1){
-      let msg_1;
-      let msg_2;
-      for (const msg of thread.messages){
-          try {
-              const user = await User.findById(msg.user_id?.toString())
-              if (user?.role === "Student") {
-                  msg_1 = msg;
-              } else {
-                  msg_2 = msg;
-              }
-          } catch (error) {
-              logger.error("Error finding message user_id:", error);
-          };
-          //calculate interval, store values into Interval Collection
-          if ( msg_1 !== undefined && msg_2 != undefined ){
-              console.log('start calculate interval');
-              try {
-                  const interval = calculateInterval(msg_1, msg_2);
-                  const newInterval = new Interval({
-                      thread_id: thread._id.toString(),
-                      message_1_id: msg_1,
-                      message_2_id: msg_2,
-                      interval_type: thread.file_type,
-                      interval: interval,
-                      updatedAt: new Date()
-                  });
-                  await newInterval.save();
-                  console.log('finish saving interval');
-                  msg_1 = undefined;
-                  msg_2 = undefined;
-              } catch (error){
-                  logger.error("Error creating interval collection:", error);
-              };
-          };
+    let msg_1;
+    let msg_2;
+    for (const msg of thread.messages){
+      try {
+        const user = await User.findById(msg.user_id?.toString())
+          if (user?.role === "Student") {
+            msg_1 = msg;
+          } else {
+            msg_2 = msg;
+          }
+      } catch (error) {
+        logger.error("Error finding message user_id:", error);
       };
+      //calculate interval, store values into Interval Collection
+      if ( msg_1 !== undefined && msg_2 != undefined ){
+        try {
+          const interval = CalculateInterval(msg_1, msg_2);
+          const newInterval = new Interval({
+            thread_id: thread._id.toString(),
+            message_1_id: msg_1,
+            message_2_id: msg_2,
+            interval_type: thread.file_type,
+            interval: interval,
+            updatedAt: new Date()
+          });
+          await newInterval.save();
+          msg_1 = undefined;
+          msg_2 = undefined;
+        } catch (error){
+          logger.error("Error creating interval collection:", error);
+        };
+      };
+    };
   };
 };
 
-const findIntervalInDocumentThreads = async () => {
-    
-  const findActiveDocumentThreads = async () => {
-      try {
-          const activeDocumentThreads = [];
-          const students = await Student.find();
-          for (const student of students){
-              if (student.archiv != true){
-                  for (const thread of student.generaldocs_threads){
-                      activeDocumentThreads.push(thread.doc_thread_id);
-                  };
-              };
-          };
-          return activeDocumentThreads;
-      } catch (error) {
-          console.log("Error finding active document threads:", error);
-          return [];
-      };
-  };
+const FindIntervalInDocumentThreads = async () => {
   try {
-      const validDocumentThread = await findActiveDocumentThreads();
+    const validDocumentThread = await FindActiveDocumentThreads();
       for (const documentThread of validDocumentThread){
-          await findValidInterval(documentThread);
+         await FindValidInterval(documentThread);
       }
   } catch (error) {
       logger.error('wrong!');
@@ -1373,5 +1353,5 @@ module.exports = {
   MeetingDailyReminderChecker,
   UnconfirmedMeetingDailyReminderChecker,
   FindIntervalInCommunications,
-  findIntervalInDocumentThreads
+  FindIntervalInDocumentThreads
 };

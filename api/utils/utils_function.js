@@ -1191,18 +1191,19 @@ const UnconfirmedMeetingDailyReminderChecker = async () => {
   logger.info('Unconfirmed Meeting attendee reminded');
 };
 
-const groupCommunicationByStudent = async () => {
+const GroupCommunicationByStudent = async () => {
   try {
-    const communications = await Communication.findAll()
+    const communications = await Communication.find()
     .populate('student_id user_id')
+    .populate('student_id','archiv')
     .lean();
     let groupCommunication = {};
-    for (singleCommunicaiton in communications){
-      if (singleCommunicaiton.student_id.archiv !== false){
-        if (!groupCommunication.hasOwnProperty(singleCommunicaiton.student_id.toString())){
-          groupCommunication[singleCommunicaiton.student_id.toString()] = [singleCommunicaiton];
+    for (const singleCommunicaiton of communications){
+      if (singleCommunicaiton.student_id && singleCommunicaiton.student_id.archiv !== true){
+        if (!groupCommunication[singleCommunicaiton.student_id._id.toString()]){
+          groupCommunication[singleCommunicaiton.student_id._id.toString()] = [singleCommunicaiton];
         } else {
-          groupCommunication[singleCommunicaiton.student_id.toString()].push(singleCommunicaiton);
+          groupCommunication[singleCommunicaiton.student_id._id.toString()].push(singleCommunicaiton);
         };
       };
     };
@@ -1213,11 +1214,11 @@ const groupCommunicationByStudent = async () => {
   };
 };
 
-const findIntervalInCommunications = async () => {
+const FindIntervalInCommunications = async () => {
   // group communications by student
   try {
-    const groupCommunication = await groupCommunicationByStudent();
-    for (const [student, messages] of groupCommunication){
+    const groupCommunication = await GroupCommunicationByStudent();
+    Object.entries(groupCommunication).forEach(async ([student, messages]) => {
       // sort messages chronically
       messages.sort((a, b) => {
         return a.updatedAt - b.updatedAt;
@@ -1234,28 +1235,26 @@ const findIntervalInCommunications = async () => {
           }
           //calculate interval, store values into Interval Collection
           if ( msg_1 !== undefined && msg_2 != undefined ){
-            console.log('start calculate interval');
             try {
-                const interval = calculateInterval(msg_1, msg_2);
-                const newInterval = new Interval({
-                    thread_id: thread._id.toString(),
-                    message_1_id: msg_1,
-                    message_2_id: msg_2,
-                    interval_type: thread.file_type,
-                    interval: interval,
-                    updatedAt: new Date()
-                });
-                await newInterval.save();
-                console.log('finish saving interval');
-                msg_1 = undefined;
-                msg_2 = undefined;
+              const interval = calculateInterval(msg_1, msg_2);
+              const newInterval = new Interval({
+                student_id: student,
+                message_1_id: msg_1,
+                message_2_id: msg_2,
+                interval_type: 'communication',
+                interval: interval,
+                updatedAt: new Date()
+              });
+              await newInterval.save();
+              msg_1 = undefined;
+              msg_2 = undefined;
             } catch (error){
-                logger.error("Error creating interval collection:", error);
+              logger.error("Error creating interval collection:", error);
             };
           };
         };
       };
-    };
+    });
   } catch (error){
     logger.error('error find valid interval');
   };
@@ -1272,5 +1271,5 @@ module.exports = {
   add_portals_registered_status,
   MeetingDailyReminderChecker,
   UnconfirmedMeetingDailyReminderChecker,
-  findIntervalInCommunications
+  FindIntervalInCommunications
 };

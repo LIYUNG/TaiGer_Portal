@@ -1885,6 +1885,15 @@ export const base_documents_checklist = {
   ECTS_Conversion: [],
   Course_Description: [
     'Degree correctness (Ex: Engineering with B.Sc. not B.A.)?',
+    'Course description?',
+    'Course outline and content?',
+    'Credits?',
+    'Self Study hours?',
+    'Course hours?',
+    'Total workload hours?',
+    'Prerequisite field?',
+    'Weekly hours per semester?',
+    'Assessment?',
     'All in English?'
   ],
   Internship: [

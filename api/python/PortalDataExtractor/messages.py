@@ -84,12 +84,12 @@ def export_student_messages():
     chat_histories = get_chat_by_students()
     for chat_history in chat_histories:
         messages = chat_history['data']
-        with open(os.path.join(output_path, f"{chat_history['student_id']}.txt"), "a", encoding="utf-8") as file:
+        file_path = os.path.join(output_path, f"{chat_history['student_id']}.txt")
+        with open(file_path, "a", encoding="utf-8") as file:
             for message in messages:
                 user_type = "Student" if message["user_id"] == chat_history['student_id'] else "TaiGer"
                 file.write(f'[{message["createdAt"]}] {message["user_id"]} ({user_type}): {extract_text_from_message(message)}\n')
                 # output format -> [time] user: context
-        # return
 
 
 export_student_messages()

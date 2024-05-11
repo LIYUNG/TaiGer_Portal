@@ -1266,7 +1266,7 @@ const FindIntervalInCommunications = async () => {
   }
 };
 
-const findActiveDocumentThreads = async () => {
+const FindActiveDocumentThreads = async () => {
   try {
     const activeDocumentThreads = [];
     const students = await Student.find();
@@ -1340,6 +1340,55 @@ const FindIntervalInDocumentThreads = async () => {
       logger.error('wrong!');
   };
 };
+
+const GroupIntervalsByDocumentThread = async () => {
+  try {
+    const intervals = await Interval.find()
+    .populate('thread_id student_id')
+    .lean();
+    let groupInterval = {};
+    for (const singleInterval of intervals){
+      if (!groupInterval[singleInterval.thread_id._id.toString()]){
+        groupInterval[singleInterval.thread_id._id.toString()] = [singleInterval];
+      } else {
+        groupInterval[singleInterval.thread_id._id.toString()].push(singleInterval);
+      };
+    };
+    return groupInterval;
+  } catch (error){
+    logger.error('error grouping communications');
+    return null;
+  };
+};
+
+const GroupIntervalsByStudentCommunication = async () => {
+  try {
+    const intervals = await Interval.find()
+    .populate('thread_id student_id')
+    .lean();
+    let groupInterval = {};
+    for (const singleInterval of intervals){
+      if (!groupInterval[singleInterval.student_id._id.toString()]){
+        groupInterval[singleInterval.student_id._id.toString()] = [singleInterval];
+      } else {
+        groupInterval[singleInterval.student_id._id.toString()].push(singleInterval);
+      };
+    };
+    return groupInterval;
+  } catch (error){
+    logger.error('error grouping communications');
+    return null;
+  };
+};
+
+// async function CalculateAverageResponseTime(){
+//   //calculate student communication average response time
+//   const studentGroupInterval = await GroupIntervalsByStudentCommunication();
+//   for (const studentInterval of studentGroupInterval){
+
+//   }
+
+// };
 
 module.exports = {
   emptyS3Directory,

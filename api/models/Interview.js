@@ -8,6 +8,7 @@ const interviewsSchema = new mongoose.Schema(
   {
     student_id: { type: ObjectId, ref: 'User' },
     trainer_id: [{ type: ObjectId, ref: 'User' }],
+    thread_id: { type: ObjectId, ref: 'Documentthread' },
     program_id: { type: ObjectId, ref: 'Program' },
     interview_description: {
       type: String,

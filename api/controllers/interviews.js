@@ -1,13 +1,15 @@
 const async = require('async');
+const path = require('path');
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
 const { Student } = require('../models/User');
 const { Interview } = require('../models/Interview');
 const logger = require('../services/logger');
+const { Documentthread } = require('../models/Documentthread');
+const { emptyS3Directory } = require('../utils/utils_function');
+const { AWS_S3_BUCKET_NAME } = require('../config');
 
 const getAllInterviews = asyncHandler(async (req, res) => {
-  const { user } = req;
-
   const interviews = await Interview.find()
     .populate('student_id trainer_id', 'firstname lastname email')
     .populate('program_id', 'school program_name degree semester')
@@ -38,7 +40,6 @@ const getMyInterview = asyncHandler(async (req, res) => {
 
 const getInterview = asyncHandler(async (req, res) => {
   const {
-    user,
     params: { interview_id }
   } = req;
   const interview = await Interview.findById(interview_id)
@@ -55,9 +56,26 @@ const getInterview = asyncHandler(async (req, res) => {
 
 const deleteInterview = asyncHandler(async (req, res) => {
   const {
-    user,
     params: { interview_id }
   } = req;
+  const interview = await Interview.findById(interview_id);
+  // Delete files in S3
+  if (
+    interview.thread_id?.toString() &&
+    interview.thread_id?.toString() !== ''
+  ) {
+    let directory = path.join(
+      interview.student_id?.toString(),
+      interview.thread_id?.toString() || ''
+    );
+    logger.info('Trying to delete interview thread and folder');
+    directory = directory.replace(/\\/g, '/');
+    emptyS3Directory(AWS_S3_BUCKET_NAME, directory);
+    // Delete interview thread in mongoDB
+    await Documentthread.findByIdAndDelete(interview.thread_id);
+  }
+
+  // Delete interview  in mongoDB
   await Interview.findByIdAndDelete(interview_id);
 
   res.status(200).send({ success: true });
@@ -93,19 +111,61 @@ const createInterview = asyncHandler(async (req, res) => {
     logger.info('createInterview: Invalid student id!');
     throw new ErrorResponse(400, 'Invalid student id');
   }
-  const interview = await Interview.findOneAndUpdate(
-    {
-      student_id: studentId,
-      program_id
-    },
-    payload,
-    { upsert: true, new: true }
-  )
+
+  const interview_existed = await Interview.findOne({
+    student_id: studentId,
+    program_id
+  })
     .populate('student_id trainer_id', 'firstname lastname email')
     .populate('program_id', 'school program_name degree semester')
     .lean();
+  if (interview_existed) {
+    try {
+      await Interview.findOneAndUpdate(
+        {
+          student_id: studentId,
+          program_id
+        },
+        payload,
+        { upsert: true }
+      )
+        .populate('student_id trainer_id', 'firstname lastname email')
+        .populate('program_id', 'school program_name degree semester')
+        .lean();
+    } catch (err) {
+      logger.error(err);
+      throw new ErrorResponse(404, err);
+    }
+    res.status(200).send({ success: true });
+  } else {
+    try {
+      const createdDocument = await Documentthread.create({
+        student_id: studentId,
+        program_id,
+        file_type: 'Interview'
+      });
 
-  res.status(200).send({ success: true, data: interview });
+      payload.thread_id = createdDocument._id?.toString();
+
+      await Interview.findOneAndUpdate(
+        {
+          student_id: studentId,
+          program_id
+        },
+        payload,
+        { upsert: true }
+      )
+        .populate('student_id trainer_id', 'firstname lastname email')
+        .populate('program_id', 'school program_name degree semester')
+        .lean();
+    } catch (err) {
+      logger.error(err);
+      throw new ErrorResponse(404, err);
+    }
+    res.status(200).send({ success: true });
+  }
+
+  res.status(200).send({ success: true });
 });
 
 module.exports = {

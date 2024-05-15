@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link as LinkDom } from 'react-router-dom';
+import { Link as LinkDom, useNavigate } from 'react-router-dom';
 import UndoIcon from '@mui/icons-material/Undo';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
@@ -49,6 +49,7 @@ const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
 export default function ApplicationProgressCard(props) {
   const [isCollapse, setIsCollapse] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
   const [application, setApplication] = useState(props.application);
   const [resultState, setResultState] = useState('-');
   // const [hasFile, setHasFile] = useState(false);
@@ -251,7 +252,7 @@ export default function ApplicationProgressCard(props) {
                     variant="contained"
                     disabled
                     size="small"
-                    onClick={() => console.log('Book clicked')}
+                    onClick={() => navigate(`${DEMO.INTERVIEW_ADD_LINK}`)}
                   >
                     {t('Coming soon', { ns: 'common' })}
                   </Button>

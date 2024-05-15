@@ -138,7 +138,7 @@ function InterviewItems(props) {
             <b>{` ${interview.student_id.firstname} - ${interview.student_id.lastname}`}</b>
           </Typography>
           <span style={{ float: 'right', cursor: 'pointer' }}>
-            {is_TaiGer_AdminAgent(user) && !props.readOnly && (
+            {is_TaiGer_AdminAgent(user) && (
               <Button
                 color="error"
                 variant="contained"

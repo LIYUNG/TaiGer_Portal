@@ -1,33 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link as LinkDom } from 'react-router-dom';
-import {
-  Box,
-  Button,
-  Card,
-  Breadcrumbs,
-  Link,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  Typography,
-  TextField,
-  MenuItem
-} from '@mui/material';
+import { Link as LinkDom, useNavigate } from 'react-router-dom';
+import { Box, Button, Breadcrumbs, Link, Typography } from '@mui/material';
 
 import { isProgramDecided, is_TaiGer_role } from '../Utils/checking-functions';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
-import {
-  getMyInterviews,
-  createInterview,
-  deleteInterview,
-  getAllInterviews
-} from '../../api';
+import { getMyInterviews, deleteInterview, getAllInterviews } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
-import NotesEditor from '../Notes/NotesEditor';
 import InterviewItems from './InterviewItems';
 import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
@@ -38,6 +18,7 @@ import ModalNew from '../../components/Modal';
 function InterviewTraining() {
   const { user } = useAuth();
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [interviewTrainingState, setInterviewTrainingState] = useState({
     error: '',
     isLoaded: false,
@@ -50,7 +31,7 @@ function InterviewTraining() {
     interviewData: {},
     category: '',
     SetDeleteDocModel: false,
-    isEdit: false,
+    isAdd: false,
     expand: true,
     editorState: '',
     res_status: 0,
@@ -125,10 +106,7 @@ function InterviewTraining() {
   }, []);
 
   const handleClick = () => {
-    setInterviewTrainingState((prevState) => ({
-      ...prevState,
-      isEdit: !prevState.isEdit
-    }));
+    navigate(`${DEMO.INTERVIEW_ADD_LINK}`);
   };
 
   const handleDeleteInterview = () => {
@@ -152,7 +130,7 @@ function InterviewTraining() {
             success,
             interviewslist: interviewslist_temp,
             SetDeleteDocModel: false,
-            isEdit: false,
+            isAdd: false,
             isLoaded: true,
             res_modal_status: status
           }));
@@ -192,70 +170,6 @@ function InterviewTraining() {
     setInterviewTrainingState((prevState) => ({
       ...prevState,
       SetDeleteDocModel: false
-    }));
-  };
-
-  const handleClickSave = (e, editorState) => {
-    e.preventDefault();
-    if (
-      !interviewTrainingState.interviewData.program_id ||
-      interviewTrainingState.interviewData.program_id === ''
-    ) {
-      alert('Interview University / Program is missing');
-      return;
-    }
-    const message = JSON.stringify(editorState);
-    const interviewData_temp = interviewTrainingState.interviewData;
-    interviewData_temp.interview_description = message;
-    createInterview(
-      interviewTrainingState.interviewData.program_id,
-      user._id.toString(),
-      interviewData_temp
-    ).then(
-      (resp) => {
-        const { success, data } = resp.data;
-        const { status } = resp;
-        if (success) {
-          let interviewslist_temp = [...interviewTrainingState.interviewslist];
-          interviewslist_temp.push(data);
-          setInterviewTrainingState((prevState) => ({
-            ...prevState,
-            success,
-            interviewslist: interviewslist_temp,
-            editorState: '',
-            isEdit: !prevState.isEdit,
-            isLoaded: true,
-            res_modal_status: status
-          }));
-        } else {
-          const { message } = resp.data;
-          setInterviewTrainingState((prevState) => ({
-            ...prevState,
-            isLoaded: true,
-            res_modal_message: message,
-            res_modal_status: status
-          }));
-        }
-      },
-      (error) => {
-        setInterviewTrainingState((prevState) => ({
-          ...prevState,
-          isLoaded: true,
-          error,
-          res_modal_status: 500,
-          res_modal_message: ''
-        }));
-      }
-    );
-    setInterviewTrainingState((state) => ({ ...state, in_edit_mode: false }));
-  };
-
-  const handleChange_InterviewTraining = (e) => {
-    const interviewData_temp = { ...interviewTrainingState.interviewData };
-    interviewData_temp[e.target.id] = e.target.value;
-    setInterviewTrainingState((prevState) => ({
-      ...prevState,
-      interviewData: interviewData_temp
     }));
   };
 
@@ -305,7 +219,7 @@ function InterviewTraining() {
       });
   }
 
-  TabTitle('Docs Database');
+  TabTitle('Interview training');
   return (
     <Box>
       {res_modal_status >= 400 && (
@@ -316,197 +230,35 @@ function InterviewTraining() {
         />
       )}
 
-      {interviewTrainingState.isEdit ? (
-        <>
-          <Breadcrumbs aria-label="breadcrumb">
-            <Link
-              underline="hover"
-              color="inherit"
-              component={LinkDom}
-              to={`${DEMO.DASHBOARD_LINK}`}
-            >
-              {appConfig.companyName}
-            </Link>
-            <Typography color="text.primary">
-              {is_TaiGer_role(user)
-                ? 'All Interviews'
-                : 'Create Interview Training Request'}
-            </Typography>
-          </Breadcrumbs>
-          <Button
-            size="small"
-            color="secondary"
-            onClick={() =>
-              setInterviewTrainingState((state) => ({
-                ...state,
-                isEdit: !interviewTrainingState.isEdit
-              }))
-            }
-          >
-            {t('Back')}
+      <Breadcrumbs aria-label="breadcrumb">
+        <Link
+          underline="hover"
+          color="inherit"
+          component={LinkDom}
+          to={`${DEMO.DASHBOARD_LINK}`}
+        >
+          {appConfig.companyName}
+        </Link>
+        <Typography color="text.primary">
+          {is_TaiGer_role(user) ? 'All Interviews' : 'My Interviews'}
+        </Typography>
+      </Breadcrumbs>
+      {interviewslist.map((interview, i) => (
+        <InterviewItems
+          key={i}
+          expanded={false}
+          user={user}
+          readOnly={true}
+          interview={interview}
+          openDeleteDocModalWindow={openDeleteDocModalWindow}
+        />
+      ))}
+      {!is_TaiGer_role(user) &&
+        available_interview_request_programs.length > 0 && (
+          <Button size="small" onClick={handleClick}>
+            {t('Add', { ns: 'common' })}
           </Button>
-          <Card>
-            <Typography variant="h6">
-              {t('Provide Interview Information')}
-            </Typography>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell></TableCell>
-                  <TableCell></TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                <TableRow>
-                  <TableCell>{t('Interview Date')}</TableCell>
-                  <TableCell>
-                    <TextField
-                      name="interview_date"
-                      type="date"
-                      required
-                      fullWidth
-                      id="interview_date"
-                      placeholder="Date of Interview"
-                      label={`${t('Date of Interview')}`}
-                      InputLabelProps={{
-                        shrink: true
-                      }}
-                      value={''}
-                      onChange={(e) => handleChange_InterviewTraining(e)}
-                    />
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>{t('Interview time')}</TableCell>
-                  <TableCell>
-                    <TextField
-                      name="interview_time"
-                      type="text"
-                      required
-                      fullWidth
-                      id="interview_time"
-                      placeholder="Interview time"
-                      label={`${t('Interview time')}`}
-                      InputLabelProps={{
-                        shrink: true
-                      }}
-                      value={''}
-                      onChange={(e) => handleChange_InterviewTraining(e)}
-                    />
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>{t('Interview duration')}</TableCell>
-                  <TableCell>
-                    <TextField
-                      name="interview_duration"
-                      type="text"
-                      required
-                      fullWidth
-                      id="interview_duration"
-                      placeholder="Interview duration"
-                      label={`${t('Interview duration')}`}
-                      InputLabelProps={{
-                        shrink: true
-                      }}
-                      value={''}
-                      onChange={(e) => handleChange_InterviewTraining(e)}
-                    />
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>{t('Interview University')}</TableCell>
-                  <TableCell>
-                    <TextField
-                      fullWidth
-                      name="program_id"
-                      id="program_id"
-                      select
-                      onChange={(e) => handleChange_InterviewTraining(e)}
-                    >
-                      <MenuItem value={''}>Select Document Category</MenuItem>
-                      {!is_TaiGer_role(user) &&
-                        available_interview_request_programs.map((cat, i) => (
-                          <MenuItem value={cat.key} key={i}>
-                            {cat.value}
-                          </MenuItem>
-                        ))}
-                    </TextField>
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>{t('Interviewer')}</TableCell>
-                  <TableCell>
-                    <TextField
-                      name="interviewer"
-                      type="text"
-                      required
-                      fullWidth
-                      id="interviewer"
-                      placeholder="Prof. Sebastian"
-                      label={`${t('Interviewer')}`}
-                      InputLabelProps={{
-                        shrink: true
-                      }}
-                      value={''}
-                      onChange={(e) => handleChange_InterviewTraining(e)}
-                    />
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-            <br />
-            <Typography>
-              Please provide further information (invitation email content,
-              reading assignment, etc.) below:{' '}
-            </Typography>
-            <NotesEditor
-              thread={interviewTrainingState.thread}
-              buttonDisabled={
-                !interviewTrainingState.interviewData.program_id ||
-                interviewTrainingState.interviewData.program_id === '' ||
-                !interviewTrainingState.interviewData.interview_date ||
-                interviewTrainingState.interviewData.interview_date === ''
-              }
-              editorState={interviewTrainingState.editorState}
-              handleClickSave={handleClickSave}
-            />
-          </Card>
-        </>
-      ) : (
-        <>
-          <Breadcrumbs aria-label="breadcrumb">
-            <Link
-              underline="hover"
-              color="inherit"
-              component={LinkDom}
-              to={`${DEMO.DASHBOARD_LINK}`}
-            >
-              {appConfig.companyName}
-            </Link>
-            <Typography color="text.primary">
-              {is_TaiGer_role(user) ? 'All Interviews' : 'My Interviews'}
-            </Typography>
-          </Breadcrumbs>
-          {interviewslist.map((interview, i) => (
-            <InterviewItems
-              key={i}
-              expanded={false}
-              user={user}
-              readOnly={true}
-              interview={interview}
-              openDeleteDocModalWindow={openDeleteDocModalWindow}
-            />
-          ))}
-          {!is_TaiGer_role(user) &&
-            available_interview_request_programs.length > 0 && (
-              <Button size="small" onClick={handleClick}>
-                {t('Add', { ns: 'common' })}
-              </Button>
-            )}
-        </>
-      )}
-
+        )}
       <ModalNew
         open={interviewTrainingState.SetDeleteDocModel}
         onClose={closeDeleteDocModalWindow}

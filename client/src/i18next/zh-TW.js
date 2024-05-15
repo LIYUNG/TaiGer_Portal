@@ -383,7 +383,7 @@ export const translation_zh_TW = {
     'uni-assist full':
       'Uni-Assist 會全權負責轉交申請給學校。您的檔案全部完成後請全部上傳到 Uni-Assist 以及 Program 繳費上傳處。此 Program 不需要VPD'
   },
-  interviews: {},
+  interviews: { 'Provide Interview Information': '請提供面試資訊' },
   portalManagement: {
     'Update portal credentials successfully': '帳號密碼更新成功'
   },

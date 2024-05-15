@@ -14,6 +14,7 @@ import {
 } from './api/dataLoader';
 import DefaultErrorPage from './Demo/Utils/DefaultErrorPage';
 import StudentApplicationsAssignPage from './Demo/StudentApplications/assignPage';
+import AddInterview from './Demo/InterviewTraining/AddInterview';
 
 const DashboardDefault = React.lazy(() => import('./Demo/Dashboard/Dashboard'));
 
@@ -335,6 +336,12 @@ const routes = [
     exact: true,
     name: 'InterviewTraining',
     Component: InterviewTraining
+  },
+  {
+    path: '/interview-training/add',
+    exact: true,
+    name: 'AddInterview',
+    Component: AddInterview
   },
   {
     path: '/interview-training/:interview_id',

@@ -379,7 +379,9 @@ export const translation_en = {
     'Please go to the Uni-Assist section, follow the instructions to complete':
       'Please go to the Uni-Assist section, follow the instructions to complete the account registration, upload documents, and apply for the VPD (Vorprüfungsdokumentation).'
   },
-  interviews: {},
+  interviews: {
+    'Provide Interview Information': 'Provide Interview Information'
+  },
   uniassist: {
     'All document uploaded to Uni-Assist and paid, waiting for VPD':
       'All document uploaded to Uni-Assist and paid, waiting for VPD',

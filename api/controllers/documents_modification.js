@@ -210,7 +210,6 @@ const SingleThreadThreadS3GarbageCollector = async (ThreadId) => {
     if (listedObjectsPublic.Contents.length > 0) {
       listedObjectsPublic.Contents.forEach((Obj) => {
         let file_found = false;
-        const temp_date = new Date();
         if (message_a.length === 0) {
           deleteParams.Delete.Objects.push({ Key: Obj.Key });
         }
@@ -233,7 +232,6 @@ const SingleThreadThreadS3GarbageCollector = async (ThreadId) => {
     if (listedObjectsPublic_files.Contents.length > 0) {
       listedObjectsPublic_files.Contents.forEach((Obj2) => {
         let file_found = false;
-        const temp_date = new Date();
         if (message_a.length === 0) {
           delete_files_Params.Delete.Objects.push({ Key: Obj2.Key });
         }
@@ -438,13 +436,13 @@ const resetSurveyInput = asyncHandler(async (req, res, next) => {
   res.status(200).send({ success: true, data: updatedSurvey });
   if (informEditor) {
     const thread = await Documentthread.findOne({
-      student_id: newSurvey.studentId,
-      program_id: newSurvey.programId,
-      file_type: newSurvey.fileType
+      student_id: updatedSurvey.studentId,
+      program_id: updatedSurvey.programId,
+      file_type: updatedSurvey.fileType
     })
       .populate('program_id')
       .lean();
-    informOnSurveyUpdate(user, newSurvey, thread);
+    informOnSurveyUpdate(user, updatedSurvey, thread);
   }
 });
 

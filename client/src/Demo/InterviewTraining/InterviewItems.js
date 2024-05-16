@@ -106,18 +106,6 @@ function InterviewItems(props) {
     }
   };
 
-  const handleClickInterviewNotesSave = async (e, editorState) => {
-    e.preventDefault();
-    var notes = JSON.stringify(editorState);
-    const { data } = await updateInterview(interview._id.toString(), {
-      interview_notes: notes
-    });
-    const { data: interview_updated, success } = data;
-    if (success) {
-      setiInterview(interview_updated);
-    }
-  };
-
   return (
     <>
       <Accordion expanded={isCollapse} disableGutters>
@@ -289,24 +277,6 @@ function InterviewItems(props) {
               </Button>
             )}
             <EventDateComponent eventDate={new Date('2024-01-01')} />
-          </Grid>
-          <Grid item xs={12}>
-            <Typography variant="body1">{t('Notes')}</Typography>{' '}
-          </Grid>
-          <Grid item xs={12}>
-            <NotesEditor
-              thread={null}
-              notes_id={`${props.interview._id.toString()}-notes`}
-              // buttonDisabled={this.state.buttonDisabled}
-              editorState={
-                interview.interview_notes && interview.interview_notes !== '{}'
-                  ? JSON.parse(interview.interview_notes)
-                  : { time: new Date(), blocks: [] }
-              }
-              unique_id={`${props.interview._id.toString()}-notes`}
-              handleClickSave={handleClickInterviewNotesSave}
-              readOnly={props.readOnly}
-            />
           </Grid>
         </AccordionDetails>
       </Accordion>

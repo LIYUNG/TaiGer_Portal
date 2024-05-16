@@ -363,7 +363,7 @@ const docspages_transformer = (docspages) => {
 const programs_transformer = (programs) => {
   const transformedDocuments = programs.map((program) => ({
     ...program,
-    _id: { $oid: program._id.toString() },
+    _id: { $oid: program._id?.toString() },
     updatedAt: program.updatedAt && {
       $date: program.updatedAt
     }
@@ -384,10 +384,10 @@ const documentthreads_transformer = (documentthreads) => {
       documentthread.messages.map((message) => ({
         ...message,
         _id: {
-          $oid: message._id.toString()
+          $oid: message._id?.toString()
         },
         user_id: {
-          $oid: message.user_id.toString()
+          $oid: message.user_id?.toString()
         },
         file:
           message.file &&
@@ -408,7 +408,7 @@ const documentthreads_transformer = (documentthreads) => {
   return transformedDocuments;
 };
 // Daily called.
-const MongoDBDataBaseDailySnapshot = async () => {
+const MongoDBDataBaseDailySnapshot = asyncHandler(async () => {
   logger.info('database snapshot');
   const data_category = [
     'users',
@@ -437,7 +437,13 @@ const MongoDBDataBaseDailySnapshot = async () => {
     await Basedocumentationslink.find().lean();
   const communications_raw = await Communication.find().lean();
   const docspages_raw = await Docspage.find().lean();
-  const programs_raw = await Program.find().lean();
+  // try {
+  //   const programs = await Program.find();
+  //   console.log('Programs:', programs);
+  // } catch (error) {
+  //   console.error('Error fetching programs:', error);
+  // }
+  const programs_raw = await Program?.find().lean();// Why this .find() of undefined?
   const documentthreads_raw = await Documentthread.find().lean();
   const documentations_raw = await Documentation.find().lean();
   const internaldocs_raw = await Internaldoc.find().lean();
@@ -510,7 +516,7 @@ const MongoDBDataBaseDailySnapshot = async () => {
       }
     );
   }
-};
+});
 
 const UrgentTasksReminderEmails_Student_core = async () => {
   // Only inform active student

@@ -19,8 +19,8 @@ import {
   convertDate,
   getDate,
   getTime,
-  getTimezoneOffset,
-  isInTheFuture
+  isInTheFuture,
+  showTimezoneOffset
 } from '../../../Demo/Utils/contants';
 import {
   AiFillCheckCircle,
@@ -66,16 +66,7 @@ export default function EventConfirmationCard(props) {
           &nbsp;{convertDate(props.event.start)}{' '}
           {NoonNightLabel(props.event.start)} ({' '}
           {Intl.DateTimeFormat().resolvedOptions().timeZone} UTC
-          {getTimezoneOffset(
-            Intl.DateTimeFormat().resolvedOptions().timeZone
-          ) >= 0
-            ? `+${getTimezoneOffset(
-                Intl.DateTimeFormat().resolvedOptions().timeZone
-              )}`
-            : getTimezoneOffset(
-                Intl.DateTimeFormat().resolvedOptions().timeZone
-              )}
-          ){' '}
+          {showTimezoneOffset()}){' '}
           <b>
             {is_TaiGer_role(user) && (
               <>
@@ -105,16 +96,7 @@ export default function EventConfirmationCard(props) {
             </Typography>
             {NoonNightLabel(props.event.start)} ({' '}
             {Intl.DateTimeFormat().resolvedOptions().timeZone} UTC
-            {getTimezoneOffset(
-              Intl.DateTimeFormat().resolvedOptions().timeZone
-            ) >= 0
-              ? `+${getTimezoneOffset(
-                  Intl.DateTimeFormat().resolvedOptions().timeZone
-                )}`
-              : getTimezoneOffset(
-                  Intl.DateTimeFormat().resolvedOptions().timeZone
-                )}
-            )
+            {showTimezoneOffset()})
           </Grid>
           <Grid item xs={12} md={6}>
             <Typography variant="body1">

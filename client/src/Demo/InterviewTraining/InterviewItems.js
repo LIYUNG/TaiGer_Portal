@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
 import { Link as LinkDom } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import TimezoneSelect from 'react-timezone-select';
+import dayjs from 'dayjs';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DesktopDateTimePicker } from '@mui/x-date-pickers/DesktopDateTimePicker';
 import {
   Accordion,
   AccordionDetails,
@@ -31,9 +36,13 @@ import {
 import DEMO from '../../store/constant';
 import { getEditors, updateInterview } from '../../api';
 import NotesEditor from '../Notes/NotesEditor';
-import EventDateComponent from '../../components/DateComponent';
 import { useAuth } from '../../components/AuthProvider';
 import ModalNew from '../../components/Modal';
+import {
+  NoonNightLabel,
+  convertDate,
+  showTimezoneOffset
+} from '../Utils/contants';
 
 function InterviewItems(props) {
   const { t } = useTranslation();
@@ -44,7 +53,14 @@ function InterviewItems(props) {
   const [trainerId, setTrainerId] = useState(
     new Set(interview.trainer_id?.map((t_id) => t_id._id.toString()))
   );
+  const [utcTime, setUtcTime] = React.useState(
+    dayjs(props.interview.event_id?.start || '')
+  );
+
   const { user } = useAuth();
+  const [timezone, setTimezone] = useState(
+    user.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone
+  );
 
   const handleToggle = () => {
     setIsCollapse(!isCollapse);
@@ -159,7 +175,7 @@ function InterviewItems(props) {
         </AccordionSummary>
         <AccordionDetails>
           <Grid container spacing={2}>
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={4}>
               <Typography variant="body1">
                 {t('Student', { ns: 'common' })}:{' '}
               </Typography>
@@ -173,11 +189,89 @@ function InterviewItems(props) {
               >
                 <Typography fontWeight="bold">{` ${interview.student_id.firstname} - ${interview.student_id.lastname}`}</Typography>
               </Link>
-              <Box style={{ display: 'flex', alignItems: 'center' }}>
-                <LinkableNewlineText text={interview.student_id.email} />
-              </Box>
+              <Typography variant="body1">{t('Trainer')}</Typography>{' '}
+              {interview.trainer_id && interview.trainer_id?.length !== 0 ? (
+                <>
+                  {interview.trainer_id.map((t_id, idx) => (
+                    <Box
+                      key={idx}
+                      style={{ display: 'flex', alignItems: 'center' }}
+                    >
+                      {t_id.firstname} {t_id.lastname} -&nbsp;
+                      <LinkableNewlineText text={t_id.email} />
+                    </Box>
+                  ))}
+                  {is_TaiGer_role(user) && !props.readOnly && (
+                    <Button
+                      color="secondary"
+                      variant="contained"
+                      size="small"
+                      onClick={openModal}
+                    >
+                      {t('Change Trainer')}
+                    </Button>
+                  )}
+                </>
+              ) : (
+                <>
+                  <Typography>{t('No Trainer Assigned')}</Typography>
+                  {is_TaiGer_role(user) && !props.readOnly && (
+                    <Button
+                      color="primary"
+                      variant="contained"
+                      size="small"
+                      onClick={openModal}
+                    >
+                      {t('Assign Trainer')}
+                    </Button>
+                  )}
+                </>
+              )}
+              <Typography variant="body1">
+                {t('Interview Training Time')}:&nbsp;
+              </Typography>
+              {is_TaiGer_role(user) && (
+                <TimezoneSelect
+                  value={timezone}
+                  displayValue="UTC"
+                  onChange={(e) => setTimezone(e.value)}
+                  isDisabled={true}
+                />
+              )}
+              {is_TaiGer_role(user) && !props.readOnly && (
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DesktopDateTimePicker
+                    value={utcTime}
+                    onChange={(newValue) => setUtcTime(newValue)}
+                  />
+                </LocalizationProvider>
+              )}
+              {!is_TaiGer_role(user) &&
+                (props.interview.event_id?.start ? (
+                  <>
+                    <Typography variant="body1">
+                      {convertDate(utcTime)}
+                    </Typography>
+                    {NoonNightLabel(utcTime)}
+                    {Intl.DateTimeFormat().resolvedOptions().timeZone}
+                    {showTimezoneOffset()}
+                  </>
+                ) : (
+                  <Typography variant="body1">To be announced</Typography>
+                ))}
+              {is_TaiGer_role(user) && (
+                <Button
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  sx={{ mt: 1 }}
+                  onClick={() => console.log('Send invitation')}
+                >
+                  Send Invitation
+                </Button>
+              )}
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={8}>
               <Typography variant="body1">
                 {t('Interview Program')}:&nbsp;
               </Typography>
@@ -199,84 +293,24 @@ function InterviewItems(props) {
                 {t('Interviewer')}:&nbsp;
                 {`${interview.interviewer}`}
               </Typography>
+              <Typography variant="body1">
+                {t('Description', { ns: 'common' })}
+              </Typography>{' '}
+              <NotesEditor
+                thread={null}
+                notes_id={`${props.interview._id.toString()}-description`}
+                // buttonDisabled={this.state.buttonDisabled}
+                editorState={
+                  interview.interview_description &&
+                  interview.interview_description !== '{}'
+                    ? JSON.parse(interview.interview_description)
+                    : { time: new Date(), blocks: [] }
+                }
+                unique_id={`${props.interview._id.toString()}-description`}
+                handleClickSave={handleClickInterviewDescriptionSave}
+                readOnly={props.readOnly}
+              />
             </Grid>
-          </Grid>
-          <Grid item xs={12}>
-            <Typography variant="body1">
-              {t('Description', { ns: 'common' })}
-            </Typography>{' '}
-          </Grid>
-          <Grid item xs={12}>
-            <NotesEditor
-              thread={null}
-              notes_id={`${props.interview._id.toString()}-description`}
-              // buttonDisabled={this.state.buttonDisabled}
-              editorState={
-                interview.interview_description &&
-                interview.interview_description !== '{}'
-                  ? JSON.parse(interview.interview_description)
-                  : { time: new Date(), blocks: [] }
-              }
-              unique_id={`${props.interview._id.toString()}-description`}
-              handleClickSave={handleClickInterviewDescriptionSave}
-              readOnly={props.readOnly}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <Typography variant="body1">{t('Trainer')}</Typography>{' '}
-          </Grid>
-          <Grid item xs={12}>
-            {interview.trainer_id && interview.trainer_id?.length !== 0 ? (
-              <>
-                {interview.trainer_id.map((t_id, idx) => (
-                  <Box
-                    key={idx}
-                    style={{ display: 'flex', alignItems: 'center' }}
-                  >
-                    {t_id.firstname} {t_id.lastname} -&nbsp;
-                    <LinkableNewlineText text={t_id.email} />
-                  </Box>
-                ))}
-                {is_TaiGer_role(user) && !props.readOnly && (
-                  <Button
-                    color="secondary"
-                    variant="contained"
-                    size="small"
-                    onClick={openModal}
-                  >
-                    {t('Change Trainer')}
-                  </Button>
-                )}
-              </>
-            ) : (
-              <>
-                <Typography>{t('No Trainer Assigned')}</Typography>
-                {is_TaiGer_role(user) && !props.readOnly && (
-                  <Button
-                    color="primary"
-                    variant="contained"
-                    size="small"
-                    onClick={openModal}
-                  >
-                    {t('Assign Trainer')}
-                  </Button>
-                )}
-              </>
-            )}
-          </Grid>
-          <Grid item xs={12}>
-            <Typography variant="body1">
-              {t('Interview Training Time')}:&nbsp;
-            </Typography>
-          </Grid>
-          <Grid item xs={12}>
-            {`${interview.interview_training_time || 'Unscheduled'}`}
-            {is_TaiGer_role(user) && !props.readOnly && (
-              <Button color="secondary" variant="contained" size="small">
-                {t('Make Training Time Available')}
-              </Button>
-            )}
-            <EventDateComponent eventDate={new Date('2024-01-01')} />
           </Grid>
         </AccordionDetails>
       </Accordion>

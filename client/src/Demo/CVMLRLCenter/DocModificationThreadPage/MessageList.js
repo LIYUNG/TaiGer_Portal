@@ -3,7 +3,7 @@ import React from 'react';
 import Message from './Message';
 
 function MessageList(props) {
-  const thread = props.thread.messages.map((message, i) => (
+  const thread = props.thread?.messages?.map((message, i) => (
     <Message
       documentsthreadId={props.documentsthreadId}
       accordionKeys={props.accordionKeys}

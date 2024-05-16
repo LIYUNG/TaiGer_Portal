@@ -45,6 +45,7 @@ const getInterview = asyncHandler(async (req, res) => {
   const interview = await Interview.findById(interview_id)
     .populate('student_id trainer_id', 'firstname lastname email')
     .populate('program_id', 'school program_name degree')
+    .populate('thread_id event_id')
     .lean();
 
   if (!interview) {
@@ -81,6 +82,62 @@ const deleteInterview = asyncHandler(async (req, res) => {
   res.status(200).send({ success: true });
 });
 
+const addInterviewTrainingDateTime = asyncHandler(async (req, res, next) => {
+  const { user } = req;
+  const newEvent = req.body;
+  let events;
+  try {
+    let write_NewEvent;
+    delete newEvent.id;
+    newEvent.isConfirmedReceiver = true;
+    events = await Event.find({
+      start: newEvent.start,
+      $or: [
+        { requester_id: newEvent.requester_id },
+        { receiver_id: newEvent.requester_id }
+      ]
+    })
+      .populate('receiver_id', 'firstname lastname email')
+      .lean();
+    // Check if there is any already booked upcoming events
+    if (events.length === 0) {
+      write_NewEvent = await Event.create(newEvent);
+      await write_NewEvent.save();
+    } else {
+      logger.error('TaiGer user books a conflicting event in this time slot.');
+      throw new ErrorResponse(
+        403,
+        'You are not allowed to book further timeslot, if you have already an upcoming timeslot.'
+      );
+    }
+    events = await Event.find({
+      $or: [{ requester_id: user._id }, { receiver_id: user._id }]
+    })
+      .populate('receiver_id requester_id', 'firstname lastname email')
+      .lean();
+    const agents_ids = user.agents;
+    const agents = await Agent.find({ _id: agents_ids }).select(
+      'firstname lastname email selfIntroduction officehours timezone'
+    );
+    res.status(200).send({
+      success: true,
+      agents,
+      data: events,
+      hasEvents: events.length !== 0
+    });
+    const updatedEvent = await Event.findById(write_NewEvent._id)
+      .populate('requester_id receiver_id', 'firstname lastname email')
+      .lean();
+    updatedEvent.requester_id.forEach((requester) => {
+      meetingConfirmationReminder(requester, user, updatedEvent.start);
+    });
+    next();
+  } catch (err) {
+    logger.error(`postEvent: ${err.message}`);
+    throw new ErrorResponse(500, err.message);
+  }
+});
+
 const updateInterview = asyncHandler(async (req, res) => {
   const {
     params: { interview_id }
@@ -91,6 +148,7 @@ const updateInterview = asyncHandler(async (req, res) => {
   })
     .populate('student_id trainer_id', 'firstname lastname email')
     .populate('program_id', 'school program_name degree semester')
+    .populate('thread_id event_id')
     .lean();
 
   res.status(200).send({ success: true, data: interview });
@@ -172,6 +230,7 @@ module.exports = {
   getAllInterviews,
   getMyInterview,
   getInterview,
+  addInterviewTrainingDateTime,
   updateInterview,
   deleteInterview,
   createInterview

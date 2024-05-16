@@ -587,6 +587,13 @@ export const getTimezoneOffset = (timezone) => {
   return offsetHours;
 };
 
+export const showTimezoneOffset = () => {
+  return getTimezoneOffset(Intl.DateTimeFormat().resolvedOptions().timeZone) >=
+    0
+    ? `+${getTimezoneOffset(Intl.DateTimeFormat().resolvedOptions().timeZone)}`
+    : getTimezoneOffset(Intl.DateTimeFormat().resolvedOptions().timeZone);
+};
+
 export const shiftDateByOffset = (originalDate, offsetHours) => {
   const shiftedDate = new Date(originalDate);
   const hours = Math.floor(offsetHours); // Get the whole number of hours

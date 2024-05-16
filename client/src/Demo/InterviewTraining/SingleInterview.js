@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { AiFillCheckCircle } from 'react-icons/ai';
-import { Card, Button, Typography } from '@mui/material';
+import { Card, Button, Typography, Avatar } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import ErrorPage from '../Utils/ErrorPage';
@@ -12,9 +12,14 @@ import InterviewItems from './InterviewItems';
 import DEMO from '../../store/constant';
 import Loading from '../../components/Loading/Loading';
 import ModalNew from '../../components/Modal';
+import { stringAvatar } from '../Utils/contants';
+import MessageList from '../CVMLRLCenter/DocModificationThreadPage/MessageList';
+import { useAuth } from '../../components/AuthProvider';
+import DocThreadEditor from '../CVMLRLCenter/DocModificationThreadPage/DocThreadEditor';
 
 function SingleInterview() {
   const { interview_id } = useParams();
+  const { user } = useAuth();
   const { t } = useTranslation();
   const [singleInterviewState, setSingleInterviewState] = useState({
     error: '',
@@ -77,6 +82,71 @@ function SingleInterview() {
       }
     );
   }, [interview_id]);
+
+  const singleExpandtHandler = () => {};
+
+  const onDeleteSingleMessage = () => {
+    // e.preventDefault();
+    // setDocModificationThreadPageState((prevState) => ({
+    //   ...prevState,
+    //   isLoaded: false
+    // }));
+    // deleteAMessageInThread(
+    //   docModificationThreadPageState.documentsthreadId,
+    //   message_id
+    // ).then(
+    //   (resp) => {
+    //     const { success } = resp.data;
+    //     const { status } = resp;
+    //     if (success) {
+    //       // TODO: remove that message
+    //       var new_messages = [
+    //         ...docModificationThreadPageState.thread.messages
+    //       ];
+    //       let idx = docModificationThreadPageState.thread.messages.findIndex(
+    //         (message) => message._id.toString() === message_id
+    //       );
+    //       if (idx !== -1) {
+    //         new_messages.splice(idx, 1);
+    //       }
+    //       setDocModificationThreadPageState((prevState) => ({
+    //         ...prevState,
+    //         success,
+    //         isLoaded: true,
+    //         thread: {
+    //           ...docModificationThreadPageState.thread,
+    //           messages: new_messages
+    //         },
+    //         buttonDisabled: false,
+    //         res_modal_status: status
+    //       }));
+    //     } else {
+    //       // TODO: what if data is oversize? data type not match?
+    //       const { message } = resp.data;
+    //       setDocModificationThreadPageState((prevState) => ({
+    //         ...prevState,
+    //         isLoaded: true,
+    //         buttonDisabled: false,
+    //         res_modal_message: message,
+    //         res_modal_status: status
+    //       }));
+    //     }
+    //   },
+    //   (error) => {
+    //     setDocModificationThreadPageState((prevState) => ({
+    //       ...prevState,
+    //       isLoaded: true,
+    //       error,
+    //       res_modal_status: 500,
+    //       res_modal_message: ''
+    //     }));
+    //   }
+    // );
+    // setDocModificationThreadPageState((prevState) => ({
+    //   ...prevState,
+    //   in_edit_mode: false
+    // }));
+  };
 
   // const handleClickSave = (e, interview, editorState) => {
   //   e.preventDefault();
@@ -214,12 +284,69 @@ function SingleInterview() {
         </Button>
       </Link>
       {interview ? (
-        <InterviewItems
-          expanded={true}
-          readOnly={false}
-          interview={interview}
-          openDeleteDocModalWindow={openDeleteDocModalWindow}
-        />
+        <>
+          <InterviewItems
+            expanded={true}
+            readOnly={false}
+            interview={interview}
+            openDeleteDocModalWindow={openDeleteDocModalWindow}
+          />
+          <MessageList
+            documentsthreadId={interview.thread_id?._id?.toString()}
+            accordionKeys={[]}
+            singleExpandtHandler={singleExpandtHandler}
+            thread={interview.thread_id}
+            isLoaded={true}
+            user={user}
+            onDeleteSingleMessage={onDeleteSingleMessage}
+          />
+          {user.archiv !== true ? (
+            <Card
+              sx={{
+                p: 2,
+                overflowWrap: 'break-word', // Add this line
+                maxWidth: window.innerWidth - 64,
+                marginTop: '1px',
+                '& .MuiAvatar-root': {
+                  width: 32,
+                  height: 32,
+                  ml: -0.5,
+                  mr: 1
+                }
+              }}
+            >
+              <Avatar {...stringAvatar(`${user.firstname} ${user.lastname}`)} />
+              <Typography
+                variant="body1"
+                sx={{ mt: 1 }}
+                style={{ marginLeft: '10px', flex: 1 }}
+              >
+                <b>
+                  {user.firstname} {user.lastname}
+                </b>
+              </Typography>
+              {interview.thread_id.isFinalVersion ? (
+                <Typography>This discussion thread is close.</Typography>
+              ) : (
+                <DocThreadEditor
+                  thread={interview.thread_id}
+                  buttonDisabled={false}
+                  editorState={{}}
+                  handleClickSave={() => {}}
+                  file={[]}
+                  onFileChange={() => {}}
+                  checkResult={() => {}}
+                />
+              )}
+            </Card>
+          ) : (
+            <Card>
+              <Typography>
+                Your service is finished. Therefore, you are in read only mode.
+              </Typography>
+            </Card>
+          )}
+        </>
       ) : isDeleteSuccessful ? (
         <Card>
           <AiFillCheckCircle color="limegreen" size={24} title="Confirmed" />{' '}

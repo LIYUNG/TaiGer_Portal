@@ -4,6 +4,7 @@ const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
 const { Student } = require('../models/User');
 const { Interview } = require('../models/Interview');
+const Event = require('../models/Event');
 const logger = require('../services/logger');
 const { Documentthread } = require('../models/Documentthread');
 const { emptyS3Directory } = require('../utils/utils_function');
@@ -72,6 +73,10 @@ const deleteInterview = asyncHandler(async (req, res) => {
     logger.info('Trying to delete interview thread and folder');
     directory = directory.replace(/\\/g, '/');
     emptyS3Directory(AWS_S3_BUCKET_NAME, directory);
+    // Delete event
+    if (interview.event_id) {
+      await Event.findByIdAndDelete(interview.event_id);
+    }
     // Delete interview thread in mongoDB
     await Documentthread.findByIdAndDelete(interview.thread_id);
   }
@@ -84,53 +89,40 @@ const deleteInterview = asyncHandler(async (req, res) => {
 
 const addInterviewTrainingDateTime = asyncHandler(async (req, res, next) => {
   const { user } = req;
-  const newEvent = req.body;
-  let events;
+  const {
+    params: { interview_id }
+  } = req;
+  const oldEvent = req.body;
   try {
-    let write_NewEvent;
-    delete newEvent.id;
-    newEvent.isConfirmedReceiver = true;
-    events = await Event.find({
-      start: newEvent.start,
-      $or: [
-        { requester_id: newEvent.requester_id },
-        { receiver_id: newEvent.requester_id }
-      ]
-    })
-      .populate('receiver_id', 'firstname lastname email')
-      .lean();
-    // Check if there is any already booked upcoming events
-    if (events.length === 0) {
-      write_NewEvent = await Event.create(newEvent);
-      await write_NewEvent.save();
+    oldEvent.isConfirmedReceiver = true;
+    oldEvent.isConfirmedRequester = true;
+    oldEvent.meetingLink = 'dummy_meeting_link';
+    if (oldEvent._id) {
+      await Event.findByIdAndUpdate(oldEvent._id, { ...oldEvent }, {});
+      await Interview.findByIdAndUpdate(
+        interview_id,
+        { event_id: oldEvent._id },
+        {}
+      );
     } else {
-      logger.error('TaiGer user books a conflicting event in this time slot.');
-      throw new ErrorResponse(
-        403,
-        'You are not allowed to book further timeslot, if you have already an upcoming timeslot.'
+      const write_NewEvent = await Event.create(oldEvent);
+      await write_NewEvent.save();
+      await Interview.findByIdAndUpdate(
+        interview_id,
+        { event_id: write_NewEvent._id?.toString() },
+        {}
       );
     }
-    events = await Event.find({
-      $or: [{ requester_id: user._id }, { receiver_id: user._id }]
-    })
-      .populate('receiver_id requester_id', 'firstname lastname email')
-      .lean();
-    const agents_ids = user.agents;
-    const agents = await Agent.find({ _id: agents_ids }).select(
-      'firstname lastname email selfIntroduction officehours timezone'
-    );
+
     res.status(200).send({
-      success: true,
-      agents,
-      data: events,
-      hasEvents: events.length !== 0
+      success: true
     });
-    const updatedEvent = await Event.findById(write_NewEvent._id)
-      .populate('requester_id receiver_id', 'firstname lastname email')
-      .lean();
-    updatedEvent.requester_id.forEach((requester) => {
-      meetingConfirmationReminder(requester, user, updatedEvent.start);
-    });
+    // const updatedEvent = await Event.findById(write_NewEvent._id)
+    //   .populate('requester_id receiver_id', 'firstname lastname email')
+    //   .lean();
+    // updatedEvent.requester_id.forEach((requester) => {
+    //   meetingConfirmationReminder(requester, user, updatedEvent.start);
+    // });
     next();
   } catch (err) {
     logger.error(`postEvent: ${err.message}`);

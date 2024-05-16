@@ -34,7 +34,11 @@ import {
   is_TaiGer_role
 } from '../Utils/checking-functions';
 import DEMO from '../../store/constant';
-import { getEditors, updateInterview } from '../../api';
+import {
+  addInterviewTrainingDateTime,
+  getEditors,
+  updateInterview
+} from '../../api';
 import NotesEditor from '../Notes/NotesEditor';
 import { useAuth } from '../../components/AuthProvider';
 import ModalNew from '../../components/Modal';
@@ -119,6 +123,30 @@ function InterviewItems(props) {
     const { data: interview_updated, success } = data;
     if (success) {
       setiInterview(interview_updated);
+    }
+  };
+
+  const handleSendInterviewInvitation = async (e) => {
+    e.preventDefault();
+    const end_date = new Date(utcTime);
+    end_date.setMinutes(end_date.getMinutes() + 60);
+    const { data } = await addInterviewTrainingDateTime(
+      interview._id.toString(),
+      {
+        _id: interview.event_id?._id,
+        requester_id: [interview.student_id._id],
+        receiver_id: [...interview.trainer_id],
+        title: `${interview.student_id.firstname} ${interview.student_id.lastname} interview training`,
+        description:
+          'This is the interview training. Please prepare and practice',
+        event_type: 'Interview',
+        start: new Date(utcTime),
+        end: end_date
+      }
+    );
+    const { success } = data;
+    if (success) {
+      console.log('success');
     }
   };
 
@@ -265,7 +293,7 @@ function InterviewItems(props) {
                   variant="contained"
                   color="primary"
                   sx={{ mt: 1 }}
-                  onClick={() => console.log('Send invitation')}
+                  onClick={(e) => handleSendInterviewInvitation(e)}
                 >
                   Send Invitation
                 </Button>

@@ -9,7 +9,8 @@ const {
   getMyInterview,
   createInterview,
   deleteInterview,
-  updateInterview
+  updateInterview,
+  addInterviewTrainingDateTime
 } = require('../controllers/interviews');
 const { multitenant_filter } = require('../middlewares/multitenant-filter');
 const { filter_archiv_user } = require('../middlewares/limit_archiv_user');
@@ -59,7 +60,16 @@ router
   );
 
 router
-  .route('/:program_id/:studentId')
+  .route('/time/:interview_id')
+  .post(
+    filter_archiv_user,
+    InterviewPUTRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
+    addInterviewTrainingDateTime
+  );
+
+router
+  .route('/create/:program_id/:studentId')
   .post(
     filter_archiv_user,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),

@@ -231,104 +231,106 @@ export default function EventConfirmationCard(props) {
                 </span>
               </Grid>
               <Grid item>
-                <Typography variant="h6">
-                  <span
-                    style={{
-                      float: 'right',
-                      justifyContent: 'flex-end'
-                    }}
-                  >
-                    {is_TaiGer_Student(user) &&
-                      (props.event.isConfirmedRequester ? (
-                        props.event.isConfirmedReceiver ? (
-                          <></>
+                {props.event.event_type !== 'Interview' && (
+                  <Typography variant="h6">
+                    <span
+                      style={{
+                        float: 'right',
+                        justifyContent: 'flex-end'
+                      }}
+                    >
+                      {is_TaiGer_Student(user) &&
+                        (props.event.isConfirmedRequester ? (
+                          props.event.isConfirmedReceiver ? (
+                            <></>
+                          ) : (
+                            <Button
+                              color="primary"
+                              variant="outlined"
+                              size="small"
+                              title="Wait for confirmation"
+                              onClick={(e) => e.stopPropagation()}
+                              startIcon={<HourglassBottomIcon />}
+                            >
+                              {t('Pending', { ns: 'common' })}
+                            </Button>
+                          )
                         ) : (
                           <Button
                             color="primary"
-                            variant="outlined"
+                            variant="contained"
                             size="small"
-                            title="Wait for confirmation"
-                            onClick={(e) => e.stopPropagation()}
-                            startIcon={<HourglassBottomIcon />}
+                            onClick={(e) =>
+                              props.handleConfirmAppointmentModalOpen(
+                                e,
+                                props.event
+                              )
+                            }
+                            sx={{ mx: 2 }}
                           >
-                            {t('Pending', { ns: 'common' })}
+                            <AiOutlineCheckCircle size={16} />{' '}
+                            {t('Confirm', { ns: 'common' })}
                           </Button>
-                        )
-                      ) : (
-                        <Button
-                          color="primary"
-                          variant="contained"
-                          size="small"
-                          onClick={(e) =>
-                            props.handleConfirmAppointmentModalOpen(
-                              e,
-                              props.event
-                            )
-                          }
-                          sx={{ mx: 2 }}
-                        >
-                          <AiOutlineCheckCircle size={16} />{' '}
-                          {t('Confirm', { ns: 'common' })}
-                        </Button>
-                      ))}
-                    {is_TaiGer_Agent(user) &&
-                      (props.event.isConfirmedReceiver ? (
-                        props.event.isConfirmedRequester ? (
-                          <></>
+                        ))}
+                      {is_TaiGer_Agent(user) &&
+                        (props.event.isConfirmedReceiver ? (
+                          props.event.isConfirmedRequester ? (
+                            <></>
+                          ) : (
+                            <Button
+                              color="primary"
+                              variant="outlined"
+                              size="small"
+                              title="Wait for confirmation"
+                              startIcon={<HourglassBottomIcon />}
+                            >
+                              {t('Pending', { ns: 'common' })}
+                            </Button>
+                          )
                         ) : (
                           <Button
                             color="primary"
-                            variant="outlined"
                             size="small"
-                            title="Wait for confirmation"
-                            startIcon={<HourglassBottomIcon />}
+                            variant="contained"
+                            onClick={(e) =>
+                              props.handleConfirmAppointmentModalOpen(
+                                e,
+                                props.event
+                              )
+                            }
                           >
-                            {t('Pending', { ns: 'common' })}
+                            <AiOutlineCheckCircle size={16} />{' '}
+                            {t('Confirm', { ns: 'common' })}
                           </Button>
-                        )
-                      ) : (
-                        <Button
-                          color="primary"
-                          size="small"
-                          variant="contained"
-                          onClick={(e) =>
-                            props.handleConfirmAppointmentModalOpen(
-                              e,
-                              props.event
-                            )
-                          }
-                        >
-                          <AiOutlineCheckCircle size={16} />{' '}
-                          {t('Confirm', { ns: 'common' })}
-                        </Button>
-                      ))}
-                    <Button
-                      color="secondary"
-                      variant="outlined"
-                      size="small"
-                      disabled={props.disabled}
-                      onClick={(e) =>
-                        props.handleEditAppointmentModalOpen(e, props.event)
-                      }
-                      sx={{ mx: 2 }}
-                      startIcon={<EditIcon />}
-                    >
-                      {t('Update', { ns: 'common' })}
-                    </Button>
-                    <Button
-                      color="secondary"
-                      variant="contained"
-                      size="small"
-                      disabled={props.disabled}
-                      onClick={(e) =>
-                        props.handleDeleteAppointmentModalOpen(e, props.event)
-                      }
-                      startIcon={<DeleteIcon />}
-                    >
-                      {t('Delete', { ns: 'common' })}
-                    </Button>
-                  </span>
-                </Typography>
+                        ))}
+                      <Button
+                        color="secondary"
+                        variant="outlined"
+                        size="small"
+                        disabled={props.disabled}
+                        onClick={(e) =>
+                          props.handleEditAppointmentModalOpen(e, props.event)
+                        }
+                        sx={{ mx: 2 }}
+                        startIcon={<EditIcon />}
+                      >
+                        {t('Update', { ns: 'common' })}
+                      </Button>
+                      <Button
+                        color="secondary"
+                        variant="contained"
+                        size="small"
+                        disabled={props.disabled}
+                        onClick={(e) =>
+                          props.handleDeleteAppointmentModalOpen(e, props.event)
+                        }
+                        startIcon={<DeleteIcon />}
+                      >
+                        {t('Delete', { ns: 'common' })}
+                      </Button>
+                    </span>
+                  </Typography>
+                )}
               </Grid>
             </Grid>
           </Grid>

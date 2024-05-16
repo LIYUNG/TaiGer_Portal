@@ -18,8 +18,11 @@ const EventSchema = new mongoose.Schema(
       type: String,
       default: false
     },
+    event_type: {
+      type: String
+    },
     title: {
-      type: String,
+      type: String
       // required: [true, 'Please write a title for your event']
     },
     description: {

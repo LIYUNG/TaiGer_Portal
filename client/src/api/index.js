@@ -612,10 +612,11 @@ export const updateInterview = (interview_id, payload) =>
 export const getMyInterviews = () =>
   request.get(`/api/interviews/my-interviews`);
 export const createInterview = (program_id, student_id, payload) =>
-  request.post(`/api/interviews/${program_id}/${student_id}`, payload);
+  request.post(`/api/interviews/create/${program_id}/${student_id}`, payload);
+export const addInterviewTrainingDateTime = (interview_id, payload) =>
+  request.post(`/api/interviews/time/${interview_id}`, payload);
 
 // Ticket
-
 export const createProgramReport = (program_id, description, type) =>
   request.post(`/api/tickets/`, { program_id, description, type });
 export const getProgramTicket = (type, program_id) =>

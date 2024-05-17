@@ -26,6 +26,7 @@ function SingleInterview() {
     author: '',
     isLoaded: false,
     success: false,
+    SetDeleteDocModel: false,
     isDeleteSuccessful: false,
     interview: {},
     editorState: null,
@@ -190,6 +191,8 @@ function SingleInterview() {
 
   const openDeleteDocModalWindow = (e, interview) => {
     e.stopPropagation();
+    console.log(interview);
+    console.log(singleInterviewState.SetDeleteDocModel);
     setSingleInterviewState((prevState) => ({
       ...prevState,
       interview_id_toBeDelete: interview._id,
@@ -287,7 +290,6 @@ function SingleInterview() {
         <>
           <InterviewItems
             expanded={true}
-            readOnly={false}
             interview={interview}
             openDeleteDocModalWindow={openDeleteDocModalWindow}
           />
@@ -355,9 +357,8 @@ function SingleInterview() {
       ) : (
         <Card>Status 404: Error! Interview not found.</Card>
       )}
-
       <ModalNew
-        show={singleInterviewState.SetDeleteDocModel}
+        open={singleInterviewState.SetDeleteDocModel}
         onHide={closeDeleteDocModalWindow}
         aria-labelledby="contained-modal-title-vcenter"
         centered

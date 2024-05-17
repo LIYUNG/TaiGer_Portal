@@ -24,8 +24,7 @@ import {
 import {
   AiFillCheckCircle,
   AiFillQuestionCircle,
-  AiOutlineDelete,
-  AiOutlineEdit
+  AiOutlineDelete
 } from 'react-icons/ai';
 
 import {
@@ -130,23 +129,40 @@ function InterviewItems(props) {
     e.preventDefault();
     const end_date = new Date(utcTime);
     end_date.setMinutes(end_date.getMinutes() + 60);
+    const interviewTrainingEvent = {
+      _id: interview.event_id?._id,
+      requester_id: [interview.student_id._id],
+      receiver_id: [...interview.trainer_id],
+      title: `${interview.student_id.firstname} ${interview.student_id.lastname} interview training`,
+      description:
+        'This is the interview training. Please prepare and practice',
+      event_type: 'Interview',
+      start: new Date(utcTime),
+      end: end_date
+    };
     const { data } = await addInterviewTrainingDateTime(
       interview._id.toString(),
-      {
-        _id: interview.event_id?._id,
-        requester_id: [interview.student_id._id],
-        receiver_id: [...interview.trainer_id],
-        title: `${interview.student_id.firstname} ${interview.student_id.lastname} interview training`,
-        description:
-          'This is the interview training. Please prepare and practice',
-        event_type: 'Interview',
-        start: new Date(utcTime),
-        end: end_date
-      }
+      interviewTrainingEvent
     );
     const { success } = data;
     if (success) {
       console.log('success');
+    }
+  };
+
+  const interviewStatus = (interview) => {
+    if (interview.status === 'Unscheduled') {
+      return (
+        <AiFillQuestionCircle color="grey" size={24} title="Unscheduled" />
+      );
+    } else if (interview.status === 'Scheduled') {
+      return (
+        <AiFillCheckCircle color="limegreen" size={24} title="Confirmed" />
+      );
+    } else {
+      return (
+        <AiFillCheckCircle color="limegreen" size={24} title="Confirmed" />
+      );
     }
   };
 
@@ -155,18 +171,19 @@ function InterviewItems(props) {
       <Accordion expanded={isCollapse} disableGutters>
         <AccordionSummary onClick={handleToggle}>
           <Typography variant="body1">
-            {interview.status !== 'Unscheduled' ? (
-              <AiFillCheckCircle
-                color="limegreen"
-                size={24}
-                title="Confirmed"
-              />
-            ) : (
-              <AiFillQuestionCircle color="grey" size={24} />
-            )}
+            {interviewStatus(interview)}
             &nbsp;
             {interview.status}
             &nbsp;
+            {props.interview.event_id?.start && (
+              <>
+                {`${convertDate(utcTime)} ${NoonNightLabel(utcTime)} ${
+                  Intl.DateTimeFormat().resolvedOptions().timeZone
+                }`}
+                {showTimezoneOffset()}
+                &nbsp;
+              </>
+            )}
             <b>{` ${interview.student_id.firstname} - ${interview.student_id.lastname}`}</b>
           </Typography>
           <span style={{ float: 'right', cursor: 'pointer' }}>
@@ -179,25 +196,8 @@ function InterviewItems(props) {
                 onClick={(e) => props.openDeleteDocModalWindow(e, interview)}
               >
                 <AiOutlineDelete size={16} />
-                &nbsp; Delete
+                &nbsp; {t('Delete', { ns: 'common' })}
               </Button>
-            )}
-            {props.readOnly && (
-              <Link
-                underline="hover"
-                to={`${DEMO.INTERVIEW_SINGLE_LINK(interview._id.toString())}`}
-                component={LinkDom}
-              >
-                <Button
-                  color="secondary"
-                  variant="contained"
-                  size="small"
-                  title="Delete"
-                >
-                  <AiOutlineEdit size={16} />
-                  &nbsp; Edit
-                </Button>
-              </Link>
             )}
           </span>
         </AccordionSummary>
@@ -259,45 +259,41 @@ function InterviewItems(props) {
                 {t('Interview Training Time')}:&nbsp;
               </Typography>
               {is_TaiGer_role(user) && (
-                <TimezoneSelect
-                  value={timezone}
-                  displayValue="UTC"
-                  onChange={(e) => setTimezone(e.value)}
-                  isDisabled={true}
-                />
-              )}
-              {is_TaiGer_role(user) && !props.readOnly && (
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DesktopDateTimePicker
-                    value={utcTime}
-                    onChange={(newValue) => setUtcTime(newValue)}
+                <>
+                  <TimezoneSelect
+                    value={timezone}
+                    displayValue="UTC"
+                    onChange={(e) => setTimezone(e.value)}
+                    isDisabled={true}
                   />
-                </LocalizationProvider>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DesktopDateTimePicker
+                      value={utcTime}
+                      onChange={(newValue) => setUtcTime(newValue)}
+                    />
+                  </LocalizationProvider>
+                  <Button
+                    fullWidth
+                    variant="contained"
+                    color="primary"
+                    sx={{ mt: 1 }}
+                    onClick={(e) => handleSendInterviewInvitation(e)}
+                  >
+                    Send Invitation
+                  </Button>
+                </>
               )}
               {!is_TaiGer_role(user) &&
                 (props.interview.event_id?.start ? (
                   <>
-                    <Typography variant="body1">
-                      {convertDate(utcTime)}
-                    </Typography>
-                    {NoonNightLabel(utcTime)}
-                    {Intl.DateTimeFormat().resolvedOptions().timeZone}
+                    {`${convertDate(utcTime)} ${NoonNightLabel(utcTime)} ${
+                      Intl.DateTimeFormat().resolvedOptions().timeZone
+                    }`}
                     {showTimezoneOffset()}
                   </>
                 ) : (
                   <Typography variant="body1">To be announced</Typography>
                 ))}
-              {is_TaiGer_role(user) && (
-                <Button
-                  fullWidth
-                  variant="contained"
-                  color="primary"
-                  sx={{ mt: 1 }}
-                  onClick={(e) => handleSendInterviewInvitation(e)}
-                >
-                  Send Invitation
-                </Button>
-              )}
             </Grid>
             <Grid item xs={12} md={8}>
               <Typography variant="body1">
@@ -313,10 +309,6 @@ function InterviewItems(props) {
               >
                 {`${interview.program_id.school} - ${interview.program_id.program_name} ${interview.program_id.degree}`}
               </Link>
-              <Typography variant="body1">
-                {t('Interview Date')}:&nbsp;
-                {`${interview.interview_date} - ${interview.interview_time}`}
-              </Typography>
               <Typography variant="body1">
                 {t('Interviewer')}:&nbsp;
                 {`${interview.interviewer}`}

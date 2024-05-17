@@ -32,6 +32,7 @@ import {
 } from '../../Demo/Utils/checking-functions';
 import ModalNew from '../Modal';
 import { BASE_URL } from '../../api/request';
+import { convertDate } from '../../Demo/Utils/contants';
 
 const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
   height: 10,
@@ -241,22 +242,70 @@ export default function ApplicationProgressCard(props) {
             'CLOSE' &&
             application.admission === '-' && (
               <>
-                <Typography variant="p" component="div" sx={{ my: 1 }}>
-                  {t(
-                    'Have you received the interview invitation from this program?'
-                  )}
-                </Typography>
-                <Typography variant="p" component="div" sx={{ my: 1 }}>
-                  <Button
-                    color="primary"
-                    variant="contained"
-                    disabled
-                    size="small"
-                    onClick={() => navigate(`${DEMO.INTERVIEW_ADD_LINK}`)}
-                  >
-                    {t('Coming soon', { ns: 'common' })}
-                  </Button>
-                </Typography>
+                {!application.interview_status && (
+                  <>
+                    <Typography variant="p" component="div" sx={{ my: 1 }}>
+                      {t(
+                        'Have you received the interview invitation from this program?'
+                      )}
+                    </Typography>
+                    <Typography variant="p" component="div" sx={{ my: 1 }}>
+                      <Button
+                        color="primary"
+                        variant="contained"
+                        disabled
+                        size="small"
+                        onClick={() => navigate(`${DEMO.INTERVIEW_ADD_LINK}`)}
+                      >
+                        {t('Coming soon', { ns: 'common' })}
+                      </Button>
+                    </Typography>
+                  </>
+                )}
+                {application.interview_status === 'Unscheduled' && (
+                  <>
+                    <Typography variant="p" component="div" sx={{ my: 1 }}>
+                      {t('Please arrange a meeting')}
+                    </Typography>
+                    <Typography variant="p" component="div" sx={{ my: 1 }}>
+                      <Typography variant="p" component="div" sx={{ my: 1 }}>
+                        <Link
+                          underline="hover"
+                          to={`${DEMO.INTERVIEW_SINGLE_LINK(
+                            application?.interview_id
+                          )}`}
+                          component={LinkDom}
+                          target="_blank"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          Arrange a training
+                        </Link>
+                      </Typography>
+                    </Typography>
+                  </>
+                )}
+                {application.interview_status === 'Scheduled' && (
+                  <>
+                    <Typography variant="p" component="div" sx={{ my: 1 }}>
+                      {t('Do not forget to attend the interview training')}
+                    </Typography>
+                    <Typography variant="p" component="div" sx={{ my: 1 }}>
+                      <Link
+                        underline="hover"
+                        to={`${DEMO.INTERVIEW_SINGLE_LINK(
+                          application?.interview_id
+                        )}`}
+                        component={LinkDom}
+                        target="_blank"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        {convertDate(
+                          application.interview_training_event?.start
+                        )}
+                      </Link>
+                    </Typography>
+                  </>
+                )}
               </>
             )}
           {application_deadline_calculator(props.student, application) ===

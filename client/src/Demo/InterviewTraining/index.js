@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link as LinkDom, useNavigate } from 'react-router-dom';
 import { Box, Button, Breadcrumbs, Link, Typography } from '@mui/material';
@@ -6,14 +6,14 @@ import { Box, Button, Breadcrumbs, Link, Typography } from '@mui/material';
 import { isProgramDecided, is_TaiGer_role } from '../Utils/checking-functions';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
-import { getMyInterviews, deleteInterview, getAllInterviews } from '../../api';
+import { getMyInterviews, getAllInterviews } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
-import InterviewItems from './InterviewItems';
 import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
 import { appConfig } from '../../config';
 import Loading from '../../components/Loading/Loading';
-import ModalNew from '../../components/Modal';
+import { MuiDataGrid } from '../../components/MuiDataGrid';
+import { convertDate } from '../Utils/contants';
 
 function InterviewTraining() {
   const { user } = useAuth();
@@ -31,6 +31,7 @@ function InterviewTraining() {
     interviewData: {},
     category: '',
     SetDeleteDocModel: false,
+    available_interview_request_programs: [],
     isAdd: false,
     expand: true,
     editorState: '',
@@ -82,6 +83,25 @@ function InterviewTraining() {
               isLoaded: true,
               interviewslist: data,
               student: student,
+              available_interview_request_programs:
+                student?.applications
+                  ?.filter(
+                    (application) =>
+                      isProgramDecided(application) &&
+                      application.admission !== 'O' &&
+                      application.admission !== 'X' &&
+                      !interviewslist.find(
+                        (interview) =>
+                          interview.program_id._id.toString() ===
+                          application.programId._id.toString()
+                      )
+                  )
+                  .map((application) => {
+                    return {
+                      key: application.programId._id.toString(),
+                      value: `${application.programId.school} ${application.programId.program_name} ${application.programId.degree} ${application.programId.semester}`
+                    };
+                  }) || [],
               success: success,
               res_status: status
             }));
@@ -109,70 +129,6 @@ function InterviewTraining() {
     navigate(`${DEMO.INTERVIEW_ADD_LINK}`);
   };
 
-  const handleDeleteInterview = () => {
-    deleteInterview(interviewTrainingState.interview_id_toBeDelete).then(
-      (resp) => {
-        const { success } = resp.data;
-        const { status } = resp;
-        if (success) {
-          let interviewslist_temp = [...interviewTrainingState.interviewslist];
-          let to_be_delete_doc_idx = interviewslist_temp.findIndex(
-            (doc) =>
-              doc._id.toString() ===
-              interviewTrainingState.interview_id_toBeDelete
-          );
-          if (to_be_delete_doc_idx > -1) {
-            // only splice array when item is found
-            interviewslist_temp.splice(to_be_delete_doc_idx, 1); // 2nd parameter means remove one item only
-          }
-          setInterviewTrainingState((prevState) => ({
-            ...prevState,
-            success,
-            interviewslist: interviewslist_temp,
-            SetDeleteDocModel: false,
-            isAdd: false,
-            isLoaded: true,
-            res_modal_status: status
-          }));
-        } else {
-          const { message } = resp.data;
-          setInterviewTrainingState((prevState) => ({
-            ...prevState,
-            isLoaded: true,
-            res_modal_message: message,
-            res_modal_status: status
-          }));
-        }
-      },
-      (error) => {
-        setInterviewTrainingState((prevState) => ({
-          ...prevState,
-          isLoaded: true,
-          error,
-          res_modal_status: 500,
-          res_modal_message: ''
-        }));
-      }
-    );
-  };
-
-  const openDeleteDocModalWindow = (e, interview) => {
-    e.stopPropagation();
-    setInterviewTrainingState((prevState) => ({
-      ...prevState,
-      interview_id_toBeDelete: interview._id,
-      interview_name_toBeDelete: `${interview.program_id.school} ${interview.program_id.program_name}`,
-      SetDeleteDocModel: true
-    }));
-  };
-
-  const closeDeleteDocModalWindow = () => {
-    setInterviewTrainingState((prevState) => ({
-      ...prevState,
-      SetDeleteDocModel: false
-    }));
-  };
-
   const ConfirmError = () => {
     setInterviewTrainingState((prevState) => ({
       ...prevState,
@@ -181,13 +137,124 @@ function InterviewTraining() {
     }));
   };
 
+  TabTitle('Interview training');
+  const column = [
+    {
+      field: 'status',
+      headerName: 'Status',
+      align: 'left',
+      headerAlign: 'left',
+      width: 100
+    },
+    {
+      field: 'firstname_lastname',
+      headerName: 'First-/ Last Name',
+      align: 'left',
+      headerAlign: 'left',
+      width: 200,
+      renderCell: (params) => {
+        const linkUrl = `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+          params.row.id,
+          DEMO.PROFILE_HASH
+        )}`;
+        return (
+          <>
+            <Link
+              underline="hover"
+              to={linkUrl}
+              component={LinkDom}
+              target="_blank"
+              title={params.value}
+            >
+              {params.value}
+            </Link>
+          </>
+        );
+      }
+    },
+    {
+      field: 'trainer_id',
+      headerName: `Trainer`,
+      align: 'left',
+      headerAlign: 'left',
+      minWidth: 100,
+      renderCell: (params) => {
+        return params.row.trainer_id?.map((trainer) => trainer.firstname) || [];
+      }
+    },
+    {
+      field: 'event_id',
+      headerName: `Training Time (${
+        Intl.DateTimeFormat().resolvedOptions().timeZone
+      })`,
+      align: 'left',
+      headerAlign: 'left',
+      width: 250,
+      renderCell: (params) => {
+        return (
+          params.row.event_id && `${convertDate(params.row.event_id.start)}`
+        );
+      }
+    },
+    {
+      field: 'interview_date',
+      headerName: 'Interview Time',
+      align: 'left',
+      headerAlign: 'left',
+      width: 100,
+      renderCell: (params) => {
+        return (
+          params.row.interview_date &&
+          `${convertDate(params.row.interview_date)}`
+        );
+      }
+    },
+    {
+      field: 'program_name',
+      headerName: 'Interview',
+      align: 'left',
+      headerAlign: 'left',
+      width: 400,
+      renderCell: (params) => {
+        return (
+          <Link
+            underline="hover"
+            to={DEMO.INTERVIEW_SINGLE_LINK(params.row.id)}
+            component={LinkDom}
+            target="_blank"
+            title={params.row.program_name}
+          >
+            {params.row.program_name}
+          </Link>
+        );
+      }
+    }
+  ];
+  const transform = (interviews) => {
+    const result = [];
+    if (!interviews) {
+      return [];
+    }
+    for (const interview of interviews) {
+      result.push({
+        ...interview,
+        id: `${interview._id}`,
+        student_id: interview.student_id._id,
+        trainer_id: interview.trainer_id,
+        program_name: `${interview.program_id.school} ${interview.program_id.program_name} ${interview.program_id.degree} ${interview.program_id.semester}`,
+        firstname_lastname: `${interview.student_id.firstname} ${interview.student_id.lastname}`
+      });
+    }
+    return result;
+  };
+  const memoizedColumns = useMemo(() => column, [column]);
+
   const {
     res_status,
     isLoaded,
     res_modal_status,
     res_modal_message,
-    interviewslist,
-    student
+    interviewslist
   } = interviewTrainingState;
 
   if (!isLoaded) {
@@ -197,29 +264,9 @@ function InterviewTraining() {
   if (res_status >= 400) {
     return <ErrorPage res_status={res_status} />;
   }
-  let available_interview_request_programs = [];
-  if (!is_TaiGer_role(user)) {
-    available_interview_request_programs = student.applications
-      .filter(
-        (application) =>
-          isProgramDecided(application) &&
-          application.admission !== 'O' &&
-          application.admission !== 'X' &&
-          !interviewslist.find(
-            (interview) =>
-              interview.program_id._id.toString() ===
-              application.programId._id.toString()
-          )
-      )
-      .map((application) => {
-        return {
-          key: application.programId._id.toString(),
-          value: `${application.programId.school} ${application.programId.program_name} ${application.programId.degree} ${application.programId.semester}`
-        };
-      });
-  }
 
-  TabTitle('Interview training');
+  const rows = transform(interviewslist);
+
   return (
     <Box>
       {res_modal_status >= 400 && (
@@ -243,50 +290,21 @@ function InterviewTraining() {
           {is_TaiGer_role(user) ? 'All Interviews' : 'My Interviews'}
         </Typography>
       </Breadcrumbs>
-      {interviewslist.map((interview, i) => (
-        <InterviewItems
-          key={i}
-          expanded={false}
-          user={user}
-          readOnly={true}
-          interview={interview}
-          openDeleteDocModalWindow={openDeleteDocModalWindow}
-        />
-      ))}
       {!is_TaiGer_role(user) &&
-        available_interview_request_programs.length > 0 && (
-          <Button size="small" onClick={handleClick}>
+        interviewTrainingState.available_interview_request_programs?.length >
+          0 && (
+          <Button
+            fullWidth
+            size="small"
+            variant="contained"
+            color="primary"
+            onClick={handleClick}
+            sx={{ my: 1 }}
+          >
             {t('Add', { ns: 'common' })}
           </Button>
         )}
-      <ModalNew
-        open={interviewTrainingState.SetDeleteDocModel}
-        onClose={closeDeleteDocModalWindow}
-        aria-labelledby="contained-modal-title-vcenter"
-        centered
-      >
-        <Typography variant="h6">Warning</Typography>
-        Do you want to delete the interview request of{' '}
-        <Typography fontWeight="bold">
-          {interviewTrainingState.interview_name_toBeDelete}
-        </Typography>
-        ?
-        <Button
-          color="primary"
-          variant="contained"
-          disabled={!isLoaded}
-          onClick={handleDeleteInterview}
-        >
-          {t('Yes', { ns: 'common' })}
-        </Button>
-        <Button
-          color="secondary"
-          variant="outlined"
-          onClick={closeDeleteDocModalWindow}
-        >
-          {t('No', { ns: 'common' })}
-        </Button>
-      </ModalNew>
+      <MuiDataGrid rows={rows} columns={memoizedColumns} />
     </Box>
   );
 }

@@ -30,10 +30,6 @@ const interviewsSchema = new mongoose.Schema(
       type: String,
       default: ''
     },
-    interview_time: {
-      type: String,
-      default: ''
-    },
     start: {
       type: Date
     },

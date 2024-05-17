@@ -401,7 +401,8 @@ export const translation_en = {
   },
   translation: {
     'Interview Training Time': 'Interview Training Time',
-    'Interview Date': 'Interview Date',
+    'Interview Time': 'Interview Time',
+    'Your timezone local time': 'Your timezone local time',
     'Interview Program': 'Interview Program',
     Interviewer: 'Interviewer',
     'Active Student List': 'Active Student List',

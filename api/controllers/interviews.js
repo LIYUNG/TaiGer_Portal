@@ -14,6 +14,7 @@ const getAllInterviews = asyncHandler(async (req, res) => {
   const interviews = await Interview.find()
     .populate('student_id trainer_id', 'firstname lastname email')
     .populate('program_id', 'school program_name degree semester')
+    .populate('event_id')
     .lean();
 
   res.status(200).send({ success: true, data: interviews });
@@ -25,7 +26,8 @@ const getMyInterview = asyncHandler(async (req, res) => {
     student_id: user._id.toString()
   })
     .populate('student_id trainer_id', 'firstname lastname email')
-    .populate('program_id', 'school program_name')
+    .populate('program_id', 'school program_name degree semester')
+    .populate('thread_id event_id')
     .lean();
 
   const student = await Student.findById(user._id.toString())
@@ -101,7 +103,7 @@ const addInterviewTrainingDateTime = asyncHandler(async (req, res, next) => {
       await Event.findByIdAndUpdate(oldEvent._id, { ...oldEvent }, {});
       await Interview.findByIdAndUpdate(
         interview_id,
-        { event_id: oldEvent._id },
+        { event_id: oldEvent._id, status: 'Scheduled' },
         {}
       );
     } else {
@@ -109,7 +111,7 @@ const addInterviewTrainingDateTime = asyncHandler(async (req, res, next) => {
       await write_NewEvent.save();
       await Interview.findByIdAndUpdate(
         interview_id,
-        { event_id: write_NewEvent._id?.toString() },
+        { event_id: write_NewEvent._id?.toString(), status: 'Scheduled' },
         {}
       );
     }

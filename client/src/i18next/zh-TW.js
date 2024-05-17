@@ -395,7 +395,8 @@ export const translation_zh_TW = {
   },
   translation: {
     'Interview Training Time': '面試訓練時間',
-    'Interview Date': '面試時間',
+    'Interview Time': '面試時間',
+    'Your timezone local time': '您所在時區時間',
     'Interview Program': '面試學程',
     Interviewer: '學校面試官',
     Overview: '總攬',

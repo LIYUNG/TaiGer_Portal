@@ -18,9 +18,13 @@ import {
 } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { DesktopDateTimePicker } from '@mui/x-date-pickers/DesktopDateTimePicker';
 
-import { isProgramDecided, isProgramSubmitted, is_TaiGer_role } from '../Utils/checking-functions';
+import {
+  isProgramDecided,
+  isProgramSubmitted,
+  is_TaiGer_role
+} from '../Utils/checking-functions';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import {
@@ -35,6 +39,7 @@ import { useAuth } from '../../components/AuthProvider';
 import { appConfig } from '../../config';
 import Loading from '../../components/Loading/Loading';
 import ModalNew from '../../components/Modal';
+import { showTimezoneOffset } from '../Utils/contants';
 
 function AddInterview() {
   const { user } = useAuth();
@@ -329,10 +334,12 @@ function AddInterview() {
           </TableHead>
           <TableBody>
             <TableRow>
-              <TableCell>{t('Interview Date')}</TableCell>
               <TableCell>
+                {t('Interview Time')} ({t('Your timezone local time')})
+              </TableCell>
+              <TableCell sx={{ display: 'flex' }}>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DatePicker
+                  <DesktopDateTimePicker
                     size="small"
                     required
                     fullWidth
@@ -350,41 +357,10 @@ function AddInterview() {
                     }}
                   />
                 </LocalizationProvider>
-                {/* <TextField
-                  name="interview_date"
-                  type="date"
-                  size="small"
-                  required
-                  fullWidth
-                  id="interview_date"
-                  placeholder="Date of Interview"
-                  label={`${t('Date of Interview')}`}
-                  InputLabelProps={{
-                    shrink: true
-                  }}
-                  value={interviewTrainingState.interviewData?.interview_date}
-                  onChange={(e) => handleChange_AddInterview(e)}
-                /> */}
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>{t('Interview time')}</TableCell>
-              <TableCell>
-                <TextField
-                  name="interview_time"
-                  type="text"
-                  size="small"
-                  required
-                  fullWidth
-                  id="interview_time"
-                  placeholder="Interview time"
-                  label={`${t('Interview time')}`}
-                  InputLabelProps={{
-                    shrink: true
-                  }}
-                  value={interviewTrainingState.interviewData?.interview_time}
-                  onChange={(e) => handleChange_AddInterview(e)}
-                />
+                <Typography sx={{ ml: 2, mt: 2 }}>
+                  {Intl.DateTimeFormat().resolvedOptions().timeZone}{' '}
+                  {showTimezoneOffset()}
+                </Typography>
               </TableCell>
             </TableRow>
             <TableRow>
@@ -397,7 +373,7 @@ function AddInterview() {
                   required
                   fullWidth
                   id="interview_duration"
-                  placeholder="Interview duration"
+                  placeholder="30 minutes"
                   label={`${t('Interview duration')}`}
                   InputLabelProps={{
                     shrink: true

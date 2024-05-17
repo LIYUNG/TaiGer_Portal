@@ -30,6 +30,7 @@ const {
 const Permission = require('../models/Permission');
 const Course = require('../models/Course');
 const { ObjectId } = require('mongodb');
+const { Interview } = require('../models/Interview');
 
 const getStudent = asyncHandler(async (req, res, next) => {
   const {
@@ -391,7 +392,35 @@ const getStudents = asyncHandler(async (req, res, next) => {
         '-attributes +applications.portal_credentials.application_portal_a.account +applications.portal_credentials.application_portal_a.password +applications.portal_credentials.application_portal_b.account +applications.portal_credentials.application_portal_b.password'
       )
       .lean();
-
+    const interviews = await Interview.find({
+      student_id: user._id.toString()
+    })
+      .populate('trainer_id', 'firstname lastname email')
+      .populate('event_id')
+      .lean();
+    if (interviews) {
+      for (let i = 0; i < student.applications?.length; i += 1) {
+        if (
+          interviews.some(
+            (interview) =>
+              interview.program_id.toString() ===
+              student.applications[i].programId._id.toString()
+          )
+        ) {
+          const interview_temp = interviews.find(
+            (interview) =>
+              interview.program_id.toString() ===
+              student.applications[i].programId._id.toString()
+          );
+          student.applications[i].interview_status = interview_temp.status;
+          student.applications[i].interview_trainer_id =
+            interview_temp.trainer_id;
+          student.applications[i].interview_training_event =
+            interview_temp.event_id;
+          student.applications[i].interview_id = interview_temp._id.toString();
+        }
+      }
+    }
     const student_new = add_portals_registered_status(student);
     // TODO Get My Courses
     let isCoursesFilled = true;

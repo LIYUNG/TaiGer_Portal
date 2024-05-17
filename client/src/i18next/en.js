@@ -380,7 +380,14 @@ export const translation_en = {
       'Please go to the Uni-Assist section, follow the instructions to complete the account registration, upload documents, and apply for the VPD (Vorprüfungsdokumentation).'
   },
   interviews: {
-    'Provide Interview Information': 'Provide Interview Information'
+    'All Interviews': 'All Interviews',
+    'My Interviews': 'My Interviews',
+    'Create Interview Training': 'Create Interview Training',
+    'Interview duration': 'Interview duration',
+    'Interview program': 'Interview program',
+    'Provide Interview Information': 'Provide Interview Information',
+    'Please provide interview information (invitation email, reading assignment, etc.)':
+      'Please provide interview information (invitation email, reading assignment, etc.)'
   },
   uniassist: {
     'All document uploaded to Uni-Assist and paid, waiting for VPD':

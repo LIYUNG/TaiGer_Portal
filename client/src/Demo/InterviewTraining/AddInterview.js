@@ -310,12 +310,17 @@ function AddInterview() {
           component={LinkDom}
           to={`${DEMO.INTERVIEW_LINK}`}
         >
-          {is_TaiGer_role(user) ? 'All Interviews' : 'My Interviews'}
+          {is_TaiGer_role(user)
+            ? t('All Interviews', { ns: 'interviews' })
+            : t('My Interviews', { ns: 'interviews' })}
         </Link>
-        <Typography color="text.primary">Create Interview</Typography>
+        <Typography color="text.primary">
+          {t('Create Interview Training', { ns: 'interviews' })}
+        </Typography>
       </Breadcrumbs>
       <Button
         size="small"
+        variant="contained"
         color="secondary"
         onClick={() => navigate(`${DEMO.INTERVIEW_LINK}`)}
       >
@@ -335,7 +340,9 @@ function AddInterview() {
           <TableBody>
             <TableRow>
               <TableCell>
-                {t('Interview Time')} ({t('Your timezone local time')})
+                <Typography>
+                  {t('Interview Time')} ({t('Your timezone local time')})
+                </Typography>
               </TableCell>
               <TableCell sx={{ display: 'flex' }}>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -364,7 +371,11 @@ function AddInterview() {
               </TableCell>
             </TableRow>
             <TableRow>
-              <TableCell>{t('Interview duration')}</TableCell>
+              <TableCell>
+                <Typography>
+                  {t('Interview duration', { ns: 'interviews' })}
+                </Typography>
+              </TableCell>
               <TableCell>
                 <TextField
                   name="interview_duration"
@@ -386,7 +397,11 @@ function AddInterview() {
               </TableCell>
             </TableRow>
             <TableRow>
-              <TableCell>{t('Interview University')}</TableCell>
+              <TableCell>
+                <Typography>
+                  {t('Interview program', { ns: 'interviews' })}
+                </Typography>
+              </TableCell>
               <TableCell>
                 <TextField
                   fullWidth
@@ -408,7 +423,9 @@ function AddInterview() {
               </TableCell>
             </TableRow>
             <TableRow>
-              <TableCell>{t('Interviewer')}</TableCell>
+              <TableCell>
+                <Typography>{t('Interviewer')}</Typography>
+              </TableCell>
               <TableCell>
                 <TextField
                   name="interviewer"
@@ -431,8 +448,10 @@ function AddInterview() {
         </Table>
         <br />
         <Typography>
-          Please provide further information (invitation email content, reading
-          assignment, etc.) below:{' '}
+          {t(
+            'Please provide interview information (invitation email, reading assignment, etc.)',
+            { ns: 'interviews' }
+          )}
         </Typography>
         <NotesEditor
           thread={interviewTrainingState.thread}

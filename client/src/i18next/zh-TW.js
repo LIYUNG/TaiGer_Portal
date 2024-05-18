@@ -389,6 +389,7 @@ export const translation_zh_TW = {
     'Create Interview Training': '新增面試訓縣',
     'Interview duration': '面試長度',
     'Interview program': '面試科系',
+    'Interview Training Meeting Link': '面試訓練會議連結',
     'Provide Interview Information': '請提供面試資訊',
     'Please provide interview information (invitation email, reading assignment, etc.)':
       '請提供校方給的面試資訊 (面試邀請 Email、閱讀作業、問題集等。若有pdf附件等，請先在新增此面試訓練請求後，方可上傳。)'

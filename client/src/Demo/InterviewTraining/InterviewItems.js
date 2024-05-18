@@ -224,7 +224,9 @@ function InterviewItems(props) {
               >
                 <Typography fontWeight="bold">{` ${interview.student_id.firstname} - ${interview.student_id.lastname}`}</Typography>
               </Link>
-              <Typography variant="body1">{t('Trainer')}</Typography>{' '}
+              <Typography variant="body1" sx={{ mt: 2 }}>
+                {t('Trainer')}
+              </Typography>{' '}
               {interview.trainer_id && interview.trainer_id?.length !== 0 ? (
                 <>
                   {interview.trainer_id.map((t_id, idx) => (
@@ -262,7 +264,7 @@ function InterviewItems(props) {
                   )}
                 </>
               )}
-              <Typography variant="body1">
+              <Typography variant="body1" sx={{ mt: 2 }}>
                 {t('Interview Training Time')}:&nbsp;
               </Typography>
               {is_TaiGer_role(user) && (
@@ -301,15 +303,31 @@ function InterviewItems(props) {
               )}
               {!is_TaiGer_role(user) &&
                 (props.interview.event_id?.start ? (
-                  <>
+                  <Typography>
                     {`${convertDate(utcTime)} ${NoonNightLabel(utcTime)} ${
                       Intl.DateTimeFormat().resolvedOptions().timeZone
                     }`}
                     {showTimezoneOffset()}
-                  </>
+                  </Typography>
                 ) : (
                   <Typography variant="body1">To be announced</Typography>
                 ))}
+              <Typography variant="body1" sx={{ mt: 2 }}>
+                {t('Interview Training Meeting Link', { ns: 'interviews' })}
+                :&nbsp;
+              </Typography>
+              {props.interview.event_id ? (
+                <Link
+                  underline="hover"
+                  to={props.interview.event_id.meetingLink}
+                  component={LinkDom}
+                  target="_blank"
+                >
+                  {props.interview.event_id.meetingLink}
+                </Link>
+              ) : (
+                <Typography variant="body1">To be announced</Typography>
+              )}
             </Grid>
             <Grid item xs={12} md={8}>
               <Typography variant="body1">
@@ -325,11 +343,11 @@ function InterviewItems(props) {
               >
                 {`${interview.program_id.school} - ${interview.program_id.program_name} ${interview.program_id.degree}`}
               </Link>
-              <Typography variant="body1">
+              <Typography variant="body1" sx={{ mt: 2 }}>
                 {t('Interviewer')}:&nbsp;
                 {`${interview.interviewer}`}
               </Typography>
-              <Typography variant="body1">
+              <Typography variant="body1" sx={{ mt: 2 }}>
                 {t('Description', { ns: 'common' })}
               </Typography>{' '}
               <NotesEditor

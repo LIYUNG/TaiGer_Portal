@@ -48,7 +48,16 @@ const getInterview = asyncHandler(async (req, res) => {
   const interview = await Interview.findById(interview_id)
     .populate('student_id trainer_id', 'firstname lastname email')
     .populate('program_id', 'school program_name degree')
-    .populate('thread_id event_id')
+    .populate({
+      path: 'thread_id',
+      select:
+        'file_type isFinalVersion outsourced_user_id flag_by_user_id updatedAt messages.file messages.message messages.createdAt messages._id',
+      populate: {
+        path: 'messages.user_id',
+        select: 'firstname lastname'
+      }
+    })
+    .populate('event_id')
     .lean();
 
   if (!interview) {

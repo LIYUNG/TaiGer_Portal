@@ -6,7 +6,12 @@ import { useTranslation } from 'react-i18next';
 
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
-import { deleteInterview, getInterview } from '../../api';
+import {
+  SubmitMessageWithAttachment,
+  deleteAMessageInThread,
+  deleteInterview,
+  getInterview
+} from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import InterviewItems from './InterviewItems';
 import DEMO from '../../store/constant';
@@ -23,6 +28,7 @@ function SingleInterview() {
   const { t } = useTranslation();
   const [singleInterviewState, setSingleInterviewState] = useState({
     error: '',
+    file: null,
     author: '',
     isLoaded: false,
     success: false,
@@ -61,6 +67,12 @@ function SingleInterview() {
             isLoaded: true,
             interview: data,
             editorState: initialEditorState,
+            accordionKeys:
+              new Array(data.thread_id?.messages?.length)
+                .fill()
+                .map((x, i) =>
+                  i === data.thread_id?.messages.length - 1 ? i : -1
+                ) || [], // to collapse all
             author,
             success: success,
             res_status: status
@@ -84,115 +96,159 @@ function SingleInterview() {
     );
   }, [interview_id]);
 
-  const singleExpandtHandler = () => {};
-
-  const onDeleteSingleMessage = () => {
-    // e.preventDefault();
-    // setDocModificationThreadPageState((prevState) => ({
-    //   ...prevState,
-    //   isLoaded: false
-    // }));
-    // deleteAMessageInThread(
-    //   docModificationThreadPageState.documentsthreadId,
-    //   message_id
-    // ).then(
-    //   (resp) => {
-    //     const { success } = resp.data;
-    //     const { status } = resp;
-    //     if (success) {
-    //       // TODO: remove that message
-    //       var new_messages = [
-    //         ...docModificationThreadPageState.thread.messages
-    //       ];
-    //       let idx = docModificationThreadPageState.thread.messages.findIndex(
-    //         (message) => message._id.toString() === message_id
-    //       );
-    //       if (idx !== -1) {
-    //         new_messages.splice(idx, 1);
-    //       }
-    //       setDocModificationThreadPageState((prevState) => ({
-    //         ...prevState,
-    //         success,
-    //         isLoaded: true,
-    //         thread: {
-    //           ...docModificationThreadPageState.thread,
-    //           messages: new_messages
-    //         },
-    //         buttonDisabled: false,
-    //         res_modal_status: status
-    //       }));
-    //     } else {
-    //       // TODO: what if data is oversize? data type not match?
-    //       const { message } = resp.data;
-    //       setDocModificationThreadPageState((prevState) => ({
-    //         ...prevState,
-    //         isLoaded: true,
-    //         buttonDisabled: false,
-    //         res_modal_message: message,
-    //         res_modal_status: status
-    //       }));
-    //     }
-    //   },
-    //   (error) => {
-    //     setDocModificationThreadPageState((prevState) => ({
-    //       ...prevState,
-    //       isLoaded: true,
-    //       error,
-    //       res_modal_status: 500,
-    //       res_modal_message: ''
-    //     }));
-    //   }
-    // );
-    // setDocModificationThreadPageState((prevState) => ({
-    //   ...prevState,
-    //   in_edit_mode: false
-    // }));
+  const singleExpandtHandler = (idx) => {
+    let accordionKeys = [...singleInterviewState.accordionKeys];
+    accordionKeys[idx] = accordionKeys[idx] !== idx ? idx : -1;
+    setSingleInterviewState((prevState) => ({
+      ...prevState,
+      accordionKeys: accordionKeys
+    }));
   };
 
-  // const handleClickSave = (e, interview, editorState) => {
-  //   e.preventDefault();
-  //   const message = JSON.stringify(editorState);
-  //   const interviewData_temp = interview;
-  //   interviewData_temp.interview_description = message;
-  //   updateInterview(interview_id, interviewData_temp).then(
-  //     (resp) => {
-  //       const { success, data } = resp.data;
-  //       const { status } = resp;
-  //       if (success) {
-  //         setSingleInterviewState((prevState) => ({
-  //           ...prevState,
-  //           success,
-  //           interview: data,
-  //           editorState,
-  //           isEdit: !singleInterviewState.isEdit,
-  //           author: data.author,
-  //           isLoaded: true,
-  //           res_modal_status: status
-  //         }));
-  //       } else {
-  //         const { message } = resp.data;
-  //         setSingleInterviewState((prevState) => ({
-  //           ...prevState,
-  //           isLoaded: true,
-  //           res_modal_message: message,
-  //           res_modal_status: status
-  //         }));
-  //       }
-  //     },
-  //     (error) => {
-  //       setSingleInterviewState((prevState) => ({
-  //         ...prevState,
-  //         error
-  //       }));
-  //     }
-  //   );
-  //   setSingleInterviewState((state) => ({ ...state, in_edit_mode: false }));
-  // };
+  const onDeleteSingleMessage = (e, message_id) => {
+    e.preventDefault();
+    setSingleInterviewState((prevState) => ({
+      ...prevState,
+      isLoaded: false
+    }));
+    deleteAMessageInThread(
+      singleInterviewState.interview.thread_id?._id.toString(),
+      message_id
+    ).then(
+      (resp) => {
+        const { success } = resp.data;
+        const { status } = resp;
+        if (success) {
+          // TODO: remove that message
+          var new_messages = [
+            ...singleInterviewState.interview.thread_id.messages
+          ];
+          let idx = singleInterviewState.interview.thread_id.messages.findIndex(
+            (message) => message._id.toString() === message_id
+          );
+          if (idx !== -1) {
+            new_messages.splice(idx, 1);
+          }
+          setSingleInterviewState((prevState) => ({
+            ...prevState,
+            success,
+            isLoaded: true,
+            interview: {
+              ...singleInterviewState.interview,
+              thread_id: {
+                ...singleInterviewState.interview.thread_id,
+                messages: new_messages
+              }
+            },
+            buttonDisabled: false,
+            res_modal_status: status
+          }));
+        } else {
+          // TODO: what if data is oversize? data type not match?
+          const { message } = resp.data;
+          setSingleInterviewState((prevState) => ({
+            ...prevState,
+            isLoaded: true,
+            buttonDisabled: false,
+            res_modal_message: message,
+            res_modal_status: status
+          }));
+        }
+      },
+      (error) => {
+        setSingleInterviewState((prevState) => ({
+          ...prevState,
+          isLoaded: true,
+          error,
+          res_modal_status: 500,
+          res_modal_message: ''
+        }));
+      }
+    );
+  };
+
+  const handleClickSave = (e, editorState) => {
+    e.preventDefault();
+    var message = JSON.stringify(editorState);
+    const formData = new FormData();
+
+    if (singleInterviewState.file) {
+      singleInterviewState.file.forEach((file) => {
+        formData.append('files', file);
+      });
+    }
+
+    // formData.append('files', docModificationThreadPageState.file);
+    formData.append('message', message);
+
+    SubmitMessageWithAttachment(
+      singleInterviewState.interview.thread_id?._id.toString(),
+      singleInterviewState.interview.student_id._id.toString(),
+      formData
+    ).then(
+      (resp) => {
+        const { success, data } = resp.data;
+        const { status } = resp;
+        if (success) {
+          setSingleInterviewState((prevState) => ({
+            ...prevState,
+            success,
+            interview: {
+              ...singleInterviewState.interview,
+              thread_id: {
+                ...singleInterviewState.interview.thread_id,
+                messages: data?.messages
+              }
+            },
+            isLoaded: true,
+            buttonDisabled: false,
+            accordionKeys: [
+              ...singleInterviewState.accordionKeys,
+              data.messages.length - 1
+            ],
+            res_modal_status: status
+          }));
+        } else {
+          const { message } = resp.data;
+          setSingleInterviewState((prevState) => ({
+            ...prevState,
+            isLoaded: true,
+            res_modal_message: message,
+            res_modal_status: status
+          }));
+        }
+      },
+      (error) => {
+        setSingleInterviewState((prevState) => ({
+          ...prevState,
+          error
+        }));
+      }
+    );
+  };
+
+  const onFileChange = (e) => {
+    e.preventDefault();
+    const file_num = e.target.files.length;
+    if (file_num <= 3) {
+      if (!e.target.files) {
+        return;
+      }
+      setSingleInterviewState((prevState) => ({
+        ...prevState,
+        file: Array.from(e.target.files)
+      }));
+    } else {
+      setSingleInterviewState((prevState) => ({
+        ...prevState,
+        res_modal_message: 'You can only select up to 3 files.',
+        res_modal_status: 423
+      }));
+    }
+  };
 
   const openDeleteDocModalWindow = (e, interview) => {
     e.stopPropagation();
-    console.log(interview);
-    console.log(singleInterviewState.SetDeleteDocModel);
     setSingleInterviewState((prevState) => ({
       ...prevState,
       interview_id_toBeDelete: interview._id,
@@ -258,6 +314,7 @@ function SingleInterview() {
     res_status,
     editorState,
     interview,
+    accordionKeys,
     isDeleteSuccessful,
     isLoaded,
     res_modal_status,
@@ -295,7 +352,7 @@ function SingleInterview() {
           />
           <MessageList
             documentsthreadId={interview.thread_id?._id?.toString()}
-            accordionKeys={[]}
+            accordionKeys={accordionKeys}
             singleExpandtHandler={singleExpandtHandler}
             thread={interview.thread_id}
             isLoaded={true}
@@ -334,9 +391,9 @@ function SingleInterview() {
                   thread={interview.thread_id}
                   buttonDisabled={false}
                   editorState={{}}
-                  handleClickSave={() => {}}
-                  file={[]}
-                  onFileChange={() => {}}
+                  handleClickSave={handleClickSave}
+                  file={singleInterviewState.file}
+                  onFileChange={onFileChange}
                   checkResult={() => {}}
                 />
               )}

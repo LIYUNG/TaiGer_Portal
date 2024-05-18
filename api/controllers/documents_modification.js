@@ -1023,25 +1023,29 @@ const postMessages = asyncHandler(async (req, res) => {
       ({ doc_thread_id }) =>
         doc_thread_id.toString() === document_thread._id.toString()
     );
-    if (user.role === Role.Student) {
+    if (doc_thread) {
+      if (user.role === Role.Student) {
+      }
+      if (user.role !== Role.Student) {
+        student.notification.isRead_new_cvmlrl_messsage = false;
+      }
+      doc_thread.latest_message_left_by_id = user._id.toString();
+      doc_thread.updatedAt = new Date();
     }
-    if (user.role !== Role.Student) {
-      student.notification.isRead_new_cvmlrl_messsage = false;
-    }
-    doc_thread.latest_message_left_by_id = user._id.toString();
-    doc_thread.updatedAt = new Date();
   } else {
     const general_thread = student.generaldocs_threads.find(
       ({ doc_thread_id }) =>
         doc_thread_id.toString() === document_thread._id.toString()
     );
-    if (user.role === Role.Student) {
+    if (general_thread) {
+      if (user.role === Role.Student) {
+      }
+      if (user.role !== Role.Student) {
+        student.notification.isRead_new_cvmlrl_messsage = false;
+      }
+      general_thread.latest_message_left_by_id = user._id.toString();
+      general_thread.updatedAt = new Date();
     }
-    if (user.role !== Role.Student) {
-      student.notification.isRead_new_cvmlrl_messsage = false;
-    }
-    general_thread.latest_message_left_by_id = user._id.toString();
-    general_thread.updatedAt = new Date();
   }
 
   await student.save();

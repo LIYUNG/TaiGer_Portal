@@ -1220,7 +1220,7 @@ const GroupCommunicationByStudent = async () => {
   };
 };
 
-const FindIntervalInCommunications = async () => {
+const FindIntervalInCommunicationsAndSave = async () => {
   // group communications by student
   try {
     const groupCommunication = await GroupCommunicationByStudent();
@@ -1284,57 +1284,53 @@ const FindActiveDocumentThreads = async () => {
   };
 };
 
-const FindValidInterval = async(validDocumentThread) => {
-  let thread;
-  try {
-    thread = await Documentthread.findById(validDocumentThread.toString())
-    .populate('student_id', 'role')
-    .lean();
-  } catch (error){
-    logger.error('error finding valid documentthread');
-  };
-  if (thread.messages.length > 1){
-    let msg_1;
-    let msg_2;
-    for (const msg of thread.messages){
-      try {
-        const user = await User.findById(msg.user_id?.toString())
-          if (user?.role === "Student") {
-            msg_1 = msg;
-          } else {
-            msg_2 = msg;
-          }
-      } catch (error) {
-        logger.error("Error finding message user_id:", error);
-      };
-      //calculate interval, store values into Interval Collection
-      if ( msg_1 !== undefined && msg_2 != undefined ){
-        try {
-          const interval = CalculateInterval(msg_1, msg_2);
-          const newInterval = new Interval({
-            thread_id: thread._id.toString(),
-            message_1_id: msg_1,
-            message_2_id: msg_2,
-            interval_type: thread.file_type,
-            interval: interval,
-            updatedAt: new Date()
-          });
-          await newInterval.save();
-          msg_1 = undefined;
-          msg_2 = undefined;
-        } catch (error){
-          logger.error("Error creating interval collection:", error);
-        };
-      };
-    };
-  };
-};
-
-const FindIntervalInDocumentThreads = async () => {
+const FindValidIntervalInDocumentThreadAndSave = async () => {
   try {
     const validDocumentThread = await FindActiveDocumentThreads();
       for (const documentThread of validDocumentThread){
-         await FindValidInterval(documentThread);
+        let thread;
+        try {
+          thread = await Documentthread.findById(validDocumentThread.toString())
+          .populate('student_id', 'role')
+          .lean();
+        } catch (error){
+          logger.error('error finding valid documentthread');
+        };
+        if (thread.messages.length > 1){
+          let msg_1;
+          let msg_2;
+          for (const msg of thread.messages){
+            try {
+              const user = await User.findById(msg.user_id?.toString())
+                if (user?.role === "Student") {
+                  msg_1 = msg;
+                } else {
+                  msg_2 = msg;
+                }
+            } catch (error) {
+              logger.error("Error finding message user_id:", error);
+            };
+            //calculate interval, store values into Interval Collection
+            if ( msg_1 !== undefined && msg_2 != undefined ){
+              try {
+                const interval = CalculateInterval(msg_1, msg_2);
+                const newInterval = new Interval({
+                  thread_id: thread._id.toString(),
+                  message_1_id: msg_1,
+                  message_2_id: msg_2,
+                  interval_type: thread.file_type,
+                  interval: interval,
+                  updatedAt: new Date()
+                });
+                await newInterval.save();
+                msg_1 = undefined;
+                msg_2 = undefined;
+              } catch (error){
+                logger.error("Error creating interval collection:", error);
+              };
+            };
+          };
+        };
       }
   } catch (error) {
       logger.error('wrong!');
@@ -1371,7 +1367,6 @@ const GroupIntervals = async () => {
 
 const CalculateAverageResponseTime = async () => {
   const [studentGroupInterval, documentThreadGroupInterval] = await GroupIntervals();
-
   const calculateAndSaveAverage = async (groupInterval, idKey) => {
     try {
       for (const key in groupInterval) {
@@ -1409,7 +1404,7 @@ module.exports = {
   add_portals_registered_status,
   MeetingDailyReminderChecker,
   UnconfirmedMeetingDailyReminderChecker,
-  FindIntervalInCommunications,
-  FindIntervalInDocumentThreads,
+  FindIntervalInCommunicationsAndSave,
+  FindValidIntervalInDocumentThreadAndSave,
   CalculateAverageResponseTime
 };

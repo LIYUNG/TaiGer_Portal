@@ -53,6 +53,8 @@ function InterviewItems(props) {
   const [showModal, setShowModal] = useState(false);
   const [interview, setiInterview] = useState(props.interview);
   const [editors, setEditors] = useState([]);
+  const [interviewTrainingTimeChange, setInterviewTrainingTimeChange] =
+    useState(false);
   const [trainerId, setTrainerId] = useState(
     new Set(interview.trainer_id?.map((t_id) => t_id._id.toString()))
   );
@@ -67,6 +69,11 @@ function InterviewItems(props) {
 
   const handleToggle = () => {
     setIsCollapse(!isCollapse);
+  };
+
+  const handleChangeInterviewTrainingTime = (newValue) => {
+    setUtcTime(newValue);
+    setInterviewTrainingTimeChange(true);
   };
 
   const toggleModal = () => {
@@ -146,7 +153,7 @@ function InterviewItems(props) {
     );
     const { success } = data;
     if (success) {
-      console.log('success');
+      setInterviewTrainingTimeChange(false);
     }
   };
 
@@ -260,27 +267,36 @@ function InterviewItems(props) {
               </Typography>
               {is_TaiGer_role(user) && (
                 <>
-                  <TimezoneSelect
-                    value={timezone}
-                    displayValue="UTC"
-                    onChange={(e) => setTimezone(e.value)}
-                    isDisabled={true}
-                  />
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DesktopDateTimePicker
-                      value={utcTime}
-                      onChange={(newValue) => setUtcTime(newValue)}
-                    />
-                  </LocalizationProvider>
-                  <Button
-                    fullWidth
-                    variant="contained"
-                    color="primary"
-                    sx={{ mt: 1 }}
-                    onClick={(e) => handleSendInterviewInvitation(e)}
-                  >
-                    Send Invitation
-                  </Button>
+                  {interview.trainer_id?.length !== 0 ? (
+                    <>
+                      <TimezoneSelect
+                        value={timezone}
+                        displayValue="UTC"
+                        onChange={(e) => setTimezone(e.value)}
+                        isDisabled={true}
+                      />
+                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DesktopDateTimePicker
+                          value={utcTime}
+                          onChange={(newValue) =>
+                            handleChangeInterviewTrainingTime(newValue)
+                          }
+                        />
+                      </LocalizationProvider>
+                      <Button
+                        fullWidth
+                        variant="contained"
+                        color="primary"
+                        disabled={!interviewTrainingTimeChange}
+                        sx={{ mt: 1 }}
+                        onClick={(e) => handleSendInterviewInvitation(e)}
+                      >
+                        {t('Send Invitation')}
+                      </Button>
+                    </>
+                  ) : (
+                    <>{t('Please assign Interview Trainer first.')}</>
+                  )}
                 </>
               )}
               {!is_TaiGer_role(user) &&

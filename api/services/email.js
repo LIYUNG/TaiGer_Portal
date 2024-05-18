@@ -136,7 +136,7 @@ const sendEventEmail = (
   subject,
   message,
   meeting_event,
-  cc,
+  cc, // array
   event_title,
   isUpdatingEvent,
   toDelete
@@ -196,6 +196,22 @@ const sendEventEmail = (
 `;
   const content =
     'BEGIN:VCALENDAR\r\nPRODID:-//ACME/DesktopCalendar//EN\r\nMETHOD:REQUEST\r\n...';
+  const cc_event_list = cc.map((c) => {
+    return {
+      email: c.email,
+      name: `${c.firstname} ${c.lastname}`,
+      status: 'ACCEPTED',
+      rsvp: true,
+      type: 'INDIVIDUAL',
+      role: 'REQ-PARTICIPANT'
+    };
+  });
+  const cc_receiver_list = cc.map((c) => {
+    return {
+      address: c.email,
+      name: `${c.firstname} ${c.lastname}`
+    };
+  });
   const event = ical({
     domain: 'taigerconsultancy-portal.com',
     prodId: '//TaiGer Portal//taigerconsultancy-portal.com//EN',
@@ -216,14 +232,7 @@ const sendEventEmail = (
           mailto: 'noreply.taigerconsultancy@gmail.com'
         },
         attendees: [
-          {
-            email: cc.email,
-            name: `${cc.firstname} ${cc.lastname}`,
-            status: 'ACCEPTED',
-            rsvp: true,
-            type: 'INDIVIDUAL',
-            role: 'REQ-PARTICIPANT'
-          },
+          ...cc_event_list,
           {
             email: to.address,
             name: `${to.firstname} ${to.lastname}`,
@@ -240,10 +249,7 @@ const sendEventEmail = (
   const mail = {
     from: senderName,
     to,
-    cc: {
-      name: `${cc.firstname} ${cc.lastname}`,
-      address: cc.email
-    },
+    cc: cc_receiver_list,
     subject,
     // text: message,
     html: message,
@@ -2180,7 +2186,7 @@ const MeetingInvitationEmail = async (recipient, payload) => {
     subject,
     message,
     payload.event,
-    payload.taiger_user,
+    [payload.taiger_user], // cc
     payload.event_title,
     payload.isUpdatingEvent,
     false
@@ -2207,10 +2213,10 @@ const MeetingCancelledReminderEmail = async (recipient, payload) => {
     subject,
     message,
     payload.event,
-    payload.taiger_user,
+    [payload.taiger_user], // cc
     payload.event_title,
     payload.isUpdatingEvent,
-    true
+    true // toDelete event
   );
 };
 
@@ -2418,7 +2424,44 @@ const sendInterviewConfirmationEmail = async (recipient, payload) => {
 
 `;
 
-  return sendEmail(recipient, subject, message);
+  return sendEventEmail(
+    recipient,
+    subject,
+    message,
+    payload.event,
+    [payload.taiger_user], // cc
+    payload.event_title,
+    payload.isUpdatingEvent,
+    false
+  );
+};
+
+const sendInterviewCancelEmail = async (recipient, payload) => {
+  const subject = `[Cancelled] Interview Training for ${payload.program.school} ${payload.program.program_name} ${payload.program.degree} ${payload.program.semester} is cancelled`;
+  const message = `\
+<p>${ENGLISH_BELOW}</p>
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+
+<p><b>${payload.taiger_user.firstname} - ${payload.taiger_user.lastname}</b> 取消了 ${payload.program.school} ${payload.program.program_name} ${payload.program.degree} ${payload.program.semester} 面試訓練時段。</p>
+
+<p>${SPLIT_LINE}</p>
+
+<p>${payload.taiger_user.firstname} - ${payload.taiger_user.lastname} cancelled the interview training for ${payload.program.school} ${payload.program.program_name} ${payload.program.degree} ${payload.program.semester}.</p>
+
+<p>${TAIGER_SIGNATURE}</p>
+
+`;
+
+  return sendEventEmail(
+    recipient,
+    subject,
+    message,
+    payload.event,
+    [payload.taiger_user], // cc
+    payload.event_title,
+    payload.isUpdatingEvent,
+    true
+  );
 };
 
 module.exports = {
@@ -2478,5 +2521,6 @@ module.exports = {
   TicketCreatedAgentEmail,
   TicketResolvedStudentEmail,
   sendAssignEssayWriterReminderEmail,
-  sendInterviewConfirmationEmail
+  sendInterviewConfirmationEmail,
+  sendInterviewCancelEmail
 };

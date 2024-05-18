@@ -2002,29 +2002,33 @@ const deleteAMessageInThread = asyncHandler(async (req, res) => {
     const t = student.generaldocs_threads.find(
       (tt) => tt.doc_thread_id.toString() === messagesThreadId
     );
-    if (updated_thread.messages.length > 0) {
-      t.latest_message_left_by_id =
-        updated_thread.messages[
-          updated_thread.messages.length - 1
-        ].user_id.toString();
-      t.updatedAt =
-        updated_thread.messages[updated_thread.messages.length - 1].updatedAt;
-    } else {
-      t.latest_message_left_by_id = '';
+    if (t) {
+      if (updated_thread.messages.length > 0) {
+        t.latest_message_left_by_id =
+          updated_thread.messages[
+            updated_thread.messages.length - 1
+          ].user_id.toString();
+        t.updatedAt =
+          updated_thread.messages[updated_thread.messages.length - 1].updatedAt;
+      } else {
+        t.latest_message_left_by_id = '';
+      }
     }
   } else {
     const t = application.doc_modification_thread.find(
       (tt) => tt.doc_thread_id.toString() === messagesThreadId
     );
-    if (updated_thread.messages.length > 0) {
-      t.latest_message_left_by_id =
-        updated_thread.messages[
-          updated_thread.messages.length - 1
-        ].user_id.toString();
-      t.updatedAt =
-        updated_thread.messages[updated_thread.messages.length - 1].updatedAt;
-    } else {
-      t.latest_message_left_by_id = '';
+    if (t) {
+      if (updated_thread.messages.length > 0) {
+        t.latest_message_left_by_id =
+          updated_thread.messages[
+            updated_thread.messages.length - 1
+          ].user_id.toString();
+        t.updatedAt =
+          updated_thread.messages[updated_thread.messages.length - 1].updatedAt;
+      } else {
+        t.latest_message_left_by_id = '';
+      }
     }
   }
   await student.save();

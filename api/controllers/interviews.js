@@ -11,7 +11,14 @@ const { emptyS3Directory } = require('../utils/utils_function');
 const { AWS_S3_BUCKET_NAME } = require('../config');
 const { sendInterviewConfirmationEmail } = require('../services/email');
 
-const InterviewTrainingInvitation = (receiver, user, event, interview_id, program) => {
+const InterviewTrainingInvitation = (
+  receiver,
+  user,
+  event,
+  interview_id,
+  program,
+  isUpdatingEvent
+) => {
   sendInterviewConfirmationEmail(
     {
       id: receiver._id.toString(),
@@ -24,7 +31,7 @@ const InterviewTrainingInvitation = (receiver, user, event, interview_id, progra
       meeting_time: event.start, // Replace with the actual meeting time
       student_id: user._id.toString(),
       meeting_link: event.meetingLink,
-      isUpdatingEvent: false,
+      isUpdatingEvent,
       event,
       interview_id,
       program
@@ -130,6 +137,7 @@ const addInterviewTrainingDateTime = asyncHandler(async (req, res, next) => {
     const date = new Date(oldEvent.start);
     oldEvent.isConfirmedReceiver = true;
     oldEvent.isConfirmedRequester = true;
+    let isUpdatingEvent = false;
     let concat_name = '';
     let concat_id = '';
     // eslint-disable-next-line no-restricted-syntax
@@ -141,17 +149,24 @@ const addInterviewTrainingDateTime = asyncHandler(async (req, res, next) => {
       .toISOString()
       .replace(/:/g, '_')
       .replace(/\./g, '_')}_${concat_id}`.replace(/ /g, '_');
-
+    let newEvent;
     if (oldEvent._id) {
       await Event.findByIdAndUpdate(oldEvent._id, { ...oldEvent }, {});
+      newEvent = await Event.findById(oldEvent._id)
+        .populate('receiver_id requester_id', 'firstname lastname email')
+        .lean();
       await Interview.findByIdAndUpdate(
         interview_id,
         { event_id: oldEvent._id, status: 'Scheduled' },
         {}
       );
+      isUpdatingEvent = true;
     } else {
       const write_NewEvent = await Event.create(oldEvent);
       await write_NewEvent.save();
+      newEvent = await Event.findById(write_NewEvent._id)
+        .populate('receiver_id requester_id', 'firstname lastname email')
+        .lean();
       await Interview.findByIdAndUpdate(
         interview_id,
         { event_id: write_NewEvent._id?.toString(), status: 'Scheduled' },
@@ -166,23 +181,25 @@ const addInterviewTrainingDateTime = asyncHandler(async (req, res, next) => {
     const interview_tmep = await Interview.findById(interview_id).populate(
       'program_id'
     );
-    oldEvent.requester_id.forEach((receiver) => {
+    newEvent.requester_id.forEach((receiver) => {
       InterviewTrainingInvitation(
         receiver,
         user,
-        oldEvent,
+        newEvent,
         interview_id,
-        interview_tmep.program_id
+        interview_tmep.program_id,
+        isUpdatingEvent
       );
     });
     // TODO: inform trainer
-    oldEvent.receiver_id.forEach((receiver) => {
+    newEvent.receiver_id.forEach((receiver) => {
       InterviewTrainingInvitation(
         receiver,
         user,
-        oldEvent,
+        newEvent,
         interview_id,
-        interview_tmep.program_id
+        interview_tmep.program_id,
+        isUpdatingEvent
       );
     });
 
@@ -239,23 +256,8 @@ const createInterview = asyncHandler(async (req, res) => {
     .populate('program_id', 'school program_name degree semester')
     .lean();
   if (interview_existed) {
-    try {
-      await Interview.findOneAndUpdate(
-        {
-          student_id: studentId,
-          program_id
-        },
-        payload,
-        { upsert: true }
-      )
-        .populate('student_id trainer_id', 'firstname lastname email')
-        .populate('program_id', 'school program_name degree semester')
-        .lean();
-    } catch (err) {
-      logger.error(err);
-      throw new ErrorResponse(404, err);
-    }
-    res.status(200).send({ success: true });
+    logger.info('createInterview: Interview already existed!');
+    throw new ErrorResponse(409, 'Interview already existed!');
   } else {
     try {
       const createdDocument = await Documentthread.create({
@@ -283,8 +285,6 @@ const createInterview = asyncHandler(async (req, res) => {
     }
     res.status(200).send({ success: true });
   }
-
-  res.status(200).send({ success: true });
 });
 
 module.exports = {

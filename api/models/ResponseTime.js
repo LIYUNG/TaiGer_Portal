@@ -1,7 +1,11 @@
-const { ObjectId } = require('mongodb');
-const { model, Schema } = require('mongoose');
+const mongoose = require('mongoose');
+const {
+  model,
+  Schema,
+  Types: { ObjectId }
+} = require('mongoose');
 
-const ResponseTimeSchema = new Schema({
+const ResponseTimeSchema = new mongoose.Schema({
   thread_id: {
     type: Schema.Types.ObjectId,
     ref: 'Documentthread'
@@ -14,7 +18,7 @@ const ResponseTimeSchema = new Schema({
     type: String,
     required: true
   },
-  interval: {
+  intervalAvg: {
     type: Number,
     required: true
   },
@@ -25,4 +29,7 @@ const ResponseTimeSchema = new Schema({
   }
 });
 
-module.exports = model('ResponseTime', ResponseTimeSchema);
+const ResponseTime = mongoose.model('ResponseTime', ResponseTimeSchema);
+module.exports = {
+  ResponseTime
+};

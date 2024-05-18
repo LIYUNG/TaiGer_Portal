@@ -1341,54 +1341,62 @@ const FindIntervalInDocumentThreads = async () => {
   };
 };
 
-const GroupIntervalsByDocumentThread = async () => {
+const GroupIntervals = async () => {
   try {
     const intervals = await Interval.find()
-    .populate('thread_id student_id')
-    .lean();
-    let groupInterval = {};
-    for (const singleInterval of intervals){
-      if (!groupInterval[singleInterval.thread_id._id.toString()]){
-        groupInterval[singleInterval.thread_id._id.toString()] = [singleInterval];
+      .populate('thread_id student_id')
+      .lean();
+
+    const studentGroupInterval = {};
+    const documentThreadGroupInterval = {};
+
+    intervals.forEach(singleInterval => {
+      const { student_id, thread_id } = singleInterval;
+      const key = student_id ? student_id._id.toString() : thread_id._id.toString();
+      const group = student_id ? studentGroupInterval : documentThreadGroupInterval;
+
+      if (!group[key]) {
+        group[key] = [singleInterval];
       } else {
-        groupInterval[singleInterval.thread_id._id.toString()].push(singleInterval);
-      };
-    };
-    return groupInterval;
-  } catch (error){
-    logger.error('error grouping communications');
+        group[key].push(singleInterval);
+      }
+    });
+
+    return [studentGroupInterval, documentThreadGroupInterval];
+  } catch (error) {
+    logger.error('Error grouping communications:', error);
     return null;
-  };
+  }
 };
 
-const GroupIntervalsByStudentCommunication = async () => {
-  try {
-    const intervals = await Interval.find()
-    .populate('thread_id student_id')
-    .lean();
-    let groupInterval = {};
-    for (const singleInterval of intervals){
-      if (!groupInterval[singleInterval.student_id._id.toString()]){
-        groupInterval[singleInterval.student_id._id.toString()] = [singleInterval];
-      } else {
-        groupInterval[singleInterval.student_id._id.toString()].push(singleInterval);
-      };
-    };
-    return groupInterval;
-  } catch (error){
-    logger.error('error grouping communications');
-    return null;
+const CalculateAverageResponseTime = async () => {
+  const [studentGroupInterval, documentThreadGroupInterval] = await GroupIntervals();
+
+  const calculateAndSaveAverage = async (groupInterval, idKey) => {
+    try {
+      for (const key in groupInterval) {
+        const intervals = groupInterval[key];
+        const total = intervals.reduce((sum, interval) => sum += interval.interval, 0);
+        const final_avg = total / intervals.length;
+        
+        const singleInterval = intervals[0];
+        const newResponseTime = new ResponseTime({
+          [`${idKey}`]: key.toString(),
+          interval_type: singleInterval.interval_type,
+          intervalAvg: final_avg,
+          updatedAt: new Date()
+        });
+
+        await newResponseTime.save();
+      }
+    } catch (err) {
+      logger.error(`Error calculating and saving average response time for ${idKey}:`, err);
+    }
   };
+
+  await calculateAndSaveAverage(studentGroupInterval, 'student_id');
+  await calculateAndSaveAverage(documentThreadGroupInterval, 'thread_id');
 };
-
-// async function CalculateAverageResponseTime(){
-//   //calculate student communication average response time
-//   const studentGroupInterval = await GroupIntervalsByStudentCommunication();
-//   for (const studentInterval of studentGroupInterval){
-
-//   }
-
-// };
 
 module.exports = {
   emptyS3Directory,
@@ -1402,5 +1410,6 @@ module.exports = {
   MeetingDailyReminderChecker,
   UnconfirmedMeetingDailyReminderChecker,
   FindIntervalInCommunications,
-  FindIntervalInDocumentThreads
+  FindIntervalInDocumentThreads,
+  CalculateAverageResponseTime
 };

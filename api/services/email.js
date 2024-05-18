@@ -2452,6 +2452,66 @@ const sendAssignEssayWriterReminderEmail = async (recipient, payload) => {
   return sendEmail(recipient, subject, message);
 };
 
+// TODO
+const sendAssignedInterviewTrainerToTrainerEmail = async (
+  recipient,
+  payload
+) => {
+  const program = `${payload.interview.program_id.school} ${payload.interview.program_id.program_name} ${payload.interview.program_id.degree} ${payload.interview.program_id.semester}`;
+  const student_name = `${payload.interview.student_id.firstname} ${payload.interview.student_id.lastname}`;
+  const training_request = `${student_name} - ${program}`;
+  const subject = `Interview Training Request assigned to you for ${training_request}`;
+
+  const message = `\
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+
+<p>The following interview training request is assigned to you!</p>
+
+<p><b>${training_request}</b></p>
+
+<p>Please go to <a href="${SINGLE_INTERVIEW_THREAD_URL(
+    payload.interview._id.toString()
+  )}">${training_request}</a></p> 
+<p>and check the interview requirements and <b>arrange interview training date</b> with your student!</p>
+
+<p>${TAIGER_SIGNATURE}</p>
+
+`;
+
+  return sendEmail(recipient, subject, message);
+};
+
+const sendAssignedInterviewTrainerToStudentEmail = async (
+  recipient,
+  payload
+) => {
+  const program = `${payload.interview.program_id.school} ${payload.interview.program_id.program_name} ${payload.interview.program_id.degree} ${payload.interview.program_id.semester}`;
+  const student_name = `${payload.interview.student_id.firstname} ${payload.interview.student_id.lastname}`;
+  const training_request = `${student_name} - ${program}`;
+  const subject = `Interview Trainer assigned for ${training_request}`;
+  let trainers = '';
+  for (let i = 0; i < payload.interview.trainer_id?.length; i += 1) {
+    trainers += `<li><b>${payload.interview.trainer_id[i].firstname} - ${payload.interview.trainer_id[i].lastname}</b> Email: ${payload.interview.trainer_id[i].email}</li>`;
+  }
+  const message = `\
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+
+<p>The following trainer are assigned to student ${student_name}!</p>
+
+<p>${trainers}</p>
+
+<p>Please go to <a href="${SINGLE_INTERVIEW_THREAD_URL(
+    payload.interview._id.toString()
+  )}">${training_request}</a></p>
+<p>and <b>arrange the interview training date</b> with your interview trainer!</p>
+
+<p>${TAIGER_SIGNATURE}</p>
+
+`;
+
+  return sendEmail(recipient, subject, message);
+};
+
 const sendInterviewConfirmationEmail = async (recipient, payload) => {
   const subject = `[Confirmed] Interview Training Time for ${payload.program.school} ${payload.program.program_name} ${payload.program.degree} ${payload.program.semester}`;
   const message = `\
@@ -2622,6 +2682,8 @@ module.exports = {
   TicketCreatedAgentEmail,
   TicketResolvedStudentEmail,
   sendAssignEssayWriterReminderEmail,
+  sendAssignedInterviewTrainerToTrainerEmail,
+  sendAssignedInterviewTrainerToStudentEmail,
   sendInterviewConfirmationEmail,
   sendInterviewCancelEmail,
   InterviewTrainingReminderEmail

@@ -11,7 +11,9 @@ const { emptyS3Directory } = require('../utils/utils_function');
 const { AWS_S3_BUCKET_NAME } = require('../config');
 const {
   sendInterviewConfirmationEmail,
-  sendAssignTrainerReminderEmail
+  sendAssignTrainerReminderEmail,
+  sendAssignedInterviewTrainerToTrainerEmail,
+  sendAssignedInterviewTrainerToStudentEmail
 } = require('../services/email');
 const Permission = require('../models/Permission');
 
@@ -119,6 +121,7 @@ const deleteInterview = asyncHandler(async (req, res) => {
     emptyS3Directory(AWS_S3_BUCKET_NAME, directory);
     // Delete event
     if (interview.event_id) {
+      // TODO: send delete event email
       await Event.findByIdAndDelete(interview.event_id);
     }
     // Delete interview thread in mongoDB
@@ -234,9 +237,27 @@ const updateInterview = asyncHandler(async (req, res) => {
     .lean();
 
   res.status(200).send({ success: true, data: interview });
-  if (payload.trainer_id) {
-    // TODO - inform student trainer
-    // TODO - inform trainer
+  if (payload.trainer_id?.length > 0) {
+    await sendAssignedInterviewTrainerToStudentEmail(
+      {
+        firstname: interview.student_id.firstname,
+        lastname: interview.student_id.lastname,
+        address: interview.student_id.email
+      },
+      { interview }
+    );
+
+    const emailRequests = interview.trainer_id?.map((trainer) =>
+      sendAssignedInterviewTrainerToTrainerEmail(
+        {
+          firstname: trainer.firstname,
+          lastname: trainer.lastname,
+          address: trainer.email
+        },
+        { interview }
+      )
+    );
+    await Promise.all(emailRequests);
     console.log('update trainer');
   }
 });

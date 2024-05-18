@@ -1284,7 +1284,7 @@ const FindActiveDocumentThreads = async () => {
   };
 };
 
-const FindValidIntervalInDocumentThreadAndSave = async () => {
+const FindIntervalInDocumentThreadAndSave = async () => {
   try {
     const validDocumentThread = await FindActiveDocumentThreads();
       for (const documentThread of validDocumentThread){
@@ -1393,6 +1393,12 @@ const CalculateAverageResponseTime = async () => {
   await calculateAndSaveAverage(documentThreadGroupInterval, 'thread_id');
 };
 
+const DailyCalculateAverageResponseTime = async () => {
+  await FindIntervalInCommunicationsAndSave();
+  await FindIntervalInDocumentThreadAndSave();
+  await CalculateAverageResponseTime();
+};
+
 module.exports = {
   emptyS3Directory,
   TasksReminderEmails,
@@ -1405,6 +1411,7 @@ module.exports = {
   MeetingDailyReminderChecker,
   UnconfirmedMeetingDailyReminderChecker,
   FindIntervalInCommunicationsAndSave,
-  FindValidIntervalInDocumentThreadAndSave,
-  CalculateAverageResponseTime
+  FindIntervalInDocumentThreadAndSave,
+  CalculateAverageResponseTime,
+  DailyCalculateAverageResponseTime
 };

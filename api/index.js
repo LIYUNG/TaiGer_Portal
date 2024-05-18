@@ -37,7 +37,8 @@ const {
   NextSemesterCourseSelectionReminderEmails,
   UpdateStatisticsData,
   MeetingDailyReminderChecker,
-  UnconfirmedMeetingDailyReminderChecker
+  UnconfirmedMeetingDailyReminderChecker,
+  NoInterviewTrainerOrTrainingDateDailyReminderChecker,
 } = require('./utils/utils_function');
 // const { UserS3GarbageCollector } = require('./controllers/users');
 
@@ -157,6 +158,11 @@ const launch = async () => {
   const job13 = schedule.scheduleJob(
     DAILY_TASKS_REMINDER_SCHEDULE,
     UnconfirmedMeetingDailyReminderChecker
+  );
+
+  const job14 = schedule.scheduleJob(
+    DAILY_TASKS_REMINDER_SCHEDULE,
+    NoInterviewTrainerOrTrainingDateDailyReminderChecker
   );
 
   logger.info(`isProd : ${isProd()}`);

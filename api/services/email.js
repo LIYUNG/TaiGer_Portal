@@ -30,7 +30,8 @@ const {
   AGENT_CALENDAR_EVENTS_URL,
   STUDENT_CALENDAR_EVENTS_URL,
   PROGRAM_URL,
-  SINGLE_INTERVIEW_THREAD_URL
+  SINGLE_INTERVIEW_THREAD_URL,
+  INTERVIEW_CENTER_URL
 } = require('../constants');
 
 const {
@@ -2024,6 +2025,74 @@ const sendAssignEditorReminderEmail = async (recipient, payload) => {
   return sendEmail(recipient, subject, message);
 };
 
+const sendNoTrainerInterviewRequestsReminderEmail = async (
+  recipient,
+  payload
+) => {
+  const requests = payload.interviewRequests.map(
+    (request) =>
+      `<li>
+      <a href="${SINGLE_INTERVIEW_THREAD_URL(request._id.toString())}">${
+        request.interview_date
+      } ${request.student_id.firstname} ${request.student_id.lastname} - ${
+        request.program_id.school
+      } ${request.program_id.program_name} ${request.program_id.degree} ${
+        request.program_id.semester
+      }</a>
+    </li>`
+  );
+  const subject =
+    '[DO NOT IGNORE] Assign Interview Trainer to the following requests';
+  const message = `\
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+
+<p>Please assign an interview trainer to the following interview training requests:</p>
+${requests}
+
+<br />
+<p>${SPLIT_LINE}</p>
+
+<p>請指派面試訓練官給下列面試訓練請求：</p>
+
+${requests}
+
+<br />
+<p>${TAIGER_SIGNATURE}</p>
+
+`; // should be for admin/editor/agent/student
+
+  return sendEmail(recipient, subject, message);
+};
+
+const sendAssignTrainerReminderEmail = async (recipient, payload) => {
+  const program_name = `${payload.program.school} ${payload.program.program_name} ${payload.program.degree}  ${payload.program.semester}`;
+  const student_name = `${payload.student_firstname} - ${payload.student_lastname}`;
+  const subject = `[DO NOT IGNORE] Assign Interview Trainer to ${student_name} - ${program_name}`;
+  const message = `\
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+
+<p>${student_name} has created interview training request, <b>but she/he did not have any interview trainer yet.</b></p>
+
+<p><b>Please assign an interview trainer to the student <a href="${SINGLE_INTERVIEW_THREAD_URL(
+    payload.interview_id
+  )}">${student_name} ${program_name}</a></b></p>
+
+<br />
+<p>${SPLIT_LINE}</p>
+
+<p>${student_name} 新增了一個面試訓練請求，但他目前並無任何面試訓練官。</p>
+
+<p><b>請指派面試訓練官給學生 <a href="${SINGLE_INTERVIEW_THREAD_URL(
+    payload.interview_id
+  )}">${student_name} ${program_name}</a></b></p>
+<br />
+<p>${TAIGER_SIGNATURE}</p>
+
+`; // should be for admin/editor/agent/student
+
+  return sendEmail(recipient, subject, message);
+};
+
 const sendAgentNewMessageReminderEmail = async (recipient, payload) => {
   const subject = `[New Message] ${payload.student_firstname} - ${payload.student_lastname}`;
   const message = `\
@@ -2463,6 +2532,37 @@ const sendInterviewCancelEmail = async (recipient, payload) => {
   );
 };
 
+const InterviewTrainingReminderEmail = async (recipient, payload) => {
+  const subject = `[Training Reminder] ${recipient.firstname} ${recipient.lastname}`;
+  const message = `\
+[面試訓練討論提醒]
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+<br />
+<p> 請於約定時間(時間請見 TaiGer Portal)該時間準時點擊以下連結： </p>
+<p>Jitsi Meet 會議連結網址： <a href="${payload.event?.meetingLink}">${payload.event?.meetingLink}</a></p>
+<p>若需要改時間，請上去 <a href="${INTERVIEW_CENTER_URL}">Interview Center</a> 和面試訓練官更改時段。</p>
+<p>若您是第一次使用Jitsi Meet 會議，建議可以先查看使用說明： <a href="${JITSI_MEET_INSTRUCTIONS_URL}">${JITSI_MEET_INSTRUCTIONS_URL}</a></p>
+<br />
+<p>Jitsi Meet 是行政院數位政委唐鳳建議使用的開源軟體，許多台灣大專院校如國立陽明交通大學、國立台東大學等所採用。</p>
+
+<p>${SPLIT_LINE}</p>
+[Interview Training Reminder]
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+<br />
+<p>Please attend the meeting (see TaiGer Portal for the booked time slot) with the following link： </p>
+<p> Jitsi Meet Meeting link: <a href="${payload.event?.meetingLink}">${payload.event?.meetingLink}</a></p>
+<p>If you can not attend the meeting, please go to <a href="${INTERVIEW_CENTER_URL}">Interview Center</a> and discuss new training time.</p>
+<p>If you are the first time to use Jitsi Meet, please read our instruction: <a href="${JITSI_MEET_INSTRUCTIONS_URL}">${JITSI_MEET_INSTRUCTIONS_URL}</a></p>
+<br />
+<p>Jitsi Meet is an open-source software recommended for use by Tang Feng, the Digital Minister of the Executive Yuan. It is adopted by many Taiwanese universities such as National Yang Ming Chiao Tung University and National Taitung University.</p>
+
+<p>${TAIGER_SIGNATURE}</p>
+
+`; // should be for admin/editor/agent/student
+
+  return sendEmail(recipient, subject, message);
+};
+
 module.exports = {
   verifySMTPConfig,
   updateNotificationEmail,
@@ -2509,6 +2609,8 @@ module.exports = {
   AnalysedCoursesDataStudentEmail,
   updateCoursesDataAgentEmail,
   sendAssignEditorReminderEmail,
+  sendNoTrainerInterviewRequestsReminderEmail,
+  sendAssignTrainerReminderEmail,
   sendAgentNewMessageReminderEmail,
   sendStudentNewMessageReminderEmail,
   MeetingAdjustReminderEmail,
@@ -2521,5 +2623,6 @@ module.exports = {
   TicketResolvedStudentEmail,
   sendAssignEssayWriterReminderEmail,
   sendInterviewConfirmationEmail,
-  sendInterviewCancelEmail
+  sendInterviewCancelEmail,
+  InterviewTrainingReminderEmail
 };

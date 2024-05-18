@@ -311,14 +311,6 @@ function ManagerMainView(props) {
           <TableHead>
             <TableRow>
               <TableCell></TableCell>
-              <TableCell>
-                First-, Last Name | 姓名 <br /> Email
-              </TableCell>
-              <TableCell>Agents</TableCell>
-              <TableCell>Editors</TableCell>
-              <TableCell>Year</TableCell>
-              <TableCell>Semester</TableCell>
-              <TableCell>Degree</TableCell>
               {header.map((name, index) => (
                 <TableCell key={index}>{name}</TableCell>
               ))}

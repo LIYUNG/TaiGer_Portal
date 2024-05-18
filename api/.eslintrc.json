@@ -16,6 +16,7 @@
     "implicit-arrow-linebreak": "off",
     "operator-linebreak": "off",
     "indent": "off",
+    "function-paren-newline": "off",
     "linebreak-style": ["error", "windows"],
     "camelcase": "off",
     "comma-dangle": [

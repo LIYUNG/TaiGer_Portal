@@ -40,12 +40,15 @@ const Note = require('../models/Note');
 const {
   sendAssignEditorReminderEmail,
   MeetingReminderEmail,
-  UnconfirmedMeetingReminderEmail
+  UnconfirmedMeetingReminderEmail,
+  sendNoTrainerInterviewRequestsReminderEmail,
+  InterviewTrainingReminderEmail
 } = require('../services/email');
 const Permission = require('../models/Permission');
 const { Communication } = require('../models/Communication');
 const { s3 } = require('../aws/index');
 const Event = require('../models/Event');
+const { Interview } = require('../models/Interview');
 
 const emptyS3Directory = async (bucket, dir) => {
   const listParams = {
@@ -1120,27 +1123,51 @@ const MeetingDailyReminderChecker = async () => {
   }).populate('requester_id receiver_id', 'firstname lastname email');
   if (upcomingEvents) {
     for (let j = 0; j < upcomingEvents.length; j += 1) {
-      // eslint-disable-next-line no-await-in-loop
-      await MeetingReminderEmail(
-        {
-          firstname: upcomingEvents[j].requester_id[0].firstname,
-          lastname: upcomingEvents[j].requester_id[0].lastname,
-          address: upcomingEvents[j].requester_id[0].email
-        },
-        {
-          event: upcomingEvents[j]
-        }
-      );
-      await MeetingReminderEmail(
-        {
-          firstname: upcomingEvents[j].receiver_id[0].firstname,
-          lastname: upcomingEvents[j].receiver_id[0].lastname,
-          address: upcomingEvents[j].receiver_id[0].email
-        },
-        {
-          event: upcomingEvents[j]
-        }
-      );
+      if (upcomingEvents.event_type === 'Interview') {
+        // eslint-disable-next-line no-await-in-loop
+        await InterviewTrainingReminderEmail(
+          {
+            firstname: upcomingEvents[j].requester_id[0].firstname,
+            lastname: upcomingEvents[j].requester_id[0].lastname,
+            address: upcomingEvents[j].requester_id[0].email
+          },
+          {
+            event: upcomingEvents[j]
+          }
+        );
+        await InterviewTrainingReminderEmail(
+          {
+            firstname: upcomingEvents[j].receiver_id[0].firstname,
+            lastname: upcomingEvents[j].receiver_id[0].lastname,
+            address: upcomingEvents[j].receiver_id[0].email
+          },
+          {
+            event: upcomingEvents[j]
+          }
+        );
+      } else {
+        // eslint-disable-next-line no-await-in-loop
+        await MeetingReminderEmail(
+          {
+            firstname: upcomingEvents[j].requester_id[0].firstname,
+            lastname: upcomingEvents[j].requester_id[0].lastname,
+            address: upcomingEvents[j].requester_id[0].email
+          },
+          {
+            event: upcomingEvents[j]
+          }
+        );
+        await MeetingReminderEmail(
+          {
+            firstname: upcomingEvents[j].receiver_id[0].firstname,
+            lastname: upcomingEvents[j].receiver_id[0].lastname,
+            address: upcomingEvents[j].receiver_id[0].email
+          },
+          {
+            event: upcomingEvents[j]
+          }
+        );
+      }
     }
   }
 
@@ -1205,6 +1232,62 @@ const UnconfirmedMeetingDailyReminderChecker = async () => {
   logger.info('Unconfirmed Meeting attendee reminded');
 };
 
+// every day reminder
+// TODO: no trainer, no date.
+const NoInterviewTrainerOrTrainingDateDailyReminderChecker = async () => {
+  const currentDate = new Date();
+
+  // Only future meeting within 24 hours, not past
+  const interviewRequests = await Interview.find({
+    $and: [
+      {
+        end: {
+          $gte: currentDate
+        }
+      },
+      {
+        $or: [
+          {
+            trainer_id: {
+              $exists: false
+            }
+          },
+          {
+            trainer_id: {
+              $size: 0
+            }
+          }
+        ]
+      }
+    ]
+  })
+    .populate('student_id', 'firstname lastname role email')
+    .populate('program_id');
+
+  if (interviewRequests) {
+    const permissions = await Permission.find({
+      canAssignEditors: true
+    })
+      .populate('user_id', 'firstname lastname email')
+      .lean();
+    const sendEmailPromises = permissions.map((permission) =>
+      sendNoTrainerInterviewRequestsReminderEmail(
+        {
+          firstname: permission.user_id.firstname,
+          lastname: permission.user_id.lastname,
+          address: permission.user_id.email
+        },
+        {
+          interviewRequests
+        }
+      )
+    );
+    await Promise.all(sendEmailPromises);
+  }
+
+  logger.info('Unconfirmed Meeting attendee reminded');
+};
+
 module.exports = {
   emptyS3Directory,
   TasksReminderEmails,
@@ -1215,5 +1298,6 @@ module.exports = {
   UpdateStatisticsData,
   add_portals_registered_status,
   MeetingDailyReminderChecker,
-  UnconfirmedMeetingDailyReminderChecker
+  UnconfirmedMeetingDailyReminderChecker,
+  NoInterviewTrainerOrTrainingDateDailyReminderChecker
 };

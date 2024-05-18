@@ -13,7 +13,7 @@ import {
 } from '@mui/material';
 import { Link as LinkDom } from 'react-router-dom';
 
-import TabProgramConflict from '../MainViewTab/ProgramConflict/TabProgramConflict';
+// import TabProgramConflict from '../MainViewTab/ProgramConflict/TabProgramConflict';
 import StudentsAgentEditor from '../MainViewTab/StudentsAgentEditor/StudentsAgentEditor';
 import TasksDistributionBarChart from '../../../components/Charts/TasksDistributionBarChart';
 import {
@@ -268,22 +268,14 @@ function EditorMainView(props) {
           </Card>
         </Grid>
 
-        <Grid item xs={12} md={12}>
+        {/* <Grid item xs={12} md={12}>
           <TabProgramConflict students={props.students} />
-        </Grid>
+        </Grid> */}
         <Grid item xs={12} md={12}>
           <Table size="small">
             <TableHead>
               <TableRow>
                 <TableCell></TableCell>
-                <TableCell>
-                  {t('First-, Last Name', { ns: 'common' })} <br /> Email
-                </TableCell>
-                <TableCell>{t('Agents', { ns: 'common' })}</TableCell>
-                <TableCell>{t('Editors', { ns: 'common' })}</TableCell>
-                <TableCell>{t('Year', { ns: 'common' })}</TableCell>
-                <TableCell>{t('Semester', { ns: 'common' })}</TableCell>
-                <TableCell>{t('Degree', { ns: 'common' })}</TableCell>
                 {header.map((name, index) => (
                   <TableCell key={index}>{name}</TableCell>
                 ))}

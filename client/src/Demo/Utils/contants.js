@@ -1917,6 +1917,12 @@ export const base_documents_checklist = {
 };
 
 export const academic_background_header = {
+  'First-, Last Name': 'First-, Last Name',
+  Agents: 'Agents',
+  Editors: 'Editors',
+  Year: 'Year',
+  Semester: 'Semester',
+  Degree: 'Degree',
   School: 'School / Program',
   Application_Fields: 'Target',
   English_German: 'English/German',

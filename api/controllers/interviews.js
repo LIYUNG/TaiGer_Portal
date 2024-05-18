@@ -9,7 +9,11 @@ const logger = require('../services/logger');
 const { Documentthread } = require('../models/Documentthread');
 const { emptyS3Directory } = require('../utils/utils_function');
 const { AWS_S3_BUCKET_NAME } = require('../config');
-const { sendInterviewConfirmationEmail } = require('../services/email');
+const {
+  sendInterviewConfirmationEmail,
+  sendAssignTrainerReminderEmail
+} = require('../services/email');
+const Permission = require('../models/Permission');
 
 const InterviewTrainingInvitation = (
   receiver,
@@ -230,6 +234,11 @@ const updateInterview = asyncHandler(async (req, res) => {
     .lean();
 
   res.status(200).send({ success: true, data: interview });
+  if (payload.trainer_id) {
+    // TODO - inform student trainer
+    // TODO - inform trainer
+    console.log('update trainer');
+  }
 });
 
 // () TODO: inform editor
@@ -284,6 +293,58 @@ const createInterview = asyncHandler(async (req, res) => {
       throw new ErrorResponse(404, err);
     }
     res.status(200).send({ success: true });
+    // TODO: inform interview assign
+    // inform editor-lead
+    const permissions = await Permission.find({
+      canAssignEditors: true
+    })
+      .populate('user_id', 'firstname lastname email')
+      .lean();
+    const newlyCreatedInterview = await Interview.findOne({
+      student_id: studentId,
+      program_id
+    })
+      .populate('student_id', 'firstname lastname email')
+      .populate('program_id', 'school program_name degree semester')
+      .lean();
+
+    if (permissions) {
+      const sendEmailPromises = permissions.map((permission) =>
+        sendAssignTrainerReminderEmail(
+          {
+            firstname: permission.user_id.firstname,
+            lastname: permission.user_id.lastname,
+            address: permission.user_id.email
+          },
+          {
+            student_firstname: student.firstname,
+            student_id: student._id.toString(),
+            student_lastname: student.lastname,
+            interview_id: newlyCreatedInterview._id.toString(),
+            program: newlyCreatedInterview.program_id
+          }
+        )
+      );
+
+      await Promise.all(sendEmailPromises);
+
+      // for (let x = 0; x < permissions.length; x += 1) {
+      //   await sendAssignTrainerReminderEmail(
+      //     {
+      //       firstname: permissions[x].user_id.firstname,
+      //       lastname: permissions[x].user_id.lastname,
+      //       address: permissions[x].user_id.email
+      //     },
+      //     {
+      //       student_firstname: student.firstname,
+      //       student_id: student._id.toString(),
+      //       student_lastname: student.lastname,
+      //       interview_id: newlyCreatedInterview._id.toString(),
+      //       program: newlyCreatedInterview.program_id
+      //     }
+      //   );
+      // }
+    }
   }
 });
 

@@ -488,14 +488,6 @@ export const SingleStudentPageMainContent = ({
                 <TableHead>
                   <TableRow>
                     <TableCell></TableCell>
-                    <TableCell>
-                      {t('First-, Last Name', { ns: 'common' })}
-                    </TableCell>
-                    <TableCell>{t('Agents', { ns: 'common' })}</TableCell>
-                    <TableCell>{t('Editors', { ns: 'common' })}</TableCell>
-                    <TableCell>{t('Year', { ns: 'common' })}</TableCell>
-                    <TableCell>{t('Semester', { ns: 'common' })}</TableCell>
-                    <TableCell>{t('Degree', { ns: 'common' })}</TableCell>
                     {header.map((name, index) => (
                       <TableCell key={index}>
                         {t(`${name}`, { ns: 'common' })}

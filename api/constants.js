@@ -28,6 +28,7 @@ const STUDENT_COMMUNICATION_THREAD_URL = (studentId) =>
   new URL(`/communications/std/${studentId}`, ORIGIN).href;
 const INTERNAL_COMMUNICATION_THREAD_URL = (studentId) =>
   new URL(`/communications/t/${studentId}`, ORIGIN).href;
+const INTERVIEW_CENTER_URL = new URL('/interview-training', ORIGIN).href;
 const SINGLE_INTERVIEW_THREAD_URL = (interview_id) =>
   new URL(`/interview-training/${interview_id}`, ORIGIN).href;
 const TEMPLATE_DOWNLOAD_URL = new URL('/download', ORIGIN).href;
@@ -1647,6 +1648,7 @@ module.exports = {
   BASE_DOCUMENT_URL,
   STUDENT_COMMUNICATION_THREAD_URL,
   INTERNAL_COMMUNICATION_THREAD_URL,
+  INTERVIEW_CENTER_URL,
   SINGLE_INTERVIEW_THREAD_URL,
   BASE_DOCUMENT_FOR_AGENT_URL,
   SURVEY_URL_FOR_AGENT_URL,

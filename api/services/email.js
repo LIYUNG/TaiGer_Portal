@@ -2557,7 +2557,7 @@ const sendInterviewConfirmationEmail = async (recipient, payload) => {
     subject,
     message,
     payload.event,
-    [payload.taiger_user], // cc
+    [...payload.cc], // cc
     payload.event_title,
     payload.isUpdatingEvent,
     false

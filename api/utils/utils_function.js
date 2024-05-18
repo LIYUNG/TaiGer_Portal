@@ -1170,7 +1170,6 @@ const MeetingDailyReminderChecker = async () => {
       }
     }
   }
-
   logger.info('Meeting attendees reminded');
 };
 

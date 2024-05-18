@@ -17,15 +17,16 @@ const {
 } = require('../services/email');
 const Permission = require('../models/Permission');
 
-const InterviewTrainingInvitation = (
+const InterviewTrainingInvitation = async (
   receiver,
   user,
   event,
   interview_id,
   program,
-  isUpdatingEvent
+  isUpdatingEvent,
+  cc
 ) => {
-  sendInterviewConfirmationEmail(
+  await sendInterviewConfirmationEmail(
     {
       id: receiver._id.toString(),
       firstname: receiver.firstname,
@@ -40,7 +41,8 @@ const InterviewTrainingInvitation = (
       isUpdatingEvent,
       event,
       interview_id,
-      program
+      program,
+      cc
     }
   );
 };
@@ -184,31 +186,25 @@ const addInterviewTrainingDateTime = asyncHandler(async (req, res, next) => {
     res.status(200).send({
       success: true
     });
-    // TODO: inform student
+
     const interview_tmep = await Interview.findById(interview_id).populate(
       'program_id'
     );
-    newEvent.requester_id.forEach((receiver) => {
+    const cc = newEvent.receiver_id;
+
+    const emailRequestsRequesters = newEvent.requester_id.map((receiver) =>
       InterviewTrainingInvitation(
         receiver,
         user,
         newEvent,
         interview_id,
         interview_tmep.program_id,
-        isUpdatingEvent
-      );
-    });
-    // TODO: inform trainer
-    newEvent.receiver_id.forEach((receiver) => {
-      InterviewTrainingInvitation(
-        receiver,
-        user,
-        newEvent,
-        interview_id,
-        interview_tmep.program_id,
-        isUpdatingEvent
-      );
-    });
+        isUpdatingEvent,
+        cc
+      )
+    );
+
+    await Promise.all(emailRequestsRequesters);
 
     // const updatedEvent = await Event.findById(write_NewEvent._id)
     //   .populate('requester_id receiver_id', 'firstname lastname email')
@@ -258,7 +254,7 @@ const updateInterview = asyncHandler(async (req, res) => {
       )
     );
     await Promise.all(emailRequests);
-    console.log('update trainer');
+    logger.info('Update trainer');
   }
 });
 
@@ -348,23 +344,6 @@ const createInterview = asyncHandler(async (req, res) => {
       );
 
       await Promise.all(sendEmailPromises);
-
-      // for (let x = 0; x < permissions.length; x += 1) {
-      //   await sendAssignTrainerReminderEmail(
-      //     {
-      //       firstname: permissions[x].user_id.firstname,
-      //       lastname: permissions[x].user_id.lastname,
-      //       address: permissions[x].user_id.email
-      //     },
-      //     {
-      //       student_firstname: student.firstname,
-      //       student_id: student._id.toString(),
-      //       student_lastname: student.lastname,
-      //       interview_id: newlyCreatedInterview._id.toString(),
-      //       program: newlyCreatedInterview.program_id
-      //     }
-      //   );
-      // }
     }
   }
 });

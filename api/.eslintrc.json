@@ -13,6 +13,9 @@
   "plugins": ["react"],
   "rules": {
     "no-underscore-dangle": "off",
+    "implicit-arrow-linebreak": "off",
+    "operator-linebreak": "off",
+    "indent": "off",
     "linebreak-style": ["error", "windows"],
     "camelcase": "off",
     "comma-dangle": [

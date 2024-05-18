@@ -194,8 +194,7 @@ const sendEventEmail = (
 </body>
 </html>
 `;
-  const content =
-    'BEGIN:VCALENDAR\r\nPRODID:-//ACME/DesktopCalendar//EN\r\nMETHOD:REQUEST\r\n...';
+
   const cc_event_list = cc.map((c) => {
     return {
       email: c.email,
@@ -1711,7 +1710,7 @@ const sendSetAsFinalProgramSpecificFileForAgentEmail = async (
   msg
 ) => {
   if (msg.isFinalVersion) {
-    const subject = `${msg.school} - ${msg.program_name} ${msg.uploaded_documentname} of ${msg.student_firstname} ${msg.student_lastname} 已完成 / ${msg.school} - ${msg.program_name} ${msg.uploaded_documentname} of ${msg.student_firstname} ${msg.student_lastname} is finished!`;
+    const subject = `[Closed] ${msg.uploaded_documentname} of ${msg.school} - ${msg.program_name} ${msg.student_firstname} ${msg.student_lastname} is finished!`;
     const message = `\
 <p>${ENGLISH_BELOW}</p>
 
@@ -1757,7 +1756,7 @@ for ${msg.student_firstname} ${msg.student_lastname}.</p>
 
     sendEmail(recipient, subject, message);
   } else {
-    const subject = `${msg.school} - ${msg.program_name} ${msg.uploaded_documentname} of ${msg.student_firstname} ${msg.student_lastname} 未完成 / ${msg.school} - ${msg.program_name} ${msg.uploaded_documentname} of ${msg.student_firstname} ${msg.student_lastname} is not finished!`;
+    const subject = `[Reopen] ${msg.uploaded_documentname} of ${msg.school} - ${msg.program_name} ${msg.student_firstname} ${msg.student_lastname} is reopen!`;
     const message = `\
 <p>${ENGLISH_BELOW}</p>
 

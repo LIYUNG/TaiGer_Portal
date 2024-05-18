@@ -1754,31 +1754,34 @@ const SetStatusMessagesThread = asyncHandler(async (req, res) => {
       'firstname lastname email archiv'
     );
 
-    for (let i = 0; i < student.agents.length; i += 1) {
-      if (isNotArchiv(student3)) {
-        if (isNotArchiv(student3.agents[i])) {
-          await sendSetAsFinalProgramSpecificFileForAgentEmail(
-            {
-              firstname: student3.agents[i].firstname,
-              lastname: student3.agents[i].lastname,
-              address: student3.agents[i].email
-            },
-            {
-              student_firstname: student3.firstname,
-              student_lastname: student3.lastname,
-              editor_firstname: user.firstname,
-              editor_lastname: user.lastname,
-              school: student_application.programId.school,
-              program_name: student_application.programId.program_name,
-              uploaded_documentname: application_thread.doc_thread_id.file_type,
-              uploaded_updatedAt: new Date(),
-              thread_id: messagesThreadId,
-              isFinalVersion: application_thread.isFinalVersion
-            }
-          );
+    const validAgents = student3.agents.filter(
+      (agent) => isNotArchiv(student3) && isNotArchiv(agent)
+    );
+    // Create an array of promises for sending emails
+    const emailPromises = validAgents.map((agent) =>
+      sendSetAsFinalProgramSpecificFileForAgentEmail(
+        {
+          firstname: agent.firstname,
+          lastname: agent.lastname,
+          address: agent.email
+        },
+        {
+          student_firstname: student3.firstname,
+          student_lastname: student3.lastname,
+          editor_firstname: user.firstname,
+          editor_lastname: user.lastname,
+          school: student_application.programId.school,
+          program_name: student_application.programId.program_name,
+          uploaded_documentname: application_thread.doc_thread_id.file_type,
+          uploaded_updatedAt: new Date(),
+          thread_id: messagesThreadId,
+          isFinalVersion: application_thread.isFinalVersion
         }
-      }
-    }
+      )
+    );
+
+    // Wait for all email promises to be resolved
+    await Promise.all(emailPromises);
   } else {
     const generaldocs_thread = student.generaldocs_threads.find(
       (thread) => thread.doc_thread_id._id == messagesThreadId

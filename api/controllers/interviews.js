@@ -9,6 +9,28 @@ const logger = require('../services/logger');
 const { Documentthread } = require('../models/Documentthread');
 const { emptyS3Directory } = require('../utils/utils_function');
 const { AWS_S3_BUCKET_NAME } = require('../config');
+const { sendInterviewConfirmationEmail } = require('../services/email');
+
+const InterviewTrainingInvitation = (receiver, user, event, interview_id, program) => {
+  sendInterviewConfirmationEmail(
+    {
+      id: receiver._id.toString(),
+      firstname: receiver.firstname,
+      lastname: receiver.lastname,
+      address: receiver.email
+    },
+    {
+      taiger_user: user,
+      meeting_time: event.start, // Replace with the actual meeting time
+      student_id: user._id.toString(),
+      meeting_link: event.meetingLink,
+      isUpdatingEvent: false,
+      event,
+      interview_id,
+      program
+    }
+  );
+};
 
 const getAllInterviews = asyncHandler(async (req, res) => {
   const interviews = await Interview.find()
@@ -105,9 +127,21 @@ const addInterviewTrainingDateTime = asyncHandler(async (req, res, next) => {
   } = req;
   const oldEvent = req.body;
   try {
+    const date = new Date(oldEvent.start);
     oldEvent.isConfirmedReceiver = true;
     oldEvent.isConfirmedRequester = true;
-    oldEvent.meetingLink = 'dummy_meeting_link';
+    let concat_name = '';
+    let concat_id = '';
+    // eslint-disable-next-line no-restricted-syntax
+    for (const requester of oldEvent.requester_id) {
+      concat_name += `${requester.firstname}_${requester.lastname}`;
+      concat_id += `${requester._id.toString()}`;
+    }
+    oldEvent.meetingLink = `https://meet.jit.si/${concat_name}_${date
+      .toISOString()
+      .replace(/:/g, '_')
+      .replace(/\./g, '_')}_${concat_id}`.replace(/ /g, '_');
+
     if (oldEvent._id) {
       await Event.findByIdAndUpdate(oldEvent._id, { ...oldEvent }, {});
       await Interview.findByIdAndUpdate(
@@ -128,6 +162,30 @@ const addInterviewTrainingDateTime = asyncHandler(async (req, res, next) => {
     res.status(200).send({
       success: true
     });
+    // TODO: inform student
+    const interview_tmep = await Interview.findById(interview_id).populate(
+      'program_id'
+    );
+    oldEvent.requester_id.forEach((receiver) => {
+      InterviewTrainingInvitation(
+        receiver,
+        user,
+        oldEvent,
+        interview_id,
+        interview_tmep.program_id
+      );
+    });
+    // TODO: inform trainer
+    oldEvent.receiver_id.forEach((receiver) => {
+      InterviewTrainingInvitation(
+        receiver,
+        user,
+        oldEvent,
+        interview_id,
+        interview_tmep.program_id
+      );
+    });
+
     // const updatedEvent = await Event.findById(write_NewEvent._id)
     //   .populate('requester_id receiver_id', 'firstname lastname email')
     //   .lean();

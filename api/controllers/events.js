@@ -374,23 +374,25 @@ const confirmEvent = asyncHandler(async (req, res, next) => {
       }_${date
         .toISOString()
         .replace(/:/g, '_')
-        .replace(/\./g, '_')}_${user._id.toString()}`;
+        .replace(/\./g, '_')}_${user._id.toString()}`.replace(/ /g, '_');
     }
     if (user.role === 'Agent') {
       const event_temp = await Event.findById(event_id)
         .populate('receiver_id requester_id', 'firstname lastname email')
         .lean();
       let concat_name = '';
+      let concat_id = '';
       // eslint-disable-next-line no-restricted-syntax
       for (const requester of event_temp.requester_id) {
         concat_name += `${requester.firstname}_${requester.lastname}`;
+        concat_id += `${requester._id.toString()}`;
       }
       if (event_temp) {
         updated_event.isConfirmedReceiver = true;
         updated_event.meetingLink = `https://meet.jit.si/${concat_name}_${date
           .toISOString()
           .replace(/:/g, '_')
-          .replace(/\./g, '_')}_${user._id.toString()}`;
+          .replace(/\./g, '_')}_${concat_id}`.replace(/ /g, '_');
       } else {
         logger.error('confirmEvent: No event found!');
         throw new ErrorResponse(404, 'No event found!');

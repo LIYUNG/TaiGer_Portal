@@ -131,7 +131,7 @@ function InterviewItems(props) {
     end_date.setMinutes(end_date.getMinutes() + 60);
     const interviewTrainingEvent = {
       _id: interview.event_id?._id,
-      requester_id: [interview.student_id._id],
+      requester_id: [interview.student_id],
       receiver_id: [...interview.trainer_id],
       title: `${interview.student_id.firstname} ${interview.student_id.lastname} interview training`,
       description:

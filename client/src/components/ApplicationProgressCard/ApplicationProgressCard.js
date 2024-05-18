@@ -253,7 +253,7 @@ export default function ApplicationProgressCard(props) {
                       <Button
                         color="primary"
                         variant="contained"
-                        disabled
+                        // disabled
                         size="small"
                         onClick={() => navigate(`${DEMO.INTERVIEW_ADD_LINK}`)}
                       >

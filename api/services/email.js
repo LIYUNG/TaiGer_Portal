@@ -29,7 +29,8 @@ const {
   JITSI_MEET_INSTRUCTIONS_URL,
   AGENT_CALENDAR_EVENTS_URL,
   STUDENT_CALENDAR_EVENTS_URL,
-  PROGRAM_URL
+  PROGRAM_URL,
+  SINGLE_INTERVIEW_THREAD_URL
 } = require('../constants');
 
 const {
@@ -2152,7 +2153,7 @@ const MeetingConfirmationReminderEmail = async (recipient, payload) => {
 const MeetingInvitationEmail = async (recipient, payload) => {
   const subject = `[Meeting Confirmed by ${payload.taiger_user.firstname} ${payload.taiger_user.lastname}] Office hour: ${payload.meeting_time}.`;
   const message = `\
-<p>Hi,</p>
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
 <p><b>${payload.taiger_user.firstname} - ${payload.taiger_user.lastname}</b> 確認了討論時段，請至 TaiGer Portal 查看您的當地 Meeting 時間。</p>
 
@@ -2377,6 +2378,49 @@ const sendAssignEssayWriterReminderEmail = async (recipient, payload) => {
   return sendEmail(recipient, subject, message);
 };
 
+const sendInterviewConfirmationEmail = async (recipient, payload) => {
+  const subject = `[Confirmed] Interview Training Time for ${payload.program.school} ${payload.program.program_name} ${payload.program.degree} ${payload.program.semester}`;
+  const message = `\
+<p>${ENGLISH_BELOW}</p>
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+
+<p><b>${payload.taiger_user.firstname} - ${
+    payload.taiger_user.lastname
+  }</b> 確認了面試訓練時段。</p>
+<p>請至 TaiGer Portal 查看您的當地面試訓練時間。</p>
+
+<p> 請於該時間準時點擊以下連結： </p>
+
+<p>Jitsi Meet 會議連結網址： <a href="${payload.meeting_link}">${
+    payload.meeting_link
+  }</a></p>
+<p>若您是第一次使用Jitsi Meet 會議，建議可以先查看使用說明： <a href="${JITSI_MEET_INSTRUCTIONS_URL}">${JITSI_MEET_INSTRUCTIONS_URL}</a></p>
+<p>若需要改時間，請上去 <a href="${SINGLE_INTERVIEW_THREAD_URL(
+    payload.interview_id
+  )}">面試討論串</a> 和面試訓練官更改模擬面試時間。</p>
+
+<p>${SPLIT_LINE}</p>
+
+<p>${payload.taiger_user.firstname} - ${
+    payload.taiger_user.lastname
+  } confirmed the meeting time.</p>
+<p>Please login to the TaiGer Portal and see the interview training time in your timezone.</p>
+
+<p> Jitsi Meet Meeting link: <a href="${payload.meeting_link}">${
+    payload.meeting_link
+  }</a></p>
+<p>If it is the first time for you to use Jitsi Meet, we recommend you having a look at our brief introduction: <a href="${JITSI_MEET_INSTRUCTIONS_URL}">${JITSI_MEET_INSTRUCTIONS_URL}</a></p>
+<p>If you can not attend the interview training, please go to <a href="${SINGLE_INTERVIEW_THREAD_URL(
+    payload.interview_id
+  )}">Interview Thread</a> arrange another interview training time.</p>
+
+<p>${TAIGER_SIGNATURE}</p>
+
+`;
+
+  return sendEmail(recipient, subject, message);
+};
+
 module.exports = {
   verifySMTPConfig,
   updateNotificationEmail,
@@ -2433,5 +2477,6 @@ module.exports = {
   UnconfirmedMeetingReminderEmail,
   TicketCreatedAgentEmail,
   TicketResolvedStudentEmail,
-  sendAssignEssayWriterReminderEmail
+  sendAssignEssayWriterReminderEmail,
+  sendInterviewConfirmationEmail
 };

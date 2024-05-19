@@ -253,7 +253,10 @@ export default function ApplicationProgressCard(props) {
                       <Button
                         color="primary"
                         variant="contained"
-                        disabled
+                        disabled={
+                          props.student._id.toString() !==
+                          '6366287a94358b085b0fccf7'
+                        }
                         size="small"
                         onClick={() => navigate(`${DEMO.INTERVIEW_ADD_LINK}`)}
                       >

@@ -115,26 +115,31 @@ const getInterview = asyncHandler(async (req, res) => {
   const {
     params: { interview_id }
   } = req;
-  const interview = await Interview.findById(interview_id)
-    .populate('student_id trainer_id', 'firstname lastname email')
-    .populate('program_id', 'school program_name degree')
-    .populate({
-      path: 'thread_id',
-      select:
-        'file_type isFinalVersion outsourced_user_id flag_by_user_id updatedAt messages.file messages.message messages.createdAt messages._id',
-      populate: {
-        path: 'messages.user_id',
-        select: 'firstname lastname'
-      }
-    })
-    .populate('event_id')
-    .lean();
+  try {
+    const interview = await Interview.findById(interview_id)
+      .populate('student_id trainer_id', 'firstname lastname email')
+      .populate('program_id', 'school program_name degree')
+      .populate({
+        path: 'thread_id',
+        select:
+          'file_type isFinalVersion outsourced_user_id flag_by_user_id updatedAt messages.file messages.message messages.createdAt messages._id',
+        populate: {
+          path: 'messages.user_id',
+          select: 'firstname lastname'
+        }
+      })
+      .populate('event_id')
+      .lean();
 
-  if (!interview) {
-    logger.info('getInterview: this interview is not found!');
+    if (!interview) {
+      logger.info('getInterview: this interview is not found!');
+      throw new ErrorResponse(404, 'this interview is not found!');
+    }
+    res.status(200).send({ success: true, data: interview });
+  } catch (e) {
+    logger.error(`getInterview: ${e.message}`);
     throw new ErrorResponse(404, 'this interview is not found!');
   }
-  res.status(200).send({ success: true, data: interview });
 });
 
 const deleteInterview = asyncHandler(async (req, res) => {

@@ -201,8 +201,8 @@ function SingleInterview() {
     formData.append('message', message);
 
     SubmitMessageWithAttachment(
-      singleInterviewState.interview.thread_id?._id.toString(),
-      singleInterviewState.interview.student_id._id.toString(),
+      singleInterviewState.interview?.thread_id?._id.toString(),
+      singleInterviewState.interview?.student_id?._id.toString(),
       formData
     ).then(
       (resp) => {

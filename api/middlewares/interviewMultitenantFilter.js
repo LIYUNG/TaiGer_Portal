@@ -54,10 +54,10 @@ const interviewMultitenantReadOnlyFilter = async (req, res, next) => {
   } = req;
 
   if (user.role === Role.Student || user.role === Role.Guest) {
-    const interview = await Interview.findById(interview_id).populate();
+    const interview = await Interview.findById(interview_id);
     if (
-      interview.student_id?.toString() &&
-      user._id.toString() !== interview.student_id?.toString()
+      interview?.student_id?.toString() &&
+      user._id.toString() !== interview?.student_id?.toString()
     ) {
       return next(
         new ErrorResponse(403, 'Not allowed to access other resource.')

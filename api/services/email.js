@@ -20,7 +20,6 @@ const {
   SETTINGS_URL,
   STUDENT_COURSE_URL,
   SURVEY_URL_FOR_AGENT_URL,
-  TAIGER_SIGNATURE,
   SPLIT_LINE,
   ENGLISH_BELOW,
   CONTACT_AGENT,
@@ -31,7 +30,8 @@ const {
   STUDENT_CALENDAR_EVENTS_URL,
   PROGRAM_URL,
   SINGLE_INTERVIEW_THREAD_URL,
-  INTERVIEW_CENTER_URL
+  INTERVIEW_CENTER_URL,
+  TAIGER_SIGNATURE
 } = require('../constants');
 
 const {
@@ -68,66 +68,98 @@ const verifySMTPConfig = () => {
 };
 
 const senderName = `No-Reply TaiGer Consultancy ${SMTP_USERNAME}`;
-const sendEmail = (to, subject, message) => {
-  const htmlContent = `
+
+const htmlContent = (message) => `
 <!DOCTYPE html>
 <html>
 <head>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f5f5f5;
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            background-color: #000000;
+            color: #ffffff;
+            padding: 10px 0;
+            border-radius: 8px 8px 0 0;
+        }
+        .header h1 {
+            margin: 0;
+        }
+        .content {
+            padding: 10px;
+            background-color: #fafafa;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            margin-top: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+        }
+        .footer {
+            text-align: center;
+            color: #888888;
+            padding: 10px 0;
+        }
+    .social-icons {
+      margin-top: 10px;
     }
-    .container {
-      padding: 20px;
-      background-color: #ffffff;
-      border-radius: 5px;
-      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    .social-icons img {
+        width: 24px;
+        height: 24px;
+        margin: 0 5px;
     }
-    .fa {
-      padding: 20px;
-      font-size: 30px;
-      width: 50px;
-      text-align: center;
-      text-decoration: none;
-    }
-
-/* Add a hover effect if you want */
-    .fa:hover {
-      opacity: 0.7;
-    }
-
-/* Set a specific color for each brand */
-
-/* Facebook */
-    .fa-facebook {
-      background: #3B5998;
-      color: white;
+    .img-radius {
+      border-radius: 50%;
     }
   </style>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
-        <a
-          href="https://taigerconsultancy-portal.com/"
-          style={{ textDecoration: 'none' }}
-        >
-          <img
-            className="img-radius"
-            src="https://taigerconsultancy-portal.com/assets/taiger_logo_small.png"
-            alt="Generic placeholder"
-          />
-        </a>
-  ${message}
+    <div class="container">
+        <div class="header">
+          <a
+            href="https://taigerconsultancy-portal.com/"
+            style={{ textDecoration: 'none' }}
+          >
+            <img
+            class="img-radius"
+            src="https://taigerconsultancy-portal.com/assets/images/taiger_logo.png"
+            alt="TaiGer Logo"
+            style="width: 75px; height: 75px; border-radius: 50%;"
+            />
+          </a>
+        <h1>TaiGer Consultancy</h1>
+    </div>
+    <div class="content">
+      ${message}
+    </div>
+    <div class="footer">
+    ${TAIGER_SIGNATURE}
+    </div>
+  </div>
 </body>
 </html>
 `;
+
+const sendEmail = (to, subject, message) => {
   const mail = {
     from: senderName,
     to,
     subject,
     // text: message,
-    html: message
+    html: htmlContent(message)
   };
   return transporter.sendMail(mail);
 };
@@ -142,60 +174,6 @@ const sendEventEmail = (
   isUpdatingEvent,
   toDelete
 ) => {
-  const htmlContent = `
-<!DOCTYPE html>
-<html>
-<head>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f5f5f5;
-    }
-    .container {
-      padding: 20px;
-      background-color: #ffffff;
-      border-radius: 5px;
-      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-    }
-    .fa {
-      padding: 20px;
-      font-size: 30px;
-      width: 50px;
-      text-align: center;
-      text-decoration: none;
-    }
-
-/* Add a hover effect if you want */
-    .fa:hover {
-      opacity: 0.7;
-    }
-
-/* Set a specific color for each brand */
-
-/* Facebook */
-    .fa-facebook {
-      background: #3B5998;
-      color: white;
-    }
-  </style>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-</head>
-<body>
-        <a
-          href="https://taigerconsultancy-portal.com/"
-          style={{ textDecoration: 'none' }}
-        >
-          <img
-            className="img-radius"
-            src="https://taigerconsultancy-portal.com/assets/taiger_logo_small.png"
-            alt="Generic placeholder"
-          />
-        </a>
-  ${message}
-</body>
-</html>
-`;
-
   const cc_event_list = cc.map((c) => {
     return {
       email: c.email,
@@ -252,7 +230,7 @@ const sendEventEmail = (
     cc: cc_receiver_list,
     subject,
     // text: message,
-    html: message,
+    html: htmlContent(message),
     attachments: [
       {
         filename: 'event.ics',
@@ -286,7 +264,6 @@ const updateNotificationEmail = async (recipient, msg) => {
 
 <p>Please visit <a href="${SETTINGS_URL}">Setting</a> and make sure your user role.</p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -315,7 +292,6 @@ const updatePermissionNotificationEmail = async (recipient, msg) => {
 
 <p>Please visit <a href="${TEAMS_URL}">TaiGer Teams</a> and make sure your user permissions.</p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -347,7 +323,6 @@ const deleteTemplateSuccessEmail = async (recipient, msg) => {
 
 <p>For more details, please visit: <a href="${TEMPLATE_DOWNLOAD_URL}">TaiGer Portal Download</a></p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -396,7 +371,6 @@ ${activationLink}
 
 <p>Please change the password in ${SETTINGS_URL} after login.</p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -449,7 +423,6 @@ ${activationLink}
 
 <p>Please change the password in ${SETTINGS_URL} after login.</p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -490,7 +463,6 @@ ${activationLink}
 <p>This link will expire in 20 minutes.</p>
 <p>You can request another here: ${RESEND_ACTIVATION_URL}</p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -530,7 +502,6 @@ ${passwordResetLink}
 <p>This link will expire in 20 minutes.</p>
 <p>You can request another here: ${FORGOT_PASSWORD_URL}</p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -559,7 +530,6 @@ const sendPasswordResetEmail = async (recipient) => {
 
 <p>in <a href="${ORIGIN}">TaiGer portal</a></p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -591,7 +561,6 @@ const sendAccountActivationConfirmationEmail = async (recipient, msg) => {
 
 <p>TaiGer Portal: <a href="${ORIGIN}">TaiGer portal</a></p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -625,7 +594,6 @@ const sendAgentUploadedProfileFilesForStudentEmail = async (recipient, msg) => {
 
 <p>If you have any question, feel free to contact your agent.</p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -659,7 +627,6 @@ const sendAgentUploadedVPDForStudentEmail = async (recipient, msg) => {
 
 <p>If you have any question, feel free to contact your agent.</p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -697,7 +664,6 @@ const sendUploadedProfileFilesRemindForAgentEmail = async (recipient, msg) => {
     msg.student_id
   )} and see the details.</p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `; // should be for student/agent/editor
 
@@ -737,7 +703,6 @@ const sendUploadedVPDRemindForAgentEmail = async (recipient, msg) => {
     msg.student_firstname
   } ${msg.student_lastname} Uni-Assist</a> and see the details.</p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `; // should be for student/agent/editor
 
@@ -776,7 +741,6 @@ const sendChangedProfileFileStatusEmail = async (recipient, msg) => {
 
 <p>If you have any question, please contact your agent. </p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `; // should be for student
   } else {
@@ -804,7 +768,6 @@ const sendChangedProfileFileStatusEmail = async (recipient, msg) => {
 
 <p>Please go to <a href="${BASE_DOCUMENT_URL}">Base Documents</a> and doueble check the details.</p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `; // should be for student
   }
@@ -837,7 +800,6 @@ const informAgentNewStudentEmail = async (recipient, msg) => {
 
 <p>and say hello to your student!</p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -873,7 +835,6 @@ const informStudentTheirAgentEmail = async (recipient, msg) => {
 
 <p>Please go to <a href="${ORIGIN}">TaiGer portal</a> , and prepare your documents!</p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -905,7 +866,6 @@ are assigned to student ${msg.std_firstname} ${msg.std_lastname}!</p>
     msg.file_type
   } task is assigned correctly!</p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -931,7 +891,6 @@ const informAgentStudentAssignedEmail = async (recipient, msg) => {
     msg.std_id
   )}">TaiGer Portal</a> , and check if the CV task is created and say hello to your student!</p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -951,7 +910,6 @@ const informEssayWriterNewEssayEmail = async (recipient, msg) => {
 <a href="${CVMLRL_CENTER_URL}">CVMLRL Center</a> in TaiGer Portal
  , and check if the ${msg.file_type} task is created and say hello to your student!</p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -969,7 +927,6 @@ const informEditorNewStudentEmail = async (recipient, msg) => {
 <a href="${CVMLRL_FOR_EDITOR_URL(msg.std_id)}">TaiGer Portal</a>
  , and check if the CV task is created and say hello to your student!</p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -985,7 +942,6 @@ const informEditorArchivedStudentEmail = async (recipient, msg) => {
 
 <p>Please go to ${ARCHIVED_STUDENTS_URL} , and see the archived student!</p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -1023,7 +979,6 @@ const informStudentArchivedStudentEmail = async (recipient, payload) => {
 
 <p>For any further questions, please contact you agent ${agent}</p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -1084,7 +1039,6 @@ const informStudentTheirEssayWriterEmail = async (recipient, msg) => {
   }.</p>
 
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -1129,7 +1083,6 @@ const informStudentTheirEditorEmail = async (recipient, msg) => {
 <p>In each TaiGer Portal's CV/ML/RL Center document discussion thread, please use <b>English</b> to provide your feedback with your edtior.</p>
 
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -1171,7 +1124,6 @@ ${programList}
 
 <p>Please go to <a href="${STUDENT_APPLICATION_URL}">Student Applications</a> and mark it as decided if these programs look good to you.</p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -1200,7 +1152,6 @@ const updateCredentialsEmail = async (recipient, msg) => {
 
 <p>Please make sure you can login in <a href="${ORIGIN}">TaiGer portal</a> </p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `; // should be for admin/editor/agent/student
 
@@ -1243,7 +1194,6 @@ const UpdateStudentApplicationsEmail = async (recipient, msg) => {
 
 <p>Also go to <a href="${CVMLRL_CENTER_URL}">CV ML RL Center</a> and see the new assigned tasks details for the applications above.</p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `; // should be for admin/editor/agent/student
 
@@ -1280,7 +1230,6 @@ ${applications_name}
 
 <p>Also go to <a href="${CVMLRL_CENTER_URL}">CV ML RL Center</a> and see the new assigned tasks details for the applications above.</p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `; // should be for admin/editor/agent/student
 
@@ -1315,7 +1264,6 @@ ${applications_name}.
 
 <p>Please go to <a href="${CVMLRL_CENTER_URL}">CV ML RL Center</a> and see the new assigned tasks details for the applications above.</p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `; // should be for admin/editor/agent/student
 
@@ -1352,7 +1300,6 @@ ${applications_name}
 
 <p>Please go to <a href="${CVMLRL_CENTER_URL}">CV ML RL Center</a> and see the new assigned tasks details for the applications above.</p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `; // should be for admin/editor/agent/student
 
@@ -1369,7 +1316,6 @@ const AdmissionResultInformEmailToTaiGer = async (recipient, msg) => {
 
 <p>${msg.student_firstname} ${msg.student_lastname} has received <b>${result}</b> from ${applications_name} </p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `; // should be for admin/editor/agent/student
 
@@ -1406,7 +1352,6 @@ const sendNewApplicationMessageInThreadEmail = async (recipient, msg) => {
 
 <p>Please go to TaiGer Portal <a href="${thread_url}">${msg.student_firstname} - ${msg.student_lastname} ${msg.school} - ${msg.program_name} - ${msg.uploaded_documentname}</a> and check the updates. </p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -1444,7 +1389,6 @@ const sendNewGeneraldocMessageInThreadEmail = async (recipient, msg) => {
 
 <p>Please go to TaiGer Portal <a href="${thread_url}">${msg.student_firstname} ${msg.student_lastname} - ${msg.uploaded_documentname}</a> and check the updates. </p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -1495,7 +1439,6 @@ const sendSetAsFinalGeneralFileForAgentEmail = async (recipient, msg) => {
 
 <p>If you have any question, feel free to contact your editor.</p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -1535,7 +1478,6 @@ as not finished.</p>
 
 <p>If you have any question, feel free to contact your editor.</p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -1577,7 +1519,6 @@ on ${msg.uploaded_updatedAt} for you.</p>
 
 <p>If you have any question, feel free to contact your editor.</p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -1611,7 +1552,6 @@ as not finished.</p>
 
 <p>If you have any question, feel free to contact your editor.</p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -1660,7 +1600,6 @@ This document is ready for the application.
 
 <p>If you have any question, feel free to contact your editor.</p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -1698,7 +1637,6 @@ as not finished.</p>
 
 <p>If you have any question, feel free to contact your editor.</p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -1751,7 +1689,6 @@ for ${msg.student_firstname} ${msg.student_lastname}.</p>
       msg.program_name
     } ${msg.uploaded_documentname}</a> for more details.</p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -1797,7 +1734,6 @@ on ${msg.uploaded_updatedAt} for ${msg.student_firstname} ${
       msg.program_name
     } ${msg.uploaded_documentname}</a> for more details.</p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -1821,7 +1757,6 @@ const assignEssayTaskToEditorEmail = async (recipient, msg) => {
 
 <p>If you have any question, feel free to contact your agent.</p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -1846,7 +1781,6 @@ ${msg.student_firstname} ${msg.student_lastname} -  ${msg.documentname},
 
 <p>If you have any question, feel free to contact your editor.</p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -1893,7 +1827,6 @@ on ${msg.updatedAt}.</p>
 
 <p>If you have any question, feel free to contact your editor.</p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -1936,7 +1869,6 @@ const AnalysedCoursesDataStudentEmail = async (recipient, msg) => {
                     semesters. Once you have identified them, discuss with your
                     Agent. If you already graduate, this is only a reference.
                   </p>
-<p>${TAIGER_SIGNATURE}</p>
 
 `; // should be for admin/editor/agent/student
 
@@ -1973,7 +1905,6 @@ const updateCoursesDataAgentEmail = async (recipient, msg) => {
     msg.student_lastname
   } Courses</a> for more details and <b>analyze the courses. </b> A system email will be sent to the student when you analyzed.</p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `; // should be for admin/editor/agent/student
 
@@ -1987,7 +1918,6 @@ const sendSomeReminderEmail = async (recipient) => {
 
 Some reminder email template.
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `; // should be for admin/editor/agent/student
 
@@ -2018,7 +1948,6 @@ const sendAssignEditorReminderEmail = async (recipient, payload) => {
     payload.student_id
   )}">${payload.student_firstname} - ${payload.student_lastname}</a></b></p>
 <br />
-<p>${TAIGER_SIGNATURE}</p>
 
 `; // should be for admin/editor/agent/student
 
@@ -2057,7 +1986,6 @@ ${requests}
 ${requests}
 
 <br />
-<p>${TAIGER_SIGNATURE}</p>
 
 `; // should be for admin/editor/agent/student
 
@@ -2086,7 +2014,6 @@ const sendAssignTrainerReminderEmail = async (recipient, payload) => {
     payload.interview_id
   )}">${student_name} ${program_name}</a></b></p>
 <br />
-<p>${TAIGER_SIGNATURE}</p>
 
 `; // should be for admin/editor/agent/student
 
@@ -2116,7 +2043,6 @@ const sendAgentNewMessageReminderEmail = async (recipient, payload) => {
     payload.student_id
   )}">${payload.student_firstname} - ${payload.student_lastname}</a></b></p>
 <br />
-<p>${TAIGER_SIGNATURE}</p>
 
 `; // should be for admin/editor/agent/student
 
@@ -2146,7 +2072,6 @@ const sendStudentNewMessageReminderEmail = async (recipient, payload) => {
     payload.student_id
   )}">Communication</a></b></p>
 <br />
-<p>${TAIGER_SIGNATURE}</p>
 
 `; // should be for admin/editor/agent/student
 
@@ -2183,7 +2108,6 @@ const MeetingAdjustReminderEmail = async (recipient, payload) => {
       : STUDENT_CALENDAR_EVENTS_URL(recipient.id)
   }">TaiGer Meeting Calendar</a> and <b>Confirm</b> the time。</p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `; // should be for admin/editor/agent/student
 
@@ -2217,7 +2141,6 @@ const MeetingConfirmationReminderEmail = async (recipient, payload) => {
       : STUDENT_CALENDAR_EVENTS_URL(recipient.id)
   }">TaiGer Meeting Calendar</a> and <b>Confirm</b> the time in order to activate the meeting link.</p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `; // should be for admin/editor/agent/student
 
@@ -2245,7 +2168,6 @@ const MeetingInvitationEmail = async (recipient, payload) => {
 <p>If it is the first time for you to use Jitsi Meet, we recommend you having a look at our brief introduction: <a href="${JITSI_MEET_INSTRUCTIONS_URL}">${JITSI_MEET_INSTRUCTIONS_URL}</a></p>
 <p>If you can not attend the meeting, please go to TaiGer Portal and Update the existing time slot to another time.</p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `; // should be for admin/editor/agent/student
 
@@ -2272,7 +2194,6 @@ const MeetingCancelledReminderEmail = async (recipient, payload) => {
 
 <p>${payload.taiger_user.firstname} - ${payload.taiger_user.lastname} cancelled the meeting.</p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `; // should be for admin/editor/agent/student
 
@@ -2299,7 +2220,6 @@ const InterviewCancelledReminderEmail = async (recipient, payload) => {
 
 <p>${payload.taiger_user.firstname} - ${payload.taiger_user.lastname} cancelled the interview training.</p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `; // should be for admin/editor/agent/student
 
@@ -2338,7 +2258,6 @@ const MeetingReminderEmail = async (recipient, payload) => {
 <br />
 <p>Jitsi Meet is an open-source software recommended for use by Tang Feng, the Digital Minister of the Executive Yuan. It is adopted by many Taiwanese universities such as National Yang Ming Chiao Tung University and National Taitung University.</p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `; // should be for admin/editor/agent/student
 
@@ -2379,7 +2298,6 @@ const UnconfirmedMeetingReminderEmail = async (recipient, payload) => {
       : AGENT_CALENDAR_EVENTS_URL(payload.id)
   }">TaiGer Meeting Calendar</a> and Update the existing time slot to another time available for you.</p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `; // should be for admin/editor/agent/student
 
@@ -2411,7 +2329,6 @@ Please check the <a href="${PROGRAM_URL(
     payload.program._id.toString()
   )}">Ticket</a> and resolve the ticket. </p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -2441,7 +2358,6 @@ Please check the <a href="${PROGRAM_URL(
     payload.program._id.toString()
   )}">Ticket</a> and resolve the ticket. </p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -2472,7 +2388,6 @@ const sendAssignEssayWriterReminderEmail = async (recipient, payload) => {
     payload.student_id
   )}">${payload.student_firstname} - ${payload.student_lastname}</a></b></p>
 <br />
-<p>${TAIGER_SIGNATURE}</p>
 
 `; // should be for admin/editor/agent/student
 
@@ -2501,7 +2416,6 @@ const sendAssignedInterviewTrainerToTrainerEmail = async (
   )}">${training_request}</a></p> 
 <p>and check the interview requirements and <b>arrange interview training date</b> with your student!</p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -2532,7 +2446,6 @@ const sendAssignedInterviewTrainerToStudentEmail = async (
   )}">${training_request}</a></p>
 <p>and <b>arrange the interview training date</b> with your interview trainer!</p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -2575,7 +2488,6 @@ const sendInterviewConfirmationEmail = async (recipient, payload) => {
     payload.interview_id
   )}">Interview Thread</a> arrange another interview training time.</p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -2603,7 +2515,6 @@ const sendInterviewCancelEmail = async (recipient, payload) => {
 
 <p>${payload.taiger_user.firstname} - ${payload.taiger_user.lastname} cancelled the interview training for ${payload.program.school} ${payload.program.program_name} ${payload.program.degree} ${payload.program.semester}.</p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -2643,7 +2554,6 @@ const InterviewTrainingReminderEmail = async (recipient, payload) => {
 <br />
 <p>Jitsi Meet is an open-source software recommended for use by Tang Feng, the Digital Minister of the Executive Yuan. It is adopted by many Taiwanese universities such as National Yang Ming Chiao Tung University and National Taitung University.</p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `; // should be for admin/editor/agent/student
 
@@ -2685,7 +2595,6 @@ const sendSetAsFinalInterviewEmail = async (recipient, msg) => {
 
 <p>If you have any question, feel free to contact your interview trainer.</p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -2719,7 +2628,6 @@ ${user_name} 標示 ${interview_name} 為未完成。
 
 <p>If you have any question, feel free to contact your interview trainer.</p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `;
 

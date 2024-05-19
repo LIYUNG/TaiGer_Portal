@@ -59,9 +59,23 @@ const JITSI_MEET_INSTRUCTIONS_URL = new URL(
 ).href;
 
 // const TAIGER_SIGNATURE = '<p><b>Your TaiGer Consultancy Team</b></p>';
-const TAIGER_SIGNATURE = `<p><b>Your TaiGer Consultancy Team</b></p><p>Website: <a href="https://taigerconsultancy.com/">https://taigerconsultancy.com/</a></p>\
-  <p>Facebook: <a href="https://www.facebook.com/profile.php?id=100063557155189">https://www.facebook.com/profile.php?id=100063557155189</a></p>\
-  <p>Instagram: <a href="https://www.instagram.com/taiger_study_abroad/?hl=de">https://www.instagram.com/taiger_study_abroad/?hl=de</a></p>`;
+const TAIGER_SIGNATURE = `
+<p><b>Your TaiGer Consultancy Team</b></p><p>Website: <a href="https://taigerconsultancy.com/">https://taigerconsultancy.com/</a></p>
+<div class="social-icons">
+  <a href="https://www.instagram.com/taiger_study_abroad/?hl=de" target="_blank">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" alt="Instagram">
+  </a>
+  <a href="https://www.facebook.com/profile.php?id=100063557155189" target="_blank">
+     <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" alt="Facebook">
+  </a>
+  <a href="https://taigerconsultancy.medium.com/" target="_blank">
+     <img src="https://upload.wikimedia.org/wikipedia/commons/e/ec/Medium_logo_Monogram.svg" alt="Facebook">
+  </a>
+  <a href="https://www.linkedin.com/company/taigerconsultancy/" target="_blank">
+     <img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png" alt="Facebook">
+  </a>
+  
+</div>`;
 const SPLIT_LINE = '-------------------------------------------------------';
 const ENGLISH_BELOW = '(English version below)';
 const CONTACT_AGENT = '如果您有任何疑問，請聯絡您的顧問。';

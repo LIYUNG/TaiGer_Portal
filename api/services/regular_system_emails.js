@@ -13,7 +13,6 @@ const {
   unsubmitted_applications_escalation_agent_summary,
 
   STUDENT_SURVEY_URL,
-  TAIGER_SIGNATURE,
   cvmlrl_deadline_within30days_escalation_summary,
   is_deadline_within30days_needed,
   is_cv_ml_rl_reminder_needed,
@@ -97,7 +96,6 @@ ${base_documents}
 ${unsubmitted_applications}
 
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `; // should be for admin/editor/agent/student
 
@@ -159,7 +157,6 @@ const AgentTasksReminderEmail = async (recipient, payload) => {
 
 ${student_i}
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `; // should be for admin/editor/agent/student
 
@@ -211,7 +208,6 @@ The following is the overview of the open tasks for your students
 ${student_i}
 
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `; // should be for admin/editor/agent/student
 
@@ -234,7 +230,6 @@ const StudentApplicationsDeadline_Within30Days_DailyReminderEmail = async (
 
 ${unsubmitted_applications}
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -254,7 +249,6 @@ const StudentCourseSelectionReminderEmail = async (recipient, payload) => {
 
 <p>若您已經大學畢業，或是尚未就讀大學，請更新 <a href="${STUDENT_SURVEY_URL}">My Profile</a> 中 <b>Already Bachelor graduated ?</b> 為<b>Yes 已畢業</b> 或是<b>No 未開始就讀</b> ，您將不會在收到此 Email</p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -276,7 +270,6 @@ const AgentCourseSelectionReminderEmail = async (recipient, payload) => {
     payload.student._id.toString()
   )}">My Profile</a> 中 <b>Already Bachelor graduated ?</b> 為<b>Yes 已畢業</b> 或是<b>No 未開始就讀</b> ，您將不會在收到此 Email</p>
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -298,7 +291,6 @@ const StudentCVMLRLEssay_NoReplyAfter3Days_DailyReminderEmail = async (
 
 ${unread_cv_ml_rl_thread}
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -333,7 +325,6 @@ const EditorCVMLRLEssay_NoReplyAfter7Days_DailyReminderEmail = async (
 
 ${unread_cv_ml_rl_threads}
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -368,7 +359,6 @@ const AgentCVMLRLEssay_NoReplyAfterXDays_DailyReminderEmail = async (
 
 ${unread_cv_ml_rl_threads}
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -399,7 +389,6 @@ const AgentApplicationsDeadline_Within30Days_DailyReminderEmail = async (
 
 ${unsubmitted_applications_students}
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `;
 
@@ -428,7 +417,6 @@ const EditorCVMLRLEssayDeadline_Within30Days_DailyReminderEmail = async (
 
 ${cvmlrl_deadline_soon}
 
-<p>${TAIGER_SIGNATURE}</p>
 
 `;
   if (hasContent) {

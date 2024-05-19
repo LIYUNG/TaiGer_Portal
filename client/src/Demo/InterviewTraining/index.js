@@ -154,7 +154,7 @@ function InterviewTraining() {
       width: 200,
       renderCell: (params) => {
         const linkUrl = `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-          params.row.id,
+          params.row.student_id,
           DEMO.PROFILE_HASH
         )}`;
         return (

@@ -40,7 +40,6 @@ const {
 const { AWS_S3_BUCKET_NAME, API_ORIGIN } = require('../config');
 const Permission = require('../models/Permission');
 const { s3 } = require('../aws/index');
-const mongoose = require('mongoose');
 
 const ThreadS3GarbageCollector = async () => {
   try {
@@ -934,7 +933,7 @@ const postImageInThread = asyncHandler(async (req, res) => {
     params: { messagesThreadId, studentId }
   } = req;
   let imageurl = new URL(
-    `/api/document-threads/image/${messagesThreadId}/${studentId}/${req.file.key}`, // TODO: not the match API get file!!!!
+    `/api/document-threads/image/${messagesThreadId}/${studentId}/${req.file.key}`,
     API_ORIGIN
   ).href;
   imageurl = imageurl.replace(/\\/g, '/');
@@ -1422,7 +1421,7 @@ const getMessageImageDownload = asyncHandler(async (req, res) => {
     Key: file_name,
     Bucket: directory
   };
-  // TODO: cache download files docx, files.
+
   const cache_key = `${studentId}${req.originalUrl.split('/')[6]}`;
   const value = one_month_cache.get(cache_key); // image name
   if (value === undefined) {
@@ -1939,8 +1938,6 @@ const deleteAMessageInThread = asyncHandler(async (req, res) => {
   await student.save();
 });
 
-// () TODO email : agent better notification
-// () TODO email : student better notification
 const assignEssayWritersToEssayTask = asyncHandler(async (req, res, next) => {
   const {
     params: { messagesThreadId },
@@ -2106,7 +2103,6 @@ const clearEssayWriters = asyncHandler(async (req, res, next) => {
 });
 
 const getAllActiveEssays = asyncHandler(async (req, res, next) => {
-  // TODO
   try {
     const matchingDocuments = [];
     const { user } = req;

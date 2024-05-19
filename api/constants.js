@@ -69,10 +69,10 @@ const TAIGER_SIGNATURE = `
      <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" alt="Facebook">
   </a>
   <a href="https://taigerconsultancy.medium.com/" target="_blank">
-     <img src="https://upload.wikimedia.org/wikipedia/commons/e/ec/Medium_logo_Monogram.svg" alt="Facebook">
+     <img src="https://upload.wikimedia.org/wikipedia/commons/e/ec/Medium_logo_Monogram.svg" alt="Medium">
   </a>
   <a href="https://www.linkedin.com/company/taigerconsultancy/" target="_blank">
-     <img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png" alt="Facebook">
+     <img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png" alt="LinkedIn">
   </a>
   
 </div>`;

@@ -73,6 +73,7 @@ const htmlContent = (message) => `
 <!DOCTYPE html>
 <html>
 <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
         body {
             font-family: 'Roboto', sans-serif;
@@ -88,6 +89,7 @@ const htmlContent = (message) => `
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-sizing: border-box;
         }
         .header {
             text-align: center;
@@ -106,6 +108,7 @@ const htmlContent = (message) => `
             border-radius: 4px;
             margin-top: 20px;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+            box-sizing: border-box;
         }
         .footer {
             text-align: center;
@@ -122,6 +125,14 @@ const htmlContent = (message) => `
     }
     .img-radius {
       border-radius: 50%;
+    }
+    @media (max-width: 600px) {
+      .header h1 {
+        font-size: 1.2em;
+      }
+      .content, .footer {
+        padding: 5px;
+      }
     }
   </style>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">

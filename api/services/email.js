@@ -1322,6 +1322,41 @@ const AdmissionResultInformEmailToTaiGer = async (recipient, msg) => {
   return sendEmail(recipient, subject, message);
 };
 
+const sendNewInterviewMessageInThreadEmail = async (recipient, msg) => {
+  const interview_single_url = `${SINGLE_INTERVIEW_THREAD_URL(
+    msg.interview_id
+  )}`;
+  const interview_name = `Interview ${msg.program.school} ${msg.program.program_name} ${msg.program.degree} ${msg.program.semester}`;
+  const student_name = `${msg.student_firstname} - ${msg.student_lastname}`;
+  const subject = `[Update] ${msg.writer_firstname} ${msg.writer_lastname} sent a new message > ${interview_name}!`;
+  const message = `\
+<p>${ENGLISH_BELOW}</p>
+
+<p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
+
+<p>${msg.writer_firstname} ${msg.writer_lastname} 對於 </p>
+
+<p><a href="${interview_single_url}">${student_name} - ${interview_name}</a></p>
+
+<p>更新了訊息，於 ${msg.uploaded_updatedAt} 。</p>
+
+<br />
+
+<p>${SPLIT_LINE}</p>
+
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+
+<p>${msg.writer_firstname} ${msg.writer_lastname} has a new update for </p>
+
+<p><a href="${interview_single_url}">${student_name} - ${interview_name}</a></p>
+
+<p>on ${msg.uploaded_updatedAt}.</p>
+
+`;
+
+  sendEmail(recipient, subject, message);
+};
+
 const sendNewApplicationMessageInThreadEmail = async (recipient, msg) => {
   const thread_url = `${THREAD_URL}/${msg.thread_id}`;
   const subject = `[Update] ${msg.writer_firstname} ${msg.writer_lastname} sent a new message > ${msg.school} ${msg.program_name} ${msg.uploaded_documentname}!`;
@@ -2662,6 +2697,7 @@ module.exports = {
   sendSetAsFinalGeneralFileForAgentEmail,
   sendSetAsFinalGeneralFileForStudentEmail,
   AdmissionResultInformEmailToTaiGer,
+  sendNewInterviewMessageInThreadEmail,
   sendNewApplicationMessageInThreadEmail,
   sendNewGeneraldocMessageInThreadEmail,
   sendSetAsFinalProgramSpecificFileForStudentEmail,

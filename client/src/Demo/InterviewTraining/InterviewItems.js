@@ -29,7 +29,6 @@ import {
 
 import {
   LinkableNewlineText,
-  is_TaiGer_AdminAgent,
   is_TaiGer_role
 } from '../Utils/checking-functions';
 import DEMO from '../../store/constant';
@@ -194,7 +193,7 @@ function InterviewItems(props) {
             <b>{` ${interview.student_id.firstname} - ${interview.student_id.lastname}`}</b>
           </Typography>
           <span style={{ float: 'right', cursor: 'pointer' }}>
-            {is_TaiGer_AdminAgent(user) && (
+            {is_TaiGer_role(user) && (
               <Button
                 color="error"
                 variant="contained"
@@ -346,6 +345,14 @@ function InterviewItems(props) {
               <Typography variant="body1" sx={{ mt: 2 }}>
                 {t('Interviewer')}:&nbsp;
                 {`${interview.interviewer}`}
+              </Typography>
+              <Typography variant="body1" sx={{ mt: 2 }}>
+                {t('Interview Time')}:&nbsp;
+                {`${convertDate(interview.interview_date)} ${NoonNightLabel(
+                  utcTime
+                )} ${
+                  Intl.DateTimeFormat().resolvedOptions().timeZone
+                } ${showTimezoneOffset()}`}
               </Typography>
               <Typography variant="body1" sx={{ mt: 2 }}>
                 {t('Description', { ns: 'common' })}

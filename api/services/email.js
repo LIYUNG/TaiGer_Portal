@@ -1501,7 +1501,7 @@ const sendSetAsFinalGeneralFileForAgentEmail = async (recipient, msg) => {
 
     sendEmail(recipient, subject, message);
   } else {
-    const subject = `${msg.student_firstname} ${msg.student_lastname} ${msg.uploaded_documentname} 未完成 / ${msg.student_firstname} ${msg.student_lastname} ${msg.uploaded_documentname} is not finished!`;
+    const subject = `[Reopen] ${msg.student_firstname} ${msg.student_lastname} ${msg.uploaded_documentname} 未完成 / ${msg.student_firstname} ${msg.student_lastname} ${msg.uploaded_documentname} is not finished!`;
     const message = `\
 <p>${ENGLISH_BELOW}</p>
 
@@ -2585,7 +2585,7 @@ const sendInterviewConfirmationEmail = async (recipient, payload) => {
     message,
     payload.event,
     [...payload.cc], // cc
-    payload.event_title,
+    payload.event.title,
     payload.isUpdatingEvent,
     false
   );
@@ -2648,6 +2648,83 @@ const InterviewTrainingReminderEmail = async (recipient, payload) => {
 `; // should be for admin/editor/agent/student
 
   return sendEmail(recipient, subject, message);
+};
+
+const sendSetAsFinalInterviewEmail = async (recipient, msg) => {
+  const user_name = `${msg.user.firstname} ${msg.user.lastname}`;
+  const student_name = `${msg.interview.student_id.firstname} ${msg.interview.student_id.lastname}`;
+  const interview_name = `Interview: ${student_name} ${msg.interview.program_id.school} ${msg.interview.program_id.program_name} ${msg.interview.program_id.degree} `;
+  if (msg.isClosed) {
+    const subject = `[Close] ${interview_name} is finished!`;
+    const message = `\
+<p>${ENGLISH_BELOW}</p>
+
+<p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
+
+<p>${user_name} 對於面試 <b>${interview_name}</b> 為完成。</p>
+
+<p>請至 <a href="${SINGLE_INTERVIEW_THREAD_URL(
+      msg.interview._id.toString()
+    )}">Interview Center</a> 查看細節</p>
+
+<p>如果您有任何問題，請聯絡您的面試訓練官。</p>
+
+<br />
+
+<p>${SPLIT_LINE}</p>
+
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+
+<p>${user_name} have finalized the interview <b>${interview_name}</b> </p>
+
+<p>for student ${msg.student_firstname} ${msg.student_lastname} </p>
+
+<p>Please go to <a href="${SINGLE_INTERVIEW_THREAD_URL(
+      msg.interview._id.toString()
+    )}">Interview Center</a> for more details.</p>
+
+<p>If you have any question, feel free to contact your interview trainer.</p>
+
+<p>${TAIGER_SIGNATURE}</p>
+
+`;
+
+    sendEmail(recipient, subject, message);
+  } else {
+    const subject = `[Reopen]  ${interview_name}  is not finished!`;
+    const message = `\
+<p>${ENGLISH_BELOW}</p>
+
+<p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
+
+${user_name} 標示 ${interview_name} 為未完成。
+
+<p>請至 <a href="${SINGLE_INTERVIEW_THREAD_URL(
+      msg.interview._id.toString()
+    )}">Interview Center</a> 查看細節。</p>
+
+<p>如果您有任何問題，請聯絡您的面試訓練官。</p>
+
+<br />
+
+<p>${SPLIT_LINE}</p>
+  
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+
+<p>${user_name} set ${interview_name} as not finished.</p>
+
+<p>Please go to <a href="${SINGLE_INTERVIEW_THREAD_URL(
+      msg.interview._id.toString()
+    )}">Interview Center</a> for more details.</p>
+
+<p>If you have any question, feel free to contact your interview trainer.</p>
+
+<p>${TAIGER_SIGNATURE}</p>
+
+`;
+
+    sendEmail(recipient, subject, message);
+  }
 };
 
 module.exports = {
@@ -2714,5 +2791,6 @@ module.exports = {
   sendInterviewConfirmationEmail,
   sendInterviewCancelEmail,
   InterviewCancelledReminderEmail,
-  InterviewTrainingReminderEmail
+  InterviewTrainingReminderEmail,
+  sendSetAsFinalInterviewEmail
 };

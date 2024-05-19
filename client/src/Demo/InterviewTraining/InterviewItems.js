@@ -151,7 +151,7 @@ function InterviewItems(props) {
       _id: interview.event_id?._id,
       requester_id: [interview.student_id],
       receiver_id: [...interview.trainer_id],
-      title: `${interview.student_id.firstname} ${interview.student_id.lastname} interview training`,
+      title: `${interview.student_id.firstname} ${interview.student_id.lastname} - ${interview.program_id.school} - ${interview.program_id.program_name} ${interview.program_id.degree} interview training`,
       description:
         'This is the interview training. Please prepare and practice',
       event_type: 'Interview',

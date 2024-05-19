@@ -14,7 +14,8 @@ const {
   sendAssignTrainerReminderEmail,
   sendAssignedInterviewTrainerToTrainerEmail,
   sendAssignedInterviewTrainerToStudentEmail,
-  InterviewCancelledReminderEmail
+  InterviewCancelledReminderEmail,
+  sendSetAsFinalInterviewEmail
 } = require('../services/email');
 const Permission = require('../models/Permission');
 
@@ -276,6 +277,7 @@ const addInterviewTrainingDateTime = asyncHandler(async (req, res, next) => {
 
 const updateInterview = asyncHandler(async (req, res) => {
   const {
+    user,
     params: { interview_id }
   } = req;
 
@@ -326,10 +328,18 @@ const updateInterview = asyncHandler(async (req, res) => {
     await Promise.all(emailRequests);
     logger.info('Update trainer');
   }
+  if ('isClosed' in payload) {
+    await sendSetAsFinalInterviewEmail(
+      {
+        firstname: interview.student_id.firstname,
+        lastname: interview.student_id.lastname,
+        address: interview.student_id.email
+      },
+      { interview, isClosed: payload.isClosed, user }
+    );
+  }
 });
 
-// () TODO: inform editor
-// () TODO: business logic
 const createInterview = asyncHandler(async (req, res) => {
   const {
     params: { program_id, studentId },

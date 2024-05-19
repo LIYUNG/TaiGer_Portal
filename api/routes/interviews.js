@@ -18,6 +18,9 @@ const {
   InterviewPUTRateLimiter,
   InterviewGETRateLimiter
 } = require('../middlewares/rate_limiter');
+const {
+  interviewMultitenantFilter
+} = require('../middlewares/interviewMultitenantFilter');
 
 const router = Router();
 
@@ -45,17 +48,20 @@ router
     filter_archiv_user,
     InterviewGETRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
+    interviewMultitenantFilter,
     getInterview
   )
   .put(
     filter_archiv_user,
     InterviewPUTRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
+    interviewMultitenantFilter,
     updateInterview
   )
   .delete(
     filter_archiv_user,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
+    interviewMultitenantFilter,
     deleteInterview
   );
 

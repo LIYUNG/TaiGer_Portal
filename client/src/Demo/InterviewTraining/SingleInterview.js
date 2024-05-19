@@ -521,15 +521,15 @@ function SingleInterview() {
           <Typography variant="h6">{t('Warning', { ns: 'common' })}</Typography>
           Do you want to set{' '}
           <b>
-            Interview for {singleInterviewState.interview.student_id.firstname}{' '}
-            {singleInterviewState.interview.student_id.lastname}{' '}
-            {singleInterviewState.interview.program_id.school}{' '}
-            {singleInterviewState.interview.program_id.program_name}{' '}
-            {singleInterviewState.interview.program_id.degree}{' '}
-            {singleInterviewState.interview.program_id.semester}
+            Interview for {interview?.student_id.firstname}{' '}
+            {interview?.student_id.lastname}{' '}
+            {interview?.program_id.school}{' '}
+            {interview?.program_id.program_name}{' '}
+            {interview?.program_id.degree}{' '}
+            {interview?.program_id.semester}
           </b>{' '}
           as{' '}
-          <b>{singleInterviewState.interview.isClosed ? 'open' : 'closed'}</b>
+          <b>{interview?.isClosed ? 'open' : 'closed'}</b>
           ?
           <br />
           <br />

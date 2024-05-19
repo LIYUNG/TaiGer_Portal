@@ -2288,6 +2288,33 @@ const MeetingCancelledReminderEmail = async (recipient, payload) => {
   );
 };
 
+const InterviewCancelledReminderEmail = async (recipient, payload) => {
+  const subject = `[Interview Training Cancelled by ${payload.taiger_user.firstname} ${payload.taiger_user.lastname}].`;
+  const message = `\
+<p>Hi,</p>
+
+<p><b>${payload.taiger_user.firstname} - ${payload.taiger_user.lastname}</b> 取消了面試訓練。</p>
+
+<p>${SPLIT_LINE}</p>
+
+<p>${payload.taiger_user.firstname} - ${payload.taiger_user.lastname} cancelled the interview training.</p>
+
+<p>${TAIGER_SIGNATURE}</p>
+
+`; // should be for admin/editor/agent/student
+
+  return sendEventEmail(
+    recipient,
+    subject,
+    message,
+    payload.event,
+    [...payload.cc], // cc
+    payload.event_title,
+    payload.isUpdatingEvent,
+    true // toDelete event
+  );
+};
+
 const MeetingReminderEmail = async (recipient, payload) => {
   const subject = `[Meeting Reminder] ${recipient.firstname} ${recipient.lastname}`;
   const message = `\
@@ -2686,5 +2713,6 @@ module.exports = {
   sendAssignedInterviewTrainerToStudentEmail,
   sendInterviewConfirmationEmail,
   sendInterviewCancelEmail,
+  InterviewCancelledReminderEmail,
   InterviewTrainingReminderEmail
 };

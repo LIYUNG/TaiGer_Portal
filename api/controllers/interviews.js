@@ -13,7 +13,8 @@ const {
   sendInterviewConfirmationEmail,
   sendAssignTrainerReminderEmail,
   sendAssignedInterviewTrainerToTrainerEmail,
-  sendAssignedInterviewTrainerToStudentEmail
+  sendAssignedInterviewTrainerToStudentEmail,
+  InterviewCancelledReminderEmail
 } = require('../services/email');
 const Permission = require('../models/Permission');
 
@@ -23,6 +24,30 @@ const PrecheckInterview = async (interview_id) => {
     logger.info('updateInterview: interview is closed!');
     throw new ErrorResponse(403, 'Interview is closed');
   }
+};
+
+const InterviewCancelledReminder = async (user, meeting_event) => {
+  InterviewCancelledReminderEmail(
+    {
+      id: meeting_event.requester_id[0]._id.toString(),
+      firstname: meeting_event.requester_id[0].firstname,
+      lastname: meeting_event.requester_id[0].lastname,
+      address: meeting_event.requester_id[0].email
+    },
+    {
+      taiger_user: user,
+      role: user.role,
+      meeting_time: meeting_event.start,
+      student_id: user._id.toString(),
+      event: meeting_event,
+      event_title:
+        user.role === 'Student'
+          ? `${user.firstname} ${user.lastname}`
+          : `${meeting_event.receiver_id[0].firstname} ${meeting_event.receiver_id[0].lastname}`,
+      isUpdatingEvent: false,
+      cc: meeting_event.receiver_id
+    }
+  );
 };
 
 const InterviewTrainingInvitation = async (
@@ -114,6 +139,7 @@ const getInterview = asyncHandler(async (req, res) => {
 
 const deleteInterview = asyncHandler(async (req, res) => {
   const {
+    user,
     params: { interview_id }
   } = req;
 
@@ -135,6 +161,11 @@ const deleteInterview = asyncHandler(async (req, res) => {
     // Delete event
     if (interview.event_id) {
       // TODO: send delete event email
+      const toBeDeletedEvent = await Event.findByIdAndDelete(interview.event_id)
+        .populate('receiver_id requester_id', 'firstname lastname email')
+        .lean();
+      await InterviewCancelledReminder(user, toBeDeletedEvent);
+
       await Event.findByIdAndDelete(interview.event_id);
     }
     // Delete interview thread in mongoDB

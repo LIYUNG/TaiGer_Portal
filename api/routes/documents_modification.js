@@ -190,6 +190,7 @@ router
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     multitenant_filter,
     doc_thread_ops_validator,
+    InnerTaigerMultitenantFilter,
     MessagesThreadUpload,
     postMessages
   )

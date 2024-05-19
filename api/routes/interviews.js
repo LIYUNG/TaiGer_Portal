@@ -19,8 +19,12 @@ const {
   InterviewGETRateLimiter
 } = require('../middlewares/rate_limiter');
 const {
-  interviewMultitenantFilter
+  interviewMultitenantFilter,
+  interviewMultitenantReadOnlyFilter
 } = require('../middlewares/interviewMultitenantFilter');
+const {
+  InnerTaigerMultitenantFilter
+} = require('../middlewares/InnerTaigerMultitenantFilter');
 
 const router = Router();
 
@@ -48,7 +52,7 @@ router
     filter_archiv_user,
     InterviewGETRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
-    interviewMultitenantFilter,
+    interviewMultitenantReadOnlyFilter,
     getInterview
   )
   .put(
@@ -80,6 +84,7 @@ router
     filter_archiv_user,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     multitenant_filter,
+    InnerTaigerMultitenantFilter,
     createInterview
   );
 module.exports = router;

@@ -17,6 +17,14 @@ const {
 } = require('../services/email');
 const Permission = require('../models/Permission');
 
+const PrecheckInterview = async (interview_id) => {
+  const precheck_interview = await Interview.findById(interview_id);
+  if (precheck_interview.isClosed) {
+    logger.info('updateInterview: interview is closed!');
+    throw new ErrorResponse(403, 'Interview is closed');
+  }
+};
+
 const InterviewTrainingInvitation = async (
   receiver,
   user,
@@ -108,6 +116,9 @@ const deleteInterview = asyncHandler(async (req, res) => {
   const {
     params: { interview_id }
   } = req;
+
+  await PrecheckInterview(interview_id);
+
   const interview = await Interview.findById(interview_id);
   // Delete files in S3
   if (
@@ -141,6 +152,9 @@ const addInterviewTrainingDateTime = asyncHandler(async (req, res, next) => {
   const {
     params: { interview_id }
   } = req;
+
+  await PrecheckInterview(interview_id);
+
   const oldEvent = req.body;
   try {
     const date = new Date(oldEvent.start);
@@ -160,16 +174,21 @@ const addInterviewTrainingDateTime = asyncHandler(async (req, res, next) => {
       .replace(/\./g, '_')}_${concat_id}`.replace(/ /g, '_');
     let newEvent;
     if (oldEvent._id) {
-      await Event.findByIdAndUpdate(oldEvent._id, { ...oldEvent }, {});
-      newEvent = await Event.findById(oldEvent._id)
-        .populate('receiver_id requester_id', 'firstname lastname email')
-        .lean();
-      await Interview.findByIdAndUpdate(
-        interview_id,
-        { event_id: oldEvent._id, status: 'Scheduled' },
-        {}
-      );
-      isUpdatingEvent = true;
+      try {
+        await Event.findByIdAndUpdate(oldEvent._id, { ...oldEvent }, {});
+        newEvent = await Event.findById(oldEvent._id)
+          .populate('receiver_id requester_id', 'firstname lastname email')
+          .lean();
+        await Interview.findByIdAndUpdate(
+          interview_id,
+          { event_id: oldEvent._id, status: 'Scheduled' },
+          {}
+        );
+        isUpdatingEvent = true;
+      } catch (e) {
+        logger.error(`addInterviewTrainingDateTime: ${e.message}`);
+        throw new ErrorResponse(403, e.message);
+      }
     } else {
       const write_NewEvent = await Event.create(oldEvent);
       await write_NewEvent.save();
@@ -223,7 +242,16 @@ const updateInterview = asyncHandler(async (req, res) => {
   const {
     params: { interview_id }
   } = req;
+
   const payload = req.body;
+  if (!('isClosed' in payload)) {
+    await PrecheckInterview(interview_id);
+  }
+
+  delete payload.thread_id;
+  delete payload.program_id;
+  delete payload.student_id;
+
   const interview = await Interview.findByIdAndUpdate(interview_id, payload, {
     new: true
   })
@@ -231,7 +259,13 @@ const updateInterview = asyncHandler(async (req, res) => {
     .populate('program_id', 'school program_name degree semester')
     .populate('thread_id event_id')
     .lean();
-
+  if (payload.isClosed === true || payload.isClosed === false) {
+    await Documentthread.findByIdAndUpdate(
+      interview.thread_id._id.toString(),
+      { isFinalVersion: payload.isClosed },
+      {}
+    );
+  }
   res.status(200).send({ success: true, data: interview });
   if (payload.trainer_id?.length > 0) {
     await sendAssignedInterviewTrainerToStudentEmail(

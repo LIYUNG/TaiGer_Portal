@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { AiFillCheckCircle } from 'react-icons/ai';
-import { Card, Button, Typography, Avatar } from '@mui/material';
+import {
+  Box,
+  Card,
+  Button,
+  Typography,
+  Avatar,
+  CircularProgress
+} from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import ErrorPage from '../Utils/ErrorPage';
@@ -10,7 +17,8 @@ import {
   SubmitMessageWithAttachment,
   deleteAMessageInThread,
   deleteInterview,
-  getInterview
+  getInterview,
+  updateInterview
 } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import InterviewItems from './InterviewItems';
@@ -21,6 +29,8 @@ import { stringAvatar } from '../Utils/contants';
 import MessageList from '../CVMLRLCenter/DocModificationThreadPage/MessageList';
 import { useAuth } from '../../components/AuthProvider';
 import DocThreadEditor from '../CVMLRLCenter/DocModificationThreadPage/DocThreadEditor';
+import { is_TaiGer_role } from '../Utils/checking-functions';
+import { TopBar } from '../../components/TopBar/TopBar';
 
 function SingleInterview() {
   const { interview_id } = useParams();
@@ -32,7 +42,9 @@ function SingleInterview() {
     author: '',
     isLoaded: false,
     success: false,
+    isSubmissionLoaded: true,
     SetDeleteDocModel: false,
+    SetAsFinalFileModel: false,
     isDeleteSuccessful: false,
     interview: {},
     editorState: null,
@@ -95,6 +107,13 @@ function SingleInterview() {
       }
     );
   }, [interview_id]);
+
+  const closeSetAsFinalFileModelWindow = () => {
+    setSingleInterviewState((prevState) => ({
+      ...prevState,
+      SetAsFinalFileModel: false
+    }));
+  };
 
   const singleExpandtHandler = (idx) => {
     let accordionKeys = [...singleInterviewState.accordionKeys];
@@ -178,7 +197,7 @@ function SingleInterview() {
       });
     }
 
-    // formData.append('files', docModificationThreadPageState.file);
+    // formData.append('files', singleInterviewState.file);
     formData.append('message', message);
 
     SubmitMessageWithAttachment(
@@ -264,6 +283,14 @@ function SingleInterview() {
     }));
   };
 
+  const handleAsFinalFile = (interview_id) => {
+    console.log(interview_id);
+    setSingleInterviewState((prevState) => ({
+      ...prevState,
+      SetAsFinalFileModel: true
+    }));
+  };
+
   const handleDeleteInterview = () => {
     deleteInterview(singleInterviewState.interview._id.toString()).then(
       (resp) => {
@@ -302,6 +329,40 @@ function SingleInterview() {
     );
   };
 
+  const ConfirmSetAsFinalFileHandler = async (e) => {
+    e.preventDefault();
+    setSingleInterviewState((prevState) => ({
+      ...prevState,
+      isSubmissionLoaded: false // false to reload everything
+    }));
+
+    const resp = await updateInterview(interview._id.toString(), {
+      isClosed: !interview.isClosed
+    });
+    const { data: interview_updated, success } = resp.data;
+    if (success) {
+      setSingleInterviewState((prevState) => ({
+        ...prevState,
+        isLoaded: true,
+        interview: {
+          ...singleInterviewState.interview,
+          isClosed: interview_updated.isClosed
+        },
+        SetAsFinalFileModel: false,
+        isSubmissionLoaded: true
+      }));
+    } else {
+      const { message } = resp.data;
+      setSingleInterviewState((prevState) => ({
+        ...prevState,
+        isLoaded: true,
+        isSubmissionLoaded: true,
+        res_modal_message: message,
+        res_modal_status: resp.status
+      }));
+    }
+  };
+
   const ConfirmError = () => {
     setSingleInterviewState((prevState) => ({
       ...prevState,
@@ -316,6 +377,7 @@ function SingleInterview() {
     interview,
     accordionKeys,
     isDeleteSuccessful,
+    isSubmissionLoaded,
     isLoaded,
     res_modal_status,
     res_modal_message
@@ -345,6 +407,7 @@ function SingleInterview() {
       </Link>
       {interview ? (
         <>
+          {interview.isClosed && <TopBar />}
           <InterviewItems
             expanded={true}
             interview={interview}
@@ -384,8 +447,8 @@ function SingleInterview() {
                   {user.firstname} {user.lastname}
                 </b>
               </Typography>
-              {interview.thread_id.isFinalVersion ? (
-                <Typography>This discussion thread is close.</Typography>
+              {interview.isClosed ? (
+                <Typography>This interview is closed.</Typography>
               ) : (
                 <DocThreadEditor
                   thread={interview.thread_id}
@@ -397,6 +460,40 @@ function SingleInterview() {
                   checkResult={() => {}}
                 />
               )}
+              {is_TaiGer_role(user) &&
+                (!singleInterviewState.interview.isClosed ? (
+                  <Button
+                    fullWidth
+                    variant="contained"
+                    color="success"
+                    onClick={() =>
+                      handleAsFinalFile(interview?._id?.toString())
+                    }
+                    sx={{ mt: 2 }}
+                  >
+                    {isSubmissionLoaded ? (
+                      t('Mark as finished')
+                    ) : (
+                      <CircularProgress size={24} />
+                    )}
+                  </Button>
+                ) : (
+                  <Button
+                    fullWidth
+                    variant="outlined"
+                    color="secondary"
+                    onClick={() =>
+                      handleAsFinalFile(interview?._id?.toString())
+                    }
+                    sx={{ mt: 2 }}
+                  >
+                    {isSubmissionLoaded ? (
+                      t('Mark as open')
+                    ) : (
+                      <CircularProgress size={24} />
+                    )}
+                  </Button>
+                ))}
             </Card>
           ) : (
             <Card>
@@ -415,19 +512,82 @@ function SingleInterview() {
         <Card>Status 404: Error! Interview not found.</Card>
       )}
       <ModalNew
+        open={singleInterviewState.SetAsFinalFileModel}
+        onClose={closeSetAsFinalFileModelWindow}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box>
+          <Typography variant="h6">{t('Warning', { ns: 'common' })}</Typography>
+          Do you want to set{' '}
+          <b>
+            Interview for {singleInterviewState.interview.student_id.firstname}{' '}
+            {singleInterviewState.interview.student_id.lastname}{' '}
+            {singleInterviewState.interview.program_id.school}{' '}
+            {singleInterviewState.interview.program_id.program_name}{' '}
+            {singleInterviewState.interview.program_id.degree}{' '}
+            {singleInterviewState.interview.program_id.semester}
+          </b>{' '}
+          as{' '}
+          <b>{singleInterviewState.interview.isClosed ? 'open' : 'closed'}</b>
+          ?
+          <br />
+          <br />
+          <Button
+            color="primary"
+            variant="contained"
+            disabled={!isLoaded || !isSubmissionLoaded}
+            onClick={(e) => ConfirmSetAsFinalFileHandler(e)}
+            sx={{ mr: 2 }}
+          >
+            {isSubmissionLoaded ? (
+              t('Yes', { ns: 'common' })
+            ) : (
+              <CircularProgress size={24} />
+            )}
+          </Button>
+          <Button
+            color="secondary"
+            variant="outlined"
+            onClick={closeSetAsFinalFileModelWindow}
+          >
+            {t('No', { ns: 'common' })}
+          </Button>
+        </Box>
+      </ModalNew>
+      <ModalNew
         open={singleInterviewState.SetDeleteDocModel}
-        onHide={closeDeleteDocModalWindow}
+        onClose={closeDeleteDocModalWindow}
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
         <Typography>{t('Warning', { ns: 'common' })}</Typography>
         Do you want to delete the interview request of{' '}
         <b>{singleInterviewState.interview_name_toBeDelete}</b>?
-        <Button disabled={!isLoaded} onClick={handleDeleteInterview}>
+        <br />
+        <Button
+          disabled={!isLoaded}
+          variant="contained"
+          color="primary"
+          onClick={handleDeleteInterview}
+        >
           Yes
         </Button>
-        <Button onClick={closeDeleteDocModalWindow}>No</Button>
+        <Button
+          variant="outlined"
+          color="secondary"
+          onClick={closeDeleteDocModalWindow}
+        >
+          No
+        </Button>
       </ModalNew>
+      {res_modal_status >= 400 && (
+        <ModalMain
+          ConfirmError={ConfirmError}
+          res_modal_status={res_modal_status}
+          res_modal_message={res_modal_message}
+        />
+      )}
     </>
   );
 }

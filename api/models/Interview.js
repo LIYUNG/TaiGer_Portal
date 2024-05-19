@@ -30,6 +30,10 @@ const interviewsSchema = new mongoose.Schema(
       type: String,
       default: ''
     },
+    isClosed: {
+      type: Boolean,
+      default: false
+    },
     start: {
       type: Date
     },

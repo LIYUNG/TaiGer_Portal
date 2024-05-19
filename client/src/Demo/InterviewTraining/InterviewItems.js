@@ -45,6 +45,7 @@ import {
   convertDate,
   showTimezoneOffset
 } from '../Utils/contants';
+import ModalMain from '../Utils/ModalHandler/ModalMain';
 
 function InterviewItems(props) {
   const { t } = useTranslation();
@@ -60,6 +61,10 @@ function InterviewItems(props) {
   const [utcTime, setUtcTime] = React.useState(
     dayjs(props.interview.event_id?.start || '')
   );
+  const [interviewItemsState, setInterviewItemsState] = useState({
+    res_modal_message: '',
+    res_modal_status: 0
+  });
 
   const { user } = useAuth();
   const [timezone, setTimezone] = useState(
@@ -109,13 +114,20 @@ function InterviewItems(props) {
 
   const updateTrainer = async () => {
     const temp_trainer_id_array = Array.from(trainerId);
-    const { data } = await updateInterview(interview._id.toString(), {
+    const resp = await updateInterview(interview._id.toString(), {
       trainer_id: temp_trainer_id_array
     });
-    const { data: interview_updated, success } = data;
+    const { data: interview_updated, success } = resp.data;
     if (success) {
       setiInterview(interview_updated);
       setShowModal(false);
+    } else {
+      const { message } = resp.data;
+      setInterviewItemsState((prevState) => ({
+        ...prevState,
+        res_modal_message: message,
+        res_modal_status: resp.status
+      }));
     }
   };
 
@@ -146,13 +158,20 @@ function InterviewItems(props) {
       start: new Date(utcTime),
       end: end_date
     };
-    const { data } = await addInterviewTrainingDateTime(
+    const resp = await addInterviewTrainingDateTime(
       interview._id.toString(),
       interviewTrainingEvent
     );
-    const { success } = data;
+    const { success } = resp.data;
     if (success) {
       setInterviewTrainingTimeChange(false);
+    } else {
+      const { message } = resp.data;
+      setInterviewItemsState((prevState) => ({
+        ...prevState,
+        res_modal_message: message,
+        res_modal_status: resp.status
+      }));
     }
   };
 
@@ -170,6 +189,14 @@ function InterviewItems(props) {
         <AiFillCheckCircle color="limegreen" size={24} title="Confirmed" />
       );
     }
+  };
+
+  const ConfirmError = () => {
+    setInterviewItemsState((prevState) => ({
+      ...prevState,
+      res_modal_status: 0,
+      res_modal_message: ''
+    }));
   };
 
   return (
@@ -421,6 +448,13 @@ function InterviewItems(props) {
           {t('Close', { ns: 'common' })}
         </Button>
       </ModalNew>
+      {interviewItemsState.res_modal_status >= 400 && (
+        <ModalMain
+          ConfirmError={ConfirmError}
+          res_modal_status={interviewItemsState.res_modal_status}
+          res_modal_message={interviewItemsState.res_modal_message}
+        />
+      )}
     </>
   );
 }

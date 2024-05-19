@@ -47,6 +47,27 @@ const interviewMultitenantFilter = async (req, res, next) => {
   next();
 };
 
+const interviewMultitenantReadOnlyFilter = async (req, res, next) => {
+  const {
+    user,
+    params: { interview_id }
+  } = req;
+
+  if (user.role === Role.Student || user.role === Role.Guest) {
+    const interview = await Interview.findById(interview_id).populate();
+    if (
+      interview.student_id?.toString() &&
+      user._id.toString() !== interview.student_id?.toString()
+    ) {
+      return next(
+        new ErrorResponse(403, 'Not allowed to access other resource.')
+      );
+    }
+  }
+  next();
+};
+
 module.exports = {
-  interviewMultitenantFilter
+  interviewMultitenantFilter,
+  interviewMultitenantReadOnlyFilter
 };

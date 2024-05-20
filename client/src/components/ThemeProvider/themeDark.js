@@ -1,7 +1,7 @@
 // themeDark.js
-import { createTheme } from '@mui/material/styles';
+import { createTheme, responsiveFontSizes } from '@mui/material/styles';
 
-const themeDark = createTheme({
+let themeDark = createTheme({
   // Dark mode theme configuration
   palette: {
     mode: 'dark'
@@ -16,5 +16,8 @@ const themeDark = createTheme({
     }
   }
 });
+
+themeDark = responsiveFontSizes(themeDark);
+
 
 export default themeDark;

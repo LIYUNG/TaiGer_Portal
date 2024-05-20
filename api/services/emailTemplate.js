@@ -66,7 +66,7 @@ const htmlContent = (message) => `
         border-radius: 4px;
         text-transform: uppercase;
         background-color: #3f51b5;
-        color: white;
+        color: white !important;
         text-align: center;
         text-decoration: none;
         border: none;

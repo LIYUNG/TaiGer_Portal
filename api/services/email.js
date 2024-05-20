@@ -31,7 +31,8 @@ const {
   PROGRAM_URL,
   SINGLE_INTERVIEW_THREAD_URL,
   INTERVIEW_CENTER_URL,
-  TAIGER_SIGNATURE
+  TAIGER_SIGNATURE,
+  STUDENT_PROFILE_FOR_AGENT_URL
 } = require('../constants');
 
 const {
@@ -1320,13 +1321,17 @@ ${applications_name}
 // For editor, agents
 const AdmissionResultInformEmailToTaiGer = async (recipient, msg) => {
   const result = msg.result === 'O' ? 'Admission' : 'Rejection';
+  const student_name = `${msg.student_firstname} ${msg.student_lastname}`;
   const applications_name = `${msg.udpatedApplication.programId.school} ${msg.udpatedApplication.programId.program_name} ${msg.udpatedApplication.programId.degree} ${msg.udpatedApplication.programId.semester}`;
-  const subject = `[${result}] ${msg.student_firstname} ${msg.student_lastname} has received ${result} from ${applications_name}`;
+  const subject = `[${result}] ${student_name} has received ${result} from ${applications_name}`;
   const message = `\
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-<p>${msg.student_firstname} ${msg.student_lastname} has received <b>${result}</b> from ${applications_name} </p>
+<p>${student_name} has received <b>${result}</b> from ${applications_name} </p>
 
+<p>See: <a href="${STUDENT_PROFILE_FOR_AGENT_URL(
+    msg.student_id
+  )}">${student_name}</a></p>
 
 `; // should be for admin/editor/agent/student
 
@@ -1609,6 +1614,7 @@ const sendSetAsFinalProgramSpecificFileForStudentEmail = async (
   recipient,
   msg
 ) => {
+  const thread_name = `${msg.school} - ${msg.program_name} ${msg.uploaded_documentname}`;
   if (msg.isFinalVersion) {
     const subject = `您的文件 ${msg.uploaded_documentname} 已完成 / Your document ${msg.uploaded_documentname} is finished!`;
     const message = `\
@@ -1618,13 +1624,11 @@ const sendSetAsFinalProgramSpecificFileForStudentEmail = async (
 
 <p>${msg.editor_firstname} ${msg.editor_lastname} 已完成</p>
 
-<p>${msg.school} - ${msg.program_name} ${msg.uploaded_documentname} 
-
-於 ${msg.uploaded_updatedAt} </p>
+<p><a href="${`${THREAD_URL}/${msg.thread_id}`}">${thread_name}</a> 於 ${
+      msg.uploaded_updatedAt
+    } </p>
 
 <p>此份最終文件可以拿來作為申請。 </p>
-
-<p>請至 <a href="${CVMLRL_CENTER_URL}">CV ML RL Center</a> 查看細節</p>
 
 <p>如果您有任何問題，請聯絡您的文件編輯 Editor。</p>
 
@@ -1636,13 +1640,11 @@ const sendSetAsFinalProgramSpecificFileForStudentEmail = async (
 
 <p>${msg.editor_firstname} ${msg.editor_lastname} have finalized
 
-${msg.school} - ${msg.program_name} ${msg.uploaded_documentname} 
+<a href="${`${THREAD_URL}/${msg.thread_id}`}">${thread_name}</a>
 
 on ${msg.uploaded_updatedAt} for you.</p>
 
 This document is ready for the application. 
-
-<p>Please go to <a href="${CVMLRL_CENTER_URL}">CV ML RL Center</a> for more details.</p>
 
 <p>If you have any question, feel free to contact your editor.</p>
 

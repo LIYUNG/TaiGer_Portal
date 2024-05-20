@@ -174,6 +174,7 @@ router
     putOriginAuthorConfirmedByStudent
   );
 
+// TODO: to find a better filter considering essay writer
 router
   .route('/:messagesThreadId/:studentId')
   .put(
@@ -190,7 +191,6 @@ router
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     multitenant_filter,
     doc_thread_ops_validator,
-    InnerTaigerMultitenantFilter,
     MessagesThreadUpload,
     postMessages
   )

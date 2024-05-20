@@ -1005,6 +1005,7 @@ const updateStudentApplicationResult = asyncHandler(async (req, res, next) => {
               address: student.agents[i].email
             },
             {
+              student_id: student._id.toString(),
               student_firstname: student.firstname,
               student_lastname: student.lastname,
               udpatedApplication: udpatedApplicationForEmail,
@@ -1022,6 +1023,7 @@ const updateStudentApplicationResult = asyncHandler(async (req, res, next) => {
               address: student.editors[i].email
             },
             {
+              student_id: student._id.toString(),
               student_firstname: student.firstname,
               student_lastname: student.lastname,
               udpatedApplication: udpatedApplicationForEmail,

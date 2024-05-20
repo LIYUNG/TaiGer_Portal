@@ -26,7 +26,11 @@ import TasksDistributionBarChart from '../../components/Charts/TasksDistribution
 import { appConfig } from '../../config';
 import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
-import { is_new_message_status, is_pending_status } from '../Utils/contants';
+import {
+  is_my_fav_message_status,
+  is_new_message_status,
+  is_pending_status
+} from '../Utils/contants';
 
 // TODO TEST_CASE
 function EditorPage() {
@@ -151,7 +155,6 @@ function EditorPage() {
     (open_task) => open_task.show && !open_task.isFinalVersion
   );
 
-  // const open_tasks_arr = open_tasks_with_editors(editorPageState.students);
   const task_distribution = open_tasks_withMyEssay_arr
     .filter(({ isFinalVersion }) => isFinalVersion !== true)
     .map(({ deadline, file_type, show, isPotentials }) => {
@@ -169,28 +172,23 @@ function EditorPage() {
       potentials: open_distr[date].potentials
     });
   });
-  // TODO:
-  // essay tasks are missing for essay writer in this page.
 
-  const new_message_tasks = open_tasks_withMyEssay_arr.filter(
-    (open_task) =>
-      open_task.show &&
-      !open_task.isFinalVersion &&
-      is_new_message_status(user, open_task)
+  const new_message_tasks = open_tasks_withMyEssay_arr?.filter((open_task) =>
+    is_new_message_status(user, open_task)
   );
 
-  const followup_tasks = open_tasks_withMyEssay_arr.filter(
+  const fav_message_tasks = open_tasks_withMyEssay_arr?.filter((open_task) =>
+    is_my_fav_message_status(user, open_task)
+  );
+
+  const followup_tasks = open_tasks_withMyEssay_arr?.filter(
     (open_task) =>
-      open_task.show &&
-      !open_task.isFinalVersion &&
       is_pending_status(user, open_task) &&
       open_task.latest_message_left_by_id !== ''
   );
 
-  const pending_progress_tasks = open_tasks_withMyEssay_arr.filter(
+  const pending_progress_tasks = open_tasks_withMyEssay_arr?.filter(
     (open_task) =>
-      open_task.show &&
-      !open_task.isFinalVersion &&
       is_pending_status(user, open_task) &&
       open_task.latest_message_left_by_id === ''
   );
@@ -255,6 +253,7 @@ function EditorPage() {
         students={editorPageState.students}
         new_message_tasks={new_message_tasks}
         followup_tasks={followup_tasks}
+        fav_message_tasks={fav_message_tasks}
         pending_progress_tasks={pending_progress_tasks}
         closed_tasks={closed_tasks}
       />

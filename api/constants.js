@@ -20,6 +20,8 @@ const UNI_ASSIST_FOR_STUDENT_URL = new URL('/uni-assist', ORIGIN).href;
 const UNI_ASSIST_FOR_AGENT_URL = (studentId) =>
   new URL(`/student-database/${studentId}#uniassist`, ORIGIN).href;
 const THREAD_URL = new URL('/document-modification', ORIGIN).href;
+const THREAD_ID_URL = (thread_id) =>
+  new URL(`/document-modification/${thread_id}`, ORIGIN).href;
 const ARCHIVED_STUDENTS_URL = new URL('/archiv/students', ORIGIN).href;
 const BASE_DOCUMENT_URL = new URL('/base-documents', ORIGIN).href;
 const BASE_DOCUMENT_FOR_AGENT_URL = (studentId) =>
@@ -1658,6 +1660,7 @@ module.exports = {
   UNI_ASSIST_FOR_STUDENT_URL,
   UNI_ASSIST_FOR_AGENT_URL,
   THREAD_URL,
+  THREAD_ID_URL,
   ARCHIVED_STUDENTS_URL,
   BASE_DOCUMENT_URL,
   STUDENT_COMMUNICATION_THREAD_URL,

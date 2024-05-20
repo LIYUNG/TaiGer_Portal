@@ -31,8 +31,8 @@ const {
   PROGRAM_URL,
   SINGLE_INTERVIEW_THREAD_URL,
   INTERVIEW_CENTER_URL,
-  TAIGER_SIGNATURE,
-  STUDENT_PROFILE_FOR_AGENT_URL
+  STUDENT_PROFILE_FOR_AGENT_URL,
+  THREAD_ID_URL
 } = require('../constants');
 
 const {
@@ -43,6 +43,7 @@ const {
   isDev,
   ORIGIN
 } = require('../config');
+const { htmlContent } = require('./emailTemplate');
 
 const transporter = isDev()
   ? createTransport({
@@ -69,101 +70,6 @@ const verifySMTPConfig = () => {
 };
 
 const senderName = `No-Reply TaiGer Consultancy ${SMTP_USERNAME}`;
-
-const htmlContent = (message) => `
-<!DOCTYPE html>
-<html>
-<head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #f5f5f5;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            width: 100%;
-            max-width: 600px;
-            margin: 0 auto;
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            box-sizing: border-box;
-        }
-        .header {
-            text-align: center;
-            background-color: #000000;
-            color: #ffffff;
-            padding: 10px 0;
-            border-radius: 8px 8px 0 0;
-        }
-        .header h1 {
-            margin: 0;
-        }
-        .content {
-            padding: 10px;
-            background-color: #fafafa;
-            border: 1px solid #e0e0e0;
-            border-radius: 4px;
-            margin-top: 20px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
-            box-sizing: border-box;
-        }
-        .footer {
-            text-align: center;
-            color: #888888;
-            padding: 10px 0;
-        }
-    .social-icons {
-      margin-top: 10px;
-    }
-    .social-icons img {
-        width: 24px;
-        height: 24px;
-        margin: 0 5px;
-    }
-    .img-radius {
-      border-radius: 50%;
-    }
-    @media (max-width: 600px) {
-      .header h1 {
-        font-size: 1.2em;
-      }
-      .content, .footer {
-        padding: 5px;
-      }
-    }
-  </style>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-          <a
-            href="https://taigerconsultancy-portal.com/"
-            style={{ textDecoration: 'none' }}
-          >
-            <img
-            class="img-radius"
-            src="https://taigerconsultancy-portal.com/assets/images/taiger_logo.png"
-            alt="TaiGer Logo"
-            style="width: 75px; height: 75px; border-radius: 50%;"
-            />
-          </a>
-        <h1>TaiGer Consultancy</h1>
-    </div>
-    <div class="content">
-      ${message}
-    </div>
-    <div class="footer">
-    ${TAIGER_SIGNATURE}
-    </div>
-  </div>
-</body>
-</html>
-`;
 
 const sendEmail = (to, subject, message) => {
   const mail = {
@@ -275,7 +181,6 @@ const updateNotificationEmail = async (recipient, msg) => {
 <p>Your user role in TaiGer Portal has been changed.</p>
 
 <p>Please visit <a href="${SETTINGS_URL}">Setting</a> and make sure your user role.</p>
-
 
 `;
 
@@ -646,15 +551,14 @@ const sendAgentUploadedVPDForStudentEmail = async (recipient, msg) => {
 };
 
 const sendUploadedProfileFilesRemindForAgentEmail = async (recipient, msg) => {
-  const subject = `New ${msg.uploaded_documentname} uploaded from ${msg.student_firstname} ${msg.student_lastname}`;
+  const student_name = `${msg.student_firstname} ${msg.student_lastname}`;
+  const subject = `New ${msg.uploaded_documentname} uploaded from ${student_name}`;
   const message = `\
 <p>${ENGLISH_BELOW}</p>
 
 <p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
 
-<p>您的學生 ${msg.student_firstname} ${msg.student_lastname} 上傳了 ${
-    msg.uploaded_documentname
-  } </p>
+<p>您的學生 ${student_name} 上傳了 ${msg.uploaded_documentname} </p>
 
 <p>於 ${msg.uploaded_updatedAt} 。</p>
 
@@ -666,9 +570,7 @@ const sendUploadedProfileFilesRemindForAgentEmail = async (recipient, msg) => {
 
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-<p>your student ${msg.student_firstname} ${msg.student_lastname} has uploaded ${
-    msg.uploaded_documentname
-  } </p>
+<p>your student ${student_name} has uploaded ${msg.uploaded_documentname} </p>
 
 <p>on ${msg.uploaded_updatedAt}.</p>
 
@@ -954,7 +856,6 @@ const informEditorArchivedStudentEmail = async (recipient, msg) => {
 
 <p>Please go to ${ARCHIVED_STUDENTS_URL} , and see the archived student!</p>
 
-
 `;
 
   return sendEmail(recipient, subject, message);
@@ -991,7 +892,6 @@ const informStudentArchivedStudentEmail = async (recipient, payload) => {
 
 <p>For any further questions, please contact you agent ${agent}</p>
 
-
 `;
 
   return sendEmail(recipient, subject, message);
@@ -1005,10 +905,11 @@ const informStudentTheirEssayWriterEmail = async (recipient, msg) => {
   } for your ${msg.file_type} ${docName}`;
   let editor;
   for (let i = 0; i < msg.editors.length; i += 1) {
+    const editor_name = `${msg.editors[i].firstname} ${msg.editors[i].lastname}`;
     if (i === 0) {
-      editor = `${msg.editors[i].firstname} ${msg.editors[i].lastname}`;
+      editor = `${editor_name}`;
     } else {
-      editor += `, ${msg.editors[i].firstname} ${msg.editors[i].lastname}`;
+      editor += `, ${editor_name}`;
     }
   }
   const message = `\
@@ -1059,12 +960,13 @@ const informStudentTheirEssayWriterEmail = async (recipient, msg) => {
 
 const informStudentTheirEditorEmail = async (recipient, msg) => {
   const subject = 'Your Editor';
-  var editor;
-  for (let i = 0; i < msg.editors.length; i++) {
+  let editor;
+  for (let i = 0; i < msg.editors.length; i += 1) {
+    const editor_name = `${msg.editors[i].firstname} ${msg.editors[i].lastname}`;
     if (i === 0) {
-      editor = `${msg.editors[i].firstname} ${msg.editors[i].lastname}`;
+      editor = `${editor_name}`;
     } else {
-      editor += `, ${msg.editors[i].firstname} ${msg.editors[i].lastname}`;
+      editor += `, ${editor_name}`;
     }
   }
   const message = `\
@@ -1105,11 +1007,12 @@ const createApplicationToStudentEmail = async (recipient, msg) => {
   const subject = '新的建議申請學程指派給您 / New Programs assigned to you.';
   let programList;
   for (let i = 0; i < msg.programs.length; i += 1) {
+    const program_name = `${msg.programs[i].school} - ${msg.programs[i].program_name}`;
     if (i === 0) {
-      programList = `<ul><li>${msg.programs[i].school} - ${msg.programs[i].program_name}</li>
+      programList = `<ul><li>${program_name}</li>
       `;
     } else {
-      programList += `<li>${msg.programs[i].school} - ${msg.programs[i].program_name}</li>`;
+      programList += `<li>${program_name}</li>`;
     }
   }
   programList += '</ul>';
@@ -1173,12 +1076,13 @@ const updateCredentialsEmail = async (recipient, msg) => {
 const UpdateStudentApplicationsEmail = async (recipient, msg) => {
   const subject = `${msg.sender_firstname} ${msg.sender_lastname} 更新了申請學校資訊並完成任務 / ${msg.sender_firstname} ${msg.sender_lastname} has updated application status and created new tasks`;
   let applications_name = '';
-  for (let i = 0; i < msg.student_applications.length; i++) {
+  for (let i = 0; i < msg.student_applications.length; i += 1) {
+    const program_name = `${msg.student_applications[i].programId.school} ${msg.student_applications[i].programId.program_name}`;
     if (msg.new_app_decided_idx.includes(i)) {
       if (i === 0) {
-        applications_name = `<ul><li>${msg.student_applications[i].programId.school} ${msg.student_applications[i].programId.program_name}</li>`;
+        applications_name = `<ul><li>${program_name}</li>`;
       } else {
-        applications_name += `<li>${msg.student_applications[i].programId.school} - ${msg.student_applications[i].programId.program_name}</li>`;
+        applications_name += `<li>${program_name}</li>`;
       }
     }
   }
@@ -1252,12 +1156,13 @@ ${applications_name}
 const NewMLRLEssayTasksEmail = async (recipient, msg) => {
   const subject = `${msg.sender_firstname} ${msg.sender_lastname} has updated application status and new tasks`;
   let applications_name = '';
-  for (let i = 0; i < msg.student_applications.length; i++) {
+  for (let i = 0; i < msg.student_applications.length; i += 1) {
+    const program_name = `${msg.student_applications[i].programId.school} ${msg.student_applications[i].programId.program_name}`;
     if (msg.new_app_decided_idx.includes(i)) {
       if (i === 0) {
-        applications_name = `<ul><li>${msg.student_applications[i].programId.school} ${msg.student_applications[i].programId.program_name}</li>`;
+        applications_name = `<ul><li>${program_name}</li>`;
       } else {
-        applications_name += `<li>${msg.student_applications[i].programId.school} - ${msg.student_applications[i].programId.program_name}</li>`;
+        applications_name += `<li>${program_name}</li>`;
       }
     }
   }
@@ -1287,11 +1192,12 @@ const NewMLRLEssayTasksEmailFromTaiGer = async (recipient, msg) => {
   const subject = `${msg.sender_firstname} ${msg.sender_lastname} has updated application status and new tasks`;
   let applications_name = '';
   for (let i = 0; i < msg.student_applications.length; i += 1) {
+    const program_name = `${msg.student_applications[i].programId.school} ${msg.student_applications[i].programId.program_name}`;
     if (msg.new_app_decided_idx.includes(i)) {
       if (i === 0) {
-        applications_name = `<ul><li>${msg.student_applications[i].programId.school} ${msg.student_applications[i].programId.program_name}</li>`;
+        applications_name = `<ul><li>${program_name}</li>`;
       } else {
-        applications_name += `<li>${msg.student_applications[i].programId.school} - ${msg.student_applications[i].programId.program_name}</li>`;
+        applications_name += `<li>${program_name}</li>`;
       }
     }
   }
@@ -1375,7 +1281,9 @@ const sendNewInterviewMessageInThreadEmail = async (recipient, msg) => {
 
 const sendNewApplicationMessageInThreadEmail = async (recipient, msg) => {
   const thread_url = `${THREAD_URL}/${msg.thread_id}`;
-  const subject = `[Update] ${msg.writer_firstname} ${msg.writer_lastname} sent a new message > ${msg.school} ${msg.program_name} ${msg.uploaded_documentname}!`;
+  const student_name = `${msg.student_firstname} - ${msg.student_lastname}`;
+  const task_name = `${msg.school} ${msg.program_name} ${msg.uploaded_documentname}`;
+  const subject = `[Update] ${msg.writer_firstname} ${msg.writer_lastname} sent a new message > ${task_name}!`;
   const message = `\
 <p>${ENGLISH_BELOW}</p>
 
@@ -1383,11 +1291,11 @@ const sendNewApplicationMessageInThreadEmail = async (recipient, msg) => {
 
 <p>${msg.writer_firstname} ${msg.writer_lastname} 對於 </p>
 
-<p>${msg.student_firstname} - ${msg.student_lastname} ${msg.school} - ${msg.program_name} - ${msg.uploaded_documentname}</p>
+<p>${student_name} ${task_name}</p>
 
 <p>更新了訊息，於 ${msg.uploaded_updatedAt} 。</p>
 
-<p>請至 TaiGer Portal <a href="${thread_url}">${msg.student_firstname} - ${msg.student_lastname} ${msg.school} - ${msg.program_name} - ${msg.uploaded_documentname}</a> 並查看新訊息。 </p>
+<p>請至 TaiGer Portal <a href="${thread_url}">${student_name} ${task_name}</a> 並查看新訊息。 </p>
 
 <br />
 
@@ -1397,11 +1305,11 @@ const sendNewApplicationMessageInThreadEmail = async (recipient, msg) => {
 
 <p>${msg.writer_firstname} ${msg.writer_lastname} has a new update for </p>
 
-<p>${msg.student_firstname} - ${msg.student_lastname} ${msg.school} - ${msg.program_name} - ${msg.uploaded_documentname}</p>
+<p>${student_name} ${task_name}</p>
 
 <p>on ${msg.uploaded_updatedAt}.</p>
 
-<p>Please go to TaiGer Portal <a href="${thread_url}">${msg.student_firstname} - ${msg.student_lastname} ${msg.school} - ${msg.program_name} - ${msg.uploaded_documentname}</a> and check the updates. </p>
+<p>Please go to TaiGer Portal <a href="${thread_url}">${student_name} ${task_name}</a> and check the updates. </p>
 
 
 `;
@@ -1411,7 +1319,8 @@ const sendNewApplicationMessageInThreadEmail = async (recipient, msg) => {
 
 const sendNewGeneraldocMessageInThreadEmail = async (recipient, msg) => {
   const thread_url = `${THREAD_URL}/${msg.thread_id}`;
-  const subject = `[Update - ${msg.uploaded_documentname}] ${msg.writer_firstname} ${msg.writer_lastname} prodvides a new message > ${msg.student_firstname} ${msg.student_lastname} - ${msg.uploaded_documentname} / ${msg.writer_firstname} ${msg.writer_lastname} has new update for ${msg.student_firstname} ${msg.student_lastname} - ${msg.uploaded_documentname}!`;
+  const student_name = `${msg.student_firstname} - ${msg.student_lastname}`;
+  const subject = `[Update - ${msg.uploaded_documentname}] ${msg.writer_firstname} ${msg.writer_lastname} prodvides a new message > ${student_name} - ${msg.uploaded_documentname} / ${msg.writer_firstname} ${msg.writer_lastname} has new update for ${student_name} - ${msg.uploaded_documentname}!`;
   const message = `\
 <p>${ENGLISH_BELOW}</p>
 
@@ -1419,12 +1328,12 @@ const sendNewGeneraldocMessageInThreadEmail = async (recipient, msg) => {
 
 <p>${msg.writer_firstname} ${msg.writer_lastname} 給了一則新訊息： </p>
 
-<p>${msg.student_firstname} - ${msg.student_lastname} ${msg.uploaded_documentname}</p>
+<p>${student_name} ${msg.uploaded_documentname}</p>
 
 <p>於 ${msg.uploaded_updatedAt}。</p>
 
 
-<p>請至 TaiGer Portal <a href="${thread_url}">${msg.student_firstname} ${msg.student_lastname}  - ${msg.uploaded_documentname}</a> 並查看細節。</p>
+<p>請至 TaiGer Portal <a href="${thread_url}">${student_name}  - ${msg.uploaded_documentname}</a> 並查看細節。</p>
 
 <br />
 
@@ -1434,11 +1343,11 @@ const sendNewGeneraldocMessageInThreadEmail = async (recipient, msg) => {
 
 <p>${msg.writer_firstname} ${msg.writer_lastname} has a new update for </p>
 
-<p>${msg.student_firstname} - ${msg.student_lastname} ${msg.uploaded_documentname}</p>
+<p>${student_name} ${msg.uploaded_documentname}</p>
 
 <p>on ${msg.uploaded_updatedAt}.</p>
 
-<p>Please go to TaiGer Portal <a href="${thread_url}">${msg.student_firstname} ${msg.student_lastname} - ${msg.uploaded_documentname}</a> and check the updates. </p>
+<p>Please go to TaiGer Portal <a href="${thread_url}">${student_name} - ${msg.uploaded_documentname}</a> and check the updates. </p>
 
 
 `;
@@ -1447,24 +1356,22 @@ const sendNewGeneraldocMessageInThreadEmail = async (recipient, msg) => {
 };
 
 const sendSetAsFinalGeneralFileForAgentEmail = async (recipient, msg) => {
+  const student_name = `${msg.student_firstname} ${msg.student_lastname}`;
+  const threadUrl = `${THREAD_ID_URL(msg.thread_id)}`;
   if (msg.isFinalVersion) {
-    const subject = `[Close] ${msg.student_firstname} ${msg.student_lastname} ${msg.uploaded_documentname} 已完成 / ${msg.student_firstname} ${msg.student_lastname} ${msg.uploaded_documentname} is finished!`;
+    const subject = `[Close] ${student_name} ${msg.uploaded_documentname} 已完成 / ${student_name} ${msg.uploaded_documentname} is finished!`;
     const message = `\
 <p>${ENGLISH_BELOW}</p>
 
 <p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
 
-<p>${msg.editor_firstname} ${msg.editor_lastname} 對於學生 ${
-      msg.student_firstname
-    } ${msg.student_lastname} 已標示 ${msg.uploaded_documentname} 為完成，
+<p>${msg.editor_firstname} ${msg.editor_lastname} 對於學生 ${student_name} 已標示 ${msg.uploaded_documentname} 為完成，
 
 於 ${msg.uploaded_updatedAt}. </p>
 
 <p>此文件已可以拿來作申請使用。 </p>
 
-<p>請至 <a href="${CVMLRL_FOR_EDITOR_URL(
-      msg.student_id
-    )}">TaiGer Portal</a> 查看細節</p>
+<p>請至 <a href="${threadUrl}">${student_name} ${msg.uploaded_documentname}</a> 查看細節</p>
 
 <p>如果您有任何問題，請聯絡您的文件編輯 Editor。</p>
 
@@ -1474,19 +1381,15 @@ const sendSetAsFinalGeneralFileForAgentEmail = async (recipient, msg) => {
 
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-<p>${msg.editor_firstname} ${msg.editor_lastname} have finalized ${
-      msg.uploaded_documentname
-    } </p>
+<p>${msg.editor_firstname} ${msg.editor_lastname} have finalized ${msg.uploaded_documentname} </p>
 
-<p>for student ${msg.student_firstname} ${msg.student_lastname} </p>
+<p>for student ${student_name} </p>
 
 <p>on ${msg.uploaded_updatedAt}.</p>
 
 <p>This document is ready for the application. </p>
 
-<p>Please go to <a href="${CVMLRL_FOR_EDITOR_URL(
-      msg.student_id
-    )}">TaiGer Portal</a> for more details.</p>
+<p>Please go to <a href="${threadUrl}">${student_name} ${msg.uploaded_documentname}</a> for more details.</p>
 
 <p>If you have any question, feel free to contact your editor.</p>
 
@@ -1495,21 +1398,17 @@ const sendSetAsFinalGeneralFileForAgentEmail = async (recipient, msg) => {
 
     sendEmail(recipient, subject, message);
   } else {
-    const subject = `[Reopen] ${msg.student_firstname} ${msg.student_lastname} ${msg.uploaded_documentname} 未完成 / ${msg.student_firstname} ${msg.student_lastname} ${msg.uploaded_documentname} is not finished!`;
+    const subject = `[Reopen] ${student_name} ${msg.uploaded_documentname} 未完成 / ${student_name} ${msg.uploaded_documentname} is not finished!`;
     const message = `\
 <p>${ENGLISH_BELOW}</p>
 
 <p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
 
-${msg.editor_firstname} ${msg.editor_lastname} 標示 ${
-      msg.uploaded_documentname
-    } 
+${msg.editor_firstname} ${msg.editor_lastname} 標示 ${msg.uploaded_documentname} 
 
 為未完成。
 
-<p>請至 <a href="${CVMLRL_FOR_EDITOR_URL(
-      msg.student_id
-    )}">TaiGer Portal</a> 查看細節。</p>
+<p>請至 <a href="${threadUrl}">${student_name} ${msg.uploaded_documentname}</a> 查看細節。</p>
 
 <p>如果您有任何問題，請聯絡您的文件編輯 Editor 或顧問。</p>
 
@@ -1519,13 +1418,11 @@ ${msg.editor_firstname} ${msg.editor_lastname} 標示 ${
   
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-<p>${msg.editor_firstname} ${msg.editor_lastname} set ${
-      msg.uploaded_documentname
-    } 
+<p>${msg.editor_firstname} ${msg.editor_lastname} set ${msg.uploaded_documentname} 
 
 as not finished.</p>
 
-<p>Please go to ${CVMLRL_FOR_EDITOR_URL(msg.student_id)} for more details.</p>
+<p>Please go to <a href="${threadUrl}">${student_name} ${msg.uploaded_documentname}</a> for more details.</p>
 
 <p>If you have any question, feel free to contact your editor.</p>
 
@@ -1537,12 +1434,14 @@ as not finished.</p>
 };
 
 const sendSetAsFinalGeneralFileForStudentEmail = async (recipient, msg) => {
+  const student_name = `${recipient.firstname} ${recipient.lastname}`;
+  const threadUrl = `${THREAD_ID_URL(msg.thread_id)}`;
   if (msg.isFinalVersion) {
     const subject = `您的文件 ${msg.uploaded_documentname} 已完成 / Your document ${msg.uploaded_documentname} is finished!`;
     const message = `\
 <p>${ENGLISH_BELOW}</p>
 
-<p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
+<p>嗨 ${student_name},</p>
 
 <p>${msg.editor_firstname} ${msg.editor_lastname} 將 ${msg.uploaded_documentname} 列為已完成
 
@@ -1550,7 +1449,7 @@ const sendSetAsFinalGeneralFileForStudentEmail = async (recipient, msg) => {
 
 <p>此文件已可以拿來作申請使用。 </p>
 
-<p>請至 <a href="${CVMLRL_CENTER_URL}">CV ML RL Center</a> 查看細節</p>
+<p>請至 <a href="${threadUrl}">${student_name} ${msg.uploaded_documentname}</a> 查看細節</p>
 
 <p>如果您有任何問題，請聯絡您的文件編輯 Editor。</p>
 
@@ -1558,7 +1457,7 @@ const sendSetAsFinalGeneralFileForStudentEmail = async (recipient, msg) => {
 
 <p>${SPLIT_LINE}</p>
 
-<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+<p>Hi ${student_name},</p>
 
 <p>your editor ${msg.editor_firstname} ${msg.editor_lastname} have finalized ${msg.uploaded_documentname} 
 
@@ -1566,7 +1465,7 @@ on ${msg.uploaded_updatedAt} for you.</p>
 
 <p>This document is ready for the application. </p>
 
-<p>Please go to <a href="${CVMLRL_CENTER_URL}">CV ML RL Center</a> for more details.</p>
+<p>Please go to <a href="${threadUrl}">${student_name} ${msg.uploaded_documentname}</a> for more details.</p>
 
 <p>If you have any question, feel free to contact your editor.</p>
 
@@ -1579,13 +1478,13 @@ on ${msg.uploaded_updatedAt} for you.</p>
     const message = `\
 <p>${ENGLISH_BELOW}</p>
 
-<p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
+<p>嗨 ${student_name},</p>
 
 <p>${msg.editor_firstname} ${msg.editor_lastname} 標記 ${msg.uploaded_documentname} 
 
 為未完成。 </p>
 
-<p>請至 <a href="${CVMLRL_CENTER_URL}">CV ML RL Center</a> 查看細節</p>
+<p>請至 <a href="${threadUrl}">${student_name} ${msg.uploaded_documentname}</a> 查看細節</p>
 
 <p>如果您有任何問題，請聯絡您的文件編輯 Editor。</p>
 
@@ -1593,13 +1492,13 @@ on ${msg.uploaded_updatedAt} for you.</p>
 
 <p>${SPLIT_LINE}</p>
 
-<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+<p>Hi ${student_name},</p>
 
 <p>${msg.editor_firstname} ${msg.editor_lastname} set ${msg.uploaded_documentname} 
 
 as not finished.</p>
 
-<p>Please go to <a href="${CVMLRL_CENTER_URL}">CV ML RL Center</a> for more details.</p>
+<p>Please go to <a href="${threadUrl}">${student_name} ${msg.uploaded_documentname}</a> for more details.</p>
 
 <p>If you have any question, feel free to contact your editor.</p>
 
@@ -1616,7 +1515,7 @@ const sendSetAsFinalProgramSpecificFileForStudentEmail = async (
 ) => {
   const thread_name = `${msg.school} - ${msg.program_name} ${msg.uploaded_documentname}`;
   if (msg.isFinalVersion) {
-    const subject = `您的文件 ${msg.uploaded_documentname} 已完成 / Your document ${msg.uploaded_documentname} is finished!`;
+    const subject = `[Closed] 您的文件 ${msg.uploaded_documentname} 已完成 / Your document ${msg.uploaded_documentname} is finished!`;
     const message = `\
 <p>${ENGLISH_BELOW}</p>
 
@@ -1653,7 +1552,7 @@ This document is ready for the application.
 
     sendEmail(recipient, subject, message);
   } else {
-    const subject = `您的文件 ${msg.uploaded_documentname} 未完成 / Your document ${msg.uploaded_documentname} is not finished!`;
+    const subject = `[Reopen] 您的文件 ${msg.uploaded_documentname} 未完成 / Your document ${msg.uploaded_documentname} is not finished!`;
     const message = `\
 <p>${ENGLISH_BELOW}</p>
 
@@ -1696,8 +1595,10 @@ const sendSetAsFinalProgramSpecificFileForAgentEmail = async (
   recipient,
   msg
 ) => {
+  const doc_name = `${msg.school} - ${msg.program_name} ${msg.uploaded_documentname}`;
+  const student_name = `${msg.student_firstname} ${msg.student_lastname}`;
   if (msg.isFinalVersion) {
-    const subject = `[Closed] ${msg.uploaded_documentname} of ${msg.school} - ${msg.program_name} ${msg.student_firstname} ${msg.student_lastname} is finished!`;
+    const subject = `[Closed] ${msg.uploaded_documentname} of ${msg.school} - ${msg.program_name} ${student_name} is finished!`;
     const message = `\
 <p>${ENGLISH_BELOW}</p>
 
@@ -1705,11 +1606,9 @@ const sendSetAsFinalProgramSpecificFileForAgentEmail = async (
 
 <p>${msg.editor_firstname} ${msg.editor_lastname} 已完成
 
-${msg.school} - ${msg.program_name} ${msg.uploaded_documentname} 於 ${
-      msg.uploaded_updatedAt
-    } 
+${doc_name} 於 ${msg.uploaded_updatedAt} 
 
-給學生 ${msg.student_firstname} ${msg.student_lastname}.</p>
+給學生 ${student_name}.</p>
 
 <p>請再次確認此文件，並確認是否可以結案此申請. </p>
 
@@ -1725,11 +1624,9 @@ ${msg.school} - ${msg.program_name} ${msg.uploaded_documentname} 於 ${
 
 <p>${msg.editor_firstname} ${msg.editor_lastname} has finalized
 
-${msg.school} - ${msg.program_name} ${msg.uploaded_documentname} on ${
-      msg.uploaded_updatedAt
-    } 
+${doc_name} on ${msg.uploaded_updatedAt} 
 
-for ${msg.student_firstname} ${msg.student_lastname}.</p>
+for ${student_name}.</p>
 
 <p>Double check this document and finalize the application if applicable. </p>
 
@@ -1742,7 +1639,7 @@ for ${msg.student_firstname} ${msg.student_lastname}.</p>
 
     sendEmail(recipient, subject, message);
   } else {
-    const subject = `[Reopen] ${msg.uploaded_documentname} of ${msg.school} - ${msg.program_name} ${msg.student_firstname} ${msg.student_lastname} is reopen!`;
+    const subject = `[Reopen] ${msg.uploaded_documentname} of ${msg.school} - ${msg.program_name} ${student_name} is reopen!`;
     const message = `\
 <p>${ENGLISH_BELOW}</p>
 
@@ -1750,11 +1647,9 @@ for ${msg.student_firstname} ${msg.student_lastname}.</p>
 
 <p>${msg.editor_firstname} ${msg.editor_lastname} 設
 
-${msg.school} - ${msg.program_name} ${msg.uploaded_documentname} 為未完成
+${doc_name} 為未完成於 ${msg.uploaded_updatedAt} 
 
-於 ${msg.uploaded_updatedAt} 
-
-給學生 ${msg.student_firstname} ${msg.student_lastname}.</p>
+給學生 ${student_name}.</p>
 
 <p>請再次確認此文件，並確認是否可以結案此申請. </p>
 
@@ -1770,18 +1665,15 @@ ${msg.school} - ${msg.program_name} ${msg.uploaded_documentname} 為未完成
 
 <p>${msg.editor_firstname} ${msg.editor_lastname} set
 
-${msg.school} - ${msg.program_name} ${msg.uploaded_documentname} as not finished
-
-on ${msg.uploaded_updatedAt} for ${msg.student_firstname} ${
-      msg.student_lastname
-    }.</p>
+${doc_name} as not finished on ${
+      msg.uploaded_updatedAt
+    } for ${student_name}.</p>
 
 <p>Double check this document and finalize the application if applicable. </p>
 
 <p>Please go to <a href="${`${THREAD_URL}/${msg.thread_id}`}">${msg.school} - ${
       msg.program_name
     } ${msg.uploaded_documentname}</a> for more details.</p>
-
 
 `;
 
@@ -1802,6 +1694,8 @@ const assignEssayTaskToEditorEmail = async (recipient, msg) => {
 <p>but this Essay does <b>not</b> have any Essay Writer yet.</p>
 
 <p><b>Please assign an Essay Writer to the Essay <a href="${THREAD_LINK}">${msg.student_firstname} ${msg.student_lastname} - ${msg.documentname}</a></b></p>
+
+<a href="${THREAD_LINK}" class="mui-button" target="_blank">Assign Essay Writer</a>
 
 <p>If you have any question, feel free to contact your agent.</p>
 
@@ -1924,35 +1818,30 @@ const AnalysedCoursesDataStudentEmail = async (recipient, msg) => {
 };
 
 const updateCoursesDataAgentEmail = async (recipient, msg) => {
-  const subject = `[TODO] 分析課程 ${msg.student_firstname} ${msg.student_lastname} | Course anaylsis for ${msg.student_firstname} ${msg.student_lastname}`;
+  const student_name = `${msg.student_firstname} ${msg.student_lastname}`;
+  const studentCourseUrl = `${STUDENT_COURSE_URL(msg.student_id)}`;
+  const subject = `[TODO] 分析課程 ${student_name} | Course anaylsis for ${student_name}`;
   const message = `\
 <p>${ENGLISH_BELOW}</p>
 
 <p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
 
-<p>${msg.student_firstname} ${msg.student_lastname} 的課程資料已更新。</p>
+<p>${student_name} 的課程資料已更新。</p>
 
-<p>請至 <a href="${STUDENT_COURSE_URL(msg.student_id)}">${
-    msg.student_firstname
-  } ${
-    msg.student_lastname
-  } Courses</a> 查看細節並<b>幫學生點選課程分析，學生可以馬上收到課程匹配度分析。</b></p>
+<p>請至 <a href="${studentCourseUrl}">${student_name} Courses</a> 查看細節並<b>幫學生點選課程分析，學生可以馬上收到課程匹配度分析。</b></p>
+
+<a href="${studentCourseUrl}" class="mui-button" target="_blank">上前分析</a>
 
 <br />
 <p>${SPLIT_LINE}</p>
 
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-<p>${msg.student_firstname} ${
-    msg.student_lastname
-  } has updated his/her courses data!</p>
+<p>${student_name} has updated his/her courses data!</p>
 
-<p>Please go to <a href="${STUDENT_COURSE_URL(msg.student_id)}">${
-    msg.student_firstname
-  } ${
-    msg.student_lastname
-  } Courses</a> for more details and <b>analyze the courses. </b> A system email will be sent to the student when you analyzed.</p>
+<p>Please go to <a href="${studentCourseUrl}">${student_name} Courses</a> for more details and <b>analyze the courses. </b> A system email will be sent to the student when you analyzed.</p>
 
+<a href="${studentCourseUrl}" class="mui-button" target="_blank">Analyse Courses</a>
 
 `; // should be for admin/editor/agent/student
 
@@ -1973,29 +1862,26 @@ Some reminder email template.
 };
 
 const sendAssignEditorReminderEmail = async (recipient, payload) => {
+  const student_name = `${payload.student_firstname} - ${payload.student_lastname}`;
+  const baseDocumentLink = `${BASE_DOCUMENT_FOR_AGENT_URL(payload.student_id)}`;
   const subject = '[DO NOT IGNORE] Assign Editor Reminder';
   const message = `\
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-<p>${payload.student_firstname} - ${
-    payload.student_lastname
-  } has uploaded some input in his/her CVMLRL Center, <b>but she/he did not have any Editor yet.</b></p>
+<p>${student_name} has uploaded some input in his/her CVMLRL Center, <b>but she/he did not have any Editor yet.</b></p>
 
-<p><b>Please assign an Editor to the student <a href="${BASE_DOCUMENT_FOR_AGENT_URL(
-    payload.student_id
-  )}">${payload.student_firstname} - ${payload.student_lastname}</a></b></p>
+<p><b>Please assign an Editor to the student <a href="${baseDocumentLink}">${student_name}</a></b></p>
+
+<a href="${baseDocumentLink}" class="mui-button" target="_blank">Assign Editor</a>
 
 <br />
 <p>${SPLIT_LINE}</p>
 
-<p>${payload.student_firstname} - ${
-    payload.student_lastname
-  } 上傳了一份文件至他的 CVMLRL Cetner，但他目前並無任何Editor。</p>
+<p>${student_name} 上傳了一份文件至他的 CVMLRL Cetner，但他目前並無任何編輯。</p>
 
-<p><b>請指派 Editor 給學生 <a href="${BASE_DOCUMENT_FOR_AGENT_URL(
-    payload.student_id
-  )}">${payload.student_firstname} - ${payload.student_lastname}</a></b></p>
-<br />
+<p><b>請指派編輯學生 <a href="${baseDocumentLink}">${student_name}</a></b></p>
+
+<a href="${baseDocumentLink}" class="mui-button" target="_blank">指派編輯</a>
 
 `; // should be for admin/editor/agent/student
 
@@ -2043,24 +1929,26 @@ ${requests}
 const sendAssignTrainerReminderEmail = async (recipient, payload) => {
   const program_name = `${payload.program.school} ${payload.program.program_name} ${payload.program.degree}  ${payload.program.semester}`;
   const student_name = `${payload.student_firstname} - ${payload.student_lastname}`;
+  const interviewUrl = `${SINGLE_INTERVIEW_THREAD_URL(payload.interview_id)}`;
   const subject = `[DO NOT IGNORE] Assign Interview Trainer to ${student_name} - ${program_name}`;
   const message = `\
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
 <p>${student_name} has created interview training request, <b>but she/he did not have any interview trainer yet.</b></p>
 
-<p><b>Please assign an interview trainer to the student <a href="${SINGLE_INTERVIEW_THREAD_URL(
-    payload.interview_id
-  )}">${student_name} ${program_name}</a></b></p>
+<p><b>Please assign an interview trainer to the student <a href="${interviewUrl}">${student_name} ${program_name}</a></b></p>
+
+<a href="${interviewUrl}" class="mui-button" target="_blank">Assign Trainer</a>
 
 <br />
 <p>${SPLIT_LINE}</p>
 
 <p>${student_name} 新增了一個面試訓練請求，但他目前並無任何面試訓練官。</p>
 
-<p><b>請指派面試訓練官給學生 <a href="${SINGLE_INTERVIEW_THREAD_URL(
-    payload.interview_id
-  )}">${student_name} ${program_name}</a></b></p>
+<p><b>請指派面試訓練官給學生 <a href="${interviewUrl}">${student_name} ${program_name}</a></b></p>
+
+<a href="${interviewUrl}" class="mui-button" target="_blank">指派面試官</a>
+
 <br />
 
 `; // should be for admin/editor/agent/student
@@ -2069,27 +1957,26 @@ const sendAssignTrainerReminderEmail = async (recipient, payload) => {
 };
 
 const sendAgentNewMessageReminderEmail = async (recipient, payload) => {
-  const subject = `[New Message] ${payload.student_firstname} - ${payload.student_lastname}`;
+  const student_name = `${payload.student_firstname} - ${payload.student_lastname}`;
+  const messageUrl = `${STUDENT_COMMUNICATION_THREAD_URL(payload.student_id)}`;
+  const subject = `[New Message] ${student_name}`;
   const message = `\
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-<p><b>${payload.student_firstname} - ${
-    payload.student_lastname
-  } sent new message(s)</b></p>
+<p><b>${student_name} sent new message(s)</b></p>
 
-<p><b>Please go to student's communication <a href="${STUDENT_COMMUNICATION_THREAD_URL(
-    payload.student_id
-  )}">${payload.student_firstname} - ${payload.student_lastname}</a></b></p>
+<p><b>Please go to student's communication <a href="${messageUrl}">${student_name}</a></b></p>
+
+<a href="${messageUrl}" class="mui-button" target="_blank">See Message</a>
 
 <p>${SPLIT_LINE}</p>
 
-<p>${payload.student_firstname} - ${
-    payload.student_lastname
-  } 傳了一則新訊息。</p>
+<p>${student_name} 傳了一則新訊息。</p>
 
-<p><b>請至學生討論串 <a href="${STUDENT_COMMUNICATION_THREAD_URL(
-    payload.student_id
-  )}">${payload.student_firstname} - ${payload.student_lastname}</a></b></p>
+<p><b>請至學生討論串 <a href="${messageUrl}">${student_name}</a></b></p>
+
+<a href="${messageUrl}" class="mui-button" target="_blank">查看訊息</a>
+
 <br />
 
 `; // should be for admin/editor/agent/student
@@ -2099,26 +1986,25 @@ const sendAgentNewMessageReminderEmail = async (recipient, payload) => {
 
 const sendStudentNewMessageReminderEmail = async (recipient, payload) => {
   const subject = `[New Message] ${recipient.firstname} ${recipient.lastname}`;
+  const messageUrl = `${STUDENT_COMMUNICATION_THREAD_URL(payload.student_id)}`;
   const message = `\
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-<p><b>${payload.taiger_user_firstname} - ${
-    payload.taiger_user_lastname
-  } sent you new message(s)</b></p>
+<p><b>${payload.taiger_user_firstname} - ${payload.taiger_user_lastname} sent you new message(s)</b></p>
 
-<p><b>Please go to my <a href="${STUDENT_COMMUNICATION_THREAD_URL(
-    payload.student_id
-  )}">Communication</a></b></p>
+<p><b>Please go to my <a href="${messageUrl}">Communication</a></b></p>
+
+<a href="${messageUrl}" class="mui-button" target="_blank">See Message</a>
 
 <p>${SPLIT_LINE}</p>
 
-<p>${payload.taiger_user_firstname} - ${
-    payload.taiger_user_lastname
-  } 留了新訊息給你。</p>
+<p>${payload.taiger_user_firstname} - ${payload.taiger_user_lastname} 留了新訊息給你。</p>
 
-<p><b>請至學生討論串 <a href="${STUDENT_COMMUNICATION_THREAD_URL(
-    payload.student_id
-  )}">Communication</a></b></p>
+<p><b>請至學生討論串 <a href="${messageUrl}">Communication</a></b></p>
+
+<a href="${messageUrl}" class="mui-button" target="_blank">查看訊息</a>
+
+
 <br />
 
 `; // should be for admin/editor/agent/student
@@ -2127,34 +2013,32 @@ const sendStudentNewMessageReminderEmail = async (recipient, payload) => {
 };
 
 const MeetingAdjustReminderEmail = async (recipient, payload) => {
-  const subject = `[TODO][Meeting confirmation required] ${payload.taiger_user_firstname} ${payload.taiger_user_lastname}`;
+  const taigerUser = `${payload.taiger_user_firstname} ${payload.taiger_user_lastname}`;
+  const calendarUrl = `${
+    payload.role === 'Student'
+      ? AGENT_CALENDAR_EVENTS_URL(recipient.id)
+      : STUDENT_CALENDAR_EVENTS_URL(recipient.id)
+  }`;
+  const subject = `[TODO][Meeting confirmation required] ${taigerUser}`;
   const message = `\
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-<p><b>${payload.taiger_user_firstname} - ${
-    payload.taiger_user_lastname
-  }</b> 調整了一個討論時段： </p>
+<p><b>${taigerUser}</b> 調整了一個討論時段： </p>
 <p><b>${payload.meeting_time}</b></p>
 
-<p>請上去 <a href="${
-    payload.role === 'Student'
-      ? AGENT_CALENDAR_EVENTS_URL(recipient.id)
-      : STUDENT_CALENDAR_EVENTS_URL(recipient.id)
-  }">TaiGer Meeting Calendar</a> 並<b>確認</b>討論內容和時間。</p>
+<p>請上去 <a href="${calendarUrl}">TaiGer Meeting Calendar</a> 並<b>確認</b>討論內容和時間。</p>
+
+<a href="${calendarUrl}" class="mui-button" target="_blank">上前確認</a>
 
 <p>${SPLIT_LINE}</p>
 
-<p>${payload.taiger_user_firstname} - ${
-    payload.taiger_user_lastname
-  } adjusted a meeting time on:</p>
+<p>${taigerUser} adjusted a meeting time on:</p>
 
 <p><b>${payload.meeting_time}</b></p>
 
-<p>Please go to <a href="${
-    payload.role === 'Student'
-      ? AGENT_CALENDAR_EVENTS_URL(recipient.id)
-      : STUDENT_CALENDAR_EVENTS_URL(recipient.id)
-  }">TaiGer Meeting Calendar</a> and <b>Confirm</b> the time。</p>
+<p>Please go to <a href="${calendarUrl}">TaiGer Meeting Calendar</a> and <b>Confirm</b> the time。</p>
+
+<a href="${calendarUrl}" class="mui-button" target="_blank">To Confirm</a>
 
 
 `; // should be for admin/editor/agent/student
@@ -2163,31 +2047,29 @@ const MeetingAdjustReminderEmail = async (recipient, payload) => {
 };
 
 const MeetingConfirmationReminderEmail = async (recipient, payload) => {
-  const subject = `[TODO][Meeting Invitation] ${payload.taiger_user_firstname} ${payload.taiger_user_lastname}`;
+  const taigerUser = `${payload.taiger_user_firstname} ${payload.taiger_user_lastname}`;
+  const calendarUrl = `${
+    payload.role === 'Student'
+      ? AGENT_CALENDAR_EVENTS_URL(recipient.id)
+      : STUDENT_CALENDAR_EVENTS_URL(recipient.id)
+  }`;
+  const subject = `[TODO][Meeting Invitation] ${taigerUser}`;
   const message = `\
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-<p><b>${payload.taiger_user_firstname} - ${
-    payload.taiger_user_lastname
-  }</b> 預訂了一個討論時段。</p>
+<p><b>${taigerUser}</b> 預訂了一個討論時段。</p>
 
-<p>請上去 <a href="${
-    payload.role === 'Student'
-      ? AGENT_CALENDAR_EVENTS_URL(recipient.id)
-      : STUDENT_CALENDAR_EVENTS_URL(recipient.id)
-  }">TaiGer Meeting Calendar</a> 並<b>確認</b>討論內容和時間，才能啟用 meeting 連結。</p>
+<p>請上去 <a href="${calendarUrl}">TaiGer Meeting Calendar</a> 並<b>確認</b>討論內容和時間，才能啟用 meeting 連結。</p>
+
+<a href="${calendarUrl}" class="mui-button" target="_blank">上前確認</a>
 
 <p>${SPLIT_LINE}</p>
 
-<p>${payload.taiger_user_firstname} - ${
-    payload.taiger_user_lastname
-  } booked a meeting time.</p>
+<p>${taigerUser} booked a meeting time.</p>
 
-<p>Please go to <a href="${
-    payload.role === 'Student'
-      ? AGENT_CALENDAR_EVENTS_URL(recipient.id)
-      : STUDENT_CALENDAR_EVENTS_URL(recipient.id)
-  }">TaiGer Meeting Calendar</a> and <b>Confirm</b> the time in order to activate the meeting link.</p>
+<p>Please go to <a href="${calendarUrl}">TaiGer Meeting Calendar</a> and <b>Confirm</b> the time in order to activate the meeting link.</p>
+
+<a href="${calendarUrl}" class="mui-button" target="_blank">To Confirm</a>
 
 
 `; // should be for admin/editor/agent/student
@@ -2196,11 +2078,12 @@ const MeetingConfirmationReminderEmail = async (recipient, payload) => {
 };
 
 const MeetingInvitationEmail = async (recipient, payload) => {
+  const taigerUser = `${payload.taiger_user.firstname} - ${payload.taiger_user.lastname}`;
   const subject = `[Meeting Confirmed by ${payload.taiger_user.firstname} ${payload.taiger_user.lastname}] Office hour: ${payload.meeting_time}.`;
   const message = `\
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-<p><b>${payload.taiger_user.firstname} - ${payload.taiger_user.lastname}</b> 確認了討論時段，請至 TaiGer Portal 查看您的當地 Meeting 時間。</p>
+<p><b>${taigerUser}</b> 確認了討論時段，請至 TaiGer Portal 查看您的當地 Meeting 時間。</p>
 
 <p> 請於該時間準時點擊以下連結： </p>
 
@@ -2210,7 +2093,7 @@ const MeetingInvitationEmail = async (recipient, payload) => {
 
 <p>${SPLIT_LINE}</p>
 
-<p>${payload.taiger_user.firstname} - ${payload.taiger_user.lastname} confirmed the meeting time. Please login to the TaiGer Portal and see the meeting time in your timezone.</p>
+<p>${taigerUser} confirmed the meeting time. Please login to the TaiGer Portal and see the meeting time in your timezone.</p>
 
 <p> Jitsi Meet Meeting link: <a href="${payload.meeting_link}">${payload.meeting_link}</a></p>
 <p>If it is the first time for you to use Jitsi Meet, we recommend you having a look at our brief introduction: <a href="${JITSI_MEET_INSTRUCTIONS_URL}">${JITSI_MEET_INSTRUCTIONS_URL}</a></p>
@@ -2232,15 +2115,16 @@ const MeetingInvitationEmail = async (recipient, payload) => {
 };
 
 const MeetingCancelledReminderEmail = async (recipient, payload) => {
+  const taigerUser = `${payload.taiger_user.firstname} - ${payload.taiger_user.lastname}`;
   const subject = `[Meeting Cancelled by ${payload.taiger_user.firstname} ${payload.taiger_user.lastname}] Office hour: ${payload.meeting_time}.`;
   const message = `\
 <p>Hi,</p>
 
-<p><b>${payload.taiger_user.firstname} - ${payload.taiger_user.lastname}</b> 取消了討論時段。</p>
+<p><b>${taigerUser}</b> 取消了討論時段。</p>
 
 <p>${SPLIT_LINE}</p>
 
-<p>${payload.taiger_user.firstname} - ${payload.taiger_user.lastname} cancelled the meeting.</p>
+<p>${taigerUser} cancelled the meeting.</p>
 
 
 `; // should be for admin/editor/agent/student
@@ -2258,15 +2142,16 @@ const MeetingCancelledReminderEmail = async (recipient, payload) => {
 };
 
 const InterviewCancelledReminderEmail = async (recipient, payload) => {
+  const taigerUser = `${payload.taiger_user.firstname} - ${payload.taiger_user.lastname}`;
   const subject = `[Interview Training Cancelled by ${payload.taiger_user.firstname} ${payload.taiger_user.lastname}].`;
   const message = `\
 <p>Hi,</p>
 
-<p><b>${payload.taiger_user.firstname} - ${payload.taiger_user.lastname}</b> 取消了面試訓練。</p>
+<p><b>${taigerUser}</b> 取消了面試訓練。</p>
 
 <p>${SPLIT_LINE}</p>
 
-<p>${payload.taiger_user.firstname} - ${payload.taiger_user.lastname} cancelled the interview training.</p>
+<p>${taigerUser} cancelled the interview training.</p>
 
 
 `; // should be for admin/editor/agent/student
@@ -2290,7 +2175,9 @@ const MeetingReminderEmail = async (recipient, payload) => {
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 <br />
 <p> 請於約定時間(時間請見 TaiGer Portal)該時間準時點擊以下連結： </p>
-<p>Jitsi Meet 會議連結網址： <a href="${payload.event?.meetingLink}">${payload.event?.meetingLink}</a></p>
+<p>Jitsi Meet 會議連結：</p>
+<a href="${payload.event?.meetingLink}" class="mui-button" target="_blank">Meeting Link</a>
+
 <p>若需要改時間，請上去TaiGer Portal, Update 您現在預定的時段至另一個 office hour 時段。</p>
 <p>若您是第一次使用Jitsi Meet 會議，建議可以先查看使用說明： <a href="${JITSI_MEET_INSTRUCTIONS_URL}">${JITSI_MEET_INSTRUCTIONS_URL}</a></p>
 <br />
@@ -2302,7 +2189,9 @@ const MeetingReminderEmail = async (recipient, payload) => {
 <br />
 <p>Please attend the meeting (see TaiGer Portal for the booked time slot) with the following link： </p>
 <p>If you can not attend the meeting, please go to TaiGer Portal and Update the existing time slot to another time.</p>
-<p> Jitsi Meet Meeting link: <a href="${payload.event?.meetingLink}">${payload.event?.meetingLink}</a></p>
+<p> Jitsi Meet Meeting link:</p>
+<a href="${payload.event?.meetingLink}" class="mui-button" target="_blank">Meeting Link</a>
+
 <br />
 <p>Jitsi Meet is an open-source software recommended for use by Tang Feng, the Digital Minister of the Executive Yuan. It is adopted by many Taiwanese universities such as National Yang Ming Chiao Tung University and National Taitung University.</p>
 
@@ -2313,38 +2202,29 @@ const MeetingReminderEmail = async (recipient, payload) => {
 };
 
 const UnconfirmedMeetingReminderEmail = async (recipient, payload) => {
+  const calendarUrl = `${
+    payload.role === 'Student'
+      ? STUDENT_CALENDAR_EVENTS_URL(payload.id)
+      : AGENT_CALENDAR_EVENTS_URL(payload.id)
+  }`;
   const subject = `[TODO now] Meeting to confirm reminder ${recipient.firstname} ${recipient.lastname}`;
   const message = `\
 [會議時間確認提醒]
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 <p> 您有一個尚未確認的討論時段與 ${payload.firstname} ${payload.lastname}</p>
-<p> 請上去 <a href="${
-    payload.role === 'Student'
-      ? STUDENT_CALENDAR_EVENTS_URL(payload.id)
-      : AGENT_CALENDAR_EVENTS_URL(payload.id)
-  }">TaiGer Meeting Calendar</a> 確認討論時段是否可以</p>
-<p>若需要改時間，請上去 <a href="${
-    payload.role === 'Student'
-      ? STUDENT_CALENDAR_EVENTS_URL(payload.id)
-      : AGENT_CALENDAR_EVENTS_URL(payload.id)
-  }">TaiGer Meeting Calendar</a> Update 您現在預定的時段至另一個您可以的 office hour 時段。</p>
+<p> 請上去 <a href="${calendarUrl}">TaiGer Meeting Calendar</a> 確認討論時段是否可以</p>
+<a href="${calendarUrl}" class="mui-button" target="_blank">前往確認</a>
+
+<p>若需要改時間，請上去 <a href="${calendarUrl}">TaiGer Meeting Calendar</a> Update 您現在預定的時段至另一個您可以的 office hour 時段。</p>
 
 <p>${SPLIT_LINE}</p>
 [Meeting Reminder]
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
-<p>You have an unconfirmed meeting slot with ${payload.firstname} ${
-    payload.lastname
-  } </p>
-<p>Please go to <a href="${
-    payload.role === 'Student'
-      ? STUDENT_CALENDAR_EVENTS_URL(payload.id)
-      : AGENT_CALENDAR_EVENTS_URL(payload.id)
-  }">TaiGer Meeting Calendar</a> to <b>confirm</b> the meeting time slot.</p>
-<p>If you can not attend the meeting, please go to <a href="${
-    payload.role === 'Student'
-      ? STUDENT_CALENDAR_EVENTS_URL(payload.id)
-      : AGENT_CALENDAR_EVENTS_URL(payload.id)
-  }">TaiGer Meeting Calendar</a> and Update the existing time slot to another time available for you.</p>
+<p>You have an unconfirmed meeting slot with ${payload.firstname} ${payload.lastname} </p>
+<p>Please go to <a href="${calendarUrl}">TaiGer Meeting Calendar</a> to <b>confirm</b> the meeting time slot.</p>
+<a href="${calendarUrl}" class="mui-button" target="_blank">To Confirm</a>
+
+<p>If you can not attend the meeting, please go to <a href="${calendarUrl}">TaiGer Meeting Calendar</a> and Update the existing time slot to another time available for you.</p>
 
 
 `; // should be for admin/editor/agent/student
@@ -2353,30 +2233,23 @@ const UnconfirmedMeetingReminderEmail = async (recipient, payload) => {
 };
 
 const TicketCreatedAgentEmail = async (recipient, payload) => {
-  const subject = `[TODO] Update request for ${payload.program.school}-${payload.program.program_name} by ${payload.student.firstname} ${payload.student.lastname}`;
+  const programName = `${payload.program.school}-${payload.program.program_name}`;
+  const student_name = `${payload.student.firstname} ${payload.student.lastname}`;
+  const subject = `[TODO] Update request for ${programName} by ${student_name}`;
   const message = `\
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-<p><b>${payload.student.firstname} - ${
-    payload.student.lastname
-  }</b> 提供了一個 program ${payload.program.school} 
-
-${payload.program.program_name} Feedback. 請上前查看 <a href="${PROGRAM_URL(
+<p><b>${student_name}</b> 提供了一個 program ${programName} Feedback. 請上前查看 <a href="${PROGRAM_URL(
     payload.program._id.toString()
   )}">Ticket</a> 並 Close ticket。 </p>
 
 <p>${SPLIT_LINE}</p>
 
-<p>${payload.student.firstname} - ${
-    payload.student.lastname
-  } provided a feedback for their program  ${payload.program.school} 
-
-${payload.program.program_name}. 
+<p>${student_name} provided a feedback for their program  ${programName}. 
 
 Please check the <a href="${PROGRAM_URL(
     payload.program._id.toString()
   )}">Ticket</a> and resolve the ticket. </p>
-
 
 `;
 
@@ -2384,13 +2257,15 @@ Please check the <a href="${PROGRAM_URL(
 };
 
 const TicketResolvedStudentEmail = async (recipient, payload) => {
-  const subject = `[Resolved] Request for ${payload.program.school}-${payload.program.program_name} by ${payload.student.firstname} ${payload.student.lastname}`;
+  const programName = `${payload.program.school}-${payload.program.program_name}`;
+  const student_name = `${payload.student.firstname} ${payload.student.lastname}`;
+  const subject = `[Resolved] Request for ${programName} by ${student_name}`;
   const message = `\
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-<p><b>${payload.agent.firstname} - ${payload.agent.lastname}</b> 解決了 ${
-    payload.program.school
-  } ${payload.program.program_name} <a href="${PROGRAM_URL(
+<p><b>${payload.agent.firstname} - ${
+    payload.agent.lastname
+  }</b> 解決了 ${programName} <a href="${PROGRAM_URL(
     payload.program._id.toString()
   )}">Ticket</a> 並 Close ticket。 </p>
 
@@ -2398,14 +2273,11 @@ const TicketResolvedStudentEmail = async (recipient, payload) => {
 
 <p>${payload.agent.firstname} - ${
     payload.agent.lastname
-  } provided a feedback for their program  ${payload.program.school} 
-
-${payload.program.program_name}. 
+  } provided a feedback for their program  ${programName}. 
 
 Please check the <a href="${PROGRAM_URL(
     payload.program._id.toString()
   )}">Ticket</a> and resolve the ticket. </p>
-
 
 `;
 
@@ -2413,28 +2285,25 @@ Please check the <a href="${PROGRAM_URL(
 };
 
 const sendAssignEssayWriterReminderEmail = async (recipient, payload) => {
+  const student_name = `${payload.student_firstname} - ${payload.student_lastname}`;
   const subject = '[DO NOT IGNORE] Assign Essay Writer Reminder';
   const message = `\
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-<p>${payload.student_firstname} - ${
-    payload.student_lastname
-  } has uploaded Essay his/her CVMLRL Center, <b>but she/he did not have any Essay Writer yet.</b></p>
+<p>${student_name} has uploaded Essay his/her CVMLRL Center, <b>but she/he did not have any Essay Writer yet.</b></p>
 
 <p><b>Please assign an Essay Writer to the student <a href="${BASE_DOCUMENT_FOR_AGENT_URL(
     payload.student_id
-  )}">${payload.student_firstname} - ${payload.student_lastname}</a></b></p>
+  )}">${student_name}</a></b></p>
 
 <br />
 <p>${SPLIT_LINE}</p>
 
-<p>${payload.student_firstname} - ${
-    payload.student_lastname
-  } 上傳了一份Essay至他的 CVMLRL Cetner，但他目前並無任何Essay Writer。</p>
+<p>${student_name} 上傳了一份Essay至他的 CVMLRL Cetner，但他目前並無任何Essay Writer。</p>
 
 <p><b>請指派 Essay Writer 給學生 <a href="${BASE_DOCUMENT_FOR_AGENT_URL(
     payload.student_id
-  )}">${payload.student_firstname} - ${payload.student_lastname}</a></b></p>
+  )}">${student_name}</a></b></p>
 <br />
 
 `; // should be for admin/editor/agent/student
@@ -2442,7 +2311,6 @@ const sendAssignEssayWriterReminderEmail = async (recipient, payload) => {
   return sendEmail(recipient, subject, message);
 };
 
-// TODO
 const sendAssignedInterviewTrainerToTrainerEmail = async (
   recipient,
   payload
@@ -2513,9 +2381,11 @@ const sendInterviewConfirmationEmail = async (recipient, payload) => {
 
 <p> 請於該時間準時點擊以下連結： </p>
 
-<p>Jitsi Meet 會議連結網址： <a href="${payload.meeting_link}">${
+<p>Jitsi Meet 會議連結網址：</p>
+<a href="${
     payload.meeting_link
-  }</a></p>
+  }" class="mui-button" target="_blank">Meeting Link</a>
+
 <p>若您是第一次使用Jitsi Meet 會議，建議可以先查看使用說明： <a href="${JITSI_MEET_INSTRUCTIONS_URL}">${JITSI_MEET_INSTRUCTIONS_URL}</a></p>
 <p>若需要改時間，請上去 <a href="${SINGLE_INTERVIEW_THREAD_URL(
     payload.interview_id
@@ -2528,9 +2398,10 @@ const sendInterviewConfirmationEmail = async (recipient, payload) => {
   } confirmed the meeting time.</p>
 <p>Please login to the TaiGer Portal and see the interview training time in your timezone.</p>
 
-<p> Jitsi Meet Meeting link: <a href="${payload.meeting_link}">${
+<p> Jitsi Meet Meeting link</p>
+<a href="${
     payload.meeting_link
-  }</a></p>
+  }" class="mui-button" target="_blank">Meeting Link</a>
 <p>If it is the first time for you to use Jitsi Meet, we recommend you having a look at our brief introduction: <a href="${JITSI_MEET_INSTRUCTIONS_URL}">${JITSI_MEET_INSTRUCTIONS_URL}</a></p>
 <p>If you can not attend the interview training, please go to <a href="${SINGLE_INTERVIEW_THREAD_URL(
     payload.interview_id
@@ -2585,7 +2456,9 @@ const InterviewTrainingReminderEmail = async (recipient, payload) => {
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 <br />
 <p> 請於約定時間(時間請見 TaiGer Portal)該時間準時點擊以下連結： </p>
-<p>Jitsi Meet 會議連結網址： <a href="${payload.event?.meetingLink}">${payload.event?.meetingLink}</a></p>
+<p>Jitsi Meet 會議連結網址：</p>
+<a href="${payload.event?.meetingLink}" class="mui-button" target="_blank">Meeting Link</a>
+
 <p>若需要改時間，請上去 <a href="${INTERVIEW_CENTER_URL}">Interview Center</a> 和面試訓練官更改時段。</p>
 <p>若您是第一次使用Jitsi Meet 會議，建議可以先查看使用說明： <a href="${JITSI_MEET_INSTRUCTIONS_URL}">${JITSI_MEET_INSTRUCTIONS_URL}</a></p>
 <br />
@@ -2596,7 +2469,8 @@ const InterviewTrainingReminderEmail = async (recipient, payload) => {
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 <br />
 <p>Please attend the meeting (see TaiGer Portal for the booked time slot) with the following link： </p>
-<p> Jitsi Meet Meeting link: <a href="${payload.event?.meetingLink}">${payload.event?.meetingLink}</a></p>
+<p> Jitsi Meet Meeting link:</p>
+<a href="${payload.event?.meetingLink}" class="mui-button" target="_blank">Meeting Link</a>
 <p>If you can not attend the meeting, please go to <a href="${INTERVIEW_CENTER_URL}">Interview Center</a> and discuss new training time.</p>
 <p>If you are the first time to use Jitsi Meet, please read our instruction: <a href="${JITSI_MEET_INSTRUCTIONS_URL}">${JITSI_MEET_INSTRUCTIONS_URL}</a></p>
 <br />

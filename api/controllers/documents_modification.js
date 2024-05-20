@@ -1844,6 +1844,7 @@ const SetStatusMessagesThread = asyncHandler(async (req, res) => {
           editor_lastname: user.lastname,
           uploaded_documentname: generaldocs_thread.doc_thread_id.file_type,
           uploaded_updatedAt: new Date(),
+          thread_id: generaldocs_thread.doc_thread_id._id?.toString(),
           isFinalVersion: generaldocs_thread.isFinalVersion
         }
       );
@@ -1869,6 +1870,7 @@ const SetStatusMessagesThread = asyncHandler(async (req, res) => {
               student_id: student3._id.toString(),
               editor_firstname: user.firstname,
               editor_lastname: user.lastname,
+              thread_id: generaldocs_thread.doc_thread_id._id?.toString(),
               uploaded_documentname: generaldocs_thread.doc_thread_id.file_type,
               uploaded_updatedAt: new Date(),
               isFinalVersion: generaldocs_thread.isFinalVersion

@@ -457,6 +457,7 @@ export const translation_zh_TW = {
     'Some of Base Documents are still missing': '你有缺少文件',
     Attention: '注意',
     Instructions: '說明',
+    Requirements: '要求',
     'Do you want to set the application of': '您確定要設定此申請',
     'Do you want to reset the result of the application of':
       '您確定要重設申請結果嗎？',

@@ -461,6 +461,7 @@ export const translation_en = {
       'Some of Base Documents are still missing',
     Attention: 'Attention',
     Instructions: 'Instructions',
+    Requirements: 'Requirements',
     'Do you want to set the application of':
       'Do you want to set the application of',
     'Do you want to reset the result of the application of':

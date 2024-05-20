@@ -99,6 +99,7 @@ export const AGENT_SUPPORT_DOCUMENTS_A = [
 // TODO test
 export const LinkableNewlineText = ({ text }) => {
   const textStyle = {
+    wordBreak: 'break-all',
     whiteSpace: 'pre-line' // Preserve newlines and wrap text
   };
   return (

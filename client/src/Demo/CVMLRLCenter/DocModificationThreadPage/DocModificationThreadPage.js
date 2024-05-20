@@ -917,7 +917,9 @@ function DocModificationThreadPage() {
       <Card sx={{ p: 2 }}>
         <Grid container spacing={2}>
           <Grid item md={widths[0]}>
-            <Typography>Instruction</Typography>
+            <Typography variant="h6" fontWeight="bold">
+              {t('Instructions')}
+            </Typography>
             {template_obj ? (
               <>
                 <Typography variant="body1">
@@ -1027,10 +1029,11 @@ function DocModificationThreadPage() {
                 </Typography>
               </>
             )}
-            <Box>
+            <Box sx={{ display: 'flex' }}>
               <Typography variant="body1" fontWeight="bold">
                 {t('Requirements')}:
               </Typography>
+              &nbsp;
               {is_TaiGer_AdminAgent(user) &&
                 docModificationThreadPageState.thread.program_id && (
                   <Link

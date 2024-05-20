@@ -1294,13 +1294,13 @@ const sendNewApplicationMessageInThreadEmail = async (recipient, msg) => {
 
 <p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
 
-<p>${msg.writer_firstname} ${msg.writer_lastname} 對於 </p>
+<p>${msg.writer_firstname} ${
+    msg.writer_lastname
+  } 對於 <a href="${thread_url}">${student_name} ${task_name}</a> 更新了訊息，於 ${
+    msg.uploaded_updatedAt
+  } 。</p>
 
-<p>${student_name} ${task_name}</p>
-
-<p>更新了訊息，於 ${msg.uploaded_updatedAt} 。</p>
-
-<p>請至 TaiGer Portal <a href="${thread_url}">${student_name} ${task_name}</a> 並查看新訊息。 </p>
+<a href="${`${thread_url}`}" class="mui-button" target="_blank">查看訊息</a>
 
 <br />
 
@@ -1308,14 +1308,13 @@ const sendNewApplicationMessageInThreadEmail = async (recipient, msg) => {
 
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-<p>${msg.writer_firstname} ${msg.writer_lastname} has a new update for </p>
+<p>${msg.writer_firstname} ${
+    msg.writer_lastname
+  } has a new update for <a href="${thread_url}">${student_name} ${task_name}</a> on ${
+    msg.uploaded_updatedAt
+  }.</p>
 
-<p>${student_name} ${task_name}</p>
-
-<p>on ${msg.uploaded_updatedAt}.</p>
-
-<p>Please go to TaiGer Portal <a href="${thread_url}">${student_name} ${task_name}</a> and check the updates. </p>
-
+<a href="${`${thread_url}`}" class="mui-button" target="_blank">See Message</a>
 
 `;
 
@@ -1447,13 +1446,16 @@ const sendSetAsFinalGeneralFileForStudentEmail = async (recipient, msg) => {
 
 <p>嗨 ${student_name},</p>
 
-<p>${msg.editor_firstname} ${msg.editor_lastname} 將 ${msg.uploaded_documentname} 列為已完成
+<p>${msg.editor_firstname} ${msg.editor_lastname} 將 ${
+      msg.uploaded_documentname
+    } 列為已完成
 
 於 ${msg.uploaded_updatedAt} 。</p>
 
 <p>此文件已可以拿來作申請使用。 </p>
 
-<p>請至 <a href="${threadUrl}">${student_name} ${msg.uploaded_documentname}</a> 查看細節</p>
+<a href="${`${threadUrl}`}" class="mui-button" target="_blank">查看細節</a>
+
 
 <p>如果您有任何問題，請聯絡您的文件編輯 Editor。</p>
 
@@ -1463,13 +1465,15 @@ const sendSetAsFinalGeneralFileForStudentEmail = async (recipient, msg) => {
 
 <p>Hi ${student_name},</p>
 
-<p>your editor ${msg.editor_firstname} ${msg.editor_lastname} have finalized ${msg.uploaded_documentname} 
+<p>your editor ${msg.editor_firstname} ${
+      msg.editor_lastname
+    } have finalized <a href="${threadUrl}">${msg.uploaded_documentname}</a> 
 
 on ${msg.uploaded_updatedAt} for you.</p>
 
 <p>This document is ready for the application. </p>
 
-<p>Please go to <a href="${threadUrl}">${student_name} ${msg.uploaded_documentname}</a> for more details.</p>
+<a href="${`${threadUrl}`}" class="mui-button" target="_blank">See details</a>
 
 <p>If you have any question, feel free to contact your editor.</p>
 
@@ -1478,17 +1482,17 @@ on ${msg.uploaded_updatedAt} for you.</p>
 
     sendEmail(recipient, subject, message);
   } else {
-    const subject = `您的文件 ${msg.uploaded_documentname} 未完成 / Your document ${msg.uploaded_documentname} is not finished!`;
+    const subject = `[Reopen] 您的文件 ${msg.uploaded_documentname} 未完成 / Your document ${msg.uploaded_documentname} is not finished!`;
     const message = `\
 <p>${ENGLISH_BELOW}</p>
 
 <p>嗨 ${student_name},</p>
 
-<p>${msg.editor_firstname} ${msg.editor_lastname} 標記 ${msg.uploaded_documentname} 
+<p>${msg.editor_firstname} ${msg.editor_lastname} 標記 <a href="${threadUrl}">${
+      msg.uploaded_documentname
+    }</a> 為未完成。 </p>
 
-為未完成。 </p>
-
-<p>請至 <a href="${threadUrl}">${student_name} ${msg.uploaded_documentname}</a> 查看細節</p>
+<a href="${`${threadUrl}`}" class="mui-button" target="_blank">查看細節</a>
 
 <p>如果您有任何問題，請聯絡您的文件編輯 Editor。</p>
 
@@ -1498,11 +1502,11 @@ on ${msg.uploaded_updatedAt} for you.</p>
 
 <p>Hi ${student_name},</p>
 
-<p>${msg.editor_firstname} ${msg.editor_lastname} set ${msg.uploaded_documentname} 
+<p>${msg.editor_firstname} ${msg.editor_lastname} set <a href="${threadUrl}">${
+      msg.uploaded_documentname
+    }</a> as not finished.</p>
 
-as not finished.</p>
-
-<p>Please go to <a href="${threadUrl}">${student_name} ${msg.uploaded_documentname}</a> for more details.</p>
+<a href="${`${threadUrl}`}" class="mui-button" target="_blank">See details</a>
 
 <p>If you have any question, feel free to contact your editor.</p>
 
@@ -1533,6 +1537,8 @@ const sendSetAsFinalProgramSpecificFileForStudentEmail = async (
 
 <p>此份最終文件可以拿來作為申請。 </p>
 
+<a href="${`${THREAD_URL}/${msg.thread_id}`}" class="mui-button" target="_blank">查看討論串</a>
+
 <p>如果您有任何問題，請聯絡您的文件編輯 Editor。</p>
 
 <br />
@@ -1549,6 +1555,8 @@ on ${msg.uploaded_updatedAt} for you.</p>
 
 This document is ready for the application. 
 
+<a href="${`${THREAD_URL}/${msg.thread_id}`}" class="mui-button" target="_blank">Check thread</a>
+
 <p>If you have any question, feel free to contact your editor.</p>
 
 
@@ -1564,11 +1572,11 @@ This document is ready for the application.
 
 <p>${msg.editor_firstname} ${msg.editor_lastname} 將
 
-${msg.school} - ${msg.program_name} ${msg.uploaded_documentname} 
+<a href="${`${THREAD_URL}/${msg.thread_id}`}">${thread_name}</a>
 
 設為未完成。</p>
 
-<p>請至 <a href="${CVMLRL_CENTER_URL}">CV ML RL Center</a> 查看細節</p>
+<a href="${`${THREAD_URL}/${msg.thread_id}`}" class="mui-button" target="_blank">查看討論串</a>
 
 <p>如果您有任何問題，請聯絡您的文件編輯 Editor。</p>
 
@@ -1580,11 +1588,11 @@ ${msg.school} - ${msg.program_name} ${msg.uploaded_documentname}
 
 <p>your editor ${msg.editor_firstname} ${msg.editor_lastname} set
 
-${msg.school} - ${msg.program_name} ${msg.uploaded_documentname} 
+<a href="${`${THREAD_URL}/${msg.thread_id}`}">${thread_name}</a>
 
 as not finished.</p>
 
-<p>Please go to <a href="${CVMLRL_CENTER_URL}">CV ML RL Center</a> for more details.</p>
+<a href="${`${THREAD_URL}/${msg.thread_id}`}" class="mui-button" target="_blank">Check thread</a>
 
 <p>If you have any question, feel free to contact your editor.</p>
 
@@ -1657,9 +1665,7 @@ ${doc_name} 為未完成於 ${msg.uploaded_updatedAt}
 
 <p>請再次確認此文件，並確認是否可以結案此申請. </p>
 
-<p>請至 <a href="${`${THREAD_URL}/${msg.thread_id}`}">${msg.school} - ${
-      msg.program_name
-    } ${msg.uploaded_documentname}</a> 查看細節。</p>
+<a href="${`${THREAD_URL}/${msg.thread_id}`}" class="mui-button" target="_blank">查看細節</a>
 
 <br />
 
@@ -1669,15 +1675,13 @@ ${doc_name} 為未完成於 ${msg.uploaded_updatedAt}
 
 <p>${msg.editor_firstname} ${msg.editor_lastname} set
 
-${doc_name} as not finished on ${
+<a href="${`${THREAD_URL}/${msg.thread_id}`}">${doc_name}</a> as not finished on ${
       msg.uploaded_updatedAt
     } for ${student_name}.</p>
 
 <p>Double check this document and finalize the application if applicable. </p>
 
-<p>Please go to <a href="${`${THREAD_URL}/${msg.thread_id}`}">${msg.school} - ${
-      msg.program_name
-    } ${msg.uploaded_documentname}</a> for more details.</p>
+<a href="${`${THREAD_URL}/${msg.thread_id}`}" class="mui-button" target="_blank">Check details</a>
 
 `;
 
@@ -2488,6 +2492,9 @@ const InterviewTrainingReminderEmail = async (recipient, payload) => {
 const sendSetAsFinalInterviewEmail = async (recipient, msg) => {
   const user_name = `${msg.user.firstname} ${msg.user.lastname}`;
   const student_name = `${msg.interview.student_id.firstname} ${msg.interview.student_id.lastname}`;
+  const interviewUrl = `${SINGLE_INTERVIEW_THREAD_URL(
+    msg.interview._id.toString()
+  )}`;
   const interview_name = `Interview: ${student_name} ${msg.interview.program_id.school} ${msg.interview.program_id.program_name} ${msg.interview.program_id.degree} `;
   if (msg.isClosed) {
     const subject = `[Close] ${interview_name} is finished!`;
@@ -2498,9 +2505,7 @@ const sendSetAsFinalInterviewEmail = async (recipient, msg) => {
 
 <p>${user_name} 對於面試 <b>${interview_name}</b> 為完成。</p>
 
-<p>請至 <a href="${SINGLE_INTERVIEW_THREAD_URL(
-      msg.interview._id.toString()
-    )}">Interview Center</a> 查看細節</p>
+<p>請至 <a href="${interviewUrl}">Interview Center</a> 查看細節</p>
 
 <p>如果您有任何問題，請聯絡您的面試訓練官。</p>
 
@@ -2514,9 +2519,7 @@ const sendSetAsFinalInterviewEmail = async (recipient, msg) => {
 
 <p>for student ${student_name} </p>
 
-<p>Please go to <a href="${SINGLE_INTERVIEW_THREAD_URL(
-      msg.interview._id.toString()
-    )}">Interview Center</a> for more details.</p>
+<p>Please go to <a href="${interviewUrl}">Interview Center</a> for more details.</p>
 
 <p>If you have any question, feel free to contact your interview trainer.</p>
 
@@ -2532,9 +2535,7 @@ const sendSetAsFinalInterviewEmail = async (recipient, msg) => {
 
 ${user_name} 標示 ${interview_name} 為未完成。
 
-<p>請至 <a href="${SINGLE_INTERVIEW_THREAD_URL(
-      msg.interview._id.toString()
-    )}">Interview Center</a> 查看細節。</p>
+<p>請至 <a href="${interviewUrl}">Interview Center</a> 查看細節。</p>
 
 <p>如果您有任何問題，請聯絡您的面試訓練官。</p>
 
@@ -2546,9 +2547,7 @@ ${user_name} 標示 ${interview_name} 為未完成。
 
 <p>${user_name} set ${interview_name} as not finished.</p>
 
-<p>Please go to <a href="${SINGLE_INTERVIEW_THREAD_URL(
-      msg.interview._id.toString()
-    )}">Interview Center</a> for more details.</p>
+<p>Please go to <a href="${interviewUrl}">Interview Center</a> for more details.</p>
 
 <p>If you have any question, feel free to contact your interview trainer.</p>
 

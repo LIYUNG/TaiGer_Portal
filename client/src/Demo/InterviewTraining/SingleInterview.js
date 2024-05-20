@@ -46,6 +46,7 @@ function SingleInterview() {
     SetDeleteDocModel: false,
     SetAsFinalFileModel: false,
     isDeleteSuccessful: false,
+    isDeleting: false,
     interview: {},
     editorState: null,
     isEdit: true,
@@ -292,6 +293,10 @@ function SingleInterview() {
   };
 
   const handleDeleteInterview = () => {
+    setSingleInterviewState((prevState) => ({
+      ...prevState,
+      isDeleting: true
+    }));
     deleteInterview(singleInterviewState.interview._id.toString()).then(
       (resp) => {
         const { success } = resp.data;
@@ -303,6 +308,7 @@ function SingleInterview() {
             SetDeleteDocModel: false,
             isEdit: false,
             isDeleteSuccessful: true,
+            isDeleting: false,
             interview: null,
             isLoaded: true,
             res_modal_status: status
@@ -522,14 +528,11 @@ function SingleInterview() {
           Do you want to set{' '}
           <b>
             Interview for {interview?.student_id.firstname}{' '}
-            {interview?.student_id.lastname}{' '}
-            {interview?.program_id.school}{' '}
-            {interview?.program_id.program_name}{' '}
-            {interview?.program_id.degree}{' '}
+            {interview?.student_id.lastname} {interview?.program_id.school}{' '}
+            {interview?.program_id.program_name} {interview?.program_id.degree}{' '}
             {interview?.program_id.semester}
           </b>{' '}
-          as{' '}
-          <b>{interview?.isClosed ? 'open' : 'closed'}</b>
+          as <b>{interview?.isClosed ? 'open' : 'closed'}</b>
           ?
           <br />
           <br />
@@ -566,7 +569,7 @@ function SingleInterview() {
         <b>{singleInterviewState.interview_name_toBeDelete}</b>?
         <br />
         <Button
-          disabled={!isLoaded}
+          disabled={!isLoaded || singleInterviewState.isDeleting}
           variant="contained"
           color="primary"
           onClick={handleDeleteInterview}

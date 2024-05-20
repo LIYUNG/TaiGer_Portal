@@ -55,6 +55,7 @@ function AddInterview() {
     interview_name_toBeDelete: '',
     program_id: '',
     interviewData: {},
+    isSubmitting: false,
     category: '',
     SetDeleteDocModel: false,
     isAdd: false,
@@ -197,6 +198,10 @@ function AddInterview() {
     const message = JSON.stringify(editorState);
     const interviewData_temp = interviewTrainingState.interviewData;
     interviewData_temp.interview_description = message;
+    setAddInterviewState((prevState) => ({
+      ...prevState,
+      isSubmitting: true
+    }));
     createInterview(
       interviewTrainingState.interviewData.program_id,
       user._id.toString(),
@@ -212,6 +217,7 @@ function AddInterview() {
           setAddInterviewState((prevState) => ({
             ...prevState,
             isLoaded: true,
+            isSubmitting: false,
             res_modal_message: message,
             res_modal_status: status
           }));
@@ -459,7 +465,8 @@ function AddInterview() {
             !interviewTrainingState.interviewData.program_id ||
             interviewTrainingState.interviewData.program_id === '' ||
             !interviewTrainingState.interviewData.interview_date ||
-            interviewTrainingState.interviewData.interview_date === ''
+            interviewTrainingState.interviewData.interview_date === '' ||
+            interviewTrainingState.isSubmitting
           }
           editorState={interviewTrainingState.editorState}
           handleClickSave={handleClickSave}

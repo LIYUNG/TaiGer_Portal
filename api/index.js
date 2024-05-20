@@ -32,7 +32,6 @@ const logger = require('./services/logger');
 const {
   TasksReminderEmails,
   UrgentTasksReminderEmails,
-  MongoDBDataBaseDailySnapshot,
   AssignEditorTasksReminderEmails,
   NextSemesterCourseSelectionReminderEmails,
   UpdateStatisticsData,
@@ -40,6 +39,7 @@ const {
   UnconfirmedMeetingDailyReminderChecker,
   NoInterviewTrainerOrTrainingDateDailyReminderChecker,
 } = require('./utils/utils_function');
+const { MongoDBDataBaseDailySnapshot } = require('./utils/jobs');
 // const { UserS3GarbageCollector } = require('./controllers/users');
 
 process.on('SIGINT', () => {

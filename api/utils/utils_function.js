@@ -1,11 +1,20 @@
-/* eslint-disable no-await-in-loop */
 const async = require('async');
 const path = require('path');
-const { ErrorResponse } = require('../common/errors');
-const { asyncHandler } = require('../middlewares/error-handler');
 const { Agent, Student, Editor, User } = require('../models/User');
 const { Documentthread } = require('../models/Documentthread');
-const Documentation = require('../models/Documentation');
+
+const {
+  sendAssignEditorReminderEmail,
+  MeetingReminderEmail,
+  UnconfirmedMeetingReminderEmail,
+  sendNoTrainerInterviewRequestsReminderEmail,
+  InterviewTrainingReminderEmail
+} = require('../services/email');
+const Permission = require('../models/Permission');
+const { s3 } = require('../aws/index');
+const Event = require('../models/Event');
+const { Interview } = require('../models/Interview');
+
 const {
   StudentTasksReminderEmail,
   AgentTasksReminderEmail,
@@ -27,28 +36,6 @@ const {
   isNotArchiv,
   needUpdateCourseSelection
 } = require('../constants');
-
-const { AWS_S3_MONGODB_BACKUP_SNAPSHOT } = require('../config');
-const { Program } = require('../models/Program');
-const { Template } = require('../models/Template');
-const Expense = require('../models/Expense');
-const Course = require('../models/Course');
-const { Basedocumentationslink } = require('../models/Basedocumentationslink');
-const Docspage = require('../models/Docspage');
-const Internaldoc = require('../models/Internaldoc');
-const Note = require('../models/Note');
-const {
-  sendAssignEditorReminderEmail,
-  MeetingReminderEmail,
-  UnconfirmedMeetingReminderEmail,
-  sendNoTrainerInterviewRequestsReminderEmail,
-  InterviewTrainingReminderEmail
-} = require('../services/email');
-const Permission = require('../models/Permission');
-const { Communication } = require('../models/Communication');
-const { s3 } = require('../aws/index');
-const Event = require('../models/Event');
-const { Interview } = require('../models/Interview');
 
 const emptyS3Directory = async (bucket, dir) => {
   const listParams = {
@@ -269,7 +256,13 @@ const users_transformer = (users) => {
             updatedAt: thread.updatedAt && { $date: thread.updatedAt },
             createdAt: thread.createdAt && { $date: thread.createdAt }
           })
-        )
+        ),
+        admission_letter: application.admission_letter && {
+          ...application.admission_letter,
+          updatedAt: application.admission_letter?.updatedAt && {
+            $date: application.admission_letter?.updatedAt
+          }
+        }
       })),
     generaldocs_threads:
       user.generaldocs_threads &&
@@ -286,6 +279,12 @@ const users_transformer = (users) => {
         ...prof,
         _id: { $oid: prof._id.toString() },
         updatedAt: prof.updatedAt && { $date: prof.updatedAt }
+      })),
+    attributes:
+      user.attributes &&
+      user.attributes.map((prof) => ({
+        ...prof,
+        _id: { $oid: prof._id.toString() }
       }))
   }));
   return transformedDocuments;
@@ -386,6 +385,33 @@ const documentthreads_transformer = (documentthreads) => {
     program_id: documentthread.program_id && {
       $oid: documentthread.program_id.toString()
     },
+    pin_by_user_id:
+      documentthread.pin_by_user_id &&
+      documentthread.pin_by_user_id.map((pin_user_id) => ({
+        ...pin_user_id,
+        _id: {
+          $oid: pin_user_id._id?.toString()
+        }
+      })),
+    outsourced_user_id:
+      documentthread.outsourced_user_id &&
+      documentthread.outsourced_user_id.map((outsource_user_id) => ({
+        ...outsource_user_id,
+        $oid: outsource_user_id._id?.toString()
+      })),
+    isOriginAuthorDeclarationConfirmedByStudentTimestamp:
+      documentthread.isOriginAuthorDeclarationConfirmedByStudentTimestamp && {
+        $date:
+          documentthread.isOriginAuthorDeclarationConfirmedByStudentTimestamp
+      },
+    flag_by_user_id:
+      documentthread.flag_by_user_id &&
+      documentthread.flag_by_user_id.map((flag_user_id) => ({
+        ...flag_user_id,
+        _id: {
+          $oid: flag_user_id._id?.toString()
+        }
+      })),
     messages:
       documentthread.messages &&
       documentthread.messages.map((message) => ({
@@ -415,115 +441,6 @@ const documentthreads_transformer = (documentthreads) => {
   return transformedDocuments;
 };
 // Daily called.
-const MongoDBDataBaseDailySnapshot = asyncHandler(async () => {
-  logger.info('database snapshot');
-  const data_category = [
-    'users',
-    'courses',
-    'communications',
-    'basedocumentationslinks',
-    'docspages',
-    'events',
-    'programs',
-    'documentthreads',
-    'documentations',
-    'internaldocs',
-    'notes',
-    'permissions',
-    'templates'
-    // 'expenses'
-  ];
-  const events_raw = await Event.find().lean();
-  const users_raw = await User.find()
-    .lean()
-    .select(
-      '+password +applications.portal_credentials.application_portal_a +applications.portal_credentials.application_portal_b'
-    );
-  const courses_raw = await Course.find().lean();
-  const basedocumentationslinks_raw =
-    await Basedocumentationslink.find().lean();
-  const communications_raw = await Communication.find().lean();
-  const docspages_raw = await Docspage.find().lean();
-  // try {
-  //   const programs = await Program.find();
-  //   console.log('Programs:', programs);
-  // } catch (error) {
-  //   console.error('Error fetching programs:', error);
-  // }
-  const programs_raw = await Program?.find().lean(); // Why this .find() of undefined?
-  const documentthreads_raw = await Documentthread.find().lean();
-  const documentations_raw = await Documentation.find().lean();
-  const internaldocs_raw = await Internaldoc.find().lean();
-  const notes_raw = await Note.find().lean();
-  const permissions_raw = await Permission.find().lean();
-  const templates_raw = await Template.find().lean();
-  const expenses_raw = await Expense.find().lean();
-
-  const events = events_transformer(events_raw);
-  const users = users_transformer(users_raw);
-  const communications = communications_transformer(communications_raw);
-  const courses = courses_transformer(courses_raw);
-  const basedocumentationslinks = basedocumentationslinks_transformer(
-    basedocumentationslinks_raw
-  );
-  const docspages = docspages_transformer(docspages_raw);
-  const programs = programs_transformer(programs_raw);
-  const documentthreads = documentthreads_transformer(documentthreads_raw);
-  const documentations = docspages_transformer(documentations_raw);
-  const internaldocs = docspages_transformer(internaldocs_raw);
-  const notes = notes_transformer(notes_raw);
-  const permissions = permissions_transformer(permissions_raw);
-  const templates = docspages_transformer(templates_raw);
-  const data_json = {
-    events,
-    users,
-    courses,
-    communications,
-    basedocumentationslinks,
-    docspages,
-    programs,
-    documentthreads,
-    documentations,
-    internaldocs,
-    notes,
-    permissions,
-    templates
-    // expenses
-  };
-
-  const currentDateTime = new Date();
-
-  const year = currentDateTime.getUTCFullYear();
-  const month = currentDateTime.getUTCMonth() + 1; // Months are zero-based, so we add 1
-  const day = currentDateTime.getUTCDate();
-  const hours = currentDateTime.getUTCHours();
-  const minutes = currentDateTime.getUTCMinutes();
-  const seconds = currentDateTime.getUTCSeconds();
-
-  // Upload JSON data to S3
-  for (let i = 0; i < data_category.length; i += 1) {
-    // Replace `jsonObject` with your actual JSON data
-    const jsonObject = data_json[data_category[i]];
-
-    // Convert JSON to string
-    const jsonString = JSON.stringify(jsonObject);
-    s3.putObject(
-      {
-        Bucket: `${AWS_S3_MONGODB_BACKUP_SNAPSHOT}/${year}-${month}-${day}/${hours}-${minutes}-${seconds}`,
-        Key: `${data_category[i]}.json`,
-        Body: jsonString,
-        ContentType: 'application/json'
-      },
-      (error, data) => {
-        if (error) {
-          logger.error(`Error uploading ${data_category[i]}.json:`, error);
-        } else {
-          logger.info(`${data_category[i]}.json uploaded successfully`);
-        }
-      }
-    );
-  }
-});
 
 const UrgentTasksReminderEmails_Student_core = async () => {
   // Only inform active student
@@ -1290,7 +1207,16 @@ const NoInterviewTrainerOrTrainingDateDailyReminderChecker = async () => {
 module.exports = {
   emptyS3Directory,
   TasksReminderEmails,
-  MongoDBDataBaseDailySnapshot,
+  events_transformer,
+  users_transformer,
+  communications_transformer,
+  courses_transformer,
+  notes_transformer,
+  permissions_transformer,
+  basedocumentationslinks_transformer,
+  docspages_transformer,
+  programs_transformer,
+  documentthreads_transformer,
   AssignEditorTasksReminderEmails,
   UrgentTasksReminderEmails,
   NextSemesterCourseSelectionReminderEmails,

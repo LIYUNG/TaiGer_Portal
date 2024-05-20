@@ -17,6 +17,7 @@ import {
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { ImCheckmark } from 'react-icons/im';
 import { useTranslation } from 'react-i18next';
+import LaunchIcon from '@mui/icons-material/Launch';
 
 import ManualFiles from './ManualFiles';
 import {
@@ -29,7 +30,6 @@ import {
 import { spinner_style2 } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
-
 import {
   deleteGenralFileThread,
   deleteProgramSpecificFileThread,
@@ -41,7 +41,6 @@ import {
 import DEMO from '../../store/constant';
 import Loading from '../../components/Loading/Loading';
 import ModalNew from '../../components/Modal';
-import { AiOutlineLink } from 'react-icons/ai';
 
 function EditorDocsProgress(props) {
   const { t } = useTranslation();
@@ -576,29 +575,32 @@ function EditorDocsProgress(props) {
             </Typography>
           </Grid>
           <Grid item xs={8} md={8}>
-            <Typography
-              variant="body1"
-              color={
-                isProgramDecided(application)
-                  ? isProgramSubmitted(application)
-                    ? 'success.light'
-                    : 'error.main'
-                  : 'grey'
-              }
-              sx={{ mr: 2 }}
-            >
-              <b>
-                {application.programId.school} - {application.programId.degree}{' '}
-                - {application.programId.program_name}
-              </b>
-            </Typography>
-            <Link
-              to={`${DEMO.SINGLE_PROGRAM_LINK(application.programId._id)}`}
-              component={LinkDom}
-              target="_blank"
-            >
-              <AiOutlineLink />
-            </Link>
+            <Box sx={{ display: 'flex' }}>
+              <Typography
+                variant="body1"
+                color={
+                  isProgramDecided(application)
+                    ? isProgramSubmitted(application)
+                      ? 'success.light'
+                      : 'error.main'
+                    : 'grey'
+                }
+                sx={{ mr: 2 }}
+              >
+                <b>
+                  {application.programId.school} -{' '}
+                  {application.programId.degree} -{' '}
+                  {application.programId.program_name}
+                </b>
+              </Typography>
+              <Link
+                to={`${DEMO.SINGLE_PROGRAM_LINK(application.programId._id)}`}
+                component={LinkDom}
+                target="_blank"
+              >
+                <LaunchIcon />
+              </Link>
+            </Box>
           </Grid>
           <Grid item xs={2} md={2}>
             <Typography>

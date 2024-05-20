@@ -13,7 +13,7 @@ import { useAuth } from '../../components/AuthProvider';
 import { appConfig } from '../../config';
 import Loading from '../../components/Loading/Loading';
 import { MuiDataGrid } from '../../components/MuiDataGrid';
-import { convertDate } from '../Utils/contants';
+import { convertDate, showTimezoneOffset } from '../Utils/contants';
 
 function InterviewTraining() {
   const { user } = useAuth();
@@ -184,9 +184,9 @@ function InterviewTraining() {
     },
     {
       field: 'event_id',
-      headerName: `Training Time (${
+      headerName: `${t('Training Time', { ns: 'interviews' })} (${
         Intl.DateTimeFormat().resolvedOptions().timeZone
-      })`,
+      } ${showTimezoneOffset()})`,
       align: 'left',
       headerAlign: 'left',
       width: 250,
@@ -198,7 +198,7 @@ function InterviewTraining() {
     },
     {
       field: 'interview_date',
-      headerName: 'Interview Time',
+      headerName: t('Interview Time'),
       align: 'left',
       headerAlign: 'left',
       width: 100,
@@ -287,7 +287,9 @@ function InterviewTraining() {
           {appConfig.companyName}
         </Link>
         <Typography color="text.primary">
-          {is_TaiGer_role(user) ? 'All Interviews' : 'My Interviews'}
+          {is_TaiGer_role(user)
+            ? t('All Interviews', { ns: 'interviews' })
+            : t('My Interviews', { ns: 'interviews' })}
         </Typography>
       </Breadcrumbs>
       {!is_TaiGer_role(user) &&

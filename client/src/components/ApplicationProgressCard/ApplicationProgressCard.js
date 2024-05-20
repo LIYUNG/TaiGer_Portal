@@ -33,6 +33,7 @@ import {
 import ModalNew from '../Modal';
 import { BASE_URL } from '../../api/request';
 import { convertDate } from '../../Demo/Utils/contants';
+import { appConfig } from '../../config';
 
 const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
   height: 10,
@@ -238,8 +239,9 @@ export default function ApplicationProgressCard(props) {
                   : t('Add Rejection Letter', { ns: 'admissions' })}
               </Button>
             )}
-          {application_deadline_calculator(props.student, application) ===
-            'CLOSE' &&
+          {appConfig.interviewEnable &&
+            application_deadline_calculator(props.student, application) ===
+              'CLOSE' &&
             application.admission === '-' && (
               <>
                 {!application.interview_status && (
@@ -253,14 +255,10 @@ export default function ApplicationProgressCard(props) {
                       <Button
                         color="primary"
                         variant="contained"
-                        disabled={
-                          props.student._id.toString() !==
-                          '6366287a94358b085b0fccf7'
-                        }
                         size="small"
                         onClick={() => navigate(`${DEMO.INTERVIEW_ADD_LINK}`)}
                       >
-                        {t('Coming soon', { ns: 'common' })}
+                        {t('Training Request', { ns: 'interviews' })}
                       </Button>
                     </Typography>
                   </>

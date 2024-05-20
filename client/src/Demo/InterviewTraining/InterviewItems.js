@@ -237,7 +237,7 @@ function InterviewItems(props) {
         <AccordionDetails>
           <Grid container spacing={2}>
             <Grid item xs={12} md={4}>
-              <Typography variant="body1">
+              <Typography variant="body1" fontWeight="bold">
                 {t('Student', { ns: 'common' })}:{' '}
               </Typography>
               <Link
@@ -250,7 +250,7 @@ function InterviewItems(props) {
               >
                 <Typography fontWeight="bold">{` ${interview.student_id.firstname} - ${interview.student_id.lastname}`}</Typography>
               </Link>
-              <Typography variant="body1" sx={{ mt: 2 }}>
+              <Typography variant="body1" fontWeight="bold" sx={{ mt: 2 }}>
                 {t('Trainer')}
               </Typography>{' '}
               {interview.trainer_id && interview.trainer_id?.length !== 0 ? (
@@ -290,8 +290,8 @@ function InterviewItems(props) {
                   )}
                 </>
               )}
-              <Typography variant="body1" sx={{ mt: 2 }}>
-                {t('Interview Training Time')}:&nbsp;
+              <Typography variant="body1" fontWeight="bold" sx={{ mt: 2 }}>
+                {t('Interview Training Time', { ns: 'interviews' })}:&nbsp;
               </Typography>
               {is_TaiGer_role(user) && (
                 <>
@@ -338,7 +338,7 @@ function InterviewItems(props) {
                 ) : (
                   <Typography variant="body1">To be announced</Typography>
                 ))}
-              <Typography variant="body1" sx={{ mt: 2 }}>
+              <Typography variant="body1" fontWeight="bold" sx={{ mt: 2 }}>
                 {t('Interview Training Meeting Link', { ns: 'interviews' })}
                 :&nbsp;
               </Typography>
@@ -356,7 +356,7 @@ function InterviewItems(props) {
               )}
             </Grid>
             <Grid item xs={12} md={8}>
-              <Typography variant="body1">
+              <Typography variant="body1" fontWeight="bold">
                 {t('Interview Program')}:&nbsp;
               </Typography>
               <Link
@@ -369,19 +369,23 @@ function InterviewItems(props) {
               >
                 {`${interview.program_id.school} - ${interview.program_id.program_name} ${interview.program_id.degree}`}
               </Link>
-              <Typography variant="body1" sx={{ mt: 2 }}>
-                {t('Interviewer')}:&nbsp;
+              <Typography variant="body1" fontWeight="bold" sx={{ mt: 2 }}>
+                {t('Interviewer', { ns: 'interviews' })}:&nbsp;
+              </Typography>
+              <Typography variant="body1">
                 {`${interview.interviewer}`}
               </Typography>
-              <Typography variant="body1" sx={{ mt: 2 }}>
+              <Typography variant="body1" fontWeight="bold" sx={{ mt: 2 }}>
                 {t('Interview Time')}:&nbsp;
+              </Typography>
+              <Typography variant="body1">
                 {`${convertDate(interview.interview_date)} ${NoonNightLabel(
                   utcTime
                 )} ${
                   Intl.DateTimeFormat().resolvedOptions().timeZone
                 } ${showTimezoneOffset()}`}
               </Typography>
-              <Typography variant="body1" sx={{ mt: 2 }}>
+              <Typography variant="body1" fontWeight="bold" sx={{ mt: 2 }}>
                 {t('Description', { ns: 'common' })}
               </Typography>{' '}
               <NotesEditor

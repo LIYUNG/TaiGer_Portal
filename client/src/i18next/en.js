@@ -15,6 +15,7 @@ export const translation_en = {
     Activate: 'Activate',
     Activated: 'Activated',
     'Application Results': 'Application Results',
+    'Action required': 'Action required',
     'Target Degree': 'Target Degree',
     'Aged days': 'Aged days',
     'Document name': 'Document name',
@@ -35,6 +36,7 @@ export const translation_en = {
     Program: 'Program',
     Programs: 'Programs',
     'Days left': 'Days left',
+    'First-/ Last Name': 'First-/ Last Name',
     Deadline: 'Deadline',
     Target: 'Target',
     'First-, Last Name': 'First-, Last Name',
@@ -380,15 +382,24 @@ export const translation_en = {
       'Please go to the Uni-Assist section, follow the instructions to complete the account registration, upload documents, and apply for the VPD (Vorprüfungsdokumentation).'
   },
   interviews: {
-    'All Interviews': 'All Interviews',
+    Interviewer: 'Interviewer',
+    'Interview Training Time': 'Interview Training Time',
+    'Training Time': 'Training Time',
     'My Interviews': 'My Interviews',
+    'All Interviews': 'All Interviews',
+    'Training Request': 'Training Request',
     'Create Interview Training': 'Create Interview Training',
     'Interview duration': 'Interview duration',
     'Interview program': 'Interview program',
     'Interview Training Meeting Link': 'Interview Training Meeting Link',
-    'Provide Interview Information': 'Provide Interview Information',
-    'Please provide interview information (invitation email, reading assignment, etc.)':
-      'Please provide interview information (invitation email, reading assignment, etc.)'
+    'Please provide received interview information':
+      'Please provide received interview information',
+    'Please provide interview information (invitation email, reading assignment, etc.) so your interviewer trainer can prepare the training for you.':
+      'Please provide interview information (invitation email, reading assignment, etc.) so your interviewer trainer can prepare the training for you.',
+    'If you did not receive an interview invitation from the university. Please do not request the training.':
+      'If you did not receive an interview invitation from the university. Please do not request the training.',
+    'If you have previously practiced interviews with our interview training officer, please do not request another interview training unless there are special requirements for the new interview (such as reading specific articles or books).':
+      'If you have previously practiced interviews with our interview training officer, please do not request another interview training unless there are special requirements for the new interview (such as reading specific articles or books).'
   },
   uniassist: {
     'All document uploaded to Uni-Assist and paid, waiting for VPD':
@@ -408,11 +419,9 @@ export const translation_en = {
     'Other wish': 'Other wish'
   },
   translation: {
-    'Interview Training Time': 'Interview Training Time',
     'Interview Time': 'Interview Time',
     'Your timezone local time': 'Your timezone local time',
     'Interview Program': 'Interview Program',
-    Interviewer: 'Interviewer',
     'Active Student List': 'Active Student List',
     'Programs Update Status': 'Programs Update Status',
     'Decided Programs Update Status': 'Decided Programs Update Status',

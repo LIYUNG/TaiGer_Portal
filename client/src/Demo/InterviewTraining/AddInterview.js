@@ -334,7 +334,21 @@ function AddInterview() {
       </Button>
       <Card sx={{ p: 2 }}>
         <Typography variant="h6">
-          {t('Provide Interview Information', { ns: 'interviews' })}
+          {t('Please provide received interview information', {
+            ns: 'interviews'
+          })}
+        </Typography>
+        <Typography variant="body1">
+          {t(
+            'If you did not receive an interview invitation from the university. Please do not request the training.',
+            { ns: 'interviews' }
+          )}
+        </Typography>
+        <Typography variant="body1">
+          {t(
+            'If you have previously practiced interviews with our interview training officer, please do not request another interview training unless there are special requirements for the new interview (such as reading specific articles or books).',
+            { ns: 'interviews' }
+          )}
         </Typography>
         <Table>
           <TableHead>
@@ -430,7 +444,9 @@ function AddInterview() {
             </TableRow>
             <TableRow>
               <TableCell>
-                <Typography>{t('Interviewer')}</Typography>
+                <Typography>
+                  {t('Interviewer', { ns: 'interviews' })}
+                </Typography>
               </TableCell>
               <TableCell>
                 <TextField
@@ -441,7 +457,7 @@ function AddInterview() {
                   fullWidth
                   id="interviewer"
                   placeholder="Prof. Sebastian"
-                  label={`${t('Interviewer')}`}
+                  label={`${t('Interviewer', { ns: 'interviews' })}`}
                   InputLabelProps={{
                     shrink: true
                   }}
@@ -455,7 +471,7 @@ function AddInterview() {
         <br />
         <Typography>
           {t(
-            'Please provide interview information (invitation email, reading assignment, etc.)',
+            'Please provide interview information (invitation email, reading assignment, etc.) so your interviewer trainer can prepare the training for you.',
             { ns: 'interviews' }
           )}
         </Typography>

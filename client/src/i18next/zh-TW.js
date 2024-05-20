@@ -15,6 +15,7 @@ export const translation_zh_TW = {
     Activate: '啟用',
     Activated: '已啟用',
     'Application Results': '申請結果',
+    'Action required': '需要動作',
     'Target Degree': '目標學位',
     'Aged days': '離上次更新(天)',
     'Document name': '文件名稱',
@@ -36,7 +37,8 @@ export const translation_zh_TW = {
     'Days left': '剩餘天數',
     Deadline: '截止日期',
     Target: '目標',
-    'First-, Last Name': 'First-, Last Name',
+    'First-/ Last Name': '名 / 姓',
+    'First-, Last Name': '名 , 姓',
     'Status(%)': '完成度(%)',
     'Updated by': '更新者',
     Comments: '註記',
@@ -195,6 +197,8 @@ export const translation_zh_TW = {
     'File Name': '檔案名稱',
     Delete: '刪除',
     Status: '狀態',
+    Trainer: '訓練官',
+    Interview: '面試',
     Tasks: '任務',
     'Essay Writer': '論文編輯',
     'Assign Essay Writer': '指派論文編輯',
@@ -224,7 +228,7 @@ export const translation_zh_TW = {
     'All Documents': '所有文件',
     'All Documentations': '所有說明',
     'Essay Dashboard': '論文中心',
-    'Interview Training': '面試訓練',
+    'Interview Center': '面試訓練中心',
     'Student Database': '學生資料庫',
     Permissions: '權限管理',
     'CVMLRL Generator': 'CVMLRL 生成器',
@@ -384,15 +388,24 @@ export const translation_zh_TW = {
       'Uni-Assist 會全權負責轉交申請給學校。您的檔案全部完成後請全部上傳到 Uni-Assist 以及 Program 繳費上傳處。此 Program 不需要VPD'
   },
   interviews: {
+    Interviewer: '學校面試官',
+    'Interview Training Time': '面試訓練時間',
+    'Training Time': '訓練時間',
     'All Interviews': '所有面試',
     'My Interviews': '我的面試',
-    'Create Interview Training': '新增面試訓縣',
+    'Training Request': '訓練請求',
+    'Create Interview Training': '新增面試訓練',
     'Interview duration': '面試長度',
     'Interview program': '面試科系',
     'Interview Training Meeting Link': '面試訓練會議連結',
-    'Provide Interview Information': '請提供面試資訊',
-    'Please provide interview information (invitation email, reading assignment, etc.)':
-      '請提供校方給的面試資訊 (面試邀請 Email、閱讀作業、問題集等。若有pdf附件等，請先在新增此面試訓練請求後，方可上傳。)'
+    'Please provide received interview information':
+      '請提供您收到學校面試之資訊',
+    'Please provide interview information (invitation email, reading assignment, etc.) so your interviewer trainer can prepare the training for you.':
+      '請提供校方給的面試資訊 (面試邀請 Email、閱讀作業、問題集等。若有pdf附件等，請先在新增此面試訓練請求後，方可上傳)。您的面試訓練官才能準備好您的面試訓練',
+    'If you did not receive an interview invitation from the university. Please do not request the training.':
+      '如果您未收到學校的面試邀請，請勿新增面試訓練要求',
+    'If you have previously practiced interviews with our interview training officer, please do not request another interview training unless there are special requirements for the new interview (such as reading specific articles or books).':
+      '如果您之前已與我們的面試訓練官進行過面試練習，除非有特殊要求（如閱讀特定書報等），否則請勿再次申請面試訓練。'
   },
   portalManagement: {
     'Update portal credentials successfully': '帳號密碼更新成功'
@@ -404,11 +417,9 @@ export const translation_zh_TW = {
     'Other wish': '其他需求'
   },
   translation: {
-    'Interview Training Time': '面試訓練時間',
     'Interview Time': '面試時間',
     'Your timezone local time': '您所在時區時間',
     'Interview Program': '面試學程',
-    Interviewer: '學校面試官',
     Overview: '總攬',
     'Active Student List': '申請中學生名單',
     'Programs Update Status': '學程更新狀況',

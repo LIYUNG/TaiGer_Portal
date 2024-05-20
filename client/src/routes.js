@@ -332,24 +332,6 @@ const routes = [
     Component: InternalDocCreatePage
   },
   {
-    path: '/interview-training',
-    exact: true,
-    name: 'InterviewTraining',
-    Component: InterviewTraining
-  },
-  {
-    path: '/interview-training/add',
-    exact: true,
-    name: 'AddInterview',
-    Component: AddInterview
-  },
-  {
-    path: '/interview-training/:interview_id',
-    exact: true,
-    name: 'SingleInterview',
-    Component: SingleInterview
-  },
-  {
     path: '/download',
     exact: true,
     name: 'Download',
@@ -579,6 +561,27 @@ if (appConfig.vpdEnable) {
     exact: true,
     name: 'Uni Assist Tasks',
     Component: UniAssist
+  });
+}
+
+if (appConfig.interviewEnable) {
+  routes.push({
+    path: '/interview-training',
+    exact: true,
+    name: 'InterviewTraining',
+    Component: InterviewTraining
+  });
+  routes.push({
+    path: '/interview-training/add',
+    exact: true,
+    name: 'AddInterview',
+    Component: AddInterview
+  });
+  routes.push({
+    path: '/interview-training/:interview_id',
+    exact: true,
+    name: 'SingleInterview',
+    Component: SingleInterview
   });
 }
 

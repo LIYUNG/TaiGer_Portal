@@ -128,7 +128,7 @@ function EditorMainView(props) {
       <Grid container spacing={2}>
         <Grid item xs={12} md={3}>
           <Card sx={{ p: 2 }}>
-            <Typography>Action required</Typography>
+            <Typography>{t('Action required', { ns: 'common' })}</Typography>
             <Typography variant="h6">
               <Link
                 to={DEMO.CV_ML_RL_CENTER_LINK}
@@ -202,8 +202,8 @@ function EditorMainView(props) {
               <Table size="small">
                 <TableHead>
                   <TableRow>
-                    <TableCell>Task</TableCell>
-                    <TableCell>Description</TableCell>
+                    <TableCell>{t('Tasks', { ns: 'common' })}</TableCell>
+                    <TableCell>{t('Description', { ns: 'common' })}</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -216,7 +216,9 @@ function EditorMainView(props) {
                         {t('Assign Editors')}
                       </Link>
                     </TableCell>
-                    <TableCell>Please assign editors</TableCell>
+                    <TableCell>
+                      {t('Please assign editors', { ns: 'common' })}
+                    </TableCell>
                     <TableCell></TableCell>
                   </TableRow>
                   {!does_essay_have_writers(
@@ -233,7 +235,9 @@ function EditorMainView(props) {
                           {t('Assign Essay Writer', { ns: 'common' })}
                         </Link>
                       </TableCell>
-                      <TableCell>{t('Please assign essay writers', { ns: 'common' })}</TableCell>
+                      <TableCell>
+                        {t('Please assign essay writers', { ns: 'common' })}
+                      </TableCell>
                     </TableRow>
                   )}
                 </TableBody>
@@ -277,7 +281,7 @@ function EditorMainView(props) {
               <TableRow>
                 <TableCell></TableCell>
                 {header.map((name, index) => (
-                  <TableCell key={index}>{name}</TableCell>
+                  <TableCell key={index}>{t(name, { ns: 'common' })}</TableCell>
                 ))}
               </TableRow>
             </TableHead>

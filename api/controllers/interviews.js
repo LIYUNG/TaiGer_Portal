@@ -390,7 +390,7 @@ const createInterview = asyncHandler(async (req, res) => {
       throw new ErrorResponse(404, err);
     }
     res.status(200).send({ success: true });
-    // TODO: inform interview assign
+    // inform interview assign
     // inform editor-lead
     const permissions = await Permission.find({
       canAssignEditors: true
@@ -406,7 +406,7 @@ const createInterview = asyncHandler(async (req, res) => {
       .lean();
 
     if (permissions) {
-      const sendEmailPromises = permissions.map((permission) =>
+      const sendEditorLeadEmailPromises = permissions.map((permission) =>
         sendAssignTrainerReminderEmail(
           {
             firstname: permission.user_id.firstname,
@@ -423,7 +423,27 @@ const createInterview = asyncHandler(async (req, res) => {
         )
       );
 
-      await Promise.all(sendEmailPromises);
+      await Promise.all(sendEditorLeadEmailPromises);
+    }
+    if (student.agents?.length > 0) {
+      const sendAgentsEmailPromises = student.agents.map((agent) =>
+        sendAssignTrainerReminderEmail(
+          {
+            firstname: agent.firstname,
+            lastname: agent.lastname,
+            address: agent.email
+          },
+          {
+            student_firstname: student.firstname,
+            student_id: student._id.toString(),
+            student_lastname: student.lastname,
+            interview_id: newlyCreatedInterview._id.toString(),
+            program: newlyCreatedInterview.program_id
+          }
+        )
+      );
+
+      await Promise.all(sendAgentsEmailPromises);
     }
   }
 });

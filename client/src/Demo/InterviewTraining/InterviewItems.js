@@ -145,32 +145,56 @@ function InterviewItems(props) {
 
   const handleSendInterviewInvitation = async (e) => {
     e.preventDefault();
-    const end_date = new Date(utcTime);
-    end_date.setMinutes(end_date.getMinutes() + 60);
-    const interviewTrainingEvent = {
-      _id: interview.event_id?._id,
-      requester_id: [interview.student_id],
-      receiver_id: [...interview.trainer_id],
-      title: `${interview.student_id.firstname} ${interview.student_id.lastname} - ${interview.program_id.school} - ${interview.program_id.program_name} ${interview.program_id.degree} interview training`,
-      description:
-        'This is the interview training. Please prepare and practice',
-      event_type: 'Interview',
-      start: new Date(utcTime),
-      end: end_date
-    };
-    const resp = await addInterviewTrainingDateTime(
-      interview._id.toString(),
-      interviewTrainingEvent
-    );
-    const { success } = resp.data;
-    if (success) {
-      setInterviewTrainingTimeChange(false);
-    } else {
-      const { message } = resp.data;
+    try {
+      const end_date = new Date(utcTime);
+      end_date.setMinutes(end_date.getMinutes() + 60);
+      const interviewTrainingEvent = {
+        _id: interview.event_id?._id,
+        requester_id: [interview.student_id],
+        receiver_id: [...interview.trainer_id],
+        title: `${interview.student_id.firstname} ${interview.student_id.lastname} - ${interview.program_id.school} - ${interview.program_id.program_name} ${interview.program_id.degree} interview training`,
+        description:
+          'This is the interview training. Please prepare and practice',
+        event_type: 'Interview',
+        start: new Date(utcTime),
+        end: end_date
+      };
+      const resp = await addInterviewTrainingDateTime(
+        interview._id.toString(),
+        interviewTrainingEvent
+      );
+      const { success } = resp.data;
+      if (success) {
+        setInterviewTrainingTimeChange(false);
+      } else {
+        const { message } = resp.data;
+        setInterviewItemsState((prevState) => ({
+          ...prevState,
+          res_modal_message: message,
+          res_modal_status: resp.status
+        }));
+      }
+    } catch (error) {
+      // Handle error here
+      // Extract the response message from the error object
+      let errorMessage =
+        'An error occurred while sending the interview invitation. Please try again later.';
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        errorMessage = error.response.data.message;
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      console.error('Error sending interview invitation:', error);
+
+      // Optionally set error state to display in the UI
       setInterviewItemsState((prevState) => ({
         ...prevState,
-        res_modal_message: message,
-        res_modal_status: resp.status
+        res_modal_message: errorMessage,
+        res_modal_status: 500
       }));
     }
   };

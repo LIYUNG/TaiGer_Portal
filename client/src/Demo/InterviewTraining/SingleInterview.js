@@ -463,7 +463,7 @@ function SingleInterview() {
                   handleClickSave={handleClickSave}
                   file={singleInterviewState.file}
                   onFileChange={onFileChange}
-                  checkResult={() => {}}
+                  checkResult={[]}
                 />
               )}
               {is_TaiGer_role(user) &&

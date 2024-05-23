@@ -721,9 +721,9 @@ const AssignEditorTasksReminderEmails = async () => {
           }
         }
       }
+      logger.info('Assign editor reminded');
     }
   }
-  logger.info('Assign editor reminded');
 };
 
 const UrgentTasksReminderEmails = async () => {
@@ -1086,8 +1086,8 @@ const MeetingDailyReminderChecker = async () => {
         );
       }
     }
+    logger.info('Meeting attendees reminded');
   }
-  logger.info('Meeting attendees reminded');
 };
 
 // every day reminder
@@ -1149,16 +1149,17 @@ const UnconfirmedMeetingDailyReminderChecker = async () => {
 };
 
 // every day reminder
-// TODO: no trainer, no date.
+// TODO: (O)no trainer, no date.
 const NoInterviewTrainerOrTrainingDateDailyReminderChecker = async () => {
   const currentDate = new Date();
+  const currentDateString = currentDate.toISOString().split('T')[0]; // Converts to 'YYYY-MM-DD' format
 
   // Only future meeting within 24 hours, not past
   const interviewRequests = await Interview.find({
     $and: [
       {
-        end: {
-          $gte: currentDate
+        interview_date: {
+          $gte: currentDateString
         }
       },
       {
@@ -1180,7 +1181,7 @@ const NoInterviewTrainerOrTrainingDateDailyReminderChecker = async () => {
     .populate('student_id', 'firstname lastname role email')
     .populate('program_id');
 
-  if (interviewRequests?.length >= 0) {
+  if (interviewRequests?.length > 0) {
     const permissions = await Permission.find({
       canAssignEditors: true
     })
@@ -1199,9 +1200,8 @@ const NoInterviewTrainerOrTrainingDateDailyReminderChecker = async () => {
       )
     );
     await Promise.all(sendEmailPromises);
+    logger.info('No interviewer tasks reminder sent.');
   }
-
-  logger.info('Unconfirmed Meeting attendee reminded');
 };
 
 module.exports = {

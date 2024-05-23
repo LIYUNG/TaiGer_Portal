@@ -1903,11 +1903,11 @@ const sendNoTrainerInterviewRequestsReminderEmail = async (
     (request) =>
       `<li>
       <a href="${SINGLE_INTERVIEW_THREAD_URL(request._id.toString())}">${
+        request.student_id.firstname
+      } ${request.student_id.lastname} - ${request.program_id.school} ${
+        request.program_id.program_name
+      } ${request.program_id.degree} ${request.program_id.semester} ${
         request.interview_date
-      } ${request.student_id.firstname} ${request.student_id.lastname} - ${
-        request.program_id.school
-      } ${request.program_id.program_name} ${request.program_id.degree} ${
-        request.program_id.semester
       }</a>
     </li>`
   );

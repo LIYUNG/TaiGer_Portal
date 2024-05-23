@@ -727,9 +727,13 @@ const AssignEditorTasksReminderEmails = async () => {
 };
 
 const UrgentTasksReminderEmails = async () => {
-  await UrgentTasksReminderEmails_Editor_core();
-  await UrgentTasksReminderEmails_Student_core();
-  await UrgentTasksReminderEmails_Agent_core();
+  const UrgentTaskPromises = [
+    UrgentTasksReminderEmails_Editor_core(),
+    UrgentTasksReminderEmails_Student_core(),
+    UrgentTasksReminderEmails_Agent_core()
+  ];
+
+  await Promise.all(UrgentTaskPromises);
 };
 
 const NextSemesterCourseSelectionStudentReminderEmails = async () => {

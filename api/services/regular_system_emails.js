@@ -28,6 +28,7 @@ const {
   isDev,
   ORIGIN
 } = require('../config');
+const { htmlContent } = require('./emailTemplate');
 
 const transporter = isDev()
   ? createTransport({
@@ -60,7 +61,7 @@ const sendEmail = (to, subject, message) => {
     to,
     subject,
     // text: message,
-    html: message
+    html: htmlContent(message)
   };
   return transporter.sendMail(mail);
 };

@@ -763,7 +763,7 @@ const initApplicationMessagesThread = asyncHandler(async (req, res) => {
     (app) => app.programId._id.toString() === program_id
   )?.programId;
   const Essay_Writer_Scope = Object.keys(ESSAY_WRITER_SCOPE);
-  const documentname = `${document_category} - ${program.school} - ${program.program_name}`;
+  const program_name = `${program.school} - ${program.program_name}`;
   if (Essay_Writer_Scope.includes(document_category)) {
     const permissions = await Permission.find({
       canAssignEditors: true
@@ -784,7 +784,8 @@ const initApplicationMessagesThread = asyncHandler(async (req, res) => {
               student_lastname: student.lastname,
               student_id: student._id.toString(),
               thread_id: newAppRecord.doc_thread_id._id,
-              documentname,
+              document_category,
+              program_name,
               updatedAt: new Date()
             }
           );

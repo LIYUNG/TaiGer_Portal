@@ -1314,7 +1314,7 @@ const sendNewApplicationMessageInThreadEmail = async (recipient, msg) => {
     msg.uploaded_updatedAt
   }.</p>
 
-<a href="${`${thread_url}`}" class="mui-button" target="_blank">See Message</a>
+<a href="${`${thread_url}`}" class="mui-button" target="_blank">View Message</a>
 
 `;
 
@@ -1324,7 +1324,7 @@ const sendNewApplicationMessageInThreadEmail = async (recipient, msg) => {
 const sendNewGeneraldocMessageInThreadEmail = async (recipient, msg) => {
   const thread_url = `${THREAD_URL}/${msg.thread_id}`;
   const student_name = `${msg.student_firstname} - ${msg.student_lastname}`;
-  const subject = `[Update - ${msg.uploaded_documentname}] ${msg.writer_firstname} ${msg.writer_lastname} prodvides a new message > ${student_name} - ${msg.uploaded_documentname} / ${msg.writer_firstname} ${msg.writer_lastname} has new update for ${student_name} - ${msg.uploaded_documentname}!`;
+  const subject = `[Update] ${msg.writer_firstname} ${msg.writer_lastname} prodvides a new message > ${student_name} ${msg.uploaded_documentname}!`;
   const message = `\
 <p>${ENGLISH_BELOW}</p>
 
@@ -1332,11 +1332,11 @@ const sendNewGeneraldocMessageInThreadEmail = async (recipient, msg) => {
 
 <p>${msg.writer_firstname} ${msg.writer_lastname} 給了一則新訊息： </p>
 
-<p>${student_name} ${msg.uploaded_documentname}</p>
+<a href="${thread_url}">${student_name}  - ${msg.uploaded_documentname}</a>
 
 <p>於 ${msg.uploaded_updatedAt}。</p>
 
-<p>請至 TaiGer Portal <a href="${thread_url}">${student_name}  - ${msg.uploaded_documentname}</a> 並查看細節。</p>
+<a href="${thread_url}" class="mui-button" target="_blank">查看訊息</a>
 
 <br />
 
@@ -1346,11 +1346,11 @@ const sendNewGeneraldocMessageInThreadEmail = async (recipient, msg) => {
 
 <p>${msg.writer_firstname} ${msg.writer_lastname} has a new update for </p>
 
-<p>${student_name} ${msg.uploaded_documentname}</p>
+<a href="${thread_url}">${student_name}  - ${msg.uploaded_documentname}</a>
 
 <p>on ${msg.uploaded_updatedAt}.</p>
 
-<p>Please go to TaiGer Portal <a href="${thread_url}">${student_name} - ${msg.uploaded_documentname}</a> and check the updates. </p>
+<a href="${thread_url}" class="mui-button" target="_blank">View Message</a>
 
 
 `;
@@ -1691,17 +1691,17 @@ ${doc_name} 為未完成於 ${msg.uploaded_updatedAt}
 
 // For editor lead, english only
 const assignEssayTaskToEditorEmail = async (recipient, msg) => {
-  const subject = `[TODO] Assign Essay Writer to ${msg.student_firstname} ${msg.student_lastname} ${msg.documentname}`;
+  const subject = `[TODO] Assign Essay Writer to ${msg.student_firstname} ${msg.student_lastname} ${msg.program_name}`;
   const THREAD_LINK = new URL(`/document-modification/${msg.thread_id}`, ORIGIN)
     .href;
   const message = `\
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-<p>The Essay <b>${msg.documentname}</b> is created for ${msg.student_firstname} ${msg.student_lastname} -  ${msg.documentname},</p>
+<p>The Essay ${msg.program_name} is created to ${msg.student_firstname} ${msg.student_lastname},</p>
 
 <p>but this Essay does <b>not</b> have any Essay Writer yet.</p>
 
-<p><b>Please assign an Essay Writer to the Essay <a href="${THREAD_LINK}">${msg.student_firstname} ${msg.student_lastname} - ${msg.documentname}</a></b></p>
+<p><b>Please assign an Essay Writer to the Essay <a href="${THREAD_LINK}">${msg.student_firstname} ${msg.student_lastname} - ${msg.program_name}</a></b></p>
 
 <a href="${THREAD_LINK}" class="mui-button" target="_blank">Assign Essay Writer</a>
 
@@ -1974,7 +1974,7 @@ const sendAgentNewMessageReminderEmail = async (recipient, payload) => {
 
 <p><b>Please go to student's communication <a href="${messageUrl}">${student_name}</a></b></p>
 
-<a href="${messageUrl}" class="mui-button" target="_blank">See Message</a>
+<a href="${messageUrl}" class="mui-button" target="_blank">View Message</a>
 
 <p>${SPLIT_LINE}</p>
 
@@ -2001,7 +2001,7 @@ const sendStudentNewMessageReminderEmail = async (recipient, payload) => {
 
 <p><b>Please go to my <a href="${messageUrl}">Communication</a></b></p>
 
-<a href="${messageUrl}" class="mui-button" target="_blank">See Message</a>
+<a href="${messageUrl}" class="mui-button" target="_blank">View Message</a>
 
 <p>${SPLIT_LINE}</p>
 

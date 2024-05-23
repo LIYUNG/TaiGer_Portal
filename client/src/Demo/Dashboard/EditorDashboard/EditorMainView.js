@@ -20,6 +20,7 @@ import {
   does_essay_have_writers,
   does_student_have_editors,
   frequencyDistribution,
+  open_tasks,
   open_tasks_with_editors
 } from '../../Utils/checking-functions';
 import {
@@ -56,6 +57,7 @@ function EditorMainView(props) {
         ))}
     </>
   );
+  // TODO: consider assigned essays!
 
   const open_tasks_arr = open_tasks_with_editors(props.students);
   const task_distribution = open_tasks_arr
@@ -76,52 +78,22 @@ function EditorMainView(props) {
     });
   });
   let header = Object.values(academic_background_header);
-  const unreplied_task = props.students
-    .filter((student) =>
-      student.editors.some((editor) => editor._id === user._id.toString())
-    )
-    .flatMap((student) => [
-      ...student.generaldocs_threads
-        .filter(
-          (generaldocs_threads) =>
-            !generaldocs_threads.isFinalVersion &&
-            is_new_message_status(user, generaldocs_threads)
-        )
-        .flatMap((generaldocs_threads) => [generaldocs_threads]),
-      ...student.applications.flatMap((application) =>
-        application.doc_modification_thread
-          .filter(
-            (application_doc_thread) =>
-              !application_doc_thread.isFinalVersion &&
-              is_new_message_status(user, application_doc_thread)
-          )
-          .flatMap((application_doc_thread) => [application_doc_thread])
-      )
-    ]);
-  const follow_up_task = props.students
-    .filter((student) =>
-      student.editors.some((editor) => editor._id === user._id.toString())
-    )
-    .flatMap((student) => [
-      ...student.generaldocs_threads
-        .filter(
-          (generaldocs_threads) =>
-            !generaldocs_threads.isFinalVersion &&
-            is_pending_status(user, generaldocs_threads) &&
-            generaldocs_threads.latest_message_left_by_id !== ''
-        )
-        .flatMap((generaldocs_threads) => [generaldocs_threads]),
-      ...student.applications.flatMap((application) =>
-        application.doc_modification_thread
-          .filter(
-            (application_doc_thread) =>
-              !application_doc_thread.isFinalVersion &&
-              is_pending_status(user, application_doc_thread) &&
-              application_doc_thread.latest_message_left_by_id !== ''
-          )
-          .flatMap((application_doc_thread) => [application_doc_thread])
-      )
-    ]);
+  const myStudents = props.students.filter((student) =>
+    student.editors.some((editor) => editor._id === user._id.toString())
+  );
+  const unreplied_task = open_tasks(myStudents).filter(
+    (open_task) =>
+      open_task.show &&
+      !open_task.isFinalVersion &&
+      is_new_message_status(user, open_task)
+  );
+  const follow_up_task = open_tasks(myStudents).filter(
+    (open_task) =>
+      open_task.show &&
+      !open_task.isFinalVersion &&
+      is_pending_status(user, open_task) &&
+      open_task.latest_message_left_by_id !== ''
+  );
 
   return (
     <>

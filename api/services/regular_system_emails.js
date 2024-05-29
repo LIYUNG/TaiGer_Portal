@@ -29,6 +29,7 @@ const {
   ORIGIN
 } = require('../config');
 const { htmlContent } = require('./emailTemplate');
+const { limiter } = require('../aws');
 
 const transporter = isDev()
   ? createTransport({
@@ -63,7 +64,8 @@ const sendEmail = (to, subject, message) => {
     // text: message,
     html: htmlContent(message)
   };
-  return transporter.sendMail(mail);
+  
+  return limiter.schedule(() => transporter.sendMail(mail));
 };
 
 const StudentTasksReminderEmail = async (recipient, payload) => {

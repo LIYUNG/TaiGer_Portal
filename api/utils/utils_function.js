@@ -121,7 +121,7 @@ const TasksReminderEmails_Agent_core = async () => {
       .exec();
     if (agent_students.length > 0) {
       if (isNotArchiv(agents[j])) {
-        await AgentTasksReminderEmail(
+        AgentTasksReminderEmail(
           {
             firstname: agents[j].firstname,
             lastname: agents[j].lastname,
@@ -151,7 +151,7 @@ const TasksReminderEmails_Student_core = async () => {
     .lean(); // Only active student, not archiv
 
   for (let j = 0; j < students.length; j += 1) {
-    await StudentTasksReminderEmail(
+    StudentTasksReminderEmail(
       {
         firstname: students[j].firstname,
         lastname: students[j].lastname,

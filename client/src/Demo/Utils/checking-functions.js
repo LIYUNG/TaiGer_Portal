@@ -799,9 +799,7 @@ export const application_deadline_calculator = (student, application) => {
   let deadline_month = parseInt(
     application.programId.application_deadline.split('-')[0]
   );
-  // let deadline_day = parseInt(
-  //   application.programId.application_deadline.split('-')[1]
-  // );
+
   if (semester === undefined) {
     return 'Err';
   }
@@ -1882,20 +1880,8 @@ export const getNextProgramStatus = (student) => {
     )
     .sort((a, b) => (a.application_deadline > b.application_deadline ? 1 : -1));
   return getNextProgram.length !== 0
-    ? // <span
-      //   className={`${
-      //     progressBarCounter(student, getNextProgram[0].application) < 100
-      //       ? progressBarCounter(student, getNextProgram[0].application) < 75
-      //         ? progressBarCounter(student, getNextProgram[0].application) < 30
-      //           ? 'text-danger' // 15 > x
-      //           : 'text-secondary' // 60 > x > 15
-      //         : 'text-warning' // 100 > x >60
-      //       : ''
-      //   }`}
-      // >
-      `${progressBarCounter(student, getNextProgram[0].application)} %`
-    : // </span>
-      '-';
+    ? `${progressBarCounter(student, getNextProgram[0].application)} %`
+    : '-';
 };
 
 export const numStudentYearDistribution = (students) => {

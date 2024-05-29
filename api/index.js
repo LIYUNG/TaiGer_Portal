@@ -1,6 +1,8 @@
 const schedule = require('node-schedule');
 const https = require('https');
 const fs = require('fs');
+const { createTransport } = require('nodemailer');
+
 const { app } = require('./app');
 const { connectToDatabase, disconnectFromDatabase } = require('./database');
 const {
@@ -22,6 +24,7 @@ const {
   COURSE_SELECTION_TASKS_REMINDER_JULY_SCHEDULE,
   COURSE_SELECTION_TASKS_REMINDER_NOVEMBER_SCHEDULE
 } = require('./config');
+
 const logger = require('./services/logger');
 // const {
 //   DocumentationS3GarbageCollector
@@ -37,9 +40,10 @@ const {
   UpdateStatisticsData,
   MeetingDailyReminderChecker,
   UnconfirmedMeetingDailyReminderChecker,
-  NoInterviewTrainerOrTrainingDateDailyReminderChecker,
+  NoInterviewTrainerOrTrainingDateDailyReminderChecker
 } = require('./utils/utils_function');
 const { MongoDBDataBaseDailySnapshot } = require('./utils/jobs');
+const { ses } = require('./aws');
 // const { UserS3GarbageCollector } = require('./controllers/users');
 
 process.on('SIGINT', () => {
@@ -183,6 +187,25 @@ const launch = async () => {
     //   '40 * * * * *',
     //   MongoDBDataBaseDailySnapshot
     // );
+    // const transporter = createTransport({
+    //   SES: ses
+    // });
+    // // Email options
+    // const mailOptions = {
+    //   from: 'no-reply@taigerconsultancy-portal.com', // sender address
+    //   to: 'noreply.taigerconsultancy@gmail.com', // list of receivers
+    //   subject: 'AWS test', // Subject line
+    //   // text: 'test test?', // plain text body
+    //   html: '<b>test aws ses?</b>' // html body
+    // };
+
+    // // Send email
+    // transporter.sendMail(mailOptions, (error, info) => {
+    //   if (error) {
+    //     return console.log(error);
+    //   }
+    //   console.log('Message sent: %s', info.messageId);
+    // });
     if (
       fs.existsSync(HTTPS_KEY) &&
       fs.existsSync(HTTPS_CERT) &&

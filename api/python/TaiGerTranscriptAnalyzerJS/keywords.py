@@ -8,10 +8,10 @@ ALL_DIFFERENTIATE_KEY_WORDS = 2
 # 物理
 GENERAL_PHYSICS_KEY_WORDS = ['物理']
 GENERAL_PHYSICS_ANTI_KEY_WORDS = ['固態', '生物', '半導體', '元件', '量子', '凝態', '核子', '天文', '分子', '原子',
-                                  '實驗', '史', '服務', '冶金', '生活', '車輛', '通識', '化學']
+                                  '實驗', '史', '服務', '冶金', '生活', '車輛', '通識', '化學', '冶金']
 GENERAL_PHYSICS_KEY_WORDS_EN = ['physics']
 GENERAL_PHYSICS_ANTI_KEY_WORDS_EN = [
-    'semicondu', 'device', 'experiment', 'lab']
+    'semicondu', 'device', 'experiment', 'lab', 'solid', 'metallurg', 'chemi' , 'quantu']
 
 # 進階物理
 EE_ADVANCED_PHYSICS_KEY_WORDS = ['固態物理', '近代物理']
@@ -185,7 +185,7 @@ DIFF_EQUATION_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
 MATH_DISCRETE_KEY_WORDS = ['離散']
 MATH_DISCRETE_ANTI_KEY_WORDS = ['asdgladfj;l', '管理']
 MATH_DISCRETE_KEY_WORDS_EN = ['discrete math', 'graph', '邏輯']
-MATH_DISCRETE_ANTI_KEY_WORDS_EN = ['asdgladfj;l', '管理', '文明', '服務']
+MATH_DISCRETE_ANTI_KEY_WORDS_EN = ['asdgladfj;l', 'crystall', '服務']
 
 # 數值分析
 MATH_NUM_METHOD_KEY_WORDS = ['數值方法', '數值分析', '數值運算']
@@ -638,9 +638,9 @@ ELECTRICAL_ENG_ANTI_KEY_WORDS_EN = [
     'asdgladfj;l', 'logic', 'automation', 'microelectroni', 'business']
 
 # 製造
-ME_MANUFACTURE_ENG_KEY_WORDS = ['製造']
+ME_MANUFACTURE_ENG_KEY_WORDS = ['製造', '冶金']
 ME_MANUFACTURE_ENG_ANTI_KEY_WORDS = ['asdgladfj;l', '邏輯', '自動化', '微電子']
-ME_MANUFACTURE_ENG_KEY_WORDS_EN = ['manufactur', 'fabrica', 'produc']
+ME_MANUFACTURE_ENG_KEY_WORDS_EN = ['manufactur', 'fabrica', 'produc', 'metallurg']
 ME_MANUFACTURE_ENG_ANTI_KEY_WORDS_EN = [
     'asdgladfj;l', 'logic', 'automation', 'microelectroni']
 
@@ -664,16 +664,10 @@ VEHICLE_ENGINEERING_KEY_WORDS_EN = ['車輛', 'vehicle', 'cumbustion',
                                     '電驅動', 'automotive', '熱機', 'suspens']
 VEHICLE_ENGINEERING_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
 
-# 離散
-MTL_MATH_DISCRETE_KEY_WORDS = ['離散', '圖形', '圖論', '邏輯']
-MTL_MATH_DISCRETE_ANTI_KEY_WORDS = ['asdgladfj;l', '管理']
-MTL_MATH_DISCRETE_KEY_WORDS_EN = ['discrete math', '圖形', 'graph', '邏輯']
-MTL_MATH_DISCRETE_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
-
 # 材料科學
-WERKSTOFFKUNDE_KEY_WORDS = ['材料']
+WERKSTOFFKUNDE_KEY_WORDS = ['材料', '結晶']
 WERKSTOFFKUNDE_ANTI_KEY_WORDS = ['asdgladfj;l', '力學', '應用', '世界', '們']
-WERKSTOFFKUNDE_KEY_WORDS_EN = ['material']
+WERKSTOFFKUNDE_KEY_WORDS_EN = ['material', 'crystallogr']
 WERKSTOFFKUNDE_ANTI_KEY_WORDS_EN = ['asdgladfj;l', 'mechanics', 'appl']
 
 # 資料科學

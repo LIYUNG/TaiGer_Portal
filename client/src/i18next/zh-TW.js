@@ -8,6 +8,8 @@ export const translation_zh_TW = {
     'Last Login': '最近登入'
   },
   common: {
+    announcement:
+      '我們已更新的 email 通知系統至 no-reply@taigerconsultancy-portal.com. 請於日後接受討論邀請並加入日曆，往後任何會議邀請便會自動加入您的日曆，避免錯過忘記討論。',
     Add: '新增',
     'I Agree': '我同意',
     Account: '帳號',

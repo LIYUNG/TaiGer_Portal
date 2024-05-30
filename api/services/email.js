@@ -44,6 +44,29 @@ const {
   ORIGIN
 } = require('../config');
 const { htmlContent } = require('./emailTemplate');
+const { ses } = require('../aws');
+
+// const transporter = isDev()
+//   ? createTransport({
+//       host: SMTP_HOST,
+//       port: SMTP_PORT,
+//       auth: {
+//         user: SMTP_USERNAME,
+//         pass: SMTP_PASSWORD
+//       },
+//       tls: {
+//         rejectUnauthorized: false
+//       }
+//     })
+//   : createTransport({
+//       service: 'gmail',
+//       auth: {
+//         user: SMTP_USERNAME,
+//         pass: SMTP_PASSWORD
+//       }
+//     });
+
+// const senderName = `No-Reply TaiGer Consultancy ${SMTP_USERNAME}`;
 
 const transporter = isDev()
   ? createTransport({
@@ -58,23 +81,21 @@ const transporter = isDev()
       }
     })
   : createTransport({
-      service: 'gmail',
-      auth: {
-        user: SMTP_USERNAME,
-        pass: SMTP_PASSWORD
-      }
+      SES: ses
     });
+
+const senderName =
+  'No-Reply TaiGer Consultancy no-reply@taigerconsultancy-portal.com';
 
 const verifySMTPConfig = () => {
   return transporter.verify();
 };
 
-const senderName = `No-Reply TaiGer Consultancy ${SMTP_USERNAME}`;
-
 const sendEmail = (to, subject, message) => {
   const mail = {
     from: senderName,
     to,
+    bcc: 'noreply.taigerconsultancy@gmail.com',
     subject,
     // text: message,
     html: htmlContent(message)
@@ -146,6 +167,7 @@ const sendEventEmail = (
     from: senderName,
     to,
     cc: cc_receiver_list,
+    bcc: 'noreply.taigerconsultancy@gmail.com',
     subject,
     // text: message,
     html: htmlContent(message),

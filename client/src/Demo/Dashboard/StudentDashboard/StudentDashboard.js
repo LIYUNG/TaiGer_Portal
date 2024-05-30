@@ -109,7 +109,7 @@ function StudentDashboard(props) {
           </Typography>
         </Card>
       )}
-
+      <Alert severity="info">{t('announcement', { ns: 'common' })}</Alert>
       <Grid container spacing={2} sx={{ mt: 0 }}>
         {student.notification &&
           !student.notification.isRead_survey_not_complete &&

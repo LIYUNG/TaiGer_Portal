@@ -8,6 +8,8 @@ export const translation_en = {
     'Last Login': 'Last Login'
   },
   common: {
+    announcement:
+      'We migrate our notification email to no-reply@taigerconsultancy-portal.com. Please Add to Calendar for the invitation in the future so that you will not miss the time.',
     Add: 'Add',
     'I Agree': 'I Agree',
     Account: 'Account',

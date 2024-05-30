@@ -192,8 +192,8 @@ const launch = async () => {
     // });
     // // Email options
     // const mailOptions = {
-    //   from: 'no-reply@taigerconsultancy-portal.com', // sender address
-    //   to: 'noreply.taigerconsultancy@gmail.com', // list of receivers
+    //   from: 'No-Reply TaiGer Consultancy no-reply@taigerconsultancy-portal.com', // sender address
+    //   to: 'taiger.leoc@gmail.com', // list of receivers
     //   subject: 'AWS test', // Subject line
     //   // text: 'test test?', // plain text body
     //   html: '<b>test aws ses?</b>' // html body

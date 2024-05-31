@@ -18,11 +18,10 @@ import {
 } from '@mui/material';
 import moment from 'moment-timezone';
 import { Navigate, useParams, Link as LinkDom } from 'react-router-dom';
-import {
-  AiFillCheckCircle,
-  AiOutlineMail,
-  AiOutlineUser
-} from 'react-icons/ai';
+import CheckIcon from '@mui/icons-material/Check';
+import PersonIcon from '@mui/icons-material/Person';
+
+import { AiOutlineMail } from 'react-icons/ai';
 import PropTypes from 'prop-types';
 
 import {
@@ -324,15 +323,15 @@ function OfficeHours() {
               onClick={(e) =>
                 handleConfirmAppointmentModal(e, event_id, event_temp)
               }
+              startIcon={
+                BookButtonDisable ? (
+                  <CircularProgress size={24} />
+                ) : (
+                  <CheckIcon />
+                )
+              }
             >
-              {BookButtonDisable ? (
-                <CircularProgress size={16} />
-              ) : (
-                <>
-                  <AiFillCheckCircle color="limegreen" size={16} />{' '}
-                  {t('Yes', { ns: 'common' })}
-                </>
-              )}
+              {t('Yes', { ns: 'common' })}
             </Button>
             <Button
               color="primary"
@@ -369,7 +368,7 @@ function OfficeHours() {
               {event_temp.description?.length || 0}/{2000}
             </Badge>
             <Typography>
-              <AiOutlineUser size={16} />
+              <PersonIcon fontSize="small" />
               Agent:{' '}
               {event_temp.receiver_id?.map((receiver, x) => (
                 <span key={x}>

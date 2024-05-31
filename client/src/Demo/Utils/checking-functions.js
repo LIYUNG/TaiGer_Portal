@@ -70,17 +70,6 @@ export const truncateText = (text, maxLength) => {
   return truncatedText;
 };
 
-export const FILE_TYPE_E = {
-  rl_required: 'RL',
-  ml_required: 'ML',
-  essay_required: 'Essay',
-  portfolio_required: 'Portfolio',
-  supplementary_form_required: 'Supplementary_Form',
-  scholarship_form_required: 'Scholarship_Form',
-  curriculum_analysis_required: 'Curriculum_Analysis',
-  others: 'Others'
-};
-
 export const file_category_const = {
   rl_required: 'RL',
   ml_required: 'ML',
@@ -89,6 +78,11 @@ export const file_category_const = {
   supplementary_form_required: 'Supplementary_Form',
   scholarship_form_required: 'Scholarship_Form',
   curriculum_analysis_required: 'Curriculum_Analysis'
+};
+
+export const FILE_TYPE_E = {
+  ...file_category_const,
+  others: 'Others'
 };
 
 export const AGENT_SUPPORT_DOCUMENTS_A = [
@@ -1844,43 +1838,34 @@ export const programs_refactor = (students) => {
   return applications;
 };
 
-export const getNextProgramName = (student) => {
-  const getNextProgram = programs_refactor([student])
+const getNextProgram = (student) => {
+  const nextProgram = programs_refactor([student])
     .filter(
       (application) => application.decided === 'O' && application.closed === '-'
     )
     .sort((a, b) => (a.application_deadline > b.application_deadline ? 1 : -1));
-  return getNextProgram.length !== 0 ? getNextProgram[0].program : '-';
+  return nextProgram;
+};
+
+export const getNextProgramName = (student) => {
+  const nextProgram = getNextProgram(student);
+  return nextProgram.length !== 0 ? nextProgram[0].program : '-';
 };
 
 export const getNextProgramDeadline = (student) => {
-  const getNextProgram = programs_refactor([student])
-    .filter(
-      (application) => application.decided === 'O' && application.closed === '-'
-    )
-    .sort((a, b) => (a.application_deadline > b.application_deadline ? 1 : -1));
-  return getNextProgram.length !== 0
-    ? getNextProgram[0].application_deadline
-    : '-';
+  const nextProgram = getNextProgram(student);
+  return nextProgram.length !== 0 ? nextProgram[0].application_deadline : '-';
 };
 
 export const getNextProgramDayleft = (student) => {
-  const getNextProgram = programs_refactor([student])
-    .filter(
-      (application) => application.decided === 'O' && application.closed === '-'
-    )
-    .sort((a, b) => (a.application_deadline > b.application_deadline ? 1 : -1));
-  return getNextProgram.length !== 0 ? getNextProgram[0].days_left : '-';
+  const nextProgram = getNextProgram(student);
+  return nextProgram.length !== 0 ? nextProgram[0].days_left : '-';
 };
 
 export const getNextProgramStatus = (student) => {
-  const getNextProgram = programs_refactor([student])
-    .filter(
-      (application) => application.decided === 'O' && application.closed === '-'
-    )
-    .sort((a, b) => (a.application_deadline > b.application_deadline ? 1 : -1));
-  return getNextProgram.length !== 0
-    ? `${progressBarCounter(student, getNextProgram[0].application)} %`
+  const nextProgram = getNextProgram(student);
+  return nextProgram.length !== 0
+    ? `${progressBarCounter(student, nextProgram[0].application)} %`
     : '-';
 };
 

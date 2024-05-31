@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { FiExternalLink } from 'react-icons/fi';
-import { Link as LinkDom } from 'react-router-dom';
+import LaunchIcon from '@mui/icons-material/Launch';
 import {
   Box,
   Button,
-  Link,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
-  TableRow
+  TableRow,
+  Typography
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import LinkIcon from '@mui/icons-material/Link';
@@ -438,13 +437,13 @@ function BaseDocument_StudentView(props) {
         title={'info'}
         path={'/'}
         text={
-          <>
+          <Typography variant="body2" sx={{ display: 'flex' }}>
             每個檔案都有注意事項。請務必上傳文件前，點選各文件名稱旁的說明連結圖示
             <Button size="small" variant="outlined" startIcon={<LinkIcon />}>
               {t('Read More')}
             </Button>
             並查看文件要求，照著我們的要求上傳，Agent 會再檢查文件是否沒問題。
-          </>
+          </Typography>
         }
         link_name={''}
         removeBanner={<></>}
@@ -454,25 +453,15 @@ function BaseDocument_StudentView(props) {
         ReadOnlyMode={true}
         bg={'danger'}
         title={'info'}
-        path={'/'}
+        path={`${DEMO.SURVEY_LINK}`}
         text={
-          <>
-            無論是申請大學部或是碩士班，高中文件、學測或統測成績單為必要文件。德國學校通常列為必要文件，此文件會因為您的背景況狀有所變動。請先填好{' '}
-            <Link
-              underline="hover"
-              to={`${DEMO.SURVEY_LINK}`}
-              component={LinkDom}
-              target="_blank"
-            >
-              {t('Profile', { ns: 'common' })}{' '}
-              <FiExternalLink
-                className="mx-1 mb-1"
-                style={{ cursor: 'pointer' }}
-              />
-            </Link>
-          </>
+          '無論是申請大學部或是碩士班，高中文件、學測或統測成績單為必要文件。德國學校通常列為必要文件，此文件會因為您的背景況狀有所變動。請先填好'
         }
-        link_name={''}
+        link_name={
+          <Typography variant="body2" sx={{ display: 'flex' }}>
+            {t('Profile', { ns: 'common' })} <LaunchIcon fontSize="small" />
+          </Typography>
+        }
         removeBanner={undefined}
         notification_key={undefined}
       />

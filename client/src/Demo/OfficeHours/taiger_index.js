@@ -16,21 +16,21 @@ import {
   Select,
   MenuItem
 } from '@mui/material';
-import { AiFillCheckCircle } from 'react-icons/ai';
+import CheckIcon from '@mui/icons-material/Check';
 import { Navigate, useParams, Link as LinkDom } from 'react-router-dom';
+import DeleteIcon from '@mui/icons-material/Delete';
 import moment from 'moment-timezone';
+import { useTranslation } from 'react-i18next';
 
 import {
   getNextDayDate,
   getTodayAsWeekday,
   getReorderWeekday,
-  // getTimezoneOffset,
   isInTheFuture,
   getUTCWithDST
 } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
-import { useTranslation } from 'react-i18next';
 
 import { TabTitle } from '../Utils/TabTitle';
 import MyCalendar from '../../components/Calendar/components/Calendar';
@@ -280,12 +280,15 @@ function TaiGerOfficeHours() {
             onClose={handleConfirmAppointmentModalClose}
             centered
           >
+            <Typography variant="h6">
+              {t('Confirm Meeting', { ns: 'common' })}
+            </Typography>
             <Typography variant="body1">
               You are aware of this meeting time and confirm.
             </Typography>
-
             <Button
-              color="secondary"
+              color="primary"
+              fullWidth
               variant="contained"
               size="small"
               disabled={
@@ -296,18 +299,19 @@ function TaiGerOfficeHours() {
               onClick={(e) =>
                 handleConfirmAppointmentModal(e, event_id, event_temp)
               }
+              startIcon={
+                BookButtonDisable ? (
+                  <CircularProgress size={24} />
+                ) : (
+                  <CheckIcon />
+                )
+              }
             >
-              {BookButtonDisable ? (
-                <CircularProgress size={16} />
-              ) : (
-                <>
-                  <AiFillCheckCircle color="limegreen" size={16} />{' '}
-                  {t('Yes', { ns: 'common' })}
-                </>
-              )}
+              {t('Yes', { ns: 'common' })}
             </Button>
             <Button
               color="secondary"
+              fullWidth
               variant="outlined"
               size="small"
               onClick={handleConfirmAppointmentModalClose}
@@ -329,12 +333,15 @@ function TaiGerOfficeHours() {
               size="small"
               disabled={event_id === '' || BookButtonDisable}
               onClick={(e) => handleDeleteAppointmentModal(e, event_id)}
+              startIcon={
+                BookButtonDisable ? (
+                  <CircularProgress size={16} />
+                ) : (
+                  <DeleteIcon />
+                )
+              }
             >
-              {BookButtonDisable ? (
-                <CircularProgress size={16} />
-              ) : (
-                t('Delete', { ns: 'common' })
-              )}
+              {t('Delete', { ns: 'common' })}
             </Button>
           </ModalNew>
         </>

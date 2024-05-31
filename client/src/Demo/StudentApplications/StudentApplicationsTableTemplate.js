@@ -27,7 +27,8 @@ import {
 } from '@mui/material';
 
 import { Link as LinkDom } from 'react-router-dom';
-import { AiFillDelete } from 'react-icons/ai';
+import DeleteIcon from '@mui/icons-material/Delete';
+
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -559,7 +560,7 @@ function StudentApplicationsTableTemplate(props) {
                     )
                   }
                 >
-                  <AiFillDelete size={16} />
+                  <DeleteIcon fontSize='small'/>
                 </Button>
               </TableCell>
             )}

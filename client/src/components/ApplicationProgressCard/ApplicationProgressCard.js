@@ -21,7 +21,7 @@ import {
   AiOutlineFieldTime,
   AiOutlineStop
 } from 'react-icons/ai';
-import { FiExternalLink } from 'react-icons/fi';
+import LaunchIcon from '@mui/icons-material/Launch';
 
 import ApplicationProgressCardBody from './ApplicationProgressCardBody';
 import { updateStudentApplicationResult } from '../../api';
@@ -196,7 +196,14 @@ export default function ApplicationProgressCard(props) {
               target="_blank"
               onClick={(e) => e.stopPropagation()}
             >
-              <b>{application?.programId?.school}</b> <FiExternalLink />
+              <Box sx={{ display: 'flex' }}>
+                <Typography fontWeight="bold">
+                  {application?.programId?.school}
+                </Typography>
+                <Typography sx={{ display: 'flex' }}>
+                  <LaunchIcon fontSize="small" />
+                </Typography>
+              </Box>
             </Link>
           </Typography>
           <Typography variant="p" component="div">

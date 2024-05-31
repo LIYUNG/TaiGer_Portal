@@ -101,7 +101,7 @@ const MyCalendar = (props) => {
               <span>
                 If the time zone not matches, please go to{' '}
                 <Link to={`${DEMO.PROFILE}`} component={LinkDom}>
-                  Profile <FiExternalLink />
+                  Profile  
                 </Link>{' '}
                 to update your time zone
               </span>

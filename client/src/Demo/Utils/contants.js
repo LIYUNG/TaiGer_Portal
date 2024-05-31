@@ -86,6 +86,20 @@ export const DECISION_STATUS_E = {
     <HelpIcon size={18} style={{ color: grey[400] }} title="Not sure" />
   )
 };
+
+export const INTERVIEW_STATUS_E = {
+  SCHEDULED_SYMBOL: (
+    <CheckCircleIcon
+      size={18}
+      style={{ color: green[500] }}
+      title="Scheduled"
+    />
+  ),
+  UNSCHEDULED_SYMBOL: (
+    <HelpIcon size={18} style={{ color: grey[400] }} title="Unscheduled" />
+  )
+};
+
 export const SUBMISSION_STATUS_E = {
   OK_SYMBOL: (
     <CheckCircleIcon

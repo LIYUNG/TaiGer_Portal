@@ -13,7 +13,7 @@ import {
   TextField
 } from '@mui/material';
 import { Navigate, Link as LinkDom } from 'react-router-dom';
-import { AiFillCheckCircle } from 'react-icons/ai';
+import CheckIcon from '@mui/icons-material/Check';
 import { useTranslation } from 'react-i18next';
 
 import { isInTheFuture } from '../Utils/contants';
@@ -235,15 +235,15 @@ function AllOfficeHours() {
               onClick={(e) =>
                 handleConfirmAppointmentModal(e, event_id, event_temp)
               }
+              startIcon={
+                BookButtonDisable ? (
+                  <CircularProgress size={24} />
+                ) : (
+                  <CheckIcon />
+                )
+              }
             >
-              {BookButtonDisable ? (
-                <CircularProgress size={16} />
-              ) : (
-                <>
-                  <AiFillCheckCircle color="limegreen" size={16} />{' '}
-                  {t('Yes', { ns: 'common' })}
-                </>
-              )}
+              {t('Yes', { ns: 'common' })}
             </Button>
             <Button
               color="primary"

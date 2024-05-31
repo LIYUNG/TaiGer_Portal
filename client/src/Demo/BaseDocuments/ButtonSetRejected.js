@@ -11,7 +11,7 @@ import {
   TextField,
   Typography
 } from '@mui/material';
-import { AiFillCloseCircle, AiOutlineComment } from 'react-icons/ai';
+import MessageIcon from '@mui/icons-material/Message';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import LinkIcon from '@mui/icons-material/Link';
@@ -25,7 +25,11 @@ import {
   is_TaiGer_Editor,
   is_TaiGer_Student
 } from '../Utils/checking-functions';
-import { ACCEPT_STYLE, convertDate } from '../Utils/contants';
+import {
+  ACCEPT_STYLE,
+  FILE_NOT_OK_SYMBOL,
+  convertDate
+} from '../Utils/contants';
 import { BASE_URL } from '../../api/request';
 
 import { updateProfileDocumentStatus } from '../../api';
@@ -279,9 +283,7 @@ function ButtonSetRejected(props) {
   var ButttonRow_Rejected;
   ButttonRow_Rejected = (
     <TableRow>
-      <TableCell>
-        <AiFillCloseCircle size={24} color="red" title="Invalid Document" />
-      </TableCell>
+      <TableCell>{FILE_NOT_OK_SYMBOL}</TableCell>
       <TableCell>
         {t(props.docName, { ns: 'common' })}
         <Link
@@ -327,8 +329,9 @@ function ButtonSetRejected(props) {
           onClick={() =>
             openCommentWindow(buttonSetRejectedState.student_id, props.k)
           }
+          startIcon={<MessageIcon />}
         >
-          <AiOutlineComment size={20} />
+          {t('Message', { ns: 'common' })}
         </Button>
       </TableCell>
       <TableCell></TableCell>

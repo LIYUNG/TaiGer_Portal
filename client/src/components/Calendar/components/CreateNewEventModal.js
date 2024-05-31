@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FiExternalLink } from 'react-icons/fi';
+import LaunchIcon from '@mui/icons-material/Launch';
 import { Link as LinkDom } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
@@ -67,7 +67,7 @@ export function CreateNewEventModal(props) {
         <span>
           If the time zone not matches, please go to{' '}
           <Link to={`${DEMO.PROFILE}`} component={LinkDom}>
-            Profile <FiExternalLink />
+            Profile <LaunchIcon fontSize="small" />
           </Link>{' '}
           to update your time zone
         </span>

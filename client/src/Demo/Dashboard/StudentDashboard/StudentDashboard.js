@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FiExternalLink } from 'react-icons/fi';
-import { AiOutlineCalendar } from 'react-icons/ai';
+import LaunchIcon from '@mui/icons-material/Launch';
+import EventIcon from '@mui/icons-material/Event';
 import {
   Alert,
   Box,
@@ -126,10 +126,7 @@ function StudentDashboard(props) {
                 link_name={
                   <>
                     {t('Survey')}
-                    <FiExternalLink
-                      className="mx-1 mb-1"
-                      style={{ cursor: 'pointer' }}
-                    />
+                    <LaunchIcon fontSize="small" />
                   </>
                 }
                 removeBanner={removeBanner}
@@ -152,10 +149,7 @@ function StudentDashboard(props) {
                 link_name={
                   <>
                     Uni-Assist
-                    <FiExternalLink
-                      className="mx-1 mb-1"
-                      style={{ cursor: 'pointer' }}
-                    />
+                    <LaunchIcon fontSize="small" />
                   </>
                 }
                 removeBanner={removeBanner}
@@ -204,14 +198,11 @@ function StudentDashboard(props) {
                 bg={'danger'}
                 title={'warning'}
                 path={`${DEMO.CV_ML_RL_CENTER_LINK}`}
-                text={`${t('New feedback from your Editor')}. See`}
+                text={`${t('New feedback from your Editor')}. See `}
                 link_name={
                   <>
                     CV/ML/RL Center
-                    <FiExternalLink
-                      className="mx-1 mb-1"
-                      style={{ cursor: 'pointer' }}
-                    />
+                    <LaunchIcon fontSize="small" />
                   </>
                 }
                 removeBanner={removeBanner}
@@ -228,15 +219,12 @@ function StudentDashboard(props) {
                 bg={'danger'}
                 title={'warning'}
                 path={`${DEMO.CV_ML_RL_CENTER_LINK}`}
-                text={`${t('New tasks are assigned to you')}. See`}
+                text={`${t('New tasks are assigned to you')}. See `}
                 link_name={
-                  <>
+                  <Typography variant="body2" sx={{ display: 'flex' }}>
                     CV/ML/RL Center
-                    <FiExternalLink
-                      className="mx-1 mb-1"
-                      style={{ cursor: 'pointer' }}
-                    />
-                  </>
+                    <LaunchIcon fontSize="small" />
+                  </Typography>
                 }
                 removeBanner={removeBanner}
                 notification_key={'isRead_new_cvmlrl_tasks_created'}
@@ -254,13 +242,10 @@ function StudentDashboard(props) {
                 path={`${DEMO.STUDENT_APPLICATIONS_LINK}`}
                 text={`${t('It looks like you did not decide programs')} `}
                 link_name={
-                  <>
+                  <Typography>
                     {t('Application Overview', { ns: 'common' })}
-                    <FiExternalLink
-                      className="mx-1 mb-1"
-                      style={{ cursor: 'pointer' }}
-                    />
-                  </>
+                    <LaunchIcon fontSize="small" />
+                  </Typography>
                 }
                 removeBanner={removeBanner}
                 notification_key={'isRead_new_programs_assigned'}
@@ -280,10 +265,7 @@ function StudentDashboard(props) {
                 link_name={
                   <>
                     Base Documents
-                    <FiExternalLink
-                      className="mx-1 mb-1"
-                      style={{ cursor: 'pointer' }}
-                    />
+                    <LaunchIcon fontSize="small" />
                   </>
                 }
                 removeBanner={removeBanner}
@@ -304,10 +286,7 @@ function StudentDashboard(props) {
                 link_name={
                   <>
                     Base Documents
-                    <FiExternalLink
-                      className="mx-1 mb-1"
-                      style={{ cursor: 'pointer' }}
-                    />
+                    <LaunchIcon fontSize="small" />
                   </>
                 }
                 removeBanner={removeBanner}
@@ -342,8 +321,8 @@ function StudentDashboard(props) {
                   <Card sx={{ p: 2 }}>
                     <Grid container spacing={2}>
                       <Grid item xs={12}>
-                        <Typography>
-                          <AiOutlineCalendar size={24} /> 時段預約
+                        <Typography sx={{ display: 'flex' }}>
+                          <EventIcon /> 時段預約
                         </Typography>
                       </Grid>
                       <Grid item xs={12}>

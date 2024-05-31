@@ -657,10 +657,10 @@ const initGeneralMessagesThread = asyncHandler(async (req, res) => {
 
   res.status(200).send({ success: true, data: temp });
   // TODO: Email notification
-  let documentname = document_category;
+  const documentname = document_category;
   for (let i = 0; i < student.editors.length; i += 1) {
     if (isNotArchiv(student)) {
-      await assignDocumentTaskToEditorEmail(
+      assignDocumentTaskToEditorEmail(
         {
           firstname: student.editors[i].firstname,
           lastname: student.editors[i].lastname,

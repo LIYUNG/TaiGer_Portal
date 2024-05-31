@@ -165,25 +165,25 @@ const application_deadline_calculator = (student, application) => {
     // include Rolling
     return `${application_year}-Rolling`;
   }
-  let deadline_month = parseInt(
+  const deadline_month = parseInt(
     application.programId.application_deadline.split('-')[0],
     10
   );
-  let deadline_day = parseInt(
-    application.programId.application_deadline.split('-')[1],
-    10
-  );
+  // const deadline_day = parseInt(
+  //   application.programId.application_deadline.split('-')[1],
+  //   10
+  // );
   if (semester === undefined) {
     return 'Err';
   }
   if (semester === 'WS') {
     if (deadline_month > 9) {
-      application_year = application_year - 1;
+      application_year -= 1;
     }
   }
   if (semester === 'SS') {
     if (deadline_month > 3) {
-      application_year = application_year - 1;
+      application_year -= 1;
     }
   }
 
@@ -261,7 +261,8 @@ const is_deadline_within30days_needed = (student) => {
       today,
       application_deadline_calculator(student, student.applications[k])
     );
-    // TODO: should pack all thread due soon in a student email, not multiple email for 1 student  for daily reminder.
+    // TODO: should pack all thread due soon in a student email,
+    // not multiple email for 1 student  for daily reminder.
     if (
       student.applications[k].decided === 'O' &&
       student.applications[k].closed !== 'O' &&

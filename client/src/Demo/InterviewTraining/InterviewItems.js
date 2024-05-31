@@ -21,11 +21,7 @@ import {
   Grid,
   Typography
 } from '@mui/material';
-import {
-  AiFillCheckCircle,
-  AiFillQuestionCircle,
-  AiOutlineDelete
-} from 'react-icons/ai';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 import {
   LinkableNewlineText,
@@ -41,6 +37,7 @@ import NotesEditor from '../Notes/NotesEditor';
 import { useAuth } from '../../components/AuthProvider';
 import ModalNew from '../../components/Modal';
 import {
+  INTERVIEW_STATUS_E,
   NoonNightLabel,
   convertDate,
   showTimezoneOffset
@@ -201,17 +198,11 @@ function InterviewItems(props) {
 
   const interviewStatus = (interview) => {
     if (interview.status === 'Unscheduled') {
-      return (
-        <AiFillQuestionCircle color="grey" size={24} title="Unscheduled" />
-      );
+      return INTERVIEW_STATUS_E.UNSCHEDULED_SYMBOL;
     } else if (interview.status === 'Scheduled') {
-      return (
-        <AiFillCheckCircle color="limegreen" size={24} title="Confirmed" />
-      );
+      return INTERVIEW_STATUS_E.SCHEDULED_SYMBOL;
     } else {
-      return (
-        <AiFillCheckCircle color="limegreen" size={24} title="Confirmed" />
-      );
+      return INTERVIEW_STATUS_E.SCHEDULED_SYMBOL;
     }
   };
 
@@ -251,9 +242,9 @@ function InterviewItems(props) {
                 size="small"
                 title="Delete"
                 onClick={(e) => props.openDeleteDocModalWindow(e, interview)}
+                startIcon={<DeleteIcon />}
               >
-                <AiOutlineDelete size={16} />
-                &nbsp; {t('Delete', { ns: 'common' })}
+                {t('Delete', { ns: 'common' })}
               </Button>
             )}
           </span>

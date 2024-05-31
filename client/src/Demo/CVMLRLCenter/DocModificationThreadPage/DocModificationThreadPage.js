@@ -4,7 +4,7 @@ import JSZip from 'jszip';
 import jsPDF from 'jspdf';
 import * as XLSX from 'xlsx';
 import DownloadIcon from '@mui/icons-material/Download';
-import { FiExternalLink } from 'react-icons/fi';
+import LaunchIcon from '@mui/icons-material/Launch';
 import { useTranslation } from 'react-i18next';
 import { green, grey } from '@mui/material/colors';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -1214,21 +1214,26 @@ function DocModificationThreadPage() {
           </Grid>
           {docModificationThreadPageState.thread.file_type === 'CV' ? (
             <Grid item md={widths[2]}>
-              <h6>
+              <Typography variant="h6">
                 <b>Profile photo:</b>
                 <img
-                  // className="d-block w-100"
                   src={`${BASE_URL}/api/students/${docModificationThreadPageState.thread.student_id._id}/files/Passport_Photo`}
                   height="100%"
                   width="100%"
                 />
-              </h6>
-              If image not shown, please go to{' '}
-              <Link underline="hover" to="/base-documents" component={LinkDom}>
-                <b>Base Documents</b>
-                <FiExternalLink style={{ cursor: 'pointer' }} />
-              </Link>
-              and upload the Passport Photo.
+              </Typography>
+              <Typography>
+                If image not shown, please go to{' '}
+                <Link
+                  underline="hover"
+                  to="/base-documents"
+                  component={LinkDom}
+                >
+                  <b>Base Documents</b>
+                  <LaunchIcon fontSize="small" />
+                </Link>
+                and upload the Passport Photo.
+              </Typography>
             </Grid>
           ) : (
             !is_TaiGer_Student(user) && (

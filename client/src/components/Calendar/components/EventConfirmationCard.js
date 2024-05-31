@@ -13,8 +13,14 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import HourglassBottomIcon from '@mui/icons-material/HourglassBottom';
+import AccessAlarmIcon from '@mui/icons-material/AccessAlarm';
+import PersonIcon from '@mui/icons-material/Person';
+import CheckIcon from '@mui/icons-material/Check';
+import EmailIcon from '@mui/icons-material/Email';
+import EventIcon from '@mui/icons-material/Event';
 
 import {
+  DECISION_STATUS_E,
   NoonNightLabel,
   convertDate,
   getDate,
@@ -22,15 +28,6 @@ import {
   isInTheFuture,
   showTimezoneOffset
 } from '../../../Demo/Utils/contants';
-import {
-  AiFillCheckCircle,
-  AiFillQuestionCircle,
-  AiOutlineCalendar,
-  AiOutlineCheckCircle,
-  AiOutlineClockCircle,
-  AiOutlineMail,
-  AiOutlineUser
-} from 'react-icons/ai';
 import {
   is_TaiGer_Agent,
   is_TaiGer_Student,
@@ -51,18 +48,14 @@ export default function EventConfirmationCard(props) {
         isInTheFuture(props.event.end)
       }
       disableGutters
-      // expanded={!props.disabled}
     >
       <AccordionSummary>
         <Typography variant="h6">
-          {props.event.isConfirmedReceiver &&
-          props.event.isConfirmedRequester ? (
-            <AiFillCheckCircle color="limegreen" size={24} title="Confirmed" />
-          ) : (
-            <AiFillQuestionCircle color="grey" size={24} />
-          )}{' '}
+          {props.event.isConfirmedReceiver && props.event.isConfirmedRequester
+            ? DECISION_STATUS_E.OK_SYMBOL
+            : DECISION_STATUS_E.UNKNOWN_SYMBOL}{' '}
           &nbsp;
-          <AiOutlineCalendar />
+          <EventIcon />
           &nbsp;{convertDate(props.event.start)}{' '}
           {NoonNightLabel(props.event.start)} ({' '}
           {Intl.DateTimeFormat().resolvedOptions().timeZone} UTC
@@ -88,29 +81,28 @@ export default function EventConfirmationCard(props) {
           </Grid>
           <Grid item xs={6} md={4}>
             <Typography variant="h6">
-              <AiOutlineCalendar />: {getDate(props.event.start)}
+              <EventIcon />: {getDate(props.event.start)}
             </Typography>
-            <Typography variant="h6">
-              {' '}
-              <AiOutlineClockCircle />: {getTime(props.event.start)}
+            <Typography variant="h6" sx={{ display: 'flex' }}>
+              <AccessAlarmIcon />: {getTime(props.event.start)}
             </Typography>
             {NoonNightLabel(props.event.start)} ({' '}
             {Intl.DateTimeFormat().resolvedOptions().timeZone} UTC
             {showTimezoneOffset()})
           </Grid>
           <Grid item xs={12} md={6}>
-            <Typography variant="body1">
-              <AiOutlineUser size={16} />
+            <Typography variant="body1" sx={{ display: 'flex' }}>
+              <PersonIcon />
               {t('Agent', { ns: 'common' })}:{' '}
               {props.event.receiver_id?.map((receiver, x) => (
                 <span key={x}>
-                  {receiver.firstname} {receiver.lastname}{' '}
-                  <AiOutlineMail ize={16} /> {receiver.email}
+                  {receiver.firstname} {receiver.lastname} <EmailIcon />{' '}
+                  {receiver.email}
                 </span>
               ))}
             </Typography>
-            <Typography variant="body1">
-              <AiOutlineUser size={16} />
+            <Typography variant="body1" sx={{ display: 'flex' }}>
+              <PersonIcon />
               {t('Student', { ns: 'common' })}:{' '}
               {props.event.requester_id?.map((requester, x) =>
                 is_TaiGer_role(user) ? (
@@ -123,13 +115,13 @@ export default function EventConfirmationCard(props) {
                     component={LinkDom}
                     key={x}
                   >
-                    {requester.firstname} {requester.lastname}{' '}
-                    <AiOutlineMail ize={16} /> {requester.email}
+                    {requester.firstname} {requester.lastname} <EmailIcon />{' '}
+                    {requester.email}
                   </Link>
                 ) : (
                   <span key={x}>
-                    {requester.firstname} {requester.lastname}{' '}
-                    <AiOutlineMail ize={16} /> {requester.email}
+                    {requester.firstname} {requester.lastname} <EmailIcon />{' '}
+                    {requester.email}
                   </span>
                 )
               )}
@@ -165,8 +157,8 @@ export default function EventConfirmationCard(props) {
                     onClick={(e) =>
                       props.handleConfirmAppointmentModalOpen(e, props.event)
                     }
+                    startIcon={<CheckIcon />}
                   >
-                    <AiOutlineCheckCircle size={16} />{' '}
                     {t('Confirm', { ns: 'common' })}
                   </Button>{' '}
                   the time and get the meeting link
@@ -200,8 +192,8 @@ export default function EventConfirmationCard(props) {
                     onClick={(e) =>
                       props.handleConfirmAppointmentModalOpen(e, props.event)
                     }
+                    startIcon={<CheckIcon />}
                   >
-                    <AiOutlineCheckCircle size={16} />{' '}
                     {t('Confirm', { ns: 'common' })}
                   </Button>{' '}
                   the time and get the meeting link
@@ -267,8 +259,8 @@ export default function EventConfirmationCard(props) {
                               )
                             }
                             sx={{ mx: 2 }}
+                            startIcon={<CheckIcon />}
                           >
-                            <AiOutlineCheckCircle size={16} />{' '}
                             {t('Confirm', { ns: 'common' })}
                           </Button>
                         ))}
@@ -298,8 +290,8 @@ export default function EventConfirmationCard(props) {
                                 props.event
                               )
                             }
+                            startIcon={<CheckIcon />}
                           >
-                            <AiOutlineCheckCircle size={16} />{' '}
                             {t('Confirm', { ns: 'common' })}
                           </Button>
                         ))}

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link as LinkDom, useParams } from 'react-router-dom';
-import { FiExternalLink } from 'react-icons/fi';
+import LaunchIcon from '@mui/icons-material/Launch';
 import {
   Box,
   Card,
@@ -364,8 +364,8 @@ function CommunicationSinglePage() {
               <b>效率溝通</b>，留言時請注意以下幾點：
               <List>
                 <ListItem>
-                  <Typography fontWeight="bold">
-                    1. 請把{' '}
+                  <Typography sx={{ display: 'flex' }}>
+                    1. 請把
                     <Link
                       to={
                         is_TaiGer_Student(user)
@@ -377,11 +377,13 @@ function CommunicationSinglePage() {
                       }
                       component={LinkDom}
                       target="_blank"
+                      sx={{ display: 'flex' }}
+                      fontWeight="bold"
                     >
                       {t('Profile', { ns: 'common' })}{' '}
-                      <FiExternalLink style={{ cursor: 'pointer' }} />
+                      <LaunchIcon fontSize="small" />
                     </Link>
-                    填好,{' '}
+                    填好，
                     <Link
                       to={
                         is_TaiGer_Student(user)
@@ -393,18 +395,22 @@ function CommunicationSinglePage() {
                       }
                       component={LinkDom}
                       target="_blank"
+                      fontWeight="bold"
+                      sx={{ display: 'flex' }}
                     >
                       {t('My Documents', { ns: 'common' })}{' '}
-                      <FiExternalLink style={{ cursor: 'pointer' }} />
+                      <LaunchIcon fontSize="small" />
                     </Link>
-                    , 文件有的都盡量先掃描上傳,{' '}
+                    ，文件有的都盡量先掃描上傳，
                     <Link
                       to={`${DEMO.COURSES_LINK}/${communicationSinglePageState.student_id}`}
                       component={LinkDom}
                       target="_blank"
+                      sx={{ display: 'flex' }}
+                      fontWeight="bold"
                     >
                       {t('My Courses', { ns: 'common' })}{' '}
-                      <FiExternalLink style={{ cursor: 'pointer' }} />
+                      <LaunchIcon fontSize="small" />
                     </Link>
                     課程填好，之後 Agent 在回答問題時比較能掌握狀況。
                   </Typography>

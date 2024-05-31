@@ -315,12 +315,17 @@ function EditorDocsProgress(props) {
     );
   };
 
-  const handleProgramStatus = (student_id, program_id) => {
+  const handleProgramStatus = (
+    student_id,
+    program_id,
+    isApplicationSubmitted
+  ) => {
     setEditorDocsProgressState((prevState) => ({
       ...prevState,
       student_id,
       program_id,
-      SetProgramStatusModel: true
+      SetProgramStatusModel: true,
+      isApplicationSubmitted
     }));
   };
 
@@ -816,12 +821,14 @@ function EditorDocsProgress(props) {
         aria-labelledby="contained-modal-title-vcenter"
       >
         <Typography variant="h6">{t('Attention')}</Typography>
-        <Typography>
-          Do you want to {editorDocsProgressState.isFinal ? 'close' : 're-open'}{' '}
+        <Typography sx={{ my: 1 }}>
+          Do you want to{' '}
+          {editorDocsProgressState.isApplicationSubmitted ? 're-open' : 'close'}{' '}
           this program for {editorDocsProgressState.student.firstname}?
         </Typography>
         <Button
           color="primary"
+          fullWidth
           variant="contained"
           disabled={!isLoaded}
           onClick={SubmitProgramStatusHandler}
@@ -830,6 +837,7 @@ function EditorDocsProgress(props) {
         </Button>
         <Button
           color="primary"
+          fullWidth
           variant="outlined"
           onClick={closeSetProgramStatusModel}
         >

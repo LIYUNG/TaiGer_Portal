@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { AiFillCheckCircle } from 'react-icons/ai';
 import {
   Box,
   Card,
@@ -25,7 +24,7 @@ import InterviewItems from './InterviewItems';
 import DEMO from '../../store/constant';
 import Loading from '../../components/Loading/Loading';
 import ModalNew from '../../components/Modal';
-import { stringAvatar } from '../Utils/contants';
+import { INTERVIEW_STATUS_E, stringAvatar } from '../Utils/contants';
 import MessageList from '../CVMLRLCenter/DocModificationThreadPage/MessageList';
 import { useAuth } from '../../components/AuthProvider';
 import DocThreadEditor from '../CVMLRLCenter/DocModificationThreadPage/DocThreadEditor';
@@ -510,12 +509,18 @@ function SingleInterview() {
           )}
         </>
       ) : isDeleteSuccessful ? (
-        <Card>
-          <AiFillCheckCircle color="limegreen" size={24} title="Confirmed" />{' '}
-          &nbsp; Interview request deleted successfully!
+        <Card sx={{ p: 1 }}>
+          <Typography variant="body2">
+            {INTERVIEW_STATUS_E.DELETED_SUCCESS_SYMBOL} &nbsp; Interview request
+            deleted successfully!
+          </Typography>
         </Card>
       ) : (
-        <Card>Status 404: Error! Interview not found.</Card>
+        <Card>
+          <Typography variant="body2">
+            Status 404: Error! Interview not found.
+          </Typography>
+        </Card>
       )}
       <ModalNew
         open={singleInterviewState.SetAsFinalFileModel}

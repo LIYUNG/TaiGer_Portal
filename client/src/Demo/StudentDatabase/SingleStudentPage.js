@@ -21,11 +21,11 @@ import {
   TableCell,
   Breadcrumbs,
   Alert,
-  TableContainer
+  TableContainer,
+  IconButton
 } from '@mui/material';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import { AiFillEdit } from 'react-icons/ai';
 import { BsMessenger } from 'react-icons/bs';
 
 import { TopBar } from '../../components/TopBar/TopBar';
@@ -344,7 +344,9 @@ export const SingleStudentPageMainContent = ({
               component={LinkDom}
               to={`${DEMO.PROFILE_STUDENT_LINK(singleStudentPage.student._id)}`}
             >
-              <AiFillEdit color="red" size={24} />
+              <IconButton>
+                <EditIcon fontSize='small' />
+              </IconButton>
             </Link>
           </Breadcrumbs>
         </Box>

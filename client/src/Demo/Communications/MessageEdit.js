@@ -4,11 +4,11 @@ import {
   Tooltip,
   AccordionDetails,
   AccordionSummary,
-  Typography
+  Typography,
+  IconButton
 } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
-
-import { RiCloseFill } from 'react-icons/ri';
+import CloseIcon from '@mui/icons-material/Close';
 import { Accordion, Avatar } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useTranslation } from 'react-i18next';
@@ -97,11 +97,8 @@ function MessageEdit(props) {
               {convertDate(props.message.createdAt)}
               {props.editable && (
                 <>
-                  <RiCloseFill
-                    className="mx-0"
-                    color="red"
-                    title="Delete this message and file"
-                    size={20}
+                  <IconButton
+                    aria-label="delete"
                     onClick={(e) =>
                       onOpendeleteMessageModalShow(
                         e,
@@ -109,8 +106,13 @@ function MessageEdit(props) {
                         props.message.createdAt
                       )
                     }
-                    style={{ cursor: 'pointer' }}
-                  />
+                  >
+                    <CloseIcon
+                      fontSize="small"
+                      title="Delete this message and file"
+                      style={{ cursor: 'pointer' }}
+                    />
+                  </IconButton>
                 </>
               )}
             </span>

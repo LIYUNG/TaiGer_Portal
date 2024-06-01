@@ -95,6 +95,13 @@ export const INTERVIEW_STATUS_E = {
       title="Scheduled"
     />
   ),
+  DELETED_SUCCESS_SYMBOL: (
+    <CheckCircleIcon
+      size={18}
+      style={{ color: green[500] }}
+      title="Success"
+    />
+  ),
   UNSCHEDULED_SYMBOL: (
     <HelpIcon size={18} style={{ color: grey[400] }} title="Unscheduled" />
   )

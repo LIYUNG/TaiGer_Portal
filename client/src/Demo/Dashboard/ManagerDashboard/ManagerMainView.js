@@ -12,7 +12,7 @@ import {
   Typography
 } from '@mui/material';
 import { Link } from 'react-router-dom';
-import { BsX } from 'react-icons/bs';
+import LaunchIcon from '@mui/icons-material/Launch';
 import ReportProblemIcon from '@mui/icons-material/ReportProblem';
 
 import BaseDocumentCheckingTasks from '../MainViewTab/AgentTasks/BaseDocumentCheckingTasks';
@@ -39,6 +39,7 @@ import NoEnoughDecidedProgramsTasksCard from '../MainViewTab/AgentTasks/NoEnough
 import VPDToSubmitTasksCard from '../MainViewTab/AgentTasks/VPDToSubmitTasksCard';
 import { useAuth } from '../../../components/AuthProvider';
 import { useTranslation } from 'react-i18next';
+import Banner from '../../../components/Banner/Banner';
 
 function ManagerMainView(props) {
   const { user } = useAuth();
@@ -143,36 +144,27 @@ function ManagerMainView(props) {
         (student, i) => (
           <Box key={i}>
             <Card>
-              <Typography style={{ textAlign: 'left' }}>
-                <ReportProblemIcon size={18} />
-                <b className="mx-2">Reminder:</b> There are new base documents
-                uploaded by{' '}
-                <b>
-                  {student.student_firstname} {student.student_lastname}
-                </b>{' '}
-                <Link
-                  to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-                    student.student_id,
-                    DEMO.PROFILE_HASH
-                  )}`}
-                  style={{ textDecoration: 'none' }}
-                  className="text-info"
-                >
-                  Base Document
-                </Link>{' '}
-                <span style={{ float: 'right', cursor: 'pointer' }}>
-                  <BsX
-                    size={18}
-                    onClick={(e) =>
-                      removeAgentBanner(
-                        e,
-                        'isRead_new_base_docs_uploaded',
-                        student.student_id
-                      )
-                    }
-                  />
-                </span>
-              </Typography>
+              <Banner
+                bg={'danger'}
+                title={'warning'}
+                path={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                  student.student_id,
+                  DEMO.PROFILE_HASH
+                )}`}
+                text={`${t('There are new base documents uploaded by', {
+                  ns: 'common'
+                })} ${student.student_firstname} ${student.student_lastname}`}
+                link_name={<LaunchIcon fontSize="small" />}
+                removeBanner={(e) =>
+                  removeAgentBanner(
+                    e,
+                    'isRead_new_base_docs_uploaded',
+                    student.student_id
+                  )
+                }
+                student_id={student.student_id}
+                notification_key={'isRead_new_base_docs_uploaded'}
+              />
             </Card>
           </Box>
         )

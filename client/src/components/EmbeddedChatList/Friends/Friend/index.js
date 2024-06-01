@@ -2,10 +2,12 @@ import React from 'react';
 import { Link as LinkDom, useParams } from 'react-router-dom';
 import {
   Avatar,
-  Box,
+  IconButton,
   ListItem,
   ListItemButton,
   ListItemIcon,
+  ListItemSecondaryAction,
+  ListItemText,
   Typography,
   useTheme
 } from '@mui/material';
@@ -16,7 +18,7 @@ import {
 } from '../../../../Demo/Utils/contants';
 import DEMO from '../../../../store/constant';
 import { truncateText } from '../../../../Demo/Utils/checking-functions';
-import { RxDotFilled } from 'react-icons/rx';
+import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 
 const friend = (props) => {
   const { student_id } = useParams();
@@ -25,6 +27,7 @@ const friend = (props) => {
     <ListItem
       key={props.data?._id?.toString()}
       sx={{
+        // height: '70px',
         backgroundColor: props.data?.latestCommunication?.readBy.includes(
           props.activeId
         )
@@ -49,62 +52,52 @@ const friend = (props) => {
         } ${props.data.lastname}`}
       >
         <ListItemIcon>
-          <Avatar
-            alt={`${props.data.firstname} ${props.data.lastname}`}
-            {...stringAvatar(`${props.data.firstname} ${props.data.lastname}`)}
-            // src={props.data.profilePicture} // Add the path to the profile picture
-          />
-          <Box
+          <IconButton edge="start">
+            <Avatar
+              alt={`${props.data.firstname} ${props.data.lastname}`}
+              {...stringAvatar(
+                `${props.data.firstname} ${props.data.lastname}`
+              )}
+              // src={props.data.profilePicture} // Add the path to the profile picture
+            />
+          </IconButton>
+          <ListItemText
+            primary={
+              <Typography style={{ fontWeight: 'bold' }}>
+                {truncateText(
+                  `${
+                    props.data.lastname_chinese
+                      ? props.data.lastname_chinese
+                      : ''
+                  }${
+                    props.data.firstname_chinese
+                      ? props.data.firstname_chinese
+                      : ''
+                  } ${props.data.firstname} ${props.data.lastname}`,
+                  22
+                )}
+              </Typography>
+            }
+            secondary={convertDate_ux_friendly(
+              props.data?.latestCommunication?.createdAt
+            )}
             style={{
               marginLeft: '10px',
               flex: 1
             }}
-          >
-            <Typography variant="body1" fontWeight="bold" color="text.primary">
-              {truncateText(
-                `${
-                  props.data.lastname_chinese ? props.data.lastname_chinese : ''
-                }${
-                  props.data.firstname_chinese
-                    ? props.data.firstname_chinese
-                    : ''
-                } ${props.data.firstname} ${props.data.lastname}`,
-                22
-              )}
+          />
+          <ListItemSecondaryAction>
+            <IconButton edge="end">
               {props.data?.latestCommunication?.user_id !== props.activeId && (
-                <RxDotFilled
-                  size={18}
+                <FiberManualRecordIcon
+                  fontSize="small"
                   title="Not Reply Yet"
                   style={{ marginLeft: '4px' }}
                 />
               )}
-            </Typography>
-            <Typography variant="body1" color="text.primary">
-              {convertDate_ux_friendly(
-                props.data?.latestCommunication?.createdAt
-              )}
-            </Typography>
-          </Box>
+            </IconButton>
+          </ListItemSecondaryAction>
         </ListItemIcon>
-
-        {/* <Box
-          style={{
-            textAlign: 'right',
-            padding: '8px 16px'
-          }}
-        >
-          <Typography variant="body2">
-            {props.data?.latestCommunication?.user_id !== props.activeId && (
-              <RxDotFilled
-                size={18}
-                title="Not Reply Yet"
-                style={{ marginLeft: '4px' }}
-              />
-            )}
-            {props.data?.latestCommunication?.createdAt &&
-              convertDate_ux_friendly(props.data.latestCommunication.createdAt)}
-          </Typography>
-        </Box> */}
       </ListItemButton>
     </ListItem>
   );

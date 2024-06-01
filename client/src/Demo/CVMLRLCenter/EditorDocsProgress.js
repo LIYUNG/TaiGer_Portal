@@ -12,10 +12,10 @@ import {
   InputLabel,
   Accordion,
   AccordionSummary,
-  AccordionDetails
+  AccordionDetails,
+  IconButton
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { ImCheckmark } from 'react-icons/im';
 import { useTranslation } from 'react-i18next';
 import LaunchIcon from '@mui/icons-material/Launch';
 
@@ -27,7 +27,7 @@ import {
   isProgramSubmitted,
   isProgramWithdraw
 } from '../Utils/checking-functions';
-import { spinner_style2 } from '../Utils/contants';
+import { FILE_OK_SYMBOL, spinner_style2 } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import {
@@ -543,11 +543,9 @@ function EditorDocsProgress(props) {
               </Typography>
             ) : isProgramSubmitted(application) ? (
               <>
-                <ImCheckmark
-                  size={16}
-                  color="limegreen"
-                  title="This program is closed"
-                />
+                <IconButton>
+                  {FILE_OK_SYMBOL}
+                </IconButton>
               </>
             ) : isProgramWithdraw(application) ? (
               <Typography fontWeight="bold">

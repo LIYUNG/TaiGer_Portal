@@ -57,7 +57,7 @@ export const StyledInputBase = styled(InputBase)(({ theme }) => ({
   }
 }));
 
-export const menuWidth = 350;
+export const menuWidth = 340;
 export const EmbeddedChatListWidth = 290;
 
 export const CVMLRL_DOC_PRECHECK_STATUS_E = {
@@ -96,11 +96,7 @@ export const INTERVIEW_STATUS_E = {
     />
   ),
   DELETED_SUCCESS_SYMBOL: (
-    <CheckCircleIcon
-      size={18}
-      style={{ color: green[500] }}
-      title="Success"
-    />
+    <CheckCircleIcon size={18} style={{ color: green[500] }} title="Success" />
   ),
   UNSCHEDULED_SYMBOL: (
     <HelpIcon size={18} style={{ color: grey[400] }} title="Unscheduled" />
@@ -110,56 +106,56 @@ export const INTERVIEW_STATUS_E = {
 export const SUBMISSION_STATUS_E = {
   OK_SYMBOL: (
     <CheckCircleIcon
-      size={18}
+      fontSize="small"
       style={{ color: green[500] }}
       title="Submitted"
     />
   ),
   NOT_OK_SYMBOL: (
-    <CancelIcon size={18} style={{ color: red[700] }} title="Withdraw" />
+    <CancelIcon fontSize="small" style={{ color: red[700] }} title="Withdraw" />
   ),
   UNKNOWN_SYMBOL: (
-    <HelpIcon size={18} style={{ color: grey[400] }} title="In Progress" />
+    <HelpIcon fontSize="small" style={{ color: grey[400] }} title="In Progress" />
   )
 };
 export const ADMISSION_STATUS_E = {
   OK_SYMBOL: (
-    <CheckCircleIcon size={18} style={{ color: green[500] }} title="Admitted" />
+    <CheckCircleIcon fontSize="small" style={{ color: green[500] }} title="Admitted" />
   ),
   NOT_OK_SYMBOL: (
-    <CancelIcon size={18} style={{ color: red[700] }} title="Rejected" />
+    <CancelIcon fontSize="small" style={{ color: red[700] }} title="Rejected" />
   ),
   UNKNOWN_SYMBOL: (
-    <HelpIcon size={18} style={{ color: grey[400] }} title="Pending" />
+    <HelpIcon fontSize="small" style={{ color: grey[400] }} title="Pending" />
   )
 };
 
 export const FILE_OK_SYMBOL = (
   <CheckCircleIcon
-    size={18}
+    fontSize="small"
     style={{ color: green[500] }}
     title="Valid Document"
   />
 );
 export const FILE_NOT_OK_SYMBOL = (
-  <CancelIcon size={18} style={{ color: red[700] }} title="Invalid Document" />
+  <CancelIcon fontSize="small" style={{ color: red[700] }} title="Invalid Document" />
 );
 export const FILE_UPLOADED_SYMBOL = (
   <QueryBuilderIcon
-    size={18}
+    fontSize="small"
     style={{ color: orange[400] }}
     title="Uploaded successfully"
   />
 );
 export const FILE_MISSING_SYMBOL = (
   <HelpIcon
-    size={18}
+    fontSize="small"
     style={{ color: grey[400] }}
     title="No Document uploaded"
   />
 );
 export const FILE_DONT_CARE_SYMBOL = (
-  <RemoveIcon size={18} style={{ color: grey[400] }} title="Not needed" />
+  <RemoveIcon fontSize="small" style={{ color: grey[400] }} title="Not needed" />
 );
 
 export const questionType = {

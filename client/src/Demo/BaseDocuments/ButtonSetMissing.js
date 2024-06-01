@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import LinkIcon from '@mui/icons-material/Link';
+import LaunchIcon from '@mui/icons-material/Launch';
 
 import OffcanvasBaseDocument from '../../components/Offcanvas/OffcanvasBaseDocument';
 import {
@@ -142,7 +142,7 @@ function ButtonSetMissing(props) {
           target="_blank"
           sx={{ ml: 1 }}
         >
-          <Button size="small" variant="outlined" startIcon={<LinkIcon />}>
+          <Button size="small" variant="outlined" endIcon={<LaunchIcon />}>
             {t('Read More')}
           </Button>
         </Link>

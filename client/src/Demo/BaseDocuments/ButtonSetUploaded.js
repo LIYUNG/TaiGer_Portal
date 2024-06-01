@@ -16,7 +16,7 @@ import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
-import LinkIcon from '@mui/icons-material/Link';
+import LaunchIcon from '@mui/icons-material/Launch';
 
 import OffcanvasBaseDocument from '../../components/Offcanvas/OffcanvasBaseDocument';
 import {
@@ -241,7 +241,7 @@ function ButtonSetUploaded(props) {
           target="_blank"
           sx={{ ml: 1 }}
         >
-          <Button size="small" variant="outlined" startIcon={<LinkIcon />}>
+          <Button size="small" variant="outlined" endIcon={<LaunchIcon />}>
             {t('Read More')}
           </Button>
         </Link>

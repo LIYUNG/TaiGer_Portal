@@ -1136,7 +1136,7 @@ const postMessages = asyncHandler(async (req, res) => {
           .lean();
         if (permissions) {
           for (let x = 0; x < permissions.length; x += 1) {
-            await sendAssignEditorReminderEmail(
+            sendAssignEditorReminderEmail(
               {
                 firstname: permissions[x].user_id.firstname,
                 lastname: permissions[x].user_id.lastname,
@@ -1286,7 +1286,7 @@ const postMessages = asyncHandler(async (req, res) => {
           .lean();
         if (permissions) {
           for (let x = 0; x < permissions.length; x += 1) {
-            await sendAssignTrainerReminderEmail(
+            sendAssignTrainerReminderEmail(
               {
                 firstname: permissions[x].user_id.firstname,
                 lastname: permissions[x].user_id.lastname,
@@ -1307,7 +1307,7 @@ const postMessages = asyncHandler(async (req, res) => {
           // inform active-trainer
           if (isNotArchiv(student)) {
             if (isNotArchiv(interview.trainer_id[i])) {
-              await sendNewInterviewMessageInThreadEmail(
+              sendNewInterviewMessageInThreadEmail(
                 {
                   firstname: interview.trainer_id[i].firstname,
                   lastname: interview.trainer_id[i].lastname,
@@ -1402,15 +1402,9 @@ const postMessages = asyncHandler(async (req, res) => {
               emailContent.school = document_thread.program_id.school;
               emailContent.program_name =
                 document_thread.program_id.program_name;
-              await sendNewApplicationMessageInThreadEmail(
-                recepient,
-                emailContent
-              );
+              sendNewApplicationMessageInThreadEmail(recepient, emailContent);
             } else {
-              await sendNewGeneraldocMessageInThreadEmail(
-                recepient,
-                emailContent
-              );
+              sendNewGeneraldocMessageInThreadEmail(recepient, emailContent);
             }
           }
         }
@@ -1440,9 +1434,9 @@ const postMessages = asyncHandler(async (req, res) => {
             if (document_thread.program_id) {
               payload.school = document_thread.program_id.school;
               payload.program_name = document_thread.program_id.program_name;
-              await sendNewApplicationMessageInThreadEmail(recipient, payload);
+              sendNewApplicationMessageInThreadEmail(recipient, payload);
             } else {
-              await sendNewGeneraldocMessageInThreadEmail(recipient, payload);
+              sendNewGeneraldocMessageInThreadEmail(recipient, payload);
             }
           }
         }
@@ -1461,7 +1455,7 @@ const postMessages = asyncHandler(async (req, res) => {
         // inform active-trainer
         if (isNotArchiv(student)) {
           if (isNotArchiv(interview.trainer_id[i])) {
-            await sendNewInterviewMessageInThreadEmail(
+            sendNewInterviewMessageInThreadEmail(
               {
                 firstname: interview.trainer_id[i].firstname,
                 lastname: interview.trainer_id[i].lastname,
@@ -1509,12 +1503,12 @@ const postMessages = asyncHandler(async (req, res) => {
             program_id: document_thread.program_id._id.toString()
           });
           student_payload.interview_id = interview._id.toString();
-          await sendNewInterviewMessageInThreadEmail(
+          sendNewInterviewMessageInThreadEmail(
             student_recipient,
             student_payload
           );
         } else {
-          await sendNewApplicationMessageInThreadEmail(
+          sendNewApplicationMessageInThreadEmail(
             student_recipient,
             student_payload
           );

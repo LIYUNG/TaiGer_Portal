@@ -116,7 +116,6 @@ function StudentDashboard(props) {
           !check_academic_background_filled(student.academic_background) && (
             <Grid item xs={12}>
               <Banner
-                ReadOnlyMode={props.ReadOnlyMode}
                 bg={'danger'}
                 title={'warning'}
                 path={`${DEMO.SURVEY_LINK}`}

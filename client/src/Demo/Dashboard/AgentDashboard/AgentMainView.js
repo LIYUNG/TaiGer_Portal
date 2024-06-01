@@ -1,7 +1,6 @@
 import React, { Fragment, useState } from 'react';
 import { Link as LinkDom } from 'react-router-dom';
-import { BsX } from 'react-icons/bs';
-import ReportProblemIcon from '@mui/icons-material/ReportProblem';
+import LaunchIcon from '@mui/icons-material/Launch';
 import { useTranslation } from 'react-i18next';
 import {
   Grid,
@@ -41,6 +40,7 @@ import ProgramSpecificDocumentCheckCard from '../MainViewTab/AgentTasks/ProgramS
 import ModalMain from '../../Utils/ModalHandler/ModalMain';
 import TabStudBackgroundDashboard from '../MainViewTab/StudDocsOverview/TabStudBackgroundDashboard';
 import useStudents from '../../../hooks/useStudents';
+import Banner from '../../../components/Banner/Banner';
 
 function AgentMainView(props) {
   const { user } = useAuth();
@@ -72,24 +72,26 @@ function AgentMainView(props) {
       (student_obj) => student_obj.student_id === student_id
     );
     temp_user.agent_notification[`${notification_key}`].splice(idx, 1);
-
-    setAgentMainViewState({ ...agentMainViewState, user: temp_user });
-
+    setAgentMainViewState({
+      ...agentMainViewState,
+      notification: temp_user.agent_notification,
+      user: temp_user
+    });
     updateAgentBanner(notification_key, student_id).then(
       (resp) => {
         const { success } = resp.data;
         const { status } = resp;
         if (success) {
-          setAgentMainViewState({
-            ...agentMainViewState,
+          setAgentMainViewState((prevState) => ({
+            ...prevState,
             success: success,
             res_status: status
-          });
+          }));
         } else {
-          setAgentMainViewState({
-            ...agentMainViewState,
+          setAgentMainViewState((prevState) => ({
+            ...prevState,
             res_status: status
-          });
+          }));
         }
       },
       (error) => {
@@ -123,41 +125,32 @@ function AgentMainView(props) {
 
   return (
     <Box sx={{ mb: 2 }}>
-      <Grid container spacing={2}>
+      <Grid container spacing={1}>
         <Grid item xs={12} sm={12}>
           {agentMainViewState.notification?.isRead_new_base_docs_uploaded?.map(
             (student, i) => (
-              <Card key={i} sx={{ mb: 2 }}>
-                <Typography style={{ textAlign: 'left' }}>
-                  <ReportProblemIcon size={18} />
-                  <b className="mx-2">Reminder:</b> There are new base documents
-                  uploaded by{' '}
-                  <b>
-                    {student.student_firstname} {student.student_lastname}
-                  </b>{' '}
-                  <Link
-                    underline="hover"
-                    to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-                      student.student_id,
-                      DEMO.PROFILE_HASH
-                    )}`}
-                    component={LinkDom}
-                  >
-                    Base Document
-                  </Link>{' '}
-                  <span style={{ float: 'right', cursor: 'pointer' }}>
-                    <BsX
-                      size={18}
-                      onClick={(e) =>
-                        removeAgentBanner(
-                          e,
-                          'isRead_new_base_docs_uploaded',
-                          student.student_id
-                        )
-                      }
-                    />
-                  </span>
-                </Typography>
+              <Card key={i} sx={{ mb: 1 }}>
+                <Banner
+                  bg={'danger'}
+                  title={'warning'}
+                  path={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                    student.student_id,
+                    DEMO.PROFILE_HASH
+                  )}`}
+                  text={`${t('There are new base documents uploaded by', {
+                    ns: 'common'
+                  })} ${student.student_firstname} ${student.student_lastname}`}
+                  link_name={<LaunchIcon fontSize="small" />}
+                  removeBanner={(e) =>
+                    removeAgentBanner(
+                      e,
+                      'isRead_new_base_docs_uploaded',
+                      student.student_id
+                    )
+                  }
+                  student_id={student.student_id}
+                  notification_key={'isRead_new_base_docs_uploaded'}
+                />
               </Card>
             )
           )}
@@ -166,7 +159,6 @@ function AgentMainView(props) {
           <Card>
             <Alert severity="error">
               <Typography>
-                {' '}
                 {t('Upcoming Applications', { ns: 'dashboard' })} (Decided):
               </Typography>
             </Alert>

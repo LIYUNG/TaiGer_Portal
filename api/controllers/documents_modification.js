@@ -43,6 +43,7 @@ const { AWS_S3_BUCKET_NAME, API_ORIGIN } = require('../config');
 const Permission = require('../models/Permission');
 const { s3 } = require('../aws/index');
 const { Interview } = require('../models/Interview');
+const mongoose = require('mongoose');
 
 const ThreadS3GarbageCollector = async () => {
   try {
@@ -2308,6 +2309,19 @@ const getAllActiveEssays = asyncHandler(async (req, res, next) => {
   }
 });
 
+const IgnoreMessageInDocumentThread = asyncHandler(async (req, res, next) => {
+  const {
+    params: { messagesThreadId,  messageId, ignoreMessageState }
+  } = req;
+  const { message } = req.body;
+  const thread = await Documentthread.updateOne(
+    { "messages._id": new mongoose.Types.ObjectId(messageId) },
+    { $set: { "messages.$.ignore_message": ignoreMessageState } }
+  );
+  res.status(200).send({ success: true, data: thread });
+  next();
+});
+
 module.exports = {
   ThreadS3GarbageCollector,
   getAllCVMLRLOverview,
@@ -2333,5 +2347,6 @@ module.exports = {
   deleteAMessageInThread,
   getAllActiveEssays,
   assignEssayWritersToEssayTask,
-  clearEssayWriters
+  clearEssayWriters,
+  IgnoreMessageInDocumentThread
 };

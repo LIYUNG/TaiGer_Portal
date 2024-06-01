@@ -622,6 +622,28 @@ const deleteAMessageInCommunicationThread = asyncHandler(
   }
 );
 
+const IgnoreMessage = asyncHandler(async (req, res, next) => {
+  const {
+    params: { communication_messageId, ignoreMessageState }
+  } = req;
+  const { message } = req.body;
+
+  const thread = await Communication.findById(communication_messageId).populate(
+    'student_id user_id',
+    'firstname lastname'
+  );
+  if (!thread) {
+    logger.error('updateAMessageInThread : Invalid message thread id');
+    throw new ErrorResponse(404, 'Thread not found');
+  }
+  thread.ignore_message = ignoreMessageState;
+  thread.message = JSON.stringify(req.body);
+  await thread.save();
+  console.log("save succeeds");
+  res.status(200).send({ success: true, data: thread });
+  next();
+});
+
 module.exports = {
   getSearchUserMessages,
   getSearchMessageKeywords,
@@ -631,5 +653,6 @@ module.exports = {
   getMessages,
   postMessages,
   updateAMessageInThread,
-  deleteAMessageInCommunicationThread
+  deleteAMessageInCommunicationThread,
+  IgnoreMessage
 };

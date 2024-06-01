@@ -8,11 +8,15 @@ import {
   AccordionDetails,
   Box,
   useTheme,
-  useMediaQuery
+  useMediaQuery,
+  FormGroup,
+  FormControlLabel,
+  Checkbox
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { RiCloseFill } from 'react-icons/ri';
 import { AiFillEdit } from 'react-icons/ai';
+import { is_TaiGer_Student } from '../Utils/checking-functions';
 
 // import Output from 'editorjs-react-renderer';
 import EditorSimple from '../../components/EditorJs/EditorSimple';
@@ -21,6 +25,7 @@ import { useAuth } from '../../components/AuthProvider';
 import ModalNew from '../../components/Modal';
 import Loading from '../../components/Loading/Loading';
 import { useTranslation } from 'react-i18next';
+import { IgnoreMessage } from '../../api/index';
 
 function Message(props) {
   // const onlyWidth = useWindowWidth();
@@ -30,7 +35,8 @@ function Message(props) {
     editorState: null,
     message_id: '',
     isLoaded: false,
-    deleteMessageModalShow: false
+    deleteMessageModalShow: false,
+    ignore_message: props.message.ignore_message === false || props.message.ignore_message === undefined ? false : props.message.ignore_message
   });
   const theme = useTheme();
   const ismobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -79,6 +85,27 @@ function Message(props) {
     }));
     props.onDeleteSingleMessage(e, messageState.message_id);
   };
+
+  const handleCheckboxChange = (e) => {
+    e.preventDefault();
+    setMessageState((prevState) => {
+      return {
+        ...prevState,
+        ignore_message: !prevState.ignore_message
+      };
+    });
+  };
+  useEffect(() => {
+    const message = props.message;
+    const ignoreMessageState = messageState.ignore_message;
+    const updateIgnoreMessage = async () => {
+      const resp = await IgnoreMessage(message._id, message.message, ignoreMessageState);
+      if (resp) {
+        console.log('nice');
+      }
+    };
+    updateIgnoreMessage();
+  }, [messageState.ignore_message]);
 
   if (!messageState.isLoaded && !messageState.editorState) {
     return <Loading />;
@@ -169,6 +196,20 @@ function Message(props) {
               defaultHeight={0}
             />
           </Box>
+          {!is_TaiGer_Student(user) && (is_TaiGer_Student(props.message.user_id)) && (
+          <FormGroup>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={messageState.ignore_message}
+                  onChange={handleCheckboxChange}
+                />
+              }
+              label="Ignore Message"
+              labelPlacement="start"
+            />
+          </FormGroup>
+          )}
         </AccordionDetails>
       </Accordion>
       {/* TODOL consider to move it to the parent! It render many time! as message increase */}

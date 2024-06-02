@@ -33,10 +33,10 @@ const friend = (props) => {
   // Access the first text content
   const firstText =
     parsedObject?.blocks?.length > 0
-      ? parsedObject?.blocks[0]?.data?.text?.replace(
-          /<\/?[^>]+(>|$)|&[^;]+;?/g,
-          ''
-        ) || ''
+      ? parsedObject?.blocks
+          .map((block) => (block?.type === 'paragraph' ? block.data?.text : ''))
+          ?.join('')
+          .replace(/<\/?[^>]+(>|$)|&[^;]+;?/g, '') || ''
       : '';
 
   const handleToChat = () => {

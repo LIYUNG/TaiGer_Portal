@@ -9,6 +9,9 @@ import { useTranslation } from 'react-i18next';
 import { green, grey } from '@mui/material/colors';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import HelpIcon from '@mui/icons-material/Help';
+import StarBorderRoundedIcon from '@mui/icons-material/StarBorderRounded';
+import StarRoundedIcon from '@mui/icons-material/StarRounded';
+
 import {
   Typography,
   Button,
@@ -21,7 +24,8 @@ import {
   Grid,
   Breadcrumbs,
   useTheme,
-  Avatar
+  Avatar,
+  IconButton
 } from '@mui/material';
 import { pdfjs } from 'react-pdf'; // Library for rendering PDFs
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
@@ -38,7 +42,8 @@ import {
   getRequirement,
   is_TaiGer_AdminAgent,
   is_TaiGer_Student,
-  is_TaiGer_role
+  is_TaiGer_role,
+  toogleItemInArray
 } from '../../Utils/checking-functions';
 import { BASE_URL } from '../../../api/request';
 import {
@@ -47,7 +52,8 @@ import {
   deleteAMessageInThread,
   SetFileAsFinal,
   updateEssayWriter,
-  putOriginAuthorConfirmedByStudent
+  putOriginAuthorConfirmedByStudent,
+  putThreadFavorite
 } from '../../../api';
 import { TabTitle } from '../../Utils/TabTitle';
 import DEMO from '../../../store/constant';
@@ -730,6 +736,40 @@ function DocModificationThreadPage() {
     );
   };
 
+  const handleFavoriteToggle = (id) => {
+    // Make sure flag_by_user_id is an array
+
+    setDocModificationThreadPageState((prevState) => ({
+      ...prevState,
+      thread: {
+        ...prevState.thread,
+        flag_by_user_id: toogleItemInArray(
+          docModificationThreadPageState.thread?.flag_by_user_id,
+          user._id.toString()
+        )
+      }
+    }));
+    putThreadFavorite(id).then(
+      (resp) => {
+        const { success } = resp.data;
+        const { status } = resp;
+        if (!success) {
+          setDocModificationThreadPageState((prevState) => ({
+            ...prevState,
+            res_status: status
+          }));
+        }
+      },
+      (error) => {
+        setDocModificationThreadPageState((prevState) => ({
+          ...prevState,
+          error,
+          res_status: 500
+        }));
+      }
+    );
+  };
+
   const handleCloseFileList = () => {
     setDocModificationThreadPageState((prevState) => ({
       ...prevState,
@@ -919,6 +959,25 @@ function DocModificationThreadPage() {
           <Grid item md={widths[0]}>
             <Typography variant="h6" fontWeight="bold">
               {t('Instructions')}
+              <IconButton
+                onClick={() =>
+                  handleFavoriteToggle(
+                    docModificationThreadPageState.thread._id
+                  )
+                }
+              >
+                {docModificationThreadPageState.thread.flag_by_user_id?.includes(
+                  user._id.toString()
+                ) ? (
+                  <StarRoundedIcon
+                  // color={params.value ? 'primary' : 'action'}
+                  />
+                ) : (
+                  <StarBorderRoundedIcon
+                  // color={params.value ? 'primary' : 'action'}
+                  />
+                )}
+              </IconButton>
             </Typography>
             {template_obj ? (
               <>

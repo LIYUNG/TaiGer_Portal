@@ -1791,6 +1791,14 @@ export const programs_refactor = (students) => {
   return applications;
 };
 
+export const toogleItemInArray = (arr, item) => {
+  return arr?.includes(item)
+    ? arr?.filter((userId) => userId !== item)
+    : arr?.length > 0
+    ? [...arr, item]
+    : [item];
+};
+
 const getNextProgram = (student) => {
   const nextProgram = programs_refactor([student])
     .filter(

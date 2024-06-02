@@ -91,14 +91,13 @@ function Message(props) {
     props.onDeleteSingleMessage(e, messageState.message_id);
   };
 
-  const handleCheckboxChange = (e) => {
-    e.preventDefault();
+  const handleCheckboxChange = async () => {
+    const ignoreMessageState = !messageState.ignore_message;
     setMessageState((prevState) => ({
       ...prevState,
-      ignore_message: !prevState.ignore_message
+      ignore_message: ignoreMessageState
     }));
     const message = props.message;
-    const ignoreMessageState = messageState.ignore_message;
     const updateIgnoreMessage = async () => {
       const resp = await IgnoreMessage(
         message.student_id._id.toString(),
@@ -110,7 +109,7 @@ function Message(props) {
         console.log('nice');
       }
     };
-    updateIgnoreMessage();
+    await updateIgnoreMessage();
   };
 
   if (!messageState.isLoaded && !messageState.editorState) {

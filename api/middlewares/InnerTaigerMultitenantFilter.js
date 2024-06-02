@@ -1,6 +1,9 @@
 const { ErrorResponse } = require('../common/errors');
-const { Role, Student } = require('../models/User');
-const { getPermission } = require('../utils/queryFunctions');
+const { Role } = require('../models/User');
+const {
+  getPermission,
+  getCachedStudentPermission
+} = require('../utils/queryFunctions');
 
 const InnerTaigerMultitenantFilter = async (req, res, next) => {
   const {
@@ -10,7 +13,7 @@ const InnerTaigerMultitenantFilter = async (req, res, next) => {
   if (user.role === Role.Editor || user.role === Role.Agent) {
     const permissions = await getPermission(user);
 
-    const student = await Student.findById(studentId).select('agents editors');
+    const student = await getCachedStudentPermission(studentId);
     if (!student) {
       next(new ErrorResponse(404, 'Student not found'));
     }

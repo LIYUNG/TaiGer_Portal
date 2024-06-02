@@ -7,7 +7,7 @@ const permission_canAssignEditor_filter = async (req, res, next) => {
   const { user } = req;
   const cachedPermission = await getPermission(user);
 
-  if (user.role === 'Admin' || cachedPermission?.canAssignEditors) {
+  if (user.role === Role.Admin || cachedPermission?.canAssignEditors) {
     next();
   } else {
     logger.warn('permissions denied: permission_canAssignEditor_filter');
@@ -20,7 +20,7 @@ const permission_canAssignEditor_filter = async (req, res, next) => {
 const permission_canAssignAgent_filter = async (req, res, next) => {
   const { user } = req;
   const cachedPermission = await getPermission(user);
-  if (user.role === 'Admin' || cachedPermission?.canAssignAgents) {
+  if (user.role === Role.Admin || cachedPermission?.canAssignAgents) {
     next();
   } else {
     logger.warn('permissions denied: permission_canAssignAgent_filter');

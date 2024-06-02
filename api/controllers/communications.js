@@ -50,8 +50,8 @@ const getSearchUserMessages = asyncHandler(async (req, res, next) => {
 
   const permissions = await getPermission(user);
   if (
-    user.role === 'Admin' ||
-    (user.role === 'Agent' && permissions?.canAccessAllChat)
+    user.role === Role.Admin ||
+    (user.role === Role.Agent && permissions?.canAccessAllChat)
   ) {
     const students = await Student.find(
       {
@@ -137,7 +137,7 @@ const getSearchMessageKeywords = asyncHandler(async (req, res) => {
       }
     }
   ]);
-  if (user.role === 'Admin') {
+  if (user.role === Role.Admin) {
     const students = await Student.find({
       $or: [{ archiv: { $exists: false } }, { archiv: false }]
     })
@@ -202,8 +202,8 @@ const getUnreadNumberMessages = asyncHandler(async (req, res) => {
   }
   const permissions = await getPermission(user);
   if (
-    user.role === 'Admin' ||
-    (user.role === 'Agent' && permissions?.canAccessAllChat)
+    user.role === Role.Admin ||
+    (user.role === Role.Agent && permissions?.canAccessAllChat)
   ) {
     const students = await Student.find({
       $or: [{ archiv: { $exists: false } }, { archiv: false }]
@@ -304,8 +304,8 @@ const getMyMessages = asyncHandler(async (req, res, next) => {
   const permissions = await getPermission(user);
 
   if (
-    user.role === 'Admin' ||
-    (user.role === 'Agent' && permissions?.canAccessAllChat)
+    user.role === Role.Admin ||
+    (user.role === Role.Agent && permissions?.canAccessAllChat)
   ) {
     const students = await Student.find({
       $or: [{ archiv: { $exists: false } }, { archiv: false }]

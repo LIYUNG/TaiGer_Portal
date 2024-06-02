@@ -1401,7 +1401,7 @@ const missing_academic_background = (student, user) => {
         }
       }
     }
-    if (user.role === Role.Agent || user.role === 'Admin') {
+    if (user.role === Role.Agent || user.role === Role.Admin) {
       missing_background_fields += `<p>Please go to <a href="${SURVEY_URL_FOR_AGENT_URL(
         student._id.toString()
       )}">Survey</a> and update them.</p>`;

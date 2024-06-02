@@ -58,7 +58,7 @@ router
   );
 
 router
-  .route('/:communication_messageId/:ignoreMessageState/ignore')
+  .route('/:studentId/:communication_messageId/:ignoreMessageState/ignore')
   .put(
     filter_archiv_user,
     postMessagesImageRateLimiter,

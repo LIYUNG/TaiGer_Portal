@@ -20,8 +20,7 @@ import moment from 'moment-timezone';
 import { Navigate, useParams, Link as LinkDom } from 'react-router-dom';
 import CheckIcon from '@mui/icons-material/Check';
 import PersonIcon from '@mui/icons-material/Person';
-
-import { AiOutlineMail } from 'react-icons/ai';
+import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import PropTypes from 'prop-types';
 
 import {
@@ -373,7 +372,7 @@ function OfficeHours() {
               {event_temp.receiver_id?.map((receiver, x) => (
                 <span key={x}>
                   {receiver.firstname} {receiver.lastname}{' '}
-                  <AiOutlineMail ize={16} /> {receiver.email}
+                  <MailOutlineIcon fontSize='small' /> {receiver.email}
                 </span>
               ))}
             </Typography>

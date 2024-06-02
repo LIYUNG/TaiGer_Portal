@@ -8,13 +8,14 @@ import {
   Avatar,
   Box,
   Button,
+  IconButton,
   Link,
   Typography,
   FormGroup,
   FormControlLabel,
   Checkbox
 } from '@mui/material';
-import { RiCloseFill } from 'react-icons/ri';
+import CloseIcon from '@mui/icons-material/Close';
 import { FileIcon, defaultStyles } from 'react-file-icon';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { is_TaiGer_Student } from '../../Utils/checking-functions';
@@ -207,25 +208,26 @@ function Message(props) {
           <Avatar {...stringAvatar(full_name)} />
           <Typography style={{ marginLeft: '10px', flex: 1 }}>
             <b style={{ cursor: 'pointer' }}>{full_name}</b>
-            <span style={{ display: 'flex', float: 'right' }}>
-              {convertDate(props.message.createdAt)}
-              {editable && (
-                <RiCloseFill
-                  className="mx-0"
-                  color="red"
+          </Typography>
+          <Typography style={{ display: 'flex', float: 'right' }}>
+            {convertDate(props.message.createdAt)}
+            {editable && (
+              <IconButton
+                onClick={(e) =>
+                  onOpendeleteMessageModalShow(
+                    e,
+                    props.message._id.toString(),
+                    props.message.createdAt
+                  )
+                }
+              >
+                <CloseIcon
+                  fontSize="small"
                   title="Delete this message and file"
-                  size={20}
-                  onClick={(e) =>
-                    onOpendeleteMessageModalShow(
-                      e,
-                      props.message._id.toString(),
-                      props.message.createdAt
-                    )
-                  }
                   style={{ cursor: 'pointer' }}
                 />
-              )}
-            </span>
+              </IconButton>
+            )}
           </Typography>
         </AccordionSummary>
         <AccordionDetails in={props.accordionKeys[props.idx] === props.idx}>

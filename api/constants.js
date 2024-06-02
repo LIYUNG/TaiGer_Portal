@@ -216,6 +216,33 @@ const ESSAY_WRITER_SCOPE = {
   Essay: 'Essay'
 };
 const FILE_MAPPING_TABLE = { ...EDITOR_SCOPE, ...ESSAY_WRITER_SCOPE };
+const PROGRAM_SPECIFIC_FILETYPE = [
+  {
+    required: 'ml_required',
+    fileType: 'ML'
+  },
+  {
+    required: 'essay_required',
+    fileType: 'Essay'
+  },
+  {
+    required: 'portfolio_required',
+    fileType: 'Portfolio'
+  },
+  {
+    required: 'supplementary_form_required',
+    fileType: 'Supplementary_Form'
+  },
+  {
+    required: 'curriculum_analysis_required',
+    fileType: 'Curriculum_Analysis'
+  },
+  {
+    required: 'scholarship_form_required',
+    fileType: 'Scholarship_Form'
+  }
+];
+
 const RLs_CONSTANT = ['RL_A', 'RL_B', 'RL_C'];
 const GENERAL_RLs_CONSTANT = [
   'Recommendation_Letter_A',
@@ -1622,6 +1649,7 @@ module.exports = {
   EDITOR_SCOPE,
   ESSAY_WRITER_SCOPE,
   FILE_MAPPING_TABLE,
+  PROGRAM_SPECIFIC_FILETYPE,
   RLs_CONSTANT,
   GENERAL_RLs_CONSTANT,
   General_Docs,

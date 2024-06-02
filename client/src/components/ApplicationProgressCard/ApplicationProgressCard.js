@@ -3,8 +3,16 @@ import { Link as LinkDom, useNavigate } from 'react-router-dom';
 import UndoIcon from '@mui/icons-material/Undo';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
+import BlockIcon from '@mui/icons-material/Block';
 import AddIcon from '@mui/icons-material/Add';
-import { Card, Collapse, CardContent, Typography, Box } from '@mui/material';
+import {
+  Card,
+  Collapse,
+  CardContent,
+  Typography,
+  Box,
+  IconButton
+} from '@mui/material';
 import {
   Button,
   Link,
@@ -15,12 +23,7 @@ import {
   TextField
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import {
-  AiFillCheckCircle,
-  AiFillCloseCircle,
-  AiOutlineFieldTime,
-  AiOutlineStop
-} from 'react-icons/ai';
+import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty';
 import LaunchIcon from '@mui/icons-material/Launch';
 
 import ApplicationProgressCardBody from './ApplicationProgressCardBody';
@@ -28,11 +31,16 @@ import { updateStudentApplicationResult } from '../../api';
 import DEMO from '../../store/constant';
 import {
   application_deadline_calculator,
+  isProgramAdmitted,
   progressBarCounter
 } from '../../Demo/Utils/checking-functions';
 import ModalNew from '../Modal';
 import { BASE_URL } from '../../api/request';
-import { convertDate } from '../../Demo/Utils/contants';
+import {
+  FILE_NOT_OK_SYMBOL,
+  FILE_OK_SYMBOL,
+  convertDate
+} from '../../Demo/Utils/contants';
 import { appConfig } from '../../config';
 
 const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
@@ -148,21 +156,21 @@ export default function ApplicationProgressCard(props) {
               <>
                 {application.admission === '-' && (
                   <>
-                    <AiFillCheckCircle color="limegreen" size={16} />
+                    <IconButton>{FILE_OK_SYMBOL}</IconButton>
                     &nbsp;
                     {t('Submitted', { ns: 'common' })}
                   </>
                 )}
-                {application.admission === 'O' && (
+                {isProgramAdmitted(application) && (
                   <>
-                    <AiFillCheckCircle color="lightblue" size={16} />
+                    <IconButton>{FILE_OK_SYMBOL}</IconButton>
                     &nbsp;
                     {t('Admitted', { ns: 'common' })}
                   </>
                 )}
                 {application.admission === 'X' && (
                   <>
-                    <AiFillCloseCircle color="red" size={16} />
+                    <IconButton>{FILE_NOT_OK_SYMBOL}</IconButton>
                     &nbsp;
                     {t('Rejected', { ns: 'common' })}
                   </>
@@ -170,41 +178,46 @@ export default function ApplicationProgressCard(props) {
               </>
             ) : application_deadline_calculator(props.student, application) ===
               'WITHDRAW' ? (
-              <span title="Deadline">
-                <AiOutlineStop size={16} />{' '}
+              <>
+                <IconButton title="Withdraw">
+                  <BlockIcon fontSize="small" />
+                </IconButton>
                 {application_deadline_calculator(props.student, application)}
-              </span>
+              </>
             ) : (
-              <span title="Deadline">
-                <AiOutlineFieldTime size={16} />{' '}
+              <>
+                <IconButton title="Pending">
+                  <HourglassEmptyIcon fontSize="small" />
+                </IconButton>
                 {application_deadline_calculator(props.student, application)}
-              </span>
+              </>
             )}
           </Typography>
           <Typography sx={{ fontSize: 16 }} color="text.secondary" gutterBottom>
-            <img
-              src={`/assets/logo/country_logo/svg/${application?.programId.country}.svg`}
-              alt="Logo"
-              style={{ maxWidth: '24px', maxHeight: '24px' }}
-            />{' '}
-            <Link
-              underline="hover"
-              to={`${DEMO.SINGLE_PROGRAM_LINK(
-                application?.programId?._id?.toString()
-              )}`}
-              component={LinkDom}
-              target="_blank"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <Box sx={{ display: 'flex' }}>
+            <Box sx={{ display: 'flex' }}>
+              <img
+                src={`/assets/logo/country_logo/svg/${application?.programId.country}.svg`}
+                alt="Logo"
+                style={{ maxWidth: '24px', maxHeight: '24px' }}
+              />{' '}
+              &nbsp;
+              <Link
+                underline="hover"
+                to={`${DEMO.SINGLE_PROGRAM_LINK(
+                  application?.programId?._id?.toString()
+                )}`}
+                component={LinkDom}
+                target="_blank"
+                onClick={(e) => e.stopPropagation()}
+              >
                 <Typography fontWeight="bold">
                   {application?.programId?.school}
+                  <IconButton>
+                    <LaunchIcon fontSize="small" />
+                  </IconButton>
                 </Typography>
-                <Typography sx={{ display: 'flex' }}>
-                  <LaunchIcon fontSize="small" />
-                </Typography>
-              </Box>
-            </Link>
+              </Link>
+            </Box>
           </Typography>
           <Typography variant="p" component="div">
             {application?.programId?.degree}{' '}

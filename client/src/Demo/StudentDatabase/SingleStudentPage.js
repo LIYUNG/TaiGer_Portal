@@ -21,12 +21,12 @@ import {
   TableCell,
   Breadcrumbs,
   Alert,
-  TableContainer
+  TableContainer,
+  IconButton
 } from '@mui/material';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import { AiFillEdit } from 'react-icons/ai';
-import { BsMessenger } from 'react-icons/bs';
+import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 
 import { TopBar } from '../../components/TopBar/TopBar';
 import BaseDocument_StudentView from '../BaseDocuments/BaseDocument_StudentView';
@@ -344,7 +344,9 @@ export const SingleStudentPageMainContent = ({
               component={LinkDom}
               to={`${DEMO.PROFILE_STUDENT_LINK(singleStudentPage.student._id)}`}
             >
-              <AiFillEdit color="red" size={24} />
+              <IconButton>
+                <EditIcon fontSize="small" />
+              </IconButton>
             </Link>
           </Breadcrumbs>
         </Box>
@@ -360,9 +362,12 @@ export const SingleStudentPageMainContent = ({
                 )}`}
                 sx={{ mr: 1 }}
               >
-                <Button color="primary" variant="contained" size="small">
-                  <BsMessenger color="white" size={16} />
-                  &nbsp;
+                <Button
+                  color="primary"
+                  variant="contained"
+                  size="small"
+                  startIcon={<ChatBubbleOutlineIcon />}
+                >
                   <b>{t('Message', { ns: 'common' })}</b>
                 </Button>
               </Link>

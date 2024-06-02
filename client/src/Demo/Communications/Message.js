@@ -11,12 +11,14 @@ import {
   useMediaQuery,
   FormGroup,
   FormControlLabel,
-  Checkbox
+  Checkbox,
+  IconButton
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { RiCloseFill } from 'react-icons/ri';
-import { AiFillEdit } from 'react-icons/ai';
-import { is_TaiGer_Student } from '../Utils/checking-functions';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import CloseIcon from '@mui/icons-material/Close';
+import EditIcon from '@mui/icons-material/Edit';
+import { useTranslation } from 'react-i18next';
 
 // import Output from 'editorjs-react-renderer';
 import EditorSimple from '../../components/EditorJs/EditorSimple';
@@ -24,8 +26,8 @@ import { stringAvatar, convertDate } from '../Utils/contants';
 import { useAuth } from '../../components/AuthProvider';
 import ModalNew from '../../components/Modal';
 import Loading from '../../components/Loading/Loading';
-import { useTranslation } from 'react-i18next';
 import { IgnoreMessage } from '../../api/index';
+import { is_TaiGer_Student } from '../Utils/checking-functions';
 
 function Message(props) {
   // const onlyWidth = useWindowWidth();
@@ -130,7 +132,7 @@ function Message(props) {
         sx={{
           overflowWrap: 'break-word', // Add this line
           ...(props.isTaiGerView &&
-            !ismobile && { maxWidth: window.innerWidth - 664 +32 }),
+            !ismobile && { maxWidth: window.innerWidth - 664 + 32 }),
           marginTop: '1px',
           '& .MuiAvatar-root': {
             width: 32,
@@ -152,25 +154,15 @@ function Message(props) {
               {convertDate(props.message.createdAt)}
               {editable && (
                 <>
-                  <AiFillEdit
-                    className="mx-1"
-                    color="blue"
-                    title="Delete this message and file"
-                    size={20}
-                    onClick={() =>
-                      props
-                        .onEditMode
-                        // e,
-                        // props.message._id.toString()
-                        ()
-                    }
-                    style={{ cursor: 'pointer' }}
-                  />
-                  <RiCloseFill
-                    className="mx-0"
-                    color="red"
-                    title="Delete this message and file"
-                    size={20}
+                  <IconButton onClick={() => props.onEditMode()}>
+                    <EditIcon
+                      title="Edit this message"
+                      fontSize="small"
+                      style={{ cursor: 'pointer' }}
+                    />
+                  </IconButton>
+                  <IconButton
+                    aria-label="delete"
                     onClick={(e) =>
                       onOpendeleteMessageModalShow(
                         e,
@@ -178,8 +170,13 @@ function Message(props) {
                         props.message.createdAt
                       )
                     }
-                    style={{ cursor: 'pointer' }}
-                  />
+                  >
+                    <CloseIcon
+                      fontSize="small"
+                      title="Delete this message and file"
+                      style={{ cursor: 'pointer' }}
+                    />
+                  </IconButton>
                 </>
               )}
             </span>

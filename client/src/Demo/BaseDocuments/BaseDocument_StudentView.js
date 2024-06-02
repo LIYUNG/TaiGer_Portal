@@ -3,6 +3,7 @@ import LaunchIcon from '@mui/icons-material/Launch';
 import {
   Box,
   Button,
+  IconButton,
   Table,
   TableBody,
   TableCell,
@@ -12,7 +13,6 @@ import {
   Typography
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import LinkIcon from '@mui/icons-material/Link';
 
 import ButtonSetUploaded from './ButtonSetUploaded';
 import ButtonSetAccepted from './ButtonSetAccepted';
@@ -437,11 +437,17 @@ function BaseDocument_StudentView(props) {
         title={'info'}
         path={'/'}
         text={
-          <Typography variant="body2" sx={{ display: 'flex' }}>
+          <Typography variant="body2">
             每個檔案都有注意事項。請務必上傳文件前，點選各文件名稱旁的說明連結圖示
-            <Button size="small" variant="outlined" startIcon={<LinkIcon />}>
-              {t('Read More')}
-            </Button>
+            <IconButton>
+              <Button
+                size="small"
+                variant="outlined"
+                endIcon={<LaunchIcon fontSize="small" />}
+              >
+                {t('Read More')}
+              </Button>
+            </IconButton>
             並查看文件要求，照著我們的要求上傳，Agent 會再檢查文件是否沒問題。
           </Typography>
         }
@@ -458,8 +464,11 @@ function BaseDocument_StudentView(props) {
           '無論是申請大學部或是碩士班，高中文件、學測或統測成績單為必要文件。德國學校通常列為必要文件，此文件會因為您的背景況狀有所變動。請先填好'
         }
         link_name={
-          <Typography variant="body2" sx={{ display: 'flex' }}>
-            {t('Profile', { ns: 'common' })} <LaunchIcon fontSize="small" />
+          <Typography variant="body2">
+            {t('Profile', { ns: 'common' })}{' '}
+            <IconButton>
+              <LaunchIcon fontSize="small" />
+            </IconButton>
           </Typography>
         }
         removeBanner={undefined}

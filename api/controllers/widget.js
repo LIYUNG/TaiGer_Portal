@@ -72,7 +72,6 @@ const WidgetProcessTranscript = asyncHandler(async (req, res, next) => {
 // Download original transcript excel
 const WidgetdownloadXLSX = asyncHandler(async (req, res, next) => {
   const {
-    user,
     params: { adminId }
   } = req;
 

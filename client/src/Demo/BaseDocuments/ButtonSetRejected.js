@@ -14,7 +14,7 @@ import {
 import MessageIcon from '@mui/icons-material/Message';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
-import LinkIcon from '@mui/icons-material/Link';
+import LaunchIcon from '@mui/icons-material/Launch';
 
 import FilePreview from '../../components/FilePreview/FilePreview';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
@@ -296,7 +296,7 @@ function ButtonSetRejected(props) {
           target="_blank"
           sx={{ ml: 1 }}
         >
-          <Button size="small" variant="outlined" startIcon={<LinkIcon />}>
+          <Button size="small" variant="outlined" endIcon={<LaunchIcon />}>
             {t('Read More')}
           </Button>
         </Link>

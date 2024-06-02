@@ -1060,13 +1060,13 @@ export const convertDate_ux_friendly = (date) => {
 
   let timeDisplay;
   if (minutes < 60) {
-    timeDisplay = `${minutes} minute${minutes > 1 ? 's' : ''}`;
+    timeDisplay = `${minutes} min.`;
   } else if (hours < 24) {
-    timeDisplay = `${hours} hour${hours > 1 ? 's' : ''}`;
+    timeDisplay = `${hours} h`;
   } else if (days < 7) {
     timeDisplay = `${days} day${days > 1 ? 's' : ''}`;
   } else if (weeks < 4) {
-    timeDisplay = `${weeks} week${weeks > 1 ? 's' : ''}`;
+    timeDisplay = `${weeks} w`;
   } else {
     timeDisplay = `${dat}`;
   }

@@ -13,10 +13,12 @@ const communicationsSchema = new Schema(
       default: ''
     },
     readBy: [{ type: ObjectId, ref: 'User' }],
-    createdAt: Date
+    createdAt: Date,
+    ignore_message: Boolean
   },
   { timestamps: true }
 );
+
 const Communication = model('Communication', communicationsSchema);
 module.exports = {
   Communication

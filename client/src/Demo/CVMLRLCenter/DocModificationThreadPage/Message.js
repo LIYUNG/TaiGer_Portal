@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
+import debounce from 'lodash/debounce';
 import { Link as LinkDom } from 'react-router-dom';
 import {
   Accordion,
@@ -9,12 +10,15 @@ import {
   Button,
   IconButton,
   Link,
-  Typography
+  Typography,
+  FormGroup,
+  FormControlLabel,
+  Checkbox
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { FileIcon, defaultStyles } from 'react-file-icon';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-
+import { is_TaiGer_Student } from '../../Utils/checking-functions';
 import { BASE_URL } from '../../../api/request';
 import EditorSimple from '../../../components/EditorJs/EditorSimple';
 // import Output from 'editorjs-react-renderer';
@@ -23,6 +27,7 @@ import { useAuth } from '../../../components/AuthProvider';
 import ModalNew from '../../../components/Modal';
 import { useTranslation } from 'react-i18next';
 import Loading from '../../../components/Loading/Loading';
+import { IgnoreMessageThread } from '../../../api/index';
 
 function Message(props) {
   const { user } = useAuth();
@@ -32,7 +37,8 @@ function Message(props) {
     ConvertedContent: '',
     message_id: '',
     isLoaded: false,
-    deleteMessageModalShow: false
+    deleteMessageModalShow: false,
+    ignore_message: props.message.ignore_message === false || props.message.ignore_message === undefined ? false : props.message.ignore_message
   });
   useEffect(() => {
     var initialEditorState = null;
@@ -80,6 +86,40 @@ function Message(props) {
     }));
     props.onDeleteSingleMessage(e, messageState.message_id);
   };
+
+  const debouncedIgnoreMessage = useCallback(
+    debounce(async (documentThreadId, messageId, message, ignoreMessageState) => {
+      const resp = await IgnoreMessageThread(documentThreadId, messageId, message.message, ignoreMessageState);
+      if (resp) {
+        console.log('nice');
+      }
+    }, 200), // Adjust debounce time as needed
+    []
+  );
+
+  const handleCheckboxChange = (e) => {
+    e.preventDefault();
+    setMessageState((prevState) => {
+      console.log('Previous ignored_message:', prevState.ignore_message);
+      
+      return {
+        ...prevState,
+        ignore_message: !prevState.ignore_message
+      };
+    });
+  };
+  
+  useEffect(() => {
+    // console.log('Updated ignored_message:', messageState.ignore_message);
+    if (messageState.ignore_message !== props.message.ignore_message) {
+      console.log('Updated ignore_message:', messageState.ignore_message);
+      const documentThreadId = props.documentsthreadId;
+      const messageId = props.message._id;
+      const message = props.message;
+      const ignoreMessageState = messageState.ignore_message;
+      debouncedIgnoreMessage(documentThreadId, messageId, message, ignoreMessageState);
+    }
+  }, [messageState.ignore_message]);
 
   if (!messageState.isLoaded && !messageState.editorState) {
     return <Loading />;
@@ -204,6 +244,20 @@ function Message(props) {
             defaultHeight={0}
           />
           {files_info}
+          {!is_TaiGer_Student(user) && (is_TaiGer_Student(props.message.user_id)) && (
+          <FormGroup>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={messageState.ignore_message}
+                  onChange={handleCheckboxChange}
+                />
+              }
+              label="Ignore Message"
+              labelPlacement="start"
+            />
+          </FormGroup>
+          )}
         </AccordionDetails>
       </Accordion>
       <ModalNew

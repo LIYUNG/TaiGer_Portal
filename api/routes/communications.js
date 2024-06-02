@@ -20,7 +20,8 @@ const {
   getMyMessages,
   loadMessages,
   getSearchUserMessages,
-  getUnreadNumberMessages
+  getUnreadNumberMessages,
+  IgnoreMessage
 } = require('../controllers/communications');
 const {
   chatMultitenantFilter
@@ -47,12 +48,24 @@ router
     getUnreadNumberMessages
   );
 
-router
+  router
   .route('/all')
   .get(
     getMessagesRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
     getMyMessages,
+    logAccess
+  );
+
+router
+  .route('/:communication_messageId/:ignoreMessageState/ignore')
+  .put(
+    filter_archiv_user,
+    postMessagesImageRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
+    multitenant_filter,
+    chatMultitenantFilter,
+    IgnoreMessage,
     logAccess
   );
 

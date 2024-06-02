@@ -40,7 +40,8 @@ const documentThreadsSchema = new mongoose.Schema({
             required: true
           }
         }
-      ]
+      ],
+      ignore_message: Boolean
     }
   ],
   updatedAt: Date

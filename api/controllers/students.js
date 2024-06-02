@@ -28,9 +28,9 @@ const {
   ManagerType,
   PROGRAM_SPECIFIC_FILETYPE
 } = require('../constants');
-const Permission = require('../models/Permission');
 const Course = require('../models/Course');
 const { Interview } = require('../models/Interview');
+const { getPermission } = require('../utils/queryFunctions');
 
 const getStudent = asyncHandler(async (req, res, next) => {
   const {
@@ -350,7 +350,7 @@ const getStudents = asyncHandler(async (req, res, next) => {
       notification: user.agent_notification
     });
   } else if (user.role === Role.Editor) {
-    const permissions = await Permission.findOne({ user_id: user._id });
+    const permissions = await getPermission(user);
     if (permissions && permissions.canAssignEditors) {
       const students = await Student.find({
         $or: [{ archiv: { $exists: false } }, { archiv: false }]
@@ -551,7 +551,7 @@ const updateStudentsArchivStatus = asyncHandler(async (req, res, next) => {
 
       res.status(200).send({ success: true, data: students });
     } else if (user.role === Role.Agent) {
-      const permissions = await Permission.findOne({ user_id: user._id });
+      const permissions = await getPermission(user);
       if (permissions && permissions.canAssignAgents) {
         const students = await Student.find({
           $or: [{ archiv: { $exists: false } }, { archiv: false }]

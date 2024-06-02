@@ -6,9 +6,9 @@ const { User, Agent, Editor, Student, Role } = require('../models/User');
 const { Program } = require('../models/Program');
 const { Documentthread } = require('../models/Documentthread');
 const logger = require('../services/logger');
-const Permission = require('../models/Permission');
 const { getStudentsByProgram } = require('./programs');
 const { findStudentDelta } = require('../utils/modelHelper/programChange');
+const { getPermission } = require('../utils/queryFunctions');
 
 const getActivePrograms = async () => {
   const activePrograms = await User.aggregate([
@@ -268,9 +268,7 @@ const getStatistics = asyncHandler(async (req, res) => {
 const getAgents = asyncHandler(async (req, res, next) => {
   const { user } = req;
   if (user.role === 'Agent') {
-    const permissions = await Permission.findOne({
-      user_id: user._id.toString()
-    });
+    const permissions = await getPermission(user);
     if (permissions && permissions.canAssignAgents) {
       const agents = await Agent.find({
         $or: [{ archiv: { $exists: false } }, { archiv: false }]
@@ -332,9 +330,7 @@ const getAgentProfile = asyncHandler(async (req, res, next) => {
 const getEditors = asyncHandler(async (req, res, next) => {
   const { user } = req;
   if (user.role === 'Editor') {
-    const permissions = await Permission.findOne({
-      user_id: user._id.toString()
-    });
+    const permissions = await getPermission(user);
     if (permissions && permissions.canAssignEditors) {
       const editors = await Editor.find({
         $or: [{ archiv: { $exists: false } }, { archiv: false }]
@@ -421,9 +417,7 @@ const getArchivStudents = asyncHandler(async (req, res) => {
 const getEssayWriters = asyncHandler(async (req, res, next) => {
   const { user } = req;
   if (user.role === 'Editor') {
-    const permissions = await Permission.findOne({
-      user_id: user._id.toString()
-    });
+    const permissions = await getPermission(user);
     // if (permissions && permissions.canAssignEditors && permissions.isEssayWriters) {
     if (permissions && permissions.canAssignEditors) {
       const editors = await Editor.find({

@@ -1,7 +1,7 @@
 const { ErrorResponse } = require('../common/errors');
 const { Interview } = require('../models/Interview');
-const Permission = require('../models/Permission');
 const { Role } = require('../models/User');
+const { getPermission } = require('../utils/queryFunctions');
 
 const interviewMultitenantFilter = async (req, res, next) => {
   const {
@@ -9,7 +9,7 @@ const interviewMultitenantFilter = async (req, res, next) => {
     params: { interview_id }
   } = req;
   if (user.role === Role.Editor || user.role === Role.Agent) {
-    const permissions = await Permission.findOne({ user_id: user._id });
+    const permissions = await getPermission(user);
 
     const interview = await Interview.findById(interview_id).populate(
       'student_id'

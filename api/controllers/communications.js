@@ -11,7 +11,7 @@ const {
 } = require('../services/email');
 const logger = require('../services/logger');
 const { isNotArchiv } = require('../constants');
-const Permission = require('../models/Permission');
+const { getPermission } = require('../utils/queryFunctions');
 
 const pageSize = 5;
 
@@ -48,7 +48,7 @@ const getSearchUserMessages = asyncHandler(async (req, res, next) => {
     }
   ]);
 
-  const permissions = await Permission.findOne({ user_id: user._id });
+  const permissions = await getPermission(user);
   if (
     user.role === 'Admin' ||
     (user.role === 'Agent' && permissions?.canAccessAllChat)
@@ -200,7 +200,7 @@ const getUnreadNumberMessages = asyncHandler(async (req, res) => {
     logger.error('getMyMessages: not TaiGer user!');
     throw new ErrorResponse(401, 'Invalid TaiGer user');
   }
-  const permissions = await Permission.findOne({ user_id: user._id });
+  const permissions = await getPermission(user);
   if (
     user.role === 'Admin' ||
     (user.role === 'Agent' && permissions?.canAccessAllChat)
@@ -288,6 +288,7 @@ const getUnreadNumberMessages = asyncHandler(async (req, res) => {
   });
 });
 
+// TODO: refactor permission to middleware
 const getMyMessages = asyncHandler(async (req, res, next) => {
   const { user } = req;
 
@@ -300,7 +301,7 @@ const getMyMessages = asyncHandler(async (req, res, next) => {
     throw new ErrorResponse(401, 'Invalid TaiGer user');
   }
 
-  const permissions = await Permission.findOne({ user_id: user._id });
+  const permissions = await getPermission(user);
 
   if (
     user.role === 'Admin' ||

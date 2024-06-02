@@ -1089,13 +1089,13 @@ const postMessages = asyncHandler(async (req, res) => {
               agent_payload.school = document_thread.program_id.school;
               agent_payload.program_name =
                 document_thread.program_id.program_name;
-              await sendNewApplicationMessageInThreadEmail(
+              sendNewApplicationMessageInThreadEmail(
                 agent_recipent,
                 agent_payload
               );
             } else {
               // if supplementary form, inform Agent.
-              await sendNewGeneraldocMessageInThreadEmail(
+              sendNewGeneraldocMessageInThreadEmail(
                 agent_recipent,
                 agent_payload
               );
@@ -1114,7 +1114,7 @@ const postMessages = asyncHandler(async (req, res) => {
           // inform active-agent
           if (isNotArchiv(student)) {
             if (isNotArchiv(student.agents[i])) {
-              await sendAssignEditorReminderEmail(
+              sendAssignEditorReminderEmail(
                 {
                   firstname: student.agents[i].firstname,
                   lastname: student.agents[i].lastname,
@@ -1173,12 +1173,12 @@ const postMessages = asyncHandler(async (req, res) => {
               editor_payload.school = document_thread.program_id.school;
               editor_payload.program_name =
                 document_thread.program_id.program_name;
-              await sendNewApplicationMessageInThreadEmail(
+              sendNewApplicationMessageInThreadEmail(
                 editor_recipient,
                 editor_payload
               );
             } else {
-              await sendNewGeneraldocMessageInThreadEmail(
+              sendNewGeneraldocMessageInThreadEmail(
                 editor_recipient,
                 editor_payload
               );
@@ -1203,7 +1203,7 @@ const postMessages = asyncHandler(async (req, res) => {
         for (let i = 0; i < student.agents.length; i += 1) {
           // inform active-agent
           if (isNotArchiv(student)) {
-            await sendAssignEssayWriterReminderEmail(
+            sendAssignEssayWriterReminderEmail(
               {
                 firstname: student.agents[i].firstname,
                 lastname: student.agents[i].lastname,
@@ -1221,7 +1221,7 @@ const postMessages = asyncHandler(async (req, res) => {
           .lean();
         if (permissions) {
           for (let x = 0; x < permissions.length; x += 1) {
-            await sendAssignEssayWriterReminderEmail(
+            sendAssignEssayWriterReminderEmail(
               {
                 firstname: permissions[x].user_id.firstname,
                 lastname: permissions[x].user_id.lastname,
@@ -1256,12 +1256,12 @@ const postMessages = asyncHandler(async (req, res) => {
               outsourcer_payload.school = document_thread.program_id.school;
               outsourcer_payload.program_name =
                 document_thread.program_id.program_name;
-              await sendNewApplicationMessageInThreadEmail(
+              sendNewApplicationMessageInThreadEmail(
                 outsourcer_recipient,
                 outsourcer_payload
               );
             } else {
-              await sendNewGeneraldocMessageInThreadEmail(
+              sendNewGeneraldocMessageInThreadEmail(
                 outsourcer_recipient,
                 outsourcer_payload
               );
@@ -2311,12 +2311,12 @@ const getAllActiveEssays = asyncHandler(async (req, res, next) => {
 
 const IgnoreMessageInDocumentThread = asyncHandler(async (req, res, next) => {
   const {
-    params: { messagesThreadId,  messageId, ignoreMessageState }
+    params: { messagesThreadId, messageId, ignoreMessageState }
   } = req;
   const { message } = req.body;
   const thread = await Documentthread.updateOne(
-    { "messages._id": new mongoose.Types.ObjectId(messageId) },
-    { $set: { "messages.$.ignore_message": ignoreMessageState } }
+    { 'messages._id': new mongoose.Types.ObjectId(messageId) },
+    { $set: { 'messages.$.ignore_message': ignoreMessageState } }
   );
   res.status(200).send({ success: true, data: thread });
   next();

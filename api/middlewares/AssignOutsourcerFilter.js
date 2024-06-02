@@ -1,7 +1,7 @@
 const { ErrorResponse } = require('../common/errors');
 const { Documentthread } = require('../models/Documentthread');
-const Permission = require('../models/Permission');
 const { Role, Student } = require('../models/User');
+const { getPermission } = require('../utils/queryFunctions');
 
 // Editor Lead, student's agents and agent lead
 const AssignOutsourcerFilter = async (req, res, next) => {
@@ -10,7 +10,7 @@ const AssignOutsourcerFilter = async (req, res, next) => {
     params: { messagesThreadId }
   } = req;
   if (user.role === Role.Editor || user.role === Role.Agent) {
-    const permissions = await Permission.findOne({ user_id: user._id });
+    const permissions = await getPermission(user);
     let outsourcer_allowed_modify = false;
     let studentId_temp = '';
     const document_thread = await Documentthread.findById(messagesThreadId)

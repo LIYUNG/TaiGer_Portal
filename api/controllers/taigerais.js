@@ -9,11 +9,11 @@ const { Program } = require('../models/Program');
 const { ProgramAI } = require('../models/ProgramAI');
 const { isProd } = require('../config');
 const { openAIClient } = require('../services/openai');
-const Permission = require('../models/Permission');
 const { Student } = require('../models/User');
 const { generalMLPrompt } = require('../prompt/ml_prompt');
 const { FILE_MAPPING_TABLE } = require('../constants');
 const { generalRLPrompt } = require('../prompt/rl_prompt');
+const { getPermission } = require('../utils/queryFunctions');
 
 const processProgramListAi = asyncHandler(async (req, res, next) => {
   const {
@@ -132,7 +132,7 @@ const cvmlrlAi = asyncHandler(async (req, res, next) => {
   }
   res.end();
 
-  const permission = await Permission.findOne({ user_id: user._id });
+  const permission = await getPermission(user);
   if (permission.taigerAiQuota > 0) {
     permission.taigerAiQuota -= 1;
     await permission.save();

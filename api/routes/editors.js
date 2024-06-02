@@ -8,7 +8,7 @@ const { permission_canAssignEditor_filter } = require('../middlewares/permission
 
 const router = Router();
 
-router.use(protect, permit(Role.Admin, Role.Manager, Role.Editor));
+router.use(protect, permit(Role.Admin, Role.Manager, Role.Editor, Role.Agent));
 
 router
   .route('/')

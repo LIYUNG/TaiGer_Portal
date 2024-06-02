@@ -1,49 +1,41 @@
 const { ErrorResponse } = require('../common/errors');
 const { Role } = require('../models/User');
-const Permission = require('../models/Permission');
+const logger = require('../services/logger');
+const { getPermission } = require('../utils/queryFunctions');
 
 const permission_canAssignEditor_filter = async (req, res, next) => {
   const { user } = req;
-  if (user.role === Role.Editor) {
-    const permissions = await Permission.findOne({ user_id: user._id });
-    if (permissions && permissions.canAssignEditors) {
-      next();
-    } else {
-      return next(
-        new ErrorResponse(403, 'Not allowed to access other resource.')
-      );
-    }
-  } else {
+  const cachedPermission = await getPermission(user);
+
+  if (user.role === 'Admin' || cachedPermission?.canAssignEditors) {
     next();
+  } else {
+    logger.warn('permissions denied: permission_canAssignEditor_filter');
+    return next(
+      new ErrorResponse(403, 'Not allowed to access other resource.')
+    );
   }
 };
 
 const permission_canAssignAgent_filter = async (req, res, next) => {
   const { user } = req;
-  if (user.role === Role.Agent) {
-    const permissions = await Permission.findOne({ user_id: user._id });
-    if (permissions && permissions.canAssignAgents) {
-      next();
-    } else {
-      return next(
-        new ErrorResponse(403, 'Not allowed to access other resource.')
-      );
-    }
-  } else {
+  const cachedPermission = await getPermission(user);
+  if (user.role === 'Admin' || cachedPermission?.canAssignAgents) {
     next();
+  } else {
+    logger.warn('permissions denied: permission_canAssignAgent_filter');
+    return next(
+      new ErrorResponse(403, 'Not allowed to access other resource.')
+    );
   }
 };
 
 const permission_canModifyDocs_filter = async (req, res, next) => {
   const { user } = req;
   if (user.role === Role.Agent || user.role === Role.Editor) {
-    const permission = await Permission.findOne({ user_id: user._id });
-    if (!permission) {
-      return next(
-        new ErrorResponse(403, 'Permission denied: Operation forbidden.')
-      );
-    }
-    if (!permission.canModifyDocumentation) {
+    const cachedPermission = await getPermission(user);
+    if (!cachedPermission?.canModifyDocumentation) {
+      logger.warn('permissions denied: permission_canModifyDocs_filter');
       return next(
         new ErrorResponse(403, 'Permission denied: Operation forbidden.')
       );
@@ -57,13 +49,11 @@ const permission_canModifyDocs_filter = async (req, res, next) => {
 const permission_canAccessStudentDatabase_filter = async (req, res, next) => {
   const { user } = req;
   if (user.role === Role.Agent || user.role === Role.Editor) {
-    const permission = await Permission.findOne({ user_id: user._id });
-    if (!permission) {
-      return next(
-        new ErrorResponse(403, 'Permission denied: Operation forbidden.')
+    const cachedPermission = await getPermission(user);
+    if (!cachedPermission?.canAccessStudentDatabase) {
+      logger.warn(
+        'permissions denied: permission_canAccessStudentDatabase_filter'
       );
-    }
-    if (!permission.canAccessStudentDatabase) {
       return next(
         new ErrorResponse(403, 'Permission denied: Operation forbidden.')
       );
@@ -76,8 +66,9 @@ const permission_canAccessStudentDatabase_filter = async (req, res, next) => {
 
 const permission_TaiGerAIRatelimiter = async (req, res, next) => {
   const { user } = req;
-  const permission = await Permission.findOne({ user_id: user._id });
+  const permission = await getPermission(user);
   if (!permission) {
+    logger.warn('permissions denied: permission_TaiGerAIRatelimiter');
     return next(
       new ErrorResponse(403, 'Permission denied: Operation forbidden.')
     );
@@ -99,8 +90,9 @@ const permission_TaiGerAIRatelimiter = async (req, res, next) => {
 
 const permission_canUseTaiGerAI_filter = async (req, res, next) => {
   const { user } = req;
-  const permission = await Permission.findOne({ user_id: user._id });
+  const permission = await getPermission(user);
   if (!permission) {
+    logger.warn('permissions denied: permission_canUseTaiGerAI_filter');
     return next(
       new ErrorResponse(403, 'Permission denied: Operation forbidden.')
     );
@@ -117,13 +109,15 @@ const permission_canModifyProgramList_filter = async (req, res, next) => {
   const { user } = req;
   // TODO: logic
   if (user.role === Role.Agent) {
-    const permission = await Permission.findOne({ user_id: user._id });
+    const permission = await getPermission(user);
     if (!permission) {
+      logger.warn('permissions denied: permission_canModifyProgramList_filter');
       return next(
         new ErrorResponse(403, 'Permission denied: Operation forbidden.')
       );
     }
     if (!permission.canModifyProgramList) {
+      logger.warn('permissions denied: permission_canModifyProgramList_filter');
       return next(
         new ErrorResponse(403, 'Permission denied: Operation forbidden.')
       );
@@ -137,13 +131,15 @@ const permission_canModifyProgramList_filter = async (req, res, next) => {
 const permission_canModifyTicketList_filter = async (req, res, next) => {
   const { user } = req;
   if (user.role === Role.Agent) {
-    const permission = await Permission.findOne({ user_id: user._id });
+    const permission = await getPermission(user);
     if (!permission) {
+      logger.warn('permissions denied: permission_canModifyTicketList_filter');
       return next(
         new ErrorResponse(403, 'Permission denied: Operation forbidden.')
       );
     }
     if (!permission.canModifyTicketList) {
+      logger.warn('permissions denied: permission_canModifyTicketList_filter');
       return next(
         new ErrorResponse(403, 'Permission denied: Operation forbidden.')
       );

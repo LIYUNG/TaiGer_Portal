@@ -1,6 +1,6 @@
 const { ErrorResponse } = require('../common/errors');
-const Permission = require('../models/Permission');
 const { Role, Student } = require('../models/User');
+const { getPermission } = require('../utils/queryFunctions');
 
 const InnerTaigerMultitenantFilter = async (req, res, next) => {
   const {
@@ -8,7 +8,7 @@ const InnerTaigerMultitenantFilter = async (req, res, next) => {
     params: { studentId }
   } = req;
   if (user.role === Role.Editor || user.role === Role.Agent) {
-    const permissions = await Permission.findOne({ user_id: user._id });
+    const permissions = await getPermission(user);
 
     const student = await Student.findById(studentId).select('agents editors');
     if (!student) {

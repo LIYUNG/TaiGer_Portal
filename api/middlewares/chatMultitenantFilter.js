@@ -1,6 +1,8 @@
+const { ten_minutes_cache } = require('../cache/node-cache');
 const { ErrorResponse } = require('../common/errors');
-const Permission = require('../models/Permission');
 const { Role, Student } = require('../models/User');
+const logger = require('../services/logger');
+const { getPermission } = require('../utils/queryFunctions');
 
 const chatMultitenantFilter = async (req, res, next) => {
   const {
@@ -8,16 +10,34 @@ const chatMultitenantFilter = async (req, res, next) => {
     params: { studentId }
   } = req;
   if (user.role === Role.Editor || user.role === Role.Agent) {
-    const student = await Student.findById(studentId).select('agents editors');
-    const permissions = await Permission.findOne({ user_id: user._id });
+    let cachedStudent = ten_minutes_cache.get(
+      `/chatMultitenantFilter/students/${studentId}`
+    );
+    if (cachedStudent === undefined) {
+      const student = await Student.findById(studentId)
+        .select('agents editors')
+        .lean();
+
+      const success = ten_minutes_cache.set(
+        `/chatMultitenantFilter/students/${studentId}`,
+        student
+      );
+      if (success) {
+        cachedStudent = student;
+        logger.info('students agents editos cache set successfully');
+      }
+    }
+
+    const cachedPermission = await getPermission(user);
+
     if (
-      student.agents.findIndex(
+      !cachedStudent.agents?.some(
         (agent_id) => agent_id.toString() === user._id.toString()
-      ) === -1 &&
-      student.editors.findIndex(
+      ) &&
+      !cachedStudent.editors?.some(
         (editor_id) => editor_id.toString() === user._id.toString()
-      ) === -1 &&
-      !permissions?.canAccessAllChat
+      ) &&
+      !cachedPermission?.canAccessAllChat
     ) {
       return next(
         new ErrorResponse(403, 'Not allowed to access other students.')

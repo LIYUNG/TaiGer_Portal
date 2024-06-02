@@ -588,18 +588,21 @@ const updateAMessageInThread = asyncHandler(async (req, res, next) => {
     params: { messageId }
   } = req;
   const { message } = req.body;
-
-  const thread = await Communication.findById(messageId).populate(
-    'student_id user_id',
-    'firstname lastname'
-  );
-  if (!thread) {
-    logger.error('updateAMessageInThread : Invalid message thread id');
-    throw new ErrorResponse(404, 'Thread not found');
+  try {
+    const thread = await Communication.findByIdAndUpdate(
+      messageId,
+      { message },
+      { new: true }
+    ).populate('student_id user_id', 'firstname lastname');
+    if (!thread) {
+      logger.error('updateAMessageInThread : Invalid message thread id');
+      throw new ErrorResponse(404, 'Thread not found');
+    }
+    res.status(200).send({ success: true, data: thread });
+  } catch (e) {
+    logger.error(`updateAMessageInThread error for messageId ${messageId}`);
+    throw new ErrorResponse(400, 'message collapse');
   }
-  thread.message = JSON.stringify(req.body);
-  await thread.save();
-  res.status(200).send({ success: true, data: thread });
   next();
 });
 
@@ -626,21 +629,22 @@ const IgnoreMessage = asyncHandler(async (req, res, next) => {
   const {
     params: { communication_messageId, ignoreMessageState }
   } = req;
-  const { message } = req.body;
 
-  const thread = await Communication.findById(communication_messageId).populate(
-    'student_id user_id',
-    'firstname lastname'
-  );
-  if (!thread) {
-    logger.error('updateAMessageInThread : Invalid message thread id');
-    throw new ErrorResponse(404, 'Thread not found');
+  try {
+    await Communication.findByIdAndUpdate(
+      communication_messageId,
+      { ignore_message: ignoreMessageState },
+      {}
+    );
+  } catch (e) {
+    logger.error(
+      `IgnoreMessage error for messageId ${communication_messageId}, state: ${ignoreMessageState}`
+    );
+    throw new ErrorResponse(400, 'message collapse');
   }
-  thread.ignore_message = ignoreMessageState;
-  thread.message = JSON.stringify(req.body);
-  await thread.save();
-  console.log("save succeeds");
-  res.status(200).send({ success: true, data: thread });
+
+  logger.info('IgnoreMessage : save succeeds');
+  res.status(200).send({ success: true });
   next();
 });
 

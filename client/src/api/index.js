@@ -404,7 +404,7 @@ export const updateAMessageInCommunicationThread = (
 ) =>
   request.put(
     `/api/communications/${communication_id}/${communication_messageId}`,
-    message
+    { message }
   );
 export const deleteAMessageInCommunicationThread = (
   student_id,

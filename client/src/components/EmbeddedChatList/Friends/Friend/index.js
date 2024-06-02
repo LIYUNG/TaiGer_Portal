@@ -39,7 +39,7 @@ const friend = (props) => {
       ? parsedObject?.blocks[0]?.data?.text?.replace(
           /<\/?[^>]+(>|$)|&[^;]+;?/g,
           ''
-        )
+        ) || ''
       : '';
   return (
     <ListItem

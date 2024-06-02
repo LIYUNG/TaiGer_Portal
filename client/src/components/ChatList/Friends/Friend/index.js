@@ -36,7 +36,7 @@ const friend = (props) => {
       ? parsedObject?.blocks[0]?.data?.text?.replace(
           /<\/?[^>]+(>|$)|&[^;]+;?/g,
           ''
-        )
+        ) || ''
       : '';
 
   const handleToChat = () => {

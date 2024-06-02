@@ -19,10 +19,25 @@ import {
 import DEMO from '../../../../store/constant';
 import { truncateText } from '../../../../Demo/Utils/checking-functions';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
+import { useAuth } from '../../../AuthProvider';
+import { useTranslation } from 'react-i18next';
 
 const friend = (props) => {
   const { student_id } = useParams();
+  const { user } = useAuth();
+  const { t } = useTranslation();
   const theme = useTheme();
+  // Parse the JSON string into an object
+  const parsedObject = JSON.parse(
+    props.data.latestCommunication?.message || '{}'
+  );
+  const lastReply = props.data.latestCommunication?.user_id;
+
+  // Access the first text content
+  const firstText =
+    parsedObject?.blocks?.length > 0
+      ? parsedObject?.blocks[0]?.data?.text?.replace(/<\/?[^>]+(>|$)/g, '')
+      : '';
   return (
     <ListItem
       key={props.data?._id?.toString()}
@@ -78,9 +93,13 @@ const friend = (props) => {
                 )}
               </Typography>
             }
-            secondary={convertDate_ux_friendly(
+            secondary={`${
+              user._id.toString() === lastReply
+                ? `${t('You', { ns: 'common' })}: `
+                : ''
+            }${truncateText(firstText, 15)} ${convertDate_ux_friendly(
               props.data?.latestCommunication?.createdAt
-            )}
+            )}`}
             style={{
               marginLeft: '10px',
               flex: 1

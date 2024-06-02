@@ -292,7 +292,8 @@ export const translation_zh_TW = {
     'It looks like you did not finish survey. See':
       '您尚未完成背景資料填寫。請見',
     'Student View': '學生視角',
-    'Wait for Agent': '等待指派顧問'
+    'Wait for Agent': '等待指派顧問',
+    You: '你'
   },
   dashboard: {
     Dashboard: '主控台',

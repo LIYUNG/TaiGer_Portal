@@ -290,7 +290,8 @@ export const translation_en = {
     'It looks like you did not finish survey. See':
       'It looks like you did not finish survey. See',
     'Student View': 'Student View',
-    'Wait for Agent': 'Wait for Agent'
+    'Wait for Agent': 'Wait for Agent',
+    You: 'You'
   },
   dashboard: {
     Dashboard: 'Dashboard',

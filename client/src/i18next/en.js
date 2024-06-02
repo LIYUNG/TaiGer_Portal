@@ -291,7 +291,11 @@ export const translation_en = {
       'It looks like you did not finish survey. See',
     'Student View': 'Student View',
     'Wait for Agent': 'Wait for Agent',
-    You: 'You'
+    You: 'You',
+    timeMinutes: '{{minutes}}m',
+    timeHours: '{{hours}}h',
+    timeDays: '{{days}}d',
+    timeWeeks: '{{weeks}}w'
   },
   dashboard: {
     Dashboard: 'Dashboard',

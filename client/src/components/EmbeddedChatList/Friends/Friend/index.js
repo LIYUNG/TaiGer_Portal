@@ -92,7 +92,7 @@ const friend = (props) => {
                       ? props.data.firstname_chinese
                       : ''
                   } ${props.data.firstname} ${props.data.lastname}`,
-                  22
+                  21
                 )}
               </Typography>
             }
@@ -100,7 +100,7 @@ const friend = (props) => {
               user._id.toString() === lastReply
                 ? `${t('You', { ns: 'common' })}: `
                 : ''
-            }${truncateText(firstText, 15)} ${convertDate_ux_friendly(
+            }${truncateText(firstText, 14)} • ${convertDate_ux_friendly(
               props.data?.latestCommunication?.createdAt
             )}`}
             style={{

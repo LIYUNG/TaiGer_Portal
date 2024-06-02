@@ -96,11 +96,11 @@ const friend = (props) => {
                 user._id.toString() === lastReply
                   ? `${t('You', { ns: 'common' })}: `
                   : ''
-              }${truncateText(firstText, 30)} ${
+              }${truncateText(firstText, 26)} ${
                 props.data?.latestCommunication?.createdAt &&
-                convertDate_ux_friendly(
+                `• ${convertDate_ux_friendly(
                   props.data.latestCommunication.createdAt
-                )
+                )}`
               }`}
             </Typography>
           </Box>

@@ -16,6 +16,7 @@ import { Link as LinkDom } from 'react-router-dom';
 import { appConfig } from '../../config';
 import DEMO from '../../store/constant';
 import { is_TaiGer_Student } from './checking-functions';
+import { useTranslation } from 'react-i18next';
 
 export const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -115,12 +116,20 @@ export const SUBMISSION_STATUS_E = {
     <CancelIcon fontSize="small" style={{ color: red[700] }} title="Withdraw" />
   ),
   UNKNOWN_SYMBOL: (
-    <HelpIcon fontSize="small" style={{ color: grey[400] }} title="In Progress" />
+    <HelpIcon
+      fontSize="small"
+      style={{ color: grey[400] }}
+      title="In Progress"
+    />
   )
 };
 export const ADMISSION_STATUS_E = {
   OK_SYMBOL: (
-    <CheckCircleIcon fontSize="small" style={{ color: green[500] }} title="Admitted" />
+    <CheckCircleIcon
+      fontSize="small"
+      style={{ color: green[500] }}
+      title="Admitted"
+    />
   ),
   NOT_OK_SYMBOL: (
     <CancelIcon fontSize="small" style={{ color: red[700] }} title="Rejected" />
@@ -138,7 +147,11 @@ export const FILE_OK_SYMBOL = (
   />
 );
 export const FILE_NOT_OK_SYMBOL = (
-  <CancelIcon fontSize="small" style={{ color: red[700] }} title="Invalid Document" />
+  <CancelIcon
+    fontSize="small"
+    style={{ color: red[700] }}
+    title="Invalid Document"
+  />
 );
 export const FILE_UPLOADED_SYMBOL = (
   <QueryBuilderIcon
@@ -155,7 +168,11 @@ export const FILE_MISSING_SYMBOL = (
   />
 );
 export const FILE_DONT_CARE_SYMBOL = (
-  <RemoveIcon fontSize="small" style={{ color: grey[400] }} title="Not needed" />
+  <RemoveIcon
+    fontSize="small"
+    style={{ color: grey[400] }}
+    title="Not needed"
+  />
 );
 
 export const questionType = {
@@ -1045,8 +1062,8 @@ export const program_fields = [
 ];
 
 export const convertDate_ux_friendly = (date) => {
-  let dat = new Date(date).toLocaleDateString('zh-Hans-CN');
-
+  // let dat = new Date(date).toLocaleDateString('zh-Hans-CN');
+  const { t } = useTranslation();
   const currentDate = new Date();
   const input_date_point = new Date(date);
   // Calculate the time difference in milliseconds
@@ -1060,15 +1077,13 @@ export const convertDate_ux_friendly = (date) => {
 
   let timeDisplay;
   if (minutes < 60) {
-    timeDisplay = `${minutes} min.`;
+    timeDisplay = t('timeMinutes', { ns: 'common', minutes });
   } else if (hours < 24) {
-    timeDisplay = `${hours} h`;
+    timeDisplay = t('timeHours', { ns: 'common', hours });
   } else if (days < 7) {
-    timeDisplay = `${days} day${days > 1 ? 's' : ''}`;
-  } else if (weeks < 4) {
-    timeDisplay = `${weeks} w`;
+    timeDisplay = t('timeDays', { ns: 'common', days });
   } else {
-    timeDisplay = `${dat}`;
+    timeDisplay = t('timeWeeks', { ns: 'common', weeks });
   }
   return timeDisplay;
 };

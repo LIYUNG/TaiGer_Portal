@@ -293,7 +293,11 @@ export const translation_zh_TW = {
       '您尚未完成背景資料填寫。請見',
     'Student View': '學生視角',
     'Wait for Agent': '等待指派顧問',
-    You: '你'
+    You: '你',
+    timeMinutes: '{{minutes}}分鐘',
+    timeHours: '{{hours}}小時',
+    timeDays: '{{days}}天',
+    timeWeeks: '{{weeks}}週'
   },
   dashboard: {
     Dashboard: '主控台',

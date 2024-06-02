@@ -76,7 +76,10 @@ const friend = (props) => {
           <Box
             style={{
               marginLeft: '10px',
-              flex: 1
+              flex: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '1px' // Adjust the gap between name and caption
             }}
           >
             <Typography variant="body1" fontWeight="bold" color="text.primary">

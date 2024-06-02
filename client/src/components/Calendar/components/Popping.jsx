@@ -15,7 +15,7 @@ import '../style/model.scss';
 import {
   NoonNightLabel,
   convertDate,
-  getTimezoneOffset
+  showTimezoneOffset
 } from '../../../Demo/Utils/contants';
 import {
   is_TaiGer_Agent,
@@ -110,28 +110,12 @@ const Popping = ({
             <li className="col text-secondary pb-0 mb-0">
               From: {convertDate(start)} {NoonNightLabel(start)}{' '}
               {Intl.DateTimeFormat().resolvedOptions().timeZone} UTC
-              {getTimezoneOffset(
-                Intl.DateTimeFormat().resolvedOptions().timeZone
-              ) >= 0
-                ? `+${getTimezoneOffset(
-                    Intl.DateTimeFormat().resolvedOptions().timeZone
-                  )}`
-                : getTimezoneOffset(
-                    Intl.DateTimeFormat().resolvedOptions().timeZone
-                  )}
+              {showTimezoneOffset()}
             </li>
             <li className="col text-secondary pb-0 mb-0">
               To: {convertDate(end)}{' '}
               {Intl.DateTimeFormat().resolvedOptions().timeZone} UTC
-              {getTimezoneOffset(
-                Intl.DateTimeFormat().resolvedOptions().timeZone
-              ) >= 0
-                ? `+${getTimezoneOffset(
-                    Intl.DateTimeFormat().resolvedOptions().timeZone
-                  )}`
-                : getTimezoneOffset(
-                    Intl.DateTimeFormat().resolvedOptions().timeZone
-                  )}
+              {showTimezoneOffset()}
             </li>
           </ul>
 

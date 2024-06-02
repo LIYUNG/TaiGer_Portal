@@ -63,21 +63,22 @@ function DocThreadEditor(props) {
             {props.file?.map((fl, i) => (
               <Box key={`${fl.name}${i}`}>
                 <Typography>{fl.name} :</Typography>
-                {Object.keys(props.checkResult[i]).map((ky) => (
-                  <Typography
-                    key={props.checkResult[i][ky].text}
-                    sx={{ ml: 2 }}
-                  >
-                    {props.checkResult[i][ky].value === undefined
-                      ? CVMLRL_DOC_PRECHECK_STATUS_E.WARNING_SYMBOK
-                      : props.checkResult[i][ky].value
-                      ? CVMLRL_DOC_PRECHECK_STATUS_E.OK_SYMBOL
-                      : CVMLRL_DOC_PRECHECK_STATUS_E.NOT_OK_SYMBOL}
-                    {props.checkResult[i][ky].text}
-                    {props.checkResult[i][ky].hasMetadata &&
-                      props.checkResult[i][ky].metaData}
-                  </Typography>
-                ))}
+                {props.checkResult?.length &&
+                  Object.keys(props.checkResult[i]).map((ky) => (
+                    <Typography
+                      key={props.checkResult[i][ky].text}
+                      sx={{ ml: 2 }}
+                    >
+                      {props.checkResult[i][ky].value === undefined
+                        ? CVMLRL_DOC_PRECHECK_STATUS_E.WARNING_SYMBOK
+                        : props.checkResult[i][ky].value
+                        ? CVMLRL_DOC_PRECHECK_STATUS_E.OK_SYMBOL
+                        : CVMLRL_DOC_PRECHECK_STATUS_E.NOT_OK_SYMBOL}
+                      {props.checkResult[i][ky].text}
+                      {props.checkResult[i][ky].hasMetadata &&
+                        props.checkResult[i][ky].metaData}
+                    </Typography>
+                  ))}
               </Box>
             ))}
           </Grid>

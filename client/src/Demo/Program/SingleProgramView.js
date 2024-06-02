@@ -379,44 +379,49 @@ function SingleProgramView(props) {
                 </TableHead>
 
                 <TableBody>
-                  {versions.changes.toReversed().map((change, index) => {
-                    const reverseIndex = versions.changes.length
-                      ? versions.changes.length - index
-                      : index;
-                    const keys = Object.keys({
-                      ...change.originalValues,
-                      ...change.updatedValues
-                    });
-                    return (
-                      <>
-                        <TableRow sx={'border-top: 2px solid #CCC'}></TableRow>
-                        <TableRow>
-                          <TableCell rowSpan={(keys?.length || 0) + 1}>
-                            {reverseIndex}
-                          </TableCell>
-                          <TableCell rowSpan={(keys?.length || 0) + 1}>
-                            <div>{change.changedBy}</div>
-                            <div>{convertDate(change.changedAt)}</div>
-                          </TableCell>
-                        </TableRow>
-                        {keys.map((key, i) => (
-                          <TableRow key={i}>
-                            <TableCell>{key}</TableCell>
-                            <TableCell>
-                              {change?.originalValues
-                                ? change.originalValues[key]
-                                : ''}
+                  {versions.changes
+                    .slice()
+                    .reverse()
+                    .map((change, index) => {
+                      const reverseIndex = versions.changes.length
+                        ? versions.changes.length - index
+                        : index;
+                      const keys = Object.keys({
+                        ...change.originalValues,
+                        ...change.updatedValues
+                      });
+                      return (
+                        <>
+                          <TableRow
+                            sx={'border-top: 2px solid #CCC'}
+                          ></TableRow>
+                          <TableRow>
+                            <TableCell rowSpan={(keys?.length || 0) + 1}>
+                              {reverseIndex}
                             </TableCell>
-                            <TableCell>
-                              {change?.updatedValues
-                                ? change.updatedValues[key]
-                                : ''}
+                            <TableCell rowSpan={(keys?.length || 0) + 1}>
+                              <div>{change.changedBy}</div>
+                              <div>{convertDate(change.changedAt)}</div>
                             </TableCell>
                           </TableRow>
-                        ))}
-                      </>
-                    );
-                  })}
+                          {keys.map((key, i) => (
+                            <TableRow key={i}>
+                              <TableCell>{key}</TableCell>
+                              <TableCell>
+                                {change?.originalValues
+                                  ? change.originalValues[key]
+                                  : ''}
+                              </TableCell>
+                              <TableCell>
+                                {change?.updatedValues
+                                  ? change.updatedValues[key]
+                                  : ''}
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </>
+                      );
+                    })}
                 </TableBody>
               </Table>
             </CustomTabPanel>
@@ -462,9 +467,10 @@ function SingleProgramView(props) {
           <Box sx={{ my: 2 }}>
             <Link
               component={LinkDom}
-              to={`https://www.google.com/search?q=${
-                props.program.school
-              }+${props.program.program_name?.replace('&', 'and')}+${
+              to={`https://www.google.com/search?q=${props.program.school?.replace(
+                '&',
+                'and'
+              )}+${props.program.program_name?.replace('&', 'and')}+${
                 props.program.degree
               }`}
               target="_blank"

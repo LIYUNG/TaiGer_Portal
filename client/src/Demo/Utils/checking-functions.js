@@ -70,17 +70,6 @@ export const truncateText = (text, maxLength) => {
   return truncatedText;
 };
 
-export const FILE_TYPE_E = {
-  rl_required: 'RL',
-  ml_required: 'ML',
-  essay_required: 'Essay',
-  portfolio_required: 'Portfolio',
-  supplementary_form_required: 'Supplementary_Form',
-  scholarship_form_required: 'Scholarship_Form',
-  curriculum_analysis_required: 'Curriculum_Analysis',
-  others: 'Others'
-};
-
 export const file_category_const = {
   rl_required: 'RL',
   ml_required: 'ML',
@@ -91,6 +80,11 @@ export const file_category_const = {
   curriculum_analysis_required: 'Curriculum_Analysis'
 };
 
+export const FILE_TYPE_E = {
+  ...file_category_const,
+  others: 'Others'
+};
+
 export const AGENT_SUPPORT_DOCUMENTS_A = [
   FILE_TYPE_E.curriculum_analysis_required,
   FILE_TYPE_E.supplementary_form_required,
@@ -99,6 +93,7 @@ export const AGENT_SUPPORT_DOCUMENTS_A = [
 // TODO test
 export const LinkableNewlineText = ({ text }) => {
   const textStyle = {
+    wordBreak: 'break-all',
     whiteSpace: 'pre-line' // Preserve newlines and wrap text
   };
   return (
@@ -721,6 +716,24 @@ export const isEnglishOK = (program, student) => {
 
   return true;
 };
+// Tested
+export const isProgramDecided = (application) => {
+  return application.decided === 'O';
+};
+
+// Tested
+export const isProgramSubmitted = (application) => {
+  return application.closed === 'O';
+};
+
+export const isProgramAdmitted = (application) => {
+  return application.admission === 'O';
+};
+
+// Tested
+export const isProgramWithdraw = (application) => {
+  return application.closed === 'X';
+};
 
 export const application_date_calculator = (student, application) => {
   if (isProgramSubmitted(application)) {
@@ -771,10 +784,10 @@ export const application_date_calculator = (student, application) => {
 };
 
 export const application_deadline_calculator = (student, application) => {
-  if (application.closed === 'O') {
+  if (isProgramSubmitted(application)) {
     return 'CLOSE';
   }
-  if (application.closed === 'X') {
+  if (isProgramWithdraw(application)) {
     return 'WITHDRAW';
   }
   const { application_deadline, semester } = application.programId;
@@ -798,9 +811,7 @@ export const application_deadline_calculator = (student, application) => {
   let deadline_month = parseInt(
     application.programId.application_deadline.split('-')[0]
   );
-  // let deadline_day = parseInt(
-  //   application.programId.application_deadline.split('-')[1]
-  // );
+
   if (semester === undefined) {
     return 'Err';
   }
@@ -828,7 +839,7 @@ export const GetCVDeadline = (student) => {
   let CVDeadlineRolling = '';
   let hasRolling = false;
   student.applications.forEach((application) => {
-    if (application.decided === 'O') {
+    if (isProgramDecided(application)) {
       const applicationDeadline = application_deadline_calculator(
         student,
         application
@@ -861,103 +872,58 @@ export const check_application_preference_filled = (application_preference) => {
     return false;
   }
   // TODO: can add more mandatory field
-  if (
-    !application_preference.expected_application_date ||
-    !application_preference.expected_application_semester ||
-    !application_preference.target_application_field ||
-    !application_preference.target_degree ||
-    application_preference.considered_privat_universities === '-' ||
-    application_preference.application_outside_germany === '-'
-  ) {
-    return false;
-  }
-  return true;
+  const {
+    expected_application_date,
+    expected_application_semester,
+    target_application_field,
+    target_degree,
+    considered_privat_universities,
+    application_outside_germany
+  } = application_preference;
+
+  return (
+    expected_application_date &&
+    expected_application_semester &&
+    target_application_field &&
+    target_degree &&
+    considered_privat_universities !== '-' &&
+    application_outside_germany !== '-'
+  );
 };
+
 export const does_student_have_agents = (students) => {
-  for (let i = 0; i < students.length; i += 1) {
-    if (students[i].agents === undefined || students[i].agents.length === 0) {
-      return false;
-    }
-  }
-  return true;
+  return students.every(
+    (student) => student.agents !== undefined && student.agents.length > 0
+  );
 };
 
 export const does_student_have_editors = (students) => {
-  for (let i = 0; i < students.length; i += 1) {
-    if (students[i].editors === undefined || students[i].editors.length === 0) {
-      return false;
-    }
-  }
-  return true;
-};
-
-export const check_applications_decision_from_student = (student) => {
-  if (!student.applications) {
-    return false;
-  }
-  if (student.applications.length === 0) {
-    return false;
-  }
-  for (let j = 0; j < student.applications.length; j += 1) {
-    if (
-      !student.applications[j].decided ||
-      (student.applications[j].decided !== undefined &&
-        student.applications[j].decided === '-')
-    ) {
-      return false;
-    }
-  }
-
-  return true;
+  return students.every(
+    (student) => student.editors !== undefined && student.editors.length > 0
+  );
 };
 
 export const check_applications_to_decided = (student) => {
-  if (!student.applications) {
+  if (!student.applications || student.applications.length === 0) {
     return true;
   }
-  if (student.applications.length === 0) {
-    return true;
-  }
-  for (let j = 0; j < student.applications.length; j += 1) {
-    if (
-      !student.applications[j].decided ||
-      (student.applications[j].decided !== undefined &&
-        student.applications[j].decided === '-')
-    ) {
-      return false;
-    }
-  }
-
-  return true;
+  return student.applications.every(
+    (app) => app.decided && app.decided !== '-'
+  );
 };
 
 export const all_applications_results_updated = (student) => {
-  if (!student.applications) {
+  if (!student.applications || student.applications.length === 0) {
     return true;
-  }
-  if (student.applications.length === 0) {
-    return true;
-  }
-  for (let j = 0; j < student.applications.length; j += 1) {
-    if (
-      student.applications[j].closed === 'O' &&
-      student.applications[j].admission === '-'
-    ) {
-      return false;
-    }
   }
 
-  return true;
+  return student.applications.every(
+    (app) => !isProgramSubmitted(app) || app.admission !== '-'
+  );
 };
 
-export const check_application_selection = (student) => {
-  if (!student.applications) {
-    return false;
-  }
-  if (student.applications.length === 0) {
-    return false;
-  }
-  return true;
+export const hasApplications = (student) => {
+  return student.applications && student.applications.length > 0;
 };
 
 export const has_agent_program_specific_tasks = (student) => {
@@ -984,11 +950,9 @@ export const has_agent_program_specific_tasks = (student) => {
 };
 
 export const anyStudentWithoutApplicationSelection = (students) => {
-  let flag = false;
   for (let i = 0; i < students.length; i += 1) {
-    flag = flag || !check_application_selection(students[i]);
-    if (flag) {
-      return flag;
+    if (!hasApplications(students[i])) {
+      return true;
     }
   }
   return false;
@@ -1017,8 +981,8 @@ export const numApplicationsDecided = (student) => {
   if (student.applications === undefined) {
     return 0;
   }
-  const num_apps_decided = student.applications.filter(
-    (app) => app.decided === 'O'
+  const num_apps_decided = student.applications.filter((app) =>
+    isProgramDecided(app)
   ).length;
   return num_apps_decided;
 };
@@ -1027,8 +991,8 @@ export const numApplicationsSubmitted = (student) => {
   if (student.applications === undefined) {
     return 0;
   }
-  const num_apps_closed = student.applications.filter(
-    (app) => app.closed === 'O'
+  const num_apps_closed = student.applications.filter((app) =>
+    isProgramSubmitted(app)
   ).length;
   return num_apps_closed;
 };
@@ -1042,8 +1006,9 @@ export const areProgramsDecidedMoreThanContract = (student) => {
     return false;
   }
   const num_decided =
-    student?.applications?.filter((application) => application.decided === 'O')
-      .length | 0;
+    student?.applications?.filter((application) =>
+      isProgramDecided(application)
+    ).length | 0;
 
   return num_decided >= student.applying_program_count;
 };
@@ -1079,8 +1044,8 @@ export const check_all_decided_applications_submitted = (student) => {
   }
 
   return student.applications
-    .filter((app) => app.decided === 'O')
-    .every((app) => app.closed === 'O' && app.decided === 'O');
+    .filter((app) => isProgramDecided(app))
+    .every((app) => isProgramSubmitted(app) && isProgramDecided(app));
 };
 
 export const check_program_uni_assist_needed = (application) => {
@@ -1093,7 +1058,7 @@ export const check_program_uni_assist_needed = (application) => {
 
 export const isUniAssistVPDNeeded = (application) => {
   if (
-    application.decided === 'O' &&
+    isProgramDecided(application) &&
     application.programId.uni_assist &&
     application.programId.uni_assist.includes('VPD')
   ) {
@@ -1133,7 +1098,7 @@ export const check_student_needs_uni_assist = (student) => {
   //  Array.some() method to check if there's an application that matches the conditions.
   return student.applications.some((app) => {
     return (
-      app.decided === 'O' &&
+      isProgramDecided(app) &&
       app.programId.uni_assist &&
       (app.programId.uni_assist.includes('VPD') ||
         app.programId.uni_assist.includes('FULL'))
@@ -1148,7 +1113,7 @@ export const num_uni_assist_vpd_uploaded = (student) => {
   }
   for (const application of student.applications) {
     if (
-      application.decided === 'O' &&
+      isProgramDecided(application) &&
       application.programId.uni_assist &&
       application.programId.uni_assist.includes('VPD') &&
       application.uni_assist &&
@@ -1169,7 +1134,7 @@ export const num_uni_assist_vpd_needed = (student) => {
   }
   for (let j = 0; j < student.applications.length; j += 1) {
     if (
-      student.applications[j].decided === 'O' &&
+      isProgramDecided(student.applications[j]) &&
       student.applications[j].programId.uni_assist &&
       student.applications[j].programId.uni_assist.includes('VPD')
     ) {
@@ -1237,31 +1202,12 @@ export const is_program_ml_rl_essay_ready = (application) => {
   return true;
 };
 
-// Tested
-export const isProgramDecided = (application) => {
-  return application.decided === 'O';
-};
-
-// Tested
-export const isProgramSubmitted = (application) => {
-  return application.closed === 'O';
-};
-
-export const isProgramAdmitted = (application) => {
-  return application.admission === 'O';
-};
-
-// Tested
-export const isProgramWithdraw = (application) => {
-  return application.closed === 'X';
-};
-
 export const isApplicationOpen = (application) => {
   return !isProgramSubmitted(application) && !isProgramWithdraw(application);
 };
 
 export const is_program_closed = (application) => {
-  if (application.closed === 'O' || application.closed === 'X') {
+  if (isProgramSubmitted(application) || isProgramWithdraw(application)) {
     return true;
   }
   return false;
@@ -1273,7 +1219,7 @@ export const is_any_programs_ready_to_submit = (students) => {
       if (students[i].applications) {
         for (let j = 0; j < students[i].applications.length; j += 1) {
           if (
-            students[i].applications[j].decided === 'O' &&
+            isProgramDecided(students[i].applications[j]) &&
             isCVFinished(students[i]) &&
             is_program_ml_rl_essay_ready(students[i].applications[j]) &&
             is_the_uni_assist_vpd_uploaded(students[i].applications[j]) &&
@@ -1310,7 +1256,7 @@ export const is_any_vpd_missing = (students) => {
       if (students[i].applications) {
         for (let j = 0; j < students[i].applications.length; j += 1) {
           if (
-            students[i].applications[j].decided === 'O' &&
+            isProgramDecided(students[i].applications[j]) &&
             students[i].applications[j].programId.uni_assist &&
             students[i].applications[j].programId.uni_assist.includes('VPD')
           ) {
@@ -1345,14 +1291,14 @@ export const is_the_uni_assist_vpd_uploaded = (application) => {
     return false;
   }
   if (
-    application.decided === 'O' &&
+    isProgramDecided(application) &&
     application.programId.uni_assist &&
     application.programId.uni_assist.includes('FULL')
   ) {
     return true;
   }
   if (
-    application.decided === 'O' &&
+    isProgramDecided(application) &&
     application.programId.uni_assist &&
     application.programId.uni_assist.includes('VPD')
   ) {
@@ -1409,7 +1355,7 @@ export const is_all_uni_assist_vpd_uploaded = (student) => {
   }
   for (let j = 0; j < student.applications.length; j += 1) {
     if (
-      student.applications[j].decided === 'O' &&
+      isProgramDecided(student.applications[j]) &&
       student.applications[j].programId.uni_assist &&
       student.applications[j].programId.uni_assist.includes('VPD')
     ) {
@@ -1608,7 +1554,7 @@ const prepApplicationTask = (student, application, thread) => {
     thread_id: thread.doc_thread_id._id.toString(),
     program_id: application.programId._id.toString(),
     deadline: application_deadline_calculator(student, application),
-    show: application.decided === 'O' ? true : false,
+    show: isProgramDecided(application) ? true : false,
     document_name: `${thread.doc_thread_id.file_type} - ${application.programId.school} - ${application.programId.degree} -${application.programId.program_name}`,
     days_left:
       parseInt(
@@ -1798,42 +1744,42 @@ export const programs_refactor = (students) => {
                 application_deadline_calculator(student, application)
               )
             ) || '-',
-          base_docs:
-            application.closed === 'O' ? '-' : isMissingBaseDocs ? 'X' : 'O',
-          uniassist:
-            application.closed === 'O'
+          base_docs: isProgramSubmitted(application)
+            ? '-'
+            : isMissingBaseDocs
+            ? 'X'
+            : 'O',
+          uniassist: isProgramSubmitted(application)
+            ? '-'
+            : check_program_uni_assist_needed(application)
+            ? application.uni_assist &&
+              application.uni_assist.status === DocumentStatus.Uploaded
+              ? 'O'
+              : 'X'
+            : 'Not Needed',
+          cv: isProgramSubmitted(application) ? '-' : is_cv_done ? 'O' : 'X',
+          ml_rl: isProgramDecided(application)
+            ? isProgramSubmitted(application)
               ? '-'
-              : check_program_uni_assist_needed(application)
-              ? application.uni_assist &&
-                application.uni_assist.status === DocumentStatus.Uploaded
-                ? 'O'
-                : 'X'
-              : 'Not Needed',
-          cv: application.closed === 'O' ? '-' : is_cv_done ? 'O' : 'X',
-          ml_rl:
-            application.decided === 'O'
-              ? application.closed === 'O'
-                ? '-'
-                : is_program_ml_rl_essay_finished(application)
-                ? 'O'
-                : 'X'
-              : 'X',
-          ready:
-            application.decided === 'O'
-              ? application.closed === 'O'
-                ? '-'
-                : !isMissingBaseDocs &&
-                  (!check_program_uni_assist_needed(application) ||
-                    (check_program_uni_assist_needed(application) &&
-                      application.uni_assist &&
-                      application.uni_assist.status ===
-                        DocumentStatus.Uploaded)) &&
-                  is_cv_done &&
-                  is_program_ml_rl_essay_finished(application)
-                ? 'Ready!'
-                : 'No'
-              : 'Undecided',
-          show: application.decided === 'O' ? true : false,
+              : is_program_ml_rl_essay_finished(application)
+              ? 'O'
+              : 'X'
+            : 'X',
+          ready: isProgramDecided(application)
+            ? isProgramSubmitted(application)
+              ? '-'
+              : !isMissingBaseDocs &&
+                (!check_program_uni_assist_needed(application) ||
+                  (check_program_uni_assist_needed(application) &&
+                    application.uni_assist &&
+                    application.uni_assist.status ===
+                      DocumentStatus.Uploaded)) &&
+                is_cv_done &&
+                is_program_ml_rl_essay_finished(application)
+              ? 'Ready!'
+              : 'No'
+            : 'Undecided',
+          show: isProgramDecided(application) ? true : false,
           status:
             application_deadline_calculator(student, application) === 'CLOSE'
               ? 100
@@ -1845,56 +1791,36 @@ export const programs_refactor = (students) => {
   return applications;
 };
 
-export const getNextProgramName = (student) => {
-  const getNextProgram = programs_refactor([student])
+const getNextProgram = (student) => {
+  const nextProgram = programs_refactor([student])
     .filter(
-      (application) => application.decided === 'O' && application.closed === '-'
+      (application) =>
+        isProgramDecided(application) && application.closed === '-'
     )
     .sort((a, b) => (a.application_deadline > b.application_deadline ? 1 : -1));
-  return getNextProgram.length !== 0 ? getNextProgram[0].program : '-';
+  return nextProgram;
+};
+
+export const getNextProgramName = (student) => {
+  const nextProgram = getNextProgram(student);
+  return nextProgram.length !== 0 ? nextProgram[0].program : '-';
 };
 
 export const getNextProgramDeadline = (student) => {
-  const getNextProgram = programs_refactor([student])
-    .filter(
-      (application) => application.decided === 'O' && application.closed === '-'
-    )
-    .sort((a, b) => (a.application_deadline > b.application_deadline ? 1 : -1));
-  return getNextProgram.length !== 0
-    ? getNextProgram[0].application_deadline
-    : '-';
+  const nextProgram = getNextProgram(student);
+  return nextProgram.length !== 0 ? nextProgram[0].application_deadline : '-';
 };
 
 export const getNextProgramDayleft = (student) => {
-  const getNextProgram = programs_refactor([student])
-    .filter(
-      (application) => application.decided === 'O' && application.closed === '-'
-    )
-    .sort((a, b) => (a.application_deadline > b.application_deadline ? 1 : -1));
-  return getNextProgram.length !== 0 ? getNextProgram[0].days_left : '-';
+  const nextProgram = getNextProgram(student);
+  return nextProgram.length !== 0 ? nextProgram[0].days_left : '-';
 };
 
 export const getNextProgramStatus = (student) => {
-  const getNextProgram = programs_refactor([student])
-    .filter(
-      (application) => application.decided === 'O' && application.closed === '-'
-    )
-    .sort((a, b) => (a.application_deadline > b.application_deadline ? 1 : -1));
-  return getNextProgram.length !== 0
-    ? // <span
-      //   className={`${
-      //     progressBarCounter(student, getNextProgram[0].application) < 100
-      //       ? progressBarCounter(student, getNextProgram[0].application) < 75
-      //         ? progressBarCounter(student, getNextProgram[0].application) < 30
-      //           ? 'text-danger' // 15 > x
-      //           : 'text-secondary' // 60 > x > 15
-      //         : 'text-warning' // 100 > x >60
-      //       : ''
-      //   }`}
-      // >
-      `${progressBarCounter(student, getNextProgram[0].application)} %`
-    : // </span>
-      '-';
+  const nextProgram = getNextProgram(student);
+  return nextProgram.length !== 0
+    ? `${progressBarCounter(student, nextProgram[0].application)} %`
+    : '-';
 };
 
 export const numStudentYearDistribution = (students) => {

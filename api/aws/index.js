@@ -1,4 +1,5 @@
 const aws = require('aws-sdk');
+const Bottleneck = require('bottleneck/es5');
 const {
   AWS_S3_ACCESS_KEY_ID,
   AWS_S3_ACCESS_KEY,
@@ -21,7 +22,12 @@ const ses = isProd()
       secretAccessKey: AWS_S3_ACCESS_KEY
     });
 
+const limiter = new Bottleneck({
+  minTime: 1100 / 14
+});
+
 module.exports = {
   s3,
-  ses
+  ses,
+  limiter
 };

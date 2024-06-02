@@ -41,7 +41,11 @@ function ApplicationProgress(props) {
       </TableRow>
     );
   } else {
-    applying_university = props.student.applications.map((application, i) => (
+    const applications = [
+      ...props.student.applications.filter((app) => isProgramDecided(app)),
+      ...props.student.applications.filter((app) => !isProgramDecided(app))
+    ];
+    applying_university = applications.map((application, i) => (
       <TableRow key={i}>
         <TableCell>
           <Link
@@ -160,7 +164,7 @@ function ApplicationProgress(props) {
                 }
                 fontWeight="bold"
               >
-                {t('Close')}
+                {t('Close', { ns: 'common' })}
               </Typography>
             </TableCell>
           ) : (

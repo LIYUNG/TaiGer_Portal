@@ -13,6 +13,8 @@ import {
   getAllArchivedStudentsLoader
 } from './api/dataLoader';
 import DefaultErrorPage from './Demo/Utils/DefaultErrorPage';
+import StudentApplicationsAssignPage from './Demo/StudentApplications/assignPage';
+import AddInterview from './Demo/InterviewTraining/AddInterview';
 
 const DashboardDefault = React.lazy(() => import('./Demo/Dashboard/Dashboard'));
 
@@ -264,6 +266,12 @@ const routes = [
     element: <StudentApplications />
   },
   {
+    path: '/student-applications/edit/:student_id',
+    errorElement: <DefaultErrorPage />,
+    loader: getApplicationStudentLoader,
+    element: <StudentApplicationsAssignPage />
+  },
+  {
     path: '/users',
     exact: true,
     name: 'Users Table',
@@ -322,18 +330,6 @@ const routes = [
     exact: true,
     name: 'InternalDocCreatePage',
     Component: InternalDocCreatePage
-  },
-  {
-    path: '/interview-training',
-    exact: true,
-    name: 'InterviewTraining',
-    Component: InterviewTraining
-  },
-  {
-    path: '/interview-training/:interview_id',
-    exact: true,
-    name: 'SingleInterview',
-    Component: SingleInterview
   },
   {
     path: '/download',
@@ -565,6 +561,27 @@ if (appConfig.vpdEnable) {
     exact: true,
     name: 'Uni Assist Tasks',
     Component: UniAssist
+  });
+}
+
+if (appConfig.interviewEnable) {
+  routes.push({
+    path: '/interview-training',
+    exact: true,
+    name: 'InterviewTraining',
+    Component: InterviewTraining
+  });
+  routes.push({
+    path: '/interview-training/add',
+    exact: true,
+    name: 'AddInterview',
+    Component: AddInterview
+  });
+  routes.push({
+    path: '/interview-training/:interview_id',
+    exact: true,
+    name: 'SingleInterview',
+    Component: SingleInterview
   });
 }
 

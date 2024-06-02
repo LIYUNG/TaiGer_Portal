@@ -9,8 +9,7 @@ import {
   useTheme
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { RxDotFilled } from 'react-icons/rx';
-
+import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import {
   convertDate_ux_friendly,
   menuWidth,
@@ -62,7 +61,7 @@ const friend = (props) => {
               flex: 1
             }}
           >
-            <Typography variant="body1" color="text.primary">
+            <Typography variant="body1" fontWeight="bold" color="text.primary">
               {truncateText(
                 `${
                   props.data.lastname_chinese ? props.data.lastname_chinese : ''
@@ -71,26 +70,10 @@ const friend = (props) => {
                     ? props.data.firstname_chinese
                     : ''
                 } ${props.data.firstname} ${props.data.lastname}`,
-                18
+                30
               )}
             </Typography>
-          </Box>
-        </Grid>
-        <Grid item>
-          <Box
-            style={{
-              textAlign: 'right',
-              padding: '8px 16px'
-            }}
-          >
-            <Typography variant="body2">
-              {props.data?.latestCommunication?.user_id !== props.activeId && (
-                <RxDotFilled
-                  size={18}
-                  title="Not Reply Yet"
-                  style={{ marginLeft: '4px' }}
-                />
-              )}
+            <Typography variant="caption">
               {props.data?.latestCommunication?.createdAt &&
                 convertDate_ux_friendly(
                   props.data.latestCommunication.createdAt
@@ -98,8 +81,25 @@ const friend = (props) => {
             </Typography>
           </Box>
         </Grid>
+        <Grid item>
+          <Box
+            style={{
+              textAlign: 'right',
+              padding: '8px 8px'
+            }}
+          >
+            <Typography variant="body2">
+              {props.data?.latestCommunication?.user_id !== props.activeId && (
+                <FiberManualRecordIcon
+                  fontSize="small"
+                  title="Not Reply Yet"
+                  style={{ marginLeft: '4px' }}
+                />
+              )}
+            </Typography>
+          </Box>
+        </Grid>
       </Grid>
-
       <Divider />
     </MenuItem>
   );

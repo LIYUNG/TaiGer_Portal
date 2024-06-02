@@ -8,10 +8,10 @@ ALL_DIFFERENTIATE_KEY_WORDS = 2
 # 物理
 GENERAL_PHYSICS_KEY_WORDS = ['物理']
 GENERAL_PHYSICS_ANTI_KEY_WORDS = ['固態', '生物', '半導體', '元件', '量子', '凝態', '核子', '天文', '分子', '原子',
-                                  '實驗', '史', '服務', '冶金', '生活', '車輛', '通識', '化學']
+                                  '實驗', '史', '服務', '冶金', '生活', '車輛', '通識', '化學', '冶金']
 GENERAL_PHYSICS_KEY_WORDS_EN = ['physics']
 GENERAL_PHYSICS_ANTI_KEY_WORDS_EN = [
-    'semicondu', 'device', 'experiment', 'lab']
+    'semicondu', 'device', 'experiment', 'lab', 'solid', 'metallurg', 'chemi' , 'quantu']
 
 # 進階物理
 EE_ADVANCED_PHYSICS_KEY_WORDS = ['固態物理', '近代物理']
@@ -185,7 +185,7 @@ DIFF_EQUATION_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
 MATH_DISCRETE_KEY_WORDS = ['離散']
 MATH_DISCRETE_ANTI_KEY_WORDS = ['asdgladfj;l', '管理']
 MATH_DISCRETE_KEY_WORDS_EN = ['discrete math', 'graph', '邏輯']
-MATH_DISCRETE_ANTI_KEY_WORDS_EN = ['asdgladfj;l', '管理', '文明', '服務']
+MATH_DISCRETE_ANTI_KEY_WORDS_EN = ['asdgladfj;l', 'crystall', '服務']
 
 # 數值分析
 MATH_NUM_METHOD_KEY_WORDS = ['數值方法', '數值分析', '數值運算']
@@ -286,7 +286,7 @@ MATHEMATICAL_LOGIC_PROG_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
 
 # 圖論
 MATHEMATICAL_GRAPH_THEORY_KEY_WORDS = ['圖論', '圖形', '圖型']
-MATHEMATICAL_GRAPH_THEORY_ANTI_KEY_WORDS = ['asdgladfj;l', '設計']
+MATHEMATICAL_GRAPH_THEORY_ANTI_KEY_WORDS = ['asdgladfj;l', '設計', '實時']
 MATHEMATICAL_GRAPH_THEORY_KEY_WORDS_EN = ['graph theor']
 MATHEMATICAL_GRAPH_THEORY_ANTI_KEY_WORDS_EN = ['asdgladfj;l', '設計']
 
@@ -323,6 +323,17 @@ CS_BA_BI_ENG_ANTI_KEY_WORDS = ['asdgladfj;l', '畢業', '社會', '人力']
 CS_BA_BI_ENG_KEY_WORDS_EN = ['語音',  '分散式']
 CS_BA_BI_ENG_ANTI_KEY_WORDS_EN = ['asdgladfj;l', '畢業', '社會', '人力']
 
+# 遊戲
+GAMING_MODULES_KEY_WORDS = ['遊戲', '實時電腦圖型', '電腦遊戲', '社群遊戲', '遊戲工程']
+GAMING_MODULES_ANTI_KEY_WORDS = ['asdgladfj;l', '理論']
+GAMING_MODULES_KEY_WORDS_EN = ['gaming', 'games', 'real time computer graphic', 'computer gam', 'social gaming', 'games engineering']
+GAMING_MODULES_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
+
+# 訊號
+CYBER_SIGNAL_PROCESSING_KEY_WORDS = ['訊號處理', '虛實', '嵌入式']
+CYBER_SIGNAL_PROCESSING_ANTI_KEY_WORDS = ['asdgladfj;l']
+CYBER_SIGNAL_PROCESSING_KEY_WORDS_EN = ['cyber', 'signal process']
+CYBER_SIGNAL_PROCESSING_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
 
 # 進階資工
 ADVANCED_COMPUTER_SCIENCE_KEY_WORDS = ['語音', '推薦', '機器學習', '通訊原理', '自然語言', '高等', '網頁', '視窗',
@@ -335,7 +346,7 @@ ADVANCED_COMPUTER_SCIENCE_ANTI_KEY_WORDS_EN = ['asdgladfj;l', '畢業']
 
 # 物理化學工程
 CS_PHY_CHEM_NS_ENG_KEY_WORDS = ['物理', '化學', '生物', '工程']
-CS_PHY_CHEM_NS_ENG_ANTI_KEY_WORDS = ['asdgladfj;l', '畢業', '社會', '人力']
+CS_PHY_CHEM_NS_ENG_ANTI_KEY_WORDS = ['asdgladfj;l', '畢業', '社會', '人力', '遊戲']
 CS_PHY_CHEM_NS_ENG_KEY_WORDS_EN = ['physi',  'chemi']
 CS_PHY_CHEM_NS_ENG_ANTI_KEY_WORDS_EN = ['asdgladfj;l', '畢業', '社會', '人力']
 
@@ -527,7 +538,7 @@ EE_ADVANCED_ELECTRO_ANTI_KEY_WORDS_EN = ['ethnic', '素養']
 # 專業應用課程
 EE_APPLICATION_ORIENTED_KEY_WORDS = ['生醫', '光機電', '電腦', '微系統', '物聯網', '聲學', '微機電', '控制',
                                      '影像', '深度學習', '光電', '應用', '綠能', '雲端運算', '醫學工程', '再生能源']
-EE_APPLICATION_ORIENTED_ANTI_KEY_WORDS = ['倫理', '素養', '入門', '經濟', '微波', '政策']
+EE_APPLICATION_ORIENTED_ANTI_KEY_WORDS = ['倫理', '素養', '入門', '經濟', '微波', '政策', '遊戲']
 EE_APPLICATION_ORIENTED_KEY_WORDS_EN = ['生醫', 'neuro', '光機電', 'mems', 'iot', 'accoustics', 'solar',
                                         'image', 'deep learning', 'optoelectronics', '應用', 'green', 'cloud', 'medical', 'renewable']
 EE_APPLICATION_ORIENTED_ANTI_KEY_WORDS_EN = ['ethnic', '素養']
@@ -627,9 +638,9 @@ ELECTRICAL_ENG_ANTI_KEY_WORDS_EN = [
     'asdgladfj;l', 'logic', 'automation', 'microelectroni', 'business']
 
 # 製造
-ME_MANUFACTURE_ENG_KEY_WORDS = ['製造']
+ME_MANUFACTURE_ENG_KEY_WORDS = ['製造', '冶金']
 ME_MANUFACTURE_ENG_ANTI_KEY_WORDS = ['asdgladfj;l', '邏輯', '自動化', '微電子']
-ME_MANUFACTURE_ENG_KEY_WORDS_EN = ['manufactur', 'fabrica', 'produc']
+ME_MANUFACTURE_ENG_KEY_WORDS_EN = ['manufactur', 'fabrica', 'produc', 'metallurg']
 ME_MANUFACTURE_ENG_ANTI_KEY_WORDS_EN = [
     'asdgladfj;l', 'logic', 'automation', 'microelectroni']
 
@@ -653,16 +664,10 @@ VEHICLE_ENGINEERING_KEY_WORDS_EN = ['車輛', 'vehicle', 'cumbustion',
                                     '電驅動', 'automotive', '熱機', 'suspens']
 VEHICLE_ENGINEERING_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
 
-# 離散
-MTL_MATH_DISCRETE_KEY_WORDS = ['離散', '圖形', '圖論', '邏輯']
-MTL_MATH_DISCRETE_ANTI_KEY_WORDS = ['asdgladfj;l', '管理']
-MTL_MATH_DISCRETE_KEY_WORDS_EN = ['discrete math', '圖形', 'graph', '邏輯']
-MTL_MATH_DISCRETE_ANTI_KEY_WORDS_EN = ['asdgladfj;l']
-
 # 材料科學
-WERKSTOFFKUNDE_KEY_WORDS = ['材料']
+WERKSTOFFKUNDE_KEY_WORDS = ['材料', '結晶']
 WERKSTOFFKUNDE_ANTI_KEY_WORDS = ['asdgladfj;l', '力學', '應用', '世界', '們']
-WERKSTOFFKUNDE_KEY_WORDS_EN = ['material']
+WERKSTOFFKUNDE_KEY_WORDS_EN = ['material', 'crystallogr']
 WERKSTOFFKUNDE_ANTI_KEY_WORDS_EN = ['asdgladfj;l', 'mechanics', 'appl']
 
 # 資料科學

@@ -1,24 +1,25 @@
 const { model, Schema } = require('mongoose');
+const mongoose = require('mongoose');
+
 const { ObjectId } = Schema.Types;
-const logger = require('../services/logger');
 const { handleProgramChanges } = require('../utils/modelHelper/programChange');
 
 const { enableVersionControl } = require('../utils/modelHelper/versionControl');
 
-const Degree = {
-  bachelor_sc: 'B.Sc',
-  bachelor_eng: 'B.Eng',
-  bachelor_a: 'B.A',
-  master_sc: 'M.Sc',
-  master_a: 'M.A',
-  mba: 'MBA',
-  doctoral: 'PhD'
-};
-const Languages = {
-  english: 'English',
-  german: 'German',
-  denglish: 'GermanAndEnglish'
-};
+// const Degree = {
+//   bachelor_sc: 'B.Sc',
+//   bachelor_eng: 'B.Eng',
+//   bachelor_a: 'B.A',
+//   master_sc: 'M.Sc',
+//   master_a: 'M.A',
+//   mba: 'MBA',
+//   doctoral: 'PhD'
+// };
+// const Languages = {
+//   english: 'English',
+//   german: 'German',
+//   denglish: 'GermanAndEnglish'
+// };
 
 const programModule = {
   isArchiv: Boolean,
@@ -206,9 +207,9 @@ programSchema.plugin(enableVersionControl);
 programSchema.plugin(handleProgramChanges);
 
 programSchema.index({ school: 1, program_name: 1 });
-const Program = model('Program', programSchema);
+const Program = mongoose.model('Program', programSchema);
 module.exports = {
-  programModule,
-  Degree,
-  Program
+  Program,
+  programModule
+  // Degree
 };

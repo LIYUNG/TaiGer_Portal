@@ -27,7 +27,8 @@ import {
 } from '@mui/material';
 
 import { Link as LinkDom } from 'react-router-dom';
-import { AiFillDelete } from 'react-icons/ai';
+import DeleteIcon from '@mui/icons-material/Delete';
+
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -63,15 +64,16 @@ import {
 } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
-import ProgramList from '../Program/ProgramList';
 import { appConfig } from '../../config';
 import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
 import ModalNew from '../../components/Modal';
+import { useNavigate } from 'react-router-dom';
 
 function StudentApplicationsTableTemplate(props) {
   const { user } = useAuth();
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [
     studentApplicationsTableTemplateState,
     setStudentApplicationsTableTemplateState
@@ -79,7 +81,7 @@ function StudentApplicationsTableTemplate(props) {
     error: '',
     student: props.student,
     applications: props.student.applications,
-    isLoaded: props.isLoaded,
+    isLoaded: true,
     importedStudent: '',
     importedStudentPrograms: [],
     program_ids: [],
@@ -453,17 +455,9 @@ function StudentApplicationsTableTemplate(props) {
   };
 
   const onClickProgramAssignHandler = () => {
-    setStudentApplicationsTableTemplateState((prevState) => ({
-      ...prevState,
-      isProgramAssignMode: true
-    }));
-  };
-
-  const onClickBackToApplicationOverviewnHandler = () => {
-    setStudentApplicationsTableTemplateState((prevState) => ({
-      ...prevState,
-      isProgramAssignMode: false
-    }));
+    navigate(
+      `/student-applications/edit/${studentApplicationsTableTemplateState.student._id.toString()}`
+    );
   };
 
   const closeProgramCorrectnessModal = () => {
@@ -507,7 +501,7 @@ function StudentApplicationsTableTemplate(props) {
     applying_university_info = (
       <>
         <TableRow>
-          {props.role !== 'Student' && <TableCell></TableCell>}
+          {!is_TaiGer_Student(user) && <TableCell></TableCell>}
           <TableCell>
             <Typography> No University</Typography>
           </TableCell>
@@ -552,7 +546,7 @@ function StudentApplicationsTableTemplate(props) {
       studentApplicationsTableTemplateState.student.applications.map(
         (application, application_idx) => (
           <TableRow key={application_idx}>
-            {props.role !== 'Student' && (
+            {!is_TaiGer_Student(user) && (
               <TableCell>
                 <Button
                   color="primary"
@@ -566,7 +560,7 @@ function StudentApplicationsTableTemplate(props) {
                     )
                   }
                 >
-                  <AiFillDelete size={16} />
+                  <DeleteIcon fontSize='small'/>
                 </Button>
               </TableCell>
             )}
@@ -967,351 +961,321 @@ function StudentApplicationsTableTemplate(props) {
           </Grid>
         )}
       </Grid>
-      {studentApplicationsTableTemplateState.isProgramAssignMode ? (
-        <>
-          <ProgramList
-            user={user}
-            student={props.student}
-            isStudentApplicationPage={true}
-          />
-          <Button
-            color="secondary"
-            variant="contained"
-            size="small"
-            onClick={onClickBackToApplicationOverviewnHandler}
-          >
-            {t('Back')}
-          </Button>
-        </>
-      ) : (
-        <>
-          {isProgramNotSelectedEnough([
+      <>
+        {isProgramNotSelectedEnough([
+          studentApplicationsTableTemplateState.student
+        ]) && (
+          <Card>
+            {props.student.firstname} {props.student.lastname} did not choose
+            enough programs.
+          </Card>
+        )}
+        {is_TaiGer_Admin(user) &&
+          is_num_Program_Not_specified(
             studentApplicationsTableTemplateState.student
-          ]) && (
+          ) && (
             <Card>
-              {props.student.firstname} {props.student.lastname} did not choose
-              enough programs.
+              The number of student&apos;s applications is not specified! Please
+              determine the number of the programs according to the contract
             </Card>
           )}
-          {is_TaiGer_Admin(user) &&
-            is_num_Program_Not_specified(
-              studentApplicationsTableTemplateState.student
-            ) && (
-              <Card>
-                The number of student&apos;s applications is not specified!
-                Please determine the number of the programs according to the
-                contract
-              </Card>
-            )}
-          <Grid container spacing={2}>
-            <Grid item xs={4}>
-              <Typography variant="h6">
-                {t('Applying Program Count', { ns: 'common' })}:{' '}
-              </Typography>
-            </Grid>
-            {is_TaiGer_Admin(user) ? (
-              <Grid item xs={2}>
-                <FormControl fullWidth>
-                  <Select
-                    size="small"
-                    id="applying_program_count"
-                    name="applying_program_count"
-                    value={
-                      studentApplicationsTableTemplateState.applying_program_count
-                    }
-                    onChange={(e) => handleChangeProgramCount(e)}
-                  >
-                    <MenuItem value="0">Please Select</MenuItem>
-                    <MenuItem value="1">1</MenuItem>
-                    <MenuItem value="2">2</MenuItem>
-                    <MenuItem value="3">3</MenuItem>
-                    <MenuItem value="4">4</MenuItem>
-                    <MenuItem value="5">5</MenuItem>
-                    <MenuItem value="6">6</MenuItem>
-                    <MenuItem value="7">7</MenuItem>
-                    <MenuItem value="8">8</MenuItem>
-                    <MenuItem value="9">9</MenuItem>
-                    <MenuItem value="10">10</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-            ) : (
-              <>
-                <Grid item xs={2}>
-                  <Typography variant="h6">
-                    {
-                      studentApplicationsTableTemplateState.student
-                        .applying_program_count
-                    }
-                  </Typography>
-                </Grid>
-              </>
-            )}
+        <Grid container spacing={2}>
+          <Grid item xs={4}>
+            <Typography variant="h6">
+              {t('Applying Program Count', { ns: 'common' })}:{' '}
+            </Typography>
           </Grid>
-          <Box>
-            <Card>
-              <Box>
-                <Banner
-                  ReadOnlyMode={true}
-                  bg={'primary'}
-                  to={`${DEMO.BASE_DOCUMENTS_LINK}`}
-                  title={'info'}
-                  text={`${appConfig.companyName} Portal 網站上的學程資訊主要為管理申請進度為主，學校學程詳細資訊仍以學校網站為主。`}
-                  link_name={''}
-                  removeBanner={<></>}
-                  notification_key={undefined}
-                />
-                <Banner
-                  ReadOnlyMode={true}
-                  bg={'secondary'}
-                  to={`${DEMO.BASE_DOCUMENTS_LINK}`}
-                  title={'warning'}
-                  text={
-                    '請選擇要申請的學程打在 Decided: Yes，不要申請打的 No。'
+          {is_TaiGer_Admin(user) ? (
+            <Grid item xs={2}>
+              <FormControl fullWidth>
+                <Select
+                  size="small"
+                  id="applying_program_count"
+                  name="applying_program_count"
+                  value={
+                    studentApplicationsTableTemplateState.applying_program_count
                   }
-                  link_name={''}
-                  removeBanner={<></>}
-                  notification_key={undefined}
-                />
-                <Banner
-                  ReadOnlyMode={true}
-                  bg={'danger'}
-                  to={`${DEMO.BASE_DOCUMENTS_LINK}`}
-                  title={'warning'}
-                  text={
-                    '請選擇要申請的學程打在 Submitted: Submitted，若想中斷申請請告知顧問，或是 選擇 Withdraw (如果東西都已準備好且解鎖)'
+                  onChange={(e) => handleChangeProgramCount(e)}
+                >
+                  <MenuItem value="0">Please Select</MenuItem>
+                  <MenuItem value="1">1</MenuItem>
+                  <MenuItem value="2">2</MenuItem>
+                  <MenuItem value="3">3</MenuItem>
+                  <MenuItem value="4">4</MenuItem>
+                  <MenuItem value="5">5</MenuItem>
+                  <MenuItem value="6">6</MenuItem>
+                  <MenuItem value="7">7</MenuItem>
+                  <MenuItem value="8">8</MenuItem>
+                  <MenuItem value="9">9</MenuItem>
+                  <MenuItem value="10">10</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+          ) : (
+            <>
+              <Grid item xs={2}>
+                <Typography variant="h6">
+                  {
+                    studentApplicationsTableTemplateState.student
+                      .applying_program_count
                   }
-                  link_name={''}
-                  removeBanner={<></>}
-                  notification_key={undefined}
-                />
-                <TableContainer style={{ overflowX: 'auto' }}>
-                  <Table size="small">
-                    <TableHead>
-                      <TableRow>
-                        {props.role !== 'Student' && <TableCell></TableCell>}
-                        {programstatuslist.map((doc, index) => (
-                          <TableCell key={index}>
-                            {t(doc.name, { ns: 'common' })}
-                          </TableCell>
-                        ))}
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>{applying_university_info}</TableBody>
-                  </Table>
-                </TableContainer>
-              </Box>
-            </Card>
+                </Typography>
+              </Grid>
+            </>
+          )}
+        </Grid>
+        <Box>
+          <Card>
             <Box>
+              <Banner
+                ReadOnlyMode={true}
+                bg={'primary'}
+                to={`${DEMO.BASE_DOCUMENTS_LINK}`}
+                title={'info'}
+                text={`${appConfig.companyName} Portal 網站上的學程資訊主要為管理申請進度為主，學校學程詳細資訊仍以學校網站為主。`}
+                link_name={''}
+                removeBanner={<></>}
+                notification_key={undefined}
+              />
+              <Banner
+                ReadOnlyMode={true}
+                bg={'secondary'}
+                to={`${DEMO.BASE_DOCUMENTS_LINK}`}
+                title={'warning'}
+                text={'請選擇要申請的學程打在 Decided: Yes，不要申請打的 No。'}
+                link_name={''}
+                removeBanner={<></>}
+                notification_key={undefined}
+              />
+              <Banner
+                ReadOnlyMode={true}
+                bg={'danger'}
+                to={`${DEMO.BASE_DOCUMENTS_LINK}`}
+                title={'warning'}
+                text={
+                  '請選擇要申請的學程打在 Submitted: Submitted，若想中斷申請請告知顧問，或是 選擇 Withdraw (如果東西都已準備好且解鎖)'
+                }
+                link_name={''}
+                removeBanner={<></>}
+                notification_key={undefined}
+              />
+              <TableContainer style={{ overflowX: 'auto' }}>
+                <Table size="small">
+                  <TableHead>
+                    <TableRow>
+                      {!is_TaiGer_Student(user) && <TableCell></TableCell>}
+                      {programstatuslist.map((doc, index) => (
+                        <TableCell key={index}>
+                          {t(doc.name, { ns: 'common' })}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>{applying_university_info}</TableBody>
+                </Table>
+              </TableContainer>
+            </Box>
+          </Card>
+          <Box>
+            <Button
+              fullWidth
+              color="primary"
+              variant="contained"
+              disabled={
+                !studentApplicationsTableTemplateState.application_status_changed ||
+                !studentApplicationsTableTemplateState.isLoaded
+              }
+              onClick={(e) =>
+                handleSubmit(
+                  e,
+                  studentApplicationsTableTemplateState.student._id
+                )
+              }
+              sx={{ mt: 2 }}
+            >
+              {studentApplicationsTableTemplateState.isLoaded ? (
+                t('Update', { ns: 'common' })
+              ) : (
+                <CircularProgress size={16} />
+              )}
+            </Button>
+          </Box>
+          {is_TaiGer_role(user) && (
+            <>
+              <Box>
+                <Typography>
+                  <span style={{ display: 'flex', justifyContent: 'center' }}>
+                    You want to add more programs to {props.student.firstname}{' '}
+                    {props.student.lastname}?
+                  </span>
+                </Typography>
+              </Box>
+              <Box>
+                <Typography>
+                  <span style={{ display: 'flex', justifyContent: 'center' }}>
+                    <Button
+                      size="small"
+                      color="primary"
+                      variant="contained"
+                      onClick={onClickProgramAssignHandler}
+                    >
+                      {t('Add New Program')}
+                    </Button>{' '}
+                  </span>
+                </Typography>
+              </Box>
+            </>
+          )}
+          <ModalNew
+            open={
+              studentApplicationsTableTemplateState.importedStudentModalOpen
+            }
+            onClose={onHideimportedStudentModalOpen}
+            size="xl"
+            aria-labelledby="contained-modal-title-vcenter"
+          >
+            <Typography variant="h5">Import programs</Typography>
+            <Typography>
+              Do you want to import the following programs?
+              <br />
+              (Same programs will <b>NOT</b> be duplicated :) )
+              {studentApplicationsTableTemplateState.isImportingStudentPrograms ? (
+                <CircularProgress size={16} />
+              ) : (
+                <List>
+                  {studentApplicationsTableTemplateState.importedStudentPrograms?.map(
+                    (app, i) => (
+                      <ListItemButton
+                        key={i}
+                        role={undefined}
+                        onClick={() =>
+                          modifyImportingPrograms(
+                            app.programId._id.toString(),
+                            studentApplicationsTableTemplateState.program_ids?.some(
+                              (program_id) =>
+                                program_id === app.programId._id.toString()
+                            )
+                          )
+                        }
+                        dense
+                      >
+                        <ListItemIcon>
+                          <Checkbox
+                            edge="start"
+                            checked={studentApplicationsTableTemplateState.program_ids?.some(
+                              (program_id) =>
+                                program_id === app.programId._id.toString()
+                            )}
+                            tabIndex={-1}
+                            disableRipple
+                          />
+                        </ListItemIcon>
+                        <ListItemText
+                          primary={`${app.programId?.school} - ${app.programId?.program_name} ${app.programId?.degree} ${app.programId?.semester}`}
+                        />
+                      </ListItemButton>
+                    )
+                  ) || []}
+                </List>
+              )}
+            </Typography>
+            <Typography>
               <Button
-                fullWidth
                 color="primary"
                 variant="contained"
-                disabled={
-                  !studentApplicationsTableTemplateState.application_status_changed ||
-                  !studentApplicationsTableTemplateState.isLoaded
-                }
-                onClick={(e) =>
-                  handleSubmit(
-                    e,
-                    studentApplicationsTableTemplateState.student._id
-                  )
-                }
-                sx={{ mt: 2 }}
+                size="small"
+                disabled={studentApplicationsTableTemplateState.isButtonDisable}
+                onClick={handleImportProgramsConfirm}
               >
-                {studentApplicationsTableTemplateState.isLoaded ? (
-                  t('Update', { ns: 'common' })
-                ) : (
+                {studentApplicationsTableTemplateState.isButtonDisable ? (
                   <CircularProgress size={16} />
+                ) : (
+                  t('Yes', { ns: 'common' })
                 )}
               </Button>
+              <Button
+                color="primary"
+                variant="outlined"
+                size="small"
+                onClick={onHideimportedStudentModalOpen}
+              >
+                {t('No', { ns: 'common' })}
+              </Button>
+            </Typography>
+          </ModalNew>
+          <ModalNew
+            open={
+              studentApplicationsTableTemplateState.modalShowAssignSuccessWindow
+            }
+            onClose={onHideAssignSuccessWindow}
+            size="m"
+            aria-labelledby="contained-modal-title-vcenter"
+          >
+            <Typography id="contained-modal-title-vcenter">
+              {t('Success', { ns: 'common' })}
+            </Typography>
+            <Typography>
+              Program(s) imported to student successfully!
+            </Typography>
+            <Typography>
+              <Button onClick={onHideAssignSuccessWindow}>Close</Button>
+            </Typography>
+          </ModalNew>
+          <ModalNew
+            open={studentApplicationsTableTemplateState.modalDeleteApplication}
+            onClose={onHideModalDeleteApplication}
+            size="small"
+            aria-labelledby="contained-modal-title-vcenter"
+          >
+            <Typography variant="h6" sx={{ mb: 2 }}>
+              {t('Warning', { ns: 'common' })}:{' '}
+              {t('Delete an application', { ns: 'common' })}
+            </Typography>
+            <Typography>
+              This will delete all message and editted files in discussion. Are
+              you sure?
+            </Typography>
+            <Box sx={{ mt: 2 }}>
+              <Button
+                color="error"
+                variant="contained"
+                disabled={!studentApplicationsTableTemplateState.isLoaded}
+                onClick={handleDeleteConfirm}
+                sx={{ mr: 2 }}
+              >
+                {t('Yes', { ns: 'common' })}
+              </Button>
+              <Button onClick={onHideModalDeleteApplication} variant="outlined">
+                {t('Close', { ns: 'common' })}
+              </Button>
             </Box>
-            {is_TaiGer_role(user) && (
-              <>
-                <Box>
-                  <Typography>
-                    <span style={{ display: 'flex', justifyContent: 'center' }}>
-                      You want to add more programs to {props.student.firstname}{' '}
-                      {props.student.lastname}?
-                    </span>
-                  </Typography>
-                </Box>
-                <Box>
-                  <Typography>
-                    <span style={{ display: 'flex', justifyContent: 'center' }}>
-                      <Button
-                        size="small"
-                        color="primary"
-                        variant="contained"
-                        onClick={onClickProgramAssignHandler}
-                      >
-                        {t('Add New Program')}
-                      </Button>{' '}
-                    </span>
-                  </Typography>
-                </Box>
-              </>
-            )}
-            <ModalNew
-              open={
-                studentApplicationsTableTemplateState.importedStudentModalOpen
-              }
-              onClose={onHideimportedStudentModalOpen}
-              size="xl"
-              aria-labelledby="contained-modal-title-vcenter"
-            >
-              <Typography variant="h5">Import programs</Typography>
-              <Typography>
-                Do you want to import the following programs?
-                <br />
-                (Same programs will <b>NOT</b> be duplicated :) )
-                {studentApplicationsTableTemplateState.isImportingStudentPrograms ? (
-                  <CircularProgress size={16} />
-                ) : (
-                  <List>
-                    {studentApplicationsTableTemplateState.importedStudentPrograms?.map(
-                      (app, i) => (
-                        <ListItemButton
-                          key={i}
-                          role={undefined}
-                          onClick={() =>
-                            modifyImportingPrograms(
-                              app.programId._id.toString(),
-                              studentApplicationsTableTemplateState.program_ids?.some(
-                                (program_id) =>
-                                  program_id === app.programId._id.toString()
-                              )
-                            )
-                          }
-                          dense
-                        >
-                          <ListItemIcon>
-                            <Checkbox
-                              edge="start"
-                              checked={studentApplicationsTableTemplateState.program_ids?.some(
-                                (program_id) =>
-                                  program_id === app.programId._id.toString()
-                              )}
-                              tabIndex={-1}
-                              disableRipple
-                            />
-                          </ListItemIcon>
-                          <ListItemText
-                            primary={`${app.programId?.school} - ${app.programId?.program_name} ${app.programId?.degree} ${app.programId?.semester}`}
-                          />
-                        </ListItemButton>
-                      )
-                    ) || []}
-                  </List>
-                )}
-              </Typography>
-              <Typography>
-                <Button
-                  color="primary"
-                  variant="contained"
-                  size="small"
-                  disabled={
-                    studentApplicationsTableTemplateState.isButtonDisable
-                  }
-                  onClick={handleImportProgramsConfirm}
-                >
-                  {studentApplicationsTableTemplateState.isButtonDisable ? (
-                    <CircularProgress size={16} />
-                  ) : (
-                    t('Yes', { ns: 'common' })
-                  )}
-                </Button>
-                <Button
-                  color="primary"
-                  variant="outlined"
-                  size="small"
-                  onClick={onHideimportedStudentModalOpen}
-                >
-                  {t('No', { ns: 'common' })}
-                </Button>
-              </Typography>
-            </ModalNew>
-            <ModalNew
-              open={
-                studentApplicationsTableTemplateState.modalShowAssignSuccessWindow
-              }
-              onClose={onHideAssignSuccessWindow}
-              size="m"
-              aria-labelledby="contained-modal-title-vcenter"
-            >
-              <Typography id="contained-modal-title-vcenter">
-                {t('Success', { ns: 'common' })}
-              </Typography>
-              <Typography>
-                Program(s) imported to student successfully!
-              </Typography>
-              <Typography>
-                <Button onClick={onHideAssignSuccessWindow}>Close</Button>
-              </Typography>
-            </ModalNew>
-            <ModalNew
-              open={
-                studentApplicationsTableTemplateState.modalDeleteApplication
-              }
-              onClose={onHideModalDeleteApplication}
-              size="small"
-              aria-labelledby="contained-modal-title-vcenter"
-            >
-              <Typography variant="h6" sx={{ mb: 2 }}>
-                {t('Warning', { ns: 'common' })}:{' '}
-                {t('Delete an application', { ns: 'common' })}
-              </Typography>
-              <Typography>
-                This will delete all message and editted files in discussion.
-                Are you sure?
-              </Typography>
-              <Box sx={{ mt: 2 }}>
-                <Button
-                  color="error"
-                  variant="contained"
-                  disabled={!studentApplicationsTableTemplateState.isLoaded}
-                  onClick={handleDeleteConfirm}
-                  sx={{ mr: 2 }}
-                >
-                  {t('Yes', { ns: 'common' })}
-                </Button>
-                <Button
-                  onClick={onHideModalDeleteApplication}
-                  variant="outlined"
-                >
-                  {t('Close', { ns: 'common' })}
-                </Button>
-              </Box>
-            </ModalNew>
-            <ModalNew
-              open={
-                studentApplicationsTableTemplateState.modalUpdatedApplication
-              }
-              onClose={onHideUpdatedApplicationWindow}
-              size="small"
-              aria-labelledby="contained-modal-title-vcenter"
-              centered
-            >
-              <Typography id="contained-modal-title-vcenter">Info:</Typography>
-              <Typography>
-                {t('Applications status updated successfully!', {
-                  ns: 'common'
-                })}
-              </Typography>
-              <Typography>
-                <Button
-                  color="primary"
-                  variant="outlined"
-                  size="small"
-                  onClick={onHideUpdatedApplicationWindow}
-                >
-                  {t('Close', { ns: 'common' })}
-                </Button>
-              </Typography>
-            </ModalNew>
-          </Box>
-        </>
-      )}
+          </ModalNew>
+          <ModalNew
+            open={studentApplicationsTableTemplateState.modalUpdatedApplication}
+            onClose={onHideUpdatedApplicationWindow}
+            size="small"
+            aria-labelledby="contained-modal-title-vcenter"
+            centered
+          >
+            <Typography id="contained-modal-title-vcenter">Info:</Typography>
+            <Typography>
+              {t('Applications status updated successfully!', {
+                ns: 'common'
+              })}
+            </Typography>
+            <Typography>
+              <Button
+                color="primary"
+                variant="outlined"
+                size="small"
+                onClick={onHideUpdatedApplicationWindow}
+              >
+                {t('Close', { ns: 'common' })}
+              </Button>
+            </Typography>
+          </ModalNew>
+        </Box>
+      </>
     </Box>
   );
 }

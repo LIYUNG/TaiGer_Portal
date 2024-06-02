@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { AiFillLock } from 'react-icons/ai';
+import LockIcon from '@mui/icons-material/Lock';
 import { Button, Tooltip } from '@mui/material';
 
 export default function OverlayButton(props) {
@@ -9,7 +9,7 @@ export default function OverlayButton(props) {
     <>
       <Tooltip title={props.text} {...props}>
         <Button ref={target} onClick={() => setShow(!show)}>
-          <AiFillLock />
+          <LockIcon />
         </Button>
       </Tooltip>
     </>

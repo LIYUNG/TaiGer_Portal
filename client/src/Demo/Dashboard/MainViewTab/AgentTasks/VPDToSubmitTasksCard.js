@@ -84,9 +84,7 @@ function VPDToSubmitTasksCard(props) {
     .filter((student) =>
       student.agents.some((agent) => agent._id === user._id.toString())
     )
-    .map((student, i) => (
-      <VPDToSubmitTasks key={i} role={user.role} student={student} />
-    ));
+    .map((student, i) => <VPDToSubmitTasks key={i} student={student} />);
   return (
     <Card sx={{ mb: 2 }}>
       <Alert severity="error">

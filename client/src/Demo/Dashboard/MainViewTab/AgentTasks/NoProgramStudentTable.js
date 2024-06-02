@@ -23,9 +23,7 @@ function NoProgramStudentTable(props) {
     .filter((student) =>
       student.agents.some((agent) => agent._id === user._id.toString())
     )
-    .map((student, i) => (
-      <NoProgramStudentTask key={i} role={user.role} student={student} />
-    ));
+    .map((student, i) => <NoProgramStudentTask key={i} student={student} />);
 
   return (
     anyStudentWithoutApplicationSelection(
@@ -35,7 +33,9 @@ function NoProgramStudentTable(props) {
     ) && (
       <Card sx={{ mb: 2 }}>
         <Alert severity="error">
-          <Typography>No Program Selected Yet</Typography>
+          <Typography>
+            {t('No Program Selected Yet', { ns: 'common' })}
+          </Typography>
         </Alert>
         <Table size="small">
           <TableHead>

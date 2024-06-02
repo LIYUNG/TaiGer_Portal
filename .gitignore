@@ -65,3 +65,4 @@ globalConfig.json
 /api/python/TaiGerProgramListAICrawler/*.pyc
 /api/python/TaiGerProgramListAICrawler/ipynb/tempDB/
 /api/python/TaiGerProgramListAICrawler/ipynb/vectorDatabase/
+api/python/PortalDataExtractor/output/

@@ -3,7 +3,7 @@ const async = require('async');
 
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
-const { Role, User, Agent, Student, Editor } = require('../models/User');
+const { Role, Agent, Student, Editor } = require('../models/User');
 const { Program } = require('../models/Program');
 const { Documentthread } = require('../models/Documentthread');
 const { Basedocumentationslink } = require('../models/Basedocumentationslink');
@@ -25,15 +25,15 @@ const {
   GENERAL_RLs_CONSTANT,
   RLs_CONSTANT,
   isNotArchiv,
-  ManagerType
+  ManagerType,
+  PROGRAM_SPECIFIC_FILETYPE
 } = require('../constants');
 const Permission = require('../models/Permission');
 const Course = require('../models/Course');
-const { ObjectId } = require('mongodb');
+const { Interview } = require('../models/Interview');
 
 const getStudent = asyncHandler(async (req, res, next) => {
   const {
-    user,
     params: { studentId }
   } = req;
 
@@ -391,7 +391,35 @@ const getStudents = asyncHandler(async (req, res, next) => {
         '-attributes +applications.portal_credentials.application_portal_a.account +applications.portal_credentials.application_portal_a.password +applications.portal_credentials.application_portal_b.account +applications.portal_credentials.application_portal_b.password'
       )
       .lean();
-
+    const interviews = await Interview.find({
+      student_id: user._id.toString()
+    })
+      .populate('trainer_id', 'firstname lastname email')
+      .populate('event_id')
+      .lean();
+    if (interviews) {
+      for (let i = 0; i < student.applications?.length; i += 1) {
+        if (
+          interviews.some(
+            (interview) =>
+              interview.program_id.toString() ===
+              student.applications[i].programId._id.toString()
+          )
+        ) {
+          const interview_temp = interviews.find(
+            (interview) =>
+              interview.program_id.toString() ===
+              student.applications[i].programId._id.toString()
+          );
+          student.applications[i].interview_status = interview_temp.status;
+          student.applications[i].interview_trainer_id =
+            interview_temp.trainer_id;
+          student.applications[i].interview_training_event =
+            interview_temp.event_id;
+          student.applications[i].interview_id = interview_temp._id.toString();
+        }
+      }
+    }
     const student_new = add_portals_registered_status(student);
     // TODO Get My Courses
     let isCoursesFilled = true;
@@ -573,7 +601,7 @@ const updateStudentsArchivStatus = asyncHandler(async (req, res, next) => {
     }
     // (O): send editor email.
     for (let i = 0; i < student.editors.length; i += 1) {
-      await informEditorArchivedStudentEmail(
+      informEditorArchivedStudentEmail(
         {
           firstname: student.editors[i].firstname,
           lastname: student.editors[i].lastname,
@@ -587,7 +615,7 @@ const updateStudentsArchivStatus = asyncHandler(async (req, res, next) => {
     }
     if (shouldInform) {
       logger.info(`Inform ${student.firstname} ${student.lastname} to archive`);
-      await informStudentArchivedStudentEmail(
+      informStudentArchivedStudentEmail(
         {
           firstname: student.firstname,
           lastname: student.lastname,
@@ -678,7 +706,7 @@ const assignAgentToStudent = asyncHandler(async (req, res, next) => {
   for (let i = 0; i < to_be_informed_agents.length; i += 1) {
     if (isNotArchiv(student)) {
       if (isNotArchiv(to_be_informed_agents[i])) {
-        await informAgentNewStudentEmail(
+        informAgentNewStudentEmail(
           {
             firstname: to_be_informed_agents[i].firstname,
             lastname: to_be_informed_agents[i].lastname,
@@ -695,7 +723,7 @@ const assignAgentToStudent = asyncHandler(async (req, res, next) => {
   }
   if (updated_agent.length !== 0) {
     if (isNotArchiv(student)) {
-      await informStudentTheirAgentEmail(
+      informStudentTheirAgentEmail(
         {
           firstname: student.firstname,
           lastname: student.lastname,
@@ -761,7 +789,7 @@ const assignEditorToStudent = asyncHandler(async (req, res, next) => {
   for (let i = 0; i < to_be_informed_editors.length; i += 1) {
     if (isNotArchiv(student)) {
       if (isNotArchiv(to_be_informed_editors[i])) {
-        await informEditorNewStudentEmail(
+        informEditorNewStudentEmail(
           {
             firstname: to_be_informed_editors[i].firstname,
             lastname: to_be_informed_editors[i].lastname,
@@ -780,7 +808,7 @@ const assignEditorToStudent = asyncHandler(async (req, res, next) => {
   for (let i = 0; i < student_upated.agents.length; i += 1) {
     if (isNotArchiv(student)) {
       if (isNotArchiv(student_upated.agents[i])) {
-        await informAgentStudentAssignedEmail(
+        informAgentStudentAssignedEmail(
           {
             firstname: student_upated.agents[i].firstname,
             lastname: student_upated.agents[i].lastname,
@@ -941,24 +969,6 @@ const createApplication = asyncHandler(async (req, res, next) => {
       ({ _id }) => _id.toString() === new_programIds[i]
     );
 
-    // Create ML task
-    if (program.ml_required === 'yes') {
-      const new_doc_thread = new Documentthread({
-        student_id: studentId,
-        file_type: 'ML',
-        program_id: new_programIds[i],
-        updatedAt: new Date()
-      });
-      const temp = application.doc_modification_thread.create({
-        doc_thread_id: new_doc_thread._id,
-        updatedAt: new Date(),
-        createdAt: new Date()
-      });
-
-      temp.student_id = studentId;
-      application.doc_modification_thread.push(temp);
-      await new_doc_thread.save();
-    }
     // check if RL required, if yes, create new thread
     if (
       program.rl_required !== undefined &&
@@ -1031,93 +1041,29 @@ const createApplication = asyncHandler(async (req, res, next) => {
         }
       }
     }
-    // Create essay task
-    if (program.essay_required === 'yes') {
-      const new_doc_thread = new Documentthread({
-        student_id: studentId,
-        file_type: 'Essay',
-        program_id: new_programIds[i],
-        updatedAt: new Date()
-      });
-      const temp = application.doc_modification_thread.create({
-        doc_thread_id: new_doc_thread._id,
-        updatedAt: new Date(),
-        createdAt: new Date()
-      });
 
-      temp.student_id = studentId;
-      application.doc_modification_thread.push(temp);
-      await new_doc_thread.save();
-    }
-    // Create portfolio task
-    if (program.portfolio_required === 'yes') {
-      const new_doc_thread = new Documentthread({
-        student_id: studentId,
-        file_type: 'Portfolio',
-        program_id: new_programIds[i],
-        updatedAt: new Date()
-      });
-      const temp = application.doc_modification_thread.create({
-        doc_thread_id: new_doc_thread._id,
-        updatedAt: new Date(),
-        createdAt: new Date()
-      });
-
-      temp.student_id = studentId;
-      application.doc_modification_thread.push(temp);
-      await new_doc_thread.save();
-    }
     // Create supplementary form task
-    if (program.supplementary_form_required === 'yes') {
-      const new_doc_thread = new Documentthread({
-        student_id: studentId,
-        file_type: 'Supplementary_Form',
-        program_id: new_programIds[i],
-        updatedAt: new Date()
-      });
-      const temp = application.doc_modification_thread.create({
-        doc_thread_id: new_doc_thread._id,
-        updatedAt: new Date(),
-        createdAt: new Date()
-      });
-      temp.student_id = studentId;
-      application.doc_modification_thread.push(temp);
-      await new_doc_thread.save();
+
+    for (const doc of PROGRAM_SPECIFIC_FILETYPE) {
+      if (program[doc.required] === 'yes') {
+        const new_doc_thread = new Documentthread({
+          student_id: studentId,
+          file_type: doc.fileType,
+          program_id: new_programIds[i],
+          updatedAt: new Date()
+        });
+        const temp = application.doc_modification_thread.create({
+          doc_thread_id: new_doc_thread._id,
+          updatedAt: new Date(),
+          createdAt: new Date()
+        });
+
+        temp.student_id = studentId;
+        application.doc_modification_thread.push(temp);
+        await new_doc_thread.save();
+      }
     }
-    // Create curriculum analysis task
-    if (program.curriculum_analysis_required === 'yes') {
-      const new_doc_thread = new Documentthread({
-        student_id: studentId,
-        file_type: 'Curriculum_Analysis',
-        program_id: new_programIds[i],
-        updatedAt: new Date()
-      });
-      const temp = application.doc_modification_thread.create({
-        doc_thread_id: new_doc_thread._id,
-        updatedAt: new Date(),
-        createdAt: new Date()
-      });
-      temp.student_id = studentId;
-      application.doc_modification_thread.push(temp);
-      await new_doc_thread.save();
-    }
-    // Create scholarship form / ML task
-    if (program.scholarship_form_required === 'yes') {
-      const new_doc_thread = new Documentthread({
-        student_id: studentId,
-        file_type: 'Scholarship_Form',
-        program_id: new_programIds[i],
-        updatedAt: new Date()
-      });
-      const temp = application.doc_modification_thread.create({
-        doc_thread_id: new_doc_thread._id,
-        updatedAt: new Date(),
-        createdAt: new Date()
-      });
-      temp.student_id = studentId;
-      application.doc_modification_thread.push(temp);
-      await new_doc_thread.save();
-    }
+
     student.notification.isRead_new_programs_assigned = false;
     student.applications.push(application);
   }
@@ -1191,7 +1137,7 @@ const deleteApplication = asyncHandler(async (req, res, next) => {
     for (let i = 0; i < application.doc_modification_thread.length; i += 1) {
       messagesThreadId =
         application.doc_modification_thread[i].doc_thread_id._id.toString();
-      logger.info('Trying to delete message threads and S3 thread folders');
+      logger.info('Trying to delete empty threads');
       // Because there are no non-empty threads. Safe to delete application.
 
       await Documentthread.findByIdAndDelete(messagesThreadId);

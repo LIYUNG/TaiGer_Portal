@@ -1,10 +1,18 @@
 import React, { useState } from 'react';
-import { Link as LinkDom } from 'react-router-dom';
+import { Link as LinkDom, useNavigate } from 'react-router-dom';
 import UndoIcon from '@mui/icons-material/Undo';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
+import BlockIcon from '@mui/icons-material/Block';
 import AddIcon from '@mui/icons-material/Add';
-import { Card, Collapse, CardContent, Typography, Box } from '@mui/material';
+import {
+  Card,
+  Collapse,
+  CardContent,
+  Typography,
+  Box,
+  IconButton
+} from '@mui/material';
 import {
   Button,
   Link,
@@ -15,23 +23,25 @@ import {
   TextField
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import {
-  AiFillCheckCircle,
-  AiFillCloseCircle,
-  AiOutlineFieldTime,
-  AiOutlineStop
-} from 'react-icons/ai';
-import { FiExternalLink } from 'react-icons/fi';
+import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty';
+import LaunchIcon from '@mui/icons-material/Launch';
 
 import ApplicationProgressCardBody from './ApplicationProgressCardBody';
 import { updateStudentApplicationResult } from '../../api';
 import DEMO from '../../store/constant';
 import {
   application_deadline_calculator,
+  isProgramAdmitted,
   progressBarCounter
 } from '../../Demo/Utils/checking-functions';
 import ModalNew from '../Modal';
 import { BASE_URL } from '../../api/request';
+import {
+  FILE_NOT_OK_SYMBOL,
+  FILE_OK_SYMBOL,
+  convertDate
+} from '../../Demo/Utils/contants';
+import { appConfig } from '../../config';
 
 const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
   height: 10,
@@ -49,6 +59,7 @@ const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
 export default function ApplicationProgressCard(props) {
   const [isCollapse, setIsCollapse] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
   const [application, setApplication] = useState(props.application);
   const [resultState, setResultState] = useState('-');
   // const [hasFile, setHasFile] = useState(false);
@@ -145,21 +156,21 @@ export default function ApplicationProgressCard(props) {
               <>
                 {application.admission === '-' && (
                   <>
-                    <AiFillCheckCircle color="limegreen" size={16} />
+                    <IconButton>{FILE_OK_SYMBOL}</IconButton>
                     &nbsp;
                     {t('Submitted', { ns: 'common' })}
                   </>
                 )}
-                {application.admission === 'O' && (
+                {isProgramAdmitted(application) && (
                   <>
-                    <AiFillCheckCircle color="lightblue" size={16} />
+                    <IconButton>{FILE_OK_SYMBOL}</IconButton>
                     &nbsp;
                     {t('Admitted', { ns: 'common' })}
                   </>
                 )}
                 {application.admission === 'X' && (
                   <>
-                    <AiFillCloseCircle color="red" size={16} />
+                    <IconButton>{FILE_NOT_OK_SYMBOL}</IconButton>
                     &nbsp;
                     {t('Rejected', { ns: 'common' })}
                   </>
@@ -167,34 +178,46 @@ export default function ApplicationProgressCard(props) {
               </>
             ) : application_deadline_calculator(props.student, application) ===
               'WITHDRAW' ? (
-              <span title="Deadline">
-                <AiOutlineStop size={16} />{' '}
+              <>
+                <IconButton title="Withdraw">
+                  <BlockIcon fontSize="small" />
+                </IconButton>
                 {application_deadline_calculator(props.student, application)}
-              </span>
+              </>
             ) : (
-              <span title="Deadline">
-                <AiOutlineFieldTime size={16} />{' '}
+              <>
+                <IconButton title="Pending">
+                  <HourglassEmptyIcon fontSize="small" />
+                </IconButton>
                 {application_deadline_calculator(props.student, application)}
-              </span>
+              </>
             )}
           </Typography>
           <Typography sx={{ fontSize: 16 }} color="text.secondary" gutterBottom>
-            <img
-              src={`/assets/logo/country_logo/svg/${application?.programId.country}.svg`}
-              alt="Logo"
-              style={{ maxWidth: '24px', maxHeight: '24px' }}
-            />{' '}
-            <Link
-              underline="hover"
-              to={`${DEMO.SINGLE_PROGRAM_LINK(
-                application?.programId?._id?.toString()
-              )}`}
-              component={LinkDom}
-              target="_blank"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <b>{application?.programId?.school}</b> <FiExternalLink />
-            </Link>
+            <Box sx={{ display: 'flex' }}>
+              <img
+                src={`/assets/logo/country_logo/svg/${application?.programId.country}.svg`}
+                alt="Logo"
+                style={{ maxWidth: '24px', maxHeight: '24px' }}
+              />{' '}
+              &nbsp;
+              <Link
+                underline="hover"
+                to={`${DEMO.SINGLE_PROGRAM_LINK(
+                  application?.programId?._id?.toString()
+                )}`}
+                component={LinkDom}
+                target="_blank"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <Typography fontWeight="bold">
+                  {application?.programId?.school}
+                  <IconButton>
+                    <LaunchIcon fontSize="small" />
+                  </IconButton>
+                </Typography>
+              </Link>
+            </Box>
           </Typography>
           <Typography variant="p" component="div">
             {application?.programId?.degree}{' '}
@@ -236,26 +259,74 @@ export default function ApplicationProgressCard(props) {
                   : t('Add Rejection Letter', { ns: 'admissions' })}
               </Button>
             )}
-          {application_deadline_calculator(props.student, application) ===
-            'CLOSE' &&
+          {appConfig.interviewEnable &&
+            application_deadline_calculator(props.student, application) ===
+              'CLOSE' &&
             application.admission === '-' && (
               <>
-                <Typography variant="p" component="div" sx={{ my: 1 }}>
-                  {t(
-                    'Have you received the interview invitation from this program?'
-                  )}
-                </Typography>
-                <Typography variant="p" component="div" sx={{ my: 1 }}>
-                  <Button
-                    color="primary"
-                    variant="contained"
-                    disabled
-                    size="small"
-                    onClick={() => console.log('Book clicked')}
-                  >
-                    {t('Coming soon', { ns: 'common' })}
-                  </Button>
-                </Typography>
+                {!application.interview_status && (
+                  <>
+                    <Typography variant="p" component="div" sx={{ my: 1 }}>
+                      {t(
+                        'Have you received the interview invitation from this program?'
+                      )}
+                    </Typography>
+                    <Typography variant="p" component="div" sx={{ my: 1 }}>
+                      <Button
+                        color="primary"
+                        variant="contained"
+                        size="small"
+                        onClick={() => navigate(`${DEMO.INTERVIEW_ADD_LINK}`)}
+                      >
+                        {t('Training Request', { ns: 'interviews' })}
+                      </Button>
+                    </Typography>
+                  </>
+                )}
+                {application.interview_status === 'Unscheduled' && (
+                  <>
+                    <Typography variant="p" component="div" sx={{ my: 1 }}>
+                      {t('Please arrange a meeting')}
+                    </Typography>
+                    <Typography variant="p" component="div" sx={{ my: 1 }}>
+                      <Typography variant="p" component="div" sx={{ my: 1 }}>
+                        <Link
+                          underline="hover"
+                          to={`${DEMO.INTERVIEW_SINGLE_LINK(
+                            application?.interview_id
+                          )}`}
+                          component={LinkDom}
+                          target="_blank"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          Arrange a training
+                        </Link>
+                      </Typography>
+                    </Typography>
+                  </>
+                )}
+                {application.interview_status === 'Scheduled' && (
+                  <>
+                    <Typography variant="p" component="div" sx={{ my: 1 }}>
+                      {t('Do not forget to attend the interview training')}
+                    </Typography>
+                    <Typography variant="p" component="div" sx={{ my: 1 }}>
+                      <Link
+                        underline="hover"
+                        to={`${DEMO.INTERVIEW_SINGLE_LINK(
+                          application?.interview_id
+                        )}`}
+                        component={LinkDom}
+                        target="_blank"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        {convertDate(
+                          application.interview_training_event?.start
+                        )}
+                      </Link>
+                    </Typography>
+                  </>
+                )}
               </>
             )}
           {application_deadline_calculator(props.student, application) ===

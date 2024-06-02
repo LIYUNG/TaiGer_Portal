@@ -8,6 +8,7 @@ import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
+import { is_TaiGer_Student, is_TaiGer_role } from '../Utils/checking-functions';
 
 function LearningResources() {
   const { user } = useAuth();
@@ -53,12 +54,7 @@ function LearningResources() {
     );
   }, []);
 
-  if (
-    user.role !== 'Admin' &&
-    user.role !== 'Editor' &&
-    user.role !== 'Agent' &&
-    user.role !== 'Student'
-  ) {
+  if (!is_TaiGer_role(user) && !is_TaiGer_Student(user)) {
     return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
   }
   TabTitle('Applications Overview');

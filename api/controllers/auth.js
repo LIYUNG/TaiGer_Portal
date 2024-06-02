@@ -14,7 +14,7 @@ const {
   checkToken
 } = require('../common/validation');
 const { asyncHandler } = require('../middlewares/error-handler');
-const { User, Guest, Role } = require('../models/User');
+const { User, Guest } = require('../models/User');
 const Token = require('../models/Token');
 const {
   sendConfirmationEmail,

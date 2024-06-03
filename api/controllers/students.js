@@ -32,6 +32,19 @@ const Course = require('../models/Course');
 const { Interview } = require('../models/Interview');
 const { getPermission } = require('../utils/queryFunctions');
 
+const fetchStudents = async (filter) =>
+  Student.find(filter)
+    .populate('agents editors', 'firstname lastname email')
+    .populate('applications.programId')
+    .populate(
+      'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
+      '-messages'
+    )
+    .select(
+      '-notification +applications.portal_credentials.application_portal_a.account +applications.portal_credentials.application_portal_a.password +applications.portal_credentials.application_portal_b.account +applications.portal_credentials.application_portal_b.password'
+    )
+    .lean();
+
 const getStudent = asyncHandler(async (req, res, next) => {
   const {
     params: { studentId }
@@ -131,36 +144,16 @@ const updateDocumentationHelperLink = asyncHandler(async (req, res, next) => {
 });
 
 const getAllArchivStudents = asyncHandler(async (req, res, next) => {
-  const students = await Student.find({ archiv: true })
-    .populate('agents editors', 'firstname lastname email')
-    .populate('applications.programId')
-    .populate(
-      'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
-      '-messages'
-    )
-    .select(
-      '-notification +applications.portal_credentials.application_portal_a.account +applications.portal_credentials.application_portal_a.password +applications.portal_credentials.application_portal_b.account +applications.portal_credentials.application_portal_b.password'
-    )
-    .lean();
+  const students = await fetchStudents({ archiv: true });
 
   res.status(200).send({ success: true, data: students });
   next();
 });
 
 const getAllActiveStudents = asyncHandler(async (req, res, next) => {
-  const students = await Student.find({
+  const students = await fetchStudents({
     $or: [{ archiv: { $exists: false } }, { archiv: false }]
-  })
-    .populate('agents editors', 'firstname lastname email')
-    .populate('applications.programId')
-    .populate(
-      'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
-      '-messages'
-    )
-    .select(
-      '-notification +applications.portal_credentials.application_portal_a.account +applications.portal_credentials.application_portal_a.password +applications.portal_credentials.application_portal_b.account +applications.portal_credentials.application_portal_b.password'
-    )
-    .lean();
+  });
   const courses = await Course.find().select('-table_data_string').lean();
   // Perform the join
   const studentsWithCourse = students.map((student) => {
@@ -182,41 +175,19 @@ const getAllActiveStudents = asyncHandler(async (req, res, next) => {
 });
 
 const getAllStudents = asyncHandler(async (req, res, next) => {
-  const students = await Student.find()
-    .populate('agents editors', 'firstname lastname email')
-    .populate('applications.programId')
-    .populate(
-      'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
-      '-messages'
-    )
-    .select(
-      '-notification +applications.portal_credentials.application_portal_a.account +applications.portal_credentials.application_portal_a.password +applications.portal_credentials.application_portal_b.account +applications.portal_credentials.application_portal_b.password'
-    )
-    .lean();
+  const students = await fetchStudents();
 
   res.status(200).send({ success: true, data: students });
   next();
 });
 
 const getStudents = asyncHandler(async (req, res, next) => {
-  const {
-    user
-    // params: { userId },
-  } = req;
+  const { user } = req;
+
   if (user.role === Role.Admin) {
-    const students = await Student.find({
+    const students = await fetchStudents({
       $or: [{ archiv: { $exists: false } }, { archiv: false }]
-    })
-      .populate('agents editors', 'firstname lastname email')
-      .populate('applications.programId')
-      .populate(
-        'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
-        '-messages'
-      )
-      .select(
-        '-notification +applications.portal_credentials.application_portal_a.account +applications.portal_credentials.application_portal_a.password +applications.portal_credentials.application_portal_b.account +applications.portal_credentials.application_portal_b.password'
-      )
-      .lean();
+    });
     const courses = await Course.find().select('-table_data_string').lean();
     // Perform the join
     const studentsWithCourse = students.map((student) => {
@@ -238,39 +209,19 @@ const getStudents = asyncHandler(async (req, res, next) => {
     let students = [];
     // TODO: depends on manager type
     if (user.manager_type === ManagerType.Agent) {
-      students = await Student.find({
+      students = await fetchStudents({
         agents: { $in: user.agents },
         $or: [{ archiv: { $exists: false } }, { archiv: false }]
-      })
-        .populate('agents editors', 'firstname lastname email')
-        .populate('applications.programId')
-        .populate(
-          'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
-          '-messages'
-        )
-        .select(
-          '-notification +applications.portal_credentials.application_portal_a.account +applications.portal_credentials.application_portal_a.password +applications.portal_credentials.application_portal_b.account +applications.portal_credentials.application_portal_b.password'
-        )
-        .lean();
+      });
     }
     if (user.manager_type === ManagerType.Editor) {
-      students = await Student.find({
+      students = await fetchStudents({
         editors: { $in: user.editors },
         $or: [{ archiv: { $exists: false } }, { archiv: false }]
-      })
-        .populate('agents editors', 'firstname lastname email')
-        .populate('applications.programId')
-        .populate(
-          'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
-          '-messages'
-        )
-        .select(
-          '-notification +applications.portal_credentials.application_portal_a.account +applications.portal_credentials.application_portal_a.password +applications.portal_credentials.application_portal_b.account +applications.portal_credentials.application_portal_b.password'
-        )
-        .lean();
+      });
     }
     if (user.manager_type === ManagerType.AgentAndEditor) {
-      students = await Student.find({
+      students = await fetchStudents({
         $and: [
           {
             $or: [
@@ -280,17 +231,7 @@ const getStudents = asyncHandler(async (req, res, next) => {
           },
           { $or: [{ archiv: { $exists: false } }, { archiv: false }] }
         ]
-      })
-        .populate('agents editors', 'firstname lastname email')
-        .populate('applications.programId')
-        .populate(
-          'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
-          '-messages'
-        )
-        .select(
-          '-notification +applications.portal_credentials.application_portal_a.account +applications.portal_credentials.application_portal_a.password +applications.portal_credentials.application_portal_b.account +applications.portal_credentials.application_portal_b.password'
-        )
-        .lean();
+      });
     }
     const courses = await Course.find().select('-table_data_string').lean();
     // Perform the join
@@ -314,20 +255,10 @@ const getStudents = asyncHandler(async (req, res, next) => {
       notification: user.agent_notification
     });
   } else if (user.role === Role.Agent) {
-    const students = await Student.find({
+    const students = await fetchStudents({
       agents: user._id,
       $or: [{ archiv: { $exists: false } }, { archiv: false }]
-    })
-      .populate('agents editors', 'firstname lastname email')
-      .populate('applications.programId')
-      .populate(
-        'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
-        '-messages'
-      )
-      .select(
-        '-notification +applications.portal_credentials.application_portal_a.account +applications.portal_credentials.application_portal_a.password +applications.portal_credentials.application_portal_b.account +applications.portal_credentials.application_portal_b.password'
-      )
-      .lean();
+    });
     const courses = await Course.find().select('-table_data_string').lean();
     // Perform the join
     const studentsWithCourse = students.map((student) => {
@@ -365,17 +296,10 @@ const getStudents = asyncHandler(async (req, res, next) => {
 
       res.status(200).send({ success: true, data: students });
     } else {
-      const students = await Student.find({
+      const students = await fetchStudents({
         editors: user._id,
         $or: [{ archiv: { $exists: false } }, { archiv: false }]
-      })
-        .populate('agents editors', 'firstname lastname email')
-        .populate('applications.programId')
-        .populate(
-          'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
-          '-messages'
-        )
-        .select('-notification');
+      });
 
       res.status(200).send({ success: true, data: students });
     }
@@ -535,19 +459,9 @@ const updateStudentsArchivStatus = asyncHandler(async (req, res, next) => {
   if (isArchived) {
     // return dashboard students
     if (user.role === Role.Admin) {
-      const students = await Student.find({
+      const students = await fetchStudents({
         $or: [{ archiv: { $exists: false } }, { archiv: false }]
-      })
-        .populate('agents editors', 'firstname lastname email')
-        .populate('applications.programId')
-        .populate(
-          'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
-          '-messages'
-        )
-        .select(
-          '-notification +applications.portal_credentials.application_portal_a.account +applications.portal_credentials.application_portal_a.password +applications.portal_credentials.application_portal_b.account +applications.portal_credentials.application_portal_b.password'
-        )
-        .lean();
+      });
 
       res.status(200).send({ success: true, data: students });
     } else if (user.role === Role.Agent) {
@@ -566,37 +480,17 @@ const updateStudentsArchivStatus = asyncHandler(async (req, res, next) => {
 
         res.status(200).send({ success: true, data: students });
       } else {
-        const students = await Student.find({
+        const students = await fetchStudents({
           agents: user._id,
           $or: [{ archiv: { $exists: false } }, { archiv: false }]
-        })
-          .populate('agents editors', 'firstname lastname email')
-          .populate('applications.programId')
-          .populate(
-            'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
-            '-messages'
-          )
-          .select(
-            '-notification +applications.portal_credentials.application_portal_a.account +applications.portal_credentials.application_portal_a.password +applications.portal_credentials.application_portal_b.account +applications.portal_credentials.application_portal_b.password'
-          )
-          .lean();
+        });
         res.status(200).send({ success: true, data: students });
       }
     } else if (user.role === Role.Editor) {
-      const students = await Student.find({
+      const students = await fetchStudents({
         editors: user._id,
         $or: [{ archiv: { $exists: false } }, { archiv: false }]
-      })
-        .populate('agents editors', 'firstname lastname email')
-        .populate('applications.programId')
-        .populate(
-          'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
-          '-messages'
-        )
-        .select(
-          '-notification +applications.portal_credentials.application_portal_a.account +applications.portal_credentials.application_portal_a.password +applications.portal_credentials.application_portal_b.account +applications.portal_credentials.application_portal_b.password'
-        )
-        .lean();
+      });
       res.status(200).send({ success: true, data: students });
     }
     // (O): send editor email.

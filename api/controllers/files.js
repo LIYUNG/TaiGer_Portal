@@ -1277,6 +1277,41 @@ const updateAcademicBackground = asyncHandler(async (req, res, next) => {
     );
 
     // TODO: update base documents needed or not:
+    const documentsToEnsure = [
+      'Bachelor_Certificate',
+      'Bachelor_Transcript',
+      'Course_Description',
+      'Employment_Certificate',
+      'ECTS_Conversion'
+    ];
+    const ensureDocumentStatus = (
+      studentProfile,
+      docName,
+      profileNameList,
+      status,
+      DocStatus
+    ) => {
+      let document = studentProfile.find(
+        (doc) => doc.name === profileNameList[docName]
+      );
+
+      if (!document) {
+        document = studentProfile.create({ name: profileNameList[docName] });
+        document.status = status;
+        document.required = true;
+        document.updatedAt = new Date();
+        document.path = '';
+        studentProfile.push(document);
+      } else if (
+        document.status ===
+        (status === DocStatus.NotNeeded
+          ? DocStatus.Missing
+          : DocStatus.NotNeeded)
+      ) {
+        document.status = status;
+      }
+    };
+    let desiredStatus;
 
     // no need university doc
     if (
@@ -1284,327 +1319,61 @@ const updateAcademicBackground = asyncHandler(async (req, res, next) => {
         'pending' ||
       updatedStudent.academic_background.university.isGraduated === 'No'
     ) {
-      // make sure if existing uploaded file
-      let bachelor_diploma_doc = updatedStudent.profile.find(
-        (doc) => doc.name === profile_name_list.Bachelor_Certificate
-      );
-      if (!bachelor_diploma_doc) {
-        // Set not needed
-        bachelor_diploma_doc = updatedStudent.profile.create({
-          name: profile_name_list.Bachelor_Certificate
-        });
-        bachelor_diploma_doc.status = DocumentStatus.NotNeeded;
-        bachelor_diploma_doc.required = true;
-        bachelor_diploma_doc.updatedAt = new Date();
-        bachelor_diploma_doc.path = '';
-        updatedStudent.profile.push(bachelor_diploma_doc);
-      } else {
-        if (bachelor_diploma_doc.status === DocumentStatus.Missing) {
-          bachelor_diploma_doc.status = DocumentStatus.NotNeeded;
-        }
-      }
-
-      let bachelor_transcript_doc = updatedStudent.profile.find(
-        (doc) => doc.name === profile_name_list.Bachelor_Transcript
-      );
-      if (!bachelor_transcript_doc) {
-        // Set not needed
-        bachelor_transcript_doc = updatedStudent.profile.create({
-          name: profile_name_list.Bachelor_Transcript
-        });
-        bachelor_transcript_doc.status = DocumentStatus.NotNeeded;
-        bachelor_transcript_doc.required = true;
-        bachelor_transcript_doc.updatedAt = new Date();
-        bachelor_transcript_doc.path = '';
-        updatedStudent.profile.push(bachelor_transcript_doc);
-      } else {
-        if (bachelor_transcript_doc.status === DocumentStatus.Missing) {
-          bachelor_transcript_doc.status = DocumentStatus.NotNeeded;
-        }
-      }
-
-      let course_description_doc = updatedStudent.profile.find(
-        (doc) => doc.name === profile_name_list.Course_Description
-      );
-      if (!course_description_doc) {
-        // Set not needed
-        course_description_doc = updatedStudent.profile.create({
-          name: profile_name_list.Course_Description
-        });
-        course_description_doc.status = DocumentStatus.NotNeeded;
-        course_description_doc.required = true;
-        course_description_doc.updatedAt = new Date();
-        course_description_doc.path = '';
-        updatedStudent.profile.push(course_description_doc);
-      } else {
-        if (course_description_doc.status === DocumentStatus.Missing) {
-          course_description_doc.status = DocumentStatus.NotNeeded;
-        }
-      }
-
-      let employment_certificate_doc = updatedStudent.profile.find(
-        (doc) => doc.name === profile_name_list.Employment_Certificate
-      );
-      if (!employment_certificate_doc) {
-        // Set not needed
-        employment_certificate_doc = updatedStudent.profile.create({
-          name: profile_name_list.Employment_Certificate
-        });
-        employment_certificate_doc.status = DocumentStatus.NotNeeded;
-        employment_certificate_doc.required = true;
-        employment_certificate_doc.updatedAt = new Date();
-        employment_certificate_doc.path = '';
-        updatedStudent.profile.push(employment_certificate_doc);
-      } else {
-        if (employment_certificate_doc.status === DocumentStatus.Missing) {
-          employment_certificate_doc.status = DocumentStatus.NotNeeded;
-        }
-      }
-      let ects_conversion_doc = updatedStudent.profile.find(
-        (doc) => doc.name === profile_name_list.ECTS_Conversion
-      );
-      if (!ects_conversion_doc) {
-        // Set not needed
-        ects_conversion_doc = updatedStudent.profile.create({
-          name: profile_name_list.ECTS_Conversion
-        });
-        ects_conversion_doc.status = DocumentStatus.NotNeeded;
-        ects_conversion_doc.required = true;
-        ects_conversion_doc.updatedAt = new Date();
-        ects_conversion_doc.path = '';
-        updatedStudent.profile.push(ects_conversion_doc);
-      } else {
-        if (ects_conversion_doc.status === DocumentStatus.Missing) {
-          ects_conversion_doc.status = DocumentStatus.NotNeeded;
-        }
-      }
+      desiredStatus = DocumentStatus.NotNeeded;
     } else {
-      let bachelor_diploma_doc = updatedStudent.profile.find(
-        (doc) => doc.name === profile_name_list.Bachelor_Certificate
-      );
-      if (!bachelor_diploma_doc) {
-        // Set not needed
-        bachelor_diploma_doc = updatedStudent.profile.create({
-          name: profile_name_list.Bachelor_Certificate
-        });
-        bachelor_diploma_doc.status = DocumentStatus.Missing;
-        bachelor_diploma_doc.required = true;
-        bachelor_diploma_doc.updatedAt = new Date();
-        bachelor_diploma_doc.path = '';
-        updatedStudent.profile.push(bachelor_diploma_doc);
-      } else {
-        if (bachelor_diploma_doc.status === DocumentStatus.NotNeeded) {
-          bachelor_diploma_doc.status = DocumentStatus.Missing;
-        }
-      }
-
-      let bachelor_transcript_doc = updatedStudent.profile.find(
-        (doc) => doc.name === profile_name_list.Bachelor_Transcript
-      );
-      if (!bachelor_transcript_doc) {
-        // Set not needed
-        bachelor_transcript_doc = updatedStudent.profile.create({
-          name: profile_name_list.Bachelor_Transcript
-        });
-        bachelor_transcript_doc.status = DocumentStatus.Missing;
-        bachelor_transcript_doc.required = true;
-        bachelor_transcript_doc.updatedAt = new Date();
-        bachelor_transcript_doc.path = '';
-        updatedStudent.profile.push(bachelor_transcript_doc);
-      } else {
-        if (bachelor_transcript_doc.status === DocumentStatus.NotNeeded) {
-          bachelor_transcript_doc.status = DocumentStatus.Missing;
-        }
-      }
-
-      let course_description_doc = updatedStudent.profile.find(
-        (doc) => doc.name === profile_name_list.Course_Description
-      );
-      if (!course_description_doc) {
-        // Set not needed
-        course_description_doc = updatedStudent.profile.create({
-          name: profile_name_list.Course_Description
-        });
-        course_description_doc.status = DocumentStatus.Missing;
-        course_description_doc.required = true;
-        course_description_doc.updatedAt = new Date();
-        course_description_doc.path = '';
-        updatedStudent.profile.push(course_description_doc);
-      } else {
-        if (course_description_doc.status === DocumentStatus.NotNeeded) {
-          course_description_doc.status = DocumentStatus.Missing;
-        }
-      }
-
-      let employment_certificate_doc = updatedStudent.profile.find(
-        (doc) => doc.name === profile_name_list.Employment_Certificate
-      );
-      if (!employment_certificate_doc) {
-        // Set not needed
-        employment_certificate_doc = updatedStudent.profile.create({
-          name: profile_name_list.Employment_Certificate
-        });
-        employment_certificate_doc.status = DocumentStatus.Missing;
-        employment_certificate_doc.required = true;
-        employment_certificate_doc.updatedAt = new Date();
-        employment_certificate_doc.path = '';
-        updatedStudent.profile.push(employment_certificate_doc);
-      } else {
-        if (employment_certificate_doc.status === DocumentStatus.NotNeeded) {
-          employment_certificate_doc.status = DocumentStatus.Missing;
-        }
-      }
-
-      let ects_conversion_doc = updatedStudent.profile.find(
-        (doc) => doc.name === profile_name_list.ECTS_Conversion
-      );
-      if (!ects_conversion_doc) {
-        // Set not needed
-        ects_conversion_doc = updatedStudent.profile.create({
-          name: profile_name_list.ECTS_Conversion
-        });
-        ects_conversion_doc.status = DocumentStatus.Missing;
-        ects_conversion_doc.required = true;
-        ects_conversion_doc.updatedAt = new Date();
-        ects_conversion_doc.path = '';
-        updatedStudent.profile.push(ects_conversion_doc);
-      } else if (ects_conversion_doc.status === DocumentStatus.NotNeeded) {
-        ects_conversion_doc.status = DocumentStatus.Missing;
-      }
+      desiredStatus = DocumentStatus.Missing;
     }
 
-    if (
+    documentsToEnsure.forEach((docName) => {
+      ensureDocumentStatus(
+        updatedStudent.profile,
+        docName,
+        profile_name_list,
+        desiredStatus,
+        DocumentStatus
+      );
+    });
+
+    const exchangeStatus =
       updatedStudent.academic_background.university.Has_Exchange_Experience ===
       'Yes'
-    ) {
-      // make sure if existing uploaded file
-      let exchange_certificate = updatedStudent.profile.find(
-        (doc) => doc.name === profile_name_list.Exchange_Student_Certificate
-      );
-      if (!exchange_certificate) {
-        // Set not needed
-        exchange_certificate = updatedStudent.profile.create({
-          name: profile_name_list.Exchange_Student_Certificate
-        });
-        exchange_certificate.status = DocumentStatus.Missing;
-        exchange_certificate.required = true;
-        exchange_certificate.updatedAt = new Date();
-        exchange_certificate.path = '';
-        updatedStudent.profile.push(exchange_certificate);
-      } else {
-        if (exchange_certificate.status === DocumentStatus.NotNeeded) {
-          exchange_certificate.status = DocumentStatus.Missing;
-        }
-      }
-    } else {
-      // make sure if existing uploaded file
-      let exchange_certificate = updatedStudent.profile.find(
-        (doc) => doc.name === profile_name_list.Exchange_Student_Certificate
-      );
-      if (!exchange_certificate) {
-        // Set not needed
-        exchange_certificate = updatedStudent.profile.create({
-          name: profile_name_list.Exchange_Student_Certificate
-        });
-        exchange_certificate.status = DocumentStatus.NotNeeded;
-        exchange_certificate.required = true;
-        exchange_certificate.updatedAt = new Date();
-        exchange_certificate.path = '';
-        updatedStudent.profile.push(exchange_certificate);
-      } else {
-        if (exchange_certificate.status === DocumentStatus.Missing) {
-          exchange_certificate.status = DocumentStatus.NotNeeded;
-        }
-      }
-    }
-    if (
+        ? DocumentStatus.Missing
+        : DocumentStatus.NotNeeded;
+
+    ensureDocumentStatus(
+      updatedStudent.profile,
+      'Exchange_Student_Certificate',
+      profile_name_list,
+      exchangeStatus,
+      DocumentStatus
+    );
+
+    const internshipStatus =
       updatedStudent.academic_background.university
         .Has_Internship_Experience === 'Yes'
-    ) {
-      // make sure if existing uploaded file
-      let internship_certificate = updatedStudent.profile.find(
-        (doc) => doc.name === profile_name_list.Internship
-      );
-      if (!internship_certificate) {
-        // Set not needed
-        internship_certificate = updatedStudent.profile.create({
-          name: profile_name_list.Internship
-        });
-        internship_certificate.status = DocumentStatus.Missing;
-        internship_certificate.required = true;
-        internship_certificate.updatedAt = new Date();
-        internship_certificate.path = '';
-        updatedStudent.profile.push(internship_certificate);
-      } else {
-        if (internship_certificate.status === DocumentStatus.NotNeeded) {
-          internship_certificate.status = DocumentStatus.Missing;
-        }
-      }
-    } else {
-      // make sure if existing uploaded file
-      let internship_certificate = updatedStudent.profile.find(
-        (doc) => doc.name === profile_name_list.Internship
-      );
-      if (!internship_certificate) {
-        // Set not needed
-        internship_certificate = updatedStudent.profile.create({
-          name: profile_name_list.Internship
-        });
-        internship_certificate.status = DocumentStatus.NotNeeded;
-        internship_certificate.required = true;
-        internship_certificate.updatedAt = new Date();
-        internship_certificate.path = '';
-        updatedStudent.profile.push(internship_certificate);
-      } else {
-        if (internship_certificate.status === DocumentStatus.Missing) {
-          internship_certificate.status = DocumentStatus.NotNeeded;
-        }
-      }
-    }
-    if (
+        ? DocumentStatus.Missing
+        : DocumentStatus.NotNeeded;
+    ensureDocumentStatus(
+      updatedStudent.profile,
+      'Internship',
+      profile_name_list,
+      internshipStatus,
+      DocumentStatus
+    );
+
+    const workExperienceStatus =
       updatedStudent.academic_background.university.Has_Working_Experience ===
       'Yes'
-    ) {
-      // make sure if existing uploaded file
-      let employment_certificate = updatedStudent.profile.find(
-        (doc) => doc.name === profile_name_list.Employment_Certificate
-      );
-      if (!employment_certificate) {
-        // Set not needed
-        employment_certificate = updatedStudent.profile.create({
-          name: profile_name_list.Employment_Certificate
-        });
-        employment_certificate.status = DocumentStatus.Missing;
-        employment_certificate.required = true;
-        employment_certificate.updatedAt = new Date();
-        employment_certificate.path = '';
-        updatedStudent.profile.push(employment_certificate);
-      } else {
-        if (employment_certificate.status === DocumentStatus.NotNeeded) {
-          employment_certificate.status = DocumentStatus.Missing;
-        }
-      }
-    } else {
-      // make sure if existing uploaded file
-      let employment_certificate = updatedStudent.profile.find(
-        (doc) => doc.name === profile_name_list.Employment_Certificate
-      );
-      if (!employment_certificate) {
-        // Set not needed
-        employment_certificate = updatedStudent.profile.create({
-          name: profile_name_list.Employment_Certificate
-        });
-        employment_certificate.status = DocumentStatus.NotNeeded;
-        employment_certificate.required = true;
-        employment_certificate.updatedAt = new Date();
-        employment_certificate.path = '';
-        updatedStudent.profile.push(employment_certificate);
-      } else {
-        if (employment_certificate.status === DocumentStatus.Missing) {
-          employment_certificate.status = DocumentStatus.NotNeeded;
-        }
-      }
-    }
+        ? DocumentStatus.Missing
+        : DocumentStatus.NotNeeded;
+    ensureDocumentStatus(
+      updatedStudent.profile,
+      'Employment_Certificate',
+      profile_name_list,
+      workExperienceStatus,
+      DocumentStatus
+    );
+
     await updatedStudent.save();
 
     // TODO: minor: profile field not used for student.

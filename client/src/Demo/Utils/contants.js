@@ -2,7 +2,7 @@ import React from 'react';
 import { DateTime, IANAZone } from 'luxon';
 import moment from 'moment-timezone';
 import { styled, alpha } from '@mui/material/styles';
-import { InputBase, Typography } from '@mui/material';
+import { Box, InputBase, Typography } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import BugReportIcon from '@mui/icons-material/BugReport';
@@ -1667,6 +1667,220 @@ export const studentOverviewTableHeader = [
   'Portals',
   'Uni-Assist',
   'open/offer/reject'
+];
+
+export const c1_mrt = [
+  {
+    accessorKey: 'firstname_lastname', //accessorKey used to define `data` column. `id` gets set to accessorKey automatically
+    filterVariant: 'autocomplete',
+    filterFn: 'contains',
+    header: 'First-, Last Name',
+    size: 150,
+    Cell: (params) => {
+      const linkUrl = `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+        params.row.original.student_id,
+        DEMO.PROFILE_HASH
+      )}`;
+      return (
+        <Box
+          sx={{
+            whiteSpace: 'nowrap',
+            overflow: 'hidden'
+            // textOverflow: 'ellipsis'
+          }}
+        >
+          <Link
+            underline="hover"
+            to={linkUrl}
+            component={LinkDom}
+            target="_blank"
+            title={params.row.original.firstname_lastname}
+          >
+            {params.row.original.firstname_lastname}
+          </Link>
+        </Box>
+      );
+    }
+  },
+  {
+    accessorKey: 'editors',
+    header: 'Editors / Writer',
+    size: 120,
+    Cell: (params) => {
+      return params.row.original.file_type === 'Essay'
+        ? params.row.original.outsourced_user_id?.map((outsourcer) => (
+            <Box
+              key={`${outsourcer._id.toString()}`}
+              sx={{
+                whiteSpace: 'nowrap',
+                overflow: 'hidden'
+                // textOverflow: 'ellipsis'
+              }}
+            >
+              <Link
+                underline="hover"
+                to={DEMO.TEAM_EDITOR_LINK(outsourcer._id.toString())}
+                component={LinkDom}
+                target="_blank"
+                title={outsourcer.firstname}
+              >
+                {`${outsourcer.firstname} `}
+              </Link>
+            </Box>
+          )) || []
+        : params.row.original.editors?.map((editor) => (
+            <Link
+              underline="hover"
+              to={DEMO.TEAM_EDITOR_LINK(editor._id.toString())}
+              component={LinkDom}
+              target="_blank"
+              title={editor.firstname}
+              key={`${editor._id.toString()}`}
+            >
+              {`${editor.firstname} `}
+            </Link>
+          ));
+    }
+  },
+  {
+    accessorKey: 'deadline',
+    header: 'Deadline',
+    size: 120,
+    Cell: (params) => {
+      return (
+        <Box
+          sx={{
+            whiteSpace: 'nowrap',
+            overflow: 'hidden'
+          }}
+        >
+          {params.row.original?.deadline}
+        </Box>
+      );
+    }
+  },
+  {
+    accessorKey: 'days_left',
+    header: 'Days left',
+    size: 80,
+    Cell: (params) => {
+      return (
+        <Box
+          sx={{
+            whiteSpace: 'nowrap',
+            overflow: 'hidden'
+          }}
+        >
+          {params.row.original?.days_left}
+        </Box>
+      );
+    }
+  },
+  {
+    accessorKey: 'document_name',
+    header: 'Document name',
+    filterFn: 'contains',
+    size: 450,
+    Cell: (params) => {
+      const linkUrl = `${DEMO.DOCUMENT_MODIFICATION_LINK(
+        params.row.original.thread_id
+      )}`;
+      return (
+        <Box
+          sx={{
+            whiteSpace: 'nowrap',
+            overflow: 'hidden'
+            // textOverflow: 'ellipsis'
+          }}
+        >
+          {params.row.original?.attributes?.map(
+            (attribute) =>
+              [1, 3, 9, 10, 11].includes(attribute.value) && (
+                <Tooltip
+                  title={`${attribute.name}: ${
+                    ATTRIBUTES[attribute.value - 1].definition
+                  }`}
+                  key={attribute._id}
+                >
+                  <Chip
+                    size="small"
+                    data-testid={`chip-${attribute.name}`}
+                    label={attribute.name[0]}
+                    color={COLORS[attribute.value]}
+                  />
+                </Tooltip>
+              )
+          )}
+          <Link
+            underline="hover"
+            to={linkUrl}
+            component={LinkDom}
+            target="_blank"
+            title={params.row.original.document_name}
+          >
+            {params.row.original.document_name}
+          </Link>
+        </Box>
+      );
+    }
+  },
+  {
+    accessorKey: 'aged_days',
+    header: 'Aged days',
+    size: 100
+  },
+  {
+    accessorKey: 'number_input_from_editors',
+    header: 'Editor Feedback (#Messages/#Files)',
+    Header: ({ column }) => (
+      <Box
+        sx={{
+          whiteSpace: 'nowrap',
+          overflow: 'hidden'
+        }}
+      >
+        {column.columnDef.header}
+      </Box> //re-use the header we already defined
+    ), //arrow function
+    size: 100
+  },
+  {
+    accessorKey: 'number_input_from_student',
+    header: 'Student Feedback (#Messages/#Files)',
+    Header: ({ column }) => (
+      <Box
+        sx={{
+          whiteSpace: 'nowrap',
+          overflow: 'hidden'
+        }}
+      >
+        {column.columnDef.header}
+      </Box> //re-use the header we already defined
+    ), //arrow function
+    size: 100
+  },
+  {
+    accessorKey: 'latest_reply',
+    header: 'Latest Reply',
+    size: 150,
+    Cell: (params) => {
+      return (
+        <Box
+          sx={{
+            whiteSpace: 'nowrap',
+            overflow: 'hidden'
+          }}
+        >
+          {params.row.original?.latest_reply}
+        </Box>
+      );
+    }
+  },
+  {
+    accessorKey: 'updatedAt',
+    header: 'Last Update',
+    size: 150
+  }
 ];
 
 export const c1 = [

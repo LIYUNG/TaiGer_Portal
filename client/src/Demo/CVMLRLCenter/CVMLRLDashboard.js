@@ -3,7 +3,7 @@ import { Button, Tabs, Tab, Box, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
-import { c1 } from '../Utils/contants';
+import { c1_mrt } from '../Utils/contants';
 import {
   // open_tasks,
   open_tasks_with_editors
@@ -15,7 +15,7 @@ import Banner from '../../components/Banner/Banner';
 import ModalNew from '../../components/Modal';
 import { CustomTabPanel, a11yProps } from '../../components/Tabs';
 import Loading from '../../components/Loading/Loading';
-import { MuiDataGrid } from '../../components/MuiDataGrid';
+import ExampleWithLocalizationProvider from '../../components/MaterialReactTable';
 
 CustomTabPanel.propTypes = {
   children: PropTypes.node,
@@ -190,7 +190,7 @@ function CVMLRLDashboard(props) {
 
   const cvmlrl_all_v2 = open_tasks_arr.filter((open_task) => open_task.show);
 
-  const memoizedColumns = useMemo(() => c1, [c1]);
+  const memoizedColumnsMrt = useMemo(() => c1_mrt, [c1_mrt]);
 
   return (
     <>
@@ -241,7 +241,10 @@ function CVMLRLDashboard(props) {
           removeBanner={<></>}
           notification_key={undefined}
         />
-        <MuiDataGrid rows={cvmlrl_active_tasks} columns={memoizedColumns} />
+        <ExampleWithLocalizationProvider
+          data={cvmlrl_active_tasks}
+          col={memoizedColumnsMrt}
+        />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
         <Banner
@@ -254,7 +257,10 @@ function CVMLRLDashboard(props) {
           removeBanner={<></>}
           notification_key={undefined}
         />
-        <MuiDataGrid rows={cvmlrl_idle_tasks} columns={memoizedColumns} />
+        <ExampleWithLocalizationProvider
+          data={cvmlrl_idle_tasks}
+          col={memoizedColumnsMrt}
+        />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
         <Banner
@@ -273,7 +279,10 @@ function CVMLRLDashboard(props) {
             { ns: 'cvmlrl' }
           )}
         </Typography>
-        <MuiDataGrid rows={cvmlrl_closed_v2} columns={memoizedColumns} />
+        <ExampleWithLocalizationProvider
+          data={cvmlrl_closed_v2}
+          col={memoizedColumnsMrt}
+        />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={3}>
         <Banner
@@ -286,7 +295,10 @@ function CVMLRLDashboard(props) {
           removeBanner={<></>}
           notification_key={undefined}
         />
-        <MuiDataGrid rows={cvmlrl_all_v2} columns={memoizedColumns} />
+        <ExampleWithLocalizationProvider
+          data={cvmlrl_all_v2}
+          col={memoizedColumnsMrt}
+        />
       </CustomTabPanel>
       <ModalNew
         open={cVMLRLDashboardState.SetAsFinalFileModel}

@@ -698,6 +698,7 @@ const SurveyEditableComponent = (props) => {
                   <>
                     <br />
                     <Button
+                      fullWidth
                       color="primary"
                       variant="contained"
                       disabled={!survey.changed_academic}
@@ -915,26 +916,27 @@ const SurveyEditableComponent = (props) => {
                   ? convertDate(survey.application_preference.updatedAt)
                   : ''}
               </Typography>
-              {user.archiv !== true && (
-                <>
-                  <br />
-                  <Button
-                    color="primary"
-                    variant="contained"
-                    disabled={!survey.changed_application_preference}
-                    onClick={(e) =>
-                      handleApplicationPreferenceSubmit(
-                        e,
-                        survey.application_preference
-                      )
-                    }
-                  >
-                    {t('Update', { ns: 'common' })}
-                  </Button>
-                </>
-              )}
             </Grid>
           </Grid>
+          {user.archiv !== true && (
+            <>
+              <br />
+              <Button
+                fullWidth
+                color="primary"
+                variant="contained"
+                disabled={!survey.changed_application_preference}
+                onClick={(e) =>
+                  handleApplicationPreferenceSubmit(
+                    e,
+                    survey.application_preference
+                  )
+                }
+              >
+                {t('Update', { ns: 'common' })}
+              </Button>
+            </>
+          )}
         </Card>
         <Card sx={{ mt: 2, padding: 2 }}>
           <Grid container spacing={2}>
@@ -1484,6 +1486,7 @@ const SurveyEditableComponent = (props) => {
                 <>
                   <br />
                   <Button
+                    fullWidth
                     color="primary"
                     variant="contained"
                     disabled={!survey.changed_language}

@@ -423,6 +423,10 @@ export const translation_zh_TW = {
     'University (Bachelor degree)': '大學 (學士學位)',
     'Other wish': '其他需求'
   },
+  visa: {
+    'Please consider working on visa, if you decide the offer.':
+      '若您決定欲就讀的科系，請至儘速至該國使館處理簽證。請先讀完左側說明連結再與顧問討論。'
+  },
   translation: {
     'Interview Time': '面試時間',
     'Your timezone local time': '您所在時區時間',

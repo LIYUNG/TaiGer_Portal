@@ -16,7 +16,8 @@ import {
   to_register_application_portals,
   is_personal_data_filled,
   isProgramDecided,
-  all_applications_results_updated
+  all_applications_results_updated,
+  has_admissions
 } from '../../../Utils/checking-functions';
 import { appConfig } from '../../../../config';
 
@@ -222,6 +223,30 @@ function StudentTasksResponsive(props) {
             <Typography variant="body2" sx={{ display: 'flex' }}>
               {t('Please update your applications results to us', {
                 ns: 'common'
+              })}
+            </Typography>
+          </TableCell>
+          <TableCell></TableCell>
+        </TableRow>
+      )}
+      {has_admissions(props.student) && (
+        <TableRow>
+          <TableCell>
+            <Link
+              underline="hover"
+              to={`${DEMO.VISA_DOCS_LINK}`}
+              component={LinkDom}
+            >
+              <Typography variant="body2" sx={{ display: 'flex' }}>
+                {t('Visa', { ns: 'common' })}
+                <LaunchIcon fontSize="small" />
+              </Typography>
+            </Link>
+          </TableCell>
+          <TableCell>
+            <Typography variant="body2" sx={{ display: 'flex' }}>
+              {t('Please consider working on visa, if you decide the offer.', {
+                ns: 'visa'
               })}
             </Typography>
           </TableCell>

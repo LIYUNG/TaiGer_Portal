@@ -34,7 +34,7 @@ const MRTable = ({
         left: ['mrt-row-expand', 'mrt-row-select'],
         right: ['mrt-row-actions']
       },
-      pagination: { pageSize: 20 }
+      pagination: { pageSize: 20, pageIndex: 0 }
     },
     paginationDisplayMode: 'pages',
     positionToolbarAlertBanner: 'bottom',

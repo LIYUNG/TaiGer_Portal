@@ -912,6 +912,16 @@ export const check_applications_to_decided = (student) => {
   );
 };
 
+export const has_admissions = (student) => {
+  if (!student.applications || student.applications.length === 0) {
+    return false;
+  }
+
+  return student.applications.some(
+    (app) => isProgramSubmitted(app) && isProgramAdmitted(app)
+  );
+};
+
 export const all_applications_results_updated = (student) => {
   if (!student.applications || student.applications.length === 0) {
     return true;

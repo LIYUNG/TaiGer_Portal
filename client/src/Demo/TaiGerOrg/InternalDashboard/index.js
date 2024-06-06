@@ -9,7 +9,7 @@ import {
   Breadcrumbs
 } from '@mui/material';
 import PropTypes from 'prop-types';
-import { Navigate, Link as LinkDom } from 'react-router-dom';
+import { Navigate, Link as LinkDom, useLocation } from 'react-router-dom';
 import { Link } from '@mui/material';
 import {
   BarChart,
@@ -45,6 +45,10 @@ import { appConfig } from '../../../config';
 import { useAuth } from '../../../components/AuthProvider';
 import Loading from '../../../components/Loading/Loading';
 import { CustomTabPanel, a11yProps } from '../../../components/Tabs';
+import {
+  INTERNAL_DASHBOARD_REVERSED_TABS,
+  INTERNAL_DASHBOARD_TABS
+} from '../../Utils/contants.js';
 
 const AgentBarCharts = ({ agentDistr }) => {
   // Extract unique years from both arrays
@@ -93,6 +97,7 @@ CustomTabPanel.propTypes = {
 function InternalDashboard() {
   const { user } = useAuth();
   const { t } = useTranslation();
+  const { hash } = useLocation();
   const [internalDashboardState, setInternalDashboardState] = useState({
     error: '',
     role: '',
@@ -108,10 +113,13 @@ function InternalDashboard() {
     editors: null,
     res_status: 0
   });
-  const [value, setValue] = useState(0);
+  const [value, setValue] = useState(
+    INTERNAL_DASHBOARD_TABS[hash.replace('#', '')] || 0
+  );
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
+    window.location.hash = INTERNAL_DASHBOARD_REVERSED_TABS[newValue];
   };
   useEffect(() => {
     getStatistics().then(
@@ -422,6 +430,7 @@ function InternalDashboard() {
           onChange={handleChange}
           variant="scrollable"
           scrollButtons="auto"
+          indicatorColor="primary"
           aria-label="basic tabs example"
         >
           <Tab label="Overview" {...a11yProps(0)} />
@@ -692,6 +701,9 @@ function InternalDashboard() {
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
         <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Typography variant='h6'>Active Students distribution</Typography>
+          </Grid>
           {internalDashboardState.agentStudentDistribution.map(
             (agentDistr, idx) => (
               <Grid item xs={12} md={4} key={idx}>

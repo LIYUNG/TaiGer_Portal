@@ -759,6 +759,20 @@ export const profile_name_list = {
   Grading_System: 'Grading_System'
 };
 
+export const INTERNAL_DASHBOARD_TABS = {
+  overview: 0,
+  agents: 1,
+  kpi: 2,
+  programList: 3
+};
+
+export const INTERNAL_DASHBOARD_REVERSED_TABS = {
+  0: 'overview',
+  1: 'agents',
+  2: 'kpi',
+  3: 'programList'
+};
+
 export const SINGLE_STUDENT_TABS = {
   applications: 0,
   profile: 1,

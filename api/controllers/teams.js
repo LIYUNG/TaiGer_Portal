@@ -171,6 +171,7 @@ const getAgentStudentDistData = async (agent) => {
   const studentYearDistributionPromise = Student.aggregate([
     {
       $match: {
+        archiv: { $ne: true },
         agents: agent._id, // Filter students where agents array includes the specific ObjectId
         'applications.admission': 'O'
       }
@@ -199,6 +200,7 @@ const getAgentStudentDistData = async (agent) => {
   const studentYearNoAdmissionDistributionPromise = Student.aggregate([
     {
       $match: {
+        archiv: { $ne: true },
         agents: agent._id, // Filter students where agents array includes the specific ObjectId
         'applications.admission': { $ne: 'O' }
       }

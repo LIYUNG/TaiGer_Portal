@@ -26,6 +26,7 @@
     "@mui/icons-material": "^5.15.19",
     "@mui/material": "^5.15.19",
     "@mui/system": "^5.15.3",
+    "@mui/x-charts": "^7.6.2",
     "@mui/x-data-grid": "^7.1.0",
     "@mui/x-date-pickers": "^7.6.1",
     "@tanstack/react-virtual": "^3.0.4",

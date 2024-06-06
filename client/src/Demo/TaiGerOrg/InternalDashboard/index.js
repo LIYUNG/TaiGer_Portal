@@ -24,6 +24,7 @@ import {
   Label
 } from 'recharts';
 import { useTranslation } from 'react-i18next';
+import { BarChart as MuiBarChart } from '@mui/x-charts/BarChart';
 
 import ErrorPage from '../../Utils/ErrorPage';
 import {
@@ -44,6 +45,44 @@ import { appConfig } from '../../../config';
 import { useAuth } from '../../../components/AuthProvider';
 import Loading from '../../../components/Loading/Loading';
 import { CustomTabPanel, a11yProps } from '../../../components/Tabs';
+
+const AgentBarCharts = ({ agentDistr }) => {
+  // Extract unique years from both arrays
+
+  const combinedKeys = Array.from(
+    new Set([
+      ...Object.keys(agentDistr.admission),
+      ...Object.keys(agentDistr.noAdmission)
+    ])
+  );
+  const admissionDataset = [];
+  const noAdmissionDataset = [];
+
+  // Populate datasets
+  combinedKeys.forEach((key) => {
+    admissionDataset.push(agentDistr.admission[key] || 0);
+    noAdmissionDataset.push(agentDistr.noAdmission[key] || 0);
+  });
+  return (
+    <Box>
+      <Typography variant="h6">{agentDistr.name}</Typography>
+      <MuiBarChart
+        xAxis={[{ scaleType: 'band', data: combinedKeys }]}
+        yAxis={[
+          {
+            label: 'Student'
+          }
+        ]}
+        series={[
+          { label: 'Admission', data: admissionDataset },
+          { label: 'No Admission', data: noAdmissionDataset }
+        ]}
+        height={250}
+        width={400}
+      />
+    </Box>
+  );
+};
 
 CustomTabPanel.propTypes = {
   children: PropTypes.node,
@@ -85,7 +124,8 @@ function InternalDashboard() {
           editors,
           finished_docs,
           documents,
-          students_details
+          students_details,
+          agentStudentDistribution
         } = resp.data;
         const { status } = resp;
         if (success) {
@@ -96,6 +136,7 @@ function InternalDashboard() {
             students: students,
             documents: documents,
             agents: agents,
+            agentStudentDistribution,
             editors: editors,
             finished_docs,
             students_details,
@@ -359,6 +400,7 @@ function InternalDashboard() {
     name: `${item.name}`, // Create a name for the item, e.g., Item 0, Item 1, etc.
     duration: calculateDuration(item.start, item.end)
   }));
+
   return (
     <Box>
       <Breadcrumbs aria-label="breadcrumb">
@@ -383,8 +425,9 @@ function InternalDashboard() {
           aria-label="basic tabs example"
         >
           <Tab label="Overview" {...a11yProps(0)} />
-          <Tab label="KPI" {...a11yProps(1)} />
-          <Tab label="Program List" {...a11yProps(2)} />
+          <Tab label="Agents" {...a11yProps(1)} />
+          <Tab label="KPI" {...a11yProps(2)} />
+          <Tab label="Program List" {...a11yProps(3)} />
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
@@ -649,6 +692,17 @@ function InternalDashboard() {
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
         <Grid container spacing={2}>
+          {internalDashboardState.agentStudentDistribution.map(
+            (agentDistr, idx) => (
+              <Grid item xs={12} md={4} key={idx}>
+                <AgentBarCharts agentDistr={agentDistr} />
+              </Grid>
+            )
+          )}
+        </Grid>
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={2}>
+        <Grid container spacing={2}>
           <Grid item xs={12} md={4}>
             <Card sx={{ p: 2 }}>
               <Typography>Closed CV KPI</Typography>
@@ -759,7 +813,7 @@ function InternalDashboard() {
           </Grid>
         </Grid>
       </CustomTabPanel>
-      <CustomTabPanel value={value} index={2}>
+      <CustomTabPanel value={value} index={3}>
         <ProgramListVisualization user={user} />
       </CustomTabPanel>
       <Tabs defaultActiveKey="default" fill={true} justify={true}>

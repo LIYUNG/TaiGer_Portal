@@ -83,8 +83,8 @@ const AgentBarCharts = ({ agentDistr }) => {
           }
         ]}
         series={[
-          { label: 'Admission', data: admissionDataset },
-          { label: 'No Admission', data: noAdmissionDataset }
+          { label: 'No Offer', data: noAdmissionDataset },
+          { label: 'Has Offer', data: admissionDataset }
         ]}
         height={250}
         width={400}
@@ -506,6 +506,8 @@ function InternalDashboard() {
                 value1={'student_num_no_offer'}
                 value2={'student_num_with_offer'}
                 xLabel="Student"
+                dataALabel="No Offer"
+                dataBLabel="Has Offer"
               />
             </Card>
           </Grid>
@@ -532,6 +534,8 @@ function InternalDashboard() {
                 value1={'active'}
                 value2={'potentials'}
                 xLabel="Student"
+                dataALabel="Active"
+                dataBLabel="Potentials"
               />
             </Card>
           </Grid>

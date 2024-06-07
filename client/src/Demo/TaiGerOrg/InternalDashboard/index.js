@@ -533,7 +533,7 @@ function InternalDashboard() {
                 k={'name'}
                 value1={'active'}
                 value2={'potentials'}
-                xLabel="Student"
+                xLabel="Tasks"
                 dataALabel="Active"
                 dataBLabel="Potentials"
               />

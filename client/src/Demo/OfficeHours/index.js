@@ -22,6 +22,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import PersonIcon from '@mui/icons-material/Person';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import PropTypes from 'prop-types';
+import _ from 'lodash';
 
 import {
   getNextDayDate,
@@ -221,27 +222,28 @@ function OfficeHours() {
               isInTheFuture(event.end) &&
               (!event.isConfirmedReceiver || !event.isConfirmedRequester)
           ).length !== 0 &&
-            events
-              ?.filter(
-                (event) =>
-                  isInTheFuture(event.end) &&
-                  (!event.isConfirmedReceiver || !event.isConfirmedRequester)
+            _.reverse(
+              _.sortBy(
+                events?.filter(
+                  (event) =>
+                    isInTheFuture(event.end) &&
+                    (!event.isConfirmedReceiver || !event.isConfirmedRequester)
+                ),
+                ['start']
               )
-              .map((event, i) => (
-                <EventConfirmationCard
-                  key={i}
-                  event={event}
-                  handleConfirmAppointmentModalOpen={
-                    handleConfirmAppointmentModalOpen
-                  }
-                  handleEditAppointmentModalOpen={
-                    handleEditAppointmentModalOpen
-                  }
-                  handleDeleteAppointmentModalOpen={
-                    handleDeleteAppointmentModalOpen
-                  }
-                />
-              ))}
+            ).map((event, i) => (
+              <EventConfirmationCard
+                key={i}
+                event={event}
+                handleConfirmAppointmentModalOpen={
+                  handleConfirmAppointmentModalOpen
+                }
+                handleEditAppointmentModalOpen={handleEditAppointmentModalOpen}
+                handleDeleteAppointmentModalOpen={
+                  handleDeleteAppointmentModalOpen
+                }
+              />
+            ))}
           <Card>
             <Box>
               <Typography variant="h6">
@@ -254,28 +256,31 @@ function OfficeHours() {
                     event.isConfirmedReceiver &&
                     event.isConfirmedRequester
                 ).length !== 0
-                  ? events
-                      ?.filter(
-                        (event) =>
-                          isInTheFuture(event.end) &&
-                          event.isConfirmedReceiver &&
-                          event.isConfirmedRequester
+                  ? _.reverse(
+                      _.sortBy(
+                        events?.filter(
+                          (event) =>
+                            isInTheFuture(event.end) &&
+                            event.isConfirmedReceiver &&
+                            event.isConfirmedRequester
+                        ),
+                        ['start']
                       )
-                      .map((event, i) => (
-                        <EventConfirmationCard
-                          key={i}
-                          event={event}
-                          handleConfirmAppointmentModalOpen={
-                            handleConfirmAppointmentModalOpen
-                          }
-                          handleEditAppointmentModalOpen={
-                            handleEditAppointmentModalOpen
-                          }
-                          handleDeleteAppointmentModalOpen={
-                            handleDeleteAppointmentModalOpen
-                          }
-                        />
-                      ))
+                    ).map((event, i) => (
+                      <EventConfirmationCard
+                        key={i}
+                        event={event}
+                        handleConfirmAppointmentModalOpen={
+                          handleConfirmAppointmentModalOpen
+                        }
+                        handleEditAppointmentModalOpen={
+                          handleEditAppointmentModalOpen
+                        }
+                        handleDeleteAppointmentModalOpen={
+                          handleDeleteAppointmentModalOpen
+                        }
+                      />
+                    ))
                   : t('No upcoming event', { ns: 'common' })}
               </Typography>
             </Box>
@@ -283,7 +288,7 @@ function OfficeHours() {
           <Card>
             <Typography variant="h6">{t('Past', { ns: 'common' })}</Typography>
             <Typography>
-              {events
+              {_.reverse(_.sortBy(events, ['start']))
                 ?.filter((event) => !isInTheFuture(event.end))
                 .map((event, i) => (
                   <EventConfirmationCard
@@ -372,7 +377,7 @@ function OfficeHours() {
               {event_temp.receiver_id?.map((receiver, x) => (
                 <span key={x}>
                   {receiver.firstname} {receiver.lastname}{' '}
-                  <MailOutlineIcon fontSize='small' /> {receiver.email}
+                  <MailOutlineIcon fontSize="small" /> {receiver.email}
                 </span>
               ))}
             </Typography>

@@ -203,7 +203,8 @@ function AllOfficeHours() {
             <Typography variant="h6">{t('Past', { ns: 'common' })}</Typography>
             {_.reverse(
               _.sortBy(
-                events?.filter((event) => !isInTheFuture(event.end), ['start'])
+                events?.filter((event) => !isInTheFuture(event.end)),
+                ['start']
               )
             ).map((event, i) => (
               <EventConfirmationCard

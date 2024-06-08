@@ -288,24 +288,27 @@ function OfficeHours() {
           <Card>
             <Typography variant="h6">{t('Past', { ns: 'common' })}</Typography>
             <Typography>
-              {_.reverse(_.sortBy(events, ['start']))
-                ?.filter((event) => !isInTheFuture(event.end))
-                .map((event, i) => (
-                  <EventConfirmationCard
-                    key={i}
-                    event={event}
-                    handleConfirmAppointmentModalOpen={
-                      handleConfirmAppointmentModalOpen
-                    }
-                    handleEditAppointmentModalOpen={
-                      handleEditAppointmentModalOpen
-                    }
-                    handleDeleteAppointmentModalOpen={
-                      handleDeleteAppointmentModalOpen
-                    }
-                    disabled={true}
-                  />
-                ))}
+              {_.reverse(
+                _.sortBy(
+                  events?.filter((event) => !isInTheFuture(event.end)),
+                  ['start']
+                )
+              ).map((event, i) => (
+                <EventConfirmationCard
+                  key={i}
+                  event={event}
+                  handleConfirmAppointmentModalOpen={
+                    handleConfirmAppointmentModalOpen
+                  }
+                  handleEditAppointmentModalOpen={
+                    handleEditAppointmentModalOpen
+                  }
+                  handleDeleteAppointmentModalOpen={
+                    handleDeleteAppointmentModalOpen
+                  }
+                  disabled={true}
+                />
+              ))}
             </Typography>
           </Card>
           <ModalNew

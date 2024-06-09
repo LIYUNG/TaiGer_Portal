@@ -71,7 +71,7 @@ const permission_TaiGerAIRatelimiter = asyncHandler(async (req, res, next) => {
     throw new ErrorResponse(403, 'Permission denied: Operation forbidden.');
   }
 
-  next();
+  next(); 
 });
 
 const permission_canUseTaiGerAI_filter = asyncHandler(

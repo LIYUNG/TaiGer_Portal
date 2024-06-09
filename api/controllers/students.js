@@ -18,7 +18,8 @@ const {
   informEditorNewStudentEmail,
   informStudentTheirEditorEmail,
   createApplicationToStudentEmail,
-  informAgentStudentAssignedEmail
+  informAgentStudentAssignedEmail,
+  informAgentManagerNewStudentEmail
 } = require('../services/email');
 
 const {
@@ -31,6 +32,7 @@ const {
 const Course = require('../models/Course');
 const { Interview } = require('../models/Interview');
 const { getPermission } = require('../utils/queryFunctions');
+const Permission = require('../models/Permission');
 
 const fetchStudents = async (filter) =>
   Student.find(filter)
@@ -552,6 +554,7 @@ const updateStudentsArchivStatus = asyncHandler(async (req, res, next) => {
 // () TODO email : student better notification ()
 const assignAgentToStudent = asyncHandler(async (req, res, next) => {
   const {
+    user,
     params: { studentId },
     body: agentsId // agentsId is json (or agentsId array with boolean)
   } = req;
@@ -597,6 +600,36 @@ const assignAgentToStudent = asyncHandler(async (req, res, next) => {
     .exec();
   res.status(200).send({ success: true, data: student_upated });
 
+  // inform editor-lead
+  const permissions = await Permission.find({
+    canAssignAgents: true
+  })
+    .populate('user_id', 'firstname lastname email')
+    .lean();
+  const agentLeads = permissions
+    .map((permission) => permission.user_id)
+    ?.filter((taigerUser) => taigerUser._id.toString() !== user._id.toString());
+
+  for (const agentLead of agentLeads) {
+    if (isNotArchiv(student)) {
+      if (isNotArchiv(agentLead)) {
+        informAgentManagerNewStudentEmail(
+          {
+            firstname: agentLead.firstname,
+            lastname: agentLead.lastname,
+            address: agentLead.email
+          },
+          {
+            std_firstname: student.firstname,
+            std_lastname: student.lastname,
+            std_id: student._id.toString(),
+            agents: updated_agent
+          }
+        );
+      }
+    }
+  }
+
   for (let i = 0; i < to_be_informed_agents.length; i += 1) {
     if (isNotArchiv(student)) {
       if (isNotArchiv(to_be_informed_agents[i])) {
@@ -615,6 +648,7 @@ const assignAgentToStudent = asyncHandler(async (req, res, next) => {
       }
     }
   }
+
   if (updated_agent.length !== 0) {
     if (isNotArchiv(student)) {
       informStudentTheirAgentEmail(

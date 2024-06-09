@@ -10,7 +10,7 @@ const TasksDistributionBarChart = ({ data, k, value1, value2, yLabel }) => {
     <BarChart
       series={[
         { data: active_a, stack: 'A', label: 'Active' },
-        { data: potential_a, stack: 'A', label: 'Potentail' }
+        { data: potential_a, stack: 'A', label: 'Potentials' }
       ]}
       xAxis={[
         {

@@ -2,21 +2,20 @@ const fs = require('fs');
 const path = require('path');
 const request = require('supertest');
 
-const { UPLOAD_PATH } = require('../config');
-const db = require('./fixtures/db');
-const { app } = require('../app');
-const { connectToDatabase, disconnectFromDatabase } = require('../database');
-const { Role, User, Agent, Editor, Student } = require('../models/User');
-const { Program } = require('../models/Program');
-const { Documentthread } = require('../models/Documentthread');
-const { generateUser } = require('./fixtures/users');
-const { generateProgram } = require('./fixtures/programs');
-const { protect } = require('../middlewares/auth');
+const { UPLOAD_PATH } = require('../../config');
+const db = require('../fixtures/db');
+const { app } = require('../../app');
+const { Role, User, Agent, Editor, Student } = require('../../models/User');
+const { Program } = require('../../models/Program');
+const { Documentthread } = require('../../models/Documentthread');
+const { generateUser } = require('../fixtures/users');
+const { generateProgram } = require('../fixtures/programs');
+const { protect } = require('../../middlewares/auth');
 
-jest.mock('../middlewares/auth', () => {
+jest.mock('../../middlewares/auth', () => {
   const passthrough = async (req, res, next) => next();
 
-  return Object.assign({}, jest.requireActual('../middlewares/auth'), {
+  return Object.assign({}, jest.requireActual('../../middlewares/auth'), {
     protect: jest.fn().mockImplementation(passthrough),
     permit: jest.fn().mockImplementation((...roles) => passthrough)
   });

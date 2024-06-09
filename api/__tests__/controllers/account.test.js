@@ -3,21 +3,20 @@ const path = require('path');
 const { spawn } = require('child_process');
 const EventEmitter = require('events');
 const request = require('supertest');
-const db = require('./fixtures/db');
+const db = require('../fixtures/db');
 
-const { UPLOAD_PATH } = require('../config');
-const { app } = require('../app');
-const { Role, User, Agent, Editor, Student } = require('../models/User');
-const { Program } = require('../models/Program');
-const { generateUser } = require('./fixtures/users');
-const { generateProgram } = require('./fixtures/programs');
+const { app } = require('../../app');
+const { Role, User, Agent, Editor, Student } = require('../../models/User');
+const { Program } = require('../../models/Program');
+const { generateUser } = require('../fixtures/users');
+const { generateProgram } = require('../fixtures/programs');
 const {
   permission_canAccessStudentDatabase_filter
-} = require('../middlewares/permission-filter');
+} = require('../../middlewares/permission-filter');
 const {
   InnerTaigerMultitenantFilter
-} = require('../middlewares/InnerTaigerMultitenantFilter');
-const { protect } = require('../middlewares/auth');
+} = require('../../middlewares/InnerTaigerMultitenantFilter');
+const { protect } = require('../../middlewares/auth');
 
 // jest.mock("../middlewares/auth", () => {
 //   return Object.assign({}, jest.requireActual("../middlewares/auth"), {
@@ -29,24 +28,24 @@ const { protect } = require('../middlewares/auth');
 //   });
 // });
 
-jest.mock('../middlewares/InnerTaigerMultitenantFilter', () => {
+jest.mock('../../middlewares/InnerTaigerMultitenantFilter', () => {
   const passthrough = async (req, res, next) => next();
 
   return Object.assign(
     {},
-    jest.requireActual('../middlewares/permission-filter'),
+    jest.requireActual('../../middlewares/permission-filter'),
     {
       InnerTaigerMultitenantFilter: jest.fn().mockImplementation(passthrough)
     }
   );
 });
 
-jest.mock('../middlewares/permission-filter', () => {
+jest.mock('../../middlewares/permission-filter', () => {
   const passthrough = async (req, res, next) => next();
 
   return Object.assign(
     {},
-    jest.requireActual('../middlewares/permission-filter'),
+    jest.requireActual('../../middlewares/permission-filter'),
     {
       permission_canAccessStudentDatabase_filter: jest
         .fn()
@@ -55,18 +54,14 @@ jest.mock('../middlewares/permission-filter', () => {
   );
 });
 
-jest.mock('../middlewares/auth', () => {
+jest.mock('../../middlewares/auth', () => {
   const passthrough = async (req, res, next) => next();
 
-  return Object.assign({}, jest.requireActual('../middlewares/auth'), {
+  return Object.assign({}, jest.requireActual('../../middlewares/auth'), {
     protect: jest.fn().mockImplementation(passthrough),
     permit: jest.fn().mockImplementation((...roles) => passthrough)
   });
 });
-
-// jest.mock('child_process', () => ({
-//   spawn: jest.fn()
-// }));
 
 const admin = generateUser(Role.Admin);
 const agents = [...Array(3)].map(() => generateUser(Role.Agent));

@@ -1,12 +1,12 @@
 const request = require('supertest');
 
-const db = require('./fixtures/db');
-const { app } = require('../app');
-const { Program } = require('../models/Program');
-const { generateProgram } = require('./fixtures/programs');
-const { generateUser } = require('./fixtures/users');
-const { protect } = require('../middlewares/auth');
-const { Role } = require('../models/User');
+const db = require('../fixtures/db');
+const { app } = require('../../app');
+const { Program } = require('../../models/Program');
+const { generateProgram } = require('../fixtures/programs');
+const { generateUser } = require('../fixtures/users');
+const { protect } = require('../../middlewares/auth');
+const { Role } = require('../../models/User');
 
 const admins = [...Array(2)].map(() => generateUser(Role.Admin));
 const agents = [...Array(3)].map(() => generateUser(Role.Agent));
@@ -14,10 +14,10 @@ const editors = [...Array(3)].map(() => generateUser(Role.Editor));
 const students = [...Array(5)].map(() => generateUser(Role.Student));
 const users = [...admins, ...agents, ...editors, ...students];
 
-jest.mock('../middlewares/auth', () => {
+jest.mock('../../middlewares/auth', () => {
   const passthrough = async (req, res, next) => next();
 
-  return Object.assign({}, jest.requireActual('../middlewares/auth'), {
+  return Object.assign({}, jest.requireActual('../../middlewares/auth'), {
     protect: jest.fn().mockImplementation(passthrough),
     permit: jest.fn().mockImplementation((...roles) => passthrough)
   });

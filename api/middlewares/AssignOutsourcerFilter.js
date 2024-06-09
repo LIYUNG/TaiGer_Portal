@@ -2,9 +2,11 @@ const { ErrorResponse } = require('../common/errors');
 const { Documentthread } = require('../models/Documentthread');
 const { Role, Student } = require('../models/User');
 const { getPermission } = require('../utils/queryFunctions');
+const { asyncHandler } = require('./error-handler');
 
 // Editor Lead, student's agents and agent lead
-const AssignOutsourcerFilter = async (req, res, next) => {
+// TODO: test case
+const AssignOutsourcerFilter = asyncHandler(async (req, res, next) => {
   const {
     user,
     params: { messagesThreadId }
@@ -30,11 +32,9 @@ const AssignOutsourcerFilter = async (req, res, next) => {
       'agents editors'
     );
     if (!student) {
-      next(
-        new ErrorResponse(
-          403,
-          'Permission denied: Not allowed to access other students documents. Please contact administrator.'
-        )
+      throw new ErrorResponse(
+        403,
+        'Permission denied: Not allowed to access other students documents. Please contact administrator.'
       );
     }
     if (
@@ -45,17 +45,16 @@ const AssignOutsourcerFilter = async (req, res, next) => {
       permissions?.canAssignAgents ||
       outsourcer_allowed_modify
     ) {
-      return next();
+      next();
     }
-    next(
-      new ErrorResponse(
-        403,
-        'Permission denied: Not allowed to access other students documents. Please contact administrator.'
-      )
+
+    throw new ErrorResponse(
+      403,
+      'Permission denied: Not allowed to access other students documents. Please contact administrator.'
     );
   }
   next();
-};
+});
 
 module.exports = {
   AssignOutsourcerFilter

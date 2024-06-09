@@ -14,5 +14,11 @@ module.exports = {
   // A map from regular expressions to module names that allow to stub out resources with a single module
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1'
-  }
+  },
+  transform: {
+    '^.+\\.[tj]sx?$': 'babel-jest'
+  },
+  transformIgnorePatterns: [
+    '/node_modules/(?!d3-scale)/' // Add any other modules you need to transform here
+  ]
 };

@@ -150,23 +150,23 @@ function CommunicationThreadEditor(props) {
             {t('Cancel', { ns: 'common' })}
           </Button>
         )}
-
-        <input
-          id="file-input"
-          type="file"
-          multiple
-          style={{ display: 'none' }}
-          onChange={(e) => props.onFileChange(e)}
-        />
-        <IconButton
-          color="primary"
-          aria-label="attach file"
-          component="span"
-          onClick={handleClick}
-        >
-          <AttachFileIcon />
-        </IconButton>
-
+        <Tooltip title={t('Attach files')} placement="top">
+          <input
+            id="file-input"
+            type="file"
+            multiple
+            style={{ display: 'none' }}
+            onChange={(e) => props.onFileChange(e)}
+          />
+          <IconButton
+            color="primary"
+            aria-label="attach file"
+            component="span"
+            onClick={handleClick}
+          >
+            <AttachFileIcon />
+          </IconButton>
+        </Tooltip>
         {is_TaiGer_role(user) && (
           <IconButton disabled>
             <AutoFixHighIcon />

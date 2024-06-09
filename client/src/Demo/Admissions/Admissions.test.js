@@ -5,14 +5,12 @@ import Admissions from './Admissions';
 import 'react-i18next';
 import { getAdmissions } from '../../api';
 import axios from 'axios';
-import { request } from '../../api/request';
 import { useAuth } from '../../components/AuthProvider';
 import { MemoryRouter } from 'react-router-dom';
 
 import { mockAdmissionsData } from '../../test/testingAdmissionsData';
 
 jest.mock('axios');
-jest.mock('request');
 jest.mock('../../api');
 
 jest.mock('react-i18next', () => ({

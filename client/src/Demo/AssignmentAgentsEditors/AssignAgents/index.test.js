@@ -5,7 +5,6 @@ import AssignAgents from './index';
 import 'react-i18next';
 import { getStudents, getProgramTickets } from '../../../api';
 import axios from 'axios';
-import { request } from '../../../api/request';
 import { useAuth } from '../../../components/AuthProvider/index';
 import {
   MemoryRouter,
@@ -21,7 +20,6 @@ import {
 import { RouterProvider } from 'react-router-dom';
 
 jest.mock('axios');
-jest.mock('request');
 jest.mock('../../../api');
 jest.mock('react-i18next', () => ({
   useTranslation: () => {

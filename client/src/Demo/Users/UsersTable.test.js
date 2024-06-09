@@ -5,14 +5,12 @@ import UsersTable from './UsersTable';
 import 'react-i18next';
 import { getUsers } from '../../api';
 import axios from 'axios';
-import { request } from '../../api/request';
 import { useAuth } from '../../components/AuthProvider';
 import { MemoryRouter } from 'react-router-dom';
 
 import { testingUsersData } from '../../test/testingUsersData';
 
 jest.mock('axios');
-jest.mock('request');
 jest.mock('../../api');
 
 jest.mock('react-i18next', () => ({

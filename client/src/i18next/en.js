@@ -295,7 +295,8 @@ export const translation_en = {
     timeMinutes: '{{minutes}}m',
     timeHours: '{{hours}}h',
     timeDays: '{{days}}d',
-    timeWeeks: '{{weeks}}w'
+    timeWeeks: '{{weeks}}w',
+    Send: 'Send'
   },
   dashboard: {
     Dashboard: 'Dashboard',

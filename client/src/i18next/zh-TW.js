@@ -297,7 +297,8 @@ export const translation_zh_TW = {
     timeMinutes: '{{minutes}}分鐘',
     timeHours: '{{hours}}小時',
     timeDays: '{{days}}天',
-    timeWeeks: '{{weeks}}週'
+    timeWeeks: '{{weeks}}週',
+    Send: '送出'
   },
   dashboard: {
     Dashboard: '主控台',

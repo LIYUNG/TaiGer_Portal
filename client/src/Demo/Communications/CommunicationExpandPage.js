@@ -32,7 +32,12 @@ import {
 } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
-import { is_TaiGer_role } from '../Utils/checking-functions';
+import {
+  is_TaiGer_role,
+  readDOCX,
+  readPDF,
+  readXLSX
+} from '../Utils/checking-functions';
 import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
 import { stringAvatar } from '../Utils/contants';
@@ -75,6 +80,7 @@ function CommunicationExpandPage() {
   const { t } = useTranslation();
   const theme = useTheme();
   const ismobile = useMediaQuery(theme.breakpoints.down('md'));
+  const [checkResult, setCheckResult] = useState([]);
 
   const [communicationExpandPageState, setCommunicationExpandPageState] =
     useState({
@@ -86,6 +92,7 @@ function CommunicationExpandPage() {
       upperThread: [],
       buttonDisabled: false,
       editorState: {},
+      files: [],
       expand: true,
       pageNumber: 1,
       uppderaccordionKeys: [], // to expand all]
@@ -249,6 +256,60 @@ function CommunicationExpandPage() {
     );
   };
 
+  const onFileChange = (e) => {
+    e.preventDefault();
+    const file_num = e.target.files.length;
+    if (file_num <= 3) {
+      if (!e.target.files) {
+        return;
+      }
+      if (!is_TaiGer_role(user)) {
+        setCommunicationExpandPageState((prevState) => ({
+          ...prevState,
+          files: Array.from(e.target.files)
+        }));
+        return;
+      }
+      // Ensure a file is selected
+      // TODO: make array
+      const checkPromises = Array.from(e.target.files).map((file) => {
+        const extension = file.name.split('.').pop().toLowerCase();
+        const studentName = communicationExpandPageState.student.firstname;
+
+        if (extension === 'pdf') {
+          return readPDF(file, studentName);
+        } else if (extension === 'docx') {
+          return readDOCX(file, studentName);
+        } else if (extension === 'xlsx') {
+          return readXLSX(file, studentName);
+        } else {
+          return Promise.resolve({});
+        }
+      });
+      Promise.all(checkPromises)
+        .then((results) => {
+          setCheckResult(results);
+          setCommunicationExpandPageState((prevState) => ({
+            ...prevState,
+            files: Array.from(e.target.files)
+          }));
+        })
+        .catch((error) => {
+          setCommunicationExpandPageState((prevState) => ({
+            ...prevState,
+            res_modal_message: error,
+            res_modal_status: 500
+          }));
+        });
+    } else {
+      setCommunicationExpandPageState((prevState) => ({
+        ...prevState,
+        res_modal_message: 'You can only select up to 3 files.',
+        res_modal_status: 423
+      }));
+    }
+  };
+
   const handleClickSave = (e, editorState) => {
     e.preventDefault();
     setCommunicationExpandPageState((prevState) => ({
@@ -256,10 +317,19 @@ function CommunicationExpandPage() {
       buttonDisabled: true
     }));
     var message = JSON.stringify(editorState);
+    const formData = new FormData();
+
+    if (communicationExpandPageState.files) {
+      communicationExpandPageState.files.forEach((file) => {
+        formData.append('files', file);
+      });
+    }
+
+    formData.append('message', message);
 
     postCommunicationThread(
       communicationExpandPageState.student._id.toString(),
-      message
+      formData
     ).then(
       (resp) => {
         const { success, data } = resp.data;
@@ -271,6 +341,7 @@ function CommunicationExpandPage() {
             count: prevState.count + 1,
             editorState: {},
             thread: [...communicationExpandPageState.thread, ...data],
+            files: [],
             messagesLoaded: true,
             buttonDisabled: false,
             accordionKeys: [
@@ -635,6 +706,9 @@ function CommunicationExpandPage() {
                                     editorState={
                                       communicationExpandPageState.editorState
                                     }
+                                    files={communicationExpandPageState.files}
+                                    onFileChange={onFileChange}
+                                    checkResult={checkResult}
                                     handleClickSave={handleClickSave}
                                   />
                                 </Card>

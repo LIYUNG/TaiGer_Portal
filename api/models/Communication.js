@@ -13,6 +13,18 @@ const communicationsSchema = new Schema(
       default: ''
     },
     readBy: [{ type: ObjectId, ref: 'User' }],
+    files: [
+      {
+        name: {
+          type: String,
+          required: true
+        },
+        path: {
+          type: String,
+          required: true
+        }
+      }
+    ],
     createdAt: Date,
     ignore_message: Boolean
   },

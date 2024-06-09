@@ -393,10 +393,8 @@ export const getCommunicationThread = (studentId) =>
   request.get(`/api/communications/${studentId}`);
 export const loadCommunicationThread = (studentId, pageNumber) =>
   request.get(`/api/communications/${studentId}/pages/${pageNumber}`);
-export const postCommunicationThread = (studentId, message) =>
-  request.post(`/api/communications/${studentId}`, {
-    message
-  });
+export const postCommunicationThread = (studentId, formData) =>
+  request.post(`/api/communications/${studentId}`, formData);
 export const updateAMessageInCommunicationThread = (
   communication_id,
   communication_messageId,

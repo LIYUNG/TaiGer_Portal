@@ -469,6 +469,50 @@ const storage_messagesthread_file_s3 = multerS3({
   }
 });
 
+const storage_messagesChat_file_s3 = multerS3({
+  s3,
+  bucket: (req, file, cb) => {
+    const { studentId } = req.params;
+    // TODO: check studentId and messagesThreadId exist
+    let directory = path.join(AWS_S3_BUCKET_NAME, studentId, 'chat');
+    directory = directory.replace(/\\/g, '/');
+    cb(null, directory);
+  },
+  metadata: (req, file, cb) => {
+    const { studentId } = req.params;
+    // TODO: check studentId  exist
+    let directory = path.join(studentId, 'chat');
+    directory = directory.replace(/\\/g, '/'); // g>> replace all!
+    cb(null, { fieldName: file.fieldname, path: directory });
+  },
+  key: (req, file, cb) => {
+    const { studentId } = req.params;
+    function formatDate(date) {
+      const pad = (number) => number.toString().padStart(2, '0');
+
+      const year = date.getFullYear();
+      const month = pad(date.getMonth() + 1); // Months are zero-indexed
+      const day = pad(date.getDate());
+      const hours = pad(date.getHours());
+      const minutes = pad(date.getMinutes());
+      const seconds = pad(date.getSeconds());
+
+      return `${year}-${month}-${day}-${hours}-${minutes}-${seconds}`;
+    }
+
+    const date = new Date();
+    const formattedDate = formatDate(date);
+    Student.findById(studentId).then((student) => {
+      let temp_name = `${student.lastname}_${
+        student.firstname
+      }_Attachment_${formattedDate}${path.extname(file.originalname)}`;
+      temp_name = temp_name.replace(/ /g, '_');
+      temp_name = temp_name.replace(/\//g, '_');
+      cb(null, temp_name);
+    });
+  }
+});
+
 // Message thread image upload (general)
 const storage_messagesthread_image_s3 = multerS3({
   s3,
@@ -498,6 +542,35 @@ const storage_messagesthread_image_s3 = multerS3({
 
 const upload_messagesthread_file_s3 = multer({
   storage: storage_messagesthread_file_s3,
+  limits: { fileSize: MAX_DOC_FILE_SIZE_MB },
+  fileFilter: (req, file, cb) => {
+    if (!ALLOWED_MIME_TYPES.includes(file.mimetype)) {
+      return cb(
+        new ErrorResponse(
+          415,
+          'Only .xls .xlsx .xlsm .pdf .png, .jpg and .jpeg .docx format are allowed'
+        )
+      );
+    }
+    const fileSize = parseInt(req.headers['content-length'], 10);
+    if (fileSize > MAX_DOC_FILE_SIZE_MB) {
+      return cb(
+        new ErrorResponse(
+          413,
+          `您的檔案不得超過 ${
+            MAX_DOC_FILE_SIZE_MB / (1024 * 1024)
+          } MB / File size is limited to ${
+            MAX_DOC_FILE_SIZE_MB / (1024 * 1024)
+          } MB!`
+        )
+      );
+    }
+    cb(null, true);
+  }
+});
+
+const upload_messagesChat_file_s3 = multer({
+  storage: storage_messagesChat_file_s3,
   limits: { fileSize: MAX_DOC_FILE_SIZE_MB },
   fileFilter: (req, file, cb) => {
     if (!ALLOWED_MIME_TYPES.includes(file.mimetype)) {
@@ -570,6 +643,7 @@ module.exports = {
   ProfilefileUpload: upload_profile_s3.single('file'),
   TemplatefileUpload: upload_template_s3.single('file'),
   MessagesThreadUpload: upload_messagesthread_file_s3.array('files'),
+  MessagesChatUpload: upload_messagesChat_file_s3.array('files'),
   MessagesImageThreadUpload: upload_messagesthread_image_s3.single('file'),
   upload: upload.single('file')
 };

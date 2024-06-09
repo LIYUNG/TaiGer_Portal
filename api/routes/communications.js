@@ -21,12 +21,14 @@ const {
   loadMessages,
   getSearchUserMessages,
   getUnreadNumberMessages,
-  IgnoreMessage
+  IgnoreMessage,
+  getChatFile
 } = require('../controllers/communications');
 const {
   chatMultitenantFilter
 } = require('../middlewares/chatMultitenantFilter');
 const { logAccess } = require('../utils/log/log');
+const { MessagesChatUpload } = require('../middlewares/file-upload');
 
 const router = Router();
 
@@ -48,7 +50,7 @@ router
     getUnreadNumberMessages
   );
 
-  router
+router
   .route('/all')
   .get(
     getMessagesRateLimiter,
@@ -98,6 +100,7 @@ router
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     multitenant_filter,
     chatMultitenantFilter,
+    MessagesChatUpload,
     postMessages,
     logAccess
   )
@@ -109,6 +112,18 @@ router
     getMessages,
     logAccess
   );
+
+router
+  .route('/:studentId/chat/:fileName')
+  .get(
+    getMessagesRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
+    multitenant_filter,
+    chatMultitenantFilter,
+    getChatFile,
+    logAccess
+  );
+
 router
   .route('/:studentId/pages/:pageNumber')
   .get(

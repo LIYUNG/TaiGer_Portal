@@ -136,7 +136,7 @@ router
 router
   .route('/essays/all')
   .get(
-    postMessagesRateLimiter,
+    getMessagesRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     getAllActiveEssays,
     logAccess

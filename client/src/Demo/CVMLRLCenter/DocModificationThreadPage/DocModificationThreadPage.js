@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link as LinkDom, useParams } from 'react-router-dom';
-import JSZip from 'jszip';
 import jsPDF from 'jspdf';
-import * as XLSX from 'xlsx';
 import DownloadIcon from '@mui/icons-material/Download';
 import LaunchIcon from '@mui/icons-material/Launch';
 import { useTranslation } from 'react-i18next';
@@ -43,6 +41,9 @@ import {
   is_TaiGer_AdminAgent,
   is_TaiGer_Student,
   is_TaiGer_role,
+  readDOCX,
+  readPDF,
+  readXLSX,
   toogleItemInArray
 } from '../../Utils/checking-functions';
 import { BASE_URL } from '../../../api/request';
@@ -175,133 +176,21 @@ function DocModificationThreadPage() {
       }
       // Ensure a file is selected
       // TODO: make array
-      const checkPromises = new Array(e.target.files?.length);
-      for (let i = 0; i < e.target.files?.length; i++) {
-        const fl = e.target.files[i];
-        const extension = fl.name?.split('.').pop().toLowerCase();
+      const checkPromises = Array.from(e.target.files).map((file) => {
+        const extension = file.name.split('.').pop().toLowerCase();
+        const studentName =
+          docModificationThreadPageState.thread.student_id.firstname;
 
-        const promise = new Promise((resolve, reject) => {
-          if (extension === 'pdf') {
-            const reader = new FileReader();
-            reader.onload = async (event) => {
-              const checkPoints = {
-                corretFirstname: {
-                  value: false,
-                  text: 'NOT Detected student first name in the document'
-                }
-              };
-              const checkPoints_temp = Object.assign({}, checkPoints);
-              try {
-                const content = event.target.result;
-                const typedarray = new Uint8Array(content);
-                const pdf = await pdfjs.getDocument(typedarray).promise;
-                let text = '';
-                for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
-                  const page = await pdf.getPage(pageNum);
-                  const pageTextContent = await page.getTextContent();
-                  pageTextContent.items.forEach((item) => {
-                    text += item.str + ' ';
-                  });
-                }
-                if (
-                  text
-                    .toLowerCase()
-                    .includes(
-                      docModificationThreadPageState.thread.student_id.firstname.toLowerCase()
-                    )
-                ) {
-                  checkPoints_temp.corretFirstname.value = true;
-                  checkPoints_temp.corretFirstname.text =
-                    checkPoints_temp.corretFirstname.text.replace('NOT ', '');
-                }
-                resolve(checkPoints_temp);
-              } catch (error) {
-                checkPoints_temp.error.value = true;
-                checkPoints_temp.error.text = error;
-                reject(checkPoints_temp);
-              }
-            };
-            reader.readAsArrayBuffer(fl);
-          } else if (extension === 'docx') {
-            const checkPoints = {
-              corretFirstname: {
-                value: false,
-                text: 'NOT Detected student first name in the document'
-              }
-            };
-            const checkPoints_temp2 = Object.assign({}, checkPoints);
-            const reader = new FileReader();
-            reader.onload = async (event) => {
-              const content = event.target.result;
-              const { headerText, textContent, footerText } =
-                await extractTextFromDocx(content);
-              if (
-                `${headerText}${textContent}${footerText}`
-                  .toLowerCase()
-                  .includes(
-                    docModificationThreadPageState.thread.student_id.firstname.toLowerCase()
-                  )
-              ) {
-                checkPoints_temp2.corretFirstname.value = true;
-                checkPoints_temp2.corretFirstname.text =
-                  checkPoints_temp2.corretFirstname.text.replace('NOT ', '');
-              }
-              if (`${headerText}${footerText}` !== '') {
-                checkPoints_temp2.metadata = {
-                  hasMetadata: true,
-                  metaData: `
-                  Potential Risky Metadata, please double check if this is safe: 
-                  Header:${headerText}
-                  
-                  Footer:${footerText}.`
-                };
-              }
-              resolve(checkPoints_temp2);
-            };
-            reader.readAsArrayBuffer(fl);
-          } else if (extension === 'xlsx') {
-            const checkPoints = {
-              corretFirstname: {
-                value: false,
-                text: 'NOT Detected student first name in the document'
-              }
-            };
-            const checkPoints_temp3 = Object.assign({}, checkPoints);
-            const reader = new FileReader();
-            reader.onload = async (event) => {
-              const data = new Uint8Array(event.target.result);
-              const workbook = XLSX.read(data, { type: 'array' });
-              let text = '';
-              workbook.SheetNames.forEach((sheetName) => {
-                const sheet = workbook.Sheets[sheetName];
-                text += XLSX.utils.sheet_to_csv(sheet);
-              });
-              if (
-                text
-                  .toLowerCase()
-                  .includes(
-                    docModificationThreadPageState.thread.student_id.firstname.toLowerCase()
-                  )
-              ) {
-                checkPoints_temp3.corretFirstname.value = true;
-                checkPoints_temp3.corretFirstname.text =
-                  checkPoints_temp3.corretFirstname.text.replace('NOT ', '');
-              }
-              resolve(checkPoints_temp3);
-            };
-            reader.readAsArrayBuffer(fl);
-          } else {
-            const checkPoints = {};
-            const checkPoints_temp4 = Object.assign({}, checkPoints);
-            const reader = new FileReader();
-            reader.onload = async () => {
-              resolve(checkPoints_temp4);
-            };
-            reader.readAsArrayBuffer(fl);
-          }
-        });
-        checkPromises[i] = promise;
-      }
+        if (extension === 'pdf') {
+          return readPDF(file, studentName);
+        } else if (extension === 'docx') {
+          return readDOCX(file, studentName);
+        } else if (extension === 'xlsx') {
+          return readXLSX(file, studentName);
+        } else {
+          return Promise.resolve({});
+        }
+      });
       Promise.all(checkPromises)
         .then((results) => {
           setCheckResult(results);
@@ -324,33 +213,6 @@ function DocModificationThreadPage() {
         res_modal_status: 423
       }));
     }
-  };
-
-  const extractTextFromDocx = async (arrayBuffer) => {
-    const zip = await JSZip.loadAsync(arrayBuffer);
-    const documentXml = await zip.file('word/document.xml')?.async('string');
-    // Extract text from the XML content
-    let textContent = documentXml?.replace(/<[^>]+>/g, ''); // Strip HTML tags
-    // Extract header text if present
-    let headerText = '';
-    const headerXml = await zip
-      .file('word/header1.xml')
-      ?.async('string')
-      .catch(() => ''); // Assuming there's only one header
-    if (headerXml) {
-      headerText = headerXml?.replace(/<[^>]+>/g, ''); // Strip XML tags
-    }
-
-    // Extract footer text if present
-    let footerText = '';
-    const footerXml = await zip
-      .file('word/footer1.xml')
-      ?.async('string')
-      .catch(() => ''); // Assuming there's only one footer
-    if (footerXml) {
-      footerText = footerXml?.replace(/<[^>]+>/g, ''); // Strip XML tags
-    }
-    return { headerText, textContent, footerText };
   };
 
   const ConfirmError = () => {
@@ -451,7 +313,6 @@ function DocModificationThreadPage() {
       });
     }
 
-    // formData.append('files', docModificationThreadPageState.file);
     formData.append('message', message);
 
     SubmitMessageWithAttachment(

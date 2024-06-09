@@ -32,7 +32,7 @@ jest.mock('../middlewares/InnerTaigerMultitenantFilter', () => {
 
   return Object.assign(
     {},
-    jest.requireActual('../middlewares/permission-filter'),
+    jest.requireActual('../middlewares/InnerTaigerMultitenantFilter'),
     {
       InnerTaigerMultitenantFilter: jest.fn().mockImplementation(passthrough)
     }
@@ -47,6 +47,12 @@ jest.mock('../middlewares/permission-filter', () => {
     jest.requireActual('../middlewares/permission-filter'),
     {
       permission_canAccessStudentDatabase_filter: jest
+        .fn()
+        .mockImplementation(passthrough),
+      permission_canAssignAgent_filter: jest
+        .fn()
+        .mockImplementation(passthrough),
+      permission_canAssignEditor_filter: jest
         .fn()
         .mockImplementation(passthrough)
     }
@@ -101,8 +107,8 @@ describe('POST /api/students/:id/agents', () => {
     const { _id: studentId } = student;
 
     const agents_obj = {};
-    agents.forEach((agent) => {
-      agents_obj[agent._id] = true;
+    agents.forEach((ag) => {
+      agents_obj[ag._id] = true;
     });
 
     const resp = await request(app)
@@ -112,9 +118,9 @@ describe('POST /api/students/:id/agents', () => {
     expect(resp.status).toBe(200);
 
     var agents_arr = [];
-    agents.forEach((agent) => {
-      if ((agents_obj[agent._id] = true)) {
-        agents_arr.push(agent._id);
+    agents.forEach((ag) => {
+      if ((agents_obj[ag._id] = true)) {
+        agents_arr.push(ag._id);
       }
     });
 

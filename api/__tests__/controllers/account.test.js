@@ -3,6 +3,7 @@ const path = require('path');
 const { spawn } = require('child_process');
 const EventEmitter = require('events');
 const request = require('supertest');
+
 const db = require('../fixtures/db');
 
 const { app } = require('../../app');
@@ -17,6 +18,12 @@ const {
   InnerTaigerMultitenantFilter
 } = require('../../middlewares/InnerTaigerMultitenantFilter');
 const { protect } = require('../../middlewares/auth');
+const { updateCredentials } = require('../../controllers/account');
+const { ErrorResponse } = require('../../common/errors');
+const {
+  asyncHandler,
+  errorHandler
+} = require('../../middlewares/error-handler');
 
 // jest.mock("../middlewares/auth", () => {
 //   return Object.assign({}, jest.requireActual("../middlewares/auth"), {
@@ -59,6 +66,7 @@ jest.mock('../../middlewares/auth', () => {
 
   return Object.assign({}, jest.requireActual('../../middlewares/auth'), {
     protect: jest.fn().mockImplementation(passthrough),
+    localAuth: jest.fn().mockImplementation(passthrough),
     permit: jest.fn().mockImplementation((...roles) => passthrough)
   });
 });
@@ -102,103 +110,38 @@ beforeEach(async () => {
   });
 });
 
-// user: Agent
-describe('POST /api/document-threads/init/application/:studentId/:programId/:document_category', () => {
-  const { _id: studentId } = student;
-  const { _id: programId } = program;
-  const { _id: agentId } = agent;
-  var docName = requiredDocuments[0];
-  const filename = 'my-file.pdf'; // will be overwrite to docName
-  const filename_invalid_ext = 'my-file.exe'; // will be overwrite to docName
-  const fileCategory = 'ML';
-  var r = /\d+/; //number pattern
-  var whoupdate = 'Editor';
-  let version_number_max = 0;
-  let db_file_name;
-  var temp_name;
-  var applicationIds;
-  var applicationId;
-  var file_name_inDB;
-  let document_category = 'ML';
-  let returndoc_modification_thread;
-  var messagesThreadId;
+describe('updateCredentials Controller', () => {
+  it('should update the user password and send an email', async () => {
+    const resp = await request(app)
+      .post('/api/account/credentials')
+      .send({
+        credentials: {
+          new_password: 'somepassword'
+        }
+      });
 
-  permission_canAccessStudentDatabase_filter.mockImplementation(
-    async (req, res, next) => {
+    expect(resp.status).toBe(200);
+    expect(resp.body.success).toEqual(true);
+  });
+
+  it('should return an error if the user is not found', async () => {
+    protect.mockImplementation(async (req, res, next) => {
+      req.user = { _id: '012345678901234567891234' };
       next();
-    }
-  );
-  InnerTaigerMultitenantFilter.mockImplementation(async (req, res, next) => {
-    next();
+    });
+    const resp = await request(app)
+      .post('/api/account/credentials')
+      .send({
+        credentials: {
+          new_password: 'somepassword'
+        }
+      });
+
+    expect(resp.status).toBe(400);
+    expect(resp.body.success).toEqual(false);
   });
-  protect.mockImplementation((req, res, next) => {
-    req.user = agent;
-    next();
-  });
-
-  expect(200).toBe(200);
-
-  // beforeEach(async () => {
-  //   const resp = await request(app)
-  //     .post(`/api/students/${studentId}/applications`)
-  //     .send({ program_id_set: [programId] });
-
-  //   const resp22 = await request(app).post(
-  //     `/api/document-threads/init/application/${studentId}/${programId}/${document_category}`
-  //   );
-  //   console.log(resp.message);
-  //   applicationIds = resp.body.data;
-  //   applicationId = applicationIds[0];
-  //   returndoc_modification_thread = resp22.body.data;
-  //   messagesThreadId = returndoc_modification_thread?._id.toString();
-  // });
-
-  // it.each([
-  //   ['my-file.exe', 400, false],
-  //   ['my-file.pdf', 201, true]
-  // ])(
-  //   'should return 400 when program specific file type not .pdf .png, .jpg and .jpeg .docx %p %p %p',
-  //   async (File_Name, status, success) => {
-  //     const buffer_1MB_exe = Buffer.alloc(1024 * 1024 * 1); // 1 MB
-  //     const resp2 = await request(app)
-  //       .post(`/api/document-threads/${messagesThreadId}/${studentId}`)
-  //       .attach('file', buffer_1MB_exe, File_Name);
-
-  //     expect(resp2.status).toBe(status);
-  //     expect(resp2.body.success).toBe(success);
-  //   }
-  // );
-  // TODO: mock S3 isntead of
-  // it('should return 400 when program specific file type not .pdf .png, .jpg and .jpeg .docx', async () => {
-  //   const buffer_1MB_exe = Buffer.alloc(1024 * 1024 * 1); // 1 MB
-  //   const resp2 = await request(app)
-  //     .post(`/api/document-threads/${messagesThreadId}/${studentId}`)
-  //     .attach('file', buffer_1MB_exe, 'my-file.exe');
-
-  //   expect(resp2.status).toBe(400);
-  //   expect(resp2.body.success).toBe(false);
-  // });
-
-  // it('should return 200 when program specific file type .pdf .png, .jpg and .jpeg .docx', async () => {
-  //   const buffer_1MB_pdf = Buffer.alloc(1024 * 1024 * 1); // 1 MB
-  //   const resp2 = await request(app)
-  //     .post(`/api/document-threads/${messagesThreadId}/${studentId}`)
-  //     .attach('file', buffer_1MB_pdf, 'my-file.pdf');
-
-  //   expect(resp2.status).toBe(200);
-  //   expect(resp2.body.success).toBe(true);
-  // });
-
-  // it('should return 400 when program specific file size (ML, Essay) over 5 MB', async () => {
-  //   const buffer_10MB = Buffer.alloc(1024 * 1024 * 6); // 6 MB
-  //   const resp2 = await request(app)
-  //     .post(`/api/document-threads/${messagesThreadId}/${studentId}`)
-  //     .attach('file', buffer_10MB, filename);
-
-  //   expect(resp2.status).toBe(400);
-  //   expect(resp2.body.success).toBe(false);
-  // });
 });
+
 // it('should save the uploaded program specific file and store the path in db', async () => {
 //   const resp = await request(app)
 //     .post(`/api/document-threads/${messagesThreadId}/${studentId}`)
@@ -984,7 +927,7 @@ describe('POST /api/account/survey/university', () => {
     );
     expect(body.data.isGraduated).toBe(university.isGraduated);
 
-    const resp2 = await request(app).get(`/api/account/survey`);
+    const resp2 = await request(app).get('/api/account/survey');
     const university_body = resp2.body.data;
     expect(
       university_body.academic_background.university.attended_university

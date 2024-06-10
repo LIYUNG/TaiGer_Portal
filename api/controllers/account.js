@@ -12,14 +12,14 @@ const updateCredentials = asyncHandler(async (req, res, next) => {
     user,
     body: { credentials }
   } = req;
-  const user_me = await User.findOne({ _id: user._id });
-  if (!user_me) {
+  const userExisted = await User.findById(user._id.toString());
+  if (!userExisted) {
     logger.error('updateCredentials: Invalid user');
     throw new ErrorResponse(400, 'Invalid user');
   }
 
-  user_me.password = credentials.new_password;
-  await user_me.save();
+  userExisted.password = credentials.new_password;
+  await userExisted.save();
   res.status(200).send({
     success: true
   });

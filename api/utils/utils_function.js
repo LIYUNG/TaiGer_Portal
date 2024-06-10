@@ -1348,7 +1348,6 @@ const CalculateAverageResponseTime = async () => {
       logger.error(`Error calculating and saving average response time for ${idKey}:`, err);
     }
   };
-
   await calculateAndSaveAverage(studentGroupInterval, 'student_id');
   await calculateAndSaveAverage(documentThreadGroupInterval, 'thread_id');
 };

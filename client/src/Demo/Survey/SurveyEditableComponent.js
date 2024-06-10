@@ -834,12 +834,10 @@ const SurveyEditableComponent = (props) => {
                 labelid="target_program_language"
                 name="target_program_language"
                 id="target_program_language"
-                error={
-                  survey.application_preference?.target_program_language === ''
-                }
+                error={!survey.application_preference?.target_program_language}
                 helperText={
-                  survey.application_preference?.target_program_language ===
-                    '' && 'Please provide the info.'
+                  !survey.application_preference?.target_program_language &&
+                  'Please provide the info.'
                 }
                 select
                 label={t('Target Program Language')}

@@ -54,6 +54,7 @@ function AdmissionsTable(props) {
                 school: application.programId.school,
                 degree: application.programId.degree,
                 program_name: application.programId.program_name,
+                finalEnrolment: application.finalEnrolment ? 'O' : '',
                 admission: application.admission,
                 admission_file_path:
                   application.admission_letter?.admission_file_path,
@@ -196,9 +197,17 @@ function AdmissionsTable(props) {
           </Link>
         );
       }
+    },
+    {
+      field: 'finalEnrolment',
+      headerName: 'Decision',
+      width: 150
     }
   ];
-  const memoizedColumns = useMemo(() => admisstionTableColumns, [admisstionTableColumns]);
+  const memoizedColumns = useMemo(
+    () => admisstionTableColumns,
+    [admisstionTableColumns]
+  );
 
   return (
     <>
@@ -210,10 +219,22 @@ function AdmissionsTable(props) {
           scrollButtons="auto"
           aria-label="basic tabs example"
         >
-          <Tab label={t('Admissions', { ns: 'admissions' })} {...a11yProps(0)} />
-          <Tab label={t('Rejections', { ns: 'admissions' })} {...a11yProps(1)} />
-          <Tab label={t('Pending Result', { ns: 'admissions' })} {...a11yProps(2)} />
-          <Tab label={t('Not Closed Yet', { ns: 'admissions' })} {...a11yProps(3)} />
+          <Tab
+            label={t('Admissions', { ns: 'admissions' })}
+            {...a11yProps(0)}
+          />
+          <Tab
+            label={t('Rejections', { ns: 'admissions' })}
+            {...a11yProps(1)}
+          />
+          <Tab
+            label={t('Pending Result', { ns: 'admissions' })}
+            {...a11yProps(2)}
+          />
+          <Tab
+            label={t('Not Closed Yet', { ns: 'admissions' })}
+            {...a11yProps(3)}
+          />
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>

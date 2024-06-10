@@ -1032,8 +1032,8 @@ function DocModificationThreadPage() {
             ))}
             <Typography variant="body1" fontWeight="bold">
               {docModificationThreadPageState.thread.file_type === 'Essay'
-                ? t('Essay Writer')
-                : t('Editor')}
+                ? t('Essay Writer', { ns: 'common' })
+                : t('Editor', { ns: 'common' })}
               :
             </Typography>
             {[
@@ -1111,6 +1111,23 @@ function DocModificationThreadPage() {
                     : t('Add Editor')}
                 </Button>
               )}
+            {docModificationThreadPageState.thread.program_id && (
+              <>
+                <Typography variant="body1" fontWeight="bold">
+                  {t('Semester', { ns: 'common' })}:
+                </Typography>
+                <Typography>
+                  {docModificationThreadPageState.thread.program_id.semester}
+                </Typography>
+                <Typography variant="body1" fontWeight="bold">
+                  {t('Program Language', { ns: 'common' })}:
+                </Typography>
+                <Typography>
+                  {docModificationThreadPageState.thread.program_id.lang}
+                </Typography>
+              </>
+            )}
+
             <Typography variant="body1">
               <b>{t('Deadline', { ns: 'common' })}:</b>
               {is_TaiGer_AdminAgent(user) &&

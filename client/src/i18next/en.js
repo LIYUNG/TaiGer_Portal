@@ -297,7 +297,8 @@ export const translation_en = {
     timeDays: '{{days}}d',
     timeWeeks: '{{weeks}}w',
     Send: 'Send',
-    'Target Year': 'Target Year'
+    'Target Year': 'Target Year',
+    'Program Language': 'Program Language'
   },
   dashboard: {
     Dashboard: 'Dashboard',

@@ -299,7 +299,8 @@ export const translation_zh_TW = {
     timeDays: '{{days}}天',
     timeWeeks: '{{weeks}}週',
     Send: '送出',
-    'Target Year': '預計申請年度'
+    'Target Year': '預計申請年度',
+    'Program Language': '學程教學語言'
   },
   dashboard: {
     Dashboard: '主控台',

@@ -14,7 +14,7 @@ env_file_path = os.path.dirname(env_file_path)
 def MTL_sorter(program_idx, file_path, abbrev, studentId, student_name, analysis_language):
 
     basic_classification_en = {
-        '離散': [MTL_MATH_DISCRETE_KEY_WORDS_EN, MTL_MATH_DISCRETE_ANTI_KEY_WORDS_EN],
+        '離散': [MATH_DISCRETE_KEY_WORDS_EN, MATH_DISCRETE_ANTI_KEY_WORDS_EN],
         '線性代數': [MATH_LINEAR_ALGEBRA_KEY_WORDS_EN, MATH_LINEAR_ALGEBRA_ANTI_KEY_WORDS_EN],
         '數值分析': [MATH_NUM_METHOD_KEY_WORDS_EN, MATH_NUM_METHOD_ANTI_KEY_WORDS_EN],
         '微積分': [CALCULUS_KEY_WORDS_EN, CALCULUS_ANTI_KEY_WORDS_EN, ['一', '二']],
@@ -35,7 +35,7 @@ def MTL_sorter(program_idx, file_path, abbrev, studentId, student_name, analysis
         '其他': [USELESS_COURSES_KEY_WORDS_EN, USELESS_COURSES_ANTI_KEY_WORDS_EN], }
 
     basic_classification_zh = {
-        '離散': [MTL_MATH_DISCRETE_KEY_WORDS, MTL_MATH_DISCRETE_ANTI_KEY_WORDS],
+        '離散': [MATH_DISCRETE_KEY_WORDS, MATH_DISCRETE_ANTI_KEY_WORDS],
         '線性代數': [MATH_LINEAR_ALGEBRA_KEY_WORDS, MATH_LINEAR_ALGEBRA_ANTI_KEY_WORDS],
         '數值分析': [MATH_NUM_METHOD_KEY_WORDS, MATH_NUM_METHOD_ANTI_KEY_WORDS],
         '微積分': [CALCULUS_KEY_WORDS, CALCULUS_ANTI_KEY_WORDS, ['一', '二']],

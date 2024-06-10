@@ -81,7 +81,7 @@ const createCourse = asyncHandler(async (req, res) => {
       .exec();
     for (let i = 0; i < student.agents.length; i += 1) {
       if (isNotArchiv(student)) {
-        await updateCoursesDataAgentEmail(
+        updateCoursesDataAgentEmail(
           {
             firstname: student.agents[i].firstname,
             lastname: student.agents[i].lastname,

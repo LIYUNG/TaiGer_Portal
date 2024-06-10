@@ -7,6 +7,7 @@ const {
   sendAssignEditorReminderEmail,
   sendNewGeneraldocMessageInThreadEmail
 } = require('../services/email');
+const { ErrorResponse } = require('../common/errors');
 
 const addMessageInThread = async (message, threadId, userId) => {
   const thread = await Documentthread.findById(threadId);

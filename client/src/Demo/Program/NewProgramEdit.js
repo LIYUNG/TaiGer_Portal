@@ -227,7 +227,7 @@ function NewProgramEdit(props) {
                 name="semester"
                 id="semester"
                 onChange={(e) => handleChange(e)}
-                disabled={props.type === 'edit'}
+                disabled={props.type === 'edit' && !is_TaiGer_Admin(user)}
                 value={program.semester || ''}
               >
                 {SEMESTER_ARRAY_OPTIONS.map((option) => (

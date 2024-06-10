@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { useTranslation } from 'react-i18next';
-import LinkIcon from '@mui/icons-material/Link';
+import LaunchIcon from '@mui/icons-material/Launch';
 
 import { FILE_DONT_CARE_SYMBOL, convertDate } from '../Utils/contants';
 import OffcanvasBaseDocument from '../../components/Offcanvas/OffcanvasBaseDocument';
@@ -135,7 +135,7 @@ function ButtonSetNotNeeded(props) {
           target="_blank"
           sx={{ ml: 1 }}
         >
-          <Button size="small" variant="outlined" startIcon={<LinkIcon />}>
+          <Button size="small" variant="outlined" endIcon={<LaunchIcon />}>
             {t('Read More')}
           </Button>
         </Link>

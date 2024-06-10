@@ -782,7 +782,7 @@ function UniAssistListCard(props) {
       ) : (
         <Card sx={{ padding: 2 }}>
           <Typography>
-            Based on the applications, Uni-Assist is NOT needed.
+            {t('Based on the applications, Uni-Assist is NOT needed')}
           </Typography>
         </Card>
       )}

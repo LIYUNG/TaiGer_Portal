@@ -31,6 +31,8 @@ module.exports = {
   SMTP_PORT: env('SMTP_PORT', 587),
   SMTP_USERNAME: env('SMTP_USERNAME', 'glen.simonis12@ethereal.email'),
   SMTP_PASSWORD: env('SMTP_PASSWORD', 'PASSWORD'),
+  AWS_SMTP_USERNAME: env('AWS_SMTP_USERNAME', 'glen.simonis12@ethereal.email'),
+  AWS_SMTP_PASSWORD: env('AWS_SMTP_PASSWORD', 'PASSWORD'),
   UPLOAD_PATH: env('UPLOAD_PATH'),
   CLEAN_UP_SCHEDULE: env('CLEAN_UP_SCHEDULE', '* * * 1 * *'),
   WEEKLY_TASKS_REMINDER_SCHEDULE: env(

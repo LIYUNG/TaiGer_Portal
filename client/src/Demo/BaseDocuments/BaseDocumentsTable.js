@@ -6,7 +6,8 @@ import {
   Button,
   CircularProgress,
   Link,
-  Typography
+  Typography,
+  IconButton
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import ModalNew from '../../components/Modal';
@@ -15,10 +16,10 @@ import {
   FILE_DONT_CARE_SYMBOL,
   FILE_MISSING_SYMBOL,
   FILE_NOT_OK_SYMBOL,
+  FILE_OK_SYMBOL,
   FILE_UPLOADED_SYMBOL,
   profile_list
 } from '../Utils/contants';
-import { IoCheckmarkCircle } from 'react-icons/io5';
 import { DocumentStatus } from '../Utils/checking-functions';
 import { updateProfileDocumentStatus } from '../../api';
 import DEMO from '../../store/constant';
@@ -202,7 +203,7 @@ export function BaseDocumentsTable(props) {
               target="_blank"
               title={params.value?.status}
             >
-              {FILE_UPLOADED_SYMBOL}
+              <IconButton>{FILE_UPLOADED_SYMBOL}</IconButton>
               {`${params.value?.status || ''}`}
             </Link>
           );
@@ -220,31 +221,36 @@ export function BaseDocumentsTable(props) {
                   params.row.id
                 );
               }}
-              style={{ textDecoration: 'none', cursor: 'pointer' }}
+              style={{
+                textDecoration: 'none',
+                cursor: 'pointer',
+                display: 'flex'
+              }}
             >
-              <IoCheckmarkCircle
-                size={24}
-                color="limegreen"
-                title="Valid Document"
-              />{' '}
+              <IconButton>{FILE_OK_SYMBOL}</IconButton>{' '}
               {`${params.value?.status || ''}`}
             </Box>
           );
         } else if (params.value?.status === DocumentStatus.Rejected) {
           return (
             <>
-              {FILE_NOT_OK_SYMBOL} {`${params.value?.status || ''}`}
+              <IconButton>{FILE_NOT_OK_SYMBOL}</IconButton>{' '}
+              {`${params.value?.status || ''}`}
             </>
           );
         } else if (params.value?.status === DocumentStatus.NotNeeded) {
           return (
             <>
-              {FILE_DONT_CARE_SYMBOL}
+              <IconButton>{FILE_DONT_CARE_SYMBOL}</IconButton>
               {`${params.value?.status || ''}`}
             </>
           );
         } else {
-          return <>{FILE_MISSING_SYMBOL}</>;
+          return (
+            <>
+              <IconButton>{FILE_MISSING_SYMBOL}</IconButton>
+            </>
+          );
         }
       }
     };

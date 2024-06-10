@@ -14,6 +14,7 @@ import {
   TextField
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import AddIcon from '@mui/icons-material/Add';
 
 import DocumentsListItems from './DocumentsListItems';
 import DocumentsListItemsEditor from './DocumentsListItemsEditor';
@@ -297,7 +298,7 @@ function InternalDocCreatePage(props) {
         <Grid item xs={12}>
           <Card>
             {internalDocCreatePageState.isEdit ? (
-              <>
+              <Box sx={{ p: 1 }}>
                 <FormControl fullWidth>
                   <Select
                     size="small"
@@ -315,6 +316,7 @@ function InternalDocCreatePage(props) {
                   </Select>
                 </FormControl>
                 <TextField
+                  fullWidth
                   size="small"
                   type="text"
                   placeholder="Title"
@@ -330,26 +332,30 @@ function InternalDocCreatePage(props) {
                   // readOnlyMode={readOnlyMode}
                   role={props.role}
                 />
-              </>
+              </Box>
             ) : (
               <>
+                {is_TaiGer_AdminAgent(user) && (
+                  <Button
+                    fullWidth
+                    size="small"
+                    color="primary"
+                    variant="contained"
+                    onClick={handleClickEditToggle}
+                    startIcon={<AddIcon />}
+                    sx={{ m: 1 }}
+                  >
+                    {t('Add', { ns: 'common' })}
+                  </Button>
+                )}
                 {documentlist_key.map((catego, i) => (
-                  <Box key={i}>
+                  <Box key={i} sx={{ p: 1 }}>
                     <Typography variant="h6">
                       - {internal_documentation_categories[`${catego}`]}
                     </Typography>
                     {document_list(catego)}
                   </Box>
                 ))}
-                {is_TaiGer_AdminAgent(user) && (
-                  <Button
-                    color="primary"
-                    variant="contained"
-                    onClick={handleClickEditToggle}
-                  >
-                    {t('Add', { ns: 'common' })}
-                  </Button>
-                )}
               </>
             )}
           </Card>
@@ -377,7 +383,9 @@ function InternalDocCreatePage(props) {
           <Button disabled={!isLoaded} onClick={handleDeleteDoc}>
             {t('Yes', { ns: 'common' })}
           </Button>
-          <Button onClick={closeDeleteDocModalWindow}>{t('No', { ns: 'common' })}</Button>
+          <Button onClick={closeDeleteDocModalWindow}>
+            {t('No', { ns: 'common' })}
+          </Button>
         </Typography>
       </ModalNew>
     </Box>

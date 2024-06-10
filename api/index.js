@@ -1,6 +1,8 @@
 const schedule = require('node-schedule');
 const https = require('https');
 const fs = require('fs');
+const { createTransport } = require('nodemailer');
+
 const { app } = require('./app');
 const { connectToDatabase, disconnectFromDatabase } = require('./database');
 const {
@@ -22,6 +24,7 @@ const {
   COURSE_SELECTION_TASKS_REMINDER_JULY_SCHEDULE,
   COURSE_SELECTION_TASKS_REMINDER_NOVEMBER_SCHEDULE
 } = require('./config');
+
 const logger = require('./services/logger');
 // const {
 //   DocumentationS3GarbageCollector
@@ -32,14 +35,15 @@ const logger = require('./services/logger');
 const {
   TasksReminderEmails,
   UrgentTasksReminderEmails,
-  MongoDBDataBaseDailySnapshot,
   AssignEditorTasksReminderEmails,
   NextSemesterCourseSelectionReminderEmails,
   UpdateStatisticsData,
   MeetingDailyReminderChecker,
   UnconfirmedMeetingDailyReminderChecker,
-  DailyCalculateAverageResponseTime
+  DailyCalculateAverageResponseTime,
+  NoInterviewTrainerOrTrainingDateDailyReminderChecker
 } = require('./utils/utils_function');
+const { MongoDBDataBaseDailySnapshot } = require('./utils/jobs');
 // const { UserS3GarbageCollector } = require('./controllers/users');
 
 process.on('SIGINT', () => {
@@ -161,7 +165,12 @@ const launch = async () => {
   );
 
   const job14 = schedule.scheduleJob(
-    COURSE_SELECTION_TASKS_REMINDER_DECEMBER_SCHEDULE,
+    DAILY_TASKS_REMINDER_SCHEDULE,
+    NoInterviewTrainerOrTrainingDateDailyReminderChecker
+  );
+  
+  const job15 = schedule.scheduleJob(
+    DAILY_TASKS_REMINDER_SCHEDULE,
     DailyCalculateAverageResponseTime
   );
 
@@ -179,35 +188,40 @@ const launch = async () => {
   } else {
     // local development
     // launch https server
+    // const job5 = schedule.scheduleJob(
+    //   '40 * * * * *',
+    //   MongoDBDataBaseDailySnapshot
+    // );
 
-    if (fs.existsSync(HTTPS_KEY) && fs.existsSync(HTTPS_CERT) && fs.existsSync(HTTPS_CA)) {
+    if (
+      fs.existsSync(HTTPS_KEY) &&
+      fs.existsSync(HTTPS_CERT) &&
+      fs.existsSync(HTTPS_CA)
+    ) {
       httpsOption = {
         key: fs.readFileSync(HTTPS_KEY, 'utf8'),
         cert: fs.readFileSync(HTTPS_CERT, 'utf8'),
         ca: fs.readFileSync(HTTPS_CA, 'utf8')
-      }
+      };
     } else {
-      httpsOption = {}
-      logger.warn("HTTPS key, cert, or ca file missing. Please check the ./cert folder")
+      httpsOption = {};
+      logger.warn(
+        'HTTPS key, cert, or ca file missing. Please check the ./cert folder'
+      );
       logger.info(`HTTPS_CA: ${HTTPS_CA}`);
       logger.info(`HTTPS_CERT: ${HTTPS_CERT}`);
       logger.info(`HTTPS_KEY: ${HTTPS_KEY}`);
     }
 
-    https
-      .createServer(
-        httpsOption,
-        app
-      )
-      .listen(HTTPS_PORT, function () {
-        logger.info(
-          'Example app listening on port ' +
+    https.createServer(httpsOption, app).listen(HTTPS_PORT, function () {
+      logger.info(
+        'Example app listening on port ' +
           HTTPS_PORT +
           ' ! Go to https://localhost:' +
           HTTPS_PORT +
           '/'
-        );
-      });
+      );
+    });
   }
 };
 

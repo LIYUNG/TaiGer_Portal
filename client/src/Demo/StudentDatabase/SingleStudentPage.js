@@ -21,13 +21,14 @@ import {
   TableCell,
   Breadcrumbs,
   Alert,
-  TableContainer
+  TableContainer,
+  IconButton
 } from '@mui/material';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import { AiFillEdit } from 'react-icons/ai';
-import { BsMessenger } from 'react-icons/bs';
+import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 
+import { TopBar } from '../../components/TopBar/TopBar';
 import BaseDocument_StudentView from '../BaseDocuments/BaseDocument_StudentView';
 import EditorDocsProgress from '../CVMLRLCenter/EditorDocsProgress';
 import UniAssistListCard from '../UniAssist/UniAssistListCard';
@@ -309,13 +310,6 @@ export const SingleStudentPageMainContent = ({
           res_modal_message={res_modal_message}
         />
       )}
-      {singleStudentPage.student.archiv && (
-        <Card sx={{ p: 2 }}>
-          <Typography variant="h5" color="red">
-            Status: <b>Close</b>
-          </Typography>
-        </Card>
-      )}
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Box>
           <Breadcrumbs aria-label="breadcrumb">
@@ -350,7 +344,9 @@ export const SingleStudentPageMainContent = ({
               component={LinkDom}
               to={`${DEMO.PROFILE_STUDENT_LINK(singleStudentPage.student._id)}`}
             >
-              <AiFillEdit color="red" size={24} />
+              <IconButton>
+                <EditIcon fontSize="small" />
+              </IconButton>
             </Link>
           </Breadcrumbs>
         </Box>
@@ -366,9 +362,12 @@ export const SingleStudentPageMainContent = ({
                 )}`}
                 sx={{ mr: 1 }}
               >
-                <Button color="primary" variant="contained" size="small">
-                  <BsMessenger color="white" size={16} />
-                  &nbsp;
+                <Button
+                  color="primary"
+                  variant="contained"
+                  size="small"
+                  startIcon={<ChatBubbleOutlineIcon />}
+                >
                   <b>{t('Message', { ns: 'common' })}</b>
                 </Button>
               </Link>
@@ -386,6 +385,7 @@ export const SingleStudentPageMainContent = ({
           </Box>
         </Box>
       </Box>
+      {singleStudentPage.student.archiv && <TopBar />}
       {singleStudentPage.taiger_view ? (
         <>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -493,14 +493,6 @@ export const SingleStudentPageMainContent = ({
                 <TableHead>
                   <TableRow>
                     <TableCell></TableCell>
-                    <TableCell>
-                      {t('First-, Last Name', { ns: 'common' })}
-                    </TableCell>
-                    <TableCell>{t('Agents', { ns: 'common' })}</TableCell>
-                    <TableCell>{t('Editors', { ns: 'common' })}</TableCell>
-                    <TableCell>{t('Year', { ns: 'common' })}</TableCell>
-                    <TableCell>{t('Semester', { ns: 'common' })}</TableCell>
-                    <TableCell>{t('Degree', { ns: 'common' })}</TableCell>
                     {header.map((name, index) => (
                       <TableCell key={index}>
                         {t(`${name}`, { ns: 'common' })}
@@ -583,7 +575,7 @@ export const SingleStudentPageMainContent = ({
         <>
           <Alert severity="error" sx={{ mt: 2 }}>
             <Typography variant="body1" fontWeight="bold">
-              {t('Student View')}
+              {t('Student View', { ns: 'common' })}
             </Typography>
           </Alert>
           <StudentDashboard

@@ -15,6 +15,7 @@ import { Link, Tooltip, Chip } from '@mui/material';
 import { Link as LinkDom } from 'react-router-dom';
 import { appConfig } from '../../config';
 import DEMO from '../../store/constant';
+import { is_TaiGer_Student } from './checking-functions';
 
 export const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -56,7 +57,7 @@ export const StyledInputBase = styled(InputBase)(({ theme }) => ({
   }
 }));
 
-export const menuWidth = 350;
+export const menuWidth = 340;
 export const EmbeddedChatListWidth = 290;
 
 export const CVMLRL_DOC_PRECHECK_STATUS_E = {
@@ -85,59 +86,76 @@ export const DECISION_STATUS_E = {
     <HelpIcon size={18} style={{ color: grey[400] }} title="Not sure" />
   )
 };
+
+export const INTERVIEW_STATUS_E = {
+  SCHEDULED_SYMBOL: (
+    <CheckCircleIcon
+      size={18}
+      style={{ color: green[500] }}
+      title="Scheduled"
+    />
+  ),
+  DELETED_SUCCESS_SYMBOL: (
+    <CheckCircleIcon size={18} style={{ color: green[500] }} title="Success" />
+  ),
+  UNSCHEDULED_SYMBOL: (
+    <HelpIcon size={18} style={{ color: grey[400] }} title="Unscheduled" />
+  )
+};
+
 export const SUBMISSION_STATUS_E = {
   OK_SYMBOL: (
     <CheckCircleIcon
-      size={18}
+      fontSize="small"
       style={{ color: green[500] }}
       title="Submitted"
     />
   ),
   NOT_OK_SYMBOL: (
-    <CancelIcon size={18} style={{ color: red[700] }} title="Withdraw" />
+    <CancelIcon fontSize="small" style={{ color: red[700] }} title="Withdraw" />
   ),
   UNKNOWN_SYMBOL: (
-    <HelpIcon size={18} style={{ color: grey[400] }} title="In Progress" />
+    <HelpIcon fontSize="small" style={{ color: grey[400] }} title="In Progress" />
   )
 };
 export const ADMISSION_STATUS_E = {
   OK_SYMBOL: (
-    <CheckCircleIcon size={18} style={{ color: green[500] }} title="Admitted" />
+    <CheckCircleIcon fontSize="small" style={{ color: green[500] }} title="Admitted" />
   ),
   NOT_OK_SYMBOL: (
-    <CancelIcon size={18} style={{ color: red[700] }} title="Rejected" />
+    <CancelIcon fontSize="small" style={{ color: red[700] }} title="Rejected" />
   ),
   UNKNOWN_SYMBOL: (
-    <HelpIcon size={18} style={{ color: grey[400] }} title="Pending" />
+    <HelpIcon fontSize="small" style={{ color: grey[400] }} title="Pending" />
   )
 };
 
 export const FILE_OK_SYMBOL = (
   <CheckCircleIcon
-    size={18}
+    fontSize="small"
     style={{ color: green[500] }}
     title="Valid Document"
   />
 );
 export const FILE_NOT_OK_SYMBOL = (
-  <CancelIcon size={18} style={{ color: red[700] }} title="Invalid Document" />
+  <CancelIcon fontSize="small" style={{ color: red[700] }} title="Invalid Document" />
 );
 export const FILE_UPLOADED_SYMBOL = (
   <QueryBuilderIcon
-    size={18}
+    fontSize="small"
     style={{ color: orange[400] }}
     title="Uploaded successfully"
   />
 );
 export const FILE_MISSING_SYMBOL = (
   <HelpIcon
-    size={18}
+    fontSize="small"
     style={{ color: grey[400] }}
     title="No Document uploaded"
   />
 );
 export const FILE_DONT_CARE_SYMBOL = (
-  <RemoveIcon size={18} style={{ color: grey[400] }} title="Not needed" />
+  <RemoveIcon fontSize="small" style={{ color: grey[400] }} title="Not needed" />
 );
 
 export const questionType = {
@@ -584,6 +602,13 @@ export const getTimezoneOffset = (timezone) => {
   const offset = zone.offset(new Date(now));
   const offsetHours = offset / 60;
   return offsetHours;
+};
+
+export const showTimezoneOffset = () => {
+  return getTimezoneOffset(Intl.DateTimeFormat().resolvedOptions().timeZone) >=
+    0
+    ? `+${getTimezoneOffset(Intl.DateTimeFormat().resolvedOptions().timeZone)}`
+    : getTimezoneOffset(Intl.DateTimeFormat().resolvedOptions().timeZone);
 };
 
 export const shiftDateByOffset = (originalDate, offsetHours) => {
@@ -1532,7 +1557,7 @@ export const is_new_message_status = (user, thread) => {
     thread.latest_message_left_by_id === undefined ||
     thread.latest_message_left_by_id === ''
   ) {
-    if (user.role !== 'Student') {
+    if (!is_TaiGer_Student(user)) {
       return false;
     }
   }
@@ -1884,6 +1909,15 @@ export const base_documents_checklist = {
   ECTS_Conversion: [],
   Course_Description: [
     'Degree correctness (Ex: Engineering with B.Sc. not B.A.)?',
+    'Course description?',
+    'Course outline and content?',
+    'Credits?',
+    'Self Study hours?',
+    'Course hours?',
+    'Total workload hours?',
+    'Prerequisite field?',
+    'Weekly hours per semester?',
+    'Assessment?',
     'All in English?'
   ],
   Internship: [
@@ -1900,6 +1934,12 @@ export const base_documents_checklist = {
 };
 
 export const academic_background_header = {
+  'First-, Last Name': 'First-, Last Name',
+  Agents: 'Agents',
+  Editors: 'Editors',
+  Year: 'Year',
+  Semester: 'Semester',
+  Degree: 'Degree',
   School: 'School / Program',
   Application_Fields: 'Target',
   English_German: 'English/German',

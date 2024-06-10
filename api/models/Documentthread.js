@@ -1,6 +1,4 @@
 const {
-  model,
-  Schema,
   Types: { ObjectId }
 } = require('mongoose');
 const mongoose = require('mongoose');

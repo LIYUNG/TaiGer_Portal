@@ -13,13 +13,14 @@ import {
 } from '@mui/material';
 import { Link as LinkDom } from 'react-router-dom';
 
-import TabProgramConflict from '../MainViewTab/ProgramConflict/TabProgramConflict';
+// import TabProgramConflict from '../MainViewTab/ProgramConflict/TabProgramConflict';
 import StudentsAgentEditor from '../MainViewTab/StudentsAgentEditor/StudentsAgentEditor';
 import TasksDistributionBarChart from '../../../components/Charts/TasksDistributionBarChart';
 import {
   does_essay_have_writers,
   does_student_have_editors,
   frequencyDistribution,
+  open_tasks,
   open_tasks_with_editors
 } from '../../Utils/checking-functions';
 import {
@@ -56,6 +57,7 @@ function EditorMainView(props) {
         ))}
     </>
   );
+  // TODO: consider assigned essays!
 
   const open_tasks_arr = open_tasks_with_editors(props.students);
   const task_distribution = open_tasks_arr
@@ -76,59 +78,29 @@ function EditorMainView(props) {
     });
   });
   let header = Object.values(academic_background_header);
-  const unreplied_task = props.students
-    .filter((student) =>
-      student.editors.some((editor) => editor._id === user._id.toString())
-    )
-    .flatMap((student) => [
-      ...student.generaldocs_threads
-        .filter(
-          (generaldocs_threads) =>
-            !generaldocs_threads.isFinalVersion &&
-            is_new_message_status(user, generaldocs_threads)
-        )
-        .flatMap((generaldocs_threads) => [generaldocs_threads]),
-      ...student.applications.flatMap((application) =>
-        application.doc_modification_thread
-          .filter(
-            (application_doc_thread) =>
-              !application_doc_thread.isFinalVersion &&
-              is_new_message_status(user, application_doc_thread)
-          )
-          .flatMap((application_doc_thread) => [application_doc_thread])
-      )
-    ]);
-  const follow_up_task = props.students
-    .filter((student) =>
-      student.editors.some((editor) => editor._id === user._id.toString())
-    )
-    .flatMap((student) => [
-      ...student.generaldocs_threads
-        .filter(
-          (generaldocs_threads) =>
-            !generaldocs_threads.isFinalVersion &&
-            is_pending_status(user, generaldocs_threads) &&
-            generaldocs_threads.latest_message_left_by_id !== ''
-        )
-        .flatMap((generaldocs_threads) => [generaldocs_threads]),
-      ...student.applications.flatMap((application) =>
-        application.doc_modification_thread
-          .filter(
-            (application_doc_thread) =>
-              !application_doc_thread.isFinalVersion &&
-              is_pending_status(user, application_doc_thread) &&
-              application_doc_thread.latest_message_left_by_id !== ''
-          )
-          .flatMap((application_doc_thread) => [application_doc_thread])
-      )
-    ]);
+  const myStudents = props.students.filter((student) =>
+    student.editors.some((editor) => editor._id === user._id.toString())
+  );
+  const unreplied_task = open_tasks(myStudents).filter(
+    (open_task) =>
+      open_task.show &&
+      !open_task.isFinalVersion &&
+      is_new_message_status(user, open_task)
+  );
+  const follow_up_task = open_tasks(myStudents).filter(
+    (open_task) =>
+      open_task.show &&
+      !open_task.isFinalVersion &&
+      is_pending_status(user, open_task) &&
+      open_task.latest_message_left_by_id !== ''
+  );
 
   return (
     <>
       <Grid container spacing={2}>
         <Grid item xs={12} md={3}>
           <Card sx={{ p: 2 }}>
-            <Typography>Action required</Typography>
+            <Typography>{t('Action required', { ns: 'common' })}</Typography>
             <Typography variant="h6">
               <Link
                 to={DEMO.CV_ML_RL_CENTER_LINK}
@@ -202,8 +174,8 @@ function EditorMainView(props) {
               <Table size="small">
                 <TableHead>
                   <TableRow>
-                    <TableCell>Task</TableCell>
-                    <TableCell>Description</TableCell>
+                    <TableCell>{t('Tasks', { ns: 'common' })}</TableCell>
+                    <TableCell>{t('Description', { ns: 'common' })}</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -216,7 +188,9 @@ function EditorMainView(props) {
                         {t('Assign Editors')}
                       </Link>
                     </TableCell>
-                    <TableCell>Please assign editors</TableCell>
+                    <TableCell>
+                      {t('Please assign editors', { ns: 'common' })}
+                    </TableCell>
                     <TableCell></TableCell>
                   </TableRow>
                   {!does_essay_have_writers(
@@ -233,7 +207,9 @@ function EditorMainView(props) {
                           {t('Assign Essay Writer', { ns: 'common' })}
                         </Link>
                       </TableCell>
-                      <TableCell>{t('Please assign essay writers', { ns: 'common' })}</TableCell>
+                      <TableCell>
+                        {t('Please assign essay writers', { ns: 'common' })}
+                      </TableCell>
                     </TableRow>
                   )}
                 </TableBody>
@@ -268,24 +244,16 @@ function EditorMainView(props) {
           </Card>
         </Grid>
 
-        <Grid item xs={12} md={12}>
+        {/* <Grid item xs={12} md={12}>
           <TabProgramConflict students={props.students} />
-        </Grid>
+        </Grid> */}
         <Grid item xs={12} md={12}>
           <Table size="small">
             <TableHead>
               <TableRow>
                 <TableCell></TableCell>
-                <TableCell>
-                  {t('First-, Last Name', { ns: 'common' })} <br /> Email
-                </TableCell>
-                <TableCell>{t('Agents', { ns: 'common' })}</TableCell>
-                <TableCell>{t('Editors', { ns: 'common' })}</TableCell>
-                <TableCell>{t('Year', { ns: 'common' })}</TableCell>
-                <TableCell>{t('Semester', { ns: 'common' })}</TableCell>
-                <TableCell>{t('Degree', { ns: 'common' })}</TableCell>
                 {header.map((name, index) => (
-                  <TableCell key={index}>{name}</TableCell>
+                  <TableCell key={index}>{t(name, { ns: 'common' })}</TableCell>
                 ))}
               </TableRow>
             </TableHead>

@@ -2,14 +2,14 @@ import React from 'react';
 import { Link as LinkDom } from 'react-router-dom';
 import { Link, TableCell, TableRow } from '@mui/material';
 
-import { check_application_selection } from '../../../Utils/checking-functions';
+import { hasApplications } from '../../../Utils/checking-functions';
 import DEMO from '../../../../store/constant';
 
 function NoProgramStudentTask(props) {
   return (
     <>
       {/* check if no program selected */}
-      {!check_application_selection(props.student) && (
+      {!hasApplications(props.student) && (
         <TableRow>
           <TableCell>
             <Link

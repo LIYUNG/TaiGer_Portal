@@ -8,6 +8,8 @@ export const translation_en = {
     'Last Login': 'Last Login'
   },
   common: {
+    announcement:
+      'We migrate our notification email to no-reply@taigerconsultancy-portal.com. Please Add to Calendar for the invitation in the future so that you will not miss the time.',
     Add: 'Add',
     'I Agree': 'I Agree',
     Account: 'Account',
@@ -15,6 +17,7 @@ export const translation_en = {
     Activate: 'Activate',
     Activated: 'Activated',
     'Application Results': 'Application Results',
+    'Action required': 'Action required',
     'Target Degree': 'Target Degree',
     'Aged days': 'Aged days',
     'Document name': 'Document name',
@@ -35,6 +38,7 @@ export const translation_en = {
     Program: 'Program',
     Programs: 'Programs',
     'Days left': 'Days left',
+    'First-/ Last Name': 'First-/ Last Name',
     Deadline: 'Deadline',
     Target: 'Target',
     'First-, Last Name': 'First-, Last Name',
@@ -176,6 +180,10 @@ export const translation_en = {
     'Target Year /Semester': 'Target Year /Semester',
     'Admission Letter': 'Admission Letter',
     'Rejection Letter': 'Rejection Letter',
+    'Open Applications Distribution': 'Open Applications Distribution',
+    'Students decided programs': 'Students decided programs',
+    'Students do not decide programs yet. But the applications will be potentially activated when they would decide':
+      'Students do not decide programs yet. But the applications will be potentially activated when they would decide',
     Confirmation: 'Confirmation',
     Close: 'Close',
     Score: 'Score',
@@ -276,7 +284,13 @@ export const translation_en = {
       'Do you want to move {{studentName}} to {{status}}?',
     'Inform student for archive':
       '[Attention]  By checking this, the student will be informed that their service in the Portal ends. For disappeared students, highly recommanded not to inform. Please consult with your manager. For those who got admissions and start studying, please inform them as official close.',
-    'New editor is assigned to you.': 'New editor is assigned to you.'
+    'New editor is assigned to you.': 'New editor is assigned to you.',
+    'No Program Selected Yet': 'No Program Selected Yet',
+    'Program Specific Documents Check': 'Program Specific Documents Check',
+    'It looks like you did not finish survey. See':
+      'It looks like you did not finish survey. See',
+    'Student View': 'Student View',
+    'Wait for Agent': 'Wait for Agent'
   },
   dashboard: {
     Dashboard: 'Dashboard',
@@ -369,7 +383,26 @@ export const translation_en = {
     'Please go to the Uni-Assist section, follow the instructions to complete':
       'Please go to the Uni-Assist section, follow the instructions to complete the account registration, upload documents, and apply for the VPD (Vorprüfungsdokumentation).'
   },
-  interviews: {},
+  interviews: {
+    Interviewer: 'Interviewer',
+    'Interview Training Time': 'Interview Training Time',
+    'Training Time': 'Training Time',
+    'My Interviews': 'My Interviews',
+    'All Interviews': 'All Interviews',
+    'Training Request': 'Training Request',
+    'Create Interview Training': 'Create Interview Training',
+    'Interview duration': 'Interview duration',
+    'Interview program': 'Interview program',
+    'Interview Training Meeting Link': 'Interview Training Meeting Link',
+    'Please provide received interview information':
+      'Please provide received interview information',
+    'Please provide interview information (invitation email, reading assignment, etc.) so your interviewer trainer can prepare the training for you.':
+      'Please provide interview information (invitation email, reading assignment, etc.) so your interviewer trainer can prepare the training for you.',
+    'If you did not receive an interview invitation from the university. Please do not request the training.':
+      'If you did not receive an interview invitation from the university. Please do not request the training.',
+    'If you have previously practiced interviews with our interview training officer, please do not request another interview training unless there are special requirements for the new interview (such as reading specific articles or books).':
+      'If you have previously practiced interviews with our interview training officer, please do not request another interview training unless there are special requirements for the new interview (such as reading specific articles or books).'
+  },
   uniassist: {
     'All document uploaded to Uni-Assist and paid, waiting for VPD':
       'All document uploaded to Uni-Assist and paid, waiting for VPD',
@@ -388,10 +421,9 @@ export const translation_en = {
     'Other wish': 'Other wish'
   },
   translation: {
-    'Interview Training Time': 'Interview Training Time',
-    'Interview Date': 'Interview Date',
+    'Interview Time': 'Interview Time',
+    'Your timezone local time': 'Your timezone local time',
     'Interview Program': 'Interview Program',
-    Interviewer: 'Interviewer',
     'Active Student List': 'Active Student List',
     'Programs Update Status': 'Programs Update Status',
     'Decided Programs Update Status': 'Decided Programs Update Status',
@@ -431,6 +463,7 @@ export const translation_en = {
       'Some of Base Documents are still missing',
     Attention: 'Attention',
     Instructions: 'Instructions',
+    Requirements: 'Requirements',
     'Do you want to set the application of':
       'Do you want to set the application of',
     'Do you want to reset the result of the application of':

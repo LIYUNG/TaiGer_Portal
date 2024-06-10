@@ -1,12 +1,20 @@
-/* eslint-disable no-await-in-loop */
 const async = require('async');
 const path = require('path');
-const { ErrorResponse } = require('../common/errors');
-const { asyncHandler } = require('../middlewares/error-handler');
 const { Agent, Student, Editor, User } = require('../models/User');
 const { Documentthread } = require('../models/Documentthread');
 const { Interval } = require('../models/Interval');
-const Documentation = require('../models/Documentation');
+const {
+  sendAssignEditorReminderEmail,
+  MeetingReminderEmail,
+  UnconfirmedMeetingReminderEmail,
+  sendNoTrainerInterviewRequestsReminderEmail,
+  InterviewTrainingReminderEmail
+} = require('../services/email');
+const Permission = require('../models/Permission');
+const { s3 } = require('../aws/index');
+const Event = require('../models/Event');
+const { Interview } = require('../models/Interview');
+
 const {
   StudentTasksReminderEmail,
   AgentTasksReminderEmail,
@@ -28,25 +36,6 @@ const {
   isNotArchiv,
   needUpdateCourseSelection
 } = require('../constants');
-
-const { AWS_S3_MONGODB_BACKUP_SNAPSHOT } = require('../config');
-const { Program } = require('../models/Program');
-const { Template } = require('../models/Template');
-const Expense = require('../models/Expense');
-const Course = require('../models/Course');
-const { Basedocumentationslink } = require('../models/Basedocumentationslink');
-const Docspage = require('../models/Docspage');
-const Internaldoc = require('../models/Internaldoc');
-const Note = require('../models/Note');
-const {
-  sendAssignEditorReminderEmail,
-  MeetingReminderEmail,
-  UnconfirmedMeetingReminderEmail
-} = require('../services/email');
-const Permission = require('../models/Permission');
-const { Communication } = require('../models/Communication');
-const { s3 } = require('../aws/index');
-const Event = require('../models/Event');
 
 const emptyS3Directory = async (bucket, dir) => {
   const listParams = {
@@ -77,9 +66,9 @@ const TasksReminderEmails_Editor_core = async () => {
   // TODO: deactivate or change email frequency (default 1 week.)
   const editors = await Editor.find();
 
-  for (let j = 0; j < editors.length; j += 1) {
+  const editorPromises = editors.map(async (editor) => {
     const editor_students = await Student.find({
-      editors: editors[j]._id,
+      editors: editor._id,
       $or: [{ archiv: { $exists: false } }, { archiv: false }]
     })
       .populate('agents editors', 'firstname lastname email')
@@ -89,21 +78,25 @@ const TasksReminderEmails_Editor_core = async () => {
         '-messages'
       )
       .select('-notification');
-    if (editor_students.length > 0) {
-      if (does_editor_have_pending_tasks(editor_students, editors[j])) {
-        if (isNotArchiv(editors[j])) {
-          await EditorTasksReminderEmail(
-            {
-              firstname: editors[j].firstname,
-              lastname: editors[j].lastname,
-              address: editors[j].email
-            },
-            { students: editor_students, editor: editors[j] }
-          );
-        }
-      }
+
+    if (
+      editor_students.length > 0 &&
+      does_editor_have_pending_tasks(editor_students, editor) &&
+      isNotArchiv(editor)
+    ) {
+      await EditorTasksReminderEmail(
+        {
+          firstname: editor.firstname,
+          lastname: editor.lastname,
+          address: editor.email
+        },
+        { students: editor_students, editor: editor }
+      );
     }
-  }
+  });
+
+  await Promise.all(editorPromises);
+
   logger.info('Editor reminder email sent');
 };
 
@@ -128,7 +121,7 @@ const TasksReminderEmails_Agent_core = async () => {
       .exec();
     if (agent_students.length > 0) {
       if (isNotArchiv(agents[j])) {
-        await AgentTasksReminderEmail(
+        AgentTasksReminderEmail(
           {
             firstname: agents[j].firstname,
             lastname: agents[j].lastname,
@@ -158,7 +151,7 @@ const TasksReminderEmails_Student_core = async () => {
     .lean(); // Only active student, not archiv
 
   for (let j = 0; j < students.length; j += 1) {
-    await StudentTasksReminderEmail(
+    StudentTasksReminderEmail(
       {
         firstname: students[j].firstname,
         lastname: students[j].lastname,
@@ -263,7 +256,13 @@ const users_transformer = (users) => {
             updatedAt: thread.updatedAt && { $date: thread.updatedAt },
             createdAt: thread.createdAt && { $date: thread.createdAt }
           })
-        )
+        ),
+        admission_letter: application.admission_letter && {
+          ...application.admission_letter,
+          updatedAt: application.admission_letter?.updatedAt && {
+            $date: application.admission_letter?.updatedAt
+          }
+        }
       })),
     generaldocs_threads:
       user.generaldocs_threads &&
@@ -280,6 +279,12 @@ const users_transformer = (users) => {
         ...prof,
         _id: { $oid: prof._id.toString() },
         updatedAt: prof.updatedAt && { $date: prof.updatedAt }
+      })),
+    attributes:
+      user.attributes &&
+      user.attributes.map((prof) => ({
+        ...prof,
+        _id: { $oid: prof._id.toString() }
       }))
   }));
   return transformedDocuments;
@@ -364,7 +369,7 @@ const docspages_transformer = (docspages) => {
 const programs_transformer = (programs) => {
   const transformedDocuments = programs.map((program) => ({
     ...program,
-    _id: { $oid: program._id.toString() },
+    _id: { $oid: program._id?.toString() },
     updatedAt: program.updatedAt && {
       $date: program.updatedAt
     }
@@ -380,15 +385,42 @@ const documentthreads_transformer = (documentthreads) => {
     program_id: documentthread.program_id && {
       $oid: documentthread.program_id.toString()
     },
+    pin_by_user_id:
+      documentthread.pin_by_user_id &&
+      documentthread.pin_by_user_id.map((pin_user_id) => ({
+        ...pin_user_id,
+        _id: {
+          $oid: pin_user_id._id?.toString()
+        }
+      })),
+    outsourced_user_id:
+      documentthread.outsourced_user_id &&
+      documentthread.outsourced_user_id.map((outsource_user_id) => ({
+        ...outsource_user_id,
+        $oid: outsource_user_id._id?.toString()
+      })),
+    isOriginAuthorDeclarationConfirmedByStudentTimestamp:
+      documentthread.isOriginAuthorDeclarationConfirmedByStudentTimestamp && {
+        $date:
+          documentthread.isOriginAuthorDeclarationConfirmedByStudentTimestamp
+      },
+    flag_by_user_id:
+      documentthread.flag_by_user_id &&
+      documentthread.flag_by_user_id.map((flag_user_id) => ({
+        ...flag_user_id,
+        _id: {
+          $oid: flag_user_id._id?.toString()
+        }
+      })),
     messages:
       documentthread.messages &&
       documentthread.messages.map((message) => ({
         ...message,
         _id: {
-          $oid: message._id.toString()
+          $oid: message._id?.toString()
         },
         user_id: {
-          $oid: message.user_id.toString()
+          $oid: message.user_id?.toString()
         },
         file:
           message.file &&
@@ -409,109 +441,6 @@ const documentthreads_transformer = (documentthreads) => {
   return transformedDocuments;
 };
 // Daily called.
-const MongoDBDataBaseDailySnapshot = async () => {
-  logger.info('database snapshot');
-  const data_category = [
-    'users',
-    'courses',
-    'communications',
-    'basedocumentationslinks',
-    'docspages',
-    'events',
-    'programs',
-    'documentthreads',
-    'documentations',
-    'internaldocs',
-    'notes',
-    'permissions',
-    'templates'
-    // 'expenses'
-  ];
-  const events_raw = await Event.find().lean();
-  const users_raw = await User.find()
-    .lean()
-    .select(
-      '+password +applications.portal_credentials.application_portal_a +applications.portal_credentials.application_portal_b'
-    );
-  const courses_raw = await Course.find().lean();
-  const basedocumentationslinks_raw =
-    await Basedocumentationslink.find().lean();
-  const communications_raw = await Communication.find().lean();
-  const docspages_raw = await Docspage.find().lean();
-  const programs_raw = await Program.find().lean();
-  const documentthreads_raw = await Documentthread.find().lean();
-  const documentations_raw = await Documentation.find().lean();
-  const internaldocs_raw = await Internaldoc.find().lean();
-  const notes_raw = await Note.find().lean();
-  const permissions_raw = await Permission.find().lean();
-  const templates_raw = await Template.find().lean();
-  const expenses_raw = await Expense.find().lean();
-
-  const events = events_transformer(events_raw);
-  const users = users_transformer(users_raw);
-  const communications = communications_transformer(communications_raw);
-  const courses = courses_transformer(courses_raw);
-  const basedocumentationslinks = basedocumentationslinks_transformer(
-    basedocumentationslinks_raw
-  );
-  const docspages = docspages_transformer(docspages_raw);
-  const programs = programs_transformer(programs_raw);
-  const documentthreads = documentthreads_transformer(documentthreads_raw);
-  const documentations = docspages_transformer(documentations_raw);
-  const internaldocs = docspages_transformer(internaldocs_raw);
-  const notes = notes_transformer(notes_raw);
-  const permissions = permissions_transformer(permissions_raw);
-  const templates = docspages_transformer(templates_raw);
-  const data_json = {
-    events,
-    users,
-    courses,
-    communications,
-    basedocumentationslinks,
-    docspages,
-    programs,
-    documentthreads,
-    documentations,
-    internaldocs,
-    notes,
-    permissions,
-    templates
-    // expenses
-  };
-
-  const currentDateTime = new Date();
-
-  const year = currentDateTime.getUTCFullYear();
-  const month = currentDateTime.getUTCMonth() + 1; // Months are zero-based, so we add 1
-  const day = currentDateTime.getUTCDate();
-  const hours = currentDateTime.getUTCHours();
-  const minutes = currentDateTime.getUTCMinutes();
-  const seconds = currentDateTime.getUTCSeconds();
-
-  // Upload JSON data to S3
-  for (let i = 0; i < data_category.length; i += 1) {
-    // Replace `jsonObject` with your actual JSON data
-    const jsonObject = data_json[data_category[i]];
-
-    // Convert JSON to string
-    const jsonString = JSON.stringify(jsonObject);
-    s3.putObject(
-      {
-        Bucket: `${AWS_S3_MONGODB_BACKUP_SNAPSHOT}/${year}-${month}-${day}/${hours}-${minutes}-${seconds}`,
-        Key: `${data_category[i]}.json`,
-        Body: jsonString,
-        ContentType: 'application/json'
-      },
-      (error, data) => {
-        if (error) {
-          logger.error(`Error uploading ${data_category[i]}.json:`, error);
-        } else {
-          logger.info(`${data_category[i]}.json uploaded successfully`);
-        }
-      }
-    );
-  }
-};
 
 const UrgentTasksReminderEmails_Student_core = async () => {
   // Only inform active student
@@ -529,38 +458,39 @@ const UrgentTasksReminderEmails_Student_core = async () => {
     .select('-notification')
     .lean(); // Only active student, not archiv
 
-  // (O): Check if student applications deadline within 30 days
-  for (let j = 0; j < students.length; j += 1) {
-    if (is_deadline_within30days_needed(students[j])) {
-      logger.info(`Escalate: ${students[j].firstname} ${students[j].lastname}`);
+  const deadlineReminderPromises = students.map(async (student) => {
+    if (is_deadline_within30days_needed(student)) {
+      logger.info(`Escalate: ${student.firstname} ${student.lastname}`);
       await StudentApplicationsDeadline_Within30Days_DailyReminderEmail(
         {
-          firstname: students[j].firstname,
-          lastname: students[j].lastname,
-          address: students[j].email
+          firstname: student.firstname,
+          lastname: student.lastname,
+          address: student.email
         },
-        { student: students[j], trigger_days }
+        { student, trigger_days }
       );
       logger.info(
-        `Daily urgent emails sent to ${students[j].firstname} ${students[j].lastname}`
+        `Daily urgent emails sent to ${student.firstname} ${student.lastname}`
       );
     }
-    // (O): Check if student threads no reply (need to response) more than 3 days (Should configurable)
-    if (is_cv_ml_rl_reminder_needed(students[j], students[j], trigger_days)) {
-      logger.info(`Escalate: ${students[j].firstname} ${students[j].lastname}`);
+
+    if (is_cv_ml_rl_reminder_needed(student, student, trigger_days)) {
+      logger.info(`Escalate: ${student.firstname} ${student.lastname}`);
       await StudentCVMLRLEssay_NoReplyAfter3Days_DailyReminderEmail(
         {
-          firstname: students[j].firstname,
-          lastname: students[j].lastname,
-          address: students[j].email
+          firstname: student.firstname,
+          lastname: student.lastname,
+          address: student.email
         },
-        { student: students[j], trigger_days }
+        { student, trigger_days }
       );
       logger.info(
-        `Daily2 urgent emails sent to ${students[j].firstname} ${students[j].lastname}`
+        `Daily2 urgent emails sent to ${student.firstname} ${student.lastname}`
       );
     }
-  }
+  });
+
+  await Promise.all(deadlineReminderPromises);
 };
 
 const UrgentTasksReminderEmails_Agent_core = async () => {
@@ -570,9 +500,9 @@ const UrgentTasksReminderEmails_Agent_core = async () => {
   const escalation_trigger_3days = 3;
   const agents = await Agent.find();
 
-  for (let j = 0; j < agents.length; j += 1) {
+  const agentPromises = agents.map(async (agent) => {
     const agent_students = await Student.find({
-      agents: agents[j]._id,
+      agents: agent._id,
       $or: [{ archiv: { $exists: false } }, { archiv: false }]
     })
       .populate('agents editors', 'firstname lastname email')
@@ -586,71 +516,74 @@ const UrgentTasksReminderEmails_Agent_core = async () => {
       let cv_ml_rl_10days_flag = false;
       let cv_ml_rl_3days_flag = false;
       let deadline_within30days_flag = false;
-      // (O) check any program within 30 days from agent's students?
       for (let x = 0; x < agent_students.length; x += 1) {
         deadline_within30days_flag |= is_deadline_within30days_needed(
           agent_students[x]
         );
         cv_ml_rl_10days_flag |= is_cv_ml_rl_reminder_needed(
           agent_students[x],
-          agents[j],
+          agent,
           escalation_trigger_10days
         );
         cv_ml_rl_3days_flag |= is_cv_ml_rl_reminder_needed(
           agent_students[x],
-          agents[j],
+          agent,
           escalation_trigger_3days
         );
       }
-      if (deadline_within30days_flag) {
-        if (cv_ml_rl_3days_flag) {
-          logger.info(`Escalate: ${agents[j].firstname} ${agents[j].lastname}`);
-          await AgentApplicationsDeadline_Within30Days_DailyReminderEmail(
+      const promises = [];
+      if (deadline_within30days_flag && cv_ml_rl_3days_flag) {
+        logger.info(`Escalate: ${agent.firstname} ${agent.lastname}`);
+        promises.push(
+          AgentApplicationsDeadline_Within30Days_DailyReminderEmail(
             {
-              firstname: agents[j].firstname,
-              lastname: agents[j].lastname,
-              address: agents[j].email
+              firstname: agent.firstname,
+              lastname: agent.lastname,
+              address: agent.email
             },
             {
               students: agent_students,
-              agent: agents[j],
+              agent,
               trigger_days: escalation_trigger_3days
             }
-          );
-          // (O): Check if student/editor no reply (need to response) more than 7 days (Should configurable)
-          await AgentCVMLRLEssay_NoReplyAfterXDays_DailyReminderEmail(
+          ),
+          AgentCVMLRLEssay_NoReplyAfterXDays_DailyReminderEmail(
             {
-              firstname: agents[j].firstname,
-              lastname: agents[j].lastname,
-              address: agents[j].email
+              firstname: agent.firstname,
+              lastname: agent.lastname,
+              address: agent.email
             },
             {
               students: agent_students,
-              agent: agents[j],
+              agent,
               trigger_days: escalation_trigger_3days
             }
-          );
-          logger.info(
-            `Deadline urgent emails sent to ${agents[j].firstname} ${agents[j].lastname}`
-          );
-        }
+          )
+        );
+        logger.info(
+          `Deadline urgent emails sent to ${agent.firstname} ${agent.lastname}`
+        );
       } else if (cv_ml_rl_10days_flag) {
-        // (O): Check if student/editor no reply (need to response) more than 7 days (Should configurable)
-        await AgentCVMLRLEssay_NoReplyAfterXDays_DailyReminderEmail(
-          {
-            firstname: agents[j].firstname,
-            lastname: agents[j].lastname,
-            address: agents[j].email
-          },
-          {
-            students: agent_students,
-            agent: agents[j],
-            trigger_days: escalation_trigger_10days
-          }
+        promises.push(
+          AgentCVMLRLEssay_NoReplyAfterXDays_DailyReminderEmail(
+            {
+              firstname: agent.firstname,
+              lastname: agent.lastname,
+              address: agent.email
+            },
+            {
+              students: agent_students,
+              agent,
+              trigger_days: escalation_trigger_10days
+            }
+          )
         );
       }
+      await Promise.all(promises);
     }
-  }
+  });
+
+  await Promise.all(agentPromises);
 };
 
 const UrgentTasksReminderEmails_Editor_core = async () => {
@@ -788,15 +721,19 @@ const AssignEditorTasksReminderEmails = async () => {
           }
         }
       }
+      logger.info('Assign editor reminded');
     }
   }
-  logger.info('Assign editor reminded');
 };
 
 const UrgentTasksReminderEmails = async () => {
-  await UrgentTasksReminderEmails_Editor_core();
-  await UrgentTasksReminderEmails_Student_core();
-  await UrgentTasksReminderEmails_Agent_core();
+  const UrgentTaskPromises = [
+    UrgentTasksReminderEmails_Editor_core(),
+    UrgentTasksReminderEmails_Student_core(),
+    UrgentTasksReminderEmails_Agent_core()
+  ];
+
+  await Promise.all(UrgentTaskPromises);
 };
 
 const NextSemesterCourseSelectionStudentReminderEmails = async () => {
@@ -1107,31 +1044,54 @@ const MeetingDailyReminderChecker = async () => {
   }).populate('requester_id receiver_id', 'firstname lastname email');
   if (upcomingEvents) {
     for (let j = 0; j < upcomingEvents.length; j += 1) {
-      // eslint-disable-next-line no-await-in-loop
-      await MeetingReminderEmail(
-        {
-          firstname: upcomingEvents[j].requester_id[0].firstname,
-          lastname: upcomingEvents[j].requester_id[0].lastname,
-          address: upcomingEvents[j].requester_id[0].email
-        },
-        {
-          event: upcomingEvents[j]
-        }
-      );
-      await MeetingReminderEmail(
-        {
-          firstname: upcomingEvents[j].receiver_id[0].firstname,
-          lastname: upcomingEvents[j].receiver_id[0].lastname,
-          address: upcomingEvents[j].receiver_id[0].email
-        },
-        {
-          event: upcomingEvents[j]
-        }
-      );
+      if (upcomingEvents.event_type === 'Interview') {
+        // eslint-disable-next-line no-await-in-loop
+        await InterviewTrainingReminderEmail(
+          {
+            firstname: upcomingEvents[j].requester_id[0].firstname,
+            lastname: upcomingEvents[j].requester_id[0].lastname,
+            address: upcomingEvents[j].requester_id[0].email
+          },
+          {
+            event: upcomingEvents[j]
+          }
+        );
+        await InterviewTrainingReminderEmail(
+          {
+            firstname: upcomingEvents[j].receiver_id[0].firstname,
+            lastname: upcomingEvents[j].receiver_id[0].lastname,
+            address: upcomingEvents[j].receiver_id[0].email
+          },
+          {
+            event: upcomingEvents[j]
+          }
+        );
+      } else {
+        // eslint-disable-next-line no-await-in-loop
+        await MeetingReminderEmail(
+          {
+            firstname: upcomingEvents[j].requester_id[0].firstname,
+            lastname: upcomingEvents[j].requester_id[0].lastname,
+            address: upcomingEvents[j].requester_id[0].email
+          },
+          {
+            event: upcomingEvents[j]
+          }
+        );
+        await MeetingReminderEmail(
+          {
+            firstname: upcomingEvents[j].receiver_id[0].firstname,
+            lastname: upcomingEvents[j].receiver_id[0].lastname,
+            address: upcomingEvents[j].receiver_id[0].email
+          },
+          {
+            event: upcomingEvents[j]
+          }
+        );
+      }
     }
+    logger.info('Meeting attendees reminded');
   }
-
-  logger.info('Meeting attendees reminded');
 };
 
 // every day reminder
@@ -1397,12 +1357,76 @@ const DailyCalculateAverageResponseTime = async () => {
   await FindIntervalInCommunicationsAndSave();
   await FindIntervalInDocumentThreadAndSave();
   await CalculateAverageResponseTime();
+
+// every day reminder
+// TODO: (O)no trainer, no date.
+const NoInterviewTrainerOrTrainingDateDailyReminderChecker = async () => {
+  const currentDate = new Date();
+  const currentDateString = currentDate.toISOString().split('T')[0]; // Converts to 'YYYY-MM-DD' format
+
+  // Only future meeting within 24 hours, not past
+  const interviewRequests = await Interview.find({
+    $and: [
+      {
+        interview_date: {
+          $gte: currentDateString
+        }
+      },
+      {
+        $or: [
+          {
+            trainer_id: {
+              $exists: false
+            }
+          },
+          {
+            trainer_id: {
+              $size: 0
+            }
+          }
+        ]
+      }
+    ]
+  })
+    .populate('student_id', 'firstname lastname role email')
+    .populate('program_id');
+
+  if (interviewRequests?.length > 0) {
+    const permissions = await Permission.find({
+      canAssignEditors: true
+    })
+      .populate('user_id', 'firstname lastname email')
+      .lean();
+    const sendEmailPromises = permissions.map((permission) =>
+      sendNoTrainerInterviewRequestsReminderEmail(
+        {
+          firstname: permission.user_id.firstname,
+          lastname: permission.user_id.lastname,
+          address: permission.user_id.email
+        },
+        {
+          interviewRequests
+        }
+      )
+    );
+    await Promise.all(sendEmailPromises);
+    logger.info('No interviewer tasks reminder sent.');
+  }
 };
 
 module.exports = {
   emptyS3Directory,
   TasksReminderEmails,
-  MongoDBDataBaseDailySnapshot,
+  events_transformer,
+  users_transformer,
+  communications_transformer,
+  courses_transformer,
+  notes_transformer,
+  permissions_transformer,
+  basedocumentationslinks_transformer,
+  docspages_transformer,
+  programs_transformer,
+  documentthreads_transformer,
   AssignEditorTasksReminderEmails,
   UrgentTasksReminderEmails,
   NextSemesterCourseSelectionReminderEmails,
@@ -1414,4 +1438,6 @@ module.exports = {
   FindIntervalInDocumentThreadAndSave,
   CalculateAverageResponseTime,
   DailyCalculateAverageResponseTime
+  FindIntervalInDocumentThreads,
+  NoInterviewTrainerOrTrainingDateDailyReminderChecker
 };

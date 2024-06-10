@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link as LinkDom } from 'react-router-dom';
-import { Alert, Link, Typography } from '@mui/material';
+import { Alert, Box, Link, Typography } from '@mui/material';
 
 export default function Banner(props) {
   return (
@@ -13,22 +13,24 @@ export default function Banner(props) {
           : undefined
       }
     >
-      <Typography variant="body2" style={{ textAlign: 'left' }}>
-        <b className="mx-2">{props.title ? props.title : 'Reminder'}</b>
-        {':'}
-        {props.text}
-        <Link to={`${props.path}`} component={LinkDom}>
-          {props.link_name}
-        </Link>{' '}
-        {/* <span style={{ float: 'right', cursor: 'pointer' }}>
-              {!props.ReadOnlyMode && (
-                <BsX
-                  size={18}
-                  onClick={(e) => props.removeBanner(e, props.notification_key)}
-                />
-              )}
-            </span> */}
-      </Typography>
+      <Box sx={{ display: 'flex' }}>
+        <Typography
+          variant="body2"
+          fontWeight="bold"
+          style={{ textAlign: 'left' }}
+        >
+          {props.title ? props.title : 'Reminder'}
+          {':'}
+        </Typography>
+        <Typography variant="body2" style={{ textAlign: 'left' }}>
+          {props.text}
+        </Typography>
+        <Typography variant="body2" style={{ textAlign: 'left' }}>
+          <Link to={`${props.path}`} component={LinkDom}>
+            {props.link_name}
+          </Link>{' '}
+        </Typography>
+      </Box>
     </Alert>
   );
 }

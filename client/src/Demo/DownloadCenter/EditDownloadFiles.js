@@ -9,7 +9,7 @@ import {
   TextField,
   Box
 } from '@mui/material';
-import { AiOutlineDelete } from 'react-icons/ai';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { useTranslation } from 'react-i18next';
 
 import { BASE_URL } from '../../api/request';
@@ -43,14 +43,15 @@ function EditDownloadFiles(props) {
               {object_init[template.prop] === 'uploaded' ? (
                 <Button
                   variant="contained"
-                  color="primary"
+                  color="error"
                   size="small"
                   type="submit"
                   title="Delete"
                   disabled={!props.areLoaded[template.prop]}
                   onClick={(e) => props.onDeleteTemplateFile(e, template.prop)}
+                  startIcon={<DeleteIcon />}
                 >
-                  <AiOutlineDelete size={16} />
+                  {t('Delete', { ns: 'common' })}
                 </Button>
               ) : (
                 <TextField

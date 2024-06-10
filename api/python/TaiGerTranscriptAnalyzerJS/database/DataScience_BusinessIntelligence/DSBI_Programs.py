@@ -148,8 +148,8 @@ def MANNHEIM_BUSINESS_INFORMATICS(transcript_sorted_group_map, df_transcript_arr
 
 
 # Requirement: https://www.tum.de/fileadmin/user_upload_87/gi32rab/FPSO/Informations_Syst_Wirtschaftsinf_MA_LB_3._AES_7.9.21.pdf
-def TUM_INFO_MGM_SYS(transcript_sorted_group_map, df_transcript_array, df_category_courses_sugesstion_data, writer):
-    program_name = 'TUM_INFO_MGM_SYS'
+def TUM_INFORMATION_SYSTEM(transcript_sorted_group_map, df_transcript_array, df_category_courses_sugesstion_data, writer):
+    program_name = 'TUM_INFORMATION_SYSTEM'
     print("Create " + program_name + " sheet")
     df_transcript_array_temp = []
     df_category_courses_sugesstion_data_temp = []
@@ -435,4 +435,4 @@ def UNI_MUENSTER_INFO_SYSTEM(transcript_sorted_group_map, df_transcript_array, d
 
 
 program_sort_function = [MANNHEIM_DATA_SCIENCE,
-                         MANNHEIM_BUSINESS_INFORMATICS, TUM_INFO_MGM_SYS, TUEBINGEN_ML, TU_BERLIN_INFO_SYS_MGMT, UNI_MUENSTER_INFO_SYSTEM]
+                         MANNHEIM_BUSINESS_INFORMATICS, TUM_INFORMATION_SYSTEM, TUEBINGEN_ML, TU_BERLIN_INFO_SYS_MGMT, UNI_MUENSTER_INFO_SYSTEM]

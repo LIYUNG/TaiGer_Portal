@@ -1,4 +1,5 @@
 const path = require('path');
+const _ = require('lodash');
 const multer = require('multer');
 const multerS3 = require('multer-s3');
 const uuid = require('uuid');
@@ -418,10 +419,8 @@ const storage_messagesthread_file_s3 = multerS3({
             thread.messages.forEach((message) => {
               message.file.forEach((file_data) => {
                 let fileversion = 0;
-                fileversion = parseInt(
-                  file_data.name.replace(/[^\d]/g, ''),
-                  10
-                );
+                const lastPart = _.last(file_data.name.split('_'));
+                fileversion = parseInt(lastPart.replace(/[^\d]/g, ''), 10);
 
                 if (fileversion > version_number_max) {
                   version_number_max = fileversion; // get the max version number

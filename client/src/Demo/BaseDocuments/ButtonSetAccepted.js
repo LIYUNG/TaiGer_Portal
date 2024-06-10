@@ -14,7 +14,7 @@ import { useTranslation } from 'react-i18next';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CloseIcon from '@mui/icons-material/Close';
-import LinkIcon from '@mui/icons-material/Link';
+import LaunchIcon from '@mui/icons-material/Launch';
 
 import { BASE_URL } from '../../api/request';
 import FilePreview from '../../components/FilePreview/FilePreview';
@@ -225,7 +225,11 @@ function ButtonSetAccepted(props) {
           target="_blank"
           sx={{ ml: 1 }}
         >
-          <Button size="small" variant="outlined" startIcon={<LinkIcon />}>
+          <Button
+            size="small"
+            variant="outlined"
+            endIcon={<LaunchIcon fontSize="small" />}
+          >
             {t('Read More')}
           </Button>
         </Link>

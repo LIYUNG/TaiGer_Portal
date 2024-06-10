@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
 import { Link as LinkDom } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import TimezoneSelect from 'react-timezone-select';
+import dayjs from 'dayjs';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DesktopDateTimePicker } from '@mui/x-date-pickers/DesktopDateTimePicker';
 import {
   Accordion,
   AccordionDetails,
@@ -16,24 +21,28 @@ import {
   Grid,
   Typography
 } from '@mui/material';
-import {
-  AiFillCheckCircle,
-  AiFillQuestionCircle,
-  AiOutlineDelete,
-  AiOutlineEdit
-} from 'react-icons/ai';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 import {
   LinkableNewlineText,
-  is_TaiGer_AdminAgent,
   is_TaiGer_role
 } from '../Utils/checking-functions';
 import DEMO from '../../store/constant';
-import { getEditors, updateInterview } from '../../api';
+import {
+  addInterviewTrainingDateTime,
+  getEditors,
+  updateInterview
+} from '../../api';
 import NotesEditor from '../Notes/NotesEditor';
-import EventDateComponent from '../../components/DateComponent';
 import { useAuth } from '../../components/AuthProvider';
 import ModalNew from '../../components/Modal';
+import {
+  INTERVIEW_STATUS_E,
+  NoonNightLabel,
+  convertDate,
+  showTimezoneOffset
+} from '../Utils/contants';
+import ModalMain from '../Utils/ModalHandler/ModalMain';
 
 function InterviewItems(props) {
   const { t } = useTranslation();
@@ -41,13 +50,31 @@ function InterviewItems(props) {
   const [showModal, setShowModal] = useState(false);
   const [interview, setiInterview] = useState(props.interview);
   const [editors, setEditors] = useState([]);
+  const [interviewTrainingTimeChange, setInterviewTrainingTimeChange] =
+    useState(false);
   const [trainerId, setTrainerId] = useState(
     new Set(interview.trainer_id?.map((t_id) => t_id._id.toString()))
   );
+  const [utcTime, setUtcTime] = React.useState(
+    dayjs(props.interview.event_id?.start || '')
+  );
+  const [interviewItemsState, setInterviewItemsState] = useState({
+    res_modal_message: '',
+    res_modal_status: 0
+  });
+
   const { user } = useAuth();
+  const [timezone, setTimezone] = useState(
+    user.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone
+  );
 
   const handleToggle = () => {
     setIsCollapse(!isCollapse);
+  };
+
+  const handleChangeInterviewTrainingTime = (newValue) => {
+    setUtcTime(newValue);
+    setInterviewTrainingTimeChange(true);
   };
 
   const toggleModal = () => {
@@ -84,13 +111,20 @@ function InterviewItems(props) {
 
   const updateTrainer = async () => {
     const temp_trainer_id_array = Array.from(trainerId);
-    const { data } = await updateInterview(interview._id.toString(), {
+    const resp = await updateInterview(interview._id.toString(), {
       trainer_id: temp_trainer_id_array
     });
-    const { data: interview_updated, success } = data;
+    const { data: interview_updated, success } = resp.data;
     if (success) {
       setiInterview(interview_updated);
       setShowModal(false);
+    } else {
+      const { message } = resp.data;
+      setInterviewItemsState((prevState) => ({
+        ...prevState,
+        res_modal_message: message,
+        res_modal_status: resp.status
+      }));
     }
   };
 
@@ -106,16 +140,78 @@ function InterviewItems(props) {
     }
   };
 
-  const handleClickInterviewNotesSave = async (e, editorState) => {
+  const handleSendInterviewInvitation = async (e) => {
     e.preventDefault();
-    var notes = JSON.stringify(editorState);
-    const { data } = await updateInterview(interview._id.toString(), {
-      interview_notes: notes
-    });
-    const { data: interview_updated, success } = data;
-    if (success) {
-      setiInterview(interview_updated);
+    try {
+      const end_date = new Date(utcTime);
+      end_date.setMinutes(end_date.getMinutes() + 60);
+      const interviewTrainingEvent = {
+        _id: interview.event_id?._id,
+        requester_id: [interview.student_id],
+        receiver_id: [...interview.trainer_id],
+        title: `${interview.student_id.firstname} ${interview.student_id.lastname} - ${interview.program_id.school} - ${interview.program_id.program_name} ${interview.program_id.degree} interview training`,
+        description:
+          'This is the interview training. Please prepare and practice',
+        event_type: 'Interview',
+        start: new Date(utcTime),
+        end: end_date
+      };
+      const resp = await addInterviewTrainingDateTime(
+        interview._id.toString(),
+        interviewTrainingEvent
+      );
+      const { success } = resp.data;
+      if (success) {
+        setInterviewTrainingTimeChange(false);
+      } else {
+        const { message } = resp.data;
+        setInterviewItemsState((prevState) => ({
+          ...prevState,
+          res_modal_message: message,
+          res_modal_status: resp.status
+        }));
+      }
+    } catch (error) {
+      // Handle error here
+      // Extract the response message from the error object
+      let errorMessage =
+        'An error occurred while sending the interview invitation. Please try again later.';
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        errorMessage = error.response.data.message;
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      console.error('Error sending interview invitation:', error);
+
+      // Optionally set error state to display in the UI
+      setInterviewItemsState((prevState) => ({
+        ...prevState,
+        res_modal_message: errorMessage,
+        res_modal_status: 500
+      }));
     }
+  };
+
+  const interviewStatus = (interview) => {
+    if (interview.status === 'Unscheduled') {
+      return INTERVIEW_STATUS_E.UNSCHEDULED_SYMBOL;
+    } else if (interview.status === 'Scheduled') {
+      return INTERVIEW_STATUS_E.SCHEDULED_SYMBOL;
+    } else {
+      return INTERVIEW_STATUS_E.SCHEDULED_SYMBOL;
+    }
+  };
+
+  const ConfirmError = () => {
+    setInterviewItemsState((prevState) => ({
+      ...prevState,
+      res_modal_status: 0,
+      res_modal_message: ''
+    }));
   };
 
   return (
@@ -123,56 +219,40 @@ function InterviewItems(props) {
       <Accordion expanded={isCollapse} disableGutters>
         <AccordionSummary onClick={handleToggle}>
           <Typography variant="body1">
-            {interview.status !== 'Unscheduled' ? (
-              <AiFillCheckCircle
-                color="limegreen"
-                size={24}
-                title="Confirmed"
-              />
-            ) : (
-              <AiFillQuestionCircle color="grey" size={24} />
-            )}
+            {interviewStatus(interview)}
             &nbsp;
             {interview.status}
             &nbsp;
+            {props.interview.event_id?.start && (
+              <>
+                {`${convertDate(utcTime)} ${NoonNightLabel(utcTime)} ${
+                  Intl.DateTimeFormat().resolvedOptions().timeZone
+                }`}
+                {showTimezoneOffset()}
+                &nbsp;
+              </>
+            )}
             <b>{` ${interview.student_id.firstname} - ${interview.student_id.lastname}`}</b>
           </Typography>
           <span style={{ float: 'right', cursor: 'pointer' }}>
-            {is_TaiGer_AdminAgent(user) && !props.readOnly && (
+            {is_TaiGer_role(user) && (
               <Button
                 color="error"
                 variant="contained"
                 size="small"
                 title="Delete"
                 onClick={(e) => props.openDeleteDocModalWindow(e, interview)}
+                startIcon={<DeleteIcon />}
               >
-                <AiOutlineDelete size={16} />
-                &nbsp; Delete
+                {t('Delete', { ns: 'common' })}
               </Button>
-            )}
-            {props.readOnly && (
-              <Link
-                underline="hover"
-                to={`${DEMO.INTERVIEW_SINGLE_LINK(interview._id.toString())}`}
-                component={LinkDom}
-              >
-                <Button
-                  color="secondary"
-                  variant="contained"
-                  size="small"
-                  title="Delete"
-                >
-                  <AiOutlineEdit size={16} />
-                  &nbsp; Edit
-                </Button>
-              </Link>
             )}
           </span>
         </AccordionSummary>
         <AccordionDetails>
           <Grid container spacing={2}>
-            <Grid item xs={12} md={6}>
-              <Typography variant="body1">
+            <Grid item xs={12} md={4}>
+              <Typography variant="body1" fontWeight="bold">
                 {t('Student', { ns: 'common' })}:{' '}
               </Typography>
               <Link
@@ -185,12 +265,113 @@ function InterviewItems(props) {
               >
                 <Typography fontWeight="bold">{` ${interview.student_id.firstname} - ${interview.student_id.lastname}`}</Typography>
               </Link>
-              <Box style={{ display: 'flex', alignItems: 'center' }}>
-                <LinkableNewlineText text={interview.student_id.email} />
-              </Box>
+              <Typography variant="body1" fontWeight="bold" sx={{ mt: 2 }}>
+                {t('Trainer')}
+              </Typography>{' '}
+              {interview.trainer_id && interview.trainer_id?.length !== 0 ? (
+                <>
+                  {interview.trainer_id.map((t_id, idx) => (
+                    <Box
+                      key={idx}
+                      style={{ display: 'flex', alignItems: 'center' }}
+                    >
+                      {t_id.firstname} {t_id.lastname} -&nbsp;
+                      <LinkableNewlineText text={t_id.email} />
+                    </Box>
+                  ))}
+                  {is_TaiGer_role(user) && !props.readOnly && (
+                    <Button
+                      color="secondary"
+                      variant="contained"
+                      size="small"
+                      onClick={openModal}
+                    >
+                      {t('Change Trainer')}
+                    </Button>
+                  )}
+                </>
+              ) : (
+                <>
+                  <Typography>{t('No Trainer Assigned')}</Typography>
+                  {is_TaiGer_role(user) && !props.readOnly && (
+                    <Button
+                      color="primary"
+                      variant="contained"
+                      size="small"
+                      onClick={openModal}
+                    >
+                      {t('Assign Trainer')}
+                    </Button>
+                  )}
+                </>
+              )}
+              <Typography variant="body1" fontWeight="bold" sx={{ mt: 2 }}>
+                {t('Interview Training Time', { ns: 'interviews' })}:&nbsp;
+              </Typography>
+              {is_TaiGer_role(user) && (
+                <>
+                  {interview.trainer_id?.length !== 0 ? (
+                    <>
+                      <TimezoneSelect
+                        value={timezone}
+                        displayValue="UTC"
+                        onChange={(e) => setTimezone(e.value)}
+                        isDisabled={true}
+                      />
+                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DesktopDateTimePicker
+                          value={utcTime}
+                          onChange={(newValue) =>
+                            handleChangeInterviewTrainingTime(newValue)
+                          }
+                        />
+                      </LocalizationProvider>
+                      <Button
+                        fullWidth
+                        variant="contained"
+                        color="primary"
+                        disabled={!interviewTrainingTimeChange}
+                        sx={{ mt: 1 }}
+                        onClick={(e) => handleSendInterviewInvitation(e)}
+                      >
+                        {t('Send Invitation')}
+                      </Button>
+                    </>
+                  ) : (
+                    <>{t('Please assign Interview Trainer first.')}</>
+                  )}
+                </>
+              )}
+              {!is_TaiGer_role(user) &&
+                (props.interview.event_id?.start ? (
+                  <Typography>
+                    {`${convertDate(utcTime)} ${NoonNightLabel(utcTime)} ${
+                      Intl.DateTimeFormat().resolvedOptions().timeZone
+                    }`}
+                    {showTimezoneOffset()}
+                  </Typography>
+                ) : (
+                  <Typography variant="body1">To be announced</Typography>
+                ))}
+              <Typography variant="body1" fontWeight="bold" sx={{ mt: 2 }}>
+                {t('Interview Training Meeting Link', { ns: 'interviews' })}
+                :&nbsp;
+              </Typography>
+              {props.interview.event_id ? (
+                <Link
+                  underline="hover"
+                  to={props.interview.event_id.meetingLink}
+                  component={LinkDom}
+                  target="_blank"
+                >
+                  {props.interview.event_id.meetingLink}
+                </Link>
+              ) : (
+                <Typography variant="body1">To be announced</Typography>
+              )}
             </Grid>
-            <Grid item xs={12} md={6}>
-              <Typography variant="body1">
+            <Grid item xs={12} md={8}>
+              <Typography variant="body1" fontWeight="bold">
                 {t('Interview Program')}:&nbsp;
               </Typography>
               <Link
@@ -203,110 +384,40 @@ function InterviewItems(props) {
               >
                 {`${interview.program_id.school} - ${interview.program_id.program_name} ${interview.program_id.degree}`}
               </Link>
-              <Typography variant="body1">
-                {t('Interview Date')}:&nbsp;
-                {`${interview.interview_date} - ${interview.interview_time}`}
+              <Typography variant="body1" fontWeight="bold" sx={{ mt: 2 }}>
+                {t('Interviewer', { ns: 'interviews' })}:&nbsp;
               </Typography>
               <Typography variant="body1">
-                {t('Interviewer')}:&nbsp;
                 {`${interview.interviewer}`}
               </Typography>
+              <Typography variant="body1" fontWeight="bold" sx={{ mt: 2 }}>
+                {t('Interview Time')}:&nbsp;
+              </Typography>
+              <Typography variant="body1">
+                {`${convertDate(interview.interview_date)} ${NoonNightLabel(
+                  utcTime
+                )} ${
+                  Intl.DateTimeFormat().resolvedOptions().timeZone
+                } ${showTimezoneOffset()}`}
+              </Typography>
+              <Typography variant="body1" fontWeight="bold" sx={{ mt: 2 }}>
+                {t('Description', { ns: 'common' })}
+              </Typography>{' '}
+              <NotesEditor
+                thread={null}
+                notes_id={`${props.interview._id.toString()}-description`}
+                // buttonDisabled={this.state.buttonDisabled}
+                editorState={
+                  interview.interview_description &&
+                  interview.interview_description !== '{}'
+                    ? JSON.parse(interview.interview_description)
+                    : { time: new Date(), blocks: [] }
+                }
+                unique_id={`${props.interview._id.toString()}-description`}
+                handleClickSave={handleClickInterviewDescriptionSave}
+                readOnly={props.readOnly}
+              />
             </Grid>
-          </Grid>
-          <Grid item xs={12}>
-            <Typography variant="body1">
-              {t('Description', { ns: 'common' })}
-            </Typography>{' '}
-          </Grid>
-          <Grid item xs={12}>
-            <NotesEditor
-              thread={null}
-              notes_id={`${props.interview._id.toString()}-description`}
-              // buttonDisabled={this.state.buttonDisabled}
-              editorState={
-                interview.interview_description &&
-                interview.interview_description !== '{}'
-                  ? JSON.parse(interview.interview_description)
-                  : { time: new Date(), blocks: [] }
-              }
-              unique_id={`${props.interview._id.toString()}-description`}
-              handleClickSave={handleClickInterviewDescriptionSave}
-              readOnly={props.readOnly}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <Typography variant="body1">{t('Trainer')}</Typography>{' '}
-          </Grid>
-          <Grid item xs={12}>
-            {interview.trainer_id && interview.trainer_id?.length !== 0 ? (
-              <>
-                {interview.trainer_id.map((t_id, idx) => (
-                  <Box
-                    key={idx}
-                    style={{ display: 'flex', alignItems: 'center' }}
-                  >
-                    {t_id.firstname} {t_id.lastname} -&nbsp;
-                    <LinkableNewlineText text={t_id.email} />
-                  </Box>
-                ))}
-                {is_TaiGer_role(user) && !props.readOnly && (
-                  <Button
-                    color="secondary"
-                    variant="contained"
-                    size="small"
-                    onClick={openModal}
-                  >
-                    {t('Change Trainer')}
-                  </Button>
-                )}
-              </>
-            ) : (
-              <>
-                <Typography>{t('No Trainer Assigned')}</Typography>
-                {is_TaiGer_role(user) && !props.readOnly && (
-                  <Button
-                    color="primary"
-                    variant="contained"
-                    size="small"
-                    onClick={openModal}
-                  >
-                    {t('Assign Trainer')}
-                  </Button>
-                )}
-              </>
-            )}
-          </Grid>
-          <Grid item xs={12}>
-            <Typography variant="body1">
-              {t('Interview Training Time')}:&nbsp;
-            </Typography>
-          </Grid>
-          <Grid item xs={12}>
-            {`${interview.interview_training_time || 'Unscheduled'}`}
-            {is_TaiGer_role(user) && !props.readOnly && (
-              <Button color="secondary" variant="contained" size="small">
-                {t('Make Training Time Available')}
-              </Button>
-            )}
-            <EventDateComponent eventDate={new Date('2024-01-01')} />
-          </Grid>
-          <Grid item xs={12}>
-            <Typography variant="body1">{t('Notes')}</Typography>{' '}
-          </Grid>
-          <Grid item xs={12}>
-            <NotesEditor
-              thread={null}
-              notes_id={`${props.interview._id.toString()}-notes`}
-              // buttonDisabled={this.state.buttonDisabled}
-              editorState={
-                interview.interview_notes && interview.interview_notes !== '{}'
-                  ? JSON.parse(interview.interview_notes)
-                  : { time: new Date(), blocks: [] }
-              }
-              unique_id={`${props.interview._id.toString()}-notes`}
-              handleClickSave={handleClickInterviewNotesSave}
-              readOnly={props.readOnly}
-            />
           </Grid>
         </AccordionDetails>
       </Accordion>
@@ -356,6 +467,13 @@ function InterviewItems(props) {
           {t('Close', { ns: 'common' })}
         </Button>
       </ModalNew>
+      {interviewItemsState.res_modal_status >= 400 && (
+        <ModalMain
+          ConfirmError={ConfirmError}
+          res_modal_status={interviewItemsState.res_modal_status}
+          res_modal_message={interviewItemsState.res_modal_message}
+        />
+      )}
     </>
   );
 }

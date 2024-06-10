@@ -18,8 +18,11 @@ const EventSchema = new mongoose.Schema(
       type: String,
       default: false
     },
+    event_type: {
+      type: String
+    },
     title: {
-      type: String,
+      type: String
       // required: [true, 'Please write a title for your event']
     },
     description: {
@@ -36,7 +39,7 @@ const EventSchema = new mongoose.Schema(
     start: {
       type: Date,
       required: [true, 'Please Insert The Start of your event'],
-      min: [new Date(), "can't be before now!!"]
+      min: [new Date(), "time can't be before now!!"]
     },
     end: {
       type: Date,

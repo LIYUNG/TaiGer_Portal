@@ -170,7 +170,6 @@ function ManualFiles(props) {
                 (!props.application ||
                   (props.application && props.application.closed !== 'O')) && (
                   <ToggleableUploadFileForm
-                    role={user.role}
                     user={user}
                     student={props.student}
                     handleSelect={handleSelect}
@@ -204,7 +203,8 @@ function ManualFiles(props) {
                   onClick={() =>
                     props.handleProgramStatus(
                       props.student._id.toString(),
-                      props.application.programId._id.toString()
+                      props.application.programId._id.toString(),
+                      is_program_closed(props.application)
                     )
                   }
                 >

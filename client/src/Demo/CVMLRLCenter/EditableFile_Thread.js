@@ -2,12 +2,12 @@ import React from 'react';
 import { Grid, Button, Link, Typography } from '@mui/material';
 import { Link as LinkDom } from 'react-router-dom';
 import CheckIcon from '@mui/icons-material/Check';
-import { AiOutlineDelete, AiOutlineUndo } from 'react-icons/ai';
-import { IoCheckmarkCircle } from 'react-icons/io5';
+import DeleteIcon from '@mui/icons-material/Delete';
+import ReplayIcon from '@mui/icons-material/Replay';
 import { useTranslation } from 'react-i18next';
 
 import { is_TaiGer_role, latestReplyInfo } from '../Utils/checking-functions';
-import { convertDate } from '../Utils/contants';
+import { FILE_OK_SYMBOL, convertDate } from '../Utils/contants';
 import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
 
@@ -39,10 +39,7 @@ function EditableFile_Thread(props) {
     documenName = props.thread.doc_thread_id?.file_type;
     // program_deadline = props.application.programId.application_deadline
   } else {
-    documenName =
-      'General' +
-      ' - ' +
-      props.thread.doc_thread_id?.file_type;
+    documenName = 'General' + ' - ' + props.thread.doc_thread_id?.file_type;
   }
 
   fileStatus = (
@@ -50,19 +47,9 @@ function EditableFile_Thread(props) {
       <Grid container spacing={2}>
         <Grid item xs={1}>
           {!is_TaiGer_role(user) ? (
-            props.thread.isFinalVersion && (
-              <IoCheckmarkCircle
-                size={24}
-                color="limegreen"
-                title="Final Version"
-              />
-            )
+            props.thread.isFinalVersion && FILE_OK_SYMBOL
           ) : props.thread.isFinalVersion ? (
-            <IoCheckmarkCircle
-              size={24}
-              color="limegreen"
-              title="Final Version"
-            />
+            FILE_OK_SYMBOL
           ) : (
             <Button
               size="small"
@@ -75,14 +62,13 @@ function EditableFile_Thread(props) {
         </Grid>
         <Grid item xs={1}>
           {props.thread.isFinalVersion ? (
-            user.role !== 'Student' && user.role !== 'Guest' ? (
-              <AiOutlineUndo
-                size={24}
-                color="red"
-                title="Un do Final Version"
-                style={{ cursor: 'pointer' }}
-                onClick={() => handleAsFinalFileThread(documenName, false)}
-              />
+            is_TaiGer_role(user) ? (
+              <Button size="small" title="Undo" variant="contained">
+                <ReplayIcon
+                  fontSize="small"
+                  onClick={() => handleAsFinalFileThread(documenName, false)}
+                />
+              </Button>
             ) : (
               <Typography color="error.main">{t('Closed')}</Typography>
             )
@@ -113,13 +99,12 @@ function EditableFile_Thread(props) {
           <Grid item xs={1}>
             <Button
               size="small"
-              style={{ cursor: 'pointer' }}
               title="Delete"
               variant="contained"
               color="error"
               onClick={() => handleDeleteFileThread(documenName)}
             >
-              <AiOutlineDelete size={20} />
+              <DeleteIcon fontSize="small" />
             </Button>
           </Grid>
         )}

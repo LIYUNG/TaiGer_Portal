@@ -1,8 +1,6 @@
 const { ObjectId } = require('mongoose').Types;
 const faker = require('faker');
 
-// const { Degree } = require("../../models/Program");
-
 const generateProgram = (requiredDocuments, optionalDocuments) => ({
   _id: new ObjectId().toHexString(),
   school: faker.company.companyName(),

@@ -14,12 +14,14 @@ import {
   TableRow,
   Typography
 } from '@mui/material';
-import { IoCheckmarkCircle } from 'react-icons/io5';
+import CheckIcon from '@mui/icons-material/Check';
+
 import { useTranslation } from 'react-i18next';
 
 import { convertDate } from '../../Demo/Utils/contants';
 import DEMO from '../../store/constant';
 import ModalNew from '../Modal';
+import { green, grey } from '@mui/material/colors';
 
 export function ExtendableTable({ data }) {
   const { t } = useTranslation();
@@ -90,7 +92,9 @@ export function ExtendableTable({ data }) {
                       <TableCell>{t('Amount')}</TableCell>
                       <TableCell>{t('Currency')}</TableCell>
                       <TableCell>{t('Status')}</TableCell>
-                      <TableCell>{t('Description', { ns: 'common' })}</TableCell>
+                      <TableCell>
+                        {t('Description', { ns: 'common' })}
+                      </TableCell>
                       <TableCell>{t('UpdateAt')}</TableCell>
                     </TableRow>
                   </TableHead>
@@ -231,9 +235,9 @@ export function ExtendableTable({ data }) {
               singleStudent.generaldocs_threads.map((thread, i) => (
                 <TableRow key={i}>
                   <TableCell>
-                    <IoCheckmarkCircle
-                      size={24}
-                      color={thread.isFinalVersion ? 'limegreen' : 'lightgray'}
+                    <CheckIcon
+                      fontSize="small"
+                      color={thread.isFinalVersion ? green[500] : grey[400]}
                       title={
                         thread.isFinalVersion ? 'Finished' : 'Not finished'
                       }
@@ -257,11 +261,9 @@ export function ExtendableTable({ data }) {
                 application.doc_modification_thread.map((thread, x) => (
                   <TableRow key={10000 * i + x}>
                     <TableCell>
-                      <IoCheckmarkCircle
-                        size={24}
-                        color={
-                          thread.isFinalVersion ? 'limegreen' : 'lightgray'
-                        }
+                      <CheckIcon
+                        fontSize="small"
+                        color={thread.isFinalVersion ? green[500] : grey[400]}
                         title={
                           thread.isFinalVersion ? 'Finished' : 'Not finished'
                         }

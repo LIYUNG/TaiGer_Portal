@@ -13,6 +13,7 @@ import { Link as LinkDom } from 'react-router-dom';
 import { UserlistHeader, convertDate, getDate } from '../Utils/contants';
 import DEMO from '../../store/constant';
 import {
+  is_TaiGer_Admin,
   is_TaiGer_Agent,
   is_TaiGer_Editor,
   is_TaiGer_Student
@@ -32,7 +33,7 @@ function User(props) {
     return (
       <TableRow key={props.user._id}>
         <TableCell>
-          {props.user.role !== 'Admin' && (
+          {!is_TaiGer_Admin(props.user) && (
             <>
               <Button
                 id="basic-button"
@@ -76,7 +77,9 @@ function User(props) {
                     )
                   }
                 >
-                  {props.user.archiv === true ? t('Activate', { ns: 'common' }) : t('Archive', { ns: 'common' })}
+                  {props.user.archiv === true
+                    ? t('Activate', { ns: 'common' })
+                    : t('Archive', { ns: 'common' })}
                 </MenuItem>
                 <MenuItem
                   onClick={() =>

@@ -95,11 +95,7 @@ function NoEnoughDecidedProgramsTasksCard(props) {
       student.agents.some((agent) => agent._id === user._id.toString())
     )
     .map((student, i) => (
-      <NoEnoughDecidedProgramsTasks
-        key={i}
-        role={user.role}
-        student={student}
-      />
+      <NoEnoughDecidedProgramsTasks key={i} student={student} />
     ));
   return (
     <Card sx={{ mb: 2 }}>

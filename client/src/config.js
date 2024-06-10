@@ -33,6 +33,7 @@ export const appConfig = {
   LogoPath: '',
   // Application level comfiguration
   vpdEnable: true,
+  interviewEnable: true,
   meetingEnable: true,
   messengerEnable: true,
   AIEnable: true

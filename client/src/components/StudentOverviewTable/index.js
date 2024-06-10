@@ -1,10 +1,14 @@
 import React, { useMemo } from 'react';
-import { Card, Link, Typography } from '@mui/material';
-import { AiFillQuestionCircle } from 'react-icons/ai';
-import { IoCheckmarkCircle } from 'react-icons/io5';
+import { Card, IconButton, Link, Typography } from '@mui/material';
 import { Link as LinkDom } from 'react-router-dom';
-
-import { profile_list, statuses } from '../../Demo/Utils/contants';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import HelpIcon from '@mui/icons-material/Help';
+import {
+  FILE_MISSING_SYMBOL,
+  FILE_OK_SYMBOL,
+  profile_list,
+  statuses
+} from '../../Demo/Utils/contants';
 import { MuiDataGrid } from '../MuiDataGrid';
 import {
   areProgramsDecidedMoreThanContract,
@@ -36,6 +40,7 @@ import {
   to_register_application_portals
 } from '../../Demo/Utils/checking-functions';
 import DEMO from '../../store/constant';
+import { green, grey } from '@mui/material/colors';
 
 function StudentOverviewTable(props) {
   const tranform = (students) => {
@@ -324,19 +329,9 @@ function StudentOverviewTable(props) {
           >
             <Typography>
               {params.row.areProgramsAllDecided ? (
-                <IoCheckmarkCircle
-                  size={24}
-                  color="limegreen"
-                  title="complete"
-                  className="my-0 mx-2"
-                />
+                <IconButton>{FILE_OK_SYMBOL}</IconButton>
               ) : (
-                <AiFillQuestionCircle
-                  size={24}
-                  color="lightgray"
-                  title="incomplete"
-                  className="my-0 mx-2"
-                />
+                <IconButton>{FILE_MISSING_SYMBOL}</IconButton>
               )}
               (
               {params.row.num_apps_decided >
@@ -366,17 +361,12 @@ function StudentOverviewTable(props) {
                 {params.row.num_apps_closed >=
                 params.row.applying_program_count ? (
                   <>
-                    <IoCheckmarkCircle
-                      size={24}
-                      color="limegreen"
-                      title="complete"
-                      className="my-0 mx-2"
-                    />
+                    <IconButton>{FILE_OK_SYMBOL}</IconButton>
                     <b>({params.row.num_apps_closed}</b>
                   </>
                 ) : (
                   <>
-                    <AiFillQuestionCircle size={24} color="lightgray" />(
+                    <IconButton>{FILE_MISSING_SYMBOL}</IconButton>(
                     {params.row.num_apps_closed}
                   </>
                 )}
@@ -384,12 +374,7 @@ function StudentOverviewTable(props) {
               </Typography>
             ) : (
               <Typography title="incomplete">
-                <AiFillQuestionCircle
-                  size={24}
-                  color="lightgray"
-                  className="my-0 mx-2"
-                />
-                (
+                <IconButton>{FILE_MISSING_SYMBOL}</IconButton>(
                 {params.row.num_apps_closed >
                 params.row.applying_program_count ? (
                   <b>{params.row.num_apps_closed}</b>
@@ -487,20 +472,25 @@ function StudentOverviewTable(props) {
               >
                 E:
                 {params.row.isEnglishPassed ? (
-                  <IoCheckmarkCircle
-                    size={18}
-                    color="limegreen"
-                    title={`complete ${params.row.academic_background?.language.english_certificate} ${params.row.academic_background?.language.english_score}`}
-                  />
+                  <IconButton>
+                    <CheckCircleIcon
+                      fontSize="small"
+                      style={{ color: green[500] }}
+                      title={`complete ${params.row.academic_background?.language.english_certificate} ${params.row.academic_background?.language.english_score}`}
+                    />
+                  </IconButton>
                 ) : (
                   !check_english_language_Notneeded(
                     params.row.academic_background
                   ) && (
-                    <AiFillQuestionCircle
-                      size={18}
-                      color="lightgray"
-                      title={`Expected Test Date ${params.row.academic_background?.language.english_certificate} ${params.row.academic_background?.language.english_test_date}`}
-                    />
+                    <>
+                      {FILE_MISSING_SYMBOL}
+                      <HelpIcon
+                        fontSize="small"
+                        style={{ color: grey[400] }}
+                        title={`Expected Test Date ${params.row.academic_background?.language.english_certificate} ${params.row.academic_background?.language.english_test_date}`}
+                      />
+                    </>
                   )
                 )}
               </Link>
@@ -517,18 +507,20 @@ function StudentOverviewTable(props) {
               >
                 D:
                 {params.row.isGermanPassed ? (
-                  <IoCheckmarkCircle
-                    size={18}
-                    color="limegreen"
-                    title={`complete ${params.row.academic_background?.language.german_certificate} ${params.row.academic_background?.language.german_score}`}
-                  />
+                  <IconButton>
+                    <CheckCircleIcon
+                      fontSize="small"
+                      style={{ color: green[500] }}
+                      title={`complete ${params.row.academic_background?.language.german_certificate} ${params.row.academic_background?.language.german_score}`}
+                    />
+                  </IconButton>
                 ) : (
                   !check_german_language_Notneeded(
                     params.row.academic_background
                   ) && (
-                    <AiFillQuestionCircle
-                      size={18}
-                      color="lightgray"
+                    <HelpIcon
+                      fontSize="small"
+                      style={{ color: grey[400] }}
                       title={`Expected Test Date${params.row.academic_background?.language.german_certificate} ${params.row.academic_background?.language.german_test_date}`}
                     />
                   )

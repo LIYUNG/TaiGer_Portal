@@ -22,14 +22,14 @@ function ProgramSpecificDocumentCheckCard(props) {
     .filter((student) =>
       student.agents.some((agent) => agent._id === user._id.toString())
     )
-    .map((student, i) => (
-      <ProgramSpecificDocument key={i} role={user.role} student={student} />
-    ));
+    .map((student, i) => <ProgramSpecificDocument key={i} student={student} />);
 
   return (
     <Card sx={{ mb: 2 }}>
       <Alert severity="error">
-        <Typography>Program Specific Documents Check</Typography>
+        <Typography>
+          {t('Program Specific Documents Check', { ns: 'common' })}
+        </Typography>
       </Alert>
       <Table size="small">
         <TableHead>

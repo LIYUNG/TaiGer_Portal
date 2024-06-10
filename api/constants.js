@@ -1217,6 +1217,7 @@ const missing_academic_background = (student, user) => {
     !student.application_preference.expected_application_date ||
     !student.application_preference.expected_application_semester ||
     !student.application_preference.target_application_field ||
+    !student.application_preference.target_program_language ||
     !student.application_preference.target_degree ||
     student.academic_background.language.english_isPassed === '-' ||
     student.academic_background.language.english_isPassed === 'X' ||
@@ -1281,6 +1282,9 @@ const missing_academic_background = (student, user) => {
     }
     if (!student.application_preference.target_application_field) {
       missing_background_fields += '<li>Target Application Fields</li>';
+    }
+    if (!student.application_preference.target_program_language) {
+      missing_background_fields += '<li>Target Program Language</li>';
     }
     if (!student.application_preference.target_degree) {
       missing_background_fields += '<li>Target Degree Programs</li>';

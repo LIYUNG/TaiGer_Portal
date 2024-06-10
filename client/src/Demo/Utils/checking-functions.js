@@ -563,6 +563,10 @@ export const MissingSurveyFieldsList = ({
         !application_preference.target_application_field && (
           <li>{t('Target Application Fields')}</li>
         )}
+      {application_preference &&
+        !application_preference.target_program_language && (
+          <li>{t('Target Program Language')}</li>
+        )}
       {application_preference && !application_preference.target_degree && (
         <li>{t('Target Degree Programs')}</li>
       )}
@@ -880,6 +884,7 @@ export const check_application_preference_filled = (application_preference) => {
     expected_application_date,
     expected_application_semester,
     target_application_field,
+    target_program_language,
     target_degree,
     considered_privat_universities,
     application_outside_germany
@@ -889,6 +894,7 @@ export const check_application_preference_filled = (application_preference) => {
     expected_application_date &&
     expected_application_semester &&
     target_application_field &&
+    target_program_language &&
     target_degree &&
     considered_privat_universities !== '-' &&
     application_outside_germany !== '-'

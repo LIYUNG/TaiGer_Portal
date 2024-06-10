@@ -254,7 +254,7 @@ function Message(props) {
                       onChange={handleCheckboxChange}
                     />
                   }
-                  label="Ignore Message"
+                  label="no need to reply"
                   labelPlacement="start"
                 />
               </FormGroup>

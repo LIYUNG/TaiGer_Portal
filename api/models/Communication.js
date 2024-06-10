@@ -13,7 +13,8 @@ const communicationsSchema = new Schema(
       default: ''
     },
     readBy: [{ type: ObjectId, ref: 'User' }],
-    createdAt: Date
+    createdAt: Date,
+    ignore_message: Boolean
   },
   { timestamps: true }
 );

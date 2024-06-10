@@ -1194,15 +1194,15 @@ const FindIntervalInCommunicationsAndSave = async () => {
         let msg_1;
         let msg_2;
         for (const msg of messages){
-          if (msg.user_id?.role === "Student") {
+          if (msg.user_id?.role === "Student" && msg.ignore_message !== true) {
             msg_1 = msg;
-          } else {
+          } else if (msg.user_id?.role !== "Student"){
             msg_2 = msg;
           }
           //calculate interval, store values into Interval Collection
           if ( msg_1 !== undefined && msg_2 != undefined ){
             try {
-              const interval = calculateInterval(msg_1, msg_2);
+              const interval = CalculateInterval(msg_1, msg_2);
               const newInterval = new Interval({
                 student_id: student,
                 message_1_id: msg_1,
@@ -1262,9 +1262,9 @@ const FindIntervalInDocumentThreadAndSave = async () => {
           for (const msg of thread.messages){
             try {
               const user = await User.findById(msg.user_id?.toString())
-                if (user?.role === "Student") {
+                if (user?.role === "Student" && msg.ignore_message !== true) {
                   msg_1 = msg;
-                } else {
+                } else if (user?.role !== "Student") {
                   msg_2 = msg;
                 }
             } catch (error) {
@@ -1356,6 +1356,7 @@ const DailyCalculateAverageResponseTime = async () => {
   await FindIntervalInCommunicationsAndSave();
   await FindIntervalInDocumentThreadAndSave();
   await CalculateAverageResponseTime();
+};
 
 // every day reminder
 // TODO: (O)no trainer, no date.
@@ -1436,7 +1437,6 @@ module.exports = {
   FindIntervalInCommunicationsAndSave,
   FindIntervalInDocumentThreadAndSave,
   CalculateAverageResponseTime,
-  DailyCalculateAverageResponseTime
-  FindIntervalInDocumentThreads,
+  DailyCalculateAverageResponseTime,
   NoInterviewTrainerOrTrainingDateDailyReminderChecker
 };

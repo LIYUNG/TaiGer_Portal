@@ -1232,7 +1232,7 @@ const FindValidInterval = async(validDocumentThread) => {
         const user = await User.findById(msg.user_id?.toString())
           if (user?.role === "Student" && ignore_message !== true) {
             msg_1 = msg;
-          } else {
+          } else if (user?.role !== "Student"){
             msg_2 = msg;
           }
       } catch (error) {

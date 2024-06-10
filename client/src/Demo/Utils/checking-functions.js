@@ -377,8 +377,13 @@ export const needUpdateCourseSelection = (student) => {
 
 export const to_register_application_portals = (student) => {
   for (const application of student.applications) {
-    if (!application.credential_a_filled || !application.credential_b_filled) {
-      return true;
+    if (isProgramDecided(application) && application.closed === '-') {
+      if (
+        !application.credential_a_filled ||
+        !application.credential_b_filled
+      ) {
+        return true;
+      }
     }
   }
   return false;

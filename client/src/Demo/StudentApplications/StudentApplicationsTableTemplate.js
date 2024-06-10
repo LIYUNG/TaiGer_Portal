@@ -867,6 +867,12 @@ function StudentApplicationsTableTemplate(props) {
               <b>{props.student.application_preference?.target_degree}</b>
             </ListItem>
             <ListItem>
+              {t('Target Program Language')}:{' '}
+              <b>
+                {props.student.application_preference?.target_program_language}
+              </b>
+            </ListItem>
+            <ListItem>
               {t(
                 'Considering private universities? (Tuition Fee: ~15000 EURO/year)'
               )}

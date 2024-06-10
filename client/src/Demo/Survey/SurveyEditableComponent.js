@@ -28,6 +28,7 @@ import {
   GRE_CERTIFICATE_ARRAY_OPTIONS,
   HIG_SCHOOL_TRI_STATE_OPTIONS,
   IS_PASSED_OPTIONS,
+  LANGUAGES_PREFERENCE_ARRAY_OPTIONS,
   SEMESTER_ARRAY_OPTIONS,
   TRI_STATE_OPTIONS,
   convertDate
@@ -823,6 +824,33 @@ const SurveyEditableComponent = (props) => {
                 {DEGREE_ARRAY_OPTIONS.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
                     {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                labelid="target_program_language"
+                name="target_program_language"
+                id="target_program_language"
+                error={
+                  survey.application_preference?.target_program_language === ''
+                }
+                helperText={
+                  survey.application_preference?.target_program_language ===
+                    '' && 'Please provide the info.'
+                }
+                select
+                label={t('Target Program Language')}
+                value={
+                  survey.application_preference?.target_program_language || ''
+                }
+                onChange={(e) => handleChangeApplicationPreference(e)}
+              >
+                {LANGUAGES_PREFERENCE_ARRAY_OPTIONS.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {t(option.label)}
                   </MenuItem>
                 ))}
               </TextField>

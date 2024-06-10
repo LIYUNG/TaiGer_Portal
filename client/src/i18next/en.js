@@ -549,6 +549,11 @@ export const translation_en = {
     'All Students Applications Overview': 'All Students Applications Overview',
     Others: 'Others',
     'Target Degree Programs': 'Target Degree Programs',
+    'Target Program Language': 'Target Degree Programs',
+    'Please Select': 'Please Select',
+    'Only English': 'Only English',
+    'Only German': 'Only German',
+    'German and/or English': 'German-or-English',
     'Target Application Fields': 'Target Application Fields',
     'Target Year': 'Target Year',
     'Read More': 'Read More'

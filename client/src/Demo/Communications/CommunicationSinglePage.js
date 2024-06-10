@@ -431,7 +431,7 @@ function CommunicationSinglePage() {
             </Breadcrumbs>
           </Grid>
           <Grid item xs={12} sm={9}>
-            <Typography variant="h6">Instructions:</Typography>
+            <Typography variant="h6">{t('Instructions')}:</Typography>
             <Box variant="body1">
               {appConfig.companyName}
               顧問皆位於中歐時區，無法及時回復，為確保有

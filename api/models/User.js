@@ -157,6 +157,10 @@ const UserSchema = new Schema(
         type: String,
         default: ''
       },
+      target_program_language: {
+        type: String,
+        default: ''
+      },
       target_application_field: {
         type: String,
         default: ''

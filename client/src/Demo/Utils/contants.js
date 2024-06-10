@@ -1187,11 +1187,19 @@ export const DEGREE_CATOGARY_ARRAY_OPTIONS = [
 ];
 
 export const LANGUAGES_ARRAY_OPTIONS = [
-  { value: '-', label: '-' },
+  { value: '', label: 'Please Select' },
   { value: 'English', label: 'English' },
   { value: 'German', label: 'German' },
   { value: 'German-and-English', label: 'German-AND-English' },
   { value: 'German-or-English', label: 'German-OR-English' }
+];
+
+export const LANGUAGES_PREFERENCE_ARRAY_OPTIONS = [
+  { value: '', label: 'Please Select' },
+  { value: 'English', label: 'Only English' },
+  { value: 'German', label: 'Only German' },
+  { value: 'German-or-English', label: 'German and/or English' },
+  { value: 'Others', label: 'Others' }
 ];
 
 export const UNI_ASSIST_ARRAY_OPTIONS = [
@@ -1199,34 +1207,6 @@ export const UNI_ASSIST_ARRAY_OPTIONS = [
   { value: 'Yes-VPD', label: 'Yes-VPD' },
   { value: 'Yes-FULL', label: 'Yes-Full' }
 ];
-
-export const DEGREE_OPTIONS = () => {
-  return (
-    <>
-      <option value="">Please Select</option>
-      <option value="B. A.">Bachelor of Art</option>
-      <option value="B. Eng.">Bachelor of Engineering</option>
-      <option value="B. Sc.">Bachelor of Science</option>
-      <option value="M. A.">Master of Art</option>
-      <option value="M. Eng.">Master of Engineering</option>
-      <option value="M. Sc.">Master of Science</option>
-      <option value="M. Res.">Master of Reserach</option>
-      <option value="MBA">MBA</option>
-    </>
-  );
-};
-
-export const LANGUAGES_OPTIONS = () => {
-  return (
-    <>
-      <option value="-">-</option>
-      <option value="English">English</option>
-      <option value="German">German</option>
-      <option value="German-and-English">German-AND-English</option>
-      <option value="German-or-English">German-OR-English</option>
-    </>
-  );
-};
 
 export const COUNTRIES_MAPPING = {
   at: 'Austria',

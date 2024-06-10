@@ -561,6 +561,11 @@ export const translation_zh_TW = {
     'All Students Applications Overview': '所有學生申請總攬',
     Others: '其他',
     'Target Degree Programs': '預計申請學位',
+    'Target Program Language': '學程教學語言',
+    'Please Select': '請選擇',
+    'Only English': '僅英語',
+    'Only German': '僅德語',
+    'German and/or English': '英語德語皆可',
     'Target Application Fields': '預計申請領域',
     'Target Year': '預計申請年度',
     'Read More': '讀我更多'

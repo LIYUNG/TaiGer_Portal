@@ -101,16 +101,21 @@ function NoEditorsStudentsCard(props) {
           </TableCell>
           <TableCell>{props.student.email}</TableCell>
           <TableCell>
-            {props.student.needEditor ? (
-              <Typography fontWeight="bold">Ready to Assign</Typography>
-            ) : (
-              '-'
-            )}
+            <Typography fontWeight="bold">
+              {props.student.needEditor ? 'Ready to Assign' : '-'}
+            </Typography>
           </TableCell>
           <TableCell>
-            {props.student.application_preference.expected_application_date || (
-              <Typography>TBD</Typography>
-            )}
+            <Typography>
+              {props.student.application_preference.target_program_language ||
+                'TBD'}
+            </Typography>
+          </TableCell>
+          <TableCell>
+            <Typography>
+              {props.student.application_preference.expected_application_date ||
+                'TBD'}
+            </Typography>
           </TableCell>
           <TableCell>
             {!props.student.agents || props.student.agents.length === 0 ? (

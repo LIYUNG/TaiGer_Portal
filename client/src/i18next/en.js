@@ -296,7 +296,8 @@ export const translation_en = {
     timeHours: '{{hours}}h',
     timeDays: '{{days}}d',
     timeWeeks: '{{weeks}}w',
-    Send: 'Send'
+    Send: 'Send',
+    'Target Year': 'Target Year'
   },
   dashboard: {
     Dashboard: 'Dashboard',
@@ -432,6 +433,7 @@ export const translation_en = {
       'Please consider working on visa, if you decide the offer.'
   },
   translation: {
+    'No Editors Students': 'No Editors Students',
     'Interview Time': 'Interview Time',
     'Your timezone local time': 'Your timezone local time',
     'Interview Program': 'Interview Program',
@@ -555,7 +557,6 @@ export const translation_en = {
     'Only German': 'Only German',
     'German and/or English': 'German-or-English',
     'Target Application Fields': 'Target Application Fields',
-    'Target Year': 'Target Year',
     'Read More': 'Read More'
   }
 };

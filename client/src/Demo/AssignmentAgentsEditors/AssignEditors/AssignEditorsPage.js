@@ -54,6 +54,7 @@ function AssignEditorsPage(props) {
                 </TableCell>
                 <TableCell>{t('Email', { ns: 'common' })}</TableCell>
                 <TableCell>{t('Status', { ns: 'common' })}</TableCell>
+                <TableCell>{t('Target Program Language')}</TableCell>
                 <TableCell>{t('Target Year', { ns: 'common' })}</TableCell>
                 <TableCell>{t('Agents', { ns: 'common' })}</TableCell>
               </TableRow>

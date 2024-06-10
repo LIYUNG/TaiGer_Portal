@@ -49,9 +49,11 @@ function AssignAgentsPage(props) {
             <TableHead>
               <TableRow>
                 <TableCell></TableCell>
-                <TableCell>First-, Last Name</TableCell>
-                <TableCell>Email</TableCell>
-                <TableCell>Target Year</TableCell>
+                <TableCell>
+                  {t('First-, Last Name', { ns: 'common' })}
+                </TableCell>{' '}
+                <TableCell>{t('Email', { ns: 'common' })}</TableCell>
+                <TableCell>{t('Target Year', { ns: 'common' })}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>{no_agent_students}</TableBody>

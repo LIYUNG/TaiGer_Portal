@@ -298,7 +298,8 @@ export const translation_zh_TW = {
     timeHours: '{{hours}}小時',
     timeDays: '{{days}}天',
     timeWeeks: '{{weeks}}週',
-    Send: '送出'
+    Send: '送出',
+    'Target Year': '預計申請年度'
   },
   dashboard: {
     Dashboard: '主控台',
@@ -429,6 +430,7 @@ export const translation_zh_TW = {
       '若您決定欲就讀的科系，請至儘速至該國使館處理簽證。請先讀完左側說明連結再與顧問討論。'
   },
   translation: {
+    'No Editors Students': '無編輯之學生',
     'Interview Time': '面試時間',
     'Your timezone local time': '您所在時區時間',
     'Interview Program': '面試學程',
@@ -567,7 +569,6 @@ export const translation_zh_TW = {
     'Only German': '僅德語',
     'German and/or English': '英語德語皆可',
     'Target Application Fields': '預計申請領域',
-    'Target Year': '預計申請年度',
     'Read More': '讀我更多'
   }
 };

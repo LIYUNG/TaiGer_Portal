@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link as LinkDom, Navigate } from 'react-router-dom';
+import { Link as LinkDom, Navigate, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   Button,
@@ -30,6 +30,7 @@ import ModalNew from '../../components/Modal';
 function ProgramList(props) {
   const { user } = useAuth();
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   let [tableStates, setTableStates] = useState({
     success: false,
@@ -80,6 +81,20 @@ function ProgramList(props) {
             isloaded: true,
             res_status: status
           }));
+          const parseQueryParams = () => {
+            const searchParams = new URLSearchParams(window.location.search);
+            const params = {};
+
+            // Iterate through each query parameter
+            for (const [key, value] of searchParams.entries()) {
+              // Add key-value pair to params object
+              params[key] = value;
+            }
+
+            // Set state with parsed query parameters
+            setFilters(params);
+          };
+          parseQueryParams();
         } else {
           setStatedata((state) => ({
             ...state,
@@ -184,7 +199,7 @@ function ProgramList(props) {
       modalShowAssignSuccessWindow: false
     }));
     if (props.isStudentApplicationPage) {
-      window.location.reload(true);
+      navigate(DEMO.STUDENT_APPLICATIONS_ID_LINK(studentId));
     }
   };
 
@@ -334,11 +349,17 @@ function ProgramList(props) {
   }
 
   const handleFilterChange = (event, column) => {
+    event.preventDefault();
     const { value } = event.target;
+    const searchParams = new URLSearchParams(window.location.search);
+    searchParams.set(column.field, value.toLowerCase());
     setFilters((prevFilters) => ({
       ...prevFilters,
       [column.field]: value.toLowerCase()
     }));
+    if (!props.isStudentApplicationPage) {
+      navigate(`${window.location.pathname}?${searchParams.toString()}`);
+    }
   };
 
   const transformedData = statedata.programs.map((row) => {
@@ -440,7 +461,8 @@ function ProgramList(props) {
                       size="small"
                       type="text"
                       placeholder={`${column.headerName}`}
-                      onClick={stopPropagation} // value={filterText[params.field] || ''}
+                      onClick={stopPropagation}
+                      value={filters[column.field] || ''}
                       onChange={(event) => handleFilterChange(event, column)}
                       sx={{ mb: 1 }}
                     />

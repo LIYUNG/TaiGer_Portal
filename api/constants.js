@@ -20,6 +20,8 @@ const UNI_ASSIST_FOR_STUDENT_URL = new URL('/uni-assist', ORIGIN).href;
 const UNI_ASSIST_FOR_AGENT_URL = (studentId) =>
   new URL(`/student-database/${studentId}#uniassist`, ORIGIN).href;
 const THREAD_URL = new URL('/document-modification', ORIGIN).href;
+const THREAD_ID_URL = (thread_id) =>
+  new URL(`/document-modification/${thread_id}`, ORIGIN).href;
 const ARCHIVED_STUDENTS_URL = new URL('/archiv/students', ORIGIN).href;
 const BASE_DOCUMENT_URL = new URL('/base-documents', ORIGIN).href;
 const BASE_DOCUMENT_FOR_AGENT_URL = (studentId) =>
@@ -28,6 +30,9 @@ const STUDENT_COMMUNICATION_THREAD_URL = (studentId) =>
   new URL(`/communications/std/${studentId}`, ORIGIN).href;
 const INTERNAL_COMMUNICATION_THREAD_URL = (studentId) =>
   new URL(`/communications/t/${studentId}`, ORIGIN).href;
+const INTERVIEW_CENTER_URL = new URL('/interview-training', ORIGIN).href;
+const SINGLE_INTERVIEW_THREAD_URL = (interview_id) =>
+  new URL(`/interview-training/${interview_id}`, ORIGIN).href;
 const TEMPLATE_DOWNLOAD_URL = new URL('/download', ORIGIN).href;
 const STUDENT_APPLICATION_URL = new URL('/student-applications', ORIGIN).href;
 const STUDENT_SURVEY_URL = new URL('/survey', ORIGIN).href;
@@ -56,9 +61,23 @@ const JITSI_MEET_INSTRUCTIONS_URL = new URL(
 ).href;
 
 // const TAIGER_SIGNATURE = '<p><b>Your TaiGer Consultancy Team</b></p>';
-const TAIGER_SIGNATURE = `<p><b>Your TaiGer Consultancy Team</b></p><p>Website: <a href="https://taigerconsultancy.com/">https://taigerconsultancy.com/</a></p>\
-  <p>Facebook: <a href="https://www.facebook.com/profile.php?id=100063557155189">https://www.facebook.com/profile.php?id=100063557155189</a></p>\
-  <p>Instagram: <a href="https://www.instagram.com/taiger_study_abroad/?hl=de">https://www.instagram.com/taiger_study_abroad/?hl=de</a></p>`;
+const TAIGER_SIGNATURE = `
+<p><b>Your TaiGer Consultancy Team</b></p><p>Website: <a href="https://taigerconsultancy.com/">https://taigerconsultancy.com/</a></p>
+<div class="social-icons">
+  <a href="https://www.instagram.com/taiger_study_abroad/?hl=de" target="_blank">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" alt="Instagram">
+  </a>
+  <a href="https://www.facebook.com/profile.php?id=100063557155189" target="_blank">
+     <img src="https://upload.wikimedia.org/wikipedia/commons/b/bd/Facebook_lg.png" alt="Facebook">
+  </a>
+  <a href="https://taigerconsultancy.medium.com/" target="_blank">
+     <img src="https://static-00.iconduck.com/assets.00/logo-medium-icon-512x512-6ohyt32n.png" alt="Medium">
+  </a>
+  <a href="https://www.linkedin.com/company/taigerconsultancy/" target="_blank">
+     <img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png" alt="LinkedIn">
+  </a>
+  
+</div>`;
 const SPLIT_LINE = '-------------------------------------------------------';
 const ENGLISH_BELOW = '(English version below)';
 const CONTACT_AGENT = '如果您有任何疑問，請聯絡您的顧問。';
@@ -146,25 +165,25 @@ const application_deadline_calculator = (student, application) => {
     // include Rolling
     return `${application_year}-Rolling`;
   }
-  let deadline_month = parseInt(
+  const deadline_month = parseInt(
     application.programId.application_deadline.split('-')[0],
     10
   );
-  let deadline_day = parseInt(
-    application.programId.application_deadline.split('-')[1],
-    10
-  );
+  // const deadline_day = parseInt(
+  //   application.programId.application_deadline.split('-')[1],
+  //   10
+  // );
   if (semester === undefined) {
     return 'Err';
   }
   if (semester === 'WS') {
     if (deadline_month > 9) {
-      application_year = application_year - 1;
+      application_year -= 1;
     }
   }
   if (semester === 'SS') {
     if (deadline_month > 3) {
-      application_year = application_year - 1;
+      application_year -= 1;
     }
   }
 
@@ -197,6 +216,33 @@ const ESSAY_WRITER_SCOPE = {
   Essay: 'Essay'
 };
 const FILE_MAPPING_TABLE = { ...EDITOR_SCOPE, ...ESSAY_WRITER_SCOPE };
+const PROGRAM_SPECIFIC_FILETYPE = [
+  {
+    required: 'ml_required',
+    fileType: 'ML'
+  },
+  {
+    required: 'essay_required',
+    fileType: 'Essay'
+  },
+  {
+    required: 'portfolio_required',
+    fileType: 'Portfolio'
+  },
+  {
+    required: 'supplementary_form_required',
+    fileType: 'Supplementary_Form'
+  },
+  {
+    required: 'curriculum_analysis_required',
+    fileType: 'Curriculum_Analysis'
+  },
+  {
+    required: 'scholarship_form_required',
+    fileType: 'Scholarship_Form'
+  }
+];
+
 const RLs_CONSTANT = ['RL_A', 'RL_B', 'RL_C'];
 const GENERAL_RLs_CONSTANT = [
   'Recommendation_Letter_A',
@@ -242,7 +288,8 @@ const is_deadline_within30days_needed = (student) => {
       today,
       application_deadline_calculator(student, student.applications[k])
     );
-    // TODO: should pack all thread due soon in a student email, not multiple email for 1 student  for daily reminder.
+    // TODO: should pack all thread due soon in a student email,
+    // not multiple email for 1 student  for daily reminder.
     if (
       student.applications[k].decided === 'O' &&
       student.applications[k].closed !== 'O' &&
@@ -1602,6 +1649,7 @@ module.exports = {
   EDITOR_SCOPE,
   ESSAY_WRITER_SCOPE,
   FILE_MAPPING_TABLE,
+  PROGRAM_SPECIFIC_FILETYPE,
   RLs_CONSTANT,
   GENERAL_RLs_CONSTANT,
   General_Docs,
@@ -1641,10 +1689,13 @@ module.exports = {
   UNI_ASSIST_FOR_STUDENT_URL,
   UNI_ASSIST_FOR_AGENT_URL,
   THREAD_URL,
+  THREAD_ID_URL,
   ARCHIVED_STUDENTS_URL,
   BASE_DOCUMENT_URL,
   STUDENT_COMMUNICATION_THREAD_URL,
   INTERNAL_COMMUNICATION_THREAD_URL,
+  INTERVIEW_CENTER_URL,
+  SINGLE_INTERVIEW_THREAD_URL,
   BASE_DOCUMENT_FOR_AGENT_URL,
   SURVEY_URL_FOR_AGENT_URL,
   TEMPLATE_DOWNLOAD_URL,

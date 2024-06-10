@@ -22,9 +22,16 @@ export const FetchStudentLayer = ({ studentId }) => {
       }
     );
   }, [studentId]);
-  if (!isLoaded) {
+  if (!isLoaded || !studentData.data) {
     return (
-      <Box sx={{ width: window.innerWidth - 60 }}>
+      <Box
+        sx={{
+          width: window.innerWidth - 60,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}
+      >
         <CircularProgress />
       </Box>
     );

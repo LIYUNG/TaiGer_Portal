@@ -109,9 +109,7 @@ function ReadyToSubmitTasksCard(props) {
     .filter((student) =>
       student.agents.some((agent) => agent._id === user._id.toString())
     )
-    .map((student, i) => (
-      <ReadyToSubmitTasks key={i} role={user.role} student={student} />
-    ));
+    .map((student, i) => <ReadyToSubmitTasks key={i} student={student} />);
 
   return (
     <Card sx={{ mb: 2 }}>
@@ -130,7 +128,9 @@ function ReadyToSubmitTasksCard(props) {
                 <TableCell>{t('Start', { ns: 'common' })}</TableCell>
                 <TableCell>{t('Deadline', { ns: 'common' })}</TableCell>
                 <TableCell>
-                  {t('Semester', { ns: 'common' })} - {t('Degree', { ns: 'common' })} - {t('Program', { ns: 'common' })}
+                  {t('Semester', { ns: 'common' })} -{' '}
+                  {t('Degree', { ns: 'common' })} -{' '}
+                  {t('Program', { ns: 'common' })}
                 </TableCell>
               </TableRow>
             </TableHead>

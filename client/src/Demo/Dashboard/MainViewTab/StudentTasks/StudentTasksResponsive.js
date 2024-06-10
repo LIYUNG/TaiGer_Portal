@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link as LinkDom } from 'react-router-dom';
-import { FiExternalLink } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
-import { Link, TableCell, TableRow } from '@mui/material';
+import { Link, TableCell, TableRow, Typography } from '@mui/material';
+import LaunchIcon from '@mui/icons-material/Launch';
 
 import DEMO from '../../../../store/constant';
 import { convertDate } from '../../../Utils/contants';
@@ -133,18 +133,19 @@ function StudentTasksResponsive(props) {
               to={`${DEMO.SURVEY_LINK}`}
               component={LinkDom}
             >
-              {t('Profile', { ns: 'common' })}
-              <FiExternalLink
-                className="mx-1 mb-1"
-                style={{ cursor: 'pointer' }}
-              />
+              <Typography variant="body2" sx={{ display: 'flex' }}>
+                {t('Profile', { ns: 'common' })}
+                <LaunchIcon fontSize="small" />
+              </Typography>
             </Link>
           </TableCell>
           <TableCell>
-            {t(
-              'Please complete Profile so that your agent can understand your situation',
-              { ns: 'dashboard' }
-            )}
+            <Typography variant="body2" sx={{ display: 'flex' }}>
+              {t(
+                'Please complete Profile so that your agent can understand your situation',
+                { ns: 'dashboard' }
+              )}
+            </Typography>
           </TableCell>
           <TableCell></TableCell>
         </TableRow>
@@ -161,18 +162,19 @@ function StudentTasksResponsive(props) {
                 to={`${DEMO.COURSES_LINK}`}
                 component={LinkDom}
               >
-                {t('My Courses', { ns: 'common' })}
-                <FiExternalLink
-                  className="mx-1 mb-1"
-                  style={{ cursor: 'pointer' }}
-                />
+                <Typography variant="body2" sx={{ display: 'flex' }}>
+                  {t('My Courses', { ns: 'common' })}
+                  <LaunchIcon fontSize="small" />
+                </Typography>
               </Link>
             </TableCell>
             <TableCell>
-              {t(
-                'Please complete My Courses table. The agent will provide you with course analysis and courses suggestion.',
-                { ns: 'courses' }
-              )}
+              <Typography variant="body2" sx={{ display: 'flex' }}>
+                {t(
+                  'Please complete My Courses table. The agent will provide you with course analysis and courses suggestion.',
+                  { ns: 'courses' }
+                )}
+              </Typography>
             </TableCell>
             <TableCell></TableCell>
           </TableRow>
@@ -185,18 +187,19 @@ function StudentTasksResponsive(props) {
               to={`${DEMO.STUDENT_APPLICATIONS_LINK}`}
               component={LinkDom}
             >
-              {t('My Applications', { ns: 'common' })}
-              <FiExternalLink
-                className="mx-1 mb-1"
-                style={{ cursor: 'pointer' }}
-              />
+              <Typography variant="body2" sx={{ display: 'flex' }}>
+                {t('My Applications', { ns: 'common' })}
+                <LaunchIcon fontSize="small" />
+              </Typography>
             </Link>
           </TableCell>
           <TableCell>
-            {t(
-              "Please refer to the programs provided by the agent and visit the school's program website for detailed information. Complete the school selection before the start of the application season.",
-              { ns: 'courses' }
-            )}
+            <Typography variant="body2" sx={{ display: 'flex' }}>
+              {t(
+                "Please refer to the programs provided by the agent and visit the school's program website for detailed information. Complete the school selection before the start of the application season.",
+                { ns: 'courses' }
+              )}
+            </Typography>
           </TableCell>
           <TableCell></TableCell>
         </TableRow>
@@ -209,14 +212,18 @@ function StudentTasksResponsive(props) {
               to={`${DEMO.STUDENT_APPLICATIONS_LINK}`}
               component={LinkDom}
             >
-              {t('Application Results', { ns: 'common' })}
-              <FiExternalLink style={{ cursor: 'pointer' }} />
+              <Typography variant="body2" sx={{ display: 'flex' }}>
+                {t('Application Results', { ns: 'common' })}
+                <LaunchIcon fontSize="small" />
+              </Typography>
             </Link>
           </TableCell>
           <TableCell>
-            {t('Please update your applications results to us', {
-              ns: 'common'
-            })}
+            <Typography variant="body2" sx={{ display: 'flex' }}>
+              {t('Please update your applications results to us', {
+                ns: 'common'
+              })}
+            </Typography>
           </TableCell>
           <TableCell></TableCell>
         </TableRow>
@@ -231,18 +238,19 @@ function StudentTasksResponsive(props) {
                 to={`${DEMO.UNI_ASSIST_LINK}`}
                 component={LinkDom}
               >
-                Uni-Assist
-                <FiExternalLink
-                  className="mx-1 mb-1"
-                  style={{ cursor: 'pointer' }}
-                />
+                <Typography variant="body2" sx={{ display: 'flex' }}>
+                  Uni-Assist
+                  <LaunchIcon fontSize="small" />
+                </Typography>
               </Link>
             </TableCell>
             <TableCell>
-              {t(
-                'Please go to the Uni-Assist section, follow the instructions to complete',
-                { ns: 'courses' }
-              )}
+              <Typography variant="body2" sx={{ display: 'flex' }}>
+                {t(
+                  'Please go to the Uni-Assist section, follow the instructions to complete',
+                  { ns: 'courses' }
+                )}
+              </Typography>
             </TableCell>
             <TableCell></TableCell>
           </TableRow>
@@ -251,18 +259,19 @@ function StudentTasksResponsive(props) {
         <TableRow>
           <TableCell>
             <Link underline="hover" to={`${DEMO.PROFILE}`} component={LinkDom}>
-              {t('Personal Data', { ns: 'common' })}
-              <FiExternalLink
-                className="mx-1 mb-1"
-                style={{ cursor: 'pointer' }}
-              />
+              <Typography variant="body2" sx={{ display: 'flex' }}>
+                {t('Personal Data', { ns: 'common' })}
+                <LaunchIcon fontSize="small" />
+              </Typography>
             </Link>
           </TableCell>
           <TableCell>
-            {t(
-              'Please be sure to update your Chinese and English names, as well as your date of birth information. This will affect the preparation of formal documents by the editor for you.',
-              { ns: 'courses' }
-            )}
+            <Typography variant="body2" sx={{ display: 'flex' }}>
+              {t(
+                'Please be sure to update your Chinese and English names, as well as your date of birth information. This will affect the preparation of formal documents by the editor for you.',
+                { ns: 'courses' }
+              )}
+            </Typography>
           </TableCell>
           <TableCell></TableCell>
         </TableRow>
@@ -275,18 +284,19 @@ function StudentTasksResponsive(props) {
               to={`${DEMO.BASE_DOCUMENTS_LINK}`}
               component={LinkDom}
             >
-              {t('My Documents', { ns: 'common' })}
-              <FiExternalLink
-                className="mx-1 mb-1"
-                style={{ cursor: 'pointer' }}
-              />
+              <Typography variant="body2" sx={{ display: 'flex' }}>
+                {t('My Documents', { ns: 'common' })}
+                <LaunchIcon fontSize="small" />
+              </Typography>
             </Link>
           </TableCell>
           <TableCell>
-            {t(
-              'Please upload documents as soon as possible. The agent needs them to understand your academic background.',
-              { ns: 'courses' }
-            )}
+            <Typography variant="body2" sx={{ display: 'flex' }}>
+              {t(
+                'Please upload documents as soon as possible. The agent needs them to understand your academic background.',
+                { ns: 'courses' }
+              )}
+            </Typography>
           </TableCell>
           <TableCell></TableCell>
         </TableRow>
@@ -299,18 +309,19 @@ function StudentTasksResponsive(props) {
               to={`${DEMO.PORTALS_MANAGEMENT_LINK}`}
               component={LinkDom}
             >
-              {t('Portals Management', { ns: 'common' })}
-              <FiExternalLink
-                className="mx-1 mb-1"
-                style={{ cursor: 'pointer' }}
-              />
+              <Typography variant="body2" sx={{ display: 'flex' }}>
+                {t('Portals Management', { ns: 'common' })}
+                <LaunchIcon fontSize="small" />
+              </Typography>
             </Link>
           </TableCell>
           <TableCell>
-            {t(
-              "Please go to each school's website to create an account and provide your login credentials. This will facilitate the agent in conducting pre-submission checks for you in the future.",
-              { ns: 'courses' }
-            )}
+            <Typography variant="body2" sx={{ display: 'flex' }}>
+              {t(
+                "Please go to each school's website to create an account and provide your login credentials. This will facilitate the agent in conducting pre-submission checks for you in the future.",
+                { ns: 'courses' }
+              )}
+            </Typography>
           </TableCell>
           <TableCell></TableCell>
         </TableRow>

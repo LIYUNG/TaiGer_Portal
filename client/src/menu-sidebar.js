@@ -82,6 +82,18 @@ if (appConfig.vpdEnable) {
   });
 }
 
+if (appConfig.interviewEnable) {
+  application_overview.push({
+    id: 'interview',
+    title: 'Interview Center',
+    type: 'item',
+    url: '/interview-training',
+    icon: <HeadsetMicOutlinedIcon />,
+    target: false,
+    breadcrumbs: false
+  });
+}
+
 let all_students_nestedList = [
   {
     id: 'all-application-overview',
@@ -111,13 +123,17 @@ let all_students_nestedList = [
     url: '/dashboard/essay',
     icon: <BorderColorOutlinedIcon />
   },
-  {
-    id: 'interview-training',
-    title: 'Interview Training',
-    type: 'item',
-    icon: <HeadsetMicOutlinedIcon />,
-    url: '/interview-training'
-  },
+  ...(appConfig.interviewEnable
+    ? [
+        {
+          id: 'interview-training',
+          title: 'Interview Center',
+          type: 'item',
+          icon: <HeadsetMicOutlinedIcon />,
+          url: '/interview-training'
+        }
+      ]
+    : []),
   {
     id: 'all-students-overview',
     title: 'Student Overview',

@@ -1,20 +1,18 @@
 import React from 'react';
 import { Link as LinkDom } from 'react-router-dom';
 import { Link, List, ListItem } from '@mui/material';
-import {
-  AiFillCheckCircle,
-  AiFillQuestionCircle,
-  AiFillWarning
-} from 'react-icons/ai';
+import WarningIcon from '@mui/icons-material/Warning';
 
 import DEMO from '../../store/constant';
 import { isEnglishOK } from '../../Demo/Utils/checking-functions';
+import { FILE_MISSING_SYMBOL, FILE_OK_SYMBOL } from '../../Demo/Utils/contants';
+import { red } from '@mui/material/colors';
 
 const DocumentOkIcon = () => {
-  return <AiFillCheckCircle color="limegreen" size={16} />;
+  return FILE_OK_SYMBOL;
 };
 const DocumentMissingIcon = () => {
-  return <AiFillQuestionCircle color="grey" size={16} />;
+  return FILE_MISSING_SYMBOL;
 };
 
 export default function ApplicationProgressCardBody(props) {
@@ -64,7 +62,7 @@ export default function ApplicationProgressCardBody(props) {
                   component={LinkDom}
                   to={`${DEMO.SURVEY_LINK}`}
                 >
-                  <AiFillWarning color="red" size={16} /> English
+                  <WarningIcon color={red[700]} fontSize="small" /> English
                 </Link>
               </ListItem>
             )

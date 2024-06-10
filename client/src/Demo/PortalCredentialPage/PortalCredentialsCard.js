@@ -408,27 +408,31 @@ export default function PortalCredentialsCard(props) {
                           />
                         </Grid>
                         <Grid item xs={3}>
-                          <Link
-                            underline="hover"
-                            to={`${application.programId.application_portal_a}`}
-                            component={LinkDom}
-                            target="_blank"
-                          >
-                            {application.programId.application_portal_a}
-                          </Link>
+                          <Typography sx={{ wordBreak: 'break-all' }}>
+                            <Link
+                              underline="hover"
+                              to={`${application.programId.application_portal_a}`}
+                              component={LinkDom}
+                              target="_blank"
+                            >
+                              {application.programId.application_portal_a}
+                            </Link>
+                          </Typography>
                         </Grid>
                         <Grid item xs={3}>
-                          <Link
-                            underline="hover"
-                            to={`${application.programId.application_portal_a_instructions}`}
-                            component={LinkDom}
-                            target="_blank"
-                          >
-                            {
-                              application.programId
-                                .application_portal_a_instructions
-                            }
-                          </Link>
+                          <Typography sx={{ wordBreak: 'break-all' }}>
+                            <Link
+                              underline="hover"
+                              to={`${application.programId.application_portal_a_instructions}`}
+                              component={LinkDom}
+                              target="_blank"
+                            >
+                              {
+                                application.programId
+                                  .application_portal_a_instructions
+                              }
+                            </Link>
+                          </Typography>
                         </Grid>
                       </Grid>
                     )}
@@ -463,27 +467,31 @@ export default function PortalCredentialsCard(props) {
                           />
                         </Grid>
                         <Grid item xs={3}>
-                          <Link
-                            underline="hover"
-                            to={`${application.programId.application_portal_b}`}
-                            component={LinkDom}
-                            target="_blank"
-                          >
-                            {application.programId.application_portal_b}
-                          </Link>
+                          <Typography sx={{ wordBreak: 'break-all' }}>
+                            <Link
+                              underline="hover"
+                              to={`${application.programId.application_portal_b}`}
+                              component={LinkDom}
+                              target="_blank"
+                            >
+                              {application.programId.application_portal_b}
+                            </Link>
+                          </Typography>
                         </Grid>
                         <Grid item xs={3}>
-                          <Link
-                            underline="hover"
-                            to={`${application.programId.application_portal_b_instructions}`}
-                            component={LinkDom}
-                            target="_blank"
-                          >
-                            {
-                              application.programId
-                                .application_portal_b_instructions
-                            }
-                          </Link>
+                          <Typography sx={{ wordBreak: 'break-all' }}>
+                            <Link
+                              underline="hover"
+                              to={`${application.programId.application_portal_b_instructions}`}
+                              component={LinkDom}
+                              target="_blank"
+                            >
+                              {
+                                application.programId
+                                  .application_portal_b_instructions
+                              }
+                            </Link>
+                          </Typography>
                         </Grid>
                       </Grid>
                     )}

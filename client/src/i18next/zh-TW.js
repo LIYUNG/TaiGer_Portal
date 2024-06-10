@@ -8,6 +8,8 @@ export const translation_zh_TW = {
     'Last Login': '最近登入'
   },
   common: {
+    announcement:
+      '我們已更新的 email 通知系統至 no-reply@taigerconsultancy-portal.com. 請於日後接受討論邀請並加入日曆，往後任何會議邀請便會自動加入您的日曆，避免錯過忘記討論。',
     Add: '新增',
     'I Agree': '我同意',
     Account: '帳號',
@@ -15,6 +17,7 @@ export const translation_zh_TW = {
     Activate: '啟用',
     Activated: '已啟用',
     'Application Results': '申請結果',
+    'Action required': '需要動作',
     'Target Degree': '目標學位',
     'Aged days': '離上次更新(天)',
     'Document name': '文件名稱',
@@ -36,7 +39,8 @@ export const translation_zh_TW = {
     'Days left': '剩餘天數',
     Deadline: '截止日期',
     Target: '目標',
-    'First-, Last Name': 'First-, Last Name',
+    'First-/ Last Name': '名 / 姓',
+    'First-, Last Name': '名 , 姓',
     'Status(%)': '完成度(%)',
     'Updated by': '更新者',
     Comments: '註記',
@@ -177,6 +181,10 @@ export const translation_zh_TW = {
     'Target Year /Semester': '申請年/學期',
     'Admission Letter': '錄取信',
     'Rejection Letter': '拒絕信',
+    'Open Applications Distribution': '進行中的申請分布',
+    'Students decided programs': '學生已決定申請科系',
+    'Students do not decide programs yet. But the applications will be potentially activated when they would decide':
+      '學生尚未決定的科系。但這些科系可能將會改為申請，一旦學生確定。',
     Confirmation: '確認',
     Close: '關閉',
     Score: 'Score',
@@ -191,6 +199,8 @@ export const translation_zh_TW = {
     'File Name': '檔案名稱',
     Delete: '刪除',
     Status: '狀態',
+    Trainer: '訓練官',
+    Interview: '面試',
     Tasks: '任務',
     'Essay Writer': '論文編輯',
     'Assign Essay Writer': '指派論文編輯',
@@ -220,7 +230,7 @@ export const translation_zh_TW = {
     'All Documents': '所有文件',
     'All Documentations': '所有說明',
     'Essay Dashboard': '論文中心',
-    'Interview Training': '面試訓練',
+    'Interview Center': '面試訓練中心',
     'Student Database': '學生資料庫',
     Permissions: '權限管理',
     'CVMLRL Generator': 'CVMLRL 生成器',
@@ -276,7 +286,13 @@ export const translation_zh_TW = {
       '你是否想要將 {{studentName}} 移至{{status}}？',
     'Inform student for archive':
       '[注意] 勾選，學生將會被 Email 告知他的 Portal 服務結束。對於消失已久學生，強烈建議不要Email通知。封存之前請諮詢你的主管。對於正常錄取結束的學生，請勾選，已表示 Portal 服務正式結束。',
-    'New editor is assigned to you.': '新的編輯已指派給您。'
+    'New editor is assigned to you.': '新的編輯已指派給您。',
+    'No Program Selected Yet': '尚未選擇任何科系',
+    'Program Specific Documents Check': '科系要求特定文件',
+    'It looks like you did not finish survey. See':
+      '您尚未完成背景資料填寫。請見',
+    'Student View': '學生視角',
+    'Wait for Agent': '等待指派顧問'
   },
   dashboard: {
     Dashboard: '主控台',
@@ -286,7 +302,7 @@ export const translation_zh_TW = {
     'Edit Editor': '編輯寫手',
     'Configure Attribute': '編輯特質',
     'Please complete Profile so that your agent can understand your situation':
-      '請完成背景資料填寫，好讓您的故未能掌握您的狀況'
+      '請完成背景資料填寫，好讓您的顧問能掌握您的狀況'
   },
   documents: {
     confirmDocument:
@@ -373,7 +389,26 @@ export const translation_zh_TW = {
     'uni-assist full':
       'Uni-Assist 會全權負責轉交申請給學校。您的檔案全部完成後請全部上傳到 Uni-Assist 以及 Program 繳費上傳處。此 Program 不需要VPD'
   },
-  interviews: {},
+  interviews: {
+    Interviewer: '學校面試官',
+    'Interview Training Time': '面試訓練時間',
+    'Training Time': '訓練時間',
+    'All Interviews': '所有面試',
+    'My Interviews': '我的面試',
+    'Training Request': '訓練請求',
+    'Create Interview Training': '新增面試訓練',
+    'Interview duration': '面試長度',
+    'Interview program': '面試科系',
+    'Interview Training Meeting Link': '面試訓練會議連結',
+    'Please provide received interview information':
+      '請提供您收到學校面試之資訊',
+    'Please provide interview information (invitation email, reading assignment, etc.) so your interviewer trainer can prepare the training for you.':
+      '請提供校方給的面試資訊 (面試邀請 Email、閱讀作業、問題集等。若有pdf附件等，請先在新增此面試訓練請求後，方可上傳)。您的面試訓練官才能準備好您的面試訓練',
+    'If you did not receive an interview invitation from the university. Please do not request the training.':
+      '如果您未收到學校的面試邀請，請勿新增面試訓練要求',
+    'If you have previously practiced interviews with our interview training officer, please do not request another interview training unless there are special requirements for the new interview (such as reading specific articles or books).':
+      '如果您之前已與我們的面試訓練官進行過面試練習，除非有特殊要求（如閱讀特定書報等），否則請勿再次申請面試訓練。'
+  },
   portalManagement: {
     'Update portal credentials successfully': '帳號密碼更新成功'
   },
@@ -384,10 +419,9 @@ export const translation_zh_TW = {
     'Other wish': '其他需求'
   },
   translation: {
-    'Interview Training Time': '面試訓練時間',
-    'Interview Date': '面試時間',
+    'Interview Time': '面試時間',
+    'Your timezone local time': '您所在時區時間',
     'Interview Program': '面試學程',
-    Interviewer: '學校面試官',
     Overview: '總攬',
     'Active Student List': '申請中學生名單',
     'Programs Update Status': '學程更新狀況',
@@ -425,6 +459,7 @@ export const translation_zh_TW = {
     'Some of Base Documents are still missing': '你有缺少文件',
     Attention: '注意',
     Instructions: '說明',
+    Requirements: '要求',
     'Do you want to set the application of': '您確定要設定此申請',
     'Do you want to reset the result of the application of':
       '您確定要重設申請結果嗎？',

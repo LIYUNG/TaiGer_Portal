@@ -10,7 +10,7 @@ import {
   Breadcrumbs
 } from '@mui/material';
 import PropTypes from 'prop-types';
-import { AiOutlinePlus } from 'react-icons/ai';
+import AddIcon from '@mui/icons-material/Add';
 import { useTranslation } from 'react-i18next';
 
 import UsersList from './UsersList';
@@ -185,8 +185,9 @@ function UsersTable() {
         color="primary"
         variant="contained"
         onClick={openAddUserModal}
+        startIcon={<AddIcon />}
       >
-        <AiOutlinePlus /> {t('Add New User')}
+        {t('Add New User')}
       </Button>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs
@@ -254,8 +255,9 @@ function UsersTable() {
         color="primary"
         variant="contained"
         onClick={openAddUserModal}
+        startIcon={<AddIcon />}
       >
-        <AiOutlinePlus /> {t('Add New User')}
+        {t('Add New User')}
       </Button>
       <AddUserModal
         isLoaded={userTableState.isLoaded}

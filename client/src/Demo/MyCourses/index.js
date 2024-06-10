@@ -46,6 +46,7 @@ import { appConfig } from '../../config';
 import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
 import ModalNew from '../../components/Modal';
+import { TopBar } from '../../components/TopBar/TopBar';
 
 export default function MyCourses() {
   const { student_id } = useParams();
@@ -457,11 +458,7 @@ export default function MyCourses() {
       )}
       {statedata.student.archiv && (
         <Box className="sticky-top">
-          <Card>
-            <Typography variant="h6">
-              Status: <b>Close</b>
-            </Typography>
-          </Card>
+          <TopBar />
         </Box>
       )}
       <Breadcrumbs aria-label="breadcrumb">

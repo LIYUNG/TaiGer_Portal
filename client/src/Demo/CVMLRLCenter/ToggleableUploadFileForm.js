@@ -15,7 +15,7 @@ const GENERAL_FILTE_TYPE = [
   { name: 'Recommendation Letter (B)', value: 'Recommendation_Letter_B' },
   { name: 'Recommendation Letter (C)', value: 'Recommendation_Letter_C' },
   { name: 'Form A', value: 'Form_A' },
-  { name: 'Form_B', value: 'Form_B' },
+  { name: 'Form B', value: 'Form_B' },
   { name: 'Others', value: 'Others' }
 ];
 const PROGRAM_SPECIFIC_FILTE_TYPE = [
@@ -83,10 +83,10 @@ function ToggleableUploadFileForm(props) {
   }
   return (
     <Grid container spacing={2}>
-      <Grid item xs={8} md={8}>
+      <Grid item xs={12} md={8}>
         {drop_list}
       </Grid>
-      <Grid item xs={4} md={4}>
+      <Grid item xs={12} md={4}>
         {props.filetype === 'General' ? (
           <Button
             color="primary"

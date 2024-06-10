@@ -1,19 +1,16 @@
 const {
-  model,
-  Schema,
   Types: { ObjectId }
 } = require('mongoose');
 const mongoose = require('mongoose');
+
 const interviewsSchema = new mongoose.Schema(
   {
     student_id: { type: ObjectId, ref: 'User' },
     trainer_id: [{ type: ObjectId, ref: 'User' }],
+    thread_id: { type: ObjectId, ref: 'Documentthread' },
     program_id: { type: ObjectId, ref: 'Program' },
+    event_id: { type: ObjectId, ref: 'Event' },
     interview_description: {
-      type: String,
-      default: ''
-    },
-    interview_notes: {
       type: String,
       default: ''
     },
@@ -33,9 +30,9 @@ const interviewsSchema = new mongoose.Schema(
       type: String,
       default: ''
     },
-    interview_time: {
-      type: String,
-      default: ''
+    isClosed: {
+      type: Boolean,
+      default: false
     },
     start: {
       type: Date

@@ -1,158 +1,126 @@
 const { ErrorResponse } = require('../common/errors');
 const { Role } = require('../models/User');
-const Permission = require('../models/Permission');
+const logger = require('../services/logger');
+const { getPermission } = require('../utils/queryFunctions');
+const { asyncHandler } = require('./error-handler');
 
-const permission_canAssignEditor_filter = async (req, res, next) => {
-  const { user } = req;
-  if (user.role === Role.Editor) {
-    const permissions = await Permission.findOne({ user_id: user._id });
-    if (permissions && permissions.canAssignEditors) {
+const permission_canAssignEditor_filter = asyncHandler(
+  async (req, res, next) => {
+    const { user } = req;
+    const cachedPermission = await getPermission(user);
+
+    if (user.role === Role.Admin || cachedPermission?.canAssignEditors) {
       next();
     } else {
-      return next(
-        new ErrorResponse(403, 'Not allowed to access other resource.')
-      );
+      logger.warn('permissions denied: permission_canAssignEditor_filter');
+      throw new ErrorResponse(403, 'Not allowed to access other resource.');
     }
-  } else {
-    next();
   }
-};
+);
 
-const permission_canAssignAgent_filter = async (req, res, next) => {
-  const { user } = req;
-  if (user.role === Role.Agent) {
-    const permissions = await Permission.findOne({ user_id: user._id });
-    if (permissions && permissions.canAssignAgents) {
+const permission_canAssignAgent_filter = asyncHandler(
+  async (req, res, next) => {
+    const { user } = req;
+    const cachedPermission = await getPermission(user);
+    if (user.role === Role.Admin || cachedPermission?.canAssignAgents) {
       next();
     } else {
-      return next(
-        new ErrorResponse(403, 'Not allowed to access other resource.')
-      );
+      logger.warn('permissions denied: permission_canAssignAgent_filter');
+      throw new ErrorResponse(403, 'Not allowed to access other resource.');
     }
-  } else {
-    next();
   }
-};
+);
 
-const permission_canModifyDocs_filter = async (req, res, next) => {
+const permission_canModifyDocs_filter = asyncHandler(async (req, res, next) => {
   const { user } = req;
   if (user.role === Role.Agent || user.role === Role.Editor) {
-    const permission = await Permission.findOne({ user_id: user._id });
-    if (!permission) {
-      return next(
-        new ErrorResponse(403, 'Permission denied: Operation forbidden.')
-      );
-    }
-    if (!permission.canModifyDocumentation) {
-      return next(
-        new ErrorResponse(403, 'Permission denied: Operation forbidden.')
-      );
+    const cachedPermission = await getPermission(user);
+    if (!cachedPermission?.canModifyDocumentation) {
+      logger.warn('permissions denied: permission_canModifyDocs_filter');
+      throw new ErrorResponse(403, 'Permission denied: Operation forbidden.');
     }
     next();
   } else {
     next();
   }
-};
+});
 
-const permission_canAccessStudentDatabase_filter = async (req, res, next) => {
-  const { user } = req;
-  if (user.role === Role.Agent || user.role === Role.Editor) {
-    const permission = await Permission.findOne({ user_id: user._id });
-    if (!permission) {
-      return next(
-        new ErrorResponse(403, 'Permission denied: Operation forbidden.')
-      );
+const permission_canAccessStudentDatabase_filter = asyncHandler(
+  async (req, res, next) => {
+    const { user } = req;
+    if (user.role === Role.Agent || user.role === Role.Editor) {
+      const cachedPermission = await getPermission(user);
+      if (!cachedPermission?.canAccessStudentDatabase) {
+        logger.warn(
+          'permissions denied: permission_canAccessStudentDatabase_filter'
+        );
+        throw new ErrorResponse(403, 'Permission denied: Operation forbidden.');
+      }
+      next();
+    } else {
+      next();
     }
-    if (!permission.canAccessStudentDatabase) {
-      return next(
-        new ErrorResponse(403, 'Permission denied: Operation forbidden.')
-      );
-    }
-    next();
-  } else {
-    next();
   }
-};
+);
 
-const permission_TaiGerAIRatelimiter = async (req, res, next) => {
+const permission_TaiGerAIRatelimiter = asyncHandler(async (req, res, next) => {
   const { user } = req;
-  const permission = await Permission.findOne({ user_id: user._id });
-  if (!permission) {
-    return next(
-      new ErrorResponse(403, 'Permission denied: Operation forbidden.')
-    );
+  const permission = await getPermission(user);
+  if (!permission?.taigerAiQuota || permission.taigerAiQuota === 0) {
+    logger.warn('permissions denied: permission_TaiGerAIRatelimiter');
+    throw new ErrorResponse(403, 'Permission denied: Operation forbidden.');
   }
-  if (!permission.taigerAiQuota) {
-    return next(new ErrorResponse(403, 'Permission denied: No enough Quota.'));
-  }
-  // Make sure not abuse the api call.
-  if (permission.taigerAiQuota === 0) {
-    return next(
-      new ErrorResponse(
-        403,
-        'Permission denied: Quota exhausted. Please top up'
-      )
-    );
-  }
-  next();
-};
 
-const permission_canUseTaiGerAI_filter = async (req, res, next) => {
-  const { user } = req;
-  const permission = await Permission.findOne({ user_id: user._id });
-  if (!permission) {
-    return next(
-      new ErrorResponse(403, 'Permission denied: Operation forbidden.')
-    );
-  }
-  if (!permission.canUseTaiGerAI) {
-    return next(
-      new ErrorResponse(403, 'Permission denied: Operation forbidden.')
-    );
-  }
-  next();
-};
+  next(); 
+});
 
-const permission_canModifyProgramList_filter = async (req, res, next) => {
-  const { user } = req;
-  // TODO: logic
-  if (user.role === Role.Agent) {
-    const permission = await Permission.findOne({ user_id: user._id });
-    if (!permission) {
-      return next(
-        new ErrorResponse(403, 'Permission denied: Operation forbidden.')
-      );
+const permission_canUseTaiGerAI_filter = asyncHandler(
+  async (req, res, next) => {
+    const { user } = req;
+    const permission = await getPermission(user);
+    if (!permission?.canUseTaiGerAI) {
+      logger.warn('permissions denied: permission_canUseTaiGerAI_filter');
+      throw new ErrorResponse(403, 'Permission denied: Operation forbidden.');
     }
-    if (!permission.canModifyProgramList) {
-      return next(
-        new ErrorResponse(403, 'Permission denied: Operation forbidden.')
-      );
-    }
-    next();
-  } else {
     next();
   }
-};
+);
 
-const permission_canModifyTicketList_filter = async (req, res, next) => {
-  const { user } = req;
-  if (user.role === Role.Agent) {
-    const permission = await Permission.findOne({ user_id: user._id });
-    if (!permission) {
-      return next(
-        new ErrorResponse(403, 'Permission denied: Operation forbidden.')
-      );
+const permission_canModifyProgramList_filter = asyncHandler(
+  async (req, res, next) => {
+    const { user } = req;
+    if (user.role === Role.Agent) {
+      const permission = await getPermission(user);
+      if (!permission?.canModifyProgramList) {
+        logger.warn(
+          'permissions denied: permission_canModifyProgramList_filter'
+        );
+        throw new ErrorResponse(403, 'Permission denied: Operation forbidden.');
+      }
+      next();
+    } else {
+      next();
     }
-    if (!permission.canModifyTicketList) {
-      return next(
-        new ErrorResponse(403, 'Permission denied: Operation forbidden.')
-      );
-    }
-    next();
-  } else {
-    next();
   }
-};
+);
+
+const permission_canModifyTicketList_filter = asyncHandler(
+  async (req, res, next) => {
+    const { user } = req;
+    if (user.role === Role.Agent) {
+      const permission = await getPermission(user);
+      if (!permission?.canModifyTicketList) {
+        logger.warn(
+          'permissions denied: permission_canModifyTicketList_filter'
+        );
+        throw new ErrorResponse(403, 'Permission denied: Operation forbidden.');
+      }
+      next();
+    } else {
+      next();
+    }
+  }
+);
 
 module.exports = {
   permission_canAssignEditor_filter,

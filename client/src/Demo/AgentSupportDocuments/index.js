@@ -9,7 +9,8 @@ import { TabTitle } from '../Utils/TabTitle';
 import {
   AGENT_SUPPORT_DOCUMENTS_A,
   is_TaiGer_role,
-  open_tasks
+  open_tasks,
+  toogleItemInArray
 } from '../Utils/checking-functions';
 import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
@@ -82,13 +83,10 @@ function index() {
       row.id === id
         ? {
             ...row,
-            flag_by_user_id: row.flag_by_user_id?.includes(user._id.toString())
-              ? row.flag_by_user_id?.filter(
-                  (userId) => userId !== user._id.toString()
-                )
-              : row.flag_by_user_id?.length > 0
-              ? [...row.flag_by_user_id, user._id.toString()]
-              : [user._id.toString()]
+            flag_by_user_id: toogleItemInArray(
+              row.flag_by_user_id,
+              user._id.toString()
+            )
           }
         : row
     );

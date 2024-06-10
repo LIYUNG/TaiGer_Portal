@@ -5,7 +5,6 @@ import ApplicantsOverview from '.';
 import 'react-i18next';
 import { getStudents, getProgramTickets } from '../../api';
 import axios from 'axios';
-import { request } from '../../api/request';
 import { useAuth } from '../../components/AuthProvider/index';
 import {
   MemoryRouter,
@@ -16,7 +15,6 @@ import {
 import { mockSingleData } from '../../test/testingStudentData';
 
 jest.mock('axios');
-jest.mock('request');
 jest.mock('../../api');
 
 jest.mock('react-i18next', () => ({

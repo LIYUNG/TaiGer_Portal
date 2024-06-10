@@ -15,6 +15,7 @@ import {
 import { Navigate, Link as LinkDom } from 'react-router-dom';
 import CheckIcon from '@mui/icons-material/Check';
 import { useTranslation } from 'react-i18next';
+import _ from 'lodash';
 
 import { isInTheFuture } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
@@ -139,27 +140,28 @@ function AllOfficeHours() {
               isInTheFuture(event.end) &&
               (!event.isConfirmedReceiver || !event.isConfirmedRequester)
           ).length !== 0 &&
-            events
-              ?.filter(
-                (event) =>
-                  isInTheFuture(event.end) &&
-                  (!event.isConfirmedReceiver || !event.isConfirmedRequester)
+            _.reverse(
+              _.sortBy(
+                events?.filter(
+                  (event) =>
+                    isInTheFuture(event.end) &&
+                    (!event.isConfirmedReceiver || !event.isConfirmedRequester)
+                ),
+                ['start']
               )
-              .map((event, i) => (
-                <EventConfirmationCard
-                  key={i}
-                  event={event}
-                  handleConfirmAppointmentModalOpen={
-                    handleConfirmAppointmentModalOpen
-                  }
-                  handleEditAppointmentModalOpen={
-                    handleEditAppointmentModalOpen
-                  }
-                  handleDeleteAppointmentModalOpen={
-                    handleDeleteAppointmentModalOpen
-                  }
-                />
-              ))}
+            ).map((event, i) => (
+              <EventConfirmationCard
+                key={i}
+                event={event}
+                handleConfirmAppointmentModalOpen={
+                  handleConfirmAppointmentModalOpen
+                }
+                handleEditAppointmentModalOpen={handleEditAppointmentModalOpen}
+                handleDeleteAppointmentModalOpen={
+                  handleDeleteAppointmentModalOpen
+                }
+              />
+            ))}
           <Card>
             <Typography variant="h6">
               {t('Upcoming', { ns: 'common' })}
@@ -170,52 +172,54 @@ function AllOfficeHours() {
                 event.isConfirmedRequester &&
                 event.isConfirmedReceiver
             ).length !== 0
-              ? events
-                  ?.filter(
-                    (event) =>
-                      isInTheFuture(event.end) &&
-                      event.isConfirmedRequester &&
-                      event.isConfirmedReceiver
+              ? _.reverse(
+                  _.sortBy(
+                    events?.filter(
+                      (event) =>
+                        isInTheFuture(event.end) &&
+                        event.isConfirmedRequester &&
+                        event.isConfirmedReceiver
+                    ),
+                    ['start']
                   )
-                  .sort((a, b) => a.start - b.start)
-                  .map((event, i) => (
-                    <EventConfirmationCard
-                      key={i}
-                      event={event}
-                      handleConfirmAppointmentModalOpen={
-                        handleConfirmAppointmentModalOpen
-                      }
-                      handleEditAppointmentModalOpen={
-                        handleEditAppointmentModalOpen
-                      }
-                      handleDeleteAppointmentModalOpen={
-                        handleDeleteAppointmentModalOpen
-                      }
-                    />
-                  ))
+                ).map((event, i) => (
+                  <EventConfirmationCard
+                    key={i}
+                    event={event}
+                    handleConfirmAppointmentModalOpen={
+                      handleConfirmAppointmentModalOpen
+                    }
+                    handleEditAppointmentModalOpen={
+                      handleEditAppointmentModalOpen
+                    }
+                    handleDeleteAppointmentModalOpen={
+                      handleDeleteAppointmentModalOpen
+                    }
+                  />
+                ))
               : t('No upcoming event', { ns: 'common' })}
           </Card>
           <Card>
             <Typography variant="h6">{t('Past', { ns: 'common' })}</Typography>
-            {events
-              ?.filter((event) => !isInTheFuture(event.end))
-              .sort((a, b) => a.start > b.start)
-              .map((event, i) => (
-                <EventConfirmationCard
-                  key={i}
-                  event={event}
-                  handleConfirmAppointmentModalOpen={
-                    handleConfirmAppointmentModalOpen
-                  }
-                  handleEditAppointmentModalOpen={
-                    handleEditAppointmentModalOpen
-                  }
-                  handleDeleteAppointmentModalOpen={
-                    handleDeleteAppointmentModalOpen
-                  }
-                  disabled={true}
-                />
-              ))}
+            {_.reverse(
+              _.sortBy(
+                events?.filter((event) => !isInTheFuture(event.end)),
+                ['start']
+              )
+            ).map((event, i) => (
+              <EventConfirmationCard
+                key={i}
+                event={event}
+                handleConfirmAppointmentModalOpen={
+                  handleConfirmAppointmentModalOpen
+                }
+                handleEditAppointmentModalOpen={handleEditAppointmentModalOpen}
+                handleDeleteAppointmentModalOpen={
+                  handleDeleteAppointmentModalOpen
+                }
+                disabled={true}
+              />
+            ))}
           </Card>
           <ModalNew
             open={isConfirmModalOpen}

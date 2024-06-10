@@ -1,9 +1,13 @@
 import React from 'react';
 import Linkify from 'react-linkify';
-import { getNumberOfDays, convertDate, profile_list } from './contants';
 import { useTranslation } from 'react-i18next';
 import { Link } from '@mui/material';
 import { Link as LinkDom } from 'react-router-dom';
+import JSZip from 'jszip';
+import * as XLSX from 'xlsx';
+
+import { getNumberOfDays, convertDate, profile_list } from './contants';
+import { pdfjs } from 'react-pdf';
 
 // Tested
 export const is_TaiGer_role = (user) =>
@@ -912,6 +916,16 @@ export const check_applications_to_decided = (student) => {
   );
 };
 
+export const has_admissions = (student) => {
+  if (!student.applications || student.applications.length === 0) {
+    return false;
+  }
+
+  return student.applications.some(
+    (app) => isProgramSubmitted(app) && isProgramAdmitted(app)
+  );
+};
+
 export const all_applications_results_updated = (student) => {
   if (!student.applications || student.applications.length === 0) {
     return true;
@@ -1791,6 +1805,14 @@ export const programs_refactor = (students) => {
   return applications;
 };
 
+export const toogleItemInArray = (arr, item) => {
+  return arr?.includes(item)
+    ? arr?.filter((userId) => userId !== item)
+    : arr?.length > 0
+    ? [...arr, item]
+    : [item];
+};
+
 const getNextProgram = (student) => {
   const nextProgram = programs_refactor([student])
     .filter(
@@ -1970,4 +1992,132 @@ export const does_essay_have_writers = (essayDocumentThreads) => {
     }
   }
   return true;
+};
+
+export const extractTextFromDocx = async (arrayBuffer) => {
+  const zip = await JSZip.loadAsync(arrayBuffer);
+  const documentXml = await zip.file('word/document.xml')?.async('string');
+  // Extract text from the XML content
+  let textContent = documentXml?.replace(/<[^>]+>/g, ''); // Strip HTML tags
+  // Extract header text if present
+  let headerText = '';
+  const headerXml = await zip
+    .file('word/header1.xml')
+    ?.async('string')
+    .catch(() => ''); // Assuming there's only one header
+  if (headerXml) {
+    headerText = headerXml?.replace(/<[^>]+>/g, ''); // Strip XML tags
+  }
+
+  // Extract footer text if present
+  let footerText = '';
+  const footerXml = await zip
+    .file('word/footer1.xml')
+    ?.async('string')
+    .catch(() => ''); // Assuming there's only one footer
+  if (footerXml) {
+    footerText = footerXml?.replace(/<[^>]+>/g, ''); // Strip XML tags
+  }
+  return { headerText, textContent, footerText };
+};
+
+export const readPDF = async (file, studentName) => {
+  const checkPoints = {
+    correctFirstname: {
+      value: false,
+      text: 'NOT Detected student first name in the document'
+    }
+  };
+  const reader = new FileReader();
+  const result = await new Promise((resolve, reject) => {
+    reader.onload = async (event) => {
+      try {
+        const content = event.target.result;
+        const typedarray = new Uint8Array(content);
+        const pdf = await pdfjs.getDocument(typedarray).promise;
+        let text = '';
+        for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+          const page = await pdf.getPage(pageNum);
+          const pageTextContent = await page.getTextContent();
+          pageTextContent.items.forEach((item) => {
+            text += item.str + ' ';
+          });
+        }
+        if (text.toLowerCase().includes(studentName.toLowerCase())) {
+          checkPoints.correctFirstname.value = true;
+          checkPoints.correctFirstname.text =
+            checkPoints.correctFirstname.text.replace('NOT ', '');
+        }
+        resolve(checkPoints);
+      } catch (error) {
+        checkPoints.error = { value: true, text: error.message };
+        reject(checkPoints);
+      }
+    };
+    reader.readAsArrayBuffer(file);
+  });
+  return result;
+};
+
+export const readDOCX = async (file, studentName) => {
+  const checkPoints = {
+    correctFirstname: {
+      value: false,
+      text: 'NOT Detected student first name in the document'
+    }
+  };
+  const reader = new FileReader();
+  const result = await new Promise((resolve) => {
+    reader.onload = async (event) => {
+      const content = event.target.result;
+      const { headerText, textContent, footerText } = await extractTextFromDocx(
+        content
+      );
+      const combinedText =
+        `${headerText}${textContent}${footerText}`.toLowerCase();
+      if (combinedText.includes(studentName.toLowerCase())) {
+        checkPoints.correctFirstname.value = true;
+        checkPoints.correctFirstname.text =
+          checkPoints.correctFirstname.text.replace('NOT ', '');
+      }
+      if (headerText || footerText) {
+        checkPoints.metadata = {
+          hasMetadata: true,
+          metaData: `Potential Risky Metadata, please double check if this is safe: Header: ${headerText} Footer: ${footerText}.`
+        };
+      }
+      resolve(checkPoints);
+    };
+    reader.readAsArrayBuffer(file);
+  });
+  return result;
+};
+
+export const readXLSX = async (file, studentName) => {
+  const checkPoints = {
+    correctFirstname: {
+      value: false,
+      text: 'NOT Detected student first name in the document'
+    }
+  };
+  const reader = new FileReader();
+  const result = await new Promise((resolve) => {
+    reader.onload = (event) => {
+      const data = new Uint8Array(event.target.result);
+      const workbook = XLSX.read(data, { type: 'array' });
+      let text = '';
+      workbook.SheetNames.forEach((sheetName) => {
+        const sheet = workbook.Sheets[sheetName];
+        text += XLSX.utils.sheet_to_csv(sheet);
+      });
+      if (text.toLowerCase().includes(studentName.toLowerCase())) {
+        checkPoints.correctFirstname.value = true;
+        checkPoints.correctFirstname.text =
+          checkPoints.correctFirstname.text.replace('NOT ', '');
+      }
+      resolve(checkPoints);
+    };
+    reader.readAsArrayBuffer(file);
+  });
+  return result;
 };

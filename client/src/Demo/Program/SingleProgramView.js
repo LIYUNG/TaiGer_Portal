@@ -628,6 +628,7 @@ function SingleProgramView(props) {
           )}
           <Card className="card-with-scroll">
             <CardContent className="card-scrollable-body">
+              <Typography>{t('Provide Feedback')}</Typography>
               <ProgramReport
                 uni_name={props.program.school}
                 program_name={props.program.program_name}

@@ -292,7 +292,13 @@ export const translation_zh_TW = {
     'It looks like you did not finish survey. See':
       '您尚未完成背景資料填寫。請見',
     'Student View': '學生視角',
-    'Wait for Agent': '等待指派顧問'
+    'Wait for Agent': '等待指派顧問',
+    You: '你',
+    timeMinutes: '{{minutes}}分鐘',
+    timeHours: '{{hours}}小時',
+    timeDays: '{{days}}天',
+    timeWeeks: '{{weeks}}週',
+    Send: '送出'
   },
   dashboard: {
     Dashboard: '主控台',
@@ -417,6 +423,10 @@ export const translation_zh_TW = {
       '請完成問卷，您的Agent才能了解您的狀況',
     'University (Bachelor degree)': '大學 (學士學位)',
     'Other wish': '其他需求'
+  },
+  visa: {
+    'Please consider working on visa, if you decide the offer.':
+      '若您決定欲就讀的科系，請至儘速至該國使館處理簽證。請先讀完左側說明連結再與顧問討論。'
   },
   translation: {
     'Interview Time': '面試時間',

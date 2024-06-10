@@ -1,5 +1,4 @@
 const _ = require('lodash');
-
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
 const Permission = require('../models/Permission');
@@ -23,10 +22,12 @@ const updateUserPermission = asyncHandler(async (req, res) => {
   })
     .populate('user_id', 'firstname lastname email')
     .lean();
+  // TODO: delete permission cache!
+
   res.status(200).send({ success: true, data: permissions });
   // TODO: email inform user
   // Email inform user, the updated status
-  await updatePermissionNotificationEmail(
+  updatePermissionNotificationEmail(
     {
       firstname: permissions.user_id.firstname,
       lastname: permissions.user_id.lastname,

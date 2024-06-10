@@ -21,6 +21,7 @@ import { Navigate, useParams, Link as LinkDom } from 'react-router-dom';
 import DeleteIcon from '@mui/icons-material/Delete';
 import moment from 'moment-timezone';
 import { useTranslation } from 'react-i18next';
+import _ from 'lodash';
 
 import {
   getNextDayDate,
@@ -195,13 +196,76 @@ function TaiGerOfficeHours() {
               isInTheFuture(event.end) &&
               (!event.isConfirmedReceiver || !event.isConfirmedRequester)
           ).length !== 0 &&
-            events
-              ?.filter(
+            _.reverse(
+              _.sortBy(
+                events?.filter(
+                  (event) =>
+                    isInTheFuture(event.end) &&
+                    (!event.isConfirmedReceiver || !event.isConfirmedRequester)
+                ),
+                ['start']
+              )
+            )?.map((event, i) => (
+              <EventConfirmationCard
+                key={i}
+                event={event}
+                handleConfirmAppointmentModalOpen={
+                  handleConfirmAppointmentModalOpen
+                }
+                handleEditAppointmentModalOpen={handleEditAppointmentModalOpen}
+                handleDeleteAppointmentModalOpen={
+                  handleDeleteAppointmentModalOpen
+                }
+              />
+            ))}
+          <Card>
+            <Typography variant="h6">
+              {t('Upcoming', { ns: 'common' })}
+            </Typography>
+            <Box>
+              {events?.filter(
                 (event) =>
                   isInTheFuture(event.end) &&
-                  (!event.isConfirmedReceiver || !event.isConfirmedRequester)
-              )
-              .map((event, i) => (
+                  event.isConfirmedRequester &&
+                  event.isConfirmedReceiver
+              ).length !== 0
+                ? _.reverse(
+                    _.sortBy(
+                      events?.filter(
+                        (event) =>
+                          isInTheFuture(event.end) &&
+                          event.isConfirmedRequester &&
+                          event.isConfirmedReceiver
+                      ),
+                      ['start']
+                    )
+                  ).map((event, i) => (
+                    <EventConfirmationCard
+                      key={i}
+                      event={event}
+                      handleConfirmAppointmentModalOpen={
+                        handleConfirmAppointmentModalOpen
+                      }
+                      handleEditAppointmentModalOpen={
+                        handleEditAppointmentModalOpen
+                      }
+                      handleDeleteAppointmentModalOpen={
+                        handleDeleteAppointmentModalOpen
+                      }
+                    />
+                  ))
+                : t('No upcoming event', { ns: 'common' })}
+            </Box>
+          </Card>
+          <Card>
+            <Typography variant="h6">{t('Past', { ns: 'common' })}</Typography>
+            <Box>
+              {_.reverse(
+                _.sortBy(
+                  events?.filter((event) => !isInTheFuture(event.end)),
+                  ['start']
+                )
+              ).map((event, i) => (
                 <EventConfirmationCard
                   key={i}
                   event={event}
@@ -214,65 +278,9 @@ function TaiGerOfficeHours() {
                   handleDeleteAppointmentModalOpen={
                     handleDeleteAppointmentModalOpen
                   }
+                  disabled={true}
                 />
               ))}
-          <Card>
-            <Typography variant="h6">
-              {t('Upcoming', { ns: 'common' })}
-            </Typography>
-            <Box>
-              {events?.filter(
-                (event) =>
-                  isInTheFuture(event.end) &&
-                  event.isConfirmedRequester &&
-                  event.isConfirmedReceiver
-              ).length !== 0
-                ? events
-                    ?.filter(
-                      (event) =>
-                        isInTheFuture(event.end) &&
-                        event.isConfirmedRequester &&
-                        event.isConfirmedReceiver
-                    )
-                    .map((event, i) => (
-                      <EventConfirmationCard
-                        key={i}
-                        event={event}
-                        handleConfirmAppointmentModalOpen={
-                          handleConfirmAppointmentModalOpen
-                        }
-                        handleEditAppointmentModalOpen={
-                          handleEditAppointmentModalOpen
-                        }
-                        handleDeleteAppointmentModalOpen={
-                          handleDeleteAppointmentModalOpen
-                        }
-                      />
-                    ))
-                : t('No upcoming event', { ns: 'common' })}
-            </Box>
-          </Card>
-          <Card>
-            <Typography variant="h6">{t('Past', { ns: 'common' })}</Typography>
-            <Box>
-              {events
-                ?.filter((event) => !isInTheFuture(event.end))
-                .map((event, i) => (
-                  <EventConfirmationCard
-                    key={i}
-                    event={event}
-                    handleConfirmAppointmentModalOpen={
-                      handleConfirmAppointmentModalOpen
-                    }
-                    handleEditAppointmentModalOpen={
-                      handleEditAppointmentModalOpen
-                    }
-                    handleDeleteAppointmentModalOpen={
-                      handleDeleteAppointmentModalOpen
-                    }
-                    disabled={true}
-                  />
-                ))}
             </Box>
           </Card>
           <ModalNew

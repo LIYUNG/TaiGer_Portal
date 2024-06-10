@@ -117,8 +117,7 @@ const TasksReminderEmails_Agent_core = async () => {
         '-messages'
       )
       .select('-notification')
-      .lean()
-      .exec();
+      .lean();
     if (agent_students.length > 0) {
       if (isNotArchiv(agents[j])) {
         AgentTasksReminderEmail(

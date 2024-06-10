@@ -9,12 +9,15 @@ import {
   Button,
   IconButton,
   Link,
-  Typography
+  Typography,
+  FormGroup,
+  FormControlLabel,
+  Checkbox
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { FileIcon, defaultStyles } from 'react-file-icon';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-
+import { is_TaiGer_Student } from '../../Utils/checking-functions';
 import { BASE_URL } from '../../../api/request';
 import EditorSimple from '../../../components/EditorJs/EditorSimple';
 // import Output from 'editorjs-react-renderer';
@@ -23,6 +26,7 @@ import { useAuth } from '../../../components/AuthProvider';
 import ModalNew from '../../../components/Modal';
 import { useTranslation } from 'react-i18next';
 import Loading from '../../../components/Loading/Loading';
+import { IgnoreMessageThread } from '../../../api/index';
 
 function Message(props) {
   const { user } = useAuth();
@@ -32,7 +36,12 @@ function Message(props) {
     ConvertedContent: '',
     message_id: '',
     isLoaded: false,
-    deleteMessageModalShow: false
+    deleteMessageModalShow: false,
+    ignore_message:
+      props.message.ignore_message === false ||
+      props.message.ignore_message === undefined
+        ? false
+        : props.message.ignore_message
   });
   useEffect(() => {
     var initialEditorState = null;
@@ -79,6 +88,29 @@ function Message(props) {
       deleteMessageModalShow: false
     }));
     props.onDeleteSingleMessage(e, messageState.message_id);
+  };
+
+  const handleCheckboxChange = async () => {
+    const ignore_message = !messageState.ignore_message;
+    setMessageState((prevState) => {
+      console.log('Previous ignored_message:', prevState.ignore_message);
+      return {
+        ...prevState,
+        ignore_message: ignore_message
+      };
+    });
+    const documentThreadId = props.documentsthreadId;
+    const messageId = props.message._id;
+    const message = props.message;
+    const resp = await IgnoreMessageThread(
+      documentThreadId,
+      messageId,
+      message.message,
+      ignore_message
+    );
+    if (resp) {
+      console.log('nice');
+    }
   };
 
   if (!messageState.isLoaded && !messageState.editorState) {
@@ -204,6 +236,21 @@ function Message(props) {
             defaultHeight={0}
           />
           {files_info}
+          {!is_TaiGer_Student(user) &&
+            is_TaiGer_Student(props.message.user_id) && (
+              <FormGroup>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={messageState.ignore_message}
+                      onChange={handleCheckboxChange}
+                    />
+                  }
+                  label="Ignore Message"
+                  labelPlacement="start"
+                />
+              </FormGroup>
+            )}
         </AccordionDetails>
       </Accordion>
       <ModalNew

@@ -7,9 +7,10 @@ module.exports = {
   overrides: [
     {
       env: {
-        node: true
+        node: true,
+        jest: true
       },
-      files: ['.eslintrc.{js,cjs}'],
+      files: ['**/*.test.js', '**/*.test.jsx'],
       parserOptions: {
         sourceType: 'script'
       }

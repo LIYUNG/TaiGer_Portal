@@ -2,51 +2,57 @@ const fs = require('fs');
 const path = require('path');
 const request = require('supertest');
 
-const { UPLOAD_PATH } = require('../config');
-const db = require('./fixtures/db');
-const { app } = require('../app');
-const { Role, User, Agent, Editor, Student } = require('../models/User');
-const { DocumentStatus } = require('../constants');
-const { generateUser } = require('./fixtures/users');
-const { protect, permit } = require('../middlewares/auth');
+const { UPLOAD_PATH } = require('../../config');
+const db = require('../fixtures/db');
+const { app } = require('../../app');
+const { Role, User, Agent, Editor, Student } = require('../../models/User');
+const { DocumentStatus } = require('../../constants');
+const { generateUser } = require('../fixtures/users');
+const { protect, permit } = require('../../middlewares/auth');
 const {
   InnerTaigerMultitenantFilter
-} = require('../middlewares/InnerTaigerMultitenantFilter');
+} = require('../../middlewares/InnerTaigerMultitenantFilter');
 const {
   permission_canAccessStudentDatabase_filter
-} = require('../middlewares/permission-filter');
-const { generateProgram } = require('./fixtures/programs');
-const { Program } = require('../models/Program');
+} = require('../../middlewares/permission-filter');
+const { generateProgram } = require('../fixtures/programs');
+const { Program } = require('../../models/Program');
 
-jest.mock('../middlewares/auth', () => {
+jest.mock('../../middlewares/auth', () => {
   const passthrough = async (req, res, next) => next();
 
-  return Object.assign({}, jest.requireActual('../middlewares/auth'), {
+  return Object.assign({}, jest.requireActual('../../middlewares/auth'), {
     protect: jest.fn().mockImplementation(passthrough),
     permit: jest.fn().mockImplementation((...roles) => passthrough)
   });
 });
 
-jest.mock('../middlewares/InnerTaigerMultitenantFilter', () => {
+jest.mock('../../middlewares/InnerTaigerMultitenantFilter', () => {
   const passthrough = async (req, res, next) => next();
 
   return Object.assign(
     {},
-    jest.requireActual('../middlewares/permission-filter'),
+    jest.requireActual('../../middlewares/InnerTaigerMultitenantFilter'),
     {
       InnerTaigerMultitenantFilter: jest.fn().mockImplementation(passthrough)
     }
   );
 });
 
-jest.mock('../middlewares/permission-filter', () => {
+jest.mock('../../middlewares/permission-filter', () => {
   const passthrough = async (req, res, next) => next();
 
   return Object.assign(
     {},
-    jest.requireActual('../middlewares/permission-filter'),
+    jest.requireActual('../../middlewares/permission-filter'),
     {
       permission_canAccessStudentDatabase_filter: jest
+        .fn()
+        .mockImplementation(passthrough),
+      permission_canAssignAgent_filter: jest
+        .fn()
+        .mockImplementation(passthrough),
+      permission_canAssignEditor_filter: jest
         .fn()
         .mockImplementation(passthrough)
     }
@@ -101,8 +107,8 @@ describe('POST /api/students/:id/agents', () => {
     const { _id: studentId } = student;
 
     const agents_obj = {};
-    agents.forEach((agent) => {
-      agents_obj[agent._id] = true;
+    agents.forEach((ag) => {
+      agents_obj[ag._id] = true;
     });
 
     const resp = await request(app)
@@ -112,9 +118,9 @@ describe('POST /api/students/:id/agents', () => {
     expect(resp.status).toBe(200);
 
     var agents_arr = [];
-    agents.forEach((agent) => {
-      if ((agents_obj[agent._id] = true)) {
-        agents_arr.push(agent._id);
+    agents.forEach((ag) => {
+      if ((agents_obj[ag._id] = true)) {
+        agents_arr.push(ag._id);
       }
     });
 

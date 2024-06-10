@@ -49,7 +49,8 @@ const {
   resetSurveyInput,
   getAllActiveEssays,
   putOriginAuthorConfirmedByStudent,
-  putThreadFavorite
+  putThreadFavorite,
+  IgnoreMessageInDocumentThread
 } = require('../controllers/documents_modification');
 const {
   docThreadMultitenant_filter,
@@ -135,7 +136,7 @@ router
 router
   .route('/essays/all')
   .get(
-    postMessagesRateLimiter,
+    getMessagesRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     getAllActiveEssays,
     logAccess
@@ -151,6 +152,17 @@ router
     editorIdsBodyFilter,
     doc_thread_ops_validator,
     assignEssayWritersToEssayTask,
+    logAccess
+  );
+
+  router
+  .route('/:messagesThreadId/:messageId/:ignoreMessageState/ignored')
+  .put(
+    filter_archiv_user,
+    putMessagesRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Editor, Role.Agent),
+    docThreadMultitenant_filter,
+    IgnoreMessageInDocumentThread,
     logAccess
   );
 

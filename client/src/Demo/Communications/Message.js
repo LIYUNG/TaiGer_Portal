@@ -9,11 +9,18 @@ import {
   Box,
   useTheme,
   useMediaQuery,
-  IconButton
+  FormGroup,
+  FormControlLabel,
+  Checkbox,
+  IconButton,
+  Card,
+  Link
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CloseIcon from '@mui/icons-material/Close';
 import EditIcon from '@mui/icons-material/Edit';
+import { useTranslation } from 'react-i18next';
+import { Link as LinkDom } from 'react-router-dom';
 
 // import Output from 'editorjs-react-renderer';
 import EditorSimple from '../../components/EditorJs/EditorSimple';
@@ -21,7 +28,10 @@ import { stringAvatar, convertDate } from '../Utils/contants';
 import { useAuth } from '../../components/AuthProvider';
 import ModalNew from '../../components/Modal';
 import Loading from '../../components/Loading/Loading';
-import { useTranslation } from 'react-i18next';
+import { IgnoreMessage } from '../../api/index';
+import { is_TaiGer_Student } from '../Utils/checking-functions';
+import { FileIcon, defaultStyles } from 'react-file-icon';
+import { BASE_URL } from '../../api/request';
 
 function Message(props) {
   // const onlyWidth = useWindowWidth();
@@ -31,7 +41,12 @@ function Message(props) {
     editorState: null,
     message_id: '',
     isLoaded: false,
-    deleteMessageModalShow: false
+    deleteMessageModalShow: false,
+    ignore_message:
+      props.message.ignore_message === false ||
+      props.message.ignore_message === undefined
+        ? false
+        : props.message.ignore_message
   });
   const theme = useTheme();
   const ismobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -79,6 +94,27 @@ function Message(props) {
       deleteMessageModalShow: false
     }));
     props.onDeleteSingleMessage(e, messageState.message_id);
+  };
+
+  const handleCheckboxChange = async () => {
+    const ignoreMessageState = !messageState.ignore_message;
+    setMessageState((prevState) => ({
+      ...prevState,
+      ignore_message: ignoreMessageState
+    }));
+    const message = props.message;
+    const updateIgnoreMessage = async () => {
+      const resp = await IgnoreMessage(
+        message.student_id._id.toString(),
+        message._id,
+        message.message,
+        ignoreMessageState
+      );
+      if (resp) {
+        console.log('nice');
+      }
+    };
+    await updateIgnoreMessage();
   };
 
   if (!messageState.isLoaded && !messageState.editorState) {
@@ -164,7 +200,65 @@ function Message(props) {
               editorState={messageState.editorState}
               defaultHeight={0}
             />
+            {props.message?.files.map((file, i) => (
+              <Card key={i} sx={{ p: 1 }}>
+                <span>
+                  <Link
+                    underline="hover"
+                    to={`${BASE_URL}/api/communications/${props.message.student_id._id.toString()}/chat/${
+                      file.name
+                    }`}
+                    component={LinkDom}
+                    target="_blank"
+                  >
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="mx-2"
+                    >
+                      <FileIcon
+                        extension={file.name.split('.').pop()}
+                        {...defaultStyles[file.name.split('.').pop()]}
+                      />
+                    </svg>
+                    {file.name}
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="m7 10 4.86 4.86c.08.08.2.08.28 0L17 10"
+                        stroke="#000"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                      ></path>
+                    </svg>
+                  </Link>
+                </span>
+              </Card>
+            ))}
           </Box>
+          {!is_TaiGer_Student(user) &&
+            is_TaiGer_Student(props.message.user_id) && (
+              <FormGroup>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={messageState.ignore_message}
+                      onChange={handleCheckboxChange}
+                    />
+                  }
+                  label="Ignore Message"
+                  labelPlacement="start"
+                />
+              </FormGroup>
+            )}
         </AccordionDetails>
       </Accordion>
       {/* TODOL consider to move it to the parent! It render many time! as message increase */}

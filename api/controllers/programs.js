@@ -91,9 +91,9 @@ const getProgram = asyncHandler(async (req, res) => {
         logger.info('programs cache set successfully');
       }
       if (
-        user.role === 'Admin' ||
-        user.role === 'Agent' ||
-        user.role === 'Editor'
+        user.role === Role.Admin ||
+        user.role === Role.Agent ||
+        user.role === Role.Editor
       ) {
         const students = await Student.find({
           applications: {
@@ -121,9 +121,9 @@ const getProgram = asyncHandler(async (req, res) => {
     logger.info('programs cache hit');
 
     if (
-      user.role === 'Admin' ||
-      user.role === 'Agent' ||
-      user.role === 'Editor'
+      user.role === Role.Admin ||
+      user.role === Role.Agent ||
+      user.role === Role.Editor
     ) {
       const students = await Student.find({
         applications: {
@@ -147,9 +147,9 @@ const getProgram = asyncHandler(async (req, res) => {
       res.send({ success: true, data: value });
     }
   } else if (
-    user.role === 'Admin' ||
-    user.role === 'Agent' ||
-    user.role === 'Editor'
+    user.role === Role.Admin ||
+    user.role === Role.Agent ||
+    user.role === Role.Editor
   ) {
     const students = await getStudentsByProgram(req.params.programId);
     const program = await Program.findById(req.params.programId);

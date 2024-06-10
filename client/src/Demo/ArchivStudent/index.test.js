@@ -10,7 +10,6 @@ import { RouterProvider, createMemoryRouter } from 'react-router-dom';
 import { mockSingleArchivStudentData } from '../../test/testingArchivStudentData';
 
 jest.mock('axios');
-jest.mock('request');
 jest.mock('../../api');
 
 jest.mock('react-i18next', () => ({

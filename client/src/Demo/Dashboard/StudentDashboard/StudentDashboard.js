@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link as LinkDom } from 'react-router-dom';
 import LaunchIcon from '@mui/icons-material/Launch';
 import EventIcon from '@mui/icons-material/Event';
 import {
@@ -8,6 +8,8 @@ import {
   Button,
   Card,
   Grid,
+  IconButton,
+  Link,
   Table,
   TableBody,
   TableCell,
@@ -331,12 +333,28 @@ function StudentDashboard(props) {
                           <Typography>
                             想要一次密集討論？ 可以預訂顧問 Office hour
                             時段討論。
+                            <Link
+                              color="inherit"
+                              component={LinkDom}
+                              to={
+                                'https://taigerconsultancy-portal.com/docs/search/64fe21bcbc729bc024d14738'
+                              }
+                              target="_blank"
+                            >
+                              {t('Instructions')}
+                              <IconButton>
+                                <LaunchIcon fontSize="small" />
+                              </IconButton>
+                            </Link>
                           </Typography>
                         )}
                       </Grid>
                       <Grid item xs={12}>
                         {student?.agents?.length !== 0 ? (
                           <Link
+                            underline="hover"
+                            color="inherit"
+                            component={LinkDom}
                             to={`${DEMO.EVENT_STUDENT_STUDENTID_LINK(
                               student._id.toString()
                             )}`}

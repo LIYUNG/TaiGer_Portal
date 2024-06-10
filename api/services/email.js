@@ -711,6 +711,39 @@ const sendChangedProfileFileStatusEmail = async (recipient, msg) => {
   return sendEmail(recipient, subject, message);
 };
 
+const informAgentManagerNewStudentEmail = async (recipient, payload) => {
+  const studentName = `${payload.std_firstname} ${payload.std_lastname}`;
+  const agentName = `${payload.agents
+    .map((agent) => `${agent.firstname}`)
+    .join(' ')}`;
+  const subject = `新學生 ${studentName} 已被指派給 ${agentName} / New student ${studentName} assigned to ${agentName}`;
+  const message = `\
+<p>${ENGLISH_BELOW}</p>
+
+<p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
+
+<p>${studentName} 將被指配給 ${agentName}。</p>
+
+<p>請至 ${STUDENT_PROFILE_FOR_AGENT_URL(
+    payload.std_id
+  )} 查看他的背景問卷！</p>
+
+<br />
+
+<p>${SPLIT_LINE}</p>
+
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+
+<p>${studentName} will be assigned to ${agentName}!</p>
+
+<p>Please see ${STUDENT_PROFILE_FOR_AGENT_URL(payload.std_id)}'s background and survey</p>
+
+
+`;
+
+  return sendEmail(recipient, subject, message);
+};
+
 const informAgentNewStudentEmail = async (recipient, msg) => {
   const subject = `新學生 ${msg.std_firstname} ${msg.std_lastname} 已被指派給您 / New student ${msg.std_firstname} ${msg.std_lastname} assigned to you`;
   const message = `\
@@ -2601,6 +2634,7 @@ module.exports = {
   NewMLRLEssayTasksEmail,
   NewMLRLEssayTasksEmailFromTaiGer,
   sendSomeReminderEmail,
+  informAgentManagerNewStudentEmail,
   informAgentNewStudentEmail,
   informStudentTheirAgentEmail,
   sendSetAsFinalGeneralFileForAgentEmail,

@@ -1,53 +1,40 @@
 import React from 'react';
-import {
-  BarChart,
-  CartesianGrid,
-  Tooltip,
-  XAxis,
-  YAxis,
-  Legend,
-  Bar,
-  ResponsiveContainer
-} from 'recharts';
+import { BarChart } from '@mui/x-charts/BarChart';
+import { axisClasses } from '@mui/x-charts/ChartsAxis';
 
-const TasksDistributionBarChart = ({ data }) => {
+const TasksDistributionBarChart = ({ data, k, value1, value2, yLabel }) => {
+  const labels = data.map((d) => d[k]);
+  const active_a = data.map((d) => d[value1]);
+  const potential_a = data.map((d) => d[value2]);
   return (
-    <ResponsiveContainer width="100%" height={250}>
-      <BarChart
-        data={data}
-        margin={{
-          top: 20,
-          right: 10,
-          left: 0,
-          bottom: 40
-        }}
-      >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis
-          dataKey="name"
-          angle={315}
-          dx={0}
-          dy={25}
-          minTickGap={-200}
-          axisLine={false}
-        />
-        <YAxis allowDecimals={false} />
-        <Legend verticalAlign="top" />
-        <Tooltip labelStyle={{ color: 'black' }} />
-        <Bar
-          dataKey="active"
-          fill="#FF0000"
-          stackId={'a'}
-          // label={{ position: 'top' }}
-        />
-        <Bar
-          dataKey="potentials"
-          fill="#A9A9A9"
-          stackId={'a'}
-          label={{ position: 'top' }}
-        />
-      </BarChart>
-    </ResponsiveContainer>
+    <BarChart
+      series={[
+        { data: active_a, stack: 'A', label: 'Active' },
+        { data: potential_a, stack: 'A', label: 'Potentials' }
+      ]}
+      xAxis={[
+        {
+          data: labels,
+          scaleType: 'band',
+          id: 'axis1',
+          interval: 0
+        }
+      ]}
+      yAxis={[
+        {
+          label: yLabel
+        }
+      ]}
+      height={300}
+      barLabel="value"
+      sx={{
+        [`.${axisClasses.bottom} .${axisClasses.tickLabel}`]: {
+          transform: 'rotateZ(-45deg)',
+          textAnchor: 'end',
+          dy: '10px'
+        }
+      }}
+    />
   );
 };
 

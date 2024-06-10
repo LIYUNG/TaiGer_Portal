@@ -1,11 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import { Avatar, Box, Button, Tooltip, Typography } from '@mui/material';
+import {
+  Avatar,
+  Box,
+  Button,
+  IconButton,
+  Tooltip,
+  Typography
+} from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
+import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
 import { useTranslation } from 'react-i18next';
 
 import EditorSimple from '../../components/EditorJs/EditorSimple';
 import { useAuth } from '../../components/AuthProvider';
-import { stringAvatar } from '../Utils/contants';
+import { CVMLRL_DOC_PRECHECK_STATUS_E, stringAvatar } from '../Utils/contants';
+import { is_TaiGer_Student, is_TaiGer_role } from '../Utils/checking-functions';
+// import { VisuallyHiddenInput } from '../../components/Input';
 
 function CommunicationThreadEditor(props) {
   const { t } = useTranslation();
@@ -26,6 +37,9 @@ function CommunicationThreadEditor(props) {
     }));
   };
 
+  const handleClick = () => {
+    document.getElementById('file-input').click();
+  };
   return (
     <>
       <Box
@@ -60,26 +74,56 @@ function CommunicationThreadEditor(props) {
           setStatedata={setStatedata}
         />
       </Box>
+      <Box>
+        {is_TaiGer_role(user) &&
+          props.files?.map((fl, i) => (
+            <Box key={`${fl.name}${i}`}>
+              <Typography>{fl.name} :</Typography>
+              {props.checkResult?.length &&
+                Object.keys(props.checkResult[i]).map((ky) => (
+                  <Typography
+                    key={props.checkResult[i][ky].text}
+                    sx={{ ml: 2 }}
+                  >
+                    {props.checkResult[i][ky].value === undefined
+                      ? CVMLRL_DOC_PRECHECK_STATUS_E.WARNING_SYMBOK
+                      : props.checkResult[i][ky].value
+                      ? CVMLRL_DOC_PRECHECK_STATUS_E.OK_SYMBOL
+                      : CVMLRL_DOC_PRECHECK_STATUS_E.NOT_OK_SYMBOL}
+                    {props.checkResult[i][ky].text}
+                    {props.checkResult[i][ky].hasMetadata &&
+                      props.checkResult[i][ky].metaData}
+                  </Typography>
+                ))}
+            </Box>
+          ))}
+        {is_TaiGer_Student(user) &&
+          props.files?.map((fl, i) => (
+            <Box key={`${fl.name}${i}`}>
+              <Typography>{fl.name}</Typography>
+            </Box>
+          ))}
+      </Box>
       <Box sx={{ mb: 2 }}>
         {!statedata.editorState.blocks ||
         statedata.editorState.blocks.length === 0 ||
         props.buttonDisabled ? (
-          <Tooltip
-            title={t(
-              'Please write some text to improve the communication and understanding.'
-            )}
-            placement="top"
-          >
-            <Button
-              variant="outlined"
-              color="secondary"
-              // disabled={true}
-              // style={{ pointerEvents: 'none' }}
-              startIcon={<SendIcon />}
+          <>
+            <Tooltip
+              title={t(
+                'Please write some text to improve the communication and understanding.'
+              )}
+              placement="top"
             >
-              Send
-            </Button>
-          </Tooltip>
+              <Button
+                variant="outlined"
+                color="secondary"
+                startIcon={<SendIcon />}
+              >
+                {t('Send', { ns: 'common' })}
+              </Button>
+            </Tooltip>
+          </>
         ) : (
           <Tooltip
             title={t(
@@ -93,7 +137,7 @@ function CommunicationThreadEditor(props) {
               startIcon={<SendIcon />}
               onClick={(e) => props.handleClickSave(e, statedata.editorState)}
             >
-              {t('Send')}
+              {t('Send', { ns: 'common' })}
             </Button>
           </Tooltip>
         )}
@@ -105,6 +149,28 @@ function CommunicationThreadEditor(props) {
           >
             {t('Cancel', { ns: 'common' })}
           </Button>
+        )}
+        <Tooltip title={t('Attach files')} placement="top">
+          <input
+            id="file-input"
+            type="file"
+            multiple
+            style={{ display: 'none' }}
+            onChange={(e) => props.onFileChange(e)}
+          />
+          <IconButton
+            color="primary"
+            aria-label="attach file"
+            component="span"
+            onClick={handleClick}
+          >
+            <AttachFileIcon />
+          </IconButton>
+        </Tooltip>
+        {is_TaiGer_role(user) && (
+          <IconButton disabled>
+            <AutoFixHighIcon />
+          </IconButton>
         )}
       </Box>
     </>

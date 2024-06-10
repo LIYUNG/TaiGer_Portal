@@ -9,7 +9,7 @@ import {
   Breadcrumbs
 } from '@mui/material';
 import PropTypes from 'prop-types';
-import { Navigate, Link as LinkDom } from 'react-router-dom';
+import { Navigate, Link as LinkDom, useLocation } from 'react-router-dom';
 import { Link } from '@mui/material';
 import {
   BarChart,
@@ -24,6 +24,7 @@ import {
   Label
 } from 'recharts';
 import { useTranslation } from 'react-i18next';
+import { BarChart as MuiBarChart } from '@mui/x-charts/BarChart';
 
 import ErrorPage from '../../Utils/ErrorPage';
 import {
@@ -44,6 +45,53 @@ import { appConfig } from '../../../config';
 import { useAuth } from '../../../components/AuthProvider';
 import Loading from '../../../components/Loading/Loading';
 import { CustomTabPanel, a11yProps } from '../../../components/Tabs';
+import {
+  INTERNAL_DASHBOARD_REVERSED_TABS,
+  INTERNAL_DASHBOARD_TABS
+} from '../../Utils/contants.js';
+import SingleBarChart from '../../../components/Charts/SingleBarChart.js';
+import VerticalDistributionBarCharts from '../../../components/Charts/VerticalDistributionBarChart.js';
+import VerticalSingleBarChart from '../../../components/Charts/VerticalSingleChart.js';
+
+const AgentBarCharts = ({ agentDistr }) => {
+  // Extract unique years from both arrays
+
+  const combinedKeys = Array.from(
+    new Set(
+      [
+        ...Object.keys(agentDistr.admission),
+        ...Object.keys(agentDistr.noAdmission)
+      ]?.sort()
+    )
+  );
+  const admissionDataset = [];
+  const noAdmissionDataset = [];
+
+  // Populate datasets
+  combinedKeys.forEach((key) => {
+    admissionDataset.push(agentDistr.admission[key] || 0);
+    noAdmissionDataset.push(agentDistr.noAdmission[key] || 0);
+  });
+  return (
+    <Box>
+      <Typography variant="h6">{agentDistr.name}</Typography>
+      <MuiBarChart
+        xAxis={[{ scaleType: 'band', data: combinedKeys }]}
+        yAxis={[
+          {
+            label: 'Student'
+          }
+        ]}
+        series={[
+          { label: 'No Offer', data: noAdmissionDataset },
+          { label: 'Has Offer', data: admissionDataset }
+        ]}
+        height={250}
+        width={400}
+      />
+    </Box>
+  );
+};
 
 CustomTabPanel.propTypes = {
   children: PropTypes.node,
@@ -54,6 +102,7 @@ CustomTabPanel.propTypes = {
 function InternalDashboard() {
   const { user } = useAuth();
   const { t } = useTranslation();
+  const { hash } = useLocation();
   const [internalDashboardState, setInternalDashboardState] = useState({
     error: '',
     role: '',
@@ -69,10 +118,13 @@ function InternalDashboard() {
     editors: null,
     res_status: 0
   });
-  const [value, setValue] = useState(0);
+  const [value, setValue] = useState(
+    INTERNAL_DASHBOARD_TABS[hash.replace('#', '')] || 0
+  );
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
+    window.location.hash = INTERNAL_DASHBOARD_REVERSED_TABS[newValue];
   };
   useEffect(() => {
     getStatistics().then(
@@ -85,7 +137,8 @@ function InternalDashboard() {
           editors,
           finished_docs,
           documents,
-          students_details
+          students_details,
+          agentStudentDistribution
         } = resp.data;
         const { status } = resp;
         if (success) {
@@ -96,6 +149,7 @@ function InternalDashboard() {
             students: students,
             documents: documents,
             agents: agents,
+            agentStudentDistribution,
             editors: editors,
             finished_docs,
             students_details,
@@ -359,6 +413,7 @@ function InternalDashboard() {
     name: `${item.name}`, // Create a name for the item, e.g., Item 0, Item 1, etc.
     duration: calculateDuration(item.start, item.end)
   }));
+
   return (
     <Box>
       <Breadcrumbs aria-label="breadcrumb">
@@ -380,11 +435,13 @@ function InternalDashboard() {
           onChange={handleChange}
           variant="scrollable"
           scrollButtons="auto"
+          indicatorColor="primary"
           aria-label="basic tabs example"
         >
           <Tab label="Overview" {...a11yProps(0)} />
-          <Tab label="KPI" {...a11yProps(1)} />
-          <Tab label="Program List" {...a11yProps(2)} />
+          <Tab label="Agents" {...a11yProps(1)} />
+          <Tab label="KPI" {...a11yProps(2)} />
+          <Tab label="Program List" {...a11yProps(3)} />
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
@@ -408,62 +465,33 @@ function InternalDashboard() {
                 decide programs yet. But the tasks will be potentially active
                 when they decided.
               </Typography>
-              <TasksDistributionBarChart data={sorted_date_freq_pair} />
+              <TasksDistributionBarChart
+                data={sorted_date_freq_pair}
+                k={'name'}
+                value1={'active'}
+                value2={'potentials'}
+                yLabel={'Tasks'}
+              />
             </Card>
           </Grid>
           <Grid item xs={12} md={4}>
-            <Card sx={{ p: 2 }}>
+            <Card>
               <Typography>{t('Students')}</Typography>
-              {/* Close: {students.isClose}. Open: {students.isOpen} */}
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart
-                  data={students_years_pair}
-                  margin={{
-                    top: 20,
-                    right: 0,
-                    left: 0,
-                    bottom: 5
-                  }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis allowDecimals={false} />
-                  <Tooltip labelStyle={{ color: 'black' }} />
-                  {/* <Legend /> */}
-                  <Bar dataKey="uv" fill="#8884d8" label={{ position: 'top' }}>
-                    {students_years_pair.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={colors[index % 20]} />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
+              <SingleBarChart
+                data={students_years_pair}
+                label="Student"
+                yLabel="Student"
+              />
             </Card>
           </Grid>
           <Grid item xs={12} md={4}>
             <Card sx={{ p: 2 }}>
               <Typography>Tasks: Number of Open Tasks</Typography>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart
-                  data={documents_data}
-                  margin={{
-                    top: 20,
-                    right: 0,
-                    left: 0,
-                    bottom: 5
-                  }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis allowDecimals={false} />
-                  <Tooltip labelStyle={{ color: 'black' }} />
-                  {/* <Legend /> */}
-                  <Bar dataKey="uv" fill="#8884d8" label={{ position: 'top' }}>
-                    {documents_data.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={colors[index % 20]} />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
+              <SingleBarChart
+                data={documents_data}
+                label="Tasks"
+                yLabel="Tasks"
+              />
             </Card>
           </Grid>
           <Grid item xs={12} md={4}>
@@ -472,41 +500,15 @@ function InternalDashboard() {
                 {t('Agents', { ns: 'common' })}: Number of active students per
                 agent
               </Typography>
-
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart
-                  data={agents_data}
-                  layout={'vertical'}
-                  margin={{
-                    top: 20,
-                    right: 30,
-                    left: 20,
-                    bottom: 5
-                  }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis type="number" allowDecimals={false} />
-                  <YAxis type="category" dataKey="key" interval={0} />
-                  <Tooltip labelStyle={{ color: 'black' }} />
-                  {/* <Legend /> */}
-                  <Bar
-                    dataKey="student_num_no_offer"
-                    fill={'#8884d8'}
-                    stackId={'a'}
-                    label={{ position: 'right' }}
-                  >
-                    {agents_data.map((entry, index) => (
-                      <Cell key={`cell-${index}`} />
-                    ))}
-                  </Bar>
-                  <Bar
-                    dataKey="student_num_with_offer"
-                    fill="#A9A9A9"
-                    stackId={'a'}
-                    label={{ position: 'right' }}
-                  />
-                </BarChart>
-              </ResponsiveContainer>
+              <VerticalDistributionBarCharts
+                data={agents_data}
+                k={'key'}
+                value1={'student_num_no_offer'}
+                value2={'student_num_with_offer'}
+                xLabel="Student"
+                dataALabel="No Offer"
+                dataBLabel="Has Offer"
+              />
             </Card>
           </Grid>
         </Grid>
@@ -517,34 +519,7 @@ function InternalDashboard() {
                 {t('Editor', { ns: 'common' })}: Number of active students per
                 editor
               </Typography>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart
-                  data={editors_data}
-                  layout={'vertical'}
-                  margin={{
-                    top: 20,
-                    right: 30,
-                    left: 40,
-                    bottom: 5
-                  }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis type="number" allowDecimals={false} />
-                  <YAxis type="category" dataKey="key" interval={0} />
-                  <Tooltip labelStyle={{ color: 'black' }} />
-                  {/* <Legend /> */}
-                  <Bar
-                    dataKey="student_num"
-                    fill={'#8884d8'}
-                    stackId={'a'}
-                    label={{ position: 'right' }}
-                  >
-                    {editor_tasks_distribution_data.map((entry, index) => (
-                      <Cell key={`cell-${index}`} />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
+              <VerticalSingleBarChart data={editors_data} xLabel={'Student'} />
             </Card>
           </Grid>
           <Grid item xs={12} md={4}>
@@ -553,40 +528,15 @@ function InternalDashboard() {
                 {t('Editor', { ns: 'common' })}:Number of open and potential
                 tasks per editor
               </Typography>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart
-                  data={editor_tasks_distribution_data}
-                  layout={'vertical'}
-                  margin={{
-                    top: 20,
-                    right: 30,
-                    left: 40,
-                    bottom: 5
-                  }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis type="number" allowDecimals={false} />
-                  <YAxis type="category" dataKey="name" interval={0} />
-                  <Tooltip labelStyle={{ color: 'black' }} />
-                  {/* <Legend /> */}
-                  <Bar
-                    dataKey="active"
-                    fill={'#8884d8'}
-                    stackId={'a'}
-                    label={{ position: 'right' }}
-                  >
-                    {editor_tasks_distribution_data.map((entry, index) => (
-                      <Cell key={`cell-${index}`} />
-                    ))}
-                  </Bar>
-                  <Bar
-                    dataKey="potentials"
-                    fill="#A9A9A9"
-                    stackId={'a'}
-                    label={{ position: 'right' }}
-                  />
-                </BarChart>
-              </ResponsiveContainer>
+              <VerticalDistributionBarCharts
+                data={editor_tasks_distribution_data}
+                k={'name'}
+                value1={'active'}
+                value2={'potentials'}
+                xLabel="Tasks"
+                dataALabel="Active"
+                dataBLabel="Potentials"
+              />
             </Card>
           </Grid>
           <Grid item xs={12} md={4}>
@@ -648,6 +598,20 @@ function InternalDashboard() {
         </Grid>
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Typography variant="h6">Active Students distribution</Typography>
+          </Grid>
+          {internalDashboardState.agentStudentDistribution.map(
+            (agentDistr, idx) => (
+              <Grid item xs={12} md={4} key={idx}>
+                <AgentBarCharts agentDistr={agentDistr} />
+              </Grid>
+            )
+          )}
+        </Grid>
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={2}>
         <Grid container spacing={2}>
           <Grid item xs={12} md={4}>
             <Card sx={{ p: 2 }}>
@@ -759,7 +723,7 @@ function InternalDashboard() {
           </Grid>
         </Grid>
       </CustomTabPanel>
-      <CustomTabPanel value={value} index={2}>
+      <CustomTabPanel value={value} index={3}>
         <ProgramListVisualization user={user} />
       </CustomTabPanel>
       <Tabs defaultActiveKey="default" fill={true} justify={true}>

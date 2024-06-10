@@ -23,7 +23,10 @@ import DEMO from '../../store/constant';
 import { appConfig } from '../../config';
 import Loading from '../../components/Loading/Loading';
 import ModalNew from '../../components/Modal';
-import { isProgramDecided } from '../Utils/checking-functions';
+import {
+  LinkableNewlineText,
+  isProgramDecided
+} from '../Utils/checking-functions';
 
 export default function PortalCredentialsCard(props) {
   const { t } = useTranslation();
@@ -408,31 +411,17 @@ export default function PortalCredentialsCard(props) {
                           />
                         </Grid>
                         <Grid item xs={3}>
-                          <Typography sx={{ wordBreak: 'break-all' }}>
-                            <Link
-                              underline="hover"
-                              to={`${application.programId.application_portal_a}`}
-                              component={LinkDom}
-                              target="_blank"
-                            >
-                              {application.programId.application_portal_a}
-                            </Link>
-                          </Typography>
+                          <LinkableNewlineText
+                            text={application.programId.application_portal_a}
+                          />
                         </Grid>
                         <Grid item xs={3}>
-                          <Typography sx={{ wordBreak: 'break-all' }}>
-                            <Link
-                              underline="hover"
-                              to={`${application.programId.application_portal_a_instructions}`}
-                              component={LinkDom}
-                              target="_blank"
-                            >
-                              {
-                                application.programId
-                                  .application_portal_a_instructions
-                              }
-                            </Link>
-                          </Typography>
+                          <LinkableNewlineText
+                            text={
+                              application.programId
+                                .application_portal_a_instructions
+                            }
+                          />
                         </Grid>
                       </Grid>
                     )}
@@ -467,31 +456,17 @@ export default function PortalCredentialsCard(props) {
                           />
                         </Grid>
                         <Grid item xs={3}>
-                          <Typography sx={{ wordBreak: 'break-all' }}>
-                            <Link
-                              underline="hover"
-                              to={`${application.programId.application_portal_b}`}
-                              component={LinkDom}
-                              target="_blank"
-                            >
-                              {application.programId.application_portal_b}
-                            </Link>
-                          </Typography>
+                          <LinkableNewlineText
+                            text={application.programId.application_portal_b}
+                          />
                         </Grid>
                         <Grid item xs={3}>
-                          <Typography sx={{ wordBreak: 'break-all' }}>
-                            <Link
-                              underline="hover"
-                              to={`${application.programId.application_portal_b_instructions}`}
-                              component={LinkDom}
-                              target="_blank"
-                            >
-                              {
-                                application.programId
-                                  .application_portal_b_instructions
-                              }
-                            </Link>
-                          </Typography>
+                          <LinkableNewlineText
+                            text={
+                              application.programId
+                                .application_portal_b_instructions
+                            }
+                          />
                         </Grid>
                       </Grid>
                     )}

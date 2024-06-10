@@ -5,14 +5,12 @@ import SingleProgram from './SingleProgram';
 import 'react-i18next';
 import { getProgram, getProgramTicket } from '../../api';
 import axios from 'axios';
-import { request } from '../../api/request';
 import { useAuth } from '../../components/AuthProvider';
 import { MemoryRouter, useParams } from 'react-router-dom';
 
 import { mockSingleProgramNoStudentsData } from '../../test/testingSingleProgramPageData';
 
 jest.mock('axios');
-jest.mock('request');
 jest.mock('../../api');
 
 jest.mock('react-i18next', () => ({

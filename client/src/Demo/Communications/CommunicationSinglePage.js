@@ -26,7 +26,13 @@ import {
 } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
-import { is_TaiGer_Student, is_TaiGer_role } from '../Utils/checking-functions';
+import {
+  is_TaiGer_Student,
+  is_TaiGer_role,
+  readDOCX,
+  readPDF,
+  readXLSX
+} from '../Utils/checking-functions';
 import { appConfig } from '../../config';
 import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
@@ -36,6 +42,7 @@ function CommunicationSinglePage() {
   const { student_id } = useParams();
   const { user } = useAuth();
   const { t } = useTranslation();
+  const [checkResult, setCheckResult] = useState([]);
   const [communicationSinglePageState, setCommunicationSinglePageState] =
     useState({
       error: '',
@@ -44,6 +51,7 @@ function CommunicationSinglePage() {
       upperThread: [],
       buttonDisabled: false,
       editorState: {},
+      files: [],
       expand: true,
       pageNumber: 1,
       uppderaccordionKeys: [], // to expand all]
@@ -180,6 +188,61 @@ function CommunicationSinglePage() {
     );
   };
 
+  const onFileChange = (e) => {
+    e.preventDefault();
+    const file_num = e.target.files.length;
+    if (file_num <= 3) {
+      if (!e.target.files) {
+        return;
+      }
+      if (!is_TaiGer_role(user)) {
+        setCommunicationSinglePageState((prevState) => ({
+          ...prevState,
+          files: Array.from(e.target.files)
+        }));
+        return;
+      }
+      // Ensure a file is selected
+      // TODO: make array
+      const checkPromises = Array.from(e.target.files).map((file) => {
+        const extension = file.name.split('.').pop().toLowerCase();
+        const studentName =
+          communicationSinglePageState.thread.student_id.firstname;
+
+        if (extension === 'pdf') {
+          return readPDF(file, studentName);
+        } else if (extension === 'docx') {
+          return readDOCX(file, studentName);
+        } else if (extension === 'xlsx') {
+          return readXLSX(file, studentName);
+        } else {
+          return Promise.resolve({});
+        }
+      });
+      Promise.all(checkPromises)
+        .then((results) => {
+          setCheckResult(results);
+          setCommunicationSinglePageState((prevState) => ({
+            ...prevState,
+            files: Array.from(e.target.files)
+          }));
+        })
+        .catch((error) => {
+          setCommunicationSinglePageState((prevState) => ({
+            ...prevState,
+            res_modal_message: error,
+            res_modal_status: 500
+          }));
+        });
+    } else {
+      setCommunicationSinglePageState((prevState) => ({
+        ...prevState,
+        res_modal_message: 'You can only select up to 3 files.',
+        res_modal_status: 423
+      }));
+    }
+  };
+
   const handleClickSave = (e, editorState) => {
     e.preventDefault();
     setCommunicationSinglePageState((prevState) => ({
@@ -188,9 +251,19 @@ function CommunicationSinglePage() {
     }));
     var message = JSON.stringify(editorState);
 
+    const formData = new FormData();
+
+    if (communicationSinglePageState.files) {
+      communicationSinglePageState.files.forEach((file) => {
+        formData.append('files', file);
+      });
+    }
+
+    formData.append('message', message);
+
     postCommunicationThread(
       communicationSinglePageState.student._id.toString(),
-      message
+      formData
     ).then(
       (resp) => {
         const { success, data } = resp.data;
@@ -202,6 +275,7 @@ function CommunicationSinglePage() {
             editorState: {},
             thread: [...communicationSinglePageState.thread, ...data],
             isLoaded: true,
+            files: [],
             buttonDisabled: false,
             accordionKeys: [
               ...communicationSinglePageState.accordionKeys,
@@ -499,6 +573,9 @@ function CommunicationSinglePage() {
                   thread={communicationSinglePageState.thread}
                   buttonDisabled={communicationSinglePageState.buttonDisabled}
                   editorState={communicationSinglePageState.editorState}
+                  files={communicationSinglePageState.files}
+                  onFileChange={onFileChange}
+                  checkResult={checkResult}
                   handleClickSave={handleClickSave}
                 />
               </Card>

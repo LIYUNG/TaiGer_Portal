@@ -1229,7 +1229,8 @@ const FindIntervalInDocumentThreads = async () => {
       }
   } catch (error) {
       logger.error('wrong!');
-  };
+  }
+};
 
 // every day reminder
 // TODO: (O)no trainer, no date.

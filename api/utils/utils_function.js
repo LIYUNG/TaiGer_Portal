@@ -1153,7 +1153,7 @@ const UnconfirmedMeetingDailyReminderChecker = async () => {
 };
 
 function CalculateInterval(message1, message2){
-  const intervalInDay = Math.abs(message1.updatedAt - message2.updatedAt) / (1000*60*60*24);
+  const intervalInDay = Math.abs(message1.createdAt - message2.createdAt) / (1000*60*60*24);
   return intervalInDay
 };
 

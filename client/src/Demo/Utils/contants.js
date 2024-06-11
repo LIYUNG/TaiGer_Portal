@@ -1280,103 +1280,6 @@ export const COUNTRIES_ARRAY_OPTIONS = [
   { value: 'us', label: 'United States' }
 ];
 
-() => {
-  return (
-    <>
-      <option value="-">-</option>
-      <option value="at">Austria</option>
-      <option value="au">Australia</option>
-      <option value="be">Belgium</option>
-      <option value="ca">Canada</option>
-      <option value="cz">Czech</option>
-      <option value="dk">Danmark</option>
-      <option value="fi">Finland</option>
-      <option value="fr">France</option>
-      <option value="de">Germany</option>
-      <option value="gr">Greece</option>
-      <option value="hk">Hong Kong</option>
-      <option value="hu">Hungary</option>
-      <option value="ie">Ireland</option>
-      <option value="it">Italy</option>
-      <option value="jp">Japan</option>
-      <option value="kr">South Korea</option>
-      <option value="lv">Latvia</option>
-      <option value="lt">Lithuania</option>
-      <option value="lu">Luxembourg</option>
-      <option value="nl">Netherlands</option>
-      <option value="nz">New Zealand</option>
-      <option value="no">Norway</option>
-      <option value="pl">Poland</option>
-      <option value="pt">Portugal</option>
-      <option value="ru">Russia</option>
-      <option value="sg">Singapore</option>
-      <option value="es">Spain</option>
-      <option value="se">Sweden</option>
-      <option value="ch">Switzerland</option>
-      <option value="uk">United Kingdom</option>
-      <option value="us">United States</option>
-    </>
-  );
-};
-
-export const COUNTRIES_OPTIONS = () => {
-  return (
-    <>
-      <option value="-">-</option>
-      <option value="at">Austria</option>
-      <option value="au">Australia</option>
-      <option value="be">Belgium</option>
-      <option value="ca">Canada</option>
-      <option value="cz">Czech</option>
-      <option value="dk">Danmark</option>
-      <option value="fi">Finland</option>
-      <option value="fr">France</option>
-      <option value="de">Germany</option>
-      <option value="gr">Greece</option>
-      <option value="hk">Hong Kong</option>
-      <option value="hu">Hungary</option>
-      <option value="ie">Ireland</option>
-      <option value="it">Italy</option>
-      <option value="jp">Japan</option>
-      <option value="kr">South Korea</option>
-      <option value="lv">Latvia</option>
-      <option value="lt">Lithuania</option>
-      <option value="lu">Luxembourg</option>
-      <option value="nl">Netherlands</option>
-      <option value="nz">New Zealand</option>
-      <option value="no">Norway</option>
-      <option value="pl">Poland</option>
-      <option value="pt">Portugal</option>
-      <option value="ru">Russia</option>
-      <option value="sg">Singapore</option>
-      <option value="es">Spain</option>
-      <option value="se">Sweden</option>
-      <option value="ch">Switzerland</option>
-      <option value="uk">United Kingdom</option>
-      <option value="us">United States</option>
-    </>
-  );
-};
-
-export const SEMESTER_OPTIONS = () => {
-  return (
-    <>
-      <option value="">Please Select</option>
-      <option value="WS">Winter Semester</option>
-      <option value="SS">Summer Semester</option>
-    </>
-  );
-};
-
-export const BINARY_STATE_OPTIONS = () => {
-  return (
-    <>
-      <option value="no">no</option>
-      <option value="yes">yes</option>
-    </>
-  );
-};
-
 export const BINARY_STATE_ARRAY_OPTIONS = [
   { value: 'no', label: 'no' },
   { value: 'yes', label: 'yes' }
@@ -1437,21 +1340,6 @@ export const ENGLISH_CERTIFICATE_ARRAY_OPTIONS = [
   { value: 'Others', label: '其餘考試不適用' }
 ];
 
-export const ENGLISH_CERTIFICATE_OPTIONS = () => {
-  return (
-    <>
-      <option value="">Please Select</option>
-      <option value="TOEFL">TOEFL iBT (現場考)</option>
-      <option value="IELTS">IELTS Academy (現場考)</option>
-      <option value="Duolingo">Duolingo (極少數承認)</option>
-      <option value="Native">English Native 母語</option>
-      <option value="Others" disabled>
-        其餘考試不適用
-      </option>
-    </>
-  );
-};
-
 export const GERMAN_CERTIFICATE_ARRAY_OPTIONS = [
   { value: 'No', label: 'No' },
   { value: 'Goethe Zertifikat A2', label: 'Goethe Zertifikat A2' },
@@ -1469,44 +1357,12 @@ export const GERMAN_CERTIFICATE_ARRAY_OPTIONS = [
   }
 ];
 
-export const GERMAN_CERTIFICATE_OPTIONS = () => {
-  return (
-    <>
-      <option value="No">No</option>
-      <option value="Goethe Zertifikat A2">Goethe Zertifikat A2</option>
-      <option value="Goethe Zertifikat B1">Goethe Zertifikat B1</option>
-      <option value="Goethe Zertifikat B2">Goethe Zertifikat B2</option>
-      <option value="Goethe Zertifikat C1">Goethe Zertifikat C1</option>
-      <option value="TestDaF">TestDaF</option>
-      <option value="Telc">Telc</option>
-      <option value="DSH">DSH</option>
-      <option value="Native">German Native 母語</option>
-      <option value="OTHERS" disabled>
-        其餘德語不適用。報名考試前請和顧問諮詢
-      </option>
-    </>
-  );
-};
-
 export const GRE_CERTIFICATE_ARRAY_OPTIONS = [
   { value: '', label: 'Please Select' },
   { value: 'GRE_GENERAL', label: 'GRE General Test' },
   { value: 'GRE_SUBJECT', label: 'GRE Subject Test' },
   { value: 'GRE_OTHERS', label: 'GRE Other Test', disabled: true }
 ];
-
-export const GRE_CERTIFICATE_OPTIONS = () => {
-  return (
-    <>
-      <option value="">Please Select</option>
-      <option value="GRE_GENERAL">GRE General Test</option>
-      <option value="GRE_SUBJECT">GRE Subject Test</option>
-      <option value="GRE_OTHERS" disabled>
-        GRE Online 不再適用。報名考試前請和顧問諮詢
-      </option>
-    </>
-  );
-};
 
 export const GMAT_CERTIFICATE_OPTIONS = [
   { value: '', label: 'Please Select' },

@@ -20,7 +20,9 @@ const getPermission = async (user) => {
     );
     if (success) {
       cachedPermission = permissions;
-      logger.info('permissions cache set successfully');
+      logger.info(
+        `permissions cache set successfully: user id ${user._id.toString()}`
+      );
     }
   }
   return cachedPermission;

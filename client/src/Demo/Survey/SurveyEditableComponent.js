@@ -1599,7 +1599,11 @@ const SurveyEditableComponent = (props) => {
                     onChange={handleChangeLanguage}
                   >
                     {GRE_CERTIFICATE_ARRAY_OPTIONS.map((option) => (
-                      <MenuItem key={option.value} value={option.value}>
+                      <MenuItem
+                        key={option.value}
+                        value={option.value}
+                        disabled={option.disabled}
+                      >
                         {option.label}
                       </MenuItem>
                     ))}

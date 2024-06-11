@@ -1236,6 +1236,9 @@ const FindActiveDocumentThreads = async () => {
         for (const thread of student.generaldocs_threads){
           activeDocumentThreads.push(thread.doc_thread_id);
         };
+        for (const thread of student.applications.doc_modification_thread){
+          activeDocumentThreads.push(thread.doc_thread_id);
+        };
       };
     };
     return activeDocumentThreads;

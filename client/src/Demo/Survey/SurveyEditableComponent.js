@@ -397,7 +397,7 @@ const SurveyEditableComponent = (props) => {
                     fullWidth
                     id="attended_university_program"
                     name="attended_university_program"
-                    label={t('Program Name / Not study yet')}
+                    label={t('Program Name')}
                     error={
                       survey.academic_background?.university
                         ?.attended_university_program === ''
@@ -489,9 +489,325 @@ const SurveyEditableComponent = (props) => {
                     ))}
                   </TextField>
                 </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth
+                    id="Highest_GPA_Uni"
+                    name="Highest_GPA_Uni"
+                    error={
+                      survey.academic_background?.university
+                        ?.Highest_GPA_Uni === '0' ||
+                      survey.academic_background?.university
+                        ?.Highest_GPA_Uni === null
+                    }
+                    helperText={
+                      (survey.academic_background?.university
+                        ?.Highest_GPA_Uni === '0' ||
+                        survey.academic_background?.university
+                          ?.Highest_GPA_Uni === null) &&
+                      'Please provide highest GPA from your university.'
+                    }
+                    label={t('Highest Score GPA of your university program')}
+                    type="number"
+                    placeholder="4.3"
+                    defaultValue={
+                      survey.academic_background?.university?.Highest_GPA_Uni ||
+                      0
+                    }
+                    onChange={(e) => handleChangeAcademic(e)}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth
+                    id="Passing_GPA_Uni"
+                    name="Passing_GPA_Uni"
+                    error={
+                      survey.academic_background?.university
+                        ?.Passing_GPA_Uni === '0' ||
+                      survey.academic_background?.university
+                        ?.Passing_GPA_Uni === null
+                    }
+                    helperText={
+                      (survey.academic_background?.university
+                        ?.Passing_GPA_Uni === '0' ||
+                        survey.academic_background?.university
+                          ?.Passing_GPA_Uni === null) &&
+                      'Please provide passing GPA from your university.'
+                    }
+                    label={t('Passing Score GPA of your university program')}
+                    type="number"
+                    placeholder="1.7"
+                    defaultValue={
+                      survey.academic_background?.university?.Passing_GPA_Uni ||
+                      0
+                    }
+                    onChange={(e) => handleChangeAcademic(e)}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth
+                    id="My_GPA_Uni"
+                    name="My_GPA_Uni"
+                    label={t('My GPA')}
+                    type="number"
+                    placeholder="3.7"
+                    error={
+                      survey.academic_background?.university?.My_GPA_Uni ===
+                        '0' ||
+                      survey.academic_background?.university?.My_GPA_Uni ===
+                        null
+                    }
+                    helperText={
+                      (survey.academic_background?.university?.My_GPA_Uni ===
+                        '0' ||
+                        survey.academic_background?.university?.My_GPA_Uni ===
+                          null) &&
+                      'Please provide passing GPA from your university.'
+                    }
+                    defaultValue={
+                      survey.academic_background?.university?.My_GPA_Uni || 0
+                    }
+                    onChange={(e) => handleChangeAcademic(e)}
+                  />
+                </Grid>
               </>
             )}
 
+            {['Yes'].includes(
+              survey.academic_background?.university?.isGraduated
+            ) && (
+              <>
+                <Grid item xs={12}>
+                  <Typography variant="body1" sx={{ mt: 2 }}>
+                    {t('Second degree (Another Bachelor or Master)', {
+                      ns: 'survey'
+                    })}
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth
+                    labelid="isSecondGraduated"
+                    name="isSecondGraduated"
+                    id="isSecondGraduated"
+                    error={
+                      survey.academic_background?.university
+                        ?.isSecondGraduated === '-'
+                    }
+                    helperText={
+                      survey.academic_background?.university
+                        ?.isSecondGraduated === '-' &&
+                      'Please provide Second Degree info.'
+                    }
+                    select
+                    value={
+                      survey.academic_background?.university
+                        ?.isSecondGraduated || '-'
+                    }
+                    label={t('Already Second Degree graduated ?')}
+                    onChange={(e) => handleChangeAcademic(e)}
+                  >
+                    {BACHELOR_GRADUATE_STATUS_OPTIONS.map((option) => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </Grid>
+                {['Yes', 'pending'].includes(
+                  survey.academic_background?.university?.isSecondGraduated
+                ) && (
+                  <>
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                        fullWidth
+                        id="attendedSecondDegreeUniversity"
+                        name="attendedSecondDegreeUniversity"
+                        error={
+                          survey.academic_background?.university
+                            ?.attendedSecondDegreeUniversity === ''
+                        }
+                        helperText={
+                          survey.academic_background?.university
+                            ?.attendedSecondDegreeUniversity === '' &&
+                          'Please provide University name info.'
+                        }
+                        label={t('University Name')}
+                        variant="outlined"
+                        placeholder="National Taipei University"
+                        value={
+                          survey.academic_background?.university
+                            ?.attendedSecondDegreeUniversity || ''
+                        }
+                        onChange={(e) => handleChangeAcademic(e)}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                        fullWidth
+                        id="attendedSecondDegreeProgram"
+                        name="attendedSecondDegreeProgram"
+                        label={t('Program Name')}
+                        error={
+                          survey.academic_background?.university
+                            ?.attendedSecondDegreeProgram === ''
+                        }
+                        helperText={
+                          survey.academic_background?.university
+                            ?.attendedSecondDegreeProgram === '' &&
+                          'Please provide program name info.'
+                        }
+                        variant="outlined"
+                        placeholder="M.Sc. Electrical Engineering"
+                        value={
+                          survey.academic_background?.university
+                            ?.attendedSecondDegreeProgram || ''
+                        }
+                        onChange={(e) => handleChangeAcademic(e)}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      {survey.academic_background?.university
+                        ?.isSecondGraduated !== '-' &&
+                        survey.academic_background?.university
+                          ?.isSecondGraduated !== 'No' && (
+                          <TextField
+                            fullWidth
+                            labelid="expectedSecondDegreeGradDate"
+                            name="expectedSecondDegreeGradDate"
+                            id="expectedSecondDegreeGradDate"
+                            error={
+                              survey.academic_background?.university
+                                ?.expectedSecondDegreeGradDate === '-'
+                            }
+                            helperText={
+                              survey.academic_background?.university
+                                ?.expectedSecondDegreeGradDate === '-' &&
+                              'Please provide graduate date info.'
+                            }
+                            select
+                            value={
+                              survey.academic_background?.university
+                                ?.expectedSecondDegreeGradDate || '-'
+                            }
+                            label={`${
+                              survey?.academic_background?.university
+                                .isSecondGraduated === 'No'
+                                ? t('Leaved Year')
+                                : survey?.academic_background?.university
+                                    .isSecondGraduated === 'Yes'
+                                ? t('Graduated Year')
+                                : t('Expected Graduate Year')
+                            }`}
+                            onChange={(e) => handleChangeAcademic(e)}
+                          >
+                            {APPLICATION_YEARS_FUTURE().map((option) => (
+                              <MenuItem key={option.value} value={option.value}>
+                                {option.label}
+                              </MenuItem>
+                            ))}
+                          </TextField>
+                        )}
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                        fullWidth
+                        id="highestSecondDegreeGPA"
+                        name="highestSecondDegreeGPA"
+                        error={
+                          survey.academic_background?.university
+                            ?.highestSecondDegreeGPA === '0' ||
+                          survey.academic_background?.university
+                            ?.highestSecondDegreeGPA === null
+                        }
+                        helperText={
+                          (survey.academic_background?.university
+                            ?.highestSecondDegreeGPA === '0' ||
+                            survey.academic_background?.university
+                              ?.highestSecondDegreeGPA === null) &&
+                          'Please provide highest GPA from your university.'
+                        }
+                        label={t(
+                          'Second Degree highest Score GPA of your university program'
+                        )}
+                        type="number"
+                        placeholder="4.3"
+                        defaultValue={
+                          survey.academic_background?.university
+                            ?.highestSecondDegreeGPA || 0
+                        }
+                        onChange={(e) => handleChangeAcademic(e)}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                        fullWidth
+                        id="passingSecondDegreeGPA"
+                        name="passingSecondDegreeGPA"
+                        error={
+                          survey.academic_background?.university
+                            ?.passingSecondDegreeGPA === '0' ||
+                          survey.academic_background?.university
+                            ?.passingSecondDegreeGPA === null
+                        }
+                        helperText={
+                          (survey.academic_background?.university
+                            ?.passingSecondDegreeGPA === '0' ||
+                            survey.academic_background?.university
+                              ?.passingSecondDegreeGPA === null) &&
+                          'Please provide passing GPA from your university.'
+                        }
+                        label={t(
+                          'Second Degree passing Score GPA of your university program'
+                        )}
+                        type="number"
+                        placeholder="1.7"
+                        defaultValue={
+                          survey.academic_background?.university
+                            ?.passingSecondDegreeGPA || 0
+                        }
+                        onChange={(e) => handleChangeAcademic(e)}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                        fullWidth
+                        id="mySecondDegreeGPA"
+                        name="mySecondDegreeGPA"
+                        label={t('My Second Degree GPA')}
+                        type="number"
+                        placeholder="3.7"
+                        error={
+                          survey.academic_background?.university
+                            ?.mySecondDegreeGPA === '0' ||
+                          survey.academic_background?.university
+                            ?.mySecondDegreeGPA === null
+                        }
+                        helperText={
+                          (survey.academic_background?.university
+                            ?.mySecondDegreeGPA === '0' ||
+                            survey.academic_background?.university
+                              ?.mySecondDegreeGPA === null) &&
+                          'Please provide passing GPA from your university.'
+                        }
+                        defaultValue={
+                          survey.academic_background?.university
+                            ?.mySecondDegreeGPA || 0
+                        }
+                        onChange={(e) => handleChangeAcademic(e)}
+                      />
+                    </Grid>
+                  </>
+                )}
+              </>
+            )}
+            <Grid item xs={12}>
+              <Typography variant="body1">
+                {t('Practical Experience', { ns: 'survey' })}
+              </Typography>
+            </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
@@ -550,84 +866,6 @@ const SurveyEditableComponent = (props) => {
                   </MenuItem>
                 ))}
               </TextField>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                id="Highest_GPA_Uni"
-                name="Highest_GPA_Uni"
-                error={
-                  survey.academic_background?.university?.Highest_GPA_Uni ===
-                    '0' ||
-                  survey.academic_background?.university?.Highest_GPA_Uni ===
-                    null
-                }
-                helperText={
-                  (survey.academic_background?.university?.Highest_GPA_Uni ===
-                    '0' ||
-                    survey.academic_background?.university?.Highest_GPA_Uni ===
-                      null) &&
-                  'Please provide highest GPA from your university.'
-                }
-                label={t('Highest Score GPA of your university program')}
-                type="number"
-                placeholder="4.3"
-                defaultValue={
-                  survey.academic_background?.university?.Highest_GPA_Uni || 0
-                }
-                onChange={(e) => handleChangeAcademic(e)}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                id="Passing_GPA_Uni"
-                name="Passing_GPA_Uni"
-                error={
-                  survey.academic_background?.university?.Passing_GPA_Uni ===
-                    '0' ||
-                  survey.academic_background?.university?.Passing_GPA_Uni ===
-                    null
-                }
-                helperText={
-                  (survey.academic_background?.university?.Passing_GPA_Uni ===
-                    '0' ||
-                    survey.academic_background?.university?.Passing_GPA_Uni ===
-                      null) &&
-                  'Please provide passing GPA from your university.'
-                }
-                label={t('Passing Score GPA of your university program')}
-                type="number"
-                placeholder="1.7"
-                defaultValue={
-                  survey.academic_background?.university?.Passing_GPA_Uni || 0
-                }
-                onChange={(e) => handleChangeAcademic(e)}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                id="My_GPA_Uni"
-                name="My_GPA_Uni"
-                label={t('My GPA')}
-                type="number"
-                placeholder="3.7"
-                error={
-                  survey.academic_background?.university?.My_GPA_Uni === '0' ||
-                  survey.academic_background?.university?.My_GPA_Uni === null
-                }
-                helperText={
-                  (survey.academic_background?.university?.My_GPA_Uni === '0' ||
-                    survey.academic_background?.university?.My_GPA_Uni ===
-                      null) &&
-                  'Please provide passing GPA from your university.'
-                }
-                defaultValue={
-                  survey.academic_background?.university?.My_GPA_Uni || 0
-                }
-                onChange={(e) => handleChangeAcademic(e)}
-              />
             </Grid>
             <Grid item xs={12} sm={12}>
               <Typography>

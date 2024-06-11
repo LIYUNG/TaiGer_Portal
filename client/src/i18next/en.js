@@ -427,6 +427,9 @@ export const translation_en = {
       'Please complete My Survey so that your agent can understand your situation',
     'Expected English Test Date': 'Expected English Test Date',
     'University (Bachelor degree)': 'University (Bachelor degree)',
+    'Second degree (Another Bachelor or Master)':
+      'Second degree (Another Bachelor or Master)',
+    'Practical Experience': 'Practical Experience',
     'Other wish': 'Other wish'
   },
   visa: {
@@ -484,6 +487,8 @@ export const translation_en = {
       'Do you want to reset the result of the application of',
     'Please finish it as soon as possible':
       'Please finish it as soon as possible',
+    'Expected English Test Date': 'Expected English Test Date',
+    'Expected German Test Date': 'Expected German Test Date',
     'Check uploaded base documents': 'Check uploaded base documents',
     'No Enough Program Decided Tasks': 'No Enough Program Decided Tasks',
     'Please select enough programs for': 'Please select enough programs for',
@@ -498,6 +503,17 @@ export const translation_en = {
     'High School': 'High School',
     'High School graduate status': 'High School graduate status',
     'High School Name (English)': 'High School Name (English)',
+    'High School already graduated': 'High School already graduated',
+    'High School Graduate Year': 'High School Graduate Year',
+    'Expected High School Graduate Year': 'Expected High School Graduate Year',
+    'High School Graduate leaved Year': 'High School Graduate leaved Year',
+    'Expected Application Year': 'Expected Application Year',
+    'Expected Application Semester': 'Expected Application Semester',
+    'University Name': 'University Name',
+    'University Name (Bachelor degree)': 'University Name (Bachelor degree)',
+    'University Name (Second degree)': 'University Name (Second degree)',
+    'Program Name': '科系名稱',
+    'Program Name / Not study yet': '科系名稱 / 尚未就讀',
     'Passing Score GPA of your university program':
       'Passing Score GPA of your university program',
     'Highest Score GPA of your university program':

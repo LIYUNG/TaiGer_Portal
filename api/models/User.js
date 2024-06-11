@@ -216,9 +216,40 @@ const UserSchema = new Schema(
         Highest_GPA_Uni: {
           type: Number
         },
+        Passing_GPA_Uni: {
+          type: Number
+        },
+        My_GPA_Uni: {
+          type: Number
+        },
         Has_Exchange_Experience: {
           type: String,
           default: '-'
+        },
+        isSecondGraduated: {
+          type: String,
+          default: '-'
+        },
+        expectedSecondDegreeGradDate: {
+          type: String,
+          default: ''
+        },
+        attendedSecondDegreeUniversity: {
+          type: String,
+          default: ''
+        },
+        attendedSecondDegreeProgram: {
+          type: String,
+          default: ''
+        },
+        highestSecondDegreeGPA: {
+          type: Number
+        },
+        passingSecondDegreeGPA: {
+          type: Number
+        },
+        mySecondDegreeGPA: {
+          type: Number
         },
         Has_Internship_Experience: {
           type: String,
@@ -227,12 +258,6 @@ const UserSchema = new Schema(
         Has_Working_Experience: {
           type: String,
           default: '-'
-        },
-        Passing_GPA_Uni: {
-          type: Number
-        },
-        My_GPA_Uni: {
-          type: Number
         },
         updatedAt: Date
       },

@@ -423,7 +423,10 @@ export const translation_zh_TW = {
   survey: {
     'Please complete My Survey so that your agent can understand your situation':
       '請完成問卷，您的Agent才能了解您的狀況',
+    'Expected English Test Date': '預計英語考試日期',
     'University (Bachelor degree)': '大學 (學士學位)',
+    'Second degree (Another Bachelor or Master)': '第二學位 (另一個學士或碩士)',
+    'Practical Experience': '實習或工作經驗',
     'Other wish': '其他需求'
   },
   visa: {
@@ -497,7 +500,10 @@ export const translation_zh_TW = {
     'High School Graduate leaved Year': '肄業高中年份',
     'Expected Application Year': '預計要入學的年度',
     'Expected Application Semester': '預計要入學的學期',
+    'University Name': '大學名稱',
     'University Name (Bachelor degree)': '大學名稱 (學士)',
+    'University Name (Second degree)': '大學名稱 (第二學位)',
+    'Program Name': '科系名稱',
     'Program Name / Not study yet': '科系名稱 / 尚未就讀',
     'Already Bachelor graduated ?': '已大學畢業 ?',
     'Graduated Year': '畢業年份',
@@ -506,8 +512,13 @@ export const translation_zh_TW = {
     'Internship Experience ?': '實習經驗 ?',
     'Full-Time Job Experience ?': '正職工作經驗 ?',
     'My GPA': '我的 GPA 成績',
+    'My Second Degree GPA': '我的第二學位 GPA 成績',
     'Passing Score GPA of your university program': '貴校及格成績GPA',
     'Highest Score GPA of your university program': '貴校滿分成績GPA',
+    'Second Degree highest Score GPA of your university program':
+      '第二學位滿分成績GPA',
+    'Second Degree passing Score GPA of your university program':
+      '第二學位及格成績GPA',
     Explanation: '說明',
     'About Higest GPA / Lowest passed GPA and my GPA, please follow this:':
       '關於滿分成績GPA / 及格成績GPA GPA 和我的 GPA, 請參見',

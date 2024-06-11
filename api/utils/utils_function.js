@@ -4,6 +4,7 @@ const { Agent, Student, Editor, User, Role } = require('../models/User');
 const { Documentthread } = require('../models/Documentthread');
 const { Communication } = require('../models/Communication');
 const { Interval } = require('../models/Interval');
+const { ResponseTime } = require('../models/ResponseTime');
 const {
   sendAssignEditorReminderEmail,
   MeetingReminderEmail,
@@ -1250,8 +1251,9 @@ const FindIntervalInDocumentThreadAndSave = async () => {
     const validDocumentThread = await FindActiveDocumentThreads();
       for (const documentThread of validDocumentThread){
         let thread;
+      //   console.log('documentThread', documentThread);
         try {
-          thread = await Documentthread.findById(validDocumentThread.toString())
+          thread = await Documentthread.findById(documentThread.toString())
           .populate('student_id', 'role')
           .lean();
         } catch (error){

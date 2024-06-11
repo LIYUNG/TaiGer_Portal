@@ -1166,13 +1166,12 @@ const SurveyEditableComponent = (props) => {
                 onChange={(e) => handleChangeApplicationPreference(e)}
                 minRows={5}
               />
-            </Grid>
-            <Grid item xs={12} sm={6}>
               <Badge>
                 {survey?.application_preference?.special_wished?.length || 0}
                 /600
               </Badge>
             </Grid>
+            {/* <Grid item xs={12} sm={6}></Grid> */}
             <Grid item xs={12} sm={6}>
               <Typography variant="body2" sx={{ mt: 2 }}>
                 {t('Last update at')}:{' '}

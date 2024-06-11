@@ -239,9 +239,11 @@ function index() {
         >
           {appConfig.companyName}
         </Link>
-        <Typography color="text.primary">
-          {t('My Students', { ns: 'common' })}
-        </Typography>
+        {is_TaiGer_role(user) && (
+          <Typography color="text.primary">
+            {t('My Students', { ns: 'common' })}
+          </Typography>
+        )}
         <Typography color="text.primary">
           {t('CV/ML/RL Center', { ns: 'common' })}
         </Typography>

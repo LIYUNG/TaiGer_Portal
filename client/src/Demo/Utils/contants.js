@@ -746,6 +746,8 @@ export const profile_name_list = {
   University_Entrance_Examination_GSAT: 'University_Entrance_Examination_GSAT',
   Bachelor_Certificate: 'Bachelor_Certificate',
   Bachelor_Transcript: 'Bachelor_Transcript',
+  Second_Degree_Certificate: 'Second_Degree_Certificate',
+  Second_Degree_Transcript: 'Second_Degree_Transcript',
   Englisch_Certificate: 'Englisch_Certificate',
   German_Certificate: 'German_Certificate',
   GRE: 'GRE',
@@ -2073,6 +2075,11 @@ export const profile_wtih_doc_link_list = {
   },
   Bachelor_Certificate: { name: 'Bachelor Certificate/Enrolment', link: '' },
   Bachelor_Transcript: { name: 'Bachelor Transcript', link: '' },
+  Second_Degree_Certificate: {
+    name: 'Second Degree Certificate/Enrolment',
+    link: ''
+  },
+  Second_Degree_Transcript: { name: 'Second Degree Transcript', link: '' },
   Englisch_Certificate: { name: 'TOEFL or IELTS', link: '' },
   German_Certificate: { name: 'TestDaF or Goethe B2/C1', link: '' },
   GRE: { name: 'GRE', link: '' },
@@ -2096,6 +2103,8 @@ export const profile_list = {
   University_Entrance_Examination_GSAT: 'GSAT/SAT/TVE Test',
   Bachelor_Certificate: 'Bachelor Certificate/Enrolment',
   Bachelor_Transcript: 'Bachelor Transcript',
+  Second_Degree_Certificate: 'Second Degree Certificate/Enrolment',
+  Second_Degree_Transcript: 'Second Degree Transcript',
   Englisch_Certificate: 'TOEFL or IELTS',
   German_Certificate: 'TestDaF or Goethe-A1-C1',
   GRE: 'GRE',
@@ -2119,6 +2128,17 @@ export const base_documents_checklist = {
     '若尚未最終版(畢業證書)，請標記註冊證明為 Reject，並提醒每學期更新'
   ],
   Bachelor_Transcript: [
+    'Grading system existed ?',
+    'GPA (1.7-4.3 system) and not 100-60 system ?',
+    'Date of referral ? (if graduated)',
+    '若尚未最終版(with Date of referral)，請標記此成績單為 Reject，並提醒每學期更新',
+    'For Bachelor application: 34 credits must be achieved (if applicable)'
+  ],
+  Second_Degree_Certificate: [
+    'English version ?',
+    '若尚未最終版(畢業證書)，請標記註冊證明為 Reject，並提醒每學期更新'
+  ],
+  Second_Degree_Transcript: [
     'Grading system existed ?',
     'GPA (1.7-4.3 system) and not 100-60 system ?',
     'Date of referral ? (if graduated)',

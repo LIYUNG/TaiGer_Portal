@@ -165,6 +165,8 @@ export const translation_en = {
     'High School Transcript': 'High School Transcript',
     'Bachelor Certificate/Enrolment': 'Bachelor Certificate/Enrolment',
     'Bachelor Transcript': 'Bachelor Transcript',
+    'Second Degree Certificate/Enrolment': 'Second Degree Certificate/Enrolment',
+    'Second Degree Transcript': 'Second Degree Transcript',
     'ECTS Conversion': 'ECTS Conversion',
     'TOEFL or IELTS': 'TOEFL or IELTS',
     'Exchange Student Certificate': 'Exchange Student Certificate',

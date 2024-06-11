@@ -166,6 +166,8 @@ export const translation_zh_TW = {
     'High School Transcript': '高中英語版成績單',
     'Bachelor Certificate/Enrolment': '大學英語版畢業證書或註冊證明',
     'Bachelor Transcript': '大學英語版成績單',
+    'Second Degree Certificate/Enrolment': '第二學位英語版畢業證書或註冊證明',
+    'Second Degree Transcript': '第二學位英語版成績單',
     'ECTS Conversion': 'ECTS學分轉換',
     'TOEFL or IELTS': '托福或雅思',
     'Exchange Student Certificate': '交換學生證明',

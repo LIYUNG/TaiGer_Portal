@@ -2,7 +2,7 @@ import React from 'react';
 import { DateTime, IANAZone } from 'luxon';
 import moment from 'moment-timezone';
 import { styled, alpha } from '@mui/material/styles';
-import { InputBase, Typography } from '@mui/material';
+import { Box, InputBase, Typography } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import BugReportIcon from '@mui/icons-material/BugReport';
@@ -16,6 +16,7 @@ import { Link as LinkDom } from 'react-router-dom';
 import { appConfig } from '../../config';
 import DEMO from '../../store/constant';
 import { is_TaiGer_Student } from './checking-functions';
+import { useTranslation } from 'react-i18next';
 
 export const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -115,12 +116,20 @@ export const SUBMISSION_STATUS_E = {
     <CancelIcon fontSize="small" style={{ color: red[700] }} title="Withdraw" />
   ),
   UNKNOWN_SYMBOL: (
-    <HelpIcon fontSize="small" style={{ color: grey[400] }} title="In Progress" />
+    <HelpIcon
+      fontSize="small"
+      style={{ color: grey[400] }}
+      title="In Progress"
+    />
   )
 };
 export const ADMISSION_STATUS_E = {
   OK_SYMBOL: (
-    <CheckCircleIcon fontSize="small" style={{ color: green[500] }} title="Admitted" />
+    <CheckCircleIcon
+      fontSize="small"
+      style={{ color: green[500] }}
+      title="Admitted"
+    />
   ),
   NOT_OK_SYMBOL: (
     <CancelIcon fontSize="small" style={{ color: red[700] }} title="Rejected" />
@@ -138,7 +147,11 @@ export const FILE_OK_SYMBOL = (
   />
 );
 export const FILE_NOT_OK_SYMBOL = (
-  <CancelIcon fontSize="small" style={{ color: red[700] }} title="Invalid Document" />
+  <CancelIcon
+    fontSize="small"
+    style={{ color: red[700] }}
+    title="Invalid Document"
+  />
 );
 export const FILE_UPLOADED_SYMBOL = (
   <QueryBuilderIcon
@@ -155,7 +168,11 @@ export const FILE_MISSING_SYMBOL = (
   />
 );
 export const FILE_DONT_CARE_SYMBOL = (
-  <RemoveIcon fontSize="small" style={{ color: grey[400] }} title="Not needed" />
+  <RemoveIcon
+    fontSize="small"
+    style={{ color: grey[400] }}
+    title="Not needed"
+  />
 );
 
 export const questionType = {
@@ -742,6 +759,20 @@ export const profile_name_list = {
   Grading_System: 'Grading_System'
 };
 
+export const INTERNAL_DASHBOARD_TABS = {
+  overview: 0,
+  agents: 1,
+  kpi: 2,
+  programList: 3
+};
+
+export const INTERNAL_DASHBOARD_REVERSED_TABS = {
+  0: 'overview',
+  1: 'agents',
+  2: 'kpi',
+  3: 'programList'
+};
+
 export const SINGLE_STUDENT_TABS = {
   applications: 0,
   profile: 1,
@@ -1045,8 +1076,8 @@ export const program_fields = [
 ];
 
 export const convertDate_ux_friendly = (date) => {
-  let dat = new Date(date).toLocaleDateString('zh-Hans-CN');
-
+  // let dat = new Date(date).toLocaleDateString('zh-Hans-CN');
+  const { t } = useTranslation();
   const currentDate = new Date();
   const input_date_point = new Date(date);
   // Calculate the time difference in milliseconds
@@ -1060,15 +1091,13 @@ export const convertDate_ux_friendly = (date) => {
 
   let timeDisplay;
   if (minutes < 60) {
-    timeDisplay = `${minutes} minute${minutes > 1 ? 's' : ''}`;
+    timeDisplay = t('timeMinutes', { ns: 'common', minutes });
   } else if (hours < 24) {
-    timeDisplay = `${hours} hour${hours > 1 ? 's' : ''}`;
+    timeDisplay = t('timeHours', { ns: 'common', hours });
   } else if (days < 7) {
-    timeDisplay = `${days} day${days > 1 ? 's' : ''}`;
-  } else if (weeks < 4) {
-    timeDisplay = `${weeks} week${weeks > 1 ? 's' : ''}`;
+    timeDisplay = t('timeDays', { ns: 'common', days });
   } else {
-    timeDisplay = `${dat}`;
+    timeDisplay = t('timeWeeks', { ns: 'common', weeks });
   }
   return timeDisplay;
 };
@@ -1652,6 +1681,220 @@ export const studentOverviewTableHeader = [
   'Portals',
   'Uni-Assist',
   'open/offer/reject'
+];
+
+export const c1_mrt = [
+  {
+    accessorKey: 'firstname_lastname', //accessorKey used to define `data` column. `id` gets set to accessorKey automatically
+    filterVariant: 'autocomplete',
+    filterFn: 'contains',
+    header: 'First-, Last Name',
+    size: 150,
+    Cell: (params) => {
+      const linkUrl = `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+        params.row.original.student_id,
+        DEMO.PROFILE_HASH
+      )}`;
+      return (
+        <Box
+          sx={{
+            whiteSpace: 'nowrap',
+            overflow: 'hidden'
+            // textOverflow: 'ellipsis'
+          }}
+        >
+          <Link
+            underline="hover"
+            to={linkUrl}
+            component={LinkDom}
+            target="_blank"
+            title={params.row.original.firstname_lastname}
+          >
+            {params.row.original.firstname_lastname}
+          </Link>
+        </Box>
+      );
+    }
+  },
+  {
+    accessorKey: 'editors',
+    header: 'Editors / Writer',
+    size: 120,
+    Cell: (params) => {
+      return params.row.original.file_type === 'Essay'
+        ? params.row.original.outsourced_user_id?.map((outsourcer) => (
+            <Box
+              key={`${outsourcer._id.toString()}`}
+              sx={{
+                whiteSpace: 'nowrap',
+                overflow: 'hidden'
+                // textOverflow: 'ellipsis'
+              }}
+            >
+              <Link
+                underline="hover"
+                to={DEMO.TEAM_EDITOR_LINK(outsourcer._id.toString())}
+                component={LinkDom}
+                target="_blank"
+                title={outsourcer.firstname}
+              >
+                {`${outsourcer.firstname} `}
+              </Link>
+            </Box>
+          )) || []
+        : params.row.original.editors?.map((editor) => (
+            <Link
+              underline="hover"
+              to={DEMO.TEAM_EDITOR_LINK(editor._id.toString())}
+              component={LinkDom}
+              target="_blank"
+              title={editor.firstname}
+              key={`${editor._id.toString()}`}
+            >
+              {`${editor.firstname} `}
+            </Link>
+          ));
+    }
+  },
+  {
+    accessorKey: 'deadline',
+    header: 'Deadline',
+    size: 120,
+    Cell: (params) => {
+      return (
+        <Box
+          sx={{
+            whiteSpace: 'nowrap',
+            overflow: 'hidden'
+          }}
+        >
+          {params.row.original?.deadline}
+        </Box>
+      );
+    }
+  },
+  {
+    accessorKey: 'days_left',
+    header: 'Days left',
+    size: 80,
+    Cell: (params) => {
+      return (
+        <Box
+          sx={{
+            whiteSpace: 'nowrap',
+            overflow: 'hidden'
+          }}
+        >
+          {params.row.original?.days_left}
+        </Box>
+      );
+    }
+  },
+  {
+    accessorKey: 'document_name',
+    header: 'Document name',
+    filterFn: 'contains',
+    size: 450,
+    Cell: (params) => {
+      const linkUrl = `${DEMO.DOCUMENT_MODIFICATION_LINK(
+        params.row.original.thread_id
+      )}`;
+      return (
+        <Box
+          sx={{
+            whiteSpace: 'nowrap',
+            overflow: 'hidden'
+            // textOverflow: 'ellipsis'
+          }}
+        >
+          {params.row.original?.attributes?.map(
+            (attribute) =>
+              [1, 3, 9, 10, 11].includes(attribute.value) && (
+                <Tooltip
+                  title={`${attribute.name}: ${
+                    ATTRIBUTES[attribute.value - 1].definition
+                  }`}
+                  key={attribute._id}
+                >
+                  <Chip
+                    size="small"
+                    data-testid={`chip-${attribute.name}`}
+                    label={attribute.name[0]}
+                    color={COLORS[attribute.value]}
+                  />
+                </Tooltip>
+              )
+          )}
+          <Link
+            underline="hover"
+            to={linkUrl}
+            component={LinkDom}
+            target="_blank"
+            title={params.row.original.document_name}
+          >
+            {params.row.original.document_name}
+          </Link>
+        </Box>
+      );
+    }
+  },
+  {
+    accessorKey: 'aged_days',
+    header: 'Aged days',
+    size: 100
+  },
+  {
+    accessorKey: 'number_input_from_editors',
+    header: 'Editor Feedback (#Messages/#Files)',
+    Header: ({ column }) => (
+      <Box
+        sx={{
+          whiteSpace: 'nowrap',
+          overflow: 'hidden'
+        }}
+      >
+        {column.columnDef.header}
+      </Box> //re-use the header we already defined
+    ), //arrow function
+    size: 100
+  },
+  {
+    accessorKey: 'number_input_from_student',
+    header: 'Student Feedback (#Messages/#Files)',
+    Header: ({ column }) => (
+      <Box
+        sx={{
+          whiteSpace: 'nowrap',
+          overflow: 'hidden'
+        }}
+      >
+        {column.columnDef.header}
+      </Box> //re-use the header we already defined
+    ), //arrow function
+    size: 100
+  },
+  {
+    accessorKey: 'latest_reply',
+    header: 'Latest Reply',
+    size: 150,
+    Cell: (params) => {
+      return (
+        <Box
+          sx={{
+            whiteSpace: 'nowrap',
+            overflow: 'hidden'
+          }}
+        >
+          {params.row.original?.latest_reply}
+        </Box>
+      );
+    }
+  },
+  {
+    accessorKey: 'updatedAt',
+    header: 'Last Update',
+    size: 150
+  }
 ];
 
 export const c1 = [

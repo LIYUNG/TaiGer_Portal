@@ -5,14 +5,12 @@ import StudentOverviewPage from '.';
 import 'react-i18next';
 import { getAllActiveStudents } from '../../api';
 import axios from 'axios';
-import { request } from '../../api/request';
 import { useAuth } from '../../components/AuthProvider/index';
 import { MemoryRouter } from 'react-router-dom';
 
 import { mockSingleData } from '../../test/testingStudentData';
 
 jest.mock('axios');
-jest.mock('request');
 jest.mock('../../api');
 
 jest.mock('react-i18next', () => ({

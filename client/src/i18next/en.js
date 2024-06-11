@@ -290,7 +290,13 @@ export const translation_en = {
     'It looks like you did not finish survey. See':
       'It looks like you did not finish survey. See',
     'Student View': 'Student View',
-    'Wait for Agent': 'Wait for Agent'
+    'Wait for Agent': 'Wait for Agent',
+    You: 'You',
+    timeMinutes: '{{minutes}}m',
+    timeHours: '{{hours}}h',
+    timeDays: '{{days}}d',
+    timeWeeks: '{{weeks}}w',
+    Send: 'Send'
   },
   dashboard: {
     Dashboard: 'Dashboard',
@@ -372,6 +378,7 @@ export const translation_en = {
       'Update transcript successfully! Your agent will be notified and will analyse your courses as soon as possible.',
     'View Online': 'View Online',
     'No analysis yet': 'No analysis yet',
+
     'Please upload documents as soon as possible. The agent needs them to understand your academic background.':
       'Please upload documents as soon as possible. The agent needs them to understand your academic background.',
     'Please be sure to update your Chinese and English names, as well as your date of birth information. This will affect the preparation of formal documents by the editor for you.':
@@ -419,6 +426,10 @@ export const translation_en = {
     'Expected English Test Date': 'Expected English Test Date',
     'University (Bachelor degree)': 'University (Bachelor degree)',
     'Other wish': 'Other wish'
+  },
+  visa: {
+    'Please consider working on visa, if you decide the offer.':
+      'Please consider working on visa, if you decide the offer.'
   },
   translation: {
     'Interview Time': 'Interview Time',

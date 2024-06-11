@@ -200,7 +200,13 @@ function ApplicationOverviewTabs(props) {
               { ns: 'common' }
             )}
           </Typography>
-          <TasksDistributionBarChart data={sorted_date_freq_pair} />
+          <TasksDistributionBarChart
+            data={sorted_date_freq_pair}
+            k={'name'}
+            value1={'active'}
+            value2={'potentials'}
+            yLabel={'Applications'}
+          />
         </Card>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <Tabs

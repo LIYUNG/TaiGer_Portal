@@ -1,5 +1,6 @@
 const async = require('async');
 const { ObjectId } = require('mongodb');
+const path = require('path');
 
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
@@ -11,7 +12,10 @@ const {
 } = require('../services/email');
 const logger = require('../services/logger');
 const { isNotArchiv } = require('../constants');
-const Permission = require('../models/Permission');
+const { getPermission } = require('../utils/queryFunctions');
+const { AWS_S3_BUCKET_NAME } = require('../config');
+const { one_month_cache } = require('../cache/node-cache');
+const { s3 } = require('../aws');
 
 const pageSize = 5;
 
@@ -48,10 +52,10 @@ const getSearchUserMessages = asyncHandler(async (req, res, next) => {
     }
   ]);
 
-  const permissions = await Permission.findOne({ user_id: user._id });
+  const permissions = await getPermission(user);
   if (
-    user.role === 'Admin' ||
-    (user.role === 'Agent' && permissions?.canAccessAllChat)
+    user.role === Role.Admin ||
+    (user.role === Role.Agent && permissions?.canAccessAllChat)
   ) {
     const students = await Student.find(
       {
@@ -137,7 +141,7 @@ const getSearchMessageKeywords = asyncHandler(async (req, res) => {
       }
     }
   ]);
-  if (user.role === 'Admin') {
+  if (user.role === Role.Admin) {
     const students = await Student.find({
       $or: [{ archiv: { $exists: false } }, { archiv: false }]
     })
@@ -200,10 +204,10 @@ const getUnreadNumberMessages = asyncHandler(async (req, res) => {
     logger.error('getMyMessages: not TaiGer user!');
     throw new ErrorResponse(401, 'Invalid TaiGer user');
   }
-  const permissions = await Permission.findOne({ user_id: user._id });
+  const permissions = await getPermission(user);
   if (
-    user.role === 'Admin' ||
-    (user.role === 'Agent' && permissions?.canAccessAllChat)
+    user.role === Role.Admin ||
+    (user.role === Role.Agent && permissions?.canAccessAllChat)
   ) {
     const students = await Student.find({
       $or: [{ archiv: { $exists: false } }, { archiv: false }]
@@ -288,6 +292,7 @@ const getUnreadNumberMessages = asyncHandler(async (req, res) => {
   });
 });
 
+// TODO: refactor permission to middleware
 const getMyMessages = asyncHandler(async (req, res, next) => {
   const { user } = req;
 
@@ -300,11 +305,11 @@ const getMyMessages = asyncHandler(async (req, res, next) => {
     throw new ErrorResponse(401, 'Invalid TaiGer user');
   }
 
-  const permissions = await Permission.findOne({ user_id: user._id });
+  const permissions = await getPermission(user);
 
   if (
-    user.role === 'Admin' ||
-    (user.role === 'Agent' && permissions?.canAccessAllChat)
+    user.role === Role.Admin ||
+    (user.role === Role.Agent && permissions?.canAccessAllChat)
   ) {
     const students = await Student.find({
       $or: [{ archiv: { $exists: false } }, { archiv: false }]
@@ -474,6 +479,46 @@ const getMessages = asyncHandler(async (req, res, next) => {
   next();
 });
 
+const getChatFile = asyncHandler(async (req, res, next) => {
+  const {
+    params: { studentId, fileName }
+  } = req;
+
+  let directory = path.join(AWS_S3_BUCKET_NAME, studentId, 'chat');
+  directory = directory.replace(/\\/g, '/');
+  const options = {
+    Key: fileName,
+    Bucket: directory
+  };
+
+  const cache_key = `chat-${studentId}${req.originalUrl.split('/')[6]}`;
+  const value = one_month_cache.get(cache_key); // image name
+  if (value === undefined) {
+    s3.getObject(options, (err, data) => {
+      // Handle any error and exit
+      if (!data || !data.Body) {
+        logger.info('File not found in S3');
+        // You can handle this case as needed, e.g., send a 404 response
+        return res.status(404).send(err);
+      }
+
+      // No error happened
+      const success = one_month_cache.set(cache_key, data.Body);
+      if (success) {
+        logger.info('image cache set successfully');
+      }
+
+      res.attachment(fileName);
+      return res.end(data.Body);
+    });
+  } else {
+    logger.info('cache hit');
+    res.attachment(fileName);
+    return res.end(value);
+  }
+  next();
+});
+
 // (O) notification email works
 const postMessages = asyncHandler(async (req, res, next) => {
   const {
@@ -517,16 +562,35 @@ const postMessages = asyncHandler(async (req, res, next) => {
     logger.error(`message collapse ${message}`);
     throw new ErrorResponse(400, 'message collapse');
   }
-
+  let newfile = [];
+  if (req.files) {
+    for (let i = 0; i < req.files.length; i += 1) {
+      newfile.push({
+        name: req.files[i].key,
+        path: path.join(req.files[i].metadata.path, req.files[i].key)
+      });
+      // Check for duplicate file extensions
+      const fileExtensions = req.files.map(
+        (file) => file.mimetype.split('/')[1]
+      );
+      const uniqueFileExtensions = new Set(fileExtensions);
+      if (fileExtensions.length !== uniqueFileExtensions.size) {
+        logger.error('Error: Duplicate file extensions found!');
+        throw new ErrorResponse(
+          423,
+          'Error: Duplicate file extensions found. Due to the system automatical naming mechanism, the files with same extension (said .pdf) will be overwritten. You can not upload 2 same files extension (2 .pdf or 2 .docx) at the same message. But 1 .pdf and 1 .docx are allowed.'
+        );
+      }
+    }
+  }
   const new_message = new Communication({
     student_id: studentId,
     user_id: user._id,
     message,
     readBy: [new ObjectId(user._id.toString())],
+    files: newfile,
     createdAt: new Date()
   });
-
-  // TODO: prevent abuse! if communication_thread.messages.length > 30, too much message in a thread!
 
   await new_message.save();
   const communication_latest = await Communication.find({
@@ -542,9 +606,8 @@ const postMessages = asyncHandler(async (req, res, next) => {
     'firstname lastname email archiv'
   );
 
-  // TODO inform agent/student
+  // inform agent/student
   if (user.role === Role.Student) {
-    // If no editor, inform agent to assign
     for (let i = 0; i < student.agents.length; i += 1) {
       // inform active-agent
       if (isNotArchiv(student)) {
@@ -588,18 +651,21 @@ const updateAMessageInThread = asyncHandler(async (req, res, next) => {
     params: { messageId }
   } = req;
   const { message } = req.body;
-
-  const thread = await Communication.findById(messageId).populate(
-    'student_id user_id',
-    'firstname lastname'
-  );
-  if (!thread) {
-    logger.error('updateAMessageInThread : Invalid message thread id');
-    throw new ErrorResponse(404, 'Thread not found');
+  try {
+    const thread = await Communication.findByIdAndUpdate(
+      messageId,
+      { message },
+      { new: true }
+    ).populate('student_id user_id', 'firstname lastname');
+    if (!thread) {
+      logger.error('updateAMessageInThread : Invalid message thread id');
+      throw new ErrorResponse(404, 'Thread not found');
+    }
+    res.status(200).send({ success: true, data: thread });
+  } catch (e) {
+    logger.error(`updateAMessageInThread error for messageId ${messageId}`);
+    throw new ErrorResponse(400, 'message collapse');
   }
-  thread.message = JSON.stringify(req.body);
-  await thread.save();
-  res.status(200).send({ success: true, data: thread });
   next();
 });
 
@@ -609,8 +675,32 @@ const deleteAMessageInCommunicationThread = asyncHandler(
     const {
       params: { messageId }
     } = req;
+    const msg = await Communication.findById(messageId);
 
-    // Prevent multitenant
+    const deleteParams = {
+      Bucket: AWS_S3_BUCKET_NAME,
+      Delete: { Objects: [] }
+    };
+
+    msg.files?.map((file) =>
+      deleteParams.Delete.Objects.push({
+        Key: file.path.replace(/\\/g, '/')
+      })
+    );
+
+    try {
+      if (deleteParams.Delete.Objects.length > 0) {
+        await s3.deleteObjects(deleteParams).promise();
+        logger.info('Deleted chat files:');
+        logger.info(JSON.stringify(deleteParams.Delete.Objects));
+      }
+    } catch (err) {
+      if (err) {
+        logger.error('delete chat files: ', err);
+        throw new ErrorResponse(500, 'Error occurs while deleting');
+      }
+    }
+
     try {
       await Communication.findByIdAndDelete(messageId);
       res.status(200).send({ success: true });
@@ -622,6 +712,29 @@ const deleteAMessageInCommunicationThread = asyncHandler(
   }
 );
 
+const IgnoreMessage = asyncHandler(async (req, res, next) => {
+  const {
+    params: { communication_messageId, ignoreMessageState }
+  } = req;
+
+  try {
+    await Communication.findByIdAndUpdate(
+      communication_messageId,
+      { ignore_message: ignoreMessageState },
+      {}
+    );
+  } catch (e) {
+    logger.error(
+      `IgnoreMessage error for messageId ${communication_messageId}, state: ${ignoreMessageState}`
+    );
+    throw new ErrorResponse(400, 'message collapse');
+  }
+
+  logger.info('IgnoreMessage : save succeeds');
+  res.status(200).send({ success: true });
+  next();
+});
+
 module.exports = {
   getSearchUserMessages,
   getSearchMessageKeywords,
@@ -629,7 +742,9 @@ module.exports = {
   getMyMessages,
   loadMessages,
   getMessages,
+  getChatFile,
   postMessages,
   updateAMessageInThread,
-  deleteAMessageInCommunicationThread
+  deleteAMessageInCommunicationThread,
+  IgnoreMessage
 };

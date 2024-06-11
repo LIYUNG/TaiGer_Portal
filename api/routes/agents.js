@@ -5,7 +5,11 @@ const { filter_archiv_user } = require('../middlewares/limit_archiv_user');
 const { protect, permit } = require('../middlewares/auth');
 const { Role } = require('../models/User');
 
-const { getAgents, getAgentProfile, putAgentProfile } = require('../controllers/teams');
+const {
+  getAgents,
+  getAgentProfile,
+  putAgentProfile
+} = require('../controllers/teams');
 const {
   permission_canAssignAgent_filter
 } = require('../middlewares/permission-filter');
@@ -19,7 +23,7 @@ router
   .get(
     filter_archiv_user,
     GeneralGETRequestRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
     permission_canAssignAgent_filter,
     getAgents
   );

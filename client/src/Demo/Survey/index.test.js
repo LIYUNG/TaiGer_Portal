@@ -9,7 +9,6 @@ import {
   getMyAcademicBackground
 } from '../../api';
 import axios from 'axios';
-import { request } from '../../api/request';
 import { useAuth } from '../../components/AuthProvider/index';
 import {
   MemoryRouter,
@@ -25,7 +24,6 @@ import { SurveyProvider } from '../../components/SurveyProvider';
 import { profile_name_list } from '../Utils/contants';
 
 jest.mock('axios');
-jest.mock('request');
 jest.mock('../../api');
 
 jest.mock('react-i18next', () => ({

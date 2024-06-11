@@ -393,10 +393,8 @@ export const getCommunicationThread = (studentId) =>
   request.get(`/api/communications/${studentId}`);
 export const loadCommunicationThread = (studentId, pageNumber) =>
   request.get(`/api/communications/${studentId}/pages/${pageNumber}`);
-export const postCommunicationThread = (studentId, message) =>
-  request.post(`/api/communications/${studentId}`, {
-    message
-  });
+export const postCommunicationThread = (studentId, formData) =>
+  request.post(`/api/communications/${studentId}`, formData);
 export const updateAMessageInCommunicationThread = (
   communication_id,
   communication_messageId,
@@ -404,7 +402,7 @@ export const updateAMessageInCommunicationThread = (
 ) =>
   request.put(
     `/api/communications/${communication_id}/${communication_messageId}`,
-    message
+    { message }
   );
 export const deleteAMessageInCommunicationThread = (
   student_id,
@@ -412,6 +410,17 @@ export const deleteAMessageInCommunicationThread = (
 ) =>
   request.delete(
     `/api/communications/${student_id}/${communication_messageId}`
+  );
+
+export const IgnoreMessage = (
+  student_id,
+  communication_messageId,
+  message,
+  ignoreMessageState
+) =>
+  request.put(
+    `/api/communications/${student_id}/${communication_messageId}/${ignoreMessageState}/ignore`,
+    message
   );
 
 export const getSurveyInputs = (documentsthreadId) =>
@@ -443,6 +452,18 @@ export const initGeneralMessageThread = (studentId, document_catgory) =>
   request.post(
     `/api/document-threads/init/general/${studentId}/${document_catgory}`
   );
+
+export const IgnoreMessageThread = (
+  documentThreadId,
+  documentsthreadMessageId,
+  documentsthreadMessage,
+  ignoreMessageState
+) =>
+  request.put(
+    `/api/document-threads/${documentThreadId}/${documentsthreadMessageId}/${ignoreMessageState}/ignored`,
+    documentsthreadMessage
+  );
+
 export const initApplicationMessageThread = (
   studentId,
   applicationId,

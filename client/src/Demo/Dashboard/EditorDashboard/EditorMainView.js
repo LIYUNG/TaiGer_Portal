@@ -239,7 +239,13 @@ function EditorMainView(props) {
                 decide programs yet. But the tasks will be potentially active
                 when they decided.
               </Typography>
-              <TasksDistributionBarChart data={sorted_date_freq_pair} />
+              <TasksDistributionBarChart
+                data={sorted_date_freq_pair}
+                k={'name'}
+                value1={'active'}
+                value2={'potentials'}
+                yLabel={'Tasks'}
+              />
             </Box>
           </Card>
         </Grid>

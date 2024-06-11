@@ -17,10 +17,28 @@ import {
 } from '../../../../Demo/Utils/contants';
 import DEMO from '../../../../store/constant';
 import { truncateText } from '../../../../Demo/Utils/checking-functions';
+import { useAuth } from '../../../AuthProvider';
+import { useTranslation } from 'react-i18next';
 
 const friend = (props) => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const { t } = useTranslation();
   const theme = useTheme();
+  const parsedObject = JSON.parse(
+    props.data.latestCommunication?.message || '{}'
+  );
+  const lastReply = props.data.latestCommunication?.user_id;
+
+  // Access the first text content
+  const firstText =
+    parsedObject?.blocks?.length > 0
+      ? parsedObject?.blocks
+          .map((block) => (block?.type === 'paragraph' ? block.data?.text : ''))
+          ?.join('')
+          .replace(/<\/?[^>]+(>|$)|&[^;]+;?/g, '') || ''
+      : '';
+
   const handleToChat = () => {
     props.handleCloseChat();
     navigate(
@@ -58,7 +76,10 @@ const friend = (props) => {
           <Box
             style={{
               marginLeft: '10px',
-              flex: 1
+              flex: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '1px' // Adjust the gap between name and caption
             }}
           >
             <Typography variant="body1" fontWeight="bold" color="text.primary">
@@ -74,10 +95,16 @@ const friend = (props) => {
               )}
             </Typography>
             <Typography variant="caption">
-              {props.data?.latestCommunication?.createdAt &&
-                convertDate_ux_friendly(
+              {`${
+                user._id.toString() === lastReply
+                  ? `${t('You', { ns: 'common' })}: `
+                  : ''
+              }${truncateText(firstText, 26)} ${
+                props.data?.latestCommunication?.createdAt &&
+                `• ${convertDate_ux_friendly(
                   props.data.latestCommunication.createdAt
-                )}
+                )}`
+              }`}
             </Typography>
           </Box>
         </Grid>

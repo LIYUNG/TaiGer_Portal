@@ -113,7 +113,9 @@ const DEMO = {
     return `/teams/managers/${manager_id}`;
   },
   TEAM_MEMBERS_LINK: '/teams/members',
+  HOWTOSTART_DOCS_LINK: '/docs/howtostart',
   UNI_ASSIST_DOCS_LINK: '/docs/uniassist',
+  VISA_DOCS_LINK: '/docs/visa',
   UNI_ASSIST_LINK: '/uni-assist'
 };
 

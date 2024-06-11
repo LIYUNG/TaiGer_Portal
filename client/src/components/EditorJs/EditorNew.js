@@ -105,7 +105,8 @@ const EditorNew = (props) => {
               '#800080',
               '#FFF'
             ],
-            type: 'text'
+            type: 'text',
+            customPicker: true
           }
         },
         // Marker: {

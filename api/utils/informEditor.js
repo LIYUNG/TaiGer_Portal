@@ -81,7 +81,7 @@ const informNoEditor = async (student) => {
   const permissions = await Permission.find({
     canAssignEditors: true
   })
-    .populate('user_id', 'user_id')
+    .populate('user_id', 'firstname lastname email')
     .lean();
 
   if (!permissions) {

@@ -47,7 +47,8 @@ function SingleInterview() {
     isDeleteSuccessful: false,
     isDeleting: false,
     interview: {},
-    editorState: null,
+    editorDescriptionState: null,
+    editorInputState: null,
     isEdit: true,
     res_status: 0,
     res_modal_message: '',
@@ -78,7 +79,8 @@ function SingleInterview() {
             ...prevState,
             isLoaded: true,
             interview: data,
-            editorState: initialEditorState,
+            editorDescriptionState: initialEditorState,
+            editorInputState: { time: new Date(), blocks: [] },
             accordionKeys:
               new Array(data.thread_id?.messages?.length)
                 .fill()
@@ -378,7 +380,7 @@ function SingleInterview() {
 
   const {
     res_status,
-    editorState,
+    editorDescriptionState,
     interview,
     accordionKeys,
     isDeleteSuccessful,
@@ -388,7 +390,7 @@ function SingleInterview() {
     res_modal_message
   } = singleInterviewState;
 
-  if (!isLoaded && !editorState) {
+  if (!isLoaded && !editorDescriptionState) {
     return <Loading />;
   }
 
@@ -458,7 +460,7 @@ function SingleInterview() {
                 <DocThreadEditor
                   thread={interview.thread_id}
                   buttonDisabled={false}
-                  editorState={{}}
+                  editorState={singleInterviewState.editorInputState}
                   handleClickSave={handleClickSave}
                   file={singleInterviewState.file}
                   onFileChange={onFileChange}

@@ -6,9 +6,10 @@ const { User, Agent, Editor, Student, Role } = require('../models/User');
 const { Program } = require('../models/Program');
 const { Documentthread } = require('../models/Documentthread');
 const logger = require('../services/logger');
-const Permission = require('../models/Permission');
 const { getStudentsByProgram } = require('./programs');
 const { findStudentDelta } = require('../utils/modelHelper/programChange');
+const { getPermission } = require('../utils/queryFunctions');
+const { ObjectId } = require('mongodb');
 
 const getActivePrograms = async () => {
   const activePrograms = await User.aggregate([
@@ -166,6 +167,76 @@ const getAgentData = async (agent) => {
   return agentData;
 };
 
+const getAgentStudentDistData = async (agent) => {
+  const studentYearDistributionPromise = Student.aggregate([
+    {
+      $match: {
+        archiv: { $ne: true },
+        agents: agent._id, // Filter students where agents array includes the specific ObjectId
+        'applications.admission': 'O'
+      }
+    },
+    {
+      $group: {
+        _id: {
+          expected_application_date:
+            '$application_preference.expected_application_date'
+        },
+        count: { $sum: 1 } // Count the number of students in each group
+      }
+    },
+    {
+      $project: {
+        _id: 0, // Do not include the default _id field
+        expected_application_date: '$_id.expected_application_date', // Rename _id.expected_application_date to expected_application_date
+        count: 1 // Include the count field
+      }
+    },
+    {
+      $sort: { expected_application_date: 1 } // Sort by expected_application_date in ascending order
+    }
+  ]);
+
+  const studentYearNoAdmissionDistributionPromise = Student.aggregate([
+    {
+      $match: {
+        archiv: { $ne: true },
+        agents: agent._id, // Filter students where agents array includes the specific ObjectId
+        'applications.admission': { $ne: 'O' }
+      }
+    },
+    {
+      $group: {
+        _id: {
+          expected_application_date:
+            '$application_preference.expected_application_date'
+        },
+        count: { $sum: 1 } // Count the number of students in each group
+      }
+    },
+    {
+      $project: {
+        _id: 0, // Do not include the default _id field
+        expected_application_date: '$_id.expected_application_date', // Rename _id.expected_application_date to expected_application_date
+        count: 1 // Include the count field
+      }
+    },
+    {
+      $sort: { expected_application_date: 1 } // Sort by expected_application_date in ascending order
+    }
+  ]);
+  const [studentYearDistribution, studentYearNoAdmissionDistribution] =
+    await Promise.all([
+      studentYearDistributionPromise,
+      studentYearNoAdmissionDistributionPromise
+    ]);
+
+  return {
+    admission: studentYearDistribution,
+    noAdmission: studentYearNoAdmissionDistribution
+  };
+};
+
 const getEditorData = async (editor) => {
   const editorData = {};
   editorData._id = editor._id.toString();
@@ -238,7 +309,8 @@ const getStatistics = asyncHandler(async (req, res) => {
     finishedDocs,
     students,
     users,
-    archivCount
+    archivCount,
+    ...agentsStudentsDistribution
   ] = await Promise.all([
     agentsPromises,
     editorsPromises,
@@ -246,8 +318,46 @@ const getStatistics = asyncHandler(async (req, res) => {
     finDocsPromise,
     studentsPromise,
     usersPromise,
-    archivCountPromise
+    archivCountPromise,
+    ...agents.map((agent) => getAgentStudentDistData(agent))
   ]);
+
+  const resultAdmission = agentsStudentsDistribution.map(
+    (agentStudentDis, idx) => {
+      const returnData = {
+        name: `${agents[idx].firstname}`,
+        id: `${agents[idx]._id.toString()}`,
+        admission: agentStudentDis.admission.reduce((acc, curr) => {
+          if (curr.expected_application_date) {
+            acc[curr.expected_application_date] = curr.count;
+          } else {
+            acc.TBD = curr.count;
+          }
+
+          return acc;
+        }, {})
+      };
+      return returnData;
+    }
+  );
+
+  const resultNoAdmission = agentsStudentsDistribution.map(
+    (agentStudentDis, idx) => {
+      const returnData = {
+        noAdmission: agentStudentDis.noAdmission.reduce((acc, curr) => {
+          if (curr.expected_application_date) {
+            acc[curr.expected_application_date] = curr.count;
+          } else {
+            acc.TBD = curr.count;
+          }
+
+          return acc;
+        }, {})
+      };
+      return returnData;
+    }
+  );
+  const mergedResults = _.mergeWith(resultAdmission, resultNoAdmission);
 
   res.status(200).send({
     success: true,
@@ -261,16 +371,15 @@ const getStatistics = asyncHandler(async (req, res) => {
     agents: agents_data,
     editors: editors_data,
     students_details: students,
-    applications: []
+    applications: [],
+    agentStudentDistribution: mergedResults
   });
 });
 
 const getAgents = asyncHandler(async (req, res, next) => {
   const { user } = req;
   if (user.role === 'Agent') {
-    const permissions = await Permission.findOne({
-      user_id: user._id.toString()
-    });
+    const permissions = await getPermission(user);
     if (permissions && permissions.canAssignAgents) {
       const agents = await Agent.find({
         $or: [{ archiv: { $exists: false } }, { archiv: false }]
@@ -332,9 +441,7 @@ const getAgentProfile = asyncHandler(async (req, res, next) => {
 const getEditors = asyncHandler(async (req, res, next) => {
   const { user } = req;
   if (user.role === 'Editor') {
-    const permissions = await Permission.findOne({
-      user_id: user._id.toString()
-    });
+    const permissions = await getPermission(user);
     if (permissions && permissions.canAssignEditors) {
       const editors = await Editor.find({
         $or: [{ archiv: { $exists: false } }, { archiv: false }]
@@ -421,9 +528,7 @@ const getArchivStudents = asyncHandler(async (req, res) => {
 const getEssayWriters = asyncHandler(async (req, res, next) => {
   const { user } = req;
   if (user.role === 'Editor') {
-    const permissions = await Permission.findOne({
-      user_id: user._id.toString()
-    });
+    const permissions = await getPermission(user);
     // if (permissions && permissions.canAssignEditors && permissions.isEssayWriters) {
     if (permissions && permissions.canAssignEditors) {
       const editors = await Editor.find({

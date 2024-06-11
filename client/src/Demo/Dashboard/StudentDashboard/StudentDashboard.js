@@ -13,6 +13,7 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableContainer,
   TableHead,
   TableRow,
   Typography
@@ -297,21 +298,23 @@ function StudentDashboard(props) {
           )}
 
         <Grid item xs={12} md={8}>
-          <Card>
-            <Alert severity="error">
+          <Card style={{ border: '4px solid red' }}>
+            <Alert severity="warning">
               {t('To Do Tasks', { ns: 'common' })} &nbsp;:&nbsp;
               {t('Please finish it as soon as possible')}
             </Alert>
-            <Table size="small">
-              <TableHead>
-                <TableRow>
-                  <TableCell>{t('Tasks', { ns: 'common' })}</TableCell>
-                  <TableCell>{t('Description', { ns: 'common' })}</TableCell>
-                  <TableCell>{t('Last update', { ns: 'common' })}</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>{student_tasks}</TableBody>
-            </Table>
+            <TableContainer style={{ overflowX: 'auto' }}>
+              <Table size="small">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>{t('Tasks', { ns: 'common' })}</TableCell>
+                    <TableCell>{t('Description', { ns: 'common' })}</TableCell>
+                    <TableCell>{t('Last update', { ns: 'common' })}</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>{student_tasks}</TableBody>
+              </Table>
+            </TableContainer>
           </Card>
         </Grid>
         <Grid item xs={12} md={4}>

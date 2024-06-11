@@ -1,7 +1,8 @@
 const async = require('async');
 const path = require('path');
-const { Agent, Student, Editor, User } = require('../models/User');
+const { Agent, Student, Editor, User, Role } = require('../models/User');
 const { Documentthread } = require('../models/Documentthread');
+const { Communication } = require('../models/Communication');
 const { Interval } = require('../models/Interval');
 const {
   sendAssignEditorReminderEmail,
@@ -1194,9 +1195,9 @@ const FindIntervalInCommunicationsAndSave = async () => {
         let msg_1;
         let msg_2;
         for (const msg of messages){
-          if (msg.user_id?.role === "Student" && msg.ignore_message !== true) {
+          if (msg.user_id?.role === Role.Student && msg.ignore_message !== true) {
             msg_1 = msg;
-          } else if (msg.user_id?.role !== "Student"){
+          } else if (msg.user_id?.role !== Role.Student){
             msg_2 = msg;
           }
           //calculate interval, store values into Interval Collection
@@ -1262,9 +1263,9 @@ const FindIntervalInDocumentThreadAndSave = async () => {
           for (const msg of thread.messages){
             try {
               const user = await User.findById(msg.user_id?.toString())
-                if (user?.role === "Student" && msg.ignore_message !== true) {
+                if (user?.role === Role.Student && msg.ignore_message !== true) {
                   msg_1 = msg;
-                } else if (user?.role !== "Student") {
+                } else if (user?.role !== Role.Student) {
                   msg_2 = msg;
                 }
             } catch (error) {

@@ -1334,6 +1334,34 @@ const updateAcademicBackground = asyncHandler(async (req, res, next) => {
       );
     });
 
+    let desiredSecondDegreeStatus;
+
+    // no need university doc
+    if (
+      updatedStudent.academic_background.university.isGraduated === 'pending' ||
+      updatedStudent.academic_background.university.isGraduated === 'No' ||
+      updatedStudent.academic_background.university.isSecondGraduated ===
+        'No' ||
+      updatedStudent.academic_background.university.isSecondGraduated === '-'
+    ) {
+      desiredSecondDegreeStatus = DocumentStatus.NotNeeded;
+    } else {
+      desiredSecondDegreeStatus = DocumentStatus.Missing;
+    }
+    const secondDegreeDocumentsToEnsure = [
+      'Second_Degree_Certificate',
+      'Second_Degree_Transcript'
+    ];
+    secondDegreeDocumentsToEnsure.forEach((docName) => {
+      ensureDocumentStatus(
+        updatedStudent.profile,
+        docName,
+        profile_name_list,
+        desiredSecondDegreeStatus,
+        DocumentStatus
+      );
+    });
+
     const exchangeStatus =
       updatedStudent.academic_background.university.Has_Exchange_Experience ===
       'Yes'

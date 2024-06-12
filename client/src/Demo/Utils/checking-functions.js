@@ -1374,6 +1374,27 @@ export const is_personal_data_filled = (student) => {
   return true;
 };
 
+export const needGraduatedApplicantsButStudentNotGraduated = (student) => {
+  if (student.applications === undefined) {
+    return false;
+  }
+  for (let j = 0; j < student.applications.length; j += 1) {
+    if (
+      student.applications[j].programId.allowOnlyGraduatedApplicant &&
+      student.academic_background.university.isGraduated !== 'Yes'
+    ) {
+      return true;
+    }
+  }
+  return false;
+};
+
+export const needGraduatedApplicantsPrograms = (applications) => {
+  return applications?.filter(
+    (app) => app.programId.allowOnlyGraduatedApplicant
+  );
+};
+
 export const is_all_uni_assist_vpd_uploaded = (student) => {
   if (student.applications === undefined) {
     return false;

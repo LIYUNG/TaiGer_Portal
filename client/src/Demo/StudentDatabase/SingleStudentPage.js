@@ -22,7 +22,8 @@ import {
   Breadcrumbs,
   Alert,
   TableContainer,
-  IconButton
+  IconButton,
+  ListItem
 } from '@mui/material';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
@@ -45,7 +46,12 @@ import {
   SINGLE_STUDENT_TABS,
   SINGLE_STUDENT_REVERSED_TABS
 } from '../Utils/contants';
-import { is_TaiGer_Editor, is_TaiGer_role } from '../Utils/checking-functions';
+import {
+  is_TaiGer_Editor,
+  is_TaiGer_role,
+  needGraduatedApplicantsButStudentNotGraduated,
+  needGraduatedApplicantsPrograms
+} from '../Utils/checking-functions';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import {
   updateAgents,
@@ -388,6 +394,32 @@ export const SingleStudentPageMainContent = ({
       {singleStudentPage.student.archiv && <TopBar />}
       {singleStudentPage.taiger_view ? (
         <>
+          {needGraduatedApplicantsButStudentNotGraduated(
+            singleStudentPage.student
+          ) && (
+            <Card sx={{ border: '4px solid red' }}>
+              <Alert severity="warning">
+                {t('Programs below are only for graduated applicants', {
+                  ns: 'common'
+                })}
+                &nbsp;:&nbsp;
+              </Alert>
+              {needGraduatedApplicantsPrograms(
+                singleStudentPage.student.applications
+              )?.map((app) => (
+                <ListItem key={app.programId._id.toString()}>
+                  <Link
+                    to={DEMO.SINGLE_PROGRAM_LINK(app.programId._id.toString())}
+                    component={LinkDom}
+                    target="_blank"
+                  >
+                    {app.programId.school} {app.programId.program_name}{' '}
+                    {app.programId.degree} {app.programId.semester}
+                  </Link>
+                </ListItem>
+              ))}
+            </Card>
+          )}
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
             <Tabs
               value={value}

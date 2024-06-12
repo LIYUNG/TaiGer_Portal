@@ -10,6 +10,7 @@ import {
   Grid,
   IconButton,
   Link,
+  ListItem,
   Table,
   TableBody,
   TableCell,
@@ -28,7 +29,9 @@ import {
   check_applications_to_decided,
   is_all_uni_assist_vpd_uploaded,
   are_base_documents_missing,
-  isBaseDocumentsRejected
+  isBaseDocumentsRejected,
+  needGraduatedApplicantsButStudentNotGraduated,
+  needGraduatedApplicantsPrograms
 } from '../../Utils/checking-functions';
 import ErrorPage from '../../Utils/ErrorPage';
 
@@ -296,7 +299,34 @@ function StudentDashboard(props) {
               />
             </Grid>
           )}
-
+        <Grid item xs={12} md={12}>
+          {needGraduatedApplicantsButStudentNotGraduated(student) && (
+            <Card sx={{ border: '4px solid red' }}>
+              <Alert severity="warning">
+                {t('Programs below are only for graduated applicants', {
+                  ns: 'common'
+                })}
+                &nbsp;:&nbsp;
+              </Alert>
+              {needGraduatedApplicantsPrograms(student.applications)?.map(
+                (app) => (
+                  <ListItem key={app.programId._id.toString()}>
+                    <Link
+                      to={DEMO.SINGLE_PROGRAM_LINK(
+                        app.programId._id.toString()
+                      )}
+                      component={LinkDom}
+                      target="_blank"
+                    >
+                      {app.programId.school} {app.programId.program_name}{' '}
+                      {app.programId.degree} {app.programId.semester}
+                    </Link>
+                  </ListItem>
+                )
+              )}
+            </Card>
+          )}
+        </Grid>
         <Grid item xs={12} md={8}>
           <Card style={{ border: '4px solid red' }}>
             <Alert severity="warning">

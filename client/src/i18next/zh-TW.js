@@ -75,6 +75,8 @@ export const translation_zh_TW = {
     'Teaching Language': '教學語言',
     'Need Uni-Assist?': '需要 Uni-Assist?',
     'Specific Requirements': '特別要求',
+    'Programs below are only for graduated applicants':
+      '以下科系僅能夠給已畢業的申請者',
     'Only for graduated applicant': '只能夠給已畢業者申請',
     'English Test Can Submit Later': '英語檢定可以申請截止後繳交',
     'TOEFL Requirement': 'TOEFL 要求',

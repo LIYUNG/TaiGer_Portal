@@ -77,6 +77,8 @@ export const translation_en = {
     'Teaching Language': 'Teaching Language',
     'Need Uni-Assist?': 'Need Uni-Assist?',
     'Specific Requirements': 'Specific Requirements',
+    'Programs below are only for graduated applicants':
+      'Programs below are only for graduated applicants',
     'Only for graduated applicant': 'Only for graduated applicant',
     'English Test Can Submit Later': 'English Test Can Submit Later',
     'TOEFL Requirement': 'TOEFL Requirement',

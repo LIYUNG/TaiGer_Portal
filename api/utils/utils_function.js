@@ -1181,7 +1181,7 @@ const GroupCommunicationByStudent = async () => {
   };
 };
 
-const saveIntervalForCommunication = async (student, msg1, msg2) => {
+const SaveIntervalForCommunication = async (student, msg1, msg2) => {
   try {
     const intervalValue = CalculateInterval(msg1, msg2);
     const intervalData = {
@@ -1211,7 +1211,7 @@ const saveIntervalForCommunication = async (student, msg1, msg2) => {
   }
 };
 
-const processMessages = async (student, messages) => {
+const ProcessMessages = async (student, messages) => {
   messages.sort((a, b) => a.updatedAt - b.updatedAt);
   if (messages.length > 1) {
     let msg1;
@@ -1223,7 +1223,7 @@ const processMessages = async (student, messages) => {
         msg2 = msg;
       }
       if (msg1 !== undefined && msg2 !== undefined) {
-        await saveIntervalForCommunication(student, msg1, msg2);
+        await SaveIntervalForCommunication(student, msg1, msg2);
         msg1 = undefined;
         msg2 = undefined;
       }
@@ -1239,14 +1239,14 @@ const FindIntervalInCommunicationsAndSave = async () => {
       messages.sort((a, b) => {
         return a.updatedAt - b.updatedAt;
       });
-      await processMessages(student, messages);
+      await ProcessMessages(student, messages);
     });
   } catch (error) {
     logger.error('Error finding valid interval:', error);
   }
 };
 
-const saveIntervalForDocumentThread = async (thread, msg_1, msg_2) => {
+const SaveIntervalForDocumentThread = async (thread, msg_1, msg_2) => {
   try {
     const intervalValue = CalculateInterval(msg_1, msg_2);
     const intervalData = {
@@ -1276,7 +1276,7 @@ const saveIntervalForDocumentThread = async (thread, msg_1, msg_2) => {
   }
 };
 
-const processThread = async (thread) => {
+const ProcessThread = async (thread) => {
   if (thread.messages?.length > 1) {
     let msg_1;
     let msg_2;
@@ -1313,7 +1313,7 @@ const FindIntervalInDocumentThreadAndSave = async () => {
       try {
         for (const generaldocs_thread of student.generaldocs_threads) {
           const thread = generaldocs_thread.doc_thread_id;
-          await processThread(thread);
+          await ProcessThread(thread);
         }
       } catch (e) {
         logger.error('Error retrieving general docs', e);
@@ -1323,7 +1323,7 @@ const FindIntervalInDocumentThreadAndSave = async () => {
         for (const application of student.applications) {
           for (const doc_thread_id of application.doc_modification_thread) {
             const thread = doc_thread_id.doc_thread_id;
-            await processThread(thread);
+            await ProcessThread(thread);
           }
         }
       } catch (e) {

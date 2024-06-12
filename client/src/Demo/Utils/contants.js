@@ -953,7 +953,8 @@ export const program_fields_overview = [
   { name: 'Degree', prop: 'degree' },
   { name: 'Semester', prop: 'semester' },
   { name: 'Teaching Language', prop: 'lang' },
-  { name: 'Website', prop: 'website' }
+  { name: 'Website', prop: 'website' },
+  { name: 'Only for graduated applicant', prop: 'allowOnlyGraduatedApplicant' }
 ];
 
 export const program_fields_application_dates = [
@@ -967,10 +968,10 @@ export const program_fields_english_languages_test = [
 ];
 
 export const program_fields_other_test = [
-  { name: 'GPA Requirement (German system)', prop: 'gpa_requirement' },
   { name: 'TestDaF Requirement', prop: 'testdaf' },
   { name: 'GRE Requirement', prop: 'gre' },
-  { name: 'GMAT Requirement', prop: 'gmat' }
+  { name: 'GMAT Requirement', prop: 'gmat' },
+  { name: 'GPA Requirement (German system)', prop: 'gpa_requirement' }
 ];
 
 export const program_fields_special_documents = [

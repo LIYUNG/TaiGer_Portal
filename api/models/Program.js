@@ -44,12 +44,20 @@ const programModule = {
   gpa_requirement: {
     type: String
   },
+  allowOnlyGraduatedApplicant: {
+    type: Boolean,
+    default: false
+  },
   application_start: String,
   application_deadline: {
     type: String
   },
   uni_assist: {
     type: String
+  },
+  englishTestHandLater: {
+    type: Boolean,
+    default: false
   },
   toefl: {
     type: String
@@ -80,6 +88,10 @@ const programModule = {
   },
   ielts_speaking: {
     type: Number
+  },
+  germanTestHandLater: {
+    type: Boolean,
+    default: false
   },
   testdaf: {
     type: String

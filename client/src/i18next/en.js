@@ -77,8 +77,11 @@ export const translation_en = {
     'Teaching Language': 'Teaching Language',
     'Need Uni-Assist?': 'Need Uni-Assist?',
     'Specific Requirements': 'Specific Requirements',
+    'Only for graduated applicant': 'Only for graduated applicant',
+    'English Test Can Submit Later': 'English Test Can Submit Later',
     'TOEFL Requirement': 'TOEFL Requirement',
     'IELTS Requirement': 'IELTS Requirement',
+    'German Test Can Submit Later': 'German Test Can Submit Later',
     'TestDaF Requirement': 'TestDaF Requirement',
     'GRE Requirement': 'GRE Requirement',
     'GMAT Requirement': 'GMAT Requirement',
@@ -165,7 +168,8 @@ export const translation_en = {
     'High School Transcript': 'High School Transcript',
     'Bachelor Certificate/Enrolment': 'Bachelor Certificate/Enrolment',
     'Bachelor Transcript': 'Bachelor Transcript',
-    'Second Degree Certificate/Enrolment': 'Second Degree Certificate/Enrolment',
+    'Second Degree Certificate/Enrolment':
+      'Second Degree Certificate/Enrolment',
     'Second Degree Transcript': 'Second Degree Transcript',
     'ECTS Conversion': 'ECTS Conversion',
     'TOEFL or IELTS': 'TOEFL or IELTS',
@@ -514,8 +518,8 @@ export const translation_en = {
     'University Name': 'University Name',
     'University Name (Bachelor degree)': 'University Name (Bachelor degree)',
     'University Name (Second degree)': 'University Name (Second degree)',
-    'Program Name': '科系名稱',
-    'Program Name / Not study yet': '科系名稱 / 尚未就讀',
+    'Program Name': 'Program Name',
+    'Program Name / Not study yet': 'Program Name / Not study yet',
     'Passing Score GPA of your university program':
       'Passing Score GPA of your university program',
     'Highest Score GPA of your university program':

@@ -22,7 +22,8 @@ const {
   COURSE_SELECTION_TASKS_REMINDER_JUNE_SCHEDULE,
   COURSE_SELECTION_TASKS_REMINDER_DECEMBER_SCHEDULE,
   COURSE_SELECTION_TASKS_REMINDER_JULY_SCHEDULE,
-  COURSE_SELECTION_TASKS_REMINDER_NOVEMBER_SCHEDULE
+  COURSE_SELECTION_TASKS_REMINDER_NOVEMBER_SCHEDULE,
+  AVERAGE_RESPONSE_TIME_CALCULATION_SCHEDULE
 } = require('./config');
 
 const logger = require('./services/logger');
@@ -40,6 +41,7 @@ const {
   UpdateStatisticsData,
   MeetingDailyReminderChecker,
   UnconfirmedMeetingDailyReminderChecker,
+  DailyCalculateAverageResponseTime,
   NoInterviewTrainerOrTrainingDateDailyReminderChecker
 } = require('./utils/utils_function');
 const { MongoDBDataBaseDailySnapshot } = require('./utils/jobs');
@@ -166,6 +168,11 @@ const launch = async () => {
   const job14 = schedule.scheduleJob(
     DAILY_TASKS_REMINDER_SCHEDULE,
     NoInterviewTrainerOrTrainingDateDailyReminderChecker
+  );
+  
+  const job15 = schedule.scheduleJob(
+    AVERAGE_RESPONSE_TIME_CALCULATION_SCHEDULE,
+    DailyCalculateAverageResponseTime
   );
 
   logger.info(`isProd : ${isProd()}`);

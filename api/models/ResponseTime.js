@@ -1,27 +1,25 @@
-const { ObjectId } = require('mongodb');
-const { model, Schema } = require('mongoose');
+const mongoose = require('mongoose');
+const {
+  model,
+  Schema,
+  Types: { ObjectId }
+} = require('mongoose');
 
-const ResponseTimeSchema = new Schema({
+const ResponseTimeSchema = new mongoose.Schema({
   thread_id: {
     type: Schema.Types.ObjectId,
-    ref: 'Documentthread',
-    required: function(){
-        return student_id? false : true 
-    }
+    ref: 'Documentthread'
   },
   student_id: {
     type: Schema.Types.ObjectId,
-    ref: 'User',
-    required: function(){
-        return thread_id? false : true 
-    }
+    ref: 'User'
   },
   interval_type: {
     type: String,
     required: true
   },
-  interval: {
-    type:{Number, default: 0},
+  intervalAvg: {
+    type: Number,
     required: true
   },
   updatedAt: {
@@ -31,4 +29,7 @@ const ResponseTimeSchema = new Schema({
   }
 });
 
-module.exports = model('ResponseTime', ResponseTimeSchema);
+const ResponseTime = mongoose.model('ResponseTime', ResponseTimeSchema);
+module.exports = {
+  ResponseTime
+};

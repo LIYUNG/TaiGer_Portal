@@ -1302,8 +1302,7 @@ const FetchStudentsForDocumentThreads = async (filter) =>
   Student.find(filter)
     .populate('agents editors', 'firstname lastname email')
     .populate(
-      'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
-      '-messages')
+      'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id')
     .lean();
 
 const FindIntervalInDocumentThreadAndSave = async () => {

@@ -1214,10 +1214,10 @@ const SaveIntervalForCommunication = async (student, msg1, msg2) => {
 const ProcessMessages = async (student, messages) => {
   messages.sort((a, b) => a.updatedAt - b.updatedAt);
   if (messages.length > 1) {
-    let msg1;
-    let msg2;
+    let msg1 = undefined;
+    let msg2 = undefined;
     for (const msg of messages) {
-      if (msg.user_id?.role === Role.Student && msg.ignore_message !== true) {
+      if (msg1 === undefined && msg.user_id?.role === Role.Student && msg.ignore_message !== true) {
         msg1 = msg;
       } else if (msg.user_id?.role !== Role.Student) {
         msg2 = msg;
@@ -1278,21 +1278,23 @@ const SaveIntervalForDocumentThread = async (thread, msg_1, msg_2) => {
 
 const ProcessThread = async (thread) => {
   if (thread.messages?.length > 1) {
-    let msg_1;
-    let msg_2;
+    let msg1 = undefined;
+    let msg2 = undefined;
     for (const msg of thread.messages) {
       try {
         const user = await User.findById(msg.user_id?.toString());
-        if (user?.role === Role.Student && msg.ignore_message !== true) {
-          msg_1 = msg;
+        if (msg1 === undefined && user?.role === Role.Student && msg.ignore_message !== true) {
+          msg1 = msg;
         } else if (user?.role !== Role.Student) {
-          msg_2 = msg;
+          msg2 = msg;
         }
       } catch (error) {
         logger.error("Error finding message user_id:", error);
       }
-      if (msg_1 !== undefined && msg_2 !== undefined) {
-        await saveIntervalForDocumentThread(thread, msg_1, msg_2);
+      if (msg1 !== undefined && msg2 !== undefined) {
+        await SaveIntervalForDocumentThread(thread, msg1, msg2);
+        msg1 = undefined;
+        msg2 = undefined;
       }
     }
   }

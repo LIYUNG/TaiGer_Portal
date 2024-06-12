@@ -1181,8 +1181,57 @@ const GroupCommunicationByStudent = async () => {
   };
 };
 
+const saveIntervalForCommunication = async (student, msg1, msg2) => {
+  try {
+    const intervalValue = CalculateInterval(msg1, msg2);
+    const intervalData = {
+      student_id: student,
+      message_1_id: msg1._id,
+      message_2_id: msg2._id,
+      interval_type: 'communication',
+      interval: intervalValue,
+      updatedAt: new Date(),
+    };
+
+    // Create a query object excluding the updatedAt field
+    const { updatedAt, ...queryData } = intervalData;
+
+    // Check if an interval with the same criteria already exists
+    const existingInterval = await Interval.findOne(queryData);
+    
+    if (!existingInterval) {
+      const newInterval = new Interval(intervalData);
+      await newInterval.save();
+      logger.info('New interval saved:', newInterval);
+    } else {
+      logger.info('Interval already exists, skipping save:', existingInterval);
+    }
+  } catch (error) {
+    logger.error("Error creating interval collection:", error);
+  }
+};
+
+const processMessages = async (student, messages) => {
+  messages.sort((a, b) => a.updatedAt - b.updatedAt);
+  if (messages.length > 1) {
+    let msg1;
+    let msg2;
+    for (const msg of messages) {
+      if (msg.user_id?.role === Role.Student && msg.ignore_message !== true) {
+        msg1 = msg;
+      } else if (msg.user_id?.role !== Role.Student) {
+        msg2 = msg;
+      }
+      if (msg1 !== undefined && msg2 !== undefined) {
+        await saveIntervalForCommunication(student, msg1, msg2);
+        msg1 = undefined;
+        msg2 = undefined;
+      }
+    }
+  }
+};
+
 const FindIntervalInCommunicationsAndSave = async () => {
-  // group communications by student
   try {
     const groupCommunication = await GroupCommunicationByStudent();
     Object.entries(groupCommunication).forEach(async ([student, messages]) => {
@@ -1190,116 +1239,100 @@ const FindIntervalInCommunicationsAndSave = async () => {
       messages.sort((a, b) => {
         return a.updatedAt - b.updatedAt;
       });
-      // find valid interval
-      if (messages.length > 1){
-        let msg_1;
-        let msg_2;
-        for (const msg of messages){
-          if (msg.user_id?.role === Role.Student && msg.ignore_message !== true) {
-            msg_1 = msg;
-          } else if (msg.user_id?.role !== Role.Student){
-            msg_2 = msg;
-          }
-          //calculate interval, store values into Interval Collection
-          if ( msg_1 !== undefined && msg_2 != undefined ){
-            try {
-              const interval = CalculateInterval(msg_1, msg_2);
-              const newInterval = new Interval({
-                student_id: student,
-                message_1_id: msg_1,
-                message_2_id: msg_2,
-                interval_type: 'communication',
-                interval: interval,
-                updatedAt: new Date()
-              });
-              await newInterval.save();
-              msg_1 = undefined;
-              msg_2 = undefined;
-            } catch (error){
-              logger.error("Error creating interval collection:", error);
-            };
-          };
-        };
-      };
+      await processMessages(student, messages);
     });
-  } catch (error){
-    logger.error('error find valid interval');
+  } catch (error) {
+    logger.error('Error finding valid interval:', error);
   }
 };
 
-const FindActiveDocumentThreads = async () => {
+const saveIntervalForDocumentThread = async (thread, msg_1, msg_2) => {
   try {
-    const activeDocumentThreads = [];
-    const students = await Student.find();
-    for (const student of students){
-      if (student.archiv !== true){
-        for (const thread of student.generaldocs_threads){
-          activeDocumentThreads.push(thread.doc_thread_id);
-        };
-        for (const thread of student.applications.doc_modification_thread){
-          activeDocumentThreads.push(thread.doc_thread_id);
-        };
-      };
+    const intervalValue = CalculateInterval(msg_1, msg_2);
+    const intervalData = {
+      thread_id: thread._id.toString(),
+      message_1_id: msg_1,
+      message_2_id: msg_2,
+      interval_type: thread.file_type,
+      interval: intervalValue,
+      updatedAt: new Date()
     };
-    return activeDocumentThreads;
+
+    // Create a query object excluding the updatedAt field
+    const { updatedAt, ...queryData } = intervalData;
+
+    // Check if an interval with the same criteria already exists
+    const existingInterval = await Interval.findOne(queryData);
+
+    if (!existingInterval) {
+      const newInterval = new Interval(intervalData);
+      await newInterval.save();
+      logger.info('New interval saved:', newInterval);
+    } else {
+      logger.info('Interval already exists, skipping save:', existingInterval);
+    }
   } catch (error) {
-    logger.error("Error finding active document threads:", error);
-    return [];
-  };
+    logger.error("Error creating interval collection:", error);
+  }
 };
+
+const processThread = async (thread) => {
+  if (thread.messages?.length > 1) {
+    let msg_1;
+    let msg_2;
+    for (const msg of thread.messages) {
+      try {
+        const user = await User.findById(msg.user_id?.toString());
+        if (user?.role === Role.Student && msg.ignore_message !== true) {
+          msg_1 = msg;
+        } else if (user?.role !== Role.Student) {
+          msg_2 = msg;
+        }
+      } catch (error) {
+        logger.error("Error finding message user_id:", error);
+      }
+      if (msg_1 !== undefined && msg_2 !== undefined) {
+        await saveIntervalForDocumentThread(thread, msg_1, msg_2);
+      }
+    }
+  }
+};
+
+const FetchStudentsForDocumentThreads = async (filter) =>
+  Student.find(filter)
+    .populate('agents editors', 'firstname lastname email')
+    .populate(
+      'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
+      '-messages')
+    .lean();
 
 const FindIntervalInDocumentThreadAndSave = async () => {
   try {
-    const validDocumentThread = await FindActiveDocumentThreads();
-      for (const documentThread of validDocumentThread){
-        let thread;
-      //   console.log('documentThread', documentThread);
-        try {
-          thread = await Documentthread.findById(documentThread.toString())
-          .populate('student_id', 'role')
-          .lean();
-        } catch (error){
-          logger.error('error finding valid documentthread');
-        };
-        if (thread.messages.length > 1){
-          let msg_1;
-          let msg_2;
-          for (const msg of thread.messages){
-            try {
-              const user = await User.findById(msg.user_id?.toString())
-                if (user?.role === Role.Student && msg.ignore_message !== true) {
-                  msg_1 = msg;
-                } else if (user?.role !== Role.Student) {
-                  msg_2 = msg;
-                }
-            } catch (error) {
-              logger.error("Error finding message user_id:", error);
-            };
-            //calculate interval, store values into Interval Collection
-            if ( msg_1 !== undefined && msg_2 != undefined ){
-              try {
-                const interval = CalculateInterval(msg_1, msg_2);
-                const newInterval = new Interval({
-                  thread_id: thread._id.toString(),
-                  message_1_id: msg_1,
-                  message_2_id: msg_2,
-                  interval_type: thread.file_type,
-                  interval: interval,
-                  updatedAt: new Date()
-                });
-                await newInterval.save();
-                msg_1 = undefined;
-                msg_2 = undefined;
-              } catch (error){
-                logger.error("Error creating interval collection:", error);
-              };
-            };
-          };
-        };
+    const students = await FetchStudentsForDocumentThreads();
+    for (const student of students) {
+      try {
+        for (const generaldocs_thread of student.generaldocs_threads) {
+          const thread = generaldocs_thread.doc_thread_id;
+          await processThread(thread);
+        }
+      } catch (e) {
+        logger.error('Error retrieving general docs', e);
       }
+
+      try {
+        for (const application of student.applications) {
+          for (const doc_thread_id of application.doc_modification_thread) {
+            const thread = doc_thread_id.doc_thread_id;
+            await processThread(thread);
+          }
+        }
+      } catch (e) {
+        logger.error('Error retrieving application docs', e);
+      }
+    }
   } catch (error) {
-      logger.error('wrong!');
-  };
+    logger.error('Error in FindIntervalInDocumentThreadAndSave:', error);
+  }
 };
 
 const GroupIntervals = async () => {
@@ -1307,52 +1340,65 @@ const GroupIntervals = async () => {
     const intervals = await Interval.find()
       .populate('thread_id student_id')
       .lean();
-
     const studentGroupInterval = {};
     const documentThreadGroupInterval = {};
-
     intervals.forEach(singleInterval => {
       const { student_id, thread_id } = singleInterval;
       const key = student_id ? student_id._id.toString() : thread_id._id.toString();
       const group = student_id ? studentGroupInterval : documentThreadGroupInterval;
-
-      if (!group[key]) {
+       if (!group[key]) {
         group[key] = [singleInterval];
       } else {
         group[key].push(singleInterval);
       }
     });
-
-    return [studentGroupInterval, documentThreadGroupInterval];
+     return [studentGroupInterval, documentThreadGroupInterval];
   } catch (error) {
     logger.error('Error grouping communications:', error);
     return null;
   }
 };
 
-const CalculateAverageResponseTime = async () => {
+const CalculateAverageResponseTimeAndSave = async () => {
   const [studentGroupInterval, documentThreadGroupInterval] = await GroupIntervals();
   const calculateAndSaveAverage = async (groupInterval, idKey) => {
     try {
       for (const key in groupInterval) {
         const intervals = groupInterval[key];
-        const total = intervals.reduce((sum, interval) => sum += interval.interval, 0);
+        const total = intervals.reduce((sum, interval) => sum + interval.interval, 0);
         const final_avg = total / intervals.length;
         
         const singleInterval = intervals[0];
-        const newResponseTime = new ResponseTime({
-          [`${idKey}`]: key.toString(),
-          interval_type: singleInterval.interval_type,
-          intervalAvg: final_avg,
-          updatedAt: new Date()
-        });
+        const intervalType = singleInterval.interval_type;
+        
+        const query = { [`${idKey}`]: key.toString(), interval_type: intervalType };
 
-        await newResponseTime.save();
+        // Check if an existing response time document exists
+        const existingResponseTime = await ResponseTime.findOne(query);
+        
+        if (existingResponseTime) {
+          // Update the existing document
+          existingResponseTime.intervalAvg = final_avg;
+          existingResponseTime.updatedAt = new Date();
+          await existingResponseTime.save();
+          logger.info('Updated existing response time:', existingResponseTime);
+        } else {
+          // Create a new response time document
+          const newResponseTime = new ResponseTime({
+            [`${idKey}`]: key.toString(),
+            interval_type: intervalType,
+            intervalAvg: final_avg,
+            updatedAt: new Date()
+          });
+          await newResponseTime.save();
+          logger.info('New response time saved:', newResponseTime);
+        }
       }
     } catch (err) {
       logger.error(`Error calculating and saving average response time for ${idKey}:`, err);
     }
   };
+
   await calculateAndSaveAverage(studentGroupInterval, 'student_id');
   await calculateAndSaveAverage(documentThreadGroupInterval, 'thread_id');
 };
@@ -1360,7 +1406,7 @@ const CalculateAverageResponseTime = async () => {
 const DailyCalculateAverageResponseTime = async () => {
   await FindIntervalInCommunicationsAndSave();
   await FindIntervalInDocumentThreadAndSave();
-  await CalculateAverageResponseTime();
+  await CalculateAverageResponseTimeAndSave();
 };
 
 // every day reminder
@@ -1439,9 +1485,6 @@ module.exports = {
   add_portals_registered_status,
   MeetingDailyReminderChecker,
   UnconfirmedMeetingDailyReminderChecker,
-  FindIntervalInCommunicationsAndSave,
-  FindIntervalInDocumentThreadAndSave,
-  CalculateAverageResponseTime,
   DailyCalculateAverageResponseTime,
   NoInterviewTrainerOrTrainingDateDailyReminderChecker
 };

@@ -123,6 +123,9 @@ function AgentMainView(props) {
     )
     .sort((a, b) => (a.application_deadline > b.application_deadline ? 1 : -1));
 
+  const myStudents = students.filter((student) =>
+    student.agents.some((agent) => agent._id === user._id.toString())
+  );
   return (
     <Box sx={{ mb: 2 }}>
       <Grid container spacing={1}>
@@ -216,30 +219,17 @@ function AgentMainView(props) {
         <Grid item xs={12} sm={12}>
           <ProgramReportCard />
         </Grid>
-        {is_any_programs_ready_to_submit(
-          students.filter((student) =>
-            student.agents.some((agent) => agent._id === user._id.toString())
-          )
-        ) && (
+        {is_any_programs_ready_to_submit(myStudents) && (
           <Grid item sm={12} md={6}>
             <ReadyToSubmitTasksCard students={students} user={user} />
           </Grid>
         )}
-        {appConfig.vpdEnable &&
-          is_any_vpd_missing(
-            students.filter((student) =>
-              student.agents.some((agent) => agent._id === user._id.toString())
-            )
-          ) && (
-            <Grid item xs={12} sm={6}>
-              <VPDToSubmitTasksCard students={students} user={user} />
-            </Grid>
-          )}
-        {is_any_base_documents_uploaded(
-          students.filter((student) =>
-            student.agents.some((agent) => agent._id === user._id.toString())
-          )
-        ) && (
+        {appConfig.vpdEnable && is_any_vpd_missing(myStudents) && (
+          <Grid item xs={12} sm={6}>
+            <VPDToSubmitTasksCard students={students} user={user} />
+          </Grid>
+        )}
+        {is_any_base_documents_uploaded(myStudents) && (
           <Grid item xs={12} sm={6}>
             <BaseDocumentCheckingTable students={students} />
           </Grid>
@@ -247,9 +237,7 @@ function AgentMainView(props) {
 
         <Grid item xs={12} sm={6}>
           {isAnyCVNotAssigned(
-            students.filter((student) =>
-              student.agents.some((agent) => agent._id === user._id.toString())
-            )
+           myStudents
           ) && <CVAssignTasksCard students={students} user={user} />}
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -264,7 +252,7 @@ function AgentMainView(props) {
         <Grid item xs={12} sm={12}>
           <Card>
             <TabStudBackgroundDashboard
-              students={students?.filter((student) => !student.archiv)}
+              students={students}
               submitUpdateAgentlist={submitUpdateAgentlist}
               submitUpdateEditorlist={submitUpdateEditorlist}
               submitUpdateAttributeslist={submitUpdateAttributeslist}

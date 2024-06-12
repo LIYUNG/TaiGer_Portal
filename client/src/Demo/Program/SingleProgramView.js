@@ -30,6 +30,8 @@ import {
 import {
   convertDate,
   COUNTRIES_MAPPING,
+  english_test_hand_after,
+  german_test_hand_after,
   program_fields_application_dates,
   program_fields_english_languages_test,
   program_fields_other_test,
@@ -154,16 +156,20 @@ function SingleProgramView(props) {
           <CustomTabPanel value={value} index={2}>
             <Card>
               <Grid container spacing={2} sx={{ p: 2 }}>
-                <Grid item xs={6} md={6}>
-                  <Typography fontWeight="bold">
-                    {t('English Test Can Submit Later', { ns: 'common' })}
-                  </Typography>
-                </Grid>
-                <Grid item xs={6} md={6}>
-                  <LinkableNewlineText
-                    text={props.program.englishTestHandLater?.toString()}
-                  />
-                </Grid>
+                {[...english_test_hand_after].map((program_field, i) => (
+                  <Fragment key={i}>
+                    <Grid item xs={6} md={4}>
+                      <Typography fontWeight="bold">
+                        {t(`${program_field.name}`, { ns: 'common' })}
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={6} md={8}>
+                      <LinkableNewlineText
+                        text={props.program[program_field.prop]?.toString()}
+                      />
+                    </Grid>
+                  </Fragment>
+                ))}
                 {program_fields_english_languages_test.map(
                   (program_field, i) => (
                     <Fragment key={i}>
@@ -212,17 +218,8 @@ function SingleProgramView(props) {
                     </Fragment>
                   )
                 )}
-                <Grid item xs={6} md={6}>
-                  <Typography fontWeight="bold">
-                    {t('German Test Can Submit Later', { ns: 'common' })}
-                  </Typography>
-                </Grid>
-                <Grid item xs={6} md={6}>
-                  <LinkableNewlineText
-                    text={props.program.germanTestHandLater?.toString()}
-                  />
-                </Grid>
                 {[
+                  ...german_test_hand_after,
                   ...program_fields_other_test,
                   ...program_fields_special_notes
                 ].map((program_field, i) => (
@@ -234,7 +231,7 @@ function SingleProgramView(props) {
                     </Grid>
                     <Grid item xs={12} md={8}>
                       <LinkableNewlineText
-                        text={props.program[program_field.prop]}
+                        text={props.program[program_field.prop]?.toString()}
                       />
                     </Grid>
                   </Fragment>
@@ -360,7 +357,7 @@ function SingleProgramView(props) {
                       <Typography>{props.program.whoupdated}</Typography>
                     </Grid>
                     <Grid item xs={12} md={4}>
-                      <Typography>{t('Group')}</Typography>
+                      <Typography>{t('Group', { ns: 'common' })}</Typography>
                     </Grid>
                     <Grid item xs={12} md={8}>
                       <Typography>{props.program.study_group_flag}</Typography>

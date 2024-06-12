@@ -26,7 +26,7 @@ const ProgramDetailsComparisonTable = ({ applications }) => {
                 {applications.map((application) => (
                   <TableCell key={application._id}>
                     <LinkableNewlineText
-                      text={application.programId[feature.prop]}
+                      text={application.programId[feature.prop]?.toString()}
                     />
                   </TableCell>
                 ))}

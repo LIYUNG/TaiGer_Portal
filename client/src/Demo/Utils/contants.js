@@ -957,6 +957,14 @@ export const program_fields_overview = [
   { name: 'Only for graduated applicant', prop: 'allowOnlyGraduatedApplicant' }
 ];
 
+export const english_test_hand_after = [
+  { name: 'English Test Can Submit Later', prop: 'englishTestHandLater' }
+];
+
+export const german_test_hand_after = [
+  { name: 'German Test Can Submit Later', prop: 'germanTestHandLater' }
+];
+
 export const program_fields_application_dates = [
   { name: 'Application Start (MM-DD)', prop: 'application_start' },
   { name: 'Application Deadline (MM-DD)', prop: 'application_deadline' }
@@ -1071,7 +1079,9 @@ export const COLORS = [
 export const program_fields = [
   ...program_fields_overview,
   ...program_fields_application_dates,
+  ...english_test_hand_after,
   ...program_fields_english_languages_test,
+  ...german_test_hand_after,
   ...program_fields_other_test,
   ...program_fields_special_documents,
   ...program_fields_special_notes,

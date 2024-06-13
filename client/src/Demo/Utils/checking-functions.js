@@ -1490,7 +1490,9 @@ export const prepTaskStudent = (student) => {
     student_id: student._id.toString(),
     attributes: student.attributes,
     agents: student.agents,
-    editors: student.editors
+    agents_joined: student.agents?.map((agent) => agent.firstname).join(' '),
+    editors: student.editors,
+    editors_joined: student.editors?.map((editor) => editor.firstname).join(' ')
   };
 };
 
@@ -1649,7 +1651,13 @@ export const open_tasks_with_editors = (students) => {
           ...prepGeneralTask(student, thread),
           isPotentials: false,
           editors: student.editors,
-          agents: student.agents
+          editors_joined: student.editors
+            ?.map((editor) => editor.firstname)
+            .join(' '),
+          agents: student.agents,
+          agents_joined: student.agents
+            ?.map((agent) => agent.firstname)
+            .join(' ')
         });
       }
       for (const application of student.applications) {
@@ -1658,7 +1666,13 @@ export const open_tasks_with_editors = (students) => {
             ...prepApplicationTask(student, application, thread),
             isPotentials: application.decided === '-' ? true : false,
             editors: student.editors,
-            agents: student.agents
+            editors_joined: student.editors
+              ?.map((editor) => editor.firstname)
+              .join(' '),
+            agents: student.agents,
+            agents_joined: student.agents
+              ?.map((agent) => agent.firstname)
+              .join(' ')
           });
         }
       }

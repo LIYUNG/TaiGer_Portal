@@ -1190,54 +1190,41 @@ const GroupCommunicationByStudent = async () => {
   }
 };
 
-const SaveIntervalForCommunication = async (student, msg1, msg2) => {
-  try {
-    const intervalValue = CalculateInterval(msg1, msg2);
-    const intervalData = {
-      student_id: student,
-      message_1_id: msg1._id,
-      message_2_id: msg2._id,
-      interval_type: 'communication',
-      interval: intervalValue,
-      updatedAt: new Date()
-    };
+const CreateIntervalMessageOperation = (student, msg1, msg2) => {
+  const intervalValue = CalculateInterval(msg1, msg2);
+  const intervalData = {
+    student_id: student,
+    message_1_id: msg1._id,
+    message_2_id: msg2._id,
+    interval_type: 'communication',
+    interval: intervalValue,
+    updatedAt: new Date()
+  };
 
-    // Create a query object excluding the updatedAt field
-    const { updatedAt, ...queryData } = intervalData;
+  // Create a query object excluding the updatedAt field
+  const { updatedAt, ...queryData } = intervalData;
 
-    // Check if an interval with the same criteria already exists
-    const existingInterval = await Interval.findOne(queryData);
+  // Define the update operation
+  const update = {
+    $setOnInsert: intervalData
+  };
 
-    if (!existingInterval) {
-      const newInterval = new Interval(intervalData);
-      await newInterval.save();
-      const {
-        _id,
-        interval,
-        interval_type,
-        message_1_id,
-        message_2_id,
-        student_id
-      } = newInterval;
-      logger.info('New interval saved:', {
-        _id,
-        interval,
-        interval_type,
-        message_1_id,
-        message_2_id,
-        student_id
-      });
+  return {
+    updateOne: {
+      filter: queryData,
+      update: update,
+      upsert: true
     }
-  } catch (error) {
-    logger.error('Error creating interval collection:', error);
-  }
+  };
 };
 
-const ProcessMessages = async (student, messages) => {
+const ProcessMessages = (student, messages) => {
+  const bulkOps = [];
   messages.sort((a, b) => a.updatedAt - b.updatedAt);
   if (messages.length > 1) {
     let msg1 = undefined;
     let msg2 = undefined;
+
     for (const msg of messages) {
       if (
         msg1 === undefined &&
@@ -1249,76 +1236,70 @@ const ProcessMessages = async (student, messages) => {
         msg2 = msg;
       }
       if (msg1 !== undefined && msg2 !== undefined) {
-        await SaveIntervalForCommunication(student, msg1, msg2);
+        const operation = CreateIntervalMessageOperation(student, msg1, msg2);
+        if (operation) {
+          bulkOps.push(operation);
+        }
         msg1 = undefined;
         msg2 = undefined;
       }
     }
   }
+  return bulkOps;
 };
 
 const FindIntervalInCommunicationsAndSave = async () => {
   try {
     const groupCommunication = await GroupCommunicationByStudent();
-    Object.entries(groupCommunication).forEach(async ([student, messages]) => {
-      // sort messages chronically
-      messages.sort((a, b) => {
-        return a.updatedAt - b.updatedAt;
-      });
-      await ProcessMessages(student, messages);
-    });
+    const bulkOps = [];
+
+    for (const [student, messages] of Object.entries(groupCommunication)) {
+      const studentBulkOps = ProcessMessages(student, messages);
+      bulkOps.push(...studentBulkOps);
+    }
+
+    if (bulkOps.length > 0) {
+      const result = await Interval.bulkWrite(bulkOps);
+      logger.info('Bulk operation result:', result);
+    }
   } catch (error) {
     logger.error('Error finding valid interval:', error);
   }
 };
 
-const SaveIntervalForDocumentThread = async (thread, msg_1, msg_2) => {
-  try {
-    const intervalValue = CalculateInterval(msg_1, msg_2);
-    const intervalData = {
-      thread_id: thread._id.toString(),
-      message_1_id: msg_1,
-      message_2_id: msg_2,
-      interval_type: thread.file_type,
-      interval: intervalValue,
-      updatedAt: new Date()
-    };
+const CreateIntervalOperation = (thread, msg1, msg2) => {
+  const intervalValue = CalculateInterval(msg1, msg2);
+  const intervalData = {
+    thread_id: thread._id,
+    message_1_id: msg1._id,
+    message_2_id: msg2._id,
+    interval_type: 'document_thread',
+    interval: intervalValue,
+    updatedAt: new Date()
+  };
 
-    // Create a query object excluding the updatedAt field
-    const { updatedAt, ...queryData } = intervalData;
+  // Create a query object excluding the updatedAt field
+  const { updatedAt, ...queryData } = intervalData;
 
-    // Check if an interval with the same criteria already exists
-    const existingInterval = await Interval.findOne(queryData);
+  // Define the update operation
+  const update = {
+    $setOnInsert: intervalData
+  };
 
-    if (!existingInterval) {
-      const newInterval = new Interval(intervalData);
-      await newInterval.save();
-      const {
-        _id,
-        interval,
-        interval_type,
-        message_1_id,
-        message_2_id,
-        student_id
-      } = newInterval;
-      logger.info('New interval saved:', {
-        _id,
-        interval,
-        interval_type,
-        message_1_id,
-        message_2_id,
-        student_id
-      });
+  return {
+    updateOne: {
+      filter: queryData,
+      update: update,
+      upsert: true
     }
-  } catch (error) {
-    logger.error('Error creating interval collection:', error);
-  }
+  };
 };
-
-const ProcessThread = async (thread) => {
+const ProcessThread = (thread) => {
+  const bulkOps = [];
   if (thread.messages?.length > 1) {
     let msg1 = undefined;
     let msg2 = undefined;
+
     for (const msg of thread.messages) {
       try {
         const UserRole = msg.user_id?.role;
@@ -1335,12 +1316,16 @@ const ProcessThread = async (thread) => {
         logger.error('Error finding message user_id:', error);
       }
       if (msg1 !== undefined && msg2 !== undefined) {
-        await SaveIntervalForDocumentThread(thread, msg1, msg2);
+        const operation = CreateIntervalOperation(thread, msg1, msg2);
+        if (operation) {
+          bulkOps.push(operation);
+        }
         msg1 = undefined;
         msg2 = undefined;
       }
     }
   }
+  return bulkOps;
 };
 
 const FetchStudentsForDocumentThreads = async (filter) =>
@@ -1361,11 +1346,14 @@ const FetchStudentsForDocumentThreads = async (filter) =>
 const FindIntervalInDocumentThreadAndSave = async () => {
   try {
     const students = await FetchStudentsForDocumentThreads();
+    const bulkOps = [];
+
     for (const student of students) {
       try {
         for (const generaldocs_thread of student.generaldocs_threads) {
           const thread = generaldocs_thread.doc_thread_id;
-          await ProcessThread(thread);
+          const threadBulkOps = ProcessThread(thread);
+          bulkOps.push(...threadBulkOps);
         }
       } catch (e) {
         logger.error('Error retrieving general docs', e);
@@ -1375,12 +1363,18 @@ const FindIntervalInDocumentThreadAndSave = async () => {
         for (const application of student.applications) {
           for (const doc_thread_id of application.doc_modification_thread) {
             const thread = doc_thread_id.doc_thread_id;
-            await ProcessThread(thread);
+            const threadBulkOps = ProcessThread(thread);
+            bulkOps.push(...threadBulkOps);
           }
         }
       } catch (e) {
         logger.error('Error retrieving application docs', e);
       }
+    }
+
+    if (bulkOps.length > 0) {
+      const result = await Interval.bulkWrite(bulkOps);
+      logger.info('Bulk operation result:', result);
     }
   } catch (error) {
     logger.error('Error in FindIntervalInDocumentThreadAndSave:', error);
@@ -1420,6 +1414,9 @@ const CalculateAverageResponseTimeAndSave = async () => {
     await GroupIntervals();
   const calculateAndSaveAverage = async (groupInterval, idKey) => {
     try {
+      const bulkOps = [];
+
+      // Prepare the bulk operations
       for (const key in groupInterval) {
         const intervals = groupInterval[key];
         const total = intervals.reduce(
@@ -1436,42 +1433,30 @@ const CalculateAverageResponseTimeAndSave = async () => {
           interval_type: intervalType
         };
 
-        // Check if an existing response time document exists
-        const existingResponseTime = await ResponseTime.findOne(query);
-
-        if (existingResponseTime) {
-          // Update the existing document
-          existingResponseTime.intervalAvg = final_avg;
-          existingResponseTime.updatedAt = new Date();
-          await existingResponseTime.save();
-          // Extract relevant properties for logging
-          const { _id, intervalAvg, interval_type, updatedAt } =
-            existingResponseTime;
-          logger.info('Updated existing response time:', {
-            _id,
-            intervalAvg,
-            interval_type,
-            updatedAt
-          });
-          // logger.info('Updated existing response time:', existingResponseTime);
-        } else {
-          // Create a new response time document
-          const newResponseTime = new ResponseTime({
-            [`${idKey}`]: key.toString(),
-            interval_type: intervalType,
+        const update = {
+          $set: {
             intervalAvg: final_avg,
             updatedAt: new Date()
-          });
-          await newResponseTime.save();
-          const { _id, intervalAvg, interval_type, updatedAt } =
-            newResponseTime;
-          logger.info('New response time saved:', {
-            _id,
-            intervalAvg,
-            interval_type,
-            updatedAt
-          });
-        }
+          },
+          $setOnInsert: {
+            [`${idKey}`]: key.toString(),
+            interval_type: intervalType
+          }
+        };
+
+        bulkOps.push({
+          updateOne: {
+            filter: query,
+            update: update,
+            upsert: true
+          }
+        });
+      }
+
+      // Execute bulk operations
+      if (bulkOps.length > 0) {
+        const result = await ResponseTime.bulkWrite(bulkOps);
+        logger.info('Bulk operation result:', result);
       }
     } catch (err) {
       logger.error(

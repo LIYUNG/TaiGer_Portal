@@ -632,7 +632,7 @@ const UrgentTasksReminderEmails_Editor_core = async () => {
           logger.info(
             `Escalate: ${editors[j].firstname} ${editors[j].lastname}`
           );
-          await EditorCVMLRLEssayDeadline_Within30Days_DailyReminderEmail(
+          EditorCVMLRLEssayDeadline_Within30Days_DailyReminderEmail(
             {
               firstname: editors[j].firstname,
               lastname: editors[j].lastname,
@@ -770,7 +770,7 @@ const NextSemesterCourseSelectionStudentReminderEmails = async () => {
     if (isNotArchiv(studentsWithCourses[j])) {
       if (needUpdateCourseSelection(studentsWithCourses[j])) {
         // Inform student
-        await StudentCourseSelectionReminderEmail(
+        StudentCourseSelectionReminderEmail(
           {
             firstname: studentsWithCourses[j].firstname,
             lastname: studentsWithCourses[j].lastname,
@@ -1114,9 +1114,8 @@ const UnconfirmedMeetingDailyReminderChecker = async () => {
   }).populate('requester_id receiver_id', 'firstname lastname role email');
   if (upcomingEvents) {
     for (let j = 0; j < upcomingEvents.length; j += 1) {
-      // eslint-disable-next-line no-await-in-loop
       if (!upcomingEvents[j].isConfirmedRequester) {
-        await UnconfirmedMeetingReminderEmail(
+        UnconfirmedMeetingReminderEmail(
           {
             firstname: upcomingEvents[j].requester_id[0].firstname,
             lastname: upcomingEvents[j].requester_id[0].lastname,
@@ -1132,7 +1131,7 @@ const UnconfirmedMeetingDailyReminderChecker = async () => {
         );
       }
       if (!upcomingEvents[j].isConfirmedReceiver) {
-        await UnconfirmedMeetingReminderEmail(
+        UnconfirmedMeetingReminderEmail(
           {
             firstname: upcomingEvents[j].receiver_id[0].firstname,
             lastname: upcomingEvents[j].receiver_id[0].lastname,

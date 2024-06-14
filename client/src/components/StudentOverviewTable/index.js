@@ -275,7 +275,7 @@ function StudentOverviewTable(props) {
       width: 80
     },
     {
-      field: 'agents',
+      field: 'agents_joined',
       headerName: 'Agents',
       width: 80,
       renderCell: (params) => {
@@ -294,7 +294,7 @@ function StudentOverviewTable(props) {
       }
     },
     {
-      field: 'editors',
+      field: 'editors_joined',
       headerName: 'Editors',
       width: 80,
       renderCell: (params) => {

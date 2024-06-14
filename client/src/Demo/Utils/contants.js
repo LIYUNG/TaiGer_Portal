@@ -1566,7 +1566,7 @@ export const c1_mrt = [
     }
   },
   {
-    accessorKey: 'editors',
+    accessorKey: 'editors_joined',
     header: 'Editors / Writer',
     size: 120,
     Cell: (params) => {

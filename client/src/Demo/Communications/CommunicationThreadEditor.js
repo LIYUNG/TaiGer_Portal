@@ -212,7 +212,8 @@ function CommunicationThreadEditor(props) {
         {is_TaiGer_role(user) && (
           <IconButton
             disabled={
-              user._id.toString() !== '639baebf8b84944b872cf648' ||
+              (user._id.toString() !== '638b8f70be60d7999c6b649d' && //Sydney
+                user._id.toString() !== '639baebf8b84944b872cf648') || //Leo
               statedata.isGenerating
             }
             onClick={onSubmit}

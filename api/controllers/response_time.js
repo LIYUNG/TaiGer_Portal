@@ -40,6 +40,10 @@ const FileTypeMapping = {
 }
 
 const BlankLookupTable = {
+    "UserProfile": {
+        firstname: null,
+        Role: null
+    },
     "CV": {
         AvgResponseTime: null,
         ResponseTimeId: []
@@ -68,7 +72,7 @@ const BlankLookupTable = {
         AvgResponseTime: null,
         ResponseTimeId: []
     }
-}
+};
 
 const GetFormattedFileType = (fileType) => {
     // Find the entry where the fileType exists in the values array
@@ -79,30 +83,32 @@ const GetFormattedFileType = (fileType) => {
 
 const GernerateLookupTable = (Lookup, key, task) => {
     const FormattedFileType = GetFormattedFileType(task.interval_type);
-    if (!(key in Lookup)) {
-        Lookup[key] = JSON.parse(JSON.stringify(BlankLookupTable));
+    const userId = key?._id.toString();
+    if (!(userId in Lookup)) {
+        Lookup[userId] = JSON.parse(JSON.stringify(BlankLookupTable));
+        Lookup[userId]["UserProfile"].firstname = key.firstname;
+        Lookup[userId]["UserProfile"].Role = key.role;
     }
-    Lookup[key][FormattedFileType].AvgResponseTime += task.intervalAvg;
-    Lookup[key][FormattedFileType].ResponseTimeId.push(task);
-}
+    Lookup[userId][FormattedFileType].AvgResponseTime += task.intervalAvg;
+    Lookup[userId][FormattedFileType].ResponseTimeId.push(task);
+};
 
 const GenerateResponseTimeByUser = asyncHandler(async (req, res, next) => {
     let Lookup = {};
 
     const ResponseTimeForCommunication = await GetResponseTimeForCommunication({ student_id: { $exists: true } });
     ResponseTimeForCommunication.forEach((RTFC) => {
-        const agent = RTFC.student_id.agents[0]?._id.toString() ?? null
+        const agent = RTFC.student_id.agents[0] ?? null
 
         if (agent) {
             GernerateLookupTable(Lookup, agent, RTFC);
         }
-    }
-    );
+    });
 
     const ResponseTimeForThread = await GetResponseTimeForThread({ thread_id: { $exists: true } });
     ResponseTimeForThread.forEach((RTFT) => {
-        const agent = RTFT.thread_id.student_id.agents[0]?._id.toString() ?? null
-        const editor = RTFT.thread_id.student_id.editors[0]?._id.toString() ?? null
+        const agent = RTFT.thread_id.student_id.agents[0] ?? null
+        const editor = RTFT.thread_id.student_id.editors[0] ?? null
 
         if (agent) {
             GernerateLookupTable(Lookup, agent, RTFT);
@@ -115,15 +121,17 @@ const GenerateResponseTimeByUser = asyncHandler(async (req, res, next) => {
     //calculate the average response time
     for (const user in Lookup) {
         for (const attribute in Lookup[user]) {
-            const entry = Lookup[user][attribute];
-            if (entry.ResponseTimeId.length > 0) {
-                const averageResponseTime = entry.AvgResponseTime / entry.ResponseTimeId.length;
-                Lookup[user][attribute].AvgResponseTime = averageResponseTime;
-            } else {
-                Lookup[user][attribute].AvgResponseTime = null;
+            if (attribute !== "UserProfile") {
+                const entry = Lookup[user][attribute];
+                if (entry !== "UserProfile" && entry.ResponseTimeId.length > 0) {
+                    const averageResponseTime = entry.AvgResponseTime / entry.ResponseTimeId.length;
+                    Lookup[user][attribute].AvgResponseTime = averageResponseTime;
+                } else {
+                    Lookup[user][attribute].AvgResponseTime = null;
+                }
             }
         }
-    }
+    };
 
     res.status(200).send({ success: true, data: Lookup });
     next();

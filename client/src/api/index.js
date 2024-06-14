@@ -579,6 +579,17 @@ export const TaiGerAiGeneral2 = (prompt) =>
     body: JSON.stringify({ prompt }) // server is expecting JSON
   });
 
+export const TaiGerChatAssistant = (prompt, studentId) =>
+  fetch(`${BASE_URL}/api/taigerai/chat/${studentId}`, {
+    method: 'post', // HTTP POST to send query to server
+    headers: {
+      'Content-Type': 'application/json'
+      // 'Content-Type': 'text/event-stream' // indicates what the server actually sent
+    },
+    credentials: 'include',
+    body: JSON.stringify({ prompt }) // server is expecting JSON
+  });
+
 export const cvmlrlAi2 = (prompt) =>
   fetch(`${BASE_URL}/api/taigerai/cvmlrl`, {
     method: 'post', // HTTP POST to send query to server

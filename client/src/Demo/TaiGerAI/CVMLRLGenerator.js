@@ -75,6 +75,7 @@ function CVMLRLGenerator() {
       isGenerating: false
     }));
   };
+
   const onChange = (e) => {
     const prompt_temp = e.target.value;
     setCVMLRLGeneratorState((prevState) => ({

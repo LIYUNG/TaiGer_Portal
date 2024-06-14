@@ -11,18 +11,29 @@ import SendIcon from '@mui/icons-material/Send';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
 import { useTranslation } from 'react-i18next';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 import EditorSimple from '../../components/EditorJs/EditorSimple';
 import { useAuth } from '../../components/AuthProvider';
 import { CVMLRL_DOC_PRECHECK_STATUS_E, stringAvatar } from '../Utils/contants';
-import { is_TaiGer_Student, is_TaiGer_role } from '../Utils/checking-functions';
+import {
+  is_TaiGer_Agent,
+  is_TaiGer_Student,
+  is_TaiGer_role
+} from '../Utils/checking-functions';
+import { TaiGerChatAssistant } from '../../api';
+import { useParams } from 'react-router-dom';
 // import { VisuallyHiddenInput } from '../../components/Input';
 
 function CommunicationThreadEditor(props) {
   const { t } = useTranslation();
+  const { student_id } = useParams();
+
   const { user } = useAuth();
   let [statedata, setStatedata] = useState({
-    editorState: props.editorState
+    editorState: props.editorState,
+    data: ''
   });
   useEffect(() => {
     setStatedata((state) => ({
@@ -39,6 +50,36 @@ function CommunicationThreadEditor(props) {
 
   const handleClick = () => {
     document.getElementById('file-input').click();
+  };
+
+  const onSubmit = async () => {
+    setStatedata((prevState) => ({
+      ...prevState,
+      isGenerating: true
+    }));
+    const response = await TaiGerChatAssistant('abc', student_id);
+    // Handle the streaming data
+    const reader = response.body
+      .pipeThrough(new TextDecoderStream())
+      .getReader();
+
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) {
+        break;
+      }
+      setStatedata((prevState) => ({
+        ...prevState,
+        data: prevState.data + value
+      }));
+    }
+    setStatedata((prevState) => ({
+      ...prevState,
+      isLoaded: true,
+      data: prevState.data + ' \n ================================= \n',
+      isGenerating: false
+    }));
   };
   return (
     <>
@@ -168,9 +209,19 @@ function CommunicationThreadEditor(props) {
           </IconButton>
         </Tooltip>
         {is_TaiGer_role(user) && (
-          <IconButton disabled>
+          <IconButton
+            disabled={user._id.toString() !== '639baebf8b84944b872cf648'}
+            onClick={onSubmit}
+          >
             <AutoFixHighIcon />
           </IconButton>
+        )}
+        {is_TaiGer_Agent(user) && (
+          <Typography variant="p">
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {statedata.data}
+            </ReactMarkdown>
+          </Typography>
         )}
       </Box>
     </>

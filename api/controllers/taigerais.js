@@ -14,6 +14,9 @@ const { generalMLPrompt } = require('../prompt/ml_prompt');
 const { FILE_MAPPING_TABLE } = require('../constants');
 const { generalRLPrompt } = require('../prompt/rl_prompt');
 const { getPermission } = require('../utils/queryFunctions');
+const { Communication } = require('../models/Communication');
+
+const pageSize = 5;
 
 const processProgramListAi = asyncHandler(async (req, res, next) => {
   const {
@@ -75,6 +78,58 @@ const TaiGerAiGeneral = asyncHandler(async (req, res, next) => {
     res.write(part.choices[0]?.delta.content || '');
   }
   res.end();
+});
+
+const TaiGerAiChat = asyncHandler(async (req, res, next) => {
+  const {
+    user,
+    params: { studentId }
+  } = req;
+  const { prompt } = req.body;
+
+  console.log(prompt);
+  console.log(studentId);
+
+  const communication_thread = await Communication.find({
+    student_id: studentId
+  })
+    .populate('student_id user_id', 'firstname lastname role')
+    .sort({ createdAt: -1 }) // 0: latest!
+    .limit(pageSize)
+    .lean(); // show only first y limit items after skip.
+  console.log(communication_thread);
+
+  const chat = communication_thread?.map((c) => {
+    try {
+      const messageObj = JSON.parse(c.message);
+      return {
+        createdAt: c.createdAt,
+        user: c.user_id?.firstname || '',
+        message:
+          messageObj.blocks
+            .map((block) =>
+              block?.type === 'paragraph' ? block.data?.text : ''
+            )
+            .join('')
+            .replace(/<\/?[^>]+(>|$)|&[^;]+;?/g, '') || ''
+      };
+    } catch (e) {
+      console.error('Error parsing JSON:', e);
+      return ''; // Return an empty string or handle the error as needed
+    }
+  });
+  const pmp = `Your are a professional study-in-Germany agent and you know the application process very well. Please according to the following chat history and create a professional response: ${JSON.stringify(
+    chat
+  )}. Please provide the response concise and simple.`;
+  const stream = await generate_streaming(pmp, 'gpt-3.5-turbo');
+  console.log(pmp);
+
+  for await (const part of stream) {
+    res.write(part.choices[0]?.delta.content || '');
+  }
+  res.end();
+
+  // res.status(200).send({ success: true, data: chat });
 });
 
 const cvmlrlAi = asyncHandler(async (req, res, next) => {
@@ -139,4 +194,9 @@ const cvmlrlAi = asyncHandler(async (req, res, next) => {
   }
 });
 
-module.exports = { TaiGerAiGeneral, cvmlrlAi, processProgramListAi };
+module.exports = {
+  TaiGerAiGeneral,
+  TaiGerAiChat,
+  cvmlrlAi,
+  processProgramListAi
+};

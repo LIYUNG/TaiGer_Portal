@@ -1153,21 +1153,21 @@ const UnconfirmedMeetingDailyReminderChecker = async () => {
   logger.info('Unconfirmed Meeting attendee reminded');
 };
 
-function CalculateInterval(message1, message2){
-  const intervalInDay = Math.abs(message1.createdAt - message2.createdAt) / (1000*60*60*24);
+function CalculateInterval(message1, message2) {
+  const intervalInDay = Math.abs(message1.createdAt - message2.createdAt) / (1000 * 60 * 60 * 24);
   return intervalInDay
 };
 
 const GroupCommunicationByStudent = async () => {
   try {
     const communications = await Communication.find()
-    .populate('student_id user_id')
-    .populate('student_id','archiv')
-    .lean();
+      .populate('student_id user_id')
+      .populate('student_id', 'archiv')
+      .lean();
     let groupCommunication = {};
-    for (const singleCommunicaiton of communications){
-      if (singleCommunicaiton.student_id && singleCommunicaiton.student_id.archiv !== true){
-        if (!groupCommunication[singleCommunicaiton.student_id._id.toString()]){
+    for (const singleCommunicaiton of communications) {
+      if (singleCommunicaiton.student_id && singleCommunicaiton.student_id.archiv !== true) {
+        if (!groupCommunication[singleCommunicaiton.student_id._id.toString()]) {
           groupCommunication[singleCommunicaiton.student_id._id.toString()] = [singleCommunicaiton];
         } else {
           groupCommunication[singleCommunicaiton.student_id._id.toString()].push(singleCommunicaiton);
@@ -1175,7 +1175,7 @@ const GroupCommunicationByStudent = async () => {
       };
     };
     return groupCommunication
-  } catch (error){
+  } catch (error) {
     logger.error('error grouping communications');
     return null;
   };
@@ -1198,7 +1198,7 @@ const SaveIntervalForCommunication = async (student, msg1, msg2) => {
 
     // Check if an interval with the same criteria already exists
     const existingInterval = await Interval.findOne(queryData);
-    
+
     if (!existingInterval) {
       const newInterval = new Interval(intervalData);
       await newInterval.save();
@@ -1282,10 +1282,10 @@ const ProcessThread = async (thread) => {
     let msg2 = undefined;
     for (const msg of thread.messages) {
       try {
-        const user = await User.findById(msg.user_id?.toString());
-        if (msg1 === undefined && user?.role === Role.Student && msg.ignore_message !== true) {
+        const UserRole = msg.user_id?.role;
+        if (msg1 === undefined && UserRole === Role.Student && msg.ignore_message !== true) {
           msg1 = msg;
-        } else if (user?.role !== Role.Student) {
+        } else if (UserRole !== Role.Student) {
           msg2 = msg;
         }
       } catch (error) {
@@ -1303,8 +1303,16 @@ const ProcessThread = async (thread) => {
 const FetchStudentsForDocumentThreads = async (filter) =>
   Student.find(filter)
     .populate('agents editors', 'firstname lastname email')
-    .populate(
-      'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id')
+    .populate({
+      path: 'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
+      populate: {
+        path: 'messages',
+        populate: {
+          path: 'user_id',
+          model: 'User'
+        }
+      }
+    })
     .lean();
 
 const FindIntervalInDocumentThreadAndSave = async () => {
@@ -1347,13 +1355,13 @@ const GroupIntervals = async () => {
       const { student_id, thread_id } = singleInterval;
       const key = student_id ? student_id._id.toString() : thread_id._id.toString();
       const group = student_id ? studentGroupInterval : documentThreadGroupInterval;
-       if (!group[key]) {
+      if (!group[key]) {
         group[key] = [singleInterval];
       } else {
         group[key].push(singleInterval);
       }
     });
-     return [studentGroupInterval, documentThreadGroupInterval];
+    return [studentGroupInterval, documentThreadGroupInterval];
   } catch (error) {
     logger.error('Error grouping communications:', error);
     return null;
@@ -1368,15 +1376,15 @@ const CalculateAverageResponseTimeAndSave = async () => {
         const intervals = groupInterval[key];
         const total = intervals.reduce((sum, interval) => sum + interval.interval, 0);
         const final_avg = total / intervals.length;
-        
+
         const singleInterval = intervals[0];
         const intervalType = singleInterval.interval_type;
-        
+
         const query = { [`${idKey}`]: key.toString(), interval_type: intervalType };
 
         // Check if an existing response time document exists
         const existingResponseTime = await ResponseTime.findOne(query);
-        
+
         if (existingResponseTime) {
           // Update the existing document
           existingResponseTime.intervalAvg = final_avg;

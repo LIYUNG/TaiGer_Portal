@@ -42,7 +42,8 @@ const FileTypeMapping = {
 const BlankLookupTable = {
     "UserProfile": {
         firstname: null,
-        Role: null
+        lastname: null,
+        role: null
     },
     "CV": {
         AvgResponseTime: null,
@@ -87,7 +88,8 @@ const GernerateLookupTable = (Lookup, key, task) => {
     if (!(userId in Lookup)) {
         Lookup[userId] = JSON.parse(JSON.stringify(BlankLookupTable));
         Lookup[userId]["UserProfile"].firstname = key.firstname;
-        Lookup[userId]["UserProfile"].Role = key.role;
+        Lookup[userId]["UserProfile"].lastname = key.lastname;
+        Lookup[userId]["UserProfile"].role = key.role;
     }
     Lookup[userId][FormattedFileType].AvgResponseTime += task.intervalAvg;
     Lookup[userId][FormattedFileType].ResponseTimeId.push(task);

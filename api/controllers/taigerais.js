@@ -9,14 +9,14 @@ const { Program } = require('../models/Program');
 const { ProgramAI } = require('../models/ProgramAI');
 const { isProd } = require('../config');
 const { openAIClient } = require('../services/openai');
-const { Student } = require('../models/User');
+const { Student, Role } = require('../models/User');
 const { generalMLPrompt } = require('../prompt/ml_prompt');
 const { FILE_MAPPING_TABLE } = require('../constants');
 const { generalRLPrompt } = require('../prompt/rl_prompt');
 const { getPermission } = require('../utils/queryFunctions');
 const { Communication } = require('../models/Communication');
 
-const pageSize = 5;
+const pageSize = 3;
 
 const processProgramListAi = asyncHandler(async (req, res, next) => {
   const {
@@ -105,6 +105,7 @@ const TaiGerAiChat = asyncHandler(async (req, res, next) => {
       return {
         createdAt: c.createdAt,
         user: c.user_id?.firstname || '',
+        role: c.user_id?.role,
         message:
           messageObj.blocks
             .map((block) =>
@@ -118,9 +119,20 @@ const TaiGerAiChat = asyncHandler(async (req, res, next) => {
       return ''; // Return an empty string or handle the error as needed
     }
   });
-  const pmp = `Your are a professional study-in-Germany agent and you know the application process very well. Please according to the following chat history and create a professional response: ${JSON.stringify(
+  const pmp = `
+  You are an AI study assistant helping a student with their academic queries. Your responses should be informative, clear, and professional, aiming to provide accurate answers and guidance. Be friendly and encouraging to promote a positive learning environment.
+  Student's Previous Messages:
+   ${JSON.stringify(chat.filter((c) => c.role === Role.Student))}
+
+   Instructions:
+ 
+  Your are a professional study-in-Germany agent and you know the application process very well. 
+  Please according to the following chat history and create a professional response: ${JSON.stringify(
     chat
-  )}. Please provide the response concise and simple.`;
+  )}. 
+  Please provide the response concise and simple based on the most recent message from the Student (user_id: ${studentId}). And please use student's language as reponse. 
+  If they use Traditional Chinese then use Tranditional Chinese.`;
+
   const stream = await generate_streaming(pmp, 'gpt-3.5-turbo');
   console.log(pmp);
 

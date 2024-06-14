@@ -3,6 +3,7 @@ import {
   Avatar,
   Box,
   Button,
+  CircularProgress,
   IconButton,
   Tooltip,
   Typography
@@ -210,10 +211,17 @@ function CommunicationThreadEditor(props) {
         </Tooltip>
         {is_TaiGer_role(user) && (
           <IconButton
-            disabled={user._id.toString() !== '639baebf8b84944b872cf648'}
+            disabled={
+              user._id.toString() !== '639baebf8b84944b872cf648' ||
+              statedata.isGenerating
+            }
             onClick={onSubmit}
           >
-            <AutoFixHighIcon />
+            {statedata.isGenerating ? (
+              <CircularProgress size={24} />
+            ) : (
+              <AutoFixHighIcon />
+            )}
           </IconButton>
         )}
         {is_TaiGer_Agent(user) && (

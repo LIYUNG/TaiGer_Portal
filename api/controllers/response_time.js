@@ -123,7 +123,7 @@ const GenerateResponseTimeByUser = asyncHandler(async (req, res, next) => {
         for (const attribute in Lookup[user]) {
             if (attribute !== "UserProfile") {
                 const entry = Lookup[user][attribute];
-                if (entry !== "UserProfile" && entry.ResponseTimeId.length > 0) {
+                if (entry.ResponseTimeId.length > 0) {
                     const averageResponseTime = entry.AvgResponseTime / entry.ResponseTimeId.length;
                     Lookup[user][attribute].AvgResponseTime = averageResponseTime;
                 } else {

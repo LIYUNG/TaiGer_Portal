@@ -1250,6 +1250,7 @@ const ProcessMessages = (student, messages) => {
 
 const FindIntervalInCommunicationsAndSave = async () => {
   try {
+    // TODO: active student's message only
     const groupCommunication = await GroupCommunicationByStudent();
     const bulkOps = [];
 
@@ -1345,7 +1346,10 @@ const FetchStudentsForDocumentThreads = async (filter) =>
 
 const FindIntervalInDocumentThreadAndSave = async () => {
   try {
-    const students = await FetchStudentsForDocumentThreads();
+    // calculate active student only
+    const students = await FetchStudentsForDocumentThreads({
+      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+    });
     const bulkOps = [];
 
     for (const student of students) {

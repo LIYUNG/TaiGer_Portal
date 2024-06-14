@@ -110,7 +110,7 @@ const CalculateAvgReponseTimeinLookup = async (Lookup) => {
     }
 };
 
-const GenerateResponseTimeByTaigerUser = async () => {
+const GenerateResponseTimeByTaigerUser = asyncHandler(async (req, res, next) => {
     let Lookup = {};
 
     const ResponseTimeForCommunication = await GetResponseTimeForCommunication({ student_id: { $exists: true } });
@@ -136,11 +136,11 @@ const GenerateResponseTimeByTaigerUser = async () => {
     });
 
     CalculateAvgReponseTimeinLookup(Lookup);
-    console.log("lookup", Lookup);
-    return Lookup;
-};
+    res.status(200).send({ success: true, data: Lookup });
+    next();
+});
 
-const GenerateResponseTimeByStudent = async () => {
+const GenerateResponseTimeByStudent = asyncHandler(async (req, res, next) => {
     let Lookup = {};
 
     const ResponseTimeForCommunication = await GetResponseTimeForCommunication({ student_id: { $exists: true } });
@@ -162,6 +162,6 @@ const GenerateResponseTimeByStudent = async () => {
     });
 
     CalculateAvgReponseTimeinLookup(Lookup);
-    console.log("lookup", Lookup);
-    return Lookup;
-};
+    res.status(200).send({ success: true, data: Lookup });
+    next();
+});

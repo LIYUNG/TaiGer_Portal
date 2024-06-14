@@ -154,7 +154,7 @@ const GenerateResponseTimeByStudent = asyncHandler(async (req, res, next) => {
 
     const ResponseTimeForThread = await GetResponseTimeForThread({ thread_id: { $exists: true } });
     ResponseTimeForThread.forEach((RTFT) => {
-        const student = RTFT.student_id ?? null
+        const student = RTFT.thread_id.student_id ?? null
 
         if (student) {
             GernerateLookupTable(Lookup, student, RTFT);

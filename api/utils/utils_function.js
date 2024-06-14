@@ -1153,9 +1153,10 @@ const UnconfirmedMeetingDailyReminderChecker = async () => {
 };
 
 function CalculateInterval(message1, message2) {
-  const intervalInDay = Math.abs(message1.createdAt - message2.createdAt) / (1000 * 60 * 60 * 24);
-  return intervalInDay
-};
+  const intervalInDay =
+    Math.abs(message1.createdAt - message2.createdAt) / (1000 * 60 * 60 * 24);
+  return parseFloat(intervalInDay.toFixed(4));
+}
 
 const GroupCommunicationByStudent = async () => {
   try {
@@ -1165,19 +1166,28 @@ const GroupCommunicationByStudent = async () => {
       .lean();
     let groupCommunication = {};
     for (const singleCommunicaiton of communications) {
-      if (singleCommunicaiton.student_id && singleCommunicaiton.student_id.archiv !== true) {
-        if (!groupCommunication[singleCommunicaiton.student_id._id.toString()]) {
-          groupCommunication[singleCommunicaiton.student_id._id.toString()] = [singleCommunicaiton];
+      if (
+        singleCommunicaiton.student_id &&
+        singleCommunicaiton.student_id.archiv !== true
+      ) {
+        if (
+          !groupCommunication[singleCommunicaiton.student_id._id.toString()]
+        ) {
+          groupCommunication[singleCommunicaiton.student_id._id.toString()] = [
+            singleCommunicaiton
+          ];
         } else {
-          groupCommunication[singleCommunicaiton.student_id._id.toString()].push(singleCommunicaiton);
-        };
-      };
-    };
-    return groupCommunication
+          groupCommunication[
+            singleCommunicaiton.student_id._id.toString()
+          ].push(singleCommunicaiton);
+        }
+      }
+    }
+    return groupCommunication;
   } catch (error) {
     logger.error('error grouping communications');
     return null;
-  };
+  }
 };
 
 const SaveIntervalForCommunication = async (student, msg1, msg2) => {
@@ -1189,7 +1199,7 @@ const SaveIntervalForCommunication = async (student, msg1, msg2) => {
       message_2_id: msg2._id,
       interval_type: 'communication',
       interval: intervalValue,
-      updatedAt: new Date(),
+      updatedAt: new Date()
     };
 
     // Create a query object excluding the updatedAt field
@@ -1201,12 +1211,25 @@ const SaveIntervalForCommunication = async (student, msg1, msg2) => {
     if (!existingInterval) {
       const newInterval = new Interval(intervalData);
       await newInterval.save();
-      logger.info('New interval saved:', newInterval);
-    } else {
-      logger.info('Interval already exists, skipping save:', existingInterval);
+      const {
+        _id,
+        interval,
+        interval_type,
+        message_1_id,
+        message_2_id,
+        student_id
+      } = newInterval;
+      logger.info('New interval saved:', {
+        _id,
+        interval,
+        interval_type,
+        message_1_id,
+        message_2_id,
+        student_id
+      });
     }
   } catch (error) {
-    logger.error("Error creating interval collection:", error);
+    logger.error('Error creating interval collection:', error);
   }
 };
 
@@ -1216,7 +1239,11 @@ const ProcessMessages = async (student, messages) => {
     let msg1 = undefined;
     let msg2 = undefined;
     for (const msg of messages) {
-      if (msg1 === undefined && msg.user_id?.role === Role.Student && msg.ignore_message !== true) {
+      if (
+        msg1 === undefined &&
+        msg.user_id?.role === Role.Student &&
+        msg.ignore_message !== true
+      ) {
         msg1 = msg;
       } else if (msg.user_id?.role !== Role.Student) {
         msg2 = msg;
@@ -1266,12 +1293,25 @@ const SaveIntervalForDocumentThread = async (thread, msg_1, msg_2) => {
     if (!existingInterval) {
       const newInterval = new Interval(intervalData);
       await newInterval.save();
-      logger.info('New interval saved:', newInterval);
-    } else {
-      logger.info('Interval already exists, skipping save:', existingInterval);
+      const {
+        _id,
+        interval,
+        interval_type,
+        message_1_id,
+        message_2_id,
+        student_id
+      } = newInterval;
+      logger.info('New interval saved:', {
+        _id,
+        interval,
+        interval_type,
+        message_1_id,
+        message_2_id,
+        student_id
+      });
     }
   } catch (error) {
-    logger.error("Error creating interval collection:", error);
+    logger.error('Error creating interval collection:', error);
   }
 };
 
@@ -1282,13 +1322,17 @@ const ProcessThread = async (thread) => {
     for (const msg of thread.messages) {
       try {
         const UserRole = msg.user_id?.role;
-        if (msg1 === undefined && UserRole === Role.Student && msg.ignore_message !== true) {
+        if (
+          msg1 === undefined &&
+          UserRole === Role.Student &&
+          msg.ignore_message !== true
+        ) {
           msg1 = msg;
         } else if (UserRole !== Role.Student) {
           msg2 = msg;
         }
       } catch (error) {
-        logger.error("Error finding message user_id:", error);
+        logger.error('Error finding message user_id:', error);
       }
       if (msg1 !== undefined && msg2 !== undefined) {
         await SaveIntervalForDocumentThread(thread, msg1, msg2);
@@ -1350,10 +1394,14 @@ const GroupIntervals = async () => {
       .lean();
     const studentGroupInterval = {};
     const documentThreadGroupInterval = {};
-    intervals.forEach(singleInterval => {
+    intervals.forEach((singleInterval) => {
       const { student_id, thread_id } = singleInterval;
-      const key = student_id ? student_id._id.toString() : thread_id._id.toString();
-      const group = student_id ? studentGroupInterval : documentThreadGroupInterval;
+      const key = student_id
+        ? student_id._id.toString()
+        : thread_id._id.toString();
+      const group = student_id
+        ? studentGroupInterval
+        : documentThreadGroupInterval;
       if (!group[key]) {
         group[key] = [singleInterval];
       } else {
@@ -1368,18 +1416,25 @@ const GroupIntervals = async () => {
 };
 
 const CalculateAverageResponseTimeAndSave = async () => {
-  const [studentGroupInterval, documentThreadGroupInterval] = await GroupIntervals();
+  const [studentGroupInterval, documentThreadGroupInterval] =
+    await GroupIntervals();
   const calculateAndSaveAverage = async (groupInterval, idKey) => {
     try {
       for (const key in groupInterval) {
         const intervals = groupInterval[key];
-        const total = intervals.reduce((sum, interval) => sum + interval.interval, 0);
+        const total = intervals.reduce(
+          (sum, interval) => sum + interval.interval,
+          0
+        );
         const final_avg = total / intervals.length;
 
         const singleInterval = intervals[0];
         const intervalType = singleInterval.interval_type;
 
-        const query = { [`${idKey}`]: key.toString(), interval_type: intervalType };
+        const query = {
+          [`${idKey}`]: key.toString(),
+          interval_type: intervalType
+        };
 
         // Check if an existing response time document exists
         const existingResponseTime = await ResponseTime.findOne(query);
@@ -1389,7 +1444,16 @@ const CalculateAverageResponseTimeAndSave = async () => {
           existingResponseTime.intervalAvg = final_avg;
           existingResponseTime.updatedAt = new Date();
           await existingResponseTime.save();
-          logger.info('Updated existing response time:', existingResponseTime);
+          // Extract relevant properties for logging
+          const { _id, intervalAvg, interval_type, updatedAt } =
+            existingResponseTime;
+          logger.info('Updated existing response time:', {
+            _id,
+            intervalAvg,
+            interval_type,
+            updatedAt
+          });
+          // logger.info('Updated existing response time:', existingResponseTime);
         } else {
           // Create a new response time document
           const newResponseTime = new ResponseTime({
@@ -1399,11 +1463,21 @@ const CalculateAverageResponseTimeAndSave = async () => {
             updatedAt: new Date()
           });
           await newResponseTime.save();
-          logger.info('New response time saved:', newResponseTime);
+          const { _id, intervalAvg, interval_type, updatedAt } =
+            newResponseTime;
+          logger.info('New response time saved:', {
+            _id,
+            intervalAvg,
+            interval_type,
+            updatedAt
+          });
         }
       }
     } catch (err) {
-      logger.error(`Error calculating and saving average response time for ${idKey}:`, err);
+      logger.error(
+        `Error calculating and saving average response time for ${idKey}:`,
+        err
+      );
     }
   };
 

@@ -93,7 +93,24 @@ const GernerateLookupTable = (Lookup, key, task) => {
     Lookup[userId][FormattedFileType].ResponseTimeId.push(task);
 };
 
-const GenerateResponseTimeByUser = asyncHandler(async (req, res, next) => {
+const CalculateAvgReponseTimeinLookup = async (Lookup) => {
+    //calculate the average response time
+    for (const user in Lookup) {
+        for (const attribute in Lookup[user]) {
+            if (attribute !== "UserProfile") {
+                const entry = Lookup[user][attribute];
+                if (entry.ResponseTimeId.length > 0) {
+                    const averageResponseTime = entry.AvgResponseTime / entry.ResponseTimeId.length;
+                    Lookup[user][attribute].AvgResponseTime = averageResponseTime;
+                } else {
+                    Lookup[user][attribute].AvgResponseTime = null;
+                }
+            }
+        }
+    }
+};
+
+const GenerateResponseTimeByTaigerUser = async () => {
     let Lookup = {};
 
     const ResponseTimeForCommunication = await GetResponseTimeForCommunication({ student_id: { $exists: true } });
@@ -118,21 +135,33 @@ const GenerateResponseTimeByUser = asyncHandler(async (req, res, next) => {
         }
     });
 
-    //calculate the average response time
-    for (const user in Lookup) {
-        for (const attribute in Lookup[user]) {
-            if (attribute !== "UserProfile") {
-                const entry = Lookup[user][attribute];
-                if (entry.ResponseTimeId.length > 0) {
-                    const averageResponseTime = entry.AvgResponseTime / entry.ResponseTimeId.length;
-                    Lookup[user][attribute].AvgResponseTime = averageResponseTime;
-                } else {
-                    Lookup[user][attribute].AvgResponseTime = null;
-                }
-            }
-        }
-    };
+    CalculateAvgReponseTimeinLookup(Lookup);
+    console.log("lookup", Lookup);
+    return Lookup;
+};
 
-    res.status(200).send({ success: true, data: Lookup });
-    next();
-});
+const GenerateResponseTimeByStudent = async () => {
+    let Lookup = {};
+
+    const ResponseTimeForCommunication = await GetResponseTimeForCommunication({ student_id: { $exists: true } });
+    ResponseTimeForCommunication.forEach((RTFC) => {
+        const student = RTFC.student_id ?? null
+
+        if (student) {
+            GernerateLookupTableByStudent(Lookup, student, RTFC);
+        }
+    });
+
+    const ResponseTimeForThread = await GetResponseTimeForThread({ thread_id: { $exists: true } });
+    ResponseTimeForThread.forEach((RTFT) => {
+        const student = RTFT.student_id ?? null
+
+        if (student) {
+            GernerateLookupTableByStudent(Lookup, student, RTFT);
+        }
+    });
+
+    CalculateAvgReponseTimeinLookup(Lookup);
+    console.log("lookup", Lookup);
+    return Lookup;
+};

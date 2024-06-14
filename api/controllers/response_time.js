@@ -148,7 +148,7 @@ const GenerateResponseTimeByStudent = async () => {
         const student = RTFC.student_id ?? null
 
         if (student) {
-            GernerateLookupTableByStudent(Lookup, student, RTFC);
+            GernerateLookupTable(Lookup, student, RTFC);
         }
     });
 
@@ -157,7 +157,7 @@ const GenerateResponseTimeByStudent = async () => {
         const student = RTFT.student_id ?? null
 
         if (student) {
-            GernerateLookupTableByStudent(Lookup, student, RTFT);
+            GernerateLookupTable(Lookup, student, RTFT);
         }
     });
 

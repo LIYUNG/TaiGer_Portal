@@ -9,9 +9,11 @@ import {
   Typography
 } from '@mui/material';
 import { Navigate, Link as LinkDom } from 'react-router-dom';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 import {
-  LinkableNewlineText,
+  // LinkableNewlineText,
   is_TaiGer_role
 } from '../Utils/checking-functions';
 import ErrorPage from '../Utils/ErrorPage';
@@ -110,7 +112,6 @@ function CVMLRLGenerator() {
           {appConfig.companyName} AI Playground
         </Typography>
       </Breadcrumbs>
-
       <TextField
         size="small"
         fullWidth
@@ -135,9 +136,12 @@ function CVMLRLGenerator() {
         )}
       </Button>
       <Typography variant="p">
-        <LinkableNewlineText
+        {/* <LinkableNewlineText
           text={cVMLRLGeneratorState.data}
-        ></LinkableNewlineText>
+        ></LinkableNewlineText> */}
+        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+          {cVMLRLGeneratorState.data}
+        </ReactMarkdown>
       </Typography>
     </Box>
   );

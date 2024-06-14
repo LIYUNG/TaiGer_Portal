@@ -44,6 +44,7 @@ const DEMO = {
   },
   EVENT_TAIGER_USERID_LINK: '/events/taiger',
   FORGOT_PASSWORD_LINK: '/account/forgot-password',
+  LANDING_PAGE_LINK: '/account/home',
   INTERVIEW_LINK: '/interview-training',
   INTERVIEW_ADD_LINK: '/interview-training/add',
   INTERVIEW_SINGLE_LINK: (interview_id) => {

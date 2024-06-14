@@ -1988,7 +1988,11 @@ export const profile_list = {
 
 export const base_documents_checklist = {
   High_School_Diploma: ['English version ?', 'School Stamp or signature'],
-  High_School_Transcript: ['English version ?', 'Grading system existed ?'],
+  High_School_Transcript: [
+    'English version ?',
+    'Grading system existed ?',
+    'Date of referral ?'
+  ],
   University_Entrance_Examination_GSAT: ['English version ?'],
   Bachelor_Certificate: [
     'English version ?',

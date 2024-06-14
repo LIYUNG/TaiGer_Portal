@@ -4,6 +4,9 @@ import React from 'react';
 //   import('./Demo/Authentication/SignUp/SignUp1')
 // );
 const SignIn = React.lazy(() => import('./Demo/Authentication/SignIn/SignIn'));
+const LandingPage = React.lazy(() =>
+  import('./Demo/Authentication/LandingPage/index')
+);
 const ResetPasswordRequest = React.lazy(() =>
   import('./Demo/Authentication/ResetPasswordRequest/ResetPasswordRequest')
 );
@@ -34,6 +37,12 @@ const route = [
     exact: true,
     name: 'ResetPassword 1',
     Component: ResetPasswordRequest
+  },
+  {
+    path: '/account/home',
+    exact: true,
+    name: 'Home 1',
+    Component: LandingPage
   },
   {
     path: '/account/login',

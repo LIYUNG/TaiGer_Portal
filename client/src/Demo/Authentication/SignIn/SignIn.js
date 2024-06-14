@@ -147,13 +147,20 @@ export default function SignIn() {
           </Button>
         </form>
         <Grid container spacing={2} sx={{ my: 1 }}>
-          <Grid item xs={6} sx={{ textAlign: 'right' }}>
-            <Typography>{t('Forgot Password', { ns: 'common' })}?</Typography>
+          <Grid item xs={12} sx={{ textAlign: 'center' }}>
+            <Typography>
+              {t('Forgot Password', { ns: 'common' })}?{' '}
+              <Link to={DEMO.FORGOT_PASSWORD_LINK} component={NavLink}>
+                {t('Reset Login Password')}
+              </Link>
+            </Typography>
           </Grid>
-          <Grid item xs={6}>
-            <Link to={DEMO.FORGOT_PASSWORD_LINK} component={NavLink}>
-              <Typography>{t('Reset Login Password')}</Typography>
-            </Link>
+          <Grid item xs={12} sx={{ textAlign: 'center' }}>
+            <Typography>
+              <Link to={DEMO.LANDING_PAGE_LINK} component={NavLink}>
+                {t('Home')}
+              </Link>
+            </Typography>
           </Grid>
         </Grid>
       </AuthWrapper>

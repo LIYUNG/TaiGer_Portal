@@ -16,7 +16,7 @@ export default function AuthWrapper({ children }) {
         }}
       >
         <Avatar
-          alt="Your Image"
+          alt="TaiGer"
           src={appConfig.LoginPageLogo}
           sx={{
             width: 150,

@@ -286,6 +286,7 @@ function ButtonSetAccepted(props) {
       <ModalNew
         open={buttonSetAcceptedState.deleteFileWarningModel}
         onClose={closeWarningWindow}
+        size="small"
         aria-labelledby="contained-modal-title-vcenter"
       >
         <Typography variant="h5">Warning</Typography>
@@ -304,6 +305,7 @@ function ButtonSetAccepted(props) {
           placeholder="delete"
           onChange={(e) => onChangeDeleteField(e)}
         />
+        <br />
         <Button
           disabled={
             !buttonSetAcceptedState.isLoaded ||

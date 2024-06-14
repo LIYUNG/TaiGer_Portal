@@ -576,7 +576,7 @@ export const translation_en = {
     'All Students Applications Overview': 'All Students Applications Overview',
     Others: 'Others',
     'Target Degree Programs': 'Target Degree Programs',
-    'Target Program Language': 'Target Degree Programs',
+    'Target Program Language': 'Target Program Language',
     'Please Select': 'Please Select',
     'Only English': 'Only English',
     'Only German': 'Only German',

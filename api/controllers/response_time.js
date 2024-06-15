@@ -85,14 +85,16 @@ const GetFormattedFileType = (fileType) => {
 const GernerateLookupTable = (Lookup, key, task) => {
     const FormattedFileType = GetFormattedFileType(task.interval_type);
     const userId = key?._id.toString();
-    if (!(userId in Lookup)) {
-        Lookup[userId] = JSON.parse(JSON.stringify(BlankLookupTable));
-        Lookup[userId]["UserProfile"].firstname = key.firstname;
-        Lookup[userId]["UserProfile"].lastname = key.lastname;
-        Lookup[userId]["UserProfile"].role = key.role;
+    if (FormattedFileType) {
+        if (!(userId in Lookup)) {
+            Lookup[userId] = JSON.parse(JSON.stringify(BlankLookupTable));
+            Lookup[userId]["UserProfile"].firstname = key.firstname;
+            Lookup[userId]["UserProfile"].lastname = key.lastname;
+            Lookup[userId]["UserProfile"].role = key.role;
+        }
+        Lookup[userId][FormattedFileType].AvgResponseTime += task.intervalAvg;
+        Lookup[userId][FormattedFileType].ResponseTimeId.push(task);
     }
-    Lookup[userId][FormattedFileType].AvgResponseTime += task.intervalAvg;
-    Lookup[userId][FormattedFileType].ResponseTimeId.push(task);
 };
 
 const CalculateAvgReponseTimeinLookup = async (Lookup) => {
@@ -112,7 +114,7 @@ const CalculateAvgReponseTimeinLookup = async (Lookup) => {
     }
 };
 
-const GenerateResponseTimeByTaigerUser = asyncHandler(async (req, res, next) => {
+const GenerateResponseTimeByTaigerUser = async () => {
     let Lookup = {};
 
     const ResponseTimeForCommunication = await GetResponseTimeForCommunication({ student_id: { $exists: true } });
@@ -138,11 +140,10 @@ const GenerateResponseTimeByTaigerUser = asyncHandler(async (req, res, next) => 
     });
 
     CalculateAvgReponseTimeinLookup(Lookup);
-    res.status(200).send({ success: true, data: Lookup });
-    next();
-});
+    return Lookup;
+};
 
-const GenerateResponseTimeByStudent = asyncHandler(async (req, res, next) => {
+const GenerateResponseTimeByStudent = async () => {
     let Lookup = {};
 
     const ResponseTimeForCommunication = await GetResponseTimeForCommunication({ student_id: { $exists: true } });
@@ -164,9 +165,8 @@ const GenerateResponseTimeByStudent = asyncHandler(async (req, res, next) => {
     });
 
     CalculateAvgReponseTimeinLookup(Lookup);
-    res.status(200).send({ success: true, data: Lookup });
-    next();
-});
+    return Lookup;
+};
 
 module.exports = {
     GenerateResponseTimeByStudent

@@ -444,6 +444,8 @@ function InternalDashboard() {
     duration: calculateDuration(item.start, item.end)
   }));
 
+  const studentResponseTimesArray = Object.values(internalDashboardState.studentResponseTimeLookupTable);
+
   return (
     <Box>
       <Breadcrumbs aria-label="breadcrumb">
@@ -760,9 +762,9 @@ function InternalDashboard() {
       <CustomTabPanel value={value} index={4}>
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <Typography variant="h6">Studnets Response Time</Typography>
+            <Typography variant="h6">Student Response Time</Typography>
           </Grid>
-          {internalDashboardState.studentResponseTimeLookupTable.map(
+          {studentResponseTimesArray.map(
             (studentResponseTime, idx) => (
               <Grid item xs={12} md={4} key={idx}>
                 <StudentResponseTimeChart studentResponseTime={studentResponseTime} />

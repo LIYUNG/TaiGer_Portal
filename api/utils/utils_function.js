@@ -1226,13 +1226,14 @@ const ProcessMessages = (student, messages) => {
     let msg2 = undefined;
 
     for (const msg of messages) {
+      const UserRole = msg.user_id?.role;
       if (
         msg1 === undefined &&
-        msg.user_id?.role === Role.Student &&
+        UserRole === Role.Student &&
         msg.ignore_message !== true
       ) {
         msg1 = msg;
-      } else if (msg.user_id?.role !== Role.Student) {
+      } else if (UserRole !== Role.Student) {
         msg2 = msg;
       }
       if (msg1 !== undefined && msg2 !== undefined) {
@@ -1274,7 +1275,7 @@ const CreateIntervalOperation = (thread, msg1, msg2) => {
     thread_id: thread._id,
     message_1_id: msg1._id,
     message_2_id: msg2._id,
-    interval_type: 'document_thread',
+    interval_type: thread.file_type,
     interval: intervalValue,
     updatedAt: new Date()
   };

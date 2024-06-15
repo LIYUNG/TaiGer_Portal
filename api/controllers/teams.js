@@ -10,6 +10,7 @@ const { getStudentsByProgram } = require('./programs');
 const { findStudentDelta } = require('../utils/modelHelper/programChange');
 const { getPermission } = require('../utils/queryFunctions');
 const { ObjectId } = require('mongodb');
+const { GenerateResponseTimeByStudent } = require('./response_time');
 
 const getActivePrograms = async () => {
   const activePrograms = await User.aggregate([
@@ -302,6 +303,8 @@ const getStatistics = asyncHandler(async (req, res) => {
     }
   ]);
 
+  const studentResponseTimeLookupTablePromise = await GenerateResponseTimeByStudent();
+
   const [
     agents_data,
     editors_data,
@@ -310,6 +313,7 @@ const getStatistics = asyncHandler(async (req, res) => {
     students,
     users,
     archivCount,
+    studentResponseTimeLookupTable,
     ...agentsStudentsDistribution
   ] = await Promise.all([
     agentsPromises,
@@ -319,6 +323,7 @@ const getStatistics = asyncHandler(async (req, res) => {
     studentsPromise,
     usersPromise,
     archivCountPromise,
+    studentResponseTimeLookupTablePromise,
     ...agents.map((agent) => getAgentStudentDistData(agent))
   ]);
 
@@ -372,7 +377,8 @@ const getStatistics = asyncHandler(async (req, res) => {
     editors: editors_data,
     students_details: students,
     applications: [],
-    agentStudentDistribution: mergedResults
+    agentStudentDistribution: mergedResults,
+    studentResponseTimeLookupTable: studentResponseTimeLookupTable
   });
 });
 

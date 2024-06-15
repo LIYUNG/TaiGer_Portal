@@ -1,7 +1,7 @@
-
 const async = require('async');
 const path = require('path');
 const { ResponseTime } = require('../models/ResponseTime');
+const { asyncHandler } = require('../middlewares/error-handler');
 
 const GetResponseTimeForCommunication = async () =>
     ResponseTime.find({ student_id: { $exists: true } })
@@ -32,10 +32,10 @@ const GetResponseTimeForThread = async () =>
 const FileTypeMapping = {
     "CV": ["CV"],
     "ML": ["ML"],
-    "RL": ["RL_A", "RL_B", "RL_C", "Recommendation_Letter_A", "Recommendation_Letter_B"],
+    "RL": ["RL_A", "RL_B", "RL_C", "Recommendation_Letter_A", "Recommendation_Letter_B", "Recommendation_Letter_C"],
     "Essay": ["Essay"],
     "Communication": ["communication"],
-    "Agent Support": ["Supplementary_Form", "Others", "Scholarship_Form", "Curriculum_Analysis"],
+    "Agent Support": ["Supplementary_Form", "Others", "Scholarship_Form", "Curriculum_Analysis", "Scholarship_form"],
     "Portfolio": ["Portfolio"]
 }
 
@@ -167,3 +167,7 @@ const GenerateResponseTimeByStudent = asyncHandler(async (req, res, next) => {
     res.status(200).send({ success: true, data: Lookup });
     next();
 });
+
+module.exports = {
+    GenerateResponseTimeByStudent
+};

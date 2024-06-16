@@ -405,7 +405,7 @@ function NewProgramEdit(props) {
             <TextField
               fullWidth
               size="small"
-              type="text"
+              type="number"
               id="toefl_reading"
               name="toefl_reading"
               label={t('Reading', { ns: 'common' })}
@@ -418,7 +418,7 @@ function NewProgramEdit(props) {
             <TextField
               fullWidth
               size="small"
-              type="text"
+              type="number"
               id="toefl_listening"
               name="toefl_listening"
               label={t('Listening', { ns: 'common' })}
@@ -431,7 +431,7 @@ function NewProgramEdit(props) {
             <TextField
               fullWidth
               size="small"
-              type="text"
+              type="number"
               id="toefl_speaking"
               name="toefl_speaking"
               label={t('Speaking', { ns: 'common' })}
@@ -444,7 +444,7 @@ function NewProgramEdit(props) {
             <TextField
               fullWidth
               size="small"
-              type="text"
+              type="number"
               id="toefl_writing"
               name="toefl_writing"
               label={t('Writing', { ns: 'common' })}
@@ -474,7 +474,7 @@ function NewProgramEdit(props) {
             <TextField
               fullWidth
               size="small"
-              type="text"
+              type="number"
               id="ielts_reading"
               name="ielts_reading"
               label={t('Reading', { ns: 'common' })}
@@ -487,7 +487,7 @@ function NewProgramEdit(props) {
             <TextField
               fullWidth
               size="small"
-              type="text"
+              type="number"
               id="ielts_listening"
               name="ielts_listening"
               label={t('Listening', { ns: 'common' })}
@@ -500,7 +500,7 @@ function NewProgramEdit(props) {
             <TextField
               fullWidth
               size="small"
-              type="text"
+              type="number"
               id="ielts_speaking"
               name="ielts_speaking"
               label={t('Speaking', { ns: 'common' })}
@@ -513,7 +513,7 @@ function NewProgramEdit(props) {
             <TextField
               fullWidth
               size="small"
-              type="text"
+              type="number"
               id="ielts_writing"
               name="ielts_writing"
               label={t('Writing', { ns: 'common' })}

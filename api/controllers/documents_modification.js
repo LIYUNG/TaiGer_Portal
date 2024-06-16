@@ -287,7 +287,7 @@ const getAllCVMLRLOverview = asyncHandler(async (req, res) => {
   })
     .populate(
       'applications.programId',
-      'school program_name degree application_deadline semester'
+      'school program_name degree application_deadline semester lang'
     )
     .populate({
       path: 'generaldocs_threads.doc_thread_id',
@@ -460,7 +460,7 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
     })
       .populate(
         'applications.programId',
-        'school program_name degree application_deadline semester'
+        'school program_name degree application_deadline semester lang'
       )
       .populate({
         path: 'generaldocs_threads.doc_thread_id',
@@ -492,7 +492,7 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
     })
       .populate(
         'applications.programId',
-        'school program_name degree application_deadline semester'
+        'school program_name degree application_deadline semester lang'
       )
       .populate({
         path: 'generaldocs_threads.doc_thread_id',
@@ -526,7 +526,7 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
     })
       .populate(
         'applications.programId',
-        'school program_name degree application_deadline semester'
+        'school program_name degree application_deadline semester lang'
       )
       .populate({
         path: 'generaldocs_threads.doc_thread_id',
@@ -562,7 +562,7 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
     const student = await Student.findById(user._id)
       .populate(
         'applications.programId',
-        'school program_name degree application_deadline semester'
+        'school program_name degree application_deadline semester lang'
       )
       .populate({
         path: 'generaldocs_threads.doc_thread_id',
@@ -2244,7 +2244,7 @@ const getAllActiveEssays = asyncHandler(async (req, res, next) => {
         .populate('messages.user_id', 'firstname lastname role')
         .populate(
           'program_id',
-          'school program_name degree application_deadline semester'
+          'school program_name degree application_deadline semester lang'
         )
         .lean();
 

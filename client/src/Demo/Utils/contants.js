@@ -1640,6 +1640,23 @@ export const c1_mrt = [
     }
   },
   {
+    accessorKey: 'lang',
+    header: 'Program Language',
+    size: 80,
+    Cell: (params) => {
+      return (
+        <Box
+          sx={{
+            whiteSpace: 'nowrap',
+            overflow: 'hidden'
+          }}
+        >
+          {params.row.original?.lang}
+        </Box>
+      );
+    }
+  },
+  {
     accessorKey: 'document_name',
     header: 'Document name',
     filterFn: 'contains',

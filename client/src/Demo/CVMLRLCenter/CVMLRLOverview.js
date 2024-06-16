@@ -118,6 +118,11 @@ function CVMLRLOverview(props) {
       minWidth: 80
     },
     {
+      field: 'lang',
+      headerName: 'Program Language',
+      minWidth: 80
+    },
+    {
       field: 'document_name',
       headerName: 'Document name',
       minWidth: 380,

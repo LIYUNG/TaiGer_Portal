@@ -97,7 +97,7 @@ const GernerateLookupTable = (Lookup, key, task) => {
                 ; Lookup[userId]["UserProfile"].editors = key.editors;
             };
         }
-        Lookup[userId][FormattedFileType].AvgResponseTime += task.intervalAvg;
+        Lookup[userId][FormattedFileType].AvgResponseTime.push(task.intervalAvg);
         Lookup[userId][FormattedFileType].ResponseTimeId.push(task);
     };
 };
@@ -152,8 +152,7 @@ const GenerateResponseTimeByTaigerUser = async () => {
         };
     });
 
-    CalculateAvgReponseTimeinLookup(Lookup);
-    console.log("lookup", Lookup);
+    // CalculateAvgReponseTimeinLookup(Lookup);
     return Lookup;
 };
 
@@ -178,7 +177,6 @@ const GenerateResponseTimeByStudent = async () => {
         }
     });
 
-    CalculateAvgReponseTimeinLookup(Lookup);
-    console.log("lookup", Lookup);
+    // CalculateAvgReponseTimeinLookup(Lookup);
     return Lookup;
 };

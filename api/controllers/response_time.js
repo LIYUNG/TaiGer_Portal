@@ -13,7 +13,7 @@ const GetResponseTimeForCommunication = async () =>
       })
       .lean()
 
-  const GetResponseTimeForThread = async () =>
+const GetResponseTimeForThread = async () =>
     ResponseTime.find({ thread_id: { $exists: true } })
       .populate({
         path: 'thread_id',
@@ -28,7 +28,7 @@ const GetResponseTimeForCommunication = async () =>
       })
       .lean()
 
-  const FileTypeMapping = {
+const FileTypeMapping = {
     "CV": ["CV"],
     "ML": ["ML"],
     "RL": ["RL_A", "RL_B", "RL_C", "Recommendation_Letter_A", "Recommendation_Letter_B"],
@@ -115,7 +115,7 @@ const GetResponseTimeForCommunication = async () =>
 
   const GenerateResponseTimeByTaigerUser = async () => {
     let Lookup = {};
-
+  
     const ResponseTimeForCommunication = await GetResponseTimeForCommunication({ student_id: { $exists: true } });
     ResponseTimeForCommunication.forEach((RTFC) => {
       if (RTFC.student_id) {
@@ -127,7 +127,7 @@ const GetResponseTimeForCommunication = async () =>
           });
       };
     });
-
+  
     const ResponseTimeForThread = await GetResponseTimeForThread({ thread_id: { $exists: true } });
     ResponseTimeForThread.forEach((RTFT) => {
       if (RTFT.student_id) {
@@ -145,14 +145,14 @@ const GetResponseTimeForCommunication = async () =>
           });
       };
     });
-
+  
     CalculateAvgReponseTimeinLookup(Lookup);
     return Lookup;
   };
 
   const GenerateResponseTimeByStudent = async () => {
     let Lookup = {};
-
+  
     const ResponseTimeForCommunication = await GetResponseTimeForCommunication({ student_id: { $exists: true } });
     ResponseTimeForCommunication.forEach((RTFC) => {
       const student = RTFC.student_id ?? null
@@ -161,7 +161,7 @@ const GetResponseTimeForCommunication = async () =>
         GernerateLookupTable(Lookup, student, RTFC);
       }
     });
-
+  
     const ResponseTimeForThread = await GetResponseTimeForThread({ thread_id: { $exists: true } });
     ResponseTimeForThread.forEach((RTFT) => {
       const student = RTFT.thread_id?.student_id ?? null
@@ -170,7 +170,7 @@ const GetResponseTimeForCommunication = async () =>
         GernerateLookupTable(Lookup, student, RTFT);
       }
     });
-
+  
     CalculateAvgReponseTimeinLookup(Lookup);
     return Lookup;
   };

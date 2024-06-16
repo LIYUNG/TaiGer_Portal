@@ -35,7 +35,7 @@ const FileTypeMapping = {
     "RL": ["RL_A", "RL_B", "RL_C", "Recommendation_Letter_A", "Recommendation_Letter_B", "Recommendation_Letter_C"],
     "Essay": ["Essay"],
     "Communication": ["communication"],
-    "Agent Support": ["Supplementary_Form", "Others", "Scholarship_Form", "Curriculum_Analysis", "Scholarship_form"],
+    "Agent Support": ["Supplementary_Form", "Others", "Scholarship_Form", "Curriculum_Analysis"],
     "Portfolio": ["Portfolio"]
 }
 

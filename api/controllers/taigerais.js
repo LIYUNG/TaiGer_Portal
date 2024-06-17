@@ -95,7 +95,9 @@ const TaiGerAiChat = asyncHandler(async (req, res, next) => {
     .sort({ createdAt: -1 }) // 0: latest!
     .limit(pageSize)
     .lean(); // show only first y limit items after skip.
-
+  const student = await Student.findById(studentId)
+    .populate('applications.programId')
+    .lean();
   const chat = communication_thread?.map((c) => {
     try {
       const messageObj = JSON.parse(c.message);
@@ -133,12 +135,13 @@ const TaiGerAiChat = asyncHandler(async (req, res, next) => {
   Please according to the following chat history and create a professional response: ${JSON.stringify(
     chat
   )}. 
-  Please provide the response concise and simple in Markdown language and based on the most recent messages from the Student (user_id: ${studentId}). 
+  Please provide the response concisely and in detail and simple in Markdown language and based on the most recent messages from the Student (user_id: ${studentId}). 
   And please use student's language as reponse. 
   If they use Traditional Chinese then use Tranditional Chinese. Please avoid using simple Chinese as it is not suitable for Taiwanese students.
   
   Here are some resources if student ansk for the topics related to below, you can provide the link to them:
-  1. if students ask how to apply German study visa, here is the link: https://taigerconsultancy-portal.com/docs/visa
+  1. if students ask how to apply German study visa, here is the link: https://taigerconsultancy-portal.com/docs/search/66117ff177802f1278b6104c
+  1.1. if students ask how to fill the online application form for German visa, here is the link: https://taigerconsultancy-portal.com/docs/search/64cf9dfc2d7b7e4d58219415
   2. if students ask how to make an appointment with Deutsches Institut Taipeh for applying visa, here is the link: https://taigerconsultancy-portal.com/docs/search/64c04b3522adb5d6aad94caf
   3. if students ask how to apply Expatrio blocked account (限制提領帳戶), here is the link: https://taigerconsultancy-portal.com/docs/search/64825ca787c9c3e88237351d
   4. if students ask how to apply Switzerland study visa, here is the link: https://taigerconsultancy-portal.com/docs/search/6611756177802f1278b601cf
@@ -149,8 +152,12 @@ const TaiGerAiChat = asyncHandler(async (req, res, next) => {
   9. if students ask how to prepare Recommendation letter with Manager or Boss (RL in our acronym), here is the link: https://taigerconsultancy-portal.com/docs/search/645f4ac8e4452f90ced998ce
   10. if students ask how to prepare essay, here is the link: https://taigerconsultancy-portal.com/docs/search/638b4f82d495bd2198261f7b
   11: if students ask how to prepare cerified copies for German universities (德國學校要求之影本驗證): https://taigerconsultancy-portal.com/docs/search/6381d2e0766614178d7f95bb
+  12. if students ask how to book agent's office hour, here is the link: https://taigerconsultancy-portal.com/docs/search/64fe21bcbc729bc024d14738
+  13. if students ask how to use jitsi meet, here is the link: https://taigerconsultancy-portal.com/docs/search/64eb25ec89ea0d1fcb39df73
+  14. if students ask how interview training works or how to request an interview training in the portal, here is the link: https://taigerconsultancy-portal.com/docs/search/664cf3260664445ad3abe3a3
+  
 
-  if students ask how to prepare the Documents, here are the requirements for:
+  if students ask how to prepare the Documents, here are the requirements and links for:
   1. passport: https://taigerconsultancy-portal.com/docs/search/6379715430243f127d4315a6
   2. bachelor or master's diploma: https://taigerconsultancy-portal.com/docs/search/6381c95a766614178d7f94bc
   3. bachelor or master's graduate certificate: https://taigerconsultancy-portal.com/docs/search/6381c389766614178d7f94a3
@@ -163,8 +170,21 @@ const TaiGerAiChat = asyncHandler(async (req, res, next) => {
   10. High school transcrpt : https://taigerconsultancy-portal.com/docs/search/63e0e7a51dd6064405885476
   11: Grading System, grade conversion table: https://taigerconsultancy-portal.com/docs/search/63d841d2603c4c625d4b3b83
 
+  Please try to provide the link as reference. These links contain important information for each document that can help student upload the file correctly.
 
-  Please don't provide all links, but only relavant ones. If none of above mataches, please answer the student based on your best professional knowledge.
+  if students ask for their application documents (listed in the following) for their applications, here are their application information, including detailed requirement:
+  The student's application information ${JSON.stringify(student.applications)}
+  1. Motivation Letter (ML) (ML requirement is in conrresponding application.programId.ml_requirement if ml_required is true, means ML is required)
+  2. Recommendation letter requirements (RL requirement is in conrresponding application.programId.rl_requirement if rl_required is the number of recommendation letters needed, means RL is required)
+  3. Supplementary Form (Supplementary Form requirement is in conrresponding application.programId.supplementary_form_requirements if supplementary_form_required is true, means Supplementary Form is required)
+  4. Curriculum Analysis (Curriculum Analysis requirement is in conrresponding application.programId.curriculum_analysis_requirements if curriculum_analysis_required is true, means Curriculum Analysis is required)
+  5. Portfolio (Portfolio requirement is in conrresponding application.programId.portfolio_requirements if portfolio_required is true, means Portfolio is required)
+  6. Program English Test (IELTS, TOEFL) requirements questions, please check programId.toefl, programId.ielts above (as well as toefl_reading, toefl.listening, toefl.writing, toefl.speaking, ielts_reading, ielts.listening, ielts.writing, ielts.speaking)
+  7. If it is related to university's application portal or uni-assist or hochschulestart (see in programId.application_portal_a and programId.application_portal_b), please guide them with programId.application_portal_a_instructions and programId.application_portal_b_instructions
+  8. Provide the information mentioned in application.programId and try to summarize the information to them.
+  Based on instruction above, please first try to use the provided information from the corresponding application.programId, and summarize it to the student.
+
+  Please don't provide all links or instructions, but only relavant ones. If none of above mataches, please answer the student based on your best professional knowledge.
   `;
 
   const stream = await generate_streaming(pmp, 'gpt-3.5-turbo');

@@ -78,7 +78,7 @@ function CommunicationThreadEditor(props) {
     setStatedata((prevState) => ({
       ...prevState,
       isLoaded: true,
-      data: prevState.data + ' \n ================================= \n',
+      data: prevState.data,
       isGenerating: false
     }));
   };
@@ -210,14 +210,7 @@ function CommunicationThreadEditor(props) {
           </IconButton>
         </Tooltip>
         {is_TaiGer_role(user) && (
-          <IconButton
-            disabled={
-              (user._id.toString() !== '638b8f70be60d7999c6b649d' && //Sydney
-                user._id.toString() !== '639baebf8b84944b872cf648') || //Leo
-              statedata.isGenerating
-            }
-            onClick={onSubmit}
-          >
+          <IconButton disabled={statedata.isGenerating} onClick={onSubmit}>
             {statedata.isGenerating ? (
               <CircularProgress size={24} />
             ) : (

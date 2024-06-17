@@ -25,6 +25,7 @@ import {
 } from '../Utils/checking-functions';
 import { TaiGerChatAssistant } from '../../api';
 import { useParams } from 'react-router-dom';
+import { appConfig } from '../../config';
 // import { VisuallyHiddenInput } from '../../components/Input';
 
 function CommunicationThreadEditor(props) {
@@ -209,7 +210,7 @@ function CommunicationThreadEditor(props) {
             <AttachFileIcon />
           </IconButton>
         </Tooltip>
-        {is_TaiGer_role(user) && (
+        {appConfig.AIEnable && is_TaiGer_role(user) && (
           <IconButton disabled={statedata.isGenerating} onClick={onSubmit}>
             {statedata.isGenerating ? (
               <CircularProgress size={24} />

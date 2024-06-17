@@ -1211,7 +1211,7 @@ export const LANGUAGES_PREFERENCE_ARRAY_OPTIONS = [
   { value: '', label: 'Please Select' },
   { value: 'English', label: 'Only English' },
   { value: 'German', label: 'Only German' },
-  { value: 'German-or-English', label: 'German and/or English' },
+  { value: 'German-and-English', label: 'German and English' },
   { value: 'Others', label: 'Others' }
 ];
 

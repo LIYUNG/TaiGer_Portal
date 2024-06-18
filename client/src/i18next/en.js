@@ -418,7 +418,17 @@ export const translation_en = {
     'If you did not receive an interview invitation from the university. Please do not request the training.':
       'If you did not receive an interview invitation from the university. Please do not request the training.',
     'If you have previously practiced interviews with our interview training officer, please do not request another interview training unless there are special requirements for the new interview (such as reading specific articles or books).':
-      'If you have previously practiced interviews with our interview training officer, please do not request another interview training unless there are special requirements for the new interview (such as reading specific articles or books).'
+      'If you have previously practiced interviews with our interview training officer, please do not request another interview training unless there are special requirements for the new interview (such as reading specific articles or books).',
+    'Kindly share your experience of our interview training by rating the following statements.':
+      'Kindly share your experience of our interview training by rating the following statements.',
+    'The interview training materials provided beforehand were beneficial for my official interview.':
+      'The interview training materials provided beforehand were beneficial for my official interview.',
+    'The interview training significantly helped me to conduct the official interview.':
+      'The interview training significantly helped me to conduct the official interview.',
+    'The interview trainer was friendly and helped me feel less nervous.':
+      'The interview trainer was friendly and helped me feel less nervous.',
+    'Please provide the interview questions to {{brandName}}':
+      'Please provide the interview questions to {{brandName}}'
   },
   uniassist: {
     'All document uploaded to Uni-Assist and paid, waiting for VPD':

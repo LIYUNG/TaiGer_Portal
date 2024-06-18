@@ -15,6 +15,7 @@ import {
 import DefaultErrorPage from './Demo/Utils/DefaultErrorPage';
 import StudentApplicationsAssignPage from './Demo/StudentApplications/assignPage';
 import AddInterview from './Demo/InterviewTraining/AddInterview';
+import Questionnaire from './Demo/InterviewTraining/Questionnaire';
 
 const DashboardDefault = React.lazy(() => import('./Demo/Dashboard/Dashboard'));
 
@@ -576,6 +577,12 @@ if (appConfig.interviewEnable) {
     exact: true,
     name: 'AddInterview',
     Component: AddInterview
+  });
+  routes.push({
+    path: '/interview-training/:interview_id/survey',
+    exact: true,
+    name: 'InterviewSurvey',
+    Component: Questionnaire
   });
   routes.push({
     path: '/interview-training/:interview_id',

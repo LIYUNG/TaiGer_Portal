@@ -18,6 +18,7 @@ const {
   sendSetAsFinalInterviewEmail
 } = require('../services/email');
 const Permission = require('../models/Permission');
+const InterviewSurveyResponse = require('../models/InterviewSurveyResponse');
 
 const PrecheckInterview = async (interview_id) => {
   const precheck_interview = await Interview.findById(interview_id);
@@ -119,7 +120,7 @@ const getInterview = asyncHandler(async (req, res) => {
   try {
     const interview = await Interview.findById(interview_id)
       .populate('student_id trainer_id', 'firstname lastname email')
-      .populate('program_id', 'school program_name degree')
+      .populate('program_id', 'school program_name degree semester')
       .populate({
         path: 'thread_id',
         select:
@@ -340,6 +341,30 @@ const updateInterview = asyncHandler(async (req, res) => {
   }
 });
 
+const updateInterviewSurvey = asyncHandler(async (req, res) => {
+  const {
+    params: { interview_id }
+  } = req;
+
+  const payload = req.body;
+  // console.log(payload);
+  const interview = await InterviewSurveyResponse.findByIdAndUpdate(
+    interview_id,
+    payload,
+    {
+      new: true,
+      upsert: true
+    }
+  )
+    .populate('student_id', 'firstname lastname email')
+    .populate('program_id', 'school program_name degree semester')
+    .lean();
+
+  res.status(200).send({ success: true, data: interview });
+  // TODO Inform Trainer
+  // TODO close interview
+});
+
 const createInterview = asyncHandler(async (req, res) => {
   const {
     params: { program_id, studentId },
@@ -454,6 +479,7 @@ module.exports = {
   getInterview,
   addInterviewTrainingDateTime,
   updateInterview,
+  updateInterviewSurvey,
   deleteInterview,
   createInterview
 };

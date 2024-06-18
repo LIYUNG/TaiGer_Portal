@@ -10,7 +10,8 @@ const {
   createInterview,
   deleteInterview,
   updateInterview,
-  addInterviewTrainingDateTime
+  addInterviewTrainingDateTime,
+  updateInterviewSurvey
 } = require('../controllers/interviews');
 const { multitenant_filter } = require('../middlewares/multitenant-filter');
 const { filter_archiv_user } = require('../middlewares/limit_archiv_user');
@@ -67,6 +68,22 @@ router
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     interviewMultitenantFilter,
     deleteInterview
+  );
+router
+  .route('/:interview_id/survey')
+  .get(
+    filter_archiv_user,
+    InterviewPUTRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
+    interviewMultitenantReadOnlyFilter,
+    getInterview
+  )
+  .put(
+    filter_archiv_user,
+    InterviewPUTRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
+    interviewMultitenantFilter,
+    updateInterviewSurvey
   );
 
 router

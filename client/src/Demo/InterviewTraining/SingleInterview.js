@@ -397,7 +397,8 @@ function SingleInterview() {
   if (res_status >= 400) {
     return <ErrorPage res_status={res_status} />;
   }
-  TabTitle(`Interview: ${singleInterviewState.document_title}`);
+  const interview_name = `${interview?.student_id.firstname} ${interview?.student_id.lastname} ${interview?.program_id.school} ${interview?.program_id.program_name} ${interview?.program_id.degree} ${interview?.program_id.semester}`;
+  TabTitle(`Interview: ${interview_name}`);
   return (
     <>
       {res_modal_status >= 400 && (

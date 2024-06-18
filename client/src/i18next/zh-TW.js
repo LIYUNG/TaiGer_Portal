@@ -422,7 +422,17 @@ export const translation_zh_TW = {
     'If you did not receive an interview invitation from the university. Please do not request the training.':
       '如果您未收到學校的面試邀請，請勿新增面試訓練要求',
     'If you have previously practiced interviews with our interview training officer, please do not request another interview training unless there are special requirements for the new interview (such as reading specific articles or books).':
-      '如果您之前已與我們的面試訓練官進行過面試練習，除非有特殊要求（如閱讀特定書報等），否則請勿再次申請面試訓練。'
+      '如果您之前已與我們的面試訓練官進行過面試練習，除非有特殊要求（如閱讀特定書報等），否則請勿再次申請面試訓練。',
+    'Kindly share your experience of our interview training by rating the following statements.':
+      '請分享您參加我們面試訓練的經驗，並對以下陳述進行評分。',
+    'The interview training materials provided beforehand were beneficial for my official interview.':
+      '提前提供的面試訓練資料對我的正式面試很有幫助。',
+    'The interview training significantly helped me to conduct the official interview.':
+      '面試訓練對我進行正式面試有很大幫助。',
+    'The interview trainer was friendly and helped me feel less nervous.':
+      '面試培訓人十分友好並能幫助我減少緊張感。',
+    'Please provide the interview questions to {{brandName}}':
+      '請提供面試問題給 {{brandName}}'
   },
   portalManagement: {
     'Update portal credentials successfully': '帳號密碼更新成功'

@@ -15,7 +15,8 @@ const {
   sendAssignedInterviewTrainerToTrainerEmail,
   sendAssignedInterviewTrainerToStudentEmail,
   InterviewCancelledReminderEmail,
-  sendSetAsFinalInterviewEmail
+  sendSetAsFinalInterviewEmail,
+  InterviewSurveyFinishedEmail
 } = require('../services/email');
 const Permission = require('../models/Permission');
 const InterviewSurveyResponse = require('../models/InterviewSurveyResponse');
@@ -343,12 +344,13 @@ const updateInterview = asyncHandler(async (req, res) => {
 
 const updateInterviewSurvey = asyncHandler(async (req, res) => {
   const {
+    user,
     params: { interview_id }
   } = req;
 
   const payload = req.body;
   // console.log(payload);
-  const interview = await InterviewSurveyResponse.findByIdAndUpdate(
+  const interviewSurvey = await InterviewSurveyResponse.findByIdAndUpdate(
     interview_id,
     payload,
     {
@@ -360,9 +362,26 @@ const updateInterviewSurvey = asyncHandler(async (req, res) => {
     .populate('program_id', 'school program_name degree semester')
     .lean();
 
-  res.status(200).send({ success: true, data: interview });
+  res.status(200).send({ success: true, data: interviewSurvey });
   // TODO Inform Trainer
+  const interview = await Interview.findById(interview_id)
+    .populate('student_id', 'firstname lastname email')
+    .populate('program_id', 'school program_name degree semester')
+    .lean();
+  InterviewSurveyFinishedEmail(
+    {
+      firstname: interview.student_id.firstname,
+      lastname: interview.student_id.lastname,
+      address: interview.student_id.email
+    },
+    { interview, user }
+  );
   // TODO close interview
+  await Interview.findByIdAndUpdate(
+    interview_id,
+    { isClosed: true, status: 'Closed' },
+    {}
+  );
 });
 
 const createInterview = asyncHandler(async (req, res) => {

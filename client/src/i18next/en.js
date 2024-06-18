@@ -419,6 +419,8 @@ export const translation_en = {
       'If you did not receive an interview invitation from the university. Please do not request the training.',
     'If you have previously practiced interviews with our interview training officer, please do not request another interview training unless there are special requirements for the new interview (such as reading specific articles or books).':
       'If you have previously practiced interviews with our interview training officer, please do not request another interview training unless there are special requirements for the new interview (such as reading specific articles or books).',
+    'Interview Training Survey': 'Interview Training Survey',
+    '1. not agree    5. strongly aggree': '1. not agree    5. strongly aggree',
     'Kindly share your experience of our interview training by rating the following statements.':
       'Kindly share your experience of our interview training by rating the following statements.',
     'The interview training materials provided beforehand were beneficial for my official interview.':

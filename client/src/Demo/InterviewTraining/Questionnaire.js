@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import {
   Box,
   Typography,
+  Link,
   Radio,
   RadioGroup,
   FormControlLabel,
@@ -9,17 +10,22 @@ import {
   FormLabel,
   Button,
   Badge,
-  TextField
+  TextField,
+  Breadcrumbs
 } from '@mui/material';
 import { t } from 'i18next';
-import { useParams } from 'react-router-dom';
+import { Link as LinkDom, useParams } from 'react-router-dom';
 import { getInterview, updateInterviewSurvey } from '../../api';
 import Loading from '../../components/Loading/Loading';
 import ErrorPage from '../Utils/ErrorPage';
 import { appConfig } from '../../config';
+import DEMO from '../../store/constant';
+import { is_TaiGer_role } from '../Utils/checking-functions';
+import { useAuth } from '../../components/AuthProvider';
 
 const Questionnaire = () => {
   const { interview_id } = useParams();
+  const { user } = useAuth();
   const [values, setValues] = React.useState({
     q1: '',
     q2: '',
@@ -103,21 +109,52 @@ const Questionnaire = () => {
   const interview_name = `${interview?.student_id.firstname} ${interview?.student_id.lastname} - ${interview?.program_id.school} ${interview?.program_id.program_name} ${interview?.program_id.degree} ${interview?.program_id.semester}`;
 
   return (
-    <Box sx={{ p: 2 }}>
-      <Box sx={{ mb: 1 }}>
-        <Typography variant="h5" gutterBottom>
-          Interview Training Survey
-        </Typography>
-        <Typography variant="h6" gutterBottom>
+    <Box>
+      <Breadcrumbs aria-label="breadcrumb">
+        <Link
+          underline="hover"
+          color="inherit"
+          component={LinkDom}
+          to={`${DEMO.DASHBOARD_LINK}`}
+        >
+          {appConfig.companyName}
+        </Link>
+        <Link
+          underline="hover"
+          color="inherit"
+          component={LinkDom}
+          to={`${DEMO.INTERVIEW_LINK}`}
+        >
+          {is_TaiGer_role(user)
+            ? t('All Interviews', { ns: 'interviews' })
+            : t('My Interviews', { ns: 'interviews' })}
+        </Link>
+        <Link
+          underline="hover"
+          color="inherit"
+          component={LinkDom}
+          to={`${DEMO.INTERVIEW_SINGLE_LINK(interview_id)}`}
+        >
           {interview_name}
+        </Link>
+        <Typography color="text.primary">
+          {t('Survey', { ns: 'common' })}
         </Typography>
-        <Typography variant="h6" gutterBottom>
+      </Breadcrumbs>
+      <Box sx={{ mb: 1 }}>
+        <Typography variant="h6" fontWeight="bold">
+          {t('Interview Training Survey', { ns: 'interviews' })}
+        </Typography>
+        <Typography variant="h6">{interview_name}</Typography>
+        <Typography variant="h6">
           {t(
             'Kindly share your experience of our interview training by rating the following statements.',
             { ns: 'interviews' }
           )}
         </Typography>
-
+        <Typography variant="body2" fontWeight="bold" sx={{ my: 1 }}>
+          {t('1. not agree    5. strongly aggree', { ns: 'interviews' })}
+        </Typography>
         <FormControl component="fieldset">
           <FormLabel component="legend">
             {t(
@@ -138,6 +175,7 @@ const Questionnaire = () => {
                 value={String(value)}
                 control={<Radio />}
                 label={String(value)}
+                labelPlacement="top"
               />
             ))}
           </RadioGroup>
@@ -164,6 +202,7 @@ const Questionnaire = () => {
                 value={String(value)}
                 control={<Radio />}
                 label={String(value)}
+                labelPlacement="top"
               />
             ))}
           </RadioGroup>
@@ -190,6 +229,7 @@ const Questionnaire = () => {
                 value={String(value)}
                 control={<Radio />}
                 label={String(value)}
+                labelPlacement="top"
               />
             ))}
           </RadioGroup>

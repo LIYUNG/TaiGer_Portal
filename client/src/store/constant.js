@@ -50,6 +50,9 @@ const DEMO = {
   INTERVIEW_SINGLE_LINK: (interview_id) => {
     return `/interview-training/${interview_id}`;
   },
+  INTERVIEW_SINGLE_SURVEY_LINK: (interview_id) => {
+    return `/interview-training/${interview_id}/survey`;
+  },
   INTERNAL_WIDGET_LINK: (user_id) => {
     return `/internal/widgets/${user_id}`;
   },

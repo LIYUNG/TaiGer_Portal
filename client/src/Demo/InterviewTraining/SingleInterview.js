@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link as LinkDom, useParams } from 'react-router-dom';
 import {
   Box,
   Card,
+  Link,
   Button,
   Typography,
   Avatar,
-  CircularProgress
+  CircularProgress,
+  Breadcrumbs
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
@@ -30,6 +32,7 @@ import { useAuth } from '../../components/AuthProvider';
 import DocThreadEditor from '../CVMLRLCenter/DocModificationThreadPage/DocThreadEditor';
 import { is_TaiGer_role } from '../Utils/checking-functions';
 import { TopBar } from '../../components/TopBar/TopBar';
+import { appConfig } from '../../config';
 
 function SingleInterview() {
   const { interview_id } = useParams();
@@ -397,7 +400,7 @@ function SingleInterview() {
   if (res_status >= 400) {
     return <ErrorPage res_status={res_status} />;
   }
-  const interview_name = `${interview?.student_id.firstname} ${interview?.student_id.lastname} ${interview?.program_id.school} ${interview?.program_id.program_name} ${interview?.program_id.degree} ${interview?.program_id.semester}`;
+  const interview_name = `${interview?.student_id.firstname} ${interview?.student_id.lastname} - ${interview?.program_id.school} ${interview?.program_id.program_name} ${interview?.program_id.degree} ${interview?.program_id.semester}`;
   TabTitle(`Interview: ${interview_name}`);
   return (
     <>
@@ -408,11 +411,27 @@ function SingleInterview() {
           res_modal_message={res_modal_message}
         />
       )}
-      <Link to={DEMO.INTERVIEW_LINK}>
-        <Button variant="outlined" color="secondary">
-          {t('Back')}
-        </Button>
-      </Link>
+      <Breadcrumbs aria-label="breadcrumb">
+        <Link
+          underline="hover"
+          color="inherit"
+          component={LinkDom}
+          to={`${DEMO.DASHBOARD_LINK}`}
+        >
+          {appConfig.companyName}
+        </Link>
+        <Link
+          underline="hover"
+          color="inherit"
+          component={LinkDom}
+          to={`${DEMO.INTERVIEW_LINK}`}
+        >
+          {is_TaiGer_role(user)
+            ? t('All Interviews', { ns: 'interviews' })
+            : t('My Interviews', { ns: 'interviews' })}
+        </Link>
+        <Typography color="text.primary">{interview_name}</Typography>
+      </Breadcrumbs>
       {interview ? (
         <>
           {interview.isClosed && <TopBar />}

@@ -341,14 +341,23 @@ export const needUpdateCourseSelection = (student) => {
   if (!student.courses.analysis?.updatedAt) {
     return 'No Anaylsis';
   }
+
+  // not necessary if have studied or not yet begin
+  if (
+    student.academic_background?.university?.isGraduated === 'Yes' ||
+    student.academic_background?.university?.isGraduated === 'No'
+  ) {
+    return 'Graduated';
+  }
+
   // necessary if courses or analysis expired 39 daays and is studying
-  const course_aged_days = parseInt(
-    getNumberOfDays(student.courses.updatedAt, new Date()),
-    10
+  const course_aged_days = getNumberOfDays(
+    student.courses.updatedAt,
+    new Date()
   );
-  const analyse_aged_days = parseInt(
-    getNumberOfDays(student.courses.analysis?.updatedAt, new Date()),
-    10
+  const analyse_aged_days = getNumberOfDays(
+    student.courses.analysis?.updatedAt,
+    new Date()
   );
   // TODO: only check when june, july, november, december,
   const currentDate = new Date();
@@ -365,13 +374,6 @@ export const needUpdateCourseSelection = (student) => {
     }
   }
 
-  // not necessary if have studied or not yet begin
-  if (
-    student.academic_background?.university?.isGraduated === 'Yes' ||
-    student.academic_background?.university?.isGraduated === 'No'
-  ) {
-    return 'Graduated';
-  }
   return 'OK';
 };
 
@@ -427,15 +429,13 @@ export const check_languages_filled = (academic_background) => {
   const today = new Date();
   if (
     (academic_background.language.english_isPassed === 'X' &&
-      parseInt(
-        getNumberOfDays(academic_background.language.english_test_date, today)
-      ) > 1) ||
+      getNumberOfDays(academic_background.language.english_test_date, today) >
+        1) ||
     (academic_background.language.english_isPassed === 'X' &&
       academic_background.language.english_test_date === '') ||
     (academic_background.language.german_isPassed === 'X' &&
-      parseInt(
-        getNumberOfDays(academic_background.language.german_test_date, today)
-      ) > 1) ||
+      getNumberOfDays(academic_background.language.german_test_date, today) >
+        1) ||
     (academic_background.language.german_isPassed === 'X' &&
       academic_background.language.german_test_date === '') ||
     (academic_background.language.gre_isPassed === 'X' &&
@@ -445,9 +445,8 @@ export const check_languages_filled = (academic_background) => {
     (academic_background.language.gre_isPassed === 'X' &&
       academic_background.language.gre_test_date === '') ||
     (academic_background.language.gmat_isPassed === 'X' &&
-      parseInt(
-        getNumberOfDays(academic_background.language.gmat_test_date, today)
-      ) > 1) ||
+      getNumberOfDays(academic_background.language.gmat_test_date, today) >
+        1) ||
     (academic_background.language.gmat_isPassed === 'X' &&
       academic_background.language.gmat_test_date === '')
   ) {
@@ -862,8 +861,7 @@ export const GetCVDeadline = (student) => {
         daysLeftRollingMin = '-';
         CVDeadlineRolling = applicationDeadline;
       }
-      const daysLeft = parseInt(getNumberOfDays(today, applicationDeadline));
-
+      const daysLeft = getNumberOfDays(today, applicationDeadline);
       if (daysLeft < daysLeftMin) {
         daysLeftMin = daysLeft;
         CVDeadline = applicationDeadline;
@@ -1511,7 +1509,7 @@ const prepEssayTaskThread = (student, thread) => {
     outsourced_user_id: thread?.outsourced_user_id,
     flag_by_user_id: thread?.flag_by_user_id,
     file_type: thread.file_type,
-    aged_days: parseInt(getNumberOfDays(thread.updatedAt, new Date())),
+    aged_days: getNumberOfDays(thread.updatedAt, new Date()),
     latest_reply: latestReplyInfo(thread),
     updatedAt: convertDate(thread.updatedAt),
     number_input_from_student: getNumberOfFilesByStudent(
@@ -1534,9 +1532,7 @@ const prepTask = (student, thread) => {
     isFinalVersion: thread.isFinalVersion,
     outsourced_user_id: thread.doc_thread_id?.outsourced_user_id,
     file_type: thread.doc_thread_id.file_type,
-    aged_days: parseInt(
-      getNumberOfDays(thread.doc_thread_id.updatedAt, new Date())
-    ),
+    aged_days: getNumberOfDays(thread.doc_thread_id.updatedAt, new Date()),
     latest_reply: latestReplyInfo(thread.doc_thread_id),
     updatedAt: convertDate(thread.doc_thread_id.updatedAt),
     number_input_from_student: getNumberOfFilesByStudent(
@@ -1585,13 +1581,11 @@ const prepEssayTask = (essay, user) => {
         : true,
     document_name: `${essay.file_type} - ${essay.program_id.school} - ${essay.program_id.degree} -${essay.program_id.program_name}`,
     days_left:
-      parseInt(
-        getNumberOfDays(
-          new Date(),
-          application_deadline_calculator(essay.student_id, {
-            programId: essay.program_id
-          })
-        )
+      getNumberOfDays(
+        new Date(),
+        application_deadline_calculator(essay.student_id, {
+          programId: essay.program_id
+        })
       ) || '-'
   };
 };
@@ -1607,11 +1601,9 @@ const prepApplicationTask = (student, application, thread) => {
     document_name: `${thread.doc_thread_id.file_type} - ${application.programId.school} - ${application.programId.degree} -${application.programId.program_name}`,
     lang: `${application.programId.lang}`,
     days_left:
-      parseInt(
-        getNumberOfDays(
-          new Date(),
-          application_deadline_calculator(student, application)
-        )
+      getNumberOfDays(
+        new Date(),
+        application_deadline_calculator(student, application)
       ) || '-'
   };
 };
@@ -1800,11 +1792,9 @@ export const programs_refactor = (students) => {
           student_id: student._id.toString(),
           deadline: application_deadline_calculator(student, application),
           days_left:
-            parseInt(
-              getNumberOfDays(
-                new Date(),
-                application_deadline_calculator(student, application)
-              )
+            getNumberOfDays(
+              new Date(),
+              application_deadline_calculator(student, application)
             ) || '-',
           base_docs: isProgramSubmitted(application)
             ? '-'

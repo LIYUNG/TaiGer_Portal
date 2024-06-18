@@ -423,6 +423,8 @@ export const translation_zh_TW = {
       '如果您未收到學校的面試邀請，請勿新增面試訓練要求',
     'If you have previously practiced interviews with our interview training officer, please do not request another interview training unless there are special requirements for the new interview (such as reading specific articles or books).':
       '如果您之前已與我們的面試訓練官進行過面試練習，除非有特殊要求（如閱讀特定書報等），否則請勿再次申請面試訓練。',
+    'Interview Training Survey': '面試訓練回饋問卷',
+    '1. not agree    5. strongly aggree': '1. 非常不同意    5. 非常同意',
     'Kindly share your experience of our interview training by rating the following statements.':
       '請分享您參加我們面試訓練的經驗，並對以下陳述進行評分。',
     'The interview training materials provided beforehand were beneficial for my official interview.':

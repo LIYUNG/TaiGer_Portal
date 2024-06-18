@@ -158,11 +158,9 @@ const SurveyEditableComponent = (props) => {
           !survey.academic_background?.language?.english_isPassed ? (
             <li>{t('Do you need English Test')}?</li>
           ) : survey.academic_background?.language?.english_isPassed === 'X' &&
-            parseInt(
-              getNumberOfDays(
-                survey.academic_background?.language?.english_test_date,
-                new Date()
-              )
+            getNumberOfDays(
+              survey.academic_background?.language?.english_test_date,
+              new Date()
             ) > 1 ? (
             <li>{t('English Passed ? (IELTS 6.5 / TOEFL 88)')}</li>
           ) : survey.academic_background?.language?.english_isPassed === 'X' &&
@@ -179,11 +177,9 @@ const SurveyEditableComponent = (props) => {
               )}
             </li>
           ) : survey.academic_background?.language?.german_isPassed === 'X' &&
-            parseInt(
-              getNumberOfDays(
-                survey.academic_background?.language?.german_test_date,
-                new Date()
-              )
+            getNumberOfDays(
+              survey.academic_background?.language?.german_test_date,
+              new Date()
             ) > 1 ? (
             <li>
               {t(
@@ -200,11 +196,9 @@ const SurveyEditableComponent = (props) => {
           !survey.academic_background?.language?.gre_isPassed ? (
             <li>{t('Do you need GRE Test')}</li>
           ) : survey.academic_background?.language?.gre_isPassed === 'X' &&
-            parseInt(
-              getNumberOfDays(
-                survey.academic_background?.language?.gre_test_date,
-                new Date()
-              )
+            getNumberOfDays(
+              survey.academic_background?.language?.gre_test_date,
+              new Date()
             ) > 1 ? (
             <li>{t('GRE Test passed ?')}</li>
           ) : survey.academic_background?.language?.gre_isPassed === 'X' &&
@@ -217,11 +211,9 @@ const SurveyEditableComponent = (props) => {
           !survey.academic_background?.language?.gmat_isPassed ? (
             <li>{t('Do you need GMAT Test')}?</li>
           ) : survey.academic_background?.language?.gmat_isPassed === 'X' &&
-            parseInt(
-              getNumberOfDays(
-                survey.academic_background?.language?.gmat_test_date,
-                new Date()
-              )
+            getNumberOfDays(
+              survey.academic_background?.language?.gmat_test_date,
+              new Date()
             ) > 1 ? (
             <li>{t('GMAT Test passed ?')}</li>
           ) : survey.academic_background?.language?.gmat_isPassed === 'X' &&

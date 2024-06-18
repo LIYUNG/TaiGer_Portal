@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link as LinkDom } from 'react-router-dom';
+import { Link as LinkDom, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import TimezoneSelect from 'react-timezone-select';
 import dayjs from 'dayjs';
@@ -40,6 +40,7 @@ import {
   INTERVIEW_STATUS_E,
   NoonNightLabel,
   convertDate,
+  isInTheFuture,
   showTimezoneOffset
 } from '../Utils/contants';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
@@ -67,6 +68,7 @@ function InterviewItems(props) {
   const [timezone, setTimezone] = useState(
     user.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone
   );
+  const navigate = useNavigate();
 
   const handleToggle = () => {
     setIsCollapse(!isCollapse);
@@ -87,6 +89,10 @@ function InterviewItems(props) {
   const openModal = async () => {
     setShowModal(true);
     getEditor();
+  };
+
+  const onClickToInterviewSurveyHandler = () => {
+    navigate(DEMO.INTERVIEW_SINGLE_SURVEY_LINK(props.interview._id.toString()));
   };
 
   const modifyTrainer = (new_trainerId, isActive) => {
@@ -369,6 +375,20 @@ function InterviewItems(props) {
               ) : (
                 <Typography variant="body1">To be announced</Typography>
               )}
+              <Typography variant="body1" fontWeight="bold" sx={{ mt: 2 }}>
+                {t('Interview Training Survey', { ns: 'interviews' })}
+                :&nbsp;
+              </Typography>
+              <Button
+                fullWidth
+                color="primary"
+                variant="contained"
+                size="small"
+                disabled={isInTheFuture(props.interview.interview_date)}
+                onClick={onClickToInterviewSurveyHandler}
+              >
+                {t('Survey', { ns: 'common' })}
+              </Button>
             </Grid>
             <Grid item xs={12} md={8}>
               <Typography variant="body1" fontWeight="bold">

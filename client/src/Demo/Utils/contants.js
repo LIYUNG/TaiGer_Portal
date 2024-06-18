@@ -883,7 +883,7 @@ export const getNumberOfDays = (start, end) => {
   // Calculating the no. of days between two dates
   const diffInDays = Math.round(diffInTime / oneDay);
 
-  return diffInDays.toString();
+  return diffInDays;
 };
 
 export const getDate = (date) => {

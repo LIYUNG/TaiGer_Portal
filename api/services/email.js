@@ -32,7 +32,8 @@ const {
   SINGLE_INTERVIEW_THREAD_URL,
   INTERVIEW_CENTER_URL,
   STUDENT_PROFILE_FOR_AGENT_URL,
-  THREAD_ID_URL
+  THREAD_ID_URL,
+  SINGLE_INTERVIEW_SURVEY_THREAD_URL
 } = require('../constants');
 
 const {
@@ -724,9 +725,7 @@ const informAgentManagerNewStudentEmail = async (recipient, payload) => {
 
 <p>${studentName} 將被指配給 ${agentName}。</p>
 
-<p>請至 ${STUDENT_PROFILE_FOR_AGENT_URL(
-    payload.std_id
-  )} 查看他的背景問卷！</p>
+<p>請至 ${STUDENT_PROFILE_FOR_AGENT_URL(payload.std_id)} 查看他的背景問卷！</p>
 
 <br />
 
@@ -736,7 +735,9 @@ const informAgentManagerNewStudentEmail = async (recipient, payload) => {
 
 <p>${studentName} will be assigned to ${agentName}!</p>
 
-<p>Please see ${STUDENT_PROFILE_FOR_AGENT_URL(payload.std_id)}'s background and survey</p>
+<p>Please see ${STUDENT_PROFILE_FOR_AGENT_URL(
+    payload.std_id
+  )}'s background and survey</p>
 
 
 `;
@@ -2570,9 +2571,7 @@ const sendSetAsFinalInterviewEmail = async (recipient, msg) => {
 
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-<p>${user_name} have finalized the interview <b>${interview_name}</b> </p>
-
-<p>for student ${student_name} </p>
+<p>${user_name} have finalized the interview <b>${interview_name}</b>. </p>
 
 <p>Please go to <a href="${interviewUrl}">Interview Center</a> for more details.</p>
 
@@ -2610,6 +2609,42 @@ ${user_name} 標示 ${interview_name} 為未完成。
 
     sendEmail(recipient, subject, message);
   }
+};
+
+const InterviewSurveyFinishedEmail = async (recipient, msg) => {
+  const user_name = `${msg.user.firstname} ${msg.user.lastname}`;
+  const student_name = `${msg.interview.student_id.firstname} ${msg.interview.student_id.lastname}`;
+  const interviewUrl = `${SINGLE_INTERVIEW_SURVEY_THREAD_URL(
+    msg.interview._id.toString()
+  )}`;
+  const interview_name = `${student_name} ${msg.interview.program_id.school} ${msg.interview.program_id.program_name} ${msg.interview.program_id.degree} `;
+  const subject = `[Close] Interview survey for ${interview_name} is finished!`;
+  const message = `\
+<p>${ENGLISH_BELOW}</p>
+
+<p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
+
+<p>${user_name} 完成了面試回饋問卷 <b>${interview_name}</b>。</p>
+
+<p>請至 <a href="${interviewUrl}">Interview Center</a> 查看細節</p>
+
+<p>如果您有任何問題，請聯絡您的面試訓練官。</p>
+
+<br />
+
+<p>${SPLIT_LINE}</p>
+
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+
+<p>${user_name} have finished the interview feedback survey <b>${interview_name}</b> </p>
+
+<p>Please go to <a href="${interviewUrl}">Interview Center</a> for more details.</p>
+
+<p>If you have any question, feel free to contact your interview trainer.</p>
+
+`;
+
+  sendEmail(recipient, subject, message);
 };
 
 module.exports = {
@@ -2679,5 +2714,6 @@ module.exports = {
   sendInterviewCancelEmail,
   InterviewCancelledReminderEmail,
   InterviewTrainingReminderEmail,
-  sendSetAsFinalInterviewEmail
+  sendSetAsFinalInterviewEmail,
+  InterviewSurveyFinishedEmail
 };

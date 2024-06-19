@@ -11,7 +11,8 @@ const {
   deleteInterview,
   updateInterview,
   addInterviewTrainingDateTime,
-  updateInterviewSurvey
+  updateInterviewSurvey,
+  getInterviewSurvey
 } = require('../controllers/interviews');
 const { multitenant_filter } = require('../middlewares/multitenant-filter');
 const { filter_archiv_user } = require('../middlewares/limit_archiv_user');
@@ -76,7 +77,7 @@ router
     InterviewPUTRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     interviewMultitenantReadOnlyFilter,
-    getInterview
+    getInterviewSurvey
   )
   .put(
     filter_archiv_user,

@@ -15,7 +15,11 @@ import {
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { Link as LinkDom, useParams } from 'react-router-dom';
-import { getInterview, updateInterviewSurvey } from '../../api';
+import {
+  getInterview,
+  getInterviewSurvey,
+  updateInterviewSurvey
+} from '../../api';
 import Loading from '../../components/Loading/Loading';
 import ErrorPage from '../Utils/ErrorPage';
 import { appConfig } from '../../config';
@@ -38,6 +42,7 @@ const Questionnaire = () => {
   const [interviewSurveyState, setInterviewSurveyState] = React.useState({});
 
   useEffect(() => {
+    fetchInterviewAndSurvey();
     getInterview(interview_id).then(
       (resp) => {
         const { data, success } = resp.data;
@@ -69,6 +74,32 @@ const Questionnaire = () => {
     );
   }, [interview_id]);
 
+  const fetchInterviewAndSurvey = async () => {
+    try {
+      const {
+        data: { data, success }
+      } = await getInterviewSurvey(interview_id);
+      if (success) {
+        const result = data?.responses?.reduce((acc, item) => {
+          acc[item.questionId] = item.answer;
+          return acc;
+        }, {});
+        console.log(result);
+        setValues({
+          ...result,
+          interviewQuestions: data.interviewQuestions,
+          interviewFeedback: data.interviewFeedback
+        });
+      }
+    } catch (error) {
+      setInterviewSurveyState((prevState) => ({
+        ...prevState,
+        isLoaded: true,
+        error,
+        res_status: 500
+      }));
+    }
+  };
   const handleChange = (event) => {
     const { name, value } = event.target;
     // Enforce character limit for interviewQuestions
@@ -268,10 +299,13 @@ const Questionnaire = () => {
       <Box sx={{ mb: 1 }}>
         <FormControl component="fieldset" sx={{ width: '100%' }}>
           <FormLabel component="legend">
-            {t(`Please provide the interview questions to {{brandName}}`, {
-              ns: 'interviews',
-              brandName: appConfig.companyName
-            })}
+            {t(
+              `Please provide the interview training feedback to {{brandName}}`,
+              {
+                ns: 'interviews',
+                brandName: appConfig.companyName
+              }
+            )}
           </FormLabel>
           <TextField
             fullWidth
@@ -280,7 +314,7 @@ const Questionnaire = () => {
             multiline
             name="interviewFeedback"
             rows="8"
-            placeholder="example questions"
+            placeholder="example feedback"
             value={values.interviewFeedback}
             onChange={handleChange}
           />

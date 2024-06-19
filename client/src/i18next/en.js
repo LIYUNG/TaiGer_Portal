@@ -430,7 +430,9 @@ export const translation_en = {
     'The interview trainer was friendly and helped me feel less nervous.':
       'The interview trainer was friendly and helped me feel less nervous.',
     'Please provide the interview questions to {{brandName}}':
-      'Please provide the interview questions to {{brandName}}'
+      'Please provide the interview questions to {{brandName}}',
+    'Please provide the interview training feedback to {{brandName}}':
+      'Please provide the interview training feedback to {{brandName}}'
   },
   uniassist: {
     'All document uploaded to Uni-Assist and paid, waiting for VPD':

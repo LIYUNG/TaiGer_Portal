@@ -643,6 +643,8 @@ export const updateInterview = (interview_id, payload) =>
   request.put(`/api/interviews/${interview_id}`, payload);
 export const updateInterviewSurvey = (interview_id, payload) =>
   request.put(`/api/interviews/${interview_id}/survey`, payload);
+export const getInterviewSurvey = (interview_id) =>
+  request.get(`/api/interviews/${interview_id}/survey`);
 export const getMyInterviews = () =>
   request.get(`/api/interviews/my-interviews`);
 export const createInterview = (program_id, student_id, payload) =>

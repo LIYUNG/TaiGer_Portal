@@ -432,9 +432,11 @@ export const translation_zh_TW = {
     'The interview training significantly helped me to conduct the official interview.':
       '面試訓練對我進行正式面試有很大幫助。',
     'The interview trainer was friendly and helped me feel less nervous.':
-      '面試培訓人十分友好並能幫助我減少緊張感。',
+      '面試訓練官十分友好並能幫助我減少緊張感。',
     'Please provide the interview questions to {{brandName}}':
-      '請提供面試問題給 {{brandName}}'
+      '請提供面試問題給 {{brandName}}',
+    'Please provide the interview training feedback to {{brandName}}':
+      '請提供面試訓練回饋給 {{brandName}}'
   },
   portalManagement: {
     'Update portal credentials successfully': '帳號密碼更新成功'

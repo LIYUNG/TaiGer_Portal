@@ -346,6 +346,21 @@ const updateInterview = asyncHandler(async (req, res) => {
   }
 });
 
+const getInterviewSurvey = asyncHandler(async (req, res) => {
+  const {
+    params: { interview_id }
+  } = req;
+
+  const interviewSurvey = await InterviewSurveyResponse.findOne({
+    interview_id
+  })
+    .populate('student_id', 'firstname lastname email')
+    .populate('program_id', 'school program_name degree semester')
+    .lean();
+
+  res.status(200).send({ success: true, data: interviewSurvey });
+});
+
 const updateInterviewSurvey = asyncHandler(async (req, res) => {
   const {
     user,
@@ -354,8 +369,8 @@ const updateInterviewSurvey = asyncHandler(async (req, res) => {
 
   const payload = req.body;
   // console.log(payload);
-  const interviewSurvey = await InterviewSurveyResponse.findByIdAndUpdate(
-    interview_id,
+  const interviewSurvey = await InterviewSurveyResponse.findOneAndUpdate(
+    { interview_id },
     payload,
     {
       new: true,
@@ -502,6 +517,7 @@ module.exports = {
   getInterview,
   addInterviewTrainingDateTime,
   updateInterview,
+  getInterviewSurvey,
   updateInterviewSurvey,
   deleteInterview,
   createInterview

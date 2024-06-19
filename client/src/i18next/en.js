@@ -432,7 +432,12 @@ export const translation_en = {
     'Please provide the interview questions to {{brandName}}':
       'Please provide the interview questions to {{brandName}}',
     'Please provide the interview training feedback to {{brandName}}':
-      'Please provide the interview training feedback to {{brandName}}'
+      'Please provide the interview training feedback to {{brandName}}',
+    'Do you want to submit the interview survey?':
+      'Do you want to submit the interview survey?',
+    'After submission you can not change the survey anymore.':
+      'After submission you can not change the survey anymore.',
+    'Save draft': 'Save draft'
   },
   uniassist: {
     'All document uploaded to Uni-Assist and paid, waiting for VPD':

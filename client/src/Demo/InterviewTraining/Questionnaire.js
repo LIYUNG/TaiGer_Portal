@@ -26,11 +26,14 @@ import { appConfig } from '../../config';
 import DEMO from '../../store/constant';
 import { is_TaiGer_role } from '../Utils/checking-functions';
 import { useAuth } from '../../components/AuthProvider';
-
+import ModalNew from '../../components/Modal';
+import { TopBar } from '../../components/TopBar/TopBar';
 const Questionnaire = () => {
   const { interview_id } = useParams();
   const { t } = useTranslation();
   const { user } = useAuth();
+  const [isChanged, setIsChanged] = React.useState(false);
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [values, setValues] = React.useState({
     q1: '',
     q2: '',
@@ -87,6 +90,7 @@ const Questionnaire = () => {
         console.log(result);
         setValues({
           ...result,
+          isFinal: data.isFinal,
           interviewQuestions: data.interviewQuestions,
           interviewFeedback: data.interviewFeedback
         });
@@ -109,14 +113,16 @@ const Questionnaire = () => {
     ) {
       return;
     }
+    setIsChanged(true);
     setValues({
       ...values,
       [name]: value
     });
   };
 
-  const handleSubmit = async () => {
+  const handleSaveDraft = async () => {
     try {
+      setIsChanged(false);
       const response = await updateInterviewSurvey(interview_id, {
         student_id: interview.student_id?._id?.toString(), // Replace with actual respondent ID if needed
         interview_id: interview_id,
@@ -128,6 +134,43 @@ const Questionnaire = () => {
         interviewQuestions: values.interviewQuestions,
         interviewFeedback: values.interviewFeedback
       });
+      console.log('Survey response submitted:', response.data);
+    } catch (error) {
+      console.error('Error submitting survey response:', error);
+    }
+  };
+
+  const formValidator = () => {
+    if (
+      !values.q1 ||
+      !values.q2 ||
+      !values.q3 ||
+      !values.interviewQuestions ||
+      !values.interviewFeedback
+    ) {
+      return false;
+    }
+    return true;
+  };
+  const handleSubmit = async () => {
+    try {
+      setValues((prevState) => ({
+        ...prevState,
+        isFinal: true
+      }));
+      const response = await updateInterviewSurvey(interview_id, {
+        student_id: interview.student_id?._id?.toString(), // Replace with actual respondent ID if needed
+        interview_id: interview_id,
+        responses: [
+          { questionId: 'q1', answer: values.q1 },
+          { questionId: 'q2', answer: values.q2 },
+          { questionId: 'q3', answer: values.q3 }
+        ],
+        isFinal: true,
+        interviewQuestions: values.interviewQuestions,
+        interviewFeedback: values.interviewFeedback
+      });
+      setIsModalOpen(false);
       console.log('Survey response submitted:', response.data);
     } catch (error) {
       console.error('Error submitting survey response:', error);
@@ -178,6 +221,7 @@ const Questionnaire = () => {
           {t('Survey', { ns: 'common' })}
         </Typography>
       </Breadcrumbs>
+      {values.isFinal && <TopBar />}
       <Box sx={{ mb: 1 }}>
         <Typography variant="h6" fontWeight="bold">
           {t('Interview Training Survey', { ns: 'interviews' })}
@@ -213,6 +257,7 @@ const Questionnaire = () => {
                 control={<Radio />}
                 label={String(value)}
                 labelPlacement="top"
+                disabled={values.isFinal}
               />
             ))}
           </RadioGroup>
@@ -240,6 +285,7 @@ const Questionnaire = () => {
                 control={<Radio />}
                 label={String(value)}
                 labelPlacement="top"
+                disabled={values.isFinal}
               />
             ))}
           </RadioGroup>
@@ -267,6 +313,7 @@ const Questionnaire = () => {
                 control={<Radio />}
                 label={String(value)}
                 labelPlacement="top"
+                disabled={values.isFinal}
               />
             ))}
           </RadioGroup>
@@ -290,6 +337,9 @@ const Questionnaire = () => {
             placeholder="example questions"
             value={values.interviewQuestions}
             onChange={handleChange}
+            InputProps={{
+              readOnly: values.isFinal
+            }}
           />
           <Badge bg={`${'primary'}`}>
             {values.interviewQuestions?.length || 0}/{2000}
@@ -317,20 +367,61 @@ const Questionnaire = () => {
             placeholder="example feedback"
             value={values.interviewFeedback}
             onChange={handleChange}
+            InputProps={{
+              readOnly: values.isFinal
+            }}
           />
           <Badge bg={`${'primary'}`}>
             {values.interviewFeedback?.length || 0}/{2000}
           </Badge>
         </FormControl>
       </Box>
+
+      <Button
+        fullWidth
+        variant="outlined"
+        color="primary"
+        disabled={values.isFinal || !isChanged}
+        onClick={handleSaveDraft}
+        sx={{ mb: 1 }}
+      >
+        {t('Save draft', { ns: 'interviews' })}
+      </Button>
       <Button
         fullWidth
         variant="contained"
         color="primary"
-        onClick={handleSubmit}
+        disabled={values.isFinal || !formValidator()}
+        onClick={() => setIsModalOpen(true)}
       >
         {t('Submit', { ns: 'common' })}
       </Button>
+      <ModalNew open={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        <Box>
+          <Typography id="modal-modal-title" variant="h6" sx={{ mb: 1 }}>
+            {t('Attention')}
+          </Typography>
+          <Typography id="modal-modal-title" variant="body1">
+            {t('Do you want to submit the interview survey?', {
+              ns: 'interviews'
+            })}
+          </Typography>
+          <Typography id="modal-modal-title" variant="body1" sx={{ mb: 1 }}>
+            {t('After submission you can not change the survey anymore.', {
+              ns: 'interviews'
+            })}
+          </Typography>
+          <Button
+            fullWidth
+            variant="contained"
+            color="primary"
+            disabled={values.isFinal}
+            onClick={handleSubmit}
+          >
+            {t('Submit', { ns: 'common' })}
+          </Button>
+        </Box>
+      </ModalNew>
     </Box>
   );
 };

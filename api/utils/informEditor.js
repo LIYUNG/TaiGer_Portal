@@ -177,4 +177,4 @@ const informOnSurveyUpdate = async (user, survey, thread) => {
   }
 };
 
-module.exports = { informOnSurveyUpdate };
+module.exports = { informOnSurveyUpdate, addMessageInThread };

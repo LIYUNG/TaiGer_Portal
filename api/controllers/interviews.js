@@ -2,7 +2,7 @@ const async = require('async');
 const path = require('path');
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
-const { Student } = require('../models/User');
+const { Student, Role } = require('../models/User');
 const { Interview } = require('../models/Interview');
 const Event = require('../models/Event');
 const logger = require('../services/logger');
@@ -16,10 +16,12 @@ const {
   sendAssignedInterviewTrainerToStudentEmail,
   InterviewCancelledReminderEmail,
   sendSetAsFinalInterviewEmail,
-  InterviewSurveyFinishedEmail
+  InterviewSurveyFinishedEmail,
+  InterviewSurveyFinishedToTaiGerEmail
 } = require('../services/email');
 const Permission = require('../models/Permission');
 const InterviewSurveyResponse = require('../models/InterviewSurveyResponse');
+const { addMessageInThread } = require('../utils/informEditor');
 
 const PrecheckInterview = async (interview_id) => {
   const precheck_interview = await Interview.findById(interview_id);
@@ -384,18 +386,42 @@ const updateInterviewSurvey = asyncHandler(async (req, res) => {
   res.status(200).send({ success: true, data: interviewSurvey });
   // TODO Inform Trainer
   const interview = await Interview.findById(interview_id)
-    .populate('student_id', 'firstname lastname email')
+    .populate('student_id trainer_id', 'firstname lastname email')
     .populate('program_id', 'school program_name degree semester')
     .lean();
-  InterviewSurveyFinishedEmail(
-    {
-      firstname: interview.student_id.firstname,
-      lastname: interview.student_id.lastname,
-      address: interview.student_id.email
-    },
-    { interview, user }
-  );
-  // TODO close interview
+  if (payload.isFinal) {
+    InterviewSurveyFinishedEmail(
+      {
+        firstname: interview.student_id.firstname,
+        lastname: interview.student_id.lastname,
+        address: interview.student_id.email
+      },
+      { interview, user }
+    );
+    interview?.trainer_id?.map((trainer) =>
+      InterviewSurveyFinishedToTaiGerEmail(
+        {
+          firstname: trainer.firstname,
+          lastname: trainer.lastname,
+          address: trainer.email
+        },
+        { interview, user }
+      )
+    );
+  }
+  const notificationUser =
+    interview?.trainer_id?.length > 0
+      ? interview?.trainer_id[0]._id
+      : undefined;
+  if (notificationUser) {
+    await addMessageInThread(
+      `Automatic Notification: Hi ${interview.student_id.firstname}, thank you for filling the interview training survey. I wish you having a great result for the application.`,
+      interview?.thread_id,
+      notificationUser
+    );
+  }
+
+  //  close interview
   await Interview.findByIdAndUpdate(
     interview_id,
     { isClosed: true, status: 'Closed' },

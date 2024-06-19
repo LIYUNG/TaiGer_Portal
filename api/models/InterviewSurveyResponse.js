@@ -14,6 +14,9 @@ const interviewSurveyResponseSchema = new mongoose.Schema(
         answer: Number
       }
     ],
+    isFinal: {
+      type: Boolean
+    },
     interviewQuestions: {
       type: String
     },

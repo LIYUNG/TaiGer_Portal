@@ -436,7 +436,12 @@ export const translation_zh_TW = {
     'Please provide the interview questions to {{brandName}}':
       '請提供面試問題給 {{brandName}}',
     'Please provide the interview training feedback to {{brandName}}':
-      '請提供面試訓練回饋給 {{brandName}}'
+      '請提供面試訓練回饋給 {{brandName}}',
+    'Do you want to submit the interview survey?':
+      '您確定要送出面試訓練回饋問卷嗎？',
+    'After submission you can not change the survey anymore.':
+      '問卷送出後，您將無法再更改',
+    'Save draft': '暫存草稿'
   },
   portalManagement: {
     'Update portal credentials successfully': '帳號密碼更新成功'

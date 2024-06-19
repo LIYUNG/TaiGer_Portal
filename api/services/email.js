@@ -2617,7 +2617,7 @@ const InterviewSurveyRequestEmail = async (recipient, msg) => {
     msg.interview._id.toString()
   )}`;
   const interview_name = `${student_name} ${msg.interview.program_id.school} ${msg.interview.program_id.program_name} ${msg.interview.program_id.degree} `;
-  const subject = `[TODO] Interview Survey for ${interview_name}`;
+  const subject = `[TODO][Urgent] Interview Survey for ${interview_name}`;
   const message = `\
 <p>${ENGLISH_BELOW}</p>
 
@@ -2657,19 +2657,19 @@ const InterviewSurveyFinishedEmail = async (recipient, msg) => {
     msg.interview._id.toString()
   )}`;
   const interview_name = `${student_name} ${msg.interview.program_id.school} ${msg.interview.program_id.program_name} ${msg.interview.program_id.degree} `;
-  const subject = `[Close] Interview survey for ${interview_name} is finished!`;
+  const subject = `[Close] Interview survey finished: ${interview_name}`;
   const message = `\
 <p>${ENGLISH_BELOW}</p>
 
 <p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
 
-<p>${user_name} 完成了面試回饋問卷 <b>${interview_name}</b>。</p>
+<p>感謝您完成了面試訓練回饋問卷 <b>${interview_name}</b>。</p>
 
 <p>請至 <a href="${interviewSurveyUrl}">Interview Center</a> 查看細節</p>
 
 <a href="${interviewSurveyUrl}" class="mui-button" target="_blank">前往面試訓練回饋</a>
 
-<p>如果您有任何問題，請聯絡您的面試訓練官。</p>
+<p>如果您有任何問題，請聯絡您的面試訓練官或顧問。</p>
 
 <br />
 
@@ -2683,7 +2683,39 @@ const InterviewSurveyFinishedEmail = async (recipient, msg) => {
 
 <p>Please go to <a href="${interviewSurveyUrl}">Interview Center</a> for more details.</p>
 
-<p>If you have any question, feel free to contact your interview trainer.</p>
+<p>If you have any question, feel free to contact your interview trainer or agent.</p>
+
+`;
+
+  sendEmail(recipient, subject, message);
+};
+
+const InterviewSurveyFinishedToTaiGerEmail = async (recipient, msg) => {
+  const user_name = `${msg.user.firstname} ${msg.user.lastname}`;
+  const student_name = `${msg.interview.student_id.firstname} ${msg.interview.student_id.lastname}`;
+  const interviewSurveyUrl = `${SINGLE_INTERVIEW_SURVEY_THREAD_URL(
+    msg.interview._id.toString()
+  )}`;
+  const interview_name = `${student_name} ${msg.interview.program_id.school} ${msg.interview.program_id.program_name} ${msg.interview.program_id.degree} `;
+  const subject = `[Close] Interview survey finished: ${interview_name}`;
+  const message = `\
+<p>${ENGLISH_BELOW}</p>
+
+<p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
+
+<p>${user_name} 完成了面試回饋問卷 <b>${interview_name}</b>。</p>
+
+<a href="${interviewSurveyUrl}" class="mui-button" target="_blank">查看面試訓練問卷</a>
+
+<br />
+
+<p>${SPLIT_LINE}</p>
+
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+
+<p>${user_name} has finished the interview feedback survey for <b>${interview_name}</b> </p>
+
+<a href="${interviewSurveyUrl}" class="mui-button" target="_blank">See Feedback</a>
 
 `;
 
@@ -2759,5 +2791,6 @@ module.exports = {
   InterviewTrainingReminderEmail,
   sendSetAsFinalInterviewEmail,
   InterviewSurveyRequestEmail,
-  InterviewSurveyFinishedEmail
+  InterviewSurveyFinishedEmail,
+  InterviewSurveyFinishedToTaiGerEmail
 };

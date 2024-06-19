@@ -31,7 +31,7 @@ const PrecheckInterview = async (interview_id) => {
   }
 };
 
-const InterviewCancelledReminder = async (user, meeting_event) => {
+const InterviewCancelledReminder = async (user, meeting_event, cc) => {
   InterviewCancelledReminderEmail(
     {
       id: meeting_event.requester_id[0]._id.toString(),
@@ -50,7 +50,7 @@ const InterviewCancelledReminder = async (user, meeting_event) => {
           ? `${user.firstname} ${user.lastname}`
           : `${meeting_event.receiver_id[0].firstname} ${meeting_event.receiver_id[0].lastname}`,
       isUpdatingEvent: false,
-      cc: meeting_event.receiver_id
+      cc
     }
   );
 };
@@ -174,7 +174,11 @@ const deleteInterview = asyncHandler(async (req, res) => {
       const toBeDeletedEvent = await Event.findByIdAndDelete(interview.event_id)
         .populate('receiver_id requester_id', 'firstname lastname email')
         .lean();
-      await InterviewCancelledReminder(user, toBeDeletedEvent);
+      const student_temp = await Student.findById(
+        interview.student_id
+      ).populate('agents', 'firstname lastname email');
+      const cc = [...toBeDeletedEvent.receiver_id, ...student_temp.agents];
+      await InterviewCancelledReminder(user, toBeDeletedEvent, cc);
 
       await Event.findByIdAndDelete(interview.event_id);
     }

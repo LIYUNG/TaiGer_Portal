@@ -1543,6 +1543,8 @@ const NoInterviewTrainerOrTrainingDateDailyReminderChecker = async () => {
     .populate('student_id', 'firstname lastname role email')
     .populate('program_id');
 
+  // TODO: reminder agent as well
+
   if (interviewRequests?.length > 0) {
     const permissions = await Permission.find({
       canAssignEditors: true

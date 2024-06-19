@@ -254,7 +254,12 @@ const addInterviewTrainingDateTime = asyncHandler(async (req, res, next) => {
     const interview_tmep = await Interview.findById(interview_id).populate(
       'program_id'
     );
-    const cc = newEvent.receiver_id;
+    // inform agent for confirmed training date
+    const student_temp = await Student.findById(
+      interview_tmep.student_id
+    ).populate('agents', 'firstname lastname email');
+
+    const cc = [...newEvent.receiver_id, ...student_temp.agents];
 
     const emailRequestsRequesters = newEvent.requester_id.map((receiver) =>
       InterviewTrainingInvitation(

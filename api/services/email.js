@@ -2611,10 +2611,45 @@ ${user_name} 標示 ${interview_name} 為未完成。
   }
 };
 
+const InterviewSurveyRequestEmail = async (recipient, msg) => {
+  const student_name = `${msg.interview.student_id.firstname} ${msg.interview.student_id.lastname}`;
+  const interviewSurveyUrl = `${SINGLE_INTERVIEW_SURVEY_THREAD_URL(
+    msg.interview._id.toString()
+  )}`;
+  const interview_name = `${student_name} ${msg.interview.program_id.school} ${msg.interview.program_id.program_name} ${msg.interview.program_id.degree} `;
+  const subject = `[Close] Interview survey for ${interview_name} is finished!`;
+  const message = `\
+<p>${ENGLISH_BELOW}</p>
+
+<p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
+
+<p>您的面試 <b>${interview_name}</b> 進行還順利嗎？ 。</p>
+
+<p>我們想要請你提供這次面試的題目給我們，請至 <a href="${interviewSurveyUrl}">Interview Center</a> 並填寫後上傳給我們。</p>
+
+<p>如果您有任何問題，請聯絡您的面試訓練官。</p>
+
+<br />
+
+<p>${SPLIT_LINE}</p>
+
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+
+<p>How was the interview <b>${interview_name}</b>?</p>
+
+<p>We would like you providing us your actual interview questions, please click <a href="${interviewSurveyUrl}">Interview Center</a> to submit the form to us.</p>
+
+<p>If you have any question, feel free to contact your interview trainer.</p>
+
+`;
+
+  sendEmail(recipient, subject, message);
+};
+
 const InterviewSurveyFinishedEmail = async (recipient, msg) => {
   const user_name = `${msg.user.firstname} ${msg.user.lastname}`;
   const student_name = `${msg.interview.student_id.firstname} ${msg.interview.student_id.lastname}`;
-  const interviewUrl = `${SINGLE_INTERVIEW_SURVEY_THREAD_URL(
+  const interviewSurveyUrl = `${SINGLE_INTERVIEW_SURVEY_THREAD_URL(
     msg.interview._id.toString()
   )}`;
   const interview_name = `${student_name} ${msg.interview.program_id.school} ${msg.interview.program_id.program_name} ${msg.interview.program_id.degree} `;
@@ -2626,7 +2661,7 @@ const InterviewSurveyFinishedEmail = async (recipient, msg) => {
 
 <p>${user_name} 完成了面試回饋問卷 <b>${interview_name}</b>。</p>
 
-<p>請至 <a href="${interviewUrl}">Interview Center</a> 查看細節</p>
+<p>請至 <a href="${interviewSurveyUrl}">Interview Center</a> 查看細節</p>
 
 <p>如果您有任何問題，請聯絡您的面試訓練官。</p>
 
@@ -2638,7 +2673,7 @@ const InterviewSurveyFinishedEmail = async (recipient, msg) => {
 
 <p>${user_name} have finished the interview feedback survey <b>${interview_name}</b> </p>
 
-<p>Please go to <a href="${interviewUrl}">Interview Center</a> for more details.</p>
+<p>Please go to <a href="${interviewSurveyUrl}">Interview Center</a> for more details.</p>
 
 <p>If you have any question, feel free to contact your interview trainer.</p>
 
@@ -2715,5 +2750,6 @@ module.exports = {
   InterviewCancelledReminderEmail,
   InterviewTrainingReminderEmail,
   sendSetAsFinalInterviewEmail,
+  InterviewSurveyRequestEmail,
   InterviewSurveyFinishedEmail
 };

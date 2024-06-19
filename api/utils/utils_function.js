@@ -10,7 +10,8 @@ const {
   MeetingReminderEmail,
   UnconfirmedMeetingReminderEmail,
   sendNoTrainerInterviewRequestsReminderEmail,
-  InterviewTrainingReminderEmail
+  InterviewTrainingReminderEmail,
+  InterviewSurveyRequestEmail
 } = require('../services/email');
 const Permission = require('../models/Permission');
 const { s3 } = require('../aws/index');
@@ -1481,6 +1482,22 @@ const DailyCalculateAverageResponseTime = async () => {
   await CalculateAverageResponseTimeAndSave();
 };
 
+const DailyInterviewSurveyChecker = async () => {
+  // TODO: find today meeting and send email reminder (only once)
+  const currentDate = new Date();
+  const twentyFourHoursAgo = new Date(currentDate);
+  twentyFourHoursAgo.setHours(currentDate.getHours() - 24);
+  console.log(twentyFourHoursAgo);
+  // console.log(twentyFourHoursAgo.split('T')[0]);
+  const interviewTookPlacedToday = await Interview.find({
+    interview_date: {
+      $gte: twentyFourHoursAgo.toISOString()
+    }
+  }).lean();
+  console.log(interviewTookPlacedToday);
+  // InterviewSurveyRequestEmail({}{});
+};
+
 // every day reminder
 // TODO: (O)no trainer, no date.
 const NoInterviewTrainerOrTrainingDateDailyReminderChecker = async () => {
@@ -1558,5 +1575,6 @@ module.exports = {
   MeetingDailyReminderChecker,
   UnconfirmedMeetingDailyReminderChecker,
   DailyCalculateAverageResponseTime,
+  DailyInterviewSurveyChecker,
   NoInterviewTrainerOrTrainingDateDailyReminderChecker
 };

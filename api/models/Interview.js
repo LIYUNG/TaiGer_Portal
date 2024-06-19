@@ -27,8 +27,7 @@ const interviewsSchema = new mongoose.Schema(
       default: ''
     },
     interview_date: {
-      type: String,
-      default: ''
+      type: Date
     },
     isClosed: {
       type: Boolean,

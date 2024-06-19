@@ -42,7 +42,8 @@ const {
   MeetingDailyReminderChecker,
   UnconfirmedMeetingDailyReminderChecker,
   DailyCalculateAverageResponseTime,
-  NoInterviewTrainerOrTrainingDateDailyReminderChecker
+  NoInterviewTrainerOrTrainingDateDailyReminderChecker,
+  DailyInterviewSurveyChecker
 } = require('./utils/utils_function');
 const { MongoDBDataBaseDailySnapshot } = require('./utils/jobs');
 // const { UserS3GarbageCollector } = require('./controllers/users');
@@ -169,11 +170,16 @@ const launch = async () => {
     DAILY_TASKS_REMINDER_SCHEDULE,
     NoInterviewTrainerOrTrainingDateDailyReminderChecker
   );
-  
+
   const job15 = schedule.scheduleJob(
     AVERAGE_RESPONSE_TIME_CALCULATION_SCHEDULE,
     DailyCalculateAverageResponseTime
   );
+
+  // const job16 = schedule.scheduleJob(
+  //   '* * * * * *',
+  //   DailyInterviewSurveyChecker
+  // );
 
   logger.info(`isProd : ${isProd()}`);
   logger.info(`isDev : ${isDev()}`);

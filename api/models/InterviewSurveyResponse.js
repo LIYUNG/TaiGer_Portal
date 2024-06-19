@@ -13,7 +13,13 @@ const interviewSurveyResponseSchema = new mongoose.Schema(
         questionId: String,
         answer: Number
       }
-    ]
+    ],
+    interviewQuestions: {
+      type: String
+    },
+    interviewFeedback: {
+      type: String
+    }
   },
   { timestamps: true }
 );

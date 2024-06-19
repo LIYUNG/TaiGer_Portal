@@ -13,7 +13,7 @@ import {
   TextField,
   Breadcrumbs
 } from '@mui/material';
-import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { Link as LinkDom, useParams } from 'react-router-dom';
 import { getInterview, updateInterviewSurvey } from '../../api';
 import Loading from '../../components/Loading/Loading';
@@ -25,12 +25,14 @@ import { useAuth } from '../../components/AuthProvider';
 
 const Questionnaire = () => {
   const { interview_id } = useParams();
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [values, setValues] = React.useState({
     q1: '',
     q2: '',
     q3: '',
-    interviewQuestions: ''
+    interviewQuestions: '',
+    interviewFeedback: ''
   });
   const [interview, setInterview] = React.useState({});
   const [interviewSurveyState, setInterviewSurveyState] = React.useState({});
@@ -70,7 +72,10 @@ const Questionnaire = () => {
   const handleChange = (event) => {
     const { name, value } = event.target;
     // Enforce character limit for interviewQuestions
-    if (name === 'interviewQuestions' && value.length > 2000) {
+    if (
+      (name === 'interviewQuestions' || name === 'interviewFeedback') &&
+      value.length > 2000
+    ) {
       return;
     }
     setValues({
@@ -89,7 +94,8 @@ const Questionnaire = () => {
           { questionId: 'q2', answer: values.q2 },
           { questionId: 'q3', answer: values.q3 }
         ],
-        interviewQuestions: values.interviewQuestions
+        interviewQuestions: values.interviewQuestions,
+        interviewFeedback: values.interviewFeedback
       });
       console.log('Survey response submitted:', response.data);
     } catch (error) {
@@ -256,6 +262,30 @@ const Questionnaire = () => {
           />
           <Badge bg={`${'primary'}`}>
             {values.interviewQuestions?.length || 0}/{2000}
+          </Badge>
+        </FormControl>
+      </Box>
+      <Box sx={{ mb: 1 }}>
+        <FormControl component="fieldset" sx={{ width: '100%' }}>
+          <FormLabel component="legend">
+            {t(`Please provide the interview questions to {{brandName}}`, {
+              ns: 'interviews',
+              brandName: appConfig.companyName
+            })}
+          </FormLabel>
+          <TextField
+            fullWidth
+            type="textarea"
+            maxLength={2000}
+            multiline
+            name="interviewFeedback"
+            rows="8"
+            placeholder="example questions"
+            value={values.interviewFeedback}
+            onChange={handleChange}
+          />
+          <Badge bg={`${'primary'}`}>
+            {values.interviewFeedback?.length || 0}/{2000}
           </Badge>
         </FormControl>
       </Box>

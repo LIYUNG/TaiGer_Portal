@@ -182,6 +182,10 @@ const deleteInterview = asyncHandler(async (req, res) => {
 
   // Delete interview  in mongoDB
   await Interview.findByIdAndDelete(interview_id);
+  // Delete interview survey if existed
+  await InterviewSurveyResponse.findOneAndDelete({
+    interview_id
+  });
 
   res.status(200).send({ success: true });
 });

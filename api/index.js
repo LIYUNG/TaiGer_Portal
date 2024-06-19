@@ -176,10 +176,10 @@ const launch = async () => {
     DailyCalculateAverageResponseTime
   );
 
-  // const job16 = schedule.scheduleJob(
-  //   '* * * * * *',
-  //   DailyInterviewSurveyChecker
-  // );
+  const job16 = schedule.scheduleJob(
+    DAILY_TASKS_REMINDER_SCHEDULE,
+    DailyInterviewSurveyChecker
+  );
 
   logger.info(`isProd : ${isProd()}`);
   logger.info(`isDev : ${isDev()}`);

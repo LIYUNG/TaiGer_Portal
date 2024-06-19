@@ -1487,15 +1487,27 @@ const DailyInterviewSurveyChecker = async () => {
   const currentDate = new Date();
   const twentyFourHoursAgo = new Date(currentDate);
   twentyFourHoursAgo.setHours(currentDate.getHours() - 24);
-  console.log(twentyFourHoursAgo);
-  // console.log(twentyFourHoursAgo.split('T')[0]);
+  // interviews took place within last 24 hours
   const interviewTookPlacedToday = await Interview.find({
     interview_date: {
       $gte: twentyFourHoursAgo.toISOString()
     }
-  }).lean();
-  console.log(interviewTookPlacedToday);
-  // InterviewSurveyRequestEmail({}{});
+  })
+    .populate('student_id', 'firstname lastname email')
+    .populate('program_id', 'school program_name degree semester')
+    .lean();
+
+  // send interview survey request email
+  interviewTookPlacedToday?.map((interview) =>
+    InterviewSurveyRequestEmail(
+      {
+        firstname: interview.student_id.firstname,
+        lastname: interview.student_id.lastname,
+        address: interview.student_id.email
+      },
+      { interview }
+    )
+  );
 };
 
 // every day reminder

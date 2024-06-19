@@ -2612,34 +2612,38 @@ ${user_name} 標示 ${interview_name} 為未完成。
 };
 
 const InterviewSurveyRequestEmail = async (recipient, msg) => {
-  const student_name = `${msg.interview.student_id.firstname} ${msg.interview.student_id.lastname}`;
+  const student_name = `${recipient.firstname} ${recipient.lastname}`;
   const interviewSurveyUrl = `${SINGLE_INTERVIEW_SURVEY_THREAD_URL(
     msg.interview._id.toString()
   )}`;
   const interview_name = `${student_name} ${msg.interview.program_id.school} ${msg.interview.program_id.program_name} ${msg.interview.program_id.degree} `;
-  const subject = `[Close] Interview survey for ${interview_name} is finished!`;
+  const subject = `[TODO] Interview Survey for ${interview_name}`;
   const message = `\
 <p>${ENGLISH_BELOW}</p>
 
-<p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
+<p>嗨 ${student_name},</p>
 
-<p>您的面試 <b>${interview_name}</b> 進行還順利嗎？ 。</p>
+<p>您的面試 <b>${interview_name}</b> 進行還順利嗎？</p>
 
-<p>我們想要請你提供這次面試的題目給我們，請至 <a href="${interviewSurveyUrl}">Interview Center</a> 並填寫後上傳給我們。</p>
+<p>我們想要請你提供面試訓練的回饋以及和學校面試的相關資訊給我們。</p>
 
-<p>如果您有任何問題，請聯絡您的面試訓練官。</p>
+<a href="${interviewSurveyUrl}" class="mui-button" target="_blank">前往面試訓練回饋</a>
+
+<p>如果您有任何問題，請聯絡您的面試訓練官或顧問。</p>
 
 <br />
 
 <p>${SPLIT_LINE}</p>
 
-<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+<p>Hi ${student_name},</p>
 
 <p>How was the interview <b>${interview_name}</b>?</p>
 
-<p>We would like you providing us your actual interview questions, please click <a href="${interviewSurveyUrl}">Interview Center</a> to submit the form to us.</p>
+<p>We would like you providing us the interview training feedback and actual interview questions from this program.</p>
 
-<p>If you have any question, feel free to contact your interview trainer.</p>
+<a href="${interviewSurveyUrl}" class="mui-button" target="_blank">Go to survey</a>
+
+<p>If you have any question, feel free to contact your interview trainer or agent.</p>
 
 `;
 
@@ -2663,6 +2667,8 @@ const InterviewSurveyFinishedEmail = async (recipient, msg) => {
 
 <p>請至 <a href="${interviewSurveyUrl}">Interview Center</a> 查看細節</p>
 
+<a href="${interviewSurveyUrl}" class="mui-button" target="_blank">前往面試訓練回饋</a>
+
 <p>如果您有任何問題，請聯絡您的面試訓練官。</p>
 
 <br />
@@ -2672,6 +2678,8 @@ const InterviewSurveyFinishedEmail = async (recipient, msg) => {
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
 <p>${user_name} have finished the interview feedback survey <b>${interview_name}</b> </p>
+
+<a href="${interviewSurveyUrl}" class="mui-button" target="_blank">Interview Training Feedback</a>
 
 <p>Please go to <a href="${interviewSurveyUrl}">Interview Center</a> for more details.</p>
 

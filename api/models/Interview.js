@@ -42,6 +42,12 @@ const interviewsSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+interviewsSchema.index(
+  { student_id: 1, program_id: 1, thread_id: 1 },
+  { unique: true }
+);
+
 const Interview = mongoose.model('Interview', interviewsSchema);
 module.exports = {
   Interview

@@ -221,7 +221,7 @@ function StudentTasksResponsive(props) {
           </TableCell>
           <TableCell>
             <Typography variant="body2" sx={{ display: 'flex' }}>
-              {t('Please update your applications results to us', {
+              {t('Please update your applications results to the corresponding program in this page below', {
                 ns: 'common'
               })}
             </Typography>

@@ -285,8 +285,8 @@ export const translation_en = {
     University: 'University',
     'Applications status updated successfully!':
       'Applications status updated successfully!',
-    'Please update your applications results to us':
-      'Please update your applications results to us',
+    'Please update your applications results to the corresponding program in this page below':
+      'Please update your applications results to the corresponding program in this page below',
     'Final Decision': 'Final Decision',
     'Move to archive statement':
       'Do you want to move {{studentName}} to {{status}}?',

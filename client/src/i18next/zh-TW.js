@@ -287,7 +287,8 @@ export const translation_zh_TW = {
     'Upload file': '上傳檔案',
     University: '大學',
     'Applications status updated successfully!': '申請狀態更新成功!',
-    'Please update your applications results to us': '請更新您的錄取結果給我們',
+    'Please update your applications results to the corresponding program in this page below':
+      '請更新您的錄取結果以及錄取或拒絕信在本頁面下方給我們',
     'Final Decision': '決定就讀',
     'Move to archive statement':
       '你是否想要將 {{studentName}} 移至{{status}}？',

@@ -8,6 +8,7 @@ import * as XLSX from 'xlsx';
 
 import { getNumberOfDays, convertDate, profile_list } from './contants';
 import { pdfjs } from 'react-pdf';
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
 // Tested
 export const is_TaiGer_role = (user) =>

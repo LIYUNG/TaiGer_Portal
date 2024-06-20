@@ -206,8 +206,7 @@ function CommunicationSinglePage() {
       // TODO: make array
       const checkPromises = Array.from(e.target.files).map((file) => {
         const extension = file.name.split('.').pop().toLowerCase();
-        const studentName =
-          communicationSinglePageState.thread.student_id.firstname;
+        const studentName = communicationSinglePageState.student?.firstname;
 
         if (extension === 'pdf') {
           return readPDF(file, studentName);

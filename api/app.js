@@ -15,6 +15,7 @@ const httpLogger = require('./services/httpLogger');
 const logger = require('./services/logger');
 
 const app = express();
+app.set('trust proxy', 1);
 app.use(helmet.contentSecurityPolicy());
 app.use(helmet.crossOriginEmbedderPolicy());
 app.use(helmet.crossOriginOpenerPolicy());

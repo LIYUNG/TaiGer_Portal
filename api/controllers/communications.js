@@ -491,7 +491,7 @@ const getChatFile = asyncHandler(async (req, res, next) => {
     Bucket: directory
   };
 
-  const cache_key = `chat-${studentId}${req.originalUrl.split('/')[6]}`;
+  const cache_key = `chat-${studentId}${req.originalUrl.split('/')[5]}`;
   const value = one_month_cache.get(cache_key); // image name
   if (value === undefined) {
     s3.getObject(options, (err, data) => {
@@ -681,6 +681,11 @@ const deleteAMessageInCommunicationThread = asyncHandler(
       Bucket: AWS_S3_BUCKET_NAME,
       Delete: { Objects: [] }
     };
+
+    // remove chat attachment cache.
+    msg.files?.map((file) =>
+      one_month_cache.del(`chat-${msg.student_id?.toString()}${file.name}`)
+    );
 
     msg.files?.map((file) =>
       deleteParams.Delete.Objects.push({

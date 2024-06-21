@@ -8,7 +8,7 @@ const logger = require('../services/logger');
 const { Program } = require('../models/Program');
 const { ProgramAI } = require('../models/ProgramAI');
 const { isProd } = require('../config');
-const { openAIClient } = require('../services/openai');
+const { openAIClient, OpenAiModel } = require('../services/openai');
 const { Student, Role } = require('../models/User');
 const { generalMLPrompt } = require('../prompt/ml_prompt');
 const { FILE_MAPPING_TABLE } = require('../constants');
@@ -18,6 +18,7 @@ const { Communication } = require('../models/Communication');
 const Permission = require('../models/Permission');
 
 const pageSize = 3;
+
 
 const processProgramListAi = asyncHandler(async (req, res, next) => {
   const {
@@ -67,14 +68,14 @@ const generate = async (input, model) => {
 const generate_streaming = async (input, model) =>
   openAIClient.chat.completions.create({
     messages: [{ role: 'user', content: input || 'where is BMW Headquarter?' }],
-    model: 'gpt-3.5-turbo',
+    model: OpenAiModel.GPT_3_5_TURBO,
     stream: true
   });
 
 const TaiGerAiGeneral = asyncHandler(async (req, res, next) => {
   const { user } = req;
   const { prompt, model } = req.body;
-  const stream = await generate_streaming(prompt, model || 'gpt-3.5-turbo');
+  const stream = await generate_streaming(prompt, model || OpenAiModel.GPT_3_5_TURBO);
   for await (const part of stream) {
     res.write(part.choices[0]?.delta.content || '');
   }
@@ -187,7 +188,7 @@ const TaiGerAiChat = asyncHandler(async (req, res, next) => {
   Please don't provide all links or instructions, but only relavant ones. If none of above mataches, please answer the student based on your best professional knowledge.
   `;
 
-  const stream = await generate_streaming(pmp, 'gpt-3.5-turbo');
+  const stream = await generate_streaming(pmp, OpenAiModel.GPT_4_o);
   logger.info(pmp);
   let tokenCount = 0;
 
@@ -269,7 +270,7 @@ const cvmlrlAi = asyncHandler(async (req, res, next) => {
 
   const stream = await generate_streaming(
     concat_prompt,
-    parsed_editor_requirements.gptModel || 'gpt-3.5-turbo'
+    parsed_editor_requirements.gptModel || OpenAiModel.GPT_3_5_TURBO
   );
   for await (const part of stream) {
     res.write(part.choices[0]?.delta.content || '');

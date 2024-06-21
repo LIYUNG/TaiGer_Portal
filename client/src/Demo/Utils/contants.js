@@ -1196,6 +1196,7 @@ export const DEGREE_CATOGARY_ARRAY_OPTIONS = [
   { value: 'M. Eng.', label: 'Master of Engineering' },
   { value: 'M. Sc.', label: 'Master of Science' },
   { value: 'M. Res.', label: 'Master of Reserach' },
+  { value: 'MPhil.', label: 'Master of Philosophy' },
   { value: 'MBA', label: 'MBA' }
 ];
 

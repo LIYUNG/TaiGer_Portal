@@ -1490,7 +1490,8 @@ const DailyInterviewSurveyChecker = async () => {
   // interviews took place within last 24 hours
   const interviewTookPlacedToday = await Interview.find({
     interview_date: {
-      $gte: twentyFourHoursAgo.toISOString()
+      $gte: twentyFourHoursAgo.toISOString(),
+      $lt: currentDate
     }
   })
     .populate('student_id', 'firstname lastname email')

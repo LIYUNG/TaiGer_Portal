@@ -29,7 +29,11 @@ import {
   check_languages_filled,
   check_academic_background_filled,
   isProgramAdmitted,
-  getMissingDocs
+  getMissingDocs,
+  does_essay_have_writers,
+  is_program_ml_rl_essay_finished,
+  num_uni_assist_vpd_needed,
+  num_uni_assist_vpd_uploaded
 } from './checking-functions';
 import { profile_list } from './contants';
 
@@ -841,5 +845,213 @@ describe('getMissingDocs', () => {
 
     const result = getMissingDocs(application);
     expect(result).not.toContain('RL -');
+  });
+});
+
+describe('num_uni_assist_vpd_uploaded', () => {
+  // Test case 1: No applications
+  it('returns 0 when no applications are provided', () => {
+    const student = {
+      applications: []
+    };
+    const result = num_uni_assist_vpd_uploaded(student);
+    expect(result).toBe(0);
+  });
+
+  // Test case 2: Applications with no VPD needed
+  it('returns 0 when no applications need uni assist for VPD', () => {
+    const student = {
+      applications: [
+        {
+          programId: { uni_assist: 'No' },
+          decided: 'O'
+        }
+      ]
+    };
+    const result = num_uni_assist_vpd_uploaded(student);
+    expect(result).toBe(0);
+  });
+
+  // Test case 3: Applications needing VPD but none uploaded
+  it('returns 0 when no VPD documents are uploaded', () => {
+    const student = {
+      applications: [
+        {
+          programId: { uni_assist: 'Yes_VPD' },
+          uni_assist: { status: 'notneeded' },
+          decided: 'O'
+        },
+        {
+          programId: { uni_assist: 'Yes_VPD' },
+          uni_assist: { status: 'notneeded' },
+          decided: 'O'
+        }
+      ]
+    };
+    const result = num_uni_assist_vpd_uploaded(student);
+    expect(result).toBe(0);
+  });
+
+  // Test case 4: Applications needing VPD and some uploaded
+  it('returns the number of applications with uploaded VPD documents', () => {
+    const student = {
+      applications: [
+        {
+          programId: { uni_assist: 'Yes_VPD' },
+          uni_assist: {
+            status: 'uploaded',
+            vpd_file_path: '/path/to/file.pdf'
+          },
+          decided: 'O'
+        },
+        {
+          programId: { uni_assist: 'Yes_VPD' },
+          uni_assist: {},
+          decided: 'O'
+        },
+        {
+          programId: { uni_assist: 'Yes_VPD' },
+          uni_assist: {
+            status: 'uploaded',
+            vpd_file_path: '/path/to/file.pdf'
+          },
+          decided: 'O'
+        },
+        {
+          programId: { uni_assist: 'no' },
+          decided: 'O'
+        }
+      ]
+    };
+    const result = num_uni_assist_vpd_uploaded(student);
+    expect(result).toBe(2); // Three applications have uploaded VPD documents
+  });
+});
+
+describe('does_essay_have_writers', () => {
+  // Test case 1: Empty array
+  it('returns true for an empty array', () => {
+    const essayDocumentThreads = [];
+    const result = does_essay_have_writers(essayDocumentThreads);
+    expect(result).toBe(true);
+  });
+
+  // Test case 2: Threads missing writers
+  it('returns false if at least one thread is missing writers', () => {
+    const essayDocumentThreads = [
+      { outsourced_user_id: 'user1' },
+      { outsourced_user_id: [] },
+      { outsourced_user_id: 'user3' }
+    ];
+    const result = does_essay_have_writers(essayDocumentThreads);
+    expect(result).toBe(false);
+  });
+
+  // Test case 3: All threads have writers
+  it('returns true if all threads have writers', () => {
+    const essayDocumentThreads = [
+      { outsourced_user_id: ['user1'] },
+      { outsourced_user_id: ['user2'] },
+      { outsourced_user_id: ['user3'] }
+    ];
+    const result = does_essay_have_writers(essayDocumentThreads);
+    expect(result).toBe(true);
+  });
+});
+
+describe('num_uni_assist_vpd_needed', () => {
+  // Test case 1: No applications
+  it('returns 0 when no applications are provided', () => {
+    const student = {
+      applications: []
+    };
+    const result = num_uni_assist_vpd_needed(student);
+    expect(result).toBe(0);
+  });
+
+  // Test case 2: Applications with no VPD needed
+  it('returns 0 when no applications need uni assist VPD', () => {
+    const student = {
+      applications: [
+        {
+          programId: { uni_assist: 'No' }
+        },
+        {
+          programId: { uni_assist: 'Yes_FULL' }
+        },
+        {
+          programId: { uni_assist: 'Yes_FULL' }
+        }
+      ]
+    };
+    const result = num_uni_assist_vpd_needed(student);
+    expect(result).toBe(0);
+  });
+
+  // Test case 3: Applications needing VPD
+  it('returns the number of applications needing uni assist for VPD', () => {
+    const student = {
+      applications: [
+        {
+          programId: { uni_assist: 'Yes_VPD' },
+          uni_assist: {},
+          decided: 'O'
+        },
+        {
+          programId: { uni_assist: 'No' },
+          uni_assist: {},
+          decided: 'O'
+        },
+        {
+          programId: { uni_assist: 'Yes_VPD' },
+          uni_assist: { status: 'notneeded' },
+          decided: 'O'
+        },
+        {
+          programId: { uni_assist: 'Yes_VPD' },
+          uni_assist: {},
+          decided: 'O'
+        }
+      ]
+    };
+    const result = num_uni_assist_vpd_needed(student);
+    expect(result).toBe(2); // Three applications require uni assist for VPD
+  });
+});
+
+describe('is_program_ml_rl_essay_finished', () => {
+  // Test case 1: No threads provided
+  it('returns true when no document modification threads are provided', () => {
+    const application = {
+      doc_modification_thread: []
+    };
+    const result = is_program_ml_rl_essay_finished(application);
+    expect(result).toBe(true);
+  });
+
+  // Test case 2: Some threads are not finished
+  it('returns false when some document modification threads are not finished', () => {
+    const application = {
+      doc_modification_thread: [
+        { isFinalVersion: true },
+        { isFinalVersion: false },
+        { isFinalVersion: true }
+      ]
+    };
+    const result = is_program_ml_rl_essay_finished(application);
+    expect(result).toBe(false);
+  });
+
+  // Test case 3: All threads are finished
+  it('returns true when all document modification threads are finished', () => {
+    const application = {
+      doc_modification_thread: [
+        { isFinalVersion: true },
+        { isFinalVersion: true },
+        { isFinalVersion: true }
+      ]
+    };
+    const result = is_program_ml_rl_essay_finished(application);
+    expect(result).toBe(true);
   });
 });

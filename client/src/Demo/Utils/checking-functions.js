@@ -1150,6 +1150,7 @@ export const check_student_needs_uni_assist = (student) => {
   });
 };
 
+// Tested
 export const num_uni_assist_vpd_uploaded = (student) => {
   let counter = 0;
   if (!student.applications) {
@@ -1171,6 +1172,7 @@ export const num_uni_assist_vpd_uploaded = (student) => {
   return counter;
 };
 
+// Tested
 export const num_uni_assist_vpd_needed = (student) => {
   let counter = 0;
   if (!student.applications) {
@@ -1197,6 +1199,7 @@ export const num_uni_assist_vpd_needed = (student) => {
   return counter;
 };
 
+// Tested
 export const is_program_ml_rl_essay_finished = (application) => {
   // check ML, RL, Essay
   return (
@@ -1964,6 +1967,7 @@ export const checkIsRLspecific = (program) => {
   return isRLSpecific || (NoRLSpecificFlag && program?.rl_requirements);
 };
 
+// Tested
 export const getMissingDocs = (application) => {
   if (!application) {
     return [];
@@ -2041,6 +2045,7 @@ export const isDocumentsMissingAssign = (application) => {
   return getMissingDocs(application).length > 0;
 };
 
+// Tested
 export const does_essay_have_writers = (essayDocumentThreads) => {
   for (let i = 0; i < essayDocumentThreads.length; i += 1) {
     if (

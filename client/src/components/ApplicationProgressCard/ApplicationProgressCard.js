@@ -193,33 +193,31 @@ export default function ApplicationProgressCard(props) {
               </>
             )}
           </Typography>
-          <Typography sx={{ fontSize: 16 }} color="text.secondary" gutterBottom>
-            <Box sx={{ display: 'flex' }}>
-              <img
-                src={`/assets/logo/country_logo/svg/${application?.programId.country}.svg`}
-                alt="Logo"
-                style={{ maxWidth: '24px', maxHeight: '24px' }}
-              />{' '}
-              &nbsp;
-              <Link
-                underline="hover"
-                to={`${DEMO.SINGLE_PROGRAM_LINK(
-                  application?.programId?._id?.toString()
-                )}`}
-                component={LinkDom}
-                target="_blank"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <Typography variant="body1" fontWeight="bold">
-                  {application?.programId?.school}
-                  <IconButton>
-                    <LaunchIcon fontSize="small" />
-                  </IconButton>
-                </Typography>
-              </Link>
-            </Box>
-          </Typography>
-          <Typography variant="body2">
+          <Box sx={{ display: 'flex' }}>
+            <img
+              src={`/assets/logo/country_logo/svg/${application?.programId.country}.svg`}
+              alt="Logo"
+              style={{ maxWidth: '24px', maxHeight: '24px' }}
+            />{' '}
+            &nbsp;
+            <Link
+              underline="hover"
+              to={`${DEMO.SINGLE_PROGRAM_LINK(
+                application?.programId?._id?.toString()
+              )}`}
+              component={LinkDom}
+              target="_blank"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Typography variant="body1" fontWeight="bold">
+                {application?.programId?.school}
+                <IconButton>
+                  <LaunchIcon fontSize="small" />
+                </IconButton>
+              </Typography>
+            </Link>
+          </Box>
+          <Typography variant="body2" fontWeight="bold">
             {application?.programId?.degree}{' '}
             {application?.programId?.program_name}{' '}
             {application?.programId?.semester}{' '}
@@ -288,7 +286,7 @@ export default function ApplicationProgressCard(props) {
                 {application.interview_status === 'Unscheduled' && (
                   <>
                     <Typography variant="p" component="div" sx={{ my: 1 }}>
-                      {t('Please arrange a meeting')}
+                      {t('Please arrange a meeting', { ns: 'interviews' })}
                     </Typography>
                     <Typography variant="p" component="div" sx={{ my: 1 }}>
                       <Typography variant="p" component="div" sx={{ my: 1 }}>

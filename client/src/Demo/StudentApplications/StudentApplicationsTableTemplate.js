@@ -503,16 +503,13 @@ function StudentApplicationsTableTemplate(props) {
         <TableRow>
           {!is_TaiGer_Student(user) && <TableCell></TableCell>}
           <TableCell>
-            <Typography> No University</Typography>
+            <Typography>No University</Typography>
           </TableCell>
           <TableCell>
-            <Typography> No Program</Typography>
+            <Typography>No Program</Typography>
           </TableCell>
           <TableCell>
-            <Typography> No Date</Typography>
-          </TableCell>
-          <TableCell>
-            <Typography> - </Typography>
+            <Typography>No Date</Typography>
           </TableCell>
           <TableCell>
             <Typography> - </Typography>
@@ -530,13 +527,16 @@ function StudentApplicationsTableTemplate(props) {
             <Typography> - </Typography>
           </TableCell>
           <TableCell>
-            <Typography>- </Typography>
+            <Typography> - </Typography>
           </TableCell>
           <TableCell>
-            <Typography>- </Typography>
+            <Typography> - </Typography>
           </TableCell>
           <TableCell>
-            <Typography>- </Typography>
+            <Typography> - </Typography>
+          </TableCell>
+          <TableCell>
+            <Typography> - </Typography>
           </TableCell>
         </TableRow>
       </>
@@ -565,74 +565,74 @@ function StudentApplicationsTableTemplate(props) {
               </TableCell>
             )}
             <TableCell>
-              <Link
-                to={`${DEMO.SINGLE_PROGRAM_LINK(application.programId._id)}`}
-                component={LinkDom}
-                style={{ textDecoration: 'none' }}
-              >
-                <Typography key={application_idx}>
+              <Typography key={application_idx}>
+                <Link
+                  to={`${DEMO.SINGLE_PROGRAM_LINK(application.programId._id)}`}
+                  component={LinkDom}
+                  style={{ textDecoration: 'none' }}
+                >
                   {application.programId.school}
-                </Typography>
-              </Link>
+                </Link>
+              </Typography>
             </TableCell>
             <TableCell>
-              <Link
-                to={`${DEMO.SINGLE_PROGRAM_LINK(application.programId._id)}`}
-                component={LinkDom}
-                style={{ textDecoration: 'none' }}
-              >
-                <Typography key={application_idx}>
+              <Typography key={application_idx}>
+                <Link
+                  to={`${DEMO.SINGLE_PROGRAM_LINK(application.programId._id)}`}
+                  component={LinkDom}
+                  style={{ textDecoration: 'none' }}
+                >
                   {application.programId.degree}
-                </Typography>
-              </Link>
+                </Link>
+              </Typography>
             </TableCell>
             <TableCell>
-              <Link
-                to={`${DEMO.SINGLE_PROGRAM_LINK(application.programId._id)}`}
-                component={LinkDom}
-                style={{ textDecoration: 'none' }}
-              >
-                <Typography key={application_idx}>
+              <Typography key={application_idx}>
+                <Link
+                  to={`${DEMO.SINGLE_PROGRAM_LINK(application.programId._id)}`}
+                  component={LinkDom}
+                  style={{ textDecoration: 'none' }}
+                >
                   {application.programId.program_name}
-                </Typography>
-              </Link>
+                </Link>
+              </Typography>
             </TableCell>
             <TableCell>
-              <Link
-                to={`${DEMO.SINGLE_PROGRAM_LINK(application.programId._id)}`}
-                component={LinkDom}
-                style={{ textDecoration: 'none' }}
-              >
-                <Typography key={application_idx}>
+              <Typography key={application_idx}>
+                <Link
+                  to={`${DEMO.SINGLE_PROGRAM_LINK(application.programId._id)}`}
+                  component={LinkDom}
+                  style={{ textDecoration: 'none' }}
+                >
                   {application.programId.semester}
-                </Typography>
-              </Link>
+                </Link>
+              </Typography>
             </TableCell>
             <TableCell>
-              <Link
-                to={`${DEMO.SINGLE_PROGRAM_LINK(application.programId._id)}`}
-                component={LinkDom}
-                style={{ textDecoration: 'none' }}
-              >
-                <Typography key={application_idx}>
+              <Typography key={application_idx}>
+                <Link
+                  to={`${DEMO.SINGLE_PROGRAM_LINK(application.programId._id)}`}
+                  component={LinkDom}
+                  style={{ textDecoration: 'none' }}
+                >
                   {application.programId.toefl
                     ? application.programId.toefl
                     : '-'}
-                </Typography>
-              </Link>
+                </Link>
+              </Typography>
             </TableCell>
             <TableCell>
-              <Link
-                to={`${DEMO.SINGLE_PROGRAM_LINK(application.programId._id)}`}
-                component={LinkDom}
-                style={{ textDecoration: 'none' }}
-              >
-                <Typography key={application_idx}>
+              <Typography key={application_idx}>
+                <Link
+                  to={`${DEMO.SINGLE_PROGRAM_LINK(application.programId._id)}`}
+                  component={LinkDom}
+                  style={{ textDecoration: 'none' }}
+                >
                   {application.programId.ielts
                     ? application.programId.ielts
                     : '-'}
-                </Typography>
-              </Link>
+                </Link>
+              </Typography>
             </TableCell>
             <TableCell>
               {isProgramSubmitted(application) ? (
@@ -839,10 +839,12 @@ function StudentApplicationsTableTemplate(props) {
             {props.student.firstname} {props.student.lastname}
           </Link>
         )}
-        <Typography color="text.primary">{t('Applications')}</Typography>
+        <Typography color="text.primary">
+          {t('Applications', { ns: 'common' })}
+        </Typography>
       </Breadcrumbs>
       <Grid container spacing={2}>
-        <Grid item sx={12} md={is_TaiGer_role(user) ? 6 : 12}>
+        <Grid item xs={12} md={is_TaiGer_role(user) ? 6 : 12}>
           <Typography variant="h6">
             {t('Application Preference From Survey')}
           </Typography>
@@ -910,7 +912,7 @@ function StudentApplicationsTableTemplate(props) {
           </List>
         </Grid>
         {is_TaiGer_role(user) && (
-          <Grid item sx={12} md={6}>
+          <Grid item xs={12} md={6}>
             <Card sx={{ p: 2, minHeight: '300px' }}>
               <Typography>
                 {t('Import programs from another student')}

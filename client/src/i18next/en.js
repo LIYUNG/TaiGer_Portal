@@ -270,6 +270,8 @@ export const translation_en = {
     Message: 'Message',
     Messages: 'Messages',
     WITHDRAW: 'WITHDRAW',
+    Withdraw: 'Withdraw',
+    "Not Yet":"Not Yet",
     Yes: 'Yes',
     No: 'No',
     Ok: 'Ok',
@@ -405,6 +407,7 @@ export const translation_en = {
       'Please go to the Uni-Assist section, follow the instructions to complete the account registration, upload documents, and apply for the VPD (Vorprüfungsdokumentation).'
   },
   interviews: {
+    'Please arrange a meeting': 'Please arrange a meeting',
     Interviewer: 'Interviewer',
     'Interview Training Time': 'Interview Training Time',
     'Training Time': 'Training Time',

@@ -273,6 +273,8 @@ export const translation_zh_TW = {
     Message: '訊息',
     Messages: '訊息',
     WITHDRAW: '撤回',
+    Withdraw: '撤回',
+    'Not Yet': '尚未決定',
     Yes: '是',
     No: '否',
     Ok: '確定',
@@ -410,6 +412,7 @@ export const translation_zh_TW = {
       'Uni-Assist 會全權負責轉交申請給學校。您的檔案全部完成後請全部上傳到 Uni-Assist 以及 Program 繳費上傳處。此 Program 不需要VPD'
   },
   interviews: {
+    'Please arrange a meeting': '請討論訓練時間',
     Interviewer: '學校面試官',
     'Interview Training Time': '面試訓練時間',
     'Training Time': '訓練時間',

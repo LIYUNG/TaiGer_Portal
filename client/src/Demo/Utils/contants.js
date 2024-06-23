@@ -1321,7 +1321,7 @@ export const TRI_STATE_OPTIONS = [
 export const IS_SUBMITTED_STATE_OPTIONS = [
   { value: '-', label: '-' },
   { value: 'O', label: 'Yes' },
-  { value: 'X', label: 'No ' }
+  { value: 'X', label: 'No' }
 ];
 
 export const IS_OFFERED_STATE_OPTIONS = [

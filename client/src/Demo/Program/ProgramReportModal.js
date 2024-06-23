@@ -55,7 +55,7 @@ function ProgramReportModal(props) {
           )
         }
       >
-        {t('Create ticket')}
+        {t('Create ticket', { ns: 'programList' })}
       </Button>
       <Button
         color="secondary"

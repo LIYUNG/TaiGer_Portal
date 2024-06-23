@@ -42,6 +42,11 @@ export const translation_zh_TW = {
     'First-/ Last Name': '名 / 姓',
     'First-, Last Name': '名 , 姓',
     'Status(%)': '完成度(%)',
+    Field: '欄位',
+    Original: '原本',
+    Updated: '已更新',
+    FPSO: 'FPSO',
+    'Changed By': '更改由',
     'Updated by': '更新者',
     Comments: '註記',
     Country: '國家',
@@ -269,6 +274,14 @@ export const translation_zh_TW = {
     'Special Requirements': '特別要求',
     '-': '-',
     Save: '儲存',
+    Group: '類組',
+    '#': '#',
+    Fetch: '拿取',
+    'GPA Requirement (German system)': 'GPA要求 (德制)',
+    "First / Last Name":"名 / 姓",
+    Feedback: '回饋',
+    'Feedback at': '回饋於',
+    'Edit History': '編輯歷史',
     Success: '成功',
     Message: '訊息',
     Messages: '訊息',
@@ -334,7 +347,14 @@ export const translation_zh_TW = {
     Reject: '拒絕'
   },
   programList: {
+    'Create ticket': '新增問題回報',
+    Report: '回報',
+    'Resolve ticket': '解決問題',
+    'Delete ticket': '解決問題',
     'to the student': '給學生',
+    'Find in Google': 'Google 搜尋',
+    'Provide Feedback': '提供回饋',
+    'Program Assistant': '科系幫手',
     'Program(s) assigned to student successfully!': '科系成功指派給學生！'
   },
   logs: {
@@ -351,6 +371,7 @@ export const translation_zh_TW = {
     'Pending Result': '等待結果',
     'Not Closed Yet': '尚未送出',
     Admissions: '錄取',
+    Admission: '錄取',
     Rejections: '拒絕'
   },
   cvmlrl: {

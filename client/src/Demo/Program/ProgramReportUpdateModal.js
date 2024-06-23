@@ -72,7 +72,7 @@ function ProgramReportUpdateModal(props) {
         }
         sx={{ mr: 1 }}
       >
-        {t('Resolve ticket')}
+        {t('Resolve ticket', { ns: 'programList' })}
       </Button>
       <Button
         color="secondary"

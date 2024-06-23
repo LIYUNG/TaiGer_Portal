@@ -265,7 +265,7 @@ function ProgramReport(props) {
         </Grid>
         <Grid item xs={12}>
           <Typography>
-            <b>{t('Feedback at')}:</b>
+            <b>{t('Feedback at', { ns: 'common' })}:</b>
             <LinkableNewlineText text={ticket.feedback} />
           </Typography>
         </Grid>
@@ -309,7 +309,7 @@ function ProgramReport(props) {
         variant="contained"
         onClick={() => handleReportClick()}
       >
-        {t('Report')}
+        {t('Report', { ns: 'programList' })}
       </Button>
       {tickets}
       {programReportState.res_modal_status >= 400 && (

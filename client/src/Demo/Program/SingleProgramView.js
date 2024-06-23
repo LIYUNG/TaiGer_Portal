@@ -109,7 +109,10 @@ function SingleProgramView(props) {
               />
               <Tab label={t('Others')} {...a11yProps(4)} />
               {versions?.changes?.length > 0 && (
-                <Tab label={t('Edit History')} {...a11yProps(5)} />
+                <Tab
+                  label={t('Edit History', { ns: 'common' })}
+                  {...a11yProps(5)}
+                />
               )}
             </Tabs>
           </Box>
@@ -367,7 +370,6 @@ function SingleProgramView(props) {
               </Grid>
             </Card>
           </CustomTabPanel>
-
           {versions?.changes?.length > 0 && (
             <CustomTabPanel
               value={value}
@@ -378,23 +380,22 @@ function SingleProgramView(props) {
                 <TableHead>
                   <TableRow>
                     <TableCell>
-                      <strong>{t('#')}</strong>
+                      <strong>{t('#', { ns: 'common' })}</strong>
                     </TableCell>
                     <TableCell>
-                      <strong>{t('Changed By')}</strong>
+                      <strong>{t('Changed By', { ns: 'common' })}</strong>
                     </TableCell>
                     <TableCell>
-                      <strong>{t('Field')}</strong>
+                      <strong>{t('Field', { ns: 'common' })}</strong>
                     </TableCell>
                     <TableCell>
-                      <strong>{t('Original')}</strong>
+                      <strong>{t('Original', { ns: 'common' })}</strong>
                     </TableCell>
                     <TableCell>
-                      <strong>{t('Updated')}</strong>
+                      <strong>{t('Updated', { ns: 'common' })}</strong>
                     </TableCell>
                   </TableRow>
                 </TableHead>
-
                 <TableBody>
                   {versions.changes
                     .slice()
@@ -408,10 +409,8 @@ function SingleProgramView(props) {
                         ...change.updatedValues
                       });
                       return (
-                        <>
-                          <TableRow
-                            sx={'border-top: 2px solid #CCC'}
-                          ></TableRow>
+                        <Fragment key={index}>
+                          <TableRow></TableRow>
                           <TableRow>
                             <TableCell rowSpan={(keys?.length || 0) + 1}>
                               {reverseIndex}
@@ -436,7 +435,7 @@ function SingleProgramView(props) {
                               </TableCell>
                             </TableRow>
                           ))}
-                        </>
+                        </Fragment>
                       );
                     })}
                 </TableBody>
@@ -498,7 +497,7 @@ function SingleProgramView(props) {
                 variant="contained"
                 endIcon={<OpenInNewIcon />}
               >
-                {t('Find in Google')}
+                {t('Find in Google', { ns: 'programList' })}
               </Button>
             </Link>
           </Box>
@@ -583,7 +582,9 @@ function SingleProgramView(props) {
                         <TableRow>
                           <TableCell>{t('Name', { ns: 'common' })}</TableCell>
                           <TableCell>{t('Year', { ns: 'common' })}</TableCell>
-                          <TableCell>{t('Admission')}</TableCell>
+                          <TableCell>
+                            {t('Admission', { ns: 'admissions' })}
+                          </TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -629,7 +630,8 @@ function SingleProgramView(props) {
               <Card>
                 <CardContent>
                   <Typography>
-                    {appConfig.companyName} {t('Program Assistant')}
+                    {appConfig.companyName}{' '}
+                    {t('Program Assistant', { ns: 'programList' })}
                   </Typography>
                   <Button
                     color="primary"
@@ -637,7 +639,7 @@ function SingleProgramView(props) {
                     size="small"
                     onClick={props.programListAssistant}
                   >
-                    {t('Fetch')}
+                    {t('Fetch', { ns: 'common' })}
                   </Button>
                 </CardContent>
               </Card>
@@ -645,7 +647,9 @@ function SingleProgramView(props) {
           )}
           <Card className="card-with-scroll">
             <CardContent className="card-scrollable-body">
-              <Typography>{t('Provide Feedback')}</Typography>
+              <Typography>
+                {t('Provide Feedback', { ns: 'programList' })}
+              </Typography>
               <ProgramReport
                 uni_name={props.program.school}
                 program_name={props.program.program_name}

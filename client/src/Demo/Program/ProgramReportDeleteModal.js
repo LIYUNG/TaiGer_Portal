@@ -35,11 +35,15 @@ function ProgramReportDeleteModal(props) {
       aria-labelledby="contained-modal-title-vcenter"
       centered
     >
-      <Typography variant="h6">Delete ticket</Typography>
+      <Typography variant="h6">
+        {t('Delete ticket', { ns: 'programList' })}
+      </Typography>
       <Typography variant="body1">
         Do you want to delelete {props.uni_name} - {props.program_name} ticket?
       </Typography>
-      <Typography variant="body1">{t('Description', { ns: 'common' })}</Typography>
+      <Typography variant="body1">
+        {t('Description', { ns: 'common' })}
+      </Typography>
       <TextField
         fullWidth
         type="textarea"
@@ -54,7 +58,9 @@ function ProgramReportDeleteModal(props) {
       <Badge>
         {props.ticket.description?.length || 0}/{2000}
       </Badge>
-      <Typography variant="body1">{t('Feedback')}</Typography>
+      <Typography variant="body1">
+        {t('Feedback', { ns: 'common' })}
+      </Typography>
       <TextField
         fullWidth
         type="textarea"
@@ -89,7 +95,7 @@ function ProgramReportDeleteModal(props) {
           props.submitProgramDeleteReport(props.ticket._id.toString())
         }
       >
-        {t('Delete Ticket')}
+        {t('Delete ticket', { ns: 'programList' })}
       </Button>
       <Button
         color="secondary"

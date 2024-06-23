@@ -166,7 +166,7 @@ export const translation_zh_TW = {
     'Recommendation Letters': '推薦信',
     'Add Task': '新增任務',
     'Course Description': '課程描述',
-    'GSAT/SAT/TVE Test': '學測/統測/SAT英語版',
+    'GSAT/SAT/TVE/IB Test': '學測/統測/SAT/IB英語版',
     'High School Diploma': '高中英語版畢業證書',
     'High School Transcript': '高中英語版成績單',
     'Bachelor Certificate/Enrolment': '大學英語版畢業證書或註冊證明',

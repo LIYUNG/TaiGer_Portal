@@ -1949,7 +1949,7 @@ export const profile_wtih_doc_link_list = {
   High_School_Diploma: { name: 'High School Diploma', link: '' },
   High_School_Transcript: { name: 'High School Transcript', link: '' },
   University_Entrance_Examination_GSAT: {
-    name: 'GSAT/SAT/TVE Test',
+    name: 'GSAT/SAT/TVE/IB Test',
     link: ''
   },
   Bachelor_Certificate: { name: 'Bachelor Certificate/Enrolment', link: '' },
@@ -1979,7 +1979,7 @@ export const profile_wtih_doc_link_list = {
 export const profile_list = {
   High_School_Diploma: 'High School Diploma',
   High_School_Transcript: 'High School Transcript',
-  University_Entrance_Examination_GSAT: 'GSAT/SAT/TVE Test',
+  University_Entrance_Examination_GSAT: 'GSAT/SAT/TVE/IB Test',
   Bachelor_Certificate: 'Bachelor Certificate/Enrolment',
   Bachelor_Transcript: 'Bachelor Transcript',
   Second_Degree_Certificate: 'Second Degree Certificate/Enrolment',

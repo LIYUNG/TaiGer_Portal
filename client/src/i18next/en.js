@@ -165,7 +165,7 @@ export const translation_en = {
     'Recommendation Letters': 'Recommendation Letters',
     'Add Task': 'Add Task',
     'Course Description': 'Course Description',
-    'GSAT/SAT/TVE Test': 'GSAT/SAT/TVE Test',
+    'GSAT/SAT/TVE/IB Test': 'GSAT/SAT/TVE/IB Test',
     'High School Diploma': 'High School Diploma',
     'High School Transcript': 'High School Transcript',
     'Bachelor Certificate/Enrolment': 'Bachelor Certificate/Enrolment',

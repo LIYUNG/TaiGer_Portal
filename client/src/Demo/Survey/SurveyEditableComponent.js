@@ -37,10 +37,10 @@ import {
   check_academic_background_filled,
   check_languages_filled,
   check_application_preference_filled,
-  MissingSurveyFieldsList,
   is_TaiGer_Admin,
   is_TaiGer_Student,
-  Bayerische_Formel
+  Bayerische_Formel,
+  MissingSurveyFieldsListArray
 } from '../Utils/checking-functions';
 import {
   APPLICATION_YEARS_FUTURE,
@@ -141,10 +141,12 @@ const SurveyEditableComponent = (props) => {
           <Typography fontWeight="bold">
             {t('The followings information are still missing')}
           </Typography>
-          <MissingSurveyFieldsList
-            academic_background={survey.academic_background}
-            application_preference={survey.application_preference}
-          />
+          {MissingSurveyFieldsListArray({
+            academic_background: survey.academic_background,
+            application_preference: survey.application_preference
+          })?.map((field) => (
+            <li key={field}>{t(field)}</li>
+          ))}
         </Card>
       )}
       {!check_languages_filled(survey.academic_background) && (

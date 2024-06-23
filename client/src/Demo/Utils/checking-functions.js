@@ -1,6 +1,5 @@
 import React from 'react';
 import Linkify from 'react-linkify';
-import { useTranslation } from 'react-i18next';
 import { Link } from '@mui/material';
 import { Link as LinkDom } from 'react-router-dom';
 import JSZip from 'jszip';
@@ -95,6 +94,7 @@ export const AGENT_SUPPORT_DOCUMENTS_A = [
   FILE_TYPE_E.supplementary_form_required,
   FILE_TYPE_E.others
 ];
+
 // TODO test
 export const LinkableNewlineText = ({ text }) => {
   const textStyle = {
@@ -278,32 +278,36 @@ export const check_german_language_Notneeded = (academic_background) => {
   return false;
 };
 
+//Testd
 export const based_documents_init = (student) => {
-  let documentlist2_keys = Object.keys(profile_list);
-  let object_init = {};
-  for (let i = 0; i < documentlist2_keys.length; i++) {
-    object_init[documentlist2_keys[i]] = DocumentStatus.Missing;
-  }
+  const documentlist2_keys = Object.keys(profile_list);
 
-  for (let i = 0; i < student.profile.length; i++) {
-    if (student.profile[i].status === DocumentStatus.Uploaded) {
-      object_init[student.profile[i].name] = DocumentStatus.Uploaded;
-    } else if (student.profile[i].status === DocumentStatus.Accepted) {
-      object_init[student.profile[i].name] = DocumentStatus.Accepted;
-    } else if (student.profile[i].status === DocumentStatus.Rejected) {
-      object_init[student.profile[i].name] = DocumentStatus.Rejected;
-    } else if (student.profile[i].status === DocumentStatus.Missing) {
-      object_init[student.profile[i].name] = DocumentStatus.Missing;
-    } else if (student.profile[i].status === DocumentStatus.NotNeeded) {
-      object_init[student.profile[i].name] = DocumentStatus.NotNeeded;
+  let object_init = documentlist2_keys.reduce((acc, key) => {
+    acc[key] = DocumentStatus.Missing;
+    return acc;
+  }, {});
+
+  student.profile.forEach((doc) => {
+    switch (doc.status) {
+      case DocumentStatus.Uploaded:
+      case DocumentStatus.Accepted:
+      case DocumentStatus.Rejected:
+      case DocumentStatus.Missing:
+      case DocumentStatus.NotNeeded:
+        object_init[doc.name] = doc.status;
+        break;
+      default:
+        break;
     }
-  }
-  return { object_init, documentlist2_keys };
+  });
+
+  return { object_init };
 };
 
 export const are_base_documents_missing = (student) => {
   if (student.profile?.length > 0) {
-    const { object_init, documentlist2_keys } = based_documents_init(student);
+    const documentlist2_keys = Object.keys(profile_list);
+    const { object_init } = based_documents_init(student);
 
     for (let i = 0; i < documentlist2_keys.length; i++) {
       if (
@@ -317,6 +321,7 @@ export const are_base_documents_missing = (student) => {
   return false;
 };
 
+// Tested: but TODO refactor
 export const is_any_base_documents_uploaded = (students) => {
   if (students) {
     for (let i = 0; i < students.length; i += 1) {
@@ -422,7 +427,8 @@ export const isBaseDocumentsRejected = (student) => {
   if (student.profile.length === 0) {
     return false;
   }
-  const { object_init, documentlist2_keys } = based_documents_init(student);
+  const { object_init } = based_documents_init(student);
+  const documentlist2_keys = Object.keys(profile_list);
 
   for (let i = 0; i < documentlist2_keys.length; i++) {
     if (object_init[documentlist2_keys[i]] === DocumentStatus.Rejected) {
@@ -432,6 +438,7 @@ export const isBaseDocumentsRejected = (student) => {
   return false;
 };
 
+// Tested
 export const check_languages_filled = (academic_background) => {
   if (!academic_background || !academic_background.language) {
     return false;
@@ -480,6 +487,7 @@ export const check_languages_filled = (academic_background) => {
   return true;
 };
 
+// Tested
 export const check_academic_background_filled = (academic_background) => {
   if (!academic_background || !academic_background.university) {
     return false;
@@ -506,106 +514,93 @@ export const check_academic_background_filled = (academic_background) => {
   return true;
 };
 
-export const MissingSurveyFieldsList = ({
+export const MissingSurveyFieldsListArray = ({
   academic_background,
   application_preference
 }) => {
-  const { t } = useTranslation();
-  return (
-    <>
-      {academic_background?.university &&
-        !academic_background.university.attended_high_school && (
-          <li>{t('High School Name')}</li>
-        )}
-      {academic_background?.university &&
-        (!academic_background.university.high_school_isGraduated ||
-          academic_background.university.high_school_isGraduated === '-') && (
-          <li>{t('High School graduate status')}</li>
-        )}
-      {academic_background?.university &&
-        (!academic_background.university.isGraduated ||
-          academic_background.university.isGraduated === '-') && (
-          <li>{t('Bachelor Degree graduate status')}</li>
-        )}
-      {[('Yes', 'pending')].includes(
-        academic_background?.university?.isGraduated
-      ) &&
-        academic_background?.university?.attended_university === '' && (
-          <li>{t('University Name (Bachelor degree)')}</li>
-        )}
-      {['Yes', 'pending'].includes(
-        academic_background?.university?.isGraduated
-      ) &&
-        academic_background?.university?.attended_university_program === '' && (
-          <li>{t('Program Name / Not study yet')}</li>
-        )}
-      {['Yes', 'pending'].includes(
-        academic_background?.university?.isGraduated
-      ) &&
-        academic_background?.university &&
-        (!academic_background.university.Has_Exchange_Experience ||
-          academic_background.university.Has_Exchange_Experience === '-') && (
-          <li>{t('Exchange Student Experience ?')}</li>
-        )}
-      {academic_background?.university &&
-        (!academic_background.university.Has_Internship_Experience ||
-          academic_background.university.Has_Internship_Experience === '-') && (
-          <li>{t('Internship Experience ?')}</li>
-        )}
-      {academic_background?.university &&
-        (!academic_background.university.Has_Working_Experience ||
-          academic_background.university.Has_Working_Experience === '-') && (
-          <li>{t('Full-Time Job Experience ?')}</li>
-        )}
-      {academic_background?.university &&
-        (!academic_background.university.isGraduated ||
-          academic_background.university.isGraduated === 'Yes' ||
-          academic_background.university.isGraduated === 'pending') && (
-          <>
-            {academic_background?.university &&
-              (!academic_background.university.Highest_GPA_Uni ||
-                academic_background.university.Highest_GPA_Uni === '-') && (
-                <li>{t('Highest Score GPA of your university program')}</li>
-              )}
-            {academic_background?.university &&
-              (!academic_background.university.Passing_GPA_Uni ||
-                academic_background.university.Passing_GPA_Uni === '-') && (
-                <li>{t('Passing Score GPA of your university program')}</li>
-              )}
-            {academic_background?.university &&
-              (!academic_background.university.My_GPA_Uni ||
-                academic_background.university.My_GPA_Uni === '-') && (
-                <li>{t('My GPA')}</li>
-              )}
-          </>
-        )}
-      {application_preference &&
-        !application_preference.expected_application_date && (
-          <li>{t('Expected Application Year')}</li>
-        )}
-      {application_preference &&
-        !application_preference.expected_application_semester && (
-          <li>{t('Expected Application Semester')}</li>
-        )}
-      {application_preference &&
-        !application_preference.target_application_field && (
-          <li>{t('Target Application Fields')}</li>
-        )}
-      {application_preference &&
-        !application_preference.target_program_language && (
-          <li>{t('Target Program Language')}</li>
-        )}
-      {application_preference && !application_preference.target_degree && (
-        <li>{t('Target Degree Programs')}</li>
-      )}
-      {application_preference?.considered_privat_universities === '-' && (
-        <li>{t('Considering private universities')}</li>
-      )}
-      {application_preference?.application_outside_germany === '-' && (
-        <li>{t('Considering universities outside Germany?')}</li>
-      )}
-    </>
-  );
+  const missingFields = [];
+  // Check academic background fields
+  if (academic_background?.university) {
+    const uni = academic_background.university;
+
+    if (!uni.attended_high_school) {
+      missingFields.push('High School Name');
+    }
+
+    if (!uni.high_school_isGraduated || uni.high_school_isGraduated === '-') {
+      missingFields.push('High School graduate status');
+    }
+
+    if (
+      !academic_background.university.isGraduated ||
+      academic_background.university.isGraduated === '-'
+    ) {
+      missingFields.push('Bachelor Degree graduate status');
+    }
+
+    if (
+      !uni.isGraduated ||
+      uni.isGraduated === '-' ||
+      ['Yes', 'pending'].includes(uni.isGraduated)
+    ) {
+      if (uni.attended_university === '') {
+        missingFields.push('University Name (Bachelor degree)');
+      }
+      if (uni.attended_university_program === '') {
+        missingFields.push('Program Name / Not study yet');
+      }
+      if (!uni.Has_Exchange_Experience || uni.Has_Exchange_Experience === '-') {
+        missingFields.push('Exchange Student Experience ?');
+      }
+      if (
+        !uni.Has_Internship_Experience ||
+        uni.Has_Internship_Experience === '-'
+      ) {
+        missingFields.push('Internship Experience ?');
+      }
+      if (!uni.Has_Working_Experience || uni.Has_Working_Experience === '-') {
+        missingFields.push('Full-Time Job Experience ?');
+      }
+      if (['Yes', 'pending'].includes(uni.isGraduated)) {
+        if (!uni.Highest_GPA_Uni || uni.Highest_GPA_Uni === '-') {
+          missingFields.push('Highest Score GPA of your university program');
+        }
+        if (!uni.Passing_GPA_Uni || uni.Passing_GPA_Uni === '-') {
+          missingFields.push('Passing Score GPA of your university program');
+        }
+        if (!uni.My_GPA_Uni || uni.My_GPA_Uni === '-') {
+          missingFields.push('My GPA');
+        }
+      }
+    }
+  }
+
+  // Check application preference fields
+  if (application_preference) {
+    if (!application_preference.expected_application_date) {
+      missingFields.push('Expected Application Year');
+    }
+    if (!application_preference.expected_application_semester) {
+      missingFields.push('Expected Application Semester');
+    }
+    if (!application_preference.target_application_field) {
+      missingFields.push('Target Application Fields');
+    }
+    if (!application_preference.target_program_language) {
+      missingFields.push('Target Program Language');
+    }
+    if (!application_preference.target_degree) {
+      missingFields.push('Target Degree Programs');
+    }
+    if (application_preference.considered_privat_universities === '-') {
+      missingFields.push('Considering private universities');
+    }
+    if (application_preference.application_outside_germany === '-') {
+      missingFields.push('Considering universities outside Germany?');
+    }
+  }
+
+  return missingFields;
 };
 
 export const progressBarCounter = (student, application) => {
@@ -752,6 +747,7 @@ export const isEnglishOK = (program, student) => {
 
   return true;
 };
+
 // Tested
 export const isProgramDecided = (application) => {
   return application.decided === 'O';
@@ -762,6 +758,7 @@ export const isProgramSubmitted = (application) => {
   return application.closed === 'O';
 };
 
+// Tested
 export const isProgramAdmitted = (application) => {
   return application.admission === 'O';
 };

@@ -22,8 +22,16 @@ import {
   check_german_language_Notneeded,
   check_german_language_passed,
   check_english_language_Notneeded,
-  check_english_language_passed
+  check_english_language_passed,
+  DocumentStatus,
+  based_documents_init,
+  is_any_base_documents_uploaded,
+  check_languages_filled,
+  check_academic_background_filled,
+  isProgramAdmitted,
+  getMissingDocs
 } from './checking-functions';
+import { profile_list } from './contants';
 
 const userStudent = { role: 'Student' };
 const userAgent = { role: 'Agent' };
@@ -180,6 +188,21 @@ describe('Role checking', () => {
     };
     expect(isProgramSubmitted(application_open)).toEqual(false);
     expect(isProgramSubmitted(application_closed)).toEqual(true);
+  });
+
+  test('isProgramAdmitted', () => {
+    const application_admitted = {
+      admission: 'O'
+    };
+    const application_open = {
+      admission: '-'
+    };
+    const application_rejected = {
+      admission: 'X'
+    };
+    expect(isProgramAdmitted(application_open)).toEqual(false);
+    expect(isProgramAdmitted(application_rejected)).toEqual(false);
+    expect(isProgramAdmitted(application_admitted)).toEqual(true);
   });
 
   test('isProgramWithdraw', () => {
@@ -533,5 +556,290 @@ describe('Language Check Functions', () => {
       expect(check_german_language_Notneeded(undefined)).toBe(false);
       expect(check_german_language_Notneeded({})).toBe(false);
     });
+  });
+});
+
+describe('based_documents_init', () => {
+  it('should initialize all document statuses to Missing', () => {
+    const student = { profile: [] };
+    const { object_init } = based_documents_init(student);
+    const documentlist2_keys = Object.keys(profile_list);
+
+    for (const key of documentlist2_keys) {
+      expect(object_init[key]).toBe(DocumentStatus.Missing);
+    }
+  });
+
+  it('should update document statuses based on student profile', () => {
+    const student = {
+      profile: [
+        { name: 'High_School_Diploma', status: DocumentStatus.Uploaded },
+        { name: 'Course_Description', status: DocumentStatus.Accepted },
+        { name: 'Bachelor_Transcript', status: DocumentStatus.Rejected }
+      ]
+    };
+    const { object_init } = based_documents_init(student);
+
+    expect(object_init.High_School_Diploma).toBe(DocumentStatus.Uploaded);
+    expect(object_init.Course_Description).toBe(DocumentStatus.Accepted);
+    expect(object_init.Bachelor_Transcript).toBe(DocumentStatus.Rejected);
+  });
+
+  it('should handle documents with status Missing', () => {
+    const student = {
+      profile: [{ name: 'High_School_Diploma', status: DocumentStatus.Missing }]
+    };
+    const { object_init } = based_documents_init(student);
+
+    expect(object_init.High_School_Diploma).toBe(DocumentStatus.Missing);
+  });
+
+  it('should handle documents with status NotNeeded', () => {
+    const student = {
+      profile: [
+        { name: 'High_School_Diploma', status: DocumentStatus.NotNeeded }
+      ]
+    };
+    const { object_init } = based_documents_init(student);
+
+    expect(object_init.High_School_Diploma).toBe(DocumentStatus.NotNeeded);
+  });
+
+  it('should not change the status of documents not in the student profile', () => {
+    const student = {
+      profile: [
+        { name: 'High_School_Diploma', status: DocumentStatus.Uploaded }
+      ]
+    };
+    const { object_init } = based_documents_init(student);
+
+    expect(object_init.High_School_Diploma).toBe(DocumentStatus.Uploaded);
+    expect(object_init.High_School_Transcript).toBe(DocumentStatus.Missing);
+    expect(object_init.University_Entrance_Examination_GSAT).toBe(
+      DocumentStatus.Missing
+    );
+  });
+});
+
+describe('is_any_base_documents_uploaded', () => {
+  const studentWithUploadedDocument = {
+    profile: [
+      { name: 'Bachelor_Transcript', status: DocumentStatus.Uploaded },
+      { name: 'Englisch_Certificate', status: DocumentStatus.Accepted },
+      { name: 'High_School_Diploma', status: DocumentStatus.Missing }
+    ]
+  };
+
+  const studentWithoutDocuments = {
+    profile: []
+  };
+
+  const students = [studentWithUploadedDocument, studentWithoutDocuments];
+
+  it('should return true if any base document is uploaded', () => {
+    expect(is_any_base_documents_uploaded(students)).toBe(true);
+  });
+
+  it('should return false if no base document is uploaded', () => {
+    const studentsNoDocs = [
+      {
+        profile: [
+          { name: 'High_School_Diploma', status: DocumentStatus.Missing }
+        ]
+      },
+      {
+        profile: [
+          { name: 'Bachelor_Transcript', status: DocumentStatus.NotNeeded }
+        ]
+      }
+    ];
+    expect(is_any_base_documents_uploaded(studentsNoDocs)).toBe(false);
+  });
+
+  it('should return false if students array is empty', () => {
+    expect(is_any_base_documents_uploaded([])).toBe(false);
+  });
+
+  it('should return false if students array is null or undefined', () => {
+    expect(is_any_base_documents_uploaded(null)).toBe(false);
+    expect(is_any_base_documents_uploaded(undefined)).toBe(false);
+  });
+});
+
+describe('check_languages_filled', () => {
+  const today = new Date();
+
+  it('should return false if academic_background or language is not provided', () => {
+    expect(check_languages_filled(null)).toBe(false);
+    expect(check_languages_filled(undefined)).toBe(false);
+    expect(check_languages_filled({})).toBe(false);
+  });
+
+  it('should return false if any language test is missing or marked as "-"', () => {
+    const academic_background = {
+      language: {
+        english_isPassed: '-',
+        german_isPassed: 'X',
+        gre_isPassed: 'O',
+        gmat_isPassed: '-'
+      }
+    };
+    expect(check_languages_filled(academic_background)).toBe(false);
+  });
+
+  it('should return false if any language test date is expired', () => {
+    const academic_background = {
+      language: {
+        english_isPassed: 'X',
+        english_test_date: '2023-06-01', // Assume this date is expired
+        german_isPassed: 'X',
+        german_test_date: '2023-05-01', // Assume this date is expired
+        gre_isPassed: 'O',
+        gre_test_date: '2023-06-01', // Assume this date is expired
+        gmat_isPassed: 'O',
+        gmat_test_date: '2023-05-01' // Assume this date is expired
+      }
+    };
+    expect(check_languages_filled(academic_background)).toBe(false);
+  });
+
+  it('should return true if all language tests are filled and not expired', () => {
+    const academic_background = {
+      language: {
+        english_isPassed: 'O',
+        english_test_date: '2023-06-01',
+        german_isPassed: 'O',
+        german_test_date: '2023-07-01',
+        gre_isPassed: 'O',
+        gre_test_date: '2023-08-01',
+        gmat_isPassed: 'O',
+        gmat_test_date: '2023-09-01'
+      }
+    };
+    expect(check_languages_filled(academic_background)).toBe(true);
+  });
+
+  it('should handle edge cases where test dates are empty strings', () => {
+    const academic_background = {
+      language: {
+        english_isPassed: 'X',
+        english_test_date: '',
+        german_isPassed: 'O',
+        german_test_date: '',
+        gre_isPassed: 'X',
+        gre_test_date: '',
+        gmat_isPassed: 'O',
+        gmat_test_date: ''
+      }
+    };
+    expect(check_languages_filled(academic_background)).toBe(false); // Assuming empty test dates are considered expired
+  });
+
+  // Add more test cases as needed to cover other scenarios
+});
+
+describe('check_academic_background_filled', () => {
+  it('should return false if academic_background or university is not provided', () => {
+    expect(check_academic_background_filled(null)).toBe(false);
+    expect(check_academic_background_filled(undefined)).toBe(false);
+    expect(check_academic_background_filled({})).toBe(false);
+    expect(check_academic_background_filled({ university: null })).toBe(false);
+  });
+
+  it('should return false if any mandatory field is missing or marked as "-"', () => {
+    const academic_background = {
+      university: {
+        attended_high_school: true,
+        high_school_isGraduated: '-',
+        Has_Exchange_Experience: '-',
+        Has_Internship_Experience: 'yes',
+        Has_Working_Experience: '-',
+        attended_university: true,
+        attended_university_program: 'Computer Science'
+      }
+    };
+    expect(check_academic_background_filled(academic_background)).toBe(false);
+  });
+
+  it('should return true if all mandatory fields are filled', () => {
+    const academic_background = {
+      university: {
+        attended_high_school: true,
+        high_school_isGraduated: 'yes',
+        Has_Exchange_Experience: 'yes',
+        Has_Internship_Experience: 'no',
+        Has_Working_Experience: 'yes',
+        attended_university: true,
+        attended_university_program: 'Computer Science'
+      }
+    };
+    expect(check_academic_background_filled(academic_background)).toBe(true);
+  });
+
+  it('should handle edge cases where fields are missing or optional fields are not required', () => {
+    const academic_background = {
+      university: {
+        attended_high_school: true,
+        high_school_isGraduated: 'yes',
+        // Missing Has_Exchange_Experience, Has_Internship_Experience, Has_Working_Experience
+        attended_university: false,
+        attended_university_program: ''
+      }
+    };
+    expect(check_academic_background_filled(academic_background)).toBe(false);
+  });
+
+  // Add more test cases as needed to cover other scenarios
+});
+
+describe('getMissingDocs', () => {
+  // Test case 1: No application provided
+  it('returns an empty array when no application is provided', () => {
+    const result = getMissingDocs(null);
+    expect(result).toEqual([]);
+  });
+
+  // Test case 2: Missing some documents
+  it('returns an array of missing documents', () => {
+    const application = {
+      programId: {
+        essay_required: 'yes',
+        ml_required: 'yes'
+      },
+      doc_modification_thread: [{ doc_thread_id: { file_type: 'Essay' } }]
+    };
+
+    const result = getMissingDocs(application);
+    expect(result).toEqual(['ML']);
+  });
+
+  // Test case 3: Insufficient RL documents
+  it('returns a message for missing RL documents', () => {
+    const application = {
+      programId: {
+        is_rl_specific: true,
+        rl_required: '3'
+      },
+      doc_modification_thread: [{ doc_thread_id: { file_type: 'RL_A' } }]
+    };
+
+    const result = getMissingDocs(application);
+    expect(result).toEqual(['RL - 3 needed, 1 provided (2 must be added)']);
+  });
+
+  // Test case 4: Sufficient RL documents
+  it('does not return RL message when sufficient RL documents are provided', () => {
+    const application = {
+      programId: {
+        rl_required: '2'
+      },
+      doc_modification_thread: [
+        { doc_thread_id: { file_type: 'RL_Transcript_1' } },
+        { doc_thread_id: { file_type: 'RL_Transcript_2' } }
+      ]
+    };
+
+    const result = getMissingDocs(application);
+    expect(result).not.toContain('RL -');
   });
 });

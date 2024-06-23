@@ -717,28 +717,22 @@ export const study_group = [
   { key: 'mtl', value: 'Materials Science' }
 ];
 
+const commonCategories = [
+  { key: 'howtostart', value: 'How to Start' },
+  { key: 'application', value: 'Application' },
+  { key: 'base-documents', value: 'Base-documents' },
+  { key: 'cv-ml-rl', value: 'CV/ML/RL' },
+  { key: 'portal-instruction', value: 'Portal-Instruction' },
+  { key: 'certification', value: 'Certification' },
+  { key: 'visa', value: 'Visa' },
+  { key: 'enrolment', value: 'Enrolment' }
+];
+
+const vpdCategory = { key: 'uniassist', value: 'Uni-Assist' };
+
 export const valid_categories = appConfig.vpdEnable
-  ? [
-      { key: 'howtostart', value: 'How to Start' },
-      { key: 'application', value: 'Application' },
-      { key: 'base-documents', value: 'Base-documents' },
-      { key: 'cv-ml-rl', value: 'CV/ML/RL' },
-      { key: 'portal-instruction', value: 'Portal-Instruction' },
-      { key: 'certification', value: 'Certification' },
-      { key: 'uniassist', value: 'Uni-Assist' },
-      { key: 'visa', value: 'Visa' },
-      { key: 'enrolment', value: 'Enrolment' }
-    ]
-  : [
-      { key: 'howtostart', value: 'How to Start' },
-      { key: 'application', value: 'Application' },
-      { key: 'base-documents', value: 'Base-documents' },
-      { key: 'cv-ml-rl', value: 'CV/ML/RL' },
-      { key: 'portal-instruction', value: 'Portal-Instruction' },
-      { key: 'certification', value: 'Certification' },
-      { key: 'visa', value: 'Visa' },
-      { key: 'enrolment', value: 'Enrolment' }
-    ];
+  ? [...commonCategories, vpdCategory]
+  : commonCategories;
 
 export const profile_name_list = {
   High_School_Diploma: 'High_School_Diploma',

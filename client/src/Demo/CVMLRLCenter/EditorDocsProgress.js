@@ -635,19 +635,6 @@ function EditorDocsProgress(props) {
       (app) => !isProgramDecided(app)
     );
   const applications = [...decidedApplication, ...notDecidedApplication];
-  const { missingDocs, extraDocs } = checkGeneraldocs(
-    editorDocsProgressState.student
-  );
-
-  const decidedApplication =
-    editorDocsProgressState.student.applications?.filter((app) =>
-      isProgramDecided(app)
-    );
-  const notDecidedApplication =
-    editorDocsProgressState.student.applications?.filter(
-      (app) => !isProgramDecided(app)
-    );
-  const applications = [...decidedApplication, ...notDecidedApplication];
 
   return (
     <Box>

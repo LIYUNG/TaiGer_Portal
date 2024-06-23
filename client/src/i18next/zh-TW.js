@@ -314,6 +314,7 @@ export const translation_zh_TW = {
     Dashboard: '主控台',
     'Upcoming Applications': '即將截止的申請',
     'Ready To Submit Tasks': '資料完整，可以送出申請之學程',
+    'No Agents Students': '無顧問之學生',
     'Edit Agent': '編輯顧問',
     'Edit Editor': '編輯寫手',
     'Configure Attribute': '編輯特質',

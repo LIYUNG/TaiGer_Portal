@@ -14,7 +14,15 @@ import {
   Bayerische_Formel,
   isProgramDecided,
   isProgramSubmitted,
-  isProgramWithdraw
+  isProgramWithdraw,
+  getRequirement,
+  isLanguageInfoComplete,
+  isEnglishLanguageInfoComplete,
+  check_if_there_is_german_language_info,
+  check_german_language_Notneeded,
+  check_german_language_passed,
+  check_english_language_Notneeded,
+  check_english_language_passed
 } from './checking-functions';
 
 const userStudent = { role: 'Student' };
@@ -183,5 +191,347 @@ describe('Role checking', () => {
     };
     expect(isProgramWithdraw(application_withdraw)).toEqual(true);
     expect(isProgramWithdraw(application_open)).toEqual(false);
+  });
+});
+
+describe('getRequirement', () => {
+  it('should return false if thread is not provided', () => {
+    expect(getRequirement(null)).toBe(false);
+    expect(getRequirement(undefined)).toBe(false);
+  });
+
+  it('should return false if fileType or program is not provided', () => {
+    expect(getRequirement({})).toBe(false);
+    expect(getRequirement({ file_type: 'Essay' })).toBe(false);
+    expect(getRequirement({ program_id: { essay_required: 'yes' } })).toBe(
+      false
+    );
+  });
+
+  it('should return the correct essay requirement', () => {
+    const thread = {
+      file_type: 'Essay',
+      program_id: { essay_required: 'yes', essay_requirements: '500 words' }
+    };
+    expect(getRequirement(thread)).toBe('500 words');
+  });
+
+  it('should return "No" if essay requirement is not specified', () => {
+    const thread = {
+      file_type: 'Essay',
+      program_id: { essay_required: 'yes' }
+    };
+    expect(getRequirement(thread)).toBe('No');
+  });
+
+  it('should return the correct ML requirement', () => {
+    const thread = {
+      file_type: 'ML',
+      program_id: { ml_required: 'yes', ml_requirements: 'ML requirement text' }
+    };
+    expect(getRequirement(thread)).toBe('ML requirement text');
+  });
+
+  it('should return the correct portfolio requirement', () => {
+    const thread = {
+      file_type: 'Portfolio',
+      program_id: {
+        portfolio_required: 'yes',
+        portfolio_requirements: 'Portfolio requirement text'
+      }
+    };
+    expect(getRequirement(thread)).toBe('Portfolio requirement text');
+  });
+
+  it('should return the correct supplementary form requirement', () => {
+    const thread = {
+      file_type: 'Supplementary_Form',
+      program_id: {
+        supplementary_form_required: 'yes',
+        supplementary_form_requirements: 'Supplementary form text'
+      }
+    };
+    expect(getRequirement(thread)).toBe('Supplementary form text');
+  });
+
+  it('should return the correct curriculum analysis requirement', () => {
+    const thread = {
+      file_type: 'Curriculum_Analysis',
+      program_id: {
+        curriculum_analysis_required: 'yes',
+        curriculum_analysis_requirements: 'Curriculum analysis text'
+      }
+    };
+    expect(getRequirement(thread)).toBe('Curriculum analysis text');
+  });
+
+  it('should return the correct scholarship form requirement', () => {
+    const thread = {
+      file_type: 'Scholarship_Form',
+      program_id: {
+        scholarship_form_required: 'yes',
+        scholarship_form_requirements: 'Scholarship form text'
+      }
+    };
+    expect(getRequirement(thread)).toBe('Scholarship form text');
+  });
+
+  it('should return the correct RL requirement', () => {
+    const thread = {
+      file_type: 'RL',
+      program_id: { rl_required: '2', rl_requirements: 'RL requirement text' }
+    };
+    expect(getRequirement(thread)).toBe('RL requirement text');
+  });
+
+  it('should return "No" if RL requirement is not specified', () => {
+    const thread = {
+      file_type: 'RL',
+      program_id: { rl_required: '2' }
+    };
+    expect(getRequirement(thread)).toBe('No');
+  });
+
+  it('should return "No" if file type does not match any condition', () => {
+    const thread = {
+      file_type: 'Unknown_Type',
+      program_id: {
+        unknown_required: 'yes',
+        unknown_requirements: 'Unknown requirement text'
+      }
+    };
+    expect(getRequirement(thread)).toBe('No');
+  });
+});
+
+describe('isLanguageInfoComplete', () => {
+  it('should return false if academic_background is not provided', () => {
+    expect(isLanguageInfoComplete(null)).toBe(false);
+    expect(isLanguageInfoComplete(undefined)).toBe(false);
+  });
+
+  it('should return false if academic_background.language is not provided', () => {
+    const academic_background = {};
+    expect(isLanguageInfoComplete(academic_background)).toBe(false);
+  });
+
+  it('should return false if both english_isPassed and german_isPassed are "-"', () => {
+    const academic_background = {
+      language: {
+        english_isPassed: '-',
+        german_isPassed: '-'
+      }
+    };
+    expect(isLanguageInfoComplete(academic_background)).toBe(false);
+  });
+
+  it('should return true if english_isPassed is not "-"', () => {
+    const academic_background = {
+      language: {
+        english_isPassed: 'yes',
+        german_isPassed: '-'
+      }
+    };
+    expect(isLanguageInfoComplete(academic_background)).toBe(true);
+  });
+
+  it('should return true if german_isPassed is not "-"', () => {
+    const academic_background = {
+      language: {
+        english_isPassed: '-',
+        german_isPassed: 'yes'
+      }
+    };
+    expect(isLanguageInfoComplete(academic_background)).toBe(true);
+  });
+
+  it('should return true if both english_isPassed and german_isPassed are not "-"', () => {
+    const academic_background = {
+      language: {
+        english_isPassed: 'yes',
+        german_isPassed: 'yes'
+      }
+    };
+    expect(isLanguageInfoComplete(academic_background)).toBe(true);
+  });
+});
+
+describe('isEnglishLanguageInfoComplete', () => {
+  it('should return false if academic_background is not provided', () => {
+    expect(isEnglishLanguageInfoComplete(null)).toBe(false);
+    expect(isEnglishLanguageInfoComplete(undefined)).toBe(false);
+  });
+
+  it('should return false if academic_background.language is not provided', () => {
+    const academic_background = {};
+    expect(isEnglishLanguageInfoComplete(academic_background)).toBe(false);
+  });
+
+  it('should return false if english_isPassed is "-"', () => {
+    const academic_background = {
+      language: {
+        english_isPassed: '-'
+      }
+    };
+    expect(isEnglishLanguageInfoComplete(academic_background)).toBe(false);
+  });
+
+  it('should return true if english_isPassed is not "-"', () => {
+    const academic_background = {
+      language: {
+        english_isPassed: 'yes'
+      }
+    };
+    expect(isEnglishLanguageInfoComplete(academic_background)).toBe(true);
+  });
+
+  it('should return true if english_isPassed is an empty string', () => {
+    const academic_background = {
+      language: {
+        english_isPassed: ''
+      }
+    };
+    expect(isEnglishLanguageInfoComplete(academic_background)).toBe(true);
+  });
+
+  it('should return true if english_isPassed is a value other than "-"', () => {
+    const academic_background = {
+      language: {
+        english_isPassed: 'no'
+      }
+    };
+    expect(isEnglishLanguageInfoComplete(academic_background)).toBe(true);
+  });
+});
+
+describe('check_if_there_is_german_language_info', () => {
+  it('should return false if academic_background is not provided', () => {
+    expect(check_if_there_is_german_language_info(null)).toBe(false);
+    expect(check_if_there_is_german_language_info(undefined)).toBe(false);
+  });
+
+  it('should return false if academic_background.language is not provided', () => {
+    const academic_background = {};
+    expect(check_if_there_is_german_language_info(academic_background)).toBe(
+      false
+    );
+  });
+
+  it('should return false if german_isPassed is "-"', () => {
+    const academic_background = {
+      language: {
+        german_isPassed: '-'
+      }
+    };
+    expect(check_if_there_is_german_language_info(academic_background)).toBe(
+      false
+    );
+  });
+
+  it('should return true if german_isPassed is not "-"', () => {
+    const academic_background = {
+      language: {
+        german_isPassed: 'yes'
+      }
+    };
+    expect(check_if_there_is_german_language_info(academic_background)).toBe(
+      true
+    );
+  });
+
+  it('should return true if german_isPassed is an empty string', () => {
+    const academic_background = {
+      language: {
+        german_isPassed: ''
+      }
+    };
+    expect(check_if_there_is_german_language_info(academic_background)).toBe(
+      true
+    );
+  });
+
+  it('should return true if german_isPassed is a value other than "-"', () => {
+    const academic_background = {
+      language: {
+        german_isPassed: 'no'
+      }
+    };
+    expect(check_if_there_is_german_language_info(academic_background)).toBe(
+      true
+    );
+  });
+});
+
+describe('Language Check Functions', () => {
+  describe('check_english_language_passed', () => {
+    it('should return true if english_isPassed is "O"', () => {
+      const academic_background = { language: { english_isPassed: 'O' } };
+      expect(check_english_language_passed(academic_background)).toBe(true);
+    });
+
+    it('should return false if english_isPassed is not "O"', () => {
+      const academic_background = { language: { english_isPassed: 'X' } };
+      expect(check_english_language_passed(academic_background)).toBe(false);
+    });
+
+    it('should return false if academic_background or language is not provided', () => {
+      expect(check_english_language_passed(null)).toBe(false);
+      expect(check_english_language_passed(undefined)).toBe(false);
+      expect(check_english_language_passed({})).toBe(false);
+    });
+  });
+
+  describe('check_english_language_Notneeded', () => {
+    it('should return true if english_isPassed is "--"', () => {
+      const academic_background = { language: { english_isPassed: '--' } };
+      expect(check_english_language_Notneeded(academic_background)).toBe(true);
+    });
+
+    it('should return false if english_isPassed is not "--"', () => {
+      const academic_background = { language: { english_isPassed: 'X' } };
+      expect(check_english_language_Notneeded(academic_background)).toBe(false);
+    });
+
+    it('should return false if academic_background or language is not provided', () => {
+      expect(check_english_language_Notneeded(null)).toBe(false);
+      expect(check_english_language_Notneeded(undefined)).toBe(false);
+      expect(check_english_language_Notneeded({})).toBe(false);
+    });
+  });
+
+  describe('check_german_language_passed', () => {
+    it('should return true if german_isPassed is "O"', () => {
+      const academic_background = { language: { german_isPassed: 'O' } };
+      expect(check_german_language_passed(academic_background)).toBe(true);
+    });
+
+    it('should return false if german_isPassed is not "O"', () => {
+      const academic_background = { language: { german_isPassed: 'X' } };
+      expect(check_german_language_passed(academic_background)).toBe(false);
+    });
+
+    it('should return false if academic_background or language is not provided', () => {
+      expect(check_german_language_passed(null)).toBe(false);
+      expect(check_german_language_passed(undefined)).toBe(false);
+      expect(check_german_language_passed({})).toBe(false);
+    });
+  });
+
+  describe('check_german_language_Notneeded', () => {
+    it('should return true if german_isPassed is "--"', () => {
+      const academic_background = { language: { german_isPassed: '--' } };
+      expect(check_german_language_Notneeded(academic_background)).toBe(true);
+    });
+
+    it('should return false if german_isPassed is not "--"', () => {
+      const academic_background = { language: { german_isPassed: 'X' } };
+      expect(check_german_language_Notneeded(academic_background)).toBe(false);
+    });
+
+    it('should return false if academic_background or language is not provided', () => {
+      expect(check_german_language_Notneeded(null)).toBe(false);
+      expect(check_german_language_Notneeded(undefined)).toBe(false);
+      expect(check_german_language_Notneeded({})).toBe(false);
+    });
   });
 });

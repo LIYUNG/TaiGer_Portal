@@ -21,6 +21,12 @@ import { RouterProvider } from 'react-router-dom';
 
 jest.mock('axios');
 jest.mock('../../api');
+jest.mock('@mui/x-charts/BarChart', () => ({
+  BarChart: jest.fn().mockImplementation(({ children }) => children)
+}));
+jest.mock('@mui/x-charts/ChartsAxis', () => ({
+  axisClasses: jest.fn().mockImplementation(({ children }) => children)
+}));
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => {

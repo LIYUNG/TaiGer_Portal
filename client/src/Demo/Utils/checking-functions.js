@@ -131,45 +131,68 @@ export const Bayerische_Formel = (high, low, my) => {
   return 0;
 };
 
+// Tested
 export const getRequirement = (thread) => {
   if (!thread) return false;
-  const fileType = thread.file_type;
-  const program = thread.program_id;
+
+  const { file_type: fileType, program_id: program } = thread;
   if (!fileType || !program) return false;
 
-  if (fileType.includes('Essay') && program.essay_required === 'yes') {
-    return program.essay_requirements || 'No';
+  const requirementsMapping = [
+    {
+      type: 'Essay',
+      requiredKey: 'essay_required',
+      requirementsKey: 'essay_requirements'
+    },
+    {
+      type: 'ML',
+      requiredKey: 'ml_required',
+      requirementsKey: 'ml_requirements'
+    },
+    {
+      type: 'Portfolio',
+      requiredKey: 'portfolio_required',
+      requirementsKey: 'portfolio_requirements'
+    },
+    {
+      type: 'Supplementary_Form',
+      requiredKey: 'supplementary_form_required',
+      requirementsKey: 'supplementary_form_requirements'
+    },
+    {
+      type: 'Curriculum_Analysis',
+      requiredKey: 'curriculum_analysis_required',
+      requirementsKey: 'curriculum_analysis_requirements'
+    },
+    {
+      type: 'Scholarship_Form',
+      requiredKey: 'scholarship_form_required',
+      requirementsKey: 'scholarship_form_requirements'
+    },
+    {
+      type: 'RL',
+      requiredKey: 'rl_required',
+      requirementsKey: 'rl_requirements',
+      validValues: ['1', '2', '3']
+    }
+  ];
+
+  for (const {
+    type,
+    requiredKey,
+    requirementsKey,
+    validValues
+  } of requirementsMapping) {
+    if (
+      fileType.includes(type) &&
+      (validValues
+        ? validValues.includes(program[requiredKey])
+        : program[requiredKey] === 'yes')
+    ) {
+      return program[requirementsKey] || 'No';
+    }
   }
-  if (fileType.includes('ML') && program.ml_required === 'yes') {
-    return program.ml_requirements || 'No';
-  }
-  if (fileType.includes('Portfolio') || program.portfolio_required === 'yes') {
-    return program.portfolio_requirements || 'No';
-  }
-  if (
-    fileType.includes('Supplementary_Form') &&
-    program.supplementary_form_required === 'yes'
-  ) {
-    return program.supplementary_form_requirements || 'No';
-  }
-  if (
-    fileType.includes('Curriculum_Analysis') &&
-    program.curriculum_analysis_required === 'yes'
-  ) {
-    return program.curriculum_analysis_requirements || 'No';
-  }
-  if (
-    fileType.includes('Scholarship_Form') &&
-    program.scholarship_form_required === 'yes'
-  ) {
-    return program.scholarship_form_requirements || 'No';
-  }
-  if (
-    fileType.includes('RL') &&
-    ['1', '2', '3'].includes(program.rl_required)
-  ) {
-    return program.rl_requirements || 'No';
-  }
+
   return 'No';
 };
 
@@ -191,20 +214,15 @@ export const NewlineText = (props) => {
   return newText;
 };
 
+// Tested
 export const isLanguageInfoComplete = (academic_background) => {
-  if (!academic_background || !academic_background.language) {
-    return false;
-  }
-  if (
-    academic_background.language.english_isPassed === '-' &&
-    academic_background.language.german_isPassed === '-'
-  ) {
-    return false;
-  }
-
-  return true;
+  const language = academic_background?.language;
+  return language
+    ? !(language.english_isPassed === '-' && language.german_isPassed === '-')
+    : false;
 };
 
+// Tested
 export const isEnglishLanguageInfoComplete = (academic_background) => {
   if (!academic_background || !academic_background.language) {
     return false;
@@ -216,6 +234,7 @@ export const isEnglishLanguageInfoComplete = (academic_background) => {
   return true;
 };
 
+// Tested
 export const check_if_there_is_german_language_info = (academic_background) => {
   if (!academic_background || !academic_background.language) {
     return false;
@@ -227,6 +246,7 @@ export const check_if_there_is_german_language_info = (academic_background) => {
   return true;
 };
 
+//Testd
 export const check_english_language_passed = (academic_background) => {
   if (academic_background?.language?.english_isPassed === 'O') {
     return true;
@@ -234,6 +254,7 @@ export const check_english_language_passed = (academic_background) => {
   return false;
 };
 
+//Testd
 export const check_english_language_Notneeded = (academic_background) => {
   if (academic_background?.language?.english_isPassed === '--') {
     return true;
@@ -241,6 +262,7 @@ export const check_english_language_Notneeded = (academic_background) => {
   return false;
 };
 
+//Testd
 export const check_german_language_passed = (academic_background) => {
   if (academic_background?.language?.german_isPassed === 'O') {
     return true;
@@ -248,6 +270,7 @@ export const check_german_language_passed = (academic_background) => {
   return false;
 };
 
+//Testd
 export const check_german_language_Notneeded = (academic_background) => {
   if (academic_background?.language?.german_isPassed === '--') {
     return true;

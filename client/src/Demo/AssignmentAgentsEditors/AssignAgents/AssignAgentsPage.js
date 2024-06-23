@@ -43,7 +43,9 @@ function AssignAgentsPage(props) {
         <Typography color="text.primary">{t('Assign Agents')}</Typography>
       </Breadcrumbs>
       <Card sx={{ p: 2 }}>
-        <Typography variant="h6">{t('No Agents Students')}</Typography>
+        <Typography variant="h6">
+          {t('No Agents Students', { ns: 'dashboard' })}
+        </Typography>
         <TableContainer style={{ overflowX: 'auto' }}>
           <Table size="small">
             <TableHead>
@@ -51,7 +53,7 @@ function AssignAgentsPage(props) {
                 <TableCell></TableCell>
                 <TableCell>
                   {t('First-, Last Name', { ns: 'common' })}
-                </TableCell>{' '}
+                </TableCell>
                 <TableCell>{t('Email', { ns: 'common' })}</TableCell>
                 <TableCell>{t('Target Year', { ns: 'common' })}</TableCell>
               </TableRow>

@@ -312,6 +312,7 @@ export const translation_en = {
     Dashboard: 'Dashboard',
     'Upcoming Applications': 'Upcoming Applications',
     'Ready To Submit Tasks': 'Ready To Submit Tasks',
+    'No Agents Students': 'No Agents Students',
     'Edit Agent': 'Edit Agent',
     'Edit Editor': 'Edit Editor',
     'Configure Attribute': 'Configure Attribute',

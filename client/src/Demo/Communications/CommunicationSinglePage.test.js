@@ -13,6 +13,10 @@ import { dummyStudentMessage } from '../../test/testingCommunicationsData';
 jest.mock('axios');
 jest.mock('crypto');
 jest.mock('../../api');
+jest.mock('react-markdown', () => (props) => {
+  return <>{props.children}</>;
+});
+jest.mock('remark-gfm', () => () => {});
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => {

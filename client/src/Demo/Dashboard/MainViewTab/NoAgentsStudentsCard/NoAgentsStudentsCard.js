@@ -75,7 +75,7 @@ function NoAgentsStudentsCard(props) {
                 }}
               >
                 <MenuItem onClick={() => startEditingAgent()}>
-                  {t('Edit Agent', { ns: 'dastboard' })}
+                  {t('Edit Agent', { ns: 'dashboard' })}
                 </MenuItem>
               </Menu>
             </TableCell>

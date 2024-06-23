@@ -635,6 +635,19 @@ function EditorDocsProgress(props) {
       (app) => !isProgramDecided(app)
     );
   const applications = [...decidedApplication, ...notDecidedApplication];
+  const { missingDocs, extraDocs } = checkGeneraldocs(
+    editorDocsProgressState.student
+  );
+
+  const decidedApplication =
+    editorDocsProgressState.student.applications?.filter((app) =>
+      isProgramDecided(app)
+    );
+  const notDecidedApplication =
+    editorDocsProgressState.student.applications?.filter(
+      (app) => !isProgramDecided(app)
+    );
+  const applications = [...decidedApplication, ...notDecidedApplication];
 
   return (
     <Box>
@@ -648,7 +661,75 @@ function EditorDocsProgress(props) {
       <Typography variant="h6">
         {t('General Documents', { ns: 'common' })} ({t('CV', { ns: 'common' })},{' '}
         {t('Recommendation Letters', { ns: 'common' })})
+      <Typography variant="h6">
+        {t('General Documents', { ns: 'common' })} ({t('CV', { ns: 'common' })},{' '}
+        {t('Recommendation Letters', { ns: 'common' })})
       </Typography>
+      <Accordion defaultExpanded={false} disableGutters>
+        <AccordionDetails>
+          {missingDocs.length > 0 && (
+            <Alert sx={{ mb: 2 }} severity="error">
+              <Typography>
+                The following general documents are not started yet, please{' '}
+                <b>create</b> the discussion thread below:{' '}
+                {missingDocs.map((doc, i) => (
+                  <li key={i}>
+                    <b>{doc}</b>
+                  </li>
+                ))}
+              </Typography>
+            </Alert>
+          )}
+          {extraDocs.length > 0 && (
+            <Alert sx={{ mb: 2 }} severity="warning">
+              <Typography>
+                The following general documents are not needed:
+                {extraDocs.map((doc, i) => (
+                  <li key={i}>
+                    <b>{doc}</b>
+                  </li>
+                ))}
+              </Typography>
+            </Alert>
+          )}
+          <ManualFiles
+            onDeleteFileThread={onDeleteFileThread}
+            handleAsFinalFile={handleAsFinalFile}
+            student={editorDocsProgressState.student}
+            filetype={'General'}
+            initGeneralFileThread={initGeneralFileThread}
+            initProgramSpecificFileThread={initProgramSpecificFileThread}
+            application={null}
+          />
+        </AccordionDetails>
+      </Accordion>
+      <Divider sx={{ mt: 2 }} />
+      <Typography variant="h6" sx={{ mt: 2 }}>
+        {t('Applications', { ns: 'common' })}
+      </Typography>
+      {applications.map((application, i) => (
+        <div key={i}>
+          <Accordion defaultExpanded={false} disableGutters>
+            <ApplicationAccordionSummary application={application} />
+            <AccordionDetails>
+              <ManualFiles
+                onDeleteFileThread={onDeleteFileThread}
+                handleAsFinalFile={handleAsFinalFile}
+                student={editorDocsProgressState.student}
+                application={application}
+                openRequirements_ModalWindow={openRequirements_ModalWindow}
+                filetype={'ProgramSpecific'}
+                missingDocs={getMissingDocs(application)}
+                extraDocs={getExtraDocs(application)}
+                handleProgramStatus={handleProgramStatus}
+                initGeneralFileThread={initGeneralFileThread}
+                initProgramSpecificFileThread={initProgramSpecificFileThread}
+              />
+            </AccordionDetails>
+          </Accordion>
+          <Divider sx={{ my: 2 }} />
+        </div>
+      ))}
       <Accordion defaultExpanded={false} disableGutters>
         <AccordionDetails>
           {missingDocs.length > 0 && (

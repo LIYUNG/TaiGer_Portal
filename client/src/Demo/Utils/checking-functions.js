@@ -196,24 +196,6 @@ export const getRequirement = (thread) => {
   return 'No';
 };
 
-// TODO: test
-export const NewlineText = (props) => {
-  const text = props.text;
-
-  // Split the input text by line breaks and URLs
-  const parts = text?.split(/\\n/);
-
-  // Process each part and replace URLs with <a> tags
-  const newText = parts?.map((part, index) => {
-    return (
-      <p key={index} className="my-1">
-        {part}
-      </p>
-    );
-  });
-  return newText;
-};
-
 // Tested
 export const isLanguageInfoComplete = (academic_background) => {
   const language = academic_background?.language;

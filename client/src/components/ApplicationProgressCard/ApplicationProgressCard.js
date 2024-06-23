@@ -210,7 +210,7 @@ export default function ApplicationProgressCard(props) {
                 target="_blank"
                 onClick={(e) => e.stopPropagation()}
               >
-                <Typography fontWeight="bold">
+                <Typography variant="body1" fontWeight="bold">
                   {application?.programId?.school}
                   <IconButton>
                     <LaunchIcon fontSize="small" />
@@ -219,46 +219,48 @@ export default function ApplicationProgressCard(props) {
               </Link>
             </Box>
           </Typography>
-          <Typography variant="p" component="div">
+          <Typography variant="body2">
             {application?.programId?.degree}{' '}
             {application?.programId?.program_name}{' '}
             {application?.programId?.semester}{' '}
           </Typography>
-          {(application.admission === 'O' || application.admission === 'X') &&
-            application.admission_letter?.status === 'uploaded' && (
-              <a
-                href={`${BASE_URL}/api/admissions/${application.admission_letter?.admission_file_path.replace(
-                  /\\/g,
-                  '/'
-                )}`}
-                target="_blank"
-                className="text-info"
-                rel="noreferrer"
-              >
-                {application.admission === 'O'
-                  ? t('Admission Letter', { ns: 'admissions' })
-                  : t('Rejection Letter', { ns: 'admissions' })}
-              </a>
-            )}
-          {application_deadline_calculator(props.student, application) ===
-            'CLOSE' &&
-            application.admission !== '-' &&
-            (!application.admission_letter?.status ||
-              application.admission_letter?.status !== 'uploaded') && (
-              <Button
-                variant="outlined"
-                color="secondary"
-                size="small"
-                title="Undo"
-                onClick={(e) => openSetResultModal(e, application.admission)}
-                startIcon={<AddIcon />}
-                sx={{ my: 1 }}
-              >
-                {application.admission === 'O'
-                  ? t('Add Admission Letter', { ns: 'admissions' })
-                  : t('Add Rejection Letter', { ns: 'admissions' })}
-              </Button>
-            )}
+          <Typography variant="body2">
+            {(application.admission === 'O' || application.admission === 'X') &&
+              application.admission_letter?.status === 'uploaded' && (
+                <a
+                  href={`${BASE_URL}/api/admissions/${application.admission_letter?.admission_file_path.replace(
+                    /\\/g,
+                    '/'
+                  )}`}
+                  target="_blank"
+                  className="text-info"
+                  rel="noreferrer"
+                >
+                  {application.admission === 'O'
+                    ? t('Admission Letter', { ns: 'admissions' })
+                    : t('Rejection Letter', { ns: 'admissions' })}
+                </a>
+              )}
+            {application_deadline_calculator(props.student, application) ===
+              'CLOSE' &&
+              application.admission !== '-' &&
+              (!application.admission_letter?.status ||
+                application.admission_letter?.status !== 'uploaded') && (
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  size="small"
+                  title="Undo"
+                  onClick={(e) => openSetResultModal(e, application.admission)}
+                  startIcon={<AddIcon />}
+                  sx={{ my: 1 }}
+                >
+                  {application.admission === 'O'
+                    ? t('Add Admission Letter', { ns: 'admissions' })
+                    : t('Add Rejection Letter', { ns: 'admissions' })}
+                </Button>
+              )}
+          </Typography>
           {appConfig.interviewEnable &&
             application_deadline_calculator(props.student, application) ===
               'CLOSE' &&
@@ -266,12 +268,12 @@ export default function ApplicationProgressCard(props) {
               <>
                 {!application.interview_status && (
                   <>
-                    <Typography variant="p" component="div" sx={{ my: 1 }}>
+                    <Typography variant="body2" sx={{ my: 1 }}>
                       {t(
                         'Have you received the interview invitation from this program?'
                       )}
                     </Typography>
-                    <Typography variant="p" component="div" sx={{ my: 1 }}>
+                    <Typography variant="body2" sx={{ my: 1 }}>
                       <Button
                         color="primary"
                         variant="contained"

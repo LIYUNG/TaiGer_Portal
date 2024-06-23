@@ -17,7 +17,7 @@ import {
 import { convertDate } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ProgramReportModal from './ProgramReportModal';
-import { NewlineText } from '../Utils/checking-functions';
+import { LinkableNewlineText } from '../Utils/checking-functions';
 import ProgramReportUpdateModal from './ProgramReportUpdateModal';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import ProgramReportDeleteModal from './ProgramReportDeleteModal';
@@ -260,12 +260,13 @@ function ProgramReport(props) {
         <Grid item xs={12}>
           <Typography>
             <b>{t('Description', { ns: 'common' })}:</b>{' '}
-            {NewlineText({ text: ticket.description })}
+            <LinkableNewlineText text={ticket.description} />
           </Typography>
         </Grid>
         <Grid item xs={12}>
           <Typography>
-            <b>{t('Feedback at')}:</b> {NewlineText({ text: ticket.feedback })}
+            <b>{t('Feedback at')}:</b>
+            <LinkableNewlineText text={ticket.feedback} />
           </Typography>
         </Grid>
         <Grid item xs={12}>

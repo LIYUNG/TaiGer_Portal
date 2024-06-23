@@ -119,16 +119,14 @@ function TaiGerMember() {
           <>
             <Typography variant="h5">Admin:</Typography>
             {admins.map((admin, i) => (
-              <p key={i}>
-                <b>
-                  <Link
-                    to={`${DEMO.TEAM_ADMIN_LINK(admin._id.toString())}`}
-                    component={LinkDom}
-                  >
-                    {admin.firstname} {admin.lastname}
-                  </Link>
-                </b>
-              </p>
+              <Typography fontWeight="bold" key={i}>
+                <Link
+                  to={`${DEMO.TEAM_ADMIN_LINK(admin._id.toString())}`}
+                  component={LinkDom}
+                >
+                  {admin.firstname} {admin.lastname}
+                </Link>
+              </Typography>
             ))}
           </>
         )}

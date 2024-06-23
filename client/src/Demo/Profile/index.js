@@ -12,6 +12,9 @@ import {
   FormControlLabel,
   Grid,
   Link,
+  List,
+  ListItem,
+  ListItemText,
   TextField,
   Typography
 } from '@mui/material';
@@ -364,31 +367,38 @@ function Profile() {
                   id="panel1-header"
                 >
                   <ReportProblemIcon size={18} />
-                  <b className="mx-2">{t('Reminder')}:</b> Please fill your
+                  <Typography>{t('Reminder')}: Please fill your</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
-                  <p
-                    className="text-light my-3 mx-3"
-                    style={{ textAlign: 'left' }}
-                  >
-                    <ul>
-                      {!profileState.personaldata.firstname && (
-                        <li>First Name(English)</li>
-                      )}
-                      {!profileState.personaldata.lastname && (
-                        <li>Last Name(English)</li>
-                      )}
-                      {!profileState.personaldata.firstname_chinese && (
-                        <li>名 (中文)</li>
-                      )}
-                      {!profileState.personaldata.lastname_chinese && (
-                        <li>姓 (中文)</li>
-                      )}
-                      {!profileState.personaldata.birthday && (
-                        <li>{t('Birthday')}</li>
-                      )}
-                    </ul>
-                  </p>
+                  <List>
+                    {!profileState.personaldata.firstname && (
+                      <ListItem>
+                        <ListItemText primary="First Name (English)" />
+                      </ListItem>
+                    )}
+                    {!profileState.personaldata.lastname && (
+                      <ListItem>
+                        <ListItemText primary="Last Name (English)" />
+                      </ListItem>
+                    )}
+                    {!profileState.personaldata.firstname_chinese && (
+                      <ListItem>
+                        <ListItemText primary="名 (中文)" />
+                      </ListItem>
+                    )}
+                    {!profileState.personaldata.lastname_chinese && (
+                      <ListItem>
+                        <ListItemText primary="姓 (中文)" />
+                      </ListItem>
+                    )}
+                    {!profileState.personaldata.birthday && (
+                      <ListItem>
+                        <ListItemText
+                          primary={t('Birthday', { ns: 'common' })}
+                        />
+                      </ListItem>
+                    )}
+                  </List>
                 </AccordionDetails>
               </Accordion>
             )}
@@ -449,7 +459,7 @@ function Profile() {
               required
               fullWidth
               id="birthday"
-              label={`${t('Birthday')}`}
+              label={`${t('Birthday', { ns: 'common' })}`}
               InputLabelProps={{
                 shrink: true
               }}
@@ -484,14 +494,19 @@ function Profile() {
         <>
           <Card sx={{ padding: 2, mb: 2 }}>
             <Typography>{t('Profile', { ns: 'common' })}</Typography>
-
-            <h5 className="text-light">{t('Introduction')}</h5>
-            {user.selfIntroduction}
+            <Typography variant="h5">
+              {t('Introduction', { ns: 'common' })}
+            </Typography>
+            <Typography>{user.selfIntroduction}</Typography>
           </Card>
           {is_TaiGer_Agent(profileState.personaldata) && (
             <Card sx={{ padding: 2, mb: 2 }}>
-              <Typography variant="h6">{t('Office Hours')}</Typography>
-              <Typography variant="h6">{t('Time zone')}</Typography>
+              <Typography variant="h6">
+                {t('Office Hours', { ns: 'common' })}
+              </Typography>
+              <Typography variant="h6">
+                {t('Time zone', { ns: 'common' })}
+              </Typography>
               <TimezoneSelect
                 value={profileState.selectedTimezone}
                 onChange={setSelectedTimezone}

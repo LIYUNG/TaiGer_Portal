@@ -12,10 +12,7 @@ import { Navigate, Link as LinkDom } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
-import {
-  // LinkableNewlineText,
-  is_TaiGer_role
-} from '../Utils/checking-functions';
+import { is_TaiGer_role } from '../Utils/checking-functions';
 import ErrorPage from '../Utils/ErrorPage';
 import { TaiGerAiGeneral2 } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
@@ -137,9 +134,6 @@ function CVMLRLGenerator() {
         )}
       </Button>
       <Typography variant="p">
-        {/* <LinkableNewlineText
-          text={cVMLRLGeneratorState.data}
-        ></LinkableNewlineText> */}
         <ReactMarkdown remarkPlugins={[remarkGfm]}>
           {cVMLRLGeneratorState.data}
         </ReactMarkdown>

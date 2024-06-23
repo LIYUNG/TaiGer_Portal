@@ -560,7 +560,7 @@ function StudentApplicationsTableTemplate(props) {
                     )
                   }
                 >
-                  <DeleteIcon fontSize='small'/>
+                  <DeleteIcon fontSize="small" />
                 </Button>
               </TableCell>
             )}
@@ -767,7 +767,7 @@ function StudentApplicationsTableTemplate(props) {
               <TableCell></TableCell>
             )}
             <TableCell>
-              <p className="mb-1 text-info" key={application_idx}>
+              <Typography key={application_idx}>
                 {isProgramSubmitted(application)
                   ? '-'
                   : application.programId.application_deadline
@@ -779,7 +779,7 @@ function StudentApplicationsTableTemplate(props) {
                       )
                     )
                   : '-'}
-              </p>
+              </Typography>
             </TableCell>
           </TableRow>
         )

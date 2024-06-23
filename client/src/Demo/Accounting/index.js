@@ -92,27 +92,21 @@ function Accounting() {
       <Card>
         <Typography variant="h5">Agent:</Typography>
         {agents.map((agent, i) => (
-          <p key={i}>
-            <b>
-              <LinkDom
-                to={`${DEMO.ACCOUNTING_USER_ID_LINK(agent._id.toString())}`}
-              >
-                {agent.firstname} {agent.lastname}{' '}
-              </LinkDom>
-            </b>
-          </p>
+          <Typography fontWeight="bold" key={i}>
+            <LinkDom
+              to={`${DEMO.ACCOUNTING_USER_ID_LINK(agent._id.toString())}`}
+            >
+              {agent.firstname} {agent.lastname}{' '}
+            </LinkDom>
+          </Typography>
         ))}
         <Typography variant="h5">Editor:</Typography>
         {editors.map((editor, i) => (
-          <p key={i}>
-            <b>
-              <Link
-                to={`${DEMO.ACCOUNTING_USER_ID_LINK(editor._id.toString())}`}
-              >
-                {editor.firstname} {editor.lastname}{' '}
-              </Link>
-            </b>
-          </p>
+          <Typography fontWeight="bold" key={i}>
+            <Link to={`${DEMO.ACCOUNTING_USER_ID_LINK(editor._id.toString())}`}>
+              {editor.firstname} {editor.lastname}{' '}
+            </Link>
+          </Typography>
         ))}
       </Card>
     </Box>

@@ -107,35 +107,27 @@ export const INTERVIEW_STATUS_E = {
 export const SUBMISSION_STATUS_E = {
   OK_SYMBOL: (
     <CheckCircleIcon
-      fontSize="small"
+      size={18}
       style={{ color: green[500] }}
       title="Submitted"
     />
   ),
   NOT_OK_SYMBOL: (
-    <CancelIcon fontSize="small" style={{ color: red[700] }} title="Withdraw" />
+    <CancelIcon size={18} style={{ color: red[700] }} title="Withdraw" />
   ),
   UNKNOWN_SYMBOL: (
-    <HelpIcon
-      fontSize="small"
-      style={{ color: grey[400] }}
-      title="In Progress"
-    />
+    <HelpIcon size={18} style={{ color: grey[400] }} title="In Progress" />
   )
 };
 export const ADMISSION_STATUS_E = {
   OK_SYMBOL: (
-    <CheckCircleIcon
-      fontSize="small"
-      style={{ color: green[500] }}
-      title="Admitted"
-    />
+    <CheckCircleIcon size={18} style={{ color: green[500] }} title="Admitted" />
   ),
   NOT_OK_SYMBOL: (
-    <CancelIcon fontSize="small" style={{ color: red[700] }} title="Rejected" />
+    <CancelIcon size={18} style={{ color: red[700] }} title="Rejected" />
   ),
   UNKNOWN_SYMBOL: (
-    <HelpIcon fontSize="small" style={{ color: grey[400] }} title="Pending" />
+    <HelpIcon size={18} style={{ color: grey[400] }} title="Pending" />
   )
 };
 

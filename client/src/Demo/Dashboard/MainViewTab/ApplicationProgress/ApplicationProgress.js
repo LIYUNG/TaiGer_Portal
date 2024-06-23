@@ -111,44 +111,62 @@ function ApplicationProgress(props) {
           </Link>
         </TableCell>
         {isProgramDecided(application) ? (
-          <TableCell
-            className={`mb-1 ${
-              isProgramSubmitted(application) ? 'text-warning' : 'text-info'
-            }`}
-          >
-            {application.programId.semester}
+          <TableCell>
+            <Typography>{application.programId.semester}</Typography>
           </TableCell>
         ) : (
-          <TableCell>{application.programId.semester}</TableCell>
-        )}
-        {isProgramDecided(application) ? (
-          isProgramSubmitted(application) ? (
-            <TableCell>
-              {application.programId.toefl ? application.programId.toefl : '-'}
-            </TableCell>
-          ) : (
-            <TableCell>
-              {application.programId.toefl ? application.programId.toefl : '-'}
-            </TableCell>
-          )
-        ) : (
           <TableCell>
-            {application.programId.toefl ? application.programId.toefl : '-'}
+            <Typography>{application.programId.semester}</Typography>
           </TableCell>
         )}
         {isProgramDecided(application) ? (
           isProgramSubmitted(application) ? (
             <TableCell>
-              {application.programId.ielts ? application.programId.ielts : '-'}
+              <Typography>
+                {application.programId.toefl
+                  ? application.programId.toefl
+                  : '-'}
+              </Typography>
             </TableCell>
           ) : (
             <TableCell>
-              {application.programId.ielts ? application.programId.ielts : '-'}
+              <Typography>
+                {application.programId.toefl
+                  ? application.programId.toefl
+                  : '-'}
+              </Typography>
             </TableCell>
           )
         ) : (
           <TableCell>
-            {application.programId.ielts ? application.programId.ielts : '-'}
+            <Typography>
+              {application.programId.toefl ? application.programId.toefl : '-'}
+            </Typography>
+          </TableCell>
+        )}
+        {isProgramDecided(application) ? (
+          isProgramSubmitted(application) ? (
+            <TableCell>
+              <Typography>
+                {application.programId.ielts
+                  ? application.programId.ielts
+                  : '-'}
+              </Typography>
+            </TableCell>
+          ) : (
+            <TableCell>
+              <Typography>
+                {application.programId.ielts
+                  ? application.programId.ielts
+                  : '-'}
+              </Typography>
+            </TableCell>
+          )
+        ) : (
+          <TableCell>
+            <Typography>
+              {application.programId.ielts ? application.programId.ielts : '-'}
+            </Typography>
           </TableCell>
         )}
         {isProgramDecided(application) ? (

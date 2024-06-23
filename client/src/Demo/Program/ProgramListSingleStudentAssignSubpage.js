@@ -1,9 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { Button, CircularProgress, Typography } from '@mui/material';
+import {
+  Button,
+  CircularProgress,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+  Typography
+} from '@mui/material';
 
 import ModalNew from '../../components/Modal';
+import { useTranslation } from 'react-i18next';
 
 function ProgramListSingleStudentAssignSubpage(props) {
+  const { t } = useTranslation();
   const [
     ProgramListSingleStudentAssignSubpageState,
     setProgramListSingleStudentAssignSubpageState
@@ -52,22 +63,29 @@ function ProgramListSingleStudentAssignSubpage(props) {
         </Typography>
       ))}
       <Typography>to the student:</Typography>
-      <table>
-        <tbody>
-          <b>{`${props.student.firstname} ${props.student.lastname}`}</b>
-        </tbody>
-      </table>
-
+      <TableContainer style={{ overflowX: 'auto' }}>
+        <Table size="small">
+          <TableBody>
+            <TableRow>
+              <TableCell>{`${props.student.firstname} ${props.student.lastname}`}</TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </TableContainer>
       <Button
         color="primary"
         variant="contained"
         disabled={props.isButtonDisable}
         onClick={(e) => props.onSubmitAddToStudentProgramList(e)}
       >
-        {props.isButtonDisable ? <CircularProgress /> : 'Assign'}
+        {props.isButtonDisable ? (
+          <CircularProgress />
+        ) : (
+          t('Assign', { ns: 'common' })
+        )}
       </Button>
       <Button color="secondary" variant="outlined" onClick={props.setModalHide}>
-        Cancel
+        {t('Cancel', { ns: 'common' })}
       </Button>
     </ModalNew>
   );

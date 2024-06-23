@@ -40,22 +40,14 @@ function StudentApplicationsAssignProgramlistPage(props) {
     student: props.student,
     applications: props.student.applications,
     isLoaded: props.isLoaded,
-    importedStudent: '',
     importedStudentPrograms: [],
     program_ids: [],
     importedStudentModalOpen: false,
-    isButtonDisable: false,
     isImportingStudentPrograms: false,
     modalShowAssignSuccessWindow: false,
     student_id: null,
-    program_id: null,
     success: false,
-    application_status_changed: false,
-    applying_program_count: props.student.applying_program_count,
-    modalDeleteApplication: false,
-    modalUpdatedApplication: false,
     showProgramCorrectnessReminderModal: true,
-    isProgramAssignMode: false,
     searchContainerRef: useRef(),
     searchResults: [],
     isResultsVisible: false,
@@ -290,7 +282,7 @@ function StudentApplicationsAssignProgramlistPage(props) {
         <Typography color="text.primary">{t('Applications')}</Typography>
       </Breadcrumbs>
       <Grid container spacing={2}>
-        <Grid item sx={12} md={is_TaiGer_role(user) ? 6 : 12}>
+        <Grid item xs={12} md={is_TaiGer_role(user) ? 6 : 12}>
           <Typography variant="h6">
             {t('Application Preference From Survey')}
           </Typography>
@@ -352,7 +344,7 @@ function StudentApplicationsAssignProgramlistPage(props) {
           </List>
         </Grid>
         {is_TaiGer_role(user) && (
-          <Grid item sx={12} md={6}>
+          <Grid item xs={12} md={6}>
             <Card sx={{ p: 2, minHeight: '300px' }}>
               <Typography>
                 {t('Import programs from another student')}

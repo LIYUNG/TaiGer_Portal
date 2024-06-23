@@ -499,47 +499,45 @@ function StudentApplicationsTableTemplate(props) {
     studentApplicationsTableTemplateState.student.applications.length === 0
   ) {
     applying_university_info = (
-      <>
-        <TableRow>
-          {!is_TaiGer_Student(user) && <TableCell></TableCell>}
-          <TableCell>
-            <Typography>No University</Typography>
-          </TableCell>
-          <TableCell>
-            <Typography>No Program</Typography>
-          </TableCell>
-          <TableCell>
-            <Typography>No Date</Typography>
-          </TableCell>
-          <TableCell>
-            <Typography> - </Typography>
-          </TableCell>
-          <TableCell>
-            <Typography> - </Typography>
-          </TableCell>
-          <TableCell>
-            <Typography> - </Typography>
-          </TableCell>
-          <TableCell>
-            <Typography> - </Typography>
-          </TableCell>
-          <TableCell>
-            <Typography> - </Typography>
-          </TableCell>
-          <TableCell>
-            <Typography> - </Typography>
-          </TableCell>
-          <TableCell>
-            <Typography> - </Typography>
-          </TableCell>
-          <TableCell>
-            <Typography> - </Typography>
-          </TableCell>
-          <TableCell>
-            <Typography> - </Typography>
-          </TableCell>
-        </TableRow>
-      </>
+      <TableRow>
+        {!is_TaiGer_Student(user) && <TableCell></TableCell>}
+        <TableCell>
+          <Typography>No University</Typography>
+        </TableCell>
+        <TableCell>
+          <Typography>No Program</Typography>
+        </TableCell>
+        <TableCell>
+          <Typography>No Date</Typography>
+        </TableCell>
+        <TableCell>
+          <Typography> - </Typography>
+        </TableCell>
+        <TableCell>
+          <Typography> - </Typography>
+        </TableCell>
+        <TableCell>
+          <Typography> - </Typography>
+        </TableCell>
+        <TableCell>
+          <Typography> - </Typography>
+        </TableCell>
+        <TableCell>
+          <Typography> - </Typography>
+        </TableCell>
+        <TableCell>
+          <Typography> - </Typography>
+        </TableCell>
+        <TableCell>
+          <Typography> - </Typography>
+        </TableCell>
+        <TableCell>
+          <Typography> - </Typography>
+        </TableCell>
+        <TableCell>
+          <Typography> - </Typography>
+        </TableCell>
+      </TableRow>
     );
   } else {
     applying_university_info =
@@ -565,7 +563,7 @@ function StudentApplicationsTableTemplate(props) {
               </TableCell>
             )}
             <TableCell>
-              <Typography key={application_idx}>
+              <Typography>
                 <Link
                   to={`${DEMO.SINGLE_PROGRAM_LINK(application.programId._id)}`}
                   component={LinkDom}
@@ -576,7 +574,7 @@ function StudentApplicationsTableTemplate(props) {
               </Typography>
             </TableCell>
             <TableCell>
-              <Typography key={application_idx}>
+              <Typography>
                 <Link
                   to={`${DEMO.SINGLE_PROGRAM_LINK(application.programId._id)}`}
                   component={LinkDom}
@@ -587,7 +585,7 @@ function StudentApplicationsTableTemplate(props) {
               </Typography>
             </TableCell>
             <TableCell>
-              <Typography key={application_idx}>
+              <Typography>
                 <Link
                   to={`${DEMO.SINGLE_PROGRAM_LINK(application.programId._id)}`}
                   component={LinkDom}
@@ -598,7 +596,7 @@ function StudentApplicationsTableTemplate(props) {
               </Typography>
             </TableCell>
             <TableCell>
-              <Typography key={application_idx}>
+              <Typography>
                 <Link
                   to={`${DEMO.SINGLE_PROGRAM_LINK(application.programId._id)}`}
                   component={LinkDom}
@@ -609,7 +607,7 @@ function StudentApplicationsTableTemplate(props) {
               </Typography>
             </TableCell>
             <TableCell>
-              <Typography key={application_idx}>
+              <Typography>
                 <Link
                   to={`${DEMO.SINGLE_PROGRAM_LINK(application.programId._id)}`}
                   component={LinkDom}
@@ -622,7 +620,7 @@ function StudentApplicationsTableTemplate(props) {
               </Typography>
             </TableCell>
             <TableCell>
-              <Typography key={application_idx}>
+              <Typography>
                 <Link
                   to={`${DEMO.SINGLE_PROGRAM_LINK(application.programId._id)}`}
                   component={LinkDom}
@@ -636,9 +634,9 @@ function StudentApplicationsTableTemplate(props) {
             </TableCell>
             <TableCell>
               {isProgramSubmitted(application) ? (
-                <Typography key={application_idx}>Close</Typography>
+                <Typography>{t('Close', { ns: 'common' })}</Typography>
               ) : (
-                <Typography key={application_idx}>
+                <Typography>
                   {application_deadline_calculator(props.student, application)}
                 </Typography>
               )}
@@ -710,7 +708,7 @@ function StudentApplicationsTableTemplate(props) {
                 )}
               </TableCell>
             ) : (
-              <TableCell></TableCell>
+              <TableCell>-</TableCell>
             )}
             {isProgramDecided(application) &&
             isProgramSubmitted(application) ? (
@@ -739,7 +737,7 @@ function StudentApplicationsTableTemplate(props) {
                 </FormControl>
               </TableCell>
             ) : (
-              <TableCell></TableCell>
+              <TableCell>-</TableCell>
             )}
             {isProgramDecided(application) &&
             isProgramSubmitted(application) &&
@@ -764,10 +762,10 @@ function StudentApplicationsTableTemplate(props) {
                 </FormControl>
               </TableCell>
             ) : (
-              <TableCell></TableCell>
+              <TableCell>-</TableCell>
             )}
             <TableCell>
-              <Typography key={application_idx}>
+              <Typography>
                 {isProgramSubmitted(application)
                   ? '-'
                   : application.programId.application_deadline
@@ -1071,10 +1069,12 @@ function StudentApplicationsTableTemplate(props) {
                 <Table size="small">
                   <TableHead>
                     <TableRow>
-                      {!is_TaiGer_Student(user) && <TableCell></TableCell>}
+                      {!is_TaiGer_Student(user) && <TableCell>-</TableCell>}
                       {programstatuslist.map((doc, index) => (
                         <TableCell key={index}>
-                          {t(doc.name, { ns: 'common' })}
+                          <Typography>
+                            {t(doc.name, { ns: 'common' })}
+                          </Typography>
                         </TableCell>
                       ))}
                     </TableRow>

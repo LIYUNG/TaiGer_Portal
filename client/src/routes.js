@@ -370,9 +370,9 @@ const routes = [
   },
   {
     path: '/all-base-documents',
-    exact: true,
-    name: 'All Documents',
-    Component: AllBaseDocuments
+    errorElement: <DefaultErrorPage />,
+    loader: getAllActiveStudentsLoader,
+    element: <AllBaseDocuments />
   },
   {
     path: '/portal-informations',
@@ -472,9 +472,9 @@ const routes = [
   },
   {
     path: '/students-overview/all',
-    exact: true,
-    name: '',
-    Component: StudentOverviewPage
+    errorElement: <DefaultErrorPage />,
+    loader: getAllActiveStudentsLoader,
+    element: <StudentOverviewPage />
   },
   {
     path: '/internal/program-conflict',

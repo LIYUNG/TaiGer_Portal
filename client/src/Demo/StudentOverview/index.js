@@ -1,75 +1,26 @@
-import React, { useEffect, useState } from 'react';
-import { Navigate, Link as LinkDom } from 'react-router-dom';
+import React from 'react';
+import { Navigate, Link as LinkDom, useLoaderData } from 'react-router-dom';
 import { Box, Breadcrumbs, Link, Typography } from '@mui/material';
 
-import ErrorPage from '../Utils/ErrorPage';
-import { getAllActiveStudents } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import { is_TaiGer_role } from '../Utils/checking-functions';
 import DEMO from '../../store/constant';
 import StudentOverviewTable from '../../components/StudentOverviewTable';
 import { useAuth } from '../../components/AuthProvider';
 import { appConfig } from '../../config';
-import Loading from '../../components/Loading/Loading';
 import { useTranslation } from 'react-i18next';
 
 function StudentOverviewPage() {
   const { user } = useAuth();
   const { t } = useTranslation();
-  const [StudentOverviewPageState, setStudentOverviewPageState] = useState({
-    error: '',
-    isLoaded: false,
-    data: null,
-    success: false,
-    students: null,
-    res_status: 0,
-    res_modal_message: '',
-    res_modal_status: 0
-  });
-  useEffect(() => {
-    getAllActiveStudents().then(
-      (resp) => {
-        const { data, success } = resp.data;
-        const { status } = resp;
-        if (success) {
-          setStudentOverviewPageState((prevState) => ({
-            ...prevState,
-            isLoaded: true,
-            students: data,
-            success: success,
-            res_status: status
-          }));
-        } else {
-          setStudentOverviewPageState((prevState) => ({
-            ...prevState,
-            isLoaded: true,
-            res_status: status
-          }));
-        }
-      },
-      (error) => {
-        setStudentOverviewPageState((prevState) => ({
-          ...prevState,
-          isLoaded: true,
-          error,
-          res_status: 500
-        }));
-      }
-    );
-  }, []);
+  const {
+    data: { data: students }
+  } = useLoaderData();
 
   if (!is_TaiGer_role(user)) {
     return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
   }
-  const { res_status, isLoaded } = StudentOverviewPageState;
   TabTitle('Students Overview');
-  if (!isLoaded && !StudentOverviewPageState.students) {
-    return <Loading />;
-  }
-
-  if (res_status >= 400) {
-    return <ErrorPage res_status={res_status} />;
-  }
 
   return (
     <Box data-testid="student_overview">
@@ -87,14 +38,10 @@ function StudentOverviewPage() {
         </Typography>
         <Typography color="text.primary">
           {t('All Active Student Overview', { ns: 'common' })} (
-          {StudentOverviewPageState.students?.length})
+          {students?.length})
         </Typography>
       </Breadcrumbs>
-      <StudentOverviewTable
-        title="All"
-        students={StudentOverviewPageState.students}
-        user={user}
-      />
+      <StudentOverviewTable title="All" students={students} user={user} />
     </Box>
   );
 }

@@ -6,7 +6,7 @@ import 'react-i18next';
 import { getAllActiveStudents } from '../../api';
 import axios from 'axios';
 import { useAuth } from '../../components/AuthProvider/index';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter, RouterProvider, createMemoryRouter } from 'react-router-dom';
 
 import { mockSingleData } from '../../test/testingStudentData';
 
@@ -31,6 +31,17 @@ class ResizeObserver {
   unobserve() {}
 }
 
+const routes = [
+  {
+    path: '/students-overview/all',
+    element: <StudentOverviewPage />,
+    errorElement: <div>Error</div>,
+    loader: () => {
+      return { data: mockSingleData, essays: { data: [] } };
+    }
+  }
+];
+
 describe('StudentOverviewPage', () => {
   window.ResizeObserver = ResizeObserver;
   test('StudentOverview page not crash', async () => {
@@ -38,23 +49,14 @@ describe('StudentOverviewPage', () => {
     useAuth.mockReturnValue({
       user: { role: 'Agent', _id: '639baebf8b84944b872cf648' }
     });
-    render(
-      <MemoryRouter>
-        <StudentOverviewPage />
-      </MemoryRouter>
-    );
-
-    // Example
-    // const buttonElement = screen.getByRole('button');
-    // userEvent.click(buttonElement);
-    // const outputElement = screen.getByText('good to see you', { exact: false });
-    // expect(outputElement).toBeInTheDocument(1);
+    const router = createMemoryRouter(routes, {
+      initialEntries: ['/students-overview/all']
+    });
+    render(<RouterProvider router={router} />);
 
     await waitFor(() => {
       // TODO
-      expect(screen.getByTestId('student_overview')).toHaveTextContent(
-        'Agent'
-      );
+      expect(screen.getByTestId('student_overview')).toHaveTextContent('Agent');
       // expect(1).toBe(1);
     });
   });

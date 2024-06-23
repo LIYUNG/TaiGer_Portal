@@ -29,11 +29,7 @@ export default function SignIn() {
   const setuserdata2 = (resp) => {
     try {
       if (resp) {
-        // TODO: what if status is other!!?
-        if (resp.status === 400) {
-          setLoginsuccess(false);
-          setButtondisable(false);
-        } else if (resp.status === 401 || resp.status === 500) {
+        if (resp.status === 400 || resp.status === 401 || resp.status === 500) {
           setLoginsuccess(false);
           setButtondisable(false);
         } else if (resp.status === 403) {
@@ -46,11 +42,6 @@ export default function SignIn() {
         } else {
           setButtondisable(false);
           login(resp.data.data);
-          // if (query.get('p')) {
-          //   navigate(query.get('p'));
-          // } else {
-          //   navigate(`${DEMO.DASHBOARD_LINK}`);
-          // }
         }
       } else {
         alert('Email or password not correct.');

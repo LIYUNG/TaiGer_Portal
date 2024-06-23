@@ -1,76 +1,28 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link as LinkDom, Navigate } from 'react-router-dom';
+import { Link as LinkDom, Navigate, useLoaderData } from 'react-router-dom';
 import { Box, Breadcrumbs, Link, Typography } from '@mui/material';
 
-import ErrorPage from '../Utils/ErrorPage';
 import { is_TaiGer_role } from '../Utils/checking-functions';
-import { getAllActiveStudents } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import { useAuth } from '../../components/AuthProvider';
 import DEMO from '../../store/constant';
 import { appConfig } from '../../config';
-import Loading from '../../components/Loading/Loading';
 import { BaseDocumentsTable } from './BaseDocumentsTable';
 
 function AllBaseDocuments() {
   const { user } = useAuth();
   const { t } = useTranslation();
-  const [baseDocumentsState, setBaseDocumentsState] = useState({
-    error: '',
-    isLoaded: false,
-    data: null,
-    success: false,
-    students: null,
-    res_status: 0
-  });
 
-  useEffect(() => {
-    getAllActiveStudents().then(
-      (resp) => {
-        const { data, success } = resp.data;
-        const { status } = resp;
-        if (success) {
-          setBaseDocumentsState((prevState) => ({
-            ...prevState,
-            isLoaded: true,
-            students: data,
-            success: success,
-            res_status: status
-          }));
-        } else {
-          setBaseDocumentsState((prevState) => ({
-            ...prevState,
-            isLoaded: true,
-            res_status: status
-          }));
-        }
-      },
-      (error) => {
-        setBaseDocumentsState((prevState) => ({
-          ...prevState,
-          isLoaded: true,
-          error,
-          res_status: 500
-        }));
-      }
-    );
-  }, []);
+  const {
+    data: { data: students }
+  } = useLoaderData();
 
   if (!is_TaiGer_role(user)) {
     return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
   }
-  const { res_status, isLoaded } = baseDocumentsState;
 
   TabTitle(t('All Documents', { ns: 'common' }));
-
-  if (!isLoaded && !baseDocumentsState.students) {
-    return <Loading />;
-  }
-
-  if (res_status >= 400) {
-    return <ErrorPage res_status={res_status} />;
-  }
 
   return (
     <Box>
@@ -90,9 +42,7 @@ function AllBaseDocuments() {
           {t('All Documents', { ns: 'common' })}
         </Typography>
       </Breadcrumbs>
-      {is_TaiGer_role(user) && (
-        <BaseDocumentsTable students={baseDocumentsState.students} />
-      )}
+      {is_TaiGer_role(user) && <BaseDocumentsTable students={students} />}
     </Box>
   );
 }

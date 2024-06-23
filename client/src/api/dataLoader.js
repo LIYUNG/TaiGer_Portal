@@ -8,7 +8,8 @@ import {
   getApplicationStudent,
   getMyAcademicBackground,
   getAllActiveEssays,
-  getAllStudents
+  getAllStudents,
+  getStudentUniAssist
 } from '.';
 
 export async function getStudentsLoader() {
@@ -40,6 +41,15 @@ export async function getAllActiveEssaysLoader() {
 
 export async function getAllActiveStudentsLoader() {
   const response = await getAllActiveStudents();
+  if (response.status >= 400) {
+    throw json({ message: response.statusText }, { status: response.status });
+  } else {
+    return response;
+  }
+}
+
+export async function getStudentUniAssistLoader() {
+  const response = await getStudentUniAssist();
   if (response.status >= 400) {
     throw json({ message: response.statusText }, { status: response.status });
   } else {

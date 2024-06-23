@@ -33,7 +33,10 @@ import {
   does_essay_have_writers,
   is_program_ml_rl_essay_finished,
   num_uni_assist_vpd_needed,
-  num_uni_assist_vpd_uploaded
+  num_uni_assist_vpd_uploaded,
+  check_student_needs_uni_assist,
+  is_uni_assist_paid_and_docs_uploaded,
+  isUniAssistVPDNeeded
 } from './checking-functions';
 import { profile_list } from './contants';
 
@@ -1053,5 +1056,153 @@ describe('is_program_ml_rl_essay_finished', () => {
     };
     const result = is_program_ml_rl_essay_finished(application);
     expect(result).toBe(true);
+  });
+});
+
+describe('isUniAssistVPDNeeded', () => {
+  it('returns false when the program is not decided', () => {
+    const application = {};
+    const result = isUniAssistVPDNeeded(application);
+    expect(result).toBe(false);
+  });
+
+  it('returns false when programId does not have uni_assist', () => {
+    const application = { programId: {} };
+    const result = isUniAssistVPDNeeded(application);
+    expect(result).toBe(false);
+  });
+
+  it('returns false when uni_assist does not include VPD', () => {
+    const application = { programId: { uni_assist: 'Yes-FULL' } };
+    const result = isUniAssistVPDNeeded(application);
+    expect(result).toBe(false);
+  });
+
+  it('returns true when uni_assist includes VPD but no uni_assist property', () => {
+    const application = {
+      programId: { uni_assist: 'Yes-VPD' },
+      uni_assist: {},
+      decided: 'O'
+    };
+    const result = isUniAssistVPDNeeded(application);
+    expect(result).toBe(true);
+  });
+
+  it('returns false when uni_assist includes VPD and status is NotNeeded', () => {
+    const application = {
+      programId: { uni_assist: 'Yes-VPD' },
+      uni_assist: { status: DocumentStatus.NotNeeded },
+      decided: 'O'
+    };
+    const result = isUniAssistVPDNeeded(application);
+    expect(result).toBe(false);
+  });
+
+  it('returns true when uni_assist includes VPD, status is not Uploaded, and vpd_file_path is empty', () => {
+    const application = {
+      programId: { uni_assist: 'Yes-VPD' },
+      uni_assist: { status: DocumentStatus.Pending, vpd_file_path: '' },
+      decided: 'O'
+    };
+    const result = isUniAssistVPDNeeded(application);
+    expect(result).toBe(true);
+  });
+
+  it('returns false when uni_assist includes VPD, status is Uploaded, and vpd_file_path is not empty', () => {
+    const application = {
+      programId: { uni_assist: 'Yes-VPD' },
+      uni_assist: {
+        status: DocumentStatus.Uploaded,
+        vpd_file_path: 'path/to/file'
+      },
+      decided: 'O'
+    };
+    const result = isUniAssistVPDNeeded(application);
+    expect(result).toBe(false);
+  });
+});
+
+describe('is_uni_assist_paid_and_docs_uploaded', () => {
+  // Test case 1: No uni assist
+  it('returns false when uni assist is not provided', () => {
+    const application = {};
+    const result = is_uni_assist_paid_and_docs_uploaded(application);
+    expect(result).toBe(false);
+  });
+
+  // Test case 2: Uni assist not paid
+  it('returns false when uni assist is not paid', () => {
+    const application = {
+      uni_assist: {
+        isPaid: false
+      }
+    };
+    const result = is_uni_assist_paid_and_docs_uploaded(application);
+    expect(result).toBe(false);
+  });
+
+  // Test case 3: Uni assist paid
+  it('returns true when uni assist is paid', () => {
+    const application = {
+      uni_assist: {
+        isPaid: true
+      }
+    };
+    const result = is_uni_assist_paid_and_docs_uploaded(application);
+    expect(result).toBe(true);
+  });
+});
+
+describe('check_student_needs_uni_assist', () => {
+  // Test case 1: No applications
+  it('returns false when no applications are provided', () => {
+    const student = { applications: [] };
+    const result = check_student_needs_uni_assist(student);
+    expect(result).toBe(false);
+  });
+
+  // Test case 2: Applications with no uni assist needed
+  it('returns false when no applications need uni assist', () => {
+    const student = {
+      applications: [{ programId: { uni_assist: 'No' }, decided: 'O' }]
+    };
+    const result = check_student_needs_uni_assist(student);
+    expect(result).toBe(false);
+  });
+
+  // Test case 3: Applications needing VPD
+  it('returns true when at least one application needs uni assist for VPD', () => {
+    const student = {
+      applications: [
+        { programId: { uni_assist: 'Yes_VPD' }, decided: 'O' },
+        { programId: { uni_assist: 'No' }, decided: 'O' }
+      ]
+    };
+    const result = check_student_needs_uni_assist(student);
+    expect(result).toBe(true);
+  });
+
+  // Test case 4: Applications needing FULL
+  it('returns true when at least one application needs uni assist for FULL', () => {
+    const student = {
+      applications: [
+        { programId: { uni_assist: 'Yes_FULL' }, decided: 'O' },
+        { programId: { uni_assist: 'No' }, decided: 'O' }
+      ]
+    };
+    const result = check_student_needs_uni_assist(student);
+    expect(result).toBe(true);
+  });
+
+  // Test case 6: No decided programs
+  it('returns false when no programs are decided', () => {
+    const student = {
+      applications: [
+        { programId: { uni_assist: 'Yes_FULL' }, decided: 'X' },
+        { programId: { uni_assist: 'Yes_VPD' }, decided: '-' }
+      ]
+    };
+    const result = check_student_needs_uni_assist(student);
+    expect(result).toBe(false);
   });
 });

@@ -1100,6 +1100,7 @@ export const check_program_uni_assist_needed = (application) => {
   return false;
 };
 
+// Tested
 export const isUniAssistVPDNeeded = (application) => {
   if (
     isProgramDecided(application) &&
@@ -1128,6 +1129,7 @@ export const isUniAssistVPDNeeded = (application) => {
   return false;
 };
 
+// Tested
 export const is_uni_assist_paid_and_docs_uploaded = (application) => {
   if (application.uni_assist && application.uni_assist.isPaid) {
     return true;
@@ -1135,6 +1137,7 @@ export const is_uni_assist_paid_and_docs_uploaded = (application) => {
   return false;
 };
 
+// Tested
 export const check_student_needs_uni_assist = (student) => {
   if (!student.applications) {
     return false;

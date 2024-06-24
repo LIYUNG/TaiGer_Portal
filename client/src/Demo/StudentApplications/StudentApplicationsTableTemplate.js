@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Breadcrumbs,
@@ -8,11 +8,6 @@ import {
   FormControl,
   Grid,
   Link,
-  List,
-  ListItemButton,
-  ListItemText,
-  ListItemIcon,
-  Checkbox,
   MenuItem,
   Select,
   Table,
@@ -53,13 +48,7 @@ import {
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 
-import {
-  UpdateStudentApplications,
-  removeProgramFromStudent,
-  getStudentApplications,
-  assignProgramToStudent,
-  getQueryStudentsResults
-} from '../../api';
+import { UpdateStudentApplications, removeProgramFromStudent } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import { appConfig } from '../../config';
@@ -98,114 +87,10 @@ function StudentApplicationsTableTemplate(props) {
     modalUpdatedApplication: false,
     showProgramCorrectnessReminderModal: true,
     isProgramAssignMode: false,
-    searchResults: [],
-    isResultsVisible: false,
     res_status: 0,
     res_modal_status: 0,
     res_modal_message: ''
   });
-  useEffect(() => {
-    const delayDebounceFn = setTimeout(() => {
-      if (studentApplicationsTableTemplateState.searchTerm) {
-        fetchSearchResults();
-      } else {
-        setStudentApplicationsTableTemplateState((prevState) => ({
-          ...prevState,
-          searchResults: []
-        }));
-      }
-    }, 300); // Adjust the delay as needed
-    document.addEventListener('click', handleClickOutside);
-    return () => {
-      document.removeEventListener('click', handleClickOutside);
-      clearTimeout(delayDebounceFn);
-    };
-  }, [studentApplicationsTableTemplateState.searchTerm]);
-
-  const handleClickOutside = () => {
-    // Clicked outside, hide the result list
-    setStudentApplicationsTableTemplateState((prevState) => ({
-      ...prevState,
-      isResultsVisible: false
-    }));
-  };
-
-  const fetchSearchResults = async () => {
-    try {
-      setStudentApplicationsTableTemplateState((prevState) => ({
-        ...prevState,
-        isLoading: true
-      }));
-      const response = await getQueryStudentsResults(
-        studentApplicationsTableTemplateState.searchTerm
-      );
-      if (response.data.success) {
-        setStudentApplicationsTableTemplateState((prevState) => ({
-          ...prevState,
-          searchResults: response.data.data,
-          isResultsVisible: true,
-          isLoading: false
-        }));
-      } else {
-        setStudentApplicationsTableTemplateState((prevState) => ({
-          ...prevState,
-          isResultsVisible: false,
-          searchTerm: '',
-          searchResults: [],
-          isErrorTerm: true,
-          isLoading: false,
-          res_modal_status: 401,
-          res_modal_message: 'Session expired. Please refresh.'
-        }));
-      }
-    } catch (error) {
-      setStudentApplicationsTableTemplateState((prevState) => ({
-        ...prevState,
-        isResultsVisible: false,
-        searchTerm: '',
-        searchResults: [],
-        isErrorTerm: true,
-        isLoading: false,
-        res_modal_status: 403,
-        res_modal_message: error
-      }));
-    }
-  };
-
-  const onClickStudentHandler = (result) => {
-    setStudentApplicationsTableTemplateState((prevState) => ({
-      ...prevState,
-      importedStudentModalOpen: true,
-      isImportingStudentPrograms: true
-    }));
-    // Call api:
-    getStudentApplications(result._id.toString()).then(
-      (res) => {
-        const { data, success } = res.data;
-        const { status } = res;
-        if (success) {
-          setStudentApplicationsTableTemplateState((prevState) => ({
-            ...prevState,
-            isImportingStudentPrograms: false,
-            importedStudentPrograms: data,
-            program_ids: data?.map((program) =>
-              program.programId._id.toString()
-            ),
-            res_modal_status: status
-          }));
-        } else {
-          const { message } = res.data;
-          setStudentApplicationsTableTemplateState((prevState) => ({
-            ...prevState,
-            isLoaded: true,
-            res_modal_status: status,
-            res_modal_message: message
-          }));
-        }
-      },
-      () => {}
-    );
-  };
 
   const handleChangeProgramCount = (e) => {
     e.preventDefault();
@@ -240,40 +125,6 @@ function StudentApplicationsTableTemplate(props) {
     }));
   };
 
-  const onHideAssignSuccessWindow = () => {
-    setStudentApplicationsTableTemplateState((prevState) => ({
-      ...prevState,
-      modalShowAssignSuccessWindow: false
-    }));
-    window.location.reload(true);
-  };
-
-  const handleInputChange = (e) => {
-    setStudentApplicationsTableTemplateState((prevState) => ({
-      ...prevState,
-      searchTerm: e.target.value.trimLeft()
-    }));
-    if (e.target.value.length === 0) {
-      setStudentApplicationsTableTemplateState((prevState) => ({
-        ...prevState,
-        isResultsVisible: false
-      }));
-    }
-  };
-
-  const handleInputBlur = () => {
-    setStudentApplicationsTableTemplateState((prevState) => ({
-      ...prevState,
-      isResultsVisible: false
-    }));
-  };
-  const onHideimportedStudentModalOpen = () => {
-    setStudentApplicationsTableTemplateState((prevState) => ({
-      ...prevState,
-      importedStudentModalOpen: false,
-      importedStudentPrograms: []
-    }));
-  };
   const onHideModalDeleteApplication = () => {
     setStudentApplicationsTableTemplateState((prevState) => ({
       ...prevState,
@@ -285,43 +136,6 @@ function StudentApplicationsTableTemplate(props) {
       ...prevState,
       modalUpdatedApplication: false
     }));
-  };
-
-  const handleImportProgramsConfirm = () => {
-    const program_ids = studentApplicationsTableTemplateState.program_ids;
-    setStudentApplicationsTableTemplateState((prevState) => ({
-      ...prevState,
-      isButtonDisable: true
-    }));
-    assignProgramToStudent(
-      studentApplicationsTableTemplateState.student._id.toString(),
-      program_ids
-    ).then(
-      (res) => {
-        const { success } = res.data;
-        const { status } = res;
-        if (success) {
-          setStudentApplicationsTableTemplateState((prevState) => ({
-            ...prevState,
-            isButtonDisable: false,
-            importedStudentModalOpen: false,
-            modalShowAssignSuccessWindow: true,
-            success,
-            res_modal_status: status
-          }));
-        } else {
-          const { message } = res.data;
-          setStudentApplicationsTableTemplateState((prevState) => ({
-            ...prevState,
-            isLoaded: true,
-            importedStudentModalOpen: false,
-            res_modal_message: message,
-            res_modal_status: status
-          }));
-        }
-      },
-      () => {}
-    );
   };
 
   const handleDeleteConfirm = (e) => {
@@ -369,28 +183,6 @@ function StudentApplicationsTableTemplate(props) {
         }));
       }
     );
-  };
-
-  const modifyImportingPrograms = (new_programId, isActive) => {
-    let importing_program_ids_existing = [
-      ...studentApplicationsTableTemplateState.program_ids
-    ];
-    console.log(importing_program_ids_existing);
-    if (isActive) {
-      importing_program_ids_existing = importing_program_ids_existing.filter(
-        (item) => item !== new_programId
-      );
-      setStudentApplicationsTableTemplateState((prevState) => ({
-        ...prevState,
-        program_ids: importing_program_ids_existing
-      }));
-    } else {
-      importing_program_ids_existing.push(new_programId);
-      setStudentApplicationsTableTemplateState((prevState) => ({
-        ...prevState,
-        program_ids: importing_program_ids_existing
-      }));
-    }
   };
 
   const handleSubmit = (e, student_id) => {
@@ -837,19 +629,7 @@ function StudentApplicationsTableTemplate(props) {
         </Grid>
         {is_TaiGer_role(user) && (
           <Grid item xs={12} md={6}>
-            <ImportStudentProgramsCard
-              student={props.student}
-              searchTerm={studentApplicationsTableTemplateState.searchTerm}
-              isResultsVisible={
-                studentApplicationsTableTemplateState.isResultsVisible
-              }
-              searchResults={
-                studentApplicationsTableTemplateState.searchResults
-              }
-              handleInputBlur={handleInputBlur}
-              handleInputChange={handleInputChange}
-              onClickStudentHandler={onClickStudentHandler}
-            />
+            <ImportStudentProgramsCard student={props.student} />
           </Grid>
         )}
       </Grid>
@@ -1020,101 +800,6 @@ function StudentApplicationsTableTemplate(props) {
               </Box>
             </>
           )}
-          <ModalNew
-            open={
-              studentApplicationsTableTemplateState.importedStudentModalOpen
-            }
-            onClose={onHideimportedStudentModalOpen}
-            size="xl"
-            aria-labelledby="contained-modal-title-vcenter"
-          >
-            <Typography variant="h6">Import programs</Typography>
-            <Typography>
-              Do you want to import the following programs?
-              <br />
-              (Same programs will <b>NOT</b> be duplicated :) )
-              {studentApplicationsTableTemplateState.isImportingStudentPrograms ? (
-                <CircularProgress size={16} />
-              ) : (
-                <List>
-                  {studentApplicationsTableTemplateState.importedStudentPrograms?.map(
-                    (app, i) => (
-                      <ListItemButton
-                        key={i}
-                        role={undefined}
-                        onClick={() =>
-                          modifyImportingPrograms(
-                            app.programId._id.toString(),
-                            studentApplicationsTableTemplateState.program_ids?.some(
-                              (program_id) =>
-                                program_id === app.programId._id.toString()
-                            )
-                          )
-                        }
-                        dense
-                      >
-                        <ListItemIcon>
-                          <Checkbox
-                            edge="start"
-                            checked={studentApplicationsTableTemplateState.program_ids?.some(
-                              (program_id) =>
-                                program_id === app.programId._id.toString()
-                            )}
-                            tabIndex={-1}
-                            disableRipple
-                          />
-                        </ListItemIcon>
-                        <ListItemText
-                          primary={`${app.programId?.school} - ${app.programId?.program_name} ${app.programId?.degree} ${app.programId?.semester}`}
-                        />
-                      </ListItemButton>
-                    )
-                  ) || []}
-                </List>
-              )}
-            </Typography>
-            <Typography>
-              <Button
-                color="primary"
-                variant="contained"
-                size="small"
-                disabled={studentApplicationsTableTemplateState.isButtonDisable}
-                onClick={handleImportProgramsConfirm}
-              >
-                {studentApplicationsTableTemplateState.isButtonDisable ? (
-                  <CircularProgress size={16} />
-                ) : (
-                  t('Yes', { ns: 'common' })
-                )}
-              </Button>
-              <Button
-                color="primary"
-                variant="outlined"
-                size="small"
-                onClick={onHideimportedStudentModalOpen}
-              >
-                {t('No', { ns: 'common' })}
-              </Button>
-            </Typography>
-          </ModalNew>
-          <ModalNew
-            open={
-              studentApplicationsTableTemplateState.modalShowAssignSuccessWindow
-            }
-            onClose={onHideAssignSuccessWindow}
-            size="m"
-            aria-labelledby="contained-modal-title-vcenter"
-          >
-            <Typography id="contained-modal-title-vcenter">
-              {t('Success', { ns: 'common' })}
-            </Typography>
-            <Typography>
-              Program(s) imported to student successfully!
-            </Typography>
-            <Typography>
-              <Button onClick={onHideAssignSuccessWindow}>Close</Button>
-            </Typography>
-          </ModalNew>
           <ModalNew
             open={studentApplicationsTableTemplateState.modalDeleteApplication}
             onClose={onHideModalDeleteApplication}

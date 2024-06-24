@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Button,
@@ -18,7 +18,11 @@ import { useTranslation } from 'react-i18next';
 import EmailIcon from '@mui/icons-material/Email';
 import { highlightText } from '../Utils/checking-functions';
 import ModalNew from '../../components/Modal';
-import { assignProgramToStudent } from '../../api';
+import {
+  assignProgramToStudent,
+  getQueryStudentsResults,
+  getStudentApplications
+} from '../../api';
 
 export const ImportStudentProgramsCard = (props) => {
   const { t } = useTranslation();
@@ -49,12 +53,135 @@ export const ImportStudentProgramsCard = (props) => {
       res_modal_message: ''
     });
 
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      if (importStudentProgramsCard.searchTerm) {
+        fetchSearchResults();
+      } else {
+        setImportStudentProgramsCardState((prevState) => ({
+          ...prevState,
+          searchResults: []
+        }));
+      }
+    }, 300); // Adjust the delay as needed
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+      clearTimeout(delayDebounceFn);
+    };
+  }, [importStudentProgramsCard.searchTerm]);
+
+  const handleClickOutside = () => {
+    // Clicked outside, hide the result list
+    setImportStudentProgramsCardState((prevState) => ({
+      ...prevState,
+      isResultsVisible: false
+    }));
+  };
+
+  const onClickStudentHandler = (result) => {
+    setImportStudentProgramsCardState((prevState) => ({
+      ...prevState,
+      importedStudentModalOpen: true,
+      isImportingStudentPrograms: true
+    }));
+    // Call api:
+    getStudentApplications(result._id.toString()).then(
+      (res) => {
+        const { data, success } = res.data;
+        const { status } = res;
+        if (success) {
+          setImportStudentProgramsCardState((prevState) => ({
+            ...prevState,
+            isImportingStudentPrograms: false,
+            importedStudentPrograms: data,
+            program_ids: data?.map((program) =>
+              program.programId._id.toString()
+            ),
+            res_modal_status: status
+          }));
+        } else {
+          const { message } = res.data;
+          setImportStudentProgramsCardState((prevState) => ({
+            ...prevState,
+            isLoaded: true,
+            res_modal_status: status,
+            res_modal_message: message
+          }));
+        }
+      },
+      () => {}
+    );
+  };
+
+  const fetchSearchResults = async () => {
+    try {
+      setImportStudentProgramsCardState((prevState) => ({
+        ...prevState,
+        isLoading: true
+      }));
+      const response = await getQueryStudentsResults(
+        importStudentProgramsCard.searchTerm
+      );
+      if (response.data.success) {
+        setImportStudentProgramsCardState((prevState) => ({
+          ...prevState,
+          searchResults: response.data.data,
+          isResultsVisible: true,
+          isLoading: false
+        }));
+      } else {
+        setImportStudentProgramsCardState((prevState) => ({
+          ...prevState,
+          isResultsVisible: false,
+          searchTerm: '',
+          searchResults: [],
+          isErrorTerm: true,
+          isLoading: false,
+          res_modal_status: 401,
+          res_modal_message: 'Session expired. Please refresh.'
+        }));
+      }
+    } catch (error) {
+      setImportStudentProgramsCardState((prevState) => ({
+        ...prevState,
+        isResultsVisible: false,
+        searchTerm: '',
+        searchResults: [],
+        isErrorTerm: true,
+        isLoading: false,
+        res_modal_status: 403,
+        res_modal_message: error
+      }));
+    }
+  };
+
   const onHideimportedStudentModalOpen = () => {
     setImportStudentProgramsCardState((prevState) => ({
       ...prevState,
       importedStudentModalOpen: false,
       importedStudentPrograms: []
     }));
+  };
+
+  const handleInputBlur = () => {
+    setImportStudentProgramsCardState((prevState) => ({
+      ...prevState,
+      isResultsVisible: false
+    }));
+  };
+
+  const handleInputChange = (e) => {
+    setImportStudentProgramsCardState((prevState) => ({
+      ...prevState,
+      searchTerm: e.target.value.trimLeft()
+    }));
+    if (e.target.value.length === 0) {
+      setImportStudentProgramsCardState((prevState) => ({
+        ...prevState,
+        isResultsVisible: false
+      }));
+    }
   };
 
   const onHideAssignSuccessWindow = () => {
@@ -125,7 +252,6 @@ export const ImportStudentProgramsCard = (props) => {
   };
   return (
     <>
-      {' '}
       <Card sx={{ p: 2, minHeight: '340px', zIndex: 0 }}>
         <Typography>{t('Import programs from another student')}</Typography>
         <Typography>
@@ -139,12 +265,12 @@ export const ImportStudentProgramsCard = (props) => {
             size="small"
             className="search-input"
             placeholder={t('Search student...')}
-            value={props.searchTerm}
-            onMouseDown={props.handleInputBlur}
-            onChange={props.handleInputChange}
+            value={importStudentProgramsCard.searchTerm}
+            onMouseDown={handleInputBlur}
+            onChange={handleInputChange}
           />
-          {props.isResultsVisible &&
-            (props.searchResults?.length > 0 ? (
+          {importStudentProgramsCard.isResultsVisible &&
+            (importStudentProgramsCard.searchResults?.length > 0 ? (
               <Paper
                 sx={{
                   marginTop: '5px',
@@ -157,9 +283,9 @@ export const ImportStudentProgramsCard = (props) => {
                 }}
               >
                 <List>
-                  {props.searchResults?.map((result, i) => (
+                  {importStudentProgramsCard.searchResults?.map((result, i) => (
                     <ListItem
-                      onClick={() => props.onClickStudentHandler(result)}
+                      onClick={() => onClickStudentHandler(result)}
                       key={i}
                       button
                     >
@@ -170,7 +296,7 @@ export const ImportStudentProgramsCard = (props) => {
                               `${result.firstname} ${result.lastname} ${
                                 result.firstname_chinese || ''
                               } ${result.lastname_chinese || ''}`,
-                              props.searchTerm
+                              importStudentProgramsCard.searchTerm
                             )}
                             {result.email && (
                               <Box
@@ -182,7 +308,10 @@ export const ImportStudentProgramsCard = (props) => {
                                 }}
                               >
                                 <EmailIcon sx={{ mr: 0.5 }} />
-                                {highlightText(result.email, props.searchTerm)}
+                                {highlightText(
+                                  result.email,
+                                  importStudentProgramsCard.searchTerm
+                                )}
                               </Box>
                             )}
                           </>

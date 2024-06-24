@@ -195,7 +195,7 @@ router
     assignEditorToStudent,
     logAccess
   );
-  
+
 router
   .route('/:studentId/attributes')
   .post(
@@ -215,7 +215,6 @@ router
     permit(Role.Admin, Role.Manager, Role.Agent),
     permission_canAccessStudentDatabase_filter,
     multitenant_filter,
-    InnerTaigerMultitenantFilter,
     getStudentApplications,
     logAccess
   )

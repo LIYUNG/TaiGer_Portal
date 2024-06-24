@@ -91,16 +91,22 @@ const getQueryResults = asyncHandler(async (req, res, next) => {
 });
 
 const getQueryStudentsResults = asyncHandler(async (req, res, next) => {
-  const students = await User.find(
-    {
-      $text: { $search: req.query.q },
-      role: { $in: ['Student'] }
-    },
-    { score: { $meta: 'textScore' } }
-  )
-    .sort({ score: { $meta: 'textScore' } })
-    .limit(5)
-    .select('firstname lastname firstname_chinese lastname_chinese role')
+  const students = await User.find({
+    $and: [
+      {
+        $or: [
+          { firstname: { $regex: req.query.q, $options: 'i' } },
+          { lastname: { $regex: req.query.q, $options: 'i' } },
+          { firstname_chinese: { $regex: req.query.q, $options: 'i' } },
+          { lastname_chinese: { $regex: req.query.q, $options: 'i' } },
+          { email: { $regex: req.query.q, $options: 'i' } }
+        ]
+      },
+      { role: { $in: ['Student'] } }
+    ]
+  })
+    .limit(6)
+    .select('firstname lastname firstname_chinese lastname_chinese role email')
     .lean();
 
   res.status(200).send({

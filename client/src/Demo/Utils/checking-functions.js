@@ -1,6 +1,6 @@
 import React from 'react';
 import Linkify from 'react-linkify';
-import { Link } from '@mui/material';
+import { Link, Typography } from '@mui/material';
 import { Link as LinkDom } from 'react-router-dom';
 import JSZip from 'jszip';
 import * as XLSX from 'xlsx';
@@ -1850,6 +1850,21 @@ export const programs_refactor = (students) => {
     }
   }
   return applications;
+};
+
+export const highlightText = (text, highlight) => {
+  if (!highlight) return text;
+
+  const parts = text.split(new RegExp(`(${highlight})`, 'gi'));
+  return parts.map((part, i) =>
+    part.toLowerCase() === highlight.toLowerCase() ? (
+      <Typography component="span" key={i} sx={{ fontWeight: 'bold' }}>
+        {part}
+      </Typography>
+    ) : (
+      part
+    )
+  );
 };
 
 export const toogleItemInArray = (arr, item) => {

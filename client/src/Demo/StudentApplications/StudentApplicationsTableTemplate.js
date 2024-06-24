@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Breadcrumbs,
@@ -9,7 +9,6 @@ import {
   Grid,
   Link,
   List,
-  ListItem,
   ListItemButton,
   ListItemText,
   ListItemIcon,
@@ -22,7 +21,6 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  TextField,
   Typography
 } from '@mui/material';
 
@@ -69,6 +67,8 @@ import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
 import ModalNew from '../../components/Modal';
 import { useNavigate } from 'react-router-dom';
+import { ImportStudentProgramsCard } from './ImportStudentProgramsCard';
+import { StudentPreferenceCard } from './StudentPreferenceCard';
 
 function StudentApplicationsTableTemplate(props) {
   const { user } = useAuth();
@@ -98,7 +98,6 @@ function StudentApplicationsTableTemplate(props) {
     modalUpdatedApplication: false,
     showProgramCorrectnessReminderModal: true,
     isProgramAssignMode: false,
-    searchContainerRef: useRef(),
     searchResults: [],
     isResultsVisible: false,
     res_status: 0,
@@ -123,20 +122,12 @@ function StudentApplicationsTableTemplate(props) {
     };
   }, [studentApplicationsTableTemplateState.searchTerm]);
 
-  const handleClickOutside = (event) => {
-    // Check if the click target is outside of the search container and result list
-    if (
-      studentApplicationsTableTemplateState.searchContainerRef.current &&
-      !studentApplicationsTableTemplateState.searchContainerRef.current.contains(
-        event.target
-      )
-    ) {
-      // Clicked outside, hide the result list
-      setStudentApplicationsTableTemplateState((prevState) => ({
-        ...prevState,
-        isResultsVisible: false
-      }));
-    }
+  const handleClickOutside = () => {
+    // Clicked outside, hide the result list
+    setStudentApplicationsTableTemplateState((prevState) => ({
+      ...prevState,
+      isResultsVisible: false
+    }));
   };
 
   const fetchSearchResults = async () => {
@@ -192,7 +183,6 @@ function StudentApplicationsTableTemplate(props) {
       (res) => {
         const { data, success } = res.data;
         const { status } = res;
-        console.log(data);
         if (success) {
           setStudentApplicationsTableTemplateState((prevState) => ({
             ...prevState,
@@ -843,127 +833,23 @@ function StudentApplicationsTableTemplate(props) {
       </Breadcrumbs>
       <Grid container spacing={2}>
         <Grid item xs={12} md={is_TaiGer_role(user) ? 6 : 12}>
-          <Typography variant="h6">
-            {t('Application Preference From Survey')}
-          </Typography>
-          <List
-            sx={{
-              width: '100%',
-              bgcolor: 'background.paper',
-              position: 'relative',
-              overflow: 'auto',
-              '& ul': { padding: 0 }
-            }}
-            subheader={<li />}
-          >
-            <ListItem>
-              {t('Target Application Fields')}:{' '}
-              <b>
-                {props.student.application_preference?.target_application_field}
-              </b>
-            </ListItem>
-            <ListItem>
-              {t('Target Degree Programs')}:{' '}
-              <b>{props.student.application_preference?.target_degree}</b>
-            </ListItem>
-            <ListItem>
-              {t('Target Program Language')}:{' '}
-              <b>
-                {props.student.application_preference?.target_program_language}
-              </b>
-            </ListItem>
-            <ListItem>
-              {t(
-                'Considering private universities? (Tuition Fee: ~15000 EURO/year)'
-              )}
-              :{' '}
-              <b>
-                {
-                  props.student.application_preference
-                    ?.considered_privat_universities
-                }
-              </b>
-            </ListItem>
-            <ListItem>
-              {t('Considering universities outside Germany?')}:{' '}
-              <b>
-                {
-                  props.student.application_preference
-                    ?.application_outside_germany
-                }
-              </b>
-            </ListItem>
-            <ListItem>
-              {t('Other wish', { ns: 'survey' })}:
-              <TextField
-                id="special_wished"
-                multiline
-                fullWidth
-                rows={4}
-                readOnly
-                value={
-                  props.student.application_preference?.special_wished || ''
-                }
-                variant="standard"
-              />
-            </ListItem>
-          </List>
+          <StudentPreferenceCard student={props.student} />
         </Grid>
         {is_TaiGer_role(user) && (
           <Grid item xs={12} md={6}>
-            <Card sx={{ p: 2, minHeight: '300px' }}>
-              <Typography>
-                {t('Import programs from another student')}
-              </Typography>
-              <Typography>
-                {t('Find the student and import his/her progams to ')}
-              </Typography>
-              <div
-                className="search-container"
-                ref={studentApplicationsTableTemplateState.searchContainerRef}
-              >
-                <TextField
-                  type="text"
-                  size="small"
-                  className="search-input"
-                  placeholder={t('Search student...')}
-                  value={studentApplicationsTableTemplateState.searchTerm}
-                  onMouseDown={handleInputBlur}
-                  onChange={handleInputChange}
-                />
-                {studentApplicationsTableTemplateState.isResultsVisible &&
-                  (studentApplicationsTableTemplateState.searchResults?.length >
-                  0 ? (
-                    <Box className="search-results result-list">
-                      {studentApplicationsTableTemplateState.searchResults?.map(
-                        (result, i) => (
-                          <li
-                            onClick={() => onClickStudentHandler(result)}
-                            key={i}
-                          >
-                            {`${result.firstname} ${result.lastname} ${
-                              result.firstname_chinese
-                                ? result.firstname_chinese
-                                : ' '
-                            }${
-                              result.lastname_chinese
-                                ? result.lastname_chinese
-                                : ' '
-                            }`}
-                          </li>
-                        )
-                      )}
-                    </Box>
-                  ) : (
-                    <Box
-                      className="search-results result-list"
-                      sx={{ zIndex: 999 }}
-                    >
-                      <li>No result</li>
-                    </Box>
-                  ))}
-              </div>
-            </Card>
+            <ImportStudentProgramsCard
+              student={props.student}
+              searchTerm={studentApplicationsTableTemplateState.searchTerm}
+              isResultsVisible={
+                studentApplicationsTableTemplateState.isResultsVisible
+              }
+              searchResults={
+                studentApplicationsTableTemplateState.searchResults
+              }
+              handleInputBlur={handleInputBlur}
+              handleInputChange={handleInputChange}
+              onClickStudentHandler={onClickStudentHandler}
+            />
           </Grid>
         )}
       </Grid>
@@ -1142,7 +1028,7 @@ function StudentApplicationsTableTemplate(props) {
             size="xl"
             aria-labelledby="contained-modal-title-vcenter"
           >
-            <Typography variant="h5">Import programs</Typography>
+            <Typography variant="h6">Import programs</Typography>
             <Typography>
               Do you want to import the following programs?
               <br />

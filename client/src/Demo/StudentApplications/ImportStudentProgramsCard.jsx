@@ -30,6 +30,7 @@ export const ImportStudentProgramsCard = (props) => {
     useState({
       error: '',
       student: props.student,
+      selectedStudentName: '',
       isLoaded: true,
       importedStudent: '',
       importedStudentPrograms: [],
@@ -38,14 +39,8 @@ export const ImportStudentProgramsCard = (props) => {
       isButtonDisable: false,
       isImportingStudentPrograms: false,
       modalShowAssignSuccessWindow: false,
-      student_id: null,
       program_id: null,
       success: false,
-      application_status_changed: false,
-      modalDeleteApplication: false,
-      modalUpdatedApplication: false,
-      showProgramCorrectnessReminderModal: true,
-      isProgramAssignMode: false,
       searchResults: [],
       isResultsVisible: false,
       res_status: 0,
@@ -95,6 +90,9 @@ export const ImportStudentProgramsCard = (props) => {
             ...prevState,
             isImportingStudentPrograms: false,
             importedStudentPrograms: data,
+            selectedStudentName: `${result.firstname} ${result.lastname} ${
+              result.firstname_chinese || ''
+            } ${result.lastname_chinese || ''}`,
             program_ids: data?.map((program) =>
               program.programId._id.toString()
             ),
@@ -346,7 +344,10 @@ export const ImportStudentProgramsCard = (props) => {
         size="xl"
         aria-labelledby="contained-modal-title-vcenter"
       >
-        <Typography variant="h6">Import programs</Typography>
+        <Typography variant="h6">
+          Import programs from{' '}
+          <b>{importStudentProgramsCard.selectedStudentName}</b>
+        </Typography>
         <Typography>
           Do you want to import the following programs?
           <br />

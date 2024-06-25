@@ -147,6 +147,34 @@ const AgentBarCharts = ({ agentDistr }) => {
   );
 };
 
+const StudentResponseTimeChart = ({ studentResponseTime }) => {
+
+  const fileTypes = ['CV', 'ML', 'RL', 'Essay', 'Communication', 'Agent Support', 'Portfolio'];
+
+  const chartData = fileTypes.map(type => ({
+    name: type,
+    ResponseTime: studentResponseTime[type]?.AvgResponseTime || 0,
+  }));
+
+  return (
+    <ResponsiveContainer width="100%" height={300}>
+      <BarChart
+        data={chartData}
+        margin={{
+          top: 20, right: 30, left: 20, bottom: 5,
+        }}
+      >
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="name" />
+        <YAxis />
+        <Tooltip />
+        <Legend />
+        <Bar dataKey="ResponseTime" fill="#8884d8" />
+      </BarChart>
+    </ResponsiveContainer>
+  );
+};
+
 CustomTabPanel.propTypes = {
   children: PropTypes.node,
   index: PropTypes.number.isRequired,
@@ -193,6 +221,7 @@ function InternalDashboard() {
           finished_docs,
           documents,
           students_details,
+          studentResponseTimeLookupTable,
           agentStudentDistribution
         } = resp.data;
         const { status } = resp;
@@ -209,7 +238,8 @@ function InternalDashboard() {
             finished_docs,
             students_details,
             success: success,
-            res_status: status
+            res_status: status,
+            studentResponseTimeLookupTable
           }));
         } else {
           setInternalDashboardState((prevState) => ({
@@ -475,6 +505,8 @@ function InternalDashboard() {
     duration: calculateDuration(item.start, item.end)
   }));
 
+  const studentResponseTimesArray = Object.values(internalDashboardState.studentResponseTimeLookupTable);
+
   return (
     <Box>
       <Breadcrumbs aria-label="breadcrumb">
@@ -503,6 +535,7 @@ function InternalDashboard() {
           <Tab label="Agents" {...a11yProps(1)} />
           <Tab label="KPI" {...a11yProps(2)} />
           <Tab label="Program List" {...a11yProps(3)} />
+          <Tab label="Response Time" {...a11yProps(4)} />
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
@@ -823,10 +856,25 @@ function InternalDashboard() {
       <CustomTabPanel value={value} index={3}>
         <ProgramListVisualization user={user} />
       </CustomTabPanel>
+      <CustomTabPanel value={value} index={4}>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Typography variant="h6">Student Response Time</Typography>
+          </Grid>
+          {studentResponseTimesArray.map(
+            (studentResponseTime, idx) => (
+              <Grid item xs={12} md={4} key={idx}>
+                <StudentResponseTimeChart studentResponseTime={studentResponseTime} />
+              </Grid>
+            )
+          )}
+        </Grid>
+      </CustomTabPanel>
       <Tabs defaultActiveKey="default" fill={true} justify={true}>
         <Tab eventKey="default" title="Overview"></Tab>
         <Tab eventKey="kpi" title="KPI"></Tab>
         <Tab eventKey="program_list" title="Program List"></Tab>
+        <Tab eventKey="response_time" title="Response Time"></Tab>
       </Tabs>
     </Box>
   );

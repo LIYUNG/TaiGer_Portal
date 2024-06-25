@@ -170,7 +170,6 @@ const GenerateResponseTimeByStudent = async () => {
             GernerateLookupTable(Lookup, student, RTFT);
         }
     });
-
     CalculateAvgReponseTimeinLookup(Lookup);
     return Lookup;
 };
@@ -179,3 +178,4 @@ module.exports = {
     GenerateResponseTimeByStudent,
     GenerateResponseTimeByTaigerUser
 };
+

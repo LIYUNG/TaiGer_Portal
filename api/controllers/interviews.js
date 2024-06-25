@@ -417,25 +417,25 @@ const updateInterviewSurvey = asyncHandler(async (req, res) => {
         { interview, user }
       )
     );
-  }
-  const notificationUser =
-    interview?.trainer_id?.length > 0
-      ? interview?.trainer_id[0]._id
-      : undefined;
-  if (notificationUser) {
-    await addMessageInThread(
-      `Automatic Notification: Hi ${interview.student_id.firstname}, thank you for filling the interview training survey. I wish you having a great result for the application.`,
-      interview?.thread_id,
-      notificationUser
+    const notificationUser =
+      interview?.trainer_id?.length > 0
+        ? interview?.trainer_id[0]._id
+        : undefined;
+    if (notificationUser) {
+      await addMessageInThread(
+        `Automatic Notification: Hi ${interview.student_id.firstname}, thank you for filling the interview training survey. I wish you having a great result for the application.`,
+        interview?.thread_id,
+        notificationUser
+      );
+    }
+
+    //  close interview
+    await Interview.findByIdAndUpdate(
+      interview_id,
+      { isClosed: true, status: 'Closed' },
+      {}
     );
   }
-
-  //  close interview
-  await Interview.findByIdAndUpdate(
-    interview_id,
-    { isClosed: true, status: 'Closed' },
-    {}
-  );
 });
 
 const createInterview = asyncHandler(async (req, res) => {

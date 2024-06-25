@@ -6,11 +6,15 @@ import {
   Box,
   Typography,
   Grid,
-  Breadcrumbs
+  Breadcrumbs,
+  ButtonGroup,
+  Button
 } from '@mui/material';
 import PropTypes from 'prop-types';
 import { Navigate, Link as LinkDom, useLocation } from 'react-router-dom';
 import { Link } from '@mui/material';
+import { LineChart } from '@mui/x-charts/LineChart';
+
 import {
   BarChart,
   CartesianGrid,
@@ -25,6 +29,9 @@ import {
 } from 'recharts';
 import { useTranslation } from 'react-i18next';
 import { BarChart as MuiBarChart } from '@mui/x-charts/BarChart';
+import dayjs from 'dayjs';
+import isoWeek from 'dayjs/plugin/isoWeek';
+dayjs.extend(isoWeek);
 
 import ErrorPage from '../../Utils/ErrorPage';
 import {
@@ -52,6 +59,53 @@ import {
 import SingleBarChart from '../../../components/Charts/SingleBarChart.js';
 import VerticalDistributionBarCharts from '../../../components/Charts/VerticalDistributionBarChart.js';
 import VerticalSingleBarChart from '../../../components/Charts/VerticalSingleChart.js';
+
+function groupByMonth(data) {
+  return data.reduce((acc, { createdAt }) => {
+    const month = dayjs(createdAt).format('YYYY-MM');
+    if (!acc[month]) {
+      acc[month] = 0;
+    }
+    acc[month]++;
+    return acc;
+  }, {});
+}
+
+function groupByWeek(data) {
+  return data.reduce((acc, { createdAt }) => {
+    const week = dayjs(createdAt).isoWeek();
+    const year = dayjs(createdAt).year();
+    const weekYear = `${year}-W${week}`;
+    if (!acc[weekYear]) {
+      acc[weekYear] = 0;
+    }
+    acc[weekYear]++;
+    return acc;
+  }, {});
+}
+
+function prepareChartData(groupedData) {
+  const labels = Object.keys(groupedData).sort((a, b) => {
+    if (a.includes('-W') && b.includes('-W')) {
+      const [yearA, weekA] = a.split('-W').map(Number);
+      const [yearB, weekB] = b.split('-W').map(Number);
+      return yearA === yearB ? weekA - weekB : yearA - yearB;
+    }
+    return a.localeCompare(b);
+  });
+
+  const data = labels.map((label) => groupedData[label]);
+
+  return {
+    labels,
+    datasets: [
+      {
+        label: 'Data Points',
+        data
+      }
+    ]
+  };
+}
 
 const AgentBarCharts = ({ agentDistr }) => {
   // Extract unique years from both arrays
@@ -103,6 +157,7 @@ function InternalDashboard() {
   const { user } = useAuth();
   const { t } = useTranslation();
   const { hash } = useLocation();
+  const [viewMode, setViewMode] = useState('month');
   const [internalDashboardState, setInternalDashboardState] = useState({
     error: '',
     role: '',
@@ -220,6 +275,12 @@ function InternalDashboard() {
       color: colors[i]
     });
   });
+  const groupedData =
+    viewMode === 'month'
+      ? groupByMonth(students_details)
+      : groupByWeek(students_details);
+
+  const chartData = prepareChartData(groupedData);
 
   const application_status = ['Open', 'Close'];
   const applications_decided = programs_refactor(students_details).filter(
@@ -471,6 +532,42 @@ function InternalDashboard() {
                 value1={'active'}
                 value2={'potentials'}
                 yLabel={'Tasks'}
+              />
+            </Card>
+          </Grid>
+          <Grid item xs={12}>
+            <Card sx={{ p: 2 }}>
+              <ButtonGroup
+                variant="contained"
+                aria-label="outlined primary button group"
+                style={{ marginBottom: '20px' }}
+              >
+                <Button
+                  onClick={() => setViewMode('month')}
+                  variant={viewMode === 'month' ? 'contained' : 'outlined'}
+                >
+                  Month View
+                </Button>
+                <Button
+                  onClick={() => setViewMode('week')}
+                  variant={viewMode === 'week' ? 'contained' : 'outlined'}
+                >
+                  Week View
+                </Button>
+              </ButtonGroup>
+              <LineChart
+                xAxis={[{ data: chartData.labels, scaleType: 'band' }]}
+                series={[
+                  {
+                    data: chartData.datasets[0].data
+                  }
+                ]}
+                yAxis={[
+                  {
+                    label: 'New Students'
+                  }
+                ]}
+                height={300}
               />
             </Card>
           </Grid>

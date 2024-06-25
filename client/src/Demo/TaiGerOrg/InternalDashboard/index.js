@@ -148,12 +148,19 @@ const AgentBarCharts = ({ agentDistr }) => {
 };
 
 const StudentResponseTimeChart = ({ studentResponseTime }) => {
+  const fileTypes = [
+    'CV',
+    'ML',
+    'RL',
+    'Essay',
+    'Communication',
+    'Agent Support',
+    'Portfolio'
+  ];
 
-  const fileTypes = ['CV', 'ML', 'RL', 'Essay', 'Communication', 'Agent Support', 'Portfolio'];
-
-  const chartData = fileTypes.map(type => ({
+  const chartData = fileTypes.map((type) => ({
     name: type,
-    ResponseTime: studentResponseTime[type]?.AvgResponseTime || 0,
+    ResponseTime: studentResponseTime[type]?.AvgResponseTime || 0
   }));
 
   return (
@@ -161,12 +168,21 @@ const StudentResponseTimeChart = ({ studentResponseTime }) => {
       <BarChart
         data={chartData}
         margin={{
-          top: 20, right: 30, left: 20, bottom: 5,
+          top: 20,
+          right: 30,
+          left: 20,
+          bottom: 5
         }}
       >
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="name" />
-        <YAxis />
+        <YAxis>
+          <Label
+            value={`${studentResponseTime.UserProfile?.firstname} ${studentResponseTime.UserProfile?.lastname}`}
+            angle={-90}
+            position="insideLeft"
+          />
+        </YAxis>
         <Tooltip />
         <Legend />
         <Bar dataKey="ResponseTime" fill="#8884d8" />
@@ -505,7 +521,9 @@ function InternalDashboard() {
     duration: calculateDuration(item.start, item.end)
   }));
 
-  const studentResponseTimesArray = Object.values(internalDashboardState.studentResponseTimeLookupTable);
+  const studentResponseTimesArray = Object.values(
+    internalDashboardState.studentResponseTimeLookupTable
+  );
 
   return (
     <Box>
@@ -861,13 +879,13 @@ function InternalDashboard() {
           <Grid item xs={12}>
             <Typography variant="h6">Student Response Time</Typography>
           </Grid>
-          {studentResponseTimesArray.map(
-            (studentResponseTime, idx) => (
-              <Grid item xs={12} md={4} key={idx}>
-                <StudentResponseTimeChart studentResponseTime={studentResponseTime} />
-              </Grid>
-            )
-          )}
+          {studentResponseTimesArray.map((studentResponseTime, idx) => (
+            <Grid item xs={12} md={4} key={idx}>
+              <StudentResponseTimeChart
+                studentResponseTime={studentResponseTime}
+              />
+            </Grid>
+          ))}
         </Grid>
       </CustomTabPanel>
       <Tabs defaultActiveKey="default" fill={true} justify={true}>

@@ -42,36 +42,34 @@ const BlankLookupTable = {
     "UserProfile": {
         firstname: null,
         lastname: null,
-        role: null,
-        agents: null,
-        editors: null
+        role: null
     },
     "CV": {
-        AvgResponseTime: [],
+        AvgResponseTime: null,
         ResponseTimeId: []
     },
     "ML": {
-        AvgResponseTime: [],
+        AvgResponseTime: null,
         ResponseTimeId: []
     },
     "RL": {
-        AvgResponseTime: [],
+        AvgResponseTime: null,
         ResponseTimeId: []
     },
     "Essay": {
-        AvgResponseTime: [],
+        AvgResponseTime: null,
         ResponseTimeId: []
     },
     "Communication": {
-        AvgResponseTime: [],
+        AvgResponseTime: null,
         ResponseTimeId: []
     },
     "Agent Support": {
-        AvgResponseTime: [],
+        AvgResponseTime: null,
         ResponseTimeId: []
     },
     "Portfolio": {
-        AvgResponseTime: [],
+        AvgResponseTime: null,
         ResponseTimeId: []
     }
 };
@@ -92,12 +90,8 @@ const GernerateLookupTable = (Lookup, key, task) => {
             Lookup[userId]["UserProfile"].firstname = key.firstname;
             Lookup[userId]["UserProfile"].lastname = key.lastname;
             Lookup[userId]["UserProfile"].role = key.role;
-            if (key.role === Role.Student) {
-                Lookup[userId]["UserProfile"].agents = key.agents;
-                ; Lookup[userId]["UserProfile"].editors = key.editors;
-            };
         }
-        Lookup[userId][FormattedFileType].AvgResponseTime.push(task.intervalAvg);
+        Lookup[userId][FormattedFileType].AvgResponseTime += task.intervalAvg;
         Lookup[userId][FormattedFileType].ResponseTimeId.push(task);
     };
 };
@@ -152,7 +146,7 @@ const GenerateResponseTimeByTaigerUser = async () => {
         };
     });
 
-    // CalculateAvgReponseTimeinLookup(Lookup);
+    CalculateAvgReponseTimeinLookup(Lookup);
     return Lookup;
 };
 
@@ -176,7 +170,12 @@ const GenerateResponseTimeByStudent = async () => {
             GernerateLookupTable(Lookup, student, RTFT);
         }
     });
-
-    // CalculateAvgReponseTimeinLookup(Lookup);
+    CalculateAvgReponseTimeinLookup(Lookup);
     return Lookup;
 };
+
+module.exports = {
+    GenerateResponseTimeByStudent,
+    GenerateResponseTimeByTaigerUser
+};
+

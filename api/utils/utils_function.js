@@ -876,6 +876,22 @@ const NextSemesterCourseSelectionReminderEmails = async () => {
   // await NextSemesterCourseSelectionAgentReminderEmails();
 };
 
+const numStudentYearDistribution = (students) => {
+  const map = {};
+  for (let i = 0; i < students.length; i++) {
+    if (students[i].application_preference.expected_application_date) {
+      map[students[i].application_preference.expected_application_date] = map[
+        students[i].application_preference.expected_application_date
+      ]
+        ? map[students[i].application_preference.expected_application_date] + 1
+        : 1;
+    } else {
+      map['TBD'] = map['TBD'] ? map['TBD'] + 1 : 1;
+    }
+  }
+  return map;
+};
+
 const UpdateStatisticsData = async () => {
   const documents_cv = await Documentthread.find({
     isFinalVersion: false,
@@ -1586,6 +1602,7 @@ module.exports = {
   AssignEditorTasksReminderEmails,
   UrgentTasksReminderEmails,
   NextSemesterCourseSelectionReminderEmails,
+  numStudentYearDistribution,
   UpdateStatisticsData,
   add_portals_registered_status,
   MeetingDailyReminderChecker,

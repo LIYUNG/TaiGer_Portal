@@ -11,6 +11,7 @@ const { findStudentDelta } = require('../utils/modelHelper/programChange');
 const { getPermission } = require('../utils/queryFunctions');
 const { ObjectId } = require('mongodb');
 const { GenerateResponseTimeByStudent } = require('./response_time');
+const { numStudentYearDistribution } = require('../utils/utils_function');
 
 const getActivePrograms = async () => {
   const activePrograms = await User.aggregate([
@@ -290,10 +291,6 @@ const getStatistics = asyncHandler(async (req, res) => {
       '-messages'
     );
 
-  const usersPromise = User.find({
-    role: { $in: ['Admin', 'Agent', 'Editor'] }
-  }).lean();
-
   const archivCountPromise = Student.aggregate([
     {
       $group: {
@@ -303,15 +300,15 @@ const getStatistics = asyncHandler(async (req, res) => {
     }
   ]);
 
-  const studentResponseTimeLookupTablePromise = await GenerateResponseTimeByStudent();
+  const studentResponseTimeLookupTablePromise =
+    await GenerateResponseTimeByStudent();
 
   const [
-    agents_data,
-    editors_data,
+    agents_raw_data,
+    editors_raw_data,
     documentsData,
     finishedDocs,
     students,
-    users,
     archivCount,
     studentResponseTimeLookupTable,
     ...agentsStudentsDistribution
@@ -321,7 +318,6 @@ const getStatistics = asyncHandler(async (req, res) => {
     documentsPromise,
     finDocsPromise,
     studentsPromise,
-    usersPromise,
     archivCountPromise,
     studentResponseTimeLookupTablePromise,
     ...agents.map((agent) => getAgentStudentDistData(agent))
@@ -363,22 +359,65 @@ const getStatistics = asyncHandler(async (req, res) => {
     }
   );
   const mergedResults = _.mergeWith(resultAdmission, resultNoAdmission);
+  const students_years_arr = numStudentYearDistribution(students);
+  const students_years_pair = [];
+  let students_years = Object.keys(students_years_arr).sort();
+  students_years = students_years.slice(
+    Math.max(students_years.length - 10, 1) // 3 >> the last x year students
+  );
+  students_years.forEach((date) => {
+    students_years_pair.push({
+      name: `${date}`,
+      uv: students_years_arr[date]
+    });
+  });
+
+  const colors = [
+    '#ff8a65',
+    '#f4c22b',
+    '#04a9f5',
+    '#3ebfea',
+    '#4F5467',
+    '#1de9b6',
+    '#a389d4',
+    '#FE8A7D'
+  ];
+
+  const editors_data = [];
+  editors_raw_data.forEach((editor, i) => {
+    editors_data.push({
+      ...editor,
+      key: `${editor.firstname}`,
+      student_num: editor.student_num,
+      color: colors[i]
+    });
+  });
+
+  const agents_data = [];
+  agents_raw_data.forEach((agent, i) => {
+    agents_data.push({
+      key: `${agent.firstname}`,
+      student_num_no_offer: agent.student_num_no_offer,
+      student_num_with_offer: agent.student_num_with_offer,
+      color: colors[i]
+    });
+  });
 
   res.status(200).send({
     success: true,
-    data: users,
     documents: documentsData,
     students: {
       isClose: archivCount.find((count) => count._id === true)?.count || 0,
       isOpen: archivCount.find((count) => count._id === false)?.count || 0
     },
     finished_docs: finishedDocs,
-    agents: agents_data,
-    editors: editors_data,
+    agents_data,
+    editors_data,
+    students_years_pair,
     students_details: students,
     applications: [],
     agentStudentDistribution: mergedResults,
-    studentResponseTimeLookupTable: studentResponseTimeLookupTable
+    studentResponseTimeLookupTable
   });
 });
 

@@ -39,7 +39,6 @@ import {
   isProgramDecided,
   isProgramSubmitted,
   is_TaiGer_role,
-  numStudentYearDistribution,
   open_tasks_with_editors,
   programs_refactor
 } from '../../Utils/checking-functions';
@@ -148,18 +147,12 @@ const AgentBarCharts = ({ agentDistr }) => {
 };
 
 const StudentResponseTimeChart = ({ studentResponseTime }) => {
-  const fileTypes = [
-    'CV',
-    'ML',
-    'RL',
-    'Essay',
-    'Messages',
-    'Agent Support'
-  ];
+  const fileTypes = ['CV', 'ML', 'RL', 'Essay', 'Messages', 'Agent Support'];
 
   const chartData = fileTypes.map((type) => ({
     name: type,
-    ResponseTime: parseFloat(studentResponseTime[type]?.AvgResponseTime?.toFixed(2)) || 0
+    ResponseTime:
+      parseFloat(studentResponseTime[type]?.AvgResponseTime?.toFixed(2)) || 0
   }));
 
   return (
@@ -207,13 +200,13 @@ function InternalDashboard() {
     isLoaded: false,
     data: null,
     success: false,
-    teams: null,
     students: null,
     documents: null,
     students_details: null,
     finished_docs: null,
-    agents: null,
-    editors: null,
+    agents_data: null,
+    students_years_pair: {},
+    editors_data: null,
     res_status: 0
   });
   const [value, setValue] = useState(
@@ -228,13 +221,13 @@ function InternalDashboard() {
     getStatistics().then(
       (resp) => {
         const {
-          data,
           success,
           students,
-          agents,
-          editors,
+          agents_data,
+          editors_data,
           finished_docs,
           documents,
+          students_years_pair,
           students_details,
           studentResponseTimeLookupTable,
           agentStudentDistribution
@@ -244,12 +237,12 @@ function InternalDashboard() {
           setInternalDashboardState((prevState) => ({
             ...prevState,
             isLoaded: true,
-            teams: data,
             students: students,
             documents: documents,
-            agents: agents,
+            agents_data,
             agentStudentDistribution,
-            editors: editors,
+            students_years_pair,
+            editors_data,
             finished_docs,
             students_details,
             success: success,
@@ -284,17 +277,14 @@ function InternalDashboard() {
     isLoaded,
     finished_docs,
     documents,
-    agents,
-    editors,
+    agents_data,
+    editors_data,
+    students,
+    students_years_pair,
     students_details
   } = internalDashboardState;
 
-  if (
-    !isLoaded &&
-    !internalDashboardState.teams &&
-    !internalDashboardState.students &&
-    !internalDashboardState.documents
-  ) {
+  if (!isLoaded && !students && !documents) {
     return <Loading />;
   }
 
@@ -312,14 +302,6 @@ function InternalDashboard() {
     '#FE8A7D'
   ];
 
-  const editors_data = [];
-  editors.forEach((editor, i) => {
-    editors_data.push({
-      key: `${editor.firstname}`,
-      student_num: editor.student_num,
-      color: colors[i]
-    });
-  });
   const groupedData =
     viewMode === 'month'
       ? groupByMonth(students_details)
@@ -388,18 +370,6 @@ function InternalDashboard() {
     });
   });
 
-  const students_years_arr = numStudentYearDistribution(students_details);
-  const students_years_pair = [];
-  let students_years = Object.keys(students_years_arr).sort();
-  students_years = students_years.slice(
-    Math.max(students_years.length - 10, 1) // 3 >> the last x year students
-  );
-  students_years.forEach((date) => {
-    students_years_pair.push({
-      name: `${date}`,
-      uv: students_years_arr[date]
-    });
-  });
   const documents_data = [];
   const editor_tasks_distribution_data = [];
   const cat = ['ML', 'CV', 'RL', 'ESSAY'];
@@ -410,14 +380,12 @@ function InternalDashboard() {
       // color: colors[i]
     });
   });
-  editors.forEach((editor) => {
+  editors_data.forEach((editor) => {
     editor_tasks_distribution_data.push({
       name: `${editor.firstname}`,
       active: open_tasks_arr.filter(
         ({ editors, isFinalVersion, show }) =>
-          editors.findIndex(
-            (ed) => ed._id.toString() === editor._id.toString()
-          ) !== -1 &&
+          editors.findIndex((ed) => ed._id === editor._id) !== -1 &&
           isFinalVersion !== true &&
           show
       ).length,
@@ -431,15 +399,7 @@ function InternalDashboard() {
       // color: colors[i]
     });
   });
-  const agents_data = [];
-  agents.forEach((agent, i) => {
-    agents_data.push({
-      key: `${agent.firstname}`,
-      student_num_no_offer: agent.student_num_no_offer,
-      student_num_with_offer: agent.student_num_with_offer,
-      color: colors[i]
-    });
-  });
+
   const calculateDuration = (start, end) => {
     const startTime = new Date(start).getTime();
     const endTime = new Date(end).getTime();

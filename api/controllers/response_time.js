@@ -1,6 +1,7 @@
 const async = require('async');
 const path = require('path');
 const { ResponseTime } = require('../models/ResponseTime');
+const { Student, Agent, Editor, Role } = require('../models/User');
 
 const GetResponseTimeForCommunication = async () =>
     ResponseTime.find({ student_id: { $exists: true } })
@@ -31,45 +32,42 @@ const GetResponseTimeForThread = async () =>
 const FileTypeMapping = {
     "CV": ["CV"],
     "ML": ["ML"],
-    "RL": ["RL_A", "RL_B", "RL_C", "Recommendation_Letter_A", "Recommendation_Letter_B"],
+    "RL": ["RL_A", "RL_B", "RL_C", "Recommendation_Letter_A", "Recommendation_Letter_B", "Recommendation_Letter_C"],
     "Essay": ["Essay"],
-    "Communication": ["communication"],
-    "Agent Support": ["Supplementary_Form", "Others", "Scholarship_Form", "Curriculum_Analysis"],
-    "Portfolio": ["Portfolio"]
+    "Messages": ["communication"],
+    "Agent Support": ["Supplementary_Form", "Others", "Scholarship_Form", "Curriculum_Analysis", "Portfolio"]
 }
 
 const BlankLookupTable = {
     "UserProfile": {
         firstname: null,
         lastname: null,
-        role: null
+        role: null,
+        agents: null,
+        editors: null
     },
     "CV": {
-        AvgResponseTime: null,
+        AvgResponseTime: [],
         ResponseTimeId: []
     },
     "ML": {
-        AvgResponseTime: null,
+        AvgResponseTime: [],
         ResponseTimeId: []
     },
     "RL": {
-        AvgResponseTime: null,
+        AvgResponseTime: [],
         ResponseTimeId: []
     },
     "Essay": {
-        AvgResponseTime: null,
+        AvgResponseTime: [],
         ResponseTimeId: []
     },
-    "Communication": {
-        AvgResponseTime: null,
+    "Messages": {
+        AvgResponseTime: [],
         ResponseTimeId: []
     },
     "Agent Support": {
-        AvgResponseTime: null,
-        ResponseTimeId: []
-    },
-    "Portfolio": {
-        AvgResponseTime: null,
+        AvgResponseTime: [],
         ResponseTimeId: []
     }
 };
@@ -90,8 +88,12 @@ const GernerateLookupTable = (Lookup, key, task) => {
             Lookup[userId]["UserProfile"].firstname = key.firstname;
             Lookup[userId]["UserProfile"].lastname = key.lastname;
             Lookup[userId]["UserProfile"].role = key.role;
+            if (key.role === Role.Student) {
+                Lookup[userId]["UserProfile"].agents = key.agents;
+                ; Lookup[userId]["UserProfile"].editors = key.editors;
+            };
         }
-        Lookup[userId][FormattedFileType].AvgResponseTime += task.intervalAvg;
+        Lookup[userId][FormattedFileType].AvgResponseTime.push(task.intervalAvg);
         Lookup[userId][FormattedFileType].ResponseTimeId.push(task);
     };
 };
@@ -170,6 +172,7 @@ const GenerateResponseTimeByStudent = async () => {
             GernerateLookupTable(Lookup, student, RTFT);
         }
     });
+
     CalculateAvgReponseTimeinLookup(Lookup);
     return Lookup;
 };

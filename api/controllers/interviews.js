@@ -22,6 +22,7 @@ const {
 const Permission = require('../models/Permission');
 const InterviewSurveyResponse = require('../models/InterviewSurveyResponse');
 const { addMessageInThread } = require('../utils/informEditor');
+const { isNotArchiv } = require('../constants');
 
 const PrecheckInterview = async (interview_id) => {
   const precheck_interview = await Interview.findById(interview_id);
@@ -395,19 +396,26 @@ const updateInterviewSurvey = asyncHandler(async (req, res) => {
   res.status(200).send({ success: true, data: interviewSurvey });
   // TODO Inform Trainer
   const interview = await Interview.findById(interview_id)
-    .populate('student_id trainer_id', 'firstname lastname email')
+    .populate('student_id trainer_id', 'firstname lastname email archiv')
     .populate('program_id', 'school program_name degree semester')
     .lean();
   if (payload.isFinal) {
-    InterviewSurveyFinishedEmail(
-      {
-        firstname: interview.student_id.firstname,
-        lastname: interview.student_id.lastname,
-        address: interview.student_id.email
-      },
-      { interview, user }
+    if (isNotArchiv(interview.student_id)) {
+      InterviewSurveyFinishedEmail(
+        {
+          firstname: interview.student_id.firstname,
+          lastname: interview.student_id.lastname,
+          address: interview.student_id.email
+        },
+        { interview, user }
+      );
+    }
+
+    const activeTrainers = interview?.trainer_id?.filter((trainer) =>
+      isNotArchiv(trainer)
     );
-    interview?.trainer_id?.map((trainer) =>
+
+    activeTrainers?.map((trainer) =>
       InterviewSurveyFinishedToTaiGerEmail(
         {
           firstname: trainer.firstname,

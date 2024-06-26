@@ -33,7 +33,8 @@ const {
   INTERVIEW_CENTER_URL,
   STUDENT_PROFILE_FOR_AGENT_URL,
   THREAD_ID_URL,
-  SINGLE_INTERVIEW_SURVEY_THREAD_URL
+  SINGLE_INTERVIEW_SURVEY_THREAD_URL,
+  STUDENT_APPLICATION_STUDENT_URL
 } = require('../constants');
 
 const {
@@ -1155,7 +1156,9 @@ const UpdateStudentApplicationsEmail = async (recipient, msg) => {
 
 <p>${msg.sender_firstname} ${msg.sender_lastname} 更新了是否申請的學程狀態。</p>
 
-<a href="${STUDENT_APPLICATION_URL}" class="mui-button" target="_blank">查看細節</a>
+<a href="${STUDENT_APPLICATION_STUDENT_URL(
+      msg.student._id.toString()
+    )}" class="mui-button" target="_blank">查看細節</a>
 
 <p>並且到 <a href="${CVMLRL_CENTER_URL}">CV ML RL Center</a> 查看對於上述申請學程的新指派的文件任務細節。</p>
 
@@ -1165,9 +1168,13 @@ const UpdateStudentApplicationsEmail = async (recipient, msg) => {
 
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-<p>${msg.sender_firstname} ${msg.sender_lastname} has updated or declined some applications.</p>
+<p>${msg.sender_firstname} ${
+      msg.sender_lastname
+    } has updated or declined some applications.</p>
 
-<a href="${STUDENT_APPLICATION_URL}" class="mui-button" target="_blank">See details</a>
+<a href="${STUDENT_APPLICATION_STUDENT_URL(
+      msg.student._id.toString()
+    )}" class="mui-button" target="_blank">See details</a>
 
 <p>Also go to <a href="${CVMLRL_CENTER_URL}">CV ML RL Center</a> and see the new assigned tasks details for the applications above.</p>
 
@@ -1380,7 +1387,7 @@ const sendNewApplicationMessageInThreadEmail = async (recipient, msg) => {
 const sendNewGeneraldocMessageInThreadEmail = async (recipient, msg) => {
   const thread_url = `${THREAD_URL}/${msg.thread_id}`;
   const student_name = `${msg.student_firstname} - ${msg.student_lastname}`;
-  const subject = `[Update] ${msg.writer_firstname} ${msg.writer_lastname} prodvides a new message > ${student_name} ${msg.uploaded_documentname}!`;
+  const subject = `[Update] ${msg.writer_firstname} ${msg.writer_lastname} provides a new message > ${student_name} ${msg.uploaded_documentname}!`;
   const message = `\
 <p>${ENGLISH_BELOW}</p>
 

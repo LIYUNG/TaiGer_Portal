@@ -37,6 +37,8 @@ const SINGLE_INTERVIEW_SURVEY_THREAD_URL = (interview_id) =>
   new URL(`/interview-training/${interview_id}/survey`, ORIGIN).href;
 const TEMPLATE_DOWNLOAD_URL = new URL('/download', ORIGIN).href;
 const STUDENT_APPLICATION_URL = new URL('/student-applications', ORIGIN).href;
+const STUDENT_APPLICATION_STUDENT_URL = (student_id) =>
+  new URL(`/student-applications/${student_id}`, ORIGIN).href;
 const STUDENT_SURVEY_URL = new URL('/survey', ORIGIN).href;
 const SURVEY_URL_FOR_AGENT_URL = (studentId) =>
   new URL(`/student-database/${studentId}#survey`, ORIGIN).href;
@@ -1680,6 +1682,7 @@ module.exports = {
   SURVEY_URL_FOR_AGENT_URL,
   TEMPLATE_DOWNLOAD_URL,
   STUDENT_APPLICATION_URL,
+  STUDENT_APPLICATION_STUDENT_URL,
   STUDENT_SURVEY_URL,
   SETTINGS_URL,
   PROFILE_URL,

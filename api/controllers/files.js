@@ -809,6 +809,7 @@ const UpdateStudentApplications = asyncHandler(async (req, res, next) => {
             address: student_updated.agents[i].email
           },
           {
+            student: student_updated,
             sender_firstname: student_updated.firstname,
             sender_lastname: student_updated.lastname,
             student_applications: student_updated.applications,
@@ -825,10 +826,11 @@ const UpdateStudentApplications = asyncHandler(async (req, res, next) => {
           address: student_updated.email
         },
         {
+          student: student_updated,
           sender_firstname: student_updated.firstname,
           sender_lastname: student_updated.lastname,
           student_applications: student_updated.applications,
-          new_app_decided_idx: new_app_decided_idx
+          new_app_decided_idx
         }
       );
     }
@@ -863,6 +865,7 @@ const UpdateStudentApplications = asyncHandler(async (req, res, next) => {
           address: student_updated.email
         },
         {
+          student: student_updated,
           sender_firstname: user.firstname,
           sender_lastname: user.lastname,
           student_applications: student_updated.applications,

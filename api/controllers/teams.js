@@ -12,6 +12,7 @@ const { getPermission } = require('../utils/queryFunctions');
 const { ObjectId } = require('mongodb');
 const { GenerateResponseTimeByStudent } = require('./response_time');
 const { numStudentYearDistribution } = require('../utils/utils_function');
+const { one_day_cache } = require('../cache/node-cache');
 
 const getActivePrograms = async () => {
   const activePrograms = await User.aggregate([
@@ -128,13 +129,145 @@ const getTeamMembers = asyncHandler(async (req, res) => {
   res.status(200).send({ success: true, data: users });
 });
 
-const getFileTypeCount = async () => {
-  const counts = await Documentthread.aggregate([
-    { $match: { isFinalVersion: false } },
-    { $group: { _id: '$file_type', count: { $sum: 1 } } }
+const getGeneralTasks = async () => {
+  const studentsWithCommunications = await Student.aggregate([
+    // Match students where archiv is not true
+    { $match: { $or: [{ archiv: { $exists: false } }, { archiv: false }] } },
+    // Unwind the generaldocs_threads array to create a document for each application
+    { $unwind: '$generaldocs_threads' },
+    // Lookup to join the Documentthread collection
+    {
+      $lookup: {
+        from: 'documentthreads', // the collection name of Documentthread
+        localField: 'generaldocs_threads.doc_thread_id',
+        foreignField: '_id',
+        as: 'doc_thread'
+      }
+    },
+    // Unwind the doc_thread array to get the document object instead of an array
+    { $unwind: '$doc_thread' },
+    // Project to reshape the output
+    {
+      $project: {
+        isFinalVersion: '$generaldocs_threads.isFinalVersion',
+        latest_message_left_by_id:
+          '$generaldocs_threads.latest_message_left_by_id',
+        doc_thread_id: '$generaldocs_threads.doc_thread_id',
+        updatedAt: '$generaldocs_threads.updatedAt',
+        createdAt: '$generaldocs_threads.createdAt',
+        _id: '$generaldocs_threads._id',
+        file_type: '$doc_thread.file_type'
+      }
+    }
   ]);
+  return studentsWithCommunications;
+};
+
+const getDecidedApplicationsTasks = async () => {
+  const studentsWithCommunications = await Student.aggregate([
+    // Match students where archiv is not true
+    { $match: { $or: [{ archiv: { $exists: false } }, { archiv: false }] } },
+    // Unwind the applications array to create a document for each application
+    { $unwind: '$applications' },
+    // Match applications where the decided field is 'O'
+    { $match: { 'applications.decided': 'O' } },
+    // Unwind the doc_modification_thread array within each application
+    { $unwind: '$applications.doc_modification_thread' },
+    // Lookup to join the Documentthread collection
+    {
+      $lookup: {
+        from: 'documentthreads', // the collection name of Documentthread
+        localField: 'applications.doc_modification_thread.doc_thread_id',
+        foreignField: '_id',
+        as: 'doc_thread'
+      }
+    },
+    // Unwind the doc_thread array to get the document object instead of an array
+    { $unwind: '$doc_thread' },
+    // Lookup to join the Program collection for programId
+    {
+      $lookup: {
+        from: 'programs', // Assuming this is the collection name for Program documents
+        localField: 'applications.programId',
+        foreignField: '_id',
+        as: 'program'
+      }
+    },
+    // Unwind the program array to get the program object instead of an array
+    { $unwind: '$program' },
+    // Project to reshape the output
+    {
+      $project: {
+        isFinalVersion: '$applications.doc_modification_thread.isFinalVersion',
+        latest_message_left_by_id:
+          '$applications.doc_modification_thread.latest_message_left_by_id',
+        doc_thread_id: '$applications.doc_modification_thread.doc_thread_id',
+        updatedAt: '$applications.doc_modification_thread.updatedAt',
+        createdAt: '$applications.doc_modification_thread.createdAt',
+        _id: '$applications.doc_modification_thread._id',
+        file_type: '$doc_thread.file_type',
+        program_id: {
+          _id: '$program._id',
+          application_deadline: '$program.application_deadline'
+        },
+        application_year: '$application_preference.expected_application_date'
+      }
+    }
+  ]);
+  return studentsWithCommunications;
+};
+
+const getFileTypeCount = async () => {
+  // TODO not accurate, because these contains not-decided tasks.
+
+  const counts1Promise = Student.aggregate([
+    // Match students where archiv is not true
+    { $match: { $or: [{ archiv: { $exists: false } }, { archiv: false }] } },
+    // Unwind the generaldocs_threads array to create a document for each application
+    { $unwind: '$generaldocs_threads' },
+    // Lookup to join the Documentthread collection
+    {
+      $lookup: {
+        from: 'documentthreads', // the collection name of Documentthread
+        localField: 'generaldocs_threads.doc_thread_id',
+        foreignField: '_id',
+        as: 'doc_thread'
+      }
+    },
+    // Unwind the doc_thread array to get the document object instead of an array
+    { $unwind: '$doc_thread' },
+    { $group: { _id: '$doc_thread.file_type', count: { $sum: 1 } } }
+  ]);
+  const counts2Promise = Student.aggregate([
+    // Match students where archiv is not true
+    { $match: { $or: [{ archiv: { $exists: false } }, { archiv: false }] } },
+    // Unwind the applications array to create a document for each application
+    { $unwind: '$applications' },
+    // Match applications where the decided field is 'O'
+    { $match: { 'applications.decided': 'O' } },
+    // Unwind the doc_modification_thread array within each application
+    { $unwind: '$applications.doc_modification_thread' },
+    // Lookup to join the Documentthread collection
+    {
+      $lookup: {
+        from: 'documentthreads', // the collection name of Documentthread
+        localField: 'applications.doc_modification_thread.doc_thread_id',
+        foreignField: '_id',
+        as: 'doc_thread'
+      }
+    },
+    // Unwind the doc_thread array to get the document object instead of an array
+    { $unwind: '$doc_thread' },
+    { $group: { _id: '$doc_thread.file_type', count: { $sum: 1 } } }
+  ]);
+
+  const [counts1, counts2] = await Promise.all([
+    counts1Promise,
+    counts2Promise
+  ]);
+
   const fileTypeCounts = {};
-  counts.forEach((count) => {
+  counts1.forEach((count) => {
     if (
       count._id.includes('RL_') ||
       count._id.includes('Recommendation_Letter_')
@@ -142,12 +275,35 @@ const getFileTypeCount = async () => {
       fileTypeCounts['RL'] = {
         count: (fileTypeCounts['RL']?.count || 0) + count.count
       };
+    } else if (count._id.includes('Others')) {
+      fileTypeCounts['OTHERS'] = {
+        count: (fileTypeCounts['OTHERS']?.count || 0) + count.count
+      };
     } else {
       fileTypeCounts[count._id.toUpperCase()] = {
         count: count.count
       };
     }
   });
+  counts2.forEach((count) => {
+    if (
+      count._id.includes('RL_') ||
+      count._id.includes('Recommendation_Letter_')
+    ) {
+      fileTypeCounts['RL'] = {
+        count: (fileTypeCounts['RL']?.count || 0) + count.count
+      };
+    } else if (count._id.includes('Others')) {
+      fileTypeCounts['OTHERS'] = {
+        count: (fileTypeCounts['OTHERS']?.count || 0) + count.count
+      };
+    } else {
+      fileTypeCounts[count._id.toUpperCase()] = {
+        count: count.count
+      };
+    }
+  });
+
   return fileTypeCounts;
 };
 
@@ -252,171 +408,191 @@ const getEditorData = async (editor) => {
 };
 
 const getStatistics = asyncHandler(async (req, res) => {
-  const agents = await Agent.find({
-    $or: [{ archiv: { $exists: false } }, { archiv: false }]
-  });
-  const editors = await Editor.find({
-    $or: [{ archiv: { $exists: false } }, { archiv: false }]
-  });
+  const cacheKey = 'internalDashboard';
+  const value = one_day_cache.get(cacheKey);
+  if (value === undefined) {
+    const agents = await Agent.find({
+      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+    });
+    const editors = await Editor.find({
+      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+    });
 
-  const agentsPromises = Promise.all(
-    agents.map((agent) => getAgentData(agent))
-  );
-  const editorsPromises = Promise.all(
-    editors.map((editor) => getEditorData(editor))
-  );
-
-  const documentsPromise = getFileTypeCount();
-  const finDocsPromise = Documentthread.find({
-    isFinalVersion: true,
-    $or: [
-      { file_type: 'CV' },
-      { file_type: 'ML' },
-      { file_type: 'RL_A' },
-      { file_type: 'RL_B' },
-      { file_type: 'RL_C' },
-      { file_type: 'Recommendation_Letter_A' },
-      { file_type: 'Recommendation_Letter_B' },
-      { file_type: 'Recommendation_Letter_C' }
-    ]
-  })
-    .populate('student_id', 'firstname lastname')
-    .select('file_type messages.createdAt');
-
-  const studentsPromise = Student.find()
-    .populate('agents editors', 'firstname lastname')
-    .populate('applications.programId')
-    .populate(
-      'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
-      '-messages'
+    const agentsPromises = Promise.all(
+      agents.map((agent) => getAgentData(agent))
+    );
+    const editorsPromises = Promise.all(
+      editors.map((editor) => getEditorData(editor))
     );
 
-  const archivCountPromise = Student.aggregate([
-    {
-      $group: {
-        _id: '$archiv',
-        count: { $sum: 1 }
+    const documentsPromise = getFileTypeCount();
+    const finDocsPromise = Documentthread.find({
+      isFinalVersion: true,
+      $or: [
+        { file_type: 'CV' },
+        { file_type: 'ML' },
+        { file_type: 'RL_A' },
+        { file_type: 'RL_B' },
+        { file_type: 'RL_C' },
+        { file_type: 'Recommendation_Letter_A' },
+        { file_type: 'Recommendation_Letter_B' },
+        { file_type: 'Recommendation_Letter_C' }
+      ]
+    })
+      .populate('student_id', 'firstname lastname')
+      .select('file_type messages.createdAt')
+      .lean();
+
+    const studentsPromise = Student.find()
+      .populate('agents editors', 'firstname lastname')
+      .populate('applications.programId')
+      .populate(
+        'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
+        '-messages'
+      )
+      .lean();
+
+    const archivCountPromise = Student.aggregate([
+      {
+        $group: {
+          _id: '$archiv',
+          count: { $sum: 1 }
+        }
       }
-    }
-  ]);
+    ]);
 
-  const studentResponseTimeLookupTablePromise =
-    await GenerateResponseTimeByStudent();
+    const studentResponseTimeLookupTablePromise =
+      GenerateResponseTimeByStudent();
+    const activeStudentGeneralTasksPromise = getGeneralTasks();
+    const activeStudentTasksPromise = await getDecidedApplicationsTasks();
+    const [
+      agents_raw_data,
+      editors_raw_data,
+      documentsData,
+      finishedDocs,
+      students,
+      archivCount,
+      studentResponseTimeLookupTable,
+      activeStudentGeneralTasks,
+      activeStudentTasks,
+      ...agentsStudentsDistribution
+    ] = await Promise.all([
+      agentsPromises,
+      editorsPromises,
+      documentsPromise,
+      finDocsPromise,
+      studentsPromise,
+      archivCountPromise,
+      studentResponseTimeLookupTablePromise,
+      activeStudentGeneralTasksPromise,
+      activeStudentTasksPromise,
+      ...agents.map((agent) => getAgentStudentDistData(agent))
+    ]);
 
-  const [
-    agents_raw_data,
-    editors_raw_data,
-    documentsData,
-    finishedDocs,
-    students,
-    archivCount,
-    studentResponseTimeLookupTable,
-    ...agentsStudentsDistribution
-  ] = await Promise.all([
-    agentsPromises,
-    editorsPromises,
-    documentsPromise,
-    finDocsPromise,
-    studentsPromise,
-    archivCountPromise,
-    studentResponseTimeLookupTablePromise,
-    ...agents.map((agent) => getAgentStudentDistData(agent))
-  ]);
+    const resultAdmission = agentsStudentsDistribution.map(
+      (agentStudentDis, idx) => {
+        const returnData = {
+          name: `${agents[idx].firstname}`,
+          id: `${agents[idx]._id.toString()}`,
+          admission: agentStudentDis.admission.reduce((acc, curr) => {
+            if (curr.expected_application_date) {
+              acc[curr.expected_application_date] = curr.count;
+            } else {
+              acc.TBD = curr.count;
+            }
 
-  const resultAdmission = agentsStudentsDistribution.map(
-    (agentStudentDis, idx) => {
-      const returnData = {
-        name: `${agents[idx].firstname}`,
-        id: `${agents[idx]._id.toString()}`,
-        admission: agentStudentDis.admission.reduce((acc, curr) => {
-          if (curr.expected_application_date) {
-            acc[curr.expected_application_date] = curr.count;
-          } else {
-            acc.TBD = curr.count;
-          }
+            return acc;
+          }, {})
+        };
+        return returnData;
+      }
+    );
 
-          return acc;
-        }, {})
-      };
-      return returnData;
-    }
-  );
+    const resultNoAdmission = agentsStudentsDistribution.map(
+      (agentStudentDis, idx) => {
+        const returnData = {
+          noAdmission: agentStudentDis.noAdmission.reduce((acc, curr) => {
+            if (curr.expected_application_date) {
+              acc[curr.expected_application_date] = curr.count;
+            } else {
+              acc.TBD = curr.count;
+            }
 
-  const resultNoAdmission = agentsStudentsDistribution.map(
-    (agentStudentDis, idx) => {
-      const returnData = {
-        noAdmission: agentStudentDis.noAdmission.reduce((acc, curr) => {
-          if (curr.expected_application_date) {
-            acc[curr.expected_application_date] = curr.count;
-          } else {
-            acc.TBD = curr.count;
-          }
+            return acc;
+          }, {})
+        };
+        return returnData;
+      }
+    );
+    const mergedResults = _.mergeWith(resultAdmission, resultNoAdmission);
+    const students_years_arr = numStudentYearDistribution(students);
+    const students_years = Object.keys(students_years_arr).sort();
+    const lastYears = students_years.slice(
+      Math.max(students_years.length - 10, 1)
+    );
 
-          return acc;
-        }, {})
-      };
-      return returnData;
-    }
-  );
-  const mergedResults = _.mergeWith(resultAdmission, resultNoAdmission);
-  const students_years_arr = numStudentYearDistribution(students);
-  const students_years = Object.keys(students_years_arr).sort();
-  const lastYears = students_years.slice(
-    Math.max(students_years.length - 10, 1)
-  );
+    const students_years_pair = lastYears.map((date) => ({
+      name: `${date}`,
+      uv: students_years_arr[date]
+    }));
 
-  const students_years_pair = lastYears.map((date) => ({
-    name: `${date}`,
-    uv: students_years_arr[date]
-  }));
+    const colors = [
+      '#ff8a65',
+      '#f4c22b',
+      '#04a9f5',
+      '#3ebfea',
+      '#4F5467',
+      '#1de9b6',
+      '#a389d4',
+      '#FE8A7D'
+    ];
 
-  const colors = [
-    '#ff8a65',
-    '#f4c22b',
-    '#04a9f5',
-    '#3ebfea',
-    '#4F5467',
-    '#1de9b6',
-    '#a389d4',
-    '#FE8A7D'
-  ];
-
-  const editors_data = [];
-  editors_raw_data.forEach((editor, i) => {
-    editors_data.push({
-      ...editor,
-      key: `${editor.firstname}`,
-      student_num: editor.student_num,
-      color: colors[i]
+    const editors_data = [];
+    editors_raw_data.forEach((editor, i) => {
+      editors_data.push({
+        ...editor,
+        key: `${editor.firstname}`,
+        student_num: editor.student_num,
+        color: colors[i]
+      });
     });
-  });
 
-  const agents_data = [];
-  agents_raw_data.forEach((agent, i) => {
-    agents_data.push({
-      key: `${agent.firstname}`,
-      student_num_no_offer: agent.student_num_no_offer,
-      student_num_with_offer: agent.student_num_with_offer,
-      color: colors[i]
+    const agents_data = [];
+    agents_raw_data.forEach((agent, i) => {
+      agents_data.push({
+        key: `${agent.firstname}`,
+        student_num_no_offer: agent.student_num_no_offer,
+        student_num_with_offer: agent.student_num_with_offer,
+        color: colors[i]
+      });
     });
-  });
-
-  res.status(200).send({
-    success: true,
-    documents: documentsData,
-    students: {
-      isClose: archivCount.find((count) => count._id === true)?.count || 0,
-      isOpen: archivCount.find((count) => count._id === false)?.count || 0
-    },
-    finished_docs: finishedDocs,
-    agents_data,
-    editors_data,
-    students_years_pair,
-    students_details: students,
-    applications: [],
-    agentStudentDistribution: mergedResults,
-    studentResponseTimeLookupTable
-  });
+    const returnBody = {
+      success: true,
+      documents: documentsData,
+      students: {
+        isClose: archivCount.find((count) => count._id === true)?.count || 0,
+        isOpen: archivCount.find((count) => count._id === false)?.count || 0
+      },
+      finished_docs: finishedDocs,
+      agents_data,
+      editors_data,
+      students_years_pair,
+      students_details: students,
+      applications: [],
+      activeStudentGeneralTasks,
+      activeStudentTasks,
+      agentStudentDistribution: mergedResults,
+      studentResponseTimeLookupTable
+    };
+    res.status(200).send(returnBody);
+    const success = one_day_cache.set(cacheKey, returnBody);
+    if (success) {
+      logger.info('internal dashboard cache set successfully');
+    }
+  } else {
+    logger.info('internal dashboard cache hit');
+    res.status(200).send(value);
+  }
 });
 
 const getAgents = asyncHandler(async (req, res, next) => {

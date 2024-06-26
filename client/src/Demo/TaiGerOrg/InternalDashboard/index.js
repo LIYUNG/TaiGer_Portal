@@ -35,17 +35,14 @@ dayjs.extend(isoWeek);
 
 import ErrorPage from '../../Utils/ErrorPage';
 import {
-  frequencyDistribution,
   isProgramDecided,
   isProgramSubmitted,
   is_TaiGer_role,
-  open_tasks_with_editors,
-  programs_refactor
+  open_tasks_with_editors
 } from '../../Utils/checking-functions';
 import { getStatistics } from '../../../api';
 import { TabTitle } from '../../Utils/TabTitle';
 import DEMO from '../../../store/constant';
-import TasksDistributionBarChart from '../../../components/Charts/TasksDistributionBarChart';
 import ProgramListVisualization from './ProgramListVisualization.js';
 import { appConfig } from '../../../config';
 import { useAuth } from '../../../components/AuthProvider';
@@ -207,6 +204,8 @@ function InternalDashboard() {
     agents_data: null,
     students_years_pair: {},
     editors_data: null,
+    activeStudentGeneralTasks: [],
+    activeStudentTasks: [],
     res_status: 0
   });
   const [value, setValue] = useState(
@@ -230,6 +229,8 @@ function InternalDashboard() {
           students_years_pair,
           students_details,
           studentResponseTimeLookupTable,
+          activeStudentGeneralTasks,
+          activeStudentTasks,
           agentStudentDistribution
         } = resp.data;
         const { status } = resp;
@@ -241,6 +242,8 @@ function InternalDashboard() {
             documents: documents,
             agents_data,
             agentStudentDistribution,
+            activeStudentGeneralTasks,
+            activeStudentTasks,
             students_years_pair,
             editors_data,
             finished_docs,
@@ -310,74 +313,69 @@ function InternalDashboard() {
   const chartData = prepareChartData(groupedData);
 
   const application_status = ['Open', 'Close'];
-  const applications_decided = programs_refactor(students_details).filter(
-    (application) =>
-      application.program_id !== '-' && isProgramDecided(application)
-  );
-  console.log(applications_decided);
-  const applications_submitted = applications_decided.filter((application) =>
-    isProgramSubmitted(application)
-  );
-  const obj = {
-    Open: applications_decided.length - applications_submitted.length,
-    Close: applications_submitted.length
-  };
-  const applications_data = [];
-  application_status.forEach((status) => {
-    applications_data.push({
-      name: `${status}`,
-      uv: obj[status]
-      // color: colors[i]
-    });
-  });
-  const admissions_data = [];
   const admission_status = ['Admission', 'Rejection', 'Pending'];
-  const applications_admission = applications_submitted.filter(
-    (application) => application.admission === 'O'
-  );
-  const applications_rejection = applications_submitted.filter(
-    (application) => application.admission === 'X'
-  );
-  const applications_pending = applications_submitted.filter(
-    (application) => application.admission === '-'
-  );
-  const obj2 = {
-    Admission: applications_admission.length,
-    Rejection: applications_rejection.length,
-    Pending: applications_pending.length
+
+  const initialData = {
+    Open: 0,
+    Close: 0,
+    Admission: 0,
+    Rejection: 0,
+    Pending: 0
   };
-  admission_status.forEach((status) => {
-    admissions_data.push({
-      name: `${status}`,
-      uv: obj2[status]
+
+  const data = students_details.reduce((acc, student) => {
+    student.applications.forEach((application) => {
+      if (application.program_id !== '-' && isProgramDecided(application)) {
+        if (isProgramSubmitted(application)) {
+          acc.Close += 1;
+          if (application.admission === 'O') {
+            acc.Admission += 1;
+          } else if (application.admission === 'X') {
+            acc.Rejection += 1;
+          } else if (application.admission === '-') {
+            acc.Pending += 1;
+          }
+        } else {
+          acc.Open += 1;
+        }
+      }
     });
-  });
+    return acc;
+  }, initialData);
+
+  const applications_data = application_status.map((status) => ({
+    name: status,
+    uv: data[status]
+  }));
+
+  const admissions_data = admission_status.map((status) => ({
+    name: status,
+    uv: data[status]
+  }));
+
   // Only open tasks. Closed tasks are excluded
   const open_tasks_arr = open_tasks_with_editors(students_details);
-  const task_distribution = open_tasks_arr
-    .filter(({ isFinalVersion }) => isFinalVersion !== true)
-    .map(({ deadline, file_type, show, isPotentials }) => {
-      return { deadline, file_type, show, isPotentials };
-    });
-  const open_distr = frequencyDistribution(task_distribution);
-  const sort_date = Object.keys(open_distr).sort();
-
-  const sorted_date_freq_pair = [];
-  sort_date.forEach((date) => {
-    sorted_date_freq_pair.push({
-      name: `${date}`,
-      active: open_distr[date].show,
-      potentials: open_distr[date].potentials
-    });
-  });
 
   const documents_data = [];
   const editor_tasks_distribution_data = [];
-  const cat = ['ML', 'CV', 'RL', 'ESSAY'];
+  const cat = [
+    'CURRICULUM_ANALYSIS',
+    'CV',
+    'ESSAY',
+    'FORM_A',
+    'FORM_B',
+    'INTERNSHIP_FORM',
+    'ML',
+    'OTHERS',
+    'PORTFOLIO',
+    'RL',
+    'SCHOLARSHIP_FORM',
+    'SUPPLEMENTARY_FORM'
+  ];
   cat.forEach((ca) => {
     documents_data.push({
       name: `${ca}`,
-      uv: documents[ca].count
+      uv: documents[ca]?.count || 0
       // color: colors[i]
     });
   });
@@ -404,7 +402,7 @@ function InternalDashboard() {
   const calculateDuration = (start, end) => {
     const startTime = new Date(start).getTime();
     const endTime = new Date(end).getTime();
-    const duration = (endTime - startTime) / (1000 * 60 * 60 * 24); // Duration in days
+    const duration = (endTime - startTime) / 86400000; // Duration in days
     return duration;
   };
   const refactor_finished_cv_docs = finished_docs
@@ -518,34 +516,6 @@ function InternalDashboard() {
       </Box>
       <CustomTabPanel value={value} index={0}>
         <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <Card sx={{ p: 2 }}>
-              <Typography>Open Tasks Distribution</Typography>
-              <Typography>
-                Tasks distribute among the date. Note that CVs, MLs, RLs, and
-                Essay are mixed together.
-              </Typography>
-              <Typography>
-                <b style={{ color: 'red' }}>active:</b> students decide
-                programs. These will be shown in{' '}
-                <Link to={`${DEMO.CV_ML_RL_DASHBOARD_LINK}`}>
-                  Tasks Dashboard
-                </Link>
-              </Typography>
-              <Typography>
-                <b style={{ color: '#A9A9A9' }}>potentials:</b> students do not
-                decide programs yet. But the tasks will be potentially active
-                when they decided.
-              </Typography>
-              <TasksDistributionBarChart
-                data={sorted_date_freq_pair}
-                k={'name'}
-                value1={'active'}
-                value2={'potentials'}
-                yLabel={'Tasks'}
-              />
-            </Card>
-          </Grid>
           <Grid item xs={12}>
             <Card sx={{ p: 2 }}>
               <ButtonGroup

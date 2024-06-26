@@ -1685,48 +1685,29 @@ export const open_tasks_with_editors = (students) => {
 };
 
 export const programs_refactor = (students) => {
-  const applications = [];
-  for (const student of students) {
+  const applications = students.reduce((acc, student) => {
     let isMissingBaseDocs = false;
 
-    let keys = Object.keys(profile_list);
-    let object_init = {};
-    for (let i = 0; i < keys.length; i++) {
-      object_init[keys[i]] = DocumentStatus.Missing;
-    }
+    const object_init = Object.fromEntries(
+      Object.keys(profile_list).map((key) => [key, DocumentStatus.Missing])
+    );
 
     if (student.profile) {
-      for (let i = 0; i < student.profile.length; i++) {
-        if (student.profile[i].status === DocumentStatus.Uploaded) {
-          object_init[student.profile[i].name] = DocumentStatus.Uploaded;
-        } else if (student.profile[i].status === DocumentStatus.Accepted) {
-          object_init[student.profile[i].name] = DocumentStatus.Accepted;
-        } else if (student.profile[i].status === DocumentStatus.Rejected) {
-          object_init[student.profile[i].name] = DocumentStatus.Rejected;
-        } else if (student.profile[i].status === DocumentStatus.Missing) {
-          object_init[student.profile[i].name] = DocumentStatus.Missing;
-        } else if (student.profile[i].status === DocumentStatus.NotNeeded) {
-          object_init[student.profile[i].name] = DocumentStatus.NotNeeded;
-        }
-      }
+      student.profile.forEach((doc) => {
+        object_init[doc.name] = doc.status;
+      });
     }
 
-    for (let i = 0; i < keys.length; i += 1) {
-      if (
-        object_init[keys[i]] !== DocumentStatus.Accepted &&
-        object_init[keys[i]] !== DocumentStatus.NotNeeded
-      ) {
-        isMissingBaseDocs = true;
-        break;
-      }
-    }
+    isMissingBaseDocs = Object.keys(object_init).some(
+      (key) =>
+        object_init[key] !== DocumentStatus.Accepted &&
+        object_init[key] !== DocumentStatus.NotNeeded
+    );
+
     const is_cv_done = isCVFinished(student);
 
-    if (
-      student.applications === undefined ||
-      student.applications.length === 0
-    ) {
-      applications.push({
+    if (!student.applications || student.applications.length === 0) {
+      acc.push({
         id: `${student._id.toString()}-`,
         target_year: `${
           student.application_preference?.expected_application_date || '-'
@@ -1764,8 +1745,47 @@ export const programs_refactor = (students) => {
         status: '-'
       });
     } else {
-      for (const application of student.applications) {
-        applications.push({
+      student.applications.forEach((application) => {
+        const is_program_submitted = isProgramSubmitted(application);
+        const is_program_decided = isProgramDecided(application);
+        const deadline = application_deadline_calculator(student, application);
+        const days_left = getNumberOfDays(new Date(), deadline) || '-';
+        const base_docs = isProgramSubmitted(application)
+          ? '-'
+          : isMissingBaseDocs
+          ? 'X'
+          : 'O';
+        const uniassist = is_program_submitted
+          ? '-'
+          : check_program_uni_assist_needed(application)
+          ? application.uni_assist &&
+            application.uni_assist.status === DocumentStatus.Uploaded
+            ? 'O'
+            : 'X'
+          : 'Not Needed';
+        const cv = is_program_submitted ? '-' : is_cv_done ? 'O' : 'X';
+        const ml_rl = is_program_decided
+          ? is_program_submitted
+            ? '-'
+            : is_program_ml_rl_essay_finished(application)
+            ? 'O'
+            : 'X'
+          : 'X';
+        const ready = is_program_decided
+          ? is_program_submitted
+            ? '-'
+            : !isMissingBaseDocs &&
+              (!check_program_uni_assist_needed(application) ||
+                (check_program_uni_assist_needed(application) &&
+                  application.uni_assist &&
+                  application.uni_assist.status === DocumentStatus.Uploaded)) &&
+              is_cv_done &&
+              is_program_ml_rl_essay_finished(application)
+            ? 'Ready!'
+            : 'No'
+          : 'Undecided';
+
+        acc.push({
           id: `${student._id.toString()}-${application.programId._id.toString()}`,
           target_year: `${
             student.application_preference?.expected_application_date || '-'
@@ -1790,65 +1810,31 @@ export const programs_refactor = (students) => {
           whoupdated: application.programId.whoupdated,
           updatedAt: application.programId.updatedAt,
           program_id: application.programId._id.toString(),
-          application_deadline: application_deadline_calculator(
-            student,
-            application
-          ),
+          application_deadline: deadline,
           isPotentials: application.decided === '-',
           decided: application.decided,
           closed: application.closed,
           admission: application.admission,
           student_id: student._id.toString(),
-          deadline: application_deadline_calculator(student, application),
-          days_left:
-            getNumberOfDays(
-              new Date(),
-              application_deadline_calculator(student, application)
-            ) || '-',
-          base_docs: isProgramSubmitted(application)
-            ? '-'
-            : isMissingBaseDocs
-            ? 'X'
-            : 'O',
-          uniassist: isProgramSubmitted(application)
-            ? '-'
-            : check_program_uni_assist_needed(application)
-            ? application.uni_assist &&
-              application.uni_assist.status === DocumentStatus.Uploaded
-              ? 'O'
-              : 'X'
-            : 'Not Needed',
-          cv: isProgramSubmitted(application) ? '-' : is_cv_done ? 'O' : 'X',
-          ml_rl: isProgramDecided(application)
-            ? isProgramSubmitted(application)
-              ? '-'
-              : is_program_ml_rl_essay_finished(application)
-              ? 'O'
-              : 'X'
-            : 'X',
-          ready: isProgramDecided(application)
-            ? isProgramSubmitted(application)
-              ? '-'
-              : !isMissingBaseDocs &&
-                (!check_program_uni_assist_needed(application) ||
-                  (check_program_uni_assist_needed(application) &&
-                    application.uni_assist &&
-                    application.uni_assist.status ===
-                      DocumentStatus.Uploaded)) &&
-                is_cv_done &&
-                is_program_ml_rl_essay_finished(application)
-              ? 'Ready!'
-              : 'No'
-            : 'Undecided',
+          deadline,
+          days_left,
+          base_docs,
+          uniassist,
+          cv,
+          ml_rl,
+          ready,
           show: isProgramDecided(application) ? true : false,
           status:
-            application_deadline_calculator(student, application) === 'CLOSE'
+            deadline === 'CLOSE'
               ? 100
               : progressBarCounter(student, application)
         });
-      }
+      });
     }
-  }
+
+    return acc;
+  }, []);
+
   return applications;
 };
 

@@ -314,6 +314,7 @@ function InternalDashboard() {
     (application) =>
       application.program_id !== '-' && isProgramDecided(application)
   );
+  console.log(applications_decided);
   const applications_submitted = applications_decided.filter((application) =>
     isProgramSubmitted(application)
   );

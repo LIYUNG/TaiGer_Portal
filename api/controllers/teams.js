@@ -360,17 +360,15 @@ const getStatistics = asyncHandler(async (req, res) => {
   );
   const mergedResults = _.mergeWith(resultAdmission, resultNoAdmission);
   const students_years_arr = numStudentYearDistribution(students);
-  const students_years_pair = [];
-  let students_years = Object.keys(students_years_arr).sort();
-  students_years = students_years.slice(
-    Math.max(students_years.length - 10, 1) // 3 >> the last x year students
+  const students_years = Object.keys(students_years_arr).sort();
+  const lastYears = students_years.slice(
+    Math.max(students_years.length - 10, 1)
   );
-  students_years.forEach((date) => {
-    students_years_pair.push({
-      name: `${date}`,
-      uv: students_years_arr[date]
-    });
-  });
+
+  const students_years_pair = lastYears.map((date) => ({
+    name: `${date}`,
+    uv: students_years_arr[date]
+  }));
 
   const colors = [
     '#ff8a65',

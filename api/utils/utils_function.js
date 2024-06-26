@@ -876,21 +876,13 @@ const NextSemesterCourseSelectionReminderEmails = async () => {
   // await NextSemesterCourseSelectionAgentReminderEmails();
 };
 
-const numStudentYearDistribution = (students) => {
-  const map = {};
-  for (let i = 0; i < students.length; i++) {
-    if (students[i].application_preference.expected_application_date) {
-      map[students[i].application_preference.expected_application_date] = map[
-        students[i].application_preference.expected_application_date
-      ]
-        ? map[students[i].application_preference.expected_application_date] + 1
-        : 1;
-    } else {
-      map['TBD'] = map['TBD'] ? map['TBD'] + 1 : 1;
-    }
-  }
-  return map;
-};
+const numStudentYearDistribution = (students) =>
+  students.reduce((acc, student) => {
+    const date =
+      student.application_preference.expected_application_date || 'TBD';
+    acc[date] = (acc[date] || 0) + 1;
+    return acc;
+  }, {});
 
 const UpdateStatisticsData = async () => {
   const documents_cv = await Documentthread.find({

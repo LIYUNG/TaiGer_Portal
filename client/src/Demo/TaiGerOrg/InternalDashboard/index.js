@@ -159,7 +159,7 @@ const StudentResponseTimeChart = ({ studentResponseTime }) => {
 
   const chartData = fileTypes.map((type) => ({
     name: type,
-    ResponseTime: studentResponseTime[type]?.AvgResponseTime || 0
+    ResponseTime: parseFloat(studentResponseTime[type]?.AvgResponseTime?.toFixed(2)) || 0
   }));
 
   return (

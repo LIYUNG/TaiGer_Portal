@@ -94,7 +94,8 @@ const GernerateLookupTable = (Lookup, key, task) => {
             };
         }
         Lookup[userId][FormattedFileType].AvgResponseTime.push(task.intervalAvg);
-        Lookup[userId][FormattedFileType].ResponseTimeId.push(task);
+        const ThreadIdOrStudentId = task.thread_id || task.student_id;
+        Lookup[userId][FormattedFileType].ResponseTimeId.push([ThreadIdOrStudentId, task.intervalAvg]);
     };
 };
 
@@ -181,4 +182,3 @@ module.exports = {
     GenerateResponseTimeByStudent,
     GenerateResponseTimeByTaigerUser
 };
-

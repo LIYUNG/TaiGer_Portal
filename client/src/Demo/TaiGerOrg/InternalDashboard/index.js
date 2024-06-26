@@ -153,9 +153,8 @@ const StudentResponseTimeChart = ({ studentResponseTime }) => {
     'ML',
     'RL',
     'Essay',
-    'Communication',
-    'Agent Support',
-    'Portfolio'
+    'Messages',
+    'Agent Support'
   ];
 
   const chartData = fileTypes.map((type) => ({

@@ -31,11 +31,10 @@ const GetResponseTimeForThread = async () =>
 const FileTypeMapping = {
     "CV": ["CV"],
     "ML": ["ML"],
-    "RL": ["RL_A", "RL_B", "RL_C", "Recommendation_Letter_A", "Recommendation_Letter_B"],
+    "RL": ["RL_A", "RL_B", "RL_C", "Recommendation_Letter_A", "Recommendation_Letter_B", "Recommendation_Letter_C"],
     "Essay": ["Essay"],
-    "Communication": ["communication"],
-    "Agent Support": ["Supplementary_Form", "Others", "Scholarship_Form", "Curriculum_Analysis"],
-    "Portfolio": ["Portfolio"]
+    "Messages": ["communication"],
+    "Agent Support": ["Supplementary_Form", "Others", "Scholarship_Form", "Curriculum_Analysis", "Portfolio"]
 }
 
 const BlankLookupTable = {
@@ -67,10 +66,6 @@ const BlankLookupTable = {
         ResponseTimeId: []
     },
     "Agent Support": {
-        AvgResponseTime: [],
-        ResponseTimeId: []
-    },
-    "Portfolio": {
         AvgResponseTime: [],
         ResponseTimeId: []
     }

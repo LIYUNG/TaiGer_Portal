@@ -1222,6 +1222,7 @@ const CreateIntervalMessageOperation = (student, msg1, msg2) => {
 const ProcessMessages = (student, messages) => {
   const bulkOps = [];
   messages.sort((a, b) => a.updatedAt - b.updatedAt);
+  // console.log("messages", messages);
   if (messages.length > 1) {
     let msg1 = undefined;
     let msg2 = undefined;
@@ -1234,7 +1235,7 @@ const ProcessMessages = (student, messages) => {
         msg.ignore_message !== true
       ) {
         msg1 = msg;
-      } else if (UserRole !== Role.Student) {
+      } else if (msg1 !== undefined && UserRole !== Role.Student) {
         msg2 = msg;
       }
       if (msg1 !== undefined && msg2 !== undefined) {
@@ -1312,7 +1313,7 @@ const ProcessThread = (thread) => {
           msg.ignore_message !== true
         ) {
           msg1 = msg;
-        } else if (UserRole !== Role.Student) {
+        } else if (msg1 !== undefined && UserRole !== Role.Student) {
           msg2 = msg;
         }
       } catch (error) {

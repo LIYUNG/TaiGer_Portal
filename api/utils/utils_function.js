@@ -1170,8 +1170,7 @@ function CalculateInterval(message1, message2) {
 const GroupCommunicationByStudent = async () => {
   try {
     const communications = await Communication.find()
-      .populate('student_id user_id')
-      .populate('student_id', 'archiv')
+      .populate('student_id user_id', 'firstname lastname email archiv')
       .lean();
     let groupCommunication = {};
     for (const singleCommunicaiton of communications) {
@@ -1199,10 +1198,10 @@ const GroupCommunicationByStudent = async () => {
   }
 };
 
-const CreateIntervalMessageOperation = (student, msg1, msg2) => {
+const CreateIntervalMessageOperation = (student_id, msg1, msg2) => {
   const intervalValue = CalculateInterval(msg1, msg2);
   const intervalData = {
-    student_id: student,
+    student_id,
     message_1_id: msg1._id,
     message_2_id: msg2._id,
     interval_type: 'communication',
@@ -1242,6 +1241,7 @@ const ProcessMessages = (student, messages) => {
         UserRole === Role.Student &&
         msg.ignore_message !== true
       ) {
+        // Get the first message from student
         msg1 = msg;
       } else if (msg1 !== undefined && UserRole !== Role.Student) {
         msg2 = msg;
@@ -1447,17 +1447,31 @@ const CalculateAverageResponseTimeAndSave = async () => {
           [`${idKey}`]: key.toString(),
           interval_type: intervalType
         };
-
-        const update = {
-          $set: {
-            intervalAvg: final_avg,
-            updatedAt: new Date()
-          },
-          $setOnInsert: {
-            [`${idKey}`]: key.toString(),
-            interval_type: intervalType
-          }
-        };
+        let update;
+        if (idKey === 'thread_id') {
+          update = {
+            $set: {
+              intervalAvg: final_avg,
+              updatedAt: new Date()
+            },
+            $setOnInsert: {
+              student_id: singleInterval.thread_id.student_id?.toString(),
+              [`${idKey}`]: key.toString(),
+              interval_type: intervalType
+            }
+          };
+        } else {
+          update = {
+            $set: {
+              intervalAvg: final_avg,
+              updatedAt: new Date()
+            },
+            $setOnInsert: {
+              [`${idKey}`]: key.toString(),
+              interval_type: intervalType
+            }
+          };
+        }
 
         bulkOps.push({
           updateOne: {

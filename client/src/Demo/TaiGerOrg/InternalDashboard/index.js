@@ -149,7 +149,9 @@ const StudentResponseTimeChart = ({ studentResponseTime }) => {
   const chartData = fileTypes.map((type) => ({
     name: type,
     ResponseTime:
-      parseFloat(studentResponseTime[type]?.AvgResponseTime?.toFixed(2)) || 0
+      parseFloat(
+        studentResponseTime.intervalGroup[type]?.toFixed(2)
+      ) || 0
   }));
 
   return (
@@ -167,7 +169,7 @@ const StudentResponseTimeChart = ({ studentResponseTime }) => {
         <XAxis dataKey="name" />
         <YAxis>
           <Label
-            value={`${studentResponseTime.UserProfile?.firstname} ${studentResponseTime.UserProfile?.lastname}`}
+            value={`${studentResponseTime.student?.firstname} ${studentResponseTime.student?.lastname}`}
             angle={-90}
             position="insideLeft"
           />
@@ -284,7 +286,8 @@ function InternalDashboard() {
     editors_data,
     students,
     students_years_pair,
-    students_details
+    students_details,
+    studentResponseTimeLookupTable
   } = internalDashboardState;
 
   if (!isLoaded && !students && !documents) {
@@ -479,10 +482,6 @@ function InternalDashboard() {
     duration: calculateDuration(item.start, item.end)
   }));
 
-  const studentResponseTimesArray = Object.values(
-    internalDashboardState.studentResponseTimeLookupTable
-  );
-  console.log(studentResponseTimesArray);
   return (
     <Box>
       <Breadcrumbs aria-label="breadcrumb">
@@ -809,7 +808,7 @@ function InternalDashboard() {
           <Grid item xs={12}>
             <Typography variant="h6">Student Response Time</Typography>
           </Grid>
-          {studentResponseTimesArray.map((studentResponseTime, idx) => (
+          {studentResponseTimeLookupTable.map((studentResponseTime, idx) => (
             <Grid item xs={12} md={4} key={idx}>
               <StudentResponseTimeChart
                 studentResponseTime={studentResponseTime}

@@ -175,6 +175,7 @@ const GenerateResponseTimeByTaigerUser = async () => {
   return Lookup;
 };
 
+// TODO: deprecated
 const GenerateResponseTimeByStudent = async () => {
   let Lookup = {};
 

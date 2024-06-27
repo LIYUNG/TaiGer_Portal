@@ -11,8 +11,12 @@ const { findStudentDelta } = require('../utils/modelHelper/programChange');
 const { getPermission } = require('../utils/queryFunctions');
 const { ObjectId } = require('mongodb');
 const { GenerateResponseTimeByStudent } = require('./response_time');
-const { numStudentYearDistribution } = require('../utils/utils_function');
+const {
+  numStudentYearDistribution,
+  DailyCalculateAverageResponseTime
+} = require('../utils/utils_function');
 const { one_day_cache } = require('../cache/node-cache');
+const { ResponseTime } = require('../models/ResponseTime');
 
 const getActivePrograms = async () => {
   const activePrograms = await User.aggregate([
@@ -408,6 +412,7 @@ const getEditorData = async (editor) => {
 };
 
 const getStatistics = asyncHandler(async (req, res) => {
+  await DailyCalculateAverageResponseTime();
   const cacheKey = 'internalDashboard';
   const value = one_day_cache.get(cacheKey);
   if (value === undefined) {
@@ -461,8 +466,49 @@ const getStatistics = asyncHandler(async (req, res) => {
       }
     ]);
 
-    const studentResponseTimeLookupTablePromise =
-      GenerateResponseTimeByStudent();
+    // const studentResponseTimeLookupTablePromise =
+    //   GenerateResponseTimeByStudent();
+    const studentResponseTimeLookupTablePromise2 = await ResponseTime.aggregate(
+      [
+        {
+          $group: {
+            _id: '$student_id',
+            intervalGroup: {
+              $push: {
+                k: '$interval_type',
+                v: '$intervalAvg'
+              }
+            }
+          }
+        },
+        {
+          $lookup: {
+            from: 'users', // the collection name in MongoDB
+            localField: '_id',
+            foreignField: '_id',
+            as: 'student'
+          }
+        },
+        {
+          $unwind: '$student'
+        },
+        {
+          $project: {
+            _id: 0,
+            student: {
+              _id: '$_id',
+              lastname_chinese: '$student.lastname_chinese',
+              firstname_chinese: '$student.firstname_chinese',
+              firstname: '$student.firstname',
+              lastname: '$student.lastname'
+            },
+            intervalGroup: {
+              $arrayToObject: '$intervalGroup'
+            }
+          }
+        }
+      ]
+    );
     const activeStudentGeneralTasksPromise = getGeneralTasks();
     const activeStudentTasksPromise = await getDecidedApplicationsTasks();
     const [
@@ -483,7 +529,7 @@ const getStatistics = asyncHandler(async (req, res) => {
       finDocsPromise,
       studentsPromise,
       archivCountPromise,
-      studentResponseTimeLookupTablePromise,
+      studentResponseTimeLookupTablePromise2,
       activeStudentGeneralTasksPromise,
       activeStudentTasksPromise,
       ...agents.map((agent) => getAgentStudentDistData(agent))

@@ -482,7 +482,7 @@ function InternalDashboard() {
   const studentResponseTimesArray = Object.values(
     internalDashboardState.studentResponseTimeLookupTable
   );
-
+  console.log(studentResponseTimesArray);
   return (
     <Box>
       <Breadcrumbs aria-label="breadcrumb">
@@ -564,7 +564,7 @@ function InternalDashboard() {
           </Grid>
           <Grid item xs={12} md={4}>
             <Card sx={{ p: 2 }}>
-              <Typography>Tasks: Number of Open Tasks</Typography>
+              <Typography>Tasks: Number of Tasks</Typography>
               <SingleBarChart
                 data={documents_data}
                 label="Tasks"

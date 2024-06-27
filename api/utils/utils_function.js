@@ -1438,7 +1438,7 @@ const CalculateAverageResponseTimeAndSave = async () => {
           (sum, interval) => sum + interval.interval,
           0
         );
-        const final_avg = total / intervals.length;
+        const final_avg = (total / intervals.length).toFixed(2);
 
         const singleInterval = intervals[0];
         const intervalType = singleInterval.interval_type;

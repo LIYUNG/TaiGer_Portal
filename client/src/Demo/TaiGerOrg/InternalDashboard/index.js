@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   Card,
   Tabs,
@@ -55,6 +55,7 @@ import {
 import SingleBarChart from '../../../components/Charts/SingleBarChart.js';
 import VerticalDistributionBarCharts from '../../../components/Charts/VerticalDistributionBarChart.js';
 import VerticalSingleBarChart from '../../../components/Charts/VerticalSingleChart.js';
+import ExampleWithLocalizationProvider from '../../../components/MaterialReactTable/index.js';
 
 function groupByMonth(data) {
   return data.reduce((acc, { createdAt }) => {
@@ -143,15 +144,14 @@ const AgentBarCharts = ({ agentDistr }) => {
   );
 };
 
+// TODO: to be moved to single student
 const StudentResponseTimeChart = ({ studentResponseTime }) => {
   const fileTypes = ['CV', 'ML', 'RL', 'Essay', 'Messages', 'Agent Support'];
 
   const chartData = fileTypes.map((type) => ({
     name: type,
     ResponseTime:
-      parseFloat(
-        studentResponseTime.intervalGroup[type]?.toFixed(2)
-      ) || 0
+      parseFloat(studentResponseTime.intervalGroup[type]?.toFixed(2)) || 0
   }));
 
   return (
@@ -187,12 +187,101 @@ CustomTabPanel.propTypes = {
   index: PropTypes.number.isRequired,
   value: PropTypes.number.isRequired
 };
+const fileTypes2 = [
+  'communication',
+  'CV',
+  'ML',
+  'RL_A',
+  'RL_B',
+  'RL_C',
+  'Essay',
+  'Supplementary_Form'
+];
 
+const responseTimeColumn = [
+  {
+    accessorKey: 'name', //accessorKey used to define `data` column. `id` gets set to accessorKey automatically
+    filterVariant: 'autocomplete',
+    filterFn: 'contains',
+    header: 'First-, Last Name',
+    size: 150,
+    Cell: (params) => {
+      const linkUrl = `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+        params.row.original.id,
+        DEMO.PROFILE_HASH
+      )}`;
+      return (
+        <Box
+          sx={{
+            whiteSpace: 'nowrap',
+            overflow: 'hidden'
+            // textOverflow: 'ellipsis'
+          }}
+        >
+          <Link
+            underline="hover"
+            to={linkUrl}
+            component={LinkDom}
+            target="_blank"
+            title={params.row.original.name}
+          >
+            {`${params.row.original.name}`}
+          </Link>
+        </Box>
+      );
+    }
+  },
+  {
+    accessorKey: 'communication',
+    header: 'Message',
+    size: 120
+  },
+  {
+    accessorKey: 'CV',
+    header: 'CV',
+    size: 120
+  },
+  {
+    accessorKey: 'ML',
+    header: 'ML',
+    size: 120
+  },
+  {
+    accessorKey: 'RL_A',
+    header: 'RL_A',
+    size: 120
+  },
+  {
+    accessorKey: 'RL_B',
+    header: 'RL_B',
+    size: 120
+  },
+  {
+    accessorKey: 'RL_C',
+    header: 'RL_C',
+    size: 120
+  },
+  {
+    accessorKey: 'Essay',
+    header: 'Essay',
+    size: 120
+  },
+  {
+    accessorKey: 'Supplementary_Form',
+    header: 'Supplementary_Form',
+    size: 120
+  }
+];
 function InternalDashboard() {
   const { user } = useAuth();
   const { t } = useTranslation();
   const { hash } = useLocation();
   const [viewMode, setViewMode] = useState('month');
+  const memoizedColumnsMrt = useMemo(
+    () => responseTimeColumn,
+    [responseTimeColumn]
+  );
+
   const [internalDashboardState, setInternalDashboardState] = useState({
     error: '',
     role: '',
@@ -315,6 +404,15 @@ function InternalDashboard() {
 
   const chartData = prepareChartData(groupedData);
 
+  // Normalize data by ensuring each object has all keys
+  const normalizedResults = studentResponseTimeLookupTable.map((result) => {
+    const normalizedResult = { ...result };
+    fileTypes2.forEach((key) => {
+      normalizedResult[key] = result[key] !== undefined ? result[key] : 0; // Set missing keys to null or undefined
+    });
+    return normalizedResult;
+  });
+  console.log(normalizedResults);
   const application_status = ['Open', 'Close'];
   const admission_status = ['Admission', 'Rejection', 'Pending'];
 
@@ -808,13 +906,20 @@ function InternalDashboard() {
           <Grid item xs={12}>
             <Typography variant="h6">Student Response Time</Typography>
           </Grid>
-          {studentResponseTimeLookupTable.map((studentResponseTime, idx) => (
-            <Grid item xs={12} md={4} key={idx}>
-              <StudentResponseTimeChart
-                studentResponseTime={studentResponseTime}
-              />
-            </Grid>
-          ))}
+          <Grid item xs={12}>
+            <ExampleWithLocalizationProvider
+              data={normalizedResults}
+              col={memoizedColumnsMrt}
+            />
+          </Grid>
+          {false &&
+            studentResponseTimeLookupTable.map((studentResponseTime, idx) => (
+              <Grid item xs={12} md={4} key={idx}>
+                <StudentResponseTimeChart
+                  studentResponseTime={studentResponseTime}
+                />
+              </Grid>
+            ))}
         </Grid>
       </CustomTabPanel>
       <Tabs defaultActiveKey="default" fill={true} justify={true}>

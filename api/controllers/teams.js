@@ -495,15 +495,33 @@ const getStatistics = asyncHandler(async (req, res) => {
         {
           $project: {
             _id: 0,
+            id: '$_id',
             student: {
               _id: '$_id',
               lastname_chinese: '$student.lastname_chinese',
               firstname_chinese: '$student.firstname_chinese',
-              firstname: '$student.firstname',
-              lastname: '$student.lastname'
+              name: {
+                $concat: ['$student.firstname', ' ', '$student.lastname']
+              }
             },
             intervalGroup: {
               $arrayToObject: '$intervalGroup'
+            }
+          }
+        },
+        {
+          $replaceRoot: {
+            newRoot: {
+              $mergeObjects: [
+                {
+                  id: '$id',
+                  student_id: '$student_id',
+                  lastname_chinese: '$student.lastname_chinese',
+                  firstname_chinese: '$student.firstname_chinese',
+                  name: '$student.name'
+                },
+                '$intervalGroup'
+              ]
             }
           }
         }

@@ -17,13 +17,18 @@ import {
 import { convertDate } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ProgramReportModal from './ProgramReportModal';
-import { LinkableNewlineText } from '../Utils/checking-functions';
+import {
+  LinkableNewlineText,
+  is_TaiGer_role
+} from '../Utils/checking-functions';
 import ProgramReportUpdateModal from './ProgramReportUpdateModal';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import ProgramReportDeleteModal from './ProgramReportDeleteModal';
+import { useAuth } from '../../components/AuthProvider';
 
 function ProgramReport(props) {
   const { t } = useTranslation();
+  const { user } = useAuth();
   const [programReportState, setProgramReportState] = useState({
     isReport: false,
     isReportDelete: false,
@@ -269,6 +274,14 @@ function ProgramReport(props) {
             <LinkableNewlineText text={ticket.feedback} />
           </Typography>
         </Grid>
+        {is_TaiGer_role(user) && (
+          <Grid item xs={12}>
+            <Typography>
+              {t('Reqested by')}:{' '}
+              {`${ticket.requester_id?.firstname} ${ticket.requester_id?.lastname}`}
+            </Typography>
+          </Grid>
+        )}
         <Grid item xs={12}>
           <Typography>
             {t('updated at')}: {convertDate(ticket.updatedAt)}

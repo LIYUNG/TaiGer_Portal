@@ -2,12 +2,17 @@ const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
 const Ticket = require('../models/Ticket');
 const logger = require('../services/logger');
-const { Student } = require('../models/User');
+const { Student, Role } = require('../models/User');
 const { isNotArchiv } = require('../constants');
 const { Program } = require('../models/Program');
-const { TicketCreatedAgentEmail } = require('../services/email');
+const {
+  TicketCreatedAgentEmail,
+  TicketResolvedRequesterReminderEmail
+} = require('../services/email');
 
 const getTickets = asyncHandler(async (req, res) => {
+  const { user } = req;
+
   const { type, program_id, status } = req.query;
   const query = {};
   if (type) {
@@ -19,25 +24,48 @@ const getTickets = asyncHandler(async (req, res) => {
   if (status) {
     query.status = status;
   }
-  const tickets = await Ticket.find(query)
-    .populate('program_id', 'school program_name degree')
-    .sort({ createdAt: -1 });
-  res.send({ success: true, data: tickets });
+  if (user.role === Role.Student) {
+    const tickets = await Ticket.find(query)
+      .populate('program_id', 'school program_name degree')
+      .select('-requester_id')
+      .sort({ createdAt: -1 });
+    res.send({ success: true, data: tickets });
+  } else {
+    const tickets = await Ticket.find(query)
+      .populate('program_id', 'school program_name degree')
+      .populate('requester_id', 'firstname lastname email')
+      .sort({ createdAt: -1 });
+    res.send({ success: true, data: tickets });
+  }
 });
 
 const getTicket = asyncHandler(async (req, res) => {
-  const ticket = await Ticket.findById(req.params.ticketId);
-  if (!ticket) {
-    logger.error('getTicket: Invalid ticket id');
-    throw new ErrorResponse(404, 'Ticket not found');
+  const { user } = req;
+  if (user.role === Role.Student) {
+    const ticket = await Ticket.findById(req.params.ticketId).select(
+      '-requester_id'
+    );
+    if (!ticket) {
+      logger.error('getTicket: Invalid ticket id');
+      throw new ErrorResponse(404, 'Ticket not found');
+    }
+    res.send({ success: true, data: ticket });
+  } else {
+    const ticket = await Ticket.findById(req.params.ticketId).populate(
+      'requester_id',
+      'firstname lastname email '
+    );
+    if (!ticket) {
+      logger.error('getTicket: Invalid ticket id');
+      throw new ErrorResponse(404, 'Ticket not found');
+    }
+    res.send({ success: true, data: ticket });
   }
-  res.send({ success: true, data: ticket });
 });
 
 const createTicket = asyncHandler(async (req, res) => {
   const { user } = req;
   const new_ticket = req.body;
-  //   console.log(new_ticket);
   new_ticket.requester_id = user._id.toString();
   // TODO: DO not create the same
   const ticket = await Ticket.create(new_ticket);
@@ -50,7 +78,7 @@ const createTicket = asyncHandler(async (req, res) => {
     .exec();
   for (let i = 0; i < student.agents.length; i += 1) {
     if (isNotArchiv(student)) {
-      await TicketCreatedAgentEmail(
+      TicketCreatedAgentEmail(
         {
           firstname: student.agents[i].firstname,
           lastname: student.agents[i].lastname,
@@ -74,9 +102,29 @@ const updateTicket = asyncHandler(async (req, res) => {
   // TODO: update resolver_id
   const updatedTicket = await Ticket.findByIdAndUpdate(ticket_id, fields, {
     new: true
-  });
+  })
+    .populate('requester_id', 'firstname lastname email archiv')
+    .populate('program_id', 'school program_name degree semester');
 
-  return res.status(200).send({ success: true, data: updatedTicket });
+  res.status(200).send({ success: true, data: updatedTicket });
+
+  // TODO: to avoid resolved many times
+  if (fields?.status === 'resolved') {
+    if (isNotArchiv(updatedTicket.requester_id)) {
+      TicketResolvedRequesterReminderEmail(
+        {
+          firstname: updatedTicket.requester_id.firstname,
+          lastname: updatedTicket.requester_id.lastname,
+          address: updatedTicket.requester_id.email
+        },
+        {
+          program: updatedTicket.program_id,
+          student: updatedTicket.requester_id,
+          taigerUser: user
+        }
+      );
+    }
+  }
 });
 
 const deleteTicket = asyncHandler(async (req, res) => {

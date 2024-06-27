@@ -2325,6 +2325,30 @@ Please check the <a href="${PROGRAM_URL(
   return sendEmail(recipient, subject, message);
 };
 
+const TicketResolvedRequesterReminderEmail = async (recipient, payload) => {
+  const programName = `${payload.program.school} - ${payload.program.program_name} - ${payload.program.degree} - ${payload.program.semester}`;
+  const taiger_user_name = `${payload.taigerUser.firstname} ${payload.taigerUser.lastname}`;
+  const subject = `[Close] Program Update Request for ${programName} by ${taiger_user_name}`;
+  const message = `\
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+
+<p><b>${taiger_user_name}</b> 更新並解決了 program ${programName} Feedback. 請上前查看 <a href="${PROGRAM_URL(
+    payload.program._id.toString()
+  )}">Ticket</a> 。 </p>
+
+<p>${SPLIT_LINE}</p>
+
+<p>${taiger_user_name} updated and resolved the feedback for the program  ${programName}. 
+
+Please check the <a href="${PROGRAM_URL(
+    payload.program._id.toString()
+  )}">Ticket</a> and see the ticket. </p>
+
+`;
+
+  return sendEmail(recipient, subject, message);
+};
+
 const TicketResolvedStudentEmail = async (recipient, payload) => {
   const programName = `${payload.program.school}-${payload.program.program_name}`;
   const student_name = `${payload.student.firstname} ${payload.student.lastname}`;
@@ -2788,6 +2812,7 @@ module.exports = {
   MeetingReminderEmail,
   UnconfirmedMeetingReminderEmail,
   TicketCreatedAgentEmail,
+  TicketResolvedRequesterReminderEmail,
   TicketResolvedStudentEmail,
   sendAssignEssayWriterReminderEmail,
   sendAssignedInterviewTrainerToTrainerEmail,

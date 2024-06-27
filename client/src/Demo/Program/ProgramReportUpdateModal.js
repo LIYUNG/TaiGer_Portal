@@ -3,9 +3,12 @@ import { Button, TextField, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import ModalNew from '../../components/Modal';
+import { is_TaiGer_role } from '../Utils/checking-functions';
+import { useAuth } from '../../components/AuthProvider';
 
 function ProgramReportUpdateModal(props) {
   const { t } = useTranslation();
+  const { user } = useAuth();
   const [programReportUpdateModalState, ProgramReportUpdateModalState] =
     useState({
       ticket: props.ticket
@@ -70,6 +73,7 @@ function ProgramReportUpdateModal(props) {
             status: 'resolved'
           })
         }
+        disabled={!is_TaiGer_role(user)}
         sx={{ mr: 1 }}
       >
         {t('Resolve ticket', { ns: 'programList' })}

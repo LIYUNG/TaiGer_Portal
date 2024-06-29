@@ -193,6 +193,10 @@ function SingleInterview() {
 
   const handleClickSave = (e, editorState) => {
     e.preventDefault();
+    setSingleInterviewState((prevState) => ({
+      ...prevState,
+      buttonDisabled: true
+    }));
     var message = JSON.stringify(editorState);
     const formData = new FormData();
 
@@ -225,6 +229,7 @@ function SingleInterview() {
               }
             },
             isLoaded: true,
+            editorInputState: {},
             buttonDisabled: false,
             accordionKeys: [
               ...singleInterviewState.accordionKeys,
@@ -479,7 +484,8 @@ function SingleInterview() {
               ) : (
                 <DocThreadEditor
                   thread={interview.thread_id}
-                  buttonDisabled={false}
+                  buttonDisabled={singleInterviewState.buttonDisabled}
+                  // buttonDisabled={false}
                   editorState={singleInterviewState.editorInputState}
                   handleClickSave={handleClickSave}
                   file={singleInterviewState.file}

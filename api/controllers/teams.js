@@ -11,10 +11,7 @@ const { findStudentDelta } = require('../utils/modelHelper/programChange');
 const { getPermission } = require('../utils/queryFunctions');
 const { ObjectId } = require('mongodb');
 const { GenerateResponseTimeByStudent } = require('./response_time');
-const {
-  numStudentYearDistribution,
-  DailyCalculateAverageResponseTime
-} = require('../utils/utils_function');
+const { numStudentYearDistribution } = require('../utils/utils_function');
 const { one_day_cache } = require('../cache/node-cache');
 const { ResponseTime } = require('../models/ResponseTime');
 
@@ -412,7 +409,6 @@ const getEditorData = async (editor) => {
 };
 
 const getStatistics = asyncHandler(async (req, res) => {
-  await DailyCalculateAverageResponseTime();
   const cacheKey = 'internalDashboard';
   const value = one_day_cache.get(cacheKey);
   if (value === undefined) {

@@ -922,12 +922,6 @@ function InternalDashboard() {
             ))}
         </Grid>
       </CustomTabPanel>
-      <Tabs defaultActiveKey="default" fill={true} justify={true}>
-        <Tab eventKey="default" title="Overview"></Tab>
-        <Tab eventKey="kpi" title="KPI"></Tab>
-        <Tab eventKey="program_list" title="Program List"></Tab>
-        <Tab eventKey="response_time" title="Response Time"></Tab>
-      </Tabs>
     </Box>
   );
 }

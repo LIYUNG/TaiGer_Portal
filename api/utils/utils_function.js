@@ -1272,7 +1272,10 @@ const FindIntervalInCommunicationsAndSave = async () => {
 
     if (bulkOps.length > 0) {
       const result = await Interval.bulkWrite(bulkOps);
-      logger.info('Bulk operation result:', result);
+      logger.info(
+        'FindIntervalInCommunicationsAndSave: Bulk operation result:',
+        result
+      );
     }
   } catch (error) {
     logger.error('Error finding valid interval:', error);
@@ -1389,7 +1392,10 @@ const FindIntervalInDocumentThreadAndSave = async () => {
 
     if (bulkOps.length > 0) {
       const result = await Interval.bulkWrite(bulkOps);
-      logger.info('Bulk operation result:', result);
+      logger.info(
+        'FindIntervalInDocumentThreadAndSave: Bulk operation result:',
+        result
+      );
     }
   } catch (error) {
     logger.error('Error in FindIntervalInDocumentThreadAndSave:', error);
@@ -1485,7 +1491,7 @@ const CalculateAverageResponseTimeAndSave = async () => {
       // Execute bulk operations
       if (bulkOps.length > 0) {
         const result = await ResponseTime.bulkWrite(bulkOps);
-        logger.info('Bulk operation result:', result);
+        logger.info('calculateAndSaveAverage: Bulk operation result:', result);
       }
     } catch (err) {
       logger.error(

@@ -751,14 +751,16 @@ export const INTERNAL_DASHBOARD_TABS = {
   overview: 0,
   agents: 1,
   kpi: 2,
-  programList: 3
+  programList: 3,
+  responseTime: 4
 };
 
 export const INTERNAL_DASHBOARD_REVERSED_TABS = {
   0: 'overview',
   1: 'agents',
   2: 'kpi',
-  3: 'programList'
+  3: 'programList',
+  4: 'responseTime'
 };
 
 export const SINGLE_STUDENT_TABS = {

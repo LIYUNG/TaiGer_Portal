@@ -465,9 +465,10 @@ const getStatistics = asyncHandler(async (req, res) => {
         }
       }
     ]);
-
+    // TODO: get MLs, RLs, etc. individual response time and thread_id>> will be used to query intervals collection.
     // const studentResponseTimeLookupTablePromise =
     //   GenerateResponseTimeByStudent();
+    // TOOD: multiple ML/ RL should be averaged. This output will be used for overview table.
     const studentResponseTimeLookupTablePromise2 = await ResponseTime.aggregate(
       [
         {
@@ -492,12 +493,21 @@ const getStatistics = asyncHandler(async (req, res) => {
         {
           $unwind: '$student'
         },
+        // {
+        //   $lookup: {
+        //     from: 'users', // Assuming this is the collection name for Program documents
+        //     localField: 'student.agents',
+        //     foreignField: '_id',
+        //     as: 'agents'
+        //   }
+        // },
         {
           $project: {
             _id: 0,
             id: '$_id',
             student: {
               _id: '$_id',
+              // agents: '$agents',
               lastname_chinese: '$student.lastname_chinese',
               firstname_chinese: '$student.firstname_chinese',
               name: {
@@ -515,7 +525,8 @@ const getStatistics = asyncHandler(async (req, res) => {
               $mergeObjects: [
                 {
                   id: '$id',
-                  student_id: '$student_id',
+                  student_id: '$id',
+                  // agents: '$agents',
                   lastname_chinese: '$student.lastname_chinese',
                   firstname_chinese: '$student.firstname_chinese',
                   name: '$student.name'

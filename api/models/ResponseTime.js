@@ -29,6 +29,11 @@ const ResponseTimeSchema = new mongoose.Schema({
   }
 });
 
+ResponseTimeSchema.index(
+  { student_id: 1, thread_id: 1, interval_type: 1 },
+  { unique: true }
+);
+
 const ResponseTime = mongoose.model('ResponseTime', ResponseTimeSchema);
 module.exports = {
   ResponseTime

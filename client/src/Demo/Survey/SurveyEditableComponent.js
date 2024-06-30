@@ -12,7 +12,8 @@ import {
   Grid,
   FormControl,
   InputLabel,
-  Badge
+  Badge,
+  Tooltip
 } from '@mui/material';
 import LinkIcon from '@mui/icons-material/Link';
 import { Link as LinkDom } from 'react-router-dom';
@@ -959,62 +960,84 @@ const SurveyEditableComponent = (props) => {
               </Typography>
             </Grid>
             <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                labelid="expected_application_date"
-                name="expected_application_date"
-                id="expected_application_date"
-                error={
-                  survey.application_preference?.expected_application_date ===
-                  ''
-                }
-                helperText={
-                  survey.application_preference?.expected_application_date ===
-                    '' && 'Please provide the info.'
-                }
-                select
-                value={
-                  survey.application_preference?.expected_application_date || ''
-                }
-                label={t('Expected Application Year')}
-                onChange={(e) => handleChangeApplicationPreference(e)}
+              <Tooltip
+                title={t(
+                  'If you want to change this, please contact your agent.'
+                )}
+                placement="top"
               >
-                {EXPECTATION_APPLICATION_YEARS().map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
-                  </MenuItem>
-                ))}
-              </TextField>
+                <TextField
+                  fullWidth
+                  labelid="expected_application_date"
+                  name="expected_application_date"
+                  id="expected_application_date"
+                  error={
+                    survey.application_preference?.expected_application_date ===
+                    ''
+                  }
+                  helperText={
+                    survey.application_preference?.expected_application_date ===
+                      '' && 'Please provide the info.'
+                  }
+                  disabled={is_TaiGer_Student(user)}
+                  select
+                  value={
+                    survey.application_preference?.expected_application_date ||
+                    ''
+                  }
+                  label={`${t('Expected Application Year')} (${t('Agent fill', {
+                    ns: 'survey'
+                  })})`}
+                  onChange={(e) => handleChangeApplicationPreference(e)}
+                >
+                  {EXPECTATION_APPLICATION_YEARS().map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </Tooltip>
             </Grid>
             <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                labelid="expected_application_semester"
-                name="expected_application_semester"
-                id="expected_application_semester"
-                error={
-                  survey.application_preference
-                    ?.expected_application_semester === ''
-                }
-                helperText={
-                  survey.application_preference
-                    ?.expected_application_semester === '' &&
-                  'Please provide the info.'
-                }
-                select
-                value={
-                  survey?.application_preference
-                    ?.expected_application_semester || ''
-                }
-                label={t('Expected Application Semester')}
-                onChange={(e) => handleChangeApplicationPreference(e)}
+              <Tooltip
+                title={t(
+                  'If you want to change this, please contact your agent.'
+                )}
+                placement="top"
               >
-                {SEMESTER_ARRAY_OPTIONS.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
-                  </MenuItem>
-                ))}
-              </TextField>
+                <TextField
+                  fullWidth
+                  labelid="expected_application_semester"
+                  name="expected_application_semester"
+                  id="expected_application_semester"
+                  error={
+                    survey.application_preference
+                      ?.expected_application_semester === ''
+                  }
+                  helperText={
+                    survey.application_preference
+                      ?.expected_application_semester === '' &&
+                    'Please provide the info.'
+                  }
+                  disabled={is_TaiGer_Student(user)}
+                  select
+                  value={
+                    survey?.application_preference
+                      ?.expected_application_semester || ''
+                  }
+                  label={`${t('Expected Application Semester')} (${t(
+                    'Agent fill',
+                    { ns: 'survey' }
+                  )})`}
+                  onChange={(e) => handleChangeApplicationPreference(e)}
+                >
+                  {SEMESTER_ARRAY_OPTIONS.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </Tooltip>
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField

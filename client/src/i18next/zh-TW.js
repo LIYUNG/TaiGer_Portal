@@ -278,7 +278,7 @@ export const translation_zh_TW = {
     '#': '#',
     Fetch: '拿取',
     'GPA Requirement (German system)': 'GPA要求 (德制)',
-    "First / Last Name":"名 / 姓",
+    'First / Last Name': '名 / 姓',
     Feedback: '回饋',
     'Feedback at': '回饋於',
     'Edit History': '編輯歷史',
@@ -481,6 +481,9 @@ export const translation_zh_TW = {
     'Expected English Test Date': '預計英語考試日期',
     'University (Bachelor degree)': '大學 (學士學位)',
     'Second degree (Another Bachelor or Master)': '第二學位 (另一個學士或碩士)',
+    'If you want to change this, please contact your agent.':
+      '如果您想更改此欄位，請和您的顧問討論',
+    'Agent fill': '顧問填寫',
     'Practical Experience': '實習或工作經驗',
     'Other wish': '其他需求'
   },

@@ -484,6 +484,9 @@ export const translation_en = {
     'University (Bachelor degree)': 'University (Bachelor degree)',
     'Second degree (Another Bachelor or Master)':
       'Second degree (Another Bachelor or Master)',
+    'If you want to change this, please contact your agent.':
+      'If you want to change this, please contact your agent.',
+    'Agent fill': 'Agent fill',
     'Practical Experience': 'Practical Experience',
     'Other wish': 'Other wish'
   },

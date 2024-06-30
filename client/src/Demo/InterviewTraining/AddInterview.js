@@ -27,18 +27,12 @@ import {
 } from '../Utils/checking-functions';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
-import {
-  getMyInterviews,
-  createInterview,
-  deleteInterview,
-  getAllInterviews
-} from '../../api';
+import { getMyInterviews, createInterview } from '../../api';
 import NotesEditor from '../Notes/NotesEditor';
 import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
 import { appConfig } from '../../config';
 import Loading from '../../components/Loading/Loading';
-import ModalNew from '../../components/Modal';
 import { showTimezoneOffset } from '../Utils/contants';
 
 function AddInterview() {
@@ -57,7 +51,6 @@ function AddInterview() {
     interviewData: {},
     isSubmitting: false,
     category: '',
-    SetDeleteDocModel: false,
     isAdd: false,
     expand: true,
     editorState: '',
@@ -67,103 +60,25 @@ function AddInterview() {
   });
 
   useEffect(() => {
-    if (is_TaiGer_role(user)) {
-      getAllInterviews().then(
-        (resp) => {
-          const { data, success, student } = resp.data;
-          const { status } = resp;
-          if (success) {
-            setAddInterviewState((prevState) => ({
-              ...prevState,
-              isLoaded: true,
-              interviewslist: data,
-              student: student,
-              success: success,
-              res_status: status
-            }));
-          } else {
-            setAddInterviewState((prevState) => ({
-              ...prevState,
-              isLoaded: true,
-              res_status: status
-            }));
-          }
-        },
-        (error) => {
-          setAddInterviewState((prevState) => ({
-            ...prevState,
-            isLoaded: true,
-            error,
-            res_status: 500
-          }));
-        }
-      );
-    } else {
-      getMyInterviews().then(
-        (resp) => {
-          const { data, success, student } = resp.data;
-          const { status } = resp;
-          if (success) {
-            setAddInterviewState((prevState) => ({
-              ...prevState,
-              isLoaded: true,
-              interviewslist: data,
-              student: student,
-              success: success,
-              res_status: status
-            }));
-          } else {
-            setAddInterviewState((prevState) => ({
-              ...prevState,
-              isLoaded: true,
-              res_status: status
-            }));
-          }
-        },
-        (error) => {
-          setAddInterviewState((prevState) => ({
-            ...prevState,
-            isLoaded: true,
-            error,
-            res_status: 500
-          }));
-        }
-      );
-    }
-  }, []);
-
-  const handleDeleteInterview = () => {
-    deleteInterview(interviewTrainingState.interview_id_toBeDelete).then(
+    getMyInterviews().then(
       (resp) => {
-        const { success } = resp.data;
+        const { data, success, student, students } = resp.data;
         const { status } = resp;
         if (success) {
-          let interviewslist_temp = [...interviewTrainingState.interviewslist];
-          let to_be_delete_doc_idx = interviewslist_temp.findIndex(
-            (doc) =>
-              doc._id.toString() ===
-              interviewTrainingState.interview_id_toBeDelete
-          );
-          if (to_be_delete_doc_idx > -1) {
-            // only splice array when item is found
-            interviewslist_temp.splice(to_be_delete_doc_idx, 1); // 2nd parameter means remove one item only
-          }
           setAddInterviewState((prevState) => ({
             ...prevState,
-            success,
-            interviewslist: interviewslist_temp,
-            SetDeleteDocModel: false,
-            isAdd: false,
             isLoaded: true,
-            res_modal_status: status
+            interviewslist: data,
+            students: students,
+            student: student,
+            success: success,
+            res_status: status
           }));
         } else {
-          const { message } = resp.data;
           setAddInterviewState((prevState) => ({
             ...prevState,
             isLoaded: true,
-            res_modal_message: message,
-            res_modal_status: status
+            res_status: status
           }));
         }
       },
@@ -172,19 +87,11 @@ function AddInterview() {
           ...prevState,
           isLoaded: true,
           error,
-          res_modal_status: 500,
-          res_modal_message: ''
+          res_status: 500
         }));
       }
     );
-  };
-
-  const closeDeleteDocModalWindow = () => {
-    setAddInterviewState((prevState) => ({
-      ...prevState,
-      SetDeleteDocModel: false
-    }));
-  };
+  }, []);
 
   const handleEditorChange = (content) => {
     setAddInterviewState((state) => ({
@@ -211,7 +118,7 @@ function AddInterview() {
     }));
     createInterview(
       interviewTrainingState.interviewData.program_id,
-      user._id.toString(),
+      interviewTrainingState.student._id,
       interviewData_temp
     ).then(
       (resp) => {
@@ -244,12 +151,21 @@ function AddInterview() {
   };
 
   const handleChange_AddInterview = (e) => {
-    const interviewData_temp = { ...interviewTrainingState.interviewData };
-    interviewData_temp[e.target.name] = e.target.value;
-    setAddInterviewState((prevState) => ({
-      ...prevState,
-      interviewData: interviewData_temp
-    }));
+    if (e.target.name === 'student') {
+      setAddInterviewState((prevState) => ({
+        ...prevState,
+        student: interviewTrainingState.students.find(
+          (std) => e.target.value === std._id
+        )
+      }));
+    } else {
+      const interviewData_temp = { ...interviewTrainingState.interviewData };
+      interviewData_temp[e.target.name] = e.target.value;
+      setAddInterviewState((prevState) => ({
+        ...prevState,
+        interviewData: interviewData_temp
+      }));
+    }
   };
 
   const ConfirmError = () => {
@@ -277,27 +193,25 @@ function AddInterview() {
     return <ErrorPage res_status={res_status} />;
   }
   let available_interview_request_programs = [];
-  if (!is_TaiGer_role(user)) {
-    available_interview_request_programs = student.applications
-      .filter(
-        (application) =>
-          isProgramDecided(application) &&
-          isProgramSubmitted(application) &&
-          application.admission !== 'O' &&
-          application.admission !== 'X' &&
-          !interviewslist.find(
-            (interview) =>
-              interview.program_id._id.toString() ===
-              application.programId._id.toString()
-          )
-      )
-      .map((application) => {
-        return {
-          key: application.programId._id.toString(),
-          value: `${application.programId.school} ${application.programId.program_name} ${application.programId.degree} ${application.programId.semester}`
-        };
-      });
-  }
+  available_interview_request_programs = student?.applications
+    .filter(
+      (application) =>
+        isProgramDecided(application) &&
+        isProgramSubmitted(application) &&
+        application.admission !== 'O' &&
+        application.admission !== 'X' &&
+        !interviewslist.find(
+          (interview) =>
+            interview.program_id._id.toString() ===
+            application.programId._id.toString()
+        )
+    )
+    .map((application) => {
+      return {
+        key: application.programId._id.toString(),
+        value: `${application.programId.school} ${application.programId.program_name} ${application.programId.degree} ${application.programId.semester}`
+      };
+    });
 
   return (
     <Box>
@@ -365,6 +279,31 @@ function AddInterview() {
             </TableRow>
           </TableHead>
           <TableBody>
+            {is_TaiGer_role(user) && (
+              <TableRow>
+                <TableCell>
+                  <Typography>{t('Student')}</Typography>
+                </TableCell>
+                <TableCell sx={{ display: 'flex' }}>
+                  <TextField
+                    fullWidth
+                    size="small"
+                    name="student"
+                    id="student"
+                    select
+                    value={interviewTrainingState.student?._id}
+                    onChange={(e) => handleChange_AddInterview(e)}
+                  >
+                    <MenuItem value={''}>Select Student</MenuItem>
+                    {interviewTrainingState.students?.map((std) => (
+                      <MenuItem value={std._id} key={std._id}>
+                        {std.firstname}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </TableCell>
+              </TableRow>
+            )}
             <TableRow>
               <TableCell>
                 <Typography>
@@ -440,12 +379,11 @@ function AddInterview() {
                   onChange={(e) => handleChange_AddInterview(e)}
                 >
                   <MenuItem value={''}>Select Program</MenuItem>
-                  {!is_TaiGer_role(user) &&
-                    available_interview_request_programs.map((cat, i) => (
-                      <MenuItem value={cat.key} key={i}>
-                        {cat.value}
-                      </MenuItem>
-                    ))}
+                  {available_interview_request_programs?.map((cat, i) => (
+                    <MenuItem value={cat.key} key={i}>
+                      {cat.value}
+                    </MenuItem>
+                  ))}
                 </TextField>
               </TableCell>
             </TableRow>
@@ -496,34 +434,6 @@ function AddInterview() {
           handleClickSave={handleClickSave}
         />
       </Card>
-      <ModalNew
-        open={interviewTrainingState.SetDeleteDocModel}
-        onClose={closeDeleteDocModalWindow}
-        aria-labelledby="contained-modal-title-vcenter"
-        centered
-      >
-        <Typography variant="h6">Warning</Typography>
-        Do you want to delete the interview request of{' '}
-        <Typography fontWeight="bold">
-          {interviewTrainingState.interview_name_toBeDelete}
-        </Typography>
-        ?
-        <Button
-          color="primary"
-          variant="contained"
-          disabled={!isLoaded}
-          onClick={handleDeleteInterview}
-        >
-          {t('Yes', { ns: 'common' })}
-        </Button>
-        <Button
-          color="secondary"
-          variant="outlined"
-          onClick={closeDeleteDocModalWindow}
-        >
-          {t('No', { ns: 'common' })}
-        </Button>
-      </ModalNew>
     </Box>
   );
 }

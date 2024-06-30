@@ -306,6 +306,18 @@ function InterviewTraining() {
             {t('Add', { ns: 'common' })}
           </Button>
         )}
+      {is_TaiGer_role(user) && (
+        <Button
+          fullWidth
+          size="small"
+          variant="contained"
+          color="primary"
+          onClick={handleClick}
+          sx={{ my: 1 }}
+        >
+          {t('Add', { ns: 'common' })}
+        </Button>
+      )}
       <MuiDataGrid rows={rows} columns={memoizedColumns} />
     </Box>
   );

@@ -44,7 +44,7 @@ router
   .get(
     filter_archiv_user,
     InterviewGETRateLimiter,
-    permit(Role.Student),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     getMyInterview
   );
 

@@ -98,23 +98,45 @@ const getAllInterviews = asyncHandler(async (req, res) => {
 
 const getMyInterview = asyncHandler(async (req, res) => {
   const { user } = req;
-  const interviews = await Interview.find({
-    student_id: user._id.toString()
-  })
-    .populate('student_id trainer_id', 'firstname lastname email')
-    .populate('program_id', 'school program_name degree semester')
-    .populate('thread_id event_id')
-    .lean();
+  if (user.role === Role.Agent || user.role === Role.Editor) {
+    const interviews = await Interview.find()
+      .populate('student_id trainer_id', 'firstname lastname email')
+      .populate('program_id', 'school program_name degree semester')
+      .populate('thread_id event_id')
+      .lean();
 
-  const student = await Student.findById(user._id.toString())
-    .populate('applications.programId', 'school program_name degree semester')
-    .lean();
-  if (!student) {
-    logger.info('getMyInterview: this student is not existed!');
-    throw new ErrorResponse(400, 'this student is not existed!');
+    const students = await Student.find({
+      agents: { $in: user._id },
+      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+    })
+      .populate('agents editors', 'firstname lastname email')
+      .populate('applications.programId', 'school program_name degree semester')
+      .lean();
+    if (!students) {
+      logger.info('getMyInterview: this student is not existed!');
+      throw new ErrorResponse(400, 'this student is not existed!');
+    }
+
+    res.status(200).send({ success: true, data: interviews, students });
+  } else {
+    const interviews = await Interview.find({
+      student_id: user._id.toString()
+    })
+      .populate('student_id trainer_id', 'firstname lastname email')
+      .populate('program_id', 'school program_name degree semester')
+      .populate('thread_id event_id')
+      .lean();
+
+    const student = await Student.findById(user._id.toString())
+      .populate('applications.programId', 'school program_name degree semester')
+      .lean();
+    if (!student) {
+      logger.info('getMyInterview: this student is not existed!');
+      throw new ErrorResponse(400, 'this student is not existed!');
+    }
+
+    res.status(200).send({ success: true, data: interviews, student });
   }
-
-  res.status(200).send({ success: true, data: interviews, student });
 });
 
 const getInterview = asyncHandler(async (req, res) => {

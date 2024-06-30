@@ -5,19 +5,26 @@ import { updateStudentNotes } from '../../api';
 
 function NotesCard(props) {
   const [notesCardState, setNotesCardState] = useState({
-    editorState: null,
+    editorState: props.notes,
     message_id: '',
     isLoaded: false,
-    buttonDisabled: false
+    buttonDisabled: true
   });
 
   useEffect(() => {
     setNotesCardState((prevState) => ({
       ...prevState,
-      isLoaded: props.isLoaded,
-      buttonDisabled: true
+      isLoaded: props.isLoaded
     }));
   }, []);
+
+  const handleEditorChange = (content) => {
+    setNotesCardState((state) => ({
+      ...state,
+      editorState: content,
+      buttonDisabled: false
+    }));
+  };
 
   const handleClickSave = (e, editorState) => {
     e.preventDefault();
@@ -74,8 +81,9 @@ function NotesCard(props) {
       <NotesEditor
         thread={notesCardState.thread}
         notes_id={`notes-${props.student_id}`}
-        // buttonDisabled={notesCardState.buttonDisabled}
-        editorState={props.notes}
+        handleEditorChange={handleEditorChange}
+        buttonDisabled={notesCardState.buttonDisabled}
+        editorState={notesCardState.editorState}
         unique_id={props.student_id}
         handleClickSave={handleClickSave}
       />

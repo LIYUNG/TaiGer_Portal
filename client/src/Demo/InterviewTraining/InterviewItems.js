@@ -19,7 +19,8 @@ import {
   Link,
   Button,
   Grid,
-  Typography
+  Typography,
+  TextField
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 
@@ -49,7 +50,15 @@ function InterviewItems(props) {
   const { t } = useTranslation();
   const [isCollapse, setIsCollapse] = useState(props.expanded);
   const [showModal, setShowModal] = useState(false);
-  const [interview, setiInterview] = useState(props.interview);
+  const [interview, setiInterview] = useState({
+    ...props.interview,
+    interview_description:
+      props.interview?.interview_description &&
+      props.interview?.interview_description !== '{}'
+        ? JSON.parse(props.interview.interview_description)
+        : { time: new Date(), blocks: [] }
+  });
+  const [buttonDisabled, setButtonDisabled] = useState(true);
   const [editors, setEditors] = useState([]);
   const [interviewTrainingTimeChange, setInterviewTrainingTimeChange] =
     useState(false);
@@ -63,7 +72,6 @@ function InterviewItems(props) {
     res_modal_message: '',
     res_modal_status: 0
   });
-
   const { user } = useAuth();
   const [timezone, setTimezone] = useState(
     user.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone
@@ -133,16 +141,34 @@ function InterviewItems(props) {
       }));
     }
   };
+  const handleChange_UpdateInterview = (e) => {
+    setButtonDisabled(false);
+    setiInterview((prevState) => ({
+      ...prevState,
+      [e.target.name]: e.target.value
+    }));
+  };
 
-  const handleClickInterviewDescriptionSave = async (e, editorState) => {
+  const handleEditorChange = (editorState) => {
+    setButtonDisabled(false);
+    setiInterview((prevState) => ({
+      ...prevState,
+      interview_description: editorState
+    }));
+  };
+
+  const handleClickSave = async (e, editorState) => {
     e.preventDefault();
     var notes = JSON.stringify(editorState);
     const { data } = await updateInterview(interview._id.toString(), {
+      interviewer: interview.interviewer,
+      interview_date: interview.interview_date,
       interview_description: notes
     });
     const { data: interview_updated, success } = data;
     if (success) {
       setiInterview(interview_updated);
+      setButtonDisabled(true);
     }
   };
 
@@ -408,33 +434,57 @@ function InterviewItems(props) {
                 {t('Interviewer', { ns: 'interviews' })}:&nbsp;
               </Typography>
               <Typography variant="body1">
-                {`${interview.interviewer}`}
+                <TextField
+                  name="interviewer"
+                  size="small"
+                  type="text"
+                  required
+                  fullWidth
+                  id="interviewer"
+                  placeholder="Prof. Sebastian"
+                  // label={`${t('Interviewer', { ns: 'interviews' })}`}
+                  InputLabelProps={{
+                    shrink: true
+                  }}
+                  value={interview.interviewer}
+                  onChange={(e) => handleChange_UpdateInterview(e)}
+                />
               </Typography>
               <Typography variant="body1" fontWeight="bold" sx={{ mt: 2 }}>
-                {t('Interview Time')}:&nbsp;
-              </Typography>
-              <Typography variant="body1">
-                {`${convertDate(interview.interview_date)} ${NoonNightLabel(
-                  utcTime
-                )} ${
+                {t('Interview Time')} ({t('Your timezone local time')}{' '}
+                {`${
                   Intl.DateTimeFormat().resolvedOptions().timeZone
                 } ${showTimezoneOffset()}`}
+                ):&nbsp;
               </Typography>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DesktopDateTimePicker
+                  size="small"
+                  required
+                  fullWidth
+                  id="interview_date"
+                  value={dayjs(interview.interview_date || '')}
+                  onChange={(newValue) => {
+                    const interviewData_temp = {
+                      ...interview
+                    };
+                    interviewData_temp.interview_date = newValue;
+                    setButtonDisabled(false);
+                    setiInterview(interviewData_temp);
+                  }}
+                />
+              </LocalizationProvider>
               <Typography variant="body1" fontWeight="bold" sx={{ mt: 2 }}>
                 {t('Description', { ns: 'common' })}
               </Typography>{' '}
               <NotesEditor
                 thread={null}
                 notes_id={`${props.interview._id.toString()}-description`}
-                // buttonDisabled={this.state.buttonDisabled}
-                editorState={
-                  interview.interview_description &&
-                  interview.interview_description !== '{}'
-                    ? JSON.parse(interview.interview_description)
-                    : { time: new Date(), blocks: [] }
-                }
+                buttonDisabled={buttonDisabled}
+                editorState={interview.interview_description}
                 unique_id={`${props.interview._id.toString()}-description`}
-                handleClickSave={handleClickInterviewDescriptionSave}
+                handleClickSave={handleClickSave}
+                handleEditorChange={handleEditorChange}
                 readOnly={props.readOnly}
               />
             </Grid>

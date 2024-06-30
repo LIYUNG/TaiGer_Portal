@@ -186,6 +186,13 @@ function AddInterview() {
     }));
   };
 
+  const handleEditorChange = (content) => {
+    setAddInterviewState((state) => ({
+      ...state,
+      editorState: content
+    }));
+  };
+
   const handleClickSave = (e, editorState) => {
     e.preventDefault();
     if (
@@ -484,6 +491,7 @@ function AddInterview() {
             interviewTrainingState.interviewData.interview_date === '' ||
             interviewTrainingState.isSubmitting
           }
+          handleEditorChange={handleEditorChange}
           editorState={interviewTrainingState.editorState}
           handleClickSave={handleClickSave}
         />

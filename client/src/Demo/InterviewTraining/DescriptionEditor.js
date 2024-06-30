@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import EditorNote from '../../components/EditorJs/EditorNote';
 
-function NotesEditor(props) {
+function DescriptionEditor(props) {
   const { t } = useTranslation();
   return (
     <>
@@ -50,4 +50,4 @@ function NotesEditor(props) {
   );
 }
 
-export default NotesEditor;
+export default DescriptionEditor;

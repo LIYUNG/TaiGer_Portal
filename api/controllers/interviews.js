@@ -23,6 +23,7 @@ const Permission = require('../models/Permission');
 const InterviewSurveyResponse = require('../models/InterviewSurveyResponse');
 const { addMessageInThread } = require('../utils/informEditor');
 const { isNotArchiv } = require('../constants');
+const { getPermission } = require('../utils/queryFunctions');
 
 const PrecheckInterview = async (interview_id) => {
   const precheck_interview = await Interview.findById(interview_id);
@@ -98,17 +99,30 @@ const getAllInterviews = asyncHandler(async (req, res) => {
 
 const getMyInterview = asyncHandler(async (req, res) => {
   const { user } = req;
-  if (user.role === Role.Agent || user.role === Role.Editor) {
-    const interviews = await Interview.find()
-      .populate('student_id trainer_id', 'firstname lastname email')
-      .populate('program_id', 'school program_name degree semester')
-      .populate('thread_id event_id')
-      .lean();
-
-    const students = await Student.find({
-      agents: { $in: user._id },
-      $or: [{ archiv: { $exists: false } }, { archiv: false }]
-    })
+  const filter = {};
+  const studentFilter = {
+    $or: [{ archiv: { $exists: false } }, { archiv: false }]
+  };
+  if (user.role === Role.Student) {
+    filter.student_id = user._id.toString();
+  }
+  const interviews = await Interview.find(filter)
+    .populate('student_id trainer_id', 'firstname lastname email')
+    .populate('program_id', 'school program_name degree semester')
+    .populate('thread_id event_id')
+    .lean();
+  if (
+    user.role === Role.Admin ||
+    user.role === Role.Agent ||
+    user.role === Role.Editor
+  ) {
+    if (user.role === Role.Agent || user.role === Role.Editor) {
+      const permissions = await getPermission(user);
+      if (!(permissions?.canAssignAgents || permissions?.canAssignEditors)) {
+        studentFilter.agents = user._id;
+      }
+    }
+    const students = await Student.find(studentFilter)
       .populate('agents editors', 'firstname lastname email')
       .populate('applications.programId', 'school program_name degree semester')
       .lean();
@@ -119,14 +133,6 @@ const getMyInterview = asyncHandler(async (req, res) => {
 
     res.status(200).send({ success: true, data: interviews, students });
   } else {
-    const interviews = await Interview.find({
-      student_id: user._id.toString()
-    })
-      .populate('student_id trainer_id', 'firstname lastname email')
-      .populate('program_id', 'school program_name degree semester')
-      .populate('thread_id event_id')
-      .lean();
-
     const student = await Student.findById(user._id.toString())
       .populate('applications.programId', 'school program_name degree semester')
       .lean();

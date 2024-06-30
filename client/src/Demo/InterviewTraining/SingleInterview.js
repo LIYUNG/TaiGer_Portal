@@ -61,7 +61,7 @@ function SingleInterview() {
   useEffect(() => {
     getInterview(interview_id).then(
       (resp) => {
-        const { data, success } = resp.data;
+        const { data, success, questionsNum } = resp.data;
         const { status } = resp;
         if (!data) {
           setSingleInterviewState((prevState) => ({
@@ -84,6 +84,7 @@ function SingleInterview() {
             interview: data,
             editorDescriptionState: initialEditorState,
             editorInputState: { time: new Date(), blocks: [] },
+            questionsNum,
             accordionKeys:
               new Array(data.thread_id?.messages?.length)
                 .fill()
@@ -394,6 +395,7 @@ function SingleInterview() {
     isDeleteSuccessful,
     isSubmissionLoaded,
     isLoaded,
+    questionsNum,
     res_modal_status,
     res_modal_message
   } = singleInterviewState;
@@ -443,6 +445,7 @@ function SingleInterview() {
           <InterviewItems
             expanded={true}
             interview={interview}
+            questionsNum={questionsNum}
             openDeleteDocModalWindow={openDeleteDocModalWindow}
           />
           <MessageList

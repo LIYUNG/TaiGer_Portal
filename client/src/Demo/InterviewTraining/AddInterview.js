@@ -203,7 +203,9 @@ function AddInterview() {
         !interviewslist.find(
           (interview) =>
             interview.program_id._id.toString() ===
-            application.programId._id.toString()
+              application.programId._id.toString() &&
+            interview.student_id._id.toString() ===
+              student._id.toString()
         )
     )
     .map((application) => {

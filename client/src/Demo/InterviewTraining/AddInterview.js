@@ -297,7 +297,8 @@ function AddInterview() {
                     <MenuItem value={''}>Select Student</MenuItem>
                     {interviewTrainingState.students?.map((std) => (
                       <MenuItem value={std._id} key={std._id}>
-                        {std.firstname}
+                        {std.firstname} {std.lastname} {std.lastname_chinese}
+                        {std.firstname_chinese}
                       </MenuItem>
                     ))}
                   </TextField>
@@ -307,10 +308,12 @@ function AddInterview() {
             <TableRow>
               <TableCell>
                 <Typography>
-                  {t('Interview Time')} ({t('Your timezone local time')})
+                  {t('Interview Time')} (
+                  {Intl.DateTimeFormat().resolvedOptions().timeZone}{' '}
+                  {showTimezoneOffset()})
                 </Typography>
               </TableCell>
-              <TableCell sx={{ display: 'flex' }}>
+              <TableCell>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DesktopDateTimePicker
                     size="small"
@@ -330,10 +333,6 @@ function AddInterview() {
                     }}
                   />
                 </LocalizationProvider>
-                <Typography sx={{ ml: 2, mt: 2 }}>
-                  {Intl.DateTimeFormat().resolvedOptions().timeZone}{' '}
-                  {showTimezoneOffset()}
-                </Typography>
               </TableCell>
             </TableRow>
             <TableRow>

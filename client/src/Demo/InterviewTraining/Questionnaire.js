@@ -42,7 +42,10 @@ const Questionnaire = () => {
     interviewFeedback: ''
   });
   const [interview, setInterview] = React.useState({});
-  const [interviewSurveyState, setInterviewSurveyState] = React.useState({});
+  const [interviewSurveyState, setInterviewSurveyState] = React.useState({
+    isLoaded: false,
+    res_status: 0
+  });
 
   useEffect(() => {
     fetchInterviewAndSurvey();
@@ -87,15 +90,15 @@ const Questionnaire = () => {
           acc[item.questionId] = item.answer;
           return acc;
         }, {});
-        console.log(result);
         setValues({
           ...result,
-          isFinal: data.isFinal,
-          interviewQuestions: data.interviewQuestions,
-          interviewFeedback: data.interviewFeedback
+          isFinal: data?.isFinal,
+          interviewQuestions: data?.interviewQuestions,
+          interviewFeedback: data?.interviewFeedback
         });
       }
     } catch (error) {
+      console.log(error);
       setInterviewSurveyState((prevState) => ({
         ...prevState,
         isLoaded: true,
@@ -177,15 +180,16 @@ const Questionnaire = () => {
     }
   };
 
-  const { res_status, editorDescriptionState, isLoaded } = interviewSurveyState;
+  const { res_status, isLoaded } = interviewSurveyState;
 
-  if (!isLoaded && !editorDescriptionState) {
+  if (!isLoaded) {
     return <Loading />;
   }
 
   if (res_status >= 400) {
     return <ErrorPage res_status={res_status} />;
   }
+
   const interview_name = `${interview?.student_id.firstname} ${interview?.student_id.lastname} - ${interview?.program_id.school} ${interview?.program_id.program_name} ${interview?.program_id.degree} ${interview?.program_id.semester}`;
 
   return (

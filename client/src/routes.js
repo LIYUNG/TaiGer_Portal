@@ -14,8 +14,15 @@ import {
 } from './api/dataLoader';
 import DefaultErrorPage from './Demo/Utils/DefaultErrorPage';
 import StudentApplicationsAssignPage from './Demo/StudentApplications/assignPage';
-import AddInterview from './Demo/InterviewTraining/AddInterview';
-import Questionnaire from './Demo/InterviewTraining/Questionnaire';
+const Questionnaire = React.lazy(() =>
+  import('./Demo/InterviewTraining/Questionnaire')
+);
+const AddInterview = React.lazy(() =>
+  import('./Demo/InterviewTraining/AddInterview')
+);
+const InterviewResponseTable = React.lazy(() =>
+  import('./Demo/InterviewTraining/InterviewResponseTable')
+);
 
 const DashboardDefault = React.lazy(() => import('./Demo/Dashboard/Dashboard'));
 
@@ -577,6 +584,12 @@ if (appConfig.interviewEnable) {
     exact: true,
     name: 'AddInterview',
     Component: AddInterview
+  });
+  routes.push({
+    path: '/interview-training/survey',
+    exact: true,
+    name: 'InterviewResponseTable',
+    Component: InterviewResponseTable
   });
   routes.push({
     path: '/interview-training/:interview_id/survey',

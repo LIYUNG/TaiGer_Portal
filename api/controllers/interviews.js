@@ -104,7 +104,6 @@ const getInterviewQuestions = asyncHandler(async (req, res) => {
     .populate('student_id', 'firstname lastname email')
     .lean();
 
-  // console.log(interviewsSurveys.interview_id?.program_id);
   const questionsArray = interviewsSurveys.filter(
     (survey) => survey.interview_id.program_id.toString() === programId
   );
@@ -184,11 +183,11 @@ const getInterview = asyncHandler(async (req, res) => {
       logger.info('getInterview: this interview is not found!');
       throw new ErrorResponse(404, 'this interview is not found!');
     }
-    // TODO: get old survey number for this program
+
     const interviewsSurveys = await InterviewSurveyResponse.find()
       .populate('interview_id')
       .lean();
-    // console.log(interviewsSurveys.interview_id?.program_id);
+
     const num = interviewsSurveys.filter(
       (survey) =>
         survey.interview_id.program_id.toString() ===

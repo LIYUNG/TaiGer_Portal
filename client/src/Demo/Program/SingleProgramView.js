@@ -18,6 +18,7 @@ import {
   Tabs,
   Tab
 } from '@mui/material';
+import { diffChars } from 'diff';
 
 import {
   is_TaiGer_Admin,
@@ -46,6 +47,27 @@ import ProgramReport from './ProgramReport';
 import { appConfig } from '../../config';
 import { useAuth } from '../../components/AuthProvider';
 import { a11yProps, CustomTabPanel } from '../../components/Tabs';
+
+const prepDiffText = (original = '', updated = '') => {
+  const diff = diffChars(original, updated);
+  return diff.map((part, index) => {
+    const color = part.added ? '#24292e' : part.removed ? '#24292e' : 'grey';
+    const background = part.added
+      ? '#e6ffed'
+      : part.removed
+      ? '#ffeef0'
+      : 'none';
+    const textDecoration = part.removed ? 'line-through' : 'none';
+    return (
+      <span
+        key={index}
+        style={{ color, background, 'text-decoration': textDecoration }}
+      >
+        {part.value}
+      </span>
+    );
+  });
+};
 
 function SingleProgramView(props) {
   const { user } = useAuth();
@@ -363,7 +385,9 @@ function SingleProgramView(props) {
                       <Typography>{t('Group', { ns: 'common' })}</Typography>
                     </Grid>
                     <Grid item xs={12} md={8}>
-                      <Typography>{props.program.study_group_flag}</Typography>
+                      <Typography>
+                        {props?.program?.study_group_flag || ''}
+                      </Typography>
                     </Grid>
                   </>
                 )}
@@ -389,10 +413,7 @@ function SingleProgramView(props) {
                       <strong>{t('Field', { ns: 'common' })}</strong>
                     </TableCell>
                     <TableCell>
-                      <strong>{t('Original', { ns: 'common' })}</strong>
-                    </TableCell>
-                    <TableCell>
-                      <strong>{t('Updated', { ns: 'common' })}</strong>
+                      <strong>{t('Value', { ns: 'common' })}</strong>
                     </TableCell>
                   </TableRow>
                 </TableHead>
@@ -424,14 +445,14 @@ function SingleProgramView(props) {
                             <TableRow key={i}>
                               <TableCell>{key}</TableCell>
                               <TableCell>
-                                {change?.originalValues
-                                  ? change.originalValues[key]
-                                  : ''}
-                              </TableCell>
-                              <TableCell>
-                                {change?.updatedValues
-                                  ? change.updatedValues[key]
-                                  : ''}
+                                {prepDiffText(
+                                  change?.originalValues
+                                    ? change.originalValues[key]
+                                    : '',
+                                  change?.updatedValues
+                                    ? change.updatedValues[key]
+                                    : ''
+                                )}
                               </TableCell>
                             </TableRow>
                           ))}

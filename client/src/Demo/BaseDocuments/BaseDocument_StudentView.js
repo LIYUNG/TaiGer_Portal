@@ -1,17 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import LaunchIcon from '@mui/icons-material/Launch';
-import {
-  Box,
-  Button,
-  IconButton,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Typography
-} from '@mui/material';
+import { Box, Button, IconButton, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import ButtonSetUploaded from './ButtonSetUploaded';
@@ -474,18 +463,7 @@ function BaseDocument_StudentView(props) {
         removeBanner={undefined}
         notification_key={undefined}
       />
-      <TableContainer style={{ overflowX: 'auto' }}>
-        <Table size="small">
-          <TableHead>
-            <TableRow>
-              <TableCell>{t('Status', { ns: 'common' })}</TableCell>
-              <TableCell>{t('File Name', { ns: 'common' })}</TableCell>
-              <TableCell></TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>{file_information}</TableBody>
-        </Table>
-      </TableContainer>
+      {file_information}
       {SYMBOL_EXPLANATION}
       {res_modal_status >= 400 && (
         <ModalMain

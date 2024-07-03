@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Link as LinkDom } from 'react-router-dom';
 import {
+  Box,
   Button,
   CircularProgress,
-  Link,
-  TableCell,
-  TableRow,
+  Grid,
+  IconButton,
+  Stack,
+  Tooltip,
   Typography
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -123,49 +125,77 @@ function ButtonSetNotNeeded(props) {
   };
   var ButttonRow_NotNeeded;
   ButttonRow_NotNeeded = (
-    <TableRow>
-      <TableCell>{FILE_DONT_CARE_SYMBOL}</TableCell>
-      <TableCell>
-        {t(props.docName, { ns: 'common' })}
-        <Link
-          to={
-            buttonSetNotNeededState.link && buttonSetNotNeededState.link != ''
-              ? buttonSetNotNeededState.link
-              : '/'
-          }
-          component={LinkDom}
-          target="_blank"
-          sx={{ ml: 1 }}
-        >
-          <Button size="small" variant="outlined" endIcon={<LaunchIcon />}>
-            {t('Read More')}
-          </Button>
-        </Link>
-        {is_TaiGer_Admin(user) && (
-          <a onClick={openOffcanvasWindow} style={{ cursor: 'pointer' }}>
-            [Edit]
-          </a>
-        )}
-        <Typography variant="body2">{convertDate(props.time)}</Typography>
-      </TableCell>
-      <TableCell>
-        {!is_TaiGer_Editor(user) && (
-          <UploadIconButton
-            user={user}
-            buttonState={buttonSetNotNeededState}
-            t={t}
-            handleGeneralDocSubmit={handleGeneralDocSubmit}
-            k={props.k}
-          />
-        )}
-        <SetNeededIconButton
-          onUpdateProfileDocStatus={onUpdateProfileDocStatus}
-          k={props.k}
-          buttonState={buttonSetNotNeededState}
-          t={t}
-        />
-      </TableCell>
-    </TableRow>
+    <Box
+      sx={{
+        mb: 1,
+        p: 2,
+        border: '1px solid',
+        borderColor: 'grey.300',
+        borderRadius: 2
+      }}
+    >
+      <Grid container alignItems="center" spacing={2}>
+        <Grid item xs={12} sm={8}>
+          <Stack direction="row" alignItems="center" spacing={1}>
+            {FILE_DONT_CARE_SYMBOL}
+            <Typography variant="body1">
+              {t(props.docName, { ns: 'common' })}
+            </Typography>
+            <Tooltip title={t('Read More')}>
+              <IconButton
+                component={LinkDom}
+                to={
+                  buttonSetNotNeededState.link &&
+                  buttonSetNotNeededState.link !== ''
+                    ? buttonSetNotNeededState.link
+                    : '/'
+                }
+                target="_blank"
+                size="small"
+                color="primary"
+              >
+                <LaunchIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+            {is_TaiGer_Admin(user) && (
+              <Typography
+                component="a"
+                onClick={openOffcanvasWindow}
+                sx={{ cursor: 'pointer', ml: 1 }}
+                color="primary"
+              >
+                [Edit]
+              </Typography>
+            )}
+          </Stack>
+          <Typography variant="body2">{convertDate(props.time)}</Typography>
+        </Grid>
+        <Grid item xs={12} sm={4}>
+          <Stack
+            direction="row"
+            justifyContent="flex-end"
+            alignItems="center"
+            spacing={1}
+          >
+            {!is_TaiGer_Editor(user) && (
+              <UploadIconButton
+                user={user}
+                buttonState={buttonSetNotNeededState}
+                t={t}
+                handleGeneralDocSubmit={handleGeneralDocSubmit}
+                k={props.k}
+              />
+            )}
+            <SetNeededIconButton
+              onUpdateProfileDocStatus={onUpdateProfileDocStatus}
+              k={props.k}
+              buttonState={buttonSetNotNeededState}
+              t={t}
+            />
+          </Stack>
+        </Grid>
+      </Grid>
+    </Box>
   );
 
   return (

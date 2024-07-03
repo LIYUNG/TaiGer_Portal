@@ -88,11 +88,12 @@ function CommunicationThreadEditor(props) {
       <Box
         style={{
           my: 1,
-          display: 'flex'
+          display: 'flex',
+          alignItems: 'center'
         }}
       >
         <Avatar {...stringAvatar(`${user.firstname} ${user.lastname}`)} />
-        <Typography>
+        <Typography variant="body1">
           {user.firstname} {user.lastname}
         </Typography>
       </Box>
@@ -121,7 +122,7 @@ function CommunicationThreadEditor(props) {
         {is_TaiGer_role(user) &&
           props.files?.map((fl, i) => (
             <Box key={`${fl.name}${i}`}>
-              <Typography>{fl.name} :</Typography>
+              <Typography variant="body1">{fl.name} :</Typography>
               {props.checkResult?.length &&
                 Object.keys(props.checkResult[i]).map((ky) => (
                   <Typography
@@ -143,7 +144,7 @@ function CommunicationThreadEditor(props) {
         {is_TaiGer_Student(user) &&
           props.files?.map((fl, i) => (
             <Box key={`${fl.name}${i}`}>
-              <Typography>{fl.name}</Typography>
+              <Typography variant="body1">{fl.name}</Typography>
             </Box>
           ))}
       </Box>
@@ -220,7 +221,7 @@ function CommunicationThreadEditor(props) {
           </IconButton>
         )}
         {is_TaiGer_Agent(user) && (
-          <Typography variant="p">
+          <Typography variant="body1">
             <ReactMarkdown remarkPlugins={[remarkGfm]}>
               {statedata.data}
             </ReactMarkdown>

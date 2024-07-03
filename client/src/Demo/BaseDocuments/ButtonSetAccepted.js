@@ -4,10 +4,11 @@ import {
   Box,
   Button,
   CircularProgress,
-  Link,
-  TableCell,
-  TableRow,
+  Grid,
+  IconButton,
+  Stack,
   TextField,
+  Tooltip,
   Typography
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -214,51 +215,79 @@ function ButtonSetAccepted(props) {
 
   var ButttonRow_Accepted;
   ButttonRow_Accepted = (
-    <TableRow>
-      <TableCell>{FILE_OK_SYMBOL}</TableCell>
-      <TableCell>
-        <Typography variant="body1">
-          {t(props.docName, { ns: 'common' })}
-          <Link
-            to={
-              buttonSetAcceptedState.link && buttonSetAcceptedState.link != ''
-                ? buttonSetAcceptedState.link
-                : '/'
-            }
-            component={LinkDom}
-            target="_blank"
-            sx={{ ml: 1 }}
+    <Box
+      sx={{
+        mb: 1,
+        p: 2,
+        border: '1px solid',
+        borderColor: 'grey.300',
+        borderRadius: 2
+      }}
+    >
+      <Grid container alignItems="center" spacing={2}>
+        <Grid item xs={12} sm={8}>
+          <Stack direction="row" alignItems="center" spacing={1}>
+            {FILE_OK_SYMBOL}
+            <Typography variant="body1">
+              {t(props.docName, { ns: 'common' })}
+            </Typography>
+            <Tooltip title={t('Read More')}>
+              <IconButton
+                component={LinkDom}
+                to={
+                  buttonSetAcceptedState.link &&
+                  buttonSetAcceptedState.link !== ''
+                    ? buttonSetAcceptedState.link
+                    : '/'
+                }
+                target="_blank"
+                size="small"
+                color="primary"
+              >
+                <LaunchIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+            {is_TaiGer_Admin(user) && (
+              <Typography
+                component="a"
+                onClick={openOffcanvasWindow}
+                sx={{ cursor: 'pointer', ml: 1 }}
+                color="primary"
+              >
+                [Edit]
+              </Typography>
+            )}
+          </Stack>
+          <Typography variant="body2" color="textSecondary">
+            {convertDate(props.time)}
+          </Typography>
+        </Grid>
+        <Grid item xs={12} sm={4}>
+          <Stack
+            direction="row"
+            justifyContent="flex-end"
+            alignItems="center"
+            spacing={1}
           >
-            <Button
-              size="small"
-              variant="outlined"
-              endIcon={<LaunchIcon fontSize="small" />}
-            >
-              {t('Read More')}
-            </Button>
-          </Link>
-          {is_TaiGer_Admin(user) && (
-            <a onClick={openOffcanvasWindow} style={{ cursor: 'pointer' }}>
-              [Edit]
-            </a>
-          )}
-        </Typography>
-        <Typography variant="body2">{convertDate(props.time)}</Typography>
-      </TableCell>
-      <TableCell>
-        <DownloadIconButton showPreview={showPreview} path={props.path} t={t} />
-        {is_TaiGer_AdminAgent(user) && (
-          <DeleteIconButton
-            isLoaded={buttonSetAcceptedState.isLoaded}
-            onDeleteFileWarningPopUp={onDeleteFileWarningPopUp}
-            k={props.k}
-            student_id={buttonSetAcceptedState.student_id}
-            docName={props.docName}
-            t={t}
-          />
-        )}
-      </TableCell>
-    </TableRow>
+            <DownloadIconButton
+              showPreview={showPreview}
+              path={props.path}
+              t={t}
+            />
+            {is_TaiGer_AdminAgent(user) && (
+              <DeleteIconButton
+                isLoaded={buttonSetAcceptedState.isLoaded}
+                onDeleteFileWarningPopUp={onDeleteFileWarningPopUp}
+                k={props.k}
+                student_id={buttonSetAcceptedState.student_id}
+                docName={props.docName}
+                t={t}
+              />
+            )}
+          </Stack>
+        </Grid>
+      </Grid>
+    </Box>
   );
 
   return (

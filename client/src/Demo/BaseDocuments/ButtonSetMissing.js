@@ -1,6 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Link as LinkDom } from 'react-router-dom';
-import { Button, Link, TableCell, TableRow, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  Grid,
+  IconButton,
+  Stack,
+  Tooltip,
+  Typography
+} from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import LaunchIcon from '@mui/icons-material/Launch';
 
@@ -14,7 +22,10 @@ import { useAuth } from '../../components/AuthProvider';
 import ModalNew from '../../components/Modal';
 import Loading from '../../components/Loading/Loading';
 import { FILE_MISSING_SYMBOL } from '../Utils/contants';
-import { SetNotNeededIconButton, UploadIconButton } from '../../components/Buttons/Button';
+import {
+  SetNotNeededIconButton,
+  UploadIconButton
+} from '../../components/Buttons/Button';
 
 function ButtonSetMissing(props) {
   const { user } = useAuth();
@@ -120,50 +131,77 @@ function ButtonSetMissing(props) {
 
   var ButttonRow_Rejected;
   ButttonRow_Rejected = (
-    <TableRow>
-      <TableCell>{FILE_MISSING_SYMBOL}</TableCell>
-      <TableCell>
-        {t(props.docName, { ns: 'common' })}
-        <Link
-          to={
-            buttonSetMissing.link && buttonSetMissing.link != ''
-              ? buttonSetMissing.link
-              : '/'
-          }
-          component={LinkDom}
-          target="_blank"
-          sx={{ ml: 1 }}
-        >
-          <Button size="small" variant="outlined" endIcon={<LaunchIcon />}>
-            {t('Read More')}
-          </Button>
-        </Link>
-        {is_TaiGer_Admin(user) && (
-          <a onClick={openOffcanvasWindow} style={{ cursor: 'pointer' }}>
-            [Edit]
-          </a>
-        )}
-      </TableCell>
-      <TableCell>
-        {(is_TaiGer_Student(user) || is_TaiGer_AdminAgent(user)) && (
-          <UploadIconButton
-            user={user}
-            buttonState={buttonSetMissing}
-            t={t}
-            handleGeneralDocSubmit={handleGeneralDocSubmit}
-            k={props.k}
-          />
-        )}
-        {is_TaiGer_AdminAgent(user) && (
-          <SetNotNeededIconButton
-            onUpdateProfileDocStatus={onUpdateProfileDocStatus}
-            k={props.k}
-            buttonState={buttonSetMissing}
-            t={t}
-          />
-        )}
-      </TableCell>
-    </TableRow>
+    <Box
+      sx={{
+        mb: 1,
+        p: 2,
+        border: '1px solid',
+        borderColor: 'grey.300',
+        borderRadius: 2
+      }}
+    >
+      <Grid container alignItems="center" spacing={2}>
+        <Grid item xs={12} sm={8}>
+          <Stack direction="row" alignItems="center" spacing={1}>
+            {FILE_MISSING_SYMBOL}
+            <Typography variant="body1">
+              {t(props.docName, { ns: 'common' })}
+            </Typography>
+            <Tooltip title={t('Read More')}>
+              <IconButton
+                component={LinkDom}
+                to={
+                  buttonSetMissing.link && buttonSetMissing.link !== ''
+                    ? buttonSetMissing.link
+                    : '/'
+                }
+                target="_blank"
+                size="small"
+                color="primary"
+              >
+                <LaunchIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+            {is_TaiGer_Admin(user) && (
+              <Typography
+                component="a"
+                onClick={openOffcanvasWindow}
+                sx={{ cursor: 'pointer', ml: 1 }}
+                color="primary"
+              >
+                [Edit]
+              </Typography>
+            )}
+          </Stack>
+        </Grid>
+        <Grid item xs={12} sm={4}>
+          <Stack
+            direction="row"
+            justifyContent="flex-end"
+            alignItems="center"
+            spacing={1}
+          >
+            {(is_TaiGer_Student(user) || is_TaiGer_AdminAgent(user)) && (
+              <UploadIconButton
+                user={user}
+                buttonState={buttonSetMissing}
+                t={t}
+                handleGeneralDocSubmit={handleGeneralDocSubmit}
+                k={props.k}
+              />
+            )}
+            {is_TaiGer_AdminAgent(user) && (
+              <SetNotNeededIconButton
+                onUpdateProfileDocStatus={onUpdateProfileDocStatus}
+                k={props.k}
+                buttonState={buttonSetMissing}
+                t={t}
+              />
+            )}
+          </Stack>
+        </Grid>
+      </Grid>
+    </Box>
   );
 
   return (

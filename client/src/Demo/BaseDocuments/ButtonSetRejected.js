@@ -3,13 +3,14 @@ import { Link as LinkDom } from 'react-router-dom';
 import {
   Box,
   Button,
-  Link,
   CircularProgress,
-  TableCell,
-  TableRow,
   InputLabel,
   TextField,
-  Typography
+  Typography,
+  Grid,
+  Stack,
+  Tooltip,
+  IconButton
 } from '@mui/material';
 import MessageIcon from '@mui/icons-material/Message';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
@@ -285,62 +286,96 @@ function ButtonSetRejected(props) {
   const { res_modal_status, res_modal_message } = buttonSetRejectedState;
   var ButttonRow_Rejected;
   ButttonRow_Rejected = (
-    <TableRow>
-      <TableCell>{FILE_NOT_OK_SYMBOL}</TableCell>
-      <TableCell>
-        <Typography>
-          {t(props.docName, { ns: 'common' })}
-          <Link
-            to={
-              buttonSetRejectedState.link && buttonSetRejectedState.link != ''
-                ? buttonSetRejectedState.link
-                : '/'
-            }
-            component={LinkDom}
-            target="_blank"
-            sx={{ ml: 1 }}
+    <Box
+      sx={{
+        mb: 1,
+        p: 2,
+        border: '1px solid',
+        borderColor: 'grey.300',
+        borderRadius: 2
+      }}
+    >
+      <Grid container alignItems="center" spacing={2}>
+        <Grid item xs={12} sm={8}>
+          <Stack direction="row" alignItems="center" spacing={1}>
+            {FILE_NOT_OK_SYMBOL}
+            <Typography variant="body1">
+              {t(props.docName, { ns: 'common' })}
+            </Typography>
+            <Tooltip title={t('Read More')}>
+              <IconButton
+                component={LinkDom}
+                to={
+                  buttonSetRejectedState.link &&
+                  buttonSetRejectedState.link !== ''
+                    ? buttonSetRejectedState.link
+                    : '/'
+                }
+                target="_blank"
+                size="small"
+                color="primary"
+              >
+                <LaunchIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+            {is_TaiGer_Admin(user) && (
+              <Typography
+                component="a"
+                onClick={openOffcanvasWindow}
+                sx={{ cursor: 'pointer', ml: 1 }}
+                color="primary"
+              >
+                [Edit]
+              </Typography>
+            )}
+          </Stack>
+          <Typography variant="body2" fontWeight="bold">
+            {t('Message', { ns: 'common' })}: {buttonSetRejectedState.comments}
+          </Typography>
+          <Typography variant="body2" color="textSecondary">
+            {convertDate(props.time)}
+          </Typography>
+        </Grid>
+        <Grid item xs={12} sm={4}>
+          <Stack
+            direction="row"
+            justifyContent="flex-end"
+            alignItems="center"
+            spacing={1}
           >
-            <Button size="small" variant="outlined" endIcon={<LaunchIcon />}>
-              {t('Read More')}
-            </Button>
-          </Link>
-          {is_TaiGer_Admin(user) && (
-            <a onClick={openOffcanvasWindow} style={{ cursor: 'pointer' }}>
-              [Edit]
-            </a>
-          )}
-        </Typography>
-        <Typography variant="body2" fontWeight="bold">
-          {t('Status', { ns: 'common' })}: {buttonSetRejectedState.comments}
-        </Typography>
-        <Typography variant="body2">{convertDate(props.time)}</Typography>
-      </TableCell>
-      <TableCell>
-        <DownloadIconButton showPreview={showPreview} path={props.path} t={t} />
-        <Button
-          size="small"
-          variant="outlined"
-          disabled={!buttonSetRejectedState.isLoaded}
-          title="Show Comments"
-          onClick={() =>
-            openCommentWindow(buttonSetRejectedState.student_id, props.k)
-          }
-          startIcon={<MessageIcon />}
-        >
-          {t('Message', { ns: 'common' })}
-        </Button>
-        {(is_TaiGer_AdminAgent(user) || is_TaiGer_Student(user)) && (
-          <DeleteIconButton
-            isLoaded={buttonSetRejectedState.isLoaded}
-            onDeleteFileWarningPopUp={onDeleteFileWarningPopUp}
-            k={props.k}
-            student_id={buttonSetRejectedState.student_id}
-            docName={props.docName}
-            t={t}
-          />
-        )}
-      </TableCell>
-    </TableRow>
+            <DownloadIconButton
+              showPreview={showPreview}
+              path={props.path}
+              t={t}
+            />
+            {!is_TaiGer_Student(user) && (
+              <Button
+                size="small"
+                variant="outlined"
+                disabled={!buttonSetRejectedState.isLoaded}
+                title="Show Comments"
+                onClick={() =>
+                  openCommentWindow(buttonSetRejectedState.student_id, props.k)
+                }
+                startIcon={<MessageIcon />}
+              >
+                {t('Message', { ns: 'common' })}
+              </Button>
+            )}
+            {(is_TaiGer_AdminAgent(user) || is_TaiGer_Student(user)) && (
+              <DeleteIconButton
+                isLoaded={buttonSetRejectedState.isLoaded}
+                onDeleteFileWarningPopUp={onDeleteFileWarningPopUp}
+                k={props.k}
+                student_id={buttonSetRejectedState.student_id}
+                docName={props.docName}
+                t={t}
+              />
+            )}
+          </Stack>
+        </Grid>
+      </Grid>
+    </Box>
   );
 
   return (

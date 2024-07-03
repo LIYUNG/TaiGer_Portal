@@ -12,7 +12,6 @@ import {
   Typography
 } from '@mui/material';
 import MessageIcon from '@mui/icons-material/Message';
-import DeleteIcon from '@mui/icons-material/Delete';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import LaunchIcon from '@mui/icons-material/Launch';
 
@@ -36,6 +35,10 @@ import { updateProfileDocumentStatus } from '../../api';
 import { useAuth } from '../../components/AuthProvider';
 import ModalNew from '../../components/Modal';
 import { useTranslation } from 'react-i18next';
+import {
+  DeleteIconButton,
+  DownloadIconButton
+} from '../../components/Buttons/Button';
 
 function ButtonSetRejected(props) {
   const { user } = useAuth();
@@ -285,42 +288,35 @@ function ButtonSetRejected(props) {
     <TableRow>
       <TableCell>{FILE_NOT_OK_SYMBOL}</TableCell>
       <TableCell>
-        {t(props.docName, { ns: 'common' })}
-        <Link
-          to={
-            buttonSetRejectedState.link && buttonSetRejectedState.link != ''
-              ? buttonSetRejectedState.link
-              : '/'
-          }
-          component={LinkDom}
-          target="_blank"
-          sx={{ ml: 1 }}
-        >
-          <Button size="small" variant="outlined" endIcon={<LaunchIcon />}>
-            {t('Read More')}
-          </Button>
-        </Link>
-        {is_TaiGer_Admin(user) && (
-          <a onClick={openOffcanvasWindow} style={{ cursor: 'pointer' }}>
-            [Edit]
-          </a>
-        )}
+        <Typography>
+          {t(props.docName, { ns: 'common' })}
+          <Link
+            to={
+              buttonSetRejectedState.link && buttonSetRejectedState.link != ''
+                ? buttonSetRejectedState.link
+                : '/'
+            }
+            component={LinkDom}
+            target="_blank"
+            sx={{ ml: 1 }}
+          >
+            <Button size="small" variant="outlined" endIcon={<LaunchIcon />}>
+              {t('Read More')}
+            </Button>
+          </Link>
+          {is_TaiGer_Admin(user) && (
+            <a onClick={openOffcanvasWindow} style={{ cursor: 'pointer' }}>
+              [Edit]
+            </a>
+          )}
+        </Typography>
+        <Typography variant="body2" fontWeight="bold">
+          {t('Status', { ns: 'common' })}: {buttonSetRejectedState.comments}
+        </Typography>
+        <Typography variant="body2">{convertDate(props.time)}</Typography>
       </TableCell>
-      <TableCell>{convertDate(props.time)}</TableCell>
       <TableCell>
-        <Button
-          color="primary"
-          variant="contained"
-          size="small"
-          title="Download"
-          startIcon={<FileDownloadIcon />}
-          onClick={(e) => showPreview(e, props.path)}
-        >
-          {t('Download', { ns: 'common' })}
-        </Button>
-      </TableCell>
-      <TableCell></TableCell>
-      <TableCell>
+        <DownloadIconButton showPreview={showPreview} path={props.path} t={t} />
         <Button
           size="small"
           variant="outlined"
@@ -333,32 +329,17 @@ function ButtonSetRejected(props) {
         >
           {t('Message', { ns: 'common' })}
         </Button>
+        {(is_TaiGer_AdminAgent(user) || is_TaiGer_Student(user)) && (
+          <DeleteIconButton
+            isLoaded={buttonSetRejectedState.isLoaded}
+            onDeleteFileWarningPopUp={onDeleteFileWarningPopUp}
+            k={props.k}
+            student_id={buttonSetRejectedState.student_id}
+            docName={props.docName}
+            t={t}
+          />
+        )}
       </TableCell>
-      <TableCell></TableCell>
-      {is_TaiGer_AdminAgent(user) || is_TaiGer_Student(user) ? (
-        <TableCell>
-          <Button
-            variant="contained"
-            color="error"
-            size="small"
-            title="Delete"
-            disabled={!buttonSetRejectedState.isLoaded}
-            onClick={(e) =>
-              onDeleteFileWarningPopUp(
-                e,
-                props.k,
-                buttonSetRejectedState.student_id,
-                props.docName
-              )
-            }
-            startIcon={<DeleteIcon />}
-          >
-            {t('Delete', { ns: 'common' })}
-          </Button>
-        </TableCell>
-      ) : (
-        <TableCell></TableCell>
-      )}
     </TableRow>
   );
 

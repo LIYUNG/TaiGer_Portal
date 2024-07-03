@@ -8,7 +8,6 @@ import {
   TableRow,
   Typography
 } from '@mui/material';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { useTranslation } from 'react-i18next';
 import LaunchIcon from '@mui/icons-material/Launch';
 
@@ -17,7 +16,10 @@ import OffcanvasBaseDocument from '../../components/Offcanvas/OffcanvasBaseDocum
 import { is_TaiGer_Admin, is_TaiGer_Editor } from '../Utils/checking-functions';
 import { useAuth } from '../../components/AuthProvider';
 import ModalNew from '../../components/Modal';
-import { VisuallyHiddenInput } from '../../components/Input';
+import {
+  SetNeededIconButton,
+  UploadIconButton
+} from '../../components/Buttons/Button';
 
 function ButtonSetNotNeeded(props) {
   const { user } = useAuth();
@@ -144,60 +146,25 @@ function ButtonSetNotNeeded(props) {
             [Edit]
           </a>
         )}
+        <Typography variant="body2">{convertDate(props.time)}</Typography>
       </TableCell>
-      <TableCell>{convertDate(props.time)}</TableCell>
-      {is_TaiGer_Editor(user) ? (
-        <>
-          <TableCell></TableCell>
-        </>
-      ) : (
-        <>
-          <TableCell>
-            {!buttonSetNotNeededState.isLoaded ? (
-              <CircularProgress />
-            ) : (
-              <Button
-                component="label"
-                size="small"
-                variant="outlined"
-                startIcon={<CloudUploadIcon />}
-              >
-                {t('Upload', { ns: 'common' })}
-                <VisuallyHiddenInput
-                  type="file"
-                  onChange={(e) =>
-                    handleGeneralDocSubmit(
-                      e,
-                      props.k,
-                      buttonSetNotNeededState.student_id
-                    )
-                  }
-                />
-              </Button>
-            )}
-          </TableCell>
-        </>
-      )}
-      <TableCell></TableCell>
       <TableCell>
-        <Button
-          color="secondary"
-          variant="contained"
-          size="small"
-          onClick={(e) =>
-            onUpdateProfileDocStatus(
-              e,
-              props.k,
-              buttonSetNotNeededState.student_id,
-              'missing'
-            )
-          }
-        >
-          {t('Set Needed', { ns: 'common' })}
-        </Button>
+        {!is_TaiGer_Editor(user) && (
+          <UploadIconButton
+            user={user}
+            buttonState={buttonSetNotNeededState}
+            t={t}
+            handleGeneralDocSubmit={handleGeneralDocSubmit}
+            k={props.k}
+          />
+        )}
+        <SetNeededIconButton
+          onUpdateProfileDocStatus={onUpdateProfileDocStatus}
+          k={props.k}
+          buttonState={buttonSetNotNeededState}
+          t={t}
+        />
       </TableCell>
-      <TableCell></TableCell>
-      <TableCell></TableCell>
     </TableRow>
   );
 

@@ -1,15 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link as LinkDom } from 'react-router-dom';
-import {
-  Button,
-  CircularProgress,
-  Link,
-  TableCell,
-  TableRow,
-  Typography
-} from '@mui/material';
+import { Button, Link, TableCell, TableRow, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import LaunchIcon from '@mui/icons-material/Launch';
 
 import OffcanvasBaseDocument from '../../components/Offcanvas/OffcanvasBaseDocument';
@@ -21,8 +13,8 @@ import {
 import { useAuth } from '../../components/AuthProvider';
 import ModalNew from '../../components/Modal';
 import Loading from '../../components/Loading/Loading';
-import { VisuallyHiddenInput } from '../../components/Input';
 import { FILE_MISSING_SYMBOL } from '../Utils/contants';
+import { SetNotNeededIconButton, UploadIconButton } from '../../components/Buttons/Button';
 
 function ButtonSetMissing(props) {
   const { user } = useAuth();
@@ -152,57 +144,25 @@ function ButtonSetMissing(props) {
           </a>
         )}
       </TableCell>
-      <TableCell></TableCell>
-      {is_TaiGer_Student(user) || is_TaiGer_AdminAgent(user) ? (
-        <TableCell>
-          {!buttonSetMissing.isLoaded ? (
-            <CircularProgress size={24} />
-          ) : (
-            <Button
-              component="label"
-              size="small"
-              variant="outlined"
-              startIcon={<CloudUploadIcon />}
-            >
-              {t('Upload', { ns: 'common' })}
-              <VisuallyHiddenInput
-                type="file"
-                onChange={(e) =>
-                  handleGeneralDocSubmit(
-                    e,
-                    props.k,
-                    buttonSetMissing.student_id
-                  )
-                }
-              />
-            </Button>
-          )}
-        </TableCell>
-      ) : (
-        <TableCell></TableCell>
-      )}
-      <TableCell></TableCell>
       <TableCell>
+        {(is_TaiGer_Student(user) || is_TaiGer_AdminAgent(user)) && (
+          <UploadIconButton
+            user={user}
+            buttonState={buttonSetMissing}
+            t={t}
+            handleGeneralDocSubmit={handleGeneralDocSubmit}
+            k={props.k}
+          />
+        )}
         {is_TaiGer_AdminAgent(user) && (
-          <Button
-            variant="outlined"
-            color="secondary"
-            size="small"
-            onClick={(e) =>
-              onUpdateProfileDocStatus(
-                e,
-                props.k,
-                buttonSetMissing.student_id,
-                'notneeded'
-              )
-            }
-          >
-            {t('Set Not Needed', { ns: 'common' })}
-          </Button>
+          <SetNotNeededIconButton
+            onUpdateProfileDocStatus={onUpdateProfileDocStatus}
+            k={props.k}
+            buttonState={buttonSetMissing}
+            t={t}
+          />
         )}
       </TableCell>
-      <TableCell></TableCell>
-      <TableCell></TableCell>
     </TableRow>
   );
 

@@ -12,7 +12,6 @@ import {
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
-import DeleteIcon from '@mui/icons-material/Delete';
 import CloseIcon from '@mui/icons-material/Close';
 import LaunchIcon from '@mui/icons-material/Launch';
 
@@ -29,6 +28,10 @@ import OffcanvasBaseDocument from '../../components/Offcanvas/OffcanvasBaseDocum
 import { useAuth } from '../../components/AuthProvider';
 import ModalNew from '../../components/Modal';
 import AcceptProfileFileModel from './AcceptedFilePreviewModal';
+import {
+  DownloadIconButton,
+  DeleteIconButton
+} from '../../components/Buttons/Button';
 
 function ButtonSetAccepted(props) {
   const { user } = useAuth();
@@ -214,67 +217,45 @@ function ButtonSetAccepted(props) {
     <TableRow>
       <TableCell>{FILE_OK_SYMBOL}</TableCell>
       <TableCell>
-        {t(props.docName, { ns: 'common' })}
-        <Link
-          to={
-            buttonSetAcceptedState.link && buttonSetAcceptedState.link != ''
-              ? buttonSetAcceptedState.link
-              : '/'
-          }
-          component={LinkDom}
-          target="_blank"
-          sx={{ ml: 1 }}
-        >
-          <Button
-            size="small"
-            variant="outlined"
-            endIcon={<LaunchIcon fontSize="small" />}
-          >
-            {t('Read More')}
-          </Button>
-        </Link>
-        {is_TaiGer_Admin(user) && (
-          <a onClick={openOffcanvasWindow} style={{ cursor: 'pointer' }}>
-            [Edit]
-          </a>
-        )}
-      </TableCell>
-      <TableCell>{convertDate(props.time)}</TableCell>
-      <TableCell>
-        <Button
-          size="small"
-          title="Download"
-          variant="contained"
-          onClick={(e) => showPreview(e, props.path)}
-          startIcon={<FileDownloadIcon />}
-        >
-          {t('Download', { ns: 'common' })}
-        </Button>
-      </TableCell>
-      <TableCell></TableCell>
-      <TableCell></TableCell>
-      <TableCell></TableCell>
-      <TableCell>
-        {is_TaiGer_AdminAgent(user) && (
-          <Button
-            color="error"
-            variant="contained"
-            size="small"
-            type="submit"
-            title="Delete"
-            disabled={!buttonSetAcceptedState.isLoaded}
-            onClick={(e) =>
-              onDeleteFileWarningPopUp(
-                e,
-                props.k,
-                buttonSetAcceptedState.student_id,
-                props.docName
-              )
+        <Typography variant="body1">
+          {t(props.docName, { ns: 'common' })}
+          <Link
+            to={
+              buttonSetAcceptedState.link && buttonSetAcceptedState.link != ''
+                ? buttonSetAcceptedState.link
+                : '/'
             }
-            startIcon={<DeleteIcon />}
+            component={LinkDom}
+            target="_blank"
+            sx={{ ml: 1 }}
           >
-            {t('Delete', { ns: 'common' })}
-          </Button>
+            <Button
+              size="small"
+              variant="outlined"
+              endIcon={<LaunchIcon fontSize="small" />}
+            >
+              {t('Read More')}
+            </Button>
+          </Link>
+          {is_TaiGer_Admin(user) && (
+            <a onClick={openOffcanvasWindow} style={{ cursor: 'pointer' }}>
+              [Edit]
+            </a>
+          )}
+        </Typography>
+        <Typography variant="body2">{convertDate(props.time)}</Typography>
+      </TableCell>
+      <TableCell>
+        <DownloadIconButton showPreview={showPreview} path={props.path} t={t} />
+        {is_TaiGer_AdminAgent(user) && (
+          <DeleteIconButton
+            isLoaded={buttonSetAcceptedState.isLoaded}
+            onDeleteFileWarningPopUp={onDeleteFileWarningPopUp}
+            k={props.k}
+            student_id={buttonSetAcceptedState.student_id}
+            docName={props.docName}
+            t={t}
+          />
         )}
       </TableCell>
     </TableRow>

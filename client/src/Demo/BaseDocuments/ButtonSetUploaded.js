@@ -13,7 +13,6 @@ import {
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
-import DeleteIcon from '@mui/icons-material/Delete';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import LaunchIcon from '@mui/icons-material/Launch';
@@ -24,11 +23,19 @@ import {
   is_TaiGer_AdminAgent,
   is_TaiGer_Editor
 } from '../Utils/checking-functions';
-import { FILE_UPLOADED_SYMBOL, base_documents_checklist, convertDate } from '../Utils/contants';
+import {
+  FILE_UPLOADED_SYMBOL,
+  base_documents_checklist,
+  convertDate
+} from '../Utils/contants';
 import { useAuth } from '../../components/AuthProvider';
 import ModalNew from '../../components/Modal';
 import FilePreview from '../../components/FilePreview/FilePreview';
 import { BASE_URL } from '../../api/request';
+import {
+  DeleteIconButton,
+  DownloadIconButton
+} from '../../components/Buttons/Button';
 
 function ButtonSetUploaded(props) {
   const { user } = useAuth();
@@ -250,43 +257,19 @@ function ButtonSetUploaded(props) {
             [Edit]
           </a>
         )}
+        <Typography variant="body2">{convertDate(props.time)}</Typography>
       </TableCell>
-      <TableCell>{convertDate(props.time)}</TableCell>
       <TableCell>
-        <Button
-          color="primary"
-          variant="contained"
-          size="small"
-          title="Download"
-          startIcon={<FileDownloadIcon />}
-          onClick={(e) => showPreview(e, props.path)}
-        >
-          {t('Download', { ns: 'common' })}
-        </Button>
-      </TableCell>
-      <TableCell></TableCell>
-      <TableCell></TableCell>
-      <TableCell></TableCell>
-      <TableCell>
+        <DownloadIconButton showPreview={showPreview} path={props.path} t={t} />
         {!is_TaiGer_Editor(user) && (
-          <Button
-            color="error"
-            variant="contained"
-            size="small"
-            title="Delete"
-            disabled={!ButtonSetUploadedState.isLoaded}
-            onClick={(e) =>
-              onDeleteFileWarningPopUp(
-                e,
-                props.k,
-                ButtonSetUploadedState.student_id,
-                props.docName
-              )
-            }
-            startIcon={<DeleteIcon />}
-          >
-            {t('Delete', { ns: 'common' })}
-          </Button>
+          <DeleteIconButton
+            isLoaded={ButtonSetUploadedState.isLoaded}
+            onDeleteFileWarningPopUp={onDeleteFileWarningPopUp}
+            k={props.k}
+            student_id={ButtonSetUploadedState.student_id}
+            docName={props.docName}
+            t={t}
+          />
         )}
       </TableCell>
     </TableRow>

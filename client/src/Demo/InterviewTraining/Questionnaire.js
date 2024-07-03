@@ -98,7 +98,6 @@ const Questionnaire = () => {
         });
       }
     } catch (error) {
-      console.log(error);
       setInterviewSurveyState((prevState) => ({
         ...prevState,
         isLoaded: true,

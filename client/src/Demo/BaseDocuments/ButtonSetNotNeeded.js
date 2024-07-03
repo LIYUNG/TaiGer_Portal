@@ -168,7 +168,9 @@ function ButtonSetNotNeeded(props) {
               </Typography>
             )}
           </Stack>
-          <Typography variant="body2">{convertDate(props.time)}</Typography>
+          <Typography variant="body2" color="textSecondary">
+            {convertDate(props.time)}
+          </Typography>
         </Grid>
         <Grid item xs={12} sm={4}>
           <Stack

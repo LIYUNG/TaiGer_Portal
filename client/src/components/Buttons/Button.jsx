@@ -10,7 +10,7 @@ import { VisuallyHiddenInput } from '../Input';
 
 export const DownloadIconButton = ({ showPreview, path, t }) => (
   <Tooltip title={t('Download', { ns: 'common' })}>
-    <IconButton size="small" onClick={(e) => showPreview(e, path)}>
+    <IconButton onClick={(e) => showPreview(e, path)}>
       <FileDownloadIcon />
     </IconButton>
   </Tooltip>
@@ -28,7 +28,6 @@ export const DeleteIconButton = ({
     <span>
       <IconButton
         color="error"
-        size="small"
         type="submit"
         disabled={!isLoaded}
         onClick={(e) => onDeleteFileWarningPopUp(e, k, student_id, docName)}
@@ -50,7 +49,7 @@ export const UploadIconButton = ({
   ) : (
     <Tooltip title={t('Upload', { ns: 'common' })}>
       <label>
-        <IconButton component="span" size="small" variant="outlined">
+        <IconButton component="span" variant="outlined">
           <CloudUploadIcon />
         </IconButton>
         <VisuallyHiddenInput
@@ -71,7 +70,6 @@ export const SetNotNeededIconButton = ({
   <Tooltip title={t('Set Not Needed', { ns: 'common' })}>
     <IconButton
       color="secondary"
-      size="small"
       onClick={(e) =>
         onUpdateProfileDocStatus(e, k, buttonState.student_id, 'notneeded')
       }
@@ -90,14 +88,8 @@ export const SetNeededIconButton = ({
   <Tooltip title={t('Set Needed', { ns: 'common' })}>
     <IconButton
       color="secondary"
-      size="small"
       onClick={(e) =>
-        onUpdateProfileDocStatus(
-          e,
-          k,
-          buttonState.student_id,
-          'missing'
-        )
+        onUpdateProfileDocStatus(e, k, buttonState.student_id, 'missing')
       }
     >
       <AssignmentTurnedInIcon />

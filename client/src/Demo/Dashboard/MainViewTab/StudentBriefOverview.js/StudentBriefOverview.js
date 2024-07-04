@@ -272,12 +272,7 @@ function StudentBriefOverview(props) {
                       overflow: 'hidden'
                     }}
                   >
-                    <Avatar
-                      onClick={() => startEditingEditor()}
-                      sx={{ bgcolor: '000000' }}
-                    >
-                      +
-                    </Avatar>
+                    <Avatar sx={{ bgcolor: '000000' }}>+</Avatar>
                   </ButtonBase>
                 </Box>
               </Box>

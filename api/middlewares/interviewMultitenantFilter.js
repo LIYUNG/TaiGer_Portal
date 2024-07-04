@@ -23,7 +23,8 @@ const interviewMultitenantFilter = async (req, res, next) => {
         ...interview.student_id.editors,
         ...interview.trainer_id
       ].some((taiger_user) => taiger_user.toString() === user._id.toString()) &&
-      !permissions?.canAssignEditors
+      !permissions?.canAssignEditors &&
+      !permissions?.canAssignAgents
     ) {
       next(
         new ErrorResponse(

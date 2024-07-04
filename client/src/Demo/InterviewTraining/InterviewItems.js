@@ -160,7 +160,7 @@ function InterviewItems(props) {
   const handleClickSave = async (e, editorState) => {
     e.preventDefault();
     var notes = JSON.stringify(editorState);
-    const { data } = await updateInterview(interview._id.toString(), {
+    const { data, status } = await updateInterview(interview._id.toString(), {
       interviewer: interview.interviewer,
       interview_date: interview.interview_date,
       interview_description: notes
@@ -169,6 +169,12 @@ function InterviewItems(props) {
     if (success) {
       setiInterview(interview_updated);
       setButtonDisabled(true);
+    } else {
+      const { message } = data;
+      setInterviewItemsState({
+        res_modal_message: message,
+        res_modal_status: status
+      });
     }
   };
 

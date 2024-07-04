@@ -234,15 +234,12 @@ function AgentMainView(props) {
             <BaseDocumentCheckingTable students={students} />
           </Grid>
         )}
-
-        <Grid item xs={12} sm={6}>
-          {isAnyCVNotAssigned(
-           myStudents
-          ) && <CVAssignTasksCard students={students} user={user} />}
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <NoProgramStudentTable students={students} />
-        </Grid>
+        {isAnyCVNotAssigned(myStudents) && (
+          <Grid item xs={12} sm={6}>
+            <CVAssignTasksCard students={students} user={user} />
+          </Grid>
+        )}
+        <NoProgramStudentTable students={students} />
         <Grid item xs={12} sm={6}>
           <ProgramSpecificDocumentCheckCard students={students} />
         </Grid>

@@ -33,13 +33,18 @@ const PrecheckInterview = async (interview_id) => {
   }
 };
 
-const InterviewCancelledReminder = async (user, meeting_event, cc) => {
+const InterviewCancelledReminder = async (
+  user,
+  receiver,
+  meeting_event,
+  cc
+) => {
   InterviewCancelledReminderEmail(
     {
-      id: meeting_event.requester_id[0]._id.toString(),
-      firstname: meeting_event.requester_id[0].firstname,
-      lastname: meeting_event.requester_id[0].lastname,
-      address: meeting_event.requester_id[0].email
+      id: receiver._id.toString(),
+      firstname: receiver.firstname,
+      lastname: receiver.lastname,
+      address: receiver.email
     },
     {
       taiger_user: user,
@@ -225,13 +230,16 @@ const deleteInterview = asyncHandler(async (req, res) => {
     if (interview.event_id) {
       // TODO: send delete event email
       const toBeDeletedEvent = await Event.findByIdAndDelete(interview.event_id)
-        .populate('receiver_id requester_id', 'firstname lastname email')
+        .populate('receiver_id requester_id', 'firstname lastname email archiv')
         .lean();
       const student_temp = await Student.findById(
         interview.student_id
       ).populate('agents', 'firstname lastname email');
       const cc = [...toBeDeletedEvent.receiver_id, ...student_temp.agents];
-      await InterviewCancelledReminder(user, toBeDeletedEvent, cc);
+      const receiver = toBeDeletedEvent.requester_id[0];
+      if (isNotArchiv(receiver)) {
+        await InterviewCancelledReminder(user, receiver, toBeDeletedEvent, cc);
+      }
 
       await Event.findByIdAndDelete(interview.event_id);
     }
@@ -279,7 +287,10 @@ const addInterviewTrainingDateTime = asyncHandler(async (req, res, next) => {
       try {
         await Event.findByIdAndUpdate(oldEvent._id, { ...oldEvent }, {});
         newEvent = await Event.findById(oldEvent._id)
-          .populate('receiver_id requester_id', 'firstname lastname email')
+          .populate(
+            'receiver_id requester_id',
+            'firstname lastname email archiv'
+          )
           .lean();
         await Interview.findByIdAndUpdate(
           interview_id,
@@ -295,7 +306,7 @@ const addInterviewTrainingDateTime = asyncHandler(async (req, res, next) => {
       const write_NewEvent = await Event.create(oldEvent);
       await write_NewEvent.save();
       newEvent = await Event.findById(write_NewEvent._id)
-        .populate('receiver_id requester_id', 'firstname lastname email')
+        .populate('receiver_id requester_id', 'firstname lastname email archiv')
         .lean();
       await Interview.findByIdAndUpdate(
         interview_id,
@@ -318,16 +329,18 @@ const addInterviewTrainingDateTime = asyncHandler(async (req, res, next) => {
 
     const cc = [...newEvent.receiver_id, ...student_temp.agents];
 
-    const emailRequestsRequesters = newEvent.requester_id.map((receiver) =>
-      InterviewTrainingInvitation(
-        receiver,
-        user,
-        newEvent,
-        interview_id,
-        interview_tmep.program_id,
-        isUpdatingEvent,
-        cc
-      )
+    const emailRequestsRequesters = newEvent.requester_id.map(
+      (receiver) =>
+        isNotArchiv(receiver) &&
+        InterviewTrainingInvitation(
+          receiver,
+          user,
+          newEvent,
+          interview_id,
+          interview_tmep.program_id,
+          isUpdatingEvent,
+          cc
+        )
     );
 
     await Promise.all(emailRequestsRequesters);
@@ -363,7 +376,7 @@ const updateInterview = asyncHandler(async (req, res) => {
   const interview = await Interview.findByIdAndUpdate(interview_id, payload, {
     new: true
   })
-    .populate('student_id trainer_id', 'firstname lastname email')
+    .populate('student_id trainer_id', 'firstname lastname email archiv')
     .populate('program_id', 'school program_name degree semester')
     .populate('thread_id event_id')
     .lean();
@@ -376,37 +389,43 @@ const updateInterview = asyncHandler(async (req, res) => {
   }
   res.status(200).send({ success: true, data: interview });
   if (payload.trainer_id?.length > 0) {
-    await sendAssignedInterviewTrainerToStudentEmail(
-      {
-        firstname: interview.student_id.firstname,
-        lastname: interview.student_id.lastname,
-        address: interview.student_id.email
-      },
-      { interview }
-    );
-
-    const emailRequests = interview.trainer_id?.map((trainer) =>
-      sendAssignedInterviewTrainerToTrainerEmail(
+    if (isNotArchiv(interview.student_id)) {
+      await sendAssignedInterviewTrainerToStudentEmail(
         {
-          firstname: trainer.firstname,
-          lastname: trainer.lastname,
-          address: trainer.email
+          firstname: interview.student_id.firstname,
+          lastname: interview.student_id.lastname,
+          address: interview.student_id.email
         },
         { interview }
-      )
+      );
+    }
+
+    const emailRequests = interview.trainer_id?.map(
+      (trainer) =>
+        isNotArchiv(trainer) &&
+        sendAssignedInterviewTrainerToTrainerEmail(
+          {
+            firstname: trainer.firstname,
+            lastname: trainer.lastname,
+            address: trainer.email
+          },
+          { interview }
+        )
     );
     await Promise.all(emailRequests);
     logger.info('Update trainer');
   }
   if ('isClosed' in payload) {
-    await sendSetAsFinalInterviewEmail(
-      {
-        firstname: interview.student_id.firstname,
-        lastname: interview.student_id.lastname,
-        address: interview.student_id.email
-      },
-      { interview, isClosed: payload.isClosed, user }
-    );
+    if (isNotArchiv(interview.student_id)) {
+      await sendSetAsFinalInterviewEmail(
+        {
+          firstname: interview.student_id.firstname,
+          lastname: interview.student_id.lastname,
+          address: interview.student_id.email
+        },
+        { interview, isClosed: payload.isClosed, user }
+      );
+    }
   }
 });
 
@@ -553,7 +572,7 @@ const createInterview = asyncHandler(async (req, res) => {
     const permissions = await Permission.find({
       canAssignEditors: true
     })
-      .populate('user_id', 'firstname lastname email')
+      .populate('user_id', 'firstname lastname email archiv')
       .lean();
     const newlyCreatedInterview = await Interview.findOne({
       student_id: studentId,
@@ -564,41 +583,45 @@ const createInterview = asyncHandler(async (req, res) => {
       .lean();
 
     if (permissions) {
-      const sendEditorLeadEmailPromises = permissions.map((permission) =>
-        sendAssignTrainerReminderEmail(
-          {
-            firstname: permission.user_id.firstname,
-            lastname: permission.user_id.lastname,
-            address: permission.user_id.email
-          },
-          {
-            student_firstname: student.firstname,
-            student_id: student._id.toString(),
-            student_lastname: student.lastname,
-            interview_id: newlyCreatedInterview._id.toString(),
-            program: newlyCreatedInterview.program_id
-          }
-        )
+      const sendEditorLeadEmailPromises = permissions.map(
+        (permission) =>
+          isNotArchiv(permission.user_id) &&
+          sendAssignTrainerReminderEmail(
+            {
+              firstname: permission.user_id.firstname,
+              lastname: permission.user_id.lastname,
+              address: permission.user_id.email
+            },
+            {
+              student_firstname: student.firstname,
+              student_id: student._id.toString(),
+              student_lastname: student.lastname,
+              interview_id: newlyCreatedInterview._id.toString(),
+              program: newlyCreatedInterview.program_id
+            }
+          )
       );
 
       await Promise.all(sendEditorLeadEmailPromises);
     }
     if (student.agents?.length > 0) {
-      const sendAgentsEmailPromises = student.agents.map((agent) =>
-        sendAssignTrainerReminderEmail(
-          {
-            firstname: agent.firstname,
-            lastname: agent.lastname,
-            address: agent.email
-          },
-          {
-            student_firstname: student.firstname,
-            student_id: student._id.toString(),
-            student_lastname: student.lastname,
-            interview_id: newlyCreatedInterview._id.toString(),
-            program: newlyCreatedInterview.program_id
-          }
-        )
+      const sendAgentsEmailPromises = student.agents.map(
+        (agent) =>
+          isNotArchiv(agent) &&
+          sendAssignTrainerReminderEmail(
+            {
+              firstname: agent.firstname,
+              lastname: agent.lastname,
+              address: agent.email
+            },
+            {
+              student_firstname: student.firstname,
+              student_id: student._id.toString(),
+              student_lastname: student.lastname,
+              interview_id: newlyCreatedInterview._id.toString(),
+              program: newlyCreatedInterview.program_id
+            }
+          )
       );
 
       await Promise.all(sendAgentsEmailPromises);

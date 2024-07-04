@@ -90,7 +90,7 @@ function VPDToSubmitTasksCard(props) {
       <Alert severity="error">
         <Typography>VPD missing:</Typography>
       </Alert>
-      <TableContainer style={{ overflowX: 'auto' }}>
+      <TableContainer style={{ maxHeight: '300px' }}>
         <Table size="small">
           <TableHead>
             <TableRow>

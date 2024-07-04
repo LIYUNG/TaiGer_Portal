@@ -8,7 +8,8 @@ import {
   TableHead,
   TableRow,
   Alert,
-  Typography
+  Typography,
+  TableContainer
 } from '@mui/material';
 
 import { useAuth } from '../../../../components/AuthProvider';
@@ -31,16 +32,18 @@ function ProgramSpecificDocumentCheckCard(props) {
           {t('Program Specific Documents Check', { ns: 'common' })}
         </Typography>
       </Alert>
-      <Table size="small">
-        <TableHead>
-          <TableRow>
-            <TableCell>{t('Student Name', { ns: 'common' })}</TableCell>
-            <TableCell>{t('Deadline', { ns: 'common' })}</TableCell>
-            <TableCell>{t('Documents', { ns: 'common' })}</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>{no_programs_student_tasks}</TableBody>
-      </Table>
+      <TableContainer style={{ maxHeight: '300px' }}>
+        <Table size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell>{t('Student Name', { ns: 'common' })}</TableCell>
+              <TableCell>{t('Deadline', { ns: 'common' })}</TableCell>
+              <TableCell>{t('Documents', { ns: 'common' })}</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>{no_programs_student_tasks}</TableBody>
+        </Table>
+      </TableContainer>
     </Card>
   );
 }

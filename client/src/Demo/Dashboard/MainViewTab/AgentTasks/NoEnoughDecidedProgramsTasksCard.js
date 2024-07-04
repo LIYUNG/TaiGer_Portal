@@ -10,7 +10,8 @@ import {
   TableRow,
   TableCell,
   Alert,
-  Typography
+  Typography,
+  TableContainer
 } from '@mui/material';
 
 import {
@@ -102,16 +103,18 @@ function NoEnoughDecidedProgramsTasksCard(props) {
       <Alert severity="error">
         <Typography>{t('No Enough Program Decided Tasks')}:</Typography>
       </Alert>
-      <Table size="small">
-        <TableHead>
-          <TableRow>
-            <TableCell>{t('Tasks', { ns: 'common' })}</TableCell>
-            <TableCell>{t('Description', { ns: 'common' })}</TableCell>
-            <TableCell>{t('Application Year', { ns: 'common' })}</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>{no_enough_programs_decided_tasks}</TableBody>
-      </Table>
+      <TableContainer style={{ maxHeight: '300px' }}>
+        <Table size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell>{t('Tasks', { ns: 'common' })}</TableCell>
+              <TableCell>{t('Description', { ns: 'common' })}</TableCell>
+              <TableCell>{t('Application Year', { ns: 'common' })}</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>{no_enough_programs_decided_tasks}</TableBody>
+        </Table>
+      </TableContainer>
     </Card>
   );
 }

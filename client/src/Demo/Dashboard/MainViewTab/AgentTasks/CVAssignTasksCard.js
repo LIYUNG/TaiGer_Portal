@@ -7,7 +7,8 @@ import {
   TableCell,
   TableHead,
   TableRow,
-  Alert
+  Alert,
+  TableContainer
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { Card, Typography } from '@mui/material';
@@ -76,18 +77,21 @@ function CVAssignTasksCard(props) {
         <Alert severity="error">
           <Typography>{t('CV Not Assigned Yet')}</Typography>
         </Alert>
-        <Table size="small">
-          <TableHead>
-            <TableRow>
-              <TableCell>Docs</TableCell>
-              <TableCell>{t('Student', { ns: 'common' })}</TableCell>
-              <TableCell>
-                {t('Year', { ns: 'common' })}/{t('Semester', { ns: 'common' })}
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>{cv_assign_tasks}</TableBody>
-        </Table>
+        <TableContainer style={{ maxHeight: '300px' }}>
+          <Table size="small">
+            <TableHead>
+              <TableRow>
+                <TableCell>Docs</TableCell>
+                <TableCell>{t('Student', { ns: 'common' })}</TableCell>
+                <TableCell>
+                  {t('Year', { ns: 'common' })}/
+                  {t('Semester', { ns: 'common' })}
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>{cv_assign_tasks}</TableBody>
+          </Table>
+        </TableContainer>
       </Card>
     </>
   );

@@ -119,25 +119,23 @@ function ReadyToSubmitTasksCard(props) {
           finished. Please submit application asap.):
         </Typography>
       </Alert>
-      <div className="card-scrollable-body">
-        <TableContainer style={{ overflowX: 'auto' }}>
-          <Table size="small">
-            <TableHead>
-              <TableRow>
-                <TableCell>{t('Student', { ns: 'common' })}</TableCell>
-                <TableCell>{t('Start', { ns: 'common' })}</TableCell>
-                <TableCell>{t('Deadline', { ns: 'common' })}</TableCell>
-                <TableCell>
-                  {t('Semester', { ns: 'common' })} -{' '}
-                  {t('Degree', { ns: 'common' })} -{' '}
-                  {t('Program', { ns: 'common' })}
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>{ready_to_submit_tasks}</TableBody>
-          </Table>
-        </TableContainer>
-      </div>
+      <TableContainer style={{ maxHeight: '300px' }}>
+        <Table size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell>{t('Student', { ns: 'common' })}</TableCell>
+              <TableCell>{t('Start', { ns: 'common' })}</TableCell>
+              <TableCell>{t('Deadline', { ns: 'common' })}</TableCell>
+              <TableCell>
+                {t('Semester', { ns: 'common' })} -{' '}
+                {t('Degree', { ns: 'common' })} -{' '}
+                {t('Program', { ns: 'common' })}
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>{ready_to_submit_tasks}</TableBody>
+        </Table>
+      </TableContainer>
     </Card>
   );
 }

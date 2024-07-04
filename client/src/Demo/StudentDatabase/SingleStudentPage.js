@@ -36,13 +36,11 @@ import UniAssistListCard from '../UniAssist/UniAssistListCard';
 import SurveyComponent from '../Survey/SurveyComponent';
 import Notes from '../Notes/index';
 import ApplicationProgress from '../Dashboard/MainViewTab/ApplicationProgress/ApplicationProgress';
-import StudentsAgentEditor from '../Dashboard/MainViewTab/StudentsAgentEditor/StudentsAgentEditor';
 import StudentDashboard from '../Dashboard/StudentDashboard/StudentDashboard';
 import {
   profile_name_list,
   convertDate,
   programstatuslist,
-  academic_background_header,
   SINGLE_STUDENT_TABS,
   SINGLE_STUDENT_REVERSED_TABS
 } from '../Utils/contants';
@@ -67,6 +65,7 @@ import { useAuth } from '../../components/AuthProvider';
 import { CustomTabPanel, a11yProps } from '../../components/Tabs';
 import { SurveyProvider } from '../../components/SurveyProvider';
 import ProgramDetailsComparisonTable from '../Program/ProgramDetailsComparisonTable';
+import StudentBriefOverview from '../Dashboard/MainViewTab/StudentBriefOverview.js/StudentBriefOverview';
 
 CustomTabPanel.propTypes = {
   children: PropTypes.node,
@@ -306,7 +305,6 @@ export const SingleStudentPageMainContent = ({
   TabTitle(
     `Student ${singleStudentPage.student.firstname} ${singleStudentPage.student.lastname} | ${singleStudentPage.student.firstname_chinese} ${singleStudentPage.student.lastname_chinese}`
   );
-  let header = Object.values(academic_background_header);
   return (
     <>
       {res_modal_status >= 400 && (
@@ -420,6 +418,23 @@ export const SingleStudentPageMainContent = ({
               ))}
             </Card>
           )}
+          <Box
+            sx={{
+              my: 1,
+              p: 2,
+              border: '1px solid',
+              borderColor: 'grey.300',
+              borderRadius: 2
+            }}
+          >
+            <StudentBriefOverview
+              student={singleStudentPage.student}
+              updateStudentArchivStatus={updateStudentArchivStatus}
+              submitUpdateAgentlist={submitUpdateAgentlist}
+              submitUpdateEditorlist={submitUpdateEditorlist}
+              submitUpdateAttributeslist={submitUpdateAttributeslist}
+            />
+          </Box>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
             <Tabs
               value={value}
@@ -520,29 +535,6 @@ export const SingleStudentPageMainContent = ({
             )}
           </CustomTabPanel>
           <CustomTabPanel value={value} index={1}>
-            <TableContainer style={{ overflowX: 'auto' }}>
-              <Table size="small">
-                <TableHead>
-                  <TableRow>
-                    <TableCell></TableCell>
-                    {header.map((name, index) => (
-                      <TableCell key={index}>
-                        {t(`${name}`, { ns: 'common' })}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  <StudentsAgentEditor
-                    student={singleStudentPage.student}
-                    updateStudentArchivStatus={updateStudentArchivStatus}
-                    submitUpdateAgentlist={submitUpdateAgentlist}
-                    submitUpdateEditorlist={submitUpdateEditorlist}
-                    submitUpdateAttributeslist={submitUpdateAttributeslist}
-                  />
-                </TableBody>
-              </Table>
-            </TableContainer>
             <BaseDocument_StudentView
               base_docs_link={base_docs_link}
               student={singleStudentPage.student}

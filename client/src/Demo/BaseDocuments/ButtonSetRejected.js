@@ -12,7 +12,6 @@ import {
   Tooltip,
   IconButton
 } from '@mui/material';
-import MessageIcon from '@mui/icons-material/Message';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import LaunchIcon from '@mui/icons-material/Launch';
 
@@ -37,6 +36,7 @@ import { useAuth } from '../../components/AuthProvider';
 import ModalNew from '../../components/Modal';
 import { useTranslation } from 'react-i18next';
 import {
+  CommentsIconButton,
   DeleteIconButton,
   DownloadIconButton
 } from '../../components/Buttons/Button';
@@ -296,7 +296,7 @@ function ButtonSetRejected(props) {
       }}
     >
       <Grid container alignItems="center" spacing={2}>
-        <Grid item xs={12} sm={8}>
+        <Grid item xs={8} sm={8}>
           <Stack direction="row" alignItems="center" spacing={1}>
             {FILE_NOT_OK_SYMBOL}
             <Typography variant="body1">
@@ -336,7 +336,7 @@ function ButtonSetRejected(props) {
             {convertDate(props.time)}
           </Typography>
         </Grid>
-        <Grid item xs={12} sm={4}>
+        <Grid item xs={4} sm={4}>
           <Stack
             direction="row"
             justifyContent="flex-end"
@@ -349,18 +349,12 @@ function ButtonSetRejected(props) {
               t={t}
             />
             {!is_TaiGer_Student(user) && (
-              <Button
-                size="small"
-                variant="outlined"
-                disabled={!buttonSetRejectedState.isLoaded}
-                title="Show Comments"
-                onClick={() =>
-                  openCommentWindow(buttonSetRejectedState.student_id, props.k)
-                }
-                startIcon={<MessageIcon />}
-              >
-                {t('Message', { ns: 'common' })}
-              </Button>
+              <CommentsIconButton
+                buttonState={buttonSetRejectedState}
+                openCommentWindow={openCommentWindow}
+                k={props.k}
+                t={t}
+              />
             )}
             {(is_TaiGer_AdminAgent(user) || is_TaiGer_Student(user)) && (
               <DeleteIconButton

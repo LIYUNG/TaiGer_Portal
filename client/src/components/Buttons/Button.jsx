@@ -5,6 +5,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import NotInterestedIcon from '@mui/icons-material/NotInterested'; // using an icon to represent "Set Not Needed"
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn'; // using an icon to represent "Set Needed"
+import MessageIcon from '@mui/icons-material/Message';
 
 import { VisuallyHiddenInput } from '../Input';
 
@@ -12,6 +13,19 @@ export const DownloadIconButton = ({ showPreview, path, t }) => (
   <Tooltip title={t('Download', { ns: 'common' })}>
     <IconButton onClick={(e) => showPreview(e, path)}>
       <FileDownloadIcon />
+    </IconButton>
+  </Tooltip>
+);
+
+export const CommentsIconButton = ({
+  openCommentWindow,
+  buttonState,
+  k,
+  t
+}) => (
+  <Tooltip title={t('Show Comments', { ns: 'common' })}>
+    <IconButton onClick={() => openCommentWindow(buttonState.student_id, k)}>
+      <MessageIcon />
     </IconButton>
   </Tooltip>
 );

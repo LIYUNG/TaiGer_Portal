@@ -246,7 +246,7 @@ function ButtonSetUploaded(props) {
       }}
     >
       <Grid container alignItems="center" spacing={2}>
-        <Grid item xs={12} sm={8}>
+        <Grid item xs={8} sm={8}>
           <Stack direction="row" alignItems="center" spacing={1}>
             {FILE_UPLOADED_SYMBOL}
             <Typography variant="body1">
@@ -283,7 +283,7 @@ function ButtonSetUploaded(props) {
             {convertDate(props.time)}
           </Typography>
         </Grid>
-        <Grid item xs={12} sm={4}>
+        <Grid item xs={4} sm={4}>
           <Stack
             direction="row"
             justifyContent="flex-end"

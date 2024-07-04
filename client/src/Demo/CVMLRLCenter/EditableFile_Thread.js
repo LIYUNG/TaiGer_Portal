@@ -60,7 +60,7 @@ function EditableFile_Thread(props) {
       }}
     >
       <Grid container spacing={2}>
-        <Grid item xs={12} md={8}>
+        <Grid item xs={8} md={8}>
           <Stack direction="row" alignItems="center" spacing={1}>
             {!is_TaiGer_role(user)
               ? props.thread.isFinalVersion && FILE_OK_SYMBOL
@@ -84,7 +84,7 @@ function EditableFile_Thread(props) {
             {latestReplyInfo(props.thread.doc_thread_id)}
           </Typography>
         </Grid>
-        <Grid item xs={12} sm={4}>
+        <Grid item xs={4} sm={4}>
           <Stack
             direction="row"
             justifyContent="flex-end"

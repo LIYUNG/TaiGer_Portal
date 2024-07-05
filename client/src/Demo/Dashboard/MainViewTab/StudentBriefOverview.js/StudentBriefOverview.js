@@ -17,8 +17,8 @@ import {
   Stack,
   IconButton
 } from '@mui/material';
-import ArchiveIcon from '@mui/icons-material/Archive';
-import UnarchiveIcon from '@mui/icons-material/Unarchive';
+import InventoryIcon from '@mui/icons-material/Inventory';
+import ReplayIcon from '@mui/icons-material/Replay';
 import EditAgentsSubpage from '../StudDocsOverview/EditAgentsSubpage';
 import EditEditorsSubpage from '../StudDocsOverview/EditEditorsSubpage';
 import {
@@ -189,9 +189,9 @@ function StudentBriefOverview(props) {
                   >
                     <IconButton onClick={setArchivModalOpen}>
                       {is_User_Archived(props.student) ? (
-                        <UnarchiveIcon />
+                        <ReplayIcon />
                       ) : (
-                        <ArchiveIcon />
+                        <InventoryIcon />
                       )}
                     </IconButton>
                   </Tooltip>

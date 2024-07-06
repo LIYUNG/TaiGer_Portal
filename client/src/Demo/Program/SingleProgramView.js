@@ -48,20 +48,35 @@ import { appConfig } from '../../config';
 import { useAuth } from '../../components/AuthProvider';
 import { a11yProps, CustomTabPanel } from '../../components/Tabs';
 
+import { useTheme } from '@mui/material';
+
 const prepDiffText = (original = '', updated = '') => {
+  const theme = useTheme();
+  const mode = theme.palette.mode;
+  const [addTextColor, addTextBg] =
+    mode === 'dark'
+      ? [theme.palette.success.contrastText, theme.palette.success.dark]
+      : [theme.palette.success.dark, theme.palette.success.light];
+
+  const [removeTextColor, removeTextBg] =
+    mode === 'dark'
+      ? [theme.palette.error.contrastText, theme.palette.error.light]
+      : [theme.palette.error.light, theme.palette.error.dark];
+
   const diff = diffChars(original, updated);
   return diff.map((part, index) => {
-    const color = part.added ? '#24292e' : part.removed ? '#24292e' : 'grey';
-    const background = part.added
-      ? '#e6ffed'
-      : part.removed
-      ? '#ffeef0'
-      : 'none';
-    const textDecoration = part.removed ? 'line-through' : 'none';
+    const { added, removed } = part;
+    const color = added ? addTextColor : removed ? removeTextColor : '';
+    const background = added ? addTextBg : removed ? removeTextBg : 'none';
+    const textDecoration = removed ? 'line-through' : 'none';
     return (
       <span
         key={index}
-        style={{ color, background, 'text-decoration': textDecoration }}
+        style={{
+          color,
+          background,
+          textDecoration
+        }}
       >
         {part.value}
       </span>

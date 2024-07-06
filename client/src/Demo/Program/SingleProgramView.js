@@ -465,12 +465,8 @@ function SingleProgramView(props) {
                               <TableCell>{key}</TableCell>
                               <TableCell>
                                 {prepDiffText(
-                                  change?.originalValues
-                                    ? change.originalValues[key]
-                                    : '',
-                                  change?.updatedValues
-                                    ? change.updatedValues[key]
-                                    : ''
+                                  change?.originalValues?.[key],
+                                  change?.updatedValues?.[key]
                                 )}
                               </TableCell>
                             </TableRow>

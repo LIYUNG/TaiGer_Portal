@@ -19,8 +19,6 @@ import {
   Tabs,
   Tab
 } from '@mui/material';
-import { diffChars } from 'diff';
-
 import {
   is_TaiGer_Admin,
   is_TaiGer_AdminAgent,
@@ -42,48 +40,13 @@ import {
   program_fields_special_documents,
   program_fields_special_notes
 } from '../Utils/contants';
+import { highlightTextDiff } from '../Utils/diffChecker';
 import Banner from '../../components/Banner/Banner';
 import DEMO from '../../store/constant';
 import ProgramReport from './ProgramReport';
 import { appConfig } from '../../config';
 import { useAuth } from '../../components/AuthProvider';
 import { a11yProps, CustomTabPanel } from '../../components/Tabs';
-
-import { useTheme } from '@mui/material';
-
-const prepDiffText = (original = '', updated = '') => {
-  const theme = useTheme();
-  const mode = theme.palette.mode;
-  const [addTextColor, addTextBg] =
-    mode === 'dark'
-      ? [theme.palette.success.contrastText, theme.palette.success.dark]
-      : [theme.palette.success.dark, theme.palette.success.light];
-
-  const [removeTextColor, removeTextBg] =
-    mode === 'dark'
-      ? [theme.palette.error.contrastText, theme.palette.error.light]
-      : [theme.palette.error.light, theme.palette.error.dark];
-
-  const diff = diffChars(original, updated);
-  return diff.map((part, index) => {
-    const { added, removed } = part;
-    const color = added ? addTextColor : removed ? removeTextColor : '';
-    const background = added ? addTextBg : removed ? removeTextBg : 'none';
-    const textDecoration = removed ? 'line-through' : 'none';
-    return (
-      <span
-        key={index}
-        style={{
-          color,
-          background,
-          textDecoration
-        }}
-      >
-        {part.value}
-      </span>
-    );
-  });
-};
 
 function SingleProgramView(props) {
   const { user } = useAuth();
@@ -464,7 +427,7 @@ function SingleProgramView(props) {
                             <TableRow key={i}>
                               <TableCell>{key}</TableCell>
                               <TableCell>
-                                {prepDiffText(
+                                {highlightTextDiff(
                                   change?.originalValues?.[key],
                                   change?.updatedValues?.[key]
                                 )}

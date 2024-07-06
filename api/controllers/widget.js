@@ -10,6 +10,7 @@ const { AWS_S3_BUCKET_NAME, isProd } = require('../config');
 const { s3 } = require('../aws/index');
 const { Communication } = require('../models/Communication');
 const { font } = require('../utils/NotoSansTC-VariableFont_wght-normal');
+const { Role } = require('../models/User');
 
 const student_name = 'PreCustomer';
 
@@ -117,13 +118,7 @@ const WidgetExportMessagePDF = asyncHandler(async (req, res, next) => {
   const {
     params: { studentId }
   } = req;
-  console.log(studentId);
-  const doc = new jsPDF({
-    compress: false,
-    orientation: 'p',
-    unit: 'px',
-    format: 'a4'
-  });
+  const doc = new jsPDF('p', 'pt', 'a4', true);
   const communication_thread = await Communication.find({
     student_id: studentId
   })
@@ -133,8 +128,8 @@ const WidgetExportMessagePDF = asyncHandler(async (req, res, next) => {
     )
     .lean();
 
-  let currentY = 10; // Initial y position
-  const lineHeight = 10; // Line height for spacing between lines
+  let currentY = 40; // Initial y position, leaving space for headers
+  const lineHeight = 14; // Line height for spacing between lines
   const pageHeight = doc.internal.pageSize.height; // Get page height
   const pageWidth = doc.internal.pageSize.width; // Get page width
 
@@ -147,11 +142,15 @@ const WidgetExportMessagePDF = asyncHandler(async (req, res, next) => {
   // Set font size for the document
   doc.setFontSize(12); // Set font size to 12 points
   doc.setFont('NotoSansTC-VariableFont_wght-normal');
-  const communicationThreadString = communication_thread
+  communication_thread
     .map((thread) => {
       try {
         const { user_id } = thread;
-        const userName = `${user_id.firstname} ${user_id.lastname}`;
+        const userName = `${user_id.firstname} ${user_id.lastname}${
+          user_id.role === Role.Student
+            ? `(${user_id.firstname_chinese} ${user_id.lastname_chinese})`
+            : ''
+        }`;
         const { message, createdAt } = thread;
         const textContent = message?.replace(/<[^>]+>/g, ''); // Strip HTML tags
         const messageObj = textContent ? JSON.parse(textContent) : '';
@@ -165,23 +164,24 @@ const WidgetExportMessagePDF = asyncHandler(async (req, res, next) => {
         // console.log(messageConcat);
 
         // Split text into lines that fit within page width
+        const createdAtFormatted = new Date(createdAt).toLocaleString();
         const lines = doc.splitTextToSize(
-          `${createdAt}: ${userName}: ${messageConcat}`,
-          pageWidth - 20
+          `${createdAtFormatted}: ${userName}: ${messageConcat}`,
+          pageWidth - 40
         ); // Leave some margin
 
         // Check if there is enough space on the current page
-        if (currentY + lineHeight > pageHeight - 10) {
+        if (currentY + lineHeight > pageHeight - 40) {
           // Leave some margin at the bottom for safety
           doc.addPage(); // Add a new page
-          currentY = 10; // Reset y position
+          currentY = 40; // Reset y position
         }
         // Add text to the PDF
-        doc.text(lines, 10, currentY);
+        doc.text(lines, 40, currentY);
         // Update currentY position
-        currentY += lineHeight * lines.length + 5; // Increase y position by total height of added text
+        currentY += lineHeight * lines.length + 10; // Increase y position by total height of added text
       } catch (e) {
-        logger.error('Error parsing JSON:', e);
+        logger.error('WidgetExportMessagePDF: Error parsing JSON:', e);
         return ''; // Return an empty string or handle the error as needed
       }
     })

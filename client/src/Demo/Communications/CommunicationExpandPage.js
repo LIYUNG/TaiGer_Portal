@@ -110,7 +110,8 @@ function CommunicationExpandPage() {
   const [open, setOpen] = useState(false);
   const [anchorStudentDetailEl, setAnchorStudentDetailEl] = useState(null);
   const isStudentDetailModalOpen = Boolean(anchorStudentDetailEl);
-
+  const [isExportingMessageDisabled, setIsExportingMessageDisabled] =
+    useState(false);
   const scrollableRef = useRef(null);
   const scrollToBottom = () => {
     if (scrollableRef.current) {
@@ -455,6 +456,7 @@ function CommunicationExpandPage() {
 
   const handleExportMessages = async (event) => {
     event.stopPropagation();
+    setIsExportingMessageDisabled(true);
     const downloadBlob = (blob, filename) => {
       // Create a URL for the Blob data
       const url = window.URL.createObjectURL(blob);
@@ -477,6 +479,7 @@ function CommunicationExpandPage() {
     const resp = await WidgetExportMessagePDF(student_id);
     const blob = resp.data;
     downloadBlob(blob, 'exported_file.pdf');
+    setIsExportingMessageDisabled(false);
   };
 
   const handleStudentDetailModalClose = (event) => {
@@ -631,8 +634,13 @@ function CommunicationExpandPage() {
                     aria-haspopup="true"
                     onClick={handleExportMessages}
                     edge="end"
+                    disabled={isExportingMessageDisabled}
                   >
-                    <ExitToAppIcon />
+                    {isExportingMessageDisabled ? (
+                      <CircularProgress size={16} />
+                    ) : (
+                      <ExitToAppIcon />
+                    )}
                   </IconButton>
                 </Tooltip>
                 <Tooltip title={t('More', { ns: 'common' })}>

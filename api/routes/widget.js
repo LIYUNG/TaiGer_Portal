@@ -8,12 +8,21 @@ const { Role } = require('../models/User');
 
 const {
   WidgetProcessTranscript,
-  WidgetdownloadXLSX
+  WidgetdownloadXLSX,
+  WidgetExportMessagePDF
 } = require('../controllers/widget');
 
 const router = Router();
 
 router.use(protect);
+
+router
+  .route('/messages/export/:studentId')
+  .get(
+    GeneralGETRequestRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent),
+    WidgetExportMessagePDF
+  );
 
 router
   .route('/transcript/:category/:language')

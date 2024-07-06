@@ -1399,7 +1399,7 @@ export const needGraduatedApplicantsButStudentNotGraduated = (student) => {
 
 export const needGraduatedApplicantsPrograms = (applications) => {
   return applications?.filter(
-    (app) => app.programId.allowOnlyGraduatedApplicant
+    (app) => isProgramDecided(app) && app.programId.allowOnlyGraduatedApplicant
   );
 };
 

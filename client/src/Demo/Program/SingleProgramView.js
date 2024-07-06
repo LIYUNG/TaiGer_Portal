@@ -1,6 +1,7 @@
 import React, { Fragment, useState } from 'react';
 import { Link as LinkDom } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import CompareIcon from '@mui/icons-material/Compare';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import {
   Box,
@@ -87,7 +88,7 @@ const prepDiffText = (original = '', updated = '') => {
 function SingleProgramView(props) {
   const { user } = useAuth();
   const { t } = useTranslation();
-  const [value, setValue] = useState(0);
+  const [value, setValue] = useState(5); // default to Edit History
   const [studentsTabValue, setStudentsTabValue] = useState(0);
   const versions = props?.versions || {};
 
@@ -415,6 +416,9 @@ function SingleProgramView(props) {
               index={5}
               style={{ width: '100%', overflowY: 'auto' }}
             >
+              <Button onClick={() => props.setDiffModalShow()}>
+                <CompareIcon fontSize="small" /> Compare
+              </Button>
               <Table>
                 <TableHead>
                   <TableRow>

@@ -445,6 +445,7 @@ function SingleProgram() {
           <ProgramDiffModal
             open={singleProgramState.modalShowDiffWindow}
             setModalHide={setDiffModal(false)}
+            originalProgram={program}
           />
         )}
       </Box>

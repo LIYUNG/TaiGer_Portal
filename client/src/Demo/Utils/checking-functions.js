@@ -1387,6 +1387,7 @@ export const needGraduatedApplicantsButStudentNotGraduated = (student) => {
   }
   for (let j = 0; j < student.applications.length; j += 1) {
     if (
+      isProgramDecided(student.applications[j]) &&
       student.applications[j].programId.allowOnlyGraduatedApplicant &&
       student.academic_background.university.isGraduated !== 'Yes'
     ) {

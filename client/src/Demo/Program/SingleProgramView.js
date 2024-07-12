@@ -380,7 +380,7 @@ function SingleProgramView(props) {
               style={{ width: '100%', overflowY: 'auto' }}
             >
               <Button onClick={() => props.setDiffModalShow()}>
-                <CompareIcon fontSize="small" /> Compare
+                <CompareIcon fontSize="small" /> Incoming changes - Compare
               </Button>
               <Table>
                 <TableHead>

@@ -2,13 +2,15 @@ import { React, useState } from 'react';
 import {
   Button,
   Typography,
+  TableContainer,
   Table,
   TableBody,
   TableCell,
   TableHead,
-  TableRow
+  TableRow,
+  Paper
 } from '@mui/material';
-
+import { Check as CheckIcon, Close as CloseIcon } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 
 import ModalNew from '../../components/Modal';
@@ -50,7 +52,7 @@ const getAllKeys = (original, updated) => {
   return [...new Set([...originalKeys, ...updatedKeys])];
 };
 
-function ProgromDiffRow({ label, original, incoming }) {
+function ProgromDiffRow({ label, original, incoming, ...rowProps }) {
   const [isAccepted, setAccepted] = useState(false);
 
   const toggleAccept = () => {
@@ -58,7 +60,7 @@ function ProgromDiffRow({ label, original, incoming }) {
   };
 
   return (
-    <TableRow hover key={label}>
+    <TableRow hover {...rowProps}>
       <TableCell>
         <Typography variant="body1">{label}</Typography>
       </TableCell>
@@ -75,7 +77,8 @@ function ProgromDiffRow({ label, original, incoming }) {
             color={isAccepted ? 'error' : 'success'}
             onClick={toggleAccept}
           >
-            {isAccepted ? 'REJECT' : 'ACCEPT'}
+            {isAccepted ? <CloseIcon /> : <CheckIcon />}
+            {''}
           </Button>
         )}
       </TableCell>
@@ -96,32 +99,34 @@ function ProgramDiffModal(props) {
       centered
     >
       <Typography variant="h6">Merge Program input</Typography>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>{t('Label')}</TableCell>
-            <TableCell>{t('Original')}</TableCell>
-            <TableCell>{t('Incoming')}</TableCell>
-            <TableCell></TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {keys.map((key) => {
-            if (ignoreKeys.includes(key)) {
-              return;
-            }
-            return (
-              <ProgromDiffRow
-                key={key}
-                label={key}
-                original={originalProgram?.[key]}
-                incoming={programFromAI?.[key]}
-              />
-            );
-          })}
-        </TableBody>
-      </Table>
-
+      TODO: sort first by changed then by key, translate label to human readable
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell></TableCell>
+              <TableCell>{t('Original')}</TableCell>
+              <TableCell>{t('Incoming Changes')}</TableCell>
+              <TableCell></TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {keys.map((key) => {
+              if (ignoreKeys.includes(key)) {
+                return;
+              }
+              return (
+                <ProgromDiffRow
+                  key={key}
+                  label={key}
+                  original={originalProgram?.[key]}
+                  incoming={programFromAI?.[key]}
+                />
+              );
+            })}
+          </TableBody>
+        </Table>
+      </TableContainer>
       <Button color="secondary" variant="outlined" onClick={props.setModalHide}>
         {t('Close', { ns: 'common' })}
       </Button>

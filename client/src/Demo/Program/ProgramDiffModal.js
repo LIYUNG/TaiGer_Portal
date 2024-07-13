@@ -14,6 +14,7 @@ import { Check as CheckIcon, Close as CloseIcon } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 
 import ModalNew from '../../components/Modal';
+import { programField2Label } from '../Utils/contants';
 // import { highlightTextDiff } from '../Utils/diffChecker';
 
 const programFromAI = {
@@ -52,7 +53,7 @@ const getAllKeys = (original, updated) => {
   return [...new Set([...originalKeys, ...updatedKeys])];
 };
 
-function ProgromDiffRow({ label, original, incoming, ...rowProps }) {
+function ProgromDiffRow({ fieldName, original, incoming, ...rowProps }) {
   const [isAccepted, setAccepted] = useState(false);
 
   const toggleAccept = () => {
@@ -62,7 +63,9 @@ function ProgromDiffRow({ label, original, incoming, ...rowProps }) {
   return (
     <TableRow hover {...rowProps}>
       <TableCell>
-        <Typography variant="body1">{label}</Typography>
+        <Typography variant="body1">
+          {programField2Label?.[fieldName] || fieldName}
+        </Typography>
       </TableCell>
       <TableCell>
         <Typography variant="body1">{JSON.stringify(original)}</Typography>
@@ -118,7 +121,7 @@ function ProgramDiffModal(props) {
               return (
                 <ProgromDiffRow
                   key={key}
-                  label={key}
+                  fieldName={key}
                   original={originalProgram?.[key]}
                   incoming={programFromAI?.[key]}
                 />

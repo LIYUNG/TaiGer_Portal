@@ -78,7 +78,7 @@ function ProgromDiffRow({ fieldName, original, incoming, ...rowProps }) {
         <Typography variant="body1">{JSON.stringify(incoming)}</Typography>
       </TableCell>
       <TableCell>
-        {original !== incoming && (
+        {incoming && original !== incoming && (
           <Button
             sx={{ width: '100px' }}
             color={isAccepted ? 'error' : 'success'}
@@ -94,9 +94,24 @@ function ProgromDiffRow({ fieldName, original, incoming, ...rowProps }) {
 }
 
 function ProgramDiffModal(props) {
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
   const originalProgram = props.originalProgram;
   const keys = getAllKeys(originalProgram, programFromAI);
+
+  const modifiedKeys = [];
+  const originalKey = [];
+  keys.forEach((key) => {
+    if (
+      programFromAI?.[key] &&
+      originalProgram?.[key] !== programFromAI?.[key]
+    ) {
+      modifiedKeys.push(key);
+    } else {
+      originalKey.push(key);
+    }
+  });
+
+  console.log(modifiedKeys, originalKey);
 
   return (
     <ModalNew
@@ -111,14 +126,27 @@ function ProgramDiffModal(props) {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell></TableCell>
+              <TableCell>{t('Field')}</TableCell>
               <TableCell>{t('Original')}</TableCell>
               <TableCell>{t('Incoming Changes')}</TableCell>
               <TableCell></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {keys.map((key) => {
+            {modifiedKeys.map((key) => {
+              if (ignoreKeys.includes(key)) {
+                return;
+              }
+              return (
+                <ProgromDiffRow
+                  key={key}
+                  fieldName={key}
+                  original={originalProgram?.[key]}
+                  incoming={programFromAI?.[key]}
+                />
+              );
+            })}
+            {originalKey.map((key) => {
               if (ignoreKeys.includes(key)) {
                 return;
               }

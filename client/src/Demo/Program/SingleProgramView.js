@@ -38,7 +38,8 @@ import {
   program_fields_others,
   program_fields_overview,
   program_fields_special_documents,
-  program_fields_special_notes
+  program_fields_special_notes,
+  programField2Label
 } from '../Utils/contants';
 import { highlightTextDiff } from '../Utils/diffChecker';
 import Banner from '../../components/Banner/Banner';
@@ -425,7 +426,9 @@ function SingleProgramView(props) {
                           </TableRow>
                           {keys.map((key, i) => (
                             <TableRow key={i}>
-                              <TableCell>{key}</TableCell>
+                              <TableCell>
+                                {programField2Label?.[key] || key}
+                              </TableCell>
                               <TableCell>
                                 {highlightTextDiff(
                                   change?.originalValues?.[key],

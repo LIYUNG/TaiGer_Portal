@@ -1076,6 +1076,11 @@ export const program_fields = [
   ...program_fields_others
 ];
 
+export const programField2Label = program_fields.reduce((acc, field) => {
+  acc[field.prop] = field.name;
+  return acc;
+}, {});
+
 export const convertDate_ux_friendly = (date) => {
   // let dat = new Date(date).toLocaleDateString('zh-Hans-CN');
   const { t } = useTranslation();

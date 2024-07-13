@@ -396,7 +396,7 @@ function SingleProgramView(props) {
                       <strong>{t('Field', { ns: 'common' })}</strong>
                     </TableCell>
                     <TableCell>
-                      <strong>{t('Value', { ns: 'common' })}</strong>
+                      <strong>{t('Content', { ns: 'common' })}</strong>
                     </TableCell>
                   </TableRow>
                 </TableHead>
@@ -427,7 +427,9 @@ function SingleProgramView(props) {
                           {keys.map((key, i) => (
                             <TableRow key={i}>
                               <TableCell>
-                                {programField2Label?.[key] || key}
+                                {t(programField2Label?.[key] || key, {
+                                  ns: 'common'
+                                })}
                               </TableCell>
                               <TableCell>
                                 {highlightTextDiff(

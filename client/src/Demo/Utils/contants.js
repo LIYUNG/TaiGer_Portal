@@ -1081,6 +1081,20 @@ export const programField2Label = program_fields.reduce((acc, field) => {
   return acc;
 }, {});
 
+export const programFieldOrder = program_fields.reduce((acc, field) => {
+  acc.push(field.prop);
+  return acc;
+}, []);
+
+export const sortProgramFields = (a, b) => {
+  const indexA = programFieldOrder.indexOf(a);
+  const indexB = programFieldOrder.indexOf(b);
+  if (indexA === -1 && indexB === -1) return 0; // Both are not in `order` = equal
+  if (indexA === -1) return 1; // `a` is not in `order`, place it later
+  if (indexB === -1) return -1; // `b` is not in `order`, place it later
+  return indexA - indexB;
+};
+
 export const convertDate_ux_friendly = (date) => {
   // let dat = new Date(date).toLocaleDateString('zh-Hans-CN');
   const { t } = useTranslation();

@@ -14,7 +14,7 @@ import { Check as CheckIcon, Close as CloseIcon } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 
 import ModalNew from '../../components/Modal';
-import { programField2Label } from '../Utils/contants';
+import { programField2Label, sortProgramFields } from '../Utils/contants';
 // import { highlightTextDiff } from '../Utils/diffChecker';
 
 const programFromAI = {
@@ -45,17 +45,19 @@ const programFromAI = {
   ml_requirements: ''
 };
 
-const ignoreKeys = ['_id', 'updatedAt', 'whoupdated'];
+const ignoreKeys = ['_id', 'updatedAt', 'whoupdated', 'createdAt', '__v'];
 
 const getAllKeys = (original, updated) => {
   const originalKeys = Object.keys(original);
   const updatedKeys = Object.keys(updated);
-  return [...new Set([...originalKeys, ...updatedKeys])];
+  return [...new Set([...originalKeys, ...updatedKeys])].sort(
+    sortProgramFields
+  );
 };
 
 function ProgromDiffRow({ fieldName, original, incoming, ...rowProps }) {
+  const { t } = useTranslation();
   const [isAccepted, setAccepted] = useState(false);
-
   const toggleAccept = () => {
     setAccepted(!isAccepted);
   };
@@ -64,7 +66,9 @@ function ProgromDiffRow({ fieldName, original, incoming, ...rowProps }) {
     <TableRow hover {...rowProps}>
       <TableCell>
         <Typography variant="body1">
-          {programField2Label?.[fieldName] || fieldName}
+          {t(programField2Label?.[fieldName] || fieldName, {
+            ns: 'common'
+          })}
         </Typography>
       </TableCell>
       <TableCell>

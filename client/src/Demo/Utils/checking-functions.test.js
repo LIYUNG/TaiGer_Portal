@@ -1205,4 +1205,8 @@ describe('check_student_needs_uni_assist', () => {
     const result = check_student_needs_uni_assist(student);
     expect(result).toBe(false);
   });
+
+  it('test pipeline', () => {
+    expect(1).toBe(0);
+  });
 });

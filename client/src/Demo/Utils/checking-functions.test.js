@@ -1209,4 +1209,7 @@ describe('check_student_needs_uni_assist', () => {
   it('test pipeline', () => {
     expect(1).toBe(0);
   });
+  it('test slack alarm', () => {
+    expect(1).toBe(0);
+  });
 });

@@ -181,13 +181,14 @@ function ProgramDiffModal(props) {
       centered
     >
       <Typography variant="h6">Merge Program input</Typography>
-      TODO: sort first by changed then by key, translate label to human readable
-      <Typography variant="body1">{JSON.stringify(delta)}</Typography>
+      <Typography variant="body1">
+        Changes to submit: {JSON.stringify(delta)}
+      </Typography>
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell style={{ width: '10%' }}>{t('Field')}</TableCell>
+              <TableCell>{t('Field')}</TableCell>
               <TableCell style={{ width: '40%' }}>{t('Original')}</TableCell>
               <TableCell style={{ width: '40%' }}>
                 {t('Incoming Changes')}

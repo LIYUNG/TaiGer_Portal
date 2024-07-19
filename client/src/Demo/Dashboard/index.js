@@ -3,8 +3,8 @@ import { Await, useLoaderData } from 'react-router-dom';
 import { TabTitle } from '../Utils/TabTitle';
 
 import DashboardBody from './DashboardBody';
-import Loading from '../../components/Loading/Loading';
 import { Box } from '@mui/material';
+import Loading from '../../components/Loading/Loading';
 
 function Dashboard() {
   const { studentAndEssays } = useLoaderData();

@@ -417,7 +417,7 @@ function SingleProgramView(props) {
                           <TableRow></TableRow>
                           <TableRow>
                             <TableCell rowSpan={(keys?.length || 0) + 1}>
-                              {reverseIndex}
+                              <Typography>{reverseIndex}</Typography>
                             </TableCell>
                             <TableCell rowSpan={(keys?.length || 0) + 1}>
                               <div>{change.changedBy}</div>

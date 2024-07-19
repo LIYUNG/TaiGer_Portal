@@ -60,9 +60,9 @@ const DiffRow = ({
   original,
   incoming,
   updateField,
+  showToggleButton = false,
   ...rowProps
 }) => {
-  const isModified = incoming && original !== incoming;
   const { t } = useTranslation();
   const [isAccepted, setAccepted] = useState(false);
   const toggleAccept = () => {
@@ -91,7 +91,7 @@ const DiffRow = ({
         <Typography variant="body1">{JSON.stringify(incoming)}</Typography>
       </TableCell>
       <TableCell>
-        {isModified && (
+        {showToggleButton && (
           <Button
             sx={{ width: '100px' }}
             color={isAccepted ? 'error' : 'success'}
@@ -123,10 +123,12 @@ const DiffTableContent = ({ originalProgram, programFromAI, setDelta }) => {
 
   const modifiedKeys = [];
   const originalKey = [];
+
   keys.forEach((key) => {
     if (
       programFromAI?.[key] &&
-      originalProgram?.[key] !== programFromAI?.[key]
+      JSON.stringify(originalProgram?.[key]) !==
+        JSON.stringify(programFromAI?.[key])
     ) {
       modifiedKeys.push(key);
     } else {
@@ -146,6 +148,7 @@ const DiffTableContent = ({ originalProgram, programFromAI, setDelta }) => {
             original={originalProgram?.[key]}
             incoming={programFromAI?.[key]}
             updateField={updateField}
+            showToggleButton={true}
           />
         );
       })}
@@ -156,10 +159,12 @@ const DiffTableContent = ({ originalProgram, programFromAI, setDelta }) => {
         return (
           <DiffRow
             key={key}
+            style={{ backgroundColor: 'lightgrey' }}
             fieldName={key}
             original={originalProgram?.[key]}
             incoming={programFromAI?.[key]}
             updateField={updateField}
+            showToggleButton={false}
           />
         );
       })}

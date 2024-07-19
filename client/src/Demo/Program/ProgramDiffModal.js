@@ -55,10 +55,23 @@ const getAllKeys = (original, updated) => {
   );
 };
 
-function ProgromDiffRow({ fieldName, original, incoming, ...rowProps }) {
+const DiffRow = ({
+  fieldName,
+  original,
+  incoming,
+  updateField,
+  ...rowProps
+}) => {
+  const isModified = incoming && original !== incoming;
   const { t } = useTranslation();
   const [isAccepted, setAccepted] = useState(false);
   const toggleAccept = () => {
+    if (isAccepted) {
+      // remove the incoming value
+      updateField(fieldName, null, true);
+    } else {
+      updateField(fieldName, incoming);
+    }
     setAccepted(!isAccepted);
   };
 
@@ -78,7 +91,7 @@ function ProgromDiffRow({ fieldName, original, incoming, ...rowProps }) {
         <Typography variant="body1">{JSON.stringify(incoming)}</Typography>
       </TableCell>
       <TableCell>
-        {incoming && original !== incoming && (
+        {isModified && (
           <Button
             sx={{ width: '100px' }}
             color={isAccepted ? 'error' : 'success'}
@@ -91,12 +104,22 @@ function ProgromDiffRow({ fieldName, original, incoming, ...rowProps }) {
       </TableCell>
     </TableRow>
   );
-}
+};
 
-function ProgramDiffModal(props) {
-  const { t } = useTranslation('common');
-  const originalProgram = props.originalProgram;
+const DiffTableContent = ({ originalProgram, programFromAI, setDelta }) => {
   const keys = getAllKeys(originalProgram, programFromAI);
+  const updateField = (fieldName, value, shouldRemove = false) => {
+    if (shouldRemove) {
+      setDelta((prevDelta) => {
+        delete prevDelta[fieldName];
+        return { ...prevDelta };
+      });
+    } else {
+      setDelta((prevDelta) => {
+        return { ...prevDelta, [fieldName]: value };
+      });
+    }
+  };
 
   const modifiedKeys = [];
   const originalKey = [];
@@ -110,8 +133,45 @@ function ProgramDiffModal(props) {
       originalKey.push(key);
     }
   });
+  return (
+    <>
+      {modifiedKeys.map((key) => {
+        if (ignoreKeys.includes(key)) {
+          return;
+        }
+        return (
+          <DiffRow
+            key={key}
+            fieldName={key}
+            original={originalProgram?.[key]}
+            incoming={programFromAI?.[key]}
+            updateField={updateField}
+          />
+        );
+      })}
+      {originalKey.map((key) => {
+        if (ignoreKeys.includes(key)) {
+          return;
+        }
+        return (
+          <DiffRow
+            key={key}
+            fieldName={key}
+            original={originalProgram?.[key]}
+            incoming={programFromAI?.[key]}
+            updateField={updateField}
+          />
+        );
+      })}
+    </>
+  );
+};
 
-  console.log(modifiedKeys, originalKey);
+function ProgramDiffModal(props) {
+  const { t } = useTranslation('common');
+  const originalProgram = props.originalProgram;
+
+  const [delta, setDelta] = useState({});
 
   return (
     <ModalNew
@@ -122,43 +182,25 @@ function ProgramDiffModal(props) {
     >
       <Typography variant="h6">Merge Program input</Typography>
       TODO: sort first by changed then by key, translate label to human readable
+      <Typography variant="body1">{JSON.stringify(delta)}</Typography>
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>{t('Field')}</TableCell>
-              <TableCell>{t('Original')}</TableCell>
-              <TableCell>{t('Incoming Changes')}</TableCell>
+              <TableCell style={{ width: '10%' }}>{t('Field')}</TableCell>
+              <TableCell style={{ width: '40%' }}>{t('Original')}</TableCell>
+              <TableCell style={{ width: '40%' }}>
+                {t('Incoming Changes')}
+              </TableCell>
               <TableCell></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {modifiedKeys.map((key) => {
-              if (ignoreKeys.includes(key)) {
-                return;
-              }
-              return (
-                <ProgromDiffRow
-                  key={key}
-                  fieldName={key}
-                  original={originalProgram?.[key]}
-                  incoming={programFromAI?.[key]}
-                />
-              );
-            })}
-            {originalKey.map((key) => {
-              if (ignoreKeys.includes(key)) {
-                return;
-              }
-              return (
-                <ProgromDiffRow
-                  key={key}
-                  fieldName={key}
-                  original={originalProgram?.[key]}
-                  incoming={programFromAI?.[key]}
-                />
-              );
-            })}
+            <DiffTableContent
+              originalProgram={originalProgram}
+              programFromAI={programFromAI}
+              setDelta={setDelta}
+            />
           </TableBody>
         </Table>
       </TableContainer>

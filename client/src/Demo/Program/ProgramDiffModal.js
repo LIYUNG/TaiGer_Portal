@@ -195,9 +195,7 @@ function ProgramDiffModal(props) {
             <TableRow>
               <TableCell>{t('Field')}</TableCell>
               <TableCell style={{ width: '40%' }}>{t('Original')}</TableCell>
-              <TableCell style={{ width: '40%' }}>
-                {t('Incoming Changes')}
-              </TableCell>
+              <TableCell style={{ width: '40%' }}>{t('Changed to')}</TableCell>
               <TableCell></TableCell>
             </TableRow>
           </TableHead>

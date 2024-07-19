@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Breadcrumbs, Link, Typography } from '@mui/material';
-import { Link as LinkDom, useLoaderData } from 'react-router-dom';
+import { Link as LinkDom } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import AdminMainView from './AdminDashboard/AdminMainView';
@@ -24,12 +24,13 @@ import DEMO from '../../store/constant';
 import { appConfig } from '../../config';
 import useStudents from '../../hooks/useStudents';
 
-function Dashboard() {
+function DashboardBody({ studentAndEssays }) {
   const { user } = useAuth();
   const {
     data: { data: fetchedStudents, isCoursesFilled, notification },
     essays: { data: essayDocumentThreads }
-  } = useLoaderData();
+  } = studentAndEssays;
+
   const { t } = useTranslation();
   const {
     students,
@@ -46,7 +47,7 @@ function Dashboard() {
   TabTitle('Home Page');
 
   return (
-    <Box data-testid="dashoboard_component">
+    <Box>
       {res_modal_status >= 400 && (
         <ModalMain
           ConfirmError={ConfirmError}
@@ -113,4 +114,4 @@ function Dashboard() {
   );
 }
 
-export default Dashboard;
+export default DashboardBody;

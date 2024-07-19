@@ -24,7 +24,7 @@ const InterviewResponseTable = React.lazy(() =>
   import('./Demo/InterviewTraining/InterviewResponseTable')
 );
 
-const DashboardDefault = React.lazy(() => import('./Demo/Dashboard/Dashboard'));
+const DashboardDefault = React.lazy(() => import('./Demo/Dashboard'));
 
 const AllArchivStudent = React.lazy(() =>
   import('./Demo/ArchivStudent/AllIndex')

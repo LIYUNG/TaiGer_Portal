@@ -10,7 +10,10 @@ import {
   TableRow,
   Paper
 } from '@mui/material';
-import { Check as CheckIcon, Close as CloseIcon } from '@mui/icons-material';
+import {
+  Restore as RestoreIcon,
+  ArrowBack as ArrowBackIcon
+} from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 
 import ModalNew from '../../components/Modal';
@@ -75,6 +78,12 @@ const DiffRow = ({
     setAccepted(!isAccepted);
   };
 
+  const cellHightlight = (included) => {
+    return included
+      ? { backgroundColor: 'lightgreen' }
+      : { backgroundColor: 'lightcoral' };
+  };
+
   return (
     <TableRow hover {...rowProps}>
       <TableCell>
@@ -84,23 +93,29 @@ const DiffRow = ({
           })}
         </Typography>
       </TableCell>
-      <TableCell>
+      <TableCell
+        style={
+          showToggleButton && isAccepted ? cellHightlight(!isAccepted) : {}
+        }
+      >
         <Typography variant="body1">{JSON.stringify(original)}</Typography>
-      </TableCell>
-      <TableCell style={isAccepted ? { backgroundColor: 'lightgreen' } : {}}>
-        <Typography variant="body1">{JSON.stringify(incoming)}</Typography>
       </TableCell>
       <TableCell>
         {showToggleButton && (
           <Button
-            sx={{ width: '100px' }}
-            color={isAccepted ? 'error' : 'success'}
+            // color={isAccepted ? 'error' : 'success'}
             onClick={toggleAccept}
           >
-            {isAccepted ? <CloseIcon /> : <CheckIcon />}
-            {''}
+            {isAccepted ? <RestoreIcon /> : <ArrowBackIcon />}
           </Button>
         )}
+      </TableCell>
+      <TableCell
+        style={
+          showToggleButton && !isAccepted ? cellHightlight(!isAccepted) : {}
+        }
+      >
+        <Typography variant="body1">{JSON.stringify(incoming)}</Typography>
       </TableCell>
     </TableRow>
   );
@@ -189,14 +204,19 @@ function ProgramDiffModal(props) {
       <Typography variant="body1">
         Changes to submit: {JSON.stringify(delta)}
       </Typography>
+      <Button color="secondary" onClick={props.setModalHide}>
+        X
+      </Button>
+      <Button color="primary">{t('Accept All', { ns: 'common' })}</Button>
+      <Button color="secondary">{t('Reject All', { ns: 'common' })}</Button>
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
               <TableCell>{t('Field')}</TableCell>
-              <TableCell style={{ width: '40%' }}>{t('Original')}</TableCell>
-              <TableCell style={{ width: '40%' }}>{t('Changed to')}</TableCell>
+              <TableCell style={{ width: '45%' }}>{t('Original')}</TableCell>
               <TableCell></TableCell>
+              <TableCell style={{ width: '45%' }}>{t('Changed to')}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

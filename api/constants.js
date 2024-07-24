@@ -1,4 +1,5 @@
 const { ORIGIN, ESCALATION_DEADLINE_DAYS_TRIGGER } = require('./config');
+const { TENANT_WEBSITE, TENANT_NAME, TENANT_INSTAGRAM_LINK, TENANT_FACEBOOK_LINK, TENANT_MEDIUM_LINK, TENANT_LINKEDIN_LINK } = require('./constants/common');
 const Role = {
   Admin: 'Admin',
   Manager: 'Manager',
@@ -64,20 +65,19 @@ const JITSI_MEET_INSTRUCTIONS_URL = new URL(
   ORIGIN
 ).href;
 
-// const TAIGER_SIGNATURE = '<p><b>Your TaiGer Consultancy Team</b></p>';
 const TAIGER_SIGNATURE = `
-<p><b>Your TaiGer Consultancy Team</b></p><p>Website: <a href="https://taigerconsultancy.com/">https://taigerconsultancy.com/</a></p>
+<p><b>Your ${TENANT_NAME} Team</b></p><p>Website: <a href="${TENANT_WEBSITE}">${TENANT_WEBSITE}</a></p>
 <div class="social-icons">
-  <a href="https://www.instagram.com/taiger_study_abroad/?hl=de" target="_blank">
+  <a href="${TENANT_INSTAGRAM_LINK}" target="_blank">
       <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" alt="Instagram">
   </a>
-  <a href="https://www.facebook.com/profile.php?id=100063557155189" target="_blank">
+  <a href="${TENANT_FACEBOOK_LINK}" target="_blank">
      <img src="https://upload.wikimedia.org/wikipedia/commons/b/bd/Facebook_lg.png" alt="Facebook">
   </a>
-  <a href="https://taigerconsultancy.medium.com/" target="_blank">
+  <a href="${TENANT_MEDIUM_LINK}" target="_blank">
      <img src="https://static-00.iconduck.com/assets.00/logo-medium-icon-512x512-6ohyt32n.png" alt="Medium">
   </a>
-  <a href="https://www.linkedin.com/company/taigerconsultancy/" target="_blank">
+  <a href="${TENANT_LINKEDIN_LINK}" target="_blank">
      <img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png" alt="LinkedIn">
   </a>
   

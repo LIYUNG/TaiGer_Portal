@@ -1,4 +1,3 @@
-const { createTransport } = require('nodemailer');
 const ical = require('ical-generator');
 const queryString = require('query-string');
 const {
@@ -37,57 +36,14 @@ const {
   STUDENT_APPLICATION_STUDENT_URL
 } = require('../constants');
 
-const {
-  SMTP_HOST,
-  SMTP_PORT,
-  SMTP_USERNAME,
-  SMTP_PASSWORD,
-  isDev,
-  ORIGIN
-} = require('../config');
+const { ORIGIN } = require('../config');
 const { htmlContent } = require('./emailTemplate');
-const { ses } = require('../aws');
-
-// const transporter = isDev()
-//   ? createTransport({
-//       host: SMTP_HOST,
-//       port: SMTP_PORT,
-//       auth: {
-//         user: SMTP_USERNAME,
-//         pass: SMTP_PASSWORD
-//       },
-//       tls: {
-//         rejectUnauthorized: false
-//       }
-//     })
-//   : createTransport({
-//       service: 'gmail',
-//       auth: {
-//         user: SMTP_USERNAME,
-//         pass: SMTP_PASSWORD
-//       }
-//     });
-
-// const senderName = `No-Reply TaiGer Consultancy ${SMTP_USERNAME}`;
-
-const transporter = isDev()
-  ? createTransport({
-      host: SMTP_HOST,
-      port: SMTP_PORT,
-      auth: {
-        user: SMTP_USERNAME,
-        pass: SMTP_PASSWORD
-      },
-      tls: {
-        rejectUnauthorized: false
-      }
-    })
-  : createTransport({
-      SES: ses
-    });
-
-const senderName =
-  'No-Reply TaiGer Consultancy no-reply@taigerconsultancy-portal.com';
+const { transporter } = require('./email/configuration');
+const {
+  senderName,
+  taigerNotReplyGmail,
+  appDomain
+} = require('../constants/email');
 
 const verifySMTPConfig = () => {
   return transporter.verify();
@@ -97,7 +53,7 @@ const sendEmail = (to, subject, message) => {
   const mail = {
     from: senderName,
     to,
-    bcc: 'noreply.taigerconsultancy@gmail.com',
+    bcc: taigerNotReplyGmail,
     subject,
     // text: message,
     html: htmlContent(message)
@@ -125,6 +81,7 @@ const sendEventEmail = (
       role: 'REQ-PARTICIPANT'
     };
   });
+
   const cc_receiver_list = cc.map((c) => {
     return {
       address: c.email,
@@ -132,7 +89,7 @@ const sendEventEmail = (
     };
   });
   const event = ical({
-    domain: 'taigerconsultancy-portal.com',
+    domain: appDomain,
     prodId: '//TaiGer Portal//taigerconsultancy-portal.com//EN',
     method: 'request', // publish (manually add) or request : receiver can choose yes or no. (but not good. info not sync with portal.)
     events: [
@@ -147,8 +104,8 @@ const sendEventEmail = (
         location: meeting_event.meetingLink,
         organizer: {
           name: 'TaiGer Portal',
-          email: 'noreply.taigerconsultancy@gmail.com',
-          mailto: 'noreply.taigerconsultancy@gmail.com'
+          email: taigerNotReplyGmail,
+          mailto: taigerNotReplyGmail
         },
         attendees: [
           ...cc_event_list,
@@ -169,7 +126,7 @@ const sendEventEmail = (
     from: senderName,
     to,
     cc: cc_receiver_list,
-    bcc: 'noreply.taigerconsultancy@gmail.com',
+    bcc: taigerNotReplyGmail,
     subject,
     // text: message,
     html: htmlContent(message),
@@ -780,7 +737,7 @@ const informAgentNewStudentEmail = async (recipient, msg) => {
 const informStudentTheirAgentEmail = async (recipient, msg) => {
   const subject = 'Your Agent';
   let agent;
-  for (let i = 0; i < msg.agents.length; i++) {
+  for (let i = 0; i < msg.agents.length; i += 1) {
     if (i === 0) {
       agent = `${msg.agents[i].firstname} ${msg.agents[i].lastname}`;
     } else {

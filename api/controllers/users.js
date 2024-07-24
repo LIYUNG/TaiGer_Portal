@@ -4,7 +4,7 @@ const generator = require('generate-password');
 
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
-const { User, Agent, Editor, Student, Role } = require('../models/User');
+const { User, Student, Role } = require('../models/User');
 const Course = require('../models/Course');
 const { Documentthread } = require('../models/Documentthread');
 const { emptyS3Directory } = require('../utils/utils_function');
@@ -164,7 +164,6 @@ const updateUser = asyncHandler(async (req, res) => {
 
 const updateUserArchivStatus = asyncHandler(async (req, res) => {
   const {
-    user,
     params: { user_id },
     body: { isArchived }
   } = req;

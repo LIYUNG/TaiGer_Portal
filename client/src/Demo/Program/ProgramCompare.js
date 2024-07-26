@@ -18,14 +18,34 @@ import { useTranslation } from 'react-i18next';
 
 import { programField2Label, sortProgramFields } from '../Utils/contants';
 
-const ignoreKeys = ['_id', 'updatedAt', 'whoupdated', 'createdAt', '__v'];
+const IGNORE_KEYS = ['_id', 'updatedAt', 'whoupdated', 'createdAt', '__v'];
 
-const getAllKeys = (original, updated) => {
+const getAllKeys = (original, incoming) => {
   const originalKeys = Object.keys(original);
-  const updatedKeys = Object.keys(updated);
+  const updatedKeys = Object.keys(incoming);
   return [...new Set([...originalKeys, ...updatedKeys])].sort(
     sortProgramFields
   );
+};
+
+const getDiffKeys = (original, incoming) => {
+  const allKeys = getAllKeys(original, incoming);
+  const modifiedKeys = [];
+  const originalKey = [];
+
+  allKeys.forEach((key) => {
+    if (IGNORE_KEYS.includes(key)) return;
+    const originalValue = original?.[key];
+    const incomingValue = incoming?.[key];
+
+    if (JSON.stringify(originalValue) !== JSON.stringify(incomingValue)) {
+      modifiedKeys.push(key);
+    } else {
+      originalKey.push(key);
+    }
+  });
+
+  return { modifiedKeys, originalKey };
 };
 
 const DiffRow = ({
@@ -87,7 +107,6 @@ const DiffTableContent = ({
   delta,
   setDelta
 }) => {
-  const keys = getAllKeys(originalProgram, incomingProgram);
   const updateField = (fieldName, value, shouldRemove = false) => {
     if (shouldRemove) {
       setDelta((prevDelta) => {
@@ -101,25 +120,15 @@ const DiffTableContent = ({
     }
   };
 
-  const modifiedKeys = [];
-  const originalKey = [];
-
-  keys.forEach((key) => {
-    if (
-      incomingProgram?.[key] &&
-      JSON.stringify(originalProgram?.[key]) !==
-        JSON.stringify(incomingProgram?.[key])
-    ) {
-      modifiedKeys.push(key);
-    } else {
-      originalKey.push(key);
-    }
-  });
+  const { modifiedKeys, originalKey } = getDiffKeys(
+    originalProgram,
+    incomingProgram
+  );
 
   return (
     <>
       {[...modifiedKeys, ...originalKey].map((key) => {
-        if (ignoreKeys.includes(key)) {
+        if (IGNORE_KEYS.includes(key)) {
           return;
         }
         const isModified = modifiedKeys.includes(key);
@@ -143,12 +152,25 @@ const ProgramCompare = ({ originalProgram, incomingProgram }) => {
   const { t } = useTranslation('common');
   const [delta, setDelta] = useState({});
 
+  const acceptAllChanges = () => {
+    const { modifiedKeys } = getDiffKeys(originalProgram, incomingProgram);
+    const modifiedDelta = Object.keys(incomingProgram)
+      .filter((key) => modifiedKeys.includes(key))
+      .reduce((obj, key) => {
+        obj[key] = incomingProgram[key];
+        return obj;
+      }, {});
+    setDelta(modifiedDelta);
+  };
+
   return (
     <>
       <Typography variant="body1">
         Changes to submit: {JSON.stringify(delta)}
       </Typography>
-      <Button color="primary">{t('Accept All', { ns: 'common' })}</Button>
+      <Button color="primary" onClick={acceptAllChanges}>
+        {t('Accept All', { ns: 'common' })}
+      </Button>
       <Button
         color="secondary"
         onClick={() => {

@@ -17,35 +17,6 @@ import {
 import { useTranslation } from 'react-i18next';
 
 import { programField2Label, sortProgramFields } from '../Utils/contants';
-// import { highlightTextDiff } from '../Utils/diffChecker';
-
-const incomingProgram = {
-  _id: {
-    $oid: '12532fde46752651539120128'
-  },
-  allowOnlyGraduatedApplicant: true,
-  school: 'Durham University',
-  program_name: 'English Studies',
-  special_notes: 'send paper copy to the university!',
-  degree: 'M. A.',
-  semester: 'WS',
-  lang: 'English',
-  uni_assist: 'No',
-  ml_required: 'yes',
-  rl_required: '3',
-  country: 'ABC',
-  is_rl_specific: false,
-  optionalDocuments: [],
-  requiredDocuments: [],
-  updatedAt: {
-    $date: '2024-05-05T11:01:38.812Z'
-  },
-  whoupdated: 'Alex TaiGer',
-  application_deadline: 'Rolling',
-  comments: 'sadfsdfsdgf',
-  study_group_flag: '',
-  ml_requirements: ''
-};
 
 const ignoreKeys = ['_id', 'updatedAt', 'whoupdated', 'createdAt', '__v'];
 
@@ -168,7 +139,7 @@ const DiffTableContent = ({
   );
 };
 
-const ProgramCompare = ({ originalProgram }) => {
+const ProgramCompare = ({ originalProgram, incomingProgram }) => {
   const { t } = useTranslation('common');
   const [delta, setDelta] = useState({});
 
@@ -178,7 +149,14 @@ const ProgramCompare = ({ originalProgram }) => {
         Changes to submit: {JSON.stringify(delta)}
       </Typography>
       <Button color="primary">{t('Accept All', { ns: 'common' })}</Button>
-      <Button color="secondary">{t('Reject All', { ns: 'common' })}</Button>
+      <Button
+        color="secondary"
+        onClick={() => {
+          setDelta({});
+        }}
+      >
+        {t('Reject All', { ns: 'common' })}
+      </Button>
       <TableContainer component={Paper}>
         <Table>
           <TableHead>

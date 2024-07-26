@@ -151,10 +151,11 @@ const DiffTableContent = ({ originalProgram, incomingProgram, setDelta }) => {
   });
   return (
     <>
-      {modifiedKeys.map((key) => {
+      {[...modifiedKeys, ...originalKey].map((key) => {
         if (ignoreKeys.includes(key)) {
           return;
         }
+        const isModified = modifiedKeys.includes(key);
         return (
           <DiffRow
             key={key}
@@ -162,23 +163,8 @@ const DiffTableContent = ({ originalProgram, incomingProgram, setDelta }) => {
             original={originalProgram?.[key]}
             incoming={incomingProgram?.[key]}
             updateField={updateField}
-            showToggleButton={true}
-          />
-        );
-      })}
-      {originalKey.map((key) => {
-        if (ignoreKeys.includes(key)) {
-          return;
-        }
-        return (
-          <DiffRow
-            key={key}
-            style={{ backgroundColor: 'lightgrey' }}
-            fieldName={key}
-            original={originalProgram?.[key]}
-            incoming={incomingProgram?.[key]}
-            updateField={updateField}
-            showToggleButton={false}
+            showToggleButton={isModified}
+            style={isModified ? {} : { backgroundColor: 'lightgrey' }}
           />
         );
       })}

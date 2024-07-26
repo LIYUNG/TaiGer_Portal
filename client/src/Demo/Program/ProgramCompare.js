@@ -86,7 +86,7 @@ const DiffRow = ({
         </Typography>
       </TableCell>
       <TableCell
-        sx={isAccepted && showToggleButton ? { bgcolor: 'success.light' } : {}}
+        sx={isAccepted && showToggleButton ? { bgcolor: 'error.light' } : {}}
       >
         <Typography variant="body1">{JSON.stringify(original)}</Typography>
       </TableCell>
@@ -98,7 +98,7 @@ const DiffRow = ({
         )}
       </TableCell>
       <TableCell
-        sx={!isAccepted && showToggleButton ? { bgcolor: 'error.light' } : {}}
+        sx={!isAccepted && showToggleButton ? { bgcolor: 'success.light' } : {}}
       >
         <Typography variant="body1">{JSON.stringify(incoming)}</Typography>
       </TableCell>
@@ -185,6 +185,10 @@ const ProgramCompare = ({ originalProgram, incomingProgram }) => {
     setDelta(modifiedDelta);
   };
 
+  const submitChanges = () => {
+    console.log(`submitting changes [${originalProgram._id}] -> `, delta);
+  };
+
   return (
     <>
       <Typography variant="body1">
@@ -215,14 +219,20 @@ const ProgramCompare = ({ originalProgram, incomingProgram }) => {
             <DiffTableContent
               originalProgram={originalProgram}
               incomingProgram={incomingProgram}
-              showOnlyModified={false}
+              showOnlyModified={true}
               delta={delta}
               setDelta={setDelta}
             />
           </TableBody>
         </Table>
       </TableContainer>
-      <Button color="primary">{t('Submit', { ns: 'common' })}</Button>
+      <Button
+        color="primary"
+        onClick={submitChanges}
+        disabled={Object.keys(delta).length === 0}
+      >
+        {t('Submit', { ns: 'common' })}
+      </Button>
     </>
   );
 };

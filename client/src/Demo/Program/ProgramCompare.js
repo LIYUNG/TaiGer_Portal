@@ -38,7 +38,10 @@ const getDiffKeys = (original, incoming) => {
     const originalValue = original?.[key];
     const incomingValue = incoming?.[key];
 
-    if (JSON.stringify(originalValue) !== JSON.stringify(incomingValue)) {
+    if (
+      incomingValue &&
+      JSON.stringify(originalValue) !== JSON.stringify(incomingValue)
+    ) {
       modifiedKeys.push(key);
     } else {
       originalKey.push(key);

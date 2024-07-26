@@ -438,6 +438,8 @@ export const translation_en = {
     'Create Interview Training': 'Create Interview Training',
     'Interview duration': 'Interview duration',
     'Interview program': 'Interview program',
+    'In case programs not shown, make sure the programs are submitted.':
+      'In case programs not shown, make sure the programs are submitted.',
     'Interview Training Meeting Link': 'Interview Training Meeting Link',
     'Please provide received interview information':
       'Please provide received interview information',

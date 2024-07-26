@@ -16,6 +16,7 @@ const { getPermission } = require('../utils/queryFunctions');
 const { AWS_S3_BUCKET_NAME } = require('../config');
 const { one_month_cache } = require('../cache/node-cache');
 const { s3 } = require('../aws');
+const { TENANT_SHORT_NAME } = require('../constants/common');
 
 const pageSize = 5;
 
@@ -201,8 +202,8 @@ const getUnreadNumberMessages = asyncHandler(async (req, res) => {
     user.role !== Role.Agent &&
     user.role !== Role.Editor
   ) {
-    logger.error('getMyMessages: not TaiGer user!');
-    throw new ErrorResponse(401, 'Invalid TaiGer user');
+    logger.error(`getMyMessages: not ${TENANT_SHORT_NAME} user!`);
+    throw new ErrorResponse(401, `Invalid ${TENANT_SHORT_NAME} user`);
   }
   const permissions = await getPermission(user);
   if (
@@ -301,8 +302,8 @@ const getMyMessages = asyncHandler(async (req, res, next) => {
     user.role !== Role.Agent &&
     user.role !== Role.Editor
   ) {
-    logger.error('getMyMessages: not TaiGer user!');
-    throw new ErrorResponse(401, 'Invalid TaiGer user');
+    logger.error(`getMyMessages: not ${TENANT_SHORT_NAME} user!`);
+    throw new ErrorResponse(401, `Invalid ${TENANT_SHORT_NAME} user`);
   }
 
   const permissions = await getPermission(user);

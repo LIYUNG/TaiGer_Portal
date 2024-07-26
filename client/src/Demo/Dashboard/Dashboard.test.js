@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
-import Dashboard from './Dashboard';
+import Dashboard from './';
 import 'react-i18next';
 import { getStudents, getProgramTickets } from '../../api';
 import axios from 'axios';
@@ -58,7 +58,9 @@ const routes = [
     element: <Dashboard />,
     errorElement: <div>Error</div>,
     loader: () => {
-      return { data: mockSingleData, essays: { data: [] } };
+      return {
+        studentAndEssays: { data: mockSingleData, essays: { data: [] } }
+      };
     }
   }
 ];

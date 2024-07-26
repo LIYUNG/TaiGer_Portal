@@ -1,4 +1,4 @@
-import { json } from 'react-router-dom';
+import { defer, json } from 'react-router-dom';
 import {
   getStudents,
   getAllActiveStudents,
@@ -104,7 +104,7 @@ export async function getMyAcademicBackgroundLoader() {
   }
 }
 
-export async function combinedLoader() {
+async function loadStudentAndEssays() {
   // Fetch data from both getAllActiveEssays and getStudents
   const [essaysResponse, studentsResponse] = await Promise.all([
     getAllActiveEssays(),
@@ -125,7 +125,10 @@ export async function combinedLoader() {
 
   // Return an object containing both essays and students data
   return {
-    essays: essaysResponse.data, // Assuming essaysResponse.data contains the essays data
-    data: studentsResponse.data // Assuming studentsResponse.data contains the students data
+    essays: await essaysResponse.data, // Assuming essaysResponse.data contains the essays data
+    data: await studentsResponse.data // Assuming studentsResponse.data contains the students data
   };
+}
+export function combinedLoader() {
+  return defer({ studentAndEssays: loadStudentAndEssays() });
 }

@@ -198,6 +198,12 @@ export const WidgetanalyzedFileDownload = (adminId) =>
   request.get(`/api/widgets/transcript/${adminId}`, {
     responseType: 'blob'
   });
+
+export const WidgetExportMessagePDF = (student_id) =>
+  request.get(`/api/widgets/messages/export/${student_id}`, {
+    responseType: 'blob'
+  });
+
 export const transcriptanalyser_test = (studentId, category, language) =>
   request.post(`/api/account/transcript/${studentId}/${category}/${language}`);
 export const analyzedFileDownload_test = (studentId) =>

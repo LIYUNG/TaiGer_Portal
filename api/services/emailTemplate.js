@@ -1,4 +1,5 @@
 const { TAIGER_SIGNATURE } = require('../constants');
+const { TENANT_NAME, TENANT_PORTAL_LINK } = require('../constants/common');
 
 const htmlContent = (message) => `
 <!DOCTYPE html>
@@ -94,17 +95,17 @@ const htmlContent = (message) => `
     <div class="container">
         <div class="header">
           <a
-            href="https://taigerconsultancy-portal.com/"
+            href="${TENANT_PORTAL_LINK}"
             style={{ textDecoration: 'none' }}
           >
             <img
             class="img-radius"
-            src="https://taigerconsultancy-portal.com/assets/images/taiger_logo.png"
+            src="${TENANT_PORTAL_LINK}assets/images/taiger_logo.png"
             alt="TaiGer Logo"
             style="width: 75px; height: 75px; border-radius: 50%;"
             />
           </a>
-        <h1>TaiGer Consultancy</h1>
+        <h1>${TENANT_NAME}</h1>
     </div>
     <div class="content">
       ${message}

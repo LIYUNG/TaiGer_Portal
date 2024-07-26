@@ -365,8 +365,11 @@ function AddInterview() {
             </TableRow>
             <TableRow>
               <TableCell>
-                <Typography>
+                <Typography variant="body1">
                   {t('Interview program', { ns: 'interviews' })}
+                </Typography>
+                <Typography variant="body2">
+                  {t('In case programs not shown, make sure the programs are submitted.', { ns: 'interviews' })}
                 </Typography>
               </TableCell>
               <TableCell>

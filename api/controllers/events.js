@@ -12,6 +12,7 @@ const {
   MeetingCancelledReminderEmail
 } = require('../services/email');
 const logger = require('../services/logger');
+const { TENANT_SHORT_NAME } = require('../constants/common');
 
 const MeetingAdjustReminder = (receiver, user, meeting_event) => {
   MeetingAdjustReminderEmail(
@@ -325,7 +326,7 @@ const postEvent = asyncHandler(async (req, res, next) => {
         await write_NewEvent.save();
       } else {
         logger.error(
-          'TaiGer user books a conflicting event in this time slot.'
+          `${TENANT_SHORT_NAME} user books a conflicting event in this time slot.`
         );
         throw new ErrorResponse(
           403,

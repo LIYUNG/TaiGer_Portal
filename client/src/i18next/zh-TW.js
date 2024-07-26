@@ -445,6 +445,8 @@ export const translation_zh_TW = {
     'Create Interview Training': '新增面試訓練',
     'Interview duration': '面試長度',
     'Interview program': '面試科系',
+    'In case programs not shown, make sure the programs are submitted.':
+      '若科系未顯示，請確認該申請是否已送出。',
     'Interview Training Meeting Link': '面試訓練會議連結',
     'Please provide received interview information':
       '請提供您收到學校面試之資訊',

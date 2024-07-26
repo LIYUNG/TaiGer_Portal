@@ -1,4 +1,5 @@
 const { ErrorResponse } = require('../common/errors');
+const { TENANT_SHORT_NAME } = require('../constants/common');
 const { asyncHandler } = require('../middlewares/error-handler');
 const Expense = require('../models/Expense');
 const { User, Student } = require('../models/User');
@@ -31,8 +32,8 @@ const getExpense = asyncHandler(async (req, res) => {
     the_user.role !== 'Agent' &&
     the_user.role !== 'Editor'
   ) {
-    logger.error('getExpense: not TaiGer user!');
-    throw new ErrorResponse(401, 'Invalid TaiGer user');
+    logger.error(`getExpense: not ${TENANT_SHORT_NAME} user!`);
+    throw new ErrorResponse(401, `Invalid ${TENANT_SHORT_NAME} user`);
   }
   const studentsWithExpenses = await Student.aggregate([
     {

@@ -12,7 +12,6 @@ const router = require('./routes');
 const { errorHandler } = require('./middlewares/error-handler');
 const { isDev, isProd } = require('./config');
 const httpLogger = require('./services/httpLogger');
-const logger = require('./services/logger');
 
 const app = express();
 app.set('trust proxy', 1);

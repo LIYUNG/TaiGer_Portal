@@ -14,12 +14,15 @@ import {
   IconButton,
   CircularProgress,
   Menu,
-  Link
+  Link,
+  Stack,
+  Tooltip
   // MenuItem
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import MessageList from './MessageList';
 import CommunicationThreadEditor from './CommunicationThreadEditor';
 import ErrorPage from '../Utils/ErrorPage';
@@ -28,7 +31,8 @@ import {
   getCommunicationThread,
   postCommunicationThread,
   deleteAMessageInCommunicationThread,
-  loadCommunicationThread
+  loadCommunicationThread,
+  WidgetExportMessagePDF
 } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
@@ -106,7 +110,8 @@ function CommunicationExpandPage() {
   const [open, setOpen] = useState(false);
   const [anchorStudentDetailEl, setAnchorStudentDetailEl] = useState(null);
   const isStudentDetailModalOpen = Boolean(anchorStudentDetailEl);
-
+  const [isExportingMessageDisabled, setIsExportingMessageDisabled] =
+    useState(false);
   const scrollableRef = useRef(null);
   const scrollToBottom = () => {
     if (scrollableRef.current) {
@@ -449,6 +454,34 @@ function CommunicationExpandPage() {
     setAnchorStudentDetailEl(event.currentTarget);
   };
 
+  const handleExportMessages = async (event) => {
+    event.stopPropagation();
+    setIsExportingMessageDisabled(true);
+    const downloadBlob = (blob, filename) => {
+      // Create a URL for the Blob data
+      const url = window.URL.createObjectURL(blob);
+
+      // Create a temporary link element
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', filename); // Set the download attribute with a filename
+
+      // Append the link to the body
+      document.body.appendChild(link);
+
+      // Programmatically click the link to trigger the download
+      link.click();
+
+      // Clean up by removing the link and revoking the URL
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    };
+    const resp = await WidgetExportMessagePDF(student_id);
+    const blob = resp.data;
+    downloadBlob(blob, 'exported_file.pdf');
+    setIsExportingMessageDisabled(false);
+  };
+
   const handleStudentDetailModalClose = (event) => {
     event.stopPropagation();
     setAnchorStudentDetailEl(null);
@@ -587,16 +620,42 @@ function CommunicationExpandPage() {
             </Box>
             <Box sx={{ flexGrow: 1 }} />
             <Box sx={{ mr: 2, md: 'flex' }}>
-              <IconButton
-                color="inherit"
-                aria-label="open-more"
-                aria-controls={dropdownId}
-                aria-haspopup="true"
-                onClick={handleStudentDetailModalOpen}
-                edge="end"
+              <Stack
+                direction="row"
+                justifyContent="flex-end"
+                alignItems="center"
+                spacing={1}
               >
-                <MoreVertIcon />
-              </IconButton>
+                <Tooltip title={t('Export messages', { ns: 'common' })}>
+                  <IconButton
+                    color="inherit"
+                    aria-label="open-more"
+                    aria-controls={dropdownId}
+                    aria-haspopup="true"
+                    onClick={handleExportMessages}
+                    edge="end"
+                    disabled={isExportingMessageDisabled}
+                  >
+                    {isExportingMessageDisabled ? (
+                      <CircularProgress size={16} />
+                    ) : (
+                      <ExitToAppIcon />
+                    )}
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title={t('More', { ns: 'common' })}>
+                  <IconButton
+                    color="inherit"
+                    aria-label="open-more"
+                    aria-controls={dropdownId}
+                    aria-haspopup="true"
+                    onClick={handleStudentDetailModalOpen}
+                    edge="end"
+                  >
+                    <MoreVertIcon />
+                  </IconButton>
+                </Tooltip>
+              </Stack>
             </Box>
           </Box>
           <Drawer

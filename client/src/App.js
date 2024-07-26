@@ -11,7 +11,6 @@ import '@fontsource/roboto/400.css'; // Specify weight
 import '@fontsource/roboto/400-italic.css'; // Specify weight and style
 
 import NavBar from './components/NavBar';
-import Loader from './components/Loader';
 import routes from './routes';
 import routes2 from './route';
 import { CssBaseline } from '@mui/material';
@@ -29,7 +28,7 @@ function Layout() {
           {navigation.state === 'loading' ? (
             <Loading />
           ) : (
-            <Suspense fallback={<Loader />}>
+            <Suspense fallback={<Loading />}>
               <Outlet />
             </Suspense>
           )}
@@ -50,7 +49,7 @@ function WrapperPublic() {
       <Navigate to={`${DEMO.DASHBOARD_LINK}`} />
     )
   ) : (
-    <Suspense fallback={<Loader />}>
+    <Suspense fallback={<Loading />}>
       <Outlet />
     </Suspense>
   );

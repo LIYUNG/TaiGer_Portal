@@ -1,12 +1,16 @@
 const _ = require('lodash');
 const { spawn } = require('child_process');
 const path = require('path');
+const { jsPDF } = require('jspdf');
 
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
 const logger = require('../services/logger');
 const { AWS_S3_BUCKET_NAME, isProd } = require('../config');
 const { s3 } = require('../aws/index');
+const { Communication } = require('../models/Communication');
+const { font } = require('../utils/NotoSansTC-VariableFont_wght-normal');
+const { Role } = require('../models/User');
 
 const student_name = 'PreCustomer';
 
@@ -109,7 +113,91 @@ const WidgetdownloadXLSX = asyncHandler(async (req, res, next) => {
   });
 });
 
+// Export messages as pdf
+const WidgetExportMessagePDF = asyncHandler(async (req, res, next) => {
+  const {
+    params: { studentId }
+  } = req;
+  const doc = new jsPDF('p', 'pt', 'a4', true);
+  const communication_thread = await Communication.find({
+    student_id: studentId
+  })
+    .populate(
+      'student_id user_id',
+      'firstname lastname firstname_chinese lastname_chinese role agents editors'
+    )
+    .lean();
+
+  let currentY = 40; // Initial y position, leaving space for headers
+  const lineHeight = 14; // Line height for spacing between lines
+  const pageHeight = doc.internal.pageSize.height; // Get page height
+  const pageWidth = doc.internal.pageSize.width; // Get page width
+
+  doc.addFileToVFS('NotoSansTC-VariableFont_wght-normal.ttf', font);
+  doc.addFont(
+    'NotoSansTC-VariableFont_wght-normal.ttf',
+    'NotoSansTC-VariableFont_wght-normal',
+    'normal'
+  );
+  // Set font size for the document
+  doc.setFontSize(12); // Set font size to 12 points
+  doc.setFont('NotoSansTC-VariableFont_wght-normal');
+  communication_thread
+    .map((thread) => {
+      try {
+        const { user_id } = thread;
+        const userName = `${user_id.firstname} ${user_id.lastname}${
+          user_id.role === Role.Student
+            ? `(${user_id.firstname_chinese} ${user_id.lastname_chinese})`
+            : ''
+        }`;
+        const { message, createdAt } = thread;
+        const textContent = message?.replace(/<[^>]+>/g, ''); // Strip HTML tags
+        const messageObj = textContent ? JSON.parse(textContent) : '';
+        const messageConcat =
+          messageObj.blocks
+            ?.map((block) =>
+              block?.type === 'paragraph' ? block.data?.text : ''
+            )
+            .join('')
+            .replace(/<\/?[^>]+(>|$)|&[^;]+;?/g, '') || '';
+        // console.log(messageConcat);
+
+        // Split text into lines that fit within page width
+        const createdAtFormatted = new Date(createdAt).toLocaleString();
+        const lines = doc.splitTextToSize(
+          `${createdAtFormatted}: ${userName}: ${messageConcat}`,
+          pageWidth - 40
+        ); // Leave some margin
+
+        // Check if there is enough space on the current page
+        if (currentY + lineHeight > pageHeight - 40) {
+          // Leave some margin at the bottom for safety
+          doc.addPage(); // Add a new page
+          currentY = 40; // Reset y position
+        }
+        // Add text to the PDF
+        doc.text(lines, 40, currentY);
+        // Update currentY position
+        currentY += lineHeight * lines.length + 10; // Increase y position by total height of added text
+      } catch (e) {
+        logger.error('WidgetExportMessagePDF: Error parsing JSON:', e);
+        return ''; // Return an empty string or handle the error as needed
+      }
+    })
+    .join('\n');
+
+  // Get the PDF data as a Uint8Array
+  const pdfData = doc.output('arraybuffer');
+
+  // Set the response content type to application/pdf
+  res.contentType('application/pdf');
+  res.send(Buffer.from(pdfData));
+  logger.info('Export messages for student Id : studentId successfully.');
+});
+
 module.exports = {
   WidgetProcessTranscript,
-  WidgetdownloadXLSX
+  WidgetdownloadXLSX,
+  WidgetExportMessagePDF
 };

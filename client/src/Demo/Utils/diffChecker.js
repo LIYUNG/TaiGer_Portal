@@ -22,7 +22,7 @@ const highlightTextDiff = (original = '', updated = '') => {
   const { addTextColor, addTextBg, removeTextColor, removeTextBg } =
     prepHighlightColor();
 
-  const diff = diffChars(original, updated);
+  const diff = diffChars(`${original}`, `${updated}`);
   return diff.map((part, index) => {
     const { added, removed } = part;
     const color = added ? addTextColor : removed ? removeTextColor : '';

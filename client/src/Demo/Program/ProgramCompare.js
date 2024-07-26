@@ -109,11 +109,11 @@ const DiffRow = ({
 const DiffTableContent = ({
   originalProgram,
   incomingProgram,
-  hideUnchanged = false,
+  showOnlyModified = false,
   delta,
   setDelta
 }) => {
-  const [isHideUnchanged, setIsHideUnchanged] = useState(hideUnchanged);
+  const [hideUnaltered, setHideUnaltered] = useState(showOnlyModified);
 
   const updateField = (fieldName, value, shouldRemove = false) => {
     if (shouldRemove) {
@@ -140,8 +140,7 @@ const DiffTableContent = ({
           return;
         }
         const isModified = modifiedKeys.includes(key);
-
-        if (isHideUnchanged && !isModified) {
+        if (hideUnaltered && !isModified) {
           return null;
         }
 
@@ -160,11 +159,11 @@ const DiffTableContent = ({
       <TableRow
         sx={{ cursor: 'pointer' }}
         onClick={() => {
-          setIsHideUnchanged(!isHideUnchanged);
+          setHideUnaltered(!hideUnaltered);
         }}
       >
         <TableCell colSpan={4} style={{ textAlign: 'center' }}>
-          {isHideUnchanged ? <ExpandMoreIcon /> : <ExpandLessIcon />}
+          {hideUnaltered ? <ExpandMoreIcon /> : <ExpandLessIcon />}
         </TableCell>
       </TableRow>
     </>
@@ -216,7 +215,7 @@ const ProgramCompare = ({ originalProgram, incomingProgram }) => {
             <DiffTableContent
               originalProgram={originalProgram}
               incomingProgram={incomingProgram}
-              hideUnchanged={true}
+              showOnlyModified={false}
               delta={delta}
               setDelta={setDelta}
             />

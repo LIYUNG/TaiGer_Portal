@@ -28,6 +28,7 @@ import {
   LinkableNewlineText
 } from '../Utils/checking-functions';
 import {
+  IS_DEV,
   convertDate,
   COUNTRIES_MAPPING,
   english_test_hand_after,
@@ -52,7 +53,7 @@ import { a11yProps, CustomTabPanel } from '../../components/Tabs';
 function SingleProgramView(props) {
   const { user } = useAuth();
   const { t } = useTranslation();
-  const [value, setValue] = useState(5); // default to Edit History
+  const [value, setValue] = useState(0);
   const [studentsTabValue, setStudentsTabValue] = useState(0);
   const versions = props?.versions || {};
 
@@ -380,9 +381,11 @@ function SingleProgramView(props) {
               index={5}
               style={{ width: '100%', overflowY: 'auto' }}
             >
-              <Button onClick={() => props.setDiffModalShow()}>
-                <CompareIcon fontSize="small" /> Incoming changes - Compare
-              </Button>
+              {IS_DEV && (
+                <Button onClick={() => props.setDiffModalShow()}>
+                  <CompareIcon fontSize="small" /> Incoming changes - Compare
+                </Button>
+              )}
               <Table>
                 <TableHead>
                   <TableRow>

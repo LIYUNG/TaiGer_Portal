@@ -18,6 +18,9 @@ import DEMO from '../../store/constant';
 import { is_TaiGer_Student } from './checking-functions';
 import { useTranslation } from 'react-i18next';
 
+export const IS_DEV =
+  !process.env.NODE_ENV || process.env.NODE_ENV === 'development';
+
 export const Search = styled('div')(({ theme }) => ({
   position: 'relative',
   borderRadius: theme.shape.borderRadius,

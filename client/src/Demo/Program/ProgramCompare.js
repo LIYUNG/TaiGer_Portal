@@ -19,7 +19,7 @@ import { useTranslation } from 'react-i18next';
 import { programField2Label, sortProgramFields } from '../Utils/contants';
 // import { highlightTextDiff } from '../Utils/diffChecker';
 
-const programFromAI = {
+const incomingProgram = {
   _id: {
     $oid: '12532fde46752651539120128'
   },
@@ -120,8 +120,8 @@ const DiffRow = ({
   );
 };
 
-const DiffTableContent = ({ originalProgram, programFromAI, setDelta }) => {
-  const keys = getAllKeys(originalProgram, programFromAI);
+const DiffTableContent = ({ originalProgram, incomingProgram, setDelta }) => {
+  const keys = getAllKeys(originalProgram, incomingProgram);
   const updateField = (fieldName, value, shouldRemove = false) => {
     if (shouldRemove) {
       setDelta((prevDelta) => {
@@ -140,9 +140,9 @@ const DiffTableContent = ({ originalProgram, programFromAI, setDelta }) => {
 
   keys.forEach((key) => {
     if (
-      programFromAI?.[key] &&
+      incomingProgram?.[key] &&
       JSON.stringify(originalProgram?.[key]) !==
-        JSON.stringify(programFromAI?.[key])
+        JSON.stringify(incomingProgram?.[key])
     ) {
       modifiedKeys.push(key);
     } else {
@@ -160,7 +160,7 @@ const DiffTableContent = ({ originalProgram, programFromAI, setDelta }) => {
             key={key}
             fieldName={key}
             original={originalProgram?.[key]}
-            incoming={programFromAI?.[key]}
+            incoming={incomingProgram?.[key]}
             updateField={updateField}
             showToggleButton={true}
           />
@@ -176,7 +176,7 @@ const DiffTableContent = ({ originalProgram, programFromAI, setDelta }) => {
             style={{ backgroundColor: 'lightgrey' }}
             fieldName={key}
             original={originalProgram?.[key]}
-            incoming={programFromAI?.[key]}
+            incoming={incomingProgram?.[key]}
             updateField={updateField}
             showToggleButton={false}
           />
@@ -188,7 +188,6 @@ const DiffTableContent = ({ originalProgram, programFromAI, setDelta }) => {
 
 const ProgramCompare = ({ originalProgram }) => {
   const { t } = useTranslation('common');
-
   const [delta, setDelta] = useState({});
 
   return (
@@ -211,7 +210,7 @@ const ProgramCompare = ({ originalProgram }) => {
           <TableBody>
             <DiffTableContent
               originalProgram={originalProgram}
-              programFromAI={programFromAI}
+              incomingProgram={incomingProgram}
               setDelta={setDelta}
             />
           </TableBody>

@@ -1084,10 +1084,7 @@ export const programField2Label = program_fields.reduce((acc, field) => {
   return acc;
 }, {});
 
-export const programFieldOrder = program_fields.reduce((acc, field) => {
-  acc.push(field.prop);
-  return acc;
-}, []);
+export const programFieldOrder = program_fields.map((field) => field.prop);
 
 export const sortProgramFields = (a, b) => {
   const indexA = programFieldOrder.indexOf(a);

@@ -62,11 +62,11 @@ const DiffRow = ({
   original,
   incoming,
   updateField,
+  isAccepted,
   showToggleButton = false,
   ...rowProps
 }) => {
   const { t } = useTranslation();
-  const [isAccepted, setAccepted] = useState(false);
 
   const toggleAccept = () => {
     if (isAccepted) {
@@ -74,7 +74,6 @@ const DiffRow = ({
     } else {
       updateField(fieldName, incoming);
     }
-    setAccepted(!isAccepted);
   };
 
   return (
@@ -111,7 +110,12 @@ const DiffRow = ({
   );
 };
 
-const DiffTableContent = ({ originalProgram, incomingProgram, setDelta }) => {
+const DiffTableContent = ({
+  originalProgram,
+  incomingProgram,
+  delta,
+  setDelta
+}) => {
   const keys = getAllKeys(originalProgram, incomingProgram);
   const updateField = (fieldName, value, shouldRemove = false) => {
     if (shouldRemove) {
@@ -140,6 +144,7 @@ const DiffTableContent = ({ originalProgram, incomingProgram, setDelta }) => {
       originalKey.push(key);
     }
   });
+
   return (
     <>
       {[...modifiedKeys, ...originalKey].map((key) => {
@@ -154,6 +159,7 @@ const DiffTableContent = ({ originalProgram, incomingProgram, setDelta }) => {
             original={originalProgram?.[key]}
             incoming={incomingProgram?.[key]}
             updateField={updateField}
+            isAccepted={key in delta}
             showToggleButton={isModified}
           />
         );
@@ -187,6 +193,7 @@ const ProgramCompare = ({ originalProgram }) => {
             <DiffTableContent
               originalProgram={originalProgram}
               incomingProgram={incomingProgram}
+              delta={delta}
               setDelta={setDelta}
             />
           </TableBody>

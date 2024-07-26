@@ -1,6 +1,7 @@
 import React, { Fragment, useState } from 'react';
 import { Link as LinkDom } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import CompareIcon from '@mui/icons-material/Compare';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import {
   Box,
@@ -18,7 +19,6 @@ import {
   Tabs,
   Tab
 } from '@mui/material';
-
 import {
   is_TaiGer_Admin,
   is_TaiGer_AdminAgent,
@@ -28,6 +28,7 @@ import {
   LinkableNewlineText
 } from '../Utils/checking-functions';
 import {
+  IS_DEV,
   convertDate,
   COUNTRIES_MAPPING,
   english_test_hand_after,
@@ -38,8 +39,10 @@ import {
   program_fields_others,
   program_fields_overview,
   program_fields_special_documents,
-  program_fields_special_notes
+  program_fields_special_notes,
+  programField2Label
 } from '../Utils/contants';
+import { highlightTextDiff } from '../Utils/diffChecker';
 import Banner from '../../components/Banner/Banner';
 import DEMO from '../../store/constant';
 import ProgramReport from './ProgramReport';
@@ -363,7 +366,9 @@ function SingleProgramView(props) {
                       <Typography>{t('Group', { ns: 'common' })}</Typography>
                     </Grid>
                     <Grid item xs={12} md={8}>
-                      <Typography>{props.program.study_group_flag}</Typography>
+                      <Typography>
+                        {props?.program?.study_group_flag || ''}
+                      </Typography>
                     </Grid>
                   </>
                 )}
@@ -376,6 +381,11 @@ function SingleProgramView(props) {
               index={5}
               style={{ width: '100%', overflowY: 'auto' }}
             >
+              {IS_DEV && (
+                <Button onClick={() => props.setDiffModalShow()}>
+                  <CompareIcon fontSize="small" /> Incoming changes - Compare
+                </Button>
+              )}
               <Table>
                 <TableHead>
                   <TableRow>
@@ -389,10 +399,7 @@ function SingleProgramView(props) {
                       <strong>{t('Field', { ns: 'common' })}</strong>
                     </TableCell>
                     <TableCell>
-                      <strong>{t('Original', { ns: 'common' })}</strong>
-                    </TableCell>
-                    <TableCell>
-                      <strong>{t('Updated', { ns: 'common' })}</strong>
+                      <strong>{t('Content', { ns: 'common' })}</strong>
                     </TableCell>
                   </TableRow>
                 </TableHead>
@@ -413,7 +420,7 @@ function SingleProgramView(props) {
                           <TableRow></TableRow>
                           <TableRow>
                             <TableCell rowSpan={(keys?.length || 0) + 1}>
-                              {reverseIndex}
+                              <Typography>{reverseIndex}</Typography>
                             </TableCell>
                             <TableCell rowSpan={(keys?.length || 0) + 1}>
                               <div>{change.changedBy}</div>
@@ -422,16 +429,16 @@ function SingleProgramView(props) {
                           </TableRow>
                           {keys.map((key, i) => (
                             <TableRow key={i}>
-                              <TableCell>{key}</TableCell>
                               <TableCell>
-                                {change?.originalValues
-                                  ? change.originalValues[key]
-                                  : ''}
+                                {t(programField2Label?.[key] || key, {
+                                  ns: 'common'
+                                })}
                               </TableCell>
                               <TableCell>
-                                {change?.updatedValues
-                                  ? change.updatedValues[key]
-                                  : ''}
+                                {highlightTextDiff(
+                                  change?.originalValues?.[key],
+                                  change?.updatedValues?.[key]
+                                )}
                               </TableCell>
                             </TableRow>
                           ))}

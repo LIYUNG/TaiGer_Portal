@@ -30,6 +30,7 @@ import Loading from '../../components/Loading/Loading';
 import { appConfig } from '../../config';
 import ModalNew from '../../components/Modal';
 import NewProgramEdit from './NewProgramEdit';
+import ProgramDiffModal from './ProgramDiffModal';
 
 function SingleProgram() {
   const { programId } = useParams();
@@ -45,6 +46,7 @@ function SingleProgram() {
     isReport: false,
     modalShowAssignSuccessWindow: false,
     modalShowAssignWindow: false,
+    modalShowDiffWindow: false,
     deleteProgramWarning: false,
     isDeleted: false,
     res_status: 0,
@@ -161,6 +163,16 @@ function SingleProgram() {
       modalShowAssignWindow: false
     }));
   };
+
+  const setDiffModal = (show = true) => {
+    return () => {
+      setSingleProgramState((prevState) => ({
+        ...prevState,
+        modalShowDiffWindow: show
+      }));
+    };
+  };
+
   const handleSetStudentId = (e) => {
     const { value } = e.target;
     setSingleProgramState((prevState) => ({
@@ -385,6 +397,7 @@ function SingleProgram() {
           handleClick={handleClick}
           setModalShow2={setModalShow2}
           setModalShowDDelete={setModalShowDDelete}
+          setDiffModalShow={setDiffModal(true)}
         />
 
         <ProgramDeleteWarning
@@ -427,6 +440,14 @@ function SingleProgram() {
             {t('Close', { ns: 'common' })}
           </Button>
         </ModalNew>
+
+        {singleProgramState.modalShowDiffWindow && (
+          <ProgramDiffModal
+            open={singleProgramState.modalShowDiffWindow}
+            setModalHide={setDiffModal(false)}
+            originalProgram={program}
+          />
+        )}
       </Box>
     );
   }

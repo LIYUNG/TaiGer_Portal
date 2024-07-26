@@ -31,6 +31,7 @@
     "@mui/x-date-pickers": "^7.6.1",
     "@tanstack/react-virtual": "^3.0.4",
     "axios": "^0.21.4",
+    "diff": "^5.2.0",
     "draft-js": "^0.11.7",
     "editorjs-react-renderer": "^3.5.1",
     "editorjs-text-color-plugin": "^2.0.4",

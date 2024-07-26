@@ -67,9 +67,9 @@ const DiffRow = ({
 }) => {
   const { t } = useTranslation();
   const [isAccepted, setAccepted] = useState(false);
+
   const toggleAccept = () => {
     if (isAccepted) {
-      // remove the incoming value
       updateField(fieldName, null, true);
     } else {
       updateField(fieldName, incoming);
@@ -77,14 +77,12 @@ const DiffRow = ({
     setAccepted(!isAccepted);
   };
 
-  const cellHightlight = (included) => {
-    return included
-      ? { backgroundColor: 'lightgreen' }
-      : { backgroundColor: 'lightcoral' };
-  };
-
   return (
-    <TableRow hover {...rowProps}>
+    <TableRow
+      hover
+      {...rowProps}
+      sx={!showToggleButton ? { bgcolor: 'grey.300' } : {}}
+    >
       <TableCell>
         <Typography variant="body1">
           {t(programField2Label?.[fieldName] || fieldName, {
@@ -93,26 +91,19 @@ const DiffRow = ({
         </Typography>
       </TableCell>
       <TableCell
-        style={
-          showToggleButton && isAccepted ? cellHightlight(!isAccepted) : {}
-        }
+        sx={isAccepted && showToggleButton ? { bgcolor: 'success.light' } : {}}
       >
         <Typography variant="body1">{JSON.stringify(original)}</Typography>
       </TableCell>
       <TableCell>
         {showToggleButton && (
-          <Button
-            // color={isAccepted ? 'error' : 'success'}
-            onClick={toggleAccept}
-          >
+          <Button onClick={toggleAccept}>
             {isAccepted ? <RestoreIcon /> : <ArrowBackIcon />}
           </Button>
         )}
       </TableCell>
       <TableCell
-        style={
-          showToggleButton && !isAccepted ? cellHightlight(!isAccepted) : {}
-        }
+        sx={!isAccepted && showToggleButton ? { bgcolor: 'error.light' } : {}}
       >
         <Typography variant="body1">{JSON.stringify(incoming)}</Typography>
       </TableCell>
@@ -164,7 +155,6 @@ const DiffTableContent = ({ originalProgram, incomingProgram, setDelta }) => {
             incoming={incomingProgram?.[key]}
             updateField={updateField}
             showToggleButton={isModified}
-            style={isModified ? {} : { backgroundColor: 'lightgrey' }}
           />
         );
       })}

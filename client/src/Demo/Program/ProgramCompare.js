@@ -12,7 +12,9 @@ import {
 } from '@mui/material';
 import {
   Restore as RestoreIcon,
-  ArrowBack as ArrowBackIcon
+  ArrowBack as ArrowBackIcon,
+  ExpandMore as ExpandMoreIcon,
+  ExpandLess as ExpandLessIcon
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 
@@ -107,9 +109,12 @@ const DiffRow = ({
 const DiffTableContent = ({
   originalProgram,
   incomingProgram,
+  hideUnchanged = false,
   delta,
   setDelta
 }) => {
+  const [isHideUnchanged, setIsHideUnchanged] = useState(hideUnchanged);
+
   const updateField = (fieldName, value, shouldRemove = false) => {
     if (shouldRemove) {
       setDelta((prevDelta) => {
@@ -135,6 +140,11 @@ const DiffTableContent = ({
           return;
         }
         const isModified = modifiedKeys.includes(key);
+
+        if (isHideUnchanged && !isModified) {
+          return null;
+        }
+
         return (
           <DiffRow
             key={key}
@@ -147,6 +157,16 @@ const DiffTableContent = ({
           />
         );
       })}
+      <TableRow
+        sx={{ cursor: 'pointer' }}
+        onClick={() => {
+          setIsHideUnchanged(!isHideUnchanged);
+        }}
+      >
+        <TableCell colSpan={4} style={{ textAlign: 'center' }}>
+          {isHideUnchanged ? <ExpandMoreIcon /> : <ExpandLessIcon />}
+        </TableCell>
+      </TableRow>
     </>
   );
 };
@@ -196,12 +216,14 @@ const ProgramCompare = ({ originalProgram, incomingProgram }) => {
             <DiffTableContent
               originalProgram={originalProgram}
               incomingProgram={incomingProgram}
+              hideUnchanged={true}
               delta={delta}
               setDelta={setDelta}
             />
           </TableBody>
         </Table>
       </TableContainer>
+      <Button color="primary">{t('Submit', { ns: 'common' })}</Button>
     </>
   );
 };

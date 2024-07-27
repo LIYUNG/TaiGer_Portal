@@ -14,4 +14,4 @@ const Basedocumentationslink = mongoose.model(
   'Basedocumentationslink',
   basedocumentationslinksSchema
 );
-module.exports = { Basedocumentationslink };
+module.exports = { Basedocumentationslink, basedocumentationslinksSchema };

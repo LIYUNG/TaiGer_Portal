@@ -1,5 +1,12 @@
 const mongoose = require('mongoose');
 const logger = require('./services/logger');
+const { MONGODB_URI } = require('./config');
+
+const mongoDb = (dbName) => {
+  console.log(MONGODB_URI);
+  console.log(dbName);
+  return `${MONGODB_URI}/${dbName}?retryWrites=true&w=majority`;
+};
 
 const connectToDatabase = async (uri, timeoutMS = 5000) => {
   mongoose.connection.on('error', () => {
@@ -20,4 +27,4 @@ const connectToDatabase = async (uri, timeoutMS = 5000) => {
 const disconnectFromDatabase = (callback = async () => void 0) =>
   mongoose.connection.close(callback);
 
-module.exports = { connectToDatabase, disconnectFromDatabase };
+module.exports = { mongoDb, connectToDatabase, disconnectFromDatabase };

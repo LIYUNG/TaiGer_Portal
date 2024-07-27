@@ -64,4 +64,5 @@ const EventSchema = new mongoose.Schema(
 
 EventSchema.index({ requester_id: 1, receiver_id: 1, start: 1 });
 
-module.exports = mongoose.model('Event', EventSchema);
+const Event = mongoose.model('Event', EventSchema);
+module.exports = { Event, EventSchema };

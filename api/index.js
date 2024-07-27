@@ -77,8 +77,8 @@ const launch = async () => {
     }
   }
   try {
-    const conn = await connectToDatabase(MONGODB_URI, 5000);
-    logger.info(`Database connected: ${conn.host}`);
+    // const conn = await connectToDatabase(MONGODB_URI, 5000);
+    // logger.info(`Database connected: ${conn.host}`);
   } catch (err) {
     logger.error('Failed to connect to database: ', err);
     process.exit(1);

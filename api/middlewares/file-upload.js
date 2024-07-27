@@ -502,14 +502,17 @@ const storage_messagesChat_file_s3 = multerS3({
 
     const date = new Date();
     const formattedDate = formatDate(date);
-    Student.findById(studentId).then((student) => {
-      let temp_name = `${student.lastname}_${
-        student.firstname
-      }_Attachment_${formattedDate}${path.extname(file.originalname)}`;
-      temp_name = temp_name.replace(/ /g, '_');
-      temp_name = temp_name.replace(/\//g, '_');
-      cb(null, temp_name);
-    });
+    req.db
+      .model('Student')
+      .findById(studentId)
+      .then((student) => {
+        let temp_name = `${student.lastname}_${
+          student.firstname
+        }_Attachment_${formattedDate}${path.extname(file.originalname)}`;
+        temp_name = temp_name.replace(/ /g, '_');
+        temp_name = temp_name.replace(/\//g, '_');
+        cb(null, temp_name);
+      });
   }
 });
 

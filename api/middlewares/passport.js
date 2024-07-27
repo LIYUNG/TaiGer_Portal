@@ -3,16 +3,24 @@ const { Strategy: LocalStrategy } = require('passport-local');
 const { Strategy: JwtStrategy } = require('passport-jwt');
 
 const { JWT_SECRET } = require('../config');
-const { User } = require('../models/User');
+const { UserSchema } = require('../models/User');
+
+const getUserModel = (db) => db.model('User', UserSchema);
 
 passport.use(
   new LocalStrategy(
-    { usernameField: 'email' },
-    async (email, password, done) => {
+    { usernameField: 'email', passReqToCallback: true },
+    async (req, email, password, done) => {
       try {
-        const user = await User.findOne({ email })
-          .select('+password')
-          .populate('students agents editors', 'firstname lastname email');
+        console.log(`req: ${req}`);
+        console.log(`req.db: ${req.db}`);
+        console.log(`email: ${email}`);
+        console.log(`password: ${password}`);
+        const User = getUserModel(req.db);
+        const user_test = await User.findOne({ email }).lean();
+        console.log(`user_test: ${user_test.firstname}`);
+        const user = await User.findOne({ email }).select('+password');
+
         if (!user) return done(null, false);
 
         const isPasswordValid = await user.verifyPassword(password);
@@ -22,12 +30,13 @@ passport.use(
           return done(null, 'inactivated');
         }
         // Log: login success
-        const user2 = await User.findOneAndUpdate(
+        await User.findOneAndUpdate(
           { email },
           { lastLoginAt: new Date() },
-          { upsert: true, new: true }
-        ).populate('students agents editors', 'firstname lastname email');
-        return done(null, user2);
+          { upsert: true }
+        );
+        console.log('pass');
+        return done(null, user);
       } catch (err) {
         return done(err);
       }
@@ -39,22 +48,28 @@ passport.use(
   new JwtStrategy(
     {
       secretOrKey: JWT_SECRET,
-      jwtFromRequest: (req) => req.cookies['x-auth']
+      jwtFromRequest: (req) => req.cookies['x-auth'],
+      passReqToCallback: true
     },
-    async (payload, done) => {
+    async (req, payload, done) => {
       try {
-        const user = await User.findById(payload.id).populate(
-          'students agents editors',
-          'firstname lastname email'
-        );
+        // console.log(req);
+        console.log(payload);
+        const User = getUserModel(req.db);
+        const user = await User.findById(payload.id);
+        // const user = await User.findById(payload.id).populate({
+        //   path: 'agents editors',
+        //   select: 'firstname lastname email',
+        //   options: { strictPopulate: false } // Set strictPopulate to false for this populate query
+        // });
         if (!user) return done(null, false);
         // Log: login success
-        const user2 = await User.findByIdAndUpdate(
+        await User.findByIdAndUpdate(
           payload.id,
           { lastLoginAt: new Date() },
-          { upsert: true, new: true }
-        ).populate('students agents editors', 'firstname lastname email');
-        return done(null, user2);
+          { upsert: true }
+        );
+        return done(null, user);
       } catch (err) {
         return done(err);
       }

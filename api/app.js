@@ -12,6 +12,7 @@ const router = require('./routes');
 const { errorHandler } = require('./middlewares/error-handler');
 const { isDev, isProd } = require('./config');
 const httpLogger = require('./services/httpLogger');
+const { tenantMiddleware } = require('./middlewares/tenantMiddleware');
 
 const app = express();
 app.set('trust proxy', 1);
@@ -37,6 +38,7 @@ app.use(
     credentials: true
   })
 );
+app.use(tenantMiddleware);
 
 app.use(methodOverride('_method')); // in order to make delete request
 app.use(cookieParser());

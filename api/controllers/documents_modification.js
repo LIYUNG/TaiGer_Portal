@@ -45,10 +45,10 @@ const { s3 } = require('../aws/index');
 const { Interview } = require('../models/Interview');
 const mongoose = require('mongoose');
 
-const ThreadS3GarbageCollector = async () => {
+const ThreadS3GarbageCollector = async (req) => {
   try {
     // TODO: could be bottleneck if number of thread increase.
-    const doc_threads = await Documentthread.find();
+    const doc_threads = await req.db.model('Documentthread').find();
 
     const deleteParams = {
       Bucket: AWS_S3_BUCKET_NAME,
@@ -162,11 +162,11 @@ const ThreadS3GarbageCollector = async () => {
   }
 };
 
-const SingleThreadThreadS3GarbageCollector = async (ThreadId) => {
+const SingleThreadThreadS3GarbageCollector = async (req, ThreadId) => {
   // This functino will be called when thread marked as finished.
   try {
     // TODO: could be bottleneck if number of thread increase.
-    const doc_thread = await Documentthread.findById(ThreadId);
+    const doc_thread = await req.db.model('Documentthread').findById(ThreadId);
     if (!doc_thread) {
       logger.error('SingleThreadThreadS3GarbageCollector Invalid ThreadId');
       throw new ErrorResponse(404, 'Thread not found');
@@ -338,10 +338,11 @@ const getSurveyInputDocuments = async (studentId, programId, fileType) => {
 
 const getSurveyInputs = asyncHandler(async (req, res, next) => {
   const {
-    user,
     params: { messagesThreadId }
   } = req;
-  const threadDocument = await Documentthread.findById(messagesThreadId)
+  const threadDocument = await req.db
+    .model('Documentthread')
+    .findById(messagesThreadId)
     .populate('student_id', 'firstname lastname email')
     .populate('program_id', 'school program_name degree lang')
     .lean()
@@ -379,11 +380,13 @@ const postSurveyInput = asyncHandler(async (req, res, next) => {
   res.status(200).send({ success: true, data: newSurvey });
 
   if (informEditor) {
-    const thread = await Documentthread.findOne({
-      student_id: newSurvey.studentId,
-      program_id: newSurvey.programId,
-      file_type: newSurvey.fileType
-    })
+    const thread = await req.db
+      .model('Documentthread')
+      .findOne({
+        student_id: newSurvey.studentId,
+        program_id: newSurvey.programId,
+        file_type: newSurvey.fileType
+      })
       .populate('program_id')
       .lean();
     informOnSurveyUpdate(user, newSurvey, thread);
@@ -410,11 +413,13 @@ const putSurveyInput = asyncHandler(async (req, res, next) => {
   res.status(200).send({ success: true, data: updatedSurvey });
 
   if (informEditor) {
-    const thread = await Documentthread.findOne({
-      student_id: updatedSurvey.studentId,
-      program_id: updatedSurvey.programId,
-      file_type: updatedSurvey.fileType
-    })
+    const thread = await req.db
+      .model('Documentthread')
+      .findOne({
+        student_id: updatedSurvey.studentId,
+        program_id: updatedSurvey.programId,
+        file_type: updatedSurvey.fileType
+      })
       .populate('program_id')
       .lean();
     informOnSurveyUpdate(user, updatedSurvey, thread);
@@ -438,11 +443,13 @@ const resetSurveyInput = asyncHandler(async (req, res, next) => {
   );
   res.status(200).send({ success: true, data: updatedSurvey });
   if (informEditor) {
-    const thread = await Documentthread.findOne({
-      student_id: updatedSurvey.studentId,
-      program_id: updatedSurvey.programId,
-      file_type: updatedSurvey.fileType
-    })
+    const thread = await req.db
+      .model('Documentthread')
+      .findOne({
+        student_id: updatedSurvey.studentId,
+        program_id: updatedSurvey.programId,
+        file_type: updatedSurvey.fileType
+      })
       .populate('program_id')
       .lean();
     informOnSurveyUpdate(user, updatedSurvey, thread);
@@ -611,7 +618,7 @@ const initGeneralMessagesThread = asyncHandler(async (req, res) => {
     throw new ErrorResponse(404, 'Student Id not found');
   }
 
-  const doc_thread_existed = await Documentthread.findOne({
+  const doc_thread_existed = await req.db.model('Documentthread').findOne({
     student_id: studentId,
     program_id: null,
     file_type: document_category
@@ -690,7 +697,7 @@ const initGeneralMessagesThread = asyncHandler(async (req, res) => {
 });
 
 const createApplicationThread = async (studentId, programId, fileType) => {
-  const threadExisted = await Documentthread.findOne({
+  const threadExisted = await req.db.model('Documentthread').findOne({
     student_id: studentId,
     program_id: programId,
     file_type: fileType
@@ -836,14 +843,16 @@ const putThreadFavorite = asyncHandler(async (req, res, next) => {
     user,
     params: { messagesThreadId }
   } = req;
-  const thread = await Documentthread.findById(messagesThreadId);
+  const thread = await req.db
+    .model('Documentthread')
+    .findById(messagesThreadId);
   if (!thread) {
     logger.error('putThreadFavorite: Invalid message thread id!');
     throw new ErrorResponse(404, 'Thread not found');
   }
 
   if (thread.flag_by_user_id?.includes(user._id.toString())) {
-    await Documentthread.findByIdAndUpdate(
+    await req.db.model('Documentthread').findByIdAndUpdate(
       messagesThreadId,
       {
         $pull: { flag_by_user_id: user._id.toString() } // Remove user id if already present
@@ -851,7 +860,7 @@ const putThreadFavorite = asyncHandler(async (req, res, next) => {
       {}
     );
   } else {
-    await Documentthread.findByIdAndUpdate(
+    await req.db.model('Documentthread').findByIdAndUpdate(
       messagesThreadId,
       {
         $addToSet: { flag_by_user_id: user._id.toString() } // Add user id if not already present
@@ -870,7 +879,9 @@ const getMessages = asyncHandler(async (req, res) => {
     user,
     params: { messagesThreadId }
   } = req;
-  const document_thread = await Documentthread.findById(messagesThreadId)
+  const document_thread = await req.db
+    .model('Documentthread')
+    .findById(messagesThreadId)
     .populate(
       'student_id',
       'firstname lastname firstname_chinese lastname_chinese role agents editors application_preference'
@@ -953,9 +964,10 @@ const postMessages = asyncHandler(async (req, res) => {
   } = req;
   const { message } = req.body;
 
-  const document_thread = await Documentthread.findById(
-    messagesThreadId
-  ).populate('student_id program_id outsourced_user_id');
+  const document_thread = await req.db
+    .model('Documentthread')
+    .findById(messagesThreadId)
+    .populate('student_id program_id outsourced_user_id');
   if (!document_thread) {
     logger.info('postMessages: Invalid message thread id');
     throw new ErrorResponse(404, 'Thread Id not found');
@@ -1010,9 +1022,10 @@ const postMessages = asyncHandler(async (req, res) => {
   document_thread.messages.push(new_message);
   document_thread.updatedAt = new Date();
   await document_thread.save();
-  const document_thread2 = await Documentthread.findById(
-    messagesThreadId
-  ).populate('student_id program_id messages.user_id');
+  const document_thread2 = await req.db
+    .model('Documentthread')
+    .findById(messagesThreadId)
+    .populate('student_id program_id messages.user_id');
   // in student (User) collections.
   const student = await Student.findById(document_thread.student_id)
     .populate('applications.programId')
@@ -1575,7 +1588,9 @@ const getMessageFileDownload = asyncHandler(async (req, res) => {
     params: { messagesThreadId, messageId, file_key }
   } = req;
 
-  const document_thread = await Documentthread.findById(messagesThreadId);
+  const document_thread = await req.db
+    .model('Documentthread')
+    .findById(messagesThreadId);
   if (!document_thread) {
     logger.error('getMessageFileDownload: thread not found!');
     throw new ErrorResponse(404, 'Thread Id not found');
@@ -1667,14 +1682,16 @@ const putOriginAuthorConfirmedByStudent = asyncHandler(async (req, res) => {
     body: { checked }
   } = req;
 
-  const document_thread = await Documentthread.findByIdAndUpdate(
-    messagesThreadId,
-    {
-      isOriginAuthorDeclarationConfirmedByStudent: checked,
-      isOriginAuthorDeclarationConfirmedByStudentTimestamp: new Date()
-    },
-    { new: true }
-  );
+  const document_thread = await req.db
+    .model('Documentthread')
+    .findByIdAndUpdate(
+      messagesThreadId,
+      {
+        isOriginAuthorDeclarationConfirmedByStudent: checked,
+        isOriginAuthorDeclarationConfirmedByStudentTimestamp: new Date()
+      },
+      { new: true }
+    );
 
   if (!document_thread) {
     logger.error(
@@ -1697,7 +1714,9 @@ const SetStatusMessagesThread = asyncHandler(async (req, res) => {
     body: { program_id }
   } = req;
 
-  const document_thread = await Documentthread.findById(messagesThreadId);
+  const document_thread = await req.db
+    .model('Documentthread')
+    .findById(messagesThreadId);
   const student = await Student.findById(studentId)
     .populate('applications.programId generaldocs_threads.doc_thread_id')
     .populate(
@@ -1747,7 +1766,7 @@ const SetStatusMessagesThread = asyncHandler(async (req, res) => {
     if (document_thread.isFinalVersion) {
       // cleanup
       logger.info('cleanup prgraom thread');
-      await SingleThreadThreadS3GarbageCollector(messagesThreadId);
+      await SingleThreadThreadS3GarbageCollector(req, messagesThreadId);
     }
     if (isNotArchiv(student)) {
       await sendSetAsFinalProgramSpecificFileForStudentEmail(
@@ -1826,7 +1845,7 @@ const SetStatusMessagesThread = asyncHandler(async (req, res) => {
     if (document_thread.isFinalVersion) {
       // cleanup
       logger.info('cleanup cv');
-      await SingleThreadThreadS3GarbageCollector(messagesThreadId);
+      await SingleThreadThreadS3GarbageCollector(req, messagesThreadId);
     }
     if (isNotArchiv(student)) {
       await sendSetAsFinalGeneralFileForStudentEmail(
@@ -1885,7 +1904,7 @@ const deleteGeneralThread = async (studentId, threadId) => {
   directory = directory.replace(/\\/g, '/');
 
   emptyS3Directory(AWS_S3_BUCKET_NAME, directory);
-  await Documentthread.findByIdAndDelete(threadId);
+  await req.db.model('Documentthread').findByIdAndDelete(threadId);
   await Student.findByIdAndUpdate(studentId, {
     $pull: {
       generaldocs_threads: { doc_thread_id: { _id: threadId } }
@@ -1899,7 +1918,9 @@ const handleDeleteGeneralThread = asyncHandler(async (req, res) => {
     params: { messagesThreadId, studentId }
   } = req;
 
-  const to_be_delete_thread = await Documentthread.findById(messagesThreadId);
+  const to_be_delete_thread = await req.db
+    .model('Documentthread')
+    .findById(messagesThreadId);
   const student = await Student.findById(studentId);
 
   if (!to_be_delete_thread) {
@@ -1933,7 +1954,9 @@ const deleteApplicationThread = async (studentId, programId, threadId) => {
       }
     }
   );
-  const thread = await Documentthread.findByIdAndDelete(threadId);
+  const thread = await req.db
+    .model('Documentthread')
+    .findByIdAndDelete(threadId);
   await surveyInput.deleteOne({
     studentId,
     programId,
@@ -1947,7 +1970,9 @@ const handleDeleteProgramThread = asyncHandler(async (req, res) => {
     params: { messagesThreadId, program_id, studentId }
   } = req;
 
-  const to_be_delete_thread = await Documentthread.findById(messagesThreadId);
+  const to_be_delete_thread = await req.db
+    .model('Documentthread')
+    .findById(messagesThreadId);
   if (!to_be_delete_thread) {
     logger.error('handleDeleteProgramThread: Invalid message thread id!');
     throw new ErrorResponse(404, 'Message not found');
@@ -1970,7 +1995,9 @@ const deleteAMessageInThread = asyncHandler(async (req, res) => {
     params: { messagesThreadId, messageId }
   } = req;
 
-  const thread = await Documentthread.findById(messagesThreadId);
+  const thread = await req.db
+    .model('Documentthread')
+    .findById(messagesThreadId);
   if (!thread) {
     logger.error('deleteAMessageInThread : Invalid message thread id');
     throw new ErrorResponse(404, 'Thread not found');
@@ -2006,7 +2033,7 @@ const deleteAMessageInThread = asyncHandler(async (req, res) => {
     }
   }
   // Don't need so delete in S3 , will delete by garbage collector
-  await Documentthread.findByIdAndUpdate(messagesThreadId, {
+  await req.db.model('Documentthread').findByIdAndUpdate(messagesThreadId, {
     $pull: {
       messages: { _id: messageId }
     }
@@ -2015,7 +2042,9 @@ const deleteAMessageInThread = asyncHandler(async (req, res) => {
   res.status(200).send({ success: true });
 
   // update latest_message_left_by_id
-  const updated_thread = await Documentthread.findById(messagesThreadId);
+  const updated_thread = await req.db
+    .model('Documentthread')
+    .findById(messagesThreadId);
 
   const student = await Student.findById(thread.student_id);
   const application = student.applications.find((application) =>
@@ -2065,7 +2094,9 @@ const assignEssayWritersToEssayTask = asyncHandler(async (req, res, next) => {
     body: editorsId
   } = req;
   const keys = Object.keys(editorsId);
-  const essayDocumentThreads = await Documentthread.findById(messagesThreadId)
+  const essayDocumentThreads = await req.db
+    .model('Documentthread')
+    .findById(messagesThreadId)
     .populate('student_id')
     .populate({
       path: 'student_id',
@@ -2129,9 +2160,9 @@ const assignEssayWritersToEssayTask = asyncHandler(async (req, res, next) => {
       '-messages'
     )
     .exec();
-  const essayDocumentThreads_Updated = await Documentthread.findById(
-    messagesThreadId
-  )
+  const essayDocumentThreads_Updated = await req.db
+    .model('Documentthread')
+    .findById(messagesThreadId)
     .populate('student_id outsourced_user_id')
     .populate({
       path: 'student_id',
@@ -2214,7 +2245,7 @@ const assignEssayWritersToEssayTask = asyncHandler(async (req, res, next) => {
 });
 
 const clearEssayWriters = asyncHandler(async (req, res, next) => {
-  await Documentthread.updateMany(
+  await req.db.model('Documentthread').updateMany(
     // Match documents where outsourced_user_id field exists
     { outsourced_user_id: { $exists: true } },
     { $set: { outsourced_user_id: [] } } // Set outsourced_user_id field to an empty array
@@ -2228,10 +2259,12 @@ const getAllActiveEssays = asyncHandler(async (req, res, next) => {
     const matchingDocuments = [];
     const { user } = req;
     if (user.role === Role.Student) {
-      const essayDocumentThreads = await Documentthread.find(
-        { student_id: user._id, file_type: 'Essay' },
-        { messages: { $slice: -1 } }
-      )
+      const essayDocumentThreads = await req.db
+        .model('Documentthread')
+        .find(
+          { student_id: user._id, file_type: 'Essay' },
+          { messages: { $slice: -1 } }
+        )
         .populate('student_id outsourced_user_id')
         .populate({
           path: 'student_id messages.user_id',
@@ -2264,12 +2297,14 @@ const getAllActiveEssays = asyncHandler(async (req, res, next) => {
       }
       res.status(200).send({ success: true, data: matchingDocuments });
     } else {
-      const essayDocumentThreads = await Documentthread.find(
-        {
-          file_type: 'Essay'
-        },
-        { messages: { $slice: -1 } }
-      )
+      const essayDocumentThreads = await req.db
+        .model('Documentthread')
+        .find(
+          {
+            file_type: 'Essay'
+          },
+          { messages: { $slice: -1 } }
+        )
         .populate('student_id outsourced_user_id')
         .populate({
           path: 'student_id messages.user_id',
@@ -2314,10 +2349,12 @@ const IgnoreMessageInDocumentThread = asyncHandler(async (req, res, next) => {
     params: { messagesThreadId, messageId, ignoreMessageState }
   } = req;
   const { message } = req.body;
-  const thread = await Documentthread.updateOne(
-    { 'messages._id': new mongoose.Types.ObjectId(messageId) },
-    { $set: { 'messages.$.ignore_message': ignoreMessageState } }
-  );
+  const thread = await req.db
+    .model('Documentthread')
+    .updateOne(
+      { 'messages._id': new mongoose.Types.ObjectId(messageId) },
+      { $set: { 'messages.$.ignore_message': ignoreMessageState } }
+    );
   res.status(200).send({ success: true, data: thread });
   next();
 });

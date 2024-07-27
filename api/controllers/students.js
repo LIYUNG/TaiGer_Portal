@@ -34,8 +34,10 @@ const { Interview } = require('../models/Interview');
 const { getPermission } = require('../utils/queryFunctions');
 const Permission = require('../models/Permission');
 
-const fetchStudents = async (filter) =>
-  Student.find(filter)
+const fetchStudents = async (req, filter) =>
+  req.db
+    .model('Student')
+    .find(filter)
     .populate('agents editors', 'firstname lastname email')
     .populate('applications.programId')
     .populate(
@@ -52,7 +54,9 @@ const getStudent = asyncHandler(async (req, res, next) => {
     params: { studentId }
   } = req;
 
-  const student = await Student.findById(studentId)
+  const student = await req.db
+    .model('Student')
+    .findById(studentId)
     .populate('agents editors', 'firstname lastname email')
     .populate('applications.programId')
     .populate(
@@ -70,7 +74,9 @@ const getStudentAndDocLinks = asyncHandler(async (req, res, next) => {
     params: { studentId }
   } = req;
 
-  const student = await Student.findById(studentId)
+  const student = await req.db
+    .model('Student')
+    .findById(studentId)
     .populate('agents editors', 'firstname lastname email')
     .populate('applications.programId')
     .populate({
@@ -95,10 +101,10 @@ const getStudentAndDocLinks = asyncHandler(async (req, res, next) => {
     .lean();
 
   const student_new = add_portals_registered_status(student);
-  const base_docs_link = await Basedocumentationslink.find({
+  const base_docs_link = await req.db.model('Basedocumentationslink').find({
     category: 'base-documents'
   });
-  const survey_link = await Basedocumentationslink.find({
+  const survey_link = await req.db.model('Basedocumentationslink').find({
     category: 'survey'
   });
 
@@ -127,33 +133,37 @@ const updateDocumentationHelperLink = asyncHandler(async (req, res, next) => {
   const { link, key, category } = req.body;
   // if not in database, then create one
   // otherwise: update the existing one.
-  let helper_link = await Basedocumentationslink.findOneAndUpdate(
-    { category, key },
-    {
-      $set: {
-        link,
-        updatedAt: new Date()
-      }
-    },
-    { upsert: true, new: true }
-  );
+  let helper_link = await req.db
+    .model('Basedocumentationslink')
+    .findOneAndUpdate(
+      { category, key },
+      {
+        $set: {
+          link,
+          updatedAt: new Date()
+        }
+      },
+      { upsert: true, new: true }
+    );
 
-  const updated_helper_link = await Basedocumentationslink.find({
-    category
-  });
+  const updated_helper_link = await req.db
+    .model('Basedocumentationslink')
+    .find({
+      category
+    });
   res.status(200).send({ success: true, helper_link: updated_helper_link });
   next();
 });
 
 const getAllArchivStudents = asyncHandler(async (req, res, next) => {
-  const students = await fetchStudents({ archiv: true });
+  const students = await fetchStudents(req, { archiv: true });
 
   res.status(200).send({ success: true, data: students });
   next();
 });
 
 const getAllActiveStudents = asyncHandler(async (req, res, next) => {
-  const students = await fetchStudents({
+  const students = await fetchStudents(req, {
     $or: [{ archiv: { $exists: false } }, { archiv: false }]
   });
   const courses = await Course.find().select('-table_data_string').lean();
@@ -177,7 +187,7 @@ const getAllActiveStudents = asyncHandler(async (req, res, next) => {
 });
 
 const getAllStudents = asyncHandler(async (req, res, next) => {
-  const students = await fetchStudents();
+  const students = await fetchStudents(req);
 
   res.status(200).send({ success: true, data: students });
   next();
@@ -187,10 +197,14 @@ const getStudents = asyncHandler(async (req, res, next) => {
   const { user } = req;
 
   if (user.role === Role.Admin) {
-    const students = await fetchStudents({
+    const students = await fetchStudents(req, {
       $or: [{ archiv: { $exists: false } }, { archiv: false }]
     });
-    const courses = await Course.find().select('-table_data_string').lean();
+    const courses = await req.db
+      .model('Course')
+      .find()
+      .select('-table_data_string')
+      .lean();
     // Perform the join
     const studentsWithCourse = students.map((student) => {
       const matchingItemB = courses.find(
@@ -211,19 +225,19 @@ const getStudents = asyncHandler(async (req, res, next) => {
     let students = [];
     // TODO: depends on manager type
     if (user.manager_type === ManagerType.Agent) {
-      students = await fetchStudents({
+      students = await fetchStudents(req, {
         agents: { $in: user.agents },
         $or: [{ archiv: { $exists: false } }, { archiv: false }]
       });
     }
     if (user.manager_type === ManagerType.Editor) {
-      students = await fetchStudents({
+      students = await fetchStudents(req, {
         editors: { $in: user.editors },
         $or: [{ archiv: { $exists: false } }, { archiv: false }]
       });
     }
     if (user.manager_type === ManagerType.AgentAndEditor) {
-      students = await fetchStudents({
+      students = await fetchStudents(req, {
         $and: [
           {
             $or: [
@@ -257,7 +271,7 @@ const getStudents = asyncHandler(async (req, res, next) => {
       notification: user.agent_notification
     });
   } else if (user.role === Role.Agent) {
-    const students = await fetchStudents({
+    const students = await fetchStudents(req, {
       agents: user._id,
       $or: [{ archiv: { $exists: false } }, { archiv: false }]
     });
@@ -285,9 +299,11 @@ const getStudents = asyncHandler(async (req, res, next) => {
   } else if (user.role === Role.Editor) {
     const permissions = await getPermission(user);
     if (permissions && permissions.canAssignEditors) {
-      const students = await Student.find({
-        $or: [{ archiv: { $exists: false } }, { archiv: false }]
-      })
+      const students = await req.db
+        .model('Student')
+        .find({
+          $or: [{ archiv: { $exists: false } }, { archiv: false }]
+        })
         .populate('agents editors', 'firstname lastname email')
         .populate('applications.programId')
         .populate(
@@ -298,7 +314,7 @@ const getStudents = asyncHandler(async (req, res, next) => {
 
       res.status(200).send({ success: true, data: students });
     } else {
-      const students = await fetchStudents({
+      const students = await fetchStudents(req, {
         editors: user._id,
         $or: [{ archiv: { $exists: false } }, { archiv: false }]
       });
@@ -306,7 +322,9 @@ const getStudents = asyncHandler(async (req, res, next) => {
       res.status(200).send({ success: true, data: students });
     }
   } else if (user.role === Role.Student) {
-    const student = await Student.findById(user._id.toString())
+    const student = await req.db
+      .model('Student')
+      .findById(user._id.toString())
       .populate('applications.programId')
       .populate('agents editors', '-students')
       .populate(
@@ -368,18 +386,22 @@ const getStudents = asyncHandler(async (req, res, next) => {
 const getStudentsAndDocLinks = asyncHandler(async (req, res, next) => {
   const { user } = req;
   if (user.role === Role.Admin) {
-    const students = await Student.find({
-      $or: [{ archiv: { $exists: false } }, { archiv: false }]
-    })
+    const students = await req.db
+      .model('Student')
+      .find({
+        $or: [{ archiv: { $exists: false } }, { archiv: false }]
+      })
       .populate('agents', 'firstname lastname email')
       .select('firstname firstname_chinese lastname lastname_chinese profile')
       .lean();
     res.status(200).send({ success: true, data: students, base_docs_link: {} });
   } else if (user.role === Role.Agent) {
-    const students = await Student.find({
-      agents: user._id,
-      $or: [{ archiv: { $exists: false } }, { archiv: false }]
-    })
+    const students = await req.db
+      .model('Student')
+      .find({
+        agents: user._id,
+        $or: [{ archiv: { $exists: false } }, { archiv: false }]
+      })
       .populate('agents', 'firstname lastname email')
       .select('firstname firstname_chinese lastname lastname_chinese profile')
       .lean()
@@ -388,14 +410,16 @@ const getStudentsAndDocLinks = asyncHandler(async (req, res, next) => {
     // res.status(200).send({ success: true, data: students, base_docs_link });
     res.status(200).send({ success: true, data: students, base_docs_link: {} });
   } else if (user.role === Role.Editor) {
-    const students = await Student.find({
-      editors: user._id,
-      $or: [{ archiv: { $exists: false } }, { archiv: false }]
-    })
+    const students = await req.db
+      .model('Student')
+      .find({
+        editors: user._id,
+        $or: [{ archiv: { $exists: false } }, { archiv: false }]
+      })
       .populate('agents', 'firstname lastname email')
       .select('firstname firstname_chinese lastname lastname_chinese profile')
       .select('-notification');
-    const base_docs_link = await Basedocumentationslink.find({
+    const base_docs_link = await req.db.model('Basedocumentationslink').find({
       category: 'base-documents'
     });
 
@@ -403,16 +427,16 @@ const getStudentsAndDocLinks = asyncHandler(async (req, res, next) => {
   } else if (user.role === Role.Student) {
     const obj = user.notification; // create object
     obj['isRead_base_documents_rejected'] = true; // set value
-    await Student.findByIdAndUpdate(
-      user._id.toString(),
-      { notification: obj },
-      {}
-    );
-    const student = await Student.findById(user._id.toString())
+    await req.db
+      .model('Student')
+      .findByIdAndUpdate(user._id.toString(), { notification: obj }, {});
+    const student = await req.db
+      .model('Student')
+      .findById(user._id.toString())
       .select('firstname firstname_chinese lastname lastname_chinese profile')
       .lean()
       .exec();
-    const base_docs_link = await Basedocumentationslink.find({
+    const base_docs_link = await req.db.model('Basedocumentationslink').find({
       category: 'base-documents'
     });
     res.status(200).send({ success: true, data: [student], base_docs_link });
@@ -428,10 +452,13 @@ const getArchivStudent = asyncHandler(async (req, res, next) => {
     params: { studentId }
   } = req;
 
-  const students = await Student.find({
-    _id: studentId,
-    archiv: true
-  }).populate('applications.programId agents editors');
+  const students = await req.db
+    .model('Student')
+    .find({
+      _id: studentId,
+      archiv: true
+    })
+    .populate('applications.programId agents editors');
   // .lean();
   res.status(200).send({ success: true, data: students[0] });
   next();
@@ -448,20 +475,22 @@ const updateStudentsArchivStatus = asyncHandler(async (req, res, next) => {
   } = req;
 
   // TODO: data validation for isArchived and studentId
-  const student = await Student.findByIdAndUpdate(
-    studentId,
-    {
-      archiv: isArchived
-    },
-    { new: true, strict: false }
-  )
+  const student = await req.db
+    .model('Student')
+    .findByIdAndUpdate(
+      studentId,
+      {
+        archiv: isArchived
+      },
+      { new: true, strict: false }
+    )
     .populate('agents editors', 'firstname lastname email')
     .lean()
     .exec();
   if (isArchived) {
     // return dashboard students
     if (user.role === Role.Admin) {
-      const students = await fetchStudents({
+      const students = await fetchStudents(req, {
         $or: [{ archiv: { $exists: false } }, { archiv: false }]
       });
 
@@ -469,9 +498,11 @@ const updateStudentsArchivStatus = asyncHandler(async (req, res, next) => {
     } else if (user.role === Role.Agent) {
       const permissions = await getPermission(user);
       if (permissions && permissions.canAssignAgents) {
-        const students = await Student.find({
-          $or: [{ archiv: { $exists: false } }, { archiv: false }]
-        })
+        const students = await req.db
+          .model('Student')
+          .find({
+            $or: [{ archiv: { $exists: false } }, { archiv: false }]
+          })
           .populate('agents editors', 'firstname lastname email')
           .populate('applications.programId')
           .populate(
@@ -482,14 +513,14 @@ const updateStudentsArchivStatus = asyncHandler(async (req, res, next) => {
 
         res.status(200).send({ success: true, data: students });
       } else {
-        const students = await fetchStudents({
+        const students = await fetchStudents(req, {
           agents: user._id,
           $or: [{ archiv: { $exists: false } }, { archiv: false }]
         });
         res.status(200).send({ success: true, data: students });
       }
     } else if (user.role === Role.Editor) {
-      const students = await fetchStudents({
+      const students = await fetchStudents(req, {
         editors: user._id,
         $or: [{ archiv: { $exists: false } }, { archiv: false }]
       });
@@ -522,25 +553,32 @@ const updateStudentsArchivStatus = asyncHandler(async (req, res, next) => {
     }
   } else {
     if (user.role === Role.Admin) {
-      const students = await Student.find({ archiv: true })
+      const students = await req.db
+        .model('Student')
+        .find({ archiv: true })
         .populate('applications.programId agents editors')
         .lean();
       res.status(200).send({ success: true, data: students });
     } else if (user.role === Role.Agent) {
-      const students = await Student.find({
-        agents: user._id,
-        archiv: true
-      })
+      const students = await req.db
+        .model('Student')
+        .find({
+          agents: user._id,
+          archiv: true
+        })
         .populate('applications.programId agents editors')
         .lean()
         .exec();
 
       res.status(200).send({ success: true, data: students });
     } else if (user.role === Role.Editor) {
-      const students = await Student.find({
-        editors: user._id,
-        archiv: true
-      }).populate('applications.programId');
+      const students = await req.db
+        .model('Student')
+        .find({
+          editors: user._id,
+          archiv: true
+        })
+        .populate('applications.programId');
       res.status(200).send({ success: true, data: students });
     } else {
       // Guest
@@ -558,7 +596,7 @@ const assignAgentToStudent = asyncHandler(async (req, res, next) => {
     params: { studentId },
     body: agentsId // agentsId is json (or agentsId array with boolean)
   } = req;
-  const student = await Student.findById(studentId);
+  const student = await req.db.model('Student').findById(studentId);
   // TODO: data validation for studentId, agentsId
   const agentsId_arr = Object.keys(agentsId);
   let updated_agent_id = [];
@@ -591,7 +629,9 @@ const assignAgentToStudent = asyncHandler(async (req, res, next) => {
   student.agents = updated_agent_id;
   await student.save();
 
-  const student_upated = await Student.findById(studentId)
+  const student_upated = await req.db
+    .model('Student')
+    .findById(studentId)
     .populate('applications.programId agents editors')
     .populate(
       'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
@@ -674,7 +714,7 @@ const assignEditorToStudent = asyncHandler(async (req, res, next) => {
     body: editorsId
   } = req;
   const keys = Object.keys(editorsId);
-  const student = await Student.findById(studentId);
+  const student = await req.db.model('Student').findById(studentId);
   // TODO: data validation for studentId, editorsId
   let updated_editor_id = [];
   let before_change_editor_arr = student.editors;
@@ -704,7 +744,9 @@ const assignEditorToStudent = asyncHandler(async (req, res, next) => {
   student.editors = updated_editor_id;
   await student.save();
 
-  const student_upated = await Student.findById(studentId)
+  const student_upated = await req.db
+    .model('Student')
+    .findById(studentId)
     .populate('applications.programId agents editors')
     .populate(
       'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
@@ -775,9 +817,13 @@ const assignAttributesToStudent = asyncHandler(async (req, res, next) => {
     params: { studentId },
     body: attributesId
   } = req;
-  await Student.findByIdAndUpdate(studentId, { attributes: attributesId }, {});
+  await req.db
+    .model('Student')
+    .findByIdAndUpdate(studentId, { attributes: attributesId }, {});
 
-  const student_upated = await Student.findById(studentId)
+  const student_upated = await req.db
+    .model('Student')
+    .findById(studentId)
     .populate('applications.programId agents editors')
     .populate(
       'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
@@ -794,7 +840,9 @@ const ToggleProgramStatus = asyncHandler(async (req, res, next) => {
     params: { studentId, program_id }
   } = req;
 
-  const student = await Student.findById(studentId)
+  const student = await req.db
+    .model('Student')
+    .findById(studentId)
     .populate('applications.programId agents editors')
     .populate(
       'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
@@ -823,7 +871,9 @@ const getStudentApplications = asyncHandler(async (req, res, next) => {
   const {
     params: { studentId }
   } = req;
-  const student = await Student.findById(studentId)
+  const student = await req.db
+    .model('Student')
+    .findById(studentId)
     .select('applications.programId')
     .populate('applications.programId', 'school program_name degree semester');
   if (!student) {
@@ -855,7 +905,7 @@ const createApplication = asyncHandler(async (req, res, next) => {
       `You assign too many programs to student. Please select max. ${max_application} programs.`
     );
   }
-  const student = await Student.findById(studentId);
+  const student = await req.db.model('Student').findById(studentId);
   const program_ids = await Program.find({ _id: { $in: program_id_set } });
   if (program_ids.length !== program_id_set.length) {
     logger.error('createApplication: some program_ids invalid');
@@ -1024,7 +1074,9 @@ const deleteApplication = asyncHandler(async (req, res, next) => {
   } = req;
 
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
-  const student = await Student.findById(studentId)
+  const student = await req.db
+    .model('Student')
+    .findById(studentId)
     .populate('agents editors', 'firstname lastname email')
     .populate('applications.programId')
     .populate(
@@ -1069,7 +1121,7 @@ const deleteApplication = asyncHandler(async (req, res, next) => {
       // Because there are no non-empty threads. Safe to delete application.
 
       await Documentthread.findByIdAndDelete(messagesThreadId);
-      await Student.findOneAndUpdate(
+      await req.db.model('Student').findOneAndUpdate(
         { _id: studentId, 'applications.programId': program_id },
         {
           $pull: {
@@ -1082,13 +1134,16 @@ const deleteApplication = asyncHandler(async (req, res, next) => {
     }
     // TODO: delete VPD
 
-    const student_updated = await Student.findByIdAndUpdate(
-      studentId,
-      {
-        $pull: { applications: { programId: { _id: program_id } } }
-      },
-      { new: true }
-    ).populate('applications.programId');
+    const student_updated = await req.db
+      .model('Student')
+      .findByIdAndUpdate(
+        studentId,
+        {
+          $pull: { applications: { programId: { _id: program_id } } }
+        },
+        { new: true }
+      )
+      .populate('applications.programId');
     res.status(200).send({ success: true, data: student_updated.applications });
   } catch (err) {
     logger.error(`Your Application folder not empty! ${err}`);

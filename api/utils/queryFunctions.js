@@ -1,11 +1,14 @@
 const { ten_minutes_cache } = require('../cache/node-cache');
-const Permission = require('../models/Permission');
+const { permissionSchema } = require('../models/Permission');
 const { Student } = require('../models/User');
 const logger = require('../services/logger');
 
 // These function will cache frequently query result but not change frequently.
 //
-const getPermission = async (user) => {
+const getPermissionModel = (db) => db.model('Permission', permissionSchema);
+
+const getPermission = async (req, user) => {
+  const Permission = getPermissionModel(req.db);
   let cachedPermission = ten_minutes_cache.get(
     `/permission/${user._id.toString()}`
   );

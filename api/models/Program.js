@@ -222,6 +222,7 @@ programSchema.index({ school: 1, program_name: 1 });
 const Program = mongoose.model('Program', programSchema);
 module.exports = {
   Program,
+  programSchema,
   programModule
   // Degree
 };

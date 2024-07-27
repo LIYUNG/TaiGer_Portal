@@ -62,5 +62,6 @@ const Documentthread = mongoose.model('Documentthread', documentThreadsSchema);
 module.exports = {
   Documentthread,
   documentType,
+  documentThreadsSchema,
   STUDENT_INPUT_STATUS_E
 };

@@ -14,7 +14,9 @@ const chatMultitenantFilter = async (req, res, next) => {
       `/chatMultitenantFilter/students/${studentId}`
     );
     if (cachedStudent === undefined) {
-      const student = await Student.findById(studentId)
+      const student = await req.db
+        .model('Student')
+        .findById(studentId)
         .select('agents editors')
         .lean();
 

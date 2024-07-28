@@ -25,7 +25,7 @@ const hashToken = (token) =>
   crypto.createHash('sha256').update(token).digest('hex');
 
 // If user deleted, but some files still remain in S3, this function is to address this issue.
-// const UserS3GarbageCollector = async () => {
+// const UserS3GarbageCollector = asyncHandler(async () => {
 //   logger.info('Trying to delete redundant file for deleted users.');
 //   const listParamsPublic = {
 //     Bucket: AWS_S3_BUCKET_NAME,
@@ -50,7 +50,7 @@ const hashToken = (token) =>
 //       }
 //     }
 //   }
-// };
+// });
 
 const addUser = asyncHandler(async (req, res) => {
   await fieldsValidation(

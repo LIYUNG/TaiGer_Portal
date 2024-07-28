@@ -27,8 +27,9 @@ const {
   permissions_transformer
 } = require('./utils_function');
 const { s3 } = require('../aws');
+const { asyncHandler } = require('../middlewares/error-handler');
 
-const MongoDBDataBaseDailySnapshot = async () => {
+const MongoDBDataBaseDailySnapshot = asyncHandler(async () => {
   logger.info('database snapshot');
   const data_category = [
     'users',
@@ -161,7 +162,7 @@ const MongoDBDataBaseDailySnapshot = async () => {
       }
     );
   }
-};
+});
 
 module.exports = {
   MongoDBDataBaseDailySnapshot

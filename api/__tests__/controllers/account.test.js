@@ -5,9 +5,10 @@ const EventEmitter = require('events');
 const request = require('supertest');
 
 const db = require('../fixtures/db');
+const { Role } = require('../../constants');
 
 const { app } = require('../../app');
-const { Role, User, Agent, Editor, Student } = require('../../models/User');
+const { User, Agent, Editor, Student } = require('../../models/User');
 const { Program } = require('../../models/Program');
 const { generateUser } = require('../fixtures/users');
 const { generateProgram } = require('../fixtures/programs');

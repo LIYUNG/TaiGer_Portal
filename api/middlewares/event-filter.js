@@ -1,7 +1,8 @@
 const { ErrorResponse } = require('../common/errors');
 const { Role } = require('../constants');
+const { asyncHandler } = require('./error-handler');
 
-const event_multitenant_filter = async (req, res, next) => {
+const event_multitenant_filter = asyncHandler(async (req, res, next) => {
   const {
     user,
     params: { event_id }
@@ -31,7 +32,7 @@ const event_multitenant_filter = async (req, res, next) => {
   }
 
   next();
-};
+});
 
 module.exports = {
   event_multitenant_filter

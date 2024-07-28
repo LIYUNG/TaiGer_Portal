@@ -5,8 +5,9 @@ const {
   getPermission,
   getCachedStudentPermission
 } = require('../utils/queryFunctions');
+const { asyncHandler } = require('./error-handler');
 
-const InnerTaigerMultitenantFilter = async (req, res, next) => {
+const InnerTaigerMultitenantFilter = asyncHandler(async (req, res, next) => {
   const {
     user,
     params: { studentId }
@@ -33,7 +34,7 @@ const InnerTaigerMultitenantFilter = async (req, res, next) => {
     }
   }
   next();
-};
+});
 
 module.exports = {
   InnerTaigerMultitenantFilter

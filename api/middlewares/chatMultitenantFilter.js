@@ -4,8 +4,9 @@ const { Role } = require('../constants');
 
 const logger = require('../services/logger');
 const { getPermission } = require('../utils/queryFunctions');
+const { asyncHandler } = require('./error-handler');
 
-const chatMultitenantFilter = async (req, res, next) => {
+const chatMultitenantFilter = asyncHandler(async (req, res, next) => {
   const {
     user,
     params: { studentId }
@@ -48,7 +49,7 @@ const chatMultitenantFilter = async (req, res, next) => {
     }
   }
   next();
-};
+});
 
 module.exports = {
   chatMultitenantFilter

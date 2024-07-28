@@ -21,7 +21,7 @@ const valid_categories = [
   'visa',
   'enrolment'
 ];
-// const DocumentationS3GarbageCollector = async (req) => {
+// const DocumentationS3GarbageCollector = asyncHandler(async (req) => {
 //   const doc = await req.db.model('Documentation').find();
 //   const listParamsPublic = {
 //     Bucket: AWS_S3_PUBLIC_BUCKET_NAME,
@@ -69,7 +69,7 @@ const valid_categories = [
 
 //     // if (listedObjectsPublic.IsTruncated) await emptyS3Directory(bucket, dir);
 //   }
-// };
+// });
 
 const updateInternalDocumentationPage = asyncHandler(async (req, res) => {
   const fields = _.omit(req.body, '_id');

@@ -53,5 +53,7 @@ const ticketSchema = new Schema(
   },
   { timestamps: true }
 );
+
 const Ticket = model('Ticket', ticketSchema);
+
 module.exports = { Ticket, ticketSchema };

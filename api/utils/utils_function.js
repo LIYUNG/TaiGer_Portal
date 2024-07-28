@@ -39,8 +39,9 @@ const {
   isNotArchiv,
   needUpdateCourseSelection
 } = require('../constants');
+const { asyncHandler } = require('../middlewares/error-handler');
 
-const emptyS3Directory = async (bucket, dir) => {
+const emptyS3Directory = asyncHandler(async (bucket, dir) => {
   const listParams = {
     Bucket: bucket,
     Prefix: dir
@@ -62,9 +63,9 @@ const emptyS3Directory = async (bucket, dir) => {
   await s3.deleteObjects(deleteParams).promise();
 
   if (listedObjects.IsTruncated) await emptyS3Directory(bucket, dir);
-};
+});
 
-const TasksReminderEmails_Editor_core = async () => {
+const TasksReminderEmails_Editor_core = asyncHandler(async () => {
   // Only inform active student
   // TODO: deactivate or change email frequency (default 1 week.)
   const editors = await Editor.find();
@@ -101,9 +102,9 @@ const TasksReminderEmails_Editor_core = async () => {
   await Promise.all(editorPromises);
 
   logger.info('Editor reminder email sent');
-};
+});
 
-const TasksReminderEmails_Agent_core = async () => {
+const TasksReminderEmails_Agent_core = asyncHandler(async () => {
   // Only inform active student
   // TODO: deactivate or change email frequency (default 1 week.)
   const agents = await Agent.find();
@@ -135,9 +136,9 @@ const TasksReminderEmails_Agent_core = async () => {
     }
   }
   logger.info('Agent reminder email sent');
-};
+});
 
-const TasksReminderEmails_Student_core = async () => {
+const TasksReminderEmails_Student_core = asyncHandler(async () => {
   // Only inform active student
   // TODO: deactivate or change email frequency (default 1 week.)
   const students = await Student.find({
@@ -163,14 +164,14 @@ const TasksReminderEmails_Student_core = async () => {
     );
   }
   logger.info('Student reminder email sent');
-};
+});
 
 // Weekly called.
-const TasksReminderEmails = async () => {
+const TasksReminderEmails = asyncHandler(async () => {
   await TasksReminderEmails_Editor_core();
   await TasksReminderEmails_Student_core();
   await TasksReminderEmails_Agent_core();
-};
+});
 
 const events_transformer = (events) => {
   const transformedDocuments = events.map((event) => ({
@@ -444,7 +445,7 @@ const documentthreads_transformer = (documentthreads) => {
 };
 // Daily called.
 
-const UrgentTasksReminderEmails_Student_core = async () => {
+const UrgentTasksReminderEmails_Student_core = asyncHandler(async () => {
   // Only inform active student
   // TODO: deactivate or change email frequency (default 1 week.)
   const trigger_days = 3;
@@ -493,9 +494,9 @@ const UrgentTasksReminderEmails_Student_core = async () => {
   });
 
   await Promise.all(deadlineReminderPromises);
-};
+});
 
-const UrgentTasksReminderEmails_Agent_core = async () => {
+const UrgentTasksReminderEmails_Agent_core = asyncHandler(async () => {
   // Only inform active student
   // TODO: deactivate or change email frequency (default 1 week.)
   const escalation_trigger_10days = 10;
@@ -586,9 +587,9 @@ const UrgentTasksReminderEmails_Agent_core = async () => {
   });
 
   await Promise.all(agentPromises);
-};
+});
 
-const UrgentTasksReminderEmails_Editor_core = async () => {
+const UrgentTasksReminderEmails_Editor_core = asyncHandler(async () => {
   // Only inform active student
   // TODO: deactivate or change email frequency (default 1 week.)
   const editor_trigger_7days = 7;
@@ -662,9 +663,9 @@ const UrgentTasksReminderEmails_Editor_core = async () => {
       }
     }
   }
-};
+});
 
-const AssignEditorTasksReminderEmails = async () => {
+const AssignEditorTasksReminderEmails = asyncHandler(async () => {
   const students = await Student.find({
     $or: [{ archiv: { $exists: false } }, { archiv: false }]
   })
@@ -726,9 +727,9 @@ const AssignEditorTasksReminderEmails = async () => {
       logger.info('Assign editor reminded');
     }
   }
-};
+});
 
-const UrgentTasksReminderEmails = async () => {
+const UrgentTasksReminderEmails = asyncHandler(async () => {
   const UrgentTaskPromises = [
     UrgentTasksReminderEmails_Editor_core(),
     UrgentTasksReminderEmails_Student_core(),
@@ -736,145 +737,149 @@ const UrgentTasksReminderEmails = async () => {
   ];
 
   await Promise.all(UrgentTaskPromises);
-};
+});
 
-const NextSemesterCourseSelectionStudentReminderEmails = async () => {
-  // Only inform active student
-  const studentsWithCourses = await Student.aggregate([
-    {
-      $match: {
-        archiv: { $ne: true } // Filter out students where 'archiv' is not equal to true
+const NextSemesterCourseSelectionStudentReminderEmails = asyncHandler(
+  async () => {
+    // Only inform active student
+    const studentsWithCourses = await Student.aggregate([
+      {
+        $match: {
+          archiv: { $ne: true } // Filter out students where 'archiv' is not equal to true
+        }
+      },
+      {
+        $lookup: {
+          from: 'courses',
+          localField: '_id',
+          foreignField: 'student_id',
+          as: 'courses'
+        }
+      },
+      {
+        $project: {
+          firstname: 1,
+          lastname: 1,
+          email: 1,
+          role: 1,
+          archiv: 1,
+          academic_background: 1,
+          courses: 1
+        }
       }
-    },
-    {
-      $lookup: {
-        from: 'courses',
-        localField: '_id',
-        foreignField: 'student_id',
-        as: 'courses'
-      }
-    },
-    {
-      $project: {
-        firstname: 1,
-        lastname: 1,
-        email: 1,
-        role: 1,
-        archiv: 1,
-        academic_background: 1,
-        courses: 1
-      }
-    }
-  ]);
+    ]);
 
-  for (let j = 0; j < studentsWithCourses.length; j += 1) {
-    if (isNotArchiv(studentsWithCourses[j])) {
-      if (needUpdateCourseSelection(studentsWithCourses[j])) {
-        // Inform student
-        StudentCourseSelectionReminderEmail(
-          {
-            firstname: studentsWithCourses[j].firstname,
-            lastname: studentsWithCourses[j].lastname,
-            address: studentsWithCourses[j].email
-          },
-          { student: studentsWithCourses[j] }
-        );
+    for (let j = 0; j < studentsWithCourses.length; j += 1) {
+      if (isNotArchiv(studentsWithCourses[j])) {
+        if (needUpdateCourseSelection(studentsWithCourses[j])) {
+          // Inform student
+          StudentCourseSelectionReminderEmail(
+            {
+              firstname: studentsWithCourses[j].firstname,
+              lastname: studentsWithCourses[j].lastname,
+              address: studentsWithCourses[j].email
+            },
+            { student: studentsWithCourses[j] }
+          );
+        }
       }
     }
   }
-};
+);
 
-const NextSemesterCourseSelectionAgentReminderEmails = async () => {
-  // Only inform active student
-  const studentsWithCourses = await Student.aggregate([
-    {
-      $match: {
-        archiv: { $ne: true } // Filter out students where 'archiv' is not equal to true
-      }
-    },
-    {
-      $lookup: {
-        from: 'courses',
-        localField: '_id',
-        foreignField: 'student_id',
-        as: 'courses'
-      }
-    },
-    {
-      $lookup: {
-        from: 'users', // Replace 'users' with the actual name of the User collection
-        localField: 'agents',
-        foreignField: '_id',
-        as: 'agentsInfo'
-      }
-    },
-    {
-      $project: {
-        firstname: 1,
-        lastname: 1,
-        email: 1,
-        role: 1,
-        archiv: 1,
-        agents: {
-          $map: {
-            input: '$agents',
-            as: 'agentId',
-            in: {
-              $let: {
-                vars: {
-                  agentInfo: {
-                    $arrayElemAt: [
-                      {
-                        $filter: {
-                          input: '$agentsInfo',
-                          cond: { $eq: ['$$this._id', '$$agentId'] }
-                        }
-                      },
-                      0
-                    ]
+const NextSemesterCourseSelectionAgentReminderEmails = asyncHandler(
+  async () => {
+    // Only inform active student
+    const studentsWithCourses = await Student.aggregate([
+      {
+        $match: {
+          archiv: { $ne: true } // Filter out students where 'archiv' is not equal to true
+        }
+      },
+      {
+        $lookup: {
+          from: 'courses',
+          localField: '_id',
+          foreignField: 'student_id',
+          as: 'courses'
+        }
+      },
+      {
+        $lookup: {
+          from: 'users', // Replace 'users' with the actual name of the User collection
+          localField: 'agents',
+          foreignField: '_id',
+          as: 'agentsInfo'
+        }
+      },
+      {
+        $project: {
+          firstname: 1,
+          lastname: 1,
+          email: 1,
+          role: 1,
+          archiv: 1,
+          agents: {
+            $map: {
+              input: '$agents',
+              as: 'agentId',
+              in: {
+                $let: {
+                  vars: {
+                    agentInfo: {
+                      $arrayElemAt: [
+                        {
+                          $filter: {
+                            input: '$agentsInfo',
+                            cond: { $eq: ['$$this._id', '$$agentId'] }
+                          }
+                        },
+                        0
+                      ]
+                    }
+                  },
+                  in: {
+                    firstname: '$$agentInfo.firstname',
+                    lastname: '$$agentInfo.lastname',
+                    archiv: '$$agentInfo.archiv',
+                    email: '$$agentInfo.email'
                   }
-                },
-                in: {
-                  firstname: '$$agentInfo.firstname',
-                  lastname: '$$agentInfo.lastname',
-                  archiv: '$$agentInfo.archiv',
-                  email: '$$agentInfo.email'
                 }
               }
             }
-          }
-        },
-        academic_background: 1,
-        courses: 1
+          },
+          academic_background: 1,
+          courses: 1
+        }
       }
-    }
-  ]);
-  for (let j = 0; j < studentsWithCourses.length; j += 1) {
-    if (isNotArchiv(studentsWithCourses[j])) {
-      if (needUpdateCourseSelection(studentsWithCourses[j])) {
-        // TODO: move informing Agent to another function so that all students needing update in 1 email for agents.
-        for (let x = 0; x < studentsWithCourses[j].agents.length; x += 1) {
-          if (isNotArchiv(studentsWithCourses[j].agents[x])) {
-            // TODO: inform Agent
-            await AgentCourseSelectionReminderEmail(
-              {
-                firstname: studentsWithCourses[j].agents[x].firstname,
-                lastname: studentsWithCourses[j].agents[x].lastname,
-                address: studentsWithCourses[j].agents[x].email
-              },
-              { student: studentsWithCourses[j] }
-            );
+    ]);
+    for (let j = 0; j < studentsWithCourses.length; j += 1) {
+      if (isNotArchiv(studentsWithCourses[j])) {
+        if (needUpdateCourseSelection(studentsWithCourses[j])) {
+          // TODO: move informing Agent to another function so that all students needing update in 1 email for agents.
+          for (let x = 0; x < studentsWithCourses[j].agents.length; x += 1) {
+            if (isNotArchiv(studentsWithCourses[j].agents[x])) {
+              // TODO: inform Agent
+              await AgentCourseSelectionReminderEmail(
+                {
+                  firstname: studentsWithCourses[j].agents[x].firstname,
+                  lastname: studentsWithCourses[j].agents[x].lastname,
+                  address: studentsWithCourses[j].agents[x].email
+                },
+                { student: studentsWithCourses[j] }
+              );
+            }
           }
         }
       }
     }
   }
-};
+);
 
-const NextSemesterCourseSelectionReminderEmails = async () => {
+const NextSemesterCourseSelectionReminderEmails = asyncHandler(async () => {
   await NextSemesterCourseSelectionStudentReminderEmails();
   // await NextSemesterCourseSelectionAgentReminderEmails();
-};
+});
 
 const numStudentYearDistribution = (students) =>
   students.reduce((acc, student) => {
@@ -884,7 +889,7 @@ const numStudentYearDistribution = (students) =>
     return acc;
   }, {});
 
-// const UpdateStatisticsData = async () => {
+// const UpdateStatisticsData = asyncHandler(async () => {
 //   const documents_cv = await Documentthread.find({
 //     isFinalVersion: false,
 //     file_type: 'CV'
@@ -986,7 +991,7 @@ const numStudentYearDistribution = (students) =>
 //     students_details: students,
 //     applications: []
 //   };
-// };
+// });
 
 const add_portals_registered_status = (student_input) => {
   const student = student_input;
@@ -1034,7 +1039,7 @@ const add_portals_registered_status = (student_input) => {
   return student;
 };
 
-const MeetingDailyReminderChecker = async () => {
+const MeetingDailyReminderChecker = asyncHandler(async () => {
   const currentDate = new Date();
   const twentyFourHoursLater = new Date(currentDate);
   twentyFourHoursLater.setHours(currentDate.getHours() + 24);
@@ -1102,10 +1107,10 @@ const MeetingDailyReminderChecker = async () => {
     }
     logger.info('Meeting attendees reminded');
   }
-};
+});
 
 // every day reminder
-const UnconfirmedMeetingDailyReminderChecker = async () => {
+const UnconfirmedMeetingDailyReminderChecker = asyncHandler(async () => {
   const currentDate = new Date();
 
   // Only future meeting within 24 hours, not past
@@ -1159,7 +1164,7 @@ const UnconfirmedMeetingDailyReminderChecker = async () => {
   }
 
   logger.info('Unconfirmed Meeting attendee reminded');
-};
+});
 
 function CalculateInterval(message1, message2) {
   const intervalInDay =
@@ -1167,7 +1172,7 @@ function CalculateInterval(message1, message2) {
   return parseFloat(intervalInDay.toFixed(4));
 }
 
-const GroupCommunicationByStudent = async () => {
+const GroupCommunicationByStudent = asyncHandler(async () => {
   try {
     const communications = await Communication.find()
       .populate('student_id user_id', 'firstname lastname email archiv')
@@ -1196,7 +1201,7 @@ const GroupCommunicationByStudent = async () => {
     logger.error('error grouping communications');
     return null;
   }
-};
+});
 
 const CreateIntervalMessageOperation = (student_id, msg1, msg2) => {
   const intervalValue = CalculateInterval(msg1, msg2);
@@ -1259,7 +1264,7 @@ const ProcessMessages = (student, messages) => {
   return bulkOps;
 };
 
-const FindIntervalInCommunicationsAndSave = async () => {
+const FindIntervalInCommunicationsAndSave = asyncHandler(async () => {
   try {
     // TODO: active student's message only
     const groupCommunication = await GroupCommunicationByStudent();
@@ -1280,7 +1285,7 @@ const FindIntervalInCommunicationsAndSave = async () => {
   } catch (error) {
     logger.error('Error finding valid interval:', error);
   }
-};
+});
 
 const CreateIntervalOperation = (thread, msg1, msg2) => {
   const intervalValue = CalculateInterval(msg1, msg2);
@@ -1343,7 +1348,7 @@ const ProcessThread = (thread) => {
   return bulkOps;
 };
 
-const FetchStudentsForDocumentThreads = async (filter) =>
+const FetchStudentsForDocumentThreads = asyncHandler(async (filter) =>
   Student.find(filter)
     .populate('agents editors', 'firstname lastname email')
     .populate({
@@ -1356,9 +1361,10 @@ const FetchStudentsForDocumentThreads = async (filter) =>
         }
       }
     })
-    .lean();
+    .lean()
+);
 
-const FindIntervalInDocumentThreadAndSave = async () => {
+const FindIntervalInDocumentThreadAndSave = asyncHandler(async () => {
   try {
     // calculate active student only
     const students = await FetchStudentsForDocumentThreads({
@@ -1400,9 +1406,9 @@ const FindIntervalInDocumentThreadAndSave = async () => {
   } catch (error) {
     logger.error('Error in FindIntervalInDocumentThreadAndSave:', error);
   }
-};
+});
 
-const GroupIntervals = async () => {
+const GroupIntervals = asyncHandler(async () => {
   try {
     const intervals = await Interval.find()
       .populate('thread_id student_id')
@@ -1428,9 +1434,9 @@ const GroupIntervals = async () => {
     logger.error('Error grouping communications:', error);
     return null;
   }
-};
+});
 
-const CalculateAverageResponseTimeAndSave = async () => {
+const CalculateAverageResponseTimeAndSave = asyncHandler(async () => {
   const [studentGroupInterval, documentThreadGroupInterval] =
     await GroupIntervals();
   const calculateAndSaveAverage = async (groupInterval, idKey) => {
@@ -1503,15 +1509,15 @@ const CalculateAverageResponseTimeAndSave = async () => {
 
   await calculateAndSaveAverage(studentGroupInterval, 'student_id');
   await calculateAndSaveAverage(documentThreadGroupInterval, 'thread_id');
-};
+});
 
-const DailyCalculateAverageResponseTime = async () => {
+const DailyCalculateAverageResponseTime = asyncHandler(async () => {
   await FindIntervalInCommunicationsAndSave();
   await FindIntervalInDocumentThreadAndSave();
   await CalculateAverageResponseTimeAndSave();
-};
+});
 
-const DailyInterviewSurveyChecker = async () => {
+const DailyInterviewSurveyChecker = asyncHandler(async () => {
   // TODO: find today meeting and send email reminder (only once)
   const currentDate = new Date();
   const twentyFourHoursAgo = new Date(currentDate);
@@ -1538,65 +1544,67 @@ const DailyInterviewSurveyChecker = async () => {
       { interview }
     )
   );
-};
+});
 
 // every day reminder
 // TODO: (O)no trainer, no date.
-const NoInterviewTrainerOrTrainingDateDailyReminderChecker = async () => {
-  const currentDate = new Date();
-  const currentDateString = currentDate.toISOString().split('T')[0]; // Converts to 'YYYY-MM-DD' format
+const NoInterviewTrainerOrTrainingDateDailyReminderChecker = asyncHandler(
+  async () => {
+    const currentDate = new Date();
+    const currentDateString = currentDate.toISOString().split('T')[0]; // Converts to 'YYYY-MM-DD' format
 
-  // Only future meeting within 24 hours, not past
-  const interviewRequests = await Interview.find({
-    $and: [
-      {
-        interview_date: {
-          $gte: currentDateString
-        }
-      },
-      {
-        $or: [
-          {
-            trainer_id: {
-              $exists: false
-            }
-          },
-          {
-            trainer_id: {
-              $size: 0
-            }
-          }
-        ]
-      }
-    ]
-  })
-    .populate('student_id', 'firstname lastname role email')
-    .populate('program_id');
-
-  // TODO: reminder agent as well
-
-  if (interviewRequests?.length > 0) {
-    const permissions = await Permission.find({
-      canAssignEditors: true
-    })
-      .populate('user_id', 'firstname lastname email')
-      .lean();
-    const sendEmailPromises = permissions.map((permission) =>
-      sendNoTrainerInterviewRequestsReminderEmail(
+    // Only future meeting within 24 hours, not past
+    const interviewRequests = await Interview.find({
+      $and: [
         {
-          firstname: permission.user_id.firstname,
-          lastname: permission.user_id.lastname,
-          address: permission.user_id.email
+          interview_date: {
+            $gte: currentDateString
+          }
         },
         {
-          interviewRequests
+          $or: [
+            {
+              trainer_id: {
+                $exists: false
+              }
+            },
+            {
+              trainer_id: {
+                $size: 0
+              }
+            }
+          ]
         }
-      )
-    );
-    await Promise.all(sendEmailPromises);
-    logger.info('No interviewer tasks reminder sent.');
+      ]
+    })
+      .populate('student_id', 'firstname lastname role email')
+      .populate('program_id');
+
+    // TODO: reminder agent as well
+
+    if (interviewRequests?.length > 0) {
+      const permissions = await Permission.find({
+        canAssignEditors: true
+      })
+        .populate('user_id', 'firstname lastname email')
+        .lean();
+      const sendEmailPromises = permissions.map((permission) =>
+        sendNoTrainerInterviewRequestsReminderEmail(
+          {
+            firstname: permission.user_id.firstname,
+            lastname: permission.user_id.lastname,
+            address: permission.user_id.email
+          },
+          {
+            interviewRequests
+          }
+        )
+      );
+      await Promise.all(sendEmailPromises);
+      logger.info('No interviewer tasks reminder sent.');
+    }
   }
-};
+);
 
 module.exports = {
   emptyS3Directory,

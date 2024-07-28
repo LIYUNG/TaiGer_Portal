@@ -1,7 +1,8 @@
 const { ErrorResponse } = require('../common/errors');
 const { Role } = require('../constants');
+const { asyncHandler } = require('./error-handler');
 
-const editorIdsBodyFilter = async (req, res, next) => {
+const editorIdsBodyFilter = asyncHandler(async (req, res, next) => {
   const {
     params: { messagesThreadId },
     user,
@@ -33,7 +34,7 @@ const editorIdsBodyFilter = async (req, res, next) => {
   }
 
   next();
-};
+});
 
 module.exports = {
   editorIdsBodyFilter

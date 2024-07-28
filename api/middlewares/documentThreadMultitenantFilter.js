@@ -1,8 +1,9 @@
 const { ErrorResponse } = require('../common/errors');
 const { Role } = require('../constants');
 const logger = require('../services/logger');
+const { asyncHandler } = require('./error-handler');
 
-const docThreadMultitenant_filter = async (req, res, next) => {
+const docThreadMultitenant_filter = asyncHandler(async (req, res, next) => {
   const {
     user,
     params: { messagesThreadId }
@@ -31,9 +32,9 @@ const docThreadMultitenant_filter = async (req, res, next) => {
     }
   }
   next();
-};
+});
 
-const surveyMultitenantFilter = async (req, res, next) => {
+const surveyMultitenantFilter = asyncHandler(async (req, res, next) => {
   const {
     user,
     params: { surveyInputId }
@@ -67,7 +68,7 @@ const surveyMultitenantFilter = async (req, res, next) => {
     }
   }
   next();
-};
+});
 
 module.exports = {
   docThreadMultitenant_filter,

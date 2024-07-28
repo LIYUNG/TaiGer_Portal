@@ -1,4 +1,6 @@
-const logAccess = async (req, res, next) => {
+const { asyncHandler } = require('../../middlewares/error-handler');
+
+const logAccess = asyncHandler(async (req, res, next) => {
   try {
     const { user } = req;
     const today = new Date();
@@ -39,7 +41,7 @@ const logAccess = async (req, res, next) => {
   } catch (e) {
     // client.close();
   }
-};
+});
 
 module.exports = {
   logAccess

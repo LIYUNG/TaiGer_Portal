@@ -1,8 +1,4 @@
-const {
-  model,
-  Schema,
-  Types: { ObjectId }
-} = require('mongoose');
+const { model, Schema } = require('mongoose');
 
 const documentationsSchema = new Schema({
   name: { type: String, default: '' },

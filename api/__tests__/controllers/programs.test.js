@@ -6,7 +6,7 @@ const { Program } = require('../../models/Program');
 const { generateProgram } = require('../fixtures/programs');
 const { generateUser } = require('../fixtures/users');
 const { protect } = require('../../middlewares/auth');
-const { Role } = require('../../models/User');
+const { Role } = require('../../constants');
 
 const admins = [...Array(2)].map(() => generateUser(Role.Admin));
 const agents = [...Array(3)].map(() => generateUser(Role.Agent));

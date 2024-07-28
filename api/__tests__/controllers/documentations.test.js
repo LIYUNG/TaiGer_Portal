@@ -3,7 +3,8 @@ const request = require('supertest');
 
 const db = require('../fixtures/db');
 const { app } = require('../../app');
-const { Role, User } = require('../../models/User');
+const { Role } = require('../../constants');
+const { User } = require('../../models/User');
 const { Program } = require('../../models/Program');
 const { generateUser } = require('../fixtures/users');
 const { generateProgram } = require('../fixtures/programs');

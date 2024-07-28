@@ -20,7 +20,7 @@ const { addMessageInThread } = require('../utils/informEditor');
 const { isNotArchiv } = require('../constants');
 const { getPermission } = require('../utils/queryFunctions');
 
-const PrecheckInterview = async (req, interview_id) => {
+const PrecheckInterview = asyncHandler(async (req, interview_id) => {
   const precheck_interview = await req.db
     .model('Interview')
     .findById(interview_id);
@@ -28,66 +28,57 @@ const PrecheckInterview = async (req, interview_id) => {
     logger.info('updateInterview: interview is closed!');
     throw new ErrorResponse(403, 'Interview is closed');
   }
-};
+});
 
-const InterviewCancelledReminder = async (
-  user,
-  receiver,
-  meeting_event,
-  cc
-) => {
-  InterviewCancelledReminderEmail(
-    {
-      id: receiver._id.toString(),
-      firstname: receiver.firstname,
-      lastname: receiver.lastname,
-      address: receiver.email
-    },
-    {
-      taiger_user: user,
-      role: user.role,
-      meeting_time: meeting_event.start,
-      student_id: user._id.toString(),
-      event: meeting_event,
-      event_title:
-        user.role === 'Student'
-          ? `${user.firstname} ${user.lastname}`
-          : `${meeting_event.receiver_id[0].firstname} ${meeting_event.receiver_id[0].lastname}`,
-      isUpdatingEvent: false,
-      cc
-    }
-  );
-};
+const InterviewCancelledReminder = asyncHandler(
+  async (user, receiver, meeting_event, cc) => {
+    InterviewCancelledReminderEmail(
+      {
+        id: receiver._id.toString(),
+        firstname: receiver.firstname,
+        lastname: receiver.lastname,
+        address: receiver.email
+      },
+      {
+        taiger_user: user,
+        role: user.role,
+        meeting_time: meeting_event.start,
+        student_id: user._id.toString(),
+        event: meeting_event,
+        event_title:
+          user.role === 'Student'
+            ? `${user.firstname} ${user.lastname}`
+            : `${meeting_event.receiver_id[0].firstname} ${meeting_event.receiver_id[0].lastname}`,
+        isUpdatingEvent: false,
+        cc
+      }
+    );
+  }
+);
 
-const InterviewTrainingInvitation = async (
-  receiver,
-  user,
-  event,
-  interview_id,
-  program,
-  isUpdatingEvent,
-  cc
-) => {
-  await sendInterviewConfirmationEmail(
-    {
-      id: receiver._id.toString(),
-      firstname: receiver.firstname,
-      lastname: receiver.lastname,
-      address: receiver.email
-    },
-    {
-      taiger_user: user,
-      meeting_time: event.start, // Replace with the actual meeting time
-      student_id: user._id.toString(),
-      meeting_link: event.meetingLink,
-      isUpdatingEvent,
-      event,
-      interview_id,
-      program,
-      cc
-    }
-  );
-};
+const InterviewTrainingInvitation = asyncHandler(
+  async (receiver, user, event, interview_id, program, isUpdatingEvent, cc) => {
+    await sendInterviewConfirmationEmail(
+      {
+        id: receiver._id.toString(),
+        firstname: receiver.firstname,
+        lastname: receiver.lastname,
+        address: receiver.email
+      },
+      {
+        taiger_user: user,
+        meeting_time: event.start, // Replace with the actual meeting time
+        student_id: user._id.toString(),
+        meeting_link: event.meetingLink,
+        isUpdatingEvent,
+        event,
+        interview_id,
+        program,
+        cc
+      }
+    );
+  }
+);
 
 const getAllInterviews = asyncHandler(async (req, res) => {
   const interviews = await req.db

@@ -1,10 +1,6 @@
-const {
-  model,
-  Schema,
-  Types: { ObjectId }
-} = require('mongoose');
-const mongoose = require('mongoose');
-const docspagesSchema = new mongoose.Schema({
+const { model, Schema } = require('mongoose');
+
+const docspagesSchema = new Schema({
   name: { type: String, default: '' },
   title: { type: String, default: '' },
   category: { type: String, default: '' },
@@ -14,5 +10,7 @@ const docspagesSchema = new mongoose.Schema({
   country: { type: String, default: '' },
   updatedAt: Date
 });
-const Docspage = mongoose.model('Docspage', docspagesSchema);
+
+const Docspage = model('Docspage', docspagesSchema);
+
 module.exports = { Docspage, docspagesSchema };

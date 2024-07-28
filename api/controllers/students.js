@@ -28,7 +28,7 @@ const {
 } = require('../constants');
 const { getPermission } = require('../utils/queryFunctions');
 
-const fetchStudents = async (req, filter) =>
+const fetchStudents = asyncHandler(async (req, filter) =>
   req.db
     .model('Student')
     .find(filter)
@@ -41,7 +41,8 @@ const fetchStudents = async (req, filter) =>
     .select(
       '-notification +applications.portal_credentials.application_portal_a.account +applications.portal_credentials.application_portal_a.password +applications.portal_credentials.application_portal_b.account +applications.portal_credentials.application_portal_b.password'
     )
-    .lean();
+    .lean()
+);
 
 const getStudent = asyncHandler(async (req, res, next) => {
   const {

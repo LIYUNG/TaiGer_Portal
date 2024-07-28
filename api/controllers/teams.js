@@ -12,7 +12,7 @@ const { GenerateResponseTimeByStudent } = require('./response_time');
 const { numStudentYearDistribution } = require('../utils/utils_function');
 const { one_day_cache } = require('../cache/node-cache');
 
-const getActivePrograms = async (req) => {
+const getActivePrograms = asyncHandler(async (req) => {
   const activePrograms = await req.db.model('User').aggregate([
     {
       $match: {
@@ -54,28 +54,30 @@ const getActivePrograms = async (req) => {
   ]);
 
   return activePrograms;
-};
+});
 
-const getStudentDeltas = async (req, student, program, options) => {
-  const deltas = await findStudentDeltaGet(
-    req,
-    student._id,
-    program,
-    options || {}
-  );
-  if (deltas?.add?.length === 0 && deltas?.remove?.length === 0) {
-    return;
+const getStudentDeltas = asyncHandler(
+  async (req, student, program, options) => {
+    const deltas = await findStudentDeltaGet(
+      req,
+      student._id,
+      program,
+      options || {}
+    );
+    if (deltas?.add?.length === 0 && deltas?.remove?.length === 0) {
+      return;
+    }
+    const studentDelta = {
+      _id: student._id,
+      firstname: student.firstname,
+      lastname: student.lastname,
+      deltas
+    };
+    return studentDelta;
   }
-  const studentDelta = {
-    _id: student._id,
-    firstname: student.firstname,
-    lastname: student.lastname,
-    deltas
-  };
-  return studentDelta;
-};
+);
 
-const getApplicationDeltaByProgram = async (req, programId) => {
+const getApplicationDeltaByProgram = asyncHandler(async (req, programId) => {
   const students = await getStudentsByProgram(req, programId);
   const program = await req.db.model('Program').findById(programId);
   const studentDeltaPromises = [];
@@ -96,7 +98,7 @@ const getApplicationDeltaByProgram = async (req, programId) => {
         students: studentDeltas
       }
     : {};
-};
+});
 
 const getApplicationDeltas = asyncHandler(async (req, res) => {
   const activePrograms = await getActivePrograms(req);
@@ -132,7 +134,7 @@ const getTeamMembers = asyncHandler(async (req, res) => {
   res.status(200).send({ success: true, data: users });
 });
 
-const getGeneralTasks = async (req) => {
+const getGeneralTasks = asyncHandler(async (req) => {
   const studentsWithCommunications = await req.db.model('Student').aggregate([
     // Match students where archiv is not true
     { $match: { $or: [{ archiv: { $exists: false } }, { archiv: false }] } },
@@ -164,9 +166,9 @@ const getGeneralTasks = async (req) => {
     }
   ]);
   return studentsWithCommunications;
-};
+});
 
-const getDecidedApplicationsTasks = async (req) => {
+const getDecidedApplicationsTasks = asyncHandler(async (req) => {
   const studentsWithCommunications = await req.db.model('Student').aggregate([
     // Match students where archiv is not true
     { $match: { $or: [{ archiv: { $exists: false } }, { archiv: false }] } },
@@ -218,9 +220,9 @@ const getDecidedApplicationsTasks = async (req) => {
     }
   ]);
   return studentsWithCommunications;
-};
+});
 
-const getFileTypeCount = async (req) => {
+const getFileTypeCount = asyncHandler(async (req) => {
   // TODO not accurate, because these contains not-decided tasks.
 
   const counts1Promise = req.db.model('Student').aggregate([
@@ -308,9 +310,9 @@ const getFileTypeCount = async (req) => {
   });
 
   return fileTypeCounts;
-};
+});
 
-const getAgentData = async (req, agent) => {
+const getAgentData = asyncHandler(async (req, agent) => {
   const agentStudents = await req.db
     .model('Student')
     .find({
@@ -329,9 +331,9 @@ const getAgentData = async (req, agent) => {
     agentStudents.length - student_num_with_offer;
   agentData.student_num_with_offer = student_num_with_offer;
   return agentData;
-};
+});
 
-const getAgentStudentDistData = async (req, agent) => {
+const getAgentStudentDistData = asyncHandler(async (req, agent) => {
   const studentYearDistributionPromise = req.db.model('Student').aggregate([
     {
       $match: {
@@ -401,9 +403,9 @@ const getAgentStudentDistData = async (req, agent) => {
     admission: studentYearDistribution,
     noAdmission: studentYearNoAdmissionDistribution
   };
-};
+});
 
-const getEditorData = async (req, editor) => {
+const getEditorData = asyncHandler(async (req, editor) => {
   const editorData = {};
   editorData._id = editor._id.toString();
   editorData.firstname = editor.firstname;
@@ -416,7 +418,7 @@ const getEditorData = async (req, editor) => {
     })
     .count();
   return editorData;
-};
+});
 
 const getStatistics = asyncHandler(async (req, res) => {
   const cacheKey = 'internalDashboard';

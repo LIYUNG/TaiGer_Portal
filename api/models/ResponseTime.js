@@ -1,11 +1,6 @@
-const mongoose = require('mongoose');
-const {
-  model,
-  Schema,
-  Types: { ObjectId }
-} = require('mongoose');
+const { model, Schema } = require('mongoose');
 
-const ResponseTimeSchema = new mongoose.Schema({
+const ResponseTimeSchema = new Schema({
   thread_id: {
     type: Schema.Types.ObjectId,
     ref: 'Documentthread'
@@ -34,7 +29,7 @@ ResponseTimeSchema.index(
   { unique: true }
 );
 
-const ResponseTime = mongoose.model('ResponseTime', ResponseTimeSchema);
+const ResponseTime = model('ResponseTime', ResponseTimeSchema);
 module.exports = {
   ResponseTime,
   ResponseTimeSchema

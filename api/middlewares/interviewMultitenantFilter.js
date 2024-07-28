@@ -1,8 +1,9 @@
 const { ErrorResponse } = require('../common/errors');
 const { Role } = require('../constants');
 const { getPermission } = require('../utils/queryFunctions');
+const { asyncHandler } = require('./error-handler');
 
-const interviewMultitenantFilter = async (req, res, next) => {
+const interviewMultitenantFilter = asyncHandler(async (req, res, next) => {
   const {
     user,
     params: { interview_id }
@@ -49,27 +50,29 @@ const interviewMultitenantFilter = async (req, res, next) => {
     }
   }
   next();
-};
+});
 
-const interviewMultitenantReadOnlyFilter = async (req, res, next) => {
-  const {
-    user,
-    params: { interview_id }
-  } = req;
+const interviewMultitenantReadOnlyFilter = asyncHandler(
+  async (req, res, next) => {
+    const {
+      user,
+      params: { interview_id }
+    } = req;
 
-  if (user.role === Role.Student || user.role === Role.Guest) {
-    const interview = await req.db.model('Interview').findById(interview_id);
-    if (
-      interview?.student_id?.toString() &&
-      user._id.toString() !== interview?.student_id?.toString()
-    ) {
-      return next(
-        new ErrorResponse(403, 'Not allowed to access other resource.')
-      );
+    if (user.role === Role.Student || user.role === Role.Guest) {
+      const interview = await req.db.model('Interview').findById(interview_id);
+      if (
+        interview?.student_id?.toString() &&
+        user._id.toString() !== interview?.student_id?.toString()
+      ) {
+        return next(
+          new ErrorResponse(403, 'Not allowed to access other resource.')
+        );
+      }
     }
+    next();
   }
-  next();
-};
+);
 
 module.exports = {
   interviewMultitenantFilter,

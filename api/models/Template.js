@@ -1,11 +1,6 @@
-const {
-  model,
-  Schema,
-  Types: { ObjectId }
-} = require('mongoose');
-const mongoose = require('mongoose');
+const { model, Schema } = require('mongoose');
 
-const templatesSchema = new mongoose.Schema({
+const templatesSchema = new Schema({
   name: {
     type: String,
     required: true
@@ -20,7 +15,7 @@ const templatesSchema = new mongoose.Schema({
   },
   updatedAt: Date
 });
-const Template = mongoose.model('Template', templatesSchema);
+const Template = model('Template', templatesSchema);
 module.exports = {
   Template,
   templatesSchema

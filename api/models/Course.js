@@ -3,8 +3,8 @@ const {
   Schema,
   Types: { ObjectId }
 } = require('mongoose');
-const mongoose = require('mongoose');
-const coursesSchema = new mongoose.Schema({
+
+const coursesSchema = new Schema({
   student_id: { type: ObjectId, ref: 'User' },
   name: { type: String, default: '' },
   table_data_string: { type: String, default: '' },
@@ -22,5 +22,5 @@ const coursesSchema = new mongoose.Schema({
     updatedAt: Date
   }
 });
-const Course = mongoose.model('Course', coursesSchema);
+const Course = model('Course', coursesSchema);
 module.exports = { Course, coursesSchema };

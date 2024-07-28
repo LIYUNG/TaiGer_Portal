@@ -1,11 +1,10 @@
-const mongoose = require('mongoose');
 const {
   model,
   Schema,
   Types: { ObjectId }
 } = require('mongoose');
 
-const permissionSchema = new mongoose.Schema(
+const permissionSchema = new Schema(
   {
     user_id: { type: ObjectId, ref: 'User' },
     taigerAiQuota: {
@@ -53,6 +52,6 @@ const permissionSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const Permission = mongoose.model('Permission', permissionSchema);
+const Permission = model('Permission', permissionSchema);
 
 module.exports = { Permission, permissionSchema };

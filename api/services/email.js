@@ -44,6 +44,7 @@ const {
   taigerNotReplyGmail,
   appDomain
 } = require('../constants/email');
+const { asyncHandler } = require('../middlewares/error-handler');
 
 const verifySMTPConfig = () => {
   return transporter.verify();
@@ -141,7 +142,7 @@ const sendEventEmail = (
   return transporter.sendMail(mail);
 };
 
-const updateNotificationEmail = async (recipient, msg) => {
+const updateNotificationEmail = asyncHandler(async (recipient, msg) => {
   const subject =
     '您的TaiGer Portal使用者權限已更新 / Your user role in TaiGer Portal updated';
   const message = `\
@@ -166,12 +167,13 @@ const updateNotificationEmail = async (recipient, msg) => {
 `;
 
   return sendEmail(recipient, subject, message);
-};
+});
 
-const updatePermissionNotificationEmail = async (recipient, msg) => {
-  const subject =
-    '您的TaiGer Portal使用者權限已更新 / Your user permissions in TaiGer Portal updated';
-  const message = `\
+const updatePermissionNotificationEmail = asyncHandler(
+  async (recipient, msg) => {
+    const subject =
+      '您的TaiGer Portal使用者權限已更新 / Your user permissions in TaiGer Portal updated';
+    const message = `\
 <p>${ENGLISH_BELOW}</p>
 
 <p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
@@ -193,10 +195,11 @@ const updatePermissionNotificationEmail = async (recipient, msg) => {
 
 `;
 
-  return sendEmail(recipient, subject, message);
-};
+    return sendEmail(recipient, subject, message);
+  }
+);
 
-const deleteTemplateSuccessEmail = async (recipient, msg) => {
+const deleteTemplateSuccessEmail = asyncHandler(async (recipient, msg) => {
   const subject = `Template ${msg.category_name} deleted successfully!`;
   const message = `\
 <p>${ENGLISH_BELOW}</p>
@@ -225,10 +228,10 @@ const deleteTemplateSuccessEmail = async (recipient, msg) => {
 `;
 
   return sendEmail(recipient, subject, message);
-};
+});
 
 // TODO
-const sendInvitationReminderEmail = async (recipient, payload) => {
+const sendInvitationReminderEmail = asyncHandler(async (recipient, payload) => {
   const subject = 'TaiGer Portal 開通提醒 / TaiGer Portal Activation Reminder';
   const activationLink = queryString.stringifyUrl({
     url: ACCOUNT_ACTIVATION_URL,
@@ -273,9 +276,9 @@ ${activationLink}
 `;
 
   return sendEmail(recipient, subject, message);
-};
+});
 
-const sendInvitationEmail = async (recipient, payload) => {
+const sendInvitationEmail = asyncHandler(async (recipient, payload) => {
   const subject =
     'TaiGer Portal 電子信箱驗證 / TaiGer Portal Email verification';
   const activationLink = queryString.stringifyUrl({
@@ -325,9 +328,9 @@ ${activationLink}
 `;
 
   return sendEmail(recipient, subject, message);
-};
+});
 
-const sendConfirmationEmail = async (recipient, token) => {
+const sendConfirmationEmail = asyncHandler(async (recipient, token) => {
   const subject =
     'TaiGer Portal 電子信箱驗證 / TaiGer Portal Email verification';
   const activationLink = queryString.stringifyUrl({
@@ -365,9 +368,9 @@ ${activationLink}
 `;
 
   return sendEmail(recipient, subject, message);
-};
+});
 
-const sendForgotPasswordEmail = async (recipient, token) => {
+const sendForgotPasswordEmail = asyncHandler(async (recipient, token) => {
   const subject =
     'TaiGer Portal 密碼重設指示 / TaiGer Portal Password reset instructions';
   const passwordResetLink = queryString.stringifyUrl({
@@ -404,9 +407,9 @@ ${passwordResetLink}
 `;
 
   return sendEmail(recipient, subject, message);
-};
+});
 
-const sendPasswordResetEmail = async (recipient) => {
+const sendPasswordResetEmail = asyncHandler(async (recipient) => {
   const subject =
     'TaiGer Portal 密碼重設成功 / TaiGer Portal Password reset successfully';
   const message = `\
@@ -432,11 +435,12 @@ const sendPasswordResetEmail = async (recipient) => {
 `;
 
   return sendEmail(recipient, subject, message);
-};
+});
 
-const sendAccountActivationConfirmationEmail = async (recipient, msg) => {
-  const subject = 'TaiGer Portal Account activation confirmation';
-  const message = `\
+const sendAccountActivationConfirmationEmail = asyncHandler(
+  async (recipient, msg) => {
+    const subject = 'TaiGer Portal Account activation confirmation';
+    const message = `\
 <p>${ENGLISH_BELOW}</p>
 
 <p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
@@ -462,12 +466,14 @@ const sendAccountActivationConfirmationEmail = async (recipient, msg) => {
 
 `;
 
-  return sendEmail(recipient, subject, message);
-};
+    return sendEmail(recipient, subject, message);
+  }
+);
 
-const sendAgentUploadedProfileFilesForStudentEmail = async (recipient, msg) => {
-  const subject = `Your ${msg.uploaded_documentname} is successfully uploaded!`;
-  const message = `\
+const sendAgentUploadedProfileFilesForStudentEmail = asyncHandler(
+  async (recipient, msg) => {
+    const subject = `Your ${msg.uploaded_documentname} is successfully uploaded!`;
+    const message = `\
 <p>${ENGLISH_BELOW}</p>
 
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
@@ -495,12 +501,14 @@ const sendAgentUploadedProfileFilesForStudentEmail = async (recipient, msg) => {
 
 `;
 
-  return sendEmail(recipient, subject, message);
-};
+    return sendEmail(recipient, subject, message);
+  }
+);
 
-const sendAgentUploadedVPDForStudentEmail = async (recipient, msg) => {
-  const subject = `您的 ${msg.fileType} 已成功上傳 / Your ${msg.fileType} is successfully uploaded!`;
-  const message = `\
+const sendAgentUploadedVPDForStudentEmail = asyncHandler(
+  async (recipient, msg) => {
+    const subject = `您的 ${msg.fileType} 已成功上傳 / Your ${msg.fileType} is successfully uploaded!`;
+    const message = `\
 <p>${ENGLISH_BELOW}</p>
 
 <p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
@@ -528,13 +536,15 @@ const sendAgentUploadedVPDForStudentEmail = async (recipient, msg) => {
 
 `;
 
-  return sendEmail(recipient, subject, message);
-};
+    return sendEmail(recipient, subject, message);
+  }
+);
 
-const sendUploadedProfileFilesRemindForAgentEmail = async (recipient, msg) => {
-  const student_name = `${msg.student_firstname} ${msg.student_lastname}`;
-  const subject = `New ${msg.uploaded_documentname} uploaded from ${student_name}`;
-  const message = `\
+const sendUploadedProfileFilesRemindForAgentEmail = asyncHandler(
+  async (recipient, msg) => {
+    const student_name = `${msg.student_firstname} ${msg.student_lastname}`;
+    const subject = `New ${msg.uploaded_documentname} uploaded from ${student_name}`;
+    const message = `\
 <p>${ENGLISH_BELOW}</p>
 
 <p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
@@ -544,8 +554,8 @@ const sendUploadedProfileFilesRemindForAgentEmail = async (recipient, msg) => {
 <p>於 ${msg.uploaded_updatedAt} 。</p>
 
 <a href="${BASE_DOCUMENT_FOR_AGENT_URL(
-    msg.student_id
-  )}" class="mui-button" target="_blank">查看檔案</a>
+      msg.student_id
+    )}" class="mui-button" target="_blank">查看檔案</a>
 
 <br />
 
@@ -558,30 +568,32 @@ const sendUploadedProfileFilesRemindForAgentEmail = async (recipient, msg) => {
 <p>on ${msg.uploaded_updatedAt}.</p>
 
 <a href="${BASE_DOCUMENT_FOR_AGENT_URL(
-    msg.student_id
-  )}" class="mui-button" target="_blank">See file</a>
+      msg.student_id
+    )}" class="mui-button" target="_blank">See file</a>
 
 `; // should be for student/agent/editor
 
-  return sendEmail(recipient, subject, message);
-};
+    return sendEmail(recipient, subject, message);
+  }
+);
 
-const sendUploadedVPDRemindForAgentEmail = async (recipient, msg) => {
-  const subject = `新 ${msg.fileType} 上傳從 ${msg.student_firstname} ${msg.student_lastname} / New ${msg.fileType} uploaded from ${msg.student_firstname} ${msg.student_lastname}`;
-  const message = `\
+const sendUploadedVPDRemindForAgentEmail = asyncHandler(
+  async (recipient, msg) => {
+    const subject = `新 ${msg.fileType} 上傳從 ${msg.student_firstname} ${msg.student_lastname} / New ${msg.fileType} uploaded from ${msg.student_firstname} ${msg.student_lastname}`;
+    const message = `\
 <p>${ENGLISH_BELOW}</p>
 
 <p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
 
 <p>您的學生 ${msg.student_firstname} ${msg.student_lastname} 上傳了 ${
-    msg.uploaded_documentname
-  } </p>
+      msg.uploaded_documentname
+    } </p>
 
 <p>在 ${msg.uploaded_updatedAt}.</p>
 
 <p>請至 <a href="${UNI_ASSIST_FOR_AGENT_URL(msg.student_id)}">${
-    msg.student_firstname
-  } ${msg.student_lastname} Uni-Assist</a> 確認細節。</p>
+      msg.student_firstname
+    } ${msg.student_lastname} Uni-Assist</a> 確認細節。</p>
 
 <br />
 
@@ -590,27 +602,29 @@ const sendUploadedVPDRemindForAgentEmail = async (recipient, msg) => {
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
 <p>your student ${msg.student_firstname} ${msg.student_lastname} has uploaded ${
-    msg.uploaded_documentname
-  } </p>
+      msg.uploaded_documentname
+    } </p>
 
 <p>on ${msg.uploaded_updatedAt}.</p>
 
 <p>Please go to <a href="${UNI_ASSIST_FOR_AGENT_URL(msg.student_id)}">${
-    msg.student_firstname
-  } ${msg.student_lastname} Uni-Assist</a> and see the details.</p>
+      msg.student_firstname
+    } ${msg.student_lastname} Uni-Assist</a> and see the details.</p>
 
 
 `; // should be for student/agent/editor
 
-  return sendEmail(recipient, subject, message);
-};
+    return sendEmail(recipient, subject, message);
+  }
+);
 
-const sendChangedProfileFileStatusEmail = async (recipient, msg) => {
-  let subject;
-  let message;
-  if (msg.status === 'rejected') {
-    subject = `[Action Required] 文件狀態更新：請再次上傳 ${msg.category} / File Status changes: please upload ${msg.category} again`;
-    message = `\
+const sendChangedProfileFileStatusEmail = asyncHandler(
+  async (recipient, msg) => {
+    let subject;
+    let message;
+    if (msg.status === 'rejected') {
+      subject = `[Action Required] 文件狀態更新：請再次上傳 ${msg.category} / File Status changes: please upload ${msg.category} again`;
+      message = `\
 <p>${ENGLISH_BELOW}</p>
 
 <p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
@@ -639,9 +653,9 @@ const sendChangedProfileFileStatusEmail = async (recipient, msg) => {
 
 
 `; // should be for student
-  } else {
-    subject = `[Closed] 文件狀態更新：${msg.category} 合格 / File Status changes: ${msg.category} is valid`;
-    message = `\
+    } else {
+      subject = `[Closed] 文件狀態更新：${msg.category} 合格 / File Status changes: ${msg.category} is valid`;
+      message = `\
 <p>${ENGLISH_BELOW}</p>
 
 <p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
@@ -665,18 +679,20 @@ const sendChangedProfileFileStatusEmail = async (recipient, msg) => {
 <p>Please go to <a href="${BASE_DOCUMENT_URL}">Base Documents</a> and doueble check the details.</p>
 
 `; // should be for student
+    }
+
+    return sendEmail(recipient, subject, message);
   }
+);
 
-  return sendEmail(recipient, subject, message);
-};
-
-const informAgentManagerNewStudentEmail = async (recipient, payload) => {
-  const studentName = `${payload.std_firstname} ${payload.std_lastname}`;
-  const agentName = `${payload.agents
-    .map((agent) => `${agent.firstname}`)
-    .join(' ')}`;
-  const subject = `新學生 ${studentName} 已被指派給 ${agentName} / New student ${studentName} assigned to ${agentName}`;
-  const message = `\
+const informAgentManagerNewStudentEmail = asyncHandler(
+  async (recipient, payload) => {
+    const studentName = `${payload.std_firstname} ${payload.std_lastname}`;
+    const agentName = `${payload.agents
+      .map((agent) => `${agent.firstname}`)
+      .join(' ')}`;
+    const subject = `新學生 ${studentName} 已被指派給 ${agentName} / New student ${studentName} assigned to ${agentName}`;
+    const message = `\
 <p>${ENGLISH_BELOW}</p>
 
 <p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
@@ -694,16 +710,17 @@ const informAgentManagerNewStudentEmail = async (recipient, payload) => {
 <p>${studentName} will be assigned to ${agentName}!</p>
 
 <p>Please see ${STUDENT_PROFILE_FOR_AGENT_URL(
-    payload.std_id
-  )}'s background and survey</p>
+      payload.std_id
+    )}'s background and survey</p>
 
 
 `;
 
-  return sendEmail(recipient, subject, message);
-};
+    return sendEmail(recipient, subject, message);
+  }
+);
 
-const informAgentNewStudentEmail = async (recipient, msg) => {
+const informAgentNewStudentEmail = asyncHandler(async (recipient, msg) => {
   const subject = `新學生 ${msg.std_firstname} ${msg.std_lastname} 已被指派給您 / New student ${msg.std_firstname} ${msg.std_lastname} assigned to you`;
   const message = `\
 <p>${ENGLISH_BELOW}</p>
@@ -732,9 +749,9 @@ const informAgentNewStudentEmail = async (recipient, msg) => {
 `;
 
   return sendEmail(recipient, subject, message);
-};
+});
 
-const informStudentTheirAgentEmail = async (recipient, msg) => {
+const informStudentTheirAgentEmail = asyncHandler(async (recipient, msg) => {
   const subject = 'Your Agent';
   let agent;
   for (let i = 0; i < msg.agents.length; i += 1) {
@@ -767,9 +784,9 @@ const informStudentTheirAgentEmail = async (recipient, msg) => {
 `;
 
   return sendEmail(recipient, subject, message);
-};
+});
 
-const informAgentEssayAssignedEmail = async (recipient, msg) => {
+const informAgentEssayAssignedEmail = asyncHandler(async (recipient, msg) => {
   const thread_url = `${THREAD_URL}/${msg.thread_id}`;
   const docName = `${msg.program.school} ${msg.program.program_name}${msg.program.degree} ${msg.program.semester}`;
   const subject = `${
@@ -798,9 +815,9 @@ are assigned to student ${msg.std_firstname} ${msg.std_lastname}!</p>
 `;
 
   return sendEmail(recipient, subject, message);
-};
+});
 
-const informAgentStudentAssignedEmail = async (recipient, msg) => {
+const informAgentStudentAssignedEmail = asyncHandler(async (recipient, msg) => {
   const subject = `Editor assigned for ${msg.std_firstname} ${msg.std_lastname}`;
   let editors = '';
   for (let i = 0; i < msg.editors.length; i += 1) {
@@ -823,9 +840,9 @@ const informAgentStudentAssignedEmail = async (recipient, msg) => {
 `;
 
   return sendEmail(recipient, subject, message);
-};
+});
 
-const informEssayWriterNewEssayEmail = async (recipient, msg) => {
+const informEssayWriterNewEssayEmail = asyncHandler(async (recipient, msg) => {
   const thread_url = `${THREAD_URL}/${msg.thread_id}`;
   const docName = `${msg.program.school} - ${msg.program.program_name} - ${msg.program.degree} - ${msg.program.semester}`;
   const subject = `New ${msg.file_type} ${docName} assigned to you`;
@@ -842,9 +859,9 @@ const informEssayWriterNewEssayEmail = async (recipient, msg) => {
 `;
 
   return sendEmail(recipient, subject, message);
-};
+});
 
-const informEditorNewStudentEmail = async (recipient, msg) => {
+const informEditorNewStudentEmail = asyncHandler(async (recipient, msg) => {
   const subject = `New student ${msg.std_firstname} ${msg.std_lastname} assigned to you`;
   const message = `\
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
@@ -859,11 +876,12 @@ const informEditorNewStudentEmail = async (recipient, msg) => {
 `;
 
   return sendEmail(recipient, subject, message);
-};
+});
 
-const informEditorArchivedStudentEmail = async (recipient, msg) => {
-  const subject = `[Close] Student ${msg.std_firstname} ${msg.std_lastname} is close.`;
-  const message = `\
+const informEditorArchivedStudentEmail = asyncHandler(
+  async (recipient, msg) => {
+    const subject = `[Close] Student ${msg.std_firstname} ${msg.std_lastname} is close.`;
+    const message = `\
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
 <p>${msg.std_firstname} ${msg.std_lastname} is closed! No further tasks needed for the student.</p>
@@ -872,20 +890,22 @@ const informEditorArchivedStudentEmail = async (recipient, msg) => {
 
 `;
 
-  return sendEmail(recipient, subject, message);
-};
-
-const informStudentArchivedStudentEmail = async (recipient, payload) => {
-  const subject = `[${recipient.firstname} ${recipient.lastname}] TaiGer Portal service ends`;
-  let agent = '';
-  for (let i = 0; i < payload.student.agents.length; i += 1) {
-    if (i === 0) {
-      agent = `<li>${payload.student.agents[i].firstname} - ${payload.student.agents[i].lastname} Email: ${payload.student.agents[i].email}</li>`;
-    } else {
-      agent += `<li>${payload.student.agents[i].firstname} ${payload.student.agents[i].lastname} Email: ${payload.student.agents[i].email}</li>`;
-    }
+    return sendEmail(recipient, subject, message);
   }
-  const message = `\
+);
+
+const informStudentArchivedStudentEmail = asyncHandler(
+  async (recipient, payload) => {
+    const subject = `[${recipient.firstname} ${recipient.lastname}] TaiGer Portal service ends`;
+    let agent = '';
+    for (let i = 0; i < payload.student.agents.length; i += 1) {
+      if (i === 0) {
+        agent = `<li>${payload.student.agents[i].firstname} - ${payload.student.agents[i].lastname} Email: ${payload.student.agents[i].email}</li>`;
+      } else {
+        agent += `<li>${payload.student.agents[i].firstname} ${payload.student.agents[i].lastname} Email: ${payload.student.agents[i].email}</li>`;
+      }
+    }
+    const message = `\
 <p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
 
 <p>您在 TaiGer Portal 上的服務已結束。</p>
@@ -908,36 +928,38 @@ const informStudentArchivedStudentEmail = async (recipient, payload) => {
 
 `;
 
-  return sendEmail(recipient, subject, message);
-};
-
-const informStudentTheirEssayWriterEmail = async (recipient, msg) => {
-  const thread_url = `${THREAD_URL}/${msg.thread_id}`;
-  const docName = `${msg.program.school} - ${msg.program.program_name} - ${msg.program.degree} - ${msg.program.semester}`;
-  const subject = `Your ${
-    msg.file_type === 'Essay' ? 'Essay Writor' : 'Editor'
-  } for your ${msg.file_type} ${docName}`;
-  let editor;
-  for (let i = 0; i < msg.editors.length; i += 1) {
-    const editor_name = `${msg.editors[i].firstname} ${msg.editors[i].lastname}`;
-    if (i === 0) {
-      editor = `${editor_name}`;
-    } else {
-      editor += `, ${editor_name}`;
-    }
+    return sendEmail(recipient, subject, message);
   }
-  const message = `\
+);
+
+const informStudentTheirEssayWriterEmail = asyncHandler(
+  async (recipient, msg) => {
+    const thread_url = `${THREAD_URL}/${msg.thread_id}`;
+    const docName = `${msg.program.school} - ${msg.program.program_name} - ${msg.program.degree} - ${msg.program.semester}`;
+    const subject = `Your ${
+      msg.file_type === 'Essay' ? 'Essay Writor' : 'Editor'
+    } for your ${msg.file_type} ${docName}`;
+    let editor;
+    for (let i = 0; i < msg.editors.length; i += 1) {
+      const editor_name = `${msg.editors[i].firstname} ${msg.editors[i].lastname}`;
+      if (i === 0) {
+        editor = `${editor_name}`;
+      } else {
+        editor += `, ${editor_name}`;
+      }
+    }
+    const message = `\
 <p>${ENGLISH_BELOW}</p>
 
 <p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
 
 <p>從現在開始我們的專業外籍${
-    msg.file_type === 'Essay' ? '論文' : ''
-  }編輯 ${editor} 會正式開始幫你修改及潤飾 ${msg.file_type} - ${docName}。</p>
+      msg.file_type === 'Essay' ? '論文' : ''
+    }編輯 ${editor} 會正式開始幫你修改及潤飾 ${msg.file_type} - ${docName}。</p>
 
 <p>若有任何疑問請直接與 ${editor} 在該文件 <a href="${thread_url}">${
-    msg.file_type
-  } - ${docName}</a> 的討論串做溝通。</p>
+      msg.file_type
+    } - ${docName}</a> 的討論串做溝通。</p>
 
 <p>如果有任何的技術上問題，請詢問您的顧問作協助。</p>
 
@@ -950,29 +972,30 @@ const informStudentTheirEssayWriterEmail = async (recipient, msg) => {
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
 <p>Let me introduce our professional ${
-    msg.file_type === 'Essay' ? 'Essay Writer' : 'Editor'
-  } ${editor}. From now on, ${editor} will be fully responsible for editing your ${
-    msg.file_type
-  } - ${docName}.</p>
+      msg.file_type === 'Essay' ? 'Essay Writer' : 'Editor'
+    } ${editor}. From now on, ${editor} will be fully responsible for editing your ${
+      msg.file_type
+    } - ${docName}.</p>
 
 <p>Please directly provide your feedback to ${editor} in the document thread in the <a href="${thread_url}">${
-    msg.file_type
-  } - ${docName}</a>. </p>
+      msg.file_type
+    } - ${docName}</a>. </p>
 
 <p>If you have any technical problems, please ask your agent for help.</p>
 
 <p>In each Portal's CV/ML/RL Center document discussion thread, please use <b>English</b> to provide your feedback with your ${
-    msg.file_type === 'Essay' ? 'Essay Writer' : 'Editor'
-  }.</p>
+      msg.file_type === 'Essay' ? 'Essay Writer' : 'Editor'
+    }.</p>
 
 
 
 `;
 
-  return sendEmail(recipient, subject, message);
-};
+    return sendEmail(recipient, subject, message);
+  }
+);
 
-const informStudentTheirEditorEmail = async (recipient, msg) => {
+const informStudentTheirEditorEmail = asyncHandler(async (recipient, msg) => {
   const subject = 'Your Editor';
   let editor;
   for (let i = 0; i < msg.editors.length; i += 1) {
@@ -1015,9 +1038,9 @@ const informStudentTheirEditorEmail = async (recipient, msg) => {
 `;
 
   return sendEmail(recipient, subject, message);
-};
+});
 
-const createApplicationToStudentEmail = async (recipient, msg) => {
+const createApplicationToStudentEmail = asyncHandler(async (recipient, msg) => {
   const subject =
     '[Action Required] 新的建議申請學程指派給您 / New Programs assigned to you.';
   let programList;
@@ -1062,9 +1085,9 @@ ${programList}
 `;
 
   return sendEmail(recipient, subject, message);
-};
+});
 
-const updateCredentialsEmail = async (recipient, msg) => {
+const updateCredentialsEmail = asyncHandler(async (recipient, msg) => {
   const subject =
     'TaiGer Portal 密碼更新成功 / TaiGer Portal passwords updated successfully';
   const message = `\
@@ -1090,9 +1113,9 @@ const updateCredentialsEmail = async (recipient, msg) => {
 `; // should be for admin/editor/agent/student
 
   return sendEmail(recipient, subject, message);
-};
+});
 
-const UpdateStudentApplicationsEmail = async (recipient, msg) => {
+const UpdateStudentApplicationsEmail = asyncHandler(async (recipient, msg) => {
   const subject = `[Info] ${msg.sender_firstname} ${msg.sender_lastname} 更新了申請學校資訊並完成任務 / ${msg.sender_firstname} ${msg.sender_lastname} has updated application status and created new tasks`;
   let applications_name = '';
   for (let i = 0; i < msg.student_applications.length; i += 1) {
@@ -1175,10 +1198,10 @@ ${applications_name}
 `; // should be for admin/editor/agent/student
 
   return sendEmail(recipient, subject, message);
-};
+});
 
 // For Editor. English only
-const NewMLRLEssayTasksEmail = async (recipient, msg) => {
+const NewMLRLEssayTasksEmail = asyncHandler(async (recipient, msg) => {
   const subject = `${msg.sender_firstname} ${msg.sender_lastname} has updated application status and new tasks`;
   let applications_name = '';
   for (let i = 0; i < msg.student_applications.length; i += 1) {
@@ -1210,27 +1233,28 @@ ${applications_name}.
 `; // should be for admin/editor/agent/student
 
   return sendEmail(recipient, subject, message);
-};
+});
 
 // For editor, english only
-const NewMLRLEssayTasksEmailFromTaiGer = async (recipient, msg) => {
-  const subject = `${msg.sender_firstname} ${msg.sender_lastname} has updated application status and new tasks`;
-  let applications_name = '';
-  for (let i = 0; i < msg.student_applications.length; i += 1) {
-    const program_name = `${msg.student_applications[i].programId.school} ${msg.student_applications[i].programId.program_name}`;
-    if (msg.new_app_decided_idx.includes(i)) {
-      if (i === 0) {
-        applications_name = `<ul><li>${program_name}</li>`;
-      } else {
-        applications_name += `<li>${program_name}</li>`;
+const NewMLRLEssayTasksEmailFromTaiGer = asyncHandler(
+  async (recipient, msg) => {
+    const subject = `${msg.sender_firstname} ${msg.sender_lastname} has updated application status and new tasks`;
+    let applications_name = '';
+    for (let i = 0; i < msg.student_applications.length; i += 1) {
+      const program_name = `${msg.student_applications[i].programId.school} ${msg.student_applications[i].programId.program_name}`;
+      if (msg.new_app_decided_idx.includes(i)) {
+        if (i === 0) {
+          applications_name = `<ul><li>${program_name}</li>`;
+        } else {
+          applications_name += `<li>${program_name}</li>`;
+        }
       }
     }
-  }
-  if (applications_name !== '') {
-    applications_name += '</ul>';
-  }
+    if (applications_name !== '') {
+      applications_name += '</ul>';
+    }
 
-  const message = `\
+    const message = `\
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
 <p>${msg.sender_firstname} ${msg.sender_lastname} has decided applications </p>
@@ -1246,37 +1270,41 @@ ${applications_name}
 
 `; // should be for admin/editor/agent/student
 
-  return sendEmail(recipient, subject, message);
-};
+    return sendEmail(recipient, subject, message);
+  }
+);
 
 // For editor, agents
-const AdmissionResultInformEmailToTaiGer = async (recipient, msg) => {
-  const result = msg.result === 'O' ? 'Admission' : 'Rejection';
-  const student_name = `${msg.student_firstname} ${msg.student_lastname}`;
-  const applications_name = `${msg.udpatedApplication.programId.school} ${msg.udpatedApplication.programId.program_name} ${msg.udpatedApplication.programId.degree} ${msg.udpatedApplication.programId.semester}`;
-  const subject = `[${result}] ${student_name} has received ${result} from ${applications_name}`;
-  const message = `\
+const AdmissionResultInformEmailToTaiGer = asyncHandler(
+  async (recipient, msg) => {
+    const result = msg.result === 'O' ? 'Admission' : 'Rejection';
+    const student_name = `${msg.student_firstname} ${msg.student_lastname}`;
+    const applications_name = `${msg.udpatedApplication.programId.school} ${msg.udpatedApplication.programId.program_name} ${msg.udpatedApplication.programId.degree} ${msg.udpatedApplication.programId.semester}`;
+    const subject = `[${result}] ${student_name} has received ${result} from ${applications_name}`;
+    const message = `\
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
 <p>${student_name} has received <b>${result}</b> from ${applications_name} </p>
 
 <p>See: <a href="${STUDENT_PROFILE_FOR_AGENT_URL(
-    msg.student_id
-  )}">${student_name}</a></p>
+      msg.student_id
+    )}">${student_name}</a></p>
 
 `; // should be for admin/editor/agent/student
 
-  return sendEmail(recipient, subject, message);
-};
+    return sendEmail(recipient, subject, message);
+  }
+);
 
-const sendNewInterviewMessageInThreadEmail = async (recipient, msg) => {
-  const interview_single_url = `${SINGLE_INTERVIEW_THREAD_URL(
-    msg.interview_id
-  )}`;
-  const interview_name = `Interview ${msg.program.school} ${msg.program.program_name} ${msg.program.degree} ${msg.program.semester}`;
-  const student_name = `${msg.student_firstname} - ${msg.student_lastname}`;
-  const subject = `[Update] ${msg.writer_firstname} ${msg.writer_lastname} sent a new message > ${interview_name}!`;
-  const message = `\
+const sendNewInterviewMessageInThreadEmail = asyncHandler(
+  async (recipient, msg) => {
+    const interview_single_url = `${SINGLE_INTERVIEW_THREAD_URL(
+      msg.interview_id
+    )}`;
+    const interview_name = `Interview ${msg.program.school} ${msg.program.program_name} ${msg.program.degree} ${msg.program.semester}`;
+    const student_name = `${msg.student_firstname} - ${msg.student_lastname}`;
+    const subject = `[Update] ${msg.writer_firstname} ${msg.writer_lastname} sent a new message > ${interview_name}!`;
+    const message = `\
 <p>${ENGLISH_BELOW}</p>
 
 <p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
@@ -1301,24 +1329,26 @@ const sendNewInterviewMessageInThreadEmail = async (recipient, msg) => {
 
 `;
 
-  sendEmail(recipient, subject, message);
-};
+    sendEmail(recipient, subject, message);
+  }
+);
 
-const sendNewApplicationMessageInThreadEmail = async (recipient, msg) => {
-  const thread_url = `${THREAD_URL}/${msg.thread_id}`;
-  const student_name = `${msg.student_firstname} - ${msg.student_lastname}`;
-  const task_name = `${msg.school} ${msg.program_name} ${msg.uploaded_documentname}`;
-  const subject = `[Update] ${msg.writer_firstname} ${msg.writer_lastname} sent a new message > ${task_name}!`;
-  const message = `\
+const sendNewApplicationMessageInThreadEmail = asyncHandler(
+  async (recipient, msg) => {
+    const thread_url = `${THREAD_URL}/${msg.thread_id}`;
+    const student_name = `${msg.student_firstname} - ${msg.student_lastname}`;
+    const task_name = `${msg.school} ${msg.program_name} ${msg.uploaded_documentname}`;
+    const subject = `[Update] ${msg.writer_firstname} ${msg.writer_lastname} sent a new message > ${task_name}!`;
+    const message = `\
 <p>${ENGLISH_BELOW}</p>
 
 <p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
 
 <p>${msg.writer_firstname} ${
-    msg.writer_lastname
-  } 對於 <a href="${thread_url}">${student_name} ${task_name}</a> 更新了訊息，於 ${
-    msg.uploaded_updatedAt
-  } 。</p>
+      msg.writer_lastname
+    } 對於 <a href="${thread_url}">${student_name} ${task_name}</a> 更新了訊息，於 ${
+      msg.uploaded_updatedAt
+    } 。</p>
 
 <a href="${`${thread_url}`}" class="mui-button" target="_blank">查看訊息</a>
 
@@ -1329,23 +1359,25 @@ const sendNewApplicationMessageInThreadEmail = async (recipient, msg) => {
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
 <p>${msg.writer_firstname} ${
-    msg.writer_lastname
-  } has a new update for <a href="${thread_url}">${student_name} ${task_name}</a> on ${
-    msg.uploaded_updatedAt
-  }.</p>
+      msg.writer_lastname
+    } has a new update for <a href="${thread_url}">${student_name} ${task_name}</a> on ${
+      msg.uploaded_updatedAt
+    }.</p>
 
 <a href="${`${thread_url}`}" class="mui-button" target="_blank">View Message</a>
 
 `;
 
-  sendEmail(recipient, subject, message);
-};
+    sendEmail(recipient, subject, message);
+  }
+);
 
-const sendNewGeneraldocMessageInThreadEmail = async (recipient, msg) => {
-  const thread_url = `${THREAD_URL}/${msg.thread_id}`;
-  const student_name = `${msg.student_firstname} - ${msg.student_lastname}`;
-  const subject = `[Update] ${msg.writer_firstname} ${msg.writer_lastname} provides a new message > ${student_name} ${msg.uploaded_documentname}!`;
-  const message = `\
+const sendNewGeneraldocMessageInThreadEmail = asyncHandler(
+  async (recipient, msg) => {
+    const thread_url = `${THREAD_URL}/${msg.thread_id}`;
+    const student_name = `${msg.student_firstname} - ${msg.student_lastname}`;
+    const subject = `[Update] ${msg.writer_firstname} ${msg.writer_lastname} provides a new message > ${student_name} ${msg.uploaded_documentname}!`;
+    const message = `\
 <p>${ENGLISH_BELOW}</p>
 
 <p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
@@ -1375,15 +1407,17 @@ const sendNewGeneraldocMessageInThreadEmail = async (recipient, msg) => {
 
 `;
 
-  sendEmail(recipient, subject, message);
-};
+    sendEmail(recipient, subject, message);
+  }
+);
 
-const sendSetAsFinalGeneralFileForAgentEmail = async (recipient, msg) => {
-  const student_name = `${msg.student_firstname} ${msg.student_lastname}`;
-  const threadUrl = `${THREAD_ID_URL(msg.thread_id)}`;
-  if (msg.isFinalVersion) {
-    const subject = `[Close] ${student_name} ${msg.uploaded_documentname} 已完成 / ${student_name} ${msg.uploaded_documentname} is finished!`;
-    const message = `\
+const sendSetAsFinalGeneralFileForAgentEmail = asyncHandler(
+  async (recipient, msg) => {
+    const student_name = `${msg.student_firstname} ${msg.student_lastname}`;
+    const threadUrl = `${THREAD_ID_URL(msg.thread_id)}`;
+    if (msg.isFinalVersion) {
+      const subject = `[Close] ${student_name} ${msg.uploaded_documentname} 已完成 / ${student_name} ${msg.uploaded_documentname} is finished!`;
+      const message = `\
 <p>${ENGLISH_BELOW}</p>
 
 <p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
@@ -1419,10 +1453,10 @@ const sendSetAsFinalGeneralFileForAgentEmail = async (recipient, msg) => {
 
 `;
 
-    sendEmail(recipient, subject, message);
-  } else {
-    const subject = `[Reopen] ${student_name} ${msg.uploaded_documentname} 未完成 / ${student_name} ${msg.uploaded_documentname} is not finished!`;
-    const message = `\
+      sendEmail(recipient, subject, message);
+    } else {
+      const subject = `[Reopen] ${student_name} ${msg.uploaded_documentname} 未完成 / ${student_name} ${msg.uploaded_documentname} is not finished!`;
+      const message = `\
 <p>${ENGLISH_BELOW}</p>
 
 <p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
@@ -1452,23 +1486,25 @@ as not finished.</p>
 
 `;
 
-    sendEmail(recipient, subject, message);
+      sendEmail(recipient, subject, message);
+    }
   }
-};
+);
 
-const sendSetAsFinalGeneralFileForStudentEmail = async (recipient, msg) => {
-  const student_name = `${recipient.firstname} ${recipient.lastname}`;
-  const threadUrl = `${THREAD_ID_URL(msg.thread_id)}`;
-  if (msg.isFinalVersion) {
-    const subject = `[Closed] 您的文件 ${msg.uploaded_documentname} 已完成 / Your document ${msg.uploaded_documentname} is finished!`;
-    const message = `\
+const sendSetAsFinalGeneralFileForStudentEmail = asyncHandler(
+  async (recipient, msg) => {
+    const student_name = `${recipient.firstname} ${recipient.lastname}`;
+    const threadUrl = `${THREAD_ID_URL(msg.thread_id)}`;
+    if (msg.isFinalVersion) {
+      const subject = `[Closed] 您的文件 ${msg.uploaded_documentname} 已完成 / Your document ${msg.uploaded_documentname} is finished!`;
+      const message = `\
 <p>${ENGLISH_BELOW}</p>
 
 <p>嗨 ${student_name},</p>
 
 <p>${msg.editor_firstname} ${msg.editor_lastname} 將 ${
-      msg.uploaded_documentname
-    } 列為已完成
+        msg.uploaded_documentname
+      } 列為已完成
 
 於 ${msg.uploaded_updatedAt} 。</p>
 
@@ -1486,8 +1522,8 @@ const sendSetAsFinalGeneralFileForStudentEmail = async (recipient, msg) => {
 <p>Hi ${student_name},</p>
 
 <p>your editor ${msg.editor_firstname} ${
-      msg.editor_lastname
-    } have finalized <a href="${threadUrl}">${msg.uploaded_documentname}</a> 
+        msg.editor_lastname
+      } have finalized <a href="${threadUrl}">${msg.uploaded_documentname}</a> 
 
 on ${msg.uploaded_updatedAt} for you.</p>
 
@@ -1500,17 +1536,17 @@ on ${msg.uploaded_updatedAt} for you.</p>
 
 `;
 
-    sendEmail(recipient, subject, message);
-  } else {
-    const subject = `[Reopen] 您的文件 ${msg.uploaded_documentname} 未完成 / Your document ${msg.uploaded_documentname} is not finished!`;
-    const message = `\
+      sendEmail(recipient, subject, message);
+    } else {
+      const subject = `[Reopen] 您的文件 ${msg.uploaded_documentname} 未完成 / Your document ${msg.uploaded_documentname} is not finished!`;
+      const message = `\
 <p>${ENGLISH_BELOW}</p>
 
 <p>嗨 ${student_name},</p>
 
 <p>${msg.editor_firstname} ${msg.editor_lastname} 標記 <a href="${threadUrl}">${
-      msg.uploaded_documentname
-    }</a> 為未完成。 </p>
+        msg.uploaded_documentname
+      }</a> 為未完成。 </p>
 
 <a href="${`${threadUrl}`}" class="mui-button" target="_blank">查看細節</a>
 
@@ -1523,8 +1559,8 @@ on ${msg.uploaded_updatedAt} for you.</p>
 <p>Hi ${student_name},</p>
 
 <p>${msg.editor_firstname} ${msg.editor_lastname} set <a href="${threadUrl}">${
-      msg.uploaded_documentname
-    }</a> as not finished.</p>
+        msg.uploaded_documentname
+      }</a> as not finished.</p>
 
 <a href="${`${threadUrl}`}" class="mui-button" target="_blank">See details</a>
 
@@ -1533,18 +1569,17 @@ on ${msg.uploaded_updatedAt} for you.</p>
 
 `;
 
-    sendEmail(recipient, subject, message);
+      sendEmail(recipient, subject, message);
+    }
   }
-};
+);
 
-const sendSetAsFinalProgramSpecificFileForStudentEmail = async (
-  recipient,
-  msg
-) => {
-  const thread_name = `${msg.school} - ${msg.program_name} ${msg.uploaded_documentname}`;
-  if (msg.isFinalVersion) {
-    const subject = `[Closed] 您的文件 ${msg.uploaded_documentname} 已完成 / Your document ${msg.uploaded_documentname} is finished!`;
-    const message = `\
+const sendSetAsFinalProgramSpecificFileForStudentEmail = asyncHandler(
+  async (recipient, msg) => {
+    const thread_name = `${msg.school} - ${msg.program_name} ${msg.uploaded_documentname}`;
+    if (msg.isFinalVersion) {
+      const subject = `[Closed] 您的文件 ${msg.uploaded_documentname} 已完成 / Your document ${msg.uploaded_documentname} is finished!`;
+      const message = `\
 <p>${ENGLISH_BELOW}</p>
 
 <p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
@@ -1552,8 +1587,8 @@ const sendSetAsFinalProgramSpecificFileForStudentEmail = async (
 <p>${msg.editor_firstname} ${msg.editor_lastname} 已完成</p>
 
 <p><a href="${`${THREAD_URL}/${msg.thread_id}`}">${thread_name}</a> 於 ${
-      msg.uploaded_updatedAt
-    } </p>
+        msg.uploaded_updatedAt
+      } </p>
 
 <p>此份最終文件可以拿來作為申請。 </p>
 
@@ -1582,10 +1617,10 @@ This document is ready for the application.
 
 `;
 
-    sendEmail(recipient, subject, message);
-  } else {
-    const subject = `[Reopen] 您的文件 ${msg.uploaded_documentname} 未完成 / Your document ${msg.uploaded_documentname} is not finished!`;
-    const message = `\
+      sendEmail(recipient, subject, message);
+    } else {
+      const subject = `[Reopen] 您的文件 ${msg.uploaded_documentname} 未完成 / Your document ${msg.uploaded_documentname} is not finished!`;
+      const message = `\
 <p>${ENGLISH_BELOW}</p>
 
 <p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
@@ -1619,19 +1654,18 @@ as not finished.</p>
 
 `;
 
-    sendEmail(recipient, subject, message);
+      sendEmail(recipient, subject, message);
+    }
   }
-};
+);
 
-const sendSetAsFinalProgramSpecificFileForAgentEmail = async (
-  recipient,
-  msg
-) => {
-  const doc_name = `${msg.school} - ${msg.program_name} ${msg.uploaded_documentname}`;
-  const student_name = `${msg.student_firstname} ${msg.student_lastname}`;
-  if (msg.isFinalVersion) {
-    const subject = `[Closed] ${msg.uploaded_documentname} of ${msg.school} - ${msg.program_name} ${student_name} is finished!`;
-    const message = `\
+const sendSetAsFinalProgramSpecificFileForAgentEmail = asyncHandler(
+  async (recipient, msg) => {
+    const doc_name = `${msg.school} - ${msg.program_name} ${msg.uploaded_documentname}`;
+    const student_name = `${msg.student_firstname} ${msg.student_lastname}`;
+    if (msg.isFinalVersion) {
+      const subject = `[Closed] ${msg.uploaded_documentname} of ${msg.school} - ${msg.program_name} ${student_name} is finished!`;
+      const message = `\
 <p>${ENGLISH_BELOW}</p>
 
 <p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
@@ -1645,8 +1679,8 @@ ${doc_name} 於 ${msg.uploaded_updatedAt}
 <p>請再次確認此文件，並確認是否可以結案此申請. </p>
 
 <p>請至 <a href="${`${THREAD_URL}/${msg.thread_id}`}">${msg.school} - ${
-      msg.program_name
-    } ${msg.uploaded_documentname}</a>  查看細節。</p>
+        msg.program_name
+      } ${msg.uploaded_documentname}</a>  查看細節。</p>
 
 <br />
 
@@ -1663,16 +1697,16 @@ for ${student_name}.</p>
 <p>Double check this document and finalize the application if applicable. </p>
 
 <p>Please go to <a href="${`${THREAD_URL}/${msg.thread_id}`}">${msg.school} - ${
-      msg.program_name
-    } ${msg.uploaded_documentname}</a> for more details.</p>
+        msg.program_name
+      } ${msg.uploaded_documentname}</a> for more details.</p>
 
 
 `;
 
-    sendEmail(recipient, subject, message);
-  } else {
-    const subject = `[Reopen] ${msg.uploaded_documentname} of ${msg.school} - ${msg.program_name} ${student_name} is reopen!`;
-    const message = `\
+      sendEmail(recipient, subject, message);
+    } else {
+      const subject = `[Reopen] ${msg.uploaded_documentname} of ${msg.school} - ${msg.program_name} ${student_name} is reopen!`;
+      const message = `\
 <p>${ENGLISH_BELOW}</p>
 
 <p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
@@ -1696,8 +1730,8 @@ ${doc_name} 為未完成於 ${msg.uploaded_updatedAt}
 <p>${msg.editor_firstname} ${msg.editor_lastname} set
 
 <a href="${`${THREAD_URL}/${msg.thread_id}`}">${doc_name}</a> as not finished on ${
-      msg.uploaded_updatedAt
-    } for ${student_name}.</p>
+        msg.uploaded_updatedAt
+      } for ${student_name}.</p>
 
 <p>Double check this document and finalize the application if applicable. </p>
 
@@ -1705,12 +1739,13 @@ ${doc_name} 為未完成於 ${msg.uploaded_updatedAt}
 
 `;
 
-    sendEmail(recipient, subject, message);
+      sendEmail(recipient, subject, message);
+    }
   }
-};
+);
 
 // For editor lead, english only
-const assignEssayTaskToEditorEmail = async (recipient, msg) => {
+const assignEssayTaskToEditorEmail = asyncHandler(async (recipient, msg) => {
   const subject = `[TODO] Assign Essay Writer to ${msg.student_firstname} ${msg.student_lastname} ${msg.program_name}`;
   const THREAD_LINK = new URL(`/document-modification/${msg.thread_id}`, ORIGIN)
     .href;
@@ -1731,10 +1766,10 @@ const assignEssayTaskToEditorEmail = async (recipient, msg) => {
 `;
 
   sendEmail(recipient, subject, message);
-};
+});
 
 // For editor, english only
-const assignDocumentTaskToEditorEmail = async (recipient, msg) => {
+const assignDocumentTaskToEditorEmail = asyncHandler(async (recipient, msg) => {
   const subject = `[New Task] ${msg.student_firstname} ${msg.student_lastname} ${msg.documentname} is assigned to you!`;
   const THREAD_LINK = new URL(`/document-modification/${msg.thread_id}`, ORIGIN)
     .href;
@@ -1755,15 +1790,18 @@ ${msg.student_firstname} ${msg.student_lastname} -  ${msg.documentname},
 `;
 
   sendEmail(recipient, subject, message);
-};
+});
 
 // TODO: kick-off email，請填寫 template
-const assignDocumentTaskToStudentEmail = async (recipient, msg) => {
-  const subject = `[新任務] ${recipient.firstname} ${recipient.lastname} ${msg.documentname} 指派給你 / [New Task] ${recipient.firstname} ${recipient.lastname} ${msg.documentname} is assigned to you!`;
-  const THREAD_LINK = new URL(`/document-modification/${msg.thread_id}`, ORIGIN)
-    .href;
+const assignDocumentTaskToStudentEmail = asyncHandler(
+  async (recipient, msg) => {
+    const subject = `[新任務] ${recipient.firstname} ${recipient.lastname} ${msg.documentname} 指派給你 / [New Task] ${recipient.firstname} ${recipient.lastname} ${msg.documentname} is assigned to you!`;
+    const THREAD_LINK = new URL(
+      `/document-modification/${msg.thread_id}`,
+      ORIGIN
+    ).href;
 
-  const message = `\
+    const message = `\
 <p>${ENGLISH_BELOW}</p>
 
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
@@ -1800,10 +1838,11 @@ on ${msg.updatedAt}.</p>
 
 `;
 
-  sendEmail(recipient, subject, message);
-};
+    sendEmail(recipient, subject, message);
+  }
+);
 
-const AnalysedCoursesDataStudentEmail = async (recipient, msg) => {
+const AnalysedCoursesDataStudentEmail = asyncHandler(async (recipient, msg) => {
   const subject = '課程匹配度分析成功 / Course data analysed successfully';
   const message = `\
 <p>${ENGLISH_BELOW}</p>
@@ -1843,9 +1882,9 @@ const AnalysedCoursesDataStudentEmail = async (recipient, msg) => {
 `; // should be for admin/editor/agent/student
 
   return sendEmail(recipient, subject, message);
-};
+});
 
-const updateCoursesDataAgentEmail = async (recipient, msg) => {
+const updateCoursesDataAgentEmail = asyncHandler(async (recipient, msg) => {
   const student_name = `${msg.student_firstname} ${msg.student_lastname}`;
   const studentCourseUrl = `${STUDENT_COURSE_URL(msg.student_id)}`;
   const subject = `[TODO] 分析課程 ${student_name} | Course anaylsis for ${student_name}`;
@@ -1874,9 +1913,9 @@ const updateCoursesDataAgentEmail = async (recipient, msg) => {
 `; // should be for admin/editor/agent/student
 
   return sendEmail(recipient, subject, message);
-};
+});
 
-const sendSomeReminderEmail = async (recipient) => {
+const sendSomeReminderEmail = asyncHandler(async (recipient) => {
   const subject = 'File Status changes';
   const message = `\
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
@@ -1887,13 +1926,16 @@ Some reminder email template.
 `; // should be for admin/editor/agent/student
 
   return sendEmail(recipient, subject, message);
-};
+});
 
-const sendAssignEditorReminderEmail = async (recipient, payload) => {
-  const student_name = `${payload.student_firstname} - ${payload.student_lastname}`;
-  const baseDocumentLink = `${BASE_DOCUMENT_FOR_AGENT_URL(payload.student_id)}`;
-  const subject = '[DO NOT IGNORE] Assign Editor Reminder';
-  const message = `\
+const sendAssignEditorReminderEmail = asyncHandler(
+  async (recipient, payload) => {
+    const student_name = `${payload.student_firstname} - ${payload.student_lastname}`;
+    const baseDocumentLink = `${BASE_DOCUMENT_FOR_AGENT_URL(
+      payload.student_id
+    )}`;
+    const subject = '[DO NOT IGNORE] Assign Editor Reminder';
+    const message = `\
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
 <p>${student_name} has uploaded some input in his/her CVMLRL Center, <b>but she/he did not have any Editor yet.</b></p>
@@ -1912,28 +1954,27 @@ const sendAssignEditorReminderEmail = async (recipient, payload) => {
 
 `; // should be for admin/editor/agent/student
 
-  return sendEmail(recipient, subject, message);
-};
+    return sendEmail(recipient, subject, message);
+  }
+);
 
-const sendNoTrainerInterviewRequestsReminderEmail = async (
-  recipient,
-  payload
-) => {
-  const requests = payload.interviewRequests.map(
-    (request) =>
-      `<li>
+const sendNoTrainerInterviewRequestsReminderEmail = asyncHandler(
+  async (recipient, payload) => {
+    const requests = payload.interviewRequests.map(
+      (request) =>
+        `<li>
       <a href="${SINGLE_INTERVIEW_THREAD_URL(request._id.toString())}">${
-        request.student_id.firstname
-      } ${request.student_id.lastname} - ${request.program_id.school} ${
-        request.program_id.program_name
-      } ${request.program_id.degree} ${request.program_id.semester} ${
-        request.interview_date
-      }</a>
+          request.student_id.firstname
+        } ${request.student_id.lastname} - ${request.program_id.school} ${
+          request.program_id.program_name
+        } ${request.program_id.degree} ${request.program_id.semester} ${
+          request.interview_date
+        }</a>
     </li>`
-  );
-  const subject =
-    '[DO NOT IGNORE] Assign Interview Trainer to the following requests';
-  const message = `\
+    );
+    const subject =
+      '[DO NOT IGNORE] Assign Interview Trainer to the following requests';
+    const message = `\
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
 <p>Please assign an interview trainer to the following interview training requests:</p>
@@ -1950,15 +1991,17 @@ ${requests}
 
 `; // should be for admin/editor/agent/student
 
-  return sendEmail(recipient, subject, message);
-};
+    return sendEmail(recipient, subject, message);
+  }
+);
 
-const sendAssignTrainerReminderEmail = async (recipient, payload) => {
-  const program_name = `${payload.program.school} ${payload.program.program_name} ${payload.program.degree}  ${payload.program.semester}`;
-  const student_name = `${payload.student_firstname} - ${payload.student_lastname}`;
-  const interviewUrl = `${SINGLE_INTERVIEW_THREAD_URL(payload.interview_id)}`;
-  const subject = `[DO NOT IGNORE] Assign Interview Trainer to ${student_name} - ${program_name}`;
-  const message = `\
+const sendAssignTrainerReminderEmail = asyncHandler(
+  async (recipient, payload) => {
+    const program_name = `${payload.program.school} ${payload.program.program_name} ${payload.program.degree}  ${payload.program.semester}`;
+    const student_name = `${payload.student_firstname} - ${payload.student_lastname}`;
+    const interviewUrl = `${SINGLE_INTERVIEW_THREAD_URL(payload.interview_id)}`;
+    const subject = `[DO NOT IGNORE] Assign Interview Trainer to ${student_name} - ${program_name}`;
+    const message = `\
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
 <p>${student_name} has created interview training request, <b>but she/he did not have any interview trainer yet.</b></p>
@@ -1980,14 +2023,18 @@ const sendAssignTrainerReminderEmail = async (recipient, payload) => {
 
 `; // should be for admin/editor/agent/student
 
-  return sendEmail(recipient, subject, message);
-};
+    return sendEmail(recipient, subject, message);
+  }
+);
 
-const sendAgentNewMessageReminderEmail = async (recipient, payload) => {
-  const student_name = `${payload.student_firstname} - ${payload.student_lastname}`;
-  const messageUrl = `${STUDENT_COMMUNICATION_THREAD_URL(payload.student_id)}`;
-  const subject = `[New Message] ${student_name}`;
-  const message = `\
+const sendAgentNewMessageReminderEmail = asyncHandler(
+  async (recipient, payload) => {
+    const student_name = `${payload.student_firstname} - ${payload.student_lastname}`;
+    const messageUrl = `${STUDENT_COMMUNICATION_THREAD_URL(
+      payload.student_id
+    )}`;
+    const subject = `[New Message] ${student_name}`;
+    const message = `\
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
 <p><b>${student_name} sent new message(s)</b></p>
@@ -2008,13 +2055,17 @@ const sendAgentNewMessageReminderEmail = async (recipient, payload) => {
 
 `; // should be for admin/editor/agent/student
 
-  return sendEmail(recipient, subject, message);
-};
+    return sendEmail(recipient, subject, message);
+  }
+);
 
-const sendStudentNewMessageReminderEmail = async (recipient, payload) => {
-  const subject = `[New Message] ${recipient.firstname} ${recipient.lastname}`;
-  const messageUrl = `${STUDENT_COMMUNICATION_THREAD_URL(payload.student_id)}`;
-  const message = `\
+const sendStudentNewMessageReminderEmail = asyncHandler(
+  async (recipient, payload) => {
+    const subject = `[New Message] ${recipient.firstname} ${recipient.lastname}`;
+    const messageUrl = `${STUDENT_COMMUNICATION_THREAD_URL(
+      payload.student_id
+    )}`;
+    const message = `\
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
 <p><b>${payload.taiger_user_firstname} - ${payload.taiger_user_lastname} sent you new message(s)</b></p>
@@ -2036,10 +2087,11 @@ const sendStudentNewMessageReminderEmail = async (recipient, payload) => {
 
 `; // should be for admin/editor/agent/student
 
-  return sendEmail(recipient, subject, message);
-};
+    return sendEmail(recipient, subject, message);
+  }
+);
 
-const MeetingAdjustReminderEmail = async (recipient, payload) => {
+const MeetingAdjustReminderEmail = asyncHandler(async (recipient, payload) => {
   const taigerUser = `${payload.taiger_user_firstname} ${payload.taiger_user_lastname}`;
   const calendarUrl = `${
     payload.role === 'Student'
@@ -2070,17 +2122,18 @@ const MeetingAdjustReminderEmail = async (recipient, payload) => {
 `; // should be for admin/editor/agent/student
 
   return sendEmail(recipient, subject, message);
-};
+});
 
-const MeetingConfirmationReminderEmail = async (recipient, payload) => {
-  const taigerUser = `${payload.taiger_user_firstname} ${payload.taiger_user_lastname}`;
-  const calendarUrl = `${
-    payload.role === 'Student'
-      ? AGENT_CALENDAR_EVENTS_URL(recipient.id)
-      : STUDENT_CALENDAR_EVENTS_URL(recipient.id)
-  }`;
-  const subject = `[TODO][Meeting Invitation] ${taigerUser}`;
-  const message = `\
+const MeetingConfirmationReminderEmail = asyncHandler(
+  async (recipient, payload) => {
+    const taigerUser = `${payload.taiger_user_firstname} ${payload.taiger_user_lastname}`;
+    const calendarUrl = `${
+      payload.role === 'Student'
+        ? AGENT_CALENDAR_EVENTS_URL(recipient.id)
+        : STUDENT_CALENDAR_EVENTS_URL(recipient.id)
+    }`;
+    const subject = `[TODO][Meeting Invitation] ${taigerUser}`;
+    const message = `\
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
 <p><b>${taigerUser}</b> 預訂了一個討論時段。</p>
@@ -2100,10 +2153,11 @@ const MeetingConfirmationReminderEmail = async (recipient, payload) => {
 
 `; // should be for admin/editor/agent/student
 
-  return sendEmail(recipient, subject, message);
-};
+    return sendEmail(recipient, subject, message);
+  }
+);
 
-const MeetingInvitationEmail = async (recipient, payload) => {
+const MeetingInvitationEmail = asyncHandler(async (recipient, payload) => {
   const taigerUser = `${payload.taiger_user.firstname} - ${payload.taiger_user.lastname}`;
   const subject = `[Meeting Confirmed] The booked office hour: ${payload.meeting_time}.`;
   const message = `\
@@ -2138,12 +2192,13 @@ const MeetingInvitationEmail = async (recipient, payload) => {
     payload.isUpdatingEvent,
     false
   );
-};
+});
 
-const MeetingCancelledReminderEmail = async (recipient, payload) => {
-  const taigerUser = `${payload.taiger_user.firstname} - ${payload.taiger_user.lastname}`;
-  const subject = `[Meeting Cancelled] The booked Office hour ${payload.meeting_time} is cancelled.`;
-  const message = `\
+const MeetingCancelledReminderEmail = asyncHandler(
+  async (recipient, payload) => {
+    const taigerUser = `${payload.taiger_user.firstname} - ${payload.taiger_user.lastname}`;
+    const subject = `[Meeting Cancelled] The booked Office hour ${payload.meeting_time} is cancelled.`;
+    const message = `\
 <p>Hi,</p>
 
 <p><b>${taigerUser}</b> 取消了討論時段。</p>
@@ -2155,22 +2210,24 @@ const MeetingCancelledReminderEmail = async (recipient, payload) => {
 
 `; // should be for admin/editor/agent/student
 
-  return sendEventEmail(
-    recipient,
-    subject,
-    message,
-    payload.event,
-    [payload.taiger_user], // cc
-    payload.event_title,
-    payload.isUpdatingEvent,
-    true // toDelete event
-  );
-};
+    return sendEventEmail(
+      recipient,
+      subject,
+      message,
+      payload.event,
+      [payload.taiger_user], // cc
+      payload.event_title,
+      payload.isUpdatingEvent,
+      true // toDelete event
+    );
+  }
+);
 
-const InterviewCancelledReminderEmail = async (recipient, payload) => {
-  const taigerUser = `${payload.taiger_user.firstname} - ${payload.taiger_user.lastname}`;
-  const subject = `[Interview Training Cancelled by ${payload.taiger_user.firstname} ${payload.taiger_user.lastname}].`;
-  const message = `\
+const InterviewCancelledReminderEmail = asyncHandler(
+  async (recipient, payload) => {
+    const taigerUser = `${payload.taiger_user.firstname} - ${payload.taiger_user.lastname}`;
+    const subject = `[Interview Training Cancelled by ${payload.taiger_user.firstname} ${payload.taiger_user.lastname}].`;
+    const message = `\
 <p>Hi,</p>
 
 <p><b>${taigerUser}</b> 取消了面試訓練。</p>
@@ -2182,19 +2239,20 @@ const InterviewCancelledReminderEmail = async (recipient, payload) => {
 
 `; // should be for admin/editor/agent/student
 
-  return sendEventEmail(
-    recipient,
-    subject,
-    message,
-    payload.event,
-    [...payload.cc], // cc
-    payload.event_title,
-    payload.isUpdatingEvent,
-    true // toDelete event
-  );
-};
+    return sendEventEmail(
+      recipient,
+      subject,
+      message,
+      payload.event,
+      [...payload.cc], // cc
+      payload.event_title,
+      payload.isUpdatingEvent,
+      true // toDelete event
+    );
+  }
+);
 
-const MeetingReminderEmail = async (recipient, payload) => {
+const MeetingReminderEmail = asyncHandler(async (recipient, payload) => {
   const subject = `[Meeting Reminder] ${recipient.firstname} ${recipient.lastname}`;
   const message = `\
 [會議討論提醒]
@@ -2225,16 +2283,17 @@ const MeetingReminderEmail = async (recipient, payload) => {
 `; // should be for admin/editor/agent/student
 
   return sendEmail(recipient, subject, message);
-};
+});
 
-const UnconfirmedMeetingReminderEmail = async (recipient, payload) => {
-  const calendarUrl = `${
-    payload.role === 'Student'
-      ? STUDENT_CALENDAR_EVENTS_URL(payload.id)
-      : AGENT_CALENDAR_EVENTS_URL(payload.id)
-  }`;
-  const subject = `[TODO now] Meeting to confirm reminder ${recipient.firstname} ${recipient.lastname}`;
-  const message = `\
+const UnconfirmedMeetingReminderEmail = asyncHandler(
+  async (recipient, payload) => {
+    const calendarUrl = `${
+      payload.role === 'Student'
+        ? STUDENT_CALENDAR_EVENTS_URL(payload.id)
+        : AGENT_CALENDAR_EVENTS_URL(payload.id)
+    }`;
+    const subject = `[TODO now] Meeting to confirm reminder ${recipient.firstname} ${recipient.lastname}`;
+    const message = `\
 [會議時間確認提醒]
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 <p> 您有一個尚未確認的討論時段與 ${payload.firstname} ${payload.lastname}</p>
@@ -2255,10 +2314,11 @@ const UnconfirmedMeetingReminderEmail = async (recipient, payload) => {
 
 `; // should be for admin/editor/agent/student
 
-  return sendEmail(recipient, subject, message);
-};
+    return sendEmail(recipient, subject, message);
+  }
+);
 
-const TicketCreatedAgentEmail = async (recipient, payload) => {
+const TicketCreatedAgentEmail = asyncHandler(async (recipient, payload) => {
   const programName = `${payload.program.school}-${payload.program.program_name}`;
   const student_name = `${payload.student.firstname} ${payload.student.lastname}`;
   const subject = `[TODO] Update request for ${programName} by ${student_name}`;
@@ -2280,33 +2340,35 @@ Please check the <a href="${PROGRAM_URL(
 `;
 
   return sendEmail(recipient, subject, message);
-};
+});
 
-const TicketResolvedRequesterReminderEmail = async (recipient, payload) => {
-  const programName = `${payload.program.school} - ${payload.program.program_name} - ${payload.program.degree} - ${payload.program.semester}`;
-  const taiger_user_name = `${payload.taigerUser.firstname} ${payload.taigerUser.lastname}`;
-  const subject = `[Close] Program Update Request for ${programName} by ${taiger_user_name}`;
-  const message = `\
+const TicketResolvedRequesterReminderEmail = asyncHandler(
+  async (recipient, payload) => {
+    const programName = `${payload.program.school} - ${payload.program.program_name} - ${payload.program.degree} - ${payload.program.semester}`;
+    const taiger_user_name = `${payload.taigerUser.firstname} ${payload.taigerUser.lastname}`;
+    const subject = `[Close] Program Update Request for ${programName} by ${taiger_user_name}`;
+    const message = `\
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
 <p><b>${taiger_user_name}</b> 更新並解決了 program ${programName} Feedback. 請上前查看 <a href="${PROGRAM_URL(
-    payload.program._id.toString()
-  )}">Ticket</a> 。 </p>
+      payload.program._id.toString()
+    )}">Ticket</a> 。 </p>
 
 <p>${SPLIT_LINE}</p>
 
 <p>${taiger_user_name} updated and resolved the feedback for the program  ${programName}. 
 
 Please check the <a href="${PROGRAM_URL(
-    payload.program._id.toString()
-  )}">Ticket</a> and see the ticket. </p>
+      payload.program._id.toString()
+    )}">Ticket</a> and see the ticket. </p>
 
 `;
 
-  return sendEmail(recipient, subject, message);
-};
+    return sendEmail(recipient, subject, message);
+  }
+);
 
-const TicketResolvedStudentEmail = async (recipient, payload) => {
+const TicketResolvedStudentEmail = asyncHandler(async (recipient, payload) => {
   const programName = `${payload.program.school}-${payload.program.program_name}`;
   const student_name = `${payload.student.firstname} ${payload.student.lastname}`;
   const subject = `[Resolved] Request for ${programName} by ${student_name}`;
@@ -2332,19 +2394,20 @@ Please check the <a href="${PROGRAM_URL(
 `;
 
   return sendEmail(recipient, subject, message);
-};
+});
 
-const sendAssignEssayWriterReminderEmail = async (recipient, payload) => {
-  const student_name = `${payload.student_firstname} - ${payload.student_lastname}`;
-  const subject = '[DO NOT IGNORE] Assign Essay Writer Reminder';
-  const message = `\
+const sendAssignEssayWriterReminderEmail = asyncHandler(
+  async (recipient, payload) => {
+    const student_name = `${payload.student_firstname} - ${payload.student_lastname}`;
+    const subject = '[DO NOT IGNORE] Assign Essay Writer Reminder';
+    const message = `\
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
 <p>${student_name} has uploaded Essay his/her CVMLRL Center, <b>but she/he did not have any Essay Writer yet.</b></p>
 
 <p><b>Please assign an Essay Writer to the student <a href="${BASE_DOCUMENT_FOR_AGENT_URL(
-    payload.student_id
-  )}">${student_name}</a></b></p>
+      payload.student_id
+    )}">${student_name}</a></b></p>
 
 <br />
 <p>${SPLIT_LINE}</p>
@@ -2352,25 +2415,24 @@ const sendAssignEssayWriterReminderEmail = async (recipient, payload) => {
 <p>${student_name} 上傳了一份Essay至他的 CVMLRL Cetner，但他目前並無任何Essay Writer。</p>
 
 <p><b>請指派 Essay Writer 給學生 <a href="${BASE_DOCUMENT_FOR_AGENT_URL(
-    payload.student_id
-  )}">${student_name}</a></b></p>
+      payload.student_id
+    )}">${student_name}</a></b></p>
 <br />
 
 `; // should be for admin/editor/agent/student
 
-  return sendEmail(recipient, subject, message);
-};
+    return sendEmail(recipient, subject, message);
+  }
+);
 
-const sendAssignedInterviewTrainerToTrainerEmail = async (
-  recipient,
-  payload
-) => {
-  const program = `${payload.interview.program_id.school} ${payload.interview.program_id.program_name} ${payload.interview.program_id.degree} ${payload.interview.program_id.semester}`;
-  const student_name = `${payload.interview.student_id.firstname} ${payload.interview.student_id.lastname}`;
-  const training_request = `${student_name} - ${program}`;
-  const subject = `Interview Training Request assigned to you for ${training_request}`;
+const sendAssignedInterviewTrainerToTrainerEmail = asyncHandler(
+  async (recipient, payload) => {
+    const program = `${payload.interview.program_id.school} ${payload.interview.program_id.program_name} ${payload.interview.program_id.degree} ${payload.interview.program_id.semester}`;
+    const student_name = `${payload.interview.student_id.firstname} ${payload.interview.student_id.lastname}`;
+    const training_request = `${student_name} - ${program}`;
+    const subject = `Interview Training Request assigned to you for ${training_request}`;
 
-  const message = `\
+    const message = `\
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
 <p>The following interview training request is assigned to you!</p>
@@ -2378,29 +2440,28 @@ const sendAssignedInterviewTrainerToTrainerEmail = async (
 <p><b>${training_request}</b></p>
 
 <p>Please go to <a href="${SINGLE_INTERVIEW_THREAD_URL(
-    payload.interview._id.toString()
-  )}">${training_request}</a></p> 
+      payload.interview._id.toString()
+    )}">${training_request}</a></p> 
 <p>and check the interview requirements and <b>arrange interview training date</b> with your student!</p>
 
 
 `;
 
-  return sendEmail(recipient, subject, message);
-};
-
-const sendAssignedInterviewTrainerToStudentEmail = async (
-  recipient,
-  payload
-) => {
-  const program = `${payload.interview.program_id.school} ${payload.interview.program_id.program_name} ${payload.interview.program_id.degree} ${payload.interview.program_id.semester}`;
-  const student_name = `${payload.interview.student_id.firstname} ${payload.interview.student_id.lastname}`;
-  const training_request = `${student_name} - ${program}`;
-  const subject = `[Info] Interview Trainer assigned for ${training_request}`;
-  let trainers = '';
-  for (let i = 0; i < payload.interview.trainer_id?.length; i += 1) {
-    trainers += `<li><b>${payload.interview.trainer_id[i].firstname} - ${payload.interview.trainer_id[i].lastname}</b> Email: ${payload.interview.trainer_id[i].email}</li>`;
+    return sendEmail(recipient, subject, message);
   }
-  const message = `\
+);
+
+const sendAssignedInterviewTrainerToStudentEmail = asyncHandler(
+  async (recipient, payload) => {
+    const program = `${payload.interview.program_id.school} ${payload.interview.program_id.program_name} ${payload.interview.program_id.degree} ${payload.interview.program_id.semester}`;
+    const student_name = `${payload.interview.student_id.firstname} ${payload.interview.student_id.lastname}`;
+    const training_request = `${student_name} - ${program}`;
+    const subject = `[Info] Interview Trainer assigned for ${training_request}`;
+    let trainers = '';
+    for (let i = 0; i < payload.interview.trainer_id?.length; i += 1) {
+      trainers += `<li><b>${payload.interview.trainer_id[i].firstname} - ${payload.interview.trainer_id[i].lastname}</b> Email: ${payload.interview.trainer_id[i].email}</li>`;
+    }
+    const message = `\
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
 <p>The following trainer are assigned to student ${student_name}!</p>
@@ -2408,71 +2469,74 @@ const sendAssignedInterviewTrainerToStudentEmail = async (
 <p>${trainers}</p>
 
 <p>Please go to <a href="${SINGLE_INTERVIEW_THREAD_URL(
-    payload.interview._id.toString()
-  )}">${training_request}</a></p>
+      payload.interview._id.toString()
+    )}">${training_request}</a></p>
 <p>and <b>arrange the interview training date</b> with your interview trainer!</p>
 
 
 `;
 
-  return sendEmail(recipient, subject, message);
-};
+    return sendEmail(recipient, subject, message);
+  }
+);
 
-const sendInterviewConfirmationEmail = async (recipient, payload) => {
-  const subject = `[Confirmed] Interview Training Time for ${payload.program.school} ${payload.program.program_name} ${payload.program.degree} ${payload.program.semester}`;
-  const message = `\
+const sendInterviewConfirmationEmail = asyncHandler(
+  async (recipient, payload) => {
+    const subject = `[Confirmed] Interview Training Time for ${payload.program.school} ${payload.program.program_name} ${payload.program.degree} ${payload.program.semester}`;
+    const message = `\
 <p>${ENGLISH_BELOW}</p>
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
 <p><b>${payload.taiger_user.firstname} - ${
-    payload.taiger_user.lastname
-  }</b> 確認了面試訓練時段。</p>
+      payload.taiger_user.lastname
+    }</b> 確認了面試訓練時段。</p>
 <p>請至 TaiGer Portal 查看您的當地面試訓練時間。</p>
 
 <p> 請於該時間準時點擊以下連結： </p>
 
 <p>Jitsi Meet 會議連結網址：</p>
 <a href="${
-    payload.meeting_link
-  }" class="mui-button" target="_blank">Meeting Link</a>
+      payload.meeting_link
+    }" class="mui-button" target="_blank">Meeting Link</a>
 
 <p>若您是第一次使用Jitsi Meet 會議，建議可以先查看使用說明： <a href="${JITSI_MEET_INSTRUCTIONS_URL}">${JITSI_MEET_INSTRUCTIONS_URL}</a></p>
 <p>若需要改時間，請上去 <a href="${SINGLE_INTERVIEW_THREAD_URL(
-    payload.interview_id
-  )}">面試討論串</a> 和面試訓練官更改模擬面試時間。</p>
+      payload.interview_id
+    )}">面試討論串</a> 和面試訓練官更改模擬面試時間。</p>
 
 <p>${SPLIT_LINE}</p>
 
 <p>${payload.taiger_user.firstname} - ${
-    payload.taiger_user.lastname
-  } confirmed the meeting time.</p>
+      payload.taiger_user.lastname
+    } confirmed the meeting time.</p>
 <p>Please login to the TaiGer Portal and see the interview training time in your timezone.</p>
 
 <p> Jitsi Meet Meeting link</p>
 <a href="${
-    payload.meeting_link
-  }" class="mui-button" target="_blank">Meeting Link</a>
+      payload.meeting_link
+    }" class="mui-button" target="_blank">Meeting Link</a>
 <p>If it is the first time for you to use Jitsi Meet, we recommend you having a look at our brief introduction: <a href="${JITSI_MEET_INSTRUCTIONS_URL}">${JITSI_MEET_INSTRUCTIONS_URL}</a></p>
 <p>If you can not attend the interview training, please go to <a href="${SINGLE_INTERVIEW_THREAD_URL(
-    payload.interview_id
-  )}">Interview Thread</a> arrange another interview training time.</p>
+      payload.interview_id
+    )}">Interview Thread</a> arrange another interview training time.</p>
 
 
 `;
 
-  return sendEventEmail(
-    recipient,
-    subject,
-    message,
-    payload.event,
-    [...payload.cc], // cc
-    payload.event.title,
-    payload.isUpdatingEvent,
-    false
-  );
-};
+    return sendEventEmail(
+      recipient,
+      subject,
+      message,
+      payload.event,
+      [...payload.cc], // cc
+      payload.event.title,
+      payload.isUpdatingEvent,
+      false
+    );
+  }
+);
 
-const sendInterviewCancelEmail = async (recipient, payload) => {
+const sendInterviewCancelEmail = asyncHandler(async (recipient, payload) => {
   const taiger_user_name = `${payload.taiger_user.firstname} - ${payload.taiger_user.lastname}`;
   const program_name = `${payload.program.school} ${payload.program.program_name} ${payload.program.degree} ${payload.program.semester}`;
   const subject = `[Cancelled] Interview Training for ${program_name} is cancelled`;
@@ -2498,11 +2562,12 @@ const sendInterviewCancelEmail = async (recipient, payload) => {
     payload.isUpdatingEvent,
     true
   );
-};
+});
 
-const InterviewTrainingReminderEmail = async (recipient, payload) => {
-  const subject = `[Training Reminder] ${recipient.firstname} ${recipient.lastname}`;
-  const message = `\
+const InterviewTrainingReminderEmail = asyncHandler(
+  async (recipient, payload) => {
+    const subject = `[Training Reminder] ${recipient.firstname} ${recipient.lastname}`;
+    const message = `\
 [面試訓練討論提醒]
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 <br />
@@ -2530,10 +2595,11 @@ const InterviewTrainingReminderEmail = async (recipient, payload) => {
 
 `; // should be for admin/editor/agent/student
 
-  return sendEmail(recipient, subject, message);
-};
+    return sendEmail(recipient, subject, message);
+  }
+);
 
-const sendSetAsFinalInterviewEmail = async (recipient, msg) => {
+const sendSetAsFinalInterviewEmail = asyncHandler(async (recipient, msg) => {
   const user_name = `${msg.user.firstname} ${msg.user.lastname}`;
   const student_name = `${msg.interview.student_id.firstname} ${msg.interview.student_id.lastname}`;
   const interviewUrl = `${SINGLE_INTERVIEW_THREAD_URL(
@@ -2597,9 +2663,9 @@ ${user_name} 標示 ${interview_name} 為未完成。
 
     sendEmail(recipient, subject, message);
   }
-};
+});
 
-const InterviewSurveyRequestEmail = async (recipient, msg) => {
+const InterviewSurveyRequestEmail = asyncHandler(async (recipient, msg) => {
   const student_name = `${recipient.firstname} ${recipient.lastname}`;
   const interviewSurveyUrl = `${SINGLE_INTERVIEW_SURVEY_THREAD_URL(
     msg.interview._id.toString()
@@ -2636,9 +2702,9 @@ const InterviewSurveyRequestEmail = async (recipient, msg) => {
 `;
 
   sendEmail(recipient, subject, message);
-};
+});
 
-const InterviewSurveyFinishedEmail = async (recipient, msg) => {
+const InterviewSurveyFinishedEmail = asyncHandler(async (recipient, msg) => {
   const user_name = `${msg.user.firstname} ${msg.user.lastname}`;
   const student_name = `${msg.interview.student_id.firstname} ${msg.interview.student_id.lastname}`;
   const interviewSurveyUrl = `${SINGLE_INTERVIEW_SURVEY_THREAD_URL(
@@ -2676,17 +2742,18 @@ const InterviewSurveyFinishedEmail = async (recipient, msg) => {
 `;
 
   sendEmail(recipient, subject, message);
-};
+});
 
-const InterviewSurveyFinishedToTaiGerEmail = async (recipient, msg) => {
-  const user_name = `${msg.user.firstname} ${msg.user.lastname}`;
-  const student_name = `${msg.interview.student_id.firstname} ${msg.interview.student_id.lastname}`;
-  const interviewSurveyUrl = `${SINGLE_INTERVIEW_SURVEY_THREAD_URL(
-    msg.interview._id.toString()
-  )}`;
-  const interview_name = `${student_name} ${msg.interview.program_id.school} ${msg.interview.program_id.program_name} ${msg.interview.program_id.degree} `;
-  const subject = `[Close] Interview survey finished: ${interview_name}`;
-  const message = `\
+const InterviewSurveyFinishedToTaiGerEmail = asyncHandler(
+  async (recipient, msg) => {
+    const user_name = `${msg.user.firstname} ${msg.user.lastname}`;
+    const student_name = `${msg.interview.student_id.firstname} ${msg.interview.student_id.lastname}`;
+    const interviewSurveyUrl = `${SINGLE_INTERVIEW_SURVEY_THREAD_URL(
+      msg.interview._id.toString()
+    )}`;
+    const interview_name = `${student_name} ${msg.interview.program_id.school} ${msg.interview.program_id.program_name} ${msg.interview.program_id.degree} `;
+    const subject = `[Close] Interview survey finished: ${interview_name}`;
+    const message = `\
 <p>${ENGLISH_BELOW}</p>
 
 <p>嗨 ${recipient.firstname} ${recipient.lastname},</p>
@@ -2707,8 +2774,9 @@ const InterviewSurveyFinishedToTaiGerEmail = async (recipient, msg) => {
 
 `;
 
-  sendEmail(recipient, subject, message);
-};
+    sendEmail(recipient, subject, message);
+  }
+);
 
 module.exports = {
   verifySMTPConfig,

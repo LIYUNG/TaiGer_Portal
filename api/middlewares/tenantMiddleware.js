@@ -80,10 +80,6 @@ const connectToDatabase = (tenant) => {
     connection.model('Interval', intervalSchema);
     connection.model('Interview', interviewsSchema);
 
-    interviewSurveyResponseSchema.index(
-      { student_id: 1, interview_id: 1 },
-      { unique: true }
-    );
     connection.model('InterviewSurveyResponse', interviewSurveyResponseSchema);
     connection.model('Note', notesSchema);
     connection.model('Permission', permissionSchema);
@@ -128,7 +124,6 @@ const tenantMiddleware = (req, res, next) => {
   }
   req.db = connectToDatabase(tenant);
   req.VCModel = req.db.model('VC');
-  //   req.tenant = tenant;
   next();
 };
 

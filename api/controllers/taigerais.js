@@ -55,23 +55,24 @@ const processProgramListAi = asyncHandler(async (req, res, next) => {
   });
 });
 
-const generate = async (input, model) => {
+const generate = asyncHandler(async (input, model) => {
   logger.info(`model = ${model}`);
   const response = await openAIClient.chat.completions.create({
     messages: [{ role: 'user', content: input || 'where is BMW Headquarter?' }],
     model
   });
   return response.choices[0]?.message;
-};
-const generate_streaming = async (input, model) =>
+});
+
+const generate_streaming = asyncHandler(async (input, model) =>
   openAIClient.chat.completions.create({
     messages: [{ role: 'user', content: input || 'where is BMW Headquarter?' }],
     model: OpenAiModel.GPT_3_5_TURBO,
     stream: true
-  });
+  })
+);
 
 const TaiGerAiGeneral = asyncHandler(async (req, res, next) => {
-  const { user } = req;
   const { prompt, model } = req.body;
   const stream = await generate_streaming(
     prompt,

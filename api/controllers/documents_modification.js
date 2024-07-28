@@ -41,7 +41,7 @@ const {
 const { AWS_S3_BUCKET_NAME, API_ORIGIN } = require('../config');
 const { s3 } = require('../aws/index');
 
-const ThreadS3GarbageCollector = async (req) => {
+const ThreadS3GarbageCollector = asyncHandler(async (req) => {
   try {
     // TODO: could be bottleneck if number of thread increase.
     const doc_threads = await req.db.model('Documentthread').find();
@@ -156,126 +156,130 @@ const ThreadS3GarbageCollector = async (req) => {
     logger.error(e);
     logger.error('Error during garbage collection.');
   }
-};
+});
 
-const SingleThreadThreadS3GarbageCollector = async (req, ThreadId) => {
-  // This functino will be called when thread marked as finished.
-  try {
-    // TODO: could be bottleneck if number of thread increase.
-    const doc_thread = await req.db.model('Documentthread').findById(ThreadId);
-    if (!doc_thread) {
-      logger.error('SingleThreadThreadS3GarbageCollector Invalid ThreadId');
-      throw new ErrorResponse(404, 'Thread not found');
-    }
+const SingleThreadThreadS3GarbageCollector = asyncHandler(
+  async (req, ThreadId) => {
+    // This functino will be called when thread marked as finished.
+    try {
+      // TODO: could be bottleneck if number of thread increase.
+      const doc_thread = await req.db
+        .model('Documentthread')
+        .findById(ThreadId);
+      if (!doc_thread) {
+        logger.error('SingleThreadThreadS3GarbageCollector Invalid ThreadId');
+        throw new ErrorResponse(404, 'Thread not found');
+      }
 
-    const deleteParams = {
-      Bucket: AWS_S3_BUCKET_NAME,
-      Delete: { Objects: [] }
-    };
+      const deleteParams = {
+        Bucket: AWS_S3_BUCKET_NAME,
+        Delete: { Objects: [] }
+      };
 
-    const delete_files_Params = {
-      Bucket: AWS_S3_BUCKET_NAME,
-      Delete: { Objects: [] }
-    };
+      const delete_files_Params = {
+        Bucket: AWS_S3_BUCKET_NAME,
+        Delete: { Objects: [] }
+      };
 
-    logger.info(
-      'Trying to delete redundant images S3 of corresponding message thread'
-    );
-    // eslint-disable-next-line no-underscore-dangle
-    const thread_id = doc_thread._id.toString();
-    const student_id = doc_thread.student_id.toString();
-    const message_a = doc_thread.messages;
-    let directory_img = path.join(student_id, thread_id, 'img');
-    directory_img = directory_img.replace(/\\/g, '/');
-    let directory_files = path.join(student_id, thread_id);
-    directory_files = directory_files.replace(/\\/g, '/');
-    const listParamsPublic = {
-      Bucket: AWS_S3_BUCKET_NAME,
-      Delimiter: '/',
-      Prefix: `${directory_img}/`
-    };
-    const listParamsPublic_files = {
-      Bucket: AWS_S3_BUCKET_NAME,
-      Delimiter: '/',
-      Prefix: `${directory_files}/`
-    };
-    const listedObjectsPublic = await s3
-      .listObjectsV2(listParamsPublic)
-      .promise();
+      logger.info(
+        'Trying to delete redundant images S3 of corresponding message thread'
+      );
+      // eslint-disable-next-line no-underscore-dangle
+      const thread_id = doc_thread._id.toString();
+      const student_id = doc_thread.student_id.toString();
+      const message_a = doc_thread.messages;
+      let directory_img = path.join(student_id, thread_id, 'img');
+      directory_img = directory_img.replace(/\\/g, '/');
+      let directory_files = path.join(student_id, thread_id);
+      directory_files = directory_files.replace(/\\/g, '/');
+      const listParamsPublic = {
+        Bucket: AWS_S3_BUCKET_NAME,
+        Delimiter: '/',
+        Prefix: `${directory_img}/`
+      };
+      const listParamsPublic_files = {
+        Bucket: AWS_S3_BUCKET_NAME,
+        Delimiter: '/',
+        Prefix: `${directory_files}/`
+      };
+      const listedObjectsPublic = await s3
+        .listObjectsV2(listParamsPublic)
+        .promise();
 
-    const listedObjectsPublic_files = await s3
-      .listObjectsV2(listParamsPublic_files)
-      .promise();
-    if (listedObjectsPublic.Contents.length > 0) {
-      listedObjectsPublic.Contents.forEach((Obj) => {
-        let file_found = false;
-        if (message_a.length === 0) {
-          deleteParams.Delete.Objects.push({ Key: Obj.Key });
-        }
-        for (let i = 0; i < message_a.length; i += 1) {
-          const file_name = Obj.Key.split('/')[3];
-          if (message_a[i].message.includes(file_name)) {
-            file_found = true;
-            break;
+      const listedObjectsPublic_files = await s3
+        .listObjectsV2(listParamsPublic_files)
+        .promise();
+      if (listedObjectsPublic.Contents.length > 0) {
+        listedObjectsPublic.Contents.forEach((Obj) => {
+          let file_found = false;
+          if (message_a.length === 0) {
+            deleteParams.Delete.Objects.push({ Key: Obj.Key });
           }
-        }
-        if (!file_found) {
-          // if until last message_a still not found, add the Key to the delete list
-          // Delete only older than 2 week
-          // if (getNumberOfDays(Obj.LastModified, temp_date) > 14) {
-          deleteParams.Delete.Objects.push({ Key: Obj.Key });
-          // }
-        }
-      });
-    }
-    if (listedObjectsPublic_files.Contents.length > 0) {
-      listedObjectsPublic_files.Contents.forEach((Obj2) => {
-        let file_found = false;
-        if (message_a.length === 0) {
-          delete_files_Params.Delete.Objects.push({ Key: Obj2.Key });
-        }
-        for (let i = 0; i < message_a.length; i += 1) {
-          const file_name = Obj2.Key.split('/')[2];
-          for (let k = 0; k < message_a[i].file.length; k += 1) {
-            if (message_a[i].file[k].path.includes(file_name)) {
+          for (let i = 0; i < message_a.length; i += 1) {
+            const file_name = Obj.Key.split('/')[3];
+            if (message_a[i].message.includes(file_name)) {
               file_found = true;
               break;
             }
           }
-          if (file_found) {
-            break;
+          if (!file_found) {
+            // if until last message_a still not found, add the Key to the delete list
+            // Delete only older than 2 week
+            // if (getNumberOfDays(Obj.LastModified, temp_date) > 14) {
+            deleteParams.Delete.Objects.push({ Key: Obj.Key });
+            // }
           }
-        }
-        if (!file_found) {
-          // if until last message_a still not found, add the Key to the delete list
-          // Delete only older than 2 week
-          // if (getNumberOfDays(Obj2.LastModified, temp_date) > 14) {
-          delete_files_Params.Delete.Objects.push({ Key: Obj2.Key });
-          // }
-        }
-      });
-    }
+        });
+      }
+      if (listedObjectsPublic_files.Contents.length > 0) {
+        listedObjectsPublic_files.Contents.forEach((Obj2) => {
+          let file_found = false;
+          if (message_a.length === 0) {
+            delete_files_Params.Delete.Objects.push({ Key: Obj2.Key });
+          }
+          for (let i = 0; i < message_a.length; i += 1) {
+            const file_name = Obj2.Key.split('/')[2];
+            for (let k = 0; k < message_a[i].file.length; k += 1) {
+              if (message_a[i].file[k].path.includes(file_name)) {
+                file_found = true;
+                break;
+              }
+            }
+            if (file_found) {
+              break;
+            }
+          }
+          if (!file_found) {
+            // if until last message_a still not found, add the Key to the delete list
+            // Delete only older than 2 week
+            // if (getNumberOfDays(Obj2.LastModified, temp_date) > 14) {
+            delete_files_Params.Delete.Objects.push({ Key: Obj2.Key });
+            // }
+          }
+        });
+      }
 
-    if (deleteParams.Delete.Objects.length > 0) {
-      await s3.deleteObjects(deleteParams).promise();
-      logger.info('Deleted redundant images for threads.');
-      logger.info(deleteParams.Delete.Objects);
-    } else {
-      logger.info('No images to be deleted for threads.');
-    }
+      if (deleteParams.Delete.Objects.length > 0) {
+        await s3.deleteObjects(deleteParams).promise();
+        logger.info('Deleted redundant images for threads.');
+        logger.info(deleteParams.Delete.Objects);
+      } else {
+        logger.info('No images to be deleted for threads.');
+      }
 
-    if (delete_files_Params.Delete.Objects.length > 0) {
-      await s3.deleteObjects(delete_files_Params).promise();
-      logger.info('Deleted redundant files for threads.');
-      logger.info(delete_files_Params.Delete.Objects);
-    } else {
-      logger.info('No files to be deleted for threads.');
+      if (delete_files_Params.Delete.Objects.length > 0) {
+        await s3.deleteObjects(delete_files_Params).promise();
+        logger.info('Deleted redundant files for threads.');
+        logger.info(delete_files_Params.Delete.Objects);
+      } else {
+        logger.info('No files to be deleted for threads.');
+      }
+    } catch (e) {
+      logger.error(e);
+      logger.error('Error during garbage collection.');
     }
-  } catch (e) {
-    logger.error(e);
-    logger.error('Error during garbage collection.');
   }
-};
+);
 
 const getAllCVMLRLOverview = asyncHandler(async (req, res) => {
   const students = await req.db
@@ -313,27 +317,29 @@ const getAllCVMLRLOverview = asyncHandler(async (req, res) => {
   res.status(200).send({ success: true, data: students });
 });
 
-const getSurveyInputDocuments = async (req, studentId, programId, fileType) => {
-  const document = await req.db
-    .model('surveyInput')
-    .find({
-      studentId,
-      ...(fileType ? { fileType } : {}),
-      ...(programId ? { programId: { $in: [programId, null] } } : {})
-    })
-    .select(
-      'programId fileType surveyType surveyContent isFinalVersion createdAt updatedAt'
-    )
-    .lean()
-    .exec();
+const getSurveyInputDocuments = asyncHandler(
+  async (req, studentId, programId, fileType) => {
+    const document = await req.db
+      .model('surveyInput')
+      .find({
+        studentId,
+        ...(fileType ? { fileType } : {}),
+        ...(programId ? { programId: { $in: [programId, null] } } : {})
+      })
+      .select(
+        'programId fileType surveyType surveyContent isFinalVersion createdAt updatedAt'
+      )
+      .lean()
+      .exec();
 
-  const surveys = {
-    general: document.find((doc) => !doc.programId),
-    specific: programId && document.find((doc) => doc.programId)
-  };
+    const surveys = {
+      general: document.find((doc) => !doc.programId),
+      specific: programId && document.find((doc) => doc.programId)
+    };
 
-  return surveys;
-};
+    return surveys;
+  }
+);
 
 const getSurveyInputs = asyncHandler(async (req, res, next) => {
   const {
@@ -706,63 +712,65 @@ const initGeneralMessagesThread = asyncHandler(async (req, res) => {
   }
 });
 
-const createApplicationThread = async (
-  { StudentModel, DocumentthreadModel },
-  studentId,
-  programId,
-  fileType
-) => {
-  const threadExisted = await DocumentthreadModel.findOne({
-    student_id: studentId,
-    program_id: programId,
-    file_type: fileType
-  });
+const createApplicationThread = asyncHandler(
+  async (
+    { StudentModel, DocumentthreadModel },
+    studentId,
+    programId,
+    fileType
+  ) => {
+    const threadExisted = await DocumentthreadModel.findOne({
+      student_id: studentId,
+      program_id: programId,
+      file_type: fileType
+    });
 
-  if (threadExisted) {
-    logger.error(
-      'initApplicationMessagesThread: Document Thread already existed!'
+    if (threadExisted) {
+      logger.error(
+        'initApplicationMessagesThread: Document Thread already existed!'
+      );
+      throw new ErrorResponse(409, 'Document Thread already existed!');
+    }
+
+    const student = await StudentModel.findById(studentId)
+      .populate('applications.programId')
+      .exec();
+
+    if (!student) {
+      logger.info('initApplicationMessagesThread: Invalid student id!');
+      throw new ErrorResponse(404, 'Student not found');
+    }
+
+    const appIdx = student.applications.findIndex(
+      (app) => app.programId._id.toString() === programId.toString()
     );
-    throw new ErrorResponse(409, 'Document Thread already existed!');
+
+    if (appIdx === -1) {
+      logger.info('initApplicationMessagesThread: Invalid application id!');
+      throw new ErrorResponse(404, 'Application not found');
+    }
+
+    const newThread = new DocumentthreadModel({
+      student_id: studentId,
+      file_type: fileType,
+      program_id: programId,
+      updatedAt: new Date()
+    });
+
+    const newAppRecord = student.applications[
+      appIdx
+    ].doc_modification_thread.create({
+      doc_thread_id: newThread,
+      updatedAt: new Date(),
+      createdAt: new Date()
+    });
+    student.applications[appIdx].doc_modification_thread.push(newAppRecord);
+    student.notification.isRead_new_cvmlrl_tasks_created = false;
+    await student.save();
+    await newThread.save();
+    return newAppRecord;
   }
-
-  const student = await StudentModel.findById(studentId)
-    .populate('applications.programId')
-    .exec();
-
-  if (!student) {
-    logger.info('initApplicationMessagesThread: Invalid student id!');
-    throw new ErrorResponse(404, 'Student not found');
-  }
-
-  const appIdx = student.applications.findIndex(
-    (app) => app.programId._id.toString() === programId.toString()
-  );
-
-  if (appIdx === -1) {
-    logger.info('initApplicationMessagesThread: Invalid application id!');
-    throw new ErrorResponse(404, 'Application not found');
-  }
-
-  const newThread = new DocumentthreadModel({
-    student_id: studentId,
-    file_type: fileType,
-    program_id: programId,
-    updatedAt: new Date()
-  });
-
-  const newAppRecord = student.applications[
-    appIdx
-  ].doc_modification_thread.create({
-    doc_thread_id: newThread,
-    updatedAt: new Date(),
-    createdAt: new Date()
-  });
-  student.applications[appIdx].doc_modification_thread.push(newAppRecord);
-  student.notification.isRead_new_cvmlrl_tasks_created = false;
-  await student.save();
-  await newThread.save();
-  return newAppRecord;
-};
+);
 
 // (O) email inform Editor
 // (O) email inform Student
@@ -1945,7 +1953,7 @@ const SetStatusMessagesThread = asyncHandler(async (req, res) => {
   }
 });
 
-const deleteGeneralThread = async (studentId, threadId) => {
+const deleteGeneralThread = asyncHandler(async (studentId, threadId) => {
   // Delete folder
   let directory = path.join(studentId, threadId);
   logger.info('Trying to delete message thread and folder');
@@ -1958,7 +1966,7 @@ const deleteGeneralThread = async (studentId, threadId) => {
       generaldocs_threads: { doc_thread_id: { _id: threadId } }
     }
   });
-};
+});
 
 // () TODO email : notification
 const handleDeleteGeneralThread = asyncHandler(async (req, res) => {
@@ -1984,39 +1992,41 @@ const handleDeleteGeneralThread = asyncHandler(async (req, res) => {
   res.status(200).send({ success: true });
 });
 
-const deleteApplicationThread = async (
-  { StudentModel, DocumentthreadModel, surveyInputModel },
-  studentId,
-  programId,
-  threadId
-) => {
-  // Before delete the thread, please delete all of the files in the thread!!
-  // Delete folder
-  let directory = path.join(studentId, threadId);
-  logger.info('Trying to delete message thread and folder');
-  directory = directory.replace(/\\/g, '/');
-  emptyS3Directory(AWS_S3_BUCKET_NAME, directory);
-
-  await StudentModel.findOneAndUpdate(
-    {
-      _id: new mongoose.Types.ObjectId(studentId),
-      'applications.programId': new mongoose.Types.ObjectId(programId)
-    },
-    {
-      $pull: {
-        'applications.$.doc_modification_thread': {
-          doc_thread_id: { _id: new mongoose.Types.ObjectId(threadId) }
-        }
-      }
-    }
-  );
-  const thread = await DocumentthreadModel.findByIdAndDelete(threadId);
-  await surveyInputModel.deleteOne({
+const deleteApplicationThread = asyncHandler(
+  async (
+    { StudentModel, DocumentthreadModel, surveyInputModel },
     studentId,
     programId,
-    fileType: thread.file_type
-  });
-};
+    threadId
+  ) => {
+    // Before delete the thread, please delete all of the files in the thread!!
+    // Delete folder
+    let directory = path.join(studentId, threadId);
+    logger.info('Trying to delete message thread and folder');
+    directory = directory.replace(/\\/g, '/');
+    emptyS3Directory(AWS_S3_BUCKET_NAME, directory);
+
+    await StudentModel.findOneAndUpdate(
+      {
+        _id: new mongoose.Types.ObjectId(studentId),
+        'applications.programId': new mongoose.Types.ObjectId(programId)
+      },
+      {
+        $pull: {
+          'applications.$.doc_modification_thread': {
+            doc_thread_id: { _id: new mongoose.Types.ObjectId(threadId) }
+          }
+        }
+      }
+    );
+    const thread = await DocumentthreadModel.findByIdAndDelete(threadId);
+    await surveyInputModel.deleteOne({
+      studentId,
+      programId,
+      fileType: thread.file_type
+    });
+  }
+);
 
 // (-) TODO email : notification
 const handleDeleteProgramThread = asyncHandler(async (req, res) => {

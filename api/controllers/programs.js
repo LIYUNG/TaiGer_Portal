@@ -37,7 +37,7 @@ const getPrograms = asyncHandler(async (req, res) => {
   }
 });
 
-const getStudentsByProgram = async (req, programId) => {
+const getStudentsByProgram = asyncHandler(async (req, programId) => {
   const students = await req.db
     .model('Student')
     .find({
@@ -67,7 +67,7 @@ const getStudentsByProgram = async (req, programId) => {
   });
 
   return students;
-};
+});
 
 const getProgram = asyncHandler(async (req, res) => {
   const { user } = req;

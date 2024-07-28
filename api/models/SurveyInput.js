@@ -1,11 +1,12 @@
-const mongoose = require('mongoose');
 const {
+  model,
+  Schema,
   Types: { ObjectId }
 } = require('mongoose');
 const { STUDENT_INPUT_STATUS_E } = require('./Documentthread');
 const contentType = ['sentence', 'paragraph', 'essay'];
 
-const surveyInputSchema = new mongoose.Schema({
+const surveyInputSchema = new Schema({
   studentId: { type: ObjectId, immutable: true, required: true, ref: 'User' },
   programId: { type: ObjectId, immutable: true, ref: 'Program' },
   fileType: {
@@ -46,5 +47,6 @@ const surveyInputSchema = new mongoose.Schema({
   }
 });
 
-const surveyInput = mongoose.model('surveyInput', surveyInputSchema);
+const surveyInput = model('surveyInput', surveyInputSchema);
+
 module.exports = { surveyInput, surveyInputSchema };

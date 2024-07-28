@@ -712,7 +712,6 @@ const Editor = User.discriminator(
 const Admin = User.discriminator('Admin', new Schema({}, options), Role.Admin);
 
 module.exports = {
-  Role,
   User,
   UserSchema,
   Guest,

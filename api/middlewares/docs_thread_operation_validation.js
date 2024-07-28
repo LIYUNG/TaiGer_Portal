@@ -1,6 +1,7 @@
 const { ErrorResponse } = require('../common/errors');
+const { asyncHandler } = require('./error-handler');
 
-const doc_thread_ops_validator = async (req, res, next) => {
+const doc_thread_ops_validator = asyncHandler(async (req, res, next) => {
   const {
     params: { messagesThreadId }
   } = req;
@@ -16,7 +17,7 @@ const doc_thread_ops_validator = async (req, res, next) => {
     );
   }
   next();
-};
+});
 
 module.exports = {
   doc_thread_ops_validator

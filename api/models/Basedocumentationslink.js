@@ -1,16 +1,13 @@
-const {
-  model,
-  Schema,
-  Types: { ObjectId }
-} = require('mongoose');
-const mongoose = require('mongoose');
-const basedocumentationslinksSchema = new mongoose.Schema({
+const { model, Schema } = require('mongoose');
+
+const basedocumentationslinksSchema = new Schema({
   key: { type: String, default: '' },
   category: { type: String, default: 'general' },
   link: { type: String, default: '' },
   updatedAt: Date
 });
-const Basedocumentationslink = mongoose.model(
+
+const Basedocumentationslink = model(
   'Basedocumentationslink',
   basedocumentationslinksSchema
 );

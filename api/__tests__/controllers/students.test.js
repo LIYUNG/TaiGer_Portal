@@ -3,10 +3,14 @@ const path = require('path');
 const request = require('supertest');
 
 const { UPLOAD_PATH } = require('../../config');
-const db = require('../fixtures/db');
+const {
+  connect,
+  closeDatabase,
+  clearDatabase
+} = require('../fixtures/db');
 const { app } = require('../../app');
 const { Role } = require('../../constants');
-const { User, Agent, Editor, Student } = require('../../models/User');
+const { User, Student, UserSchema } = require('../../models/User');
 const { DocumentStatus } = require('../../constants');
 const { generateUser } = require('../fixtures/users');
 const { protect, permit } = require('../../middlewares/auth');
@@ -17,7 +21,9 @@ const {
   permission_canAccessStudentDatabase_filter
 } = require('../../middlewares/permission-filter');
 const { generateProgram } = require('../fixtures/programs');
-const { Program } = require('../../models/Program');
+const { Program, programSchema } = require('../../models/Program');
+const { TENANT_ID } = require('../fixtures/constants');
+const { connectToDatabase } = require('../../middlewares/tenantMiddleware');
 
 jest.mock('../../middlewares/auth', () => {
   const passthrough = async (req, res, next) => next();
@@ -78,20 +84,30 @@ const users = [
   student,
   student2
 ];
+let dbUri;
 
 const programs = [...Array(2)].map(() => generateProgram());
 
 const requiredDocuments = ['transcript', 'resume'];
 const optionalDocuments = ['certificate', 'visa'];
 
-beforeAll(async () => await db.connect());
-afterAll(async () => await db.clearDatabase());
+beforeAll(async () => {
+  dbUri = await connect();
+});
+afterAll(async () => await clearDatabase());
 
 beforeEach(async () => {
-  await User.deleteMany();
-  await Program.deleteMany();
-  await User.insertMany(users);
-  await Program.insertMany(programs);
+  const db = connectToDatabase(TENANT_ID, dbUri);
+
+  const UserModel = db.model('User', UserSchema);
+  const ProgramModel = db.model('Program', programSchema);
+
+  await UserModel.insertMany(users);
+  await ProgramModel.insertMany(programs);
+  // await User.deleteMany();
+  // await Program.deleteMany();
+  // await User.insertMany(users);
+  // await Program.insertMany(programs);
 });
 
 afterEach(() => {
@@ -146,6 +162,7 @@ describe('POST /api/students/:id/editors', () => {
 
     const resp = await request(app)
       .post(`/api/students/${studentId}/editors`)
+      .set('tenantId', TENANT_ID)
       .send(editors_obj);
 
     expect(resp.status).toBe(200);
@@ -188,6 +205,7 @@ describe('POST /api/students/:studentId/applications', () => {
     });
     const resp = await request(app)
       .post(`/api/students/${studentId}/applications`)
+      .set('tenantId', TENANT_ID)
       .send({ program_id_set: programs_arr });
 
     const {
@@ -317,6 +335,7 @@ describe('POST /api/students/:studentId/files/:category', () => {
     const buffer_2MB_exe = Buffer.alloc(1024 * 1024 * 2); // 2 MB
     const resp2 = await request(app)
       .post(`/api/students/${studentId}/files/${category}`)
+      .set('tenantId', TENANT_ID)
       .attach('file', buffer_2MB_exe, filename_invalid_ext);
 
     expect(resp2.status).toBe(415);
@@ -327,6 +346,7 @@ describe('POST /api/students/:studentId/files/:category', () => {
     const buffer_10MB = Buffer.alloc(1024 * 1024 * 6); // 6 MB
     const resp2 = await request(app)
       .post(`/api/students/${studentId}/files/${category}`)
+      .set('tenantId', TENANT_ID)
       .attach('file', buffer_10MB, filename);
 
     expect(resp2.status).toBe(413);
@@ -336,6 +356,7 @@ describe('POST /api/students/:studentId/files/:category', () => {
   it('should save the uploaded profile file and store the path in db', async () => {
     const resp = await request(app)
       .post(`/api/students/${studentId}/files/${category}`)
+      .set('tenantId', TENANT_ID)
       .attach('file', Buffer.from('Lorem ipsum'), filename);
 
     const { status, body } = resp;
@@ -370,6 +391,7 @@ describe('POST /api/students/:studentId/files/:category', () => {
     // Test Download:
     const resp2 = await request(app)
       .get(`/api/students/${studentId}/files/${category}`)
+      .set('tenantId', TENANT_ID)
       .buffer();
 
     expect(resp2.status).toBe(200);
@@ -387,16 +409,16 @@ describe('POST /api/students/:studentId/files/:category', () => {
     // expect(resp3.body.success).toBe(false);
 
     // test delete
-    const resp4 = await request(app).delete(
-      `/api/students/${studentId}/files/${category}`
-    );
+    const resp4 = await request(app)
+      .set('tenantId', TENANT_ID)
+      .delete(`/api/students/${studentId}/files/${category}`);
     expect(resp4.status).toBe(200);
     expect(resp4.body.success).toBe(true);
 
     // TODO test delete: should not delete other students file
-    const resp5 = await request(app).delete(
-      `/api/students/${student2Id}/files/${category}`
-    );
+    const resp5 = await request(app)
+      .set('tenantId', TENANT_ID)
+      .delete(`/api/students/${student2Id}/files/${category}`);
     expect(resp5.status).toBe(403);
     expect(resp5.body.success).toBe(false);
   });
@@ -431,6 +453,7 @@ describe('POST /api/students/:studentId/files/:category', () => {
     async (File_Name, status, success) => {
       const buffer_1MB_exe = Buffer.alloc(1024 * 1024 * 1); // 1 MB
       const resp2 = await request(app)
+        .set('tenantId', TENANT_ID)
         .post(`/api/students/${studentId}/files/${category}`)
         .attach('file', buffer_1MB_exe, File_Name);
 
@@ -443,6 +466,7 @@ describe('POST /api/students/:studentId/files/:category', () => {
     const buffer_10MB = Buffer.alloc(1024 * 1024 * 6); // 6 MB
     const resp2 = await request(app)
       .post(`/api/students/${studentId}/files/${category}`)
+      .set('tenantId', TENANT_ID)
       .attach('file', buffer_10MB, filename);
 
     expect(resp2.status).toBe(413);
@@ -452,6 +476,7 @@ describe('POST /api/students/:studentId/files/:category', () => {
   it('should save the uploaded profile file and store the path in db', async () => {
     const resp = await request(app)
       .post(`/api/students/${studentId}/files/${category}`)
+      .set('tenantId', TENANT_ID)
       .attach('file', Buffer.from('Lorem ipsum'), filename);
 
     const { status, body } = resp;

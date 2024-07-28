@@ -8,6 +8,7 @@ const mongoDb = (dbName) => {
   return `${MONGODB_URI}/${dbName}?retryWrites=true&w=majority`;
 };
 
+// TODO: deprecated for multitenant architecture.
 const connectToDatabase = async (uri, timeoutMS = 5000) => {
   mongoose.connection.on('error', () => {
     logger.error('Database connection error');

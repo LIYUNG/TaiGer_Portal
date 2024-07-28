@@ -1,10 +1,9 @@
 const schedule = require('node-schedule');
 const https = require('https');
 const fs = require('fs');
-const { createTransport } = require('nodemailer');
 
 const { app } = require('./app');
-const { connectToDatabase, disconnectFromDatabase } = require('./database');
+// const { connectToDatabase, disconnectFromDatabase } = require('./database');
 const {
   PORT,
   isProd,
@@ -48,12 +47,12 @@ const {
 const { MongoDBDataBaseDailySnapshot } = require('./utils/jobs');
 // const { UserS3GarbageCollector } = require('./controllers/users');
 
-process.on('SIGINT', () => {
-  disconnectFromDatabase(() => {
-    logger.error('Database disconnected through app termination');
-    process.exit(0);
-  });
-});
+// process.on('SIGINT', () => {
+//   disconnectFromDatabase(() => {
+//     logger.error('Database disconnected through app termination');
+//     process.exit(0);
+//   });
+// });
 
 const launch = async () => {
   if (isDev()) {

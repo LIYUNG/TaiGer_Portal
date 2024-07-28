@@ -1,4 +1,4 @@
-const { Role } = require('../../models/User');
+const { Role } = require('../../constants');
 const { ErrorResponse } = require('../../common/errors');
 const { multitenant_filter } = require('../../middlewares/multitenant-filter');
 

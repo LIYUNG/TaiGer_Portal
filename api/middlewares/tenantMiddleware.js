@@ -61,9 +61,9 @@ const getTenantFromRequest = (req) => {
   return tenantid;
 };
 
-const connectToDatabase = (tenant) => {
+const connectToDatabase = (tenant, uri = null) => {
   if (!connections[tenant]) {
-    const dbUri = `${mongoDb(tenant)}`;
+    const dbUri = uri || `${mongoDb(tenant)}`;
     const connection = mongoose.createConnection(dbUri, {});
     connections[tenant] = connection;
 
@@ -127,4 +127,4 @@ const tenantMiddleware = (req, res, next) => {
   next();
 };
 
-module.exports = { tenantMiddleware };
+module.exports = { tenantMiddleware, connectToDatabase };

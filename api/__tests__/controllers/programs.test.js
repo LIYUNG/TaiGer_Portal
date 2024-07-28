@@ -1,12 +1,14 @@
 const request = require('supertest');
 
-const db = require('../fixtures/db');
+const { connect, closeDatabase, clearDatabase } = require('../fixtures/db');
 const { app } = require('../../app');
-const { Program } = require('../../models/Program');
+const { Program, programSchema } = require('../../models/Program');
 const { generateProgram } = require('../fixtures/programs');
 const { generateUser } = require('../fixtures/users');
 const { protect } = require('../../middlewares/auth');
 const { Role } = require('../../constants');
+const { connectToDatabase } = require('../../middlewares/tenantMiddleware');
+const { TENANT_ID } = require('../fixtures/constants');
 
 const admins = [...Array(2)].map(() => generateUser(Role.Admin));
 const agents = [...Array(3)].map(() => generateUser(Role.Agent));
@@ -24,12 +26,25 @@ jest.mock('../../middlewares/auth', () => {
 });
 const programs = [...Array(5)].map(() => generateProgram());
 
+let dbUri;
 beforeAll(async () => {
-  await db.connect();
-  await Program.deleteMany();
-  await Program.insertMany(programs);
+  dbUri = await connect();
+  // await Program.deleteMany();
+  // await Program.insertMany(programs);
 });
-afterAll(async () => await db.clearDatabase());
+afterAll(async () => await clearDatabase());
+
+beforeEach(async () => {
+  const db = connectToDatabase(TENANT_ID, dbUri);
+
+  const ProgramModel = db.model('Program', programSchema);
+
+  await ProgramModel.insertMany(programs);
+  // await User.deleteMany();
+  // await Program.deleteMany();
+  // await User.insertMany(users);
+  // await Program.insertMany(programs);
+});
 
 describe('GET /api/programs', () => {
   protect.mockImplementation(async (req, res, next) => {

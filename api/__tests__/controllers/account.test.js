@@ -4,12 +4,18 @@ const { spawn } = require('child_process');
 const EventEmitter = require('events');
 const request = require('supertest');
 
-const db = require('../fixtures/db');
+const { connect, closeDatabase, clearDatabase } = require('../fixtures/db');
 const { Role } = require('../../constants');
 
 const { app } = require('../../app');
-const { User, Agent, Editor, Student } = require('../../models/User');
-const { Program } = require('../../models/Program');
+const {
+  User,
+  Agent,
+  Editor,
+  Student,
+  UserSchema
+} = require('../../models/User');
+const { Program, programSchema } = require('../../models/Program');
 const { generateUser } = require('../fixtures/users');
 const { generateProgram } = require('../fixtures/programs');
 const {
@@ -25,6 +31,8 @@ const {
   asyncHandler,
   errorHandler
 } = require('../../middlewares/error-handler');
+const { TENANT_ID } = require('../fixtures/constants');
+const { connectToDatabase } = require('../../middlewares/tenantMiddleware');
 
 // jest.mock("../middlewares/auth", () => {
 //   return Object.assign({}, jest.requireActual("../middlewares/auth"), {
@@ -94,16 +102,26 @@ const users = [
 const requiredDocuments = ['transcript', 'resume'];
 const optionalDocuments = ['certificate', 'visa'];
 const program = generateProgram(requiredDocuments, optionalDocuments);
+let dbUri;
 
-beforeAll(async () => await db.connect());
-afterAll(async () => await db.clearDatabase());
+beforeAll(async () => {
+  dbUri = await connect();
+});
+afterAll(async () => await clearDatabase());
 
 beforeEach(async () => {
-  await User.deleteMany();
-  await User.insertMany(users);
+  const db = connectToDatabase(TENANT_ID, dbUri);
 
-  await Program.deleteMany();
-  await Program.create(program);
+  const UserModel = db.model('User', UserSchema);
+  const ProgramModel = db.model('Program', programSchema);
+
+  await UserModel.insertMany(users);
+  await ProgramModel.create(program);
+  // await User.deleteMany();
+  // await User.insertMany(users);
+
+  // await Program.deleteMany();
+  // await Program.create(program);
 
   protect.mockImplementation(async (req, res, next) => {
     req.user = await Student.findById(student._id);
@@ -115,6 +133,7 @@ describe('updateCredentials Controller', () => {
   it('should update the user password and send an email', async () => {
     const resp = await request(app)
       .post('/api/account/credentials')
+      .set('tenantId', TENANT_ID)
       .send({
         credentials: {
           new_password: 'somepassword'
@@ -132,6 +151,7 @@ describe('updateCredentials Controller', () => {
     });
     const resp = await request(app)
       .post('/api/account/credentials')
+      .set('tenantId', TENANT_ID)
       .send({
         credentials: {
           new_password: 'somepassword'
@@ -849,6 +869,7 @@ describe('POST /api/account/profile/:user_id', () => {
   it('should update personal data', async () => {
     const resp = await request(app)
       .post(`/api/account/profile/${student._id.toString()}`)
+      .set('tenantId', TENANT_ID)
       .send({ personaldata });
     const { status, body } = resp;
     expect(status).toBe(200);
@@ -882,6 +903,7 @@ describe('POST /api/account/survey/language', () => {
   it('should update language status', async () => {
     const resp = await request(app)
       .post(`/api/account/survey/language/${student._id}`)
+      .set('tenantId', TENANT_ID)
       .send({ language });
     const { status, body } = resp;
     expect(status).toBe(200);
@@ -914,6 +936,7 @@ describe('POST /api/account/survey/university', () => {
   it('should update university (academic background) ', async () => {
     const resp = await request(app)
       .post(`/api/account/survey/university/${student._id}`)
+      .set('tenantId', TENANT_ID)
       .send({ university });
     const { status, body } = resp;
     // expect(JSON.parse(resp.text)).toBe(200); // TODO: some reason that in API req.user not existed!?
@@ -928,7 +951,9 @@ describe('POST /api/account/survey/university', () => {
     );
     expect(body.data.isGraduated).toBe(university.isGraduated);
 
-    const resp2 = await request(app).get('/api/account/survey');
+    const resp2 = await request(app)
+      .get('/api/account/survey')
+      .set('tenantId', TENANT_ID);
     const university_body = resp2.body.data;
     expect(
       university_body.academic_background.university.attended_university

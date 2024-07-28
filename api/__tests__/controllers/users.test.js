@@ -6,8 +6,20 @@ const { Role } = require('../../constants');
 const { User, UserSchema } = require('../../models/User');
 const { generateUser } = require('../fixtures/users');
 const { protect } = require('../../middlewares/auth');
+const {
+  decryptCookieMiddleware
+} = require('../../middlewares/decryptCookieMiddleware');
 const { TENANT_ID } = require('../fixtures/constants');
 const { connectToDatabase } = require('../../middlewares/tenantMiddleware');
+
+jest.mock('../../middlewares/decryptCookieMiddleware', () => {
+  const passthrough = async (req, res, next) => next();
+
+  return {
+    ...jest.requireActual('../../middlewares/decryptCookieMiddleware'),
+    decryptCookieMiddleware: jest.fn().mockImplementation(passthrough)
+  };
+});
 
 jest.mock('../../middlewares/auth', () => {
   const passthrough = async (req, res, next) => next();

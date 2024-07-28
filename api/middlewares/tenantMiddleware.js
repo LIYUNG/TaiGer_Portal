@@ -122,6 +122,7 @@ const tenantMiddleware = (req, res, next) => {
   if (!tenant) {
     return res.status(400).send('Tenant not identified');
   }
+  console.log(req.decryptedToken);
   req.db = connectToDatabase(tenant);
   req.VCModel = req.db.model('VC');
   next();

@@ -9,12 +9,23 @@ const { protect } = require('../../middlewares/auth');
 const { Role } = require('../../constants');
 const { connectToDatabase } = require('../../middlewares/tenantMiddleware');
 const { TENANT_ID } = require('../fixtures/constants');
-
+const {
+  decryptCookieMiddleware
+} = require('../../middlewares/decryptCookieMiddleware');
 const admins = [...Array(2)].map(() => generateUser(Role.Admin));
 const agents = [...Array(3)].map(() => generateUser(Role.Agent));
 const editors = [...Array(3)].map(() => generateUser(Role.Editor));
 const students = [...Array(5)].map(() => generateUser(Role.Student));
 const users = [...admins, ...agents, ...editors, ...students];
+
+jest.mock('../../middlewares/decryptCookieMiddleware', () => {
+  const passthrough = async (req, res, next) => next();
+
+  return {
+    ...jest.requireActual('../../middlewares/decryptCookieMiddleware'),
+    decryptCookieMiddleware: jest.fn().mockImplementation(passthrough)
+  };
+});
 
 jest.mock('../../middlewares/auth', () => {
   const passthrough = async (req, res, next) => next();

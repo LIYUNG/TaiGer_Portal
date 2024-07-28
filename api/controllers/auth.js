@@ -21,8 +21,8 @@ const {
   sendAccountActivationConfirmationEmail
 } = require('../services/email');
 
-const generateAuthToken = (user) => {
-  const payload = { id: user._id };
+const generateAuthToken = (user, tenantId) => {
+  const payload = { id: user._id, tenantId };
   return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRE });
 };
 
@@ -65,17 +65,16 @@ const signup = asyncHandler(async (req, res) => {
     activationToken
   );
 
-  // const authToken = generateAuthToken(user);
   res
     // .cookie("x-auth", authToken, { httpOnly: true, sameSite: 'none', secure: true })
     .status(201)
-    // .json({ success: true, data: user });
     .json({ success: true });
 });
 
 const login = (req, res) => {
   const { user } = req;
-  const token = generateAuthToken(user);
+  // TODO: 2. attribute should be dynamic (from domain etc.)
+  const token = generateAuthToken(user, 'TaiGer_Dev');
   res
     .cookie('x-auth', token, { httpOnly: true, sameSite: 'none', secure: true })
     .status(200)
@@ -91,7 +90,7 @@ const logout = (req, res) => {
 
 const verify = (req, res) => {
   const { user } = req;
-  const token = generateAuthToken(user);
+  const token = generateAuthToken(user, 'TaiGer_Dev');
   user.attributes = [];
   res
     .cookie('x-auth', token, { httpOnly: true, sameSite: 'none', secure: true })
@@ -134,7 +133,7 @@ const activateAccount = asyncHandler(async (req, res) => {
 
   await token.deleteOne();
 
-  const authToken = generateAuthToken(user);
+  const authToken = generateAuthToken(user, 'TaiGer_Dev');
   res
     .cookie('x-auth', authToken, {
       httpOnly: true,

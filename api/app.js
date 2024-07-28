@@ -13,6 +13,9 @@ const { errorHandler } = require('./middlewares/error-handler');
 const { isDev, isProd } = require('./config');
 const httpLogger = require('./services/httpLogger');
 const { tenantMiddleware } = require('./middlewares/tenantMiddleware');
+const {
+  decryptCookieMiddleware
+} = require('./middlewares/decryptCookieMiddleware');
 
 const app = express();
 app.set('trust proxy', 1);
@@ -38,10 +41,11 @@ app.use(
     credentials: true
   })
 );
+app.use(cookieParser());
+app.use(decryptCookieMiddleware);
 app.use(tenantMiddleware);
 
 app.use(methodOverride('_method')); // in order to make delete request
-app.use(cookieParser());
 app.use(express.json());
 
 if (isProd()) {

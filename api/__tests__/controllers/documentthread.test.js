@@ -20,6 +20,18 @@ const {
 } = require('../../middlewares/InnerTaigerMultitenantFilter');
 const { connectToDatabase } = require('../../middlewares/tenantMiddleware');
 const { TENANT_ID } = require('../fixtures/constants');
+const {
+  decryptCookieMiddleware
+} = require('../../middlewares/decryptCookieMiddleware');
+
+jest.mock('../../middlewares/decryptCookieMiddleware', () => {
+  const passthrough = async (req, res, next) => next();
+
+  return {
+    ...jest.requireActual('../../middlewares/decryptCookieMiddleware'),
+    decryptCookieMiddleware: jest.fn().mockImplementation(passthrough)
+  };
+});
 
 jest.mock('../../middlewares/auth', () => {
   const passthrough = async (req, res, next) => next();

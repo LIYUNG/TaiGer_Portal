@@ -3,11 +3,7 @@ const path = require('path');
 const request = require('supertest');
 
 const { UPLOAD_PATH } = require('../../config');
-const {
-  connect,
-  closeDatabase,
-  clearDatabase
-} = require('../fixtures/db');
+const { connect, closeDatabase, clearDatabase } = require('../fixtures/db');
 const { app } = require('../../app');
 const { Role } = require('../../constants');
 const { User, Student, UserSchema } = require('../../models/User');
@@ -24,6 +20,9 @@ const { generateProgram } = require('../fixtures/programs');
 const { Program, programSchema } = require('../../models/Program');
 const { TENANT_ID } = require('../fixtures/constants');
 const { connectToDatabase } = require('../../middlewares/tenantMiddleware');
+const {
+  decryptCookieMiddleware
+} = require('../../middlewares/decryptCookieMiddleware');
 
 jest.mock('../../middlewares/auth', () => {
   const passthrough = async (req, res, next) => next();
@@ -44,6 +43,15 @@ jest.mock('../../middlewares/InnerTaigerMultitenantFilter', () => {
       InnerTaigerMultitenantFilter: jest.fn().mockImplementation(passthrough)
     }
   );
+});
+
+jest.mock('../../middlewares/decryptCookieMiddleware', () => {
+  const passthrough = async (req, res, next) => next();
+
+  return {
+    ...jest.requireActual('../../middlewares/decryptCookieMiddleware'),
+    decryptCookieMiddleware: jest.fn().mockImplementation(passthrough)
+  };
 });
 
 jest.mock('../../middlewares/permission-filter', () => {

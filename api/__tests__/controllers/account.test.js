@@ -22,6 +22,9 @@ const {
   permission_canAccessStudentDatabase_filter
 } = require('../../middlewares/permission-filter');
 const {
+  decryptCookieMiddleware
+} = require('../../middlewares/decryptCookieMiddleware');
+const {
   InnerTaigerMultitenantFilter
 } = require('../../middlewares/InnerTaigerMultitenantFilter');
 const { protect } = require('../../middlewares/auth');
@@ -44,40 +47,44 @@ const { connectToDatabase } = require('../../middlewares/tenantMiddleware');
 //   });
 // });
 
+jest.mock('../../middlewares/decryptCookieMiddleware', () => {
+  const passthrough = async (req, res, next) => next();
+
+  return {
+    ...jest.requireActual('../../middlewares/decryptCookieMiddleware'),
+    decryptCookieMiddleware: jest.fn().mockImplementation(passthrough)
+  };
+});
+
 jest.mock('../../middlewares/InnerTaigerMultitenantFilter', () => {
   const passthrough = async (req, res, next) => next();
 
-  return Object.assign(
-    {},
-    jest.requireActual('../../middlewares/permission-filter'),
-    {
-      InnerTaigerMultitenantFilter: jest.fn().mockImplementation(passthrough)
-    }
-  );
+  return {
+    ...jest.requireActual('../../middlewares/permission-filter'),
+    InnerTaigerMultitenantFilter: jest.fn().mockImplementation(passthrough)
+  };
 });
 
 jest.mock('../../middlewares/permission-filter', () => {
   const passthrough = async (req, res, next) => next();
 
-  return Object.assign(
-    {},
-    jest.requireActual('../../middlewares/permission-filter'),
-    {
-      permission_canAccessStudentDatabase_filter: jest
-        .fn()
-        .mockImplementation(passthrough)
-    }
-  );
+  return {
+    ...jest.requireActual('../../middlewares/permission-filter'),
+    permission_canAccessStudentDatabase_filter: jest
+      .fn()
+      .mockImplementation(passthrough)
+  };
 });
 
 jest.mock('../../middlewares/auth', () => {
   const passthrough = async (req, res, next) => next();
 
-  return Object.assign({}, jest.requireActual('../../middlewares/auth'), {
+  return {
+    ...jest.requireActual('../../middlewares/auth'),
     protect: jest.fn().mockImplementation(passthrough),
     localAuth: jest.fn().mockImplementation(passthrough),
     permit: jest.fn().mockImplementation((...roles) => passthrough)
-  });
+  };
 });
 
 const admin = generateUser(Role.Admin);

@@ -15,4 +15,4 @@ const docspagesSchema = new mongoose.Schema({
   updatedAt: Date
 });
 const Docspage = mongoose.model('Docspage', docspagesSchema);
-module.exports = Docspage;
+module.exports = { Docspage, docspagesSchema };

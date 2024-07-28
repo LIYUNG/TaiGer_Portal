@@ -706,7 +706,7 @@ const initGeneralMessagesThread = asyncHandler(async (req, res) => {
   }
 });
 
-const createApplicationThread = async (studentId, programId, fileType) => {
+const createApplicationThread = async (req, studentId, programId, fileType) => {
   const threadExisted = await req.db.model('Documentthread').findOne({
     student_id: studentId,
     program_id: programId,
@@ -769,6 +769,7 @@ const initApplicationMessagesThread = asyncHandler(async (req, res) => {
   } = req;
 
   const newAppRecord = await createApplicationThread(
+    req,
     studentId,
     program_id,
     document_category

@@ -1,6 +1,6 @@
 const { Student } = require('../../models/User');
 const { Documentthread } = require('../../models/Documentthread');
-const { RLs_CONSTANT } = require('../../constants.js');
+const { RLs_CONSTANT } = require('../../constants');
 const {
   createApplicationThread,
   deleteApplicationThread
@@ -37,9 +37,9 @@ const isCrucialChanges = (changes) => {
   return false;
 };
 
-const findAffectedStudents = async (programId) => {
+const findAffectedStudents = async (programId, { StudentModel }) => {
   // non-archived student has open application for program
-  let students = await Student.find({
+  let students = await StudentModel.find({
     applications: {
       $elemMatch: {
         programId: programId,
@@ -115,7 +115,7 @@ const findRLDelta = async (program, studentId, threads, options) => {
 
   return delta;
 };
-const findStudentDelta = async (studentId, program, options) => {
+const findStudentDelta = async (req, studentId, program, options) => {
   const { skipCompleted } = options || {};
 
   let delta = {
@@ -123,10 +123,12 @@ const findStudentDelta = async (studentId, program, options) => {
     remove: []
   };
 
-  const studentProgramThreads = await Documentthread.find({
-    student_id: studentId,
-    program_id: program._id
-  })
+  const studentProgramThreads = await req.db
+    .model('Documentthread')
+    .find({
+      student_id: studentId,
+      program_id: program._id
+    })
     .select('file_type messages isFinalVersion')
     .lean();
 
@@ -215,8 +217,10 @@ const handleStudentDelta = async (studentId, program) => {
   }
 };
 
-const handleThreadDelta = async (program) => {
-  const affectedStudents = await findAffectedStudents(program._id);
+const handleThreadDelta = async (program, { StudentModel }) => {
+  const affectedStudents = await findAffectedStudents(program._id, {
+    StudentModel
+  });
   for (let studentId of affectedStudents) {
     try {
       await handleStudentDelta(studentId, program);
@@ -228,7 +232,7 @@ const handleThreadDelta = async (program) => {
   }
 };
 
-const handleProgramChanges = (schema) => {
+const handleProgramChanges = (schema, { StudentModel }) => {
   schema.pre(
     ['findOneAndUpdate', 'updateOne', 'updateMany', 'update'],
     async function (doc) {
@@ -262,7 +266,7 @@ const handleProgramChanges = (schema) => {
                 changes
               )}`
             );
-            await handleThreadDelta(updatedDoc);
+            await handleThreadDelta(updatedDoc, { StudentModel });
             logger.info(
               `ProgramHook - Post hook executed successfully. (Id=${programId})`
             );

@@ -27,14 +27,9 @@ const interviewSurveyResponseSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-interviewSurveyResponseSchema.index(
-  { student_id: 1, interview_id: 1 },
-  { unique: true }
-);
-
 const InterviewSurveyResponse = mongoose.model(
   'InterviewSurveyResponse',
   interviewSurveyResponseSchema
 );
 
-module.exports = InterviewSurveyResponse;
+module.exports = { InterviewSurveyResponse, interviewSurveyResponseSchema };

@@ -14,7 +14,7 @@ const InnerTaigerMultitenantFilter = async (req, res, next) => {
   if (user.role === Role.Editor || user.role === Role.Agent) {
     const permissions = await getPermission(req, user);
 
-    const student = await getCachedStudentPermission(studentId);
+    const student = await getCachedStudentPermission(req, studentId);
     if (!student) {
       next(new ErrorResponse(404, 'Student not found'));
     }

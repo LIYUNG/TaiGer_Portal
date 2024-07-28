@@ -23,10 +23,25 @@ const { templatesSchema } = require('../models/Template');
 const { documentationsSchema } = require('../models/Documentation');
 const { internaldocsSchema } = require('../models/Internaldoc');
 const { enableVersionControl } = require('../utils/modelHelper/versionControl');
+const { docspagesSchema } = require('../models/Docspage');
+const { expensesSchema } = require('../models/Expense');
+const { incomesSchema } = require('../models/Income');
+const { interviewsSchema } = require('../models/Interview');
+const { intervalSchema } = require('../models/Interval');
+const {
+  interviewSurveyResponseSchema
+} = require('../models/InterviewSurveyResponse');
+const { notesSchema } = require('../models/Note');
+const { userlogSchema } = require('../models/Userlog');
+const { ResponseTimeSchema } = require('../models/ResponseTime');
+const { surveyInputSchema } = require('../models/SurveyInput');
+const { permissionSchema } = require('../models/Permission');
+const { handleProgramChanges } = require('../utils/modelHelper/programChange');
 
 const connections = {};
 
-const applyProgramSchema = (db, VCModel) => {
+const applyProgramSchema = (db, VCModel, StudentModel) => {
+  programSchema.plugin(handleProgramChanges, { StudentModel });
   programSchema.plugin(enableVersionControl, { VCModel });
   return db.model('Program', programSchema);
 };
@@ -47,9 +62,29 @@ const connectToDatabase = (tenant) => {
     connection.model('Course', coursesSchema);
     connection.model('Documentation', documentationsSchema);
     connection.model('Documentthread', documentThreadsSchema);
+    connection.model('Docspage', docspagesSchema);
     connection.model('Event', EventSchema);
+    connection.model('Expense', expensesSchema);
+    connection.model('Incom', incomesSchema);
     connection.model('Internaldoc', internaldocsSchema);
-    // connection.model('Program', programSchema);
+    connection.model('Interval', intervalSchema);
+    connection.model('Interview', interviewsSchema);
+
+    interviewSurveyResponseSchema.index(
+      { student_id: 1, interview_id: 1 },
+      { unique: true }
+    );
+    connection.model('InterviewSurveyResponse', interviewSurveyResponseSchema);
+    connection.model('Note', notesSchema);
+    connection.model('Permission', permissionSchema);
+    connection.model('ResponseTime', ResponseTimeSchema);
+
+    surveyInputSchema.index(
+      { studentId: 1, programId: 1, fileType: 1 },
+      { unique: true }
+    );
+
+    connection.model('surveyInput', surveyInputSchema);
     connection.model('Template', templatesSchema);
     connection.model('Ticket', ticketSchema);
     connection.model('Token', tokenSchema);
@@ -64,7 +99,12 @@ const connectToDatabase = (tenant) => {
     connection.model('User').discriminator('Guest', Guest.schema);
 
     connection.model('VC', versionControlSchema);
-    applyProgramSchema(connection, connection.model('VC'));
+    applyProgramSchema(
+      connection,
+      connection.model('VC'),
+      connection.model('User')
+    );
+    connection.model('Userlog', userlogSchema);
   }
   return connections[tenant];
 };

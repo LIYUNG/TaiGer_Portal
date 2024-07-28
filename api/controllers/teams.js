@@ -15,8 +15,8 @@ const { numStudentYearDistribution } = require('../utils/utils_function');
 const { one_day_cache } = require('../cache/node-cache');
 const { ResponseTime } = require('../models/ResponseTime');
 
-const getActivePrograms = async () => {
-  const activePrograms = await User.aggregate([
+const getActivePrograms = async (req) => {
+  const activePrograms = await req.db.model('User').aggregate([
     {
       $match: {
         role: 'Student',
@@ -59,8 +59,13 @@ const getActivePrograms = async () => {
   return activePrograms;
 };
 
-const getStudentDeltas = async (student, program, options) => {
-  const deltas = await findStudentDelta(student._id, program, options || {});
+const getStudentDeltas = async (req, student, program, options) => {
+  const deltas = await findStudentDelta(
+    req,
+    student._id,
+    program,
+    options || {}
+  );
   if (deltas?.add?.length === 0 && deltas?.remove?.length === 0) {
     return;
   }
@@ -82,7 +87,7 @@ const getApplicationDeltaByProgram = async (req, programId) => {
     if (!student.application || student.application.closed !== '-') {
       continue;
     }
-    const studentDelta = getStudentDeltas(student, program, options);
+    const studentDelta = getStudentDeltas(req, student, program, options);
     studentDeltaPromises.push(studentDelta);
   }
   let studentDeltas = await Promise.all(studentDeltaPromises);
@@ -97,7 +102,7 @@ const getApplicationDeltaByProgram = async (req, programId) => {
 };
 
 const getApplicationDeltas = asyncHandler(async (req, res) => {
-  const activePrograms = await getActivePrograms();
+  const activePrograms = await getActivePrograms(req);
   const deltaPromises = [];
   for (let program of activePrograms) {
     const programDeltaPromise = getApplicationDeltaByProgram(req, program._id);

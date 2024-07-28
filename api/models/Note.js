@@ -10,4 +10,4 @@ const notesSchema = new Schema({
   updatedAt: Date
 });
 const Note = model('Note', notesSchema);
-module.exports = Note;
+module.exports = { Note, notesSchema };

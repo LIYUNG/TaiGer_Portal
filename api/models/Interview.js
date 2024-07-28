@@ -50,5 +50,6 @@ interviewsSchema.index(
 
 const Interview = mongoose.model('Interview', interviewsSchema);
 module.exports = {
-  Interview
+  Interview,
+  interviewsSchema
 };

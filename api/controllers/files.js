@@ -3,7 +3,6 @@ const { asyncHandler } = require('../middlewares/error-handler');
 const { one_month_cache, two_month_cache } = require('../cache/node-cache');
 const { Role } = require('../constants');
 const { Basedocumentationslink } = require('../models/Basedocumentationslink');
-const { Documentthread } = require('../models/Documentthread');
 const { ErrorResponse } = require('../common/errors');
 const {
   DocumentStatus,
@@ -784,9 +783,9 @@ const UpdateStudentApplications = asyncHandler(async (req, res, next) => {
     if (application.closed === 'O') {
       for (let k = 0; k < application.doc_modification_thread.length; k += 1) {
         application.doc_modification_thread[k].updatedAt = new Date();
-        const document_thread = await Documentthread.findById(
-          application.doc_modification_thread[k].doc_thread_id
-        );
+        const document_thread = await req.db
+          .model('Documentthread')
+          .findById(application.doc_modification_thread[k].doc_thread_id);
         document_thread.isFinalVersion = true;
         document_thread.updatedAt = new Date();
         await document_thread.save();

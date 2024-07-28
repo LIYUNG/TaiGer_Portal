@@ -4,7 +4,6 @@ const mongoose = require('mongoose');
 const { ObjectId } = Schema.Types;
 const { handleProgramChanges } = require('../utils/modelHelper/programChange');
 
-const { enableVersionControl } = require('../utils/modelHelper/versionControl');
 
 // const Degree = {
 //   bachelor_sc: 'B.Sc',
@@ -215,7 +214,6 @@ const programModule = {
 };
 
 const programSchema = new Schema(programModule, { timestamps: true });
-programSchema.plugin(handleProgramChanges);
 
 programSchema.index({ school: 1, program_name: 1 });
 const Program = mongoose.model('Program', programSchema);

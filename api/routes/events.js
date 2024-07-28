@@ -1,5 +1,4 @@
 const { Router } = require('express');
-const Event = require('../models/Event');
 const { protect, permit } = require('../middlewares/auth');
 const {
   getEvents,

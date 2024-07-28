@@ -46,9 +46,5 @@ const surveyInputSchema = new mongoose.Schema({
   }
 });
 
-surveyInputSchema.index(
-  { studentId: 1, programId: 1, fileType: 1 },
-  { unique: true }
-);
 const surveyInput = mongoose.model('surveyInput', surveyInputSchema);
 module.exports = { surveyInput, surveyInputSchema };

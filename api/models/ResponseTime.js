@@ -36,5 +36,6 @@ ResponseTimeSchema.index(
 
 const ResponseTime = mongoose.model('ResponseTime', ResponseTimeSchema);
 module.exports = {
-  ResponseTime
+  ResponseTime,
+  ResponseTimeSchema
 };

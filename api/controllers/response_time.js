@@ -1,7 +1,7 @@
 const async = require('async');
 const path = require('path');
 const { ResponseTime } = require('../models/ResponseTime');
-const { Role } = require('../models/User');
+const { Role } = require('../constants');
 
 const GetResponseTimeForCommunication = async () =>
   ResponseTime.find({ student_id: { $exists: true } })

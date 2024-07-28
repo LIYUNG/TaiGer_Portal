@@ -1,6 +1,6 @@
 const { ErrorResponse } = require('../common/errors');
 const { Interview } = require('../models/Interview');
-const { Role } = require('../models/User');
+const { Role } = require('../constants');
 const { getPermission } = require('../utils/queryFunctions');
 
 const interviewMultitenantFilter = async (req, res, next) => {

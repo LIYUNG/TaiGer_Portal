@@ -1,7 +1,7 @@
 // const path = require('path');
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
-const { Role } = require('../models/User');
+const { Role } = require('../constants');
 const async = require('async');
 const {
   MeetingInvitationEmail,

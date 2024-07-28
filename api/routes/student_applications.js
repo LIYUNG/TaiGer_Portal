@@ -8,7 +8,8 @@ const { multitenant_filter } = require('../middlewares/multitenant-filter');
 
 const { filter_archiv_user } = require('../middlewares/limit_archiv_user');
 
-const { Role } = require('../models/User');
+const { Role } = require('../constants');
+
 
 const {
   getApplicationStudent,

@@ -6,16 +6,7 @@ const {
 const bcrypt = require('bcryptjs');
 const isEmail = require('validator/lib/isEmail');
 
-const { DocumentStatus, ManagerType } = require('../constants');
-
-const Role = {
-  Admin: 'Admin',
-  Manager: 'Manager',
-  Guest: 'Guest',
-  Agent: 'Agent',
-  Editor: 'Editor',
-  Student: 'Student'
-};
+const { DocumentStatus, ManagerType, Role } = require('../constants');
 
 const options = { discriminatorKey: 'role', timestamps: true };
 const UserSchema = new Schema(

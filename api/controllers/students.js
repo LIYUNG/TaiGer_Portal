@@ -3,7 +3,7 @@ const async = require('async');
 
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
-const { Role } = require('../models/User');
+const { Role } = require('../constants');
 const { add_portals_registered_status } = require('../utils/utils_function');
 const logger = require('../services/logger');
 
@@ -26,7 +26,6 @@ const {
   ManagerType,
   PROGRAM_SPECIFIC_FILETYPE
 } = require('../constants');
-const { Interview } = require('../models/Interview');
 const { getPermission } = require('../utils/queryFunctions');
 const Permission = require('../models/Permission');
 
@@ -343,9 +342,11 @@ const getStudents = asyncHandler(async (req, res, next) => {
         '-attributes +applications.portal_credentials.application_portal_a.account +applications.portal_credentials.application_portal_a.password +applications.portal_credentials.application_portal_b.account +applications.portal_credentials.application_portal_b.password'
       )
       .lean();
-    const interviews = await Interview.find({
-      student_id: user._id.toString()
-    })
+    const interviews = await req.db
+      .model('Interview')
+      .find({
+        student_id: user._id.toString()
+      })
       .populate('trainer_id', 'firstname lastname email')
       .populate('event_id')
       .lean();

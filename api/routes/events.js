@@ -11,7 +11,8 @@ const {
   getAllEvents,
   getActiveEventsNumber
 } = require('../controllers/events');
-const { Role } = require('../models/User');
+const { Role } = require('../constants');
+
 const {
   GeneralGETRequestRateLimiter,
   GeneralPUTRequestRateLimiter,

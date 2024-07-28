@@ -1,7 +1,6 @@
 const { body, param, validationResult } = require('express-validator');
 const { ObjectID } = require('mongodb');
-
-const { Role } = require('../models/User');
+const { Role } = require('../constants');
 
 const fieldsValidation =
   (...rules) =>
@@ -48,6 +47,6 @@ module.exports = {
   checkEmail,
   checkPassword,
   checkUserRole,
-  checkToken,
+  checkToken
   // checkObjectID
 };

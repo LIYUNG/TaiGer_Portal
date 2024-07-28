@@ -4,19 +4,18 @@ const path = require('path');
 
 const { asyncHandler } = require('../middlewares/error-handler');
 const logger = require('../services/logger');
-const { User } = require('../models/User');
-const Documentation = require('../models/Documentation');
 const Internaldoc = require('../models/Internaldoc');
-const { Program } = require('../models/Program');
 
 const getQueryPublicResults = asyncHandler(async (req, res, next) => {
-  const documentations = await Documentation.find(
-    {
-      $text: { $search: req.query.q },
-      category: { $not: { $regex: new RegExp('portal-instruction', 'i') } }
-    },
-    { score: { $meta: 'textScore' } }
-  )
+  const documentations = await req.db
+    .model('Documentation')
+    .find(
+      {
+        $text: { $search: req.query.q },
+        category: { $not: { $regex: new RegExp('portal-instruction', 'i') } }
+      },
+      { score: { $meta: 'textScore' } }
+    )
     .sort({ score: { $meta: 'textScore' } })
     .limit(5)
     .select('title')
@@ -39,22 +38,26 @@ const getQueryResults = asyncHandler(async (req, res, next) => {
   //   const regex = new RegExp(searchTerms.join('|'), 'i');
 
   // Use the regular expression pattern in the query
-  const students = await User.find(
-    {
-      $text: { $search: req.query.q },
-      role: { $in: ['Student', 'Guest', 'Agent', 'Editor'] }
-    },
-    { score: { $meta: 'textScore' } }
-  )
+  const students = await req.db
+    .model('User')
+    .find(
+      {
+        $text: { $search: req.query.q },
+        role: { $in: ['Student', 'Guest', 'Agent', 'Editor'] }
+      },
+      { score: { $meta: 'textScore' } }
+    )
     .sort({ score: { $meta: 'textScore' } })
     .limit(5)
     .select('firstname lastname firstname_chinese lastname_chinese role')
     .lean();
 
-  const documentations = await Documentation.find(
-    { $text: { $search: req.query.q } },
-    { score: { $meta: 'textScore' } }
-  )
+  const documentations = await req.db
+    .model('Documentation')
+    .find(
+      { $text: { $search: req.query.q } },
+      { score: { $meta: 'textScore' } }
+    )
     .sort({ score: { $meta: 'textScore' } })
     .limit(5)
     .select('title')
@@ -93,20 +96,22 @@ const getQueryResults = asyncHandler(async (req, res, next) => {
 });
 
 const getQueryStudentsResults = asyncHandler(async (req, res, next) => {
-  const students = await User.find({
-    $and: [
-      {
-        $or: [
-          { firstname: { $regex: req.query.q, $options: 'i' } },
-          { lastname: { $regex: req.query.q, $options: 'i' } },
-          { firstname_chinese: { $regex: req.query.q, $options: 'i' } },
-          { lastname_chinese: { $regex: req.query.q, $options: 'i' } },
-          { email: { $regex: req.query.q, $options: 'i' } }
-        ]
-      },
-      { role: { $in: ['Student'] } }
-    ]
-  })
+  const students = await req.db
+    .model('User')
+    .find({
+      $and: [
+        {
+          $or: [
+            { firstname: { $regex: req.query.q, $options: 'i' } },
+            { lastname: { $regex: req.query.q, $options: 'i' } },
+            { firstname_chinese: { $regex: req.query.q, $options: 'i' } },
+            { lastname_chinese: { $regex: req.query.q, $options: 'i' } },
+            { email: { $regex: req.query.q, $options: 'i' } }
+          ]
+        },
+        { role: { $in: ['Student'] } }
+      ]
+    })
     .limit(6)
     .select('firstname lastname firstname_chinese lastname_chinese role email')
     .lean();

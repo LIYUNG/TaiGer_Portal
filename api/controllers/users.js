@@ -4,7 +4,7 @@ const generator = require('generate-password');
 
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
-const { Role } = require('../models/User');
+const { Role } = require('../constants');
 const { emptyS3Directory } = require('../utils/utils_function');
 const {
   updateNotificationEmail,

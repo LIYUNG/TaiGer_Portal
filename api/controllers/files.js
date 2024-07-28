@@ -1,8 +1,7 @@
 const path = require('path');
 const { asyncHandler } = require('../middlewares/error-handler');
 const { one_month_cache, two_month_cache } = require('../cache/node-cache');
-const { Role, User } = require('../models/User');
-const { Template } = require('../models/Template');
+const { Role } = require('../constants');
 const { Basedocumentationslink } = require('../models/Basedocumentationslink');
 const { Documentthread } = require('../models/Documentthread');
 const { ErrorResponse } = require('../common/errors');
@@ -31,7 +30,7 @@ const { s3 } = require('../aws/index');
 
 const getMyfiles = asyncHandler(async (req, res, next) => {
   const { user } = req;
-  const student = await User.findById(user._id);
+  const student = await req.db.model('User').findById(user._id);
   if (!student) {
     logger.error('getMyfiles: Invalid student id');
     throw new ErrorResponse(404, 'Student not found');
@@ -1215,10 +1214,12 @@ const removeNotification = asyncHandler(async (req, res, next) => {
   const { user } = req;
   const { notification_key } = req.body;
   // eslint-disable-next-line no-underscore-dangle
-  const me = await User.findById(user._id.toString());
+  const me = await req.db.model('User').findById(user._id.toString());
   const obj = me.notification; // create object
   obj[`${notification_key}`] = true; // set value
-  await User.findByIdAndUpdate(user._id.toString(), { notification: obj }, {});
+  await req.db
+    .model('User')
+    .findByIdAndUpdate(user._id.toString(), { notification: obj }, {});
   res.status(200).send({
     success: true
   });
@@ -1248,7 +1249,7 @@ const removeAgentNotification = asyncHandler(async (req, res, next) => {
 const getMyAcademicBackground = asyncHandler(async (req, res, next) => {
   const { user: student } = req;
   const { _id } = student;
-  const me = await User.findById(_id);
+  const me = await req.db.model('User').findById(_id);
   if (me.academic_background === undefined) me.academic_background = {};
   await me.save();
   // TODO: mix with base-docuement link??
@@ -1287,7 +1288,7 @@ const updateAcademicBackground = asyncHandler(async (req, res, next) => {
   }
   try {
     university['updatedAt'] = new Date();
-    const updatedStudent = await User.findByIdAndUpdate(
+    const updatedStudent = await req.db.model('User').findByIdAndUpdate(
       student_id,
       {
         'academic_background.university': university
@@ -1455,7 +1456,7 @@ const updateLanguageSkill = asyncHandler(async (req, res, next) => {
     student_id = studentId;
   }
   language['updatedAt'] = new Date();
-  const updatedStudent = await User.findByIdAndUpdate(
+  const updatedStudent = await req.db.model('User').findByIdAndUpdate(
     student_id,
     {
       'academic_background.language': language
@@ -1618,14 +1619,14 @@ const updateApplicationPreferenceSkill = asyncHandler(
       student_id = studentId;
     }
     application_preference['updatedAt'] = new Date();
-    const updatedStudent = await User.findByIdAndUpdate(
+    const updatedStudent = await req.db.model('User').findByIdAndUpdate(
       student_id,
       {
         application_preference
       },
       { upsert: true, new: true }
     );
-    // const updatedStudent = await User.findById(_id);
+    // const updatedStudent = await req.db.model('User').findById(_id);
     res.status(200).send({
       success: true,
       data: updatedStudent.application_preference
@@ -1642,11 +1643,13 @@ const updatePersonalData = asyncHandler(async (req, res, next) => {
     body: { personaldata }
   } = req;
   try {
-    const updatedStudent = await User.findByIdAndUpdate(user_id, personaldata, {
-      upsert: true,
-      new: true
-    });
-    // const updatedStudent = await User.findById(_id);
+    const updatedStudent = await req.db
+      .model('User')
+      .findByIdAndUpdate(user_id, personaldata, {
+        upsert: true,
+        new: true
+      });
+    // const updatedStudent = await req.db.model('User').findById(_id);
     res.status(200).send({
       success: true,
       data: {

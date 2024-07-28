@@ -1,5 +1,5 @@
 const { ErrorResponse } = require('../common/errors');
-const { Role } = require('../models/User');
+const { Role } = require('../constants');
 const logger = require('../services/logger');
 
 const docThreadMultitenant_filter = async (req, res, next) => {

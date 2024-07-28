@@ -1,6 +1,7 @@
 const { Student } = require('../models/User');
 const { Documentthread } = require('../models/Documentthread');
-const { Role } = require('../models/User');
+const { Role } = require('../constants');
+
 const { isArchiv } = require('../constants');
 const {
   sendNewApplicationMessageInThreadEmail,

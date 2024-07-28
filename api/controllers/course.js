@@ -6,7 +6,6 @@ const path = require('path');
 
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
-const { Role } = require('../models/User');
 const logger = require('../services/logger');
 const {
   updateCoursesDataAgentEmail,
@@ -14,7 +13,7 @@ const {
 } = require('../services/email');
 const { one_month_cache } = require('../cache/node-cache');
 const { AWS_S3_BUCKET_NAME, isProd } = require('../config');
-const { isNotArchiv } = require('../constants');
+const { isNotArchiv, Role } = require('../constants');
 const { s3 } = require('../aws/index');
 
 const getCourse = asyncHandler(async (req, res) => {

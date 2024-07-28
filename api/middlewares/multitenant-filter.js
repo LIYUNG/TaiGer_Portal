@@ -1,5 +1,6 @@
 const { ErrorResponse } = require('../common/errors');
-const { Role } = require('../models/User');
+const { Role } = require('../constants');
+
 
 const multitenant_filter = (req, res, next) => {
   const {

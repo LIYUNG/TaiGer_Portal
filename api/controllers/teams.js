@@ -2,8 +2,8 @@ const _ = require('lodash');
 
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
-const { User, Agent, Editor, Student, Role } = require('../models/User');
-const { Program } = require('../models/Program');
+const { Role } = require('../constants');
+const { User, Agent, Editor, Student } = require('../models/User');
 const { Documentthread } = require('../models/Documentthread');
 const logger = require('../services/logger');
 const { getStudentsByProgram } = require('./programs');

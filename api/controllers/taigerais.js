@@ -5,16 +5,13 @@ const { spawn } = require('child_process');
 
 const { asyncHandler } = require('../middlewares/error-handler');
 const logger = require('../services/logger');
-const { Program } = require('../models/Program');
 const { ProgramAI } = require('../models/ProgramAI');
 const { isProd } = require('../config');
 const { openAIClient, OpenAiModel } = require('../services/openai');
-const { Student, Role } = require('../models/User');
+const { Role } = require('../constants');
 const { generalMLPrompt } = require('../prompt/ml_prompt');
 const { FILE_MAPPING_TABLE } = require('../constants');
 const { generalRLPrompt } = require('../prompt/rl_prompt');
-const { getPermission } = require('../utils/queryFunctions');
-const { Communication } = require('../models/Communication');
 const Permission = require('../models/Permission');
 
 const pageSize = 3;
@@ -94,9 +91,11 @@ const TaiGerAiChat = asyncHandler(async (req, res, next) => {
   } = req;
   const { prompt } = req.body;
 
-  const communication_thread = await Communication.find({
-    student_id: studentId
-  })
+  const communication_thread = await req.db
+    .model('Communication')
+    .find({
+      student_id: studentId
+    })
     .populate('student_id user_id', 'firstname lastname role')
     .sort({ createdAt: -1 }) // 0: latest!
     .limit(pageSize)

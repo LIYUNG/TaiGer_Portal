@@ -1,10 +1,8 @@
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
-const Ticket = require('../models/Ticket');
 const logger = require('../services/logger');
-const { Student, Role } = require('../models/User');
+const { Role } = require('../constants');
 const { isNotArchiv } = require('../constants');
-const { Program } = require('../models/Program');
 const {
   TicketCreatedAgentEmail,
   TicketResolvedRequesterReminderEmail

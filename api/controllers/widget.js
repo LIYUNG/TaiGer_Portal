@@ -9,7 +9,8 @@ const logger = require('../services/logger');
 const { AWS_S3_BUCKET_NAME, isProd } = require('../config');
 const { s3 } = require('../aws/index');
 const { font } = require('../utils/NotoSansTC-VariableFont_wght-normal');
-const { Role } = require('../models/User');
+const { Role } = require('../constants');
+
 
 const student_name = 'PreCustomer';
 

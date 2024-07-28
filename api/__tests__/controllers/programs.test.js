@@ -39,6 +39,7 @@ beforeEach(async () => {
 
   const ProgramModel = db.model('Program', programSchema);
 
+  await ProgramModel.deleteMany();
   await ProgramModel.insertMany(programs);
   // await User.deleteMany();
   // await Program.deleteMany();
@@ -53,7 +54,9 @@ describe('GET /api/programs', () => {
     next();
   });
   it('should return all programs', async () => {
-    const resp = await request(app).get('/api/programs');
+    const resp = await request(app)
+      .get('/api/programs')
+      .set('tenantId', TENANT_ID);
     const { success, data } = resp.body;
 
     expect(resp.status).toBe(200);

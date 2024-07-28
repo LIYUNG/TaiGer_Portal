@@ -51,8 +51,8 @@ describe('GET /api/users', () => {
 
   it('should return all users', async () => {
     const resp = await request(app)
-      .set('tenantId', TENANT_ID)
-      .get('/api/users');
+      .get('/api/users')
+      .set('tenantId', TENANT_ID);
     const { success, data } = resp.body;
 
     expect(resp.status).toBe(200);
@@ -66,8 +66,8 @@ describe('GET /api/users', () => {
 describe('GET /api/agents', () => {
   it('should return all agents', async () => {
     const resp = await request(app)
-      .set('tenantId', TENANT_ID)
-      .get('/api/agents');
+      .get('/api/agents')
+      .set('tenantId', TENANT_ID);
     const { success, data } = resp.body;
 
     const agentIds = agents.map(({ _id }) => _id).sort();
@@ -81,7 +81,9 @@ describe('GET /api/agents', () => {
 
 describe('GET /api/editors', () => {
   it('should return all editors', async () => {
-    const resp = await request(app).get('/api/editors');
+    const resp = await request(app)
+      .get('/api/editors')
+      .set('tenantId', TENANT_ID);
     const { success, data } = resp.body;
 
     const editorIds = editors.map(({ _id }) => _id).sort();

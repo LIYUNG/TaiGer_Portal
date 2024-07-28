@@ -56,7 +56,9 @@ beforeEach(async () => {
   const UserModel = db.model('User', UserSchema);
   const ProgramModel = db.model('Program', programSchema);
 
+  await UserModel.deleteMany();
   await UserModel.insertMany(users);
+  await ProgramModel.deleteMany();
   await ProgramModel.create(program);
   // await User.deleteMany();
   // await User.insertMany(users);
@@ -155,23 +157,23 @@ describe('/api/docs/:category', () => {
 
   test('GET all documentation in db', async () => {
     const resp4 = await request(app)
-      .set('tenantId', TENANT_ID)
-      .get('/api/docs/all');
+      .get('/api/docs/all')
+      .set('tenantId', TENANT_ID);
     expect(resp4.body.success).toBe(true);
   });
 
   test('GET all internal documentation in db', async () => {
     const resp4 = await request(app)
-      .set('tenantId', TENANT_ID)
-      .get('/api/docs/internal/all');
+      .get('/api/docs/internal/all')
+      .set('tenantId', TENANT_ID);
     expect(resp4.body.success).toBe(true);
   });
 
   test('DELETE documentation in db', async () => {
     // test delete
     const resp4 = await request(app)
-      .set('tenantId', TENANT_ID)
-      .delete(`/api/docs/${article_id}`);
+      .delete(`/api/docs/${article_id}`)
+      .set('tenantId', TENANT_ID);
     expect(resp4.status).toBe(200);
     expect(resp4.body.success).toBe(true);
   });

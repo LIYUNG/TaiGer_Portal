@@ -3,11 +3,11 @@ const path = require('path');
 const request = require('supertest');
 
 const { UPLOAD_PATH } = require('../../config');
-const db = require('../fixtures/db');
+const { connect, closeDatabase, clearDatabase } = require('../fixtures/db');
 const { app } = require('../../app');
 const { Role } = require('../../constants');
-const { User, Agent, Editor, Student } = require('../../models/User');
-const { Program } = require('../../models/Program');
+const { User, Agent, Editor, Student, UserSchema } = require('../../models/User');
+const { Program, programSchema } = require('../../models/Program');
 const { Documentthread } = require('../../models/Documentthread');
 const { generateUser } = require('../fixtures/users');
 const { generateProgram } = require('../fixtures/programs');
@@ -18,6 +18,8 @@ const {
 const {
   InnerTaigerMultitenantFilter
 } = require('../../middlewares/InnerTaigerMultitenantFilter');
+const { connectToDatabase } = require('../../middlewares/tenantMiddleware');
+const { TENANT_ID } = require('../fixtures/constants');
 
 jest.mock('../../middlewares/auth', () => {
   const passthrough = async (req, res, next) => next();
@@ -77,15 +79,22 @@ const requiredDocuments = ['transcript', 'resume'];
 const optionalDocuments = ['certificate', 'visa'];
 const program = generateProgram(requiredDocuments, optionalDocuments);
 
-beforeAll(async () => await db.connect());
-afterAll(async () => await db.clearDatabase());
+let dbUri;
 
+beforeAll(async () => {
+  dbUri = await connect();
+});
+afterAll(async () => await clearDatabase());
 beforeEach(async () => {
-  await User.deleteMany();
-  await User.insertMany(users);
+  const db = connectToDatabase(TENANT_ID, dbUri);
 
-  await Program.deleteMany();
-  await Program.create(program);
+  const UserModel = db.model('User', UserSchema);
+  const ProgramModel = db.model('Program', programSchema);
+
+  await UserModel.deleteMany();
+  await UserModel.insertMany(users);
+  await ProgramModel.deleteMany();
+  await ProgramModel.create(program);
 });
 
 afterEach(() => {

@@ -102,7 +102,9 @@ beforeEach(async () => {
   const UserModel = db.model('User', UserSchema);
   const ProgramModel = db.model('Program', programSchema);
 
+  await UserModel.deleteMany();
   await UserModel.insertMany(users);
+  await ProgramModel.deleteMany();
   await ProgramModel.insertMany(programs);
   // await User.deleteMany();
   // await Program.deleteMany();
@@ -130,6 +132,7 @@ describe('POST /api/students/:id/agents', () => {
 
     const resp = await request(app)
       .post(`/api/students/${studentId}/agents`)
+      .set('tenantId', TENANT_ID)
       .send(agents_obj);
 
     expect(resp.status).toBe(200);
@@ -410,15 +413,15 @@ describe('POST /api/students/:studentId/files/:category', () => {
 
     // test delete
     const resp4 = await request(app)
-      .set('tenantId', TENANT_ID)
-      .delete(`/api/students/${studentId}/files/${category}`);
+      .delete(`/api/students/${studentId}/files/${category}`)
+      .set('tenantId', TENANT_ID);
     expect(resp4.status).toBe(200);
     expect(resp4.body.success).toBe(true);
 
     // TODO test delete: should not delete other students file
     const resp5 = await request(app)
-      .set('tenantId', TENANT_ID)
-      .delete(`/api/students/${student2Id}/files/${category}`);
+      .delete(`/api/students/${student2Id}/files/${category}`)
+      .set('tenantId', TENANT_ID);
     expect(resp5.status).toBe(403);
     expect(resp5.body.success).toBe(false);
   });
@@ -453,8 +456,8 @@ describe('POST /api/students/:studentId/files/:category', () => {
     async (File_Name, status, success) => {
       const buffer_1MB_exe = Buffer.alloc(1024 * 1024 * 1); // 1 MB
       const resp2 = await request(app)
-        .set('tenantId', TENANT_ID)
         .post(`/api/students/${studentId}/files/${category}`)
+        .set('tenantId', TENANT_ID)
         .attach('file', buffer_1MB_exe, File_Name);
 
       expect(resp2.status).toBe(status);
@@ -511,6 +514,7 @@ describe('POST /api/students/:studentId/files/:category', () => {
     // Test Download:
     const resp2 = await request(app)
       .get(`/api/students/${studentId}/files/${category}`)
+      .set('tenantId', TENANT_ID)
       .buffer();
 
     expect(resp2.status).toBe(200);
@@ -531,6 +535,7 @@ describe('POST /api/students/:studentId/files/:category', () => {
     const feedback_str = 'too blurred';
     const resp5 = await request(app)
       .post(`/api/students/${studentId}/${category}/status`)
+      .set('tenantId', TENANT_ID)
       .send({ status: 'rejected', feedback: feedback_str });
     expect(resp5.status).toBe(201);
     var updatedStudent2 = resp5.body.data;
@@ -542,9 +547,9 @@ describe('POST /api/students/:studentId/files/:category', () => {
     expect(updated_doc.feedback).toBe(feedback_str);
 
     // test delete
-    const resp4 = await request(app).delete(
-      `/api/students/${studentId}/files/${category}`
-    );
+    const resp4 = await request(app)
+      .delete(`/api/students/${studentId}/files/${category}`)
+      .set('tenantId', TENANT_ID);
     expect(resp4.status).toBe(200);
     expect(resp4.body.success).toBe(true);
   });

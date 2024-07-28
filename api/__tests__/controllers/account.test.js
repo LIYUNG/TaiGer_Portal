@@ -115,7 +115,9 @@ beforeEach(async () => {
   const UserModel = db.model('User', UserSchema);
   const ProgramModel = db.model('Program', programSchema);
 
+  await UserModel.deleteMany();
   await UserModel.insertMany(users);
+  await ProgramModel.deleteMany();
   await ProgramModel.create(program);
   // await User.deleteMany();
   // await User.insertMany(users);
@@ -124,7 +126,7 @@ beforeEach(async () => {
   // await Program.create(program);
 
   protect.mockImplementation(async (req, res, next) => {
-    req.user = await Student.findById(student._id);
+    req.user = await UserModel.findById(student._id);
     next();
   });
 });

@@ -38,7 +38,7 @@ const {
   UrgentTasksReminderEmails,
   AssignEditorTasksReminderEmails,
   NextSemesterCourseSelectionReminderEmails,
-  UpdateStatisticsData,
+  // UpdateStatisticsData,
   MeetingDailyReminderChecker,
   UnconfirmedMeetingDailyReminderChecker,
   DailyCalculateAverageResponseTime,

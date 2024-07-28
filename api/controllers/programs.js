@@ -1,12 +1,10 @@
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
-const { programSchema } = require('../models/Program');
 const { Role } = require('../constants');
 const logger = require('../services/logger');
 const { one_month_cache } = require('../cache/node-cache');
 const { two_weeks_cache } = require('../cache/node-cache');
 const { PROGRAMS_CACHE } = require('../config');
-const { enableVersionControl } = require('../utils/modelHelper/versionControl');
 
 const getPrograms = asyncHandler(async (req, res) => {
   // Option 1 : Cache version

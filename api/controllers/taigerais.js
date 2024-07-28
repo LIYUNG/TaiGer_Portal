@@ -12,7 +12,6 @@ const { Role } = require('../constants');
 const { generalMLPrompt } = require('../prompt/ml_prompt');
 const { FILE_MAPPING_TABLE } = require('../constants');
 const { generalRLPrompt } = require('../prompt/rl_prompt');
-const Permission = require('../models/Permission');
 
 const pageSize = 3;
 
@@ -213,7 +212,7 @@ const TaiGerAiChat = asyncHandler(async (req, res, next) => {
   );
 
   // res.status(200).send({ success: true, data: chat });
-  const permission = await Permission.findOne({
+  const permission = await req.db.model('Permission').findOne({
     user_id: user._id
   });
   if (permission.taigerAiQuota > 0) {
@@ -283,7 +282,7 @@ const cvmlrlAi = asyncHandler(async (req, res, next) => {
   }
   res.end();
 
-  const permission = await Permission.findOne({
+  const permission = await req.db.model('Permission').findOne({
     user_id: user._id
   });
   if (permission.taigerAiQuota > 0) {

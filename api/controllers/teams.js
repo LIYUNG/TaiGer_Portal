@@ -3,17 +3,14 @@ const _ = require('lodash');
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
 const { Role } = require('../constants');
-const { User, Agent, Editor, Student } = require('../models/User');
-const { Documentthread } = require('../models/Documentthread');
 const logger = require('../services/logger');
 const { getStudentsByProgram } = require('./programs');
-const { findStudentDelta, findStudentDeltaGet } = require('../utils/modelHelper/programChange');
+const { findStudentDeltaGet } = require('../utils/modelHelper/programChange');
 const { getPermission } = require('../utils/queryFunctions');
 const { ObjectId } = require('mongodb');
 const { GenerateResponseTimeByStudent } = require('./response_time');
 const { numStudentYearDistribution } = require('../utils/utils_function');
 const { one_day_cache } = require('../cache/node-cache');
-const { ResponseTime } = require('../models/ResponseTime');
 
 const getActivePrograms = async (req) => {
   const activePrograms = await req.db.model('User').aggregate([
@@ -116,7 +113,7 @@ const getApplicationDeltas = asyncHandler(async (req, res) => {
 });
 
 const getTeamMembers = asyncHandler(async (req, res) => {
-  const users = await User.aggregate([
+  const users = await req.db.model('User').aggregate([
     {
       $match: {
         role: { $in: ['Admin', 'Agent', 'Editor'] },
@@ -135,8 +132,8 @@ const getTeamMembers = asyncHandler(async (req, res) => {
   res.status(200).send({ success: true, data: users });
 });
 
-const getGeneralTasks = async () => {
-  const studentsWithCommunications = await Student.aggregate([
+const getGeneralTasks = async (req) => {
+  const studentsWithCommunications = await req.db.model('Student').aggregate([
     // Match students where archiv is not true
     { $match: { $or: [{ archiv: { $exists: false } }, { archiv: false }] } },
     // Unwind the generaldocs_threads array to create a document for each application
@@ -169,8 +166,8 @@ const getGeneralTasks = async () => {
   return studentsWithCommunications;
 };
 
-const getDecidedApplicationsTasks = async () => {
-  const studentsWithCommunications = await Student.aggregate([
+const getDecidedApplicationsTasks = async (req) => {
+  const studentsWithCommunications = await req.db.model('Student').aggregate([
     // Match students where archiv is not true
     { $match: { $or: [{ archiv: { $exists: false } }, { archiv: false }] } },
     // Unwind the applications array to create a document for each application
@@ -223,10 +220,10 @@ const getDecidedApplicationsTasks = async () => {
   return studentsWithCommunications;
 };
 
-const getFileTypeCount = async () => {
+const getFileTypeCount = async (req) => {
   // TODO not accurate, because these contains not-decided tasks.
 
-  const counts1Promise = Student.aggregate([
+  const counts1Promise = req.db.model('Student').aggregate([
     // Match students where archiv is not true
     { $match: { $or: [{ archiv: { $exists: false } }, { archiv: false }] } },
     // Unwind the generaldocs_threads array to create a document for each application
@@ -244,7 +241,7 @@ const getFileTypeCount = async () => {
     { $unwind: '$doc_thread' },
     { $group: { _id: '$doc_thread.file_type', count: { $sum: 1 } } }
   ]);
-  const counts2Promise = Student.aggregate([
+  const counts2Promise = req.db.model('Student').aggregate([
     // Match students where archiv is not true
     { $match: { $or: [{ archiv: { $exists: false } }, { archiv: false }] } },
     // Unwind the applications array to create a document for each application
@@ -313,11 +310,14 @@ const getFileTypeCount = async () => {
   return fileTypeCounts;
 };
 
-const getAgentData = async (agent) => {
-  const agentStudents = await Student.find({
-    agents: agent._id,
-    $or: [{ archiv: { $exists: false } }, { archiv: false }]
-  }).lean();
+const getAgentData = async (req, agent) => {
+  const agentStudents = await req.db
+    .model('Student')
+    .find({
+      agents: agent._id,
+      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+    })
+    .lean();
   const student_num_with_offer = agentStudents.filter((std) =>
     std.applications.some((application) => application.admission === 'O')
   ).length;
@@ -331,8 +331,8 @@ const getAgentData = async (agent) => {
   return agentData;
 };
 
-const getAgentStudentDistData = async (agent) => {
-  const studentYearDistributionPromise = Student.aggregate([
+const getAgentStudentDistData = async (req, agent) => {
+  const studentYearDistributionPromise = req.db.model('Student').aggregate([
     {
       $match: {
         archiv: { $ne: true },
@@ -361,34 +361,36 @@ const getAgentStudentDistData = async (agent) => {
     }
   ]);
 
-  const studentYearNoAdmissionDistributionPromise = Student.aggregate([
-    {
-      $match: {
-        archiv: { $ne: true },
-        agents: agent._id, // Filter students where agents array includes the specific ObjectId
-        'applications.admission': { $ne: 'O' }
+  const studentYearNoAdmissionDistributionPromise = req.db
+    .model('Student')
+    .aggregate([
+      {
+        $match: {
+          archiv: { $ne: true },
+          agents: agent._id, // Filter students where agents array includes the specific ObjectId
+          'applications.admission': { $ne: 'O' }
+        }
+      },
+      {
+        $group: {
+          _id: {
+            expected_application_date:
+              '$application_preference.expected_application_date'
+          },
+          count: { $sum: 1 } // Count the number of students in each group
+        }
+      },
+      {
+        $project: {
+          _id: 0, // Do not include the default _id field
+          expected_application_date: '$_id.expected_application_date', // Rename _id.expected_application_date to expected_application_date
+          count: 1 // Include the count field
+        }
+      },
+      {
+        $sort: { expected_application_date: 1 } // Sort by expected_application_date in ascending order
       }
-    },
-    {
-      $group: {
-        _id: {
-          expected_application_date:
-            '$application_preference.expected_application_date'
-        },
-        count: { $sum: 1 } // Count the number of students in each group
-      }
-    },
-    {
-      $project: {
-        _id: 0, // Do not include the default _id field
-        expected_application_date: '$_id.expected_application_date', // Rename _id.expected_application_date to expected_application_date
-        count: 1 // Include the count field
-      }
-    },
-    {
-      $sort: { expected_application_date: 1 } // Sort by expected_application_date in ascending order
-    }
-  ]);
+    ]);
   const [studentYearDistribution, studentYearNoAdmissionDistribution] =
     await Promise.all([
       studentYearDistributionPromise,
@@ -401,15 +403,18 @@ const getAgentStudentDistData = async (agent) => {
   };
 };
 
-const getEditorData = async (editor) => {
+const getEditorData = async (req, editor) => {
   const editorData = {};
   editorData._id = editor._id.toString();
   editorData.firstname = editor.firstname;
   editorData.lastname = editor.lastname;
-  editorData.student_num = await Student.find({
-    editors: editor._id,
-    $or: [{ archiv: { $exists: false } }, { archiv: false }]
-  }).count();
+  editorData.student_num = await req.db
+    .model('Student')
+    .find({
+      editors: editor._id,
+      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+    })
+    .count();
   return editorData;
 };
 
@@ -417,39 +422,43 @@ const getStatistics = asyncHandler(async (req, res) => {
   const cacheKey = 'internalDashboard';
   const value = one_day_cache.get(cacheKey);
   if (value === undefined) {
-    const agents = await Agent.find({
+    const agents = await req.db.model('Agent').find({
       $or: [{ archiv: { $exists: false } }, { archiv: false }]
     });
-    const editors = await Editor.find({
+    const editors = await req.db.model('Editor').find({
       $or: [{ archiv: { $exists: false } }, { archiv: false }]
     });
 
     const agentsPromises = Promise.all(
-      agents.map((agent) => getAgentData(agent))
+      agents.map((agent) => getAgentData(req, agent))
     );
     const editorsPromises = Promise.all(
-      editors.map((editor) => getEditorData(editor))
+      editors.map((editor) => getEditorData(req, editor))
     );
 
-    const documentsPromise = getFileTypeCount();
-    const finDocsPromise = Documentthread.find({
-      isFinalVersion: true,
-      $or: [
-        { file_type: 'CV' },
-        { file_type: 'ML' },
-        { file_type: 'RL_A' },
-        { file_type: 'RL_B' },
-        { file_type: 'RL_C' },
-        { file_type: 'Recommendation_Letter_A' },
-        { file_type: 'Recommendation_Letter_B' },
-        { file_type: 'Recommendation_Letter_C' }
-      ]
-    })
+    const documentsPromise = getFileTypeCount(req);
+    const finDocsPromise = req.db
+      .model('Documentthread')
+      .find({
+        isFinalVersion: true,
+        $or: [
+          { file_type: 'CV' },
+          { file_type: 'ML' },
+          { file_type: 'RL_A' },
+          { file_type: 'RL_B' },
+          { file_type: 'RL_C' },
+          { file_type: 'Recommendation_Letter_A' },
+          { file_type: 'Recommendation_Letter_B' },
+          { file_type: 'Recommendation_Letter_C' }
+        ]
+      })
       .populate('student_id', 'firstname lastname')
       .select('file_type messages.createdAt')
       .lean();
 
-    const studentsPromise = Student.find()
+    const studentsPromise = req.db
+      .model('Student')
+      .find()
       .populate('agents editors', 'firstname lastname')
       .populate('applications.programId')
       .populate(
@@ -458,7 +467,7 @@ const getStatistics = asyncHandler(async (req, res) => {
       )
       .lean();
 
-    const archivCountPromise = Student.aggregate([
+    const archivCountPromise = req.db.model('Student').aggregate([
       {
         $group: {
           _id: '$archiv',
@@ -470,8 +479,9 @@ const getStatistics = asyncHandler(async (req, res) => {
     // const studentResponseTimeLookupTablePromise =
     //   GenerateResponseTimeByStudent();
     // TOOD: multiple ML/ RL should be averaged. This output will be used for overview table.
-    const studentResponseTimeLookupTablePromise2 = await ResponseTime.aggregate(
-      [
+    const studentResponseTimeLookupTablePromise2 = await req.db
+      .model('ResponseTime')
+      .aggregate([
         {
           $group: {
             _id: '$student_id',
@@ -537,10 +547,9 @@ const getStatistics = asyncHandler(async (req, res) => {
             }
           }
         }
-      ]
-    );
-    const activeStudentGeneralTasksPromise = getGeneralTasks();
-    const activeStudentTasksPromise = await getDecidedApplicationsTasks();
+      ]);
+    const activeStudentGeneralTasksPromise = getGeneralTasks(req);
+    const activeStudentTasksPromise = await getDecidedApplicationsTasks(req);
     const [
       agents_raw_data,
       editors_raw_data,
@@ -562,7 +571,7 @@ const getStatistics = asyncHandler(async (req, res) => {
       studentResponseTimeLookupTablePromise2,
       activeStudentGeneralTasksPromise,
       activeStudentTasksPromise,
-      ...agents.map((agent) => getAgentStudentDistData(agent))
+      ...agents.map((agent) => getAgentStudentDistData(req, agent))
     ]);
 
     const resultAdmission = agentsStudentsDistribution.map(
@@ -676,9 +685,12 @@ const getAgents = asyncHandler(async (req, res, next) => {
   if (user.role === 'Agent') {
     const permissions = await getPermission(req, user);
     if (permissions && permissions.canAssignAgents) {
-      const agents = await Agent.find({
-        $or: [{ archiv: { $exists: false } }, { archiv: false }]
-      }).select('firstname lastname');
+      const agents = await req.db
+        .model('Agent')
+        .find({
+          $or: [{ archiv: { $exists: false } }, { archiv: false }]
+        })
+        .select('firstname lastname');
       res.status(200).send({ success: true, data: agents });
     } else {
       logger.error('getAgents: no permission');
@@ -688,16 +700,22 @@ const getAgents = asyncHandler(async (req, res, next) => {
       );
     }
   } else {
-    const agents = await Agent.find({
-      $or: [{ archiv: { $exists: false } }, { archiv: false }]
-    }).select('firstname lastname');
+    const agents = await req.db
+      .model('Agent')
+      .find({
+        $or: [{ archiv: { $exists: false } }, { archiv: false }]
+      })
+      .select('firstname lastname');
     res.status(200).send({ success: true, data: agents });
   }
 });
 
 const getSingleAgent = asyncHandler(async (req, res, next) => {
   const { agent_id } = req.params;
-  const agent = await Agent.findById(agent_id).select('firstname lastname');
+  const agent = await req.db
+    .model('Agent')
+    .findById(agent_id)
+    .select('firstname lastname');
   // query by agents field: student.agents include agent_id
   const students = await req.db
     .model('Student')
@@ -719,30 +737,35 @@ const getSingleAgent = asyncHandler(async (req, res, next) => {
 
 const putAgentProfile = asyncHandler(async (req, res, next) => {
   const { agent_id } = req.params;
-  const agent = await Agent.findById(agent_id).select(
-    'firstname lastname email selfIntroduction'
-  );
+  const agent = await req.db
+    .model('Agent')
+    .findById(agent_id)
+    .select('firstname lastname email selfIntroduction');
 
   res.status(200).send({ success: true, data: agent });
 });
 
 const getAgentProfile = asyncHandler(async (req, res, next) => {
   const { agent_id } = req.params;
-  const agent = await Agent.findById(agent_id).select(
-    'firstname lastname email selfIntroduction officehours timezone'
-  );
+  const agent = await req.db
+    .model('Agent')
+    .findById(agent_id)
+    .select('firstname lastname email selfIntroduction officehours timezone');
 
   res.status(200).send({ success: true, data: agent });
 });
 
 const getEditors = asyncHandler(async (req, res, next) => {
   const { user } = req;
-  if (user.role === 'Editor') {
+  if (user.role === Role.Editor) {
     const permissions = await getPermission(req, user);
     if (permissions && permissions.canAssignEditors) {
-      const editors = await Editor.find({
-        $or: [{ archiv: { $exists: false } }, { archiv: false }]
-      }).select('firstname lastname');
+      const editors = await req.db
+        .model('Editor')
+        .find({
+          $or: [{ archiv: { $exists: false } }, { archiv: false }]
+        })
+        .select('firstname lastname');
       res.status(200).send({ success: true, data: editors });
     } else {
       logger.error('getEditors: no permission');
@@ -752,16 +775,22 @@ const getEditors = asyncHandler(async (req, res, next) => {
       );
     }
   } else {
-    const editors = await Editor.find({
-      $or: [{ archiv: { $exists: false } }, { archiv: false }]
-    }).select('firstname lastname');
+    const editors = await req.db
+      .model('Editor')
+      .find({
+        $or: [{ archiv: { $exists: false } }, { archiv: false }]
+      })
+      .select('firstname lastname');
     res.status(200).send({ success: true, data: editors });
   }
 });
 
 const getSingleEditor = asyncHandler(async (req, res, next) => {
   const { editor_id } = req.params;
-  const editor = await Editor.findById(editor_id).select('firstname lastname');
+  const editor = await req.db
+    .model('Editor')
+    .findById(editor_id)
+    .select('firstname lastname');
   // query by agents field: student.editors include editor_id
   const students = await req.db
     .model('Student')
@@ -793,7 +822,7 @@ const getSingleEditor = asyncHandler(async (req, res, next) => {
 
 const getArchivStudents = asyncHandler(async (req, res) => {
   const { TaiGerStaffId } = req.params;
-  const user = await User.findById(TaiGerStaffId);
+  const user = await req.db.model('User').findById(TaiGerStaffId);
   if (user.role === Role.Admin) {
     const students = await req.db
       .model('Student')
@@ -836,9 +865,12 @@ const getEssayWriters = asyncHandler(async (req, res, next) => {
     const permissions = await getPermission(req, user);
     // if (permissions && permissions.canAssignEditors && permissions.isEssayWriters) {
     if (permissions && permissions.canAssignEditors) {
-      const editors = await Editor.find({
-        $or: [{ archiv: { $exists: false } }, { archiv: false }]
-      }).select('firstname lastname');
+      const editors = await req.db
+        .model('Editor')
+        .find({
+          $or: [{ archiv: { $exists: false } }, { archiv: false }]
+        })
+        .select('firstname lastname');
       res.status(200).send({ success: true, data: editors });
     } else {
       logger.error('getEssayWriters: no permission');
@@ -848,9 +880,12 @@ const getEssayWriters = asyncHandler(async (req, res, next) => {
       );
     }
   } else {
-    const editors = await Editor.find({
-      $or: [{ archiv: { $exists: false } }, { archiv: false }]
-    }).select('firstname lastname');
+    const editors = await req.db
+      .model('Editor')
+      .find({
+        $or: [{ archiv: { $exists: false } }, { archiv: false }]
+      })
+      .select('firstname lastname');
     res.status(200).send({ success: true, data: editors });
   }
 });

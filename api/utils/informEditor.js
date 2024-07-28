@@ -1,5 +1,3 @@
-const { Student } = require('../models/User');
-const { Documentthread } = require('../models/Documentthread');
 const { Role } = require('../constants');
 
 const { isArchiv } = require('../constants');
@@ -10,8 +8,8 @@ const {
 } = require('../services/email');
 const { ErrorResponse } = require('../common/errors');
 
-const addMessageInThread = async (message, threadId, userId) => {
-  const thread = await Documentthread.findById(threadId);
+const addMessageInThread = async (req, message, threadId, userId) => {
+  const thread = await req.db.model('Documentthread').findById(threadId);
   if (!thread) {
     throw new ErrorResponse(403, 'Invalid message thread id');
   }
@@ -55,9 +53,11 @@ const informStaff = async (user, staff, student, fileType, thread, message) => {
   );
 };
 
-const informNoEditor = async (student) => {
+const informNoEditor = async (req, student) => {
   const agents = student?.agents;
-  await Student.findByIdAndUpdate(student._id, { needEditor: true }, {});
+  await req.db
+    .model('Student')
+    .findByIdAndUpdate(student._id, { needEditor: true }, {});
 
   // inform active-agent
   for (let agent of agents) {
@@ -106,12 +106,13 @@ const informNoEditor = async (student) => {
   }
 };
 
-const informOnSurveyUpdate = async (user, survey, thread) => {
+const informOnSurveyUpdate = async (req, user, survey, thread) => {
   // placeholder for automatic notification user id
   const notificationUser = undefined;
 
   // Create message notification
   await addMessageInThread(
+    req,
     `Automatic Notification: Survey has been finalized by ${user.firstname} ${user.lastname}.`,
     thread?._id,
     notificationUser
@@ -121,7 +122,9 @@ const informOnSurveyUpdate = async (user, survey, thread) => {
     return;
   }
 
-  const student = await Student.findById(survey.studentId)
+  const student = await req.db
+    .model('Student')
+    .findById(survey.studentId)
     .populate('agents editors', 'firstname lastname email')
     .lean();
 
@@ -137,7 +140,7 @@ const informOnSurveyUpdate = async (user, survey, thread) => {
 
   // If no editor, inform agent to assign
   if (noEditor) {
-    informNoEditor(student);
+    informNoEditor(req, student);
   } else {
     // if supplementary form, inform Agent.
     if (fileType === 'Supplementary_Form') {

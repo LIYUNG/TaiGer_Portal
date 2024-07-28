@@ -1,5 +1,4 @@
 const { ErrorResponse } = require('../common/errors');
-const { Interview } = require('../models/Interview');
 const { Role } = require('../constants');
 const { getPermission } = require('../utils/queryFunctions');
 
@@ -11,9 +10,10 @@ const interviewMultitenantFilter = async (req, res, next) => {
   if (user.role === Role.Editor || user.role === Role.Agent) {
     const permissions = await getPermission(req, user);
 
-    const interview = await Interview.findById(interview_id).populate(
-      'student_id'
-    );
+    const interview = await req.db
+      .model('Interview')
+      .findById(interview_id)
+      .populate('student_id');
     if (!interview) {
       next(new ErrorResponse(404, 'Interview not found'));
     }
@@ -35,7 +35,10 @@ const interviewMultitenantFilter = async (req, res, next) => {
     }
   }
   if (user.role === Role.Student || user.role === Role.Guest) {
-    const interview = await Interview.findById(interview_id).populate();
+    const interview = await req.db
+      .model('Interview')
+      .findById(interview_id)
+      .populate();
     if (
       interview.student_id?.toString() &&
       user._id.toString() !== interview.student_id?.toString()
@@ -55,7 +58,7 @@ const interviewMultitenantReadOnlyFilter = async (req, res, next) => {
   } = req;
 
   if (user.role === Role.Student || user.role === Role.Guest) {
-    const interview = await Interview.findById(interview_id);
+    const interview = await req.db.model('Interview').findById(interview_id);
     if (
       interview?.student_id?.toString() &&
       user._id.toString() !== interview?.student_id?.toString()

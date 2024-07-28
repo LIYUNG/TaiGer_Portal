@@ -4,7 +4,6 @@ const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
 const { Role } = require('../constants');
 const logger = require('../services/logger');
-const { Documentthread } = require('../models/Documentthread');
 const { emptyS3Directory } = require('../utils/utils_function');
 const { AWS_S3_BUCKET_NAME } = require('../config');
 const {
@@ -17,8 +16,6 @@ const {
   InterviewSurveyFinishedEmail,
   InterviewSurveyFinishedToTaiGerEmail
 } = require('../services/email');
-const Permission = require('../models/Permission');
-const InterviewSurveyResponse = require('../models/InterviewSurveyResponse');
 const { addMessageInThread } = require('../utils/informEditor');
 const { isNotArchiv } = require('../constants');
 const { getPermission } = require('../utils/queryFunctions');
@@ -107,7 +104,9 @@ const getAllInterviews = asyncHandler(async (req, res) => {
 const getInterviewQuestions = asyncHandler(async (req, res) => {
   const { programId } = req.params;
 
-  const interviewsSurveys = await InterviewSurveyResponse.find()
+  const interviewsSurveys = await req.db
+    .model('InterviewSurveyResponse')
+    .find()
     .populate('student_id', 'firstname lastname email')
     .lean();
 
@@ -199,7 +198,9 @@ const getInterview = asyncHandler(async (req, res) => {
       throw new ErrorResponse(404, 'this interview is not found!');
     }
 
-    const interviewsSurveys = await InterviewSurveyResponse.find()
+    const interviewsSurveys = await req.db
+      .model('InterviewSurveyResponse')
+      .find()
       .populate('interview_id')
       .lean();
 
@@ -257,13 +258,13 @@ const deleteInterview = asyncHandler(async (req, res) => {
       await req.db.model('Event').findByIdAndDelete(interview.event_id);
     }
     // Delete interview thread in mongoDB
-    await Documentthread.findByIdAndDelete(interview.thread_id);
+    await req.db.model('Documentthread').findByIdAndDelete(interview.thread_id);
   }
 
   // Delete interview  in mongoDB
   await req.db.model('Interview').findByIdAndDelete(interview_id);
   // Delete interview survey if existed
-  await InterviewSurveyResponse.findOneAndDelete({
+  await req.db.model('InterviewSurveyResponse').findOneAndDelete({
     interview_id
   });
 
@@ -408,11 +409,13 @@ const updateInterview = asyncHandler(async (req, res) => {
     .populate('thread_id event_id')
     .lean();
   if (payload.isClosed === true || payload.isClosed === false) {
-    await Documentthread.findByIdAndUpdate(
-      interview.thread_id._id.toString(),
-      { isFinalVersion: payload.isClosed },
-      {}
-    );
+    await req.db
+      .model('Documentthread')
+      .findByIdAndUpdate(
+        interview.thread_id._id.toString(),
+        { isFinalVersion: payload.isClosed },
+        {}
+      );
   }
   res.status(200).send({ success: true, data: interview });
   if (payload.trainer_id?.length > 0) {
@@ -461,9 +464,11 @@ const getInterviewSurvey = asyncHandler(async (req, res) => {
     params: { interview_id }
   } = req;
 
-  const interviewSurvey = await InterviewSurveyResponse.findOne({
-    interview_id
-  })
+  const interviewSurvey = await req.db
+    .model('InterviewSurveyResponse')
+    .findOne({
+      interview_id
+    })
     .populate('student_id', 'firstname lastname email')
     .populate('program_id', 'school program_name degree semester')
     .lean();
@@ -479,14 +484,12 @@ const updateInterviewSurvey = asyncHandler(async (req, res) => {
 
   const payload = req.body;
   // console.log(payload);
-  const interviewSurvey = await InterviewSurveyResponse.findOneAndUpdate(
-    { interview_id },
-    payload,
-    {
+  const interviewSurvey = await req.db
+    .model('InterviewSurveyResponse')
+    .findOneAndUpdate({ interview_id }, payload, {
       new: true,
       upsert: true
-    }
-  )
+    })
     .populate('student_id', 'firstname lastname email')
     .populate('program_id', 'school program_name degree semester')
     .lean();
@@ -531,6 +534,7 @@ const updateInterviewSurvey = asyncHandler(async (req, res) => {
         : undefined;
     if (notificationUser) {
       await addMessageInThread(
+        req,
         `Automatic Notification: Hi ${interview.student_id.firstname}, thank you for filling the interview training survey. I wish you having a great result for the application.`,
         interview?.thread_id,
         notificationUser
@@ -578,7 +582,7 @@ const createInterview = asyncHandler(async (req, res) => {
     throw new ErrorResponse(409, 'Interview already existed!');
   } else {
     try {
-      const createdDocument = await Documentthread.create({
+      const createdDocument = await req.db.model('Documentthread').create({
         student_id: studentId,
         program_id,
         file_type: 'Interview'
@@ -606,9 +610,11 @@ const createInterview = asyncHandler(async (req, res) => {
     res.status(200).send({ success: true });
     // inform interview assign
     // inform editor-lead
-    const permissions = await Permission.find({
-      canAssignEditors: true
-    })
+    const permissions = await req.db
+      .model('Permission')
+      .find({
+        canAssignEditors: true
+      })
       .populate('user_id', 'firstname lastname email archiv')
       .lean();
     const newlyCreatedInterview = await req.db

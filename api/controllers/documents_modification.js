@@ -1,11 +1,10 @@
+const mongoose = require('mongoose');
 const async = require('async');
 const path = require('path');
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
-const { Role, Agent, Editor } = require('../models/User');
+const { Role } = require('../constants');
 const { one_month_cache } = require('../cache/node-cache');
-const { Documentthread } = require('../models/Documentthread');
-const surveyInput = require('../models/SurveyInput');
 const { emptyS3Directory } = require('../utils/utils_function');
 const { informOnSurveyUpdate } = require('../utils/informEditor');
 const {
@@ -40,10 +39,7 @@ const {
 } = require('../services/email');
 
 const { AWS_S3_BUCKET_NAME, API_ORIGIN } = require('../config');
-const Permission = require('../models/Permission');
 const { s3 } = require('../aws/index');
-const { Interview } = require('../models/Interview');
-const mongoose = require('mongoose');
 
 const ThreadS3GarbageCollector = async (req) => {
   try {
@@ -317,8 +313,9 @@ const getAllCVMLRLOverview = asyncHandler(async (req, res) => {
   res.status(200).send({ success: true, data: students });
 });
 
-const getSurveyInputDocuments = async (studentId, programId, fileType) => {
-  const document = await surveyInput
+const getSurveyInputDocuments = async (req, studentId, programId, fileType) => {
+  const document = await req.db
+    .model('surveyInput')
     .find({
       studentId,
       ...(fileType ? { fileType } : {}),
@@ -358,6 +355,7 @@ const getSurveyInputs = asyncHandler(async (req, res, next) => {
   }
 
   const surveyDocument = await getSurveyInputDocuments(
+    req,
     threadDocument.student_id._id.toString(),
     threadDocument?.program_id && threadDocument?.program_id._id.toString(),
     threadDocument.file_type
@@ -374,7 +372,8 @@ const getSurveyInputs = asyncHandler(async (req, res, next) => {
 const postSurveyInput = asyncHandler(async (req, res, next) => {
   const { user } = req;
   const { input, informEditor } = req.body;
-  const newSurvey = new surveyInput({
+  const SurveyInput = req.db.model('surveyInput');
+  const newSurvey = new SurveyInput({
     ...input,
     createdAt: new Date()
   });
@@ -391,7 +390,7 @@ const postSurveyInput = asyncHandler(async (req, res, next) => {
       })
       .populate('program_id')
       .lean();
-    informOnSurveyUpdate(user, newSurvey, thread);
+    informOnSurveyUpdate(req, user, newSurvey, thread);
   }
 });
 
@@ -401,7 +400,8 @@ const putSurveyInput = asyncHandler(async (req, res, next) => {
     params: { surveyInputId }
   } = req;
   const { input, informEditor } = req.body;
-  const updatedSurvey = await surveyInput
+  const updatedSurvey = await req.db
+    .model('surveyInput')
     .findByIdAndUpdate(
       surveyInputId,
       {
@@ -424,7 +424,7 @@ const putSurveyInput = asyncHandler(async (req, res, next) => {
       })
       .populate('program_id')
       .lean();
-    informOnSurveyUpdate(user, updatedSurvey, thread);
+    informOnSurveyUpdate(req, user, updatedSurvey, thread);
   }
 });
 
@@ -434,7 +434,7 @@ const resetSurveyInput = asyncHandler(async (req, res, next) => {
     params: { surveyInputId }
   } = req;
   const { informEditor } = req.body;
-  const updatedSurvey = await surveyInput.findByIdAndUpdate(
+  const updatedSurvey = await req.db.model('surveyInput').findByIdAndUpdate(
     surveyInputId,
     {
       $unset: {
@@ -454,7 +454,7 @@ const resetSurveyInput = asyncHandler(async (req, res, next) => {
       })
       .populate('program_id')
       .lean();
-    informOnSurveyUpdate(user, updatedSurvey, thread);
+    informOnSurveyUpdate(req, user, updatedSurvey, thread);
   }
 });
 
@@ -615,7 +615,7 @@ const initGeneralMessagesThread = asyncHandler(async (req, res) => {
   const {
     params: { studentId, document_category }
   } = req;
-
+  const Documentthread = req.db.model('Documentthread');
   const student = await req.db
     .model('Student')
     .findById(studentId)
@@ -628,7 +628,7 @@ const initGeneralMessagesThread = asyncHandler(async (req, res) => {
     throw new ErrorResponse(404, 'Student Id not found');
   }
 
-  const doc_thread_existed = await req.db.model('Documentthread').findOne({
+  const doc_thread_existed = await Documentthread.findOne({
     student_id: studentId,
     program_id: null,
     file_type: document_category
@@ -1324,10 +1324,12 @@ const postMessages = asyncHandler(async (req, res) => {
       }
     }
     if (['Interview'].includes(document_thread.file_type)) {
-      const interview = await Interview.findOne({
-        student_id: document_thread.student_id._id.toString(),
-        program_id: document_thread.program_id._id.toString()
-      })
+      const interview = await req.db
+        .model('Interview')
+        .findOne({
+          student_id: document_thread.student_id._id.toString(),
+          program_id: document_thread.program_id._id.toString()
+        })
         .populate('student_id trainer_id', 'firstname lastname email')
         .populate('program_id', 'school program_name degree semester')
         .lean();
@@ -1408,7 +1410,7 @@ const postMessages = asyncHandler(async (req, res) => {
         student_payload.program_name = document_thread.program_id.program_name;
         student_payload.program = document_thread.program_id;
         if (['Interview'].includes(document_thread.file_type)) {
-          const interview = await Interview.findOne({
+          const interview = await req.db.model('Interview').findOne({
             student_id: document_thread.student_id._id.toString(),
             program_id: document_thread.program_id._id.toString()
           });
@@ -1500,10 +1502,12 @@ const postMessages = asyncHandler(async (req, res) => {
     }
 
     if (['Interview'].includes(document_thread.file_type)) {
-      const interview = await Interview.findOne({
-        student_id: document_thread.student_id._id.toString(),
-        program_id: document_thread.program_id._id.toString()
-      })
+      const interview = await req.db
+        .model('Interview')
+        .findOne({
+          student_id: document_thread.student_id._id.toString(),
+          program_id: document_thread.program_id._id.toString()
+        })
         .populate('student_id trainer_id', 'firstname lastname email')
         .populate('program_id', 'school program_name degree semester')
         .lean();
@@ -1554,7 +1558,7 @@ const postMessages = asyncHandler(async (req, res) => {
         student_payload.program_name = document_thread.program_id.program_name;
         student_payload.program = document_thread.program_id;
         if (['Interview'].includes(document_thread.file_type)) {
-          const interview = await Interview.findOne({
+          const interview = await req.db.model('Interview').findOne({
             student_id: document_thread.student_id._id.toString(),
             program_id: document_thread.program_id._id.toString()
           });
@@ -2169,7 +2173,7 @@ const assignEssayWritersToEssayTask = asyncHandler(async (req, res, next) => {
     if (editorsId[keys[i]]) {
       updated_essay_writer_id.push(keys[i]);
 
-      const editor = await Editor.findById(keys[i]);
+      const editor = await req.db.model('Editor').findById(keys[i]);
       updated_editor.push({
         firstname: editor.firstname,
         lastname: editor.lastname,

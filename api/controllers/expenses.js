@@ -1,13 +1,11 @@
 const { ErrorResponse } = require('../common/errors');
 const { TENANT_SHORT_NAME } = require('../constants/common');
 const { asyncHandler } = require('../middlewares/error-handler');
-const Expense = require('../models/Expense');
-const { User, Student } = require('../models/User');
 const logger = require('../services/logger');
-const async = require('async');
+const { Role } = require('../constants');
 
 const getExpenses = asyncHandler(async (req, res) => {
-  const studentsWithExpenses = await Student.aggregate([
+  const studentsWithExpenses = await req.db.model('Student').aggregate([
     { $match: { role: { $in: ['Admin', 'Agent', 'Editor'] } } },
     {
       $lookup: {
@@ -23,19 +21,20 @@ const getExpenses = asyncHandler(async (req, res) => {
 
 const getExpense = asyncHandler(async (req, res) => {
   const { taiger_user_id } = req.params;
-  const the_user = await User.findById(taiger_user_id).select(
-    'firstname lastname role'
-  );
+  const the_user = await req.db
+    .model('User')
+    .findById(taiger_user_id)
+    .select('firstname lastname role');
 
   if (
-    the_user.role !== 'Admin' &&
-    the_user.role !== 'Agent' &&
-    the_user.role !== 'Editor'
+    the_user.role !== Role.Admin &&
+    the_user.role !== Role.Agent &&
+    the_user.role !== Role.Editor
   ) {
     logger.error(`getExpense: not ${TENANT_SHORT_NAME} user!`);
     throw new ErrorResponse(401, `Invalid ${TENANT_SHORT_NAME} user`);
   }
-  const studentsWithExpenses = await Student.aggregate([
+  const studentsWithExpenses = await req.db.model('Student').aggregate([
     {
       $lookup: {
         from: 'expenses',
@@ -48,11 +47,13 @@ const getExpense = asyncHandler(async (req, res) => {
   // res.status(200).send({ success: true, data: expense });
 
   // query by agents field: student.agents include agent_id
-  if (the_user.role === 'Agent') {
-    const students = await Student.find({
-      agents: the_user._id.toString(),
-      $or: [{ archiv: { $exists: false } }, { archiv: false }]
-    })
+  if (the_user.role === Role.Agent) {
+    const students = await req.db
+      .model('Student')
+      .find({
+        agents: the_user._id.toString(),
+        $or: [{ archiv: { $exists: false } }, { archiv: false }]
+      })
       .populate('agents editors', 'firstname lastname email')
       .populate('applications.programId')
       .populate(
@@ -71,11 +72,13 @@ const getExpense = asyncHandler(async (req, res) => {
     res
       .status(200)
       .send({ success: true, data: { students: mergedResults, the_user } });
-  } else if (the_user.role === 'Editor') {
-    const students = await Student.find({
-      editors: the_user._id.toString(),
-      $or: [{ archiv: { $exists: false } }, { archiv: false }]
-    })
+  } else if (the_user.role === Role.Editor) {
+    const students = await req.db
+      .model('Student')
+      .find({
+        editors: the_user._id.toString(),
+        $or: [{ archiv: { $exists: false } }, { archiv: false }]
+      })
       .populate('agents editors', 'firstname lastname email')
       .populate('applications.programId')
       .populate(
@@ -100,7 +103,7 @@ const getExpense = asyncHandler(async (req, res) => {
 });
 
 const syncExpense = asyncHandler(async (req, res) => {
-  const users = await User.find();
+  const users = await req.db.model('User').find();
   res.status(200).send({ success: true, data: users });
 });
 

@@ -1,6 +1,5 @@
 const { ErrorResponse } = require('../common/errors');
-const { Documentthread } = require('../models/Documentthread');
-const Event = require('../models/Event');
+const { Role } = require('../constants');
 
 const editorIdsBodyFilter = async (req, res, next) => {
   const {
@@ -9,8 +8,10 @@ const editorIdsBodyFilter = async (req, res, next) => {
     body: editorsId
   } = req;
 
-  if (user.role === 'Agent' || user.role === 'Editor') {
-    const thread = await Documentthread.findById(messagesThreadId)
+  if (user.role === Role.Agent || user.role === Role.Editor) {
+    const thread = await req.db
+      .model('Documentthread')
+      .findById(messagesThreadId)
       .populate('student_id')
       .populate({
         path: 'student_id',

@@ -3,7 +3,7 @@ const async = require('async');
 
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
-const { Role, User, Student } = require('../models/User');
+const { Role } = require('../constants');
 
 const logger = require('../services/logger');
 

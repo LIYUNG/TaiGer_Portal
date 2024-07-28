@@ -1,5 +1,3 @@
-const { Student } = require('../../models/User');
-const { Documentthread } = require('../../models/Documentthread');
 const { RLs_CONSTANT } = require('../../constants');
 const {
   createApplicationThread,

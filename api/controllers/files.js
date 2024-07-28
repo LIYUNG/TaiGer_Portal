@@ -2,7 +2,6 @@ const path = require('path');
 const { asyncHandler } = require('../middlewares/error-handler');
 const { one_month_cache, two_month_cache } = require('../cache/node-cache');
 const { Role } = require('../constants');
-const { Basedocumentationslink } = require('../models/Basedocumentationslink');
 const { ErrorResponse } = require('../common/errors');
 const {
   DocumentStatus,
@@ -1252,7 +1251,7 @@ const getMyAcademicBackground = asyncHandler(async (req, res, next) => {
   if (me.academic_background === undefined) me.academic_background = {};
   await me.save();
   // TODO: mix with base-docuement link??
-  const survey_docs_link = await Basedocumentationslink.find({
+  const survey_docs_link = await req.db.model('Basedocumentationslink').find({
     category: 'survey'
   });
 

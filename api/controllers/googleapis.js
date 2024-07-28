@@ -5,8 +5,6 @@ const async = require('async');
 const path = require('path');
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
-const { Role, Agent, Student, Editor } = require('../models/User');
-const { Interview } = require('../models/Interview');
 const { ses } = require('../aws/index');
 
 const {

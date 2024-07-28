@@ -63,7 +63,9 @@ const getAdmissionLetter = asyncHandler(async (req, res, next) => {
 
 const getAdmissionsYear = asyncHandler(async (req, res) => {
   const { applications_year } = req.params;
-  const tasks = req.db.model('Student').find({ student_id: applications_year });
+  const tasks = await req.db
+    .model('Student')
+    .find({ student_id: applications_year });
   res.status(200).send({ success: true, data: tasks });
 });
 

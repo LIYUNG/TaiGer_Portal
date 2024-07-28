@@ -4,7 +4,7 @@ const { multitenant_filter } = require('../../middlewares/multitenant-filter');
 
 // Mock dependencies
 const next = jest.fn();
-const mockErrorResponse = jest.fn();
+// const mockErrorResponse = jest.fn();
 
 describe('multitenant_filter middleware', () => {
   beforeEach(() => {

@@ -17,7 +17,7 @@ const { s3 } = require('../aws/index');
 
 const getCourse = asyncHandler(async (req, res) => {
   const { studentId } = req.params;
-  const student = req.db.model('Student').findById(studentId);
+  const student = await req.db.model('Student').findById(studentId);
   if (!student) {
     logger.info('getCourse: no student found');
     throw new ErrorResponse(500, 'Invalid student');
@@ -81,7 +81,7 @@ const createCourse = asyncHandler(async (req, res) => {
   res.send({ success: true, data: courses2 });
   if (user.role === 'Student') {
     // TODO: send course update to Agent
-    const student = req.db
+    const student = await req.db
       .model('Student')
       .findById(studentId)
       .populate('agents', 'firstname lastname email')
@@ -180,7 +180,7 @@ const processTranscript_test = asyncHandler(async (req, res, next) => {
   });
 
   // TODO: information student
-  const student = req.db
+  const student = await req.db
     .model('Student')
     .findById(studentId)
     .populate('agents', 'firstname lastname email')
@@ -259,7 +259,7 @@ const processTranscript_api = asyncHandler(async (req, res, next) => {
   }
 
   // TODO: information student
-  const student = req.db
+  const student = await req.db
     .model('Student')
     .findById(studentId)
     .populate('agents', 'firstname lastname email')

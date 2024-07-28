@@ -15,10 +15,11 @@ const { connectToDatabase } = require('../../middlewares/tenantMiddleware');
 jest.mock('../../middlewares/auth', () => {
   const passthrough = async (req, res, next) => next();
 
-  return Object.assign({}, jest.requireActual('../../middlewares/auth'), {
+  return {
+    ...jest.requireActual('../../middlewares/auth'),
     protect: jest.fn().mockImplementation(passthrough),
     permit: jest.fn().mockImplementation((...roles) => passthrough)
-  });
+  };
 });
 
 const admin = generateUser(Role.Admin);

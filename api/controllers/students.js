@@ -27,7 +27,6 @@ const {
   PROGRAM_SPECIFIC_FILETYPE
 } = require('../constants');
 const { getPermission } = require('../utils/queryFunctions');
-const Permission = require('../models/Permission');
 
 const fetchStudents = async (req, filter) =>
   req.db
@@ -274,6 +273,7 @@ const getStudents = asyncHandler(async (req, res, next) => {
       notification: user.agent_notification
     });
   } else if (user.role === Role.Agent) {
+    console.log(user);
     const students = await fetchStudents(req, {
       agents: user._id,
       $or: [{ archiv: { $exists: false } }, { archiv: false }]
@@ -304,7 +304,7 @@ const getStudents = asyncHandler(async (req, res, next) => {
       notification: user.agent_notification
     });
   } else if (user.role === Role.Editor) {
-    const permissions = await getPermission(user);
+    const permissions = await getPermission(req, user);
     if (permissions && permissions.canAssignEditors) {
       const students = await req.db
         .model('Student')
@@ -508,7 +508,7 @@ const updateStudentsArchivStatus = asyncHandler(async (req, res, next) => {
 
       res.status(200).send({ success: true, data: students });
     } else if (user.role === Role.Agent) {
-      const permissions = await getPermission(user);
+      const permissions = await getPermission(req, user);
       if (permissions && permissions.canAssignAgents) {
         const students = await req.db
           .model('Student')
@@ -653,6 +653,7 @@ const assignAgentToStudent = asyncHandler(async (req, res, next) => {
   res.status(200).send({ success: true, data: student_upated });
 
   // inform editor-lead
+  const Permission = req.db.model('Permission');
   const permissions = await Permission.find({
     canAssignAgents: true
   })

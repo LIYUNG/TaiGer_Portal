@@ -669,7 +669,7 @@ const getStatistics = asyncHandler(async (req, res) => {
 const getAgents = asyncHandler(async (req, res, next) => {
   const { user } = req;
   if (user.role === 'Agent') {
-    const permissions = await getPermission(user);
+    const permissions = await getPermission(req, user);
     if (permissions && permissions.canAssignAgents) {
       const agents = await Agent.find({
         $or: [{ archiv: { $exists: false } }, { archiv: false }]
@@ -733,7 +733,7 @@ const getAgentProfile = asyncHandler(async (req, res, next) => {
 const getEditors = asyncHandler(async (req, res, next) => {
   const { user } = req;
   if (user.role === 'Editor') {
-    const permissions = await getPermission(user);
+    const permissions = await getPermission(req, user);
     if (permissions && permissions.canAssignEditors) {
       const editors = await Editor.find({
         $or: [{ archiv: { $exists: false } }, { archiv: false }]
@@ -828,7 +828,7 @@ const getArchivStudents = asyncHandler(async (req, res) => {
 const getEssayWriters = asyncHandler(async (req, res, next) => {
   const { user } = req;
   if (user.role === 'Editor') {
-    const permissions = await getPermission(user);
+    const permissions = await getPermission(req, user);
     // if (permissions && permissions.canAssignEditors && permissions.isEssayWriters) {
     if (permissions && permissions.canAssignEditors) {
       const editors = await Editor.find({

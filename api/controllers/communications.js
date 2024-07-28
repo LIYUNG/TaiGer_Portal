@@ -52,7 +52,7 @@ const getSearchUserMessages = asyncHandler(async (req, res, next) => {
     }
   ]);
 
-  const permissions = await getPermission(user);
+  const permissions = await getPermission(req, user);
   if (
     user.role === Role.Admin ||
     (user.role === Role.Agent && permissions?.canAccessAllChat)

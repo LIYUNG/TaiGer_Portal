@@ -20,8 +20,16 @@ const { versionControlSchema } = require('../models/VersionControl');
 const { ticketSchema } = require('../models/Ticket');
 const { tokenSchema } = require('../models/Token');
 const { templatesSchema } = require('../models/Template');
+const { documentationsSchema } = require('../models/Documentation');
+const { internaldocsSchema } = require('../models/Internaldoc');
+const { enableVersionControl } = require('../utils/modelHelper/versionControl');
 
 const connections = {};
+
+const applyProgramSchema = (db, VCModel) => {
+  programSchema.plugin(enableVersionControl, { VCModel });
+  return db.model('Program', programSchema);
+};
 
 const getTenantFromRequest = (req) => {
   const { tenantid } = req.headers; // Get the host from the request headers
@@ -37,8 +45,10 @@ const connectToDatabase = (tenant) => {
     connection.model('Basedocumentationslink', basedocumentationslinksSchema);
     connection.model('Communication', communicationsSchema);
     connection.model('Course', coursesSchema);
+    connection.model('Documentation', documentationsSchema);
     connection.model('Documentthread', documentThreadsSchema);
     connection.model('Event', EventSchema);
+    connection.model('Internaldoc', internaldocsSchema);
     // connection.model('Program', programSchema);
     connection.model('Template', templatesSchema);
     connection.model('Ticket', ticketSchema);
@@ -54,6 +64,7 @@ const connectToDatabase = (tenant) => {
     connection.model('User').discriminator('Guest', Guest.schema);
 
     connection.model('VC', versionControlSchema);
+    applyProgramSchema(connection, connection.model('VC'));
   }
   return connections[tenant];
 };

@@ -31,7 +31,7 @@ const chatMultitenantFilter = async (req, res, next) => {
       }
     }
 
-    const cachedPermission = await getPermission(user);
+    const cachedPermission = await getPermission(req, user);
 
     if (
       !cachedStudent.agents?.some(

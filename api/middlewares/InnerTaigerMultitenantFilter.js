@@ -12,7 +12,7 @@ const InnerTaigerMultitenantFilter = async (req, res, next) => {
     params: { studentId }
   } = req;
   if (user.role === Role.Editor || user.role === Role.Agent) {
-    const permissions = await getPermission(user);
+    const permissions = await getPermission(req, user);
 
     const student = await getCachedStudentPermission(studentId);
     if (!student) {

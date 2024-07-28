@@ -5,13 +5,13 @@ const {
   resendActivationRateLimiter,
   forgotPasswordRateLimiter,
   resetPasswordRateLimiter,
-  registerRateLimiter,
+  // registerRateLimiter,
   GeneralGETRequestRateLimiter
 } = require('../middlewares/rate_limiter');
 
 const { localAuth, protect } = require('../middlewares/auth');
 const {
-  signup,
+  // signup,
   login,
   logout,
   verify,

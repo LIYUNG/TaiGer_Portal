@@ -1,10 +1,8 @@
 const _ = require('lodash');
 const { ErrorResponse } = require('../common/errors');
-const path = require('path');
 
 const { asyncHandler } = require('../middlewares/error-handler');
 const logger = require('../services/logger');
-const Internaldoc = require('../models/Internaldoc');
 
 const getQueryPublicResults = asyncHandler(async (req, res, next) => {
   const documentations = await req.db
@@ -63,10 +61,12 @@ const getQueryResults = asyncHandler(async (req, res, next) => {
     .select('title')
     .lean();
 
-  const internaldocs = await Internaldoc.find(
-    { $text: { $search: req.query.q } },
-    { score: { $meta: 'textScore' } }
-  )
+  const internaldocs = await req.db
+    .model('Internaldoc')
+    .find(
+      { $text: { $search: req.query.q } },
+      { score: { $meta: 'textScore' } }
+    )
     .sort({ score: { $meta: 'textScore' } })
     .limit(5)
     .select('title internal')

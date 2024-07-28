@@ -140,7 +140,7 @@ const getMyInterview = asyncHandler(async (req, res) => {
     user.role === Role.Editor
   ) {
     if (user.role === Role.Agent || user.role === Role.Editor) {
-      const permissions = await getPermission(user);
+      const permissions = await getPermission(req, user);
       if (!(permissions?.canAssignAgents || permissions?.canAssignEditors)) {
         studentFilter.agents = user._id;
       }

@@ -1,7 +1,6 @@
 // const path = require('path');
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
-const async = require('async');
 const { updateCredentialsEmail } = require('../services/email');
 const logger = require('../services/logger');
 

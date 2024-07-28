@@ -9,7 +9,7 @@ const interviewMultitenantFilter = async (req, res, next) => {
     params: { interview_id }
   } = req;
   if (user.role === Role.Editor || user.role === Role.Agent) {
-    const permissions = await getPermission(user);
+    const permissions = await getPermission(req, user);
 
     const interview = await Interview.findById(interview_id).populate(
       'student_id'

@@ -18,4 +18,4 @@ const documentationsSchema = new Schema({
 documentationsSchema.index({ title: 'text', text: 'text' });
 
 const Documentation = model('Documentation', documentationsSchema);
-module.exports = Documentation;
+module.exports = { Documentation, documentationsSchema };

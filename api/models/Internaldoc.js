@@ -4,6 +4,7 @@ const {
   Types: { ObjectId }
 } = require('mongoose');
 const mongoose = require('mongoose');
+
 const internaldocsSchema = new mongoose.Schema({
   name: { type: String, default: '' },
   title: { type: String, default: '' },
@@ -18,4 +19,4 @@ const internaldocsSchema = new mongoose.Schema({
 internaldocsSchema.index({ title: 'text', text: 'text' });
 
 const Internaldoc = mongoose.model('Internaldoc', internaldocsSchema);
-module.exports = Internaldoc;
+module.exports = { Internaldoc, internaldocsSchema };

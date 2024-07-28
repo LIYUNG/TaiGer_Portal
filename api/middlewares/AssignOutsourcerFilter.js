@@ -12,7 +12,7 @@ const AssignOutsourcerFilter = asyncHandler(async (req, res, next) => {
     params: { messagesThreadId }
   } = req;
   if (user.role === Role.Editor || user.role === Role.Agent) {
-    const permissions = await getPermission(user);
+    const permissions = await getPermission(req, user);
     let outsourcer_allowed_modify = false;
     let studentId_temp = '';
     const document_thread = await req.db

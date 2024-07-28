@@ -8,21 +8,18 @@ const { two_weeks_cache } = require('../cache/node-cache');
 const { PROGRAMS_CACHE } = require('../config');
 const { enableVersionControl } = require('../utils/modelHelper/versionControl');
 
-const applyProgramSchema = (db, VCModel) => {
-  programSchema.plugin(enableVersionControl, { VCModel });
-  return db.model('Program', programSchema);
-};
-
 const getPrograms = asyncHandler(async (req, res) => {
   // Option 1 : Cache version
-  const Program = applyProgramSchema(req.db, req.VCModel);
   if (PROGRAMS_CACHE === 'true') {
     const value = two_weeks_cache.get(req.originalUrl);
     if (value === undefined) {
       // cache miss
-      const programs = await Program.find({ isArchiv: { $ne: true } }).select(
-        '-study_group_flag -tuition_fees -website -special_notes -comments -optionalDocuments -requiredDocuments -uni_assist -daad_link -ml_required -ml_requirements -rl_required -essay_required -essay_requirements -application_portal_a -application_portal_b -fpso -program_duration -deprecated'
-      );
+      const programs = await req.db
+        .model('Program')
+        .find({ isArchiv: { $ne: true } })
+        .select(
+          '-study_group_flag -tuition_fees -website -special_notes -comments -optionalDocuments -requiredDocuments -uni_assist -daad_link -ml_required -ml_requirements -rl_required -essay_required -essay_requirements -application_portal_a -application_portal_b -fpso -program_duration -deprecated'
+        );
       const success = two_weeks_cache.set(req.originalUrl, programs);
       if (success) {
         logger.info('programs cache set successfully');
@@ -77,7 +74,6 @@ const getStudentsByProgram = async (req, programId) => {
 const getProgram = asyncHandler(async (req, res) => {
   const { user } = req;
   // prevent student multitenancy
-  const Program = applyProgramSchema(req.db, req.VCModel);
   if (user.role === Role.Student) {
     if (
       user.applications.findIndex(
@@ -92,7 +88,9 @@ const getProgram = asyncHandler(async (req, res) => {
     const value = one_month_cache.get(req.originalUrl);
     if (value === undefined) {
       // cache miss
-      const program = Program.findById(req.params.programId);
+      const program = await req.db
+        .model('Program')
+        .findById(req.params.programId);
       if (!program) {
         logger.error('getProgram: Invalid program id');
         throw new ErrorResponse(404, 'Program not found');
@@ -173,7 +171,9 @@ const getProgram = asyncHandler(async (req, res) => {
     user.role === Role.Editor
   ) {
     const students = await getStudentsByProgram(req, req.params.programId);
-    const program = await Program.findById(req.params.programId);
+    const program = await req.db
+      .model('Program')
+      .findById(req.params.programId);
     if (!program) {
       logger.error('getProgram: Invalid program id');
       throw new ErrorResponse(404, 'Program not found');
@@ -188,7 +188,9 @@ const getProgram = asyncHandler(async (req, res) => {
 
     res.send({ success: true, data: program, students, vc });
   } else {
-    const program = await Program.findById(req.params.programId);
+    const program = await req.db
+      .model('Program')
+      .findById(req.params.programId);
     if (!program) {
       logger.error('getProgram: Invalid program id');
       throw new ErrorResponse(404, 'Program not found');
@@ -200,13 +202,12 @@ const getProgram = asyncHandler(async (req, res) => {
 const createProgram = asyncHandler(async (req, res) => {
   const { user } = req;
   const new_program = req.body;
-  const Program = applyProgramSchema(req.db, req.VCModel);
 
   new_program.school = new_program.school.trim();
   new_program.program_name = new_program.program_name.trim();
   new_program.updatedAt = new Date();
   new_program.whoupdated = `${user.firstname} ${user.lastname}`;
-  const programs = await Program.find({
+  const programs = await req.db.model('Program').find({
     school: new_program.school,
     program_name: new_program.program_name,
     degree: new_program.degree,
@@ -220,7 +221,7 @@ const createProgram = asyncHandler(async (req, res) => {
       'This program is already existed! Considering update the existing one.'
     );
   }
-  const program = await Program.create(new_program);
+  const program = await req.db.model('Program').create(new_program);
   return res.status(201).send({ success: true, data: program });
 });
 
@@ -236,17 +237,14 @@ const updateProgram = asyncHandler(async (req, res) => {
   delete fields_root.application_start;
   delete fields_root.application_deadline;
 
-  const Program = applyProgramSchema(req.db, req.VCModel);
-  const program = await Program.findOneAndUpdate(
-    { _id: req.params.programId },
-    fields,
-    {
+  const program = await req.db
+    .model('Program')
+    .findOneAndUpdate({ _id: req.params.programId }, fields, {
       new: true
-    }
-  );
+    });
 
   // Update same program but other semester common data
-  await Program.updateMany(
+  await req.db.model('Program').updateMany(
     {
       _id: { $ne: req.params.programId },
       school: program.school,
@@ -288,12 +286,10 @@ const deleteProgram = asyncHandler(async (req, res) => {
   // Check if anyone applied this program
   if (students.length === 0) {
     logger.info('it can be deleted!');
-    const applyProgramSchema = (db, VCModel) => {
-      programSchema.plugin(enableVersionControl, { VCModel });
-      return db.model('Program', programSchema);
-    };
-    const Program = applyProgramSchema(req.db, req.VCModel);
-    await Program.findByIdAndUpdate(req.params.programId, { isArchiv: true });
+
+    await req.db
+      .model('Program')
+      .findByIdAndUpdate(req.params.programId, { isArchiv: true });
     logger.info('The program deleted!');
 
     const value = one_month_cache.del(req.originalUrl);

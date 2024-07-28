@@ -40,8 +40,18 @@ const { handleProgramChanges } = require('../utils/modelHelper/programChange');
 
 const connections = {};
 
-const applyProgramSchema = (db, VCModel, StudentModel) => {
-  programSchema.plugin(handleProgramChanges, { StudentModel });
+const applyProgramSchema = (
+  db,
+  VCModel,
+  StudentModel,
+  DocumentthreadModel,
+  surveyInputModel
+) => {
+  programSchema.plugin(handleProgramChanges, {
+    StudentModel,
+    DocumentthreadModel,
+    surveyInputModel
+  });
   programSchema.plugin(enableVersionControl, { VCModel });
   return db.model('Program', programSchema);
 };
@@ -102,7 +112,9 @@ const connectToDatabase = (tenant) => {
     applyProgramSchema(
       connection,
       connection.model('VC'),
-      connection.model('User')
+      connection.model('Student'),
+      connection.model('Documentthread'),
+      connection.model('surveyInput')
     );
     connection.model('Userlog', userlogSchema);
   }

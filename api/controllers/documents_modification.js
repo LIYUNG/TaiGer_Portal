@@ -706,8 +706,13 @@ const initGeneralMessagesThread = asyncHandler(async (req, res) => {
   }
 });
 
-const createApplicationThread = async (req, studentId, programId, fileType) => {
-  const threadExisted = await req.db.model('Documentthread').findOne({
+const createApplicationThread = async (
+  { StudentModel, DocumentthreadModel },
+  studentId,
+  programId,
+  fileType
+) => {
+  const threadExisted = await DocumentthreadModel.findOne({
     student_id: studentId,
     program_id: programId,
     file_type: fileType
@@ -720,9 +725,7 @@ const createApplicationThread = async (req, studentId, programId, fileType) => {
     throw new ErrorResponse(409, 'Document Thread already existed!');
   }
 
-  const student = await req.db
-    .model('Student')
-    .findById(studentId)
+  const student = await StudentModel.findById(studentId)
     .populate('applications.programId')
     .exec();
 
@@ -740,7 +743,7 @@ const createApplicationThread = async (req, studentId, programId, fileType) => {
     throw new ErrorResponse(404, 'Application not found');
   }
 
-  const newThread = new Documentthread({
+  const newThread = new DocumentthreadModel({
     student_id: studentId,
     file_type: fileType,
     program_id: programId,
@@ -1977,7 +1980,12 @@ const handleDeleteGeneralThread = asyncHandler(async (req, res) => {
   res.status(200).send({ success: true });
 });
 
-const deleteApplicationThread = async (studentId, programId, threadId) => {
+const deleteApplicationThread = async (
+  { StudentModel, DocumentthreadModel, surveyInputModel },
+  studentId,
+  programId,
+  threadId
+) => {
   // Before delete the thread, please delete all of the files in the thread!!
   // Delete folder
   let directory = path.join(studentId, threadId);
@@ -1985,20 +1993,21 @@ const deleteApplicationThread = async (studentId, programId, threadId) => {
   directory = directory.replace(/\\/g, '/');
   emptyS3Directory(AWS_S3_BUCKET_NAME, directory);
 
-  await req.db.model('Student').findOneAndUpdate(
-    { _id: studentId, 'applications.programId': programId },
+  await StudentModel.findOneAndUpdate(
+    {
+      _id: new mongoose.Types.ObjectId(studentId),
+      'applications.programId': new mongoose.Types.ObjectId(programId)
+    },
     {
       $pull: {
         'applications.$.doc_modification_thread': {
-          doc_thread_id: { _id: threadId }
+          doc_thread_id: { _id: new mongoose.Types.ObjectId(threadId) }
         }
       }
     }
   );
-  const thread = await req.db
-    .model('Documentthread')
-    .findByIdAndDelete(threadId);
-  await surveyInput.deleteOne({
+  const thread = await DocumentthreadModel.findByIdAndDelete(threadId);
+  await surveyInputModel.deleteOne({
     studentId,
     programId,
     fileType: thread.file_type

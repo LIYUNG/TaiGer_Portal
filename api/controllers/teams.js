@@ -7,7 +7,7 @@ const { User, Agent, Editor, Student } = require('../models/User');
 const { Documentthread } = require('../models/Documentthread');
 const logger = require('../services/logger');
 const { getStudentsByProgram } = require('./programs');
-const { findStudentDelta } = require('../utils/modelHelper/programChange');
+const { findStudentDelta, findStudentDeltaGet } = require('../utils/modelHelper/programChange');
 const { getPermission } = require('../utils/queryFunctions');
 const { ObjectId } = require('mongodb');
 const { GenerateResponseTimeByStudent } = require('./response_time');
@@ -60,7 +60,7 @@ const getActivePrograms = async (req) => {
 };
 
 const getStudentDeltas = async (req, student, program, options) => {
-  const deltas = await findStudentDelta(
+  const deltas = await findStudentDeltaGet(
     req,
     student._id,
     program,

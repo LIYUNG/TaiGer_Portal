@@ -115,7 +115,8 @@ const findRLDelta = async (program, studentId, threads, options) => {
 
   return delta;
 };
-const findStudentDelta = async (req, studentId, program, options) => {
+
+const findStudentDeltaGet = async (req, studentId, program, options) => {
   const { skipCompleted } = options || {};
 
   let delta = {
@@ -174,12 +175,81 @@ const findStudentDelta = async (req, studentId, program, options) => {
   return delta;
 };
 
-const handleStudentDelta = async (studentId, program) => {
-  const studentDelta = await findStudentDelta(studentId, program);
+const findStudentDelta = async (
+  studentId,
+  program,
+  { DocumentthreadModel },
+  options
+) => {
+  const { skipCompleted } = options || {};
+
+  let delta = {
+    add: [],
+    remove: []
+  };
+
+  const studentProgramThreads = await DocumentthreadModel.find({
+    student_id: studentId,
+    program_id: program._id
+  })
+    .select('file_type messages isFinalVersion')
+    .lean();
+
+  studentProgramThreads.map((thread) => {
+    thread.messageSize = thread.messages.length;
+    delete thread.messages;
+  });
+
+  for (let fileType of Object.keys(FILETYPES)) {
+    if (FILETYPES[fileType] === 'RL') {
+      continue;
+    }
+    const fileThread = studentProgramThreads.find(
+      (thread) => thread.file_type === FILETYPES[fileType]
+    );
+
+    if (program[fileType]?.toLowerCase() === 'yes' && !fileThread) {
+      delta.add.push({
+        studentId,
+        programId: program._id,
+        fileType: FILETYPES[fileType]
+      });
+    } else if (program[fileType]?.toLowerCase() !== 'yes' && fileThread) {
+      if (skipCompleted && fileThread.isFinalVersion) {
+        continue;
+      }
+      delta.remove.push({
+        studentId,
+        programId: program._id,
+        fileThread
+      });
+    }
+  }
+
+  const RLdelta = await findRLDelta(
+    program,
+    studentId,
+    studentProgramThreads,
+    options || {}
+  );
+  delta.add = delta.add.concat(RLdelta.add);
+  delta.remove = delta.remove.concat(RLdelta.remove);
+  return delta;
+};
+
+const handleStudentDelta = async (
+  studentId,
+  program,
+  { StudentModel, DocumentthreadModel, surveyInputModel }
+) => {
+  const studentDelta = await findStudentDelta(studentId, program, {
+    DocumentthreadModel
+  });
 
   for (let missingDoc of studentDelta.add) {
     try {
       await createApplicationThread(
+        { StudentModel, DocumentthreadModel },
         missingDoc.studentId.toString(),
         missingDoc.programId.toString(),
         missingDoc.fileType
@@ -202,6 +272,7 @@ const handleStudentDelta = async (studentId, program) => {
     }
     try {
       await deleteApplicationThread(
+        { StudentModel, DocumentthreadModel, surveyInputModel },
         extraDoc.studentId.toString(),
         extraDoc.programId.toString(),
         extraDoc.fileThread._id.toString()
@@ -217,13 +288,20 @@ const handleStudentDelta = async (studentId, program) => {
   }
 };
 
-const handleThreadDelta = async (program, { StudentModel }) => {
+const handleThreadDelta = async (
+  program,
+  { StudentModel, DocumentthreadModel, surveyInputModel }
+) => {
   const affectedStudents = await findAffectedStudents(program._id, {
     StudentModel
   });
   for (let studentId of affectedStudents) {
     try {
-      await handleStudentDelta(studentId, program);
+      await handleStudentDelta(studentId, program, {
+        StudentModel,
+        DocumentthreadModel,
+        surveyInputModel
+      });
     } catch (error) {
       logger.error(
         `handleThreadDelta: error on student ${studentId} and program ${program._id}: ${error}`
@@ -232,7 +310,10 @@ const handleThreadDelta = async (program, { StudentModel }) => {
   }
 };
 
-const handleProgramChanges = (schema, { StudentModel }) => {
+const handleProgramChanges = (
+  schema,
+  { StudentModel, DocumentthreadModel, surveyInputModel }
+) => {
   schema.pre(
     ['findOneAndUpdate', 'updateOne', 'updateMany', 'update'],
     async function (doc) {
@@ -266,7 +347,11 @@ const handleProgramChanges = (schema, { StudentModel }) => {
                 changes
               )}`
             );
-            await handleThreadDelta(updatedDoc, { StudentModel });
+            await handleThreadDelta(updatedDoc, {
+              StudentModel,
+              DocumentthreadModel,
+              surveyInputModel
+            });
             logger.info(
               `ProgramHook - Post hook executed successfully. (Id=${programId})`
             );
@@ -287,6 +372,7 @@ module.exports = {
   handleProgramChanges,
   isCrucialChanges,
   findAffectedStudents,
+  findStudentDeltaGet,
   findStudentDelta,
   handleThreadDelta
 };

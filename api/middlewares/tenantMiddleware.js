@@ -1,6 +1,13 @@
 const mongoose = require('mongoose');
 const { mongoDb } = require('../database');
-const { UserSchema, Agent, Editor, Student, Admin } = require('../models/User');
+const {
+  UserSchema,
+  Agent,
+  Editor,
+  Student,
+  Admin,
+  Guest
+} = require('../models/User');
 const { EventSchema } = require('../models/Event');
 const { documentThreadsSchema } = require('../models/Documentthread');
 const { programSchema } = require('../models/Program');
@@ -9,6 +16,9 @@ const {
   basedocumentationslinksSchema
 } = require('../models/Basedocumentationslink');
 const { communicationsSchema } = require('../models/Communication');
+const { versionControlSchema } = require('../models/VersionControl');
+const { ticketSchema } = require('../models/Ticket');
+const { tokenSchema } = require('../models/Token');
 
 const connections = {};
 
@@ -28,7 +38,9 @@ const connectToDatabase = (tenant) => {
     connection.model('Course', coursesSchema);
     connection.model('Documentthread', documentThreadsSchema);
     connection.model('Event', EventSchema);
-    connection.model('Program', programSchema);
+    // connection.model('Program', programSchema);
+    connection.model('Ticket', ticketSchema);
+    connection.model('Token', tokenSchema);
     // Register base models
     connection.model('User', UserSchema);
 
@@ -37,6 +49,9 @@ const connectToDatabase = (tenant) => {
     connection.model('User').discriminator('Editor', Editor.schema);
     connection.model('User').discriminator('Student', Student.schema);
     connection.model('User').discriminator('Admin', Admin.schema);
+    connection.model('User').discriminator('Guest', Guest.schema);
+
+    connection.model('VC', versionControlSchema);
   }
   return connections[tenant];
 };
@@ -47,6 +62,7 @@ const tenantMiddleware = (req, res, next) => {
     return res.status(400).send('Tenant not identified');
   }
   req.db = connectToDatabase(tenant);
+  req.VCModel = req.db.model('VC');
   //   req.tenant = tenant;
   next();
 };

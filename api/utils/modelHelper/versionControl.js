@@ -20,7 +20,7 @@ const detectChanges = (a, b) => {
   };
 };
 
-const enableVersionControl = (schema) => {
+const enableVersionControl = (schema, { VCModel }) => {
   schema.pre(
     ['findOneAndUpdate', 'updateOne', 'updateMany', 'update'],
     async function () {
@@ -57,7 +57,7 @@ const enableVersionControl = (schema) => {
         }
 
         try {
-          await VC.findOneAndUpdate(
+          await VCModel.findOneAndUpdate(
             {
               docId: objectId,
               collectionName: collectionName

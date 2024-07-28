@@ -1,10 +1,6 @@
 const _ = require('lodash');
 const { ErrorResponse } = require('../common/errors');
-const path = require('path');
-
 const { asyncHandler } = require('../middlewares/error-handler');
-const Course = require('../models/Course');
-const { Role, Student, User } = require('../models/User');
 const logger = require('../services/logger');
 
 const getPortalCredentials = asyncHandler(async (req, res) => {
@@ -12,7 +8,9 @@ const getPortalCredentials = asyncHandler(async (req, res) => {
     params: { studentId }
   } = req;
 
-  const student = await Student.findById(studentId)
+  const student = await req.db
+    .model('Student')
+    .findById(studentId)
     .populate(
       'applications.programId',
       'school program_name semester degree application_portal_a application_portal_b application_portal_a_instructions application_portal_b_instructions'
@@ -39,7 +37,7 @@ const getPortalCredentials = asyncHandler(async (req, res) => {
 const createPortalCredentials = asyncHandler(async (req, res) => {
   const { studentId, programId } = req.params;
   const credentials = req.body;
-  const student = await Student.findById(studentId);
+  const student = await req.db.model('Student').findById(studentId);
   const application = student.applications.find(
     (appli) => appli.programId.toString() === programId
   );

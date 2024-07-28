@@ -166,7 +166,11 @@ const getAllActiveStudents = asyncHandler(async (req, res, next) => {
   const students = await fetchStudents(req, {
     $or: [{ archiv: { $exists: false } }, { archiv: false }]
   });
-  const courses = await Course.find().select('-table_data_string').lean();
+  const courses = await req.db
+    .model('Course')
+    .find()
+    .select('-table_data_string')
+    .lean();
   // Perform the join
   const studentsWithCourse = students.map((student) => {
     const matchingItemB = courses.find(
@@ -249,7 +253,11 @@ const getStudents = asyncHandler(async (req, res, next) => {
         ]
       });
     }
-    const courses = await Course.find().select('-table_data_string').lean();
+    const courses = await req.db
+      .model('Course')
+      .find()
+      .select('-table_data_string')
+      .lean();
     // Perform the join
     const studentsWithCourse = students.map((student) => {
       const matchingItemB = courses.find(
@@ -275,7 +283,11 @@ const getStudents = asyncHandler(async (req, res, next) => {
       agents: user._id,
       $or: [{ archiv: { $exists: false } }, { archiv: false }]
     });
-    const courses = await Course.find().select('-table_data_string').lean();
+    const courses = await req.db
+      .model('Course')
+      .find()
+      .select('-table_data_string')
+      .lean();
     // Perform the join
     const studentsWithCourse = students.map((student) => {
       const matchingItemB = courses.find(
@@ -367,9 +379,12 @@ const getStudents = asyncHandler(async (req, res, next) => {
     const student_new = add_portals_registered_status(student);
     // TODO Get My Courses
     let isCoursesFilled = true;
-    const courses = await Course.findOne({
-      student_id: user._id.toString()
-    }).lean();
+    const courses = await req.db
+      .model('Course')
+      .findOne({
+        student_id: user._id.toString()
+      })
+      .lean();
     if (!courses) {
       isCoursesFilled = false;
     }
@@ -906,7 +921,9 @@ const createApplication = asyncHandler(async (req, res, next) => {
     );
   }
   const student = await req.db.model('Student').findById(studentId);
-  const program_ids = await Program.find({ _id: { $in: program_id_set } });
+  const program_ids = await req.db
+    .model('Program')
+    .find({ _id: { $in: program_id_set } });
   if (program_ids.length !== program_id_set.length) {
     logger.error('createApplication: some program_ids invalid');
     throw new ErrorResponse(

@@ -12,7 +12,7 @@ const updateCredentials = asyncHandler(async (req, res, next) => {
     user,
     body: { credentials }
   } = req;
-  const userExisted = await User.findById(user._id.toString());
+  const userExisted = await req.db.model('User').findById(user._id.toString());
   if (!userExisted) {
     logger.error('updateCredentials: Invalid user');
     throw new ErrorResponse(400, 'Invalid user');

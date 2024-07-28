@@ -215,7 +215,6 @@ const programModule = {
 };
 
 const programSchema = new Schema(programModule, { timestamps: true });
-programSchema.plugin(enableVersionControl);
 programSchema.plugin(handleProgramChanges);
 
 programSchema.index({ school: 1, program_name: 1 });

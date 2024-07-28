@@ -73,12 +73,12 @@ const getStudentDeltas = async (student, program, options) => {
   return studentDelta;
 };
 
-const getApplicationDeltaByProgram = async (programId) => {
-  const students = await getStudentsByProgram(programId);
-  const program = await Program.findById(programId);
+const getApplicationDeltaByProgram = async (req, programId) => {
+  const students = await getStudentsByProgram(req, programId);
+  const program = await req.db.model('Program').findById(programId);
   const studentDeltaPromises = [];
   const options = { skipCompleted: true };
-  for (let student of students) {
+  for (const student of students) {
     if (!student.application || student.application.closed !== '-') {
       continue;
     }
@@ -100,7 +100,7 @@ const getApplicationDeltas = asyncHandler(async (req, res) => {
   const activePrograms = await getActivePrograms();
   const deltaPromises = [];
   for (let program of activePrograms) {
-    const programDeltaPromise = getApplicationDeltaByProgram(program._id);
+    const programDeltaPromise = getApplicationDeltaByProgram(req, program._id);
     deltaPromises.push(programDeltaPromise);
   }
   const deltas = await Promise.all(deltaPromises);
@@ -694,10 +694,12 @@ const getSingleAgent = asyncHandler(async (req, res, next) => {
   const { agent_id } = req.params;
   const agent = await Agent.findById(agent_id).select('firstname lastname');
   // query by agents field: student.agents include agent_id
-  const students = await Student.find({
-    agents: agent_id,
-    $or: [{ archiv: { $exists: false } }, { archiv: false }]
-  })
+  const students = await req.db
+    .model('Student')
+    .find({
+      agents: agent_id,
+      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+    })
     .populate('agents editors', 'firstname lastname email')
     .populate('applications.programId')
     .populate(
@@ -756,10 +758,12 @@ const getSingleEditor = asyncHandler(async (req, res, next) => {
   const { editor_id } = req.params;
   const editor = await Editor.findById(editor_id).select('firstname lastname');
   // query by agents field: student.editors include editor_id
-  const students = await Student.find({
-    editors: editor_id,
-    $or: [{ archiv: { $exists: false } }, { archiv: false }]
-  })
+  const students = await req.db
+    .model('Student')
+    .find({
+      editors: editor_id,
+      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+    })
     .populate('agents editors', 'firstname lastname email')
     .populate('applications.programId')
     .populate({
@@ -786,15 +790,19 @@ const getArchivStudents = asyncHandler(async (req, res) => {
   const { TaiGerStaffId } = req.params;
   const user = await User.findById(TaiGerStaffId);
   if (user.role === Role.Admin) {
-    const students = await Student.find({ archiv: true })
+    const students = await req.db
+      .model('Student')
+      .find({ archiv: true })
       .populate('agents editors', 'firstname lastname')
       .exec();
     res.status(200).send({ success: true, data: students });
   } else if (user.role === Role.Agent) {
-    const students = await Student.find({
-      agents: TaiGerStaffId,
-      archiv: true
-    })
+    const students = await req.db
+      .model('Student')
+      .find({
+        agents: TaiGerStaffId,
+        archiv: true
+      })
       .populate('agents editors', 'firstname lastname')
       .populate('applications.programId')
       .lean()
@@ -802,10 +810,12 @@ const getArchivStudents = asyncHandler(async (req, res) => {
 
     res.status(200).send({ success: true, data: students });
   } else if (user.role === Role.Editor) {
-    const students = await Student.find({
-      editors: TaiGerStaffId,
-      archiv: true
-    })
+    const students = await req.db
+      .model('Student')
+      .find({
+        editors: TaiGerStaffId,
+        archiv: true
+      })
       .populate('agents editors', 'firstname lastname')
       .populate('applications.programId');
     res.status(200).send({ success: true, data: students });

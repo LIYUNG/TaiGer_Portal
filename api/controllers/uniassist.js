@@ -14,14 +14,14 @@ const getStudentUniAssist = asyncHandler(async (req, res) => {
   if (user.role === Role.Student) {
     const obj = user.notification; // create object
     obj['isRead_uni_assist_task_assigned'] = true; // set value
-    await Student.findByIdAndUpdate(
-      user._id.toString(),
-      { notification: obj },
-      {}
-    );
+    await req.db
+      .model('Student')
+      .findByIdAndUpdate(user._id.toString(), { notification: obj }, {});
   }
 
-  const student = await Student.findById(studentId)
+  const student = await req.db
+    .model('Student')
+    .findById(studentId)
     .populate('agents editors', 'firstname lastname email')
     .populate('applications.programId')
     .populate(

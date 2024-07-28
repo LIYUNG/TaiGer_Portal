@@ -150,10 +150,12 @@ const getEvents = asyncHandler(async (req, res, next) => {
       })
       .populate('receiver_id requester_id', 'firstname lastname email')
       .lean();
-    students = await Student.find({
-      agents: user._id,
-      $or: [{ archiv: { $exists: false } }, { archiv: false }]
-    })
+    students = await req.db
+      .model('Student')
+      .find({
+        agents: user._id,
+        $or: [{ archiv: { $exists: false } }, { archiv: false }]
+      })
       .select('firstname lastname firstname_chinese lastname_chinese  email')
       .lean();
     if (events.length === 0) {
@@ -212,12 +214,14 @@ const getAllEvents = asyncHandler(async (req, res, next) => {
     .find()
     .populate('receiver_id requester_id', 'firstname lastname email')
     .lean();
-  const students = await Student.find({
-    $and: [
-      { $or: [{ agents: user._id }, { editors: user._id }] },
-      { $or: [{ archiv: { $exists: false } }, { archiv: false }] }
-    ]
-  })
+  const students = await req.db
+    .model('Student')
+    .find({
+      $and: [
+        { $or: [{ agents: user._id }, { editors: user._id }] },
+        { $or: [{ archiv: { $exists: false } }, { archiv: false }] }
+      ]
+    })
     .select('firstname lastname firstname_chinese lastname_chinese  email')
     .lean();
   if (events.length === 0) {

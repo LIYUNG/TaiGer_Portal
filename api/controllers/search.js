@@ -69,10 +69,12 @@ const getQueryResults = asyncHandler(async (req, res, next) => {
     .select('title internal')
     .lean();
 
-  const programs = await Program.find(
-    { $text: { $search: req.query.q }, isArchiv: { $ne: true } },
-    { score: { $meta: 'textScore' } }
-  )
+  const programs = await req.db
+    .model('Program')
+    .find(
+      { $text: { $search: req.query.q }, isArchiv: { $ne: true } },
+      { score: { $meta: 'textScore' } }
+    )
     .sort({ score: { $meta: 'textScore' } })
     .limit(5)
     .select('school program_name degree semester')

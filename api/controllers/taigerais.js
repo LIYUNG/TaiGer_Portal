@@ -19,12 +19,14 @@ const Permission = require('../models/Permission');
 
 const pageSize = 3;
 
-
 const processProgramListAi = asyncHandler(async (req, res, next) => {
   const {
     params: { programId }
   } = req;
-  const program = await Program.findOne({ _id: programId }).lean();
+  const program = await req.db
+    .model('Program')
+    .findOne({ _id: programId })
+    .lean();
   const programai = await ProgramAI.findOne({ program_id: programId }).lean();
   if (!program) {
     logger.error('no program found!');
@@ -75,7 +77,10 @@ const generate_streaming = async (input, model) =>
 const TaiGerAiGeneral = asyncHandler(async (req, res, next) => {
   const { user } = req;
   const { prompt, model } = req.body;
-  const stream = await generate_streaming(prompt, model || OpenAiModel.GPT_3_5_TURBO);
+  const stream = await generate_streaming(
+    prompt,
+    model || OpenAiModel.GPT_3_5_TURBO
+  );
   for await (const part of stream) {
     res.write(part.choices[0]?.delta.content || '');
   }
@@ -96,7 +101,9 @@ const TaiGerAiChat = asyncHandler(async (req, res, next) => {
     .sort({ createdAt: -1 }) // 0: latest!
     .limit(pageSize)
     .lean(); // show only first y limit items after skip.
-  const student = await Student.findById(studentId)
+  const student = await req.db
+    .model('Student')
+    .findById(studentId)
     .populate('applications.programId')
     .lean();
   const chat = communication_thread?.map((c) => {
@@ -236,7 +243,7 @@ const cvmlrlAi = asyncHandler(async (req, res, next) => {
   let student_info = {};
 
   try {
-    const student = await Student.findById(student_id);
+    const student = await req.db.model('Student').findById(student_id);
     student_info = {
       firstname: student.firstname,
       lastname: student.lastname,

@@ -141,7 +141,9 @@ const getMyInterview = asyncHandler(async (req, res) => {
         studentFilter.agents = user._id;
       }
     }
-    const students = await Student.find(studentFilter)
+    const students = await req.db
+      .model('Student')
+      .find(studentFilter)
       .populate('agents editors', 'firstname lastname email')
       .populate('applications.programId', 'school program_name degree semester')
       .lean();
@@ -152,7 +154,9 @@ const getMyInterview = asyncHandler(async (req, res) => {
 
     res.status(200).send({ success: true, data: interviews, students });
   } else {
-    const student = await Student.findById(user._id.toString())
+    const student = await req.db
+      .model('Student')
+      .findById(user._id.toString())
       .populate('applications.programId', 'school program_name degree semester')
       .lean();
     if (!student) {
@@ -232,9 +236,10 @@ const deleteInterview = asyncHandler(async (req, res) => {
       const toBeDeletedEvent = await Event.findByIdAndDelete(interview.event_id)
         .populate('receiver_id requester_id', 'firstname lastname email archiv')
         .lean();
-      const student_temp = await Student.findById(
-        interview.student_id
-      ).populate('agents', 'firstname lastname email');
+      const student_temp = await req.db
+        .model('Student')
+        .findById(interview.student_id)
+        .populate('agents', 'firstname lastname email');
       const cc = [...toBeDeletedEvent.receiver_id, ...student_temp.agents];
       const receiver = toBeDeletedEvent.requester_id[0];
       if (isNotArchiv(receiver)) {
@@ -323,9 +328,10 @@ const addInterviewTrainingDateTime = asyncHandler(async (req, res, next) => {
       'program_id'
     );
     // inform agent for confirmed training date
-    const student_temp = await Student.findById(
-      interview_tmep.student_id
-    ).populate('agents', 'firstname lastname email');
+    const student_temp = await req.db
+      .model('Student')
+      .findById(interview_tmep.student_id)
+      .populate('agents', 'firstname lastname email');
 
     const cc = [...newEvent.receiver_id, ...student_temp.agents];
 
@@ -522,7 +528,9 @@ const createInterview = asyncHandler(async (req, res) => {
     params: { program_id, studentId },
     body: payload
   } = req;
-  const student = await Student.findById(studentId)
+  const student = await req.db
+    .model('Student')
+    .findById(studentId)
     .populate('applications.programId')
     .populate('agents editors', 'firstname lastname email')
     .exec();

@@ -175,7 +175,9 @@ const saveProfileFilePath = asyncHandler(async (req, res, next) => {
     params: { studentId, category }
   } = req;
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
-  const student = await Student.findById(studentId)
+  const student = await req.db
+    .model('Student')
+    .findById(studentId)
     .populate('agents editors', 'firstname lastname email archiv')
     .populate('applications.programId');
   if (!student) {
@@ -327,9 +329,10 @@ const updateVPDPayment = asyncHandler(async (req, res, next) => {
     body: { isPaid }
   } = req;
 
-  const student = await Student.findById(studentId).populate(
-    'applications.programId'
-  );
+  const student = await req.db
+    .model('Student')
+    .findById(studentId)
+    .populate('applications.programId');
 
   if (!student) {
     logger.error('updateVPDPayment: Invalid student id!');
@@ -358,9 +361,10 @@ const updateVPDFileNecessity = asyncHandler(async (req, res, next) => {
     params: { studentId, program_id }
   } = req;
 
-  const student = await Student.findById(studentId).populate(
-    'applications.programId'
-  );
+  const student = await req.db
+    .model('Student')
+    .findById(studentId)
+    .populate('applications.programId');
 
   if (!student) {
     logger.error('updateVPDFileNecessity: Invalid student id!');
@@ -396,9 +400,10 @@ const saveVPDFilePath = asyncHandler(async (req, res, next) => {
     params: { studentId, program_id, fileType }
   } = req;
 
-  const student = await Student.findById(studentId).populate(
-    'applications.programId'
-  );
+  const student = await req.db
+    .model('Student')
+    .findById(studentId)
+    .populate('applications.programId');
 
   if (!student) {
     logger.error('saveVPDFilePath: Invalid student id!');
@@ -441,10 +446,10 @@ const saveVPDFilePath = asyncHandler(async (req, res, next) => {
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
   res.status(201).send({ success: true, data: student });
 
-  const student_updated = await Student.findById(studentId).populate(
-    'agents',
-    'firstname lastname email archiv'
-  );
+  const student_updated = await req.db
+    .model('Student')
+    .findById(studentId)
+    .populate('agents', 'firstname lastname email archiv');
 
   if (user.role === Role.Student) {
     // Reminder for Agent:
@@ -496,7 +501,7 @@ const downloadVPDFile = asyncHandler(async (req, res, next) => {
 
   // AWS S3
   // download the file via aws s3 here
-  const student = await Student.findById(studentId);
+  const student = await req.db.model('Student').findById(studentId);
   if (!student) {
     logger.error('downloadVPDFile: Invalid student id!');
     throw new ErrorResponse(404, 'Student not found');
@@ -579,7 +584,7 @@ const downloadProfileFileURL = asyncHandler(async (req, res, next) => {
 
   // AWS S3
   // download the file via aws s3 here
-  const student = await Student.findById(studentId);
+  const student = await req.db.model('Student').findById(studentId);
 
   if (!student) {
     logger.error('downloadProfileFileURL: Invalid student id!');
@@ -649,9 +654,11 @@ const updateProfileDocumentStatus = asyncHandler(async (req, res, next) => {
     throw new ErrorResponse(403, 'Invalid document status');
   }
 
-  const student = await Student.findOne({
-    _id: studentId
-  })
+  const student = await req.db
+    .model('Student')
+    .findOne({
+      _id: studentId
+    })
     .populate('applications.programId')
     .populate('agents editors', 'firstname lastname email');
   if (!student) {
@@ -724,7 +731,9 @@ const UpdateStudentApplications = asyncHandler(async (req, res, next) => {
     body: { applications, applying_program_count }
   } = req;
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
-  const student = await Student.findById(studentId)
+  const student = await req.db
+    .model('Student')
+    .findById(studentId)
     .populate('applications.programId')
     .populate('applications', 'doc_modification_thread.doc_thread_id')
     .exec();
@@ -788,7 +797,9 @@ const UpdateStudentApplications = asyncHandler(async (req, res, next) => {
   }
   await student.save();
 
-  const student_updated = await Student.findById(studentId)
+  const student_updated = await req.db
+    .model('Student')
+    .findById(studentId)
     .populate('applications.programId')
     .populate(
       'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
@@ -905,7 +916,9 @@ const updateStudentApplicationResult = asyncHandler(async (req, res, next) => {
   const { studentId, programId, result } = req.params;
   const { user } = req;
 
-  const student = await Student.findById(studentId)
+  const student = await req.db
+    .model('Student')
+    .findById(studentId)
     .populate('agents editors', 'firstname lastname email')
     .populate('applications.programId');
   if (!student) {
@@ -922,7 +935,7 @@ const updateStudentApplicationResult = asyncHandler(async (req, res, next) => {
       updatedAt: new Date()
     };
 
-    updatedStudent = await Student.findOneAndUpdate(
+    updatedStudent = await req.db.model('Student').findOneAndUpdate(
       { _id: studentId, 'applications.programId': programId },
       {
         'applications.$.admission': result,
@@ -971,7 +984,7 @@ const updateStudentApplicationResult = asyncHandler(async (req, res, next) => {
       comments: '',
       updatedAt: new Date()
     };
-    updatedStudent = await Student.findOneAndUpdate(
+    updatedStudent = await req.db.model('Student').findOneAndUpdate(
       { _id: studentId, 'applications.programId': programId },
       {
         'applications.$.admission': result,
@@ -980,7 +993,7 @@ const updateStudentApplicationResult = asyncHandler(async (req, res, next) => {
       { new: true }
     );
   } else {
-    updatedStudent = await Student.findOneAndUpdate(
+    updatedStudent = await req.db.model('Student').findOneAndUpdate(
       { _id: studentId, 'applications.programId': programId },
       {
         'applications.$.admission': result
@@ -1046,7 +1059,7 @@ const updateStudentApplicationResult = asyncHandler(async (req, res, next) => {
 const deleteProfileFile = asyncHandler(async (req, res, next) => {
   const { studentId, category } = req.params;
 
-  const student = await Student.findOne({
+  const student = await req.db.model('Student').findOne({
     _id: studentId
   });
 
@@ -1107,9 +1120,11 @@ const deleteProfileFile = asyncHandler(async (req, res, next) => {
 const deleteVPDFile = asyncHandler(async (req, res, next) => {
   const { studentId, program_id, fileType } = req.params;
 
-  const student = await Student.findOne({
-    _id: studentId
-  })
+  const student = await req.db
+    .model('Student')
+    .findOne({
+      _id: studentId
+    })
     .populate('applications.programId')
     .populate('agents editors', 'firstname lastname email');
 

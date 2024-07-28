@@ -38,4 +38,4 @@ versionControlSchema.statics.getVersion = async function (
 
 versionControlSchema.index({ docId: 1, collectionName: 1 });
 const VC = mongoose.model('VC', versionControlSchema);
-module.exports = VC;
+module.exports = { VC, versionControlSchema };

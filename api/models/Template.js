@@ -22,5 +22,6 @@ const templatesSchema = new mongoose.Schema({
 });
 const Template = mongoose.model('Template', templatesSchema);
 module.exports = {
-  Template
+  Template,
+  templatesSchema
 };

@@ -3,10 +3,7 @@ const async = require('async');
 
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
-const { Role, Agent, Student, Editor } = require('../models/User');
-const { Program } = require('../models/Program');
-const { Documentthread } = require('../models/Documentthread');
-const { Basedocumentationslink } = require('../models/Basedocumentationslink');
+const { Role } = require('../models/User');
 const { add_portals_registered_status } = require('../utils/utils_function');
 const logger = require('../services/logger');
 
@@ -29,7 +26,6 @@ const {
   ManagerType,
   PROGRAM_SPECIFIC_FILETYPE
 } = require('../constants');
-const Course = require('../models/Course');
 const { Interview } = require('../models/Interview');
 const { getPermission } = require('../utils/queryFunctions');
 const Permission = require('../models/Permission');
@@ -114,7 +110,7 @@ const getStudentAndDocLinks = asyncHandler(async (req, res, next) => {
     .status(200)
     .send({ success: true, data: student_new, base_docs_link, survey_link });
   if (user.role === Role.Agent) {
-    await Agent.findByIdAndUpdate(
+    await req.db.model('Agent').findByIdAndUpdate(
       user._id.toString(),
       {
         $pull: {
@@ -621,7 +617,7 @@ const assignAgentToStudent = asyncHandler(async (req, res, next) => {
   for (let i = 0; i < agentsId_arr.length; i += 1) {
     if (agentsId[agentsId_arr[i]]) {
       updated_agent_id.push(agentsId_arr[i]);
-      const agent = await Agent.findById(agentsId_arr[i]);
+      const agent = await req.db.model('Agent').findById(agentsId_arr[i]);
       updated_agent.push({
         firstname: agent.firstname,
         lastname: agent.lastname,
@@ -738,7 +734,7 @@ const assignEditorToStudent = asyncHandler(async (req, res, next) => {
   for (let i = 0; i < keys.length; i += 1) {
     if (editorsId[keys[i]]) {
       updated_editor_id.push(keys[i]);
-      const editor = await Editor.findById(keys[i]);
+      const editor = await req.db.model('Editor').findById(keys[i]);
       updated_editor.push({
         firstname: editor.firstname,
         lastname: editor.lastname,
@@ -976,7 +972,7 @@ const createApplication = asyncHandler(async (req, res, next) => {
           `createApplication ${new_programIds[i]}: RL required is not a number`
         );
       }
-
+      const Documentthread = req.db.model('Documentthread');
       const isRLSpecific = program.is_rl_specific;
       const NoRLSpecificFlag =
         isRLSpecific === undefined || isRLSpecific === null;
@@ -989,15 +985,17 @@ const createApplication = asyncHandler(async (req, res, next) => {
         const genThreadIds = student.generaldocs_threads.map(
           (thread) => thread.doc_thread_id
         );
-        const generalRLcount = await Documentthread.find({
-          _id: { $in: genThreadIds },
-          file_type: { $regex: /Recommendation_Letter_/ }
-        }).count();
+        const generalRLcount = await req.db
+          .model('Documentthread')
+          .find({
+            _id: { $in: genThreadIds },
+            file_type: { $regex: /Recommendation_Letter_/ }
+          })
+          .count();
 
         if (generalRLcount < nrRLrequired) {
           // create general RL tasks
           logger.info('Create general RL tasks!');
-
           for (let j = generalRLcount; j < nrRLrequired; j += 1) {
             const newThread = new Documentthread({
               student_id: studentId,
@@ -1038,6 +1036,7 @@ const createApplication = asyncHandler(async (req, res, next) => {
     }
 
     // Create supplementary form task
+    const Documentthread = req.db.model('Documentthread');
 
     for (const doc of PROGRAM_SPECIFIC_FILETYPE) {
       if (program[doc.required] === 'yes') {
@@ -1112,6 +1111,7 @@ const deleteApplication = asyncHandler(async (req, res, next) => {
     logger.error('deleteApplication: Invalid application id');
     throw new ErrorResponse(404, 'Application not found');
   }
+  const Documentthread = req.db.model('Documentthread');
 
   // checking if delete is safe?
   for (let i = 0; i < application.doc_modification_thread.length; i += 1) {

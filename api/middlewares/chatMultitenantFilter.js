@@ -1,6 +1,6 @@
 const { ten_minutes_cache } = require('../cache/node-cache');
 const { ErrorResponse } = require('../common/errors');
-const { Role, Student } = require('../models/User');
+const { Role } = require('../models/User');
 const logger = require('../services/logger');
 const { getPermission } = require('../utils/queryFunctions');
 

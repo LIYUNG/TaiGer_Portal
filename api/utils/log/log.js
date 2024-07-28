@@ -1,5 +1,3 @@
-const Userlog = require('../../models/Userlog');
-
 const logAccess = async (req, res, next) => {
   try {
     const { user } = req;
@@ -8,7 +6,7 @@ const logAccess = async (req, res, next) => {
     const month = String(today.getMonth() + 1).padStart(2, '0');
     const day = String(today.getDate()).padStart(2, '0');
     const formattedDate = `${year}-${month}-${day}`;
-    const u = await Userlog.findOne({
+    const u = await req.db.model('Userlog').findOne({
       user_id: user._id,
       apiPath: req.originalUrl,
       operation: req.originalMethod,
@@ -16,7 +14,7 @@ const logAccess = async (req, res, next) => {
     });
     if (u) {
       // If a document exists, increment the access count
-      await Userlog.findOneAndUpdate(
+      await req.db.model('Userlog').findOneAndUpdate(
         {
           user_id: user._id,
           apiPath: req.originalUrl,
@@ -27,7 +25,7 @@ const logAccess = async (req, res, next) => {
       );
     } else {
       // If no document exists, create a new one with an access count of 1
-      await Userlog.findOneAndUpdate(
+      await req.db.model('Userlog').findOneAndUpdate(
         {
           user_id: user._id,
           apiPath: req.originalUrl,

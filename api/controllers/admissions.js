@@ -2,7 +2,6 @@ const path = require('path');
 const async = require('async');
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
-const { Student } = require('../models/User');
 const logger = require('../services/logger');
 const { two_month_cache } = require('../cache/node-cache');
 const { AWS_S3_BUCKET_NAME } = require('../config');

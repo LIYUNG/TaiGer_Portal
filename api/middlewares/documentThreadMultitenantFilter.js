@@ -1,6 +1,4 @@
 const { ErrorResponse } = require('../common/errors');
-const { Documentthread } = require('../models/Documentthread');
-const surveyInput = require('../models/SurveyInput');
 const { Role } = require('../models/User');
 const logger = require('../services/logger');
 
@@ -10,7 +8,9 @@ const docThreadMultitenant_filter = async (req, res, next) => {
     params: { messagesThreadId }
   } = req;
   if (user.role === Role.Student || user.role === Role.Guest) {
-    const document_thread = await Documentthread.findById(messagesThreadId)
+    const document_thread = await req.db
+      .model('Documentthread')
+      .findById(messagesThreadId)
       .populate('student_id', 'firstname lastname role ')
       .select('student_id')
       .lean();
@@ -52,7 +52,10 @@ const surveyMultitenantFilter = async (req, res, next) => {
     }
 
     // On PUT/DELETE: use surveyInputId to validate the document belongs to the user
-    const surveyInputs = await surveyInput.findById(surveyInputId).lean();
+    const surveyInputs = await req.db
+      .model('surveyInput')
+      .findById(surveyInputId)
+      .lean();
     if (surveyInputs.studentId.toString() !== user._id.toString()) {
       return next(
         new ErrorResponse(403, 'Not allowed to access other resource.')

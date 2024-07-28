@@ -19,6 +19,7 @@ const { communicationsSchema } = require('../models/Communication');
 const { versionControlSchema } = require('../models/VersionControl');
 const { ticketSchema } = require('../models/Ticket');
 const { tokenSchema } = require('../models/Token');
+const { templatesSchema } = require('../models/Template');
 
 const connections = {};
 
@@ -39,6 +40,7 @@ const connectToDatabase = (tenant) => {
     connection.model('Documentthread', documentThreadsSchema);
     connection.model('Event', EventSchema);
     // connection.model('Program', programSchema);
+    connection.model('Template', templatesSchema);
     connection.model('Ticket', ticketSchema);
     connection.model('Token', tokenSchema);
     // Register base models

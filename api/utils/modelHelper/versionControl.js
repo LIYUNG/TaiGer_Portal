@@ -1,4 +1,3 @@
-const VC = require('../../models/VersionControl');
 const logger = require('../../services/logger');
 
 const detectChanges = (a, b) => {

@@ -51,4 +51,4 @@ surveyInputSchema.index(
   { unique: true }
 );
 const surveyInput = mongoose.model('surveyInput', surveyInputSchema);
-module.exports = surveyInput;
+module.exports = { surveyInput, surveyInputSchema };

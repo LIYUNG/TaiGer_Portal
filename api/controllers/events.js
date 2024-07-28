@@ -1,9 +1,7 @@
 // const path = require('path');
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
-const Event = require('../models/Event');
-const { Agent, Role, Student } = require('../models/User');
-
+const { Role } = require('../models/User');
 const async = require('async');
 const {
   MeetingInvitationEmail,
@@ -116,9 +114,10 @@ const getEvents = asyncHandler(async (req, res, next) => {
       .populate('receiver_id requester_id', 'firstname lastname email')
       .lean();
     const agents_ids = user.agents;
-    const agents = await Agent.find({ _id: agents_ids }).select(
-      'firstname lastname email selfIntroduction officehours timezone'
-    );
+    const agents = await req.db
+      .model('Agent')
+      .find({ _id: agents_ids })
+      .select('firstname lastname email selfIntroduction officehours timezone');
     agents_events = await req.db
       .model('Event')
       .find({
@@ -137,9 +136,10 @@ const getEvents = asyncHandler(async (req, res, next) => {
       students: []
     });
   }
-  const agents = await Agent.find({ _id: user._id.toString() }).select(
-    'firstname lastname email selfIntroduction officehours timezone'
-  );
+  const agents = await req.db
+    .model('Agent')
+    .find({ _id: user._id.toString() })
+    .select('firstname lastname email selfIntroduction officehours timezone');
   let students = [];
 
   if (user.role === Role.Agent) {
@@ -205,9 +205,10 @@ const getActiveEventsNumber = asyncHandler(async (req, res, next) => {
 
 const getAllEvents = asyncHandler(async (req, res, next) => {
   const { user } = req;
-  const agents = await Agent.find().select(
-    'firstname lastname email selfIntroduction officehours timezone'
-  );
+  const agents = await req.db
+    .model('Agent')
+    .find()
+    .select('firstname lastname email selfIntroduction officehours timezone');
 
   const events = await req.db
     .model('Event')
@@ -307,9 +308,10 @@ const postEvent = asyncHandler(async (req, res, next) => {
       .populate('requester_id receiver_id', 'firstname lastname email')
       .lean();
     const agents_ids = user.agents;
-    const agents = await Agent.find({ _id: agents_ids }).select(
-      'firstname lastname email selfIntroduction officehours timezone'
-    );
+    const agents = await req.db
+      .model('Agent')
+      .find({ _id: agents_ids })
+      .select('firstname lastname email selfIntroduction officehours timezone');
     res.status(200).send({
       success: true,
       agents,
@@ -364,9 +366,12 @@ const postEvent = asyncHandler(async (req, res, next) => {
         .populate('receiver_id requester_id', 'firstname lastname email')
         .lean();
       const agents_ids = user.agents;
-      const agents = await Agent.find({ _id: agents_ids }).select(
-        'firstname lastname email selfIntroduction officehours timezone'
-      );
+      const agents = await req.db
+        .model('Agent')
+        .find({ _id: agents_ids })
+        .select(
+          'firstname lastname email selfIntroduction officehours timezone'
+        );
       res.status(200).send({
         success: true,
         agents,
@@ -529,9 +534,12 @@ const deleteEvent = asyncHandler(async (req, res, next) => {
         .populate('receiver_id requester_id', 'firstname lastname email')
         .lean();
       const agents_ids = user.agents;
-      const agents = await Agent.find({ _id: agents_ids }).select(
-        'firstname lastname email selfIntroduction officehours timezone'
-      );
+      const agents = await req.db
+        .model('Agent')
+        .find({ _id: agents_ids })
+        .select(
+          'firstname lastname email selfIntroduction officehours timezone'
+        );
       res.status(200).send({
         success: true,
         agents,
@@ -550,9 +558,12 @@ const deleteEvent = asyncHandler(async (req, res, next) => {
         })
         .populate('receiver_id requester_id', 'firstname lastname email')
         .lean();
-      const agents = await Agent.find({ _id: user._id.toString() }).select(
-        'firstname lastname email selfIntroduction officehours timezone'
-      );
+      const agents = await req.db
+        .model('Agent')
+        .find({ _id: user._id.toString() })
+        .select(
+          'firstname lastname email selfIntroduction officehours timezone'
+        );
       res.status(200).send({
         success: true,
         agents,

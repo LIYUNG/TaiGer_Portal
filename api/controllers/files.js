@@ -1,7 +1,7 @@
 const path = require('path');
 const { asyncHandler } = require('../middlewares/error-handler');
 const { one_month_cache, two_month_cache } = require('../cache/node-cache');
-const { Role, Student, User, Agent } = require('../models/User');
+const { Role, User } = require('../models/User');
 const { Template } = require('../models/Template');
 const { Basedocumentationslink } = require('../models/Basedocumentationslink');
 const { Documentthread } = require('../models/Documentthread');
@@ -42,7 +42,7 @@ const getMyfiles = asyncHandler(async (req, res, next) => {
 });
 
 const getTemplates = asyncHandler(async (req, res, next) => {
-  const templates = await Template.find({});
+  const templates = await req.db.model('Template').find({});
 
   res.status(201).send({ success: true, data: templates });
   next();
@@ -53,7 +53,7 @@ const deleteTemplate = asyncHandler(async (req, res, next) => {
   const { user } = req;
   const { category_name } = req.params;
 
-  const template = await Template.findOne({ category_name });
+  const template = await req.db.model('Template').findOne({ category_name });
 
   let document_split = template.path.replace(/\\/g, '/');
   document_split = document_split.split('/');
@@ -84,8 +84,8 @@ const deleteTemplate = asyncHandler(async (req, res, next) => {
       throw new ErrorResponse(500, 'Error occurs while deleting');
     }
   }
-  await Template.findOneAndDelete({ category_name });
-  const templates = await Template.find({});
+  await req.db.model('Template').findOneAndDelete({ category_name });
+  const templates = await req.db.model('Template').find({});
   res.status(200).send({ success: true, data: templates });
   await deleteTemplateSuccessEmail(
     {
@@ -105,7 +105,7 @@ const deleteTemplate = asyncHandler(async (req, res, next) => {
 const uploadTemplate = asyncHandler(async (req, res, next) => {
   const { category_name } = req.params;
 
-  const updated_templates = await Template.findOneAndUpdate(
+  const updated_templates = await req.db.model('Template').findOneAndUpdate(
     { category_name },
     {
       name: req.file.key,
@@ -124,7 +124,7 @@ const downloadTemplateFile = asyncHandler(async (req, res, next) => {
     params: { category_name }
   } = req;
 
-  const template = await Template.findOne({ category_name });
+  const template = await req.db.model('Template').findOne({ category_name });
   // AWS S3
   // download the file via aws s3 here
   let document_split = template.path.replace(/\\/g, '/');
@@ -197,7 +197,9 @@ const saveProfileFilePath = asyncHandler(async (req, res, next) => {
     if (user.role === Role.Student) {
       // TODO: add notification for agents
       for (let i = 0; i < student.agents.length; i += 1) {
-        const agent = await Agent.findById(student.agents[i]._id.toString());
+        const agent = await req.db
+          .model('Agent')
+          .findById(student.agents[i]._id.toString());
         if (agent.agent_notification) {
           const temp_student =
             agent.agent_notification.isRead_new_base_docs_uploaded.find(
@@ -263,7 +265,9 @@ const saveProfileFilePath = asyncHandler(async (req, res, next) => {
     if (user.role === Role.Student) {
       // TODO: notify agents
       for (let i = 0; i < student.agents.length; i += 1) {
-        const agent = await Agent.findById(student.agents[i]._id.toString());
+        const agent = await req.db
+          .model('Agent')
+          .findById(student.agents[i]._id.toString());
         if (agent.agent_notification) {
           const temp_student =
             agent.agent_notification.isRead_new_base_docs_uploaded.find(
@@ -1225,7 +1229,7 @@ const removeAgentNotification = asyncHandler(async (req, res, next) => {
   const { user } = req;
   const { notification_key, student_id } = req.body;
   // eslint-disable-next-line no-underscore-dangle
-  const me = await Agent.findById(user._id.toString());
+  const me = await req.db.model('Agent').findById(user._id.toString());
   const idx = me.agent_notification[`${notification_key}`].findIndex(
     (student_obj) => student_obj.student_id === student_id
   );

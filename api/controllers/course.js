@@ -6,8 +6,7 @@ const path = require('path');
 
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
-const Course = require('../models/Course');
-const { Role, Student } = require('../models/User');
+const { Role } = require('../models/User');
 const logger = require('../services/logger');
 const {
   updateCoursesDataAgentEmail,

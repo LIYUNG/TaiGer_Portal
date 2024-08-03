@@ -1,9 +1,7 @@
 // const path = require('path');
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
-const Event = require('../models/Event');
-const { Agent, Role, Student } = require('../models/User');
-
+const { Role } = require('../constants');
 const async = require('async');
 const {
   MeetingInvitationEmail,
@@ -110,17 +108,22 @@ const getEvents = asyncHandler(async (req, res, next) => {
   let events;
   let agents_events;
   if (user.role === Role.Student) {
-    events = await Event.find({ requester_id: user._id })
+    events = await req.db
+      .model('Event')
+      .find({ requester_id: user._id })
       .populate('receiver_id requester_id', 'firstname lastname email')
       .lean();
     const agents_ids = user.agents;
-    const agents = await Agent.find({ _id: agents_ids }).select(
-      'firstname lastname email selfIntroduction officehours timezone'
-    );
-    agents_events = await Event.find({
-      receiver_id: { $in: agents_ids },
-      requester_id: { $nin: [user._id] }
-    })
+    const agents = await req.db
+      .model('Agent')
+      .find({ _id: agents_ids })
+      .select('firstname lastname email selfIntroduction officehours timezone');
+    agents_events = await req.db
+      .model('Event')
+      .find({
+        receiver_id: { $in: agents_ids },
+        requester_id: { $nin: [user._id] }
+      })
       .populate('receiver_id', 'firstname lastname email')
       .select('start')
       .lean();
@@ -133,21 +136,26 @@ const getEvents = asyncHandler(async (req, res, next) => {
       students: []
     });
   }
-  const agents = await Agent.find({ _id: user._id.toString() }).select(
-    'firstname lastname email selfIntroduction officehours timezone'
-  );
+  const agents = await req.db
+    .model('Agent')
+    .find({ _id: user._id.toString() })
+    .select('firstname lastname email selfIntroduction officehours timezone');
   let students = [];
 
   if (user.role === Role.Agent) {
-    events = await Event.find({
-      $or: [{ requester_id: user._id }, { receiver_id: user._id }]
-    })
+    events = await req.db
+      .model('Event')
+      .find({
+        $or: [{ requester_id: user._id }, { receiver_id: user._id }]
+      })
       .populate('receiver_id requester_id', 'firstname lastname email')
       .lean();
-    students = await Student.find({
-      agents: user._id,
-      $or: [{ archiv: { $exists: false } }, { archiv: false }]
-    })
+    students = await req.db
+      .model('Student')
+      .find({
+        agents: user._id,
+        $or: [{ archiv: { $exists: false } }, { archiv: false }]
+      })
       .select('firstname lastname firstname_chinese lastname_chinese  email')
       .lean();
     if (events.length === 0) {
@@ -180,12 +188,15 @@ const getActiveEventsNumber = asyncHandler(async (req, res, next) => {
     user.role === Role.Agent ||
     user.role === Role.Admin
   ) {
-    const futureEvents = await Event.find({
-      $or: [{ requester_id: user._id }, { receiver_id: user._id }],
-      isConfirmedReceiver: true,
-      isConfirmedRequester: true,
-      start: { $gt: new Date() }
-    }).lean();
+    const futureEvents = await req.db
+      .model('Event')
+      .find({
+        $or: [{ requester_id: user._id }, { receiver_id: user._id }],
+        isConfirmedReceiver: true,
+        isConfirmedRequester: true,
+        start: { $gt: new Date() }
+      })
+      .lean();
     res.status(200).send({ success: true, data: futureEvents.length });
   } else {
     res.status(200).send({ success: true });
@@ -194,19 +205,24 @@ const getActiveEventsNumber = asyncHandler(async (req, res, next) => {
 
 const getAllEvents = asyncHandler(async (req, res, next) => {
   const { user } = req;
-  const agents = await Agent.find().select(
-    'firstname lastname email selfIntroduction officehours timezone'
-  );
+  const agents = await req.db
+    .model('Agent')
+    .find()
+    .select('firstname lastname email selfIntroduction officehours timezone');
 
-  const events = await Event.find()
+  const events = await req.db
+    .model('Event')
+    .find()
     .populate('receiver_id requester_id', 'firstname lastname email')
     .lean();
-  const students = await Student.find({
-    $and: [
-      { $or: [{ agents: user._id }, { editors: user._id }] },
-      { $or: [{ archiv: { $exists: false } }, { archiv: false }] }
-    ]
-  })
+  const students = await req.db
+    .model('Student')
+    .find({
+      $and: [
+        { $or: [{ agents: user._id }, { editors: user._id }] },
+        { $or: [{ archiv: { $exists: false } }, { archiv: false }] }
+      ]
+    })
     .select('firstname lastname firstname_chinese lastname_chinese  email')
     .lean();
   if (events.length === 0) {
@@ -233,7 +249,7 @@ const getAllEvents = asyncHandler(async (req, res, next) => {
 
 const showEvent = asyncHandler(async (req, res, next) => {
   const { event_id } = req.params;
-  const event = await Event.findById(event_id);
+  const event = await req.db.model('Event').findById(event_id);
 
   try {
     res.status(200).json(event);
@@ -255,25 +271,27 @@ const postEvent = asyncHandler(async (req, res, next) => {
     // TODO: verify requester_id and receiver_id?
     // Check if there is already future timeslot, same student?
     const currentDate = new Date();
-    events = await Event.find({
-      $or: [
-        {
-          start: newEvent.start,
-          receiver_id: newEvent.receiver_id // Same receiver_id
-        }, // Start date is the same as the provided date
-        {
-          start: { $gt: currentDate }, // Start date is in the future
-          requester_id: newEvent.requester_id, // Same requester_id
-          receiver_id: newEvent.receiver_id // Same receiver_id
-        }
-      ]
-    })
+    events = await req.db
+      .model('Event')
+      .find({
+        $or: [
+          {
+            start: newEvent.start,
+            receiver_id: newEvent.receiver_id // Same receiver_id
+          }, // Start date is the same as the provided date
+          {
+            start: { $gt: currentDate }, // Start date is in the future
+            requester_id: newEvent.requester_id, // Same requester_id
+            receiver_id: newEvent.receiver_id // Same receiver_id
+          }
+        ]
+      })
       .populate('requester_id receiver_id', 'firstname lastname email')
       .lean();
     // Check if there is already booked upcoming events
     if (events.length === 0) {
       // TODO: additional check if the timeslot is in agent office hour?
-      write_NewEvent = await Event.create(newEvent);
+      write_NewEvent = await req.db.model('Event').create(newEvent);
       await write_NewEvent.save();
     } else {
       logger.error('Student book a conflicting event in this time slot.');
@@ -282,15 +300,18 @@ const postEvent = asyncHandler(async (req, res, next) => {
         'You are not allowed to book further timeslot, if you have already an upcoming timeslot of the agent.'
       );
     }
-    events = await Event.find({
-      requester_id: newEvent.requester_id
-    })
+    events = await req.db
+      .model('Event')
+      .find({
+        requester_id: newEvent.requester_id
+      })
       .populate('requester_id receiver_id', 'firstname lastname email')
       .lean();
     const agents_ids = user.agents;
-    const agents = await Agent.find({ _id: agents_ids }).select(
-      'firstname lastname email selfIntroduction officehours timezone'
-    );
+    const agents = await req.db
+      .model('Agent')
+      .find({ _id: agents_ids })
+      .select('firstname lastname email selfIntroduction officehours timezone');
     res.status(200).send({
       success: true,
       agents,
@@ -299,7 +320,9 @@ const postEvent = asyncHandler(async (req, res, next) => {
     });
 
     // TODO Sent email to receiver
-    const updatedEvent = await Event.findById(write_NewEvent._id)
+    const updatedEvent = await req.db
+      .model('Event')
+      .findById(write_NewEvent._id)
       .populate('requester_id receiver_id', 'firstname lastname email')
       .lean();
 
@@ -311,18 +334,20 @@ const postEvent = asyncHandler(async (req, res, next) => {
       let write_NewEvent;
       delete newEvent.id;
       newEvent.isConfirmedReceiver = true;
-      events = await Event.find({
-        start: newEvent.start,
-        $or: [
-          { requester_id: newEvent.requester_id },
-          { receiver_id: newEvent.requester_id }
-        ]
-      })
+      events = await req.db
+        .model('Event')
+        .find({
+          start: newEvent.start,
+          $or: [
+            { requester_id: newEvent.requester_id },
+            { receiver_id: newEvent.requester_id }
+          ]
+        })
         .populate('receiver_id', 'firstname lastname email')
         .lean();
       // Check if there is any already booked upcoming events
       if (events.length === 0) {
-        write_NewEvent = await Event.create(newEvent);
+        write_NewEvent = await req.db.model('Event').create(newEvent);
         await write_NewEvent.save();
       } else {
         logger.error(
@@ -333,22 +358,29 @@ const postEvent = asyncHandler(async (req, res, next) => {
           'You are not allowed to book further timeslot, if you have already an upcoming timeslot.'
         );
       }
-      events = await Event.find({
-        $or: [{ requester_id: user._id }, { receiver_id: user._id }]
-      })
+      events = await req.db
+        .model('Event')
+        .find({
+          $or: [{ requester_id: user._id }, { receiver_id: user._id }]
+        })
         .populate('receiver_id requester_id', 'firstname lastname email')
         .lean();
       const agents_ids = user.agents;
-      const agents = await Agent.find({ _id: agents_ids }).select(
-        'firstname lastname email selfIntroduction officehours timezone'
-      );
+      const agents = await req.db
+        .model('Agent')
+        .find({ _id: agents_ids })
+        .select(
+          'firstname lastname email selfIntroduction officehours timezone'
+        );
       res.status(200).send({
         success: true,
         agents,
         data: events,
         hasEvents: events.length !== 0
       });
-      const updatedEvent = await Event.findById(write_NewEvent._id)
+      const updatedEvent = await req.db
+        .model('Event')
+        .findById(write_NewEvent._id)
         .populate('requester_id receiver_id', 'firstname lastname email')
         .lean();
       updatedEvent.requester_id.forEach((requester) => {
@@ -378,7 +410,9 @@ const confirmEvent = asyncHandler(async (req, res, next) => {
         .replace(/\./g, '_')}_${user._id.toString()}`.replace(/ /g, '_');
     }
     if (user.role === 'Agent') {
-      const event_temp = await Event.findById(event_id)
+      const event_temp = await req.db
+        .model('Event')
+        .findById(event_id)
         .populate('receiver_id requester_id', 'firstname lastname email')
         .lean();
       let concat_name = '';
@@ -400,10 +434,12 @@ const confirmEvent = asyncHandler(async (req, res, next) => {
       }
     }
     updated_event.end = new Date(date.getTime() + 60000 * 30);
-    const event = await Event.findByIdAndUpdate(event_id, updated_event, {
-      upsert: false,
-      new: true
-    })
+    const event = await req.db
+      .model('Event')
+      .findByIdAndUpdate(event_id, updated_event, {
+        upsert: false,
+        new: true
+      })
       .populate('receiver_id requester_id', 'firstname lastname email')
       .lean();
     if (event) {
@@ -447,10 +483,12 @@ const updateEvent = asyncHandler(async (req, res, next) => {
     }
 
     updated_event.end = new Date(date.getTime() + 60000 * 30);
-    const event = await Event.findByIdAndUpdate(event_id, updated_event, {
-      upsert: false,
-      new: true
-    })
+    const event = await req.db
+      .model('Event')
+      .findByIdAndUpdate(event_id, updated_event, {
+        upsert: false,
+        new: true
+      })
       .populate('receiver_id requester_id', 'firstname lastname email')
       .lean();
     if (event) {
@@ -482,19 +520,26 @@ const deleteEvent = asyncHandler(async (req, res, next) => {
   const { event_id } = req.params;
   const { user } = req;
   try {
-    const toBeDeletedEvent = await Event.findById(event_id)
+    const toBeDeletedEvent = await req.db
+      .model('Event')
+      .findById(event_id)
       .populate('receiver_id requester_id', 'firstname lastname email')
       .lean();
-    await Event.findByIdAndDelete(event_id);
+    await req.db.model('Event').findByIdAndDelete(event_id);
     let events;
     if (user.role === Role.Student) {
-      events = await Event.find({ requester_id: user._id })
+      events = await req.db
+        .model('Event')
+        .find({ requester_id: user._id })
         .populate('receiver_id requester_id', 'firstname lastname email')
         .lean();
       const agents_ids = user.agents;
-      const agents = await Agent.find({ _id: agents_ids }).select(
-        'firstname lastname email selfIntroduction officehours timezone'
-      );
+      const agents = await req.db
+        .model('Agent')
+        .find({ _id: agents_ids })
+        .select(
+          'firstname lastname email selfIntroduction officehours timezone'
+        );
       res.status(200).send({
         success: true,
         agents,
@@ -503,17 +548,22 @@ const deleteEvent = asyncHandler(async (req, res, next) => {
       });
       MeetingCancelledReminder(user, toBeDeletedEvent);
     } else if (user.role === Role.Agent) {
-      events = await Event.find({
-        $or: [
-          { requester_id: user._id.toString() },
-          { receiver_id: user._id.toString() }
-        ]
-      })
+      events = await req.db
+        .model('Event')
+        .find({
+          $or: [
+            { requester_id: user._id.toString() },
+            { receiver_id: user._id.toString() }
+          ]
+        })
         .populate('receiver_id requester_id', 'firstname lastname email')
         .lean();
-      const agents = await Agent.find({ _id: user._id.toString() }).select(
-        'firstname lastname email selfIntroduction officehours timezone'
-      );
+      const agents = await req.db
+        .model('Agent')
+        .find({ _id: user._id.toString() })
+        .select(
+          'firstname lastname email selfIntroduction officehours timezone'
+        );
       res.status(200).send({
         success: true,
         agents,

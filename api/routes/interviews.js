@@ -1,6 +1,6 @@
 const { Router } = require('express');
 
-const { Role } = require('../models/User');
+const { Role } = require('../constants');
 const { protect, permit } = require('../middlewares/auth');
 
 const {

@@ -3,11 +3,11 @@ const path = require('path');
 const request = require('supertest');
 
 const { UPLOAD_PATH } = require('../../config');
-const db = require('../fixtures/db');
+const { connect, closeDatabase, clearDatabase } = require('../fixtures/db');
 const { app } = require('../../app');
-const { Role, User, Agent, Editor, Student } = require('../../models/User');
-const { Program } = require('../../models/Program');
-const { Documentthread } = require('../../models/Documentthread');
+const { Role } = require('../../constants');
+const { User, UserSchema } = require('../../models/User');
+const { programSchema } = require('../../models/Program');
 const { generateUser } = require('../fixtures/users');
 const { generateProgram } = require('../fixtures/programs');
 const { protect } = require('../../middlewares/auth');
@@ -17,6 +17,32 @@ const {
 const {
   InnerTaigerMultitenantFilter
 } = require('../../middlewares/InnerTaigerMultitenantFilter');
+const { connectToDatabase } = require('../../middlewares/tenantMiddleware');
+const { TENANT_ID } = require('../fixtures/constants');
+const {
+  decryptCookieMiddleware
+} = require('../../middlewares/decryptCookieMiddleware');
+
+jest.mock('../../middlewares/tenantMiddleware', () => {
+  const passthrough = async (req, res, next) => {
+    req.tenantId = 'test';
+    next();
+  };
+
+  return {
+    ...jest.requireActual('../../middlewares/tenantMiddleware'),
+    checkTenantDBMiddleware: jest.fn().mockImplementation(passthrough)
+  };
+});
+
+jest.mock('../../middlewares/decryptCookieMiddleware', () => {
+  const passthrough = async (req, res, next) => next();
+
+  return {
+    ...jest.requireActual('../../middlewares/decryptCookieMiddleware'),
+    decryptCookieMiddleware: jest.fn().mockImplementation(passthrough)
+  };
+});
 
 jest.mock('../../middlewares/auth', () => {
   const passthrough = async (req, res, next) => next();
@@ -76,15 +102,22 @@ const requiredDocuments = ['transcript', 'resume'];
 const optionalDocuments = ['certificate', 'visa'];
 const program = generateProgram(requiredDocuments, optionalDocuments);
 
-beforeAll(async () => await db.connect());
-afterAll(async () => await db.clearDatabase());
+let dbUri;
 
+beforeAll(async () => {
+  dbUri = await connect();
+});
+afterAll(async () => await clearDatabase());
 beforeEach(async () => {
-  await User.deleteMany();
-  await User.insertMany(users);
+  const db = connectToDatabase(TENANT_ID, dbUri);
 
-  await Program.deleteMany();
-  await Program.create(program);
+  const UserModel = db.model('User', UserSchema);
+  const ProgramModel = db.model('Program', programSchema);
+
+  await UserModel.deleteMany();
+  await UserModel.insertMany(users);
+  await ProgramModel.deleteMany();
+  await ProgramModel.create(program);
 });
 
 afterEach(() => {

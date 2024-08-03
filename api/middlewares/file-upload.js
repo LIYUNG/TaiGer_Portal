@@ -3,9 +3,6 @@ const _ = require('lodash');
 const multer = require('multer');
 const multerS3 = require('multer-s3');
 const uuid = require('uuid');
-const { Program } = require('../models/Program');
-const { Documentthread } = require('../models/Documentthread');
-const { Student } = require('../models/User');
 const { ErrorResponse } = require('../common/errors');
 const { AWS_S3_BUCKET_NAME, AWS_S3_PUBLIC_BUCKET_NAME } = require('../config');
 const { s3 } = require('../aws/index');
@@ -107,19 +104,25 @@ const storage_vpd_s3 = multerS3({
   key: (req, file, cb) => {
     const { studentId, program_id, fileType } = req.params;
 
-    Student.findById(studentId).then((student) => {
-      if (student) {
-        Program.findById(program_id).then((program) => {
-          const program_name = `${program.school} ${program.program_name}`;
-          let temp_name = `${student.lastname}_${
-            student.firstname
-          }_${program_name}_${fileType}${path.extname(file.originalname)}`;
-          temp_name = temp_name.replace(/ /g, '_');
-          temp_name = temp_name.replace(/\//g, '_');
-          cb(null, temp_name);
-        });
-      }
-    });
+    req.db
+      .model('Student')
+      .findById(studentId)
+      .then((student) => {
+        if (student) {
+          req.db
+            .model('Program')
+            .findById(program_id)
+            .then((program) => {
+              const program_name = `${program.school} ${program.program_name}`;
+              let temp_name = `${student.lastname}_${
+                student.firstname
+              }_${program_name}_${fileType}${path.extname(file.originalname)}`;
+              temp_name = temp_name.replace(/ /g, '_');
+              temp_name = temp_name.replace(/\//g, '_');
+              cb(null, temp_name);
+            });
+        }
+      });
   }
 });
 
@@ -150,7 +153,9 @@ const storage_profile_s3 = multerS3({
     // cb(null, file.originalname);
     const { studentId } = req.params;
 
-    Student.findOne({ _id: studentId })
+    req.db
+      .model('Student')
+      .findOne({ _id: studentId })
       .populate('applications.programId')
       .lean()
       .exec()
@@ -226,21 +231,27 @@ const admission_letter_s3 = multerS3({
     const { studentId, programId, result } = req.params;
     const admission_status = result === 'O' ? 'Admission' : 'Rejection';
 
-    Student.findById(studentId).then((student) => {
-      if (student) {
-        Program.findById(programId).then((program) => {
-          const program_name = `${program.school} ${program.program_name} ${program.degree} ${program.semester}`;
-          let temp_name = `${student.lastname}_${
-            student.firstname
-          }_${program_name}_${admission_status}${path.extname(
-            file.originalname
-          )}`;
-          temp_name = temp_name.replace(/ /g, '_');
-          temp_name = temp_name.replace(/\//g, '_');
-          cb(null, temp_name);
-        });
-      }
-    });
+    req.db
+      .model('Student')
+      .findById(studentId)
+      .then((student) => {
+        if (student) {
+          req.db
+            .model('Program')
+            .findById(programId)
+            .then((program) => {
+              const program_name = `${program.school} ${program.program_name} ${program.degree} ${program.semester}`;
+              let temp_name = `${student.lastname}_${
+                student.firstname
+              }_${program_name}_${admission_status}${path.extname(
+                file.originalname
+              )}`;
+              temp_name = temp_name.replace(/ /g, '_');
+              temp_name = temp_name.replace(/\//g, '_');
+              cb(null, temp_name);
+            });
+        }
+      });
   }
 });
 
@@ -404,7 +415,9 @@ const storage_messagesthread_file_s3 = multerS3({
   },
   key: (req, file, cb) => {
     const { messagesThreadId } = req.params;
-    Documentthread.findById(messagesThreadId)
+    req.db
+      .model('Documentthread')
+      .findById(messagesThreadId)
       .populate('student_id')
       .then((thread) => {
         if (!thread) {
@@ -412,35 +425,38 @@ const storage_messagesthread_file_s3 = multerS3({
         }
         let program_name = '';
         if (thread.program_id) {
-          Program.findById(thread.program_id).then((program) => {
-            program_name = `${program.school}_${program.program_name}`;
-            let version_number_max = 0;
+          req.db
+            .model('Program')
+            .findById(thread.program_id)
+            .then((program) => {
+              program_name = `${program.school}_${program.program_name}`;
+              let version_number_max = 0;
 
-            thread.messages.forEach((message) => {
-              message.file.forEach((file_data) => {
-                let fileversion = 0;
-                const lastPart = _.last(file_data.name.split('_'));
-                fileversion = parseInt(lastPart.replace(/[^\d]/g, ''), 10);
+              thread.messages.forEach((message) => {
+                message.file.forEach((file_data) => {
+                  let fileversion = 0;
+                  const lastPart = _.last(file_data.name.split('_'));
+                  fileversion = parseInt(lastPart.replace(/[^\d]/g, ''), 10);
 
-                if (fileversion > version_number_max) {
-                  version_number_max = fileversion; // get the max version number
-                }
+                  if (fileversion > version_number_max) {
+                    version_number_max = fileversion; // get the max version number
+                  }
+                });
               });
+
+              const version_number = parseInt(version_number_max, 10) + 1;
+              let temp_name = `${thread.student_id.lastname}_${
+                thread.student_id.firstname
+              }_${program_name}_${
+                thread.file_type
+              }_v${version_number.toString()}${path
+                .extname(file.originalname)
+                .toLowerCase()}`;
+              temp_name = temp_name.replace(/ /g, '_');
+              temp_name = temp_name.replace(/\//g, '_');
+
+              cb(null, temp_name);
             });
-
-            const version_number = parseInt(version_number_max, 10) + 1;
-            let temp_name = `${thread.student_id.lastname}_${
-              thread.student_id.firstname
-            }_${program_name}_${
-              thread.file_type
-            }_v${version_number.toString()}${path
-              .extname(file.originalname)
-              .toLowerCase()}`;
-            temp_name = temp_name.replace(/ /g, '_');
-            temp_name = temp_name.replace(/\//g, '_');
-
-            cb(null, temp_name);
-          });
         } else {
           let version_number_max = 0;
 
@@ -502,14 +518,17 @@ const storage_messagesChat_file_s3 = multerS3({
 
     const date = new Date();
     const formattedDate = formatDate(date);
-    Student.findById(studentId).then((student) => {
-      let temp_name = `${student.lastname}_${
-        student.firstname
-      }_Attachment_${formattedDate}${path.extname(file.originalname)}`;
-      temp_name = temp_name.replace(/ /g, '_');
-      temp_name = temp_name.replace(/\//g, '_');
-      cb(null, temp_name);
-    });
+    req.db
+      .model('Student')
+      .findById(studentId)
+      .then((student) => {
+        let temp_name = `${student.lastname}_${
+          student.firstname
+        }_Attachment_${formattedDate}${path.extname(file.originalname)}`;
+        temp_name = temp_name.replace(/ /g, '_');
+        temp_name = temp_name.replace(/\//g, '_');
+        cb(null, temp_name);
+      });
   }
 });
 

@@ -5,26 +5,24 @@ const { spawn } = require('child_process');
 
 const { asyncHandler } = require('../middlewares/error-handler');
 const logger = require('../services/logger');
-const { Program } = require('../models/Program');
 const { ProgramAI } = require('../models/ProgramAI');
 const { isProd } = require('../config');
 const { openAIClient, OpenAiModel } = require('../services/openai');
-const { Student, Role } = require('../models/User');
+const { Role } = require('../constants');
 const { generalMLPrompt } = require('../prompt/ml_prompt');
 const { FILE_MAPPING_TABLE } = require('../constants');
 const { generalRLPrompt } = require('../prompt/rl_prompt');
-const { getPermission } = require('../utils/queryFunctions');
-const { Communication } = require('../models/Communication');
-const Permission = require('../models/Permission');
 
 const pageSize = 3;
-
 
 const processProgramListAi = asyncHandler(async (req, res, next) => {
   const {
     params: { programId }
   } = req;
-  const program = await Program.findOne({ _id: programId }).lean();
+  const program = await req.db
+    .model('Program')
+    .findOne({ _id: programId })
+    .lean();
   const programai = await ProgramAI.findOne({ program_id: programId }).lean();
   if (!program) {
     logger.error('no program found!');
@@ -57,25 +55,29 @@ const processProgramListAi = asyncHandler(async (req, res, next) => {
   });
 });
 
-const generate = async (input, model) => {
+const generate = asyncHandler(async (input, model) => {
   logger.info(`model = ${model}`);
   const response = await openAIClient.chat.completions.create({
     messages: [{ role: 'user', content: input || 'where is BMW Headquarter?' }],
     model
   });
   return response.choices[0]?.message;
-};
-const generate_streaming = async (input, model) =>
+});
+
+const generate_streaming = asyncHandler(async (input, model) =>
   openAIClient.chat.completions.create({
     messages: [{ role: 'user', content: input || 'where is BMW Headquarter?' }],
     model: OpenAiModel.GPT_3_5_TURBO,
     stream: true
-  });
+  })
+);
 
 const TaiGerAiGeneral = asyncHandler(async (req, res, next) => {
-  const { user } = req;
   const { prompt, model } = req.body;
-  const stream = await generate_streaming(prompt, model || OpenAiModel.GPT_3_5_TURBO);
+  const stream = await generate_streaming(
+    prompt,
+    model || OpenAiModel.GPT_3_5_TURBO
+  );
   for await (const part of stream) {
     res.write(part.choices[0]?.delta.content || '');
   }
@@ -89,14 +91,18 @@ const TaiGerAiChat = asyncHandler(async (req, res, next) => {
   } = req;
   const { prompt } = req.body;
 
-  const communication_thread = await Communication.find({
-    student_id: studentId
-  })
+  const communication_thread = await req.db
+    .model('Communication')
+    .find({
+      student_id: studentId
+    })
     .populate('student_id user_id', 'firstname lastname role')
     .sort({ createdAt: -1 }) // 0: latest!
     .limit(pageSize)
     .lean(); // show only first y limit items after skip.
-  const student = await Student.findById(studentId)
+  const student = await req.db
+    .model('Student')
+    .findById(studentId)
     .populate('applications.programId')
     .lean();
   const chat = communication_thread?.map((c) => {
@@ -207,7 +213,7 @@ const TaiGerAiChat = asyncHandler(async (req, res, next) => {
   );
 
   // res.status(200).send({ success: true, data: chat });
-  const permission = await Permission.findOne({
+  const permission = await req.db.model('Permission').findOne({
     user_id: user._id
   });
   if (permission.taigerAiQuota > 0) {
@@ -236,7 +242,7 @@ const cvmlrlAi = asyncHandler(async (req, res, next) => {
   let student_info = {};
 
   try {
-    const student = await Student.findById(student_id);
+    const student = await req.db.model('Student').findById(student_id);
     student_info = {
       firstname: student.firstname,
       lastname: student.lastname,
@@ -277,7 +283,7 @@ const cvmlrlAi = asyncHandler(async (req, res, next) => {
   }
   res.end();
 
-  const permission = await Permission.findOne({
+  const permission = await req.db.model('Permission').findOne({
     user_id: user._id
   });
   if (permission.taigerAiQuota > 0) {

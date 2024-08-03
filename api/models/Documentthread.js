@@ -1,11 +1,10 @@
 const {
+  model,
+  Schema,
   Types: { ObjectId }
 } = require('mongoose');
-const mongoose = require('mongoose');
 
-const documentType = ['CV', 'ML', 'RL', 'Essay'];
-
-const documentThreadsSchema = new mongoose.Schema({
+const documentThreadsSchema = new Schema({
   student_id: { type: ObjectId, require: true, ref: 'User' },
   program_id: { type: ObjectId, ref: 'Program' },
   outsourced_user_id: [{ type: ObjectId, ref: 'User' }],
@@ -58,9 +57,9 @@ documentThreadsSchema.index(
   { student_id: 1, program_id: 1, file_type: 1 },
   { unique: true }
 );
-const Documentthread = mongoose.model('Documentthread', documentThreadsSchema);
+const Documentthread = model('Documentthread', documentThreadsSchema);
 module.exports = {
   Documentthread,
-  documentType,
+  documentThreadsSchema,
   STUDENT_INPUT_STATUS_E
 };

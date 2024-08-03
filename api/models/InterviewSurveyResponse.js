@@ -1,9 +1,10 @@
-const mongoose = require('mongoose');
 const {
+  model,
+  Schema,
   Types: { ObjectId }
 } = require('mongoose');
 
-const interviewSurveyResponseSchema = new mongoose.Schema(
+const interviewSurveyResponseSchema = new Schema(
   {
     student_id: { type: ObjectId, ref: 'User' },
     interview_id: { type: ObjectId, ref: 'Interview' },
@@ -32,9 +33,9 @@ interviewSurveyResponseSchema.index(
   { unique: true }
 );
 
-const InterviewSurveyResponse = mongoose.model(
+const InterviewSurveyResponse = model(
   'InterviewSurveyResponse',
   interviewSurveyResponseSchema
 );
 
-module.exports = InterviewSurveyResponse;
+module.exports = { InterviewSurveyResponse, interviewSurveyResponseSchema };

@@ -1536,21 +1536,21 @@ const prepEssayTaskThread = (student, thread) => {
 const prepTask = (student, thread) => {
   return {
     ...prepTaskStudent(student),
-    id: thread.doc_thread_id._id.toString(),
+    id: thread.doc_thread_id?._id.toString(),
     latest_message_left_by_id: thread.latest_message_left_by_id,
     flag_by_user_id: thread.doc_thread_id?.flag_by_user_id,
     isFinalVersion: thread.isFinalVersion,
     outsourced_user_id: thread.doc_thread_id?.outsourced_user_id,
-    file_type: thread.doc_thread_id.file_type,
-    aged_days: getNumberOfDays(thread.doc_thread_id.updatedAt, new Date()),
+    file_type: thread.doc_thread_id?.file_type,
+    aged_days: getNumberOfDays(thread.doc_thread_id?.updatedAt, new Date()),
     latest_reply: latestReplyInfo(thread.doc_thread_id),
-    updatedAt: convertDate(thread.doc_thread_id.updatedAt),
+    updatedAt: convertDate(thread.doc_thread_id?.updatedAt),
     number_input_from_student: getNumberOfFilesByStudent(
-      thread.doc_thread_id.messages,
+      thread.doc_thread_id?.messages,
       student._id.toString()
     ),
     number_input_from_editors: getNumberOfFilesByEditor(
-      thread.doc_thread_id.messages,
+      thread.doc_thread_id?.messages,
       student._id.toString()
     )
   };
@@ -1604,11 +1604,11 @@ const prepEssayTask = (essay, user) => {
 const prepApplicationTask = (student, application, thread) => {
   return {
     ...prepTask(student, thread),
-    thread_id: thread.doc_thread_id._id.toString(),
+    thread_id: thread.doc_thread_id?._id.toString(),
     program_id: application.programId._id.toString(),
     deadline: application_deadline_calculator(student, application),
     show: isProgramDecided(application) ? true : false,
-    document_name: `${thread.doc_thread_id.file_type} - ${application.programId.school} - ${application.programId.degree} -${application.programId.program_name}`,
+    document_name: `${thread.doc_thread_id?.file_type} - ${application.programId.school} - ${application.programId.degree} -${application.programId.program_name}`,
     lang: `${application.programId.lang}`,
     days_left:
       getNumberOfDays(

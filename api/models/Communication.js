@@ -34,5 +34,6 @@ const communicationsSchema = new Schema(
 communicationsSchema.index({ student_id: 1 });
 const Communication = model('Communication', communicationsSchema);
 module.exports = {
-  Communication
+  Communication,
+  communicationsSchema
 };

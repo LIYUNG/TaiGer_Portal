@@ -1,10 +1,12 @@
 const { ten_minutes_cache } = require('../cache/node-cache');
 const { ErrorResponse } = require('../common/errors');
-const { Role, Student } = require('../models/User');
+const { Role } = require('../constants');
+
 const logger = require('../services/logger');
 const { getPermission } = require('../utils/queryFunctions');
+const { asyncHandler } = require('./error-handler');
 
-const chatMultitenantFilter = async (req, res, next) => {
+const chatMultitenantFilter = asyncHandler(async (req, res, next) => {
   const {
     user,
     params: { studentId }
@@ -14,7 +16,9 @@ const chatMultitenantFilter = async (req, res, next) => {
       `/chatMultitenantFilter/students/${studentId}`
     );
     if (cachedStudent === undefined) {
-      const student = await Student.findById(studentId)
+      const student = await req.db
+        .model('Student')
+        .findById(studentId)
         .select('agents editors')
         .lean();
 
@@ -28,7 +32,7 @@ const chatMultitenantFilter = async (req, res, next) => {
       }
     }
 
-    const cachedPermission = await getPermission(user);
+    const cachedPermission = await getPermission(req, user);
 
     if (
       !cachedStudent.agents?.some(
@@ -45,7 +49,7 @@ const chatMultitenantFilter = async (req, res, next) => {
     }
   }
   next();
-};
+});
 
 module.exports = {
   chatMultitenantFilter

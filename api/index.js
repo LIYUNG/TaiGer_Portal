@@ -1,10 +1,9 @@
 const schedule = require('node-schedule');
 const https = require('https');
 const fs = require('fs');
-const { createTransport } = require('nodemailer');
 
 const { app } = require('./app');
-const { connectToDatabase, disconnectFromDatabase } = require('./database');
+// const { connectToDatabase, disconnectFromDatabase } = require('./database');
 const {
   PORT,
   isProd,
@@ -38,7 +37,7 @@ const {
   UrgentTasksReminderEmails,
   AssignEditorTasksReminderEmails,
   NextSemesterCourseSelectionReminderEmails,
-  UpdateStatisticsData,
+  // UpdateStatisticsData,
   MeetingDailyReminderChecker,
   UnconfirmedMeetingDailyReminderChecker,
   DailyCalculateAverageResponseTime,
@@ -48,12 +47,12 @@ const {
 const { MongoDBDataBaseDailySnapshot } = require('./utils/jobs');
 // const { UserS3GarbageCollector } = require('./controllers/users');
 
-process.on('SIGINT', () => {
-  disconnectFromDatabase(() => {
-    logger.error('Database disconnected through app termination');
-    process.exit(0);
-  });
-});
+// process.on('SIGINT', () => {
+//   disconnectFromDatabase(() => {
+//     logger.error('Database disconnected through app termination');
+//     process.exit(0);
+//   });
+// });
 
 const launch = async () => {
   if (isDev()) {
@@ -69,16 +68,15 @@ const launch = async () => {
   if (isProd()) {
     if (
       !AWS_S3_BUCKET_NAME.includes('production') ||
-      !AWS_S3_PUBLIC_BUCKET_NAME.includes('production') ||
-      !MONGODB_URI.includes('TaiGer_Prod')
+      !AWS_S3_PUBLIC_BUCKET_NAME.includes('production')
     ) {
-      logger.error('Database / S3 bucket name not consistent for Prod');
+      logger.error('S3 bucket name not consistent for Prod');
       return;
     }
   }
   try {
-    const conn = await connectToDatabase(MONGODB_URI, 5000);
-    logger.info(`Database connected: ${conn.host}`);
+    // const conn = await connectToDatabase(MONGODB_URI, 5000);
+    // logger.info(`Database connected: ${conn.host}`);
   } catch (err) {
     logger.error('Failed to connect to database: ', err);
     process.exit(1);

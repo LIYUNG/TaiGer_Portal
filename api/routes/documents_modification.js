@@ -21,7 +21,8 @@ const {
   doc_thread_ops_validator
 } = require('../middlewares/docs_thread_operation_validation');
 
-const { Role } = require('../models/User');
+const { Role } = require('../constants');
+
 const { protect, permit } = require('../middlewares/auth');
 const {
   MessagesThreadUpload,

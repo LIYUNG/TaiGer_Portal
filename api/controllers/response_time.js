@@ -1,9 +1,8 @@
-const async = require('async');
-const path = require('path');
 const { ResponseTime } = require('../models/ResponseTime');
-const { Student, Agent, Editor, Role } = require('../models/User');
+const { Role } = require('../constants');
+const { asyncHandler } = require('../middlewares/error-handler');
 
-const GetResponseTimeForCommunication = async () =>
+const GetResponseTimeForCommunication = asyncHandler(async () =>
   ResponseTime.find({ student_id: { $exists: true } })
     .populate({
       path: 'student_id',
@@ -12,9 +11,10 @@ const GetResponseTimeForCommunication = async () =>
         { path: 'editors', model: 'User' }
       ]
     })
-    .lean();
+    .lean()
+);
 
-const GetResponseTimeForThread = async () =>
+const GetResponseTimeForThread = asyncHandler(async () =>
   ResponseTime.find({ thread_id: { $exists: true } })
     .populate({
       path: 'thread_id',
@@ -27,7 +27,8 @@ const GetResponseTimeForThread = async () =>
         ]
       }
     })
-    .lean();
+    .lean()
+);
 
 const FileTypeMapping = {
   CV: ['CV'],
@@ -117,7 +118,7 @@ const GernerateLookupTable = (Lookup, key, task) => {
   }
 };
 
-const CalculateAvgReponseTimeinLookup = async (Lookup) => {
+const CalculateAvgReponseTimeinLookup = asyncHandler(async (Lookup) => {
   //calculate the average response time
   for (const user in Lookup) {
     for (const attribute in Lookup[user]) {
@@ -133,9 +134,9 @@ const CalculateAvgReponseTimeinLookup = async (Lookup) => {
       }
     }
   }
-};
+});
 
-const GenerateResponseTimeByTaigerUser = async () => {
+const GenerateResponseTimeByTaigerUser = asyncHandler(async () => {
   let Lookup = {};
 
   const ResponseTimeForCommunication = await GetResponseTimeForCommunication({
@@ -173,10 +174,10 @@ const GenerateResponseTimeByTaigerUser = async () => {
 
   CalculateAvgReponseTimeinLookup(Lookup);
   return Lookup;
-};
+});
 
 // TODO: deprecated
-const GenerateResponseTimeByStudent = async () => {
+const GenerateResponseTimeByStudent = asyncHandler(async () => {
   let Lookup = {};
 
   const ResponseTimeForCommunication = await GetResponseTimeForCommunication({
@@ -203,7 +204,7 @@ const GenerateResponseTimeByStudent = async () => {
 
   CalculateAvgReponseTimeinLookup(Lookup);
   return Lookup;
-};
+});
 
 module.exports = {
   GenerateResponseTimeByStudent,

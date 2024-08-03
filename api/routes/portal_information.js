@@ -9,7 +9,8 @@ const {
   InnerTaigerMultitenantFilter
 } = require('../middlewares/InnerTaigerMultitenantFilter');
 const { protect, permit, prohibit } = require('../middlewares/auth');
-const { Role } = require('../models/User');
+const { Role } = require('../constants');
+
 
 const {
   createPortalCredentials,

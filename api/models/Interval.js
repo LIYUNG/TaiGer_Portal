@@ -1,11 +1,10 @@
-const mongoose = require('mongoose');
 const {
   model,
   Schema,
   Types: { ObjectId }
 } = require('mongoose');
 
-const IntervalSchema = new mongoose.Schema({
+const intervalSchema = new Schema({
   thread_id: {
     type: Schema.Types.ObjectId,
     ref: 'Documentthread'
@@ -37,7 +36,7 @@ const IntervalSchema = new mongoose.Schema({
   }
 });
 
-IntervalSchema.index(
+intervalSchema.index(
   {
     student_id: 1,
     thread_id: 1,
@@ -48,7 +47,8 @@ IntervalSchema.index(
   { unique: true }
 );
 
-const Interval = mongoose.model('Interval', IntervalSchema);
+const Interval = model('Interval', intervalSchema);
 module.exports = {
-  Interval
+  Interval,
+  intervalSchema
 };

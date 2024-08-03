@@ -21,6 +21,7 @@ const { htmlContent } = require('./emailTemplate');
 const { limiter } = require('../aws');
 const { transporter } = require('./email/configuration');
 const { senderName, taigerNotReplyGmail } = require('../constants/email');
+const { asyncHandler } = require('../middlewares/error-handler');
 
 const verifySMTPConfig = () => {
   return transporter.verify();
@@ -39,7 +40,7 @@ const sendEmail = (to, subject, message) => {
   return limiter.schedule(() => transporter.sendMail(mail));
 };
 
-const StudentTasksReminderEmail = async (recipient, payload) => {
+const StudentTasksReminderEmail = asyncHandler(async (recipient, payload) => {
   const subject = `TaiGer Weekly Reminder: ${recipient.firstname} ${recipient.lastname}`;
   const unsubmitted_applications = unsubmitted_applications_summary(
     payload.student
@@ -83,9 +84,9 @@ ${unsubmitted_applications}
   } else {
     return sendEmail(recipient, subject, message);
   }
-};
+});
 
-const AgentTasksReminderEmail = async (recipient, payload) => {
+const AgentTasksReminderEmail = asyncHandler(async (recipient, payload) => {
   const subject = `TaiGer Agent Reminder: ${recipient.firstname} ${recipient.lastname}`;
   let student_i = '';
   for (let i = 0; i < payload.students.length; i += 1) {
@@ -135,9 +136,9 @@ ${student_i}
 `; // should be for admin/editor/agent/student
 
   return sendEmail(recipient, subject, message);
-};
+});
 
-const EditorTasksReminderEmail = async (recipient, payload) => {
+const EditorTasksReminderEmail = asyncHandler(async (recipient, payload) => {
   const subject = `TaiGer Editor Reminder: ${recipient.firstname} ${recipient.lastname}`;
   let student_i = '';
   let x = 0;
@@ -186,20 +187,19 @@ ${student_i}
 `; // should be for admin/editor/agent/student
 
   return sendEmail(recipient, subject, message);
-};
+});
 
-const StudentApplicationsDeadline_Within30Days_DailyReminderEmail = async (
-  recipient,
-  payload
-) => {
-  const subject = `[Important] Applications Deadline very close: ${recipient.firstname} ${recipient.lastname}`;
-  const unsubmitted_applications = unsubmitted_applications_escalation_summary(
-    payload.student,
-    payload.student,
-    payload.trigger_days
-  );
+const StudentApplicationsDeadline_Within30Days_DailyReminderEmail =
+  asyncHandler(async (recipient, payload) => {
+    const subject = `[Important] Applications Deadline very close: ${recipient.firstname} ${recipient.lastname}`;
+    const unsubmitted_applications =
+      unsubmitted_applications_escalation_summary(
+        payload.student,
+        payload.student,
+        payload.trigger_days
+      );
 
-  const message = `\
+    const message = `\
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
 ${unsubmitted_applications}
@@ -207,17 +207,18 @@ ${unsubmitted_applications}
 
 `;
 
-  return sendEmail(recipient, subject, message);
-};
+    return sendEmail(recipient, subject, message);
+  });
 
-const StudentCourseSelectionReminderEmail = async (recipient, payload) => {
-  const subject = `[Courses Update] ${recipient.firstname} ${recipient.lastname}: 請更新您的課程，並為下學期選課做準備 | Please update courses and prepare the courses for the next semester!`;
-  const message = `\
+const StudentCourseSelectionReminderEmail = asyncHandler(
+  async (recipient, payload) => {
+    const subject = `[Courses Update] ${recipient.firstname} ${recipient.lastname}: 請更新您的課程，並為下學期選課做準備 | Please update courses and prepare the courses for the next semester!`;
+    const message = `\
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
 <p>為了確保您的課程符合度能符合之後申請學校的課程要求，TaiGer 提醒您前往 <a href="${STUDENT_COURSE_URL(
-    payload.student._id.toString()
-  )}">TaiGer Portal My Course</a> 更新您截至目前為止的課程，您的 Agent 會再次為您下學期的選課做準備。</p>
+      payload.student._id.toString()
+    )}">TaiGer Portal My Course</a> 更新您截至目前為止的課程，您的 Agent 會再次為您下學期的選課做準備。</p>
 
 <p>為了您和 Agent 的溝通順暢，盡速更新課程，您的 Agent 會在您更新課程後，為您盡快分析課程。</p>
 
@@ -226,41 +227,42 @@ const StudentCourseSelectionReminderEmail = async (recipient, payload) => {
 
 `;
 
-  return sendEmail(recipient, subject, message);
-};
+    return sendEmail(recipient, subject, message);
+  }
+);
 
-const AgentCourseSelectionReminderEmail = async (recipient, payload) => {
-  const subject = `[Courses Update] ${payload.student.firstname} ${payload.student.lastname}: 課程過時。請提醒學生，並為下學期選課做準備 | Please remind the student for courses selection next semester!`;
-  const message = `\
+const AgentCourseSelectionReminderEmail = asyncHandler(
+  async (recipient, payload) => {
+    const subject = `[Courses Update] ${payload.student.firstname} ${payload.student.lastname}: 課程過時。請提醒學生，並為下學期選課做準備 | Please remind the student for courses selection next semester!`;
+    const message = `\
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
 <p>為了確保學生課程符合度能符合之後申請學校的課程要求，TaiGer 提醒您前往 <a href="${STUDENT_COURSE_URL(
-    payload.student._id.toString()
-  )}">${payload.student.firstname} ${
-    payload.student.lastname
-  } Course</a> 檢查是否已更新課程分析。</p>
+      payload.student._id.toString()
+    )}">${payload.student.firstname} ${
+      payload.student.lastname
+    } Course</a> 檢查是否已更新課程分析。</p>
 
 <p>若學生已經大學畢業，或是尚未就讀大學，請更新 <a href="${SURVEY_URL_FOR_AGENT_URL(
-    payload.student._id.toString()
-  )}">My Profile</a> 中 <b>Already Bachelor graduated ?</b> 為<b>Yes 已畢業</b> 或是<b>No 未開始就讀</b> ，您將不會在收到此 Email</p>
+      payload.student._id.toString()
+    )}">My Profile</a> 中 <b>Already Bachelor graduated ?</b> 為<b>Yes 已畢業</b> 或是<b>No 未開始就讀</b> ，您將不會在收到此 Email</p>
 
 
 `;
 
-  return sendEmail(recipient, subject, message);
-};
+    return sendEmail(recipient, subject, message);
+  }
+);
 
-const StudentCVMLRLEssay_NoReplyAfter3Days_DailyReminderEmail = async (
-  recipient,
-  payload
-) => {
-  const subject = `[Action Required] ${recipient.firstname} ${recipient.lastname}: Your Editor is waiting for you!`;
-  const unread_cv_ml_rl_thread = cv_ml_rl_escalation_summary(
-    payload.student,
-    payload.student,
-    payload.trigger_days // after 3 days
-  );
-  const message = `\
+const StudentCVMLRLEssay_NoReplyAfter3Days_DailyReminderEmail = asyncHandler(
+  async (recipient, payload) => {
+    const subject = `[Action Required] ${recipient.firstname} ${recipient.lastname}: Your Editor is waiting for you!`;
+    const unread_cv_ml_rl_thread = cv_ml_rl_escalation_summary(
+      payload.student,
+      payload.student,
+      payload.trigger_days // after 3 days
+    );
+    const message = `\
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
 ${unread_cv_ml_rl_thread}
@@ -268,17 +270,16 @@ ${unread_cv_ml_rl_thread}
 
 `;
 
-  return sendEmail(recipient, subject, message);
-};
+    return sendEmail(recipient, subject, message);
+  }
+);
 
-const EditorCVMLRLEssay_NoReplyAfter7Days_DailyReminderEmail = async (
-  recipient,
-  payload
-) => {
-  const subject = `[Action Required] ${recipient.firstname} ${recipient.lastname}: Your Students are waiting for your response!`;
-  let unread_cv_ml_rl_threads = '';
-  for (let i = 0; i < payload.students.length; i += 1) {
-    unread_cv_ml_rl_threads += `
+const EditorCVMLRLEssay_NoReplyAfter7Days_DailyReminderEmail = asyncHandler(
+  async (recipient, payload) => {
+    const subject = `[Action Required] ${recipient.firstname} ${recipient.lastname}: Your Students are waiting for your response!`;
+    let unread_cv_ml_rl_threads = '';
+    for (let i = 0; i < payload.students.length; i += 1) {
+      unread_cv_ml_rl_threads += `
     ${
       is_cv_ml_rl_reminder_needed(
         payload.students[i],
@@ -293,8 +294,8 @@ const EditorCVMLRLEssay_NoReplyAfter7Days_DailyReminderEmail = async (
         : ''
     }
     `;
-  }
-  const message = `\
+    }
+    const message = `\
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
 ${unread_cv_ml_rl_threads}
@@ -302,17 +303,16 @@ ${unread_cv_ml_rl_threads}
 
 `;
 
-  return sendEmail(recipient, subject, message);
-};
+    return sendEmail(recipient, subject, message);
+  }
+);
 
-const AgentCVMLRLEssay_NoReplyAfterXDays_DailyReminderEmail = async (
-  recipient,
-  payload
-) => {
-  const subject = `[Escalation] ${recipient.firstname} ${recipient.lastname}: The documents are idle for ${payload.trigger_days} days!`;
-  let unread_cv_ml_rl_threads = '';
-  for (let i = 0; i < payload.students.length; i += 1) {
-    unread_cv_ml_rl_threads += `
+const AgentCVMLRLEssay_NoReplyAfterXDays_DailyReminderEmail = asyncHandler(
+  async (recipient, payload) => {
+    const subject = `[Escalation] ${recipient.firstname} ${recipient.lastname}: The documents are idle for ${payload.trigger_days} days!`;
+    let unread_cv_ml_rl_threads = '';
+    for (let i = 0; i < payload.students.length; i += 1) {
+      unread_cv_ml_rl_threads += `
     ${
       is_cv_ml_rl_reminder_needed(
         payload.students[i],
@@ -327,8 +327,8 @@ const AgentCVMLRLEssay_NoReplyAfterXDays_DailyReminderEmail = async (
         : ''
     }
     `;
-  }
-  const message = `\
+    }
+    const message = `\
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
 ${unread_cv_ml_rl_threads}
@@ -336,17 +336,16 @@ ${unread_cv_ml_rl_threads}
 
 `;
 
-  return sendEmail(recipient, subject, message);
-};
+    return sendEmail(recipient, subject, message);
+  }
+);
 
-const AgentApplicationsDeadline_Within30Days_DailyReminderEmail = async (
-  recipient,
-  payload
-) => {
-  const subject = `[Action Required] ${recipient.firstname} ${recipient.lastname}: Your students' applications deadline very close`;
-  let unsubmitted_applications_students = '';
-  for (let i = 0; i < payload.students.length; i += 1) {
-    unsubmitted_applications_students += `
+const AgentApplicationsDeadline_Within30Days_DailyReminderEmail = asyncHandler(
+  async (recipient, payload) => {
+    const subject = `[Action Required] ${recipient.firstname} ${recipient.lastname}: Your students' applications deadline very close`;
+    let unsubmitted_applications_students = '';
+    for (let i = 0; i < payload.students.length; i += 1) {
+      unsubmitted_applications_students += `
     ${
       is_deadline_within30days_needed(payload.students[i])
         ? unsubmitted_applications_escalation_agent_summary(
@@ -356,9 +355,9 @@ const AgentApplicationsDeadline_Within30Days_DailyReminderEmail = async (
           )
         : ''
     }`;
-  }
+    }
 
-  const message = `\
+    const message = `\
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
 ${unsubmitted_applications_students}
@@ -366,37 +365,37 @@ ${unsubmitted_applications_students}
 
 `;
 
-  return sendEmail(recipient, subject, message);
-};
-
-const EditorCVMLRLEssayDeadline_Within30Days_DailyReminderEmail = async (
-  recipient,
-  payload
-) => {
-  const subject = `[Escalation] ${recipient.firstname} ${recipient.lastname}: These Tasks deadline very close!`;
-  let cvmlrl_deadline_soon = '';
-  let hasContent = false;
-  for (let i = 0; i < payload.students.length; i += 1) {
-    const temp_text = cvmlrl_deadline_within30days_escalation_summary(
-      payload.students[i]
-    );
-    if (temp_text !== '') {
-      cvmlrl_deadline_soon += `${temp_text}`;
-      hasContent = true;
-    }
+    return sendEmail(recipient, subject, message);
   }
+);
 
-  const message = `\
+const EditorCVMLRLEssayDeadline_Within30Days_DailyReminderEmail = asyncHandler(
+  async (recipient, payload) => {
+    const subject = `[Escalation] ${recipient.firstname} ${recipient.lastname}: These Tasks deadline very close!`;
+    let cvmlrl_deadline_soon = '';
+    let hasContent = false;
+    for (let i = 0; i < payload.students.length; i += 1) {
+      const temp_text = cvmlrl_deadline_within30days_escalation_summary(
+        payload.students[i]
+      );
+      if (temp_text !== '') {
+        cvmlrl_deadline_soon += `${temp_text}`;
+        hasContent = true;
+      }
+    }
+
+    const message = `\
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
 ${cvmlrl_deadline_soon}
 
 
 `;
-  if (hasContent) {
-    return sendEmail(recipient, subject, message);
+    if (hasContent) {
+      return sendEmail(recipient, subject, message);
+    }
   }
-};
+);
 
 module.exports = {
   verifySMTPConfig,

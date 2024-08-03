@@ -1,6 +1,7 @@
 const { Router } = require('express');
 const { GeneralGETRequestRateLimiter } = require('../middlewares/rate_limiter');
-const { Role } = require('../models/User');
+const { Role } = require('../constants');
+
 const { protect, permit } = require('../middlewares/auth');
 const {
   processProgramListAi,

@@ -1,5 +1,4 @@
 const { Router } = require('express');
-const Event = require('../models/Event');
 const { protect, permit } = require('../middlewares/auth');
 const {
   getEvents,
@@ -11,7 +10,8 @@ const {
   getAllEvents,
   getActiveEventsNumber
 } = require('../controllers/events');
-const { Role } = require('../models/User');
+const { Role } = require('../constants');
+
 const {
   GeneralGETRequestRateLimiter,
   GeneralPUTRequestRateLimiter,

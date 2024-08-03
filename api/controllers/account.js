@@ -1,8 +1,6 @@
 // const path = require('path');
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
-const { Role, User, Student, Agent } = require('../models/User');
-const async = require('async');
 const { updateCredentialsEmail } = require('../services/email');
 const logger = require('../services/logger');
 
@@ -12,7 +10,7 @@ const updateCredentials = asyncHandler(async (req, res, next) => {
     user,
     body: { credentials }
   } = req;
-  const userExisted = await User.findById(user._id.toString());
+  const userExisted = await req.db.model('User').findById(user._id.toString());
   if (!userExisted) {
     logger.error('updateCredentials: Invalid user');
     throw new ErrorResponse(400, 'Invalid user');
@@ -39,11 +37,9 @@ const updateOfficehours = asyncHandler(async (req, res, next) => {
     user,
     body: { officehours, timezone }
   } = req;
-  await Agent.findByIdAndUpdate(
-    user._id.toString(),
-    { officehours, timezone },
-    {}
-  );
+  await req.db
+    .model('Agent')
+    .findByIdAndUpdate(user._id.toString(), { officehours, timezone }, {});
 
   res.status(200).send({
     success: true

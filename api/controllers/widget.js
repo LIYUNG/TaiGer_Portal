@@ -8,9 +8,9 @@ const { asyncHandler } = require('../middlewares/error-handler');
 const logger = require('../services/logger');
 const { AWS_S3_BUCKET_NAME, isProd } = require('../config');
 const { s3 } = require('../aws/index');
-const { Communication } = require('../models/Communication');
 const { font } = require('../utils/NotoSansTC-VariableFont_wght-normal');
-const { Role } = require('../models/User');
+const { Role } = require('../constants');
+
 
 const student_name = 'PreCustomer';
 
@@ -119,9 +119,11 @@ const WidgetExportMessagePDF = asyncHandler(async (req, res, next) => {
     params: { studentId }
   } = req;
   const doc = new jsPDF('p', 'pt', 'a4', true);
-  const communication_thread = await Communication.find({
-    student_id: studentId
-  })
+  const communication_thread = await req.db
+    .model('Communication')
+    .find({
+      student_id: studentId
+    })
     .populate(
       'student_id user_id',
       'firstname lastname firstname_chinese lastname_chinese role agents editors'
@@ -161,7 +163,6 @@ const WidgetExportMessagePDF = asyncHandler(async (req, res, next) => {
             )
             .join('')
             .replace(/<\/?[^>]+(>|$)|&[^;]+;?/g, '') || '';
-        // console.log(messageConcat);
 
         // Split text into lines that fit within page width
         const createdAtFormatted = new Date(createdAt).toLocaleString();

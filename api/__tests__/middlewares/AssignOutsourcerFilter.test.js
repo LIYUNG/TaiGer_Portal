@@ -1,5 +1,5 @@
-const { Role, Student } = require('../../models/User');
-const { ErrorResponse } = require('../../common/errors');
+const { Role } = require('../../constants');
+const { Student } = require('../../models/User');
 const {
   AssignOutsourcerFilter
 } = require('../../middlewares/AssignOutsourcerFilter');

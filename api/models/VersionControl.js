@@ -1,6 +1,10 @@
-const mongoose = require('mongoose');
+const {
+  model,
+  Schema,
+  Types: { ObjectId }
+} = require('mongoose');
 
-const changesSchema = new mongoose.Schema(
+const changesSchema = new Schema(
   {
     originalValues: Object,
     updatedValues: { type: Object, required: true },
@@ -17,9 +21,9 @@ const changesSchema = new mongoose.Schema(
   { _id: false }
 );
 
-const versionControlSchema = new mongoose.Schema({
+const versionControlSchema = new Schema({
   docId: {
-    type: mongoose.ObjectId,
+    type: ObjectId,
     refPath: 'collectionName'
   },
   collectionName: {
@@ -37,5 +41,7 @@ versionControlSchema.statics.getVersion = async function (
 };
 
 versionControlSchema.index({ docId: 1, collectionName: 1 });
-const VC = mongoose.model('VC', versionControlSchema);
-module.exports = VC;
+
+const VC = model('VC', versionControlSchema);
+
+module.exports = { VC, versionControlSchema };

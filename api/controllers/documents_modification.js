@@ -712,65 +712,63 @@ const initGeneralMessagesThread = asyncHandler(async (req, res) => {
   }
 });
 
-const createApplicationThread = asyncHandler(
-  async (
-    { StudentModel, DocumentthreadModel },
-    studentId,
-    programId,
-    fileType
-  ) => {
-    const threadExisted = await DocumentthreadModel.findOne({
-      student_id: studentId,
-      program_id: programId,
-      file_type: fileType
-    });
+const createApplicationThread = async (
+  { StudentModel, DocumentthreadModel },
+  studentId,
+  programId,
+  fileType
+) => {
+  const threadExisted = await DocumentthreadModel.findOne({
+    student_id: studentId,
+    program_id: programId,
+    file_type: fileType
+  });
 
-    if (threadExisted) {
-      logger.error(
-        'initApplicationMessagesThread: Document Thread already existed!'
-      );
-      throw new ErrorResponse(409, 'Document Thread already existed!');
-    }
-
-    const student = await StudentModel.findById(studentId)
-      .populate('applications.programId')
-      .exec();
-
-    if (!student) {
-      logger.info('initApplicationMessagesThread: Invalid student id!');
-      throw new ErrorResponse(404, 'Student not found');
-    }
-
-    const appIdx = student.applications.findIndex(
-      (app) => app.programId._id.toString() === programId.toString()
+  if (threadExisted) {
+    logger.error(
+      'initApplicationMessagesThread: Document Thread already existed!'
     );
-
-    if (appIdx === -1) {
-      logger.info('initApplicationMessagesThread: Invalid application id!');
-      throw new ErrorResponse(404, 'Application not found');
-    }
-
-    const newThread = new DocumentthreadModel({
-      student_id: studentId,
-      file_type: fileType,
-      program_id: programId,
-      updatedAt: new Date()
-    });
-
-    const newAppRecord = student.applications[
-      appIdx
-    ].doc_modification_thread.create({
-      doc_thread_id: newThread,
-      updatedAt: new Date(),
-      createdAt: new Date()
-    });
-    student.applications[appIdx].doc_modification_thread.push(newAppRecord);
-    student.notification.isRead_new_cvmlrl_tasks_created = false;
-    await student.save();
-    await newThread.save();
-    return newAppRecord;
+    throw new ErrorResponse(409, 'Document Thread already existed!');
   }
-);
+
+  const student = await StudentModel.findById(studentId)
+    .populate('applications.programId')
+    .exec();
+
+  if (!student) {
+    logger.info('initApplicationMessagesThread: Invalid student id!');
+    throw new ErrorResponse(404, 'Student not found');
+  }
+
+  const appIdx = student.applications.findIndex(
+    (app) => app.programId._id.toString() === programId.toString()
+  );
+
+  if (appIdx === -1) {
+    logger.info('initApplicationMessagesThread: Invalid application id!');
+    throw new ErrorResponse(404, 'Application not found');
+  }
+
+  const newThread = new DocumentthreadModel({
+    student_id: studentId,
+    file_type: fileType,
+    program_id: programId,
+    updatedAt: new Date()
+  });
+
+  const newAppRecord = student.applications[
+    appIdx
+  ].doc_modification_thread.create({
+    doc_thread_id: newThread,
+    updatedAt: new Date(),
+    createdAt: new Date()
+  });
+  student.applications[appIdx].doc_modification_thread.push(newAppRecord);
+  student.notification.isRead_new_cvmlrl_tasks_created = false;
+  await student.save();
+  await newThread.save();
+  return newAppRecord;
+};
 
 // (O) email inform Editor
 // (O) email inform Student
@@ -780,7 +778,10 @@ const initApplicationMessagesThread = asyncHandler(async (req, res) => {
   } = req;
 
   const newAppRecord = await createApplicationThread(
-    req,
+    {
+      StudentModel: req.db.model('Student'),
+      DocumentthreadModel: req.db.model('Documentthread')
+    },
     studentId,
     program_id,
     document_category
@@ -1992,42 +1993,47 @@ const handleDeleteGeneralThread = asyncHandler(async (req, res) => {
   res.status(200).send({ success: true });
 });
 
-const deleteApplicationThread = asyncHandler(
-  async (
-    { StudentModel, DocumentthreadModel, surveyInputModel },
-    studentId,
-    programId,
-    threadId
-  ) => {
-    // Before delete the thread, please delete all of the files in the thread!!
-    // Delete folder
-    let directory = path.join(studentId, threadId);
-    logger.info('Trying to delete message thread and folder');
-    directory = directory.replace(/\\/g, '/');
-    emptyS3Directory(AWS_S3_BUCKET_NAME, directory);
+const deleteApplicationThread = async (
+  req,
+  studentId,
+  programId,
+  messagesThreadId
+) => {
+  // Before delete the thread, please delete all of the files in the thread!!
+  // Delete folder
+  console.log(`studentId: ${studentId}`);
+  console.log(`programId: ${programId}`);
+  console.log(`messagesThreadId: ${messagesThreadId}`);
 
-    await StudentModel.findOneAndUpdate(
-      {
-        _id: new mongoose.Types.ObjectId(studentId),
-        'applications.programId': new mongoose.Types.ObjectId(programId)
-      },
-      {
-        $pull: {
-          'applications.$.doc_modification_thread': {
-            doc_thread_id: { _id: new mongoose.Types.ObjectId(threadId) }
+  let directory = path.join(studentId, messagesThreadId);
+  logger.info('Trying to delete message thread and folder');
+  directory = directory.replace(/\\/g, '/');
+  emptyS3Directory(AWS_S3_BUCKET_NAME, directory);
+
+  await req.StudentModel.findOneAndUpdate(
+    {
+      _id: new mongoose.Types.ObjectId(studentId),
+      'applications.programId': new mongoose.Types.ObjectId(programId)
+    },
+    {
+      $pull: {
+        'applications.$.doc_modification_thread': {
+          doc_thread_id: {
+            _id: new mongoose.Types.ObjectId(messagesThreadId)
           }
         }
       }
-    );
-    const thread = await DocumentthreadModel.findByIdAndDelete(threadId);
-    await surveyInputModel.deleteOne({
-      studentId,
-      programId,
-      fileType: thread.file_type
-    });
-  }
-);
-
+    }
+  );
+  const thread = await req.DocumentthreadModel.findByIdAndDelete(
+    messagesThreadId
+  );
+  await req.surveyInputModel.deleteOne({
+    studentId,
+    programId,
+    fileType: thread.file_type
+  });
+};
 // (-) TODO email : notification
 const handleDeleteProgramThread = asyncHandler(async (req, res) => {
   const {
@@ -2047,8 +2053,20 @@ const handleDeleteProgramThread = asyncHandler(async (req, res) => {
     logger.error('handleDeleteProgramThread: Invalid student id!');
     throw new ErrorResponse(404, 'Student not found');
   }
+  console.log(`studentId: ${studentId}`);
+  console.log(`program_id: ${program_id}`);
+  console.log(`messagesThreadId: ${messagesThreadId}`);
 
-  await deleteApplicationThread(studentId, program_id, messagesThreadId);
+  await deleteApplicationThread(
+    {
+      StudentModel: req.db.model('Student'),
+      DocumentthreadModel: req.db.model('Documentthread'),
+      surveyInputModel: req.db.model('surveyInput')
+    },
+    studentId,
+    program_id,
+    messagesThreadId
+  );
   res.status(200).send({ success: true });
 });
 

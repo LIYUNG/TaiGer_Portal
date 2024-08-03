@@ -136,18 +136,21 @@ const checkTenantDBMiddleware = asyncHandler(async (req, res, next) => {
   logger.info(`tenentid: ${tenentid}`);
   logger.info(`req.hostname: ${req.hostname}`); // prod: ec2...amazon.com
   logger.info(`req.headers['origin']: ${req.headers['origin']}`); // prod:
-  const origin = req.headers.origin;
-  const url = new URL(origin);
-  const { hostname } = url;
-  logger.info(`hostname: ${hostname}`); // prod:
+
   let tenantExisted;
   tenantExisted = await connections[tenantDb]
     .model(tenantDb)
     .findOne({ tenantId: tenentid });
   if (!tenantExisted) {
-    tenantExisted = await connections[tenantDb]
-      .model(tenantDb)
-      .findOne({ domainName: hostname });
+    const { origin } = req.headers;
+    if (origin) {
+      const url = new URL(origin);
+      const { hostname } = url;
+      logger.info(`hostname: ${hostname}`); // prod:
+      tenantExisted = await connections[tenantDb]
+        .model(tenantDb)
+        .findOne({ domainName: hostname });
+    }
   }
   logger.info(`tenantExisted: ${tenantExisted}`);
 

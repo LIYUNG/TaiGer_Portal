@@ -100,7 +100,7 @@ export default function SignIn() {
     return (
       <AuthWrapper>
         <Alert variant="filled" severity="warning" sx={{ mt: 1 }}>
-          System updated: Please refresh your browser in case login failed.
+          System updating: Please try it later.
         </Alert>
         <Typography component="h1" variant="h5" sx={{ mt: 1 }}>
           {t('Sign in', { ns: 'auth' })}

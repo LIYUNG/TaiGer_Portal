@@ -131,6 +131,8 @@ const checkTenantDBMiddleware = asyncHandler(async (req, res, next) => {
   }
 
   // 0.
+  logger.info(`tenantId: ${tenantId}`);
+  logger.info(`req.hostname: ${req.hostname}`);
   let tenantExisted;
   tenantExisted = await connections[tenantDb]
     .model(tenantDb)
@@ -140,9 +142,13 @@ const checkTenantDBMiddleware = asyncHandler(async (req, res, next) => {
       .model(tenantDb)
       .findOne({ domainName: req.hostname });
   }
+  logger.info(`tenantExisted: ${tenantExisted}`);
+
   if (!tenantExisted) {
     logger.error(
-      `tenantMiddleware : Tenant not identified, req.decryptedToken: ${req.decryptedToken?.toString()}`
+      `tenantMiddleware : Tenant not identified, req.decryptedToken: ${JSON.stringify(
+        req.decryptedToken
+      )}`
     );
     return res.status(400).send('Tenant not identified');
   }

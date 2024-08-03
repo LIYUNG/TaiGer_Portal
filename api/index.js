@@ -68,10 +68,9 @@ const launch = async () => {
   if (isProd()) {
     if (
       !AWS_S3_BUCKET_NAME.includes('production') ||
-      !AWS_S3_PUBLIC_BUCKET_NAME.includes('production') ||
-      !MONGODB_URI.includes('TaiGer_Prod')
+      !AWS_S3_PUBLIC_BUCKET_NAME.includes('production')
     ) {
-      logger.error('Database / S3 bucket name not consistent for Prod');
+      logger.error('S3 bucket name not consistent for Prod');
       return;
     }
   }

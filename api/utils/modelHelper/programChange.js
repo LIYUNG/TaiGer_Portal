@@ -1,10 +1,5 @@
 const { RLs_CONSTANT } = require('../../constants');
-const {
-  createApplicationThread,
-  deleteApplicationThread
-} = require('../../controllers/documents_modification');
 const { asyncHandler } = require('../../middlewares/error-handler');
-const logger = require('../../services/logger');
 
 const FILETYPES = {
   rl_required: 'RL',
@@ -15,46 +10,6 @@ const FILETYPES = {
   scholarship_form_required: 'Scholarship_Form',
   supplementary_form_required: 'Supplementary_Form'
 };
-
-const isCrucialChanges = (changes) => {
-  const crucialChanges = [
-    'ml_required',
-    'rl_required',
-    'rl_requirements',
-    'is_rl_specific',
-    'essay_required',
-    'portfolio_required',
-    'curriculum_analysis_required',
-    'scholarship_form_required',
-    'supplementary_form_required'
-  ];
-  for (let change in changes) {
-    if (crucialChanges.includes(change)) {
-      return true;
-    }
-  }
-  return false;
-};
-
-const findAffectedStudents = asyncHandler(
-  async (programId, { StudentModel }) => {
-    // non-archived student has open application for program
-    let students = await StudentModel.find({
-      applications: {
-        $elemMatch: {
-          programId: programId,
-          closed: '-'
-        }
-      },
-      archive: { $ne: true }
-    })
-      .select('_id')
-      .lean();
-
-    students = students.map((student) => student._id.toString());
-    return students;
-  }
-);
 
 const checkIsRLspecific = (program) => {
   const isRLSpecific = program?.is_rl_specific;
@@ -239,84 +194,7 @@ const findStudentDelta = asyncHandler(
   }
 );
 
-const handleStudentDelta = asyncHandler(
-  async (
-    studentId,
-    program,
-    { StudentModel, DocumentthreadModel, surveyInputModel }
-  ) => {
-    const studentDelta = await findStudentDelta(studentId, program, {
-      DocumentthreadModel
-    });
-
-    for (let missingDoc of studentDelta.add) {
-      try {
-        await createApplicationThread(
-          { StudentModel, DocumentthreadModel },
-          missingDoc.studentId.toString(),
-          missingDoc.programId.toString(),
-          missingDoc.fileType
-        );
-        logger.info(
-          `handleStudentDelta: create thread for student ${missingDoc.studentId} and program ${missingDoc.programId} with file type ${missingDoc.fileType}`
-        );
-      } catch (error) {
-        logger.error(
-          `handleStudentDelta: error on thread creation for student ${missingDoc.studentId} and program ${missingDoc.programId} with file type ${missingDoc.fileType} -> error: ${error}`
-        );
-      }
-    }
-    for (let extraDoc of studentDelta.remove) {
-      if (extraDoc?.fileThread?.messageSize !== 0) {
-        logger.info(
-          `handleStudentDelta: thread deletion aborted (non-empty thread) for student ${studentId} and program ${program._id} with file type ${extraDoc.fileThread.fileType} -> messages exist`
-        );
-        continue;
-      }
-      try {
-        await deleteApplicationThread(
-          { StudentModel, DocumentthreadModel, surveyInputModel },
-          extraDoc.studentId.toString(),
-          extraDoc.programId.toString(),
-          extraDoc.fileThread._id.toString()
-        );
-        logger.info(
-          `handleStudentDelta: delete thread for student ${extraDoc.studentId} and program ${extraDoc.programId} with file type ${extraDoc.fileThread.file_type}`
-        );
-      } catch (error) {
-        logger.error(
-          `handleStudentDelta: error on thread deletion for student ${extraDoc.studentId} and program ${extraDoc.programId} with file type ${extraDoc.fileThread.file_type} -> error: ${error}`
-        );
-      }
-    }
-  }
-);
-
-const handleThreadDelta = asyncHandler(
-  async (program, { StudentModel, DocumentthreadModel, surveyInputModel }) => {
-    const affectedStudents = await findAffectedStudents(program._id, {
-      StudentModel
-    });
-    for (let studentId of affectedStudents) {
-      try {
-        await handleStudentDelta(studentId, program, {
-          StudentModel,
-          DocumentthreadModel,
-          surveyInputModel
-        });
-      } catch (error) {
-        logger.error(
-          `handleThreadDelta: error on student ${studentId} and program ${program._id}: ${error}`
-        );
-      }
-    }
-  }
-);
-
 module.exports = {
-  isCrucialChanges,
-  findAffectedStudents,
   findStudentDeltaGet,
-  findStudentDelta,
-  handleThreadDelta
+  findStudentDelta
 };

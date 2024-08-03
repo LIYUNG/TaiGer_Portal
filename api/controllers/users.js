@@ -5,7 +5,6 @@ const generator = require('generate-password');
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
 const { Role } = require('../constants');
-const { emptyS3Directory } = require('../utils/utils_function');
 const {
   updateNotificationEmail,
   sendInvitationEmail
@@ -19,6 +18,7 @@ const {
 } = require('../common/validation');
 const { AWS_S3_BUCKET_NAME } = require('../config');
 const { s3 } = require('../aws/index');
+const { emptyS3Directory } = require('../utils/modelHelper/versionControl');
 
 const generateRandomToken = () => crypto.randomBytes(32).toString('hex');
 const hashToken = (token) =>

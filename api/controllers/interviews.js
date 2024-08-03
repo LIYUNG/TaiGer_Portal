@@ -4,7 +4,6 @@ const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
 const { Role } = require('../constants');
 const logger = require('../services/logger');
-const { emptyS3Directory } = require('../utils/utils_function');
 const { AWS_S3_BUCKET_NAME } = require('../config');
 const {
   sendInterviewConfirmationEmail,
@@ -19,6 +18,7 @@ const {
 const { addMessageInThread } = require('../utils/informEditor');
 const { isNotArchiv } = require('../constants');
 const { getPermission } = require('../utils/queryFunctions');
+const { emptyS3Directory } = require('../utils/modelHelper/versionControl');
 
 const PrecheckInterview = asyncHandler(async (req, interview_id) => {
   const precheck_interview = await req.db

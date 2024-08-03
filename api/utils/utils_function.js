@@ -36,29 +36,7 @@ const { asyncHandler } = require('../middlewares/error-handler');
 const { isProd } = require('../config');
 const { connectToDatabase } = require('../middlewares/tenantMiddleware');
 
-const emptyS3Directory = asyncHandler(async (bucket, dir) => {
-  const listParams = {
-    Bucket: bucket,
-    Prefix: dir
-  };
 
-  const listedObjects = await s3.listObjectsV2(listParams).promise();
-
-  if (listedObjects.Contents.length === 0) return;
-
-  const deleteParams = {
-    Bucket: bucket,
-    Delete: { Objects: [] }
-  };
-
-  listedObjects.Contents.forEach(({ Key }) => {
-    deleteParams.Delete.Objects.push({ Key });
-  });
-  logger.warn(JSON.stringify(deleteParams));
-  await s3.deleteObjects(deleteParams).promise();
-
-  if (listedObjects.IsTruncated) await emptyS3Directory(bucket, dir);
-});
 
 const TasksReminderEmails_Editor_core = asyncHandler(async (req) => {
   // Only inform active student
@@ -1677,7 +1655,6 @@ const NoInterviewTrainerOrTrainingDateDailyReminderChecker = asyncHandler(
 );
 
 module.exports = {
-  emptyS3Directory,
   TasksReminderEmails,
   events_transformer,
   users_transformer,

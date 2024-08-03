@@ -163,7 +163,6 @@ const WidgetExportMessagePDF = asyncHandler(async (req, res, next) => {
             )
             .join('')
             .replace(/<\/?[^>]+(>|$)|&[^;]+;?/g, '') || '';
-        // console.log(messageConcat);
 
         // Split text into lines that fit within page width
         const createdAtFormatted = new Date(createdAt).toLocaleString();

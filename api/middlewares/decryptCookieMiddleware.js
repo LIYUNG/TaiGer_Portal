@@ -1,19 +1,21 @@
 const jwt = require('jsonwebtoken');
-const { JWT_SECRET } = require('../config');
+const { asyncHandler } = require('./error-handler');
+const logger = require('../services/logger');
 
-const decryptCookieMiddleware = (req, res, next) => {
+const decryptCookieMiddleware = asyncHandler((req, res, next) => {
   const token = req.cookies['x-auth'];
   if (!token) {
-    return res.status(401).send('Authentication token not found');
+    logger.info(
+      'new browser request: decryptCookieMiddleware: Token not found'
+    );
+    req.decryptedToken = {};
+    return next();
+    // throw new ErrorResponse(401, 'Token not found');
   }
-
-  try {
-    const payload = jwt.verify(token, JWT_SECRET);
-    req.decryptedToken = payload; // Attach decrypted payload to the request object
-    next();
-  } catch (err) {
-    return res.status(401).send('Invalid token');
-  }
-};
+  const payload = jwt.decode(token);
+  req.decryptedToken = payload; // Attach decrypted payload to the request object
+  logger.info(`decode ${JSON.stringify(payload)}`);
+  next();
+});
 
 module.exports = { decryptCookieMiddleware };

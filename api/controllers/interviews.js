@@ -474,7 +474,6 @@ const updateInterviewSurvey = asyncHandler(async (req, res) => {
   } = req;
 
   const payload = req.body;
-  // console.log(payload);
   const interviewSurvey = await req.db
     .model('InterviewSurveyResponse')
     .findOneAndUpdate({ interview_id }, payload, {

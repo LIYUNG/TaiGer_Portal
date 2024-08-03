@@ -37,8 +37,12 @@ const { ResponseTimeSchema } = require('../models/ResponseTime');
 const { surveyInputSchema } = require('../models/SurveyInput');
 const { permissionSchema } = require('../models/Permission');
 const { handleProgramChanges } = require('../utils/modelHelper/programChange');
+const { tenantsSchema } = require('../models/Tenant');
+const logger = require('../services/logger');
+const { asyncHandler } = require('./error-handler');
 
 const connections = {};
+const tenantDb = 'Tenant';
 
 const applyProgramSchema = (
   db,
@@ -117,15 +121,35 @@ const connectToDatabase = (tenant, uri = null) => {
   return connections[tenant];
 };
 
-const tenantMiddleware = (req, res, next) => {
-  const tenant = getTenantFromRequest(req);
-  if (!tenant) {
+const tenantMiddleware = asyncHandler(async (req, res, next) => {
+  const { tenantId } = req.decryptedToken;
+  const dbUri = `${mongoDb(tenantDb)}`;
+  if (!connections[tenantDb]) {
+    const connection = mongoose.createConnection(dbUri, {});
+    connection.model(tenantDb, tenantsSchema);
+    connections[tenantDb] = connection;
+  }
+
+  // 0.
+  let tenantExisted;
+  tenantExisted = await connections[tenantDb]
+    .model(tenantDb)
+    .findOne({ tenantId });
+  if (!tenantExisted) {
+    tenantExisted = await connections[tenantDb]
+      .model(tenantDb)
+      .findOne({ domainName: req.hostname });
+  }
+  if (!tenantExisted) {
+    logger.error(
+      `tenantMiddleware : Tenant not identified, req.decryptedToken: ${req.decryptedToken?.toString()}`
+    );
     return res.status(400).send('Tenant not identified');
   }
-  console.log(req.decryptedToken);
-  req.db = connectToDatabase(tenant);
+
+  req.db = connectToDatabase(tenantExisted.tenantId);
   req.VCModel = req.db.model('VC');
   next();
-};
+});
 
 module.exports = { tenantMiddleware, connectToDatabase };

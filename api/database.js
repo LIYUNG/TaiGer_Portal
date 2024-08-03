@@ -2,11 +2,8 @@ const mongoose = require('mongoose');
 const logger = require('./services/logger');
 const { MONGODB_URI } = require('./config');
 
-const mongoDb = (dbName) => {
-  console.log(MONGODB_URI);
-  console.log(dbName);
-  return `${MONGODB_URI}/${dbName}?retryWrites=true&w=majority`;
-};
+const mongoDb = (dbName) =>
+  `${MONGODB_URI}/${dbName}?retryWrites=true&w=majority`;
 
 // TODO: deprecated for multitenant architecture.
 const connectToDatabase = async (uri, timeoutMS = 5000) => {

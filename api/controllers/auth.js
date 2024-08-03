@@ -74,7 +74,7 @@ const signup = asyncHandler(async (req, res) => {
 const login = (req, res) => {
   const { user } = req;
   // TODO: 2. attribute should be dynamic (from domain etc.)
-  const token = generateAuthToken(user, 'TaiGer_Dev');
+  const token = generateAuthToken(user, 'TaiGer');
   res
     .cookie('x-auth', token, { httpOnly: true, sameSite: 'none', secure: true })
     .status(200)
@@ -90,7 +90,8 @@ const logout = (req, res) => {
 
 const verify = (req, res) => {
   const { user } = req;
-  const token = generateAuthToken(user, 'TaiGer_Dev');
+  // TODO: tenentId should be dynamic
+  const token = generateAuthToken(user, 'TaiGer');
   user.attributes = [];
   res
     .cookie('x-auth', token, { httpOnly: true, sameSite: 'none', secure: true })
@@ -132,8 +133,8 @@ const activateAccount = asyncHandler(async (req, res) => {
     );
 
   await token.deleteOne();
-
-  const authToken = generateAuthToken(user, 'TaiGer_Dev');
+  // TODO: attribute should be dynamic (from domain etc.)
+  const authToken = generateAuthToken(user, 'TaiGer');
   res
     .cookie('x-auth', authToken, {
       httpOnly: true,

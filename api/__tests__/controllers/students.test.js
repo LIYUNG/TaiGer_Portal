@@ -6,7 +6,7 @@ const { UPLOAD_PATH } = require('../../config');
 const { connect, closeDatabase, clearDatabase } = require('../fixtures/db');
 const { app } = require('../../app');
 const { Role } = require('../../constants');
-const { User, Student, UserSchema } = require('../../models/User');
+const { Student, UserSchema } = require('../../models/User');
 const { DocumentStatus } = require('../../constants');
 const { generateUser } = require('../fixtures/users');
 const { protect, permit } = require('../../middlewares/auth');
@@ -17,7 +17,7 @@ const {
   permission_canAccessStudentDatabase_filter
 } = require('../../middlewares/permission-filter');
 const { generateProgram } = require('../fixtures/programs');
-const { Program, programSchema } = require('../../models/Program');
+const { programSchema } = require('../../models/Program');
 const { TENANT_ID } = require('../fixtures/constants');
 const { connectToDatabase } = require('../../middlewares/tenantMiddleware');
 const {

@@ -1,18 +1,4 @@
-const { AWS_S3_MONGODB_BACKUP_SNAPSHOT } = require('../config');
-const { Basedocumentationslink } = require('../models/Basedocumentationslink');
-const { Communication } = require('../models/Communication');
-const Course = require('../models/Course');
-const Docspage = require('../models/Docspage');
-const Event = require('../models/Event');
-const Documentation = require('../models/Documentation');
-const { Documentthread } = require('../models/Documentthread');
-const Expense = require('../models/Expense');
-const Internaldoc = require('../models/Internaldoc');
-const Note = require('../models/Note');
-const Permission = require('../models/Permission');
-const { Program } = require('../models/Program');
-const { Template } = require('../models/Template');
-const { User } = require('../models/User');
+const { AWS_S3_MONGODB_BACKUP_SNAPSHOT, isProd } = require('../config');
 const logger = require('../services/logger');
 const {
   events_transformer,
@@ -28,8 +14,14 @@ const {
 } = require('./utils_function');
 const { s3 } = require('../aws');
 const { asyncHandler } = require('../middlewares/error-handler');
+const { connectToDatabase } = require('../middlewares/tenantMiddleware');
 
 const MongoDBDataBaseDailySnapshot = asyncHandler(async () => {
+  const tenantId = isProd() ? 'TaiGer_Prod' : 'TaiGer';
+  const req = {};
+  req.db = connectToDatabase(tenantId);
+  req.VCModel = req.db.model('VC');
+
   logger.info('database snapshot');
   const data_category = [
     'users',
@@ -47,24 +39,29 @@ const MongoDBDataBaseDailySnapshot = asyncHandler(async () => {
     'templates'
     // 'expenses'
   ];
-  const programsPromise = Program.find().lean(); // Handle undefined Program
-  const eventsPromise = Event.find().lean();
-  const usersPromise = User.find()
+  const programsPromise = req.db.model('Program').find().lean(); // Handle undefined Program
+  const eventsPromise = req.db.model('Event').find().lean();
+  const usersPromise = req.db
+    .model('User')
+    .find()
     .lean()
     .select(
       '+password +applications.portal_credentials.application_portal_a +applications.portal_credentials.application_portal_b'
     );
-  const coursesPromise = Course.find().lean();
-  const basedocumentationslinksPromise = Basedocumentationslink.find().lean();
-  const communicationsPromise = Communication.find().lean();
-  const docspagesPromise = Docspage.find().lean();
-  const documentthreadsPromise = Documentthread.find().lean();
-  const documentationsPromise = Documentation.find().lean();
-  const internaldocsPromise = Internaldoc.find().lean();
-  const notesPromise = Note.find().lean();
-  const permissionsPromise = Permission.find().lean();
-  const templatesPromise = Template.find().lean();
-  const expensesPromise = Expense.find().lean();
+  const coursesPromise = req.db.model('Course').find().lean();
+  const basedocumentationslinksPromise = req.db
+    .model('Basedocumentationslink')
+    .find()
+    .lean();
+  const communicationsPromise = req.db.model('Communication').find().lean();
+  const docspagesPromise = req.db.model('Docspage').find().lean();
+  const documentthreadsPromise = req.db.model('Documentthread').find().lean();
+  const documentationsPromise = req.db.model('Documentation').find().lean();
+  const internaldocsPromise = req.db.model('Internaldoc').find().lean();
+  const notesPromise = req.db.model('Note').find().lean();
+  const permissionsPromise = req.db.model('Permission').find().lean();
+  const templatesPromise = req.db.model('Template').find().lean();
+  const expensesPromise = req.db.model('Expense').find().lean();
 
   const [
     events_raw,

@@ -1,10 +1,5 @@
 const async = require('async');
 const path = require('path');
-const { Agent, Student, Editor, User, Role } = require('../models/User');
-const { Documentthread } = require('../models/Documentthread');
-const { Communication } = require('../models/Communication');
-const { Interval } = require('../models/Interval');
-const { ResponseTime } = require('../models/ResponseTime');
 const {
   sendAssignEditorReminderEmail,
   MeetingReminderEmail,
@@ -13,10 +8,7 @@ const {
   InterviewTrainingReminderEmail,
   InterviewSurveyRequestEmail
 } = require('../services/email');
-const Permission = require('../models/Permission');
 const { s3 } = require('../aws/index');
-const Event = require('../models/Event');
-const { Interview } = require('../models/Interview');
 
 const {
   StudentTasksReminderEmail,
@@ -37,9 +29,12 @@ const {
   is_deadline_within30days_needed,
   is_cv_ml_rl_reminder_needed,
   isNotArchiv,
-  needUpdateCourseSelection
+  needUpdateCourseSelection,
+  Role
 } = require('../constants');
 const { asyncHandler } = require('../middlewares/error-handler');
+const { isProd } = require('../config');
+const { connectToDatabase } = require('../middlewares/tenantMiddleware');
 
 const emptyS3Directory = asyncHandler(async (bucket, dir) => {
   const listParams = {
@@ -65,16 +60,18 @@ const emptyS3Directory = asyncHandler(async (bucket, dir) => {
   if (listedObjects.IsTruncated) await emptyS3Directory(bucket, dir);
 });
 
-const TasksReminderEmails_Editor_core = asyncHandler(async () => {
+const TasksReminderEmails_Editor_core = asyncHandler(async (req) => {
   // Only inform active student
   // TODO: deactivate or change email frequency (default 1 week.)
-  const editors = await Editor.find();
+  const editors = await req.db.model('Editor').find();
 
   const editorPromises = editors.map(async (editor) => {
-    const editor_students = await Student.find({
-      editors: editor._id,
-      $or: [{ archiv: { $exists: false } }, { archiv: false }]
-    })
+    const editor_students = await req.db
+      .model('Student')
+      .find({
+        editors: editor._id,
+        $or: [{ archiv: { $exists: false } }, { archiv: false }]
+      })
       .populate('agents editors', 'firstname lastname email')
       .populate('applications.programId')
       .populate(
@@ -104,16 +101,18 @@ const TasksReminderEmails_Editor_core = asyncHandler(async () => {
   logger.info('Editor reminder email sent');
 });
 
-const TasksReminderEmails_Agent_core = asyncHandler(async () => {
+const TasksReminderEmails_Agent_core = asyncHandler(async (req) => {
   // Only inform active student
   // TODO: deactivate or change email frequency (default 1 week.)
-  const agents = await Agent.find();
+  const agents = await req.db.model('Agent').find();
 
   for (let j = 0; j < agents.length; j += 1) {
-    const agent_students = await Student.find({
-      agents: agents[j]._id,
-      $or: [{ archiv: { $exists: false } }, { archiv: false }]
-    })
+    const agent_students = await req.db
+      .model('Student')
+      .find({
+        agents: agents[j]._id,
+        $or: [{ archiv: { $exists: false } }, { archiv: false }]
+      })
       .populate('agents editors', 'firstname lastname email')
       .populate('applications.programId')
       .populate(
@@ -138,12 +137,14 @@ const TasksReminderEmails_Agent_core = asyncHandler(async () => {
   logger.info('Agent reminder email sent');
 });
 
-const TasksReminderEmails_Student_core = asyncHandler(async () => {
+const TasksReminderEmails_Student_core = asyncHandler(async (req) => {
   // Only inform active student
   // TODO: deactivate or change email frequency (default 1 week.)
-  const students = await Student.find({
-    $or: [{ archiv: { $exists: false } }, { archiv: false }]
-  })
+  const students = await req.db
+    .model('Student')
+    .find({
+      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+    })
     .populate('agents editors', 'firstname lastname email')
     .populate('applications.programId')
     .populate(
@@ -168,9 +169,13 @@ const TasksReminderEmails_Student_core = asyncHandler(async () => {
 
 // Weekly called.
 const TasksReminderEmails = asyncHandler(async () => {
-  await TasksReminderEmails_Editor_core();
-  await TasksReminderEmails_Student_core();
-  await TasksReminderEmails_Agent_core();
+  const tenantId = isProd() ? 'TaiGer_Prod' : 'TaiGer';
+  const req = {};
+  req.db = connectToDatabase(tenantId);
+  req.VCModel = req.db.model('VC');
+  await TasksReminderEmails_Editor_core(req);
+  await TasksReminderEmails_Student_core(req);
+  await TasksReminderEmails_Agent_core(req);
 });
 
 const events_transformer = (events) => {
@@ -445,13 +450,15 @@ const documentthreads_transformer = (documentthreads) => {
 };
 // Daily called.
 
-const UrgentTasksReminderEmails_Student_core = asyncHandler(async () => {
+const UrgentTasksReminderEmails_Student_core = asyncHandler(async (req) => {
   // Only inform active student
   // TODO: deactivate or change email frequency (default 1 week.)
   const trigger_days = 3;
-  const students = await Student.find({
-    $or: [{ archiv: { $exists: false } }, { archiv: false }]
-  })
+  const students = await req.db
+    .model('Student')
+    .find({
+      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+    })
     .populate('agents editors', 'firstname lastname email')
     .populate('applications.programId')
     .populate(
@@ -496,18 +503,20 @@ const UrgentTasksReminderEmails_Student_core = asyncHandler(async () => {
   await Promise.all(deadlineReminderPromises);
 });
 
-const UrgentTasksReminderEmails_Agent_core = asyncHandler(async () => {
+const UrgentTasksReminderEmails_Agent_core = asyncHandler(async (req) => {
   // Only inform active student
   // TODO: deactivate or change email frequency (default 1 week.)
   const escalation_trigger_10days = 10;
   const escalation_trigger_3days = 3;
-  const agents = await Agent.find();
+  const agents = await req.db.model('Agent').find();
 
   const agentPromises = agents.map(async (agent) => {
-    const agent_students = await Student.find({
-      agents: agent._id,
-      $or: [{ archiv: { $exists: false } }, { archiv: false }]
-    })
+    const agent_students = await req.db
+      .model('Student')
+      .find({
+        agents: agent._id,
+        $or: [{ archiv: { $exists: false } }, { archiv: false }]
+      })
       .populate('agents editors', 'firstname lastname email')
       .populate('applications.programId')
       .populate(
@@ -589,19 +598,22 @@ const UrgentTasksReminderEmails_Agent_core = asyncHandler(async () => {
   await Promise.all(agentPromises);
 });
 
-const UrgentTasksReminderEmails_Editor_core = asyncHandler(async () => {
+const UrgentTasksReminderEmails_Editor_core = asyncHandler(async (req) => {
   // Only inform active student
   // TODO: deactivate or change email frequency (default 1 week.)
   const editor_trigger_7days = 7;
   const editor_trigger_3days = 3;
-  const editors = await Editor.find();
+
+  const editors = await req.db.model('Editor').find();
 
   // (O): Check if editor no reply (need to response) more than 3 days (Should configurable)
   for (let j = 0; j < editors.length; j += 1) {
-    const editor_students = await Student.find({
-      editors: editors[j]._id,
-      $or: [{ archiv: { $exists: false } }, { archiv: false }]
-    })
+    const editor_students = await req.db
+      .model('Student')
+      .find({
+        editors: editors[j]._id,
+        $or: [{ archiv: { $exists: false } }, { archiv: false }]
+      })
       .populate('agents editors', 'firstname lastname email')
       .populate('applications.programId')
       .populate(
@@ -666,9 +678,15 @@ const UrgentTasksReminderEmails_Editor_core = asyncHandler(async () => {
 });
 
 const AssignEditorTasksReminderEmails = asyncHandler(async () => {
-  const students = await Student.find({
-    $or: [{ archiv: { $exists: false } }, { archiv: false }]
-  })
+  const tenantId = isProd() ? 'TaiGer_Prod' : 'TaiGer';
+  const req = {};
+  req.db = connectToDatabase(tenantId);
+  req.VCModel = req.db.model('VC');
+  const students = await req.db
+    .model('Student')
+    .find({
+      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+    })
     .populate('agents editors', 'firstname lastname email archiv')
     .populate('applications.programId')
     .populate(
@@ -701,9 +719,11 @@ const AssignEditorTasksReminderEmails = asyncHandler(async () => {
         }
       }
       // inform editor-lead
-      const permissions = await Permission.find({
-        canAssignEditors: true
-      })
+      const permissions = await req.db
+        .model('Permission')
+        .find({
+          canAssignEditors: true
+        })
         .populate('user_id', 'firstname lastname email')
         .lean();
       if (permissions) {
@@ -730,10 +750,14 @@ const AssignEditorTasksReminderEmails = asyncHandler(async () => {
 });
 
 const UrgentTasksReminderEmails = asyncHandler(async () => {
+  const tenantId = isProd() ? 'TaiGer_Prod' : 'TaiGer';
+  const req = {};
+  req.db = connectToDatabase(tenantId);
+  req.VCModel = req.db.model('VC');
   const UrgentTaskPromises = [
-    UrgentTasksReminderEmails_Editor_core(),
-    UrgentTasksReminderEmails_Student_core(),
-    UrgentTasksReminderEmails_Agent_core()
+    UrgentTasksReminderEmails_Editor_core(req),
+    UrgentTasksReminderEmails_Student_core(req),
+    UrgentTasksReminderEmails_Agent_core(req)
   ];
 
   await Promise.all(UrgentTaskPromises);
@@ -742,7 +766,12 @@ const UrgentTasksReminderEmails = asyncHandler(async () => {
 const NextSemesterCourseSelectionStudentReminderEmails = asyncHandler(
   async () => {
     // Only inform active student
-    const studentsWithCourses = await Student.aggregate([
+    const tenantId = isProd() ? 'TaiGer_Prod' : 'TaiGer';
+
+    const req = {};
+    req.db = connectToDatabase(tenantId);
+    req.VCModel = req.db.model('VC');
+    const studentsWithCourses = await req.db.model('Student').aggregate([
       {
         $match: {
           archiv: { $ne: true } // Filter out students where 'archiv' is not equal to true
@@ -790,7 +819,11 @@ const NextSemesterCourseSelectionStudentReminderEmails = asyncHandler(
 const NextSemesterCourseSelectionAgentReminderEmails = asyncHandler(
   async () => {
     // Only inform active student
-    const studentsWithCourses = await Student.aggregate([
+    const tenantId = isProd() ? 'TaiGer_Prod' : 'TaiGer';
+    const req = {};
+    req.db = connectToDatabase(tenantId);
+    req.VCModel = req.db.model('VC');
+    const studentsWithCourses = await req.db.model('Student').aggregate([
       {
         $match: {
           archiv: { $ne: true } // Filter out students where 'archiv' is not equal to true
@@ -1044,19 +1077,25 @@ const MeetingDailyReminderChecker = asyncHandler(async () => {
   const twentyFourHoursLater = new Date(currentDate);
   twentyFourHoursLater.setHours(currentDate.getHours() + 24);
 
-  // Only future meeting within 24 hours, not past
-  const upcomingEvents = await Event.find({
-    $and: [
-      {
-        end: {
-          $gte: currentDate,
-          $lt: twentyFourHoursLater
-        }
-      },
-      { isConfirmedReceiver: true },
-      { isConfirmedRequester: true }
-    ]
-  }).populate('requester_id receiver_id', 'firstname lastname email');
+  const tenantId = isProd() ? 'TaiGer_Prod' : 'TaiGer';
+  const req = {};
+  req.db = connectToDatabase(tenantId);
+  req.VCModel = req.db.model('VC'); // Only future meeting within 24 hours, not past
+  const upcomingEvents = await req.db
+    .model('Event')
+    .find({
+      $and: [
+        {
+          end: {
+            $gte: currentDate,
+            $lt: twentyFourHoursLater
+          }
+        },
+        { isConfirmedReceiver: true },
+        { isConfirmedRequester: true }
+      ]
+    })
+    .populate('requester_id receiver_id', 'firstname lastname email');
   if (upcomingEvents) {
     for (let j = 0; j < upcomingEvents.length; j += 1) {
       if (upcomingEvents.event_type === 'Interview') {
@@ -1114,18 +1153,25 @@ const UnconfirmedMeetingDailyReminderChecker = asyncHandler(async () => {
   const currentDate = new Date();
 
   // Only future meeting within 24 hours, not past
-  const upcomingEvents = await Event.find({
-    $and: [
-      {
-        end: {
-          $gte: currentDate
+  const tenantId = isProd() ? 'TaiGer_Prod' : 'TaiGer';
+  const req = {};
+  req.db = connectToDatabase(tenantId);
+  req.VCModel = req.db.model('VC');
+  const upcomingEvents = await req.db
+    .model('Event')
+    .find({
+      $and: [
+        {
+          end: {
+            $gte: currentDate
+          }
+        },
+        {
+          $or: [{ isConfirmedReceiver: false }, { isConfirmedRequester: false }]
         }
-      },
-      {
-        $or: [{ isConfirmedReceiver: false }, { isConfirmedRequester: false }]
-      }
-    ]
-  }).populate('requester_id receiver_id', 'firstname lastname role email');
+      ]
+    })
+    .populate('requester_id receiver_id', 'firstname lastname role email');
   if (upcomingEvents) {
     for (let j = 0; j < upcomingEvents.length; j += 1) {
       if (!upcomingEvents[j].isConfirmedRequester) {
@@ -1172,9 +1218,11 @@ function CalculateInterval(message1, message2) {
   return parseFloat(intervalInDay.toFixed(4));
 }
 
-const GroupCommunicationByStudent = asyncHandler(async () => {
+const GroupCommunicationByStudent = asyncHandler(async (req) => {
   try {
-    const communications = await Communication.find()
+    const communications = await req.db
+      .model('Communication')
+      .find()
       .populate('student_id user_id', 'firstname lastname email archiv')
       .lean();
     let groupCommunication = {};
@@ -1234,7 +1282,6 @@ const CreateIntervalMessageOperation = (student_id, msg1, msg2) => {
 const ProcessMessages = (student, messages) => {
   const bulkOps = [];
   messages.sort((a, b) => a.updatedAt - b.updatedAt);
-  // console.log("messages", messages);
   if (messages.length > 1) {
     let msg1 = undefined;
     let msg2 = undefined;
@@ -1264,10 +1311,10 @@ const ProcessMessages = (student, messages) => {
   return bulkOps;
 };
 
-const FindIntervalInCommunicationsAndSave = asyncHandler(async () => {
+const FindIntervalInCommunicationsAndSave = asyncHandler(async (req) => {
   try {
     // TODO: active student's message only
-    const groupCommunication = await GroupCommunicationByStudent();
+    const groupCommunication = await GroupCommunicationByStudent(req);
     const bulkOps = [];
 
     for (const [student, messages] of Object.entries(groupCommunication)) {
@@ -1276,7 +1323,7 @@ const FindIntervalInCommunicationsAndSave = asyncHandler(async () => {
     }
 
     if (bulkOps.length > 0) {
-      const result = await Interval.bulkWrite(bulkOps);
+      const result = await req.db.model('Interval').bulkWrite(bulkOps);
       logger.info(
         'FindIntervalInCommunicationsAndSave: Bulk operation result:',
         result
@@ -1348,8 +1395,10 @@ const ProcessThread = (thread) => {
   return bulkOps;
 };
 
-const FetchStudentsForDocumentThreads = asyncHandler(async (filter) =>
-  Student.find(filter)
+const FetchStudentsForDocumentThreads = asyncHandler(async (req, filter) =>
+  req.db
+    .model('Student')
+    .find(filter)
     .populate('agents editors', 'firstname lastname email')
     .populate({
       path: 'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
@@ -1364,10 +1413,10 @@ const FetchStudentsForDocumentThreads = asyncHandler(async (filter) =>
     .lean()
 );
 
-const FindIntervalInDocumentThreadAndSave = asyncHandler(async () => {
+const FindIntervalInDocumentThreadAndSave = asyncHandler(async (req) => {
   try {
     // calculate active student only
-    const students = await FetchStudentsForDocumentThreads({
+    const students = await FetchStudentsForDocumentThreads(req, {
       $or: [{ archiv: { $exists: false } }, { archiv: false }]
     });
     const bulkOps = [];
@@ -1397,7 +1446,7 @@ const FindIntervalInDocumentThreadAndSave = asyncHandler(async () => {
     }
 
     if (bulkOps.length > 0) {
-      const result = await Interval.bulkWrite(bulkOps);
+      const result = await req.db.model('Interval').bulkWrite(bulkOps);
       logger.info(
         'FindIntervalInDocumentThreadAndSave: Bulk operation result:',
         result
@@ -1408,9 +1457,11 @@ const FindIntervalInDocumentThreadAndSave = asyncHandler(async () => {
   }
 });
 
-const GroupIntervals = asyncHandler(async () => {
+const GroupIntervals = asyncHandler(async (req) => {
   try {
-    const intervals = await Interval.find()
+    const intervals = await req.db
+      .model('Interval')
+      .find()
       .populate('thread_id student_id')
       .lean();
     const studentGroupInterval = {};
@@ -1436,9 +1487,9 @@ const GroupIntervals = asyncHandler(async () => {
   }
 });
 
-const CalculateAverageResponseTimeAndSave = asyncHandler(async () => {
+const CalculateAverageResponseTimeAndSave = asyncHandler(async (req) => {
   const [studentGroupInterval, documentThreadGroupInterval] =
-    await GroupIntervals();
+    await GroupIntervals(req);
   const calculateAndSaveAverage = async (groupInterval, idKey) => {
     try {
       const bulkOps = [];
@@ -1496,7 +1547,7 @@ const CalculateAverageResponseTimeAndSave = asyncHandler(async () => {
 
       // Execute bulk operations
       if (bulkOps.length > 0) {
-        const result = await ResponseTime.bulkWrite(bulkOps);
+        const result = await req.db.model('ResponseTime').bulkWrite(bulkOps);
         logger.info('calculateAndSaveAverage: Bulk operation result:', result);
       }
     } catch (err) {
@@ -1512,9 +1563,13 @@ const CalculateAverageResponseTimeAndSave = asyncHandler(async () => {
 });
 
 const DailyCalculateAverageResponseTime = asyncHandler(async () => {
-  await FindIntervalInCommunicationsAndSave();
-  await FindIntervalInDocumentThreadAndSave();
-  await CalculateAverageResponseTimeAndSave();
+  const tenantId = isProd() ? 'TaiGer_Prod' : 'TaiGer';
+  const req = {};
+  req.db = connectToDatabase(tenantId);
+  req.VCModel = req.db.model('VC');
+  await FindIntervalInCommunicationsAndSave(req);
+  await FindIntervalInDocumentThreadAndSave(req);
+  await CalculateAverageResponseTimeAndSave(req);
 });
 
 const DailyInterviewSurveyChecker = asyncHandler(async () => {
@@ -1523,12 +1578,18 @@ const DailyInterviewSurveyChecker = asyncHandler(async () => {
   const twentyFourHoursAgo = new Date(currentDate);
   twentyFourHoursAgo.setHours(currentDate.getHours() - 24);
   // interviews took place within last 24 hours
-  const interviewTookPlacedToday = await Interview.find({
-    interview_date: {
-      $gte: twentyFourHoursAgo.toISOString(),
-      $lt: currentDate
-    }
-  })
+  const tenantId = isProd() ? 'TaiGer_Prod' : 'TaiGer';
+  const req = {};
+  req.db = connectToDatabase(tenantId);
+  req.VCModel = req.db.model('VC');
+  const interviewTookPlacedToday = await req.db
+    .model('Interview')
+    .find({
+      interview_date: {
+        $gte: twentyFourHoursAgo.toISOString(),
+        $lt: currentDate
+      }
+    })
     .populate('student_id', 'firstname lastname email')
     .populate('program_id', 'school program_name degree semester')
     .lean();
@@ -1553,39 +1614,47 @@ const NoInterviewTrainerOrTrainingDateDailyReminderChecker = asyncHandler(
     const currentDate = new Date();
     const currentDateString = currentDate.toISOString().split('T')[0]; // Converts to 'YYYY-MM-DD' format
 
+    const tenantId = isProd() ? 'TaiGer_Prod' : 'TaiGer';
+    const req = {};
+    req.db = connectToDatabase(tenantId);
+    req.VCModel = req.db.model('VC');
     // Only future meeting within 24 hours, not past
-    const interviewRequests = await Interview.find({
-      $and: [
-        {
-          interview_date: {
-            $gte: currentDateString
-          }
-        },
-        {
-          $or: [
-            {
-              trainer_id: {
-                $exists: false
-              }
-            },
-            {
-              trainer_id: {
-                $size: 0
-              }
+    const interviewRequests = await req.db
+      .model('Interview')
+      .find({
+        $and: [
+          {
+            interview_date: {
+              $gte: currentDateString
             }
-          ]
-        }
-      ]
-    })
+          },
+          {
+            $or: [
+              {
+                trainer_id: {
+                  $exists: false
+                }
+              },
+              {
+                trainer_id: {
+                  $size: 0
+                }
+              }
+            ]
+          }
+        ]
+      })
       .populate('student_id', 'firstname lastname role email')
       .populate('program_id');
 
     // TODO: reminder agent as well
 
     if (interviewRequests?.length > 0) {
-      const permissions = await Permission.find({
-        canAssignEditors: true
-      })
+      const permissions = await req.db
+        .model('Permission')
+        .find({
+          canAssignEditors: true
+        })
         .populate('user_id', 'firstname lastname email')
         .lean();
       const sendEmailPromises = permissions.map((permission) =>

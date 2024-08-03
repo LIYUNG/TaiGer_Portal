@@ -2,7 +2,7 @@ const request = require('supertest');
 
 const { connect, closeDatabase, clearDatabase } = require('../fixtures/db');
 const { app } = require('../../app');
-const { Program, programSchema } = require('../../models/Program');
+const { programSchema } = require('../../models/Program');
 const { generateProgram } = require('../fixtures/programs');
 const { generateUser } = require('../fixtures/users');
 const { protect } = require('../../middlewares/auth');

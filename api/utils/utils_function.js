@@ -764,13 +764,9 @@ const UrgentTasksReminderEmails = asyncHandler(async () => {
 });
 
 const NextSemesterCourseSelectionStudentReminderEmails = asyncHandler(
-  async () => {
+  async (req) => {
     // Only inform active student
-    const tenantId = isProd() ? 'TaiGer_Prod' : 'TaiGer';
 
-    const req = {};
-    req.db = connectToDatabase(tenantId);
-    req.VCModel = req.db.model('VC');
     const studentsWithCourses = await req.db.model('Student').aggregate([
       {
         $match: {
@@ -910,6 +906,11 @@ const NextSemesterCourseSelectionAgentReminderEmails = asyncHandler(
 );
 
 const NextSemesterCourseSelectionReminderEmails = asyncHandler(async () => {
+  const tenantId = isProd() ? 'TaiGer_Prod' : 'TaiGer';
+
+  const req = {};
+  req.db = connectToDatabase(tenantId);
+  req.VCModel = req.db.model('VC');
   await NextSemesterCourseSelectionStudentReminderEmails();
   // await NextSemesterCourseSelectionAgentReminderEmails();
 });

@@ -8,32 +8,13 @@ const { connect, closeDatabase, clearDatabase } = require('../fixtures/db');
 const { Role } = require('../../constants');
 
 const { app } = require('../../app');
-const {
-  User,
-  Agent,
-  Editor,
-  Student,
-  UserSchema
-} = require('../../models/User');
-const { Program, programSchema } = require('../../models/Program');
+const { UserSchema } = require('../../models/User');
+const { programSchema } = require('../../models/Program');
 const { generateUser } = require('../fixtures/users');
 const { generateProgram } = require('../fixtures/programs');
-const {
-  permission_canAccessStudentDatabase_filter
-} = require('../../middlewares/permission-filter');
-const {
-  decryptCookieMiddleware
-} = require('../../middlewares/decryptCookieMiddleware');
-const {
-  InnerTaigerMultitenantFilter
-} = require('../../middlewares/InnerTaigerMultitenantFilter');
+
 const { protect } = require('../../middlewares/auth');
-const { updateCredentials } = require('../../controllers/account');
-const { ErrorResponse } = require('../../common/errors');
-const {
-  asyncHandler,
-  errorHandler
-} = require('../../middlewares/error-handler');
+
 const { TENANT_ID } = require('../fixtures/constants');
 const { connectToDatabase } = require('../../middlewares/tenantMiddleware');
 
@@ -46,6 +27,18 @@ const { connectToDatabase } = require('../../middlewares/tenantMiddleware');
 //         next(),
 //   });
 // });
+
+jest.mock('../../middlewares/tenantMiddleware', () => {
+  const passthrough = async (req, res, next) => {
+    req.tenantId = 'test';
+    next();
+  };
+
+  return {
+    ...jest.requireActual('../../middlewares/tenantMiddleware'),
+    checkTenantDBMiddleware: jest.fn().mockImplementation(passthrough)
+  };
+});
 
 jest.mock('../../middlewares/decryptCookieMiddleware', () => {
   const passthrough = async (req, res, next) => next();

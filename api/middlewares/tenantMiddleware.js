@@ -121,7 +121,7 @@ const connectToDatabase = (tenant, uri = null) => {
   return connections[tenant];
 };
 
-const tenantMiddleware = asyncHandler(async (req, res, next) => {
+const checkTenantDBMiddleware = asyncHandler(async (req, res, next) => {
   const { tenantId } = req.decryptedToken;
   const dbUri = `${mongoDb(tenantDb)}`;
   if (!connections[tenantDb]) {
@@ -147,9 +147,18 @@ const tenantMiddleware = asyncHandler(async (req, res, next) => {
     return res.status(400).send('Tenant not identified');
   }
 
-  req.db = connectToDatabase(tenantExisted.tenantId);
+  req.tenantId = tenantExisted.tenantId;
+  next();
+});
+
+const tenantMiddleware = asyncHandler(async (req, res, next) => {
+  req.db = connectToDatabase(req.tenantId);
   req.VCModel = req.db.model('VC');
   next();
 });
 
-module.exports = { tenantMiddleware, connectToDatabase };
+module.exports = {
+  tenantMiddleware,
+  checkTenantDBMiddleware,
+  connectToDatabase
+};

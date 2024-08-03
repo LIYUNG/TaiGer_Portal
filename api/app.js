@@ -12,7 +12,7 @@ const router = require('./routes');
 const { errorHandler } = require('./middlewares/error-handler');
 const { isDev, isProd } = require('./config');
 const httpLogger = require('./services/httpLogger');
-const { tenantMiddleware } = require('./middlewares/tenantMiddleware');
+const { tenantMiddleware, checkTenantDBMiddleware } = require('./middlewares/tenantMiddleware');
 const {
   decryptCookieMiddleware
 } = require('./middlewares/decryptCookieMiddleware');
@@ -43,6 +43,7 @@ app.use(
 );
 app.use(cookieParser());
 app.use(decryptCookieMiddleware);
+app.use(checkTenantDBMiddleware);
 app.use(tenantMiddleware);
 
 app.use(methodOverride('_method')); // in order to make delete request

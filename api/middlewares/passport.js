@@ -53,8 +53,6 @@ passport.use(
     },
     async (req, payload, done) => {
       try {
-        // console.log(req);
-        console.log(payload);
         const User = getUserModel(req.db);
         const user = await User.findById(payload.id);
         // const user = await User.findById(payload.id).populate({

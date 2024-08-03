@@ -12,6 +12,18 @@ const {
 const { TENANT_ID } = require('../fixtures/constants');
 const { connectToDatabase } = require('../../middlewares/tenantMiddleware');
 
+jest.mock('../../middlewares/tenantMiddleware', () => {
+  const passthrough = async (req, res, next) => {
+    req.tenantId = 'test';
+    next();
+  };
+
+  return {
+    ...jest.requireActual('../../middlewares/tenantMiddleware'),
+    checkTenantDBMiddleware: jest.fn().mockImplementation(passthrough)
+  };
+});
+
 jest.mock('../../middlewares/decryptCookieMiddleware', () => {
   const passthrough = async (req, res, next) => next();
 

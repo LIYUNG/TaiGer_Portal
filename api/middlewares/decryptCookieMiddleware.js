@@ -10,7 +10,6 @@ const decryptCookieMiddleware = asyncHandler((req, res, next) => {
     );
     req.decryptedToken = {};
     return next();
-    // throw new ErrorResponse(401, 'Token not found');
   }
   const payload = jwt.decode(token);
   req.decryptedToken = payload; // Attach decrypted payload to the request object

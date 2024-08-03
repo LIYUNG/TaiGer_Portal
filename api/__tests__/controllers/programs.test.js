@@ -18,6 +18,18 @@ const editors = [...Array(3)].map(() => generateUser(Role.Editor));
 const students = [...Array(5)].map(() => generateUser(Role.Student));
 const users = [...admins, ...agents, ...editors, ...students];
 
+jest.mock('../../middlewares/tenantMiddleware', () => {
+  const passthrough = async (req, res, next) => {
+    req.tenantId = 'test';
+    next();
+  };
+
+  return {
+    ...jest.requireActual('../../middlewares/tenantMiddleware'),
+    checkTenantDBMiddleware: jest.fn().mockImplementation(passthrough)
+  };
+});
+
 jest.mock('../../middlewares/decryptCookieMiddleware', () => {
   const passthrough = async (req, res, next) => next();
 

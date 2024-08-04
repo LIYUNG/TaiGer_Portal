@@ -165,6 +165,7 @@ export const translation_en = {
     Documents: 'Documents',
     'Student Overview': 'Student Overview',
     'CV/ML/RL Center': 'CV/ML/RL Center',
+    'Customer Center': 'Customer Center',
     'General Documents': 'General Documents',
     CV: 'CV',
     ML: 'ML',

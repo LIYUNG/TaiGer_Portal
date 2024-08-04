@@ -72,6 +72,9 @@ const EssayDashboard = React.lazy(() => import('./Demo/EssayDashboard/index'));
 const AllApplicantsOverview = React.lazy(() =>
   import('./Demo/ApplicantsOverview/allStudentIndex')
 );
+const CustomerSupport = React.lazy(() =>
+  import('./Demo/CustomerSupport')
+);
 const MyStudentOverviewPage = React.lazy(() =>
   import('./Demo/StudentOverview/MyStudentsOverview')
 );
@@ -476,6 +479,12 @@ const routes = [
     errorElement: <DefaultErrorPage />,
     loader: getStudentsLoader,
     element: <MyStudentOverviewPage />
+  },
+  {
+    path: '/customer-support',
+    errorElement: <DefaultErrorPage />,
+    loader: getAllActiveStudentsLoader,
+    element: <CustomerSupport />
   },
   {
     path: '/students-overview/all',

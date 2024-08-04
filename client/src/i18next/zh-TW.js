@@ -166,6 +166,7 @@ export const translation_zh_TW = {
     'Uni-Assist Tasks': 'Uni-Assist 任務',
     Documents: '文件',
     'Student Overview': '學生總攬',
+    'Customer Center': '客服中心',
     'CV/ML/RL Center': 'CV/ML/RL 中心',
     Notes: '筆記欄',
     'General Documents': '通用文件',

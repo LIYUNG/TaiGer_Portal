@@ -39,13 +39,17 @@ export async function getAllActiveEssaysLoader() {
   }
 }
 
-export async function getAllActiveStudentsLoader() {
+export async function AllActiveStudentsLoader() {
   const response = await getAllActiveStudents();
   if (response.status >= 400) {
     throw json({ message: response.statusText }, { status: response.status });
   } else {
-    return response;
+    return response.data.data;
   }
+}
+
+export function getAllActiveStudentsLoader() {
+  return defer({ students: AllActiveStudentsLoader() });
 }
 
 export async function getStudentUniAssistLoader() {
@@ -129,6 +133,7 @@ async function loadStudentAndEssays() {
     data: await studentsResponse.data // Assuming studentsResponse.data contains the students data
   };
 }
+
 export function combinedLoader() {
   return defer({ studentAndEssays: loadStudentAndEssays() });
 }

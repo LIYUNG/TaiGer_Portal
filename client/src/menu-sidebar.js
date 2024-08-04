@@ -27,6 +27,7 @@ import HistoryIcon from '@mui/icons-material/History';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import EqualizerIcon from '@mui/icons-material/Equalizer';
 import DifferenceIcon from '@mui/icons-material/Difference';
+import SupportAgentIcon from '@mui/icons-material/SupportAgent';
 import { appConfig } from './config';
 
 let application_overview = [
@@ -134,6 +135,13 @@ let all_students_nestedList = [
         }
       ]
     : []),
+  {
+    id: 'customer-support-center',
+    title: 'Customer Center',
+    type: 'item',
+    url: '/customer-support',
+    icon: <SupportAgentIcon />
+  },
   {
     id: 'all-students-overview',
     title: 'Student Overview',

@@ -73,9 +73,12 @@ const EssayDashboard = React.lazy(() => import('./Demo/EssayDashboard/index'));
 const AllApplicantsOverview = React.lazy(() =>
   import('./Demo/ApplicantsOverview/allStudentIndex')
 );
-const CustomerSupport = React.lazy(() =>
-  import('./Demo/CustomerSupport')
+const CustomerSupport = React.lazy(() => import('./Demo/CustomerSupport'));
+
+const CustomerTicketDetailPage = React.lazy(() =>
+  import('./Demo/CustomerSupport/CustomerTicketDetailPage')
 );
+
 const MyStudentOverviewPage = React.lazy(() =>
   import('./Demo/StudentOverview/MyStudentsOverview')
 );
@@ -486,6 +489,12 @@ const routes = [
     errorElement: <DefaultErrorPage />,
     loader: getAllTicketsLoader,
     element: <CustomerSupport />
+  },
+  {
+    path: '/customer-center/tickets/:complaintTicketId',
+    errorElement: <DefaultErrorPage />,
+    loader: getAllTicketsLoader,
+    element: <CustomerTicketDetailPage />
   },
   {
     path: '/students-overview/all',

@@ -1,24 +1,18 @@
 import React from 'react';
 import { Link as LinkDom } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExportIcon from '@mui/icons-material/ExitToApp';
 import {
   Box,
   Link,
   Breadcrumbs,
   Typography,
-  //   Container,
-  //   Tabs,
-  //   Tab,
   List,
   Paper,
   Grid,
-  //   ListItem,
   ListItemText,
   Button,
-  //   FormControl,
-  //   InputLabel,
-  //   Select,
-  //   MenuItem,
-  //   TextField,
   ListItemButton,
   Accordion,
   AccordionSummary,
@@ -26,29 +20,9 @@ import {
 } from '@mui/material';
 import { appConfig } from '../../config';
 import DEMO from '../../store/constant';
-import { useTranslation } from 'react-i18next';
-// import { DatePicker } from '@mui/x-date-pickers';
-// import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
-import AddIcon from '@mui/icons-material/Add';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-import SearchIcon from '@mui/icons-material/Search';
-import ExportIcon from '@mui/icons-material/ExitToApp';
-// import CreateComplaintTicket from './CreateComplaintTicket';
-// import ViewTickets from './ViewTickets';
-
-function CustomerSupportBody() {
+function CustomerTicketDetailPageBody() {
   const { t } = useTranslation();
-  //   const [ticket, setTicket] = useState({
-  //     requestType: '',
-  //     pnr: '',
-  //     passengerName: '',
-  //     ticketNumber: '',
-  //     reissueReason: '',
-  //     changeDate: new Date(),
-  //     flightNumber: '',
-  //     remarks: ''
-  //   });
 
   const tickets = [
     {
@@ -57,55 +31,8 @@ function CustomerSupportBody() {
       requestType: 'Refund Request',
       date: '20/01/2023',
       status: 'Inprocess'
-    },
-    {
-      id: 2,
-      requestNumber: 'SR#136354745',
-      requestType: 'Reissue Request',
-      date: '25/01/2023',
-      status: 'Approve'
-    },
-    {
-      id: 3,
-      requestNumber: 'SR#136354787',
-      requestType: 'VIP Request',
-      date: '23/01/2023',
-      status: 'Submit'
-    },
-    {
-      id: 4,
-      requestNumber: 'SR#136354756',
-      requestType: 'Void Request',
-      date: '23/01/2023',
-      status: 'Cancel'
-    },
-    {
-      id: 5,
-      requestNumber: 'SR#136354756',
-      requestType: 'Void Request',
-      date: '23/01/2023',
-      status: 'Cancel'
-    },
-    {
-      id: 6,
-      requestNumber: 'SR#136354756',
-      requestType: 'Void Request',
-      date: '23/01/2023',
-      status: 'Cancel'
     }
   ];
-
-  //   const handleChange = (e) => {
-  //     setTicket({ ...ticket, [e.target.name]: e.target.value });
-  //   };
-
-  //   const handleDateChange = (date) => {
-  //     setTicket({ ...ticket, changeDate: date });
-  //   };
-
-  //   const handleSubmit = () => {
-  //     // handle submit logic
-  //   };
 
   return (
     <Box>
@@ -118,9 +45,15 @@ function CustomerSupportBody() {
         >
           {appConfig.companyName}
         </Link>
-        <Typography color="text.primary">
+        <Link
+          underline="hover"
+          color="inherit"
+          component={LinkDom}
+          to={`${DEMO.CUSTOMER_CENTER_LINK}`}
+        >
           {t('Customer Center', { ns: 'common' })}
-        </Typography>
+        </Link>
+        <Typography color="text.primary">{'TICKET_NUMBER'}</Typography>
       </Breadcrumbs>
       <Box>
         <Box
@@ -137,94 +70,8 @@ function CustomerSupportBody() {
               When customers have problems, they open support tickets.
             </Typography>
           </Box>
-          <Box display="flex" alignItems="center">
-            <Button
-              variant="outlined"
-              startIcon={<SearchIcon />}
-              sx={{ mr: 2 }}
-            >
-              Search
-            </Button>
-            <Button variant="contained" startIcon={<AddIcon />}>
-              Add Ticket
-            </Button>
-          </Box>
         </Box>
         <Grid container spacing={3}>
-          {/* <Grid item xs={12}>
-            <Paper elevation={3} sx={{ p: 3 }}>
-              <Typography variant="h6" gutterBottom>
-                Create New Ticket
-              </Typography>
-              <Typography variant="body2" gutterBottom>
-                Fill up all the information here, then click submit button
-              </Typography>
-              <Grid container spacing={2}>
-                <Grid item xs={12} md={3}>
-                  <FormControl size="small" fullWidth margin="normal">
-                    <InputLabel>Select Request Type</InputLabel>
-                    <Select
-                      value={ticket.requestType}
-                      name="requestType"
-                      onChange={handleChange}
-                    >
-                      <MenuItem value="Reissue Request">
-                        Reissue Request
-                      </MenuItem>
-                      <MenuItem value="Refund Request">Refund Request</MenuItem>
-                      <MenuItem value="VIP Request">VIP Request</MenuItem>
-                    </Select>
-                  </FormControl>
-                </Grid>
-                <Grid item xs={12} md={3}>
-                  <TextField
-                    fullWidth
-                    size="small"
-                    label="Search PNR"
-                    name="pnr"
-                    value={ticket.pnr}
-                    onChange={handleChange}
-                    margin="normal"
-                    InputProps={{
-                      endAdornment: <SearchIcon />
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={12} md={3}>
-                  <TextField
-                    fullWidth
-                    size="small"
-                    label="Flight Number"
-                    name="flightNumber"
-                    value={ticket.flightNumber}
-                    onChange={handleChange}
-                    margin="normal"
-                  />
-                </Grid>
-                <Grid item xs={12} md={3}>
-                  <TextField
-                    fullWidth
-                    size="small"
-                    label="Remarks"
-                    name="remarks"
-                    value={ticket.remarks}
-                    onChange={handleChange}
-                    margin="normal"
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleSubmit}
-                  >
-                    Submit Ticket
-                  </Button>
-                </Grid>
-              </Grid>
-            </Paper>
-          </Grid> */}
-
           <Grid item xs={12} md={8}>
             <Paper
               elevation={3}
@@ -321,4 +168,4 @@ function CustomerSupportBody() {
   );
 }
 
-export default CustomerSupportBody;
+export default CustomerTicketDetailPageBody;

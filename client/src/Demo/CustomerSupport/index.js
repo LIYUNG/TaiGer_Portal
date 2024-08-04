@@ -6,7 +6,7 @@ import { TabTitle } from '../Utils/TabTitle';
 
 import { useTranslation } from 'react-i18next';
 import Loading from '../../components/Loading/Loading';
-import CustomerSupportBody from './CustomerSupport';
+import CustomerSupportBody from './CustomerSupportBody';
 
 function CustomerSupport() {
   const { t } = useTranslation();

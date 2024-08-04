@@ -482,7 +482,7 @@ const routes = [
     element: <MyStudentOverviewPage />
   },
   {
-    path: '/customer-support',
+    path: '/customer-center',
     errorElement: <DefaultErrorPage />,
     loader: getAllTicketsLoader,
     element: <CustomerSupport />

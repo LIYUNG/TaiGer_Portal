@@ -55,122 +55,47 @@ import DEMO from '../../store/constant';
 const drawerWidth = 300;
 const ExcludeMenu = {
   Guest: [
-    'Component',
-    'Docs Database',
-    'Tools',
-    'My Students',
-    'All Students',
-    'Documentation',
-    'Menu Levels',
-    `${appConfig.companyName} Teams`,
-    `${appConfig.companyName} Members`,
-    'Tasks Overview',
-    'Uni-Assist Tasks',
-    'Documents',
-    'My Tasks Overview',
-    'Applications Overview',
-    'CV/ML/RL Center',
-    'Statistics',
-    'Charts',
-    'Applications Overview',
-    'Program List',
-    'Interview Center',
-    `${appConfig.companyName} Admissions`,
-    'Map',
-    'Internal Docs',
-    'Archiv Students',
-    'Internal Docs',
-    'Documentation',
-    'Student Database',
-    'Tasks Dashboard',
-    `${appConfig.companyName} Members`,
-    'User Logs',
-    'User List'
+    'my-students',
+    'user-list',
+    'program-table',
+    'all-students',
+    'tools-widgets',
+    'teams_overview',
+    'internal-document-database'
   ],
   Student: [
-    'Component',
-    'Docs Database',
-    'Tools',
-    'My Students',
-    'All Students',
-    'Menu Levels',
-    `${appConfig.companyName} Teams`,
-    `${appConfig.companyName} Members`,
-    'Tasks Overview',
-    'Charts',
-    'Statistics',
-    'My Tasks Overview',
-    'Program List',
-    'Map',
-    'Applications Overview',
-    'CV/ML/RL Center',
-    'Documents',
-    `${appConfig.companyName} Admissions`,
-    'Internal Docs',
-    'Archiv Students',
-    'Student Database',
-    'Tasks Dashboard',
-    `${appConfig.companyName} Members`,
-    'User Logs',
-    'User List'
+    'my-students',
+    'user-list',
+    'program-table',
+    'all-students',
+    'tools-widgets',
+    'teams_overview',
+    'internal-document-database'
   ],
   Agent: [
-    'Component',
-    'Applications Overview',
-    'Tools',
-    'Menu Levels',
-    'My Courses',
-    'My Profile',
-    'Tasks Overview',
-    'Portals Management',
-    'Applications Overview',
-    'Uni-Assist Tasks',
-    'My Tasks Overview',
-    'My Applications',
-    'Statistics',
-    'Charts',
-    'Map',
-    'User List',
-    'User Logs',
-    'Contact Us'
+    'contact_us',
+    'application_overivew',
+    'user-list',
+    'tools-widgets',
+    'academicsurvey',
+    'my-courses',
+    'customer-center-student'
   ],
   Editor: [
-    'Component',
-    'Applications Overview',
-    'Tools',
-    'Menu Levels',
-    'My Courses',
-    'My Profile',
-    'Tasks Overview',
-    'Portals Management',
-    'Applications Overview',
-    'Uni-Assist Tasks',
-    'My Tasks Overview',
-    'My Applications',
-    'Statistics',
-    'Charts',
-    'Map',
-    'User List',
-    'User Logs',
-    'Contact Us'
+    'contact_us',
+    'application_overivew',
+    'user-list',
+    'tools-widgets',
+    'academicsurvey',
+    'my-courses',
+    'customer-center-student'
   ],
   Admin: [
-    'Component',
-    'My Students',
-    'Applications Overview',
-    'Menu Levels',
-    'My Courses',
-    'My Profile',
-    'Portals Management',
-    'Applications Overview',
-    'Uni-Assist Tasks',
-    'My Tasks Overview',
-    'My Applications',
-    'Charts',
-    'Statistics',
-    'Map',
-    'Tasks Overview',
-    'Contact Us'
+    'contact_us',
+    'application_overivew',
+    'academicsurvey',
+    'my-courses',
+    'customer-center-student'
   ]
 };
 
@@ -696,7 +621,7 @@ function NavBar(props) {
           <Divider />
           <List disablePadding>
             {MenuSidebar.filter(
-              (menuItem) => !ExcludeMenu[user?.role].includes(menuItem.title)
+              (menuItem) => !ExcludeMenu[user?.role].includes(menuItem.id)
             ).map((menuItem) =>
               menuItem.children ? (
                 <Box key={menuItem.id}>
@@ -723,7 +648,12 @@ function NavBar(props) {
                     )}
                   </ListItemButton>
                   <Collapse
-                    in={menuItemOpen[menuItem.id]}
+                    in={
+                      menuItemOpen[menuItem.id] ||
+                      menuItem.children?.some(
+                        (subItem) => subItem.url === location.pathname
+                      )
+                    }
                     timeout="auto"
                     unmountOnExit
                   >
@@ -731,7 +661,7 @@ function NavBar(props) {
                       {menuItem.children
                         .filter(
                           (subItem) =>
-                            !ExcludeMenu[user?.role].includes(subItem.title)
+                            !ExcludeMenu[user?.role].includes(subItem.id)
                         )
                         .map((subMenuItem) => (
                           <ListItemButton

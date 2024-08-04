@@ -25,9 +25,9 @@ import DrawIcon from '@mui/icons-material/Draw';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import HistoryIcon from '@mui/icons-material/History';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
-import EqualizerIcon from '@mui/icons-material/Equalizer';
 import DifferenceIcon from '@mui/icons-material/Difference';
 import SupportAgentIcon from '@mui/icons-material/SupportAgent';
+import ArchitectureIcon from '@mui/icons-material/Architecture';
 import { appConfig } from './config';
 
 let application_overview = [
@@ -136,10 +136,10 @@ let all_students_nestedList = [
       ]
     : []),
   {
-    id: 'customer-support-center',
+    id: 'customer-center',
     title: 'Customer Center',
     type: 'item',
-    url: '/customer-support',
+    url: '/customer-center',
     icon: <SupportAgentIcon />
   },
   {
@@ -398,13 +398,6 @@ export const MenuSidebar = [
     icon: <ArticleIcon />
   },
   {
-    id: 'applications-overview',
-    title: 'Applications Overview',
-    type: 'item',
-    icon: <ArticleIcon />,
-    url: '/student-applications'
-  },
-  {
     id: 'application_overivew',
     title: 'My Applications',
     type: 'collapse',
@@ -412,24 +405,24 @@ export const MenuSidebar = [
     icon: <ArticleIcon />,
     children: application_overview
   },
+  // {
+  //   id: 'students_tasks_overview',
+  //   title: 'Tasks Overview',
+  //   type: 'item',
+  //   url: '/tasks/students/overview',
+  //   classes: 'nav-item',
+  //   icon: <ArticleIcon />
+  // },
+  // {
+  //   id: 'student_task',
+  //   title: 'My Tasks Overview',
+  //   type: 'item',
+  //   url: '/tasks',
+  //   classes: 'nav-item',
+  //   icon: <ArticleIcon />
+  // },
   {
-    id: 'students_tasks_overview',
-    title: 'Tasks Overview',
-    type: 'item',
-    url: '/tasks/students/overview',
-    classes: 'nav-item',
-    icon: <ArticleIcon />
-  },
-  {
-    id: 'student_task',
-    title: 'My Tasks Overview',
-    type: 'item',
-    url: '/tasks',
-    classes: 'nav-item',
-    icon: <ArticleIcon />
-  },
-  {
-    id: 'user-table',
+    id: 'user-list',
     title: 'User List',
     type: 'item',
     icon: <PeopleAltOutlinedIcon />,
@@ -442,22 +435,6 @@ export const MenuSidebar = [
     icon: <SchoolOutlinedIcon />,
     url: '/programs'
   },
-
-  {
-    id: 'statistics',
-    title: 'Statistics',
-    type: 'item',
-    icon: <EqualizerIcon />,
-    url: '/statistics'
-  },
-  {
-    id: 'maps',
-    title: 'Map',
-    type: 'item',
-    icon: 'feather icon-map',
-    url: '/maps/google-map'
-  },
-
   // {
   //   id: 'learning-resources',
   //   title: 'Learning Resources',
@@ -474,11 +451,11 @@ export const MenuSidebar = [
     children: all_students_nestedList
   },
   {
-    id: 'taiger_widgets',
+    id: 'tools-widgets',
     title: 'Tools',
     type: 'collapse',
     classes: 'nav-item',
-    icon: <HelpOutlineIcon />,
+    icon: <ArchitectureIcon />,
     children: [
       {
         id: 'course-analyser',
@@ -508,7 +485,7 @@ export const MenuSidebar = [
     icon: <LocalPostOfficeOutlinedIcon />
   },
   {
-    id: 'internal_backend',
+    id: 'internal-document-database',
     title: 'Docs Database',
     type: 'collapse',
     classes: 'nav-item',
@@ -549,5 +526,12 @@ export const MenuSidebar = [
     url: '/download',
     classes: 'nav-item',
     icon: <DownloadIcon />
+  },
+  {
+    id: 'customer-center-student',
+    title: 'Customer Center',
+    type: 'item',
+    url: '/customer-center',
+    icon: <SupportAgentIcon />
   }
 ];

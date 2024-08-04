@@ -152,7 +152,17 @@ function NavBar(props) {
   const { t } = useTranslation();
   const { user, isAuthenticated, isLoaded, logout } = useAuth();
   const theme = useTheme();
-  const [menuItemOpen, setMenuItemOpen] = useState({});
+  const initialMenuItemOpen = MenuSidebar.filter(
+    (menuItem) =>
+      !ExcludeMenu[user?.role].includes(menuItem.id) &&
+      menuItem.children?.length > 0
+  ).reduce((acc, menuItem) => {
+    acc[menuItem.id] = menuItem.children?.some(
+      (subItem) => subItem.url === location.pathname
+    );
+    return acc;
+  }, {});
+  const [menuItemOpen, setMenuItemOpen] = useState(initialMenuItemOpen);
   const ismobile = useMediaQuery(theme.breakpoints.down('md'));
   const [open, setOpen] = useState(ismobile ? false : true);
   const [navState, setNavState] = useState({
@@ -648,12 +658,7 @@ function NavBar(props) {
                     )}
                   </ListItemButton>
                   <Collapse
-                    in={
-                      menuItemOpen[menuItem.id] ||
-                      menuItem.children?.some(
-                        (subItem) => subItem.url === location.pathname
-                      )
-                    }
+                    in={menuItemOpen[menuItem.id]}
                     timeout="auto"
                     unmountOnExit
                   >

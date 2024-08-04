@@ -1,5 +1,4 @@
 const async = require('async');
-const path = require('path');
 const {
   sendAssignEditorReminderEmail,
   MeetingReminderEmail,
@@ -8,7 +7,6 @@ const {
   InterviewTrainingReminderEmail,
   InterviewSurveyRequestEmail
 } = require('../services/email');
-const { s3 } = require('../aws/index');
 
 const {
   StudentTasksReminderEmail,
@@ -1204,7 +1202,7 @@ const GroupCommunicationByStudent = asyncHandler(async (req) => {
       .find()
       .populate('student_id user_id', 'firstname lastname email archiv')
       .lean();
-    let groupCommunication = {};
+    const groupCommunication = {};
     for (const singleCommunicaiton of communications) {
       if (
         singleCommunicaiton.student_id &&

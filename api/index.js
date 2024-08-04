@@ -181,6 +181,7 @@ const launch = async () => {
 
   logger.info(`isProd : ${isProd()}`);
   logger.info(`isDev : ${isDev()}`);
+  let httpsOption;
   if (isProd()) {
     const job5 = schedule.scheduleJob(
       DAILY_TASKS_REMINDER_SCHEDULE,

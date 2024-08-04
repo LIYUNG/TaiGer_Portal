@@ -756,7 +756,7 @@ const initApplicationMessagesThread = asyncHandler(async (req, res) => {
     if (permissions) {
       for (let x = 0; x < permissions.length; x += 1) {
         if (isNotArchiv(permissions[x].user_id)) {
-          await assignEssayTaskToEditorEmail(
+          assignEssayTaskToEditorEmail(
             {
               firstname: permissions[x].user_id.firstname,
               lastname: permissions[x].user_id.lastname,
@@ -776,11 +776,12 @@ const initApplicationMessagesThread = asyncHandler(async (req, res) => {
       }
     }
   }
+  const documentname = document_category;
 
   for (let i = 0; i < student.editors.length; i += 1) {
     if (isNotArchiv(student.editors[i])) {
       if (!Essay_Writer_Scope.includes(document_category)) {
-        await assignDocumentTaskToEditorEmail(
+        assignDocumentTaskToEditorEmail(
           {
             firstname: student.editors[i].firstname,
             lastname: student.editors[i].lastname,
@@ -798,7 +799,7 @@ const initApplicationMessagesThread = asyncHandler(async (req, res) => {
     }
   }
   if (isNotArchiv(student)) {
-    await assignDocumentTaskToStudentEmail(
+    assignDocumentTaskToStudentEmail(
       {
         firstname: student.firstname,
         lastname: student.lastname,

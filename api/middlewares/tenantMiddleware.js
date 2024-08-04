@@ -27,9 +27,6 @@ const checkTenantDBMiddleware = asyncHandler(async (req, res, next) => {
 
   // 0.
   const tenentid = tenentIdHeader || tenantId;
-  logger.info(`tenentid: ${tenentid}`);
-  logger.info(`req.hostname: ${req.hostname}`); // prod: ec2...amazon.com
-  logger.info(`req.headers['origin']: ${req.headers['origin']}`); // prod:
 
   let tenantExisted;
   tenantExisted = await connections[tenantDb]
@@ -46,7 +43,6 @@ const checkTenantDBMiddleware = asyncHandler(async (req, res, next) => {
         .findOne({ domainName: hostname });
     }
   }
-  logger.info(`tenantExisted: ${tenantExisted}`);
 
   if (!tenantExisted) {
     logger.error(

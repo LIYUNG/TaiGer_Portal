@@ -97,10 +97,6 @@ const deleteApplicationThread = async (
 ) => {
   // Before delete the thread, please delete all of the files in the thread!!
   // Delete folder
-  console.log(`studentId: ${studentId}`);
-  console.log(`programId: ${programId}`);
-  console.log(`messagesThreadId: ${messagesThreadId}`);
-
   let directory = path.join(studentId, messagesThreadId);
   logger.info('Trying to delete message thread and folder');
   directory = directory.replace(/\\/g, '/');
@@ -162,7 +158,7 @@ const isCrucialChanges = (changes) => {
     'scholarship_form_required',
     'supplementary_form_required'
   ];
-  for (let change in changes) {
+  for (const change in changes) {
     if (crucialChanges.includes(change)) {
       return true;
     }
@@ -291,7 +287,7 @@ const handleProgramChanges = (
           return;
         }
 
-        for (let doc of docs) {
+        for (const doc of docs) {
           const updatedDoc = { ...doc, ...changes };
           const programId = updatedDoc._id;
 

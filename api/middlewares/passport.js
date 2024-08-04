@@ -12,13 +12,8 @@ passport.use(
     { usernameField: 'email', passReqToCallback: true },
     async (req, email, password, done) => {
       try {
-        console.log(`req: ${req}`);
-        console.log(`req.db: ${req.db}`);
-        console.log(`email: ${email}`);
-        console.log(`password: ${password}`);
         const User = getUserModel(req.db);
-        const user_test = await User.findOne({ email }).lean();
-        console.log(`user_test: ${user_test.firstname}`);
+
         const user = await User.findOne({ email }).select('+password');
 
         if (!user) return done(null, false);
@@ -35,7 +30,6 @@ passport.use(
           { lastLoginAt: new Date() },
           { upsert: true }
         );
-        console.log('pass');
         return done(null, user);
       } catch (err) {
         return done(err);
@@ -55,11 +49,7 @@ passport.use(
       try {
         const User = getUserModel(req.db);
         const user = await User.findById(payload.id);
-        // const user = await User.findById(payload.id).populate({
-        //   path: 'agents editors',
-        //   select: 'firstname lastname email',
-        //   options: { strictPopulate: false } // Set strictPopulate to false for this populate query
-        // });
+
         if (!user) return done(null, false);
         // Log: login success
         await User.findByIdAndUpdate(

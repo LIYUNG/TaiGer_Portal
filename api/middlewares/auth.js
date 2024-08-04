@@ -13,7 +13,7 @@ const localAuth = (req, res, next) => {
       return next(new ErrorResponse(401, 'The current password is wrong.'));
     }
     req.user = user;
-    next();
+    return next();
   })(req, res, next);
 };
 
@@ -30,7 +30,7 @@ const protect = (req, res, next) => {
       );
     }
     req.user = user;
-    next();
+    return next();
   })(req, res, next);
 };
 

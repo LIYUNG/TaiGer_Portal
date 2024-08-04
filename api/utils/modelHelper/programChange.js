@@ -43,7 +43,7 @@ const findRLDelta = asyncHandler(
         (fileType) => !existingRLTypes.includes(fileType)
       );
       const missingRL = nrSpecRLNeeded - nrSpecificRL;
-      for (let i = 0; i < missingRL && i < availableRLs.length; i++) {
+      for (let i = 0; i < missingRL && i < availableRLs.length; i += 1) {
         delta.add.push({
           studentId,
           programId: program._id,
@@ -55,7 +55,7 @@ const findRLDelta = asyncHandler(
     // find extra RL
     if (nrSpecRLNeeded < nrSpecificRL) {
       const extraRL = nrSpecificRL - nrSpecRLNeeded;
-      for (let i = 0; i < extraRL && i < existingRL.length; i++) {
+      for (let i = 0; i < extraRL && i < existingRL.length; i += 1) {
         const fileThread = threads.find(
           (thread) => thread.file_type === existingRL[i]?.file_type
         );
@@ -78,7 +78,7 @@ const findStudentDeltaGet = asyncHandler(
   async (req, studentId, program, options) => {
     const { skipCompleted } = options || {};
 
-    let delta = {
+    const delta = {
       add: [],
       remove: []
     };
@@ -97,7 +97,7 @@ const findStudentDeltaGet = asyncHandler(
       delete thread.messages;
     });
 
-    for (let fileType of Object.keys(FILETYPES)) {
+    for (const fileType of Object.keys(FILETYPES)) {
       if (FILETYPES[fileType] === 'RL') {
         continue;
       }
@@ -139,7 +139,7 @@ const findStudentDelta = asyncHandler(
   async (studentId, program, { DocumentthreadModel }, options) => {
     const { skipCompleted } = options || {};
 
-    let delta = {
+    const delta = {
       add: [],
       remove: []
     };
@@ -156,7 +156,7 @@ const findStudentDelta = asyncHandler(
       delete thread.messages;
     });
 
-    for (let fileType of Object.keys(FILETYPES)) {
+    for (const fileType of Object.keys(FILETYPES)) {
       if (FILETYPES[fileType] === 'RL') {
         continue;
       }

@@ -31,6 +31,8 @@
     "function-paren-newline": "off",
     "linebreak-style": ["error", "windows"],
     "camelcase": "off",
+    "no-await-in-loop": "off",
+    "object-curly-newline": "off",
     "comma-dangle": [
       "error",
       {

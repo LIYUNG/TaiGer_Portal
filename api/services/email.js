@@ -72,23 +72,20 @@ const sendEventEmail = (
   isUpdatingEvent,
   toDelete
 ) => {
-  const cc_event_list = cc.map((c) => {
-    return {
-      email: c.email,
-      name: `${c.firstname} ${c.lastname}`,
-      status: 'ACCEPTED',
-      rsvp: true,
-      type: 'INDIVIDUAL',
-      role: 'REQ-PARTICIPANT'
-    };
-  });
+  const cc_event_list = cc.map((c) => ({
+    email: c.email,
+    name: `${c.firstname} ${c.lastname}`,
+    status: 'ACCEPTED',
+    rsvp: true,
+    type: 'INDIVIDUAL',
+    role: 'REQ-PARTICIPANT'
+  }));
 
-  const cc_receiver_list = cc.map((c) => {
-    return {
-      address: c.email,
-      name: `${c.firstname} ${c.lastname}`
-    };
-  });
+  const cc_receiver_list = cc.map((c) => ({
+    address: c.email,
+    name: `${c.firstname} ${c.lastname}`
+  }));
+
   const event = ical({
     domain: appDomain,
     prodId: '//TaiGer Portal//taigerconsultancy-portal.com//EN',

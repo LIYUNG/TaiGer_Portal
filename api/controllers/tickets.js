@@ -1,10 +1,8 @@
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
-const Ticket = require('../models/Ticket');
 const logger = require('../services/logger');
-const { Student, Role } = require('../models/User');
+const { Role } = require('../constants');
 const { isNotArchiv } = require('../constants');
-const { Program } = require('../models/Program');
 const {
   TicketCreatedAgentEmail,
   TicketResolvedRequesterReminderEmail
@@ -25,13 +23,17 @@ const getTickets = asyncHandler(async (req, res) => {
     query.status = status;
   }
   if (user.role === Role.Student) {
-    const tickets = await Ticket.find(query)
+    const tickets = await req.db
+      .model('Ticket')
+      .find(query)
       .populate('program_id', 'school program_name degree')
       .select('-requester_id')
       .sort({ createdAt: -1 });
     res.send({ success: true, data: tickets });
   } else {
-    const tickets = await Ticket.find(query)
+    const tickets = await req.db
+      .model('Ticket')
+      .find(query)
       .populate('program_id', 'school program_name degree')
       .populate('requester_id', 'firstname lastname email')
       .sort({ createdAt: -1 });
@@ -42,19 +44,20 @@ const getTickets = asyncHandler(async (req, res) => {
 const getTicket = asyncHandler(async (req, res) => {
   const { user } = req;
   if (user.role === Role.Student) {
-    const ticket = await Ticket.findById(req.params.ticketId).select(
-      '-requester_id'
-    );
+    const ticket = await req.db
+      .model('Ticket')
+      .findById(req.params.ticketId)
+      .select('-requester_id');
     if (!ticket) {
       logger.error('getTicket: Invalid ticket id');
       throw new ErrorResponse(404, 'Ticket not found');
     }
     res.send({ success: true, data: ticket });
   } else {
-    const ticket = await Ticket.findById(req.params.ticketId).populate(
-      'requester_id',
-      'firstname lastname email '
-    );
+    const ticket = await req.db
+      .model('Ticket')
+      .findById(req.params.ticketId)
+      .populate('requester_id', 'firstname lastname email ');
     if (!ticket) {
       logger.error('getTicket: Invalid ticket id');
       throw new ErrorResponse(404, 'Ticket not found');
@@ -68,12 +71,14 @@ const createTicket = asyncHandler(async (req, res) => {
   const new_ticket = req.body;
   new_ticket.requester_id = user._id.toString();
   // TODO: DO not create the same
-  const ticket = await Ticket.create(new_ticket);
+  const ticket = await req.db.model('Ticket').create(new_ticket);
 
   res.status(201).send({ success: true, data: ticket });
 
-  const program = await Program.findById(new_ticket.program_id);
-  const student = await Student.findById(user._id.toString())
+  const program = await req.db.model('Program').findById(new_ticket.program_id);
+  const student = await req.db
+    .model('Student')
+    .findById(user._id.toString())
     .populate('agents', 'firstname lastname email')
     .exec();
   for (let i = 0; i < student.agents.length; i += 1) {
@@ -100,9 +105,11 @@ const updateTicket = asyncHandler(async (req, res) => {
 
   fields.updatedAt = new Date();
   // TODO: update resolver_id
-  const updatedTicket = await Ticket.findByIdAndUpdate(ticket_id, fields, {
-    new: true
-  })
+  const updatedTicket = await req.db
+    .model('Ticket')
+    .findByIdAndUpdate(ticket_id, fields, {
+      new: true
+    })
     .populate('requester_id', 'firstname lastname email archiv')
     .populate('program_id', 'school program_name degree semester');
 
@@ -128,7 +135,7 @@ const updateTicket = asyncHandler(async (req, res) => {
 });
 
 const deleteTicket = asyncHandler(async (req, res) => {
-  await Ticket.findByIdAndDelete(req.params.ticket_id);
+  await req.db.model('Ticket').findByIdAndDelete(req.params.ticket_id);
   res.status(200).send({ success: true });
 });
 

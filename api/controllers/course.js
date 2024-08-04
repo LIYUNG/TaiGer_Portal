@@ -1,13 +1,10 @@
 const _ = require('lodash');
 const { spawn } = require('child_process');
-
 const axios = require('axios');
 const path = require('path');
 
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
-const Course = require('../models/Course');
-const { Role, Student } = require('../models/User');
 const logger = require('../services/logger');
 const {
   updateCoursesDataAgentEmail,
@@ -15,19 +12,22 @@ const {
 } = require('../services/email');
 const { one_month_cache } = require('../cache/node-cache');
 const { AWS_S3_BUCKET_NAME, isProd } = require('../config');
-const { isNotArchiv } = require('../constants');
+const { isNotArchiv, Role } = require('../constants');
 const { s3 } = require('../aws/index');
 
 const getCourse = asyncHandler(async (req, res) => {
   const { studentId } = req.params;
-  const student = await Student.findById(studentId);
+  const student = await req.db.model('Student').findById(studentId);
   if (!student) {
     logger.info('getCourse: no student found');
     throw new ErrorResponse(500, 'Invalid student');
   }
-  const courses = await Course.findOne({
-    student_id: studentId
-  }).populate('student_id', 'firstname lastname agents editors archiv');
+  const courses = await req.db
+    .model('Course')
+    .findOne({
+      student_id: studentId
+    })
+    .populate('student_id', 'firstname lastname agents editors archiv');
 
   if (!courses) {
     return res.send({
@@ -56,9 +56,12 @@ const putCourse = asyncHandler(async (req, res) => {
   const { studentId } = req.params;
   const fields = req.body;
   fields.updatedAt = new Date();
-  await Course.findOneAndUpdate({ student_id: studentId }, fields, {
-    new: false
-  }).populate('student_id', 'firstname lastname');
+  await req.db
+    .model('Course')
+    .findOneAndUpdate({ student_id: studentId }, fields, {
+      new: false
+    })
+    .populate('student_id', 'firstname lastname');
   res.send({ success: true });
 });
 
@@ -68,15 +71,19 @@ const createCourse = asyncHandler(async (req, res) => {
   const fields = req.body;
   fields.updatedAt = new Date();
 
-  const courses2 = await Course.findOneAndUpdate(
-    { student_id: studentId },
-    fields,
-    { upsert: true, new: true }
-  ).populate('student_id', 'firstname lastname');
+  const courses2 = await req.db
+    .model('Course')
+    .findOneAndUpdate({ student_id: studentId }, fields, {
+      upsert: true,
+      new: true
+    })
+    .populate('student_id', 'firstname lastname');
   res.send({ success: true, data: courses2 });
   if (user.role === 'Student') {
     // TODO: send course update to Agent
-    const student = await Student.findById(studentId)
+    const student = await req.db
+      .model('Student')
+      .findById(studentId)
       .populate('agents', 'firstname lastname email')
       .exec();
     for (let i = 0; i < student.agents.length; i += 1) {
@@ -102,9 +109,10 @@ const processTranscript_test = asyncHandler(async (req, res, next) => {
   const {
     params: { category, studentId, language }
   } = req;
-  const courses = await Course.findOne({ student_id: studentId }).populate(
-    'student_id'
-  );
+  const courses = await req.db
+    .model('Course')
+    .findOne({ student_id: studentId })
+    .populate('student_id');
   if (!courses) {
     logger.error('no course for this student!');
     return res.send({ success: true, data: {} });
@@ -172,7 +180,9 @@ const processTranscript_test = asyncHandler(async (req, res, next) => {
   });
 
   // TODO: information student
-  const student = await Student.findById(studentId)
+  const student = await req.db
+    .model('Student')
+    .findById(studentId)
     .populate('agents', 'firstname lastname email')
     .exec();
 
@@ -195,9 +205,10 @@ const processTranscript_api = asyncHandler(async (req, res, next) => {
   const {
     params: { category, studentId, language }
   } = req;
-  const courses = await Course.findOne({ student_id: studentId }).populate(
-    'student_id'
-  );
+  const courses = await req.db
+    .model('Course')
+    .findOne({ student_id: studentId })
+    .populate('student_id');
   if (!courses) {
     logger.error('no course for this student!');
     return res.send({ success: true, data: {} });
@@ -248,7 +259,9 @@ const processTranscript_api = asyncHandler(async (req, res, next) => {
   }
 
   // TODO: information student
-  const student = await Student.findById(studentId)
+  const student = await req.db
+    .model('Student')
+    .findById(studentId)
     .populate('agents', 'firstname lastname email')
     .exec();
 
@@ -276,7 +289,7 @@ const downloadXLSX = asyncHandler(async (req, res, next) => {
 
   const studentIdToUse =
     user.role === Role.Student || user.role === 'Guest' ? user._id : studentId;
-  const course = await Course.findOne({
+  const course = await req.db.model('Course').findOne({
     student_id: studentIdToUse.toString()
   });
   if (!course) {
@@ -336,11 +349,11 @@ const downloadXLSX = asyncHandler(async (req, res, next) => {
 });
 
 const deleteCourse = asyncHandler(async (req, res) => {
-  const course = await Course.findById(req.params.id);
+  const course = await req.db.model('Course').findById(req.params.id);
   if (!course) {
     return res.status(404).send({ error: 'Course not found' });
   }
-  await Course.findByIdAndDelete(req.params.id);
+  await req.db.model('Course').findByIdAndDelete(req.params.id);
   return res.send({ success: true });
 });
 

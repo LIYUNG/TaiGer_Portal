@@ -1,21 +1,49 @@
 const fs = require('fs');
 const request = require('supertest');
 
-const db = require('../fixtures/db');
+const { connect, closeDatabase, clearDatabase } = require('../fixtures/db');
 const { app } = require('../../app');
-const { Role, User } = require('../../models/User');
-const { Program } = require('../../models/Program');
+const { Role } = require('../../constants');
+const { User, UserSchema } = require('../../models/User');
+const { programSchema } = require('../../models/Program');
 const { generateUser } = require('../fixtures/users');
 const { generateProgram } = require('../fixtures/programs');
 const { protect } = require('../../middlewares/auth');
+const { TENANT_ID } = require('../fixtures/constants');
+const { connectToDatabase } = require('../../middlewares/tenantMiddleware');
+const {
+  decryptCookieMiddleware
+} = require('../../middlewares/decryptCookieMiddleware');
+
+jest.mock('../../middlewares/tenantMiddleware', () => {
+  const passthrough = async (req, res, next) => {
+    req.tenantId = 'test';
+    next();
+  };
+
+  return {
+    ...jest.requireActual('../../middlewares/tenantMiddleware'),
+    checkTenantDBMiddleware: jest.fn().mockImplementation(passthrough)
+  };
+});
+
+jest.mock('../../middlewares/decryptCookieMiddleware', () => {
+  const passthrough = async (req, res, next) => next();
+
+  return {
+    ...jest.requireActual('../../middlewares/decryptCookieMiddleware'),
+    decryptCookieMiddleware: jest.fn().mockImplementation(passthrough)
+  };
+});
 
 jest.mock('../../middlewares/auth', () => {
   const passthrough = async (req, res, next) => next();
 
-  return Object.assign({}, jest.requireActual('../../middlewares/auth'), {
+  return {
+    ...jest.requireActual('../../middlewares/auth'),
     protect: jest.fn().mockImplementation(passthrough),
     permit: jest.fn().mockImplementation((...roles) => passthrough)
-  });
+  };
 });
 
 const admin = generateUser(Role.Admin);
@@ -40,16 +68,28 @@ const users = [
 const requiredDocuments = ['transcript', 'resume'];
 const optionalDocuments = ['certificate', 'visa'];
 const program = generateProgram(requiredDocuments, optionalDocuments);
+let dbUri;
 
-beforeAll(async () => await db.connect());
-afterAll(async () => await db.clearDatabase());
+beforeAll(async () => {
+  dbUri = await connect();
+});
+afterAll(async () => await clearDatabase());
 
 beforeEach(async () => {
-  await User.deleteMany();
-  await User.insertMany(users);
+  const db = connectToDatabase(TENANT_ID, dbUri);
 
-  await Program.deleteMany();
-  await Program.create(program);
+  const UserModel = db.model('User', UserSchema);
+  const ProgramModel = db.model('Program', programSchema);
+
+  await UserModel.deleteMany();
+  await UserModel.insertMany(users);
+  await ProgramModel.deleteMany();
+  await ProgramModel.create(program);
+  // await User.deleteMany();
+  // await User.insertMany(users);
+
+  // await Program.deleteMany();
+  // await Program.create(program);
 });
 
 describe('/api/docs/:category', () => {
@@ -81,7 +121,10 @@ describe('/api/docs/:category', () => {
   });
 
   test('POST should create a new documentation in db', async () => {
-    const resp = await request(app).post(`/api/docs`).send(article);
+    const resp = await request(app)
+      .post('/api/docs')
+      .set('tenantId', TENANT_ID)
+      .send(article);
     const { status, body } = resp;
     expect(status).toBe(200);
     expect(body.success).toBe(true);
@@ -95,6 +138,7 @@ describe('/api/docs/:category', () => {
     // Test Get Article:
     const resp2 = await request(app)
       .get(`/api/docs/${category_uniassist}`)
+      .set('tenantId', TENANT_ID)
       .buffer();
     expect(resp2.status).toBe(200);
   });
@@ -102,6 +146,7 @@ describe('/api/docs/:category', () => {
   test('GET certification documentation in db', async () => {
     const resp2_cert = await request(app)
       .get(`/api/docs/${category_certification}`)
+      .set('tenantId', TENANT_ID)
       .buffer();
     expect(resp2_cert.status).toBe(200);
   });
@@ -109,6 +154,7 @@ describe('/api/docs/:category', () => {
   test('GET application documentation in db', async () => {
     const resp2_app = await request(app)
       .get(`/api/docs/${category_application}`)
+      .set('tenantId', TENANT_ID)
       .buffer();
     expect(resp2_app.status).toBe(200);
   });
@@ -116,6 +162,7 @@ describe('/api/docs/:category', () => {
   test('GET visa documentation in db', async () => {
     const resp2_visa = await request(app)
       .get(`/api/docs/${category_visa}`)
+      .set('tenantId', TENANT_ID)
       .buffer();
     expect(resp2_visa.status).toBe(200);
   });
@@ -124,6 +171,7 @@ describe('/api/docs/:category', () => {
     // test update doc status
     const resp5 = await request(app)
       .put(`/api/docs/${article_id}`)
+      .set('tenantId', TENANT_ID)
       .send(Newarticle);
     expect(resp5.status).toBe(201);
     const new_article = resp5.body.data;
@@ -133,18 +181,24 @@ describe('/api/docs/:category', () => {
   });
 
   test('GET all documentation in db', async () => {
-    const resp4 = await request(app).get('/api/docs/all');
+    const resp4 = await request(app)
+      .get('/api/docs/all')
+      .set('tenantId', TENANT_ID);
     expect(resp4.body.success).toBe(true);
   });
 
   test('GET all internal documentation in db', async () => {
-    const resp4 = await request(app).get('/api/docs/internal/all');
+    const resp4 = await request(app)
+      .get('/api/docs/internal/all')
+      .set('tenantId', TENANT_ID);
     expect(resp4.body.success).toBe(true);
   });
 
   test('DELETE documentation in db', async () => {
     // test delete
-    const resp4 = await request(app).delete(`/api/docs/${article_id}`);
+    const resp4 = await request(app)
+      .delete(`/api/docs/${article_id}`)
+      .set('tenantId', TENANT_ID);
     expect(resp4.status).toBe(200);
     expect(resp4.body.success).toBe(true);
   });

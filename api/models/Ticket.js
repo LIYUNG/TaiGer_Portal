@@ -1,7 +1,7 @@
 const { model, Schema } = require('mongoose');
 const { TicketStatus } = require('../constants');
 
-const TicketSchema = new Schema(
+const ticketSchema = new Schema(
   {
     requester_id: {
       type: Schema.Types.ObjectId,
@@ -54,4 +54,6 @@ const TicketSchema = new Schema(
   { timestamps: true }
 );
 
-module.exports = model('Ticket', TicketSchema);
+const Ticket = model('Ticket', ticketSchema);
+
+module.exports = { Ticket, ticketSchema };

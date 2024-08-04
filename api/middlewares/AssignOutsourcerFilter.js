@@ -1,6 +1,6 @@
 const { ErrorResponse } = require('../common/errors');
-const { Documentthread } = require('../models/Documentthread');
-const { Role, Student } = require('../models/User');
+const { Role } = require('../constants');
+
 const { getPermission } = require('../utils/queryFunctions');
 const { asyncHandler } = require('./error-handler');
 
@@ -12,10 +12,12 @@ const AssignOutsourcerFilter = asyncHandler(async (req, res, next) => {
     params: { messagesThreadId }
   } = req;
   if (user.role === Role.Editor || user.role === Role.Agent) {
-    const permissions = await getPermission(user);
+    const permissions = await getPermission(req, user);
     let outsourcer_allowed_modify = false;
     let studentId_temp = '';
-    const document_thread = await Documentthread.findById(messagesThreadId)
+    const document_thread = await req.db
+      .model('Documentthread')
+      .findById(messagesThreadId)
       .populate('student_id')
       .lean();
     studentId_temp = document_thread.student_id._id.toString();
@@ -28,9 +30,10 @@ const AssignOutsourcerFilter = asyncHandler(async (req, res, next) => {
           (agent) => agent?.toString() === user._id.toString()
         ));
 
-    const student = await Student.findById(studentId_temp).select(
-      'agents editors'
-    );
+    const student = await req.db
+      .model('Student')
+      .findById(studentId_temp)
+      .select('agents editors');
     if (!student) {
       throw new ErrorResponse(
         403,

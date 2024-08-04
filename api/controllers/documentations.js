@@ -1,15 +1,11 @@
 const _ = require('lodash');
 const path = require('path');
 const { ErrorResponse } = require('../common/errors');
-const { Role } = require('../models/User');
 
 const { asyncHandler } = require('../middlewares/error-handler');
-const Documentation = require('../models/Documentation');
-const Internaldoc = require('../models/Internaldoc');
-const Docspage = require('../models/Docspage');
 const { one_month_cache } = require('../cache/node-cache');
 const logger = require('../services/logger');
-const { getNumberOfDays } = require('../constants');
+const { getNumberOfDays, Role } = require('../constants');
 const { API_ORIGIN, AWS_S3_PUBLIC_BUCKET_NAME } = require('../config');
 
 const { s3 } = require('../aws/index');
@@ -25,65 +21,66 @@ const valid_categories = [
   'visa',
   'enrolment'
 ];
-const DocumentationS3GarbageCollector = async () => {
-  const doc = await Documentation.find();
-  const listParamsPublic = {
-    Bucket: AWS_S3_PUBLIC_BUCKET_NAME,
-    Delimiter: '/',
-    Prefix: 'Documentations/'
-  };
-  const listedObjectsPublic = await s3
-    .listObjectsV2(listParamsPublic)
-    .promise();
+// const DocumentationS3GarbageCollector = asyncHandler(async (req) => {
+//   const doc = await req.db.model('Documentation').find();
+//   const listParamsPublic = {
+//     Bucket: AWS_S3_PUBLIC_BUCKET_NAME,
+//     Delimiter: '/',
+//     Prefix: 'Documentations/'
+//   };
+//   const listedObjectsPublic = await s3
+//     .listObjectsV2(listParamsPublic)
+//     .promise();
 
-  const temp_date = new Date();
-  if (listedObjectsPublic.Contents.length > 0) {
-    const deleteParams = {
-      Bucket: AWS_S3_PUBLIC_BUCKET_NAME,
-      Delete: { Objects: [] }
-    };
-    listedObjectsPublic.Contents.forEach((Obj) => {
-      for (let i = 0; i < doc.length; i += 1) {
-        const file_name = encodeURIComponent(Obj.Key.split('/')[1]);
-        if (doc[i].text.includes(file_name)) {
-          break;
-        }
+//   const temp_date = new Date();
+//   if (listedObjectsPublic.Contents.length > 0) {
+//     const deleteParams = {
+//       Bucket: AWS_S3_PUBLIC_BUCKET_NAME,
+//       Delete: { Objects: [] }
+//     };
+//     listedObjectsPublic.Contents.forEach((Obj) => {
+//       for (let i = 0; i < doc.length; i += 1) {
+//         const file_name = encodeURIComponent(Obj.Key.split('/')[1]);
+//         if (doc[i].text.includes(file_name)) {
+//           break;
+//         }
 
-        if (i === doc.length - 1) {
-          // if until last doc still not found, add the Key to the delete list
-          if (!doc[i].text.includes(file_name)) {
-            // Delete only older than 2 week
-            if (getNumberOfDays(Obj.LastModified, temp_date) > 14) {
-              deleteParams.Delete.Objects.push({ Key: Obj.Key });
-            }
-          }
-        }
-      }
-      // logger.info('Deleting ', Key);
-    });
-    // TODO: there are something mixed in Documentations/ folder:
-    // 1. documentation
-    if (deleteParams.Delete.Objects.length > 0) {
-      await s3.deleteObjects(deleteParams).promise();
-      logger.info('Deleted redundant files and image for documentation.');
-      logger.info(deleteParams.Delete.Objects);
-    } else {
-      logger.info('Nothing to be deleted for documentation.');
-    }
+//         if (i === doc.length - 1) {
+//           // if until last doc still not found, add the Key to the delete list
+//           if (!doc[i].text.includes(file_name)) {
+//             // Delete only older than 2 week
+//             if (getNumberOfDays(Obj.LastModified, temp_date) > 14) {
+//               deleteParams.Delete.Objects.push({ Key: Obj.Key });
+//             }
+//           }
+//         }
+//       }
+//       // logger.info('Deleting ', Key);
+//     });
+//     // TODO: there are something mixed in Documentations/ folder:
+//     // 1. documentation
+//     if (deleteParams.Delete.Objects.length > 0) {
+//       await s3.deleteObjects(deleteParams).promise();
+//       logger.info('Deleted redundant files and image for documentation.');
+//       logger.info(deleteParams.Delete.Objects);
+//     } else {
+//       logger.info('Nothing to be deleted for documentation.');
+//     }
 
-    // if (listedObjectsPublic.IsTruncated) await emptyS3Directory(bucket, dir);
-  }
-};
+//     // if (listedObjectsPublic.IsTruncated) await emptyS3Directory(bucket, dir);
+//   }
+// });
 
 const updateInternalDocumentationPage = asyncHandler(async (req, res) => {
   const fields = _.omit(req.body, '_id');
 
   fields.author = `${req.user.firstname} ${req.user.lastname}`;
-  const interna_doc_page_existed = await Docspage.findOneAndUpdate(
-    { category: 'internal' },
-    fields,
-    { upsert: true, new: true }
-  );
+  const interna_doc_page_existed = await req.db
+    .model('Docspage')
+    .findOneAndUpdate({ category: 'internal' }, fields, {
+      upsert: true,
+      new: true
+    });
 
   return res
     .status(201)
@@ -91,7 +88,7 @@ const updateInternalDocumentationPage = asyncHandler(async (req, res) => {
 });
 
 const getInternalDocumentationsPage = asyncHandler(async (req, res) => {
-  const docspage = await Docspage.findOne({
+  const docspage = await req.db.model('Docspage').findOne({
     category: 'internal'
   });
   return res.send({ success: true, data: !docspage ? {} : docspage });
@@ -100,11 +97,12 @@ const getInternalDocumentationsPage = asyncHandler(async (req, res) => {
 const updateDocumentationPage = asyncHandler(async (req, res) => {
   const fields = _.omit(req.body, '_id');
   fields.author = `${req.user.firstname} ${req.user.lastname}`;
-  const doc_page_existed = await Docspage.findOneAndUpdate(
-    { category: req.params.category },
-    fields,
-    { upsert: true, new: true }
-  );
+  const doc_page_existed = await req.db
+    .model('Docspage')
+    .findOneAndUpdate({ category: req.params.category }, fields, {
+      upsert: true,
+      new: true
+    });
   const success = one_month_cache.set(req.url, doc_page_existed);
   if (success) {
     logger.info('cache set update successfully');
@@ -140,7 +138,7 @@ const getCategoryDocumentationsPage = asyncHandler(async (req, res) => {
   if (value === undefined) {
     // cache miss
     logger.info('cache miss');
-    const docspage = await Docspage.findOne({
+    const docspage = await req.db.model('Docspage').findOne({
       category: req.params.category
     });
     const success = one_month_cache.set(req.url, docspage);
@@ -163,7 +161,7 @@ const getCategoryDocumentations = asyncHandler(async (req, res) => {
     logger.error('getCategoryDocumentations : invalid category');
     throw new ErrorResponse(400, 'invalid category');
   }
-  const documents = await Documentation.find(
+  const documents = await req.db.model('Documentation').find(
     {
       category: req.params.category
     },
@@ -173,34 +171,44 @@ const getCategoryDocumentations = asyncHandler(async (req, res) => {
 });
 
 const getAllDocumentations = asyncHandler(async (req, res) => {
-  const document = await Documentation.find().select('title category');
+  const document = await req.db
+    .model('Documentation')
+    .find()
+    .select('title category');
   return res.send({ success: true, data: document });
 });
 
 const getAllInternalDocumentations = asyncHandler(async (req, res) => {
-  const document = await Internaldoc.find().select('title internal category');
+  const document = await req.db
+    .model('Internaldoc')
+    .find()
+    .select('title internal category');
   return res.send({ success: true, data: document });
 });
 
 const getDocumentation = asyncHandler(async (req, res) => {
-  const document = await Documentation.findById(req.params.doc_id);
+  const document = await req.db
+    .model('Documentation')
+    .findById(req.params.doc_id);
   return res.send({ success: true, data: document });
 });
 
 const getInternalDocumentation = asyncHandler(async (req, res) => {
-  const document = await Internaldoc.findById(req.params.doc_id);
+  const document = await req.db
+    .model('Internaldoc')
+    .findById(req.params.doc_id);
   return res.send({ success: true, data: document });
 });
 
 const createDocumentation = asyncHandler(async (req, res) => {
   const fields = _.omit(req.body, '_id');
-  const newDoc = await Documentation.create(fields);
+  const newDoc = await req.db.model('Documentation').create(fields);
   return res.send({ success: true, data: newDoc });
 });
 
 const createInternalDocumentation = asyncHandler(async (req, res) => {
   const fields = _.omit(req.body, '_id');
-  const newDoc = await Internaldoc.create(fields);
+  const newDoc = await req.db.model('Internaldoc').create(fields);
   return res.send({ success: true, data: newDoc });
 });
 
@@ -279,39 +287,35 @@ const uploadDocDocs = asyncHandler(async (req, res) => {
 const updateDocumentation = asyncHandler(async (req, res) => {
   const fields = req.body;
   fields.author = `${req.user.firstname} ${req.user.lastname}`;
-  const updated_doc = await Documentation.findByIdAndUpdate(
-    req.params.id,
-    fields,
-    { new: true }
-  );
+  const updated_doc = await req.db
+    .model('Documentation')
+    .findByIdAndUpdate(req.params.id, fields, { new: true });
   return res.status(201).send({ success: true, data: updated_doc });
 });
 
 const updateInternalDocumentation = asyncHandler(async (req, res) => {
   const fields = req.body;
   fields.author = `${req.user.firstname} ${req.user.lastname}`;
-  const updated_doc = await Internaldoc.findByIdAndUpdate(
-    req.params.id,
-    fields,
-    { new: true }
-  );
+  const updated_doc = await req.db
+    .model('Internaldoc')
+    .findByIdAndUpdate(req.params.id, fields, { new: true });
   return res.status(201).send({ success: true, data: updated_doc });
 });
 
 const deleteDocumentation = asyncHandler(async (req, res) => {
-  await Documentation.findByIdAndDelete(req.params.id);
+  await req.db.model('Documentation').findByIdAndDelete(req.params.id);
   // TODO: delete documents images
   return res.send({ success: true });
 });
 
 const deleteInternalDocumentation = asyncHandler(async (req, res) => {
-  await Internaldoc.findByIdAndDelete(req.params.id);
+  await req.db.model('Internaldoc').findByIdAndDelete(req.params.id);
   // TODO: delete documents images
   return res.send({ success: true });
 });
 
 module.exports = {
-  DocumentationS3GarbageCollector,
+  // DocumentationS3GarbageCollector,
   updateInternalDocumentationPage,
   getInternalDocumentationsPage,
   updateDocumentationPage,

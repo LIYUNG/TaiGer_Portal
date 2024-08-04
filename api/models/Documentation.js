@@ -1,8 +1,4 @@
-const {
-  model,
-  Schema,
-  Types: { ObjectId }
-} = require('mongoose');
+const { model, Schema } = require('mongoose');
 
 const documentationsSchema = new Schema({
   name: { type: String, default: '' },
@@ -18,4 +14,4 @@ const documentationsSchema = new Schema({
 documentationsSchema.index({ title: 'text', text: 'text' });
 
 const Documentation = model('Documentation', documentationsSchema);
-module.exports = Documentation;
+module.exports = { Documentation, documentationsSchema };

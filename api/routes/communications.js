@@ -9,7 +9,8 @@ const {
 const { filter_archiv_user } = require('../middlewares/limit_archiv_user');
 const { multitenant_filter } = require('../middlewares/multitenant-filter');
 
-const { Role } = require('../models/User');
+const { Role } = require('../constants');
+
 const { protect, permit } = require('../middlewares/auth');
 
 const {

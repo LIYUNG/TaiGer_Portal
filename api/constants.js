@@ -1,13 +1,13 @@
 const { ORIGIN, ESCALATION_DEADLINE_DAYS_TRIGGER } = require('./config');
-const { TENANT_WEBSITE, TENANT_NAME, TENANT_INSTAGRAM_LINK, TENANT_FACEBOOK_LINK, TENANT_MEDIUM_LINK, TENANT_LINKEDIN_LINK } = require('./constants/common');
-const Role = {
-  Admin: 'Admin',
-  Manager: 'Manager',
-  Guest: 'Guest',
-  Agent: 'Agent',
-  Editor: 'Editor',
-  Student: 'Student'
-};
+const {
+  TENANT_WEBSITE,
+  TENANT_NAME,
+  TENANT_INSTAGRAM_LINK,
+  TENANT_FACEBOOK_LINK,
+  TENANT_MEDIUM_LINK,
+  TENANT_LINKEDIN_LINK
+} = require('./constants/common');
+
 const ACCOUNT_ACTIVATION_URL = new URL('/account/activation', ORIGIN).href;
 const RESEND_ACTIVATION_URL = new URL('/account/resend-activation', ORIGIN)
   .href;
@@ -64,6 +64,15 @@ const JITSI_MEET_INSTRUCTIONS_URL = new URL(
   '/docs/search/64eb25ec89ea0d1fcb39df73',
   ORIGIN
 ).href;
+
+const Role = {
+  Admin: 'Admin',
+  Manager: 'Manager',
+  Guest: 'Guest',
+  Agent: 'Agent',
+  Editor: 'Editor',
+  Student: 'Student'
+};
 
 const TAIGER_SIGNATURE = `
 <p><b>Your ${TENANT_NAME} Team</b></p><p>Website: <a href="${TENANT_WEBSITE}">${TENANT_WEBSITE}</a></p>
@@ -1622,6 +1631,7 @@ const base_documents_summary = (student) => {
 };
 
 module.exports = {
+  Role,
   TicketStatus,
   ManagerType,
   DocumentStatus,

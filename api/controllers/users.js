@@ -4,11 +4,7 @@ const generator = require('generate-password');
 
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
-const { User, Student, Role } = require('../models/User');
-const Course = require('../models/Course');
-const { Documentthread } = require('../models/Documentthread');
-const { emptyS3Directory } = require('../utils/utils_function');
-const Token = require('../models/Token');
+const { Role } = require('../constants');
 const {
   updateNotificationEmail,
   sendInvitationEmail
@@ -21,39 +17,39 @@ const {
   checkEmail
 } = require('../common/validation');
 const { AWS_S3_BUCKET_NAME } = require('../config');
-const { s3 } = require('../aws/index');
+const { emptyS3Directory } = require('../utils/modelHelper/versionControl');
 
 const generateRandomToken = () => crypto.randomBytes(32).toString('hex');
 const hashToken = (token) =>
   crypto.createHash('sha256').update(token).digest('hex');
 
 // If user deleted, but some files still remain in S3, this function is to address this issue.
-const UserS3GarbageCollector = async () => {
-  logger.info('Trying to delete redundant file for deleted users.');
-  const listParamsPublic = {
-    Bucket: AWS_S3_BUCKET_NAME,
-    Delimiter: '/',
-    Prefix: ''
-  };
-  const listedObjectsPublic = await s3
-    .listObjectsV2(listParamsPublic)
-    .promise();
-  if (listedObjectsPublic.CommonPrefixes.length > 0) {
-    for (let i = 0; i < listedObjectsPublic.CommonPrefixes.length; i += 1) {
-      const Obj = listedObjectsPublic.CommonPrefixes[i];
-      const student_id = Obj.Prefix.replace('/', '');
-      try {
-        const student = await User.findById(student_id);
-        if (!student) {
-          // Obj.Prefix = folder_name/
-          emptyS3Directory(AWS_S3_BUCKET_NAME, `${Obj.Prefix}`);
-        }
-      } catch (err) {
-        logger.error(err);
-      }
-    }
-  }
-};
+// const UserS3GarbageCollector = asyncHandler(async () => {
+//   logger.info('Trying to delete redundant file for deleted users.');
+//   const listParamsPublic = {
+//     Bucket: AWS_S3_BUCKET_NAME,
+//     Delimiter: '/',
+//     Prefix: ''
+//   };
+//   const listedObjectsPublic = await s3
+//     .listObjectsV2(listParamsPublic)
+//     .promise();
+//   if (listedObjectsPublic.CommonPrefixes.length > 0) {
+//     for (let i = 0; i < listedObjectsPublic.CommonPrefixes.length; i += 1) {
+//       const Obj = listedObjectsPublic.CommonPrefixes[i];
+//       const student_id = Obj.Prefix.replace('/', '');
+//       try {
+//         const student = await req.db.model('User').findById(student_id);
+//         if (!student) {
+//           // Obj.Prefix = folder_name/
+//           emptyS3Directory(AWS_S3_BUCKET_NAME, `${Obj.Prefix}`);
+//         }
+//       } catch (err) {
+//         logger.error(err);
+//       }
+//     }
+//   }
+// });
 
 const addUser = asyncHandler(async (req, res) => {
   await fieldsValidation(
@@ -70,7 +66,7 @@ const addUser = asyncHandler(async (req, res) => {
     email,
     applying_program_count
   } = req.body;
-  const existUser = await User.findOne({ email });
+  const existUser = await req.db.model('User').findOne({ email });
   if (existUser) {
     logger.error('addUser: An account with this email address already exists');
     throw new ErrorResponse(
@@ -83,7 +79,7 @@ const addUser = asyncHandler(async (req, res) => {
     length: 10,
     numbers: true
   });
-  const user = await Student.create({
+  const user = await req.db.model('Student').create({
     firstname_chinese,
     lastname_chinese,
     firstname,
@@ -94,9 +90,11 @@ const addUser = asyncHandler(async (req, res) => {
   });
 
   const activationToken = generateRandomToken();
-  await Token.create({ userId: user._id, value: hashToken(activationToken) });
+  await req.db
+    .model('Token')
+    .create({ userId: user._id, value: hashToken(activationToken) });
 
-  const users = await User.find({}).lean();
+  const users = await req.db.model('User').find({}).lean();
   res.status(201).send({ success: true, data: users });
 
   await sendInvitationEmail(
@@ -106,13 +104,13 @@ const addUser = asyncHandler(async (req, res) => {
 });
 
 const getUsers = asyncHandler(async (req, res) => {
-  const users = await User.find({}).lean();
+  const users = await req.db.model('User').find({}).lean();
   res.status(200).send({ success: true, data: users });
 });
 
 const getUser = asyncHandler(async (req, res) => {
   const { user_id } = req.params;
-  const user = await User.findById(user_id).lean();
+  const user = await req.db.model('User').findById(user_id).lean();
 
   res.status(200).send({ success: true, data: user });
 });
@@ -132,7 +130,7 @@ const updateUser = asyncHandler(async (req, res) => {
     );
   }
   // TODO: if Agent or editor change role, remove their belong students!
-  // const students = await Student.updateMany(
+  // const students = await req.db.model('Student').updateMany(
   //   {
   //     agents: { $in: user_id }
   //   },
@@ -142,13 +140,16 @@ const updateUser = asyncHandler(async (req, res) => {
   //   { multi: true }
   // );
 
-  const new_user = await User.findByIdAndUpdate(user_id, fields, {
-    runValidators: true,
-    overwriteDiscriminatorKey: true,
-    // upsert: true,
-    new: true
-  }).lean();
-  const updated_user = await User.findById(user_id);
+  const new_user = await req.db
+    .model('User')
+    .findByIdAndUpdate(user_id, fields, {
+      runValidators: true,
+      overwriteDiscriminatorKey: true,
+      // upsert: true,
+      new: true
+    })
+    .lean();
+  const updated_user = await req.db.model('User').findById(user_id);
   res.status(200).send({ success: true, data: new_user });
 
   // Email inform user, the updated status
@@ -169,17 +170,19 @@ const updateUserArchivStatus = asyncHandler(async (req, res) => {
   } = req;
 
   // TODO: data validation for isArchived and user_id
-  let updated_user = await User.findByIdAndUpdate(
-    user_id,
-    {
-      archiv: isArchived
-    },
-    { new: true, strict: false }
-  )
+  let updated_user = await req.db
+    .model('User')
+    .findByIdAndUpdate(
+      user_id,
+      {
+        archiv: isArchived
+      },
+      { new: true, strict: false }
+    )
     .populate('editors')
     .lean()
     .exec();
-  const users = await User.find({}).lean();
+  const users = await req.db.model('User').find({}).lean();
   res.status(200).send({ success: true, data: users });
 });
 
@@ -187,17 +190,17 @@ const deleteUser = asyncHandler(async (req, res) => {
   const {
     params: { user_id }
   } = req;
-  const user_deleting = await User.findById(user_id);
+  const user_deleting = await req.db.model('User').findById(user_id);
 
   // Delete Admin
   if (user_deleting.role === Role.Admin) {
-    await User.findByIdAndDelete(user_id);
+    await req.db.model('User').findByIdAndDelete(user_id);
   }
 
   // delete from agent/editor
   if (user_deleting.role === Role.Agent) {
     // remove agent from students
-    const students = await Student.updateMany(
+    const students = await req.db.model('Student').updateMany(
       {
         agents: { $in: user_id }
       },
@@ -206,14 +209,14 @@ const deleteUser = asyncHandler(async (req, res) => {
       },
       { multi: true }
     );
-    await User.findByIdAndDelete(user_id);
+    await req.db.model('User').findByIdAndDelete(user_id);
     logger.info('delete agent user');
     logger.info(students);
   }
 
   if (user_deleting.role === Role.Editor) {
     // remove editor from students
-    const students = await Student.updateMany(
+    const students = await req.db.model('Student').updateMany(
       {
         editors: { $in: user_id }
       },
@@ -222,7 +225,7 @@ const deleteUser = asyncHandler(async (req, res) => {
       },
       { multi: true }
     );
-    await User.findByIdAndDelete(user_id);
+    await req.db.model('User').findByIdAndDelete(user_id);
     logger.info('delete editor user');
   }
 
@@ -235,21 +238,21 @@ const deleteUser = asyncHandler(async (req, res) => {
     emptyS3Directory(AWS_S3_BUCKET_NAME, `${user_id}/`);
 
     // Delete thread that user has
-    await Documentthread.deleteMany({ student_id: user_id });
+    await req.db.model('Documentthread').deleteMany({ student_id: user_id });
     logger.info('Threads deleted');
     // Delete course that user has
-    await Course.deleteMany({ student_id: user_id });
+    await req.db.model('Course').deleteMany({ student_id: user_id });
     logger.info('Courses deleted');
 
     // delete user in database
-    await User.findByIdAndDelete(user_id);
+    await req.db.model('User').findByIdAndDelete(user_id);
     logger.info('studnet deleted');
   }
   res.status(200).send({ success: true });
 });
 
 module.exports = {
-  UserS3GarbageCollector,
+  // UserS3GarbageCollector,
   addUser,
   getUsers,
   getUser,

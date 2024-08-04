@@ -3,9 +3,10 @@ const path = require('path');
 const request = require('supertest');
 
 const { UPLOAD_PATH } = require('../../config');
-const db = require('../fixtures/db');
+const { connect, closeDatabase, clearDatabase } = require('../fixtures/db');
 const { app } = require('../../app');
-const { Role, User, Agent, Editor, Student } = require('../../models/User');
+const { Role } = require('../../constants');
+const { Student, UserSchema } = require('../../models/User');
 const { DocumentStatus } = require('../../constants');
 const { generateUser } = require('../fixtures/users');
 const { protect, permit } = require('../../middlewares/auth');
@@ -16,7 +17,12 @@ const {
   permission_canAccessStudentDatabase_filter
 } = require('../../middlewares/permission-filter');
 const { generateProgram } = require('../fixtures/programs');
-const { Program } = require('../../models/Program');
+const { programSchema } = require('../../models/Program');
+const { TENANT_ID } = require('../fixtures/constants');
+const { connectToDatabase } = require('../../middlewares/tenantMiddleware');
+const {
+  decryptCookieMiddleware
+} = require('../../middlewares/decryptCookieMiddleware');
 
 jest.mock('../../middlewares/auth', () => {
   const passthrough = async (req, res, next) => next();
@@ -37,6 +43,27 @@ jest.mock('../../middlewares/InnerTaigerMultitenantFilter', () => {
       InnerTaigerMultitenantFilter: jest.fn().mockImplementation(passthrough)
     }
   );
+});
+
+jest.mock('../../middlewares/tenantMiddleware', () => {
+  const passthrough = async (req, res, next) => {
+    req.tenantId = 'test';
+    next();
+  };
+
+  return {
+    ...jest.requireActual('../../middlewares/tenantMiddleware'),
+    checkTenantDBMiddleware: jest.fn().mockImplementation(passthrough)
+  };
+});
+
+jest.mock('../../middlewares/decryptCookieMiddleware', () => {
+  const passthrough = async (req, res, next) => next();
+
+  return {
+    ...jest.requireActual('../../middlewares/decryptCookieMiddleware'),
+    decryptCookieMiddleware: jest.fn().mockImplementation(passthrough)
+  };
 });
 
 jest.mock('../../middlewares/permission-filter', () => {
@@ -77,20 +104,32 @@ const users = [
   student,
   student2
 ];
+let dbUri;
 
 const programs = [...Array(2)].map(() => generateProgram());
 
 const requiredDocuments = ['transcript', 'resume'];
 const optionalDocuments = ['certificate', 'visa'];
 
-beforeAll(async () => await db.connect());
-afterAll(async () => await db.clearDatabase());
+beforeAll(async () => {
+  dbUri = await connect();
+});
+afterAll(async () => await clearDatabase());
 
 beforeEach(async () => {
-  await User.deleteMany();
-  await Program.deleteMany();
-  await User.insertMany(users);
-  await Program.insertMany(programs);
+  const db = connectToDatabase(TENANT_ID, dbUri);
+
+  const UserModel = db.model('User', UserSchema);
+  const ProgramModel = db.model('Program', programSchema);
+
+  await UserModel.deleteMany();
+  await UserModel.insertMany(users);
+  await ProgramModel.deleteMany();
+  await ProgramModel.insertMany(programs);
+  // await User.deleteMany();
+  // await Program.deleteMany();
+  // await User.insertMany(users);
+  // await Program.insertMany(programs);
 });
 
 afterEach(() => {
@@ -113,6 +152,7 @@ describe('POST /api/students/:id/agents', () => {
 
     const resp = await request(app)
       .post(`/api/students/${studentId}/agents`)
+      .set('tenantId', TENANT_ID)
       .send(agents_obj);
 
     expect(resp.status).toBe(200);
@@ -145,6 +185,7 @@ describe('POST /api/students/:id/editors', () => {
 
     const resp = await request(app)
       .post(`/api/students/${studentId}/editors`)
+      .set('tenantId', TENANT_ID)
       .send(editors_obj);
 
     expect(resp.status).toBe(200);
@@ -187,6 +228,7 @@ describe('POST /api/students/:studentId/applications', () => {
     });
     const resp = await request(app)
       .post(`/api/students/${studentId}/applications`)
+      .set('tenantId', TENANT_ID)
       .send({ program_id_set: programs_arr });
 
     const {
@@ -316,6 +358,7 @@ describe('POST /api/students/:studentId/files/:category', () => {
     const buffer_2MB_exe = Buffer.alloc(1024 * 1024 * 2); // 2 MB
     const resp2 = await request(app)
       .post(`/api/students/${studentId}/files/${category}`)
+      .set('tenantId', TENANT_ID)
       .attach('file', buffer_2MB_exe, filename_invalid_ext);
 
     expect(resp2.status).toBe(415);
@@ -326,6 +369,7 @@ describe('POST /api/students/:studentId/files/:category', () => {
     const buffer_10MB = Buffer.alloc(1024 * 1024 * 6); // 6 MB
     const resp2 = await request(app)
       .post(`/api/students/${studentId}/files/${category}`)
+      .set('tenantId', TENANT_ID)
       .attach('file', buffer_10MB, filename);
 
     expect(resp2.status).toBe(413);
@@ -335,6 +379,7 @@ describe('POST /api/students/:studentId/files/:category', () => {
   it('should save the uploaded profile file and store the path in db', async () => {
     const resp = await request(app)
       .post(`/api/students/${studentId}/files/${category}`)
+      .set('tenantId', TENANT_ID)
       .attach('file', Buffer.from('Lorem ipsum'), filename);
 
     const { status, body } = resp;
@@ -369,6 +414,7 @@ describe('POST /api/students/:studentId/files/:category', () => {
     // Test Download:
     const resp2 = await request(app)
       .get(`/api/students/${studentId}/files/${category}`)
+      .set('tenantId', TENANT_ID)
       .buffer();
 
     expect(resp2.status).toBe(200);
@@ -386,16 +432,16 @@ describe('POST /api/students/:studentId/files/:category', () => {
     // expect(resp3.body.success).toBe(false);
 
     // test delete
-    const resp4 = await request(app).delete(
-      `/api/students/${studentId}/files/${category}`
-    );
+    const resp4 = await request(app)
+      .delete(`/api/students/${studentId}/files/${category}`)
+      .set('tenantId', TENANT_ID);
     expect(resp4.status).toBe(200);
     expect(resp4.body.success).toBe(true);
 
     // TODO test delete: should not delete other students file
-    const resp5 = await request(app).delete(
-      `/api/students/${student2Id}/files/${category}`
-    );
+    const resp5 = await request(app)
+      .delete(`/api/students/${student2Id}/files/${category}`)
+      .set('tenantId', TENANT_ID);
     expect(resp5.status).toBe(403);
     expect(resp5.body.success).toBe(false);
   });
@@ -431,6 +477,7 @@ describe('POST /api/students/:studentId/files/:category', () => {
       const buffer_1MB_exe = Buffer.alloc(1024 * 1024 * 1); // 1 MB
       const resp2 = await request(app)
         .post(`/api/students/${studentId}/files/${category}`)
+        .set('tenantId', TENANT_ID)
         .attach('file', buffer_1MB_exe, File_Name);
 
       expect(resp2.status).toBe(status);
@@ -442,6 +489,7 @@ describe('POST /api/students/:studentId/files/:category', () => {
     const buffer_10MB = Buffer.alloc(1024 * 1024 * 6); // 6 MB
     const resp2 = await request(app)
       .post(`/api/students/${studentId}/files/${category}`)
+      .set('tenantId', TENANT_ID)
       .attach('file', buffer_10MB, filename);
 
     expect(resp2.status).toBe(413);
@@ -451,6 +499,7 @@ describe('POST /api/students/:studentId/files/:category', () => {
   it('should save the uploaded profile file and store the path in db', async () => {
     const resp = await request(app)
       .post(`/api/students/${studentId}/files/${category}`)
+      .set('tenantId', TENANT_ID)
       .attach('file', Buffer.from('Lorem ipsum'), filename);
 
     const { status, body } = resp;
@@ -485,6 +534,7 @@ describe('POST /api/students/:studentId/files/:category', () => {
     // Test Download:
     const resp2 = await request(app)
       .get(`/api/students/${studentId}/files/${category}`)
+      .set('tenantId', TENANT_ID)
       .buffer();
 
     expect(resp2.status).toBe(200);
@@ -505,6 +555,7 @@ describe('POST /api/students/:studentId/files/:category', () => {
     const feedback_str = 'too blurred';
     const resp5 = await request(app)
       .post(`/api/students/${studentId}/${category}/status`)
+      .set('tenantId', TENANT_ID)
       .send({ status: 'rejected', feedback: feedback_str });
     expect(resp5.status).toBe(201);
     var updatedStudent2 = resp5.body.data;
@@ -516,9 +567,9 @@ describe('POST /api/students/:studentId/files/:category', () => {
     expect(updated_doc.feedback).toBe(feedback_str);
 
     // test delete
-    const resp4 = await request(app).delete(
-      `/api/students/${studentId}/files/${category}`
-    );
+    const resp4 = await request(app)
+      .delete(`/api/students/${studentId}/files/${category}`)
+      .set('tenantId', TENANT_ID);
     expect(resp4.status).toBe(200);
     expect(resp4.body.success).toBe(true);
   });

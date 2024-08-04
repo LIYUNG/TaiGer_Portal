@@ -3,7 +3,8 @@ const {
   GeneralGETSearchRequestRateLimiter
 } = require('../middlewares/rate_limiter');
 const { protect, permit } = require('../middlewares/auth');
-const { Role } = require('../models/User');
+const { Role } = require('../constants');
+
 
 const {
   getQueryResults,

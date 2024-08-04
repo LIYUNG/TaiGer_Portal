@@ -3,7 +3,7 @@ const async = require('async');
 
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
-const { Role, User, Agent, Student, Editor } = require('../models/User');
+const { Role } = require('../constants');
 const logger = require('../services/logger');
 
 const getStudentUniAssist = asyncHandler(async (req, res) => {
@@ -14,14 +14,14 @@ const getStudentUniAssist = asyncHandler(async (req, res) => {
   if (user.role === Role.Student) {
     const obj = user.notification; // create object
     obj['isRead_uni_assist_task_assigned'] = true; // set value
-    await Student.findByIdAndUpdate(
-      user._id.toString(),
-      { notification: obj },
-      {}
-    );
+    await req.db
+      .model('Student')
+      .findByIdAndUpdate(user._id.toString(), { notification: obj }, {});
   }
 
-  const student = await Student.findById(studentId)
+  const student = await req.db
+    .model('Student')
+    .findById(studentId)
     .populate('agents editors', 'firstname lastname email')
     .populate('applications.programId')
     .populate(

@@ -1,4 +1,4 @@
-const { Role } = require('../../models/User');
+const { Role } = require('../../constants');
 const { getPermission } = require('../../utils/queryFunctions');
 const {
   permission_canAssignEditor_filter,

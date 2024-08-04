@@ -2,14 +2,15 @@ const path = require('path');
 const async = require('async');
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
-const { Student } = require('../models/User');
 const logger = require('../services/logger');
 const { two_month_cache } = require('../cache/node-cache');
 const { AWS_S3_BUCKET_NAME } = require('../config');
 const { s3 } = require('../aws');
 
 const getAdmissions = asyncHandler(async (req, res) => {
-  const students = await Student.find()
+  const students = await req.db
+    .model('Student')
+    .find()
     .select(
       '-applications.doc_modification_thread -applications.uni_assist -email -birthday -applying_program_count -agents -editors -profile -isAccountActivated -updatedAt -generaldocs_threads -taigerai -notification -academic_background'
     )
@@ -62,7 +63,9 @@ const getAdmissionLetter = asyncHandler(async (req, res, next) => {
 
 const getAdmissionsYear = asyncHandler(async (req, res) => {
   const { applications_year } = req.params;
-  const tasks = await Student.find({ student_id: applications_year });
+  const tasks = await req.db
+    .model('Student')
+    .find({ student_id: applications_year });
   res.status(200).send({ success: true, data: tasks });
 });
 

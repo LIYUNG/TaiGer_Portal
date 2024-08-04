@@ -6,16 +6,7 @@ const {
 const bcrypt = require('bcryptjs');
 const isEmail = require('validator/lib/isEmail');
 
-const { DocumentStatus, ManagerType } = require('../constants');
-
-const Role = {
-  Admin: 'Admin',
-  Manager: 'Manager',
-  Guest: 'Guest',
-  Agent: 'Agent',
-  Editor: 'Editor',
-  Student: 'Student'
-};
+const { DocumentStatus, ManagerType, Role } = require('../constants');
 
 const options = { discriminatorKey: 'role', timestamps: true };
 const UserSchema = new Schema(
@@ -720,4 +711,13 @@ const Editor = User.discriminator(
 
 const Admin = User.discriminator('Admin', new Schema({}, options), Role.Admin);
 
-module.exports = { Role, User, Guest, Student, Agent, Editor, Manager, Admin };
+module.exports = {
+  User,
+  UserSchema,
+  Guest,
+  Student,
+  Agent,
+  Editor,
+  Manager,
+  Admin
+};

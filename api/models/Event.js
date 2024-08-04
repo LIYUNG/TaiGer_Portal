@@ -1,8 +1,11 @@
 // const moment = require('moment');
-const { ObjectId } = require('mongodb');
-const mongoose = require('mongoose');
+const {
+  model,
+  Schema,
+  Types: { ObjectId }
+} = require('mongoose');
 
-const EventSchema = new mongoose.Schema(
+const EventSchema = new Schema(
   {
     requester_id: [{ type: ObjectId, ref: 'User' }],
     receiver_id: [{ type: ObjectId, ref: 'User' }],
@@ -64,4 +67,6 @@ const EventSchema = new mongoose.Schema(
 
 EventSchema.index({ requester_id: 1, receiver_id: 1, start: 1 });
 
-module.exports = mongoose.model('Event', EventSchema);
+const Event = model('Event', EventSchema);
+
+module.exports = { Event, EventSchema };

@@ -1,10 +1,4 @@
 const async = require('async');
-const path = require('path');
-const { Agent, Student, Editor, User, Role } = require('../models/User');
-const { Documentthread } = require('../models/Documentthread');
-const { Communication } = require('../models/Communication');
-const { Interval } = require('../models/Interval');
-const { ResponseTime } = require('../models/ResponseTime');
 const {
   sendAssignEditorReminderEmail,
   MeetingReminderEmail,
@@ -13,10 +7,6 @@ const {
   InterviewTrainingReminderEmail,
   InterviewSurveyRequestEmail
 } = require('../services/email');
-const Permission = require('../models/Permission');
-const { s3 } = require('../aws/index');
-const Event = require('../models/Event');
-const { Interview } = require('../models/Interview');
 
 const {
   StudentTasksReminderEmail,
@@ -37,43 +27,27 @@ const {
   is_deadline_within30days_needed,
   is_cv_ml_rl_reminder_needed,
   isNotArchiv,
-  needUpdateCourseSelection
+  needUpdateCourseSelection,
+  Role
 } = require('../constants');
+const { asyncHandler } = require('../middlewares/error-handler');
+const { isProd } = require('../config');
+const { connectToDatabase } = require('../middlewares/tenantMiddleware');
 
-const emptyS3Directory = async (bucket, dir) => {
-  const listParams = {
-    Bucket: bucket,
-    Prefix: dir
-  };
 
-  const listedObjects = await s3.listObjectsV2(listParams).promise();
 
-  if (listedObjects.Contents.length === 0) return;
-
-  const deleteParams = {
-    Bucket: bucket,
-    Delete: { Objects: [] }
-  };
-
-  listedObjects.Contents.forEach(({ Key }) => {
-    deleteParams.Delete.Objects.push({ Key });
-  });
-  logger.warn(JSON.stringify(deleteParams));
-  await s3.deleteObjects(deleteParams).promise();
-
-  if (listedObjects.IsTruncated) await emptyS3Directory(bucket, dir);
-};
-
-const TasksReminderEmails_Editor_core = async () => {
+const TasksReminderEmails_Editor_core = asyncHandler(async (req) => {
   // Only inform active student
   // TODO: deactivate or change email frequency (default 1 week.)
-  const editors = await Editor.find();
+  const editors = await req.db.model('Editor').find();
 
   const editorPromises = editors.map(async (editor) => {
-    const editor_students = await Student.find({
-      editors: editor._id,
-      $or: [{ archiv: { $exists: false } }, { archiv: false }]
-    })
+    const editor_students = await req.db
+      .model('Student')
+      .find({
+        editors: editor._id,
+        $or: [{ archiv: { $exists: false } }, { archiv: false }]
+      })
       .populate('agents editors', 'firstname lastname email')
       .populate('applications.programId')
       .populate(
@@ -101,18 +75,20 @@ const TasksReminderEmails_Editor_core = async () => {
   await Promise.all(editorPromises);
 
   logger.info('Editor reminder email sent');
-};
+});
 
-const TasksReminderEmails_Agent_core = async () => {
+const TasksReminderEmails_Agent_core = asyncHandler(async (req) => {
   // Only inform active student
   // TODO: deactivate or change email frequency (default 1 week.)
-  const agents = await Agent.find();
+  const agents = await req.db.model('Agent').find();
 
   for (let j = 0; j < agents.length; j += 1) {
-    const agent_students = await Student.find({
-      agents: agents[j]._id,
-      $or: [{ archiv: { $exists: false } }, { archiv: false }]
-    })
+    const agent_students = await req.db
+      .model('Student')
+      .find({
+        agents: agents[j]._id,
+        $or: [{ archiv: { $exists: false } }, { archiv: false }]
+      })
       .populate('agents editors', 'firstname lastname email')
       .populate('applications.programId')
       .populate(
@@ -135,14 +111,16 @@ const TasksReminderEmails_Agent_core = async () => {
     }
   }
   logger.info('Agent reminder email sent');
-};
+});
 
-const TasksReminderEmails_Student_core = async () => {
+const TasksReminderEmails_Student_core = asyncHandler(async (req) => {
   // Only inform active student
   // TODO: deactivate or change email frequency (default 1 week.)
-  const students = await Student.find({
-    $or: [{ archiv: { $exists: false } }, { archiv: false }]
-  })
+  const students = await req.db
+    .model('Student')
+    .find({
+      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+    })
     .populate('agents editors', 'firstname lastname email')
     .populate('applications.programId')
     .populate(
@@ -163,14 +141,18 @@ const TasksReminderEmails_Student_core = async () => {
     );
   }
   logger.info('Student reminder email sent');
-};
+});
 
 // Weekly called.
-const TasksReminderEmails = async () => {
-  await TasksReminderEmails_Editor_core();
-  await TasksReminderEmails_Student_core();
-  await TasksReminderEmails_Agent_core();
-};
+const TasksReminderEmails = asyncHandler(async () => {
+  const tenantId = isProd() ? 'TaiGer_Prod' : 'TaiGer';
+  const req = {};
+  req.db = connectToDatabase(tenantId);
+  req.VCModel = req.db.model('VC');
+  await TasksReminderEmails_Editor_core(req);
+  await TasksReminderEmails_Student_core(req);
+  await TasksReminderEmails_Agent_core(req);
+});
 
 const events_transformer = (events) => {
   const transformedDocuments = events.map((event) => ({
@@ -444,13 +426,15 @@ const documentthreads_transformer = (documentthreads) => {
 };
 // Daily called.
 
-const UrgentTasksReminderEmails_Student_core = async () => {
+const UrgentTasksReminderEmails_Student_core = asyncHandler(async (req) => {
   // Only inform active student
   // TODO: deactivate or change email frequency (default 1 week.)
   const trigger_days = 3;
-  const students = await Student.find({
-    $or: [{ archiv: { $exists: false } }, { archiv: false }]
-  })
+  const students = await req.db
+    .model('Student')
+    .find({
+      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+    })
     .populate('agents editors', 'firstname lastname email')
     .populate('applications.programId')
     .populate(
@@ -493,20 +477,22 @@ const UrgentTasksReminderEmails_Student_core = async () => {
   });
 
   await Promise.all(deadlineReminderPromises);
-};
+});
 
-const UrgentTasksReminderEmails_Agent_core = async () => {
+const UrgentTasksReminderEmails_Agent_core = asyncHandler(async (req) => {
   // Only inform active student
   // TODO: deactivate or change email frequency (default 1 week.)
   const escalation_trigger_10days = 10;
   const escalation_trigger_3days = 3;
-  const agents = await Agent.find();
+  const agents = await req.db.model('Agent').find();
 
   const agentPromises = agents.map(async (agent) => {
-    const agent_students = await Student.find({
-      agents: agent._id,
-      $or: [{ archiv: { $exists: false } }, { archiv: false }]
-    })
+    const agent_students = await req.db
+      .model('Student')
+      .find({
+        agents: agent._id,
+        $or: [{ archiv: { $exists: false } }, { archiv: false }]
+      })
       .populate('agents editors', 'firstname lastname email')
       .populate('applications.programId')
       .populate(
@@ -586,21 +572,24 @@ const UrgentTasksReminderEmails_Agent_core = async () => {
   });
 
   await Promise.all(agentPromises);
-};
+});
 
-const UrgentTasksReminderEmails_Editor_core = async () => {
+const UrgentTasksReminderEmails_Editor_core = asyncHandler(async (req) => {
   // Only inform active student
   // TODO: deactivate or change email frequency (default 1 week.)
   const editor_trigger_7days = 7;
   const editor_trigger_3days = 3;
-  const editors = await Editor.find();
+
+  const editors = await req.db.model('Editor').find();
 
   // (O): Check if editor no reply (need to response) more than 3 days (Should configurable)
   for (let j = 0; j < editors.length; j += 1) {
-    const editor_students = await Student.find({
-      editors: editors[j]._id,
-      $or: [{ archiv: { $exists: false } }, { archiv: false }]
-    })
+    const editor_students = await req.db
+      .model('Student')
+      .find({
+        editors: editors[j]._id,
+        $or: [{ archiv: { $exists: false } }, { archiv: false }]
+      })
       .populate('agents editors', 'firstname lastname email')
       .populate('applications.programId')
       .populate(
@@ -662,12 +651,18 @@ const UrgentTasksReminderEmails_Editor_core = async () => {
       }
     }
   }
-};
+});
 
-const AssignEditorTasksReminderEmails = async () => {
-  const students = await Student.find({
-    $or: [{ archiv: { $exists: false } }, { archiv: false }]
-  })
+const AssignEditorTasksReminderEmails = asyncHandler(async () => {
+  const tenantId = isProd() ? 'TaiGer_Prod' : 'TaiGer';
+  const req = {};
+  req.db = connectToDatabase(tenantId);
+  req.VCModel = req.db.model('VC');
+  const students = await req.db
+    .model('Student')
+    .find({
+      $or: [{ archiv: { $exists: false } }, { archiv: false }]
+    })
     .populate('agents editors', 'firstname lastname email archiv')
     .populate('applications.programId')
     .populate(
@@ -700,9 +695,11 @@ const AssignEditorTasksReminderEmails = async () => {
         }
       }
       // inform editor-lead
-      const permissions = await Permission.find({
-        canAssignEditors: true
-      })
+      const permissions = await req.db
+        .model('Permission')
+        .find({
+          canAssignEditors: true
+        })
         .populate('user_id', 'firstname lastname email')
         .lean();
       if (permissions) {
@@ -726,155 +723,173 @@ const AssignEditorTasksReminderEmails = async () => {
       logger.info('Assign editor reminded');
     }
   }
-};
+});
 
-const UrgentTasksReminderEmails = async () => {
+const UrgentTasksReminderEmails = asyncHandler(async () => {
+  const tenantId = isProd() ? 'TaiGer_Prod' : 'TaiGer';
+  const req = {};
+  req.db = connectToDatabase(tenantId);
+  req.VCModel = req.db.model('VC');
   const UrgentTaskPromises = [
-    UrgentTasksReminderEmails_Editor_core(),
-    UrgentTasksReminderEmails_Student_core(),
-    UrgentTasksReminderEmails_Agent_core()
+    UrgentTasksReminderEmails_Editor_core(req),
+    UrgentTasksReminderEmails_Student_core(req),
+    UrgentTasksReminderEmails_Agent_core(req)
   ];
 
   await Promise.all(UrgentTaskPromises);
-};
+});
 
-const NextSemesterCourseSelectionStudentReminderEmails = async () => {
-  // Only inform active student
-  const studentsWithCourses = await Student.aggregate([
-    {
-      $match: {
-        archiv: { $ne: true } // Filter out students where 'archiv' is not equal to true
-      }
-    },
-    {
-      $lookup: {
-        from: 'courses',
-        localField: '_id',
-        foreignField: 'student_id',
-        as: 'courses'
-      }
-    },
-    {
-      $project: {
-        firstname: 1,
-        lastname: 1,
-        email: 1,
-        role: 1,
-        archiv: 1,
-        academic_background: 1,
-        courses: 1
-      }
-    }
-  ]);
+const NextSemesterCourseSelectionStudentReminderEmails = asyncHandler(
+  async (req) => {
+    // Only inform active student
 
-  for (let j = 0; j < studentsWithCourses.length; j += 1) {
-    if (isNotArchiv(studentsWithCourses[j])) {
-      if (needUpdateCourseSelection(studentsWithCourses[j])) {
-        // Inform student
-        StudentCourseSelectionReminderEmail(
-          {
-            firstname: studentsWithCourses[j].firstname,
-            lastname: studentsWithCourses[j].lastname,
-            address: studentsWithCourses[j].email
-          },
-          { student: studentsWithCourses[j] }
-        );
+    const studentsWithCourses = await req.db.model('Student').aggregate([
+      {
+        $match: {
+          archiv: { $ne: true } // Filter out students where 'archiv' is not equal to true
+        }
+      },
+      {
+        $lookup: {
+          from: 'courses',
+          localField: '_id',
+          foreignField: 'student_id',
+          as: 'courses'
+        }
+      },
+      {
+        $project: {
+          firstname: 1,
+          lastname: 1,
+          email: 1,
+          role: 1,
+          archiv: 1,
+          academic_background: 1,
+          courses: 1
+        }
+      }
+    ]);
+
+    for (let j = 0; j < studentsWithCourses.length; j += 1) {
+      if (isNotArchiv(studentsWithCourses[j])) {
+        if (needUpdateCourseSelection(studentsWithCourses[j])) {
+          // Inform student
+          StudentCourseSelectionReminderEmail(
+            {
+              firstname: studentsWithCourses[j].firstname,
+              lastname: studentsWithCourses[j].lastname,
+              address: studentsWithCourses[j].email
+            },
+            { student: studentsWithCourses[j] }
+          );
+        }
       }
     }
   }
-};
+);
 
-const NextSemesterCourseSelectionAgentReminderEmails = async () => {
-  // Only inform active student
-  const studentsWithCourses = await Student.aggregate([
-    {
-      $match: {
-        archiv: { $ne: true } // Filter out students where 'archiv' is not equal to true
-      }
-    },
-    {
-      $lookup: {
-        from: 'courses',
-        localField: '_id',
-        foreignField: 'student_id',
-        as: 'courses'
-      }
-    },
-    {
-      $lookup: {
-        from: 'users', // Replace 'users' with the actual name of the User collection
-        localField: 'agents',
-        foreignField: '_id',
-        as: 'agentsInfo'
-      }
-    },
-    {
-      $project: {
-        firstname: 1,
-        lastname: 1,
-        email: 1,
-        role: 1,
-        archiv: 1,
-        agents: {
-          $map: {
-            input: '$agents',
-            as: 'agentId',
-            in: {
-              $let: {
-                vars: {
-                  agentInfo: {
-                    $arrayElemAt: [
-                      {
-                        $filter: {
-                          input: '$agentsInfo',
-                          cond: { $eq: ['$$this._id', '$$agentId'] }
-                        }
-                      },
-                      0
-                    ]
+const NextSemesterCourseSelectionAgentReminderEmails = asyncHandler(
+  async () => {
+    // Only inform active student
+    const tenantId = isProd() ? 'TaiGer_Prod' : 'TaiGer';
+    const req = {};
+    req.db = connectToDatabase(tenantId);
+    req.VCModel = req.db.model('VC');
+    const studentsWithCourses = await req.db.model('Student').aggregate([
+      {
+        $match: {
+          archiv: { $ne: true } // Filter out students where 'archiv' is not equal to true
+        }
+      },
+      {
+        $lookup: {
+          from: 'courses',
+          localField: '_id',
+          foreignField: 'student_id',
+          as: 'courses'
+        }
+      },
+      {
+        $lookup: {
+          from: 'users', // Replace 'users' with the actual name of the User collection
+          localField: 'agents',
+          foreignField: '_id',
+          as: 'agentsInfo'
+        }
+      },
+      {
+        $project: {
+          firstname: 1,
+          lastname: 1,
+          email: 1,
+          role: 1,
+          archiv: 1,
+          agents: {
+            $map: {
+              input: '$agents',
+              as: 'agentId',
+              in: {
+                $let: {
+                  vars: {
+                    agentInfo: {
+                      $arrayElemAt: [
+                        {
+                          $filter: {
+                            input: '$agentsInfo',
+                            cond: { $eq: ['$$this._id', '$$agentId'] }
+                          }
+                        },
+                        0
+                      ]
+                    }
+                  },
+                  in: {
+                    firstname: '$$agentInfo.firstname',
+                    lastname: '$$agentInfo.lastname',
+                    archiv: '$$agentInfo.archiv',
+                    email: '$$agentInfo.email'
                   }
-                },
-                in: {
-                  firstname: '$$agentInfo.firstname',
-                  lastname: '$$agentInfo.lastname',
-                  archiv: '$$agentInfo.archiv',
-                  email: '$$agentInfo.email'
                 }
               }
             }
-          }
-        },
-        academic_background: 1,
-        courses: 1
+          },
+          academic_background: 1,
+          courses: 1
+        }
       }
-    }
-  ]);
-  for (let j = 0; j < studentsWithCourses.length; j += 1) {
-    if (isNotArchiv(studentsWithCourses[j])) {
-      if (needUpdateCourseSelection(studentsWithCourses[j])) {
-        // TODO: move informing Agent to another function so that all students needing update in 1 email for agents.
-        for (let x = 0; x < studentsWithCourses[j].agents.length; x += 1) {
-          if (isNotArchiv(studentsWithCourses[j].agents[x])) {
-            // TODO: inform Agent
-            await AgentCourseSelectionReminderEmail(
-              {
-                firstname: studentsWithCourses[j].agents[x].firstname,
-                lastname: studentsWithCourses[j].agents[x].lastname,
-                address: studentsWithCourses[j].agents[x].email
-              },
-              { student: studentsWithCourses[j] }
-            );
+    ]);
+    for (let j = 0; j < studentsWithCourses.length; j += 1) {
+      if (isNotArchiv(studentsWithCourses[j])) {
+        if (needUpdateCourseSelection(studentsWithCourses[j])) {
+          // TODO: move informing Agent to another function so that all students needing update in 1 email for agents.
+          for (let x = 0; x < studentsWithCourses[j].agents.length; x += 1) {
+            if (isNotArchiv(studentsWithCourses[j].agents[x])) {
+              // TODO: inform Agent
+              await AgentCourseSelectionReminderEmail(
+                {
+                  firstname: studentsWithCourses[j].agents[x].firstname,
+                  lastname: studentsWithCourses[j].agents[x].lastname,
+                  address: studentsWithCourses[j].agents[x].email
+                },
+                { student: studentsWithCourses[j] }
+              );
+            }
           }
         }
       }
     }
   }
-};
+);
 
-const NextSemesterCourseSelectionReminderEmails = async () => {
+const NextSemesterCourseSelectionReminderEmails = asyncHandler(async () => {
+  const tenantId = isProd() ? 'TaiGer_Prod' : 'TaiGer';
+
+  const req = {};
+  req.db = connectToDatabase(tenantId);
+  req.VCModel = req.db.model('VC');
   await NextSemesterCourseSelectionStudentReminderEmails();
   // await NextSemesterCourseSelectionAgentReminderEmails();
-};
+});
 
 const numStudentYearDistribution = (students) =>
   students.reduce((acc, student) => {
@@ -884,109 +899,109 @@ const numStudentYearDistribution = (students) =>
     return acc;
   }, {});
 
-const UpdateStatisticsData = async () => {
-  const documents_cv = await Documentthread.find({
-    isFinalVersion: false,
-    file_type: 'CV'
-  }).count();
-  // TODO: this include the tasks that created by not shown, because the programs are not decided.
-  // So that is why the number is more than what we actually see in UI.
-  // Case 2: if student in Archiv, but the tasks are still open!! then the number is not correct!
-  const documents_ml = await Documentthread.find({
-    isFinalVersion: false,
-    file_type: 'ML'
-  }).count();
-  const documents_rl = await Documentthread.find({
-    isFinalVersion: false,
-    $or: [
-      { file_type: 'RL_A' },
-      { file_type: 'RL_B' },
-      { file_type: 'RL_C' },
-      { file_type: 'Recommendation_Letter_A' },
-      { file_type: 'Recommendation_Letter_B' },
-      { file_type: 'Recommendation_Letter_C' }
-    ]
-  }).count();
-  const documents_essay = await Documentthread.find({
-    isFinalVersion: false,
-    file_type: 'Essay'
-  }).count();
-  const documents_data = {};
-  documents_data.CV = { count: documents_cv };
-  documents_data.ML = { count: documents_ml };
-  documents_data.RL = { count: documents_rl };
-  documents_data.ESSAY = { count: documents_essay };
-  const agents = await Agent.find({
-    $or: [{ archiv: { $exists: false } }, { archiv: false }]
-  });
-  const editors = await Editor.find({
-    $or: [{ archiv: { $exists: false } }, { archiv: false }]
-  });
-  const students = await Student.find()
-    .populate('agents editors', 'firstname lastname')
-    .populate('applications.programId')
-    .populate(
-      'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
-      '-messages'
-    );
-  const agents_data = [];
-  const editors_data = [];
-  for (let i = 0; i < agents.length; i += 1) {
-    const Obj = {};
-    Obj._id = agents[i]._id.toString();
-    Obj.firstname = agents[i].firstname;
-    Obj.lastname = agents[i].lastname;
-    Obj.student_num = await Student.find({
-      agents: agents[i]._id,
-      $or: [{ archiv: { $exists: false } }, { archiv: false }]
-    }).count();
-    agents_data.push(Obj);
-  }
-  for (let i = 0; i < editors.length; i += 1) {
-    const Obj = {};
-    Obj._id = editors[i]._id.toString();
-    Obj.firstname = editors[i].firstname;
-    Obj.lastname = editors[i].lastname;
-    Obj.student_num = await Student.find({
-      editors: editors[i]._id,
-      $or: [{ archiv: { $exists: false } }, { archiv: false }]
-    }).count();
-    editors_data.push(Obj);
-  }
-  const finished_docs = await Documentthread.find({
-    isFinalVersion: true,
-    $or: [
-      { file_type: 'CV' },
-      { file_type: 'ML' },
-      { file_type: 'RL_A' },
-      { file_type: 'RL_B' },
-      { file_type: 'RL_C' },
-      { file_type: 'Recommendation_Letter_A' },
-      { file_type: 'Recommendation_Letter_B' },
-      { file_type: 'Recommendation_Letter_C' }
-    ]
-  })
-    .populate('student_id', 'firstname lastname')
-    .select('file_type messages.createdAt');
-  const users = await User.find({
-    role: { $in: ['Admin', 'Agent', 'Editor'] }
-  }).lean();
-  const result = {
-    success: true,
-    data: users,
-    // documents_all_open,
-    documents: documents_data,
-    students: {
-      isClose: students.filter((student) => student.archiv === true).length,
-      isOpen: students.filter((student) => student.archiv !== true).length
-    },
-    finished_docs,
-    agents: agents_data,
-    editors: editors_data,
-    students_details: students,
-    applications: []
-  };
-};
+// const UpdateStatisticsData = asyncHandler(async () => {
+//   const documents_cv = await Documentthread.find({
+//     isFinalVersion: false,
+//     file_type: 'CV'
+//   }).count();
+//   // TODO: this include the tasks that created by not shown, because the programs are not decided.
+//   // So that is why the number is more than what we actually see in UI.
+//   // Case 2: if student in Archiv, but the tasks are still open!! then the number is not correct!
+//   const documents_ml = await Documentthread.find({
+//     isFinalVersion: false,
+//     file_type: 'ML'
+//   }).count();
+//   const documents_rl = await Documentthread.find({
+//     isFinalVersion: false,
+//     $or: [
+//       { file_type: 'RL_A' },
+//       { file_type: 'RL_B' },
+//       { file_type: 'RL_C' },
+//       { file_type: 'Recommendation_Letter_A' },
+//       { file_type: 'Recommendation_Letter_B' },
+//       { file_type: 'Recommendation_Letter_C' }
+//     ]
+//   }).count();
+//   const documents_essay = await Documentthread.find({
+//     isFinalVersion: false,
+//     file_type: 'Essay'
+//   }).count();
+//   const documents_data = {};
+//   documents_data.CV = { count: documents_cv };
+//   documents_data.ML = { count: documents_ml };
+//   documents_data.RL = { count: documents_rl };
+//   documents_data.ESSAY = { count: documents_essay };
+//   const agents = await Agent.find({
+//     $or: [{ archiv: { $exists: false } }, { archiv: false }]
+//   });
+//   const editors = await Editor.find({
+//     $or: [{ archiv: { $exists: false } }, { archiv: false }]
+//   });
+//   const students = await Student.find()
+//     .populate('agents editors', 'firstname lastname')
+//     .populate('applications.programId')
+//     .populate(
+//       'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
+//       '-messages'
+//     );
+//   const agents_data = [];
+//   const editors_data = [];
+//   for (let i = 0; i < agents.length; i += 1) {
+//     const Obj = {};
+//     Obj._id = agents[i]._id.toString();
+//     Obj.firstname = agents[i].firstname;
+//     Obj.lastname = agents[i].lastname;
+//     Obj.student_num = await Student.find({
+//       agents: agents[i]._id,
+//       $or: [{ archiv: { $exists: false } }, { archiv: false }]
+//     }).count();
+//     agents_data.push(Obj);
+//   }
+//   for (let i = 0; i < editors.length; i += 1) {
+//     const Obj = {};
+//     Obj._id = editors[i]._id.toString();
+//     Obj.firstname = editors[i].firstname;
+//     Obj.lastname = editors[i].lastname;
+//     Obj.student_num = await Student.find({
+//       editors: editors[i]._id,
+//       $or: [{ archiv: { $exists: false } }, { archiv: false }]
+//     }).count();
+//     editors_data.push(Obj);
+//   }
+//   const finished_docs = await Documentthread.find({
+//     isFinalVersion: true,
+//     $or: [
+//       { file_type: 'CV' },
+//       { file_type: 'ML' },
+//       { file_type: 'RL_A' },
+//       { file_type: 'RL_B' },
+//       { file_type: 'RL_C' },
+//       { file_type: 'Recommendation_Letter_A' },
+//       { file_type: 'Recommendation_Letter_B' },
+//       { file_type: 'Recommendation_Letter_C' }
+//     ]
+//   })
+//     .populate('student_id', 'firstname lastname')
+//     .select('file_type messages.createdAt');
+//   const users = await User.find({
+//     role: { $in: ['Admin', 'Agent', 'Editor'] }
+//   }).lean();
+//   const result = {
+//     success: true,
+//     data: users,
+//     // documents_all_open,
+//     documents: documents_data,
+//     students: {
+//       isClose: students.filter((student) => student.archiv === true).length,
+//       isOpen: students.filter((student) => student.archiv !== true).length
+//     },
+//     finished_docs,
+//     agents: agents_data,
+//     editors: editors_data,
+//     students_details: students,
+//     applications: []
+//   };
+// });
 
 const add_portals_registered_status = (student_input) => {
   const student = student_input;
@@ -1034,24 +1049,30 @@ const add_portals_registered_status = (student_input) => {
   return student;
 };
 
-const MeetingDailyReminderChecker = async () => {
+const MeetingDailyReminderChecker = asyncHandler(async () => {
   const currentDate = new Date();
   const twentyFourHoursLater = new Date(currentDate);
   twentyFourHoursLater.setHours(currentDate.getHours() + 24);
 
-  // Only future meeting within 24 hours, not past
-  const upcomingEvents = await Event.find({
-    $and: [
-      {
-        end: {
-          $gte: currentDate,
-          $lt: twentyFourHoursLater
-        }
-      },
-      { isConfirmedReceiver: true },
-      { isConfirmedRequester: true }
-    ]
-  }).populate('requester_id receiver_id', 'firstname lastname email');
+  const tenantId = isProd() ? 'TaiGer_Prod' : 'TaiGer';
+  const req = {};
+  req.db = connectToDatabase(tenantId);
+  req.VCModel = req.db.model('VC'); // Only future meeting within 24 hours, not past
+  const upcomingEvents = await req.db
+    .model('Event')
+    .find({
+      $and: [
+        {
+          end: {
+            $gte: currentDate,
+            $lt: twentyFourHoursLater
+          }
+        },
+        { isConfirmedReceiver: true },
+        { isConfirmedRequester: true }
+      ]
+    })
+    .populate('requester_id receiver_id', 'firstname lastname email');
   if (upcomingEvents) {
     for (let j = 0; j < upcomingEvents.length; j += 1) {
       if (upcomingEvents.event_type === 'Interview') {
@@ -1102,25 +1123,32 @@ const MeetingDailyReminderChecker = async () => {
     }
     logger.info('Meeting attendees reminded');
   }
-};
+});
 
 // every day reminder
-const UnconfirmedMeetingDailyReminderChecker = async () => {
+const UnconfirmedMeetingDailyReminderChecker = asyncHandler(async () => {
   const currentDate = new Date();
 
   // Only future meeting within 24 hours, not past
-  const upcomingEvents = await Event.find({
-    $and: [
-      {
-        end: {
-          $gte: currentDate
+  const tenantId = isProd() ? 'TaiGer_Prod' : 'TaiGer';
+  const req = {};
+  req.db = connectToDatabase(tenantId);
+  req.VCModel = req.db.model('VC');
+  const upcomingEvents = await req.db
+    .model('Event')
+    .find({
+      $and: [
+        {
+          end: {
+            $gte: currentDate
+          }
+        },
+        {
+          $or: [{ isConfirmedReceiver: false }, { isConfirmedRequester: false }]
         }
-      },
-      {
-        $or: [{ isConfirmedReceiver: false }, { isConfirmedRequester: false }]
-      }
-    ]
-  }).populate('requester_id receiver_id', 'firstname lastname role email');
+      ]
+    })
+    .populate('requester_id receiver_id', 'firstname lastname role email');
   if (upcomingEvents) {
     for (let j = 0; j < upcomingEvents.length; j += 1) {
       if (!upcomingEvents[j].isConfirmedRequester) {
@@ -1159,7 +1187,7 @@ const UnconfirmedMeetingDailyReminderChecker = async () => {
   }
 
   logger.info('Unconfirmed Meeting attendee reminded');
-};
+});
 
 function CalculateInterval(message1, message2) {
   const intervalInDay =
@@ -1167,12 +1195,14 @@ function CalculateInterval(message1, message2) {
   return parseFloat(intervalInDay.toFixed(4));
 }
 
-const GroupCommunicationByStudent = async () => {
+const GroupCommunicationByStudent = asyncHandler(async (req) => {
   try {
-    const communications = await Communication.find()
+    const communications = await req.db
+      .model('Communication')
+      .find()
       .populate('student_id user_id', 'firstname lastname email archiv')
       .lean();
-    let groupCommunication = {};
+    const groupCommunication = {};
     for (const singleCommunicaiton of communications) {
       if (
         singleCommunicaiton.student_id &&
@@ -1196,7 +1226,7 @@ const GroupCommunicationByStudent = async () => {
     logger.error('error grouping communications');
     return null;
   }
-};
+});
 
 const CreateIntervalMessageOperation = (student_id, msg1, msg2) => {
   const intervalValue = CalculateInterval(msg1, msg2);
@@ -1229,7 +1259,6 @@ const CreateIntervalMessageOperation = (student_id, msg1, msg2) => {
 const ProcessMessages = (student, messages) => {
   const bulkOps = [];
   messages.sort((a, b) => a.updatedAt - b.updatedAt);
-  // console.log("messages", messages);
   if (messages.length > 1) {
     let msg1 = undefined;
     let msg2 = undefined;
@@ -1259,10 +1288,10 @@ const ProcessMessages = (student, messages) => {
   return bulkOps;
 };
 
-const FindIntervalInCommunicationsAndSave = async () => {
+const FindIntervalInCommunicationsAndSave = asyncHandler(async (req) => {
   try {
     // TODO: active student's message only
-    const groupCommunication = await GroupCommunicationByStudent();
+    const groupCommunication = await GroupCommunicationByStudent(req);
     const bulkOps = [];
 
     for (const [student, messages] of Object.entries(groupCommunication)) {
@@ -1271,7 +1300,7 @@ const FindIntervalInCommunicationsAndSave = async () => {
     }
 
     if (bulkOps.length > 0) {
-      const result = await Interval.bulkWrite(bulkOps);
+      const result = await req.db.model('Interval').bulkWrite(bulkOps);
       logger.info(
         'FindIntervalInCommunicationsAndSave: Bulk operation result:',
         result
@@ -1280,7 +1309,7 @@ const FindIntervalInCommunicationsAndSave = async () => {
   } catch (error) {
     logger.error('Error finding valid interval:', error);
   }
-};
+});
 
 const CreateIntervalOperation = (thread, msg1, msg2) => {
   const intervalValue = CalculateInterval(msg1, msg2);
@@ -1343,8 +1372,10 @@ const ProcessThread = (thread) => {
   return bulkOps;
 };
 
-const FetchStudentsForDocumentThreads = async (filter) =>
-  Student.find(filter)
+const FetchStudentsForDocumentThreads = asyncHandler(async (req, filter) =>
+  req.db
+    .model('Student')
+    .find(filter)
     .populate('agents editors', 'firstname lastname email')
     .populate({
       path: 'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
@@ -1356,12 +1387,13 @@ const FetchStudentsForDocumentThreads = async (filter) =>
         }
       }
     })
-    .lean();
+    .lean()
+);
 
-const FindIntervalInDocumentThreadAndSave = async () => {
+const FindIntervalInDocumentThreadAndSave = asyncHandler(async (req) => {
   try {
     // calculate active student only
-    const students = await FetchStudentsForDocumentThreads({
+    const students = await FetchStudentsForDocumentThreads(req, {
       $or: [{ archiv: { $exists: false } }, { archiv: false }]
     });
     const bulkOps = [];
@@ -1391,7 +1423,7 @@ const FindIntervalInDocumentThreadAndSave = async () => {
     }
 
     if (bulkOps.length > 0) {
-      const result = await Interval.bulkWrite(bulkOps);
+      const result = await req.db.model('Interval').bulkWrite(bulkOps);
       logger.info(
         'FindIntervalInDocumentThreadAndSave: Bulk operation result:',
         result
@@ -1400,11 +1432,13 @@ const FindIntervalInDocumentThreadAndSave = async () => {
   } catch (error) {
     logger.error('Error in FindIntervalInDocumentThreadAndSave:', error);
   }
-};
+});
 
-const GroupIntervals = async () => {
+const GroupIntervals = asyncHandler(async (req) => {
   try {
-    const intervals = await Interval.find()
+    const intervals = await req.db
+      .model('Interval')
+      .find()
       .populate('thread_id student_id')
       .lean();
     const studentGroupInterval = {};
@@ -1428,11 +1462,11 @@ const GroupIntervals = async () => {
     logger.error('Error grouping communications:', error);
     return null;
   }
-};
+});
 
-const CalculateAverageResponseTimeAndSave = async () => {
+const CalculateAverageResponseTimeAndSave = asyncHandler(async (req) => {
   const [studentGroupInterval, documentThreadGroupInterval] =
-    await GroupIntervals();
+    await GroupIntervals(req);
   const calculateAndSaveAverage = async (groupInterval, idKey) => {
     try {
       const bulkOps = [];
@@ -1490,7 +1524,7 @@ const CalculateAverageResponseTimeAndSave = async () => {
 
       // Execute bulk operations
       if (bulkOps.length > 0) {
-        const result = await ResponseTime.bulkWrite(bulkOps);
+        const result = await req.db.model('ResponseTime').bulkWrite(bulkOps);
         logger.info('calculateAndSaveAverage: Bulk operation result:', result);
       }
     } catch (err) {
@@ -1503,26 +1537,36 @@ const CalculateAverageResponseTimeAndSave = async () => {
 
   await calculateAndSaveAverage(studentGroupInterval, 'student_id');
   await calculateAndSaveAverage(documentThreadGroupInterval, 'thread_id');
-};
+});
 
-const DailyCalculateAverageResponseTime = async () => {
-  await FindIntervalInCommunicationsAndSave();
-  await FindIntervalInDocumentThreadAndSave();
-  await CalculateAverageResponseTimeAndSave();
-};
+const DailyCalculateAverageResponseTime = asyncHandler(async () => {
+  const tenantId = isProd() ? 'TaiGer_Prod' : 'TaiGer';
+  const req = {};
+  req.db = connectToDatabase(tenantId);
+  req.VCModel = req.db.model('VC');
+  await FindIntervalInCommunicationsAndSave(req);
+  await FindIntervalInDocumentThreadAndSave(req);
+  await CalculateAverageResponseTimeAndSave(req);
+});
 
-const DailyInterviewSurveyChecker = async () => {
+const DailyInterviewSurveyChecker = asyncHandler(async () => {
   // TODO: find today meeting and send email reminder (only once)
   const currentDate = new Date();
   const twentyFourHoursAgo = new Date(currentDate);
   twentyFourHoursAgo.setHours(currentDate.getHours() - 24);
   // interviews took place within last 24 hours
-  const interviewTookPlacedToday = await Interview.find({
-    interview_date: {
-      $gte: twentyFourHoursAgo.toISOString(),
-      $lt: currentDate
-    }
-  })
+  const tenantId = isProd() ? 'TaiGer_Prod' : 'TaiGer';
+  const req = {};
+  req.db = connectToDatabase(tenantId);
+  req.VCModel = req.db.model('VC');
+  const interviewTookPlacedToday = await req.db
+    .model('Interview')
+    .find({
+      interview_date: {
+        $gte: twentyFourHoursAgo.toISOString(),
+        $lt: currentDate
+      }
+    })
     .populate('student_id', 'firstname lastname email')
     .populate('program_id', 'school program_name degree semester')
     .lean();
@@ -1538,68 +1582,77 @@ const DailyInterviewSurveyChecker = async () => {
       { interview }
     )
   );
-};
+});
 
 // every day reminder
 // TODO: (O)no trainer, no date.
-const NoInterviewTrainerOrTrainingDateDailyReminderChecker = async () => {
-  const currentDate = new Date();
-  const currentDateString = currentDate.toISOString().split('T')[0]; // Converts to 'YYYY-MM-DD' format
+const NoInterviewTrainerOrTrainingDateDailyReminderChecker = asyncHandler(
+  async () => {
+    const currentDate = new Date();
+    const currentDateString = currentDate.toISOString().split('T')[0]; // Converts to 'YYYY-MM-DD' format
 
-  // Only future meeting within 24 hours, not past
-  const interviewRequests = await Interview.find({
-    $and: [
-      {
-        interview_date: {
-          $gte: currentDateString
-        }
-      },
-      {
-        $or: [
+    const tenantId = isProd() ? 'TaiGer_Prod' : 'TaiGer';
+    const req = {};
+    req.db = connectToDatabase(tenantId);
+    req.VCModel = req.db.model('VC');
+    // Only future meeting within 24 hours, not past
+    const interviewRequests = await req.db
+      .model('Interview')
+      .find({
+        $and: [
           {
-            trainer_id: {
-              $exists: false
+            interview_date: {
+              $gte: currentDateString
             }
           },
           {
-            trainer_id: {
-              $size: 0
-            }
+            $or: [
+              {
+                trainer_id: {
+                  $exists: false
+                }
+              },
+              {
+                trainer_id: {
+                  $size: 0
+                }
+              }
+            ]
           }
         ]
-      }
-    ]
-  })
-    .populate('student_id', 'firstname lastname role email')
-    .populate('program_id');
+      })
+      .populate('student_id', 'firstname lastname role email')
+      .populate('program_id');
 
-  // TODO: reminder agent as well
+    // TODO: reminder agent as well
 
-  if (interviewRequests?.length > 0) {
-    const permissions = await Permission.find({
-      canAssignEditors: true
-    })
-      .populate('user_id', 'firstname lastname email')
-      .lean();
-    const sendEmailPromises = permissions.map((permission) =>
-      sendNoTrainerInterviewRequestsReminderEmail(
-        {
-          firstname: permission.user_id.firstname,
-          lastname: permission.user_id.lastname,
-          address: permission.user_id.email
-        },
-        {
-          interviewRequests
-        }
-      )
-    );
-    await Promise.all(sendEmailPromises);
-    logger.info('No interviewer tasks reminder sent.');
+    if (interviewRequests?.length > 0) {
+      const permissions = await req.db
+        .model('Permission')
+        .find({
+          canAssignEditors: true
+        })
+        .populate('user_id', 'firstname lastname email')
+        .lean();
+      const sendEmailPromises = permissions.map((permission) =>
+        sendNoTrainerInterviewRequestsReminderEmail(
+          {
+            firstname: permission.user_id.firstname,
+            lastname: permission.user_id.lastname,
+            address: permission.user_id.email
+          },
+          {
+            interviewRequests
+          }
+        )
+      );
+      await Promise.all(sendEmailPromises);
+      logger.info('No interviewer tasks reminder sent.');
+    }
   }
-};
+);
 
 module.exports = {
-  emptyS3Directory,
   TasksReminderEmails,
   events_transformer,
   users_transformer,
@@ -1615,7 +1668,7 @@ module.exports = {
   UrgentTasksReminderEmails,
   NextSemesterCourseSelectionReminderEmails,
   numStudentYearDistribution,
-  UpdateStatisticsData,
+  // UpdateStatisticsData,
   add_portals_registered_status,
   MeetingDailyReminderChecker,
   UnconfirmedMeetingDailyReminderChecker,

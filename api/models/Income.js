@@ -4,7 +4,7 @@ const {
   Types: { ObjectId }
 } = require('mongoose');
 
-const IncomesSchema = new Schema({
+const incomesSchema = new Schema({
   student_id: { type: ObjectId, ref: 'User' },
   income_type: { type: String, default: '' },
   amount: { type: Number, default: 0 },
@@ -13,5 +13,6 @@ const IncomesSchema = new Schema({
   description: { type: String, default: '' },
   updatedAt: Date
 });
-const Income = model('Income', IncomesSchema);
-module.exports = Income;
+const Income = model('Income', incomesSchema);
+
+module.exports = { Income, incomesSchema };

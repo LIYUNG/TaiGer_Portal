@@ -1,6 +1,6 @@
 const { model, Schema } = require('mongoose');
 
-const UserlogSchema = new Schema({
+const userlogSchema = new Schema({
   user_id: {
     type: Schema.Types.ObjectId,
     required: true,
@@ -28,5 +28,5 @@ const UserlogSchema = new Schema({
     expires: 15552000 // 6 month
   }
 });
-
-module.exports = model('Userlog', UserlogSchema);
+const Userlog = model('Userlog', userlogSchema);
+module.exports = { Userlog, userlogSchema };

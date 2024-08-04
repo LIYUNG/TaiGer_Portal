@@ -13,7 +13,7 @@ const { multitenant_filter } = require('../middlewares/multitenant-filter');
 const {
   InnerTaigerMultitenantFilter
 } = require('../middlewares/InnerTaigerMultitenantFilter');
-const { Role } = require('../models/User');
+const { Role } = require('../constants');
 const { protect, permit } = require('../middlewares/auth');
 const {
   TemplatefileUpload,

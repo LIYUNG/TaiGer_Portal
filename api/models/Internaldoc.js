@@ -1,10 +1,6 @@
-const {
-  model,
-  Schema,
-  Types: { ObjectId }
-} = require('mongoose');
-const mongoose = require('mongoose');
-const internaldocsSchema = new mongoose.Schema({
+const { model, Schema } = require('mongoose');
+
+const internaldocsSchema = new Schema({
   name: { type: String, default: '' },
   title: { type: String, default: '' },
   category: { type: String, default: '' },
@@ -17,5 +13,5 @@ const internaldocsSchema = new mongoose.Schema({
 
 internaldocsSchema.index({ title: 'text', text: 'text' });
 
-const Internaldoc = mongoose.model('Internaldoc', internaldocsSchema);
-module.exports = Internaldoc;
+const Internaldoc = model('Internaldoc', internaldocsSchema);
+module.exports = { Internaldoc, internaldocsSchema };

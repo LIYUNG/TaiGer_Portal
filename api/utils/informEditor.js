@@ -1,6 +1,5 @@
-const { Student } = require('../models/User');
-const { Documentthread } = require('../models/Documentthread');
-const { Role } = require('../models/User');
+const { Role } = require('../constants');
+
 const { isArchiv } = require('../constants');
 const {
   sendNewApplicationMessageInThreadEmail,
@@ -8,55 +7,62 @@ const {
   sendNewGeneraldocMessageInThreadEmail
 } = require('../services/email');
 const { ErrorResponse } = require('../common/errors');
+const { asyncHandler } = require('../middlewares/error-handler');
 
-const addMessageInThread = async (message, threadId, userId) => {
-  const thread = await Documentthread.findById(threadId);
-  if (!thread) {
-    throw new ErrorResponse(403, 'Invalid message thread id');
-  }
-  const msg = JSON.stringify({
-    blocks: [
-      {
-        data: { text: message },
-        type: 'paragraph'
-      }
-    ]
-  });
-  const newMessage = {
-    user_id: userId,
-    message: msg,
-    createdAt: new Date()
-  };
-  thread.messages.push(newMessage);
-  thread.updatedAt = new Date();
-  await thread.save();
-};
-
-const informStaff = async (user, staff, student, fileType, thread, message) => {
-  await sendNewApplicationMessageInThreadEmail(
-    {
-      firstname: staff.firstname,
-      lastname: staff.lastname,
-      address: staff.email
-    },
-    {
-      writer_firstname: user.firstname,
-      writer_lastname: user.lastname,
-      student_firstname: student.firstname,
-      student_lastname: student.lastname,
-      uploaded_documentname: fileType,
-      school: thread.program_id.school,
-      program_name: thread.program_id.program_name,
-      thread_id: thread._id.toString(),
-      uploaded_updatedAt: new Date(),
-      message
+const addMessageInThread = asyncHandler(
+  async (req, message, threadId, userId) => {
+    const thread = await req.db.model('Documentthread').findById(threadId);
+    if (!thread) {
+      throw new ErrorResponse(403, 'Invalid message thread id');
     }
-  );
-};
+    const msg = JSON.stringify({
+      blocks: [
+        {
+          data: { text: message },
+          type: 'paragraph'
+        }
+      ]
+    });
+    const newMessage = {
+      user_id: userId,
+      message: msg,
+      createdAt: new Date()
+    };
+    thread.messages.push(newMessage);
+    thread.updatedAt = new Date();
+    await thread.save();
+  }
+);
 
-const informNoEditor = async (student) => {
+const informStaff = asyncHandler(
+  async (user, staff, student, fileType, thread, message) => {
+    await sendNewApplicationMessageInThreadEmail(
+      {
+        firstname: staff.firstname,
+        lastname: staff.lastname,
+        address: staff.email
+      },
+      {
+        writer_firstname: user.firstname,
+        writer_lastname: user.lastname,
+        student_firstname: student.firstname,
+        student_lastname: student.lastname,
+        uploaded_documentname: fileType,
+        school: thread.program_id.school,
+        program_name: thread.program_id.program_name,
+        thread_id: thread._id.toString(),
+        uploaded_updatedAt: new Date(),
+        message
+      }
+    );
+  }
+);
+
+const informNoEditor = asyncHandler(async (req, student) => {
   const agents = student?.agents;
-  await Student.findByIdAndUpdate(student._id, { needEditor: true }, {});
+  await req.db
+    .model('Student')
+    .findByIdAndUpdate(student._id, { needEditor: true }, {});
 
   // inform active-agent
   for (let agent of agents) {
@@ -103,14 +109,15 @@ const informNoEditor = async (student) => {
       }
     );
   }
-};
+});
 
-const informOnSurveyUpdate = async (user, survey, thread) => {
+const informOnSurveyUpdate = asyncHandler(async (req, user, survey, thread) => {
   // placeholder for automatic notification user id
   const notificationUser = undefined;
 
   // Create message notification
   await addMessageInThread(
+    req,
     `Automatic Notification: Survey has been finalized by ${user.firstname} ${user.lastname}.`,
     thread?._id,
     notificationUser
@@ -120,7 +127,9 @@ const informOnSurveyUpdate = async (user, survey, thread) => {
     return;
   }
 
-  const student = await Student.findById(survey.studentId)
+  const student = await req.db
+    .model('Student')
+    .findById(survey.studentId)
     .populate('agents editors', 'firstname lastname email')
     .lean();
 
@@ -136,7 +145,7 @@ const informOnSurveyUpdate = async (user, survey, thread) => {
 
   // If no editor, inform agent to assign
   if (noEditor) {
-    informNoEditor(student);
+    informNoEditor(req, student);
   } else {
     // if supplementary form, inform Agent.
     if (fileType === 'Supplementary_Form') {
@@ -175,6 +184,6 @@ const informOnSurveyUpdate = async (user, survey, thread) => {
       }
     }
   }
-};
+});
 
 module.exports = { informOnSurveyUpdate, addMessageInThread };

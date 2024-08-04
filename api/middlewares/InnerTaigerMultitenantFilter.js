@@ -1,19 +1,21 @@
 const { ErrorResponse } = require('../common/errors');
-const { Role } = require('../models/User');
+const { Role } = require('../constants');
+
 const {
   getPermission,
   getCachedStudentPermission
 } = require('../utils/queryFunctions');
+const { asyncHandler } = require('./error-handler');
 
-const InnerTaigerMultitenantFilter = async (req, res, next) => {
+const InnerTaigerMultitenantFilter = asyncHandler(async (req, res, next) => {
   const {
     user,
     params: { studentId }
   } = req;
   if (user.role === Role.Editor || user.role === Role.Agent) {
-    const permissions = await getPermission(user);
+    const permissions = await getPermission(req, user);
 
-    const student = await getCachedStudentPermission(studentId);
+    const student = await getCachedStudentPermission(req, studentId);
     if (!student) {
       next(new ErrorResponse(404, 'Student not found'));
     }
@@ -32,7 +34,7 @@ const InnerTaigerMultitenantFilter = async (req, res, next) => {
     }
   }
   next();
-};
+});
 
 module.exports = {
   InnerTaigerMultitenantFilter

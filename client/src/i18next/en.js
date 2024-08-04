@@ -325,8 +325,10 @@ export const translation_en = {
     timeWeeks: '{{weeks}}w',
     Send: 'Send',
     'Target Year': 'Target Year',
-    'Program Language': 'Program Language'
+    'Program Language': 'Program Language',
+    'Frequently Asked Questions': 'Frequently Asked Questions'
   },
+  customerCenter: {},
   dashboard: {
     Dashboard: 'Dashboard',
     'Upcoming Applications': 'Upcoming Applications',

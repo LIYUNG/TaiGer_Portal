@@ -10,7 +10,8 @@ import {
   combinedLoader,
   getAllActiveEssaysLoader,
   getAllStudentsLoader,
-  getAllArchivedStudentsLoader
+  getAllArchivedStudentsLoader,
+  getAllTicketsLoader
 } from './api/dataLoader';
 import DefaultErrorPage from './Demo/Utils/DefaultErrorPage';
 import StudentApplicationsAssignPage from './Demo/StudentApplications/assignPage';
@@ -483,7 +484,7 @@ const routes = [
   {
     path: '/customer-support',
     errorElement: <DefaultErrorPage />,
-    loader: getAllActiveStudentsLoader,
+    loader: getAllTicketsLoader,
     element: <CustomerSupport />
   },
   {

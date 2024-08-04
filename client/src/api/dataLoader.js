@@ -9,7 +9,8 @@ import {
   getMyAcademicBackground,
   getAllActiveEssays,
   getAllStudents,
-  getStudentUniAssist
+  getStudentUniAssist,
+  getComplaintsTickets
 } from '.';
 
 export async function getStudentsLoader() {
@@ -37,6 +38,19 @@ export async function getAllActiveEssaysLoader() {
   } else {
     return response;
   }
+}
+
+export async function AllTicketsLoader() {
+  const response = await getComplaintsTickets();
+  if (response.status >= 400) {
+    throw json({ message: response.statusText }, { status: response.status });
+  } else {
+    return response.data.data;
+  }
+}
+
+export function getAllTicketsLoader() {
+  return defer({ complaintTickets: AllTicketsLoader() });
 }
 
 export async function AllActiveStudentsLoader() {

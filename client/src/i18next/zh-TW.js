@@ -329,8 +329,10 @@ export const translation_zh_TW = {
     timeWeeks: '{{weeks}}週',
     Send: '送出',
     'Target Year': '預計申請年度',
-    'Program Language': '學程教學語言'
+    'Program Language': '學程教學語言',
+    'Frequently Asked Questions': '常見問題'
   },
+  customerCenter: {},
   dashboard: {
     Dashboard: '主控台',
     'Upcoming Applications': '即將截止的申請',

@@ -13,7 +13,7 @@ import CustomerSupportBody from './CustomerSupport';
 function CustomerSupport() {
   const { user } = useAuth();
   const { t } = useTranslation();
-  const { students } = useLoaderData();
+  const { complaintTickets } = useLoaderData();
 
   if (!is_TaiGer_role(user)) {
     return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
@@ -23,8 +23,10 @@ function CustomerSupport() {
   return (
     <Box data-testid="customer_support">
       <Suspense fallback={<Loading />}>
-        <Await resolve={students}>
-          {(loadedData) => <CustomerSupportBody students={loadedData} />}
+        <Await resolve={complaintTickets}>
+          {(loadedData) => (
+            <CustomerSupportBody complaintTickets={loadedData} />
+          )}
         </Await>
       </Suspense>
     </Box>

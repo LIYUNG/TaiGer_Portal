@@ -152,16 +152,17 @@ function NavBar(props) {
   const { t } = useTranslation();
   const { user, isAuthenticated, isLoaded, logout } = useAuth();
   const theme = useTheme();
-  const initialMenuItemOpen = MenuSidebar.filter(
-    (menuItem) =>
-      !ExcludeMenu[user?.role].includes(menuItem.id) &&
-      menuItem.children?.length > 0
-  ).reduce((acc, menuItem) => {
-    acc[menuItem.id] = menuItem.children?.some(
-      (subItem) => subItem.url === location.pathname
-    );
-    return acc;
-  }, {});
+  const initialMenuItemOpen =
+    MenuSidebar?.filter(
+      (menuItem) =>
+        !ExcludeMenu[user?.role]?.includes(menuItem.id) &&
+        menuItem.children?.length > 0
+    ).reduce((acc, menuItem) => {
+      acc[menuItem.id] = menuItem.children?.some(
+        (subItem) => subItem.url === location.pathname
+      );
+      return acc;
+    }, {}) || {};
   const [menuItemOpen, setMenuItemOpen] = useState(initialMenuItemOpen);
   const ismobile = useMediaQuery(theme.breakpoints.down('md'));
   const [open, setOpen] = useState(ismobile ? false : true);

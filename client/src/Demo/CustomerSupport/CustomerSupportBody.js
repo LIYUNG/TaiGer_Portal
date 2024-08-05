@@ -250,6 +250,17 @@ function CustomerSupportBody() {
                       ticket.id
                     )}`}
                     key={ticket.id}
+                    sx={{
+                      '&:hover': {
+                        backgroundColor: 'rgba(0, 0, 0, 0.08)', // Change background color on hover
+                        '& .MuiTypography-root': {
+                          color: 'primary.main' // Change text color on hover
+                        },
+                        '& .MuiListItemText-primary': {
+                          color: 'primary.main' // Change primary text color on hover
+                        }
+                      }
+                    }}
                   >
                     <ListItemText
                       primary={ticket.requestNumber}
@@ -271,48 +282,61 @@ function CustomerSupportBody() {
               </Typography>
               <Accordion disableGutters>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography>How do tickets get issued?</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
                   <Typography>
-                    To issue a ticket, you go to the booking search, make a
-                    booking, fill out the passenger information, and create a
-                    PNR. Then click to order ticket.
+                    What is the purpose of the Customer Center?
                   </Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Typography>TODO: </Typography>
                 </AccordionDetails>
               </Accordion>
               <Accordion disableGutters>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography>What is the process refund tickets?</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <Typography>Details about the refund process.</Typography>
-                </AccordionDetails>
-              </Accordion>
-              <Accordion disableGutters>
-                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography>How can I reissue the tickets?</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <Typography>Details about reissuing tickets.</Typography>
-                </AccordionDetails>
-              </Accordion>
-              <Accordion disableGutters>
-                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography>How can see ticket history by PNR?</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
                   <Typography>
-                    Details about viewing ticket history by PNR.
+                    What can I expect for the support ticket?
                   </Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Typography>TODO: </Typography>
                 </AccordionDetails>
               </Accordion>
               <Accordion disableGutters>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography>How can see issue ticket?</Typography>
+                  <Typography>The portal looks buggy, how can I do?</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
-                  <Typography>Details about issuing tickets.</Typography>
+                  <Typography>TODO: </Typography>
+                </AccordionDetails>
+              </Accordion>
+              <Accordion disableGutters>
+                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                  <Typography>
+                    My Agent or Editor did not reply me, what can I do?
+                  </Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Typography>TODO: </Typography>
+                </AccordionDetails>
+              </Accordion>
+              <Accordion disableGutters>
+                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                  <Typography>
+                    The quality of my CV, ML, RL or any other documents by the
+                    Editor is not as good as I expected. What can I do?
+                  </Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Typography>TODO: </Typography>
+                </AccordionDetails>
+              </Accordion>
+              <Accordion disableGutters>
+                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                  <Typography>
+                    I did not find my previous closed documents, how can I do?
+                  </Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Typography>TODO: </Typography>
                 </AccordionDetails>
               </Accordion>
             </Paper>

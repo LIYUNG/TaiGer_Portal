@@ -95,6 +95,17 @@ function CustomerTicketDetailPageBody() {
                     component={LinkDom}
                     to={`/ticket/${ticket.id}`}
                     key={ticket.id}
+                    sx={{
+                      '&:hover': {
+                        backgroundColor: 'rgba(0, 0, 0, 0.08)', // Change background color on hover
+                        '& .MuiTypography-root': {
+                          color: 'primary.main' // Change text color on hover
+                        },
+                        '& .MuiListItemText-primary': {
+                          color: 'primary.main' // Change primary text color on hover
+                        }
+                      }
+                    }}
                   >
                     <ListItemText
                       primary={ticket.requestNumber}

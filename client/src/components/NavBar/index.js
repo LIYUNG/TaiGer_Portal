@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link as LinkDom, Navigate, useNavigate } from 'react-router-dom';
-
 import { useTheme } from '@mui/material/styles';
 import { styled } from '@mui/material/styles';
 import MuiAppBar from '@mui/material/AppBar';
@@ -15,29 +14,19 @@ import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import AccountCircle from '@mui/icons-material/AccountCircle';
-import ExpandLess from '@mui/icons-material/ExpandLess';
-import ExpandMore from '@mui/icons-material/ExpandMore';
 import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
-import Drawer from '@mui/material/Drawer';
 import CssBaseline from '@mui/material/CssBaseline';
-import List from '@mui/material/List';
 import Divider from '@mui/material/Divider';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
 import MailIcon from '@mui/icons-material/Mail';
-import { Avatar, Collapse, Link, Tooltip, useMediaQuery } from '@mui/material';
+import { Avatar, Link, Tooltip, useMediaQuery } from '@mui/material';
 
 import {
   getActiveEventsNumber,
   getMyCommunicationUnreadNumber
 } from '../../api/index';
 import { appConfig } from '../../config';
-import { MenuSidebar } from '../../menu-sidebar';
 import { useAuth } from '../AuthProvider';
 import NavSearch from './NavSearch';
 import {
@@ -48,56 +37,11 @@ import {
 } from '../../Demo/Utils/checking-functions';
 import ChatList from '../ChatList';
 import { stringAvatar } from '../../Demo/Utils/contants';
-import Footer from '../Footer/Footer';
 import Loading from '../Loading/Loading';
 import DEMO from '../../store/constant';
+import { CustomDrawer } from './Drawer';
 
 const drawerWidth = 300;
-const ExcludeMenu = {
-  Guest: [
-    'my-students',
-    'user-list',
-    'program-table',
-    'all-students',
-    'tools-widgets',
-    'teams_overview',
-    'internal-document-database'
-  ],
-  Student: [
-    'my-students',
-    'user-list',
-    'program-table',
-    'all-students',
-    'tools-widgets',
-    'teams_overview',
-    'internal-document-database'
-  ],
-  Agent: [
-    'contact_us',
-    'application_overivew',
-    'user-list',
-    'tools-widgets',
-    'academicsurvey',
-    'my-courses',
-    'customer-center-student'
-  ],
-  Editor: [
-    'contact_us',
-    'application_overivew',
-    'user-list',
-    'tools-widgets',
-    'academicsurvey',
-    'my-courses',
-    'customer-center-student'
-  ],
-  Admin: [
-    'contact_us',
-    'application_overivew',
-    'academicsurvey',
-    'my-courses',
-    'customer-center-student'
-  ]
-};
 
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
   ({ theme, open, ismobile }) => ({
@@ -121,7 +65,7 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
 );
 
 const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== 'open'
+  shouldForwardProp: (prop) => prop !== 'popperRef'
 })(({ theme, open, ismobile }) => ({
   transition: theme.transitions.create(['margin', 'width'], {
     easing: theme.transitions.easing.sharp,
@@ -152,18 +96,6 @@ function NavBar(props) {
   const { t } = useTranslation();
   const { user, isAuthenticated, isLoaded, logout } = useAuth();
   const theme = useTheme();
-  const initialMenuItemOpen =
-    MenuSidebar?.filter(
-      (menuItem) =>
-        !ExcludeMenu[user?.role]?.includes(menuItem.id) &&
-        menuItem.children?.length > 0
-    ).reduce((acc, menuItem) => {
-      acc[menuItem.id] = menuItem.children?.some(
-        (subItem) => subItem.url === location.pathname
-      );
-      return acc;
-    }, {}) || {};
-  const [menuItemOpen, setMenuItemOpen] = useState(initialMenuItemOpen);
   const ismobile = useMediaQuery(theme.breakpoints.down('md'));
   const [open, setOpen] = useState(ismobile ? false : true);
   const [navState, setNavState] = useState({
@@ -465,261 +397,158 @@ function NavBar(props) {
         />
       );
     }
-    // navigate(DEMO.LOGIN_LINK);
   }
   return (
-    <>
-      <Box
-        sx={{
-          minHeight: '100vh',
-          display: 'flex'
-        }}
-        onClick={() => {
-          if (ismobile) {
-            handleDrawerClose();
-          }
-        }}
-      >
-        <CssBaseline />
-        <AppBar position="fixed" open={open} ismobile={ismobile.toString()}>
-          <Toolbar>
-            <IconButton
+    <Box
+      sx={{
+        minHeight: '100vh',
+        display: 'flex'
+      }}
+      onClick={() => {
+        if (ismobile) {
+          handleDrawerClose();
+        }
+      }}
+      data-testid="navbar_component"
+    >
+      <CssBaseline />
+      <AppBar position="fixed" open={open} ismobile={ismobile.toString()}>
+        <Toolbar>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            onClick={(e) => handleDrawerOpen(e)}
+            edge="start"
+            sx={{ mr: 2, ...(!ismobile && open && { display: 'none' }) }}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography variant="h6" noWrap component="div">
+            <Link
+              underline="none"
               color="inherit"
-              aria-label="open drawer"
-              onClick={(e) => handleDrawerOpen(e)}
-              edge="start"
-              sx={{ mr: 2, ...(!ismobile && open && { display: 'none' }) }}
+              component={LinkDom}
+              to={`${DEMO.DASHBOARD_LINK}`}
             >
-              <MenuIcon />
-            </IconButton>
-            <Typography variant="h6" noWrap component="div">
-              <Link
-                underline="none"
+              {appConfig.companyName}
+            </Link>
+          </Typography>
+          {is_TaiGer_role(user) && <NavSearch />}
+          <Box sx={{ flexGrow: 1 }} />
+          <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+            {(is_TaiGer_Agent(user) || is_TaiGer_Student(user)) && (
+              <IconButton
+                size="large"
+                aria-label="show active event"
+                onClick={handleNavigateCalendar}
                 color="inherit"
-                component={LinkDom}
-                to={`${DEMO.DASHBOARD_LINK}`}
               >
-                {appConfig.companyName}
-              </Link>
-            </Typography>
-            {is_TaiGer_role(user) && <NavSearch />}
-            <Box sx={{ flexGrow: 1 }} />
-            <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-              {(is_TaiGer_Agent(user) || is_TaiGer_Student(user)) && (
-                <IconButton
-                  size="large"
-                  aria-label="show active event"
-                  onClick={handleNavigateCalendar}
-                  color="inherit"
-                >
-                  <Badge badgeContent={navState.activeEventCount} color="error">
-                    <CalendarMonthIcon />
-                  </Badge>
-                </IconButton>
-              )}
-              {!is_TaiGer_Editor(user) && (
-                <IconButton
-                  size="large"
-                  aria-label="show unread new messages"
-                  aria-controls={chatId}
-                  aria-haspopup="true"
-                  onClick={handleOpenChat}
-                  color="inherit"
-                >
-                  <Badge badgeContent={navState.unreadCount} color="error">
-                    <MailIcon />
-                  </Badge>
-                </IconButton>
-              )}
-
-              <Tooltip title="Account settings" placement="bottom-start">
-                <IconButton
-                  size="large"
-                  edge="end"
-                  aria-label="account of current user"
-                  aria-controls={menuId}
-                  aria-haspopup="true"
-                  onClick={handleProfileMenuOpen}
-                  color="inherit"
-                >
-                  <Avatar
-                    {...stringAvatar(`${user?.firstname} ${user?.lastname}`)}
-                    size="small"
-                    title={`${user?.firstname} ${user?.lastname}`}
-                  />
-                </IconButton>
-              </Tooltip>
-            </Box>
-            <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
-              {(is_TaiGer_Agent(user) || is_TaiGer_Student(user)) && (
-                <IconButton
-                  size="large"
-                  aria-label="show active event"
-                  onClick={handleNavigateCalendar}
-                  color="inherit"
-                >
-                  <Badge badgeContent={navState.activeEventCount} color="error">
-                    <CalendarMonthIcon />
-                  </Badge>
-                </IconButton>
-              )}
-              {!is_TaiGer_Editor(user) && (
-                <IconButton
-                  size="large"
-                  aria-label="show unread new messages"
-                  aria-controls={chatId}
-                  aria-haspopup="true"
-                  onClick={handleOpenChat}
-                  color="inherit"
-                >
-                  <Badge badgeContent={navState.unreadCount} color="error">
-                    <MailIcon />
-                  </Badge>
-                </IconButton>
-              )}
-              <Tooltip title="Account settings" placement="bottom-start">
-                <IconButton
-                  size="large"
-                  edge="end"
-                  aria-label="account of current user"
-                  aria-controls={menuId}
-                  aria-haspopup="true"
-                  onClick={handleProfileMenuOpen}
-                  color="inherit"
-                  sx={{
-                    '& .MuiAvatar-root': {
-                      width: 32,
-                      height: 32,
-                      ml: -0.5,
-                      mr: 1
-                    }
-                  }}
-                >
-                  <Avatar
-                    {...stringAvatar(`${user?.firstname} ${user?.lastname}`)}
-                    size="small"
-                    title={`${user?.firstname} ${user?.lastname}`}
-                  />
-                </IconButton>
-              </Tooltip>
-            </Box>
-          </Toolbar>
-        </AppBar>
-        <Drawer
-          sx={{
-            width: drawerWidth,
-            flexShrink: 0,
-            '& .MuiDrawer-paper': {
-              width: drawerWidth,
-              boxSizing: 'border-box'
-            }
-          }}
-          // variant="persistent"
-          variant={ismobile ? 'temporary' : 'persistent'}
-          anchor="left"
-          open={open}
-        >
-          <DrawerHeader>
-            <Typography variant="h6">{appConfig.companyName}</Typography>
-            <IconButton onClick={handleDrawerClose}>
-              {theme.direction === 'ltr' ? (
-                <ChevronLeftIcon />
-              ) : (
-                <ChevronRightIcon />
-              )}
-            </IconButton>
-          </DrawerHeader>
-          <Divider />
-          <List disablePadding>
-            {MenuSidebar.filter(
-              (menuItem) => !ExcludeMenu[user?.role].includes(menuItem.id)
-            ).map((menuItem) =>
-              menuItem.children ? (
-                <Box key={menuItem.id}>
-                  <ListItemButton
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setMenuItemOpen((prevState) => ({
-                        ...prevState,
-                        [menuItem.id]:
-                          prevState[menuItem.id] === undefined
-                            ? true
-                            : !prevState[menuItem.id]
-                      }));
-                    }}
-                  >
-                    <ListItemIcon>{menuItem.icon}</ListItemIcon>
-                    <ListItemText
-                      primary={t(`${menuItem.title}`, { ns: 'common' })}
-                    />
-                    {menuItemOpen[menuItem.id] ? (
-                      <ExpandLess />
-                    ) : (
-                      <ExpandMore />
-                    )}
-                  </ListItemButton>
-                  <Collapse
-                    in={menuItemOpen[menuItem.id]}
-                    timeout="auto"
-                    unmountOnExit
-                  >
-                    <List disablePadding>
-                      {menuItem.children
-                        .filter(
-                          (subItem) =>
-                            !ExcludeMenu[user?.role].includes(subItem.id)
-                        )
-                        .map((subMenuItem) => (
-                          <ListItemButton
-                            key={subMenuItem.id}
-                            sx={{ pl: 4 }}
-                            component={LinkDom}
-                            to={subMenuItem.url}
-                            selected={subMenuItem.url === location.pathname}
-                          >
-                            <ListItemIcon>{subMenuItem.icon}</ListItemIcon>
-                            <ListItemText
-                              primary={t(`${subMenuItem.title}`, {
-                                ns: 'common'
-                              })}
-                            />
-                          </ListItemButton>
-                        ))}
-                    </List>
-                  </Collapse>
-                </Box>
-              ) : (
-                <ListItem key={menuItem.id} disablePadding>
-                  <ListItemButton
-                    component={LinkDom}
-                    to={menuItem.url}
-                    selected={menuItem.url === location.pathname}
-                  >
-                    <ListItemIcon>{menuItem.icon}</ListItemIcon>
-                    <ListItemText
-                      primary={t(`${menuItem.title}`, {
-                        ns: 'common'
-                      })}
-                    />
-                  </ListItemButton>
-                </ListItem>
-              )
+                <Badge badgeContent={navState.activeEventCount} color="error">
+                  <CalendarMonthIcon />
+                </Badge>
+              </IconButton>
             )}
-          </List>
-          <Divider />
-          <div style={{ position: 'relative', bottom: 0, width: '100%' }}>
-            <Footer />
-          </div>
-        </Drawer>
-        <Main open={open} ismobile={ismobile.toString()}>
-          <DrawerHeader />
-          {props.children}
-          {renderMobileMenu}
-          {RenderChatList}
-          <RenderMenu />
-        </Main>
-      </Box>
-    </>
+            {!is_TaiGer_Editor(user) && (
+              <IconButton
+                size="large"
+                aria-label="show unread new messages"
+                aria-controls={chatId}
+                aria-haspopup="true"
+                onClick={handleOpenChat}
+                color="inherit"
+              >
+                <Badge badgeContent={navState.unreadCount} color="error">
+                  <MailIcon />
+                </Badge>
+              </IconButton>
+            )}
+            <Tooltip title="Account settings" placement="bottom-start">
+              <IconButton
+                size="large"
+                edge="end"
+                aria-label="account of current user"
+                aria-controls={menuId}
+                aria-haspopup="true"
+                onClick={handleProfileMenuOpen}
+                color="inherit"
+              >
+                <Avatar
+                  {...stringAvatar(`${user?.firstname} ${user?.lastname}`)}
+                  size="small"
+                  title={`${user?.firstname} ${user?.lastname}`}
+                />
+              </IconButton>
+            </Tooltip>
+          </Box>
+          <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
+            {(is_TaiGer_Agent(user) || is_TaiGer_Student(user)) && (
+              <IconButton
+                size="large"
+                aria-label="show active event"
+                onClick={handleNavigateCalendar}
+                color="inherit"
+              >
+                <Badge badgeContent={navState.activeEventCount} color="error">
+                  <CalendarMonthIcon />
+                </Badge>
+              </IconButton>
+            )}
+            {!is_TaiGer_Editor(user) && (
+              <IconButton
+                size="large"
+                aria-label="show unread new messages"
+                aria-controls={chatId}
+                aria-haspopup="true"
+                onClick={handleOpenChat}
+                color="inherit"
+              >
+                <Badge badgeContent={navState.unreadCount} color="error">
+                  <MailIcon />
+                </Badge>
+              </IconButton>
+            )}
+            <Tooltip title="Account settings" placement="bottom-start">
+              <IconButton
+                size="large"
+                edge="end"
+                aria-label="account of current user"
+                aria-controls={menuId}
+                aria-haspopup="true"
+                onClick={handleProfileMenuOpen}
+                color="inherit"
+                sx={{
+                  '& .MuiAvatar-root': {
+                    width: 32,
+                    height: 32,
+                    ml: -0.5,
+                    mr: 1
+                  }
+                }}
+              >
+                <Avatar
+                  {...stringAvatar(`${user?.firstname} ${user?.lastname}`)}
+                  size="small"
+                  title={`${user?.firstname} ${user?.lastname}`}
+                />
+              </IconButton>
+            </Tooltip>
+          </Box>
+        </Toolbar>
+      </AppBar>
+      <CustomDrawer
+        open={open}
+        ismobile={ismobile}
+        handleDrawerClose={handleDrawerClose}
+        theme={theme}
+      />
+      <Main open={open} ismobile={ismobile.toString()}>
+        <DrawerHeader />
+        {props.children}
+        {renderMobileMenu}
+        {RenderChatList}
+        <RenderMenu />
+      </Main>
+    </Box>
   );
 }
 

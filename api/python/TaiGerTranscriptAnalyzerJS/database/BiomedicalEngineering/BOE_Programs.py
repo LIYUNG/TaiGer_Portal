@@ -8,6 +8,7 @@ import sys
 # Global variable:
 column_len_array = []
 
+# 2024: https://www.rwth-aachen.de/global/show_document.asp?id=aaaaaaaacnihfun
 def RWTH_BIO_ENGINEERING(transcript_sorted_group_map, df_transcript_array, df_category_courses_sugesstion_data, writer):
     program_name = 'RWTH_BIO_ENGINEERING'
     print("Create " + program_name + " sheet")
@@ -30,7 +31,7 @@ def RWTH_BIO_ENGINEERING(transcript_sorted_group_map, df_transcript_array, df_ca
     PROG_SPEC_BIOLOGY_PARAM = {
         'Program_Category': 'Biology', 'Required_ECTS': 20}
     PROG_SPEC_ENGINEERING_PHYSICS_PARAM = {
-        'Program_Category': 'Engineering Technology and Physics', 'Required_ECTS': 20}
+        'Program_Category': 'Engineering Technology and Physics', 'Required_ECTS': 30}
     PROG_SPEC_OTHERS = {
         'Program_Category': 'Others', 'Required_ECTS': 0}
 
@@ -84,9 +85,9 @@ def RWTH_BIO_ENGINEERING(transcript_sorted_group_map, df_transcript_array, df_ca
     WriteToExcel(writer, program_name, program_category, program_category_map,
                  transcript_sorted_group_map, df_transcript_array_temp, df_category_courses_sugesstion_data_temp, column_len_array)
 
-
-def TUM_BIO_ENGINEERING(transcript_sorted_group_map, df_transcript_array, df_category_courses_sugesstion_data, writer):
-    program_name = 'TUM_BIO_ENGINEERING'
+# Biomedical Engineering and Medical Physics : https://www.tum.de/fileadmin/w00bfo/www/Studium/Studienangebot/Lesbare_Fassung/Master/Biomedical_Engineering_and_Medical_Physics_MA_FPSO_22.01.2024.pdf
+def TUM_BIOMEDICAL_ENGINEERING(transcript_sorted_group_map, df_transcript_array, df_category_courses_sugesstion_data, writer):
+    program_name = 'TUM_BIOMEDICAL_ENGINEERING'
     print("Create " + program_name + " sheet")
     df_transcript_array_temp = []
     df_category_courses_sugesstion_data_temp = []
@@ -258,4 +259,4 @@ def TUM_NEURO_SCIENCE(transcript_sorted_group_map, df_transcript_array, df_categ
 
 
 program_sort_function = [RWTH_BIO_ENGINEERING,
-                         TUM_BIO_ENGINEERING, TUM_NEURO_SCIENCE]
+                         TUM_BIOMEDICAL_ENGINEERING, TUM_NEURO_SCIENCE]

@@ -34,4 +34,28 @@ const submitProgramChangeRequests = asyncHandler(async (req, res) => {
   res.send({ success: true, data: changeRequest });
 });
 
-module.exports = { getProgramChangeRequests, submitProgramChangeRequests };
+const reviewProgramChangeRequest = asyncHandler(async (req, res) => {
+  const { requestId } = req.params;
+  const { user } = req;
+  const changeRequest = await req.db
+    .model('ProgramChangeRequest')
+    .findById(requestId);
+  if (!changeRequest) {
+    logger.error('updateProgramChangeRequest: Invalid request id');
+    throw new ErrorResponse(404, 'ChangeRequest not found');
+  }
+  if (changeRequest.reviewedBy) {
+    logger.error('updateProgramChangeRequest: Request already reviewed');
+    throw new ErrorResponse(400, 'Request already reviewed');
+  }
+  changeRequest.reviewedBy = user._id;
+  changeRequest.reviewedAt = new Date();
+  await changeRequest.save();
+  res.send({ success: true, data: changeRequest });
+});
+
+module.exports = {
+  getProgramChangeRequests,
+  submitProgramChangeRequests,
+  reviewProgramChangeRequest
+};

@@ -18,7 +18,8 @@ const {
 } = require('../controllers/programs');
 const {
   getProgramChangeRequests,
-  submitProgramChangeRequests
+  submitProgramChangeRequests,
+  reviewProgramChangeRequest
 } = require('../controllers/programChangeRequests');
 const { filter_archiv_user } = require('../middlewares/limit_archiv_user');
 const {
@@ -80,6 +81,15 @@ router
     PostProgramRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     submitProgramChangeRequests
+  );
+
+router
+  .route('/review-changes/:requestId')
+  .post(
+    filter_archiv_user,
+    UpdateProgramRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
+    reviewProgramChangeRequest
   );
 
 module.exports = router;

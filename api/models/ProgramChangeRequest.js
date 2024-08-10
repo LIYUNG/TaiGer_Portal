@@ -24,7 +24,8 @@ const programChangeRequestSchema = new Schema(
     reviewedBy: {
       type: Schema.Types.ObjectId,
       ref: 'User'
-    }
+    },
+    reviewedAt: Schema.Types.Date
   },
   { timestamps: true }
 );

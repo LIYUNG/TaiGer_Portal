@@ -19,7 +19,7 @@ const changesSchema = new Schema(
     },
     changeRequest: {
       type: ObjectId,
-      ref: 'ProgramChangeRequest'
+      refPath: 'changeRequestRef'
     }
   },
   { _id: false }
@@ -35,6 +35,14 @@ const versionControlSchema = new Schema({
     required: true
   },
   changes: [changesSchema]
+});
+
+// Mapping to original collection and change request collection
+const collectionMap = {
+  Program: 'ProgramChangeRequest'
+};
+versionControlSchema.virtual('changeRequestRef').get(function () {
+  return collectionMap?.[this.collectionName];
 });
 
 versionControlSchema.statics.getVersion = async function (

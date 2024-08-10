@@ -1,16 +1,13 @@
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
-const { Role } = require('../constants');
 const logger = require('../services/logger');
-const { one_month_cache } = require('../cache/node-cache');
-const { two_weeks_cache } = require('../cache/node-cache');
-const { PROGRAMS_CACHE } = require('../config');
 
 const getProgramChangeRequests = asyncHandler(async (req, res) => {
   const { programId } = req.params;
   const changeRequests = await req.db
     .model('ProgramChangeRequest')
-    .find({ programId });
+    .find({ programId })
+    .populate('requestedBy', 'firstname lastname');
   if (!changeRequests) {
     logger.error('getProgramChangeRequests: Invalid program id');
     throw new ErrorResponse(404, 'ChangeRequests not found');

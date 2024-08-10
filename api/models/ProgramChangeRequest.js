@@ -29,14 +29,4 @@ const programChangeRequestSchema = new Schema(
   { timestamps: true }
 );
 
-// Assume it's requested by AI/External if requestedBy is null or undefined
-programChangeRequestSchema.virtual('isRequestedByExternal').get(function () {
-  return !this.requestedBy;
-});
-
-// Returns true if reviewedBy is populated, false otherwise
-programChangeRequestSchema.virtual('isReviewed').get(function () {
-  return !!this.reviewedBy;
-});
-
 module.exports = { programChangeRequestSchema };

@@ -28,9 +28,14 @@ import OffcanvasBaseDocument from '../../components/Offcanvas/OffcanvasBaseDocum
 import {
   is_TaiGer_Admin,
   is_TaiGer_AdminAgent,
-  is_TaiGer_Editor
+  is_TaiGer_Editor,
+  is_TaiGer_Student
 } from '../Utils/checking-functions';
 import {
+  FILE_DONT_CARE_SYMBOL,
+  FILE_MISSING_SYMBOL,
+  FILE_NOT_OK_SYMBOL,
+  FILE_OK_SYMBOL,
   FILE_UPLOADED_SYMBOL,
   base_documents_checklist,
   convertDate
@@ -39,21 +44,28 @@ import { useAuth } from '../../components/AuthProvider';
 import FilePreview from '../../components/FilePreview/FilePreview';
 import { BASE_URL } from '../../api/request';
 import {
+  CommentsIconButton,
   DeleteIconButton,
-  DownloadIconButton
+  DownloadIconButton,
+  SetNeededIconButton,
+  SetNotNeededIconButton,
+  UploadIconButton
 } from '../../components/Buttons/Button';
+// import { updateProfileDocumentStatus } from '../../api';
+import Loading from '../../components/Loading/Loading';
 
-function ButtonSetUploaded(props) {
+function MyDocumentCard(props) {
   const { user } = useAuth();
   const { t } = useTranslation();
-  const [ButtonSetUploadedState, setButtonSetUploadedState] = useState({
+  const [MyDocumentCardState, setMyDocumentCardState] = useState({
     student: props.student,
     link: props.link,
     student_id: props.student._id.toString(),
     category: '',
     docName: '',
-    comments: '',
+    comments: props.message,
     file: '',
+    delete_field: '',
     isLoaded: props.isLoaded,
     feedback: '',
     deleteFileWarningModel: false,
@@ -66,19 +78,21 @@ function ButtonSetUploaded(props) {
     checkedBoxes: [],
     rejectProfileFileModel: false,
     acceptProfileFileModel: false,
+    setMissingWindow: false,
+    SetNeededWindow: false,
     baseDocsflagOffcanvas: false,
     baseDocsflagOffcanvasButtonDisable: false
   });
 
   useEffect(() => {
-    setButtonSetUploadedState((prevState) => ({
+    setMyDocumentCardState((prevState) => ({
       ...prevState,
       isLoaded: props.isLoaded,
       student_id: props.student._id.toString()
     }));
   }, [props.isLoaded]);
   useEffect(() => {
-    setButtonSetUploadedState((prevState) => ({
+    setMyDocumentCardState((prevState) => ({
       ...prevState,
       isLoaded: props.isLoaded,
       student_id: props.student._id.toString()
@@ -86,28 +100,29 @@ function ButtonSetUploaded(props) {
   }, [props.student._id]);
 
   const closeOffcanvasWindow = () => {
-    setButtonSetUploadedState((prevState) => ({
+    setMyDocumentCardState((prevState) => ({
       ...prevState,
       baseDocsflagOffcanvas: false
     }));
   };
 
   const openOffcanvasWindow = () => {
-    setButtonSetUploadedState((prevState) => ({
+    setMyDocumentCardState((prevState) => ({
       ...prevState,
       baseDocsflagOffcanvas: true
     }));
   };
 
   const closeWarningWindow = () => {
-    setButtonSetUploadedState((prevState) => ({
+    setMyDocumentCardState((prevState) => ({
       ...prevState,
-      deleteFileWarningModel: false
+      deleteFileWarningModel: false,
+      delete_field: ''
     }));
   };
 
   const closePreviewWindow = () => {
-    setButtonSetUploadedState((prevState) => ({
+    setMyDocumentCardState((prevState) => ({
       ...prevState,
       showPreview: false
     }));
@@ -115,7 +130,7 @@ function ButtonSetUploaded(props) {
 
   const showPreview = (e, path) => {
     e.preventDefault();
-    setButtonSetUploadedState((prevState) => ({
+    setMyDocumentCardState((prevState) => ({
       ...prevState,
       showPreview: true,
       preview_path: path
@@ -123,14 +138,14 @@ function ButtonSetUploaded(props) {
   };
 
   const closeRejectWarningWindow = () => {
-    setButtonSetUploadedState((prevState) => ({
+    setMyDocumentCardState((prevState) => ({
       ...prevState,
       rejectProfileFileModel: false
     }));
   };
 
   const closeAcceptWarningWindow = () => {
-    setButtonSetUploadedState((prevState) => ({
+    setMyDocumentCardState((prevState) => ({
       ...prevState,
       acceptProfileFileModel: false
     }));
@@ -138,7 +153,7 @@ function ButtonSetUploaded(props) {
 
   const onDeleteFileWarningPopUp = (e, category, student_id, docName) => {
     e.preventDefault();
-    setButtonSetUploadedState((prevState) => ({
+    setMyDocumentCardState((prevState) => ({
       ...prevState,
       student_id,
       category,
@@ -149,24 +164,40 @@ function ButtonSetUploaded(props) {
 
   const handleRejectMessage = (e, rejectmessage) => {
     e.preventDefault();
-    setButtonSetUploadedState((prevState) => ({
+    setMyDocumentCardState((prevState) => ({
       ...prevState,
-      feedback: rejectmessage
+      comments: rejectmessage
     }));
   };
 
   const onUpdateProfileDocStatus = (e, category, student_id, status) => {
     e.preventDefault();
     if (status === 'accepted') {
-      setButtonSetUploadedState((prevState) => ({
+      setMyDocumentCardState((prevState) => ({
         ...prevState,
         student_id,
         category,
         status,
         acceptProfileFileModel: true
       }));
+    } else if (status === 'missing') {
+      setMyDocumentCardState((prevState) => ({
+        ...prevState,
+        student_id,
+        category,
+        status,
+        SetNeededWindow: true
+      }));
+    } else if (status === 'notneeded') {
+      setMyDocumentCardState((prevState) => ({
+        ...prevState,
+        student_id,
+        category,
+        status,
+        setMissingWindow: true
+      }));
     } else {
-      setButtonSetUploadedState((prevState) => ({
+      setMyDocumentCardState((prevState) => ({
         ...prevState,
         student_id,
         category,
@@ -178,12 +209,12 @@ function ButtonSetUploaded(props) {
 
   const updateDocLink = (e) => {
     e.preventDefault();
-    setButtonSetUploadedState((prevState) => ({
+    setMyDocumentCardState((prevState) => ({
       ...prevState,
       baseDocsflagOffcanvasButtonDisable: true
     }));
-    props.updateDocLink(ButtonSetUploadedState.link, props.k);
-    setButtonSetUploadedState((prevState) => ({
+    props.updateDocLink(MyDocumentCardState.link, props.k);
+    setMyDocumentCardState((prevState) => ({
       ...prevState,
       baseDocsflagOffcanvasButtonDisable: false,
       baseDocsflagOffcanvas: false
@@ -193,7 +224,7 @@ function ButtonSetUploaded(props) {
   const onChangeURL = (e) => {
     e.preventDefault();
     const url_temp = e.target.value;
-    setButtonSetUploadedState((prevState) => ({
+    setMyDocumentCardState((prevState) => ({
       ...prevState,
       link: url_temp
     }));
@@ -202,25 +233,77 @@ function ButtonSetUploaded(props) {
   const onDeleteFilefromstudent = (e) => {
     e.preventDefault();
     props.onDeleteFilefromstudent(
-      ButtonSetUploadedState.category,
-      ButtonSetUploadedState.student_id
+      MyDocumentCardState.category,
+      MyDocumentCardState.student_id
     );
+    setMyDocumentCardState((prevState) => ({
+      ...prevState,
+      deleteFileWarningModel: false
+    }));
+  };
+
+  const openCommentWindow = (student_id, category) => {
+    setMyDocumentCardState((prevState) => ({
+      ...prevState,
+      rejectProfileFileModel: true,
+      status: 'rejected',
+      student_id,
+      category
+    }));
+  };
+
+  const onChangeDeleteField = (e) => {
+    setMyDocumentCardState((prevState) => ({
+      ...prevState,
+      delete_field: e.target.value
+    }));
+  };
+
+  const closeSetMissingWindow = () => {
+    setMyDocumentCardState((prevState) => ({
+      ...prevState,
+      setMissingWindow: false
+    }));
+  };
+
+  const closeSetNeededWindow = () => {
+    setMyDocumentCardState((prevState) => ({
+      ...prevState,
+      SetNeededWindow: false
+    }));
+  };
+
+  const handleGeneralDocSubmit = (e, k, student_id) => {
+    e.preventDefault();
+    setMyDocumentCardState((prevState) => ({
+      ...prevState,
+      isLoaded: false
+    }));
+    props.handleGeneralDocSubmit(e, k, student_id);
   };
 
   const onUpdateProfileFilefromstudent = (e) => {
     e.preventDefault();
     props.onUpdateProfileFilefromstudent(
-      ButtonSetUploadedState.category,
-      ButtonSetUploadedState.student_id,
-      ButtonSetUploadedState.status,
-      ButtonSetUploadedState.feedback
+      MyDocumentCardState.category,
+      MyDocumentCardState.student_id,
+      MyDocumentCardState.status,
+      MyDocumentCardState.comments
     );
+    setMyDocumentCardState((prevState) => ({
+      ...prevState,
+      showPreview: false,
+      SetNeededWindow: false,
+      setMissingWindow: false,
+      rejectProfileFileModel: false,
+      acceptProfileFileModel: false
+    }));
   };
 
   const onChecked = (e) => {
     const id = e.target.id;
     const isChecked = e.target.checked;
-    const temp_checkedBoxes = [...ButtonSetUploadedState.checkedBoxes];
+    const temp_checkedBoxes = [...MyDocumentCardState.checkedBoxes];
     if (isChecked) {
       // Add the ID to the list
       temp_checkedBoxes.push(id);
@@ -232,14 +315,32 @@ function ButtonSetUploaded(props) {
       }
     }
 
-    setButtonSetUploadedState((prevState) => ({
+    setMyDocumentCardState((prevState) => ({
       ...prevState,
       checkedBoxes: temp_checkedBoxes
     }));
   };
 
-  var ButttonRow_Uploaded;
-  ButttonRow_Uploaded = (
+  const StatusIcon = () => {
+    if (props.status === 'uploaded') {
+      return FILE_UPLOADED_SYMBOL;
+    } else if (props.status === 'accepted') {
+      return FILE_OK_SYMBOL;
+    } else if (props.status === 'rejected') {
+      return FILE_NOT_OK_SYMBOL;
+    } else if (props.status === 'notneeded') {
+      return FILE_DONT_CARE_SYMBOL;
+    } else {
+      return FILE_MISSING_SYMBOL;
+    }
+  };
+
+  const ButttonRow_Uploaded = ((props.status === 'notneeded' &&
+    is_TaiGer_AdminAgent(user)) ||
+    props.status === 'uploaded' ||
+    props.status === 'rejected' ||
+    props.status === 'missing' ||
+    props.status === 'accepted') && (
     <Box
       sx={{
         mb: 1,
@@ -252,7 +353,7 @@ function ButtonSetUploaded(props) {
       <Grid container alignItems="center" spacing={2}>
         <Grid item xs={8} sm={8}>
           <Stack direction="row" alignItems="center" spacing={1}>
-            {FILE_UPLOADED_SYMBOL}
+            <StatusIcon />
             <Typography variant="body1">
               {t(props.docName, { ns: 'common' })}
             </Typography>
@@ -260,9 +361,8 @@ function ButtonSetUploaded(props) {
               <IconButton
                 component={LinkDom}
                 to={
-                  ButtonSetUploadedState.link &&
-                  ButtonSetUploadedState.link !== ''
-                    ? ButtonSetUploadedState.link
+                  MyDocumentCardState.link && MyDocumentCardState.link !== ''
+                    ? MyDocumentCardState.link
                     : '/'
                 }
                 target="_blank"
@@ -283,6 +383,11 @@ function ButtonSetUploaded(props) {
               </Typography>
             )}
           </Stack>
+          {props.status === 'rejected' && (
+            <Typography variant="body2" fontWeight="bold">
+              {t('Message', { ns: 'common' })}: {MyDocumentCardState.comments}
+            </Typography>
+          )}
           <Typography variant="body2" color="textSecondary">
             {convertDate(props.time)}
           </Typography>
@@ -294,18 +399,59 @@ function ButtonSetUploaded(props) {
             alignItems="center"
             spacing={1}
           >
-            <DownloadIconButton
-              showPreview={showPreview}
-              path={props.path}
-              t={t}
-            />
-            {!is_TaiGer_Editor(user) && (
-              <DeleteIconButton
-                isLoaded={ButtonSetUploadedState.isLoaded}
-                onDeleteFileWarningPopUp={onDeleteFileWarningPopUp}
+            {(props.status === 'missing' || props.status === 'notneeded') &&
+              (is_TaiGer_Student(user) || is_TaiGer_AdminAgent(user)) && (
+                <UploadIconButton
+                  user={user}
+                  buttonState={MyDocumentCardState}
+                  t={t}
+                  handleGeneralDocSubmit={handleGeneralDocSubmit}
+                  k={props.k}
+                />
+              )}
+            {(props.status === 'rejected' ||
+              props.status === 'uploaded' ||
+              props.status === 'accepted') && (
+              <DownloadIconButton
+                showPreview={showPreview}
+                path={props.path}
+                t={t}
+              />
+            )}
+            {props.status === 'rejected' && !is_TaiGer_Student(user) && (
+              <CommentsIconButton
+                buttonState={MyDocumentCardState}
+                openCommentWindow={openCommentWindow}
                 k={props.k}
-                student_id={ButtonSetUploadedState.student_id}
-                docName={props.docName}
+                t={t}
+              />
+            )}
+            {props.status === 'notneeded' && (
+              <SetNeededIconButton
+                onUpdateProfileDocStatus={onUpdateProfileDocStatus}
+                k={props.k}
+                buttonState={MyDocumentCardState}
+                t={t}
+              />
+            )}
+            {(props.status === 'uploaded' ||
+              props.status === 'rejected' ||
+              (props.status === 'accepted' && is_TaiGer_AdminAgent(user))) &&
+              !is_TaiGer_Editor(user) && (
+                <DeleteIconButton
+                  isLoaded={MyDocumentCardState.isLoaded}
+                  onDeleteFileWarningPopUp={onDeleteFileWarningPopUp}
+                  k={props.k}
+                  student_id={MyDocumentCardState.student_id}
+                  docName={props.docName}
+                  t={t}
+                />
+              )}
+            {props.status === 'missing' && is_TaiGer_AdminAgent(user) && (
+              <SetNotNeededIconButton
+                onUpdateProfileDocStatus={onUpdateProfileDocStatus}
+                k={props.k}
+                buttonState={MyDocumentCardState}
                 t={t}
               />
             )}
@@ -319,7 +465,7 @@ function ButtonSetUploaded(props) {
     <>
       {ButttonRow_Uploaded}
       <Dialog
-        open={ButtonSetUploadedState.deleteFileWarningModel}
+        open={MyDocumentCardState.deleteFileWarningModel}
         onClose={closeWarningWindow}
         aria-labelledby="contained-modal-title-vcenter"
       >
@@ -328,16 +474,33 @@ function ButtonSetUploaded(props) {
           <DialogContentText>
             {t('Do you want to delete')} {props.docName}?
           </DialogContentText>
+          <TextField
+            type="text"
+            fullWidth
+            required
+            variant="standard"
+            margin="dense"
+            label={
+              <>
+                Please type <b>delete</b> to delete.
+              </>
+            }
+            placeholder="delete"
+            onChange={(e) => onChangeDeleteField(e)}
+          />
         </DialogContent>
         <DialogActions>
           <Button
-            color="primary"
             variant="contained"
-            disabled={!ButtonSetUploadedState.isLoaded}
+            color="primary"
+            disabled={
+              !MyDocumentCardState.isLoaded ||
+              MyDocumentCardState.delete_field !== 'delete'
+            }
             onClick={(e) => onDeleteFilefromstudent(e)}
             sx={{ mr: 1 }}
           >
-            {!ButtonSetUploadedState.isLoaded ? (
+            {!MyDocumentCardState.isLoaded ? (
               <CircularProgress size={24} />
             ) : (
               t('Yes', { ns: 'common' })
@@ -349,7 +512,7 @@ function ButtonSetUploaded(props) {
         </DialogActions>
       </Dialog>
       <Dialog
-        open={ButtonSetUploadedState.rejectProfileFileModel}
+        open={MyDocumentCardState.rejectProfileFileModel}
         onClose={closeRejectWarningWindow}
         aria-labelledby="contained-modal-title-vcenter"
       >
@@ -357,13 +520,14 @@ function ButtonSetUploaded(props) {
         <DialogContent>
           <DialogContentText>
             Please give a reason why the uploaded
-            {ButtonSetUploadedState.category} is invalied?
+            {MyDocumentCardState.category} is invalied?
           </DialogContentText>
           <TextField
             id="rejectmessage"
             required
             fullWidth
             type="text"
+            defaultValue={MyDocumentCardState.comments || ''}
             onChange={(e) => handleRejectMessage(e, e.target.value)}
           />
         </DialogContent>
@@ -372,12 +536,12 @@ function ButtonSetUploaded(props) {
             color="primary"
             variant="contained"
             disabled={
-              ButtonSetUploadedState.feedback === '' ||
-              !ButtonSetUploadedState.isLoaded
+              MyDocumentCardState.comments === '' ||
+              !MyDocumentCardState.isLoaded
             }
             onClick={(e) => onUpdateProfileFilefromstudent(e)}
           >
-            {!ButtonSetUploadedState.isLoaded ? (
+            {!MyDocumentCardState.isLoaded ? (
               <CircularProgress size={24} />
             ) : (
               t('Submit', { ns: 'common' })
@@ -389,7 +553,7 @@ function ButtonSetUploaded(props) {
         </DialogActions>
       </Dialog>
       <Dialog
-        open={ButtonSetUploadedState.acceptProfileFileModel}
+        open={MyDocumentCardState.acceptProfileFileModel}
         onClose={closeAcceptWarningWindow}
         aria-labelledby="contained-modal-title-vcenter"
         centered
@@ -397,7 +561,7 @@ function ButtonSetUploaded(props) {
         <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            {ButtonSetUploadedState.category} is a valid and can be used for the
+            {MyDocumentCardState.category} is a valid and can be used for the
             application?
           </DialogContentText>
         </DialogContent>
@@ -405,10 +569,10 @@ function ButtonSetUploaded(props) {
           <Button
             color="primary"
             variant="contained"
-            disabled={!ButtonSetUploadedState.isLoaded}
+            disabled={!MyDocumentCardState.isLoaded}
             onClick={(e) => onUpdateProfileFilefromstudent(e)}
           >
-            {!ButtonSetUploadedState.isLoaded ? (
+            {!MyDocumentCardState.isLoaded ? (
               <CircularProgress size={24} />
             ) : (
               t('Yes', { ns: 'common' })
@@ -426,14 +590,14 @@ function ButtonSetUploaded(props) {
       <Dialog
         fullWidth={true}
         maxWidth={'xl'}
-        open={ButtonSetUploadedState.showPreview}
+        open={MyDocumentCardState.showPreview}
         onClose={closePreviewWindow}
         aria-labelledby="contained-modal-title-vcenter2"
       >
         <DialogTitle>{props.path}</DialogTitle>
         <FilePreview
-          path={ButtonSetUploadedState.preview_path}
-          student_id={ButtonSetUploadedState.student_id.toString()}
+          path={MyDocumentCardState.preview_path}
+          student_id={MyDocumentCardState.student_id.toString()}
         />
         <DialogContent>
           {is_TaiGer_AdminAgent(user) && (
@@ -459,9 +623,9 @@ function ButtonSetUploaded(props) {
                 : t('No', { ns: 'common' })}
             </>
           )}
-          {props.path.split('.')[1] !== 'pdf' && (
+          {props.path && props.path.split('.')[1] !== 'pdf' && (
             <a
-              href={`${BASE_URL}/api/students/${ButtonSetUploadedState.student_id.toString()}/files/${
+              href={`${BASE_URL}/api/students/${MyDocumentCardState.student_id.toString()}/files/${
                 props.path
               }`}
               download
@@ -483,40 +647,42 @@ function ButtonSetUploaded(props) {
         <DialogActions>
           {is_TaiGer_AdminAgent(user) && (
             <>
-              <Button
-                variant="contained"
-                color="primary"
-                size="small"
-                title="Mark as finished"
-                disabled={
-                  !ButtonSetUploadedState.isLoaded ||
-                  ButtonSetUploadedState.num_points !==
-                    ButtonSetUploadedState.checkedBoxes.length
-                }
-                onClick={(e) =>
-                  onUpdateProfileDocStatus(
-                    e,
-                    props.k,
-                    ButtonSetUploadedState.student_id,
-                    'accepted'
-                  )
-                }
-                startIcon={<CheckIcon />}
-                sx={{ mr: 2 }}
-              >
-                {t('Accept', { ns: 'common' })}
-              </Button>
+              {props.status !== 'accepted' && (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                  title="Mark as finished"
+                  disabled={
+                    !MyDocumentCardState.isLoaded ||
+                    MyDocumentCardState.num_points !==
+                      MyDocumentCardState.checkedBoxes.length
+                  }
+                  onClick={(e) =>
+                    onUpdateProfileDocStatus(
+                      e,
+                      props.k,
+                      MyDocumentCardState.student_id,
+                      'accepted'
+                    )
+                  }
+                  startIcon={<CheckIcon />}
+                  sx={{ mr: 2 }}
+                >
+                  {t('Accept', { ns: 'common' })}
+                </Button>
+              )}
               <Button
                 variant="contained"
                 color="secondary"
                 size="small"
                 title="Mark as reject"
-                disabled={!ButtonSetUploadedState.isLoaded}
+                disabled={!MyDocumentCardState.isLoaded}
                 onClick={(e) =>
                   onUpdateProfileDocStatus(
                     e,
                     props.k,
-                    ButtonSetUploadedState.student_id,
+                    MyDocumentCardState.student_id,
                     'rejected'
                   )
                 }
@@ -528,7 +694,7 @@ function ButtonSetUploaded(props) {
             </>
           )}
           <Button size="small" variant="outlined" onClick={closePreviewWindow}>
-            {!ButtonSetUploadedState.isLoaded ? (
+            {!MyDocumentCardState.isLoaded ? (
               <CircularProgress size={24} />
             ) : (
               t('Close', { ns: 'common' })
@@ -536,19 +702,74 @@ function ButtonSetUploaded(props) {
           </Button>
         </DialogActions>
       </Dialog>
+      <Dialog
+        open={MyDocumentCardState.SetNeededWindow}
+        onClose={closeSetNeededWindow}
+        aria-labelledby="contained-modal-title-vcenter"
+      >
+        <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Do you want to set {MyDocumentCardState.category} as mandatory
+            document?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          {!MyDocumentCardState.isLoaded ? (
+            <CircularProgress />
+          ) : (
+            <Button
+              disabled={!MyDocumentCardState.isLoaded}
+              onClick={(e) => onUpdateProfileFilefromstudent(e)}
+            >
+              {t('Yes', { ns: 'common' })}
+            </Button>
+          )}
+
+          <Button onClick={closeSetNeededWindow}>
+            {t('No', { ns: 'common' })}
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        open={MyDocumentCardState.setMissingWindow}
+        onClose={closeSetMissingWindow}
+        aria-labelledby="contained-modal-title-vcenter"
+      >
+        <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Do you want to set {MyDocumentCardState.category} unnecessary
+            document?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          {!MyDocumentCardState.isLoaded && <Loading />}
+          <Button
+            variant="contained"
+            disabled={!MyDocumentCardState.isLoaded}
+            onClick={(e) => onUpdateProfileFilefromstudent(e)}
+          >
+            {t('Yes', { ns: 'common' })}
+          </Button>
+          <Button onClick={closeSetMissingWindow}>
+            {t('No', { ns: 'common' })}
+          </Button>
+        </DialogActions>
+      </Dialog>
       <OffcanvasBaseDocument
-        open={ButtonSetUploadedState.baseDocsflagOffcanvas}
+        open={MyDocumentCardState.baseDocsflagOffcanvas}
         onHide={closeOffcanvasWindow}
-        link={ButtonSetUploadedState.link}
+        link={MyDocumentCardState.link}
         docName={props.docName}
         onChangeURL={onChangeURL}
         updateDocLink={updateDocLink}
         baseDocsflagOffcanvasButtonDisable={
-          ButtonSetUploadedState.baseDocsflagOffcanvasButtonDisable
+          MyDocumentCardState.baseDocsflagOffcanvasButtonDisable
         }
       />
     </>
   );
 }
 
-export default ButtonSetUploaded;
+export default MyDocumentCard;

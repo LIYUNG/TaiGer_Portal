@@ -11,6 +11,7 @@ const {
 const { EventSchema } = require('./models/Event');
 const { documentThreadsSchema } = require('./models/Documentthread');
 const { programSchema } = require('./models/Program');
+const { programChangeRequestSchema } = require('./models/ProgramChangeRequest');
 const { coursesSchema } = require('./models/Course');
 const {
   basedocumentationslinksSchema
@@ -22,7 +23,10 @@ const { tokenSchema } = require('./models/Token');
 const { templatesSchema } = require('./models/Template');
 const { documentationsSchema } = require('./models/Documentation');
 const { internaldocsSchema } = require('./models/Internaldoc');
-const { enableVersionControl, handleProgramChanges } = require('./utils/modelHelper/versionControl');
+const {
+  enableVersionControl,
+  handleProgramChanges
+} = require('./utils/modelHelper/versionControl');
 const { docspagesSchema } = require('./models/Docspage');
 const { expensesSchema } = require('./models/Expense');
 const { incomesSchema } = require('./models/Income');
@@ -102,6 +106,7 @@ const connectToDatabase = (tenant, uri = null) => {
     connection.model('User').discriminator('Admin', Admin.schema);
     connection.model('User').discriminator('Guest', Guest.schema);
 
+    connection.model('ProgramChangeRequest', programChangeRequestSchema);
     connection.model('VC', versionControlSchema);
     applyProgramSchema(
       connection,

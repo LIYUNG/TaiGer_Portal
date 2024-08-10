@@ -68,7 +68,8 @@ function ProgramDiffModal(props) {
 
       <ProgramCompare
         originalProgram={originalProgram}
-        incomingProgram={incomingChanges[changeIndex]?.programChanges || {}}
+        incomingChanges={incomingChanges[changeIndex] || {}}
+        submitCallBack={props.setModalHide}
       />
       <Button color="secondary" variant="outlined" onClick={props.setModalHide}>
         {t('Close', { ns: 'common' })}

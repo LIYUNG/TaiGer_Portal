@@ -18,6 +18,7 @@ import {
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 
+import { updateProgram, reviewProgramChangeRequests } from '../../api/index';
 import { programField2Label, sortProgramFields } from '../Utils/contants';
 
 const IGNORE_KEYS = ['_id', 'updatedAt', 'whoupdated', 'createdAt', '__v'];
@@ -170,9 +171,14 @@ const DiffTableContent = ({
   );
 };
 
-const ProgramCompare = ({ originalProgram, incomingProgram }) => {
+const ProgramCompare = ({
+  originalProgram,
+  incomingChanges,
+  submitCallBack
+}) => {
   const { t } = useTranslation('common');
   const [delta, setDelta] = useState({});
+  const incomingProgram = incomingChanges?.programChanges || {};
 
   const acceptAllChanges = () => {
     const { modifiedKeys } = getDiffKeys(originalProgram, incomingProgram);
@@ -185,8 +191,14 @@ const ProgramCompare = ({ originalProgram, incomingProgram }) => {
     setDelta(modifiedDelta);
   };
 
-  const submitChanges = () => {
-    console.log(`submitting changes [${originalProgram._id}] -> `, delta);
+  const submitChanges = async () => {
+    const program = updateProgram({ _id: originalProgram._id, ...delta });
+    const changeRequest = reviewProgramChangeRequests(incomingChanges._id);
+    await Promise.all([program, changeRequest]);
+    if (typeof submitCallBack === 'function') {
+      submitCallBack();
+    }
+    console.log('Changes submitted');
   };
 
   return (

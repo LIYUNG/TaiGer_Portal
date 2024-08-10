@@ -16,6 +16,10 @@ const changesSchema = new Schema(
       type: String
       // type: mongoose.Schema.Types.ObjectId,
       // ref: 'User'
+    },
+    changeRequest: {
+      type: ObjectId,
+      ref: 'ProgramChangeRequest'
     }
   },
   { _id: false }

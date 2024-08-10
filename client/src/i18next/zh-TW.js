@@ -330,7 +330,10 @@ export const translation_zh_TW = {
     Send: '送出',
     'Target Year': '預計申請年度',
     'Program Language': '學程教學語言',
-    'Frequently Asked Questions': '常見問題'
+    'Frequently Asked Questions': '常見問題',
+    'Program Update Request': '科系更新請求',
+    'Agent Support Documents': '顧問輔助文件',
+    'Move to Active': '移至 Active'
   },
   customerCenter: {},
   dashboard: {

@@ -117,7 +117,9 @@ function ProgramReportCard() {
   return (
     <Card>
       <Alert severity="error">
-        <Typography>{t('Program Update Request')}:</Typography>
+        <Typography>
+          {t('Program Update Request', { ns: 'common' })}:
+        </Typography>
       </Alert>
       <div className="card-scrollable-body">
         <Table size="small">

@@ -326,7 +326,10 @@ export const translation_en = {
     Send: 'Send',
     'Target Year': 'Target Year',
     'Program Language': 'Program Language',
-    'Frequently Asked Questions': 'Frequently Asked Questions'
+    'Frequently Asked Questions': 'Frequently Asked Questions',
+    'Program Update Request': 'Program Update Request',
+    'Agent Support Documents': 'Agent Support Documents',
+    'Move to Active': 'Move to Active'
   },
   customerCenter: {},
   dashboard: {

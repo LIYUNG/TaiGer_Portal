@@ -10,7 +10,11 @@ import {
   Grid,
   Stack,
   Tooltip,
-  IconButton
+  IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions
 } from '@mui/material';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import LaunchIcon from '@mui/icons-material/Launch';
@@ -456,71 +460,75 @@ function ButtonSetRejected(props) {
           </>
         )}
       </ModalNew>
-      <ModalNew
+      <Dialog
+        fullWidth={true}
+        maxWidth={'xl'}
         open={buttonSetRejectedState.showPreview}
         onClose={closePreviewWindow}
         aria-labelledby="contained-modal-title-vcenter2"
         size="xl"
       >
-        <Typography id="contained-d-title-vcenter">{props.path}</Typography>
-        <Typography>
-          <FilePreview
-            path={buttonSetRejectedState.preview_path}
-            student_id={buttonSetRejectedState.student_id.toString()}
-          />
-        </Typography>
-        {props.path.split('.')[1] !== 'pdf' && (
-          <a
-            href={`${BASE_URL}/api/students/${buttonSetRejectedState.student_id.toString()}/files/${
-              props.path
-            }`}
-            download
-            target="_blank"
-            rel="noreferrer"
-          >
+        <DialogTitle>{props.path}</DialogTitle>
+        <FilePreview
+          path={buttonSetRejectedState.preview_path}
+          student_id={buttonSetRejectedState.student_id.toString()}
+        />
+        <DialogContent>
+          {props.path.split('.')[1] !== 'pdf' && (
+            <a
+              href={`${BASE_URL}/api/students/${buttonSetRejectedState.student_id.toString()}/files/${
+                props.path
+              }`}
+              download
+              target="_blank"
+              rel="noreferrer"
+            >
+              <Button
+                color="secondary"
+                variant="contained"
+                size="small"
+                title="Download"
+                startIcon={<FileDownloadIcon />}
+              >
+                {t('Download', { ns: 'common' })}
+              </Button>
+            </a>
+          )}
+        </DialogContent>
+        <DialogActions>
+          {!(is_TaiGer_Editor(user) || is_TaiGer_Student(user)) && (
             <Button
-              color="secondary"
+              color={ACCEPT_STYLE}
               variant="contained"
               size="small"
-              title="Download"
-              startIcon={<FileDownloadIcon />}
+              title="Mark as accepted"
+              disabled={!buttonSetRejectedState.isLoaded}
+              onClick={(e) =>
+                onUpdateProfileDocStatus(
+                  e,
+                  props.k,
+                  buttonSetRejectedState.student_id,
+                  'accepted'
+                )
+              }
             >
-              {t('Download', { ns: 'common' })}
+              {t('Accept', { ns: 'common' })}
             </Button>
-          </a>
-        )}
-        {!(is_TaiGer_Editor(user) || is_TaiGer_Student(user)) && (
-          <Button
-            color={ACCEPT_STYLE}
-            variant="contained"
-            size="small"
-            title="Mark as accepted"
-            disabled={!buttonSetRejectedState.isLoaded}
-            onClick={(e) =>
-              onUpdateProfileDocStatus(
-                e,
-                props.k,
-                buttonSetRejectedState.student_id,
-                'accepted'
-              )
-            }
-          >
-            {t('Accept', { ns: 'common' })}
-          </Button>
-        )}
-        <Button
-          color="secondary"
-          variant="outlined"
-          size="small"
-          onClick={closePreviewWindow}
-        >
-          {!buttonSetRejectedState.isLoaded ? (
-            <CircularProgress />
-          ) : (
-            t('Close', { ns: 'common' })
           )}
-        </Button>
-      </ModalNew>
+          <Button
+            color="secondary"
+            variant="outlined"
+            size="small"
+            onClick={closePreviewWindow}
+          >
+            {!buttonSetRejectedState.isLoaded ? (
+              <CircularProgress />
+            ) : (
+              t('Close', { ns: 'common' })
+            )}
+          </Button>
+        </DialogActions>
+      </Dialog>
       <ModalNew
         open={buttonSetRejectedState.acceptProfileFileModel}
         onClose={closeAcceptWarningWindow}

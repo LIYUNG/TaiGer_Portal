@@ -5,6 +5,10 @@ import {
   Button,
   Checkbox,
   CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   FormControlLabel,
   Grid,
   IconButton,
@@ -410,117 +414,119 @@ function ButtonSetUploaded(props) {
           {t('No', { ns: 'common' })}
         </Button>
       </ModalNew>
-      <ModalNew
+      <Dialog
+        fullWidth={true}
+        maxWidth={'xl'}
         open={ButtonSetUploadedState.showPreview}
         onClose={closePreviewWindow}
         aria-labelledby="contained-modal-title-vcenter2"
-        width="100%"
-        size="xl"
       >
-        <Typography id="contained-d-title-vcenter">{props.path}</Typography>
-        <Typography>
-          <FilePreview
-            path={ButtonSetUploadedState.preview_path}
-            student_id={ButtonSetUploadedState.student_id.toString()}
-          />
-        </Typography>
-        {is_TaiGer_AdminAgent(user) && (
-          <>
-            <Typography variant="body1" fontWeight="bold">
-              {base_documents_checklist[props.k] &&
-                base_documents_checklist[props.k].length !== 0 &&
-                'Check list: Please check the following points so that you can flag this document as valid.'}
-            </Typography>
-            {base_documents_checklist[props.k]
-              ? base_documents_checklist[props.k].map((check_item, i) => (
-                  <FormControlLabel
-                    key={i}
-                    label={`${check_item}`}
-                    control={
-                      <Checkbox
-                        id={`${check_item}-${i}`}
-                        onChange={(e) => onChecked(e)}
-                      />
-                    }
-                  />
-                ))
-              : t('No', { ns: 'common' })}
-          </>
-        )}
-        {props.path.split('.')[1] !== 'pdf' && (
-          <a
-            href={`${BASE_URL}/api/students/${ButtonSetUploadedState.student_id.toString()}/files/${
-              props.path
-            }`}
-            download
-            target="_blank"
-            rel="noreferrer"
-          >
-            <Button
-              color="primary"
-              variant="contained"
-              size="small"
-              title="Download"
-              startIcon={<FileDownloadIcon />}
-            >
-              {t('Download', { ns: 'common' })}
-            </Button>
-          </a>
-        )}
-        {is_TaiGer_AdminAgent(user) && (
-          <>
-            <Button
-              variant="contained"
-              color="primary"
-              size="small"
-              title="Mark as finished"
-              disabled={
-                !ButtonSetUploadedState.isLoaded ||
-                ButtonSetUploadedState.num_points !==
-                  ButtonSetUploadedState.checkedBoxes.length
-              }
-              onClick={(e) =>
-                onUpdateProfileDocStatus(
-                  e,
-                  props.k,
-                  ButtonSetUploadedState.student_id,
-                  'accepted'
-                )
-              }
-              startIcon={<CheckIcon />}
-              sx={{ mr: 2 }}
-            >
-              {t('Accept', { ns: 'common' })}
-            </Button>
-            <Button
-              variant="contained"
-              color="secondary"
-              size="small"
-              title="Mark as reject"
-              disabled={!ButtonSetUploadedState.isLoaded}
-              onClick={(e) =>
-                onUpdateProfileDocStatus(
-                  e,
-                  props.k,
-                  ButtonSetUploadedState.student_id,
-                  'rejected'
-                )
-              }
-              startIcon={<CloseIcon />}
-              sx={{ mr: 2 }}
-            >
-              {t('Reject', { ns: 'documents' })}
-            </Button>
-          </>
-        )}
-        <Button size="small" variant="outlined" onClick={closePreviewWindow}>
-          {!ButtonSetUploadedState.isLoaded ? (
-            <CircularProgress size={24} />
-          ) : (
-            t('Close', { ns: 'common' })
+        <DialogTitle>{props.path}</DialogTitle>
+        <FilePreview
+          path={ButtonSetUploadedState.preview_path}
+          student_id={ButtonSetUploadedState.student_id.toString()}
+        />
+        <DialogContent>
+          {is_TaiGer_AdminAgent(user) && (
+            <>
+              <Typography variant="body1" fontWeight="bold">
+                {base_documents_checklist[props.k] &&
+                  base_documents_checklist[props.k].length !== 0 &&
+                  'Check list: Please check the following points so that you can flag this document as valid.'}
+              </Typography>
+              {base_documents_checklist[props.k]
+                ? base_documents_checklist[props.k].map((check_item, i) => (
+                    <FormControlLabel
+                      key={i}
+                      label={`${check_item}`}
+                      control={
+                        <Checkbox
+                          id={`${check_item}-${i}`}
+                          onChange={(e) => onChecked(e)}
+                        />
+                      }
+                    />
+                  ))
+                : t('No', { ns: 'common' })}
+            </>
           )}
-        </Button>
-      </ModalNew>
+          {props.path.split('.')[1] !== 'pdf' && (
+            <a
+              href={`${BASE_URL}/api/students/${ButtonSetUploadedState.student_id.toString()}/files/${
+                props.path
+              }`}
+              download
+              target="_blank"
+              rel="noreferrer"
+            >
+              <Button
+                color="primary"
+                variant="contained"
+                size="small"
+                title="Download"
+                startIcon={<FileDownloadIcon />}
+              >
+                {t('Download', { ns: 'common' })}
+              </Button>
+            </a>
+          )}
+        </DialogContent>
+        <DialogActions>
+          {is_TaiGer_AdminAgent(user) && (
+            <>
+              <Button
+                variant="contained"
+                color="primary"
+                size="small"
+                title="Mark as finished"
+                disabled={
+                  !ButtonSetUploadedState.isLoaded ||
+                  ButtonSetUploadedState.num_points !==
+                    ButtonSetUploadedState.checkedBoxes.length
+                }
+                onClick={(e) =>
+                  onUpdateProfileDocStatus(
+                    e,
+                    props.k,
+                    ButtonSetUploadedState.student_id,
+                    'accepted'
+                  )
+                }
+                startIcon={<CheckIcon />}
+                sx={{ mr: 2 }}
+              >
+                {t('Accept', { ns: 'common' })}
+              </Button>
+              <Button
+                variant="contained"
+                color="secondary"
+                size="small"
+                title="Mark as reject"
+                disabled={!ButtonSetUploadedState.isLoaded}
+                onClick={(e) =>
+                  onUpdateProfileDocStatus(
+                    e,
+                    props.k,
+                    ButtonSetUploadedState.student_id,
+                    'rejected'
+                  )
+                }
+                startIcon={<CloseIcon />}
+                sx={{ mr: 2 }}
+              >
+                {t('Reject', { ns: 'documents' })}
+              </Button>
+            </>
+          )}
+          <Button size="small" variant="outlined" onClick={closePreviewWindow}>
+            {!ButtonSetUploadedState.isLoaded ? (
+              <CircularProgress size={24} />
+            ) : (
+              t('Close', { ns: 'common' })
+            )}
+          </Button>
+        </DialogActions>
+      </Dialog>
       <OffcanvasBaseDocument
         open={ButtonSetUploadedState.baseDocsflagOffcanvas}
         onHide={closeOffcanvasWindow}

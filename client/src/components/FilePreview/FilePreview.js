@@ -9,7 +9,7 @@ const FilePreview = ({ path, student_id }) => {
   return (
     <>
       {path.split('.')[1] === 'pdf' || path.split('.')[1] === 'PDF' ? (
-        <div>{PDFViewer(student_id, path)}</div>
+        <>{PDFViewer(student_id, path)}</>
       ) : (
         // <embed
         //   src={`${BASE_URL}/api/students/${student_id}/files/${path}`}

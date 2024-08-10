@@ -8,6 +8,7 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
+  DialogContentText,
   DialogTitle,
   FormControlLabel,
   Grid,
@@ -35,7 +36,6 @@ import {
   convertDate
 } from '../Utils/contants';
 import { useAuth } from '../../components/AuthProvider';
-import ModalNew from '../../components/Modal';
 import FilePreview from '../../components/FilePreview/FilePreview';
 import { BASE_URL } from '../../api/request';
 import {
@@ -318,102 +318,111 @@ function ButtonSetUploaded(props) {
   return (
     <>
       {ButttonRow_Uploaded}
-      <ModalNew
+      <Dialog
         open={ButtonSetUploadedState.deleteFileWarningModel}
         onClose={closeWarningWindow}
         aria-labelledby="contained-modal-title-vcenter"
       >
-        <Typography variant="h5">{t('Warning', { ns: 'common' })}</Typography>
-        <Typography sx={{ py: 2 }}>
-          {t('Do you want to delete')} {props.docName}?
-        </Typography>
-        <Button
-          color="primary"
-          variant="contained"
-          disabled={!ButtonSetUploadedState.isLoaded}
-          onClick={(e) => onDeleteFilefromstudent(e)}
-          sx={{ mr: 1 }}
-        >
-          {!ButtonSetUploadedState.isLoaded ? (
-            <CircularProgress size={24} />
-          ) : (
-            t('Yes', { ns: 'common' })
-          )}
-        </Button>
-        <Button variant="outlined" onClick={closeWarningWindow}>
-          {t('No', { ns: 'common' })}
-        </Button>
-      </ModalNew>
-      <ModalNew
+        <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            {t('Do you want to delete')} {props.docName}?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            color="primary"
+            variant="contained"
+            disabled={!ButtonSetUploadedState.isLoaded}
+            onClick={(e) => onDeleteFilefromstudent(e)}
+            sx={{ mr: 1 }}
+          >
+            {!ButtonSetUploadedState.isLoaded ? (
+              <CircularProgress size={24} />
+            ) : (
+              t('Yes', { ns: 'common' })
+            )}
+          </Button>
+          <Button variant="outlined" onClick={closeWarningWindow}>
+            {t('No', { ns: 'common' })}
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
         open={ButtonSetUploadedState.rejectProfileFileModel}
         onClose={closeRejectWarningWindow}
         aria-labelledby="contained-modal-title-vcenter"
       >
-        <Typography variant="h5" sx={{ mb: 2 }}>
-          {t('Warning', { ns: 'common' })}
-        </Typography>
-        <Typography sx={{ mb: 2 }}>
-          Please give a reason why the uploaded
-          {ButtonSetUploadedState.category} is invalied?
-        </Typography>
-        <TextField
-          id="rejectmessage"
-          required
-          fullWidth
-          type="text"
-          onChange={(e) => handleRejectMessage(e, e.target.value)}
-          sx={{ mb: 2 }}
-        />
-        <Button
-          color="primary"
-          variant="contained"
-          disabled={
-            ButtonSetUploadedState.feedback === '' ||
-            !ButtonSetUploadedState.isLoaded
-          }
-          onClick={(e) => onUpdateProfileFilefromstudent(e)}
-        >
-          {!ButtonSetUploadedState.isLoaded ? (
-            <CircularProgress size={24} />
-          ) : (
-            t('Submit', { ns: 'common' })
-          )}
-        </Button>
-        <Button onClick={closeRejectWarningWindow}>No</Button>
-      </ModalNew>
-      <ModalNew
+        <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Please give a reason why the uploaded
+            {ButtonSetUploadedState.category} is invalied?
+          </DialogContentText>
+          <TextField
+            id="rejectmessage"
+            required
+            fullWidth
+            type="text"
+            onChange={(e) => handleRejectMessage(e, e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button
+            color="primary"
+            variant="contained"
+            disabled={
+              ButtonSetUploadedState.feedback === '' ||
+              !ButtonSetUploadedState.isLoaded
+            }
+            onClick={(e) => onUpdateProfileFilefromstudent(e)}
+          >
+            {!ButtonSetUploadedState.isLoaded ? (
+              <CircularProgress size={24} />
+            ) : (
+              t('Submit', { ns: 'common' })
+            )}
+          </Button>
+          <Button onClick={closeRejectWarningWindow}>
+            {t('No', { ns: 'common' })}
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
         open={ButtonSetUploadedState.acceptProfileFileModel}
         onClose={closeAcceptWarningWindow}
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
-        <Typography variant="h5">Warning</Typography>
-
-        <Typography sx={{ my: 2 }}>
-          {ButtonSetUploadedState.category} is a valid and can be used for the
-          application?
-        </Typography>
-
-        <Button
-          color="primary"
-          variant="contained"
-          disabled={!ButtonSetUploadedState.isLoaded}
-          onClick={(e) => onUpdateProfileFilefromstudent(e)}
-        >
-          {!ButtonSetUploadedState.isLoaded ? (
-            <CircularProgress size={24} />
-          ) : (
-            t('Yes', { ns: 'common' })
-          )}
-        </Button>
-        <Button
-          color="primary"
-          variant="outlined"
-          onClick={closeAcceptWarningWindow}
-        >
-          {t('No', { ns: 'common' })}
-        </Button>
-      </ModalNew>
+        <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            {ButtonSetUploadedState.category} is a valid and can be used for the
+            application?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            color="primary"
+            variant="contained"
+            disabled={!ButtonSetUploadedState.isLoaded}
+            onClick={(e) => onUpdateProfileFilefromstudent(e)}
+          >
+            {!ButtonSetUploadedState.isLoaded ? (
+              <CircularProgress size={24} />
+            ) : (
+              t('Yes', { ns: 'common' })
+            )}
+          </Button>
+          <Button
+            color="primary"
+            variant="outlined"
+            onClick={closeAcceptWarningWindow}
+          >
+            {t('No', { ns: 'common' })}
+          </Button>
+        </DialogActions>
+      </Dialog>
       <Dialog
         fullWidth={true}
         maxWidth={'xl'}

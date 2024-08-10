@@ -14,7 +14,8 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogActions
+  DialogActions,
+  DialogContentText
 } from '@mui/material';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import LaunchIcon from '@mui/icons-material/Launch';
@@ -386,33 +387,36 @@ function ButtonSetRejected(props) {
         />
       )}
       {ButttonRow_Rejected}
-      <ModalNew
+      <Dialog
         open={buttonSetRejectedState.deleteFileWarningModel}
         onClose={closeWarningWindow}
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
-        <Typography variant="h5">{t('Warning', { ns: 'common' })}</Typography>
-        <Typography sx={{ my: 2 }}>
-          {t('Do you want to delete')} {props.docName}?
-        </Typography>
-
-        <Button
-          variant="contained"
-          disabled={!buttonSetRejectedState.isLoaded}
-          onClick={(e) => onDeleteFilefromstudent(e)}
-          sx={{ mr: 1 }}
-        >
-          {!buttonSetRejectedState.isLoaded ? (
-            <CircularProgress />
-          ) : (
-            t('Yes', { ns: 'common' })
-          )}
-        </Button>
-        <Button onClick={closeWarningWindow} variant="outlined">
-          {t('No', { ns: 'common' })}
-        </Button>
-      </ModalNew>
+        <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            {t('Do you want to delete')} {props.docName}?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant="contained"
+            disabled={!buttonSetRejectedState.isLoaded}
+            onClick={(e) => onDeleteFilefromstudent(e)}
+            sx={{ mr: 1 }}
+          >
+            {!buttonSetRejectedState.isLoaded ? (
+              <CircularProgress />
+            ) : (
+              t('Yes', { ns: 'common' })
+            )}
+          </Button>
+          <Button onClick={closeWarningWindow} variant="outlined">
+            {t('No', { ns: 'common' })}
+          </Button>
+        </DialogActions>
+      </Dialog>
       <ModalNew
         open={buttonSetRejectedState.CommentModel}
         onClose={closeCommentWindow}
@@ -529,39 +533,39 @@ function ButtonSetRejected(props) {
           </Button>
         </DialogActions>
       </Dialog>
-      <ModalNew
+      <Dialog
         open={buttonSetRejectedState.acceptProfileFileModel}
         onClose={closeAcceptWarningWindow}
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
-        <Typography variant="h5">Warning</Typography>
-
-        <Typography sx={{ my: 2 }}>
+        <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
+        <DialogContent>
           {buttonSetRejectedState.category} is a valid and can be used for the
           application?
-        </Typography>
-
-        <Button
-          color="primary"
-          variant="contained"
-          disabled={!buttonSetRejectedState.isLoaded}
-          onClick={(e) => onUpdateProfileFilefromstudent(e)}
-        >
-          {!buttonSetRejectedState.isLoaded ? (
-            <CircularProgress size={24} />
-          ) : (
-            t('Yes', { ns: 'common' })
-          )}
-        </Button>
-        <Button
-          color="primary"
-          variant="outlined"
-          onClick={closeAcceptWarningWindow}
-        >
-          {t('No', { ns: 'common' })}
-        </Button>
-      </ModalNew>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            color="primary"
+            variant="contained"
+            disabled={!buttonSetRejectedState.isLoaded}
+            onClick={(e) => onUpdateProfileFilefromstudent(e)}
+          >
+            {!buttonSetRejectedState.isLoaded ? (
+              <CircularProgress size={24} />
+            ) : (
+              t('Yes', { ns: 'common' })
+            )}
+          </Button>
+          <Button
+            color="primary"
+            variant="outlined"
+            onClick={closeAcceptWarningWindow}
+          >
+            {t('No', { ns: 'common' })}
+          </Button>
+        </DialogActions>
+      </Dialog>
       <OffcanvasBaseDocument
         open={buttonSetRejectedState.baseDocsflagOffcanvas}
         onHide={closeOffcanvasWindow}

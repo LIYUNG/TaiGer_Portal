@@ -29,8 +29,8 @@ const FilePreview = ({ path, student_id }) => {
         >
           <img
             src={`${BASE_URL}/api/students/${student_id}/files/${path}`}
-            width="30%"
-            height="30%"
+            width="90%"
+            height="60%"
           />
         </div>
       )}

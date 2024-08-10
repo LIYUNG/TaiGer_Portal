@@ -4,6 +4,11 @@ import {
   Box,
   Button,
   CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   Grid,
   IconButton,
   Stack,
@@ -293,62 +298,73 @@ function ButtonSetAccepted(props) {
   return (
     <>
       {ButttonRow_Accepted}
-      <ModalNew
+      <Dialog
         open={buttonSetAcceptedState.deleteFileWarningModel}
         onClose={closeWarningWindow}
         size="small"
         aria-labelledby="contained-modal-title-vcenter"
       >
-        <Typography variant="h5">Warning</Typography>
-        <Typography variant="h5">
-          Do you want to delete {props.docName}?
-        </Typography>
-        <Typography>
-          Please enter{' '}
-          <i>
-            <b>delete</b>
-          </i>{' '}
-          in order to delete the base document.
-        </Typography>
-        <TextField
-          type="text"
-          placeholder="delete"
-          onChange={(e) => onChangeDeleteField(e)}
-        />
-        <br />
-        <Button
-          disabled={
-            !buttonSetAcceptedState.isLoaded ||
-            buttonSetAcceptedState.delete_field !== 'delete'
-          }
-          onClick={(e) => onDeleteFilefromstudent(e)}
-        >
-          {!buttonSetAcceptedState.isLoaded ? (
-            <CircularProgress />
-          ) : (
-            t('Yes', { ns: 'common' })
-          )}
-        </Button>
-        <Button onClick={closeWarningWindow} variant="light">
-          No
-        </Button>
-      </ModalNew>
-      <ModalNew
+        <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Do you want to delete {props.docName}?{' '}
+          </DialogContentText>
+          <TextField
+            type="text"
+            fullWidth
+            required
+            variant="standard"
+            margin="dense"
+            label={
+              <>
+                Please type <b>delete</b> to delete.
+              </>
+            }
+            placeholder="delete"
+            onChange={(e) => onChangeDeleteField(e)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant="contained"
+            color="error"
+            disabled={
+              !buttonSetAcceptedState.isLoaded ||
+              buttonSetAcceptedState.delete_field !== 'delete'
+            }
+            onClick={(e) => onDeleteFilefromstudent(e)}
+          >
+            {!buttonSetAcceptedState.isLoaded ? (
+              <CircularProgress />
+            ) : (
+              t('Yes', { ns: 'common' })
+            )}
+          </Button>
+          <Button onClick={closeWarningWindow} variant="outlined">
+            {t('No', { ns: 'common' })}
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
         open={buttonSetAcceptedState.rejectProfileFileModel}
         onClose={closeRejectWarningWindow}
         aria-labelledby="contained-modal-title-vcenter"
       >
-        <Typography variant="h6">Warning</Typography>
-        <Typography variant="body1">
-          Please give a reason why the uploaded{' '}
-          {buttonSetAcceptedState.category} is invalied?
-        </Typography>
-        <TextField
-          type="text"
-          placeholder="ex. Poor scanned quality."
-          onChange={(e) => handleRejectMessage(e, e.target.value)}
-        />
-        <Box>
+        <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Please give a reason why the uploaded{' '}
+            {buttonSetAcceptedState.category} is invalied?
+          </DialogContentText>
+          <TextField
+            type="text"
+            fullWidth
+            required
+            placeholder="ex. Poor scanned quality."
+            onChange={(e) => handleRejectMessage(e, e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
           <Button
             disabled={buttonSetAcceptedState.feedback === ''}
             onClick={(e) => onUpdateProfileFilefromstudent(e)}
@@ -362,8 +378,8 @@ function ButtonSetAccepted(props) {
           <Button onClick={closeRejectWarningWindow}>
             {t('No', { ns: 'common' })}
           </Button>
-        </Box>
-      </ModalNew>
+        </DialogActions>
+      </Dialog>
       <AcceptProfileFileModel
         showPreview={buttonSetAcceptedState.showPreview}
         closePreviewWindow={closePreviewWindow}

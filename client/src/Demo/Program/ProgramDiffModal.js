@@ -44,20 +44,22 @@ function ProgramDiffModal(props) {
         <CloseIcon />
       </Button>
       <FormControl fullWidth>
-        <InputLabel id="demo-simple-select-label">Age</InputLabel>
+        <InputLabel id="request-select-label">Requests</InputLabel>
         <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
+          labelId="request-select-label"
+          id="request-select"
           value={changeIndex}
-          label="Age"
+          label="Requests"
           onChange={(e) => setChangeIndex(e.target.value)}
         >
           {incomingChanges.length > 0 &&
             incomingChanges.map((change, index) => {
               return (
                 <MenuItem key={index} value={index}>
-                  {change.requestedBy.firstname} {change.requestedBy.lastname} -{' '}
-                  {new Date(change?.updatedAt)?.toLocaleString()}
+                  {new Date(change?.updatedAt)?.toLocaleString()} -{' '}
+                  {change.requestedBy
+                    ? `${change.requestedBy.firstname} ${change.requestedBy.lastname} `
+                    : 'External Source'}
                 </MenuItem>
               );
             })}

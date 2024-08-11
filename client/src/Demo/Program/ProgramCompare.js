@@ -207,17 +207,23 @@ const ProgramCompare = ({
 
   return (
     <>
-      <Button color="primary" onClick={acceptAllChanges}>
-        {t('Accept All', { ns: 'common' })}
-      </Button>
       <Button
         color="secondary"
         onClick={() => {
           setDelta({});
         }}
+        style={{ width: '50%' }}
       >
         {t('Reject All', { ns: 'common' })}
       </Button>
+      <Button
+        color="primary"
+        onClick={acceptAllChanges}
+        style={{ width: '50%' }}
+      >
+        {t('Accept All', { ns: 'common' })}
+      </Button>
+
       <TableContainer component={Paper}>
         <Table>
           <TableHead>

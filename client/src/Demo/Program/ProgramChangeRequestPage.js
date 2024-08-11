@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link as LinkDom, useParams } from 'react-router-dom';
+import { Link as LinkDom, useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   Box,
@@ -53,19 +53,23 @@ function CustomBreadcrumbs({ program }) {
 }
 
 function ProgramChangeRequestPage(props) {
+  const navigate = useNavigate();
   const { programId } = useParams();
   const [originalProgram, setOriginalProgram] = useState({});
   const [incomingChanges, setIncomingChanges] = useState([]);
   const [changeIndex, setChangeIndex] = useState(0);
 
   useEffect(() => {
+    getProgramChangeRequests(programId).then((res) => {
+      const { data } = res.data;
+      if (!data?.length) {
+        navigate(DEMO.SINGLE_PROGRAM_LINK(programId));
+      }
+      setIncomingChanges(data);
+    });
     getProgram(programId).then((res) => {
       const { data } = res.data;
       setOriginalProgram(data);
-    });
-    getProgramChangeRequests(programId).then((res) => {
-      const { data } = res.data;
-      setIncomingChanges(data);
     });
   }, [programId]);
 

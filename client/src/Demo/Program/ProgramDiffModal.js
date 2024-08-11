@@ -10,6 +10,7 @@ import {
 } from '@mui/material';
 import { Close as CloseIcon } from '@mui/icons-material';
 
+import { convertDate } from '../Utils/contants';
 import ModalNew from '../../components/Modal';
 import ProgramCompare from './ProgramCompare';
 
@@ -56,7 +57,7 @@ function ProgramDiffModal(props) {
             incomingChanges.map((change, index) => {
               return (
                 <MenuItem key={index} value={index}>
-                  {new Date(change?.updatedAt)?.toLocaleString()} -{' '}
+                  {convertDate(change?.updatedAt)} -{' '}
                   {change.requestedBy
                     ? `${change.requestedBy.firstname} ${change.requestedBy.lastname} `
                     : 'External Source'}

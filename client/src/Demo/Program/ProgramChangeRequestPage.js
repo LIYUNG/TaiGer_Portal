@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link as LinkDom, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
+  Box,
   Link,
   Typography,
   Breadcrumbs,
@@ -71,34 +72,35 @@ function ProgramChangeRequestPage(props) {
   return (
     <>
       <CustomBreadcrumbs program={originalProgram} />
-      <Typography variant="h6">Merge Program input </Typography>
-      <FormControl fullWidth>
-        <InputLabel id="request-select-label">Requests</InputLabel>
-        <Select
-          labelId="request-select-label"
-          id="request-select"
-          value={changeIndex}
-          label="Requests"
-          onChange={(e) => setChangeIndex(e.target.value)}
-        >
-          {incomingChanges.length > 0 &&
-            incomingChanges.map((change, index) => {
-              return (
-                <MenuItem key={index} value={index}>
-                  {convertDate(change?.updatedAt)} -{' '}
-                  {change.requestedBy
-                    ? `${change.requestedBy.firstname} ${change.requestedBy.lastname} `
-                    : 'External Source'}
-                </MenuItem>
-              );
-            })}
-        </Select>
-      </FormControl>
-      <ProgramCompare
-        originalProgram={originalProgram || {}}
-        incomingChanges={incomingChanges[changeIndex] || {}}
-        submitCallBack={props.setModalHide}
-      />
+      <Box sx={{ my: 3 }}>
+        <FormControl fullWidth>
+          <InputLabel id="request-select-label">Requests</InputLabel>
+          <Select
+            labelId="request-select-label"
+            id="request-select"
+            value={changeIndex}
+            label="Requests"
+            onChange={(e) => setChangeIndex(e.target.value)}
+          >
+            {incomingChanges.length > 0 &&
+              incomingChanges.map((change, index) => {
+                return (
+                  <MenuItem key={index} value={index}>
+                    {convertDate(change?.updatedAt)} -{' '}
+                    {change.requestedBy
+                      ? `${change.requestedBy.firstname} ${change.requestedBy.lastname} `
+                      : 'External Source'}
+                  </MenuItem>
+                );
+              })}
+          </Select>
+        </FormControl>
+        <ProgramCompare
+          originalProgram={originalProgram || {}}
+          incomingChanges={incomingChanges[changeIndex] || {}}
+          submitCallBack={props.setModalHide}
+        />
+      </Box>
     </>
   );
 }

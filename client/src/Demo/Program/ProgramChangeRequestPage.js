@@ -1,30 +1,28 @@
-import { React, useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import {
-  Select,
+  Typography,
   FormControl,
-  MenuItem,
-  Button,
   InputLabel,
-  Typography
+  Select,
+  MenuItem
 } from '@mui/material';
-import { Close as CloseIcon } from '@mui/icons-material';
 
-import { convertDate } from '../Utils/contants';
-import ModalNew from '../../components/Modal';
 import ProgramCompare from './ProgramCompare';
+import { getProgramChangeRequests, getProgram } from '../../api/index';
+import { convertDate } from '../Utils/contants';
 
-import { getProgramChangeRequests } from '../../api/index';
-
-function ProgramDiffModal(props) {
-  const { t } = useTranslation();
-  const { originalProgram } = props;
-  const programId = originalProgram._id;
-
+function ProgramChangeRequestPage(props) {
+  const { programId } = useParams();
+  const [originalProgram, setOriginalProgram] = useState({});
   const [incomingChanges, setIncomingChanges] = useState([]);
   const [changeIndex, setChangeIndex] = useState(0);
 
   useEffect(() => {
+    getProgram(programId).then((res) => {
+      const { data } = res.data;
+      setOriginalProgram(data);
+    });
     getProgramChangeRequests(programId).then((res) => {
       const { data } = res.data;
       setIncomingChanges(data);
@@ -32,15 +30,7 @@ function ProgramDiffModal(props) {
   }, [programId]);
 
   return (
-    <ModalNew
-      open={props.open}
-      size="lg"
-      aria-labelledby="contained-modal-title-vcenter"
-      centered
-    >
-      <Button color="secondary" onClick={props.setModalHide}>
-        <CloseIcon />
-      </Button>
+    <>
       <Typography variant="h6">Merge Program input </Typography>
       <FormControl fullWidth>
         <InputLabel id="request-select-label">Requests</InputLabel>
@@ -65,14 +55,11 @@ function ProgramDiffModal(props) {
         </Select>
       </FormControl>
       <ProgramCompare
-        originalProgram={originalProgram}
+        originalProgram={originalProgram || {}}
         incomingChanges={incomingChanges[changeIndex] || {}}
         submitCallBack={props.setModalHide}
       />
-      <Button color="secondary" variant="outlined" onClick={props.setModalHide}>
-        {t('Close', { ns: 'common' })}
-      </Button>
-    </ModalNew>
+    </>
   );
 }
-export default ProgramDiffModal;
+export default ProgramChangeRequestPage;

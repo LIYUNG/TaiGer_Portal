@@ -101,18 +101,17 @@ const createComplaint = asyncHandler(async (req, res) => {
 
 const updateComplaint = asyncHandler(async (req, res) => {
   const { user } = req;
-  const { ticket_id } = req.params;
+  const { ticketId } = req.params;
   const fields = req.body;
 
   fields.updatedAt = new Date();
   // TODO: update resolver_id
   const updatedComplaint = await req.db
     .model('Complaint')
-    .findByIdAndUpdate(ticket_id, fields, {
+    .findByIdAndUpdate(ticketId, fields, {
       new: true
     })
-    .populate('requester_id', 'firstname lastname email archiv')
-    .populate('program_id', 'school program_name degree semester');
+    .populate('requester_id', 'firstname lastname email archiv');
 
   res.status(200).send({ success: true, data: updatedComplaint });
 
@@ -136,7 +135,7 @@ const updateComplaint = asyncHandler(async (req, res) => {
 });
 
 const deleteComplaint = asyncHandler(async (req, res) => {
-  await req.db.model('Complaint').findByIdAndDelete(req.params.ticket_id);
+  await req.db.model('Complaint').findByIdAndDelete(req.params.ticketId);
   res.status(200).send({ success: true });
 });
 

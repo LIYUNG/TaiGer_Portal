@@ -8,8 +8,8 @@ const { app } = require('../../app');
 const { Role } = require('../../constants');
 const { User, UserSchema } = require('../../models/User');
 const { programSchema } = require('../../models/Program');
-const { generateUser } = require('../fixtures/users');
-const { generateProgram } = require('../fixtures/programs');
+const { generateUser } = require('../fixtures/faker');
+const { generateProgram } = require('../fixtures/faker');
 const { protect } = require('../../middlewares/auth');
 const {
   permission_canAccessStudentDatabase_filter
@@ -187,17 +187,19 @@ describe('POST /api/document-threads/init/application/:studentId/:programId/:doc
 
   expect(200).toBe(200);
 
+  // TODO: need to simplify mock data.
   // beforeEach(async () => {
   //   const resp = await request(app)
   //     .post(`/api/students/${studentId}/applications`)
+  //     .set('tenantId', TENANT_ID)
   //     .send({ program_id_set: [programId] });
 
-  //   const resp22 = await request(app).post(
-  //     `/api/document-threads/init/application/${studentId}/${programId}/${document_category}`
-  //   );
-  //   console.log(resp.message);
+  //   const resp22 = await request(app)
+  //     .post(
+  //       `/api/document-threads/init/application/${studentId}/${programId}/${document_category}`
+  //     )
+  //     .set('tenantId', TENANT_ID);
   //   applicationIds = resp.body.data;
-  //   applicationId = applicationIds[0];
   //   returndoc_modification_thread = resp22.body.data;
   //   messagesThreadId = returndoc_modification_thread?._id.toString();
   // });
@@ -211,17 +213,19 @@ describe('POST /api/document-threads/init/application/:studentId/:programId/:doc
   //     const buffer_1MB_exe = Buffer.alloc(1024 * 1024 * 1); // 1 MB
   //     const resp2 = await request(app)
   //       .post(`/api/document-threads/${messagesThreadId}/${studentId}`)
+  //       .set('tenantId', TENANT_ID)
   //       .attach('file', buffer_1MB_exe, File_Name);
 
   //     expect(resp2.status).toBe(status);
   //     expect(resp2.body.success).toBe(success);
   //   }
   // );
-  // TODO: mock S3 isntead of
+  // // TODO: mock S3 isntead of
   // it('should return 400 when program specific file type not .pdf .png, .jpg and .jpeg .docx', async () => {
   //   const buffer_1MB_exe = Buffer.alloc(1024 * 1024 * 1); // 1 MB
   //   const resp2 = await request(app)
   //     .post(`/api/document-threads/${messagesThreadId}/${studentId}`)
+  //     .set('tenantId', TENANT_ID)
   //     .attach('file', buffer_1MB_exe, 'my-file.exe');
 
   //   expect(resp2.status).toBe(400);
@@ -232,6 +236,7 @@ describe('POST /api/document-threads/init/application/:studentId/:programId/:doc
   //   const buffer_1MB_pdf = Buffer.alloc(1024 * 1024 * 1); // 1 MB
   //   const resp2 = await request(app)
   //     .post(`/api/document-threads/${messagesThreadId}/${studentId}`)
+  //     .set('tenantId', TENANT_ID)
   //     .attach('file', buffer_1MB_pdf, 'my-file.pdf');
 
   //   expect(resp2.status).toBe(200);
@@ -242,6 +247,7 @@ describe('POST /api/document-threads/init/application/:studentId/:programId/:doc
   //   const buffer_10MB = Buffer.alloc(1024 * 1024 * 6); // 6 MB
   //   const resp2 = await request(app)
   //     .post(`/api/document-threads/${messagesThreadId}/${studentId}`)
+  //     .set('tenantId', TENANT_ID)
   //     .attach('file', buffer_10MB, filename);
 
   //   expect(resp2.status).toBe(400);

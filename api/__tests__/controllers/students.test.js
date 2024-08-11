@@ -8,7 +8,7 @@ const { app } = require('../../app');
 const { Role } = require('../../constants');
 const { Student, UserSchema } = require('../../models/User');
 const { DocumentStatus } = require('../../constants');
-const { generateUser } = require('../fixtures/users');
+const { generateUser } = require('../fixtures/faker');
 const { protect, permit } = require('../../middlewares/auth');
 const {
   InnerTaigerMultitenantFilter
@@ -16,7 +16,7 @@ const {
 const {
   permission_canAccessStudentDatabase_filter
 } = require('../../middlewares/permission-filter');
-const { generateProgram } = require('../fixtures/programs');
+const { generateProgram } = require('../fixtures/faker');
 const { programSchema } = require('../../models/Program');
 const { TENANT_ID } = require('../fixtures/constants');
 const { connectToDatabase } = require('../../middlewares/tenantMiddleware');
@@ -574,3 +574,5 @@ describe('POST /api/students/:studentId/files/:category', () => {
     expect(resp4.body.success).toBe(true);
   });
 });
+
+

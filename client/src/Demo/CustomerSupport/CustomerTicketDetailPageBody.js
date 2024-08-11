@@ -7,11 +7,8 @@ import {
   Link,
   Breadcrumbs,
   Typography,
-  List,
   Paper,
   Grid,
-  ListItemText,
-  ListItemButton,
   Accordion,
   AccordionSummary,
   AccordionDetails
@@ -19,18 +16,8 @@ import {
 import { appConfig } from '../../config';
 import DEMO from '../../store/constant';
 
-function CustomerTicketDetailPageBody() {
+function CustomerTicketDetailPageBody({ complaintTicket }) {
   const { t } = useTranslation();
-
-  const tickets = [
-    {
-      id: 1,
-      requestNumber: 'SR#136354726',
-      requestType: 'Refund Request',
-      date: '20/01/2023',
-      status: 'Inprocess'
-    }
-  ];
 
   return (
     <Box>
@@ -72,36 +59,11 @@ function CustomerTicketDetailPageBody() {
                 </Box>
               </Box>
               <Typography variant="body2" gutterBottom>
-                Here is your most recent history
+                {complaintTicket.title}
               </Typography>
-              <List>
-                {tickets.map((ticket) => (
-                  <ListItemButton
-                    component={LinkDom}
-                    to={`/ticket/${ticket.id}`}
-                    key={ticket.id}
-                    sx={{
-                      '&:hover': {
-                        backgroundColor: 'rgba(0, 0, 0, 0.08)', // Change background color on hover
-                        '& .MuiTypography-root': {
-                          color: 'primary.main' // Change text color on hover
-                        },
-                        '& .MuiListItemText-primary': {
-                          color: 'primary.main' // Change primary text color on hover
-                        }
-                      }
-                    }}
-                  >
-                    <ListItemText
-                      primary={ticket.requestNumber}
-                      secondary={`${ticket.requestType} - ${ticket.date}`}
-                    />
-                    <Typography variant="body2" color="textSecondary">
-                      {ticket.status}
-                    </Typography>
-                  </ListItemButton>
-                ))}
-              </List>
+              <Typography variant="body2" gutterBottom>
+                {complaintTicket.description}
+              </Typography>
             </Paper>
           </Grid>
           <Grid item xs={12} md={4}>

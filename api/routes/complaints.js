@@ -42,7 +42,7 @@ router
   );
 
 router
-  .route('/:ticket_id')
+  .route('/:ticketId')
   .get(
     filter_archiv_user,
     GetComplaintRateLimiter,

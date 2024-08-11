@@ -10,7 +10,8 @@ import {
   getAllActiveEssays,
   getAllStudents,
   getStudentUniAssist,
-  getComplaintsTickets
+  getComplaintsTickets,
+  getComplaintsTicket
 } from '.';
 
 export async function getStudentsLoader() {
@@ -40,7 +41,21 @@ export async function getAllActiveEssaysLoader() {
   }
 }
 
-export async function AllTicketsLoader() {
+export async function ComplaintTicketLoader({ params }) {
+  const complaintTicketId = params.complaintTicketId;
+  const response = await getComplaintsTicket(complaintTicketId);
+  if (response.status >= 400) {
+    throw json({ message: response.statusText }, { status: response.status });
+  } else {
+    return response.data.data;
+  }
+}
+
+export function getComplaintTicketLoader({ params }) {
+  return defer({ complaintTicket: ComplaintTicketLoader({ params }) });
+}
+
+export async function AllComplaintTicketsLoader() {
   const response = await getComplaintsTickets();
   if (response.status >= 400) {
     throw json({ message: response.statusText }, { status: response.status });
@@ -49,8 +64,8 @@ export async function AllTicketsLoader() {
   }
 }
 
-export function getAllTicketsLoader() {
-  return defer({ complaintTickets: AllTicketsLoader() });
+export function getAllComplaintTicketsLoader() {
+  return defer({ complaintTickets: AllComplaintTicketsLoader() });
 }
 
 export async function AllActiveStudentsLoader() {

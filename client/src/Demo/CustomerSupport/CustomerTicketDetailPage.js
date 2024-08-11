@@ -10,16 +10,16 @@ import CustomerTicketDetailPageBody from './CustomerTicketDetailPageBody';
 
 function CustomerTicketDetailPage() {
   const { t } = useTranslation();
-  const { complaintTickets } = useLoaderData();
+  const { complaintTicket } = useLoaderData();
 
   TabTitle(t('Customer Center', { ns: 'common' }));
 
   return (
     <Box data-testid="customer_support">
       <Suspense fallback={<Loading />}>
-        <Await resolve={complaintTickets}>
+        <Await resolve={complaintTicket}>
           {(loadedData) => (
-            <CustomerTicketDetailPageBody complaintTickets={loadedData} />
+            <CustomerTicketDetailPageBody complaintTicket={loadedData} />
           )}
         </Await>
       </Suspense>

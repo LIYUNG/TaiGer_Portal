@@ -11,7 +11,8 @@ import {
   getAllActiveEssaysLoader,
   getAllStudentsLoader,
   getAllArchivedStudentsLoader,
-  getAllTicketsLoader
+  getAllComplaintTicketsLoader,
+  getComplaintTicketLoader
 } from './api/dataLoader';
 import DefaultErrorPage from './Demo/Utils/DefaultErrorPage';
 import StudentApplicationsAssignPage from './Demo/StudentApplications/assignPage';
@@ -491,19 +492,18 @@ const routes = [
   {
     path: '/customer-center',
     errorElement: <DefaultErrorPage />,
-    loader: getAllTicketsLoader,
+    loader: getAllComplaintTicketsLoader,
     element: <CustomerSupport />
   },
   {
     path: '/customer-center/add-ticket',
     errorElement: <DefaultErrorPage />,
-    loader: getAllTicketsLoader,
     element: <CreateComplaintTicket />
   },
   {
     path: '/customer-center/tickets/:complaintTicketId',
     errorElement: <DefaultErrorPage />,
-    loader: getAllTicketsLoader,
+    loader: getComplaintTicketLoader,
     element: <CustomerTicketDetailPage />
   },
   {

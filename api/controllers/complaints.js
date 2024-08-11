@@ -25,16 +25,14 @@ const getComplaints = asyncHandler(async (req, res) => {
   if (user.role === Role.Student) {
     const tickets = await req.db
       .model('Complaint')
-      .find(query)
-      .populate('program_id', 'school program_name degree')
+      .find()
       .select('-requester_id')
       .sort({ createdAt: -1 });
     res.send({ success: true, data: tickets });
   } else {
     const tickets = await req.db
       .model('Complaint')
-      .find(query)
-      .populate('program_id', 'school program_name degree')
+      .find()
       .populate('requester_id', 'firstname lastname email')
       .sort({ createdAt: -1 });
     res.send({ success: true, data: tickets });
@@ -43,10 +41,11 @@ const getComplaints = asyncHandler(async (req, res) => {
 
 const getComplaint = asyncHandler(async (req, res) => {
   const { user } = req;
+  const { ticketId } = req.params;
   if (user.role === Role.Student) {
     const ticket = await req.db
       .model('Complaint')
-      .findById(req.params.ticketId)
+      .findById(ticketId)
       .select('-requester_id');
     if (!ticket) {
       logger.error('getComplaint: Invalid ticket id');
@@ -56,7 +55,7 @@ const getComplaint = asyncHandler(async (req, res) => {
   } else {
     const ticket = await req.db
       .model('Complaint')
-      .findById(req.params.ticketId)
+      .findById(ticketId)
       .populate('requester_id', 'firstname lastname email ');
     if (!ticket) {
       logger.error('getComplaint: Invalid ticket id');

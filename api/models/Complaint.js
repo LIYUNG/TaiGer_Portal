@@ -17,6 +17,18 @@ const complaintSchema = new Schema(
       enum: Object.values(TicketStatus),
       default: 'open'
     },
+    title: {
+      type: String,
+      default: '',
+      validate: {
+        validator: function (value) {
+          // Maximum allowed length
+          return value.length <= 200;
+        },
+        message:
+          'Description exceeds the maximum allowed length of 3000 characters'
+      }
+    },
     description: {
       type: String,
       default: '',

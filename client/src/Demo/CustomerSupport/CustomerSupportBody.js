@@ -37,7 +37,7 @@ import ExportIcon from '@mui/icons-material/ExitToApp';
 // import CreateComplaintTicket from './CreateComplaintTicket';
 // import ViewTickets from './ViewTickets';
 
-function CustomerSupportBody() {
+function CustomerSupportBody({ complaintTickets }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -54,51 +54,6 @@ function CustomerSupportBody() {
   //     flightNumber: '',
   //     remarks: ''
   //   });
-
-  const tickets = [
-    {
-      id: 1,
-      requestNumber: 'SR#136354726',
-      requestType: 'Refund Request',
-      date: '20/01/2023',
-      status: 'Inprocess'
-    },
-    {
-      id: 2,
-      requestNumber: 'SR#136354745',
-      requestType: 'Reissue Request',
-      date: '25/01/2023',
-      status: 'Approve'
-    },
-    {
-      id: 3,
-      requestNumber: 'SR#136354787',
-      requestType: 'VIP Request',
-      date: '23/01/2023',
-      status: 'Submit'
-    },
-    {
-      id: 4,
-      requestNumber: 'SR#136354756',
-      requestType: 'Void Request',
-      date: '23/01/2023',
-      status: 'Cancel'
-    },
-    {
-      id: 5,
-      requestNumber: 'SR#136354756',
-      requestType: 'Void Request',
-      date: '23/01/2023',
-      status: 'Cancel'
-    },
-    {
-      id: 6,
-      requestNumber: 'SR#136354756',
-      requestType: 'Void Request',
-      date: '23/01/2023',
-      status: 'Cancel'
-    }
-  ];
 
   //   const handleChange = (e) => {
   //     setTicket({ ...ticket, [e.target.name]: e.target.value });
@@ -252,13 +207,13 @@ function CustomerSupportBody() {
                 Here is your most recent history
               </Typography>
               <List>
-                {tickets.map((ticket) => (
+                {complaintTickets.map((ticket) => (
                   <ListItemButton
                     component={LinkDom}
                     to={`${DEMO.CUSTOMER_CENTER_TICKET_DETAIL_PAGE_LINK(
-                      ticket.id
+                      ticket._id
                     )}`}
-                    key={ticket.id}
+                    key={ticket._id}
                     sx={{
                       '&:hover': {
                         backgroundColor: 'rgba(0, 0, 0, 0.08)', // Change background color on hover
@@ -272,8 +227,8 @@ function CustomerSupportBody() {
                     }}
                   >
                     <ListItemText
-                      primary={ticket.requestNumber}
-                      secondary={`${ticket.requestType} - ${ticket.date}`}
+                      primary={ticket.title}
+                      secondary={`${ticket.description} - ${ticket.date}`}
                     />
                     <Typography variant="body2" color="textSecondary">
                       {ticket.status}

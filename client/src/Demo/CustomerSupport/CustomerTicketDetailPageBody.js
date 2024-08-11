@@ -63,7 +63,7 @@ function CustomerTicketDetailPageBody({ complaintTicket }) {
         >
           {t('Customer Center', { ns: 'common' })}
         </Link>
-        <Typography color="text.primary">{'TICKET_NUMBER'}</Typography>
+        <Typography color="text.primary">{`${complaintTicket.title} (Ticket Nr. ${complaintTicket._id})`}</Typography>
       </Breadcrumbs>
       {isDeleted ? (
         <Box>
@@ -117,20 +117,14 @@ function CustomerTicketDetailPageBody({ complaintTicket }) {
                     alignItems="center"
                   >
                     <Box>
-                      <Typography variant="h5" gutterBottom>
+                      <Typography variant="h6" gutterBottom>
                         Ticket Information
                       </Typography>
                       <Typography variant="subtitle1" gutterBottom>
-                        When customers have problems, they open support tickets.
+                        {complaintTicket.description}
                       </Typography>
                     </Box>
                   </Box>
-                  <Typography variant="body2" gutterBottom>
-                    {complaintTicket.title}
-                  </Typography>
-                  <Typography variant="body2" gutterBottom>
-                    {complaintTicket.description}
-                  </Typography>
                 </Paper>
               </Grid>
               <Grid item xs={12} md={4}>
@@ -200,7 +194,9 @@ function CustomerTicketDetailPageBody({ complaintTicket }) {
           >
             {t('Yes', { ns: 'common' })}
           </Button>
-          <Button variant="outlined">{t('No', { ns: 'common' })}</Button>
+          <Button variant="outlined" onClick={() => setOpen(false)}>
+            {t('No', { ns: 'common' })}
+          </Button>
         </DialogActions>
       </Dialog>
     </Box>

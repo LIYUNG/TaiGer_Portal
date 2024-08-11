@@ -56,6 +56,7 @@ const getComplaint = asyncHandler(async (req, res) => {
     const ticket = await req.db
       .model('Complaint')
       .findById(ticketId)
+      .populate('messages.user_id', 'firstname lastname email ')
       .populate('requester_id', 'firstname lastname email ');
     if (!ticket) {
       logger.error('getComplaint: Invalid ticket id');

@@ -11,7 +11,8 @@ import {
   Grid,
   Accordion,
   AccordionSummary,
-  AccordionDetails
+  AccordionDetails,
+  Card
 } from '@mui/material';
 import { appConfig } from '../../config';
 import DEMO from '../../store/constant';
@@ -104,6 +105,15 @@ function CustomerTicketDetailPageBody({ complaintTicket }) {
             </Paper>
           </Grid>
         </Grid>
+        {complaintTicket?.messages?.map((message) => (
+          <Card key={message._id}>
+            <Typography variant="body1">
+              {message.user_id?.firstname}
+              {message.user_id?.lastname}
+            </Typography>
+            <Typography variant="bpdy2">{message.message}</Typography>
+          </Card>
+        ))}
       </Box>
     </Box>
   );

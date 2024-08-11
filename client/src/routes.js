@@ -235,7 +235,7 @@ const routes = [
     element: <AllArchivStudent />
   },
   {
-    path: '/programs/:programId/change-request',
+    path: '/programs/:programId/change-requests',
     exact: true,
     name: 'SingleProgram',
     Component: ProgramChangeRequestPage

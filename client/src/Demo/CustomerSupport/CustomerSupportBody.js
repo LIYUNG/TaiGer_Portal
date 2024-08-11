@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link as LinkDom } from 'react-router-dom';
+import { Link as LinkDom, useNavigate } from 'react-router-dom';
 import {
   Box,
   Link,
@@ -39,6 +39,11 @@ import ExportIcon from '@mui/icons-material/ExitToApp';
 
 function CustomerSupportBody() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+
+  const handleAddTicketClick = () => {
+    navigate('/customer-center/add-ticket');
+  };
   //   const [ticket, setTicket] = useState({
   //     requestType: '',
   //     pnr: '',
@@ -145,7 +150,11 @@ function CustomerSupportBody() {
             >
               Search
             </Button>
-            <Button variant="contained" startIcon={<AddIcon />}>
+            <Button
+              variant="contained"
+              startIcon={<AddIcon />}
+              onClick={handleAddTicketClick}
+            >
               Add Ticket
             </Button>
           </Box>

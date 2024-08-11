@@ -2,7 +2,6 @@ import React from 'react';
 import { Link as LinkDom } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import ExportIcon from '@mui/icons-material/ExitToApp';
 import {
   Box,
   Link,
@@ -12,7 +11,6 @@ import {
   Paper,
   Grid,
   ListItemText,
-  Button,
   ListItemButton,
   Accordion,
   AccordionSummary,
@@ -56,35 +54,22 @@ function CustomerTicketDetailPageBody() {
         <Typography color="text.primary">{'TICKET_NUMBER'}</Typography>
       </Breadcrumbs>
       <Box>
-        <Box
-          display="flex"
-          justifyContent="space-between"
-          alignItems="center"
-          my={2}
-        >
-          <Box>
-            <Typography variant="h5" gutterBottom>
-              Support Ticket
-            </Typography>
-            <Typography variant="subtitle1" gutterBottom>
-              When customers have problems, they open support tickets.
-            </Typography>
-          </Box>
-        </Box>
-        <Grid container spacing={3}>
+        <Grid container spacing={2} sx={{ mt: 1 }}>
           <Grid item xs={12} md={8}>
-            <Paper
-              elevation={3}
-              sx={{ p: 3, maxHeight: 600, overflow: 'auto' }}
-            >
+            <Paper elevation={3} sx={{ p: 3, overflow: 'auto' }}>
               <Box
                 display="flex"
                 justifyContent="space-between"
                 alignItems="center"
-                mb={2}
               >
-                <Typography variant="h6">Latest Support History</Typography>
-                <Button startIcon={<ExportIcon />}>Export</Button>
+                <Box>
+                  <Typography variant="h5" gutterBottom>
+                    Ticket Information
+                  </Typography>
+                  <Typography variant="subtitle1" gutterBottom>
+                    When customers have problems, they open support tickets.
+                  </Typography>
+                </Box>
               </Box>
               <Typography variant="body2" gutterBottom>
                 Here is your most recent history
@@ -119,7 +104,6 @@ function CustomerTicketDetailPageBody() {
               </List>
             </Paper>
           </Grid>
-
           <Grid item xs={12} md={4}>
             <Paper elevation={3} sx={{ p: 3 }}>
               <Typography variant="h6" gutterBottom>
@@ -135,22 +119,6 @@ function CustomerTicketDetailPageBody() {
                     booking, fill out the passenger information, and create a
                     PNR. Then click to order ticket.
                   </Typography>
-                </AccordionDetails>
-              </Accordion>
-              <Accordion disableGutters>
-                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography>What is the process refund tickets?</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <Typography>Details about the refund process.</Typography>
-                </AccordionDetails>
-              </Accordion>
-              <Accordion disableGutters>
-                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography>How can I reissue the tickets?</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <Typography>Details about reissuing tickets.</Typography>
                 </AccordionDetails>
               </Accordion>
               <Accordion disableGutters>

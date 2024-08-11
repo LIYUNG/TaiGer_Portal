@@ -15,6 +15,10 @@ import {
 } from './api/dataLoader';
 import DefaultErrorPage from './Demo/Utils/DefaultErrorPage';
 import StudentApplicationsAssignPage from './Demo/StudentApplications/assignPage';
+
+const CreateComplaintTicket = React.lazy(() =>
+  import('./Demo/CustomerSupport/CreateTicket')
+);
 const Questionnaire = React.lazy(() =>
   import('./Demo/InterviewTraining/Questionnaire')
 );
@@ -489,6 +493,12 @@ const routes = [
     errorElement: <DefaultErrorPage />,
     loader: getAllTicketsLoader,
     element: <CustomerSupport />
+  },
+  {
+    path: '/customer-center/add-ticket',
+    errorElement: <DefaultErrorPage />,
+    loader: getAllTicketsLoader,
+    element: <CreateComplaintTicket />
   },
   {
     path: '/customer-center/tickets/:complaintTicketId',

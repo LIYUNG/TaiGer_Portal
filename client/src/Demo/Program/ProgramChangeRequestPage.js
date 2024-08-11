@@ -52,12 +52,25 @@ function CustomBreadcrumbs({ program }) {
   );
 }
 
-function ProgramChangeRequestPage(props) {
+function ProgramChangeRequestPage() {
   const navigate = useNavigate();
   const { programId } = useParams();
   const [originalProgram, setOriginalProgram] = useState({});
   const [incomingChanges, setIncomingChanges] = useState([]);
   const [changeIndex, setChangeIndex] = useState(0);
+
+  // remove the request from the list after submission
+  const removeRequestFn = (requestId) => {
+    if (!requestId) return;
+    const callbackFn = () => {
+      setIncomingChanges((prev) => {
+        return [...prev].filter((change) => change._id !== requestId);
+      });
+      setChangeIndex(0);
+      console.log(`submitFn ${requestId}:  done!`);
+    };
+    return callbackFn;
+  };
 
   useEffect(() => {
     getProgramChangeRequests(programId).then((res) => {
@@ -104,7 +117,7 @@ function ProgramChangeRequestPage(props) {
         <ProgramCompare
           originalProgram={originalProgram || {}}
           incomingChanges={incomingChanges[changeIndex] || {}}
-          submitCallBack={props.setModalHide}
+          submitCallBack={removeRequestFn(incomingChanges[changeIndex]?._id)}
         />
       </Box>
     </>

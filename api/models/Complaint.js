@@ -29,6 +29,10 @@ const complaintSchema = new Schema(
           'Description exceeds the maximum allowed length of 3000 characters'
       }
     },
+    category: {
+      type: String,
+      default: 'others'
+    },
     description: {
       type: String,
       default: '',
@@ -71,6 +75,8 @@ const complaintSchema = new Schema(
   },
   { timestamps: true }
 );
+
+complaintSchema.index({ requester_id: 1 });
 
 const Complaint = model('Complaint', complaintSchema);
 

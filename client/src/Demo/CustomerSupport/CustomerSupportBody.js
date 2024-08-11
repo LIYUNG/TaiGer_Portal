@@ -27,15 +27,11 @@ import {
 import { appConfig } from '../../config';
 import DEMO from '../../store/constant';
 import { useTranslation } from 'react-i18next';
-// import { DatePicker } from '@mui/x-date-pickers';
-// import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
 import AddIcon from '@mui/icons-material/Add';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 import SearchIcon from '@mui/icons-material/Search';
 import ExportIcon from '@mui/icons-material/ExitToApp';
-// import CreateComplaintTicket from './CreateComplaintTicket';
-// import ViewTickets from './ViewTickets';
 
 function CustomerSupportBody({ complaintTickets }) {
   const { t } = useTranslation();
@@ -44,28 +40,6 @@ function CustomerSupportBody({ complaintTickets }) {
   const handleAddTicketClick = () => {
     navigate('/customer-center/add-ticket');
   };
-  //   const [ticket, setTicket] = useState({
-  //     requestType: '',
-  //     pnr: '',
-  //     passengerName: '',
-  //     ticketNumber: '',
-  //     reissueReason: '',
-  //     changeDate: new Date(),
-  //     flightNumber: '',
-  //     remarks: ''
-  //   });
-
-  //   const handleChange = (e) => {
-  //     setTicket({ ...ticket, [e.target.name]: e.target.value });
-  //   };
-
-  //   const handleDateChange = (date) => {
-  //     setTicket({ ...ticket, changeDate: date });
-  //   };
-
-  //   const handleSubmit = () => {
-  //     // handle submit logic
-  //   };
 
   return (
     <Box>

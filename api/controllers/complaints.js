@@ -68,34 +68,35 @@ const getComplaint = asyncHandler(async (req, res) => {
 
 const createComplaint = asyncHandler(async (req, res) => {
   const { user } = req;
-  const new_ticket = req.body;
-  new_ticket.requester_id = user._id.toString();
+  const { ticket } = req.body;
+  ticket.requester_id = user._id.toString();
   // TODO: DO not create the same
-  const ticket = await req.db.model('Complaint').create(new_ticket);
+  const new_ticket = await req.db.model('Complaint').create(ticket);
 
-  res.status(201).send({ success: true, data: ticket });
+  res.status(201).send({ success: true, data: new_ticket });
 
-  const program = await req.db.model('Program').findById(new_ticket.program_id);
-  const student = await req.db
-    .model('Student')
-    .findById(user._id.toString())
-    .populate('agents', 'firstname lastname email')
-    .exec();
-  for (let i = 0; i < student.agents.length; i += 1) {
-    if (isNotArchiv(student)) {
-      ComplaintCreatedAgentEmail(
-        {
-          firstname: student.agents[i].firstname,
-          lastname: student.agents[i].lastname,
-          address: student.agents[i].email
-        },
-        {
-          program,
-          student
-        }
-      );
-    }
-  }
+  // TODO: inform manager
+
+  // const student = await req.db
+  //   .model('Student')
+  //   .findById(user._id.toString())
+  //   .populate('agents', 'firstname lastname email')
+  //   .exec();
+  // for (let i = 0; i < student.agents.length; i += 1) {
+  //   if (isNotArchiv(student)) {
+  //     ComplaintCreatedAgentEmail(
+  //       {
+  //         firstname: student.agents[i].firstname,
+  //         lastname: student.agents[i].lastname,
+  //         address: student.agents[i].email
+  //       },
+  //       {
+  //         program,
+  //         student
+  //       }
+  //     );
+  //   }
+  // }
 });
 
 const updateComplaint = asyncHandler(async (req, res) => {

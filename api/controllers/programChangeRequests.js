@@ -26,16 +26,20 @@ const submitProgramChangeRequests = asyncHandler(async (req, res) => {
     throw new ErrorResponse(404, 'Program not found');
   }
 
-  const changeRequest = await req.db
-    .model('ProgramChangeRequest')
-    .findOneAndUpdate(
-      { programId, requestedBy: user._id },
-      {
-        programChanges: changes
-      },
-      { upsert: true }
-    );
-  res.send({ success: true, data: changeRequest });
+  await req.db.model('ProgramChangeRequest').findOneAndUpdate(
+    {
+      programId,
+      requestedBy: user._id,
+      reviewedBy: {
+        $exists: false
+      }
+    },
+    {
+      programChanges: changes
+    },
+    { upsert: true }
+  );
+  res.send({ success: true });
 });
 
 const reviewProgramChangeRequest = asyncHandler(async (req, res) => {

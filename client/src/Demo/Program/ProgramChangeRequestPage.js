@@ -74,12 +74,14 @@ function ProgramChangeRequestPage(props) {
       <CustomBreadcrumbs program={originalProgram} />
       <Box sx={{ my: 3 }}>
         <FormControl fullWidth>
-          <InputLabel id="request-select-label">Requests</InputLabel>
+          <InputLabel id="request-select-label">{`Requests (${
+            incomingChanges?.length || 0
+          })`}</InputLabel>
           <Select
             labelId="request-select-label"
             id="request-select"
             value={changeIndex}
-            label="Requests"
+            label={`Requests (${incomingChanges?.length || 0})`}
             onChange={(e) => setChangeIndex(e.target.value)}
           >
             {incomingChanges.length > 0 &&

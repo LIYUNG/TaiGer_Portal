@@ -39,7 +39,7 @@ function CreateComplaintTicket() {
     if (response.status === 201) {
       setDescription('');
       setTitle('');
-      navigate('/customer-center');
+      navigate(DEMO.CUSTOMER_CENTER_LINK);
     }
   };
 

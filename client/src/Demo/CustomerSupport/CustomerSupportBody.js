@@ -38,7 +38,7 @@ function CustomerSupportBody({ complaintTickets }) {
   const navigate = useNavigate();
 
   const handleAddTicketClick = () => {
-    navigate('/customer-center/add-ticket');
+    navigate(DEMO.CUSTOMER_CENTER_ADD_TICKET_LINK);
   };
 
   return (

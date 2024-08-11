@@ -23,6 +23,7 @@ const DEMO = {
     return `/communications/t/${student_id}`;
   },
   CUSTOMER_CENTER_LINK: '/customer-center',
+  CUSTOMER_CENTER_ADD_TICKET_LINK: '/customer-center/add-ticket',
   CUSTOMER_CENTER_TICKET_DETAIL_PAGE_LINK: (ticket_id) => {
     return `/customer-center/tickets/${ticket_id}`;
   },

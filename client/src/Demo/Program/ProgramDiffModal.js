@@ -39,10 +39,10 @@ function ProgramDiffModal(props) {
       aria-labelledby="contained-modal-title-vcenter"
       centered
     >
-      <Typography variant="h6">Merge Program input</Typography>
       <Button color="secondary" onClick={props.setModalHide}>
         <CloseIcon />
       </Button>
+      <Typography variant="h6">Merge Program input </Typography>
       <FormControl fullWidth>
         <InputLabel id="request-select-label">Requests</InputLabel>
         <Select
@@ -65,7 +65,6 @@ function ProgramDiffModal(props) {
             })}
         </Select>
       </FormControl>
-
       <ProgramCompare
         originalProgram={originalProgram}
         incomingChanges={incomingChanges[changeIndex] || {}}

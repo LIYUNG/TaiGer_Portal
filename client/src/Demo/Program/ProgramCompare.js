@@ -203,9 +203,6 @@ const ProgramCompare = ({
 
   return (
     <>
-      <Typography variant="body1">
-        Changes to submit: {JSON.stringify(delta)}
-      </Typography>
       <Button color="primary" onClick={acceptAllChanges}>
         {t('Accept All', { ns: 'common' })}
       </Button>

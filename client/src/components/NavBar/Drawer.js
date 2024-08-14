@@ -68,6 +68,7 @@ const ExcludeMenu = {
     'customer-center-student'
   ],
   Admin: [
+    'my-students',
     'contact_us',
     'application_overivew',
     'academicsurvey',

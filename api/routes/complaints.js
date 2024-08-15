@@ -14,7 +14,8 @@ const {
   getComplaint,
   createComplaint,
   updateComplaint,
-  deleteComplaint
+  deleteComplaint,
+  deleteAMessageInComplaint
 } = require('../controllers/complaints');
 const { filter_archiv_user } = require('../middlewares/limit_archiv_user');
 // const {
@@ -62,6 +63,23 @@ router
     permit(Role.Admin, Role.Manager, Role.Editor, Role.Agent, Role.Student),
     // permission_canModifyComplaintList_filter,
     deleteComplaint
+  );
+
+router
+  .route('/:ticketId/:messageId')
+  .put(
+    filter_archiv_user,
+    UpdateComplaintRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Editor, Role.Agent, Role.Student),
+    // permission_canModifyComplaintList_filter,
+    updateComplaint
+  )
+  .delete(
+    filter_archiv_user,
+    DeleteComplaintRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Editor, Role.Agent, Role.Student),
+    // permission_canModifyComplaintList_filter,
+    deleteAMessageInComplaint
   );
 
 module.exports = router;

@@ -134,6 +134,45 @@ const updateComplaint = asyncHandler(async (req, res) => {
   }
 });
 
+const deleteAMessageInComplaint = asyncHandler(async (req, res) => {
+  const { user } = req;
+  const { ticketId, messageId } = req.params;
+
+  const ticket = await req.db.model('Complaint').findById(ticketId);
+  if (!ticket) {
+    logger.error('deleteAMessageInComplaint : Invalid message thread id');
+    throw new ErrorResponse(404, 'Thread not found');
+  }
+  if (ticket.status === 'closed') {
+    logger.error('deleteAMessageInComplaint : ticket is closed.');
+    throw new ErrorResponse(423, 'Ticket is closed.');
+  }
+  const msg = ticket.messages.find(
+    (message) => message._id.toString() === messageId
+  );
+
+  if (!msg) {
+    logger.error('deleteAMessageInComplaint : Invalid message id');
+    throw new ErrorResponse(404, 'Message not found');
+  }
+  // Prevent multitenant
+  if (msg.user_id.toString() !== user._id.toString()) {
+    logger.error(
+      'deleteAMessageInComplaint : You can only delete your own message.'
+    );
+    throw new ErrorResponse(409, 'You can only delete your own message.');
+  }
+
+  // Don't need so delete in S3 , will delete by garbage collector
+  await req.db.model('Complaint').findByIdAndUpdate(ticketId, {
+    $pull: {
+      messages: { _id: messageId }
+    }
+  });
+
+  res.status(200).send({ success: true });
+});
+
 const deleteComplaint = asyncHandler(async (req, res) => {
   await req.db.model('Complaint').findByIdAndDelete(req.params.ticketId);
   res.status(200).send({ success: true });
@@ -144,5 +183,6 @@ module.exports = {
   getComplaint,
   createComplaint,
   updateComplaint,
+  deleteAMessageInComplaint,
   deleteComplaint
 };

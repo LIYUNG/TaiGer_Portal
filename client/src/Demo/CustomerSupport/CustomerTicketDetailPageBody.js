@@ -13,7 +13,6 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
-  Card,
   Button,
   Dialog,
   DialogTitle,
@@ -23,11 +22,22 @@ import {
 } from '@mui/material';
 import { appConfig } from '../../config';
 import DEMO from '../../store/constant';
-import { deleteComplaintsTicket } from '../../api';
+import { deleteAMessageinTicket, deleteComplaintsTicket } from '../../api';
+import MessageList from '../../components/Message/MessageList';
 
 function CustomerTicketDetailPageBody({ complaintTicket }) {
   const { t } = useTranslation();
   const [isDeleted, setIsDeleted] = useState(false);
+  const [
+    customerTicketDetailPageBodyState,
+    setCustomerTicketDetailPageBodyState
+  ] = useState({
+    thread: complaintTicket,
+    accordionKeys: new Array(complaintTicket.messages.length)
+      .fill()
+      .map((x, i) => (i === complaintTicket.messages.length - 1 ? i : -1)), // to collapse all
+    isLoaded: true
+  });
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -38,6 +48,75 @@ function CustomerTicketDetailPageBody({ complaintTicket }) {
     console.log(response);
     setIsDeleted(true);
     setOpen(false);
+  };
+
+  const singleExpandtHandler = (idx) => {
+    let accordionKeys = [...customerTicketDetailPageBodyState.accordionKeys];
+    accordionKeys[idx] = accordionKeys[idx] !== idx ? idx : -1;
+    setCustomerTicketDetailPageBodyState((prevState) => ({
+      ...prevState,
+      accordionKeys: accordionKeys
+    }));
+  };
+
+  const onDeleteSingleMessage = (e, message_id) => {
+    e.preventDefault();
+    setCustomerTicketDetailPageBodyState((prevState) => ({
+      ...prevState,
+      isLoaded: false
+    }));
+    deleteAMessageinTicket(complaintTicket?._id?.toString(), message_id).then(
+      (resp) => {
+        const { success } = resp.data;
+        const { status } = resp;
+        if (success) {
+          // TODO: remove that message
+          var new_messages = [
+            ...customerTicketDetailPageBodyState.thread.messages
+          ];
+          let idx = customerTicketDetailPageBodyState.thread.messages.findIndex(
+            (message) => message._id.toString() === message_id
+          );
+          if (idx !== -1) {
+            new_messages.splice(idx, 1);
+          }
+          setCustomerTicketDetailPageBodyState((prevState) => ({
+            ...prevState,
+            success,
+            isLoaded: true,
+            thread: {
+              ...customerTicketDetailPageBodyState.thread,
+              messages: new_messages
+            },
+            buttonDisabled: false,
+            res_modal_status: status
+          }));
+        } else {
+          // TODO: what if data is oversize? data type not match?
+          const { message } = resp.data;
+          setCustomerTicketDetailPageBodyState((prevState) => ({
+            ...prevState,
+            isLoaded: true,
+            buttonDisabled: false,
+            res_modal_message: message,
+            res_modal_status: status
+          }));
+        }
+      },
+      (error) => {
+        setCustomerTicketDetailPageBodyState((prevState) => ({
+          ...prevState,
+          isLoaded: true,
+          error,
+          res_modal_status: 500,
+          res_modal_message: ''
+        }));
+      }
+    );
+    setCustomerTicketDetailPageBodyState((prevState) => ({
+      ...prevState,
+      in_edit_mode: false
+    }));
   };
 
   const returnBack = () => {
@@ -167,15 +246,14 @@ function CustomerTicketDetailPageBody({ complaintTicket }) {
                 </Paper>
               </Grid>
             </Grid>
-            {complaintTicket?.messages?.map((message) => (
-              <Card key={message._id}>
-                <Typography variant="body1">
-                  {message.user_id?.firstname}
-                  {message.user_id?.lastname}
-                </Typography>
-                <Typography variant="bpdy2">{message.message}</Typography>
-              </Card>
-            ))}
+            <MessageList
+              documentsthreadId={complaintTicket._id}
+              accordionKeys={customerTicketDetailPageBodyState.accordionKeys}
+              singleExpandtHandler={singleExpandtHandler}
+              thread={customerTicketDetailPageBodyState.thread}
+              isLoaded={customerTicketDetailPageBodyState.isLoaded}
+              onDeleteSingleMessage={onDeleteSingleMessage}
+            />
           </Box>
         </Box>
       )}

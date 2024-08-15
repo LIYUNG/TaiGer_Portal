@@ -684,6 +684,8 @@ export const updateComplaintsTicket = (ticket_id, updatedTicket) =>
   request.put(`/api/complaints/${ticket_id}`, updatedTicket);
 export const deleteComplaintsTicket = (ticket_id) =>
   request.delete(`/api/complaints/${ticket_id}`);
+export const deleteAMessageinTicket = (ticket_id, message_id) =>
+  request.delete(`/api/complaints/${ticket_id}/${message_id}`);
 
 // Log:
 export const getUsersLog = () => request.get(`/api/userlogs`);

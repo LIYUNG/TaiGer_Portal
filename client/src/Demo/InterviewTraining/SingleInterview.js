@@ -27,12 +27,12 @@ import DEMO from '../../store/constant';
 import Loading from '../../components/Loading/Loading';
 import ModalNew from '../../components/Modal';
 import { INTERVIEW_STATUS_E, stringAvatar } from '../Utils/contants';
-import MessageList from '../CVMLRLCenter/DocModificationThreadPage/MessageList';
 import { useAuth } from '../../components/AuthProvider';
 import DocThreadEditor from '../CVMLRLCenter/DocModificationThreadPage/DocThreadEditor';
 import { is_TaiGer_role } from '../Utils/checking-functions';
 import { TopBar } from '../../components/TopBar/TopBar';
 import { appConfig } from '../../config';
+import MessageList from '../../components/Message/MessageList';
 
 function SingleInterview() {
   const { interview_id } = useParams();

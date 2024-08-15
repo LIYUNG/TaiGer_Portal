@@ -14,21 +14,22 @@ import {
   FormControlLabel,
   Checkbox
 } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import CloseIcon from '@mui/icons-material/Close';
 import { FileIcon, defaultStyles } from 'react-file-icon';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { is_TaiGer_Student } from '../../Utils/checking-functions';
-import { BASE_URL } from '../../../api/request';
-import EditorSimple from '../../../components/EditorJs/EditorSimple';
-// import Output from 'editorjs-react-renderer';
-import { stringAvatar, convertDate } from '../../Utils/contants';
-import { useAuth } from '../../../components/AuthProvider';
-import ModalNew from '../../../components/Modal';
-import { useTranslation } from 'react-i18next';
-import Loading from '../../../components/Loading/Loading';
-import { IgnoreMessageThread } from '../../../api/index';
 
-function Message(props) {
+import { is_TaiGer_Student } from '../../Demo/Utils/checking-functions';
+import { BASE_URL } from '../../../src/api/request';
+import EditorSimple from '../EditorJs/EditorSimple';
+// import Output from 'editorjs-react-renderer';
+import { stringAvatar, convertDate } from '../../Demo/Utils/contants';
+import { useAuth } from '../AuthProvider';
+import ModalNew from '../Modal';
+import Loading from '../Loading/Loading';
+import { IgnoreMessageThread } from '../../../src/api/index';
+
+function MessageCard(props) {
   const { user } = useAuth();
   const { t } = useTranslation();
   const [messageState, setMessageState] = useState({
@@ -285,4 +286,4 @@ function Message(props) {
   );
 }
 
-export default Message;
+export default MessageCard;

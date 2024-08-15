@@ -28,7 +28,6 @@ import {
 import { pdfjs } from 'react-pdf'; // Library for rendering PDFs
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
-import MessageList from './MessageList';
 import DocThreadEditor from './DocThreadEditor';
 import ErrorPage from '../../Utils/ErrorPage';
 import ModalMain from '../../Utils/ModalHandler/ModalMain';
@@ -65,6 +64,7 @@ import Loading from '../../../components/Loading/Loading';
 import ModalNew from '../../../components/Modal';
 import EditEssayWritersSubpage from '../../Dashboard/MainViewTab/StudDocsOverview/EditEssayWritersSubpage';
 import { TopBar } from '../../../components/TopBar/TopBar';
+import MessageList from '../../../components/Message/MessageList';
 
 function DocModificationThreadPage() {
   const { user } = useAuth();
@@ -830,13 +830,9 @@ function DocModificationThreadPage() {
                 {docModificationThreadPageState.thread.flag_by_user_id?.includes(
                   user._id.toString()
                 ) ? (
-                  <StarRoundedIcon
-                  // color={params.value ? 'primary' : 'action'}
-                  />
+                  <StarRoundedIcon />
                 ) : (
-                  <StarBorderRoundedIcon
-                  // color={params.value ? 'primary' : 'action'}
-                  />
+                  <StarBorderRoundedIcon />
                 )}
               </IconButton>
             </Typography>

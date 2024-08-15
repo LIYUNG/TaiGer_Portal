@@ -335,7 +335,6 @@ const getMyMessages = asyncHandler(async (req, res, next) => {
       .select('firstname lastname role')
       .lean();
     // Get only the last communication
-    console.log(students);
     const student_ids = students.map((stud, i) => stud._id);
     const studentsWithCommunications = await req.db.model('Student').aggregate([
       {

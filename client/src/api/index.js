@@ -680,12 +680,17 @@ export const getComplaintsTicket = (ticketId) =>
   request.get(`/api/complaints/${ticketId}`);
 export const getComplaintsTickets = (type) =>
   request.get(`/api/complaints?type=${type}`);
-export const updateComplaintsTicket = (ticket_id, updatedTicket) =>
-  request.put(`/api/complaints/${ticket_id}`, updatedTicket);
-export const deleteComplaintsTicket = (ticket_id) =>
-  request.delete(`/api/complaints/${ticket_id}`);
-export const deleteAMessageinTicket = (ticket_id, message_id) =>
-  request.delete(`/api/complaints/${ticket_id}/${message_id}`);
+export const updateComplaintsTicket = (ticketId, updatedTicket) =>
+  request.put(`/api/complaints/${ticketId}`, updatedTicket);
+export const deleteComplaintsTicket = (ticketId) =>
+  request.delete(`/api/complaints/${ticketId}`);
+export const submitMessageInTicketWithAttachment = (
+  ticketId,
+  studentId,
+  newFile
+) => request.post(`/api/complaints/new-message/${ticketId}/${studentId}`, newFile);
+export const deleteAMessageinTicket = (ticketId, message_id) =>
+  request.delete(`/api/complaints/${ticketId}/${message_id}`);
 
 // Log:
 export const getUsersLog = () => request.get(`/api/userlogs`);

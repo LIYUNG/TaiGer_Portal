@@ -1,3 +1,4 @@
+const path = require('path');
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
 const logger = require('../services/logger');
@@ -98,6 +99,136 @@ const createComplaint = asyncHandler(async (req, res) => {
   //   }
   // }
 });
+// (O) notification email works
+const postMessageInTicket = asyncHandler(async (req, res) => {
+  const {
+    user,
+    params: { ticketId }
+  } = req;
+  const { message } = req.body;
+  console.log(message);
+  const ticket = await req.db
+    .model('Complaint')
+    .findById(ticketId)
+    .populate('requester_id');
+  if (!ticket) {
+    logger.info('postMessageInTicket: Invalid message thread id');
+    throw new ErrorResponse(404, 'Thread Id not found');
+  }
+
+  if (ticket?.isFinalVersion) {
+    logger.info('postMessageInTicket: thread is closed! Please refresh!');
+    throw new ErrorResponse(403, ' thread is closed! Please refresh!');
+  }
+  try {
+    JSON.parse(message);
+  } catch (e) {
+    logger.error(`Thread message collapse ${message}`);
+    throw new ErrorResponse(400, 'message collapse');
+  }
+  // Check student can only access their own thread!!!!
+  if (user.role === Role.Student) {
+    if (ticket.student_id._id.toString() !== user._id.toString()) {
+      logger.error('getMessages: Unauthorized request!');
+      throw new ErrorResponse(403, 'Unauthorized request');
+    }
+  }
+  let newfile = [];
+  if (req.files) {
+    for (let i = 0; i < req.files.length; i += 1) {
+      newfile.push({
+        name: req.files[i].key,
+        path: path.join(req.files[i].metadata.path, req.files[i].key)
+      });
+      // Check for duplicate file extensions
+      const fileExtensions = req.files.map(
+        (file) => file.mimetype.split('/')[1]
+      );
+      const uniqueFileExtensions = new Set(fileExtensions);
+      if (fileExtensions.length !== uniqueFileExtensions.size) {
+        logger.error('Error: Duplicate file extensions found!');
+        throw new ErrorResponse(
+          423,
+          'Error: Duplicate file extensions found. Due to the system automatical naming mechanism, the files with same extension (said .pdf) will be overwritten. You can not upload 2 same files extension (2 .pdf or 2 .docx) at the same message. But 1 .pdf and 1 .docx are allowed.'
+        );
+      }
+    }
+  }
+
+  const new_message = {
+    user_id: user._id,
+    message,
+    createdAt: new Date(),
+    file: newfile
+  };
+  // TODO: prevent abuse! if ticket.messages.length > 30, too much message in a thread!
+  ticket.messages.push(new_message);
+  ticket.updatedAt = new Date();
+  await ticket.save();
+  const ticket2 = await req.db
+    .model('Complaint')
+    .findById(ticketId)
+    .populate('requester_id messages.user_id');
+
+  res.status(200).send({ success: true, data: ticket2 });
+
+  const student = await req.db
+    .model('Student')
+    .findById(ticket.requester_id)
+    .populate('editors agents', 'firstname lastname email archiv');
+
+  if (user.role === Role.Student) {
+    // Inform Agent
+    if (isNotArchiv(student)) {
+      for (let i = 0; i < student.agents.length; i += 1) {
+        // Inform Agent
+        if (isNotArchiv(student.agents[i])) {
+          const agent_recipent = {
+            firstname: student.agents[i].firstname,
+            lastname: student.agents[i].lastname,
+            address: student.agents[i].email
+          };
+          const agent_payload = {
+            writer_firstname: user.firstname,
+            writer_lastname: user.lastname,
+            student_firstname: student.firstname,
+            student_lastname: student.lastname,
+            uploaded_documentname: ticket.file_type,
+            thread_id: ticket._id.toString(),
+            uploaded_updatedAt: new Date()
+          };
+          // sendNewGeneraldocMessageInThreadEmail(
+          //   agent_recipent,
+          //   agent_payload
+          // );
+        }
+      }
+    }
+  }
+
+  // Inform student
+  if (isNotArchiv(ticket.student_id)) {
+    const student_recipient = {
+      firstname: document_thread.requester_id.firstname,
+      lastname: document_thread.requester_id.lastname,
+      address: document_thread.requester_id.email
+    };
+    const student_payload = {
+      writer_firstname: user.firstname,
+      writer_lastname: user.lastname,
+      student_firstname: student.firstname,
+      student_lastname: student.lastname,
+      uploaded_documentname: document_thread.file_type,
+      thread_id: document_thread._id.toString(),
+      uploaded_updatedAt: new Date()
+    };
+    // TODO: email
+    // sendNewApplicationMessageInThreadEmail(
+    //   student_recipient,
+    //   student_payload
+    // );
+  }
+});
 
 const updateComplaint = asyncHandler(async (req, res) => {
   const { user } = req;
@@ -183,6 +314,7 @@ module.exports = {
   getComplaint,
   createComplaint,
   updateComplaint,
+  postMessageInTicket,
   deleteAMessageInComplaint,
   deleteComplaint
 };

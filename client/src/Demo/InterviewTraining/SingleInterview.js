@@ -28,11 +28,11 @@ import Loading from '../../components/Loading/Loading';
 import ModalNew from '../../components/Modal';
 import { INTERVIEW_STATUS_E, stringAvatar } from '../Utils/contants';
 import { useAuth } from '../../components/AuthProvider';
-import DocThreadEditor from '../CVMLRLCenter/DocModificationThreadPage/DocThreadEditor';
 import { is_TaiGer_role } from '../Utils/checking-functions';
 import { TopBar } from '../../components/TopBar/TopBar';
 import { appConfig } from '../../config';
 import MessageList from '../../components/Message/MessageList';
+import DocThreadEditor from '../../components/Message/DocThreadEditor';
 
 function SingleInterview() {
   const { interview_id } = useParams();

@@ -28,7 +28,7 @@ import {
 import { pdfjs } from 'react-pdf'; // Library for rendering PDFs
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
-import DocThreadEditor from './DocThreadEditor';
+import DocThreadEditor from '../../../components/Message/DocThreadEditor';
 import ErrorPage from '../../Utils/ErrorPage';
 import ModalMain from '../../Utils/ModalHandler/ModalMain';
 import { stringAvatar, templatelist } from '../../Utils/contants';
@@ -813,7 +813,6 @@ function DocModificationThreadPage() {
           onDeleteSingleMessage={onDeleteSingleMessage}
         />
       </ModalNew>
-      <Card></Card>
       {docModificationThreadPageState.thread.isFinalVersion && <TopBar />}
       <Card sx={{ p: 2 }}>
         <Grid container spacing={2}>

@@ -114,7 +114,7 @@ function DocThreadEditor(props) {
                 variant="outlined"
                 startIcon={<SendIcon />}
               >
-                {t('Send')}
+                {t('Send', { ns: 'common' })}
               </Button>
             </Tooltip>
           ) : (
@@ -124,7 +124,7 @@ function DocThreadEditor(props) {
               onClick={(e) => props.handleClickSave(e, statedata.editorState)}
               startIcon={<SendIcon />}
             >
-              {t('Send')}
+              {t('Send', { ns: 'common' })}
             </Button>
           )}
         </Grid>

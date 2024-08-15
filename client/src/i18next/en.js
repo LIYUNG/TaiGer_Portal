@@ -365,6 +365,9 @@ export const translation_en = {
   logs: {
     'User Logs': 'User Logs'
   },
+  tickets: {
+    'Do you want to delete this ticket?': 'Do you want to delete this ticket?'
+  },
   backgroundProfile: {},
   admissions: {
     'Attach Admission Letter or Admission Email pdf or Email screenshot':

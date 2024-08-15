@@ -13,7 +13,12 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
-  IconButton
+  IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useTranslation } from 'react-i18next';
@@ -40,7 +45,6 @@ import {
 } from '../../api';
 import DEMO from '../../store/constant';
 import Loading from '../../components/Loading/Loading';
-import ModalNew from '../../components/Modal';
 
 function EditorDocsProgress(props) {
   const { t } = useTranslation();
@@ -61,7 +65,6 @@ function EditorDocsProgress(props) {
     isLoaded: false,
     requirements: '',
     file: '',
-    isThreadExisted: false,
     res_status: 0,
     res_modal_message: '',
     res_modal_status: 0
@@ -100,12 +103,7 @@ function EditorDocsProgress(props) {
       requirements: ''
     }));
   };
-  const closeDocExistedWindow = () => {
-    setEditorDocsProgressState((prevState) => ({
-      ...prevState,
-      isThreadExisted: false
-    }));
-  };
+
   const closeWarningWindow = () => {
     setEditorDocsProgressState((prevState) => ({
       ...prevState,
@@ -543,9 +541,7 @@ function EditorDocsProgress(props) {
               </Typography>
             ) : isProgramSubmitted(application) ? (
               <>
-                <IconButton>
-                  {FILE_OK_SYMBOL}
-                </IconButton>
+                <IconButton>{FILE_OK_SYMBOL}</IconButton>
               </>
             ) : isProgramWithdraw(application) ? (
               <Typography fontWeight="bold">
@@ -688,160 +684,146 @@ function EditorDocsProgress(props) {
             <Divider sx={{ my: 2 }} />
           </div>
         ))}
-      <ModalNew
+      <Dialog
         open={editorDocsProgressState.deleteFileWarningModel}
         onClose={closeWarningWindow}
         aria-labelledby="contained-modal-title-vcenter"
       >
-        <Typography variant="h6">{t('Warning', { ns: 'common' })}</Typography>
-        <Typography sx={{ my: 2 }}>
-          Do you want to delete <b>{editorDocsProgressState.docName}</b>?
-        </Typography>
-        <InputLabel>
-          <Typography>
-            Please enter{' '}
-            <i>
-              <b>delete</b>
-            </i>{' '}
-            in order to delete the user.
-          </Typography>
-        </InputLabel>
-        <TextField
-          fullWidth
-          size="small"
-          type="text"
-          placeholder="delete"
-          value={`${editorDocsProgressState.delete_field}`}
-          onChange={(e) => onChangeDeleteField(e)}
-          sx={{ mb: 2 }}
-        />
-        <Button
-          size="small"
-          color="primary"
-          variant="contained"
-          disabled={
-            !isLoaded || editorDocsProgressState.delete_field !== 'delete'
-          }
-          onClick={ConfirmDeleteDiscussionThreadHandler}
-          sx={{ mr: 1 }}
-        >
-          {isLoaded ? (
-            t('Yes', { ns: 'common' })
-          ) : (
-            <div style={spinner_style2}>
-              <CircularProgress />
-            </div>
-          )}
-        </Button>
-        <Button
-          size="small"
-          color="primary"
-          variant="outlined"
-          onClick={closeWarningWindow}
-        >
-          {t('No', { ns: 'common' })}
-        </Button>
-      </ModalNew>
-      <ModalNew
+        <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Do you want to delete <b>{editorDocsProgressState.docName}</b>?
+          </DialogContentText>
+          <InputLabel>
+            <Typography>
+              Please enter{' '}
+              <i>
+                <b>delete</b>
+              </i>{' '}
+              in order to delete the user.
+            </Typography>
+          </InputLabel>
+          <TextField
+            fullWidth
+            size="small"
+            type="text"
+            placeholder="delete"
+            value={`${editorDocsProgressState.delete_field}`}
+            onChange={(e) => onChangeDeleteField(e)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button
+            color="primary"
+            variant="contained"
+            disabled={
+              !isLoaded || editorDocsProgressState.delete_field !== 'delete'
+            }
+            onClick={ConfirmDeleteDiscussionThreadHandler}
+          >
+            {isLoaded ? (
+              t('Yes', { ns: 'common' })
+            ) : (
+              <div style={spinner_style2}>
+                <CircularProgress />
+              </div>
+            )}
+          </Button>
+          <Button
+            color="primary"
+            variant="outlined"
+            onClick={closeWarningWindow}
+          >
+            {t('No', { ns: 'common' })}
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
         open={editorDocsProgressState.SetAsFinalFileModel}
         onClose={closeSetAsFinalFileModelWindow}
         aria-labelledby="contained-modal-title-vcenter"
       >
-        <Typography variant="h6" sx={{ mb: 1 }}>
-          {t('Warning', { ns: 'common' })}
-        </Typography>
-        <Typography sx={{ mb: 1 }}>
-          Do you want to set {editorDocsProgressState.docName} as{' '}
-          {editorDocsProgressState.isFinal ? 'final' : 'open'}?
-        </Typography>
-        <Button
-          color="primary"
-          variant="contained"
-          size="small"
-          disabled={!isLoaded}
-          onClick={ConfirmSetAsFinalFileHandler}
-        >
-          {isLoaded ? (
-            t('Yes', { ns: 'common' })
-          ) : (
-            <div style={spinner_style2}>
-              <CircularProgress />
-            </div>
-          )}
-        </Button>
-        <Button
-          size="small"
-          variant="outlined"
-          onClick={closeSetAsFinalFileModelWindow}
-        >
-          {t('No', { ns: 'common' })}
-        </Button>
-      </ModalNew>
-      <ModalNew
+        <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Do you want to set {editorDocsProgressState.docName} as{' '}
+            {editorDocsProgressState.isFinal ? 'final' : 'open'}?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            color="primary"
+            variant="contained"
+            disabled={!isLoaded}
+            onClick={ConfirmSetAsFinalFileHandler}
+          >
+            {isLoaded ? (
+              t('Yes', { ns: 'common' })
+            ) : (
+              <div style={spinner_style2}>
+                <CircularProgress />
+              </div>
+            )}
+          </Button>
+          <Button variant="outlined" onClick={closeSetAsFinalFileModelWindow}>
+            {t('No', { ns: 'common' })}
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
         open={editorDocsProgressState.Requirements_Modal}
         onClose={close_Requirements_ModalWindow}
         aria-labelledby="contained-modal-title-vcenter"
       >
-        <Typography variant="h6">
-          {t('Special Requirements', { ns: 'common' })}
-        </Typography>
-        <Typography>
-          <LinkableNewlineText text={editorDocsProgressState.requirements} />
-        </Typography>
-        <Button
-          color="primary"
-          variant="outlined"
-          onClick={close_Requirements_ModalWindow}
-        >
-          {t('Close', { ns: 'common' })}
-        </Button>
-      </ModalNew>
-      <ModalNew
-        open={editorDocsProgressState.isThreadExisted}
-        onClose={closeDocExistedWindow}
-        aria-labelledby="contained-modal-title-vcenter"
-      >
-        <Typography variant="h6">{t('Attention')}</Typography>
-        <Typography>
-          {editorDocsProgressState.docName} is already existed
-        </Typography>
-        <Button
-          color="secondary"
-          variant="contained"
-          onClick={closeDocExistedWindow}
-        >
-          {t('Close', { ns: 'common' })}
-        </Button>
-      </ModalNew>
-      <ModalNew
+        <DialogTitle>{t('Special Requirements', { ns: 'common' })}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            <LinkableNewlineText text={editorDocsProgressState.requirements} />
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            color="primary"
+            variant="outlined"
+            onClick={close_Requirements_ModalWindow}
+          >
+            {t('Close', { ns: 'common' })}
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
         open={editorDocsProgressState.SetProgramStatusModel}
         onClose={closeSetProgramStatusModel}
         aria-labelledby="contained-modal-title-vcenter"
       >
-        <Typography variant="h6">{t('Attention')}</Typography>
-        <Typography sx={{ my: 1 }}>
-          Do you want to{' '}
-          {editorDocsProgressState.isApplicationSubmitted ? 're-open' : 'close'}{' '}
-          this program for {editorDocsProgressState.student.firstname}?
-        </Typography>
-        <Button
-          color="primary"
-          fullWidth
-          variant="contained"
-          disabled={!isLoaded}
-          onClick={SubmitProgramStatusHandler}
-        >
-          {t('Yes', { ns: 'common' })}
-        </Button>
-        <Button
-          color="primary"
-          fullWidth
-          variant="outlined"
-          onClick={closeSetProgramStatusModel}
-        >
-          {t('Close', { ns: 'common' })}
-        </Button>
-      </ModalNew>
+        <DialogTitle>{t('Attention')}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Do you want to{' '}
+            {editorDocsProgressState.isApplicationSubmitted
+              ? 're-open'
+              : 'close'}{' '}
+            this program for {editorDocsProgressState.student.firstname}?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            color="primary"
+            variant="contained"
+            disabled={!isLoaded}
+            onClick={SubmitProgramStatusHandler}
+          >
+            {t('Yes', { ns: 'common' })}
+          </Button>
+          <Button
+            color="primary"
+            variant="outlined"
+            onClick={closeSetProgramStatusModel}
+          >
+            {t('No', { ns: 'common' })}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

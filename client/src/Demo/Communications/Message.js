@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import {
   Button,
   Avatar,
-  Typography,
   Accordion,
   AccordionSummary,
   AccordionDetails,
@@ -14,7 +13,12 @@ import {
   Checkbox,
   IconButton,
   Card,
-  Link
+  Link,
+  DialogTitle,
+  Dialog,
+  DialogContent,
+  DialogContentText,
+  DialogActions
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CloseIcon from '@mui/icons-material/Close';
@@ -26,7 +30,6 @@ import { Link as LinkDom } from 'react-router-dom';
 import EditorSimple from '../../components/EditorJs/EditorSimple';
 import { stringAvatar, convertDate } from '../Utils/contants';
 import { useAuth } from '../../components/AuthProvider';
-import ModalNew from '../../components/Modal';
 import Loading from '../../components/Loading/Loading';
 import { IgnoreMessage } from '../../api/index';
 import { is_TaiGer_Student } from '../Utils/checking-functions';
@@ -262,29 +265,33 @@ function Message(props) {
         </AccordionDetails>
       </Accordion>
       {/* TODOL consider to move it to the parent! It render many time! as message increase */}
-      <ModalNew
+      <Dialog
         open={messageState.deleteMessageModalShow}
         onClose={onHidedeleteMessageModalShow}
         aria-labelledby="contained-modal-title-vcenter"
       >
-        <Typography variant="h6">Warning</Typography>
-        <Typography>Do you wan to delete this message on </Typography>
-        <Typography fontWeight="bold">
-          {convertDate(messageState.createdAt)}?
-        </Typography>
-        <Button
-          disabled={!props.isLoaded}
-          variant="contained"
-          onClick={onDeleteSingleMessage}
-        >
-          {props.isLoaded
-            ? t('Delete', { ns: 'common' })
-            : t('Pending', { ns: 'common' })}
-        </Button>
-        <Button variant="outlined" onClick={onHidedeleteMessageModalShow}>
-          {t('Cancel', { ns: 'common' })}
-        </Button>
-      </ModalNew>
+        <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Do you wan to delete this message on{' '}
+            {convertDate(messageState.createdAt)}?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            disabled={!props.isLoaded}
+            variant="contained"
+            onClick={onDeleteSingleMessage}
+          >
+            {props.isLoaded
+              ? t('Delete', { ns: 'common' })
+              : t('Pending', { ns: 'common' })}
+          </Button>
+          <Button variant="outlined" onClick={onHidedeleteMessageModalShow}>
+            {t('Cancel', { ns: 'common' })}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }

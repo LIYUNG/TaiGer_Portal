@@ -2,70 +2,65 @@ import React from 'react';
 import {
   Button,
   CircularProgress,
-  Typography,
   TextField,
-  Box
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-
-import ModalNew from '../../components/Modal';
 
 function UserDeleteWarning(props) {
   const { t } = useTranslation();
   return (
-    <ModalNew
-      open={props.deleteUserWarning}
-      onClose={props.setModalHideDDelete}
-      aria-labelledby="contained-modal-title-vcenter"
-    >
-      <Typography variant="h6" fontWeight="bold">
-        {t('Warning', { ns: 'common' })}
-      </Typography>
-      <Typography variant="body1">
-        {t('Do you want to delete')}{' '}
-        <b>
-          {props.firstname} - {props.lastname}
-        </b>
-        ?
-      </Typography>
-      <Typography variant="body1">
-        Please enter{' '}
-        <i>
-          <b>delete</b>
-        </i>{' '}
-        in order to delete the user.
-      </Typography>
-      <TextField
-        size="small"
-        type="text"
-        placeholder="delete"
-        onChange={(e) => props.onChangeDeleteField(e)}
-      />
-      <Box sx={{ mt: 2 }}>
-        <Button
+    <Dialog open={props.deleteUserWarning} onClose={props.setModalHideDDelete}>
+      <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
+      <DialogContent>
+        <DialogContentText>
+          {t('Do you want to delete')}{' '}
+          <b>
+            {props.firstname} - {props.lastname}
+          </b>
+          ?
+        </DialogContentText>
+        <TextField
           size="small"
+          type="text"
+          label={
+            <>
+              Please enter{' '}
+              <i>
+                <b>delete</b>
+              </i>
+            </>
+          }
+          placeholder="delete"
+          onChange={(e) => props.onChangeDeleteField(e)}
+        />
+      </DialogContent>
+      <DialogActions>
+        <Button
           color="primary"
           variant="contained"
           disabled={!props.isLoaded || !(props.delete_field === 'delete')}
           onClick={() => props.handleDeleteUser(props.selected_user_id)}
-          sx={{ mr: 2 }}
         >
           {props.isLoaded ? (
-            t('Yes', { ns: 'comon' })
+            t('Yes', { ns: 'common' })
           ) : (
             <CircularProgress size={24} />
           )}
         </Button>
         <Button
-          size="small"
           color="secondary"
           variant="outlined"
           onClick={props.setModalHideDDelete}
         >
           {t('No', { ns: 'common' })}
         </Button>
-      </Box>
-    </ModalNew>
+      </DialogActions>
+    </Dialog>
   );
 }
 export default UserDeleteWarning;

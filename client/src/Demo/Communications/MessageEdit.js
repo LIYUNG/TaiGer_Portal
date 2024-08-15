@@ -5,7 +5,12 @@ import {
   AccordionDetails,
   AccordionSummary,
   Typography,
-  IconButton
+  IconButton,
+  DialogContent,
+  DialogTitle,
+  DialogContentText,
+  Dialog,
+  DialogActions
 } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import CloseIcon from '@mui/icons-material/Close';
@@ -17,7 +22,6 @@ import { useTranslation } from 'react-i18next';
 import EditorSimple from '../../components/EditorJs/EditorSimple';
 import { stringAvatar, convertDate } from '../Utils/contants';
 import Loading from '../../components/Loading/Loading';
-import ModalNew from '../../components/Modal';
 
 function MessageEdit(props) {
   const { t } = useTranslation();
@@ -171,32 +175,34 @@ function MessageEdit(props) {
         </Button>
       </Accordion>
       {/* TODOL consider to move it to the parent! It render many time! as message increase */}
-      <ModalNew
+      <Dialog
         open={messageEditState.deleteMessageModalShow}
         onClose={onHidedeleteMessageModalShow}
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
-        <Typography>{t('Warning', { ns: 'common' })}</Typography>
-        <Typography>
-          Do you wan to delete this message on{' '}
-          <b>{convertDate(messageEditState.createdAt)}?</b>
-        </Typography>
-        <Typography>
+        <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Do you wan to delete this message on{' '}
+            <b>{convertDate(messageEditState.createdAt)}?</b>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
           <Button
             disabled={!props.isLoaded}
-            variant="danger"
+            variant="contained"
             onClick={onDeleteSingleMessage}
           >
             {props.isLoaded
               ? t('Delete', { ns: 'common' })
               : t('Pending', { ns: 'common' })}
           </Button>
-          <Button onClick={onHidedeleteMessageModalShow} variant="light">
+          <Button onClick={onHidedeleteMessageModalShow} variant="outlined">
             {t('Cancel', { ns: 'common' })}
           </Button>
-        </Typography>
-      </ModalNew>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }

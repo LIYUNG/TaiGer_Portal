@@ -368,6 +368,9 @@ export const translation_zh_TW = {
   logs: {
     'User Logs': '使用者紀錄'
   },
+  tickets: {
+    'Do you want to delete this ticket?': '您想刪除這個客服請求嗎？'
+  },
   backgroundProfile: {},
   admissions: {
     'Attach Admission Letter or Admission Email pdf or Email screenshot':

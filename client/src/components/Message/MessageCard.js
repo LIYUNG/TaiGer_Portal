@@ -12,7 +12,12 @@ import {
   Typography,
   FormGroup,
   FormControlLabel,
-  Checkbox
+  Checkbox,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import CloseIcon from '@mui/icons-material/Close';
@@ -25,7 +30,6 @@ import EditorSimple from '../EditorJs/EditorSimple';
 // import Output from 'editorjs-react-renderer';
 import { stringAvatar, convertDate } from '../../Demo/Utils/contants';
 import { useAuth } from '../AuthProvider';
-import ModalNew from '../Modal';
 import Loading from '../Loading/Loading';
 import { IgnoreMessageThread } from '../../../src/api/index';
 
@@ -254,34 +258,34 @@ function MessageCard(props) {
             )}
         </AccordionDetails>
       </Accordion>
-      <ModalNew
+      <Dialog
         open={messageState.deleteMessageModalShow}
         onClose={onHidedeleteMessageModalShow}
         aria-labelledby="contained-modal-title-vcenter"
       >
-        <Box>
-          <Typography variant="h6">Warning</Typography>
-          <Typography variant="string">
+        <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
             Do you wan to delete this message on{' '}
             <b>{convertDate(messageState.createdAt)}?</b>
-          </Typography>
-          <Box sx={{ mt: 2 }}>
-            <Button
-              disabled={!props.isLoaded}
-              variant="contained"
-              color="primary"
-              onClick={onDeleteSingleMessage}
-            >
-              {props.isLoaded
-                ? t('Delete', { ns: 'common' })
-                : t('Pending', { ns: 'common' })}
-            </Button>
-            <Button onClick={onHidedeleteMessageModalShow} variant="light">
-              {t('Cancel', { ns: 'common' })}
-            </Button>
-          </Box>
-        </Box>
-      </ModalNew>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            disabled={!props.isLoaded}
+            variant="contained"
+            color="primary"
+            onClick={onDeleteSingleMessage}
+          >
+            {props.isLoaded
+              ? t('Delete', { ns: 'common' })
+              : t('Pending', { ns: 'common' })}
+          </Button>
+          <Button onClick={onHidedeleteMessageModalShow} variant="outlined">
+            {t('Cancel', { ns: 'common' })}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }

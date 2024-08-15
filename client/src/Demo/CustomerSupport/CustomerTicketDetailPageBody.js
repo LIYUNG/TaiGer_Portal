@@ -92,11 +92,10 @@ function CustomerTicketDetailPageBody({ complaintTicket }) {
         return;
       }
       // Ensure a file is selected
-      // TODO: make array
       const checkPromises = Array.from(e.target.files).map((file) => {
         const extension = file.name.split('.').pop().toLowerCase();
         const studentName =
-          customerTicketDetailPageBodyState.thread.student_id.firstname;
+          customerTicketDetailPageBodyState.thread.requester_id.firstname;
 
         if (extension === 'pdf') {
           return readPDF(file, studentName);
@@ -342,10 +341,18 @@ function CustomerTicketDetailPageBody({ complaintTicket }) {
                   >
                     <Box>
                       <Typography variant="h6" gutterBottom>
-                        Ticket Information
+                        {t('Description', { ns: 'tickets' })}
                       </Typography>
                       <Typography variant="subtitle1" gutterBottom>
                         {complaintTicket.description}
+                      </Typography>
+                    </Box>
+                    <Box>
+                      <Typography variant="h6" gutterBottom>
+                        {t('Requester', { ns: 'tickets' })}
+                      </Typography>
+                      <Typography variant="body1" gutterBottom>
+                        {`${complaintTicket.requester_id?.firstname} ${complaintTicket.requester_id?.lastname}`}
                       </Typography>
                     </Box>
                   </Box>
@@ -458,7 +465,7 @@ function CustomerTicketDetailPageBody({ complaintTicket }) {
         <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            {t('Do you want to delete this ticket?', { ns: 'common' })}
+            {t('Do you want to delete this ticket?', { ns: 'tickets' })}
           </DialogContentText>
         </DialogContent>
         <DialogActions>

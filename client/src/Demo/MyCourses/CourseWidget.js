@@ -10,7 +10,12 @@ import {
   Link,
   MenuItem,
   Select,
-  Typography
+  Typography,
+  Dialog,
+  DialogTitle,
+  DialogContentText,
+  DialogContent,
+  DialogActions
 } from '@mui/material';
 import { DataSheetGrid, textColumn, keyColumn } from 'react-datasheet-grid';
 import { Navigate, Link as LinkDom, useParams } from 'react-router-dom';
@@ -30,7 +35,6 @@ import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
 import { appConfig } from '../../config';
-import ModalNew from '../../components/Modal';
 
 export default function CourseWidget() {
   const { user } = useAuth();
@@ -378,21 +382,27 @@ export default function CourseWidget() {
           )}
         </Typography>
       </Card>
-      <ModalNew
+      <Dialog
         open={statedata.analysisSuccessModalWindowOpen}
         onClose={closeanalysisSuccessModal}
         aria-labelledby="contained-modal-title-vcenter"
       >
-        <Typography variant="h6">{t('Success', { ns: 'common' })}</Typography>
-        <Typography>{t('Transcript analysed successfully!')}</Typography>
-        <Button
-          color="primary"
-          variant="contained"
-          onClick={closeanalysisSuccessModal}
-        >
-          {t('Close', { ns: 'common' })}
-        </Button>
-      </ModalNew>
+        <DialogTitle>{t('Success', { ns: 'common' })}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            {t('Transcript analysed successfully!')}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            color="primary"
+            variant="contained"
+            onClick={closeanalysisSuccessModal}
+          >
+            {t('Close', { ns: 'common' })}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

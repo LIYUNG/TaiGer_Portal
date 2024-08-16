@@ -5,6 +5,11 @@ import {
   Card,
   Checkbox,
   CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   List,
   ListItem,
   ListItemButton,
@@ -338,20 +343,22 @@ export const ImportStudentProgramsCard = (props) => {
             ))}
         </Box>
       </Card>
-      <ModalNew
+      <Dialog
         open={importStudentProgramsCard.importedStudentModalOpen}
         onClose={onHideimportedStudentModalOpen}
         size="xl"
         aria-labelledby="contained-modal-title-vcenter"
       >
-        <Typography variant="h6">
+        <DialogTitle>
           Import programs from{' '}
           <b>{importStudentProgramsCard.selectedStudentName}</b>
-        </Typography>
-        <Typography>
-          Do you want to import the following programs?
-          <br />
-          (Same programs will <b>NOT</b> be duplicated :) )
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Do you want to import the following programs?
+            <br />
+            (Same programs will <b>NOT</b> be duplicated :) )
+          </DialogContentText>
           {importStudentProgramsCard.isImportingStudentPrograms ? (
             <CircularProgress size={16} />
           ) : (
@@ -391,12 +398,11 @@ export const ImportStudentProgramsCard = (props) => {
               ) || []}
             </List>
           )}
-        </Typography>
-        <Typography>
+        </DialogContent>
+        <DialogActions>
           <Button
             color="primary"
             variant="contained"
-            size="small"
             disabled={importStudentProgramsCard.isButtonDisable}
             onClick={handleImportProgramsConfirm}
           >
@@ -409,13 +415,12 @@ export const ImportStudentProgramsCard = (props) => {
           <Button
             color="primary"
             variant="outlined"
-            size="small"
             onClick={onHideimportedStudentModalOpen}
           >
             {t('No', { ns: 'common' })}
           </Button>
-        </Typography>
-      </ModalNew>
+        </DialogActions>
+      </Dialog>
       <ModalNew
         open={importStudentProgramsCard.modalShowAssignSuccessWindow}
         onClose={onHideAssignSuccessWindow}

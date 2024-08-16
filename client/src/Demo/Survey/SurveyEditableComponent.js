@@ -13,7 +13,11 @@ import {
   FormControl,
   InputLabel,
   Badge,
-  Tooltip
+  Tooltip,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions
 } from '@mui/material';
 import LinkIcon from '@mui/icons-material/Link';
 import { Link as LinkDom } from 'react-router-dom';
@@ -54,7 +58,6 @@ import { useAuth } from '../../components/AuthProvider';
 import { appConfig } from '../../config';
 import DEMO from '../../store/constant';
 import { useSurvey } from '../../components/SurveyProvider';
-import ModalNew from '../../components/Modal';
 
 const SurveyEditableComponent = (props) => {
   const {
@@ -1790,24 +1793,28 @@ const SurveyEditableComponent = (props) => {
           </Box>
         </Card>
       </Box>
-      <ModalNew
+      <Dialog
         open={surveyEditableComponentState.baseDocsflagOffcanvas}
         onClose={closeOffcanvasWindow}
       >
-        <Typography variant="h6">{t('Edit', { ns: 'common' })}</Typography>
-        <TextField
-          label={`Documentation Link for ${props.docName}`}
-          placeholder="https://taigerconsultancy-portal.com/docs/search/12345678"
-          value={survey.survey_link}
-          onChange={(e) => onChangeURL(e)}
-        />
-        <Button
-          onClick={(e) => handleUpdateDocLink(e)}
-          disabled={survey.baseDocsflagOffcanvasButtonDisable}
-        >
-          {t('Save', { ns: 'common' })}
-        </Button>
-      </ModalNew>
+        <DialogTitle>{t('Edit', { ns: 'common' })}</DialogTitle>
+        <DialogContent>
+          <TextField
+            label={`Documentation Link for ${props.docName}`}
+            placeholder="https://taigerconsultancy-portal.com/docs/search/12345678"
+            value={survey.survey_link}
+            onChange={(e) => onChangeURL(e)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={(e) => handleUpdateDocLink(e)}
+            disabled={survey.baseDocsflagOffcanvasButtonDisable}
+          >
+            {t('Save', { ns: 'common' })}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

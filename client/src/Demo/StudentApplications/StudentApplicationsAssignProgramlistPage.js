@@ -3,6 +3,10 @@ import {
   Box,
   Breadcrumbs,
   Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Grid,
   Link,
   Typography
@@ -21,7 +25,6 @@ import ProgramList from '../Program/ProgramList';
 import { appConfig } from '../../config';
 import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
-import ModalNew from '../../components/Modal';
 import { ImportStudentProgramsCard } from './ImportStudentProgramsCard';
 import { StudentPreferenceCard } from './StudentPreferenceCard';
 
@@ -95,27 +98,29 @@ function StudentApplicationsAssignProgramlistPage(props) {
         />
       )}
       {is_TaiGer_Student(user) && (
-        <ModalNew open={showProgramCorrectnessReminderModal}>
-          <Typography variant="h6" fontWeight="bold">
-            {t('Warning', { ns: 'common' })}
-          </Typography>
-          <Typography
-            variant="body1"
-            sx={{ mt: 2 }}
-          >{`${appConfig.companyName} Portal 網站上的學程資訊主要為管理申請進度為主，學校學程詳細資訊仍以學校網站為主。`}</Typography>
-          <Typography
-            sx={{ mt: 2 }}
-          >{`若發現 ${appConfig.companyName} Portal 資訊和學校官方網站資料有不同之處，請和顧問討論。`}</Typography>
-          <Button
-            fullWidth
-            variant="contained"
-            color="primary"
-            onClick={closeProgramCorrectnessModal}
-            sx={{ mt: 2 }}
-          >
-            {t('Accept', { ns: 'common' })}
-          </Button>
-        </ModalNew>
+        <Dialog open={showProgramCorrectnessReminderModal}>
+          <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
+          <DialogContent>
+            <Typography
+              variant="body1"
+              sx={{ mt: 2 }}
+            >{`${appConfig.companyName} Portal 網站上的學程資訊主要為管理申請進度為主，學校學程詳細資訊仍以學校網站為主。`}</Typography>
+            <Typography
+              sx={{ mt: 2 }}
+            >{`若發現 ${appConfig.companyName} Portal 資訊和學校官方網站資料有不同之處，請和顧問討論。`}</Typography>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              fullWidth
+              variant="contained"
+              color="primary"
+              onClick={closeProgramCorrectnessModal}
+              sx={{ mt: 2 }}
+            >
+              {t('Accept', { ns: 'common' })}
+            </Button>
+          </DialogActions>
+        </Dialog>
       )}
       <Breadcrumbs aria-label="breadcrumb">
         <Link

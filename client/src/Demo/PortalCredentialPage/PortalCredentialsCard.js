@@ -11,7 +11,11 @@ import {
   Card,
   Link,
   Typography,
-  TextField
+  TextField,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions
 } from '@mui/material';
 
 import ErrorPage from '../Utils/ErrorPage';
@@ -22,7 +26,6 @@ import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import { appConfig } from '../../config';
 import Loading from '../../components/Loading/Loading';
-import ModalNew from '../../components/Modal';
 import {
   LinkableNewlineText,
   isProgramDecided
@@ -477,24 +480,19 @@ export default function PortalCredentialsCard(props) {
           </Fragment>
         ))}
       </Card>
-      <ModalNew
-        open={statedata.confirmModalWindowOpen}
-        onClose={closeModal}
-        aria-labelledby="contained-modal-title-vcenter"
-        centered
-      >
-        <Typography variant="h5">
-          {t('Confirmation', { ns: 'common' })}
-        </Typography>
-        <Typography>
+      <Dialog open={statedata.confirmModalWindowOpen} onClose={closeModal}>
+        <DialogTitle>{t('Confirmation', { ns: 'common' })}</DialogTitle>
+        <DialogContent>
           {t('Update portal credentials successfully', {
             ns: 'portalManagement'
           })}
-        </Typography>
-        <Button color="primary" variant="outlined" onClick={closeModal}>
-          {t('Close', { ns: 'common' })}
-        </Button>
-      </ModalNew>
+        </DialogContent>
+        <DialogActions>
+          <Button color="primary" variant="outlined" onClick={closeModal}>
+            {t('Close', { ns: 'common' })}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

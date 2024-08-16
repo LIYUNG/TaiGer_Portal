@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import {
   Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   FormControl,
   InputLabel,
   MenuItem,
   Select,
-  Typography
 } from '@mui/material';
-import ModalNew from '../../components/Modal';
 import { useTranslation } from 'react-i18next';
 
 function GrantManagerModal(props) {
@@ -33,17 +35,11 @@ function GrantManagerModal(props) {
   };
 
   return (
-    <ModalNew
-      open={props.managerModalShow}
-      onClose={props.setManagerModalHide}
-      size="lg"
-      aria-labelledby="contained-modal-title-vcenter"
-      centered
-    >
-      <Typography>
+    <Dialog open={props.managerModalShow} onClose={props.setManagerModalHide}>
+      <DialogTitle>
         Set {props.firstname} - {props.lastname} as Manager:
-      </Typography>
-      <Typography>
+      </DialogTitle>
+      <DialogContent>
         <FormControl fullWidth>
           <InputLabel id="select-manager-type">
             {t('Configure Manager Type')}
@@ -67,8 +63,8 @@ function GrantManagerModal(props) {
         configure agents
         <br />
         configure editors
-      </Typography>
-      <Typography>
+      </DialogContent>
+      <DialogActions>
         <Button
           color="primary"
           variant="contained"
@@ -84,8 +80,8 @@ function GrantManagerModal(props) {
         >
           {t('Cancel', { ns: 'common' })}
         </Button>
-      </Typography>
-    </ModalNew>
+      </DialogActions>
+    </Dialog>
   );
 }
 export default GrantManagerModal;

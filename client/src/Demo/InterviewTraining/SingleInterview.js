@@ -29,7 +29,6 @@ import { TabTitle } from '../Utils/TabTitle';
 import InterviewItems from './InterviewItems';
 import DEMO from '../../store/constant';
 import Loading from '../../components/Loading/Loading';
-import ModalNew from '../../components/Modal';
 import { INTERVIEW_STATUS_E, stringAvatar } from '../Utils/contants';
 import { useAuth } from '../../components/AuthProvider';
 import { is_TaiGer_role } from '../Utils/checking-functions';
@@ -596,32 +595,35 @@ function SingleInterview() {
           </Button>
         </DialogActions>
       </Dialog>
-      <ModalNew
+      <Dialog
         open={singleInterviewState.SetDeleteDocModel}
         onClose={closeDeleteDocModalWindow}
-        aria-labelledby="contained-modal-title-vcenter"
-        centered
       >
-        <Typography>{t('Warning', { ns: 'common' })}</Typography>
-        Do you want to delete the interview request of{' '}
-        <b>{singleInterviewState.interview_name_toBeDelete}</b>?
-        <br />
-        <Button
-          disabled={!isLoaded || singleInterviewState.isDeleting}
-          variant="contained"
-          color="primary"
-          onClick={handleDeleteInterview}
-        >
-          Yes
-        </Button>
-        <Button
-          variant="outlined"
-          color="secondary"
-          onClick={closeDeleteDocModalWindow}
-        >
-          No
-        </Button>
-      </ModalNew>
+        <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Do you want to delete the interview request of{' '}
+            <b>{singleInterviewState.interview_name_toBeDelete}</b>?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            disabled={!isLoaded || singleInterviewState.isDeleting}
+            variant="contained"
+            color="primary"
+            onClick={handleDeleteInterview}
+          >
+            {t('Yes', { ns: 'common' })}
+          </Button>
+          <Button
+            variant="outlined"
+            color="secondary"
+            onClick={closeDeleteDocModalWindow}
+          >
+            {t('No', { ns: 'common' })}
+          </Button>
+        </DialogActions>
+      </Dialog>
       {res_modal_status >= 400 && (
         <ModalMain
           ConfirmError={ConfirmError}

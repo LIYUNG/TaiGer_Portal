@@ -333,7 +333,10 @@ export const translation_zh_TW = {
     'Frequently Asked Questions': '常見問題',
     'Program Update Request': '科系更新請求',
     'Agent Support Documents': '顧問輔助文件',
-    'Move to Active': '移至 Active'
+    'Move to Active': '移至 Active',
+    'Update Successfully': '更新成功',
+    'Personal Data is updated successfully!': '個人資料更新成功！',
+    'Office Hours time slots updated': 'Office Hours 更新成功'
   },
   customerCenter: {},
   dashboard: {

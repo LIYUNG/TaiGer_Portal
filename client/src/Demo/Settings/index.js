@@ -11,7 +11,11 @@ import {
   FormLabel,
   RadioGroup,
   FormControlLabel,
-  Radio
+  Radio,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { Link as LinkDom } from 'react-router-dom';
@@ -22,7 +26,6 @@ import ModalMain from '../Utils/ModalHandler/ModalMain';
 import { updateCredentials } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import { useAuth } from '../../components/AuthProvider';
-import ModalNew from '../../components/Modal';
 import { useCustomTheme } from '../../components/ThemeProvider';
 import { appConfig } from '../../config';
 import DEMO from '../../store/constant';
@@ -234,19 +237,15 @@ function Settings() {
           {t('Reset Password')}
         </Button>
       </Box>
-      <ModalNew
+      <Dialog
         open={settingsState.updatecredentialconfirmed}
         onClose={setmodalhideUpdateCredentials}
-        aria-labelledby="contained-modal-title-vcenter"
       >
-        <Typography variant="h6">
-          {t('Update Credentials Successfully')}
-        </Typography>
-        <Typography>
+        <DialogTitle>{t('Update Credentials Successfully')}</DialogTitle>
+        <DialogContent>
           {t('Credentials are updated successfully! Please login again.')}
-        </Typography>
-        <br />
-        <div style={{ marginTop: 'auto', textAlign: 'right' }}>
+        </DialogContent>
+        <DialogActions>
           <Button
             color="primary"
             variant="contained"
@@ -254,8 +253,8 @@ function Settings() {
           >
             {t('Ok')}
           </Button>
-        </div>
-      </ModalNew>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

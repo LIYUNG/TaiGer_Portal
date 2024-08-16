@@ -329,7 +329,11 @@ export const translation_en = {
     'Frequently Asked Questions': 'Frequently Asked Questions',
     'Program Update Request': 'Program Update Request',
     'Agent Support Documents': 'Agent Support Documents',
-    'Move to Active': 'Move to Active'
+    'Move to Active': 'Move to Active',
+    'Update Successfully': 'Update Successfully',
+    'Personal Data is updated successfully!':
+      'Personal Data is updated successfully!',
+    'Office Hours time slots updated': 'Office Hours time slots updated'
   },
   customerCenter: {},
   dashboard: {

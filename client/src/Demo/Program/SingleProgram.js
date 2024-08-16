@@ -5,7 +5,12 @@ import {
   Button,
   Link,
   Typography,
-  Box
+  Box,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions
 } from '@mui/material';
 import { Link as LinkDom, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -28,7 +33,6 @@ import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
 import { appConfig } from '../../config';
-import ModalNew from '../../components/Modal';
 import NewProgramEdit from './NewProgramEdit';
 import ProgramDiffModal from './ProgramDiffModal';
 
@@ -420,26 +424,29 @@ function SingleProgram() {
             onSubmitAddToStudentProgramList={onSubmitAddToStudentProgramList}
           />
         )}
-        <ModalNew
+        <Dialog
           open={singleProgramState.modalShowAssignSuccessWindow}
           onClose={onHideAssignSuccessWindow}
           aria-labelledby="contained-modal-title-vcenter"
         >
-          <Typography>{t('Success', { ns: 'common' })}</Typography>
-          <Typography>
-            {t('Program(s) assigned to student successfully!', {
-              ns: 'programList'
-            })}
-          </Typography>
-          <Button
-            size="small"
-            color="primary"
-            variant="contained"
-            onClick={onHideAssignSuccessWindow}
-          >
-            {t('Close', { ns: 'common' })}
-          </Button>
-        </ModalNew>
+          <DialogTitle>{t('Success', { ns: 'common' })}</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              {t('Program(s) assigned to student successfully!', {
+                ns: 'programList'
+              })}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              color="primary"
+              variant="contained"
+              onClick={onHideAssignSuccessWindow}
+            >
+              {t('Close', { ns: 'common' })}
+            </Button>
+          </DialogActions>
+        </Dialog>
 
         {singleProgramState.modalShowDiffWindow && (
           <ProgramDiffModal

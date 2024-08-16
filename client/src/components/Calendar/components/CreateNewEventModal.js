@@ -3,9 +3,12 @@ import LaunchIcon from '@mui/icons-material/Launch';
 import { Link as LinkDom } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
-  Box,
   Button,
   CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   FormControl,
   InputLabel,
   Link,
@@ -19,7 +22,6 @@ import {
   getLocalTime,
   getUTCTimezoneOffset
 } from '../../../Demo/Utils/contants';
-import ModalNew from '../../Modal';
 import DEMO from '../../../store/constant';
 import { useAuth } from '../../AuthProvider';
 
@@ -45,14 +47,12 @@ export function CreateNewEventModal(props) {
   };
 
   return (
-    <ModalNew
+    <Dialog
       open={props.isNewEventModalOpen}
       onClose={props.handleNewEventModalClose}
     >
-      <Typography variant="h6" sx={{ mb: 2 }}>
-        Create New Event
-      </Typography>
-      <Box>
+      <DialogTitle>Create New Event</DialogTitle>
+      <DialogContent>
         <TextField
           fullWidth
           multiline
@@ -92,7 +92,8 @@ export function CreateNewEventModal(props) {
                   key={`${time_slot.start}`}
                 >
                   {getLocalTime(time_slot.start, user.timezone)} UTC +
-                  {getUTCTimezoneOffset(time_slot.start, user.timezone) / 60}
+                  {getUTCTimezoneOffset(time_slot.start, user.timezone) / 60}{' '}
+                  {user.timezone}
                 </MenuItem>
               ))}
           </Select>
@@ -122,8 +123,8 @@ export function CreateNewEventModal(props) {
             ))}
           </Select>
         </FormControl>
-      </Box>
-      <Box>
+      </DialogContent>
+      <DialogActions>
         <Button
           color="primary"
           variant="contained"
@@ -133,14 +134,13 @@ export function CreateNewEventModal(props) {
             props.student_id === ''
           }
           onClick={handleCreateEvent}
-          sx={{ mr: 2 }}
         >
           {props.BookButtonDisable ? <CircularProgress /> : t('Create')}
         </Button>
         <Button variant="outlined" onClick={props.handleNewEventModalClose}>
           {t('Cancel', { ns: 'common' })}
         </Button>
-      </Box>
-    </ModalNew>
+      </DialogActions>
+    </Dialog>
   );
 }

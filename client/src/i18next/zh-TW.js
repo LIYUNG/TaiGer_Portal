@@ -358,7 +358,7 @@ export const translation_zh_TW = {
     'Create ticket': '新增問題回報',
     Report: '回報',
     'Resolve ticket': '解決問題',
-    'Delete ticket': '解決問題',
+    'Delete ticket': '刪除問題',
     'to the student': '給學生',
     'Find in Google': 'Google 搜尋',
     'Provide Feedback': '提供回饋',

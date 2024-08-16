@@ -3,6 +3,10 @@ import {
   Button,
   Checkbox,
   CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   FormControlLabel,
   Table,
   TableBody,
@@ -12,7 +16,6 @@ import {
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-import ModalNew from '../../../../components/Modal';
 import { getEssayWriters } from '../../../../api';
 import { FILE_TYPE_E } from '../../../Utils/checking-functions';
 
@@ -59,8 +62,7 @@ function EditEssayWritersSubpage(props) {
       // Add select editor list
       //  setCheckboxState({ editors, updateEditorList });
       const editors = props.editors; //need to change to get all essay writers
-      const { outsourced_user_id: student_editor } =
-        props.essayDocumentThread;
+      const { outsourced_user_id: student_editor } = props.essayDocumentThread;
       const updateEditorList = editors?.reduce(
         (prev, { _id }) => ({
           ...prev,
@@ -89,15 +91,10 @@ function EditEssayWritersSubpage(props) {
   };
 
   return (
-    <ModalNew
-      open={props.show}
-      onClose={props.onHide}
-      size="large"
-      aria-labelledby="contained-modal-title-vcenter"
-    >
+    <Dialog open={props.show} onClose={props.onHide}>
       {isLoaded ? (
         <>
-          <Typography variant="h6">
+          <DialogTitle>
             {props.actor} for {props.essayDocumentThread.file_type}-
             {props.essayDocumentThread.program_id?.school}-
             {props.essayDocumentThread.program_id?.program_name}
@@ -105,65 +102,71 @@ function EditEssayWritersSubpage(props) {
             {props.essayDocumentThread.program_id?.semester}
             {props.essayDocumentThread.student_id?.firstname}
             {props.essayDocumentThread.student_id?.lastname}
-          </Typography>
-          <Typography variant="h6">{t('Essay Writer')}: </Typography>
-          <Table size="small">
-            <TableBody>
-              {checkboxState.editors ? (
-                checkboxState.editors.map((editor, i) => (
-                  <TableRow key={i + 1}>
+          </DialogTitle>
+          <DialogContent>
+            {t('Essay Writer')}
+            <Table size="small">
+              <TableBody>
+                {checkboxState.editors ? (
+                  checkboxState.editors.map((editor, i) => (
+                    <TableRow key={i + 1}>
+                      <TableCell>
+                        <FormControlLabel
+                          label={`${editor.lastname} ${editor.firstname}`}
+                          control={
+                            <Checkbox
+                              checked={
+                                checkboxState?.updateEditorList[editor._id] ||
+                                false
+                              }
+                              onChange={(e) => handleChangeEditorlist(e)}
+                              value={editor._id}
+                            />
+                          }
+                        />
+                      </TableCell>
+                      <TableCell></TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
                     <TableCell>
-                      <FormControlLabel
-                        label={`${editor.lastname} ${editor.firstname}`}
-                        control={
-                          <Checkbox
-                            checked={
-                              checkboxState?.updateEditorList[editor._id] ||
-                              false
-                            }
-                            onChange={(e) => handleChangeEditorlist(e)}
-                            value={editor._id}
-                          />
-                        }
-                      />
+                      <Typography variant="h6">
+                        {t('No Essay Writer')}
+                      </Typography>
                     </TableCell>
-                    <TableCell></TableCell>
                   </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell>
-                    <Typography variant="h6">{t('No Essay Writer')}</Typography>
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-          <Button
-            color="primary"
-            variant="contained"
-            disabled={
-              !checkboxState.updateEditorList ||
-              checkboxState.updateEditorList?.length === 0
-            }
-            onClick={(e) =>
-              props.submitUpdateEssayWriterlist(
-                e,
-                checkboxState.updateEditorList,
-                props.essayDocumentThread._id
-              )
-            }
-          >
-            {t('Update', { ns: 'common' })}
-          </Button>
-          <Button variant="outlined" onClick={props.onHide}>
-            {t('Cancel', { ns: 'common' })}
-          </Button>
+                )}
+              </TableBody>
+            </Table>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              color="primary"
+              variant="contained"
+              disabled={
+                !checkboxState.updateEditorList ||
+                checkboxState.updateEditorList?.length === 0
+              }
+              onClick={(e) =>
+                props.submitUpdateEssayWriterlist(
+                  e,
+                  checkboxState.updateEditorList,
+                  props.essayDocumentThread._id
+                )
+              }
+            >
+              {t('Update', { ns: 'common' })}
+            </Button>
+            <Button variant="outlined" onClick={props.onHide}>
+              {t('Cancel', { ns: 'common' })}
+            </Button>
+          </DialogActions>
         </>
       ) : (
         <CircularProgress size={24} />
       )}
-    </ModalNew>
+    </Dialog>
   );
 }
 export default EditEssayWritersSubpage;

@@ -7,6 +7,11 @@ import {
   Card,
   Checkbox,
   CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   FormControl,
   FormControlLabel,
   Grid,
@@ -45,7 +50,6 @@ import DEMO from '../../store/constant';
 import { appConfig } from '../../config';
 import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
-import ModalNew from '../../components/Modal';
 import { TopBar } from '../../components/TopBar/TopBar';
 
 export default function MyCourses() {
@@ -753,47 +757,47 @@ export default function MyCourses() {
           </Grid>
         </Grid>
       </Card>
-      <ModalNew
-        open={statedata.confirmModalWindowOpen}
-        onClose={closeModal}
-        aria-labelledby="contained-modal-title-vcenter"
-        centered
-      >
-        <Typography>{t('Confirmation', { ns: 'common' })}</Typography>
-        <Typography>
-          {t(
-            'Update transcript successfully! Your agent will be notified and will analyse your courses as soon as possible.',
-            { ns: 'courses' }
-          )}
-        </Typography>
-        <Typography>
+      <Dialog open={statedata.confirmModalWindowOpen} onClose={closeModal}>
+        <DialogTitle>{t('Confirmation', { ns: 'common' })}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            {t(
+              'Update transcript successfully! Your agent will be notified and will analyse your courses as soon as possible.',
+              { ns: 'courses' }
+            )}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
           <Button color="primary" variant="contained" onClick={closeModal}>
             {t('Close', { ns: 'common' })}
           </Button>
-        </Typography>
-      </ModalNew>
-      <ModalNew
+        </DialogActions>
+      </Dialog>
+      <Dialog
         open={statedata.analysisSuccessModalWindowOpen}
         onClose={closeanalysisSuccessModal}
-        aria-labelledby="contained-modal-title-vcenter"
-        centered
       >
-        <Typography>
+        <DialogTitle>
           {t('Success', { ns: 'common' }, { ns: 'common' })}
-        </Typography>
-        <Typography>
-          {t('Courses analysed successfully!', { ns: 'courses' })}
-          <b>
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            {t('Courses analysed successfully!', { ns: 'courses' })}
+            <b>
+              {t(
+                'The student will receive an email notification and the analysed course URL link.',
+                { ns: 'courses' }
+              )}
+            </b>{' '}
             {t(
-              'The student will receive an email notification and the analysed course URL link.',
-              { ns: 'courses' }
+              'Student should access the analysed page in their course page.',
+              {
+                ns: 'courses'
+              }
             )}
-          </b>{' '}
-          {t('Student should access the analysed page in their course page.', {
-            ns: 'courses'
-          })}
-        </Typography>
-        <Typography>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
           <Button
             color="primary"
             variant="contained"
@@ -801,8 +805,8 @@ export default function MyCourses() {
           >
             {t('Close', { ns: 'common' })}
           </Button>
-        </Typography>
-      </ModalNew>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

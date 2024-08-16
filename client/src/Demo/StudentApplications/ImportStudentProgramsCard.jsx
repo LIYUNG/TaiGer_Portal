@@ -22,7 +22,6 @@ import {
 import { useTranslation } from 'react-i18next';
 import EmailIcon from '@mui/icons-material/Email';
 import { highlightText } from '../Utils/checking-functions';
-import ModalNew from '../../components/Modal';
 import {
   assignProgramToStudent,
   getQueryStudentsResults,
@@ -421,20 +420,20 @@ export const ImportStudentProgramsCard = (props) => {
           </Button>
         </DialogActions>
       </Dialog>
-      <ModalNew
+      <Dialog
         open={importStudentProgramsCard.modalShowAssignSuccessWindow}
         onClose={onHideAssignSuccessWindow}
-        size="m"
-        aria-labelledby="contained-modal-title-vcenter"
       >
-        <Typography id="contained-modal-title-vcenter">
-          {t('Success', { ns: 'common' })}
-        </Typography>
-        <Typography>Program(s) imported to student successfully!</Typography>
-        <Typography>
-          <Button onClick={onHideAssignSuccessWindow}>Close</Button>
-        </Typography>
-      </ModalNew>
+        <DialogTitle>{t('Success', { ns: 'common' })}</DialogTitle>
+        <DialogContent>
+          Program(s) imported to student successfully!
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={onHideAssignSuccessWindow}>
+            {t('Close', { ns: 'common' })}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };

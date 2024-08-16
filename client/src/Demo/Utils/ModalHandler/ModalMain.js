@@ -1,9 +1,16 @@
 import React from 'react';
-import { Button, Box, Typography } from '@mui/material';
+import {
+  Button,
+  Box,
+  Typography,
+  Dialog,
+  DialogActions,
+  DialogTitle,
+  DialogContent
+} from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import { appConfig } from '../../../config';
-import ModalNew from '../../../components/Modal';
 
 function ModalMain(props) {
   const { t } = useTranslation();
@@ -15,15 +22,13 @@ function ModalMain(props) {
   const { res_modal_status, res_modal_message } = modalMainState;
   return (
     <>
-      <ModalNew
+      <Dialog
         open={[400, 401, 409, 423, 429, 500].includes(res_modal_status)}
         onClose={props.ConfirmError}
-        aria-labelledby="contained-modal-title-vcenter"
-        centered
       >
-        <Box>
-          <Typography>{t('Error')}</Typography>
-          <Typography>{res_modal_message}</Typography>
+        <DialogTitle>{t('Error')}</DialogTitle>
+        <DialogContent>{res_modal_message}</DialogContent>
+        <DialogActions>
           <Button
             color="primary"
             variant="contained"
@@ -31,9 +36,9 @@ function ModalMain(props) {
           >
             {t('Ok')}
           </Button>
-        </Box>
-      </ModalNew>
-      <ModalNew
+        </DialogActions>
+      </Dialog>
+      <Dialog
         open={
           res_modal_status === 403 ||
           res_modal_status === 404 ||
@@ -41,11 +46,9 @@ function ModalMain(props) {
           res_modal_status === 415
         }
         onClose={props.ConfirmError}
-        aria-labelledby="contained-modal-title-vcenter"
-        centered
       >
-        <Box>
-          <Typography variant="h6">{t('Error')}</Typography>
+        <DialogTitle>{t('Error')}</DialogTitle>
+        <DialogContent>
           <Box>
             {res_modal_status === 403 && (
               <>
@@ -88,6 +91,8 @@ function ModalMain(props) {
               </>
             )}
           </Box>
+        </DialogContent>
+        <DialogActions>
           <Button
             color="primary"
             variant="contained"
@@ -95,8 +100,8 @@ function ModalMain(props) {
           >
             {t('Ok')}
           </Button>
-        </Box>
-      </ModalNew>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }

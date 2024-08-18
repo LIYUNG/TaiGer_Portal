@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link as LinkDom, useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
+  Card,
+  Stack,
   Box,
   Link,
   Typography,
@@ -47,7 +49,9 @@ function CustomBreadcrumbs({ program }) {
       >
         {`${program.school}-${program.program_name}`}
       </Link>
-      <Typography color="text.primary">Change Requests</Typography>
+      <Typography color="text.primary">
+        {t('Change Requests', { ns: 'common' })}
+      </Typography>
     </Breadcrumbs>
   );
 }
@@ -90,36 +94,47 @@ function ProgramChangeRequestPage() {
     <>
       <CustomBreadcrumbs program={originalProgram} />
       <Box sx={{ my: 3 }}>
-        <FormControl fullWidth>
-          <InputLabel id="request-select-label">{`Requests (${
-            incomingChanges?.length || 0
-          })`}</InputLabel>
-          <Select
-            labelId="request-select-label"
-            id="request-select"
-            value={changeIndex}
-            label={`Requests (${incomingChanges?.length || 0})`}
-            onChange={(e) => setChangeIndex(e.target.value)}
-          >
-            {incomingChanges.length > 0 &&
-              incomingChanges.map((change, index) => {
-                return (
-                  <MenuItem key={index} value={index}>
-                    {convertDate(change?.updatedAt)} -{' '}
-                    {change.requestedBy
-                      ? `${change.requestedBy.firstname} ${change.requestedBy.lastname} `
-                      : 'External Source'}
-                  </MenuItem>
-                );
-              })}
-          </Select>
-        </FormControl>
-        <ProgramCompare
-          originalProgram={originalProgram || {}}
-          incomingChanges={incomingChanges[changeIndex] || {}}
-          submitCallBack={removeRequestFn(incomingChanges[changeIndex]?._id)}
-        />
+        <Card variant="outlined" sx={{ padding: 2 }}>
+          <Typography variant="caption" color="text.secondary">
+            <Stack sx={{ mb: 3 }}>
+              <div>School: {originalProgram.school}</div>
+              <div>Program: {originalProgram.program_name}</div>
+              <div>Degree: {originalProgram.degree}</div>
+              <div>Semester: {originalProgram.semester}</div>
+            </Stack>
+          </Typography>
+
+          <FormControl fullWidth>
+            <InputLabel id="request-select-label">{`Requests (${
+              incomingChanges?.length || 0
+            })`}</InputLabel>
+            <Select
+              labelId="request-select-label"
+              id="request-select"
+              value={changeIndex}
+              label={`Requests (${incomingChanges?.length || 0})`}
+              onChange={(e) => setChangeIndex(e.target.value)}
+            >
+              {incomingChanges.length > 0 &&
+                incomingChanges.map((change, index) => {
+                  return (
+                    <MenuItem key={index} value={index}>
+                      {convertDate(change?.updatedAt)} -{' '}
+                      {change.requestedBy
+                        ? `${change.requestedBy.firstname} ${change.requestedBy.lastname} `
+                        : 'External Source'}
+                    </MenuItem>
+                  );
+                })}
+            </Select>
+          </FormControl>
+        </Card>
       </Box>
+      <ProgramCompare
+        originalProgram={originalProgram || {}}
+        incomingChanges={incomingChanges[changeIndex] || {}}
+        submitCallBack={removeRequestFn(incomingChanges[changeIndex]?._id)}
+      />
     </>
   );
 }

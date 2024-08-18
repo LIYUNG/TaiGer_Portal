@@ -1,5 +1,6 @@
 import { React, useState } from 'react';
 import {
+  Box,
   Button,
   Typography,
   TableContainer,
@@ -206,7 +207,7 @@ const ProgramCompare = ({
   };
 
   return (
-    <>
+    <Box>
       <Button
         color="secondary"
         onClick={() => {
@@ -252,7 +253,7 @@ const ProgramCompare = ({
       >
         {t('Submit', { ns: 'common' })}
       </Button>
-    </>
+    </Box>
   );
 };
 

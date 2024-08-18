@@ -5,11 +5,11 @@ import DownloadIcon from '@mui/icons-material/Download';
 import ZoomInIcon from '@mui/icons-material/ZoomIn';
 import ZoomOutIcon from '@mui/icons-material/ZoomOut';
 
-import { getProfilePdf } from '../../api';
+import { getPdf } from '../../api';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
-const PDFViewer = (student_id, path) => {
+const PDFViewer = (apiFilePath, path) => {
   const [pdfData, setPdfData] = useState(null);
   const [pageWidth, setPageWidth] = useState(null);
   const [numPages, setNumPages] = useState(null);
@@ -19,7 +19,7 @@ const PDFViewer = (student_id, path) => {
 
   useEffect(() => {
     const fetchPdfData = async () => {
-      const pdf = await getProfilePdf(student_id, path); // Call the function to retrieve the PDF data
+      const pdf = await getPdf(apiFilePath);
       setPdfData(pdf.data); // Set the PDF data in the state
     };
 

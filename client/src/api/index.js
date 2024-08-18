@@ -120,15 +120,10 @@ export const downloadProfile = (category, studentId) =>
     responseType: 'blob'
   });
 
-export const getProfilePdf = (studentId, path) =>
-  request.get(`/api/students/${studentId}/files/${path}`, {
+export const getPdf = (apiPath) =>
+  request.get(apiPath, {
     responseType: 'blob'
   });
-
-// export const getProfilePdf = (path, studentId) =>
-//   request.get(`/api/students/${studentId}/files/${path}`, {
-//     responseType: 'blob'
-//   });
 
 export const uploadforstudent = (category, studentId, data) =>
   request.post(`/api/students/${studentId}/files/${category}`, data);
@@ -688,7 +683,8 @@ export const submitMessageInTicketWithAttachment = (
   ticketId,
   studentId,
   newFile
-) => request.post(`/api/complaints/new-message/${ticketId}/${studentId}`, newFile);
+) =>
+  request.post(`/api/complaints/new-message/${ticketId}/${studentId}`, newFile);
 export const deleteAMessageinTicket = (ticketId, message_id) =>
   request.delete(`/api/complaints/${ticketId}/${message_id}`);
 

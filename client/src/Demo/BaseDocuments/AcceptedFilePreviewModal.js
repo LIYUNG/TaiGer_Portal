@@ -34,8 +34,10 @@ function AcceptProfileFileModel(props) {
       <DialogTitle>{props.path}</DialogTitle>
       <DialogContent>
         <FilePreview
+          apiFilePath={`/api/students/${props.student_id.toString()}/files/${
+            props.preview_path
+          }`}
           path={props.preview_path}
-          student_id={props.student_id?.toString()}
         />
         {props.path?.split('.')[1] !== 'pdf' && (
           <a

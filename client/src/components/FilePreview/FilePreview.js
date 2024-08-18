@@ -5,18 +5,12 @@ import React from 'react';
 import { BASE_URL } from '../../api/request';
 import PDFViewer from '../../components/PDFViewer/index';
 // TODO: under constrution. prevent PDF download, prevent browser default setting.
-const FilePreview = ({ path, student_id }) => {
+const FilePreview = ({ path, apiFilePath }) => {
   return (
     <>
       {path.split('.')[1] === 'pdf' || path.split('.')[1] === 'PDF' ? (
-        <>{PDFViewer(student_id, path)}</>
+        <>{PDFViewer(apiFilePath, path)}</>
       ) : (
-        // <embed
-        //   src={`${BASE_URL}/api/students/${student_id}/files/${path}`}
-        //   type="application/pdf"
-        //   height={600}
-        //   width="100%"
-        // ></embed>
         <div
           className="center"
           style={{
@@ -27,11 +21,7 @@ const FilePreview = ({ path, student_id }) => {
             'justify-content': 'center'
           }}
         >
-          <img
-            src={`${BASE_URL}/api/students/${student_id}/files/${path}`}
-            width="90%"
-            height="60%"
-          />
+          <img src={`${BASE_URL}${apiFilePath}`} width="90%" height="60%" />
         </div>
       )}
     </>

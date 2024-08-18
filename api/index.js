@@ -2,9 +2,6 @@ const schedule = require('node-schedule');
 const https = require('https');
 const fs = require('fs');
 
-const dns = require('dns');
-dns.setServers(['8.8.8.8', '8.8.4.4']);
-
 const { app } = require('./app');
 // const { connectToDatabase, disconnectFromDatabase } = require('./database');
 const {

@@ -6,8 +6,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  TextField,
-  Typography
+  TextField
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 

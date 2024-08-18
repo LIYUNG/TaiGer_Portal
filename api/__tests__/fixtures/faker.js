@@ -48,6 +48,14 @@ const generateProgram = (requiredDocuments, optionalDocuments) => ({
   optionalDocuments
 });
 
+const generateCommunicationMessage = (props) => ({
+  _id: new ObjectId().toHexString(),
+  student_id: props.studnet_id,
+  user_id: props.user_id,
+  message: faker.lorem.words(20),
+  readBy: []
+});
+
 const generateComlaintTicket = () => ({
   _id: new ObjectId().toHexString(),
   requester_id: new ObjectId().toHexString(),
@@ -61,5 +69,6 @@ module.exports = {
   generateEditor,
   generateStudent,
   generateProgram,
+  generateCommunicationMessage,
   generateComlaintTicket
 };

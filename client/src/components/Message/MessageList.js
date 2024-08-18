@@ -1,10 +1,10 @@
 import React from 'react';
 
-import Message from './Message';
+import MessageCard from './MessageCard';
 
 function MessageList(props) {
   const thread = props.thread?.messages?.map((message, i) => (
-    <Message
+    <MessageCard
       documentsthreadId={props.documentsthreadId}
       accordionKeys={props.accordionKeys}
       singleExpandtHandler={props.singleExpandtHandler}

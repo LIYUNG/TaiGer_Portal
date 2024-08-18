@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { Link as LinkDom, useParams } from 'react-router-dom';
 import {
-  Box,
   Card,
   Link,
   Button,
   Typography,
   Avatar,
   CircularProgress,
-  Breadcrumbs
+  Breadcrumbs,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
@@ -25,14 +29,13 @@ import { TabTitle } from '../Utils/TabTitle';
 import InterviewItems from './InterviewItems';
 import DEMO from '../../store/constant';
 import Loading from '../../components/Loading/Loading';
-import ModalNew from '../../components/Modal';
 import { INTERVIEW_STATUS_E, stringAvatar } from '../Utils/contants';
-import MessageList from '../CVMLRLCenter/DocModificationThreadPage/MessageList';
 import { useAuth } from '../../components/AuthProvider';
-import DocThreadEditor from '../CVMLRLCenter/DocModificationThreadPage/DocThreadEditor';
 import { is_TaiGer_role } from '../Utils/checking-functions';
 import { TopBar } from '../../components/TopBar/TopBar';
 import { appConfig } from '../../config';
+import MessageList from '../../components/Message/MessageList';
+import DocThreadEditor from '../../components/Message/DocThreadEditor';
 
 function SingleInterview() {
   const { interview_id } = useParams();
@@ -553,31 +556,29 @@ function SingleInterview() {
           </Typography>
         </Card>
       )}
-      <ModalNew
+      <Dialog
         open={singleInterviewState.SetAsFinalFileModel}
         onClose={closeSetAsFinalFileModelWindow}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
       >
-        <Box>
-          <Typography variant="h6">{t('Warning', { ns: 'common' })}</Typography>
-          Do you want to set{' '}
-          <b>
-            Interview for {interview?.student_id.firstname}{' '}
-            {interview?.student_id.lastname} {interview?.program_id.school}{' '}
-            {interview?.program_id.program_name} {interview?.program_id.degree}{' '}
-            {interview?.program_id.semester}
-          </b>{' '}
-          as <b>{interview?.isClosed ? 'open' : 'closed'}</b>
-          ?
-          <br />
-          <br />
+        <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Do you want to set{' '}
+            <b>
+              Interview for {interview?.student_id.firstname}{' '}
+              {interview?.student_id.lastname} {interview?.program_id.school}{' '}
+              {interview?.program_id.program_name}{' '}
+              {interview?.program_id.degree} {interview?.program_id.semester}
+            </b>{' '}
+            as <b>{interview?.isClosed ? 'open' : 'closed'}</b>?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
           <Button
             color="primary"
             variant="contained"
             disabled={!isLoaded || !isSubmissionLoaded}
             onClick={(e) => ConfirmSetAsFinalFileHandler(e)}
-            sx={{ mr: 2 }}
           >
             {isSubmissionLoaded ? (
               t('Yes', { ns: 'common' })
@@ -592,34 +593,37 @@ function SingleInterview() {
           >
             {t('No', { ns: 'common' })}
           </Button>
-        </Box>
-      </ModalNew>
-      <ModalNew
+        </DialogActions>
+      </Dialog>
+      <Dialog
         open={singleInterviewState.SetDeleteDocModel}
         onClose={closeDeleteDocModalWindow}
-        aria-labelledby="contained-modal-title-vcenter"
-        centered
       >
-        <Typography>{t('Warning', { ns: 'common' })}</Typography>
-        Do you want to delete the interview request of{' '}
-        <b>{singleInterviewState.interview_name_toBeDelete}</b>?
-        <br />
-        <Button
-          disabled={!isLoaded || singleInterviewState.isDeleting}
-          variant="contained"
-          color="primary"
-          onClick={handleDeleteInterview}
-        >
-          Yes
-        </Button>
-        <Button
-          variant="outlined"
-          color="secondary"
-          onClick={closeDeleteDocModalWindow}
-        >
-          No
-        </Button>
-      </ModalNew>
+        <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Do you want to delete the interview request of{' '}
+            <b>{singleInterviewState.interview_name_toBeDelete}</b>?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            disabled={!isLoaded || singleInterviewState.isDeleting}
+            variant="contained"
+            color="primary"
+            onClick={handleDeleteInterview}
+          >
+            {t('Yes', { ns: 'common' })}
+          </Button>
+          <Button
+            variant="outlined"
+            color="secondary"
+            onClick={closeDeleteDocModalWindow}
+          >
+            {t('No', { ns: 'common' })}
+          </Button>
+        </DialogActions>
+      </Dialog>
       {res_modal_status >= 400 && (
         <ModalMain
           ConfirmError={ConfirmError}

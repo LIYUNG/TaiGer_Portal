@@ -24,6 +24,19 @@ const ALLOWED_MIME_PDF_TYPES = ['application/pdf'];
 
 const ALLOWED_MIME_IMAGE_TYPES = ['image/png', 'image/jpg', 'image/jpeg'];
 
+const formatDate = (date) => {
+  const pad = (number) => number.toString().padStart(2, '0');
+
+  const year = date.getFullYear();
+  const month = pad(date.getMonth() + 1); // Months are zero-indexed
+  const day = pad(date.getDate());
+  const hours = pad(date.getHours());
+  const minutes = pad(date.getMinutes());
+  const seconds = pad(date.getSeconds());
+
+  return `${year}-${month}-${day}-${hours}-${minutes}-${seconds}`;
+};
+
 // Template file upload
 const template_storage_s3 = multerS3({
   s3,
@@ -396,6 +409,44 @@ const upload_profile_s3 = multer({
   }
 });
 
+// Message ticket files upload
+const storage_messagesticket_file_s3 = multerS3({
+  s3,
+  bucket: (req, file, cb) => {
+    const { ticketId, studentId } = req.params;
+    // TODO: check studentId and ticketId exist
+    let directory = path.join(AWS_S3_BUCKET_NAME, studentId, ticketId);
+    directory = directory.replace(/\\/g, '/');
+    cb(null, directory);
+  },
+  metadata: (req, file, cb) => {
+    const { ticketId, studentId } = req.params;
+    // TODO: check studentId and ticketId exist
+    let directory = path.join(studentId, ticketId);
+    directory = directory.replace(/\\/g, '/'); // g>> replace all!
+    cb(null, { fieldName: file.fieldname, path: directory });
+  },
+  key: (req, file, cb) => {
+    const { ticketId } = req.params;
+    req.db
+      .model('Complaint')
+      .findById(ticketId)
+      .populate('requester_id')
+      .then((ticket) => {
+        if (!ticket) {
+          throw new ErrorResponse(404, 'Thread not found');
+        }
+        const date = new Date();
+        const formattedDate = formatDate(date);
+        const temp_name = `${ticket.requester_id.lastname}_${
+          ticket.requester_id.firstname
+        }_Ticket_Attachment_${formattedDate}${path.extname(file.originalname)}`;
+
+        cb(null, temp_name);
+      });
+  }
+});
+
 // Message thread file upload (general)
 const storage_messagesthread_file_s3 = multerS3({
   s3,
@@ -503,18 +554,6 @@ const storage_messagesChat_file_s3 = multerS3({
   },
   key: (req, file, cb) => {
     const { studentId } = req.params;
-    function formatDate(date) {
-      const pad = (number) => number.toString().padStart(2, '0');
-
-      const year = date.getFullYear();
-      const month = pad(date.getMonth() + 1); // Months are zero-indexed
-      const day = pad(date.getDate());
-      const hours = pad(date.getHours());
-      const minutes = pad(date.getMinutes());
-      const seconds = pad(date.getSeconds());
-
-      return `${year}-${month}-${day}-${hours}-${minutes}-${seconds}`;
-    }
 
     const date = new Date();
     const formattedDate = formatDate(date);
@@ -556,6 +595,34 @@ const storage_messagesthread_image_s3 = multerS3({
     const id = uuid.v4();
     const fileName = id + path.extname(file.originalname);
     cb(null, fileName);
+  }
+});
+const upload_messagesticket_file_s3 = multer({
+  storage: storage_messagesticket_file_s3,
+  limits: { fileSize: MAX_DOC_FILE_SIZE_MB },
+  fileFilter: (req, file, cb) => {
+    if (!ALLOWED_MIME_TYPES.includes(file.mimetype)) {
+      return cb(
+        new ErrorResponse(
+          415,
+          'Only .xls .xlsx .xlsm .pdf .png, .jpg and .jpeg .docx format are allowed'
+        )
+      );
+    }
+    const fileSize = parseInt(req.headers['content-length'], 10);
+    if (fileSize > MAX_DOC_FILE_SIZE_MB) {
+      return cb(
+        new ErrorResponse(
+          413,
+          `您的檔案不得超過 ${
+            MAX_DOC_FILE_SIZE_MB / (1024 * 1024)
+          } MB / File size is limited to ${
+            MAX_DOC_FILE_SIZE_MB / (1024 * 1024)
+          } MB!`
+        )
+      );
+    }
+    cb(null, true);
   }
 });
 
@@ -662,6 +729,7 @@ module.exports = {
   ProfilefileUpload: upload_profile_s3.single('file'),
   TemplatefileUpload: upload_template_s3.single('file'),
   MessagesThreadUpload: upload_messagesthread_file_s3.array('files'),
+  MessagesTicketUpload: upload_messagesticket_file_s3.array('files'),
   MessagesChatUpload: upload_messagesChat_file_s3.array('files'),
   MessagesImageThreadUpload: upload_messagesthread_image_s3.single('file'),
   upload: upload.single('file')

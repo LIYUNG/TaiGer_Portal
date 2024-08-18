@@ -14,7 +14,12 @@ import {
   FormControl,
   InputLabel,
   Select,
-  MenuItem
+  MenuItem,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions
 } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
 import { Navigate, useParams, Link as LinkDom } from 'react-router-dom';
@@ -40,7 +45,6 @@ import EventConfirmationCard from '../../components/Calendar/components/EventCon
 import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
-import ModalNew from '../../components/Modal';
 import { appConfig } from '../../config';
 import { a11yProps, CustomTabPanel } from '../../components/Tabs';
 import { CreateNewEventModal } from '../../components/Calendar/components/CreateNewEventModal';
@@ -283,75 +287,81 @@ function TaiGerOfficeHours() {
               ))}
             </Box>
           </Card>
-          <ModalNew
+          <Dialog
             open={isConfirmModalOpen}
             onClose={handleConfirmAppointmentModalClose}
             centered
           >
-            <Typography variant="h6">
-              {t('Confirm Meeting', { ns: 'common' })}
-            </Typography>
-            <Typography variant="body1">
-              You are aware of this meeting time and confirm.
-            </Typography>
-            <Button
-              color="primary"
-              fullWidth
-              variant="contained"
-              size="small"
-              disabled={
-                event_id === '' ||
-                event_temp?.description?.length === 0 ||
-                BookButtonDisable
-              }
-              onClick={(e) =>
-                handleConfirmAppointmentModal(e, event_id, event_temp)
-              }
-              startIcon={
-                BookButtonDisable ? (
-                  <CircularProgress size={24} />
-                ) : (
-                  <CheckIcon />
-                )
-              }
-            >
-              {t('Yes', { ns: 'common' })}
-            </Button>
-            <Button
-              color="secondary"
-              fullWidth
-              variant="outlined"
-              size="small"
-              onClick={handleConfirmAppointmentModalClose}
-            >
-              {t('Close', { ns: 'common' })}
-            </Button>
-          </ModalNew>
-          <ModalNew
+            <DialogTitle>{t('Confirm Meeting', { ns: 'common' })}</DialogTitle>
+            <DialogContent>
+              <DialogContentText>
+                You are aware of this meeting time and confirm.
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button
+                color="primary"
+                fullWidth
+                variant="contained"
+                size="small"
+                disabled={
+                  event_id === '' ||
+                  event_temp?.description?.length === 0 ||
+                  BookButtonDisable
+                }
+                onClick={(e) =>
+                  handleConfirmAppointmentModal(e, event_id, event_temp)
+                }
+                startIcon={
+                  BookButtonDisable ? (
+                    <CircularProgress size={24} />
+                  ) : (
+                    <CheckIcon />
+                  )
+                }
+              >
+                {t('Yes', { ns: 'common' })}
+              </Button>
+              <Button
+                color="secondary"
+                fullWidth
+                variant="outlined"
+                size="small"
+                onClick={handleConfirmAppointmentModalClose}
+              >
+                {t('Close', { ns: 'common' })}
+              </Button>
+            </DialogActions>
+          </Dialog>
+          <Dialog
             open={isDeleteModalOpen}
             onClose={handleDeleteAppointmentModalClose}
-            centered
-            size="lg"
           >
-            <Typography>{t('Do you want to cancel this meeting?')}</Typography>
-            <br />
-            <Button
-              color="secondary"
-              variant="contained"
-              size="small"
-              disabled={event_id === '' || BookButtonDisable}
-              onClick={(e) => handleDeleteAppointmentModal(e, event_id)}
-              startIcon={
-                BookButtonDisable ? (
-                  <CircularProgress size={16} />
-                ) : (
-                  <DeleteIcon />
-                )
-              }
-            >
-              {t('Delete', { ns: 'common' })}
-            </Button>
-          </ModalNew>
+            <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
+            <DialogContent>
+              <DialogContentText>
+                {t('Do you want to cancel this meeting?')}
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button
+                color="secondary"
+                variant="contained"
+                size="small"
+                disabled={event_id === '' || BookButtonDisable}
+                onClick={(e) => handleDeleteAppointmentModal(e, event_id)}
+                startIcon={
+                  BookButtonDisable ? (
+                    <CircularProgress size={16} />
+                  ) : (
+                    <DeleteIcon />
+                  )
+                }
+              >
+                {t('Delete', { ns: 'common' })}
+              </Button>
+            </DialogActions>
+          </Dialog>
         </>
       ) : (
         <>
@@ -413,86 +423,89 @@ function TaiGerOfficeHours() {
           </Card>
         </>
       )}
-      <ModalNew
-        open={isEditModalOpen}
-        onClose={handleEditAppointmentModalClose}
-        size="lg"
-      >
-        <Typography variant="h6">{t('Edit', { ns: 'common' })}</Typography>
-        <TextField
-          fullWidth
-          type="textarea"
-          maxLength={2000}
-          label="請寫下想討論的主題"
-          multiline
-          rows="10"
-          placeholder="Example：我想定案選校、選課，我想討論簽證，德語班。"
-          value={event_temp.description || ''}
-          isInvalid={event_temp.description?.length > 2000}
-          onChange={(e) => handleUpdateDescription(e)}
-        />
-        <Badge
-          bg={`${event_temp.description?.length > 2000 ? 'danger' : 'primary'}`}
-        >
-          {event_temp.description?.length || 0}/{2000}
-        </Badge>
-        <Typography variant="body1">Student: </Typography>
-        {event_temp?.requester_id?.map((requester, idx) => (
-          <Typography fontWeight="bold" key={idx}>
-            {requester.firstname} {requester.lastname}
-          </Typography>
-        ))}
-        <Typography>
-          Time zone: {user.timezone}. (Please update it in{' '}
-          <a href="/profile" target="_blank">
-            Profile
-          </a>
-          )
-        </Typography>
-        <br />
-        <FormControl fullWidth>
-          <InputLabel id="time-slot">
-            {t('Time Slot', { ns: 'common' })}
-          </InputLabel>
-          <Select
-            labelId="study_group"
-            label="Select target group"
-            name="study_group"
-            id="study_group"
-            onChange={(e) => handleUpdateTimeSlot(e)}
-            value={new Date(event_temp.start).toString()}
+      <Dialog open={isEditModalOpen} onClose={handleEditAppointmentModalClose}>
+        <DialogTitle>{t('Edit', { ns: 'common' })}</DialogTitle>
+        <DialogContent>
+          <TextField
+            fullWidth
+            type="textarea"
+            maxLength={2000}
+            label="請寫下想討論的主題"
+            multiline
+            rows="10"
+            placeholder="Example：我想定案選校、選課，我想討論簽證，德語班。"
+            value={event_temp.description || ''}
+            isInvalid={event_temp.description?.length > 2000}
+            onChange={(e) => handleUpdateDescription(e)}
+          />
+          <Badge
+            bg={`${
+              event_temp.description?.length > 2000 ? 'danger' : 'primary'
+            }`}
           >
-            {available_termins
-              .sort((a, b) => (a.start < b.start ? -1 : 1))
-              .map((time_slot) => (
-                <MenuItem
-                  value={`${time_slot.start}`}
-                  key={`${time_slot.start}`}
-                >
-                  {time_slot.start.toLocaleString()} to{' '}
-                  {time_slot.end.toLocaleString()}
-                </MenuItem>
-              ))}
-          </Select>
-        </FormControl>
-        <Button
-          color="secondary"
-          variant="outlined"
-          size="small"
-          disabled={
-            event_id === '' ||
-            event_temp?.description?.length === 0 ||
-            BookButtonDisable
-          }
-          onClick={(e) => handleEditAppointmentModal(e, event_id, event_temp)}
-        >
-          {BookButtonDisable ? (
-            <CircularProgress size={16} />
-          ) : (
-            t('Update', { ns: 'common' })
-          )}
-        </Button>
-      </ModalNew>
+            {event_temp.description?.length || 0}/{2000}
+          </Badge>
+          <Typography variant="body1">Student: </Typography>
+          {event_temp?.requester_id?.map((requester, idx) => (
+            <Typography fontWeight="bold" key={idx}>
+              {requester.firstname} {requester.lastname}
+            </Typography>
+          ))}
+          <Typography>
+            Time zone: {user.timezone}. (Please update it in{' '}
+            <a href="/profile" target="_blank">
+              Profile
+            </a>
+            )
+          </Typography>
+          <br />
+          <FormControl fullWidth>
+            <InputLabel id="time-slot">
+              {t('Time Slot', { ns: 'common' })}
+            </InputLabel>
+            <Select
+              labelId="study_group"
+              label="Select target group"
+              name="study_group"
+              id="study_group"
+              onChange={(e) => handleUpdateTimeSlot(e)}
+              value={new Date(event_temp.start).toString()}
+            >
+              {available_termins
+                .sort((a, b) => (a.start < b.start ? -1 : 1))
+                .map((time_slot) => (
+                  <MenuItem
+                    value={`${time_slot.start}`}
+                    key={`${time_slot.start}`}
+                  >
+                    {time_slot.start.toLocaleString()} to{' '}
+                    {time_slot.end.toLocaleString()}
+                  </MenuItem>
+                ))}
+            </Select>
+          </FormControl>
+        </DialogContent>
+
+        <DialogActions>
+          <Button
+            color="secondary"
+            variant="outlined"
+            size="small"
+            disabled={
+              event_id === '' ||
+              event_temp?.description?.length === 0 ||
+              BookButtonDisable
+            }
+            onClick={(e) => handleEditAppointmentModal(e, event_id, event_temp)}
+          >
+            {BookButtonDisable ? (
+              <CircularProgress size={16} />
+            ) : (
+              t('Update', { ns: 'common' })
+            )}
+          </Button>
+        </DialogActions>
+      </Dialog>
       {is_TaiGer_Agent(user) && (
         <CreateNewEventModal
           // {...props}

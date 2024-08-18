@@ -1,6 +1,14 @@
 import React, { useState } from 'react';
-import { Badge, Button, TextField, Typography } from '@mui/material';
-import ModalNew from '../../components/Modal';
+import {
+  Badge,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  TextField
+} from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 function ProgramReportDeleteModal(props) {
@@ -28,83 +36,79 @@ function ProgramReportDeleteModal(props) {
   };
 
   return (
-    <ModalNew
+    <Dialog
       open={props.isReportDelete}
       onClose={props.setReportDeleteModalHide}
-      size="lg"
-      aria-labelledby="contained-modal-title-vcenter"
       centered
     >
-      <Typography variant="h6">
-        {t('Delete ticket', { ns: 'programList' })}
-      </Typography>
-      <Typography variant="body1">
-        Do you want to delelete {props.uni_name} - {props.program_name} ticket?
-      </Typography>
-      <Typography variant="body1">
+      <DialogTitle>{t('Delete ticket', { ns: 'programList' })}</DialogTitle>
+      <DialogContent>
+        <DialogContentText>
+          Do you want to delelete {props.uni_name} - {props.program_name}{' '}
+          ticket?
+        </DialogContentText>
         {t('Description', { ns: 'common' })}
-      </Typography>
-      <TextField
-        fullWidth
-        type="textarea"
-        inputProps={{ maxLength: 2000 }}
-        multiline
-        minRows={8}
-        placeholder="Deadline is wrong."
-        defaultValue={props.ticket.description}
-        isInvalid={props.ticket.description?.length > 2000}
-        onChange={(e) => handleChange(e)}
-      />
-      <Badge>
-        {props.ticket.description?.length || 0}/{2000}
-      </Badge>
-      <Typography variant="body1">
-        {t('Feedback', { ns: 'common' })}
-      </Typography>
-      <TextField
-        fullWidth
-        type="textarea"
-        inputProps={{ maxLength: 2000 }}
-        multiline
-        minRows={8}
-        placeholder="Deadline is wrong."
-        defaultValue={props.ticket.feedback}
-        isInvalid={props.ticket.feedback?.length > 2000}
-        onChange={(e) => handleChange(e)}
-      />
-      <Badge>
-        {props.ticket.feedback?.length || 0}/{2000}
-      </Badge>
-      <br />
-      <Typography variant="body2">
-        Please enter <i>delete</i> in order to delete the ticket.
-      </Typography>
-      <TextField
-        fullWidth
-        id="delete"
-        size="small"
-        type="text"
-        placeholder="delete"
-        onChange={(e) => handleDeleteChange(e)}
-      />
-      <Button
-        color="primary"
-        variant="contained"
-        disabled={programReportDeleteModal.delete !== 'delete'}
-        onClick={() =>
-          props.submitProgramDeleteReport(props.ticket._id.toString())
-        }
-      >
-        {t('Delete ticket', { ns: 'programList' })}
-      </Button>
-      <Button
-        color="secondary"
-        variant="outlined"
-        onClick={props.setReportDeleteModalHide}
-      >
-        {t('Close', { ns: 'common' })}
-      </Button>
-    </ModalNew>
+        <TextField
+          fullWidth
+          type="textarea"
+          inputProps={{ maxLength: 2000 }}
+          multiline
+          minRows={4}
+          placeholder="Deadline is wrong."
+          defaultValue={props.ticket.description}
+          isInvalid={props.ticket.description?.length > 2000}
+          onChange={(e) => handleChange(e)}
+        />
+        <Badge>
+          {props.ticket.description?.length || 0}/{2000}
+        </Badge>
+        <DialogContentText>{t('Feedback', { ns: 'common' })}</DialogContentText>
+        <TextField
+          fullWidth
+          type="textarea"
+          inputProps={{ maxLength: 2000 }}
+          multiline
+          minRows={4}
+          placeholder="Deadline is wrong."
+          defaultValue={props.ticket.feedback}
+          isInvalid={props.ticket.feedback?.length > 2000}
+          onChange={(e) => handleChange(e)}
+        />
+        <Badge>
+          {props.ticket.feedback?.length || 0}/{2000}
+        </Badge>
+        <DialogContentText>
+          Please enter <i>delete</i> in order to delete the ticket.
+        </DialogContentText>
+        <TextField
+          fullWidth
+          id="delete"
+          size="small"
+          type="text"
+          placeholder="delete"
+          onChange={(e) => handleDeleteChange(e)}
+        />
+      </DialogContent>
+      <DialogActions>
+        <Button
+          color="primary"
+          variant="contained"
+          disabled={programReportDeleteModal.delete !== 'delete'}
+          onClick={() =>
+            props.submitProgramDeleteReport(props.ticket._id.toString())
+          }
+        >
+          {t('Delete ticket', { ns: 'programList' })}
+        </Button>
+        <Button
+          color="secondary"
+          variant="outlined"
+          onClick={props.setReportDeleteModalHide}
+        >
+          {t('Close', { ns: 'common' })}
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 }
 export default ProgramReportDeleteModal;

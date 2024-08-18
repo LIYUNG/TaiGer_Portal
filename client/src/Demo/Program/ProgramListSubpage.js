@@ -3,6 +3,10 @@ import {
   Button,
   Checkbox,
   CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   FormControlLabel,
   Table,
   TableBody,
@@ -13,7 +17,6 @@ import {
 
 import ErrorPage from '../Utils/ErrorPage';
 import { getStudents } from '../../api';
-import ModalNew from '../../components/Modal';
 import { useTranslation } from 'react-i18next';
 
 function ProgramListSubpage(props) {
@@ -74,57 +77,62 @@ function ProgramListSubpage(props) {
     program_names.push(props.uni_name[i] + ' - ' + props.program_name[i]);
   }
   return (
-    <ModalNew
+    <Dialog
       open={props.show}
       onClose={props.setModalHide}
       aria-labelledby="contained-modal-title-vcenter"
     >
-      {t('Assign', { ns: 'common' })}{' '}
-      {program_names.map((program_name, i) => (
-        <Typography variant="body1" fontWeight="bold" key={i}>
-          {program_name}
-        </Typography>
-      ))}
-      <Typography variant="body1">
+      <DialogTitle>
+        {t('Assign', { ns: 'common' })}
+        {program_names.map((program_name, i) => (
+          <Typography variant="body1" fontWeight="bold" key={i}>
+            {program_name}
+          </Typography>
+        ))}
         {t('to the student', { ns: 'programList' })}:
-      </Typography>
-      <Table size="small">
-        <TableBody>
-          {programListSubpageState.students.map((student, i) => (
-            <TableRow key={i}>
-              <TableCell>
-                <FormControlLabel
-                  label={`${student.firstname}, ${student.lastname}`}
-                  control={
-                    <Checkbox
-                      checked={props.studentId === student._id}
-                      onChange={props.handleSetStudentId}
-                      value={student._id}
-                    />
-                  }
-                />
-              </TableCell>
-              <TableCell></TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-      <Button
-        variant="contained"
-        color="primary"
-        disabled={props.isButtonDisable}
-        onClick={(e) => props.onSubmitAddToStudentProgramList(e)}
-      >
-        {props.isButtonDisable ? (
-          <CircularProgress />
-        ) : (
-          t('Assign', { ns: 'common' })
-        )}
-      </Button>
-      <Button variant="outlined" onClick={props.setModalHide}>
-        {t('Cancel', { ns: 'common' })}
-      </Button>
-    </ModalNew>
+      </DialogTitle>
+      <DialogContent>
+        <Typography variant="body1"></Typography>
+        <Table size="small">
+          <TableBody>
+            {programListSubpageState.students.map((student, i) => (
+              <TableRow key={i}>
+                <TableCell>
+                  <FormControlLabel
+                    label={`${student.firstname}, ${student.lastname}`}
+                    control={
+                      <Checkbox
+                        checked={props.studentId === student._id}
+                        onChange={props.handleSetStudentId}
+                        value={student._id}
+                      />
+                    }
+                  />
+                </TableCell>
+                <TableCell></TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </DialogContent>
+      <DialogActions>
+        <Button
+          variant="contained"
+          color="primary"
+          disabled={props.isButtonDisable}
+          onClick={(e) => props.onSubmitAddToStudentProgramList(e)}
+        >
+          {props.isButtonDisable ? (
+            <CircularProgress />
+          ) : (
+            t('Assign', { ns: 'common' })
+          )}
+        </Button>
+        <Button variant="outlined" onClick={props.setModalHide}>
+          {t('Cancel', { ns: 'common' })}
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 }
 export default ProgramListSubpage;

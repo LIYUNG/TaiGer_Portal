@@ -22,6 +22,11 @@ const DEMO = {
   COMMUNICATIONS_TAIGER_MODE_LINK: (student_id) => {
     return `/communications/t/${student_id}`;
   },
+  CUSTOMER_CENTER_LINK: '/customer-center',
+  CUSTOMER_CENTER_ADD_TICKET_LINK: '/customer-center/add-ticket',
+  CUSTOMER_CENTER_TICKET_DETAIL_PAGE_LINK: (ticket_id) => {
+    return `/customer-center/tickets/${ticket_id}`;
+  },
   CV_ML_RL_CENTER_LINK: '/cv-ml-rl-center',
   CV_ML_RL_DOCS_LINK: '/docs/cv-ml-rl',
   CV_ML_RL_DASHBOARD_LINK: '/dashboard/cv-ml-rl',

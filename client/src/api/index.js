@@ -666,7 +666,7 @@ export const addInterviewTrainingDateTime = (interview_id, payload) =>
 export const SetInterviewAsFinal = (interview_id) =>
   request.post(`/api/interviews/status/${interview_id}`);
 
-// Ticket
+// Program feedback Ticket
 export const createProgramReport = (program_id, description, type) =>
   request.post(`/api/tickets/`, { program_id, description, type });
 export const getProgramTicket = (type, program_id) =>
@@ -678,6 +678,25 @@ export const deleteProgramTicket = (ticket_id) =>
 // TODO
 export const getProgramTickets = (type, status) =>
   request.get(`/api/tickets?type=${type}&status=${status}`);
+
+// Complaint
+export const createComplaintTicket = (ticket) =>
+  request.post(`/api/complaints/`, { ticket });
+export const getComplaintsTicket = (ticketId) =>
+  request.get(`/api/complaints/${ticketId}`);
+export const getComplaintsTickets = (type) =>
+  request.get(`/api/complaints?type=${type}`);
+export const updateComplaintsTicket = (ticketId, updatedTicket) =>
+  request.put(`/api/complaints/${ticketId}`, updatedTicket);
+export const deleteComplaintsTicket = (ticketId) =>
+  request.delete(`/api/complaints/${ticketId}`);
+export const submitMessageInTicketWithAttachment = (
+  ticketId,
+  studentId,
+  newFile
+) => request.post(`/api/complaints/new-message/${ticketId}/${studentId}`, newFile);
+export const deleteAMessageinTicket = (ticketId, message_id) =>
+  request.delete(`/api/complaints/${ticketId}/${message_id}`);
 
 // Log:
 export const getUsersLog = () => request.get(`/api/userlogs`);

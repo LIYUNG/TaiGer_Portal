@@ -105,18 +105,18 @@ function ReadyToSubmitTasksCard(props) {
   const { user } = useAuth();
   const { t } = useTranslation();
 
-  const ready_to_submit_tasks = props.students
-    .filter((student) =>
-      student.agents.some((agent) => agent._id === user._id.toString())
-    )
-    .map((student, i) => <ReadyToSubmitTasks key={i} student={student} />);
+  const ready_to_submit_tasks = props.students.filter((student) =>
+    student.agents.some((agent) => agent._id === user._id.toString())
+  );
+  const readyToSubmittasks = ready_to_submit_tasks.map((student, i) => (
+    <ReadyToSubmitTasks key={i} student={student} />
+  ));
 
   return (
     <Card sx={{ mb: 2 }}>
       <Alert severity="error">
         <Typography>
-          {t('Ready To Submit Tasks', { ns: 'dashboard' })} ( ML/ RL/ Essay are
-          finished. Please submit application asap.):
+          {t('Ready To Submit Tasks', { ns: 'dashboard' })}:
         </Typography>
       </Alert>
       <TableContainer style={{ maxHeight: '300px' }}>
@@ -133,7 +133,7 @@ function ReadyToSubmitTasksCard(props) {
               </TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>{ready_to_submit_tasks}</TableBody>
+          <TableBody>{readyToSubmittasks}</TableBody>
         </Table>
       </TableContainer>
     </Card>

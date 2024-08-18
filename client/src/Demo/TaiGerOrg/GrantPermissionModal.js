@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 import {
   Button,
   Checkbox,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   FormControl,
   FormControlLabel,
   Table,
@@ -9,12 +13,9 @@ import {
   TableCell,
   TableHead,
   TableRow,
-  TextField,
-  Typography
+  TextField
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-
-import ModalNew from '../../components/Modal';
 
 function GrantPermissionModal(props) {
   const { t } = useTranslation();
@@ -69,78 +70,81 @@ function GrantPermissionModal(props) {
   const permissionsQuota = [['taigerAiQuota', 'TaiGerAI Quota']];
 
   return (
-    <ModalNew
+    <Dialog
       open={props.modalShow}
       onClose={props.setModalHide}
-      size="lg"
       aria-labelledby="contained-modal-title-vcenter"
     >
-      <Typography>
+      <DialogTitle>
         Edit {props.firstname} - {props.lastname} permissions:
-      </Typography>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>Permission</TableCell>
-            <TableCell>Check</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {permissions.map((permission, i) => (
-            <TableRow key={i + 1}>
-              <TableCell>{permission[1]}</TableCell>
-              <TableCell>
-                <FormControl>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        type="checkbox"
-                        checked={
-                          grantPermissionModalState.permissions[permission[0]]
-                        }
-                        onChange={(e) => onChangePermissions(e)}
-                        value={permission[0]}
-                        sx={{ '& .MuiSvgIcon-root': { fontSize: '1.5rem' } }}
-                      />
+      </DialogTitle>
+      <DialogContent>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Permission</TableCell>
+              <TableCell>Check</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {permissions.map((permission, i) => (
+              <TableRow key={i + 1}>
+                <TableCell>{permission[1]}</TableCell>
+                <TableCell>
+                  <FormControl>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          type="checkbox"
+                          checked={
+                            grantPermissionModalState.permissions[permission[0]]
+                          }
+                          onChange={(e) => onChangePermissions(e)}
+                          value={permission[0]}
+                          sx={{ '& .MuiSvgIcon-root': { fontSize: '1.5rem' } }}
+                        />
+                      }
+                    />
+                  </FormControl>
+                </TableCell>
+              </TableRow>
+            ))}
+            {permissionsQuota.map((permission_quota, j) => (
+              <TableRow key={j + 1000}>
+                <TableCell>{permission_quota[1]}</TableCell>
+                <TableCell>
+                  <TextField
+                    fullWidth
+                    placeholder="1000"
+                    id={permission_quota[0]}
+                    name={permission_quota[0]}
+                    label="Quota"
+                    type="number"
+                    value={
+                      grantPermissionModalState.permissions[permission_quota[0]]
                     }
+                    onChange={(e) => onChangePermissions_Quota(e)}
                   />
-                </FormControl>
-              </TableCell>
-            </TableRow>
-          ))}
-          {permissionsQuota.map((permission_quota, j) => (
-            <TableRow key={j + 1000}>
-              <TableCell>{permission_quota[1]}</TableCell>
-              <TableCell>
-                <TextField
-                  fullWidth
-                  placeholder="1000"
-                  id={permission_quota[0]}
-                  name={permission_quota[0]}
-                  label="Quota"
-                  type="number"
-                  value={
-                    grantPermissionModalState.permissions[permission_quota[0]]
-                  }
-                  onChange={(e) => onChangePermissions_Quota(e)}
-                />
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-      <Button
-        color="primary"
-        variant="contained"
-        disabled={!grantPermissionModalState.changed}
-        onClick={(e) => onSubmitHandler(e)}
-      >
-        {t('Update', { ns: 'common' })}
-      </Button>
-      <Button color="primary" variant="outlined" onClick={props.setModalHide}>
-        {t('Cancel', { ns: 'common' })}
-      </Button>
-    </ModalNew>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </DialogContent>
+      <DialogActions>
+        <Button
+          color="primary"
+          variant="contained"
+          disabled={!grantPermissionModalState.changed}
+          onClick={(e) => onSubmitHandler(e)}
+        >
+          {t('Update', { ns: 'common' })}
+        </Button>
+        <Button color="primary" variant="outlined" onClick={props.setModalHide}>
+          {t('Cancel', { ns: 'common' })}
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 }
 export default GrantPermissionModal;

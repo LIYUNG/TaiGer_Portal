@@ -12,7 +12,9 @@ import {
   TableCell,
   TableHead,
   TableRow,
-  Typography
+  Dialog,
+  DialogTitle,
+  DialogContent
 } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
 
@@ -20,7 +22,6 @@ import { useTranslation } from 'react-i18next';
 
 import { convertDate } from '../../Demo/Utils/contants';
 import DEMO from '../../store/constant';
-import ModalNew from '../Modal';
 import { green, grey } from '@mui/material/colors';
 
 export function ExtendableTable({ data }) {
@@ -212,54 +213,24 @@ export function ExtendableTable({ data }) {
           ))}
         </TableBody>
       </Table>
-      <ModalNew
-        centered
-        size="xl"
-        open={readinessModalShow}
-        onClose={closeModal}
-      >
-        <Typography id="sTableCell-name">
+      <Dialog open={readinessModalShow} onClose={closeModal}>
+        <DialogTitle>
           {singleStudent.firstname}
           {singleStudent.lastname}
-        </Typography>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Status</TableCell>
-              <TableCell>Document Name</TableCell>
-              <TableCell>Last Update</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {singleStudent.generaldocs_threads &&
-              singleStudent.generaldocs_threads.map((thread, i) => (
-                <TableRow key={i}>
-                  <TableCell>
-                    <CheckIcon
-                      fontSize="small"
-                      color={thread.isFinalVersion ? green[500] : grey[400]}
-                      title={
-                        thread.isFinalVersion ? 'Finished' : 'Not finished'
-                      }
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <Link
-                      to={DEMO.DOCUMENT_MODIFICATION_LINK(
-                        thread.doc_thread_id?._id.toString()
-                      )}
-                      component={LinkDom}
-                    >
-                      {thread.doc_thread_id.file_type}
-                    </Link>
-                  </TableCell>
-                  <TableCell>{`${convertDate(thread.updatedAt)}`}</TableCell>
-                </TableRow>
-              ))}
-            {singleStudent.applications &&
-              singleStudent.applications.map((application, i) =>
-                application.doc_modification_thread.map((thread, x) => (
-                  <TableRow key={10000 * i + x}>
+        </DialogTitle>
+        <DialogContent>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Status</TableCell>
+                <TableCell>Document Name</TableCell>
+                <TableCell>Last Update</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {singleStudent.generaldocs_threads &&
+                singleStudent.generaldocs_threads.map((thread, i) => (
+                  <TableRow key={i}>
                     <TableCell>
                       <CheckIcon
                         fontSize="small"
@@ -276,16 +247,45 @@ export function ExtendableTable({ data }) {
                         )}
                         component={LinkDom}
                       >
-                        {`${thread.doc_thread_id.file_type} - ${application.programId.school} ${application.programId.program_name}`}
+                        {thread.doc_thread_id.file_type}
                       </Link>
                     </TableCell>
                     <TableCell>{`${convertDate(thread.updatedAt)}`}</TableCell>
                   </TableRow>
-                ))
-              )}
-          </TableBody>
-        </Table>
-      </ModalNew>
+                ))}
+              {singleStudent.applications &&
+                singleStudent.applications.map((application, i) =>
+                  application.doc_modification_thread.map((thread, x) => (
+                    <TableRow key={10000 * i + x}>
+                      <TableCell>
+                        <CheckIcon
+                          fontSize="small"
+                          color={thread.isFinalVersion ? green[500] : grey[400]}
+                          title={
+                            thread.isFinalVersion ? 'Finished' : 'Not finished'
+                          }
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Link
+                          to={DEMO.DOCUMENT_MODIFICATION_LINK(
+                            thread.doc_thread_id?._id.toString()
+                          )}
+                          component={LinkDom}
+                        >
+                          {`${thread.doc_thread_id.file_type} - ${application.programId.school} ${application.programId.program_name}`}
+                        </Link>
+                      </TableCell>
+                      <TableCell>{`${convertDate(
+                        thread.updatedAt
+                      )}`}</TableCell>
+                    </TableRow>
+                  ))
+                )}
+            </TableBody>
+          </Table>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

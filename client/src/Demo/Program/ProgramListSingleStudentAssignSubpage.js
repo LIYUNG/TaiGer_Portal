@@ -2,6 +2,10 @@ import React, { useEffect, useState } from 'react';
 import {
   Button,
   CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Table,
   TableBody,
   TableCell,
@@ -10,7 +14,6 @@ import {
   Typography
 } from '@mui/material';
 
-import ModalNew from '../../components/Modal';
 import { useTranslation } from 'react-i18next';
 
 function ProgramListSingleStudentAssignSubpage(props) {
@@ -50,44 +53,54 @@ function ProgramListSingleStudentAssignSubpage(props) {
     );
   }
   return (
-    <ModalNew
+    <Dialog
       open={props.show}
       onClose={props.setModalHide}
       size="small"
       aria-labelledby="contained-modal-title-vcenter"
     >
-      <Typography variant="h6">Assign </Typography>
-      {program_names.map((program_name, i) => (
-        <Typography key={i}>
-          <b>{program_name}</b>
-        </Typography>
-      ))}
-      <Typography>to the student:</Typography>
-      <TableContainer style={{ overflowX: 'auto' }}>
-        <Table size="small">
-          <TableBody>
-            <TableRow>
-              <TableCell>{`${props.student.firstname} ${props.student.lastname}`}</TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <Button
-        color="primary"
-        variant="contained"
-        disabled={props.isButtonDisable}
-        onClick={(e) => props.onSubmitAddToStudentProgramList(e)}
-      >
-        {props.isButtonDisable ? (
-          <CircularProgress />
-        ) : (
-          t('Assign', { ns: 'common' })
-        )}
-      </Button>
-      <Button color="secondary" variant="outlined" onClick={props.setModalHide}>
-        {t('Cancel', { ns: 'common' })}
-      </Button>
-    </ModalNew>
+      <DialogTitle>
+        Assign{' '}
+        {program_names.map((program_name, i) => (
+          <Typography key={i}>
+            <b>{program_name}</b>
+          </Typography>
+        ))}
+        to the student:
+      </DialogTitle>
+      <DialogContent>
+        <TableContainer style={{ overflowX: 'auto' }}>
+          <Table size="small">
+            <TableBody>
+              <TableRow>
+                <TableCell>{`${props.student.firstname} ${props.student.lastname}`}</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </DialogContent>
+      <DialogActions>
+        <Button
+          color="primary"
+          variant="contained"
+          disabled={props.isButtonDisable}
+          onClick={(e) => props.onSubmitAddToStudentProgramList(e)}
+        >
+          {props.isButtonDisable ? (
+            <CircularProgress />
+          ) : (
+            t('Assign', { ns: 'common' })
+          )}
+        </Button>
+        <Button
+          color="secondary"
+          variant="outlined"
+          onClick={props.setModalHide}
+        >
+          {t('Cancel', { ns: 'common' })}
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 }
 

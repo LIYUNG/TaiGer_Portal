@@ -119,7 +119,7 @@ function index() {
     return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
   }
   const { res_status, isLoaded, open_tasks_arr } = indexState;
-  TabTitle('Agent Support Documents');
+  TabTitle('Agent Support Documents', { ns: 'common' });
   if (!isLoaded && !indexState.students) {
     return <Loading />;
   }
@@ -174,7 +174,7 @@ function index() {
           {t('My Students', { ns: 'common' })}
         </Typography>
         <Typography color="text.primary">
-          {t('Agent Support Documents')}
+          {t('Agent Support Documents', { ns: 'common' })}
         </Typography>
       </Breadcrumbs>
       {!is_TaiGer_role(user) && (

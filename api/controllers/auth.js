@@ -73,7 +73,6 @@ const signup = asyncHandler(async (req, res) => {
 
 const login = (req, res) => {
   const { user } = req;
-  // TODO: 2. attribute should be dynamic (from domain etc.)
   const token = generateAuthToken(user, req.tenantId);
   res
     .cookie('x-auth', token, { httpOnly: true, sameSite: 'none', secure: true })
@@ -90,7 +89,6 @@ const logout = (req, res) => {
 
 const verify = (req, res) => {
   const { user } = req;
-  // TODO: tenentId should be dynamic
   const token = generateAuthToken(user, req.tenantId);
   user.attributes = [];
   res
@@ -133,7 +131,6 @@ const activateAccount = asyncHandler(async (req, res) => {
     );
 
   await token.deleteOne();
-  // TODO: attribute should be dynamic (from domain etc.)
   const authToken = generateAuthToken(user, req.tenantId);
   res
     .cookie('x-auth', authToken, {

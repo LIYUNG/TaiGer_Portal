@@ -246,6 +246,41 @@ const DeleteTicketRateLimiter = rateLimit({
   legacyHeaders: false // Disable the `X-RateLimit-*` headers
 });
 
+const GetComplaintListRateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 * 1 minutes
+  max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false // Disable the `X-RateLimit-*` headers
+});
+
+const GetComplaintRateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 * 1 minutes
+  max: 120, // Limit each IP to 120 requests per `window` (here, per 15 minutes)
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false // Disable the `X-RateLimit-*` headers
+});
+
+const PostComplaintRateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 * 1 minutes
+  max: 10, // Limit each IP to 10 requests per `window` (here, per 15 minutes)
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false // Disable the `X-RateLimit-*` headers
+});
+
+const UpdateComplaintRateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 * 1 minutes
+  max: 30, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false // Disable the `X-RateLimit-*` headers
+});
+
+const DeleteComplaintRateLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 30 * 1 minutes
+  max: 20, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false // Disable the `X-RateLimit-*` headers
+});
+
 const DocumentationGETRateLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 * 1 minutes
   max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
@@ -316,6 +351,11 @@ module.exports = {
   PostTicketRateLimiter,
   UpdateTicketRateLimiter,
   DeleteTicketRateLimiter,
+  GetComplaintListRateLimiter,
+  GetComplaintRateLimiter,
+  PostComplaintRateLimiter,
+  UpdateComplaintRateLimiter,
+  DeleteComplaintRateLimiter,
   DocumentationGETRateLimiter,
   InterviewGETRateLimiter,
   InterviewPUTRateLimiter,

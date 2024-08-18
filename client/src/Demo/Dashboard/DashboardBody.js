@@ -1,5 +1,12 @@
 import React from 'react';
-import { Box, Breadcrumbs, Link, Typography } from '@mui/material';
+import {
+  Box,
+  Breadcrumbs,
+  Link,
+  SpeedDial,
+  SpeedDialAction,
+  Typography
+} from '@mui/material';
 import { Link as LinkDom } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
@@ -23,6 +30,18 @@ import { useAuth } from '../../components/AuthProvider';
 import DEMO from '../../store/constant';
 import { appConfig } from '../../config';
 import useStudents from '../../hooks/useStudents';
+import SpeedDialIcon from '@mui/material/SpeedDialIcon';
+import FileCopyIcon from '@mui/icons-material/FileCopyOutlined';
+import SaveIcon from '@mui/icons-material/Save';
+import PrintIcon from '@mui/icons-material/Print';
+import ShareIcon from '@mui/icons-material/Share';
+
+const actions = [
+  { icon: <FileCopyIcon />, name: 'Copy' },
+  { icon: <SaveIcon />, name: 'Save' },
+  { icon: <PrintIcon />, name: 'Print' },
+  { icon: <ShareIcon />, name: 'Share' }
+];
 
 function DashboardBody({ studentAndEssays }) {
   const { user } = useAuth();
@@ -110,6 +129,22 @@ function DashboardBody({ studentAndEssays }) {
         />
       )}
       {is_TaiGer_Guest(user) && <GuestDashboard students={students} />}
+      {false && (
+        <Box sx={{ position: 'fixed', bottom: 16, right: 16 }}>
+          <SpeedDial
+            ariaLabel="SpeedDial basic example"
+            icon={<SpeedDialIcon />}
+          >
+            {actions.map((action) => (
+              <SpeedDialAction
+                key={action.name}
+                icon={action.icon}
+                tooltipTitle={action.name}
+              />
+            ))}
+          </SpeedDial>
+        </Box>
+      )}
     </Box>
   );
 }

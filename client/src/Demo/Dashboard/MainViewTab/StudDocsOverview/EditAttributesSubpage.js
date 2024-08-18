@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import ModalNew from '../../../../components/Modal';
 import {
   Autocomplete,
-  Box,
   Button,
   Checkbox,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   TextField,
-  Typography
 } from '@mui/material';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
@@ -64,18 +65,20 @@ function EditAttributesSubpage(props) {
   };
 
   return (
-    <ModalNew
+    <Dialog
       open={props.show}
       onClose={props.onHide}
       size="large"
       aria-labelledby="contained-modal-title-vcenter"
       centered
     >
-      <Typography variant="h6">
+      <DialogTitle>
         Attributes for {props.student.firstname} - {props.student.lastname} to
-      </Typography>
-      <AttributeInputSelection />
-      <Box sx={{ mt: 2 }}>
+      </DialogTitle>
+      <DialogContent>
+        <AttributeInputSelection />
+      </DialogContent>
+      <DialogActions>
         <Button
           color="primary"
           variant="contained"
@@ -86,15 +89,14 @@ function EditAttributesSubpage(props) {
               props.student._id
             )
           }
-          sx={{ mr: 2 }}
         >
           {t('Update', { ns: 'common' })}
         </Button>
         <Button color="secondary" variant="outlined" onClick={props.onHide}>
           {t('Cancel', { ns: 'common' })}
         </Button>
-      </Box>
-    </ModalNew>
+      </DialogActions>
+    </Dialog>
   );
 }
 

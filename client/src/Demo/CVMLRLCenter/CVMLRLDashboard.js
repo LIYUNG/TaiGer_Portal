@@ -1,5 +1,15 @@
 import React, { useMemo, useState } from 'react';
-import { Button, Tabs, Tab, Box, Typography } from '@mui/material';
+import {
+  Button,
+  Tabs,
+  Tab,
+  Box,
+  Typography,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions
+} from '@mui/material';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
@@ -12,7 +22,6 @@ import ModalMain from '../Utils/ModalHandler/ModalMain';
 
 import { SetFileAsFinal } from '../../api';
 import Banner from '../../components/Banner/Banner';
-import ModalNew from '../../components/Modal';
 import { CustomTabPanel, a11yProps } from '../../components/Tabs';
 import Loading from '../../components/Loading/Loading';
 import ExampleWithLocalizationProvider from '../../components/MaterialReactTable';
@@ -300,26 +309,29 @@ function CVMLRLDashboard(props) {
           col={memoizedColumnsMrt}
         />
       </CustomTabPanel>
-      <ModalNew
+      <Dialog
         open={cVMLRLDashboardState.SetAsFinalFileModel}
         onClose={closeSetAsFinalFileModelWindow}
         aria-labelledby="contained-modal-title-vcenter"
       >
-        <Typography variant="h5">{t('Warning', { ns: 'common' })}</Typography>
-        <Typography>
+        <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
+        <DialogContent>
           Do you want to set {cVMLRLDashboardState.docName} as{' '}
           {cVMLRLDashboardState.isFinalVersion ? 'open' : 'final'} for student?
-        </Typography>
-        <Button
-          variant="contained"
-          disabled={!isLoaded}
-          onClick={ConfirmSetAsFinalFileHandler}
-        >
-          {t('Yes', { ns: 'common' })}
-        </Button>
-        <Button onClick={closeSetAsFinalFileModelWindow}>No</Button>
-        {!isLoaded && <Loading />}
-      </ModalNew>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant="contained"
+            disabled={!isLoaded}
+            onClick={ConfirmSetAsFinalFileHandler}
+          >
+            {t('Yes', { ns: 'common' })}
+          </Button>
+          <Button onClick={closeSetAsFinalFileModelWindow}>
+            {t('No', { ns: 'common' })}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }

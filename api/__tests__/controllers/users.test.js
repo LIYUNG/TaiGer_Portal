@@ -4,7 +4,7 @@ const { connect, closeDatabase, clearDatabase } = require('../fixtures/db');
 const { app } = require('../../app');
 const { Role } = require('../../constants');
 const { User, UserSchema } = require('../../models/User');
-const { generateUser } = require('../fixtures/users');
+const { generateUser } = require('../fixtures/faker');
 const { protect } = require('../../middlewares/auth');
 const {
   decryptCookieMiddleware

@@ -165,6 +165,7 @@ export const translation_en = {
     Documents: 'Documents',
     'Student Overview': 'Student Overview',
     'CV/ML/RL Center': 'CV/ML/RL Center',
+    'Customer Center': 'Customer Center',
     'General Documents': 'General Documents',
     CV: 'CV',
     ML: 'ML',
@@ -324,8 +325,17 @@ export const translation_en = {
     timeWeeks: '{{weeks}}w',
     Send: 'Send',
     'Target Year': 'Target Year',
-    'Program Language': 'Program Language'
+    'Program Language': 'Program Language',
+    'Frequently Asked Questions': 'Frequently Asked Questions',
+    'Program Update Request': 'Program Update Request',
+    'Agent Support Documents': 'Agent Support Documents',
+    'Move to Active': 'Move to Active',
+    'Update Successfully': 'Update Successfully',
+    'Personal Data is updated successfully!':
+      'Personal Data is updated successfully!',
+    'Office Hours time slots updated': 'Office Hours time slots updated'
   },
+  customerCenter: {},
   dashboard: {
     Dashboard: 'Dashboard',
     'Upcoming Applications': 'Upcoming Applications',
@@ -358,6 +368,9 @@ export const translation_en = {
   },
   logs: {
     'User Logs': 'User Logs'
+  },
+  tickets: {
+    'Do you want to delete this ticket?': 'Do you want to delete this ticket?'
   },
   backgroundProfile: {},
   admissions: {

@@ -40,6 +40,7 @@ const { userlogSchema } = require('./models/Userlog');
 const { ResponseTimeSchema } = require('./models/ResponseTime');
 const { surveyInputSchema } = require('./models/SurveyInput');
 const { permissionSchema } = require('./models/Permission');
+const { complaintSchema } = require('./models/Complaint');
 
 const connections = {};
 const tenantDb = 'Tenant';
@@ -71,6 +72,7 @@ const connectToDatabase = (tenant, uri = null) => {
 
     connection.model('Basedocumentationslink', basedocumentationslinksSchema);
     connection.model('Communication', communicationsSchema);
+    connection.model('Complaint', complaintSchema);
     connection.model('Course', coursesSchema);
     connection.model('Documentation', documentationsSchema);
     connection.model('Documentthread', documentThreadsSchema);

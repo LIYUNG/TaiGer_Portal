@@ -3,11 +3,6 @@ import LaunchIcon from '@mui/icons-material/Launch';
 import { Box, Button, IconButton, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-import ButtonSetUploaded from './ButtonSetUploaded';
-import ButtonSetAccepted from './ButtonSetAccepted';
-import ButtonSetRejected from './ButtonSetRejected';
-import ButtonSetNotNeeded from './ButtonSetNotNeeded';
-import ButtonSetMissing from './ButtonSetMissing';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import {
   profile_wtih_doc_link_list,
@@ -20,11 +15,11 @@ import {
   deleteFile,
   updateDocumentationHelperLink
 } from '../../api';
-import { is_TaiGer_AdminAgent } from '../Utils/checking-functions';
 import Banner from '../../components/Banner/Banner';
 import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
+import MyDocumentCard from './MyDocumentCard';
 
 function BaseDocument_StudentView(props) {
   const { user } = useAuth();
@@ -287,6 +282,7 @@ function BaseDocument_StudentView(props) {
   }
   let value2 = Object.values(profile_list);
   let keys2 = Object.keys(profile_wtih_doc_link_list);
+  let profile_wtih_doc_link_list_key = Object.keys(profile_wtih_doc_link_list);
   let object_init = {};
   let object_message = {};
   let object_time_init = {};
@@ -325,98 +321,25 @@ function BaseDocument_StudentView(props) {
       object_time_init[profile.name] = profile.updatedAt;
     });
   }
-  var file_information;
-  file_information = keys2.map((k, i) =>
-    object_init[k].status === 'uploaded' ? (
-      <ButtonSetUploaded
-        key={i + 1}
-        updateDocLink={updateDocLink}
-        link={object_init[k].link}
-        path={object_init[k].path}
-        user={user}
-        isLoaded={baseDocumentStudentViewState.isLoaded[k]}
-        docName={value2[i]}
-        time={object_time_init[k]}
-        k={k}
-        student={baseDocumentStudentViewState.student}
-        onDeleteFilefromstudent={onDeleteFilefromstudent}
-        onUpdateProfileFilefromstudent={onUpdateProfileFilefromstudent}
-      />
-    ) : object_init[k].status === 'accepted' ? (
-      <ButtonSetAccepted
-        key={i + 1}
-        updateDocLink={updateDocLink}
-        link={object_init[k].link}
-        path={object_init[k].path}
-        user={user}
-        isLoaded={baseDocumentStudentViewState.isLoaded[k]}
-        docName={value2[i]}
-        time={object_time_init[k]}
-        k={k}
-        student={baseDocumentStudentViewState.student}
-        onDeleteFilefromstudent={onDeleteFilefromstudent}
-        onUpdateProfileFilefromstudent={onUpdateProfileFilefromstudent}
-        deleteFileWarningModel={
-          baseDocumentStudentViewState.deleteFileWarningModel
-        }
-      />
-    ) : object_init[k].status === 'rejected' ? (
-      <ButtonSetRejected
-        key={i + 1}
-        updateDocLink={updateDocLink}
-        link={object_init[k].link}
-        path={object_init[k].path}
-        user={user}
-        isLoaded={baseDocumentStudentViewState.isLoaded[k]}
-        docName={value2[i]}
-        time={object_time_init[k]}
-        k={k}
-        message={object_message[k]}
-        student={baseDocumentStudentViewState.student}
-        onDeleteFilefromstudent={onDeleteFilefromstudent}
-        onUpdateProfileFilefromstudent={onUpdateProfileFilefromstudent}
-        deleteFileWarningModel={
-          baseDocumentStudentViewState.deleteFileWarningModel
-        }
-      />
-    ) : object_init[k].status === 'notneeded' ? (
-      is_TaiGer_AdminAgent(user) && (
-        <ButtonSetNotNeeded
-          key={i + 1}
-          updateDocLink={updateDocLink}
-          link={object_init[k].link}
-          user={user}
-          isLoaded={baseDocumentStudentViewState.isLoaded[k]}
-          docName={value2[i]}
-          time={object_time_init[k]}
-          k={k}
-          student={baseDocumentStudentViewState.student}
-          onDeleteFilefromstudent={onDeleteFilefromstudent}
-          onUpdateProfileFilefromstudent={onUpdateProfileFilefromstudent}
-          deleteFileWarningModel={
-            baseDocumentStudentViewState.deleteFileWarningModel
-          }
-          handleGeneralDocSubmit={handleGeneralDocSubmit}
-        />
-      )
-    ) : (
-      <ButtonSetMissing
-        key={i + 1}
-        updateDocLink={updateDocLink}
-        link={object_init[k].link}
-        user={user}
-        isLoaded={baseDocumentStudentViewState.isLoaded[k]}
-        docName={value2[i]}
-        time={object_time_init[k]}
-        k={k}
-        message={object_message[k]}
-        student={baseDocumentStudentViewState.student}
-        onDeleteFilefromstudent={onDeleteFilefromstudent}
-        onUpdateProfileFilefromstudent={onUpdateProfileFilefromstudent}
-        handleGeneralDocSubmit={handleGeneralDocSubmit}
-      />
-    )
-  );
+  const file_information_test = profile_wtih_doc_link_list_key.map((k, i) => (
+    <MyDocumentCard
+      k={k}
+      key={i + 1}
+      updateDocLink={updateDocLink}
+      link={object_init[k].link}
+      path={object_init[k].path}
+      status={object_init[k].status}
+      user={user}
+      isLoaded={baseDocumentStudentViewState.isLoaded[k]}
+      docName={value2[i]}
+      message={object_message[k]}
+      time={object_time_init[k]}
+      student={baseDocumentStudentViewState.student}
+      onDeleteFilefromstudent={onDeleteFilefromstudent}
+      onUpdateProfileFilefromstudent={onUpdateProfileFilefromstudent}
+      handleGeneralDocSubmit={handleGeneralDocSubmit}
+    />
+  ));
 
   return (
     <Box>
@@ -463,7 +386,7 @@ function BaseDocument_StudentView(props) {
         removeBanner={undefined}
         notification_key={undefined}
       />
-      {file_information}
+      {true && file_information_test}
       {SYMBOL_EXPLANATION}
       {res_modal_status >= 400 && (
         <ModalMain

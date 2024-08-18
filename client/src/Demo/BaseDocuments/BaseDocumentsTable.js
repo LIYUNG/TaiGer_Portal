@@ -6,11 +6,14 @@ import {
   Button,
   CircularProgress,
   Link,
-  Typography,
-  IconButton
+  IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import ModalNew from '../../components/Modal';
 import { MuiDataGrid } from '../../components/MuiDataGrid';
 import {
   FILE_DONT_CARE_SYMBOL,
@@ -319,22 +322,24 @@ export function BaseDocumentsTable(props) {
         k={baseDocumentsTableState.doc_key}
         onUpdateProfileDocStatus={onUpdateProfileDocStatus}
       />
-      <ModalNew
+      <Dialog
         open={baseDocumentsTableState.rejectProfileFileModel}
         onClose={closeRejectWarningWindow}
         aria-labelledby="contained-modal-title-vcenter"
       >
-        <Typography variant="h6">Warning</Typography>
-        <Typography variant="body1">
-          Please give a reason why the uploaded{' '}
-          {baseDocumentsTableState.category} is invalied?
-        </Typography>
-        <TextField
-          type="text"
-          placeholder="ex. Poor scanned quality."
-          onChange={(e) => handleRejectMessage(e, e.target.value)}
-        />
-        <Box>
+        <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Please give a reason why the uploaded{' '}
+            {baseDocumentsTableState.category} is invalied?
+          </DialogContentText>
+          <TextField
+            type="text"
+            placeholder="ex. Poor scanned quality."
+            onChange={(e) => handleRejectMessage(e, e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
           <Button
             disabled={baseDocumentsTableState.feedback === ''}
             onClick={(e) => onUpdateProfileFilefromstudent(e)}
@@ -348,8 +353,8 @@ export function BaseDocumentsTable(props) {
           <Button onClick={closeRejectWarningWindow}>
             {t('No', { ns: 'common' })}
           </Button>
-        </Box>
-      </ModalNew>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

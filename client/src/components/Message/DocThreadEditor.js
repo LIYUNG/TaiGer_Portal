@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import SendIcon from '@mui/icons-material/Send';
 
-import EditorSimple from '../../../components/EditorJs/EditorSimple';
+import EditorSimple from '../EditorJs/EditorSimple';
 import {
   Button,
   Grid,
@@ -12,9 +12,9 @@ import {
   Box
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { CVMLRL_DOC_PRECHECK_STATUS_E } from '../../Utils/contants';
-import { is_TaiGer_role } from '../../Utils/checking-functions';
-import { useAuth } from '../../../components/AuthProvider';
+import { CVMLRL_DOC_PRECHECK_STATUS_E } from '../../Demo/Utils/contants';
+import { is_TaiGer_role } from '../../Demo/Utils/checking-functions';
+import { useAuth } from '../AuthProvider';
 
 function DocThreadEditor(props) {
   const { t } = useTranslation();
@@ -48,7 +48,6 @@ function DocThreadEditor(props) {
               readOnly={false}
               imageEnable={true}
               handleEditorChange={handleEditorChange}
-              handleClickSave={props.handleClickSave}
               editorState={props.editorState}
               setStatedata={setStatedata}
             />
@@ -115,7 +114,7 @@ function DocThreadEditor(props) {
                 variant="outlined"
                 startIcon={<SendIcon />}
               >
-                {t('Send')}
+                {t('Send', { ns: 'common' })}
               </Button>
             </Tooltip>
           ) : (
@@ -125,7 +124,7 @@ function DocThreadEditor(props) {
               onClick={(e) => props.handleClickSave(e, statedata.editorState)}
               startIcon={<SendIcon />}
             >
-              {t('Send')}
+              {t('Send', { ns: 'common' })}
             </Button>
           )}
         </Grid>

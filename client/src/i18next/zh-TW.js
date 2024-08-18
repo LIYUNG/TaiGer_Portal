@@ -166,6 +166,7 @@ export const translation_zh_TW = {
     'Uni-Assist Tasks': 'Uni-Assist 任務',
     Documents: '文件',
     'Student Overview': '學生總攬',
+    'Customer Center': '客服中心',
     'CV/ML/RL Center': 'CV/ML/RL 中心',
     Notes: '筆記欄',
     'General Documents': '通用文件',
@@ -328,8 +329,16 @@ export const translation_zh_TW = {
     timeWeeks: '{{weeks}}週',
     Send: '送出',
     'Target Year': '預計申請年度',
-    'Program Language': '學程教學語言'
+    'Program Language': '學程教學語言',
+    'Frequently Asked Questions': '常見問題',
+    'Program Update Request': '科系更新請求',
+    'Agent Support Documents': '顧問輔助文件',
+    'Move to Active': '移至 Active',
+    'Update Successfully': '更新成功',
+    'Personal Data is updated successfully!': '個人資料更新成功！',
+    'Office Hours time slots updated': 'Office Hours 更新成功'
   },
+  customerCenter: {},
   dashboard: {
     Dashboard: '主控台',
     'Upcoming Applications': '即將截止的申請',
@@ -352,7 +361,7 @@ export const translation_zh_TW = {
     'Create ticket': '新增問題回報',
     Report: '回報',
     'Resolve ticket': '解決問題',
-    'Delete ticket': '解決問題',
+    'Delete ticket': '刪除問題',
     'to the student': '給學生',
     'Find in Google': 'Google 搜尋',
     'Provide Feedback': '提供回饋',
@@ -361,6 +370,9 @@ export const translation_zh_TW = {
   },
   logs: {
     'User Logs': '使用者紀錄'
+  },
+  tickets: {
+    'Do you want to delete this ticket?': '您想刪除這個客服請求嗎？'
   },
   backgroundProfile: {},
   admissions: {

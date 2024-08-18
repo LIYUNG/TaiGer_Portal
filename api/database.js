@@ -22,7 +22,10 @@ const { tokenSchema } = require('./models/Token');
 const { templatesSchema } = require('./models/Template');
 const { documentationsSchema } = require('./models/Documentation');
 const { internaldocsSchema } = require('./models/Internaldoc');
-const { enableVersionControl, handleProgramChanges } = require('./utils/modelHelper/versionControl');
+const {
+  enableVersionControl,
+  handleProgramChanges
+} = require('./utils/modelHelper/versionControl');
 const { docspagesSchema } = require('./models/Docspage');
 const { expensesSchema } = require('./models/Expense');
 const { incomesSchema } = require('./models/Income');
@@ -36,6 +39,7 @@ const { userlogSchema } = require('./models/Userlog');
 const { ResponseTimeSchema } = require('./models/ResponseTime');
 const { surveyInputSchema } = require('./models/SurveyInput');
 const { permissionSchema } = require('./models/Permission');
+const { complaintSchema } = require('./models/Complaint');
 
 const connections = {};
 const tenantDb = 'Tenant';
@@ -67,6 +71,7 @@ const connectToDatabase = (tenant, uri = null) => {
 
     connection.model('Basedocumentationslink', basedocumentationslinksSchema);
     connection.model('Communication', communicationsSchema);
+    connection.model('Complaint', complaintSchema);
     connection.model('Course', coursesSchema);
     connection.model('Documentation', documentationsSchema);
     connection.model('Documentthread', documentThreadsSchema);

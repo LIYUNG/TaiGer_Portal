@@ -11,7 +11,11 @@ import {
   CardContent,
   Typography,
   Box,
-  IconButton
+  IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions
 } from '@mui/material';
 import {
   Button,
@@ -34,7 +38,6 @@ import {
   isProgramAdmitted,
   progressBarCounter
 } from '../../Demo/Utils/checking-functions';
-import ModalNew from '../Modal';
 import { BASE_URL } from '../../api/request';
 import {
   FILE_NOT_OK_SYMBOL,
@@ -404,21 +407,20 @@ export default function ApplicationProgressCard(props) {
           />
         </Collapse>
       </Card>
-      <ModalNew open={showUndoModal} onClose={closeUndoModal} size="small">
-        <Box>
-          <Typography id="modal-modal-title" variant="h6">
-            {t('Attention')}
-          </Typography>
+      <Dialog open={showUndoModal} onClose={closeUndoModal} size="small">
+        <DialogTitle>{t('Attention')}</DialogTitle>
+        <DialogContent>
           <Typography id="modal-modal-description" sx={{ my: 2 }}>
             {t('Do you want to reset the result of the application of')}{' '}
             <b>{`${application.programId.school}-${application.programId.degree}-${application.programId.program_name}`}</b>
             ?
           </Typography>
+        </DialogContent>
+        <DialogActions>
           <Button
             color="secondary"
             variant="contained"
             disabled={isLoading}
-            size="small"
             title="Undo"
             sx={{ mr: 1 }}
             onClick={(e) => handleUpdateResult(e, '-')}
@@ -432,19 +434,21 @@ export default function ApplicationProgressCard(props) {
           <Button
             color="secondary"
             variant="outlined"
-            size="small"
             title="Undo"
             onClick={closeUndoModal}
           >
             {t('Cancel', { ns: 'common' })}
           </Button>
-        </Box>
-      </ModalNew>
-      <ModalNew open={showSetResultModal} onClose={closeSetResultModal}>
-        <Box>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            {t('Attention')}
-          </Typography>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        fullWidth={true}
+        maxWidth={'md'}
+        open={showSetResultModal}
+        onClose={closeSetResultModal}
+      >
+        <DialogTitle>{t('Attention')}</DialogTitle>
+        <DialogContent>
           {application.admission === '-' && (
             <Typography id="modal-modal-description" sx={{ my: 2 }}>
               {t('Do you want to set the application of')}{' '}
@@ -486,6 +490,8 @@ export default function ApplicationProgressCard(props) {
               {returnedMessage}
             </Typography>
           )}
+        </DialogContent>
+        <DialogActions>
           <Button
             color={resultState === 'O' ? 'primary' : 'secondary'}
             variant="contained"
@@ -493,7 +499,6 @@ export default function ApplicationProgressCard(props) {
               isLoading
               // || !hasFile
             }
-            size="small"
             onClick={(e) => handleUpdateResult(e, resultState)}
             startIcon={isLoading ? <CircularProgress size={24} /> : null}
           >
@@ -504,15 +509,14 @@ export default function ApplicationProgressCard(props) {
           <Button
             color="secondary"
             variant="outlined"
-            size="small"
             title="Undo"
             sx={{ ml: 1 }}
             onClick={closeSetResultModal}
           >
             {t('Cancel', { ns: 'common' })}
           </Button>
-        </Box>
-      </ModalNew>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }

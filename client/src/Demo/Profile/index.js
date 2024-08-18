@@ -9,6 +9,10 @@ import {
   Button,
   Card,
   Checkbox,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   FormControlLabel,
   Grid,
   Link,
@@ -40,7 +44,6 @@ import {
 } from '../Utils/checking-functions';
 import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
-import ModalNew from '../../components/Modal';
 import { appConfig } from '../../config';
 import Loading from '../../components/Loading/Loading';
 
@@ -589,29 +592,31 @@ function Profile() {
           )}
         </>
       )}
-      <ModalNew
+      <Dialog
         open={profileState.updateconfirmed}
         onClose={setmodalhide}
         aria-labelledby="contained-modal-title-vcenter"
       >
-        <Typography variant="h6">Update Successfully</Typography>
-        <Typography>Personal Data is updated successfully!</Typography>
-        <br />
-        <div style={{ marginTop: 'auto', textAlign: 'right' }}>
+        <DialogTitle>{t('Update Successfully', { ns: 'common' })}</DialogTitle>
+        <DialogContent>
+          {t('Personal Data is updated successfully!', { ns: 'common' })}
+        </DialogContent>
+        <DialogActions>
           <Button color="primary" variant="contained" onClick={setmodalhide}>
             {t('Close', { ns: 'common' })}
           </Button>
-        </div>
-      </ModalNew>
-      <ModalNew
+        </DialogActions>
+      </Dialog>
+      <Dialog
         open={profileState.updateOfficeHoursConfirmed}
         onClose={onHideOfficeHoursConfirmed}
-        aria-labelledby="contained-modal-title-vcenter"
       >
-        <Typography variant="h6">Update Successfully</Typography>
-        <Typography>Office Hours time slots updated Successfully</Typography>
-        <br />
-        <div style={{ marginTop: 'auto', textAlign: 'right' }}>
+        <DialogTitle>{t('Update Successfully', { ns: 'common' })}</DialogTitle>
+        <DialogContent>
+          {t('Office Hours time slots updated', { ns: 'common' })}
+          Successfully
+        </DialogContent>
+        <DialogActions>
           <Button
             color="primary"
             variant="contained"
@@ -619,8 +624,8 @@ function Profile() {
           >
             {t('Close', { ns: 'common' })}
           </Button>
-        </div>
-      </ModalNew>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

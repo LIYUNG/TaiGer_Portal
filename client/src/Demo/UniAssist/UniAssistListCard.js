@@ -10,7 +10,12 @@ import {
   FormControlLabel,
   Checkbox,
   Box,
-  Stack
+  Stack,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions
 } from '@mui/material';
 import { green, grey } from '@mui/material/colors';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -39,7 +44,6 @@ import {
 import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
-import ModalNew from '../../components/Modal';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -795,96 +799,94 @@ function UniAssistListCard(props) {
         </Card>
       )}
 
-      <ModalNew
+      <Dialog
         open={uniAssistListCardState.deleteVPDFileWarningModel}
         onClose={closeWarningWindow}
         aria-labelledby="contained-modal-title-vcenter"
       >
-        <Typography variant="h6">{t('Warning', { ns: 'common' })}</Typography>
-        <Typography sx={{ my: 2 }}>{t('Do you want to delete?')}</Typography>
-        <Button
-          variant="contained"
-          color="secondary"
-          disabled={
-            !uniAssistListCardState.isLoaded2[
+        <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>{t('Do you want to delete?')}</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant="contained"
+            color="secondary"
+            disabled={
+              !uniAssistListCardState.isLoaded2[
+                uniAssistListCardState.program_id
+              ] ||
+              !uniAssistListCardState.isLoadedVPDConfirmation[
+                uniAssistListCardState.program_id
+              ]
+            }
+            onClick={(e) =>
+              handleUniAssistDocDelete(e, uniAssistListCardState.program_id)
+            }
+          >
+            {uniAssistListCardState.isLoaded2[
               uniAssistListCardState.program_id
             ] ||
-            !uniAssistListCardState.isLoadedVPDConfirmation[
+            uniAssistListCardState.isLoadedVPDConfirmation[
               uniAssistListCardState.program_id
-            ]
-          }
-          onClick={(e) =>
-            handleUniAssistDocDelete(e, uniAssistListCardState.program_id)
-          }
-        >
-          {uniAssistListCardState.isLoaded2[
-            uniAssistListCardState.program_id
-          ] ||
-          uniAssistListCardState.isLoadedVPDConfirmation[
-            uniAssistListCardState.program_id
-          ] ? (
-            t('Yes', { ns: 'common' })
-          ) : (
-            <CircularProgress size={16} />
-          )}
-        </Button>
-        <Button onClick={closeWarningWindow}>
-          {t('No', { ns: 'common' })}
-        </Button>
-      </ModalNew>
-      <ModalNew
+            ] ? (
+              t('Yes', { ns: 'common' })
+            ) : (
+              <CircularProgress size={16} />
+            )}
+          </Button>
+          <Button onClick={closeWarningWindow} variant="outlined">
+            {t('No', { ns: 'common' })}
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
         open={uniAssistListCardState.setAsNotNeededModel}
         onClose={closesetAsNotNeededWindow}
         aria-labelledby="contained-modal-title-vcenter"
       >
-        <Grid container spacing={2}>
-          <Grid item md={12}>
-            <Typography variant="h6">
-              {t('Warning', { ns: 'common' })}
-            </Typography>
-          </Grid>
-          <Grid item md={12}>
-            <Typography variant="string">
-              {t(
-                'Is VPD not necessary for this program (because other programs have already VPD and it can be reused for this)?'
-              )}
-            </Typography>
-          </Grid>
-          <Grid item md={12}>
-            <Button
-              color="secondary"
-              variant="contained"
-              disabled={
-                !uniAssistListCardState.isLoaded2[
-                  uniAssistListCardState.program_id
-                ] ||
-                !uniAssistListCardState.isLoadedVPDConfirmation[
-                  uniAssistListCardState.program_id
-                ]
-              }
-              onClick={(e) => handleSetAsNotNeeded(e)}
-            >
-              {uniAssistListCardState.isLoaded2[
+        <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            {t(
+              'Is VPD not necessary for this program (because other programs have already VPD and it can be reused for this)?'
+            )}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            color="secondary"
+            variant="contained"
+            disabled={
+              !uniAssistListCardState.isLoaded2[
                 uniAssistListCardState.program_id
               ] ||
-              uniAssistListCardState.isLoadedVPDConfirmation[
+              !uniAssistListCardState.isLoadedVPDConfirmation[
                 uniAssistListCardState.program_id
-              ] ? (
-                t('Yes', { ns: 'common' })
-              ) : (
-                <CircularProgress size={16} />
-              )}
-            </Button>
-            <Button
-              color="secondary"
-              variant="outlined"
-              onClick={closesetAsNotNeededWindow}
-            >
-              {t('No', { ns: 'common' })}
-            </Button>
-          </Grid>
-        </Grid>
-      </ModalNew>
+              ]
+            }
+            onClick={(e) => handleSetAsNotNeeded(e)}
+          >
+            {uniAssistListCardState.isLoaded2[
+              uniAssistListCardState.program_id
+            ] ||
+            uniAssistListCardState.isLoadedVPDConfirmation[
+              uniAssistListCardState.program_id
+            ] ? (
+              t('Yes', { ns: 'common' })
+            ) : (
+              <CircularProgress size={16} />
+            )}
+          </Button>
+          <Button
+            color="secondary"
+            variant="outlined"
+            onClick={closesetAsNotNeededWindow}
+          >
+            {t('No', { ns: 'common' })}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }

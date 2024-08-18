@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { pdfjs, Document, Page } from 'react-pdf';
-import { Button, Typography } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import DownloadIcon from '@mui/icons-material/Download';
 import ZoomInIcon from '@mui/icons-material/ZoomIn';
 import ZoomOutIcon from '@mui/icons-material/ZoomOut';
@@ -57,12 +57,12 @@ const PDFViewer = (student_id, path) => {
   };
 
   return (
-    <div>
+    <Box>
       {pdfData ? (
         <>
-          <div
+          <Box
             ref={containerRef}
-            style={{ width: '100%', height: '60vh', overflow: 'auto' }}
+            style={{ height: '60vh', overflow: 'auto' }}
             onScroll={handleScroll}
           >
             <Document
@@ -80,35 +80,37 @@ const PDFViewer = (student_id, path) => {
                 />
               ))}
             </Document>
-          </div>
-          <Typography>
-            {currentPage} of {numPages}
-          </Typography>
-          <div>
-            <Button
-              size="small"
-              variant="outlined"
-              onClick={handleZoomIn}
-              startIcon={<ZoomInIcon />}
-            ></Button>
-            <Button
-              size="small"
-              variant="outlined"
-              onClick={handleZoomOut}
-              startIcon={<ZoomOutIcon />}
-            ></Button>
-            <Button
-              size="small"
-              variant="outlined"
-              onClick={handleDownload}
-              startIcon={<DownloadIcon />}
-            ></Button>
-          </div>
+          </Box>
+          <Box sx={{ mx: 2 }}>
+            <Typography>
+              {currentPage} of {numPages}
+            </Typography>
+            <Box>
+              <Button
+                size="small"
+                variant="outlined"
+                onClick={handleZoomIn}
+                startIcon={<ZoomInIcon />}
+              ></Button>
+              <Button
+                size="small"
+                variant="outlined"
+                onClick={handleZoomOut}
+                startIcon={<ZoomOutIcon />}
+              ></Button>
+              <Button
+                size="small"
+                variant="outlined"
+                onClick={handleDownload}
+                startIcon={<DownloadIcon />}
+              ></Button>
+            </Box>
+          </Box>
         </>
       ) : (
-        <div>Loading PDF...</div>
+        <Box>Loading PDF...</Box>
       )}
-    </div>
+    </Box>
   );
 };
 export default PDFViewer;

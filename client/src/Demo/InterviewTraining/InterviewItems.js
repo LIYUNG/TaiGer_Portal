@@ -20,7 +20,11 @@ import {
   Button,
   Grid,
   Typography,
-  TextField
+  TextField,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 
@@ -36,7 +40,6 @@ import {
 } from '../../api';
 import NotesEditor from '../Notes/NotesEditor';
 import { useAuth } from '../../components/AuthProvider';
-import ModalNew from '../../components/Modal';
 import {
   INTERVIEW_STATUS_E,
   NoonNightLabel,
@@ -505,52 +508,54 @@ function InterviewItems(props) {
           </Grid>
         </AccordionDetails>
       </Accordion>
-      <ModalNew open={showModal} size="small" centered onClose={toggleModal}>
-        <Typography>{t('Assign Trainer')}</Typography>
-        <List>
-          {editors?.map((editor, i) => (
-            <ListItemButton
-              key={i}
-              role={undefined}
-              onClick={() =>
-                modifyTrainer(
-                  editor._id.toString(),
-                  trainerId.has(editor._id.toString())
-                )
-              }
-              dense
-            >
-              <ListItemIcon>
-                <Checkbox
-                  edge="start"
-                  checked={trainerId.has(editor._id.toString())}
-                  tabIndex={-1}
-                  disableRipple
+      <Dialog open={showModal} size="small" centered onClose={toggleModal}>
+        <DialogTitle>{t('Assign Trainer')}</DialogTitle>
+        <DialogContent>
+          <List>
+            {editors?.map((editor, i) => (
+              <ListItemButton
+                key={i}
+                role={undefined}
+                onClick={() =>
+                  modifyTrainer(
+                    editor._id.toString(),
+                    trainerId.has(editor._id.toString())
+                  )
+                }
+                dense
+              >
+                <ListItemIcon>
+                  <Checkbox
+                    edge="start"
+                    checked={trainerId.has(editor._id.toString())}
+                    tabIndex={-1}
+                    disableRipple
+                  />
+                </ListItemIcon>
+                <ListItemText
+                  primary={`${editor.firstname} ${editor.lastname}`}
                 />
-              </ListItemIcon>
-              <ListItemText
-                primary={`${editor.firstname} ${editor.lastname}`}
-              />
-            </ListItemButton>
-          ))}
-        </List>
-        <Button
-          color="primary"
-          variant="contained"
-          size="small"
-          onClick={updateTrainer}
-        >
-          {t('Assign', { ns: 'common' })}
-        </Button>
-        <Button
-          color="secondary"
-          variant="contained"
-          size="small"
-          onClick={toggleModal}
-        >
-          {t('Close', { ns: 'common' })}
-        </Button>
-      </ModalNew>
+              </ListItemButton>
+            ))}
+          </List>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            color="primary"
+            variant="contained"
+            onClick={updateTrainer}
+          >
+            {t('Assign', { ns: 'common' })}
+          </Button>
+          <Button
+            color="secondary"
+            variant="contained"
+            onClick={toggleModal}
+          >
+            {t('Close', { ns: 'common' })}
+          </Button>
+        </DialogActions>
+      </Dialog>
       {interviewItemsState.res_modal_status >= 400 && (
         <ModalMain
           ConfirmError={ConfirmError}

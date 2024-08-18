@@ -48,6 +48,8 @@ function AdmissionsTable(props) {
                 id: `${student._id}${application.programId._id}`,
                 student_id: student._id,
                 name: `${student.firstname}, ${student.lastname}`,
+                first_name_chinese: `${student.firstname_chinese}`,
+                last_name_chinese: `${student.lastname_chinese}`,
                 editors: editors_name_string,
                 agents: agents_name_string,
                 program_id: application.programId._id,
@@ -68,6 +70,8 @@ function AdmissionsTable(props) {
               id: `${student._id}${application.programId._id}`,
               student_id: student._id,
               name: `${student.firstname}, ${student.lastname}`,
+              first_name_chinese: `${student.firstname_chinese}`,
+              last_name_chinese: `${student.lastname_chinese}`,
               editors: editors_name_string,
               agents: agents_name_string,
               program_id: application.programId._id,
@@ -92,6 +96,52 @@ function AdmissionsTable(props) {
   let not_yet_closed_table = applicationResultsArray(students, '--');
 
   const admisstionTableColumns = [
+    {
+      field: 'first_name_chinese',
+      headerName: 'First Name Chinese',
+      align: 'left',
+      headerAlign: 'left',
+      width: 80,
+      renderCell: (params) => {
+        const linkUrl = `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+          params.row.student_id,
+          DEMO.PROFILE_HASH
+        )}`;
+        return (
+          <Link
+            underline="hover"
+            to={linkUrl}
+            component={LinkDom}
+            target="_blank"
+          >
+            {params.value}
+          </Link>
+        );
+      }
+    },
+    {
+      field: 'last_name_chinese',
+      headerName: 'Last Name Chinese',
+      align: 'left',
+      headerAlign: 'left',
+      width: 80,
+      renderCell: (params) => {
+        const linkUrl = `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+          params.row.student_id,
+          DEMO.PROFILE_HASH
+        )}`;
+        return (
+          <Link
+            underline="hover"
+            to={linkUrl}
+            component={LinkDom}
+            target="_blank"
+          >
+            {params.value}
+          </Link>
+        );
+      }
+    },
     {
       field: 'name',
       headerName: 'Name',

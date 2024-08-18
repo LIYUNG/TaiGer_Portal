@@ -11,7 +11,12 @@ import {
   Button,
   Badge,
   TextField,
-  Breadcrumbs
+  Breadcrumbs,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { Link as LinkDom, useParams } from 'react-router-dom';
@@ -26,7 +31,6 @@ import { appConfig } from '../../config';
 import DEMO from '../../store/constant';
 import { is_TaiGer_role } from '../Utils/checking-functions';
 import { useAuth } from '../../components/AuthProvider';
-import ModalNew from '../../components/Modal';
 import { TopBar } from '../../components/TopBar/TopBar';
 const Questionnaire = () => {
   const { interview_id } = useParams();
@@ -379,7 +383,6 @@ const Questionnaire = () => {
           </Badge>
         </FormControl>
       </Box>
-
       <Button
         fullWidth
         variant="outlined"
@@ -399,21 +402,19 @@ const Questionnaire = () => {
       >
         {t('Submit', { ns: 'common' })}
       </Button>
-      <ModalNew open={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <Box>
-          <Typography id="modal-modal-title" variant="h6" sx={{ mb: 1 }}>
-            {t('Attention')}
-          </Typography>
-          <Typography id="modal-modal-title" variant="body1">
+      <Dialog open={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        <DialogTitle>{t('Attention')}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
             {t('Do you want to submit the interview survey?', {
               ns: 'interviews'
             })}
-          </Typography>
-          <Typography id="modal-modal-title" variant="body1" sx={{ mb: 1 }}>
-            {t('After submission you can not change the survey anymore.', {
-              ns: 'interviews'
-            })}
-          </Typography>
+          </DialogContentText>
+          {t('After submission you can not change the survey anymore.', {
+            ns: 'interviews'
+          })}
+        </DialogContent>
+        <DialogActions>
           <Button
             fullWidth
             variant="contained"
@@ -423,8 +424,8 @@ const Questionnaire = () => {
           >
             {t('Submit', { ns: 'common' })}
           </Button>
-        </Box>
-      </ModalNew>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

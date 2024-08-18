@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import ModalNew from '../../../../components/Modal';
 import {
   Box,
   Button,
   Checkbox,
   CircularProgress,
+  Dialog,
+  DialogContent,
+  DialogTitle,
   FormControlLabel,
   Table,
   TableBody,
@@ -91,46 +93,54 @@ function EditAgentsSubpage(props) {
   );
 
   return (
-    <ModalNew
+    <Dialog
       open={props.show}
       onClose={props.onHide}
       size="large"
       aria-labelledby="contained-modal-title-vcenter"
       centered
     >
-      {isLoaded ? (
-        <>
-          <Typography variant="h6">
-            Agent for {props.student.firstname} - {props.student.lastname} to
-          </Typography>
-          <Typography variant="body1">{t('Agent', { ns: 'common' })}: </Typography>
-          <Table size="small">
-            <TableBody>{agentlist}</TableBody>
-          </Table>
-          <Box sx={{ mt: 2 }}>
-            <Button
-              color="primary"
-              variant="contained"
-              onClick={(e) =>
-                props.submitUpdateAgentlist(
-                  e,
-                  checkboxState.updateAgentList,
-                  props.student._id
-                )
-              }
-              sx={{ mr: 2 }}
-            >
-              {t('Update', { ns: 'common' })}
-            </Button>
-            <Button color="secondary" variant="outlined" onClick={props.onHide}>
-              {t('Cancel', { ns: 'common' })}
-            </Button>
-          </Box>
-        </>
-      ) : (
-        <CircularProgress size={24} />
-      )}
-    </ModalNew>
+      <DialogTitle>
+        Agent for {props.student.firstname} - {props.student.lastname} to
+      </DialogTitle>
+      <DialogContent>
+        {isLoaded ? (
+          <>
+            <Typography variant="body1">
+              {t('Agent', { ns: 'common' })}:{' '}
+            </Typography>
+            <Table size="small">
+              <TableBody>{agentlist}</TableBody>
+            </Table>
+            <Box sx={{ mt: 2 }}>
+              <Button
+                color="primary"
+                variant="contained"
+                onClick={(e) =>
+                  props.submitUpdateAgentlist(
+                    e,
+                    checkboxState.updateAgentList,
+                    props.student._id
+                  )
+                }
+                sx={{ mr: 2 }}
+              >
+                {t('Update', { ns: 'common' })}
+              </Button>
+              <Button
+                color="secondary"
+                variant="outlined"
+                onClick={props.onHide}
+              >
+                {t('Cancel', { ns: 'common' })}
+              </Button>
+            </Box>
+          </>
+        ) : (
+          <CircularProgress size={24} />
+        )}
+      </DialogContent>
+    </Dialog>
   );
 }
 

@@ -10,7 +10,11 @@ import {
   Tabs,
   Tab,
   Typography,
-  TextField
+  TextField,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions
 } from '@mui/material';
 import { Navigate, Link as LinkDom } from 'react-router-dom';
 import CheckIcon from '@mui/icons-material/Check';
@@ -28,7 +32,6 @@ import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
 import { appConfig } from '../../config';
 import Loading from '../../components/Loading/Loading';
-import ModalNew from '../../components/Modal';
 import { CustomTabPanel, a11yProps } from '../../components/Tabs';
 import useCalendarEvents from '../../hooks/useCalendarEvents';
 
@@ -221,65 +224,67 @@ function AllOfficeHours() {
               />
             ))}
           </Card>
-          <ModalNew
+          <Dialog
             open={isConfirmModalOpen}
             onClose={handleConfirmAppointmentModalClose}
           >
-            <Typography variant="string">
+            <DialogContent>
               You are aware of this meeting time and confirm.
-            </Typography>
-            <Button
-              color="primary"
-              variant="contained"
-              disabled={
-                event_id === '' ||
-                event_temp?.description?.length === 0 ||
-                BookButtonDisable
-              }
-              onClick={(e) =>
-                handleConfirmAppointmentModal(e, event_id, event_temp)
-              }
-              startIcon={
-                BookButtonDisable ? (
-                  <CircularProgress size={24} />
-                ) : (
-                  <CheckIcon />
-                )
-              }
-            >
-              {t('Yes', { ns: 'common' })}
-            </Button>
-            <Button
-              color="primary"
-              variant="outlined"
-              onClick={handleConfirmAppointmentModalClose}
-            >
-              {t('Close', { ns: 'common' })}
-            </Button>
-          </ModalNew>
-          <ModalNew
+            </DialogContent>
+            <DialogActions>
+              <Button
+                color="primary"
+                variant="contained"
+                disabled={
+                  event_id === '' ||
+                  event_temp?.description?.length === 0 ||
+                  BookButtonDisable
+                }
+                onClick={(e) =>
+                  handleConfirmAppointmentModal(e, event_id, event_temp)
+                }
+                startIcon={
+                  BookButtonDisable ? (
+                    <CircularProgress size={24} />
+                  ) : (
+                    <CheckIcon />
+                  )
+                }
+              >
+                {t('Yes', { ns: 'common' })}
+              </Button>
+              <Button
+                color="primary"
+                variant="outlined"
+                onClick={handleConfirmAppointmentModalClose}
+              >
+                {t('Close', { ns: 'common' })}
+              </Button>
+            </DialogActions>
+          </Dialog>
+          <Dialog
             open={isDeleteModalOpen}
             onClose={handleDeleteAppointmentModalClose}
-            centered
-            size="lg"
           >
-            <Typography variant="string">
+            <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
+            <DialogContent>
               {t('Do you want to cancel this meeting?')}
-            </Typography>
-            <br />
-            <Button
-              color="primary"
-              variant="contained"
-              disabled={event_id === '' || BookButtonDisable}
-              onClick={(e) => handleDeleteAppointmentModal(e, event_id)}
-            >
-              {BookButtonDisable ? (
-                <CircularProgress size={16} />
-              ) : (
-                t('Delete', { ns: 'common' })
-              )}
-            </Button>
-          </ModalNew>
+            </DialogContent>
+            <DialogActions>
+              <Button
+                color="primary"
+                variant="contained"
+                disabled={event_id === '' || BookButtonDisable}
+                onClick={(e) => handleDeleteAppointmentModal(e, event_id)}
+              >
+                {BookButtonDisable ? (
+                  <CircularProgress size={16} />
+                ) : (
+                  t('Delete', { ns: 'common' })
+                )}
+              </Button>
+            </DialogActions>
+          </Dialog>
         </>
       ) : (
         <>
@@ -330,55 +335,56 @@ function AllOfficeHours() {
           </Card>
         </>
       )}
-      <ModalNew
-        open={isEditModalOpen}
-        onClose={handleEditAppointmentModalClose}
-        size="xl"
-        centered
-      >
-        <Typography variant="h6">{t('Edit', { ns: 'common' })}</Typography>
-        <Typography>請寫下想討論的主題</Typography>
-        <TextField
-          fullWidth
-          type="textarea"
-          inputProps={{ maxLength: 2000 }}
-          multiline
-          minRows={10}
-          placeholder="Example：我想定案選校、選課，我想討論簽證，德語班。"
-          value={event_temp.description || ''}
-          isInvalid={event_temp.description?.length > 2000}
-          onChange={(e) => handleUpdateDescription(e)}
-        ></TextField>
-        <Badge
-          bg={`${event_temp.description?.length > 2000 ? 'danger' : 'primary'}`}
-        >
-          {event_temp.description?.length || 0}/{2000}
-        </Badge>
-        <Typography>
-          Student:{' '}
-          {event_temp?.requester_id?.map((requester, idx) => (
-            <Typography fontWeight="bold" key={idx}>
-              {requester.firstname} {requester.lastname}
-            </Typography>
-          ))}
-        </Typography>
-        <Button
-          color="primary"
-          variant="contained"
-          disabled={
-            event_id === '' ||
-            event_temp?.description?.length === 0 ||
-            BookButtonDisable
-          }
-          onClick={(e) => handleEditAppointmentModal(e, event_id, event_temp)}
-        >
-          {BookButtonDisable ? (
-            <CircularProgress size={16} />
-          ) : (
-            t('Update', { ns: 'common' })
-          )}
-        </Button>
-      </ModalNew>
+      <Dialog open={isEditModalOpen} onClose={handleEditAppointmentModalClose}>
+        <DialogTitle>{t('Edit', { ns: 'common' })}</DialogTitle>
+        <DialogContent>
+          請寫下想討論的主題
+          <TextField
+            fullWidth
+            type="textarea"
+            inputProps={{ maxLength: 2000 }}
+            multiline
+            minRows={10}
+            placeholder="Example：我想定案選校、選課，我想討論簽證，德語班。"
+            value={event_temp.description || ''}
+            isInvalid={event_temp.description?.length > 2000}
+            onChange={(e) => handleUpdateDescription(e)}
+          ></TextField>
+          <Badge
+            bg={`${
+              event_temp.description?.length > 2000 ? 'danger' : 'primary'
+            }`}
+          >
+            {event_temp.description?.length || 0}/{2000}
+          </Badge>
+          <Typography>
+            {t('Student', { ns: 'common' })}:{' '}
+            {event_temp?.requester_id?.map((requester, idx) => (
+              <Typography fontWeight="bold" key={idx}>
+                {requester.firstname} {requester.lastname}
+              </Typography>
+            ))}
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            color="primary"
+            variant="contained"
+            disabled={
+              event_id === '' ||
+              event_temp?.description?.length === 0 ||
+              BookButtonDisable
+            }
+            onClick={(e) => handleEditAppointmentModal(e, event_id, event_temp)}
+          >
+            {BookButtonDisable ? (
+              <CircularProgress size={16} />
+            ) : (
+              t('Update', { ns: 'common' })
+            )}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

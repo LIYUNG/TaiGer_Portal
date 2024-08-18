@@ -11,7 +11,12 @@ import {
   FormControl,
   Select,
   MenuItem,
-  TextField
+  TextField,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import AddIcon from '@mui/icons-material/Add';
@@ -37,7 +42,6 @@ import DEMO from '../../store/constant';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
-import ModalNew from '../../components/Modal';
 import { appConfig } from '../../config';
 
 function InternalDocCreatePage(props) {
@@ -368,26 +372,26 @@ function InternalDocCreatePage(props) {
           res_modal_message={res_modal_message}
         />
       )}
-      <ModalNew
+      <Dialog
         open={internalDocCreatePageState.SetDeleteDocModel}
         onClose={closeDeleteDocModalWindow}
-        aria-labelledby="contained-modal-title-vcenter"
-        centered
       >
-        <Typography>{t('Warning', { ns: 'common' })}</Typography>
-        <Typography>
-          Do you want to delete documentation of title:{' '}
-          {internalDocCreatePageState.doc_title_toBeDelete}?
-        </Typography>
-        <Typography>
+        <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Do you want to delete documentation of title:{' '}
+            {internalDocCreatePageState.doc_title_toBeDelete}?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
           <Button disabled={!isLoaded} onClick={handleDeleteDoc}>
             {t('Yes', { ns: 'common' })}
           </Button>
           <Button onClick={closeDeleteDocModalWindow}>
             {t('No', { ns: 'common' })}
           </Button>
-        </Typography>
-      </ModalNew>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

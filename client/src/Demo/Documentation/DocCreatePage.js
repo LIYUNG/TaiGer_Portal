@@ -5,6 +5,11 @@ import {
   Breadcrumbs,
   Button,
   Card,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   FormControl,
   Grid,
   InputLabel,
@@ -36,7 +41,6 @@ import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
 import { useTranslation } from 'react-i18next';
 import { appConfig } from '../../config';
-import ModalNew from '../../components/Modal';
 
 function DocCreatePage(props) {
   const { user } = useAuth();
@@ -296,7 +300,9 @@ function DocCreatePage(props) {
         >
           {appConfig.companyName}
         </Link>
-        <Typography color="text.primary">{t('All Documentations', { ns: 'common' })}</Typography>
+        <Typography color="text.primary">
+          {t('All Documentations', { ns: 'common' })}
+        </Typography>
       </Breadcrumbs>
 
       {DocCreatePageState.isEdit ? (
@@ -364,27 +370,26 @@ function DocCreatePage(props) {
           </Grid>
         </Grid>
       )}
-
-      <ModalNew
+      <Dialog
         open={DocCreatePageState.SetDeleteDocModel}
         onClose={closeDeleteDocModalWindow}
-        aria-labelledby="contained-modal-title-vcenter"
-        centered
       >
-        <Typography id="contained-modal-title-vcenter">
-          {t('Warning', { ns: 'common' })}
-        </Typography>
-        <Typography>
-          Do you want to delete documentation of title:{' '}
-          {DocCreatePageState.doc_title_toBeDelete}?
-        </Typography>
-        <Typography>
+        <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Do you want to delete documentation of title:{' '}
+            {DocCreatePageState.doc_title_toBeDelete}?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
           <Button disabled={!isLoaded} onClick={handleDeleteDoc}>
             {t('Yes', { ns: 'common' })}
           </Button>
-          <Button onClick={closeDeleteDocModalWindow}>{t('No', { ns: 'common' })}</Button>
-        </Typography>
-      </ModalNew>
+          <Button onClick={closeDeleteDocModalWindow}>
+            {t('No', { ns: 'common' })}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

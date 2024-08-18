@@ -5,6 +5,11 @@ import {
   Card,
   Checkbox,
   CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   List,
   ListItem,
   ListItemButton,
@@ -17,7 +22,6 @@ import {
 import { useTranslation } from 'react-i18next';
 import EmailIcon from '@mui/icons-material/Email';
 import { highlightText } from '../Utils/checking-functions';
-import ModalNew from '../../components/Modal';
 import {
   assignProgramToStudent,
   getQueryStudentsResults,
@@ -338,20 +342,22 @@ export const ImportStudentProgramsCard = (props) => {
             ))}
         </Box>
       </Card>
-      <ModalNew
+      <Dialog
         open={importStudentProgramsCard.importedStudentModalOpen}
         onClose={onHideimportedStudentModalOpen}
         size="xl"
         aria-labelledby="contained-modal-title-vcenter"
       >
-        <Typography variant="h6">
+        <DialogTitle>
           Import programs from{' '}
           <b>{importStudentProgramsCard.selectedStudentName}</b>
-        </Typography>
-        <Typography>
-          Do you want to import the following programs?
-          <br />
-          (Same programs will <b>NOT</b> be duplicated :) )
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Do you want to import the following programs?
+            <br />
+            (Same programs will <b>NOT</b> be duplicated :) )
+          </DialogContentText>
           {importStudentProgramsCard.isImportingStudentPrograms ? (
             <CircularProgress size={16} />
           ) : (
@@ -391,12 +397,11 @@ export const ImportStudentProgramsCard = (props) => {
               ) || []}
             </List>
           )}
-        </Typography>
-        <Typography>
+        </DialogContent>
+        <DialogActions>
           <Button
             color="primary"
             variant="contained"
-            size="small"
             disabled={importStudentProgramsCard.isButtonDisable}
             onClick={handleImportProgramsConfirm}
           >
@@ -409,27 +414,26 @@ export const ImportStudentProgramsCard = (props) => {
           <Button
             color="primary"
             variant="outlined"
-            size="small"
             onClick={onHideimportedStudentModalOpen}
           >
             {t('No', { ns: 'common' })}
           </Button>
-        </Typography>
-      </ModalNew>
-      <ModalNew
+        </DialogActions>
+      </Dialog>
+      <Dialog
         open={importStudentProgramsCard.modalShowAssignSuccessWindow}
         onClose={onHideAssignSuccessWindow}
-        size="m"
-        aria-labelledby="contained-modal-title-vcenter"
       >
-        <Typography id="contained-modal-title-vcenter">
-          {t('Success', { ns: 'common' })}
-        </Typography>
-        <Typography>Program(s) imported to student successfully!</Typography>
-        <Typography>
-          <Button onClick={onHideAssignSuccessWindow}>Close</Button>
-        </Typography>
-      </ModalNew>
+        <DialogTitle>{t('Success', { ns: 'common' })}</DialogTitle>
+        <DialogContent>
+          Program(s) imported to student successfully!
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={onHideAssignSuccessWindow}>
+            {t('Close', { ns: 'common' })}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };

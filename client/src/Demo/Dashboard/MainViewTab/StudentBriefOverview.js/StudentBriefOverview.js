@@ -15,7 +15,11 @@ import {
   Grid,
   ButtonBase,
   Stack,
-  IconButton
+  IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions
 } from '@mui/material';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import ReplayIcon from '@mui/icons-material/Replay';
@@ -30,7 +34,6 @@ import DEMO from '../../../../store/constant';
 import { useAuth } from '../../../../components/AuthProvider';
 import EditAttributesSubpage from '../StudDocsOverview/EditAttributesSubpage';
 import { COLORS, stringAvatar } from '../../../Utils/contants';
-import ModalNew from '../../../../components/Modal';
 
 function StudentBriefOverview(props) {
   const { user } = useAuth();
@@ -307,13 +310,11 @@ function StudentBriefOverview(props) {
             />
           )}
           {studentBriefOverviewState.showArchivModalPage && (
-            <ModalNew
+            <Dialog
               open={studentBriefOverviewState.showArchivModalPage}
-              size="sm"
               onClose={setArchivModalhide}
-              aria-labelledby="contained-modal-title-vcenter"
             >
-              <Typography sx={{ mb: 2 }}>
+              <DialogTitle>
                 {t('Move to archive statement', {
                   ns: 'common',
                   studentName: `${props.student.firstname} ${props.student.lastname}`,
@@ -323,39 +324,43 @@ function StudentBriefOverview(props) {
                       : t('Archive', { ns: 'common' })
                   }`
                 })}
-              </Typography>
-              <FormControlLabel
-                label={t('Inform student for archive', { ns: 'common' })}
-                control={
-                  <Checkbox
-                    id={`Inform student`}
-                    checked={shouldInform}
-                    onChange={() => setShouldInform(!shouldInform)}
-                  />
-                }
-              />
-              <br />
-              <Button
-                color="primary"
-                variant="contained"
-                onClick={() =>
-                  updateStudentArchivStatus(
-                    props.student._id,
-                    !is_User_Archived(props.student),
-                    shouldInform
-                  )
-                }
-              >
-                {isLoading ? (
-                  <CircularProgress size={24} />
-                ) : (
-                  t('Submit', { ns: 'common' })
-                )}
-              </Button>
-              <Button onClick={setArchivModalhide}>
-                {t('Cancel', { ns: 'common' })}
-              </Button>
-            </ModalNew>
+              </DialogTitle>
+              <DialogContent>
+                <FormControlLabel
+                  label={t('Inform student for archive', { ns: 'common' })}
+                  control={
+                    <Checkbox
+                      id={`Inform student`}
+                      checked={shouldInform}
+                      onChange={() => setShouldInform(!shouldInform)}
+                    />
+                  }
+                />
+              </DialogContent>
+              <DialogActions>
+                <Button
+                  color="primary"
+                  variant="contained"
+                  disabled={isLoading}
+                  onClick={() =>
+                    updateStudentArchivStatus(
+                      props.student._id,
+                      !is_User_Archived(props.student),
+                      shouldInform
+                    )
+                  }
+                >
+                  {isLoading ? (
+                    <CircularProgress size={24} />
+                  ) : (
+                    t('Submit', { ns: 'common' })
+                  )}
+                </Button>
+                <Button onClick={setArchivModalhide}>
+                  {t('Cancel', { ns: 'common' })}
+                </Button>
+              </DialogActions>
+            </Dialog>
           )}
         </>
       )}

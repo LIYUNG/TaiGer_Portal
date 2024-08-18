@@ -7,7 +7,11 @@ import {
   Link,
   Typography,
   Box,
-  TextField
+  TextField,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions
 } from '@mui/material';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
@@ -25,7 +29,6 @@ import { is_TaiGer_role } from '../Utils/checking-functions';
 import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
 import { appConfig } from '../../config';
-import ModalNew from '../../components/Modal';
 
 function ProgramList(props) {
   const { user } = useAuth();
@@ -518,24 +521,24 @@ function ProgramList(props) {
           )}
         </>
       )}
-      <ModalNew
+      <Dialog
         open={tableStates.modalShowAssignSuccessWindow}
         onHide={onHideAssignSuccessWindow}
         size="m"
         centered
       >
-        <Typography>{t('Success', { ns: 'common' })}</Typography>
-        <Typography>
+        <DialogTitle>{t('Success', { ns: 'common' })}</DialogTitle>
+        <DialogContent>
           {t('Program(s) assigned to student successfully!', {
             ns: 'programList'
           })}
-        </Typography>
-        <Typography>
+        </DialogContent>
+        <DialogActions>
           <Button variant="outlined" onClick={onHideAssignSuccessWindow}>
             {t('Close', { ns: 'common' })}
           </Button>
-        </Typography>
-      </ModalNew>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

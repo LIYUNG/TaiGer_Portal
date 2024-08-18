@@ -162,7 +162,8 @@ function AgentMainView(props) {
           <Card>
             <Alert severity="error">
               <Typography>
-                {t('Upcoming Applications', { ns: 'dashboard' })} (Decided):
+                {t('Upcoming Applications', { ns: 'dashboard' })} (
+                {applications_arr?.length}):
               </Typography>
             </Alert>
             <div className="card-scrollable-body">

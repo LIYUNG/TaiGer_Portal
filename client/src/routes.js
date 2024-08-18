@@ -10,10 +10,16 @@ import {
   combinedLoader,
   getAllActiveEssaysLoader,
   getAllStudentsLoader,
-  getAllArchivedStudentsLoader
+  getAllArchivedStudentsLoader,
+  getAllComplaintTicketsLoader,
+  getComplaintTicketLoader
 } from './api/dataLoader';
 import DefaultErrorPage from './Demo/Utils/DefaultErrorPage';
 import StudentApplicationsAssignPage from './Demo/StudentApplications/assignPage';
+
+const CreateComplaintTicket = React.lazy(() =>
+  import('./Demo/CustomerSupport/CreateTicket')
+);
 const Questionnaire = React.lazy(() =>
   import('./Demo/InterviewTraining/Questionnaire')
 );
@@ -72,6 +78,12 @@ const EssayDashboard = React.lazy(() => import('./Demo/EssayDashboard/index'));
 const AllApplicantsOverview = React.lazy(() =>
   import('./Demo/ApplicantsOverview/allStudentIndex')
 );
+const CustomerSupport = React.lazy(() => import('./Demo/CustomerSupport'));
+
+const CustomerTicketDetailPage = React.lazy(() =>
+  import('./Demo/CustomerSupport/CustomerTicketDetailPage')
+);
+
 const MyStudentOverviewPage = React.lazy(() =>
   import('./Demo/StudentOverview/MyStudentsOverview')
 );
@@ -476,6 +488,23 @@ const routes = [
     errorElement: <DefaultErrorPage />,
     loader: getStudentsLoader,
     element: <MyStudentOverviewPage />
+  },
+  {
+    path: '/customer-center',
+    errorElement: <DefaultErrorPage />,
+    loader: getAllComplaintTicketsLoader,
+    element: <CustomerSupport />
+  },
+  {
+    path: '/customer-center/add-ticket',
+    errorElement: <DefaultErrorPage />,
+    element: <CreateComplaintTicket />
+  },
+  {
+    path: '/customer-center/tickets/:complaintTicketId',
+    errorElement: <DefaultErrorPage />,
+    loader: getComplaintTicketLoader,
+    element: <CustomerTicketDetailPage />
   },
   {
     path: '/students-overview/all',

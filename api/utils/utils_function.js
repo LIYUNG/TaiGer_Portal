@@ -887,7 +887,7 @@ const NextSemesterCourseSelectionReminderEmails = asyncHandler(async () => {
   const req = {};
   req.db = connectToDatabase(tenantId);
   req.VCModel = req.db.model('VC');
-  await NextSemesterCourseSelectionStudentReminderEmails();
+  await NextSemesterCourseSelectionStudentReminderEmails(req);
   // await NextSemesterCourseSelectionAgentReminderEmails();
 });
 

@@ -6,7 +6,9 @@ const {
   SMTP_USERNAME,
   SMTP_PASSWORD
 } = require('../../config');
-const { ses } = require('../../aws');
+const { ses, limiter } = require('../../aws');
+const { senderName, taigerNotReplyGmail } = require('../../constants/email');
+const { htmlContent } = require('../emailTemplate');
 
 const transporter = isDev()
   ? createTransport({
@@ -24,4 +26,17 @@ const transporter = isDev()
       SES: ses
     });
 
-module.exports = { transporter };
+const sendEmail = (to, subject, message) => {
+  const mail = {
+    from: senderName,
+    to,
+    bcc: taigerNotReplyGmail,
+    subject,
+    // text: message,
+    html: htmlContent(message)
+  };
+
+  return limiter.schedule(() => transporter.sendMail(mail));
+};
+
+module.exports = { transporter, sendEmail };

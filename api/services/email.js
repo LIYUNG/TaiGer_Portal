@@ -38,7 +38,7 @@ const {
 
 const { ORIGIN } = require('../config');
 const { htmlContent } = require('./emailTemplate');
-const { transporter } = require('./email/configuration');
+const { transporter, sendEmail } = require('./email/configuration');
 const {
   senderName,
   taigerNotReplyGmail,
@@ -48,18 +48,6 @@ const { asyncHandler } = require('../middlewares/error-handler');
 
 const verifySMTPConfig = () => {
   return transporter.verify();
-};
-
-const sendEmail = (to, subject, message) => {
-  const mail = {
-    from: senderName,
-    to,
-    bcc: taigerNotReplyGmail,
-    subject,
-    // text: message,
-    html: htmlContent(message)
-  };
-  return transporter.sendMail(mail);
 };
 
 const sendEventEmail = (
@@ -2779,7 +2767,6 @@ module.exports = {
   verifySMTPConfig,
   updateNotificationEmail,
   updatePermissionNotificationEmail,
-  sendEmail,
   deleteTemplateSuccessEmail,
   sendInvitationReminderEmail,
   sendInvitationEmail,

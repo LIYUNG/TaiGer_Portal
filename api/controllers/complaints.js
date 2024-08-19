@@ -8,6 +8,10 @@ const {
   ComplaintCreatedAgentEmail,
   ComplaintResolvedRequesterReminderEmail
 } = require('../services/email');
+const {
+  newCustomerCenterTicketEmail,
+  newCustomerCenterTicketSubmitConfirmationEmail
+} = require('../services/email/complaints');
 
 const getComplaints = asyncHandler(async (req, res) => {
   const { user } = req;
@@ -77,28 +81,56 @@ const createComplaint = asyncHandler(async (req, res) => {
   res.status(201).send({ success: true, data: new_ticket });
 
   // TODO: inform manager
+  const permissions = await req.db
+    .model('Permission')
+    .find({
+      $or: [
+        { canAssignEditors: true },
+        { canAssignAgents: true },
+        { canModifyAllBaseDocuments: true },
+        { canAccessAllChat: true }
+      ]
+    })
+    .populate('user_id', 'firstname lastname email archiv')
+    .lean();
+  if (permissions) {
+    for (let x = 0; x < permissions.length; x += 1) {
+      if (isNotArchiv(permissions[x].user_id)) {
+        newCustomerCenterTicketEmail(
+          {
+            firstname: permissions[x].user_id.firstname,
+            lastname: permissions[x].user_id.lastname,
+            address: permissions[x].user_id.email
+          },
+          {
+            requester: user,
+            ticket_id: new_ticket._id?.toString(),
+            ticket_title: new_ticket.title,
+            ticket_description: new_ticket.description,
+            createdAt: new Date()
+          }
+        );
+      }
+    }
+  }
 
-  // const student = await req.db
-  //   .model('Student')
-  //   .findById(user._id.toString())
-  //   .populate('agents', 'firstname lastname email')
-  //   .exec();
-  // for (let i = 0; i < student.agents.length; i += 1) {
-  //   if (isNotArchiv(student)) {
-  //     ComplaintCreatedAgentEmail(
-  //       {
-  //         firstname: student.agents[i].firstname,
-  //         lastname: student.agents[i].lastname,
-  //         address: student.agents[i].email
-  //       },
-  //       {
-  //         program,
-  //         student
-  //       }
-  //     );
-  //   }
-  // }
+  if (isNotArchiv(user)) {
+    newCustomerCenterTicketSubmitConfirmationEmail(
+      {
+        firstname: user.firstname,
+        lastname: user.lastname,
+        address: user.email
+      },
+      {
+        ticket_id: new_ticket._id?.toString(),
+        ticket_title: new_ticket.title,
+        ticket_description: new_ticket.description,
+        createdAt: new Date()
+      }
+    );
+  }
 });
+
 // (O) notification email works
 const postMessageInTicket = asyncHandler(async (req, res) => {
   const {

@@ -110,8 +110,7 @@ function StudentDashboard(props) {
             is terminated.
           </Typography>
           <Typography variant="body1" color="red">
-            Your account is deactivated. If you have any question, please
-            contact the administrator: contact@taigerconsultancy.com
+            {t('acctount_deactivated_text', { ns: 'dashboard' })}
           </Typography>
         </Card>
       )}

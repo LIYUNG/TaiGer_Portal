@@ -335,7 +335,24 @@ export const translation_en = {
       'Personal Data is updated successfully!',
     'Office Hours time slots updated': 'Office Hours time slots updated'
   },
-  customerCenter: {},
+  customerCenter: {
+    'What is the purpose of the Customer Center?':
+      'What is the purpose of the Customer Center?',
+    explanation_customer_center:
+      'The purpose of the customer service center is to assist students with any issues they may encounter when working with agents or editors, as well as any difficulties they may experience using the portal. The customer center is here to provide support.',
+    'What can I expect for the support ticket?':
+      'What can I expect for the support ticket?',
+    expectation_customer_center:
+      "When you submit a request, you will communicate directly with a manager. They will discuss and understand the issues you are facing and provide you with the necessary assistance. Since you will be in direct contact with a supervisor or administrator, please ensure that you only submit a request after you've been unable to resolve the issue with your consultant or editor. Be sure to provide a detailed description of your situation to facilitate the resolution of your problem.",
+    'My Agent or Editor did not reply me immediately, what can I do?':
+      'My Agent or Editor did not reply me immediately, what can I do?',
+    complaint_agents_editors:
+      'Your {{companyName}} professional consultant and foreign editor are usually based in European or U.S. time zones and work for top international companies, so they may not be able to respond to you immediately. However, the quality of your application will not be affected. Besides using the {{companyName}} Message system, please make good use of the Office Hours provided by your consultant or schedule a meeting to discuss all your questions at once. If your request is urgent or requires immediate resolution and your consultant or editor is unable to accommodate your timing, you may seek assistance from the customer center.',
+    'The quality of my CV, ML, RL or any other documents by the Editor is not as good as I expected. What can I do?':
+      'The quality of my CV, ML, RL or any other documents by the Editor is not as good as I expected. What can I do?',
+    quality_cvmlrl_explanation: 'quality_cvmlrl_explanation',
+    'Add Ticket': 'Add Ticket'
+  },
   dashboard: {
     Dashboard: 'Dashboard',
     'Upcoming Applications': 'Upcoming Applications',
@@ -345,7 +362,9 @@ export const translation_en = {
     'Edit Editor': 'Edit Editor',
     'Configure Attribute': 'Configure Attribute',
     'Please complete Profile so that your agent can understand your situation':
-      'Please complete Profile so that your agent can understand your situation'
+      'Please complete Profile so that your agent can understand your situation',
+    acctount_deactivated_text:
+      'Your account is deactivated. If you have any question, please contact the administrator: contact@taigerconsultancy.com'
   },
   documents: {
     confirmDocument:

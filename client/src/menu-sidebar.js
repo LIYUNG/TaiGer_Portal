@@ -26,7 +26,7 @@ import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import HistoryIcon from '@mui/icons-material/History';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import DifferenceIcon from '@mui/icons-material/Difference';
-// import SupportAgentIcon from '@mui/icons-material/SupportAgent';
+import SupportAgentIcon from '@mui/icons-material/SupportAgent';
 import ArchitectureIcon from '@mui/icons-material/Architecture';
 import { appConfig } from './config';
 
@@ -135,13 +135,13 @@ let all_students_nestedList = [
         }
       ]
     : []),
-  // {
-  //   id: 'customer-center',
-  //   title: 'Customer Center',
-  //   type: 'item',
-  //   url: '/customer-center',
-  //   icon: <SupportAgentIcon />
-  // },
+  {
+    id: 'customer-center',
+    title: 'Customer Center',
+    type: 'item',
+    url: '/customer-center',
+    icon: <SupportAgentIcon />
+  },
   {
     id: 'all-students-overview',
     title: 'Student Overview',
@@ -527,11 +527,11 @@ export const MenuSidebar = [
     classes: 'nav-item',
     icon: <DownloadIcon />
   },
-  // {
-  //   id: 'customer-center-student',
-  //   title: 'Customer Center',
-  //   type: 'item',
-  //   url: '/customer-center',
-  //   icon: <SupportAgentIcon />
-  // }
+  {
+    id: 'customer-center-student',
+    title: 'Customer Center',
+    type: 'item',
+    url: '/customer-center',
+    icon: <SupportAgentIcon />
+  }
 ];

@@ -30,7 +30,6 @@ import { useTranslation } from 'react-i18next';
 import AddIcon from '@mui/icons-material/Add';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-import SearchIcon from '@mui/icons-material/Search';
 import ExportIcon from '@mui/icons-material/ExitToApp';
 
 function CustomerSupportBody({ complaintTickets }) {
@@ -65,104 +64,28 @@ function CustomerSupportBody({ complaintTickets }) {
         >
           <Box>
             <Typography variant="h5" gutterBottom>
-              Support Ticket
+              {t('What is the purpose of the Customer Center?', {
+                ns: 'customerCenter'
+              })}
             </Typography>
             <Typography variant="subtitle1" gutterBottom>
-              When customers have problems, they open support tickets.
+              {t('explanation_customer_center', {
+                ns: 'customerCenter'
+              })}
             </Typography>
           </Box>
           <Box display="flex" alignItems="center">
             <Button
-              variant="outlined"
-              startIcon={<SearchIcon />}
-              sx={{ mr: 2 }}
-            >
-              Search
-            </Button>
-            <Button
               variant="contained"
               startIcon={<AddIcon />}
               onClick={handleAddTicketClick}
+              sx={{ minWidth: '140px' }}
             >
-              Add Ticket
+              {t('Add Ticket', { ns: 'customerCenter' })}
             </Button>
           </Box>
         </Box>
         <Grid container spacing={3}>
-          {/* <Grid item xs={12}>
-            <Paper elevation={3} sx={{ p: 3 }}>
-              <Typography variant="h6" gutterBottom>
-                Create New Ticket
-              </Typography>
-              <Typography variant="body2" gutterBottom>
-                Fill up all the information here, then click submit button
-              </Typography>
-              <Grid container spacing={2}>
-                <Grid item xs={12} md={3}>
-                  <FormControl size="small" fullWidth margin="normal">
-                    <InputLabel>Select Request Type</InputLabel>
-                    <Select
-                      value={ticket.requestType}
-                      name="requestType"
-                      onChange={handleChange}
-                    >
-                      <MenuItem value="Reissue Request">
-                        Reissue Request
-                      </MenuItem>
-                      <MenuItem value="Refund Request">Refund Request</MenuItem>
-                      <MenuItem value="VIP Request">VIP Request</MenuItem>
-                    </Select>
-                  </FormControl>
-                </Grid>
-                <Grid item xs={12} md={3}>
-                  <TextField
-                    fullWidth
-                    size="small"
-                    label="Search PNR"
-                    name="pnr"
-                    value={ticket.pnr}
-                    onChange={handleChange}
-                    margin="normal"
-                    InputProps={{
-                      endAdornment: <SearchIcon />
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={12} md={3}>
-                  <TextField
-                    fullWidth
-                    size="small"
-                    label="Flight Number"
-                    name="flightNumber"
-                    value={ticket.flightNumber}
-                    onChange={handleChange}
-                    margin="normal"
-                  />
-                </Grid>
-                <Grid item xs={12} md={3}>
-                  <TextField
-                    fullWidth
-                    size="small"
-                    label="Remarks"
-                    name="remarks"
-                    value={ticket.remarks}
-                    onChange={handleChange}
-                    margin="normal"
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleSubmit}
-                  >
-                    Submit Ticket
-                  </Button>
-                </Grid>
-              </Grid>
-            </Paper>
-          </Grid> */}
-
           <Grid item xs={12} md={8}>
             <Paper
               elevation={3}
@@ -221,60 +144,54 @@ function CustomerSupportBody({ complaintTickets }) {
               <Accordion disableGutters>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                   <Typography>
-                    What is the purpose of the Customer Center?
+                    {t('What can I expect for the support ticket?', {
+                      ns: 'customerCenter'
+                    })}
                   </Typography>
                 </AccordionSummary>
                 <AccordionDetails>
-                  <Typography>TODO: </Typography>
+                  <Typography>
+                    {t('expectation_customer_center', {
+                      ns: 'customerCenter'
+                    })}
+                  </Typography>
                 </AccordionDetails>
               </Accordion>
               <Accordion disableGutters>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                   <Typography>
-                    What can I expect for the support ticket?
+                    {t(
+                      'My Agent or Editor did not reply me immediately, what can I do?',
+                      {
+                        ns: 'customerCenter'
+                      }
+                    )}
                   </Typography>
                 </AccordionSummary>
                 <AccordionDetails>
-                  <Typography>TODO: </Typography>
-                </AccordionDetails>
-              </Accordion>
-              <Accordion disableGutters>
-                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography>The portal looks buggy, how can I do?</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <Typography>TODO: </Typography>
-                </AccordionDetails>
-              </Accordion>
-              <Accordion disableGutters>
-                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                   <Typography>
-                    My Agent or Editor did not reply me, what can I do?
+                    {t('complaint_agents_editors', {
+                      ns: 'customerCenter',
+                      companyName: appConfig.companyName
+                    })}
                   </Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <Typography>TODO: </Typography>
                 </AccordionDetails>
               </Accordion>
               <Accordion disableGutters>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography>
-                    The quality of my CV, ML, RL or any other documents by the
-                    Editor is not as good as I expected. What can I do?
-                  </Typography>
+                  {t(
+                    'The quality of my CV, ML, RL or any other documents by the Editor is not as good as I expected. What can I do?',
+                    {
+                      ns: 'customerCenter'
+                    }
+                  )}
                 </AccordionSummary>
                 <AccordionDetails>
-                  <Typography>TODO: </Typography>
-                </AccordionDetails>
-              </Accordion>
-              <Accordion disableGutters>
-                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                   <Typography>
-                    I did not find my previous closed documents, how can I do?
+                    {t('quality_cvmlrl_explanation', {
+                      ns: 'customerCenter'
+                    })}
                   </Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <Typography>TODO: </Typography>
                 </AccordionDetails>
               </Accordion>
             </Paper>

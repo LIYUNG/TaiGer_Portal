@@ -84,7 +84,6 @@ function DocModificationThreadPage() {
       isFilesListOpen: false,
       showEditorPage: false,
       isSubmissionLoaded: true,
-      articles: [],
       isEdit: false,
       thread: null,
       buttonDisabled: false,

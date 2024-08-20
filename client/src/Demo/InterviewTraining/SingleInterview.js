@@ -55,7 +55,6 @@ function SingleInterview() {
     interview: {},
     editorDescriptionState: null,
     editorInputState: null,
-    isEdit: true,
     res_status: 0,
     res_modal_message: '',
     res_modal_status: 0
@@ -319,7 +318,6 @@ function SingleInterview() {
             ...prevState,
             success,
             SetDeleteDocModel: false,
-            isEdit: false,
             isDeleteSuccessful: true,
             isDeleting: false,
             interview: null,

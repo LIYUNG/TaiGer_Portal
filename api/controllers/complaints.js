@@ -282,7 +282,7 @@ const postMessageInTicket = asyncHandler(async (req, res) => {
   }
 
   // Inform student
-  if (isNotArchiv(ticket.student_id)) {
+  if (isNotArchiv(ticket.requester_id)) {
     const student_recipient = {
       firstname: document_thread.requester_id.firstname,
       lastname: document_thread.requester_id.lastname,

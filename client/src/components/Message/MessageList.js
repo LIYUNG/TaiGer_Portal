@@ -12,8 +12,6 @@ function MessageList(props) {
       idx={i}
       key={i}
       message={message}
-      onTrashClick={props.onTrashClick}
-      lastupdate={props.lastupdate}
       isLoaded={props.isLoaded}
       onDeleteSingleMessage={props.onDeleteSingleMessage}
       apiPrefix={props.apiPrefix}

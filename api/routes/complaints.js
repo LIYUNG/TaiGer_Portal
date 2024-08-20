@@ -17,7 +17,8 @@ const {
   deleteComplaint,
   deleteAMessageInComplaint,
   postMessageInTicket,
-  getMessageFileInTicket
+  getMessageFileInTicket,
+  updateAMessageInComplaint
 } = require('../controllers/complaints');
 const { filter_archiv_user } = require('../middlewares/limit_archiv_user');
 const { multitenant_filter } = require('../middlewares/multitenant-filter');
@@ -79,7 +80,7 @@ router
     UpdateComplaintRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Editor, Role.Agent, Role.Student),
     // permission_canModifyComplaintList_filter,
-    updateComplaint
+    updateAMessageInComplaint
   )
   .delete(
     filter_archiv_user,

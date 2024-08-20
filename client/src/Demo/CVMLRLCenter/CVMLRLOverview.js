@@ -32,11 +32,7 @@ function CVMLRLOverview(props) {
     data: null,
     success: props.success,
     students: props.students,
-    doc_thread_id: '',
     student_id: '',
-    program_id: '',
-    SetAsFinalFileModel: false,
-    isFinalVersion: false,
     status: '', //reject, accept... etc
     res_status: 0,
     res_modal_message: '',

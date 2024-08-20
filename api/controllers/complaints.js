@@ -4,14 +4,15 @@ const { asyncHandler } = require('../middlewares/error-handler');
 const logger = require('../services/logger');
 const { Role } = require('../constants');
 const { isNotArchiv } = require('../constants');
-const {
-  ComplaintCreatedAgentEmail,
-  ComplaintResolvedRequesterReminderEmail
-} = require('../services/email');
+
 const {
   newCustomerCenterTicketEmail,
-  newCustomerCenterTicketSubmitConfirmationEmail
+  newCustomerCenterTicketSubmitConfirmationEmail,
+  complaintResolvedRequesterReminderEmail
 } = require('../services/email/complaints');
+const { s3 } = require('../aws');
+const { one_month_cache } = require('../cache/node-cache');
+const { AWS_S3_BUCKET_NAME } = require('../config');
 
 const getComplaints = asyncHandler(async (req, res) => {
   const { user } = req;
@@ -128,6 +129,47 @@ const createComplaint = asyncHandler(async (req, res) => {
         createdAt: new Date()
       }
     );
+  }
+});
+
+const getMessageFileInTicket = asyncHandler(async (req, res) => {
+  const {
+    params: { ticketId, studentId, fileKey }
+  } = req;
+
+  logger.info('Trying to download ticket file', fileKey);
+  let directory = path.join(AWS_S3_BUCKET_NAME, ticketId, studentId);
+  directory = directory.replace(/\\/g, '/');
+  const options = {
+    Key: fileKey,
+    Bucket: directory
+  };
+
+  // messageid + extension
+  const cache_key = `${studentId}${ticketId}${encodeURIComponent(fileKey)}`;
+  const value = one_month_cache.get(cache_key); // file name
+  if (value === undefined) {
+    s3.getObject(options, (err, data) => {
+      // Handle any error and exit
+      if (!data || !data.Body) {
+        logger.info('ticket file not found in S3');
+        // You can handle this case as needed, e.g., send a 404 response
+        return res.status(404).send(err);
+      }
+
+      // No error happened
+      const success = one_month_cache.set(cache_key, data.Body);
+      if (success) {
+        logger.info('ticket file cache set successfully');
+      }
+
+      res.attachment(fileKey);
+      return res.end(data.Body);
+    });
+  } else {
+    logger.info('ticket file cache hit');
+    res.attachment(fileKey);
+    return res.end(value);
   }
 });
 
@@ -281,7 +323,7 @@ const updateComplaint = asyncHandler(async (req, res) => {
   // TODO: to avoid resolved many times
   if (fields?.status === 'resolved') {
     if (isNotArchiv(updatedComplaint.requester_id)) {
-      ComplaintResolvedRequesterReminderEmail(
+      complaintResolvedRequesterReminderEmail(
         {
           firstname: updatedComplaint.requester_id.firstname,
           lastname: updatedComplaint.requester_id.lastname,
@@ -346,6 +388,7 @@ module.exports = {
   getComplaint,
   createComplaint,
   updateComplaint,
+  getMessageFileInTicket,
   postMessageInTicket,
   deleteAMessageInComplaint,
   deleteComplaint

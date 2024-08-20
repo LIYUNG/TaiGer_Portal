@@ -19,8 +19,6 @@ function Notes(props) {
     isLoaded: false,
     notes: '{}',
     success: false,
-    academic_background: {},
-    application_preference: {},
     updateconfirmed: false,
     res_status: 0
   });

@@ -16,7 +16,8 @@ const {
   updateComplaint,
   deleteComplaint,
   deleteAMessageInComplaint,
-  postMessageInTicket
+  postMessageInTicket,
+  getMessageFileInTicket
 } = require('../controllers/complaints');
 const { filter_archiv_user } = require('../middlewares/limit_archiv_user');
 const { multitenant_filter } = require('../middlewares/multitenant-filter');
@@ -85,6 +86,17 @@ router
     // permission_canModifyComplaintList_filter,
     deleteAMessageInComplaint
   );
+
+router.route('/files/:ticketId/:studentId/:fileKey').get(
+  filter_archiv_user,
+  UpdateComplaintRateLimiter,
+  permit(Role.Admin, Role.Manager, Role.Editor, Role.Agent, Role.Student),
+  // permission_canModifyComplaintList_filter,
+  // multitenant_filter,
+  // doc_thread_ops_validator,
+  MessagesTicketUpload,
+  getMessageFileInTicket
+);
 
 router.route('/new-message/:ticketId/:studentId').post(
   filter_archiv_user,

@@ -336,7 +336,9 @@ export const translation_zh_TW = {
     'Move to Active': '移至 Active',
     'Update Successfully': '更新成功',
     'Personal Data is updated successfully!': '個人資料更新成功！',
-    'Office Hours time slots updated': 'Office Hours 更新成功'
+    'Office Hours time slots updated': 'Office Hours 更新成功',
+    'Internal Documentation': '內部文檔',
+    'All Internal Documentations': '所有內部文檔'
   },
   customerCenter: {
     'What is the purpose of the Customer Center?': '客服中心的目的是什麼？',

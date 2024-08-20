@@ -295,7 +295,7 @@ function InternalDocCreatePage(props) {
           {appConfig.companyName}
         </Link>
         <Typography color="text.primary">
-          {t('All Internal Documentations')}
+          {t('All Internal Documentations', { ns: 'common' })}
         </Typography>
       </Breadcrumbs>
       <Grid container spacing={2}>

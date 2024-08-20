@@ -333,7 +333,9 @@ export const translation_en = {
     'Update Successfully': 'Update Successfully',
     'Personal Data is updated successfully!':
       'Personal Data is updated successfully!',
-    'Office Hours time slots updated': 'Office Hours time slots updated'
+    'Office Hours time slots updated': 'Office Hours time slots updated',
+    'Internal Documentation': 'Internal Documentation',
+    'All Internal Documentations': 'All Internal Documentations'
   },
   customerCenter: {
     'What is the purpose of the Customer Center?':

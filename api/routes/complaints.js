@@ -21,7 +21,9 @@ const {
 } = require('../controllers/complaints');
 const { filter_archiv_user } = require('../middlewares/limit_archiv_user');
 const { multitenant_filter } = require('../middlewares/multitenant-filter');
-const { doc_thread_ops_validator } = require('../middlewares/docs_thread_operation_validation');
+const {
+  doc_thread_ops_validator
+} = require('../middlewares/docs_thread_operation_validation');
 const { MessagesTicketUpload } = require('../middlewares/file-upload');
 // const {
 //   permission_canModifyComplaintList_filter

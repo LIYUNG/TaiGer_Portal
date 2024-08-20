@@ -13,6 +13,7 @@ const {
 const { s3 } = require('../aws');
 const { one_month_cache } = require('../cache/node-cache');
 const { AWS_S3_BUCKET_NAME } = require('../config');
+const { emptyS3Directory } = require('../utils/modelHelper/versionControl');
 
 const getComplaints = asyncHandler(async (req, res) => {
   const { user } = req;
@@ -378,8 +379,25 @@ const deleteAMessageInComplaint = asyncHandler(async (req, res) => {
   res.status(200).send({ success: true });
 });
 
+const deleteTicketFiles = asyncHandler(async (req, studentId, ticketId) => {
+  // Delete folder
+  let directory = path.join(studentId, ticketId);
+  logger.info(`Trying to delete folder /${studentId}/${ticketId}`);
+  directory = directory.replace(/\\/g, '/');
+
+  emptyS3Directory(AWS_S3_BUCKET_NAME, directory);
+});
+
 const deleteComplaint = asyncHandler(async (req, res) => {
-  await req.db.model('Complaint').findByIdAndDelete(req.params.ticketId);
+  const { ticketId } = req.params;
+  const toBeDeletedTicket = await req.db.model('Complaint').findById(ticketId);
+  await req.db.model('Complaint').findByIdAndDelete(ticketId);
+  await deleteTicketFiles(
+    req,
+    toBeDeletedTicket.requester_id.toString(),
+    ticketId
+  );
+
   res.status(200).send({ success: true });
 });
 

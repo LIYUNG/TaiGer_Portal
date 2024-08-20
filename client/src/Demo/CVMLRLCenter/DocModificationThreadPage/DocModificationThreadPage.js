@@ -1207,6 +1207,7 @@ function DocModificationThreadPage() {
         isLoaded={docModificationThreadPageState.isLoaded}
         user={user}
         onDeleteSingleMessage={onDeleteSingleMessage}
+        apiPrefix={'/api/document-threads'}
       />
       {user.archiv !== true ? (
         <Card

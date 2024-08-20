@@ -138,7 +138,7 @@ const getMessageFileInTicket = asyncHandler(async (req, res) => {
   } = req;
 
   logger.info('Trying to download ticket file', fileKey);
-  let directory = path.join(AWS_S3_BUCKET_NAME, ticketId, studentId);
+  let directory = path.join(AWS_S3_BUCKET_NAME, studentId, ticketId);
   directory = directory.replace(/\\/g, '/');
   const options = {
     Key: fileKey,

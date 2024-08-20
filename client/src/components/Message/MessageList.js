@@ -16,6 +16,7 @@ function MessageList(props) {
       lastupdate={props.lastupdate}
       isLoaded={props.isLoaded}
       onDeleteSingleMessage={props.onDeleteSingleMessage}
+      apiPrefix={props.apiPrefix}
     />
   ));
   return <>{thread}</>;

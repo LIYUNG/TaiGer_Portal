@@ -459,6 +459,7 @@ function SingleInterview() {
             isLoaded={true}
             user={user}
             onDeleteSingleMessage={onDeleteSingleMessage}
+            apiPrefix={'/api/document-threads'}
           />
           {user.archiv !== true ? (
             <Card

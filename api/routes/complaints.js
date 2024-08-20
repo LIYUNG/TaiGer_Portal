@@ -87,7 +87,7 @@ router
     deleteAMessageInComplaint
   );
 
-router.route('/files/:ticketId/:studentId/:fileKey').get(
+router.route('/:studentId/:ticketId/:fileKey').get(
   filter_archiv_user,
   UpdateComplaintRateLimiter,
   permit(Role.Admin, Role.Manager, Role.Editor, Role.Agent, Role.Student),

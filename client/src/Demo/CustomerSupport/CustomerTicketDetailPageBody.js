@@ -405,6 +405,7 @@ function CustomerTicketDetailPageBody({ complaintTicket }) {
               thread={customerTicketDetailPageBodyState.thread}
               isLoaded={customerTicketDetailPageBodyState.isLoaded}
               onDeleteSingleMessage={onDeleteSingleMessage}
+              apiPrefix={'/api/complaints'}
             />
             {user.archiv !== true ? (
               <Card

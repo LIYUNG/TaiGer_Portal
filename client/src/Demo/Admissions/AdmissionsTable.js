@@ -47,6 +47,7 @@ function AdmissionsTable(props) {
               result.push({
                 id: `${student._id}${application.programId._id}`,
                 student_id: student._id,
+                email: student.email,
                 name: `${student.firstname}, ${student.lastname}`,
                 first_name_chinese: `${student.firstname_chinese}`,
                 last_name_chinese: `${student.lastname_chinese}`,
@@ -69,6 +70,7 @@ function AdmissionsTable(props) {
             result.push({
               id: `${student._id}${application.programId._id}`,
               student_id: student._id,
+              email: student.email,
               name: `${student.firstname}, ${student.lastname}`,
               first_name_chinese: `${student.firstname_chinese}`,
               last_name_chinese: `${student.lastname_chinese}`,
@@ -145,6 +147,29 @@ function AdmissionsTable(props) {
     {
       field: 'name',
       headerName: 'Name',
+      align: 'left',
+      headerAlign: 'left',
+      width: 150,
+      renderCell: (params) => {
+        const linkUrl = `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+          params.row.student_id,
+          DEMO.PROFILE_HASH
+        )}`;
+        return (
+          <Link
+            underline="hover"
+            to={linkUrl}
+            component={LinkDom}
+            target="_blank"
+          >
+            {params.value}
+          </Link>
+        );
+      }
+    },
+    {
+      field: 'email',
+      headerName: 'Email',
       align: 'left',
       headerAlign: 'left',
       width: 150,

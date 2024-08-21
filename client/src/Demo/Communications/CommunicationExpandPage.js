@@ -392,7 +392,6 @@ function CommunicationExpandPage() {
         const { success } = resp.data;
         const { status } = resp;
         if (success) {
-          // TODO: remove that message
           const new_messages = [...communicationExpandPageState.thread];
           let idx = new_messages.findIndex(
             (message) => message._id.toString() === message_id

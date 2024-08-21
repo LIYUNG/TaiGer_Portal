@@ -336,9 +336,26 @@ export const translation_zh_TW = {
     'Move to Active': '移至 Active',
     'Update Successfully': '更新成功',
     'Personal Data is updated successfully!': '個人資料更新成功！',
-    'Office Hours time slots updated': 'Office Hours 更新成功'
+    'Office Hours time slots updated': 'Office Hours 更新成功',
+    'Internal Documentation': '內部文檔',
+    'All Internal Documentations': '所有內部文檔'
   },
-  customerCenter: {},
+  customerCenter: {
+    'What is the purpose of the Customer Center?': '客服中心的目的是什麼？',
+    explanation_customer_center:
+      '客服中心設立目的在於學生對於和顧問，外籍編輯合作情況下有磨合上的問題，或是對於您的帳戶有使用上困難等問題，可以透過客服中心得到協助。',
+    'What can I expect for the support ticket?': '客服中心能給我什麼樣的支援？',
+    expectation_customer_center:
+      '當您提出了請求，您將會直接和主管經理溝通，主管經理會和您討論並了解您遇到的問題，並給您必要的幫助。由於您將直接和主管或是管理員聯繫，請務必確認在無法和顧問或是編輯溝通解決問題的情況下，再提出申請時，詳細描述您的狀況，顧問和編輯如何無法解決您的問題，方便主管經理解決您的問題。',
+    'My Agent or Editor did not reply me immediately, what can I do?':
+      '我的顧問或外籍編輯沒有立即回覆我，我該怎麼做？',
+    complaint_agents_editors:
+      '您的{{companyName}}專業顧問以及外籍編輯平時為位於歐洲或美國時區，並任職於頂尖外商，無法立即回覆您。但您的申請品質不會因此有所影響。除了 {{companyName}} Message外，請善用顧問提供的Office Hour或是和顧問約時間，整理好問題，一次討論。若您的申請很緊急或是必須要當下要立即得到解決，而顧問或編輯無法配合時間，始可利用客服中心得到幫助。',
+    'The quality of my CV, ML, RL or any other documents by the Editor is not as good as I expected. What can I do?':
+      '我收到的履歷、動機信、推薦信草稿或是小論文的品質並沒有讓我滿意，我該怎麼做？',
+    quality_cvmlrl_explanation: 'quality_cvmlrl_explanation',
+    'Add Ticket': '新增請求'
+  },
   dashboard: {
     Dashboard: '主控台',
     'Upcoming Applications': '即將截止的申請',
@@ -348,7 +365,9 @@ export const translation_zh_TW = {
     'Edit Editor': '編輯寫手',
     'Configure Attribute': '編輯特質',
     'Please complete Profile so that your agent can understand your situation':
-      '請完成背景資料填寫，好讓您的顧問能掌握您的狀況'
+      '請完成背景資料填寫，好讓您的顧問能掌握您的狀況',
+    acctount_deactivated_text:
+      '您的帳號已停用。若有任何疑問，請聯絡管理員 contact@taigerconsultancy.com'
   },
   documents: {
     confirmDocument:

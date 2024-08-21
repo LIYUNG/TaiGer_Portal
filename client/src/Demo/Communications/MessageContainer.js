@@ -12,17 +12,11 @@ function MessageContainer(props) {
     isEdit: false,
     isLoaded: false,
     message: props.message,
-    thread: null,
-    upperThread: [],
     buttonDisabled: false,
     editorState: {},
     expand: true,
-    pageNumber: 1,
     deadline: '',
-    SetAsFinalFileModel: false,
-    uppderaccordionKeys: [], // to expand all]
     accordionKeys: [0], // to expand all]
-    loadButtonDisabled: false,
     res_status: 0,
     res_modal_status: 0,
     res_modal_message: ''

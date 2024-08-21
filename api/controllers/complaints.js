@@ -4,10 +4,16 @@ const { asyncHandler } = require('../middlewares/error-handler');
 const logger = require('../services/logger');
 const { Role } = require('../constants');
 const { isNotArchiv } = require('../constants');
+
 const {
-  ComplaintCreatedAgentEmail,
-  ComplaintResolvedRequesterReminderEmail
-} = require('../services/email');
+  newCustomerCenterTicketEmail,
+  newCustomerCenterTicketSubmitConfirmationEmail,
+  complaintResolvedRequesterReminderEmail
+} = require('../services/email/complaints');
+const { s3 } = require('../aws');
+const { one_month_cache } = require('../cache/node-cache');
+const { AWS_S3_BUCKET_NAME } = require('../config');
+const { emptyS3Directory } = require('../utils/modelHelper/versionControl');
 
 const getComplaints = asyncHandler(async (req, res) => {
   const { user } = req;
@@ -77,28 +83,97 @@ const createComplaint = asyncHandler(async (req, res) => {
   res.status(201).send({ success: true, data: new_ticket });
 
   // TODO: inform manager
+  const permissions = await req.db
+    .model('Permission')
+    .find({
+      $or: [
+        { canAssignEditors: true },
+        { canAssignAgents: true },
+        { canModifyAllBaseDocuments: true },
+        { canAccessAllChat: true }
+      ]
+    })
+    .populate('user_id', 'firstname lastname email archiv')
+    .lean();
+  if (permissions) {
+    for (let x = 0; x < permissions.length; x += 1) {
+      if (isNotArchiv(permissions[x].user_id)) {
+        newCustomerCenterTicketEmail(
+          {
+            firstname: permissions[x].user_id.firstname,
+            lastname: permissions[x].user_id.lastname,
+            address: permissions[x].user_id.email
+          },
+          {
+            requester: user,
+            ticket_id: new_ticket._id?.toString(),
+            ticket_title: new_ticket.title,
+            ticket_description: new_ticket.description,
+            createdAt: new Date()
+          }
+        );
+      }
+    }
+  }
 
-  // const student = await req.db
-  //   .model('Student')
-  //   .findById(user._id.toString())
-  //   .populate('agents', 'firstname lastname email')
-  //   .exec();
-  // for (let i = 0; i < student.agents.length; i += 1) {
-  //   if (isNotArchiv(student)) {
-  //     ComplaintCreatedAgentEmail(
-  //       {
-  //         firstname: student.agents[i].firstname,
-  //         lastname: student.agents[i].lastname,
-  //         address: student.agents[i].email
-  //       },
-  //       {
-  //         program,
-  //         student
-  //       }
-  //     );
-  //   }
-  // }
+  if (isNotArchiv(user)) {
+    newCustomerCenterTicketSubmitConfirmationEmail(
+      {
+        firstname: user.firstname,
+        lastname: user.lastname,
+        address: user.email
+      },
+      {
+        ticket_id: new_ticket._id?.toString(),
+        ticket_title: new_ticket.title,
+        ticket_description: new_ticket.description,
+        createdAt: new Date()
+      }
+    );
+  }
 });
+
+const getMessageFileInTicket = asyncHandler(async (req, res) => {
+  const {
+    params: { ticketId, studentId, fileKey }
+  } = req;
+
+  logger.info('Trying to download ticket file', fileKey);
+  let directory = path.join(AWS_S3_BUCKET_NAME, studentId, ticketId);
+  directory = directory.replace(/\\/g, '/');
+  const options = {
+    Key: fileKey,
+    Bucket: directory
+  };
+
+  // messageid + extension
+  const cache_key = `${studentId}${ticketId}${encodeURIComponent(fileKey)}`;
+  const value = one_month_cache.get(cache_key); // file name
+  if (value === undefined) {
+    s3.getObject(options, (err, data) => {
+      // Handle any error and exit
+      if (!data || !data.Body) {
+        logger.info('ticket file not found in S3');
+        // You can handle this case as needed, e.g., send a 404 response
+        return res.status(404).send(err);
+      }
+
+      // No error happened
+      const success = one_month_cache.set(cache_key, data.Body);
+      if (success) {
+        logger.info('ticket file cache set successfully');
+      }
+
+      res.attachment(fileKey);
+      return res.end(data.Body);
+    });
+  } else {
+    logger.info('ticket file cache hit');
+    res.attachment(fileKey);
+    return res.end(value);
+  }
+});
+
 // (O) notification email works
 const postMessageInTicket = asyncHandler(async (req, res) => {
   const {
@@ -207,7 +282,7 @@ const postMessageInTicket = asyncHandler(async (req, res) => {
   }
 
   // Inform student
-  if (isNotArchiv(ticket.student_id)) {
+  if (isNotArchiv(ticket.requester_id)) {
     const student_recipient = {
       firstname: document_thread.requester_id.firstname,
       lastname: document_thread.requester_id.lastname,
@@ -249,7 +324,7 @@ const updateComplaint = asyncHandler(async (req, res) => {
   // TODO: to avoid resolved many times
   if (fields?.status === 'resolved') {
     if (isNotArchiv(updatedComplaint.requester_id)) {
-      ComplaintResolvedRequesterReminderEmail(
+      complaintResolvedRequesterReminderEmail(
         {
           firstname: updatedComplaint.requester_id.firstname,
           lastname: updatedComplaint.requester_id.lastname,
@@ -263,6 +338,44 @@ const updateComplaint = asyncHandler(async (req, res) => {
       );
     }
   }
+});
+
+const updateAMessageInComplaint = asyncHandler(async (req, res) => {
+  const { user } = req;
+  const { ticketId, messageId } = req.params;
+  const payload = req.body;
+
+  const ticket = await req.db.model('Complaint').findById(ticketId);
+  if (!ticket) {
+    logger.error('updateAMessageInComplaint : Invalid message thread id');
+    throw new ErrorResponse(404, 'Thread not found');
+  }
+  if (ticket.status === 'closed') {
+    logger.error('updateAMessageInComplaint : ticket is closed.');
+    throw new ErrorResponse(423, 'Ticket is closed.');
+  }
+  const msg = ticket.messages.find(
+    (message) => message._id.toString() === messageId
+  );
+
+  if (!msg) {
+    logger.error('updateAMessageInComplaint : Invalid message id');
+    throw new ErrorResponse(404, 'Message not found');
+  }
+  // Prevent multitenant
+  if (msg.user_id.toString() !== user._id.toString()) {
+    logger.error(
+      'updateAMessageInComplaint : You can only modify your own message.'
+    );
+    throw new ErrorResponse(409, 'You can only delete your own message.');
+  }
+
+  // Don't need so delete in S3 , will delete by garbage collector
+  await req.db
+    .model('Complaint')
+    .findByIdAndUpdate(ticketId, payload, { upsert: false });
+
+  res.status(200).send({ success: true });
 });
 
 const deleteAMessageInComplaint = asyncHandler(async (req, res) => {
@@ -304,8 +417,25 @@ const deleteAMessageInComplaint = asyncHandler(async (req, res) => {
   res.status(200).send({ success: true });
 });
 
+const deleteTicketFiles = asyncHandler(async (req, studentId, ticketId) => {
+  // Delete folder
+  let directory = path.join(studentId, ticketId);
+  logger.info(`Trying to delete folder /${studentId}/${ticketId}`);
+  directory = directory.replace(/\\/g, '/');
+
+  emptyS3Directory(AWS_S3_BUCKET_NAME, directory);
+});
+
 const deleteComplaint = asyncHandler(async (req, res) => {
-  await req.db.model('Complaint').findByIdAndDelete(req.params.ticketId);
+  const { ticketId } = req.params;
+  const toBeDeletedTicket = await req.db.model('Complaint').findById(ticketId);
+  await req.db.model('Complaint').findByIdAndDelete(ticketId);
+  await deleteTicketFiles(
+    req,
+    toBeDeletedTicket.requester_id.toString(),
+    ticketId
+  );
+
   res.status(200).send({ success: true });
 });
 
@@ -314,7 +444,9 @@ module.exports = {
   getComplaint,
   createComplaint,
   updateComplaint,
+  getMessageFileInTicket,
   postMessageInTicket,
+  updateAMessageInComplaint,
   deleteAMessageInComplaint,
   deleteComplaint
 };

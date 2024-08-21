@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link as LinkDom, Navigate } from 'react-router-dom';
 import { Box, Breadcrumbs, Link, Typography } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import AdmissionsTable from './AdmissionsTable';
 import ErrorPage from '../Utils/ErrorPage';
@@ -11,7 +12,6 @@ import DEMO from '../../store/constant';
 import { appConfig } from '../../config';
 import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
-import { useTranslation } from 'react-i18next';
 
 function Admissions() {
   const { user } = useAuth();

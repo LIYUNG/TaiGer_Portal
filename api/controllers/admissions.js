@@ -12,7 +12,7 @@ const getAdmissions = asyncHandler(async (req, res) => {
     .model('Student')
     .find()
     .select(
-      '-applications.doc_modification_thread -applications.uni_assist -email -birthday -applying_program_count -agents -editors -profile -isAccountActivated -updatedAt -generaldocs_threads -taigerai -notification -academic_background'
+      '-applications.doc_modification_thread -applications.uni_assist -birthday -applying_program_count -profile -isAccountActivated -updatedAt -generaldocs_threads -taigerai -notification -academic_background'
     )
     .populate('agents editors', 'firstname lastname firstname_firstname lastname_lastname')
     .populate('applications.programId', 'school program_name semester degree');

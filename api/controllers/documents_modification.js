@@ -1587,7 +1587,7 @@ const getMessageImageDownload = asyncHandler(async (req, res) => {
 const getMessageFileDownload = asyncHandler(async (req, res) => {
   const {
     user,
-    params: { messagesThreadId, messageId, file_key }
+    params: { studentId, messagesThreadId, file_key }
   } = req;
 
   const document_thread = await req.db
@@ -1621,37 +1621,16 @@ const getMessageFileDownload = asyncHandler(async (req, res) => {
     throw new ErrorResponse(403, 'Not authorized');
   }
 
-  const message = document_thread.messages.find(
-    (msg) => msg._id.toString() === messageId
-  );
-  if (!message) {
-    logger.error('getMessageFileDownload: message not found!');
-    throw new ErrorResponse(404, 'Message not found');
-  }
-
-  const file = message.file.find(
-    (each_file) => each_file.path.replace(/\\/g, '/').split('/')[2] === file_key
-  );
-  if (!file) {
-    logger.error('getMessageFileDownload: file not found!');
-    throw new ErrorResponse(404, 'file not found');
-  }
-
-  let path_split = file.path.replace(/\\/g, '/');
-  path_split = path_split.split('/');
-  const fileKey = path_split[2];
-  logger.info('Trying to download message file', fileKey);
-  let directory = path.join(AWS_S3_BUCKET_NAME, path_split[0], path_split[1]);
+  logger.info('Trying to download message file', file_key);
+  let directory = path.join(AWS_S3_BUCKET_NAME, studentId, messagesThreadId);
   directory = directory.replace(/\\/g, '/');
   const options = {
-    Key: fileKey,
+    Key: file_key,
     Bucket: directory
   };
 
   // messageid + extension
-  const cache_key = `${messageId}${encodeURIComponent(
-    req.originalUrl.split('/')[5].split('.')[1]
-  )}`;
+  const cache_key = `${messagesThreadId}${encodeURIComponent(file_key)}`;
   const value = one_month_cache.get(cache_key); // file name
   if (value === undefined) {
     s3.getObject(options, (err, data) => {
@@ -1668,12 +1647,12 @@ const getMessageFileDownload = asyncHandler(async (req, res) => {
         logger.info('thread file cache set successfully');
       }
 
-      res.attachment(fileKey);
+      res.attachment(file_key);
       return res.end(data.Body);
     });
   } else {
     logger.info('thread file cache hit');
-    res.attachment(fileKey);
+    res.attachment(file_key);
     return res.end(value);
   }
 });

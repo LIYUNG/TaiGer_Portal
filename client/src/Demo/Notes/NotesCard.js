@@ -6,7 +6,6 @@ import { updateStudentNotes } from '../../api';
 function NotesCard(props) {
   const [notesCardState, setNotesCardState] = useState({
     editorState: props.notes,
-    message_id: '',
     isLoaded: false,
     buttonDisabled: true
   });

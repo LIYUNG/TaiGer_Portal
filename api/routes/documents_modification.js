@@ -269,7 +269,7 @@ router
   );
 
 router
-  .route('/:messagesThreadId/:messageId/:file_key')
+  .route('/:studentId/:messagesThreadId/:file_key')
   .get(
     filter_archiv_user,
     getMessageFileRateLimiter,

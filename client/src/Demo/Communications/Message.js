@@ -325,7 +325,7 @@ function Message(props) {
         onClose={closePreviewWindow}
         aria-labelledby="contained-modal-title-vcenter2"
       >
-        <DialogTitle>{closePreviewWindow.filePath}</DialogTitle>
+        <DialogTitle>{messageState.filePath}</DialogTitle>
         <FilePreview
           apiFilePath={messageState.filePath}
           path={messageState.fileName}

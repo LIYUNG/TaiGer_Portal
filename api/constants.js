@@ -84,7 +84,7 @@ const TAIGER_SIGNATURE = `
      <img src="https://upload.wikimedia.org/wikipedia/commons/b/bd/Facebook_lg.png" alt="Facebook">
   </a>
   <a href="${TENANT_MEDIUM_LINK}" target="_blank">
-     <img src="https://static-00.iconduck.com/assets.00/logo-medium-icon-512x512-6ohyt32n.png" alt="Medium">
+     <img src="https://seeklogo.com/images/M/medium-logo-93CDCF6451-seeklogo.com.png" alt="Medium">
   </a>
   <a href="${TENANT_LINKEDIN_LINK}" target="_blank">
      <img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png" alt="LinkedIn">

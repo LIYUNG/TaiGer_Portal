@@ -330,7 +330,7 @@ const updateComplaint = asyncHandler(async (req, res) => {
           address: updatedComplaint.requester_id.email
         },
         {
-          program: updatedComplaint.program_id,
+          ticket_id: updatedComplaint._id,
           student: updatedComplaint.requester_id,
           taigerUser: user
         }

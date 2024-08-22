@@ -675,6 +675,8 @@ export const getComplaintsTicket = (ticketId) =>
   request.get(`/api/complaints/${ticketId}`);
 export const getComplaintsTickets = (type) =>
   request.get(`/api/complaints?type=${type}`);
+export const putComplaintsTicketStatus = (ticketId, status) =>
+  request.put(`/api/complaints/status/${ticketId}`, { status });
 export const updateComplaintsTicket = (ticketId, updatedTicket) =>
   request.put(`/api/complaints/${ticketId}`, updatedTicket);
 export const deleteComplaintsTicket = (ticketId) =>

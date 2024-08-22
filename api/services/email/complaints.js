@@ -61,6 +61,27 @@ const newCustomerCenterTicketSubmitConfirmationEmail = async (
 };
 
 // For student confirmation
+const newCustomerCenterTicketMessageEmail = async (recipient, payload) => {
+  const subject = `[Customer Center] There is a new message for the request (Ticket id: ${payload.ticket_id})`;
+  const TICKET_LINK = new URL(
+    `/customer-center/tickets/${payload.ticket_id}`,
+    ORIGIN
+  ).href;
+  const message = `\
+<p>Hi ${recipient.firstname} ${recipient.lastname},</p>
+
+<p>There is a new message for the request (Ticket id: ${payload.ticket_id}).</p>
+
+<p>Title: <b>${payload.ticket_title}</b></p>
+
+<a href="${TICKET_LINK}" class="mui-button" target="_blank">See Ticket</a>
+
+`;
+
+  sendEmail(recipient, subject, message);
+};
+
+// For student confirmation
 const complaintResolvedRequesterReminderEmail = async (recipient, payload) => {
   const subject = `[Resolved] Your customer support request is resolved (Ticket id: ${payload.ticket_id}`;
   const TICKET_LINK = new URL(
@@ -84,5 +105,6 @@ const complaintResolvedRequesterReminderEmail = async (recipient, payload) => {
 module.exports = {
   newCustomerCenterTicketEmail,
   newCustomerCenterTicketSubmitConfirmationEmail,
+  newCustomerCenterTicketMessageEmail,
   complaintResolvedRequesterReminderEmail
 };

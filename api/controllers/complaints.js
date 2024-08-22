@@ -8,7 +8,8 @@ const { isNotArchiv } = require('../constants');
 const {
   newCustomerCenterTicketEmail,
   newCustomerCenterTicketSubmitConfirmationEmail,
-  complaintResolvedRequesterReminderEmail
+  complaintResolvedRequesterReminderEmail,
+  newCustomerCenterTicketMessageEmail
 } = require('../services/email/complaints');
 const { s3 } = require('../aws');
 const { one_month_cache } = require('../cache/node-cache');
@@ -241,55 +242,41 @@ const postMessageInTicket = asyncHandler(async (req, res) => {
     .populate('editors agents', 'firstname lastname email archiv');
 
   if (user.role === Role.Student) {
-    // Inform Agent
+    // TODO: Inform Manager
     if (isNotArchiv(student)) {
       for (let i = 0; i < student.agents.length; i += 1) {
-        // Inform Agent
         if (isNotArchiv(student.agents[i])) {
           const agent_recipent = {
             firstname: student.agents[i].firstname,
             lastname: student.agents[i].lastname,
             address: student.agents[i].email
           };
-          const agent_payload = {
-            writer_firstname: user.firstname,
-            writer_lastname: user.lastname,
+          const payload = {
             student_firstname: student.firstname,
             student_lastname: student.lastname,
-            uploaded_documentname: ticket.file_type,
-            thread_id: ticket._id.toString(),
-            uploaded_updatedAt: new Date()
+            ticket_id: ticket._id.toString()
           };
-          // sendNewGeneraldocMessageInThreadEmail(
-          //   agent_recipent,
-          //   agent_payload
-          // );
+          newCustomerCenterTicketMessageEmail(agent_recipent, payload);
         }
       }
     }
+    return;
   }
 
   // Inform student
   if (isNotArchiv(ticket.requester_id)) {
     const student_recipient = {
-      firstname: document_thread.requester_id.firstname,
-      lastname: document_thread.requester_id.lastname,
-      address: document_thread.requester_id.email
+      firstname: ticket2.requester_id.firstname,
+      lastname: ticket2.requester_id.lastname,
+      address: ticket2.requester_id.email
     };
-    const student_payload = {
-      writer_firstname: user.firstname,
-      writer_lastname: user.lastname,
+    const payload = {
       student_firstname: student.firstname,
       student_lastname: student.lastname,
-      uploaded_documentname: document_thread.file_type,
-      thread_id: document_thread._id.toString(),
-      uploaded_updatedAt: new Date()
+      ticket_id: ticket._id.toString()
     };
     // TODO: email
-    // sendNewApplicationMessageInThreadEmail(
-    //   student_recipient,
-    //   student_payload
-    // );
+    newCustomerCenterTicketMessageEmail(student_recipient, payload);
   }
 });
 

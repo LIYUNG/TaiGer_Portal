@@ -141,7 +141,6 @@ function CustomerTicketDetailPageBody({ complaintTicket }) {
       ...prevState,
       buttonDisabled: true
     }));
-    console.log(editorState);
     var message = JSON.stringify(editorState);
     const formData = new FormData();
 
@@ -196,6 +195,7 @@ function CustomerTicketDetailPageBody({ complaintTicket }) {
           ...prevState,
           isLoaded: true,
           error,
+          buttonDisabled: false,
           res_modal_status: 500,
           res_modal_message: ''
         }));

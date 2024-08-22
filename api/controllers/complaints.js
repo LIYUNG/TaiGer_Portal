@@ -307,10 +307,21 @@ const updateComplaint = asyncHandler(async (req, res) => {
     })
     .populate('requester_id', 'firstname lastname email archiv');
 
+  if (!updatedComplaint) {
+    logger.error('updateComplaint: Invalid message thread id');
+    throw new ErrorResponse(404, 'Thread not found');
+  }
+
   res.status(200).send({ success: true, data: updatedComplaint });
 
   // TODO: to avoid resolved many times
   if (fields?.status === 'resolved') {
+    // cleanup
+    logger.info('cleanup files');
+    const collection = 'Complaint';
+    const userFolder = 'requester_id';
+    await threadS3GarbageCollector(req, collection, userFolder, ticketId);
+    // inform student
     if (isNotArchiv(updatedComplaint.requester_id)) {
       complaintResolvedRequesterReminderEmail(
         {
@@ -414,35 +425,6 @@ const deleteTicketFiles = asyncHandler(async (req, studentId, ticketId) => {
   emptyS3Directory(AWS_S3_BUCKET_NAME, directory);
 });
 
-const updateTicketStatus = asyncHandler(async (req, res) => {
-  const {
-    params: { ticketId }
-  } = req;
-  const { status } = req.body;
-
-  const ticket = await req.db
-    .model('Complaint')
-    .findByIdAndUpdate(ticketId, { status }, { new: true });
-
-  if (!ticket) {
-    logger.error('SetStatusMessagesThread: Invalid message thread id');
-    throw new ErrorResponse(404, 'Thread not found');
-  }
-
-  res.status(200).send({
-    success: true,
-    data: ticket
-  });
-  if (ticket.status === 'resolved') {
-    // cleanup
-    logger.info('cleanup files');
-    const collection = 'Complaint';
-    const userFolder = 'requester_id';
-    await threadS3GarbageCollector(req, collection, userFolder, ticketId);
-  }
-  // TODO: inform student
-});
-
 const deleteComplaint = asyncHandler(async (req, res) => {
   const { ticketId } = req.params;
   const toBeDeletedTicket = await req.db.model('Complaint').findById(ticketId);
@@ -465,6 +447,5 @@ module.exports = {
   postMessageInTicket,
   updateAMessageInComplaint,
   deleteAMessageInComplaint,
-  updateTicketStatus,
   deleteComplaint
 };

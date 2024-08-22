@@ -28,8 +28,8 @@ import DEMO from '../../store/constant';
 import {
   deleteAMessageinTicket,
   deleteComplaintsTicket,
-  putComplaintsTicketStatus,
-  submitMessageInTicketWithAttachment
+  submitMessageInTicketWithAttachment,
+  updateComplaintsTicket
 } from '../../api';
 import MessageList from '../../components/Message/MessageList';
 import { stringAvatar } from '../Utils/contants';
@@ -290,9 +290,9 @@ function CustomerTicketDetailPageBody({ complaintTicket }) {
       isSubmissionLoaded: false // false to reload everything
     }));
 
-    putComplaintsTicketStatus(
+    updateComplaintsTicket(
       customerTicketDetailPageBodyState.thread._id.toString(),
-      customerTicketDetailPageBodyState.newStatus
+      { status: customerTicketDetailPageBodyState.newStatus }
     ).then(
       (resp) => {
         const { data, success } = resp.data;

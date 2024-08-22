@@ -18,8 +18,7 @@ const {
   deleteAMessageInComplaint,
   postMessageInTicket,
   getMessageFileInTicket,
-  updateAMessageInComplaint,
-  updateTicketStatus
+  updateAMessageInComplaint
 } = require('../controllers/complaints');
 const { filter_archiv_user } = require('../middlewares/limit_archiv_user');
 const { multitenant_filter } = require('../middlewares/multitenant-filter');
@@ -74,14 +73,6 @@ router
     // permission_canModifyComplaintList_filter,
     deleteComplaint
   );
-
-router.route('/status/:ticketId').put(
-  filter_archiv_user,
-  UpdateComplaintRateLimiter,
-  permit(Role.Admin, Role.Manager, Role.Editor, Role.Agent),
-  // permission_canModifyComplaintList_filter,
-  updateTicketStatus
-);
 
 // TODO: Test update
 router

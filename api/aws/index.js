@@ -3,11 +3,17 @@ const Bottleneck = require('bottleneck/es5');
 const {
   AWS_S3_ACCESS_KEY_ID,
   AWS_S3_ACCESS_KEY,
-  isProd
+  isProd,
+  isTest
 } = require('../config');
 
 const s3 = isProd()
   ? new aws.S3()
+  : isTest()
+  ? new aws.S3({
+      accessKeyId: AWS_S3_ACCESS_KEY_ID,
+      secretAccessKey: AWS_S3_ACCESS_KEY
+    })
   : new aws.S3({
       accessKeyId: AWS_S3_ACCESS_KEY_ID,
       secretAccessKey: AWS_S3_ACCESS_KEY

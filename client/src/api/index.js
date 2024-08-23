@@ -168,8 +168,6 @@ export const updateProfileDocumentStatus = (
   });
 
 // Account APIs
-export const getMyfiles = () => request.get(`/api/account/files`);
-
 export const getTemplates = () => request.get(`/api/account/files/template`);
 export const uploadtemplate = (category, data) =>
   request.post(`/api/account/files/template/${category}`, data);
@@ -200,16 +198,9 @@ export const WidgetExportMessagePDF = (student_id) =>
   });
 
 export const transcriptanalyser_test = (studentId, category, language) =>
-  request.post(`/api/account/transcript/${studentId}/${category}/${language}`);
+  request.post(`/api/courses/transcript/${studentId}/${category}/${language}`);
 export const analyzedFileDownload_test = (studentId) =>
-  request.get(`/api/account/transcript/${studentId}`, {
-    responseType: 'blob'
-  });
-export const transcriptanalyser = (studentId, category, data) =>
-  request.post(`/api/account/transcript/${studentId}/${category}`, data);
-
-export const generatedFileDownload = (studentId, filename) =>
-  request.get(`/api/account/transcript/${studentId}/${filename}`, {
+  request.get(`/api/courses/transcript/${studentId}`, {
     responseType: 'blob'
   });
 

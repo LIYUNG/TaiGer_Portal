@@ -22,12 +22,10 @@ const {
 
 const {
   processTranscript_test,
-  processTranscript_api,
   downloadXLSX
 } = require('../controllers/course');
 
 const {
-  getMyfiles,
   getTemplates,
   deleteTemplate,
   uploadTemplate,
@@ -53,16 +51,6 @@ const { logAccess } = require('../utils/log/log');
 const router = Router();
 
 router.use(protect);
-
-router
-  .route('/files')
-  .get(
-    filter_archiv_user,
-    GeneralGETRequestRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
-    getMyfiles,
-    logAccess
-  );
 
 router
   .route('/files/template')
@@ -119,42 +107,6 @@ router
     InnerTaigerMultitenantFilter,
     admissionUpload,
     updateStudentApplicationResult,
-    logAccess
-  );
-// TaiGer Transcript Analyser:
-router
-  .route('/transcript/:studentId/:category/:language')
-  .post(
-    filter_archiv_user,
-    TranscriptAnalyserRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
-    multitenant_filter,
-    InnerTaigerMultitenantFilter,
-    processTranscript_test,
-    logAccess
-  );
-
-// TaiGer Transcript Analyser (Python Backend)
-router
-  .route('/transcript-test/:studentId/:category/:language')
-  .post(
-    filter_archiv_user,
-    TranscriptAnalyserRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
-    multitenant_filter,
-    InnerTaigerMultitenantFilter,
-    processTranscript_api,
-    logAccess
-  );
-
-router
-  .route('/transcript/:studentId')
-  .get(
-    filter_archiv_user,
-    DownloadTemplateRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
-    multitenant_filter,
-    downloadXLSX,
     logAccess
   );
 

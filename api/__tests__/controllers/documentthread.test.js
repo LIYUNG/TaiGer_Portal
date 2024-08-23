@@ -79,6 +79,32 @@ jest.mock('../../middlewares/InnerTaigerMultitenantFilter', () => {
   );
 });
 
+jest.mock('../../aws/index', () => {
+  const mockS3Instance = {
+    upload: jest.fn().mockReturnThis(),
+    promise: jest.fn().mockResolvedValue({
+      Location: 'https://mock-s3-url.com/mock-file.jpg'
+    }),
+    getObject: jest.fn().mockReturnThis(),
+    createReadStream: jest.fn(() => ({
+      on: jest.fn((event, callback) => {
+        if (event === 'data') {
+          callback(Buffer.from('dummy file content'));
+        }
+        if (event === 'end') {
+          callback();
+        }
+        if (event === 'error') {
+          callback(new Error('S3 download error'));
+        }
+      })
+    }))
+  };
+  return Object.assign({}, jest.requireActual('../../aws/index'), {
+    s3: mockS3Instance
+  });
+});
+
 const admin = generateUser(Role.Admin);
 const agents = [...Array(3)].map(() => generateUser(Role.Agent));
 const agent = generateUser(Role.Agent);

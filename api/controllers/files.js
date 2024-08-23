@@ -26,18 +26,6 @@ const logger = require('../services/logger');
 
 const { s3 } = require('../aws/index');
 
-const getMyfiles = asyncHandler(async (req, res, next) => {
-  const { user } = req;
-  const student = await req.db.model('User').findById(user._id);
-  if (!student) {
-    logger.error('getMyfiles: Invalid student id');
-    throw new ErrorResponse(404, 'Student not found');
-  }
-
-  res.status(201).send({ success: true, data: student });
-  next();
-});
-
 const getTemplates = asyncHandler(async (req, res, next) => {
   const templates = await req.db.model('Template').find({});
 
@@ -1665,7 +1653,6 @@ const updatePersonalData = asyncHandler(async (req, res, next) => {
 });
 
 module.exports = {
-  getMyfiles,
   getTemplates,
   deleteTemplate,
   uploadTemplate,

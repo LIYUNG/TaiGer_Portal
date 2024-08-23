@@ -7,7 +7,6 @@ const { connect, closeDatabase, clearDatabase } = require('../fixtures/db');
 const { Role } = require('../../constants');
 const { app } = require('../../app');
 const { UserSchema } = require('../../models/User');
-const { programSchema } = require('../../models/Program');
 const { generateUser } = require('../fixtures/faker');
 const { generateProgram } = require('../fixtures/faker');
 const { protect } = require('../../middlewares/auth');

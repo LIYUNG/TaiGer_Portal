@@ -19,9 +19,6 @@ const {
 } = require('../../middlewares/InnerTaigerMultitenantFilter');
 const { connectToDatabase } = require('../../middlewares/tenantMiddleware');
 const { TENANT_ID } = require('../fixtures/constants');
-const {
-  decryptCookieMiddleware
-} = require('../../middlewares/decryptCookieMiddleware');
 
 jest.mock('../../middlewares/tenantMiddleware', () => {
   const passthrough = async (req, res, next) => {
@@ -47,36 +44,31 @@ jest.mock('../../middlewares/decryptCookieMiddleware', () => {
 jest.mock('../../middlewares/auth', () => {
   const passthrough = async (req, res, next) => next();
 
-  return Object.assign({}, jest.requireActual('../../middlewares/auth'), {
+  return {
+    ...jest.requireActual('../../middlewares/auth'),
     protect: jest.fn().mockImplementation(passthrough),
     permit: jest.fn().mockImplementation((...roles) => passthrough)
-  });
+  };
 });
 
 jest.mock('../../middlewares/permission-filter', () => {
   const passthrough = async (req, res, next) => next();
 
-  return Object.assign(
-    {},
-    jest.requireActual('../../middlewares/permission-filter'),
-    {
-      permission_canAccessStudentDatabase_filter: jest
-        .fn()
-        .mockImplementation(passthrough)
-    }
-  );
+  return {
+    ...jest.requireActual('../../middlewares/permission-filter'),
+    permission_canAccessStudentDatabase_filter: jest
+      .fn()
+      .mockImplementation(passthrough)
+  };
 });
 
 jest.mock('../../middlewares/InnerTaigerMultitenantFilter', () => {
   const passthrough = async (req, res, next) => next();
 
-  return Object.assign(
-    {},
-    jest.requireActual('../../middlewares/permission-filter'),
-    {
-      InnerTaigerMultitenantFilter: jest.fn().mockImplementation(passthrough)
-    }
-  );
+  return {
+    ...jest.requireActual('../../middlewares/permission-filter'),
+    InnerTaigerMultitenantFilter: jest.fn().mockImplementation(passthrough)
+  };
 });
 
 // jest.mock('../../aws/index', () => {
@@ -188,21 +180,17 @@ describe('POST /api/document-threads/init/application/:studentId/:programId/:doc
   const { _id: studentId } = student;
   const { _id: programId } = program;
   const { _id: agentId } = agent;
-  let docName = requiredDocuments[0];
   const filename = 'my-file.pdf'; // will be overwrite to docName
-  const filename_invalid_ext = 'my-file.exe'; // will be overwrite to docName
-  const fileCategory = 'ML';
+
   let r = /\d+/; //number pattern
-  let whoupdate = 'Editor';
   let version_number_max = 0;
   let db_file_name;
   let temp_name;
   let applicationIds;
   let applicationId;
   let file_name_inDB;
-  let document_category = 'ML';
   let returndoc_modification_thread;
-  var messagesThreadId;
+  let messagesThreadId;
 
   permission_canAccessStudentDatabase_filter.mockImplementation(
     async (req, res, next) => {
@@ -243,14 +231,30 @@ describe('POST /api/document-threads/init/application/:studentId/:programId/:doc
     );
     expect(thread.doc_thread_id.file_type).toBe('ML');
     messagesThreadId = thread.doc_thread_id._id?.toString();
-    // const resp22 = await request(app)
-    //   .post(
-    //     `/api/document-threads/init/application/${studentId}/${programId}/${document_category}`
-    //   )
-    //   .set('tenantId', TENANT_ID);
-    // applicationIds = resp.body.data;
-    // returndoc_modification_thread = resp22.body.data;
-    // messagesThreadId = returndoc_modification_thread?._id.toString();
+  });
+
+  it('should create a Supplementary_Form thread when manually added', async () => {
+    const resp22 = await request(app)
+      .post(
+        `/api/document-threads/init/application/${studentId}/${programId}/${'Supplementary_Form'}`
+      )
+      .set('tenantId', TENANT_ID);
+    expect(resp22.status).toBe(200);
+
+    const resp_std = await request(app)
+      .get(`/api/students/doc-links/${studentId}`)
+      .set('tenantId', TENANT_ID);
+
+    expect(resp_std.status).toBe(200);
+    const newStudentData = resp_std.body.data;
+
+    const newApplication = newStudentData.applications.find(
+      (appl) => appl.programId._id?.toString() === programId
+    );
+    const thread = newApplication.doc_modification_thread.find(
+      (thr) => thr.doc_thread_id.file_type === 'Supplementary_Form'
+    );
+    expect(thread.doc_thread_id.file_type).toBe('Supplementary_Form');
   });
 
   it.each([

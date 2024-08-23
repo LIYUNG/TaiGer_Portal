@@ -46,7 +46,7 @@ const InterviewCancelledReminder = asyncHandler(
         student_id: user._id.toString(),
         event: meeting_event,
         event_title:
-          user.role === 'Student'
+          user.role === Role.Student
             ? `${user.firstname} ${user.lastname}`
             : `${meeting_event.receiver_id[0].firstname} ${meeting_event.receiver_id[0].lastname}`,
         isUpdatingEvent: false,

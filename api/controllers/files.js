@@ -988,8 +988,7 @@ const updateStudentApplicationResult = asyncHandler(async (req, res, next) => {
     (application) => application.programId?.id.toString() === programId
   );
   res.status(200).send({ success: true, data: udpatedApplication });
-  if (user.role === 'Student') {
-    // TODO: add email informing agent.
+  if (user.role === Role.Student) {
     if (result !== '-') {
       for (let i = 0; i < student.agents?.length; i += 1) {
         if (isNotArchiv(student.agents[i])) {

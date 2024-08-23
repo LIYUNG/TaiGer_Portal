@@ -3,7 +3,7 @@ const path = require('path');
 const { spawn } = require('child_process');
 const EventEmitter = require('events');
 const request = require('supertest');
-const { connect, closeDatabase, clearDatabase } = require('../fixtures/db');
+const { connect, clearDatabase } = require('../fixtures/db');
 const { Role } = require('../../constants');
 const { app } = require('../../app');
 const { UserSchema } = require('../../models/User');
@@ -94,7 +94,9 @@ let dbUri;
 beforeAll(async () => {
   dbUri = await connect();
 });
-afterAll(async () => await clearDatabase());
+afterAll(async () => {
+  await clearDatabase();
+});
 
 beforeEach(async () => {
   const db = connectToDatabase(TENANT_ID, dbUri);

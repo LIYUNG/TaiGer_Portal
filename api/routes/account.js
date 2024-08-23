@@ -5,8 +5,7 @@ const {
   DownloadTemplateRateLimiter,
   RemoveNotificationRateLimiter,
   updateCredentialRateLimiter,
-  updatePersonalInformationRateLimiter,
-  TranscriptAnalyserRateLimiter
+  updatePersonalInformationRateLimiter
 } = require('../middlewares/rate_limiter');
 const { filter_archiv_user } = require('../middlewares/limit_archiv_user');
 const { multitenant_filter } = require('../middlewares/multitenant-filter');
@@ -19,11 +18,6 @@ const {
   TemplatefileUpload,
   admissionUpload
 } = require('../middlewares/file-upload');
-
-const {
-  processTranscript_test,
-  downloadXLSX
-} = require('../controllers/course');
 
 const {
   getTemplates,

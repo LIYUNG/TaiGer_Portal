@@ -34,7 +34,7 @@ const MeetingAdjustReminder = (receiver, user, meeting_event) => {
 
 const MeetingCancelledReminder = (user, meeting_event) => {
   MeetingCancelledReminderEmail(
-    user.role === 'Student'
+    user.role === Role.Student
       ? {
           id: meeting_event.receiver_id[0]._id.toString(),
           firstname: meeting_event.receiver_id[0].firstname,
@@ -54,7 +54,7 @@ const MeetingCancelledReminder = (user, meeting_event) => {
       student_id: user._id.toString(),
       event: meeting_event,
       event_title:
-        user.role === 'Student'
+        user.role === Role.Student
           ? `${user.firstname} ${user.lastname}`
           : `${meeting_event.receiver_id[0].firstname} ${meeting_event.receiver_id[0].lastname}`,
       isUpdatingEvent: false
@@ -78,7 +78,7 @@ const meetingInvitation = (receiver, user, event) => {
       isUpdatingEvent: false,
       event,
       event_title:
-        user.role === 'Student'
+        user.role === Role.Student
           ? `${user.firstname} ${user.lastname}`
           : `${receiver.firstname} ${receiver.lastname}`
     }
@@ -400,7 +400,7 @@ const confirmEvent = asyncHandler(async (req, res, next) => {
   const updated_event = req.body;
   try {
     const date = new Date(updated_event.start);
-    if (user.role === 'Student') {
+    if (user.role === Role.Student) {
       updated_event.isConfirmedRequester = true;
       updated_event.meetingLink = `https://meet.jit.si/${user.firstname}_${
         user.lastname
@@ -450,12 +450,12 @@ const confirmEvent = asyncHandler(async (req, res, next) => {
     }
     // TODO Sent email to requester
 
-    if (user.role === 'Student') {
+    if (user.role === Role.Student) {
       event.receiver_id.forEach((receiver) => {
         meetingInvitation(receiver, user, event);
       });
     }
-    if (user.role === 'Agent') {
+    if (user.role === Role.Agent) {
       event.requester_id.forEach((requester) => {
         meetingInvitation(requester, user, event);
       });
@@ -473,11 +473,11 @@ const updateEvent = asyncHandler(async (req, res, next) => {
   const updated_event = req.body;
   try {
     const date = new Date(updated_event.start);
-    if (user.role === 'Student') {
+    if (user.role === Role.Student) {
       updated_event.isConfirmedRequester = true;
       updated_event.isConfirmedReceiver = false;
     }
-    if (user.role === 'Agent') {
+    if (user.role === Role.Agent) {
       updated_event.isConfirmedRequester = false;
       updated_event.isConfirmedReceiver = true;
     }
@@ -497,9 +497,9 @@ const updateEvent = asyncHandler(async (req, res, next) => {
     if (!event) {
       res.status(404).json({ error: 'event is not found' });
     }
-    // TODO Sent email to receiver
-    // TODO: sync with google calendar.
-    if (user.role === 'Student') {
+    // Sent email to receiver
+    // sync with google calendar.
+    if (user.role === Role.Student) {
       event.receiver_id.forEach((receiver) => {
         MeetingAdjustReminder(receiver, user, event);
       });

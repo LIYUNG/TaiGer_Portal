@@ -64,7 +64,7 @@ const updateAcademicBackground = asyncHandler(async (req, res, next) => {
     student_id = studentId;
   }
   try {
-    university['updatedAt'] = new Date();
+    university.updatedAt = new Date();
     const updatedStudent = await req.db.model('User').findByIdAndUpdate(
       student_id,
       {
@@ -320,15 +320,13 @@ const updateApplicationPreferenceSkill = asyncHandler(
       body: { application_preference }
     } = req;
     const { studentId } = req.params;
-    // const { _id } = student;
     let student_id;
     if (user.role === Role.Student || user.role === Role.Guest) {
-      // eslint-disable-next-line no-underscore-dangle
       student_id = user._id;
     } else {
       student_id = studentId;
     }
-    application_preference['updatedAt'] = new Date();
+    application_preference.updatedAt = new Date();
     const updatedStudent = await req.db.model('User').findByIdAndUpdate(
       student_id,
       {
@@ -336,7 +334,6 @@ const updateApplicationPreferenceSkill = asyncHandler(
       },
       { upsert: true, new: true }
     );
-    // const updatedStudent = await req.db.model('User').findById(_id);
     res.status(200).send({
       success: true,
       data: updatedStudent.application_preference
@@ -349,7 +346,6 @@ const updateApplicationPreferenceSkill = asyncHandler(
 const updatePersonalData = asyncHandler(async (req, res, next) => {
   const {
     params: { user_id },
-    user,
     body: { personaldata }
   } = req;
   try {
@@ -359,7 +355,6 @@ const updatePersonalData = asyncHandler(async (req, res, next) => {
         upsert: true,
         new: true
       });
-    // const updatedStudent = await req.db.model('User').findById(_id);
     res.status(200).send({
       success: true,
       data: {
